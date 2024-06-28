@@ -56,8 +56,10 @@ export default function PageLayout(props) {
     )
 
     const {height: windowHeight} = useWindowDimensions();
+   
 
-    const feedList = appSetting('feed', 'list')
+    const feedList = appSetting('feed', 'list');
+    const [feedHeight, setFeedHeight] = useState(windowHeight - 64 -64 - (feedList.length > 1 ? 40 : 0));
 
     const [unitMode, setUnitMode] = useState(
         feedMode ? feedMode : appSetting('feed', 'default_view')
@@ -125,7 +127,7 @@ export default function PageLayout(props) {
         data: props.data,
         block: SplashBlock(props),
     }
-    const {feedHeight, setFeedHeight} = useState(windowHeight - 64 -64 - (feedList.length > 1 ? 40 : 0));
+    
 
     useEffect(() => {
         setFeedHeight(windowHeight - 64 -64 - (feedList.length > 1 ? 40 : 0));

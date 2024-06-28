@@ -4,7 +4,7 @@ import { Button, Hidden } from 'app/design/controls'
 import { View } from 'app/design/view'
 import { useWindowDimensions } from 'react-native'
 import { appSetting } from 'app/lib/util'
-import { Keyboard } from 'react-native';
+import { Keyboard, Platform } from 'react-native';
 export default function FormFieldSubmit(props) {
     const formContext = useFormContext();
     const { formState } = formContext;
@@ -15,13 +15,22 @@ export default function FormFieldSubmit(props) {
     const { field } = useController({ name, rules, defaultValue });
 
     const formProps = appSetting('forms', props.form_name);
-    
+
+    const handlePress = () => {
+        if (!props.disabled) {
+            props.handleSubmit();
+            Keyboard.dismiss();
+        }
+    };
+
     return (
         <Field  {...props}>
             <Button
                 title={!props.icon_only ? props.value : ''}
                 variant={!!props.variant ? props.variant : 'primary'}
-                onTouchStart={()=> {if (!props.disabled){props.handleSubmit();  Keyboard.dismiss();console.log('submitting')}}}
+                {...(Platform.OS === 'web'
+                    ? { onPress: handlePress }
+                    : { onTouchStart: handlePress })}
                 startDecorator={props.icon}
                 size={!!props.size ? props.size : 'base'}
                 disabled={props.disabled ? props.disabled : false}
@@ -35,7 +44,7 @@ export default function FormFieldSubmit(props) {
                 defaultValue={defaultValue}
             />
             {
-                (Object.keys(formContext.formState.errors).length > 0 && props.hide_errors !==true && formProps?.hide_errors !== true) &&
+                (Object.keys(formContext.formState.errors).length > 0 && props.hide_errors !== true && formProps?.hide_errors !== true) &&
                 <View className="mt-2"><FormError errorText={"Errors:"} /><View className="ml-4">
                     {
                         Object.keys(formContext.formState.errors).map((fieldName, index) => {

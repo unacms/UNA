@@ -12,12 +12,13 @@ import * as Linking from 'expo-linking';
 import { useRouter, useNavigation } from 'expo-router';
 import { parseUrl } from 'app/lib/util'
 import { clearNotif } from 'app/lib/util'
+import * as Notifications from 'expo-notifications';
 
 export default function () {
 
     const { t } = useTranslation();
     let { currentUser, setCurrentUser } = useCurrentUser();
-    
+
     const navigation = useNavigation();
     const router = useRouter();
     const { colors } = Theme();
@@ -45,14 +46,31 @@ export default function () {
                 navigation.navigate('tab' + index);
             }
         }
-        
+
 
     }, [url, currentUser]);
 
-    /*useEffect(() => {
-        if (currentUser?.notifications && notifCount != currentUser?.notifications)
-            setNotifCount(currentUser?.notifications)
-    }, [currentUser?.notifications]);*/
+    useEffect(() => {
+
+        const scheduleNotification = async () => {
+            await Notifications.setBadgeCountAsync(currentUser?.notifications);
+            if (currentUser?.notifications > 0){
+                await Notifications.scheduleNotificationAsync({
+                    content: {
+                        title: "New notifications",
+                        body: 'You have ' + currentUser?.notifications + 'new notifications!',
+                    },
+                    trigger: { seconds: 2 },
+                });
+            }
+        };
+
+        if (currentUser?.notifications) {
+            console.log('------------------------')
+            scheduleNotification();
+        }
+    }, [currentUser?.notifications]);
+
     // DEEP LINKING
 
     if (currentUser) {
@@ -61,7 +79,7 @@ export default function () {
         dUser.url = '/dashboard'
         profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="xs" />
     }
-    
+
 
     return (
         <BottomSheetDataContext>
@@ -69,7 +87,8 @@ export default function () {
                 screenOptions={({ navigation, route }) => ({
                     tabBarStyle: {
                         backgroundColor: colors.barsBackground,
-                        height: currentUser || appSetting('layout', 'hide_nav_non_logged_native: true') ? 55 : 0
+                        height: currentUser || appSetting('layout', 'hide_nav_non_logged_native: true') ? 55 : 0,
+                        opacity: currentUser || appSetting('layout', 'hide_nav_non_logged_native: true') ? 1 : 0
                     },
                     headerStyle: {
                         backgroundColor: colors.barsBackground,
@@ -79,8 +98,8 @@ export default function () {
                         height: 44,
                         marginTop: 5,
                         borderRadius: 10,
-                        marginLeft:10,
-                        marginRight:10,
+                        marginLeft: 10,
+                        marginRight: 10,
                     },
 
                     tabBarInactiveTintColor: colors.barsColor,
@@ -100,14 +119,14 @@ export default function () {
                                 (tab.url == '/dashboard' && profile) ? profile : <Icon icon={tab.icon} width={iconWidth} height={iconHeight} color={color} />
                             )
                         };
-                
+
                         if (tab.title == '') {
                             options.tabBarLabel = () => null;
                         }
 
                         if (tab.hide == true)
                             options.href = null;
-                
+
                         return (
                             <Tabs.Screen
                                 key={`tab${index}`}
@@ -115,10 +134,10 @@ export default function () {
                                 initialParams={{ url2: tab.url }}
                                 listeners={{
                                     tabPress: e => {
-                                        if (e.type=='tabPress'){
+                                        if (e.type == 'tabPress') {
                                             let a = e.target.split('-');
-                                            let d= TabList[a[0].replace('tab', '')];
-                                            if(d.url == appSetting('layout', 'notifications'))
+                                            let d = TabList[a[0].replace('tab', '')];
+                                            if (d.url == appSetting('layout', 'notifications'))
                                                 clearNotif(currentUser, setCurrentUser)
                                         }
                                         FeedbackHaptics('Medium');

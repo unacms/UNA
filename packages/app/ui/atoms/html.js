@@ -115,6 +115,11 @@ export default function ElementHtml(props) {
             color: colors.primary,
             textDecorationLine: 'none',
         }
+        ,'bx-embeded':
+        {
+            lineHeight:18,
+            fontSize: 14,
+        }
 
     }
 

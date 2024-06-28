@@ -34,6 +34,7 @@ export default function Root(props) {
         })();
     }, []);
 
+
     const languageDetector = {
         type: 'languageDetector',
         async: true,

@@ -71,7 +71,7 @@ export default function UniList(props) {
             <FlashList  
                 ref = {refer}   
                 keyExtractor={item => item.id}
-                onEndReachedThreshold={1}
+                onEndReachedThreshold={2}
                 numColumns={numColumns}
                 estimatedItemSize={400}
                 data={data}

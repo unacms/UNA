@@ -320,7 +320,7 @@ function GhostsList(imagesList, bMultiple, handleDelete) {
         const isImage = img?.file_type?.includes('image/');
 
         return (
-            <View key={`file-${name}-${index}`} className='h-24 w-24 justify-center items-center dark:bg-bgrcard-d border-bdr dark:border-bdr-d border rounded-lg m-1 overflow-hidden' >
+            <View key={`file-${index}`} className='h-24 w-24 justify-center items-center dark:bg-bgrcard-d border-bdr dark:border-bdr-d border rounded-lg m-1 overflow-hidden' >
                 {isImage && <Image view='cover' sizes="96px" className="u-cover" alt='' src={img.file_url} />}
                 {!isImage && !img?.preload && <Icon icon="File" className="w-20 h-20" size={80} />}
                 {img?.preload && <View className='absolute w-full h-full justify-center items-center'><Loading /></View>}

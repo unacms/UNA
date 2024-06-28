@@ -31,7 +31,8 @@ const expoConfig = {
         "NSCalendarsUsageDescription": "See your scheduled meetings in Jitsi.",
         "NFCReaderUsageDescription":  "Quick contacts between users.",
         "NSBluetoothAlwaysUsageDescription": "Quick contacts between users.",
-        "NSBluetoothPeripheralUsageDescription": "Quick contacts between users."
+        "NSBluetoothPeripheralUsageDescription": "Quick contacts between users.",
+        "NSLocationWhenInUseUsageDescription": "Quick contacts between users."
       }
     },
     "android": {
@@ -58,6 +59,10 @@ const expoConfig = {
         "android.permission.BLUETOOTH_SCAN",
         "android.permission.BLUETOOTH_CONNECT",
         "android.permission.BLUETOOTH_ADVERTISE",
+        "android.permission.WAKE_LOCK",
+        "android.permission.RECEIVE_BOOT_COMPLETED",
+        "com.google.android.c2dm.permission.RECEIVE",
+        "android.permission.SCHEDULE_EXACT_ALARM"
       ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
