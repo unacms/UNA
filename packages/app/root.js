@@ -4,15 +4,23 @@ import React, { useEffect, useCallback } from 'react';
 import { useCurrentUser } from 'app/context/user';
 import { Platform } from 'react-native'
 import { storageClear, decodeText } from 'app/lib/util';
-import Layouts from 'app/components/layouts'
 import { remoteSettings } from 'app/settings-remote';
 import { subscribe } from 'app/ui/atoms/socket';
 import { getRemoteSettings } from 'app/config';
 import dynamic from 'next/dynamic'
 import { appSetting } from 'app/lib/util'
+let Layouts;
+
+if (Platform.OS === 'web') {
+    const dynamic = require('next/dynamic').default;
+    Layouts = dynamic(() => import('app/components/layouts'), { ssr: false });
+    //const Layouts = React.lazy(() => import('app/components/layouts'));
+} else {
+    Layouts = require('app/components/layouts').default;
+}
 
 //const Layouts = dynamic(() => import('app/components/layouts'), { ssr: false, })
-//const Layouts = React.lazy(() => import('app/components/layouts'));
+
 
 const metaAdder = (queryProperty, value) => {
     let element = document.querySelector(`meta[${queryProperty}]`);
@@ -25,7 +33,6 @@ const metaAdder = (queryProperty, value) => {
 };
 
 export function Root(props) {
-    console.log("init-root");
     //return <></>
     let { currentUser, setCurrentUser } = useCurrentUser();
     let data = props?.data;
@@ -33,17 +40,17 @@ export function Root(props) {
 
     useEffect(() => {
         if (isWeb) {
-            if (data?.title){
-              
-                if (appSetting('layout', 'add_notifications_count_in_title')){
-                    if (currentUser?.notifications > 0){
-                        document.title = decodeText('(' + currentUser?.notifications +') ' + data?.title);
+            if (data?.title) {
+
+                if (appSetting('layout', 'add_notifications_count_in_title')) {
+                    if (currentUser?.notifications > 0) {
+                        document.title = decodeText('(' + currentUser?.notifications + ') ' + data?.title);
                     }
-                    else{
+                    else {
                         document.title = decodeText(data?.title);
                     }
                 }
-                else{
+                else {
                     document.title = decodeText(data?.title);
                 }
 
@@ -56,7 +63,7 @@ export function Root(props) {
     }, [currentUser?.notifications]);
 
     useEffect(() => {
-        subscribe('sys_api_0' , 'config_changed', updateSettings);
+        subscribe('sys_api_0', 'config_changed', updateSettings);
     }, [])
 
     const updateSettings = useCallback(async () => {
@@ -87,8 +94,8 @@ export function Root(props) {
 
     }, [data?.user]);
 
-    if (props.code == 404 && !data?.page_status ) {
-         data.page_status = 404
+    if (props.code == 404 && !data?.page_status) {
+        data.page_status = 404
     }
 
     return (

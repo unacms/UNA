@@ -174,7 +174,7 @@ export default function PageLayout(props) {
                                 
                                 <Link href="/logout"><Button variant="outline" startDecorator="SignOut" rounded /></Link>
                             </View>
-                            <View className="flex-row flex-wrap gap-x-2 gap-y-2 hidden justify-center lg:flex">
+                            {Platform.OS == 'web' && <View className="flex-row flex-wrap gap-x-2 gap-y-2 hidden justify-center lg:flex">
                                 <ProfileSwitcher hideTitle={true} ><Button
                                     variant="text"
                                     title={ t("Switch Profile") }
@@ -251,7 +251,7 @@ export default function PageLayout(props) {
                                     fullWidth
                                     align="left"
                                 /></Link>
-                            </View>
+                            </View>}
                         </View>
                     </Card>
                 </View>

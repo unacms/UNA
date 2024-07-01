@@ -5,7 +5,6 @@ import PageLayout from 'app/components/page-layout';
 import LayoutDataContext from 'app/context/layout';
 
 export default function Layouts({path, data, uri, url}) {
-    console.log('lay');
     return(
         <LayoutDataContext>
             <Layout path={path} data={data} uri={uri}>
