@@ -46,6 +46,8 @@ export function Screen(params) {
     const navigation = useNavigation();
     const route = useRoute();
     const [pageData, setPageData] = useState(null);
+
+    
     const routerExpo = useRouter();
     const { colors } = Theme();
 
@@ -60,20 +62,23 @@ export function Screen(params) {
         }
     }
 
+    
     // BOTTOM TABS NAVIGATION
-    if (!_path || _path.includes('/tab')) {
+    if (!pagePath || pagePath.includes('/tab')) {
         const tabListKey = currentUser ? 'menu_tabbar_logged' : 'menu_tabbar_non_logged';
         const tabList = appSetting('menu_items', tabListKey);
         const item = tabList.find((item) => item.key === pathname);
         _path = item ? item.url : null;
     }
 
+    const [pagePath, setPagePath] = useState(_path);
+
     useEffect(() => {
         if (!isFocused) return;
-        if (!(_path && _path.startsWith('/') && !_path.includes('/?url='))) return;
+        if (!(pagePath && pagePath.startsWith('/') && !pagePath.includes('/?url='))) return;
 
         const fetchPageData = async () => {
-            const { path: pathWithoutQuery, queryString } = parseUrl(_path);
+            const { path: pathWithoutQuery, queryString } = parseUrl(pagePath);
             const params = queryString ? JSON.stringify(parseQueryString(queryString)) : null;
             const data = await getData(pathWithoutQuery, null, null, null, null, params);
 
@@ -83,7 +88,7 @@ export function Screen(params) {
             }
         };
         fetchPageData();
-    }, [_path, isFocused, currentUser?.id]);
+    }, [pagePath, isFocused, currentUser?.id]);
 
     useEffect(() => {
         if (pageData){
@@ -103,7 +108,7 @@ export function Screen(params) {
         return <></>;
 
     return pageData?.data ? (
-        <Convo path={_path} pageData={pageData} />
+        <Convo _path={pagePath} pageData={pageData} />
     ) : <Loading />;
 }
 

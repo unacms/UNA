@@ -66,9 +66,10 @@ export async function fetcherRaw (host, mixed) {
     else if ('web' !== Platform.OS)
         headers['Origin'] = APP_ORIGIN;
 
-    // headers['Cache-Control'] = "no-cache, no-store, must-revalidate";
-    // headers['Pragma'] = "no-cache";
-    // headers['Expires'] = "0";
+    headers['Content-Type'] = "application/json";
+    headers['Cache-Control'] = "no-cache";
+    headers['Pragma'] = "no-cache";
+    headers['Expires'] = "0";
     // perform fetch
     const lang = i18n.language;
 
@@ -76,6 +77,7 @@ export async function fetcherRaw (host, mixed) {
         method: data ? 'POST' : 'GET',
         body: data ? data : null,
         headers: headers,
+        cache: 'no-store',
         credentials: 'include' // Set to true on UNA side - Access-Control-Allow-Credentials
     })
     .then(async (r) => {

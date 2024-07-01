@@ -4,14 +4,14 @@ import React, { useEffect, useCallback } from 'react';
 import { useCurrentUser } from 'app/context/user';
 import { Platform } from 'react-native'
 import { storageClear, decodeText } from 'app/lib/util';
-//import Layouts from 'app/components/layouts'
+import Layouts from 'app/components/layouts'
 import { remoteSettings } from 'app/settings-remote';
 import { subscribe } from 'app/ui/atoms/socket';
 import { getRemoteSettings } from 'app/config';
 import dynamic from 'next/dynamic'
 import { appSetting } from 'app/lib/util'
 
-const Layouts = dynamic(() => import('app/components/layouts'), { ssr: false, })
+//const Layouts = dynamic(() => import('app/components/layouts'), { ssr: false, })
 //const Layouts = React.lazy(() => import('app/components/layouts'));
 
 const metaAdder = (queryProperty, value) => {
@@ -25,6 +25,8 @@ const metaAdder = (queryProperty, value) => {
 };
 
 export function Root(props) {
+    console.log("init-root");
+    //return <></>
     let { currentUser, setCurrentUser } = useCurrentUser();
     let data = props?.data;
     const isWeb = Platform.OS == 'web'
@@ -69,19 +71,7 @@ export function Root(props) {
                 setCurrentUser(b);
                 storageClear();
             }
-            if (currentUser?.notifications && currentUser?.notifications != data.user.notifications) {
-                /*let b = currentUser;
-                b.notifications = data.user.notifications
-                setCurrentUser(b);*/
-                /*setCurrentUser(prevUser => ({
-                    ...prevUser,
-                    notifications: data.user.notifications,
-                }));*/
-            }
             if (currentUser && currentUser?.informer != data.user.informer) {
-                /*let b = currentUser;
-                b.informer = data.user.informer
-                setCurrentUser(data.user);*/
                 setCurrentUser(prevUser => ({
                     ...prevUser,
                     informer: data.user.informer,

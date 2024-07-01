@@ -13,8 +13,15 @@ import { useRouter, useNavigation } from 'expo-router';
 import { parseUrl } from 'app/lib/util'
 import { clearNotif } from 'app/lib/util'
 import * as Notifications from 'expo-notifications';
+import Suggestions from 'app/ui/molecules/suggestions';
+import AsyncWorker from 'app/ui/molecules/async_worker';
+import { useFonts } from 'expo-font';
 
 export default function () {
+
+    const isUseCustomFont = appSetting('layout', 'use_custom_font');
+    const fontsToLoad = isUseCustomFont ? { default: require('app/design/fonts/DefaultFont.ttf') } : {};
+    const [fontsLoaded] = useFonts(fontsToLoad);
 
     const { t } = useTranslation();
     let { currentUser, setCurrentUser } = useCurrentUser();
@@ -80,9 +87,17 @@ export default function () {
         profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="xs" />
     }
 
+    
+    if (!fontsLoaded) {
+        return null;
+    }
+
+
 
     return (
         <BottomSheetDataContext>
+             <Suggestions />
+             <AsyncWorker />
             <Tabs
                 screenOptions={({ navigation, route }) => ({
                     tabBarStyle: {
