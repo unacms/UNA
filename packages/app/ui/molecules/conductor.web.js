@@ -88,13 +88,17 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
     const scrollValue = useSharedValue(1);
     //const { colors } = Theme();
-    const [index, setIndex] = useState(routes.findIndex(function (item) {
-        if (useSectionAsMenu)
-            return data.url == item.key;
-        else
-            return data.url == item.key;  // /for links like /events
-        //return (data.url).includes(item.key);
-    }));
+    const [index, setIndex] = useState(() => {
+        const foundIndex = routes.findIndex(function (item) {
+          if (useSectionAsMenu) {
+            return data.url === item.key;
+          } else {
+            return data.url === item.key;  // for links like /events
+            // return (data.url).includes(item.key);  // Uncomment if needed
+          }
+        });
+        return foundIndex !== -1 ? foundIndex : 0;
+    });
 
     //let maxIdLocal = 0;
     const currentRoute = routes.find((item) => item.index === index);
