@@ -66,7 +66,7 @@ export async function fetcherRaw (host, mixed) {
     else if ('web' !== Platform.OS)
         headers['Origin'] = APP_ORIGIN;
 
-    headers['Content-Type'] = "application/json";
+   // headers['Content-Type'] = "application/json";
     headers['Cache-Control'] = "no-cache";
     headers['Pragma'] = "no-cache";
     headers['Expires'] = "0";
