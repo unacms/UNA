@@ -16,6 +16,8 @@ export default function (props) {
     if (Platform.OS != 'web')
         sClassName += '  ';
 
+
+
     const isShowOptional = appSetting('layout', 'form_fields_optional_text1') != '' ? '(' + appSetting('layout', 'form_fields_optional_text1') + ')' : '';
     const isShowCaption = !!props.caption && props.format == 'default' && !props.use_caption_as_placeholder && ['switcher', 'checkbox'].includes(props.type) == false;
     return (
@@ -36,7 +38,7 @@ export default function (props) {
             {props.children}
             {!!props.error && Array.isArray(props.error) && <FormError errorText={error[0]} errorLink={error[1]} />}
             {!!props.error && !Array.isArray(props.error) && <FormError errorText={props.error} />}
-            {!!props.error2 && <FormError errorText={props.checker.error} />}
+            {(props.error2 && props.checker.error!='') && <FormError errorText={props.checker.error} />}
             {!!props.info &&
                 <View className="label" >
                     <Text className="mt-1 text-xs sm:text-sm text-neutral-700 dark:text-neutral-300">{props.info}</Text>

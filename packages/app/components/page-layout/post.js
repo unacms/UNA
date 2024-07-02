@@ -22,8 +22,9 @@ export default function PageLayout(props) {
     const viewFormRef = useRef();
     const viewCntRef = useRef();
 
-    const handleReply =  async (id, author, text) => {
-        setFormData({text:stripTags(text), parent_id:id, author:author})
+    const handleReply =  async (data) => {
+        setFormData({ text: stripTags(data.cmt_text), parent_id: data.cmt_id, author: data.author_data })
+        //setFormData({text:stripTags(text), parent_id:id, author:author})
     }
 
     const handleForm =  async (data) => {

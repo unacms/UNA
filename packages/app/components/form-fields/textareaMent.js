@@ -21,7 +21,8 @@ function formatText(text) {
         (match, p1, p2, name) => {
             //console.log('Name:', name);
             const trigger = '@'; // Assuming '@' is the trigger in this context
-            //console.log('Trigger:', trigger);
+            //console.log('Trigger:', trigger, name);
+            name = name.replace('@', '');
             return `@[${name}](7)`; // Replace '8' with the appropriate ID if needed
         }
     );
@@ -29,11 +30,11 @@ function formatText(text) {
 }
 
 export default function ({ name, value = '', numLines = 4, ...props }) {
+
     const { colors } = Theme();
     const { field } = useController({ name, rules: {}, defaultValue: value });
-    let v =  formatText(field.value);
 
-    const [localValue, setLocalValue] = useState(v);
+    const [localValue, setLocalValue] = useState(formatText(field.value));
     const [suggestions, setSuggestions] = useState([]);
     const [keywordval, setKeyword] = useState(['', '']);
 
@@ -56,12 +57,15 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
         if (field.value == ''){
             setLocalValue('');
         }
+        else{
+            setLocalValue(formatText(field.value));
+        }
     }, [field.value]);    
 
     const handleChange2 = (val) => {
         setLocalValue(val);
         
-        let v = replaceMentionValues(val, ({trigger, name, id}) => `<a class="bx-mention-link" href="/pages/view-persons-profile?id=${id}" title="${name}" dchar="${trigger}" data-profile-id="${id}">${trigger}${name}</a>`)
+        let v = replaceMentionValues(val, ({trigger, name, id}) => `<a class="bx-mention-link" href="/pages/view-persons-profile?id=${id}" title="${name}" dchar="${trigger}" data-profile-id="${id}">${name}</a>`)
         v = v.split('\n').map(line => `<p>${line}</p>`).join('');
         field.onChange(v)
     }
@@ -88,7 +92,7 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
         );
     };
 
-    let styles ={maxHeight: 100};
+    let styles ={maxHeight: 100, verticalAlign:'top'};
     if(name != 'cmt_text') {
         styles = {...styles, minHeight: 100}
     }
@@ -97,13 +101,14 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
         styles = {...styles, ...props.styles};
 
     let MentionInput = props.bg =='transparent' ? MentionInputMultiTransparent : MentionInputMulti
-
+    
     return (
         <Field {...props}>
             <MentionInput style={styles}
                 multiline
                 autoFocus={true}
                 value={localValue}
+                placeholder = {props.placeholder}
                 onChange={handleChange2}
                 partTypes={[
                     {

@@ -7,7 +7,6 @@ import { useCurrentUser } from 'app/context/user'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import { useTranslation } from 'react-i18next';
 import Browse from 'app/components/elements/browse'
-import { ClearNotif } from 'app/ui/workers/notif_checker';
 import { Link } from 'solito/link'
 
 export default function (props) {
@@ -19,12 +18,13 @@ export default function (props) {
     let data = { request_url: "/api.php?r=bx_notifications/get_data/&params[]=", "type": "obj_own_and_con", unit: "notifications" }
     
     const memoizedBrowse = useMemo(() => {
+
         return <Browse cachePrefix={Date.now()} height={400} data={data} />;
     }, [notifCount]);
 
     useEffect(() => {
         if (ntfsOpen){
-            clearNotif();
+            clearNotif(currentUser, setCurrentUser);
         }
     }, [ntfsOpen])
 
