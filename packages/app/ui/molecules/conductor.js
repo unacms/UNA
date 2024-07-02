@@ -27,6 +27,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
     const [menuState, setMenuState] = useState(menu);
     if (!deepEqual(menu, menuState)) {
         setMenuState(menu)
+        console.log("setRoutes-001")
         setRoutes(initedTabs);
     }
 
@@ -126,11 +127,13 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
 
     /* NEW POST TO FEED */
     useEffect(() => {
-        const data = handleFeedLayoutData(layoutData, routes[index].data, routes[index].endpoint?.unit )
-        const newRoutes = [...routes];
-        newRoutes[index].data = data
-        setRoutes(newRoutes);
-
+        if (currentRoute.endpoint?.unit === 'feed' && layoutData && layoutData.data && (layoutData?.type == 'feed:new_content' || layoutData?.type == 'feed:remove_content')) {
+            let clonedData = currentRoute.data
+            const data = handleFeedLayoutData(layoutData, clonedData)
+            const newRoutes = [...routes];
+            newRoutes[index].data = data
+            setRoutes(newRoutes);
+        }
     }, [layoutData]);
     /* NEW POST TO FEED */
 

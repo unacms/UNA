@@ -1,4 +1,5 @@
 import { Tabs } from "expo-router";
+import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon';
 import { useCurrentUser } from 'app/context/user';
 import { appSetting } from 'app/lib/util'
@@ -58,10 +59,10 @@ export default function () {
     }, [url, currentUser]);
 
     useEffect(() => {
-
         const scheduleNotification = async () => {
-            await Notifications.setBadgeCountAsync(currentUser?.notifications);
-            if (currentUser?.notifications > 0){
+            const notificationsCount = Number(currentUser.notifications);
+            await Notifications.setBadgeCountAsync(notificationsCount);
+            if (notificationsCount > 0){
                 await Notifications.scheduleNotificationAsync({
                     content: {
                         title: "New notifications",
@@ -73,7 +74,6 @@ export default function () {
         };
 
         if (currentUser?.notifications) {
-            console.log('------------------------')
             scheduleNotification();
         }
     }, [currentUser?.notifications]);
@@ -127,7 +127,7 @@ export default function () {
                 {
                     TabList.map((tab, index) => {
                         const options = {
-                            tabBarBadge: (tab.url == appSetting('layout', 'notifications') && currentUser?.notifications) ? currentUser?.notifications : null,
+                            tabBarBadge: (tab.url == appSetting('layout', 'notifications') && currentUser?.notifications) ? <Text className="text-sm">{currentUser?.notifications}</Text> : null,
                             title: t(tab.title),
                             headerShown: false,
                             tabBarIcon: ({ color }) => (

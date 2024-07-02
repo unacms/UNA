@@ -52,15 +52,21 @@ export function absoluteApiUrl(url_name) {
 
 export function clearNotif(currentUser, setCurrentUser) {
 
-    console.log("ClearNotif", currentUser);
+    
     if (currentUser?.notifications > 0) {
+      
+        const clearNotifications = async () => {
+            console.log("ClearNotif", currentUser);
+            await fetcher('/api.php?r=bx_notifications/mark_as_read/')
+        }
+
+        clearNotifications();
+
         setCurrentUser(prevUser => ({
             ...prevUser,
             notifications: 0,
         }));
-        async () => {
-            await fetcher('/api.php?r=bx_notifications/mark_as_read/')
-        }
+        
     }
 }
 
