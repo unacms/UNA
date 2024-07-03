@@ -17,6 +17,8 @@ import { LayoutData } from 'app/context/layout';
 import { menuItemsFilter } from 'app/lib/util';
 
 export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks, useSectionAsMenu = false, unitMode = '', skeleton = '', onChangeRoute, keyword }) {
+   // console.log("conductor-001")
+   // return <></>
     const { currentUser, setCurrentUser } = useCurrentUser();
     const { layoutData, setLayoutData } = useContext(LayoutData);
     const { t } = useTranslation();
@@ -72,10 +74,14 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
     });
 
     const handleEndReached = async (lastItemIndex) => {
+        console.log("handleEndReached-001")
         if (isFetchingNextPage || isRefreshing)
             return;
         if (currentRoute?.endpoint?.finished)
             return;
+
+        console.log("handleEndReached-002")
+
         fetchNextPage();
     };
 
@@ -115,6 +121,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
     });
 
     useEffect(() => {
+        console.log("fetchAndUpdateData-001")
         fetchAndUpdateData(routes, index, setRoutes);
     }, [index]);
 

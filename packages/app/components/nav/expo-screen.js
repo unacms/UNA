@@ -47,7 +47,7 @@ export function Screen(params) {
     const route = useRoute();
     const [pageData, setPageData] = useState(null);
 
-    
+
     const routerExpo = useRouter();
     const { colors } = Theme();
 
@@ -62,7 +62,7 @@ export function Screen(params) {
         }
     }
 
-    
+
     // BOTTOM TABS NAVIGATION
     if (!_path || _path.includes('/tab')) {
         const tabListKey = currentUser ? 'menu_tabbar_logged' : 'menu_tabbar_non_logged';
@@ -70,9 +70,9 @@ export function Screen(params) {
         const item = tabList.find((item) => item.key === pathname);
         _path = item ? item.url : null;
     }
-    console.log("_path", _path)
-    const [pagePath, setPagePath] = useState(_path);
-
+    //    console.log("_path", _path, isFocused, pageData?.data?.title)
+    //const [pagePath, setPagePath] = useState(_path);
+    const pagePath = _path;
     useEffect(() => {
         if (!isFocused) return;
         if (!(pagePath && pagePath.startsWith('/') && !pagePath.includes('/?url='))) return;
@@ -91,7 +91,13 @@ export function Screen(params) {
     }, [pagePath, isFocused, currentUser?.id]);
 
     useEffect(() => {
-        if (pageData){
+        if (!isFocused) {
+            setPageData(null);
+        }
+    }, [isFocused]);
+
+    useEffect(() => {
+        if (pageData) {
             const settings = appSetting('layouts', pageData.data.uri)
             const profileDisplay = <></>;/*currentUser && appSetting('layout', 'show_user_icon')
             ? <View className="mr-2">
@@ -102,7 +108,7 @@ export function Screen(params) {
             updateCenterHeader(_path, t(pageData.data.name), false, navigation, routerExpo, colors, '', profileDisplay, currentUser);
         }
     }, [pageData, currentUser?.id]);
-    
+
 
     if (!isFocused)
         return <></>;
