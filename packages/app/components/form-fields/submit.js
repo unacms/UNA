@@ -18,8 +18,8 @@ export default function FormFieldSubmit(props) {
 
     const handlePress = () => {
         if (!props.disabled) {
-            props.handleSubmit();
             Keyboard.dismiss();
+            props.handleSubmit();
         }
     };
 
