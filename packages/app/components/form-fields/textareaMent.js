@@ -106,7 +106,7 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
         <Field {...props}>
             <MentionInput style={styles}
                 multiline
-                autoFocus={true}
+                autoFocus={field.value ? true : false}
                 value={localValue}
                 placeholder = {props.placeholder}
                 onChange={handleChange2}

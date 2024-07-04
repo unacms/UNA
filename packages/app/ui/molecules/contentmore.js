@@ -1,11 +1,9 @@
 import { Text } from 'app/design/typography'
 import { useState, useMemo } from 'react';
-import { stripTags } from 'app/lib/util';
-import { View, Pressable } from 'app/design/view';
+import { Pressable } from 'app/design/view';
 import Html from 'app/ui/atoms/html';
-import { appSetting, linkify2, truncateHTML } from 'app/lib/util';
-import { Button } from 'app/design/controls'
-import Link from 'app/ui/atoms/link';
+import { truncateHTML } from 'app/lib/util';
+import { storageSet, storageGet } from 'app/lib/util'
 
 function HtmlMemo({ data }) {
     const computedData = useMemo(() => {
@@ -14,8 +12,16 @@ function HtmlMemo({ data }) {
     return computedData
 }
 
-export function ContentMore({ content, embed, numberOfSymbols = 350, textStyle, openSmall, showLink = true, showLess = false }) {
-    const [showFull, setShowFull] = useState(openSmall);
+export function ContentMore({ content, embed, numberOfSymbols = 350, textStyle, openSmall, showLink = true, showLess = false, id=false }) {
+    let initedValue = openSmall;
+    if (id){
+        let a = storageGet('layout:shmo', '');
+        if (a){
+            if (a.includes(id))
+                initedValue = true;
+        }
+    }
+    const [showFull, setShowFull] = useState(initedValue);
 
     let linkContent = '';
     if (showLink && embed) {
@@ -37,6 +43,17 @@ export function ContentMore({ content, embed, numberOfSymbols = 350, textStyle, 
 
 
     const handleToggle = (e) => {
+        if (id){
+            let sm = storageGet('layout:shmo', '');
+            if (!sm){
+                sm =[];
+            }
+            sm.filter(item => item !== id);
+            if (!showFull)
+                sm.push(id);
+
+            storageSet('layout:shmo', '', sm)
+        }
         setShowFull((prevShowFull) => !prevShowFull);
         e.preventDefault();
     };

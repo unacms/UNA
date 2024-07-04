@@ -20,6 +20,7 @@ import Link from 'app/ui/atoms/link'
 import { stripTags, appSetting } from 'app/lib/util';
 import Carousel from 'app/ui/molecules/carousel'
 import { componentsMap } from 'app/ui/molecules/_map'
+import { KeyboardAvoidingView } from 'react-native';
 
 export default function UnitComments(props) {
     const { t } = useTranslation();
@@ -46,7 +47,7 @@ export default function UnitComments(props) {
         return (<View></View>);
 
     let { data: dynamicData, error } = useSWR(
-        postData ? ['/api.php?r='+appSetting("urls", "cmts")+'/&params[]={"module":"' + props.module + '","object_id":' + props.data.cmt_object_id + ',"action":"edit","id":' + props.data.cmt_id + '}', '', postData] : null,
+        postData ? ['/api.php?r=' + appSetting("urls", "cmts") + '/&params[]={"module":"' + props.module + '","object_id":' + props.data.cmt_object_id + ',"action":"edit","id":' + props.data.cmt_id + '}', '', postData] : null,
         fetcher,
         !true ? undefined : {
             revalidateIfStale: false,
@@ -71,12 +72,12 @@ export default function UnitComments(props) {
     const handleManageMenuSelect = async (oItem, event) => {
         switch (oItem.name) {
             case 'item-edit':
-                const result1 = await fetcher('/api.php?r='+appSetting("urls", "cmts")+'/&params[]={"module":"' + props.module + '","object_id":' + props.data.cmt_object_id + ',"action":"edit","id":' + props.data.cmt_id + '}');
+                const result1 = await fetcher('/api.php?r=' + appSetting("urls", "cmts") + '/&params[]={"module":"' + props.module + '","object_id":' + props.data.cmt_object_id + ',"action":"edit","id":' + props.data.cmt_id + '}');
                 setViewState({ view: 'edited', data: result1.data.form });
                 break;
 
             case 'item-delete':
-                const result = await fetcher('/api.php?r='+appSetting("urls", "cmts")+'/&params[]={"module":"' + props.module + '","object_id":' + props.data.cmt_object_id + ',"action":"remove","id":' + props.data.cmt_id + '}');
+                const result = await fetcher('/api.php?r=' + appSetting("urls", "cmts") + '/&params[]={"module":"' + props.module + '","object_id":' + props.data.cmt_object_id + ',"action":"remove","id":' + props.data.cmt_id + '}');
                 setViewState({ view: 'deleted' });
                 props.handleDelete();
                 break;
@@ -182,9 +183,11 @@ export default function UnitComments(props) {
                         }
                         <View className='text-neutral-900 dark:text-neutral-50'>
                             {viewState.view == 'edited' ? (
-                                <View className='-translate-y-6'>
-                                    <View className='ml-auto mb-2'><Button align="start" title="Cancel" size="xs" startDecorator="X" variant="outline" onPress={() => setViewState({ view: '' })} rounded /></View>
-                                    <Form {...viewState.data} classContainerName="flex-row flex-wrap w-full  items-start justify-between" onFormSubmit={onFormSubmit} />
+                                <View className='-translate-y-5'>
+                                    <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
+                                        <View className='ml-auto mb-2'><Button align="start" title="Cancel" size="xs" startDecorator="X" variant="outline" onPress={() => setViewState({ view: '' })} rounded /></View>
+                                        <Form {...viewState.data} classContainerName="flex-row flex-wrap w-full  items-start justify-between" onFormSubmit={onFormSubmit} />
+                                    </KeyboardAvoidingView>
                                 </View>
                             ) : <Html htmlStyles={{ fontSize: 14 }} customClassName='u-vanilla-html-small' data={linkify(data.cmt_text)} />}
                         </View>

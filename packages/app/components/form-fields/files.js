@@ -62,8 +62,9 @@ export default function (props) {
         let filteredArr = []
         if (imageSource?.images)
             filteredArr = imageSource?.images?.filter(item => item.preload === true);
-
-        setImageSource({ images: [...a, ...filteredArr] });
+        //console.log("filteredArrfilteredArr", filteredArr, a)
+        // setImageSource({ images: [...a, ...filteredArr] });
+        setImageSource({ images: [...a] });
 
     };
 
@@ -311,7 +312,7 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
 }
 
 function GhostsList(imagesList, bMultiple, handleDelete) {
-
+    console.log("imagesList", imagesList)
     if (!imagesList || imagesList.length === 0 || !bMultiple) {
         return;
     }

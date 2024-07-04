@@ -17,7 +17,7 @@ import * as Notifications from 'expo-notifications';
 import Suggestions from 'app/ui/molecules/suggestions';
 import AsyncWorker from 'app/ui/molecules/async_worker';
 import { useFonts } from 'expo-font';
-
+import { Platform } from 'react-native'
 export default function () {
 
     const isUseCustomFont = appSetting('layout', 'use_custom_font');
@@ -36,6 +36,16 @@ export default function () {
 
     let profile = null
     const [notifCount, setNotifCount] = useState(currentUser ? currentUser.notifications : null)
+
+
+    Notifications.setNotificationHandler({
+        handleNotification: async () => ({
+          shouldShowAlert: true,
+          shouldPlaySound: true,
+          shouldSetBadge: true,
+        }),
+      });
+
 
     // DEEP LINKING
     const url = Linking.useURL();
@@ -66,7 +76,7 @@ export default function () {
                 await Notifications.scheduleNotificationAsync({
                     content: {
                         title: "New notifications",
-                        body: 'You have ' + currentUser?.notifications + 'new notifications!',
+                        body: 'You have ' + currentUser?.notifications + ' new notifications!',
                     },
                     trigger: { seconds: 2 },
                 });
@@ -127,7 +137,7 @@ export default function () {
                 {
                     TabList.map((tab, index) => {
                         const options = {
-                            tabBarBadge: (tab.url == appSetting('layout', 'notifications') && currentUser?.notifications) ? <Text className="text-sm">{currentUser?.notifications}</Text> : null,
+                            tabBarBadge: (tab.url == appSetting('layout', 'notifications') && currentUser?.notifications) ? <Text className={Platform.OS === 'ios' ? 'text-xs': 'text-sm'}>{currentUser?.notifications}</Text> : null,
                             title: t(tab.title),
                             headerShown: false,
                             tabBarIcon: ({ color }) => (

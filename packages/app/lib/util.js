@@ -55,6 +55,11 @@ export function clearNotif(currentUser, setCurrentUser) {
     
     if (currentUser?.notifications > 0) {
       
+        setCurrentUser(prevUser => ({
+            ...prevUser,
+            notifications: 0,
+        }));
+
         const clearNotifications = async () => {
             console.log("ClearNotif", currentUser);
             await fetcher('/api.php?r=bx_notifications/mark_as_read/')
@@ -62,10 +67,7 @@ export function clearNotif(currentUser, setCurrentUser) {
 
         clearNotifications();
 
-        setCurrentUser(prevUser => ({
-            ...prevUser,
-            notifications: 0,
-        }));
+       
         
     }
 }

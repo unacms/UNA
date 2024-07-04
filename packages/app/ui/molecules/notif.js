@@ -22,12 +22,6 @@ export default function (props) {
         return <Browse cachePrefix={Date.now()} height={400} data={data} />;
     }, [notifCount]);
 
-    useEffect(() => {
-        if (ntfsOpen){
-            clearNotif(currentUser, setCurrentUser);
-        }
-    }, [ntfsOpen])
-
     const ntfsContent = (
         ntfsOpen && <View key="ddp-content" className="px-1.5 pb-1.5">
             <View className="flex-row items-center mb-1">
@@ -59,7 +53,7 @@ export default function (props) {
             startDecorator="Bell"
             id="m1"
         />
-        {(notifCount > 0) && <View className='absolute bg-contrast border-2 border-white dark:border-neutral-900 rounded-full  px-1.5 items-center justify-center -right-1 -top-2'><Text className='text-white text-xs font-semibold'>{notifCount}</Text></View>}
+        {(notifCount > 0 && !ntfsOpen) && <View className='absolute bg-contrast border-2 border-white dark:border-neutral-900 rounded-full  px-1.5 items-center justify-center -right-1 -top-2'><Text className='text-white text-xs font-semibold'>{notifCount}</Text></View>}
 
     </View>
 
@@ -77,7 +71,10 @@ export default function (props) {
     const dd = <DropdownPopup
         open={ntfsOpen}
         onOpenChange={async (bOpen) => {
+            clearNotif(currentUser, setCurrentUser);
             setNtfsOpen(bOpen);
+           
+            
         }}
         title={t("Notifications")}
     >
