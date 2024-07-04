@@ -490,6 +490,16 @@ div[data-radix-popper-content-wrapper]:not(.radix-hide){
     z-index: 1000000 !important;
 }
 
+.react-grid-item > .react-resizable-handle{
+    display: none;
+}
+.react-grid-item:hover > .react-resizable-handle{
+    display: block;
+    background-size: cover;
+}
+.react-grid-item:hover > .react-resizable-handle:after{
+    display: none;
+}
 .react-grid-item > .react-resizable-handle.react-resizable-handle-ne {
     top: 5px !important;
     right: 5px !important;

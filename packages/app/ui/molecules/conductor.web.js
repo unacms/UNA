@@ -47,7 +47,7 @@ function AddBlocks({leftSideBarBlocks, data, onFormSubmit})
             {windowWidth < 1024 && <View className="items-start ml-4 mt-2">
                 <Button title={show ?"Hide filters": "Show filters"}  variant="outline" rounded onPress={() =>{setShow(!show)}} />
             </View>}
-            {(show || windowWidth>=1024) && <View className="m-4">
+            {(show || windowWidth>=1024) && <View className="my-4 mx-2">
                 {leftSideBarBlocksObj.map((block, index) => {
                     return <View key={"lb-" + index}>{block}</View>
                 })}
@@ -258,7 +258,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         if (blocksroutes) {
             const blockKeys = Object.keys(blocksroutes);
             for (const key of blockKeys) {
-                if (blocksroutes[key].perLine > 0) {
+                if (blocksroutes[key].perLine > 0 && width> 640) {
                     return blocksroutes[key].perLine;
                 }
             }

@@ -1,11 +1,10 @@
-
 import StarRating from 'react-native-star-rating-widget';
 import StarRatingDisplay from 'react-native-star-rating-widget';
 
 export function StarsView(props) {
-    return <StarRatingDisplay {...props} starSize={24} color="#dddddd" enableHalfStar={false} />;
+    return <StarRatingDisplay {...props} starSize={props.starSize ? props.starSize: 24} color="#FDB022" enableHalfStar={false} />;
 }
 
 export function StarsAction(props) {
-    return <StarRating {...props} starSize={24} color="#dddddd" enableHalfStar={false} />;
+    return <StarRating {...props} starSize={props.starSize ? props.starSize: 24} color="#dddddd" enableHalfStar={false} />;
 }
