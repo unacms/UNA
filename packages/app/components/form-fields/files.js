@@ -13,7 +13,7 @@ import { useFormContext, useController } from 'react-hook-form';
 import { uploadImage, md5 } from 'app/lib/util';
 import Loading from 'app/ui/atoms/loading'
 import { Text } from 'app/design/typography'
-import { Image as ImageNative } from 'react-native';
+import { Image as ImageNative, Alert, Platform } from 'react-native';
 
 export default function (props) {
     const name = props.name;
@@ -143,6 +143,34 @@ export default function (props) {
     }
 
     const selectImage = useCallback(async () => {
+        if (Platform.OS !== 'web') {
+        Alert.alert(
+            "Upload Photo",
+            "Choose an option",
+            [
+              {
+                text: "Take Photo",
+                onPress: selectImage1('camera')
+              },
+              {
+                text: "Choose from Library",
+                onPress: selectImage1('library')
+              },
+              {
+                text: "Cancel",
+                style: "cancel"
+              }
+            ],
+            { cancelable: true }
+          );
+        }
+        else {
+            selectImage1('library')
+        }
+    }, [props.ext_deny, props.ext_allow, imageSource, url]);
+
+
+    const selectImage1 = useCallback(async (type) => {
         let bIsMedia = props.ext_deny == '' || props.ext_allow == 'mp3,m4a,m4b,wma,wav,3gp' ? true : false;
 
         if (!bIsMedia && props.ext_deny.length && !'jpg,jpeg,jpe,gif,png,svg,webp'.split(',').filter((s) => ~props.ext_deny.split(',').indexOf(s)).length)
@@ -156,12 +184,22 @@ export default function (props) {
             if (props.ext_allow == 'avi,flv,mpg,mpeg,wmv,mp4,m4v,mov,qt,divx,xvid,3gp,3g2,webm,mkv,ogv,ogg,rm,rmvb,asf,drc,ts')
                 mediaTypes = ImagePicker.MediaTypeOptions.Videos;
 
-            let result = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: mediaTypes,
-                quality: 1,
-                allowsMultipleSelection: bMultiple,
-            });
-
+            let result = null
+            
+            if (type == 'library'){
+                result = await ImagePicker.launchImageLibraryAsync({
+                    mediaTypes: mediaTypes,
+                    quality: 1,
+                    allowsMultipleSelection: bMultiple,
+                });
+            }
+            else{
+                result = await ImagePicker.launchCameraAsync({
+                    mediaTypes: mediaTypes,
+                    quality: 1,
+                    allowsMultipleSelection: bMultiple,
+                });
+            }
             if (!result.cancelled) {
                 let k = await uploadImages(result.assets);
                 setImageSource({ images: k });
