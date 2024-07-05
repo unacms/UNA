@@ -106,6 +106,12 @@ const expoConfig = {
           ios: {
             deploymentTarget: '13.4',
           },
+          android: {
+            minSdkVersion: 29, // Android 10
+            compileSdkVersion: 34,
+            targetSdkVersion: 34,
+            buildToolsVersion: "34.0.0"
+          }
         },
       ],
     ],
