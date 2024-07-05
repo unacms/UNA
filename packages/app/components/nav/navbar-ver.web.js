@@ -130,52 +130,55 @@ export default function (props) {
                         <HeaderLine headerSettings={headerSettings} currentUser={currentUser} uri={props.uri} bSearch={bSearch} showMenu={showMenu} menuPopup={menuPopup} setMenuPopup={setMenuPopup} />
                         <View className='hidden lg:flex flex-col flex-auto justify-between h-full'>
                             {!!currentUser && (
-                                <Row className='mt-4 justify-center mx-auto w-full px-4 gap-x-4'>
-                                    <View className='flex-auto'>
-                                        <BlockByUrl url="/api.php?r=bx_timeline/get_block_post_account" exProps={{ "mode": "button" }} />
-                                    </View>
-                                </Row>
-                            )}
-                            <View className='py-4'>
-                                <Row className='flex-row px-4 '>
-                                    <View className='flex-auto'>
-                                        <DropdownMenu items={menu_account_items.map(
-                                            (item, index) => {
-                                                return (
-                                                    {
-                                                        id: 'menu-' + index,
-                                                        link: item.link,
-                                                        title: t(item.title),
-                                                        icon:
-                                                            item.icon.indexOf(' ') == -1
-                                                                ? item.icon
-                                                                : item.icon.split(' ')[0],
+                                <>
+                                    <Row className='mt-4 justify-center mx-auto w-full px-4 gap-x-4'>
+                                        <View className='flex-auto'>
+                                            <BlockByUrl url="/api.php?r=bx_timeline/get_block_post_account" exProps={{ "mode": "button" }} />
+                                        </View>
+                                    </Row>
+                                
+                                    <View className='py-4'>
+                                        <Row className='flex-row px-4 '>
+                                            <View className='flex-auto'>
+                                                <DropdownMenu items={menu_account_items.map(
+                                                    (item, index) => {
+                                                        return (
+                                                            {
+                                                                id: 'menu-' + index,
+                                                                link: item.link,
+                                                                title: t(item.title),
+                                                                icon:
+                                                                    item.icon.indexOf(' ') == -1
+                                                                        ? item.icon
+                                                                        : item.icon.split(' ')[0],
+                                                            }
+                                                        )
                                                     }
-                                                )
-                                            }
-                                        )}
-                                        >
-                                            <Row className={"rounded-full items-center justify-between  p-1  hover:border-transparent  cursor-pointer hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50"}>
-                                                <Row className='flex-row gap-x-3 items-center'>
-                                                    <Profile
-                                                        {...currentUser}
-                                                        url_avatar={currentUser.avatar}
-                                                        displayType="unit_wo_info"
-                                                        displaySize="sm"
-                                                    />
-                                                    <Text className="text-base flex-auto my-auto font-semibold truncate text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
-                                                        {currentUser.display_name}
-                                                    </Text>
-                                                </Row>
+                                                )}
+                                                >
+                                                    <Row className={"rounded-full items-center justify-between  p-1  hover:border-transparent  cursor-pointer hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50"}>
+                                                        <Row className='flex-row gap-x-3 items-center'>
+                                                            <Profile
+                                                                {...currentUser}
+                                                                url_avatar={currentUser.avatar}
+                                                                displayType="unit_wo_info"
+                                                                displaySize="sm"
+                                                            />
+                                                            <Text className="text-base flex-auto my-auto font-semibold truncate text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
+                                                                {currentUser.display_name}
+                                                            </Text>
+                                                        </Row>
 
-                                            </Row>
-                                        </DropdownMenu>
+                                                    </Row>
+                                                </DropdownMenu>
+                                            </View>
+                                            <View className='ml-2'>
+                                                {menu_add_items.length > 0 && <MenuAdd typestyle="button" buttonProps={buttonProps} />}
+                                            </View>
+                                        </Row>
                                     </View>
-                                    <View className='ml-2'>
-                                        {menu_add_items.length > 0 && <MenuAdd typestyle="button" buttonProps={buttonProps} />}
-                                    </View>
-                                </Row>
-                            </View>
+                                </>
+                            )}
                         </View>
                     </View>
                     {!!currentUser && (
