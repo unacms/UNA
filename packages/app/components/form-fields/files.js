@@ -150,11 +150,11 @@ export default function (props) {
             [
               {
                 text: "Take Photo",
-                onPress: selectImage1('camera')
+                onPress:  () => {selectImage1('camera')}
               },
               {
                 text: "Choose from Library",
-                onPress: selectImage1('library')
+                onPress:  () => {selectImage1('library')}
               },
               {
                 text: "Cancel",

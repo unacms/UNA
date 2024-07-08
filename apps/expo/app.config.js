@@ -27,6 +27,8 @@ const expoConfig = {
       "backgroundColor": "#000000",
       "infoPlist": {
         "NSCameraUsageDescription": "This app uses the camera allow calls in Jitsi.",
+        "NSPhotoLibraryUsageDescription": "This app uses the camera allow calls in Jitsi.",
+        "NSPhotoLibraryAddUsageDescription": "This app uses the camera allow calls in Jitsi.",
         "NSMicrophoneUsageDescriptionin": "This app uses the mic allow calls in Jitsi.",
         "NSCalendarsUsageDescription": "See your scheduled meetings in Jitsi.",
         "NFCReaderUsageDescription":  "Quick contacts between users.",
