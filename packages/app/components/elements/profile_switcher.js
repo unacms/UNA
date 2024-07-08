@@ -45,7 +45,6 @@ export default function ElementProfileSwitcher(props) {
     }
 
     const rounded = props.rounded ? props.rounded : 'rounded-lg'
-
     return (
         <>
             {!props.useDefault ?
@@ -107,19 +106,20 @@ export default function ElementProfileSwitcher(props) {
                             </Link>
                         )
                     })}
-                    <Row className='justity-between mt-4 w-full'>
-                        {appSetting('layout', 'allow_create_new_profile') && <View className='w-1/2 pr-2'>
-                            <Link href="/create-persons-profile">
-                                <Button
-                                    variant="outline"
-                                    title={t("Create new profile")}
-                                    startDecorator="UserCircle"
-                                    fullWidth
-
-                                />
-                            </Link>
-                        </View>}
-                        <View className='w-1/2 pl-2'>
+                    <Row className='justity-between mt-4 w-full '>
+                        {currentUser?.menu?.items && currentUser.menu.items.map((item, index) => (
+                            <View className={'w-1/' + (currentUser.menu.items.length + 1) + ' pr-2 '}>
+                                <Link href={item.name}>
+                                    <Button
+                                        variant="outline"
+                                        title={t("New " + item.title)}
+                                        startDecorator="UserCircle"
+                                        fullWidth
+                                    />
+                                </Link>
+                            </View>
+                        ))}
+                        <View className={'w-1/' + (currentUser.menu.items.length + 1) + ''}>
                             <Link href="/logout">
                                 <Button
                                     variant="outline"
