@@ -14,7 +14,7 @@ import { WidthProvider, Responsive } from "react-grid-layout";
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 const ResponsiveReactGridLayoutM = memo(({ data, bAllowEdit, rowHeight, breakpoint, onBreakpointChange, onResize, onDrag, getCell }) => (
-    <ResponsiveReactGridLayout
+    <View className={bAllowEdit ? 'grid-editable' : 'grid-readonly'}><ResponsiveReactGridLayout
         className="layout w-full"
         layouts={data}
         isResizable={bAllowEdit}
@@ -31,7 +31,7 @@ const ResponsiveReactGridLayoutM = memo(({ data, bAllowEdit, rowHeight, breakpoi
         {data[breakpoint].map((block) => {
             return getCell(block, bAllowEdit);
         })}
-    </ResponsiveReactGridLayout>
+    </ResponsiveReactGridLayout></View>
 ));
 
 export default function (props) {

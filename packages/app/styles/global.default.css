@@ -528,3 +528,6 @@ div[data-radix-popper-content-wrapper]:not(.radix-hide){
     bottom: 5px !important;
     left: 5px !important;
 }
+.grid-readonly .react-grid-item .react-resizable-handle{
+    display: none;
+}

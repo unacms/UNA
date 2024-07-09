@@ -46,9 +46,7 @@ const HeaderLine = memo(({ headerSettings, currentUser, uri, bSearch, menuPopup,
                 <Link href="/home" aria-label="Logo">
                     <View className="group mr-4 flex-row flex-none items-center my-auto">
                         {appStatic('logo_mark')}
-                        <View className="lg:hidden">
-                            {appStatic('logo_text')}
-                        </View>
+                        {appStatic('logo_text')}
                     </View>
                 </Link>
             )}
