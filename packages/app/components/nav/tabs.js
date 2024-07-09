@@ -18,6 +18,10 @@ import Suggestions from 'app/ui/molecules/suggestions';
 import AsyncWorker from 'app/ui/molecules/async_worker';
 import { useFonts } from 'expo-font';
 import { Platform } from 'react-native'
+import { enableScreens } from 'react-native-screens';
+
+enableScreens(true);
+
 export default function () {
 
     const isUseCustomFont = appSetting('layout', 'use_custom_font');
@@ -97,12 +101,11 @@ export default function () {
         profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="xs" />
     }
 
-    
     if (!fontsLoaded) {
         return null;
     }
 
-
+    const isShowTabs = currentUser || appSetting('layout', 'show_nav_non_logged_native')
 
     return (
         <BottomSheetDataContext>
@@ -112,8 +115,8 @@ export default function () {
                 screenOptions={({ navigation, route }) => ({
                     tabBarStyle: {
                         backgroundColor: colors.barsBackground,
-                        height: currentUser || appSetting('layout', 'hide_nav_non_logged_native: true') ? 55 : 0,
-                        opacity: currentUser || appSetting('layout', 'hide_nav_non_logged_native: true') ? 1 : 0
+                        height: isShowTabs ? 55 : 0,
+                        opacity: isShowTabs ? 1 : 0
                     },
                     headerStyle: {
                         backgroundColor: colors.barsBackground,
@@ -132,6 +135,7 @@ export default function () {
                     tabBarActiveBackgroundColor: colors.primaryBg,
                     freezeOnBlur: true,
                     unmountOnBlur: false,
+                    lazy: true,
                 })}
             >
                 {

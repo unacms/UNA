@@ -279,7 +279,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
             animationHeaderPosition={animationHeaderPosition}
             animationHeaderHeight={animationHeaderHeight}
             renderTabBar={renderTabBar}
-            
+            onStartRefresh={onStartRefresh}
             isRefreshing={isRefreshing}
             enableGestureRunOnJS={false}
         />

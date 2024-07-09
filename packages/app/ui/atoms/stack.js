@@ -12,8 +12,6 @@ const StackCustom = () => {
             headerStyle: {
                 backgroundColor: colors.barsBackground,
             }, 
-            freezeOnBlur: true,
-            unmountOnBlur: true,
     })}/>;
 };
 

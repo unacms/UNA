@@ -78,7 +78,8 @@ let settingsDefault = {
         hide_comments_sort: false,
         comments_in_modal: true,
         comments_count_in_feed: 3,
-        add_notifications_count_in_title: true
+        add_notifications_count_in_title: true,
+        show_nav_non_logged_native: false
     },
     forms:{
         sys_login: {hide_errors: true, button_full_width: true}, 

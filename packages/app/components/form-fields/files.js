@@ -25,9 +25,10 @@ export default function (props) {
     let defaultValue = props?.value ? props.value : '';
     const { field } = useController({ name, rules, defaultValue });
     const bMultiple = props.multiple;
-
+    const [hasPermissionCamera, requestPermissionCamera] = ImagePicker.useCameraPermissions();
+    const [hasPermissionLibrary, requestPermissionLibrary] = ImagePicker.useMediaLibraryPermissions();
     const url = useMemo(() => {
-        return '/api.php?r=system/get_data_api/TemplUploaderServices/&params[]=&obfuscate_faces='+obfuscateFaces+'&&uo=' + props.uploaders[0] + '&so=' + props.storage_object + '&uid=' + genRnd(8) + '&img_trans=' + props.images_transcoder + '&m=' + (bMultiple ? 1 : 0) + '&c=' + props.content_id + '&p=' + (props.privacy ? 1 : 0);
+        return '/api.php?r=system/get_data_api/TemplUploaderServices/&params[]=&obfuscate_faces=' + obfuscateFaces + '&&uo=' + props.uploaders[0] + '&so=' + props.storage_object + '&uid=' + genRnd(8) + '&img_trans=' + props.images_transcoder + '&m=' + (bMultiple ? 1 : 0) + '&c=' + props.content_id + '&p=' + (props.privacy ? 1 : 0);
     }, [props, obfuscateFaces]);
 
     const RestoreGhosts = async (data) => {
@@ -51,7 +52,7 @@ export default function (props) {
                 if (props.useUrl) {
                     field.onChange(a[0].file_url);
                 }
-                else{
+                else {
                     field.onChange(val);
                 }
             }
@@ -62,10 +63,8 @@ export default function (props) {
         let filteredArr = []
         if (imageSource?.images)
             filteredArr = imageSource?.images?.filter(item => item.preload === true);
-        //console.log("filteredArrfilteredArr", filteredArr, a)
-        // setImageSource({ images: [...a, ...filteredArr] });
-        setImageSource({ images: [...a] });
 
+        setImageSource({ images: [...a] });
     };
 
     useEffect(() => {
@@ -78,8 +77,7 @@ export default function (props) {
         if (formValue && field.value && !isNaN(field.value)) {
             RestoreGhosts(0);
         }
-        if (!formValue)
-        {
+        if (!formValue) {
             setImageSource({ images: null });
         }
     }, [formValue]);
@@ -144,25 +142,25 @@ export default function (props) {
 
     const selectImage = useCallback(async () => {
         if (Platform.OS !== 'web') {
-        Alert.alert(
-            "Upload Photo",
-            "Choose an option",
-            [
-              {
-                text: "Take Photo",
-                onPress:  () => {selectImage1('camera')}
-              },
-              {
-                text: "Choose from Library",
-                onPress:  () => {selectImage1('library')}
-              },
-              {
-                text: "Cancel",
-                style: "cancel"
-              }
-            ],
-            { cancelable: true }
-          );
+            Alert.alert(
+                "Upload Photo",
+                "Choose an option",
+                [
+                    {
+                        text: "Take Photo",
+                        onPress: () => { selectImage1('camera') }
+                    },
+                    {
+                        text: "Choose from Library",
+                        onPress: () => { selectImage1('library') }
+                    },
+                    {
+                        text: "Cancel",
+                        style: "cancel"
+                    }
+                ],
+                { cancelable: true }
+            );
         }
         else {
             selectImage1('library')
@@ -185,15 +183,34 @@ export default function (props) {
                 mediaTypes = ImagePicker.MediaTypeOptions.Videos;
 
             let result = null
-            
-            if (type == 'library'){
+
+            if (type == 'library') {
+
+                if (!hasPermissionLibrary) {
+                    const permission = await requestPermissionLibrary();
+                    if (!permission.granted) {
+                        Alert.alert('Camera access is required to use this feature.');
+                        return;
+                    }
+                }
+
                 result = await ImagePicker.launchImageLibraryAsync({
                     mediaTypes: mediaTypes,
                     quality: 1,
                     allowsMultipleSelection: bMultiple,
                 });
             }
-            else{
+            else {
+
+
+                if (!hasPermissionCamera) {
+                    const permission = await requestPermissionCamera();
+                    if (!permission.granted) {
+                        Alert.alert('Camera access is required to use this feature.');
+                        return;
+                    }
+                }
+
                 result = await ImagePicker.launchCameraAsync({
                     mediaTypes: mediaTypes,
                     quality: 1,
@@ -246,7 +263,7 @@ export default function (props) {
 
     if (props.view == 'preview') {
         return imageSource?.images?.length > 0 ? <ActionButton uploadImages={uploadImages} imagesList={imageSource.images} bMultiple={bMultiple} props={props} selectImage={selectImage} handleDelete={handleDelete} />
-        : <></>;
+            : <></>;
     }
 
     return (
@@ -275,7 +292,7 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
     let sIcon = iconMap[props.name] || "Plus";
     let sTitle = sIcon === "Plus" ? "Select " + props.name : "";
 
-    
+
     useEffect(() => {
         if (drop.current) {
             drop.current.addEventListener('dragover', handleDragOver);
@@ -312,45 +329,43 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
     };
     let button = <Button startDecorator={props.icon ? props.icon : sIcon} title={props.title ? props.title : sTitle} size={props.size ? props.size : "base"} variant={props.variant ? props.variant : "text"} onPress={selectImage} />
 
-        if (!bMultiple) {
-            let img = imagesList && imagesList.length > 0 ? imagesList[0] : null;
-            if (!img && props.useUrl) {
-                img = {file_url:props.value, file_type: "image/jpeg"};
-            }
-            let w = props.name == 'picture' ? 'w-48 h-48' : 'w-full';
-            if (!props.viewClasses) {
-                w += ' bg-bgrinput dark:bg-bgrinput-d border-bdrinput dark:border-bdrinput-d rounded-lg'
-            }
-            else {
-                w += ' ' + props.viewClasses
-            }
-
-            let isImage = img?.file_type?.includes('image/');
-
-            button = (
-                <Pressable onPress={selectImage} >
-                    <View className={w + '  items-center justify-center bg-primary/5 ' + (isImage ? appSetting('layout', 'cover_aspect') : 'h-32')}>
-                        <View ref={drop} className=' text-neutral-500/50 text-lg  flex-auto w-full border-neutral-300 dark:border-neutral-700 rounded-lg  justify-center  flex-col border border-dashed text-center'>
-                            <Text className='text-neutral-500/50 text-lg  justify-center  flex-col text-center'>Drag & Drop or browse files...</Text>
-                        </View>
-                        {img != null && (<>
-                            { isImage && <Image view='cover' sizes="(max-width:1024px) 100vw, 1024px" className=" u-cover " alt='' src={img.file_url} />}
-                            { imagesList && imagesList.find(item => item.preload === true) && <View className='absolute w-full h-full justify-center items-center z-50'><Loading /></View>}
-                            <View className='absolute top-1 right-1 w-6.5 text-center mx-auto'>
-                                <Button onPress={() => handleDelete(img.file_id)} variant="default" startDecorator="X" align="start" title="" rounded size="xs" />
-                            </View>
-                        </>)
-                        }
-                    </View>
-                </Pressable>
-            );
+    if (!bMultiple) {
+        let img = imagesList && imagesList.length > 0 ? imagesList[0] : null;
+        if (!img && props.useUrl) {
+            img = { file_url: props.value, file_type: "image/jpeg" };
         }
-        return button;
-   
+        let w = props.name == 'picture' ? 'w-48 h-48' : 'w-full';
+        if (!props.viewClasses) {
+            w += ' bg-bgrinput dark:bg-bgrinput-d border-bdrinput dark:border-bdrinput-d rounded-lg'
+        }
+        else {
+            w += ' ' + props.viewClasses
+        }
+
+        let isImage = img?.file_type?.includes('image/');
+
+        button = (
+            <Pressable onPress={selectImage} >
+                <View className={w + '  items-center justify-center bg-primary/5 ' + (isImage ? appSetting('layout', 'cover_aspect') : 'h-32')}>
+                    <View ref={drop} className=' text-neutral-500/50 text-lg  flex-auto w-full border-neutral-300 dark:border-neutral-700 rounded-lg  justify-center  flex-col border border-dashed text-center'>
+                        <Text className='text-neutral-500/50 text-lg  justify-center  flex-col text-center'>Drag & Drop or browse files...</Text>
+                    </View>
+                    {img != null && (<>
+                        {isImage && <Image view='cover' sizes="(max-width:1024px) 100vw, 1024px" className=" u-cover " alt='' src={img.file_url} />}
+                        {imagesList && imagesList.find(item => item.preload === true) && <View className='absolute w-full h-full justify-center items-center z-50'><Loading /></View>}
+                        <View className='absolute top-1 right-1 w-6.5 text-center mx-auto'>
+                            <Button onPress={() => handleDelete(img.file_id)} variant="default" startDecorator="X" align="start" title="" rounded size="xs" />
+                        </View>
+                    </>)
+                    }
+                </View>
+            </Pressable>
+        );
+    }
+    return button;
 }
 
 function GhostsList(imagesList, bMultiple, handleDelete) {
-    console.log("imagesList", imagesList)
     if (!imagesList || imagesList.length === 0 || !bMultiple) {
         return;
     }
@@ -377,11 +392,11 @@ function ButtonCover({ imageSource, selectImage }) {
     let isImages = imagesList && imagesList.find(item => item.preload !== true)
 
     return !isImages && <Button
-            title="Add Cover"
-            startDecorator={img?.preload ? "_loading" : "Image"}
-            variant="outline"
-            size="sm"
-            onPress={selectImage}
-        />
- 
+        title="Add Cover"
+        startDecorator={img?.preload ? "_loading" : "Image"}
+        variant="outline"
+        size="sm"
+        onPress={selectImage}
+    />
+
 }

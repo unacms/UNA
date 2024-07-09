@@ -1,13 +1,13 @@
 import { Root } from 'app/root'
-import { memo, useState, useEffect, useContext } from 'react'
-import { useRoute, useIsFocused } from '@react-navigation/native';
+import { memo, useState, useEffect, useContext, useMemo } from 'react'
+import { useRoute } from '@react-navigation/native';
 import { useCurrentUser } from 'app/context/user';
 import { appSetting, parseUrl, parseQueryString, getURI } from 'app/lib/util'
 import { useRouter, useNavigation } from 'expo-router';
 import { Theme } from 'app/design/theme';
-import { View } from 'app/design/view';
+
 import { updateRightHeader, updateCenterHeader } from 'app/lib/native-handlers'
-import Profile from 'app/ui/molecules/profile';
+
 import { useTranslation } from 'react-i18next';
 import { Loading } from 'app/loading'
 import { BottomSheetData } from 'app/context/bottomsheet';
@@ -38,18 +38,9 @@ export async function getData(path, token, origin, headers, callback, params) {
 }
 
 export function Screen(params) {
-    const isFocused = useIsFocused();
-    const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);
-    const { t } = useTranslation();
     const pathname = params.tabname;
     const { currentUser } = useCurrentUser();
-    const navigation = useNavigation();
     const route = useRoute();
-    const [pageData, setPageData] = useState(null);
-
-
-    const routerExpo = useRouter();
-    const { colors } = Theme();
 
     let _path = route?.params?.path && Array.isArray(route?.params?.path)
         ? `/${route.params.path.join('/')}`
@@ -70,14 +61,27 @@ export function Screen(params) {
         const item = tabList.find((item) => item.key === pathname);
         _path = item ? item.url : null;
     }
-    //    console.log("_path", _path, isFocused, pageData?.data?.title)
-    //const [pagePath, setPagePath] = useState(_path);
-    const pagePath = _path;
+    console.log("_path", _path, params)
+    const memoizedValue = useMemo(() => {
+        return <Content pagePath={_path} currentUser={currentUser} />;
+    }, [_path, currentUser?.id]);
+
+    return memoizedValue
+}
+
+const Content = ({ pagePath, currentUser }) => {
+    ;
+    const [pageData, setPageData] = useState(null);
+    const navigation = useNavigation();
+    const routerExpo = useRouter();
+    const { colors } = Theme();
+    const { t } = useTranslation();
+    const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);
     useEffect(() => {
-        if (!isFocused) return;
         if (!(pagePath && pagePath.startsWith('/') && !pagePath.includes('/?url='))) return;
 
         const fetchPageData = async () => {
+
             const { path: pathWithoutQuery, queryString } = parseUrl(pagePath);
             const params = queryString ? JSON.stringify(parseQueryString(queryString)) : null;
             const data = await getData(pathWithoutQuery, null, null, null, null, params);
@@ -88,36 +92,25 @@ export function Screen(params) {
             }
         };
         fetchPageData();
-    }, [pagePath, isFocused, currentUser?.id]);
-
-    useEffect(() => {
-        if (!isFocused) {
-            setPageData(null);
-        }
-    }, [isFocused]);
+    }, [pagePath, currentUser?.id]);
 
     useEffect(() => {
         if (pageData) {
             const settings = appSetting('layouts', pageData.data.uri)
-            const profileDisplay = <></>;/*currentUser && appSetting('layout', 'show_user_icon')
-            ? <View className="mr-2">
-                <Profile {...{ ...currentUser, url_avatar: currentUser.avatar }} displayType="unit_wo_info" displaySize="xs" />
-            </View>
-            : <></>;*/
+            const profileDisplay = <></>;
             updateRightHeader(currentUser ? settings?.header : null, navigation);
-            updateCenterHeader(_path, t(pageData.data.name), false, navigation, routerExpo, colors, '', profileDisplay, currentUser);
+            updateCenterHeader(pagePath, t(pageData.data.name), false, navigation, routerExpo, colors, '', profileDisplay, currentUser);
         }
     }, [pageData, currentUser?.id]);
 
-
-    if (!isFocused)
-        return <></>;
-
     return pageData?.data ? (
-        <Convo _path={pagePath} pageData={pageData} />
-    ) : <Loading />;
-}
 
+        <Root path={pagePath} data={pageData.data} uri={pageData.data.uri} />
+    ) : <Loading />;
+    // return <><Text>{pagePath}-{currentTime}-{JSON.stringify(pageData)}</Text><Link href="/contact"><Text>link</Text></Link></>
+};
+/*
+<Convo _path={pagePath} pageData={pageData} />
 const Convo = memo(({ _path, pageData }) => {
     return <Root path={_path} data={pageData.data} uri={pageData.data.uri} />
-});
+});*/
