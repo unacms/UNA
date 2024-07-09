@@ -72,7 +72,7 @@ function Search({ data, imageSizes }) {
 
 function Base({ data, imageSizes }) {
     return (
-        <View className=" p-2 sm:px-4 sm:pt-4 mx-auto w-full max-w-4xl">
+        <View className=" p-2  mx-auto w-full max-w-4xl">
             <Card addClassName=" p-2 flex-auto  mx-auto w-full flex-col md:flex-row-reverse duration-300 ">
                 {data.image && (
                     <View className=" aspect-video flex-none rounded-lg overflow-hidden  w-full md:w-1/3 mb-auto  ">
