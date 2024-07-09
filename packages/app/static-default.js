@@ -347,14 +347,14 @@ export function ComponentsIntro(props) {
     )
 }
 
-function ComponentModal(props) {
+function ComponentModal({title = "test"}) {
     return (
         <View
             className={
                 'flex-col mb-4 w-full mx-auto ' + appSetting('layout', 'max_width')
             }
         >
-            <View className=" md:flex-row  duration-300">
+            <View className="   duration-300">
                 <View className=" flex-col  mx-auto my-auto justify-center sm:justify-start items-center md:items-start  flex-auto   ">
                     <View className=" flex-auto ">
                         <Text className="text-3xl mb-6 text-center md:text-left font-bold text-neutral-800 dark:text-neutral-200 ">

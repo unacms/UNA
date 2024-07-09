@@ -898,7 +898,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
     });
 
     const ButtonEx = memo(({ visibleItemsCount }) => {
-        return <View key="btn" className='ml-2'><Button title={'More...'} variant={visibleItemsCount <= index ? 'outline' : "text"} pressed={visibleItemsCount <= index ? true : false} size="sm" rounded onPress={() => { }} /></View>;
+        return <View key="btn" className='ml-1'><Button title={'More...'} variant={visibleItemsCount <= index ? 'outline' : "text"} pressed={visibleItemsCount <= index ? true : false} size="sm" rounded onPress={() => { }} /></View>;
     });
 
     return <DynamicMenu
@@ -910,7 +910,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
         containerClasses="w-full"
         items={filteredItems}
         isButtonOutside={false}
-        menuClasses=" ml-3 sm:ml-4 gap-x-2 flex-row"
-        menuExClasses="mr-auto ml-3 sm:ml-4 items-end"
+        menuClasses=" ml-3.5 gap-x-1 flex-row"
+        menuExClasses="mr-auto ml-4 items-end"
     />
 }
