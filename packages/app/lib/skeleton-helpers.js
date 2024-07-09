@@ -45,22 +45,28 @@ const Notif = memo(() => (
 ));
 
 const Forum = memo(() => (
-    <View className="flex-col p-4  sm:m-4 bg-bgrcard dark:bg-bgrcard-d sm:rounded-2xl animate-pulse flex-col w-full  gap-y-1">
-        <View className="flex-row gap-x-2 mb-1 sm:hidden items-center">
-            <View className="h-5 w-5 flex-none bg-neutral-500/50 rounded-full"></View>
-            <View className="h-3 w-1/4 flex-none bg-neutral-500/40 rounded-full"></View>
+   
+    <View className="flex-col p-2 lg:p-4 border-b border-bdr dark:border-bdr-d animate-pulse flex-col w-full mx-auto  max-w-4xl gap-y-1">
+        <View className="flex-row gap-x-2 mb-2 sm:hidden items-center">
+            <View className="h-8 w-8 flex-none bg-neutral-500/50 rounded-full"></View>
+            <View className="h-4 w-1/4 flex-none bg-neutral-500/50 rounded-full"></View>
         </View>
-        <View className="h-4 w-full bg-neutral-500/50 rounded-full"></View>
-        <View className="h-4 w-2/3 bg-neutral-500/50 rounded-full"></View>
+        <View className="h-4 w-2/3 bg-neutral-500/50 mb-2 rounded-full"></View>
+        <View className="h-3 w-full bg-neutral-500/40 rounded-full"></View>
+        <View className="h-3 w-full bg-neutral-500/40 rounded-full"></View>
+        <View className="h-3 w-2/3 bg-neutral-500/40 rounded-full"></View>
         <View className="flex-row gap-x-2 mt-1 hidden sm:flex items-center">
             <View className="h-5 w-5 flex-none bg-neutral-500/50 rounded-full"></View>
             <View className="h-3 w-1/4 flex-none bg-neutral-500/40 rounded-full"></View>
         </View>
     </View>
+   
 ));
 
 const Posts = memo(() => (
-    <View className="m-3 p-2 mt-4 sm:mx-4 shadow flex-auto md:flex-row-reverse rounded-2xl p-2 overflow-hidden bg-bgrcard dark:bg-bgrcard-d ">
+    <View className="p-2 lg:pt-4 lg:px-4  animate-pulse w-full mx-auto max-w-4xl">
+
+    <View className=" shadow flex-auto md:flex-row-reverse rounded-2xl p-2 overflow-hidden  max-w-4xl bg-bgrcard dark:bg-bgrcard-d ">
         <View className="relative bg-neutral-500/20 aspect-video rounded-xl w-full md:w-1/3 "></View>
         <View className="flex-auto p-2 flex-col md:ml-0.5 md:mr-2">
             <View className="w-2/3 h-4 mt-1.5 rounded-full bg-neutral-500/20"></View>
@@ -71,6 +77,7 @@ const Posts = memo(() => (
                 <View className="ml-2 w-1/4 h-3 my-auto rounded-full bg-neutral-500/20"></View>
             </View>
         </View>
+    </View>
     </View>
 ));
 

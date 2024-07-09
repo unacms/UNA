@@ -27,7 +27,7 @@ const HeaderLine = memo(({ headerSettings, currentUser, uri, bSearch, menuPopup,
 
 
     return (
-        <View className="flex-row pl-3 sm:pl-6  flex-auto lg:flex-none lg:w-80 my-auto items-center">
+        <View className="flex-row px-4 flex-auto lg:flex-none lg:w-80 my-auto items-center">
             {(headerSettings.menu && isDrawer) && (
                 <View className="lg:hidden mr-3 sm:mr-4">
                     <Pressable onPress={showMenu}>
