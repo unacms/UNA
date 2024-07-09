@@ -152,6 +152,8 @@ export default function UnitComments(props) {
     if (viewState.view == 'deleted')
         return (<></>);
 
+
+
     return (
         <View className='w-full'>
             <View className="flex-row gap-x-2 ">
@@ -194,7 +196,7 @@ export default function UnitComments(props) {
                         {(viewState.view != 'edited' && aImg.length > 0) && <View className=' max-w-lg'><Carousel data={aImg} /></View>}
                     </View>
                     {viewState.view != 'edited' && <View className=' mb-1 flex-row w-full  items-center'>
-                        {!!currentUser && !!props.handleReply ? <View className='mr-2'>
+                        {(!!currentUser && !!props.handleReply && !props.module.includes('_reviews')) ? <View className='mr-2'>
                             <Button align="start" title={t("Reply")} size="xs" startDecorator="ArrowBendLeftUp" variant="text" onPress={() => handleReply(data)} rounded />
                         </View> : <View className='mr-2'></View>}
                         <View className='flex-row flex-auto '>

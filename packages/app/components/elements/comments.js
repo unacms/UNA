@@ -17,15 +17,16 @@ export default function (props) {
         setAddData(data)
     }
 
-    console.log("props", props)
 
     return <>
-        <CommentsBrowse commentsTitle = "Reviews" classesBrowse='items-center my-4' addItems={aItems} handleReply={handleReply} browse={props.browse} addData={addData} module={props.browse?.data?.module ? props.browse.data.module : ''} requestUrl={props.url} />
-        <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
-            <View className='border-bdrcard dark:border-bdrcard-d  border-t border-bdr dark:border-bdr-d mt-2'>
+        <View className=''>
+            <CommentsBrowse commentsTitle="Reviews" classesBrowse='items-center my-4' addItems={aItems} handleReply={handleReply} browse={props.browse} addData={addData} module={props.browse?.data?.module ? props.browse.data.module : ''} requestUrl={props.url} />
+        </View>
+        {!!props.form ? <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
+            <View className='border-bdrcard dark:border-bdrcard-d  border-t border-bdr dark:border-bdr-d mt-12'>
                 <CommentsForm handleForm={handleForm} browse={props.browse} module={props.browse?.data?.module ? props.browse.data.module : ''} form={props.form} formData={formData} requestUrl={props.url} />
             </View>
-        </KeyboardAvoidingView>
+        </KeyboardAvoidingView> : <View className='mt-12'></View>}
 
     </>
 }
