@@ -95,6 +95,7 @@ const expoConfig = {
     },
     plugins: [
       [
+        "expo-router",
         "react-native-ble-plx",
         {
           "isBackgroundEnabled": true,
