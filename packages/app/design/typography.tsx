@@ -31,16 +31,14 @@ export const P = styled(NativeText, 'text-base text-black my-4')
  * Components can have defaultProps and styles
  */
 const H1_ = styled(NativeText, 'text-2xl lg:text-3xl font-bold my-4')
-H1_.defaultProps = {
-}
+
 export const H1 = ({ children, ...rest }) => {
   const correctedChildren = typeof children === 'string' ? decodeText(children) : children;
   return <H1_ {...rest} allowFontScaling={false}>{correctedChildren}</H1_>;
 };
 
 const H1C_ = styled(NativeText, ' text-2xl lg:text-3xl font-bold ')
-H1C_.defaultProps = {
-}
+
 
 export const H1C = ({ children, ...rest }) => {
   const correctedChildren = typeof children === 'string' ? decodeText(children) : children;
@@ -48,8 +46,7 @@ export const H1C = ({ children, ...rest }) => {
 };
 
 export const H2_ = styled(NativeText, 'text-xl font-extrabold mt-2 mb-3')
-H1_.defaultProps = {
-}
+
 
 export const H2 = ({ children, ...rest }) => {
   const correctedChildren = typeof children === 'string' ? decodeText(children) : children;

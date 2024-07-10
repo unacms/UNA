@@ -4,7 +4,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { CurrentUserProvider } from 'app/context/user';
 import Tabs from 'app/components/nav/tabs';
 import React, { useMemo } from 'react';
-import * as Notifications from 'expo-notifications';
 
 const AppLayout = React.memo(() => {
     const { colors } = Theme();
@@ -18,30 +17,7 @@ const AppLayout = React.memo(() => {
         backgroundColor: colors.barsBackground,
     }), [colors.barsBackground]);
 
-    useEffect(() => {
-        async function registerForPushNotificationsAsync() {
-            const { status: existingStatus } = await Notifications.getPermissionsAsync();
-            let finalStatus = existingStatus;
-            if (existingStatus !== 'granted') {
-                const { status } = await Notifications.requestPermissionsAsync();
-                finalStatus = status;
-            }
-            if (finalStatus !== 'granted') {
-                alert('Failed to get push token for push notification!');
-                return;
-            }
-        }
-        registerForPushNotificationsAsync();
-
-        Notifications.setNotificationHandler({
-            handleNotification: async () => ({
-                shouldShowAlert: true,
-                shouldPlaySound: true,
-                shouldSetBadge: true,
-            }),
-        });
-
-    }, []);
+    
 
     return (
         <SafeAreaView edges={['left', 'right', 'bottom']} style={containerStyle}>

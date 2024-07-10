@@ -20,6 +20,7 @@ import en from 'app/locales/en/translation.json';
 import ru from 'app/locales/ru/translation.json';
 import { remoteSettings } from 'app/settings-remote';
 import { getRemoteSettings } from 'app/config';
+import * as Notifications from 'expo-notifications';
 
 export default function Root(props) {
 
@@ -32,6 +33,31 @@ export default function Root(props) {
         (async () => {
             remoteSettings.data = await getRemoteSettings();
         })();
+    }, []);
+
+    useEffect(() => {
+        async function registerForPushNotificationsAsync() {
+            const { status: existingStatus } = await Notifications.getPermissionsAsync();
+            let finalStatus = existingStatus;
+            if (existingStatus !== 'granted') {
+                const { status } = await Notifications.requestPermissionsAsync();
+                finalStatus = status;
+            }
+            if (finalStatus !== 'granted') {
+                alert('Failed to get push token for push notification!');
+                return;
+            }
+        }
+        registerForPushNotificationsAsync();
+
+        Notifications.setNotificationHandler({
+            handleNotification: async () => ({
+                shouldShowAlert: true,
+                shouldPlaySound: true,
+                shouldSetBadge: true,
+            }),
+        });
+
     }, []);
 
 
