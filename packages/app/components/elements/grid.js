@@ -18,14 +18,17 @@ import { stripTags } from 'app/lib/util';
 import { Modal } from 'app/design/controls'
 import { BlockByData } from 'app/components/blocks-content/object-data-array-int';
 import { useWindowDimensions} from 'react-native';
-import dynamic from 'next/dynamic'
+//import dynamic from 'next/dynamic'
 import { getAlert } from 'app/lib/util';
 import { BottomSheetData } from 'app/context/bottomsheet';
 
 function Stripe(props) {
     const computedData = useMemo(() => {
-        const StripeCont = React.memo(dynamic(() => import('app/ui/molecules/stripe')));
-            return  <StripeCont {...props} />
+        //const StripeCont = React.memo(dynamic(() => import('app/ui/molecules/stripe')));
+        const StripeCont = React.memo(
+            lazy(() => import('app/ui/molecules/stripe'))
+        );
+        return  <StripeCont {...props} />
     }, [props.b]); 
     return computedData;
 }

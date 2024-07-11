@@ -12,7 +12,7 @@ import { getSkeletonForList } from 'app/lib/skeleton-helpers';
 import { Button } from 'app/design/controls';
 import { useTranslation } from 'react-i18next';
 import { useCurrentUser } from 'app/context/user'
-import { useRouter } from 'expo-router';
+import { useRouter, useGlobalSearchParams } from 'expo-router';
 import { LayoutData } from 'app/context/layout';
 import { menuItemsFilter } from 'app/lib/util';
 
@@ -74,17 +74,15 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
     });
 
     const handleEndReached = async (lastItemIndex) => {
-        console.log("handleEndReached-001")
         if (isFetchingNextPage || isRefreshing)
             return;
         if (currentRoute?.endpoint?.finished)
             return;
 
-        console.log("handleEndReached-002")
-
         fetchNextPage();
     };
 
+    const glob = useGlobalSearchParams();
 
     if (isHideDefaultHeader) {
         setTimeout(() => {
@@ -121,13 +119,16 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
     });
 
     useEffect(() => {
-        console.log("fetchAndUpdateData-001")
         fetchAndUpdateData(routes, index, setRoutes);
     }, [index]);
 
     useEffect(() => {
         if (isRefreshing) {
-            routerExpo.replace(routes[index].link);
+            routerExpo.replace( {
+                pathname: '/' + glob.name,
+                params: { url: '/' + routes[index].link }
+              });
+              
             queryClient.removeQueries(qKey);
         }
     }, [isRefreshing]);

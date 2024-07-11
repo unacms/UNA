@@ -7,14 +7,14 @@ import { storageClear, decodeText } from 'app/lib/util';
 import { remoteSettings } from 'app/settings-remote';
 import { subscribe } from 'app/ui/atoms/socket';
 import { getRemoteSettings } from 'app/config';
-import dynamic from 'next/dynamic'
+//import dynamic from 'next/dynamic'
 import { appSetting } from 'app/lib/util'
 let Layouts;
 
 if (Platform.OS === 'web') {
-    const dynamic = require('next/dynamic').default;
-    Layouts = dynamic(() => import('app/components/layouts'), { ssr: false });
-    //const Layouts = React.lazy(() => import('app/components/layouts'));
+    //const dynamic = require('next/dynamic').default;
+    //Layouts = dynamic(() => import('app/components/layouts'), { ssr: false });
+    const Layouts = React.lazy(() => import('app/components/layouts'));
 } else {
     Layouts = require('app/components/layouts').default;
 }

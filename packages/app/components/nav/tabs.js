@@ -160,7 +160,7 @@ export default function () {
                             <Tabs.Screen
                                 key={`tab${index}`}
                                 name={`tab${index}`}
-                                initialParams={{ url2: tab.url }}
+                                initialParams={{ url2: tab.url, name:`tab${index}` }}
                                 listeners={{
                                     tabPress: e => {
                                         if (e.type == 'tabPress') {

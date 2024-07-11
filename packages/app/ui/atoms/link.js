@@ -1,21 +1,24 @@
 import { Pressable } from 'app/design/view'
-import { Link } from 'expo-router';
+import { Link, useGlobalSearchParams} from 'expo-router';
 import { FeedbackHaptics } from 'app/lib/util';
 import { useNavigation } from 'expo-router';
 import { useCurrentUser } from 'app/context/user';
 import { appSetting } from 'app/lib/util'
+import { Text } from 'app/design/typography'
 
 export default function ElementLink(props) {
+    let { href, ...rest } = props
     const navigation = useNavigation();
+    const glob = useGlobalSearchParams();
 
-    if (!props.href)
-        props.href = '/'
+    if (!href)
+        href = '/'
     let { currentUser, setCurrentUser } = useCurrentUser();
 
     const TabList = currentUser ? appSetting('menu_items', 'menu_tabbar_logged') : appSetting('menu_items', 'menu_tabbar_non_logged');
 
     const index = TabList.findIndex((item) => {
-        if (item.url == props.href) {
+        if (item.url == href) {
             return true;
         }
     });
@@ -30,12 +33,21 @@ export default function ElementLink(props) {
 
     }
     return (
-        <Link href={props.href} asChild {...props}>
-            <Pressable onPress={() => {
-                props.haptics ? FeedbackHaptics(props.haptics) : ''
-            }}>
-                {props.children}
+        <Link 
+          push
+          href={{
+            pathname: '/' + glob.name,
+            params: { url: href }
+          }}
+          asChild {...rest}
+        >
+          {props.haptics ? (
+            <Pressable onPress={() => FeedbackHaptics(props.haptics)}>
+              {props.children}
             </Pressable>
+          ) : (
+            props.children
+          )}
         </Link>
-    )
+      );
 }

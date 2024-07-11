@@ -1,5 +1,5 @@
 {
-   "main": "index.js",
+  "main": "index.js",
   "dependencies": {
     "@amplitude/react-native": "2.7.0",
     "@giphy/react-native-sdk": "2.3.0",
@@ -21,7 +21,7 @@
     "app": "*",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
     "date-fns": "^2.30.0",
-    "expo": "^51.0.0",
+    "expo": "51.0.19",
     "expo-blur": "~13.0.2",
     "expo-build-properties": "~0.12.3",
     "expo-constants": "~16.0.2",
@@ -33,7 +33,7 @@
     "expo-linking": "~6.3.1",
     "expo-location": "~17.0.1",
     "expo-notifications": "~0.28.9",
-    "expo-router": "~3.5.17",
+    "expo-router": "~3.5.18",
     "expo-splash-screen": "~0.27.5",
     "expo-status-bar": "~1.12.1",
     "flatted": "^3.3.1",

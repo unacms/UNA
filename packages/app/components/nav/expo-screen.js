@@ -5,13 +5,16 @@ import { useCurrentUser } from 'app/context/user';
 import { appSetting, parseUrl, parseQueryString, getURI } from 'app/lib/util'
 import { useRouter, useNavigation } from 'expo-router';
 import { Theme } from 'app/design/theme';
-
 import { updateRightHeader, updateCenterHeader } from 'app/lib/native-handlers'
-
 import { useTranslation } from 'react-i18next';
 import { Loading } from 'app/loading'
 import { BottomSheetData } from 'app/context/bottomsheet';
 import { fetcher } from 'app/lib/fetcher';
+import { Text } from 'app/design/typography'
+import { useLocalSearchParams, useGlobalSearchParams, Link } from 'expo-router';
+import { View } from 'app/design/view'
+const friends = ['charlie', 'james']
+
 
 export async function getData(path, token, origin, headers, callback, params) {
     path = (!path || path.startsWith('expo-development-client')) ? 'home' : path;
@@ -38,11 +41,13 @@ export async function getData(path, token, origin, headers, callback, params) {
 }
 
 export function Screen(params) {
+
+    const local = useLocalSearchParams();
     const pathname = params.tabname;
     const { currentUser } = useCurrentUser();
-    const route = useRoute();
-
-    let _path = route?.params?.path && Array.isArray(route?.params?.path)
+   // const route = useRoute();
+let _path = local.url;
+    /*let _path = route?.params?.path && Array.isArray(route?.params?.path)
         ? `/${route.params.path.join('/')}`
         : null;
 
@@ -51,7 +56,7 @@ export function Screen(params) {
         if (Object.keys(otherParams).length > 0) {
             _path += `&params[]=&params[]=${JSON.stringify(otherParams)}`;
         }
-    }
+    }*/
 
 
     // BOTTOM TABS NAVIGATION
@@ -61,7 +66,8 @@ export function Screen(params) {
         const item = tabList.find((item) => item.key === pathname);
         _path = item ? item.url : null;
     }
-    console.log("_path", _path, params)
+
+   // console.log("_path", _path, params)
     const memoizedValue = useMemo(() => {
         return <Content pagePath={_path} currentUser={currentUser} />;
     }, [_path, currentUser?.id]);
