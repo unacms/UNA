@@ -20,7 +20,7 @@
     "@tiptap/react": "^2.0.4",
     "@tiptap/starter-kit": "^2.0.4",
     "@tiptap/suggestion": "^2.0.4",
-    "ai": "^3.2.21",
+    "ai": "^2.2.7",
     "clsx": "^2.0.0",
     "dripsy": "^3.6.0",
     "google-map-react": "^2.2.1",

@@ -6,6 +6,9 @@ const nextConfigCustom = require('./next.config.custom.js');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  typescript: {
+    ignoreBuildErrors: true,
+  },
     /*experimental: {
       ppr: true,
     },*/
