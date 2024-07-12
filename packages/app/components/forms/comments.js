@@ -1,7 +1,6 @@
 import { View, Row } from 'app/design/view'
 import { useState, useCallback } from 'react';
 import { getFormFieldByData } from 'app/lib/form-helpers'
-import { useWindowDimensions } from 'react-native';
 import { Platform } from 'react-native'
 
 export default function FormComments(props) {
@@ -19,7 +18,7 @@ export default function FormComments(props) {
     let prevList = Object.values(imageSource).flat();
 
     props.data.inputs['cmt_submit'].icon = 'PaperPlaneRight';
-
+    props.data.inputs['cmt_submit'].hide_errors = true;
     return <View className='w-full ' >
         <Row className='w-full items-center bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d rounded-xl p-1'>
             <View className='flex-auto ' >

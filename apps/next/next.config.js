@@ -35,6 +35,7 @@ const nextConfig = {
     'nativewind',
     '@expo/html-elements',
     'react-native-gesture-handler',
+    '@react-native-clipboard/clipboard',
     'react-native-reactions',
     '@babel/core',
     '@babel/plugin-proposal-export-namespace-from',

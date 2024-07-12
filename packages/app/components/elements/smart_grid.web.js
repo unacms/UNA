@@ -257,7 +257,6 @@ export default function (props) {
     }, [data, breakpoint, getCell]);
 
     function getCell(block, bAllowEdit) {
-        console.log('getCell', block);
         let blockContent;
         switch (block.type) {
             case "image":

@@ -21,6 +21,7 @@ import { stripTags, appSetting } from 'app/lib/util';
 import Carousel from 'app/ui/molecules/carousel'
 import { componentsMap } from 'app/ui/molecules/_map'
 import { KeyboardAvoidingView } from 'react-native';
+import { StarsView } from 'app/ui/atoms/stars';
 
 export default function UnitComments(props) {
     const { t } = useTranslation();
@@ -173,6 +174,7 @@ export default function UnitComments(props) {
                                 <Profile {...parent.data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
                                 {false && <Text className="text-neutral-500 px-1 text-sm whitespace-nowrap text-ellipsis overflow-hidden"> {stripTags(parent?.data?.cmt_text)}</Text>}
                             </Row>}
+
                         </View>
                         {
                             (view == 'flat' && data.cmt_parent_id > 0) && <View className='   border border-bdr dark:border-bdr-d  rounded-md p-2 my-1'>
@@ -192,6 +194,7 @@ export default function UnitComments(props) {
                                     </KeyboardAvoidingView>
                                 </View>
                             ) : <Html htmlStyles={{ fontSize: 14 }} customClassName='u-vanilla-html-small' data={linkify(data.cmt_text)} />}
+                            {!!data.cmt_mood && <StarsView rating={data.cmt_mood} starSize={20} />}
                         </View>
                         {(viewState.view != 'edited' && aImg.length > 0) && <View className=' max-w-lg'><Carousel data={aImg} /></View>}
                     </View>
@@ -216,6 +219,7 @@ export default function UnitComments(props) {
                                 </View>
                             }
                             {!!oReport && oReport}
+
                         </View>
                     </View>
                     }

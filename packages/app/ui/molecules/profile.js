@@ -195,6 +195,7 @@ export default function AtomProfile(oProps) {
                         <Text className={sSizeFontLetter + ' text-white '}>{name}</Text>
                     </View>}
                     {!!oProps.url_avatar && <Image
+                        sizes="(max-width:1024px) 100vw, 1024px"
                         className={sSize + "    z-50"}
                         view="cover"
                         src={oProps.url_avatar}

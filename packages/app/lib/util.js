@@ -5,6 +5,7 @@ import { stringMd5 } from 'react-native-quick-md5';
 import pako from 'pako';
 import { useTranslation } from 'react-i18next';
 //import Clipboard from '@react-native-community/clipboard';
+import Clipboard from '@react-native-clipboard/clipboard';
 import { decode } from 'html-entities';
 import { appSetting as setting, UNA_URL, APP_URL } from 'app/config';
 import { remoteSettings } from 'app/settings-remote';
@@ -30,7 +31,7 @@ export function truncateString(str, num) {
 
 export async function getClipboard() {
     if (Platform.OS !== 'web') {
-        //return await Clipboard.getString();
+        return await Clipboard.getString();
     }
     else {
         return await navigator.clipboard.readText();
@@ -39,7 +40,7 @@ export async function getClipboard() {
 
 export async function setClipboard(str) {
     if (Platform.OS !== 'web') {
-        //Clipboard.setString(str);
+        Clipboard.setString(str);
     }
     else {
         await navigator.clipboard.writeText(str);

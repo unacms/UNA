@@ -12,6 +12,7 @@
     "@react-native-community/netinfo": "11.3.1",
     "@react-native-community/slider": "4.5.2",
     "@react-native-google-signin/google-signin": "10.0.1",
+    "@react-native-clipboard/clipboard": "^1.14.1",
     "@react-native-menu/menu": "^1.1.2",
     "@react-native-picker/picker": "2.7.5",
     "@react-navigation/native": "^6.1.7",

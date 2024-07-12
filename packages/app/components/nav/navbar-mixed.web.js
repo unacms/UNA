@@ -85,7 +85,6 @@ export default function (props) {
         setMenuPopup(!menuPopup)
     }
 
-    console.log("Content5")
     return (
         <>
             <View className={appSetting('layout', 'max_width') + " w-full flex-row flex-auto mx-auto"}>

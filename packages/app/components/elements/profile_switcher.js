@@ -9,9 +9,8 @@ import { fetcher } from 'app/lib/fetcher';
 import Redirect from 'app/ui/atoms/redirect';
 import { useTranslation } from 'react-i18next';
 import { Modal } from 'app/design/controls'
-import { appSetting } from 'app/lib/util';
 
-export default function ElementProfileSwitcher(props) {
+export default function (props) {
     const { t } = useTranslation();
     const { currentUser, setCurrentUser } = useCurrentUser();
     const [data, setData] = useState(false)
@@ -31,8 +30,9 @@ export default function ElementProfileSwitcher(props) {
     }
 
     useEffect(() => {
-        fetchData()
-    }, []);
+        if (show)
+            fetchData()
+    }, [show]);
 
     const handleClick = async (id) => {
         setShow(true)
@@ -78,7 +78,7 @@ export default function ElementProfileSwitcher(props) {
                     </Row>
                 </Link>
             }
-            {(show) && <Modal id='file-preview' title={t("Your Profiles")} onVisible={show} onClose={() => { setShow(false) }}>
+            {(show && data) && <Modal id='file-preview' title={t("Your Profiles")} onVisible={show} onClose={() => { setShow(false) }}>
                 <Redirect ref={redirectdRef} />
                 <View className="  overflow-hidden flex-col">
                     {!props.hideTitle && <View className="flex-row items-center  justify-between">
@@ -108,7 +108,7 @@ export default function ElementProfileSwitcher(props) {
                     })}
                     <Row className='justity-between mt-4 w-full '>
                         {currentUser?.menu?.items && currentUser.menu.items.map((item, index) => (
-                            <View className={'w-1/' + (currentUser.menu.items.length + 1) + ' pr-2 '}>
+                            <View key={index} className={'w-1/' + (currentUser.menu.items.length + 1) + ' pr-2 '}>
                                 <Link href={item.name}>
                                     <Button
                                         variant="outline"
