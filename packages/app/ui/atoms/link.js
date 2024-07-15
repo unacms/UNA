@@ -46,7 +46,9 @@ export default function ElementLink(props) {
               {props.children}
             </Pressable>
           ) : (
+            <Pressable>
             props.children
+            </Pressable>
           )}
         </Link>
       );
