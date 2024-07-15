@@ -560,14 +560,8 @@ function DefaultUnit(data) {
     }
 
     function DefaultView({ data, styles, bIsTitle, bIsTimelineContent, content_attach, url, isCompact }) {
-        let imgs = [];
+        let imgs = content_attach;
 
-        if (data.content.images_attach && data.content.images_attach.length > 0) {
-            imgs = content_attach.concat(data.content.images_attach);
-        }
-        if (data.content.videos_attach && data.content.videos_attach.length > 0) {
-            imgs = content_attach.concat(data.content.videos_attach);
-        }
         return <>
             <View className={isCompact ? "flex-row-reverse" : " flex-col md:flex-row-reverse "}>
                 {data.mainImage && (
