@@ -8,12 +8,22 @@ import { appStatic } from 'app/lib/app-static';
 import Search from 'app/ui/molecules/search';
 import { FeedbackHaptics } from 'app/lib/util';
 import { appSetting } from 'app/lib/util'
+import { useRouter } from "expo-router";
 
 export function SvgLogoNative() {
+    const routerExpo = useRouter();
     const scheme = useColorScheme();
     const logo = scheme === 'dark' ? 'logo_native' : 'logo_nativedark';
     
-    return <View className='w-20 h-6'>{appStatic(logo)}</View>;
+    return <Pressable onPress={() => {
+        routerExpo.replace( {
+           pathname: '/tab0' ,
+           params: { url: '/home'}
+         });
+         
+       
+       
+       }}><View className='w-20 h-6'>{appStatic(logo)}</View></Pressable>;
 };
 
 export function updateRightHeader(items, navigation) {
