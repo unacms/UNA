@@ -2,6 +2,7 @@ import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
 import Time from 'app/ui/atoms/time'
 import Profile from 'app/ui/molecules/profile'
+import Embed from 'app/ui/molecules/embed'
 import React, { memo, useState, useEffect, useContext, useRef } from 'react'
 import { useCurrentUser } from 'app/context/user'
 import { appSetting } from 'app/lib/util'
@@ -595,7 +596,8 @@ function DefaultUnit(data) {
                         <View className="flex-col  relative ">
                             {bIsTimelineContent && (
                                 <View className={' ' + data.content.text && content_attach.length > 0 ? ' pb-4 ' : ''}>
-                                    <ContentMore id={'feed-' + data.id} showLink={data?.content?.images_attach?.length == 0} content={data.content.text} embed={data.content.embed} numberOfLines={3} openSmall={false} textClassName="font-default text-base text-neutral-600 dark:text-neutral-400" />
+                                    <ContentMore id={'feed-' + data.id} showLink={data?.content?.images_attach?.length == 0} content={data.content.text} numberOfLines={3} openSmall={false} textClassName="font-default text-base text-neutral-600 dark:text-neutral-400" />
+                                    {!!data.content.embed && <Embed data={data.content.embed}/>}
                                 </View>
                             )}
                             {!bIsTimelineContent && (

@@ -5,7 +5,7 @@ import Menu from 'app/components/menu';
 import { useState, useEffect, useContext } from 'react'
 import Carousel from 'app/ui/molecules/carousel'
 import { LayoutData } from 'app/context/layout';
-
+import Embed from 'app/ui/molecules/embed'
 
 export default function ElementFeedItem({ data }) {
     const { layoutData, setLayoutData } = useContext(LayoutData);
@@ -25,9 +25,9 @@ export default function ElementFeedItem({ data }) {
         if (link){
             tlContent = tlContent + '<br><div class="bx-embed-link" source="' + link + '">' + link + '</div>'
         }*/
-        if (content.embed) {
+       /* if (content.embed) {
             tlContent = tlContent + content.embed
-        }
+        }*/
     }
 
     let content_attach = [];
@@ -63,6 +63,7 @@ export default function ElementFeedItem({ data }) {
         <View className="relative sm:my-0 bg-bgrcard dark:bg-bgrcard-d w-full mx-auto max-w-5xl">
             <View className="my-4">
                 <Html data={tlContent} />
+                {!!content.embed && <Embed data={content.embed}/>}
             </View>
             <UnitImages images={content_attach} />
             {
