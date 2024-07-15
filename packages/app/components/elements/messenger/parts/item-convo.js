@@ -1,5 +1,5 @@
 import { Text } from 'app/design/typography'
-import { View, Pressable } from 'app/design/view'
+import { View, Row, Pressable } from 'app/design/view'
 import { stripTags } from 'app/lib/util'
 import Card from 'app/ui/molecules/card'
 import AnimatedBlock from 'app/ui/molecules/animated-block'
@@ -31,10 +31,9 @@ export default function ({ item, index, changeConvo, selectedIndex }) {
                 <Text className="flex-auto text-base  font-bold text-neutral-800 dark:text-neutral-200 sm:group-hover:text-neutral-950 sm:dark:group-hover:text-neutral-50" numberOfLines={1}>
                     {names}
                 </Text>
-                <View className="flex-row gap-x-2">
-                   
+                <Row>
                     <Time className="text-xs flex-none" ts={item.date}></Time>
-                </View>
+                </Row>
                 <View className="flex-row w-full items-end content-end">
                    {/* <Text
                         className="flex-auto mr-2 text-sm text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-neutral-50"

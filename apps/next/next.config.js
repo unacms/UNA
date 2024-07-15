@@ -55,6 +55,7 @@ const nextConfig = {
     'expo-image-manipulator',
     'react-native-svg-transformer',
     'expo-constants',
+    'expo-router',
     'i18next',
     'react-i18next',
     'react-native-localize',

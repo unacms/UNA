@@ -206,7 +206,10 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
             return (
                 <ScrollView horizontal={true} className="bg-white dark:bg-neutral-900  min-w-full">
                     <Row className="pl-4 gap-x-2 " >
-                        {props.navigationState.routes.filter((aItem) => aItem.hideInTop != true).map((a) => (
+                        {props.navigationState.routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
+                            const counter = appSetting('layout', 'show_nav_counters') ? 0 : a.addon ? (a.addon.text ? a.addon.text : a.addon) : 0;
+                            const counter2 = counter >0 ? ' ('+counter+')' :''
+                            return (
                             <Pressable className="items-center justify-center py-2.5"
                                 key={`tab-${a.index}`}
                             >
@@ -216,10 +219,10 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
                                         if (onChangeRoute) {
                                             onChangeRoute(a);
                                         }
-                                    }} fullWidth={false} variant={props.navigationState.index === a.index ? 'primary' : "text"} rounded size='sm' title={t(a.title)} />
+                                    }} fullWidth={false} variant={props.navigationState.index === a.index ? 'primary' : "text"} rounded size='sm' title={t(a.title)+counter2} />
                                 </View>
                             </Pressable>
-                        ))}
+                        )})}
 
                     </Row>
                 </ScrollView>

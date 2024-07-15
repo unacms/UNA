@@ -24,11 +24,11 @@ export function Nav2({ text, onPress, backButton }) {
     const routerExpo = useRouter();
     const navigation = useNavigation();
     const { colors } = useTheme();
-    let header = <Row className='w-auto w-full items-center '>
-        {backButton && <Pressable className="mr-4   rounded-full justify-center items-center" onPress={() => { FeedbackHaptics('Medium'); onPress() }}>
+    let header = <Row className=' w-3/4 overflow-hidden items-center'>
+        {backButton && <Pressable className="rounded-full mr-2 justify-center items-center" onPress={() => { FeedbackHaptics('Medium'); onPress() }}>
             <Icon icon="ArrowLeft" width={24} height={24} color={colors.barsColor} /></Pressable>
-}
-        <Text className="font-bold  ml-2 text-neutral-800 dark:text-neutral-200 text-xl">{text}</Text>
+        }
+        <Text numberOfLines={2} className="font-bold text-neutral-800 dark:text-neutral-200 text-xl">{text}</Text>
     </Row>
-    updateCenterHeader(null, header, false, navigation, routerExpo, colors, null,null, currentUser);
+    updateCenterHeader(null, header, false, navigation, routerExpo, colors, null, null, currentUser);
 }

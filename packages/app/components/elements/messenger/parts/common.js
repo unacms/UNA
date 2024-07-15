@@ -22,6 +22,7 @@ import CreateConvo, { CreateConvoButton } from 'app/components/elements/messenge
 import Msg from 'app/ui/molecules/msg';
 import { BottomSheetData } from 'app/context/bottomsheet';
 import Profile from 'app/ui/molecules/profile'
+import { useRouter } from "expo-router";
 
 export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, fetchConvos, data, onSave }) {
     const isWeb = Platform.OS == 'web'
@@ -36,6 +37,8 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     const [formHeight, setFormHeight] = useState(100);
     const [showMsg, setShowMsg] = useState(false);
     const [showInfo, setShowInfo] = useState(false);
+
+    const routerExpo = useRouter()
 
     const refListConvos = useRef();
     const refListJots = useRef();
@@ -301,6 +304,15 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
             fetchItems(selectedConvo.id, true);
     };
 
+
+
+    const handleBackButton = () => {
+        if (!panelsVisible.convos)
+            showConvo()
+        else
+            routerExpo.back(); 
+    };
+
     const convosComponent = panelsVisible.convos && <Convos
         layoutHeightLeft={layoutHeightLeft}
         data={convos?.data}
@@ -313,7 +325,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     />
 
     const jotsComponent = (panelsVisible.jots && selectedConvo && jots?.data?.jots) && <View className={' w-full md:w-3/5 h-full flex-1 bg-bgrcard dark:bg-bgrcard-d'}>
-        <View className=''>
+        <View className='w-full h-full flex-1'>
             <Jots
                 isSmallScreen={isSmallScreen}
                 title={selectedConvo.title}
@@ -345,7 +357,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
                 <Msg onVisible={showMsg} title={showMsg} handleOk={() => { setShowMsg(false) }} />
                 {convosComponent}
                 {jotsComponent}
-                <Nav2 text={panelsVisible.convos ? "Messenger" : selectedConvo.title} onPress={showConvo} backButton={!panelsVisible.convos} />
+                <Nav2 text={panelsVisible.convos ? "Messenger" : selectedConvo.title} onPress={handleBackButton} backButton={!panelsVisible.convos || appSetting('layout', 'show_back_button_in_messenger')} />
             </View>
         );
     }
@@ -400,10 +412,10 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
     const isWeb = Platform.OS == 'web'
     return (<>
         <View className='md:px-0 border-bdrcard dark:border-bdrcard-d border-b'>
-            {isWeb && <Row className='px-4 py-3 items-center justify-between w-full'>
-                <Row className='items-center justify-start '>
+            {isWeb && <Row className='px-1 py-3 items-center justify-between w-full'>
+                <Row className='items-center justify-start overflow-hidden flex-auto'>
                     {isSmallScreen && <Button variant="text" startDecorator='ArrowLeft' rounded align="start" onPress={() => showConvo()} />}
-                    <Text className="text-lg lg:text-xl font-bold font-bold tracking-tight  text-neutral-900 dark:text-neutral-50">{title}</Text>
+                    <Text  numberOfLines={1} className="text-lg lg:text-xl font-bold font-bold tracking-tight  text-neutral-900 dark:text-neutral-50">{title}</Text>
                 </Row>
                 <Row className='items-center gap-x-2 '>
                     <Button buttonTooltip="Edit participants list" startDecorator="Users" variant="outline" rounded size="sm" onPress={() => editConvo()} />
