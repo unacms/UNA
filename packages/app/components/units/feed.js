@@ -360,8 +360,8 @@ function DefaultUnit(data) {
 
     return (
         <AnimatedBlock>
-            <Card rounded=' rounded-none sm:rounded-2xl ' border=" sm:border border-bdrcard dark:border-bdrcard-d" margin=' mb-2 sm:mb-4 sm:mx-4 ' addClassName={'p-3 sm:p-6 tl-' + data.id} >
-                <View className="flex-auto flex-row items-top pb-3 sm:pb-6">
+            <Card rounded=' rounded-none sm:rounded-2xl ' border=" sm:border border-bdrcard dark:border-bdrcard-d" margin=' mb-2 sm:mb-4 sm:mx-4 ' addClassName={'p-4 tl-' + data.id} >
+                <View className="flex-auto flex-row items-top pb-3 sm:pb-4">
                     <Author />
                     <View className="flex-auto justify-end flex-row mb-auto">
                         {data.author_actions.map((item, index) => {
@@ -396,7 +396,7 @@ function DefaultUnit(data) {
                     ) : (
                         <>
                             <MainContent />
-                            <View className="pt-4 sm:pt-6 ">
+                            <View className="pt-4">
                                 <MenuMemo showCommentsModal={showCommentsModal} />
                             </View>
                         </>
@@ -593,7 +593,7 @@ function DefaultUnit(data) {
                         </Link>
                     )}
                     <View>
-                        <View className="flex-col  relative ">
+                        <View className="flex-col relative ">
                             {bIsTimelineContent && (
                                 <View className={' ' + data.content.text && content_attach.length > 0 ? ' pb-4 ' : ''}>
                                     <ContentMore id={'feed-' + data.id} showLink={data?.content?.images_attach?.length == 0} content={data.content.text} numberOfLines={3} openSmall={false} textClassName="font-default text-base text-neutral-600 dark:text-neutral-400" />
@@ -627,7 +627,7 @@ function SmallUnit(data) {
     return (
         <AnimatedBlock>
             <Link href={url} className="w-full" emulate={true}>
-                <Card addClassName='  group active:opacity-50 active:translate-y-1 flex-row p-3 sm:p-6 ' rounded=" rounded-none sm:rounded-2xl " margin=" -mb-[1px] sm:mx-4 sm:mb-2 ">
+                <Card addClassName='  group active:opacity-50 active:translate-y-1 flex-row p-4 ' rounded=" rounded-none sm:rounded-2xl " margin=" -mb-[1px] sm:mx-4 sm:mb-2 ">
                     <View className=" mr-2 xl:mr-3 rounded-full flex-none bg-secondary-500/10">
                         <Profile
                             {...data.author_data}
@@ -636,7 +636,7 @@ function SmallUnit(data) {
                         />
                     </View>
                     <View className="flex-auto flex-col my-auto ">
-                        <View className="flex-row gap-x-3 sm:gap-x-4">
+                        <View className="flex-row gap-x-3">
                             <Text className="text-base flex-auto font-semibold text-neutral-800 dark:text-neutral-200">
                                 {data.author_data.display_name}
                             </Text>

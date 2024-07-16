@@ -9,34 +9,30 @@ import { Platform } from 'react-native'
 import { appStatic } from 'app/lib/app-static'
 
 export default function PageLayout(props) {
-    let cls = 'lg:h-[calc(100vh-4rem)]';
-    const isWeb = Platform.OS == 'web';
-    if (isWeb) {
-        cls += ' justify-center';
-    }
+   
 
     const joinData = DataByName(props.data, props.blocks.form_join);
     const isAllowJoin = joinData.content[0].type == "form";
     
     return (
-        <ScrollView className={cls}>
-            <View className=" w-full p-2 mx-auto max-w-5xl flex-col items-center lg:flex-row  rounded-3xl lg:bg-bgrnavbar/50 lg:dark:bg-bgrnavbar-d/50 lg:border border-dashed border-bdr dark:border-bdr-d ">
-                <View className="flex-col p-8 flex-auto w-full  items-center lg:items-start  gap-y-4 lg:gap-y-8 my-auto ">
-                    <Text className="text-4xl lg:text-5xl tracking-tight font-bold text-neutral-800 dark:text-neutral-200 ">
+        <ScrollView className='p-4'>
+            <View className=" w-full mx-auto max-w-5xl flex-col items-center lg:flex-row  rounded-3xl lg:bg-bgrnavbar/50 lg:dark:bg-bgrnavbar-d/50 lg:border border-dashed border-bdr dark:border-bdr-d ">
+            <View className="flex-col p-4 lg:p-8 flex-auto w-full  items-center lg:items-start gap-y-4 my-auto ">
+            <Text className="text-4xl lg:text-5xl tracking-tight font-bold text-neutral-800 dark:text-neutral-200 ">
                         { isAllowJoin ? 'Join now!' : 'Request Invitation' }
                     </Text>
 
                     <Text className="text-base lg:text-lg xl:text-xl  text-neutral-700 dark:text-neutral-300  ">
                         { isAllowJoin ? 'Create an account to get started.' : 'Registration is by invitation only.' }
                     </Text>
-                    {appStatic('components_logincontent')}
+                    <View className="w-full mt-4"> {appStatic('components_logincontent')}</View>
                 </View>
 
-                <View className="mx-auto w-full max-w-lg md:w-1/2 lg:w-2/5 my-auto mx-auto items-center xl:p-4 p-2  ">
+                <View className="mx-auto w-full max-w-lg md:w-1/2 lg:w-2/5 my-auto mx-auto items-center lg:p-2  ">
                     <View className=" flex-auto w-full   ">
                     <Card
                             rounded=" rounded-2xl "
-                            addClassName="border px-6 py-4 w-full  max-w-xl mx-auto flex-auto  "
+                            addClassName="border px-4 py-2 sm:px-6 sm:py-4 w-full  max-w-xl mx-auto flex-auto  "
                         >
                         {!isAllowJoin && <BlockByName name={props.blocks.form_invitation} data={props.data} />}
                         {isAllowJoin && <BlockByName name={props.blocks.form_join} data={props.data} />}

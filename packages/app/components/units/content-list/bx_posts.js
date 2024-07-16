@@ -11,7 +11,7 @@ const ProfileCnt = memo(({ authorData }) => (
     <Profile
         {...authorData}
         displayType="unit"
-        displaySize={authorData.displaySize || "sm"}
+        displaySize={authorData.displaySize || "xs"}
         showInfo="false"
     />
 ));
@@ -72,10 +72,10 @@ function Search({ data, imageSizes }) {
 
 function Base({ data, imageSizes }) {
     return (
-        <View className=" p-2  mx-auto w-full max-w-4xl">
-            <Card addClassName=" p-2 flex-auto  mx-auto w-full flex-col md:flex-row-reverse duration-300 ">
+        <View className=" p-1.5 sm:p-2 mx-auto w-full max-w-3xl">
+            <Card addClassName=" p-2 flex-auto  mx-auto w-full flex-row-reverse duration-300 ">
                 {data.image && (
-                    <View className=" aspect-video flex-none rounded-lg overflow-hidden  w-full md:w-1/3 mb-auto  ">
+                    <View className="aspect-square md:aspect-video flex-none rounded-lg overflow-hidden h-24 sm:h-36 mb-auto  ">
                         <Image
                             {...data.image}
                             alt={data.title}
@@ -88,10 +88,10 @@ function Base({ data, imageSizes }) {
 
                 <View className="flex-auto px-2 py-2">
                     <Link href={data.url}>
-                        <Text numberOfLines={2} className="text-neutral-950  mb-1 tracking-tight leading-tight dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-d text-lg font-bold">
+                        <Text numberOfLines={2} className="text-neutral-800  mb-2 tracking-tight leading-tight dark:text-neutral-200 sm:hover:text-primary sm:dark:hover:text-primary-d text-base font-bold">
                             {data.title}
                         </Text>
-                        <Text numberOfLines={2} className="text-neutral-700 mb-2 dark:text-neutral-300  text-sm sm:text-base">
+                        <Text numberOfLines={2} className="text-neutral-600 mb-2 dark:text-neutral-400 text-xs sm:text-sm">
                             {data.summary_plain}
                         </Text>
                     </Link>
