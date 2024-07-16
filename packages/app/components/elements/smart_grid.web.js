@@ -222,7 +222,7 @@ export default function (props) {
             content = d;
         }
         if (addType.type === 'link') {
-            const a = await fetcher('/api.php?r=system/get_url_info/TemplServicePages&params[]=' + d.content);
+            const a = await fetcher('/api.php?r=' + appSetting("urls", "embeds_new") + d.content);
             content_data = a.data;
         }
         if (addType.i > 0) {

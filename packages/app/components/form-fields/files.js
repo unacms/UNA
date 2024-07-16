@@ -201,8 +201,6 @@ export default function (props) {
                 });
             }
             else {
-
-
                 if (!hasPermissionCamera) {
                     const permission = await requestPermissionCamera();
                     if (!permission.granted) {

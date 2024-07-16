@@ -228,7 +228,7 @@ function DefaultUnit(data) {
     const { t } = useTranslation();
     const [viewState, setViewState] = useState({ view: '' })
     const [postData, setPostData] = useState(null)
-    const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);
+    const { setBottomSheetData } = useContext(BottomSheetData);
     const styles = StyleSheet.create(
         Platform.OS !== 'web'
             ? {

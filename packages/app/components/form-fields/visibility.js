@@ -13,7 +13,7 @@ export default function (props) {
     const formContext = useFormContext();
     const defaultValue = props?.value ? props.value : '';
     const [value, setValue] = useState(defaultValue)
-    const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);
+    const { setBottomSheetData } = useContext(BottomSheetData);
     const { field } = useController({ name, rules, defaultValue });
 
     useEffect(() => {

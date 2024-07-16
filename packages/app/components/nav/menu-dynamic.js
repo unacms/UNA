@@ -37,7 +37,7 @@ export default function DynamicMenu({ name, MenuItem, MenuItemEx, ButtonEx, cont
         setWidth(event.nativeEvent.layout.width );
     }, []);
 
-    let ExMenu = visibleItemsCount < items.length && (
+    let ExMenu = (visibleItemsCount < items.length && isWeb) && (
         <DropdownMenu 
             variant = 'nopad'
             items={items.slice(visibleItemsCount).map((aItem, iKey) => ({

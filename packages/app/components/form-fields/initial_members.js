@@ -105,7 +105,7 @@ export default function (props) {
     const formContext = useFormContext();
     const name = props.name ? props.name : '';
     const { field } = useController({ name, rules, defaultValue });
-    const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);
+    const { setBottomSheetData } = useContext(BottomSheetData);
     const [selected, setSelected] = useState(props.value_data ? props.value_data : []);
     const isSingle = props?.custom?.only_once;
     const onSave = (data, isAdd = false) => {

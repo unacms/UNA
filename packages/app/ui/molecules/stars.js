@@ -6,7 +6,7 @@ import { fetcher } from 'app/lib/fetcher';
 import { useCurrentUser } from 'app/context/user';
 import { ActionsData } from 'app/context/actions';
 import { View, Pressable } from 'app/design/view'
-import { ButtonMenuCounterDefault, ButtonMenuCounterText, ButtonMenuGroupItem, ButtonsGroupMenu, Modal } from 'app/design/controls';
+import { ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounterDefault, ButtonMenuCounterText, ButtonMenuGroupItem, ButtonsGroupMenu, Modal } from 'app/design/controls';
 import DropdownPopup from 'app/ui/atoms/dropdown-popup';
 import Profile from 'app/ui/molecules/profile';
 import { subscribe } from 'app/ui/atoms/socket';

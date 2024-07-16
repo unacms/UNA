@@ -11,7 +11,7 @@ import RbList from 'app/ui/molecules/radio_list';
 
 export default function MenuItemButton(oProps) {
     const redirectdRef = useRef();
-    const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);
+    const { setBottomSheetData } = useContext(BottomSheetData);
     const [isVisible, setIsVisible] = useState(true);
 
     const oIconAliases = {

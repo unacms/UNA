@@ -70,6 +70,11 @@ const expoConfig = {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyAhrci201-9xXIRAy0kLOHFGppeTk8AHmo"
+        }
+      },
       "intentFilters": [
         {
           "action": "VIEW",

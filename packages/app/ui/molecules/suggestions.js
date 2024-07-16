@@ -11,7 +11,7 @@ export default function Suggestions(props) {
     const windowWidth = useWindowDimensions().width;
     let { currentUser, setCurrentUser } = useCurrentUser();
     const [dataIndexModal, setDataIndexModal] = useState(0);
-    const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);
+    const { setBottomSheetData } = useContext(BottomSheetData);
     const [dataCount, setDataCount] = useState(0);
     let suggestionList = appSetting('suggestion', 'list');
 

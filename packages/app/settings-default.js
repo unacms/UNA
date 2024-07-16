@@ -93,6 +93,7 @@ let settingsDefault = {
     },
     urls: {
         embeds: '/oembed.php?html=1&a=get_link&l=',
+        embeds_new: 'system/get_url_info/TemplServicePages&params[]=',
         cmts: 'system/get_data_api/TemplCmtsServices'
     },
     cache: {

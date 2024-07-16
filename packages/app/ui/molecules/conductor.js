@@ -16,9 +16,13 @@ import { useRouter, useGlobalSearchParams } from 'expo-router';
 import { LayoutData } from 'app/context/layout';
 import { menuItemsFilter } from 'app/lib/util';
 
-export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks, useSectionAsMenu = false, unitMode = '', skeleton = '', onChangeRoute, keyword }) {
-   // console.log("conductor-001")
-   // return <></>
+export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultHeader, menu, data, blocks, useSectionAsMenu, unitMode, skeleton, onChangeRoute, keyword }) {
+    minHeaderHeight = minHeaderHeight || 100; 
+    isHideDefaultHeader = isHideDefaultHeader || false;
+    useSectionAsMenu = useSectionAsMenu || false;
+    skeleton = skeleton || '';
+    unitMode = unitMode || '';
+
     const { currentUser, setCurrentUser } = useCurrentUser();
     const { layoutData, setLayoutData } = useContext(LayoutData);
     const { t } = useTranslation();
@@ -29,7 +33,6 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
     const [menuState, setMenuState] = useState(menu);
     if (!deepEqual(menu, menuState)) {
         setMenuState(menu)
-        console.log("setRoutes-001")
         setRoutes(initedTabs);
     }
 

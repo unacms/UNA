@@ -8,7 +8,6 @@ import { useController, useFormContext } from 'react-hook-form';
 import { Button, ButtonsGroup } from 'app/design/controls';
 import { uploadImage, linkify2 } from 'app/lib/util';
 import { useColorScheme } from 'react-native';
-import { absoluteApiUrl } from 'app/lib/util'
 import { useState, useEffect } from 'react'
 import Image from '@tiptap/extension-image'
 import Link from '@tiptap/extension-link'
@@ -22,6 +21,9 @@ import { Input } from 'app/design/controls'
 import { Text as TextTag } from 'app/design/typography'
 import Html from 'app/ui/atoms/html'
 import Editor from "app/ui/editor/ui/editor";
+import Embed from 'app/ui/molecules/embed'
+import { fetcher } from 'app/lib/fetcher';
+import { appSetting, } from 'app/lib/util'
 
 import "app/ui/editor/styles/globals.css";
 import "app/ui/editor/styles/prosemirror.css";
@@ -63,7 +65,7 @@ const MenuBar = ({ editor }) => {
             setModalType('');
             setInputValue('');
         }
-        if (modalType == 'embed') {
+        /*if (modalType == 'embed') {
             if (inputValue != '') {
                 let className = "w-full max-w-xl aspect-video mx-auto ";
 
@@ -73,7 +75,7 @@ const MenuBar = ({ editor }) => {
                 setModalType('');
                 setInputValue('');
             }
-        }
+        }*/
     }
 
     const handleAddLink = () => {
@@ -292,7 +294,7 @@ export default function FormFieldFtf(props) {
             if (props.linkify) {
                 let l = linkify2(editor.getHTML());
                 if (l != link) {
-                    setLink('<div class="bx-embed-link" source="' + l + '">' + l + '</div>');
+                    setLink(l);
                 }
             }
             field.onChange(editor.getHTML());
@@ -340,12 +342,13 @@ export default function FormFieldFtf(props) {
 
     const isFullHtml = (props.html == 2 || props.html == 1);
 
-    const computedData = useMemo(() => {
-        if (link)
-            return <View className='w-1/3 mt-2'>
-                <Html data={link} />
+    const  computedData = useMemo(async () => {
+        if (link){
+            const a = await fetcher('/api.php?r=' + appSetting("urls", "embeds_new") + link);
+            return <View className='w-full mt-2'>
+                <Embed data={a.data}/>
             </View>
-
+        }
         return <></>
     }, [link]);
 

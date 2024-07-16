@@ -181,7 +181,7 @@ export async function parseData(routes, index, setRoutes, newData) {
 
 
         if (newData.length > 0 || isFinished) {
-            addMoreData(newData, endpoint, setRoutes, index, {}, routes);
+            addMoreData(newData, endpoint, setRoutes, index, {}, routes, false, null);
         }
         return { data: newData, endpoint: endpoint };
     }
@@ -212,7 +212,10 @@ export async function fetchAndUpdateData(routes, index, setRoutes) {
     }
 }
 
-export function addMoreData(newItems, endpoint, setRoutes, index, blocks, routes, sidebar = false, pageData = null) {
+export function addMoreData(newItems, endpoint, setRoutes, index, blocks, routes, sidebar, pageData) {
+    sidebar = sidebar || false;
+    pageData = pageData || null;
+
     const updatedRoutes = routes.map((route) => {
         if (route.index === index) {
             route.endpoint = endpoint;

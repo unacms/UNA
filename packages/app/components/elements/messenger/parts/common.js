@@ -27,7 +27,7 @@ import { useRouter } from "expo-router";
 export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, fetchConvos, data, onSave }) {
     const isWeb = Platform.OS == 'web'
     const { width, height } = useWindowDimensions();
-    const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);
+    const { setBottomSheetData } = useContext(BottomSheetData);
     const [convoId, setConvoId] = useState(defaultConvoId);
     const [jots, setJots] = useState(false);
     const [isSmallScreen, setIsSmallScreen] = useState(width < 768);

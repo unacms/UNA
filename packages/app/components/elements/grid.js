@@ -185,7 +185,7 @@ const Cell = React.memo(({ cell, indexRow, id, toggleSwitch, setSelection, selec
 });
 
 export default function ElementGrid({data}) {
-    const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);
+    const { setBottomSheetData } = useContext(BottomSheetData);
 
     let settings = data.settings;
     let header = data.header.filter((item) => (item?.name != 'reports'))

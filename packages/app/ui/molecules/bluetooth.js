@@ -38,7 +38,7 @@ export default function Bluetooth(props) {
     const [isEnabled, setIsEnabled] = React.useState({ bt: false, gps: false });
     const [advertising, setAdvertising] = React.useState(false);
     const peripheral = React.useRef();
-    const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);
+    const { setBottomSheetData } = useContext(BottomSheetData);
     const manager = new BleManager();
 
 

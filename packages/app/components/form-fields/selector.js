@@ -15,7 +15,7 @@ export default function (props) {
     const defaultValue = props?.value ? (Array.isArray(props.value) ? props.value.map(String) : [props.value]) : '';
     const name = props.name ? props.name : '';
     const { field } = useController({ name, rules, defaultValue });
-    const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);
+    const { setBottomSheetData } = useContext(BottomSheetData);
 
     const setFormValue = (value) => {
         value = value.filter(item => item);

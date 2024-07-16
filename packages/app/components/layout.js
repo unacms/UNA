@@ -6,7 +6,6 @@ import { appStatic } from 'app/lib/app-static'
 
 export default function Layout(props) {
     const isUseBg = appSetting('layout', 'background_native');
-
     if (props.data.page_status == 503){
         return   <>
             {appStatic('maintenance_mode')}

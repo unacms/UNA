@@ -100,7 +100,7 @@ export default function ElementMenu(oProps) {
         isUseStaticWidth = false;
     }
     if (!isWeb){
-      //  isUseStaticWidth = true;
+        isUseStaticWidth = true;
     }
 
     if (isUseStaticWidth){

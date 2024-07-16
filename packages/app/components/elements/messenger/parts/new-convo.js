@@ -34,7 +34,7 @@ export default function CreateConvo ({ onSave, initedData=[], convoId }) {
 };
 
 export function CreateConvoButton({onSave, onShow, variant ='small'}) {
-    const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);
+    const { setBottomSheetData } = useContext(BottomSheetData);
     const newConvo = () => {
         setBottomSheetData({ title: 'Add users to start messaging', content: <CreateConvo onSave={onSaveHandler} />, showClose: true, snapPoints: ['25%', '50%'] });
     }

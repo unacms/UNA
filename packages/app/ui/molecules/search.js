@@ -64,7 +64,7 @@ export function SearchPanel(props) {
 }
 
 export function ElementSearchData(oProps) {
-    const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);
+    const { setBottomSheetData } = useContext(BottomSheetData);
     const redirectdRef = useRef();
     const sSection = oProps?.section ? oProps.section : '';
     const sUrlRedirect = '/search-keyword?keyword={keyword}' + (!!sSection ? '&section=' + sSection : '');
