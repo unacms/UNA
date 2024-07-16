@@ -12,21 +12,20 @@ const pusherInstance = new Pusher(conf.key, {
 console.log("init")
 
 const boundEvents = [];
-console.log("boundEvents", boundEvents)
 export function subscribe(channel_name, event_name, cb) {
     if (pusherInstance) {
         let channel = pusherInstance.channel(channel_name);
         if (!channel)
             channel = pusherInstance.subscribe(channel_name);
 
-        if (!boundEvents[channel_name]) {
-            boundEvents[channel_name] = [];
-            boundEvents[channel_name].push(event_name);
+        //if (!boundEvents[channel_name]) {
+          //  boundEvents[channel_name] = [];
+          //  boundEvents[channel_name].push(event_name);
             channel.bind(event_name, function (data) {
                 cb(data)
             });
-            console.log("pusherInstance-----")
-        }
+           
+        //}
 
 
     }

@@ -36,7 +36,6 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     const [jotUpdated, setJotUpdated] = useState(false);
     const [formHeight, setFormHeight] = useState(100);
     const [showMsg, setShowMsg] = useState(false);
-    const [showInfo, setShowInfo] = useState(false);
 
     const routerExpo = useRouter()
 
@@ -62,6 +61,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     );
 
     useEffect(() => {
+        data.form.data.inputs.message.value='';
         setReplyItem(false);
         setCommentForm(false);
         if (dynamicData?.data?.jot_id > 0)
@@ -118,12 +118,10 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
 
     useEffect(() => {
         if (selectedConvo) {
-            fetchItems(selectedConvo.id, false);
-            updateState();
-            console.log("subscribe", selectedConvo.id, currentUser.id)
             subscribe('bx_messenger', 'convo_' + selectedConvo.id, onNewMessage);
             subscribe('bx_messenger', 'profile_' + currentUser.id, onCheckConvos);
-
+            fetchItems(selectedConvo.id, false);
+            updateState();
         }
     }, [convoId]);
 
@@ -141,16 +139,16 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     }, [convos]);
 
     const onNewMessage = (data) => {
-        console.log("onNewMessage");
         if (data.id == convoId) {
             setJotUpdated(data);
         }
     }
 
     const onCheckConvos = (data) => {
-        if (convoId != data.id) {
+        /*if (convoId != data.id) {
             fetchConvos();
-        }
+        }*/
+        //MAY BE NEED TO RETURN
     }
 
     const scrolTo = () => {
@@ -286,8 +284,8 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     }
 
     const onFormSubmit = (formData, d) => {
-        setCommentForm(formData);
         Keyboard.dismiss();
+        setCommentForm(formData);
     }
 
     const handleLayout = (event) => {
@@ -329,6 +327,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
 
     const jotsComponent = (panelsVisible.jots && selectedConvo && jots?.data?.jots) && <View className={' w-full md:w-3/5 h-full flex-1 bg-bgrcard dark:bg-bgrcard-d'}>
         <View className='w-full h-full flex-1'>
+           
             <Jots
                 isSmallScreen={isSmallScreen}
                 title={selectedConvo.title}

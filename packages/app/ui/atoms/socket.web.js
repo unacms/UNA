@@ -18,13 +18,13 @@ export function subscribe(channel_name, event_name, cb) {
         if (!channel)
             channel = pusherInstance.subscribe(channel_name);
 
-        if (!boundEvents[channel_name]) {
-            boundEvents[channel_name] = [];
-            boundEvents[channel_name].push(event_name);
+        //if (!boundEvents[channel_name]) {
+         //   boundEvents[channel_name] = [];
+           // boundEvents[channel_name].push(event_name);
             channel.bind(event_name, function (data) {
                 cb(data)
             });
-        }
+      //  }
 
 
     }

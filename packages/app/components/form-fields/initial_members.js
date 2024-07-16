@@ -9,6 +9,7 @@ import { Button, InputRounded } from 'app/design/controls'
 import Loading from 'app/ui/atoms/loading'
 import { BottomSheetData } from 'app/context/bottomsheet';
 import { Icon } from 'app/ui/atoms/icon'
+import { KeyboardAvoidingView, Platform } from 'react-native'
 
 const User = ({ data, onSelect, type }) => {
     return (
@@ -79,23 +80,25 @@ export function SelectUsers({ onSave, initedData = [], requestUrl, isSingle = fa
     }, [state.selectedUsers, isSingle]);
 
     return <View className="">
-        <Row className="text-center w-full  flex-wrap gap-x-2 py-2">
-            {state.selectedUsers && state.selectedUsers.map((item) => <User key={item.id} data={item} onSelect={onRemove} />)}
-        </Row>
-        <Row className="gap-x-2 mx-1">
-            <InputRounded
-                placeholder={"Select users..."}
-                className="px-2 w-full"
-                onChangeText={onChangeText}
-                role="textbox"
-            />
-            <Button variant="outline" disabled={state.selectedUsers.length == 0} startDecorator="Check" rounded align="start" onPress={() => onSaveInt()} />
-        </Row>
-        <Row className="text-center py-2 w-full  flex-wrap gap-x-2 ">
-            {state.suggestedUsers && !state.showLoading && state.suggestedUsers.map((item) => <User key={item.id} data={item} onSelect={onSelectUser} />)}
-            {state.showLoading && <View className=' w-full items-center justify-center py-2'><Loading /></View>}
-            {state.suggestedUsers.length == 0 && state.searchText != '' && !state.showLoading && <Text className="text-sm py-2">Nothing found</Text>}
-        </Row>
+        <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
+            <Row className="text-center w-full  flex-wrap gap-x-2 py-2">
+                {state.selectedUsers && state.selectedUsers.map((item) => <User key={item.id} data={item} onSelect={onRemove} />)}
+            </Row>
+            <Row className="gap-x-2 mx-1">
+                <InputRounded
+                    placeholder={"Select users..."}
+                    className="px-2 w-full"
+                    onChangeText={onChangeText}
+                    role="textbox"
+                />
+                <Button variant="outline" disabled={state.selectedUsers.length == 0} startDecorator="Check" rounded align="start" onPress={() => onSaveInt()} />
+            </Row>
+            <Row className="text-center py-2 w-full  flex-wrap gap-x-2 ">
+                {state.suggestedUsers && !state.showLoading && state.suggestedUsers.map((item) => <User key={item.id} data={item} onSelect={onSelectUser} />)}
+                {state.showLoading && <View className=' w-full items-center justify-center py-2'><Loading /></View>}
+                {state.suggestedUsers.length == 0 && state.searchText != '' && !state.showLoading && <Text className="text-sm py-2">Nothing found</Text>}
+            </Row>
+        </KeyboardAvoidingView>
     </View>
 };
 

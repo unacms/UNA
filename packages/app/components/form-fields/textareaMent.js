@@ -33,7 +33,6 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
 
     const { colors } = Theme();
     const { field } = useController({ name, rules: {}, defaultValue: value });
-
     const [localValue, setLocalValue] = useState(formatText(field.value));
     const [suggestions, setSuggestions] = useState([]);
     const [keywordval, setKeyword] = useState(['', '']);
