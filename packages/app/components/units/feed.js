@@ -24,7 +24,7 @@ import { useTranslation } from 'react-i18next';
 import { CommentsBrowse, CommentsParts } from 'app/lib/comments-helpers'
 import { Pressable } from 'app/design/view';
 import { ContentMore } from 'app/ui/molecules/contentmore';
-import { BottomSheetData } from 'app/context/bottomsheet';
+//import { BottomSheetData } from 'app/context/bottomsheet';
 import { useWindowDimensions } from 'react-native'
 import Carousel from 'app/ui/molecules/carousel'
 import { subscribe } from 'app/ui/atoms/socket';
@@ -221,14 +221,11 @@ const MenuManage = ({ id, menu, setViewState }) => {
 };
 
 function DefaultUnit(data) {
-
-   /* if (data.type == 'timeline_common_repost') {
-        return <>555</>; //NEED TO FIX
-    }*/
     const { t } = useTranslation();
     const [viewState, setViewState] = useState({ view: '' })
-    const [postData, setPostData] = useState(null)
-    const { setBottomSheetData } = useContext(BottomSheetData);
+    const [postData, setPostData] = useState(null);
+    const [cmtsData, setCmtsData] = useState(false)
+    //const { setBottomSheetData } = useContext(BottomSheetData);
     const styles = StyleSheet.create(
         Platform.OS !== 'web'
             ? {
@@ -305,18 +302,21 @@ function DefaultUnit(data) {
 
     const showCommentsModal = async (initFormData) => {
         const res = await fetcher('/api.php?r='+appSetting("urls", "cmts")+'/&params[]={"module":"' + data?.cmts?.module + '","object_id":' + data?.cmts?.object_id + '}');
-        setBottomSheetData(
+        setCmtsData({title:data.author_data.display_name + "'s post", data:<CommentsModal initFormData={initFormData}
+            itemContent={{ id: "block-comments", data: <><View className='pb-4'><Author /></View><MainContent /></> }} 
+            commentsData={res.data} />})
+        /* setBottomSheetData(
             { 
                 title: data.author_data.display_name + "'s post", 
                 showClose: true, 
                 isListView: true, 
                 modal:{padding:'sm:p-6 sm:pt-4 pb-1 sm:pb-4 md:pb-0'}, 
                 content: <CommentsModal initFormData={initFormData}
-                itemContent={{ id: "block-comments", data: <><View className='pb-4'><Author /></View><MainContent /></> }} 
-                commentsData={res.data} />, 
+                    itemContent={{ id: "block-comments", data: <><View className='pb-4'><Author /></View><MainContent /></> }} 
+                    commentsData={res.data} />, 
                 snapPoints: ['95%', '95%'] 
             }
-        );
+        );*/
     }
 
     if (viewState.view == 'deleted')
@@ -360,6 +360,16 @@ function DefaultUnit(data) {
 
     return (
         <AnimatedBlock>
+            <Modal
+                outerClickClose={false} 
+                onClose={() => setCmtsData(false)}
+                onVisible={!!cmtsData}
+                title={cmtsData.title}
+            ><View className='p-2 sm:p-0'>
+                {cmtsData.data}
+            </View>
+                
+            </Modal>
             <Card rounded=' rounded-none sm:rounded-2xl ' border=" sm:border border-bdrcard dark:border-bdrcard-d" margin=' mb-2 sm:mb-4 sm:mx-4 ' addClassName={'p-4 tl-' + data.id} >
                 <View className="flex-auto flex-row items-top pb-3 sm:pb-4">
                     <Author />
