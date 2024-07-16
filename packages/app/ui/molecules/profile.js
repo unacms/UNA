@@ -172,7 +172,7 @@ export default function AtomProfile(oProps) {
     switch (sDisplayType) {
         case 'unit':
             sResult = (
-                <View className="flex-row gap-x-3 sm:gap-x-4  items-center">
+                <View className="flex-row gap-x-2  items-center">
                     <View className="flex-none">
                         <AtomProfile {...oProps} displayType="unit_wo_info" />
                     </View>

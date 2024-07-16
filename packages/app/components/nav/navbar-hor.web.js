@@ -27,7 +27,7 @@ const HeaderLine = memo(({ headerSettings, currentUser, uri, bSearch, menuPopup,
 
 
     return (
-        <View className="flex-row px-4 flex-auto lg:flex-none lg:w-80 my-auto items-center">
+        <View className="flex-row px-4 flex-auto lg:flex-none my-auto items-center">
             {(headerSettings.menu && isDrawer) && (
                 <View className="lg:hidden mr-3 sm:mr-4">
                     <Pressable onPress={showMenu}>
@@ -63,7 +63,7 @@ const HeaderLine = memo(({ headerSettings, currentUser, uri, bSearch, menuPopup,
                 </View>
             )}
             {bSearch && (
-                <View className=" w-full flex-auto max-w-sm hidden lg:flex ">
+                <View className=" w-full flex-auto hidden xl:flex ">
                     <Search
                         type="input"
                         placeholder="Enter search text"
@@ -112,7 +112,7 @@ export default function (props) {
                     >
                         <HeaderLine headerSettings={headerSettings} title={sTitle} currentUser={currentUser} uri={props.uri} bSearch={bSearch} showMenu={showMenu} menuPopup={menuPopup} setMenuPopup={setMenuPopup} />
                         <Row className="hidden lg:flex flex-auto">
-                            <Row className="w-full mx-auto gap-x-0.5 max-w-lg justify-between">
+                            <Row className="w-full mx-auto gap-x-0.5 max-w-2xl justify-between">
                                 {menu_navbar_items.map((item, index) => (
                                     <Link
                                         className="flex-auto"
@@ -144,11 +144,11 @@ export default function (props) {
                                 ))}
                             </Row>
                         </Row>
-                        <Row className="flex-row flex-none xl:w-96 px-3 sm:px-4 justify-end ">
+                        <Row className="flex-row flex-none px-3.5 sm:px-4 justify-end ">
                             {!!currentUser && (
                                 <Row className="flex-row justify-end ">
                                     <View className=" flex-row my-auto gap-x-2 ">
-                                        <View className="lg:hidden ">
+                                        <View className="xl:hidden ">
                                             {bSearch && <Search />}
                                         </View>
                                         <View className="hidden sm:block">
