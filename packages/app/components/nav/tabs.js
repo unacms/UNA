@@ -41,6 +41,27 @@ export default function () {
     let profile = null
     const [notifCount, setNotifCount] = useState(currentUser ? currentUser.notifications : null)
 
+    useEffect(() => {
+        const handleNotifPermissions = async () => {
+          try {
+            const { status: existingStatus } = await Notifications.getPermissionsAsync();
+            let finalStatus = existingStatus;
+            if (existingStatus !== 'granted') {
+              const { status } = await Notifications.requestPermissionsAsync();
+              finalStatus = status;
+            }
+            if (finalStatus !== 'granted') {
+              Alert.alert('Failed to get push token for push notification!');
+              return;
+            }
+            // Further logic for successful permissions can go here
+          } catch (error) {
+            console.error("Error getting notification permissions: ", error);
+          }
+        };
+    
+        handleNotifPermissions();
+      }, []);
 
     Notifications.setNotificationHandler({
         handleNotification: async () => ({
