@@ -119,7 +119,8 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     useEffect(() => {
         if (selectedConvo) {
             fetchItems(selectedConvo.id, false);
-            updateState()
+            updateState();
+            console.log("subscribe", selectedConvo.id, currentUser.id)
             subscribe('bx_messenger', 'convo_' + selectedConvo.id, onNewMessage);
             subscribe('bx_messenger', 'profile_' + currentUser.id, onCheckConvos);
 
@@ -140,6 +141,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     }, [convos]);
 
     const onNewMessage = (data) => {
+        console.log("onNewMessage");
         if (data.id == convoId) {
             setJotUpdated(data);
         }
@@ -175,6 +177,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
 
     useEffect(() => {
         if (jotUpdated) {
+            
             if (jotUpdated.action == 'added') {
                 setJots(prevJots => ({
                     ...prevJots,

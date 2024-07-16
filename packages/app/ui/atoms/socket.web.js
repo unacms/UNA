@@ -1,4 +1,4 @@
-import Pusher from 'pusher-js/react-native';
+import Pusher from 'pusher-js';
 import { appSetting } from 'app/lib/util'
 
 const conf = appSetting('config', 'sockets');
@@ -9,10 +9,9 @@ const pusherInstance = new Pusher(conf.key, {
     enabledTransports: ['ws', 'wss'],
     cluster: '',
 });
-console.log("init")
 
 const boundEvents = [];
-console.log("boundEvents", boundEvents)
+
 export function subscribe(channel_name, event_name, cb) {
     if (pusherInstance) {
         let channel = pusherInstance.channel(channel_name);
@@ -25,7 +24,6 @@ export function subscribe(channel_name, event_name, cb) {
             channel.bind(event_name, function (data) {
                 cb(data)
             });
-            console.log("pusherInstance-----")
         }
 
 
