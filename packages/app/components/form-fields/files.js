@@ -14,6 +14,7 @@ import { uploadImage, md5 } from 'app/lib/util';
 import Loading from 'app/ui/atoms/loading'
 import { Text } from 'app/design/typography'
 import { Image as ImageNative, Alert, Platform } from 'react-native';
+import * as Permissions from 'expo-permissions';
 
 export default function (props) {
     const name = props.name;
@@ -201,12 +202,19 @@ export default function (props) {
                 });
             }
             else {
-                if (!hasPermissionCamera) {
-                    const permission = await requestPermissionCamera();
-                    if (!permission.granted) {
-                        Alert.alert('Camera access is required to use this feature.');
-                        return;
+                let isGranted = false;
+                const permission = await Permissions.getAsync(Permissions.CAMERA_ROLL);
+                if (permission.status !== 'granted') {
+                    const newPermission = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+                    if (newPermission.status === 'granted') {
+                        isGranted = true;
                     }
+                } else {
+                    isGranted = true;
+                }
+
+                if (isGranted){
+                    return;
                 }
 
                 result = await ImagePicker.launchCameraAsync({
