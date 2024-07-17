@@ -67,25 +67,6 @@ export default function (props) {
         setImageSource({ images: [...a] });
     };
 
-
-    useEffect(() => {
-        const handleNotifPermissions = async () => {
-            const { status } = await ImagePicker.requestCameraPermissionsAsync();
-            if (status !== 'granted') {
-                Alert.alert('Permission to access camera is required!');
-                return;
-            }
-
-            const { status2 } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-            if (status2 !== 'granted') {
-                Alert.alert('Permission to access lib is required!');
-                return;
-            }
-        };
-
-        handleNotifPermissions();
-    }, []);
-
     useEffect(() => {
         if (props.previewPlaceHolder) {
             props.previewPlaceHolder(name, GhostsList(imageSource.images, bMultiple, handleDelete));
@@ -205,7 +186,13 @@ export default function (props) {
 
             if (type == 'library') {
 
-                
+                if (!hasPermissionLibrary) {
+                    const { status2 } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+                    if (status2 !== 'granted') {
+                        Alert.alert('Permission to access lib is required!');
+                        return;
+                    }
+                }
 
                 result = await ImagePicker.launchImageLibraryAsync({
                     mediaTypes: mediaTypes,
@@ -214,7 +201,13 @@ export default function (props) {
                 });
             }
             else {
-               
+                if (!hasPermissionCamera) {
+                    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+                    if (status !== 'granted') {
+                        Alert.alert('Permission to access camera is required!');
+                        return;
+                    }
+                }
 
                 result = await ImagePicker.launchCameraAsync({
                     mediaTypes: mediaTypes,
