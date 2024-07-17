@@ -111,8 +111,9 @@ export default function FormFeed(props) {
                             
                             </Row>}
                         </View>
+                        {getFormFieldByData(props.data.inputs['tlb_do_submit'], props.handleSubmit, 'default')}
                     </KeyboardAvoidingView>
-                    {getFormFieldByData(props.data.inputs['tlb_do_submit'], props.handleSubmit, 'default')}
+                    
                 </View>
             </Modal>
             {props.exProps?.mode == 'button' ? <Button variant = "primary" title = "Post" tooltip = "Post" rounded = 'rounded' fullWidth onPress={() => {
