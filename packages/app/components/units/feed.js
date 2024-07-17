@@ -60,7 +60,7 @@ const CommentsSection = React.memo(({ isCommentsModal, commentsDataInline, data,
     </Text>);
     return (
         <View className='border-t border-bdr/50 dark:border-bdr-d/50 pt-4 mt-4'>
-            <CommentsBrowse maxCount={appSetting('layout', 'comments_count_in_feed')} browse={commentsDataInline} module={data?.cmts.module} isShort={true} handleReply={showCommentsModal} />
+            <CommentsBrowse maxCount={appSetting('layout', 'comments_count_in_feed')} contentUrl={url} browse={commentsDataInline} module={data?.cmts.module} isShort={true}  {...(isCommentsModal && { handleReply: showCommentsModal })} />
             {isShowMoreComments && (
                 <View className='bg-bgritem dark:bg-bgritem-d hover:bg-primary/10 dark:hover:bg-primary-d/10 px-3 py-1  rounded-lg'>
                     {isCommentsModal ? <Pressable onPress={() => { showCommentsModal() }} >
@@ -297,8 +297,8 @@ function DefaultUnit(data) {
                 ? <GroupView isCompact={false} content_attach={content_attach} url={url} data={data} styles={styles} bIsTitle={bIsTitle} bIsTimelineContent={bIsTimelineContent} />
                 : <DefaultView isCompact={false} content_attach={content_attach} url={url} data={data} styles={styles} bIsTitle={bIsTitle} bIsTimelineContent={bIsTimelineContent} />;
 
-
-    const isCommentsModal = appSetting('layout', 'comments_in_modal');
+    const isWeb = Platform.OS == 'web' ? true : false;
+    const isCommentsModal = appSetting('layout', 'comments_in_modal') && isWeb;
 
     const showCommentsModal = async (initFormData) => {
         const res = await fetcher('/api.php?r='+appSetting("urls", "cmts")+'/&params[]={"module":"' + data?.cmts?.module + '","object_id":' + data?.cmts?.object_id + '}');

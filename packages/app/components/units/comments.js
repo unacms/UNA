@@ -12,7 +12,7 @@ import { useCurrentUser } from 'app/context/user';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import React from 'react';
 import { fetcher } from 'app/lib/fetcher';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Form from 'app/components/elements/form';
 import useSWR from "swr";
 import { useTranslation } from 'react-i18next';
@@ -22,6 +22,7 @@ import Carousel from 'app/ui/molecules/carousel'
 import { componentsMap } from 'app/ui/molecules/_map'
 import { KeyboardAvoidingView } from 'react-native';
 import { StarsView } from 'app/ui/atoms/stars';
+import { useLocalSearchParams, useGlobalSearchParams } from 'expo-router';
 
 export default function UnitComments(props) {
     const { t } = useTranslation();
@@ -37,12 +38,19 @@ export default function UnitComments(props) {
     let files = props.files;
     let maxLevel = props.max_level;
     let parent = props.parent;
+    const local = useLocalSearchParams();
 
     // request form for reply
     const handleReply = async (data) => {
+        console.log("aaaaaaaaaaaa", data)
         FeedbackHaptics('Medium');
         props.handleReply(data);
     };
+    useEffect(() => {
+        console.log("locallocal", local);
+
+        //TODO GOOD handleReply(data);
+    },[]);
 
     if (!data)
         return (<View></View>);
@@ -201,7 +209,12 @@ export default function UnitComments(props) {
                     {viewState.view != 'edited' && <View className=' mb-1 flex-row w-full  items-center'>
                         {(!!currentUser && !!props.handleReply && !props.module.includes('_reviews')) ? <View className='mr-2'>
                             <Button align="start" title={t("Reply")} size="xs" startDecorator="ArrowBendLeftUp" variant="text" onPress={() => handleReply(data)} rounded />
-                        </View> : <View className='mr-2'></View>}
+                        </View> : <View className='mr-2'></View>
+                        }
+                        {(!!currentUser && !props.handleReply && !props.module.includes('_reviews')) ? <View className='mr-2'>
+                            <Link href={props.contentUrl+'#cmt_id'+data.cmt_id}><Button align="start" title={t("Reply")} size="xs" startDecorator="ArrowBendLeftUp" variant="text" rounded /></Link>
+                        </View> : <View className='mr-2'></View>
+                        }
                         <View className='flex-row flex-auto '>
                             <Menu {...data.menu_actions} displayType="element" showMatched={true} params={{ show_action: true, show_counter: true, show_combined: true, display_size: 'xs', button_variant: 'text' }} />
                             {!!currentUser && !!aMenuManageItems.length &&

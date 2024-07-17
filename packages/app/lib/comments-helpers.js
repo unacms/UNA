@@ -107,7 +107,7 @@ export function CommentsParts(commentsData, aItems, height = 0, initFormData, is
     ]
 }
 
-export function CommentsBrowse({ browse, requestUrl, module, handleReply, handleEdit, addData, addItems, isShort = false, maxCount, height = 0, showCommentsModal, classesBrowse='', commentsTitle="Comments" }) {
+export function CommentsBrowse({ browse, requestUrl, module, handleReply, handleEdit, addData, addItems, isShort = false, maxCount, height = 0, showCommentsModal, classesBrowse='', commentsTitle="Comments", contentUrl }) {
     const UnitComments = componentsMap['comments'];
 
     const { t } = useTranslation();
@@ -307,8 +307,8 @@ export function CommentsBrowse({ browse, requestUrl, module, handleReply, handle
         if (maxCount)
             dataOut = dataOut.slice(0, maxCount);
         return dataOut.map((item, index) => (
-            <View className=' ' key={index}>
-                <UnitComments module={commentData.moduleName} {...item} view={viewMode} max_level={commentData.maxLevel} handleReply={handleReply} handleEdit={handleEdit} handleDelete={handleDelete} />
+            <View key={index}>
+                <UnitComments contentUrl={contentUrl} module={commentData.moduleName} {...item} view={viewMode} max_level={commentData.maxLevel} handleReply={handleReply} handleEdit={handleEdit} handleDelete={handleDelete} />
             </View>))
     }
 
@@ -360,7 +360,7 @@ export function CommentsBrowse({ browse, requestUrl, module, handleReply, handle
                     }
                     return (
                         <View className='' key={index}>
-                            <UnitComments module={commentData.moduleName} {...item} view={viewMode} max_level={commentData.maxLevel} handleReply={handleReply} handleEdit={handleEdit} handleDelete={handleDelete} />
+                            <UnitComments  module={commentData.moduleName} {...item} view={viewMode} max_level={commentData.maxLevel} handleReply={handleReply} handleEdit={handleEdit} handleDelete={handleDelete} />
                         </View>
                     )
                 }}

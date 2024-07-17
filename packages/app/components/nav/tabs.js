@@ -39,7 +39,6 @@ export default function () {
     let iconHeight = 24;
 
     let profile = null
-    const [notifCount, setNotifCount] = useState(currentUser ? currentUser.notifications : null)
 
     useEffect(() => {
         const handleNotifPermissions = async () => {
@@ -128,7 +127,6 @@ export default function () {
 
     const isShowTabs = currentUser || appSetting('layout', 'show_nav_non_logged_native')
 
-    console.log("aaaa")
     return (
         <><Suggestions />
              <AsyncWorker /><BottomSheetDataContext>
