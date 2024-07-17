@@ -11,7 +11,7 @@ import Link from 'app/ui/atoms/link'
 import { getImageSizes } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import Redirect from 'app/ui/atoms/redirect';
-import { BottomSheetData } from 'app/context/bottomsheet';
+import { useBottomSheetData } from 'app/context/bottomsheet';
 
 const getGeo = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
@@ -42,7 +42,7 @@ function getDistance(lat1, lon1, lat2, lon2) {
 }
 
 export default function WorkerEventChecker(oProps) {
-    const { setBottomSheetData } = useContext(BottomSheetData);
+    const { setBottomSheetData } = useBottomSheetData();
 
     const redirectdRef = useRef();
     const [data, setData] = useState(false);

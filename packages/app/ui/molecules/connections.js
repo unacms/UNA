@@ -6,13 +6,13 @@ import { ButtonMenuActionDefault, ButtonMenuActionText } from 'app/design/contro
 import { Modal } from 'app/design/controls'
 import { BlockByData } from 'app/components/blocks-content/object-data-array-int';
 import { useTranslation } from 'react-i18next';
-import { LayoutData } from 'app/context/layout'
+import { useLayoutData } from 'app/context/layout'
 import { storageClear } from 'app/lib/util'
 
 export default function ElementConnections(oProps) {
     const [ elementData, setElementData ] = useState(false);
     const [ modalContent, setModalContent ] = useState(false);
-    const { layoutData, setLayoutData } = useContext(LayoutData)
+    const { layoutData, setLayoutData } = useLayoutData()
     const { t } = useTranslation();
 
     const oSettings = appSetting('social_actions', 'connection');

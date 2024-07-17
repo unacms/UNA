@@ -5,7 +5,7 @@ import { Reaction, ReactionProvider } from 'react-native-reactions';
 import { appSetting, FeedbackHaptics } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { useCurrentUser } from 'app/context/user';
-import { ActionsData } from 'app/context/actions';
+import { useActionsData } from 'app/context/actions';
 import { Button, ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounterDefault, ButtonMenuCounterText, ButtonMenuGroupItem, ButtonsGroupMenu, Modal } from 'app/design/controls';
 import { View, Pressable } from 'app/design/view';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
@@ -95,7 +95,7 @@ export default function ElementReactions(oProps) {
         return oAliases[sKey][sName] && oAliases[sKey][sName][sType];
     };
 
-    const { actionsData, setActionsData } = useContext(ActionsData);
+    const { actionsData, setActionsData } = useActionsData();
     const [ actionsDataState, actisetActionsDataState ] = useState({});
 
     let oCounterState = {};

@@ -13,7 +13,7 @@ import { Button } from 'app/design/controls';
 import { useTranslation } from 'react-i18next';
 import { useCurrentUser } from 'app/context/user'
 import { useRouter, useGlobalSearchParams } from 'expo-router';
-import { LayoutData } from 'app/context/layout';
+import { useLayoutData } from 'app/context/layout';
 import { menuItemsFilter } from 'app/lib/util';
 
 export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultHeader, menu, data, blocks, useSectionAsMenu, unitMode, skeleton, onChangeRoute, keyword }) {
@@ -23,8 +23,8 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
     skeleton = skeleton || '';
     unitMode = unitMode || '';
 
-    const { currentUser, setCurrentUser } = useCurrentUser();
-    const { layoutData, setLayoutData } = useContext(LayoutData);
+    const { currentUser } = useCurrentUser();
+    const { layoutData } = useLayoutData();
     const { t } = useTranslation();
     const routerExpo = useRouter();
     const initedTabs = fillTabs(menu, data, blocks, currentUser, useSectionAsMenu);

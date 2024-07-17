@@ -5,7 +5,7 @@ import { useState, useRef, useEffect, useContext } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
 import CheckBox from 'app/ui/atoms/checkbox';
 import { Button, Input } from "app/design/controls";
-import { BottomSheetData } from 'app/context/bottomsheet';
+import { useBottomSheetData } from 'app/context/bottomsheet';
 import RadioButton from 'app/ui/atoms/radiobutton';
 
 export default function (props) {
@@ -15,7 +15,7 @@ export default function (props) {
     const defaultValue = props?.value ? (Array.isArray(props.value) ? props.value.map(String) : [props.value]) : '';
     const name = props.name ? props.name : '';
     const { field } = useController({ name, rules, defaultValue });
-    const { setBottomSheetData } = useContext(BottomSheetData);
+    const { setBottomSheetData } = useBottomSheetData();
 
     const setFormValue = (value) => {
         value = value.filter(item => item);

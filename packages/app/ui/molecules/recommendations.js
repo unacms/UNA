@@ -2,13 +2,13 @@ import { useState, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { appSetting } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
-import { CardData } from 'app/context/card';
+import { useCardData } from 'app/context/card';
 import { ButtonMenuActionDefault, ButtonMenuActionText } from 'app/design/controls';
 
 export default function ElementRecommendations(oProps) {
     const { t } = useTranslation();
 
-    const { cardData, setCardData } = useContext(CardData);
+    const { cardData, setCardData } = useCardData();
     const [ elementData, setElementData ] = useState(false);
 
     const oParams = {...appSetting('social_actions', 'recommendation'), ...oProps.params};

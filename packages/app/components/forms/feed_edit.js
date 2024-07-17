@@ -2,7 +2,7 @@ import { View, Row } from 'app/design/view'
 import { Button, Modal,  } from 'app/design/controls'
 import { useState, useContext } from 'react';
 import { getFormFieldByData } from 'app/lib/form-helpers'
-import  { LayoutData } from 'app/context/layout';
+import  { useLayoutData } from 'app/context/layout';
 import { FeedbackHaptics, getAlert } from 'app/lib/util';
 import { KeyboardAvoidingView } from 'react-native';
 import { Platform } from 'react-native'
@@ -11,10 +11,9 @@ import Profile from 'app/ui/molecules/profile';
 import { appSetting } from 'app/lib/util'
 
 export default function FormFeed(props) {
-    const [showImage, setShowImage] = useState(false);
     const [imageSource, setImageSource] = useState([]);
-    const { layoutData, setLayoutData } = useContext(LayoutData);
-    let { currentUser, setCurrentUser } = useCurrentUser();
+    const { setLayoutData } = useLayoutData();
+    let { currentUser } = useCurrentUser();
     if (props.response?.id){
         setTimeout(() => {
             setLayoutData(getAlert('feed:new_content', props.response));

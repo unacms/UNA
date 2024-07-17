@@ -2,7 +2,7 @@ import { useState, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { appSetting, FeedbackHaptics } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
-import { ActionsData } from 'app/context/actions';
+import { useActionsData } from 'app/context/actions';
 import { View } from 'app/design/view'
 import { ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounterDefault, ButtonMenuCounterText, ButtonMenuGroupItem, ButtonsGroupMenu, Modal } from 'app/design/controls';
 
@@ -44,7 +44,7 @@ export default function ElementReposts(oProps) {
         return [].concat(aName).join('-');
     };
 
-    const { actionsData, setActionsData } = useContext(ActionsData);
+    const { actionsData, setActionsData } = useActionsData();
     const [ actionsDataState, asetActionsDataState ] = useState({});
 
     const [ popupVisible, setPopupVisible ] = useState(false);

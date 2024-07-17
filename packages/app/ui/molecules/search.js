@@ -9,12 +9,12 @@ import Redirect from 'app/ui/atoms/redirect';
 import { UnitSearchResultsSmall as SearchResults } from 'app/components/units/search-results';
 import Link from 'app/ui/atoms/link';
 import { useTranslation } from 'react-i18next';
-import { BottomSheetData } from 'app/context/bottomsheet';
+import { useBottomSheetData } from 'app/context/bottomsheet';
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import { appStatic } from 'app/lib/app-static'
 
 export default function ElementSearch(oProps) {
-    const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);
+    const { bottomSheetData, setBottomSheetData } = useBottomSheetData();
     const { t } = useTranslation();
     const sType = oProps?.type ? oProps.type : 'default';
     const oParams = oProps?.params ? oProps.params : {};
@@ -64,7 +64,7 @@ export function SearchPanel(props) {
 }
 
 export function ElementSearchData(oProps) {
-    const { setBottomSheetData } = useContext(BottomSheetData);
+    const { setBottomSheetData } = useBottomSheetData();
     const redirectdRef = useRef();
     const sSection = oProps?.section ? oProps.section : '';
     const sUrlRedirect = '/search-keyword?keyword={keyword}' + (!!sSection ? '&section=' + sSection : '');

@@ -1,11 +1,24 @@
-import { createContext, useState } from 'react';
+import { createContext, useState, useMemo, useCallback, useContext } from 'react';
 
-export const LayoutData = createContext({});
+const LayoutData = createContext({});
 
 export default function LayoutDataContext({ children }) {
-    const [layoutData, setLayoutData] = useState();
+    const [layoutData, setLayoutDataIn] = useState();
+
+    const setLayoutData = useCallback((value) => {
+        setLayoutDataIn(value);
+    }, []);
+
+    const contextValue = useMemo(() => ({
+        layoutData,
+        setLayoutData
+    }), [layoutData, setLayoutData]);
 
     return (
-        <LayoutData.Provider value={{ layoutData, setLayoutData }}>{children}</LayoutData.Provider>
+        <LayoutData.Provider value={contextValue}>{children}</LayoutData.Provider>
     );
+}
+
+export function useLayoutData() {
+    return useContext(LayoutData);
 }

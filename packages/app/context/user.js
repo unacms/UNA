@@ -1,11 +1,17 @@
-import { createContext, useState, useContext } from 'react';
+import { createContext, useState, useContext, useMemo } from 'react';
 
-export const CurrentUserContext = createContext(null);
+const CurrentUserContext = createContext(null);
 
 export function CurrentUserProvider ({ children }) {
     const [currentUser, setCurrentUser] = useState(null);
+
+    const contextValue = useMemo(() => ({
+        currentUser,
+        setCurrentUser
+    }), [currentUser, setCurrentUser]);
+
     return (
-        <CurrentUserContext.Provider value={{ currentUser, setCurrentUser }}>{children}</CurrentUserContext.Provider>
+        <CurrentUserContext.Provider value={contextValue}>{children}</CurrentUserContext.Provider>
     );
 }
 

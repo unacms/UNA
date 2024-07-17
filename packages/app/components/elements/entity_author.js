@@ -9,18 +9,18 @@ import Link from 'app/ui/atoms/link'
 import { Text } from 'app/design/typography'
 import { fetcher } from 'app/lib/fetcher'
 import Redirect from 'app/ui/atoms/redirect'
-import { useRef, useState, useContext, useEffect } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import useSWR from 'swr'
 import { Modal } from 'app/design/controls'
 import { useTranslation } from 'react-i18next';
 import Form from 'app/components/elements/form'
-import { LayoutData } from 'app/context/layout';
+import { useLayoutData } from 'app/context/layout';
 
 export default function ElementEntityAuthor(oProps) {
     let { currentUser, setCurrentUser } = useCurrentUser();
     const [viewState, setViewState] = useState({ view: '' })
     const [postData, setPostData] = useState(null)
-    const { layoutData, setLayoutData } = useContext(LayoutData)
+    const { setLayoutData } = useLayoutData()
     const { t } = useTranslation();
 
     const sInfo = (

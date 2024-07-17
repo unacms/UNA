@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { appSetting, FeedbackHaptics } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { useCurrentUser } from 'app/context/user';
-import { ActionsData } from 'app/context/actions';
+import { useActionsData } from 'app/context/actions';
 import { Text } from 'app/design/typography';
 import { View } from 'app/design/view';
 import { Button, ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounterDefault, ButtonMenuCounterText, ButtonMenuGroupItem, ButtonsGroupMenu, Modal } from 'app/design/controls';
@@ -53,7 +53,7 @@ const ElementReports = forwardRef((oProps, ref) => {
         return [].concat(aName).join('-');
     };
 
-    const { actionsData, setActionsData } = useContext(ActionsData);
+    const { actionsData, setActionsData } = useActionsData();
     const [ actionsDataState, asetActionsDataState ] = useState({});
 
     const [ popupVisibleDo, setPopupVisibleDo ] = useState(false);

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { appSetting, FeedbackHaptics } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { useCurrentUser } from 'app/context/user';
-import { ActionsData } from 'app/context/actions';
+import { useActionsData } from 'app/context/actions';
 import { View, Pressable } from 'app/design/view'
 import { ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounterDefault, ButtonMenuCounterText, ButtonMenuGroupItem, ButtonsGroupMenu, Modal } from 'app/design/controls';
 import DropdownPopup from 'app/ui/atoms/dropdown-popup';
@@ -55,7 +55,7 @@ export default function ElementStars(oProps) {
         return [].concat(aName).join('-');
     };
 
-    const { actionsData, setActionsData } = useContext(ActionsData);
+    const { actionsData, setActionsData } = useActionsData();
     const [ actionsDataState, asetActionsDataState ] = useState({});
 
     const [ popupVisibleDo, setPopupVisibleDo ] = useState(false);

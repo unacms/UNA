@@ -3,7 +3,7 @@ import { Platform } from 'react-native';
 import { appSetting, FeedbackHaptics } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { useCurrentUser } from 'app/context/user';
-import { ActionsData } from 'app/context/actions';
+import { useActionsData } from 'app/context/actions';
 import { Text } from 'app/design/typography';
 import { View } from 'app/design/view';
 import { ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounterDefault, ButtonMenuCounterText, ButtonMenuGroupItem, ButtonsGroupMenu, Modal } from 'app/design/controls';
@@ -55,7 +55,7 @@ export default function ElementScore(oProps) {
         return [].concat(aName).join('-');
     };
 
-    const { actionsData, setActionsData } = useContext(ActionsData);
+    const { actionsData, setActionsData } = useActionsData();
     const [ actionsDataState, setActionsDataState ] = useState({});
     const [ counterClass, setCounterClass ] = useState('');
 

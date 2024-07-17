@@ -6,12 +6,12 @@ import { appSetting, storageSet, storageGet } from 'app/lib/util'
 import Browse from 'app/components/elements/browse'
 import { fetcher } from 'app/lib/fetcher';
 import { useWindowDimensions } from 'react-native';
-import { BottomSheetData } from 'app/context/bottomsheet';
+import { useBottomSheetData } from 'app/context/bottomsheet';
 export default function Suggestions(props) {
     const windowWidth = useWindowDimensions().width;
     let { currentUser, setCurrentUser } = useCurrentUser();
     const [dataIndexModal, setDataIndexModal] = useState(0);
-    const { setBottomSheetData } = useContext(BottomSheetData);
+    const { setBottomSheetData } = useBottomSheetData();
     const [dataCount, setDataCount] = useState(0);
     let suggestionList = appSetting('suggestion', 'list');
 

@@ -3,7 +3,7 @@ import { View, Row } from 'app/design/view'
 import { fetcher } from 'app/lib/fetcher';
 import React, { useContext, useState  } from 'react';
 import { Button } from 'app/design/controls'
-import { BottomSheetData } from 'app/context/bottomsheet';
+import { useBottomSheetData } from 'app/context/bottomsheet';
 import {SelectUsers} from 'app/components/form-fields/initial_members';
 
 export default function CreateConvo ({ onSave, initedData=[], convoId }) {
@@ -34,7 +34,7 @@ export default function CreateConvo ({ onSave, initedData=[], convoId }) {
 };
 
 export function CreateConvoButton({onSave, onShow, variant ='small'}) {
-    const { setBottomSheetData } = useContext(BottomSheetData);
+    const { setBottomSheetData } = useBottomSheetData();
     const newConvo = () => {
         setBottomSheetData({ title: 'Add users to start messaging', content: <CreateConvo onSave={onSaveHandler} />, showClose: true, snapPoints: ['25%', '50%'] });
     }

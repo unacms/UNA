@@ -3,7 +3,7 @@ import Field, { getValidationRules } from './_field';
 import { useFormContext, useController } from 'react-hook-form';
 import { Button } from 'app/design/controls'
 import { getVisibilityValues } from './select';
-import { BottomSheetData } from 'app/context/bottomsheet';
+import { useBottomSheetData } from 'app/context/bottomsheet';
 import { truncateString } from 'app/lib/util';
 import RbList from 'app/ui/molecules/radio_list';
 
@@ -13,7 +13,7 @@ export default function (props) {
     const formContext = useFormContext();
     const defaultValue = props?.value ? props.value : '';
     const [value, setValue] = useState(defaultValue)
-    const { setBottomSheetData } = useContext(BottomSheetData);
+    const { setBottomSheetData } = useBottomSheetData();
     const { field } = useController({ name, rules, defaultValue });
 
     useEffect(() => {

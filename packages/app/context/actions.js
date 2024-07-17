@@ -1,11 +1,24 @@
-import { createContext, useState } from 'react';
+import { createContext, useState, useMemo, useContext, useCallback } from 'react';
 
-export const ActionsData = createContext({});
+const ActionsData = createContext({});
 
 export default function ActionsDataContext({ children }) {
-    const [actionsData, setActionsData] = useState();
+    const [actionsData, setActionsDataIn] = useState();
+
+    const setActionsData = useCallback((value) => {
+        setActionsDataIn(value);
+    }, []);
+
+    const contextValue = useMemo(() => ({
+        actionsData,
+        setActionsData
+    }), [actionsData, setActionsData]);
 
     return (
-        <ActionsData.Provider value={{ actionsData, setActionsData }}>{children}</ActionsData.Provider>
+        <ActionsData.Provider value={contextValue}>{children}</ActionsData.Provider>
     );
+}
+
+export function useActionsData() {
+    return useContext(ActionsData);
 }

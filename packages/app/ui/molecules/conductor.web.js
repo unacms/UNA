@@ -17,7 +17,7 @@ import MenuDrawer from 'app/components/nav/menu-drawer'
 import { useTranslation } from 'react-i18next';
 import Toaster from 'app/ui/atoms/toaster';
 import useDaemon from 'app/lib/hooks/daemon'
-import { LayoutData } from 'app/context/layout';
+import { useLayoutData } from 'app/context/layout';
 import { useCurrentUser } from 'app/context/user'
 import Dropdown from 'app/ui/atoms/dropdown'
 import Search from 'app/ui/molecules/search';
@@ -58,8 +58,8 @@ function AddBlocks({leftSideBarBlocks, data, onFormSubmit})
 }
 
 export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, leftSideBarBlocks, leftSideBarWidth = 'w-80', skeleton = '', onChangeRoute, keyword, cover, layoutName }) {
-    const { currentUser, setCurrentUser } = useCurrentUser();
-    const { layoutData, setLayoutData } = useContext(LayoutData);
+    const { currentUser } = useCurrentUser();
+    const { layoutData } = useLayoutData();
     const { t } = useTranslation();
     let uniRef = useRef();
     const [menuPopup, setMenuPopup] = useState(false)

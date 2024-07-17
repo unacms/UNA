@@ -5,13 +5,13 @@ import { fetcher } from 'app/lib/fetcher';
 import Submenu from './submenu'
 import SubmenuShare from './submenu-share'
 import Redirect from 'app/ui/atoms/redirect';
-import { BottomSheetData } from 'app/context/bottomsheet';
+import { useBottomSheetData } from 'app/context/bottomsheet';
 import { Platform } from 'react-native';
 import RbList from 'app/ui/molecules/radio_list';
 
 export default function MenuItemButton(oProps) {
     const redirectdRef = useRef();
-    const { setBottomSheetData } = useContext(BottomSheetData);
+    const { setBottomSheetData } = useBottomSheetData();
     const [isVisible, setIsVisible] = useState(true);
 
     const oIconAliases = {

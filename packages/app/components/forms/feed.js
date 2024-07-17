@@ -2,7 +2,7 @@ import { View, Row } from 'app/design/view'
 import { Button, Modal } from 'app/design/controls'
 import { useState, useContext } from 'react'
 import { getFormFieldByData } from 'app/lib/form-helpers'
-import { LayoutData } from 'app/context/layout'
+import { useLayoutData } from 'app/context/layout'
 import { FeedbackHaptics, getAlert } from 'app/lib/util'
 import { KeyboardAvoidingView } from 'react-native'
 import { Platform } from 'react-native'
@@ -20,7 +20,7 @@ export default function FormFeed(props) {
     const [showImage, setShowImage] = useState(false)
     const [responseId, setResponseId] = useState(0)
     const [imageSource, setImageSource] = useState([])
-    const { layoutData, setLayoutData } = useContext(LayoutData)
+    const { setLayoutData } = useLayoutData()
     let { currentUser, setCurrentUser } = useCurrentUser()
 
     useEffect(() => {

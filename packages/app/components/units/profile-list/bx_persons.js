@@ -1,5 +1,4 @@
-import { useContext } from "react";
-import { CardData } from "app/context/card";
+import { useCardData } from "app/context/card";
 import Link from "app/ui/atoms/link";
 import Profile from "app/ui/molecules/profile";
 import { getImageSizes } from "app/lib/util";
@@ -11,7 +10,7 @@ export default function Unit(props) {
     const imageSizes = getImageSizes();
     let data = props.data;
 
-    const { cardData, setCardData } = useContext(CardData);
+    const { cardData } = useCardData();
 
     if (!!cardData?.hidden) return;
 

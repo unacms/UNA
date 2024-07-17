@@ -1,11 +1,26 @@
-import { createContext, useState } from 'react';
+import { createContext, useState, useMemo, useCallback, useContext } from 'react';
 
 export const CardData = createContext({});
 
 export default function CardDataContext({ children }) {
-    const [cardData, setCardData] = useState({hidden: false});
+    const [cardData, setCardDataIn] = useState({hidden: false});
+
+    const setCardData = useCallback((value) => {
+        setCardDataIn(value);
+    }, []);
+
+
+    const contextValue = useMemo(() => ({
+        cardData,
+        setCardData
+    }), [cardData, setCardData]);
 
     return (
-        <CardData.Provider value={{ cardData, setCardData }}>{children}</CardData.Provider>
+        <CardData.Provider value={contextValue}>{children}</CardData.Provider>
     );
+}
+
+
+export function useCardData() {
+    return useContext(CardData);
 }

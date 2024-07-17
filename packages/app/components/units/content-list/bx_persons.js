@@ -1,5 +1,5 @@
 import { useState, useContext, useRef, useMemo, memo } from 'react'
-import { CardData } from 'app/context/card'
+import { useCardData } from 'app/context/card'
 import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
 import { getImageSizes, tp } from 'app/lib/util'
@@ -191,7 +191,7 @@ export default function Unit(props) {
     const data = props.data;
     const imageSizes = getImageSizes();
     const redirectdRef = useRef();
-    const { cardData, setCardData } = useContext(CardData);
+    const { cardData } = useCardData();
     const [popupVisible, setPopupVisible] = useState(false);
 
     const friendsLabel = data.mutual_friends_count > 0

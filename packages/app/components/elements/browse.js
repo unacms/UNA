@@ -13,7 +13,7 @@ import { useTranslation } from 'react-i18next';
 import useDaemon from 'app/lib/hooks/daemon'
 import Toaster from 'app/ui/atoms/toaster';
 import { storageClear } from 'app/lib/util';
-import { LayoutData } from 'app/context/layout';
+import { useLayoutData } from 'app/context/layout';
 
 const Item = memo(({ item, index, numColumns, data, unitMode, props }) => (
     <View className={numColumns > 1 ? 'w-full pb-2 ' : '  ' + (data.unit != 'feed' ? '   w-full' : '  ') + '  '}>
@@ -41,7 +41,7 @@ const getNumCols = (width, props, data) => {
 };
 
 export default function (props) {
-    const { layoutData, setLayoutData } = useContext(LayoutData);
+    const { layoutData } = useLayoutData();
     const toasterRef2 = useRef();
     const { t } = useTranslation();
     let uniRef = useRef();

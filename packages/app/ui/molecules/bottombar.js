@@ -1,11 +1,11 @@
 import React, { useContext } from 'react';
 import { View, Row } from 'app/design/view'
 
-import { LayoutData } from 'app/context/layout';
+import { useLayoutData } from 'app/context/layout';
 
 export default function ElementCommentForm(props) {
     
-    const { layoutData, setLayoutData } = useContext(LayoutData);
+    const { layoutData } = useLayoutData();
 
     return (
         <View className=''>

@@ -18,9 +18,7 @@ import { Platform } from 'react-native'
 import { storageSet, storageClear, storageGet } from 'app/lib/util'
 import { fetcher } from 'app/lib/fetcher';
 import Bluetooth from 'app/ui/molecules/bluetooth'
-import { useContext } from 'react';
-
-import { BottomSheetData } from 'app/context/bottomsheet';
+import { useBottomSheetData } from 'app/context/bottomsheet';
 
 
 function getCounter(num, icon = '', add = '') {
@@ -47,7 +45,7 @@ function getCounter(num, icon = '', add = '') {
 }
 
 export default function PageLayout(props) {
-    const { setBottomSheetData } = useContext(BottomSheetData);
+    const { setBottomSheetData } = useBottomSheetData();
 
     const { t } = useTranslation();
     let { currentUser, setCurrentUser } = useCurrentUser()
@@ -116,10 +114,10 @@ export default function PageLayout(props) {
 
     return (
         <ScrollView className=''>
-           {/*} <Button title="sdasd"
-             onPress={() => {setBottomSheetData({ title: 'Choose labels', showClose: true, content: <></> })}}
+           { <Button title="sdasd"
+             onPress={() => {setBottomSheetData({ title: 'Choose labels', showClose: true, content: <View className='h-24 w-full'><Text>TextTextTextText</Text></View> })}}
              
-            ></Button>*/}
+            ></Button>}
             <Modal id='file-preview2' title="VideoChat" onVisible={!!showImage2} onClose={() => {setShowImage2(null)}}>
                 
             </Modal>

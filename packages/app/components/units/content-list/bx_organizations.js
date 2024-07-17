@@ -1,5 +1,5 @@
 import { useState, useContext, useRef } from 'react'
-import { CardData } from 'app/context/card'
+import { useCardData } from 'app/context/card'
 import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
 import Profile from 'app/ui/molecules/profile'
@@ -24,7 +24,7 @@ export default function Unit(props) {
     const redirectdRef = useRef();
     const [popupVisible, setPopupVisible] = useState(false);
 
-    const { cardData, setCardData } = useContext(CardData);
+    const { cardData } = useCardData();
 
     const handleClick = (event, sUrl) => {
         event.preventDefault();

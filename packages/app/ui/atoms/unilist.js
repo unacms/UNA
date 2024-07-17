@@ -1,13 +1,10 @@
 import { MasonryFlashList, FlashList } from "@shopify/flash-list";
-//import { LayoutData } from 'app/context/layout';
 import { useContext, useCallback, useState } from 'react';
 import { RefreshControl } from 'react-native';
 import { useRouter } from 'expo-router';
 
 export default function UniList(props) {
-   // const { layoutData, setLayoutData } = useContext(LayoutData);
     const routerExpo = useRouter();
-   // console.log("propsprops", props)
     let { data, renderItem, onEndReached, ListFooterComponent, refer, onScrollToIndex, numColumns, keyExtractor, ...rest } = props
 
     const [refreshing, setRefreshing] = useState(false);
@@ -15,7 +12,6 @@ export default function UniList(props) {
     const onRefresh = () => {
         setRefreshing(true);
         routerExpo.replace(props.url)
-        //setRefreshing(false);
     };
 
     /*if (props.unit == 'feed'){

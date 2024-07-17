@@ -1,11 +1,24 @@
-import { createContext, useState } from 'react';
+import { createContext, useState, useMemo, useCallback, useContext } from 'react';
 
-export const BottomSheetData = createContext({});
+const BottomSheetData = createContext({});
 
 export default function BottomSheetDataContext({ children }) {
-    const [bottomSheetData, setBottomSheetData] = useState();
+    const [bottomSheetData, setBottomSheetDataIn] = useState();
+
+    const setBottomSheetData = useCallback((value) => {
+        setBottomSheetDataIn(value);
+    }, []);
+
+    const contextValue = useMemo(() => ({
+        bottomSheetData,
+        setBottomSheetData
+    }), [bottomSheetData, setBottomSheetData]);
 
     return (
-        <BottomSheetData.Provider value={{ bottomSheetData, setBottomSheetData }}>{children}</BottomSheetData.Provider>
+        <BottomSheetData.Provider value={contextValue}>{children}</BottomSheetData.Provider>
     );
+}
+
+export function useBottomSheetData() {
+    return useContext(BottomSheetData);
 }

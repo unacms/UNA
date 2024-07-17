@@ -20,14 +20,14 @@ import { Nav2 } from 'app/components/elements/messenger/parts/nav';
 import { linkedText } from 'app/lib/text-helpers';
 import CreateConvo, { CreateConvoButton } from 'app/components/elements/messenger/parts/new-convo';
 import Msg from 'app/ui/molecules/msg';
-import { BottomSheetData } from 'app/context/bottomsheet';
+import { useBottomSheetData } from 'app/context/bottomsheet';
 import Profile from 'app/ui/molecules/profile'
 import { useRouter } from "expo-router";
 
 export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, fetchConvos, data, onSave }) {
     const isWeb = Platform.OS == 'web'
     const { width, height } = useWindowDimensions();
-    const { setBottomSheetData } = useContext(BottomSheetData);
+    const { setBottomSheetData } = useBottomSheetData();
     const [convoId, setConvoId] = useState(defaultConvoId);
     const [jots, setJots] = useState(false);
     const [isSmallScreen, setIsSmallScreen] = useState(width < 768);

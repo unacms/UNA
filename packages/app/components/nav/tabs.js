@@ -128,10 +128,11 @@ export default function () {
 
     const isShowTabs = currentUser || appSetting('layout', 'show_nav_non_logged_native')
 
+    console.log("aaaa")
     return (
-        <BottomSheetDataContext>
-             <Suggestions />
-             <AsyncWorker />
+        <><Suggestions />
+             <AsyncWorker /><BottomSheetDataContext>
+             
             <Tabs
                 screenOptions={({ navigation, route }) => ({
                     tabBarStyle: {
@@ -199,6 +200,6 @@ export default function () {
                     })
                 }
             </Tabs>
-        </BottomSheetDataContext>
+        </BottomSheetDataContext></>
     )
 }

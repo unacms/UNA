@@ -7,7 +7,7 @@ import { fetcher } from 'app/lib/fetcher';
 import Profile from 'app/ui/molecules/profile'
 import { Button, InputRounded } from 'app/design/controls'
 import Loading from 'app/ui/atoms/loading'
-import { BottomSheetData } from 'app/context/bottomsheet';
+import { useBottomSheetData } from 'app/context/bottomsheet';
 import { Icon } from 'app/ui/atoms/icon'
 import { KeyboardAvoidingView, Platform } from 'react-native'
 
@@ -108,7 +108,7 @@ export default function (props) {
     const formContext = useFormContext();
     const name = props.name ? props.name : '';
     const { field } = useController({ name, rules, defaultValue });
-    const { setBottomSheetData } = useContext(BottomSheetData);
+    const { setBottomSheetData } = useBottomSheetData();
     const [selected, setSelected] = useState(props.value_data ? props.value_data : []);
     const isSingle = props?.custom?.only_once;
     const onSave = (data, isAdd = false) => {

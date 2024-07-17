@@ -15,10 +15,6 @@ export default function ElementCommentForm(props) {
         container: {
             flex: 1,
         },
-
-    });
-
-    const styles2 = StyleSheet.create({
         bottomSheet: {
             shadowColor: "#000",
             shadowOffset: {
@@ -34,13 +30,14 @@ export default function ElementCommentForm(props) {
     });
 
     return (
-        props.open && <BottomSheet backgroundStyle={{ backgroundColor: 'white' }}
+        <BottomSheet backgroundStyle={{ backgroundColor: 'white' }}
             /* ref={bottomSheetRef}*/
             index={1}
             snapPoints={snapPoints}
+            /*enableDynamicSizing={true}*/
             onChange={handleSheetChanges}
             detached={true}
-            style={styles2.bottomSheet}
+            style={styles.bottomSheet}
 
         >
             {props.isListView ? props.children : <BottomSheetScrollView contentContainerStyle={styles.contentContainer}>

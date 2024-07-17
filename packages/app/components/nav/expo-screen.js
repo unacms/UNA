@@ -8,12 +8,10 @@ import { Theme } from 'app/design/theme';
 import { updateRightHeader, updateCenterHeader } from 'app/lib/native-handlers'
 import { useTranslation } from 'react-i18next';
 import { Loading } from 'app/loading'
-import { BottomSheetData } from 'app/context/bottomsheet';
+import { useBottomSheetData } from 'app/context/bottomsheet';
 import { fetcher } from 'app/lib/fetcher';
 import { Text } from 'app/design/typography'
 import { useLocalSearchParams, useGlobalSearchParams, Link } from 'expo-router';
-import { View } from 'app/design/view'
-const friends = ['charlie', 'james']
 
 
 export async function getData(path, token, origin, headers, callback, params) {
@@ -41,23 +39,10 @@ export async function getData(path, token, origin, headers, callback, params) {
 }
 
 export function Screen(params) {
-
     const local = useLocalSearchParams();
     const pathname = params.tabname;
     const { currentUser } = useCurrentUser();
-   // const route = useRoute();
-let _path = local.url;
-    /*let _path = route?.params?.path && Array.isArray(route?.params?.path)
-        ? `/${route.params.path.join('/')}`
-        : null;
-
-    if (route?.params) {
-        const { path, ...otherParams } = route.params;
-        if (Object.keys(otherParams).length > 0) {
-            _path += `&params[]=&params[]=${JSON.stringify(otherParams)}`;
-        }
-    }*/
-
+    let _path = local.url;
 
     // BOTTOM TABS NAVIGATION
     if (!_path || _path.includes('/tab')) {
@@ -67,7 +52,6 @@ let _path = local.url;
         _path = item ? item.url : null;
     }
 
-   // console.log("_path", _path, params)
     const memoizedValue = useMemo(() => {
         return <Content pagePath={_path} currentUser={currentUser} />;
     }, [_path, currentUser?.id]);
@@ -82,7 +66,7 @@ const Content = ({ pagePath, currentUser }) => {
     const routerExpo = useRouter();
     const { colors } = Theme();
     const { t } = useTranslation();
-    const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);
+    const { bottomSheetData, setBottomSheetData } = useBottomSheetData();
     useEffect(() => {
         if (!(pagePath && pagePath.startsWith('/') && !pagePath.includes('/?url='))) return;
 
@@ -113,7 +97,6 @@ const Content = ({ pagePath, currentUser }) => {
 
         <Root path={pagePath} data={pageData.data} uri={pageData.data.uri} />
     ) : <Loading />;
-    // return <><Text>{pagePath}-{currentTime}-{JSON.stringify(pageData)}</Text><Link href="/contact"><Text>link</Text></Link></>
 };
 /*
 <Convo _path={pagePath} pageData={pageData} />

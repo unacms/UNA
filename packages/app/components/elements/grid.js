@@ -20,7 +20,7 @@ import { BlockByData } from 'app/components/blocks-content/object-data-array-int
 import { useWindowDimensions} from 'react-native';
 //import dynamic from 'next/dynamic'
 import { getAlert } from 'app/lib/util';
-import { BottomSheetData } from 'app/context/bottomsheet';
+import { useBottomSheetData } from 'app/context/bottomsheet';
 
 function Stripe(props) {
     const computedData = useMemo(() => {
@@ -185,7 +185,7 @@ const Cell = React.memo(({ cell, indexRow, id, toggleSwitch, setSelection, selec
 });
 
 export default function ElementGrid({data}) {
-    const { setBottomSheetData } = useContext(BottomSheetData);
+    const { setBottomSheetData } = useBottomSheetData();
 
     let settings = data.settings;
     let header = data.header.filter((item) => (item?.name != 'reports'))

@@ -1,14 +1,13 @@
 import { View } from 'app/design/view';
 import Html from 'app/ui/atoms/html';
-import { linkify2 } from 'app/lib/util'
 import Menu from 'app/components/menu';
-import { useState, useEffect, useContext } from 'react'
+import { useState, useEffect } from 'react'
 import Carousel from 'app/ui/molecules/carousel'
-import { LayoutData } from 'app/context/layout';
+import { useLayoutData } from 'app/context/layout';
 import Embed from 'app/ui/molecules/embed'
 
 export default function ElementFeedItem({ data }) {
-    const { layoutData, setLayoutData } = useContext(LayoutData);
+    const { layoutData } = useLayoutData();
     const [content, setContent] = useState(data.event.content)
 
     useEffect(() => {

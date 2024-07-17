@@ -10,7 +10,7 @@ import Profile from 'app/ui/molecules/profile';
 import { Switch } from 'app/design/controls'
 import { Theme } from 'app/design/theme';
 import { BleManager } from 'react-native-ble-plx';
-import { BottomSheetData } from 'app/context/bottomsheet';
+import { useBottomSheetData } from 'app/context/bottomsheet';
 import { FeedbackHaptics } from 'app/lib/util';
 import * as Location from 'expo-location';
 import {
@@ -38,7 +38,7 @@ export default function Bluetooth(props) {
     const [isEnabled, setIsEnabled] = React.useState({ bt: false, gps: false });
     const [advertising, setAdvertising] = React.useState(false);
     const peripheral = React.useRef();
-    const { setBottomSheetData } = useContext(BottomSheetData);
+    const { setBottomSheetData } = useBottomSheetData();
     const manager = new BleManager();
 
 

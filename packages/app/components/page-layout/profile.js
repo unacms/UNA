@@ -3,12 +3,12 @@ import { useContext, useState, useEffect } from 'react';
 import Cover, {CoverSmall} from 'app/components/elements/cover';
 import { getHeaderSettings, getBlocksFromData, cloneObject } from 'app/lib/util';
 import { useWindowDimensions } from 'react-native';
-import { LayoutData } from 'app/context/layout';
+import { useLayoutData } from 'app/context/layout';
 import { fetcher } from 'app/lib/fetcher';
 
 export default function PageLayout(props) {
     const windowDimen =  useWindowDimensions();
-    const { layoutData, setLayoutData } = useContext(LayoutData);
+    const { layoutData } = useLayoutData();
     const [ pageData, setPageData] = useState(props.data);
     let ts = 0;
 
