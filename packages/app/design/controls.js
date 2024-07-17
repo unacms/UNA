@@ -70,12 +70,8 @@ presentation = 'fullScreen';
 
     return (
         <ModalDef visible={onVisible} presentationStyle={presentation} animationType={animation} transparent={false}>
-             <SafeAreaView edges={['top', 'ribottomght']} style={{
-        width: '100%',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        height: '100%',
+             <SafeAreaView edges={['top', 'bottom']} style={{
+       flex: 1
     }}>
             <Wrapper className="flex justify-end w-full h-full bg-white/80 dark:bg-black/80 backdrop-blur" {...(isOuterClose && { onPress: onClose })}>
                 <View className={`flex-row justify-center left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto md:inset-0 h-modal h-full ${sClassPosition}`}>
