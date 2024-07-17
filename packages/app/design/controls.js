@@ -10,6 +10,7 @@ import { Theme } from 'app/design/theme';
 import Tooltip from 'app/ui/atoms/tooltip';
 import { useWindowDimensions } from 'react-native';
 import Loading from 'app/ui/atoms/loading'
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 let h11 = '';
 if (Platform.OS === 'android') {
