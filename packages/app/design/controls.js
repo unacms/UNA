@@ -55,7 +55,7 @@ export function Modal({
         'bottom': 'items-end py-8 px-4',
         'center': 'sm:items-center items-start sm:p-4',
     };
-
+presentation = 'fullScreen';
     if (presentation == 'fullScreen'){
         transparent = false;
     }
