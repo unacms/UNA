@@ -90,7 +90,7 @@ const AppLayout = React.memo(() => {
             <StatusBar translucent={false} />
             <Provider>
                 <QueryClientProvider client={queryClient}>
-                    <SafeAreaView edges={['left', 'right', 'bottom']} style={containerStyle}>
+                    <SafeAreaView edges={['left', 'right']} style={containerStyle}>
                         <CurrentUserProvider>
                             <Tabs />
                         </CurrentUserProvider>

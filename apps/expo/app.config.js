@@ -42,6 +42,7 @@ const expoConfig = {
       "permissions":  [
         "android.permission.ACCESS_NETWORK_STATE", 
         "android.permission.CAMERA", 
+        "android.permission.CAMERA_ROLL", 
         "android.permission.INTERNET", 
         "android.permission.MANAGE_OWN_CALLS", 
         "android.permission.MODIFY_AUDIO_SETTINGS",
