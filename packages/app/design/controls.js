@@ -50,16 +50,12 @@ export function Modal({
 
     const isOuterClose = (onClose !== 'undefined' && outerClickClose !== false);
     const Wrapper = isOuterClose ? Pressable : View;
-    const positionClasses = {
-        'top': 'items-start py-8 px-4',
-        'bottom': 'items-end py-8 px-4',
-        'center': 'sm:items-center items-start sm:p-4',
-    };
+   
 presentation = 'fullScreen';
     if (presentation == 'fullScreen'){
         transparent = false;
     }
-    const sClassPosition = positionClasses[position] || positionClasses['center'];
+
 
     if (!title && onClose){
         textAlign = 'end'
@@ -67,7 +63,7 @@ presentation = 'fullScreen';
 
     return (
         <ModalDef visible={onVisible} presentationStyle={presentation} animationType={animation} transparent={transparent}>
-             <View className = { padding+" overflow-y-auto flex-auto md:h-auto" }>{children}</View>
+             <View >{children}</View>
         </ModalDef>
     );
 }
