@@ -123,7 +123,7 @@ export function ButtonsGroup({
     const aChildren = children.map((child, iIndex) => {
         const { variant, size, fullWidth, ...restChild } = child.props;
         const isLastChild = iIndex < children.length - 1;
-        const childClass = 'flex-auto ' + (isLastChild ? 'border-r border-transparent dark:border-transparent' : '');
+        const childClass = 'flex-auto ' + (isLastChild ? 'border-r border-bdr dark:border-bdr-d' : '');
 
         let childItem;
         if (child.type === Button) {
