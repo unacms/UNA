@@ -149,7 +149,7 @@ export default function PageLayout(props) {
             )}
             {!!currentUser && (
                 <>
-                    <Row className="px-auto justify-center gap-x-1 bg-bgrtabbar dark:bg-bgrtabbar-d pl-2 pr-4">
+                    <Row className="px-3 justify-center gap-x-2 bg-bgrtabbar dark:bg-bgrtabbar-d ">
                         {feedList.length > 1 &&
                             feedList.map((item, index) => {
                                 return (
@@ -166,7 +166,7 @@ export default function PageLayout(props) {
                                             startDecorator={item.icon}
                                             variant={
                                                 feedType == item.name
-                                                    ? 'outline'
+                                                    ? 'linkah'
                                                     : 'text'
                                             }
                                             size="sm"

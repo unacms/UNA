@@ -115,7 +115,7 @@ const ItemInfo = ({ data, t }) => {
         return l && (
             <>
                 <Text className=" text-neutral-500/50 text-sm"> · </Text>
-                <Text className="  text-neutral-600 dark:text-neutral-400 text-sm font-medium text-center  ">
+                <Text className=" text-neutral-600 dark:text-neutral-400 text-sm font-medium text-center ">
                     {l}
                 </Text>
             </>
@@ -370,7 +370,7 @@ function DefaultUnit(data) {
             </View>
                 
             </Modal>
-            <Card rounded=' rounded-none sm:rounded-2xl ' border=" sm:border border-bdrcard dark:border-bdrcard-d" margin=' mb-2 sm:mb-4 sm:mx-4 ' addClassName={'p-4 tl-' + data.id} >
+            <Card rounded=' rounded-none sm:rounded-2xl ' border=" border-y sm:border border-bdrcard dark:border-bdrcard-d" margin=' mb-1 sm:mb-4 sm:mx-4 ' addClassName={'p-4 tl-' + data.id} >
                 <View className="flex-auto flex-row items-top pb-3 sm:pb-4">
                     <Author />
                     <View className="flex-auto justify-end flex-row mb-auto">
