@@ -54,7 +54,7 @@ const colors = {
     },
 
     bgrbody: {
-        DEFAULT: 'rgba(243,244,246,1)',
+        DEFAULT: 'rgba(229,231,235,1)',
         d: 'rgba(0,0,0,1)',
     },
 

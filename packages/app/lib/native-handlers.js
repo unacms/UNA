@@ -13,7 +13,7 @@ import { useRouter } from "expo-router";
 export function SvgLogoNative() {
     const routerExpo = useRouter();
     const scheme = useColorScheme();
-    const logo = scheme === 'dark' ? 'logo_native' : 'logo_nativedark';
+    const logo = scheme === 'dark' ? 'logo_nativedark' : 'logo_native';
     
     return <View className='w-20 h-6'>{appStatic(logo)}</View>;
 };
