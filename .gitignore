@@ -83,4 +83,3 @@ build/**
 !.yarn/sdks
 !.yarn/versions
 yarn.lock
-packages/app/background.png
