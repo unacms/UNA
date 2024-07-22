@@ -25,7 +25,7 @@ export default function PageLayout(props) {
                     <Text className="text-base lg:text-lg xl:text-xl  text-neutral-700 dark:text-neutral-300  ">
                         { isAllowJoin ? 'Create an account to get started.' : 'Registration is by invitation only.' }
                     </Text>
-                    <View className="w-full mt-4"> {appStatic('components_logincontent')}</View>
+                    <View className="w-full mt-4">{appStatic('components_logincontent')}</View>
                 </View>
 
                 <View className="mx-auto w-full max-w-lg md:w-1/2 lg:w-2/5 my-auto mx-auto items-center lg:p-2  ">

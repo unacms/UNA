@@ -21,7 +21,7 @@ export default function PageLayout(props) {
                     <Text className="text-base lg:text-lg xl:text-xl  text-neutral-700 dark:text-neutral-300  ">
                         Login to your account to continue.
                     </Text>
-                    <View className="w-full mt-4"> {appStatic('components_logincontent')}</View>
+                    <View className="w-full mt-4">{appStatic('components_logincontent')}</View>
                    
                 </View>
 
