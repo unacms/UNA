@@ -280,7 +280,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     const editConvo = async () => {
         let request_url = '/api.php?r=bx_messenger/get_parts_list/Services&params=' + JSON.stringify({ lot: selectedConvo.id2 });
         const sResponse = await fetcher(request_url);
-        setBottomSheetData({ title: 'Add users to start messaging', content: <CreateConvo onSave={onSaveHandler} initedData={sResponse.data} convoId={selectedConvo.id2} />, showClose: true, snapPoints: ['25%', '50%'] });
+        setBottomSheetData({ title: 'Add users to start messaging', content: <CreateConvo onSave={onSaveHandler} initedData={sResponse.data} convoId={selectedConvo.id2} />, showClose: true, snapPoints: ['85%', '85%'] });
     }
 
     const onFormSubmit = (formData, d) => {
@@ -326,8 +326,9 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     />
 
     const jotsComponent = (panelsVisible.jots && selectedConvo && jots?.data?.jots) && <View className={' w-full md:w-3/5 h-full flex-1 bg-bgrcard dark:bg-bgrcard-d'}>
-        <View className='w-full h-full flex-1'>
-           
+          <KeyboardAvoidingView className='w-full h-full flex-1' keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
+        <View className='w-full flex-auto'>
+      
             <Jots
                 isSmallScreen={isSmallScreen}
                 title={selectedConvo.title}
@@ -345,12 +346,12 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
         </View>
         <FormContainer
             form={data.form}
-            formHeight={formHeight}
             replyItem={replyItem}
             onFormSubmit={onFormSubmit}
             handleCancelReply={handleCancelReply}
             handleLayout={handleLayout}
         />
+         </KeyboardAvoidingView>
     </View>
 
     if (!isWeb) {
@@ -412,6 +413,23 @@ const Convos = memo(({ layoutHeightLeft, data, refListConvos, selectedConvoIndex
 /*bg-neutral-500/10 border-b border-neutral-500/10*/
 const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots, showConvo, deleteConvo, leaveConvo, getConvo, editConvo, handleReply, startReached }) => {
     const isWeb = Platform.OS == 'web'
+
+    const [keyboardHeight, setKeyboardHeight] = useState(0);
+
+    useEffect(() => {
+      const showSubscription = Keyboard.addListener('keyboardDidShow', (e) => {
+        setKeyboardHeight(e.endCoordinates.height);
+      });
+      const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
+        setKeyboardHeight(0); // Reset keyboard height
+      });
+  
+      return () => {
+        showSubscription.remove();
+        hideSubscription.remove();
+      };
+    }, []);
+
     return (<>
         <View className='md:px-0 border-bdrcard dark:border-bdrcard-d border-b'>
             {isWeb && <Row className='px-1 py-3 items-center justify-between w-full'>
@@ -427,7 +445,7 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
                 </Row>
             </Row>}
         </View>
-        <View style={{ height: layoutHeightRight }} className='m-2'>
+        <View style={{ height: layoutHeightRight-keyboardHeight }} className='m-2'>
             {data.length > 0 && <UniList
                 refer={refListJots}
                 {...(Platform.OS !== 'web' ? { inverted: true } : {})}
@@ -436,7 +454,7 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
                 onEndReached={!isWeb ? startReached : null}
                 scrollToLastItem={true}
                 data={isWeb ? data : data.slice().reverse()}
-                height={layoutHeightRight}
+                height={layoutHeightRight-keyboardHeight}
 
                 useWindowScroll
                 renderItem={({ item, index }) => <ItemJot handleReply={handleReply} item={item} index={index} />}
@@ -447,10 +465,8 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
 
 const FormContainer = memo(({ form, replyItem, onFormSubmit, handleCancelReply, handleLayout }) => {
     let padding = 12;
-    const { colors } = useTheme();
     return (
-        <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
-            <View className='bg-bgrcard dark:bg-bgrcard-d border-t border-bdr dark:border-bdr-d' onLayout={handleLayout} style={{ backgroundColor: colors.barsBackground, paddingTop: padding, paddingBottom: padding }}>
+            <View className='bg-bgrcard dark:bg-bgrcard-d border-t border-bdr dark:border-bdr-d' onLayout={handleLayout} style={{ paddingTop: padding, paddingBottom: padding }}>
                 <View className=' ' >
                     {
                         replyItem && (<View className='bg-bgrcard dark:bg-bgrcard-d rounded-sm border-l-2 border-primary/50 py-1 pl-2 mt-2 mx-2'>
@@ -471,6 +487,5 @@ const FormContainer = memo(({ form, replyItem, onFormSubmit, handleCancelReply, 
                     <Form {...form} name='bx_messenger' resetOnSubmit={true} classContainerName={" flex-row flex-wrap w-full items-start justify-between"} onFormSubmit={onFormSubmit} />
                 </View>
             </View>
-        </KeyboardAvoidingView>
     )
 });

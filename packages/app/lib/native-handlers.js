@@ -15,15 +15,7 @@ export function SvgLogoNative() {
     const scheme = useColorScheme();
     const logo = scheme === 'dark' ? 'logo_native' : 'logo_nativedark';
     
-    return <Pressable onPress={() => {
-        routerExpo.replace( {
-           pathname: '/tab0' ,
-           params: { url: '/home'}
-         });
-         
-       
-       
-       }}><View className='w-20 h-6'>{appStatic(logo)}</View></Pressable>;
+    return <View className='w-20 h-6'>{appStatic(logo)}</View>;
 };
 
 export function updateRightHeader(items, navigation) {
