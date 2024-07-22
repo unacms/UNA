@@ -107,7 +107,7 @@ export function CommentsParts(commentsData, aItems, height = 0, initFormData, is
     ]
 }
 
-export function CommentsBrowse({ browse, requestUrl, module, handleReply, handleEdit, addData, addItems, isShort = false, maxCount, height = 0, showCommentsModal, classesBrowse='', commentsTitle="Comments", contentUrl }) {
+export function CommentsBrowse({ browse, requestUrl, module, handleReply, handleEdit, addData, addItems, isShort = false, maxCount, height = 0, showCommentsModal, classesBrowse='', commentsTitle="Comments", contentUrl, replyId }) {
     const UnitComments = componentsMap['comments'];
 
     const { t } = useTranslation();
@@ -308,7 +308,7 @@ export function CommentsBrowse({ browse, requestUrl, module, handleReply, handle
             dataOut = dataOut.slice(0, maxCount);
         return dataOut.map((item, index) => (
             <View key={index}>
-                <UnitComments contentUrl={contentUrl} module={commentData.moduleName} {...item} view={viewMode} max_level={commentData.maxLevel} handleReply={handleReply} handleEdit={handleEdit} handleDelete={handleDelete} />
+                <UnitComments  contentUrl={contentUrl} module={commentData.moduleName} {...item} view={viewMode} max_level={commentData.maxLevel} handleReply={handleReply} handleEdit={handleEdit} handleDelete={handleDelete} />
             </View>))
     }
 
@@ -360,7 +360,7 @@ export function CommentsBrowse({ browse, requestUrl, module, handleReply, handle
                     }
                     return (
                         <View className='' key={index}>
-                            <UnitComments  module={commentData.moduleName} {...item} view={viewMode} max_level={commentData.maxLevel} handleReply={handleReply} handleEdit={handleEdit} handleDelete={handleDelete} />
+                            <UnitComments replyId={replyId} module={commentData.moduleName} {...item} view={viewMode} max_level={commentData.maxLevel} handleReply={handleReply} handleEdit={handleEdit} handleDelete={handleDelete} />
                         </View>
                     )
                 }}
@@ -408,10 +408,10 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
             form.data.inputs.cmt_parent_id.value = formData.parent_id;
             if (appSetting('layout', 'comments_mentions')){
                 if (formData.author.url == "/javascript:"){
-                    form.data.inputs.cmt_text.value = '<a class="bx-mention-link" data-id="[object Object]" href="#" title="'+formData.author.display_name+'" dchar="@" data-profile-id="-1" contenteditable="false">'+formData.author.display_name+'</a>&nbsp;';
+                    form.data.inputs.cmt_text.value = '<a class="bx-mention-link" data-id="[object Object]" href="#" title="'+formData.author.display_name+'" dchar="@" data-profile-id="-1" contenteditable="false">'+formData.author.display_name+'</a> ';
                 }
                 else{
-                    form.data.inputs.cmt_text.value = '<a class="bx-mention-link" href="' + formData.author.url + '">' + formData.author.display_name + '</a>&nbsp;';
+                    form.data.inputs.cmt_text.value = '<a class="bx-mention-link" href="' + formData.author.url + '">' + formData.author.display_name + '</a> ';
                 }
             }
             form.data.reset = true;
