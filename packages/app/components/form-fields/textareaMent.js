@@ -14,8 +14,9 @@ const MentionInputMulti = styled(MentionInputDef, ' bg-bgrinput text-neutral-900
 const MentionInputMultiTransparent = styled(MentionInputDef, '  text-red-500 rounded-lg   w-full p-2 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus placeholder-neutral-500 dark:text-neutral-200 text-base leading-5 text-neutral-800')
 
 function formatText(text) {
-    let v =  text.replace(/<\/?p>/g, '\n');//.trim();
-    v =  v.replace(/&nbsp;/g, ' ');//.trim();
+    //TODO REPLACE TO BR
+    let v =  text.replace(/<\/?p>/g, '\n').trim();
+    v =  v.replace(/&nbsp;/g, ' ').trim();
     v = v.replace(
         /<a(.*?)class="bx-mention-link(.*?)"[^>]*>([^<]+)<\/a>/g,
         (match, p1, p2, name) => {
@@ -33,7 +34,7 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
 
     const { colors } = Theme();
     const { field } = useController({ name, rules: {}, defaultValue: value });
-    const [localValue, setLocalValue] = useState(formatText(field.value));
+   // const [localValue, setLocalValue] = useState(formatText(field.value));
     const [suggestions, setSuggestions] = useState([]);
     const [keywordval, setKeyword] = useState(['', '']);
 
@@ -51,27 +52,19 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
         fetchData();
     }, [keywordval]);
 
-    useEffect(() => {
+    
+   /* useEffect(() => {
         if (field.value == ''){
             setLocalValue('');
         }
         else{
-            const b = formatText(field.value);
-            if (b != localValue){
-              //  console.log("localValuelocalValue", localValue, b)
-                setLocalValue(b);
-            }
+            setLocalValue(formatText(field.value));
         }
     }, [field.value]);    
-
+*/
     const handleChange2 = (val) => {
-        setLocalValue(val);
+      //  setLocalValue(val);
         
-    }
-
-    const handleChange3 = () => {
-        //console.log("99999999999");
-        const val = localValue;
         let v = replaceMentionValues(val, ({trigger, name, id}) => `<a class="bx-mention-link" href="/pages/view-persons-profile?id=${id}" title="${name}" dchar="${trigger}" data-profile-id="${id}">${name}</a>`)
         v = v.split('\n').map(line => `<p>${line}</p>`).join('');
         field.onChange(v)
@@ -115,10 +108,9 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
                 multiline
                 allowFontScaling={false}
                 autoFocus={field.value ? true : false}
-                value={localValue}
+                value={formatText(field.value)}
                 placeholder = {props.placeholder}
                 onChange={handleChange2}
-                onBlur={handleChange3}
                 partTypes={[
                     {
                         trigger: '@', 

@@ -107,14 +107,14 @@ const AppLayout = React.memo(() => {
         }}
       >
             <StatusBar translucent={false}  backgroundColor={colors.barsBackground}/>
-            <Provider>
+
                 <QueryClientProvider client={queryClient}>
                         <CurrentUserProvider>
                             <Tabs />
                         </CurrentUserProvider>
 
                 </QueryClientProvider>
-            </Provider>
+
         </View>
         </SafeAreaProvider>
         </ThemeProvider>
