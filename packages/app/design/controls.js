@@ -239,20 +239,20 @@ export function Button(props) {
 
     switch (buttonSize) {
         case 'xs':
-            sClassContainer += buttonRounded ? sClassFullRounding + ' p-1 ' : sClassDefaultRounding + ' px-1 py-1 ';
-            sIconContainer = ' h-4 w-4 ' + (buttonTitle !== '' ? ' mx-[1px] ' : '');
-            sClassText += ' text-xs '
-            iIconSize = 16;
-            sTitleContainer += buttonTitle !== '' ? 'mx-1 ' : '' // Conditionally add 'mx-2' class
+            sClassContainer += buttonRounded ? sClassFullRounding + ' p-1 ' : sClassDefaultRounding + ' p-1 ';
+            sIconContainer = ' h-5 w-5 ' + (buttonTitle !== '' ? ' mx-[1px] ' : '');
+            sClassText += ' text-sm '
+            iIconSize = 20;
+            sTitleContainer += buttonTitle !== '' ? 'mx-1 ' : '' 
             break
 
         case 'sm':
             sClassContainer += buttonRounded ? sClassFullRounding + ' p-1.5 ' : sClassDefaultRounding ;
-            sClassContainer += (buttonType != 'none' ? ' px-2 py-1.5 ' : ' px-3 py-2.5 justify-start ') + (buttonType == 'none' ? ' w-full ' : ' ')
-            sIconContainer = ' h-5 w-5 ' + (buttonTitle !== '' ? ' mx-0.5 ' : '');
-            sClassText += ' text-sm leading-5  '
-            iIconSize = 20;
-            sTitleContainer += buttonTitle !== '' ? ' mx-1.5  ' : '' // Conditionally add 'mx-2' class
+            sClassContainer += (buttonType != 'none' ? ' p-1.5 ' : ' p-1.5 justify-start ') + (buttonType == 'none' ? ' w-full ' : ' ')
+            sIconContainer = ' h-6 w-6 ' + (buttonTitle !== '' ? '  ' : '');
+            sClassText += ' text-sm  '
+            iIconSize = 24;
+            sTitleContainer += buttonTitle !== '' ? ' mx-1.5  ' : '' 
             break
 
         case 'base':
@@ -260,7 +260,7 @@ export function Button(props) {
             sIconContainer = ' h-6 w-6  ' + (buttonTitle !== '' ? ' mx-1 ' : '');
             sClassText += ' text-base leading-6  '
             iIconSize = 24;
-            sTitleContainer += buttonTitle !== '' ? ' mx-1 ' : '' // Conditionally add 'mx-2' class
+            sTitleContainer += buttonTitle !== '' ? ' mx-1 ' : '' 
             break
 
         case 'lg':
@@ -268,7 +268,7 @@ export function Button(props) {
             sIconContainer = ' h-8 w-8 ' + (buttonTitle !== '' ? ' mx-2 my-0.5 ' : ' mx-2 my-0.5 ');
             sClassText += ' text-lg '
             iIconSize = 32;
-            sTitleContainer += buttonTitle !== '' ? ' mx-4 ' : '' // Conditionally add 'mx-2' class
+            sTitleContainer += buttonTitle !== '' ? ' mx-4 ' : '' 
             break
 
 

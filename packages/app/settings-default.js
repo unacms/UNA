@@ -878,7 +878,7 @@ let settingsDefault = {
             default: '#D1D5DB', //fix for icons color in iOS
             primary: '#0ea5e9',
             background: '#000000',
-            barsBackground: 'rgba(31,41,55,1)',
+            barsBackground: '#111827',
             barsColor: '#D1D5DB',
             selectBorder: 'rgba(55, 65, 81, 0.3)',
             fieldBackground: '#030712',
@@ -899,7 +899,7 @@ let settingsDefault = {
             'u-btn-primary-text': '  font-medium text-primary-50 sm:group-hover:text-white ',
             'u-btn-primary-trans': ' duration-200 ',
 
-            'u-btn-secondary-cnt': ' bg-neutral-200 dark:bg-neutral-800 sm:hover:bg-neutral-300 dark:sm:hover:bg-neutral-700 border border-transparent active:opacity-50  ',
+            'u-btn-secondary-cnt': ' bg-neutral-200 dark:bg-neutral-800 sm:hover:bg-neutral-300 dark:sm:hover:bg-neutral-700 active:opacity-50  ',
             'u-btn-secondary-text': ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
             'u-btn-secondary-trans': ' duration-200 ',
 

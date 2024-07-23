@@ -137,6 +137,8 @@ export default function () {
                     },
                     headerStyle: {
                         backgroundColor: colors.barsBackground,
+                        height: 96
+
                     },
                     tabBarItemStyle: {
                         marginBottom: 5,

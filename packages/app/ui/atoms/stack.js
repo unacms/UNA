@@ -9,8 +9,10 @@ const StackCustom = () => {
         screenOptions={({ navigation, route  }) => ({
             title: t('Loading...'),
             headerBackVisible: false, 
+            headerShadowVisible: false,
             headerStyle: {
                 backgroundColor: colors.barsBackground,
+               
             }, 
     })}/>;
 };

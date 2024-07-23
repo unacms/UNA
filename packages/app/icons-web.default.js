@@ -8,7 +8,7 @@ import { List, ArrowLeft, House, WarningCircle, Chats, ArrowRight, ChatCircleTex
 	TextHOne, TextHTwo, TextHThree, ListBullets, ListNumbers, Quotes, ArrowUUpLeft, ArrowUUpRight, Image, Code,
 	ImageSquare, PaperPlaneRight, ArrowFatUp, ArrowFatDown, SortAscending, ArrowBendLeftUp, ThumbsUp, FilePlus,	MonitorPlay, X, UserCirclePlus, RocketLaunch,
 	ArrowsClockwise, Graph, ChatsTeardrop, MagicWand, Student, Handshake, At, CaretUp, CaretDown, CaretLeft, ChatCenteredText, Clipboard, CirclesFour,FileAudio, 
-	DotsThreeVertical, ChatCircle, Calendar, UserPlus, Fire, Rows, Share, CheckCircle, IntersectThree, Cake, IdentificationBadge, Heart, 
+	DotsThreeVertical, ChatCircle, Calendar, UserPlus, Fire, Rows, ShareFat, CheckCircle, IntersectThree, Cake, IdentificationBadge, Heart, 
 	ChartBar, Storefront, Video, ShoppingCart, Check, HouseSimple, Folders, Egg, Binoculars, SquaresFour,
 	UserList, UserCircleGear, ContactlessPayment, Folder,
 	UserFocus, UserSquare, LinkSimple, ChartLine, Translate, Moon,Trash, Minus, Hash, CirclesThree, Megaphone, Sparkle, MapPin, Wallet
@@ -89,7 +89,7 @@ export const IconSet = {
 	ArrowCircleRight: ArrowCircleRight,
 	ChatTeardropDots: ChatTeardropDots,
 	Smiley: Smiley,
-	ShareFat: Share,
+	ShareFatFat: ShareFat,
 	UserCircle: UserCircle,
 	DotsThreeOutlineVertical: DotsThreeOutlineVertical,
 	File: File,

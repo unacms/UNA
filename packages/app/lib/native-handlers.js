@@ -15,16 +15,16 @@ export function SvgLogoNative() {
     const scheme = useColorScheme();
     const logo = scheme === 'dark' ? 'logo_nativedark' : 'logo_native';
     
-    return <View className='w-20 h-6'>{appStatic(logo)}</View>;
+    return <View className='w-32 h-10'>{appStatic(logo)}</View>;
 };
 
 export function updateRightHeader(items, navigation) {
     let addButtons = items?.map((button) => {
         let btn = undefined;
         if(button.section || button.link == 'search')
-            btn = <Search section={button.section} params={{trigger: {size: 'sm'}}} />
+            btn = <Search section={button.section} params={{trigger: {size: 'sm', variant: 'secondary' }}} />
         else {
-            btn = <Button rounded title={button.title} variant='outline' startDecorator={button.icon} size="sm" />;
+            btn = <Button rounded title={button.title} variant='secondary' startDecorator={button.icon} size="sm" />;
             btn = button.link ? <Link href={button.link } >{btn}</Link> : btn
         }
 
@@ -49,7 +49,7 @@ export function updateRightHeaderObj(addButtons, navigation) {
 export function updateCenterHeader(_path, header, backButtonPresented, navigation, routerExpo, colors, icon, leftComponent, currentUser) {
     let type = typeof header;
 
-    const backButton =  backButtonPresented ? <Pressable className="mr-4   rounded-full justify-center items-center" onPress={() => { FeedbackHaptics('Medium'); routerExpo.back(); }}>
+    const backButton =  backButtonPresented ? <Pressable className=" mr-4 rounded-full justify-center items-center" onPress={() => { FeedbackHaptics('Medium'); routerExpo.back(); }}>
     <Icon icon="ArrowLeft" width={24} height={24} color={colors.barsColor} /></Pressable> :<></>
     if (type == 'string'){
         header = (
@@ -57,7 +57,7 @@ export function updateCenterHeader(_path, header, backButtonPresented, navigatio
                 { backButton }
                 { leftComponent }
                 { icon ? <Icon icon={icon} width={24} height={24} color={colors.barsColor} /> : <></>}
-                { _path =='/home' ? <Pressable onPress={() => {navigation.navigate('tab0')}}><SvgLogoNative/></Pressable> : <Text className='font-bold  ml-2 text-neutral-800 dark:text-neutral-200 text-xl'>{header.replace('__notification__', '')}</Text>}
+                { _path =='/home' ? <Pressable onPress={() => {navigation.navigate('tab0')}}><SvgLogoNative/></Pressable> : <Text className='font-bold  tracking-tighter text-neutral-800 dark:text-neutral-200 text-2xl'>{header.replace('__notification__', '')}</Text>}
             </Row>
         )
     }
@@ -72,7 +72,7 @@ export function updateCenterHeader(_path, header, backButtonPresented, navigatio
         header = <><Text className='font-bold  ml-2 text-neutral-800 dark:text-neutral-200 text-xl'>hz</Text></>
 */
     if (!currentUser)
-        header = <><Text className='font-bold  ml-2 text-neutral-800 dark:text-neutral-200 text-xl'>Log in</Text></>
+        header = <><Text className='font-bold ml-2 text-neutral-800 dark:text-neutral-200 text-xl'>Log in</Text></>
 
    /* if (!currentUser){
         header = <></>
