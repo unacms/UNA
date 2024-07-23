@@ -111,7 +111,9 @@ export default function FormFeed(props) {
                             
                             </Row>}
                         </View>
+                        <View className=''>
                         {getFormFieldByData(props.data.inputs['tlb_do_submit'], props.handleSubmit, 'default')}
+                        </View>
                     </KeyboardAvoidingView>
                     
                 </View>

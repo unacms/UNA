@@ -297,14 +297,15 @@ export default function ElementReactions(oProps) {
                         name: oItem.name,
                         icon: getIconAlias(oItem.name),
                         class_item: 'transition active:scale-150 duration-300 active:-translate-y-4',
-                        class_item_icon: 'text-2xl'
+                        class_item_icon: 'text-2xl',
+                        tooltip: "TODO",
                     };
                 });
 
                 sActionButton = oItems.length > 1 ? (
                     <Pressable key="action" onPress={(event) => {event.preventDefault()}}>
                         <DropdownMenu variant="horizontal" items={aItems} onSelect={(oItem, event) => {handleDo(event, oItem)}}>
-                            <ButtonAction variant={bShowCombined ? 'group-item' : false} size={sDisplaySize} startDecorator={getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : ''} onPress={() => {}} disabled={bShowActionDisabled} {...oButtonProps} />
+                            <ButtonAction variant={bShowCombined ? 'group-item' : false} size={sDisplaySize}  startDecorator={getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : ''} onPress={() => {}} disabled={bShowActionDisabled} {...oButtonProps} />
                         </DropdownMenu>
                     </Pressable>
                 ) : (

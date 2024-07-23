@@ -69,7 +69,7 @@ export function Modal({
         <ModalDef visible={onVisible} presentationStyle={presentation} animationType={animation} transparent={false}>
             <Wrapper className="flex justify-end w-full h-full bg-white/80 dark:bg-black/80 backdrop-blur" {...(isOuterClose && { onPress: onClose })}>
                 <View className={`flex-row justify-center left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto md:inset-0 h-modal h-full ${sClassPosition}`}>
-                    <View className={`${fullWidth ? 'w-full' : ''} relative h-full max-w-2xl md:h-auto `+(Platform.OS === 'ios' ? 'mt-6':'mt-0')}>
+                    <View className={`${fullWidth ? 'w-full' : ''} relative h-full max-w-2xl md:h-auto `}>
                         <Pressable onPress={() => { }} className='relative bg-bgrmodal dark:bg-bgrmodal-d h-full md:h-auto sm:border sm:border-bdrmodal sm:dark:border-bdrmodal-d sm:rounded-2xl sm:shadow-sm'>
                             {
                                 (title || onClose) && <Row className={`items-center justify-${textAlign} ${headerBorder ? ' border-b border-bdr dark:border-bdr-d ' : ''} px-4 py-3 sm:px-6 sm:py-5 `}>

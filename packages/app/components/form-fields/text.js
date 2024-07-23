@@ -31,7 +31,7 @@ export default function FormFieldText(props) {
     return (
         <Field {...props} error2={formContext.formState.errors[name]}>
             <Input 
-                 ref={inputRef}
+                ref={inputRef}
                 name={props.name}
                 placeholder = {props.placeholder}
                 onChangeText={field.onChange}

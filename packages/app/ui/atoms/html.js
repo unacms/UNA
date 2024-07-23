@@ -41,10 +41,13 @@ function onElement(element) {
     if (element?.parent?.children[element.parent.children.length - 1] === 'p') {
         element.parent.children[element.parent.children.length - 1].attribs = { class: 'lastP' }
     }
+    if (element?.parent?.children.length === 1 && element.parent.children[0]?.name === 'p') {
+        element.parent.children[0].attribs.class = 'firstP lastP';
+    }
 }
 
 const domVisitors = {
-    /* onElement: onElement*/
+     onElement: onElement
 };
 
 export default function ElementHtml(props) {
@@ -103,7 +106,6 @@ export default function ElementHtml(props) {
     const classesStyles = {
         firstP: {
             marginTop: 0,
-            color: 'red'
         },
         lastP: {
             marginBottom: 0,

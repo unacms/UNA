@@ -114,10 +114,10 @@ export default function PageLayout(props) {
 
     return (
         <ScrollView className=''>
-           { <Button title="sdasd"
+           { /*<Button title="Test bottomsheet"
              onPress={() => {setBottomSheetData({ title: 'Choose labels', showClose: true, content: <View className='h-24 w-full'><Text>TextTextTextText</Text></View> })}}
              
-            ></Button>}
+            ></Button>*/}
             <Modal id='file-preview2' title="VideoChat" onVisible={!!showImage2} onClose={() => {setShowImage2(null)}}>
                 
             </Modal>

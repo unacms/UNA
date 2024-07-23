@@ -7,14 +7,14 @@ import { useMemo, useState } from 'react';
 
 export default function Layout(props) {
     const [child] = useState(props.children);
-    const isUseBg = appSetting('layout', 'background_native');
+    const isUseBg = false;//appSetting('layout', 'background_native');
     if (props.data.page_status == 503) {
         return <>
             {appStatic('maintenance_mode')}
         </>
     }
 
-    const backgroundImage = useMemo(() => (
+    /*const backgroundImage = useMemo(() => (
         <ImageBackground
             source={require('app/background.png')}
             resizeMode="cover"
@@ -22,13 +22,13 @@ export default function Layout(props) {
             {child}
         </ImageBackground>
     ), [child]); // Memoize background image
-
+*/
     const content = useMemo(() => {
         return (
-
-            isUseBg ? backgroundImage : child
+            child
+           // isUseBg ? backgroundImage : child
         )
-    }, [isUseBg, backgroundImage, child]);
+    }, [isUseBg, child]);
 
     return (
         <View className=" bg-bgrbody dark:bg-bgrbody-d text-neutral-900 dark:text-neutral-50 w-full h-full flex-1">

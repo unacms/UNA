@@ -105,9 +105,10 @@ export default function () {
                     trigger: { seconds: 2 },
                 });
             }
-        };        
-        scheduleNotification();
-    }, [currentUser?.notifications]);
+        };     
+        if (currentUser)   
+            scheduleNotification();
+    }, [currentUser, currentUser?.notifications]);
 
     // DEEP LINKING
 

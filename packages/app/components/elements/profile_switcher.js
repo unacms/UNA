@@ -106,9 +106,9 @@ export default function (props) {
                             </Link>
                         )
                     })}
-                    <Row className='justity-between mt-4 w-full '>
+                    <View className='sm:flex-row justity-between mt-4 w-full mx-2 sm:mx-0'>
                         {currentUser?.menu?.items && currentUser.menu.items.map((item, index) => (
-                            <View key={index} className={'w-1/' + (currentUser.menu.items.length + 1) + ' pr-2 '}>
+                            <View key={index} className={'mb-2 sm:mb-0 w-full sm:w-1/' + (currentUser.menu.items.length + 1) + ' pr-2 '}>
                                 <Link href={item.name}>
                                     <Button
                                         variant="outline"
@@ -119,7 +119,7 @@ export default function (props) {
                                 </Link>
                             </View>
                         ))}
-                        <View className={'w-1/' + (currentUser.menu.items.length + 1) + ''}>
+                        <View className={'w-full sm:w-1/' + (currentUser.menu.items.length + 1) + ''}>
                             <Link href="/logout">
                                 <Button
                                     variant="outline"
@@ -129,7 +129,7 @@ export default function (props) {
                                 />
                             </Link>
                         </View>
-                    </Row>
+                    </View>
                 </View>
             </Modal>}
         </>

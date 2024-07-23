@@ -149,7 +149,9 @@ export default function PageLayout(props) {
             )}
             {!!currentUser && (
                 <>
-                    <Row className="px-3 justify-center gap-x-2 bg-bgrtabbar dark:bg-bgrtabbar-d ">
+                 <View className='bg-bgrtabbar dark:bg-bgrtabbar-d w-full'>
+                 <ScrollView horizontal={true} className="w-full ">
+                    <Row className="px-3 justify-center gap-x-2  ">
                         {feedList.length > 1 &&
                             feedList.map((item, index) => {
                                 return (
@@ -164,9 +166,10 @@ export default function PageLayout(props) {
                                             fullWidth={false}
                                             id="tab"
                                             startDecorator={item.icon}
+                                            title={item.showTitle ? t(item.title) : ''}
                                             variant={
                                                 feedType == item.name
-                                                    ? 'linkah'
+                                                    ? 'link'
                                                     : 'text'
                                             }
                                             size="sm"
@@ -211,8 +214,11 @@ export default function PageLayout(props) {
                                     />
                                 </Pressable>
                             </Row>
+                            
                         )}
                     </Row>
+                    </ScrollView>
+                    </View>
                     {feedList.map((item, index) => {
                         if (feedType == item.name) {
                             return (

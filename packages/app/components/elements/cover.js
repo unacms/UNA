@@ -88,7 +88,7 @@ export function CoverSmall(props) {
     // 
     return (
         <Row
-            className=" justify-left items-center pt-4 w-full h-24 bg-primary-200 dark:bg-primary-950"
+            className=" justify-left items-center pt-0 w-full h-24 bg-primary-200 dark:bg-primary-950"
         >
             <View className="absolute h-80 w-full">
                 {!!data.cover && (
@@ -146,7 +146,7 @@ export default function ElementCover(props) {
                     />
                 )}
             </View>
-            <Row className=" justify-left w-full h-24 pt-12">
+            <Row className=" justify-left w-full h-24 pt-4">
                 <Pressable
                     className="mr-2 ml-2 bg-bgrnavbar dark:bg-bgrnavbar-d    w-10 h-10 rounded-full justify-center items-center"
                     onPress={() => routerExpo.back()}

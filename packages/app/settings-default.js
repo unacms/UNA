@@ -101,17 +101,17 @@ let settingsDefault = {
         compress: true
     },
     feed: {
-        show_selector_view: true,
+        show_selector_view: false,
         default_view: '',
         show_html: false,
         default_feed: 'foryou',
         list: [
-            { name: 'foryou', icon: 'Sparkle', title: 'For you' },
+            { name: 'foryou', icon: 'Sparkle', title: 'For you', showTitle:true },
             
-            { name: 'account', icon: 'Binoculars', title: 'Account' },
-            { name: 'hot', icon: 'Fire', title: 'Hot' },
-            { name: 'public', icon: 'Egg', title: 'Public' },
-            /*{ name: 'channels', icon: 'Hash' }*/
+            { name: 'account', icon: 'Binoculars', title: 'Account', showTitle:false },
+            { name: 'hot', icon: 'Fire', title: 'Hot', showTitle:true },
+            { name: 'public', icon: 'Egg', title: 'Public', showTitle:true },
+            { name: 'channels', icon: 'Hash', title: 'News', showTitle:false }
         ]
     },
     entry: {

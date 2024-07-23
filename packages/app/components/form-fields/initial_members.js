@@ -84,10 +84,10 @@ export function SelectUsers({ onSave, initedData = [], requestUrl, isSingle = fa
             <Row className="text-center w-full  flex-wrap gap-x-2 py-2">
                 {state.selectedUsers && state.selectedUsers.map((item) => <User key={item.id} data={item} onSelect={onRemove} />)}
             </Row>
-            <Row className="gap-x-2 mx-1">
+            <Row className="">
                 <InputRounded
                     placeholder={"Select users..."}
-                    className="px-2 w-full"
+                    className="px-2 mr-2 w-full"
                     onChangeText={onChangeText}
                     role="textbox"
                 />

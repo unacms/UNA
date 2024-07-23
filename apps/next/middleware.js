@@ -4,7 +4,7 @@ import * as Icons from  "@phosphor-icons/react/dist/ssr";
 import ReactDOMServer from 'react-dom/server';
 export const config = {
     matcher: ["/((?!static|_next|sw.js|manifest.json|logo192.png|loader.svg|favicon.ico|_vercel).*)"],
-    runtime: 'experimental-edge',
+   // runtime: 'experimental-edge',
 };
 
 export function middleware(request) {

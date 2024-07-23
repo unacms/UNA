@@ -14,8 +14,8 @@ const MentionInputMulti = styled(MentionInputDef, ' bg-bgrinput text-neutral-900
 const MentionInputMultiTransparent = styled(MentionInputDef, '  text-red-500 rounded-lg   w-full p-2 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus placeholder-neutral-500 dark:text-neutral-200 text-base leading-5 text-neutral-800')
 
 function formatText(text) {
-    let v =  text.replace(/<\/?p>/g, '\n').trim();
-    v =  v.replace(/&nbsp;/g, ' ').trim();
+    let v =  text.replace(/<\/?p>/g, '\n');//.trim();
+    v =  v.replace(/&nbsp;/g, ' ');//.trim();
     v = v.replace(
         /<a(.*?)class="bx-mention-link(.*?)"[^>]*>([^<]+)<\/a>/g,
         (match, p1, p2, name) => {
@@ -51,19 +51,27 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
         fetchData();
     }, [keywordval]);
 
-    
     useEffect(() => {
         if (field.value == ''){
             setLocalValue('');
         }
         else{
-            setLocalValue(formatText(field.value));
+            const b = formatText(field.value);
+            if (b != localValue){
+              //  console.log("localValuelocalValue", localValue, b)
+                setLocalValue(b);
+            }
         }
     }, [field.value]);    
 
     const handleChange2 = (val) => {
         setLocalValue(val);
         
+    }
+
+    const handleChange3 = () => {
+        //console.log("99999999999");
+        const val = localValue;
         let v = replaceMentionValues(val, ({trigger, name, id}) => `<a class="bx-mention-link" href="/pages/view-persons-profile?id=${id}" title="${name}" dchar="${trigger}" data-profile-id="${id}">${name}</a>`)
         v = v.split('\n').map(line => `<p>${line}</p>`).join('');
         field.onChange(v)
@@ -110,6 +118,7 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
                 value={localValue}
                 placeholder = {props.placeholder}
                 onChange={handleChange2}
+                onBlur={handleChange3}
                 partTypes={[
                     {
                         trigger: '@', 

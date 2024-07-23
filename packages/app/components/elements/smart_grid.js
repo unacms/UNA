@@ -32,7 +32,7 @@ function getCell(block, bAllowEdit) {
             blockContent = <View className='w-full aspect-video'><Image view='cover' sizes="(max-width:1024px) 100vw, 1024px" className=" u-cover " alt='' src={block.content} /></View>
             break;
         case "text":
-            blockContent = <View className="py-2 px-4 items-start justify-start"><Text className='text-lg'>{block.content}</Text></View>;
+            blockContent = <View className="py-2 px-4 items-start justify-start"><Text className='text-lg text-neutral-900 dark:text-neutral-50'>{block.content}</Text></View>;
             break;
         case "link":
             const ImageComponent = ({ className, src }) => (
@@ -65,7 +65,7 @@ function getCell(block, bAllowEdit) {
     }
 
     return (
-        <View key={block.i} className="border border-bdrcard dark:border-bdrcard-d shadow-sm group duration-200 overflow-hidden bg-bgrcard dark:bg-bgrcard-d">
+        <View key={block.i} className="mb-1 mx-1 border border-bdrcard dark:border-bdrcard-d shadow-sm group duration-200 overflow-hidden bg-bgrcard dark:bg-bgrcard-d">
             {blockContent}
         </View>
     );
