@@ -41,7 +41,7 @@ export default function AtomProfile(oProps) {
             sSize = 'w-6 h-6'
             iSizeWidth = 24
             iSizeHeight = 24
-            sSizeFont = 'text-xs font-semibold';
+            sSizeFont = 'text-xs tracking-tight font-semibold';
             sSizeFontLetter = 'text-base font-bold';
             break
 
@@ -49,31 +49,31 @@ export default function AtomProfile(oProps) {
             sSize = 'w-8 h-8'
             iSizeWidth = 32
             iSizeHeight = 32
-            sSizeFont = 'text-sm font-semibold';
+            sSizeFont = 'text-sm tracking-tight font-semibold';
             sSizeFontLetter = 'text-base font-bold';
             break
 
         case 'base':
-            sSize = ' w-[42px] h-[42px] '
-            iSizeWidth = 42
-            iSizeHeight = 42
-            sSizeFont = ' text-base font-bold';
-            sSizeFontLetter = 'text-xl font-bold';
+            sSize = ' w-10 h-10 '
+            iSizeWidth = 40
+            iSizeHeight = 40
+            sSizeFont = ' text-base tracking-tight font-bold';
+            sSizeFontLetter = 'text-xl  font-bold';
             break
 
         case 'lg':
             sSize = 'w-12 h-12'
             iSizeWidth = 56
             iSizeHeight = 56
-            sSizeFont = 'text-lg font-semibold';
-            sSizeFontLetter = 'text-xl  font-bold';
+            sSizeFont = 'text-lg tracking-tight font-semibold';
+            sSizeFontLetter = 'text-xl font-bold';
             break
 
         case 'xl':
             sSize = 'w-20 h-20'
             iSizeWidth = 80
             iSizeHeight = 80
-            sSizeFont = 'text-xl font-semibold';
+            sSizeFont = 'text-xl tracking-tight font-semibold';
             sSizeFontLetter = 'text-xl  font-bold';
             break
 
@@ -81,7 +81,7 @@ export default function AtomProfile(oProps) {
             sSize = 'w-24 h-24'
             iSizeWidth = 96
             iSizeHeight = 96
-            sSizeFont = 'text-2xl font-semibold';
+            sSizeFont = 'text-2xl tracking-tight font-semibold';
             sSizeFontLetter = 'text-2xl font-bold';
             break
 
@@ -89,7 +89,7 @@ export default function AtomProfile(oProps) {
             sSize = 'w-32 h-32'
             iSizeWidth = 128
             iSizeHeight = 128
-            sSizeFont = 'text-3xl font-semibold';
+            sSizeFont = 'text-3xl tracking-tight font-semibold';
             sSizeFontLetter = 'text-5xl font-bold';
             break
 
@@ -97,7 +97,7 @@ export default function AtomProfile(oProps) {
             sSize = 'w-48 h-48'
             iSizeWidth = 192
             iSizeHeight = 192
-            sSizeFont = 'text-4xl font-semibold';
+            sSizeFont = 'text-4xl tracking-tight font-semibold';
             sSizeFontLetter = 'text-7xl font-bold';
             break
 
@@ -105,7 +105,7 @@ export default function AtomProfile(oProps) {
             sSize = ' w-full aspect-square rounded-xl '
             iSizeWidth = 400
             iSizeHeight = 400
-            sSizeFont = 'text-5xl font-semibold';
+            sSizeFont = 'text-5xl tracking-tight font-semibold';
             sSizeFontLetter = 'text-7xl font-bold';
             break
     }
@@ -172,7 +172,7 @@ export default function AtomProfile(oProps) {
     switch (sDisplayType) {
         case 'unit':
             sResult = (
-                <View className="flex-row gap-x-2  items-center">
+                <View className="flex-row gap-x-3 sm:gap-x-4  items-center">
                     <View className="flex-none">
                         <AtomProfile {...oProps} displayType="unit_wo_info" />
                     </View>
