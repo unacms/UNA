@@ -15,7 +15,8 @@ const MentionInputMultiTransparent = styled(MentionInputDef, '  text-red-500 rou
 
 function formatText(text) {
     //TODO REPLACE TO BR
-    let v =  text.replace(/<\/?p>/g, '\n').trim();
+   // let v =  text.replace(/<\/?p>/g, '\n').trim();
+   let v =  text.replace(/<br>/g, '\n').trim();
     v =  v.replace(/&nbsp;/g, ' ').trim();
     v = v.replace(
         /<a(.*?)class="bx-mention-link(.*?)"[^>]*>([^<]+)<\/a>/g,
@@ -66,7 +67,8 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
       //  setLocalValue(val);
         
         let v = replaceMentionValues(val, ({trigger, name, id}) => `<a class="bx-mention-link" href="/pages/view-persons-profile?id=${id}" title="${name}" dchar="${trigger}" data-profile-id="${id}">${name}</a>`)
-        v = v.split('\n').map(line => `<p>${line}</p>`).join('');
+       // v = v.split('\n').map(line => `<p>${line}</p>`).join('');
+       v = v.split('\n').map(line => `${line}<br>`).join('');
         field.onChange(v)
     }
 

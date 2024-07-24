@@ -1,5 +1,5 @@
 
-import { SafeAreaView, useSafeAreaInsets, SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Tabs from 'app/components/nav/tabs';
 import React, { useMemo } from 'react';
 
@@ -25,7 +25,7 @@ import ru from 'app/locales/ru/translation.json';
 import { remoteSettings } from 'app/settings-remote';
 import { getRemoteSettings } from 'app/config';
 import { StatusBar } from 'react-native';
-import { View } from 'app/design/view'
+import * as NavigationBar from "expo-navigation-bar";
 
 const AppLayout = React.memo(() => {
 
@@ -85,38 +85,22 @@ const AppLayout = React.memo(() => {
 
     const scheme = useColorScheme();
     const queryClient = new QueryClient()
-    
-    const insets = useSafeAreaInsets();
 
+    NavigationBar.setBackgroundColorAsync(colors.barsBackground);
     return (
         <ThemeProvider value={Theme(scheme)} >
-        <SafeAreaProvider>
-        <View
-        style={{
-            width: '100%',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            height: '100%',
-            backgroundColor: colors.barsBackground,
-          // Paddings to handle safe area
-          paddingBottom: insets.top,
-          paddingBottom: insets.bottom,
-          paddingLeft: insets.left,
-          paddingRight: insets.right,
-        }}
-      >
-            <StatusBar translucent={false}  backgroundColor={colors.barsBackground}/>
-
+            <StatusBar backgroundColor={colors.barsBackground}
+            
+					translucent={true} />
+            <Provider>
                 <QueryClientProvider client={queryClient}>
+                    <SafeAreaView edges={['left', 'right']} style={containerStyle}>
                         <CurrentUserProvider>
                             <Tabs />
                         </CurrentUserProvider>
-
+                    </SafeAreaView>
                 </QueryClientProvider>
-
-        </View>
-        </SafeAreaProvider>
+            </Provider>
         </ThemeProvider>
     );
 });

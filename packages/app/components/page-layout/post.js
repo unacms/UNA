@@ -57,7 +57,7 @@ export default function PageLayout(props) {
                     data: <BlockByName data={props.data} name={value} />
                 }));
             if (headerItems.length > 0) {
-                updateCenterHeader(null, <View style={{ width: Dimensions.get('window').width - 65 }} className='items-center'>{headerItems[0].data}</View>, true, navigation, routerExpo, colors, null, null, currentUser);
+               updateCenterHeader(null, <View className='items-center'>{headerItems[0].data}</View>, true, navigation);
             }
         }, 100);
         return () => clearTimeout(timer);

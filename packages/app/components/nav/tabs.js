@@ -133,13 +133,10 @@ export default function () {
                 screenOptions={({ navigation, route }) => ({
                     tabBarStyle: {
                         backgroundColor: colors.barsBackground,
-                        height: isShowTabs ? 55 : 0,
-                        opacity: isShowTabs ? 1 : 0
-                    },
-                    headerStyle: {
-                        backgroundColor: colors.barsBackground,
-                        height: 96
-
+                        height: isShowTabs ? 62 : 0,//55 old
+                        opacity: isShowTabs ? 1 : 0,
+                        elevation:0,
+                        boxShadow: 'none',
                     },
                     tabBarItemStyle: {
                         marginBottom: 5,

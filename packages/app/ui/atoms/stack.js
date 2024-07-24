@@ -1,20 +1,12 @@
 import { Stack } from "expo-router";
-import { Theme } from 'app/design/theme';
-import { useTranslation } from 'react-i18next';
-
+import Header from 'app/components/nav/header';
 const StackCustom = () => {
-    const { t } = useTranslation();
-    const { colors } = Theme();
     return <Stack 
-        screenOptions={({ navigation, route  }) => ({
-            title: t('Loading...'),
-            headerBackVisible: false, 
-            headerShadowVisible: false,
-            headerStyle: {
-                backgroundColor: colors.barsBackground,
-               
-            }, 
-    })}/>;
+        screenOptions={() => ({
+            header:(props) => <Header header="Loading..." />,
+            headerBackVisible: true, 
+            headerShadowVisible: true,
+    })}/>
 };
 
 export default StackCustom;

@@ -4,6 +4,7 @@
 
 import 'react-native-get-random-values';
 import 'react-native-url-polyfill/auto';
+import { StatusBar } from 'react-native';
 //import 'expo-router/entry';
 
 import { GestureHandlerRootView } from 'react-native-gesture-handler';

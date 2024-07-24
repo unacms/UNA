@@ -6,7 +6,7 @@ import UniList from 'app/ui/atoms/unilist'
 import { useNavigation } from '@react-navigation/native';
 import { appSetting, deepEqual, getUnitModeBySource, handleFeedLayoutData } from 'app/lib/util';
 import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer } from 'app/lib/conductor-helpers';
-import { updateRightHeader } from 'app/lib/native-handlers';
+import { updateCenterHeader, getRightHeader } from 'app/lib/native-handlers';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers';
 import { Button } from 'app/design/controls';
@@ -17,6 +17,7 @@ import { useLayoutData } from 'app/context/layout';
 import { menuItemsFilter } from 'app/lib/util';
 
 export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultHeader, menu, data, blocks, useSectionAsMenu, unitMode, skeleton, onChangeRoute, keyword }) {
+   console.log('--------------',data)
     minHeaderHeight = minHeaderHeight || 100; 
     isHideDefaultHeader = isHideDefaultHeader || false;
     useSectionAsMenu = useSectionAsMenu || false;
@@ -203,7 +204,8 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
                 //updateRightHeaderObj(addButtons, navigation);
                 let addButtonsSet = menuSettings?.add?.filter(item => item.hideInTopBar !== true);
                 addButtonsSet = menuItemsFilter(addButtonsSet, currentUser);
-                updateRightHeader(addButtonsSet, navigation, );
+                updateCenterHeader('/'+data.url, data.name, false, navigation, getRightHeader(addButtonsSet));
+               // updateRightHeader(addButtonsSet, navigation, );
             }, 300);
             /* gap-x-2*/
             return (

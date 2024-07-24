@@ -1,4 +1,5 @@
 import { useMemo, useRef } from 'react';
+import { Platform } from 'react-native';
 import { menuItemsByName, linkify, FeedbackHaptics } from 'app/lib/util';
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'

@@ -24,7 +24,7 @@ import { useBottomSheetData } from 'app/context/bottomsheet';
 import Profile from 'app/ui/molecules/profile'
 import { useRouter } from "expo-router";
 
-export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, fetchConvos, data, onSave }) {
+export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, fetchConvos, data, onSave, addButtons }) {
     const isWeb = Platform.OS == 'web'
     const { width, height } = useWindowDimensions();
     const { setBottomSheetData } = useBottomSheetData();
@@ -360,7 +360,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
                 <Msg onVisible={showMsg} title={showMsg} handleOk={() => { setShowMsg(false) }} />
                 {convosComponent}
                 {jotsComponent}
-                <Nav2 text={panelsVisible.convos ? "Messenger" : selectedConvo.title} onPress={handleBackButton} backButton={!panelsVisible.convos || appSetting('layout', 'show_back_button_in_messenger')} />
+                <Nav2 addButtons={addButtons} text={panelsVisible.convos ? "Messenger" : selectedConvo.title} onPress={handleBackButton} backButton={!panelsVisible.convos || appSetting('layout', 'show_back_button_in_messenger')} />
             </View>
         );
     }

@@ -6,14 +6,13 @@ import { useCurrentUser } from 'app/context/user'
 import { DataByName } from 'app/components/block';
 import { LeftSidebar, TopSidebar } from 'app/lib/conductor-helpers';
 import { useWindowDimensions } from 'react-native';
-import { Button, Input, InputRounded, InputRoundedSmall } from 'app/design/controls'
+import { Button } from 'app/design/controls'
 import Messenger from 'app/components/elements/messenger/parts/common'
 import { CreateConvoButton } from 'app/components/elements/messenger/parts/new-convo';
-import { Nav } from 'app/components/elements/messenger/parts/nav';
 import { fetcher } from 'app/lib/fetcher';
 import { Platform } from 'react-native'
 import MenuDrawer from 'app/components/nav/menu-drawer'
-
+ 
 
 export default function PageLayout({ url, data, layoutName, blocks: { main } }) {
     const isWeb = Platform.OS == 'web'
@@ -26,9 +25,7 @@ export default function PageLayout({ url, data, layoutName, blocks: { main } }) 
     if (aUrl.length > 2)
         defaultConvoId = aUrl[2];
 
-    const { currentUser, setCurrentUser } = useCurrentUser();
-    
-    const isDrawer = menuItemsByName('main_menu', appSetting('menu_items', 'menu_drawer'), currentUser).length > 0 ;
+    const { currentUser } = useCurrentUser();
 
     const layout = getLayout(currentUser, 'navigator');
     const isLeftMenu = layout != 'hor' ? false : true;
@@ -84,7 +81,7 @@ export default function PageLayout({ url, data, layoutName, blocks: { main } }) 
         ]
     }, []);
 
-    const messengerContainer = (menu && convos) && <><Nav addButtons={addButtons} /><MessengerContainer
+    const messengerContainer = (menu && convos) && <><MessengerContainer
         fetchConvos={fetchConvos}
         convos={convos}
         data={data2.content[0]}
@@ -94,6 +91,7 @@ export default function PageLayout({ url, data, layoutName, blocks: { main } }) 
         windowWHeight={windowWHeight}
         layout={layout}
         onSave={onSave}
+        addButtons ={addButtons}
     /></>
 
     if (!isWeb) {
@@ -139,7 +137,7 @@ export default function PageLayout({ url, data, layoutName, blocks: { main } }) 
     )
 }
 
-const MessengerContainer = memo(({ convos, selectedMenu, url, data, windowWHeight, windowWidth, layout, fetchConvos, defaultConvoId, onSave }) => {
+const MessengerContainer = memo(({ convos, selectedMenu, url, data, windowWHeight, windowWidth, layout, fetchConvos, defaultConvoId, onSave, addButtons }) => {
     const isWeb = Platform.OS == 'web'
     let height = useMemo(() => {
         let heightInit = windowWHeight;
@@ -162,7 +160,7 @@ const MessengerContainer = memo(({ convos, selectedMenu, url, data, windowWHeigh
     }, [windowWHeight, layout])
 
     return (
-        <Messenger onSave={onSave} fetchConvos={fetchConvos} layoutHeight={height} {...data} url={url} selectedMenu={selectedMenu} convos={convos} defaultConvoId={defaultConvoId} />
+        <Messenger addButtons={addButtons} onSave={onSave} fetchConvos={fetchConvos} layoutHeight={height} {...data} url={url} selectedMenu={selectedMenu} convos={convos} defaultConvoId={defaultConvoId} />
     );
 });
 

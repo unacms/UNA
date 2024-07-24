@@ -1,18 +1,14 @@
 import { Root } from 'app/root'
 import { memo, useState, useEffect, useContext, useMemo } from 'react'
-import { useRoute } from '@react-navigation/native';
+
 import { useCurrentUser } from 'app/context/user';
 import { appSetting, parseUrl, parseQueryString, getURI } from 'app/lib/util'
-import { useRouter, useNavigation } from 'expo-router';
-import { Theme } from 'app/design/theme';
-import { updateRightHeader, updateCenterHeader } from 'app/lib/native-handlers'
-import { useTranslation } from 'react-i18next';
 import { Loading } from 'app/loading'
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { fetcher } from 'app/lib/fetcher';
-import { Text } from 'app/design/typography'
-import { useLocalSearchParams, useGlobalSearchParams, Link } from 'expo-router';
-
+import { useLocalSearchParams} from 'expo-router';
+import { updateCenterHeader, getRightHeader } from 'app/lib/native-handlers'
+import {  useNavigation } from 'expo-router'; 
 
 export async function getData(path, token, origin, headers, callback, params) {
     path = (!path || path.startsWith('expo-development-client')) ? 'home' : path;
@@ -60,12 +56,8 @@ export function Screen(params) {
 }
 
 const Content = ({ pagePath, currentUser }) => {
-    ;
-    const [pageData, setPageData] = useState(null);
     const navigation = useNavigation();
-    const routerExpo = useRouter();
-    const { colors } = Theme();
-    const { t } = useTranslation();
+    const [ pageData, setPageData ] = useState(null);
     const { bottomSheetData, setBottomSheetData } = useBottomSheetData();
     useEffect(() => {
         if (!(pagePath && pagePath.startsWith('/') && !pagePath.includes('/?url='))) return;
@@ -84,12 +76,10 @@ const Content = ({ pagePath, currentUser }) => {
         fetchPageData();
     }, [pagePath, currentUser?.id]);
 
-    useEffect(() => {
+   useEffect(() => {
         if (pageData) {
             const settings = appSetting('layouts', pageData.data.uri)
-            const profileDisplay = <></>;
-            updateRightHeader(currentUser ? settings?.header : null, navigation);
-            updateCenterHeader(pagePath, t(pageData.data.name), false, navigation, routerExpo, colors, '', profileDisplay, currentUser);
+            updateCenterHeader(pagePath, pageData.data.name, false, navigation, getRightHeader(settings?.header));
         }
     }, [pageData, currentUser?.id]);
 
