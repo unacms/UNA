@@ -107,11 +107,10 @@ let settingsDefault = {
         default_feed: 'foryou',
         list: [
             { name: 'foryou', icon: 'Sparkle', title: 'For you', showTitle:true },
-            
-            { name: 'account', icon: 'Binoculars', title: 'Account', showTitle:false },
+            { name: 'account', icon: 'Binoculars', title: 'Following', showTitle:true },
             { name: 'hot', icon: 'Fire', title: 'Hot', showTitle:true },
             { name: 'public', icon: 'Egg', title: 'Public', showTitle:true },
-            { name: 'channels', icon: 'Hash', title: 'News', showTitle:false }
+            { name: 'channels', icon: 'Hash', title: 'News', showTitle:true }
         ]
     },
     entry: {

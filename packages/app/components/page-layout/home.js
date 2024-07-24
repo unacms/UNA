@@ -167,9 +167,10 @@ export default function PageLayout(props) {
                                             id="tab"
                                             startDecorator={item.icon}
                                             title={item.showTitle ? t(item.title) : ''}
+                                            rounded
                                             variant={
                                                 feedType == item.name
-                                                    ? 'link'
+                                                    ? 'primary'
                                                     : 'text'
                                             }
                                             size="sm"
