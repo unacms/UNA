@@ -254,22 +254,22 @@ export function Button(props) {
         case 'sm':
             sClassContainer += buttonRounded ? sClassFullRounding + ' p-1.5 ' : sClassDefaultRounding ;
             sClassContainer += (buttonType != 'none' ? ' p-1.5 ' : ' p-1.5 justify-start ') + (buttonType == 'none' ? ' w-full ' : ' ')
-            sIconContainer = ' h-6 w-6 ' + (buttonTitle !== '' ? '  ' : '');
+            sIconContainer = ' h-5 w-5 ' + (buttonTitle !== '' ? '  ' : '');
             sClassText += ' text-sm tracking-tight '
-            iIconSize = 24;
+            iIconSize = 20;
             sTitleContainer += buttonTitle !== '' ? ' mx-1.5  ' : '' 
             break
 
         case 'base':
-            sClassContainer += buttonRounded ? sClassFullRounding + (props.padding ? ' p-' + props.padding : ' p-1.5') : sClassDefaultRounding + ' p-1.5  ';
-            sIconContainer = ' h-7 w-7  ' + (buttonTitle !== '' ? ' mx-1 ' : '');
+            sClassContainer += buttonRounded ? sClassFullRounding + (props.padding ? ' p-' + props.padding : ' p-2') : sClassDefaultRounding + ' p-2  ';
+            sIconContainer = ' h-6 w-6  ' + (buttonTitle !== '' ? ' mx-2 ' : '');
             sClassText += ' text-base tracking-tight '
-            iIconSize = 28;
-            sTitleContainer += buttonTitle !== '' ? ' mx-1 ' : '' 
+            iIconSize = 24;
+            sTitleContainer += buttonTitle !== '' ? ' mx-2 ' : '' 
             break
 
         case 'lg':
-            sClassContainer += buttonRounded ? sClassFullRounding + ' p-2 ' : sClassDefaultRounding + ' px-2 ';
+            sClassContainer += buttonRounded ? sClassFullRounding + ' p-2 ' : sClassDefaultRounding + ' p-2 ';
             sIconContainer = ' h-8 w-8 ' + (buttonTitle !== '' ? ' mx-2 my-0.5 ' : ' mx-2 my-0.5 ');
             sClassText += ' text-lg tracking-tight '
             iIconSize = 32;
