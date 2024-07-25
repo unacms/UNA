@@ -79,7 +79,7 @@ const Content = ({ pagePath, currentUser }) => {
    useEffect(() => {
         if (pageData) {
             const settings = appSetting('layouts', pageData.data.uri)
-            updateCenterHeader(pagePath, pageData.data.name, false, navigation, getRightHeader(settings?.header));
+            updateCenterHeader(pagePath, pageData.data.name, false, navigation, getRightHeader(settings?.header, currentUser), settings?.headerSettings);
         }
     }, [pageData, currentUser?.id]);
 

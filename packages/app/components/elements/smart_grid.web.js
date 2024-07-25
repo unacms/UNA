@@ -320,7 +320,6 @@ export default function (props) {
                     onClose={() => {
                         setAddType(false)
                     }}
-                    presentation='overFullScreen'
                     transparent={true}
                     headerBorder={true}
                     title={(addType.i > 0 ? "Edit " : "Add new ") + addType.type}

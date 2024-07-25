@@ -1,5 +1,5 @@
-import { MasonryFlashList, FlashList } from "@shopify/flash-list";
-import { useContext, useCallback, useState } from 'react';
+import { /*MasonryFlashList,*/ FlashList } from "@shopify/flash-list";
+import { useState } from 'react';
 import { RefreshControl } from 'react-native';
 import { useRouter } from 'expo-router';
 
@@ -41,7 +41,7 @@ export default function UniList(props) {
     }*/
     data = data.filter((v,i,a)=>a.findIndex(t=>(t.id === v.id)) === i);
     
-    if (props.masonry){
+    /*if (props.masonry){
         return (
             <MasonryFlashList
                 ref = {refer}   
@@ -62,25 +62,25 @@ export default function UniList(props) {
             />
         )
     }
-    else{
-        return (
-            <FlashList  
-                ref = {refer}   
-                keyExtractor={item => item.id}
-                onEndReachedThreshold={1}
-                numColumns={numColumns}
-                estimatedItemSize={400}
-                data={data}
-                renderItem={renderItem}
-                onEndReached = {onEndReached} 
-                ListFooterComponent={ListFooterComponent}
-                {...rest}
-                refreshControl={
-                    props.url ? (
-                        <RefreshControl progressViewOffset={100} size={'large'} refreshing={refreshing} onRefresh={onRefresh} />
-                    ) : null
-                }
-            />
-        )
-    }
+    else{*/
+    return (
+        <FlashList  
+            ref = {refer}   
+            keyExtractor={item => item.id}
+            onEndReachedThreshold={1}
+            numColumns={numColumns}
+            estimatedItemSize={400}
+            data={data}
+            renderItem={renderItem}
+            onEndReached = {onEndReached} 
+            ListFooterComponent={ListFooterComponent}
+            {...rest}
+            refreshControl={
+                props.url ? (
+                    <RefreshControl progressViewOffset={100} size={'large'} refreshing={refreshing} onRefresh={onRefresh} />
+                ) : null
+            }
+        />
+    )
+   // }
 }

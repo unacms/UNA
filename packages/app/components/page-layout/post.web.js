@@ -2,8 +2,6 @@ import { View, Row } from 'app/design/view';
 import { BlockByName, DataByName } from 'app/components/block';
 import { useState, useRef,useEffect } from 'react';
 import { getBackButtonWeb } from 'app/lib/conductor-helpers';
-import { KeyboardAvoidingView } from 'react-native';
-import { Platform } from 'react-native'
 import { useWindowDimensions } from 'react-native'
 import { CommentsParts } from 'app/lib/comments-helpers'
 

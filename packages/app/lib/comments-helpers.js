@@ -16,7 +16,7 @@ import { subscribe } from 'app/ui/atoms/socket';
 import { useCurrentUser } from 'app/context/user';
 import Toaster from 'app/ui/atoms/toaster';
 import { useTranslation } from 'react-i18next';
-import { KeyboardAvoidingView } from 'react-native';
+import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
 import { Platform } from 'react-native'
 import { stripTags } from 'app/lib/util';
 
@@ -101,9 +101,9 @@ export function CommentsParts(commentsData, aItems, height = 0, initFormData, is
 
     return [
         <CommentsBrowse height={height > 0 ? height : undefined} addItems={aItems} handleReply={handleReply} browse={commentsData.browse} addData={addData} module={commentsData.browse?.data?.module ? commentsData.browse.data.module : commentsData?.module} requestUrl={commentsData.url} />,
-        <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
+        <KbAvoidingView>
             <CommentsForm isModal={isModal} handleForm={handleForm} browse={commentsData.browse} module={commentsData.browse?.data?.module ? commentsData.browse.data.module : commentsData?.module} form={commentsData.form} formData={formData} requestUrl={commentsData.url} />
-        </KeyboardAvoidingView>
+        </KbAvoidingView>
     ]
 }
 

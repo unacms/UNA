@@ -30,7 +30,7 @@ const OneColumn = memo(() => (
 ));
 
 const Notif = memo(() => (
-    <View className="max-w-4xl w-full mx-auto flex-col p-2 m-2 bg-bgrcard dark:bg-bgrcard-d rounded-md">
+    <View className="max-w-4xl w-full mx-auto flex-col p-2 mb-1 bg-bgrcard dark:bg-bgrcard-d rounded-md">
         <View className="animate-pulse flex-row items-center gap-2">
             <View className="rounded-full bg-neutral-500/40 h-12 w-12"></View>
             <View className="flex-1 gap-1.5">

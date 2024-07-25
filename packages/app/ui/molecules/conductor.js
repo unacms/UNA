@@ -17,7 +17,6 @@ import { useLayoutData } from 'app/context/layout';
 import { menuItemsFilter } from 'app/lib/util';
 
 export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultHeader, menu, data, blocks, useSectionAsMenu, unitMode, skeleton, onChangeRoute, keyword }) {
-   console.log('--------------',data)
     minHeaderHeight = minHeaderHeight || 100; 
     isHideDefaultHeader = isHideDefaultHeader || false;
     useSectionAsMenu = useSectionAsMenu || false;
@@ -88,11 +87,11 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
 
     const glob = useGlobalSearchParams();
 
-    if (isHideDefaultHeader) {
+    /*if (isHideDefaultHeader) {
         setTimeout(() => {
             navigation.setOptions({ headerShown: false });
         }, 300);
-    }
+    }*/
 
     const handleLayout = (event) => {
         scroll.value = event.nativeEvent.contentOffset.y > 200 ? 0 : 1;
@@ -200,12 +199,12 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
 
             const menuSettings = appSetting('menu_items', menu.object);
             setTimeout(() => {
-                //TODO FIX
-                //updateRightHeaderObj(addButtons, navigation);
-                let addButtonsSet = menuSettings?.add?.filter(item => item.hideInTopBar !== true);
-                addButtonsSet = menuItemsFilter(addButtonsSet, currentUser);
-                updateCenterHeader('/'+data.url, data.name, false, navigation, getRightHeader(addButtonsSet));
-               // updateRightHeader(addButtonsSet, navigation, );
+
+                if (!isHideDefaultHeader){
+                    let addButtonsSet = menuSettings?.add?.filter(item => item.hideInTopBar !== true);
+                    addButtonsSet = menuItemsFilter(addButtonsSet, currentUser);
+                    updateCenterHeader('/'+data.url, data.name, false, navigation, getRightHeader(addButtonsSet, currentUser));
+                }
             }, 300);
             /* gap-x-2*/
             return (

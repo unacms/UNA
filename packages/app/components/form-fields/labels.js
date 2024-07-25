@@ -9,6 +9,7 @@ import { useBottomSheetData } from 'app/context/bottomsheet';
 import RadioButton from 'app/ui/atoms/radiobutton';
 
 export default function (props) {
+    console.log("propsprops", props)
     const rules = {};
     const defaultValue = props.value ? props.value : '';
     const formContext = useFormContext();
@@ -20,6 +21,9 @@ export default function (props) {
         value = value.filter(item => item);
         field.onChange(value);
         setBottomSheetData(false);
+        if (props.onShowModal){
+            props.onShowModal(true);
+        }
     }
     const removeValue = (valueToRemove) => {
         const newValue = field.value.filter(item => item !== valueToRemove);
@@ -32,6 +36,9 @@ export default function (props) {
 
     const showSelect = (val) => {
         setBottomSheetData({ title: 'Choose labels', showClose: true, content: <ChkList values={dataFlat} selectedValues={field.value} setFormValue={setFormValue}></ChkList> });
+        if (props.onShowModal){
+            props.onShowModal(false);
+        }
     }
 
     let styles = "justify-start pr-4";

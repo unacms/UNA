@@ -4,7 +4,7 @@ import { useState, useContext } from 'react'
 import { getFormFieldByData } from 'app/lib/form-helpers'
 import { useLayoutData } from 'app/context/layout'
 import { FeedbackHaptics, getAlert } from 'app/lib/util'
-import { KeyboardAvoidingView } from 'react-native'
+import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
 import { Platform } from 'react-native'
 import { Text } from 'app/design/typography'
 import { useCurrentUser } from 'app/context/user'
@@ -59,7 +59,6 @@ export default function FormFeed(props) {
                 onClose={() => {
                     setShowImage(null)
                 }}
-                presentation='overFullScreen'
                 padding = 'sm:p-6 sm:pt-4 pb-1 sm:pb-4 md:pb-0'
                 transparent={true}
                 headerBorder={true}
@@ -70,14 +69,14 @@ export default function FormFeed(props) {
                 {getFormFieldByData(props.data.inputs['type'], props.handleSubmit, 'default')}
 
                 <View className='justify-between mb-4 h-full p-4 sm:p-0'>
-                    <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
+                    <KbAvoidingView>
                         <View className="w-full  flex-col ">
                             <View className=" flex-row flex-wrap gap-x-2 mt-2 flex-auto justify-between ">
                                 <View className=" flex-auto text-base font-bold text-neutral-800 my-auto ">
                                     <Profile {...currentUser} displayType="unit" displaySize="base" />
                                 </View>
                                 <View className="   ">
-                                    {getFormFieldByData(props.data.inputs['object_privacy_view'], props.handleSubmit, 'nofield')}
+                                    {getFormFieldByData(props.data.inputs['object_privacy_view'], props.handleSubmit, 'nofield', { onShowModal: setShowImage, showModal: showImage })}
                                 </View>
 
                             </View>
@@ -106,7 +105,7 @@ export default function FormFeed(props) {
                             {props.data.inputs['labels'] && <Row className="  my-2 border border-bdr dark:border-bdr-d rounded-xl  items-center ">
                                 <Text className="px-4 mr-auto text-sm font-medium text-neutral-800 dark:text-neutral-200">Labels</Text>
                                 <View className="mr-2 flex-auto ">
-                                    {props.data.inputs['labels'] && getFormFieldByData(props.data.inputs['labels'], props.handleSubmit, 'notitle')}
+                                    {props.data.inputs['labels'] && getFormFieldByData(props.data.inputs['labels'], props.handleSubmit, 'notitle', { onShowModal: setShowImage, showModal: showImage })}
                                 </View>
                             
                             </Row>}
@@ -114,7 +113,7 @@ export default function FormFeed(props) {
                         <View className=''>
                         {getFormFieldByData(props.data.inputs['tlb_do_submit'], props.handleSubmit, 'default')}
                         </View>
-                    </KeyboardAvoidingView>
+                    </KbAvoidingView>
                     
                 </View>
             </Modal>

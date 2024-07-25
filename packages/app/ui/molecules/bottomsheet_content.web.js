@@ -40,7 +40,6 @@ export default function ElementCommentForm(props) {
         return (
             <Modal
                 title={bottomSheetData.title}
-                presentation='overFullScreen'
                 onVisible={true}
                 onClose={() => {
                     setBottomSheetData(false)

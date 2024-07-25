@@ -19,9 +19,10 @@ import { storageSet, storageClear, storageGet } from 'app/lib/util'
 import { fetcher } from 'app/lib/fetcher';
 import Bluetooth from 'app/ui/molecules/bluetooth'
 import { useBottomSheetData } from 'app/context/bottomsheet';
+import { Theme } from 'app/design/theme';
 
-
-function getCounter(num, icon = '', add = '') {
+function getCounter(num, icon = '', add = '', color = '') {
+    
     if (!num) num = 0;
     let sColor = 'gray'
 
@@ -38,7 +39,7 @@ function getCounter(num, icon = '', add = '') {
 
     return (
         <Row className={'mb-auto    text-' + sColor + '-800 bg-' + sColor + '-200 dark:bg-' + sColor + '-950 gap-x-1 py-1 px-2 rounded-full mb-auto dark:text-' + sColor + '-200 '}>
-            <Icon className={"text-" + sColor + "-600 dark:text-" + sColor + "-400"} icon={icon}  size={16} />
+            <Icon color={color} className={"text-" + sColor + "-600 dark:text-" + sColor + "-400"} icon={icon}  size={16} />
             <Text className={"flex-none text-" + sColor + "-800 dark:text-" + sColor + "-200 text-xs"}>{num}{add}</Text>
         </Row>
     )
@@ -277,6 +278,8 @@ export default function PageLayout(props) {
 
 
 function ElementDashboardStat(props) {
+    
+    const { colors } = Theme();
     const { t } = useTranslation();
     const [data, setData] = useState(props.data);
     let { currentUser, setCurrentUser } = useCurrentUser()
@@ -310,7 +313,7 @@ function ElementDashboardStat(props) {
                                                     {item.count}
                                                 </Text> : <View><Link href={item2.link2} emulate={true}><Button variant="outline" startDecorator="Plus" size="sm" rounded /></Link></View>
                                             }
-                                            {getCounter(item[item2.action], item2.action_icon)}
+                                            {getCounter(item[item2.action], item2.action_icon, '', colors.default)}
                                         </Row>
                                         <Row className="w-full my-auto gap-x-2 ">
 
@@ -318,7 +321,7 @@ function ElementDashboardStat(props) {
                                                 {t(item2.title)}
                                             </Text>
                                             <View className="flex-none text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold ">
-                                                <Icon icon={item2.icon} width={24} height={24} />
+                                                <Icon icon={item2.icon} width={24} height={24} color={colors.default}/>
                                             </View>
                                         </Row>
                                     </Card>
@@ -333,7 +336,7 @@ function ElementDashboardStat(props) {
                                             <Text className=" text-3xl -translate-y-1 font-semibold flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white  ">
                                                 {item.current}
                                             </Text>
-                                            {getCounter(item.growth, '', '%')}
+                                            {getCounter(item.growth, '', '%', colors.default)}
 
                                         </Row>
                                         <Row className="w-full gap-x-2">
@@ -342,7 +345,7 @@ function ElementDashboardStat(props) {
                                                 {t(item2.title)}
                                             </Text>
                                             <View className="flex-none text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold ">
-                                                <Icon icon={item2.icon} width={24} height={24} />
+                                                <Icon icon={item2.icon} width={24} height={24} color={colors.default} />
                                             </View>
                                         </Row>
                                     </Card>
@@ -365,7 +368,7 @@ function ElementDashboardStat(props) {
 
                                     <Row className="w-full my-auto gap-x-2 items-center">
                                         <View className="flex-none text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold ">
-                                            <Icon icon={item2.icon} width={24} height={24} />
+                                            <Icon icon={item2.icon} width={24} height={24} color={colors.default}/>
                                         </View>
                                         <Text className=" sm:text-lg flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold ">
                                             {t(item2.title)}

@@ -8,6 +8,7 @@ import { truncateString } from 'app/lib/util';
 import RbList from 'app/ui/molecules/radio_list';
 
 export default function (props) {
+    console.log("propsprops--------------------", props.onShowModal, props.showImage)
     const name = props.name;
     const rules = getValidationRules(props);
     const formContext = useFormContext();
@@ -16,23 +17,32 @@ export default function (props) {
     const { setBottomSheetData } = useBottomSheetData();
     const { field } = useController({ name, rules, defaultValue });
 
-    useEffect(() => {
+    /*useEffect(() => {
+        console.log("----", field.value, value)
         if (value != field.value)
             field.onChange(value);
     }, [value]);
-
+*/
     const setValueF = (val) => {
-        setValue(val);
+        field.onChange(val);
+        //setValue(val);
         if (props.onChange) {
             props.onChange(val)
         }
+        if (props.onShowModal){
+            props.onShowModal(true);
+        }
         setBottomSheetData(false);
+        
     }
 
     let values = getVisibilityValues(props.values);
     values = values.filter(item => item.value != '6' && item.value != '8');
     const showSelect = (val) => {
-        setBottomSheetData({ title: 'Choose audience',showClose:true, snapPoints: ['70%', '70%'], content: <RbList values={values} setValue={setValueF} selectedValue={field.value} /> });
+        setBottomSheetData({ title: 'Choose audience',showClose:false, snapPoints: ['70%', '70%'], content: <RbList values={values} setValue={setValueF} selectedValue={field.value} /> });
+        if (props.onShowModal){
+            props.onShowModal(false);
+        }
     }
     
     if (props.format == 'nofield'){

@@ -1,23 +1,17 @@
-import { useColorScheme } from 'react-native';
 import { Button } from 'app/design/controls';
 import Link from 'app/ui/atoms/link'
-import { View, Row, Pressable } from 'app/design/view'; 
-import { Text } from 'app/design/typography'
-import { Icon } from 'app/ui/atoms/icon'; 
-import { appStatic } from 'app/lib/app-static';
+import { View } from 'app/design/view'; 
 import Search from 'app/ui/molecules/search';
-import { FeedbackHaptics } from 'app/lib/util';
-import { appSetting } from 'app/lib/util'
-import { useRouter } from "expo-router";
+import { menuItemsFilter } from 'app/lib/util';
 import Header from 'app/components/nav/header';
-
+/*
 export function updateRightHeader(items, navigation) {
     let addButtons = items?.map((button) => {
         let btn = undefined;
         if(button.section || button.link == 'search')
-            btn = <Search section={button.section} params={{trigger: {size: 'base', variant: 'secondary' }}} />
+            btn = <Search section={button.section} params={{trigger: {size: 'sm', variant: 'secondary' }}} />
         else {
-            btn = <Button rounded title={button.title} variant='secondary' startDecorator={button.icon} size="base" />;
+            btn = <Button rounded title={button.title} variant='secondary' startDecorator={button.icon} size="sm" />;
             btn = button.link ? <Link href={button.link } >{btn}</Link> : btn
         }
 
@@ -30,7 +24,7 @@ export function updateRightHeader(items, navigation) {
     if (addButtons) {
         navigation.setOptions({ headerRight: () => (addButtons) });
     }
-};
+};*/
 
 /*export function updateRightHeaderObj(addButtons, navigation) {
 
@@ -39,7 +33,8 @@ export function updateRightHeader(items, navigation) {
     }
 };*/
 
-export function getRightHeader(items) {
+export function getRightHeader(items, currentUser) {
+    items = menuItemsFilter(items, currentUser);
     let addButtons = items?.map((button) => {
         let btn = undefined;
         if(button.section || button.link == 'search')
@@ -57,13 +52,17 @@ export function getRightHeader(items) {
     return addButtons;
 };
 
-export function updateCenterHeader(_path, header, backButtonPresented, navigation, rightComponents) {
-    console.log("updateCenterHeader",_path,header,  rightComponents)
-    navigation.setOptions({ 
-        headerBackVisible: false, 
-        header:(props) => <Header backButtonPresented={backButtonPresented} header={header} pagePath={_path} rightComponents={rightComponents}/>,
-        headerShown: true
-    });
+export function updateCenterHeader(_path, header, backButtonPresented, navigation, rightComponents, headerSettings) {
+    if (headerSettings?.header === false){
+        navigation.setOptions({ headerShown: false });
+    }
+    else{
+        navigation.setOptions({ 
+            headerBackVisible: false, 
+            header:(props) => <Header backButtonPresented={backButtonPresented} header={header} pagePath={_path} rightComponents={rightComponents}/>,
+            headerShown: true
+        });
+    }
 }
 
 /*export function updateCenterHeader(_path, header, backButtonPresented, navigation, routerExpo, colors, icon, leftComponent, currentUser) {

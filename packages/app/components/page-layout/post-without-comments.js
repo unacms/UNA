@@ -3,7 +3,7 @@ import {BlockByName, DataByName} from 'app/components/block';
 import { useState, useRef } from 'react';
 import { stripTags } from 'app/lib/util';
 import { Dimensions } from 'react-native';
-import { KeyboardAvoidingView } from 'react-native';
+import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
 import { Platform, Keyboard } from 'react-native'
 import Card from 'app/ui/molecules/card'
 
@@ -89,8 +89,7 @@ export default function PageLayout(props) {
                 </View>
                 </Row>
                 <View ref={viewFormRef} style={{width:sizes.formWidth}} onLayout={handleLayout} className={isStycky? ' fixed bottom-16 lg:bottom-0 w-full' : ' w-full'} > 
-                    <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
-                    </KeyboardAvoidingView>
+                <KbAvoidingView></KbAvoidingView>
                 </View>
             </Card>
         </View> 

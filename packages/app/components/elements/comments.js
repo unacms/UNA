@@ -1,6 +1,6 @@
 import { View, Row } from 'app/design/view';
 import { useState, useRef, useEffect } from 'react';
-import { KeyboardAvoidingView } from 'react-native';
+import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
 import { Platform } from 'react-native'
 import { CommentsBrowse, CommentsForm } from 'app/lib/comments-helpers'
 
@@ -29,11 +29,11 @@ export default function (props) {
         <View className=''>
             <CommentsBrowse commentsTitle="Reviews" classesBrowse='items-center my-4' addItems={aItems} handleReply={handleReply} browse={props.browse} addData={addData} module={props.browse?.data?.module ? props.browse.data.module : ''} requestUrl={props.url} />
         </View>
-        {!!form ? <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
+        {!!form ? <KbAvoidingView>
             <View className='border-bdrcard dark:border-bdrcard-d  border-t border-bdr dark:border-bdr-d mt-12'>
                 <CommentsForm handleForm={handleForm} browse={props.browse} module={props.browse?.data?.module ? props.browse.data.module : ''} form={form} formData={formData} requestUrl={props.url} />
             </View>
-        </KeyboardAvoidingView> : <View className='mt-12'></View>}
+        </KbAvoidingView> : <View className='mt-12'></View>}
 
     </>
 }

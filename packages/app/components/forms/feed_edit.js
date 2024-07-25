@@ -4,7 +4,7 @@ import { useState, useContext } from 'react';
 import { getFormFieldByData } from 'app/lib/form-helpers'
 import  { useLayoutData } from 'app/context/layout';
 import { FeedbackHaptics, getAlert } from 'app/lib/util';
-import { KeyboardAvoidingView } from 'react-native';
+import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
 import { Platform } from 'react-native'
 import { useCurrentUser } from 'app/context/user';
 import Profile from 'app/ui/molecules/profile';
@@ -45,7 +45,7 @@ export default function FormFeed(props) {
         {getFormFieldByData(props.data.inputs['object_cf'], props.handleSubmit,  'default')}
         {getFormFieldByData(props.data.inputs['owner_id'], props.handleSubmit,  'default')}
         {getFormFieldByData(props.data.inputs['type'], props.handleSubmit,  'default')}
-        <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
+        <KbAvoidingView>
             <View className='w-full flex-col pt-2 px-2'>
                 {getFormFieldByData(props.data.inputs['text'], props.handleSubmit, 'custom', {placeholder: 'Write your text here...'})}
                 <Row className='mt-2'>
@@ -58,6 +58,6 @@ export default function FormFeed(props) {
                 {getFormFieldByData(props.data.inputs['tlb_do_submit'], props.handleSubmit,  'default')}
 
             </View>  
-        </KeyboardAvoidingView> 
+        </KbAvoidingView> 
     </View>
 }

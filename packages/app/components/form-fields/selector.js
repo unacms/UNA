@@ -9,9 +9,8 @@ import { useBottomSheetData } from 'app/context/bottomsheet';
 import RadioButton from 'app/ui/atoms/radiobutton';
 
 export default function (props) {
-
+ 
     const rules = {};
-    console.log("props?.value", props?.value)
     const defaultValue = props?.value ? (Array.isArray(props.value) ? props.value.map(String) : [props.value]) : '';
     const name = props.name ? props.name : '';
     const { field } = useController({ name, rules, defaultValue });
@@ -36,6 +35,7 @@ export default function (props) {
     else
         dataFlat = Object.entries(props.values).map(([key, value]) => ({ key: String(key), value }));
     const showSelect = (val) => {
+       // if ()
         setBottomSheetData({ title: 'Choose', showClose: true, content: <ChkList values={dataFlat} selectedValues={field.value} setFormValue={setFormValue} /> });
     }
 

@@ -111,7 +111,6 @@ export default function ElementEntityAuthor(oProps) {
                 onClose={() => {
                     setViewState({ view: '' })
                 }}
-                presentation='overFullScreen'
 
                 transparent={true}
                 headerBorder={true}

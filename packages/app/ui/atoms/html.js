@@ -35,15 +35,17 @@ const customHTMLElementModels = {
 };
 
 function onElement(element) {
+    let cls = '';
     if (element?.parent?.children[0] === 'p') {
-        element.parent.children[0] = { class: 'firstP' }
+        if (element?.parent?.children.length === 1)
+            element.parent.children[0].attribs.class = 'firstP lastP';
+        else
+            element.parent.children[0] = { class: 'firstP' }
     }
-    if (element?.parent?.children[element.parent.children.length - 1] === 'p') {
+    if (element?.parent?.children[element.parent.children.length - 1] === 'p' && element.parent.children.length > 1) {
         element.parent.children[element.parent.children.length - 1].attribs = { class: 'lastP' }
     }
-    if (element?.parent?.children.length === 1 && element.parent.children[0]?.name === 'p') {
-        element.parent.children[0].attribs.class = 'firstP lastP';
-    }
+    
 }
 
 const domVisitors = {
@@ -91,8 +93,11 @@ export default function ElementHtml(props) {
         h4: {
             color: colors.default
         },
+       /* p: {
+            margin: 2
+        },*/
         p: {
-            marginTop: 0
+            margin: 0
         },
         ul: {
             margin: 0,

@@ -28,6 +28,24 @@ function formatText(text) {
             return `@[${name}](7)`; // Replace '8' with the appropriate ID if needed
         }
     );
+
+    v = v.replace(/<p>/g, '\n');
+    
+    // Remove </p>
+    v = v.replace(/<\/p>/g, '');
+    
+
+    
+    // Remove first \n if it exists
+    if (v.startsWith('\n')) {
+        v = v.slice(1);
+    }
+    
+    // Remove last \n if it exists
+    if (v.endsWith('\n')) {
+        v = v.slice(0, -1);
+    }
+
     return v;
 }
 

@@ -5,7 +5,7 @@ import { useState, useRef, useEffect} from 'react';
 import { getBackButtonWeb } from 'app/lib/conductor-helpers';
 import { CommentsBrowse, CommentsForm } from 'app/lib/comments-helpers'
 import { Dimensions } from 'react-native';
-import { KeyboardAvoidingView } from 'react-native';
+import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
 import { Platform } from 'react-native'
 import { stripTags,parseUrl, parseQueryString } from 'app/lib/util';
 import { useWindowDimensions } from 'react-native'
@@ -127,9 +127,9 @@ export default function PageLayout(props) {
                         </View>
                     </Row>
                     <View ref={viewFormRef} style={{width:sizes.formWidth}} onLayout={handleLayout} className={isStycky? ' bg-bgrcard dark:bg-bgrcard-d border-bdrcard dark:border-bdrcard-d fixed bottom-0 w-full' : ' w-full'} > 
-                        <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
+                        <KbAvoidingView>
                             <CommentsForm handleForm={handleForm} browse={commentsData?.content[0].browse} module={commentsData?.content[0].browse?.data?.module ? commentsData?.content[0].browse.data.module : commentsData?.module} form={commentsData?.content[0].form} formData={formData} requestUrl={commentsData?.content[0].url} isModal={false} />         
-                        </KeyboardAvoidingView>
+                        </KbAvoidingView>
                     </View>
                 </View>
             </View>

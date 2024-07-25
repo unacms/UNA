@@ -1,10 +1,12 @@
-import React, { useCallback, useMemo, useRef, useContext } from 'react';
-import BottomSheet, { BottomSheetScrollView, BottomSheetFooter } from '@gorhom/bottom-sheet';
+import React, { useCallback, useMemo, useRef, useContext, useEffect } from 'react';
+import BottomSheet, { BottomSheetModalProvider, BottomSheetModal, BottomSheetScrollView, BottomSheetFooter } from '@gorhom/bottom-sheet';
 import { StyleSheet } from "react-native";
-
+import { Theme } from 'app/design/theme';
 
 
 export default function ElementCommentForm(props) {
+    const { colors } = Theme();
+    const bottomSheetModalRef = useRef(null);
     //const bottomSheetRef = useRef(null);
     const snapPoints = useMemo(() => (props.snapPoints ? props.snapPoints : ['50%', '90%']), []);
     const handleSheetChanges = useCallback((index) => {
@@ -29,9 +31,15 @@ export default function ElementCommentForm(props) {
         },
     });
 
+    useEffect(() => {
+        bottomSheetModalRef.current?.present();
+    }, []);
+
     return (
-        <BottomSheet backgroundStyle={{ backgroundColor: 'white' }}
+        <BottomSheetModalProvider>
+        <BottomSheetModal backgroundStyle={{backgroundColor: colors.bottomSheetBackground}}
             /* ref={bottomSheetRef}*/
+            ref={bottomSheetModalRef}
             index={1}
             snapPoints={snapPoints}
             /*enableDynamicSizing={true}*/
@@ -44,6 +52,7 @@ export default function ElementCommentForm(props) {
                 {props.children}
             </BottomSheetScrollView>
             }
-        </BottomSheet>
+        </BottomSheetModal>
+        </BottomSheetModalProvider>
     )
 }

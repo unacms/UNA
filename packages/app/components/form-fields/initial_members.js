@@ -9,7 +9,7 @@ import { Button, InputRounded } from 'app/design/controls'
 import Loading from 'app/ui/atoms/loading'
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { Icon } from 'app/ui/atoms/icon'
-import { KeyboardAvoidingView, Platform } from 'react-native'
+import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
 
 const User = ({ data, onSelect, type }) => {
     return (
@@ -80,7 +80,7 @@ export function SelectUsers({ onSave, initedData = [], requestUrl, isSingle = fa
     }, [state.selectedUsers, isSingle]);
 
     return <View className="">
-        <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
+        <KbAvoidingView>
             <Row className="text-center w-full  flex-wrap gap-x-2 py-2">
                 {state.selectedUsers && state.selectedUsers.map((item) => <User key={item.id} data={item} onSelect={onRemove} />)}
             </Row>
@@ -98,7 +98,7 @@ export function SelectUsers({ onSave, initedData = [], requestUrl, isSingle = fa
                 {state.showLoading && <View className=' w-full items-center justify-center py-2'><Loading /></View>}
                 {state.suggestedUsers.length == 0 && state.searchText != '' && !state.showLoading && <Text className="text-sm py-2">Nothing found</Text>}
             </Row>
-        </KeyboardAvoidingView>
+        </KbAvoidingView>
     </View>
 };
 

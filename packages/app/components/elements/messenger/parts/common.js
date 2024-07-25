@@ -12,10 +12,9 @@ import { Platform } from 'react-native'
 import useSWR from "swr";
 import { useCurrentUser } from 'app/context/user';
 import { subscribe } from 'app/ui/atoms/socket';
-import { KeyboardAvoidingView } from 'react-native';
+import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
 import ItemConvo from 'app/components/elements/messenger/parts/item-convo';
 import ItemJot from 'app/components/elements/messenger/parts/item-jot';
-import { useTheme } from '@react-navigation/native';
 import { Nav2 } from 'app/components/elements/messenger/parts/nav';
 import { linkedText } from 'app/lib/text-helpers';
 import CreateConvo, { CreateConvoButton } from 'app/components/elements/messenger/parts/new-convo';
@@ -23,7 +22,6 @@ import Msg from 'app/ui/molecules/msg';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import Profile from 'app/ui/molecules/profile'
 import { useRouter } from "expo-router";
-import { useHeaderHeight } from "@react-navigation/elements";
 
 
 export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, fetchConvos, data, onSave, addButtons }) {
@@ -307,16 +305,12 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
             fetchItems(selectedConvo.id, true);
     };
 
-
-
     const handleBackButton = () => {
         if (!panelsVisible.convos)
             showConvo()
         else
             routerExpo.back(); 
     };
-    const headerHeight = useHeaderHeight();
-
 
     const convosComponent = panelsVisible.convos && <Convos
         layoutHeightLeft={layoutHeightLeft}
@@ -330,7 +324,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     />
 
     const jotsComponent = (panelsVisible.jots && selectedConvo && jots?.data?.jots) && <View className={' w-full md:w-3/5 h-full flex-1 bg-bgrcard dark:bg-bgrcard-d'}>
-          <KeyboardAvoidingView className='w-full h-full flex-1' keyboardVerticalOffset={58 + headerHeight} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
+          <KbAvoidingView className='w-full h-full flex-1'>
         <View className='w-full flex-auto'>
       
             <Jots
@@ -355,7 +349,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
             handleCancelReply={handleCancelReply}
             handleLayout={handleLayout}
         />
-         </KeyboardAvoidingView>
+         </KbAvoidingView>
     </View>
 
     if (!isWeb) {
@@ -436,7 +430,7 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
 
     return (<>
         <View className='md:px-0 border-bdrcard dark:border-bdrcard-d border-b'>
-            {isWeb && <Row className='px-1 py-3 items-center justify-between w-full'>
+            {isWeb && <Row className='px-2 py-3 items-center justify-between w-full'>
                 <Row className='items-center justify-start overflow-hidden flex-auto'>
                     {isSmallScreen && <Button variant="text" startDecorator='ArrowLeft' rounded align="start" onPress={() => showConvo()} />}
                     <Text  numberOfLines={1} className="text-lg lg:text-xl font-bold font-bold tracking-tight  text-neutral-900 dark:text-neutral-50">{title}</Text>

@@ -5,10 +5,10 @@ import { stripTags } from 'app/lib/util';
 import { useTheme } from '@react-navigation/native';
 import { Platform } from 'react-native'
 import { CommentsBrowse, CommentsForm } from 'app/lib/comments-helpers'
-import { KeyboardAvoidingView } from 'react-native';
+import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
 import { useNavigation, useRouter} from "expo-router";
 import { updateCenterHeader } from 'app/lib/native-handlers'
-import { Dimensions, Keyboard } from 'react-native';
+import { Keyboard } from 'react-native';
 import { useCurrentUser } from 'app/context/user';
 
 export default function PageLayout(props) {
@@ -89,11 +89,11 @@ export default function PageLayout(props) {
                     <CommentsBrowse addItems = {aItems} handleReply={handleReply} browse={commentsData.content[0].browse} addData={addData} module={commentsData?.content[0].browse?.data?.module ? commentsData?.content[0].browse.data.module : commentsData?.module} requestUrl={commentsData.content[0].url} />
                 </View>
             </View>                
-            <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
+            <KbAvoidingView>
                 <View ref={viewFormRef} onLayout={handleLayout} className='border-bdrcard dark:border-bdrcard-d  border-t border-bdr dark:border-bdr-d'> 
                     <CommentsForm handleForm={handleForm} browse={commentsData.content[0].browse} module={commentsData?.content[0].browse?.data?.module ? commentsData?.content[0].browse.data.module : commentsData?.module} form={commentsData.content[0].form} formData={formData} requestUrl={commentsData.content[0].url} />         
                 </View>
-            </KeyboardAvoidingView>
+            </KbAvoidingView>
 
         </View>
     )

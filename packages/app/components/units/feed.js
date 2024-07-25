@@ -92,7 +92,6 @@ const ItemInfo = ({ data, t }) => {
             onClose={() => {
                 setShowContextList(false)
             }}
-            presentation='overFullScreen'
             transparent={true}
             headerBorder={true}
             title="Posted to"
@@ -390,8 +389,6 @@ function DefaultUnit(data) {
                             onClose={() => {
                                 setViewState({ view: '' })
                             }}
-                            presentation='overFullScreen'
-
                             transparent={true}
                             headerBorder={true}
                         >

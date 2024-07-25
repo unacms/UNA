@@ -21,7 +21,7 @@ import Link from 'app/ui/atoms/link'
 import { stripTags, appSetting } from 'app/lib/util';
 import Carousel from 'app/ui/molecules/carousel'
 import { componentsMap } from 'app/ui/molecules/_map'
-import { KeyboardAvoidingView } from 'react-native';
+import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
 import { StarsView } from 'app/ui/atoms/stars';
 import { useLocalSearchParams, useGlobalSearchParams } from 'expo-router';
 
@@ -199,10 +199,10 @@ useEffect(()=> {
                         <View className='text-neutral-900 dark:text-neutral-50'>
                             {viewState.view == 'edited' ? (
                                 <View className='-translate-y-5'>
-                                    <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
+                                    <KbAvoidingView>
                                         <View className='ml-auto mb-2'><Button align="start" title="Cancel" size="xs" startDecorator="X" variant="outline" onPress={() => setViewState({ view: '' })} rounded /></View>
                                         <Form {...viewState.data} classContainerName="flex-row flex-wrap w-full  items-start justify-between" onFormSubmit={onFormSubmit} />
-                                    </KeyboardAvoidingView>
+                                    </KbAvoidingView>
                                 </View>
                             ) : <Html htmlStyles={{ fontSize: 14 }} customClassName='u-vanilla-html-small' data={linkify(data.cmt_text)} />}
                             {!!data.cmt_mood && <StarsView rating={data.cmt_mood} starSize={20} />}
