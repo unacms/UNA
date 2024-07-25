@@ -18,6 +18,7 @@ import { appStatic } from 'app/lib/app-static'
 import { useTranslation } from 'react-i18next'
 import { useWindowDimensions } from 'react-native';
 import Image from 'app/ui/atoms/image'
+import { Theme } from 'app/design/theme';
 
 
 function SplashBlock(props) {
@@ -56,7 +57,7 @@ export default function PageLayout(props) {
     )
 
     const {height: windowHeight} = useWindowDimensions();
-   
+    const { colors } = Theme();
 
     const feedList = appSetting('feed', 'list');
     const [feedHeight, setFeedHeight] = useState(windowHeight - 64 -64 - (feedList.length > 1 ? 40 : 0));
@@ -149,7 +150,7 @@ export default function PageLayout(props) {
             )}
             {!!currentUser && (
                 <>
-                 <View className='bg-bgrnavbar border-b border-bdr dark:border-bdr-d dark:bg-bgrnavbar-d min-w-full'>
+                 <View style={{ backgroundColor: colors.barsBackground }} className=' border-b border-bdr dark:border-bdr-d  min-w-full'>
                  <ScrollView horizontal={true} className="w-full ">
                     <Row className=" px-1.5  justify-center  ">
                         {feedList.length > 1 &&

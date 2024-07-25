@@ -15,6 +15,7 @@ import { useCurrentUser } from 'app/context/user'
 import { useRouter, useGlobalSearchParams } from 'expo-router';
 import { useLayoutData } from 'app/context/layout';
 import { menuItemsFilter } from 'app/lib/util';
+import { Theme } from 'app/design/theme';
 
 export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultHeader, menu, data, blocks, useSectionAsMenu, unitMode, skeleton, onChangeRoute, keyword }) {
     minHeaderHeight = minHeaderHeight || 100; 
@@ -177,6 +178,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
     };
 
     const renderScene = useCallback(({ route }) => <TabScene route={route} index={route.index} />, [unitMode]);
+    const { colors } = Theme();
 
     const renderTabBar = (props) => {
 
@@ -208,7 +210,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
             }, 300);
             /* gap-x-2*/
             return (
-                <ScrollView horizontal={true} className="bg-bgrnavbar border-b border-bdr dark:border-bdr-d dark:bg-bgrnavbar-d min-w-full">
+                <ScrollView horizontal={true}  style={{ backgroundColor: colors.barsBackground }} className=" border-b border-bdr dark:border-bdr-d min-w-full">
                     <Row className="px-1.5 " >
                         {props.navigationState.routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
                             const counter = appSetting('layout', 'show_nav_counters') ? 0 : a.addon ? (a.addon.text ? a.addon.text : a.addon) : 0;

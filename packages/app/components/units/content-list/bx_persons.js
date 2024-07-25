@@ -173,7 +173,7 @@ function getMenuItemConfigs(unitType, data, handleClick, t, setPopupVisible) {
 
 function ImageSection({ data, imageSizes }) {
     return (
-        <View className="aspect-square mr-1 sm:mr-0 sm:w-full rounded-xl overflow-hidden items-center justify-center">
+        <View className=" aspect-square  sm:w-full rounded-xl overflow-hidden items-center justify-center">
             <Image
                 src={data?.image?.src}
                 alt={data.title}
@@ -217,25 +217,25 @@ export default function Unit(props) {
     return (
         <>
             <Redirect ref={redirectdRef} />
-            <Card margin="  m-1 sm:m-2 " rounded=" rounded-2xl ">
+            <Card margin=" mb-[1px] sm:m-2 " border="border-none sm:border" rounded=" sm:rounded-2xl ">
                 <Link className="group " href={data.url}>
-                    <View className="flex-row sm:flex-col p-1 h-36 sm:h-auto">
+                    <View className="flex-row  sm:flex-col p-3 sm:p-1 h-32 sm:h-40 sm:h-auto">
                         <ImageSection data={data} imageSizes={imageSizes} />
-                        <View className="flex-col p-2 flex-auto items-between justify-between ">
+                        <View className="flex-col pl-3 sm:p-1.5 flex-auto items-between justify-between ">
                             <View className='flex-auto mb-auto'>
-                                <Text numberOfLines={1} className=" mt-1 text-base leading-tight tracking-tight font-semibold text-neutral-800 dark:text-neutral-200 group-hover:text-primary group-hover:dark:text-primary-d">
+                                <Text numberOfLines={1} className=" mb-2 text-lg leading-tight tracking-tight font-semibold text-neutral-800 dark:text-neutral-200 group-hover:text-primary group-hover:dark:text-primary-d">
                                     {data.title}
                                 </Text>
-                                <Row className="items-center h-6 mt-2">
-                                    <View className="mr-2 h-6">
+                                <Row className="items-center  mb-2">
+                                    <View className="mr-2">
                                         <ProfilesListCnt data={isFollowers ? data.followers_list : (data.mutual_friends_count > 0 ? data.mutual_friends_list : data.friends_list)} />
                                     </View>
-                                    <Text className="truncate text-xs leading-tight flex-auto text-neutral-600 dark:text-neutral-400">
+                                    <Text className="truncate text-sm leading-tight flex-auto text-neutral-600 dark:text-neutral-400">
                                         {isFollowers ? data?.followers_count + " followers" : friendsLabel}
                                     </Text>
                                 </Row>
                             </View>
-                            <View className="flex-row w-full mt-4 ">
+                            <View className="flex-row w-full  ">
                                 {oMenuItemPrimary}
                                 {bMenuItemsMoreShow && !!oMenuItemsMore &&
                                     oMenuItemsMore.items.length > 0 && (
