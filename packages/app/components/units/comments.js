@@ -209,14 +209,14 @@ useEffect(()=> {
                         </View>
                         {(viewState.view != 'edited' && aImg.length > 0) && <View className=' max-w-lg'><Carousel data={aImg} /></View>}
                     </View>
-                    {viewState.view != 'edited' && <View className=' mb-1 flex-row w-full  items-center'>
+                    {viewState.view != 'edited' && <View className=' flex-row w-full items-center'>
                         {(!!currentUser && !!props.handleReply && !props.module.includes('_reviews')) ? <View className='mr-2'>
                             <Button align="start" title={t("Reply")} size="xs" startDecorator="ArrowBendLeftUp" variant="text" onPress={() => handleReply(data)} rounded />
-                        </View> : <View className='mr-2'></View>
+                        </View> : <View></View>
                         }
                         {(!!currentUser && !props.handleReply && !props.module.includes('_reviews')) ? <View className='mr-2'>
                             <Link href={props.contentUrl+'#cmt_id='+data.cmt_id}><Button align="start" title={t("Reply")} size="xs" startDecorator="ArrowBendLeftUp" variant="text" rounded /></Link>
-                        </View> : <View className='mr-2'></View>
+                        </View> : <View></View>
                         }
                         <View className='flex-row flex-auto '>
                             <Menu {...data.menu_actions} displayType="element" showMatched={true} params={{ show_action: true, show_counter: true, show_combined: true, display_size: 'xs', button_variant: 'text' }} />
