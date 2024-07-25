@@ -45,7 +45,7 @@ export default function ({ backButtonPresented, pagePath, rightComponents, heade
                 </View>}
             </Row>
             {type != 'string' && <View className='flex-auto'>{header}</View>}
-            {rightComponents && <Row className='ml-3 gap-x-3'>
+            {rightComponents && <Row className='ml-2 gap-x-2'>
                 {rightComponents}
             </Row>}
         </Row>

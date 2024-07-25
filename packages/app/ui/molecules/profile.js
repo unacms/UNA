@@ -156,7 +156,7 @@ export default function AtomProfile(oProps) {
         return <></>
         return (
             <View className="flex-row ">
-                <Text className="mr-2 text-neutral-600 dark:text-neutral-400 text-sm    tracking-tight">
+                <Text className="mr-2 text-neutral-600 dark:text-neutral-400 text-sm tracking-tight">
                     user
                 </Text>
             </View>

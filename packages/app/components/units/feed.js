@@ -606,7 +606,7 @@ function DefaultUnit(data) {
                         <View className="flex-col relative ">
                             {bIsTimelineContent && (
                                 <View className={' ' + ((data.content.text && content_attach.length > 0) ? ' pb-4 ' : '')}>
-                                    <ContentMore id={'feed-' + data.id} showLink={data?.content?.images_attach?.length == 0} content={data.content.text ? data.content.text : ''} numberOfLines={3} openSmall={false} textClassName="font-default text-base text-neutral-600 dark:text-neutral-400" />
+                                    <ContentMore id={'feed-' + data.id} showLink={data?.content?.images_attach?.length == 0} content={data.content.text ? data.content.text : ''} numberOfLines={3} openSmall={false} textClassName=" text-neutral-600 dark:text-neutral-400 text-sm " />
                                     {!!data.content.embed && <Embed data={data.content.embed}/>}
                                 </View>
                             )}
@@ -623,9 +623,9 @@ function DefaultUnit(data) {
                 </View>
             </View>
             {bIsTimelineContent && (
-                <View className="">
+                
                     <UnitImages images={imgs} />
-                </View>
+                
             )}
         </>
 

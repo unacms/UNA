@@ -34,7 +34,7 @@ function Small({ data, showPad }) {
         <View className=" bg-bgrcard  dark:bg-bgrcard-d sm:border-x  border-bdr dark:border-bdr-d w-full mx-auto  ">
             <View className=' bg-primary/10 dark:bg-primary-d/10 sm:bg-transparent dark:bg-bgritem-d rounded-lg flex-col px-2.5 py-2 sm:p-0 mx-4 mb-2 mt-4'>
                 <Text className="font-bold text-neutral-900 dark:text-neutral-50 text-base sm:text-xl ">{data.entry_title}</Text>
-                <ContentMore content={text} numberOfLines={3} textStyle={oCommentTextStyle} openSmall={false} textClassName="font-default text-base text-neutral-600 dark:text-neutral-400" />
+                <ContentMore content={text} numberOfLines={3} textStyle={oCommentTextStyle} openSmall={false} textClassName=" text-sm text-neutral-600 dark:text-neutral-400" />
             </View>
         </View>
     );
@@ -64,7 +64,7 @@ function Default({ data, showPad, sidebar, block }) {
             {(data.image) && <View className="w-full aspect-[2/1] rounded-xl overflow-hidden my-2 lg:mt-6"><Image {...data.image} alt={data.title} sizes="(max-width:1024px) 100vw, 1024px" className=" u-cover" view="cover" /></View>}
             <View className={"mx-auto w-full " + (showPad == false || sidebar ? '' : ' ')}>
                 {isSmall ? <TextMore tagName='h1' text={data.entry_title} numberOfLines={2} className="font-bold tracking-tight  text-neutral-900 dark:text-neutral-50 "></TextMore> :  <H1 className="font-bold tracking-tight  text-neutral-900 dark:text-neutral-50 ">{data.entry_title}</H1>}
-                {isSmall ? <ContentMore numberOfSymbols={200} showLess={true} content={text} numberOfLines={3}  openSmall={false} textClassName="font-default text-base text-neutral-600 dark:text-neutral-400" /> :  <Html data={text} />}
+                {isSmall ? <ContentMore numberOfSymbols={200} showLess={true} content={text} numberOfLines={3}  openSmall={false} textClassName="  text-sm text-neutral-600 dark:text-neutral-400" /> :  <Html data={text} />}
                 
             </View>
             <EntityAttachments data={att} />
