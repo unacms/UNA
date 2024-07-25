@@ -246,32 +246,32 @@ export function Button(props) {
         case 'xs':
             sClassContainer += buttonRounded ? sClassFullRounding + ' p-1 ' : sClassDefaultRounding + ' p-1 ';
             sIconContainer = ' h-5 w-5 ' + (buttonTitle !== '' ? ' mx-[1px] ' : '');
-            sClassText += ' text-sm '
+            sClassText += ' text-xs tracking-tight '
             iIconSize = 20;
             sTitleContainer += buttonTitle !== '' ? 'mx-1 ' : '' 
             break
 
         case 'sm':
-            sClassContainer += buttonRounded ? sClassFullRounding + ' p-1.5 ' : sClassDefaultRounding ;
-            sClassContainer += (buttonType != 'none' ? ' p-1.5 ' : ' p-1.5 justify-start ') + (buttonType == 'none' ? ' w-full ' : ' ')
+            sClassContainer += buttonRounded ? sClassFullRounding + ' p-1 ' : sClassDefaultRounding ;
+            sClassContainer += (buttonType != 'none' ? ' p-1 ' : ' p-1 justify-start ') + (buttonType == 'none' ? ' w-full ' : ' ')
             sIconContainer = ' h-6 w-6 ' + (buttonTitle !== '' ? '  ' : '');
-            sClassText += ' text-sm  '
+            sClassText += ' text-sm tracking-tight '
             iIconSize = 24;
-            sTitleContainer += buttonTitle !== '' ? ' mx-1.5  ' : '' 
+            sTitleContainer += buttonTitle !== '' ? ' mx-1  ' : '' 
             break
 
         case 'base':
-            sClassContainer += buttonRounded ? sClassFullRounding + (props.padding ? ' p-' + props.padding : ' p-2') : sClassDefaultRounding + ' px-2 py-2  ';
-            sIconContainer = ' h-6 w-6  ' + (buttonTitle !== '' ? ' mx-1 ' : '');
-            sClassText += ' text-base leading-6  '
-            iIconSize = 24;
+            sClassContainer += buttonRounded ? sClassFullRounding + (props.padding ? ' p-' + props.padding : ' p-1.5') : sClassDefaultRounding + ' p-1.5  ';
+            sIconContainer = ' h-7 w-7  ' + (buttonTitle !== '' ? ' mx-1 ' : '');
+            sClassText += ' text-base tracking-tight '
+            iIconSize = 28;
             sTitleContainer += buttonTitle !== '' ? ' mx-1 ' : '' 
             break
 
         case 'lg':
-            sClassContainer += buttonRounded ? sClassFullRounding + ' px-2.5 py-2 ' : sClassDefaultRounding + ' px-2.5 py-2 ';
+            sClassContainer += buttonRounded ? sClassFullRounding + ' p-2 ' : sClassDefaultRounding + ' px-2 ';
             sIconContainer = ' h-8 w-8 ' + (buttonTitle !== '' ? ' mx-2 my-0.5 ' : ' mx-2 my-0.5 ');
-            sClassText += ' text-lg '
+            sClassText += ' text-lg tracking-tight '
             iIconSize = 32;
             sTitleContainer += buttonTitle !== '' ? ' mx-4 ' : '' 
             break
