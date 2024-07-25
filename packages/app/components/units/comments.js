@@ -23,7 +23,8 @@ import Carousel from 'app/ui/molecules/carousel'
 import { componentsMap } from 'app/ui/molecules/_map'
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
 import { StarsView } from 'app/ui/atoms/stars';
-import { useLocalSearchParams, useGlobalSearchParams } from 'expo-router';
+import { Modal } from 'app/design/controls'
+import { useLocalSearchParams } from 'expo-router';
 
 export default function UnitComments(props) {
     const { t } = useTranslation();
@@ -48,12 +49,12 @@ export default function UnitComments(props) {
         props.handleReply(data);
     };
 
-useEffect(()=> {
-    if (props.replyId == "cmt_id="+data.cmt_id){
-        console.log("handleReply");
-        handleReply(data, true);
-    }
-}, [props.replyId])
+    useEffect(() => {
+        if (props.replyId == "cmt_id=" + data.cmt_id) {
+            console.log("handleReply");
+            handleReply(data, true);
+        }
+    }, [props.replyId])
 
     if (!data)
         return (<View></View>);
@@ -198,12 +199,20 @@ useEffect(()=> {
                         }
                         <View className='text-neutral-900 dark:text-neutral-50'>
                             {viewState.view == 'edited' ? (
-                                <View className='-translate-y-5'>
-                                    <KbAvoidingView>
-                                        <View className='ml-auto mb-2'><Button align="start" title="Cancel" size="xs" startDecorator="X" variant="outline" onPress={() => setViewState({ view: '' })} rounded /></View>
-                                        <Form {...viewState.data} classContainerName="flex-row flex-wrap w-full  items-start justify-between" onFormSubmit={onFormSubmit} />
-                                    </KbAvoidingView>
-                                </View>
+                                <Modal
+                                    title={t("Edit comment")}
+                                    onVisible={true}
+                                    onClose={() => {
+                                        setViewState({ view: '' })
+                                    }}
+                                    transparent={true}
+                                    headerBorder={true}
+                                >
+                                    <Form {...viewState.data} classContainerName="flex-row flex-wrap w-full  items-start justify-between" onFormSubmit={onFormSubmit} />
+
+                                </Modal>
+
+
                             ) : <Html htmlStyles={{ fontSize: 14 }} customClassName='u-vanilla-html-small' data={linkify(data.cmt_text)} />}
                             {!!data.cmt_mood && <StarsView rating={data.cmt_mood} starSize={20} />}
                         </View>
@@ -215,7 +224,7 @@ useEffect(()=> {
                         </View> : <View></View>
                         }
                         {(!!currentUser && !props.handleReply && !props.module.includes('_reviews')) ? <View className='mr-2'>
-                            <Link href={props.contentUrl+'#cmt_id='+data.cmt_id}><Button align="start" title={t("Reply")} size="xs" startDecorator="ArrowBendLeftUp" variant="text" rounded /></Link>
+                            <Link href={props.contentUrl + '#cmt_id=' + data.cmt_id}><Button align="start" title={t("Reply")} size="xs" startDecorator="ArrowBendLeftUp" variant="text" rounded /></Link>
                         </View> : <View></View>
                         }
                         <View className='flex-row flex-auto '>
@@ -235,7 +244,6 @@ useEffect(()=> {
                                 </View>
                             }
                             {!!oReport && oReport}
-
                         </View>
                     </View>
                     }

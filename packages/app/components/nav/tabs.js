@@ -146,7 +146,7 @@ export default function () {
                         marginLeft: 10,
                         marginRight: 10,
                     },
-
+                    tabBarAllowFontScaling: false,
                     tabBarInactiveTintColor: colors.barsColor,
                     tabBarActiveTintColor: colors.primary,
                     tabBarActiveBackgroundColor: colors.primaryBg,
@@ -159,6 +159,7 @@ export default function () {
                     TabList.map((tab, index) => {
                         const options = {
                             tabBarBadge: (tab.url == appSetting('layout', 'notifications') && currentUser?.notifications) ? <Text className={Platform.OS === 'ios' ? 'text-xs': 'text-sm'}>{currentUser?.notifications}</Text> : null,
+                            tabBarBadgeAllowFontScaling: false,
                             title: t(tab.title),
                             headerShown: false,
                             tabBarIcon: ({ color }) => (

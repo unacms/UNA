@@ -14,14 +14,15 @@ import { FeedbackHaptics } from 'app/lib/util';
 import { linkedText } from 'app/lib/text-helpers';
 import { Platform } from 'react-native'
 import Carousel from 'app/ui/molecules/carousel'
+import { Modal } from 'app/design/controls'
 
 export default function JotItem({ item, index, handleReply }) {
     const isWeb = Platform.OS == 'web'
     const { t } = useTranslation();
     const [postData, setPostData] = useState(null)
     const [viewState, setViewState] = useState({ view: '' })
-    
-    const handleManageMenuSelect =  useCallback(async (oItem, event) => {
+
+    const handleManageMenuSelect = useCallback(async (oItem, event) => {
 
         switch (oItem.name) {
             case 'edit':
@@ -77,27 +78,34 @@ export default function JotItem({ item, index, handleReply }) {
                     </View>
 
                     {viewState.view == 'edited' ? (
-                        <View className='-translate-y-6'>
-                            <View className='ml-auto mb-2'>
-                                <Button align="start" title="Cancel" size="xs" startDecorator="X" variant="outline" onPress={() => setViewState({ view: '' })} rounded />
-                            </View>
+                        <Modal
+                            title={t("Edit")}
+                            onVisible={true}
+                            onClose={() => {
+                                setViewState({ view: '' })
+                            }}
+                            transparent={true}
+                            headerBorder={true}
+                        >
                             <Form
                                 name='bx_messenger'
                                 {...viewState.data}
                                 classContainerName="flex-row flex-wrap px-2 w-full items-start justify-between"
                                 onFormSubmit={onFormSubmit}
                             />
-                        </View>
+
+                        </Modal>
+
 
                     ) : <>
                         {item.reply > 0 && <View className='   border border-bdr dark:border-bdr-d  rounded-md p-2 my-1  bg-neutral-500/20'>
                             <View className="flex-row items-baseline" >
-                               {/* <View><Text className='text-xs text-neutral-800 dark:text-neutral-200 pb-1'>In Reply to </Text></View>*/}
+                                {/* <View><Text className='text-xs text-neutral-800 dark:text-neutral-200 pb-1'>In Reply to </Text></View>*/}
                             </View>
                             <Text className="text-xs text-neutral-800 dark:text-neutral-200 font-default">{linkedText(item?.reply_message, "hover:text-linkhover")}</Text>
                         </View>}
                         <Text className="text-base text-neutral-800 dark:text-neutral-200 font-default">{linkedText(item?.message, "hover:text-linkhover")}</Text>
-                        { aImg.length > 0 && <Carousel data={aImg}/> }
+                        {aImg.length > 0 && <Carousel data={aImg} />}
                     </>}
                 </View>
             </View>
@@ -127,14 +135,14 @@ export default function JotItem({ item, index, handleReply }) {
     </View>
 
     //if (!isWeb)
-        return Jot
-        //<Jot viewState={viewState} item={item} onFormSubmit={onFormSubmit} aManageMenu={aManageMenu} handleManageMenuSelect={handleManageMenuSelect}/>;
+    return Jot
+    //<Jot viewState={viewState} item={item} onFormSubmit={onFormSubmit} aManageMenu={aManageMenu} handleManageMenuSelect={handleManageMenuSelect}/>;
 
-   /* return (
-        <AnimatedBlock key={'jot' + index}>
-            {Jot}
-        </AnimatedBlock>
-    )*/
+    /* return (
+         <AnimatedBlock key={'jot' + index}>
+             {Jot}
+         </AnimatedBlock>
+     )*/
 }
 
 

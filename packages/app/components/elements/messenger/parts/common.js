@@ -411,15 +411,16 @@ const Convos = memo(({ layoutHeightLeft, data, refListConvos, selectedConvoIndex
 /*bg-neutral-500/10 border-b border-neutral-500/10*/
 const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots, showConvo, deleteConvo, leaveConvo, getConvo, editConvo, handleReply, startReached }) => {
     const isWeb = Platform.OS == 'web'
+    const initValue = Platform.OS === 'ios' ? 40 : 0;
 
-    const [keyboardHeight, setKeyboardHeight] = useState(0);
+    const [keyboardHeight, setKeyboardHeight] = useState(initValue);
 
     useEffect(() => {
       const showSubscription = Keyboard.addListener('keyboardDidShow', (e) => {
         setKeyboardHeight(e.endCoordinates.height);
       });
       const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
-        setKeyboardHeight(0); // Reset keyboard height
+        setKeyboardHeight(initValue); // Reset keyboard height
       });
   
       return () => {
