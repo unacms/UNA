@@ -1,7 +1,6 @@
 import { useState, useContext, useEffect } from 'react';
 import { Platform, StyleSheet, useColorScheme } from 'react-native';
 import { Reaction, ReactionProvider } from 'react-native-reactions';
-
 import { appSetting, FeedbackHaptics } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { useCurrentUser } from 'app/context/user';
@@ -296,8 +295,8 @@ export default function ElementReactions(oProps) {
                         id: oItem.id ? oItem.id : oItem.name,
                         name: oItem.name,
                         icon: getIconAlias(oItem.name),
-                        class_item: 'transition active:scale-150 duration-300 active:-translate-y-4',
-                        class_item_icon: 'text-2xl',
+                        class_item: ' transition active:scale-150 duration-300 active:-translate-y-4  ',
+                        class_item_icon: ' text-3xl ',
                         tooltip: "TODO",
                     };
                 });
@@ -317,9 +316,9 @@ export default function ElementReactions(oProps) {
                     cardStyle: {
                         backgroundColor: appSetting('theme', sTheme == 'dark' ? 'dark' : 'light', 'bgrmodal'),
                         shadowOpacity: 0.1,
-                        shadowRadius: 5,
+                        shadowRadius: 4,
                         bdr: appSetting('theme', sTheme == 'dark' ? 'dark' : 'light', 'bdrModal'),
-                        borderWidth: 1,
+                        borderWidth: 0,
                     },
                 });
 

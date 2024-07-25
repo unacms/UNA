@@ -210,22 +210,22 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
             /* gap-x-2*/
             return (
                 <ScrollView horizontal={true} className="bg-bgrnavbar border-b border-bdr dark:border-bdr-d dark:bg-bgrnavbar-d min-w-full">
-                    <Row className="p-2.5 pt-1.5 gap-x-1" >
+                    <Row className="px-1.5 " >
                         {props.navigationState.routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
                             const counter = appSetting('layout', 'show_nav_counters') ? 0 : a.addon ? (a.addon.text ? a.addon.text : a.addon) : 0;
                             const counter2 = counter >0 ? ' ('+counter+')' :''
                             return (
-                            <Pressable className="items-center justify-center"
+                            <Pressable className="items-center py-2 px-1 justify-center"
                                 key={`tab-${a.index}`}
                             >
-                                <View >
+                                
                                     <Button onPress={() => {
                                         setIndex(a.index)
                                         if (onChangeRoute) {
                                             onChangeRoute(a);
                                         }
                                     }} fullWidth={false} variant={props.navigationState.index === a.index ? 'primary' : "text"} rounded size='sm' title={t(a.title)+counter2} />
-                                </View>
+                                
                             </Pressable>
                         )})}
 

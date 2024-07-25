@@ -30,7 +30,7 @@ export const DropdownMenuItemNoPad = DropdownMenu.create(
 export const DropdownMenuContentH = DropdownMenu.create(
   styled(
     DropdownMenu.Content,
-    'flex-row z-10 p-2 bg-bgrmodal dark:bg-bgrmodal-d text-sm text-neutral-800 dark:text-neutral-200 rounded-full shadow'
+    'flex-row z-10 p-1 bg-bgrmodal dark:bg-bgrmodal-d text-sm text-neutral-800 dark:text-neutral-200 rounded-full shadow'
   ),
   'Content'
 )

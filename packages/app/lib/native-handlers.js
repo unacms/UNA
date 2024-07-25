@@ -15,9 +15,9 @@ export function updateRightHeader(items, navigation) {
     let addButtons = items?.map((button) => {
         let btn = undefined;
         if(button.section || button.link == 'search')
-            btn = <Search section={button.section} params={{trigger: {size: 'sm', variant: 'secondary' }}} />
+            btn = <Search section={button.section} params={{trigger: {size: 'base', variant: 'secondary' }}} />
         else {
-            btn = <Button rounded title={button.title} variant='secondary' startDecorator={button.icon} size="sm" />;
+            btn = <Button rounded title={button.title} variant='secondary' startDecorator={button.icon} size="base" />;
             btn = button.link ? <Link href={button.link } >{btn}</Link> : btn
         }
 
@@ -43,14 +43,14 @@ export function getRightHeader(items) {
     let addButtons = items?.map((button) => {
         let btn = undefined;
         if(button.section || button.link == 'search')
-            btn = <Search section={button.section} params={{trigger: {size: 'sm', variant: 'secondary' }}} />
+            btn = <Search section={button.section} params={{trigger: {size: 'base', variant: 'secondary' }}} />
         else {
-            btn = <Button rounded title={button.title} variant='secondary' startDecorator={button.icon} size="sm" />;
+            btn = <Button rounded title={button.title} variant='secondary' startDecorator={button.icon} size="base" />;
             btn = button.link ? <Link href={button.link } >{btn}</Link> : btn
         }
 
         return (
-            <View className="w-9"  key={`add-${button.icon}`} >{btn}</View>
+            <View className="w-10"  key={`add-${button.icon}`} >{btn}</View>
         )
     });
 
