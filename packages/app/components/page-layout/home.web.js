@@ -175,7 +175,7 @@ export default function (props) {
                                                             variant={
                                                                 feedType ==
                                                                     item.name
-                                                                    ? 'link'
+                                                                    ? 'primary'
                                                                     : 'text'
                                                             }
                                                             rounded

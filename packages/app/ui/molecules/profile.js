@@ -42,14 +42,14 @@ export default function AtomProfile(oProps) {
             iSizeWidth = 24
             iSizeHeight = 24
             sSizeFont = 'text-xs tracking-tight font-semibold';
-            sSizeFontLetter = 'text-base font-bold';
+            sSizeFontLetter = 'text-base font-semibold';
             break
 
         case 'sm':
             sSize = 'w-8 h-8'
             iSizeWidth = 32
             iSizeHeight = 32
-            sSizeFont = 'text-sm tracking-tight font-semibold';
+            sSizeFont = 'text-sm tracking-tighter font-semibold';
             sSizeFontLetter = 'text-base font-bold';
             break
 
@@ -57,56 +57,56 @@ export default function AtomProfile(oProps) {
             sSize = ' w-10 h-10 '
             iSizeWidth = 40
             iSizeHeight = 40
-            sSizeFont = ' text-base tracking-tight font-bold';
-            sSizeFontLetter = 'text-xl  font-bold';
+            sSizeFont = ' text-sm leading-[22px] tracking-tight font-bold';
+            sSizeFontLetter = 'text-xl font-semibold';
             break
 
         case 'lg':
             sSize = 'w-12 h-12'
             iSizeWidth = 56
             iSizeHeight = 56
-            sSizeFont = 'text-lg tracking-tight font-semibold';
-            sSizeFontLetter = 'text-xl font-bold';
+            sSizeFont = 'text-base tracking-tight font-bold';
+            sSizeFontLetter = 'text-xl font-semibold';
             break
 
         case 'xl':
             sSize = 'w-20 h-20'
             iSizeWidth = 80
             iSizeHeight = 80
-            sSizeFont = 'text-xl tracking-tight font-semibold';
-            sSizeFontLetter = 'text-xl  font-bold';
+            sSizeFont = 'text-lg tracking-tight font-semibold';
+            sSizeFontLetter = 'text-xl  font-semibold';
             break
 
         case '2xl':
             sSize = 'w-24 h-24'
             iSizeWidth = 96
             iSizeHeight = 96
-            sSizeFont = 'text-2xl tracking-tight font-semibold';
-            sSizeFontLetter = 'text-2xl font-bold';
+            sSizeFont = 'text-xl tracking-tight font-semibold';
+            sSizeFontLetter = 'text-2xl font-semibold';
             break
 
         case '3xl':
             sSize = 'w-32 h-32'
             iSizeWidth = 128
             iSizeHeight = 128
-            sSizeFont = 'text-3xl tracking-tight font-semibold';
-            sSizeFontLetter = 'text-5xl font-bold';
+            sSizeFont = 'text-2xl tracking-tight font-semibold';
+            sSizeFontLetter = 'text-5xl font-semibold';
             break
 
         case '4xl':
             sSize = 'w-48 h-48'
             iSizeWidth = 192
             iSizeHeight = 192
-            sSizeFont = 'text-4xl tracking-tight font-semibold';
-            sSizeFontLetter = 'text-7xl font-bold';
+            sSizeFont = 'text-3xl tracking-tight font-semibold';
+            sSizeFontLetter = 'text-7xl font-semibold';
             break
 
         case 'full':
             sSize = ' w-full aspect-square rounded-xl '
             iSizeWidth = 400
             iSizeHeight = 400
-            sSizeFont = 'text-5xl tracking-tight font-semibold';
-            sSizeFontLetter = 'text-7xl font-bold';
+            sSizeFont = 'text-4xl tracking-tight font-semibold';
+            sSizeFontLetter = 'text-7xl font-semibold';
             break
     }
     sSize += ' rounded-full '
@@ -126,7 +126,7 @@ export default function AtomProfile(oProps) {
 
         if (isAnon || oProps.title.includes("(anonymized)")) {
             return (
-                <Row className={'text-neutral-900  dark:text-neutral-100 gap-x-2 items-center ' + sSizeFont}>
+                <Row className={' text-neutral-900  dark:text-neutral-100 gap-x-2 items-center ' + sSizeFont}>
                     <Text className={'text-neutral-900  dark:text-neutral-100 ' + sSizeFont + ' truncate '}>
                         {oProps.title && oProps.title.replace(" (anonymized)", '')}
                     </Text>
@@ -137,7 +137,7 @@ export default function AtomProfile(oProps) {
         }
 
         return (
-            <Text className={'text-neutral-900  dark:text-neutral-100 hover:text-linkhover ' + sSizeFont + ' truncate '}>
+            <Text className={' text-neutral-900 dark:text-neutral-100 hover:text-linkhover ' + sSizeFont + ' truncate '}>
                 {oProps.title}
             </Text>
         )
@@ -172,7 +172,7 @@ export default function AtomProfile(oProps) {
     switch (sDisplayType) {
         case 'unit':
             sResult = (
-                <View className="flex-row gap-x-3 sm:gap-x-4  items-center">
+                <View className="flex-row gap-x-2 sm:gap-x-3  items-center">
                     <View className="flex-none">
                         <AtomProfile {...oProps} displayType="unit_wo_info" />
                     </View>
@@ -186,17 +186,14 @@ export default function AtomProfile(oProps) {
         case 'unit_wo_info':
             let name = oProps.display_name ? oProps.display_name.substr(0, 1) : ''
             const content = <View className="relative flex-row">
-                <View className={sSize + " aspect-square overflow-hidden bg-neutral-50 dark:bg-neutral-700 mx-auto  rounded-full "}>
-                    {/*!oProps.url_avatar && <View>
-                        <View className="w-[50%] z-20 aspect-square bg-neutral-300 dark:bg-neutral-600 border-2 border-neutral-50 dark:border-neutral-700 mx-auto rounded-full mt-[15%] "></View>
-                        <View className="w-[80%] -translate-y-[5%] aspect-square bg-neutral-300    dark:bg-neutral-600 mx-auto rounded-t-full "></View>
-                        </View>*/}
+                <View className={sSize + " aspect-square overflow-hidden bg-neutral-50 dark:bg-neutral-700 mx-auto rounded-full "}>
+                   
                     {!oProps.url_avatar && <View className={'h-full items-center justify-center bg-' + getRandomColor(oProps.id) + '-500 uppercase'}>
                         <Text className={sSizeFontLetter + ' text-white '}>{name}</Text>
                     </View>}
                     {!!oProps.url_avatar && <Image
                         sizes="(max-width:1024px) 100vw, 1024px"
-                        className={sSize + "    z-50"}
+                        className={sSize + " z-50"}
                         view="cover"
                         src={oProps.url_avatar}
                         alt={oProps.display_name}

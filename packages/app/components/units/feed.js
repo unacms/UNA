@@ -137,7 +137,7 @@ const LinkContent = ({ url, data }) => (
         </Text>
         <Text
             numberOfLines={2}
-            className=" mt-1 text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-2xl tracking-tight font-bold"
+            className=" mt-1 text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-lg sm:text-xl tracking-tight font-bold"
         >
             {data.content.title}
         </Text>
@@ -471,7 +471,7 @@ function DefaultUnit(data) {
                     </Text>
                     <Text
                         numberOfLines={2}
-                        className=" mt-1 text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-2xl tracking-tight font-bold"
+                        className=" mt-1 text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-lg sm:text-xl tracking-tight font-bold"
                     >
                         {data.content.title}
                     </Text>
@@ -550,7 +550,7 @@ function DefaultUnit(data) {
 
                     <Text
                         numberOfLines={2}
-                        className=" mt-1 text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-2xl tracking-tight font-bold"
+                        className=" mt-1 text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-lg sm:text-xl tracking-tight font-bold"
                     >
                         {data.content.title}
                     </Text>
@@ -596,7 +596,7 @@ function DefaultUnit(data) {
                         <Link href={url} className="">
                             <Text
                                 numberOfLines={3}
-                                className="  text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-2xl tracking-tight font-bold"
+                                className="  text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-lg sm:text-xl tracking-tight font-bold"
                             >
                                 {data.content.title}
                             </Text>
@@ -612,7 +612,7 @@ function DefaultUnit(data) {
                             )}
                             {!bIsTimelineContent && (
                                 <Text
-                                    className="text-neutral-600 dark:text-neutral-400 pt-2 text-sm sm:text-base"
+                                    className="text-neutral-600 dark:text-neutral-400 text-sm"
                                     numberOfLines={3}
                                 >
                                     {data.content.text}

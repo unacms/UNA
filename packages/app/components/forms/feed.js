@@ -122,8 +122,8 @@ export default function FormFeed(props) {
                 FeedbackHaptics('Medium')
                 setShowImage(true)
             }} /> : <Card rounded=' rounded-none sm:rounded-2xl  ' margin='p-3 sm:p-4 mb-1 sm:mb-4 sm:mx-4 ' border=" sm:border border-bdrcard dark:border-bdrcard-d " >
-                <View className=" flex-row ">
-                    <View className='mr-3 sm:mr-4 my-auto'>{profile}</View>
+                <View className=" flex-row gap-x-2 sm:gap-x-3 ">
+                    <View className=' my-auto'>{profile}</View>
                     <Button
                         size="base"
                         variant="secondary"

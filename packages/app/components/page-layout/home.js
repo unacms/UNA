@@ -151,13 +151,13 @@ export default function PageLayout(props) {
                 <>
                  <View className='bg-bgrtabbar dark:bg-bgrtabbar-d w-full'>
                  <ScrollView horizontal={true} className="w-full ">
-                    <Row className="px-3 justify-center gap-x-2  ">
+                    <Row className="px-3 justify-center gap-x-2 py-2 ">
                         {feedList.length > 1 &&
                             feedList.map((item, index) => {
                                 return (
                                     <Pressable
                                         key={'selector' + index}
-                                        className="items-center justify-center py-2.5 "
+                                        className="items-center justify-center "
                                         onPress={() => {
                                             setFeedTypeEx(item.name)
                                         }}
