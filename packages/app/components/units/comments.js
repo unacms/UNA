@@ -208,8 +208,9 @@ export default function UnitComments(props) {
                                     transparent={true}
                                     headerBorder={true}
                                 >
-                                    <Form {...viewState.data} classContainerName="flex-row flex-wrap w-full  items-start justify-between" onFormSubmit={onFormSubmit} />
-
+                                    <View className="p-2">
+                                        <Form {...viewState.data} classContainerName="flex-row flex-wrap w-full  items-start justify-between" onFormSubmit={onFormSubmit} />
+                                    </View>
                                 </Modal>
 
 

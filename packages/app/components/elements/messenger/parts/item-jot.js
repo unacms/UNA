@@ -87,12 +87,14 @@ export default function JotItem({ item, index, handleReply }) {
                             transparent={true}
                             headerBorder={true}
                         >
-                            <Form
-                                name='bx_messenger'
-                                {...viewState.data}
-                                classContainerName="flex-row flex-wrap px-2 w-full items-start justify-between"
-                                onFormSubmit={onFormSubmit}
-                            />
+                            <View className="p-2">
+                                <Form
+                                    name='bx_messenger'
+                                    {...viewState.data}
+                                    classContainerName="flex-row flex-wrap px-2 w-full items-start justify-between"
+                                    onFormSubmit={onFormSubmit}
+                                />
+                            </View>
 
                         </Modal>
 
