@@ -13,7 +13,7 @@ export function Nav2({ text, onPress, backButton, addButtons }) {
         {backButton && <Pressable className="rounded-full mr-2 justify-center items-center" onPress={() => { FeedbackHaptics('Medium'); onPress() }}>
             <Icon icon="ArrowLeft" width={24} height={24} color={colors.barsColor} /></Pressable>
         }
-        <Text numberOfLines={1} className="font-bold text-neutral-800 dark:text-neutral-200 text-xl">{text}</Text>
+        <Text numberOfLines={1} className={(backButton?" text-lg ":" text-3xl ")+"font-bold text-neutral-800 dark:text-neutral-200 tracking-tighter"}>{text}</Text>
     </Row>
 
    updateCenterHeader(null, header, false, navigation, backButton? null : addButtons);

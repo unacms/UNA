@@ -34,6 +34,7 @@ export default function FormFieldText(props) {
                 ref={inputRef}
                 name={props.name}
                 placeholder = {props.placeholder}
+                placeholderTextColor="#6b7280"
                 onChangeText={field.onChange}
                 onBlur={field.onBlur}
                 value={String(field.value)}

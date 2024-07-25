@@ -11,8 +11,10 @@ import { useNavigation, useRouter } from "expo-router";
 import { updateCenterHeader } from 'app/lib/native-handlers'
 import { Dimensions, Keyboard } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
+import { useHeaderHeight } from "@react-navigation/elements";
 
 export default function PageLayout(props) {
+    const headerHeight = useHeaderHeight();
     const [formData, setFormData] = useState({});
     const [addData, setAddData] = useState({});
     const [isKeyboardVisible, setKeyboardVisible] = useState(0);
@@ -70,7 +72,7 @@ export default function PageLayout(props) {
                     <CommentsBrowse addItems={aItems} handleReply={data => setFormData({ text: stripTags(data.cmt_text), parent_id: data.cmt_id, author: data.author_data })} browse={commentsData.content[0].browse} addData={addData} module={commentsData?.content[0].browse?.data?.module || commentsData?.module} requestUrl={commentsData.content[0].url} replyId={replyId} />
                 </View>
             </View>
-            <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+            <KeyboardAvoidingView keyboardVerticalOffset={58 + headerHeight} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
                 <View className='border-bdrcard dark:border-bdrcard-d border-t border-bdr dark:border-bdr-d px-3' style={{ backgroundColor: colors.barsBackground }}>
                     <CommentsForm handleForm={setAddData} browse={commentsData.content[0].browse} module={commentsData?.content[0].browse?.data?.module || commentsData?.module} form={commentsData.content[0].form} formData={formData} requestUrl={commentsData.content[0].url} />
                 </View>

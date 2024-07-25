@@ -23,6 +23,8 @@ import Msg from 'app/ui/molecules/msg';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import Profile from 'app/ui/molecules/profile'
 import { useRouter } from "expo-router";
+import { useHeaderHeight } from "@react-navigation/elements";
+
 
 export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, fetchConvos, data, onSave, addButtons }) {
     const isWeb = Platform.OS == 'web'
@@ -313,6 +315,8 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
         else
             routerExpo.back(); 
     };
+    const headerHeight = useHeaderHeight();
+
 
     const convosComponent = panelsVisible.convos && <Convos
         layoutHeightLeft={layoutHeightLeft}
@@ -326,7 +330,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     />
 
     const jotsComponent = (panelsVisible.jots && selectedConvo && jots?.data?.jots) && <View className={' w-full md:w-3/5 h-full flex-1 bg-bgrcard dark:bg-bgrcard-d'}>
-          <KeyboardAvoidingView className='w-full h-full flex-1' keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
+          <KeyboardAvoidingView className='w-full h-full flex-1' keyboardVerticalOffset={58 + headerHeight} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
         <View className='w-full flex-auto'>
       
             <Jots
