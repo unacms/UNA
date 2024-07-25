@@ -209,13 +209,13 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
             }, 300);
             /* gap-x-2*/
             return (
-                <ScrollView horizontal={true} className="bg-white dark:bg-neutral-900  min-w-full">
-                    <Row className="pl-4 gap-x-2 " >
+                <ScrollView horizontal={true} className="bg-bgrnavbar border-b border-bdr dark:border-bdr-d dark:bg-bgrnavbar-d min-w-full">
+                    <Row className="p-2.5 pt-1.5 gap-x-1" >
                         {props.navigationState.routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
                             const counter = appSetting('layout', 'show_nav_counters') ? 0 : a.addon ? (a.addon.text ? a.addon.text : a.addon) : 0;
                             const counter2 = counter >0 ? ' ('+counter+')' :''
                             return (
-                            <Pressable className="items-center justify-center py-2.5"
+                            <Pressable className="items-center justify-center"
                                 key={`tab-${a.index}`}
                             >
                                 <View >

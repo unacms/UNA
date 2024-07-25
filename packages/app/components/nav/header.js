@@ -41,7 +41,7 @@ export default function ({ backButtonPresented, pagePath, rightComponents, heade
                     <Icon icon="ArrowLeft" width={24} height={24} color={colors.barsColor} /></Pressable>
                 }
                 {text && <View className=''>
-                    <Text className="font-bold  text-neutral-800 dark:text-neutral-200 text-xl">{text}</Text>
+                    <Text className="font-bold text-neutral-800 dark:text-neutral-200 text-3xl tracking-tighter ">{text}</Text>
                 </View>}
             </Row>
             {type != 'string' && <View className='flex-auto'>{header}</View>}

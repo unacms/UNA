@@ -22,7 +22,7 @@ export function updateRightHeader(items, navigation) {
         }
 
         return (
-            <View className="w-9 ml-2"  key={`add-${button.icon}`} >{btn}</View>
+            <View className=" ml-2"  key={`add-${button.icon}`} >{btn}</View>
         )
     });
 

@@ -245,19 +245,19 @@ export function Button(props) {
     switch (buttonSize) {
         case 'xs':
             sClassContainer += buttonRounded ? sClassFullRounding + ' p-1 ' : sClassDefaultRounding + ' p-1 ';
-            sIconContainer = ' h-5 w-5 ' + (buttonTitle !== '' ? ' mx-[1px] ' : '');
+            sIconContainer = ' h-4 w-4 ' + (buttonTitle !== '' ? ' mx-[1px] ' : '');
             sClassText += ' text-xs tracking-tight '
-            iIconSize = 20;
+            iIconSize = 16;
             sTitleContainer += buttonTitle !== '' ? 'mx-1 ' : '' 
             break
 
         case 'sm':
-            sClassContainer += buttonRounded ? sClassFullRounding + ' p-1 ' : sClassDefaultRounding ;
-            sClassContainer += (buttonType != 'none' ? ' p-1 ' : ' p-1 justify-start ') + (buttonType == 'none' ? ' w-full ' : ' ')
+            sClassContainer += buttonRounded ? sClassFullRounding + ' p-1.5 ' : sClassDefaultRounding ;
+            sClassContainer += (buttonType != 'none' ? ' p-1.5 ' : ' p-1.5 justify-start ') + (buttonType == 'none' ? ' w-full ' : ' ')
             sIconContainer = ' h-6 w-6 ' + (buttonTitle !== '' ? '  ' : '');
             sClassText += ' text-sm tracking-tight '
             iIconSize = 24;
-            sTitleContainer += buttonTitle !== '' ? ' mx-1  ' : '' 
+            sTitleContainer += buttonTitle !== '' ? ' mx-1.5  ' : '' 
             break
 
         case 'base':

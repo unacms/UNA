@@ -149,9 +149,9 @@ export default function PageLayout(props) {
             )}
             {!!currentUser && (
                 <>
-                 <View className='bg-bgrtabbar dark:bg-bgrtabbar-d w-full'>
+                 <View className='bg-bgrnavbar dark:bg-bgrnavbar-d w-full'>
                  <ScrollView horizontal={true} className="w-full ">
-                    <Row className="px-3 justify-center gap-x-2 py-2 ">
+                    <Row className="p-2.5 pt-1.5 justify-center gap-x-2 py-2 ">
                         {feedList.length > 1 &&
                             feedList.map((item, index) => {
                                 return (
