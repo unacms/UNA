@@ -9,5 +9,5 @@ export default function PageLayout(props) {
     useEffect(() => {
         clearNotif(currentUser, setCurrentUser);
     }, [])
-    return (  <View className='px-1'><BlockByName data={props.data} name={props.blocks.browse} /></View>)
+    return (  <View className='sm:p-2'><BlockByName data={props.data} name={props.blocks.browse} /></View>)
 }

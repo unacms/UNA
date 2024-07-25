@@ -8,6 +8,7 @@ import Redirect from 'app/ui/atoms/redirect';
 import Profile from 'app/ui/molecules/profile';
 import AnimatedBlock from 'app/ui/molecules/animated-block'
 import Link from 'app/ui/atoms/link'
+import Card from 'app/ui/molecules/card'
 
 export default function UnitFeed({data}) {
     const redirectdRef = useRef();
@@ -35,10 +36,11 @@ export default function UnitFeed({data}) {
 
     return (
         <AnimatedBlock>
-        <View className=" mt-2 ">
+        
             <Redirect ref={redirectdRef} />
             <Link href={url}>
-                <View className=" bg-bgritem dark:bg-bgritem-d flex-row p-2 max-w-4xl mx-auto w-full rounded-lg ">  
+                <Card margin=" mt-[1px] sm:mb-2 sm:mx-2 p-3 sm:p-4 " border="border-none sm:border" rounded=" sm:rounded-2xl " > 
+                    <View className="flex-row items-center">
                     <View className="w-12 h-12 mr-2 rounded-full flex-none " >
                         <Profile {...data.author_data} displayType="unit_wo_info" displaySize="lg" />
                     </View>
@@ -51,10 +53,11 @@ export default function UnitFeed({data}) {
                             <Text className='flex-auto mr-2 text-sm text-neutral-900 dark:text-neutral-100' numberOfLines={1}>{stripTags(content_parsed)}</Text>    
                         </View>         
                     </View>
-               </View>
+                    </View>
+               </Card>
 
             </Link>
-        </View>
+       
         </AnimatedBlock>
     );
 }
