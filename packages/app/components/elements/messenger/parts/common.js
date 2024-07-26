@@ -411,7 +411,7 @@ const Convos = memo(({ layoutHeightLeft, data, refListConvos, selectedConvoIndex
 /*bg-neutral-500/10 border-b border-neutral-500/10*/
 const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots, showConvo, deleteConvo, leaveConvo, getConvo, editConvo, handleReply, startReached }) => {
     const isWeb = Platform.OS == 'web'
-    const initValue = Platform.OS === 'ios' ? 40 : 0;
+    const initValue = Platform.OS === 'ios' ? 48 : 0;
 
     const [keyboardHeight, setKeyboardHeight] = useState(initValue);
 

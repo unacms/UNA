@@ -39,7 +39,7 @@ export default function (props) {
     let values = getVisibilityValues(props.values);
     values = values.filter(item => item.value != '6' && item.value != '8');
     const showSelect = (val) => {
-        setBottomSheetData({ title: 'Choose audience',showClose:false, snapPoints: ['70%', '70%'], content: <RbList values={values} setValue={setValueF} selectedValue={field.value} /> });
+        setBottomSheetData({ title: 'Choose audience',showClose: props.onShowModal ? false : true, snapPoints: ['70%', '70%'], content: <RbList values={values} setValue={setValueF} selectedValue={field.value} /> });
         if (props.onShowModal){
             props.onShowModal(false);
         }

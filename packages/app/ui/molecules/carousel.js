@@ -97,7 +97,8 @@ export default function ({ data = [] }) {
             if (w && h && (w > h)) {
                 aspect = '';
                 if (isWeb) {
-                    return (<View className={`${max_image_width} mx-auto ${aspect} w-full  items-center justify-center bg-neutral-200  dark:bg-neutral-600 rounded sm:rounded-lg 003-` + w + '-' + h + '-' + (w > h)}>
+                    /*bg-neutral-200  dark:bg-neutral-600*/
+                    return (<View className={`${max_image_width} ${aspect} w-full max-w-lg  items-start justify-center  rounded sm:rounded-lg 003-` + w + '-' + h + '-' + (w > h)}>
                         <View style={{ aspectRatio: aspectStyle }} className='h-full'>
                             <Image2 row={0} index={0} key={0} width={w} height={h} src={data[0].src} />
                         </View>
@@ -111,7 +112,8 @@ export default function ({ data = [] }) {
                 }
 
                 return (
-                    <View className={`${max_image_width} mx-auto ${aspect} w-full  items-center justify-center bg-neutral-200  dark:bg-neutral-600 rounded sm:rounded-lg 002`}>
+                    /*bg-neutral-200  dark:bg-neutral-600*/
+                    <View className={`${max_image_width}  ${aspect} w-full max-w-lg items-start justify-center rounded sm:rounded-lg 002`}>
                         <View style={{ aspectRatio: aspectStyle, width: w, height: h }} >
                             <Image2 row={0} index={0} key={0} src={data[0].src} />
                         </View>
@@ -123,7 +125,8 @@ export default function ({ data = [] }) {
                 h = "";
                 w = "";
                 return (
-                    <View className={`${max_image_width} mx-auto ${aspect} w-full  items-center justify-center bg-neutral-200  dark:bg-neutral-600 rounded sm:rounded-lg 001`}>
+                    /*bg-neutral-200  dark:bg-neutral-600*/
+                    <View className={`${max_image_width}  ${aspect} w-full max-w-lg items-start justify-center ounded sm:rounded-lg 001`}>
                         <View style={{ aspectRatio: aspectStyle }} className='h-full '>
                             <Image2 row={0} index={0} key={0} width={w} height={h} src={data[0].src} />
                         </View>

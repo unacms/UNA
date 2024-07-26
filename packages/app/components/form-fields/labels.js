@@ -35,7 +35,7 @@ export default function (props) {
     );
 
     const showSelect = (val) => {
-        setBottomSheetData({ title: 'Choose labels', showClose: true, content: <ChkList values={dataFlat} selectedValues={field.value} setFormValue={setFormValue}></ChkList> });
+        setBottomSheetData({ title: 'Choose labels', showClose: props.onShowModal ? false : true, content: <ChkList values={dataFlat} selectedValues={field.value} setFormValue={setFormValue}></ChkList> });
         if (props.onShowModal){
             props.onShowModal(false);
         }

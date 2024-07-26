@@ -73,7 +73,7 @@ let settingsDefault = {
         card_amimation_duration: 0,
         comments_mentions: true,
         carousel_image_width: '',
-        carousel_image_aspect: 'aspect-video',
+        carousel_image_aspect: 'aspect-square',
         show_navigation_non_logged_native: false,
         hide_comments_sort: false,
         comments_in_modal: true,
