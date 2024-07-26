@@ -75,7 +75,9 @@ export default function ElementHtml(props) {
             marginRight: 0,
             marginTop: 0,
             marginBottom: 0,
-            paddingTop: 0
+            paddingTop: 0,
+            paddingBottom: 0,
+            
         },
         a: {
             color: colors.primary,
@@ -97,7 +99,7 @@ export default function ElementHtml(props) {
             margin: 2
         },*/
         p: {
-            margin: 0
+            margin: 5
         },
         ul: {
             margin: 0,
@@ -177,7 +179,7 @@ export default function ElementHtml(props) {
         data = data.replace(/(((<[^\/(br)>]*>)+[ \n(<br\s*\/*>)]*(<\/[^>]+>)+)+)/g, '');
         data = data.replace('/(<br\s*\/?>\s*){2,}/i', '<br>', data);
     }
-
+    data = data.replace(/<br\s*\/?>\s*$/, '');
     return (
         <RenderHtml
             renderers={renderers}
