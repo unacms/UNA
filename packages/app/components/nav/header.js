@@ -7,6 +7,8 @@ import { useColorScheme } from 'react-native';
 import { FeedbackHaptics } from 'app/lib/util';
 import { useCurrentUser } from 'app/context/user';
 import { appStatic } from 'app/lib/app-static';
+import { menuItemsByName, appSetting } from 'app/lib/util'
+import MenuAdd from 'app/components/nav/menu-add'
 
 function SvgLogoNative() {
     const scheme = useColorScheme();
@@ -27,7 +29,7 @@ export default function ({ backButtonPresented, pagePath, rightComponents, heade
     if (isHome && currentUser) {
         text = '';
     }
-    
+
     text = text.replace('__notification__', '');
 
     return (

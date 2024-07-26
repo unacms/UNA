@@ -122,7 +122,7 @@ export default function FormPost(props) {
 
 
                 <View className='w-full  my-1 flex-row border rounded-xl border-bdr dark:border-bdr-d py-1 px-2'>
-                    <Text className="font-semibold px-3 py-1 justify-center my-auto text-sm flex-auto text-neutral-800 dark:text-neutral-200">Labels</Text>
+                    <Text className="font-semibold px-3 py-1 justify-center my-auto text-sm  text-neutral-800 dark:text-neutral-200">Labels</Text>
                     <Row className=" justify-start items-center flex-auto px-2 ">
                         {getFormFieldByData(
                             props.data.inputs['labels'],
@@ -133,7 +133,7 @@ export default function FormPost(props) {
                 </View>
 
                 <View className='w-full flex-wrap my-1 flex-row border rounded-xl border-bdr dark:border-bdr-d py-1 px-2'>
-                    <Text className="font-semibold px-3 py-1 flex-auto my-auto text-sm  text-neutral-800 dark:text-neutral-200">Category</Text>
+                    <Text className="font-semibold px-3 py-1 my-auto text-sm  text-neutral-800 dark:text-neutral-200">Category</Text>
                     <Row className=" gap-x-2 max-w-xl px-2 justify-start items-center flex-auto flex-row flex-wrap ">
                         {getFormFieldByData(
                             props.data.inputs['cat'],

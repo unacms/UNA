@@ -8,7 +8,6 @@ import { truncateString } from 'app/lib/util';
 import RbList from 'app/ui/molecules/radio_list';
 
 export default function (props) {
-    console.log("propsprops--------------------", props.onShowModal, props.showImage)
     const name = props.name;
     const rules = getValidationRules(props);
     const formContext = useFormContext();

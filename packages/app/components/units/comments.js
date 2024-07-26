@@ -51,7 +51,6 @@ export default function UnitComments(props) {
 
     useEffect(() => {
         if (props.replyId == "cmt_id=" + data.cmt_id) {
-            console.log("handleReply");
             handleReply(data, true);
         }
     }, [props.replyId])

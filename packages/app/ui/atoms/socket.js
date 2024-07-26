@@ -9,7 +9,6 @@ const pusherInstance = new Pusher(conf.key, {
     enabledTransports: ['ws', 'wss'],
     cluster: '',
 });
-console.log("init")
 
 const boundEvents = [];
 export function subscribe(channel_name, event_name, cb) {

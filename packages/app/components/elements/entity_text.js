@@ -8,7 +8,6 @@ import EntityAttachments from './entity_attachments';
 import TextMore from 'app/ui/molecules/textmore';
 
 export default function (props) {
-    console.log("props", props)
     const data = props.data;
     const block = props.block;
     const view = appSetting('entry', 'default_view');

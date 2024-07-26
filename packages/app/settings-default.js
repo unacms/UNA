@@ -575,7 +575,6 @@ let settingsDefault = {
                 footer: { name: 'static:footer', showTitle: false, showBg: false, sidebar: true },
             },
             header: [
-                { icon: 'Plus', name: 'Add', link: '/create-post', nonlogged: false, section:'' },
                 { icon: 'MagnifyingGlass', name: 'Search', link: 'search', nonlogged: false  },
             ],
             headerSettings: {header: true, backButton: false, menu: true, title: false },

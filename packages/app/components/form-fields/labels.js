@@ -9,7 +9,6 @@ import { useBottomSheetData } from 'app/context/bottomsheet';
 import RadioButton from 'app/ui/atoms/radiobutton';
 
 export default function (props) {
-    console.log("propsprops", props)
     const rules = {};
     const defaultValue = props.value ? props.value : '';
     const formContext = useFormContext();

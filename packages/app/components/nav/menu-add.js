@@ -1,8 +1,7 @@
 import { View } from 'app/design/view'
 import { ButtonRef } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user'
-import { appSetting } from 'app/lib/util'
-import { menuItemsByName } from 'app/lib/util'
+import { menuItemsByName, appSetting } from 'app/lib/util'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { useTranslation } from 'react-i18next';
 

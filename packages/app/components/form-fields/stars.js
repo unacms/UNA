@@ -27,10 +27,6 @@ export default function FormFieldText(props) {
     }
     }, []);
 
-    function setRating(rating) {
-        console.log("rating", rating)
-    }
-
     return (
         <Field {...props} error2={formContext.formState.errors[name]}>
             <StarsAction rating={Number(field.value)} onChange={field.onChange} />
