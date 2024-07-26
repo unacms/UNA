@@ -1,12 +1,10 @@
-import React, { useCallback, useState, useEffect, useContext } from "react";
+import React, { useCallback, useState, useEffect, useMemo, useRef } from "react";
 import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "react-native-reanimated";
 import { TabView, useHeaderTabContext, SceneComponent } from "@showtime-xyz/tab-view";
 import { View, ScrollView, Row, Pressable } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
-import { useNavigation } from '@react-navigation/native';
 import { appSetting, deepEqual, getUnitModeBySource, handleFeedLayoutData } from 'app/lib/util';
 import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer } from 'app/lib/conductor-helpers';
-import { updateCenterHeader, getRightHeader } from 'app/lib/native-handlers';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers';
 import { Button } from 'app/design/controls';
@@ -14,11 +12,12 @@ import { useTranslation } from 'react-i18next';
 import { useCurrentUser } from 'app/context/user'
 import { useRouter, useGlobalSearchParams } from 'expo-router';
 import { useLayoutData } from 'app/context/layout';
-import { menuItemsFilter } from 'app/lib/util';
 import { Theme } from 'app/design/theme';
+import { md5 } from 'app/lib/util'
 
 export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultHeader, menu, data, blocks, useSectionAsMenu, unitMode, skeleton, onChangeRoute, keyword }) {
     minHeaderHeight = minHeaderHeight || 100; 
+    const renderedItemsRef = useRef(new Map());
     isHideDefaultHeader = isHideDefaultHeader || false;
     useSectionAsMenu = useSectionAsMenu || false;
     skeleton = skeleton || '';
@@ -28,35 +27,45 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
     const { layoutData } = useLayoutData();
     const { t } = useTranslation();
     const routerExpo = useRouter();
-    const initedTabs = fillTabs(menu, data, blocks, currentUser, useSectionAsMenu);
+    const initedTabs =  useMemo(() => fillTabs(menu, data, blocks, currentUser, useSectionAsMenu), [menu, data, blocks, currentUser, useSectionAsMenu]);;
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [routes, setRoutes1] = useState(initedTabs);
     const [menuState, setMenuState] = useState(menu);
-    if (!deepEqual(menu, menuState)) {
-        setMenuState(menu)
-        setRoutes(initedTabs);
-    }
+    
+    useEffect(() => {
+        if (!deepEqual(menu, menuState)) {
+            setMenuState(menu);
+            setRoutes(initedTabs);
+        }
+    }, [menu, menuState, initedTabs, setRoutes]);
 
-    const setRoutes = (a) => {
+
+    const setRoutes = useCallback((a) => {
         setRoutes1(a);
-    };
+    }, []);
 
     const scroll = useSharedValue(1);
-    const navigation = useNavigation();
-    const [index, setIndex] = useState(routes.findIndex(function (item) {
-        if (useSectionAsMenu)
-            return data.url == item.key;
-        else
-            return ('/' + data.url).includes('/' + item.key);
-    }));
+    const initialIndex = useMemo(() => {
+        const idx = routes.findIndex(item => {
+            if (useSectionAsMenu) {
+                return data.url === item.key;
+            } else {
+                return `/${data.url}`.includes(`/${item.key}`);
+            }
+        });
+        return idx === -1 ? 0 : idx; // Default to 0 if no matching route is found
+    }, [routes, data.url, useSectionAsMenu]);
+
+    const [index, setIndex] = useState(initialIndex);
     const animationHeaderPosition = useSharedValue(0);
     const animationHeaderHeight = useSharedValue(0);
     const indicatorOffset = useSharedValue(0);
     const headerMaxHeight = useSharedValue(100);
 
-    const currentRoute = routes.find((item) => item.index === index);
+    const currentRoute =  useMemo(() => routes.find((item) => item.index === index), [routes, index]);;
     const qKey = [currentRoute?.endpoint?.request_url, index, keyword, JSON.stringify(currentRoute?.endpoint?.params?.filters)];
     const queryClient = useQueryClient();
+
     const {
         status: rqtStatus,
         data: newData,
@@ -109,6 +118,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
 
     const TabFlashList = React.forwardRef((props, ref) => {
         const { scrollViewPaddingTop } = useHeaderTabContext();
+        console.log("UniList")
         return (
             <UniList
                 {...props}
@@ -149,12 +159,27 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
     }, [layoutData]);
     /* NEW POST TO FEED */
 
-    const onStartRefresh = async () => {
+    const onStartRefresh = useCallback(async () => {
         setIsRefreshing(true);
         setIsRefreshing(false);
-    };
+    }, []);
 
-    const TabScene = ({ route, index }) => {
+    const handleItemRender = useCallback((item, index, unitType, unitMode, route) => {
+       const key = `${item.id}-${index}`;
+        console.log("key", key)
+        // Check if item is already cached
+        if (renderedItemsRef.current.has(key)) {
+            console.log("keypres--", key)
+            return renderedItemsRef.current.get(key);
+        }
+        
+        // Render new item and cache it
+        const renderedItem =  <ItemRenderer unitType={unitType} unitMode={unitMode} route={route} item={item} unit={route?.endpoint?.unit} module={route?.endpoint?.module} />
+       // renderedItemsRef.current.set(key, renderedItem);
+        return renderedItem;
+    }, []);
+
+    const TabScene =  useCallback(({ route, index }) => {
         const Preload = getSkeletonForList(skeleton != '' ? skeleton : (data.module ? data.module : data.unit), 1);
         if (!route.inited) {
             //Preload
@@ -169,13 +194,16 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
                 data={route.data}
                 route={route}
                 unit={route.endpoint?.unit}
+                //renderItem={({ item, index }) => handleItemRender(item, index, unitType, unitMode, route)}
+                //renderItem={({ item, index }) => <ItemRenderer unitType={unitType} unitMode={unitMode} route={route} item={item} unit={route?.endpoint?.unit} module={route?.endpoint?.module} />
                 renderItem={({ item, index }) => <ItemRenderer unitType={unitType} unitMode={unitMode} route={route} item={item} unit={route?.endpoint?.unit} module={route?.endpoint?.module} />}
+               //<View className="w-full h-24 bg-red-500 my-2"></View>}
                 ListFooterComponent={
                     (route?.endpoint?.request_url ? ( route?.endpoint?.finished ? null : Preload) : <></>)
                 }
             />
         )
-    };
+    }, [skeleton, data, unitMode]);
 
     const renderScene = useCallback(({ route }) => <TabScene route={route} index={route.index} />, [unitMode]);
     const { colors } = Theme();
@@ -199,15 +227,15 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
 */
         if (props.navigationState.routes.length > 1) {
 
-            const menuSettings = appSetting('menu_items', menu.object);
+            /*const menuSettings = appSetting('menu_items', menu.object);
             setTimeout(() => {
 
                 if (!isHideDefaultHeader){
                     let addButtonsSet = menuSettings?.add?.filter(item => item.hideInTopBar !== true);
                     addButtonsSet = menuItemsFilter(addButtonsSet, currentUser);
-                    updateCenterHeader('/'+data.url, data.name, false, navigation, getRightHeader(addButtonsSet, currentUser));
+                    updateCenterHeader('/'+data.url, data.name, false, navigation, addButtonsSet);
                 }
-            }, 300);
+            }, 300);*/
             /* gap-x-2*/
             return (
                 <ScrollView horizontal={true}  style={{ backgroundColor: colors.barsBackground }} className=" border-b border-bdr dark:border-bdr-d min-w-full">

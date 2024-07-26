@@ -2,12 +2,10 @@ import { View } from 'app/design/view';
 import { BlockByName, DataByName} from 'app/components/block';
 import { useState, useContext, useRef, useEffect } from 'react';
 import { stripTags } from 'app/lib/util';
-import { useTheme } from '@react-navigation/native';
-import { Platform } from 'react-native'
 import { CommentsBrowse, CommentsForm } from 'app/lib/comments-helpers'
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
-import { useNavigation, useRouter} from "expo-router";
-import { updateCenterHeader } from 'app/lib/native-handlers'
+import { useNavigation} from "expo-router";
+import { useUpdateCenterHeader } from 'app/lib/native-handlers'
 import { Keyboard } from 'react-native';
 import { useCurrentUser } from 'app/context/user';
 
@@ -46,19 +44,25 @@ export default function PageLayout(props) {
             </View>
         );
     }
-
-    const routerExpo = useRouter();
     const navigation = useNavigation();
-    const { colors } = useTheme();   
+    const updateCenterHeader = useUpdateCenterHeader(navigation);
 
-    setTimeout(() => {
-        let aItems = Object.entries(props.blocks).filter(([key, value]) => value.forHeader).map(([key, value]) => ({
-            data: <BlockByName data={props.data} name={value} />
-        }));
-        if (aItems.length > 0){
-            updateCenterHeader(null, <View className='items-center'>{headerItems[0].data}</View>, true, navigation);
-        }
-    }, 100);
+    const headerItems = useMemo(() => {
+        return Object.entries(props.blocks)
+            .filter(([key, value]) => value.forHeader)
+            .map(([key, value]) => ({
+                data: <BlockByName data={props.data} name={value} />
+            }));
+    }, [props.blocks, props.data]);
+
+    useEffect(() => {
+        if (headerItems.length === 0) return; // Exit early if no items
+        const timer = setTimeout(() => {
+            updateCenterHeader(null, <View className='items-center'>{headerItems[0].data}</View>, true);
+        }, 100);
+
+        return () => clearTimeout(timer);
+    }, [headerItems]);
 
     const handleLayout = () => {
         viewFormRef.current.measure((x, y, width, height, pageX, pageY) => {

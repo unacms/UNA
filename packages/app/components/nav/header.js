@@ -7,8 +7,13 @@ import { useColorScheme } from 'react-native';
 import { FeedbackHaptics } from 'app/lib/util';
 import { useCurrentUser } from 'app/context/user';
 import { appStatic } from 'app/lib/app-static';
-import { menuItemsByName, appSetting } from 'app/lib/util'
+import { menuItemsFilter } from 'app/lib/util';
 import MenuAdd from 'app/components/nav/menu-add'
+import { menuItemsByName, appSetting } from 'app/lib/util'
+import Search from 'app/ui/molecules/search';
+import { Button } from 'app/design/controls';
+import Link from 'app/ui/atoms/link'
+import { isValidElement, useMemo, memo } from 'react';
 
 function SvgLogoNative() {
     const scheme = useColorScheme();
@@ -17,11 +22,55 @@ function SvgLogoNative() {
     return <View className='w-32 h-10'>{appStatic(logo)}</View>;
 };
 
-export default function ({ backButtonPresented, pagePath, rightComponents, header }) {
+function getRightHeader(items, currentUser, pagePath) {
+    items = menuItemsFilter(items, currentUser);
+    let addMenu = null;
+    if (pagePath == '/home' && currentUser) {
+        const menu_add_items = menuItemsByName('', appSetting('menu_items', 'menu_add'), currentUser);
+        if (menu_add_items.length) {
+            addMenu = <MenuAdd key='menu-add' buttonProps={{ variant: "secondary", rounded: 'rounded', startDecorator: "Plus", id: "m3" }} />;
+        }
+    }
+    if (items?.length == 0 && !addMenu)
+        return null;
+
+    return <Row className='gap-x-2'>{
+        items?.map((button) => {
+            let btn = undefined;
+            if (button.section || button.link == 'search')
+                btn = <Search section={button.section} params={{ trigger: { size: 'base', variant: 'secondary' } }} />
+            else {
+                btn = <Button rounded title={button.title} variant='secondary' startDecorator={button.icon} size="base" />;
+                btn = button.link ? <Link href={button.link} >{btn}</Link> : btn
+            }
+
+            return (
+                <View className="w-10" key={`add-${button.icon}`} >{btn}</View>
+            )
+        })
+
+    }
+        {!!addMenu && <View>{addMenu}</View>}
+    </Row>;
+};
+
+const Header = memo(({ backButtonPresented, header, pagePath, rightComponents }) => {
+
+    const { currentUser } = useCurrentUser();
+
+    console.log("defaultPropsdefaultProps", backButtonPresented, pagePath, rightComponents, header)
+
+    const memoizedRightComponents = useMemo(() => {
+        if (Array.isArray(rightComponents) && rightComponents.length && !isValidElement(rightComponents[0])) {
+            return getRightHeader(rightComponents, currentUser, pagePath);
+        }
+        return rightComponents;
+    }, [rightComponents, currentUser, pagePath]);
+
     const type = typeof header;
     let text = type === 'string' ? header : '';
 
-    const { currentUser } = useCurrentUser();
+
     const routerExpo = useRouter();
     const { colors } = Theme();
     const isHome = pagePath === '/home';
@@ -37,9 +86,9 @@ export default function ({ backButtonPresented, pagePath, rightComponents, heade
             <Row>
                 {(isHome && currentUser) && <SvgLogoNative />}
                 {backButtonPresented && (
-                    <Pressable className="mr-3 rounded-full justify-center items-center" onPress={() => { 
-                        FeedbackHaptics('Medium'); 
-                        routerExpo.back(); 
+                    <Pressable className="mr-3 rounded-full justify-center items-center" onPress={() => {
+                        FeedbackHaptics('Medium');
+                        routerExpo.back();
                     }}>
                         <Icon icon="ArrowLeft" width={24} height={24} color={colors.barsColor} />
                     </Pressable>
@@ -53,7 +102,9 @@ export default function ({ backButtonPresented, pagePath, rightComponents, heade
                 )}
             </Row>
             {type !== 'string' && <View className="flex-auto">{header}</View>}
-            {rightComponents && <Row className="ml-2 gap-x-2">{rightComponents}</Row>}
+            {memoizedRightComponents && <Row className="gap-x-2">{memoizedRightComponents}</Row>}
         </Row>
     );
-}
+});
+
+export default Header;

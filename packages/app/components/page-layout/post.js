@@ -1,13 +1,11 @@
 import { View } from 'app/design/view';
 import { BlockByName, DataByName } from 'app/components/block';
-import { useCurrentUser } from 'app/context/user';
 import { useState, useContext, useMemo, useEffect } from 'react';
 import { stripTags } from 'app/lib/util';
 import { useTheme } from '@react-navigation/native';
 import { CommentsBrowse, CommentsForm } from 'app/lib/comments-helpers'
-import { useNavigation, useRouter } from "expo-router";
-import { updateCenterHeader } from 'app/lib/native-handlers'
-import { Dimensions, Keyboard } from 'react-native';
+import { useNavigation } from "expo-router";
+import { useUpdateCenterHeader } from 'app/lib/native-handlers'
 import { useLocalSearchParams } from 'expo-router';
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
 
@@ -15,14 +13,12 @@ export default function PageLayout(props) {
 
     const [formData, setFormData] = useState({});
     const [addData, setAddData] = useState({});
-    //const [isKeyboardVisible, setKeyboardVisible] = useState(0);
     const [replyId, setReplyId] = useState(false);
-    const { currentUser } = useCurrentUser();
     const localUrl = useLocalSearchParams();
     const commentsData = useMemo(() => DataByName(props.data, props.blocks.comments), [props.data, props.blocks.comments]);
     const { colors } = useTheme();
     const navigation = useNavigation();
-    const routerExpo = useRouter();
+    const updateCenterHeader = useUpdateCenterHeader(navigation);
 
     useEffect(() => {
         if (localUrl?.url) {
@@ -49,19 +45,22 @@ export default function PageLayout(props) {
         };
     }, []);*/
 
+    const headerItems = useMemo(() => {
+        return Object.entries(props.blocks)
+            .filter(([key, value]) => value.forHeader)
+            .map(([key, value]) => ({
+                data: <BlockByName data={props.data} name={value} />
+            }));
+    }, [props.blocks, props.data]);
+
     useEffect(() => {
+        if (headerItems.length === 0) return; // Exit early if no items
         const timer = setTimeout(() => {
-            const headerItems = Object.entries(props.blocks)
-                .filter(([key, value]) => value.forHeader)
-                .map(([key, value]) => ({
-                    data: <BlockByName data={props.data} name={value} />
-                }));
-            if (headerItems.length > 0) {
-               updateCenterHeader(null, <View className='items-center'>{headerItems[0].data}</View>, true, navigation);
-            }
+            updateCenterHeader(null, <View className='items-center'>{headerItems[0].data}</View>, true);
         }, 100);
+
         return () => clearTimeout(timer);
-    }, [props.blocks, props.data, colors, navigation, routerExpo, currentUser]);
+    }, [headerItems]);
 
     return (
         <View className='flex-1 w-full h-full'>

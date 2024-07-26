@@ -8,7 +8,7 @@ import { Icon } from 'app/ui/atoms/icon';
 import { Pressable } from 'app/design/view'
 import { Button } from 'app/design/controls';
 import { getBlocksFromData } from 'app/lib/util';
-import { memo } from 'react';
+import { memo,useCallback  } from 'react';
 
 export function getBackButtonWeb() {
     if (history.length > 2) {
@@ -310,7 +310,7 @@ export function processUrl(data, blocks) {
 }
 
 function ItemRenderer_({ route, numColumns, item, unit, module, unitMode, unitType, sidebar }) {
-
+    console.log("ItemRenderer_", item?.id)
     if (item?.type === 'block') {
         let b = BlockByName2({ b: item.data, name: item.block })
         if (!b)
@@ -332,6 +332,35 @@ function ItemRenderer_({ route, numColumns, item, unit, module, unitMode, unitTy
 }
 
 export const ItemRenderer = memo(ItemRenderer_);
+/*
+const ItemRenderer = memo(function ItemRenderer({ route, numColumns, item, unit, module, unitMode, unitType, sidebar }) {
+    console.log("ItemRenderer_", item?.id);
+    
+    const renderBlock = useCallback(() => {
+        let b = BlockByName2({ b: item.data, name: item.block });
+        if (!b) return <View className='h-[1px]'><Text>&nbsp;</Text></View>;
+        return b;
+    }, [item.data, item.block]);
+
+    const renderUnit = useCallback(() => (
+        <Unit unitType={unitType} module={module} unit={unit} data={item} mode={unitMode} />
+    ), [unitType, module, unit, item, unitMode]);
+
+    if (item?.type === 'block') {
+        return (
+            <View key={`${route.index}-${item.id}`} className={numColumns > 1 ? 'w-full' : 'w-full'}>
+                {renderBlock()}
+            </View>
+        );
+    } else {
+        return (
+            <View key={`${route.index}-${item.id}`} className={numColumns > 1 ? 'w-full' : 'w-full'}>
+                {renderUnit()}
+            </View>
+        );
+    }
+});
+*/
 
 export function LeftSidebar({ title, addButtons, children, width }) {
     return (

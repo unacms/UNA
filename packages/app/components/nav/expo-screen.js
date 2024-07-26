@@ -7,7 +7,7 @@ import { Loading } from 'app/loading'
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { fetcher } from 'app/lib/fetcher';
 import { useLocalSearchParams} from 'expo-router';
-import { updateCenterHeader, getRightHeader } from 'app/lib/native-handlers'
+import { useUpdateCenterHeader , getRightHeader } from 'app/lib/native-handlers'
 import {  useNavigation } from 'expo-router'; 
 
 export async function getData(path, token, origin, headers, callback, params) {
@@ -57,6 +57,7 @@ export function Screen(params) {
 
 const Content = ({ pagePath, currentUser }) => {
     const navigation = useNavigation();
+    const updateCenterHeader = useUpdateCenterHeader(navigation);
     const [ pageData, setPageData ] = useState(null);
     const { bottomSheetData, setBottomSheetData } = useBottomSheetData();
     useEffect(() => {
@@ -79,7 +80,7 @@ const Content = ({ pagePath, currentUser }) => {
    useEffect(() => {
         if (pageData) {
             const settings = appSetting('layouts', pageData.data.uri)
-            updateCenterHeader(pagePath, pageData.data.name, null, navigation, getRightHeader(settings?.header, currentUser, pagePath), settings?.headerSettings);
+            updateCenterHeader(pagePath, pageData.data.name, null, settings?.header, settings?.headerSettings);
         }
     }, [pageData, currentUser?.id]);
 
