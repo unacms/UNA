@@ -1,6 +1,6 @@
 import { View, Row } from 'app/design/view';
 import { BlockByName, DataByName } from 'app/components/block';
-import { useState, useRef,useEffect } from 'react';
+import { useState, useRef,useEffect, useCallback, useMemo } from 'react';
 import { getBackButtonWeb } from 'app/lib/conductor-helpers';
 import { useWindowDimensions } from 'react-native'
 import { CommentsParts } from 'app/lib/comments-helpers'
@@ -16,35 +16,39 @@ export default function PageLayout(props) {
         calculateSize();
     }, [windowDimensions]);
 
-    const handleLayout = () => {
-        calculateSize();
-    };
-
-    const windowWidth = windowDimensions.width + 24;
-
-    const calculateSize = () => {
+    const calculateSize = useCallback(() => {
         if (viewFormRef.current) {
             viewFormRef.current.measure((x, y, width, height, pageX, pageY) => {
-                let FormH = height
+                let FormH = height;
                 let offset = 100;
                 let otherH = windowDimensions.height;
-                if (windowDimensions.width >= 1024){
+                if (windowDimensions.width >= 1024) {
                     otherH = otherH - FormH - offset;
                 }
-                
+
                 viewCntRef.current.measure((x, y, width, height, pageX, pageY) => {
-                    setSizes({ formHeight: FormH, formWidth: width, otherHeight: otherH, cntHeight: height })
+                    setSizes({ formHeight: FormH, formWidth: width, otherHeight: otherH, cntHeight: height });
                 });
             });
         }
-    }
+    }, [windowDimensions]);
 
-    let aItems = Object.entries(props.blocks).filter(([key, value]) => value.forList).map(([key, value]) => ({
-        id: `block_${key}`,
-        data: <BlockByName data={props.data} name={value} />
-    }));
+    const handleLayout = useCallback(() => {
+        calculateSize();
+    }, [calculateSize]);
 
-    let actionsItemIndex = aItems.findIndex(item => item.id === 'block_actions');
+    const windowWidth = windowDimensions.width + 24;
+
+    
+
+    const aItems = useMemo(() => {
+        return Object.entries(props.blocks).filter(([key, value]) => value.forList).map(([key, value]) => ({
+            id: `block_${key}`,
+            data: <BlockByName data={props.data} name={value} />
+        }));
+    }, [props.blocks, props.data]);
+
+    let actionsItemIndex = useMemo(() => aItems.findIndex(item => item.id === 'block_actions'), [aItems]);
     if (actionsItemIndex !== -1) {
         aItems[actionsItemIndex].data = (
             <View className=''>
@@ -53,47 +57,45 @@ export default function PageLayout(props) {
         );
     }
 
-    let header = <></>
-
-    actionsItemIndex = aItems.findIndex(item => item.id === 'block_author');
-    if (actionsItemIndex !== -1) {
-        if (windowDimensions.width < 1024) {
-            header = (
-                <><Row className='py-2 px-3 w-full items-center fixed top-0 z-50 border-b  bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur border-bdrnavbar dark:border-bdrnavbar-d flex-row justify-start'>
-                    {getBackButtonWeb()}
-                    <View style={{ width: windowWidth - 92 }}>
+    let header = useMemo(() => {
+        let headerComponent = <></>;
+        actionsItemIndex = aItems.findIndex(item => item.id === 'block_author');
+        if (actionsItemIndex !== -1) {
+            if (windowDimensions.width < 1024) {
+                headerComponent = (
+                    <Row className='py-2 px-3 w-full items-center fixed top-0 z-50 border-b  bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur border-bdrnavbar dark:border-bdrnavbar-d flex-row justify-start'>
+                        {getBackButtonWeb()}
+                        <View style={{ width: windowWidth - 92 }}>
+                            {aItems[actionsItemIndex].data}
+                        </View>
+                    </Row>
+                );
+                aItems.splice(actionsItemIndex, 1);
+            } else {
+                aItems[actionsItemIndex].data = (
+                    <View className=''>
                         {aItems[actionsItemIndex].data}
                     </View>
-                </Row></>
-            );
-            aItems.splice(actionsItemIndex, 1);
+                );
+            }
         }
-        else {
-            aItems[actionsItemIndex].data = (
-                <View className='  '>
-                    {aItems[actionsItemIndex].data}
-                </View>
-            );
-        }
-
-    }
-
-    const commentsData = DataByName(props.data, props.blocks.comments);
-    const offset = commentsData?.content[0]?.form?.data?.inputs?.cmt_text?.html === 2 ? "pb-36 " : "pb-2";
-    const isStycky = windowDimensions.width < 1024 || sizes.otherHeight < sizes.cntHeight;
+        return headerComponent;
+    }, [aItems, windowDimensions, windowWidth]);
+    
+    const commentsData = useMemo(() => DataByName(props.data, props.blocks.comments), [props.data, props.blocks.comments]);
     const CommentsPartsData = CommentsParts(commentsData?.content[0], aItems);
 
     return (
         <>
             {header}
-            <View className=" py-0 lg:px-4 mt-14 lg:mt-4 ">
-                <View className="max-w-5xl mx-auto w-full border-bdrcard dark:border-bdrcard-d group duration-500  lg:rounded-2xl bg-bgrcard dark:bg-bgrcard-d ">
-                    <Row style={{ paddingBottom: isStycky? sizes.formHeight: 0 }}>
-                        <View ref={viewCntRef} className={'w-full p-4 '+ (windowDimensions.width < 1024 ? '' : offset)}>
+            <View className=" py-0 lg:px-4 mt-14 lg:mt-4 flex-1">
+                <View ref={viewCntRef} className="max-w-5xl overflow-hidden mx-auto w-full border-bdrcard dark:border-bdrcard-d group duration-500  lg:rounded-2xl bg-bgrcard dark:bg-bgrcard-d">
+                    <Row className='m-4' style={{ marginBottom: sizes.formHeight + 28 }}>
+                        <View  className='w-full' >
                             {CommentsPartsData[0]}
                         </View>
                     </Row>
-                    <View ref={viewFormRef} style={{ width: sizes.formWidth }} onLayout={handleLayout} className={isStycky ? ' px-3 bg-bgrcard dark:bg-bgrcard-d border-t border-bdr dark:border-bdr-d fixed bottom-0 w-full ' : ' px-3 w-full sm:rounded-b-2xl border-t border-bdr dark:border-bdr-d '} >
+                    <View ref={viewFormRef} style={{ width: sizes.formWidth }} onLayout={handleLayout} className='px-3 bg-bgrcard dark:bg-bgrcard-d border-t border-bdr dark:border-bdr-d fixed bottom-0 w-full' >
                         {CommentsPartsData[1]} 
                     </View>
                 </View>

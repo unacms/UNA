@@ -59,7 +59,7 @@ export default function ElementFeedItem({ data }) {
     }
 
     return (
-        <View className="relative sm:my-0 bg-bgrcard dark:bg-bgrcard-d w-full mx-auto max-w-5xl">
+        <View className="relative sm:my-0 w-full mx-auto max-w-5xl">
             <View className="my-4">
                 <Html data={tlContent} />
                 {!!content.embed && <Embed data={content.embed}/>}
