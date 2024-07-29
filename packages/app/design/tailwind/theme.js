@@ -1,5 +1,5 @@
 const merge = require('deepmerge');
-const configCustom = require('./theme.custom.js');
+const configCustom = require('app/design/tailwind-custom/theme');
 
 const colors = {
     neutral: {
@@ -55,12 +55,9 @@ const colors = {
 
     bgrbody: {
         DEFAULT: 'rgba(229,231,235,1)',
+        d: 'rgba(229,231,235,1)',
         d: 'rgba(0,0,0,1)',
-    },
-
-    bgrbody2: {
-        DEFAULT: 'rgba(243,244,246,0.9)',
-        d: 'rgba(0,0,0,0.9)',
+        dh: 'rgba(0,0,0,1)',
     },
 
     bgrcard: {

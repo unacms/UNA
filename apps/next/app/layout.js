@@ -20,10 +20,10 @@ export default function RootLayout({ children }) {
             const locale = await RNLocalize.getLocales();
             callback(locale[0].languageCode);
         },
-        init: () => {},
-        cacheUserLanguage: () => {},
+        init: () => { },
+        cacheUserLanguage: () => { },
     };
-    
+
     i18n
         .use(initReactI18next)
         .use(languageDetector)
@@ -42,37 +42,36 @@ export default function RootLayout({ children }) {
             interpolation: {
                 escapeValue: false
             }
-        });  
+        });
 
     const queryClient = new QueryClient()
     let theme = '';
-    if (typeof window !== 'undefined'){
+    if (typeof window !== 'undefined') {
         theme = storageGet('layout:theme', '', true);
         let lang = storageGet('layout:lang', '', true);
         if (lang)
-            i18n.changeLanguage(lang);   
+            i18n.changeLanguage(lang);
     }
     const scheme = useColorScheme();
-    if (theme == ''){
+    if (theme == '') {
         theme = scheme;
     }
 
-    if (typeof window !== 'undefined'){
+    if (typeof window !== 'undefined') {
         const root = window.document.documentElement;
         //root.setAttribute('theme', scheme);
     }
-    
+
     return (
         <html lang="en" >
-            <body className='bg-bgrbody dark:bg-bgrbody-d' style={{overflowY:'initial'}}>
-               
-                        <QueryClientProvider client={queryClient}>
-                            <CurrentUserProvider>
-                                {!!process.env['VERCEL'] ? <Analytics /> : null}
-                                {children}
-                            </CurrentUserProvider>
-                        </QueryClientProvider>
-                </body>
+            <body className='bg-bgrbody dark:bg-bgrbody-d' style={{ overflowY: 'initial' }}>
+                <QueryClientProvider client={queryClient}>
+                    <CurrentUserProvider>
+                        {!!process.env['VERCEL'] ? <Analytics /> : null}
+                        {children}
+                    </CurrentUserProvider>
+                </QueryClientProvider>
+            </body>
         </html>
     )
 }
