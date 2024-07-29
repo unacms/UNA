@@ -319,7 +319,9 @@ export default function FormFieldFtf(props) {
 
     useEffect(() => {
         if (editor && editor.getHTML() != field.value) {//&& field.value == ''{}
-            editor.commands.setContent(field.value);
+            editor.commands.setContent(field.value, false, {
+                preserveWhitespace: "full",
+              });
             editor.commands.focus()
         }
 

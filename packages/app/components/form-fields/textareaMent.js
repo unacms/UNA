@@ -16,8 +16,8 @@ const MentionInputMultiTransparent = styled(MentionInputDef, '  text-red-500 rou
 function formatText(text) {
     //TODO REPLACE TO BR
    // let v =  text.replace(/<\/?p>/g, '\n').trim();
-   let v =  text.replace(/<br>/g, '\n').trim();
-    v =  v.replace(/&nbsp;/g, ' ').trim();
+   let v =  text.replace(/<br>/g, '\n');
+    v =  v.replace(/&nbsp;/g, ' ');
     v = v.replace(
         /<a(.*?)class="bx-mention-link(.*?)"[^>]*>([^<]+)<\/a>/g,
         (match, p1, p2, name) => {
