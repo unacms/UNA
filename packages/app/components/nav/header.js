@@ -58,8 +58,6 @@ const Header = memo(({ backButtonPresented, header, pagePath, rightComponents })
 
     const { currentUser } = useCurrentUser();
 
-    console.log("defaultPropsdefaultProps", backButtonPresented, pagePath, rightComponents, header)
-
     const memoizedRightComponents = useMemo(() => {
         if (Array.isArray(rightComponents) && rightComponents.length && !isValidElement(rightComponents[0])) {
             return getRightHeader(rightComponents, currentUser, pagePath);
@@ -69,7 +67,6 @@ const Header = memo(({ backButtonPresented, header, pagePath, rightComponents })
 
     const type = typeof header;
     let text = type === 'string' ? header : '';
-
 
     const routerExpo = useRouter();
     const { colors } = Theme();

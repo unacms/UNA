@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, memo } from 'react';
 import { View, Pressable, Row } from 'app/design/view'
 import Image from 'app/ui/atoms/image';
 import { Button } from 'app/design/controls';
@@ -9,7 +9,7 @@ import { useWindowDimensions } from 'react-native';
 import { appSetting } from 'app/lib/util'
 import { Platform } from 'react-native'
 
-export default function ({ data = [] }) {
+const Carousel = memo(({ data = [] }) => {
     if (!data.length) return null;
 
     const isWeb = Platform.OS == 'web'
@@ -172,4 +172,6 @@ export default function ({ data = [] }) {
         </Modal>}
         <Gallery data2={data2} imageSize={imageSize} width={width} handleLayout={handleLayout} />
     </>
-}
+});
+
+export default Carousel;

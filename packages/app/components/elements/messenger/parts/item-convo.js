@@ -2,7 +2,6 @@ import { Text } from 'app/design/typography'
 import { View, Row, Pressable } from 'app/design/view'
 import { stripTags } from 'app/lib/util'
 import Card from 'app/ui/molecules/card'
-import AnimatedBlock from 'app/ui/molecules/animated-block'
 import Profile from 'app/ui/molecules/profile'
 import Time from 'app/ui/atoms/time'
 import { Platform } from 'react-native'
@@ -64,10 +63,4 @@ export default function ({ item, index, changeConvo, selectedIndex }) {
     //if (!isWeb) {
     return <Item item={item} index={index} changeConvo={changeConvo} selectedIndex={selectedIndex} />
     //}
-
-   /* return (
-        <AnimatedBlock key={'convos' + index}>
-            <Item item={item} index={index} changeConvo={changeConvo} selectedIndex={selectedIndex} />
-        </AnimatedBlock>
-    )*/
 }

@@ -8,7 +8,7 @@ import { Icon } from 'app/ui/atoms/icon';
 import { Pressable } from 'app/design/view'
 import { Button } from 'app/design/controls';
 import { getBlocksFromData } from 'app/lib/util';
-import { memo,useCallback  } from 'react';
+import { memo,useCallback, useRef, useMemo  } from 'react';
 
 export function getBackButtonWeb() {
     if (history.length > 2) {
@@ -310,28 +310,53 @@ export function processUrl(data, blocks) {
 }
 
 function ItemRenderer_({ route, numColumns, item, unit, module, unitMode, unitType, sidebar }) {
-    console.log("ItemRenderer_", item?.id)
-    if (item?.type === 'block') {
-        let b = BlockByName2({ b: item.data, name: item.block })
-        if (!b)
-            return (<View className='h-[1px]'><Text>&nbsp;</Text></View>);
+    const b = useMemo(() => {
+        if (item?.type === 'block') {
+            let block = BlockByName2({ b: item.data, name: item.block });
+            if (!block) {
+                return <View className='h-[1px]'><Text>&nbsp;</Text></View>;
+            }
+            return (
+                <View key={`${route.index}-${item.id}`} className={numColumns > 1 ? 'w-full' : 'w-full'}>
+                    {block}
+                </View>
+            );
+        } else {
+            return (
+                <View key={`${route.index}-${item.id}`} className={numColumns > 1 ? 'w-full' : 'w-full'}>
+                    <Unit unitType={unitType} module={module} unit={unit} data={item} mode={unitMode} />
+                </View>
+            );
+        }
+    }, [route.index, item, numColumns, unit, module, unitMode, unitType]);
 
-        return (
-            <View key={`${route.index}-${item.id}`} className={numColumns > 1 ? 'w-full ' : 'w-full '}>
-                {b}
-            </View>
-        );
-    }
-    else {
-        return (
-            <View key={`${route.index}-${item.id}`} className={numColumns > 1 ? 'w-full' : 'w-full'}>
-                <Unit unitType={unitType} module={module} unit={unit} data={item} mode={unitMode} />
-            </View>
-        );
-    }
+    return b;
 }
+export function ItemRenderer({ route, numColumns, item, unit, module, unitMode, unitType, sidebar }) {
+    const renderedItemsRef = useRef(new Map());
 
-export const ItemRenderer = memo(ItemRenderer_);
+    const key = `${item.id}`;
+    const renderedItem = useMemo(() => {
+        if (renderedItemsRef.current.has(key)) {
+            return renderedItemsRef.current.get(key);
+        }
+        const newItem = (
+            <ItemRenderer_
+                unitType={unitType}
+                unitMode={unitMode}
+                route={route}
+                item={item}
+                unit={route?.endpoint?.unit}
+                module={route?.endpoint?.module}
+            />
+        );
+        renderedItemsRef.current.set(key, newItem);
+        return newItem;
+    }, [key, unitType, unitMode, route, item]);
+
+    return renderedItem;
+}
+//export const ItemRenderer = memo(ItemRenderer_);
 /*
 const ItemRenderer = memo(function ItemRenderer({ route, numColumns, item, unit, module, unitMode, unitType, sidebar }) {
     console.log("ItemRenderer_", item?.id);

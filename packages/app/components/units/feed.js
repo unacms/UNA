@@ -3,7 +3,7 @@ import Link from 'app/ui/atoms/link'
 import Time from 'app/ui/atoms/time'
 import Profile from 'app/ui/molecules/profile'
 import Embed from 'app/ui/molecules/embed'
-import React, { memo, useState, useEffect, useContext, useRef } from 'react'
+import React, { memo, useState, useEffect, useMemo, useRef } from 'react'
 import { useCurrentUser } from 'app/context/user'
 import { appSetting } from 'app/lib/util'
 import { Text } from 'app/design/typography'
@@ -304,18 +304,6 @@ function DefaultUnit(data) {
         setCmtsData({title:data.author_data.display_name + "'s post", data:<CommentsModal initFormData={initFormData}
             itemContent={{ id: "block-comments", data: <><View className='pb-4'><Author /></View><MainContent /></> }} 
             commentsData={res.data} />})
-        /* setBottomSheetData(
-            { 
-                title: data.author_data.display_name + "'s post", 
-                showClose: true, 
-                isListView: true, 
-                modal:{padding:'sm:p-6 sm:pt-4 pb-1 sm:pb-4 md:pb-0'}, 
-                content: <CommentsModal initFormData={initFormData}
-                    itemContent={{ id: "block-comments", data: <><View className='pb-4'><Author /></View><MainContent /></> }} 
-                    commentsData={res.data} />, 
-                snapPoints: ['95%', '95%'] 
-            }
-        );*/
     }
 
     if (viewState.view == 'deleted')
@@ -359,7 +347,7 @@ function DefaultUnit(data) {
 
     return (
         <AnimatedBlock>
-            <Modal
+            {isCommentsModal && <Modal
                 outerClickClose={false} 
                 onClose={() => setCmtsData(false)}
                 onVisible={!!cmtsData}
@@ -367,8 +355,7 @@ function DefaultUnit(data) {
             ><View className='p-2 sm:p-0'>
                 {cmtsData.data}
             </View>
-                
-            </Modal>
+            </Modal>}
             <Card rounded=' rounded-none sm:rounded-2xl ' border=" sm:border border-bdrcard dark:border-bdrcard-d" margin=' mb-1 sm:mb-4 sm:mx-4 ' addClassName={'p-3 sm:p-4 tl-' + data.id} >
                 <View className="flex-auto flex-row items-top pb-3 sm:pb-4">
                     <Author />
@@ -674,27 +661,20 @@ function SmallUnit(data) {
     )
 }
 
-/*
-function CarouselMemo({ aImg, b }) {
-    const computedData = useMemo(() => {
-        return <><Carousel data={data} /></>
-    }, [b, aImg])
-    return computedData
-}*/
-
 function UnitImages(images) {
 
-    if (!images?.images || images?.images?.length == 0)
-        return <></>
-
-    let aImg = images?.images.map((obj) => {
-        return {
+    const aImg = useMemo(() => {
+        if (!images?.images || images?.images?.length === 0) return [];
+        return images.images.map((obj) => ({
             src: obj.src_orig ? obj.src_orig : obj.src,
             width: obj.width,
             height: obj.height,
             type: 'image',
-        }
-    })
+        }));
+    }, [images]);
+
+    if (aImg.length === 0) return <></>;
+
 
     return (
         <View className="w-full px-0.5 ">
@@ -707,8 +687,6 @@ function UnitImages(images) {
 
 export default function UnitFeed(props) {
     let data = props.data
-   
-
     data.mainImage = null
     if (data?.content?.images)
         data.mainImage = data?.content?.images?.length > 0 ? data.content.images[0] : null

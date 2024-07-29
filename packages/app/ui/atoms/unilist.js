@@ -1,12 +1,18 @@
 import { /*MasonryFlashList,*/ FlashList } from "@shopify/flash-list";
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { RefreshControl } from 'react-native';
 import { useRouter } from 'expo-router';
 
 export default function UniList(props) {
     const routerExpo = useRouter();
-    let { data, renderItem, onEndReached, ListFooterComponent, refer, onScrollToIndex, numColumns, keyExtractor, ...rest } = props
-
+    let { data, renderItem, onEndReached, ListFooterComponent, refer, onScrollToIndex, numColumns, keyExtractor, unit, ...rest } = props
+    let estimatedItemSize = 400;
+    if (unit == 'notifications'){
+        estimatedItemSize=40;
+    }
+    if (unit == 'feed'){
+        estimatedItemSize=200;
+    }
     const [refreshing, setRefreshing] = useState(false);
 
     const onRefresh = () => {
@@ -63,13 +69,18 @@ export default function UniList(props) {
         )
     }
     else{*/
+    const onLoadListener = useCallback(({ elapsedTimeInMs } ) => {
+        console.log("Sample List load time", elapsedTimeInMs);
+    }, []);
+
     return (
         <FlashList  
+            onLoad={onLoadListener}
             ref = {refer}   
             keyExtractor={item => item.id}
             onEndReachedThreshold={1}
             numColumns={numColumns}
-            estimatedItemSize={400}
+            estimatedItemSize={estimatedItemSize}
             data={data}
             renderItem={renderItem}
             onEndReached = {onEndReached} 
