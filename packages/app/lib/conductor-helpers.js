@@ -400,7 +400,7 @@ export function TopSidebar({ styles, isWeb, leftSideBar, header, headerSettings,
                             />
 
                         </Pressable></View>}
-                        {headerSettings.title && <Text className="text-3xl tracking-tight font-semibold text-neutral-800 dark:text-neutral-200 leading-tight">{title}</Text>}
+                        {headerSettings.title && <Text className="text-2xl sm:text-3xl lg:hidden font-bold text-neutral-800 dark:text-neutral-200">{title}</Text>}
                     </Row>
                     <Row className="px-3 sm:px-4">
                         {addButtons}

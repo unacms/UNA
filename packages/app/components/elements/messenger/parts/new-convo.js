@@ -45,7 +45,7 @@ export function CreateConvoButton({onSave, onShow, variant ='small'}) {
     }
 
     if (variant == 'small')
-        return <View key={`add-1`} ><Button startDecorator={"Plus"} variant="outline" rounded size="sm" onPress={() => newConvo()} /></View>
+        return <View key={`add-1`} ><Button startDecorator={"Plus"} variant="outline" rounded size="base" onPress={() => newConvo()} /></View>
 
     return <Button startDecorator={"Plus"} variant="primary" title="Create your first conversation" rounded  onPress={() => {newConvo(), onShow()}} />
 

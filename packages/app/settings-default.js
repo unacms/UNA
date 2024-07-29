@@ -509,7 +509,7 @@ let settingsDefault = {
             blocks: {
                 main: { name: 'bx_messenger:get_main_messenger_page', showTitle: false },
             },
-            headerSettings: { backButton: false }
+            headerSettings: { backButton: false, offset:false }
          
         },
         login: {

@@ -125,7 +125,7 @@ export default function (props) {
                     </View>
                 </Row>
             </View>
-            {!bIsHideHeader && <View className={(props.layoutName == 'profile' ? 'hidden lg:flex ' : '') + " fixed w-full"}>
+            {!bIsHideHeader && <View className={(props.layoutName == 'profile' || props.layoutName == 'messenger' ? 'hidden lg:flex ' : '') + " fixed w-full"}>
                 <View className=" backdrop-blur h-16  items-center w-full shadow-sm border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d  ">
                     <View className={appSetting('layout', 'max_width') + "  w-full flex-row flex-auto  items-center "}>
                         <HeaderLine headerSettings={headerSettings} currentUser={currentUser} uri={props.uri} title={sTitle} showMenu={showMenu} menuPopup={menuPopup} setMenuPopup={setMenuPopup} />
