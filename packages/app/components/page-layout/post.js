@@ -66,7 +66,7 @@ export default function PageLayout(props) {
         <View className='flex-1 w-full h-full'>
             <View className="w-full h-full flex-1 bg-bgrcard dark:bg-bgrcard-d px-3">
                 <View className='overflow-hidden h-full w-full'>
-                    <CommentsBrowse addItems={aItems} handleReply={data => setFormData({ text: stripTags(data.cmt_text), parent_id: data.cmt_id, author: data.author_data })} browse={commentsData.content[0].browse} addData={addData} module={commentsData?.content[0].browse?.data?.module || commentsData?.module} requestUrl={commentsData.content[0].url} replyId={replyId} />
+                    <CommentsBrowse addItems={aItems} handleReply={data => setFormData({ text: stripTags(data.cmt_text), parent_id: data.cmt_id, author: data.author_data, cmt_id: data.cmt_id, cmt_object_id: data.cmt_object_id })} browse={commentsData.content[0].browse} addData={addData} module={commentsData?.content[0].browse?.data?.module || commentsData?.module} requestUrl={commentsData.content[0].url} replyId={replyId} />
                 </View>
             </View>
             <KbAvoidingView>

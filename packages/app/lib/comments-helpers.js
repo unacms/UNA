@@ -17,7 +17,7 @@ import { useCurrentUser } from 'app/context/user';
 import Toaster from 'app/ui/atoms/toaster';
 import { useTranslation } from 'react-i18next';
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
-import { Platform } from 'react-native'
+
 import { stripTags } from 'app/lib/util';
 
 export function findParent(data, c, o, insert) {
@@ -84,9 +84,8 @@ export function CommentsParts(commentsData, aItems, height = 0, initFormData, is
     const [formData, setFormData] = useState({});
     const [addData, setAddData] = useState({});
 
-
     const handleReply = async (data) => {
-        setFormData({ text: stripTags(data.cmt_text), parent_id: data.cmt_id, author: data.author_data })
+        setFormData({ text: stripTags(data.cmt_text), parent_id: data.cmt_id, author: data.author_data, cmt_id: data.cmt_id, cmt_object_id: data.cmt_object_id })
     }
 
     useEffect(() => {
@@ -404,19 +403,42 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
     }
 
     useEffect(() => {
+        const updateFormData = async () => {
         if (formData.parent_id > 0) {
             form.data.inputs.cmt_parent_id.value = formData.parent_id;
             if (appSetting('layout', 'comments_mentions')){
-                if (formData.author.url == "/javascript:"){
-                    form.data.inputs.cmt_text.value = '<a class="bx-mention-link" data-id="[object Object]" href="#" title="'+formData.author.display_name+'" dchar="@" data-profile-id="-1" contenteditable="false">'+formData.author.display_name+'</a> ';
+                console.log("formDataformData", formData)
+
+
+                const sUrl = appSetting('urls', 'cmts_menthion_url');
+                if (sUrl){
+                    const sResponse = await fetcher('/api.php?r='+sUrl+'&params[]='+formData.cmt_id+'&params[]='+formData.cmt_object_id+'');
+                    console.log("sResponse", sResponse)
+                    if (sResponse.data){
+                        form.data.inputs.cmt_text.value = '<a class="bx-mention-link" data-id="[object Object]" href="mention'+sResponse.data.id+'" title="'+sResponse.data.name+'" dchar="@" data-profile-id="-1" contenteditable="false">'+sResponse.data.name+'</a> ';
+                    }
+                    else{
+                        form.data.inputs.cmt_text.value = '';
+                    }
                 }
                 else{
-                    form.data.inputs.cmt_text.value = '<a class="bx-mention-link" href="' + formData.author.url + '">' + formData.author.display_name + '</a> ';
+                    if (formData.author.url == "/javascript:"){
+                        form.data.inputs.cmt_text.value = '<a class="bx-mention-link" data-id="[object Object]" href="#" title="'+formData.author.display_name+'" dchar="@" data-profile-id="-1" contenteditable="false">'+formData.author.display_name+'</a> ';
+                    }
+                    else{
+                        form.data.inputs.cmt_text.value = '<a class="bx-mention-link" href="' + formData.author.url + '">' + formData.author.display_name + '</a> ';
+                    }
+
                 }
+
+                
+               
             }
             form.data.reset = true;
             addCommentData({ formText: formData.text, formAuthor: formData.author.display_name, parentId: formData.parent_id })
         }
+    }
+    updateFormData();
     }, [formData.parent_id]);
 
     const [commentForm, setCommentForm] = useState();

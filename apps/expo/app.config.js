@@ -34,7 +34,8 @@ const expoConfig = {
         "NFCReaderUsageDescription":  "Quick contacts between users.",
         "NSBluetoothAlwaysUsageDescription": "Quick contacts between users.",
         "NSBluetoothPeripheralUsageDescription": "Quick contacts between users.",
-        "NSLocationWhenInUseUsageDescription": "Quick contacts between users."
+        "NSLocationWhenInUseUsageDescription": "Quick contacts between users.",
+        "UIUserInterfaceStyle": "Automatic"
       }
     },
     "android": {

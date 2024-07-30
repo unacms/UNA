@@ -19,13 +19,12 @@ function formatText(text) {
    let v =  text.replace(/<br>/g, '\n');
     v =  v.replace(/&nbsp;/g, ' ');
     v = v.replace(
-        /<a(.*?)class="bx-mention-link(.*?)"[^>]*>([^<]+)<\/a>/g,
-        (match, p1, p2, name) => {
-            //console.log('Name:', name);
+        /<a(.*?)class="bx-mention-link(.*?)"[^>]*href="([^"]+)"[^>]*>([^<]+)<\/a>/g,
+        (match, p1, p2, href, name) => {
+            console.log("aaa", href, name)
             const trigger = '@'; // Assuming '@' is the trigger in this context
-            //console.log('Trigger:', trigger, name);
             name = name.replace('@', '');
-            return `@[${name}](7)`; // Replace '8' with the appropriate ID if needed
+            return `@[${name}](${href})`; // Use the captured href value
         }
     );
 
@@ -84,7 +83,7 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
     const handleChange2 = (val) => {
       //  setLocalValue(val);
         
-        let v = replaceMentionValues(val, ({trigger, name, id}) => `<a class="bx-mention-link" href="/pages/view-persons-profile?id=${id}" title="${name}" dchar="${trigger}" data-profile-id="${id}">${name}</a>`)
+        let v = replaceMentionValues(val, ({trigger, name, id}) => `<a class="bx-mention-link" href="${id}" title="${name}" dchar="${trigger}" data-profile-id="${id}">${name}</a>`)
        // v = v.split('\n').map(line => `<p>${line}</p>`).join('');
        v = v.split('\n').map(line => `${line}<br>`).join('');
         field.onChange(v)
