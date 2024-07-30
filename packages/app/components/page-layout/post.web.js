@@ -39,8 +39,6 @@ export default function PageLayout(props) {
 
     const windowWidth = windowDimensions.width + 24;
 
-    
-
     const aItems = useMemo(() => {
         return Object.entries(props.blocks).filter(([key, value]) => value.forList).map(([key, value]) => ({
             id: `block_${key}`,

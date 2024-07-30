@@ -14,9 +14,7 @@ import { uploadImage, md5 } from 'app/lib/util';
 import Loading from 'app/ui/atoms/loading'
 import { Text } from 'app/design/typography'
 import { Image as ImageNative, Alert, Platform } from 'react-native';
-import * as Permissions from 'expo-permissions';
-// update to https://stackoverflow.com/questions/68668152/react-native-expo-permission-deprecated-what-to-use-now
-// https://docs.expo.dev/versions/latest/sdk/camera/
+import { Camera } from "expo-camera";
 export default function (props) {
     const name = props.name;
     const [imageSource, setImageSource] = useState({ images: null });
@@ -160,25 +158,43 @@ export default function (props) {
 
     const selectImage = useCallback(async () => {
         if (Platform.OS !== 'web') {
-            Alert.alert(
-                "Upload Photo",
-                "Choose an option",
-                [
-                    {
-                        text: "Take Photo",
-                        onPress: () => { selectImage1('camera') }
-                    },
-                    {
-                        text: "Choose from Library",
-                        onPress: () => { selectImage1('library') }
-                    },
-                    {
-                        text: "Cancel",
-                        style: "cancel"
-                    }
-                ],
-                { cancelable: true }
-            );
+            const { status } = await Camera.requestCameraPermissionsAsync();
+            if (status === "granted"){
+                Alert.alert(
+                    "Upload Photo",
+                    "Choose an option",
+                    [
+                        {
+                            text: "Take Photo",
+                            onPress: () => { selectImage1('camera') }
+                        },
+                        {
+                            text: "Choose from Library",
+                            onPress: () => { selectImage1('library') }
+                        },
+                        {
+                            text: "Cancel",
+                            style: "cancel"
+                        }
+                    ],
+                    { cancelable: true }
+                );
+            }
+            else{
+                Alert.alert(
+                    "Upload Photo",
+                    "Gallery permissions are needed",
+                    [
+                        {
+                            text: "Cancel",
+                            style: "cancel"
+                        }
+                    ],
+                    { cancelable: true }
+
+
+                )
+            }
         }
         else {
             selectImage1('library')
@@ -203,8 +219,8 @@ export default function (props) {
             let result = null
 
             if (type == 'library') {
-                const permissions = Permissions.CAMERA_ROLL;
-                const { status } = await Permissions.askAsync(permissions);
+                //const permissions = Permissions.CAMERA_ROLL;
+                //const { status } = await Permissions.askAsync(permissions);
                 
                 if (!hasPermissionLibrary) {
                     const { status2 } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -221,8 +237,8 @@ export default function (props) {
                 });
             }
             else {
-                const permissions = Permissions.CAMERA;
-                const { status } = await Permissions.askAsync(permissions);
+                //const permissions = Permissions.CAMERA;
+                //const { status } = await Permissions.askAsync(permissions);
                 if (!hasPermissionCamera) {
                     const permission = await requestPermissionCamera();
                     if (!permission.granted) {

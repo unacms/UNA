@@ -50,7 +50,7 @@ const nextConfig = {
     '@react-native-picker/picker',
     'expo-image-picker',
     'expo-location',
-    'expo-permissions',
+    'expo-camera',
     'expo-document-picker',
     'react-native-svg',
     'expo-image-manipulator',
