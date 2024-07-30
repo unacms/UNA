@@ -14,7 +14,7 @@ import { uploadImage, md5 } from 'app/lib/util';
 import Loading from 'app/ui/atoms/loading'
 import { Text } from 'app/design/typography'
 import { Image as ImageNative, Alert, Platform } from 'react-native';
-import { Permissions } from 'expo';
+import * as Permissions from 'expo-permissions';
 
 export default function (props) {
     const name = props.name;
