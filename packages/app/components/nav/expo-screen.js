@@ -9,6 +9,7 @@ import { fetcher } from 'app/lib/fetcher';
 import { useLocalSearchParams} from 'expo-router';
 import { useUpdateCenterHeader , getRightHeader } from 'app/lib/native-handlers'
 import {  useNavigation } from 'expo-router'; 
+import { menuItemsFilter } from 'app/lib/util';
 
 export async function getData(path, token, origin, headers, callback, params) {
     path = (!path || path.startsWith('expo-development-client')) ? 'home' : path;
@@ -80,7 +81,19 @@ const Content = ({ pagePath, currentUser }) => {
    useEffect(() => {
         if (pageData) {
             const settings = appSetting('layouts', pageData.data.uri)
-            updateCenterHeader(pagePath, pageData.data.name, null, settings?.header, settings?.headerSettings);
+
+            let header = settings?.header
+            if (!header){
+                const menu_name = pageData.data?.menu?.object;
+                if (menu_name){
+                    const menuSettings = appSetting('menu_items', menu_name);
+
+                    let addButtonsSet = menuSettings?.add?.filter(item => item.hideInTopBar !== true);
+                    addButtonsSet = menuItemsFilter(addButtonsSet, currentUser);
+                    header = addButtonsSet;
+                }
+            }
+            updateCenterHeader(pagePath, pageData.data.name, null, header, settings?.headerSettings);
         }
     }, [pageData, currentUser?.id]);
 
@@ -89,8 +102,3 @@ const Content = ({ pagePath, currentUser }) => {
         <Root path={pagePath} data={pageData.data} uri={pageData.data.uri} />
     ) : <Loading />;
 };
-/*
-<Convo _path={pagePath} pageData={pageData} />
-const Convo = memo(({ _path, pageData }) => {
-    return <Root path={_path} data={pageData.data} uri={pageData.data.uri} />
-});*/

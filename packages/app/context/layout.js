@@ -6,6 +6,7 @@ export default function LayoutDataContext({ children }) {
     const [layoutData, setLayoutDataIn] = useState();
 
     const setLayoutData = useCallback((value) => {
+       // console.log("setLayoutData", value)
         setLayoutDataIn(value);
     }, []);
 

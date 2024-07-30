@@ -66,7 +66,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     const showMenu = (params) => {
         setMenuPopup(!menuPopup)
     }
-
+    console.log("layoutDatalayoutData", layoutData)
     //const [maxId, setMaxId] = useState(0);
     //const toasterRef = useRef();
     const toasterRef2 = useRef();

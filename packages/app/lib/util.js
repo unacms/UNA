@@ -205,7 +205,6 @@ export function getBlocksFromData(data) {
 
 export function getHeaderSettings(uri, width, layout) {
     let settings = appSetting('layouts', uri);
-    console.log("-----------", layout )
     if (!settings?.headerSettings) {
         if (layout == 'navigator') {
             settings = { headerSettings: { offset: false, header: false, backButton: false, menu: true, footer: false } }

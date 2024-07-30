@@ -15,3 +15,20 @@ index 3098506..07493bb 100644
      })
      .onStart(() => {
        isPullEnough.value = false;
+
+
+
+https://www.npmjs.com/package/expo-camera
+
+allprojects {
+    repositories {
+
+        // * Your other repositories here *
+
+        // * Add a new maven block after other repositories / blocks *
+        maven {
+            // expo-camera bundles a custom com.google.android:cameraview
+            url "$rootDir/../node_modules/expo-camera/android/maven"
+        }
+    }
+}

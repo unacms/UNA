@@ -8,7 +8,7 @@ export function useUpdateCenterHeader(navigation) {
                 navigation.setOptions({ headerShown: false });
             } else {
                 if (backButtonPresented === null) {
-                    if (headerSettings?.backButton !== false) {
+                    if (headerSettings?.backButton === true) {
                         backButtonPresented = true;
                     }
                 }

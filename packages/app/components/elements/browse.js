@@ -258,7 +258,7 @@ export default function (props) {
                         contentContainerStyle={props?.contentContainerStyle}
                         refer={uniRef}
                         no_scroll={props.no_scroll}
-                        renderItem={({ item, index }) => <Item  item={item} index={index} numColumns={numColumns} data={data} unitMode={unitMode} props={props} />}
+                        renderItem={({ item, index }) => Platform.OS === 'web' ? <Item key={'item' + item.id} item={item} index={index} numColumns={numColumns} data={data} unitMode={unitMode} props={props} /> : <Item item={item} index={index} numColumns={numColumns} data={data} unitMode={unitMode} props={props} />}
                         onEndReached={handleEndReached}
                         ListFooterComponent={
                             ((hasNextPage && isFetchingNextPage)) ? (

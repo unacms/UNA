@@ -25,6 +25,7 @@ export default function FormFeed(props) {
 
     useEffect(() => {
         if (props.response?.id != responseId) {
+            //console.log("props.responseprops.response", props.response)
             setLayoutData(getAlert('feed:new_content', props.response));
             setShowImage(false);
             setResponseId(props.response?.id);
