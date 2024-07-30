@@ -306,10 +306,13 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     };
 
     const handleBackButton = () => {
-        if (!panelsVisible.convos)
+        if (!panelsVisible.convos){
             showConvo()
-        else
-            routerExpo.back(); 
+        }
+        else{
+            setConvoId(-1);
+            routerExpo.back();
+        }
     };
 
     const convosComponent = panelsVisible.convos && <Convos
