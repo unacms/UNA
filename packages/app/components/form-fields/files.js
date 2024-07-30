@@ -14,7 +14,7 @@ import { uploadImage, md5 } from 'app/lib/util';
 import Loading from 'app/ui/atoms/loading'
 import { Text } from 'app/design/typography'
 import { Image as ImageNative, Alert, Platform } from 'react-native';
-import * as Permissions from 'expo-permissions';
+import { Permissions } from 'expo';
 
 export default function (props) {
     const name = props.name;
@@ -38,26 +38,14 @@ export default function (props) {
             const permissions = Permissions.CAMERA_ROLL;
             const { status } = await Permissions.askAsync(permissions);
         
-            console.log(permissions, status);
-            if(status === 'granted') {
-              let image = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: 'Images',
-              }).catch(error => console.log(permissions, { error }));
-              console.log(permissions, 'SUCCESS', image);
-            }
+            
           }
         
           pickFromCamera = async () => {
             const permissions = Permissions.CAMERA;
             const { status } = await Permissions.askAsync(permissions);
         
-            console.log(permissions, status);
-            if(status === 'granted') {
-              let image = await ImagePicker.launchCameraAsync({
-                mediaTypes: 'Images',
-              }).catch(error => console.log(permissions, { error }));
-              console.log(permissions, 'SUCCESS', image);
-            }
+        
           }
 
           pickFromGallery();
