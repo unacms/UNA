@@ -14,6 +14,7 @@ import { uploadImage, md5 } from 'app/lib/util';
 import Loading from 'app/ui/atoms/loading'
 import { Text } from 'app/design/typography'
 import { Image as ImageNative, Alert, Platform } from 'react-native';
+import * as Permissions from 'expo-permissions';
 
 export default function (props) {
     const name = props.name;
@@ -30,6 +31,38 @@ export default function (props) {
     const url = useMemo(() => {
         return '/api.php?r=system/get_data_api/TemplUploaderServices/&params[]=&obfuscate_faces=' + obfuscateFaces + '&&uo=' + props.uploaders[0] + '&so=' + props.storage_object + '&uid=' + genRnd(8) + '&img_trans=' + props.images_transcoder + '&m=' + (bMultiple ? 1 : 0) + '&c=' + props.content_id + '&p=' + (props.privacy ? 1 : 0);
     }, [props, obfuscateFaces]);
+
+
+    useEffect(() => {
+        pickFromGallery = async () => {
+            const permissions = Permissions.CAMERA_ROLL;
+            const { status } = await Permissions.askAsync(permissions);
+        
+            console.log(permissions, status);
+            if(status === 'granted') {
+              let image = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: 'Images',
+              }).catch(error => console.log(permissions, { error }));
+              console.log(permissions, 'SUCCESS', image);
+            }
+          }
+        
+          pickFromCamera = async () => {
+            const permissions = Permissions.CAMERA;
+            const { status } = await Permissions.askAsync(permissions);
+        
+            console.log(permissions, status);
+            if(status === 'granted') {
+              let image = await ImagePicker.launchCameraAsync({
+                mediaTypes: 'Images',
+              }).catch(error => console.log(permissions, { error }));
+              console.log(permissions, 'SUCCESS', image);
+            }
+          }
+
+          pickFromGallery();
+          pickFromCamera();
+    }, []);
 
     const RestoreGhosts = async (data) => {
 
@@ -202,9 +235,9 @@ export default function (props) {
             }
             else {
                 if (!hasPermissionCamera) {
-                    const { status } = await ImagePicker.requestCameraPermissionsAsync();
-                    if (status !== 'granted') {
-                        Alert.alert('Permission to access camera is required!');
+                    const permission = await requestPermissionCamera();
+                    if (!permission.granted) {
+                        Alert.alert('Camera access is required to use this feature.');
                         return;
                     }
                 }
