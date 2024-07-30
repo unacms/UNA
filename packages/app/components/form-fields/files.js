@@ -33,24 +33,20 @@ export default function (props) {
     }, [props, obfuscateFaces]);
 
 
-    useEffect(() => {
+   /* useEffect(() => {
         pickFromGallery = async () => {
             const permissions = Permissions.CAMERA_ROLL;
             const { status } = await Permissions.askAsync(permissions);
-        
-            
           }
         
           pickFromCamera = async () => {
             const permissions = Permissions.CAMERA;
             const { status } = await Permissions.askAsync(permissions);
-        
-        
           }
 
           pickFromGallery();
           pickFromCamera();
-    }, []);
+    }, []);*/
 
     const RestoreGhosts = async (data) => {
 
@@ -207,6 +203,8 @@ export default function (props) {
 
             if (type == 'library') {
 
+                const permissions = Permissions.CAMERA;
+                const { status } = await Permissions.askAsync(permissions);
                 if (!hasPermissionLibrary) {
                     const { status2 } = await ImagePicker.requestMediaLibraryPermissionsAsync();
                     if (status2 !== 'granted') {
@@ -222,6 +220,8 @@ export default function (props) {
                 });
             }
             else {
+                const permissions = Permissions.CAMERA_ROLL;
+                const { status } = await Permissions.askAsync(permissions);
                 if (!hasPermissionCamera) {
                     const permission = await requestPermissionCamera();
                     if (!permission.granted) {
