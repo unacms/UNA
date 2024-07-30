@@ -65,6 +65,8 @@ export function Modal({
         textAlign = 'end'
     }
 
+    const type = typeof title;
+
     return (
         <ModalDef visible={onVisible} presentationStyle={presentation} animationType={animation} transparent={false}>
             <Wrapper className="flex justify-end w-full h-full bg-white/80 dark:bg-black/80 backdrop-blur" {...(isOuterClose && { onPress: onClose })}>
@@ -73,10 +75,13 @@ export function Modal({
                         <Pressable onPress={() => { }} className='relative bg-bgrmodal dark:bg-bgrmodal-d h-full md:h-auto sm:border sm:border-bdrmodal sm:dark:border-bdrmodal-d sm:rounded-2xl sm:shadow-sm'>
                             {
                                 (title || onClose) && <Row className={`items-center justify-${textAlign} ${headerBorder ? ' border-b border-bdr dark:border-bdr-d ' : ''} px-4 py-3 sm:px-6 sm:py-5 `}>
-                                    {title && (
+                                    {(title && type === 'string') && (
                                         <View className='flex-auto'>
                                             <Text className='text-neutral-700 dark:text-neutral-200 text-xl font-bold '>{title}</Text>
                                         </View>
+                                    )}
+                                    {(title && type !== 'string') && (title
+                                        
                                     )}
                                     {onClose && (
                                     <View className=''>
