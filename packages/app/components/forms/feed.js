@@ -90,7 +90,7 @@ export default function FormFeed(props) {
                 {getFormFieldByData(props.data.inputs['object_cf'], props.handleSubmit, 'default')}
                 {getFormFieldByData(props.data.inputs['owner_id'], props.handleSubmit, 'default')}
                 {getFormFieldByData(props.data.inputs['type'], props.handleSubmit, 'default')}
-                <KbAvoidingView>
+                <KbAvoidingView offset={72}>
                     <View className='justify-between mb-4 h-full  '>
                         <ScrollView className="w-full h-full flex-1">
 
@@ -123,7 +123,7 @@ export default function FormFeed(props) {
 
                            
                         </ScrollView>
-                        <Row className={"w-full flex-wrap  border-bdr dark:border-bdr-d items-center " + (isWeb ? '' : ' pb-4 ') + (isSmall ? " border-t fixed bottom-0" : " rounded-xl border my-2 border")}>
+                        <Row className={"w-full flex-wrap  border-bdr dark:border-bdr-d items-center " + (isWeb ? '' : ' pb-4 ') + (isSmall ? "h-16 border-t fixed bottom-0 bg-bgrcard dark:bg-bgrcard-d" : " rounded-xl border my-2 border")}>
                             <Text className="px-4 mr-auto text-sm font-medium text-neutral-800 dark:text-neutral-200">Add media</Text>
 
                             {props.data.inputs['obfuscate_faces'] && <View className="mr-4">
