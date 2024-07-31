@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next';
 import { appSetting } from 'app/lib/util'
 import { useWindowDimensions } from 'react-native'
 import { Keyboard } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function FormFeed(props) {
 
@@ -77,6 +78,7 @@ export default function FormFeed(props) {
 
     return (
         <View className="w-full h-full ">
+            
             <Modal
                 title={isSmall ? header : t("Create new post")}
                 onVisible={showImage}
@@ -91,6 +93,7 @@ export default function FormFeed(props) {
                 {getFormFieldByData(props.data.inputs['object_cf'], props.handleSubmit, 'default')}
                 {getFormFieldByData(props.data.inputs['owner_id'], props.handleSubmit, 'default')}
                 {getFormFieldByData(props.data.inputs['type'], props.handleSubmit, 'default')}
+                <SafeAreaView edges={['top', 'bottom']} >
                 <KbAvoidingView offset={72}>
                     <View className='justify-between mb-4 h-full'>
                         <ScrollView className="w-full h-full flex-1">
@@ -148,6 +151,7 @@ export default function FormFeed(props) {
                             </View>
                     </View>
                 </KbAvoidingView>
+                </SafeAreaView>
             </Modal>
             {props.exProps?.mode == 'button' ? <Button variant="primary" title="Post" tooltip="Post" rounded='rounded' fullWidth onPress={() => {
                 FeedbackHaptics('Medium')

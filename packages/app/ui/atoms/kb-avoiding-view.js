@@ -6,7 +6,7 @@ export default function KbAvoidingView(props) {
     const headerHeight = useHeaderHeight();
     const { bottom,top } = useSafeAreaInsets();
     let { children, offset, ...rest } = props
-   
+    console.log("bottom", bottom)
     let offsetHeight = (Platform.OS === 'ios' ? 58 :44) + headerHeight
     if (offset)
         offsetHeight = offset + top;
