@@ -111,9 +111,12 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
         );
     };
 
-    let styles ={maxHeight: 100, verticalAlign:'top'};
+    let styles ={verticalAlign:'top'};
     if(name != 'cmt_text') {
         styles = {...styles, minHeight: 100}
+    }
+    else {
+        styles = {...styles, maxHeight: 100}
     }
 
     if (typeof props.styles === 'object')

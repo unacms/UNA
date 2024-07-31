@@ -9,7 +9,7 @@ export default function KbAvoidingView(props) {
    
     let offsetHeight = (Platform.OS === 'ios' ? 58 :44) + headerHeight
     if (offset)
-        offsetHeight = offset+bottom+top;
+        offsetHeight = offset + top;
     console.log('offsetHeight', offsetHeight, offset)
     return (
         <KeyboardAvoidingView {...rest} keyboardVerticalOffset={offsetHeight} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
