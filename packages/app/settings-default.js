@@ -20,7 +20,7 @@ let settingsDefault = {
         api_keys: {
             google_maps: 'AIzaSyAhrci201-9xXIRAy0kLOHFGppeTk8AHmo',
             open_ai: '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',
-            onesignal: null,
+            onesignal: 'a36d17c1-693e-40e1-98e9-41a62a9b5e7d',
         },
     },
     layout: {

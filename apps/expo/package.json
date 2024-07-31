@@ -67,6 +67,7 @@
     "react-native-maps": "^1.15.6",
     "react-native-mmkv-storage": "^0.9.1",
     "react-native-multi-ble-peripheral": "^0.1.5",
+    "react-native-onesignal": "^5.2.2",
     "react-native-orientation-locker": "1.5.0",
     "react-native-pager-view": "6.3.0",
     "react-native-paper": "5.12.3",

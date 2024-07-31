@@ -19,7 +19,8 @@ import AsyncWorker from 'app/ui/molecules/async_worker';
 import { useFonts } from 'expo-font';
 import { Platform } from 'react-native'
 import { enableScreens } from 'react-native-screens';
-
+import { OneSignal } from 'react-native-onesignal';
+//import { registerBackgroundFetchAsync, unregisterBackgroundFetchAsync } from 'app/ui/molecules/background_tasks';
 enableScreens(true);
 
 export default function () {
@@ -93,6 +94,15 @@ export default function () {
     }, [url, currentUser]);
 
     useEffect(() => {
+        if (currentUser)  {
+            console.log("---setExternalUserId")
+            OneSignal.login(""+currentUser.id);
+            OneSignal.User.addEmail(currentUser.email);
+            OneSignal.User.addTag("user_hash", ""+currentUser.id);
+        }
+    },[currentUser]);
+
+    useEffect(() => {
         const scheduleNotification = async () => {
             const notificationsCount = Number(currentUser.notifications);
             await Notifications.setBadgeCountAsync(notificationsCount);
@@ -109,6 +119,24 @@ export default function () {
         if (currentUser)   
             scheduleNotification();
     }, [currentUser, currentUser?.notifications]);
+
+
+   /* useEffect(() => {
+        const registerFetch = async () => {
+            try {
+                const status = await registerBackgroundFetchAsync();
+                console.log('Background fetch registered, status:', status);
+            } catch (err) {
+                console.error('Error registering background fetch:', err);
+            }
+        };
+
+        registerFetch();
+        return () => {
+            unregisterBackgroundFetchAsync();
+        };
+    }, []);
+*/
 
     // DEEP LINKING
 

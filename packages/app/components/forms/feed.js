@@ -25,11 +25,9 @@ export default function FormFeed(props) {
     const { setLayoutData } = useLayoutData()
     let { currentUser, setCurrentUser } = useCurrentUser()
     const windowDimensions = useWindowDimensions();
-    const [isKbVisible, setIsKbVisible] = useState(false)
 
     const isSmall = windowDimensions.width < 640 ? true : false;
     const isWeb = Platform.OS === 'web'
-    const isIos = Platform.OS === 'ios'
 
     useEffect(() => {
         if (props.response?.id != responseId) {
@@ -61,27 +59,10 @@ export default function FormFeed(props) {
     }
 
     const handlePress = () => {
-
         Keyboard.dismiss();
         setShowImage(null)
         props.handleSubmit();
-
     };
-
-    useEffect(() => {
-        const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', (e) => {;
-            setIsKbVisible(true);
-        });
-    
-        const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
-            setIsKbVisible(false);
-        });
-    
-        return () => {
-          keyboardDidShowListener.remove();
-          keyboardDidHideListener.remove();
-        };
-      }, []);
 
     const header = <Row className='h-12 w-full justify-between items-center'>
         <View className='w-1/4'><Button onPress={() => { setShowImage(null) }} variant='outline' fullWidth title="Cancel" /></View>
@@ -90,11 +71,6 @@ export default function FormFeed(props) {
             <Button onPress={() => { handlePress() }} variant='primary' fullWidth title="Save" />
         </View>
     </Row>
-
-    let h = "h-16";
-    if (isIos && !isKbVisible) {
-        h= 'h-20';
-    }
 
     return (
         <View className="w-full h-full ">
@@ -142,10 +118,8 @@ export default function FormFeed(props) {
 
 
                                 </View>
-
-
                             </ScrollView>
-                            <Row className={"w-full flex-wrap  border-bdr dark:border-bdr-d items-center " + (isWeb ? '' : ' pb-4 ') + (isSmall ? h+" border-t fixed bottom-0 bg-bgrcard dark:bg-bgrcard-d" : " rounded-xl border my-2 border")}>
+                            <Row className={"w-full flex-wrap  border-bdr dark:border-bdr-d items-center " + (isWeb ? '' : ' pb-4 ') + (isSmall ? "h-16 border-t fixed bottom-0 bg-bgrcard dark:bg-bgrcard-d" : " rounded-xl border my-2 border")}>
                                 <Text className="px-4 mr-auto text-sm font-medium text-neutral-800 dark:text-neutral-200">Add media</Text>
 
                                 {props.data.inputs['obfuscate_faces'] && <View className="mr-4">

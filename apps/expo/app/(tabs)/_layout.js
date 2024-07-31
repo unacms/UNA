@@ -27,6 +27,8 @@ import { getRemoteSettings } from 'app/config';
 import { StatusBar } from 'react-native';
 import * as NavigationBar from "expo-navigation-bar";
 import { Platform } from 'react-native'
+import { LogLevel, OneSignal } from 'react-native-onesignal';
+
 
 const AppLayout = React.memo(() => {
 
@@ -40,6 +42,24 @@ const AppLayout = React.memo(() => {
             remoteSettings.data = await getRemoteSettings();
         })();
     }, []);
+
+
+    useEffect(() => {
+        console.log('OneSignal: Start initialization');
+        OneSignal.Debug.setLogLevel(LogLevel.Verbose);
+
+        // OneSignal Initialization
+        OneSignal.initialize(appSetting('config', 'api_keys', 'onesignal'));
+
+        // requestPermission will show the native iOS or Android notification permission prompt.
+        // We recommend removing the following code and instead using an In-App Message to prompt for notification permission
+        OneSignal.Notifications.requestPermission(true);
+
+        // Method for listening for notification clicks
+        OneSignal.Notifications.addEventListener('click', (event) => {
+            console.log('OneSignal: notification clicked:', event);
+        });
+    },[]);
 
 
     const languageDetector = {
