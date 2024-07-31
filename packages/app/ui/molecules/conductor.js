@@ -112,6 +112,8 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
             {...props}
             useExternalScrollView
             forwardedRef={ref}
+             keyboardShouldPersistTaps="always"
+  keyboardDismissMode="on-drag"
             ContainerView={Animated.ScrollView}
         />
     ));

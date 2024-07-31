@@ -96,7 +96,7 @@ export default function FormFeed(props) {
                 <SafeAreaView edges={['top', 'bottom']} >
                 <KbAvoidingView offset={72}>
                     <View className='justify-between mb-4 h-full'>
-                        <ScrollView className="w-full h-full flex-1">
+                        <ScrollView className="w-full h-full flex-1" keyboardShouldPersistTaps='always' keyboardDismissMode="on-drag">
 
                             <View className="w-full  flex-col p-4 sm:p-0 ">
                                 <View className=" flex-row flex-wrap gap-x-2 mt-2 flex-auto justify-between ">
