@@ -6,6 +6,9 @@ const StackCustom = () => {
             header:(props) => <Header header="Loading..." />,
             headerBackVisible: true, 
             headerShadowVisible: true,
+            freezeOnBlur: true,
+            unmountOnBlur: false,
+            lazy: true,
     })}/>
 };
 

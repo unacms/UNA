@@ -84,7 +84,7 @@ export default function ElementCommentForm(props) {
             <View className="mx-auto w-full flex-1 flex-auto py-2 h-full">
                 {bottomSheetHeader}
                 {isListView ? contentView : (
-                    <ScrollView className='w-full'>
+                    <ScrollView className='w-full' keyboardShouldPersistTaps="always" keyboardDismissMode="on-drag">
                         {contentView}
                     </ScrollView>
                 )}

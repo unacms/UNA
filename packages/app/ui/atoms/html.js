@@ -36,21 +36,54 @@ const customHTMLElementModels = {
 
 function onElement(element) {
     let cls = '';
-    if (element?.parent?.children[0] === 'p') {
+    console.log("---", element.parent.children.length, element?.parent?.children[0])
+    if (element?.parent?.children[0].name === 'p') {
         if (element?.parent?.children.length === 1)
             element.parent.children[0].attribs.class = 'firstP lastP';
         else
-            element.parent.children[0] = { class: 'firstP' }
+            element.parent.children[0].attribs.class = 'firstP'
     }
-    if (element?.parent?.children[element.parent.children.length - 1] === 'p' && element.parent.children.length > 1) {
-        element.parent.children[element.parent.children.length - 1].attribs = { class: 'lastP' }
+    if (element?.parent?.children[element.parent.children.length - 1].name === 'p' && element.parent.children.length > 1) {
+        element.parent.children[element.parent.children.length - 1].attribs.class = 'lastP'
     }
-    
+     
 }
 
 const domVisitors = {
-     onElement: onElement
+    // onElement: onElement
 };
+
+function addClassesToP(htmlString) {
+   // Regular expression to match <p> tags
+   const pTagRegex = /<p\b[^>]*>/g;
+   let match;
+   let pTags = [];
+
+   // Find all <p> tag matches
+   while ((match = pTagRegex.exec(htmlString)) !== null) {
+       pTags.push(match.index);
+   }
+
+   // Check if there are any <p> tags
+   if (pTags.length > 0) {
+       // Add class1 to the first <p> tag
+       let firstPIndex = pTags[0];
+       htmlString = htmlString.slice(0, firstPIndex) + htmlString.slice(firstPIndex).replace('<p', '<p class="firstP"');
+
+       // Add class2 to the last <p> tag if there are multiple <p> tags
+       if (pTags.length > 1) {
+           let lastPIndex = pTags[pTags.length - 1];
+           // Recalculate lastPIndex after modifying the first <p>
+           lastPIndex += '<p class="class1"'.length - 2; // Adjust length change due to added class
+           htmlString = htmlString.slice(0, lastPIndex) + htmlString.slice(lastPIndex).replace('<p', '<p class="lastP"');
+       } else {
+           // If only one <p> tag, append class2 to the existing class1
+           htmlString = htmlString.replace('class="firstP"', 'class="firstP lastP"');
+       }
+   }
+
+   return htmlString;
+}
 
 export default function ElementHtml(props) {
     const { colors } = Theme();
@@ -99,7 +132,8 @@ export default function ElementHtml(props) {
             margin: 2
         },*/
         p: {
-            margin: 5
+            margin: 5,
+             
         },
         ul: {
             margin: 0,
@@ -116,6 +150,11 @@ export default function ElementHtml(props) {
         },
         lastP: {
             marginBottom: 0,
+            
+        },
+        'bx-menthion-link':{
+            color: colors.primary,
+            textDecorationLine: 'none',
         },
         'bx-embeded-link': {
             color: colors.default
@@ -124,8 +163,7 @@ export default function ElementHtml(props) {
             color: colors.primary,
             textDecorationLine: 'none',
         }
-        ,'bx-embeded':
-        {
+        ,'bx-embeded':{
             lineHeight:18,
             fontSize: 14,
         }
@@ -180,6 +218,8 @@ export default function ElementHtml(props) {
         data = data.replace('/(<br\s*\/?>\s*){2,}/i', '<br>', data);
     }
     data = data.replace(/<br\s*\/?>\s*$/, '');
+    data  = addClassesToP(data);
+
     return (
         <RenderHtml
             renderers={renderers}

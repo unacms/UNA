@@ -407,9 +407,6 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
         if (formData.parent_id > 0) {
             form.data.inputs.cmt_parent_id.value = formData.parent_id;
             if (appSetting('layout', 'comments_mentions')){
-                console.log("formDataformData", formData)
-
-
                 const sUrl = appSetting('urls', 'cmts_menthion_url');
                 if (sUrl){
                     const sResponse = await fetcher('/api.php?r='+sUrl+'&params[]='+formData.cmt_id+'&params[]='+formData.cmt_object_id+'');

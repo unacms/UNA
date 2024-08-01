@@ -48,7 +48,7 @@ export default function ElementCommentForm(props) {
             style={styles.bottomSheet}
 
         >
-            {props.isListView ? props.children : <BottomSheetScrollView contentContainerStyle={styles.contentContainer}>
+            {props.isListView ? props.children : <BottomSheetScrollView contentContainerStyle={styles.contentContainer}  keyboardShouldPersistTaps="always" keyboardDismissMode="on-drag">
                 {props.children}
             </BottomSheetScrollView>
             }

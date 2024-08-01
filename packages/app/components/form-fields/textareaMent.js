@@ -2,7 +2,7 @@ import Field from './_field';
 import { View, Pressable } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { useController } from 'react-hook-form';
-import { useState, useEffect} from 'react';
+import { useState, useRef, useEffect} from 'react';
 import { fetcher } from 'app/lib/fetcher';
 import { replaceMentionValues } from 'react-native-controlled-mentions';
 import { MentionInput as MentionInputDef } from 'react-native-controlled-mentions'
@@ -50,6 +50,7 @@ function formatText(text) {
 
 export default function ({ name, value = '', numLines = 4, ...props }) {
 
+    const inputRef = useRef(null);
     const { colors } = Theme();
     const { field } = useController({ name, rules: {}, defaultValue: value });
    // const [localValue, setLocalValue] = useState(formatText(field.value));
@@ -70,7 +71,11 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
         fetchData();
     }, [keywordval]);
 
-    
+    useEffect(() => {
+        if (inputRef.current) {
+        inputRef.current.focus();
+      }
+    }, []);    
    /* useEffect(() => {
         if (field.value == ''){
             setLocalValue('');
@@ -127,6 +132,7 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
     return (
         <Field {...props}>
             <MentionInput style={styles}
+                inputRef={inputRef}
                 multiline
                 allowFontScaling={false}
                 autoFocus={field.value ? true : false}

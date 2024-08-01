@@ -71,14 +71,31 @@ const Content = ({ pagePath, currentUser }) => {
             const data = await getData(pathWithoutQuery, null, null, null, null, params);
 
             if (data?.props) {
+                const pageData1 = data.props;
+                const settings = appSetting('layouts', pageData1.data.uri)
+
+                let header = settings?.header
+                if (!header){
+                    const menu_name = pageData1.data?.menu?.object;
+                    if (menu_name){
+                        const menuSettings = appSetting('menu_items', menu_name);
+    
+                        let addButtonsSet = menuSettings?.add?.filter(item => item.hideInTopBar !== true);
+                        addButtonsSet = menuItemsFilter(addButtonsSet, currentUser);
+                        header = addButtonsSet;
+                    }
+                }
+                if (currentUser?.id)
+                    updateCenterHeader(pagePath, pageData1.data.name, null, header, settings?.headerSettings);
+               
                 setBottomSheetData(bottomSheetData !== false ? false : bottomSheetData);
-                setPageData(data.props);
+                setPageData(data.props); 
             }
         };
         fetchPageData();
     }, [pagePath, currentUser?.id]);
 
-   useEffect(() => {
+   /*useEffect(() => {
         if (pageData) {
             const settings = appSetting('layouts', pageData.data.uri)
 
@@ -93,9 +110,10 @@ const Content = ({ pagePath, currentUser }) => {
                     header = addButtonsSet;
                 }
             }
+            console.log("updateCenterHeader")
             updateCenterHeader(pagePath, pageData.data.name, null, header, settings?.headerSettings);
         }
-    }, [pageData, currentUser?.id]);
+    }, [pageData, currentUser?.id]);*/
 
     return pageData?.data ? (
 
