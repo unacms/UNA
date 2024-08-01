@@ -90,6 +90,7 @@ export function SelectUsers({ onSave, initedData = [], requestUrl, isSingle = fa
                     className="px-2 mr-2 w-full"
                     onChangeText={onChangeText}
                     role="textbox"
+                    autoFocus={true}
                 />
                 <Button variant="outline" disabled={state.selectedUsers.length == 0} startDecorator="Check" rounded align="start" onPress={() => onSaveInt()} />
             </Row>

@@ -6,7 +6,7 @@ import { useWindowDimensions } from 'react-native'
 import { CommentsParts } from 'app/lib/comments-helpers'
 
 export default function PageLayout(props) {
-    const [sizes, setSizes] = useState({ cntHeight: 0, listHeight: 100, formHeight: 0, formWidth: 100 });
+    const [sizes, setSizes] = useState({ cntHeight: 0, listHeight: 100, formHeight: 0, formWidth: 1024 });
 
     const viewFormRef = useRef();
     const viewCntRef = useRef();
