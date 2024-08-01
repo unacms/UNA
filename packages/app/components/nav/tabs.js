@@ -96,13 +96,13 @@ export default function () {
     useEffect(() => {
         if (currentUser)  {
             console.log("---setExternalUserId")
-            OneSignal.login(""+currentUser.id);
+            OneSignal.login("user"+currentUser.id);
             OneSignal.User.addEmail(currentUser.email);
-            OneSignal.User.addTag("user_hash", ""+currentUser.id);
+            OneSignal.User.addTag("user_hash", ""+currentUser.hash);
         }
     },[currentUser]);
 
-    useEffect(() => {
+    /*useEffect(() => {
         const scheduleNotification = async () => {
             const notificationsCount = Number(currentUser.notifications);
             await Notifications.setBadgeCountAsync(notificationsCount);
@@ -118,7 +118,7 @@ export default function () {
         };     
         if (currentUser)   
             scheduleNotification();
-    }, [currentUser, currentUser?.notifications]);
+    }, [currentUser, currentUser?.notifications]);*/
 
 
    /* useEffect(() => {
