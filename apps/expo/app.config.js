@@ -23,7 +23,7 @@ const expoConfig = {
     "ios": {
       "supportsTablet": true,
       "associatedDomains": ["neo.so"],
-      "bundleIdentifier": "com.una.neo",
+      "bundleIdentifier": "so.neo.app",
       "backgroundColor": "#000000",
       "infoPlist": {
         "NSCameraUsageDescription": "This app uses the camera allow calls in Jitsi.",
@@ -39,7 +39,7 @@ const expoConfig = {
       }
     },
     "android": {
-      "package": "com.una.neo",
+      "package": "so.neo.app",
       "permissions":  [
         "android.permission.ACCESS_NETWORK_STATE", 
         "android.permission.CAMERA", 
