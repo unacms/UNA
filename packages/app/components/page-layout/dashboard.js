@@ -18,7 +18,7 @@ import { Appearance } from 'react-native';
 import { Platform } from 'react-native'
 import { storageSet, storageClear, storageGet } from 'app/lib/util'
 import { fetcher } from 'app/lib/fetcher';
-import Bluetooth from 'app/ui/molecules/bluetooth'
+//import Bluetooth from 'app/ui/molecules/bluetooth'
 
 export default function PageLayout(props) {
     
@@ -232,11 +232,11 @@ export default function PageLayout(props) {
                         </View>
                     </Card>
                 </View>
-                { appSetting('layout', 'bluetooth') && Platform.OS != 'web' && <View className=" w-full  p-2">
+                { /*appSetting('layout', 'bluetooth') && Platform.OS != 'web' && <View className=" w-full  p-2">
                     <Card rounded=" rounded-2xl " addClassName="w-full p-4 flex-row ">
                         <Bluetooth/>
                     </Card>
-                </View> }
+                </View>*/ }
                 <View className=" w-full ">
                     <BlockByName name={props.blocks.stat_block} data={props.data} hideTitle={true} />
                 </View>

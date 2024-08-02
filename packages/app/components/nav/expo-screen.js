@@ -6,9 +6,9 @@ import { appSetting, parseUrl, parseQueryString, getURI } from 'app/lib/util'
 import { Loading } from 'app/loading'
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { fetcher } from 'app/lib/fetcher';
-import { useLocalSearchParams} from 'expo-router';
-import { useUpdateCenterHeader , getRightHeader } from 'app/lib/native-handlers'
-import {  useNavigation } from 'expo-router'; 
+import { useLocalSearchParams } from 'expo-router';
+import { useUpdateCenterHeader, getRightHeader } from 'app/lib/native-handlers'
+import { useNavigation } from 'expo-router';
 import { menuItemsFilter } from 'app/lib/util';
 
 export async function getData(path, token, origin, headers, callback, params) {
@@ -40,6 +40,7 @@ export function Screen(params) {
     const pathname = params.tabname;
     const { currentUser } = useCurrentUser();
     let _path = local.url;
+    let isRoot = false;
 
     // BOTTOM TABS NAVIGATION
     if (!_path || _path.includes('/tab')) {
@@ -47,19 +48,20 @@ export function Screen(params) {
         const tabList = appSetting('menu_items', tabListKey);
         const item = tabList.find((item) => item.key === pathname);
         _path = item ? item.url : null;
+        isRoot = true;
     }
 
     const memoizedValue = useMemo(() => {
-        return <Content pagePath={_path} currentUser={currentUser} />;
+        return <Content pagePath={_path} currentUser={currentUser} isRoot={isRoot} />;
     }, [_path, currentUser?.id]);
 
     return memoizedValue
 }
 
-const Content = ({ pagePath, currentUser }) => {
+const Content = ({ pagePath, currentUser, isRoot }) => {
     const navigation = useNavigation();
     const updateCenterHeader = useUpdateCenterHeader(navigation);
-    const [ pageData, setPageData ] = useState(null);
+    const [pageData, setPageData] = useState(null);
     const { bottomSheetData, setBottomSheetData } = useBottomSheetData();
     useEffect(() => {
         if (!(pagePath && pagePath.startsWith('/') && !pagePath.includes('/?url='))) return;
@@ -75,45 +77,48 @@ const Content = ({ pagePath, currentUser }) => {
                 const settings = appSetting('layouts', pageData1.data.uri)
 
                 let header = settings?.header
-                if (!header){
+                if (!header) {
                     const menu_name = pageData1.data?.menu?.object;
-                    if (menu_name){
+                    if (menu_name) {
                         const menuSettings = appSetting('menu_items', menu_name);
-    
+
                         let addButtonsSet = menuSettings?.add?.filter(item => item.hideInTopBar !== true);
                         addButtonsSet = menuItemsFilter(addButtonsSet, currentUser);
                         header = addButtonsSet;
                     }
                 }
-                if (currentUser?.id)
+                if (/*currentUser?.id &&*/ (!isRoot || navigation.getState().routes.length <= 1)) {
                     updateCenterHeader(pagePath, pageData1.data.name, null, header, settings?.headerSettings);
-               
+                }
+
+                //  console.log('updateCenterHeader', pagePath, pageData1?.data?.name, navigation.getState())
+
                 setBottomSheetData(bottomSheetData !== false ? false : bottomSheetData);
-                setPageData(data.props); 
+                setPageData(data.props);
             }
         };
         fetchPageData();
     }, [pagePath, currentUser?.id]);
 
-   /*useEffect(() => {
-        if (pageData) {
-            const settings = appSetting('layouts', pageData.data.uri)
-
-            let header = settings?.header
-            if (!header){
-                const menu_name = pageData.data?.menu?.object;
-                if (menu_name){
-                    const menuSettings = appSetting('menu_items', menu_name);
-
-                    let addButtonsSet = menuSettings?.add?.filter(item => item.hideInTopBar !== true);
-                    addButtonsSet = menuItemsFilter(addButtonsSet, currentUser);
-                    header = addButtonsSet;
-                }
-            }
-            console.log("updateCenterHeader")
-            updateCenterHeader(pagePath, pageData.data.name, null, header, settings?.headerSettings);
-        }
-    }, [pageData, currentUser?.id]);*/
+    /*useEffect(() => {
+         if (pageData) {
+             const settings = appSetting('layouts', pageData.data.uri)
+ 
+             let header = settings?.header
+             if (!header){
+                 const menu_name = pageData.data?.menu?.object;
+                 if (menu_name){
+                     const menuSettings = appSetting('menu_items', menu_name);
+ 
+                     let addButtonsSet = menuSettings?.add?.filter(item => item.hideInTopBar !== true);
+                     addButtonsSet = menuItemsFilter(addButtonsSet, currentUser);
+                     header = addButtonsSet;
+                 }
+             }
+             console.log("updateCenterHeader")
+             updateCenterHeader(pagePath, pageData.data.name, null, header, settings?.headerSettings);
+         }
+     }, [pageData, currentUser?.id]);*/
 
     return pageData?.data ? (
 

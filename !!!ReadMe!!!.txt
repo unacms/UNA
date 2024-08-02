@@ -17,6 +17,8 @@ index 3098506..07493bb 100644
        isPullEnough.value = false;
 
 
+https://github.com/meliorence/react-native-render-html/issues/661
+
 
 https://www.npmjs.com/package/expo-camera
 

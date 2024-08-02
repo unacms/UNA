@@ -132,7 +132,8 @@ export default function ElementHtml(props) {
             margin: 2
         },*/
         p: {
-            margin: 5,
+            marginTop: 5,
+            marginBottom: 5,
              
         },
         ul: {
