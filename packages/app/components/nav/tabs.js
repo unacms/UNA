@@ -13,7 +13,7 @@ import * as Linking from 'expo-linking';
 import { useRouter, useNavigation } from 'expo-router';
 import { parseUrl } from 'app/lib/util'
 import { clearNotif } from 'app/lib/util'
-import * as Notifications from 'expo-notifications';
+//import * as Notifications from 'expo-notifications';
 import Suggestions from 'app/ui/molecules/suggestions';
 import AsyncWorker from 'app/ui/molecules/async_worker';
 import { useFonts } from 'expo-font';
@@ -41,7 +41,7 @@ export default function () {
 
     let profile = null
 
-    useEffect(() => {
+    /*useEffect(() => {
         const handleNotifPermissions = async () => {
           try {
             const { status: existingStatus } = await Notifications.getPermissionsAsync();
@@ -61,15 +61,15 @@ export default function () {
         };
     
         handleNotifPermissions();
-      }, []);
+      }, []);*/
 
-    Notifications.setNotificationHandler({
+    /*Notifications.setNotificationHandler({
         handleNotification: async () => ({
           shouldShowAlert: true,
           shouldPlaySound: true,
           shouldSetBadge: true,
         }),
-      });
+      });*/
 
 
     // DEEP LINKING

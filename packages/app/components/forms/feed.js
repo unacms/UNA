@@ -88,10 +88,9 @@ export default function FormFeed(props) {
                     {getFormFieldByData(props.data.inputs['object_cf'], props.handleSubmit, 'default')}
                     {getFormFieldByData(props.data.inputs['owner_id'], props.handleSubmit, 'default')}
                     {getFormFieldByData(props.data.inputs['type'], props.handleSubmit, 'default')}
-                    <KbAvoidingView offset={72}>
+                    <KbAvoidingView offset={isIos ? 56: 72}>
                         <View className='justify-between mb-4 h-full  '>
                             <ScrollView className="w-full h-full flex-1">
-
                                 <View className="w-full  flex-col px-2 sm:p-0 ">
                                     <View className=" flex-row gap-x-3 px-2 pb-0 pt-3 flex-auto justify-between ">
                                         <View className=" mb-auto ">
