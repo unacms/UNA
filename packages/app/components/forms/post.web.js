@@ -121,7 +121,7 @@ export default function FormPost(props) {
 
 
 
-                <View className='w-full  my-1 flex-row border rounded-xl border-bdr dark:border-bdr-d py-1 px-2'>
+                <View className='w-full my-1 flex-row border rounded-xl border-bdr dark:border-bdr-d py-1 px-2'>
                     <Text className="font-semibold px-3 py-1 justify-center my-auto text-sm  text-neutral-800 dark:text-neutral-200">Labels</Text>
                     <Row className=" justify-start items-center flex-auto px-2 ">
                         {getFormFieldByData(

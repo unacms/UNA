@@ -65,10 +65,10 @@ export default function FormFeed(props) {
     };
 
     const header = <Row className='h-12 w-full justify-between items-center'>
-        <View className='w-1/4'><Button onPress={() => { setShowImage(null) }} variant='outline' fullWidth title="Cancel" /></View>
-        <View className='w-1/2 items-center justify-center'><Text className="text-neutral-700 dark:text-neutral-200 text-xl font-bold">Create post</Text></View>
-        <View className='w-1/4'>
-            <Button onPress={() => { handlePress() }} variant='primary' fullWidth title="Save" />
+        <View className='w-12 py-1'><View className='mr-auto'><Button onPress={() => { setShowImage(null) }} variant='outline' rounded startDecorator="X" /></View></View>
+        <View className='w-full flex-auto items-center justify-center'><Text className="text-neutral-700 dark:text-neutral-200 text-xl font-bold">Create post</Text></View>
+        <View className='w-1/5 py-1'>
+            <Button onPress={() => { handlePress() }} variant='primary' rounded fullWidth title="Post" />
         </View>
     </Row>
 
@@ -92,25 +92,25 @@ export default function FormFeed(props) {
                         <View className='justify-between mb-4 h-full  '>
                             <ScrollView className="w-full h-full flex-1">
 
-                                <View className="w-full  flex-col p-4 sm:p-0 ">
-                                    <View className=" flex-row flex-wrap gap-x-2 mt-2 flex-auto justify-between ">
-                                        <View className=" flex-auto text-base font-bold text-neutral-800 my-auto ">
-                                            <Profile {...currentUser} displayType="unit" displaySize="base" />
+                                <View className="w-full  flex-col px-2 sm:p-0 ">
+                                    <View className=" flex-row flex-wrap gap-x-2 px-1 pt-3 flex-auto justify-between ">
+                                        <View className=" flex-auto text-base py-0.5 font-bold text-neutral-800 my-auto ">
+                                            <Profile {...currentUser} displayType="unit" displaySize="sm" />
                                         </View>
-                                        <View className="   ">
+                                        <View className="  ">
                                             {getFormFieldByData(props.data.inputs['object_privacy_view'], props.handleSubmit, 'nofield', { onShowModal: setShowImage, showModal: showImage })}
                                         </View>
 
                                     </View>
                                     {getFormFieldByData(props.data.inputs['text'], props.handleSubmit, 'custom', { focus: true, bg: 'transparent', placeholder: 'Write here...', linkify: true })}
                                     {prevList.length > 0 && prevList[0]?.key && (
-                                        <Row className="flex-wrap gap-2 ">{prevList}</Row>
+                                        <Row className="flex-wrap gap-2 px-3 ">{prevList}</Row>
                                     )}
 
 
-                                    {props.data.inputs['labels'] && <Row className="  my-2 border border-bdr dark:border-bdr-d rounded-xl  items-center ">
-                                        <Text className="px-4 mr-auto text-sm font-medium text-neutral-800 dark:text-neutral-200">Labels</Text>
-                                        <View className="mr-2 flex-auto ">
+                                    {props.data.inputs['labels'] && <Row className=" justify-between my-2 border border-bdr dark:border-bdr-d rounded-xl  items-center px-3 ">
+                                        <Text className=" mr-auto text-sm font-medium text-neutral-800 dark:text-neutral-200">Labels</Text>
+                                        <View className="">
                                             {props.data.inputs['labels'] && getFormFieldByData(props.data.inputs['labels'], props.handleSubmit, 'notitle', { onShowModal: setShowImage, showModal: showImage })}
                                         </View>
 
@@ -145,7 +145,7 @@ export default function FormFeed(props) {
                     </KbAvoidingView>
                 </SafeAreaView>
             </Modal>
-            {props.exProps?.mode == 'button' ? <Button variant="primary" title="Post" tooltip="Post" rounded='rounded' fullWidth onPress={() => {
+            {props.exProps?.mode == 'button' ? <Button variant="primary" title="Post" tooltip="Post" rounded fullWidth onPress={() => {
                 FeedbackHaptics('Medium')
                 setShowImage(true)
             }} /> : <Card rounded=' rounded-none sm:rounded-2xl  ' margin='p-3 sm:p-4 mb-1 sm:mb-4 sm:mx-4 ' border=" sm:border border-bdrcard dark:border-bdrcard-d " >
