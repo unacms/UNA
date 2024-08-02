@@ -66,7 +66,9 @@ const HeaderLine = memo(({ headerSettings, currentUser, uri, bSearch, menuPopup,
                                     rounded
                                     align="start"
                                     title={item.title}
+                                    addon={item.link == '/notifications-view' && { text: currentUser.notifications, variant: 'primary' }}
                                 />
+                                
                             </Link>
                     )}
                     {!!currentUser && (
