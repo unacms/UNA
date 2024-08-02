@@ -289,17 +289,18 @@ export default function ElementReactions(oProps) {
             );
         }
         else {
+            const aItems = oItems.map((oItem) => {
+                return {
+                    id: oItem.id ? oItem.id : oItem.name,
+                    name: oItem.name,
+                    icon: getIconAlias(oItem.name),
+                    class_item: ' transition active:scale-150 duration-300 active:-translate-y-4  ',
+                    class_item_icon: ' text-3xl ',
+                    tooltip: "TODO",
+                };
+            });
             if(bWeb) {
-                const aItems = oItems.map((oItem) => {
-                    return {
-                        id: oItem.id ? oItem.id : oItem.name,
-                        name: oItem.name,
-                        icon: getIconAlias(oItem.name),
-                        class_item: ' transition active:scale-150 duration-300 active:-translate-y-4  ',
-                        class_item_icon: ' text-3xl ',
-                        tooltip: "TODO",
-                    };
-                });
+                
 
                 sActionButton = oItems.length > 1 ? (
                     <Pressable key="action" onPress={(event) => {event.preventDefault()}}>
