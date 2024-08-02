@@ -65,10 +65,10 @@ export default function FormFeed(props) {
     };
 
     const header = <Row className='h-12 w-full justify-between items-center'>
-        <View className='w-12 py-1'><View className='mr-auto'><Button onPress={() => { setShowImage(null) }} variant='outline' rounded startDecorator="X" /></View></View>
+        <View className=''><Button onPress={() => { setShowImage(null) }} variant='outline' rounded startDecorator="X" /></View>
         <View className='w-full flex-auto items-center justify-center'><Text className="text-neutral-700 dark:text-neutral-200 text-xl font-bold">Create post</Text></View>
-        <View className='w-1/5 py-1'>
-            <Button onPress={() => { handlePress() }} variant='primary' rounded fullWidth title="Post" />
+        <View className=' '>
+            <Button onPress={() => { handlePress() }} variant='primary'   rounded  startDecorator="PaperPlane" />
         </View>
     </Row>
 
@@ -93,18 +93,20 @@ export default function FormFeed(props) {
                             <ScrollView className="w-full h-full flex-1">
 
                                 <View className="w-full  flex-col px-2 sm:p-0 ">
-                                    <View className=" flex-row flex-wrap gap-x-2 px-1 pt-3 flex-auto justify-between ">
-                                        <View className=" flex-auto text-base py-0.5 font-bold text-neutral-800 my-auto ">
-                                            <Profile {...currentUser} displayType="unit" displaySize="sm" />
+                                    <View className=" flex-row gap-x-3 px-2 pb-0 pt-3 flex-auto justify-between ">
+                                        <View className=" mb-auto ">
+                                            <Profile {...currentUser} displayType="unit_wo_info" displaySize="lg" />
                                         </View>
-                                        <View className="  ">
-                                            {getFormFieldByData(props.data.inputs['object_privacy_view'], props.handleSubmit, 'nofield', { onShowModal: setShowImage, showModal: showImage })}
+                                        <View className="flex-col  flex-auto ">
+                                            <Profile {...currentUser} displayType="unit_wo_image" displaySize="lg" />
+
+                                           <View className='mt-1.5 mr-auto'>{getFormFieldByData(props.data.inputs['object_privacy_view'], props.handleSubmit, 'nofield', { onShowModal: setShowImage, showModal: showImage })}</View> 
                                         </View>
 
                                     </View>
                                     {getFormFieldByData(props.data.inputs['text'], props.handleSubmit, 'custom', { focus: true, bg: 'transparent', placeholder: 'Write here...', linkify: true })}
                                     {prevList.length > 0 && prevList[0]?.key && (
-                                        <Row className="flex-wrap gap-2 px-3 ">{prevList}</Row>
+                                        <Row className="flex-wrap  px-3 ">{prevList}</Row>
                                     )}
 
 
@@ -119,10 +121,10 @@ export default function FormFeed(props) {
 
                                 </View>
                             </ScrollView>
-                            <Row className={"w-full flex-wrap  border-bdr dark:border-bdr-d items-center " + (isWeb ? '' : ' pb-4 ') + (isSmall ? "h-16 border-t fixed bottom-0 bg-bgrcard dark:bg-bgrcard-d" : " rounded-xl border my-2 border")}>
-                                <Text className="px-4 mr-auto text-sm font-medium text-neutral-800 dark:text-neutral-200">Add media</Text>
-
-                                {props.data.inputs['obfuscate_faces'] && <View className="mr-4">
+                            <Row className={"w-full flex-wrap px-1 gap-x-1 mx-auto border-bdr dark:border-bdr-d items-center " + (isWeb ? '' : ' pb-4 ') + (isSmall ? "h-[68px] border-t fixed bottom-0 border-bdr dark:border-bdr-d  bg-bgrcard dark:bg-bgrcard-d" : " rounded-xl border my-6 border")}>
+                                <Text className="hidden sm:flex px-4 mr-auto text-sm font-medium text-neutral-800 dark:text-neutral-200">Add media</Text>
+                                
+                                {props.data.inputs['obfuscate_faces'] && <View className="">
                                     {getFormFieldByData(props.data.inputs['obfuscate_faces'], props.handleSubmit, 'default')}
                                 </View>}
                                 {props.data.inputs['photo'] && <View className="">
