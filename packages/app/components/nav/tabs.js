@@ -95,8 +95,8 @@ export default function () {
 
     useEffect(() => {
         if (currentUser)  {
-            //console.log("---setExternalUserId")
-            OneSignal.login("user"+currentUser.id);
+            console.log("OneSignal:"+currentUser.id+":"+currentUser.hash)
+            OneSignal.login(''+currentUser.id);
             OneSignal.User.addEmail(currentUser.email);
             OneSignal.User.addTag("user_hash", ""+currentUser.hash);
         }

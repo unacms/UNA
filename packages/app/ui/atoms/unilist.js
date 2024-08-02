@@ -70,7 +70,7 @@ export default function UniList(props) {
     }
     else{*/
     const onLoadListener = useCallback(({ elapsedTimeInMs } ) => {
-        console.log("Sample List load time", elapsedTimeInMs);
+        //console.log("Sample List load time", elapsedTimeInMs);
     }, []);
 
     return (

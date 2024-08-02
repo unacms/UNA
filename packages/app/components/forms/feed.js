@@ -27,7 +27,6 @@ export default function FormFeed(props) {
     const windowDimensions = useWindowDimensions();
 
     const isSmall = windowDimensions.width < 640 ? true : false;
-    console.log(windowDimensions.width, isSmall);
     const isWeb = Platform.OS === 'web'
     const isIos = Platform.OS === 'ios'
     useEffect(() => {

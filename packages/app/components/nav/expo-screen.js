@@ -91,7 +91,7 @@ const Content = ({ pagePath, currentUser, isRoot }) => {
                     updateCenterHeader(pagePath, pageData1.data.name, null, header, settings?.headerSettings);
                 }
 
-                //  console.log('updateCenterHeader', pagePath, pageData1?.data?.name, navigation.getState())
+                 //console.log('-------------------------------updateCenterHeader', pagePath, pageData1?.data?.name, navigation.getState().routes.length)
 
                 setBottomSheetData(bottomSheetData !== false ? false : bottomSheetData);
                 setPageData(data.props);
