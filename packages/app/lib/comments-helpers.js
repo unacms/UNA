@@ -432,6 +432,7 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
                
             }
             form.data.reset = true;
+            form.data.inputs.cmt_text.autofocus = true;
             addCommentData({ formText: formData.text, formAuthor: formData.author.display_name, parentId: formData.parent_id })
         }
     }
@@ -461,8 +462,10 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
     const handleCancel = async () => {
         form.data.inputs.cmt_parent_id.value = 0;
         form.data.inputs.cmt_text.value = '';
+        form.data.inputs.cmt_text.autofocus = false;
         form.data.reset = true;
         formData.parent_id = 0;
+        
         addCommentData({ formText: '', formAuthor: '', parentId: 0 })
     }
 

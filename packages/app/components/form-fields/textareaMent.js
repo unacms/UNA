@@ -21,7 +21,6 @@ function formatText(text) {
     v = v.replace(
         /<a(.*?)class="bx-mention-link(.*?)"[^>]*href="([^"]+)"[^>]*>([^<]+)<\/a>/g,
         (match, p1, p2, href, name) => {
-            console.log("aaa", href, name)
             const trigger = '@'; // Assuming '@' is the trigger in this context
             name = name.replace('@', '');
             return `@[${name}](${href})`; // Use the captured href value
@@ -72,10 +71,10 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
     }, [keywordval]);
 
     useEffect(() => {
-        if (inputRef.current) {
+        if (inputRef.current && props.autofocus) {
         inputRef.current.focus();
       }
-    }, []);    
+    }, [props.autofocus]);    
    /* useEffect(() => {
         if (field.value == ''){
             setLocalValue('');

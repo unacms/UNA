@@ -3,8 +3,7 @@ import { Text } from 'app/design/typography'
 import { View, Row, Pressable } from 'app/design/view'
 import { useState, useRef, useEffect, useContext } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
-import CheckBox from 'app/ui/atoms/checkbox';
-import { Button } from "app/design/controls";
+import { Button, Modal } from "app/design/controls";
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import RadioButton from 'app/ui/atoms/radiobutton';
 
@@ -15,14 +14,16 @@ export default function (props) {
     const name = props.name ? props.name : '';
     const { field } = useController({ name, rules, defaultValue });
     const { setBottomSheetData } = useBottomSheetData();
+    const [isModal, setIsModal] = useState(false);
 
     const setFormValue = (value) => {
         value = value.filter(item => item);
         field.onChange(value);
-        setBottomSheetData(false);
-        if (props.onShowModal){
+        //setBottomSheetData(false);
+        setIsModal(false)
+       /* if (props.onShowModal) {
             props.onShowModal(true);
-        }
+        }*/
     }
     const removeValue = (valueToRemove) => {
         const newValue = field.value.filter(item => item !== valueToRemove);
@@ -34,48 +35,63 @@ export default function (props) {
     );
 
     const showSelect = (val) => {
-        setBottomSheetData({ title: 'Choose labels', showClose: props.onShowModal ? false : true, content: <ChkList values={dataFlat} selectedValues={field.value} setFormValue={setFormValue}></ChkList> });
+        /*setBottomSheetData({ title: 'Choose labels', showClose: props.onShowModal ? false : true, content: <ChkList values={dataFlat} selectedValues={field.value} setFormValue={setFormValue}></ChkList> });
         if (props.onShowModal){
             props.onShowModal(false);
-        }
+        }*/
+        setIsModal(true);
     }
 
     let styles = "justify-start pr-4";
-    if (props.align == 'right') 
+    if (props.align == 'right')
         styles += 'justify-end pl-4';
 
     return (
-        <Field {...props}>   
-            <View className='w-full justify-between '>
-                <View className={styles + ' w-full flex-auto  items-center flex-row flex-wrap my-2'}>
-                    {props.align == 'right' && <Button
-                        startDecorator="Plus"
-                        variant="text"
-                        size="base"
-                        onPress={() => showSelect()}
-                    />}
-                    {!!field.value && field.value.map((item, index) => (
-                        <View className='m-1' key={'label' + index}>
-                            <Button
-                                endDecorator="X"
-                                variant={"outline"}
-                                size="sm"
-                                title={item}
-                                onPress={() => removeValue(item)}
-                            />
-                        </View>
-                    )
-                    )}
-                    {props.align !='right' && <Button
-                        startDecorator="Plus"
-                        variant="text"
-                        size="sm"
-                        title='Add'
-                        onPress={() => showSelect()}
-                    />}
+        <>
+            <Modal
+                title='Choose labels'
+                onVisible={isModal}
+                onClose={() => setIsModal(false)}
+                transparent={true}
+                headerBorder={true}
+            >
+                <View className='m-4'>
+                    <ChkList values={dataFlat} selectedValues={field.value} setFormValue={setFormValue}></ChkList>
                 </View>
-            </View>
-        </Field>
+
+            </Modal>
+            <Field {...props}>
+                <View className='w-full justify-between '>
+                    <View className={styles + ' w-full flex-auto  items-center flex-row flex-wrap my-2'}>
+                        {props.align == 'right' && <Button
+                            startDecorator="Plus"
+                            variant="text"
+                            size="base"
+                            onPress={() => showSelect()}
+                        />}
+                        {!!field.value && field.value.map((item, index) => (
+                            <View className='m-1' key={'label' + index}>
+                                <Button
+                                    endDecorator="X"
+                                    variant={"outline"}
+                                    size="sm"
+                                    title={item}
+                                    onPress={() => removeValue(item)}
+                                />
+                            </View>
+                        )
+                        )}
+                        {props.align != 'right' && <Button
+                            startDecorator="Plus"
+                            variant="text"
+                            size="sm"
+                            title='Add'
+                            onPress={() => showSelect()}
+                        />}
+                    </View>
+                </View>
+            </Field>
+        </>
     );
 }
 

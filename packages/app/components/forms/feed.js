@@ -27,8 +27,9 @@ export default function FormFeed(props) {
     const windowDimensions = useWindowDimensions();
 
     const isSmall = windowDimensions.width < 640 ? true : false;
+    console.log(windowDimensions.width, isSmall);
     const isWeb = Platform.OS === 'web'
-
+    const isIos = Platform.OS === 'ios'
     useEffect(() => {
         if (props.response?.id != responseId) {
             //console.log("props.responseprops.response", props.response)
@@ -83,7 +84,7 @@ export default function FormFeed(props) {
                 transparent={true}
                 headerBorder={true}
             >
-                <SafeAreaView style={{ flex: 1, backgroundColor: "transparent" }}>
+               
                     {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'default')}
                     {getFormFieldByData(props.data.inputs['object_cf'], props.handleSubmit, 'default')}
                     {getFormFieldByData(props.data.inputs['owner_id'], props.handleSubmit, 'default')}
@@ -121,7 +122,7 @@ export default function FormFeed(props) {
 
                                 </View>
                             </ScrollView>
-                            <Row className={"w-full flex-wrap px-1 gap-x-1 mx-auto border-bdr dark:border-bdr-d items-center " + (isWeb ? '' : ' pb-4 ') + (isSmall ? "h-[68px] border-t fixed bottom-0 border-bdr dark:border-bdr-d  bg-bgrcard dark:bg-bgrcard-d" : " rounded-xl border my-6 border")}>
+                            <Row className={"w-full flex-wrap px-1 gap-x-1 mx-auto border-bdr dark:border-bdr-d items-center " + (isWeb ? '' : ' pb-4 ') + (isSmall ? " h-[68px] border-t fixed " + (isIos? ' bottom-4 ': ' bottom-0 ') + " border-bdr dark:border-bdr-d  bg-bgrcard dark:bg-bgrcard-d " : " rounded-xl border my-6 border")}>
                                 <Text className="hidden sm:flex px-4 mr-auto text-sm font-medium text-neutral-800 dark:text-neutral-200">Add media</Text>
                                 
                                 {props.data.inputs['obfuscate_faces'] && <View className="">
@@ -145,7 +146,7 @@ export default function FormFeed(props) {
                             </View>
                         </View>
                     </KbAvoidingView>
-                </SafeAreaView>
+
             </Modal>
             {props.exProps?.mode == 'button' ? <Button variant="primary" title="Post" tooltip="Post" rounded fullWidth onPress={() => {
                 FeedbackHaptics('Medium')
