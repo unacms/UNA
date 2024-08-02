@@ -5,7 +5,7 @@ import { useCallback } from 'react';
 
 export default function ElementLink(props) {  
 
-    let { href, emulate,  ...rest } = props;
+    let { href, emulate, target,  ...rest } = props;
     const router = useRouter();
 
     const handlePress = (event, href) => {
@@ -15,15 +15,17 @@ export default function ElementLink(props) {
         }
     }
 
-    const handleLinkClick = useCallback((event, href) => {
-        if (href != window.location.pathname + window.location.search){
-          //  var tag = document.createElement("div");
-            //tag.className = 'loader';
-            //document.body.appendChild(tag);
-            let element = document.querySelector('.animated-view');
-            if (element){
-                element.classList.remove('page-fade-in');
-                element.classList.add('page-fade-out');
+    const handleLinkClick = useCallback((event, href, target) => {
+        if (!target){
+            if (href != window.location.pathname + window.location.search){
+            //  var tag = document.createElement("div");
+                //tag.className = 'loader';
+                //document.body.appendChild(tag);
+                let element = document.querySelector('.animated-view');
+                if (element){
+                    element.classList.remove('page-fade-in');
+                    element.classList.add('page-fade-out');
+                }
             }
         }
     }, []);
@@ -51,7 +53,7 @@ export default function ElementLink(props) {
         prefetch = false;
 
     return (
-        <Link href={href} {...rest} prefetch={prefetch} onClick={(e) => handleLinkClick(e, href)} legacyBehavior={false}> 
+        <Link href={href} {...rest} prefetch={prefetch} onClick={(e) => handleLinkClick(e, href, target)} legacyBehavior={false}> 
             {props.children}
         </Link>
     );

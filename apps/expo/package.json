@@ -85,6 +85,7 @@
     "react-native-svg": "15.2.0",
     "react-native-tab-view": "^3.5.2",
     "react-native-url-polyfill": "^2.0.0",
+    "react-native-video": "^6.4.3",
     "react-native-watch-connectivity": "1.1.0",
     "react-native-web": "~0.19.6",
     "react-native-webrtc": "111.0.3",

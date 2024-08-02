@@ -121,37 +121,56 @@ export default function (props) {
 
         for (const i of asset) {
             let uri = i.uri;
-            ImageNative.getSize(uri, async (width, height) => {
-                let manipulatedWidth = 2000;
-                let manipulatedHeight = 2000;
+            console.log("i.uri", i)
+            let isImage = i?.mimeType?.includes('image/');
+            if (isImage){
+                ImageNative.getSize(uri, async (width, height) => {
+                    let manipulatedWidth = 2000;
+                    let manipulatedHeight = 2000;
 
-                if (width > manipulatedWidth || height > manipulatedHeight) {
-                    if (width > height) {
-                        manipulatedHeight = Math.round((height * manipulatedWidth) / width);
-                    } else {
-                        manipulatedWidth = Math.round((width * manipulatedHeight) / height);
+                    if (width > manipulatedWidth || height > manipulatedHeight) {
+                        if (width > height) {
+                            manipulatedHeight = Math.round((height * manipulatedWidth) / width);
+                        } else {
+                            manipulatedWidth = Math.round((width * manipulatedHeight) / height);
+                        }
+
+                        const resizedPhoto = await ImageManipulator.manipulateAsync(uri, [
+                            { resize: { width: manipulatedWidth, height: manipulatedHeight } }
+                        ]);
+                        uri = resizedPhoto.uri;
                     }
 
-                    const resizedPhoto = await ImageManipulator.manipulateAsync(uri, [
-                        { resize: { width: manipulatedWidth, height: manipulatedHeight } }
-                    ]);
-                    uri = resizedPhoto.uri;
-                }
+                    let hash = md5(uri);
+                    uploadImage(
+                        uri,
+                        url + '&a=upload',
+                        handleInsertImageFinish,
+                        { hash: hash }
+                    );
 
+                    let fileType = i.type ? i.type + '/' : uri.split(';')[0].split(':')[1];
+                    k = [
+                        ...k,
+                        { file_url: uri, file_type: fileType, preload: true, hash: hash }
+                    ];
+                });
+            }
+            else{
                 let hash = md5(uri);
-                uploadImage(
-                    uri,
-                    url + '&a=upload',
-                    handleInsertImageFinish,
-                    { hash: hash }
-                );
+                    uploadImage(
+                        uri,
+                        url + '&a=upload',
+                        handleInsertImageFinish,
+                        { hash: hash }
+                    );
 
-                let fileType = i.type ? i.type + '/' : uri.split(';')[0].split(':')[1];
-                k = [
-                    ...k,
-                    { file_url: uri, file_type: fileType, preload: true, hash: hash }
-                ];
-            });
+                    let fileType = i.type ? i.type + '/' : uri.split(';')[0].split(':')[1];
+                    k = [
+                        ...k,
+                        { file_url: uri, file_type: fileType, preload: true, hash: hash }
+                    ];
+            }
         }
         return k;
     }
@@ -233,6 +252,7 @@ export default function (props) {
                 result = await ImagePicker.launchImageLibraryAsync({
                     mediaTypes: mediaTypes,
                     quality: 1,
+                    UIImagePickerPreferredAssetRepresentationMode: 'current',
                     allowsMultipleSelection: bMultiple,
                 });
             }
@@ -250,6 +270,7 @@ export default function (props) {
                 result = await ImagePicker.launchCameraAsync({
                     mediaTypes: mediaTypes,
                     quality: 1,
+                    UIImagePickerPreferredAssetRepresentationMode: 'current',
                     allowsMultipleSelection: bMultiple,
                 });
             }
@@ -263,7 +284,8 @@ export default function (props) {
                 const result = await DocumentPicker.getDocumentAsync({
                     type: '*/*', // This allows all file types
                 });
-                if (result.type === 'success') {
+               console.log("result", result)
+              /*   if (result.type === 'success') {
                     let k = imageSource.images;
                     let hash = crypto.createHash('sha256').update(result.uri).digest('hex');
                     uploadImage(
@@ -276,6 +298,11 @@ export default function (props) {
 
                     let fileType = i.type ? i.type + '/' : result.uri.split(';')[0].split(':')[1];
                     k = [...k, { file_url: result.uri, file_type: fileType, preload: true, hash: hash }];
+                    setImageSource({ images: k });
+                }*/
+                if (!result.cancelled) {
+                    let k = await uploadImages(result.assets);
+                    console.log("k", k)
                     setImageSource({ images: k });
                 }
             } catch (err) {
@@ -405,14 +432,14 @@ function GhostsList(imagesList, bMultiple, handleDelete) {
     if (!imagesList || imagesList.length === 0 || !bMultiple) {
         return;
     }
-
+    console.log("imagesList", imagesList)
     return imagesList.map((img, index) => {
         const isImage = img?.file_type?.includes('image/');
-
+        console.log("imgimg", img)
         return (
             <View key={`file-${index}`} className='h-24 w-24 justify-center items-center dark:bg-bgrcard-d border-bdr dark:border-bdr-d border rounded-lg m-1 overflow-hidden' >
                 {isImage && <Image view='cover' sizes="96px" className="u-cover" alt='' src={img.file_url} />}
-                {!isImage && !img?.preload && <Icon icon="File" className="w-20 h-20" size={80} />}
+                {!isImage && !img?.preload && <View className='h-16 w-16'><Icon icon="File" className="w-20 h-20" size={80} /></View>}
                 {img?.preload && <View className='absolute w-full h-full justify-center items-center'><Loading /></View>}
                 {img?.file_id && <View className='absolute top-1 right-1 w-6.5 text-center mx-auto'>
                     <Button onPress={() => handleDelete(img.file_id)} variant="default" startDecorator="X" align="start" title="" rounded size="xs" />

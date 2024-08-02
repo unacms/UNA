@@ -287,6 +287,10 @@ function DefaultUnit(data) {
     if (data.content.videos_attach && data.content.videos_attach.length > 0) {
         content_attach = content_attach.concat(data.content.videos_attach);
     }
+    let files_attach = [];
+    if (data.content.files_attach && data.content.files_attach.length > 0) {
+        files_attach = files_attach.concat(data.content.files_attach);
+    }
 
     const MainContent = () => bIsMarketContent
         ? <MarketView isCompact={false} content_attach={content_attach} url={url} data={data} styles={styles} bIsTitle={bIsTitle} bIsTimelineContent={bIsTimelineContent} />
@@ -294,7 +298,7 @@ function DefaultUnit(data) {
             ? <AdView isCompact={false} content_attach={content_attach} url={url} data={data} styles={styles} bIsTitle={bIsTitle} bIsTimelineContent={bIsTimelineContent} />
             : bIsGroupContent
                 ? <GroupView isCompact={false} content_attach={content_attach} url={url} data={data} styles={styles} bIsTitle={bIsTitle} bIsTimelineContent={bIsTimelineContent} />
-                : <DefaultView isCompact={false} content_attach={content_attach} url={url} data={data} styles={styles} bIsTitle={bIsTitle} bIsTimelineContent={bIsTimelineContent} />;
+                : <DefaultView isCompact={false} content_attach={content_attach} files_attach={files_attach} url={url} data={data} styles={styles} bIsTitle={bIsTitle} bIsTimelineContent={bIsTimelineContent} />;
 
     const isWeb = Platform.OS == 'web' ? true : false;
     const isCommentsModal = appSetting('layout', 'comments_in_modal') && isWeb;
@@ -554,7 +558,7 @@ function DefaultUnit(data) {
         </View>
     }
 
-    function DefaultView({ data, styles, bIsTitle, bIsTimelineContent, content_attach, url, isCompact }) {
+    function DefaultView({ data, styles, bIsTitle, bIsTimelineContent, content_attach, files_attach, url, isCompact }) {
         let imgs = content_attach;
 
         return <>
@@ -611,6 +615,9 @@ function DefaultUnit(data) {
                     <UnitImages images={imgs} />
                 
             )}
+            {files_attach.map((item, index) => {
+                return <Row key={"att"+index}><Link target='_blank' href={item.url}><Text className="text-sm  text-neutral-700 dark:text-neutral-300">{item.title}</Text></Link></Row>
+            })}
         </>
 
     }
