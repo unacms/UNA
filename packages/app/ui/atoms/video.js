@@ -1,10 +1,9 @@
-
 import Video from 'react-native-video';
 import {StyleSheet} from 'react-native';
-
+/*
 export default function ElementVideo(props) {
     return <></>
-}
+}*/
 
 export default function ElementVideo(props) {
     var styles = StyleSheet.create({

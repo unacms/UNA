@@ -669,15 +669,21 @@ function SmallUnit(data) {
 }
 
 function UnitImages(images) {
-
     const aImg = useMemo(() => {
         if (!images?.images || images?.images?.length === 0) return [];
-        return images.images.map((obj) => ({
+
+        let photo = images.images.filter(item => item.src).map((obj) => ({
             src: obj.src_orig ? obj.src_orig : obj.src,
             width: obj.width,
             height: obj.height,
             type: 'image',
         }));
+
+        let video = images.images.filter(item => item.src_poster).map((obj) => ({
+            src: obj.src_poster ? obj.src_poster : obj.src_poster,
+            type: 'video',
+        }));
+        return [...photo, ...video]
     }, [images]);
 
     if (aImg.length === 0) return <></>;

@@ -8,8 +8,10 @@ import { Image as ImageOr } from 'react-native';
 import { useWindowDimensions } from 'react-native';
 import { appSetting } from 'app/lib/util'
 import { Platform } from 'react-native'
+import Video from 'app/ui/atoms/video';
 
 const Carousel = memo(({ data = [] }) => {
+
     if (!data.length) return null;
 
     const isWeb = Platform.OS == 'web'
@@ -59,17 +61,28 @@ const Carousel = memo(({ data = [] }) => {
         }
     }, [currentImageIndex]);
 
-    const Image2 = (item) => (
-        <View className='flex-auto h-full border border-bdr dark:border-bdr-d'>
-            <Pressable style={{ flex: 1, justifyContent: 'center' }} onPress={() => handleShowImage(item)} >
-                {item.width && item.height ?
-                    <Image sizes="1280px" src={item.src} alt='' height={item.height} width={item.width} className=" u-cover dark:bg-bgritem-d dark:bg-bgritem-d gap-x-1 " /> :
-                    <Image sizes="1280px" src={item.src} alt='' view="cover" className=" u-cover dark:bg-bgritem-d dark:bg-bgritem-d gap-x-1 " />
-                }
-                {item.row == 1 && item?.index2 == 1 && data.length > 3 && <View className='absolute z-50 w-full h-full text-center items-center justify-center'><Text className='text-5xl lg:text-7xl text-white'>+{data.length - 3}</Text></View>}
-            </Pressable>
-        </View>
-    );
+    const Image2 = (item) => {
+        console.log("itemitem", item)
+        if (item.type == 'video'){
+            return (
+                <View className='flex-auto h-full border border-bdr dark:border-bdr-d aspect-square'>
+                    <Pressable style={{ flex: 1, justifyContent: 'center' }} onPress={() => handleShowImage(item)} >
+                        <Video src={item.src}/>
+                    </Pressable>
+                </View>
+            );
+        }
+        return (
+            <View className='flex-auto h-full border border-bdr dark:border-bdr-d'>
+                <Pressable style={{ flex: 1, justifyContent: 'center' }} onPress={() => handleShowImage(item)} >
+                    {item.width && item.height ?
+                        <Image sizes="1280px" src={item.src} alt='' height={item.height} width={item.width} className=" u-cover dark:bg-bgritem-d dark:bg-bgritem-d gap-x-1 " /> :
+                        <Image sizes="1280px" src={item.src} alt='' view="cover" className=" u-cover dark:bg-bgritem-d dark:bg-bgritem-d gap-x-1 " />
+                    }
+                    {item.row == 1 && item?.index2 == 1 && data.length > 3 && <View className='absolute z-50 w-full h-full text-center items-center justify-center'><Text className='text-5xl lg:text-7xl text-white'>+{data.length - 3}</Text></View>}
+                </Pressable>
+            </View>
+    )};
 
     const data2 = useMemo(() => data.slice(0, 3), [data]);
     const len = useMemo(() => data2.length, [data2]);
@@ -84,7 +97,7 @@ const Carousel = memo(({ data = [] }) => {
             if (!data[0].height || !data[0].width) {
                 return (
                     <View className={`${max_image_width} mx-auto ${max_image_aspect} w-full `}>
-                        <Image2 row={0} index={0} key={0} width={data[0].width} height={data[0].height} src={data[0].src} />
+                        <Image2 row={0} index={0} key={0} width={data[0].width} height={data[0].height} src={data[0].src} type={data[0].type} />
                     </View>
                 )
             }
@@ -100,7 +113,7 @@ const Carousel = memo(({ data = [] }) => {
                     /*bg-neutral-200  dark:bg-neutral-600*/
                     return (<View className={`${max_image_width} ${aspect} w-full max-w-lg  items-start justify-center  rounded sm:rounded-lg 003-` + w + '-' + h + '-' + (w > h)}>
                         <View style={{ aspectRatio: aspectStyle }} className='h-full'>
-                            <Image2 row={0} index={0} key={0} width={w} height={h} src={data[0].src} />
+                            <Image2 row={0} index={0} key={0} width={w} height={h} src={data[0].src} type={data[0].type} />
                         </View>
                     </View>)
                 }
@@ -115,7 +128,7 @@ const Carousel = memo(({ data = [] }) => {
                     /*bg-neutral-200  dark:bg-neutral-600*/
                     <View className={`${max_image_width}  ${aspect} w-full max-w-lg items-start justify-center rounded sm:rounded-lg 002`}>
                         <View style={{ aspectRatio: aspectStyle, width: w, height: h }} >
-                            <Image2 row={0} index={0} key={0} src={data[0].src} />
+                            <Image2 row={0} index={0} key={0} src={data[0].src} type={data[0].type} />
                         </View>
                     </View>
                 )
@@ -128,7 +141,7 @@ const Carousel = memo(({ data = [] }) => {
                     /*bg-neutral-200  dark:bg-neutral-600*/
                     <View className={`${max_image_width}  ${aspect} w-full max-w-lg items-start justify-center ounded sm:rounded-lg 001`}>
                         <View style={{ aspectRatio: aspectStyle }} className='h-full '>
-                            <Image2 row={0} index={0} key={0} width={w} height={h} src={data[0].src} />
+                            <Image2 row={0} index={0} key={0} width={w} height={h} src={data[0].src} type={data[0].type} />
                         </View>
                     </View>
                 )
@@ -140,13 +153,13 @@ const Carousel = memo(({ data = [] }) => {
             <View className={(data.length == 2 ? "aspect-video" : "aspect-square") + " w-full " + max_image_width + " gap-y-0.5 rounded sm:rounded-lg overflow-hidden mx-auto "}>
                 <Row className={(len > 2 ? 'h-1/2' : 'h-full') + ' gap-x-0.5 w-full '}>
                     {dataR1?.map((item, index) => (
-                        <Image2 row={0} index={index} key={index} src={item.src} />
+                        <Image2 row={0} index={index} key={index} src={item.src} type={item.type} />
                     ))}
                 </Row>
                 <Row className={(len > 2 ? 'h-1/2 gap-y-0.5 ' : 'h-full') + ' gap-x-0.5 w-full '}>
                     {
                         dataR2?.map((item, index) => (
-                            <Image2 row={1} index={dataR1.length + index} index2={index} key={index} src={item.src} />
+                            <Image2 row={1} index={dataR1.length + index} index2={index} key={index} src={item.src} type={item.type}/>
                         ))}
 
                 </Row>
