@@ -442,7 +442,7 @@ function GhostsList(imagesList, bMultiple, handleDelete, props) {
         return;
     }
    
-    console.log("imagesList", imagesList, props)
+    //console.log("imagesList", imagesList, props)
     return imagesList.map((img, index) => {
         const isImage = img?.file_type?.includes('image/');
         const isVideo = img?.file_type?.includes('video/');

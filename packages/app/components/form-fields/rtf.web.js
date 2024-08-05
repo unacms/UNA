@@ -227,6 +227,13 @@ export default function FormFieldFtf(props) {
         //formContext.setValue(props.name, props.value)
     }, [props.name, props.value]);
 
+    // may be need not, fix foe edit post text content
+    useEffect(() => {
+        if (props.html == 2)
+            formContext.setValue(props.name, 'xxxx')
+    }, []);
+
+
     if (props.html == 2) {
         return <Editor contentf={field.value} defaultValue={defaultValue} field={field} formContext={formContext} name={name} viewClasses={props.viewClasses} />
     }
