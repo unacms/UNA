@@ -36,6 +36,9 @@ const expoConfig = {
         "NSBluetoothPeripheralUsageDescription": "Quick contacts between users.",
         "NSLocationWhenInUseUsageDescription": "Quick contacts between users.",
         "UIUserInterfaceStyle": "Automatic"
+      },
+      "entitlements": {
+        "aps-environment": "development"
       }
     },
     "android": {
