@@ -40,7 +40,7 @@ export default function ElementEntityAuthor(oProps) {
         </Row>
     );
 
-    let handleMenuManageSelect = async (oItem, event) => { }
+    let handleMenuManageSelect = false
 
     const item_id = oProps?.data?.entry_id;
     const redirectdRef = useRef();
@@ -80,10 +80,10 @@ export default function ElementEntityAuthor(oProps) {
     }
 
     aMenuManageItems = aMenuManageItems.filter((item) => (item.title != ''))
-
+    console.log("oItem.name", aMenuManageItems)
     if (oProps?.data?.menu_manage?.object == 'bx_timeline_menu_item_manage') {
         handleMenuManageSelect = async (oItem, event) => {
-            console.log("oItem.name", oItem.name)
+           
             switch (oItem.name) {
                 case 'item-edit':
                     const oResultEdit = await fetcher(
@@ -100,6 +100,10 @@ export default function ElementEntityAuthor(oProps) {
                     break
             }
         }
+    }
+    let a = {}
+    if (handleMenuManageSelect){
+        a = {onSelect:handleMenuManageSelect}
     }
 
     return (
@@ -138,7 +142,7 @@ export default function ElementEntityAuthor(oProps) {
             }
             <View>
                 {aMenuManageItems.length > 0 &&
-                    <DropdownMenu items={aMenuManageItems} onSelect={handleMenuManageSelect}>
+                    <DropdownMenu items={aMenuManageItems} {...a}>
                         <Button variant="text" rounded="true" startDecorator="DotsThreeOutline" onPress={() => { FeedbackHaptics('Medium'); }} />
                     </DropdownMenu>
                 }

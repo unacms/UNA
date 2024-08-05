@@ -89,7 +89,6 @@ export default function FormFeed(props) {
                 transparent={true}
                 headerBorder={true}
             >
-               
                     {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'default')}
                     {getFormFieldByData(props.data.inputs['object_cf'], props.handleSubmit, 'default')}
                     {getFormFieldByData(props.data.inputs['owner_id'], props.handleSubmit, 'default')}
@@ -112,9 +111,7 @@ export default function FormFeed(props) {
                                             {props.data.inputs['labels'] && getFormFieldByData(props.data.inputs['labels'], props.handleSubmit, 'notitle', { onShowModal: setShowImage, showModal: showImage })}
                                         </View>
 
-                                    }
-                                            
-                                           
+                                    } 
                                         </View>
 
                                     </View>
@@ -122,16 +119,10 @@ export default function FormFeed(props) {
                                     {prevList.length > 0 && prevList[0]?.key && (
                                         <Row className="flex-wrap ">{prevList}</Row>
                                     )}
-
-
-                                 
-
-
                                 </View>
                             </ScrollView>
                             <Row className={"w-full flex-wrap px-1 gap-x-1 mx-auto border-bdr dark:border-bdr-d items-center " + (isWeb ? '' : ' pb-4 ') + (isSmall ? " h-[68px] border-t fixed " + (isIos? ' bottom-4 ': ' bottom-0 ') + " border-bdr dark:border-bdr-d  bg-bgrcard dark:bg-bgrcard-d " : " rounded-lg border px-2 my-2 border")}>
                                 <Text className="hidden sm:flex px-2 mr-auto text-sm font-medium text-neutral-800 dark:text-neutral-200">Add media</Text>
-                                
                                 {props.data.inputs['obfuscate_faces'] && <View className="">
                                     {getFormFieldByData(props.data.inputs['obfuscate_faces'], props.handleSubmit, 'default')}
                                 </View>}
