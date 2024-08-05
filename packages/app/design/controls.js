@@ -74,7 +74,7 @@ export function Modal({
                     <View className={`${fullWidth ? 'w-full' : ''} relative h-full max-w-2xl md:h-auto `}>
                         <Pressable onPress={() => { }} className='relative bg-bgrmodal dark:bg-bgrmodal-d h-full md:h-auto sm:border sm:border-bdrmodal sm:dark:border-bdrmodal-d sm:rounded-2xl sm:shadow-sm'>
                             {
-                                (title || onClose) && <Row className={`items-center justify-${textAlign} ${headerBorder ? ' border-b border-bdr dark:border-bdr-d ' : ''} px-4 py-3 sm:px-6 sm:py-5 `}>
+                                (title || onClose) && <Row className={`items-center justify-${textAlign} ${headerBorder ? ' border-b border-bdr dark:border-bdr-d ' : ''} px-3 py-2.5 sm:p-4 sm:py-3`}>
                                     {(title && type === 'string') && (
                                         <View className='flex-auto'>
                                             <Text className='text-neutral-700 dark:text-neutral-200 text-xl font-bold '>{title}</Text>

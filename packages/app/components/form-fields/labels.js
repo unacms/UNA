@@ -62,7 +62,7 @@ export default function (props) {
             </Modal>
             <Field {...props}>
                 <View className='w-full justify-between '>
-                    <View className={styles + ' w-full flex-auto  items-center flex-row flex-wrap my-2'}>
+                    <View className={styles + ' w-full flex-auto  items-center flex-row flex-wrap'}>
                         {props.align == 'right' && <Button
                             startDecorator="Plus"
                             variant="text"
@@ -70,7 +70,7 @@ export default function (props) {
                             onPress={() => showSelect()}
                         />}
                         {!!field.value && field.value.map((item, index) => (
-                            <View className='m-1' key={'label' + index}>
+                            <View className='mr-2 my-1' key={'label' + index}>
                                 <Button
                                     endDecorator="X"
                                     variant={"outline"}
@@ -82,10 +82,10 @@ export default function (props) {
                         )
                         )}
                         {props.align != 'right' && <Button
-                            startDecorator="Plus"
-                            variant="text"
+                            startDecorator="Hash"
+                            variant="outline"
                             size="sm"
-                            title='Add'
+                            title='Tags'
                             onPress={() => showSelect()}
                         />}
                     </View>

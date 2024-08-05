@@ -64,7 +64,7 @@ export default function FormFeed(props) {
         props.handleSubmit();
     };
 
-    const header = <Row className='h-12 w-full justify-between items-center'>
+    const header = <Row className=' w-full justify-between items-center'>
         <View className=''><Button onPress={() => { setShowImage(null) }} variant='outline' rounded startDecorator="X" /></View>
         <View className='w-full flex-auto items-center justify-center'><Text className="text-neutral-700 dark:text-neutral-200 text-xl font-bold">Create post</Text></View>
         <View className=' '>
@@ -79,7 +79,7 @@ export default function FormFeed(props) {
                 onVisible={showImage}
 
                 {...(!isSmall && { onClose: () => setShowImage(null) })}
-                padding='sm:p-6 sm:pt-4 pb-1 sm:pb-4 md:pb-0'
+                padding='sm:p-4 sm:pb-0'
                 transparent={true}
                 headerBorder={true}
             >
@@ -89,39 +89,42 @@ export default function FormFeed(props) {
                     {getFormFieldByData(props.data.inputs['owner_id'], props.handleSubmit, 'default')}
                     {getFormFieldByData(props.data.inputs['type'], props.handleSubmit, 'default')}
                     <KbAvoidingView offset={isIos ? 56: 72}>
-                        <View className='justify-between mb-4 h-full  '>
+                        <View className='justify-between mb-2 h-full  '>
                             <ScrollView className="w-full h-full flex-1">
                                 <View className="w-full  flex-col px-2 sm:p-0 ">
-                                    <View className=" flex-row gap-x-3 px-2 pb-0 pt-3 flex-auto justify-between ">
+                                    <View className=" flex-row gap-x-3 px-1 sm:px-0 pb-0 pt-3 sm:pt-0 flex-auto justify-between ">
                                         <View className=" mb-auto ">
                                             <Profile {...currentUser} displayType="unit_wo_info" displaySize="lg" />
                                         </View>
                                         <View className="flex-col  flex-auto ">
                                             <Profile {...currentUser} displayType="unit_wo_image" displaySize="lg" />
 
-                                           <View className='mt-1.5 mr-auto'>{getFormFieldByData(props.data.inputs['object_privacy_view'], props.handleSubmit, 'nofield', { onShowModal: setShowImage, showModal: showImage })}</View> 
+                                           
+                                           <View className="mr-auto mt-2">{getFormFieldByData(props.data.inputs['object_privacy_view'], props.handleSubmit, 'nofield', { onShowModal: setShowImage, showModal: showImage })}</View>
+                                            {props.data.inputs['labels'] && 
+                                        <View className="">
+                                            {props.data.inputs['labels'] && getFormFieldByData(props.data.inputs['labels'], props.handleSubmit, 'notitle', { onShowModal: setShowImage, showModal: showImage })}
+                                        </View>
+
+                                    }
+                                            
+                                           
                                         </View>
 
                                     </View>
                                     {getFormFieldByData(props.data.inputs['text'], props.handleSubmit, 'custom', { focus: true, bg: 'transparent', placeholder: 'Write here...', linkify: true })}
                                     {prevList.length > 0 && prevList[0]?.key && (
-                                        <Row className="flex-wrap  px-3 ">{prevList}</Row>
+                                        <Row className="flex-wrap px-3 ">{prevList}</Row>
                                     )}
 
 
-                                    {props.data.inputs['labels'] && <Row className=" justify-between my-2 border border-bdr dark:border-bdr-d rounded-xl  items-center px-3 ">
-                                        <Text className=" mr-auto text-sm font-medium text-neutral-800 dark:text-neutral-200">Labels</Text>
-                                        <View className="">
-                                            {props.data.inputs['labels'] && getFormFieldByData(props.data.inputs['labels'], props.handleSubmit, 'notitle', { onShowModal: setShowImage, showModal: showImage })}
-                                        </View>
-
-                                    </Row>}
+                                 
 
 
                                 </View>
                             </ScrollView>
-                            <Row className={"w-full flex-wrap px-1 gap-x-1 mx-auto border-bdr dark:border-bdr-d items-center " + (isWeb ? '' : ' pb-4 ') + (isSmall ? " h-[68px] border-t fixed " + (isIos? ' bottom-4 ': ' bottom-0 ') + " border-bdr dark:border-bdr-d  bg-bgrcard dark:bg-bgrcard-d " : " rounded-xl border my-6 border")}>
-                                <Text className="hidden sm:flex px-4 mr-auto text-sm font-medium text-neutral-800 dark:text-neutral-200">Add media</Text>
+                            <Row className={"w-full flex-wrap px-1 gap-x-1 mx-auto border-bdr dark:border-bdr-d items-center " + (isWeb ? '' : ' pb-4 ') + (isSmall ? " h-[68px] border-t fixed " + (isIos? ' bottom-4 ': ' bottom-0 ') + " border-bdr dark:border-bdr-d  bg-bgrcard dark:bg-bgrcard-d " : " rounded-lg border px-2 my-2 border")}>
+                                <Text className="hidden sm:flex px-2 mr-auto text-sm font-medium text-neutral-800 dark:text-neutral-200">Add media</Text>
                                 
                                 {props.data.inputs['obfuscate_faces'] && <View className="">
                                     {getFormFieldByData(props.data.inputs['obfuscate_faces'], props.handleSubmit, 'default')}
