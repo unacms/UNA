@@ -12,12 +12,12 @@ import Profile from 'app/ui/molecules/profile'
 import Card from 'app/ui/molecules/card'
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { appSetting } from 'app/lib/util'
+import { appSetting, stripTags } from 'app/lib/util'
 import { useWindowDimensions } from 'react-native'
 import { Keyboard } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useFormContext } from 'react-hook-form';
 export default function FormFeed(props) {
-
+    const formContext = useFormContext();
     const { t } = useTranslation();
     const [showImage, setShowImage] = useState(false)
     const [responseId, setResponseId] = useState(0)
@@ -39,6 +39,12 @@ export default function FormFeed(props) {
     }, [props.response?.id]);
 
 
+    let text = formContext.watch('text');
+    if (typeof text === 'string'){
+        text = stripTags(text).trim();
+    }
+
+
     function setPlaceHolder(name, previews) {
         if (JSON.stringify(previews) != JSON.stringify(imageSource[name])) {
             setImageSource((prevImageSource) => ({
@@ -48,7 +54,7 @@ export default function FormFeed(props) {
         }
     }
 
-    let prevList = Object.values(imageSource).flat()
+    let prevList = Object.values(imageSource).flat().filter(element => element !== undefined)
 
     let profile = null
     if (currentUser) {
@@ -68,7 +74,7 @@ export default function FormFeed(props) {
         <View className=''><Button onPress={() => { setShowImage(null) }} variant='outline' rounded startDecorator="X" /></View>
         <View className='w-full flex-auto items-center justify-center'><Text className="text-neutral-700 dark:text-neutral-200 text-xl font-bold">Create post</Text></View>
         <View className=' '>
-            <Button onPress={() => { handlePress() }} variant='primary'   rounded  startDecorator="PaperPlane" />
+            <Button onPress={() => { handlePress() }} variant='primary' disabled={text!='' ? false : true}  rounded  startDecorator="PaperPlane" />
         </View>
     </Row>
 
@@ -114,7 +120,7 @@ export default function FormFeed(props) {
                                     </View>
                                     {getFormFieldByData(props.data.inputs['text'], props.handleSubmit, 'custom', { focus: true, bg: 'transparent', placeholder: 'Write here...', linkify: true })}
                                     {prevList.length > 0 && prevList[0]?.key && (
-                                        <Row className="flex-wrap px-3 ">{prevList}</Row>
+                                        <Row className="flex-wrap ">{prevList}</Row>
                                     )}
 
 
@@ -143,7 +149,7 @@ export default function FormFeed(props) {
                             </Row>
 
                             <View className='hidden sm:flex'>
-                                {getFormFieldByData(props.data.inputs['tlb_do_submit'], props.handleSubmit, 'default')}
+                                {getFormFieldByData(props.data.inputs['tlb_do_submit'], props.handleSubmit, 'default', {disabled:text!='' ? false : true})}
                             </View>
                         </View>
                     </KbAvoidingView>

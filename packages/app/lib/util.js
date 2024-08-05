@@ -625,8 +625,7 @@ export const uploadImage = async (uri, fetchUrl, calback, extraVar) => {
     else {
         const formData = new FormData();
         const fileName = uri.split('/').pop();
-        const fileType = uri.match(/\.([a-z]+)$/i)[1];
-
+        const fileType = uri.match(/\.([a-z0-9]+)$/i)[1];
         formData.append("file", {
             uri,
             name: fileName,

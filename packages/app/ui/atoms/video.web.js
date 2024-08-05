@@ -1,8 +1,8 @@
 
 
-export default function ElementVideo(props) {
+export default function ElementVideo({src, controls}) {
 
     return (
-        <video  className="w-full h-full" controls> <source src={props.src.toString()}  type="video/mp4"/></video>
+        <video className="w-full h-full" controls={controls}> <source src={src.toString()} type="video/mp4"/></video>
     )
 }

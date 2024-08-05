@@ -11,7 +11,7 @@ import { Theme } from 'app/design/theme';
 
 const MentionInput = styled(MentionInputDef, ' bg-bgrinput  border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg   w-full p-2 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus placeholder-neutral-500 dark:text-neutral-100 text-base leading-5 h-[40px]')
 const MentionInputMulti = styled(MentionInputDef, ' bg-bgrinput text-neutral-900 border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg   w-full p-2 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus placeholder-neutral-500 dark:text-neutral-100 text-base leading-5')
-const MentionInputMultiTransparent = styled(MentionInputDef, '  text-red-500 rounded-lg   w-full p-2 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus placeholder-neutral-500 dark:text-neutral-200 text-base leading-5 text-neutral-800')
+const MentionInputMultiTransparent = styled(MentionInputDef, '  text-red-500 rounded-lg   w-full p-2  dark:focus:bg-bgrinput-dafocus placeholder-neutral-500 dark:text-neutral-200 text-base leading-5 text-neutral-800')
 
 function formatText(text) {
     //TODO REPLACE TO BR
@@ -88,9 +88,12 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
       //  setLocalValue(val);
         
         let v = replaceMentionValues(val, ({trigger, name, id}) => `<a class="bx-mention-link" href="${id}" title="${name}" dchar="${trigger}" data-profile-id="${id}">${name}</a>`)
-       // v = v.split('\n').map(line => `<p>${line}</p>`).join('');
-       v = v.split('\n').map(line => `${line}<br>`).join('');
-        field.onChange(v)
+        // v = v.split('\n').map(line => `<p>${line}</p>`).join('');
+        v = v.split('\n').map(line => `<p>${line}</p>`).join('');
+       if (v){
+      //  v = '<p>'+v+'</p>'
+       }
+       field.onChange(v)
     }
 
     const renderSuggestions = ({ keyword, onSuggestionPress, trigger }) => {
@@ -127,7 +130,7 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
         styles = {...styles, ...props.styles};
 
     let MentionInput = props.bg =='transparent' ? MentionInputMultiTransparent : MentionInputMulti
-    
+    let ft = formatText(field.value);
     return (
         <Field {...props}>
             <MentionInput style={styles}
@@ -135,7 +138,7 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
                 multiline
                 allowFontScaling={false}
                 autoFocus={field.value ? true : false}
-                value={formatText(field.value)}
+                value={ft}
                 placeholder = {props.placeholder}
                 onChange={handleChange2}
                 partTypes={[

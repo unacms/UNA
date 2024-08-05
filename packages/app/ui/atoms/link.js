@@ -1,5 +1,5 @@
 import { Pressable } from 'app/design/view'
-import { Link, useGlobalSearchParams} from 'expo-router';
+import { Link, useGlobalSearchParams } from 'expo-router';
 import { FeedbackHaptics } from 'app/lib/util';
 import { useNavigation } from 'expo-router';
 import { useCurrentUser } from 'app/context/user';
@@ -7,7 +7,7 @@ import { appSetting } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 
 export default function ElementLink(props) {
-    let { href, ...rest } = props
+    let { href, target, ...rest } = props
     const navigation = useNavigation();
     const glob = useGlobalSearchParams();
 
@@ -32,24 +32,29 @@ export default function ElementLink(props) {
         </Pressable>
 
     }
+    let p = {
+        pathname: '/' + glob.name,
+        params: { url: href }
+    }
+    if (target){
+        p = href;
+    }
+
     return (
-        <Link 
-          push
-          href={{
-            pathname: '/' + glob.name,
-            params: { url: href }
-          }}
-          asChild {...rest}
+        <Link
+            push
+            href={p}
+            asChild {...rest}
         >
-          {props.haptics ? (
-            <Pressable onPress={() => FeedbackHaptics(props.haptics)}>
-              {props.children}
-            </Pressable>
-          ) : (
-            <Pressable>
-            {props.children}
-            </Pressable>
-          )}
+            {props.haptics ? (
+                <Pressable onPress={() => FeedbackHaptics(props.haptics)}>
+                    {props.children}
+                </Pressable>
+            ) : (
+                <Pressable>
+                    {props.children}
+                </Pressable>
+            )}
         </Link>
-      );
+    );
 }

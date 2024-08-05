@@ -5,7 +5,7 @@ export default function ElementVideo(props) {
     return <></>
 }*/
 
-export default function ElementVideo(props) {
+export default function ElementVideo({src, controls}) {
     var styles = StyleSheet.create({
         backgroundVideo: {
             position: 'absolute',
@@ -18,7 +18,7 @@ export default function ElementVideo(props) {
 
     return (
         <Video 
-            controls={true}
+            controls={controls}
             ref={(ref) => {
                 this.player = ref
             }}        
@@ -26,7 +26,7 @@ export default function ElementVideo(props) {
             autoplay={false}                                            
             onBuffer={this.onBuffer}    
             onError={this.videoError}        
-            source={{uri:props.src}}    
+            source={{uri:src}}    
             style={styles.backgroundVideo}
         />
     )

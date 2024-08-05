@@ -16,6 +16,7 @@ import { stripTags, menuItemsByName, FeedbackHaptics } from 'app/lib/util'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu'
 import { fetcher } from 'app/lib/fetcher'
 import Form from 'app/components/elements/form'
+import { Icon } from 'app/ui/atoms/icon';
 import useSWR from 'swr'
 import { componentsMap } from 'app/ui/molecules/_map'
 import Card from 'app/ui/molecules/card'
@@ -616,7 +617,7 @@ function DefaultUnit(data) {
                 
             )}
             {files_attach.map((item, index) => {
-                return <Row key={"att"+index}><Link target='_blank' href={item.url}><Text className="text-sm  text-neutral-700 dark:text-neutral-300">{item.title}</Text></Link></Row>
+                return <Link key={"att"+index} target='_blank' href={item.url}><Row className='gap-x-2 w-full items-center p-3 bg-bgritem dark:bg-bgritem-d rounded-lg mt-1'><Text className="text-sm text-neutral-700 dark:text-neutral-300"><Icon icon="File" className="w-6 h-6" size={24} /></Text><Text className="text-sm text-neutral-700 dark:text-neutral-300">{item.title}</Text></Row></Link>
             })}
         </>
 

@@ -15,6 +15,8 @@ import Loading from 'app/ui/atoms/loading'
 import { Text } from 'app/design/typography'
 import { Image as ImageNative, Alert, Platform } from 'react-native';
 import { Camera } from "expo-camera";
+
+
 export default function (props) {
     const name = props.name;
     const [imageSource, setImageSource] = useState({ images: null });
@@ -23,6 +25,7 @@ export default function (props) {
     let obfuscateFaces = formContext.watch('obfuscate_faces');
     const rules = getValidationRules(props);
     let defaultValue = props?.value ? props.value : '';
+
     const { field } = useController({ name, rules, defaultValue });
     const bMultiple = props.multiple;
     const [hasPermissionCamera, requestPermissionCamera] = ImagePicker.useCameraPermissions();
@@ -85,7 +88,7 @@ export default function (props) {
 
     useEffect(() => {
         if (props.previewPlaceHolder) {
-            props.previewPlaceHolder(name, GhostsList(imageSource.images, bMultiple, handleDelete));
+            props.previewPlaceHolder(name, GhostsList(imageSource.images, bMultiple, handleDelete, props));
         }
     }, [imageSource]);
 
@@ -121,7 +124,6 @@ export default function (props) {
 
         for (const i of asset) {
             let uri = i.uri;
-            console.log("i.uri", i)
             let isImage = i?.mimeType?.includes('image/');
             if (isImage){
                 ImageNative.getSize(uri, async (width, height) => {
@@ -166,17 +168,26 @@ export default function (props) {
                     );
 
                     let fileType = i.type ? i.type + '/' : uri.split(';')[0].split(':')[1];
-                    k = [
+                    /*k = [
                         ...k,
                         { file_url: uri, file_type: fileType, preload: true, hash: hash }
-                    ];
+                    ];*/
             }
         }
         return k;
     }
 
     const selectImage = useCallback(async () => {
-        if (Platform.OS !== 'web') {
+
+        console.log("propsprops", props)
+        let bIsMedia = props.ext_deny == '' || props.ext_allow == 'mp3,m4a,m4b,wma,wav,3gp' ? true : false;
+
+        if (!bIsMedia && props.ext_deny.length && !'jpg,jpeg,jpe,gif,png,svg,webp'.split(',').filter((s) => ~props.ext_deny.split(',').indexOf(s)).length)
+            bIsMedia = true;
+
+        console.log("bIsMedia", bIsMedia)
+
+        if (Platform.OS !== 'web' && bIsMedia) {
             const { status } = await Camera.requestCameraPermissionsAsync();
             if (status === "granted"){
                 Alert.alert(
@@ -185,11 +196,11 @@ export default function (props) {
                     [
                         {
                             text: "Take Photo",
-                            onPress: () => { selectImage1('camera') }
+                            onPress: () => { selectImage1('camera', bIsMedia) }
                         },
                         {
                             text: "Choose from Library",
-                            onPress: () => { selectImage1('library') }
+                            onPress: () => { selectImage1('library', bIsMedia) }
                         },
                         {
                             text: "Cancel",
@@ -216,23 +227,18 @@ export default function (props) {
             }
         }
         else {
-            selectImage1('library')
+            selectImage1('library', bIsMedia)
         }
     }, [props.ext_deny, props.ext_allow, imageSource, url]);
 
 
-    const selectImage1 = useCallback(async (type) => {
-        let bIsMedia = props.ext_deny == '' || props.ext_allow == 'mp3,m4a,m4b,wma,wav,3gp' ? true : false;
-
-        if (!bIsMedia && props.ext_deny.length && !'jpg,jpeg,jpe,gif,png,svg,webp'.split(',').filter((s) => ~props.ext_deny.split(',').indexOf(s)).length)
-            bIsMedia = true;
-
+    const selectImage1 = useCallback(async (type, bIsMedia) => {
         if (bIsMedia) {
 
             let mediaTypes = ImagePicker.MediaTypeOptions.All;
-            if (props.ext_allow == 'jpg,jpeg,jpe,gif,png,svg,webp' || props.ext_allow == 'jpg,jpeg,jpe,gif,png,webp')
+            if (props.ext_allow.includes('jpg') && !props.ext_allow.includes('mp4'))
                 mediaTypes = ImagePicker.MediaTypeOptions.Images;
-            if (props.ext_allow == 'avi,flv,mpg,mpeg,wmv,mp4,m4v,mov,qt,divx,xvid,3gp,3g2,webm,mkv,ogv,ogg,rm,rmvb,asf,drc,ts')
+            if (props.ext_allow.includes('mp4') && !props.ext_allow.includes('mp4'))
                 mediaTypes = ImagePicker.MediaTypeOptions.Videos;
 
             let result = null
@@ -280,11 +286,12 @@ export default function (props) {
             }
         }
         else {
+            console.log("DocumentPicker")
             try {
                 const result = await DocumentPicker.getDocumentAsync({
                     type: '*/*', // This allows all file types
+                    multiple:true
                 });
-               console.log("result", result)
               /*   if (result.type === 'success') {
                     let k = imageSource.images;
                     let hash = crypto.createHash('sha256').update(result.uri).digest('hex');
@@ -334,7 +341,7 @@ export default function (props) {
             <View className={bMultiple ? "" : ""} >
                 <ActionButton uploadImages={uploadImages} imagesList={imageSource.images} props={props} bMultiple={bMultiple} selectImage={selectImage} handleDelete={handleDelete} />
             </View>
-            {!props.previewPlaceHolder && <Row className='flex-wrap '>{GhostsList(imageSource.images, bMultiple, handleDelete)}</Row>}
+            {!props.previewPlaceHolder && <Row className='flex-wrap '>{GhostsList(imageSource.images, bMultiple, handleDelete, props)}</Row>}
         </Field>
     );
 }
@@ -428,18 +435,21 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
     return button;
 }
 
-function GhostsList(imagesList, bMultiple, handleDelete) {
-    if (!imagesList || imagesList.length === 0 || !bMultiple) {
+function GhostsList(imagesList, bMultiple, handleDelete, props) {
+    
+
+    if (!imagesList || imagesList.length === 0 ) {//|| !bMultiple
         return;
     }
-    console.log("imagesList", imagesList)
+   
+    console.log("imagesList", imagesList, props)
     return imagesList.map((img, index) => {
         const isImage = img?.file_type?.includes('image/');
-        console.log("imgimg", img)
+        const isVideo = img?.file_type?.includes('video/');
         return (
-            <View key={`file-${index}`} className='h-24 w-24 justify-center items-center dark:bg-bgrcard-d border-bdr dark:border-bdr-d border rounded-lg m-1 overflow-hidden' >
+            <View key={`file-${props.name}-${index}`} className='h-24 w-24 justify-center items-center dark:bg-bgrcard-d border-bdr dark:border-bdr-d border rounded-lg m-1 overflow-hidden' >
                 {isImage && <Image view='cover' sizes="96px" className="u-cover" alt='' src={img.file_url} />}
-                {!isImage && !img?.preload && <View className='h-16 w-16'><Icon icon="File" className="w-20 h-20" size={80} /></View>}
+                {!isImage && !img?.preload && <View className='h-16 w-16  text-neutral-700 dark:text-neutral-300 items-center justify-center'>{isVideo ? <Icon icon="Video" className="w-8 h-8" size={32}  /> : <Icon  icon="File" className="w-8 h-8" size={32} />}</View>}
                 {img?.preload && <View className='absolute w-full h-full justify-center items-center'><Loading /></View>}
                 {img?.file_id && <View className='absolute top-1 right-1 w-6.5 text-center mx-auto'>
                     <Button onPress={() => handleDelete(img.file_id)} variant="default" startDecorator="X" align="start" title="" rounded size="xs" />

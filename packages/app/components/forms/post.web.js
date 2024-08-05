@@ -114,11 +114,11 @@ export default function FormPost(props) {
                             )}
                         </View>
                     </Row>
-                    {prevList.length > 0 && prevList[0]?.key && (
+                    
+                </View>
+                {prevList.length > 0 && prevList[0]?.key && (
                         <Row className="flex-wrap">{prevList}</Row>
                     )}
-                </View>
-
 
 
                 <View className='w-full my-1 flex-row border rounded-xl border-bdr dark:border-bdr-d py-1 px-2'>

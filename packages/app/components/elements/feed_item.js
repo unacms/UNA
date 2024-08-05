@@ -1,7 +1,7 @@
 import { View } from 'app/design/view';
 import Html from 'app/ui/atoms/html';
 import Menu from 'app/components/menu';
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import Carousel from 'app/ui/molecules/carousel'
 import { useLayoutData } from 'app/context/layout';
 import Embed from 'app/ui/molecules/embed'
@@ -39,17 +39,22 @@ export default function ElementFeedItem({ data }) {
 
     function UnitImages(images) {
 
-        if (images?.images?.length == 0)
-            return <></>
-
-        let aImg = images?.images?.map((obj) => {
-            return {
+        const aImg = useMemo(() => {
+            if (!images?.images || images?.images?.length === 0) return [];
+    
+            let photo = images.images.filter(item => item.src).map((obj) => ({
                 src: obj.src_orig ? obj.src_orig : obj.src,
                 width: obj.width,
                 height: obj.height,
                 type: 'image',
-            }
-        })
+            }));
+    
+            let video = images.images.filter(item => item.src_poster).map((obj) => ({
+                src: obj.src_poster ? obj.src_poster : obj.src_poster,
+                type: 'video',
+            }));
+            return [...photo, ...video]
+        }, [images]);
 
         return (
             <View className="w-full px-0.5 sm:px-4">
