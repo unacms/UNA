@@ -80,7 +80,6 @@ export default function ElementEntityAuthor(oProps) {
     }
 
     aMenuManageItems = aMenuManageItems.filter((item) => (item.title != ''))
-    console.log("oItem.name", aMenuManageItems)
     if (oProps?.data?.menu_manage?.object == 'bx_timeline_menu_item_manage') {
         handleMenuManageSelect = async (oItem, event) => {
            
