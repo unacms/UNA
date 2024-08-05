@@ -129,7 +129,6 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
         styles.maxHeight = props.maxHeight;
     }
 
-
     if (typeof props.styles === 'object')
         styles = {...styles, ...props.styles};
 
