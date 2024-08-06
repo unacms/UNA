@@ -438,7 +438,7 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
 function GhostsList(imagesList, bMultiple, handleDelete, props) {
     
 
-    if (!imagesList || imagesList.length === 0 ) {//|| !bMultiple
+    if (!imagesList || imagesList.length === 0 || props.name == 'cover') {//|| !bMultiple
         return;
     }
    
