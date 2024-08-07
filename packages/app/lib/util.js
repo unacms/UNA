@@ -4,13 +4,15 @@ import { fetcher } from 'app/lib/fetcher';
 import { stringMd5 } from 'react-native-quick-md5';
 import pako from 'pako';
 import { useTranslation } from 'react-i18next';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+//import AsyncStorage from '@react-native-async-storage/async-storage';
 //import Clipboard from '@react-native-community/clipboard';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { decode } from 'html-entities';
 import { appSetting as setting, UNA_URL, APP_URL } from 'app/config';
 import { remoteSettings } from 'app/settings-remote';
 import {parse as flatted_parse, stringify as flatted_stringify} from 'flatted';
+
+const nativeCache = [];
 
 export function appSetting(section, name, path) {
     return setting(section, name, path, remoteSettings.data);
@@ -75,7 +77,7 @@ export function clearNotif(currentUser, setCurrentUser) {
 }
 
 export  const getDataFromCache = (pref, storageKeyValue) => {
-    if (appSetting('cache', 'list')) {
+    if (appSetting('cache', 'list') && Platform.OS == 'web') {
         return storageGet(pref, storageKeyValue);
     }
     return false;
@@ -84,6 +86,7 @@ export  const getDataFromCache = (pref, storageKeyValue) => {
 export function storageSet(pref, key, data, isLocal = false) {
    
     if (Platform.OS !== 'web') {
+        nativeCache[pref + '-' + key] = JSON.stringify(data);
       //  await AsyncStorage.setItem(`${pref}-${key}`, serializedData);
     }
     else {
@@ -95,6 +98,8 @@ export function storageSet(pref, key, data, isLocal = false) {
 
 export function storageGet(pref, key, isLocal = false) {
     if (Platform.OS !== 'web') {
+        if (nativeCache[pref + '-' + key])
+            return nativeCache[pref + '-' + key]
        // return await AsyncStorage.getItem(`${pref}-${key}`);
     }
     else {
