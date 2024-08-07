@@ -76,7 +76,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
 
     useEffect(() => {
         fetchConvos(searchValue);
-        if (convos.data.length > 0)
+        if (convos && convos.data.length > 0)
             setConvoId(convos.data[0].id);
     }, [searchValue]);
 

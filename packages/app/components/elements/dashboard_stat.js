@@ -94,6 +94,9 @@ export default function PageLayout(props) {
             setCurrentUser(Object.assign({}, currentUser));
         }
         else{
+            console.log("item", item)
+            if (item == 'auto')
+                item=null;
             Appearance.setColorScheme(item);
         }
     }

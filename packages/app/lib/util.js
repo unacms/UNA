@@ -4,6 +4,7 @@ import { fetcher } from 'app/lib/fetcher';
 import { stringMd5 } from 'react-native-quick-md5';
 import pako from 'pako';
 import { useTranslation } from 'react-i18next';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 //import Clipboard from '@react-native-community/clipboard';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { decode } from 'html-entities';
@@ -73,7 +74,7 @@ export function clearNotif(currentUser, setCurrentUser) {
     }
 }
 
-export const getDataFromCache = (pref, storageKeyValue) => {
+export  const getDataFromCache = (pref, storageKeyValue) => {
     if (appSetting('cache', 'list')) {
         return storageGet(pref, storageKeyValue);
     }
@@ -81,27 +82,20 @@ export const getDataFromCache = (pref, storageKeyValue) => {
 }
 
 export function storageSet(pref, key, data, isLocal = false) {
+   
     if (Platform.OS !== 'web') {
-        /*const MMKV = new MMKVLoader().initialize(); 
-        await MMKV.setStringAsync(`${pref}-${key}`, JSON.stringify(data));*/
+      //  await AsyncStorage.setItem(`${pref}-${key}`, serializedData);
     }
     else {
-        const storage = isLocal ? localStorage : sessionStorage;
         const serializedData = appSetting('cache', 'compress') ? compress(data) : JSON.stringify(data);
-
+        const storage = isLocal ? localStorage : sessionStorage;
         storage.setItem(`${pref}-${key}`, serializedData);
     }
 }
 
 export function storageGet(pref, key, isLocal = false) {
     if (Platform.OS !== 'web') {
-        /*  const MMKV = new MMKVLoader().initialize(); 
-          let storedData = await MMKV.getStringAsync(`${pref}-${key}`);
-          console.log(storedData);
-          console.log('----------------------------');
-          console.log(JSON.parse(storedData));
-          if (!storedData) return null;
-          return JSON.parse(storedData);*/
+       // return await AsyncStorage.getItem(`${pref}-${key}`);
     }
     else {
         const storage = isLocal ? localStorage : sessionStorage;

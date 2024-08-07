@@ -1,8 +1,9 @@
 
 
-export default function ElementVideo({src, controls}) {
+export default function ElementVideo({src, controls, cover, autoplay, muted}) {
+
 
     return (
-        <video className="w-full h-full" controls={controls}> <source src={src.toString()} type="video/mp4"/></video>
+        <video className={cover? 'background-video' : ''} controls={controls} autoplay={autoplay} muted={muted}> <source src={src.toString()} type="video/mp4"/></video>
     )
 }

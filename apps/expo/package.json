@@ -7,7 +7,7 @@
     "@jitsi/react-native-sdk": "^0.4.1",
     "@native-html/iframe-plugin": "^2.6.1",
     "@react-native-assets/slider": "^7.0.6",
-    "@react-native-async-storage/async-storage": "1.23.1",
+    "@react-native-async-storage/async-storage": "^1.24.0",
     "@react-native-clipboard/clipboard": "^1.14.1",
     "@react-native-community/checkbox": "^0.5.16",
     "@react-native-community/netinfo": "11.3.1",

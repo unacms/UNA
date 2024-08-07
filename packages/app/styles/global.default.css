@@ -531,3 +531,11 @@ div[data-radix-popper-content-wrapper]:not(.radix-hide){
 .grid-readonly .react-grid-item .react-resizable-handle{
     display: none;
 }
+.background-video{position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: translate(-50%, -50%);
+    z-index: -1;}

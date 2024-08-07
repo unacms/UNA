@@ -4,22 +4,24 @@ import { View, Row, Pressable, ScrollView } from 'app/design/view'
 import { useState, useRef, useEffect, useContext } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
 import CheckBox from 'app/ui/atoms/checkbox';
-import { Button, Input } from "app/design/controls";
-import { useBottomSheetData } from 'app/context/bottomsheet';
+import { Button, Input, Modal } from "app/design/controls";
+//import { useBottomSheetData } from 'app/context/bottomsheet';
 import RadioButton from 'app/ui/atoms/radiobutton';
 
 export default function (props) {
- 
+    const [isModal, setIsModal] = useState(false);
+
     const rules = {};
     const defaultValue = props?.value ? (Array.isArray(props.value) ? props.value.map(String) : [props.value]) : '';
     const name = props.name ? props.name : '';
     const { field } = useController({ name, rules, defaultValue });
-    const { setBottomSheetData } = useBottomSheetData();
+    //const { setBottomSheetData } = useBottomSheetData();
 
     const setFormValue = (value) => {
         value = value.filter(item => item);
         field.onChange(value);
-        setBottomSheetData(false);
+        //setBottomSheetData(false);
+        setIsModal(false)
     }
     const removeValue = (valueToRemove) => {
         const newValue = field.value.filter(item => item !== valueToRemove);
@@ -35,46 +37,63 @@ export default function (props) {
     else
         dataFlat = Object.entries(props.values).map(([key, value]) => ({ key: String(key), value }));
     const showSelect = (val) => {
-       // if ()
-        setBottomSheetData({ title: 'Choose', showClose: true, content: <ChkList values={dataFlat} selectedValues={field.value} setFormValue={setFormValue} /> });
+        // if ()
+        //setBottomSheetData({ title: 'Choose', showClose: true, content: <ChkList values={dataFlat} selectedValues={field.value} setFormValue={setFormValue} /> });
+        setIsModal(true);
     }
 
     let styles = "justify-start pr-4";
     if (props.align == 'right')
         styles += 'justify-end pl-4';
 
+    const ModalCnt = <Modal
+        title={'Choose ' + props.caption}
+        onVisible={isModal}
+        onClose={() => setIsModal(false)}
+        transparent={true}
+        headerBorder={true}
+    >
+        <View className='m-4 flex-1'>
+            <ChkList values={dataFlat} selectedValues={field.value} setFormValue={setFormValue} />
+        </View>
+
+    </Modal>
+
+
     return (
-        <Field {...props}>
-            <View className='w-full justify-between '>
-                <View className={styles + ' w-full flex-auto  items-center flex-row flex-wrap my-2'}>
-                    {props.align == 'right' && <Button
-                        startDecorator="Plus"
-                        variant="text"
-                        size="base"
-                        onPress={() => showSelect()}
-                    />}
-                    {!!field.value && dataFlat.filter(item => field.value.includes(item.key)).map((item, index) => (
-                        <View className='m-1' key={'label' + index}>
-                            <Button
-                                endDecorator="X"
-                                variant={"outline"}
-                                size="sm"
-                                title={item.value}
-                                onPress={() => removeValue(item.key)}
-                            />
-                        </View>
-                    )
-                    )}
-                    {props.align != 'right' && <Button
-                        startDecorator="Plus"
-                        variant="text"
-                        size="sm"
-                        title='Add'
-                        onPress={() => showSelect()}
-                    />}
+        <>
+            {ModalCnt}
+            <Field {...props}>
+                <View className='w-full justify-between '>
+                    <View className={styles + ' w-full flex-auto  items-center flex-row flex-wrap my-2'}>
+                        {props.align == 'right' && <Button
+                            startDecorator="Plus"
+                            variant="text"
+                            size="base"
+                            onPress={() => showSelect()}
+                        />}
+                        {!!field.value && dataFlat.filter(item => field.value.includes(item.key)).map((item, index) => (
+                            <View className='m-1' key={'label' + index}>
+                                <Button
+                                    endDecorator="X"
+                                    variant={"outline"}
+                                    size="sm"
+                                    title={item.value}
+                                    onPress={() => removeValue(item.key)}
+                                />
+                            </View>
+                        )
+                        )}
+                        {props.align != 'right' && <Button
+                            startDecorator="Plus"
+                            variant="text"
+                            size="sm"
+                            title='Add'
+                            onPress={() => showSelect()}
+                        />}
+                    </View>
                 </View>
-            </View>
-        </Field>
+            </Field></>
     );
 }
 
@@ -92,9 +111,9 @@ function ChkList({ values, selectedValues, setFormValue }) {
     if (inputValue)
         filtred = values.filter(item => item.value.toLowerCase().includes(inputValue.toLowerCase()));
     return (
-        <View className='px-2'>
+        <View className='flex-1'>
             {
-                values.length > 10 && (<View className='py-2'>
+                values.length > 10 && (<View className='pb-2'>
                     <Input name="search" placeholder={'Search...'} defaultValue={inputValue}
                         onChangeText={(value) => {
                             setInputValue(value)
@@ -102,7 +121,7 @@ function ChkList({ values, selectedValues, setFormValue }) {
                     />
                 </View>)
             }
-            <ScrollView className='h-72'>
+            <ScrollView className='flex-auto'>
                 {filtred.map((item2, index) => {
                     const key = item2.key;
                     return (
@@ -120,7 +139,7 @@ function ChkList({ values, selectedValues, setFormValue }) {
                 })}
 
             </ScrollView>
-            <View className='pb-2 justify-end items-start'>
+            <View className='pt-2 justify-end items-start'>
                 <Button
                     title='Save'
                     variant="default"

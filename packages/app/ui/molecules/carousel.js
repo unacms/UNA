@@ -63,12 +63,12 @@ const Carousel = memo(({ data = [] }) => {
 
     const Image2 = (item) => {
         return (
-            <View className={(item.len >1 ? 'w-1/2' : 'w-full') + '  border border-bdr dark:border-bdr-d bg-bgritem dark:bg-bgritem-d'}>
+            <View className={(item.len > 1 ? 'w-1/2' : 'w-full') + ' h-full border border-bdr dark:border-bdr-d bg-bgritem dark:bg-bgritem-d '}>
                 <Pressable style={{ flex: 1, justifyContent: 'center' }} onPress={() => handleShowImage(item)} >
                     {item.type == 'image' ? ((item.width && item.height) ?
                         <Image sizes="1280px" src={item.src} alt='' height={item.height} width={item.width} className=" u-cover dark:bg-bgritem-d dark:bg-bgritem-d gap-x-1 " /> :
                         <Image sizes="1280px" src={item.src} alt='' view="cover" className=" u-cover dark:bg-bgritem-d dark:bg-bgritem-d gap-x-1 " />
-                    ) : <Video src={item.src} controls={false} />}
+                    ) : <Video cover={true} src={item.src} controls={false} muted={"muted"} autoplay={"autoplay"}/>}
 
                     {item.row == 1 && item?.index2 == 1 && data.length > 3 && <View className='absolute z-50 w-full h-full text-center items-center justify-center'><Text className='text-5xl lg:text-7xl text-white'>+{data.length - 3}</Text></View>}
                 </Pressable>
@@ -88,8 +88,8 @@ const Carousel = memo(({ data = [] }) => {
             // back compability for old data
             if (!data[0].height || !data[0].width) {
                 return (
-                    <View className={`${max_image_width} mx-auto ${max_image_aspect} w-full `}>
-                        <Image2 row={0} index={0} key={0} width={data[0].width} height={data[0].height} src={data[0].src} type={data[0].type} />
+                    <View className={`${max_image_width} mx-auto ${max_image_aspect} w-full 005`}>
+                        <Image2 row={0} index={0} key={0}  src={data[0].src} type={data[0].type} />
                     </View>
                 )
             }
@@ -160,7 +160,7 @@ const Carousel = memo(({ data = [] }) => {
     }, (prevProps, nextProps) => prevProps.data2 === nextProps.data2);
 
     return <>
-        {currentImageIndex !== false && <Modal visible={currentImageIndex !== false} onClose={() => { setCurrentImageIndex(false) }} transparent={true} >
+        {currentImageIndex !== false && <Modal title="Viewer" visible={currentImageIndex !== false} onClose={() => { setCurrentImageIndex(false) }} transparent={true} >
             <Row className=' w-full mx-auto items-center justify-center'>
 
                 {
@@ -169,7 +169,7 @@ const Carousel = memo(({ data = [] }) => {
                     </Pressable>
                 }
                 {
-                    data[currentImageIndex].type == 'video' && <Pressable onPress={() => setCurrentImageIndex(false)}><View className='aspect-video max-w-xl' style={{ width: windowWidthOr }}><Video controls={true} src={data[currentImageIndex].src} /></View></Pressable>
+                    data[currentImageIndex].type == 'video' && <Pressable onPress={() => setCurrentImageIndex(false)}><View className='aspect-video max-w-xl' style={{ width: windowWidthOr }}><Video autoplay="autoplay" muted={false} controls={true} src={data[currentImageIndex].src} /></View></Pressable>
                 }
 
             </Row>
@@ -182,7 +182,10 @@ const Carousel = memo(({ data = [] }) => {
                 }
             </Row>
         </Modal>}
-        <Gallery data2={data2} imageSize={imageSize} width={width} handleLayout={handleLayout} />
+        <View className='w-full max-w-3xl mx-auto'>
+            <Gallery data2={data2} imageSize={imageSize} width={width} handleLayout={handleLayout} />
+        </View>
+        
     </>
 });
 

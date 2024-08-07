@@ -5,7 +5,7 @@ export default function ElementVideo(props) {
     return <></>
 }*/
 
-export default function ElementVideo({src, controls}) {
+export default function ElementVideo({src, controls, cover, autoplay, muted}) {
     var styles = StyleSheet.create({
         backgroundVideo: {
             position: 'absolute',
@@ -13,6 +13,8 @@ export default function ElementVideo({src, controls}) {
             left: 0,
             bottom: 0,
             right: 0,
+            width: '100%',
+            height: '100%',
         }
     });    
 
@@ -21,9 +23,9 @@ export default function ElementVideo({src, controls}) {
             controls={controls}
             ref={(ref) => {
                 this.player = ref
-            }}        
-            paused={true}
-            autoplay={false}                                            
+            }}     
+            resizeMode={cover? "cover"  : ''}
+            muted  ={muted? true : false}    
             onBuffer={this.onBuffer}    
             onError={this.videoError}        
             source={{uri:src}}    
