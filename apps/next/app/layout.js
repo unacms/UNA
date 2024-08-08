@@ -1,15 +1,14 @@
 "use client"
 import { Analytics } from '@vercel/analytics/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-
 import { CurrentUserProvider } from 'app/context/user';
 import { storageGet } from 'app/lib/util'
 import * as RNLocalize from "react-native-localize";
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { useColorScheme } from 'react-native';
-import en from 'app/locales/en/translation.json';
-import ru from 'app/locales/ru/translation.json';
+import { resources } from 'app/translation';
+
 
 export default function RootLayout({ children }) {
 
@@ -29,14 +28,7 @@ export default function RootLayout({ children }) {
         .use(languageDetector)
         .init({
             compatibilityJSON: 'v3',
-            resources: {
-                en: {
-                    translation: en
-                },
-                ru: {
-                    translation: ru
-                }
-            },
+            resources: resources,
             lng: 'en', // default language
             fallbackLng: 'en',
             interpolation: {

@@ -20,8 +20,7 @@ import * as RNLocalize from "react-native-localize";
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { appSetting } from 'app/lib/util'
-import en from 'app/locales/en/translation.json';
-import ru from 'app/locales/ru/translation.json';
+import { resources } from 'app/translation';
 import { remoteSettings } from 'app/settings-remote';
 import { getRemoteSettings } from 'app/config';
 import { StatusBar } from 'react-native';
@@ -78,14 +77,7 @@ const AppLayout = React.memo(() => {
         .use(languageDetector)
         .init({
             compatibilityJSON: 'v3',
-            resources: {
-                en: {
-                    translation: en
-                },
-                ru: {
-                    translation: ru
-                }
-            },
+            resources: resources,
             lng: 'en', // default language
             fallbackLng: 'en',
             interpolation: {

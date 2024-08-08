@@ -1,6 +1,6 @@
 import { env } from 'app/lib/env';
 
-let settingsDefault = {
+export const settingsDefault = {
     config: {
         una_url: env('UNA_URL'),
         app_url: env('APP_URL'),
@@ -933,5 +933,5 @@ let settingsDefault = {
     },
 }
 
-export { settingsDefault };
+
 
