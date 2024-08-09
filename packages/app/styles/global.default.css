@@ -10,6 +10,8 @@
     line-height: 1.5rem;
     max-width: none;
     word-wrap: break-word;
+    margin-top: 0.5em !important;
+    margin-bottom: 0.5em !important;
 }
 
 .u-vanilla-html :where(p):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
