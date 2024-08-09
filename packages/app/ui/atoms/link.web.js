@@ -53,7 +53,7 @@ export default function ElementLink(props) {
         prefetch = false;
 
     return (
-        <Link href={href} {...rest} prefetch={prefetch} onClick={(e) => handleLinkClick(e, href, target)} legacyBehavior={false}> 
+        <Link target={target} href={href} {...rest} prefetch={prefetch} onClick={(e) => handleLinkClick(e, href, target)} legacyBehavior={false}> 
             {props.children}
         </Link>
     );
