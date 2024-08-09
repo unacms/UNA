@@ -294,7 +294,6 @@ export function CommentsBrowse({ browse, requestUrl, module, handleReply, handle
             flashListRef.current.scrollToIndex({ animated: true, index: itemIndex });
         }
     }, [commentData.lastInserted]);
-
     useEffect(() => {
         if (!isShort)
             subscribe('cmts_' + commentData.moduleName + '_' + commentData.objectId, 'comment_added', cb);
@@ -311,7 +310,7 @@ export function CommentsBrowse({ browse, requestUrl, module, handleReply, handle
             </View>))
     }
     let title = t(module + '_title');
-    if (!title)
+    if (title == module + '_title')
         title = t(commentsTitle);
     
     let header = commentData.total_count > 0 ? (
