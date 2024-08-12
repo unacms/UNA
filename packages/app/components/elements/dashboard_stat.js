@@ -126,18 +126,28 @@ export default function PageLayout(props) {
                 
             </Modal>
             <View className={appSetting('layout', 'max_width') +" w-full  mx-auto flex-col"}>
-                <View className={appSetting('layout', 'max_width_block') +" w-full p-2  mx-auto flex-col"}>
+                <View className={appSetting('layout', 'max_width_block') +" w-full px-2 pb-1 pt-2 sm:p-2  mx-auto flex-col"}>
                     <Card rounded=" rounded-2xl " addClassName="  w-full p-4 flex-row ">
                         <View className="justify-center sm:justify-between flex-auto my-auto w-full items-center">
-                            <View className="flex-row gap-x-2 items-center mb-4">
-                                {profile}
-                                <Link href={currentUser.url}>
-                                    <Text className="my-auto text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 hover:dark:text-neutral-50 text-lg font-semibold ">
-                                        {currentUser.display_name}
-                                    </Text>
-                                </Link>
+                            <View className="flex-row  w-full  items-center ">
+                                <View className="flex-auto  ">
+                                    
+                                    <Link href={currentUser.url}>
+                                        <View className="flex-row items-center ">
+                                        {profile}
+                                        <Text className="my-auto ml-3 text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 hover:dark:text-neutral-50 text-lg font-semibold ">
+                                            {currentUser.display_name}
+                                        </Text>
+                                        </View>
+                                    </Link>
+                                </View> 
+                                <View className="flex-none">
+                                <ProfileSwitcher hideTitle={true} >
+                                    <Button variant="outline" startDecorator="UserSwitch" tooltip={t('Switch profile')} rounded  />
+                                </ProfileSwitcher>
+                                </View>
                             </View>
-                            <View className="flex-row  items-center gap-x-2 my-auto lg:hidden">
+                            <View className="flex-row  items-center gap-x-2 my-auto hidden">
                                <ProfileSwitcher hideTitle={true} >
                                     <Button variant="outline" startDecorator="UserSwitch" tooltip={t('Switch profile')} rounded  />
                                 </ProfileSwitcher>
@@ -185,84 +195,7 @@ export default function PageLayout(props) {
                                 
                                 <Link href="/logout"><Button variant="outline" startDecorator="SignOut" rounded /></Link>
                             </View>
-                            {Platform.OS == 'web' && <View className="flex-row flex-wrap gap-x-2 gap-y-2 hidden justify-center lg:flex">
-                                <ProfileSwitcher hideTitle={true} ><Button
-                                    variant="text"
-                                    title={ t("Switch Profile") }
-                                    startDecorator="UserSwitch"
-                                    fullWidth
-                                    align="left"
-                                /></ProfileSwitcher>
                             
-                               
-                                {
-                                    appSetting('layout', 'switch_lang').length > 1 && (
-                                        <DropdownMenu items={appSetting('layout', 'switch_lang').map(lang => ({
-                                                id: lang,
-                                                key: lang,
-                                                name: lang,
-                                                title: t('lang_' + lang)
-                                            }))} 
-                                            onSelect={(oItem) => {handleLang(oItem.id)}}>
-                                            <Pressable>
-                                                <Button
-                                                    variant="text"
-                                                    title= {t('lang_' + i18n.language)}
-                                                    startDecorator="Translate"
-                                                    fullWidth
-                                                    align="left"
-                                            /></Pressable>
-                                        </DropdownMenu>)
-                                }
-                                {
-                                    appSetting('layout', 'switch_theme') && (
-                                        <DropdownMenu items={['dark', 'light','auto'].map(theme => ({
-                                                key: theme,
-                                                id: theme,
-                                                name: theme,
-                                                title: t('theme_' + theme)
-                                            }))} 
-                                            onSelect={(oItem) => {handleTheme(oItem.id)}}>
-                                                <Pressable>
-                                                    <Button
-                                                        variant="text"
-                                                        title= {t('theme_' + currentTheme)}
-                                                        startDecorator="Moon"
-                                                        fullWidth
-                                                        align="left"
-                                                    />
-                                                </Pressable>
-                                        </DropdownMenu>)
-                                }
-                                {
-                                    appSetting('layout', 'format_list').length > 1 && (
-                                        <View><DropdownMenu 
-                                            items={appSetting('layout', 'format_list').map(lang => ({
-                                                id: lang,
-                                                key: lang,
-                                                name: lang,
-                                                title: t('format_' + lang)
-                                            }))} 
-                                            onSelect={(oItem) => {handleFormat(oItem.id)}}>
-                                                <Pressable>
-                                                    <Button
-                                                        variant="text"
-                                                        title= {t('format_' + currentFormat)}
-                                                        startDecorator="Layout"
-                                                        fullWidth
-                                                        align="left"
-                                                    />
-                                                </Pressable>
-                                        </DropdownMenu></View>)
-                                }
-                                <Link href="/logout"><Button
-                                    variant="text"
-                                    title= {t("Sign out")}
-                                    startDecorator="SignOut"
-                                    fullWidth
-                                    align="left"
-                                /></Link>
-                            </View>}
                         </View>
                     </Card>
                 </View>
@@ -272,8 +205,96 @@ export default function PageLayout(props) {
                     </Card>
                 </View> */}
                 <View className=" w-full ">
+                    
                     <ElementDashboardStat {...props}/>
+                    <Card addClassName="flex-col m-2 p-3 sm:p-4">
+                               
+                            
+                               
+                                {
+                                    
+                                    appSetting('layout', 'switch_lang').length > 1 && (
+                                        <View className="mb-2">
+                                        <DropdownMenu items={appSetting('layout', 'switch_lang').map(lang => ({
+                                                id: lang,
+                                                key: lang,
+                                                name: lang,
+                                                title: t('lang_' + lang)
+                                            }))} 
+                                            onSelect={(oItem) => {handleLang(oItem.id)}}>
+                                            <Pressable>
+                                                <Button
+                                                    variant="secondary"
+                                                    title= {t('lang_' + i18n.language)}
+                                                    startDecorator="Translate"
+                                                    fullWidth
+                                                    
+                                                    align="left"
+                                            /></Pressable>
+                                        </DropdownMenu>
+                                        </View>
+                                        )
+                                }
+                                {
+                                    appSetting('layout', 'switch_theme') && (
+                                        <View className="mb-2">
+
+                                        <DropdownMenu items={['dark', 'light','auto'].map(theme => ({
+                                                key: theme,
+                                                id: theme,
+                                                name: theme,
+                                                title: t('theme_' + theme)
+                                            }))} 
+                                            onSelect={(oItem) => {handleTheme(oItem.id)}}>
+                                                <Pressable>
+                                                    <Button
+                                                        variant="secondary"
+                                                        title= {t('theme_' + currentTheme)}
+                                                        startDecorator="Moon"
+                                                        fullWidth
+                                                        
+                                                        align="left"
+                                                    />
+                                                </Pressable>
+                                        </DropdownMenu>
+                                        </View>)
+                                }
+                                
+                                {
+                                    appSetting('layout', 'format_list').length > 1 && (
+                                        
+                                        <View className='hidden sm:flex mb-2'>
+                                            <DropdownMenu 
+                                            items={appSetting('layout', 'format_list').map(lang => ({
+                                                id: lang,
+                                                key: lang,
+                                                name: lang,
+                                                title: t('format_' + lang)
+                                            }))} 
+                                            onSelect={(oItem) => {handleFormat(oItem.id)}}>
+                                                <Pressable>
+                                                    <Button
+                                                        variant="secondary"
+                                                        title= {t('format_' + currentFormat)}
+                                                        startDecorator="Layout"
+                                                        fullWidth
+                                                       
+                                                        align="left"
+                                                    />
+                                                </Pressable>
+                                        </DropdownMenu></View>)
+                                }
+                                <Link href="/logout"><Button
+                                    variant="secondary"
+                                    title= {t("Sign out")}
+                                    startDecorator="SignOut"
+                                    fullWidth
+                                  
+                                    align="left"
+                                /></Link>
+                    </Card>
                 </View>
+                
             </View>
         </ScrollView>
     )
@@ -302,12 +323,12 @@ function ElementDashboardStat(props) {
 
     return (
         <>
-            <Row className="flex-wrap flex-auto mb-auto ">
+            <Row className="flex-wrap flex-auto mb-auto px-1 sm:px-0">
                 {menu.map((item2, index) => {
                     let item = data[item2.key];
                     if (item) {
                         if (item?.type != 'growth') {
-                            return <View className="  w-1/2 lg:w-1/3 xl:w-1/4 p-2 duration-300 " key={index}>
+                            return <View className="  w-1/2 lg:w-1/3 xl:w-1/4 p-1 sm:p-2 duration-300 " key={index}>
                                 <Link href={item2.link}>
                                     <Card rounded=" rounded-2xl " addClassName="sm:hover:scale-105 w-full p-4 " >
                                         <Row className='space-x-1 w-full justify-between'>
@@ -332,7 +353,7 @@ function ElementDashboardStat(props) {
                             </View>;
                         }
                         return (
-                            <View className=" w-1/2 lg:w-1/3  xl:w-1/4 p-2 duration-300 " key={index}>
+                            <View className=" w-1/2 lg:w-1/3  xl:w-1/4 p-1 sm:p-2 duration-300 " key={index}>
                                 <Link href={item2.link} key={index}>
                                     <Card rounded=" rounded-2xl " addClassName="w-full p-4  sm:hover:scale-105 " margin="a">
                                         <Row className=''>
@@ -359,30 +380,30 @@ function ElementDashboardStat(props) {
                 })}
             </Row>
 
-            {menu_manage.length > 0 && <View className='mt-8'>
-                <View className='ml-4 mb-2'>
-                    <Text className="text-2xl  text-neutral-800 dark:text-neutral-200 font-semibold">Admin Tools</Text>
-                </View>
-                <Row className="flex-wrap flex-auto mb-auto ">
+            {menu_manage.length > 0 && <Card addClassName='m-2 p-2 sm:p-3'>
+                
+                    <Text className="text-xl mx-1 mb-1 text-neutral-800 dark:text-neutral-200 font-semibold">Admin Tools</Text>
+                
+                <View className="flex-row flex-wrap ">
                     {menu_manage.map((item2, index) => {
-                        return <View className="  w-1/2 lg:w-1/3 xl:w-1/4 p-2 duration-300 " key={index}>
+                        return <View className="  w-1/2 lg:w-1/3 xl:w-1/4 p-1 " key={index}>
                             <Link href={item2.link}>
-                                <Card rounded=" rounded-2xl " addClassName="w-full p-4 gap-y-2 sm:hover:scale-105" >
+                                
 
-                                    <Row className="w-full my-auto gap-x-2 items-center">
-                                        <View className="flex-none text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold ">
+                                    <Row className="w-full bg-bgritem p-2  rounded-lg my-auto  items-center  text-neutral-600 hover:text-neutral-950 dark:text-neutral-400 hover:dark:text-white">
+                                        <View className="flex-none  font-semibold ">
                                             <Icon icon={item2.icon} width={24} height={24} color={colors.default}/>
                                         </View>
-                                        <Text className=" sm:text-lg flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold ">
+                                        <Text className="ml-3 sm:text-lg flex-auto text-neutral-600 hover:text-neutral-950 dark:text-neutral-400 hover:dark:text-white  font-semibold ">
                                             {t(item2.title)}
                                         </Text>
 
                                     </Row>
-                                </Card>
+                                
                             </Link>
                         </View>;
                     })}
-                </Row></View>}
+                </View></Card>}
         </>
     )
 }

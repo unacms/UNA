@@ -361,7 +361,7 @@ function DefaultUnit(data) {
                 {cmtsData.data}
             </View>
             </Modal>}
-            <Card rounded=' rounded-none sm:rounded-2xl ' border=" sm:border border-bdrcard dark:border-bdrcard-d" margin=' mb-1 sm:mb-4 sm:mx-4 ' addClassName={'p-3 sm:p-4 tl-' + data.id} >
+            <Card rounded=' rounded-none sm:rounded-2xl ' border=" " margin=' mb-1 sm:mb-4 sm:mx-4 ' addClassName={'p-3 sm:p-4 tl-' + data.id} >
                 <View className="flex-auto flex-row items-top pb-3 sm:pb-4">
                     <Author />
                     <View className="flex-auto justify-end flex-row mb-auto">
