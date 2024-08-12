@@ -2,7 +2,7 @@ import { View } from 'app/design/view'
 
 export default function (props) {
     let margin = "";
-    let border = " border border-bdrcard dark:border-bdrcard-d";
+    let border = " border-none border-bdrcard dark:border-bdrcard-d";
     if (props?.margin)
         margin = props.margin;
 
