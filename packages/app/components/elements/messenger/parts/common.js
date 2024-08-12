@@ -284,7 +284,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     }
 
     const onFormSubmit = (formData, d) => {
-        Keyboard.dismiss();
+        //Keyboard.dismiss();
         setCommentForm(formData);
     }
 

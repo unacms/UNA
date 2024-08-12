@@ -140,6 +140,7 @@ export default function FormFeed(props) {
                             </Row>
 
                             <View className='hidden sm:flex'>
+                            <Button onPress={() => { handlePress() }} variant='primary' disabled={text!='' ? false : true}   startDecorator="PaperPlane" title="Post" />
                                 {getFormFieldByData(props.data.inputs['tlb_do_submit'], props.handleSubmit, 'default', {disabled:text!='' ? false : true})}
                             </View>
                         </View>
