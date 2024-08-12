@@ -35,10 +35,10 @@ function formatText(text) {
 
     
     // Remove first \n if it exists
-   /* if (v.startsWith('\n')) {
+    if (v.startsWith('\n')) {
         v = v.slice(1);
     }
-    */
+    
     // Remove last \n if it exists
    /* if (v.endsWith('\n')) {
         v = v.slice(0, -1);
