@@ -41,6 +41,24 @@ export async function getClipboard() {
     }
 }
 
+export function getDomainFromUrl(url) {
+    let protocol;
+    let domain;
+
+    // Check if the URL contains a protocol
+    if (url.indexOf("://") > -1) {
+        protocol = url.split("://")[0] + "://";
+        domain = url.split("://")[1].split('/')[0];
+    } else {
+        // Default to http if no protocol is found
+        protocol = "http://";
+        domain = url.split('/')[0];
+    }
+    if (domain)
+        return protocol + domain;
+
+}
+
 export async function setClipboard(str) {
     if (Platform.OS !== 'web') {
         Clipboard.setString(str);

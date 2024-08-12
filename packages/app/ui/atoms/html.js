@@ -6,10 +6,12 @@ import RenderHtml, {
     HTMLElementModel,
 } from 'react-native-render-html'
 import { mergeDeep } from 'app/lib/util';
-import { appSetting, md5, absoluteApiUrl } from 'app/lib/util'
+import { appSetting, md5, absoluteApiUrl, getDomainFromUrl } from 'app/lib/util'
 import { Theme } from 'app/design/theme';
 import { useState } from 'react';
 import Video from 'app/ui/atoms/video';
+import { Linking } from 'react-native';
+import * as WebBrowser from 'expo-web-browser';
 
 const renderers = {
     iframe: IframeRenderer,
@@ -214,12 +216,29 @@ export default function ElementHtml(props) {
         //setIframeH({...iframeH, ...a})
     };
 
+   
+
     if (data){
         data = data.replace(/(((<[^\/(br)>]*>)+[ \n(<br\s*\/*>)]*(<\/[^>]+>)+)+)/g, '');
         data = data.replace('/(<br\s*\/?>\s*){2,}/i', '<br>', data);
     }
     data = data.replace(/<br\s*\/?>\s*$/, '');
     data  = addClassesToP(data);
+
+    const onPress = async (event, url, htmlAttribs, target) => {
+        console.log(url);
+        
+        const domain = getDomainFromUrl(url);
+        
+        if (domain !== '' && domain !== appSetting('config', 'app_url')) {
+            // Await the result of opening the link in the web browser
+            let result = await WebBrowser.openBrowserAsync(url);
+            console.log(result); // Optionally log the result if you need it
+        } else {
+            // If the domain is the app's own domain, open it using Linking
+            Linking.openURL(url);
+        }
+    };
 
     return (
         <RenderHtml
@@ -243,9 +262,13 @@ export default function ElementHtml(props) {
                     scalesPageToFit: true,
                     webViewProps: {
                         onMessage: onMessage
-                        /* Any prop you want to pass to iframe WebViews */
                     }
-                }
+                },
+                a: {
+                    onPress(event, url, htmlAttribs, target) {
+                        onPress(event, url, htmlAttribs, target);
+                    }
+                  }
             }}
             contentWidth={width}
             tagsStyles={tagsStyles}

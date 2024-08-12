@@ -3,8 +3,9 @@ import { Link, useGlobalSearchParams } from 'expo-router';
 import { FeedbackHaptics } from 'app/lib/util';
 import { useNavigation } from 'expo-router';
 import { useCurrentUser } from 'app/context/user';
-import { appSetting } from 'app/lib/util'
+import { appSetting, getDomainFromUrl } from 'app/lib/util'
 import { Text } from 'app/design/typography'
+import * as WebBrowser from 'expo-web-browser';
 
 export default function ElementLink(props) {
     let { href, target, ...rest } = props
@@ -39,6 +40,17 @@ export default function ElementLink(props) {
     if (target){
         p = href;
     }
+    const domain = getDomainFromUrl(href);
+    if (domain != '' && domain != appSetting('config', 'app_url')) {
+        return <Pressable onPress={async () => {
+            let result = await WebBrowser.openBrowserAsync(href);
+ 
+        }}>
+            {props.children}
+        </Pressable>
+    }
+
+
 
     return (
         <Link

@@ -822,7 +822,7 @@ export const settingsDefault = {
             headerSettings: { offset: false, header: false, cover: 'profile' }
         },*/
         'view-persons-profile': {
-            layout: 'profile-alt',
+            layout: 'profile',
             blocks: {
                 col5: { name: 'system:block_1572', showTitle: false, showBg: false, sidebar: false, leftbar: false },
                 col0: { name: 'bx_timeline:get_block_post_profile', showTitle: false, showBg: false },
