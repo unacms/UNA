@@ -47,7 +47,7 @@ function AddBlocks({leftSideBarBlocks, data, onFormSubmit})
             {windowWidth < 1024 && <View className="items-start ml-4 mt-2">
                 <Button title={show ?"Hide filters": "Show filters"}  variant="outline" rounded onPress={() =>{setShow(!show)}} />
             </View>}
-            {(show || windowWidth>=1024) && <View className="my-4 mx-2">
+            {(show || windowWidth>=1024) && <View className="my-3 mx-2 ">
                 {leftSideBarBlocksObj.map((block, index) => {
                     return <View key={"lb-" + index}>{block}</View>
                 })}
