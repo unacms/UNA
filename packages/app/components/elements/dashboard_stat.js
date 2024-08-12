@@ -38,7 +38,7 @@ function getCounter(num, icon = '', add = '', color = '') {
     }
 
     return (
-        <Row className={'mb-auto    text-' + sColor + '-800 bg-' + sColor + '-200 dark:bg-' + sColor + '-950 gap-x-1 py-1 px-2 rounded-full mb-auto dark:text-' + sColor + '-200 '}>
+        <Row className={'mb-auto    text-' + sColor + '-800 bg-' + sColor + '-200 dark:bg-' + sColor + '-950 gap-x-1 py-1 px-2 rounded-full  mb-auto dark:text-' + sColor + '-200 '}>
             <Icon color={color} className={"text-" + sColor + "-600 dark:text-" + sColor + "-400"} icon={icon}  size={16} />
             <Text className={"flex-none text-" + sColor + "-800 dark:text-" + sColor + "-200 text-xs"}>{num}{add}</Text>
         </Row>
@@ -337,16 +337,18 @@ function ElementDashboardStat(props) {
                                                     {item.count}
                                                 </Text> : <View><Link href={item2.link2} emulate={true}><Button variant="outline" startDecorator="Plus" size="sm" rounded /></Link></View>
                                             }
-                                            {getCounter(item[item2.action], item2.action_icon, '', colors.default)}
-                                        </Row>
-                                        <Row className="w-full my-auto gap-x-2 ">
-
-                                            <Text className=" sm:text-lg flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold mt-2">
-                                                {t(item2.title)}
-                                            </Text>
-                                            <View className="flex-none text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold ">
+                                            <View className="flex-none  text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold ">
                                                 <Icon icon={item2.icon} width={24} height={24} color={colors.default}/>
                                             </View>
+                                        </Row>
+                                        <Row className="w-full my-auto gap-x-2 ">
+                                             
+                                            <Text className=" text-lg flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold ">
+                                                {t(item2.title)}
+                                            </Text>
+                                            <View className='my-auto' > {getCounter(item[item2.action], item2.action_icon, '', colors.default)}</View>
+                                           
+                                            
                                         </Row>
                                     </Card>
                                 </Link>
@@ -360,17 +362,18 @@ function ElementDashboardStat(props) {
                                             <Text className=" text-3xl -translate-y-1 font-semibold flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white  ">
                                                 {item.current}
                                             </Text>
-                                            {getCounter(item.growth, '', '%', colors.default)}
+                                            <View className="flex-none  text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold ">
+                                                <Icon icon={item2.icon} width={24} height={24} color={colors.default}/>
+                                            </View>
 
                                         </Row>
                                         <Row className="w-full gap-x-2">
-
-                                            <Text className=" sm:text-lg flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold mt-2 ">
+                                          
+                                            <Text className=" text-lg flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold  ">
                                                 {t(item2.title)}
                                             </Text>
-                                            <View className="flex-none text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold ">
-                                                <Icon icon={item2.icon} width={24} height={24} color={colors.default} />
-                                            </View>
+                                            <View className='my-auto' > {getCounter(item[item2.action], item2.action_icon, '', colors.default)}</View>
+
                                         </Row>
                                     </Card>
                                 </Link>
@@ -380,7 +383,7 @@ function ElementDashboardStat(props) {
                 })}
             </Row>
 
-            {menu_manage.length > 0 && <Card addClassName='m-2 p-2 sm:p-3'>
+            {menu_manage.length > 0 && <Card addClassName='m-2 mb-1 p-2 sm:p-3'>
                 
                     <Text className="text-xl mx-1 mb-1 text-neutral-800 dark:text-neutral-200 font-semibold">Admin Tools</Text>
                 
@@ -390,11 +393,11 @@ function ElementDashboardStat(props) {
                             <Link href={item2.link}>
                                 
 
-                                    <Row className="w-full bg-bgritem p-2  rounded-lg my-auto  items-center  text-neutral-600 hover:text-neutral-950 dark:text-neutral-400 hover:dark:text-white">
-                                        <View className="flex-none  font-semibold ">
+                                    <Row className="w-full bg-bgritem dark:bg-bgritem-d hover:bg-bgritem-h dark:hover:bg-bgritem-dh p-2 rounded-lg my-auto  items-center  text-neutral-600 hover:text-neutral-950 dark:text-neutral-400 hover:dark:text-white">
+                                        <View className="flex-none px-1 font-semibold ">
                                             <Icon icon={item2.icon} width={24} height={24} color={colors.default}/>
                                         </View>
-                                        <Text className="ml-3 sm:text-lg flex-auto text-neutral-600 hover:text-neutral-950 dark:text-neutral-400 hover:dark:text-white  font-semibold ">
+                                        <Text className="ml-3 sm:text-base flex-auto text-neutral-600 hover:text-neutral-950 dark:text-neutral-400 hover:dark:text-white  font-medium ">
                                             {t(item2.title)}
                                         </Text>
 

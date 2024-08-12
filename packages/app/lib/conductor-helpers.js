@@ -391,7 +391,7 @@ export function LeftSidebar({ title, addButtons, children, width }) {
     return (
         <View className={" hidden lg:block " + width}>
             <View className={' fixed-process ' + width + ' lg:px-4 lg:py-3 '}>
-                {(!!title && !!addButtons) && <Row className="justify-between items-center mt-1 mb-4 ml-3 ">
+                {(!!title && !!addButtons) && <Row className="justify-between items-center mt-1 mb-4 ml-1 ">
                     <Text className="text-2xl truncate mr-auto font-bold  text-neutral-700 dark:text-neutral-100 hidden lg:flex flex-row items-center gap-x-2 ">
                         {title}
                     </Text>
