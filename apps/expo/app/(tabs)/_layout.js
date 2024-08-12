@@ -24,7 +24,7 @@ import { resources } from 'app/translation';
 import { remoteSettings } from 'app/settings-remote';
 import { getRemoteSettings } from 'app/config';
 import { StatusBar } from 'react-native';
-import * as NavigationBar from "expo-navigation-bar";
+//import * as NavigationBar from "expo-navigation-bar";
 import { Platform } from 'react-native'
 import { LogLevel, OneSignal } from 'react-native-onesignal';
 
@@ -98,10 +98,10 @@ const AppLayout = React.memo(() => {
 
     const scheme = useColorScheme();
     const queryClient = new QueryClient()
-//TOIDO
-    if (Platform.OS != 'ios'){
+
+    /*if (Platform.OS != 'ios'){
         NavigationBar.setBackgroundColorAsync(colors.barsBackground);
-    }
+    }*/
     return (
         <ThemeProvider value={Theme(scheme)} >
             <StatusBar backgroundColor={colors.barsBackground}
