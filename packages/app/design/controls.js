@@ -235,8 +235,8 @@ export function Button(props) {
     sClassContainer += ' justify-' + buttonAlign + ' '
 
     if (buttonPressed) {
-        sClassContainer += ' bg-primary/10 dark:bg-primary-d/10  ring-offset-1 ring-primary/50 dark:ring-primary-d/50 ';
-        sClassText += ' text-primary-600 dark:text-primary-400 ';
+        sClassContainer += ' bg-primary/20 dark:bg-primary-d/20  border-none ';
+        sClassText += ' text-gray-950 dark:text-white  ';
     }
 
     let sClassDefaultRounding = buttonType != 'group-item' ? 'rounded-' + (buttonSize == 'lg' ? 'xl' : 'lg') : '';

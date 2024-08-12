@@ -61,16 +61,16 @@ const colors = {
     },
 
     bgrcard: {
-        DEFAULT: 'rgba(255,255,255,0.9)',
+        DEFAULT: 'rgba(255,255,255,1)',
         h: 'rgba(255,255,255,1)',
-        d: 'rgba(17,24,39,0.9)',
+        d: 'rgba(17,24,39,1)',
         dh: 'rgba(17,24,39,1)',
     },
     bdrcard: {
-        DEFAULT: 'rgba(0,0,0,0.1)',
-        h: 'rgba(0,0,0,0.15)',
-        d: 'rgba(255,255,255,0.05)',
-        dh: 'rgba(255,255,255,0.10)',
+        DEFAULT: 'rgba(229,231,235,1)',
+        h: 'rgba(229,231,235,1)',
+        d: 'rgba(31,41,55,1)',
+        dh: 'rgba(31,41,55,1)',
     },
 
     bgrinput: {
@@ -129,21 +129,21 @@ const colors = {
     },
 
     bgrbutton: {
-        DEFAULT: 'rgba(229,231,235,0.8)',
-        h: 'rgba(209,213,219,0.5)',
-        d: 'rgba(31,41,55,0.8)',
-        dh: 'rgba(31,41,55,0.5)',
-    },
-    bdrbutton: {
-        DEFAULT: 'rgba(209,213,219,0.8)',
+        DEFAULT: 'rgba(229,231,235,1)',
         h: 'rgba(209,213,219,1)',
         d: 'rgba(31,41,55,1)',
-        dh: 'rgba(31,41,55,0.8)',
+        dh: 'rgba(31,41,55,1)',
+    },
+    bdrbutton: {
+        DEFAULT: 'rgba(209,213,219,1)',
+        h: 'rgba(209,213,219,1)',
+        d: 'rgba(31,41,55,1)',
+        dh: 'rgba(31,41,55,1)',
     },
 
     bdr: {
-        DEFAULT: 'rgba(229,231,235,1)',
-        d: 'rgba(31,41,55,0.8)',
+        DEFAULT: 'rgba(209,213,219,1)',
+        d: 'rgba(31,41,55,1)',
     },
     bgr: {
         DEFAULT: 'rgba(255,255,255,1)',
