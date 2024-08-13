@@ -25,32 +25,32 @@ export default function PageLayout(props) {
         }
     }, [layoutData?.data?.time]);
 
-    if (!props.data.menu.items) {
-        props.data.menu.items = [];
+    if (!pageData.menu.items) {
+        pageData.menu.items = [];
     }
-    let menu = cloneObject(props.data.menu);
+    let menu = cloneObject(pageData.menu);
     let blocks = props.blocks;
 
     if (!menu.items)
         menu.items = [];
 
     const isNamePresent = menu.items.some(item => item.name === props.uri);
-    const isNamePresent2 = props.data.menu.items.some(item => item.name === props.uri);
+    const isNamePresent2 = pageData.menu.items.some(item => item.name === props.uri);
 
     if (!isNamePresent) {
-        menu.items.push({ id: -1, name: props.uri, title: '', link: props.data.url, hideInTop: true });
+        menu.items.push({ id: -1, name: props.uri, title: '', link: pageData.url, hideInTop: true });
     }
 
     const windowWidth = windowDimen.width;
     let headerSettings = getHeaderSettings(props.uri, windowWidth, 'profile');
     let cover = headerSettings.cover;
 
-    let header = <Cover data={props.data.cover_block} mode={cover} uri={props.uri} />
-    let smallHeader = <CoverSmall data={props.data.cover_block} />
+    let header = <Cover data={pageData.cover_block} mode={cover} uri={props.uri}/>
+    let smallHeader = <CoverSmall data={pageData.cover_block}/>
     const leftSideBar = true
 
     if (!blocks) {
-        blocks = getBlocksFromData(props.data)
+        blocks = getBlocksFromData(pageData)
     }
     blocks = processBlocks(blocks);
 

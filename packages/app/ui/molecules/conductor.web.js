@@ -509,7 +509,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                 </Animated.View>
             </>
         );
-    }, [windowWidth, currentUser, cntWidth]);
+    }, [windowWidth, currentUser, cntWidth, header, smallHeader]);
 
     const RenderScene = useCallback(({ route, status }) => {
         let inputs = route?.endpoint?.filters?.inputs;

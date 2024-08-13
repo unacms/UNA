@@ -8,11 +8,14 @@ import Redirect from 'app/ui/atoms/redirect';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { Platform } from 'react-native';
 import RbList from 'app/ui/molecules/radio_list';
+import { storageClear, getAlert } from 'app/lib/util';
+import  { useLayoutData } from 'app/context/layout';
 
 export default function MenuItemButton(oProps) {
     const redirectdRef = useRef();
     const { setBottomSheetData } = useBottomSheetData();
     const [isVisible, setIsVisible] = useState(true);
+    const { setLayoutData } = useLayoutData();
 
     const oIconAliases = {
         'item-comment': 'ChatTeardropDots',
@@ -80,6 +83,11 @@ export default function MenuItemButton(oProps) {
                     setIsVisible(false)
                 if (oProps.data.on_callback == 'redirect')
                     redirectdRef.current.redirect(sResponse.data);
+                if (oProps.data.on_callback == 'alert'){
+                    if (oProps.data.on_callback_clear_cache)
+                        storageClear();
+                    setLayoutData(getAlert(oProps.data.on_callback_param, {time:Date.now()} ));
+                }
             };
 
             const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;

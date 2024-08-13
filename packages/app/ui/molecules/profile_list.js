@@ -1,5 +1,3 @@
-
-
 import { View, Row } from 'app/design/view'
 import Profile from 'app/ui/molecules/profile';
 
