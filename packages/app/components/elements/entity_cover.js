@@ -3,12 +3,12 @@ import Image from 'app/ui/atoms/image';
 import { Text } from 'app/design/typography';
 import { useTranslation } from 'react-i18next';
 import { CoverMenuMeta, CoverMenu } from 'app/components/nav/menu-cover'
+import { stripTags } from 'app/lib/util'
 
 export default function (props) {
-
-
     const { t } = useTranslation();
     const data = props.data;
+    console.log(data)
     return (
         <View className="flex-col p-6 w-full mx-auto  bg-bgrcard h-min dark:bg-bgrcard-d  overflow-hidden rounded-xl">
             <View className="w-28 h-28 overflow-hidden bg-neutral-100 dark:bg-neutral-700  rounded-full  ">
@@ -32,7 +32,7 @@ export default function (props) {
                 <CoverMenu {...data.actions_menu} uri={props?.uri} />
             </View>
             
-            <Text className='mt-2 text-base text-neutral-600 dark:text-neutral-400'>Generic persona that doesn't exist. Used commonly in software prototypes to denote a human.</Text>
+            <Text numberOfLines={3} className='mt-2 text-base text-neutral-600 dark:text-neutral-400'>{stripTags(data.description)}</Text>
             
         </View>
     );

@@ -227,15 +227,12 @@ export default function ElementHtml(props) {
 
     const onPress = async (event, url, htmlAttribs, target) => {
         console.log(url);
-        
         const domain = getDomainFromUrl(url);
         
         if (domain !== '' && domain !== appSetting('config', 'app_url')) {
-            // Await the result of opening the link in the web browser
             let result = await WebBrowser.openBrowserAsync(url);
-            console.log(result); // Optionally log the result if you need it
         } else {
-            // If the domain is the app's own domain, open it using Linking
+            //TODOFIX
             Linking.openURL(url);
         }
     };
