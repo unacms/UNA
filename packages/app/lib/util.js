@@ -41,6 +41,15 @@ export async function getClipboard() {
     }
 }
 
+export function addParameterToUrl(url, paramName, paramValue) {
+
+    if (url.includes('?')) {
+        return url + '&' + paramName + '=' + paramValue;
+    } else {
+        return url + '?' + paramName + '=' + paramValue;
+    }
+}
+
 export function getDomainFromUrl(url) {
     let protocol;
     let domain;
