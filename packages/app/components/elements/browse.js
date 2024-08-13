@@ -7,7 +7,7 @@ import UniList from 'app/ui/atoms/unilist'
 import { fetcher } from 'app/lib/fetcher';
 import { appSetting, storageKey, getDataFromCache, storageSet, handleFeedLayoutData, cloneObject } from 'app/lib/util'
 import { Text } from 'app/design/typography'
-import { useInfiniteQuery} from '@tanstack/react-query'
+import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers';
 import { useTranslation } from 'react-i18next';
 import useDaemon from 'app/lib/hooks/daemon'
@@ -44,13 +44,17 @@ export default function (props) {
     const { layoutData } = useLayoutData();
     const toasterRef2 = useRef();
     const { t } = useTranslation();
-
+    const [isRefreshing, setIsRefreshing] = useState(false);
+    const onStartRefresh = () => {
+        setDataItems(getDefaultParams());
+        setIsRefreshing(true);
+    };
 
     const uniRef = useRef();
     const data = props.data;
-    const storageKeyValue = storageKey((props.uri ? props.uri : '') + (data.request_url ? ':' + data.request_url :'') + (data.params?.type ? ':' + data.params?.type :'') + (data.params?.category ? ':' + data.params?.category :'') + (props.cachePrefix ? ':' + props.cachePrefix :''))
- //const [cachedData, setCachedData] = useState(props.cachePrefix ? false : { state: getDataFromCache('ul:state', storageKeyValue), data: getDataFromCache('ul:data', storageKeyValue) });
-    const cachedData =  { state: getDataFromCache('ul:state', storageKeyValue), data: getDataFromCache('ul:data', storageKeyValue) };
+    const storageKeyValue = storageKey((props.uri ? props.uri : '') + (data.request_url ? ':' + data.request_url : '') + (data.params?.type ? ':' + data.params?.type : '') + (data.params?.category ? ':' + data.params?.category : '') + (props.cachePrefix ? ':' + props.cachePrefix : ''))
+    //const [cachedData, setCachedData] = useState(props.cachePrefix ? false : { state: getDataFromCache('ul:state', storageKeyValue), data: getDataFromCache('ul:data', storageKeyValue) });
+    const cachedData = { state: getDataFromCache('ul:state', storageKeyValue), data: getDataFromCache('ul:data', storageKeyValue) };
 
     if (data.unit == 'mixed') {
         data.unit = 'general-profile-list';
@@ -65,7 +69,13 @@ export default function (props) {
         defParams.moduleName = data.module ? data.module : '';
     const browseParams = defParams;
 
-    const [dataItems, setDataItems] = useState({ data: (appSetting('cache', 'list') && cachedData?.data ? cachedData.data : []), params: browseParams });
+
+    const getDefaultParams = () => {
+        return { data: (appSetting('cache', 'list') && cachedData?.data ? cachedData.data : []), params: browseParams };
+    }
+
+    const [dataItems, setDataItems] = useState(getDefaultParams());
+
     /* unit mode & change unit mode */
     const unitMode = props.unitMode ? props.unitMode : appSetting('feed', 'default_view');
 
@@ -85,10 +95,12 @@ export default function (props) {
     const styles = Platform.OS === 'web' ? {} : { height: (defParams?.height ? defParams.height : windowHeight - hOffset) }
 
     const fetchData = useCallback(async ({ }) => {
-        return (await fetcher(data.request_url + JSON.stringify({ 'params': dataItems.params }))).data[0].data;
+        const sUrl = data.request_url + JSON.stringify({ 'params': dataItems.params });
+        return (await fetcher(sUrl)).data[0].data;
     }, [dataItems.params]);
 
-    const queryClientKey = [data.request_url + browseParams?.type + defParams?.category + props?.cachePrefix];
+    const qKey = [data.request_url + browseParams?.type + defParams?.category + props?.cachePrefix];
+    const queryClient = useQueryClient();
     const {
         status,
         data: newData,
@@ -96,7 +108,7 @@ export default function (props) {
         hasNextPage,
         isFetchingNextPage,
         refetch,
-    } = useInfiniteQuery(queryClientKey, fetchData, {
+    } = useInfiniteQuery(qKey, fetchData, {
         getNextPageParam: lastPage => {
             if (lastPage.data.length == 0)
                 return;
@@ -107,6 +119,14 @@ export default function (props) {
         },
         enabled: Platform.OS === 'web' ? false : false, // on native no cashed data
     });
+
+    useEffect(() => {
+        if (isRefreshing) {
+            queryClient.removeQueries(qKey);
+            setIsRefreshing(false);
+            refetch();
+        }
+    }, [isRefreshing]);
 
     const handleEndReached = useCallback((lastItemIndex) => {
         if (!hasNextPage)
@@ -211,7 +231,7 @@ export default function (props) {
     /* NEW POST TO FEED */
 
     useEffect(() => {
-        
+
         if (dataItems.data.length > 0) {
             storageSet('ul:data', storageKeyValue, dataItems.data);
         }
@@ -222,14 +242,14 @@ export default function (props) {
             refetch();
     }, [storageKeyValue, dataItems.params, props.cachePrefix]);
 
-    if ( dataItems.data.length == 0 && ((dataItems?.params?.start === 0 && (!props.only_one_page &&  data.unit!='notifications') ) || status === 'loading'))
+    if (dataItems.data.length == 0 && ((dataItems?.params?.start === 0 && (!props.only_one_page && data.unit != 'notifications')) || status === 'loading'))
         return <>{Preload}</>
 
-    if (dataItems.data.length == 0 && status === 'success' && data.unit == 'notifications' && dataItems?.params?.start > 0){
+    if (dataItems.data.length == 0 && status === 'success' && data.unit == 'notifications' && dataItems?.params?.start > 0) {
         return <View className="p-8">
             <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto mb-auto py-4 px-8 h-full items-center rounded-2xl  bg-neutral-500/10 ">
                 <Text className="text-center text-base text-neutral-600 dark:text-neutral-400 ">
-                No notifications
+                    No notifications
                 </Text>
             </View>
         </View>
@@ -260,6 +280,8 @@ export default function (props) {
                         contentContainerStyle={props?.contentContainerStyle}
                         refer={uniRef}
                         no_scroll={props.no_scroll}
+                        onRefresh={onStartRefresh}
+                        refreshing={isRefreshing}
                         renderItem={({ item, index }) => Platform.OS === 'web' ? <Item key={'item' + item.id} item={item} index={index} numColumns={numColumns} data={data} unitMode={unitMode} props={props} /> : <Item item={item} index={index} numColumns={numColumns} data={data} unitMode={unitMode} props={props} />}
                         onEndReached={handleEndReached}
                         ListFooterComponent={

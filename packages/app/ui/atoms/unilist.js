@@ -1,11 +1,9 @@
 import { /*MasonryFlashList,*/ FlashList } from "@shopify/flash-list";
 import { useState, useCallback } from 'react';
 import { RefreshControl } from 'react-native';
-import { useRouter } from 'expo-router';
 
 export default function UniList(props) {
-    const routerExpo = useRouter();
-    let { data, renderItem, onEndReached, ListFooterComponent, refer, onScrollToIndex, numColumns, keyExtractor, unit, ...rest } = props
+    let { data, renderItem, onEndReached, ListFooterComponent, refer, onScrollToIndex, numColumns, keyExtractor, unit, refreshing, onRefresh, ...rest } = props
     let estimatedItemSize = 400;
     if (unit == 'notifications'){
         estimatedItemSize=40;
@@ -13,13 +11,6 @@ export default function UniList(props) {
     if (unit == 'feed'){
         estimatedItemSize=200;
     }
-    const [refreshing, setRefreshing] = useState(false);
-
-    const onRefresh = () => {
-        setRefreshing(true);
-        routerExpo.replace(props.url)
-    };
-
     /*if (props.unit == 'feed'){
         if(layoutData && layoutData?.type == 'feed:new_content'){
             if(layoutData.data?.id){
@@ -73,6 +64,7 @@ export default function UniList(props) {
         //console.log("Sample List load time", elapsedTimeInMs);
     }, []);
 
+    console.log("refreshingrefreshing", refreshing)
     return (
         <FlashList  
             onLoad={onLoadListener}

@@ -30,13 +30,13 @@ const OneColumn = memo(() => (
 ));
 
 const Notif = memo(() => (
-    <View className="max-w-4xl w-full mx-auto flex-col p-2 mb-1 bg-bgrcard dark:bg-bgrcard-d rounded-md">
+    <View className="max-w-4xl w-full mx-auto flex-col mt-[1px] sm:mb-2 p-3  border-none sm:border sm:rounded-2xl">
         <View className="animate-pulse flex-row items-center gap-2">
             <View className="rounded-full bg-neutral-500/40 h-12 w-12"></View>
             <View className="flex-1 gap-1.5">
                 <View className="flex-row justify-between">
                     <View className="h-3 w-1/2 bg-neutral-500/60 rounded-full"></View>
-                    <View className="h-3 w-20 bg-neutral-500/40 rounded-full"></View>
+                   
                 </View>
                 <View className="h-3 w-full bg-neutral-500/50 rounded-full"></View>
             </View>
