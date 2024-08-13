@@ -122,6 +122,7 @@ export function CoverMenuMeta(props) {
             params={{
                 button_variant: 'text',
                 button_size: 'sm',
+                className: 'lg:w-full lg:gap-y-2 lg:flex-wrap',
                 button_hide_title_on_small: false,
             }}
         />

@@ -18,9 +18,19 @@ export default function (props) {
     let data = { request_url: "/api.php?r=bx_notifications/get_data/&params[]=", "type": "obj_own_and_con", unit: "notifications" }
     
     const memoizedBrowse = useMemo(() => {
-
-        return <Browse cachePrefix={Date.now()} height={400} data={data} />;
+        return<Browse only_one_page={true} cachePrefix={Date.now()} height={400} data={data} />;
     }, [notifCount]);
+
+    useEffect(() => {
+        if (ntfsOpen){
+        setNtfsOpen(false);
+        
+        setTimeout(() => {
+            setNtfsOpen(true);
+        }, 100);
+    }
+        
+}, [notifCount]);
 
     const ntfsContent = (
         ntfsOpen && <View key="ddp-content" className="px-1.5 pb-1.5">
@@ -53,7 +63,7 @@ export default function (props) {
             startDecorator="Bell"
             id="m1"
         />
-        {(notifCount > 0 && !ntfsOpen) && <View className='absolute bg-contrast border-2 border-white dark:border-neutral-900 rounded-full  px-1.5 items-center justify-center -right-1 -top-2'><Text className='text-white text-xs font-semibold'>{notifCount}</Text></View>}
+        {(notifCount > 0 /*&& !ntfsOpen*/) && <View className='absolute bg-contrast border-2 border-white dark:border-neutral-900 rounded-full  px-1.5 items-center justify-center -right-1 -top-2'><Text className='text-white text-xs font-semibold'>{notifCount}</Text></View>}
 
     </View>
 

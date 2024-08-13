@@ -106,7 +106,6 @@ export function CommentsParts(commentsData, aItems, height = 0, initFormData, is
 }
 
 export function CommentsBrowse({ browse, requestUrl, module, handleReply, handleEdit, addData, addItems, isShort = false, maxCount, height = 0, showCommentsModal, classesBrowse='', commentsTitle="Comments", contentUrl, replyId }) {
-    
     const UnitComments = componentsMap['comments'];
 
     const { t } = useTranslation();
@@ -134,6 +133,31 @@ export function CommentsBrowse({ browse, requestUrl, module, handleReply, handle
         lastInserted: 0,
         total_count: browse?.data?.total_count
     });
+
+
+    useEffect(() => {
+        /* Added for reload comments from notifs */
+        setCommentData(
+            {
+                parentId: 0,
+                startFrom: browse?.data?.start,
+                perView: browse?.data?.per_view,
+                last_count: browse?.data?.count,
+                moduleName: module,
+                orderWay: browse?.data?.order,
+                view: browse?.data?.view,
+                objectId: browse?.data?.object_id,
+                maxLevel: browse?.data?.max_level,
+                formText: '',
+                formAuthor: '',
+                postData: null,
+                num: 0,
+                listData: browse,
+                lastInserted: 0,
+                total_count: browse?.data?.total_count
+            }
+        );
+    }, [browse?.data]);  
 
     useEffect(() => {
         if (isShort){

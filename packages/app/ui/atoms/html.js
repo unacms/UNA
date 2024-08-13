@@ -12,6 +12,7 @@ import { useState } from 'react';
 import Video from 'app/ui/atoms/video';
 import { Linking } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
+import { useRouter, useGlobalSearchParams } from 'expo-router';
 
 const renderers = {
     iframe: IframeRenderer,
@@ -37,8 +38,6 @@ const customHTMLElementModels = {
 };
 
 function onElement(element) {
-    let cls = '';
-    console.log("---", element.parent.children.length, element?.parent?.children[0])
     if (element?.parent?.children[0].name === 'p') {
         if (element?.parent?.children.length === 1)
             element.parent.children[0].attribs.class = 'firstP lastP';
@@ -48,7 +47,7 @@ function onElement(element) {
     if (element?.parent?.children[element.parent.children.length - 1].name === 'p' && element.parent.children.length > 1) {
         element.parent.children[element.parent.children.length - 1].attribs.class = 'lastP'
     }
-     
+
 }
 
 const domVisitors = {
@@ -56,49 +55,51 @@ const domVisitors = {
 };
 
 function addClassesToP(htmlString) {
-   // Regular expression to match <p> tags
-   const pTagRegex = /<p\b[^>]*>/g;
-   let match;
-   let pTags = [];
+    // Regular expression to match <p> tags
+    const pTagRegex = /<p\b[^>]*>/g;
+    let match;
+    let pTags = [];
 
-   // Find all <p> tag matches
-   while ((match = pTagRegex.exec(htmlString)) !== null) {
-       pTags.push(match.index);
-   }
+    // Find all <p> tag matches
+    while ((match = pTagRegex.exec(htmlString)) !== null) {
+        pTags.push(match.index);
+    }
 
-   // Check if there are any <p> tags
-   if (pTags.length > 0) {
-       // Add class1 to the first <p> tag
-       let firstPIndex = pTags[0];
-       htmlString = htmlString.slice(0, firstPIndex) + htmlString.slice(firstPIndex).replace('<p', '<p class="firstP"');
+    // Check if there are any <p> tags
+    if (pTags.length > 0) {
+        // Add class1 to the first <p> tag
+        let firstPIndex = pTags[0];
+        htmlString = htmlString.slice(0, firstPIndex) + htmlString.slice(firstPIndex).replace('<p', '<p class="firstP"');
 
-       // Add class2 to the last <p> tag if there are multiple <p> tags
-       if (pTags.length > 1) {
-           let lastPIndex = pTags[pTags.length - 1];
-           // Recalculate lastPIndex after modifying the first <p>
-           lastPIndex += '<p class="class1"'.length - 2; // Adjust length change due to added class
-           htmlString = htmlString.slice(0, lastPIndex) + htmlString.slice(lastPIndex).replace('<p', '<p class="lastP"');
-       } else {
-           // If only one <p> tag, append class2 to the existing class1
-           htmlString = htmlString.replace('class="firstP"', 'class="firstP lastP"');
-       }
-   }
+        // Add class2 to the last <p> tag if there are multiple <p> tags
+        if (pTags.length > 1) {
+            let lastPIndex = pTags[pTags.length - 1];
+            // Recalculate lastPIndex after modifying the first <p>
+            lastPIndex += '<p class="class1"'.length - 2; // Adjust length change due to added class
+            htmlString = htmlString.slice(0, lastPIndex) + htmlString.slice(lastPIndex).replace('<p', '<p class="lastP"');
+        } else {
+            // If only one <p> tag, append class2 to the existing class1
+            htmlString = htmlString.replace('class="firstP"', 'class="firstP lastP"');
+        }
+    }
 
-   return htmlString;
+    return htmlString;
 }
 
 export default function ElementHtml(props) {
+    const glob = useGlobalSearchParams();
+    const routerExpo = useRouter();
     const { colors } = Theme();
     const [iframeH, setIframeH] = useState({});
     let { width } = useWindowDimensions();
     let customClassName = props.customClassName ? props.customClassName : '';
     let fontSize = 16;
     let lineHeight = 20;
-    if (customClassName == 'u-vanilla-html-small'){
+    if (customClassName == 'u-vanilla-html-small') {
         fontSize = 14;
         lineHeight = 18;
     }
-    
+
     const theme = useColorScheme();
     let tagsStyles = {
         body: {
@@ -112,7 +113,7 @@ export default function ElementHtml(props) {
             marginBottom: 0,
             paddingTop: 0,
             paddingBottom: 0,
-            
+
         },
         a: {
             color: colors.primary,
@@ -130,13 +131,13 @@ export default function ElementHtml(props) {
         h4: {
             color: colors.default
         },
-       /* p: {
-            margin: 2
-        },*/
+        /* p: {
+             margin: 2
+         },*/
         p: {
             marginTop: 5,
             marginBottom: 5,
-             
+
         },
         ul: {
             margin: 0,
@@ -153,9 +154,9 @@ export default function ElementHtml(props) {
         },
         lastP: {
             marginBottom: 0,
-            
+
         },
-        'bx-menthion-link':{
+        'bx-menthion-link': {
             color: colors.primary,
             textDecorationLine: 'none',
         },
@@ -166,8 +167,8 @@ export default function ElementHtml(props) {
             color: colors.primary,
             textDecorationLine: 'none',
         }
-        ,'bx-embeded':{
-            lineHeight:18,
+        , 'bx-embeded': {
+            lineHeight: 18,
             fontSize: 14,
         }
 
@@ -196,7 +197,7 @@ export default function ElementHtml(props) {
             }
 
             if (item && !capture.includes('oembed.php')) {
-                heightIfr = widthIfr * 0.3;  
+                heightIfr = widthIfr * 0.3;
             }
 
             return (
@@ -216,24 +217,26 @@ export default function ElementHtml(props) {
         //setIframeH({...iframeH, ...a})
     };
 
-   
 
-    if (data){
+
+    if (data) {
         data = data.replace(/(((<[^\/(br)>]*>)+[ \n(<br\s*\/*>)]*(<\/[^>]+>)+)+)/g, '');
         data = data.replace('/(<br\s*\/?>\s*){2,}/i', '<br>', data);
     }
     data = data.replace(/<br\s*\/?>\s*$/, '');
-    data  = addClassesToP(data);
+    data = addClassesToP(data);
 
     const onPress = async (event, url, htmlAttribs, target) => {
-        console.log(url);
+        const rootUrl = appSetting('config', 'native_app_images_url');// MAY BE NEED TO CHANGE
         const domain = getDomainFromUrl(url);
-        
-        if (domain !== '' && domain !== appSetting('config', 'app_url')) {
+
+        if (domain !== '' && domain !== rootUrl) {
             let result = await WebBrowser.openBrowserAsync(url);
         } else {
-            //TODOFIX
-            Linking.openURL(url);
+            routerExpo.push({
+                pathname: '/' + glob.name,
+                params: { url: '/' + url.replace(rootUrl+'/', '') }
+            });
         }
     };
 
@@ -265,7 +268,7 @@ export default function ElementHtml(props) {
                     onPress(event, url, htmlAttribs, target) {
                         onPress(event, url, htmlAttribs, target);
                     }
-                  }
+                }
             }}
             contentWidth={width}
             tagsStyles={tagsStyles}

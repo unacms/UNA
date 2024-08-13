@@ -44,12 +44,14 @@ export default function (props) {
     const { layoutData } = useLayoutData();
     const toasterRef2 = useRef();
     const { t } = useTranslation();
-    let uniRef = useRef();
 
-    let storageKeyValue = storageKey(props.uri + ':' + props.data.request_url + ':' + props.data.params?.type + ':' + props.data.params?.category)
-    //const [cachedData, setCachedData] = useState(props.cachePrefix ? false : { state: getDataFromCache('ul:state', storageKeyValue), data: getDataFromCache('ul:data', storageKeyValue) });
+
+    const uniRef = useRef();
+    const data = props.data;
+    const storageKeyValue = storageKey((props.uri ? props.uri : '') + (data.request_url ? ':' + data.request_url :'') + (data.params?.type ? ':' + data.params?.type :'') + (data.params?.category ? ':' + data.params?.category :'') + (props.cachePrefix ? ':' + props.cachePrefix :''))
+ //const [cachedData, setCachedData] = useState(props.cachePrefix ? false : { state: getDataFromCache('ul:state', storageKeyValue), data: getDataFromCache('ul:data', storageKeyValue) });
     const cachedData =  { state: getDataFromCache('ul:state', storageKeyValue), data: getDataFromCache('ul:data', storageKeyValue) };
-    let data = props.data;
+
     if (data.unit == 'mixed') {
         data.unit = 'general-profile-list';
     }
