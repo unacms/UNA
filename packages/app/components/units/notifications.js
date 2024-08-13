@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { useWindowDimensions} from 'react-native';
-import { stripTags } from 'app/lib/util';
+import { stripTags, addParameterToUrl } from 'app/lib/util';
 import { Text } from 'app/design/typography'
 import { View, Pressable } from 'app/design/view'
 import Time from 'app/ui/atoms/time';
@@ -12,7 +12,6 @@ import Card from 'app/ui/molecules/card'
 
 export default function UnitFeed({data}) {
     const redirectdRef = useRef();
-    console.log("data", data)
     var oImage = null;
     if (data.content.images)  
       oImage = data.content.images.length > 0 ? data.content.images[0] : null;
@@ -22,8 +21,7 @@ export default function UnitFeed({data}) {
     
     const {height, width, scale, fontScale} = useWindowDimensions();
 
-    //TODO: rework url
-    let url = data.content.entry_url.replace('{bx_url_root}', '')+'?t='+data.id;
+    const url = addParameterToUrl(data.content.entry_url.replace('{bx_url_root}', ''),'ts',data.id);
     
     
    /* const handleClick = (sUrl) => {
