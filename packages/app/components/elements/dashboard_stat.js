@@ -346,7 +346,7 @@ function ElementDashboardStat(props) {
                                             <Text className=" text-lg flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold ">
                                                 {t(item2.title)}
                                             </Text>
-                                            <View className='my-auto' > {getCounter(item[item2.action], item2.action_icon, '', colors.default)}</View>
+                                            <View className='my-auto' ><Text>{getCounter(item[item2.action], item2.action_icon, '', colors.default)}</Text></View>
                                            
                                             
                                         </Row>
@@ -372,7 +372,7 @@ function ElementDashboardStat(props) {
                                             <Text className=" text-lg flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold  ">
                                                 {t(item2.title)}
                                             </Text>
-                                            <View className='my-auto' > {getCounter(item[item2.action], item2.action_icon, '', colors.default)}</View>
+                                            <View className='my-auto' ><Text>{getCounter(item[item2.action], item2.action_icon, '', colors.default)}</Text></View>
 
                                         </Row>
                                     </Card>

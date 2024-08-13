@@ -1,13 +1,15 @@
 import { useState, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import { appSetting } from 'app/lib/util';
+import { appSetting, getAlert} from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { useCardData } from 'app/context/card';
 import { ButtonMenuActionDefault, ButtonMenuActionText } from 'app/design/controls';
+import { useLayoutData } from 'app/context/layout'
+import { storageClear } from 'app/lib/util'
 
 export default function ElementRecommendations(oProps) {
     const { t } = useTranslation();
-
+    const { layoutData, setLayoutData } = useLayoutData()
     const { cardData, setCardData } = useCardData();
     const [ elementData, setElementData ] = useState(false);
 
@@ -75,10 +77,11 @@ export default function ElementRecommendations(oProps) {
             else
                 oValue = mValue;
 
-            if(!cardData)
+               // console.log('---------------------------------');
+          /*  if(!cardData)
                 setCardData(oValue);
             else
-                setCardData({...cardData, ...oValue});
+                setCardData({...cardData, ...oValue});*/
         }
         else {
             if(!elementData)
@@ -97,7 +100,14 @@ export default function ElementRecommendations(oProps) {
         const sResponse = await fetcher(sRequest);
         if(typeof onLoad === 'function')
             onLoad(sResponse?.data);
+
+        storageClear();
+        setLayoutData(getAlert('сonnections:action', {object: oProps.o, time:Date.now(), action: aParams, data: sResponse?.data, key: getKey()} ));
     };
+
+    const getKey = () => {
+        return oProps.o + '_' + oProps.iid + '_' + oProps.cid;
+    }
 
     const handleDo = (event, sAction) => {
         event.preventDefault();

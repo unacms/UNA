@@ -4,7 +4,7 @@ import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "
 import { View, Row, Pressable } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
 import { StyleSheet, useWindowDimensions } from 'react-native';
-import { appSetting, getHeaderSettings, getUnitModeBySource, getURI, getLayout, handleFeedLayoutData, menuItemsByName } from 'app/lib/util';
+import { appSetting, getHeaderSettings, getUnitModeBySource, getURI, getLayout, handleFeedLayoutData, updateRouteDataForConnections, menuItemsByName } from 'app/lib/util';
 import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer, LeftSidebar, TopSidebar } from 'app/lib/conductor-helpers';
 import { Button } from 'app/design/controls';
 import Link from 'app/ui/atoms/link'
@@ -66,7 +66,6 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     const showMenu = (params) => {
         setMenuPopup(!menuPopup)
     }
-    console.log("layoutDatalayoutData", layoutData)
     //const [maxId, setMaxId] = useState(0);
     //const toasterRef = useRef();
     const toasterRef2 = useRef();
@@ -221,7 +220,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
     }
     /* UPDATE CONTENT PART */
-
+    console.log("currentRoutecurrentRoute", currentRoute.endpoint?.request_url,layoutData?.data?.action?.a, layoutData?.data?.action?.o )
     /* NEW POST TO FEED */
     useEffect(() => {
         if (currentRoute.endpoint?.unit === 'feed' && layoutData && layoutData.data && (layoutData?.type == 'feed:new_content' || layoutData?.type == 'feed:remove_content')) {
@@ -231,6 +230,8 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             newRoutes[index].data = data
             setRoutes(newRoutes);
         }
+        updateRouteDataForConnections(currentRoute, layoutData, routes, index, setRoutes);
+        
     }, [layoutData]);
     /* NEW POST TO FEED */
 

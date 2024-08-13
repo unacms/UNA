@@ -70,7 +70,7 @@ export default function ElementConnections(oProps) {
         const sResponse = await fetcher(sRequest);
 
         storageClear();
-        setLayoutData(getAlert('сonnections:action', {object: oProps.o, time:Date.now(), data: sResponse?.data, key: getKey()} ));
+        setLayoutData(getAlert('сonnections:action', {object: oProps.o, time:Date.now(), action: aParams, data: sResponse?.data, key: getKey()} ));
     };
 
     useEffect(() => {

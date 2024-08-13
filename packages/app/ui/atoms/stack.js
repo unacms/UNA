@@ -3,7 +3,7 @@ import Header from 'app/components/nav/header';
 const StackCustom = () => {
     return <Stack 
         screenOptions={() => ({
-            header:(props) => <Header header="Loading..." />,
+            header:(props) => <></>,/*<Header header="Loading..." />*/
             headerBackVisible: true, 
             headerShadowVisible: true,
             freezeOnBlur: true,

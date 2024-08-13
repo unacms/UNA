@@ -3,7 +3,7 @@ import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "
 import { TabView, useHeaderTabContext, SceneComponent } from "@showtime-xyz/tab-view";
 import { View, ScrollView, Row, Pressable } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
-import { appSetting, deepEqual, getUnitModeBySource, handleFeedLayoutData } from 'app/lib/util';
+import { appSetting, deepEqual, getUnitModeBySource, handleFeedLayoutData, updateRouteDataForConnections } from 'app/lib/util';
 import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer } from 'app/lib/conductor-helpers';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers';
@@ -13,7 +13,7 @@ import { useCurrentUser } from 'app/context/user'
 import { useRouter, useGlobalSearchParams } from 'expo-router';
 import { useLayoutData } from 'app/context/layout';
 import { Theme } from 'app/design/theme';
-import { md5 } from 'app/lib/util'
+
 
 export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultHeader, menu, data, blocks, useSectionAsMenu, unitMode, skeleton, onChangeRoute, keyword }) {
     minHeaderHeight = minHeaderHeight || 100; 
@@ -157,6 +157,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
             newRoutes[index].data = data
             setRoutes(newRoutes);
         }
+        updateRouteDataForConnections(currentRoute, layoutData, routes, index, setRoutes);
     }, [layoutData]);
     /* NEW POST TO FEED */
 
