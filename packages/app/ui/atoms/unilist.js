@@ -64,7 +64,6 @@ export default function UniList(props) {
         //console.log("Sample List load time", elapsedTimeInMs);
     }, []);
 
-    console.log("refreshingrefreshing", refreshing)
     return (
         <FlashList  
             onLoad={onLoadListener}

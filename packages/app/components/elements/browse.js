@@ -45,10 +45,6 @@ export default function (props) {
     const toasterRef2 = useRef();
     const { t } = useTranslation();
     const [isRefreshing, setIsRefreshing] = useState(false);
-    const onStartRefresh = () => {
-        setDataItems(getDefaultParams());
-        setIsRefreshing(true);
-    };
 
     const uniRef = useRef();
     const data = props.data;
@@ -119,6 +115,11 @@ export default function (props) {
         },
         enabled: Platform.OS === 'web' ? false : false, // on native no cashed data
     });
+
+    const onStartRefresh = () => {
+        setDataItems(getDefaultParams());
+        setIsRefreshing(true);
+    };
 
     useEffect(() => {
         if (isRefreshing) {

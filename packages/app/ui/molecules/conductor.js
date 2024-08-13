@@ -16,7 +16,7 @@ import { Theme } from 'app/design/theme';
 
 
 export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultHeader, menu, data, blocks, useSectionAsMenu, unitMode, skeleton, onChangeRoute, keyword }) {
-    minHeaderHeight = minHeaderHeight || 100; 
+    minHeaderHeight = minHeaderHeight || 100;
     const renderedItemsRef = useRef(new Map());
     isHideDefaultHeader = isHideDefaultHeader || false;
     useSectionAsMenu = useSectionAsMenu || false;
@@ -27,11 +27,11 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
     const { layoutData } = useLayoutData();
     const { t } = useTranslation();
     const routerExpo = useRouter();
-    const initedTabs =  useMemo(() => fillTabs(menu, data, blocks, currentUser, useSectionAsMenu), [menu, data, blocks, currentUser, useSectionAsMenu]);;
+    const initedTabs = useMemo(() => fillTabs(menu, data, blocks, currentUser, useSectionAsMenu), [menu, data, blocks, currentUser, useSectionAsMenu]);;
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [routes, setRoutes1] = useState(initedTabs);
     const [menuState, setMenuState] = useState(menu);
-    
+
     useEffect(() => {
         if (!deepEqual(menu, menuState)) {
             setMenuState(menu);
@@ -62,7 +62,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
     const indicatorOffset = useSharedValue(0);
     const headerMaxHeight = useSharedValue(100);
 
-    const currentRoute =  useMemo(() => routes.find((item) => item.index === index), [routes, index]);;
+    const currentRoute = useMemo(() => routes.find((item) => item.index === index), [routes, index]);;
     const qKey = [currentRoute?.endpoint?.request_url, index, keyword, JSON.stringify(currentRoute?.endpoint?.params?.filters)];
     const queryClient = useQueryClient();
 
@@ -85,6 +85,9 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
         },
         enabled: currentRoute?.endpoint?.params?.start == 0 && !isRefreshing//routes[index]?.data?.length == 0
     });
+
+
+
 
     const handleEndReached = async (lastItemIndex) => {
         if (isFetchingNextPage || isRefreshing)
@@ -112,8 +115,8 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
             {...props}
             useExternalScrollView
             forwardedRef={ref}
-             keyboardShouldPersistTaps="always"
-  keyboardDismissMode="on-drag"
+            keyboardShouldPersistTaps="always"
+            keyboardDismissMode="on-drag"
             ContainerView={Animated.ScrollView}
         />
     ));
@@ -137,14 +140,22 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
         fetchAndUpdateData(routes, index, setRoutes);
     }, [index]);
 
+    const onStartRefresh = useCallback(async () => {
+        const newRoutes = [...routes];
+        //TODO CHECK WHY INITEDD TABS  IS RELOADING EVERY TIME
+        let k = fillTabs(menu, data, blocks, currentUser, useSectionAsMenu)
+        newRoutes[index] = k[index];
+        setRoutes(newRoutes);
+        setIsRefreshing(true);
+
+    }, []);
+
+    console.log("currentRoute?.endpoint?.params?.start", currentRoute?.endpoint?.params?.start, initedTabs[index].endpoint)
+
     useEffect(() => {
         if (isRefreshing) {
-            routerExpo.replace( {
-                pathname: '/' + glob.name,
-                params: { url: '/' + routes[index].link }
-              });
-              
             queryClient.removeQueries(qKey);
+            setIsRefreshing(false);
         }
     }, [isRefreshing]);
 
@@ -161,26 +172,21 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
     }, [layoutData]);
     /* NEW POST TO FEED */
 
-    const onStartRefresh = useCallback(async () => {
-        setIsRefreshing(true);
-        setIsRefreshing(false);
-    }, []);
-
     const handleItemRender = useCallback((item, index, unitType, unitMode, route) => {
-       const key = `${item.id}-${index}`;
+        const key = `${item.id}-${index}`;
         // Check if item is already cached
         if (renderedItemsRef.current.has(key)) {
             console.log("keypres--", key)
             return renderedItemsRef.current.get(key);
         }
-        
+
         // Render new item and cache it
-        const renderedItem =  <ItemRenderer unitType={unitType} unitMode={unitMode} route={route} item={item} unit={route?.endpoint?.unit} module={route?.endpoint?.module} />
-       // renderedItemsRef.current.set(key, renderedItem);
+        const renderedItem = <ItemRenderer unitType={unitType} unitMode={unitMode} route={route} item={item} unit={route?.endpoint?.unit} module={route?.endpoint?.module} />
+        // renderedItemsRef.current.set(key, renderedItem);
         return renderedItem;
     }, []);
 
-    const TabScene =  useCallback(({ route, index }) => {
+    const TabScene = useCallback(({ route, index }) => {
         const Preload = getSkeletonForList(skeleton != '' ? skeleton : (data.module ? data.module : data.unit), 1);
         if (!route.inited) {
             //Preload
@@ -197,12 +203,12 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
                 //renderItem={({ item, index }) => handleItemRender(item, index, unitType, unitMode, route)}
                 //renderItem={({ item, index }) => <ItemRenderer unitType={unitType} unitMode={unitMode} route={route} item={item} unit={route?.endpoint?.unit} module={route?.endpoint?.module} />
                 renderItem={({ item, index }) => <ItemRenderer unitType={unitType} unitMode={unitMode} route={route} item={item} unit={route?.endpoint?.unit} module={route?.endpoint?.module} />}
-               //<View className="w-full h-24 bg-red-500 my-2"></View>}
-               getItemType={(item) => {
-                return item.type;
-              }}
+                //<View className="w-full h-24 bg-red-500 my-2"></View>}
+                getItemType={(item) => {
+                    return item.type;
+                }}
                 ListFooterComponent={
-                    (route?.endpoint?.request_url ? ( route?.endpoint?.finished ? null : Preload) : <></>)
+                    (route?.endpoint?.request_url ? (route?.endpoint?.finished ? null : Preload) : <></>)
                 }
             />
         )
@@ -216,18 +222,18 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
         const tabWidth = props.layout.width / props.navigationState.routes.length;
         indicatorOffset.value = withTiming(props.navigationState.index * tabWidth, { duration: 200, easing: Easing.inOut(Easing.ease) });
 
-       /* const indicatorStyle = useAnimatedStyle(() => {
-            return {
-                transform: [{ translateX: indicatorOffset.value }],
-            };
-        }, [indicatorOffset]);
-*/
-       /* const styles = StyleSheet.create({
-            indicator: {
-                width: tabWidth
-            },
-        });
-*/
+        /* const indicatorStyle = useAnimatedStyle(() => {
+             return {
+                 transform: [{ translateX: indicatorOffset.value }],
+             };
+         }, [indicatorOffset]);
+ */
+        /* const styles = StyleSheet.create({
+             indicator: {
+                 width: tabWidth
+             },
+         });
+ */
         if (props.navigationState.routes.length > 1) {
 
             /*const menuSettings = appSetting('menu_items', menu.object);
@@ -241,25 +247,26 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
             }, 300);*/
             /* gap-x-2*/
             return (
-                <ScrollView horizontal={true}  style={{ backgroundColor: colors.barsBackground }} className=" border-b border-bdr dark:border-bdr-d min-w-full">
+                <ScrollView horizontal={true} style={{ backgroundColor: colors.barsBackground }} className=" border-b border-bdr dark:border-bdr-d min-w-full">
                     <Row className="px-1.5 " >
                         {props.navigationState.routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
                             const counter = appSetting('layout', 'show_nav_counters') ? 0 : a.addon ? (a.addon.text ? a.addon.text : a.addon) : 0;
-                            const counter2 = counter >0 ? ' ('+counter+')' :''
+                            const counter2 = counter > 0 ? ' (' + counter + ')' : ''
                             return (
-                            <Pressable className="items-center py-2 px-1 justify-center"
-                                key={`tab-${a.index}`}
-                            >
-                                
+                                <Pressable className="items-center py-2 px-1 justify-center"
+                                    key={`tab-${a.index}`}
+                                >
+
                                     <Button onPress={() => {
                                         setIndex(a.index)
                                         if (onChangeRoute) {
                                             onChangeRoute(a);
                                         }
-                                    }} fullWidth={false} variant={props.navigationState.index === a.index ? 'primary' : "text"} rounded size='sm' title={t(a.title)+counter2} />
-                                
-                            </Pressable>
-                        )})}
+                                    }} fullWidth={false} variant={props.navigationState.index === a.index ? 'primary' : "text"} rounded size='sm' title={t(a.title) + counter2} />
+
+                                </Pressable>
+                            )
+                        })}
 
                     </Row>
                 </ScrollView>
