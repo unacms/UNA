@@ -57,7 +57,7 @@ function AddBlocks({leftSideBarBlocks, data, onFormSubmit})
     </>
 }
 
-export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, leftSideBarBlocks, leftSideBarWidth = 'w-80', skeleton = '', onChangeRoute, keyword, cover, layoutName }) {
+export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, leftSideBarBlocks, leftSideBarWidth = ' w-80 2xl:w-96 ', skeleton = '', onChangeRoute, keyword, cover, layoutName }) {
     const { currentUser } = useCurrentUser();
     const { layoutData } = useLayoutData();
     const { t } = useTranslation();
@@ -722,7 +722,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                         let icon = !a.ident ? (settings?.icon ? settings?.icon : a?.icon.replace('*', '')) : a.icon.replace('*', '');
                         let btn = <Button
                             variant={a.index == index ? 'outline' : "text"}
-                            size={!a.ident ? "base" : "sm"}
+                            size={!a.ident ? "lg" : "sm"}
                             pressed={a.index == index ? true : false}
                             fullWidth
                             title={(a.title)}
@@ -801,7 +801,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                 <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="New content" size="sm" />
                 <View style={{ minHeight: (windowHeight - 64) }} className={appSetting('layout', 'max_width  ') + '  mx-auto w-full '} >
                     <Row>
-                        <View style={{ minHeight: (windowHeight - 64) }} className={leftSideBarWidth + ' hidden lg:block border-r border-bdr dark:border-bdr-d  fixed lg:relative top-0 z-50'}>
+                        <View style={{ minHeight: (windowHeight - 64) }} className={leftSideBarWidth + ' hidden lg:block border-r border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d fixed lg:relative top-0 z-50'}>
                             {leftSideBarObj()}
                         </View>
                         <View className=" flex-auto">{/*min-h-screen???*/}

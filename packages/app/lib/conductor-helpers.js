@@ -391,9 +391,9 @@ const ItemRenderer = memo(function ItemRenderer({ route, numColumns, item, unit,
 export function LeftSidebar({ title, addButtons, children, width }) {
     return (
         <View className={" hidden lg:block " + width}>
-            <View className={' fixed-process ' + width + ' lg:px-4 lg:py-3 '}>
-                {(!!title && !!addButtons) && <Row className="justify-between items-center mt-1 mb-4 ml-1 ">
-                    <Text className="text-2xl truncate mr-auto font-bold  text-neutral-900 dark:text-neutral-100 hidden lg:flex flex-row items-center gap-x-2 ">
+            <View className={' fixed-process ' + width + ' lg:px-2 lg:py-3 '}>
+                {(!!title && !!addButtons) && <Row className="justify-between items-center mt-1 mb-4 px-2 ">
+                    <Text className="text-2xl truncate mr-auto font-bold  text-neutral-900 dark:text-neutral-100 hidden lg:flex  ">
                         {title}
                     </Text>
                     <Row className=" ">
