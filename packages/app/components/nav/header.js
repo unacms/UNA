@@ -71,7 +71,6 @@ const Header = memo(({ backButtonPresented, header, pagePath, rightComponents })
     const routerExpo = useRouter();
     const { colors } = Theme();
     const isHome = pagePath === '/home';
-
     if (isHome && currentUser) {
         text = '';
     }

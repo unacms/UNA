@@ -16,6 +16,7 @@ import { Theme } from 'app/design/theme';
 
 
 export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultHeader, menu, data, blocks, useSectionAsMenu, unitMode, skeleton, onChangeRoute, keyword }) {
+
     minHeaderHeight = minHeaderHeight || 100;
     const renderedItemsRef = useRef(new Map());
     isHideDefaultHeader = isHideDefaultHeader || false;

@@ -113,8 +113,10 @@ export  const getDataFromCache = (pref, storageKeyValue) => {
 export function storageSet(pref, key, data, isLocal = false) {
    
     if (Platform.OS !== 'web') {
-        nativeCache[pref + '-' + key] = JSON.stringify(data);
+        if (!isLocal && pref=='layout:shmo'){
+            nativeCache[pref + '-' + key] = JSON.stringify(data);
       //  await AsyncStorage.setItem(`${pref}-${key}`, serializedData);
+        }
     }
     else {
         const serializedData = appSetting('cache', 'compress') ? compress(data) : JSON.stringify(data);
@@ -125,8 +127,10 @@ export function storageSet(pref, key, data, isLocal = false) {
 
 export function storageGet(pref, key, isLocal = false) {
     if (Platform.OS !== 'web') {
-        if (nativeCache[pref + '-' + key])
-            return nativeCache[pref + '-' + key]
+        if (!isLocal && pref=='layout:shmo'){
+            if (nativeCache[pref + '-' + key])
+                return nativeCache[pref + '-' + key]
+        }
        // return await AsyncStorage.getItem(`${pref}-${key}`);
     }
     else {

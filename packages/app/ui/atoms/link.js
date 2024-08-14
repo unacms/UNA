@@ -42,7 +42,7 @@ export default function ElementLink(props) {
     }
     const domain = getDomainFromUrl(href);
     const rootUrl = appSetting('config', 'native_app_images_url');// MAY BE NEED TO CHANGE
-    if (domain != '' && domain != rootUrl) {
+    if (domain && domain != rootUrl) {
         return <Pressable onPress={async () => {
             let result = await WebBrowser.openBrowserAsync(href);
  

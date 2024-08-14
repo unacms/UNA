@@ -332,7 +332,7 @@ function DefaultUnit(data) {
     ));
 
     const Author = ({ }) => (
-        <View className='flex-auto overflow-hidden '>
+        <View className='flex-auto overflow-hidden'>
             <Profile
                 {...data.author_data}
                 showLink={true}
