@@ -126,17 +126,17 @@ export default function (props) {
             >
                 <View className="flex-auto  relative w-full flex-row mx-auto ">
                     {getLayout(currentUser) == 'hor' && (
-                        <View className="hidden xl:block w-80 duration-300 border-r border-bdr dark:border-bdr-d  ">
-                            <View className="fixed fixed-process w-80">
+                        <View className="hidden xl:block xl:w-80 2xl:w-96 ">
+                            <View className="fixed fixed-process xl:w-80 2xl:w-96">
                                 {appSetting(
                                     'layout',
                                     'show_profile_info'
                                 ) && (
-                                        <View className="px-4 pt-3 pb-1">
+                                    <View className="px-2 pt-3 pb-1">
                                             <ProfileSwitcher hideTitle={true} useDefault={true} />
                                         </View>
                                     )}
-                                <View className="flex-auto px-4 w-full">
+                                <View className="flex-auto px-2 w-full">
                                     {navBarBlocks.map((item, index) => {
                                         return (
                                             <BlockByName
@@ -152,7 +152,7 @@ export default function (props) {
                         </View>
                     )}
 
-                    <View className="flex-auto w-full lg:w-auto flex-row  duration-200">
+                    <View className="flex-auto w-full lg:w-auto flex-row ">
                         <View className="flex-auto  xl:mx-2">
                             <View className=" w-full mx-auto max-w-3xl">
                                 <ScrollView horizontal={true} className="w-full ">
@@ -286,8 +286,8 @@ export default function (props) {
                             </View>
                         </View>
                     </View>
-                    <View className="hidden lg:block w-80 xl:w-96 ">
-                        <View className="fixed-process w-80 xl:w-96 max-w-md  p-4 flex-col space-y-4 duration-200">
+                    <View className="hidden lg:block xl:w-80 2xl:w-96 ">
+                        <View className="fixed-process xl:w-80 2xl:w-96 max-w-md  p-4 flex-col space-y-4 duration-200">
                             {sideBarBlocks.map((item, index) => {
                                 return (
                                     <BlockByName
