@@ -155,8 +155,8 @@ export default function (props) {
                     <View className="flex-auto w-full lg:w-auto flex-row ">
                         <View className="flex-auto  xl:mx-2">
                             <View className=" w-full mx-auto max-w-3xl">
-                                <ScrollView horizontal={true} className="w-full justify-center ">
-                                <Row className="  rounded-full mx-3 sm:mx-4 my-2 sm:mt-4 sm:mb-4 p-0.5  gap-x-1 sm:border border-bdr dark:border-bdr-d  ">
+                                <ScrollView horizontal={true} className="w-full sm:justify-center ">
+                                <Row className="  rounded-full mx-3 sm:mx-4 my-2 sm:mt-4 sm:mb-4   gap-x-1 sm:gap-x-2  ">
                                     {feedList.length > 1 &&
                                         feedList.map((item, index) => {
                                             return (
