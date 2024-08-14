@@ -5,16 +5,27 @@ import { useState, useEffect, useMemo } from 'react'
 import Carousel from 'app/ui/molecules/carousel'
 import { useLayoutData } from 'app/context/layout';
 import Embed from 'app/ui/molecules/embed'
+import { storageSet, getDataFromCache  } from 'app/lib/util';
+import { Platform } from 'react-native'
 
 export default function ElementFeedItem({ data }) {
     const { layoutData } = useLayoutData();
     const [content, setContent] = useState(data.event.content)
-
+    const isWeb = Platform.OS == 'web' ? true : false;
     useEffect(() => {
         if (layoutData && layoutData.type == 'feed_item:content') {
             setContent(layoutData.data.content)
         }
     }, [layoutData]);
+
+    if (isWeb){
+        const sKey = 'feed_' + data.event.id;
+        const dataCache = getDataFromCache('li:data', sKey)
+        if (dataCache){
+            dataCache.ts = -1;
+        }
+        storageSet('li:data', sKey, dataCache)
+    }
 
     let tlContent = '';
 

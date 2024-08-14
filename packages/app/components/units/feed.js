@@ -5,7 +5,7 @@ import Profile from 'app/ui/molecules/profile'
 import Embed from 'app/ui/molecules/embed'
 import React, { memo, useState, useEffect, useMemo, useRef } from 'react'
 import { useCurrentUser } from 'app/context/user'
-import { appSetting } from 'app/lib/util'
+import { appSetting, getDataFromCache, storageSet } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { View, Row, ScrollView } from 'app/design/view'
 import { StyleSheet } from 'react-native'
@@ -40,14 +40,14 @@ const CommentsModal = ({ commentsData, initFormData, itemContent }) => {
     const handleLayout = (event) => {
         const h = windowDimensions.height * 0.95 - 82 - event.nativeEvent.layout.height;
         setHeight(h)
-    }; 
+    };
 
     return (
         <View className='w-full h-full'>
-            <View  className={'w-full ' + (isWeb ? '  ' : ' ')} style={{height:height}}>
+            <View className={'w-full ' + (isWeb ? '  ' : ' ')} style={{ height: height }}>
                 {CommentsPartsData[0]}
             </View>
-            <View  onLayout={handleLayout} className={(isWeb ? '' : 'absolute bottom-0 ') + ' w-full'} >
+            <View onLayout={handleLayout} className={(isWeb ? '' : 'absolute bottom-0 ') + ' w-full'} >
                 {CommentsPartsData[1]}
             </View>
         </View>
@@ -306,10 +306,12 @@ function DefaultUnit(data) {
     const isCommentsModal = appSetting('layout', 'comments_in_modal') && isWeb;
 
     const showCommentsModal = async (initFormData) => {
-        const res = await fetcher('/api.php?r='+appSetting("urls", "cmts")+'/&params[]={"module":"' + data?.cmts?.module + '","object_id":' + data?.cmts?.object_id + '}');
-        setCmtsData({title:data.author_data.display_name + "'s post", data:<CommentsModal initFormData={initFormData}
-            itemContent={{ id: "block-comments", data: <><View className='pb-4'><Author /></View><MainContent /></> }} 
-            commentsData={res.data} />})
+        const res = await fetcher('/api.php?r=' + appSetting("urls", "cmts") + '/&params[]={"module":"' + data?.cmts?.module + '","object_id":' + data?.cmts?.object_id + '}');
+        setCmtsData({
+            title: data.author_data.display_name + "'s post", data: <CommentsModal initFormData={initFormData}
+                itemContent={{ id: "block-comments", data: <><View className='pb-4'><Author /></View><MainContent /></> }}
+                commentsData={res.data} />
+        })
     }
 
     if (viewState.view == 'deleted')
@@ -318,7 +320,7 @@ function DefaultUnit(data) {
     if (isCommentsModal && data.menu_actions?.items[0].data?.callback)
         data.menu_actions.items[0].data.callback = showCommentsModal
 
-   
+
 
     const MenuMemo = memo(() => (
         <Menu
@@ -354,13 +356,13 @@ function DefaultUnit(data) {
     return (
         <AnimatedBlock>
             {isCommentsModal && <Modal
-                outerClickClose={false} 
+                outerClickClose={false}
                 onClose={() => setCmtsData(false)}
                 onVisible={!!cmtsData}
                 title={cmtsData.title}
             ><View className='p-2 sm:p-0'>
-                {cmtsData.data}
-            </View>
+                    {cmtsData.data}
+                </View>
             </Modal>}
             <Card rounded=' rounded-none sm:rounded-2xl ' border=" " margin=' mb-1 sm:mb-4 sm:mx-4 ' addClassName={'p-3 sm:p-4 tl-' + data.id} >
                 <View className="flex-auto flex-row items-top pb-3 sm:pb-4">
@@ -369,7 +371,7 @@ function DefaultUnit(data) {
                         {data.author_actions.map((item, index) => {
                             const Element = componentsMap[item.type]
                             if (!Element) return
-                            return <Element  params={{ button_variant: 'text' }}  key={`action-${index}`} {...item} />
+                            return <Element params={{ button_variant: 'text' }} key={`action-${index}`} {...item} />
                         })}
                         <MenuManage id={data.id} menu={data?.menu_manage} setViewState={setViewState} />
                     </View>
@@ -597,7 +599,7 @@ function DefaultUnit(data) {
                             {bIsTimelineContent && (
                                 <View className={' ' + ((data.content.text && content_attach.length > 0) ? ' pb-4 ' : '')}>
                                     <ContentMore id={'feed-' + data.id} showLink={data?.content?.images_attach?.length == 0} content={data.content.text ? data.content.text : ''} numberOfLines={3} openSmall={false} textClassName=" text-neutral-600 dark:text-neutral-400 text-sm " />
-                                    {!!data.content.embed && <Embed data={data.content.embed}/>}
+                                    {!!data.content.embed && <Embed data={data.content.embed} />}
                                 </View>
                             )}
                             {!bIsTimelineContent && (
@@ -613,12 +615,12 @@ function DefaultUnit(data) {
                 </View>
             </View>
             {bIsTimelineContent && (
-                
-                    <UnitImages images={imgs} />
-                
+
+                <UnitImages images={imgs} />
+
             )}
             {files_attach.map((item, index) => {
-                return <Link key={"att"+index} target='_blank' href={item.url}><Row className='gap-x-2 w-full items-center p-3 bg-bgritem dark:bg-bgritem-d rounded-lg mt-1'><Text className="text-sm text-neutral-700 dark:text-neutral-300"><Icon icon="File" className="w-6 h-6" size={24} /></Text><Text className="text-sm text-neutral-700 dark:text-neutral-300">{item.title}</Text></Row></Link>
+                return <Link key={"att" + index} target='_blank' href={item.url}><Row className='gap-x-2 w-full items-center p-3 bg-bgritem dark:bg-bgritem-d rounded-lg mt-1'><Text className="text-sm text-neutral-700 dark:text-neutral-300"><Icon icon="File" className="w-6 h-6" size={24} /></Text><Text className="text-sm text-neutral-700 dark:text-neutral-300">{item.title}</Text></Row></Link>
             })}
         </>
 
@@ -701,6 +703,7 @@ function UnitImages(images) {
 
 
 export default function UnitFeed(props) {
+
     let data = props.data
     data.mainImage = null
     if (data?.content?.images)
@@ -710,50 +713,43 @@ export default function UnitFeed(props) {
     if (data?.cmts?.data?.length > 0) {
         data.comments = data.cmts.data[0][Object.keys(data.cmts.data[0])[0]].data
     }
-
+    const sKey = 'feed_' + data.id;
     data.showMore = true;
+    const dataCache = getDataFromCache('li:data', sKey)
+    const [datas, setDatas] = useState(dataCache ? dataCache.data : data);
 
-    const [datas, setDatas] = useState(data);
+    useEffect(() => {
+        storageSet('li:data', sKey, { data: datas, ts: Date.now() });
+    }, [datas]);
 
-    const cb = async (inputData) => {
-        let result1 = await fetcher(
-            '/api.php?r=bx_timeline/get_block_item/&params[]=&id=' + datas.id
+    useEffect(() => {
+        if (dataCache && dataCache.ts < Date.now() - 1000 * appSetting('cache', 'items_lifetime')) {
+            cb();
+        }
+    }, [dataCache]);
+
+    // may be neednt
+    useEffect(() => {
+        const interval = setInterval(() => {
+            cb();
+        }, appSetting('cache', 'items_lifetime') * 1000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+
+    const cb = async () => {
+        const result = await fetcher(
+            '/api.php?r=bx_timeline/get/&params[]={"params":{"browse":"id","value":' + datas.id + '}}'
         )
-        const inputDataObj = JSON.parse(inputData)
-      
-        const updatedData = { 
-            ...datas,
-            cmts: result1.data[0].data.event.cmts,
-            menu_actions: {
-                ...datas.menu_actions,
-                items: datas.menu_actions.items.map((action, index) => {
-                    if (action.name === 'item-comment') {
-                        return {
-                            ...action,
-                            data: {
-                                ...action.data,
-                                action: {
-                                    ...action.data.action,
-                                    count: inputDataObj.count
-                                },
-                                counter: {
-                                    ...action.data.counter,
-                                    count: inputDataObj.count
-                                }
-                            }
-                        };
-                    }
-                    return action;
-                }),
-            }
-        };
 
-        setDatas(updatedData);
+        setDatas(result.data);
     }
 
     useEffect(() => {
         subscribe('cmts_' + datas.cmts.module + '_' + datas.id, 'comment_added', cb);
-    }, [])
+    }, []);
+
     let unit = props.mode == 'small' ? SmallUnit(datas) : DefaultUnit(datas)
 
     return <>{unit}</>

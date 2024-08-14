@@ -98,7 +98,8 @@ export const settingsDefault = {
     },
     cache: {
         list: true,
-        compress: true
+        compress: true,
+        items_lifetime: 30,
     },
     feed: {
         show_selector_view: false,

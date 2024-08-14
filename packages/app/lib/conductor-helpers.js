@@ -309,7 +309,7 @@ export function processUrl(data, blocks) {
     return contentAndEndpoint;
 }
 
-export function ItemRenderer({ route, numColumns, item, unit, module, unitMode, unitType, sidebar }) {
+function ItemRenderer_({ route, numColumns, item, unit, module, unitMode, unitType, sidebar }) {
     const b = useMemo(() => {
         if (item?.type === 'block') {
             //return <></>
@@ -357,7 +357,9 @@ export function ItemRenderer({ route, numColumns, item, unit, module, unitMode, 
 
     return renderedItem;
 }*/
-//export const ItemRenderer = memo(ItemRenderer_);
+
+// AVOID BLINKING
+export const ItemRenderer = memo(ItemRenderer_);
 /*
 const ItemRenderer = memo(function ItemRenderer({ route, numColumns, item, unit, module, unitMode, unitType, sidebar }) {
     console.log("ItemRenderer_", item?.id);

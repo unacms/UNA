@@ -160,6 +160,17 @@ export function storageClear(pref, key) {
     sessionStorage.clear();
 }
 
+export function storageRemove(pref, key, isLocal = false) {
+    if (Platform.OS !== 'web') {
+      
+    }
+    else {
+        const storage = isLocal ? localStorage : sessionStorage;
+        storage.removeItem(`${pref}-${key}`);
+    }
+}
+
+
 function replacer(key, value) {
     if (value === this) {
         return undefined;

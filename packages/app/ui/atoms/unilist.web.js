@@ -8,7 +8,7 @@ import { storageSet, appSetting } from 'app/lib/util'
 
 export default function UniList(props) {
     let { data, renderItem, onEndReached, contentContainerStyle, initialScrollIndex, ListHeaderComponent, ListFooterComponent, refer, onScrollToIndex,
-          numColumns, keyExtractor, useWindowScroll, height, listState, endpoint, index, viewParams, topItemCount, scrollToLastItem, ...rest } = props
+          numColumns, keyExtractor, useWindowScroll, height, listState, endpoint, index, viewParams, topItemCount, scrollToLastItem,refreshing, onRefresh, ...rest } = props
    
     data = data.filter((v,i,a)=>a.findIndex(t=>(t.id === v.id)) === i);
     
