@@ -27,7 +27,7 @@ export const settingsDefault = {
         format_list:['hor', 'ver', 'mixed'],
         format:'mixed', //hor, ver, mixed
         format_guest:'hor', //hor, ver, mixed
-        max_width: ' max-w-screen-2xl ',  // for hor = max-w-screen-2xl, for ver = max-w-screen-xl
+        max_width: ' full ',  // consider for hor = max-w-screen-2xl, for ver = max-w-screen-xl
         max_width_block: 'max-w-screen-xl', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
         use_background: false,
         cover_aspect: 'aspect-3/1',

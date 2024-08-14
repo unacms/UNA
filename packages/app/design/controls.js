@@ -267,7 +267,7 @@ export function Button(props) {
 
         case 'base':
             sClassContainer += buttonRounded ? sClassFullRounding + (props.padding ? ' p-' + props.padding : ' p-2') : sClassDefaultRounding + ' p-2  ';
-            sIconContainer = ' h-6 w-6  ' + (buttonTitle !== '' ? ' mx-2 ' : '');
+            sIconContainer = ' h-6 w-6  ' + (buttonTitle !== '' ? ' mx-1 ' : '');
             sClassText += ' text-base tracking-tight '
             iIconSize = 24;
             sTitleContainer += buttonTitle !== '' ? ' mx-2 ' : '' 
@@ -278,7 +278,7 @@ export function Button(props) {
             sIconContainer = ' h-8 w-8 ' + (buttonTitle !== '' ? ' mx-2 my-0.5 ' : ' mx-2 my-0.5 ');
             sClassText += ' text-lg tracking-tight '
             iIconSize = 32;
-            sTitleContainer += buttonTitle !== '' ? ' mx-4 ' : '' 
+            sTitleContainer += buttonTitle !== '' ? ' mx-2 ' : '' 
             break
 
 
