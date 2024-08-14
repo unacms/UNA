@@ -44,7 +44,7 @@ export default function (props) {
         return <></>;
     }
 
-    const rounded = props.rounded ? props.rounded : 'rounded-lg'
+    const rounded = props.rounded ? props.rounded : 'rounded-xl'
     return (
         <>
             {!props.useDefault ?
@@ -52,15 +52,15 @@ export default function (props) {
                     {props.children}
                 </Pressable> :
                 <Link href={currentUser.url} emulate={true} >
-                    <Row className={rounded + "  border border-transparent items-center justify-between p-1    cursor-pointer hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50"}>
+                    <Row className={rounded + " items-center justify-between p-2 cursor-pointer hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50"}>
                         <Row className='flex-row px-1 items-center'>
                             <Profile
                                 {...currentUser}
                                 url_avatar={currentUser.avatar}
                                 displayType="unit_wo_info"
-                                displaySize="sm"
+                                displaySize="base"
                             />
-                            <Text className="text-base pl-2 flex-auto my-auto font-semibold truncate text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
+                            <Text className="text-lg pl-3 flex-auto my-auto font-semibold truncate text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
                                 {currentUser.display_name}
                             </Text>
                         </Row>

@@ -17,62 +17,72 @@ import MenuAccount from 'app/components/nav/menu-account'
 import MenuLauncher from 'app/components/nav/menu-launcher'
 import MenuDrawer from 'app/components/nav/menu-drawer'
 
-const HeaderLine = memo(({ headerSettings, currentUser, uri, bSearch, menuPopup, setMenuPopup, showMenu, title }) => {
+const HeaderLine = memo(
+    ({
+        headerSettings,
+        currentUser,
+        uri,
+        bSearch,
+        menuPopup,
+        setMenuPopup,
+        showMenu,
+        title,
+    }) => {
+        const { width } = useWindowDimensions()
+        if (width > 1280 && menuPopup) setMenuPopup(false)
 
-    const { width } = useWindowDimensions();
-    if (width > 1280 && menuPopup)
-        setMenuPopup(false)
+        const isDrawer =
+            menuItemsByName(
+                'main_menu',
+                appSetting('menu_items', 'menu_drawer'),
+                currentUser
+            ).length > 0
 
-    const isDrawer = menuItemsByName('main_menu', appSetting('menu_items', 'menu_drawer'), currentUser).length > 0;
-
-
-    return (
-        <View className="flex-row px-4 flex-auto lg:flex-none my-auto items-center">
-            {(headerSettings.menu && isDrawer) && (
-                <View className="lg:hidden mr-3 sm:mr-4">
-                    <Pressable onPress={showMenu}>
-                        <Button
-                            variant="outline"
-                            startDecorator="List"
-                            rounded
-                            align="start"
-                            aria-label={'Menu'}
-                            alt={'Menu'}
-                        />
-                    </Pressable>
-                </View>
-            )}
-            {(uri == 'home' || width >= 1024) && (
-                <Link href="/home" aria-label="Logo">
-                    <View className="group mr-4 flex-row flex-none items-center my-auto">
-                        {appStatic('logo_mark')}
-                        {appStatic('logo_text')}
+        return (
+            <View className="flex-row xl:w-80 2xl:w-96 pl-4 pr-2 flex-auto lg:flex-none my-auto items-center">
+                {headerSettings.menu && isDrawer && (
+                    <View className="lg:hidden mr-3 sm:mr-4">
+                        <Pressable onPress={showMenu}>
+                            <Button
+                                variant="outline"
+                                startDecorator="List"
+                                rounded
+                                align="start"
+                                aria-label={'Menu'}
+                                alt={'Menu'}
+                            />
+                        </Pressable>
                     </View>
-                </Link>
-            )}
-            {headerSettings.backButton && getBackButtonWeb()}
-            {headerSettings.title && (
-                <View className="flex-auto overflow-hidden">
-                    <Text
-                        numberOfLines={1}
-                        ellipsizeMode="tail"
-                        className="text-2xl sm:text-3xl lg:hidden font-bold text-neutral-800 dark:text-neutral-200 "
-                    >
-                        {title}
-                    </Text>
-                </View>
-            )}
-            {bSearch && (
-                <View className=" w-full flex-auto hidden xl:flex ">
-                    <Search
-                        type="input"
-                        placeholder="Enter search text"
-                    />
-                </View>
-            )}
-        </View>
-    )
-});
+                )}
+                {(uri == 'home' || width >= 1024) && (
+                    <Link href="/home" aria-label="Logo">
+                        <View className="group mr-4 flex-row flex-none items-center my-auto">
+                            {appStatic('logo_mark')}
+                            {appStatic('logo_text')}
+                        </View>
+                    </Link>
+                )}
+                {headerSettings.backButton && getBackButtonWeb()}
+                {headerSettings.title && (
+                    <View className="flex-auto overflow-hidden">
+                        <Text
+                            numberOfLines={1}
+                            ellipsizeMode="tail"
+                            className="text-2xl sm:text-3xl lg:hidden font-bold text-neutral-800 dark:text-neutral-200 "
+                        >
+                            {title}
+                        </Text>
+                    </View>
+                )}
+                {bSearch && (
+                    <View className=" w-full flex-auto hidden 2xl:flex ">
+                        <Search type="input" placeholder="Enter search text" />
+                    </View>
+                )}
+            </View>
+        )
+    }
+)
 
 export default function (props) {
     const { currentUser, setCurrentUser } = useCurrentUser()
@@ -93,26 +103,34 @@ export default function (props) {
         currentUser
     )
 
-    const headerSettings = props.headerSettings;
+    const headerSettings = props.headerSettings
 
     let sTitle = props.title
     const menuSettings = appSetting('menu_items', props?.menu?.object)
-    if (menuSettings && menuSettings.name)
-        sTitle = t(menuSettings.name)
+    if (menuSettings && menuSettings.name) sTitle = t(menuSettings.name)
 
     return (
         <>
             <View className="fixed w-full">
-                <View className="  backdrop-blur h-16  items-center w-full shadow-sm border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d  ">
+                <View className="backdrop-blur h-16 items-center w-full shadow-sm border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d">
                     <View
                         className={
                             appSetting('layout', 'max_width') +
-                            ' w-full flex-row flex-auto  items-center'
+                            ' w-full flex-row flex-auto items-center'
                         }
                     >
-                        <HeaderLine headerSettings={headerSettings} title={sTitle} currentUser={currentUser} uri={props.uri} bSearch={bSearch} showMenu={showMenu} menuPopup={menuPopup} setMenuPopup={setMenuPopup} />
-                        <Row className="hidden lg:flex flex-auto">
-                            <Row className="w-full mx-auto gap-x-0.5 max-w-2xl justify-between">
+                        <HeaderLine
+                            headerSettings={headerSettings}
+                            title={sTitle}
+                            currentUser={currentUser}
+                            uri={props.uri}
+                            bSearch={bSearch}
+                            showMenu={showMenu}
+                            menuPopup={menuPopup}
+                            setMenuPopup={setMenuPopup}
+                        />
+                        <Row className="hidden lg:flex flex-auto ">
+                            <Row className="w-full mx-auto gap-x-0.5 px-4 max-w-3xl justify-between">
                                 {menu_navbar_items.map((item, index) => (
                                     <Link
                                         className="flex-auto"
@@ -122,14 +140,20 @@ export default function (props) {
                                     >
                                         <ButtonRef
                                             pressed={
-                                                (item.link == '/' + props.uri || (item.link == '/' && props.uri == 'home'))
+                                                item.link == '/' + props.uri ||
+                                                (item.link == '/' &&
+                                                    props.uri == 'home')
                                                     ? true
                                                     : false
                                             }
                                             variant="text"
                                             size="lg"
                                             tooltip={t(item.title)}
-                                            title={item.showTitle ? t(item.title) : ''}
+                                            title={
+                                                item.showTitle
+                                                    ? t(item.title)
+                                                    : ''
+                                            }
                                             alt={t(item.title)}
                                             aria-label={t(item.title)}
                                             fullWidth
@@ -144,7 +168,7 @@ export default function (props) {
                                 ))}
                             </Row>
                         </Row>
-                        <Row className="flex-row flex-none px-3.5 sm:px-4 justify-end ">
+                        <Row className="flex-none xl:w-80 2xl:w-96  flex-auto pr-3 sm:pr-4 justify-end ">
                             {!!currentUser && (
                                 <Row className="flex-row justify-end ">
                                     <View className=" flex-row my-auto gap-x-2 ">
@@ -179,7 +203,6 @@ export default function (props) {
                                                 </Link>
                                             )}
                                         </View>
-
 
                                         <View className="hidden sm:block">
                                             <MenuAccount />
