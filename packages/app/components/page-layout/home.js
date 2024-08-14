@@ -49,7 +49,8 @@ export default function PageLayout(props) {
     const { t } = useTranslation()
 
     const [renderBlock, setRenderBlock] = useState(false)
-    let { currentUser, setCurrentUser } = useCurrentUser()
+    let { currentUser, setCurrentUser } = useCurrentUser();
+
     const feedMode = storageGet('feed:mode', '', true)
     const feedTypeD = storageGet('feed:type', '', true)
     const [feedType, setFeedType] = useState(
@@ -77,15 +78,15 @@ export default function PageLayout(props) {
     }
 
 
-    useEffect(() => {
+    /*useEffect(() => {
         const timer = setTimeout(() => {
-            if (!currentUser) setRenderBlock(true)
+            setRenderBlock(true)
         }, 100)
 
         return () => clearTimeout(timer) // This will clear the timer when the component is unmounted.
     }, [])
 
-    
+    */
     let topBlocks = Object.keys(props.blocks)
         .filter((key) => props.blocks[key].topbar)
         .map((key) => {
@@ -129,14 +130,16 @@ export default function PageLayout(props) {
         block: SplashBlock(props),
     }
     
-
     useEffect(() => {
         setFeedHeight(windowHeight - 64 -64 - (feedList.length > 1 ? 40 : 0));
     }, [windowHeight]);
 
+    if (currentUser === null)
+        return <></>
+
     return (
         <View className="w-full ">
-            {!currentUser && renderBlock && (
+            {!currentUser  && (
                 <ScrollView>
                     <View
                         className={

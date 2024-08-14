@@ -1,6 +1,5 @@
 import { Root } from 'app/root'
 import { memo, useState, useEffect, useContext, useMemo } from 'react'
-
 import { useCurrentUser } from 'app/context/user';
 import { appSetting, parseUrl, parseQueryString, getURI } from 'app/lib/util'
 import { Loading } from 'app/loading'
@@ -10,6 +9,7 @@ import { useLocalSearchParams } from 'expo-router';
 import { useUpdateCenterHeader, getRightHeader } from 'app/lib/native-handlers'
 import { useNavigation } from 'expo-router';
 import { menuItemsFilter } from 'app/lib/util';
+import { storageClear, decodeText } from 'app/lib/util';
 
 export async function getData(path, token, origin, headers, callback, params) {
     path = (!path || path.startsWith('expo-development-client')) ? 'home' : path;
@@ -38,7 +38,7 @@ export async function getData(path, token, origin, headers, callback, params) {
 export function Screen(params) {
     const local = useLocalSearchParams();
     const pathname = params.tabname;
-    const { currentUser } = useCurrentUser();
+    const { currentUser, setCurrentUser } = useCurrentUser();
     let _path = local.url;
     let isRoot = false;
 
@@ -67,7 +67,8 @@ const Content = ({ pagePath, currentUser, isRoot }) => {
         if (!(pagePath && pagePath.startsWith('/') && !pagePath.includes('/?url='))) return;
 
         const fetchPageData = async () => {
-
+            if (pageData?.data?.user?.id  && pageData?.data?.user?.id === currentUser?.id)
+                return;
             const { path: pathWithoutQuery, queryString } = parseUrl(pagePath);
             const params = queryString ? JSON.stringify(parseQueryString(queryString)) : null;
             const data = await getData(pathWithoutQuery, null, null, null, null, params);
@@ -94,6 +95,25 @@ const Content = ({ pagePath, currentUser, isRoot }) => {
                  //console.log('-------------------------------updateCenterHeader', pagePath, pageData1?.data?.name, navigation.getState().routes.length)
 
                 setBottomSheetData(bottomSheetData !== false ? false : bottomSheetData);
+
+               /* const data2 = data.props.data;
+                if (data2?.user) {
+                    if (currentUser?.id != data2.user.id) {
+                        let b = Object.assign({}, data2.user)
+                        setCurrentUser(b);
+                        storageClear();
+                    }
+                    if (currentUser && currentUser?.informer != data2.user.informer) {
+                        setCurrentUser(prevUser => ({
+                            ...prevUser,
+                            informer: data2.user.informer,
+                        }));
+                    }
+                }
+                else {
+                    setCurrentUser(false);
+                    storageClear();
+                }*/
                 setPageData(data.props);
             }
         };
@@ -120,6 +140,7 @@ const Content = ({ pagePath, currentUser, isRoot }) => {
          }
      }, [pageData, currentUser?.id]);*/
 
+   //  console.log("!!!!!!!!!!!!!!!!!!!!!!!", pageData?.data.user)
     return pageData?.data ? (
 
         <Root path={pagePath} data={pageData.data} uri={pageData.data.uri} />

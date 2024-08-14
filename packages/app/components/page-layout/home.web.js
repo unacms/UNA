@@ -69,7 +69,7 @@ export default function (props) {
     useEffect(() => {
         const timer = setTimeout(() => {
             if (!currentUser) setRenderBlock(true)
-        }, 100)
+        }, 250)
 
         return () => clearTimeout(timer) // This will clear the timer when the component is unmounted.
     }, [])

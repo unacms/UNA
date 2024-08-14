@@ -221,6 +221,7 @@ const MenuManage = ({ id, menu, setViewState }) => {
 };
 
 function DefaultUnit(data) {
+    //return <View className='w-full h-24 bg-red-500 mb-2'><Text>{data.url}</Text></View>
     const { t } = useTranslation();
     const [viewState, setViewState] = useState({ view: '' })
     const [postData, setPostData] = useState(null);

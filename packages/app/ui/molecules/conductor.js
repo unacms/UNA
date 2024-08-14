@@ -18,7 +18,6 @@ import { Theme } from 'app/design/theme';
 export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultHeader, menu, data, blocks, useSectionAsMenu, unitMode, skeleton, onChangeRoute, keyword }) {
 
     minHeaderHeight = minHeaderHeight || 100;
-    const renderedItemsRef = useRef(new Map());
     isHideDefaultHeader = isHideDefaultHeader || false;
     useSectionAsMenu = useSectionAsMenu || false;
     skeleton = skeleton || '';
@@ -27,7 +26,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
     const { currentUser } = useCurrentUser();
     const { layoutData } = useLayoutData();
     const { t } = useTranslation();
-    const routerExpo = useRouter();
+
     const initedTabs = useMemo(() => fillTabs(menu, data, blocks, currentUser, useSectionAsMenu), [menu, data, blocks, currentUser, useSectionAsMenu]);;
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [routes, setRoutes1] = useState(initedTabs);
@@ -67,12 +66,11 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
     const qKey = [currentRoute?.endpoint?.request_url, index, keyword, JSON.stringify(currentRoute?.endpoint?.params?.filters)];
     const queryClient = useQueryClient();
 
-    const {
-        status: rqtStatus,
-        data: newData,
+    const bEnabled = currentRoute?.endpoint?.params?.start == 0 && !isRefreshing;
+
+   const {
+       
         fetchNextPage,
-        hasNextPage,
-        isFetchingNextPage,
 
     } = useInfiniteQuery({
         queryKey: qKey,
@@ -84,22 +82,38 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
 
             return;
         },
-        enabled: currentRoute?.endpoint?.params?.start == 0 && !isRefreshing//routes[index]?.data?.length == 0
+        enabled: false//routes[index]?.data?.length == 0
     });
 
-
-
+    useEffect(() => {
+        if (bEnabled){
+            //parseData(routes, index, setRoutes)
+             fetchNextPage();
+        }
+    }, [bEnabled]);
 
     const handleEndReached = async (lastItemIndex) => {
-        if (isFetchingNextPage || isRefreshing)
+       
+       /*if (isFetchingNextPage || isRefreshing)
             return;
         if (currentRoute?.endpoint?.finished)
             return;
 
+        fetchNextPage();*/
+
+        if (currentRoute?.endpoint?.params?.start == 0)
+            return;
+
+        if (isRefreshing)
+            return;
+        if (currentRoute?.endpoint?.finished)
+            return;
+        console.log('++++++++++++++++++++++++++++++++++++', handleEndReached)
         fetchNextPage();
+        // parseData(routes, index, setRoutes)
     };
 
-    const glob = useGlobalSearchParams();
+   
 
     /*if (isHideDefaultHeader) {
         setTimeout(() => {
@@ -151,7 +165,6 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
 
     }, []);
 
-    console.log("currentRoute?.endpoint?.params?.start", currentRoute?.endpoint?.params?.start, initedTabs[index].endpoint)
 
     useEffect(() => {
         if (isRefreshing) {
@@ -173,20 +186,6 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
     }, [layoutData]);
     /* NEW POST TO FEED */
 
-    const handleItemRender = useCallback((item, index, unitType, unitMode, route) => {
-        const key = `${item.id}-${index}`;
-        // Check if item is already cached
-        if (renderedItemsRef.current.has(key)) {
-            console.log("keypres--", key)
-            return renderedItemsRef.current.get(key);
-        }
-
-        // Render new item and cache it
-        const renderedItem = <ItemRenderer unitType={unitType} unitMode={unitMode} route={route} item={item} unit={route?.endpoint?.unit} module={route?.endpoint?.module} />
-        // renderedItemsRef.current.set(key, renderedItem);
-        return renderedItem;
-    }, []);
-
     const TabScene = useCallback(({ route, index }) => {
         const Preload = getSkeletonForList(skeleton != '' ? skeleton : (data.module ? data.module : data.unit), 1);
         if (!route.inited) {
@@ -201,8 +200,6 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
                 data={route.data}
                 route={route}
                 unit={route.endpoint?.unit}
-                //renderItem={({ item, index }) => handleItemRender(item, index, unitType, unitMode, route)}
-                //renderItem={({ item, index }) => <ItemRenderer unitType={unitType} unitMode={unitMode} route={route} item={item} unit={route?.endpoint?.unit} module={route?.endpoint?.module} />
                 renderItem={({ item, index }) => <ItemRenderer unitType={unitType} unitMode={unitMode} route={route} item={item} unit={route?.endpoint?.unit} module={route?.endpoint?.module} />}
                 //<View className="w-full h-24 bg-red-500 my-2"></View>}
                 getItemType={(item) => {
@@ -316,9 +313,21 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
         );
     }, [scroll, headerMaxHeight]);
 
+    console.log("********************************************************RELOAD**********", currentRoute?.endpoint?.params?.start, isRefreshing, currentRoute.data.length)
+   
+   /* 
+       const routerExpo = useRouter();
+ const glob = useGlobalSearchParams();
+    <Button title="xx" onPress={() => {
+        routerExpo.replace( {
+            pathname: '/' + glob.name,
+            params: { url: '/' + routes[index].link }
+          })}}>
+        </Button>*/
     return (
 
-        <TabView
+        <>
+         <TabView
             navigationState={{ index, routes }}
             renderScene={renderScene}
             onIndexChange={setIndex}
@@ -331,6 +340,6 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
             onStartRefresh={onStartRefresh}
             isRefreshing={isRefreshing}
             enableGestureRunOnJS={false}
-        />
+        /></>
     );
 }

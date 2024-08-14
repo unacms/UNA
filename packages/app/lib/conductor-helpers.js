@@ -309,9 +309,10 @@ export function processUrl(data, blocks) {
     return contentAndEndpoint;
 }
 
-function ItemRenderer_({ route, numColumns, item, unit, module, unitMode, unitType, sidebar }) {
+export function ItemRenderer({ route, numColumns, item, unit, module, unitMode, unitType, sidebar }) {
     const b = useMemo(() => {
         if (item?.type === 'block') {
+            //return <></>
             let block = BlockByName2({ b: item.data, name: item.block });
             if (!block) {
                 return <View className='h-[1px]'><Text>&nbsp;</Text></View>;
@@ -332,7 +333,7 @@ function ItemRenderer_({ route, numColumns, item, unit, module, unitMode, unitTy
 
     return b;
 }
-export function ItemRenderer({ route, numColumns, item, unit, module, unitMode, unitType, sidebar }) {
+/*export function ItemRenderer({ route, numColumns, item, unit, module, unitMode, unitType, sidebar }) {
     const renderedItemsRef = useRef(new Map());
 
     const key = `${item.id}`;
@@ -355,7 +356,7 @@ export function ItemRenderer({ route, numColumns, item, unit, module, unitMode, 
     }, [key, unitType, unitMode, route, item]);
 
     return renderedItem;
-}
+}*/
 //export const ItemRenderer = memo(ItemRenderer_);
 /*
 const ItemRenderer = memo(function ItemRenderer({ route, numColumns, item, unit, module, unitMode, unitType, sidebar }) {
