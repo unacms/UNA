@@ -39,12 +39,10 @@ export default function PageLayout(props) {
 
     const windowWidth = windowDimensions.width + 24;
 
-    const aItems = useMemo(() => {
-        return Object.entries(props.blocks).filter(([key, value]) => value.forList).map(([key, value]) => ({
-            id: `block_${key}`,
-            data: <BlockByName data={props.data} name={value} />
-        }));
-    }, [props.blocks, props.data]);
+    const aItems = Object.entries(props.blocks).filter(([key, value]) => value.forList).map(([key, value]) => ({
+        id: `block_${key}`,
+        data: <BlockByName data={props.data} name={value} />
+}));
 
     let actionsItemIndex = useMemo(() => aItems.findIndex(item => item.id === 'block_actions'), [aItems]);
     if (actionsItemIndex !== -1) {

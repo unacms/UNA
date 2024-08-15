@@ -703,7 +703,7 @@ function UnitImages(images) {
 
 
 export default function UnitFeed(props) {
-
+    const isWeb = Platform.OS == 'web' ? true : false;
     let data = props.data
     data.mainImage = null
     if (data?.content?.images)
@@ -723,18 +723,22 @@ export default function UnitFeed(props) {
     }, [datas]);
 
     useEffect(() => {
-        if (dataCache && dataCache.ts < Date.now() - 1000 * appSetting('cache', 'items_lifetime')) {
-            cb();
+        if (isWeb){
+            if (isWeb && dataCache && dataCache.ts < Date.now() - 1000 * appSetting('cache', 'items_lifetime')) {
+                cb();
+            }
         }
     }, [dataCache]);
 
     // may be neednt
     useEffect(() => {
-        const interval = setInterval(() => {
-            cb();
-        }, appSetting('cache', 'items_lifetime') * 1000);
+        if (isWeb){
+            const interval = setInterval(() => {
+                cb();
+            }, appSetting('cache', 'items_lifetime') * 1000);
 
-        return () => clearInterval(interval);
+            return () => clearInterval(interval);
+        }
     }, []);
 
 
