@@ -901,6 +901,17 @@ const ComponentsFullFooter = () => {
     )
 }
 
+function getBadgeForTab(currentUser, url) {
+    if (url == appSetting('layout', 'notifications') && currentUser?.notifications)
+        return  <Text className={Platform.OS === 'ios' ? 'text-xs': 'text-sm'}>{currentUser?.notifications}</Text>;  
+
+    if (url == '/friends-all' && currentUser?.counters)
+        return  <Text className={Platform.OS === 'ios' ? 'text-xs': 'text-sm'}>{currentUser.counters.respects + currentUser.counters.trust}</Text>;  
+
+   return null
+}
+
+
 export const staticDefault = {
     logo_text: LogoText,
     logo_mark: LogoMark,
@@ -917,5 +928,7 @@ export const staticDefault = {
     components_dummy: ComponentsDummy,
     components_footer: ComponentsFooter,
     components_fullfooter: ComponentsFullFooter,
-    components_logincontent: ComponentsLoginContent
+    components_logincontent: ComponentsLoginContent,
+
+    getBadgeForTab: getBadgeForTab
 }

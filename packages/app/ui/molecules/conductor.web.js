@@ -720,6 +720,14 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                     {headerSettings.hideLeftmenu != true && routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
                         let settings = appSetting('layouts', a.key)
                         let icon = !a.ident ? (settings?.icon ? settings?.icon : a?.icon.replace('*', '')) : a.icon.replace('*', '');
+
+                        let addon = a.addon ? a.addon : null;
+                        if (!appSetting('layout', 'show_nav_counters'))
+                            addon = null;
+                        if (appSetting('layout', 'show_nav_counters') == 'primary' && a?.addon?.variant != 'primary')
+                            addon = null;
+
+
                         let btn = <Button
                             variant={a.index == index ? 'outline' : "text"}
                             size={!a.ident ? "lg" : "sm"}
@@ -728,7 +736,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                             title={(a.title)}
                             align="start"
                             startDecorator={icon}
-                            addon={!appSetting('layout', 'show_nav_counters') && a.addon ? null : a.addon}
+                            addon={addon}
                         />
                         if (a?.icon == '*') {
                             return (

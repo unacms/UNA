@@ -20,6 +20,7 @@ import { useFonts } from 'expo-font';
 import { Platform } from 'react-native'
 import { enableScreens } from 'react-native-screens';
 import { OneSignal } from 'react-native-onesignal';
+import { staticComponents } from 'app/static';
 //import { registerBackgroundFetchAsync, unregisterBackgroundFetchAsync } from 'app/ui/molecules/background_tasks';
 enableScreens(true);
 
@@ -186,7 +187,7 @@ export default function () {
                 {
                     TabList.map((tab, index) => {
                         const options = {
-                            tabBarBadge: (tab.url == appSetting('layout', 'notifications') && currentUser?.notifications) ? <Text className={Platform.OS === 'ios' ? 'text-xs': 'text-sm'}>{currentUser?.notifications}</Text> : null,
+                            tabBarBadge: staticComponents['getBadgeForTab'](currentUser,tab.url),
                             tabBarBadgeAllowFontScaling: false,
                             title: t(tab.title),
                             headerShown: false,

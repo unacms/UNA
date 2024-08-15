@@ -40,6 +40,8 @@ export default function FormFeed(props) {
 
 
     let text = formContext.watch('text');
+    if (!text)
+        text = '';
     if (typeof text === 'string'){
         text = stripTags(text).trim();
     }
