@@ -350,7 +350,7 @@ export function ComponentsIntro(props) {
     )
 }
 
-function ComponentModal({title = "test"}) {
+function ComponentModal({ title = "test" }) {
     return (
         <View
             className={
@@ -415,7 +415,7 @@ function ComponentModal({title = "test"}) {
 
 function ComponentsSplash(props) {
     const isWeb = Platform.OS == 'web';
-    
+
 
     const cnt = <View className="mx-auto w-full max-w-lg md:w-1/2 lg:w-1/3 my-auto mx-auto items-center xl:p-4 p-2  ">
         <View className=" flex-auto w-full   ">
@@ -457,13 +457,13 @@ function ComponentsSplash(props) {
         </View>
     </View>
 
-    if (!isWeb){
+    if (!isWeb) {
         return (
             <View className=' w-full  w-full justify-center mt-16 '>
                 <View className='   '>
                     <View className='items-center mb-4 '><View className='w-60 h-16'>{LogoNative}</View></View>
-                    
-                {cnt}
+
+                    {cnt}
                 </View>
             </View>
         )
@@ -903,13 +903,36 @@ const ComponentsFullFooter = () => {
 
 function getBadgeForTab(currentUser, url) {
     if (url == appSetting('layout', 'notifications') && currentUser?.notifications)
-        return  <Text className={Platform.OS === 'ios' ? 'text-xs': 'text-sm'}>{currentUser?.notifications}</Text>;  
+        return <Text className={Platform.OS === 'ios' ? 'text-xs' : 'text-sm'}>{currentUser?.notifications}</Text>;
 
     if (url == '/friends-all' && currentUser?.counters)
-        return  <Text className={Platform.OS === 'ios' ? 'text-xs': 'text-sm'}>{currentUser.counters.respects + currentUser.counters.trust}</Text>;  
+        return <Text className={Platform.OS === 'ios' ? 'text-xs' : 'text-sm'}>{currentUser.counters.respects + currentUser.counters.trust}</Text>;
 
-   return null
+    return null
 }
+
+function getButtonForConductor(a, index, currentUser) {
+    let settings = appSetting('layouts', a.key)
+    let icon = !a.ident ? (settings?.icon ? settings?.icon : a?.icon.replace('*', '')) : a.icon.replace('*', '');
+
+    let addon = a.addon ? a.addon : null;
+    if (!appSetting('layout', 'show_nav_counters'))
+        addon = null;
+    if (appSetting('layout', 'show_nav_counters') == 'primary' && a?.addon?.variant != 'primary')
+        addon = null;
+
+    return <Button
+        variant={a.index == index ? 'outline' : "text"}
+        size={!a.ident ? "lg" : "sm"}
+        pressed={a.index == index ? true : false}
+        fullWidth
+        title={(a.title)}
+        align="start"
+        startDecorator={icon}
+        addon={addon}
+    />
+}
+
 
 
 export const staticDefault = {
@@ -930,5 +953,6 @@ export const staticDefault = {
     components_fullfooter: ComponentsFullFooter,
     components_logincontent: ComponentsLoginContent,
 
-    getBadgeForTab: getBadgeForTab
+    getBadgeForTab: getBadgeForTab,
+    getButtonForConductor: getButtonForConductor
 }

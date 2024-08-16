@@ -25,6 +25,7 @@ import Location from 'app/components/form-fields/location'
 import DynamicMenu from 'app/components/nav/menu-dynamic';
 import { storageClear, menuItemsFilter } from 'app/lib/util';
 import Footer from 'app/components/nav/footer';
+import { staticComponents } from 'app/static';
 
 function AddBlocks({leftSideBarBlocks, data, onFormSubmit})
 {
@@ -718,26 +719,8 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             <>
                 <LeftSidebar title={t(menuSettings?.name)} addButtons={addButtons} width={leftSideBarWidth}>
                     {headerSettings.hideLeftmenu != true && routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
-                        let settings = appSetting('layouts', a.key)
-                        let icon = !a.ident ? (settings?.icon ? settings?.icon : a?.icon.replace('*', '')) : a.icon.replace('*', '');
-
-                        let addon = a.addon ? a.addon : null;
-                        if (!appSetting('layout', 'show_nav_counters'))
-                            addon = null;
-                        if (appSetting('layout', 'show_nav_counters') == 'primary' && a?.addon?.variant != 'primary')
-                            addon = null;
-
-
-                        let btn = <Button
-                            variant={a.index == index ? 'outline' : "text"}
-                            size={!a.ident ? "lg" : "sm"}
-                            pressed={a.index == index ? true : false}
-                            fullWidth
-                            title={(a.title)}
-                            align="start"
-                            startDecorator={icon}
-                            addon={addon}
-                        />
+                        const btn = staticComponents['getButtonForConductor'](a, index, currentUser)
+                        
                         if (a?.icon == '*') {
                             return (
                                 <Link href={a.link} key={`lmenu-${a.index}`} alt={a.title}>
@@ -763,7 +746,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
             </>
         )
-    }, [routes, index]);
+    }, [routes, index, currentUser]);
 
     const topSideBarObj = useCallback(() => {
         return <Row className="w-full px-8 pt-6 items-stretch justify-stretch sticky z-50 t-8 gap-x-8 hidden lg:flex">
