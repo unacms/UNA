@@ -17,7 +17,20 @@ export default function PageLayout(props) {
     useEffect(() => {
         if (layoutData && layoutData?.type == 'сonnections:action') {
             (async () => {
-                const sResponse = await fetcher('/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' + pageData.url);
+                const pagePath =  parseUrl(pageData.url);
+                let sAdd = "";
+                if (pagePath['queryString']){
+                    const b = pagePath['queryString'].split('&');
+                    const c ={};
+                    b.forEach((value, key) => {
+                        const d = value.split('=')
+                        c[d[0]] = d[1];
+                    });
+                    let e = JSON.stringify(c);
+                    sAdd = '&params[]=&params[]=' + e;
+
+                }
+                const sResponse = await fetcher('/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' + pagePath.path +sAdd);
                 if (sResponse.data != pageData)
                     setPageData(sResponse.data);
             })();

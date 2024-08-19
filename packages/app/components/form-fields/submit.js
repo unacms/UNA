@@ -28,6 +28,7 @@ export default function FormFieldSubmit(props) {
             <Button
                 title={!props.icon_only ? props.value : ''}
                 variant={!!props.variant ? props.variant : 'primary'}
+                rounded={!!props.variant ? props.rounded : false}
                 {...(Platform.OS === 'web'
                     ? { onPress: handlePress }
                     : { onTouchStart: handlePress })}

@@ -53,7 +53,6 @@ export default function RootLayout({ children }) {
         const root = window.document.documentElement;
         //root.setAttribute('theme', scheme);
     }
-
     return (
         <html lang="en" >
             <body className='bg-bgrbody dark:bg-bgrbody-d' style={{ overflowY: 'initial' }}>

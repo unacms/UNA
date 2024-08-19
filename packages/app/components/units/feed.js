@@ -61,14 +61,15 @@ const CommentsSection = React.memo(({ isCommentsModal, commentsDataInline, data,
     </Text>);
     return (
         <View className='border-t border-bdr/50 dark:border-bdr-d/50 pt-4 mt-4'>
-            <CommentsBrowse maxCount={appSetting('layout', 'comments_count_in_feed')} contentUrl={url} browse={commentsDataInline} module={data?.cmts.module} isShort={true}  {...(isCommentsModal && { handleReply: showCommentsModal })} />
-            {isShowMoreComments && (
-                <View className='bg-bgritem dark:bg-bgritem-d hover:bg-primary/10 dark:hover:bg-primary-d/10 px-3 py-1  rounded-lg'>
+             {isShowMoreComments && (
+                <View className='pb-1 mb-1'>
                     {isCommentsModal ? <Pressable onPress={() => { showCommentsModal() }} >
                         {ShowMoreCmts}
                     </Pressable> : <Link href={url}>{ShowMoreCmts}</Link>}
                 </View>
             )}
+            <CommentsBrowse maxCount={appSetting('layout', 'comments_count_in_feed')} contentUrl={url} browse={commentsDataInline} module={data?.cmts.module} isShort={true}  {...(isCommentsModal && { handleReply: showCommentsModal })} />
+           
         </View>
     )
 });
