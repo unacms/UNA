@@ -4,17 +4,63 @@ import { useState, useRef,useEffect, useCallback, useMemo } from 'react';
 import { getBackButtonWeb } from 'app/lib/conductor-helpers';
 import { useWindowDimensions } from 'react-native'
 import { CommentsParts } from 'app/lib/comments-helpers'
+import { fetcher } from 'app/lib/fetcher'
+import { parseUrl, getDataFromCache, storageSet } from 'app/lib/util';
 
 export default function PageLayout(props) {
-    const [sizes, setSizes] = useState({ cntHeight: 0, listHeight: 100, formHeight: 0, formWidth: 1024 });
 
+    //console.log
+    const sKey = 'page_' + props.data.url;
+    //const dataCache = getDataFromCache('pg:data', sKey)
+
+    const windowDimensions = useWindowDimensions();
+    const [sizes, setSizes] = useState({ cntHeight: 0, listHeight: 100, formHeight: 0, formWidth: windowDimensions.width<1024?windowDimensions:1024 });
+    const [pageData, setPageData ] = useState(props.data)//dataCache ? dataCache.data : 
     const viewFormRef = useRef();
     const viewCntRef = useRef();
-    const windowDimensions = useWindowDimensions();
+   
 
     useEffect(() => {
         calculateSize();
     }, [windowDimensions]);
+
+    useEffect(() => {
+       //TODO!!!!!!!!!!!!!!!!!
+        (async () => {
+            //if (dataCache){
+            const pagePath =  parseUrl(pageData.url);
+            let sAdd = "";
+            if (pagePath['queryString']){
+                const b = pagePath['queryString'].split('&');
+                const c ={};
+                b.forEach((value, key) => {
+                    const d = value.split('=')
+                    c[d[0]] = d[1];
+                });
+                let e = JSON.stringify(c);
+                sAdd = '&params[]=&params[]=' + e;
+
+            }
+            const sResponse = await fetcher('/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' + pagePath.path +sAdd);
+
+            if (sResponse.data != pageData){
+                setPageData(sResponse.data);
+                //console.log("dataCachedataCache")
+               // storageSet('pg:data', sKey, { data: sResponse.data, ts: Date.now() });
+               //
+            }
+       // }
+        })();
+       
+    }, []);
+
+
+    /*useEffect(() => {
+        if(!dataCache || (dataCache && props.data != dataCache.data)){
+            console.log("dataCachedataCache", dataCache, props.data != dataCache?.data)
+            storageSet('pg:data', sKey, { data: pageData, ts: Date.now() });
+        }
+    }, [pageData]);*/
 
     const calculateSize = useCallback(() => {
         if (viewFormRef.current) {
@@ -78,7 +124,9 @@ export default function PageLayout(props) {
         return headerComponent;
     }, [aItems, windowDimensions, windowWidth]);
     
-    const commentsData = useMemo(() => DataByName(props.data, props.blocks.comments), [props.data, props.blocks.comments]);
+    //const commentsData = useMemo(() => DataByName(props.data, props.blocks.comments), [props.data, props.blocks.comments]);
+    const commentsData = DataByName(pageData, props.blocks.comments);
+    //console.log("commentsData", commentsData)
     const CommentsPartsData = CommentsParts(commentsData?.content[0], aItems);
 
     return (
