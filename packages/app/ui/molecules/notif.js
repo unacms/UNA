@@ -18,19 +18,8 @@ export default function (props) {
     let data = { request_url: "/api.php?r=bx_notifications/get_data/&params[]=", "type": "obj_own_and_con", unit: "notifications" }
     
     const memoizedBrowse = useMemo(() => {
-        return<Browse only_one_page={true} cachePrefix={Date.now()} height={400} data={data} />;
+        return<Browse key={notifCount} only_one_page={true} cachePrefix={Date.now()} height={400} data={data} />;
     }, [notifCount]);
-
-    useEffect(() => {
-        if (ntfsOpen){
-        setNtfsOpen(false);
-        
-        setTimeout(() => {
-            setNtfsOpen(true);
-        }, 100);
-    }
-        
-}, [notifCount]);
 
     const ntfsContent = (
         ntfsOpen && <View key="ddp-content" className="px-1.5 pb-1.5">

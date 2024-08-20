@@ -73,7 +73,7 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, layoutName, d
     if (getLayout(currentUser, layoutName) == 'hor') {
         return (
             <BottomSheetDataContext>
-                <Content layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} />
+                <Content layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} url={data?.url} />
 
                 <Suggestions />
                 <AsyncWorker />
@@ -92,7 +92,7 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, layoutName, d
                 <Suggestions />
                 <AsyncWorker />
                 <NavbarMemo headerSettings={headerSettings} layoutName={layoutName} title={data?.name} menu={data?.menu} menu_add={data?.menu_add || false} uri={uri} >
-                    <Content layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} />
+                    <Content layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser}  url={data?.url}/>
                 </NavbarMemo>
                 <BottomSheet />
                 <ModalPopup />
@@ -110,7 +110,7 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, layoutName, d
                 <View className={appSetting('layout', 'max_width') + ' w-full mx-auto'}>
                     <Row className='w-full flex-col lg:flex-row-reverse  lg:min-h-screen '>
                         <View className={(menuItems.length > 0 ? 'lg:w-[calc(100%-20rem)] border-x border-bdr dark:border-bdr-d' : '') + ' w-full '}>
-                            <Content layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} />
+                            <Content layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser}  url={data?.url}/>
                             <Suggestions />
                             <AsyncWorker />
                         </View>
@@ -275,11 +275,12 @@ export default function (props) {
     return <MemoizedContent blocks={blocks} headerSettings={headerSettings} currentUser={currentUser} layoutName={layoutName} data={data} children={children} uri={uri} />
 }
 
-const Content = React.memo(({ children, headerSettings, stylesBgImage, currentUser, layoutName }) => {
+const Content = React.memo(({ children, headerSettings, stylesBgImage, currentUser, layoutName, url }) => {
+    console.log("url", url)
     return (
         <>
 
-            <View className="w-full items-stretch" >
+            <View className="w-full items-stretch" key={url}>
                 <View className=" w-full mx-auto flex-row " >
                     <View className={((layoutName != 'messenger' && layoutName != 'post') ? 'pb-16 lg:pb-0' : '') + '  w-full  relative overflow-hidden    mx-auto'}>{/*mb-16* TODO lg:pb-0*/}
                         <View className='w-full mx-auto min-h-screen'>
