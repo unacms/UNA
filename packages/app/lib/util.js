@@ -10,7 +10,7 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import { decode } from 'html-entities';
 import { appSetting as setting, UNA_URL, APP_URL } from 'app/config';
 import { remoteSettings } from 'app/settings-remote';
-import {parse as flatted_parse, stringify as flatted_stringify} from 'flatted';
+import { parse as flatted_parse, stringify as flatted_stringify } from 'flatted';
 
 const nativeCache = [];
 
@@ -83,9 +83,9 @@ export function absoluteApiUrl(url_name) {
 
 export function clearNotif(currentUser, setCurrentUser) {
 
-    
+
     if (currentUser?.notifications > 0) {
-      
+
         setCurrentUser(prevUser => ({
             ...prevUser,
             notifications: 0,
@@ -98,12 +98,12 @@ export function clearNotif(currentUser, setCurrentUser) {
 
         clearNotifications();
 
-       
-        
+
+
     }
 }
 
-export  const getDataFromCache = (pref, storageKeyValue) => {
+export const getDataFromCache = (pref, storageKeyValue) => {
     if (appSetting('cache', 'list') && Platform.OS == 'web') {
         return storageGet(pref, storageKeyValue);
     }
@@ -111,11 +111,11 @@ export  const getDataFromCache = (pref, storageKeyValue) => {
 }
 
 export function storageSet(pref, key, data, isLocal = false) {
-   
+
     if (Platform.OS !== 'web') {
-        if (!isLocal && pref=='layout:shmo'){
+        if (!isLocal && pref == 'layout:shmo') {
             nativeCache[pref + '-' + key] = JSON.stringify(data);
-      //  await AsyncStorage.setItem(`${pref}-${key}`, serializedData);
+            //  await AsyncStorage.setItem(`${pref}-${key}`, serializedData);
         }
     }
     else {
@@ -127,11 +127,11 @@ export function storageSet(pref, key, data, isLocal = false) {
 
 export function storageGet(pref, key, isLocal = false) {
     if (Platform.OS !== 'web') {
-        if (!isLocal && pref=='layout:shmo'){
+        if (!isLocal && pref == 'layout:shmo') {
             if (nativeCache[pref + '-' + key])
                 return nativeCache[pref + '-' + key]
         }
-       // return await AsyncStorage.getItem(`${pref}-${key}`);
+        // return await AsyncStorage.getItem(`${pref}-${key}`);
     }
     else {
         const storage = isLocal ? localStorage : sessionStorage;
@@ -162,7 +162,7 @@ export function storageClear(pref, key) {
 
 export function storageRemove(pref, key, isLocal = false) {
     if (Platform.OS !== 'web') {
-      
+
     }
     else {
         const storage = isLocal ? localStorage : sessionStorage;
@@ -179,7 +179,7 @@ function replacer(key, value) {
 }
 
 function compress(data) {
-    
+
     try {
         let a = flatted_stringify(data);
         return Buffer.from(pako.deflate(a)).toString('base64');
@@ -314,38 +314,38 @@ export function getUnitModeBySource(source) {
 
 export function truncateHTML(html, maxLength) {
     if (!html) return '';
-  
+
     // Limit the length
     let truncated = html.substring(0, maxLength);
-  
+
     // Remove trailing half-opened tags
     truncated = truncated.replace(/<[^>]*$/, '');
-  
+
     // Stack to track opened tags
     const tags = [];
     const tagRegex = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi;
     let match;
-    
+
     // Iterate over all tags to see which ones are opened or closed
     while ((match = tagRegex.exec(truncated))) {
-      const tagName = match[1];
-      const isClosingTag = match[0][1] === '/';
-  
-      if (!isClosingTag && !/br|hr|img|input|link|meta|area|base|col|command|embed|keygen|param|source|track|wbr/.test(tagName)) {
-        tags.push(tagName);
-      } else {
-        let i = tags.lastIndexOf(tagName);
-        if (i !== -1) {
-          tags.splice(i, 1); // Remove the tag from the stack
+        const tagName = match[1];
+        const isClosingTag = match[0][1] === '/';
+
+        if (!isClosingTag && !/br|hr|img|input|link|meta|area|base|col|command|embed|keygen|param|source|track|wbr/.test(tagName)) {
+            tags.push(tagName);
+        } else {
+            let i = tags.lastIndexOf(tagName);
+            if (i !== -1) {
+                tags.splice(i, 1); // Remove the tag from the stack
+            }
         }
-      }
     }
-  
+
     // Close all unclosed tags in the reverse order they were opened
     while (tags.length) {
-      truncated += `</${tags.pop()}>`;
+        truncated += `</${tags.pop()}>`;
     }
-  
+
     return truncated;
 }
 
@@ -788,8 +788,8 @@ export function menuItemsByName(name, items, currentUser, url = '') {
     if (!items)
         items = [{ link: url, title: '' }];
 
-    
-    return menuItemsFilter(items,currentUser);
+
+    return menuItemsFilter(items, currentUser);
 }
 
 export function menuItemsFilter(items, currentUser) {
@@ -806,7 +806,8 @@ export function menuItemsFilter(items, currentUser) {
         }
 
         items = items.filter(item => {
-            return !item.membership_level || (item.membership_level & Math.pow(2, currentUser.membership)) == Math.pow(2, currentUser.membership)});
+            return !item.membership_level || (item.membership_level & Math.pow(2, currentUser.membership)) == Math.pow(2, currentUser.membership)
+        });
     }
 
     items = items.map(item => {
@@ -862,7 +863,7 @@ export function handleFeedLayoutData(layoutData, data) {
 const updateRouteDataForConnection = (endpoint, actions, object, currentRoute, layoutData, routes, index, setRoutes) => {
     if (currentRoute.endpoint?.request_url.includes(endpoint) && layoutData && layoutData.data && (layoutData?.type === 'сonnections:action' && actions.includes(layoutData?.data?.action?.a) && layoutData?.data?.action?.o === object)) {
         let clonedData = currentRoute.data;
-        const data = clonedData.filter(item => item.id !== layoutData?.data?.action?.cid); 
+        const data = clonedData.filter(item => item.id !== layoutData?.data?.action?.cid);
         const newRoutes = [...routes];
         newRoutes[index].data = data;
         setRoutes(newRoutes);
@@ -878,3 +879,16 @@ export const updateRouteDataForConnections = (currentRoute, layoutData, routes, 
     updateRouteDataForConnection('system/browse_recommendations_friends', ['add', 'ignore'], 'sys_friends', currentRoute, layoutData, routes, index, setRoutes);
 }
 
+export async function getPageData(url) {
+    const pagePath = parseUrl(url);
+    let sAdd = "";
+
+    if (pagePath.queryString) {
+        const params = Object.fromEntries(
+            pagePath.queryString.split('&').map(param => param.split('='))
+        );
+        sAdd = `&params[]=&params[]=${JSON.stringify(params)}`;
+    }
+
+    return await fetcher(`/api.php?r=system/get_page_by_request/TemplServicePages&params[]=${pagePath.path}${sAdd}`);
+}

@@ -1,11 +1,9 @@
 import { Conductor } from 'app/ui/molecules/conductor';
 import { useContext, useState, useEffect } from 'react';
 import Cover, { CoverSmall } from 'app/components/elements/cover';
-import { getHeaderSettings, getBlocksFromData, cloneObject } from 'app/lib/util';
+import { getHeaderSettings, getBlocksFromData, cloneObject, getPageData } from 'app/lib/util';
 import { useWindowDimensions } from 'react-native';
 import { useLayoutData } from 'app/context/layout';
-import { fetcher } from 'app/lib/fetcher';
-import { BlockByName } from 'app/components/block';
 import { processBlocks } from 'app/lib/conductor-helpers';
 
 export default function PageLayout(props) {
@@ -17,20 +15,7 @@ export default function PageLayout(props) {
     useEffect(() => {
         if (layoutData && layoutData?.type == 'сonnections:action') {
             (async () => {
-                const pagePath =  parseUrl(pageData.url);
-                let sAdd = "";
-                if (pagePath['queryString']){
-                    const b = pagePath['queryString'].split('&');
-                    const c ={};
-                    b.forEach((value, key) => {
-                        const d = value.split('=')
-                        c[d[0]] = d[1];
-                    });
-                    let e = JSON.stringify(c);
-                    sAdd = '&params[]=&params[]=' + e;
-
-                }
-                const sResponse = await fetcher('/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' + pagePath.path +sAdd);
+                const sResponse = await getPageData(pageData.url);
                 if (sResponse.data != pageData)
                     setPageData(sResponse.data);
             })();
