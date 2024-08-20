@@ -106,7 +106,7 @@ export default function PageLayout(props) {
     //const commentsData = useMemo(() => DataByName(props.data, props.blocks.comments), [props.data, props.blocks.comments]);
     const commentsData = DataByName(pageData, props.blocks.comments);
     //console.log("commentsData", commentsData)
-    const CommentsPartsData = CommentsParts(commentsData?.content[0], aItems);)
+    const CommentsPartsData = CommentsParts(commentsData?.content[0], aItems)
     return (
         <>
             {header}
