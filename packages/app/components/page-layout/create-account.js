@@ -32,7 +32,7 @@ export default function PageLayout(props) {
                     <View className=" flex-auto w-full   ">
                     <Card
                             rounded=" rounded-2xl "
-                            addClassName="border px-4 py-2 sm:px-6 sm:py-4 w-full  max-w-xl mx-auto flex-auto  "
+                            addClassName=" px-4 py-2 sm:px-6 sm:py-4 w-full  max-w-xl mx-auto flex-auto  "
                         >
                         {!isAllowJoin && <BlockByName name={props.blocks.form_invitation} data={props.data} />}
                         {isAllowJoin && <BlockByName name={props.blocks.form_join} data={props.data} />}
@@ -40,7 +40,7 @@ export default function PageLayout(props) {
                     <View className="w-full m-2"></View>
                     <Card
                         rounded=" rounded-2xl "
-                        addClassName="border p-6 w-full  max-w-xl mx-auto flex-auto flex-col "
+                        addClassName="p-6 w-full  max-w-xl mx-auto flex-auto flex-col "
                     >
                         <Text className="text-lg font-bold  mx-auto text-neutral-700 dark:text-neutral-300  mb-6">
                             Already have an account?

@@ -370,7 +370,7 @@ function ComponentModal({ title = "test" }) {
                     <View className=" flex-auto w-full   ">
                         <Card
                             rounded=" rounded-2xl "
-                            addClassName="border px-4 py-2 sm:px-6 sm:py-4 w-full  max-w-xl mx-auto flex-auto  "
+                            addClassName=" px-4 py-2 sm:px-6 sm:py-4 w-full  max-w-xl mx-auto flex-auto  "
                         >
                             <View className="">
                                 <BlockByUrl url="/api.php?r=system/login_form/TemplServiceLogin" />
@@ -421,7 +421,7 @@ function ComponentsSplash(props) {
         <View className=" flex-auto w-full   ">
             <Card
                 rounded=" rounded-2xl "
-                addClassName="border px-4 py-2 sm:px-6 sm:py-4 w-full  max-w-xl mx-auto flex-auto  "
+                addClassName=" px-4 py-2 sm:px-6 sm:py-4 w-full  max-w-xl mx-auto flex-auto  "
             >
                 <View className="">{props.block}</View>
             </Card>
