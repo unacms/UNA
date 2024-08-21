@@ -65,7 +65,7 @@ function getCell(block, bAllowEdit) {
     }
 
     return (
-        <View key={block.i} className="mb-1 mx-1 border border-bdrcard dark:border-bdrcard-d shadow-sm group duration-200 overflow-hidden bg-bgrcard dark:bg-bgrcard-d">
+        <View key={block.i} className="mb-1 mx-1 shadow group duration-200 overflow-hidden bg-bgrcard dark:bg-bgrcard-d">
             {blockContent}
         </View>
     );

@@ -54,10 +54,8 @@ const colors = {
     },
 
     bgrbody: {
-        DEFAULT: 'rgba(229,231,235,1)',
-        d: 'rgba(229,231,235,1)',
+        DEFAULT: 'rgba(243,244,246,1)',
         d: 'rgba(0,0,0,1)',
-        dh: 'rgba(0,0,0,1)',
     },
 
     bgrcard: {
@@ -67,10 +65,8 @@ const colors = {
         dh: 'rgba(17,24,39,1)',
     },
     bdrcard: {
-        DEFAULT: 'rgba(229,231,235,1)',
-        h: 'rgba(229,231,235,1)',
-        d: 'rgba(31,41,55,1)',
-        dh: 'rgba(31,41,55,1)',
+        DEFAULT: 'rgba(209,213,219,0.8)',
+        d: 'rgba(31,41,55,0.8)',
     },
 
     bgrinput: {
@@ -142,7 +138,7 @@ const colors = {
     },
 
     bdr: {
-        DEFAULT: 'rgba(209,213,219,1)',
+        DEFAULT: 'rgba(229,231,235,1)',
         d: 'rgba(31,41,55,1)',
     },
     bgr: {

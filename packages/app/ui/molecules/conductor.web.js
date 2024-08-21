@@ -792,7 +792,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                 <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="New content" size="sm" />
                 <View style={{ minHeight: (windowHeight - 64) }} className={appSetting('layout', 'max_width  ') + '  mx-auto w-full '} >
                     <Row>
-                        <View style={{ minHeight: (windowHeight - 64) }} className={leftSideBarWidth + ' hidden lg:block border-r border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d fixed lg:relative top-0 z-50'}>
+                        <View style={{ minHeight: (windowHeight - 64) }} className={leftSideBarWidth + ' hidden lg:block border-r border-bdr dark:border-bdr-d bg-bgrnavbar dark:bg-bgrnavbar-d fixed lg:relative top-0 z-50'}>
                             {leftSideBarObj()}
                         </View>
                         <View className=" flex-auto">{/*min-h-screen???*/}
