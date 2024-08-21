@@ -296,7 +296,7 @@ export default function (props) {
         }
 
         return (
-            <View key={block.i} className="border border-bdrcard dark:border-bdrcard-d shadow-sm group duration-200 overflow-hidden sm:rounded-2xl  bg-bgrcard dark:bg-bgrcard-d">
+            <View key={block.i} className=" shadow group duration-200 overflow-hidden sm:rounded-2xl bg-bgrcard dark:bg-bgrcard-d">
                 {blockContent}
                 {bAllowEdit && <View className="absolute left-1/4 w-1/2 flex-row justify-center gap-x-4  items-center bottom-[20px] z-50">
                     <Pressable onMouseDown={(event) => onRemove(event, block.i)} onTouchStart={(event) => onRemove(event, block.i)}>
