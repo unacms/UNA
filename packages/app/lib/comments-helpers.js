@@ -435,9 +435,9 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
                 const sUrl = appSetting('urls', 'cmts_menthion_url');
                 if (sUrl){
                     const sResponse = await fetcher('/api.php?r='+sUrl+'&params[]='+formData.cmt_id+'&params[]='+formData.cmt_object_id+'');
-                    console.log("sResponse", sResponse)
+                    
                     if (sResponse.data){
-                        form.data.inputs.cmt_text.value = '<a class="bx-mention-link" data-id="[object Object]" href="mention'+sResponse.data.id+'" title="'+sResponse.data.name+'" dchar="@" data-profile-id="-1" contenteditable="false">'+sResponse.data.name+'</a> ';
+                        form.data.inputs.cmt_text.value = '<a class="bx-mention-link" data-id="[object Object]" href="/mention'+sResponse.data.id+'" title="'+sResponse.data.name+'" dchar="@" data-profile-id="-1" contenteditable="false">'+sResponse.data.name+'</a> ';
                     }
                     else{
                         form.data.inputs.cmt_text.value = '';
