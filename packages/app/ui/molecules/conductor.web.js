@@ -221,7 +221,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
     }
     /* UPDATE CONTENT PART */
-    console.log("currentRoutecurrentRoute", currentRoute.endpoint?.request_url,layoutData?.data?.action?.a, layoutData?.data?.action?.o )
+    //console.log("currentRoutecurrentRoute", currentRoute.endpoint?.request_url,layoutData?.data?.action?.a, layoutData?.data?.action?.o )
     /* NEW POST TO FEED */
     useEffect(() => {
         if (currentRoute.endpoint?.unit === 'feed' && layoutData && layoutData.data && (layoutData?.type == 'feed:new_content' || layoutData?.type == 'feed:remove_content')) {

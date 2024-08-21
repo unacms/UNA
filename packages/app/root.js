@@ -66,9 +66,21 @@ export function Root(props) {
         subscribe('sys_api_0', 'config_changed', updateSettings);
     }, [])
 
+    useEffect(() => {
+        if(currentUser?.id){
+            subscribe('sys_connections_'+currentUser.id, 'changed', updateConnections);
+        }
+    }, [currentUser])
+
     const updateSettings = useCallback(async () => {
         remoteSettings.data = await getRemoteSettings();
     }, []);
+
+    const updateConnections = useCallback((data) => {
+        storageClear()
+    }, []);
+
+    
 
     useEffect(() => {
         if (data?.user) {

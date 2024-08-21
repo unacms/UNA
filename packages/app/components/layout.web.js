@@ -276,7 +276,6 @@ export default function (props) {
 }
 
 const Content = React.memo(({ children, headerSettings, stylesBgImage, currentUser, layoutName, url }) => {
-    console.log("url", url)
     return (
         <>
 
