@@ -105,6 +105,7 @@ export function Root(props) {
         }
 
     }, [data?.user]);
+    
 
     if (props.code == 404 && !data?.page_status) {
         data.page_status = 404
