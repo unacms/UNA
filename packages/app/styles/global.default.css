@@ -480,12 +480,12 @@ div[data-radix-popper-content-wrapper]:not(.radix-hide){
 .tiptap-default{
     max-height: 250px;
     overflow-y: scroll;
-    scrollbar-width: auto;
+    scrollbar-width: none;
 }
 .tiptap-comments{
     max-height: 100px;
     overflow-y: scroll;
-    scrollbar-width: auto;
+    scrollbar-width: none;
 }
 
 .pac-container{ 
