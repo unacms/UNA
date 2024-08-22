@@ -319,7 +319,7 @@ function DefaultUnit(data) {
         return <></>
 
     if (isCommentsModal && data.menu_actions?.items[0].data?.callback)
-        data.menu_actions.items[0].data.callback = showCommentsModal
+        data.menu_actions.items.find(x => x.name == "item-comment").data.callback = showCommentsModal
 
 
 

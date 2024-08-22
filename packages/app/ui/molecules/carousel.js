@@ -27,7 +27,8 @@ const Carousel = memo(({ data = [] }) => {
 
     const windowWidthOr = useWindowDimensions().width;
     const windowWidth = windowWidthOr - 200;
-    const windowHeight = useWindowDimensions().height - 200;
+    const windowHeightOr = useWindowDimensions().height;
+    const windowHeight = windowHeightOr - 200;
 
     const handleShowImage = useCallback((img) => {
         setCurrentImageIndex(img.index);
@@ -44,17 +45,21 @@ const Carousel = memo(({ data = [] }) => {
                 data[currentImageIndex].src,
                 (width, height) => {
                     let imageAspectRatio = width / height;
-                    let windowAspectRatio = windowWidth / windowHeight;
+                    let ww = windowWidthOr >1024 ? 1024 : windowWidthOr;
+                    let wh = windowHeightOr - (windowWidthOr >1024? 120:60);
+                  //  let wh = windowWidthOr * wh1/ww;
+                    let windowAspectRatio = ww / wh;
 
                     let newImageWidth, newImageHeight;
 
                     if (imageAspectRatio > windowAspectRatio) {
-                        newImageWidth = windowWidth;
-                        newImageHeight = windowWidth / imageAspectRatio;
+                        newImageWidth = ww;
+                        newImageHeight = ww / imageAspectRatio;
                     } else {
-                        newImageHeight = windowHeight;
-                        newImageWidth = windowHeight * imageAspectRatio;
+                        newImageHeight = wh;
+                        newImageWidth = wh * imageAspectRatio;
                     }
+                    console.log("setImageSize2", [newImageWidth, newImageHeight,width, height, ww,wh])
                     setImageSize2([newImageWidth, newImageHeight]);
                 }
             );
@@ -161,11 +166,11 @@ const Carousel = memo(({ data = [] }) => {
 
     return <>
         {currentImageIndex !== false && <Modal title="Viewer" visible={currentImageIndex !== false} onClose={() => { setCurrentImageIndex(false) }} transparent={true} >
-            <Row className=' w-full mx-auto items-center justify-center'>
+            <Row className=' w-full mx-auto items-center justify-center h-full'>
 
                 {
-                    (imageSize2[0] > 0 && data[currentImageIndex].type == 'image') && <Pressable style={{ width: imageSize2[0], height: imageSize2[1], maxWidth: windowWidth, maxHeight: windowHeight }} onPress={() => setCurrentImageIndex(false)}>
-                        {currentImageIndex !== false && <Image width={imageSize2[0]} height={imageSize2[1]} sizes="(max-width:1280px) 100vw, 1280px" src={data[currentImageIndex].src} alt='' className=" u-cover  dark:bg-bgritem-d dark:bg-bgritem-d gap-x-1 " />}
+                    (imageSize2[0] > 0 && data[currentImageIndex].type == 'image') && <Pressable style={{ width: imageSize2[0], height: imageSize2[1], maxWidth: windowWidthOr, maxHeight: windowHeightOr }} onPress={() => setCurrentImageIndex(false)}>
+                        {currentImageIndex !== false && <Image view='cover' sizes="(max-width:1280px) 100vw, 1280px" src={data[currentImageIndex].src} alt='' className=" u-cover  dark:bg-bgritem-d dark:bg-bgritem-d gap-x-1 " />}
                     </Pressable>
                 }
                 {
