@@ -13,7 +13,7 @@ export default function ElementMsg({data, msg_type}) {
     }
 
     if (msg_type == 'result'){
-        clsname = "mb-4";
+        clsname = "";
         clsname1 = "text-black dark:text-white text-base text-center";
     }
 
