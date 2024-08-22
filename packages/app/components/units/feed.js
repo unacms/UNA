@@ -747,8 +747,8 @@ export default function UnitFeed(props) {
         const result = await fetcher(
             '/api.php?r=bx_timeline/get/&params[]={"params":{"browse":"id","value":' + datas.id + '}}'
         )
-
-        setDatas(result.data);
+        if (result.data)
+            setDatas(result.data);
     }
 
     useEffect(() => {
