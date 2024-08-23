@@ -48,7 +48,7 @@ export default function PageLayout(props) {
 
                         <Card
                             rounded=" rounded-2xl "
-                            addClassName="border p-4 mt-4 sm:p-6 sm:mt-6 w-full  max-w-xl mx-auto flex-auto  "
+                            addClassName="p-4 mt-4 sm:p-6 sm:mt-6 w-full  max-w-xl mx-auto flex-auto  "
                         >
                             <Text className="text-center mb-4 sm:mb-6 text-lg font-semibold  mx-auto text-neutral-700 dark:text-neutral-300  ">
                                 Don't have an account?

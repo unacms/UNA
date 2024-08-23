@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react'
 import React from 'react'
 import { Animated } from 'react-native'
 import { useTranslation } from 'react-i18next'
-import { tp, appSetting } from 'app/lib/util'
+import { tp, appSetting, updateRouteDataForConnection } from 'app/lib/util'
 import ProfilesList from 'app/ui/molecules/profile_list'
 import BlockByUrl from 'app/ui/molecules/block'
 import { Platform } from 'react-native'
@@ -933,6 +933,14 @@ function getButtonForConductor(a, index, currentUser) {
     />
 }
 
+function updateRouteDataForConnections(currentRoute, layoutData, routes, index, setRoutes) {
+    updateRouteDataForConnection('system/browse_subscriptions', ['remove'], 'sys_profiles_subscriptions', currentRoute, layoutData, routes, index, setRoutes);
+    updateRouteDataForConnection('system/browse_friends', ['remove'], 'sys_profiles_friends', currentRoute, layoutData, routes, index, setRoutes);
+    updateRouteDataForConnection('system/browse_friend_requested', ['remove'], 'sys_profiles_friends', currentRoute, layoutData, routes, index, setRoutes);
+    updateRouteDataForConnection('system/browse_friend_requests', ['add'], 'sys_profiles_friends', currentRoute, layoutData, routes, index, setRoutes);
+    updateRouteDataForConnection('system/browse_recommendations_subscriptions', ['add', 'ignore'], 'sys_subscriptions', currentRoute, layoutData, routes, index, setRoutes);
+    updateRouteDataForConnection('system/browse_recommendations_friends', ['add', 'ignore'], 'sys_friends', currentRoute, layoutData, routes, index, setRoutes);
+}
 
 
 export const staticDefault = {
@@ -954,5 +962,6 @@ export const staticDefault = {
     components_logincontent: ComponentsLoginContent,
 
     getBadgeForTab: getBadgeForTab,
-    getButtonForConductor: getButtonForConductor
+    getButtonForConductor: getButtonForConductor,
+    updateRouteDataForConnections: updateRouteDataForConnections
 }

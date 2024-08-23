@@ -182,7 +182,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
             newRoutes[index].data = data
             setRoutes(newRoutes);
         }
-        updateRouteDataForConnections(currentRoute, layoutData, routes, index, setRoutes);
+        staticComponents['updateRouteDataForConnections'](currentRoute, layoutData, routes, index, setRoutes)
     }, [layoutData]);
     /* NEW POST TO FEED */
 

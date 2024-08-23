@@ -858,26 +858,16 @@ export function handleFeedLayoutData(layoutData, data) {
     return data;
 }
 
-
-
-const updateRouteDataForConnection = (endpoint, actions, object, currentRoute, layoutData, routes, index, setRoutes) => {
+export const updateRouteDataForConnection = (endpoint, actions, object, currentRoute, layoutData, routes, index, setRoutes) => {
     if (currentRoute.endpoint?.request_url.includes(endpoint) && layoutData && layoutData.data && (layoutData?.type === 'сonnections:action' && actions.includes(layoutData?.data?.action?.a) && layoutData?.data?.action?.o === object)) {
         let clonedData = currentRoute.data;
-        const data = clonedData.filter(item => item.id !== layoutData?.data?.action?.cid);
+        let cid = Array.isArray(layoutData?.data?.action?.cid) ? layoutData?.data?.action?.cid[0] : layoutData?.data?.action?.cid
+        const data = clonedData.filter(item => item.id !== cid);
         const newRoutes = [...routes];
         newRoutes[index].data = data;
         setRoutes(newRoutes);
     }
 };
-
-export const updateRouteDataForConnections = (currentRoute, layoutData, routes, index, setRoutes) => {
-    updateRouteDataForConnection('system/browse_subscriptions', ['remove'], 'sys_profiles_subscriptions', currentRoute, layoutData, routes, index, setRoutes);
-    updateRouteDataForConnection('system/browse_friends', ['remove'], 'sys_profiles_friends', currentRoute, layoutData, routes, index, setRoutes);
-    updateRouteDataForConnection('system/browse_friend_requested', ['remove'], 'sys_profiles_friends', currentRoute, layoutData, routes, index, setRoutes);
-    updateRouteDataForConnection('system/browse_friend_requests', ['add'], 'sys_profiles_friends', currentRoute, layoutData, routes, index, setRoutes);
-    updateRouteDataForConnection('system/browse_recommendations_subscriptions', ['add', 'ignore'], 'sys_subscriptions', currentRoute, layoutData, routes, index, setRoutes);
-    updateRouteDataForConnection('system/browse_recommendations_friends', ['add', 'ignore'], 'sys_friends', currentRoute, layoutData, routes, index, setRoutes);
-}
 
 export async function getPageData(url) {
     const pagePath = parseUrl(url);

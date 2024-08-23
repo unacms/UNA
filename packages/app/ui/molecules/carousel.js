@@ -93,7 +93,7 @@ const Carousel = memo(({ data = [] }) => {
             // back compability for old data
             if (!data[0].height || !data[0].width) {
                 return (
-                    <View className={`${max_image_width} mx-auto ${max_image_aspect} w-full 005`}>
+                    <View className={`${max_image_width} mx-auto ${max_image_aspect} w-full rounded sm:rounded-lg overflow-hidden 005`}>
                         <Image2 row={0} index={0} key={0}  src={data[0].src} type={data[0].type} />
                     </View>
                 )
@@ -108,7 +108,7 @@ const Carousel = memo(({ data = [] }) => {
                 aspect = '';
                 if (isWeb) {
                     /*bg-neutral-200  dark:bg-neutral-600*/
-                    return (<View className={`${max_image_width} ${aspect} w-full max-w-lg  items-start justify-center  rounded sm:rounded-lg 003-` + w + '-' + h + '-' + (w > h)}>
+                    return (<View className={`${max_image_width} ${aspect} w-full items-start justify-center  rounded sm:rounded-lg overflow-hidden 003-` + w + '-' + h + '-' + (w > h)}>
                         <View style={{ aspectRatio: aspectStyle }} className='h-full'>
                             <Image2 row={0} index={0} key={0} width={w} height={h} src={data[0].src} type={data[0].type} />
                         </View>
@@ -123,7 +123,7 @@ const Carousel = memo(({ data = [] }) => {
 
                 return (
                     /*bg-neutral-200  dark:bg-neutral-600*/
-                    <View className={`${max_image_width}  ${aspect} w-full max-w-lg items-start justify-center rounded sm:rounded-lg 002`}>
+                    <View className={`${max_image_width}  ${aspect} w-full items-start justify-center rounded sm:rounded-lg overflow-hidden 002`}>
                         <View style={{ aspectRatio: aspectStyle, width: w, height: h }} >
                             <Image2 row={0} index={0} key={0} src={data[0].src} type={data[0].type} />
                         </View>
@@ -136,7 +136,7 @@ const Carousel = memo(({ data = [] }) => {
                 w = "";
                 return (
                     /*bg-neutral-200  dark:bg-neutral-600*/
-                    <View className={`${max_image_width}  ${aspect} w-full max-w-lg items-start justify-center ounded sm:rounded-lg 001`}>
+                    <View className={`${max_image_width}  ${aspect} w-full max-w-lg items-start justify-center rounded sm:rounded-lg overflow-hidden 001`}>
                         <View style={{ aspectRatio: aspectStyle }} className='h-full '>
                             <Image2 row={0} index={0} key={0} width={w} height={h} src={data[0].src} type={data[0].type} />
                         </View>
