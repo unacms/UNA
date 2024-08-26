@@ -27,11 +27,11 @@ import { storageClear, menuItemsFilter } from 'app/lib/util';
 import Footer from 'app/components/nav/footer';
 import { staticComponents } from 'app/static';
 
-function AddBlocks({leftSideBarBlocks, data, onFormSubmit})
+
+function AddBlocks({leftSideBarBlocks, data, onFormSubmit, show, setShow})
 {
     const windowDimen = useWindowDimensions();
     const windowWidth = windowDimen.width;
-    const [show, setShow] = useState(false);
 
     let leftSideBarBlocksObj = leftSideBarBlocks.map((block) => {
         return <BlockByName
@@ -45,8 +45,8 @@ function AddBlocks({leftSideBarBlocks, data, onFormSubmit})
     return <>
         {leftSideBarBlocksObj?.length > 0 &&
             <>
-            {windowWidth < 1024 && <View className="items-start ml-4 mt-2">
-                <Button title={show ?"Hide filters": "Show filters"}  variant="outline" rounded onPress={() =>{setShow(!show)}} />
+            {windowWidth < 1024 && <View className="items-start ml-2 mt-2">
+                <Button title={show ?"Hide filters": "Show filters"}  variant="default" size="sm" rounded onPress={() =>{setShow(!show)}} />
             </View>}
             {(show || windowWidth>=1024) && <View className="my-3 mx-2 ">
                 {leftSideBarBlocksObj.map((block, index) => {
@@ -61,6 +61,7 @@ function AddBlocks({leftSideBarBlocks, data, onFormSubmit})
 export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, leftSideBarBlocks, leftSideBarWidth = ' w-80 2xl:w-96 ', skeleton = '', onChangeRoute, keyword, cover, layoutName }) {
     const { currentUser } = useCurrentUser();
     const { layoutData } = useLayoutData();
+    const [show, setShow] = useState(false);
     const { t } = useTranslation();
     let uniRef = useRef();
     const [menuPopup, setMenuPopup] = useState(false)
@@ -72,6 +73,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     const toasterRef2 = useRef();
 
     const initedTabs = fillTabs(menu, data, blocks, currentUser, useSectionAsMenu);
+    //console.log("initedTabs", initedTabs)
 
     const windowDimen = useWindowDimensions();
     const windowWidth = windowDimen.width;
@@ -183,7 +185,9 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             .filter(item => item.type !== 'block')
             .map(item => item.id)
         )].slice(0, 10).join(',');
-        if (a || true) {
+
+        if ((a || true) && !currentRoute.endpoint.request_url.includes("system/get_results/TemplSearchExtendedServices")) {
+            
             endpointUpdateContent = currentRoute.endpoint.request_url + JSON.stringify({
                 'params': { ...currentRoute.endpoint.params, validate: a }
             });
@@ -740,7 +744,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                             </Link>
                         )
                     })}
-                    <MemoAddBlocks leftSideBarBlocks={leftSideBarBlocks} data={data} onFormSubmit={onFormSubmit}/>
+                    <MemoAddBlocks leftSideBarBlocks={leftSideBarBlocks} data={data} onFormSubmit={onFormSubmit} show={show} setShow={setShow}/>
                     
                 </LeftSidebar>
 
@@ -798,7 +802,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                         <View className=" flex-auto">{/*min-h-screen???*/}
                             {(headerSettings.showAltTopMenu) && topSideBarObj()}
                             <View className="lg:hidden">
-                                <MemoAddBlocks leftSideBarBlocks={leftSideBarBlocks} data={data} onFormSubmit={onFormSubmit}/>
+                                <MemoAddBlocks leftSideBarBlocks={leftSideBarBlocks} data={data} onFormSubmit={onFormSubmit} show={show} setShow={setShow}/>
                             </View>
                             <RenderScene route={currentRoute} />
                         </View>

@@ -32,7 +32,7 @@ export default function (props) {
                     </Row >
                 </Text>
             }
-            {(props.name && props.last_changed == props.name) && <View className='absolute right-0 top-0'>
+            {(props.name && props.last_changed == props.name) && <View className='absolute right-0 top-0 mb-1'>
                 <Button onPress={props.handleSubmit} startDecorator="ArrowClockwise" variant="primary" size="xs" rounded />
             </View>}
             {props.children}

@@ -121,7 +121,7 @@ function ChkList({ values, selectedValues, setFormValue }) {
                     />
                 </View>)
             }
-            <ScrollView className='flex-auto'>
+            <ScrollView className='flex-auto max-h-80'>
                 {filtred.map((item2, index) => {
                     const key = item2.key;
                     return (
