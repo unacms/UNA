@@ -30,10 +30,10 @@ export default function MenuItemButton(oProps) {
 
         default:
             let oButtonProps = {};
-            if(oProps.primary)
-                oButtonProps.variant = 'primary';
             if(oProps.params?.button_variant != undefined)
                 oButtonProps.variant = oProps.params.button_variant;
+            if(oProps.primary && oProps.primary == "1")
+                oButtonProps.variant = 'primary';
             if(oProps.params?.button_size != undefined)
                 oButtonProps.size = oProps.params.button_size;
             if(oProps.params?.button_rounded != undefined)
