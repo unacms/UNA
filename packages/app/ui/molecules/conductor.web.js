@@ -27,7 +27,6 @@ import { storageClear, menuItemsFilter } from 'app/lib/util';
 import Footer from 'app/components/nav/footer';
 import { staticComponents } from 'app/static';
 
-
 function AddBlocks({leftSideBarBlocks, data, onFormSubmit, show, setShow})
 {
     const windowDimen = useWindowDimensions();
