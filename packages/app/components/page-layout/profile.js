@@ -14,7 +14,7 @@ export default function PageLayout(props) {
     //reload page after some connection actions
     
     useEffect(() => {
-        if(layoutData && layoutData?.type == 'сonnections:action'){
+        if(layoutData && layoutData?.type == 'сonnections:action' && layoutData?.data?.reload){
             (async () => {
                 const sResponse = await getPageData(pageData.url);
                 if (sResponse.data != pageData)

@@ -68,9 +68,12 @@ export default function ElementConnections(oProps) {
         const sRequest = '/api.php?r=system/' + sAction + '/TemplServiceConnections&params[]=' + JSON.stringify(aParams);
 
         const sResponse = await fetcher(sRequest);
-
-        storageClear();
-        setLayoutData(getAlert('сonnections:action', {object: oProps.o, time:Date.now(), action: aParams, data: sResponse?.data, key: getKey()} ));
+        const isReload = sResponse?.data?.a != 'questionnaire';
+        if (isReload){
+            storageClear();
+        }
+        setLayoutData(getAlert('сonnections:action', {object: oProps.o, time:Date.now(), action: aParams, data: sResponse?.data, key: getKey(), reload: isReload} ));
+        
     };
 
     useEffect(() => {

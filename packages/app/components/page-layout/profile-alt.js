@@ -13,7 +13,7 @@ export default function PageLayout(props) {
     let ts = 0;
 
     useEffect(() => {
-        if (layoutData && layoutData?.type == 'сonnections:action') {
+        if (layoutData && layoutData?.type == 'сonnections:action' && layoutData?.data?.reload) {
             (async () => {
                 const sResponse = await getPageData(pageData.url);
                 if (sResponse.data != pageData)
