@@ -13,7 +13,7 @@ import { useCurrentUser } from 'app/context/user'
 import { useRouter, useGlobalSearchParams } from 'expo-router';
 import { useLayoutData } from 'app/context/layout';
 import { Theme } from 'app/design/theme';
-
+import { staticComponents } from 'app/static';
 
 export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultHeader, menu, data, blocks, useSectionAsMenu, unitMode, skeleton, onChangeRoute, keyword }) {
 
