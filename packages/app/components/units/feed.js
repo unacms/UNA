@@ -138,7 +138,7 @@ const LinkContent = ({ url, data }) => (
         </Text>
         <Text
             numberOfLines={2}
-            className=" mt-1 text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-lg sm:text-xl tracking-tight font-bold"
+            className=" text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-lg sm:text-xl tracking-tight font-bold"
         >
             {data.content.title}
         </Text>
@@ -412,7 +412,7 @@ function DefaultUnit(data) {
 
     function GroupView({ data, styles, url, isCompact }) {
         const pref = isCompact ? '' : 'md:';
-        return (<View className={isCompact ? " flex-row space-x-2 mx-4 overflow-hidden rounded-lg border border-bdritem dark:border-bdritem-d bg-bgritem dark:bg-bgritem-d p-1" : " flex-col md:flex-row space-x-2 mx-0.5 sm:mx-4 overflow-hidden rounded-lg border border-bdritem dark:border-bdritem-d bg-bgritem dark:bg-bgritem-d p-1"}>
+        return (<View className={isCompact ? " flex-row space-x-2 mx-4 overflow-hidden rounded-lg border border-bdritem dark:border-bdritem-d bg-bgritem dark:bg-bgritem-d p-1" : " flex-col md:flex-row space-x-2 overflow-hidden rounded-lg bg-bgritem dark:bg-bgritem-d p-1"}>
             {data.mainImage && (
                 <View className={isCompact ? "w-64" : "w-full md:w-1/3 "}>
                     <View
@@ -464,7 +464,7 @@ function DefaultUnit(data) {
                     </Text>
                     <Text
                         numberOfLines={2}
-                        className=" mt-1 text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-lg sm:text-xl tracking-tight font-bold"
+                        className=" text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-lg sm:text-xl tracking-tight font-bold"
                     >
                         {data.content.title}
                     </Text>
@@ -472,7 +472,7 @@ function DefaultUnit(data) {
                 <View>
                     <View className="flex-col relative">
                         <Text
-                            className="text-neutral-950 dark:text-neutral-50 pb-4 text-sm "
+                            className="text-neutral-950 dark:text-neutral-50 text-sm "
                             numberOfLines={2}
                         >
                             {data.content.text}
@@ -518,7 +518,7 @@ function DefaultUnit(data) {
         </View>
     }
     function MarketView({ data, styles }) {
-        return <View className=" flex-col md:flex-row space-x-2 mx-0.5 sm:mx-4 overflow-hidden rounded-lg border border-bdritem dark:border-bdritem-d bg-bgritem dark:bg-bgritem-d p-1">
+        return <View className=" flex-col md:flex-row space-x-2  overflow-hidden rounded-lg border border-bdritem dark:border-bdritem-d bg-bgritem dark:bg-bgritem-d p-1">
             {data.mainImage && (
                 <View className="w-full md:w-1/3  ">
                     <View
@@ -543,7 +543,7 @@ function DefaultUnit(data) {
 
                     <Text
                         numberOfLines={2}
-                        className=" mt-1 text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-lg sm:text-xl tracking-tight font-bold"
+                        className=" text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-lg sm:text-xl tracking-tight font-bold"
                     >
                         {data.content.title}
                     </Text>
@@ -695,7 +695,7 @@ function UnitImages(images) {
 
 
     return (
-        <View className="w-full px-0.5 ">
+        <View className="w-full ">
             <Carousel data={aImg} />
         </View>
     )

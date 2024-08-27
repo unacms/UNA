@@ -14,9 +14,9 @@ import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
 const User = ({ data, onSelect, type }) => {
     return (
         <Pressable onPress={() => onSelect(data)}>
-            <Row className="p-1 pr-2 group duration-200 rounded-full active:opacity-50 active:translate-y-1
-                    hover:bg-bgritem-h dark:hover:bg-bgritem-dh  border border-bdrnavbar dark:border-bdrnavbar-d mb-2 mr-2 items-center justiy-center">
-                <Profile displaySize="xs" {...data} showLinks={false} />
+            <Row className="p-1 pr-2 sm:pr-3 group duration-200 rounded-full active:opacity-50 active:translate-y-1
+                    hover:bg-bgritem-h dark:hover:bg-bgritem-dh  border border-bdr dark:border-bdr-d mb-2 mr-2 items-center justiy-center">
+                <Profile displaySize="sm" {...data} showLinks={false} />
                 {type == 'remove' && <Icon icon="X" />}
             </Row>
         </Pressable>
@@ -81,10 +81,10 @@ export function SelectUsers({ onSave, initedData = [], requestUrl, isSingle = fa
 
     return <View className="">
         <KbAvoidingView>
-            <Row className="text-center w-full  flex-wrap gap-x-2 py-2">
+            <Row className="text-center w-full  flex-wrap gap-x-2 ">
                 {state.selectedUsers && state.selectedUsers.map((item) => <User key={item.id} data={item} onSelect={onRemove} />)}
             </Row>
-            <Row className="">
+            <Row className="py-2">
                 <InputRounded
                     placeholder={"Select users..."}
                     className="px-2 mr-2 w-full"
@@ -94,7 +94,7 @@ export function SelectUsers({ onSave, initedData = [], requestUrl, isSingle = fa
                 />
                 <Button variant="outline" disabled={state.selectedUsers.length == 0} startDecorator="Check" rounded align="start" onPress={() => onSaveInt()} />
             </Row>
-            <Row className="text-center py-2 w-full  flex-wrap gap-x-2 ">
+            <Row className="text-center w-full flex-wrap gap-x-2 ">
                 {state.suggestedUsers && !state.showLoading && state.suggestedUsers.map((item) => <User key={item.id} data={item} onSelect={onSelectUser} />)}
                 {state.showLoading && <View className=' w-full items-center justify-center py-2'><Loading /></View>}
                 {state.suggestedUsers.length == 0 && state.searchText != '' && !state.showLoading && <Text className="text-sm py-2">Nothing found</Text>}
@@ -144,7 +144,7 @@ export default function (props) {
                             startDecorator="Plus"
                             variant="default"
                             rounded
-                            size="sm"
+                            size="base"
                             onPress={() => showSelect()}
                         />
                     </View>
