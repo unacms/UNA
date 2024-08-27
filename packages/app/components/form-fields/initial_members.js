@@ -14,7 +14,7 @@ import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
 const User = ({ data, onSelect, type }) => {
     return (
         <Pressable onPress={() => onSelect(data)}>
-            <Row className="p-1 pr-2 sm:pr-3 group duration-200 rounded-full active:opacity-50 active:translate-y-1
+            <Row className="p-[5px] pr-2 sm:pr-3 group duration-200 rounded-full active:opacity-50 active:translate-y-1
                     hover:bg-bgritem-h dark:hover:bg-bgritem-dh  border border-bdr dark:border-bdr-d mb-2 mr-2 items-center justiy-center">
                 <Profile displaySize="sm" {...data} showLinks={false} />
                 {type == 'remove' && <Icon icon="X" />}

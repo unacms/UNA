@@ -235,8 +235,8 @@ export function Button(props) {
     sClassContainer += ' justify-' + buttonAlign + ' '
 
     if (buttonPressed) {
-        sClassContainer += ' bg-primary/20 dark:bg-primary-d/20  border-none ';
-        sClassText += ' text-gray-950 dark:text-white  ';
+        sClassContainer += ' bg-primary/10 dark:bg-primary-d/10  border-none ';
+        sClassText += ' text-neutral-950 dark:text-white';
     }
 
     let sClassDefaultRounding = buttonType != 'group-item' ? 'rounded-' + (buttonSize == 'lg' ? 'xl' : 'lg') : '';
@@ -266,7 +266,7 @@ export function Button(props) {
             break
 
         case 'base':
-            sClassContainer += buttonRounded ? sClassFullRounding + (props.padding ? ' p-' + props.padding : ' p-2') : sClassDefaultRounding + ' p-2  ';
+            sClassContainer += buttonRounded ? sClassFullRounding + (props.padding ? ' p-' + props.padding : ' p-[9px]') : sClassDefaultRounding + ' p-[9px]  ';
             sIconContainer = ' h-6 w-6  ' + (buttonTitle !== '' ? ' mx-1 ' : '');
             sClassText += ' text-base tracking-tight '
             iIconSize = 24;
