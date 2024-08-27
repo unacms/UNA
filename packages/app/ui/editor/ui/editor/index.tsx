@@ -122,9 +122,9 @@ export default function Editor({ defaultValue, formContext, field, name, viewCla
     }
   }, [editor, content, hydrated]);
 
-  let className = "relative min-h-[100px] p-4 bg-neutral-500/10 border border-neutral-500/10 focus:bg-bgrinput-focus focus:outline-none focus:border-bdrinput-focus dark:focus:border-bdrinput-df text-neutral-900 rounded-lg w-full dark:focus:bg-bgrinput-dafocus placeholder-neutral-500 dark:text-neutral-100 text-base"
+  let className = "relative min-h-24 px-3 py-2 bg-neutral-500/10 border border-neutral-500/10 focus:bg-bgrinput-focus focus:outline-none focus:border-bdrinput-focus dark:focus:border-bdrinput-df text-neutral-900 rounded-lg w-full dark:focus:bg-bgrinput-dafocus placeholder-neutral-500 dark:text-neutral-100 text-base"
   if (viewClasses) {
-    className = "relative min-h-[100px] focus:outline-none " + viewClasses;
+    className = "relative min-h-24 focus:outline-none " + viewClasses;
   }
 
   return (

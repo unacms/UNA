@@ -57,12 +57,12 @@ const CommentsModal = ({ commentsData, initFormData, itemContent }) => {
 const CommentsSection = React.memo(({ isCommentsModal, commentsDataInline, data, isShowMoreComments, showCommentsModal, url, t }) => {
 
     const ShowMoreCmts = (<Text className='text-neutral-600 dark:text-neutral-400 hover:text-primary dark:hover:text-primary-d text-sm font-semibold'>
-        {t('View more comments...')}
+        {t('View more comments')}
     </Text>);
     return (
         <View className='border-t border-bdr/50 dark:border-bdr-d/50 pt-4 mt-4'>
              {isShowMoreComments && (
-                <View className='pb-1 mb-1'>
+                <View className='pb-1 mb-3'>
                     {isCommentsModal ? <Pressable onPress={() => { showCommentsModal() }} >
                         {ShowMoreCmts}
                     </Pressable> : <Link href={url}>{ShowMoreCmts}</Link>}
@@ -391,7 +391,7 @@ function DefaultUnit(data) {
 
                             <Form
                                 {...viewState.data}
-                                classContainerName="flex-row flex-wrap px-2 w-full items-start justify-between"
+                                classContainerName="flex-row flex-wrap  w-full items-start justify-between"
                                 onFormSubmit={onFormSubmit}
                             />
 

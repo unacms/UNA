@@ -19,9 +19,9 @@ if (Platform.OS === 'android') {
 //import { Dropdown as DropdownDef} from 'react-native-element-dropdown';
 
 /* inputs */
-export const Input = styled(TextInputDef, ' bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-bdrinput dark:border-bdrinput-d focus:outline-none focus:outline-primary/50 dark:focus-outline-primary-d/50 duration-100 text-neutral-900 rounded-lg flex-auto px-3  dark:text-neutral-100 text-base leading-5 h-[42px] ')
+export const Input = styled(TextInputDef, ' bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-bdrinput dark:border-bdrinput-d focus:outline-none focus:outline-primary/50 dark:focus-outline-primary-d/50 duration-100 text-neutral-900 rounded-lg flex-auto px-3  dark:text-neutral-100 text-base leading-5 h-11 ')
 export const InputMulti = styled(TextInputDef, ' bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg flex-auto p-2 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 ')
-export const InputRounded = styled(TextInputDef, ' bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-bdrinput dark:border-bdrinput-d focus:outline-none focus:outline-primary/50 dark:focus-outline-primary-d/50 duration-100 text-neutral-900 rounded-full flex-auto px-3   dark:text-neutral-100 text-base leading-5 h-[42px]  ')
+export const InputRounded = styled(TextInputDef, ' bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-bdrinput dark:border-bdrinput-d focus:outline-none focus:outline-primary/50 dark:focus-outline-primary-d/50 duration-100 text-neutral-900 rounded-full flex-auto px-3   dark:text-neutral-100 text-base leading-5 h-11  ')
 export const InputRoundedSmall = styled(TextInputDef, ' bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-full flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[34px] ')
 export const Switch = (props) => Platform.OS =='web' ? <View className="w-16 h-8 pl-2 pt-1.5"><SwitchDef {...props} style={{ transform: [{ scaleX: 1.4 }, { scaleY: 1.4 }], ...props.style }} /></View> : <SwitchDef {...props} style={props.style } />;
 export const Hidden = styled(TextInputDef, 'hidden')
@@ -45,7 +45,7 @@ export function Modal({
     headerBorder = true,
     fullWidth = true,
     children,
-    padding = "sm:p-6 sm:pt-4 pb-1 sm:pb-4 "
+    padding = " px-4 py-2 "
 }) {
 
     const isOuterClose = (onClose !== 'undefined' && outerClickClose !== false);
