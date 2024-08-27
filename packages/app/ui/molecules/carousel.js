@@ -68,7 +68,7 @@ const Carousel = memo(({ data = [] }) => {
 
     const Image2 = (item) => {
         return (
-            <View className={(item.len > 1 ? 'w-1/2' : 'w-full') + ' h-full border border-bdr dark:border-bdr-d bg-bgritem dark:bg-bgritem-d '}>
+            <View className={(item.len > 1 ? 'w-1/2' : 'w-full') + ' h-full bg-bgritem dark:bg-bgritem-d '}>
                 <Pressable style={{ flex: 1, justifyContent: 'center' }} onPress={() => handleShowImage(item)} >
                     {item.type == 'image' ? ((item.width && item.height) ?
                         <Image sizes="1280px" src={item.src} alt='' height={item.height} width={item.width} className=" u-cover dark:bg-bgritem-d dark:bg-bgritem-d gap-x-1 " /> :
@@ -93,7 +93,7 @@ const Carousel = memo(({ data = [] }) => {
             // back compability for old data
             if (!data[0].height || !data[0].width) {
                 return (
-                    <View className={`${max_image_width} mx-auto ${max_image_aspect} w-full rounded sm:rounded-lg overflow-hidden 005`}>
+                    <View className={`${max_image_width} mx-auto ${max_image_aspect} w-full rounded-lg overflow-hidden 005`}>
                         <Image2 row={0} index={0} key={0}  src={data[0].src} type={data[0].type} />
                     </View>
                 )
@@ -108,7 +108,7 @@ const Carousel = memo(({ data = [] }) => {
                 aspect = '';
                 if (isWeb) {
                     /*bg-neutral-200  dark:bg-neutral-600*/
-                    return (<View className={`${max_image_width} ${aspect} w-full items-start justify-center  rounded sm:rounded-lg overflow-hidden 003-` + w + '-' + h + '-' + (w > h)}>
+                    return (<View className={`${max_image_width} ${aspect} w-full items-start justify-center  rounded-lg  overflow-hidden 003-` + w + '-' + h + '-' + (w > h)}>
                         <View style={{ aspectRatio: aspectStyle }} className='h-full'>
                             <Image2 row={0} index={0} key={0} width={w} height={h} src={data[0].src} type={data[0].type} />
                         </View>

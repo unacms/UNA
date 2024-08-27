@@ -138,7 +138,7 @@ const LinkContent = ({ url, data }) => (
         </Text>
         <Text
             numberOfLines={2}
-            className=" mt-1 text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-lg sm:text-xl tracking-tight font-bold"
+            className=" text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-lg sm:text-xl tracking-tight font-bold"
         >
             {data.content.title}
         </Text>
@@ -343,7 +343,7 @@ function DefaultUnit(data) {
                 displayType="unit"
                 displaySize="base"
                 showInfo={
-                    <Row className="flex-wrap items-center text-sm">
+                    <Row className="flex-wrap items-center text-sm leading-4 ">
                         <Link href={url}>
                             <Time stylesNameAdd=" hover:text-linkhover  align-center text-center" ts={data.date}></Time>
                         </Link>
@@ -366,7 +366,7 @@ function DefaultUnit(data) {
                 </View>
             </Modal>}
             <Card rounded=' rounded-none sm:rounded-2xl '  margin=' mb-1 sm:mb-4 sm:mx-4 ' addClassName={'p-3 sm:p-4 tl-' + data.id} >
-                <View className="flex-auto flex-row items-top pb-3 sm:pb-4">
+                <View className="flex-auto flex-row items-top pb-3">
                     <Author />
                     <View className="flex-auto justify-end flex-row mb-auto">
                         {data.author_actions.map((item, index) => {
@@ -399,7 +399,7 @@ function DefaultUnit(data) {
                     ) : (
                         <>
                             <MainContent />
-                            <View className="pt-3 sm:pt-4">
+                            <View className="pt-3">
                                 <MenuMemo showCommentsModal={showCommentsModal} />
                             </View>
                         </>
@@ -412,7 +412,7 @@ function DefaultUnit(data) {
 
     function GroupView({ data, styles, url, isCompact }) {
         const pref = isCompact ? '' : 'md:';
-        return (<View className={isCompact ? " flex-row space-x-2 mx-4 overflow-hidden rounded-lg border border-bdritem dark:border-bdritem-d bg-bgritem dark:bg-bgritem-d p-1" : " flex-col md:flex-row space-x-2 mx-0.5 sm:mx-4 overflow-hidden rounded-lg border border-bdritem dark:border-bdritem-d bg-bgritem dark:bg-bgritem-d p-1"}>
+        return (<View className={isCompact ? " flex-row space-x-2 mx-4 overflow-hidden rounded-lg border border-bdritem dark:border-bdritem-d bg-bgritem dark:bg-bgritem-d p-1" : " flex-col md:flex-row space-x-2 overflow-hidden rounded-lg bg-bgritem dark:bg-bgritem-d p-1"}>
             {data.mainImage && (
                 <View className={isCompact ? "w-64" : "w-full md:w-1/3 "}>
                     <View
@@ -435,17 +435,11 @@ function DefaultUnit(data) {
                         numberOfLines={1}
                         className=" text-neutral-600 dark:text-neutral-400 text-xs uppercase tracking-tight overflow-hidden"
                     >
-                        {data.content.visibility != '3' ? (
-                            <>PRIVATE</>
-                        ) : (
-                            <>PUBLIC</>
-                        )}
-                        {data.content.members > -1 && (
-                            <> · {data.content.members} MEMBERS </>
-                        )}
+                       
+                       
                         {data.content.date_start && (
                             <>
-                                ·{' '}
+                                
                                 <Time
                                     stylesName="text-xs flex-none"
                                     ts={data.content.date_start}
@@ -464,7 +458,7 @@ function DefaultUnit(data) {
                     </Text>
                     <Text
                         numberOfLines={2}
-                        className=" mt-1 text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-lg sm:text-xl tracking-tight font-bold"
+                        className=" text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-lg sm:text-xl tracking-tight font-bold"
                     >
                         {data.content.title}
                     </Text>
@@ -472,7 +466,7 @@ function DefaultUnit(data) {
                 <View>
                     <View className="flex-col relative">
                         <Text
-                            className="text-neutral-950 dark:text-neutral-50 pb-4 text-sm "
+                            className="text-neutral-950 dark:text-neutral-50 text-sm "
                             numberOfLines={2}
                         >
                             {data.content.text}
@@ -518,7 +512,7 @@ function DefaultUnit(data) {
         </View>
     }
     function MarketView({ data, styles }) {
-        return <View className=" flex-col md:flex-row space-x-2 mx-0.5 sm:mx-4 overflow-hidden rounded-lg border border-bdritem dark:border-bdritem-d bg-bgritem dark:bg-bgritem-d p-1">
+        return <View className=" flex-col md:flex-row space-x-2  overflow-hidden rounded-lg border border-bdritem dark:border-bdritem-d bg-bgritem dark:bg-bgritem-d p-1">
             {data.mainImage && (
                 <View className="w-full md:w-1/3  ">
                     <View
@@ -543,7 +537,7 @@ function DefaultUnit(data) {
 
                     <Text
                         numberOfLines={2}
-                        className=" mt-1 text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-lg sm:text-xl tracking-tight font-bold"
+                        className=" text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-lg sm:text-xl tracking-tight font-bold"
                     >
                         {data.content.title}
                     </Text>
@@ -598,7 +592,7 @@ function DefaultUnit(data) {
                     <View>
                         <View className="flex-col relative ">
                             {bIsTimelineContent && (
-                                <View className={' ' + ((data.content.text && content_attach.length > 0) ? ' pb-4 ' : '')}>
+                                <View className={' ' + ((data.content.text && content_attach.length > 0) ? ' pb-3 ' : '')}>
                                     <ContentMore id={'feed-' + data.id} showLink={data?.content?.images_attach?.length == 0} content={data.content.text ? data.content.text : ''} numberOfLines={3} openSmall={false} textClassName=" text-neutral-600 dark:text-neutral-400 text-sm " />
                                     {!!data.content.embed && <Embed data={data.content.embed} />}
                                 </View>
@@ -695,7 +689,7 @@ function UnitImages(images) {
 
 
     return (
-        <View className="w-full px-0.5 ">
+        <View className="w-full ">
             <Carousel data={aImg} />
         </View>
     )

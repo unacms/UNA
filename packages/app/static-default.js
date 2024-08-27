@@ -18,7 +18,7 @@ import { Platform } from 'react-native'
 const LogoText = (
     <Svg
         aria-label="Logo Text"
-        className="h-8 w-20 group-active:scale-90 text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-900 dark:group-hover:text-neutral-100 duration-500"
+        className="h-11 w-20 group-active:scale-90 text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-900 dark:group-hover:text-neutral-100 duration-500"
         viewBox="0 0 6400 2400"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -41,7 +41,7 @@ const LogoText = (
 const LogoMark = (
     <Svg
         aria-label="Logo Mark"
-        className=" group-hover:rotate-[180deg] group-hover:scale-125 group-active:scale-90 duration-500 h-[42px] w-[42px] group-active:scale-90 text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900 dark:group-hover:text-neutral-100  "
+        className=" group-hover:rotate-[180deg] group-hover:scale-125 group-active:scale-90 duration-500 h-11 w-11 group-active:scale-90 text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900 dark:group-hover:text-neutral-100  "
         viewBox="0 0 240 240"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -118,10 +118,7 @@ const LogoNative = (
             d="M1660 1478.25L2280 400C1939.86 596.377 1735.59 711.463 1412.5 898L1660 1478.25Z"
             fill="#dc2626"
         />
-        <Path
-            d="M987.5 1502L740 921.75L120 2000L987.5 1502Z"
-            fill="#dc2626"
-        />
+        <Path d="M987.5 1502L740 921.75L120 2000L987.5 1502Z" fill="#dc2626" />
 
         <Path
             d="M740 921.75L1360 2000L1660 1478.25L1040 400L740 921.75Z"
@@ -161,10 +158,7 @@ const LogoNativeDark = (
             d="M1660 1478.25L2280 400C1939.86 596.377 1735.59 711.463 1412.5 898L1660 1478.25Z"
             fill="#dc2626"
         />
-        <Path
-            d="M987.5 1502L740 921.75L120 2000L987.5 1502Z"
-            fill="#dc2626"
-        />
+        <Path d="M987.5 1502L740 921.75L120 2000L987.5 1502Z" fill="#dc2626" />
 
         <Path
             d="M740 921.75L1360 2000L1660 1478.25L1040 400L740 921.75Z"
@@ -350,11 +344,12 @@ export function ComponentsIntro(props) {
     )
 }
 
-function ComponentModal({ title = "test" }) {
+function ComponentModal({ title = 'test' }) {
     return (
         <View
             className={
-                'flex-col mb-4 w-full mx-auto ' + appSetting('layout', 'max_width')
+                'flex-col mb-4 w-full mx-auto ' +
+                appSetting('layout', 'max_width')
             }
         >
             <View className="   duration-300">
@@ -374,7 +369,6 @@ function ComponentModal({ title = "test" }) {
                         >
                             <View className="">
                                 <BlockByUrl url="/api.php?r=system/login_form/TemplServiceLogin" />
-
                             </View>
                         </Card>
 
@@ -392,7 +386,7 @@ function ComponentModal({ title = "test" }) {
 
                         <Card
                             rounded=" rounded-2xl "
-                            addClassName="border p-4 mt-4 sm:p-6 sm:mt-6 w-full  max-w-xl mx-auto flex-auto  "
+                            addClassName=" p-4 mt-4 sm:p-6 sm:mt-6 w-full  max-w-xl mx-auto flex-auto  "
                         >
                             <Text className="text-center mb-6 text-lg font-semibold  mx-auto text-neutral-700 dark:text-neutral-300  ">
                                 Don't have an account?
@@ -414,54 +408,54 @@ function ComponentModal({ title = "test" }) {
 }
 
 function ComponentsSplash(props) {
-    const isWeb = Platform.OS == 'web';
+    const isWeb = Platform.OS == 'web'
 
+    const cnt = (
+        <View className="mx-auto w-full max-w-lg md:w-1/2 lg:w-1/3 my-auto mx-auto items-center xl:p-4 p-2  ">
+            <View className=" flex-auto w-full   ">
+                <Card
+                    rounded=" rounded-2xl "
+                    addClassName=" px-4 py-2 sm:px-6 sm:py-4 w-full  max-w-xl mx-auto flex-auto  "
+                >
+                    <View className="">{props.block}</View>
+                </Card>
 
-    const cnt = <View className="mx-auto w-full max-w-lg md:w-1/2 lg:w-1/3 my-auto mx-auto items-center xl:p-4 p-2  ">
-        <View className=" flex-auto w-full   ">
-            <Card
-                rounded=" rounded-2xl "
-                addClassName=" px-4 py-2 sm:px-6 sm:py-4 w-full  max-w-xl mx-auto flex-auto  "
-            >
-                <View className="">{props.block}</View>
-            </Card>
-
-            <Link
-                className=" mx-auto  w-full "
-                href="/forgot-password"
-            >
-                <Button
-                    title="Forgot password?"
-                    variant="link"
-                    fullWidth
-                    size="sm"
-                />
-            </Link>
-
-            <Card
-                rounded=" rounded-2xl "
-                addClassName="border p-4 mt-4 sm:p-6 sm:mt-6 w-full  max-w-xl mx-auto flex-auto  "
-            >
-                <Text className="text-center mb-4 sm:mb-6 text-lg font-semibold  mx-auto text-neutral-700 dark:text-neutral-300  ">
-                    Don't have an account?
-                </Text>
-                <Link className=" w-full " href="/create-account">
+                <Link className=" mx-auto  w-full " href="/forgot-password">
                     <Button
-                        title="Create new account"
-                        startDecorator="UserCirclePlus"
-                        size="base"
+                        title="Forgot password?"
+                        variant="link"
                         fullWidth
+                        size="sm"
                     />
                 </Link>
-            </Card>
+
+                <Card
+                    rounded=" rounded-2xl "
+                    addClassName=" p-4 mt-4 sm:p-6 sm:mt-6 w-full max-w-xl mx-auto flex-auto  "
+                >
+                    <Text className="text-center mb-4 sm:mb-6 text-lg font-semibold  mx-auto text-neutral-700 dark:text-neutral-300  ">
+                        Don't have an account?
+                    </Text>
+                    <Link className=" w-full " href="/create-account">
+                        <Button
+                            title="Create new account"
+                            startDecorator="UserCirclePlus"
+                            size="base"
+                            fullWidth
+                        />
+                    </Link>
+                </Card>
+            </View>
         </View>
-    </View>
+    )
 
     if (!isWeb) {
         return (
-            <View className=' w-full  w-full justify-center mt-16 '>
-                <View className='   '>
-                    <View className='items-center mb-4 '><View className='w-60 h-16'>{LogoNative}</View></View>
+            <View className=" w-full  w-full justify-center mt-16 ">
+                <View className="   ">
+                    <View className="items-center mb-4 ">
+                        <View className="w-60 h-16">{LogoNative}</View>
+                    </View>
 
                     {cnt}
                 </View>
@@ -470,17 +464,16 @@ function ComponentsSplash(props) {
     }
 
     return (
-        <View className={
-            'flex-col w-full mx-auto ' + appSetting('layout', 'max_width')
-        }>
+        <View
+            className={
+                'flex-col w-full mx-auto ' + appSetting('layout', 'max_width')
+            }
+        >
             <View className="mb-4 md:flex-row border-b border-bdr dark:border-bdr-d  px-2 xl:px-4 py-8 lg:gap-x-4 duration-300  ">
-
-                <View className='group absolute my-auto'>
-                    <View className='translate-x-8 -rotate-6 translate-y-8 duration-1000 hover:rotate-6 absolute backdrop-blur-sm  bg-primary/5 rounded-2xl w-80 h-80 '></View>
-                    <View className='translate-x-32 -rotate-6 translate-y-16 duration-1000 hover:rotate-6 absolute backdrop-blur-sm  bg-primary/5 rounded-2xl w-80 h-80 '></View>
-                    <View className='translate-x-60 -rotate-6 translate-y-24 duration-1000 hover:rotate-6 absolute backdrop-blur-sm  bg-primary/5 rounded-2xl w-80 h-80 '></View>
-
-
+                <View className="group absolute my-auto">
+                    <View className="translate-x-8 -rotate-6 translate-y-8 duration-1000 hover:rotate-6 absolute backdrop-blur-sm  bg-primary/5 rounded-2xl w-80 h-80 "></View>
+                    <View className="translate-x-32 -rotate-6 translate-y-16 duration-1000 hover:rotate-6 absolute backdrop-blur-sm  bg-primary/5 rounded-2xl w-80 h-80 "></View>
+                    <View className="translate-x-60 -rotate-6 translate-y-24 duration-1000 hover:rotate-6 absolute backdrop-blur-sm  bg-primary/5 rounded-2xl w-80 h-80 "></View>
                 </View>
                 <View className=" p-10 flex-col mx-auto justify-center  my-auto sm:justify-start items-center md:items-start xl:items-center  flex-auto  ">
                     <Text className=" text-4xl mb-8 lg:text-6xl max-w-2xl text-center md:text-left tracking-tight font-bold text-neutral-800 dark:text-neutral-200 ">
@@ -902,46 +895,124 @@ const ComponentsFullFooter = () => {
 }
 
 function getBadgeForTab(currentUser, url) {
-    if (url == appSetting('layout', 'notifications') && currentUser?.notifications)
-        return <Text className={Platform.OS === 'ios' ? 'text-xs' : 'text-sm'}>{currentUser?.notifications}</Text>;
+    if (
+        url == appSetting('layout', 'notifications') &&
+        currentUser?.notifications
+    )
+        return (
+            <Text className={Platform.OS === 'ios' ? 'text-xs' : 'text-sm'}>
+                {currentUser?.notifications}
+            </Text>
+        )
 
     if (url == '/friends-all' && currentUser?.counters)
-        return <Text className={Platform.OS === 'ios' ? 'text-xs' : 'text-sm'}>{currentUser.counters.respects + currentUser.counters.trust}</Text>;
+        return (
+            <Text className={Platform.OS === 'ios' ? 'text-xs' : 'text-sm'}>
+                {currentUser.counters.respects + currentUser.counters.trust}
+            </Text>
+        )
 
     return null
 }
 
 function getButtonForConductor(a, index, currentUser) {
     let settings = appSetting('layouts', a.key)
-    let icon = !a.ident ? (settings?.icon ? settings?.icon : a?.icon.replace('*', '')) : a.icon.replace('*', '');
+    let icon = !a.ident
+        ? settings?.icon
+            ? settings?.icon
+            : a?.icon.replace('*', '')
+        : a.icon.replace('*', '')
 
-    let addon = a.addon ? a.addon : null;
-    if (!appSetting('layout', 'show_nav_counters'))
-        addon = null;
-    if (appSetting('layout', 'show_nav_counters') == 'primary' && a?.addon?.variant != 'primary')
-        addon = null;
+    let addon = a.addon ? a.addon : null
+    if (!appSetting('layout', 'show_nav_counters')) addon = null
+    if (
+        appSetting('layout', 'show_nav_counters') == 'primary' &&
+        a?.addon?.variant != 'primary'
+    )
+        addon = null
 
-    return <Button
-        variant={a.index == index ? 'outline' : "text"}
-        size={!a.ident ? "lg" : "sm"}
-        pressed={a.index == index ? true : false}
-        fullWidth
-        title={(a.title)}
-        align="start"
-        startDecorator={icon}
-        addon={addon}
-    />
+    return (
+        <Button
+            variant={a.index == index ? 'outline' : 'text'}
+            size={!a.ident ? 'lg' : 'sm'}
+            pressed={a.index == index ? true : false}
+            fullWidth
+            title={a.title}
+            align="start"
+            startDecorator={icon}
+            addon={addon}
+        />
+    )
 }
 
-function updateRouteDataForConnections(currentRoute, layoutData, routes, index, setRoutes) {
-    updateRouteDataForConnection('system/browse_subscriptions', ['remove'], 'sys_profiles_subscriptions', currentRoute, layoutData, routes, index, setRoutes);
-    updateRouteDataForConnection('system/browse_friends', ['remove'], 'sys_profiles_friends', currentRoute, layoutData, routes, index, setRoutes);
-    updateRouteDataForConnection('system/browse_friend_requested', ['remove'], 'sys_profiles_friends', currentRoute, layoutData, routes, index, setRoutes);
-    updateRouteDataForConnection('system/browse_friend_requests', ['add'], 'sys_profiles_friends', currentRoute, layoutData, routes, index, setRoutes);
-    updateRouteDataForConnection('system/browse_recommendations_subscriptions', ['add', 'ignore'], 'sys_subscriptions', currentRoute, layoutData, routes, index, setRoutes);
-    updateRouteDataForConnection('system/browse_recommendations_friends', ['add', 'ignore'], 'sys_friends', currentRoute, layoutData, routes, index, setRoutes);
+function updateRouteDataForConnections(
+    currentRoute,
+    layoutData,
+    routes,
+    index,
+    setRoutes
+) {
+    updateRouteDataForConnection(
+        'system/browse_subscriptions',
+        ['remove'],
+        'sys_profiles_subscriptions',
+        currentRoute,
+        layoutData,
+        routes,
+        index,
+        setRoutes
+    )
+    updateRouteDataForConnection(
+        'system/browse_friends',
+        ['remove'],
+        'sys_profiles_friends',
+        currentRoute,
+        layoutData,
+        routes,
+        index,
+        setRoutes
+    )
+    updateRouteDataForConnection(
+        'system/browse_friend_requested',
+        ['remove'],
+        'sys_profiles_friends',
+        currentRoute,
+        layoutData,
+        routes,
+        index,
+        setRoutes
+    )
+    updateRouteDataForConnection(
+        'system/browse_friend_requests',
+        ['add'],
+        'sys_profiles_friends',
+        currentRoute,
+        layoutData,
+        routes,
+        index,
+        setRoutes
+    )
+    updateRouteDataForConnection(
+        'system/browse_recommendations_subscriptions',
+        ['add', 'ignore'],
+        'sys_subscriptions',
+        currentRoute,
+        layoutData,
+        routes,
+        index,
+        setRoutes
+    )
+    updateRouteDataForConnection(
+        'system/browse_recommendations_friends',
+        ['add', 'ignore'],
+        'sys_friends',
+        currentRoute,
+        layoutData,
+        routes,
+        index,
+        setRoutes
+    )
 }
-
 
 export const staticDefault = {
     logo_text: LogoText,
@@ -963,5 +1034,5 @@ export const staticDefault = {
 
     getBadgeForTab: getBadgeForTab,
     getButtonForConductor: getButtonForConductor,
-    updateRouteDataForConnections: updateRouteDataForConnections
+    updateRouteDataForConnections: updateRouteDataForConnections,
 }

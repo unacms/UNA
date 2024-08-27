@@ -49,15 +49,15 @@ export default function AtomProfile(oProps) {
             sSize = 'w-8 h-8'
             iSizeWidth = 32
             iSizeHeight = 32
-            sSizeFont = 'text-sm tracking-tighter font-semibold';
+            sSizeFont = 'text-sm tracking-tight font-semibold';
             sSizeFontLetter = 'text-base font-bold';
             break
 
         case 'base':
-            sSize = ' w-10 h-10 '
-            iSizeWidth = 40
-            iSizeHeight = 40
-            sSizeFont = ' text-sm leading-[22px] tracking-tight font-bold';
+            sSize = ' w-11 h-11 '
+            iSizeWidth = 44
+            iSizeHeight = 44
+            sSizeFont = ' text-sm leading-4 tracking-tight font-bold ';
             sSizeFontLetter = 'text-xl font-semibold';
             break
 
@@ -137,7 +137,7 @@ export default function AtomProfile(oProps) {
         }
 
         return (
-            <Text className={' text-neutral-900 dark:text-neutral-100 hover:text-linkhover ' + sSizeFont + ' truncate '}>
+            <Text className={'text-neutral-900 dark:text-neutral-100 hover:text-linkhover' + sSizeFont + ' truncate '}>
                 {oProps.title}
             </Text>
         )

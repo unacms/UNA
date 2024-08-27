@@ -919,7 +919,7 @@ export const settingsDefault = {
             checkbox: '#0ea5e9',
         },
         button_styles: {
-            'u-btn-default-cnt': ' bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-300 dark:sm:hover:bg-neutral-700 border border-bdrbutton dark:border-bdrbutton-d sm:hover:border-bdrbutton-h dark:hover:border-bdrbutton-dh active:opacity-50 shadow-sm sm:hover:shadow-md active:shadow-none ',
+            'u-btn-default-cnt': ' bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:sm:hover:bg-neutral-700 border border-bdrbutton dark:border-neutral-700 sm:hover:border-bdrbutton-h dark:sm:hover:border-neutral-600 active:opacity-50 shadow-sm sm:hover:shadow-md active:shadow-none ',
             'u-btn-default-text': ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
             'u-btn-default-trans': ' duration-200 ',
 
