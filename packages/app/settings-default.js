@@ -1928,7 +1928,7 @@ export const settingsDefault = {
             'u-btn-default-trans': ' duration-200 ',
 
             'u-btn-primary-cnt':
-                ' bg-primary dark:bg-primary-d sm:hover:bg-primary-600 dark:sm:hover:bg-primary-700 shadow-sm sm:hover:shadow-md active:opacity-50 active:shadow-none  ',
+                ' bg-primary dark:bg-primary-d sm:hover:bg-primary-600 dark:sm:hover:bg-primary-700 shadow-sm sm:hover:shadow-md active:opacity-50 active:shadow-none border border-transparent ',
             'u-btn-primary-text': '  font-medium text-white ',
             'u-btn-primary-trans': ' duration-200 ',
 
