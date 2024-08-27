@@ -64,7 +64,7 @@ export default function (props) {
                     return (
                         <Row className='px-2 py-1' key={"row" + index}>
                             <Switch
-                                trackColor={{ false: colors.border, true: colors.primary }}
+                                trackColor={{ false: colors.border, true: colors.checkbox }}
                                 thumbColor={'#ffffff'}
                                 onValueChange={() => toggleSwitch(item.id, item.value == 1 ? 0 : 1)}
                                 activeThumbColor={'#ffffff'}

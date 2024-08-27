@@ -305,7 +305,7 @@ export default function Bluetooth(props) {
         <Row className='justify-between w-full '>
             <Row className='items-center gap-x-2'>
                 <Switch
-                    trackColor={{ false: colors.border, true: colors.primary }}
+                    trackColor={{ false: colors.border, true: colors.checkbox }}
                     thumbColor={'#ffffff'}
                     onValueChange={() => startAdv()}
                     activeThumbColor={'#ffffff'}
