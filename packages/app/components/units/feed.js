@@ -343,7 +343,7 @@ function DefaultUnit(data) {
                 displayType="unit"
                 displaySize="base"
                 showInfo={
-                    <Row className="flex-wrap items-center text-sm">
+                    <Row className="flex-wrap items-center text-sm leading-4 ">
                         <Link href={url}>
                             <Time stylesNameAdd=" hover:text-linkhover  align-center text-center" ts={data.date}></Time>
                         </Link>
@@ -366,7 +366,7 @@ function DefaultUnit(data) {
                 </View>
             </Modal>}
             <Card rounded=' rounded-none sm:rounded-2xl '  margin=' mb-1 sm:mb-4 sm:mx-4 ' addClassName={'p-3 sm:p-4 tl-' + data.id} >
-                <View className="flex-auto flex-row items-top pb-3 sm:pb-4">
+                <View className="flex-auto flex-row items-top pb-3">
                     <Author />
                     <View className="flex-auto justify-end flex-row mb-auto">
                         {data.author_actions.map((item, index) => {
@@ -399,7 +399,7 @@ function DefaultUnit(data) {
                     ) : (
                         <>
                             <MainContent />
-                            <View className="pt-3 sm:pt-4">
+                            <View className="pt-3">
                                 <MenuMemo showCommentsModal={showCommentsModal} />
                             </View>
                         </>
@@ -435,17 +435,11 @@ function DefaultUnit(data) {
                         numberOfLines={1}
                         className=" text-neutral-600 dark:text-neutral-400 text-xs uppercase tracking-tight overflow-hidden"
                     >
-                        {data.content.visibility != '3' ? (
-                            <>PRIVATE</>
-                        ) : (
-                            <>PUBLIC</>
-                        )}
-                        {data.content.members > -1 && (
-                            <> · {data.content.members} MEMBERS </>
-                        )}
+                       
+                       
                         {data.content.date_start && (
                             <>
-                                ·{' '}
+                                
                                 <Time
                                     stylesName="text-xs flex-none"
                                     ts={data.content.date_start}
@@ -598,7 +592,7 @@ function DefaultUnit(data) {
                     <View>
                         <View className="flex-col relative ">
                             {bIsTimelineContent && (
-                                <View className={' ' + ((data.content.text && content_attach.length > 0) ? ' pb-4 ' : '')}>
+                                <View className={' ' + ((data.content.text && content_attach.length > 0) ? ' pb-3 ' : '')}>
                                     <ContentMore id={'feed-' + data.id} showLink={data?.content?.images_attach?.length == 0} content={data.content.text ? data.content.text : ''} numberOfLines={3} openSmall={false} textClassName=" text-neutral-600 dark:text-neutral-400 text-sm " />
                                     {!!data.content.embed && <Embed data={data.content.embed} />}
                                 </View>
