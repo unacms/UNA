@@ -70,7 +70,7 @@ export default function (props) {
                             onPress={() => showSelect()}
                         />}
                         {!!field.value && field.value.map((item, index) => (
-                            <View className='mr-2 my-1' key={'label' + index}>
+                            <View className='mr-2 mt-1' key={'label' + index}>
                                 <Button
                                     endDecorator="X"
                                     variant={"outline"}

@@ -217,11 +217,11 @@ export default function Unit(props) {
     return (
         <>
             <Redirect ref={redirectdRef} />
-            <Card margin=" mb-[1px] sm:m-2 " border="border-none sm:border" rounded=" sm:rounded-2xl ">
+            <Card margin=" mb-[1px] sm:m-2 " border=" border-none shadow-none sm:shadow "  rounded=" sm:rounded-2xl ">
                 <Link className="group " href={data.url}>
-                    <View className="flex-row  sm:flex-col p-3 sm:p-1 h-32 sm:h-40 sm:h-auto">
+                    <View className="flex-row  sm:flex-col p-4 sm:p-1 h-32 sm:h-40 sm:h-auto">
                         <ImageSection data={data} imageSizes={imageSizes} />
-                        <View className="flex-col pl-3 sm:p-1.5 flex-auto items-between justify-between ">
+                        <View className="flex-col pl-4 sm:p-3 sm:h-32 flex-auto items-between justify-between ">
                             <View className='flex-auto mb-auto'>
                                 <Text numberOfLines={1} className=" mb-2 text-lg leading-tight tracking-tight font-semibold text-neutral-800 dark:text-neutral-200 group-hover:text-primary group-hover:dark:text-primary-d">
                                     {data.title}
