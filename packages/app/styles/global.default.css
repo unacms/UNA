@@ -4,7 +4,7 @@
 
 
 .u-vanilla-html {
-    @apply prose dark:prose-invert;
+    /* @apply prose dark:prose-invert; */
     @apply text-neutral-700 dark:text-neutral-300;
     font-size: 1rem;
     line-height: 1.375rem;
@@ -12,7 +12,7 @@
     word-wrap: break-word;
     /*margin-top: 0.5em !important;
     margin-bottom: 0.5em !important;*/
-}SW
+}
 
 .u-vanilla-html :where(p):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
     margin-top: 0.5em !important;
@@ -322,8 +322,8 @@ div::-webkit-scrollbar {
 }
 
 .editor-height .ProseMirror P {
-    margin-top: 1em;
-    margin-bottom: 1em;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
 }
 
 .editor-height .ProseMirror P:first-child {

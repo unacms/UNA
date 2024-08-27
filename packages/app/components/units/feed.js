@@ -366,7 +366,7 @@ function DefaultUnit(data) {
                 </View>
             </Modal>}
             <Card rounded=' rounded-none sm:rounded-2xl '  margin=' mb-1 sm:mb-4 sm:mx-4 ' addClassName={'p-3 sm:p-4 tl-' + data.id} >
-                <View className="flex-auto flex-row items-top pb-3">
+                <View className="flex-auto flex-row items-top pb-3 sm:pb-4">
                     <Author />
                     <View className="flex-auto justify-end flex-row mb-auto">
                         {data.author_actions.map((item, index) => {
@@ -399,7 +399,7 @@ function DefaultUnit(data) {
                     ) : (
                         <>
                             <MainContent />
-                            <View className="pt-3">
+                            <View className="pt-3 sm:pt-4">
                                 <MenuMemo showCommentsModal={showCommentsModal} />
                             </View>
                         </>
