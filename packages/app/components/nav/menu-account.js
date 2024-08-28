@@ -25,7 +25,7 @@ export default function () {
         return <></>;
 
     return (
-        <View className=" flex-row justify-center">
+        <View className="flex-row justify-center">
             <DropdownMenu items={menu_account_items.map(
                 (item, index) => {
                     return (
@@ -44,7 +44,7 @@ export default function () {
             >
                 <ButtonRef
                     tooltip={t("Dashboard")}
-                    variant="outline"
+                    variant="secondary"
                     rounded
                     padding={'0px'}
                     startDecorator={profile}

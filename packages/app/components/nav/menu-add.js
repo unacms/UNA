@@ -14,7 +14,7 @@ export default function ({buttonProps}) {
         return <></>;
 
     const buttonPropsDef = {
-        variant: "outline",
+        variant: "secondary",
         rounded: 'rounded',
         startDecorator: "Plus",
         id: "m3",

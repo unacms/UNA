@@ -112,7 +112,7 @@ export default function (props) {
     return (
         <>
             <View className="fixed w-full">
-                <View className="backdrop-blur h-16 items-center w-full shadow bg-bgrnavbar dark:bg-bgrnavbar-d">
+                <View className="backdrop-blur h-16 items-center w-full border-b border-bdrnavbar dark:border-bdrnavbar-d shadow-sm bg-bgrnavbar dark:bg-bgrnavbar-d ">
                     <View
                         className={
                             appSetting('layout', 'max_width') +
@@ -195,7 +195,7 @@ export default function (props) {
                                                 >
                                                     <ButtonRef
                                                         tooltip={t('Messenger')}
-                                                        variant="outline"
+                                                        variant="secondary"
                                                         rounded
                                                         startDecorator="ChatTeardropDots"
                                                         id="m2"

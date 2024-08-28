@@ -29,7 +29,7 @@ export default function () {
             >
                 <ButtonRef
                     tooltip="All Apps"
-                    variant="outline"
+                    variant="secondary"
                     size="base"
                     fullWidth
                     rounded

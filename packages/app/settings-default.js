@@ -1933,7 +1933,7 @@ export const settingsDefault = {
             'u-btn-primary-trans': ' duration-200 ',
 
             'u-btn-secondary-cnt':
-                ' bg-neutral-200 dark:bg-neutral-800 sm:hover:bg-neutral-300 dark:sm:hover:bg-neutral-700 active:opacity-50  ',
+                '  bg-bgritem dark:bg-bgritem-d sm:hover:bg-neutral-300 dark:sm:hover:bg-neutral-700 active:opacity-50  ',
             'u-btn-secondary-text':
                 ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
             'u-btn-secondary-trans': ' duration-200 ',

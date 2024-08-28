@@ -46,7 +46,7 @@ export default function (props) {
 
     let ntfsTrigger = <View key="ddp-trigger3">
         <ButtonRef
-            variant="outline"
+            variant="secondary"
             tooltip={props.tooltip === undefined ? "Notifications" : props.tooltip}
             rounded
             startDecorator="Bell"

@@ -19,10 +19,10 @@ if (Platform.OS === 'android') {
 //import { Dropdown as DropdownDef} from 'react-native-element-dropdown';
 
 /* inputs */
-export const Input = styled(TextInputDef, ' bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-bdrinput dark:border-bdrinput-d focus:outline-none focus:outline-primary/50 dark:focus-outline-primary-d/50 duration-100 text-neutral-900 rounded-lg flex-auto px-3  dark:text-neutral-100 text-base leading-5 h-11 ')
-export const InputMulti = styled(TextInputDef, ' bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg flex-auto p-2 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 ')
-export const InputRounded = styled(TextInputDef, ' bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-bdrinput dark:border-bdrinput-d focus:outline-none focus:outline-primary/50 dark:focus-outline-primary-d/50 duration-100 text-neutral-900 rounded-full flex-auto px-3   dark:text-neutral-100 text-base leading-5 h-11  ')
-export const InputRoundedSmall = styled(TextInputDef, ' bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-full flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[34px] ')
+export const Input = styled(TextInputDef, ' bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-bdrinput dark:border-bdrinput-d focus:outline-none focus:outline-primary dark:focus-outline-primary-d placeholder-neutral-500 duration-100 text-neutral-900 rounded-lg flex-auto px-3  dark:text-neutral-100 text-base leading-5 h-11 ')
+export const InputMulti = styled(TextInputDef, ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg flex-auto p-2 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 ')
+export const InputRounded = styled(TextInputDef, ' placeholder-neutral-500 bg-bgritem dark:bg-bgritem-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-transparent focus:border-bdrinput dark:focus:border-bdrinput-d focus:outline-none focus:outline-primary dark:focus-outline-primary-d duration-100 text-neutral-900 rounded-full flex-auto px-3 dark:text-neutral-100 text-base leading-5 h-11  ')
+export const InputRoundedSmall = styled(TextInputDef, ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-full flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[34px] ')
 export const Switch = (props) => Platform.OS =='web' ? <View className="w-16 h-8 pl-2 pt-1.5"><SwitchDef {...props} style={{ transform: [{ scaleX: 1.4 }, { scaleY: 1.4 }], ...props.style }} /></View> : <SwitchDef {...props} style={props.style } />;
 export const Hidden = styled(TextInputDef, 'hidden')
 //export const Dropdown = styled(DropdownDef, ' bg-bgrinput  border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg   w-full p-2 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus   dark:text-neutral-100 text-base leading-5 h-[40px]')
@@ -210,7 +210,7 @@ export function Button(props) {
     let sClassContainer = ' group relative flex-row items-center '
     let sIconContainer = ' h-6 w-6 mr-2 '
 
-    sClassContainer += buttonFull ? ' flex-auto w-full ' : '  m-0 truncate w-fit '//w-fit  m-0 truncate
+    sClassContainer += buttonFull ? ' flex-auto w-full ' : ' m-0 truncate w-fit '
 
     if (buttonDisabled) sClassContainer += ' opacity-50 '
 
@@ -266,19 +266,19 @@ export function Button(props) {
             break
 
         case 'base':
-            sClassContainer += buttonRounded ? sClassFullRounding + (props.padding ? ' p-' + props.padding : ' p-[9px]') : sClassDefaultRounding + ' p-[9px]  ';
-            sIconContainer = ' h-6 w-6  ' + (buttonTitle !== '' ? ' mx-1 ' : '');
+            sClassContainer += buttonRounded ? sClassFullRounding + (props.padding ? ' p-' + props.padding : ' p-2.5') : sClassDefaultRounding + ' p-2.5 ';
+            sIconContainer = ' h-6 w-6  ' + (buttonTitle !== '' ? ' mx-1 ' : ' ');
             sClassText += ' text-base tracking-tight '
             iIconSize = 24;
             sTitleContainer += buttonTitle !== '' ? ' mx-2 ' : '' 
             break
 
         case 'lg':
-            sClassContainer += buttonRounded ? sClassFullRounding + ' p-2 ' : sClassDefaultRounding + ' p-2 ';
-            sIconContainer = ' h-8 w-8 ' + (buttonTitle !== '' ? ' mx-2 my-0.5 ' : ' mx-2 my-0.5 ');
-            sClassText += ' text-lg tracking-tight '
+            sClassContainer += buttonRounded ? sClassFullRounding + (props.padding ? ' p-' + props.padding : ' p-2.5') : sClassDefaultRounding + ' p-2.5 ';
+            sIconContainer = ' h-8 w-8 ' + (buttonTitle !== '' ? ' mx-1.5 ' : ' mx-1.5  ');
+            sClassText += ' h-8 leading-8 text-lg tracking-tight  '
             iIconSize = 32;
-            sTitleContainer += buttonTitle !== '' ? ' mx-2 ' : '' 
+            sTitleContainer += buttonTitle !== '' ? ' mx-1.5 ' : '' 
             break
 
 

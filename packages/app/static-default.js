@@ -466,7 +466,7 @@ function ComponentsSplash(props) {
     return (
         <View
             className={
-                'flex-col w-full mx-auto ' + appSetting('layout', 'max_width')
+                'flex-col w-full mx-auto max-w-screen-2xl mx-auto ' + appSetting('layout', 'max_width')
             }
         >
             <View className="mb-4 md:flex-row border-b border-bdr dark:border-bdr-d  px-2 xl:px-4 py-8 lg:gap-x-4 duration-300  ">
@@ -489,7 +489,7 @@ function ComponentsSplash(props) {
 
                 {cnt}
             </View>
-            <View className=" items-center px-2 xl:px-4 py-4 flex-row flex-wrap w-full duration-300">
+            <View className=" max-w-screen-2xl mx-auto items-center px-2 xl:px-4 py-4 flex-row flex-wrap w-full duration-300">
                 <View className="w-full md:w-1/2 lg:w-1/3 flex-auto max-w-lg mx-auto xl:p-4 p-2">
                     <Card addClassName=" rounded-2xl w-full flex-col p-4 sm:p-6 ">
                         <View className="flex-row gap-x-3 mb-4">
