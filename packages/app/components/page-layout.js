@@ -4,7 +4,6 @@ import { Platform } from 'react-native'
 import Cell from 'app/components/cell';
 import { View } from 'app/design/view'
 import { useCurrentUser } from 'app/context/user';
-//import ConfirmEmail from 'app/ui/molecules/confirm_email';
 import { appStatic } from 'app/lib/app-static'
 import Redirect from 'app/ui/atoms/redirect'
 import { useRef, useEffect  } from 'react';
@@ -82,10 +81,16 @@ function Wrapper(p, props){
 
     useEffect(() => {
         let bConfirm = false;
+        let bConfirm2 = false;
         if ((currentUser && !currentUser?.confirmed && appSetting('layout', 'lock_unconfirmed') == true) && props?.data?.uri?.toString() != 'confirm-email')
             bConfirm = true;
+        if ((currentUser && currentUser?.confirmed && appSetting('layout', 'lock_unconfirmed') == true) && props?.data?.uri?.toString() == 'confirm-email')
+            bConfirm2 = true;
         if (bConfirm){
             redirectdRef.current.redirect('/confirm-email');
+        }
+        if (bConfirm2){
+            redirectdRef.current.redirect('/home');
         }
     }, [currentUser?.confirmed]);
    

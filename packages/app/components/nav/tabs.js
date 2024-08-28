@@ -101,7 +101,7 @@ export default function () {
             OneSignal.User.addEmail(currentUser.email);
             OneSignal.User.addTag("user_hash", ""+currentUser.hash);
         }
-    },[currentUser]);
+    },[currentUser?.id]);
 
     /*useEffect(() => {
         const scheduleNotification = async () => {

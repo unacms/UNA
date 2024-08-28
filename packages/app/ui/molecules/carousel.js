@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo, memo } from 'react';
-import { View, Pressable, Row } from 'app/design/view'
+import { View, Pressable, Row, ScrollView } from 'app/design/view'
 import Image from 'app/ui/atoms/image';
 import { Button } from 'app/design/controls';
 import { Modal } from "app/design/controls";
@@ -45,12 +45,14 @@ const Carousel = memo(({ data = [] }) => {
                 data[currentImageIndex].src,
                 (width, height) => {
                     let imageAspectRatio = width / height;
-                    let ww = windowWidthOr >1024 ? 1024 : windowWidthOr;
-                    let wh = windowHeightOr - (windowWidthOr >1024? 120:60);
+                    let ww = windowWidthOr >672 ? 672 : windowWidthOr;
+                    let wh = windowHeightOr - (windowWidthOr >672? 120:60);
+
+                    let newImageWidth, newImageHeight;
                   //  let wh = windowWidthOr * wh1/ww;
                     let windowAspectRatio = ww / wh;
 
-                    let newImageWidth, newImageHeight;
+                    if (false){
 
                     if (imageAspectRatio > windowAspectRatio) {
                         newImageWidth = ww;
@@ -59,6 +61,12 @@ const Carousel = memo(({ data = [] }) => {
                         newImageHeight = wh;
                         newImageWidth = wh * imageAspectRatio;
                     }
+                    }
+                    else{
+                    newImageWidth = ww;
+                    newImageHeight = newImageWidth*height/width
+                    }
+
                     console.log("setImageSize2", [newImageWidth, newImageHeight,width, height, ww,wh])
                     setImageSize2([newImageWidth, newImageHeight]);
                 }
@@ -165,13 +173,13 @@ const Carousel = memo(({ data = [] }) => {
     }, (prevProps, nextProps) => prevProps.data2 === nextProps.data2);
 
     return <>
-        {currentImageIndex !== false && <Modal title="Viewer" visible={currentImageIndex !== false} onClose={() => { setCurrentImageIndex(false) }} transparent={true} >
+        {currentImageIndex !== false && <Modal padding=" " title="Viewer" visible={currentImageIndex !== false} onClose={() => { setCurrentImageIndex(false) }} transparent={true} >
             <Row className=' w-full mx-auto items-center justify-center h-full'>
 
                 {
-                    (imageSize2[0] > 0 && data[currentImageIndex].type == 'image') && <Pressable style={{ width: imageSize2[0], height: imageSize2[1], maxWidth: windowWidthOr, maxHeight: windowHeightOr }} onPress={() => setCurrentImageIndex(false)}>
+                    (imageSize2[0] > 0 && data[currentImageIndex].type == 'image') && <ScrollView style={{height: windowHeightOr - (windowWidthOr >672? 120:60)}}><Pressable style={{ width: imageSize2[0], height: imageSize2[1]}} onPress={() => setCurrentImageIndex(false)}>
                         {currentImageIndex !== false && <Image view='cover' sizes="(max-width:1280px) 100vw, 1280px" src={data[currentImageIndex].src} alt='' className=" u-cover  dark:bg-bgritem-d dark:bg-bgritem-d gap-x-1 " />}
-                    </Pressable>
+                    </Pressable></ScrollView>
                 }
                 {
                     data[currentImageIndex].type == 'video' && <Pressable onPress={() => setCurrentImageIndex(false)}><View className='aspect-video max-w-xl' style={{ width: windowWidthOr }}><Video autoplay="autoplay" muted={false} controls={true} src={data[currentImageIndex].src} /></View></Pressable>

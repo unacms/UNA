@@ -12,7 +12,7 @@ import { StyleSheet } from 'react-native'
 import { Platform, Image as ImageNative } from 'react-native'
 import { Button, Modal } from 'app/design/controls'
 import Menu from 'app/components/menu'
-import { stripTags, menuItemsByName, FeedbackHaptics } from 'app/lib/util'
+import { appSetting, getDataFromCache, storageSet, compare_objects } from 'app/lib/util'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu'
 import { fetcher } from 'app/lib/fetcher'
 import Form from 'app/components/elements/form'
@@ -741,7 +741,7 @@ export default function UnitFeed(props) {
         const result = await fetcher(
             '/api.php?r=bx_timeline/get/&params[]={"params":{"browse":"id","value":' + datas.id + '}}'
         )
-        if (result.data && JSON.stringify(result.data) != JSON.stringify(datas))
+        if (result.data && !compare_objects(result.data, datas))
             setDatas(result.data);
     }
 

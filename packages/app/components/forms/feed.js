@@ -85,7 +85,7 @@ export default function FormFeed(props) {
             <Modal
                 title={isSmall ? header : t("Create new post")}
                 onVisible={showImage}
-
+                outerClickClose = {false}
                 {...(!isSmall && { onClose: () => setShowImage(null) })}
                 padding='sm:p-4 sm:pb-0'
                 transparent={true}

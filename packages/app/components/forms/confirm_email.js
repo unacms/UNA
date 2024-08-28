@@ -5,13 +5,13 @@ import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import { Button, Input, InputRounded, Modal } from 'app/design/controls';
 import { useCurrentUser } from 'app/context/user';
-import { useState, useContext, useRef } from 'react'
+import { useState, useEffect, useCallback , useRef } from 'react'
 import Msg from 'app/ui/molecules/msg';
 import { fetcher } from 'app/lib/fetcher';
 import { useTranslation } from 'react-i18next';
 import Card from 'app/ui/molecules/card'
 import Redirect from 'app/ui/atoms/redirect';
-
+import { subscribe } from 'app/ui/atoms/socket';
 
 export default function FormComments(props) {
 
@@ -27,9 +27,24 @@ export default function FormComments(props) {
         setShowMsg(true);
     };
 
+    useEffect(() => {
+        if (currentUser?.account_id)
+            subscribe('sys_account_'+currentUser.account_id, 'confirmed', updateAccount);
+    }, [currentUser.id])
+
+
+    
+    const updateAccount = useCallback((data) => {
+        setCurrentUser(prevUser => ({
+            ...prevUser,
+            confirmed: true,
+        }));
+    }, []);
+
     props.data.inputs['do_submit'].value = 'Confirm';
 
     return <>
+        <Redirect ref={redirectdRef} />
         <Msg onVisible={showMsg} title={"New verification code emailed"} handleOk={() => { setShowMsg(false) }} />
         <View className='mx-auto max-w-xl p-4 w-full '>
             <Card rounded margin=' p-4 '>
