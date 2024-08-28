@@ -23,6 +23,6 @@ export function Icon(props) {
     if (!IconComponent)
         console.log('Icon not found:', ic);
 
-    return !IconComponent ? <></> : <IconComponent color={color ? colors : colors.default} size={size} className={className} {...rest} />
+    return !IconComponent ? <></> : <IconComponent color={color ? color : colors.default} size={size} className={className} {...rest} />
 }
 

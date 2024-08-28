@@ -15,6 +15,7 @@ import { useLayoutData } from 'app/context/layout';
 import { Theme } from 'app/design/theme';
 import { staticComponents } from 'app/static';
 
+
 export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultHeader, menu, data, blocks, useSectionAsMenu, unitMode, skeleton, onChangeRoute, keyword }) {
 
     minHeaderHeight = minHeaderHeight || 100;
@@ -250,18 +251,13 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
                         {props.navigationState.routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
                             const counter = appSetting('layout', 'show_nav_counters') ? 0 : a.addon ? (a.addon.text ? a.addon.text : a.addon) : 0;
                             const counter2 = counter > 0 ? ' (' + counter + ')' : ''
+                            const btn = staticComponents['getButtonForConductorNative'](a, props.navigationState.index, currentUser, setIndex, onChangeRoute)
+
                             return (
                                 <Pressable className="items-center py-2 px-1 justify-center"
                                     key={`tab-${a.index}`}
                                 >
-
-                                    <Button onPress={() => {
-                                        setIndex(a.index)
-                                        if (onChangeRoute) {
-                                            onChangeRoute(a);
-                                        }
-                                    }} fullWidth={false} variant={props.navigationState.index === a.index ? 'primary' : "text"} rounded size='sm' title={t(a.title) + counter2} />
-
+                                    {btn}
                                 </Pressable>
                             )
                         })}
@@ -313,7 +309,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
         );
     }, [scroll, headerMaxHeight]);
 
-    console.log("********************************************************RELOAD**********", currentRoute?.endpoint?.params?.start, isRefreshing, currentRoute.data.length)
+    //console.log("********************************************************RELOAD**********", currentRoute?.endpoint?.params?.start, isRefreshing, currentRoute.data.length)
    
    /* 
        const routerExpo = useRouter();

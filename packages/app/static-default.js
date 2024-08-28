@@ -945,6 +945,34 @@ function getButtonForConductor(a, index, currentUser) {
     )
 }
 
+
+function getButtonForConductorNative(a, index, currentUser, setIndex, onChangeRoute) {
+    let settings = appSetting('layouts', a.key)
+    let icon = !a.ident
+        ? settings?.icon
+            ? settings?.icon
+            : a?.icon.replace('*', '')
+        : a.icon.replace('*', '')
+
+    let addon = a.addon ? a.addon : null
+    if (!appSetting('layout', 'show_nav_counters')) addon = null
+    if (
+        appSetting('layout', 'show_nav_counters') == 'primary' &&
+        a?.addon?.variant != 'primary'
+    )
+        addon = null
+
+    return (
+        <Button onPress={() => {
+            setIndex(a.index)
+            if (onChangeRoute) {
+                onChangeRoute(a);
+            }
+        }}  addon={addon} fullWidth={false} variant={index === a.index ? 'primary' : "text"} rounded size='sm' title={t(a.title)} />
+
+    )
+}
+
 function updateRouteDataForConnections(
     currentRoute,
     layoutData,
@@ -1034,5 +1062,6 @@ export const staticDefault = {
 
     getBadgeForTab: getBadgeForTab,
     getButtonForConductor: getButtonForConductor,
+    getButtonForConductorNative: getButtonForConductorNative,
     updateRouteDataForConnections: updateRouteDataForConnections,
 }

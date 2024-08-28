@@ -105,7 +105,7 @@ export function CommentsParts(commentsData, aItems, height = 0, initFormData, is
     ]
 }
 
-export function CommentsBrowse({ browse, requestUrl, module, handleReply, handleEdit, addData, addItems, isShort = false, maxCount, height = 0, showCommentsModal, classesBrowse='', commentsTitle="Comments", contentUrl, replyId }) {
+export function CommentsBrowse({ browse, requestUrl, module, handleReply, handleEdit, addData, addItems, isShort = false, maxCount, height = 0, showCommentsModal, classesBrowse='', commentsTitle="Comments", contentUrl, replyId, hideActions = false, selectedId=0 }) {
     const UnitComments = componentsMap['comments'];
 
     const { t } = useTranslation();
@@ -364,10 +364,6 @@ export function CommentsBrowse({ browse, requestUrl, module, handleReply, handle
     if (!h && addItems)
         dataOut = [...addItems, { id: 'block_header', data: header }, ...dataOut];
 
-    //dataOut = dataOut.filter(item => (!item.id.toString().includes('block') || typeof item.data?.props?.children !== 'undefined') );
-
-   
-
     return (
         <>
          <Toaster ref={toasterRef} onPress={showNewContent} variant="primary" title="New comment" size="sm" />
@@ -384,7 +380,7 @@ export function CommentsBrowse({ browse, requestUrl, module, handleReply, handle
                     }
                     return (
                         <View className='' key={index}>
-                            <UnitComments replyId={replyId} module={commentData.moduleName} {...item} view={viewMode} max_level={commentData.maxLevel} handleReply={handleReply} handleEdit={handleEdit} handleDelete={handleDelete} />
+                            <UnitComments selectedId={selectedId} hideActions={hideActions} replyId={replyId} module={commentData.moduleName} {...item} view={viewMode} max_level={commentData.maxLevel} handleReply={handleReply} handleEdit={handleEdit} handleDelete={handleDelete} />
                         </View>
                     )
                 }}
