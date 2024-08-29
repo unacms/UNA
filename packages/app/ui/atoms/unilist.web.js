@@ -56,7 +56,9 @@ export default function UniList(props) {
                 style={style}
                 itemContent={itemContent} 
                 stateChanged = {stateChanged}
-                {...(listState?.viewport ? { restoreStateFrom: listState } : {})}
+                     /*  
+        restore it on fix https://github.com/petyosi/react-virtuoso/issues/1114
+        {...(listState?.viewport ? { restoreStateFrom: listState } : {})} */
                 {...(scrollToLastItem ? { initialTopMostItemIndex: data.length } : {})}
                 overscan={900}
                 ref = {refer}   

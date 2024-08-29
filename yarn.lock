@@ -10529,7 +10529,7 @@ react-use-gesture@^8.0.1:
   resolved "https://registry.yarnpkg.com/react-use-gesture/-/react-use-gesture-8.0.1.tgz#4360c0f7c9e26baf9fbe58f63fc9de7ef699c17f"
   integrity sha512-CXzUNkulUdgouaAlvAsC5ZVo0fi9KGSBSk81WrE4kOIcJccpANe9zZkAYr5YZZhqpicIFxitsrGVS4wmoMun9A==
 
-react-virtuoso@^4.4.2:
+react-virtuoso@^4.10.1:
   version "4.10.1"
   resolved "https://registry.yarnpkg.com/react-virtuoso/-/react-virtuoso-4.10.1.tgz#868a40073e497777f49c052eb24be55171ce8639"
   integrity sha512-vDBt9AarmCjPNshw3VxPXW355ZQKSO0p9vrAJ0pi04TB6aXk+qHWTu8NuaQ3ppcd/Ub1r5ryRA4fJ2QGuH0H0g==
