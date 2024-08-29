@@ -16,7 +16,7 @@ export default function PageLayout(props) {
     const isAllowJoin = joinData.content[0].type == "form";
 
     return (
-        <View className='p-4' keyboardShouldPersistTaps="always">
+        <ScrollView className='p-4' keyboardShouldPersistTaps="always" keyboardDismissMode="on-drag">
             <View className=" w-full mx-auto max-w-5xl flex-col items-center lg:flex-row  rounded-3xl lg:bg-bgrnavbar/50 lg:dark:bg-bgrnavbar-d/50 lg:border border-dashed border-bdr dark:border-bdr-d ">
                 <View className="flex-col p-4 lg:p-8 flex-auto w-full  items-center lg:items-start gap-y-4 my-auto ">
                     <Text className="text-4xl lg:text-5xl tracking-tight font-bold text-neutral-800 dark:text-neutral-200 ">
@@ -61,6 +61,6 @@ export default function PageLayout(props) {
                     </View>
                 </View>
             </View>
-        </View>
+        </ScrollView>
     )
 }

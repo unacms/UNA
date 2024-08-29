@@ -20,7 +20,7 @@ import PushNotificationIOS from "@react-native-community/push-notification-ios";
 import { enableScreens } from 'react-native-screens';
 import { OneSignal } from 'react-native-onesignal';
 import { staticComponents } from 'app/static';
-
+import { Platform } from 'react-native'
 enableScreens(true);
 
 export default function () {
@@ -106,7 +106,9 @@ export default function () {
     }, [currentUser?.id]);
 
     useEffect(() => {
-        PushNotificationIOS.setApplicationIconBadgeNumber(currentUser?.notifications);
+        if (Platform.OS =='ios'){
+            PushNotificationIOS.setApplicationIconBadgeNumber(currentUser?.notifications);
+        }
     }, [currentUser?.notifications]);
   
 
