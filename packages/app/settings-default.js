@@ -1922,20 +1922,20 @@ export const settingsDefault = {
         },
         button_styles: {
             'u-btn-default-cnt':
-                ' bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:sm:hover:bg-neutral-700 border border-bdrbutton dark:border-neutral-700 sm:hover:border-bdrbutton-h dark:sm:hover:border-neutral-600 active:opacity-50 shadow-sm sm:hover:shadow-md active:shadow-none ',
+                ' bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-300 dark:sm:hover:bg-neutral-700 active:opacity-50  ',
             'u-btn-default-text':
-                ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
+                ' font-medium text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-white ',
             'u-btn-default-trans': ' duration-200 ',
 
             'u-btn-primary-cnt':
-                ' bg-primary dark:bg-primary-d sm:hover:bg-primary-600 dark:sm:hover:bg-primary-700 shadow-sm sm:hover:shadow-md active:opacity-50 active:shadow-none border border-transparent ',
+                ' bg-primary dark:bg-primary-d sm:hover:bg-primary-600 dark:sm:hover:bg-primary-700  ',
             'u-btn-primary-text': '  font-medium text-white ',
             'u-btn-primary-trans': ' duration-200 ',
 
             'u-btn-secondary-cnt':
-                '  bg-bgritem dark:bg-bgritem-d sm:hover:bg-neutral-300 dark:sm:hover:bg-neutral-700 active:opacity-50  ',
+            ' bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-300 dark:sm:hover:bg-neutral-700 active:opacity-50  ',
             'u-btn-secondary-text':
-                ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
+            ' font-medium text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-white ',
             'u-btn-secondary-trans': ' duration-200 ',
 
             'u-btn-danger-cnt':

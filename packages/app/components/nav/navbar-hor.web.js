@@ -220,7 +220,7 @@ export default function (props) {
                                     <MenuLauncher />
                                     <Link href="/login">
                                         <ButtonRef
-                                            variant="outline"
+                                            variant="secondary"
                                             tooltip="Account"
                                             rounded
                                             aria-label="Account"
