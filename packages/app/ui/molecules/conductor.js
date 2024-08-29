@@ -307,7 +307,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
                 </Animated.View>
             </Animated.View>
         );
-    }, [scroll, headerMaxHeight]);
+    }, [scroll, headerMaxHeight, header, smallHeader]);
 
     //console.log("********************************************************RELOAD**********", currentRoute?.endpoint?.params?.start, isRefreshing, currentRoute.data.length)
    

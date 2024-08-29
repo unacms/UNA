@@ -73,14 +73,13 @@ export default function ElementConnections(oProps) {
             storageClear();
         }
         setLayoutData(getAlert('сonnections:action', {object: oProps.o, time:Date.now(), action: aParams, data: sResponse?.data, key: getKey(), reload: isReload} ));
-        
     };
 
-    useEffect(() => {
-        if(layoutData && layoutData?.type == 'сonnections:action' && layoutData?.data.key == getKey()){
+     /*useEffect(() => {
+       if(layoutData && layoutData?.type == 'сonnections:action' && layoutData?.data.key == getKey()){
             handleOnDo(layoutData.data.data)
         }
-    }, [layoutData?.data?.time]);
+    }, [layoutData?.data?.time]);*/
       
 
     const handleDo = (event, sAction) => {

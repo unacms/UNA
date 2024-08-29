@@ -39,6 +39,7 @@ const Carousel = memo(({ data = [] }) => {
             setWidth(event.nativeEvent.layout.width);
     }, [width]);
 
+    let offset = windowWidthOr >672? 120: (Platform.OS == 'ios' ? 100 :60)
     useEffect(() => {
         if (currentImageIndex !== false) {
             ImageOr.getSize(
@@ -46,7 +47,7 @@ const Carousel = memo(({ data = [] }) => {
                 (width, height) => {
                     let imageAspectRatio = width / height;
                     let ww = windowWidthOr >672 ? 672 : windowWidthOr;
-                    let wh = windowHeightOr - (windowWidthOr >672? 120:60);
+                    let wh = windowHeightOr - (offset);
 
                     let newImageWidth, newImageHeight;
                   //  let wh = windowWidthOr * wh1/ww;
@@ -177,7 +178,7 @@ const Carousel = memo(({ data = [] }) => {
             <Row className=' w-full mx-auto items-center justify-center h-full'>
 
                 {
-                    (imageSize2[0] > 0 && data[currentImageIndex].type == 'image') && <ScrollView style={{height: windowHeightOr - (windowWidthOr >672? 120:60)}}><Pressable style={{ width: imageSize2[0], height: imageSize2[1]}} onPress={() => setCurrentImageIndex(false)}>
+                    (imageSize2[0] > 0 && data[currentImageIndex].type == 'image') && <ScrollView style={{height: windowHeightOr - offset}}><Pressable style={{ width: imageSize2[0], height: imageSize2[1]}} onPress={() => setCurrentImageIndex(false)}>
                         {currentImageIndex !== false && <Image view='cover' sizes="(max-width:1280px) 100vw, 1280px" src={data[currentImageIndex].src} alt='' className=" u-cover  dark:bg-bgritem-d dark:bg-bgritem-d gap-x-1 " />}
                     </Pressable></ScrollView>
                 }
