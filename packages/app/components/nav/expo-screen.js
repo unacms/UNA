@@ -24,7 +24,7 @@ export async function getData(path, token, origin, headers, callback, params) {
     }
 
     if (params) {
-        path += `&params[]=${params}`;
+        path += `&params[]=&params[]=${params}`;
     }
 
     const t1 = Date.now();
@@ -141,6 +141,7 @@ const Content = ({ pagePath, currentUser, isRoot }) => {
      }, [pageData, currentUser?.id]);*/
 
    //  console.log("!!!!!!!!!!!!!!!!!!!!!!!", pageData?.data.user)
+
     return pageData?.data ? (
 
         <Root path={pagePath} data={pageData.data} uri={pageData.data.uri} />
