@@ -286,7 +286,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         return 1;
     };
 
-    const queryKey = [currentRoute?.endpoint?.request_url, index, keyword, JSON.stringify(currentRoute?.endpoint?.params?.filters)];
+    const queryKey = [currentRoute?.endpoint?.request_url, index, keyword, JSON.stringify(currentRoute?.endpoint?.params?.filters), data.uri];
     const queryClient = useQueryClient();
     const [numColumns, setNumColumns] = useState(getNumCols(windowWidth));
     const {
