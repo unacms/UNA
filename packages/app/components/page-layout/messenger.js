@@ -1,7 +1,7 @@
 
 import { View, Row, Pressable } from 'app/design/view'
 import React, { memo, useState, useEffect, useContext, useMemo } from 'react';
-import { appSetting, getLayout, menuItemsByName, getHeaderSettings, getURI } from 'app/lib/util'
+import { appSetting, getLayout, menuItemsByName, getHeaderSettings, getURI,parseUrl } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import { DataByName } from 'app/components/block';
 import { LeftSidebar, TopSidebar } from 'app/lib/conductor-helpers';
@@ -19,7 +19,8 @@ export default function PageLayout({ url, data, layoutName, blocks: { main } }) 
     const sTitle = 'Messenger';
     let defaultMenuName = 'inbox';
     let defaultConvoId = '';
-    const aUrl = url.split('/');
+    let b = parseUrl(url);
+    const aUrl = b['path'].split('/');
     if (aUrl.length > 1)
         defaultMenuName = aUrl[1];
     if (aUrl.length > 2)

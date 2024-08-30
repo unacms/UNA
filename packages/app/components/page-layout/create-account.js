@@ -35,7 +35,7 @@ export default function PageLayout(props) {
                             rounded=" rounded-2xl "
                             addClassName=" px-4 py-2 sm:px-6 sm:py-4 w-full  max-w-xl mx-auto flex-auto  "
                         >
-                            <KbAvoidingView offset={1}>
+                            <KbAvoidingView>
                                 {!isAllowJoin && <BlockByName name={props.blocks.form_invitation} data={props.data} />}
                                 {isAllowJoin && <BlockByName name={props.blocks.form_join} data={props.data} />}
                             </KbAvoidingView>

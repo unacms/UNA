@@ -191,13 +191,13 @@ export function CommentsBrowse({ browse, requestUrl, module, handleReply, handle
     useEffect(() => {
         if (addData && addData?.data?.browse && addData?.data?.browse?.insert) {
             let browse = parseData(commentData.listData, addData);
-
             let i = Object.keys(addData?.data?.browse.data.data[0])[0].replace('i', '');
             addCommentData({ listData: browse, total_count: commentData.total_count + 1, lastInserted: i })
         }
     }, [addData]);
 
     useEffect(() => {
+       
         // flashListRef.current.scrollToIndex({ animated: true, index:  });
     }, []);
 
@@ -314,8 +314,13 @@ export function CommentsBrowse({ browse, requestUrl, module, handleReply, handle
 
         if (commentData.lastInserted > 0) {
             let itemIndex = dataOut.findIndex(obj => obj.id == commentData.lastInserted);
-            //TODO
-            flashListRef.current.scrollToIndex({ animated: true, index: itemIndex });
+            
+           // NEED CHECK ON IOS
+            setTimeout(() => {
+              //  console.log("itemIndex", itemIndex);
+                flashListRef.current.scrollToIndex({ animated: true, index: itemIndex });
+            }, 300);
+            
         }
     }, [commentData.lastInserted]);
     useEffect(() => {
@@ -500,7 +505,7 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
         Keyboard.dismiss();
     }
 
-    let padding = 16;
+    let padding = 12;
     if (isModal)
         padding = 0;
     const { colors } = useTheme();

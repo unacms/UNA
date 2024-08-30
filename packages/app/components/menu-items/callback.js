@@ -86,7 +86,7 @@ export default function MenuItemButton(oProps) {
                 if (oProps.data.on_callback == 'alert'){
                     if (oProps.data.on_callback_clear_cache)
                         storageClear();
-                    setLayoutData(getAlert(oProps.data.on_callback_param, {time:Date.now()} ));
+                    setLayoutData(getAlert(oProps.data.on_callback_param, {time:Date.now(), reload: true} ));
                 }
             };
 
