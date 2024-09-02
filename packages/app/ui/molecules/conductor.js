@@ -101,6 +101,8 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
             return;
 
         fetchNextPage();*/
+        if (!currentRoute?.endpoint)
+            return;
 
         if (currentRoute?.endpoint?.params?.start == 0)
             return;
@@ -156,15 +158,15 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
         fetchAndUpdateData(routes, index, setRoutes);
     }, [index]);
 
-    const onStartRefresh = useCallback(async () => {
+    const onStartRefresh = async () => {
         const newRoutes = [...routes];
         //TODO CHECK WHY INITEDD TABS  IS RELOADING EVERY TIME
-        let k = fillTabs(menu, data, blocks, currentUser, useSectionAsMenu)
+        let k = fillTabs(menu, data, blocks, currentUser, useSectionAsMenu);
         newRoutes[index] = k[index];
         setRoutes(newRoutes);
         setIsRefreshing(true);
 
-    }, []);
+    };
 
 
     useEffect(() => {
