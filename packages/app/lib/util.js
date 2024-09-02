@@ -164,6 +164,68 @@ export function storageClear(pref, key) {
     sessionStorage.clear();
 }
 
+export const formatDate = (date, t)  => {
+    const day = String(date.getDate()).padStart(2, '0');
+    const monthNames = [
+        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ];
+    const month = t(monthNames[date.getMonth()]);
+    let year = date.getFullYear();
+    if (year == new Date().getFullYear()) 
+        year ='';
+    return `${day} ${month} ${year}`;
+}
+
+export const formatDate2 = (date, t)  => {
+    const now = new Date();
+    const tomorrow = new Date(now);
+    tomorrow.setDate(now.getDate() + 1);
+    const isToday = now.getFullYear() === date.getFullYear() &&
+                    now.getMonth() === date.getMonth() &&
+                    now.getDate() === date.getDate();
+    if (isToday)
+        return "Today "
+
+    const isTomorrow = tomorrow.getFullYear() === date.getFullYear() &&
+    tomorrow.getMonth() === date.getMonth() &&
+    tomorrow.getDate() === date.getDate();
+
+    if (isTomorrow)
+        return "Tomorrow ";
+
+    return formatDate(date, t)
+}
+
+export const formatTime = (ts)  => {
+    const date = new Date(ts * 1000);
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+
+    // Return an empty string if the time is exactly midnight
+    if (hours === 0 && minutes === 0) {
+        return '';
+    }
+
+    // Format hours and minutes with leading zeros if needed
+    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+}
+
+export const formatDateInterval = (dateStart, dateEnd, t) => {
+    const isSingleDate = (new Date(dateStart * 1000)).toLocaleDateString() === (new Date(dateEnd * 1000)).toLocaleDateString();
+    const isSingleTime = (new Date(dateStart * 1000)).toLocaleTimeString() === (new Date(dateEnd * 1000)).toLocaleTimeString();
+
+    let sRv = formatDate2(new Date(dateStart * 1000), t);
+
+    if (isSingleDate) {
+        sRv += isSingleTime ? formatTime(dateStart) : `${formatTime(dateStart)} - ${formatTime(dateEnd)}`;
+    } else {
+        sRv += formatTime(dateStart) + ' - ' + formatDate2(new Date(dateEnd * 1000), t) + formatTime(dateEnd);
+    }
+
+    return sRv;
+}
+
 export function storageRemove(pref, key, isLocal = false) {
     if (Platform.OS !== 'web') {
 

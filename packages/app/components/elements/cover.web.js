@@ -5,7 +5,7 @@ import Badges from 'app/ui/atoms/badges'
 import { Text } from 'app/design/typography'
 import { getBackButtonWeb } from 'app/lib/conductor-helpers'
 import { Button } from 'app/design/controls'
-import { appSetting } from 'app/lib/util'
+import { appSetting, formatDateInterval } from 'app/lib/util'
 import Profile from 'app/ui/molecules/profile'
 import { useWindowDimensions } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
@@ -15,7 +15,8 @@ import { fetcher } from 'app/lib/fetcher'
 import * as ImageManipulator from 'expo-image-manipulator'
 import { Image as ImageNative } from 'react-native'
 import { useCurrentUser } from 'app/context/user'
-import {CoverMenuMeta, CoverMenu, CoverMenuSmall} from 'app/components/nav/menu-cover'
+import { CoverMenuMeta, CoverMenu, CoverMenuSmall } from 'app/components/nav/menu-cover'
+import { useTranslation } from 'react-i18next';
 
 export function CoverSmall(props) {
     const data = props.data
@@ -71,6 +72,7 @@ export function CoverSmall(props) {
 }
 
 export default function (props) {
+    const { t } = useTranslation();
     const { currentUser, setCurrentUser } = useCurrentUser()
     const data = props.data
     const mode = props.mode
@@ -200,20 +202,20 @@ export default function (props) {
     const isUseBg = appSetting('layout', 'use_background')
 
     const bAllowEdit = data.allow_edit && appSetting('layout', 'allow_edit_covers');
-    
-    const foundItem = currentUser?.informer?.find((item) => { return item.id == 'sys-switch-profile-context'});
+
+    const foundItem = currentUser?.informer?.find((item) => { return item.id == 'sys-switch-profile-context' });
     let isAllowSwitch = foundItem ? foundItem.msg : false;
-    if (isAllowSwitch){
+    if (isAllowSwitch) {
         let match = isAllowSwitch.match(/switch_to_profile=(\d+)/);
         isAllowSwitch = match ? match[1] : null
     }
 
     const handleSwitch = async (id) => {
-        const result = await fetcher('/api.php?r=system/switch_profile/TemplServiceAccount&params[]=' + id);       
+        const result = await fetcher('/api.php?r=system/switch_profile/TemplServiceAccount&params[]=' + id);
         location.reload();
     };
 
-    
+
     return (
         <View className=' border-b border-bdrnavbar dark:border-bdr-d bg-bgrnavbar dark:bg-bgrnavbar-d ' >
             <View
@@ -239,24 +241,24 @@ export default function (props) {
                                 src={coverUrl}
                             />
                         )}
-                        
-                            <Row className="p-4 justify-end gap-x-4">
-                               {isAllowSwitch && <Button
-                                    rounded
-                                    variant="primary"
-                                    startDecorator="UserSwitch" 
-                                    tooltip={'Switch to profile'}
-                                    onPress={() => handleSwitch(isAllowSwitch)}
-                                />
 
-                               }
-                                {bAllowEdit && (<Button
-                                    rounded
-                                    startDecorator="Camera"
-                                    onPress={() => handleUpload('cover')}
-                                />)}
-                            </Row>
-                        
+                        <Row className="p-4 justify-end gap-x-4">
+                            {isAllowSwitch && <Button
+                                rounded
+                                variant="primary"
+                                startDecorator="UserSwitch"
+                                tooltip={'Switch to profile'}
+                                onPress={() => handleSwitch(isAllowSwitch)}
+                            />
+
+                            }
+                            {bAllowEdit && (<Button
+                                rounded
+                                startDecorator="Camera"
+                                onPress={() => handleUpload('cover')}
+                            />)}
+                        </Row>
+
 
                         <View className="absolute lg:hidden top-4 left-4 z-50">
                             {getBackButtonWeb()}
@@ -298,19 +300,26 @@ export default function (props) {
                             </View>
                         </View>
                     )}
-                    
+
                     <View className="flex-col flex-auto gap-y-3  ">
                         <View className=" flex-auto flex-col gap-y-4 xl:flex-row  justify-between  ">
-                        <Row className=" flex-auto items-center gap-x-2  ">
-                            <Text
-                                className="tracking-tight text-2xl sm:text-3xl font-bold text-neutral-900 dark:text-neutral-50"
-                                numberOfLines={2}
-                            >
-                                {data.profile.display_name}
-                            </Text>
-                            <Badges badges={data.badges} />
-                        </Row>
-                        <CoverMenuMeta {...data.meta_menu} />
+
+                            <Row className=" flex-auto items-center gap-x-2  ">
+                                <Text
+                                    className="tracking-tight text-2xl sm:text-3xl font-bold text-neutral-900 dark:text-neutral-50"
+                                    numberOfLines={2}
+                                >
+                                    {data.profile.display_name}
+                                </Text>
+                                <Badges badges={data.badges} />
+                                {data.profile.info?.date_start && (
+                                    <Text className="  text-neutral-600 dark:text-neutral-400 text-xs uppercase font-semibold tracking-tight overflow-hidden  rounded-md flex-none items-center">
+                                        {formatDateInterval(data.profile.info?.date_start, data.profile.info?.date_end, t)}
+                                    </Text>
+
+                                )}
+                            </Row>
+                            <CoverMenuMeta {...data.meta_menu} />
                         </View>
 
                         <CoverMenu {...data.actions_menu} uri={props?.uri} />

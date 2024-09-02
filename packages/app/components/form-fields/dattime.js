@@ -4,10 +4,11 @@ import { useController, useFormContext } from 'react-hook-form';
 import Calendar from 'app/ui/atoms/calendar'
 
 export default function ({ name, value = '', type, ...props }) {
+    console.log("props", props, value, name)
     const formContext = useFormContext();
     const rules = getValidationRules(props);
     const bIsTime = type === 'datetime';
-    if (value == '0000-00-00 00:00:00Z' || value == '') {
+    if ((value == '0000-00-00 00:00:00Z' || value == '') && props.required == true) {
         let date = new Date();
         date.setHours(0, 0, 0, 0);
         date.setMinutes(date.getMinutes() - date.getTimezoneOffset());

@@ -3,18 +3,7 @@ import { formatDistance } from 'date-fns';
 import { Text } from 'app/design/typography';
 import { useTranslation } from 'react-i18next';
 
-function formatDate(date, t) {
-    const day = String(date.getDate()).padStart(2, '0');
-    const monthNames = [
-        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-    ];
-    const month = t(monthNames[date.getMonth()]);
-    let year = date.getFullYear();
-    if (year == new Date().getFullYear()) 
-        year ='';
-    return `${day} ${month} ${year}`;
-}
+import { formatDate } from 'app/lib/util'
 
 export default function ElementTime(props) {
     const { t } = useTranslation();

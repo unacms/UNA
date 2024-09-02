@@ -1,7 +1,7 @@
 import { useState, useContext, useRef } from 'react'
 import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
-import { getImageSizes, FeedbackHaptics, tp, t } from 'app/lib/util'
+import { getImageSizes, FeedbackHaptics, tp, t, formatDateInterval } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import Card from 'app/ui/molecules/card'
@@ -11,6 +11,7 @@ import { componentsMap } from 'app/ui/molecules/_map'
 import ProfilesList from 'app/ui/molecules/profile_list'
 import Time from 'app/ui/atoms/time'
 import MoreMenu from 'app/components/nav/menu-more'
+import { useTranslation } from 'react-i18next';
 
 export default function Unit(props) {
 
@@ -18,6 +19,7 @@ export default function Unit(props) {
     const imageSizes = getImageSizes();
     const redirectdRef = useRef();
     const [popupVisible, setPopupVisible] = useState(false);
+    const { t } = useTranslation();
 
 
     const handleClick = (event, sUrl) => {
@@ -134,7 +136,6 @@ export default function Unit(props) {
     const friendsLabel = data.followers_count > 0 ? tp("intrested", data?.followers_count) : ''
     const friendsLabel1 = data.members_count > 0 ? tp("going", data?.followers_count) : ''
 
-
     return (
         <>
             <Redirect ref={redirectdRef} />
@@ -190,26 +191,16 @@ export default function Unit(props) {
                                         )}
                                     </Text>
                                 </Row>
+                                
                                 <Row className='mb-3 w-full bg-primary/30 px-2 py-1 rounded-md justify-between'>
 
                                     {data.date_start && (
                                         <Text className="  text-neutral-600 dark:text-neutral-400 text-xs uppercase font-semibold tracking-tight overflow-hidden  rounded-md flex-none items-center">
-                                            <Time
-                                                stylesName="text-xs flex-none"
-                                                ts={data.date_start}
-                                            ></Time>
+                                            {formatDateInterval(data.date_start, data.date_end, t)}
                                         </Text>
 
                                     )}
-                                    {data.date_end && (
-                                        <>
-                                            <Text className="  text-neutral-600 dark:text-neutral-400 text-xs uppercase font-semibold tracking-tight overflow-hidden  rounded-md flex-none items-center"> - </Text>
-                                            <Text className="  text-neutral-600 dark:text-neutral-400 text-xs uppercase font-semibold tracking-tight overflow-hidden  rounded-md flex-none items-center"><Time
-                                                stylesName="text-xs flex-none"
-                                                ts={data.date_end}
-                                            ></Time> </Text>
-                                        </>
-                                    )}
+                                   
 
                                 </Row>
                             </View>
