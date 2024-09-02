@@ -11,7 +11,7 @@ function getFormType(name) {
     return componentsMap[name];
 }
 
-function getFormFieldList(name, inputs, handleSubmit, isInitial = false, lastChangedField) {
+function getFormFieldList(name, inputs, handleSubmit, isInitial = false, lastChangedField, saveOnChanges) {
 
     const ElementForm = getFormType(name);
 
@@ -24,7 +24,7 @@ function getFormFieldList(name, inputs, handleSubmit, isInitial = false, lastCha
     }
 
     return Object.keys(inputs).map(function (key) {
-        return getFormFieldByData(inputs[key], handleSubmit, 'default', { form_name: name, last_changed:lastChangedField })
+        return getFormFieldByData(inputs[key], handleSubmit, 'default', { form_name: name, last_changed:lastChangedField, saveOnChanges:saveOnChanges  })
     });
 }
 
@@ -131,7 +131,7 @@ export default function (props) {
         }
     }, [watch])
 
-    let inputs = getFormFieldList(name, data.inputs, _handleSubmit, true, lastChangedField);
+    let inputs = getFormFieldList(name, data.inputs, _handleSubmit, true, lastChangedField, props.saveOnChanges);
     if (inputs?.length > 0)
         inputs = inputs.filter(item => item.key !== null && item.key.toString() !== '')
 

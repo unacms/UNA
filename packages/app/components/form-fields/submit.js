@@ -1,7 +1,7 @@
 import Field, { FormError } from './_field';
 import { useController, useFormContext } from 'react-hook-form';
 import { Button, Hidden } from 'app/design/controls'
-import { View } from 'app/design/view'
+import { View, Row } from 'app/design/view'
 import { useWindowDimensions } from 'react-native'
 import { appSetting } from 'app/lib/util'
 import { Keyboard, Platform } from 'react-native';
@@ -23,8 +23,20 @@ export default function FormFieldSubmit(props) {
         }
     };
 
+
+    const handleReset = () => {
+        console.log(formContext.formState.isDirty ,formContext.getValues());
+        const keys = Object.keys(formContext.getValues());
+        keys.forEach((sKey) => {
+            if (name !='key')
+                formContext.setValue(sKey, '');
+        });
+        props.handleSubmit();
+    };
+
     return (
         <Field  {...props}>
+            <Row className='gap-x-2'>
             <Button
                 title={!props.icon_only ? props.value : ''}
                 variant={!!props.variant ? props.variant : 'primary'}
@@ -38,6 +50,15 @@ export default function FormFieldSubmit(props) {
                 fullWidth={formProps?.button_full_width == true || width < 1024}
 
             />
+            {props.saveOnChanges && <Button
+                 variant="default"
+                 title ="Reset"
+                 {...(Platform.OS === 'web'
+                    ? { onPress: handleReset }
+                    : { onTouchStart: handlePress })}
+                 />
+            }
+            </Row>
             <Hidden
                 name={props.name}
                 onChangeText={field.onChange}
