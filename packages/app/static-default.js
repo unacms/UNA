@@ -968,8 +968,7 @@ function getButtonForConductorNative(a, index, currentUser, setIndex, onChangeRo
             if (onChangeRoute) {
                 onChangeRoute(a);
             }
-        }}  addon={addon} fullWidth={false} variant={index === a.index ? 'primary' : "text"} rounded size='sm' title={t(a.title)} />
-
+        }}  addon={addon} fullWidth={false} variant={index === a.index ? 'primary' : "text"} rounded size='sm' title={a.title} />
     )
 }
 

@@ -107,7 +107,8 @@ export default function () {
 
     useEffect(() => {
         if (Platform.OS =='ios'){
-            PushNotificationIOS.setApplicationIconBadgeNumber(currentUser?.notifications);
+            if (currentUser)
+                PushNotificationIOS.setApplicationIconBadgeNumber(currentUser?.notifications);
         }
     }, [currentUser?.notifications]);
   

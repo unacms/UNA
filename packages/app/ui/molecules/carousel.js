@@ -39,7 +39,7 @@ const Carousel = memo(({ data = [] }) => {
             setWidth(event.nativeEvent.layout.width);
     }, [width]);
 
-    let offset = windowWidthOr >672? 120: (Platform.OS == 'ios' ? 100 :60)
+    let offset = windowWidthOr >672? 120: (Platform.OS == 'ios' ? 120 :60)
     useEffect(() => {
         if (currentImageIndex !== false) {
             ImageOr.getSize(
