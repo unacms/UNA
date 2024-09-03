@@ -1,4 +1,5 @@
 import { Tabs } from "expo-router";
+import { View,Row } from 'app/design/view';
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon';
 import { useCurrentUser } from 'app/context/user';
@@ -107,8 +108,7 @@ export default function () {
 
     useEffect(() => {
         if (Platform.OS =='ios'){
-            if (currentUser)
-                PushNotificationIOS.setApplicationIconBadgeNumber(currentUser?.notifications);
+            PushNotificationIOS.setApplicationIconBadgeNumber(currentUser?.notifications);
         }
     }, [currentUser?.notifications]);
   
@@ -128,8 +128,10 @@ export default function () {
 
     return (
         <><Suggestions />
-            <AsyncWorker /><BottomSheetDataContext>
-
+           <BottomSheetDataContext>
+                <View className="flex-1">
+                <View className="w-full"><AsyncWorker /></View>
+                
                 <Tabs
                     screenOptions={({ navigation, route }) => ({
                         tabBarStyle: {
@@ -197,6 +199,7 @@ export default function () {
                         })
                     }
                 </Tabs>
+                </View>
             </BottomSheetDataContext></>
     )
 }

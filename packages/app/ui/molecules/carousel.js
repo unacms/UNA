@@ -39,7 +39,7 @@ const Carousel = memo(({ data = [] }) => {
             setWidth(event.nativeEvent.layout.width);
     }, [width]);
 
-    let offset = windowWidthOr >672? 120: (Platform.OS == 'ios' ? 120 :60)
+    let offset = windowWidthOr >672? 120: (Platform.OS == 'ios' ? 120 :60)// check with ANdrew
     useEffect(() => {
         if (currentImageIndex !== false) {
             ImageOr.getSize(
@@ -67,7 +67,7 @@ const Carousel = memo(({ data = [] }) => {
                     newImageWidth = ww;
                     newImageHeight = newImageWidth*height/width
                     }
-
+                    // ANDREW check
                     console.log("setImageSize2", [newImageWidth, newImageHeight,width, height, ww,wh])
                     setImageSize2([newImageWidth, newImageHeight]);
                 }
