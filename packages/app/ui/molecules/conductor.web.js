@@ -27,11 +27,11 @@ import { storageClear, menuItemsFilter } from 'app/lib/util';
 import Footer from 'app/components/nav/footer';
 import { staticComponents } from 'app/static';
 
-function AddBlocks({leftSideBarBlocks, data, onFormSubmit, show, setShow})
+function AddBlocks({leftSideBarBlocks, data, onFormSubmit, show, setShow, layoutName})
 {
     const windowDimen = useWindowDimensions();
     const windowWidth = windowDimen.width;
-
+    
     let leftSideBarBlocksObj = leftSideBarBlocks.map((block) => {
         return <BlockByName
             data={data}
@@ -40,9 +40,9 @@ function AddBlocks({leftSideBarBlocks, data, onFormSubmit, show, setShow})
             saveOnChanges={true}
         />
     });
-
+    console.log("leftSideBarBlocksObj", layoutName)
     return <>
-        {leftSideBarBlocksObj?.length > 0 &&
+        {(leftSideBarBlocksObj?.length > 0 && layoutName == 'navigator') && 
             <>
             {windowWidth < 1024 && <View className="items-start ml-2 mt-2">
                 <Button title={show ?"Hide filters": "Show filters"}  variant="default" size="sm" rounded onPress={() =>{setShow(!show)}} />
@@ -743,7 +743,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                             </Link>
                         )
                     })}
-                    <MemoAddBlocks leftSideBarBlocks={leftSideBarBlocks} data={data} onFormSubmit={onFormSubmit} show={show} setShow={setShow}/>
+                    <MemoAddBlocks leftSideBarBlocks={leftSideBarBlocks} data={data} onFormSubmit={onFormSubmit} show={show} setShow={setShow} layoutName={layoutName}/>
                     
                 </LeftSidebar>
 
@@ -801,7 +801,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                         <View className=" flex-auto">{/*min-h-screen???*/}
                             {(headerSettings.showAltTopMenu) && topSideBarObj()}
                             <View className="lg:hidden">
-                                <MemoAddBlocks leftSideBarBlocks={leftSideBarBlocks} data={data} onFormSubmit={onFormSubmit} show={show} setShow={setShow}/>
+                                <MemoAddBlocks leftSideBarBlocks={leftSideBarBlocks} data={data} onFormSubmit={onFormSubmit} show={show} setShow={setShow} layoutName={layoutName}/>
                             </View>
                             <RenderScene route={currentRoute} />
                         </View>

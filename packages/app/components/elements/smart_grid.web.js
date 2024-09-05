@@ -21,7 +21,7 @@ const ResponsiveReactGridLayoutM = memo(({ data, bAllowEdit, rowHeight, breakpoi
         isDraggable={bAllowEdit}
 
         breakpoints={{ lg: 700, sm: 0 }}
-        cols={{ lg: 4, sm: 2 }}
+        cols={{ lg: 4, sm: 1 }}
         rowHeight={rowHeight}
         onBreakpointChange={onBreakpointChange}
         onResizeStop={onResize}
