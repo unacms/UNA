@@ -42,9 +42,9 @@ function AddBlocks({leftSideBarBlocks, data, onFormSubmit, show, setShow, layout
     });
     console.log("leftSideBarBlocksObj", layoutName)
     return <>
-        {(leftSideBarBlocksObj?.length > 0 && layoutName == 'navigator') && 
+        {(leftSideBarBlocksObj?.length > 0 ) && 
             <>
-            {windowWidth < 1024 && <View className="items-start ml-2 mt-2">
+            {(windowWidth < 1024 && layoutName == 'navigator' ) && <View className="items-start ml-2 mt-2">
                 <Button title={show ?"Hide filters": "Show filters"}  variant="default" size="sm" rounded onPress={() =>{setShow(!show)}} />
             </View>}
             {(show || windowWidth>=1024) && <View className="my-3 mx-2 ">
@@ -743,7 +743,8 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                             </Link>
                         )
                     })}
-                    <MemoAddBlocks leftSideBarBlocks={leftSideBarBlocks} data={data} onFormSubmit={onFormSubmit} show={show} setShow={setShow} layoutName={layoutName}/>  
+                    <MemoAddBlocks leftSideBarBlocks={leftSideBarBlocks} data={data} onFormSubmit={onFormSubmit} show={show} setShow={setShow} layoutName={layoutName}/>
+                    
                 </LeftSidebar>
 
             </>
