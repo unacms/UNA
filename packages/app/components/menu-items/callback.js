@@ -82,7 +82,7 @@ export default function MenuItemButton(oProps) {
                 if (oProps.data.on_callback == 'hide')
                     setIsVisible(false)
                 if (oProps.data.on_callback == 'redirect')
-                    redirectdRef.current.redirect(sResponse.data);
+                    redirectdRef.current.redirect(sResponse.data?.url ? sResponse.data?.url : sResponse.data);
                 if (oProps.data.on_callback == 'alert'){
                     if (oProps.data.on_callback_clear_cache)
                         storageClear();

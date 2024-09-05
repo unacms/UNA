@@ -8,6 +8,7 @@ import { remoteSettings } from 'app/settings-remote';
 import { subscribe } from 'app/ui/atoms/socket';
 import { getRemoteSettings } from 'app/config';
 //import dynamic from 'next/dynamic'
+import { fetcher } from 'app/lib/fetcher';
 import { appSetting } from 'app/lib/util'
 let Layouts;
 
@@ -76,8 +77,13 @@ export function Root(props) {
         remoteSettings.data = await getRemoteSettings();
     }, []);
 
-    const updateConnections = useCallback((data) => {
+    const updateConnections = useCallback(async (data) => {
         storageClear()
+
+        const request_url = '/api.php?r=system/get_page_by_request/TemplServicePages&params[]=home';
+        const sResponse = await fetcher(request_url);
+
+        setCurrentUser(sResponse.data.user);
     }, []);
 
     

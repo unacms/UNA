@@ -743,8 +743,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                             </Link>
                         )
                     })}
-                    <MemoAddBlocks leftSideBarBlocks={leftSideBarBlocks} data={data} onFormSubmit={onFormSubmit} show={show} setShow={setShow} layoutName={layoutName}/>
-                    
+                    <MemoAddBlocks leftSideBarBlocks={leftSideBarBlocks} data={data} onFormSubmit={onFormSubmit} show={show} setShow={setShow} layoutName={layoutName}/>  
                 </LeftSidebar>
 
             </>
