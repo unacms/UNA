@@ -9,6 +9,7 @@ import { subscribe } from 'app/ui/atoms/socket';
 import { getRemoteSettings } from 'app/config';
 //import dynamic from 'next/dynamic'
 import { fetcher } from 'app/lib/fetcher';
+
 import { appSetting } from 'app/lib/util'
 let Layouts;
 
