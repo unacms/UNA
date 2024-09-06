@@ -10,9 +10,9 @@ import RadioButton from 'app/ui/atoms/radiobutton';
 
 export default function (props) {
     const [isModal, setIsModal] = useState(false);
-
     const rules = {};
-    const defaultValue = props?.value ? (Array.isArray(props.value) ? props.value.map(String) : [props.value]) : '';
+    const isMultiple = props.origtype == 'select' ? false :true;
+    const defaultValue = props?.value ? (Array.isArray(props.value) ? props.value.map(String) : [props.value.toString()]) : '';
     const name = props.name ? props.name : '';
     const { field } = useController({ name, rules, defaultValue });
     //const { setBottomSheetData } = useBottomSheetData();
@@ -54,7 +54,7 @@ export default function (props) {
         headerBorder={true}
     >
         <View className='m-4 flex-1'>
-            <ChkList values={dataFlat} selectedValues={field.value} setFormValue={setFormValue} />
+            <ChkList values={dataFlat} selectedValues={field.value} setFormValue={setFormValue} isMultiple={isMultiple} />
         </View>
 
     </Modal>
@@ -97,19 +97,21 @@ export default function (props) {
     );
 }
 
-function ChkList({ values, selectedValues, setFormValue }) {
+function ChkList({ values, selectedValues, setFormValue, isMultiple }) {
     const [value2, setValue2] = useState(selectedValues)
     const [inputValue, setInputValue] = useState('');
     const addValue2 = (value) => {
         const selectedValues = value2.includes(value)
-            ? value2.filter(item => item !== value)
-            : [...value2, value];
+            ? (isMultiple? value2.filter(item => item !== value): [value])
+            : (isMultiple? [...value2, value] : [value]);
         setValue2(selectedValues);
     }
 
+    
     let filtred = values;
     if (inputValue)
         filtred = values.filter(item => item.value.toLowerCase().includes(inputValue.toLowerCase()));
+
     return (
         <View className='flex-1'>
             {

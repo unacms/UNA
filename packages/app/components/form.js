@@ -55,6 +55,7 @@ export default function (props) {
                 data.inputs[key].type = 'visibility'
             }
             if (checkInputType('selector', name, data.inputs[key].name)) {
+                data.inputs[key].origtype = data.inputs[key].type;
                 data.inputs[key].type = 'selector'
             }
 
