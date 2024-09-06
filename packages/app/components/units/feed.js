@@ -716,36 +716,19 @@ export default function UnitFeed(props) {
         storageSet('li:data', sKey, { data: datas, ts: Date.now() });
     }, [datas]);
 
-    useEffect(() => {
-        if (isWeb){
-            if (isWeb && dataCache && dataCache.ts < Date.now() - 1000 * appSetting('cache', 'items_lifetime')) {
-                cb();
-            }
+    const onItemEdited = async (strData) => {
+        const data = JSON.parse(strData);
+        if (data.id.toString() == datas.id.toString()){
+            const result = await fetcher(
+                '/api.php?r='+appSetting("urls", "feed_item")+'{"params":{"browse":"id","value":' + data.id + '}}'
+            )
+            if (result.data && !compare_objects(result.data, datas))
+                setDatas(result.data);
         }
-    }, [dataCache]);
-
-    // may be neednt
-    useEffect(() => {
-        if (isWeb){
-            const interval = setInterval(() => {
-                cb();
-            }, appSetting('cache', 'items_lifetime') * 1000);
-
-            return () => clearInterval(interval);
-        }
-    }, []);
-
-
-    const cb = async () => {
-        const result = await fetcher(
-            '/api.php?r=bx_timeline/get/&params[]={"params":{"browse":"id","value":' + datas.id + '}}'
-        )
-        if (result.data && !compare_objects(result.data, datas))
-            setDatas(result.data);
     }
-
+    
     useEffect(() => {
-        subscribe('cmts_' + datas.cmts.module + '_' + datas.id, 'comment_added', cb);
+        subscribe('bx_timeline_0', 'edited', onItemEdited);
     }, []);
 
     let unit = props.mode == 'small' ? SmallUnit(datas) : DefaultUnit(datas)

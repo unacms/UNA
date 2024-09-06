@@ -8,7 +8,6 @@ import { stripTags } from 'app/lib/util'
 export default function (props) {
     const { t } = useTranslation();
     const data = props.data;
-    console.log(data)
     return (
         <View className="flex-col p-6 w-full mx-auto  bg-bgrcard h-min dark:bg-bgrcard-d  overflow-hidden rounded-xl">
             <View className="w-28 h-28 overflow-hidden bg-neutral-100 dark:bg-neutral-700  rounded-full  ">

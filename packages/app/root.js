@@ -3,7 +3,7 @@
 import React, { useEffect, useCallback } from 'react';
 import { useCurrentUser } from 'app/context/user';
 import { Platform } from 'react-native'
-import { storageClear, decodeText } from 'app/lib/util';
+import { storageClear, decodeText, getDataFromCache, storageSet } from 'app/lib/util';
 import { remoteSettings } from 'app/settings-remote';
 import { subscribe } from 'app/ui/atoms/socket';
 import { getRemoteSettings } from 'app/config';
@@ -65,29 +65,46 @@ export function Root(props) {
     }, [currentUser?.notifications]);
 
     useEffect(() => {
-        subscribe('sys_api_0', 'config_changed', updateSettings);
+        subscribe('sys_api_0', 'config_changed', onUpdateSettings);
     }, [])
 
     useEffect(() => {
         if(currentUser?.id){
-            subscribe('sys_connections_'+currentUser.id, 'changed', updateConnections);
+            subscribe('sys_connections_'+currentUser.id, 'changed', onUpdateConnections);
         }
     }, [currentUser])
 
-    const updateSettings = useCallback(async () => {
+    useEffect(() => {
+        if(currentUser?.id){
+            subscribe('bx_timeline_0', 'edited', onItemEdited);
+        }
+    }, []);
+
+
+
+    const onUpdateSettings = useCallback(async () => {
         remoteSettings.data = await getRemoteSettings();
     }, []);
 
-    const updateConnections = useCallback(async (data) => {
+    const onUpdateConnections = useCallback(async (data) => {
         storageClear()
-
         const request_url = '/api.php?r=system/get_page_by_request/TemplServicePages&params[]=home';
         const sResponse = await fetcher(request_url);
-
         setCurrentUser(sResponse.data.user);
     }, []);
 
-    
+    const onItemEdited = useCallback(async (strData) => {
+        const data = JSON.parse(strData);
+        const sKey = 'feed_' + data.id;
+        const dataCache = getDataFromCache('li:data', sKey)
+        if (dataCache){     
+            const result = await fetcher(
+                '/api.php?r='+appSetting("urls", "feed_item")+'{"params":{"browse":"id","value":' + data.id + '}}'
+            )
+            if (result.data)
+                storageSet('li:data', sKey, { data: result.data, ts: Date.now() });
+        }
+    }, []);
 
     useEffect(() => {
         if (data?.user) {

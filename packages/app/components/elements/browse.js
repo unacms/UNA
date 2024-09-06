@@ -14,6 +14,8 @@ import useDaemon from 'app/lib/hooks/daemon'
 import Toaster from 'app/ui/atoms/toaster';
 import { storageClear } from 'app/lib/util';
 import { useLayoutData } from 'app/context/layout';
+import { subscribe } from 'app/ui/atoms/socket';
+import { useCurrentUser } from 'app/context/user'
 
 const Item = memo(({ item, index, numColumns, data, unitMode, props }) => (
     <View className={numColumns > 1 ? 'w-full pb-2 ' : '  ' + (data.unit != 'feed' ? '   w-full' : '  ') + '  '}>
@@ -45,12 +47,29 @@ export default function (props) {
     const toasterRef2 = useRef();
     const { t } = useTranslation();
     const [isRefreshing, setIsRefreshing] = useState(false);
-
+    const [isRevalidate, setIsRevalidate] = useState(false);
+    const { currentUser } = useCurrentUser();
     const uniRef = useRef();
     const data = props.data;
     const storageKeyValue = storageKey((props.uri ? props.uri : '') + (data.request_url ? ':' + data.request_url : '') + (data.params?.type ? ':' + data.params?.type : '') + (data.params?.category ? ':' + data.params?.category : '') + (props.cachePrefix ? ':' + props.cachePrefix : ''))
     //const [cachedData, setCachedData] = useState(props.cachePrefix ? false : { state: getDataFromCache('ul:state', storageKeyValue), data: getDataFromCache('ul:data', storageKeyValue) });
     const cachedData = { state: getDataFromCache('ul:state', storageKeyValue), data: getDataFromCache('ul:data', storageKeyValue) };
+   
+
+    useEffect(() => {
+        if (cachedData){
+            revalidateData();
+            //TODO revaliadate
+        }
+        if (props.data.unit == 'feed'){
+            subscribe('bx_timeline_0', 'added', setIsRevalidate);
+            subscribe('bx_timeline_0', 'deleted', setIsRevalidate);
+        }
+    }, []);
+
+    useEffect(() => {
+        revalidateData();
+    }, [isRevalidate]);
 
     if (data.unit == 'mixed') {
         data.unit = 'general-profile-list';
@@ -185,7 +204,32 @@ export default function (props) {
         }
     }
 
-    let endpointUpdateContent = '';
+    const revalidateData = async () => {
+        let endpointUpdateContent = '';
+        let bUpdateContent = false;
+        const revalidatedData = JSON.parse(isRevalidate);
+        if (revalidatedData.author_id != currentUser.id && dataItems.data.length > 0 && props.sidebar !== true && props.no_scroll !== true) {
+            const a = [...new Set(dataItems.data
+                .filter(item => item.type !== 'block')
+                .map(item => item.id)
+            )].slice(0, 10).join(',');
+            if (a) {
+                endpointUpdateContent = data.request_url + JSON.stringify({
+                    'params': { ...getCurrentParams(), validate: a }
+                });
+                bUpdateContent = true;
+            }
+        }
+        if (bUpdateContent){
+
+            const validatedData = (await fetcher(endpointUpdateContent)).data?.[0]?.data?.data;
+            if (validatedData && (validatedData == 'valid' || validatedData == 'invalid')) {
+                setToaster2Visible(validatedData !== 'valid');
+            }
+        }
+    }
+
+    /*let endpointUpdateContent = '';
     let bUpdateContent = false;
 
     if (dataItems.data.length > 0 && props.sidebar !== true && props.no_scroll !== true) {
@@ -210,7 +254,7 @@ export default function (props) {
                 setToaster2Visible(data !== 'valid');
             }
         }
-    }, [daemonData, daemonUrl]);
+    }, [daemonData, daemonUrl]);*/
 
     const showNewContent2 = async () => {
         storageClear('ul:data', storageKeyValue)

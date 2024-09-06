@@ -14,7 +14,9 @@ import { useRouter, useGlobalSearchParams } from 'expo-router';
 import { useLayoutData } from 'app/context/layout';
 import { Theme } from 'app/design/theme';
 import { staticComponents } from 'app/static';
-
+import { subscribe } from 'app/ui/atoms/socket';
+import { fetcher } from 'app/lib/fetcher';
+import Toaster from 'app/ui/atoms/toaster';
 
 export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultHeader, menu, data, blocks, useSectionAsMenu, unitMode, skeleton, onChangeRoute, keyword }) {
 
@@ -32,6 +34,8 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [routes, setRoutes1] = useState(initedTabs);
     const [menuState, setMenuState] = useState(menu);
+    const [isRevalidate, setIsRevalidate] = useState(false);
+    const toasterRef2 = useRef();
 
     useEffect(() => {
         if (!deepEqual(menu, menuState)) {
@@ -67,6 +71,21 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
     const qKey = [currentRoute?.endpoint?.request_url, index, keyword, JSON.stringify(currentRoute?.endpoint?.params?.filters)];
     const queryClient = useQueryClient();
 
+    useEffect(() => {
+        if (currentRoute.cached){
+            revalidateData();
+
+        }
+        if (currentRoute?.endpoint?.unit == 'feed'){
+            subscribe('bx_timeline_0', 'added', setIsRevalidate);
+            subscribe('bx_timeline_0', 'deleted', setIsRevalidate);
+        }
+    }, []);
+
+    useEffect(() => {
+        revalidateData();
+    }, [isRevalidate]);
+
     const bEnabled = currentRoute?.endpoint?.params?.start == 0 && !isRefreshing;
 
    const {
@@ -92,6 +111,57 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
              fetchNextPage();
         }
     }, [bEnabled]);
+
+    useEffect(() => {
+        setToaster2Visible(false);
+    }, [index]);
+
+    const showNewContent2 = async () => {
+      
+        const newRoutes = [...routes];
+        newRoutes[index].endpoint.finished = false;
+        newRoutes[index].data = newRoutes[index].data.filter(item => item.type === 'block');;
+        newRoutes[index].endpoint.params.start = 0;
+        setRoutes(newRoutes);
+        setToaster2Visible(false);
+        // uniRef.current.scrollToIndex({ animated: true, index: -1 });
+
+    }
+
+    const setToaster2Visible = (val) => {
+        const current = toasterRef2.current;
+        if (current) {
+            current.setVisible(val);
+        }
+    }
+
+    const revalidateData =  useCallback(async () => {
+        const hasEndpoint = Boolean(currentRoute?.endpoint);
+        let endpointUpdateContent = '';
+        let bUpdateContent = false;
+        const revalidatedData = JSON.parse(isRevalidate);
+        if (hasEndpoint) {
+    
+            const a = [...new Set(currentRoute.data
+                .filter(item => item.type !== 'block')
+                .map(item => item.id)
+            )].slice(0, 10).join(',');
+
+            if ((a || true) && revalidatedData.author_id != currentUser.id &&  !currentRoute.endpoint.request_url.includes("system/get_results/TemplSearchExtendedServices")) {
+                endpointUpdateContent = currentRoute.endpoint.request_url + JSON.stringify({
+                    'params': { ...currentRoute.endpoint.params, validate: a }
+                });
+                bUpdateContent = true;
+            }
+        }
+        if (bUpdateContent){
+            const validatedData = (await fetcher(endpointUpdateContent)).data?.[0]?.data?.data;
+
+            if (validatedData && (validatedData == 'valid' || validatedData == 'invalid')) {
+                setToaster2Visible(validatedData !== 'valid');
+            }
+        }
+    }, [currentRoute, isRevalidate]);
 
     const handleEndReached = async (lastItemIndex) => {
        
@@ -215,7 +285,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
         )
     }, [skeleton, data, unitMode]);
 
-    const renderScene = useCallback(({ route }) => <TabScene route={route} index={route.index} />, [unitMode]);
+    const renderScene = useCallback(({ route }) => <><Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="New content" size="sm" /><TabScene route={route} index={route.index} /></>, [unitMode]);
     const { colors } = Theme();
 
     const renderTabBar = (props) => {

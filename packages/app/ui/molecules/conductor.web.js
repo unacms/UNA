@@ -26,6 +26,8 @@ import DynamicMenu from 'app/components/nav/menu-dynamic';
 import { storageClear, menuItemsFilter } from 'app/lib/util';
 import Footer from 'app/components/nav/footer';
 import { staticComponents } from 'app/static';
+import { subscribe } from 'app/ui/atoms/socket';
+import { fetcher } from 'app/lib/fetcher';
 
 function AddBlocks({leftSideBarBlocks, data, onFormSubmit, show, setShow, layoutName})
 {
@@ -40,7 +42,6 @@ function AddBlocks({leftSideBarBlocks, data, onFormSubmit, show, setShow, layout
             saveOnChanges={true}
         />
     });
-    console.log("leftSideBarBlocksObj", layoutName)
     return <>
         {(leftSideBarBlocksObj?.length > 0 ) && 
             <>
@@ -79,7 +80,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     const windowHeight = windowDimen.height;
     const [routes, setRoutes] = useState(initedTabs);
     const [cntWidth, setCntWidth] = useState(0);
-
+    const [isRevalidate, setIsRevalidate] = useState(false);
     const isDrawer = menuItemsByName('main_menu', appSetting('menu_items', 'menu_drawer'), currentUser).length > 0;
 
     useEffect(() => {
@@ -103,59 +104,23 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
     //let maxIdLocal = 0;
     const currentRoute = routes.find((item) => item.index === index);
-
     let headerSettings = getHeaderSettings(getURI(currentRoute?.key), windowWidth, layoutName);
 
-    /* DAEMON PART */
-    /*const setToasterVisible = (val) => {
-        const current = toasterRef.current;
-        if (current) {
-            current.setVisible(val);
-        }
-    }
-    const bUseDaemon = (currentRoute?.endpoint?.unit == 'feed');
-    let params = currentRoute?.endpoint?.params ? JSON.parse(JSON.stringify(currentRoute.endpoint.params)) : {};
-    params.start = 0;
-    const { daemonData, error } = useDaemon('/api.php?r=bx_timeline/get_live_update&params[]=' + JSON.stringify({ 'params': params }) + '&params[]=0&params[]=0', false, bUseDaemon);
-    if (bUseDaemon) {
-        maxIdLocal = currentRoute?.data.length > 0
-            ? currentRoute?.data.reduce((max, item) => {
-                const idNumber = parseFloat(item.id);
-                return (typeof idNumber === 'number' && Number.isFinite(idNumber) && idNumber > max) ? idNumber : max;
-            }, parseFloat(currentRoute?.data[0].id) || 0)
-            : 0;
-        if (daemonData && maxId > 0 && maxId < daemonData) {
-            setTimeout(() => {
-                setToasterVisible(true);
-            }, 100);
-
-        }
-    }
-
-   
 
     useEffect(() => {
-        if (maxIdLocal > 0 && maxIdLocal != maxId) {
-            setMaxId(maxIdLocal)
+        if (currentRoute.cached){
+            revalidateData();
+
         }
-    }, [maxIdLocal]);
+        if (currentRoute?.endpoint?.unit == 'feed'){
+            subscribe('bx_timeline_0', 'added', setIsRevalidate);
+            subscribe('bx_timeline_0', 'deleted', setIsRevalidate);
+        }
+    }, []);
 
-
-    const showNewContent = async () => {
-        setToasterVisible(false);
-        let params = JSON.parse(JSON.stringify(currentRoute.endpoint.params));
-        params.start = 0;
-        const sRequest = currentRoute.endpoint.request_url + JSON.stringify({ params });
-
-        const sResponse = await fetcher(sRequest);
-        maxIdLocal = sResponse.data[0].data.data.length > 0 ? sResponse.data[0].data.data.reduce((max, item) => item.id > max ? item.id : max, sResponse.data[0].data.data[0].id) : 0;
-        setLayoutData(getAlert('feed:new_content', sResponse.data[0].data.data));
-
-        setMaxId(maxIdLocal);
-        uniRef.current.scrollToIndex({ animated: true, index: -1 });
-
-    }*/
-    /* DAEMON PART */
+    useEffect(() => {
+        revalidateData();
+    }, [isRevalidate]);
 
     useEffect(() => {
         if (getNumCols(cntWidth) != numColumns) {
@@ -175,9 +140,36 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         }
     }
 
-    const hasEndpoint = Boolean(currentRoute?.endpoint);
-    let endpointUpdateContent = '';
-    let bUpdateContent = false;
+    const revalidateData =  useCallback(async () => {
+        const hasEndpoint = Boolean(currentRoute?.endpoint);
+        let endpointUpdateContent = '';
+        let bUpdateContent = false;
+        const revalidatedData = JSON.parse(isRevalidate);
+    
+        if (hasEndpoint) {
+    
+            const a = [...new Set(currentRoute.data
+                .filter(item => item.type !== 'block')
+                .map(item => item.id)
+            )].slice(0, 10).join(',');
+
+            if ((a || true) && revalidatedData.author_id != currentUser.id &&  !currentRoute.endpoint.request_url.includes("system/get_results/TemplSearchExtendedServices")) {
+                endpointUpdateContent = currentRoute.endpoint.request_url + JSON.stringify({
+                    'params': { ...currentRoute.endpoint.params, validate: a }
+                });
+                bUpdateContent = true;
+            }
+        }
+        if (bUpdateContent){
+            const validatedData = (await fetcher(endpointUpdateContent)).data?.[0]?.data?.data;
+
+            if (validatedData && (validatedData == 'valid' || validatedData == 'invalid')) {
+                setToaster2Visible(validatedData !== 'valid');
+            }
+        }
+    }, [currentRoute, isRevalidate]);
+
+    /*c
 
     if (hasEndpoint) {
         const a = [...new Set(currentRoute.data
@@ -209,7 +201,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             }
         }
     }, [daemonData, daemonUrl]);
-
+*/
     const showNewContent2 = async () => {
         storageClear('ul:data', currentRoute.storageKeyValue)
         storageClear('ul:state', currentRoute.storageKeyValue)

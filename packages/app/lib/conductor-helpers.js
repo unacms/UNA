@@ -117,6 +117,7 @@ export function fillTabs(menu, data, blocks, currentUser, useSectionAsMenu) {
                 if (stateD) {
                     i.endpoint = stateD.endpoint;
                     i.data = stateD.data;
+                    i.cached = true;
                 }
             }
 
