@@ -86,6 +86,8 @@ function DefaultUnit(data) {
     )
 }
 
-export default function UnitFeed_(props) {
-    return <UnitFeed data={props.data} mode={props.mode} SmallUnit={SmallUnit} DefaultUnit={DefaultUnit} />;
+export default function UnitFeed_({data, mode}) {
+  //  return useMemo(() => (
+    return   <UnitFeed data={data} mode={mode} SmallUnit={SmallUnit} DefaultUnit={DefaultUnit} />
+//), [data, mode]);
 }

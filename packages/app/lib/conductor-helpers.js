@@ -334,62 +334,14 @@ function ItemRenderer_({ route, numColumns, item, unit, module, unitMode, unitTy
 
     return b;
 }
-/*export function ItemRenderer({ route, numColumns, item, unit, module, unitMode, unitType, sidebar }) {
-    const renderedItemsRef = useRef(new Map());
-
-    const key = `${item.id}`;
-    const renderedItem = useMemo(() => {
-        if (renderedItemsRef.current.has(key)) {
-            return renderedItemsRef.current.get(key);
-        }
-        const newItem = (
-            <ItemRenderer_
-                unitType={unitType}
-                unitMode={unitMode}
-                route={route}
-                item={item}
-                unit={route?.endpoint?.unit}
-                module={route?.endpoint?.module}
-            />
-        );
-        renderedItemsRef.current.set(key, newItem);
-        return newItem;
-    }, [key, unitType, unitMode, route, item]);
-
-    return renderedItem;
-}*/
 
 // AVOID BLINKING
 export const ItemRenderer = memo(ItemRenderer_);
-/*
-const ItemRenderer = memo(function ItemRenderer({ route, numColumns, item, unit, module, unitMode, unitType, sidebar }) {
-    console.log("ItemRenderer_", item?.id);
-    
-    const renderBlock = useCallback(() => {
-        let b = BlockByName2({ b: item.data, name: item.block });
-        if (!b) return <View className='h-[1px]'><Text>&nbsp;</Text></View>;
-        return b;
-    }, [item.data, item.block]);
+/*export const ItemRenderer = memo(ItemRenderer_, (prevProps, nextProps) => {
+    return prevProps.item.id === nextProps.item.id; 
+});*/
 
-    const renderUnit = useCallback(() => (
-        <Unit unitType={unitType} module={module} unit={unit} data={item} mode={unitMode} />
-    ), [unitType, module, unit, item, unitMode]);
 
-    if (item?.type === 'block') {
-        return (
-            <View key={`${route.index}-${item.id}`} className={numColumns > 1 ? 'w-full' : 'w-full'}>
-                {renderBlock()}
-            </View>
-        );
-    } else {
-        return (
-            <View key={`${route.index}-${item.id}`} className={numColumns > 1 ? 'w-full' : 'w-full'}>
-                {renderUnit()}
-            </View>
-        );
-    }
-});
-*/
 
 export function LeftSidebar({ title, addButtons, children, width }) {
     return (

@@ -30,7 +30,7 @@ function DefaultUnit(data) {
     if (viewState.view == 'edited')
         return <FeedEditForm setViewState ={setViewState} id={data.id} viewState={viewState}/>
 
-    //return<View className='w-full h-12 bg-red-500 my-2'></View>
+   // return<View className='w-full h-12 bg-red-500 my-2'><Author data={data} url={url} t={t} /></View>
     return (
         <AnimatedBlock>
             <Card rounded=' rounded-none ' margin=' mb-1  ' addClassName={' p-3 tl-' + data.id} >
@@ -59,6 +59,7 @@ function DefaultUnit(data) {
 }
 
 export default function UnitFeed_({data, mode}) {
-    
-    return <UnitFeed data={data} mode={mode} SmallUnit={SmallUnit} DefaultUnit={DefaultUnit} />;
+    //return useMemo(() => (
+        return <UnitFeed data={data} mode={mode} SmallUnit={SmallUnit} DefaultUnit={DefaultUnit} />
+    //), [data, mode]);
 }

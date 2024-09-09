@@ -195,6 +195,7 @@ export default function AtomProfile(oProps) {
                         sizes="(max-width:1024px) 100vw, 1024px"
                         className={sSize + " z-50"}
                         view="cover"
+                        width={iSizeWidth}
                         src={oProps.url_avatar}
                         alt={oProps.display_name}
                     />

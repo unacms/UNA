@@ -9,19 +9,13 @@ import { appStatic } from 'app/lib/app-static'
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
 
 export default function PageLayout(props) {
-    
+
 
     return (
         <KbAvoidingView style={{ flex: 1 }}>
-        <ScrollView 
-            contentContainerStyle={{ flexGrow: 1 }} 
-            className='flex-1 p-4' 
-            keyboardShouldPersistTaps="always" 
-            keyboardDismissMode="on-drag"
-        >
-            <View style={{ flex: 1 }} className={Platform.OS === 'web' ? 'w-full mx-auto max-w-5xl flex-col items-center lg:flex-row  rounded-3xl lg:bg-bgrnavbar/50 lg:dark:bg-bgrnavbar-d/50 lg:border border-dashed border-bdr dark:border-bdr-d':''}>
-                <View className={Platform.OS === 'web' ? "flex-col p-4 lg:p-8 flex-auto w-full  items-center lg:items-start gap-y-4 my-auto ":"w-full mx-auto max-w-5xl flex-col items-center lg:flex-row rounded-3xl lg:bg-bgrnavbar/50 lg:dark:bg-bgrnavbar-d/50 lg:border border-dashed border-bdr dark:border-bdr-d"}>
-  
+            <View style={{ flex: 1 }} className={Platform.OS === 'web' ? 'w-full p-4 mx-auto max-w-5xl flex-col items-center lg:flex-row  rounded-3xl lg:bg-bgrnavbar/50 lg:dark:bg-bgrnavbar-d/50 lg:border border-dashed border-bdr dark:border-bdr-d' : 'p-4'}>
+                <View className={Platform.OS === 'web' ? "flex-col p-4 lg:p-8 flex-auto w-full  items-center lg:items-start gap-y-4 my-auto " : "w-full mx-auto max-w-5xl flex-col items-center lg:flex-row rounded-3xl lg:bg-bgrnavbar/50 lg:dark:bg-bgrnavbar-d/50 lg:border border-dashed border-bdr dark:border-bdr-d"}>
+
                     <Text className="text-4xl tracking-tight font-bold text-neutral-800 dark:text-neutral-200 ">
                         Welcome back!
                     </Text>
@@ -30,19 +24,21 @@ export default function PageLayout(props) {
                         Login to your account to continue.
                     </Text>
                     <View className="w-full mt-4">{appStatic('components_logincontent')}</View>
-                   
+
                 </View>
 
 
                 <View className="w-full max-w-lg md:w-1/2 lg:w-2/5 my-auto mx-auto items-center lg:p-2  ">
                     <View className=" flex-auto w-full   ">
-                <Card
+                        <Card
                             rounded=" rounded-2xl "
                             addClassName=" px-4 py-2 sm:px-6 sm:py-4 w-full  max-w-xl mx-auto flex-auto  "
                         >
-                    <BlockByName name={props.blocks.form} data={props.data} />
-                    </Card>
-                    <Link
+                            <ScrollView>
+                                <BlockByName name={props.blocks.form} data={props.data} />
+                            </ScrollView>
+                        </Card>
+                        <Link
                             className=" mx-auto  w-full "
                             href="/forgot-password"
                         >
@@ -70,9 +66,9 @@ export default function PageLayout(props) {
                                 />
                             </Link>
                         </Card>
-                </View>
+                    </View>
                 </View>
             </View>
-            </ScrollView></KbAvoidingView>
+        </KbAvoidingView >
     )
 }

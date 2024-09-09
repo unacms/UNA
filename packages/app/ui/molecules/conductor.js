@@ -260,6 +260,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
     /* NEW POST TO FEED */
 
     const TabScene = useCallback(({ route, index }) => {
+        const cache = useRef({});
         const Preload = getSkeletonForList(skeleton != '' ? skeleton : (data.module ? data.module : data.unit), 1);
         if (!route.inited) {
             //Preload
@@ -267,13 +268,35 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
         }
         const unitType = getUnitModeBySource(route?.endpoint?.request_url);
 
+        const renderCachedItem = ({ item, index }) => {
+            const cacheKey = item.id || index; // Use id or index as the cache key
+    
+            // Check if the item is already cached
+            if (!cache.current[cacheKey]) {
+                // If not cached, render the item and store it in the cache
+                cache.current[cacheKey] = (
+                    <ItemRenderer
+                        unitType={unitType}
+                        unitMode={unitMode}
+                        route={route}
+                        item={item}
+                        unit={route?.endpoint?.unit}
+                        module={route?.endpoint?.module}
+                    />
+                );
+            }
+           
+            return cache.current[cacheKey];
+        };
+
         return (
             <TabFlashList
                 index={route.index}
                 data={route.data}
                 route={route}
                 unit={route.endpoint?.unit}
-                renderItem={({ item, index }) => <ItemRenderer unitType={unitType} unitMode={unitMode} route={route} item={item} unit={route?.endpoint?.unit} module={route?.endpoint?.module} />}
+                renderItem={({ item, index }) => renderCachedItem({ item, index })}
+                //renderItem={({ item, index }) => <ItemRenderer unitType={unitType} unitMode={unitMode} route={route} item={item} unit={route?.endpoint?.unit} module={route?.endpoint?.module} />}
                 //<View className="w-full h-24 bg-red-500 my-2"></View>}
                 getItemType={(item) => {
                     return item.type;

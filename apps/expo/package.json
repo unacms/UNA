@@ -95,7 +95,8 @@
     "swr": "^2.2.0",
     "uuid": "3.4.0",
     "victory-native": "^36.7.0",
-    "zeego": "^1.9.0"
+    "zeego": "^1.9.0",
+    "zustand": "^4.5.5"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

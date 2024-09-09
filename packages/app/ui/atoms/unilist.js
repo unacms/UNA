@@ -1,18 +1,21 @@
 import { /*MasonryFlashList,*/ FlashList } from "@shopify/flash-list";
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo, useRef } from 'react';
 import { RefreshControl } from 'react-native';
+import { View } from 'app/design/view'
+import { Text } from 'app/design/typography'
 
 export default function UniList(props) {
     let { data, renderItem, onEndReached, ListFooterComponent, refer, onScrollToIndex, numColumns, keyExtractor, unit, refreshing, onRefresh, ...rest } = props
-    let estimatedItemSize = 400;
-    if (unit == 'notifications'){
-        estimatedItemSize=40;
-    }
-    if (unit == 'feed'){
-        estimatedItemSize=200;
-    }
+    const unitSizeMap = {
+        notifications: 40,
+        feed: 200,
+    };
+   
+    const estimatedItemSize = unitSizeMap[unit] || 400;
     
-    data = data.filter((v,i,a)=>a.findIndex(t=>(t.id === v.id)) === i);
+    const filteredData = useMemo(() => {
+        return data.filter((v, i, a) => a.findIndex(t => t.id === v.id) === i);
+      }, [data]);
     
     
     /*const onLoadListener = useCallback(({ elapsedTimeInMs } ) => {
@@ -27,7 +30,7 @@ export default function UniList(props) {
             onEndReachedThreshold={1}
             numColumns={numColumns}
             estimatedItemSize={estimatedItemSize}
-            data={data}
+            data={filteredData}
             renderItem={renderItem}
             onEndReached = {onEndReached} 
             ListFooterComponent={ListFooterComponent}

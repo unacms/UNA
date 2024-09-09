@@ -3,6 +3,7 @@ import { styled } from 'nativewind'
 import { Platform } from 'react-native'
 import { StyleSheet, PixelRatio } from 'react-native';
 import { appSetting } from 'app/lib/util';
+import { useMemo } from 'react';
 
 export const SolitoImageStyled = styled(SolitoImage)
 
@@ -83,41 +84,21 @@ export default function ElementImage(props) {
             w = 640;
 
         src = appSetting('config', 'native_app_images_url') +    "/_next/image?url=" + src + "&w=" + w + "&q=75"
-
         srcImIn = src;
     }
     
-    //const [srcIm, setSrcIm] = useState(srcImIn);
-    //const [srcOr, setSrcOr] = useState(src);
-   /* const handleImageLoad = (e) => {
-        if (srcIm != srcOr){
-            setSrcIm(srcOr)
-        }
-    };
-
-    const keyStr =  'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/='
-
-    const triplet = (e1, e2, e3) =>
-  keyStr.charAt(e1 >> 2) +
-  keyStr.charAt(((e1 & 3) << 4) | (e2 >> 4)) +
-  keyStr.charAt(((e2 & 15) << 2) | (e3 >> 6)) +
-  keyStr.charAt(e3 & 63)
-
-    const rgbDataURL = (r, g, b) =>  `data:image/gif;base64,R0lGODlhAQABAPAA${triplet(0, r, g) + triplet(b, 255, 255)}/yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==`
-*/
     
     
     if (nobg == true){
         style={}
     }
 
-    return (
+    return useMemo(() => (
         <SolitoImageStyled 
-            priority
             {...rest} 
             src={src} 
             alt={alt} 
             style={style} 
         />
-    );
+    ), [rest, src, alt, style]);
 }
