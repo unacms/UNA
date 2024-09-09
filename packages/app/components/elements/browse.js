@@ -144,6 +144,7 @@ export default function (props) {
         if (isRefreshing) {
             queryClient.removeQueries(qKey);
             setIsRefreshing(false);
+            console.log('refetch');
             refetch();
         }
     }, [isRefreshing]);
@@ -157,7 +158,7 @@ export default function (props) {
             return;
         if (lastItemIndex == false)
             return;
-
+        console.log("fetchNextPage");
         fetchNextPage();
     }, [hasNextPage, props.only_one_page, isFetchingNextPage]);
 
@@ -260,8 +261,8 @@ export default function (props) {
         storageClear('ul:data', storageKeyValue)
         storageClear('ul:state', storageKeyValue);
         setDataItems({ data: [], params: browseParams });
-
-        setToaster2Visible(false);
+        // HECH HERE !!!
+       // setToaster2Visible(false);
     }
     /* UPDATE CONTENT PART */
 
@@ -283,8 +284,10 @@ export default function (props) {
     }, [dataItems.data]);
 
     useEffect(() => {
-        if (dataItems.data.length == 0 && dataItems.params == browseParams)
+        if (dataItems.data.length == 0 && dataItems.params == browseParams){
+            console.log('refetch2');
             refetch();
+        }
     }, [storageKeyValue, dataItems.params, props.cachePrefix]);
 
     if (dataItems.data.length == 0 && ((dataItems?.params?.start === 0 && (!props.only_one_page && data.unit != 'notifications')) || status === 'loading'))
