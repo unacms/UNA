@@ -35,10 +35,9 @@ export default function FormComments(props) {
 
     
     const updateAccount = useCallback((data) => {
-        setCurrentUser(prevUser => ({
-            ...prevUser,
+        setCurrentUser({
             confirmed: true,
-        }));
+        });
     }, []);
 
     props.data.inputs['do_submit'].value = 'Confirm';

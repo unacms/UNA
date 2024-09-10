@@ -21,8 +21,9 @@ export default function Subscriber() {
 
     useEffect(() => {
         if(currentUser?.id){
-            console.log("sys_connections_", 555)
-            subscribe('sys_connections_'+currentUser.id, 'changed', onUpdateConnections);
+            //TODO need to fix
+            //console.log("sys_connections_", 555)
+            //subscribe('sys_connections_'+currentUser.id, 'changed', onUpdateConnections);
         }
     }, [currentUser?.id])
 

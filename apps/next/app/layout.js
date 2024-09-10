@@ -1,7 +1,7 @@
 "use client"
 import { Analytics } from '@vercel/analytics/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { CurrentUserProvider } from 'app/context/user';
+//import { CurrentUserProvider } from 'app/context/user';
 import { storageGet } from 'app/lib/util'
 import * as RNLocalize from "react-native-localize";
 import i18n from 'i18next';
@@ -57,10 +57,9 @@ export default function RootLayout({ children }) {
         <html lang="en" >
             <body className='bg-bgrbody dark:bg-bgrbody-d' style={{ overflowY: 'initial' }}>
                 <QueryClientProvider client={queryClient}>
-                    <CurrentUserProvider>
                         {!!process.env['VERCEL'] ? <Analytics /> : null}
                         {children}
-                    </CurrentUserProvider>
+
                 </QueryClientProvider>
             </body>
         </html>

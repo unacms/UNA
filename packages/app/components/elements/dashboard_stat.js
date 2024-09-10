@@ -68,7 +68,7 @@ export default function PageLayout(props) {
         if(Platform.OS == 'web'){
             storageClear();
             storageSet('layout:lang', '', item, true);
-            setCurrentUser(Object.assign({}, currentUser));
+            //STRANGE CODE setCurrentUser(Object.assign({}, currentUser));
             window.location.href = window.location.href
         }
         
@@ -91,7 +91,7 @@ export default function PageLayout(props) {
             
             storageSet('layout:theme', '', item, true);
             //location.reload();
-            setCurrentUser(Object.assign({}, currentUser));
+           // setCurrentUser(Object.assign({}, currentUser));
         }
         else{
             console.log("item", item)

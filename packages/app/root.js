@@ -66,16 +66,15 @@ export function Root(props) {
     useEffect(() => {
         if (data?.user) {
             if (currentUser?.id != data.user.id) {
-                let b = Object.assign({}, data.user)
-
-                setCurrentUser(b);
+               // let b = Object.assign({}, data.user)
+                //console.log('data.user', b)
+                setCurrentUser(data.user);
                 storageClear();
             }
             if (currentUser && currentUser?.informer != data.user.informer) {
-                setCurrentUser(prevUser => ({
-                    ...prevUser,
+                setCurrentUser({
                     informer: data.user.informer,
-                }));
+                });
             }
         }
         else {

@@ -7,7 +7,7 @@ import { Provider } from 'app/provider'
 import { Stack } from 'expo-router'
 import { Theme } from 'app/design/theme'
 import { ThemeProvider } from "@react-navigation/native";
-import { CurrentUserProvider } from 'app/context/user';
+//import { CurrentUserProvider } from 'app/context/user';
 import { useColorScheme } from 'react-native';
 import { useEffect } from 'react'
 import {
@@ -110,9 +110,9 @@ const AppLayout = React.memo(() => {
             <Provider>
                 <QueryClientProvider client={queryClient}>
                     <SafeAreaView edges={['left', 'right']} style={containerStyle}>
-                        <CurrentUserProvider>
+                       
                             <Tabs />
-                        </CurrentUserProvider>
+
                     </SafeAreaView>
                 </QueryClientProvider>
             </Provider>

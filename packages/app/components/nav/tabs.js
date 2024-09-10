@@ -8,7 +8,7 @@ import { Theme } from 'app/design/theme';
 import Profile from 'app/ui/molecules/profile';
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next';
-import BottomSheetDataContext from 'app/context/bottomsheet';
+//import BottomSheetDataContext from 'app/context/bottomsheet';
 import { FeedbackHaptics } from 'app/lib/util';
 import * as Linking from 'expo-linking';
 import { useRouter } from 'expo-router';
@@ -130,7 +130,7 @@ export default function () {
     return (
         <><Suggestions />
             <Subscriber />
-            <BottomSheetDataContext>
+
                 <View className="flex-1">
                     <View className="w-full"><AsyncWorker /></View>
 
@@ -202,6 +202,6 @@ export default function () {
                         }
                     </Tabs>
                 </View>
-            </BottomSheetDataContext></>
+            </>
     )
 }

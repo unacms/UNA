@@ -9,12 +9,11 @@ export default function (oProps) {
             if (currentUser) {
                 if (daemonData != null) {
                     const newNotifs = Number(daemonData);
-                    if (newNotifs !== Number(currentUser?.notifications)) {
-                        setCurrentUser(prevUser => ({
-                            ...prevUser,
+                   // if (newNotifs !== Number(currentUser?.notifications)) {
+                        setCurrentUser({
                             notifications: newNotifs,
-                        }));
-                    }
+                        });
+                    //}
                 }
             }
         }, [daemonData, currentUser]);

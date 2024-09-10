@@ -1,4 +1,4 @@
-import { createContext, useState, useContext, useMemo } from 'react';
+/*import { createContext, useState, useContext, useMemo } from 'react';
 
 const CurrentUserContext = createContext(null);
 
@@ -17,24 +17,28 @@ export function CurrentUserProvider ({ children }) {
 
 export function useCurrentUser() {
     return useContext(CurrentUserContext);
-}
+}*/
 
-/*
+
 import { createContext, useState, useContext, useMemo } from 'react';
 import { create } from 'zustand';
-import { compare_objects } from 'app/lib/util'
+import { isObjectsEqual } from 'app/lib/util'
 const CurrentUserContext = createContext(null);
 
 export const useCurrentUserStore = create((set, get) => ({
     currentUser: null, // Initial state
 
     // Setter function with deep comparison check using lodash's isEqual
-    setCurrentUser: (newUser) => {
+    setCurrentUser: (userUpdate) => {
         const currentUser = get().currentUser;
 
+        const updatedUser = {
+            ...currentUser, // Copy the current user object
+            ...userUpdate,  // Merge the updates (e.g., notifications)
+        };
         // Only update if the objects are not deeply equal
-        if (!compare_objects(currentUser, newUser)) {
-            set(() => ({ currentUser: newUser }));
+        if (!isObjectsEqual(currentUser, updatedUser)) {
+            set(() => ({ currentUser: updatedUser }));
         }
     },
 }));
@@ -45,4 +49,4 @@ export const useCurrentUser = () => {
     const setCurrentUser = useCurrentUserStore((state) => state.setCurrentUser);
 
     return { currentUser, setCurrentUser };
-};*/
+};

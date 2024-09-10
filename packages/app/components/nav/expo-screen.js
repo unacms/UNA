@@ -95,52 +95,11 @@ const Content = ({ pagePath, currentUser, isRoot }) => {
                  //console.log('-------------------------------updateCenterHeader', pagePath, pageData1?.data?.name, navigation.getState().routes.length)
 
                 setBottomSheetData(bottomSheetData !== false ? false : bottomSheetData);
-
-               /* const data2 = data.props.data;
-                if (data2?.user) {
-                    if (currentUser?.id != data2.user.id) {
-                        let b = Object.assign({}, data2.user)
-                        setCurrentUser(b);
-                        storageClear();
-                    }
-                    if (currentUser && currentUser?.informer != data2.user.informer) {
-                        setCurrentUser(prevUser => ({
-                            ...prevUser,
-                            informer: data2.user.informer,
-                        }));
-                    }
-                }
-                else {
-                    setCurrentUser(false);
-                    storageClear();
-                }*/
                 setPageData(data.props);
             }
         };
         fetchPageData();
     }, [pagePath, currentUser?.id]);
-
-    /*useEffect(() => {
-         if (pageData) {
-             const settings = appSetting('layouts', pageData.data.uri)
- 
-             let header = settings?.header
-             if (!header){
-                 const menu_name = pageData.data?.menu?.object;
-                 if (menu_name){
-                     const menuSettings = appSetting('menu_items', menu_name);
- 
-                     let addButtonsSet = menuSettings?.add?.filter(item => item.hideInTopBar !== true);
-                     addButtonsSet = menuItemsFilter(addButtonsSet, currentUser);
-                     header = addButtonsSet;
-                 }
-             }
-             console.log("updateCenterHeader")
-             updateCenterHeader(pagePath, pageData.data.name, null, header, settings?.headerSettings);
-         }
-     }, [pageData, currentUser?.id]);*/
-
-   //  console.log("!!!!!!!!!!!!!!!!!!!!!!!", pageData?.data.user)
 
     return pageData?.data ? (
 

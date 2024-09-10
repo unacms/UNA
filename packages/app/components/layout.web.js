@@ -12,7 +12,7 @@ import BottomSheet from 'app/ui/molecules/bottomsheet_content';
 import { getHeaderSettings, getLayout, deepEqual } from 'app/lib/util';
 import { useColorScheme } from 'react-native';
 import { appSetting } from 'app/lib/util'
-import BottomSheetDataContext from 'app/context/bottomsheet';
+//import BottomSheetDataContext from 'app/context/bottomsheet';
 import { appStatic } from 'app/lib/app-static'
 import { storageSet, storageClear, storageGet } from 'app/lib/util'
 import { menuItemsByName } from 'app/lib/util'
@@ -72,7 +72,7 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, layoutName, d
 
     if (getLayout(currentUser, layoutName) == 'hor') {
         return (
-            <BottomSheetDataContext>
+            <>
                 <Content layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} url={data?.url} />
 
                 <Suggestions />
@@ -80,14 +80,14 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, layoutName, d
                 <NavbarMemo headerSettings={headerSettings} layoutName={layoutName} title={data.name} menu={data.menu} menu_add={data.menu_add || false} uri={uri} />
                 <BottomSheet />
                 <ModalPopup />
-            </BottomSheetDataContext>
+            </>
         );
     }
 
     if (getLayout(currentUser, layoutName) == 'mixed') {
 
         return (
-            <BottomSheetDataContext>
+            <>
 
                 <Suggestions />
                 <AsyncWorker />
@@ -97,7 +97,7 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, layoutName, d
                 <BottomSheet />
                 <ModalPopup />
 
-            </BottomSheetDataContext>
+            </>
 
         );
     }
@@ -106,7 +106,7 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, layoutName, d
 
         const menuItems = menuItemsByName('main_menu', appSetting('menu_items', 'menu_sidebar'), currentUser);
         return (
-            <BottomSheetDataContext>
+            <>
                 <View className={appSetting('layout', 'max_width') + ' w-full mx-auto'}>
                     <Row className='w-full flex-col lg:flex-row-reverse  lg:min-h-screen '>
                         <View className={(menuItems.length > 0 ? 'lg:w-[calc(100%-20rem)] border-x border-bdr dark:border-bdr-d' : '') + ' w-full '}>
@@ -121,7 +121,7 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, layoutName, d
                     <BottomSheet />
                     <ModalPopup />
                 </View>
-            </BottomSheetDataContext>
+            </>
         );
     }
 });

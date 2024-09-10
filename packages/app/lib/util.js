@@ -90,10 +90,9 @@ export function clearNotif(currentUser, setCurrentUser) {
 
     if (currentUser?.notifications > 0) {
 
-        setCurrentUser(prevUser => ({
-            ...prevUser,
+        setCurrentUser({
             notifications: 0,
-        }));
+        });
 
         const clearNotifications = async () => {
             console.log("ClearNotif", currentUser);
