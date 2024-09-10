@@ -153,7 +153,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                 .map(item => item.id)
             )].slice(0, 10).join(',');
 
-            if ((a || true) && revalidatedData.author_id != currentUser.id &&  !currentRoute.endpoint.request_url.includes("system/get_results/TemplSearchExtendedServices")) {
+            if ((a || true) && revalidatedData.author_id != currentUser?.id &&  !currentRoute.endpoint.request_url.includes("system/get_results/TemplSearchExtendedServices")) {
                 endpointUpdateContent = currentRoute.endpoint.request_url + JSON.stringify({
                     'params': { ...currentRoute.endpoint.params, validate: a }
                 });
@@ -167,7 +167,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                 setToaster2Visible(validatedData !== 'valid');
             }
         }
-    }, [currentRoute, isRevalidate]);
+    }, [currentRoute, isRevalidate, currentUser?.id]);
 
     /*c
 

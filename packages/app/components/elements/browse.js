@@ -209,7 +209,7 @@ export default function (props) {
         let endpointUpdateContent = '';
         let bUpdateContent = false;
         const revalidatedData = JSON.parse(isRevalidate);
-        if (revalidatedData.author_id != currentUser.id && dataItems.data.length > 0 && props.sidebar !== true && props.no_scroll !== true) {
+        if (revalidatedData.author_id != currentUser?.id && dataItems.data.length > 0 && props.sidebar !== true && props.no_scroll !== true) {
             const a = [...new Set(dataItems.data
                 .filter(item => item.type !== 'block')
                 .map(item => item.id)
