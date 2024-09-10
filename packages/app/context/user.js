@@ -32,6 +32,11 @@ export const useCurrentUserStore = create((set, get) => ({
     setCurrentUser: (userUpdate) => {
         const currentUser = get().currentUser;
 
+        if (!userUpdate) {
+            set({ currentUser: userUpdate });
+            return;
+        }
+
         const updatedUser = {
             ...currentUser, // Copy the current user object
             ...userUpdate,  // Merge the updates (e.g., notifications)
