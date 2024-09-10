@@ -1,5 +1,5 @@
 import { Tabs } from "expo-router";
-import { View,Row } from 'app/design/view';
+import { View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon';
 import { useCurrentUser } from 'app/context/user';
@@ -16,6 +16,7 @@ import { parseUrl } from 'app/lib/util'
 import { clearNotif } from 'app/lib/util'
 import Suggestions from 'app/ui/molecules/suggestions';
 import AsyncWorker from 'app/ui/molecules/async_worker';
+import Subscriber from 'app/ui/molecules/subscriber';
 import { useFonts } from 'expo-font';
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
 import { enableScreens } from 'react-native-screens';
@@ -72,7 +73,7 @@ export default function () {
         const fetchInitialUrl = async () => {
             const url = await Linking.getInitialURL();
             if (url) {
-                processUrl(url);  
+                processUrl(url);
             }
         };
 
@@ -95,7 +96,7 @@ export default function () {
             };
         }
     }, [currentUser?.id]);
-   // DEEP LINKING
+    // DEEP LINKING
 
     useEffect(() => {
         if (currentUser) {
@@ -107,11 +108,11 @@ export default function () {
     }, [currentUser?.id]);
 
     useEffect(() => {
-        if (Platform.OS =='ios'){
+        if (Platform.OS == 'ios') {
             PushNotificationIOS.setApplicationIconBadgeNumber(currentUser?.notifications);
         }
     }, [currentUser?.notifications]);
-  
+
 
     if (currentUser) {
         let dUser = Object.assign({}, currentUser);
@@ -128,77 +129,78 @@ export default function () {
 
     return (
         <><Suggestions />
-           <BottomSheetDataContext>
+            <Subscriber />
+            <BottomSheetDataContext>
                 <View className="flex-1">
-                <View className="w-full"><AsyncWorker /></View>
-                
-                <Tabs
-                    screenOptions={({ navigation, route }) => ({
-                        tabBarStyle: {
-                            backgroundColor: colors.barsBackground,
-                            height: isShowTabs ? 62 : 0,//55 old
-                            opacity: isShowTabs ? 1 : 0,
-                            elevation: 0,
-                            boxShadow: 'none',
-                        },
-                        tabBarItemStyle: {
-                            marginBottom: 5,
-                            height: 44,
-                            marginTop: 5,
-                            borderRadius: 10,
-                            marginLeft: 10,
-                            marginRight: 10,
-                        },
-                        tabBarAllowFontScaling: false,
-                        tabBarInactiveTintColor: colors.barsColor,
-                        tabBarActiveTintColor: colors.primary,
-                        tabBarActiveBackgroundColor: colors.primaryBg,
-                        freezeOnBlur: true,
-                        unmountOnBlur: false,
-                        lazy: currentUser ? false : true,
-                    })}
-                >
-                    {
-                        TabList.map((tab, index) => {
-                            const options = {
-                                tabBarBadge: staticComponents['getBadgeForTab'](currentUser, tab.url),
-                                tabBarBadgeAllowFontScaling: false,
-                                title: t(tab.title),
-                                headerShown: false,
-                                tabBarIcon: ({ color }) => (
-                                    (tab.url == '/dashboard' && profile) ? profile : <Icon icon={tab.icon} width={iconWidth} height={iconHeight} color={color} />
-                                )
-                            };
+                    <View className="w-full"><AsyncWorker /></View>
 
-                            if (tab.title == '') {
-                                options.tabBarLabel = () => null;
-                            }
+                    <Tabs
+                        screenOptions={({ navigation, route }) => ({
+                            tabBarStyle: {
+                                backgroundColor: colors.barsBackground,
+                                height: isShowTabs ? 62 : 0,//55 old
+                                opacity: isShowTabs ? 1 : 0,
+                                elevation: 0,
+                                boxShadow: 'none',
+                            },
+                            tabBarItemStyle: {
+                                marginBottom: 5,
+                                height: 44,
+                                marginTop: 5,
+                                borderRadius: 10,
+                                marginLeft: 10,
+                                marginRight: 10,
+                            },
+                            tabBarAllowFontScaling: false,
+                            tabBarInactiveTintColor: colors.barsColor,
+                            tabBarActiveTintColor: colors.primary,
+                            tabBarActiveBackgroundColor: colors.primaryBg,
+                            freezeOnBlur: true,
+                            unmountOnBlur: false,
+                            lazy: currentUser ? false : true,
+                        })}
+                    >
+                        {
+                            TabList.map((tab, index) => {
+                                const options = {
+                                    tabBarBadge: staticComponents['getBadgeForTab'](currentUser, tab.url),
+                                    tabBarBadgeAllowFontScaling: false,
+                                    title: t(tab.title),
+                                    headerShown: false,
+                                    tabBarIcon: ({ color }) => (
+                                        (tab.url == '/dashboard' && profile) ? profile : <Icon icon={tab.icon} width={iconWidth} height={iconHeight} color={color} />
+                                    )
+                                };
 
-                            if (tab.hide == true)
-                                options.href = null;
+                                if (tab.title == '') {
+                                    options.tabBarLabel = () => null;
+                                }
 
-                            return (
-                                <Tabs.Screen
-                                    key={`tab${index}`}
-                                    name={`tab${index}`}
-                                    initialParams={{ url2: tab.url, name: `tab${index}` }}
-                                    listeners={{
-                                        tabPress: e => {
-                                            if (e.type == 'tabPress') {
-                                                let a = e.target.split('-');
-                                                let d = TabList[a[0].replace('tab', '')];
-                                                if (d.url == appSetting('layout', 'notifications'))
-                                                    clearNotif(currentUser, setCurrentUser)
-                                            }
-                                            FeedbackHaptics('Medium');
-                                        },
-                                    }}
-                                    options={options}
-                                />
-                            );
-                        })
-                    }
-                </Tabs>
+                                if (tab.hide == true)
+                                    options.href = null;
+
+                                return (
+                                    <Tabs.Screen
+                                        key={`tab${index}`}
+                                        name={`tab${index}`}
+                                        initialParams={{ url2: tab.url, name: `tab${index}` }}
+                                        listeners={{
+                                            tabPress: e => {
+                                                if (e.type == 'tabPress') {
+                                                    let a = e.target.split('-');
+                                                    let d = TabList[a[0].replace('tab', '')];
+                                                    if (d.url == appSetting('layout', 'notifications'))
+                                                        clearNotif(currentUser, setCurrentUser)
+                                                }
+                                                FeedbackHaptics('Medium');
+                                            },
+                                        }}
+                                        options={options}
+                                    />
+                                );
+                            })
+                        }
+                    </Tabs>
                 </View>
             </BottomSheetDataContext></>
     )

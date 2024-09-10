@@ -1,13 +1,14 @@
 "use client"
 import { Analytics } from '@vercel/analytics/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { CurrentUserProvider } from 'app/context/user';
+
 import { storageGet } from 'app/lib/util'
 import * as RNLocalize from "react-native-localize";
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { useColorScheme } from 'react-native';
 import { resources } from 'app/translation';
+import Subscriber from 'app/ui/molecules/subscriber';
 
 
 export default function RootLayout({ children }) {
@@ -57,10 +58,11 @@ export default function RootLayout({ children }) {
         <html lang="en" >
             <body className='bg-bgrbody dark:bg-bgrbody-d' style={{ overflowY: 'initial' }}>
                 <QueryClientProvider client={queryClient}>
-                    <CurrentUserProvider>
-                        {!!process.env['VERCEL'] ? <Analytics /> : null}
-                        {children}
-                    </CurrentUserProvider>
+
+                    <Subscriber />
+                    {!!process.env['VERCEL'] ? <Analytics /> : null}
+                    {children}
+
                 </QueryClientProvider>
             </body>
         </html>

@@ -4,7 +4,7 @@ import Time from 'app/ui/atoms/time'
 import Profile from 'app/ui/molecules/profile'
 import React, { memo, useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import { useCurrentUser } from 'app/context/user'
-import { appSetting, getDataFromCache, storageSet, compare_objects, menuItemsByName } from 'app/lib/util'
+import { appSetting, getDataFromCache, storageSet, isObjectsEqual, menuItemsByName } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import { Platform, useWindowDimensions, StyleSheet } from 'react-native'
@@ -458,7 +458,7 @@ export const UnitFeed = ({ data, mode, DefaultUnit, SmallUnit }) => {
             const result = await fetcher(
                 '/api.php?r='+appSetting("urls", "feed_item")+'{"params":{"browse":"id","value":' + data.id + '}}'
             )
-            if (result.data && !compare_objects(result.data, datas))
+            if (result.data && !isObjectsEqual(result.data, datas))
                 setDatas(result.data);
         }
     }, [datas]);
