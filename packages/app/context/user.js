@@ -1,5 +1,5 @@
 import { createContext, useState, useContext, useMemo } from 'react';
-
+import { create } from 'zustand';
 const CurrentUserContext = createContext(null);
 
 export function CurrentUserProvider ({ children }) {
@@ -18,3 +18,16 @@ export function CurrentUserProvider ({ children }) {
 export function useCurrentUser() {
     return useContext(CurrentUserContext);
 }
+/*
+export const useCurrentUserStore = create((set) => ({
+    currentUser: null, // Initial state
+    setCurrentUser: (data) => set({ currentUser: data }),
+}));
+
+
+export const useCurrentUser = () => {
+    const currentUser = useCurrentUserStore((state) => state.currentUser);
+    const setCurrentUser = useCurrentUserStore((state) => state.setCurrentUser);
+
+    return { currentUser, setCurrentUser };
+};*/

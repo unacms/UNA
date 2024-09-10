@@ -10,7 +10,8 @@ import { View, Row } from 'app/design/view'
 import { Platform, useWindowDimensions, StyleSheet } from 'react-native'
 import { Button, Modal } from 'app/design/controls'
 import Menu from 'app/components/menu'
-import DropdownMenu from 'app/ui/atoms/dropdown-menu'
+//import DropdownMenu from 'app/ui/atoms/dropdown-menu'
+import DropdownMenu from 'app/ui/atoms/dropdown-menu-bsh'
 import { fetcher } from 'app/lib/fetcher'
 import { componentsMap } from 'app/ui/molecules/_map'
 import Card from 'app/ui/molecules/card'
@@ -313,9 +314,9 @@ export const MenuManage = memo(({ id, menu, setViewState }) => {
                         size="sm"
                         rounded
                         startDecorator="DotsThreeOutline"
-                        onPress={() => {
+                       /* onPress={() => {
                             FeedbackHaptics('Medium')
-                        }}
+                        }}*/
                     />
                 </DropdownMenu>
             </View>

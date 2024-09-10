@@ -9,13 +9,10 @@ import { appStatic } from 'app/lib/app-static'
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
 
 export default function PageLayout(props) {
-
-
     return (
         <KbAvoidingView style={{ flex: 1 }}>
             <View style={{ flex: 1 }} className={Platform.OS === 'web' ? 'w-full p-4 mx-auto max-w-5xl flex-col items-center lg:flex-row  rounded-3xl lg:bg-bgrnavbar/50 lg:dark:bg-bgrnavbar-d/50 lg:border border-dashed border-bdr dark:border-bdr-d' : 'p-4'}>
                 <View className={Platform.OS === 'web' ? "flex-col p-4 lg:p-8 flex-auto w-full  items-center lg:items-start gap-y-4 my-auto " : "w-full mx-auto max-w-5xl flex-col items-center lg:flex-row rounded-3xl lg:bg-bgrnavbar/50 lg:dark:bg-bgrnavbar-d/50 lg:border border-dashed border-bdr dark:border-bdr-d"}>
-
                     <Text className="text-4xl tracking-tight font-bold text-neutral-800 dark:text-neutral-200 ">
                         Welcome back!
                     </Text>
@@ -24,7 +21,6 @@ export default function PageLayout(props) {
                         Login to your account to continue.
                     </Text>
                     <View className="w-full mt-4">{appStatic('components_logincontent')}</View>
-
                 </View>
 
 
