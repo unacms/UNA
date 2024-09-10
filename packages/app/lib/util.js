@@ -18,7 +18,7 @@ export function appSetting(section, name, path) {
     return setting(section, name, path, remoteSettings.data);
 }
 
-export function compare_objects(obj, obj2) {
+export function isObjectsEqual(obj, obj2) {
     return flatted_stringify(obj) == flatted_stringify(obj2)
 }
 
