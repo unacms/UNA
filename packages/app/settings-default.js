@@ -78,7 +78,7 @@ export const settingsDefault = {
         allow_create_new_profile: true,
         form_fields_optional_text1: '',
         form_fields_mandatory_icon: 'Asterisk',
-        form_without_captions: ['sys_account_create', 'sys_login'],
+        form_without_captions: ['sys_login'],
         form_visibility_control_names: [
             '*_allow_view_to',
             '*_object_privacy_view',
@@ -596,14 +596,24 @@ export const settingsDefault = {
             },
         ],
         menu_tabbar_logged: [
-            { key: '/tab0', title: 'Home', url: '/home', icon: 'House' },
+            { 
+                key: '/tab0', 
+                title: 'Home', 
+                url: '/home', 
+                icon: 'House' 
+            },
             {
                 key: '/tab1',
                 title: 'Messages',
                 url: '/messenger',
                 icon: 'ChatTeardropDots',
             },
-            { key: '/tab2', title: 'Friends', url: '/friends', icon: 'Users' },
+            { 
+                key: '/tab2', 
+                title: 'Friends', 
+                url: '/friends', 
+                icon: 'Users' 
+            },
             {
                 key: '/tab3',
                 title: 'Notifications',
@@ -618,21 +628,36 @@ export const settingsDefault = {
             },
         ],
         menu_tabbar_non_logged: [
-            { key: '/tab0', title: 'Home', url: '/home', icon: 'House' },
+            { 
+                key: '/tab0', 
+                title: 'Home', 
+                url: '/home', 
+                icon: 'House' 
+            },
             {
                 key: '/tab1',
                 title: 'Posts',
                 url: '/posts-home',
                 icon: 'ChatCenteredText',
             },
-            { key: '/tab2', title: 'About', url: '/about', icon: 'Info' },
+            { 
+                key: '/tab2', 
+                title: 'About', 
+                url: '/about', 
+                icon: 'Info' 
+            },
             {
                 key: '/tab3',
-                title: 'Sign-up',
-                url: '/create-account',
-                icon: 'UserCircle',
+                title: 'Terms',
+                url: '/terms',
+                icon: 'List',
             },
-            { key: '/tab4', title: 'Login', url: '/login', icon: 'SignIn' },
+            { 
+                key: '/tab4', 
+                title: 'Privacy', 
+                url: '/privacy', 
+                icon: 'EyeSlash' 
+            },
         ],
         profile_menu: [
             'view-persons-profile',

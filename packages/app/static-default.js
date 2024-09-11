@@ -1,6 +1,6 @@
 import { View, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
-import { Button } from 'app/design/controls'
+import { Button, Modal } from 'app/design/controls'
 import Svg, { Path, Circle, Ellipse } from 'react-native-svg'
 import Link from 'app/ui/atoms/link'
 import { Icon } from 'app/ui/atoms/icon'
@@ -13,8 +13,12 @@ import { useTranslation } from 'react-i18next'
 import { tp, appSetting, updateRouteDataForConnection } from 'app/lib/util'
 import ProfilesList from 'app/ui/molecules/profile_list'
 import BlockByUrl from 'app/ui/molecules/block'
+import Signup from 'app/ui/molecules/signup'
 import { Platform } from 'react-native'
-
+import { useWindowDimensions } from 'react-native'
+import { BlockByData } from 'app/components/blocks-content/object-data-array-int';
+import { Keyboard } from 'react-native';
+import Form from 'app/components/elements/form';
 const LogoText = (
     <Svg
         aria-label="Logo Text"
@@ -408,45 +412,76 @@ function ComponentModal({ title = 'test' }) {
 }
 
 function ComponentsSplash(props) {
+
+
+    const [data, setData] = useState(false)
+
+
+    async function fetchData() {
+        const sResponse = await fetcher('/api.php?r=system/create_account_form/TemplServiceAccount');
+
+        const sResponse3 = await fetcher('/api.php?r=system/forgot_password/TemplServiceAccount');
+
+        if (sResponse.data[0].type == 'form')
+            setData({create:{ content: sResponse.data, designbox_id: 0 }, forgot:{ content: sResponse3.data, designbox_id: 0 }});
+        else {
+            const sResponse2 = await fetcher('/api.php?r=bx_invites/get_block_form_request');
+            setData({create:{ content: sResponse2.data, designbox_id: 0 }, forgot:{ content: sResponse3.data, designbox_id: 0 }});
+        }
+    }
+
+    useEffect(() => {
+        fetchData()
+    }, []);
+
+  
+console.log(data);
+
     const isWeb = Platform.OS == 'web'
 
     const cnt = (
-        <View className="mx-auto w-full max-w-lg md:w-1/2 lg:w-1/3 my-auto mx-auto items-center xl:p-4 p-2  ">
-            <View className=" flex-auto w-full   ">
-                <Card
-                    rounded=" rounded-2xl "
-                    addClassName=" px-4 py-2 sm:px-6 sm:py-4 w-full  max-w-xl mx-auto flex-auto  "
-                >
-                    <View className="">{props.block}</View>
-                </Card>
+        <>
+        
+            <View className="mx-auto w-full max-w-lg md:w-1/2 lg:w-1/3 my-auto mx-auto items-center xl:p-4 p-2  ">
+                <View className=" flex-auto w-full   ">
+                    <Card
+                        rounded=" rounded-2xl "
+                        addClassName=" px-4 py-2 sm:px-6 sm:py-4 w-full  max-w-xl mx-auto flex-auto  "
+                    >
+                        <View className="">{props.block}</View>
+                    </Card>
 
-                <Link className=" mx-auto  w-full " href="/forgot-password">
-                    <Button
-                        title="Forgot password?"
-                        variant="link"
-                        fullWidth
-                        size="sm"
-                    />
-                </Link>
 
-                <Card
-                    rounded=" rounded-2xl "
-                    addClassName=" p-4 mt-4 sm:p-6 sm:mt-6 w-full max-w-xl mx-auto flex-auto  "
-                >
-                    <Text className="text-center mb-4 sm:mb-6 text-lg font-semibold  mx-auto text-neutral-700 dark:text-neutral-300  ">
-                        Don't have an account?
-                    </Text>
-                    <Link className=" w-full " href="/create-account">
-                        <Button
+                    {!data ? <Button
+                            title="Forgot password?"
+                            variant="link"
+                            fullWidth
+                            size="sm"
+                        />
+                       : <BlockByData block={data.forgot} />}
+                        
+ 
+
+                    <Card
+                        rounded=" rounded-2xl "
+                        addClassName=" p-4 mt-4 sm:p-6 sm:mt-6 w-full max-w-xl mx-auto flex-auto  "
+                    >
+                        <Text className="text-center mb-4 sm:mb-6 text-lg font-semibold  mx-auto text-neutral-700 dark:text-neutral-300  ">
+                            Don't have an account?
+                        </Text>
+                        {!data ? <Button
                             title="Create new account"
                             startDecorator="UserCirclePlus"
                             size="base"
                             fullWidth
-                        />
-                    </Link>
-                </Card>
-            </View>
-        </View>
+                           
+                        /> : <BlockByData block={data.create} />}
+
+                        
+
+                    </Card>
+                </View>
+            </View></>
     )
 
     if (!isWeb) {
@@ -968,7 +1003,7 @@ function getButtonForConductorNative(a, index, currentUser, setIndex, onChangeRo
             if (onChangeRoute) {
                 onChangeRoute(a);
             }
-        }}  addon={addon} fullWidth={false} variant={index === a.index ? 'primary' : "text"} rounded size='sm' title={a.title} />
+        }} addon={addon} fullWidth={false} variant={index === a.index ? 'primary' : "text"} rounded size='sm' title={a.title} />
     )
 }
 

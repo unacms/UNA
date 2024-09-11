@@ -16,8 +16,7 @@ export default function FormFieldSwitcher(props) {
         formContext.setValue(props.name, isEnabled ? 1 : 0)
     }, [props.name, isEnabled]);
 
-    if (props.use_caption_as_placeholder)
-        props.placeholder = props.caption;
+    const placeholder = props.use_caption_as_placeholder? props.caption : props.placeholder;
 
     // TODO: improve value
     return (

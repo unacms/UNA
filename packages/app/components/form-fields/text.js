@@ -25,15 +25,14 @@ export default function FormFieldText(props) {
     }
     }, []);
 
-    if (props.use_caption_as_placeholder)
-        props.placeholder = props.caption;
+    const placeholder = props.use_caption_as_placeholder? props.caption : props.placeholder;
 
     return (
         <Field {...props} error2={formContext.formState.errors[name]}>
             <Input 
                 ref={inputRef}
                 name={props.name}
-                placeholder = {props.placeholder}
+                placeholder = {placeholder}
                 placeholderTextColor="#6b7280"
                 onChangeText={field.onChange}
                 onBlur={field.onBlur}

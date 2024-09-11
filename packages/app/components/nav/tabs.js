@@ -107,6 +107,7 @@ export default function () {
             }
             else {
                 try {
+                    // MAY BE NEED FIX
                     let s = OneSignal.User.getOnesignalId();
                     console.log("OneSignal:logout:" + s)
                     OneSignal.User.addTag("user_hash", "");

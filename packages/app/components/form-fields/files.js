@@ -179,7 +179,6 @@ export default function (props) {
 
     const selectImage = useCallback(async () => {
 
-        console.log("propsprops", props)
         let bIsMedia = props.ext_deny == '' || props.ext_allow == 'mp3,m4a,m4b,wma,wav,3gp' ? true : false;
 
         if (!bIsMedia && props.ext_deny.length && !'jpg,jpeg,jpe,gif,png,svg,webp'.split(',').filter((s) => ~props.ext_deny.split(',').indexOf(s)).length)

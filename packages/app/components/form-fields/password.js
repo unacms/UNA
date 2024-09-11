@@ -14,14 +14,12 @@ export default function FormFieldPassword(props) {
     let defaultValue = props.value ? props.value : '';
     let { field } = useController({ name, rules, defaultValue });
 
-    if (props.use_caption_as_placeholder)
-        props.placeholder = props.caption;
-
+    const placeholder = props.use_caption_as_placeholder? props.caption : props.placeholder;
 
     return (
         <Field {...props}>
             <Input 
-                placeholder = {props.placeholder}
+                placeholder = {placeholder}
                 secureTextEntry={isVisible}
                 name={props.name}
                 onChangeText={field.onChange}
