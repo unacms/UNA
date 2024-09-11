@@ -13,10 +13,10 @@ import { FeedbackHaptics } from 'app/lib/util';
 
 export const Menu = memo(({ items, onSelect, setBottomSheetData}) => {
 
-    const onPressMenu = (item) => {
+    const onPressMenu = (item, event) => {
         FeedbackHaptics('Medium')
         setBottomSheetData(false);
-        onSelect(item, 'a')
+        onSelect(item, event)
     }
 
     return (
@@ -24,11 +24,10 @@ export const Menu = memo(({ items, onSelect, setBottomSheetData}) => {
             {items.map(
                 (item, index) =>
                     <View key={item.id} className='mb-2'><Button
-
                         variant="outline"
                         size="base"
                         fullWidth
-                        onPress={() => onPressMenu(item)}
+                        onPress={(event) => onPressMenu(item, event)}
                         align="start"
                         title={item.title}
                     /></View>

@@ -160,7 +160,10 @@ export function storageClear(pref, key) {
     if (Platform.OS !== 'web')
         return;
 
-    sessionStorage.clear();
+    if (pref && key)
+        localStorage.removeItem(`${pref}-${key}`);
+    else
+        sessionStorage.clear();
 }
 
 export const formatDate = (date, t)  => {

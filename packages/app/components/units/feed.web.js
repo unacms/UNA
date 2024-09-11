@@ -17,8 +17,7 @@ function DefaultUnit(data) {
     const [cmtsData, setCmtsData] = useState(false)
 
     const isCommentsModal = appSetting('layout', 'comments_in_modal');
-    if (isCommentsModal && data.menu_actions?.items[0].data?.callback)
-        data.menu_actions.items.find(x => x.name == "item-comment").data.callback = showCommentsModal
+
 
     const { url, commentsData, isShowMoreComments } = useMemo(() => prepareData(data), [data]);
 
@@ -43,6 +42,8 @@ function DefaultUnit(data) {
                 commentsData={res.data} />
         })
     }
+    if (isCommentsModal && data.menu_actions?.items[0].data?.callback)
+        data.menu_actions.items.find(x => x.name == "item-comment").data.callback = showCommentsModal
 
     if (viewState.view == 'deleted')
         return <></>
@@ -57,9 +58,8 @@ function DefaultUnit(data) {
                 onClose={() => setCmtsData(false)}
                 onVisible={!!cmtsData}
                 title={cmtsData.title}
-            ><View className='p-2 sm:p-0'>
+            >
                     {cmtsData.data}
-                </View>
             </Modal>}
             <Card rounded=' rounded-none sm:rounded-2xl ' margin=' mb-1 sm:mb-4 sm:mx-4 ' addClassName={' p-3 sm:p-4 tl-' + data.id} >
                 <View className="flex-auto flex-row items-top pb-3 sm:pb-4">

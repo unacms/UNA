@@ -83,7 +83,8 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
     }, []);
 
     useEffect(() => {
-        revalidateData();
+        if (isRevalidate)
+            revalidateData();
     }, [isRevalidate]);
 
     const bEnabled = currentRoute?.endpoint?.params?.start == 0 && !isRefreshing;

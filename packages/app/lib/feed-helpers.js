@@ -27,22 +27,22 @@ import { useTranslation } from 'react-i18next';
 
 export const CommentsModal = memo(({ commentsData, initFormData, itemContent }) => {
     const windowDimensions = useWindowDimensions();
-    const [height, setHeight] = useState(windowDimensions.height * 0.95 - 166);
-    const isWeb = Platform.OS == 'web' ? true : false;
+    const offset = windowDimensions.width>1024 ? 100 :60;
+    const [height, setHeight] = useState( windowDimensions.height  - offset - 100);
     const aItems = [itemContent];
     const CommentsPartsData = CommentsParts(commentsData, aItems, height, initFormData);
 
     const handleLayout = (event) => {
-        const h = windowDimensions.height * 0.95 - 82 - event.nativeEvent.layout.height;
+        const h = windowDimensions.height  - offset - event.nativeEvent.layout.height;
         setHeight(h)
     };
 
     return (
         <View className='w-full h-full'>
-            <View className={'w-full ' + (isWeb ? '  ' : ' ')} style={{ height: height }}>
+            <View className='w-full ' style={{ height: height }}>
                 {CommentsPartsData[0]}
             </View>
-            <View onLayout={handleLayout} className={(isWeb ? '' : 'absolute bottom-0 ') + ' w-full'} >
+            <View onLayout={handleLayout} className=' w-full  border-t border-bdr dark:border-bdr-d' >
                 {CommentsPartsData[1]}
             </View>
         </View>

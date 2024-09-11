@@ -119,7 +119,8 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     }, []);
 
     useEffect(() => {
-        revalidateData();
+        if (isRevalidate)
+            revalidateData();
     }, [isRevalidate]);
 
     useEffect(() => {

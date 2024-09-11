@@ -99,11 +99,21 @@ export default function () {
     // DEEP LINKING
 
     useEffect(() => {
-        if (currentUser) {
-            console.log("OneSignal:" + currentUser.id + ":" + currentUser.hash)
-            OneSignal.login('' + currentUser.id);
-            OneSignal.User.addEmail(currentUser.email);
-            OneSignal.User.addTag("user_hash", "" + currentUser.hash);
+        if (OneSignal.User) {
+            if (currentUser) {
+                console.log("OneSignal:" + currentUser.id + ":" + currentUser.hash)
+                OneSignal.login('' + currentUser.id);
+                OneSignal.User.addTag("user_hash", "" + currentUser.hash);
+            }
+            else {
+                try {
+                    let s = OneSignal.User.getOnesignalId();
+                    console.log("OneSignal:logout:" + s)
+                    OneSignal.User.addTag("user_hash", "");
+                } catch (error) {
+                    console.error('Error adding tag:', error);
+                }
+            }
         }
     }, [currentUser?.id]);
 
@@ -130,78 +140,77 @@ export default function () {
     return (
         <><Suggestions />
             <Subscriber />
+            <View className="flex-1">
+                <View className="w-full"><AsyncWorker /></View>
 
-                <View className="flex-1">
-                    <View className="w-full"><AsyncWorker /></View>
+                <Tabs
+                    screenOptions={({ navigation, route }) => ({
+                        tabBarStyle: {
+                            backgroundColor: colors.barsBackground,
+                            height: isShowTabs ? 62 : 0,//55 old
+                            opacity: isShowTabs ? 1 : 0,
+                            elevation: 0,
+                            boxShadow: 'none',
+                        },
+                        tabBarItemStyle: {
+                            marginBottom: 5,
+                            height: 44,
+                            marginTop: 5,
+                            borderRadius: 10,
+                            marginLeft: 10,
+                            marginRight: 10,
+                        },
+                        tabBarAllowFontScaling: false,
+                        tabBarInactiveTintColor: colors.barsColor,
+                        tabBarActiveTintColor: colors.primary,
+                        tabBarActiveBackgroundColor: colors.primaryBg,
+                        freezeOnBlur: true,
+                        unmountOnBlur: false,
+                        lazy: currentUser ? false : true,
+                    })}
+                >
+                    {
+                        TabList.map((tab, index) => {
+                            const options = {
+                                tabBarBadge: staticComponents['getBadgeForTab'](currentUser, tab.url),
+                                tabBarBadgeAllowFontScaling: false,
+                                title: t(tab.title),
+                                headerShown: false,
+                                tabBarIcon: ({ color }) => (
+                                    (tab.url == '/dashboard' && profile) ? profile : <Icon icon={tab.icon} width={iconWidth} height={iconHeight} color={color} />
+                                )
+                            };
 
-                    <Tabs
-                        screenOptions={({ navigation, route }) => ({
-                            tabBarStyle: {
-                                backgroundColor: colors.barsBackground,
-                                height: isShowTabs ? 62 : 0,//55 old
-                                opacity: isShowTabs ? 1 : 0,
-                                elevation: 0,
-                                boxShadow: 'none',
-                            },
-                            tabBarItemStyle: {
-                                marginBottom: 5,
-                                height: 44,
-                                marginTop: 5,
-                                borderRadius: 10,
-                                marginLeft: 10,
-                                marginRight: 10,
-                            },
-                            tabBarAllowFontScaling: false,
-                            tabBarInactiveTintColor: colors.barsColor,
-                            tabBarActiveTintColor: colors.primary,
-                            tabBarActiveBackgroundColor: colors.primaryBg,
-                            freezeOnBlur: true,
-                            unmountOnBlur: false,
-                            lazy: currentUser ? false : true,
-                        })}
-                    >
-                        {
-                            TabList.map((tab, index) => {
-                                const options = {
-                                    tabBarBadge: staticComponents['getBadgeForTab'](currentUser, tab.url),
-                                    tabBarBadgeAllowFontScaling: false,
-                                    title: t(tab.title),
-                                    headerShown: false,
-                                    tabBarIcon: ({ color }) => (
-                                        (tab.url == '/dashboard' && profile) ? profile : <Icon icon={tab.icon} width={iconWidth} height={iconHeight} color={color} />
-                                    )
-                                };
+                            if (tab.title == '') {
+                                options.tabBarLabel = () => null;
+                            }
 
-                                if (tab.title == '') {
-                                    options.tabBarLabel = () => null;
-                                }
+                            if (tab.hide == true)
+                                options.href = null;
 
-                                if (tab.hide == true)
-                                    options.href = null;
-
-                                return (
-                                    <Tabs.Screen
-                                        key={`tab${index}`}
-                                        name={`tab${index}`}
-                                        initialParams={{ url2: tab.url, name: `tab${index}` }}
-                                        listeners={{
-                                            tabPress: e => {
-                                                if (e.type == 'tabPress') {
-                                                    let a = e.target.split('-');
-                                                    let d = TabList[a[0].replace('tab', '')];
-                                                    if (d.url == appSetting('layout', 'notifications'))
-                                                        clearNotif(currentUser, setCurrentUser)
-                                                }
-                                                FeedbackHaptics('Medium');
-                                            },
-                                        }}
-                                        options={options}
-                                    />
-                                );
-                            })
-                        }
-                    </Tabs>
-                </View>
-            </>
+                            return (
+                                <Tabs.Screen
+                                    key={`tab${index}`}
+                                    name={`tab${index}`}
+                                    initialParams={{ url2: tab.url, name: `tab${index}` }}
+                                    listeners={{
+                                        tabPress: e => {
+                                            if (e.type == 'tabPress') {
+                                                let a = e.target.split('-');
+                                                let d = TabList[a[0].replace('tab', '')];
+                                                if (d.url == appSetting('layout', 'notifications'))
+                                                    clearNotif(currentUser, setCurrentUser)
+                                            }
+                                            FeedbackHaptics('Medium');
+                                        },
+                                    }}
+                                    options={options}
+                                />
+                            );
+                        })
+                    }
+                </Tabs>
+            </View>
+        </>
     )
 }

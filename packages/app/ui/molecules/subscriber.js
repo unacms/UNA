@@ -21,15 +21,12 @@ export default function Subscriber() {
 
     useEffect(() => {
         if(currentUser?.id){
-            //TODO need to fix
-            //console.log("sys_connections_", 555)
-            //subscribe('sys_connections_'+currentUser.id, 'changed', onUpdateConnections);
+            subscribe('sys_connections_'+currentUser.id, 'changed', onUpdateConnections);
         }
     }, [currentUser?.id])
 
     useEffect(() => {
         if(currentUser?.id){
-            console.log("bx_timeline_0", 555)
             subscribe('bx_timeline_0', 'edited', onItemEdited);
         }
     }, [currentUser?.id]);
@@ -39,14 +36,9 @@ export default function Subscriber() {
     }, []);
 
     const onUpdateConnections = useCallback(async (data) => {
-        storageClear()
-        const request_url = '/api.php?r=system/get_page_by_request/TemplServicePages&params[]=home';
-        console.log("onUpdateConnections", 555)
-        const sResponse = await fetcher(request_url);
-        if(!isObjectsEqual(sResponse.data.user, currentUser)){
-            setCurrentUser(sResponse.data.user);
-        }
-       
+        storageClear();
+        const oData = JSON.parse(data);
+        setCurrentUser(oData.user);
     }, []);
 
     const onItemEdited = useCallback(async (strData) => {

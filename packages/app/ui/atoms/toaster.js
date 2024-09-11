@@ -9,7 +9,7 @@ const ElementToster = forwardRef((props, ref) => {
     const sharedValue = useSharedValue(50); 
 
     const isWeb = Platform.OS === 'web';
-    const sClassName = isWeb ? ' fixed bottom-32 left-0 w-full items-center z-50' : 'absolute top-0 w-full items-center z-50';
+    const sClassName = isWeb ? ' fixed bottom-32 left-0 w-full items-center z-50' : 'absolute bottom-12 w-full items-center z-50';
     const sClassName2 = isWeb ? 'items-center' : 'w-1/2 items-center';
         
     const indicatorStyle = useAnimatedStyle(() => {
@@ -26,9 +26,10 @@ const ElementToster = forwardRef((props, ref) => {
     }, [isVisible]);
 
     useImperativeHandle(ref, () => ({
+        
         setVisible: (visible) => setIsVisible(visible),
     }));
-
+    console.log("isVisible", isVisible)
     return (
         <View style={{ display: isVisible ? 'flex' : 'none' }} className={sClassName}>
             <Animated.View style={indicatorStyle} >

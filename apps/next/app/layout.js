@@ -8,7 +8,7 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { useColorScheme } from 'react-native';
 import { resources } from 'app/translation';
-
+import Subscriber from 'app/ui/molecules/subscriber';
 
 export default function RootLayout({ children }) {
 
@@ -59,7 +59,7 @@ export default function RootLayout({ children }) {
                 <QueryClientProvider client={queryClient}>
                         {!!process.env['VERCEL'] ? <Analytics /> : null}
                         {children}
-
+                    <Subscriber/>
                 </QueryClientProvider>
             </body>
         </html>
