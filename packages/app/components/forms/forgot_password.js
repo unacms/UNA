@@ -31,7 +31,7 @@ export default function FormComments(props) {
     const isSmall = windowDimensions.width < 640 ? true : false;
     const isWeb = Platform.OS === 'web'
     const isIos = Platform.OS === 'ios'
-    console.log("propsprops", props)
+
     const handlePress = () => {
         Keyboard.dismiss();
         props.handleSubmit();
@@ -46,7 +46,7 @@ export default function FormComments(props) {
     </Row>
 
     return (
-        <View className="w-full h-full ">
+        <>
             <Modal
                 title={isSmall ? header : t("Restore password")}
                 onVisible={showImage}
@@ -60,7 +60,7 @@ export default function FormComments(props) {
                 <KbAvoidingView offset={isIos ? 56 : 72}>
                     <View className='justify-between mb-2 h-full  '>
                         <ScrollView className="w-full h-full flex-1">
-                            <View className="w-full  flex-col px-2 sm:p-0 ">
+                            <View className="w-full  flex-col px-2 ">
                                 <Text className="text-black dark:text-white text-base">Enter your account email address to get a password-reset link.</Text>
                                 {getFormFieldByData(props.data.inputs['email'], props.handleSubmit, 'default')}
 
@@ -84,7 +84,7 @@ export default function FormComments(props) {
                         />
             
                 
-        </View>
+        </>
     )
 }
 

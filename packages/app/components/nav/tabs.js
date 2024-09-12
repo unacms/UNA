@@ -106,14 +106,14 @@ export default function () {
                 OneSignal.User.addTag("user_hash", "" + currentUser.hash);
             }
             else {
-                try {
+                /*try {
                     // MAY BE NEED FIX
                     let s = OneSignal.User.getOnesignalId();
                     console.log("OneSignal:logout:" + s)
                     OneSignal.User.addTag("user_hash", "");
                 } catch (error) {
                     console.error('Error adding tag:', error);
-                }
+                }*/
             }
         }
     }, [currentUser?.id]);

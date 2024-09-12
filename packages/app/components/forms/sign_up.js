@@ -46,7 +46,7 @@ export default function FormComments(props) {
     </Row>
 
     return (
-        <View className="w-full h-full ">
+        <>
             <Modal
                 title={isSmall ? header : t("Create new account")}
                 onVisible={showImage}
@@ -60,7 +60,7 @@ export default function FormComments(props) {
                 <KbAvoidingView offset={isIos ? 56 : 72}>
                     <View className='justify-between mb-2 h-full  '>
                         <ScrollView className="w-full h-full flex-1">
-                            <View className="w-full  flex-col px-2 sm:p-0 ">
+                            <View className="w-full  flex-col px-2  ">
                                 {getFormFieldByData(props.data.inputs['name'], props.handleSubmit, 'default', { use_caption_as_placeholder: true })}
                                 {getFormFieldByData(props.data.inputs['email'], props.handleSubmit, 'default', { use_caption_as_placeholder: true })}
                                 {getFormFieldByData(props.data.inputs['password'], props.handleSubmit, 'default', { use_caption_as_placeholder: true })}
@@ -83,7 +83,7 @@ export default function FormComments(props) {
                 fullWidth
                 onPress={() => { setShowImage(true) }}
             />
-        </View>
+        </>
     )
 }
 

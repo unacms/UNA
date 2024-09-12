@@ -142,8 +142,8 @@ export const settingsDefault = {
         default_view: '',
     },
     suggestion: {
-        list: [
-            {
+       list: [
+           /*  {
                 name: 'friends',
                 request_url:
                     '/api.php?r=system/browse_recommendations_friends/TemplServiceProfiles&params[]={user_id}&params[]=',
@@ -158,7 +158,7 @@ export const settingsDefault = {
                 title: 'Recommended groups',
                 unitType: 'person_friends_recommendations',
                 perLine: 3,
-            },
+            },*/
         ],
     },
     browse: {
