@@ -78,7 +78,7 @@ export const settingsDefault = {
         allow_create_new_profile: true,
         form_fields_optional_text1: '',
         form_fields_mandatory_icon: 'Asterisk',
-        form_without_captions: ['sys_login'],
+        form_without_captions: ['sys_login', 'sys_account_create', 'sys_forgot_password', 'bx_invites_request_send'],
         form_visibility_control_names: [
             '*_allow_view_to',
             '*_object_privacy_view',
@@ -98,7 +98,9 @@ export const settingsDefault = {
     },
     forms: {
         sys_login: { hide_errors: true, button_full_width: true },
-        sys_account_create: { hide_errors: true, button_full_width: true },
+        sys_account_create: { hide_errors: true, button_full_width: true, button_hide_on_small: true },
+        sys_forgot_password: { hide_errors: true, button_full_width: true, button_hide_on_small: true },
+        bx_invites_request_send: { hide_errors: true, button_full_width: true, button_hide_on_small: true },
     },
     jitsi: {
         prefix: 'prefix_',

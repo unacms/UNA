@@ -27,12 +27,14 @@ export default function FormFieldText(props) {
     const [height, setHeight] = useState(h);
     const accessibility = props.caption.length > 0 ? props.caption : 'text';
 
+    const placeholder = props.use_caption_as_placeholder? props.caption : props.placeholder;
+
     let input = <InputMulti
         multiline
         editable
         numberOfLines={4}
         name={props.name}
-        placeholder = {props.placeholder}
+        placeholder = {placeholder}
         onChangeText={field.onChange}
         onBlur={field.onBlur}
         value={field.value}
@@ -43,7 +45,7 @@ export default function FormFieldText(props) {
             multiline
             editable
             style={{height: height}}
-            placeholder = {props.placeholder}
+            placeholder = {placeholder}
             numberOfLines={props.numLines ? props.numLines : 4}
             name={props.name}
             onChangeText={field.onChange}

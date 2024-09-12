@@ -120,6 +120,12 @@ export default function (props) {
     }
     let _handleSubmit = methods.handleSubmit(onSubmit, onError)
 
+    useEffect(() => {
+        if (props.isSubmit) {
+            _handleSubmit();
+        }
+    }, [props.isSubmit]);
+
 
     const { watch } = methods;
     useEffect(() => {

@@ -1,4 +1,4 @@
-import { View, Row } from 'app/design/view'
+import { View, ScrollView, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { Button, Modal } from 'app/design/controls'
 import Svg, { Path, Circle, Ellipse } from 'react-native-svg'
@@ -13,12 +13,11 @@ import { useTranslation } from 'react-i18next'
 import { tp, appSetting, updateRouteDataForConnection } from 'app/lib/util'
 import ProfilesList from 'app/ui/molecules/profile_list'
 import BlockByUrl from 'app/ui/molecules/block'
-import Signup from 'app/ui/molecules/signup'
+import { DataByName2 } from 'app/components/block';
 import { Platform } from 'react-native'
 import { useWindowDimensions } from 'react-native'
 import { BlockByData } from 'app/components/blocks-content/object-data-array-int';
-import { Keyboard } from 'react-native';
-import Form from 'app/components/elements/form';
+import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
 const LogoText = (
     <Svg
         aria-label="Logo Text"
@@ -412,36 +411,58 @@ function ComponentModal({ title = 'test' }) {
 }
 
 function ComponentsSplash(props) {
-
-
-    const [data, setData] = useState(false)
-
-
-    async function fetchData() {
-        const sResponse = await fetcher('/api.php?r=system/create_account_form/TemplServiceAccount');
-
-        const sResponse3 = await fetcher('/api.php?r=system/forgot_password/TemplServiceAccount');
-
-        if (sResponse.data[0].type == 'form')
-            setData({create:{ content: sResponse.data, designbox_id: 0 }, forgot:{ content: sResponse3.data, designbox_id: 0 }});
-        else {
-            const sResponse2 = await fetcher('/api.php?r=bx_invites/get_block_form_request');
-            setData({create:{ content: sResponse2.data, designbox_id: 0 }, forgot:{ content: sResponse3.data, designbox_id: 0 }});
-        }
-    }
-
-    useEffect(() => {
-        fetchData()
-    }, []);
-
-  
-console.log(data);
-
+    console.log("props", props)
     const isWeb = Platform.OS == 'web'
+
+    const [isCreateAccount, setIsCreateAccount] = useState(false)
+    const [isCreateAccountSubmit, setIsCreateAccountSubmit] = useState(false)
+
+    const windowDimensions = useWindowDimensions();
+    const isIos = Platform.OS === 'ios'
+    const isSmall = windowDimensions.width < 640 ? true : false;
+
+    const dataSignUp = DataByName2(props.data, 'system:create_account_form');
+    const dataJoin = DataByName2(props.data, 'bx_invites:get_block_form_request');
+    const dataForgotPass = DataByName2(props.data, 'system:forgot_password');
+    const isSignUp = dataSignUp.content[0].type == "form" ? true : false
+
+    const data = {
+        create: { content: isSignUp ? dataSignUp.content : dataJoin.content, designbox_id: 0, title: isSignUp ? "Create new account" : "Request invitation" },
+        forgot: { content: dataForgotPass.content, designbox_id: 0 }
+
+    }
+    const caption = isCreateAccount == 'forgot' ? 'Restore password' : data.create.title
+
+    const headerCreateAccount = <Row className=' w-full justify-between items-center'>
+        <View className=''><Button onPress={() => { setIsCreateAccount(false) }} variant='outline' rounded startDecorator="X" /></View>
+        <View className='w-full flex-auto items-center justify-center'><Text className="text-neutral-700 dark:text-neutral-200 text-xl font-bold">{caption}</Text></View>
+        <View className=' '>
+            <Button onPress={() => { setIsCreateAccountSubmit(Date.now()) }} variant='primary' rounded startDecorator="PaperPlane" />
+        </View>
+    </Row>
 
     const cnt = (
         <>
-        
+            <Modal
+                title={isSmall ? headerCreateAccount : caption}
+                onVisible={!!isCreateAccount}
+                outerClickClose={false}
+                {...(!isSmall && { onClose: () => setIsCreateAccount(false) })}
+                padding='sm:p-4 sm:pb-0'
+                transparent={true}
+                headerBorder={true}
+            >
+                <View className=' w-full h-full pt-2 sm:pt-0'>
+                    <KbAvoidingView offset={isIos ? 56 : 72} className="flex-1 w-full h-full">
+                        <ScrollView className="w-full h-full flex-1">
+                            <View className="w-full px-4 sm:px-1">
+
+                                <BlockByData block={isCreateAccount == 'signup' ? data.create : data.forgot} isSubmit={isCreateAccountSubmit} />
+                            </View>
+                        </ScrollView>
+                    </KbAvoidingView>
+                </View>
+            </Modal>
             <View className="mx-auto w-full max-w-lg md:w-1/2 lg:w-1/3 my-auto mx-auto items-center xl:p-4 p-2  ">
                 <View className=" flex-auto w-full   ">
                     <Card
@@ -450,18 +471,14 @@ console.log(data);
                     >
                         <View className="">{props.block}</View>
                     </Card>
+                    <Button
+                        title="Forgot password?"
+                        variant="link"
+                        fullWidth
+                        size="sm"
+                        onPress={() => { setIsCreateAccount('forgot') }}
 
-
-                    {!data ? <Button
-                            title="Forgot password?"
-                            variant="link"
-                            fullWidth
-                            size="sm"
-                        />
-                       : <BlockByData block={data.forgot} />}
-                        
- 
-
+                    />
                     <Card
                         rounded=" rounded-2xl "
                         addClassName=" p-4 mt-4 sm:p-6 sm:mt-6 w-full max-w-xl mx-auto flex-auto  "
@@ -469,16 +486,13 @@ console.log(data);
                         <Text className="text-center mb-4 sm:mb-6 text-lg font-semibold  mx-auto text-neutral-700 dark:text-neutral-300  ">
                             Don't have an account?
                         </Text>
-                        {!data ? <Button
-                            title="Create new account"
+                        <Button
+                            title={data.create.title}
                             startDecorator="UserCirclePlus"
                             size="base"
                             fullWidth
-                           
-                        /> : <BlockByData block={data.create} />}
-
-                        
-
+                            onPress={() => { setIsCreateAccount('signup') }}
+                        />
                     </Card>
                 </View>
             </View></>

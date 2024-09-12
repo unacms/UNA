@@ -43,6 +43,16 @@ export function DataByName(data, name) {
     let b = null;
     if (name){
         const blockName = name?.name;
+        return DataByName2(data, blockName)
+    }
+    return b;
+}
+
+export function DataByName2(data, name) {
+
+    let b = null;
+    if (name){
+        const blockName = name;
         Object.keys(data?.elements).forEach(key => {
             Object.keys(data.elements[key]).forEach(key2 => {
                 if (data.elements[key][key2].content){

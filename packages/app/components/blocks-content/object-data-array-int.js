@@ -82,7 +82,7 @@ export default function BlockContentObjectDataArray(props) {
 
     // display each block element from static data or from dynamic data
     return (
-        <View className={(Platform.OS == 'web' ? 'gap-y-4' : '') + "relative"}>
+        <View className={(Platform.OS == 'web' ? 'gap-y-4' : '') + " relative"}>
             {realData?.map(a => {
                 const type = !dynamicData ? props.block.content[0].type : a?.type;
                 if (!type)

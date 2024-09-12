@@ -6,6 +6,7 @@ import { useWindowDimensions } from 'react-native'
 import { appSetting } from 'app/lib/util'
 import { Keyboard, Platform } from 'react-native';
 export default function FormFieldSubmit(props) {
+    console.log("propsprops", props)
     const formContext = useFormContext();
     const { formState } = formContext;
     let rules = {};
@@ -36,7 +37,7 @@ export default function FormFieldSubmit(props) {
 
     return (
         <Field  {...props}>
-            <Row className='gap-x-2'>
+            <Row className={(formProps?.button_hide_on_small ? 'hidden sm:flex' : '' ) + ' gap-x-2'}>
             <Button
                 title={!props.icon_only ? props.value : ''}
                 variant={!!props.variant ? props.variant : 'primary'}

@@ -10,9 +10,9 @@ import Messenger from './messenger';
 
 export const componentsMapDefault = {
     sys_confirm_email: FormConfirmEmail,
-    sys_account_create: FormSignUp,
-    sys_forgot_password: FormPassword,
-    bx_artificer: Invite,
+   // sys_account_create: FormSignUp,
+   // sys_forgot_password: FormPassword,
+   // bx_invites_request_send: Invite,
     comment: FormComments,
     feed: FormFeed,
     feed_edit: FormFeedEdit,
