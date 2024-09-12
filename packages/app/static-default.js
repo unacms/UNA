@@ -427,8 +427,8 @@ function ComponentsSplash(props) {
     const isSignUp = dataSignUp.content[0].type == "form" ? true : false
 
     const data = {
-        create: { content: isSignUp ? dataSignUp.content : dataJoin.content, designbox_id: 0, title: isSignUp ? "Create new account" : "Request invitation" },
-        forgot: { content: dataForgotPass.content, designbox_id: 0 }
+        create: { content: isSignUp ? dataSignUp?.content : dataJoin?.content, designbox_id: 0, title: isSignUp ? "Create new account" : "Request invitation" },
+        forgot: { content: dataForgotPass?.content, designbox_id: 0 }
 
     }
     const caption = isCreateAccount == 'forgot' ? 'Restore password' : data.create.title

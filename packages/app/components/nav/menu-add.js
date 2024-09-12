@@ -45,7 +45,7 @@ export default function ({buttonProps}) {
 
                 <ButtonRef
                     {...buttonProps}
-                    onPress={() => { }}
+                  
                 />
             </DropdownMenu>
         </View>

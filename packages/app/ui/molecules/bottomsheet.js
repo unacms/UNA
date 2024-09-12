@@ -16,18 +16,20 @@ export default function ElementCommentForm(props) {
     const styles = StyleSheet.create({
         container: {
             flex: 1,
+            
         },
         bottomSheet: {
+            borderWidth:0,
             shadowColor: "#000",
-            shadowOffset: {
-                width: 0,
-                height: 12,
-            },
-            shadowOpacity: 0.58,
-            shadowRadius: 16.00,
+shadowOffset: {
+	width: 0,
+	height: 3,
+},
+shadowOpacity: 0.27,
+shadowRadius: 4.25,
 
-            elevation: 24,
-            backgroundColor: 'white', // Ensure background color is set
+elevation: 10,
+            /*backgroundColor: colors.bottomSheetBackground, // Ensure background color is set*/
         },
     });
 
@@ -37,14 +39,17 @@ export default function ElementCommentForm(props) {
 
     return (
         <BottomSheetModalProvider>
-        <BottomSheetModal backgroundStyle={{backgroundColor: colors.bottomSheetBackground}}
+        <BottomSheetModal 
+            backgroundStyle={{backgroundColor: colors.bottomSheetBackground}}
             /* ref={bottomSheetRef}*/
             ref={bottomSheetModalRef}
             index={1}
             snapPoints={snapPoints}
-            /*enableDynamicSizing={true}*/
+            enableDismissOnClose={false} // prevents closing on dismiss event
+            enablePanDownToClose={false} // prevents closing by sliding down
+            enableDynamicSizing={true}
             onChange={handleSheetChanges}
-            detached={true}
+           /* detached={true}*/
             style={styles.bottomSheet}
 
         >

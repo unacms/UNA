@@ -46,14 +46,14 @@ export default function ElementCommentForm(props) {
     const bottomSheetHeader = useMemo(() => (
         <>
             {title && (
-                <View>
+                <View className=''>
                     <Text className='text-neutral-700 dark:text-neutral-200 text-center text-xl font-bold mb-2'>
                         {title}
                     </Text>
                 </View>
             )}
             {showClose && (
-                <View className='absolute right-2 z-50 top-0'>
+                <View className='absolute right-2 z-50 top-2 '>
                     <Button startDecorator="X" tooltip='Close' variant='text' size='sm' onPress={onClose} />
                 </View>
             )}

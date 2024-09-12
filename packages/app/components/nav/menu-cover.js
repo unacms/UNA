@@ -103,9 +103,7 @@ export function CoverMenu(props) {
                             size={size}
                             tooltip="Settings"
                             startDecorator="DotsThreeOutline"
-                            onPress={() => {
-                                FeedbackHaptics('Medium')
-                            }}
+                          
                         />
                     </DropdownMenu>
                 </View>

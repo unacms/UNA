@@ -170,7 +170,7 @@ const MsgFeed = memo(({ item, handlerMenuSelect }) => {
                                     setMode(oItem.name);
                                     return handlerMenuSelect(oItem, item);
                                 }}>
-                                    <Button variant="outline" size="xs" startDecorator="DotsThreeOutline" rounded onPress={() => {FeedbackHaptics('Medium');}} />
+                                    <Button variant="outline" size="xs" startDecorator="DotsThreeOutline" rounded />
                                 </DropdownMenu>
                             </View>
                         </View> }

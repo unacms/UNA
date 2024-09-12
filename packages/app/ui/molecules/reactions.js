@@ -305,7 +305,7 @@ export default function ElementReactions(oProps) {
                 sActionButton = oItems.length > 1 ? (
                     <Pressable key="action" onPress={(event) => {event.preventDefault()}}>
                         <DropdownMenu variant="horizontal" items={aItems} onSelect={(oItem, event) => {handleDo(event, oItem)}}>
-                            <ButtonAction variant={bShowCombined ? 'group-item' : false} size={sDisplaySize}  startDecorator={getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : ''} onPress={() => {}} disabled={bShowActionDisabled} {...oButtonProps} />
+                            <ButtonAction variant={bShowCombined ? 'group-item' : false} size={sDisplaySize}  startDecorator={getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : ''} disabled={bShowActionDisabled} {...oButtonProps} />
                         </DropdownMenu>
                     </Pressable>
                 ) : (

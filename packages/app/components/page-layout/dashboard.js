@@ -117,14 +117,14 @@ export default function PageLayout(props) {
                                                 title: t('lang_' + lang)
                                             }))} 
                                             onSelect={(oItem) => {handleLang(oItem.id)}}>
-                                                <Pressable>
+                                               
                                                     <Button
                                                         variant="outline"                                               
                                                         startDecorator="Translate"
                                                         rounded
                                                         align="left"
                                                     />
-                                                </Pressable>
+                                             
                                         </DropdownMenu></View>)
                                 }
                                 
@@ -137,14 +137,14 @@ export default function PageLayout(props) {
                                                 title: t('theme_' + theme)
                                             }))} 
                                             onSelect={(oItem) => {handleTheme(oItem.id)}}>
-                                                <Pressable>
+                                               
                                                     <Button
                                                         variant="outline"
                                                         startDecorator="Moon"
                                                         rounded
                                                         align="left"
                                                     />
-                                                </Pressable>
+                                        
                                         </DropdownMenu></View>)
                                 }
                                
@@ -170,14 +170,14 @@ export default function PageLayout(props) {
                                                 title: t('lang_' + lang)
                                             }))} 
                                             onSelect={(oItem) => {handleLang(oItem.id)}}>
-                                            <Pressable>
+                                           
                                                 <Button
                                                     variant="text"
                                                     title= {t('lang_' + i18n.language)}
                                                     startDecorator="Translate"
                                                     fullWidth
                                                     align="left"
-                                            /></Pressable>
+                                            />
                                         </DropdownMenu>)
                                 }
                                 {
@@ -189,7 +189,7 @@ export default function PageLayout(props) {
                                                 title: t('theme_' + theme)
                                             }))} 
                                             onSelect={(oItem) => {handleTheme(oItem.id)}}>
-                                                <Pressable>
+                                              
                                                     <Button
                                                         variant="text"
                                                         title= {t('theme_' + currentTheme)}
@@ -197,7 +197,7 @@ export default function PageLayout(props) {
                                                         fullWidth
                                                         align="left"
                                                     />
-                                                </Pressable>
+                                           
                                         </DropdownMenu>)
                                 }
                                 {
@@ -210,7 +210,7 @@ export default function PageLayout(props) {
                                                 title: t('format_' + lang)
                                             }))} 
                                             onSelect={(oItem) => {handleFormat(oItem.id)}}>
-                                                <Pressable>
+                                               
                                                     <Button
                                                         variant="text"
                                                         title= {t('format_' + currentFormat)}
@@ -218,7 +218,7 @@ export default function PageLayout(props) {
                                                         fullWidth
                                                         align="left"
                                                     />
-                                                </Pressable>
+                                              
                                         </DropdownMenu></View>)
                                 }
                                 <Link href="/logout"><Button

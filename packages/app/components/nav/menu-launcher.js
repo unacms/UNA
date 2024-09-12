@@ -36,7 +36,6 @@ export default function () {
                     alt={t("All Apps")}
                     startDecorator="CirclesFour"
                     aria-label="All Apps"
-                    onPress={() => { }}
                 />
             </DropdownMenu>
         </View>

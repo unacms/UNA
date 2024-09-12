@@ -6,7 +6,6 @@ import { useWindowDimensions } from 'react-native'
 import { appSetting } from 'app/lib/util'
 import { Keyboard, Platform } from 'react-native';
 export default function FormFieldSubmit(props) {
-    console.log("propsprops", props)
     const formContext = useFormContext();
     const { formState } = formContext;
     let rules = {};

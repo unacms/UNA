@@ -161,14 +161,14 @@ export default function PageLayout(props) {
                                                 title: t('lang_' + lang)
                                             }))} 
                                             onSelect={(oItem) => {handleLang(oItem.id)}}>
-                                                <Pressable>
+                                               
                                                     <Button
                                                         variant="outline"                                               
                                                         startDecorator="Translate"
                                                         rounded
                                                         align="left"
                                                     />
-                                                </Pressable>
+                                                
                                         </DropdownMenu></View>)
                                 }
                                 
@@ -181,14 +181,14 @@ export default function PageLayout(props) {
                                                 title: t('theme_' + theme)
                                             }))} 
                                             onSelect={(oItem) => {handleTheme(oItem.id)}}>
-                                                <Pressable>
+                                               
                                                     <Button
                                                         variant="outline"
                                                         startDecorator="Moon"
                                                         rounded
                                                         align="left"
                                                     />
-                                                </Pressable>
+                                              
                                         </DropdownMenu></View>)
                                 }
                                
@@ -222,7 +222,7 @@ export default function PageLayout(props) {
                                                 title: t('lang_' + lang)
                                             }))} 
                                             onSelect={(oItem) => {handleLang(oItem.id)}}>
-                                            <Pressable>
+                                            
                                                 <Button
                                                     variant="secondary"
                                                     title= {t('lang_' + i18n.language)}
@@ -230,7 +230,7 @@ export default function PageLayout(props) {
                                                     fullWidth
                                                     
                                                     align="left"
-                                            /></Pressable>
+                                            />
                                         </DropdownMenu>
                                         </View>
                                         )
@@ -246,7 +246,7 @@ export default function PageLayout(props) {
                                                 title: t('theme_' + theme)
                                             }))} 
                                             onSelect={(oItem) => {handleTheme(oItem.id)}}>
-                                                <Pressable>
+                                               
                                                     <Button
                                                         variant="secondary"
                                                         title= {t('theme_' + currentTheme)}
@@ -255,7 +255,7 @@ export default function PageLayout(props) {
                                                         
                                                         align="left"
                                                     />
-                                                </Pressable>
+                                              
                                         </DropdownMenu>
                                         </View>)
                                 }

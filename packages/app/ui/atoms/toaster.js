@@ -29,7 +29,6 @@ const ElementToster = forwardRef((props, ref) => {
         
         setVisible: (visible) => setIsVisible(visible),
     }));
-    console.log("isVisible", isVisible)
     return (
         <View style={{ display: isVisible ? 'flex' : 'none' }} className={sClassName}>
             <Animated.View style={indicatorStyle} >

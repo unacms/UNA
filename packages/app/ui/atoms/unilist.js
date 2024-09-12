@@ -13,14 +13,17 @@ export default function UniList(props) {
    
     const estimatedItemSize = unitSizeMap[unit] || 400;
     
-    const filteredData = useMemo(() => {
+    /*const filteredData = useMemo(() => {
         return data.filter((v, i, a) => a.findIndex(t => t.id === v.id) === i);
-      }, [data]);
+      }, [data]);*/
+      const filteredData = data.filter((v, i, a) => a.findIndex(t => t.id === v.id) === i);
+
     
     
     /*const onLoadListener = useCallback(({ elapsedTimeInMs } ) => {
         console.log("Sample List load time", elapsedTimeInMs);
     }, []);*/
+    console.log("UniList", filteredData.length)
 
     return (
         <FlashList  

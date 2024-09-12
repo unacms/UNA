@@ -1936,7 +1936,7 @@ export const settingsDefault = {
             default: '#D1D5DB', //fix for icons color in iOS
             primary: '#0ea5e9',
             barsBackground: 'rgba(0,0,0,1)',
-            bottomSheetBackground: '#111827',
+            bottomSheetBackground: 'rgba(31,41,55,1)',
             barsColor: '#D1D5DB',
             selectBorder: 'rgba(55, 65, 81, 0.3)',
             fieldBackground: '#030712',
