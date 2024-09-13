@@ -140,7 +140,7 @@ export default function ElementMenu(oProps) {
     });
 
     const ButtonEx = memo(() => {
-        return <View key="btn" className='ml-2'><Button size={oProps.params.button_size} onPress={() => {}} variant="default" startDecorator="DotsThreeOutline" /></View>;
+        return <View key="btn" className='ml-2'><Button size={oProps.params.button_size} variant="default" startDecorator="DotsThreeOutline" /></View>;
     });
     
     return <DynamicMenu 
