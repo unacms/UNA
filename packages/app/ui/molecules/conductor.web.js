@@ -5,7 +5,7 @@ import { View, Row, Pressable } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
 import { StyleSheet, useWindowDimensions } from 'react-native';
 import { appSetting, getHeaderSettings, getUnitModeBySource, getURI, getLayout, handleFeedLayoutData, updateRouteDataForConnections, menuItemsByName } from 'app/lib/util';
-import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer, LeftSidebar, TopSidebar } from 'app/lib/conductor-helpers';
+import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer,ItemRendererMemo, LeftSidebar, TopSidebar } from 'app/lib/conductor-helpers';
 import { Button } from 'app/design/controls';
 import Link from 'app/ui/atoms/link'
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
@@ -583,7 +583,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 */
         if (props.data.length == 1 && !props.endpoint) {
             let a = props.data.map((item, index) => {
-                return <View className={appSetting('layout', 'max_width_block') + " mx-auto w-full"} key={"tab-" + index}><ItemRenderer route={props.route} key={'item' + index} numColumns={1} item={item} /></View>
+                return <View className={appSetting('layout', 'max_width_block') + " mx-auto w-full"} key={"tab-" + index}><ItemRendererMemo route={props.route} key={'item' + index} numColumns={1} item={item} /></View>
             });
             return a;
         }

@@ -39,7 +39,7 @@ export async function fetcher (mixed, useProxy = false) {
 
     const diff = Date.now() - t1;
     if (appSetting('config', 'debug'))
-        console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~ load time:", parseFloat(diff/1000), "sec (", prefix + mixed, ")");
+        console.log((new Date(t1)).toLocaleTimeString(), "~~~~~~~~~~~~~~~~~~~~~~~~~~~~ load time:", parseFloat(diff/1000), "sec (", prefix + mixed, ")");
 
     return r;
 }

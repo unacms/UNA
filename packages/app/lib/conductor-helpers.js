@@ -310,8 +310,9 @@ export function processUrl(data, blocks) {
     return contentAndEndpoint;
 }
 
-function ItemRenderer_({ route, numColumns, item, unit, module, unitMode, unitType, sidebar }) {
-    const b = useMemo(() => {
+export function ItemRenderer({ route, numColumns, item, unit, module, unitMode, unitType, sidebar }) {
+   // return <View className='bg-red-500 h-12 w-full'></View>
+ //   const b = useMemo(() => {
         if (item?.type === 'block') {
             //return <></>
             let block = BlockByName2({ b: item.data, name: item.block });
@@ -330,13 +331,13 @@ function ItemRenderer_({ route, numColumns, item, unit, module, unitMode, unitTy
                 </View>
             );
         }
-    }, [route.index, item, numColumns, unit, module, unitMode, unitType]);
+   /* }, [route.index, item, numColumns, unit, module, unitMode, unitType]);
 
-    return b;
+    return b;*/
 }
 
 // AVOID BLINKING
-export const ItemRenderer = memo(ItemRenderer_);
+export const ItemRendererMemo = memo(ItemRenderer);
 /*export const ItemRenderer = memo(ItemRenderer_, (prevProps, nextProps) => {
     return prevProps.item.id === nextProps.item.id; 
 });*/

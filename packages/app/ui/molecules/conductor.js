@@ -296,8 +296,8 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
                 data={route.data}
                 route={route}
                 unit={route.endpoint?.unit}
-                renderItem={({ item, index }) => renderCachedItem({ item, index })}
-                //renderItem={({ item, index }) => <ItemRenderer unitType={unitType} unitMode={unitMode} route={route} item={item} unit={route?.endpoint?.unit} module={route?.endpoint?.module} />}
+                //renderItem={({ item, index }) => renderCachedItem({ item, index })}
+                renderItem={({ item, index }) => <ItemRenderer unitType={unitType} unitMode={unitMode} route={route} item={item} unit={route?.endpoint?.unit} module={route?.endpoint?.module} />}
                 //<View className="w-full h-24 bg-red-500 my-2"></View>}
                 getItemType={(item) => {
                     return item.type;
