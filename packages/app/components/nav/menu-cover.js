@@ -97,7 +97,15 @@ export function CoverMenu(props) {
             />
             {isSplitMenu && propsCopy.items.length > 0 && (
                 <View className="ml-2">
-                   
+                    <DropdownMenu items={aMenuManageItems}>
+                        <Button
+                            variant="default"
+                            size={size}
+                            tooltip="Settings"
+                            startDecorator="DotsThreeOutline"
+                          
+                        />
+                    </DropdownMenu>
                 </View>
             )}
         </>
