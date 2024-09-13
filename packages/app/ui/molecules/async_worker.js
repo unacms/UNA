@@ -18,11 +18,11 @@ export default function ElementAsyncWorker(props) {
 
         updateContent();
 
-        const interval = setInterval(() => {
+       /* const interval = setInterval(() => {
             updateContent();
         }, appSetting('layout', 'async_workers_interval') * 1000);
 
-        return () => clearInterval(interval);
+        return () => clearInterval(interval);*/
     }, []);
 
     return <>{content}</>;
