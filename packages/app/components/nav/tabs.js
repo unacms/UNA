@@ -167,7 +167,7 @@ export default function () {
                         tabBarActiveBackgroundColor: colors.primaryBg,
                         freezeOnBlur: true,
                         unmountOnBlur: false,
-                        lazy: currentUser ? false : true,
+                        /*lazy: currentUser ? false : true,*/
                     })}
                 >
                     {

@@ -34,11 +34,11 @@ const Menu = memo(({ items, onSelect, setBottomSheetData}) => {
     }
 
     return (
-        <View className='w-full mt-6 '>
+        <View className='w-full mt-0 mb-2'>
             {items.map(
                 (item, index) =>
-                    <View key={item.id} className='mb-2'><Button
-                        variant="outline"
+                    <View key={item.id} className='mb-0'><Button
+                        variant="text"
                         size="base"
                         fullWidth
                         onPress={(event) => onPressMenu(item, event)}
@@ -68,7 +68,7 @@ function DropdownMenuMobile(oProps) {
     const showMenu = () => {
         console.log("aaaa");
         FeedbackHaptics('Medium')
-        setBottomSheetData({ title: 'Menu options', showClose: true, snapPoints: ['50%', '50%'], content: <Menu items={oProps.items} onSelect={oProps.onSelect} setBottomSheetData={setBottomSheetData} /> });
+        setBottomSheetData({ title: 'Menu options', showClose: true, snapPoints: ['10%', '50%'], content: <Menu items={oProps.items} onSelect={oProps.onSelect} setBottomSheetData={setBottomSheetData} /> });
     }
 
     return (
