@@ -78,7 +78,7 @@ export const GroupView = memo(({data, styles, url, isCompact}) => {
     </View>);
 });
 
-export const AdView = memo(({data, styles}) => {
+export const AdView = memo(({data, styles, url, isCompact}) => {
 
     useEffect(() => {
         (async () => {
@@ -129,7 +129,7 @@ export const AdView = memo(({data, styles}) => {
     </View>
 })
 
-export const MarketView = memo(({data, styles}) => {
+export const MarketView = memo(({data, styles, url, isCompact}) => {
     return <View className=" flex-col md:flex-row space-x-2  overflow-hidden rounded-lg border border-bdritem dark:border-bdritem-d bg-bgritem dark:bg-bgritem-d p-1">
         {data.mainImage && (
             <View className="w-full md:w-1/3  ">
