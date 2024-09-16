@@ -48,6 +48,7 @@ export const settingsDefault = {
         background_image_dark: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239C92AC' fill-opacity='0.08' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E")`,
         background_cover_color: 'rgba(107, 114, 128, 0.2)',
         background_native: false,
+        hide_header_for_non_logged: false,
         profile_colors: [
             'orange',
             'yellow',
@@ -95,6 +96,7 @@ export const settingsDefault = {
         add_notifications_count_in_title: true,
         show_nav_non_logged_native: true,
         show_back_button_in_messenger: false,
+        
     },
     forms: {
         sys_login: { hide_errors: true, button_full_width: true },
