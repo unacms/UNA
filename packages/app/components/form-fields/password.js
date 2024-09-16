@@ -18,6 +18,7 @@ export default function FormFieldPassword(props) {
 
     return (
         <Field {...props}>
+            <View>
             <Input 
                 placeholder = {placeholder}
                 secureTextEntry={isVisible}
@@ -27,8 +28,9 @@ export default function FormFieldPassword(props) {
                 value={field.value}
                 
             />
-            <View className="absolute m-1 right-0 bottom-0 ">
+            <View className="absolute m-1 right-0 bottom-0.5 ">
                 <Button startDecorator={isVisible?'Eye':'EyeSlash'} rounded size="sm" variant="text" onPress={()=>{setIsVisible(!isVisible)}}  />
+            </View>
             </View>
         </Field>
     );
