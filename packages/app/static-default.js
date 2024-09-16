@@ -1090,6 +1090,10 @@ function updateRouteDataForConnections(
     )
 }
 
+function noContentByUrl(url){
+    return <ComponentsContentEmpty/>
+}
+
 export const staticDefault = {
     logo_text: LogoText,
     logo_mark: LogoMark,
@@ -1112,4 +1116,5 @@ export const staticDefault = {
     getButtonForConductor: getButtonForConductor,
     getButtonForConductorNative: getButtonForConductorNative,
     updateRouteDataForConnections: updateRouteDataForConnections,
+    noContentByUrl: noContentByUrl,
 }
