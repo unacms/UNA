@@ -25,8 +25,8 @@ import Embed from 'app/ui/molecules/embed'
 import { fetcher } from 'app/lib/fetcher';
 import { appSetting, } from 'app/lib/util'
 
-import "app/ui/editor/styles/globals.css";
-import "app/ui/editor/styles/prosemirror.css";
+//import "app/ui/editor/styles/globals.css";
+//import "app/ui/editor/styles/prosemirror.css";
 
 const MenuBar = ({ editor }) => {
     const scheme = useColorScheme();

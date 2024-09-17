@@ -5,7 +5,7 @@ import { useState, useRef, useEffect, useContext } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
 import { Button, Modal } from "app/design/controls";
 import { useBottomSheetData } from 'app/context/bottomsheet';
-import RadioButton from 'app/ui/atoms/radiobutton';
+import CheckBox from 'app/ui/atoms/checkbox';
 
 export default function (props) {
     const rules = {};
@@ -19,11 +19,7 @@ export default function (props) {
     const setFormValue = (value) => {
         value = value.filter(item => item);
         field.onChange(value);
-        //setBottomSheetData(false);
         setIsModal(false)
-       /* if (props.onShowModal) {
-            props.onShowModal(true);
-        }*/
     }
     const removeValue = (valueToRemove) => {
         const newValue = field.value.filter(item => item !== valueToRemove);
@@ -54,10 +50,11 @@ export default function (props) {
                 onClose={() => setIsModal(false)}
                 transparent={true}
                 headerBorder={true}
+                scrollable={true}
             >
-                <View className='m-4'>
+               
                     <ChkList values={dataFlat} selectedValues={field.value} setFormValue={setFormValue}></ChkList>
-                </View>
+
 
             </Modal>
             <Field {...props}>
@@ -113,13 +110,14 @@ function ChkList({ values, selectedValues, setFormValue }) {
         <>
             {values.map((item2, index) => (
                 <Pressable key={`lbl-${index}`} onPress={() => addValue2(item2.value)}>
-                    <Row className='items-center my-1 border border-bdr dark:border-bdr-d rounded-lg hover:bg-primary/10 active:bg-primary/20 dark:hover:bg-primary-d/10 dark:active:bg-primary-d/20' key={'chk' + index}>
-                        <RadioButton
+                    <Row className='items-center my-1 px-2 border border-bdr dark:border-bdr-d rounded-lg hover:bg-primary/10 active:bg-primary/20 dark:hover:bg-primary-d/10 dark:active:bg-primary-d/20' key={'chk' + index}>
+                        <CheckBox
                             value={item2.value}
                             status={value2.includes(item2.value) ? 'checked' : 'unchecked'}
                             onPress={() => { addValue2(item2.value); }}
+                            title={item2.value}
                         />
-                        <Text className="text-neutral-700 dark:text-neutral-200  text-sm">{item2.value}</Text>
+                       {/* <Text className="text-neutral-700 dark:text-neutral-200  text-sm">{item2.value}</Text>*/}
                     </Row>
                 </Pressable>
             ))}

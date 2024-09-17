@@ -114,6 +114,8 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
 
     useEffect(() => {
         setConvoId(defaultConvoId);
+        if (isSmallScreen)
+            setPanelsVisible({ convos: false, jots: true })
     }, [selectedMenu, defaultConvoId]);
 
     useEffect(() => {
@@ -127,7 +129,8 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
 
 
     useEffect(() => {
-        setPanelsVisible({ convos: true, jots: isSmallScreen ? false : true });
+        if (!defaultConvoId)
+            setPanelsVisible({ convos: true, jots: isSmallScreen ? false : true });
     }, [isSmallScreen]);
 
 

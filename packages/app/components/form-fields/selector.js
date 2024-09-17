@@ -1,11 +1,8 @@
 import Field from './_field';
-import { Text } from 'app/design/typography'
 import { View, Row, Pressable, ScrollView } from 'app/design/view'
 import { useState, useRef, useEffect, useContext } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
-import CheckBox from 'app/ui/atoms/checkbox';
 import { Button, Input, Modal } from "app/design/controls";
-//import { useBottomSheetData } from 'app/context/bottomsheet';
 import RadioButton from 'app/ui/atoms/radiobutton';
 
 export default function (props) {
@@ -52,6 +49,7 @@ export default function (props) {
         onClose={() => setIsModal(false)}
         transparent={true}
         headerBorder={true}
+        scrollable={true}
     >
         <View className='m-4 flex-1'>
             <ChkList values={dataFlat} selectedValues={field.value} setFormValue={setFormValue} isMultiple={isMultiple} />
@@ -123,7 +121,7 @@ function ChkList({ values, selectedValues, setFormValue, isMultiple }) {
                     />
                 </View>)
             }
-            <ScrollView className='flex-auto max-h-80'>
+
                 {filtred.map((item2, index) => {
                     const key = item2.key;
                     return (
@@ -133,14 +131,15 @@ function ChkList({ values, selectedValues, setFormValue, isMultiple }) {
                                     value={key}
                                     status={value2.includes(key) ? 'checked' : 'unchecked'}
                                     onPress={() => { addValue2(key); }}
+                                    title={item2.value}
                                 />
-                                <Text className="text-neutral-700 dark:text-neutral-200  text-sm">{item2.value}</Text>
+                                {/*<Text className="text-neutral-700 dark:text-neutral-200  text-sm">{item2.value}</Text>*/}
                             </Row>
                         </Pressable>
                     )
                 })}
 
-            </ScrollView>
+
             <View className='pt-2 justify-end items-start'>
                 <Button
                     title='Save'

@@ -285,7 +285,7 @@ export default function (props) {
 
     useEffect(() => {
         if (dataItems.data.length == 0 && dataItems.params == browseParams){
-            console.log('refetch2');
+            //console.log('refetch2');
             refetch();
         }
     }, [storageKeyValue, dataItems.params, props.cachePrefix]);

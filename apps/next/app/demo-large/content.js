@@ -19,7 +19,7 @@ const fixReanimatedIssue = () => {
 fixReanimatedIssue()
 
 import { Provider } from 'app/provider'
-import { CurrentUserProvider } from 'app/context/user';
+
 
 import 'app/styles/global.css'
 
@@ -53,12 +53,12 @@ export  function Page (props) {
     <>
         <Provider>
           <QueryClientProvider client={queryClient}>
-            <CurrentUserProvider>
+          
               {!!process.env['VERCEL'] ? <Analytics /> : null}
               <Layout path={props?.path} data={props.data} uri={props?.uri}>
                 <StaticBlock  name='static:home'></StaticBlock>
               </Layout>
-            </CurrentUserProvider>
+
           </QueryClientProvider>
         </Provider>
       

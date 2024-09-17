@@ -158,7 +158,8 @@ const Cell = React.memo(({ cell, indexRow, id, toggleSwitch, setSelection, selec
             return <>
                 <CheckBox
                     value={selected.includes(cell.data)}
-                    onValueChange={() => setSelection(cell.data)}
+                    status={value.includes(cell.data) ? 'checked' : 'unchecked'}
+                    onPress={() => setSelection(cell.data)}
                 /></>
         case 'profile':
             return <Profile {...cell.data}  displaySize="sm" />

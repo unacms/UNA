@@ -156,8 +156,6 @@ export default function (props) {
 
     useEffect(() => {
 
-        runOneSignal();
-
         if (navigator.serviceWorker) {
             navigator.serviceWorker.register('/sw.js');
         }
@@ -168,6 +166,14 @@ export default function (props) {
         };
 
     }, [handlePageShow]);
+
+
+    useEffect(() => {
+
+        runOneSignal();
+
+
+    }, []);
 
     useEffect(() => {
 

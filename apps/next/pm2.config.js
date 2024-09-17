@@ -41,7 +41,8 @@ module.exports = {
   apps: [
     {
       name: 'neoapp',
-      script: './../../node_modules/next/dist/bin/next',
+      //script: './../../node_modules/next/dist/bin/next',
+      script: './node_modules/next/dist/bin/next',
       args: 'start',
       instances: RUN_ENV_MAP[argEnv].instances,
       exec_mode: 'cluster',

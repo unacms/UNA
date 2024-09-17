@@ -36,8 +36,8 @@ export default function FormMessenger(props) {
     if (typeof props.data.inputs['send'] !== 'undefined')
         props.data.inputs['submit'].icon = 'PaperPlaneRight';
 
-    props.data.inputs['payload'].value = parseInt((new Date()).getTime()/1000);
-    
+    props.data.inputs['payload'].value = parseInt((new Date()).getTime() / 1000);
+
     props.data.inputs['submit'].hide_errors = true;
 
     props.data.inputs['submit'].icon = 'PaperPlane';
@@ -68,19 +68,19 @@ export default function FormMessenger(props) {
     </View>*/
     return <View className='w-full  px-3' >
         <Row className='w-full items-end  '>
-        <View className={'mr-2 ' + (isWeb ? '' : ' w-11 ')}>
+            <View className={'mr-2 ' + (isWeb ? '' : ' w-11 ')}>
                 {getFormFieldByData(props.data.inputs['files'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder, classes: 'mb-0 mt-0 ' })}
             </View>
-            <View className={'flex-auto bg-bgritem dark:bg-bgritem-d rounded-3xl justify-center p-0 items-end '+ (isWeb ? 'p-2.5 ' : '')} >
-            {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'custom')}
+            <View className={'flex-auto bg-bgritem dark:bg-bgritem-d rounded-3xl justify-center p-0 items-end ' + (isWeb ? 'p-2.5 ' : '')} >
+                {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['cf'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['payload'], props.handleSubmit, 'custom')}
-                {getFormFieldByData(props.data.inputs['message'], props.handleSubmit, 'custom', {container_class:'comments', focus:true, bg:'transparent', placeholder: 'Write your comment here...', classes: 'mb-0 mt-0' })}
+                {getFormFieldByData(props.data.inputs['message'], props.handleSubmit, 'custom', { container_class: 'comments', focus: true, bg: 'transparent', submitOnEnter: true, styles: { minHeight: "auto" }, classes: 'mb-0 mt-0', placeholder: 'Message ...' })}
                 {getFormFieldByData(props.data.inputs['id'], props.handleSubmit, 'custom')}
-                { getFormFieldByData(props.data.inputs['message_id'], props.handleSubmit, 'custom') }
+                {getFormFieldByData(props.data.inputs['message_id'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['send'], props.handleSubmit, 'custom')}
             </View>
-           
+
             <View className={'ml-2 ' + (isWeb ? '' : ' w-11 ')}>{getFormFieldByData(props.data.inputs['submit'], props.handleSubmit, 'custom', { classes: isWeb ? 'mb-0 ml-0 mt-0' : 'mb-0 mt-0' })}</View>
         </Row>
         {(prevList.length > 0 && prevList[0]?.key) && <Row className='flex-wrap gap-2 mt-3'>{prevList}</Row>}

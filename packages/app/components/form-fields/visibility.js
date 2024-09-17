@@ -54,10 +54,9 @@ export default function (props) {
         onClose={() => setIsModal(false)}
         transparent={true}
         headerBorder={true}
+        scrollable={true}
     >
-        <View className='m-4'>
-            <RbList values={values} setValue={setValueF} selectedValue={field.value} />
-        </View>
+        <RbList values={values} setValue={setValueF} selectedValue={field.value} />
 
     </Modal>
 

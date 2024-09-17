@@ -7,7 +7,6 @@ import { Provider } from 'app/provider'
 import { Stack } from 'expo-router'
 import { Theme } from 'app/design/theme'
 import { ThemeProvider } from "@react-navigation/native";
-//import { CurrentUserProvider } from 'app/context/user';
 import { useColorScheme } from 'react-native';
 import { useEffect } from 'react'
 import {

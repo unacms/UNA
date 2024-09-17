@@ -1,6 +1,6 @@
 import React from 'react';
 import { TextInput as TextInputDef, Modal as ModalDef, Platform, Switch as SwitchDef } from 'react-native'
-import { Pressable, View, Row } from 'app/design/view'
+import { Pressable, View,ScrollView, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { styled } from 'nativewind'
 import { Icon } from 'app/ui/atoms/icon'
@@ -45,7 +45,8 @@ export function Modal({
     headerBorder = true,
     fullWidth = true,
     children,
-    padding = " px-4 py-2 "
+    padding = " px-4 py-2 ",
+    scrollable = false
 }) {
 
     const isOuterClose = (onClose !== 'undefined' && outerClickClose !== false);
@@ -66,13 +67,20 @@ export function Modal({
     }
 
     const type = typeof title;
+    let styles = {}
+    const { width, height } = useWindowDimensions();
+    
+    if (width > 768)
+        styles = { maxHeight: height - 100 }
+
+    let Cnt = scrollable ? ScrollView : View
 
     return (
         <ModalDef visible={onVisible} presentationStyle={presentation} animationType={animation} transparent={false}>
             <Wrapper className="flex justify-end w-full h-full bg-white/80 dark:bg-black/80 backdrop-blur" {...(isOuterClose && { onPress: onClose })}>
                 <View className={`flex-row justify-center left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto md:inset-0 h-modal h-full ${sClassPosition}`}>
-                    <View className={`${fullWidth ? 'w-full' : ''} relative h-full max-w-2xl md:h-auto `}>
-                        <Pressable onPress={() => { }} className='relative bg-bgrmodal dark:bg-bgrmodal-d h-full md:h-auto sm:border sm:border-bdrmodal sm:dark:border-bdrmodal-d sm:rounded-2xl sm:shadow-sm'>
+                    <View className={`${fullWidth ? 'w-full' : ''}  relative h-full max-w-2xl md:h-auto `}>
+                        <Pressable onPress={() => { }} className='relative bg-bgrmodal dark:bg-bgrmodal-d h-full md:h-auto  sm:border sm:border-bdrmodal sm:dark:border-bdrmodal-d sm:rounded-2xl sm:shadow-sm'>
                             {
                                 (title || onClose) && <Row className={`items-center justify-${textAlign} ${headerBorder ? ' border-b border-bdr dark:border-bdr-d ' : ''} px-3 py-2.5 sm:p-4 sm:py-3`}>
                                     {(title && type === 'string') && (
@@ -90,7 +98,7 @@ export function Modal({
                                 )}
                                 </Row>
                             }
-                            <View className = { padding+" overflow-y-auto flex-auto md:h-auto" }>{children}</View>
+                            <Cnt style = {styles}  className = { padding+" eweee overflow-y-auto flex-auto md:h-auto" }>{children}</Cnt>
                         </Pressable>
                     </View>
                 </View>
