@@ -12,10 +12,11 @@ import { menuItemsFilter } from 'app/lib/util';
 import { storageClear, decodeText } from 'app/lib/util';
 
 export async function getData(path, token, origin, headers, callback, params) {
+    
     path = (!path || path.startsWith('expo-development-client')) ? 'home' : path;
     path = path.startsWith('/') ? path.substr(1) : path;
     path = `/api.php?r=system/get_page_by_request/TemplServicePages&params[]=${path}`;
-
+    
     const uri = getURI(path);
     const settings = appSetting('layouts', uri);
     if (settings?.blocks) {
@@ -36,6 +37,7 @@ export async function getData(path, token, origin, headers, callback, params) {
 }
 
 export function Screen(params) {
+   
     const local = useLocalSearchParams();
     const pathname = params.tabname;
     const { currentUser, setCurrentUser } = useCurrentUser();
@@ -50,12 +52,14 @@ export function Screen(params) {
         _path = item ? item.url : null;
         isRoot = true;
     }
-
+    /*console.log("params555",_path)
     const memoizedValue = useMemo(() => {
         return <Content pagePath={_path} currentUser={currentUser} isRoot={isRoot} />;
     }, [_path, currentUser?.id]);
+    return memoizedValue*/
+    return <Content key={_path} pagePath={_path} currentUser={currentUser} isRoot={isRoot} />
 
-    return memoizedValue
+  
 }
 
 const Content = ({ pagePath, currentUser, isRoot }) => {
@@ -100,7 +104,7 @@ const Content = ({ pagePath, currentUser, isRoot }) => {
         };
         fetchPageData();
     }, [pagePath, currentUser?.id]);
-
+    console.log("pagePath---------------------", pagePath)
     return pageData?.data ? (
 
         <Root path={pagePath} data={pageData.data} uri={pageData.data.uri} />

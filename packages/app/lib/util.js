@@ -950,3 +950,22 @@ export async function getPageData(url) {
 
     return await fetcher(`/api.php?r=system/get_page_by_request/TemplServicePages&params[]=${pagePath.path}${sAdd}`);
 }
+
+export function BlockDataByName(data, name) {
+
+    let b = null;
+    if (name){
+        const blockName = name;
+        Object.keys(data?.elements).forEach(key => {
+            Object.keys(data.elements[key]).forEach(key2 => {
+                if (data.elements[key][key2].content){
+                    Object.keys(data.elements[key][key2].content).forEach(key3 => {
+                        if(data.elements[key][key2].source == blockName.toString())
+                            b = data.elements[key][key2];
+                    });
+                }
+            });
+        });
+    }
+    return b;
+}

@@ -3,7 +3,7 @@ import ObjectDataObject from './blocks-content/object-data-object';
 import ObjectDataArray from './blocks-content/object-data-array';
 import { View } from 'app/design/view'
 import { Text, H2 } from 'app/design/typography'
-import { stripTags, appSetting } from 'app/lib/util';
+import { stripTags, appSetting,BlockDataByName } from 'app/lib/util';
 import { appStatic } from 'app/lib/app-static';
 import Card from 'app/ui/molecules/card'
 
@@ -43,26 +43,7 @@ export function DataByName(data, name) {
     let b = null;
     if (name){
         const blockName = name?.name;
-        return DataByName2(data, blockName)
-    }
-    return b;
-}
-
-export function DataByName2(data, name) {
-
-    let b = null;
-    if (name){
-        const blockName = name;
-        Object.keys(data?.elements).forEach(key => {
-            Object.keys(data.elements[key]).forEach(key2 => {
-                if (data.elements[key][key2].content){
-                    Object.keys(data.elements[key][key2].content).forEach(key3 => {
-                        if(data.elements[key][key2].source == blockName.toString())
-                            b = data.elements[key][key2];
-                    });
-                }
-            });
-        });
+        return BlockDataByName(data, blockName)
     }
     return b;
 }

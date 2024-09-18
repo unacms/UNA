@@ -11,13 +11,10 @@ import { Switch } from 'app/design/controls'
 import { Theme } from 'app/design/theme';
 import { BleManager } from 'react-native-ble-plx';
 import { useBottomSheetData } from 'app/context/bottomsheet';
-import { FeedbackHaptics } from 'app/lib/util';
 import * as Location from 'expo-location';
 import {
     Platform,
-    NativeModules,
     Alert,
-    NativeEventEmitter,
     PermissionsAndroid,
 } from 'react-native';
 

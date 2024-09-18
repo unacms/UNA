@@ -2,9 +2,7 @@
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Tabs from 'app/components/nav/tabs';
 import React, { useMemo } from 'react';
-
 import { Provider } from 'app/provider'
-import { Stack } from 'expo-router'
 import { Theme } from 'app/design/theme'
 import { ThemeProvider } from "@react-navigation/native";
 import { useColorScheme } from 'react-native';
@@ -31,8 +29,8 @@ import { LogLevel, OneSignal } from 'react-native-onesignal';
 const AppLayout = React.memo(() => {
 
     if (appSetting('layout', 'disable_screenshots')) {
-        RNScreenshotPrevent.enableSecureView();
         RNScreenshotPrevent.enabled(true);
+        RNScreenshotPrevent.enableSecureView();
     }
 
     useEffect(() => {
@@ -57,7 +55,7 @@ const AppLayout = React.memo(() => {
         OneSignal.Notifications.addEventListener('click', (event) => {
             console.log('OneSignal: notification clicked:', event);
         });
-    },[]);
+    }, []);
 
 
     const languageDetector = {
@@ -83,7 +81,7 @@ const AppLayout = React.memo(() => {
                 escapeValue: false
             }
         });
-        
+
     const { colors } = Theme();
 
     const containerStyle = useMemo(() => ({
@@ -104,13 +102,13 @@ const AppLayout = React.memo(() => {
     return (
         <ThemeProvider value={Theme(scheme)} >
             <StatusBar backgroundColor={colors.barsBackground}
-            
-					translucent={true} />
+
+                translucent={true} />
             <Provider>
                 <QueryClientProvider client={queryClient}>
                     <SafeAreaView edges={['left', 'right']} style={containerStyle}>
-                       
-                            <Tabs />
+
+                        <Tabs />
 
                     </SafeAreaView>
                 </QueryClientProvider>

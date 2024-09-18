@@ -19,7 +19,6 @@ import { fetcher } from 'app/lib/fetcher';
 import Toaster from 'app/ui/atoms/toaster';
 
 export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultHeader, menu, data, blocks, useSectionAsMenu, unitMode, skeleton, onChangeRoute, keyword }) {
-
     minHeaderHeight = minHeaderHeight || 100;
     isHideDefaultHeader = isHideDefaultHeader || false;
     useSectionAsMenu = useSectionAsMenu || false;
@@ -45,9 +44,9 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
     }, [menu, menuState, initedTabs, setRoutes]);
 
 
-    const setRoutes = useCallback((a) => {
+    const setRoutes = /*useCallback(*/(a) => {
         setRoutes1(a);
-    }, []);
+    }/*, []);*/
 
     const scroll = useSharedValue(1);
     const initialIndex = useMemo(() => {

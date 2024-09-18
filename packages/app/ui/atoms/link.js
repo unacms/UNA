@@ -19,12 +19,12 @@ export default function ElementLink(props) {
     const TabList = currentUser ? appSetting('menu_items', 'menu_tabbar_logged') : appSetting('menu_items', 'menu_tabbar_non_logged');
 
     const index = TabList.findIndex((item) => {
-        if (item.url == href) {
+        if (href.includes(item.url)) {
             return true;
         }
     });
 
-    if (index !== null && index > -1) {
+    /*if (index !== null && index > -1) {
         return <Pressable onPress={() => {
             props.haptics ? FeedbackHaptics(props.haptics) : ''
             navigation.navigate('tab' + index)
@@ -32,9 +32,9 @@ export default function ElementLink(props) {
             {props.children}
         </Pressable>
 
-    }
+    }*/
     let p = {
-        pathname: '/' + glob.name,
+        pathname: index !== null && index > -1 ? '/tab' + index : '/' + glob.name,
         params: { url: href }
     }
     if (target){
