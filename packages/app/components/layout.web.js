@@ -35,7 +35,7 @@ async function runOneSignal() {
 }
 
 
-const MemoizedContent = React.memo(({ headerSettings, currentUser, layoutName, data, children, uri, blocks }) => {
+const MemoizedContent = React.memo(({ headerSettings, currentUser, layoutName, data, children, uri, blocks, width }) => {
     const [isModal, setIsModal] = useState(false);
    
     useEffect(() => {
@@ -73,7 +73,7 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, layoutName, d
     if (getLayout(currentUser, layoutName) == 'hor') {
         return (
             <>
-                <Content layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} url={data?.url} />
+                <Content width={width} layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} url={data?.url} />
 
                 <Suggestions />
                 <AsyncWorker />
@@ -92,7 +92,7 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, layoutName, d
                 <Suggestions />
                 <AsyncWorker />
                 <NavbarMemo headerSettings={headerSettings} layoutName={layoutName} title={data?.name} menu={data?.menu} menu_add={data?.menu_add || false} uri={uri} >
-                    <Content layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser}  url={data?.url}/>
+                    <Content width={width}  layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser}  url={data?.url}/>
                 </NavbarMemo>
                 <BottomSheet />
                 <ModalPopup />
@@ -110,7 +110,7 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, layoutName, d
                 <View className={appSetting('layout', 'max_width') + ' w-full mx-auto'}>
                     <Row className='w-full flex-col lg:flex-row-reverse  lg:min-h-screen '>
                         <View className={(menuItems.length > 0 ? 'lg:w-[calc(100%-20rem)] border-x border-bdr dark:border-bdr-d' : '') + ' w-full '}>
-                            <Content layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser}  url={data?.url}/>
+                            <Content width={width}  layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser}  url={data?.url}/>
                             <Suggestions />
                             <AsyncWorker />
                         </View>
@@ -278,12 +278,12 @@ export default function (props) {
         applyStyles(stylesBgImage);
         applyStyles(stylesBg);
     }, [stylesBgImage, stylesBg]);
-    return <MemoizedContent blocks={blocks} headerSettings={headerSettings} currentUser={currentUser} layoutName={layoutName} data={data} children={children} uri={uri} />
+    return <MemoizedContent width={width} blocks={blocks} headerSettings={headerSettings} currentUser={currentUser} layoutName={layoutName} data={data} children={children} uri={uri} />
 }
 
-const Content = React.memo(({ children, headerSettings, stylesBgImage, currentUser, layoutName, url }) => {
+const Content = React.memo(({ children, headerSettings, stylesBgImage, currentUser, layoutName, url, width }) => {
 
-    const isHideHeader = appSetting('layout', 'hide_header_for_non_logged') && !currentUser;
+    const isHideHeader = appSetting('layout', 'hide_header_for_non_logged') && !currentUser && width > 1024;
 
     return (
         <>
