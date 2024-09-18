@@ -11,7 +11,7 @@ import { BlockByData } from 'app/components/blocks-content/object-data-array-int
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
 
 
-export default function Splash() {
+export default function Splash(props) {
     const isWeb = Platform.OS == 'web'
 
     const [isCreateAccount, setIsCreateAccount] = useState(false)
