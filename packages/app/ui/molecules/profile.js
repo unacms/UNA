@@ -31,7 +31,7 @@ function DisplayNameLink({ title, url, href, fontSize }) {
     if (isAnon || title.includes("(anonymized)")) {
         return (
             <Row className={' text-neutral-900  dark:text-neutral-100 gap-x-2 items-center ' + fontSize}>
-                <Text className={'text-neutral-900  dark:text-neutral-100 ' + fontSize + ' truncate '}>
+                <Text className={'text-neutral-900 dark:text-neutral-100 font-semibold ' + fontSize + ' truncate '}>
                     {title && title.replace(" (anonymized)", '')}
                 </Text>
                 <Icon icon="Detective"></Icon>
@@ -41,7 +41,7 @@ function DisplayNameLink({ title, url, href, fontSize }) {
     }
 
     return (
-        <Text className={'text-neutral-900 dark:text-neutral-100 hover:text-linkhover' + fontSize + ' truncate '}>
+        <Text className={'text-neutral-900 dark:text-neutral-100 hover:text-linkhover font-semibold ' + fontSize + ' truncate '}>
             {title}
         </Text>
     )
