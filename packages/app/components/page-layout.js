@@ -7,6 +7,7 @@ import { useCurrentUser } from 'app/context/user';
 import { appStatic } from 'app/lib/app-static'
 import Redirect from 'app/ui/atoms/redirect'
 import { useRef, useEffect  } from 'react';
+import ConfirmEmail from 'app/ui/molecules/confirm_email';
 
 function Page404() {
     const r = appSetting('layout', 'redirect_on_not_found');
@@ -75,15 +76,12 @@ export default function PageLayout(props) {
 }
 
 function Wrapper(p, props){
-    const redirectdRef = useRef();
+    //const redirectdRef = useRef();
     let { currentUser, setCurrentUser } = useCurrentUser();
     
 
-    useEffect(() => {
-        let bConfirm = false;
-        let bConfirm2 = false;
-        if ((currentUser && !currentUser?.confirmed && appSetting('layout', 'lock_unconfirmed') == true) && props?.data?.uri?.toString() != 'confirm-email')
-            bConfirm = true;
+    /*useEffect(() => {
+       
         if ((currentUser && currentUser?.confirmed && appSetting('layout', 'lock_unconfirmed') == true) && props?.data?.uri?.toString() == 'confirm-email')
             bConfirm2 = true;
         if (bConfirm){
@@ -92,9 +90,18 @@ function Wrapper(p, props){
         if (bConfirm2){
             redirectdRef.current.redirect('/home');
         }
-    }, [currentUser?.confirmed]);
+    }, [currentUser?.confirmed]);*/
+
+    let bConfirm = false;
+    if ((currentUser && !currentUser?.confirmed && appSetting('layout', 'lock_unconfirmed') == true) && props?.data?.uri?.toString() != 'confirm-email')
+        bConfirm = true;
+    
+    return (<View className='flex-1 mx-auto w-full h-full animated-view'>
+        {bConfirm? <ConfirmEmail/> : p}
+        </View>
+    );
    
-    return <><Redirect ref={redirectdRef} /><View className='flex-1 mx-auto w-full h-full animated-view'>{p}</View></>
+    //return <><Redirect ref={redirectdRef} /><View className='flex-1 mx-auto w-full h-full animated-view'>{p}</View></>
 }
 
 export function getLayoutName(data, uri, isWeb) {

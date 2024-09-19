@@ -1,24 +1,19 @@
 import { getFormFieldByData } from 'app/lib/form-helpers'
-import { useWindowDimensions } from 'react-native';
-import { Platform } from 'react-native'
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
-import { Button, Input, InputRounded, Modal } from 'app/design/controls';
+import { Button, } from 'app/design/controls';
 import { useCurrentUser } from 'app/context/user';
-import { useState, useEffect, useCallback , useRef } from 'react'
+import { useState, useRef } from 'react'
 import Msg from 'app/ui/molecules/msg';
 import { fetcher } from 'app/lib/fetcher';
 import { useTranslation } from 'react-i18next';
 import Card from 'app/ui/molecules/card'
 import Redirect from 'app/ui/atoms/redirect';
-import { subscribe } from 'app/ui/atoms/socket';
 
 export default function FormComments(props) {
 
     let { currentUser, setCurrentUser } = useCurrentUser();
     const [showMsg, setShowMsg] = useState(false);
-    const [inputValue, setInputValue] = useState("");
-    const [inputError, setInputError] = useState(false);
     const { t } = useTranslation();
     const redirectdRef = useRef();
     const pressBack = async () => {
@@ -26,19 +21,6 @@ export default function FormComments(props) {
         const sResponse = await fetcher(sRequest);
         setShowMsg(true);
     };
-
-    useEffect(() => {
-        if (currentUser?.account_id)
-            subscribe('sys_account_'+currentUser.account_id, 'confirmed', updateAccount);
-    }, [currentUser.id])
-
-
-    
-    const updateAccount = useCallback((data) => {
-        setCurrentUser({
-            confirmed: true,
-        });
-    }, []);
 
     props.data.inputs['do_submit'].value = 'Confirm';
 

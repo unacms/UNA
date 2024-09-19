@@ -283,7 +283,7 @@ export default function (props) {
 
 const Content = React.memo(({ children, headerSettings, stylesBgImage, currentUser, layoutName, url, width }) => {
 
-    const isHideHeader = appSetting('layout', 'hide_header_for_non_logged') && !currentUser && width > 1024;
+    const isHideHeader = appSetting('layout', 'hide_header_for_non_logged') && !currentUser;//&& width > 1024;
 
     return (
         <>

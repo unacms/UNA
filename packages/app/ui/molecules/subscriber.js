@@ -20,16 +20,22 @@ export default function Subscriber() {
     }, [])
 
     useEffect(() => {
-        if(currentUser?.id){
-            subscribe('sys_connections_'+currentUser.id, 'changed', onUpdateConnections);
-        }
-    }, [currentUser?.id])
-
-    useEffect(() => {
-        if(currentUser?.id){
+        if (currentUser?.id) {
+            subscribe('sys_connections_' + currentUser.id, 'changed', onUpdateConnections);
             subscribe('bx_timeline_0', 'edited', onItemEdited);
         }
-    }, [currentUser?.id]);
+
+        if (currentUser?.account_id)
+            subscribe('sys_account_' + currentUser.account_id, 'confirmed', onUpdateAccount);
+
+    }, [currentUser?.id])
+
+    const onUpdateAccount = useCallback((data) => {
+        console.log('onUpdateAccount----------------------', data);
+        setCurrentUser({
+            confirmed: true,
+        });
+    }, []);
 
     const onUpdateSettings = useCallback(async () => {
         remoteSettings.data = await getRemoteSettings();
@@ -45,9 +51,9 @@ export default function Subscriber() {
         const data = JSON.parse(strData);
         const sKey = 'feed_' + data.id;
         const dataCache = getDataFromCache('li:data', sKey)
-        if (dataCache){     
+        if (dataCache) {
             const result = await fetcher(
-                '/api.php?r='+appSetting("urls", "feed_item")+'{"params":{"browse":"id","value":' + data.id + '}}'
+                '/api.php?r=' + appSetting("urls", "feed_item") + '{"params":{"browse":"id","value":' + data.id + '}}'
             )
             if (result.data)
                 storageSet('li:data', sKey, { data: result.data, ts: Date.now() });
