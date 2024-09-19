@@ -1,20 +1,20 @@
-import { useCardData } from "app/context/card";
-import Link from "app/ui/atoms/link";
-import Profile from "app/ui/molecules/profile";
-import { getImageSizes } from "app/lib/util";
-import { Text } from "app/design/typography";
-import { View } from "app/design/view";
-import Menu from "app/components/menu";
+import { useCardData } from 'app/context/card'
+import Link from 'app/ui/atoms/link'
+import Profile from 'app/ui/molecules/profile'
+import { getImageSizes } from 'app/lib/util'
+import { Text } from 'app/design/typography'
+import { View } from 'app/design/view'
+import Menu from 'app/components/menu'
 
 export default function Unit(props) {
-    const imageSizes = getImageSizes();
-    let data = props.data;
+    const imageSizes = getImageSizes()
+    let data = props.data
 
-    const { cardData } = useCardData();
+    const { cardData } = useCardData()
 
-    if (!!cardData?.hidden) return;
+    if (!!cardData?.hidden) return
 
-    let sMeta = <></>;
+    let sMeta = <></>
     if (data?.meta)
         sMeta = (
             <View className="text-center flex-col  h-auto justify-end">
@@ -23,15 +23,15 @@ export default function Unit(props) {
                     displayType="mixed"
                     params={{
                         showVertical: false,
-                        button_size: "sm",
+                        button_size: 'sm',
                         button_full_width: true,
                         button_rounded: false,
                         only_icon: true,
-                        on_done: 'hide'
+                        on_done: 'hide',
                     }}
                 />
             </View>
-        );
+        )
     return (
         <View className="">
             <Link href={data.url} emulate={true}>
@@ -53,7 +53,10 @@ export default function Unit(props) {
                     <View className="flex-auto my-auto ">
                         <View className="flex-row justify-between">
                             <View className="justify-center flex-auto ">
-                                <Text numberOfLines={2} className="text-sm mr-2 font-semibold text-neutral-900  dark:text-neutral-100">
+                                <Text
+                                    numberOfLines={2}
+                                    className="text-sm mr-2 font-semibold text-neutral-900 dark:text-neutral-100"
+                                >
                                     {data.title}
                                 </Text>
                             </View>
@@ -63,5 +66,5 @@ export default function Unit(props) {
                 </View>
             </Link>
         </View>
-    );
+    )
 }

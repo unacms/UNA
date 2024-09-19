@@ -34,5 +34,5 @@ export default function ElementTime(props) {
     }
 
     const { stylesName, stylesNameAdd } = props;
-    return <Text className={stylesName || " text-neutral-500 text-sm leading-[18px] whitespace-nowrap sm:hover:text-primary sm:hover:underline sm:dark:hover:text-primary-d " + stylesNameAdd}>{s}</Text>;
+    return <Text className={stylesName || " text-neutral-500 text-sm whitespace-nowrap sm:hover:text-primary sm:hover:underline sm:dark:hover:text-primary-d " + stylesNameAdd}>{s}</Text>;
 }

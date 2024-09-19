@@ -32,7 +32,7 @@ const HeaderLine = memo(({headerSettings, currentUser, uri, title, menuPopup, se
                 <View className="lg:hidden mr-3 sm:mr-4">
                     <Pressable onPress={showMenu}>
                         <Button
-                            variant="outline"
+                            variant="secondary"
                             startDecorator="List"
                             rounded
                             align="start"
@@ -164,7 +164,7 @@ export default function (props) {
                                                 >
                                                     <ButtonRef
                                                         tooltip={t('Messenger')}
-                                                        variant="outline"
+                                                        variant="secondary"
                                                         rounded
                                                         startDecorator="ChatTeardropDots"
                                                         id="m2"
@@ -190,7 +190,7 @@ export default function (props) {
                                     <MenuLauncher />
                                     <Link href="/login">
                                         <ButtonRef
-                                            variant="outline"
+                                            variant="secondary"
                                             tooltip="Account"
                                             rounded
                                             aria-label="Account"
