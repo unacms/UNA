@@ -1,14 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { formatDistance } from 'date-fns';
-import { Text } from 'app/design/typography';
 import { useTranslation } from 'react-i18next';
-
+import { Text } from 'app/design/typography';
 import { formatDate } from 'app/lib/util'
 
 export default function ElementTime(props) {
     const { t } = useTranslation();
     const [date, setDate] = useState(new Date());
 
+    // Update current time every minute
     useEffect(() => {
         const interval = setInterval(() => {
             setDate(new Date());
@@ -16,23 +16,40 @@ export default function ElementTime(props) {
         return () => clearInterval(interval);
     }, []);
 
-    let s = props.ts;
-    if (!isNaN(props.ts)) {
-        let d = new Date(props.ts * 1000);
-        let now = new Date();
-        const diffDays = Math.abs(now - d) / (1000 * 60 * 60 * 24);
+    const formattedTime = useMemo(() => {
+        let s = props.ts;
+        
+        if (!isNaN(props.ts)) {
+            const d = new Date(props.ts * 1000);
+            const now = new Date();
+            const diffDays = Math.abs(now - d) / (1000 * 60 * 60 * 24);
 
-        if (diffDays < 1) {
-            s = formatDistance(d, date, { addSuffix: false }).trim();
-            s = s.replace(/\s+/g, '').replace('about', '').replace('lessthanaminute', t('Now')).replace('hours', t('h')).replace('hour', t('h')).replace('minutes', t('m')).replace('minute', t('m')).trim();
-        } else {
-            s = formatDate(d, t).trim();
+            if (diffDays < 1) {
+                s = formatDistance(d, date, { addSuffix: false })
+                    .replace(/\s+/g, '')
+                    .replace('about', '')
+                    .replace('lessthanaminute', t('Now'))
+                    .replace('hours', t('h'))
+                    .replace('hour', t('h'))
+                    .replace('minutes', t('m'))
+                    .replace('minute', t('m'))
+                    .trim();
+            } else {
+                s = formatDate(d, t).trim();
+            }
+
+            if (props.format === 'datetime') {
+                s = d.toLocaleDateString() + ' ' + d.toLocaleTimeString();
+            }
         }
-        if (props.format == 'datetime') {
-            s = d.toLocaleDateString() + ' '+ d.toLocaleTimeString();
-        }
-    }
+        return s;
+    }, [props.ts, date, t, props.format]);
 
     const { stylesName, stylesNameAdd } = props;
-    return <Text className={stylesName || " text-neutral-500 text-sm whitespace-nowrap sm:hover:text-primary sm:hover:underline sm:dark:hover:text-primary-d " + stylesNameAdd}>{s}</Text>;
+
+    return (
+        <Text className={stylesName || `text-neutral-500 text-sm whitespace-nowrap sm:hover:text-primary sm:hover:underline sm:dark:hover:text-primary-d ${stylesNameAdd}`}>
+            {formattedTime}
+        </Text>
+    );
 }

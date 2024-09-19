@@ -609,7 +609,7 @@ export const settingsDefault = {
             {
                 key: '/tab1',
                 title: 'Messages',
-                url: '/messenger',
+                url: '/posts-home',
                 icon: 'ChatTeardropDots',
             },
             { 

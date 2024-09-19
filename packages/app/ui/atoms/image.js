@@ -45,53 +45,58 @@ function normalizeWidth(width) {
 }
 
 export default function ElementImage(props) {
-    let {width, height, alt, src, style, source, nobg, ...rest} = props; // remove width & height
+    let {width, height,  alt = "", src = '/spacer.png', style, source, nobg, ...rest} = props; // remove width & height
 
     const bg_image = appSetting('layout','background_cover');
     
-    if (Platform.OS != 'web' || !bg_image)
-        style={ backgroundColor: appSetting('layout','background_cover_color')}
-    else
-        style={ backgroundImage: bg_image}
+    style = useMemo(() => {
+        if (nobg) return {};
+
+        if (Platform.OS !== 'web' || !bg_image) {
+            return { ...style, backgroundColor: appSetting('layout', 'background_cover_color') };
+        } else {
+            return { ...style, backgroundImage: bg_image };
+        }
+    }, [nobg, style, bg_image]);
     
-    if (!src)
-        src = '/spacer.png'
+    src = useMemo(() => {
+        let updatedSrc = src;
 
-    if (src.includes('.svg') && Platform.OS != 'web')
-        src = src.replace('.svg', '.png')
+        if (src.includes('.svg') && Platform.OS !== 'web') {
+            updatedSrc = updatedSrc.replace('.svg', '.png');
+        }
 
-    if (!alt)
-        alt = "";        
+        
 
-    if (rest.view == "cover"){
-        rest.fill = 'fill'
-        if (Platform.OS != 'web')
-            rest.contentFit="cover" 
-    }
-    else{     
-        rest.height = props.pref_height ? props.pref_height : height;
-        rest.width = props.pref_width ? props.pref_width : width;
-       /* if (Platform.OS != 'web'){
-                rest.height = 'auto';
-        }*/
-    }
-    
-    let srcImIn = src.includes('/_next/image?url=') || src.includes('data:') ? src : '/_next/image?url=' + src + "&w=" + 32 + "&q=75"
-    if (Platform.OS != 'web'){
-        const imageWidth = extractStyleWidth(style) || width;
+        if (Platform.OS !== 'web') {
+            const imageWidth = extractStyleWidth(style) || width;
         let w = normalizeWidth(imageWidth);
         if (w > 256)
             w = 640;
 
-        src = appSetting('config', 'native_app_images_url') +    "/_next/image?url=" + src + "&w=" + w + "&q=75"
-        srcImIn = src;
-    }
-    
-    
-    
-    if (nobg == true){
-        style={}
-    }
+        updatedSrc = appSetting('config', 'native_app_images_url') +    "/_next/image?url=" + src + "&w=" + w + "&q=75"
+        }
+
+        return updatedSrc;
+    }, [src, style, width]);
+
+     
+    rest = useMemo(() => {
+        const updatedRest = { ...rest };
+
+        if (rest.view === "cover") {
+            updatedRest.fill = 'fill';
+            if (Platform.OS !== 'web') {
+                updatedRest.contentFit = "cover";
+            }
+        } else {
+            updatedRest.height = rest.pref_height || height;
+            updatedRest.width = rest.pref_width || width;
+        }
+
+        return updatedRest;
+    }, [rest.view, height, width, rest.pref_height, rest.pref_width, rest]);
+
 
     return useMemo(() => (
         <SolitoImageStyled 
