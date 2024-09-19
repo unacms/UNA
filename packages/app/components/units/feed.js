@@ -1,6 +1,5 @@
 import React, { memo, useState, useEffect, useMemo, useRef } from 'react'
 import { View } from 'app/design/view'
-import { componentsMap } from 'app/ui/molecules/_map'
 import Card from 'app/ui/molecules/card'
 import AnimatedBlock from 'app/ui/molecules/animated-block'
 import { useTranslation } from 'react-i18next';
@@ -37,11 +36,6 @@ function DefaultUnit(data) {
                 <View className="flex-auto flex-row items-top pb-3 ">
                     <Author data={data} url={url} t={t} />
                     <View className="flex-auto justify-end flex-row mb-auto">
-                        {data.author_actions.map((item, index) => {
-                            const Element = componentsMap[item.type]
-                            if (!Element) return
-                                return <Element params={{ button_variant: 'text' }} key={`action-${index}`} {...item} />
-                        })}
                         <MenuManage id={data.id} menu={data?.menu_manage} setViewState={setViewState} />
                     </View>
                 </View>

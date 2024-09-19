@@ -6,33 +6,33 @@ import Profile from 'app/ui/molecules/profile';
 import { Icon } from 'app/ui/atoms/icon'
 import { getIconByNameFromIconset } from 'app/lib/util';
 
+const DisplayLink = (oProps) => {
+    const sClassName = 'menu-item ' + ((oProps?.params && oProps.params?.classNameItem && oProps.params.classNameItem?.link) || 'flex max-w-full text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:underline cursor-pointer');
+
+    return (
+        <View className={sClassName}>
+            <Link href={oProps.link}>{oProps.content}</Link>
+        </View>
+    );
+}
+
+const DisplayText = (oProps) => {
+    const sClassName = 'menu-item ' + ((oProps?.params && oProps.params?.classNameItem && oProps.params.classNameItem?.text) || 'flex max-w-full');
+
+    return (
+        <View className={sClassName}>{oProps.content}</View>
+    );
+}
+
 export default function MenuItemLink(oProps) {
     if(!oProps.title && !oProps.icon)
         return;
 
-    const bShowVertical = oProps?.params && oProps.params?.showVertical === true;
     const bShowLink = (oProps?.link && oProps.link != 'javascript:void(0)') || false;
     const bTitleOnly = oProps?.params && oProps.params?.showTitleOnly === true;
     const oIconset = oProps?.params && !!oProps.params?.iconset ? oProps.params.iconset : {};
 
-    const DisplayLink = (oProps) => {
-        const sClassName = 'menu-item ' + ((oProps?.params && oProps.params?.classNameItem && oProps.params.classNameItem?.link) || 'flex max-w-full text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:underline cursor-pointer');
-
-        return (
-            <View className={sClassName}>
-                <Link href={oProps.link}>{oProps.content}</Link>
-            </View>
-        );
-    }
-
-    const DisplayText = (oProps) => {
-        const sClassName = 'menu-item ' + ((oProps?.params && oProps.params?.classNameItem && oProps.params.classNameItem?.text) || 'flex max-w-full');
-
-        return (
-            <View className={sClassName}>{oProps.content}</View>
-        );
-    }
-
+   
     const sClassContent = 'flex flex-row items-center';
 
     let sIcon = '';

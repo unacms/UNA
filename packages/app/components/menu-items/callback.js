@@ -9,7 +9,38 @@ import { useBottomSheetData } from 'app/context/bottomsheet';
 import { Platform } from 'react-native';
 import RbList from 'app/ui/molecules/radio_list';
 import { storageClear, getAlert } from 'app/lib/util';
-import  { useLayoutData } from 'app/context/layout';
+import { useLayoutData } from 'app/context/layout';
+
+const setMembership = async (val) => {
+    oProps.data.value = val;
+    let request_url = '/api.php?r=system/set_membership/TemplServiceProfiles&params[]=' + oProps.data.profile_id + '&params[]=' + val;
+    await fetcher(request_url);
+    setBottomSheetData(false);
+}
+const handleClick = async (event, oProps, setBottomSheetData, setLayoutData, redirectdRef) => {
+    if (oProps.content_type == 'memberships') {
+        if (Platform.OS == 'web') {
+            const popperDiv = document.querySelector('div[data-radix-popper-content-wrapper]');
+            if (popperDiv) {
+                popperDiv.classList.add('radix-hide');
+            }
+        }
+        setBottomSheetData({ title: 'Choose membership', showClose: true, snapPoints: ['70%', '70%'], content: <RbList values={oProps.data.values} setValue={setMembership} selectedValue={oProps.data.value} /> });
+        return;
+    }
+
+    let request_url = '/api.php?r=' + oProps.data.request_url;
+    const sResponse = await fetcher(request_url);
+    if (oProps.data.on_callback == 'hide')
+        setIsVisible(false)
+    if (oProps.data.on_callback == 'redirect')
+        redirectdRef.current.redirect(sResponse.data?.url ? sResponse.data?.url : sResponse.data);
+    if (oProps.data.on_callback == 'alert') {
+        if (oProps.data.on_callback_clear_cache)
+            storageClear();
+        setLayoutData(getAlert(oProps.data.on_callback_param, { time: Date.now(), reload: true }));
+    }
+};
 
 export default function MenuItemButton(oProps) {
     const redirectdRef = useRef();
@@ -29,15 +60,6 @@ export default function MenuItemButton(oProps) {
 
     let sContent = undefined;
 
-    const setMembership = async (val) => {
-
-
-        oProps.data.value = val;
-        let request_url = '/api.php?r=system/set_membership/TemplServiceProfiles&params[]=' + oProps.data.profile_id + '&params[]=' + val;
-        await fetcher(request_url);
-        setBottomSheetData(false);
-    }
-
     switch (oProps.content_type) {
         case 'submenu':
             const oSubmenuMap = {
@@ -51,43 +73,12 @@ export default function MenuItemButton(oProps) {
             break;
 
         default:
-            let oButtonProps = {};
-            if(oProps.params?.button_variant != undefined)
-                oButtonProps.variant = oProps.params.button_variant;
-            if(oProps.primary && oProps.primary == "1")
-                oButtonProps.variant = 'primary';
-            if (oProps.params?.button_size != undefined)
-                oButtonProps.size = oProps.params.button_size;
-            if (oProps.params?.button_rounded != undefined)
-                oButtonProps.rounded = oProps.params.button_rounded;
-            if (oProps.params?.button_full_width != undefined)
-                oButtonProps.fullWidth = oProps.params.button_full_width;
-            if (oProps.params?.button_hide_title_on_small != undefined)
-                oButtonProps.hideTitleOnSmall = oProps.params.button_hide_title_on_small;
-
-            const handleClick = async (event) => {
-                if (oProps.content_type == 'memberships') {
-                    if (Platform.OS == 'web') {
-                        const popperDiv = document.querySelector('div[data-radix-popper-content-wrapper]');
-                        if (popperDiv) {
-                            popperDiv.classList.add('radix-hide');
-                        }
-                    }
-                    setBottomSheetData({ title: 'Choose membership', showClose: true, snapPoints: ['70%', '70%'], content: <RbList values={oProps.data.values} setValue={setMembership} selectedValue={oProps.data.value} /> });
-                    return;
-                }
-
-                let request_url = '/api.php?r=' + oProps.data.request_url;
-                const sResponse = await fetcher(request_url);
-                if (oProps.data.on_callback == 'hide')
-                    setIsVisible(false)
-                if (oProps.data.on_callback == 'redirect')
-                    redirectdRef.current.redirect(sResponse.data?.url ? sResponse.data?.url : sResponse.data);
-                if (oProps.data.on_callback == 'alert'){
-                    if (oProps.data.on_callback_clear_cache)
-                        storageClear();
-                    setLayoutData(getAlert(oProps.data.on_callback_param, {time:Date.now(), reload: true} ));
-                }
+            let oButtonProps = {
+                variant: oProps.primary === "1" ? 'primary' : oProps.params?.button_variant,
+                size: oProps.params?.button_size,
+                rounded: oProps.params?.button_rounded,
+                fullWidth: oProps.params?.button_full_width,
+                hideTitleOnSmall: oProps.params?.button_hide_title_on_small
             };
 
             const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
@@ -103,7 +94,7 @@ export default function MenuItemButton(oProps) {
             sContent = (
                 <View className="flex-auto">
                     <Redirect ref={redirectdRef} />
-                    <ButtonAction onPress={handleClick} title={oProps.title} startDecorator={sButtonIcon} {...oButtonProps} />
+                    <ButtonAction onPress={(event) => handleClick(event, oProps, setBottomSheetData, setLayoutData, redirectdRef)} title={oProps.title} startDecorator={sButtonIcon} {...oButtonProps} />
                 </View>
             );
     }

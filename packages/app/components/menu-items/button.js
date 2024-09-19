@@ -29,19 +29,14 @@ export default function MenuItemButton(oProps) {
             break;
 
         default:
-            let oButtonProps = {};
-            if(oProps.params?.button_variant != undefined)
-                oButtonProps.variant = oProps.params.button_variant;
-            if(oProps.primary && oProps.primary == "1")
-                oButtonProps.variant = 'primary';
-            if(oProps.params?.button_size != undefined)
-                oButtonProps.size = oProps.params.button_size;
-            if(oProps.params?.button_rounded != undefined)
-                oButtonProps.rounded = oProps.params.button_rounded;
-            if(oProps.params?.button_full_width != undefined)
-                oButtonProps.fullWidth = oProps.params.button_full_width;
-            if(oProps.params?.button_hide_title_on_small != undefined)
-                oButtonProps.hideTitleOnSmall = oProps.params.button_hide_title_on_small;
+            let oButtonProps = {
+                variant: oProps.primary === "1" ? 'primary' : oProps.params?.button_variant,
+                size: oProps.params?.button_size,
+                rounded: oProps.params?.button_rounded,
+                fullWidth: oProps.params?.button_full_width,
+                hideTitleOnSmall: oProps.params?.button_hide_title_on_small
+            };
+            
             const handleClick = (event) => {
                 if(!oProps?.link && !oProps.params?.onclick)
                     return;

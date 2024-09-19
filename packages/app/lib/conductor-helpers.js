@@ -310,7 +310,7 @@ export function processUrl(data, blocks) {
     return contentAndEndpoint;
 }
 
-export function ItemRenderer({ route, numColumns, item, unit, module, unitMode, unitType, sidebar }) {
+function ItemRenderer_({ route, numColumns, item, unit, module, unitMode, unitType, sidebar }) {
    // return <View className='bg-red-500 h-12 w-full'></View>
  //   const b = useMemo(() => {
         if (item?.type === 'block') {
@@ -337,6 +337,7 @@ export function ItemRenderer({ route, numColumns, item, unit, module, unitMode, 
 }
 
 // AVOID BLINKING
+export const ItemRenderer = memo(ItemRenderer_);
 export const ItemRendererMemo = memo(ItemRenderer);
 /*export const ItemRenderer = memo(ItemRenderer_, (prevProps, nextProps) => {
     return prevProps.item.id === nextProps.item.id; 

@@ -81,7 +81,7 @@ export default function FormFeed(props) {
     </Row>
 
     return (
-        <View className="w-full h-full ">
+        <View className="w-full">
             <Modal
                 title={isSmall ? header : t("Create new post")}
                 onVisible={showImage}

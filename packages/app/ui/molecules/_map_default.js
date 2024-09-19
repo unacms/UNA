@@ -2,11 +2,11 @@ import Likes from './likes';
 import Stars from './stars';
 import Reactions from './reactions';
 import Scores from './scores';
-import Comments from './comments';
+import Comments from './comments';// optimized
 import Features from './features';
 import Reports from './reports';
 import Reposts from './reposts';
-import Shares from './shares';
+import Shares from './shares';// optimized
 import Connections from './connections';
 import Recommendation from './recommendations';
 
