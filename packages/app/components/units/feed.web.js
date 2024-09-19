@@ -62,7 +62,7 @@ function DefaultUnit(data) {
                     {cmtsData.data}
             </Modal>}
             <Card rounded=' rounded-none sm:rounded-2xl ' margin=' mb-1 sm:mb-4 sm:mx-4 ' addClassName={' p-3 sm:p-4 tl-' + data.id} >
-                <View className="flex-auto flex-row items-top pb-3 sm:pb-4">
+                <View className="flex-auto flex-row items-top pb-3">
                     <Author data={data} url={url} t={t} />
                     <View className="flex-auto justify-end flex-row mb-auto">
                         {data.author_actions.map((item, index) => {
@@ -75,7 +75,7 @@ function DefaultUnit(data) {
                 </View>
                 <View className="flex-col ">
                     {MainContentComponent}
-                    <View className="pt-3 sm:pt-4">
+                    <View className="pt-3">
                         <ActionMenu data={data.menu_actions} showCommentsModal={showCommentsModal} />
                     </View>
 
