@@ -353,7 +353,7 @@ function ComponentModal({ title = 'test' }) {
 
 function ComponentsSplash(props) {
     return (
-        <Splash {...props}/>
+        <Splash {...props} logo_native={LogoNative}/>
     )
 }
 
