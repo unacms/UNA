@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { appSetting, getAlert } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { View } from 'app/design/view'
@@ -9,6 +9,72 @@ import { useTranslation } from 'react-i18next';
 import { useLayoutData } from 'app/context/layout'
 import { storageClear } from 'app/lib/util'
 
+const getKey = (sO, iIid, iCid) => {
+    return sO + '_' + iIid + '_' + iCid;
+}
+
+const isElementVar = (elementData, sName) => {
+    return elementData?.[sName];
+};
+
+const getElementVar = (elementData, sName) => {
+    return elementData[sName];
+};
+
+const setElementVars = (elementData, setElementData, mValue) => {
+    if(!elementData)
+        setElementData(mValue);
+    else
+        setElementData({...elementData, ...mValue});
+};
+
+const performAction = async (setLayoutData, sO, iIid, iCid, sKey, sAction, aParams) => {
+    const aParamsDefault = {o: sO, iid: iIid, cid: iCid};
+
+    aParams = aParams ? {...aParamsDefault, ...aParams} : aParamsDefault;
+    const sRequest = '/api.php?r=system/' + sAction + '/TemplServiceConnections&params[]=' + JSON.stringify(aParams);
+
+    const oResponse = await fetcher(sRequest);
+    const isReload = oResponse?.data?.a != 'questionnaire';
+    if(isReload)
+        storageClear();
+
+    setLayoutData(getAlert('сonnections:action', {object: sO, time:Date.now(), action: aParams, data: oResponse?.data, key: sKey, reload: isReload} ));
+};
+
+const handleDo = (performAction, fOnDo, sAction, oEvent) => {
+    if(!!oEvent)
+        oEvent.preventDefault();
+
+    if(fOnDo && typeof fOnDo === 'function')
+        fOnDo(sAction);
+
+    performAction('perform', {a:sAction});
+};
+
+const handleOnDo = (setElementVars, setModalContent, fOnDone, oData) => {
+    if(oData.a == 'questionnaire') {
+        setModalContent({content: oData.data, designbox_id: 0});
+    }
+    else{
+        setElementVars(oData);
+    }
+
+    if(fOnDone && typeof fOnDone === 'function')
+        fOnDone(oData);
+}
+
+const handleCloseModal = (setModalContent) => {
+    setModalContent(false);
+};
+
+const handleFormSubmittedAndValid = (handleDo, handleCloseModal) => {
+    setTimeout(() => {
+        handleCloseModal();
+        handleDo('add');
+    }, 100);
+}
+
 export default function ElementConnections(oProps) {
     const [ elementData, setElementData ] = useState(false);
     const [ modalContent, setModalContent ] = useState(false);
@@ -18,6 +84,8 @@ export default function ElementConnections(oProps) {
     const oSettings = appSetting('social_actions', 'connection');
     const oParams = {...oSettings, ...oProps.params};
 
+    const sKey = useMemo(() => getKey(oProps.o, oProps.iid, oProps.cid), [oProps.o, oProps.iid, oProps.cid]);
+
     const oIcons = oProps?.o && oSettings[oProps.o]?.icons != undefined ? oSettings[oProps.o].icons : {
         add: 'UserPlus', 
         remove: 'UserMinus'
@@ -25,103 +93,39 @@ export default function ElementConnections(oProps) {
 
     const bShowActionAsButton = oParams?.show_action_as_button == undefined || oParams.show_action_as_button === true;
 
-    let oButtonProps = {};
-    if(oProps.params?.button_variant != undefined)
-        oButtonProps.variant = oProps.params.button_variant;
-    if(oProps.primary)
-        oButtonProps.variant = 'primary';
-  
-    if(oProps.params?.button_size != undefined)
-        oButtonProps.size = oProps.params.button_size;
-    if(oProps.params?.button_rounded != undefined)
-        oButtonProps.rounded = oProps.params.button_rounded;
-    if(oProps.params?.button_full_width != undefined)
-        oButtonProps.fullWidth = oProps.params.button_full_width;
-    if(oProps.params?.button_hide_title_on_small != undefined)
-        oButtonProps.hideTitleOnSmall = oProps.params.button_hide_title_on_small;
+    const oButtonProps = {
+        variant: oProps?.primary ? 'primary' : oProps.params?.button_variant,
+        size: oProps.params?.button_size,
+        rounded: oProps.params?.button_rounded,
+        fullWidth: oProps.params?.button_full_width,
+        hideTitleOnSmall: oProps.params?.button_hide_title_on_small
+    };    
 
-    
+    const _isElementVar = useCallback((sName) => isElementVar(elementData, sName), [elementData]);
+    const _getElementVar = useCallback((sName) => getElementVar(elementData, sName), [elementData]);
+    const _setElementVars = useCallback((mValue) => setElementVars(elementData, setElementData, mValue), [elementData, setElementData]);
+    const _performAction = useCallback((sAction, aParams) => performAction(setLayoutData, oProps.o, oProps.iid, oProps.cid, sKey, sAction, aParams), [setLayoutData, oProps.o, oProps.iid, oProps.cid, sKey]);
+    const _handleDo = useCallback((sAction, oEvent) => handleDo(_performAction, (oProps.params?.on_do ? oProps.params.on_do : false), sAction, oEvent), [_performAction, oProps.params.on_do]);
+    const _handleOnDo = useCallback((oData) => handleOnDo(_setElementVars, setModalContent, (oProps.params?.on_done ? oProps.params.on_done : false), oData), [_setElementVars, setModalContent, oProps.params.on_done]);
+    const _handleCloseModal = useCallback(() => handleCloseModal(setModalContent), [setModalContent]);
+    const _handleFormSubmittedAndValid = useCallback(() => handleFormSubmittedAndValid(_handleDo, _handleCloseModal), []);
 
-    const isElementVar = (sName) => {
-        return elementData && elementData[sName] != undefined;
-    };
-
-    const getElementVar = (sName) => {
-        return elementData[sName];
-    };
-
-    const setElementVars = (mValue) => {
-        if(!elementData)
-            setElementData(mValue);
-        else
-            setElementData({...elementData, ...mValue});
-    };
-
-    const getKey = () => {
-        return oProps.o + '_' + oProps.iid + '_' + oProps.cid;
-    }
-
-    const performAction = async (sAction, aParams) => {
-        const aParamsDefault = {o:oProps.o, iid:oProps.iid, cid:oProps.cid};
-
-        aParams = aParams ? {...aParamsDefault, ...aParams} : aParamsDefault;
-        const sRequest = '/api.php?r=system/' + sAction + '/TemplServiceConnections&params[]=' + JSON.stringify(aParams);
-
-        const sResponse = await fetcher(sRequest);
-        const isReload = sResponse?.data?.a != 'questionnaire';
-        if (isReload){
-            storageClear();
+    //TODO: For Roman check if handleOnDo is calling at all. If not 'questionnaire' won't work.
+    /*
+    useEffect(() => {
+       if(layoutData && layoutData?.type == 'сonnections:action' && layoutData?.data.key == sKey) {
+            _handleOnDo(layoutData.data.data)
         }
-        setLayoutData(getAlert('сonnections:action', {object: oProps.o, time:Date.now(), action: aParams, data: sResponse?.data, key: getKey(), reload: isReload} ));
-    };
-
-     /*useEffect(() => {
-       if(layoutData && layoutData?.type == 'сonnections:action' && layoutData?.data.key == getKey()){
-            handleOnDo(layoutData.data.data)
-        }
-    }, [layoutData?.data?.time]);*/
-      
-
-    const handleDo = (event, sAction) => {
-        if(!!event)
-            event.preventDefault();
-
-        if(oProps.params?.on_do && typeof oProps.params.on_do === 'function')
-            oProps.params.on_do(sAction);
-
-        performAction('perform', {a:sAction});
-    };
-
-    const handleOnDo = (oData) => {
-        if(oData.a == 'questionnaire') {
-            setModalContent({content: oData.data, designbox_id: 0});
-        }
-        else{
-            setElementVars(oData);
-        }
-        
-        if(oProps.params?.on_done && typeof oProps.params.on_done === 'function')
-            oProps.params.on_done(sAction, oData);
-    }
-
-    const handleCloseModal = () => {
-        setModalContent(false);
-    };
-
-    const handleFormSubmittedAndValid = () => {
-        setTimeout(() => {
-            handleCloseModal();
-            handleDo(null, 'add');
-        }, 100);
-    }
+    }, [layoutData?.data?.time]);
+    */
 
     let sAction = oProps?.a || '';
-    if(isElementVar('a'))
-        sAction = getElementVar('a');
+    if(_isElementVar('a'))
+        sAction = _getElementVar('a');
 
     let sTitle = oProps?.title || '';
-    if(isElementVar('title'))
-        sTitle = getElementVar('title');
+    if(_isElementVar('title'))
+        sTitle = _getElementVar('title');
 
     const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
     if(oIcons && !!oIcons[sAction])
@@ -129,10 +133,10 @@ export default function ElementConnections(oProps) {
 
     return (
         <>
-            <ButtonAction title={sTitle} onPress={(event) => handleDo(event, sAction)} {...oButtonProps} />
-            {modalContent && <Modal title={t("Questionnaire")} onVisible={modalContent} outerClickClose={false} onClose={() => handleCloseModal()}>
+            <ButtonAction title={sTitle} onPress={(event) => _handleDo(sAction, event)} {...oButtonProps} />
+            {modalContent && <Modal title={t("Questionnaire")} onVisible={modalContent} outerClickClose={false} onClose={_handleCloseModal}>
                 <View className='px-4'>
-                    <BlockByData onFormEmpty = {() => handleFormSubmittedAndValid()} block = {modalContent}  />
+                    <BlockByData onFormEmpty = {_handleFormSubmittedAndValid} block = {modalContent}  />
                 </View>
             </Modal>}
         </>
