@@ -5,7 +5,7 @@ import { getImageSizes } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
 import Card from 'app/ui/molecules/card'
-import { memo } from 'react';
+import { memo, useMemo } from 'react';
 
 const ProfileCnt = memo(({ authorData }) => (
     <Profile
@@ -108,13 +108,13 @@ function Base({ data, imageSizes }) {
 
 export default function (props) {
     const data = props.data
-    const imageSizes = getImageSizes()
+    const imageSizes = useMemo(() => getImageSizes(), []);
     const componentMap = {
         small: Small,
         search: Search,
         default: Base
     };
 
-    const Component = componentMap[props.unitType] || componentMap.default;
+    const Component = componentMap[props.unitType] || Base;
     return <Component data={data} imageSizes={imageSizes} />;
 }

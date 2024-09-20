@@ -3,9 +3,10 @@ import { useState, useCallback, useMemo, useRef } from 'react';
 import { RefreshControl } from 'react-native';
 import { View } from 'app/design/view'
 import { Text } from 'app/design/typography'
+import { FlatList} from 'react-native';
 
 export default function UniList(props) {
-    let { data, renderItem, onEndReached, ListFooterComponent, refer, onScrollToIndex, numColumns, keyExtractor, unit, refreshing, onRefresh, ...rest } = props
+    let { data,mode, renderItem, onEndReached,maxToRenderPerBatch, initialNumToRender, ListFooterComponent, refer, onScrollToIndex, numColumns, keyExtractor, unit, refreshing, onRefresh, ...rest } = props
     const unitSizeMap = {
         notifications: 40,
         feed: 200,
@@ -17,14 +18,32 @@ export default function UniList(props) {
         return data.filter((v, i, a) => a.findIndex(t => t.id === v.id) === i);
       }, [data]);*/
       const filteredData = data.filter((v, i, a) => a.findIndex(t => t.id === v.id) === i);
-
     
-    
-    /*const onLoadListener = useCallback(({ elapsedTimeInMs } ) => {
-        console.log("Sample List load time", elapsedTimeInMs);
-    }, []);*/
-    console.log("UniList", filteredData.length)
 
+    if (mode == 'simple'){
+        console.log("FlatList", filteredData.length)
+        return (
+            <FlatList  
+               // onLoad={onLoadListener}
+                ref = {refer}   
+                onEndReachedThreshold={2}
+                data={filteredData}
+                keyExtractor={item => item.id}
+                renderItem={renderItem}
+                onEndReached = {onEndReached} 
+                ListFooterComponent={ListFooterComponent}
+                {...rest}
+                refreshControl={
+                    props.url ? (
+                        <RefreshControl progressViewOffset={100} size={'large'} refreshing={refreshing} onRefresh={onRefresh} />
+                    ) : null
+                }
+            />
+           
+       
+        )
+    }
+    console.log("FlashList", filteredData.length)
     return (
         <FlashList  
            // onLoad={onLoadListener}

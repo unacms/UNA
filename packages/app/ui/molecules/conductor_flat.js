@@ -1,0 +1,280 @@
+import React, { useCallback, useState, useEffect, useMemo, useRef } from "react";
+import { View, ScrollView, Row, Pressable } from 'app/design/view';
+import UniList from 'app/ui/atoms/unilist'
+import { appSetting, deepEqual, getUnitModeBySource, handleFeedLayoutData, updateRouteDataForConnections } from 'app/lib/util';
+import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer } from 'app/lib/conductor-helpers';
+import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
+import { getSkeletonForList } from 'app/lib/skeleton-helpers';
+import { Button } from 'app/design/controls';
+import { useTranslation } from 'react-i18next';
+import { useCurrentUser } from 'app/context/user'
+import { useLayoutData } from 'app/context/layout';
+import { Theme } from 'app/design/theme';
+import { staticComponents } from 'app/static';
+import { subscribe } from 'app/ui/atoms/socket';
+import { fetcher } from 'app/lib/fetcher';
+import Toaster from 'app/ui/atoms/toaster';
+import { useWindowDimensions } from 'react-native'
+
+const TabBar = ({ routes, index, currentUser, setIndex, onChangeRoute }) => {
+    const { colors } = Theme();
+
+
+    if (routes.length > 1) {
+        return (
+            <View className="w-full">
+                <ScrollView horizontal={true} style={{ backgroundColor: colors.barsBackground }} className=" border-b border-bdr dark:border-bdr-d ">
+                    <Row className="px-1.5  justify-center" >
+                        {routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
+                            const btn = staticComponents['getButtonForConductorNative'](a, index, currentUser, setIndex, onChangeRoute)
+                            return (
+                                <View className="py-2 px-1 items-center justify-center"
+                                    key={`tab-${a.index}`}
+                                >
+                                    {btn}
+                                </View>
+                            )
+                        })}
+
+                    </Row>
+                </ScrollView>
+            </View>
+
+        )
+    }
+};
+
+const TabScene = ({ route, index, skeleton, data, unitMode, handleEndReached, onRefresh, refreshing }) => {
+
+    if (!route.inited) {
+        return <></>;
+    }
+
+    const Preload = useMemo(() => {
+        return getSkeletonForList(skeleton !== '' ? skeleton : (data.module ? data.module : data.unit), 1);
+    }, [skeleton, data.module, data.unit]);
+
+    const unitType = useMemo(() => {
+        return getUnitModeBySource(route?.endpoint?.request_url);
+    }, [route?.endpoint?.request_url]); // Dependency on route.endpoint.request_url
+
+    const renderItem = useCallback(({ item, index }) => (
+        <ItemRenderer
+            unitType={unitType}
+            unitMode={unitMode}
+            route={route}
+            item={item}
+            unit={route?.endpoint?.unit}
+            module={route?.endpoint?.module}
+        />
+    ), [unitType, unitMode, route]);
+
+    return (
+        <UniList
+            index={route.index}
+            data={route.data}
+            route={route}
+            unit={route.endpoint?.unit}
+            renderItem={renderItem}
+            ListFooterComponent={
+                (route?.endpoint?.request_url ? (route?.endpoint?.finished ? (route.data.length == 0 ? staticComponents['noContentByUrl'](route?.endpoint?.request_url) : <></>) : Preload) : <></>)
+            }
+            maxToRenderPerBatch={5}
+            initialNumToRender={5}
+            mode="simple"
+            url={route?.endpoint?.request_url}
+            onRefresh={onRefresh}
+            refreshing={refreshing}
+            onEndReached={handleEndReached}
+        />
+
+    )
+};
+
+export function ConductorFlat({ header, smallHeader, minHeaderHeight, isHideDefaultHeader, menu, data, blocks, useSectionAsMenu, unitMode, skeleton, onChangeRoute, keyword }) {
+
+    minHeaderHeight = minHeaderHeight || 100;
+    isHideDefaultHeader = isHideDefaultHeader || false;
+    useSectionAsMenu = useSectionAsMenu || false;
+    skeleton = skeleton || '';
+    unitMode = unitMode || '';
+
+    const { currentUser } = useCurrentUser();
+    const { layoutData } = useLayoutData();
+    const { t } = useTranslation();
+
+    const initedTabs = useMemo(() => fillTabs(menu, data, blocks, currentUser, useSectionAsMenu), [menu, data, blocks, currentUser, useSectionAsMenu]);;
+    const [isRefreshing, setIsRefreshing] = useState(false);
+    const [routes, setRoutes1] = useState(initedTabs);
+    const [menuState, setMenuState] = useState(menu);
+    const [isRevalidate, setIsRevalidate] = useState(false);
+    const toasterRef2 = useRef();
+
+    useEffect(() => {
+        if (!deepEqual(menu, menuState)) {
+            setMenuState(menu);
+            setRoutes(initedTabs);
+        }
+    }, [menu, menuState, initedTabs, setRoutes]);
+
+
+    const setRoutes = /*useCallback(*/(a) => {
+        setRoutes1(a);
+    }/*, []);*/
+
+    const initialIndex = useMemo(() => {
+        const idx = routes.findIndex(item => {
+            if (useSectionAsMenu) {
+                return data.url === item.key;
+            } else {
+                return `/${data.url}`.includes(`/${item.key}`);
+            }
+        });
+        return idx === -1 ? 0 : idx; // Default to 0 if no matching route is found
+    }, [routes, data.url, useSectionAsMenu]);
+
+    const [index, setIndex] = useState(initialIndex);
+
+    const currentRoute = useMemo(() => routes.find((item) => item.index === index), [routes, index]);;
+    const qKey = useMemo(() => [currentRoute?.endpoint?.request_url, index, keyword, JSON.stringify(currentRoute?.endpoint?.params?.filters)], [currentRoute, index, keyword]);
+    const queryClient = useQueryClient();
+
+    useEffect(() => {
+        if (currentRoute.cached) {
+            revalidateData();
+
+        }
+        if (currentRoute?.endpoint?.unit == 'feed') {
+            subscribe('bx_timeline_0', 'added', setIsRevalidate);
+            subscribe('bx_timeline_0', 'deleted', setIsRevalidate);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (isRevalidate)
+            revalidateData();
+    }, [isRevalidate]);
+
+    const bEnabled = currentRoute?.endpoint?.params?.start == 0 && !isRefreshing;
+
+    const {
+        fetchNextPage,
+    } = useInfiniteQuery({
+        queryKey: qKey,
+        queryFn: ({ pageParam }) => parseData(routes, index, setRoutes),
+        getNextPageParam: (lastPage, pages) => {
+            if (lastPage?.data?.length > 0) {
+                return lastPage?.endpoint;
+            }
+
+            return;
+        },
+        enabled: false//routes[index]?.data?.length == 0
+    });
+
+    useEffect(() => {
+        if (bEnabled) {
+            //parseData(routes, index, setRoutes)
+            fetchNextPage();
+        }
+    }, [bEnabled]);
+
+    useEffect(() => {
+        setToaster2Visible(false);
+    }, [index]);
+
+    const showNewContent2 = async () => {
+        const newRoutes = [...routes];
+        newRoutes[index].endpoint.finished = false;
+        newRoutes[index].data = newRoutes[index].data.filter(item => item.type === 'block');;
+        newRoutes[index].endpoint.params.start = 0;
+        setRoutes(newRoutes);
+        setToaster2Visible(false);
+    }
+
+    const setToaster2Visible = (val) => {
+        const current = toasterRef2.current;
+        if (current) {
+            current.setVisible(val);
+        }
+    }
+
+    const revalidateData = useCallback(async () => {
+        const hasEndpoint = Boolean(currentRoute?.endpoint);
+        let endpointUpdateContent = '';
+        let bUpdateContent = false;
+        const revalidatedData = JSON.parse(isRevalidate);
+        if (hasEndpoint) {
+
+            const a = [...new Set(currentRoute.data
+                .filter(item => item.type !== 'block')
+                .map(item => item.id)
+            )].slice(0, 10).join(',');
+
+            if ((a || true) && revalidatedData.author_id != currentUser?.id && !currentRoute.endpoint.request_url.includes("system/get_results/TemplSearchExtendedServices")) {
+                endpointUpdateContent = currentRoute.endpoint.request_url + JSON.stringify({
+                    'params': { ...currentRoute.endpoint.params, validate: a }
+                });
+                bUpdateContent = true;
+            }
+        }
+        if (bUpdateContent) {
+            const validatedData = (await fetcher(endpointUpdateContent)).data?.[0]?.data?.data;
+
+            if (validatedData && (validatedData == 'valid' || validatedData == 'invalid')) {
+                setToaster2Visible(validatedData !== 'valid');
+            }
+        }
+    }, [currentRoute, isRevalidate, currentUser?.id]);
+
+    const handleEndReached = useCallback(() => {
+        if (!currentRoute?.endpoint || currentRoute?.endpoint?.params?.start === 0 || isRefreshing || currentRoute?.endpoint?.finished) return;
+        fetchNextPage();
+    }, [currentRoute, fetchNextPage, isRefreshing]);
+
+
+
+
+    useEffect(() => {
+        fetchAndUpdateData(routes, index, setRoutes);
+    }, [index]);
+
+    const onStartRefresh = useCallback(async () => {
+        setRoutes(prevRoutes => {
+            const updatedRoutes = fillTabs(menu, data, blocks, currentUser, false);
+            return [...prevRoutes.slice(0, index), updatedRoutes[index], ...prevRoutes.slice(index + 1)];
+        });
+        setIsRefreshing(true);
+    }, [menu, data, blocks, currentUser, index]);
+
+    useEffect(() => {
+        if (isRefreshing) {
+            queryClient.removeQueries(qKey);
+            setIsRefreshing(false);
+        }
+    }, [isRefreshing, queryClient, qKey]);
+
+    /* NEW POST TO FEED */
+    useEffect(() => {
+        if (currentRoute.endpoint?.unit === 'feed' && layoutData && layoutData.data && (layoutData?.type == 'feed:new_content' || layoutData?.type == 'feed:remove_content')) {
+            let clonedData = currentRoute.data
+            const data = handleFeedLayoutData(layoutData, clonedData)
+            const newRoutes = [...routes];
+            newRoutes[index].data = data
+            setRoutes(newRoutes);
+        }
+        staticComponents['updateRouteDataForConnections'](currentRoute, layoutData, routes, index, setRoutes)
+    }, [layoutData]);
+    /* NEW POST TO FEED */
+    return (
+
+        <View className="w-full flex-1">
+            <TabBar routes={routes} index={index} currentUser={currentUser} setIndex={setIndex} onChangeRoute={onChangeRoute} />
+
+            <View className="w-full flex-1 ">
+                <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="New content" size="sm" />
+                <TabScene onRefresh={onStartRefresh} refreshing={isRefreshing} route={currentRoute} index={index} skeleton={skeleton} unitMode={unitMode} data={data} handleEndReached={handleEndReached} />
+            </View>
+        </View>
+    );
+}

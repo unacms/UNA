@@ -1,10 +1,11 @@
 import { DataByName } from 'app/components/block'
 import { Conductor } from 'app/ui/molecules/conductor';
+import { ConductorFlat } from 'app/ui/molecules/conductor_flat';
 import { getLayout } from 'app/lib/util';
 import { useMemo} from 'react';
 import { useCurrentUser } from 'app/context/user'
-import { BlockByName } from 'app/components/block';
 import { processBlocks } from 'app/lib/conductor-helpers';
+import { Platform } from 'react-native'
 
 function getMenu(props, layout) {
     let menu = Object.assign({}, props.data.menu);;
@@ -30,6 +31,7 @@ function getMenu(props, layout) {
 }
 
 export default function PageLayout(props) {
+    const isWeb = Platform.OS == 'web';
     const { currentUser, setCurrentUser } = useCurrentUser();
     const layout = getLayout(currentUser, 'navigator');
     const leftSideBar = layout != 'hor' ? false : true
@@ -40,6 +42,22 @@ export default function PageLayout(props) {
     }
     const pageData = props.data;
     const blocks = processBlocks(props.blocks);
+
+if (!isWeb){
+    return (
+        <ConductorFlat 
+            layoutName={props.layoutName}
+            minHeaderHeight={0} 
+            isHideDefaultHeader={false} 
+            menu={menu} 
+            data={pageData} 
+            blocks={blocks.mainBlocks}
+            useSectionAsMenu={false}
+            leftSideBar={leftSideBar}
+            leftSideBarBlocks={blocks.leftBlocks}
+        />
+    )
+}
 
     return (
         <Conductor 

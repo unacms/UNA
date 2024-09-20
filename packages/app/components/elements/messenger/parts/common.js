@@ -23,7 +23,6 @@ import { useBottomSheetData } from 'app/context/bottomsheet';
 import Profile from 'app/ui/molecules/profile'
 import { useRouter } from "expo-router";
 
-
 export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, fetchConvos, data, onSave, addButtons }) {
     const isWeb = Platform.OS == 'web'
     const { width, height } = useWindowDimensions();
@@ -66,6 +65,11 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
         setCommentForm(false);
         if (dynamicData?.data?.jot_id > 0)
             scrolTo();
+
+        if (dynamicData?.data?.data){
+            setJotUpdated(dynamicData?.data?.data);
+        }
+
     }, [dynamicData]);
 
 
@@ -136,7 +140,6 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
 
     useEffect(() => {
         if (convoId == '' && convos) {
-
             setConvoId(convos?.data[0]?.id);
         }
     }, [convos]);

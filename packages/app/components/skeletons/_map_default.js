@@ -66,8 +66,8 @@ const Forum = memo(() => (
 const Posts = memo(() => (
     <View className="p-2 animate-pulse w-full mx-auto max-w-4xl">
 
-    <View className=" shadow flex-auto md:flex-row-reverse rounded-2xl p-2 overflow-hidden  max-w-4xl bg-bgrcard dark:bg-bgrcard-d ">
-        <View className="relative bg-neutral-500/20 aspect-video rounded-xl w-full md:w-1/3 "></View>
+    <View className=" shadow flex-auto flex-row-reverse rounded-2xl p-2 overflow-hidden  max-w-4xl bg-bgrcard dark:bg-bgrcard-d ">
+        <View className="relative bg-neutral-500/20 aspect-square md:aspect-video rounded-xl w-1/3 "></View>
         <View className="flex-auto p-2 flex-col md:ml-0.5 md:mr-2">
             <View className="w-2/3 h-4 mt-1.5 rounded-full bg-neutral-500/20"></View>
             <View className="w-full h-3 mt-3 rounded-full bg-neutral-500/20"></View>

@@ -311,6 +311,7 @@ export function processUrl(data, blocks) {
 }
 
 function ItemRenderer_({ route, numColumns, item, unit, module, unitMode, unitType, sidebar }) {
+    
    // return <View className='bg-red-500 h-12 w-full'></View>
  //   const b = useMemo(() => {
         if (item?.type === 'block') {

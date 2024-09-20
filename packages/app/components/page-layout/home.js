@@ -1,7 +1,7 @@
 import { View, Row, Pressable, ScrollView } from 'app/design/view'
 import { BlockByName } from 'app/components/block'
 import { Platform } from 'react-native'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo, useCallback } from 'react'
 import {
     appSetting,
     filterContent,
@@ -10,7 +10,7 @@ import {
     getLayout,
 } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
-import { Conductor } from 'app/ui/molecules/conductor'
+import { ConductorFlat as Conductor} from 'app/ui/molecules/conductor_flat'
 import { Text } from 'app/design/typography'
 import { Button } from 'app/design/controls'
 
@@ -48,24 +48,16 @@ function SplashBlock(props) {
 export default function PageLayout(props) {
     const { t } = useTranslation()
 
-    const [renderBlock, setRenderBlock] = useState(false)
     let { currentUser, setCurrentUser } = useCurrentUser();
-
-    const feedMode = storageGet('feed:mode', '', true)
-    const feedTypeD = storageGet('feed:type', '', true)
-    const [feedType, setFeedType] = useState(
-        feedTypeD ? feedTypeD : appSetting('feed', 'default_feed')
-    )
-
-    const {height: windowHeight} = useWindowDimensions();
+    const { height: windowHeight } = useWindowDimensions();
     const { colors } = Theme();
-
+    const feedMode = storageGet('feed:mode', '', true)
+    const feedTypeDefault = storageGet('feed:type', '', true) || appSetting('feed', 'default_feed');
+    const [feedType, setFeedType] = useState(feedTypeDefault);
+    const [unitMode, setUnitMode] = useState(feedMode || appSetting('feed', 'default_view'));
     const feedList = appSetting('feed', 'list');
-    const [feedHeight, setFeedHeight] = useState(windowHeight - 64 -64 - (feedList.length > 1 ? 40 : 0));
+    const feedHeight = windowHeight - 128 - (feedList.length > 1 ? 40 : 0);
 
-    const [unitMode, setUnitMode] = useState(
-        feedMode ? feedMode : appSetting('feed', 'default_view')
-    )
 
     function setUnitModeEx(mode) {
         storageSet('feed:mode', '', mode, true)
@@ -77,21 +69,11 @@ export default function PageLayout(props) {
         setFeedType(mode)
     }
 
-
-    /*useEffect(() => {
-        const timer = setTimeout(() => {
-            setRenderBlock(true)
-        }, 100)
-
-        return () => clearTimeout(timer) // This will clear the timer when the component is unmounted.
-    }, [])
-
-    */
-    let topBlocks = Object.keys(props.blocks)
-        .filter((key) => props.blocks[key].topbar)
-        .map((key) => {
-            return { name: key, block: props.blocks[key] }
-        })
+    const topBlocks = useMemo(() => {
+        return Object.keys(props.blocks)
+            .filter((key) => props.blocks[key].topbar)
+            .map((key) => ({ name: key, block: props.blocks[key] }));
+    }, [props.blocks]);
 
     let sect = [{ name: '', title: 'Top' }]
 
@@ -105,19 +87,28 @@ export default function PageLayout(props) {
             icon: '',
         }
     })
-    let blocks = appSetting('layouts', 'home').blocks
-    let blocksForAdd = []
-    if (blocks[feedType + '_feed_form']) {
-        blocksForAdd.push(blocks[feedType + '_feed_form'].name)
-    }
-    if (blocks[feedType + '_feed']) {
-        blocksForAdd.push(blocks[feedType + '_feed'].name)
-    }
-    topBlocks.map((item, index) => {
-        blocksForAdd.push(item.block.name)
-    })
+    const blocksForAdd = useMemo(() => {
+        const blocks = appSetting('layouts', 'home').blocks;
+        const addedBlocks = [];
+        if (blocks[`${feedType}_feed_form`]) addedBlocks.push(blocks[`${feedType}_feed_form`].name);
+        if (blocks[`${feedType}_feed`]) addedBlocks.push(blocks[`${feedType}_feed`].name);
+        topBlocks.forEach((item) => addedBlocks.push(item.block.name));
+        return addedBlocks;
+    }, [feedType, topBlocks]);
 
-    let dataForFeed = filterContent(props.data, blocksForAdd)
+
+    const dataForFeed = useMemo(() => filterContent(props.data, blocksForAdd), [props.data, blocksForAdd]);
+
+    const handleFeedTypeChange = useCallback((type) => {
+        storageSet('feed:type', '', type, true);
+        setFeedType(type);
+    }, []);
+
+    const handleUnitModeChange = useCallback((mode) => {
+        storageSet('feed:mode', '', mode, true);
+        setUnitMode(mode);
+    }, []);
+
 
     let menu = {
         object: 'search',
@@ -129,17 +120,17 @@ export default function PageLayout(props) {
         data: props.data,
         block: SplashBlock(props),
     }
-    
-    useEffect(() => {
-        setFeedHeight(windowHeight - 64 -64 - (feedList.length > 1 ? 40 : 0));
-    }, [windowHeight]);
+
+    /*  useEffect(() => {
+          setFeedHeight(windowHeight - 64 -64 - (feedList.length > 1 ? 40 : 0));
+      }, [windowHeight]);*/
 
     if (currentUser === null)
         return <></>
 
     return (
         <View className="w-full ">
-            {!currentUser  && (
+            {!currentUser && (
                 <ScrollView>
                     <View
                         className={
@@ -153,83 +144,81 @@ export default function PageLayout(props) {
             )}
             {!!currentUser && (
                 <>
-                 <View style={{ backgroundColor: colors.barsBackground }} className=' border-b border-bdr dark:border-bdr-d  min-w-full'>
-                 <ScrollView horizontal={true} className="w-full ">
-                    <Row className=" px-1.5  justify-center  ">
-                        {feedList.length > 1 &&
-                            feedList.map((item, index) => {
-                                return (
-                                    <Pressable
-                                        key={'selector' + index}
-                                        className="py-2 px-1 items-center justify-center "
-                                        onPress={() => {
-                                            setFeedTypeEx(item.name)
-                                        }}
-                                    >
-                                        <Button
-                                            fullWidth={false}
-                                            id="tab"
-                                            startDecorator={item.icon}
-                                            title={item.showTitle ? t(item.title) : ''}
-                                            rounded
-                                            variant={
-                                                feedType == item.name
-                                                    ? 'primary'
-                                                    : 'text'
-                                            }
-                                            size="sm"
-                                        />
-                                    </Pressable>
-                                )
-                            })}
-                        {appSetting('feed', 'show_selector_view') && (
-                            <Row className="flex-auto flex-auto justify-end">
-                                <Pressable
-                                    className="items-center justify-center py-2.5  "
-                                    onPress={() => {
-                                        setUnitModeEx('')
-                                    }}
-                                >
-                                    <Button
-                                        startDecorator="Rows"
-                                        fullWidth={false}
-                                        rounded
-                                        variant={
-                                            unitMode == '' ? 'link' : 'text'
-                                        }
-                                        size="sm"
-                                    />
-                                </Pressable>
-                                <Pressable
-                                    className="items-center justify-center py-2.5  "
-                                    onPress={() => {
-                                        setUnitModeEx('small')
-                                    }}
-                                >
-                                    <Button
-                                        startDecorator="ListBullets"
-                                        fullWidth={false}
-                                        rounded
-                                        variant={
-                                            unitMode == 'small'
-                                                ? 'link'
-                                                : 'text'
-                                        }
-                                        size="sm"
-                                    />
-                                </Pressable>
+                    <View style={{ backgroundColor: colors.barsBackground }} className=' border-b border-bdr dark:border-bdr-d  min-w-full'>
+                        <ScrollView horizontal={true} className="w-full ">
+                            <Row className=" px-1.5  justify-center  ">
+                                {feedList.length > 1 &&
+                                    feedList.map((item, index) => {
+                                        return (
+                                            <View
+
+                                                className="py-2 px-1 items-center justify-center "
+                                                key={'selector' + index}
+                                            >
+                                                <Button
+
+                                                    fullWidth={false}
+                                                    id="tab"
+                                                    onPress={() => handleFeedTypeChange(item.name)}
+                                                    startDecorator={item.icon}
+                                                    title={item.showTitle ? t(item.title) : ''}
+                                                    rounded
+                                                    variant={
+                                                        feedType == item.name
+                                                            ? 'primary'
+                                                            : 'text'
+                                                    }
+                                                    size="sm"
+                                                />
+                                            </View>
+                                        )
+                                    })}
+                                {appSetting('feed', 'show_selector_view') && (
+                                    <Row className="flex-auto flex-auto justify-end">
+                                        <View
+                                            className="items-center justify-center py-2.5  "
+
+                                        >
+                                            <Button
+                                                onPress={() => handleUnitModeChange('')}
+                                                startDecorator="Rows"
+                                                fullWidth={false}
+                                                rounded
+                                                variant={
+                                                    unitMode == '' ? 'link' : 'text'
+                                                }
+                                                size="sm"
+                                            />
+                                        </View>
+                                        <View
+                                            className="items-center justify-center py-2.5  "
+
+                                        >
+                                            <Button
+                                                onPress={() => handleUnitModeChange('small')}
+                                                startDecorator="ListBullets"
+                                                fullWidth={false}
+                                                rounded
+                                                variant={
+                                                    unitMode == 'small'
+                                                        ? 'link'
+                                                        : 'text'
+                                                }
+                                                size="sm"
+                                            />
+                                        </View>
+                                    </Row>
+
+                                )}
                             </Row>
-                            
-                        )}
-                    </Row>
-                    </ScrollView>
+                        </ScrollView>
                     </View>
                     {feedList.map((item, index) => {
                         if (feedType == item.name) {
                             return (
                                 <View
                                     key={'view' + index}
-                                    style={{ height: feedHeight}}
+                                    style={{ height: feedHeight }}
                                     className="w-full  "
                                 >
                                     <Conductor

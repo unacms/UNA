@@ -230,33 +230,6 @@ export default function (props) {
         }
     }
 
-    /*let endpointUpdateContent = '';
-    let bUpdateContent = false;
-
-    if (dataItems.data.length > 0 && props.sidebar !== true && props.no_scroll !== true) {
-
-        const a = [...new Set(dataItems.data
-            .filter(item => item.type !== 'block')
-            .map(item => item.id)
-        )].slice(0, 10).join(',');
-        if (a) {
-            endpointUpdateContent = data.request_url + JSON.stringify({
-                'params': { ...getCurrentParams(), validate: a }
-            });
-            bUpdateContent = true;
-        }
-    }
-    const { daemonData, daemonUrl } = useDaemon(endpointUpdateContent, true, bUpdateContent, 10000);
-
-    useEffect(() => {
-        if (daemonUrl == endpointUpdateContent) {
-            const data = daemonData?.[0]?.data?.data;
-            if (data && (data == 'valid' || data == 'invalid')) {
-                setToaster2Visible(data !== 'valid');
-            }
-        }
-    }, [daemonData, daemonUrl]);*/
-
     const showNewContent2 = async () => {
         storageClear('ul:data', storageKeyValue)
         storageClear('ul:state', storageKeyValue);
@@ -317,6 +290,7 @@ export default function (props) {
                 {dataItems.data.length > 0 ? <>{props.showTitleInside ? <View className='p-3'><Text className="text-lg font-bold text-neutral-800 dark:text-neutral-200 ">{t(props.block.title)}</Text></View> : <></>}
                     <UniList
                         numColumns={numColumns}
+                        mode='simple'
                         data={dataItems.data}
                         viewParams={getCurrentParams()}
                         listState={cachedData?.state?.state}
@@ -327,6 +301,8 @@ export default function (props) {
                         url={props?.url}
                         contentContainerStyle={props?.contentContainerStyle}
                         refer={uniRef}
+                        maxToRenderPerBatch={10}
+                        initialNumToRender={10}
                         no_scroll={props.no_scroll}
                         onRefresh={onStartRefresh}
                         refreshing={isRefreshing}

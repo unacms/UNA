@@ -71,7 +71,7 @@ export default function FormMessenger(props) {
             <View className={'mr-2 ' + (isWeb ? '' : ' w-11 ')}>
                 {getFormFieldByData(props.data.inputs['files'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder, classes: 'mb-0 mt-0 ' })}
             </View>
-            <View className={'flex-auto bg-bgritem dark:bg-bgritem-d rounded-3xl justify-center p-0 items-end ' + (isWeb ? 'p-2.5 ' : '')} >
+            <View className={'flex-auto bg-bgritem dark:bg-bgritem-d rounded-3xl justify-center p-0 items-end ' + (isWeb ? 'p-3s ' : '')} >
                 {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['cf'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['payload'], props.handleSubmit, 'custom')}

@@ -1,28 +1,21 @@
-import { useState, useRef } from 'react';
+import { memo } from 'react';
 import { stripTags, addParameterToUrl } from 'app/lib/util';
 import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
 import Time from 'app/ui/atoms/time';
-import Redirect from 'app/ui/atoms/redirect';
-import Profile from 'app/ui/molecules/profile';
 import AnimatedBlock from 'app/ui/molecules/animated-block'
 import Link from 'app/ui/atoms/link'
 import Card from 'app/ui/molecules/card'
+import Profile from 'app/ui/molecules/profile';
 
-export default function UnitFeed({ data }) {
-    const redirectdRef = useRef();
-    var oImage = null;
-    if (data.content.images)
-        oImage = data.content.images.length > 0 ? data.content.images[0] : null;
+function Unit({ data }) {
+    const url = addParameterToUrl(data?.content?.entry_url?.replace('{bx_url_root}', ''), 'ts', data.id);
 
-    const url = addParameterToUrl(data.content.entry_url.replace('{bx_url_root}', ''), 'ts', data.id);
-
-    let content_parsed = data?.content_parsed.site ? data?.content_parsed?.site : data?.content_parsed;
+    let content_parsed = data?.content_parsed?.site || data?.content_parsed || '';
     content_parsed = content_parsed.replace('&#8230;', '...');
 
     return (
         <AnimatedBlock>
-            <Redirect ref={redirectdRef} />
             <Link href={url}>
                 <Card margin=" mt-[1px] sm:mb-2 sm:mx-2 p-3 sm:p-4 " border="border-none sm:border" rounded=" sm:rounded-2xl " >
                     <View className="flex-row items-center">
@@ -44,3 +37,5 @@ export default function UnitFeed({ data }) {
         </AnimatedBlock>
     );
 }
+
+export default memo(Unit);
