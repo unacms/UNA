@@ -1,10 +1,63 @@
-import { useState, useContext } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { appSetting, FeedbackHaptics } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { useActionsData } from 'app/context/actions';
 import { View } from 'app/design/view'
 import { ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounterDefault, ButtonMenuCounterText, ButtonMenuGroupItem, ButtonsGroupMenu, Modal } from 'app/design/controls';
+
+const getName = (sType, sSystem, sObjectId, sName) => {
+    let aName = [sType, sSystem.replace(/_/g, '-'), sObjectId];
+    if(sName)
+        aName.push(sName);
+
+    return [].concat(aName).join('-');
+};
+
+const isContextVar = (actionsData, actionsDataState, bShowFull, sContextKey, sName) => {
+    return bShowFull ? actionsDataState?.[sContextKey]?.[sName] : actionsData?.[sContextKey]?.[sName];
+};
+
+const getContextVar = (actionsData, actionsDataState, bShowFull, sContextKey, sName) => {
+    return bShowFull ? actionsDataState[sContextKey][sName] : actionsData[sContextKey][sName];
+};
+
+const setContextVars = (actionsData, setActionsData, actionsDataState, setActionsDataState, bShowFull, sContextKey, mValue) => {
+    let oValue = {};
+    oValue[sContextKey] = mValue;
+
+    if(bShowFull) {
+        if(!actionsDataState)
+            setActionsDataState(oValue);
+        else
+            setActionsDataState({...actionsDataState, ...oValue});
+    }
+    else {
+        if(!actionsData)
+            setActionsData(oValue);
+        else
+            setActionsData({...actionsData, ...oValue});
+    }
+};
+
+
+const performAction = async (sAction, aParams, onLoad) => {
+    const sRequest = '/api.php?r=bx_timeline/' + sAction + '/Module&params=' + JSON.stringify(aParams);
+
+    const sResponse = await fetcher(sRequest);
+    if(typeof onLoad === 'function')
+        onLoad(sResponse?.data);
+};
+
+const handleDo = (setContextVars, sHapticsType, oAction, oEvent) => {
+    oEvent.preventDefault();
+
+    FeedbackHaptics(sHapticsType);
+
+    performAction('repost', Object.values(oAction.data), (oData) => {
+        setContextVars(oData);
+    });
+};
 
 export default function ElementReposts(oProps) {
     const { t } = useTranslation();
@@ -14,6 +67,8 @@ export default function ElementReposts(oProps) {
     const sIcon = oSettings[oProps['system']]?.icon ? oSettings[oProps['system']].icon : "ArrowsClockwise"
     const oAction = oProps.action;
     const oCounter = oProps?.counter;
+
+    const sObject = useMemo(() => getName(oProps.type, oProps.system, oProps.object_id), [oProps.type, oProps.system, oProps.object_id]);
 
     //--- default display type: action, counter, both.
     const sDisplayType = oProps?.displayType ? oProps.displayType : 'both';
@@ -36,123 +91,28 @@ export default function ElementReposts(oProps) {
     if(oProps.params?.button_full_width != undefined)
         oButtonProps.fullWidth = oProps.params.button_full_width;
 
-    const getName = (sName) => {
-        let aName = [oProps.type, oProps.system.replace(/_/g, '-'), oProps.object_id];
-        if(sName != undefined && sName.length > 0)
-            aName.push(sName);
-
-        return [].concat(aName).join('-');
-    };
-
     const { actionsData, setActionsData } = useActionsData();
-    const [ actionsDataState, asetActionsDataState ] = useState({});
+    const [ actionsDataState, setActionsDataState ] = useState({});
 
     const [ popupVisible, setPopupVisible ] = useState(false);
     const [ performedBy, setPerformedBy ] = useState();
 
-    const isContextVar = (sName) => {
-        const sContextKey = getName();
-
-        if(bShowFull)
-            return actionsDataState && actionsDataState[sContextKey] != undefined && actionsDataState[sContextKey][sName] != undefined;
-        else
-            return actionsData && actionsData[sContextKey] != undefined && actionsData[sContextKey][sName] != undefined;
-    };
-
-    const getContextVar = (sName) => {
-        const sContextKey = getName();
-
-        if(bShowFull)
-            return actionsDataState[sContextKey][sName];
-        else
-            return actionsData[sContextKey][sName];
-    };
-
-    const setContextVars = (mValue) => {
-        const sContextKey = getName();
-
-        let oValue = {};
-        oValue[sContextKey] = mValue;
-
-        if(bShowFull) {
-            if(!actionsDataState)
-                asetActionsDataState(oValue);
-            else
-                asetActionsDataState({...actionsDataState, ...oValue});
-        }
-        else {
-            if(!actionsData)
-                setActionsData(oValue);
-            else
-                setActionsData({...actionsData, ...oValue});
-        }
-    };
-
-    const performAction = async (sAction, aParams, onLoad) => {
-        console.log(aParams);
-        const sRequest = '/api.php?r=bx_timeline/' + sAction + '/Module&params=' + JSON.stringify(aParams);
-
-        const sResponse = await fetcher(sRequest);
-        if(typeof onLoad === 'function')
-            onLoad(sResponse?.data);
-    };
-
-    const handleDo = (event) => {
-        event.preventDefault();
-
-        FeedbackHaptics(oParams.haptics_type);
-
-        performAction('repost', Object.values(oAction.data), (oData) => {
-            setContextVars(oData);
-        });
-    };
-
-    const handleGetPerformedBy = (event) => {
-        event.preventDefault();
-
-        if(!bAllowViewVoted)
-            return;
-
-        FeedbackHaptics(oParams.haptics_type);
-
-        performAction('get_performed_by', {}, (oData) => {
-            if(!oData?.performed_by)
-                return;
-
-            setPerformedBy(oData.performed_by);
-            setPopupVisible(true);
-        });
-    };
-
-    const getSkeleton = () => {
-        return (
-            <View className="gap-y-2">
-            {[...Array(1, 2, 3)].map( i => 
-                <View key={i} className="flex-col p-2 bg-neutral-500/5 sm:rounded-lg">
-                    <View className="animate-pulse flex-row items-center gap-3">
-                        <View className="rounded-full bg-neutral-600/20 h-10 w-10"></View>
-                        <View className="flex-1 gap-y-1">
-                            <View className="h-4 w-1/2 bg-neutral-600/20 rounded-full"></View>    
-                            <View className="h-3 w-1/3 bg-neutral-600/20 rounded-full"></View>
-                        </View>
-                    </View>
-                </View>
-            )}
-            </View>
-        );
-    };
+    const _isContextVar = useCallback((sName) => isContextVar(actionsData, actionsDataState, bShowFull, sObject, sName), [actionsData, actionsDataState, bShowFull, sObject]);
+    const _getContextVar = useCallback((sName) => getContextVar(actionsData, actionsDataState, bShowFull, sObject, sName), [actionsData, actionsDataState, bShowFull, sObject]);
+    const _setContextVars = useCallback((mValue) => setContextVars(actionsData, setActionsData, actionsDataState, setActionsDataState, bShowFull, sObject, mValue), [actionsData, setActionsData, actionsDataState, setActionsDataState, bShowFull, sObject]);
+    const _handleDo = useCallback((event) => handleDo(_setContextVars, oParams.haptics_type, oAction, event), [_setContextVars, oParams.haptics_type, oAction]);
 
     //--- show action
     const bShowActionAsButton = oParams?.show_action_as_button == undefined || oParams.show_action_as_button === true;
     const bShowActionLabel = oParams?.show_action_label == undefined || oParams.show_action_label === true;
 
     const bShowActionUndo = oAction?.is_undo === true;
-    const bShowActionPerformed = oAction?.is_performed === true || (isContextVar('is_performed') && getContextVar('is_performed') === true);
-    const bShowActionDisabled = oAction?.is_disabled === true || (isContextVar('is_disabled') && getContextVar('is_disabled') === true);
+    const bShowActionPerformed = oAction?.is_performed === true || (_isContextVar('is_performed') && _getContextVar('is_performed') === true);
+    const bShowActionDisabled = oAction?.is_disabled === true || (_isContextVar('is_disabled') && _getContextVar('is_disabled') === true);
 
     let sTitle = oAction?.title || '';
-    if(isContextVar('title'))
-        sTitle = getContextVar('title');
+    if(_isContextVar('title'))
+        sTitle = _getContextVar('title');
 
     const ButtonAction = !bShowCombined ? (bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText) : ButtonMenuGroupItem;
 
@@ -164,7 +124,7 @@ export default function ElementReposts(oProps) {
     }
     else {
         sActionButton = (
-            <ButtonAction key="action" size={sDisplaySize} startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? (event) => {handleDo(event)} : () => {}} disabled={bShowActionDisabled} {...oButtonProps} />
+            <ButtonAction key="action" size={sDisplaySize} startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? _handleDo : () => {}} disabled={bShowActionDisabled} {...oButtonProps} />
         );
     }
 
@@ -176,8 +136,8 @@ export default function ElementReposts(oProps) {
     let iCount = '';
     if (oCounter?.count)
         iCount = oCounter.count;
-    if(isContextVar('counter')) {
-        const oCounterGlobal = getContextVar('counter');
+    if(_isContextVar('counter')) {
+        const oCounterGlobal = _getContextVar('counter');
         if(oCounterGlobal?.count)
             iCount = oCounterGlobal.count;
     }
@@ -188,7 +148,6 @@ export default function ElementReposts(oProps) {
         //TODO: Counter can be added here.
     }
 
-    const sObject = getName();
     if(bShowCombined) {
         let aButtonsGroup = [sActionButton];
         if(!!sCounterButton)
