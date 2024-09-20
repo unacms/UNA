@@ -6,6 +6,8 @@ import { View } from 'app/design/view'
 export default function ElementRedirect({data}) {
     const router = useRouter();
     console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Redirect to:", data);
+    if (!data?.uri)
+        data.uri = '/home';
     useEffect(() => {
         if (data?.uri) {
             if (data.uri == '/')

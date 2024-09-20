@@ -1,6 +1,8 @@
 import {Loading} from 'app/loading'
 import { View } from 'app/design/view'
 export default function ElementRedirect({data}) {
+    if (!data?.uri)
+        data.uri = '/home';
     if (data?.uri) {
         /*console.log("data.timeout)", data)
         if (data?.timeout){
