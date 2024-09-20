@@ -6,6 +6,8 @@ import { Platform } from 'react-native'
 export default function FormComments(props) {
     const [imageSource, setImageSource] = useState([]);
     const isWeb = Platform.OS == 'web';
+    const isIos = Platform.OS == 'ios'
+    
     function setPlaceHolder(name, previews) {
         if (JSON.stringify(previews) != JSON.stringify(imageSource[name])) {
             setImageSource(prevImageSource => ({
@@ -27,12 +29,13 @@ export default function FormComments(props) {
     props.data.inputs['cmt_image'].rounded = 'true';
     props.data.inputs['cmt_image'].variant = 'default';
 
+    const sPad = isWeb ? 'p-3' : (isIos || isWeb) ? 'px-2 pb-2' : 'px-1';
     return <View className='w-full ' >
         <Row className='w-full items-end  '>
         <View className={'mr-2 ' + (isWeb ? '' : ' w-11 ')}>
                 {getFormFieldByData(props.data.inputs['cmt_image'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder, classes: 'mb-0 mt-0 ' })}
             </View>
-            <View className={'flex-auto bg-bgritem dark:bg-bgritem-d rounded-3xl justify-center px-2 pb-2 items-end '+ (isWeb ? 'p-3 ' : '')} >
+            <View className={`flex-auto bg-bgritem dark:bg-bgritem-d rounded-3xl justify-center items-end ${sPad}`} >
                 {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['cmt_cf'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['cmt_parent_id'], props.handleSubmit, 'custom')}

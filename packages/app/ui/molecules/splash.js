@@ -9,7 +9,6 @@ import { Platform } from 'react-native'
 import { useWindowDimensions } from 'react-native'
 import { BlockByData } from 'app/components/blocks-content/object-data-array-int';
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
-import { staticDefault } from 'app/static-default'
 
 export default function Splash(props) {
     const isWeb = Platform.OS == 'web'
@@ -104,10 +103,9 @@ export default function Splash(props) {
                 <View className="   ">
                     <View className="items-center mb-4 ">
                         <View className="w-60 h-16">
-                            {staticDefault.logo_native}
+                            {props.logo_native}
                         </View>
                     </View>
-
                     {cnt}
                 </View>
             </View>
