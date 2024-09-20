@@ -1,12 +1,12 @@
-import Likes from './likes';
-import Stars from './stars';
-import Reactions from './reactions';
-import Scores from './scores';
-import Comments from './comments';// optimized
-import Features from './features';
-import Reports from './reports';
-import Reposts from './reposts';
-import Shares from './shares';// optimized
+import Likes from './likes';    // optimized
+import Stars from './stars';    // optimized
+import Reactions from './reactions';    // optimized
+import Scores from './scores';  // optimized
+import Comments from './comments';  // optimized
+import Features from './features';  // optimized
+import Reports from './reports';    // optimized
+import Reposts from './reposts';    // optimized
+import Shares from './shares';  // optimized
 import Connections from './connections';
 import Recommendation from './recommendations';
 

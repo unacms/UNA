@@ -76,14 +76,10 @@ const handleDo = (performAction, setContextVars, sHapticsType, sReaction, oEvent
     });
 };
 
-const handleUndo = (performAction, setContextVars, isContextVar, getContextVar, oProps, oEvent) => {
+const handleUndo = (performAction, setContextVars, isContextVar, getContextVar, sReaction, oEvent) => {
     oEvent.preventDefault();
 
-    let sReaction = oProps.action.reaction;
-    if(isContextVar('reaction'))
-        sReaction = getContextVar('reaction');
-
-    performAction('do', {value: 1, reaction: sReaction}, (oData) => {
+    performAction('do', {value: 1, reaction: (isContextVar('reaction') ? getContextVar('reaction') : sReaction)}, (oData) => {
         setContextVars(oData);
     });
 };
@@ -358,7 +354,7 @@ export default function ElementReactions(oProps) {
     const _setContextVars = useCallback((mValue) => setContextVars(actionsData, setActionsData, actionsDataState, setActionsDataState, bShowFull, sObject, mValue), [actionsData, setActionsData, actionsDataState, setActionsDataState, bShowFull, sObject]);
     const _performAction = useCallback((sAction, aParams, onLoad) => performAction(oProps.system, oProps.object_id, sAction, aParams, onLoad), [oProps.system, oProps.object_id]);
     const _handleDo = useCallback((sReaction, event) => handleDo(_performAction, _setContextVars, oParams.haptics_type, sReaction, event), [_performAction, _setContextVars, oParams.haptics_type]);
-    const _handleUndo = useCallback((event) => handleUndo(_performAction, _setContextVars, _isContextVar, _getContextVar, oProps, event), [_performAction, _setContextVars, _isContextVar, _getContextVar, oProps]);
+    const _handleUndo = useCallback((event) => handleUndo(_performAction, _setContextVars, _isContextVar, _getContextVar, oProps.action.reaction, event), [_performAction, _setContextVars, _isContextVar, _getContextVar, oProps.action.reaction]);
     const _handleGetPerformedByCpd = useCallback((event) => handleGetPerformedByCpd(_performAction, setPerformedBy, setTabVisibleByCpd, setPopupVisibleByCpd, bAllowViewVoted, oParams.haptics_type, event), [_performAction, setPerformedBy, setTabVisibleByCpd, setPopupVisibleByCpd, bAllowViewVoted, oParams.haptics_type]);
     const _handleGetPerformedByDvd = useCallback((sReaction, event) => handleGetPerformedByDvd(_performAction, setPerformedBy, setPopupVisibleByDvd, bAllowViewVoted, oParams.haptics_type, sReaction, event), [_performAction, setPerformedBy, setPopupVisibleByDvd, bAllowViewVoted, oParams.haptics_type]);
 

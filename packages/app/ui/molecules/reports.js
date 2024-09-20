@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect, forwardRef, useRef, useImperativeHandle } from 'react';
+import { useState, useMemo, useCallback, useEffect, forwardRef, useRef, useImperativeHandle } from 'react';
 import { useTranslation } from 'react-i18next';
 import { appSetting, FeedbackHaptics } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
@@ -13,6 +13,129 @@ import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing, withSeq
 import Dropdown from 'app/ui/atoms/dropdown'
 import { InputMulti } from 'app/design/controls'
 import { Platform } from 'react-native';
+
+const getName = (sType, sSystem, sObjectId, sName) => {
+    let aName = [sType, sSystem.replace(/_/g, '-'), sObjectId];
+    if(sName)
+        aName.push(sName);
+
+    return [].concat(aName).join('-');
+};
+
+const isContextVar = (actionsData, actionsDataState, bShowFull, sContextKey, sName) => {
+    return bShowFull ? actionsDataState?.[sContextKey]?.[sName] : actionsData?.[sContextKey]?.[sName];
+};
+
+const getContextVar = (actionsData, actionsDataState, bShowFull, sContextKey, sName) => {
+    return bShowFull ? actionsDataState[sContextKey][sName] : actionsData[sContextKey][sName];
+};
+
+const setContextVars = (actionsData, setActionsData, actionsDataState, setActionsDataState, bShowFull, sContextKey, mValue) => {
+    let oValue = {};
+    oValue[sContextKey] = mValue;
+
+    if(bShowFull) {
+        if(!actionsDataState)
+            setActionsDataState(oValue);
+        else
+            setActionsDataState({...actionsDataState, ...oValue});
+    }
+    else {
+        if(!actionsData)
+            setActionsData(oValue);
+        else
+            setActionsData({...actionsData, ...oValue});
+    }
+};
+
+const performAction = async (sSystem, iObjectId, sAction, aParams, onLoad) => {
+    const aParamsDefault = {s: sSystem, o: iObjectId};
+
+    aParams = aParams ? {...aParamsDefault, ...aParams} : aParamsDefault;
+    const sRequest = '/api.php?r=system/' + sAction + '/TemplReportServices&params[]=' + JSON.stringify(aParams);
+
+    const sResponse = await fetcher(sRequest);
+    if(typeof onLoad === 'function')
+        onLoad(sResponse?.data);
+};
+
+const handleGetDo = (setPopupVisibleDo, oEvent) => {
+    if(!!oEvent)
+        oEvent.preventDefault();
+
+    if(Platform.OS == 'web') {
+        const popperDiv = document.querySelector('div[data-radix-popper-content-wrapper]');
+        if(popperDiv)
+            popperDiv.classList.add('radix-hide');
+    }
+
+    setPopupVisibleDo(true);
+};
+
+const handleDo = (performAction, setContextVars, setPopupVisibleDo, valuesType, setValueType, setValueText, sHapticsType, fOnChangeTitle, oDataSubmit, oEvent) => {
+    if(!!oEvent)
+        oEvent.preventDefault();
+
+    FeedbackHaptics(sHapticsType);
+
+    performAction('do', oDataSubmit, (oData) => {
+        setContextVars(oData);
+        setPopupVisibleDo(false);
+
+        if(fOnChangeTitle && typeof fOnChangeTitle === 'function')
+            fOnChangeTitle(oData['title']);
+    });
+
+    setValueType(valuesType[0].value);
+    setValueText('');
+};
+
+const handleUndo = (performAction, setContextVars, fOnChangeTitle, oEvent) => {
+    if(!!oEvent)
+        oEvent.preventDefault();
+
+    performAction('do', {}, (oData) => {
+        setContextVars(oData);
+
+        if(fOnChangeTitle && typeof fOnChangeTitle === 'function')
+            fOnChangeTitle(oData['title']);
+    });
+};
+
+const handleGetPerformedBy = (performAction, setPerformedBy, setPopupVisiblePerformed, bAllowViewReported, sHapticsType, oEvent) => {
+    oEvent.preventDefault();
+
+    if(!bAllowViewReported)
+        return;
+
+    FeedbackHaptics(sHapticsType);
+
+    performAction('get_performed_by', {}, (oData) => {
+        if(!oData?.performed_by)
+            return;
+
+        setPerformedBy(oData.performed_by);
+        setPopupVisiblePerformed(true);
+    });
+};
+
+const getSkeleton = () => {
+    return (
+        <View className="gap-y-2">
+        {[...Array(1, 2, 3)].map( i => 
+            <View key={i} className="flex-col p-2 bg-neutral-500/5 sm:rounded-lg">
+                <View className="animate-pulse flex-row items-center gap-3">
+                    <View className="rounded-full bg-neutral-600/20 h-10 w-10"></View>
+                    <View className="flex-1 gap-y-1">
+                        <View className="h-4 w-1/2 bg-neutral-600/20 rounded-full"></View>    
+                        <View className="h-3 w-1/3 bg-neutral-600/20 rounded-full"></View>
+                    </View>
+                </View>
+            </View>
+        )}
+        </View>
+    );
+};
 
 const ElementReports = forwardRef((oProps, ref) => {
     const { t } = useTranslation();
@@ -36,6 +159,8 @@ const ElementReports = forwardRef((oProps, ref) => {
     const oAction = oProps.action;
     const oCounter = oProps.counter;
 
+    const sObject = useMemo(() => getName(oProps.type, oProps.system, oProps.object_id), [oProps.type, oProps.system, oProps.object_id]);
+
     //--- default display type: action, counter, both.
     const sDisplayType = oProps?.displayType ? oProps.displayType : 'both';
     const sDisplaySize = oProps?.displaySize ? oProps.displaySize : (oParams?.display_size ? oParams.display_size : false);
@@ -45,82 +170,12 @@ const ElementReports = forwardRef((oProps, ref) => {
     const bShowFull = bShowAction && bShowCounter;
     const bShowCombined = bShowFull && oParams?.show_combined != undefined && oParams.show_combined === true   
 
-    const getName = (sName) => {
-        let aName = [oProps.type, oProps.system.replace(/_/g, '-'), oProps.object_id];
-        if(sName != undefined && sName.length > 0)
-            aName.push(sName);
-
-        return [].concat(aName).join('-');
-    };
-
     const { actionsData, setActionsData } = useActionsData();
-    const [ actionsDataState, asetActionsDataState ] = useState({});
+    const [ actionsDataState, setActionsDataState ] = useState({});
 
     const [ popupVisibleDo, setPopupVisibleDo ] = useState(false);
     const [ popupVisiblePerformed, setPopupVisiblePerformed ] = useState(false);
     const [ performedBy, setPerformedBy ] = useState();
-
-    const isContextVar = (sName) => {
-        const sContextKey = getName();
-
-        if(bShowFull)
-            return actionsDataState && actionsDataState[sContextKey] != undefined && actionsDataState[sContextKey][sName] != undefined;
-        else
-            return actionsData && actionsData[sContextKey] != undefined && actionsData[sContextKey][sName] != undefined;
-    };
-
-    const getContextVar = (sName) => {
-        const sContextKey = getName();
-
-        if(bShowFull)
-            return actionsDataState[sContextKey][sName];
-        else
-            return actionsData[sContextKey][sName];
-    };
-
-    const setContextVars = (mValue) => {
-        const sContextKey = getName();
-
-        let oValue = {};
-        oValue[sContextKey] = mValue;
-
-        if(bShowFull) {
-            if(!actionsDataState)
-                asetActionsDataState(oValue);
-            else
-                asetActionsDataState({...actionsDataState, ...oValue});
-        }
-        else {
-            if(!actionsData)
-                setActionsData(oValue);
-            else
-                setActionsData({...actionsData, ...oValue});
-        }
-    };
-
-    const performAction = async (sAction, aParams, onLoad) => {
-        const aParamsDefault = {s: oProps.system, o:oProps.object_id};
-
-        aParams = aParams ? {...aParamsDefault, ...aParams} : aParamsDefault;
-        const sRequest = '/api.php?r=system/' + sAction + '/TemplReportServices&params[]=' + JSON.stringify(aParams);
-
-        const sResponse = await fetcher(sRequest);
-        if(typeof onLoad === 'function')
-            onLoad(sResponse?.data);
-    };
-
-    const handleGetDo = (event) => {
-        if(!!event)
-            event.preventDefault();
-
-        if (Platform.OS == 'web') {
-            const popperDiv = document.querySelector('div[data-radix-popper-content-wrapper]');
-            if (popperDiv) {
-                popperDiv.classList.add('radix-hide');
-            }
-        }
-        setPopupVisibleDo(true);
-    };
 
     let valuesType = oParams.types.map(function (item) {
         return item.name ? {label: item.title, value: item.name} : null
@@ -130,70 +185,16 @@ const ElementReports = forwardRef((oProps, ref) => {
     const [ valueType, setValueType ] = useState(valuesType[0].value);
     const [ valueText, setValueText ] = useState('');
 
-    const handleDo = (event, oDataSubmit) => {
-        if(!!event)
-            event.preventDefault();
+    const bAllowViewReported = oSettings[oProps['system']]?.allow_view_reported != undefined ? oSettings[oProps['system']].allow_view_reported : true;
 
-        FeedbackHaptics(oParams.haptics_type);
-
-        performAction('do', oDataSubmit, (oData) => {
-            setContextVars(oData);
-            setPopupVisibleDo(false);
-
-            if(oProps?.onChangeTitle)
-                oProps?.onChangeTitle(oData['title']);
-        });
-
-        setValueType(valuesType[0].value);
-        setValueText('');
-    };
-
-    const handleUndo = (event) => {
-        if(!!event)
-            event.preventDefault();
-
-        performAction('do', {}, (oData) => {
-            setContextVars(oData);
-
-            if(oProps?.onChangeTitle)
-                oProps?.onChangeTitle(oData['title']);
-        });
-    };
-
-    const handleGetPerformedBy = (event) => {
-        event.preventDefault();
-
-        if(!bAllowViewReported)
-            return;
-
-        FeedbackHaptics(oParams.haptics_type);
-
-        performAction('get_performed_by', {}, (oData) => {
-            if(!oData?.performed_by)
-                return;
-
-            setPerformedBy(oData.performed_by);
-            setPopupVisiblePerformed(true);
-        });
-    };
-
-    const getSkeleton = () => {
-        return (
-            <View className="gap-y-2">
-            {[...Array(1, 2, 3)].map( i => 
-                <View key={i} className="flex-col p-2 bg-neutral-500/5 sm:rounded-lg">
-                    <View className="animate-pulse flex-row items-center gap-3">
-                        <View className="rounded-full bg-neutral-600/20 h-10 w-10"></View>
-                        <View className="flex-1 gap-y-1">
-                            <View className="h-4 w-1/2 bg-neutral-600/20 rounded-full"></View>    
-                            <View className="h-3 w-1/3 bg-neutral-600/20 rounded-full"></View>
-                        </View>
-                    </View>
-                </View>
-            )}
-            </View>
-        );
-    };
+    const _isContextVar = useCallback((sName) => isContextVar(actionsData, actionsDataState, bShowFull, sObject, sName), [actionsData, actionsDataState, bShowFull, sObject]);
+    const _getContextVar = useCallback((sName) => getContextVar(actionsData, actionsDataState, bShowFull, sObject, sName), [actionsData, actionsDataState, bShowFull, sObject]);
+    const _setContextVars = useCallback((mValue) => setContextVars(actionsData, setActionsData, actionsDataState, setActionsDataState, bShowFull, sObject, mValue), [actionsData, setActionsData, actionsDataState, setActionsDataState, bShowFull, sObject]);
+    const _performAction = useCallback((sAction, aParams, onLoad) => performAction(oProps.system, oProps.object_id, sAction, aParams, onLoad), [oProps.system, oProps.object_id]);
+    const _handleGetDo = useCallback((event) => handleGetDo(setPopupVisibleDo, event), [setPopupVisibleDo]);
+    const _handleDo = useCallback((oDataSubmit, event) => handleDo(_performAction, _setContextVars, setPopupVisibleDo, valuesType, setValueType, setValueText, oParams.haptics_type, (oProps?.onChangeTitle ? oProps.onChangeTitle : false), oDataSubmit, event), [_performAction, _setContextVars, setPopupVisibleDo, valuesType, setValueType, setValueText, oParams.haptics_type, oProps.onChangeTitle]);
+    const _handleUndo = useCallback((event) => handleUndo(_performAction, _setContextVars, (oProps?.onChangeTitle ? oProps.onChangeTitle : false), event), [_performAction, _setContextVars, oProps.onChangeTitle]);
+    const _handleGetPerformedBy = useCallback((event) => handleGetPerformedBy(_performAction, setPerformedBy, setPopupVisiblePerformed, bAllowViewReported, oParams.haptics_type, event), [_performAction, setPerformedBy, setPopupVisiblePerformed, bAllowViewReported, oParams.haptics_type]);
 
     let { currentUser, setCurrentUser } = useCurrentUser();
     useEffect(() => {
@@ -203,7 +204,7 @@ const ElementReports = forwardRef((oProps, ref) => {
     const cb = (data) => {
         let aData = JSON.parse(data);
         if(!!aData?.api)
-            setContextVars(aData.api.performer_id == currentUser.id ? aData.api : {counter: aData.api.counter});
+            _setContextVars(aData.api.performer_id == currentUser.id ? aData.api : {counter: aData.api.counter});
     }
 
     //--- show action
@@ -212,31 +213,25 @@ const ElementReports = forwardRef((oProps, ref) => {
 
     const bShowActionUndo = oAction?.is_undo === true;
 
-    if(isContextVar('is_reported'))
-        oAction.is_reported = getContextVar('is_reported') === true;
+    if(_isContextVar('is_reported'))
+        oAction.is_reported = _getContextVar('is_reported') === true;
     let bShowActionReported = oAction?.is_reported === true;
 
-    if(isContextVar('is_disabled'))
-        oAction.is_disabled = getContextVar('is_disabled') === true;
+    if(_isContextVar('is_disabled'))
+        oAction.is_disabled = _getContextVar('is_disabled') === true;
     let bShowActionDisabled = oAction?.is_disabled === true;
 
-    if(isContextVar('title'))
-        oAction.title = getContextVar('title');
+    if(_isContextVar('title'))
+        oAction.title = _getContextVar('title');
     let sTitle = oAction?.title || '';
 
-    let oButtonProps = {};
-    if(oProps.primary)
-        oButtonProps.variant = 'primary';
-    if(oProps.params?.button_variant != undefined)
-        oButtonProps.variant = oProps.params.button_variant;
-    if(oProps.params?.button_size != undefined)
-        oButtonProps.size = oProps.params.button_size;
-    if(oProps.params?.button_rounded != undefined)
-        oButtonProps.rounded = oProps.params.button_rounded;
-    if(oProps.params?.button_full_width != undefined)
-        oButtonProps.fullWidth = oProps.params.button_full_width;
-    if(oProps.params?.button_hide_title_on_small != undefined)
-        oButtonProps.hideTitleOnSmall = oProps.params.button_hide_title_on_small;
+    const oButtonProps = {
+        variant: oProps?.primary ? 'primary' : oProps.params?.button_variant,
+        size: oProps.params?.button_size,
+        rounded: oProps.params?.button_rounded,
+        fullWidth: oProps.params?.button_full_width,
+        hideTitleOnSmall: oProps.params?.button_hide_title_on_small
+    };
 
     const ButtonAction = !bShowCombined ? (bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText) : ButtonMenuGroupItem;
 
@@ -244,15 +239,13 @@ const ElementReports = forwardRef((oProps, ref) => {
     let sActionPopup = undefined;
     if(bShowActionUndo && bShowActionReported) {
         sActionButton = (
-            <ButtonAction key="action" size={sDisplaySize} startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} onPress={handleUndo} {...oButtonProps} />
+            <ButtonAction key="action" size={sDisplaySize} startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} onPress={_handleUndo} {...oButtonProps} />
         );
     }
     else {
         sActionButton = (
-            <ButtonAction key="action" size={sDisplaySize} startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? (event) => {handleGetDo(event)} : () => {}} disabled={bShowActionDisabled} {...oButtonProps} />
+            <ButtonAction key="action" size={sDisplaySize} startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? _handleGetDo : () => {}} disabled={bShowActionDisabled} {...oButtonProps} />
         );
-
-        
 
         sActionPopup = (
             <Modal title={t('Report')} onVisible={popupVisibleDo} onClose={() => {setPopupVisibleDo(false)}}>
@@ -276,7 +269,7 @@ const ElementReports = forwardRef((oProps, ref) => {
                         onChangeText={setValueText}
                         value={valueText}
                     />
-                    <Button size={sDisplaySize} title={t('Send report')} onPress={(event) => {handleDo(event, {type: valueType, text: valueText})}} />
+                    <Button size={sDisplaySize} title={t('Send report')} onPress={(event) => {_handleDo({type: valueType, text: valueText}, event)}} />
                 </View>
             </Modal>
         );
@@ -284,15 +277,14 @@ const ElementReports = forwardRef((oProps, ref) => {
 
     //--- Counter
     const bShowCounterAsButton = oParams?.show_counter_as_button != undefined && oParams.show_counter_as_button === true;
-    const bAllowViewReported = oSettings[oProps['system']]?.allow_view_reported != undefined ? oSettings[oProps['system']].allow_view_reported : true;
 
     const ButtonCounter = !bShowCombined ? (bShowCounterAsButton ? ButtonMenuCounterDefault : ButtonMenuCounterText) : ButtonMenuGroupItem;
 
     let iCount = '';
     if (oCounter?.count != undefined)
         iCount = oCounter.count;
-    if(isContextVar('counter')) {
-        const oCounterGlobal = getContextVar('counter');
+    if(_isContextVar('counter')) {
+        const oCounterGlobal = _getContextVar('counter');
         if(oCounterGlobal?.count != undefined)
             iCount = oCounterGlobal.count;
     }    
@@ -329,7 +321,7 @@ const ElementReports = forwardRef((oProps, ref) => {
 
         sCounterButton = (
             <Animated.View key="counter" style={indicatorStyle}>
-                <ButtonCounter size={sDisplaySize} startDecorator={!bShowCombined ? sIcon : false} title={iCount+''} onPress={(event) => {handleGetPerformedBy(event)}} {...oButtonProps} />
+                <ButtonCounter size={sDisplaySize} startDecorator={!bShowCombined ? sIcon : false} title={iCount+''} onPress={_handleGetPerformedBy} {...oButtonProps} />
             </Animated.View>
         );
 
@@ -345,7 +337,6 @@ const ElementReports = forwardRef((oProps, ref) => {
      */
     elementRef.current = oAction;
 
-    const sObject = getName();
     if(bShowCombined) {
         let aButtonsGroup = [sActionButton];
         if(!!sCounterButton)
