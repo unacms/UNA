@@ -91,7 +91,6 @@ const TabScene = ({ route, index, skeleton, data, unitMode, handleEndReached, on
     )
 };
 
-
 export function ConductorFlat({ header, smallHeader, minHeaderHeight, isHideDefaultHeader, menu, data, blocks, useSectionAsMenu, unitMode, skeleton, onChangeRoute, keyword }) {
 
     minHeaderHeight = minHeaderHeight || 100;
