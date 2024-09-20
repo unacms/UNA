@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { Platform, StyleSheet, useColorScheme } from 'react-native';
 import { Reaction, ReactionProvider } from 'react-native-reactions';
 import { appSetting, FeedbackHaptics } from 'app/lib/util';
@@ -12,6 +12,278 @@ import Profile from 'app/ui/molecules/profile';
 import { subscribe } from 'app/ui/atoms/socket';
 import { useTranslation } from 'react-i18next';
 
+const getName = (sType, sSystem, sObjectId, sName) => {
+    let aName = [sType, sSystem.replace(/_/g, '-'), sObjectId];
+    if(sName)
+        aName.push(sName);
+
+    return [].concat(aName).join('-');
+};
+
+const getIconAlias = (oParams, oAliases, sName) => {
+    const sKey = Platform.OS === 'web' ? 'web' : 'native';
+    const sType = sName != 'default' ? oParams['icon_type_' + sKey] : 'svg';
+    
+
+    return oAliases[sKey][sName] && oAliases[sKey][sName][sType];
+};
+
+const isContextVar = (actionsData, actionsDataState, bShowFull, sContextKey, sName) => {
+    return bShowFull ? actionsDataState?.[sContextKey]?.[sName] : actionsData?.[sContextKey]?.[sName];
+};
+
+const getContextVar = (actionsData, actionsDataState, bShowFull, sContextKey, sName) => {
+    return bShowFull ? actionsDataState[sContextKey][sName] : actionsData[sContextKey][sName];
+};
+
+const setContextVars = (actionsData, setActionsData, actionsDataState, setActionsDataState, bShowFull, sContextKey, mValue) => {
+    let oValue = {};
+    oValue[sContextKey] = mValue;
+
+    if(bShowFull) {
+        if(!actionsDataState)
+            setActionsDataState(oValue);
+        else
+            setActionsDataState({...actionsDataState, ...oValue});
+    }
+    else {
+        if(!actionsData)
+            setActionsData(oValue);
+        else
+            setActionsData({...actionsData, ...oValue});
+    }
+};
+
+const performAction = async (sSystem, iObjectId, sAction, aParams, onLoad) => {
+    const aParamsDefault = {s: sSystem, o: iObjectId};
+
+    aParams = aParams ? {...aParamsDefault, ...aParams} : aParamsDefault;
+    const sRequest = '/api.php?r=system/' + sAction + '/TemplVoteServices&params[]=' + JSON.stringify(aParams);
+
+    const sResponse = await fetcher(sRequest);
+    if(typeof onLoad === 'function')
+        onLoad(sResponse?.data);
+};
+
+const handleDo = (performAction, setContextVars, sHapticsType, sReaction, oEvent) => {
+    if(oEvent)
+        oEvent.preventDefault();
+
+    FeedbackHaptics(sHapticsType);
+
+    performAction('do', {value: 1, reaction: sReaction}, (oData) => {
+        setContextVars(oData);
+    });
+};
+
+const handleUndo = (performAction, setContextVars, isContextVar, getContextVar, oProps, oEvent) => {
+    oEvent.preventDefault();
+
+    let sReaction = oProps.action.reaction;
+    if(isContextVar('reaction'))
+        sReaction = getContextVar('reaction');
+
+    performAction('do', {value: 1, reaction: sReaction}, (oData) => {
+        setContextVars(oData);
+    });
+};
+
+const handleGetPerformedByCpd = (performAction, setPerformedBy, setTabVisibleByCpd, setPopupVisibleByCpd, bAllowViewVoted, sHapticsType, oEvent) => {
+    oEvent.preventDefault();
+
+    if(!bAllowViewVoted)
+        return;
+
+    FeedbackHaptics(sHapticsType);
+
+    performAction('get_performed_by', {}, (oData) => {
+        if(!oData?.performed_by)
+            return;
+
+        setPerformedBy(oData.performed_by);
+
+        setTabVisibleByCpd('');
+        setPopupVisibleByCpd(true);
+    });
+};
+
+const handleGetPerformedByDvd = (performAction, setPerformedBy, setPopupVisibleByDvd, bAllowViewVoted, sHapticsType, sReaction, oEvent) => {
+    oEvent.preventDefault();
+
+    if(!bAllowViewVoted || !sReaction)
+        return;
+
+    FeedbackHaptics(sHapticsType);
+
+    performAction('get_performed_by', {reaction: sReaction}, (oData) => {
+        if(!oData?.performed_by)
+            return;
+
+        setPerformedBy(oData.performed_by);
+        setPopupVisibleByDvd(state => ({...state, [sReaction]: true}));
+    });
+};
+
+const getSkeleton = () => {
+    return (
+        <View className="gap-2">
+        {[...Array(1, 2, 3)].map( i => 
+            <View key={i} className="flex-col p-2 bg-neutral-500/5 sm:rounded-lg">
+                <View className="animate-pulse flex-row items-center gap-3">
+                    <View className="rounded-full bg-neutral-600/20 h-10 w-10"></View>
+                    <View className="flex-1 gap-y-1">
+                        <View className="h-4 w-1/2 bg-neutral-600/20 rounded-full"></View>    
+                        <View className="h-3 w-1/3 bg-neutral-600/20 rounded-full"></View>
+                    </View>
+                </View>
+            </View>
+        )}
+        </View>
+    );
+};
+
+const getCounterDivided = (getIconAlias, isContextVar, getContextVar, handleGetPerformedByDvd, performedBy, popupVisibleByDvd, setPopupVisibleByDvd, bShowCombined, sDisplaySize, oParams, oCounter) => {
+    const { t } = useTranslation();
+
+    let aButtons = [];
+    let aPopups = [];
+
+    const bShowCounterAsButton = oParams?.show_counter_as_button === true;
+    const ButtonCounter = !bShowCombined ? (bShowCounterAsButton ? ButtonMenuCounterDefault : ButtonMenuCounterText) : ButtonMenuGroupItem;
+
+    oCounter.items.forEach((aItem, iKey) => {
+        if(aItem.name == 'default')
+            return;
+
+        let iCount = aItem.count;
+        if(isContextVar('counter')) {
+            const oCounterGlobal = getContextVar('counter');
+            const sCounterKey = 'count_' + aItem.name;
+            if(oCounterGlobal[sCounterKey] != undefined)
+                iCount = oCounterGlobal[sCounterKey];
+        }
+
+        if(!iCount)
+            return;
+
+        let aUsers = undefined;
+        if(performedBy && performedBy[aItem.name]) {
+            aUsers = performedBy[aItem.name].map(aUser => {
+                return (
+                    <View key={aUser.id}><Profile {...aUser} /></View>
+                );
+            });
+        }
+
+        if(aUsers && aUsers.length != 0)
+            aUsers = (
+                <View className="gap-2">{aUsers}</View>
+            );
+        else
+            aUsers = getSkeleton();
+
+        aButtons.push(<ButtonCounter key={'counter-button-' + iKey} size={sDisplaySize} startDecorator={getIconAlias(aItem.name)} title={iCount} onPress={(event) => {handleGetPerformedByDvd(aItem?.name || '', event)}} />);
+        aPopups.push(<Modal key={'counter-popup-' + iKey} title={t("Reactions")} onVisible={popupVisibleByDvd[aItem.name]} onClose={() => {setPopupVisibleByDvd(state => ({...state, [aItem.name]: false}))}}>{aUsers}</Modal>)
+    });
+
+    return [aButtons, aPopups];
+};
+
+const getCounterCompound = (getIconAlias, isContextVar, getContextVar, handleGetPerformedByCpd, performedBy, popupVisibleByCpd, setPopupVisibleByCpd, tabVisibleByCpd, setTabVisibleByCpd, bShowCombined, sDisplaySize, oParams, oCounter) => {
+    const { t } = useTranslation();
+
+    let iTotal = 0;
+    let sSelected = tabVisibleByCpd;
+    const aCounter = Object.keys(oCounter.items).map(function(iKey) {
+        const aItem = oCounter.items[iKey];
+
+        if(aItem.name == 'default')
+            return;
+
+        let iCount = aItem.count;
+        if(isContextVar('counter')) {
+            const oCounterGlobal = getContextVar('counter');
+            const sCounterKey = 'count_' + aItem.name;
+            if(oCounterGlobal[sCounterKey] != undefined)
+                iCount = oCounterGlobal[sCounterKey];
+        }
+
+        if(!sSelected && iCount != 0)
+            sSelected = aItem.name;
+
+        iTotal += iCount;
+
+        if(!iCount)
+            return;
+        
+        return getIconAlias(aItem.name);
+    });
+
+    if(!iTotal)
+        return false;
+
+    const aPerformedByMenu = Object.keys(oCounter.items).map(function(iKey) {
+        const aItem = oCounter.items[iKey];
+        if(aItem.name == 'default')
+            return;
+        
+        if(performedBy == undefined || performedBy[aItem.name] == undefined || performedBy[aItem.name].length == 0)
+            return;
+
+        let sClass = 'flex-0 flex mx-1  flex-row w-min top-px';
+        if(aItem.name == sSelected)
+            sClass += ' border-b-2 border-primary dark:border-primary-d ';
+
+        return (
+            <View key={aItem.name} className={sClass}>
+                <Button size="sm" variant="text" startDecorator={getIconAlias(aItem.name)} onPress={() => {setTabVisibleByCpd(aItem.name)}} rounded="true" />
+            </View>
+        );
+    });
+
+    const aPerformedByUsers = Object.keys(oCounter.items).map(function(iKey) {
+        const aItem = oCounter.items[iKey];
+        if(aItem.name == 'default')
+            return;
+
+        if(!sSelected && aItem.count != 0)
+            sSelected = aItem.name;
+
+        let aUsers = undefined;
+        if(performedBy && performedBy[aItem.name]) {
+            aUsers = performedBy[aItem.name].map(aUser => {
+                return (
+                    <View key={aUser.id}><Profile {...aUser} /></View>
+                );
+            });
+        }
+
+        if(!aUsers || aUsers.length == 0)
+            aUsers = getSkeleton();
+
+        let sClass = '';
+        if(aItem.name != sSelected) 
+            sClass = 'hidden ';
+        sClass += 'gap-2 overflow-y-auto text-neutral-700 dark:text-neutral-200';
+
+        return (
+            <View key={aItem.name} className={sClass}>{aUsers}</View>
+        );
+    });
+
+    const bShowCounterAsButton = oParams?.show_counter_as_button === true;
+    const ButtonCounter = !bShowCombined ? (bShowCounterAsButton ? ButtonMenuCounterDefault : ButtonMenuCounterText) : ButtonMenuGroupItem;
+
+    return [[
+            <ButtonCounter fullWidth={false} key="counter" size={sDisplaySize} endDecorator={aCounter} title={iTotal} onPress={handleGetPerformedByCpd} />
+        ], [
+            <Modal key="counter-popup"  title={t("Reactions")} onVisible={popupVisibleByCpd} onClose={() => {setPopupVisibleByCpd(false)}}>
+                <View className="relative flex-row border-b border-bdr dark:border-bdr-d ">{aPerformedByMenu}</View>
+                <View className="p-2">{aPerformedByUsers}</View>
+            </Modal>
+        ]
+    ];
+};
 
 export default function ElementReactions(oProps) {
     const { t } = useTranslation();
@@ -22,6 +294,8 @@ export default function ElementReactions(oProps) {
     const oParams = {...oSettings, ...oProps.params};
     const oAction = oProps.action;
     const oCounter = oProps.counter;
+
+    const sObject = useMemo(() => getName(oProps.type, oProps.system, oProps.object_id), [oProps.type, oProps.system, oProps.object_id]);
 
     const oItems = oSettings[oProps['system']]?.items ? oSettings[oProps['system']].items : oParams.items;
     const oAliases = oSettings[oProps['system']]?.iconset ? oSettings[oProps['system']].iconset : {
@@ -54,196 +328,39 @@ export default function ElementReactions(oProps) {
     const bShowFull = bShowAction && bShowCounter;
     const bShowCombined = bShowFull && oParams?.show_combined != undefined && oParams.show_combined === true;
    
-    let oButtonProps = {};
-    if(oProps.primary)
-        oButtonProps.variant = 'primary';
-    if(oProps.params?.button_variant != undefined)
-        oButtonProps.variant = oProps.params.button_variant;
-    if(oProps.params?.button_size != undefined)
-        oButtonProps.size = oProps.params.button_size;
-    if(oProps.params?.button_rounded != undefined)
-        oButtonProps.rounded = oProps.params.button_rounded;
-    if(oProps.params?.button_full_width != undefined)
-        oButtonProps.fullWidth = oProps.params.button_full_width;
-    oButtonProps.fullWidth= false;
-    if(oProps.params?.button_hide_title_on_small != undefined)
-        oButtonProps.hideTitleOnSmall = oProps.params.button_hide_title_on_small;
-
-    const getName = (sName) => {
-        let aName = [oProps.type, oProps?.system?.replace(/_/g, '-'), oProps.object_id];
-        if(sName != undefined && sName.length > 0)
-            aName.push(sName);
-
-        return [].concat(aName).join('-');
-    };
-
-    const getIconType = (sMode) => {
-        const aIconType = {
-            web: !!oParams?.icon_type_web ? oParams.icon_type_web : 'svg', 
-            native: !!oParams?.icon_type_native ? oParams.icon_type_native : 'emoji'
-        }
-
-        return aIconType[sMode];
-    }
-
-    const getIconAlias = (sName) => {
-        const sKey = bWeb ? 'web' : 'native';
-        const sType = sName != 'default' ? oParams['icon_type_' + sKey] : 'svg';
-        
-
-        return oAliases[sKey][sName] && oAliases[sKey][sName][sType];
-    };
+    const oButtonProps = {
+        variant: oProps?.primary ? 'primary' : oProps.params?.button_variant,
+        size: oProps.params?.button_size,
+        rounded: oProps.params?.button_rounded,
+        fullWidth: oProps.params?.button_full_width,
+        hideTitleOnSmall: oProps.params?.button_hide_title_on_small
+    }; 
 
     const { actionsData, setActionsData } = useActionsData();
-    const [ actionsDataState, actisetActionsDataState ] = useState({});
-
-    let oCounterState = {};
-    for (const i in oItems) {
-        oCounterState[oItems[i].name] = false;
-    }
+    const [ actionsDataState, setActionsDataState ] = useState({});
 
     const [ performedBy, setPerformedBy ] = useState();
 
     const [ popupVisibleByCpd, setPopupVisibleByCpd ] = useState(false);
     const [ tabVisibleByCpd, setTabVisibleByCpd ] = useState('');
 
+    let oCounterState = {};
+    for (const i in oItems)
+        oCounterState[oItems[i].name] = false;
+
     const [ popupVisibleByDvd, setPopupVisibleByDvd ] = useState(oCounterState);
 
-    const isContextVar = (sName) => {
-        const sContextKey = getName();
+    const bAllowViewVoted = oSettings[oProps['system']]?.allow_view_voted != undefined ? oSettings[oProps['system']].allow_view_voted : true;
 
-        if(bShowFull)
-            return actionsDataState && actionsDataState[sContextKey] != undefined && actionsDataState[sContextKey][sName] != undefined;
-        else
-            return actionsData && actionsData[sContextKey] != undefined && actionsData[sContextKey][sName] != undefined;
-    };
-
-    const getContextVar = (sName) => {
-        const sContextKey = getName();
-
-        if(bShowFull)
-            return actionsDataState[sContextKey][sName];
-        else
-            return actionsData[sContextKey][sName];
-    };
-
-    const getContextVars = () => {
-        const sContextKey = getName();
-
-        if(bShowFull)
-            return actionsDataState && actionsDataState[sContextKey] ? actionsDataState[sContextKey] : null;
-        else
-            return actionsData && actionsData[sContextKey] ? actionsData[sContextKey] : null;
-    };
-
-    const setContextVars = (mValue) => {
-        const sContextKey = getName();
-        const oValue = {[sContextKey]: mValue};
-
-        if(bShowFull) {
-            if(!actionsDataState)
-                actisetActionsDataState(oValue);
-            else
-                actisetActionsDataState({...actionsDataState, ...oValue});
-        }
-        else {
-            if(!actionsData)
-                setActionsData(oValue);
-            else
-                setActionsData({...actionsData, ...oValue});
-        }
-    };
-
-    const performAction = async (sAction, aParams, onLoad) => {
-        const aParamsDefault = {s: oProps.system, o:oProps.object_id};
-
-        aParams = aParams ? {...aParamsDefault, ...aParams} : aParamsDefault;
-        const sRequest = '/api.php?r=system/' + sAction + '/TemplVoteServices&params[]=' + JSON.stringify(aParams);
-
-        const sResponse = await fetcher(sRequest);
-        if(typeof onLoad === 'function')
-            onLoad(sResponse?.data);
-    };
-
-    const handleDo = (event, oItem) => {
-        if(event)
-            event.preventDefault();
-
-        performAction('do', {value: 1, reaction: oItem.name}, (oData) => {
-            setContextVars(oData);
-        });
-
-    };
-
-    const handleUndo = (event) => {
-        event.preventDefault();
-
-        let sReaction = oProps.action.reaction;
-        if(isContextVar('reaction'))
-            sReaction = getContextVar('reaction');
-
-        performAction('do', {value: 1, reaction: sReaction}, (oData) => {
-            setContextVars(oData);
-        });
-    };
-
-    const handleGetPerformedByCpd = (event) => {
-        event.preventDefault();
-
-        if(!bAllowViewVoted)
-            return;
-
-        FeedbackHaptics(oParams.haptics_type);
-
-        performAction('get_performed_by', {}, (oData) => {
-            if(!oData?.performed_by)
-                return;
-
-            setPerformedBy(oData.performed_by);
-
-            setTabVisibleByCpd('');
-            setPopupVisibleByCpd(true);
-        });
-    };
-
-    const handleGetPerformedByDvd = (event, oItem) => {
-        event.preventDefault();
-
-        if(!bAllowViewVoted)
-            return;
-
-        FeedbackHaptics(oParams.haptics_type);
-
-        const sReaction = oItem?.name || '';
-        if(!sReaction)
-            return;
-
-        performAction('get_performed_by', {reaction: sReaction}, (oData) => {
-            if(!oData?.performed_by)
-                return;
-            
-            setPerformedBy(oData.performed_by);
-            setPopupVisibleByDvd(state => ({...state, [sReaction]: true}));
-        });
-    };
-
-    const getSkeleton = () => {
-        return (
-            <View className="gap-2">
-            {[...Array(1, 2, 3)].map( i => 
-                <View key={i} className="flex-col p-2 bg-neutral-500/5 sm:rounded-lg">
-                    <View className="animate-pulse flex-row items-center gap-3">
-                        <View className="rounded-full bg-neutral-600/20 h-10 w-10"></View>
-                        <View className="flex-1 gap-y-1">
-                            <View className="h-4 w-1/2 bg-neutral-600/20 rounded-full"></View>    
-                            <View className="h-3 w-1/3 bg-neutral-600/20 rounded-full"></View>
-                        </View>
-                    </View>
-                </View>
-            )}
-            </View>
-        );
-    };
+    const _getIconAlias = useCallback((sName) => getIconAlias(oParams, oAliases, sName), [oParams, oAliases]);
+    const _isContextVar = useCallback((sName) => isContextVar(actionsData, actionsDataState, bShowFull, sObject, sName), [actionsData, actionsDataState, bShowFull, sObject]);
+    const _getContextVar = useCallback((sName) => getContextVar(actionsData, actionsDataState, bShowFull, sObject, sName), [actionsData, actionsDataState, bShowFull, sObject]);
+    const _setContextVars = useCallback((mValue) => setContextVars(actionsData, setActionsData, actionsDataState, setActionsDataState, bShowFull, sObject, mValue), [actionsData, setActionsData, actionsDataState, setActionsDataState, bShowFull, sObject]);
+    const _performAction = useCallback((sAction, aParams, onLoad) => performAction(oProps.system, oProps.object_id, sAction, aParams, onLoad), [oProps.system, oProps.object_id]);
+    const _handleDo = useCallback((sReaction, event) => handleDo(_performAction, _setContextVars, oParams.haptics_type, sReaction, event), [_performAction, _setContextVars, oParams.haptics_type]);
+    const _handleUndo = useCallback((event) => handleUndo(_performAction, _setContextVars, _isContextVar, _getContextVar, oProps, event), [_performAction, _setContextVars, _isContextVar, _getContextVar, oProps]);
+    const _handleGetPerformedByCpd = useCallback((event) => handleGetPerformedByCpd(_performAction, setPerformedBy, setTabVisibleByCpd, setPopupVisibleByCpd, bAllowViewVoted, oParams.haptics_type, event), [_performAction, setPerformedBy, setTabVisibleByCpd, setPopupVisibleByCpd, bAllowViewVoted, oParams.haptics_type]);
+    const _handleGetPerformedByDvd = useCallback((sReaction, event) => handleGetPerformedByDvd(_performAction, setPerformedBy, setPopupVisibleByDvd, bAllowViewVoted, oParams.haptics_type, sReaction, event), [_performAction, setPerformedBy, setPopupVisibleByDvd, bAllowViewVoted, oParams.haptics_type]);
 
     let { currentUser, setCurrentUser } = useCurrentUser();
     useEffect(() => {
@@ -253,7 +370,7 @@ export default function ElementReactions(oProps) {
     const cb = (data) => {
         let aData = JSON.parse(data);
         if(!!aData?.api)
-            setContextVars(aData.api.performer_id == currentUser.id ? aData.api : {counter: aData.api.counter});
+            _setContextVars(aData.api.performer_id == currentUser.id ? aData.api : {counter: aData.api.counter});
     }
 
     //--- show action
@@ -266,26 +383,26 @@ export default function ElementReactions(oProps) {
         const bShowActionUndo = oAction?.is_undo === true;
 
         let bShowActionVoted = oAction?.is_voted === true || false;
-        if(isContextVar('is_voted'))
-            bShowActionVoted = getContextVar('is_voted') === true;
+        if(_isContextVar('is_voted'))
+            bShowActionVoted = _getContextVar('is_voted') === true;
 
         let bShowActionDisabled = oAction?.is_disabled === true || false;
-        if(isContextVar('is_disabled'))
-            bShowActionDisabled = getContextVar('is_disabled') === true;
+        if(_isContextVar('is_disabled'))
+            bShowActionDisabled = _getContextVar('is_disabled') === true;
 
         let sReaction = oAction?.reaction || '';
-        if(isContextVar('reaction'))
-            sReaction = getContextVar('reaction');
+        if(_isContextVar('reaction'))
+            sReaction = _getContextVar('reaction');
 
         let sTitle = oAction?.title || '';
-        if(isContextVar('title'))
-            sTitle = getContextVar('title');
+        if(_isContextVar('title'))
+            sTitle = _getContextVar('title');
 
         const ButtonAction = !bShowCombined ? (bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText) : ButtonMenuGroupItem;
 
         if(bShowActionUndo && bShowActionVoted) {
             sActionButton = (
-                <ButtonAction key="action" size={sDisplaySize} startDecorator={getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : ''} onPress={handleUndo} {...oButtonProps} />
+                <ButtonAction key="action" size={sDisplaySize} startDecorator={_getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : ''} onPress={_handleUndo} {...oButtonProps} />
             );
         }
         else {
@@ -293,23 +410,21 @@ export default function ElementReactions(oProps) {
                 return {
                     id: oItem.id ? oItem.id : oItem.name,
                     name: oItem.name,
-                    icon: getIconAlias(oItem.name),
+                    icon: _getIconAlias(oItem.name),
                     class_item: ' transition active:scale-150 duration-300 active:-translate-y-4  ',
                     class_item_icon: ' text-3xl ',
                     tooltip: "TODO",
                 };
             });
             if(bWeb) {
-                
-
                 sActionButton = oItems.length > 1 ? (
                     <Pressable key="action" onPress={(event) => {event.preventDefault()}}>
-                        <DropdownMenu variant="horizontal" items={aItems} onSelect={(oItem, event) => {handleDo(event, oItem)}}>
-                            <ButtonAction variant={bShowCombined ? 'group-item' : false} size={sDisplaySize}  startDecorator={getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : ''} disabled={bShowActionDisabled} {...oButtonProps} />
+                        <DropdownMenu variant="horizontal" items={aItems} onSelect={(oItem, event) => {_handleDo(oItem.name, event)}}>
+                            <ButtonAction variant={bShowCombined ? 'group-item' : false} size={sDisplaySize}  startDecorator={_getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : ''} disabled={bShowActionDisabled} {...oButtonProps} />
                         </DropdownMenu>
                     </Pressable>
                 ) : (
-                    <ButtonAction key="action" variant={bShowCombined ? 'group-item' : false} size={sDisplaySize} startDecorator={getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : ''} onPress={(event) => {handleDo(event, aItems[0])}} disabled={bShowActionDisabled} {...oButtonProps} />
+                    <ButtonAction key="action" variant={bShowCombined ? 'group-item' : false} size={sDisplaySize} startDecorator={_getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : ''} onPress={(event) => {_handleDo(aItems[0].name, event)}} disabled={bShowActionDisabled} {...oButtonProps} />
                 );
             }
             else {
@@ -327,22 +442,17 @@ export default function ElementReactions(oProps) {
                     return {
                         id: oItem.id,
                         name: oItem.name,
-                        emoji: getIconAlias(oItem.name),
+                        emoji: _getIconAlias(oItem.name),
                         title: t('rvote_' + oItem.name + '_title')
                     };
                 });
 
-                const onDoSelect = (item) => {
-                    FeedbackHaptics(oParams.haptics_type);
-                    handleDo(undefined, item);
-                };
-
                 sActionButton = sActionButton = oItems.length > 1 ? (
-                    <Reaction key="action" type="modal" showPopupType="onPress" items={aReactionItems} onTap={(item) => {onDoSelect(item)}} disabled={bShowActionDisabled} cardStyle={oReactionStyles.cardStyle}>
-                        <ButtonAction size={sDisplaySize} startDecorator={getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : false} {...oButtonProps} />
+                    <Reaction key="action" type="modal" showPopupType="onPress" items={aReactionItems} onTap={(item) => {_handleDo(item.name)}} disabled={bShowActionDisabled} cardStyle={oReactionStyles.cardStyle}>
+                        <ButtonAction size={sDisplaySize} startDecorator={_getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : false} {...oButtonProps} />
                     </Reaction>
                 ) : (
-                    <ButtonAction key="action" size={sDisplaySize} startDecorator={getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : false} onPress={() => {onDoSelect(aItems[0])}} disabled={bShowActionDisabled} {...oButtonProps} />
+                    <ButtonAction key="action" size={sDisplaySize} startDecorator={_getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : false} onPress={() => {_handleDo(aItems[0].name)}} disabled={bShowActionDisabled} {...oButtonProps} />
                 );
             }
         }
@@ -350,157 +460,23 @@ export default function ElementReactions(oProps) {
 
     //--- show counter
     const sShowCounterStyle = oParams?.show_counter_style || 'compound';
-    const bShowCounterAsButton = oParams?.show_counter_as_button != undefined && oParams.show_counter_as_button === true;
-    const bAllowViewVoted = oSettings[oProps['system']]?.allow_view_voted != undefined ? oSettings[oProps['system']].allow_view_voted : true;
 
-    const ButtonCounter = !bShowCombined ? (bShowCounterAsButton ? ButtonMenuCounterDefault : ButtonMenuCounterText) : ButtonMenuGroupItem;
+    const _getCounterDivided = useCallback(() => getCounterDivided(_getIconAlias, _isContextVar, _getContextVar, _handleGetPerformedByDvd, performedBy, popupVisibleByDvd, setPopupVisibleByDvd, bShowCombined, sDisplaySize, oParams, oCounter), [_getIconAlias, _isContextVar, _getContextVar, _handleGetPerformedByDvd, performedBy, popupVisibleByDvd, setPopupVisibleByDvd, bShowCombined, sDisplaySize, oParams, oCounter]);
+    const _getCounterCompound = useCallback(() => getCounterCompound(_getIconAlias, _isContextVar, _getContextVar, _handleGetPerformedByCpd, performedBy, popupVisibleByCpd, setPopupVisibleByCpd, tabVisibleByCpd, setTabVisibleByCpd, bShowCombined, sDisplaySize, oParams, oCounter), [_getIconAlias, _isContextVar, _getContextVar, _handleGetPerformedByCpd, performedBy, popupVisibleByCpd, setPopupVisibleByCpd, tabVisibleByCpd, setTabVisibleByCpd, bShowCombined, sDisplaySize, oParams, oCounter]);
 
-    const getCounterDivided = () => {
-        let aButtons = [];
-        let aPopups = [];
-
-        oCounter.items.forEach((aItem, iKey) => {
-            if(aItem.name == 'default')
-                return;
-
-            let iCount = aItem.count;
-            if(isContextVar('counter')) {
-                const oCounterGlobal = getContextVar('counter');
-                const sCounterKey = 'count_' + aItem.name;
-                if(oCounterGlobal[sCounterKey] != undefined)
-                    iCount = oCounterGlobal[sCounterKey];
-            }
-
-            if(!iCount)
-                return;
-
-            let aUsers = undefined;
-            if(performedBy && performedBy[aItem.name]) {
-                aUsers = performedBy[aItem.name].map(aUser => {
-                    return (
-                        <View key={aUser.id}><Profile {...aUser} /></View>
-                    );
-                });
-            }
-
-            if(aUsers && aUsers.length != 0)
-                aUsers = (
-                    <View className="gap-2">{aUsers}</View>
-                );
-            else
-                aUsers = getSkeleton();
-
-            aButtons.push(<ButtonCounter key={'counter-button-' + iKey} size={sDisplaySize} startDecorator={getIconAlias(aItem.name)} title={iCount} onPress={(event) => {handleGetPerformedByDvd(event, aItem)}} />);
-            aPopups.push(<Modal key={'counter-popup-' + iKey} title={t("Reactions")} onVisible={popupVisibleByDvd[aItem.name]} onClose={() => {setPopupVisibleByDvd(state => ({...state, [aItem.name]: false}))}}>{aUsers}</Modal>)
-        });
-
-        return [aButtons, aPopups];
-    };
-
-    const getCounterCompound = () => {
-        let iTotal = 0;
-        let sSelected = tabVisibleByCpd;
-        const aCounter = Object.keys(oCounter.items).map(function(iKey) {
-            const aItem = oCounter.items[iKey];
-
-            if(aItem.name == 'default')
-                return;
-
-            let iCount = aItem.count;
-            if(isContextVar('counter')) {
-                const oCounterGlobal = getContextVar('counter');
-                const sCounterKey = 'count_' + aItem.name;
-                if(oCounterGlobal[sCounterKey] != undefined)
-                    iCount = oCounterGlobal[sCounterKey];
-            }
-
-            if(!sSelected && iCount != 0)
-                sSelected = aItem.name;
-
-            iTotal += iCount;
-
-            if(!iCount)
-                return;
-            
-            return getIconAlias(aItem.name);
-        });
-
-        if(!iTotal)
-            return false;
-
-        const aPerformedByMenu = Object.keys(oCounter.items).map(function(iKey) {
-            const aItem = oCounter.items[iKey];
-            if(aItem.name == 'default')
-                return;
-            
-            if(performedBy == undefined || performedBy[aItem.name] == undefined || performedBy[aItem.name].length == 0)
-                return;
-
-            let sClass = 'flex-0 flex mx-1  flex-row w-min top-px';
-            if(aItem.name == sSelected)
-                sClass += ' border-b-2 border-primary dark:border-primary-d ';
-
-            return (
-                <View key={aItem.name} className={sClass}>
-                    <Button size="sm" variant="text" startDecorator={getIconAlias(aItem.name)} onPress={() => {setTabVisibleByCpd(aItem.name)}} rounded="true" />
-                </View>
-            );
-        });
-
-        const aPerformedByUsers = Object.keys(oCounter.items).map(function(iKey) {
-            const aItem = oCounter.items[iKey];
-            if(aItem.name == 'default')
-                return;
-
-            if(!sSelected && aItem.count != 0)
-                sSelected = aItem.name;
-
-            let aUsers = undefined;
-            if(performedBy && performedBy[aItem.name]) {
-                aUsers = performedBy[aItem.name].map(aUser => {
-                    return (
-                        <View key={aUser.id}><Profile {...aUser} /></View>
-                    );
-                });
-            }
-
-            if(!aUsers || aUsers.length == 0)
-                aUsers = getSkeleton();
-
-            let sClass = '';
-            if(aItem.name != sSelected) 
-                sClass = 'hidden ';
-            sClass += 'gap-2 overflow-y-auto text-neutral-700 dark:text-neutral-200';
-
-            return (
-                <View key={aItem.name} className={sClass}>{aUsers}</View>
-            );
-        });
-
-        return [[
-                <ButtonCounter fullWidth={false} key="counter" size={sDisplaySize} endDecorator={aCounter} title={iTotal} onPress={handleGetPerformedByCpd} />
-            ], [
-                <Modal key="counter-popup"  title={t("Reactions")} onVisible={popupVisibleByCpd} onClose={() => {setPopupVisibleByCpd(false)}}>
-                    <View className="relative flex-row border-b border-bdr dark:border-bdr-d ">{aPerformedByMenu}</View>
-                    <View className="p-2">{aPerformedByUsers}</View>
-                </Modal>
-            ]
-        ];
-    };
-
-    //--- Counter
     let aCounter = [];
     if(bShowCounter && oCounter?.items != undefined)
         switch(sShowCounterStyle) {
             case 'compound':
-                aCounter = getCounterCompound()
+                aCounter = _getCounterCompound()
                 break;
 
             case 'divided':
-                aCounter = getCounterDivided();
+                aCounter = _getCounterDivided();
                 break;
         }
 
+    //--- show final component
     let sResult = undefined;
 
     if(bShowCombined) {
@@ -523,7 +499,6 @@ export default function ElementReactions(oProps) {
         );
     }
     else {
-        const sObject = getName();
         const bCounter = bShowCounter && !!aCounter;
 
         sResult = (
@@ -539,4 +514,4 @@ export default function ElementReactions(oProps) {
     return bWeb ? sResult : (
         <ReactionProvider>{sResult}</ReactionProvider>
     )
- }
+}
