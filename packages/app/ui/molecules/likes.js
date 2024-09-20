@@ -90,6 +90,24 @@ const handleGetPerformedBy = (performAction, setPerformedBy, setPopupVisible, bA
     });
 };
 
+const getSkeleton = () => {
+    return (
+        <View className="gap-y-2">
+        {[...Array(1, 2, 3)].map( i => 
+            <View key={i} className="flex-col p-2 bg-neutral-500/5 sm:rounded-lg">
+                <View className="animate-pulse flex-row items-center gap-3">
+                    <View className="rounded-full bg-neutral-600/20 h-10 w-10"></View>
+                    <View className="flex-1 gap-y-1">
+                        <View className="h-4 w-1/2 bg-neutral-600/20 rounded-full"></View>    
+                        <View className="h-3 w-1/3 bg-neutral-600/20 rounded-full"></View>
+                    </View>
+                </View>
+            </View>
+        )}
+        </View>
+    );
+};
+
 export default function ElementLikes(oProps) {
     const { t } = useTranslation();
     const oSettings = appSetting('social_actions', 'like');
@@ -133,24 +151,6 @@ export default function ElementLikes(oProps) {
     const _handleDo = useCallback((event) => handleDo(_performAction, _setContextVars, oParams.haptics_type, event), [_performAction, _setContextVars, oParams.haptics_type]);
     const _handleUndo = useCallback((event) => handleUndo(_performAction, _setContextVars, event), [_performAction, _setContextVars]);
     const _handleGetPerformedBy = useCallback((event) => handleGetPerformedBy(_performAction, setPerformedBy, setPopupVisible, bAllowViewVoted, oParams.haptics_type, event), [_performAction, setPerformedBy, setPopupVisible, bAllowViewVoted, oParams.haptics_type]);
-
-    const getSkeleton = () => {
-        return (
-            <View className="gap-y-2">
-            {[...Array(1, 2, 3)].map( i => 
-                <View key={i} className="flex-col p-2 bg-neutral-500/5 sm:rounded-lg">
-                    <View className="animate-pulse flex-row items-center gap-3">
-                        <View className="rounded-full bg-neutral-600/20 h-10 w-10"></View>
-                        <View className="flex-1 gap-y-1">
-                            <View className="h-4 w-1/2 bg-neutral-600/20 rounded-full"></View>    
-                            <View className="h-3 w-1/3 bg-neutral-600/20 rounded-full"></View>
-                        </View>
-                    </View>
-                </View>
-            )}
-            </View>
-        );
-    };
 
     let { currentUser, setCurrentUser } = useCurrentUser();
     useEffect(() => {
