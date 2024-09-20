@@ -25,8 +25,8 @@ export default function Subscriber() {
             subscribe('bx_timeline_0', 'edited', onItemEdited);
         }
 
-        if (currentUser?.account_id)
-            subscribe('sys_account_' + currentUser.account_id, 'confirmed', onUpdateAccount);
+        //if (currentUser?.account_id)
+        //    subscribe('sys_account_' + currentUser.account_id, 'confirmed', onUpdateAccount);
 
     }, [currentUser?.id])
 
