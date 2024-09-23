@@ -8,6 +8,8 @@ import { appStatic } from 'app/lib/app-static'
 import Redirect from 'app/ui/atoms/redirect'
 import { useRef, useEffect  } from 'react';
 import { storageClear } from 'app/lib/util';
+import { Modal } from 'app/design/controls'
+import ConfirmEmail from 'app/ui/molecules/confirm_email'
 
 function Page404() {
     const r = appSetting('layout', 'redirect_on_not_found');
@@ -81,21 +83,25 @@ function Wrapper(p, props){
     
     let bConfirm = false;
     let bConfirm2 = false;
+
+   /* if ((currentUser && !currentUser?.confirmed && appSetting('layout', 'lock_unconfirmed') == true)  && props?.data?.uri?.toString() != 'create-account' && props?.data?.uri?.toString() != 'login')
+        bConfirm = true;*/
     useEffect(() => {
         
         if ((currentUser && !currentUser?.confirmed && appSetting('layout', 'lock_unconfirmed') == true) && props?.data?.uri?.toString() != 'confirm-email')
             bConfirm = true;
-        if ((currentUser && currentUser?.confirmed && appSetting('layout', 'lock_unconfirmed') == true) && props?.data?.uri?.toString() == 'confirm-email')
-            bConfirm2 = true;
+       // if ((currentUser && currentUser?.confirmed && appSetting('layout', 'lock_unconfirmed') == true) && props?.data?.uri?.toString() == 'confirm-email')
+        //    bConfirm2 = true;
         if (bConfirm){
             redirectdRef.current.redirect('/confirm-email');
         }
-        if (bConfirm2){
+       /* if (bConfirm2){
             storageClear();
-            redirectdRef.current.redirect('/home');
-        }
+        redirectdRef.current.redirect('/home');
+        }*/
     }, [currentUser?.confirmed]);
-    console.log("bConfirm", bConfirm, bConfirm2)
+    console.log("bConfirm", bConfirm, bConfirm2, currentUser)
+
 
     return <><Redirect ref={redirectdRef} /><View className='flex-1 mx-auto w-full h-full animated-view'>{p}</View></>
 }

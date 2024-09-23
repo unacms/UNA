@@ -34,7 +34,7 @@ function DisplayNameLink({ title, url, href, fontSize }) {
                 <Text className={'text-neutral-900 dark:text-neutral-100 font-semibold ' + fontSize + ' truncate '}>
                     {title && title.replace(" (anonymized)", '')}
                 </Text>
-                <Icon icon="Detective"></Icon>
+                <Icon icon="Shield"></Icon>
             </Row>
         )
 

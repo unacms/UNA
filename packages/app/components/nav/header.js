@@ -14,6 +14,7 @@ import Search from 'app/ui/molecules/search';
 import { Button } from 'app/design/controls';
 import Link from 'app/ui/atoms/link'
 import { isValidElement, useMemo, memo } from 'react';
+import { parseUrl } from 'app/lib/util'
 
 function SvgLogoNative() {
     const scheme = useColorScheme();
@@ -70,7 +71,8 @@ const Header = memo(({ backButtonPresented, header, pagePath, rightComponents })
 
     const routerExpo = useRouter();
     const { colors } = Theme();
-    const isHome = pagePath === '/home';
+    let a = parseUrl(pagePath);
+    const isHome = a.path === '/home';
     if (isHome /*&& currentUser*/) {
         text = '';
     }

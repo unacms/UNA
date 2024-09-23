@@ -8,12 +8,14 @@ import { fetcher } from 'app/lib/fetcher';
 import { useTranslation } from 'react-i18next';
 import Card from 'app/ui/molecules/card'
 import Redirect from 'app/ui/atoms/redirect';
+import { storageClear } from 'app/lib/util';
 
 export default function ElementConfirmEmail(props) {
     let { currentUser, setCurrentUser } = useCurrentUser();
     const [showMsg, setShowMsg] = useState(false);
     const [inputValue, setInputValue] = useState("");
     const [inputError, setInputError] = useState(false);
+    const redirectdRef = useRef();
     const { t } = useTranslation();
     const handleConfirm = async () => {
         const sRequest = '/api.php?r=system/confirm_email/TemplServiceAccount&params[]=' + inputValue;
@@ -21,9 +23,11 @@ export default function ElementConfirmEmail(props) {
 
         
         if (sResponse.data == true) {
+            storageClear();
             setCurrentUser({
                 confirmed: true,
             });
+            redirectdRef.current.redirect('/home?ts='+Date.now());
         }
         else {
             setInputError(true);
@@ -37,7 +41,7 @@ export default function ElementConfirmEmail(props) {
     };
 
     return (
-        <>
+        <><Redirect ref={redirectdRef} />
             <Msg onVisible={showMsg} title={"New verification code emailed"} handleOk={() => { setShowMsg(false) }} />
             <View className='mx-auto max-w-xl p-4 w-full '>
                 <Card rounded margin=' p-4 '>
