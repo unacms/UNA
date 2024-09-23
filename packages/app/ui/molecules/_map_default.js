@@ -7,8 +7,8 @@ import Features from './features';  // optimized
 import Reports from './reports';    // optimized
 import Reposts from './reposts';    // optimized
 import Shares from './shares';  // optimized
-import Connections from './connections';
-import Recommendation from './recommendations';
+import Connections from './connections';    // optimized
+import Recommendation from './recommendations'; // optimized
 
 export const componentsMapDefault = {
     likes: Likes,
