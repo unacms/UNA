@@ -71,8 +71,13 @@ const Header = memo(({ backButtonPresented, header, pagePath, rightComponents })
 
     const routerExpo = useRouter();
     const { colors } = Theme();
-    let a = parseUrl(pagePath);
-    const isHome = a.path === '/home';
+    //let a = parseUrl(pagePath);
+    let b = pagePath;
+    if (pagePath){
+        let a = parseUrl(pagePath);
+        b = a.path
+    }
+    const isHome = b === '/home';
     if (isHome /*&& currentUser*/) {
         text = '';
     }
