@@ -72,7 +72,6 @@ export default function ElementReposts(oProps) {
 
     //--- default display type: action, counter, both.
     const sDisplayType = oProps?.displayType ? oProps.displayType : 'both';
-    const sDisplaySize = oProps?.displaySize ? oProps.displaySize : (oParams?.display_size ? oParams.display_size : false);
 
     const bShowAction = (oParams?.show_action == undefined || oParams.show_action === true) && (sDisplayType == 'action' || sDisplayType == 'both');
     const bShowCounter = oParams?.show_counter != undefined && oParams.show_counter === true && (sDisplayType == 'counter' || sDisplayType == 'both');
@@ -119,12 +118,12 @@ export default function ElementReposts(oProps) {
     let sActionButton = undefined;
     if(bShowActionUndo && bShowActionPerformed) {
         sActionButton = (
-            <ButtonAction key="action" size={sDisplaySize} startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} onPress={handleUndo} pressed={true} {...oButtonProps} />
+            <ButtonAction key="action" startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} onPress={handleUndo} pressed={true} {...oButtonProps} />
         );
     }
     else {
         sActionButton = (
-            <ButtonAction key="action" size={sDisplaySize} startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? _handleDo : () => {}} disabled={bShowActionDisabled} {...oButtonProps} />
+            <ButtonAction key="action" startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? _handleDo : () => {}} disabled={bShowActionDisabled} {...oButtonProps} />
         );
     }
 
@@ -155,7 +154,7 @@ export default function ElementReposts(oProps) {
 
         return (
             <View>
-                <ButtonsGroupMenu size={sDisplaySize} {...oButtonProps}>{aButtonsGroup}</ButtonsGroupMenu>
+                <ButtonsGroupMenu  {...oButtonProps}>{aButtonsGroup}</ButtonsGroupMenu>
                 {sCounterPopup}
             </View>
         );

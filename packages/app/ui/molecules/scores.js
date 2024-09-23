@@ -136,7 +136,6 @@ export default function ElementScore(oProps) {
 
     //--- default display type: action, counter, both.
     const sDisplayType = oProps.displayType ? oProps.displayType : 'both';
-    const sDisplaySize = oProps?.displaySize ? oProps.displaySize : (oParams?.display_size ? oParams.display_size : false);
 
     const bShowAction = (oParams?.show_action == undefined || oParams.show_action === true) && (sDisplayType == 'action' || sDisplayType == 'both');
     const bShowCounter = oParams?.show_counter != undefined && oParams.show_counter === true && (sDisplayType == 'counter' || sDisplayType == 'both');
@@ -197,7 +196,7 @@ export default function ElementScore(oProps) {
         }
 
         return (
-            <ButtonAction key={'action-' + sAction} size={sDisplaySize} startDecorator={oIconAliases[sAction]} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? (event) => {_handleDo(sAction, event)} : () => {}} disabled={bShowActionDisabled} {...oButtonProps} />
+            <ButtonAction key={'action-' + sAction} startDecorator={oIconAliases[sAction]} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? (event) => {_handleDo(sAction, event)} : () => {}} disabled={bShowActionDisabled} {...oButtonProps} />
         );
     });
 
@@ -240,7 +239,7 @@ export default function ElementScore(oProps) {
         ) : iScore.toString();
 
         sCounterButton = (
-            <ButtonCounter key="counter" size={sDisplaySize} startDecorator={!bShowCombined ? 'ArrowFatUp' : false} title={sScore} onPress={_handleGetPerformedBy} disabled={!bScore} {...oButtonProps} />
+            <ButtonCounter key="counter" startDecorator={!bShowCombined ? 'ArrowFatUp' : false} title={sScore} onPress={_handleGetPerformedBy} disabled={!bScore} {...oButtonProps} />
         );
 
         if(bScore) {
@@ -276,7 +275,7 @@ export default function ElementScore(oProps) {
 
         return (
             <View>
-                <ButtonsGroupMenu size={sDisplaySize} {...oButtonProps}>{aButtonsGroup}</ButtonsGroupMenu>
+                <ButtonsGroupMenu {...oButtonProps}>{aButtonsGroup}</ButtonsGroupMenu>
                 {sCounterPopup}
             </View>
         );

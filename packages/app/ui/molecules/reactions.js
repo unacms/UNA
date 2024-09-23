@@ -138,7 +138,7 @@ const getSkeleton = () => {
     );
 };
 
-const getCounterDivided = (getIconAlias, isContextVar, getContextVar, handleGetPerformedByDvd, performedBy, popupVisibleByDvd, setPopupVisibleByDvd, bShowCombined, sDisplaySize, oParams, oCounter) => {
+const getCounterDivided = (getIconAlias, isContextVar, getContextVar, handleGetPerformedByDvd, performedBy, popupVisibleByDvd, setPopupVisibleByDvd, bShowCombined, oParams, oCounter) => {
     const { t } = useTranslation();
 
     let aButtons = [];
@@ -178,14 +178,14 @@ const getCounterDivided = (getIconAlias, isContextVar, getContextVar, handleGetP
         else
             aUsers = getSkeleton();
 
-        aButtons.push(<ButtonCounter key={'counter-button-' + iKey} size={sDisplaySize} startDecorator={getIconAlias(aItem.name)} title={iCount} onPress={(event) => {handleGetPerformedByDvd(aItem?.name || '', event)}} />);
+        aButtons.push(<ButtonCounter key={'counter-button-' + iKey} startDecorator={getIconAlias(aItem.name)} title={iCount} onPress={(event) => {handleGetPerformedByDvd(aItem?.name || '', event)}} />);
         aPopups.push(<Modal key={'counter-popup-' + iKey} title={t("Reactions")} onVisible={popupVisibleByDvd[aItem.name]} onClose={() => {setPopupVisibleByDvd(state => ({...state, [aItem.name]: false}))}}>{aUsers}</Modal>)
     });
 
     return [aButtons, aPopups];
 };
 
-const getCounterCompound = (getIconAlias, isContextVar, getContextVar, handleGetPerformedByCpd, performedBy, popupVisibleByCpd, setPopupVisibleByCpd, tabVisibleByCpd, setTabVisibleByCpd, bShowCombined, sDisplaySize, oParams, oCounter) => {
+const getCounterCompound = (getIconAlias, isContextVar, getContextVar, handleGetPerformedByCpd, performedBy, popupVisibleByCpd, setPopupVisibleByCpd, tabVisibleByCpd, setTabVisibleByCpd, bShowCombined, oParams, oCounter) => {
     const { t } = useTranslation();
 
     let iTotal = 0;
@@ -271,7 +271,7 @@ const getCounterCompound = (getIconAlias, isContextVar, getContextVar, handleGet
     const ButtonCounter = !bShowCombined ? (bShowCounterAsButton ? ButtonMenuCounterDefault : ButtonMenuCounterText) : ButtonMenuGroupItem;
 
     return [[
-            <ButtonCounter fullWidth={false} key="counter" size={sDisplaySize} endDecorator={aCounter} title={iTotal} onPress={handleGetPerformedByCpd} />
+            <ButtonCounter fullWidth={false} key="counter" endDecorator={aCounter} title={iTotal} onPress={handleGetPerformedByCpd} />
         ], [
             <Modal key="counter-popup"  title={t("Reactions")} onVisible={popupVisibleByCpd} onClose={() => {setPopupVisibleByCpd(false)}}>
                 <View className="relative flex-row border-b border-bdr dark:border-bdr-d ">{aPerformedByMenu}</View>
@@ -317,7 +317,6 @@ export default function ElementReactions(oProps) {
 
     //--- default display type: action, counter, both.
     const sDisplayType = oProps.displayType ? oProps.displayType : 'both';
-    const sDisplaySize = oProps?.displaySize ? oProps.displaySize : (oParams?.display_size ? oParams.display_size : false);
 
     const bShowAction = (oParams?.show_action == undefined || oParams.show_action === true) && (sDisplayType == 'action' || sDisplayType == 'both') && !!oAction && !!oAction?.title;
     const bShowCounter = oParams?.show_counter != undefined && oParams.show_counter === true && (sDisplayType == 'counter' || sDisplayType == 'both') && !!oCounter && !!oCounter?.items;
@@ -398,7 +397,7 @@ export default function ElementReactions(oProps) {
 
         if(bShowActionUndo && bShowActionVoted) {
             sActionButton = (
-                <ButtonAction key="action" size={sDisplaySize} startDecorator={_getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : ''} onPress={_handleUndo} {...oButtonProps} />
+                <ButtonAction key="action" startDecorator={_getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : ''} onPress={_handleUndo} {...oButtonProps} />
             );
         }
         else {
@@ -416,11 +415,11 @@ export default function ElementReactions(oProps) {
                 sActionButton = oItems.length > 1 ? (
                     <Pressable key="action" onPress={(event) => {event.preventDefault()}}>
                         <DropdownMenu variant="horizontal" items={aItems} onSelect={(oItem, event) => {_handleDo(oItem.name, event)}}>
-                            <ButtonAction variant={bShowCombined ? 'group-item' : false} size={sDisplaySize}  startDecorator={_getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : ''} disabled={bShowActionDisabled} {...oButtonProps} />
+                            <ButtonAction variant={bShowCombined ? 'group-item' : false}  startDecorator={_getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : ''} disabled={bShowActionDisabled} {...oButtonProps} />
                         </DropdownMenu>
                     </Pressable>
                 ) : (
-                    <ButtonAction key="action" variant={bShowCombined ? 'group-item' : false} size={sDisplaySize} startDecorator={_getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : ''} onPress={(event) => {_handleDo(aItems[0].name, event)}} disabled={bShowActionDisabled} {...oButtonProps} />
+                    <ButtonAction key="action" variant={bShowCombined ? 'group-item' : false} startDecorator={_getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : ''} onPress={(event) => {_handleDo(aItems[0].name, event)}} disabled={bShowActionDisabled} {...oButtonProps} />
                 );
             }
             else {
@@ -445,10 +444,10 @@ export default function ElementReactions(oProps) {
 
                 sActionButton = sActionButton = oItems.length > 1 ? (
                     <Reaction key="action" type="modal" showPopupType="onPress" items={aReactionItems} onTap={(item) => {_handleDo(item.name)}} disabled={bShowActionDisabled} cardStyle={oReactionStyles.cardStyle}>
-                        <ButtonAction size={sDisplaySize} startDecorator={_getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : false} {...oButtonProps} />
+                        <ButtonAction startDecorator={_getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : false} {...oButtonProps} />
                     </Reaction>
                 ) : (
-                    <ButtonAction key="action" size={sDisplaySize} startDecorator={_getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : false} onPress={() => {_handleDo(aItems[0].name)}} disabled={bShowActionDisabled} {...oButtonProps} />
+                    <ButtonAction key="action" startDecorator={_getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : false} onPress={() => {_handleDo(aItems[0].name)}} disabled={bShowActionDisabled} {...oButtonProps} />
                 );
             }
         }
@@ -457,8 +456,8 @@ export default function ElementReactions(oProps) {
     //--- show counter
     const sShowCounterStyle = oParams?.show_counter_style || 'compound';
 
-    const _getCounterDivided = useCallback(() => getCounterDivided(_getIconAlias, _isContextVar, _getContextVar, _handleGetPerformedByDvd, performedBy, popupVisibleByDvd, setPopupVisibleByDvd, bShowCombined, sDisplaySize, oParams, oCounter), [_getIconAlias, _isContextVar, _getContextVar, _handleGetPerformedByDvd, performedBy, popupVisibleByDvd, setPopupVisibleByDvd, bShowCombined, sDisplaySize, oParams, oCounter]);
-    const _getCounterCompound = useCallback(() => getCounterCompound(_getIconAlias, _isContextVar, _getContextVar, _handleGetPerformedByCpd, performedBy, popupVisibleByCpd, setPopupVisibleByCpd, tabVisibleByCpd, setTabVisibleByCpd, bShowCombined, sDisplaySize, oParams, oCounter), [_getIconAlias, _isContextVar, _getContextVar, _handleGetPerformedByCpd, performedBy, popupVisibleByCpd, setPopupVisibleByCpd, tabVisibleByCpd, setTabVisibleByCpd, bShowCombined, sDisplaySize, oParams, oCounter]);
+    const _getCounterDivided = useCallback(() => getCounterDivided(_getIconAlias, _isContextVar, _getContextVar, _handleGetPerformedByDvd, performedBy, popupVisibleByDvd, setPopupVisibleByDvd, bShowCombined, oParams, oCounter), [_getIconAlias, _isContextVar, _getContextVar, _handleGetPerformedByDvd, performedBy, popupVisibleByDvd, setPopupVisibleByDvd, bShowCombined, oParams, oCounter]);
+    const _getCounterCompound = useCallback(() => getCounterCompound(_getIconAlias, _isContextVar, _getContextVar, _handleGetPerformedByCpd, performedBy, popupVisibleByCpd, setPopupVisibleByCpd, tabVisibleByCpd, setTabVisibleByCpd, bShowCombined, oParams, oCounter), [_getIconAlias, _isContextVar, _getContextVar, _handleGetPerformedByCpd, performedBy, popupVisibleByCpd, setPopupVisibleByCpd, tabVisibleByCpd, setTabVisibleByCpd, bShowCombined, oParams, oCounter]);
 
     let aCounter = [];
     if(bShowCounter && oCounter?.items != undefined)
@@ -488,7 +487,7 @@ export default function ElementReactions(oProps) {
 
         sResult = (
             <View>
-                <ButtonsGroupMenu size={sDisplaySize}  {...oButtonProps}>{aButtonsGroup}</ButtonsGroupMenu>
+                <ButtonsGroupMenu {...oButtonProps}>{aButtonsGroup}</ButtonsGroupMenu>
                 {sActionPopup}
                 {aCounter[1]}
             </View>

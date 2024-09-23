@@ -44,8 +44,6 @@ export default function ElementShares(oProps) {
     const sIcon = oSettings[oProps['system']]?.icon || "ShareFat";
     const oAction = oProps.action;
 
-    const sDisplaySize = oProps?.displaySize || oParams?.display_size || false;
-
     const bShowAction = oParams?.show_action !== false;
 
     const oButtonProps = {
@@ -68,7 +66,7 @@ export default function ElementShares(oProps) {
 
     return (
         <View className="flex-auto flex-row items-center">
-            {bShowAction && <View key={sObject + '-action'} className={'flex-auto'}><ButtonAction key="action" size={sDisplaySize} startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} onPress={handlePress} {...oButtonProps} /></View>}
+            {bShowAction && <View key={sObject + '-action'} className={'flex-auto'}><ButtonAction key="action" startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} onPress={handlePress} {...oButtonProps} /></View>}
         </View>
     );
  }

@@ -228,7 +228,7 @@ export default function UnitComments(props) {
                         </View> : <View></View>
                         }
                         <View className='flex-row flex-auto '>
-                            <Menu {...data.menu_actions} displayType="element" showMatched={true} params={{ show_action: true, show_counter: true, show_combined: true, display_size: 'xs', button_variant: 'text' }} />
+                            <Menu {...data.menu_actions} displayType="element" showMatched={true} params={{ show_action: true, show_counter: true, show_combined: true, button_size:'xs', button_variant: 'text' }} />
                             {!!currentUser && !!aMenuManageItems.length &&
                                 <View className="ml-auto flex-none">
                                     <DropdownMenu items={aMenuManageItems.map((aItem) => {

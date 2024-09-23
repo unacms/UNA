@@ -58,9 +58,6 @@ export default function ElementFeatures(oProps) {
         undo: 'Star'
     };
 
-    //--- default display type: action, counter, both.
-    const sDisplaySize = oProps?.displaySize ? oProps.displaySize : (oParams?.display_size ? oParams.display_size : false);
-
     const oButtonProps = {
         variant: oProps?.primary ? 'primary' : oProps.params?.button_variant,
         size: oProps.params?.button_size,
@@ -98,6 +95,6 @@ export default function ElementFeatures(oProps) {
         oButtonProps.startDecorator = oIcons[(bShowActionFeatured ? 'un' : '') + 'do'];
 
     return (
-        <ButtonAction key="action" size={sDisplaySize} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? _handleDo : () => {}} pressed={bShowActionUndo && bShowActionFeatured} disabled={bShowActionDisabled} {...oButtonProps} />
+        <ButtonAction key="action" title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? _handleDo : () => {}} pressed={bShowActionUndo && bShowActionFeatured} disabled={bShowActionDisabled} {...oButtonProps} />
     );
 }

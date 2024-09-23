@@ -36,7 +36,6 @@ export default function ElementComments(oProps) {
 
     //--- default display type: action, counter, both.
     const sDisplayType = oProps.displayType || 'both';
-    const sDisplaySize = oProps.displaySize || oParams.display_size || false;
 
     const oButtonProps = {
         variant: oProps.primary ? 'primary' : oProps.params?.button_variant,
@@ -95,14 +94,13 @@ export default function ElementComments(oProps) {
     const sActionButton = useMemo(() => (
         <ButtonAction
             key="action"
-            size={sDisplaySize}
             startDecorator="ChatCircleText"
             title={bShowActionLabel ? (iCount > 0 ? iCount : sTitle) : false}
             onPress={!bShowActionDisabled ? handlePress : undefined}
             disabled={bShowActionDisabled}
             {...oButtonProps}
         />
-    ), [sDisplaySize, bShowActionLabel, sTitle, bShowActionDisabled, handlePress, oButtonProps]);
+    ), [bShowActionLabel, sTitle, bShowActionDisabled, handlePress, oButtonProps]);
 
     if(bShowCombined) {
         let aButtonsGroup = [sActionButton];

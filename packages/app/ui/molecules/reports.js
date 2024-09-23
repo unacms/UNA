@@ -163,7 +163,6 @@ const ElementReports = forwardRef((oProps, ref) => {
 
     //--- default display type: action, counter, both.
     const sDisplayType = oProps?.displayType ? oProps.displayType : 'both';
-    const sDisplaySize = oProps?.displaySize ? oProps.displaySize : (oParams?.display_size ? oParams.display_size : false);
 
     const bShowAction = (oParams?.show_action == undefined || oParams.show_action === true) && (sDisplayType == 'action' || sDisplayType == 'both');
     const bShowCounter = oParams?.show_counter != undefined && oParams.show_counter === true && (sDisplayType == 'counter' || sDisplayType == 'both');
@@ -239,12 +238,12 @@ const ElementReports = forwardRef((oProps, ref) => {
     let sActionPopup = undefined;
     if(bShowActionUndo && bShowActionReported) {
         sActionButton = (
-            <ButtonAction key="action" size={sDisplaySize} startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} onPress={_handleUndo} {...oButtonProps} />
+            <ButtonAction key="action"  startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} onPress={_handleUndo} {...oButtonProps} />
         );
     }
     else {
         sActionButton = (
-            <ButtonAction key="action" size={sDisplaySize} startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? _handleGetDo : () => {}} disabled={bShowActionDisabled} {...oButtonProps} />
+            <ButtonAction key="action"  startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? _handleGetDo : () => {}} disabled={bShowActionDisabled} {...oButtonProps} />
         );
 
         sActionPopup = (
@@ -269,7 +268,7 @@ const ElementReports = forwardRef((oProps, ref) => {
                         onChangeText={setValueText}
                         value={valueText}
                     />
-                    <Button size={sDisplaySize} title={t('Send report')} onPress={(event) => {_handleDo({type: valueType, text: valueText}, event)}} />
+                    <Button  title={t('Send report')} onPress={(event) => {_handleDo({type: valueType, text: valueText}, event)}} />
                 </View>
             </Modal>
         );
@@ -321,7 +320,7 @@ const ElementReports = forwardRef((oProps, ref) => {
 
         sCounterButton = (
             <Animated.View key="counter" style={indicatorStyle}>
-                <ButtonCounter size={sDisplaySize} startDecorator={!bShowCombined ? sIcon : false} title={iCount+''} onPress={_handleGetPerformedBy} {...oButtonProps} />
+                <ButtonCounter  startDecorator={!bShowCombined ? sIcon : false} title={iCount+''} onPress={_handleGetPerformedBy} {...oButtonProps} />
             </Animated.View>
         );
 
@@ -344,7 +343,7 @@ const ElementReports = forwardRef((oProps, ref) => {
 
         return (
             <View className={(bShowActionUndo && bShowActionReported ? ' undo' : ' do')}>
-                <ButtonsGroupMenu size={sDisplaySize} {...oButtonProps}>{aButtonsGroup}</ButtonsGroupMenu>
+                <ButtonsGroupMenu  {...oButtonProps}>{aButtonsGroup}</ButtonsGroupMenu>
                     {sActionPopup}
                     {sCounterPopup}
             </View>

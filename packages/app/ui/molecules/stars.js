@@ -124,7 +124,6 @@ export default function ElementStars(oProps) {
 
     //--- default display type: action, counter, both.
     const sDisplayType = oProps?.displayType ? oProps.displayType : 'both';
-    const sDisplaySize = oProps?.displaySize ? oProps.displaySize : (oParams?.display_size ? oParams.display_size : false);
 
     const bShowAction = (oParams?.show_action == undefined || oParams.show_action === true) && (sDisplayType == 'action' || sDisplayType == 'both');
     const bShowCounter = oParams?.show_counter != undefined && oParams.show_counter === true && (sDisplayType == 'counter' || sDisplayType == 'both');
@@ -211,11 +210,11 @@ export default function ElementStars(oProps) {
         if(bShowActionVoted) {
             if(bShowActionUndo)
                 sActionButton = (
-                    <ButtonAction key="action" size={sDisplaySize} startDecorator={sIcon} title={bShowActionLabel ? sTitle : ''} onPress={_handleUndo} {...oButtonProps} />
+                    <ButtonAction key="action"  startDecorator={sIcon} title={bShowActionLabel ? sTitle : ''} onPress={_handleUndo} {...oButtonProps} />
                 );
             else
                 sActionButton = (
-                    <ButtonAction key="action" size={sDisplaySize} startDecorator={sIcon} title={bShowActionLabel ? sTitle : ''} onPress={() => {}} disabled={true} {...oButtonProps} />
+                    <ButtonAction key="action"  startDecorator={sIcon} title={bShowActionLabel ? sTitle : ''} onPress={() => {}} disabled={true} {...oButtonProps} />
                 );
         }
         else {
@@ -224,7 +223,7 @@ export default function ElementStars(oProps) {
                     <Pressable key="action" onPress={(event) => {event.preventDefault()}}>
                         <DropdownPopup size="auto" open={!!popupVisibleDo} onOpenChange={async (bOpen) => {setPopupVisibleDo(bOpen)}}>
                         {[
-                            <ButtonAction variant={bShowCombined ? 'group-item' : false} size={sDisplaySize} startDecorator={sIcon} title={bShowActionLabel ? sTitle : ''} onPress={() => {}} disabled={bShowActionDisabled} {...oButtonProps} />,
+                            <ButtonAction variant={bShowCombined ? 'group-item' : false}  startDecorator={sIcon} title={bShowActionLabel ? sTitle : ''} onPress={() => {}} disabled={bShowActionDisabled} {...oButtonProps} />,
                             <StarsAction rating={fRate} onChange={!bShowActionDisabled ? (number) => {_handleDo(number)} : () => {}} />
                         ]}
                         </DropdownPopup>
@@ -234,7 +233,7 @@ export default function ElementStars(oProps) {
             else {
                 //TODO: Roman, something should be used here for Native.
                 sActionButton = (
-                    <ButtonAction size={sDisplaySize} startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} {...oButtonProps} />
+                    <ButtonAction  startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} {...oButtonProps} />
                 );
             }
         }
@@ -276,7 +275,7 @@ export default function ElementStars(oProps) {
 
         sCounterButton = (
             <Animated.View key="counter" style={indicatorStyle}>
-                <ButtonCounter size={sDisplaySize} startDecorator={'Star'} title={fRate + ''} onPress={_handleGetPerformedBy} {...oButtonProps} />
+                <ButtonCounter  startDecorator={'Star'} title={fRate + ''} onPress={_handleGetPerformedBy} {...oButtonProps} />
             </Animated.View>
         );
 
@@ -299,7 +298,7 @@ export default function ElementStars(oProps) {
 
         sResult = (
             <View>
-                <ButtonsGroupMenu size={sDisplaySize}  {...oButtonProps}>{aButtonsGroup}</ButtonsGroupMenu>
+                <ButtonsGroupMenu  {...oButtonProps}>{aButtonsGroup}</ButtonsGroupMenu>
                 {sCounterPopup}
             </View>
         );
