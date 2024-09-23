@@ -6,6 +6,8 @@ import { Platform } from 'react-native'
 
 export default function FormMessenger(props) {
     const isWeb = Platform.OS == 'web';
+    const isIos = Platform.OS == 'ios'
+    
     const [imageSource, setImageSource] = useState([]);
     function setPlaceHolder(name, previews) {
         if (JSON.stringify(previews) != JSON.stringify(imageSource[name])) {
