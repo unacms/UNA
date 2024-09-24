@@ -16,7 +16,7 @@ import { fetcher } from 'app/lib/fetcher';
 import Toaster from 'app/ui/atoms/toaster';
 import { useWindowDimensions } from 'react-native'
 
-const TabBar = ({ routes, index, currentUser, setIndex, onChangeRoute }) => {
+const TabBar = React.memo(({ routes, index, currentUser, setIndex, onChangeRoute }) => {
     const { colors } = Theme();
 
 
@@ -42,21 +42,27 @@ const TabBar = ({ routes, index, currentUser, setIndex, onChangeRoute }) => {
 
         )
     }
-};
+});
 
-const TabScene = ({ route, index, skeleton, data, unitMode, handleEndReached, onRefresh, refreshing }) => {
+const TabScene = React.memo(({
+    route,
+    unitType,
+    Preload,
+    unitMode,
+    fetchNextPage,
+    onRefresh,
+    refreshing
+}) => {
+
+    const handleEndReached = useCallback(() => {
+        if (!route?.endpoint || route?.endpoint?.params?.start === 0 || refreshing || route?.endpoint?.finished)
+            return;
+        fetchNextPage();
+    }, [route?.endpoint, route?.endpoint?.params?.start, route?.endpoint?.finished, fetchNextPage, refreshing]);
 
     if (!route.inited) {
         return <></>;
     }
-
-    const Preload = useMemo(() => {
-        return getSkeletonForList(skeleton !== '' ? skeleton : (data.module ? data.module : data.unit), 1);
-    }, [skeleton, data.module, data.unit]);
-
-    const unitType = useMemo(() => {
-        return getUnitModeBySource(route?.endpoint?.request_url);
-    }, [route?.endpoint?.request_url]); // Dependency on route.endpoint.request_url
 
     const renderItem = useCallback(({ item, index }) => (
         <ItemRenderer
@@ -68,6 +74,7 @@ const TabScene = ({ route, index, skeleton, data, unitMode, handleEndReached, on
             module={route?.endpoint?.module}
         />
     ), [unitType, unitMode, route]);
+
 
     return (
         <UniList
@@ -89,10 +96,10 @@ const TabScene = ({ route, index, skeleton, data, unitMode, handleEndReached, on
         />
 
     )
-};
+});
 
 export function ConductorFlat({ header, smallHeader, minHeaderHeight, isHideDefaultHeader, menu, data, blocks, useSectionAsMenu, unitMode, skeleton, onChangeRoute, keyword }) {
-
+    console.log("ConductorFlat")
     minHeaderHeight = minHeaderHeight || 100;
     isHideDefaultHeader = isHideDefaultHeader || false;
     useSectionAsMenu = useSectionAsMenu || false;
@@ -119,7 +126,7 @@ export function ConductorFlat({ header, smallHeader, minHeaderHeight, isHideDefa
 
     useEffect(() => {
         setRoutes(initedTabs);
-    }, [ data]);
+    }, [data]);
     const setRoutes = /*useCallback(*/(a) => {
         setRoutes1(a);
     }/*, []);*/
@@ -229,12 +236,6 @@ export function ConductorFlat({ header, smallHeader, minHeaderHeight, isHideDefa
         }
     }, [currentRoute, isRevalidate, currentUser?.id]);
 
-    const handleEndReached = useCallback(() => {
-        if (!currentRoute?.endpoint || currentRoute?.endpoint?.params?.start === 0 || isRefreshing || currentRoute?.endpoint?.finished) return;
-        fetchNextPage();
-    }, [currentRoute, fetchNextPage, isRefreshing]);
-
-
 
 
     useEffect(() => {
@@ -243,11 +244,11 @@ export function ConductorFlat({ header, smallHeader, minHeaderHeight, isHideDefa
 
     const onStartRefresh = useCallback(async () => {
         setRoutes(prevRoutes => {
-            const updatedRoutes = fillTabs(menu, data, blocks, currentUser, false);
+            const updatedRoutes = initedTabs;
             return [...prevRoutes.slice(0, index), updatedRoutes[index], ...prevRoutes.slice(index + 1)];
         });
         setIsRefreshing(true);
-    }, [menu, data, blocks, currentUser, index]);
+    }, [initedTabs, index]);
 
     useEffect(() => {
         if (isRefreshing) {
@@ -268,6 +269,15 @@ export function ConductorFlat({ header, smallHeader, minHeaderHeight, isHideDefa
         staticComponents['updateRouteDataForConnections'](currentRoute, layoutData, routes, index, setRoutes)
     }, [layoutData]);
     /* NEW POST TO FEED */
+
+    const Preload = useMemo(() => {
+        return getSkeletonForList(skeleton !== '' ? skeleton : (data.module ? data.module : data.unit), 1);
+    }, [skeleton, data.module, data.unit]);
+
+    const unitType = useMemo(() => {
+        return getUnitModeBySource(currentRoute?.endpoint?.request_url);
+    }, [currentRoute?.endpoint?.request_url]); // Dependency on route.endpoint.request_url
+
     return (
 
         <View className="w-full flex-1">
@@ -275,7 +285,7 @@ export function ConductorFlat({ header, smallHeader, minHeaderHeight, isHideDefa
 
             <View className="w-full flex-1 ">
                 <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="New content" size="sm" />
-                <TabScene onRefresh={onStartRefresh} refreshing={isRefreshing} route={currentRoute} index={index} skeleton={skeleton} unitMode={unitMode} data={data} handleEndReached={handleEndReached} />
+                <TabScene onRefresh={onStartRefresh} refreshing={isRefreshing} route={currentRoute} Preload={Preload} unitType={unitType} unitMode={unitMode} fetchNextPage={fetchNextPage} />
             </View>
         </View>
     );

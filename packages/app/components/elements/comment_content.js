@@ -11,7 +11,6 @@ import Link from 'app/ui/atoms/link'
 export default function (props) {
 
     const data = props.data;
-    console.log("data", data)
 
     return (
         <View className="w-full">
