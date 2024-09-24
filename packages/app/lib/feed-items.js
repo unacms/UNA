@@ -149,8 +149,8 @@ export const MarketView = memo(({data, styles, url, isCompact}) => {
         )}
         <View className="flex-auto p-2 my-auto flex-col    ">
             <Link href={url} className="">
-                <Text className="mr-auto  bg-primary-100 dark:bg-primary-900 rounded-lg font-semibold px-2 py-1 flex-none flex-auto text-neutral-800 dark:text-neutral-200">
-                    {data.price_recurring > 0 ? data.price_recurring + '$/' + data.duration_recurring : (data.price_single > 0 ? data.price_single + '$' : 'Free')}
+                <Text className="mr-auto  bg-primary-100 dark:bg-primary-900 rounded-lg font-semibold px-2 py-1 flex-none flex-auto text-white">
+                    {data.content.price_recurring > 0 ? data.content.price_recurring + '$/' + data.content.duration_recurring : (data.content.price_single > 0 ? data.content.price_single + '$' : 'Free')}
                 </Text>
 
                 <Text
