@@ -47,6 +47,9 @@ function normalizeWidth(width) {
 export default function ElementImage(props) {
     let {width, height,  alt = "", src = '/spacer.png', style, source, nobg, ...rest} = props; // remove width & height
 
+    if (null === src)
+        src = '/spacer.png';
+
     const bg_image = appSetting('layout','background_cover');
     
     style = useMemo(() => {
