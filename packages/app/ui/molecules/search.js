@@ -29,7 +29,7 @@ export default function ElementSearch(oProps) {
     }
 
     let sResult = sType == 'input' ? (
-        <ElementSearchData {...oProps} resInPopup={true} />
+        <ElementSearchData {...oProps} resInPopup={true} setBottomSheetData={setBottomSheetData} />
     ) : (
         <Row>
             <View key="ddp-trigger" className="flex-row">
@@ -108,7 +108,10 @@ export function ElementSearchData(oProps) {
         if (event.key !== "Enter")
             return;
 
-        handleRedirect();
+        if (!appSetting('layout', 'extended_search'))
+            setBottomSheetData(false)
+        else
+            handleRedirect();
     };
 
     const handleRedirect = () => {
