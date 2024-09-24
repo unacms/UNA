@@ -183,7 +183,6 @@ export function ConductorFlat({ header, smallHeader, minHeaderHeight, isHideDefa
 
     useEffect(() => {
         if (bEnabled) {
-            //parseData(routes, index, setRoutes)
             fetchNextPage();
         }
     }, [bEnabled]);
@@ -235,8 +234,6 @@ export function ConductorFlat({ header, smallHeader, minHeaderHeight, isHideDefa
             }
         }
     }, [currentRoute, isRevalidate, currentUser?.id]);
-
-
 
     useEffect(() => {
         fetchAndUpdateData(routes, index, setRoutes);
