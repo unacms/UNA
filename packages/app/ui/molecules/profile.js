@@ -32,7 +32,7 @@ function DisplayNameLink({ title, url, href, fontSize }) {
         return (
             <Row className={' text-neutral-900  dark:text-neutral-100 gap-x-2 items-center ' + fontSize}>
                 <Text className={'text-neutral-900 dark:text-neutral-100 font-semibold ' + fontSize + ' truncate '}>
-                    {title && title.replace(" (anonymized)", '')}
+                    {title && title.replace(" (anonymized)", '')} (protected)
                 </Text>
                 <Icon icon="ShieldCheckered"></Icon>
             </Row>

@@ -24,10 +24,12 @@ import Calendar from './calendar';
 import Grid from './grid';
 import Chart from './chart';
 import Comments from './comments';
+import CommentContent from './comment_content';
 import NotificationsSettings from './notifications_settings';
 
 export const componentsMapDefault = {
     chart: Chart,
+    comment_content:CommentContent,
     browse: Browse,
     grid: Grid,
     invite: Invite,

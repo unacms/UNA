@@ -21,7 +21,6 @@ export default function UniList(props) {
     
 
     if (mode == 'simple'){
-        console.log("FlatList", filteredData.length)
         return (
             <FlatList  
                // onLoad={onLoadListener}

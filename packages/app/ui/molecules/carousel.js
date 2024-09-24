@@ -30,7 +30,7 @@ const Image2 = memo((item) => {
 });
 
 
-const Gallery = React.memo(({ data, handleShowImage }) => {
+const Gallery = React.memo(({ data, handleShowImage, windowWidthOr }) => {
     const data2 = useMemo(() => data.slice(0, 3), [data]);
     const len = useMemo(() => data2.length, [data2]);
     const dataR1 = useMemo(() => (len === 3 ? data2.slice(0, 1) : data2.slice(0, 2)), [data2, len]);
@@ -197,7 +197,7 @@ const Carousel = memo(({ data = [] }) => {
             </Row>
         </Modal>}
         <View className='w-full max-w-3xl mx-auto'>
-            <Gallery data={data}  handleShowImage={handleShowImage} />
+            <Gallery windowWidthOr={windowWidthOr} data={data}  handleShowImage={handleShowImage} />
         </View>
 
     </>

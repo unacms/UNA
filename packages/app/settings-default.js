@@ -1312,6 +1312,12 @@ export const settingsDefault = {
                     forList: true,
                     forHeader: true,
                 },
+                text: {
+                    name: 'system:get_block_content',
+                    showTitle: false,
+                    showBg: false,
+                    forList: true,
+                },
                 comments: {
                     name: 'system:get_block_view',
                     showTitle: false,

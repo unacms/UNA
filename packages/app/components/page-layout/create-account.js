@@ -9,9 +9,9 @@ import { Platform, Keyboard } from 'react-native'
 import { appStatic } from 'app/lib/app-static'
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
 import { useState, useEffect} from "react";
-
+import { useTranslation } from 'react-i18next';
 export default function PageLayout(props) {
-
+    const { t } = useTranslation();
     const [isKeyboardVisible, setKeyboardVisible] = useState(false);
     const joinData = DataByName(props.data, props.blocks.form_join);
     const isAllowJoin = joinData.content[0].type == "form";
@@ -47,7 +47,7 @@ export default function PageLayout(props) {
                     </Text>
 
                     <Text className="text-base lg:text-lg xl:text-xl  text-neutral-700 dark:text-neutral-300  ">
-                        {isAllowJoin ? 'Create an account to get started.' : 'Registration is by invitation only.'}
+                        {isAllowJoin ? t('Create an account to get started') : t('Registration is by invitation only.')}
                     </Text>
                     <View className="w-full mt-4">{appStatic('components_logincontent')}</View>
                 </View>}

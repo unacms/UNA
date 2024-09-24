@@ -129,7 +129,7 @@ export default function ElementEntityAuthor(oProps) {
             }
 
             <View className={oProps.data.text ? '' : 'flex-auto'}><Profile {...oProps.data.author_data} displayType="unit" displaySize="base" showInfo={sInfo} /></View>
-            {oProps.data.text && (
+            {(oProps.data.text && false) && (
                 <View className='flex-auto overflow-hidden text-ellipsis w-1/2 lg:w-auto px-4'>
                     <Link href={oProps.data.url}>
                         <Text className=" lg:text-center overflow-hidden text-ellipsis text-lg font-bold font-bold  text-neutral-900 dark:text-neutral-50 overflow" numberOfLines={2}>

@@ -6,7 +6,7 @@ import { appStatic } from 'app/lib/app-static'
 import { useMemo, useState } from 'react';
 
 export default function Layout(props) {
-    const [child] = useState(props.children);
+    //const [child] = useState(props.children);
     const isUseBg = false;//appSetting('layout', 'background_native');
     if (props.data.page_status == 503) {
         return <>
@@ -23,16 +23,16 @@ export default function Layout(props) {
         </ImageBackground>
     ), [child]); // Memoize background image
 */
-    const content = useMemo(() => {
+   /* const content = useMemo(() => {
         return (
             child
            // isUseBg ? backgroundImage : child
         )
     }, [isUseBg, child]);
-
+*/
     return (
         <View className=" bg-bgrbody dark:bg-bgrbody-d text-neutral-900 dark:text-neutral-50 w-full h-full flex-1">
-            {content}
+            {props.children}
             <BottomSheet />
         </View>
     );

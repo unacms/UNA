@@ -90,7 +90,7 @@ export function Root(props) {
     if (props.code == 404 && !data?.page_status) {
         data.page_status = 404
     }
-
+    
     return (
         <Layouts path={props?.path} data={data} uri={data?.uri} url={data?.url} />
     );

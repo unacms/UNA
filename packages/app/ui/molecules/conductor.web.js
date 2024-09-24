@@ -33,7 +33,8 @@ function AddBlocks({leftSideBarBlocks, data, onFormSubmit, show, setShow, layout
 {
     const windowDimen = useWindowDimensions();
     const windowWidth = windowDimen.width;
-    
+    if (!leftSideBarBlocks)
+        return null;
     let leftSideBarBlocksObj = leftSideBarBlocks.map((block) => {
         return <BlockByName
             data={data}

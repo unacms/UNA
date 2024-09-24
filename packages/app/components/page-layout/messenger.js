@@ -29,7 +29,7 @@ export default function PageLayout({ url, data, layoutName, blocks: { main } }) 
     const { currentUser } = useCurrentUser();
 
     const layout = getLayout(currentUser, 'navigator');
-    const isLeftMenu = layout != 'hor' ? false : true;
+    const isLeftMenu = layout != 'hor' ? false : false;
     const data2 = DataByName(data, main);
     const menuDefaultList = useMemo(() => {
         return data2.content[0].data.menu.items.filter(item => ['inbox', 'direct'].includes(item.name));
@@ -146,13 +146,13 @@ const MessengerContainer = memo(({ convos, selectedMenu, url, data, windowWHeigh
             heightInit = windowWHeight - 64;
         }
         if (layout == 'hor') {
-            heightInit = windowWHeight - 64;
+            heightInit = windowWHeight - 64- 64;
         }
         if (layout == 'mixed') {
             heightInit = windowWHeight - 64 - 64;
         }
         if (windowWidth < 1024) {
-            heightInit = windowWHeight - 64 - 64 - 64;
+            heightInit = windowWHeight - 64 - 64 - 50;
         }
         if (!isWeb) {
             heightInit = windowWHeight - 64 - 51;

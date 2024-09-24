@@ -440,8 +440,8 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
 
     return (<>
         <View className='md:px-0 border-bdrcard dark:border-bdrcard-d border-b'>
-            {isWeb && <Row className='px-2 py-3 items-center justify-between w-full'>
-                <Row className='items-center justify-start overflow-hidden flex-auto'>
+            {isWeb && <Row className='px-2 py-3 items-center justify-between w-full h-[60px]'>
+                <Row className='items-center justify-start overflow-hidden flex-auto '>
                     {isSmallScreen && <Button variant="text" startDecorator='ArrowLeft' rounded align="start" onPress={() => showConvo()} />}
                     <Text  numberOfLines={1} className="text-lg lg:text-xl font-bold font-bold tracking-tight  text-neutral-900 dark:text-neutral-50">{title}</Text>
                 </Row>

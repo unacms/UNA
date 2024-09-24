@@ -9,8 +9,12 @@ import { useTranslation } from 'react-i18next';
 import Card from 'app/ui/molecules/card'
 import Redirect from 'app/ui/atoms/redirect';
 import { storageClear } from 'app/lib/util';
+import { Platform } from 'react-native'
+import { useRouter } from "expo-router";
 
 export default function ElementConfirmEmail(props) {
+    const isWeb = Platform.OS == 'web'
+    const router = useRouter();
     let { currentUser, setCurrentUser } = useCurrentUser();
     const [showMsg, setShowMsg] = useState(false);
     const [inputValue, setInputValue] = useState("");
@@ -20,14 +24,13 @@ export default function ElementConfirmEmail(props) {
     const handleConfirm = async () => {
         const sRequest = '/api.php?r=system/confirm_email/TemplServiceAccount&params[]=' + inputValue;
         const sResponse = await fetcher(sRequest);
-
-        
         if (sResponse.data == true) {
             storageClear();
             setCurrentUser({
                 confirmed: true,
             });
-            redirectdRef.current.redirect('/home?ts='+Date.now());
+            if (isWeb)
+                document.location = props.url;
         }
         else {
             setInputError(true);
@@ -47,7 +50,7 @@ export default function ElementConfirmEmail(props) {
                 <Card rounded margin=' p-4 '>
                     <View className='mb-4 '>
                         <Text className="text-lg text-center mb-2 text-neutral-700 dark:text-neutral-300">{t("Unconfirmed email address")}</Text>
-                        <Text className="text-base text-center text-neutral-700 dark:text-neutral-300">{t("Please check your email.")}</Text>
+                        <Text className="text-base text-center text-neutral-700 dark:text-neutral-300">{t("Please check your email")}</Text>
                     </View>
                     <View className='gap-y-4'>
                         <Row className='w-full gap-x-4 items-start justify-between'>

@@ -58,7 +58,7 @@ export default function PageLayout(props) {
             layoutName={props.layoutName}
             header={header} 
             smallHeader={smallHeader} 
-            minHeaderHeight={104} 
+            minHeaderHeight={60} 
             offsetTop={300}
             isHideDefaultHeader={true} 
             menu={menu} 

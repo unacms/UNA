@@ -71,12 +71,11 @@ const Content = ({ pagePath, currentUser, isRoot }) => {
         if (!(pagePath && pagePath.startsWith('/') && !pagePath.includes('/?url='))) return;
 
         const fetchPageData = async () => {
-            if (pageData?.data?.user?.id  && pageData?.data?.user?.id === currentUser?.id)
+            if (pageData?.data?.user?.id  && pageData?.data?.user?.id === currentUser?.id && pageData?.data?.user?.confirmed === currentUser?.confirmed)
                 return;
             const { path: pathWithoutQuery, queryString } = parseUrl(pagePath);
             const params = queryString ? JSON.stringify(parseQueryString(queryString)) : null;
             const data = await getData(pathWithoutQuery, null, null, null, null, params);
-
             if (data?.props) {
                 const pageData1 = data.props;
                 const settings = appSetting('layouts', pageData1.data.uri)
@@ -103,8 +102,7 @@ const Content = ({ pagePath, currentUser, isRoot }) => {
             }
         };
         fetchPageData();
-    }, [pagePath, currentUser?.id]);
-    console.log("pagePath---------------------", pagePath)
+    }, [pagePath, currentUser?.id, currentUser?.confirmed]);
     return pageData?.data ? (
 
         <Root path={pagePath} data={pageData.data} uri={pageData.data.uri} />

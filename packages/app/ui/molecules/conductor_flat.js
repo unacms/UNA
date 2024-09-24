@@ -115,9 +115,11 @@ export function ConductorFlat({ header, smallHeader, minHeaderHeight, isHideDefa
             setMenuState(menu);
             setRoutes(initedTabs);
         }
-    }, [menu, menuState, initedTabs, setRoutes]);
+    }, [menu, menuState, initedTabs, setRoutes, data]);
 
-
+    useEffect(() => {
+        setRoutes(initedTabs);
+    }, [ data]);
     const setRoutes = /*useCallback(*/(a) => {
         setRoutes1(a);
     }/*, []);*/

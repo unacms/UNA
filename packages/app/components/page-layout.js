@@ -47,7 +47,6 @@ function Page403() {
 
 
 export default function PageLayout(props) {
-
     let data = props.data;
     if (data.page_status == 404){
         return <Page404/>
@@ -62,7 +61,7 @@ export default function PageLayout(props) {
     let Component = componentsMap[layoutName];
 
     if(isCustomLayout && layoutBlocks)
-        return Wrapper(<Component layoutName={layoutName} {...props} blocks={layoutBlocks}/>);
+        return Wrapper(<Component layoutName={layoutName} {...props} blocks={layoutBlocks}/>, props);
 
     let cells = null;
 
@@ -73,7 +72,7 @@ export default function PageLayout(props) {
     cells = Object.keys(data.elements).map(key => {
         return <Cell key={key} uri={props.data.uri} url={props.url} blocks={data.elements[key]} />
     });
-
+    
     return Wrapper(<Component layoutName={layoutName} {...props} >{cells}</Component>, props);
 }
 
@@ -84,24 +83,21 @@ function Wrapper(p, props){
     let bConfirm = false;
     let bConfirm2 = false;
 
-   /* if ((currentUser && !currentUser?.confirmed && appSetting('layout', 'lock_unconfirmed') == true)  && props?.data?.uri?.toString() != 'create-account' && props?.data?.uri?.toString() != 'login')
-        bConfirm = true;*/
-    useEffect(() => {
-        
+
+    /*useEffect(() => {
         if ((currentUser && !currentUser?.confirmed && appSetting('layout', 'lock_unconfirmed') == true) && props?.data?.uri?.toString() != 'confirm-email')
             bConfirm = true;
-       // if ((currentUser && currentUser?.confirmed && appSetting('layout', 'lock_unconfirmed') == true) && props?.data?.uri?.toString() == 'confirm-email')
-        //    bConfirm2 = true;
+
         if (bConfirm){
             redirectdRef.current.redirect('/confirm-email');
         }
-       /* if (bConfirm2){
-            storageClear();
-        redirectdRef.current.redirect('/home');
-        }*/
-    }, [currentUser?.confirmed]);
-    console.log("bConfirm", bConfirm, bConfirm2, currentUser)
 
+    }, [currentUser?.confirmed]);
+    console.log("bConfirm", bConfirm, bConfirm2, currentUser)*/
+
+    if ((currentUser && !currentUser?.confirmed && appSetting('layout', 'lock_unconfirmed') == true)){
+        return <ConfirmEmail  url={props.url}/>
+    }
 
     return <><Redirect ref={redirectdRef} /><View className='flex-1 mx-auto w-full h-full animated-view'>{p}</View></>
 }

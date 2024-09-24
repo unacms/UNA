@@ -88,7 +88,7 @@ export function CoverSmall(props) {
     // 
     return (
         <Row
-            className=" justify-left items-center pt-0 w-full h-24 bg-primary-200 dark:bg-primary-950"
+            className=" justify-left items-center pt-0 w-full h-16 bg-primary-200 dark:bg-primary-950"
         >
             <View className="absolute h-80 w-full">
                 {!!data.cover && (
