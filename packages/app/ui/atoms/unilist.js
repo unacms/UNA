@@ -25,7 +25,7 @@ export default function UniList(props) {
             <FlatList  
                // onLoad={onLoadListener}
                 ref = {refer}   
-                onEndReachedThreshold={2}
+                onEndReachedThreshold={4}
                 data={filteredData}
                 keyExtractor={item => item.id}
                 renderItem={renderItem}

@@ -52,11 +52,6 @@ export function Screen(params) {
         _path = item ? item.url : null;
         isRoot = true;
     }
-    /*console.log("params555",_path)
-    const memoizedValue = useMemo(() => {
-        return <Content pagePath={_path} currentUser={currentUser} isRoot={isRoot} />;
-    }, [_path, currentUser?.id]);
-    return memoizedValue*/
     return <Content key={_path} pagePath={_path} currentUser={currentUser} isRoot={isRoot} />
 
   

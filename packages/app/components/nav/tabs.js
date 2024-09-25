@@ -6,7 +6,7 @@ import { useCurrentUser } from 'app/context/user';
 import { appSetting } from 'app/lib/util'
 import { Theme } from 'app/design/theme';
 import Profile from 'app/ui/molecules/profile';
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next';
 //import BottomSheetDataContext from 'app/context/bottomsheet';
 import { FeedbackHaptics } from 'app/lib/util';
@@ -23,57 +23,91 @@ import { enableScreens } from 'react-native-screens';
 import { OneSignal } from 'react-native-onesignal';
 import { staticComponents } from 'app/static';
 import { Platform } from 'react-native'
-enableScreens(true);
+enableScreens(appSetting('layout', 'naive_enable_screens'));
+
+function processUrl(url, router) {
+    if (currentUser?.id) {
+        let a = parseUrl(url);
+        let _path = '/' + a.path + (a.queryString ? '?' + a.queryString : '')
+        if (_path == '/')
+            _path = '/home';
+        const index = TabList.findIndex((item) => {
+            if (item.url == _path) {
+                return true;
+            }
+        });
+        if (index !== null && index > -1) {
+            router.push({
+                pathname: '/tab' + index
+            });
+        }
+        else {
+            router.push({
+                pathname: '/tab0',
+                params: { url: _path }
+            });
+        }
+    }
+}
 
 export default function () {
+    const { currentUser, setCurrentUser } = useCurrentUser();
 
     const isUseCustomFont = appSetting('layout', 'use_custom_font');
     const fontsToLoad = isUseCustomFont ? { default: require('app/design/fonts/DefaultFont.ttf') } : {};
     const [fontsLoaded] = useFonts(fontsToLoad);
     const { t } = useTranslation();
-    let { currentUser, setCurrentUser } = useCurrentUser();
+    
     const router = useRouter();
     const { colors } = Theme();
-    const TabList = currentUser ? appSetting('menu_items', 'menu_tabbar_logged') : appSetting('menu_items', 'menu_tabbar_non_logged');
-    let iconWidth = 24;
-    let iconHeight = 24;
+    const iconWidth = 24;
+    const iconHeight = 24;
+    const isShowTabs = currentUser || appSetting('layout', 'show_nav_non_logged_native')
+    const notificationUrl =  appSetting('layout', 'notifications');
 
-    let profile = null
+    const TabList = useMemo(() => currentUser ? appSetting('menu_items', 'menu_tabbar_logged') : appSetting('menu_items', 'menu_tabbar_non_logged'), [currentUser?.id]);
+
+    const profile = useMemo(() => {
+        if (currentUser) {
+            const dUser = { ...currentUser, url_avatar: currentUser.avatar, url: '/dashboard' };
+            return <Profile {...dUser} displayType="unit_wo_info" displaySize="xs" />;
+        }
+        return null;
+    }, [currentUser?.id]);
+
+    const screenOptions = useMemo(() => ({
+        tabBarStyle: {
+            backgroundColor: colors.barsBackground,
+            height: isShowTabs ? 62 : 0,
+            opacity: isShowTabs ? 1 : 0,
+            elevation: 0,
+            boxShadow: 'none',
+        },
+        tabBarItemStyle: {
+            marginBottom: 5,
+            height: 44,
+            marginTop: 5,
+            borderRadius: 10,
+            marginLeft: 10,
+            marginRight: 10,
+        },
+        tabBarAllowFontScaling: false,
+        tabBarInactiveTintColor: colors.barsColor,
+        tabBarActiveTintColor: colors.primary,
+        tabBarActiveBackgroundColor: colors.primaryBg,
+        freezeOnBlur: true,
+        unmountOnBlur: false,
+        lazy: currentUser ? appSetting('layout', 'naive_lazy_tabs') : true,
+    }), [colors, isShowTabs, currentUser?.id]);
 
     // DEEP LINKING
-
-    function processUrl(url) {
-        if (currentUser?.id) {
-            let a = parseUrl(url);
-            let _path = '/' + a.path + (a.queryString ? '?' + a.queryString : '')
-            if (_path == '/')
-                _path = '/home';
-            const index = TabList.findIndex((item) => {
-                console.log(item.url, _path)
-                if (item.url == _path) {
-                    return true;
-                }
-            });
-            if (index !== null && index > -1) {
-                router.push({
-                    pathname: '/tab' + index
-                });
-            }
-            else {
-                router.push({
-                    pathname: '/tab0',
-                    params: { url: _path }
-                });
-            }
-        }
-    }
 
     useEffect(() => {
         // process links if app close
         const fetchInitialUrl = async () => {
             const url = await Linking.getInitialURL();
             if (url) {
-                processUrl(url);
+                processUrl(url, router);
             }
         };
 
@@ -83,7 +117,7 @@ export default function () {
             const url = event.url;
             if (url) {
                 setTimeout(() => {
-                    processUrl(url);
+                    processUrl(url, router);
                 }, 3000);
             }
         };
@@ -95,10 +129,7 @@ export default function () {
                 urlListener.remove();
             };
         }
-    }, [currentUser?.id]);
-    // DEEP LINKING
 
-    useEffect(() => {
         if (OneSignal.User) {
             if (currentUser) {
                 console.log("OneSignal:" + currentUser.id + ":" + currentUser.hash)
@@ -117,6 +148,8 @@ export default function () {
             }
         }
     }, [currentUser?.id]);
+    // DEEP LINKING
+
 
     useEffect(() => {
         if (Platform.OS == 'ios') {
@@ -125,18 +158,9 @@ export default function () {
     }, [currentUser?.notifications]);
 
 
-    if (currentUser) {
-        let dUser = Object.assign({}, currentUser);
-        dUser.url_avatar = dUser.avatar
-        dUser.url = '/dashboard'
-        profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="xs" />
-    }
-
     if (!fontsLoaded) {
         return null;
     }
-
-    const isShowTabs = currentUser || appSetting('layout', 'show_nav_non_logged_native')
 
     return (
         <><Suggestions />
@@ -144,32 +168,7 @@ export default function () {
             <View className="flex-1">
                 <View className="w-full"><AsyncWorker /></View>
 
-                <Tabs
-                    screenOptions={({ navigation, route }) => ({
-                        tabBarStyle: {
-                            backgroundColor: colors.barsBackground,
-                            height: isShowTabs ? 62 : 0,//55 old
-                            opacity: isShowTabs ? 1 : 0,
-                            elevation: 0,
-                            boxShadow: 'none',
-                        },
-                        tabBarItemStyle: {
-                            marginBottom: 5,
-                            height: 44,
-                            marginTop: 5,
-                            borderRadius: 10,
-                            marginLeft: 10,
-                            marginRight: 10,
-                        },
-                        tabBarAllowFontScaling: false,
-                        tabBarInactiveTintColor: colors.barsColor,
-                        tabBarActiveTintColor: colors.primary,
-                        tabBarActiveBackgroundColor: colors.primaryBg,
-                        freezeOnBlur: true,
-                        unmountOnBlur: false,
-                        /*lazy: currentUser ? false : true,*/
-                    })}
-                >
+                <Tabs screenOptions={screenOptions}>
                     {
                         TabList.map((tab, index) => {
                             const options = {
@@ -199,7 +198,7 @@ export default function () {
                                             if (e.type == 'tabPress') {
                                                 let a = e.target.split('-');
                                                 let d = TabList[a[0].replace('tab', '')];
-                                                if (d.url == appSetting('layout', 'notifications'))
+                                                if (d.url == notificationUrl)
                                                     clearNotif(currentUser, setCurrentUser)
                                             }
                                             FeedbackHaptics('Medium');
