@@ -5,21 +5,9 @@ import { useCurrentUser } from 'app/context/user';
 import { Platform } from 'react-native'
 import { storageClear, decodeText, getDataFromCache, storageSet } from 'app/lib/util';
 import { remoteSettings } from 'app/settings-remote';
-//import dynamic from 'next/dynamic'
-
-
 import { appSetting } from 'app/lib/util'
-let Layouts;
-
-if (Platform.OS === 'web') {
-    const dynamic = require('next/dynamic').default;
-    Layouts = dynamic(() => import('app/components/layouts'), { ssr: false });
-    //const Layouts = React.lazy(() => import('app/components/layouts'));
-} else {
-    Layouts = require('app/components/layouts').default;
-}
-
-//const Layouts = dynamic(() => import('app/components/layouts'), { ssr: false, })
+const dynamic = require('next/dynamic').default;
+const Layouts = dynamic(() => import('app/components/layouts'), { ssr: false });
 
 
 const metaAdder = (queryProperty, value) => {
@@ -39,7 +27,7 @@ export function Root(props) {
     const isWeb = Platform.OS == 'web'
 
     useEffect(() => {
-        if (isWeb) {
+
             if (data?.title) {
 
                 if (appSetting('layout', 'add_notifications_count_in_title')) {
@@ -56,7 +44,6 @@ export function Root(props) {
 
             }
             metaAdder('property="og:title"', decodeText(data?.title))
-        }
         if (props.settings)
             remoteSettings.data = props.settings;
 
@@ -91,9 +78,8 @@ export function Root(props) {
     if (props.code == 404 && !data?.page_status) {
         data.page_status = 404
     }
-    console.log("************************************************root-render", props?.path)
+
     return (
-        <Text>{props?.path}</Text>
-        /*<Layouts path={props?.path} data={data} uri={data?.uri} url={data?.url} />*/
+        <Layouts path={props?.path} data={data} uri={data?.uri} url={data?.url} />
     );
 }

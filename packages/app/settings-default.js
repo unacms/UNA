@@ -87,7 +87,7 @@ export const settingsDefault = {
             '*_object_privacy_view',
         ],
         form_selector_control_names: ['*_cat'],
-        card_amimation_duration: 0,
+        card_animation_duration: 0,
         comments_mentions: true,
         carousel_image_width: '',
         carousel_image_aspect: 'aspect-square',

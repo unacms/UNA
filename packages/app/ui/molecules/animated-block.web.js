@@ -6,7 +6,7 @@ import { appSetting } from 'app/lib/util';
 const AnimatedContainer = (props) => {
     const opacity = useSharedValue(0);
     const translateY = useSharedValue(-50); // start position
-    const animationDuration = appSetting('layout', 'card_amimation_duration');
+    const animationDuration = appSetting('layout', 'card_animation_duration');
 
     if (animationDuration  == 0){
         return (

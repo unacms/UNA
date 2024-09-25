@@ -77,10 +77,11 @@ export function getLayoutName(data, uri, isWeb) {
 }
 
 export default function PageLayout(props) {
+   
     const { data, url } = props;
+    return <Text>{data?.uri}</Text>
     const isWeb = Platform.OS == 'web'
     let { currentUser, setCurrentUser } = useCurrentUser();
-
 
     if (data.page_status === 404 || data.page_status === 403) {
         return <ErrorPage type={data.page_status} />;
@@ -89,7 +90,6 @@ export default function PageLayout(props) {
     if (currentUser && !currentUser.confirmed && appSetting('layout', 'lock_unconfirmed')) {
         return <ConfirmEmail url={url} />;
     }
-
 
     const { layoutName, layoutBlocks, isCustomLayout } = useMemo(() => {
         const isWeb = Platform.OS === 'web';
