@@ -44,7 +44,7 @@ export function CoverMenuSmall(props) {
 
 export function CoverMenu(props) {
     let { width } = useWindowDimensions()
-    let size = 'base'
+    let size = props.size || 'sm'
 
     if (width < 1280) size = 'sm'
 

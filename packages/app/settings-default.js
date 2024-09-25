@@ -1741,7 +1741,7 @@ export const settingsDefault = {
             headerSettings: { offset: false, header: false, cover: 'min' },
         },
         //############ PERSONS PAGES ############
-        /*'view-persons-profile': {
+        'view-persons-profile': {
             layout: 'profile',
             blocks: {
                 col0: { name: 'bx_timeline:get_block_post_profile', showTitle: false, showBg: false },
@@ -1750,8 +1750,8 @@ export const settingsDefault = {
                 col4: { name: 'bx_persons:entity_text_block', showTitle: false, showBg: true, sidebar: true },
             },
             headerSettings: { offset: false, header: false, cover: 'profile' }
-        },*/
-        'view-persons-profile': {
+        },
+        /*'view-persons-profile': {
             layout: 'profile-alt',
             blocks: {
                 col5: {
@@ -1793,9 +1793,9 @@ export const settingsDefault = {
                 hideLeftmenu: true,
                 showAltTopMenu: true,
             },
-        },
+        },*/
         'persons-profile-info': {
-            layout: 'profile-alt',
+            layout: 'profile',
             blocks: {
                 col1: {
                     name: 'bx_persons:entity_info_full',
@@ -1827,7 +1827,7 @@ export const settingsDefault = {
             },
         },
         'persons-profile-friends': {
-            layout: 'profile-alt',
+            layout: 'profile',
             blocks: {
                 col2: {
                     name: 'system:connections_table',
@@ -1852,7 +1852,7 @@ export const settingsDefault = {
             },
         },
         'persons-profile-subscriptions': {
-            layout: 'profile-alt',
+            layout: 'profile',
             blocks: {
                 col2: {
                     name: 'system:subscribed_me_table',

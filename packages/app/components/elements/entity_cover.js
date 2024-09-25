@@ -28,7 +28,7 @@ export default function (props) {
                 <CoverMenuMeta {...data.meta_menu} />
             </View>
             <View className="text-center py-2 flex-row gap-x-2 items-center">
-                <CoverMenu {...data.actions_menu} uri={props?.uri} />
+                <CoverMenu size='base' {...data.actions_menu} uri={props?.uri} />
             </View>
             
             <Text numberOfLines={3} className='mt-2 text-base text-neutral-600 dark:text-neutral-400'>{stripTags(data.description)}</Text>

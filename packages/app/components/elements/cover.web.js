@@ -28,7 +28,7 @@ export function CoverSmall(props) {
 
     let styles = {}
     if (windowWidth > 1024 && getLayout(currentUser) != 'hor') {
-        styles = { width: 1536 - 20 * 16 }
+       // styles = { width: 1536 - 20 * 16 }
     }
 
     return (
