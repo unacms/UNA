@@ -14,7 +14,7 @@ const getKey = (sO, iIid, iCid) => {
 }
 
 const isElementVar = (elementData, sName) => {
-    return elementData?.[sName];
+    return elementData?.[sName] != undefined;
 };
 
 const getElementVar = (elementData, sName) => {

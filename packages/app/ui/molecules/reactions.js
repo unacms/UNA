@@ -29,7 +29,7 @@ const getIconAlias = (oParams, oAliases, sName) => {
 };
 
 const isContextVar = (actionsData, actionsDataState, bShowFull, sContextKey, sName) => {
-    return bShowFull ? actionsDataState?.[sContextKey]?.[sName] : actionsData?.[sContextKey]?.[sName];
+    return bShowFull ? actionsDataState?.[sContextKey]?.[sName] != undefined : actionsData?.[sContextKey]?.[sName] != undefined;
 };
 
 const getContextVar = (actionsData, actionsDataState, bShowFull, sContextKey, sName) => {
@@ -388,7 +388,7 @@ export default function ElementReactions(oProps) {
         let sReaction = oAction?.reaction || '';
         if(_isContextVar('reaction'))
             sReaction = _getContextVar('reaction');
-
+//TODO: 'default' word shouldn't be sent as selected reaction.
         let sTitle = oAction?.title || '';
         if(_isContextVar('title'))
             sTitle = _getContextVar('title');

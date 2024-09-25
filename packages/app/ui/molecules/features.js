@@ -4,7 +4,7 @@ import { fetcher } from 'app/lib/fetcher';
 import { ButtonMenuActionDefault, ButtonMenuActionText } from 'app/design/controls';
 
 const isElementVar = (elementData, sName) => {
-    return elementData?.[sName];
+    return elementData?.[sName] != undefined;
 };
 
 const getElementVar = (elementData, sName) => {

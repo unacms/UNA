@@ -15,7 +15,7 @@ const getName = (sType, sSystem, sObjectId, sName) => {
 };
 
 const isContextVar = (actionsData, actionsDataState, bShowFull, sContextKey, sName) => {
-    return bShowFull ? actionsDataState?.[sContextKey]?.[sName] : actionsData?.[sContextKey]?.[sName];
+    return bShowFull ? actionsDataState?.[sContextKey]?.[sName] != undefined : actionsData?.[sContextKey]?.[sName] != undefined;
 };
 
 const getContextVar = (actionsData, actionsDataState, bShowFull, sContextKey, sName) => {
