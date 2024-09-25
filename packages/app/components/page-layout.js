@@ -79,7 +79,6 @@ export function getLayoutName(data, uri, isWeb) {
 export default function PageLayout(props) {
    
     const { data, url } = props;
-    return <Text>{data?.uri}</Text>
     const isWeb = Platform.OS == 'web'
     let { currentUser, setCurrentUser } = useCurrentUser();
 
