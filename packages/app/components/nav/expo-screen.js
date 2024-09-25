@@ -79,6 +79,7 @@ const Content = ({ pagePath, currentUser, isRoot }) => {
             if (data?.props) {
                 const pageData1 = data.props;
                 const settings = appSetting('layouts', pageData1.data.uri)
+                data.props.data['timestamp'] = Date.now();
 
                 let header = settings?.header
                 if (!header) {

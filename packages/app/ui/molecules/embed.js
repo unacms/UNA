@@ -8,7 +8,7 @@ export default function ({ data }) {
     return <Link target='_blank' href={data.url} >
         <Row className='rounded-lg mt-4 border border-bdr dark:border-bdr-d'>
             <View className='aspect-square h-32 mr-4'>
-                <Image view="cover" sizes="(max-width:1024px) 100vw, 1024px" resizeMode="cover" className="rounded-tl-lg rounded-bl-lg " src={data.image} />
+                {data.image ? <Image view="cover" sizes="(max-width:1024px) 100vw, 1024px" resizeMode="cover" className="rounded-tl-lg rounded-bl-lg " src={data.image} /> : <Image view="cover" sizes="(max-width:1024px) 100vw, 1024px" resizeMode="cover" className="rounded-tl-lg rounded-bl-lg " src={data.logo} />}
             </View>
             <View className='flex-auto my-2 mr-4'>
                 <Text className="text-neutral-900  dark:text-neutral-100 text-base font-bold " numberOfLines={1}>{data.title}</Text>

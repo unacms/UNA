@@ -60,10 +60,6 @@ const TabScene = React.memo(({
         fetchNextPage();
     }, [route?.endpoint, route?.endpoint?.params?.start, route?.endpoint?.finished, fetchNextPage, refreshing]);
 
-    if (!route.inited) {
-        return <></>;
-    }
-
     const renderItem = useCallback(({ item, index }) => (
         <ItemRenderer
             unitType={unitType}
@@ -75,6 +71,9 @@ const TabScene = React.memo(({
         />
     ), [unitType, unitMode, route]);
 
+    if (!route.inited) {
+        return <></>;
+    }
 
     return (
         <UniList
@@ -124,9 +123,11 @@ export function ConductorFlat({ header, smallHeader, minHeaderHeight, isHideDefa
         }
     }, [menu, menuState, initedTabs, setRoutes, data]);
 
-    useEffect(() => {
+    /*useEffect(() => {
         setRoutes(initedTabs);
-    }, [data]);
+    }, [data]);*/
+
+
     const setRoutes = /*useCallback(*/(a) => {
         setRoutes1(a);
     }/*, []);*/
@@ -276,10 +277,8 @@ export function ConductorFlat({ header, smallHeader, minHeaderHeight, isHideDefa
     }, [currentRoute?.endpoint?.request_url]); // Dependency on route.endpoint.request_url
 
     return (
-
         <View className="w-full flex-1">
             <TabBar routes={routes} index={index} currentUser={currentUser} setIndex={setIndex} onChangeRoute={onChangeRoute} />
-
             <View className="w-full flex-1 ">
                 <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="New content" size="sm" />
                 <TabScene onRefresh={onStartRefresh} refreshing={isRefreshing} route={currentRoute} Preload={Preload} unitType={unitType} unitMode={unitMode} fetchNextPage={fetchNextPage} />

@@ -11,12 +11,21 @@ export default function ElementLink(props) {
     let { href, target, ...rest } = props
     const navigation = useNavigation();
     const glob = useGlobalSearchParams();
-
-    if (!href)
-        href = '/'
     let { currentUser, setCurrentUser } = useCurrentUser();
 
     const TabList = currentUser ? appSetting('menu_items', 'menu_tabbar_logged') : appSetting('menu_items', 'menu_tabbar_non_logged');
+
+
+    if (href == 'javascript:' || href === undefined || href == '/javascript:')
+        href='';
+
+    if (href == ''){
+        return props.children
+    }
+   
+    if ((href == '/home' || href == '')){
+        href ='/'
+    }
 
     const index = TabList.findIndex((item) => {
         if (href.includes(item.url)) {
