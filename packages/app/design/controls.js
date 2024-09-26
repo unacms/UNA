@@ -258,7 +258,7 @@ export const Button = memo((props) => {
     }, [fullWidth, disabled, variant, solid, ThemeCssClasses, className, align, pressed]);
 
     const sClassText = useMemo(() => {
-        let classes = 'whitespace-nowrap text-ellipsis overflow-hidden ';
+        let classes = 'whitespace-nowrap text-ellipsis overflow-hidden tracking-tight';
         if (variant !== 'custom') {
             classes += ThemeCssClasses[`u-btn-${variant}-text`];
         } else {
@@ -267,8 +267,9 @@ export const Button = memo((props) => {
         if (pressed) {
             classes += 'text-neutral-950 dark:text-white ';
         }
+        classes += ' text-'+size+' ';
         return classes;
-    }, [variant, ThemeCssClasses, classTextName, pressed]);
+    }, [variant, ThemeCssClasses, classTextName, pressed, size]);
 
     const { sIconContainer, iIconSize, sTitleContainer, sizeClasses } = useMemo(() => {
         const titleVisible = !hideTitleOnSmall || !isIcon || !isNaN(title);
