@@ -1,80 +1,131 @@
+import React, { useCallback, useRef } from 'react';
 import Field, { FormError } from './_field';
 import { useController, useFormContext } from 'react-hook-form';
-import { Button, Hidden } from 'app/design/controls'
-import { View, Row } from 'app/design/view'
-import { useWindowDimensions } from 'react-native'
-import { appSetting } from 'app/lib/util'
-import { Keyboard, Platform } from 'react-native';
+import { Button, Hidden } from 'app/design/controls';
+import { View, Row } from 'app/design/view';
+import { useWindowDimensions, Keyboard, Platform } from 'react-native';
+import { appSetting } from 'app/lib/util';
+
 export default function FormFieldSubmit(props) {
+    // Destructure props with default values
+    const {
+        name,
+        value,
+        form_name,
+        handleSubmit,
+        disabled = false,
+        icon_only = false,
+        variant = 'primary',
+        rounded = false,
+        icon,
+        size = 'base',
+        saveOnChanges = false,
+        hide_errors = false,
+        ...restProps
+    } = props;
+
     const formContext = useFormContext();
     const { formState } = formContext;
-    let rules = {};
-    let name = props.name;
-    let defaultValue = props.value;
-    let { width } = useWindowDimensions();
-    const { field } = useController({ name, rules, defaultValue });
+    const { width } = useWindowDimensions();
+    const isSubmitting = useRef(false);
 
-    const formProps = appSetting('forms', props.form_name);
+    // Initialize controller for form field
+    const { field } = useController({ name, rules: {}, defaultValue: value });
 
-    const handlePress = () => {
-        if (!props.disabled) {
-            //Keyboard.dismiss();
-            props.handleSubmit();
+    // Get form-specific settings
+    const formProps = appSetting('forms', form_name) || {};
+
+    // Memoize handlers to prevent unnecessary re-renders
+    const handlePress = useCallback(() => {
+        if (isSubmitting.current) return;
+
+        isSubmitting.current = true;
+        if (!disabled) {
+            handleSubmit();
         }
-    };
+        isSubmitting.current = false;
+    }, [disabled, handleSubmit, isSubmitting]);
 
-
-    const handleReset = () => {
-        console.log(formContext.formState.isDirty ,formContext.getValues());
-        const keys = Object.keys(formContext.getValues());
-        keys.forEach((sKey) => {
-            if (name !='key')
-                formContext.setValue(sKey, '');
+    const handleReset = useCallback(() => {
+        const values = formContext.getValues();
+        Object.keys(values).forEach((key) => {
+            if (key !== 'key') {
+                formContext.setValue(key, '');
+            }
         });
-        props.handleSubmit();
+        handleSubmit();
+    }, [formContext, handleSubmit]);
+
+    // Prepare error display
+    const errors = formState.errors;
+    const errorKeys = Object.keys(errors);
+    const showErrors =
+        errorKeys.length > 0 && !hide_errors && !formProps.hide_errors;
+
+    // Prepare button properties
+    const buttonProps = {
+        variant,
+        rounded,
+        size,
+        disabled: isSubmitting.current || disabled,
+        fullWidth: formProps.button_full_width || width < 1024,
     };
+
+    const buttonHandlers = Platform.select({
+        web: { onPress: handlePress },
+        default: { onTouchStart: handlePress },
+    });
+
+    const resetHandlers = Platform.select({
+        web: { onPress: handleReset },
+        default: { onTouchStart: handleReset },
+    });
+
+    // Prepare row className
+    const rowClassName = [
+        formProps.button_hide_on_small ? 'hidden sm:flex' : '',
+        'gap-x-2',
+    ]
+        .filter(Boolean)
+        .join(' ');
 
     return (
-        <Field  {...props}>
-            <Row className={(formProps?.button_hide_on_small ? 'hidden sm:flex' : '' ) + ' gap-x-2'}>
-            <Button
-                title={!props.icon_only ? props.value : ''}
-                variant={!!props.variant ? props.variant : 'primary'}
-                rounded={!!props.variant ? props.rounded : false}
-                {...(Platform.OS === 'web'
-                    ? { onPress: handlePress }
-                    : { onTouchStart: handlePress })}
-                startDecorator={props.icon}
-                size={!!props.size ? props.size : 'base'}
-                disabled={props.disabled ? props.disabled : false}
-                fullWidth={formProps?.button_full_width == true || width < 1024}
-
-            />
-            {props.saveOnChanges && <Button
-                 variant="default"
-                 title ="Reset"
-                 {...(Platform.OS === 'web'
-                    ? { onPress: handleReset }
-                    : { onTouchStart: handlePress })}
-                 />
-            }
+        <Field {...restProps}>
+            <Row className={rowClassName}>
+                <Button
+                    title={!icon_only ? value : ''}
+                    startDecorator={icon}
+                    {...buttonProps}
+                    {...buttonHandlers}
+                />
+                {saveOnChanges && (
+                    <Button
+                        variant="default"
+                        title="Reset"
+                        {...buttonProps}
+                        {...resetHandlers}
+                    />
+                )}
             </Row>
             <Hidden
-                name={props.name}
+                name={name}
                 onChangeText={field.onChange}
                 onBlur={field.onBlur}
-                defaultValue={defaultValue}
+                defaultValue={value}
             />
-            {
-                (Object.keys(formContext.formState.errors).length > 0 && props.hide_errors !== true && formProps?.hide_errors !== true) &&
-                <View className="mt-2"><FormError errorText={"Errors:"} /><View className="ml-4">
-                    {
-                        Object.keys(formContext.formState.errors).map((fieldName, index) => {
-                            const error = formContext.formState.errors[fieldName];
-                            return <FormError key={index} errorText={error.message} />
-                        })
-                    }</View></View>
-            }
+            {showErrors && (
+                <View className="mt-2">
+                    <FormError errorText="Errors:" />
+                    <View className="ml-4">
+                        {errorKeys.map((fieldName) => (
+                            <FormError
+                                key={fieldName}
+                                errorText={errors[fieldName].message}
+                            />
+                        ))}
+                    </View>
+                </View>
+            )}
         </Field>
     );
 }

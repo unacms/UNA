@@ -14,11 +14,9 @@ import { staticComponents } from 'app/static';
 import { subscribe } from 'app/ui/atoms/socket';
 import { fetcher } from 'app/lib/fetcher';
 import Toaster from 'app/ui/atoms/toaster';
-import { useWindowDimensions } from 'react-native'
 
 const TabBar = React.memo(({ routes, index, currentUser, setIndex, onChangeRoute }) => {
     const { colors } = Theme();
-
 
     if (routes.length > 1) {
         return (
@@ -261,8 +259,12 @@ export function ConductorFlat({ header, smallHeader, minHeaderHeight, isHideDefa
         if (currentRoute.endpoint?.unit === 'feed' && layoutData && layoutData.data && (layoutData?.type == 'feed:new_content' || layoutData?.type == 'feed:remove_content')) {
             let clonedData = currentRoute.data
             const data = handleFeedLayoutData(layoutData, clonedData)
+             // Create a new route object by spreading the existing one and updating data
+            const updatedRoute = { ...routes[index], data };
+
+            // Create a new routes array with the updated route
             const newRoutes = [...routes];
-            newRoutes[index].data = data
+            newRoutes[index] = updatedRoute;
             setRoutes(newRoutes);
         }
         staticComponents['updateRouteDataForConnections'](currentRoute, layoutData, routes, index, setRoutes)

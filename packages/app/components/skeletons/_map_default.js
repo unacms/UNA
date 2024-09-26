@@ -30,7 +30,9 @@ const OneColumn = memo(() => (
 ));
 
 const Notif = memo(() => (
-    <View className="max-w-4xl w-full mx-auto flex-col mt-[1px] sm:mb-2 p-3  border-none sm:border sm:rounded-2xl">
+    
+    <View className=" w-full">
+        <Card margin=" mt-[1px] sm:mb-2 sm:mx-2 p-3 sm:p-4 " border="border-none sm:border" rounded=" sm:rounded-2xl " >
         <View className="animate-pulse flex-row items-center gap-2">
             <View className="rounded-full bg-neutral-500/40 h-12 w-12"></View>
             <View className="flex-1 gap-1.5">
@@ -41,7 +43,9 @@ const Notif = memo(() => (
                 <View className="h-3 w-full bg-neutral-500/50 rounded-full"></View>
             </View>
         </View>
+        </Card>
     </View>
+   
 ));
 
 const Forum = memo(() => (
