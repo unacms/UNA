@@ -357,6 +357,7 @@ export const Button = memo((props) => {
     const oButtonAddon = useMemo(() => {
         if (!addon) return null;
         const addonText = typeof addon === 'object' ? addon.text : addon;
+        if (!addonText) return null
         const addonVariant = typeof addon === 'object' ? addon.variant : '';
         const addonBg =
             addonVariant === 'primary'
