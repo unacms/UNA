@@ -1,62 +1,51 @@
 'use client'
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState, memo, useMemo } from 'react';
 import { storageGet, storageSet } from 'app/lib/util'
 
-export const Icon = React.memo(function Icon(props) {
-    let {  icon, className, width, height,size,  ...rest } = props
-    const key = icon + '-' + (width ? width : '') + '-' + (height ? height : '') + '-' + (size ? size : '');
-    const [currentIcon, setCurrentIcon] = useState(storageGet('icon-'+key, '', true));
+export const Icon = memo(function Icon(props) {
+    let { icon, className, width, height, size, ...rest } = props;
+
+    // Мемоизируем ключ, чтобы он не пересчитывался при каждом рендере
+    const key = useMemo(() => `${icon}-${width || ''}-${height || ''}-${size || ''}`, [icon, width, height, size]);
+
+    // Инициализируем состояние с иконкой из локального хранилища
+    const [currentIcon, setCurrentIcon] = useState(() => storageGet(`icon-${key}`, '', true));
 
     useEffect(() => {
-        
+        // Функция для получения иконки с сервера
         const fetchIcon = async () => {
-            let url = '/api/api.icon?icon='+icon;
-            if (width)
-                url += '&width='+width;
-            if (height)
-                url += '&height='+height;   
-            if (size)
-                url += '&size='+size;   
-            const response = await fetch(url);
-            const data = await response.json();
-            setCurrentIcon(data.icon)
-            storageSet('icon-'+key, '', data.icon, true);
-            
+            let url = `/api/api.icon?icon=${icon}`;
+            if (width) url += `&width=${width}`;
+            if (height) url += `&height=${height}`;
+            if (size) url += `&size=${size}`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+
+                // Обновляем состояние иконки и сохраняем в локальное хранилище
+                setCurrentIcon(data.icon);
+                storageSet(`icon-${key}`, '', data.icon, true);
+            } catch (error) {
+                console.error('Ошибка загрузки иконки:', error);
+            }
         };
-        let nIcon = storageGet('icon-'+key, '', true)
-        if (icon){
-            if (!nIcon)
-                fetchIcon();
-            else
-                setCurrentIcon(nIcon)
+
+        // Проверяем, есть ли иконка в локальном хранилище, и вызываем `fetchIcon`, если её нет
+        const cachedIcon = storageGet(`icon-${key}`, '', true);
+        if (icon && !cachedIcon) {
+            fetchIcon();
+        } else if (cachedIcon) {
+            setCurrentIcon(cachedIcon);
         }
-    }, [key]); 
-    if (!currentIcon)
-        return <></>
-    return <div className={className} {...rest} dangerouslySetInnerHTML={{ __html: currentIcon }} />;
+    }, [icon, key]); // Зависим только от иконки и ключа
+
+    if (!currentIcon) return null; // Возвращаем null, если иконка не загружена
+
+    // Отображаем иконку
+    return (
+        <div className={className} {...rest} dangerouslySetInnerHTML={{ __html: currentIcon }} />
+    );
 });
 
-/*
-OLD CODE
-'use client'
-import React, { lazy } from 'react'
-import IconDef from 'app/icons-web';
-
-
-export function Icon(props) {
-    return <IconDef {...props}/>
-}
-*/
-
-/*
-OLD CODE WITH HOOK
-'use client'
-import dynamic from 'next/dynamic'
-import React, { useEffect, useState, useMemo, useCallback } from 'react';
-//const IconDef = lazy(() => import('app/icons-web'));
-
-const IconWeb = dynamic(() => import('app/icons-web'));
-
-export const Icon = React.memo(function Icon(props) {
-    return <IconWeb {...props}/>*/

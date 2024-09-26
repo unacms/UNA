@@ -8,7 +8,7 @@ import { Icon } from 'app/ui/atoms/icon';
 import { Pressable } from 'app/design/view'
 import { Button } from 'app/design/controls';
 import { getBlocksFromData } from 'app/lib/util';
-import { memo,useCallback, useRef, useMemo  } from 'react';
+import { memo, useCallback, useRef, useMemo } from 'react';
 
 export function getBackButtonWeb() {
     if (history.length > 2) {
@@ -213,38 +213,48 @@ export async function fetchAndUpdateData(routes, index, setRoutes) {
     }
 }
 
-export function addMoreData(newItems, endpoint, setRoutes, index, blocks, routes, sidebar, pageData) {
-    sidebar = sidebar || false;
-    pageData = pageData || null;
+export function addMoreData(newItems, endpoint, setRoutes, index, blocks, routes, sidebar = false, pageData = null) {
+
+    let hasChanged = false;
 
     const updatedRoutes = routes.map((route) => {
-        if (route.index === index) {
-            route.endpoint = endpoint;
-
-            if (blocks && !route.blocks)
-                route.blocks = blocks
-
-            if (pageData && !route.pageData)
-                route.pageData = pageData
-
-
-            if (sidebar)
-                route.sidebar = sidebar
-
-            route.inited = true;
-            storageSet('ul:data', route.storageKeyValue, { data: route.data.concat(newItems), endpoint: route.endpoint });
-            return {
-                ...route,
-                data: route.data.concat(newItems),
-            };
-
-
+        if (route.index !== index) {
+            return route;
         }
 
-        return route;
+        hasChanged = true;
+
+        const updatedRoute = {
+            ...route,
+            endpoint,
+            inited: true,
+            data: route.data.concat(newItems),
+        };
+
+        if (blocks && !route.blocks) {
+            updatedRoute.blocks = blocks;
+        }
+
+        if (pageData && !route.pageData) {
+            updatedRoute.pageData = pageData;
+        }
+
+        if (sidebar) {
+            updatedRoute.sidebar = sidebar;
+        }
+
+        storageSet('ul:data', updatedRoute.storageKeyValue, {
+            data: updatedRoute.data,
+            endpoint: updatedRoute.endpoint,
+        });
+
+        return updatedRoute;
     });
-    if (routes != updatedRoutes)
+
+
+    if (hasChanged) {
         setRoutes(updatedRoutes);
+    }
 };
 
 export function getContent(data, block) {
@@ -311,30 +321,30 @@ export function processUrl(data, blocks) {
 }
 
 function ItemRenderer_({ route, numColumns, item, unit, module, unitMode, unitType, sidebar }) {
-    
-   // return <View className='bg-red-500 h-12 w-full'></View>
- //   const b = useMemo(() => {
-        if (item?.type === 'block') {
-            //return <></>
-            let block = BlockByName2({ b: item.data, name: item.block });
-            if (!block) {
-                return <View className='h-[1px]'><Text>&nbsp;</Text></View>;
-            }
-            return (
-                <View key={`${route.index}-${item.id}`} className={numColumns > 1 ? 'w-full' : 'w-full'}>
-                    {block}
-                </View>
-            );
-        } else {
-            return (
-                <View key={`${route.index}-${item.id}`} className={numColumns > 1 ? 'w-full' : 'w-full'}>
-                    <Unit unitType={unitType} module={module} unit={unit} data={item} mode={unitMode} />
-                </View>
-            );
-        }
-   /* }, [route.index, item, numColumns, unit, module, unitMode, unitType]);
 
-    return b;*/
+    // return <View className='bg-red-500 h-12 w-full'></View>
+    //   const b = useMemo(() => {
+    if (item?.type === 'block') {
+        //return <></>
+        let block = BlockByName2({ b: item.data, name: item.block });
+        if (!block) {
+            return <View className='h-[1px]'><Text>&nbsp;</Text></View>;
+        }
+        return (
+            <View key={`${route.index}-${item.id}`} className={numColumns > 1 ? 'w-full' : 'w-full'}>
+                {block}
+            </View>
+        );
+    } else {
+        return (
+            <View key={`${route.index}-${item.id}`} className={numColumns > 1 ? 'w-full' : 'w-full'}>
+                <Unit unitType={unitType} module={module} unit={unit} data={item} mode={unitMode} />
+            </View>
+        );
+    }
+    /* }, [route.index, item, numColumns, unit, module, unitMode, unitType]);
+ 
+     return b;*/
 }
 
 // AVOID BLINKING

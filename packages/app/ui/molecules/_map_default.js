@@ -1,3 +1,4 @@
+import { memo } from "react";
 import Likes from './likes';    // optimized
 import Stars from './stars';    // optimized
 import Reactions from './reactions';    // optimized
@@ -11,16 +12,16 @@ import Connections from './connections';    // optimized
 import Recommendation from './recommendations'; // optimized
 
 export const componentsMapDefault = {
-    likes: Likes,
-    stars: Stars,
-    reactions: Reactions,
-    scores: Scores,
-    comments: Comments,
-    features:Features,
-    reports: Reports,
-    reposts: Reposts,
-    shares: Shares,
-    connections: Connections,
-    recommendation: Recommendation,
+    likes: memo(Likes),
+    stars: memo(Stars),
+    reactions: memo(Reactions),
+    scores: memo(Scores),
+    comments: memo(Comments),
+    features:memo(Features),
+    reports: memo(Reports),
+    reposts: memo(Reposts),
+    shares: memo(Shares),
+    connections: memo(Connections),
+    recommendation: memo(Recommendation),
 };
 

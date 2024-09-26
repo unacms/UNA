@@ -12,6 +12,10 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { registerRootComponent } from "expo";
 import { ExpoRoot } from "expo-router";
 
+if (__DEV__) {
+	import('./ReactotronConfig').then(() => console.log('Reactotron Configured'));
+  }
+
 // Must be exported or Fast Refresh won't update the context
 export function App() {
 	const ctx = require.context("./app");

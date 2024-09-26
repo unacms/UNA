@@ -10,31 +10,41 @@ const pusherInstance = new Pusher(conf.key, {
     cluster: '',
 });
 
-const boundEvents = [];
 export function subscribe(channel_name, event_name, cb) {
     if (pusherInstance) {
         let channel = pusherInstance.channel(channel_name);
         if (!channel)
             channel = pusherInstance.subscribe(channel_name);
-
-        //if (!boundEvents[channel_name]) {
-          //  boundEvents[channel_name] = [];
-          //  boundEvents[channel_name].push(event_name);
             channel.bind(event_name, function (data) {
                 cb(data)
             });
-           
-        //}
-
-
     }
 };
-/*
-export function unbind(pusher, channel_name) {
+/* optimized
+export function subscribe(channel_name, event_name, cb) {
     if (pusherInstance) {
-        const channel = pusherInstance.channel(channel_name);
-        if (channel) {
-            channel.unbind();
+        if (!pusherInstance.boundEvents) {
+            pusherInstance.boundEvents = {};
         }
-    }
-};*/
+
+        let channel = pusherInstance.channel(channel_name);
+        if (!channel) {
+            channel = pusherInstance.subscribe(channel_name);
+        }
+
+        if (!pusherInstance.boundEvents[channel_name]) {
+            pusherInstance.boundEvents[channel_name] = {};
+        }
+
+        if (!pusherInstance.boundEvents[channel_name][event_name]) {
+            pusherInstance.boundEvents[channel_name][event_name] = [];
+
+            channel.bind(event_name, function(data) {
+                pusherInstance.boundEvents[channel_name][event_name].forEach(callback => callback(data));
+            });
+        }
+
+        pusherInstance.boundEvents[channel_name][event_name].push(cb);
+}
+}
+*/

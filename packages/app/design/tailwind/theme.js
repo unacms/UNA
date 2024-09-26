@@ -165,4 +165,8 @@ const theme = {
     },
 }
 
-module.exports = merge({ theme, colors }, configCustom)
+module.exports = (() => {
+    console.log('mergedConfig');
+    const mergedConfig = merge({ theme, colors }, configCustom);
+    return mergedConfig;
+  })();

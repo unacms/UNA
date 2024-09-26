@@ -2,8 +2,9 @@ import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
+import { memo } from "react";
 
-export default function ({ data }) {
+const Embed = memo(function ({ data }) {
 
     return <Link target='_blank' href={data.url} >
         <Row className='rounded-lg mt-4 border border-bdr dark:border-bdr-d'>
@@ -21,4 +22,6 @@ export default function ({ data }) {
             </View>
         </Row>
     </Link>
-}
+})
+
+export default Embed;

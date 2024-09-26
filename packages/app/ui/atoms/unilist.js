@@ -14,13 +14,20 @@ export default function UniList(props) {
    
     const estimatedItemSize = unitSizeMap[unit] || 400;
     
-    /*const filteredData = useMemo(() => {
-        return data.filter((v, i, a) => a.findIndex(t => t.id === v.id) === i);
-      }, [data]);*/
-      const filteredData = data.filter((v, i, a) => a.findIndex(t => t.id === v.id) === i);
+    const filteredData = data.filter((v, i, a) => a.findIndex(t => t.id === v.id) === i);
     
 
     if (mode == 'simple'){
+      /*  
+         const renderedItems = [];
+   filteredData.forEach((item, index) => {
+     renderedItems.push(
+       <View key={item.id}>
+         {renderItem({ item, index })}
+       </View>
+     );
+   });
+   return renderedItems*/
         return (
             <FlatList  
                // onLoad={onLoadListener}

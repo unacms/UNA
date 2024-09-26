@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { memo, useMemo } from 'react';
 import { TextInput as TextInputDef, Modal as ModalDef, Platform, Switch as SwitchDef } from 'react-native'
-import { Pressable, View,ScrollView, Row } from 'app/design/view'
+import { Pressable, View, ScrollView, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { styled } from 'nativewind'
 import { Icon } from 'app/ui/atoms/icon'
@@ -23,7 +23,7 @@ export const Input = styled(TextInputDef, ' bg-bgrinput dark:bg-bgrinput-d focus
 export const InputMulti = styled(TextInputDef, ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg flex-auto p-2 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 ')
 export const InputRounded = styled(TextInputDef, ' placeholder-neutral-500 bg-bgritem dark:bg-bgritem-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-transparent focus:border-bdrinput dark:focus:border-bdrinput-d focus:outline-none focus:outline-primary dark:focus-outline-primary-d duration-100 text-neutral-900 rounded-full flex-auto px-3 dark:text-neutral-100 text-base leading-5 h-11  ')
 export const InputRoundedSmall = styled(TextInputDef, ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-full flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[34px] ')
-export const Switch = (props) => Platform.OS =='web' ? <View className="w-16 h-8 pl-2 pt-1.5"><SwitchDef {...props} style={{ transform: [{ scaleX: 1.4 }, { scaleY: 1.4 }], ...props.style }} /></View> : <SwitchDef {...props} style={props.style } />;
+export const Switch = (props) => Platform.OS == 'web' ? <View className="w-16 h-8 pl-2 pt-1.5"><SwitchDef {...props} style={{ transform: [{ scaleX: 1.4 }, { scaleY: 1.4 }], ...props.style }} /></View> : <SwitchDef {...props} style={props.style} />;
 export const Hidden = styled(TextInputDef, 'hidden')
 //export const Dropdown = styled(DropdownDef, ' bg-bgrinput  border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg   w-full p-2 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus   dark:text-neutral-100 text-base leading-5 h-[40px]')
 
@@ -57,19 +57,19 @@ export function Modal({
         'center': 'sm:items-center items-start sm:p-4',
     };
     presentation = 'pageSheet';
-    if (presentation == 'fullScreen'){
+    if (presentation == 'fullScreen') {
         transparent = false;
     }
     const sClassPosition = positionClasses[position] || positionClasses['center'];
 
-    if (!title && onClose){
+    if (!title && onClose) {
         textAlign = 'end'
     }
 
     const type = typeof title;
     let styles = {}
     const { width, height } = useWindowDimensions();
-    
+
     if (width > 768)
         styles = { maxHeight: height - 100 }
 
@@ -89,16 +89,16 @@ export function Modal({
                                         </View>
                                     )}
                                     {(title && type !== 'string') && (title
-                                        
+
                                     )}
                                     {onClose && (
-                                    <View className=''>
-                                        <Button variant='text' size='sm' rounded startDecorator='X' onPress={onClose} />
-                                    </View>
-                                )}
+                                        <View className=''>
+                                            <Button variant='text' size='sm' rounded startDecorator='X' onPress={onClose} />
+                                        </View>
+                                    )}
                                 </Row>
                             }
-                            <Cnt style = {styles}  className = { padding+" eweee overflow-y-auto flex-auto md:h-auto" }>{children}</Cnt>
+                            <Cnt style={styles} className={padding + " eweee overflow-y-auto flex-auto md:h-auto"}>{children}</Cnt>
                         </Pressable>
                     </View>
                 </View>
@@ -118,7 +118,7 @@ export function ButtonsGroup({
     variant = 'default',
     size = 'base',
     fullWidth = false,
-    hideTitleOnSmall=true,
+    hideTitleOnSmall = true,
     rounded = false,
     children = [],
     ...rest
@@ -167,9 +167,9 @@ const getIcon = (sIcon, iIndex, classIconName, sClassText, sIconContainer, iIcon
     if (typeof (sIcon) == 'object')
         return buttonIconStart;
 
-    sClassText=sClassText.replace('overflow-hidden', '');
-    
-    if (isEmoji(sIcon)){
+    sClassText = sClassText.replace('overflow-hidden', '');
+
+    if (isEmoji(sIcon)) {
         sClassText = sClassText.replace('text-lg', 'text-[19px]');
         sClassText = sClassText.replace('text-base', 'text-[17px]');
         sClassText = sClassText.replace('text-sm', 'text-[16px]');
@@ -195,151 +195,209 @@ const getIcon2 = (buttonInfo, classIconName, sClassText, sIconContainer, iIconSi
 }
 
 
-export function Button(props) {
-    let { className, classTextName, classIconName, onPress, forwardedRef, ...rest } = props
-    let buttonType = props.variant ? props.variant : 'default'
-    let buttonSize = props.size ? props.size : 'base'
-    let hideTitleOnSmall = props.hideTitleOnSmall ? props.hideTitleOnSmall : false
-    let buttonTooltip = props.tooltip ? props.tooltip : false
-    let buttonPressed = props.pressed ? true : false
-    let buttonDisabled = props.disabled ? true : false
-    let buttonIconStart = props.startDecorator ? props.startDecorator : false
-    let buttonIconEnd = props.endDecorator ? props.endDecorator : false
-    let buttonAlign = props.align ? props.align : 'center'
-    let buttonFull = props.fullWidth ? true : false
-    let buttonTitle = props.title ? props.title : ''
-    let buttonAddon = props.addon ? props.addon : ''
-    let buttonRounded = props.rounded ? true : false
-    let buttonSolid = props.solid ? true : false
-    let isIcon = buttonIconStart || buttonIconEnd;
-    let sTitleContainer = (hideTitleOnSmall && isIcon && isNaN(buttonTitle)) ? ' hidden sm:block ' : '';
-    let iIconSize = 24
+export const Button = memo((props) => {
+    const {
+        className = '',
+        classTextName = '',
+        classIconName = '',
+        onPress,
+        forwardedRef,
+        variant = 'default',
+        size = 'base',
+        hideTitleOnSmall = false,
+        tooltip = false,
+        pressed = false,
+        disabled = false,
+        startDecorator = '',
+        endDecorator = '',
+        align = 'center',
+        fullWidth = false,
+        title = '',
+        addon = '',
+        rounded = false,
+        solid = false,
+        padding,
+        children,
+        ...rest
+    } = props;
 
-    let sClassContainer = ' group relative flex-row items-center '
-    let sIconContainer = ' h-6 w-6 mr-2 '
+    const isIcon = !!startDecorator || !!endDecorator;
 
-    sClassContainer += buttonFull ? ' flex-auto w-full ' : ' m-0 truncate w-fit '
-
-    if (buttonDisabled) sClassContainer += ' opacity-50 '
-
-    let sClassText = ' whitespace-nowrap text-ellipsis overflow-hidden '
-
-    let ThemeCssClasses = appSetting('theme', 'button_styles');
-
-    if (buttonType != 'custom') {
-        sClassContainer +=
-            (buttonSolid ? '' : ThemeCssClasses['u-btn-' + buttonType + '-trans']) +
-            ThemeCssClasses['u-btn-' + buttonType + '-cnt']
-        sClassText += ThemeCssClasses['u-btn-' + buttonType + '-text']
-    }
-    else {
-        sClassContainer += className
-        sClassText += classTextName
-    }
-
-    if (buttonType == 'none')
-        buttonAlign = 'start'
-
-    sClassContainer += ' justify-' + buttonAlign + ' '
-
-    if (buttonPressed) {
-        sClassContainer += ' bg-primary/10 dark:bg-primary-d/10  border-none ';
-        sClassText += ' text-neutral-950 dark:text-white';
-    }
-
-    let sClassDefaultRounding = buttonType != 'group-item' ? 'rounded-' + (buttonSize == 'lg' ? 'xl' : 'lg') : '';
-    const sClassFullRounding = buttonType != 'group-item' ? 'rounded-full' : '';
-
-    if (buttonType == 'none'){
-        sClassDefaultRounding = ''
-        buttonRounded = false;
-    }
-
-    switch (buttonSize) {
-        case 'xs':
-            sClassContainer += buttonRounded ? sClassFullRounding + ' p-1 ' : sClassDefaultRounding + ' p-1 ';
-            sIconContainer = ' h-4 w-4 ' + (buttonTitle !== '' ? ' mx-[1px] ' : '');
-            sClassText += ' text-xs tracking-tight '
-            iIconSize = 16;
-            sTitleContainer += buttonTitle !== '' ? 'mx-1 ' : '' 
-            break
-
-        case 'sm':
-            sClassContainer += buttonRounded ? sClassFullRounding + ' p-1.5 ' : sClassDefaultRounding ;
-            sClassContainer += (buttonType != 'none' ? ' p-1.5 ' : ' p-1.5 justify-start ') + (buttonType == 'none' ? ' w-full ' : ' ')
-            sIconContainer = ' h-5 w-5 ' + (buttonTitle !== '' ? '  ' : '');
-            sClassText += ' text-sm tracking-tight '
-            iIconSize = 20;
-            sTitleContainer += buttonTitle !== '' ? ' mx-1.5  ' : '' 
-            break
-
-        case 'base':
-            sClassContainer += buttonRounded ? sClassFullRounding + (props.padding ? ' p-' + props.padding : ' p-2.5') : sClassDefaultRounding + ' p-2.5 ';
-            sIconContainer = ' h-6 w-6  ' + (buttonTitle !== '' ? ' mx-1 ' : ' ');
-            sClassText += ' text-base tracking-tight '
-            iIconSize = 24;
-            sTitleContainer += buttonTitle !== '' ? ' mx-2 ' : '' 
-            break
-
-        case 'lg':
-            sClassContainer += buttonRounded ? sClassFullRounding + (props.padding ? ' p-' + props.padding : ' p-2.5') : sClassDefaultRounding + ' p-2.5 ';
-            sIconContainer = ' h-8 w-8 ' + (buttonTitle !== '' ? ' mx-1.5 ' : ' mx-1.5  ');
-            sClassText += ' h-8 leading-8 text-lg tracking-tight  '
-            iIconSize = 32;
-            sTitleContainer += buttonTitle !== '' ? ' mx-1.5 ' : '' 
-            break
-
-
-    }
-    const { colors } = Theme()
+    const { colors } = Theme();
     const { width } = useWindowDimensions();
-    if (width < 1024)
-        buttonTooltip = false;
-    let colorIcon = props.variant == 'link' ? colors.primary : '';
-    colorIcon = props.variant == 'primary' ? 'rgb(243, 244, 246)' : '';
+    const showTooltip = useMemo(() => width >= 1024 && tooltip, [width, tooltip]);
 
-    let sButtonIconStart = buttonIconStart != '' && !buttonIconEnd ? getIcon2(buttonIconStart, classIconName, sClassText, sIconContainer, iIconSize, colorIcon, buttonIconStart) : null;
-    let sButtonIconEnd = buttonIconEnd != '' && buttonIconEnd ? getIcon2(buttonIconEnd, classIconName, sClassText, sIconContainer, iIconSize, colorIcon, buttonIconStart) : null;/*bg-primary dark:bg-primary-d */
-    let oButtonAddon = null;
+    const colorIcon = useMemo(() => {
+        if (variant === 'link') return colors.primary;
+        if (variant === 'primary') return 'rgb(243, 244, 246)';
+        return '';
+    }, [variant, colors]);
 
-    let sButtonAddonText = "";
-    let sButtonAddonBg = "bg-neutral-500 dark:bg-neutral-500";
-    if (typeof buttonAddon === 'object') {
-        sButtonAddonText = buttonAddon.text;
-        if (buttonAddon.variant == 'primary')
-            sButtonAddonBg = 'bg-contrast dark:bg-contrast-d';
-    }
-    else {
-        sButtonAddonText = buttonAddon;
-    }
+    const ThemeCssClasses = useMemo(() => appSetting('theme', 'button_styles'), []);
 
-    oButtonAddon = sButtonAddonText && sButtonAddonText != '' ? <View className='flex-1 items-end '>
-        <View className={sButtonAddonBg + ' rounded-full px-2 py-0.5 mx-1 text-center items-center'}>
-            <Text className="text-white  text-xs font-semibold">{sButtonAddonText}</Text></View></View> : null;
+    const sClassContainer = useMemo(() => {
+        let classes = 'group relative flex-row items-center ';
+        classes += fullWidth ? 'flex-auto w-full ' : 'm-0 truncate w-fit ';
+        if (disabled) classes += 'opacity-50 ';
+        if (variant !== 'custom') {
+            classes +=
+                (solid ? '' : ThemeCssClasses[`u-btn-${variant}-trans`]) +
+                ThemeCssClasses[`u-btn-${variant}-cnt`];
+        } else {
+            classes += className;
+        }
+        if (variant === 'none') {
+            classes += 'justify-start ';
+        } else {
+            classes += `justify-${align} `;
+        }
+        if (pressed) {
+            classes += 'bg-primary/10 dark:bg-primary-d/10 border-none ';
+        }
+        return classes;
+    }, [fullWidth, disabled, variant, solid, ThemeCssClasses, className, align, pressed]);
 
+    const sClassText = useMemo(() => {
+        let classes = 'whitespace-nowrap text-ellipsis overflow-hidden ';
+        if (variant !== 'custom') {
+            classes += ThemeCssClasses[`u-btn-${variant}-text`];
+        } else {
+            classes += classTextName;
+        }
+        if (pressed) {
+            classes += 'text-neutral-950 dark:text-white ';
+        }
+        return classes;
+    }, [variant, ThemeCssClasses, classTextName, pressed]);
 
-    if (buttonDisabled)
-        onPress = undefined;
-    let Cnt = onPress !== undefined ? Pressable : View
-    let Cnt2 = (
-        <Cnt className={sClassContainer} {...rest}  {...(rest.alt ? { 'aria-label': rest.alt, role: 'button', 'alt': rest.alt } : {})} onPress={onPress} ref={forwardedRef}>
+    const { sIconContainer, iIconSize, sTitleContainer, sizeClasses } = useMemo(() => {
+        const titleVisible = !hideTitleOnSmall || !isIcon || !isNaN(title);
+        let iconSize = 24;
+        let iconContainerClass = '';
+        let titleContainerClass = titleVisible ? '' : ' hidden sm:block ';
+        let sizeClasses = '';
+
+        const sClassDefaultRounding = variant !== 'group-item' ? `rounded-${size === 'lg' ? 'xl' : 'lg'}` : '';
+        const sClassFullRounding = variant !== 'group-item' ? 'rounded-full' : '';
+        const roundingClass = rounded ? sClassFullRounding : sClassDefaultRounding;
+
+        switch (size) {
+            case 'xs':
+                sizeClasses = `${roundingClass} p-1 `;
+                iconContainerClass = `h-4 w-4 ${title ? 'mx-[1px]' : ''}`;
+                iconSize = 16;
+                titleContainerClass += title ? 'mx-1 ' : '';
+                break;
+            case 'sm':
+                sizeClasses = `${roundingClass} p-1.5 `;
+                iconContainerClass = `h-5 w-5 ${title ? '' : ''}`;
+                iconSize = 20;
+                titleContainerClass += title ? 'mx-1.5 ' : '';
+                break;
+            case 'base':
+                sizeClasses = `${roundingClass} ${padding ? `p-${padding}` : 'p-2.5'} `;
+                iconContainerClass = `h-6 w-6 ${title ? 'mx-1' : ''}`;
+                iconSize = 24;
+                titleContainerClass += title ? 'mx-2 ' : '';
+                break;
+            case 'lg':
+                sizeClasses = `${roundingClass} ${padding ? `p-${padding}` : 'p-2.5'} `;
+                iconContainerClass = `h-8 w-8 ${title ? 'mx-1.5' : ''}`;
+                iconSize = 32;
+                titleContainerClass += title ? 'mx-1.5 ' : '';
+                break;
+            default:
+                sizeClasses = `${roundingClass} ${padding ? `p-${padding}` : 'p-2.5'} `;
+                iconContainerClass = `h-6 w-6 ${title ? 'mx-1' : ''}`;
+                iconSize = 24;
+                titleContainerClass += title ? 'mx-2 ' : '';
+        }
+
+        return {
+            sIconContainer: iconContainerClass,
+            iIconSize: iconSize,
+            sTitleContainer: titleContainerClass,
+            sizeClasses,
+        };
+    }, [size, rounded, padding, variant, title, hideTitleOnSmall, isIcon]);
+
+    const sButtonIconStart = useMemo(
+        () =>
+            startDecorator
+                ? getIcon2(
+                    startDecorator,
+                    classIconName,
+                    sClassText,
+                    sIconContainer,
+                    iIconSize,
+                    colorIcon,
+                    startDecorator
+                )
+                : null,
+        [startDecorator, classIconName, sClassText, sIconContainer, iIconSize, colorIcon]
+    );
+
+    const sButtonIconEnd = useMemo(
+        () =>
+            endDecorator
+                ? getIcon2(
+                    endDecorator,
+                    classIconName,
+                    sClassText,
+                    sIconContainer,
+                    iIconSize,
+                    colorIcon,
+                    endDecorator
+                )
+                : null,
+        [endDecorator, classIconName, sClassText, sIconContainer, iIconSize, colorIcon]
+    );
+
+    const oButtonAddon = useMemo(() => {
+        if (!addon) return null;
+        const addonText = typeof addon === 'object' ? addon.text : addon;
+        const addonVariant = typeof addon === 'object' ? addon.variant : '';
+        const addonBg =
+            addonVariant === 'primary'
+                ? 'bg-contrast dark:bg-contrast-d'
+                : 'bg-neutral-500 dark:bg-neutral-500';
+        return (
+            <View className="flex-1 items-end ">
+                <View
+                    className={`${addonBg} rounded-full px-2 py-0.5 mx-1 text-center items-center`}
+                >
+                    <Text className="text-white text-xs font-semibold">{addonText}</Text>
+                </View>
+            </View>
+        );
+    }, [addon]);
+
+    const Cnt = onPress && !disabled ? Pressable : View;
+    const refProps = forwardedRef ? { ref: forwardedRef } : {};
+    const buttonContent = (
+        <Cnt
+            className={`${sClassContainer} ${sizeClasses}`}
+            {...rest}
+            {...(rest.alt
+                ? { 'aria-label': rest.alt, role: 'button', alt: rest.alt }
+                : {})}
+            onPress={onPress && !disabled ? onPress : undefined}
+            {...refProps}
+        >
             {sButtonIconStart}
-            {buttonTitle !== undefined && (
-                <Text className={sClassText + sTitleContainer} numberOfLines={1}>{buttonTitle}</Text>
+            {title !== undefined && (
+                <Text className={`${sClassText} ${sTitleContainer}`} numberOfLines={1}>
+                    {title}
+                </Text>
             )}
             {sButtonIconEnd}
             {oButtonAddon}
-            {props.children}
+            {children}
         </Cnt>
     );
 
-    if (buttonTooltip) {
-        return <Tooltip content={buttonTooltip}>{Cnt2}</Tooltip>
-    }
-
-    return Cnt2;
-
-}
+    return showTooltip ? <Tooltip content={tooltip}>{buttonContent}</Tooltip> : buttonContent;
+});
 
 export const ButtonRef = React.forwardRef((props, forwardedRef) => {
     return (
@@ -356,9 +414,9 @@ export function ButtonsGroupMenu(props) {
 export function ButtonMenuGroupItem(props) {
     let { variant, size, title, startDecorator, endDecorator, onPress, pressed, rounded, fullWidth, disabled, hideTitleOnSmall, ...rest } = props
     let sVariant = 'group-item' + (!!variant && variant == 'text' ? '-text' : '');
-    if (variant == 'none'){
-        sVariant='none';
-        fullWidth='true'
+    if (variant == 'none') {
+        sVariant = 'none';
+        fullWidth = 'true'
     }
     return (
         <Button variant={sVariant} hideTitleOnSmall={hideTitleOnSmall != undefined ? hideTitleOnSmall : true} size={!!size ? size : 'sm'} title={title} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} pressed={pressed != undefined ? pressed : false} rounded={rounded != undefined ? rounded : true} disabled={disabled != undefined ? disabled : false} fullWidth={fullWidth != undefined ? fullWidth : false}>

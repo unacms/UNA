@@ -126,7 +126,9 @@ export default function ElementMenu(oProps) {
 
     if (isUseStaticWidth) {
         const sItems = filteredItems.map((item, index) => {
-            const ItemType = componentsMap[item.display_type ? item.display_type : sDisplayType];
+            const ItemType = useMemo(() => {
+                return componentsMap[item.display_type || sDisplayType];
+            }, [item.display_type, sDisplayType]);
             return (
                 <View key={'menu' + index} className={(bShowVertical) ? 'w-full  ' : ' ' + (sAlignItems == 'stretch' ? 'flex-auto' : '')}>
                     <ItemType key={item.id ? item.id : item.name} {...item} params={oProps.params} />

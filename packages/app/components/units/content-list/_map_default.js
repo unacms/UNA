@@ -1,3 +1,4 @@
+import { memo } from "react";
 import UnitGroup from './bx_groups';
 import UnitAd from './bx_ads';
 import UnitChannel from './bx_channels';
@@ -8,18 +9,19 @@ import UnitOrg from './bx_organizations';
 import UnitPerson from './bx_persons';
 import UnitDefault from './default';
 import UnitPosts from './bx_posts';
-export const componentsMapDefault = {
-    'bx_groups': UnitGroup,
-    'bx_ads': UnitAd,
-    'bx_channels': UnitChannel,
-    'bx_events': UnitEvent,
-    'bx_forum': UnitForum,
-    'bx_market': UnitMarket,
-    'bx_organizations': UnitOrg,
-    'bx_persons': UnitPerson,
-    'bx_posts': UnitPosts,
 
-    'default': UnitDefault,
+export const componentsMapDefault = {
+    'bx_groups': memo(UnitGroup),
+    'bx_ads': memo(UnitAd),
+    'bx_channels': memo(UnitChannel),
+    'bx_events': memo(UnitEvent),
+    'bx_forum': memo(UnitForum),
+    'bx_market': memo(UnitMarket),
+    'bx_organizations': memo(UnitOrg),
+    'bx_persons': memo(UnitPerson),
+    'bx_posts': memo(UnitPosts),
+
+    'default': memo(UnitDefault),
     
 };
 

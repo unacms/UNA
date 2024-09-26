@@ -55,6 +55,7 @@ const TabScene = React.memo(({
 }) => {
 
     const handleEndReached = useCallback(() => {
+       
         if (!route?.endpoint || route?.endpoint?.params?.start === 0 || refreshing || route?.endpoint?.finished)
             return;
         fetchNextPage();
@@ -242,7 +243,7 @@ export function ConductorFlat({ header, smallHeader, minHeaderHeight, isHideDefa
 
     const onStartRefresh = useCallback(async () => {
         setRoutes(prevRoutes => {
-            const updatedRoutes = initedTabs;
+            const updatedRoutes =  fillTabs(menu, data, blocks, currentUser, useSectionAsMenu);;
             return [...prevRoutes.slice(0, index), updatedRoutes[index], ...prevRoutes.slice(index + 1)];
         });
         setIsRefreshing(true);

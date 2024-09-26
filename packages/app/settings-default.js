@@ -63,7 +63,7 @@ export const settingsDefault = {
             'rose',
             'red',
         ],
-        async_workers: ['NotifChecker'], //['EventChecker'],
+        async_workers: ['NotifChecker'], //['EventChecker'], 
         async_workers_interval: 10,
         bluetooth: false,
         bluetooth_device_name_prefix: 'NEO',
