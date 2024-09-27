@@ -1,7 +1,7 @@
 import { Pressable, View } from 'app/design/view';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { Button } from 'app/design/controls'
-import { memo, useCallback } from 'react'
+import { memo, useCallback, useEffect } from 'react'
 import { FeedbackHaptics } from 'app/lib/util';
 
 const Menu = memo(({ items, onSelect, setBottomSheetData }) => {
@@ -32,18 +32,22 @@ const Menu = memo(({ items, onSelect, setBottomSheetData }) => {
     );
 });
 
-export default function (oProps) {
-
+export default function ({items, onSelect, children, defaultOpen}) {
     const { setBottomSheetData } = useBottomSheetData();
-
     const handlePress = useCallback(() => {
         FeedbackHaptics('Medium')
-        setBottomSheetData({ title: 'Menu options', showClose: true, snapPoints: ['10%', '50%'], content: <Menu items={oProps.items} onSelect={oProps.onSelect} setBottomSheetData={setBottomSheetData} /> });
-    }, [setBottomSheetData, oProps]);
+        setBottomSheetData({ title: 'Menu options', showClose: true, snapPoints: ['10%', '50%'], content: <Menu items={items} onSelect={onSelect} setBottomSheetData={setBottomSheetData} /> });
+    }, [setBottomSheetData, items, onSelect]);
+
+    useEffect(() => {
+        if (defaultOpen)
+            handlePress()
+    }, []);
+
 
 
     return (
-        <Pressable onPress={handlePress}>{oProps.children}</Pressable>
+        <Pressable onPress={handlePress}>{children}</Pressable>
     );
 }
 

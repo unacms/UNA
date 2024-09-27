@@ -1,4 +1,4 @@
-import * as DropdownMenu from 'zeego/dropdown-menu'
+/*import * as DropdownMenu from 'zeego/dropdown-menu'
 import { styled } from 'nativewind'
 
 export const DropdownMenuRoot = DropdownMenu.Root
@@ -58,3 +58,4 @@ export const DropdownMenuItemIcon = DropdownMenu.create(
   ),
   'ItemIcon'
 )
+*/

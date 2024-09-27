@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react';
+import { useMemo, useRef, memo, useCallback } from 'react';
 import { Platform } from 'react-native';
 import { menuItemsByName, linkify, FeedbackHaptics } from 'app/lib/util';
 import { Text } from 'app/design/typography'
@@ -18,13 +18,11 @@ import Form from 'app/components/elements/form';
 import useSWR from "swr";
 import { useTranslation } from 'react-i18next';
 import Link from 'app/ui/atoms/link'
-import { stripTags, appSetting } from 'app/lib/util';
+import { stripTags, appSetting, getDataForMenu } from 'app/lib/util';
 import Carousel from 'app/ui/molecules/carousel'
 import { componentsMap } from 'app/ui/molecules/_map'
-import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
 import { StarsView } from 'app/ui/atoms/stars';
 import { Modal } from 'app/design/controls'
-import { useLocalSearchParams } from 'expo-router';
 
 export default function UnitComments(props) {
     const { t } = useTranslation();
@@ -32,22 +30,22 @@ export default function UnitComments(props) {
     const [viewState, setViewState] = useState({ view: '' });
     const [postData, setPostData] = useState(null);
 
-    let level = props.level ? props.level : 0
-    let lvls = props.lvls ? props.lvls : []
+    let level = props.level || 0
+    let lvls = props.lvls || []
     let data = props.data;
     let items = props.items;
     let view = props.view;
     let files = props.files;
     let maxLevel = props.max_level;
     let parent = props.parent;
-    const local = useLocalSearchParams();
 
-    // request form for reply
-    const handleReply = async (data, isNoReaction) => {
+    const handleReply = useCallback((data, isNoReaction) => {
         if (!isNoReaction)
             FeedbackHaptics('Medium');
         props.handleReply(data);
-    };
+    },
+        [props.handleReply]
+    );
 
     useEffect(() => {
         if (props.replyId == "cmt_id=" + data.cmt_id) {
@@ -56,7 +54,7 @@ export default function UnitComments(props) {
     }, [props.replyId])
 
     if (!data)
-        return (<View></View>);
+        return null;
 
     let { data: dynamicData, error } = useSWR(
         postData ? ['/api.php?r=' + appSetting("urls", "cmts") + '/&params[]={"module":"' + props.module + '","object_id":' + props.data.cmt_object_id + ',"action":"edit","id":' + props.data.cmt_id + '}', '', postData] : null,
@@ -74,96 +72,59 @@ export default function UnitComments(props) {
         files = dynamicData?.data?.browse?.data?.data[0]['i' + props.data.cmt_id].files;
     }
 
-    const onFormSubmit = (formData, d) => {
+    const onFormSubmit = useCallback((formData) => {
         setViewState({ view: '' });
         setPostData(formData);
-    }
+    }, []);
 
-    const refReport = useRef(null);
-    const [reportTitle, setReportTitle] = useState(null);
-    const handleManageMenuSelect = async (oItem, event) => {
-        switch (oItem.name) {
-            case 'item-edit':
-                const result1 = await fetcher('/api.php?r=' + appSetting("urls", "cmts") + '/&params[]={"module":"' + props.module + '","object_id":' + props.data.cmt_object_id + ',"action":"edit","id":' + props.data.cmt_id + '}');
-                setViewState({ view: 'edited', data: result1.data.form });
-                break;
 
-            case 'item-delete':
-                const result = await fetcher('/api.php?r=' + appSetting("urls", "cmts") + '/&params[]={"module":"' + props.module + '","object_id":' + props.data.cmt_object_id + ',"action":"remove","id":' + props.data.cmt_id + '}');
-                setViewState({ view: 'deleted' });
-                props.handleDelete();
-                break;
-
-            case 'item-report':
-                refReport.current.report(event);
-                break;
+    const cells = useMemo(() => {
+        const cellsArray = [];
+        const effectiveLevel = Math.min(level, maxLevel);
+        for (let i = 0; i < effectiveLevel; i++) {
+            cellsArray.push(
+                <View key={`sp-${level}-${i}`} className="w-8">
+                    {lvls[i + 1] && (
+                        <View className="ml-[15px] w-0.5 flex-auto bg-neutral-100 dark:bg-neutral-800" />
+                    )}
+                    {i === level - 1 && (
+                        <View className="ml-[15px] h-6 w-6 border-neutral-100 dark:border-neutral-800 border-l-2 border-b-2 absolute -top-1.5 rounded-bl-2xl flex-auto" />
+                    )}
+                </View>
+            );
         }
-    }
+        return cellsArray;
+    }, [level, maxLevel, lvls]);
 
-    let cells = [];
 
-    let l = level < maxLevel ? level : maxLevel;
-    for (let i = 0; i < l; i++) {
-        cells.push(<View key={'sp-' + level + '-' + i} className='w-8'>{  /*i+'-'+level+'-'+lvls[i]+'-'+lvls.length*/}
-            {(lvls[i + 1]) && <View className="ml-[15px] w-0.5 flex-auto  bg-neutral-100 dark:bg-neutral-800"></View>}
-            {(i == level - 1) && <View className="ml-[15px] h-6 w-6 border-neutral-100 dark:border-neutral-800  border-l-2 border-b-2 absolute -top-1.5 rounded-bl-2xl flex-auto"></View>}
-        </View>)
-    };
-    let oReport = undefined;
-    const aMenuManageItems = menuItemsByName('comments_manage_menu', data.menu_manage.items, currentUser).map(
-        (aItem) => {
-            let sTitle = aItem.title;
-            if (!!aItem.display_type && aItem.display_type == 'element') {
-                const Element = componentsMap[aItem.data.type];
-                if (!!Element) {
-                    sTitle = aItem.data?.action ? aItem.data?.action.title : 'Report';
-                    if (!!reportTitle)
-                        sTitle = reportTitle;
-
-                    oReport = (
-                        <View className="w-0 h-0" style={{ opacity: 0 }}>
-                            <Element key={aItem.id ? aItem.id : aItem.name} ref={refReport} onChangeTitle={setReportTitle} {...aItem.data} />
-                        </View>
-                    );
-                }
-            }
-
-            return {
-                id: aItem.id ? aItem.id : aItem.name,
-                name: aItem.name,
-                link: aItem.link,
-                title: sTitle,
-            }
-        }
+    const imageList = useMemo(
+        () =>
+            files.map((obj) => ({
+                src: obj.file,
+                width: obj.width,
+                height: obj.height,
+                type: 'image',
+            })),
+        [files]
     );
-
-    let aImg = files.map(obj => {
-        return {
-            src: obj.file,
-            width: obj.width,
-            height: obj.height,
-            type: 'image'
-        };
-    });
-
-    const TabFlashList = React.forwardRef((props, ref) => {
-
-        if (getNumCols(0) != numColumns)
-            setNumColumns(getNumCols(0));
-
-        return (
-            <UniList
-                {...props}
-                useWindowScroll
-                numColumns={numColumns}
-                onEndReached={handleEndReached}
-            />
-        );
-    });
 
     if (viewState.view == 'deleted')
         return (<></>);
 
+    if (viewState.view == 'edited')
+        return <Modal
+            title={t("Edit comment")}
+            onVisible={true}
+            onClose={() => {
+                setViewState({ view: '' })
+            }}
+            transparent={true}
+            headerBorder={true}
+        >
+            <View className="p-2">
+                <Form {...viewState.data} classContainerName="flex-row flex-wrap w-full  items-start justify-between" onFormSubmit={onFormSubmit} />
+            </View>
+        </Modal>
 
 
     return (
@@ -197,26 +158,10 @@ export default function UnitComments(props) {
                             </View>
                         }
                         <View className='text-neutral-900 dark:text-neutral-50'>
-                            {viewState.view == 'edited' ? (
-                                <Modal
-                                    title={t("Edit comment")}
-                                    onVisible={true}
-                                    onClose={() => {
-                                        setViewState({ view: '' })
-                                    }}
-                                    transparent={true}
-                                    headerBorder={true}
-                                >
-                                    <View className="p-2">
-                                        <Form {...viewState.data} classContainerName="flex-row flex-wrap w-full  items-start justify-between" onFormSubmit={onFormSubmit} />
-                                    </View>
-                                </Modal>
-
-
-                            ) : <Html htmlStyles={{ fontSize: 14 }} customClassName='u-vanilla-html u-vanilla-html-small' data={linkify(data.cmt_text)} />}
+                            <Html htmlStyles={{ fontSize: 14 }} customClassName='u-vanilla-html u-vanilla-html-small' data={linkify(data.cmt_text)} />
                             {!!data.cmt_mood && <StarsView rating={data.cmt_mood} starSize={20} />}
                         </View>
-                        {(viewState.view != 'edited' && aImg.length > 0) && <View className=' max-w-lg'><Carousel data={aImg} /></View>}
+                        {(viewState.view != 'edited' && imageList.length > 0) && <View className=' max-w-lg'><Carousel data={imageList} /></View>}
                     </View>
                     {viewState.view != 'edited' && <View className=' flex-row w-full items-center'>
                         {(!!currentUser && !!props.handleReply && !props.module.includes('_reviews')) ? <View className='mr-2'>
@@ -228,22 +173,8 @@ export default function UnitComments(props) {
                         </View> : <View></View>
                         }
                         <View className='flex-row flex-auto '>
-                            <Menu {...data.menu_actions} displayType="element" showMatched={true} params={{ show_action: true, show_counter: true, show_combined: true, button_size:'xs', button_variant: 'text' }} />
-                            {!!currentUser && !!aMenuManageItems.length &&
-                                <View className="ml-auto flex-none">
-                                    <DropdownMenu items={aMenuManageItems.map((aItem) => {
-                                        return {
-                                            id: aItem.id ? aItem.id : aItem.name,
-                                            name: aItem.name,
-                                            link: aItem.link,
-                                            title: aItem.title
-                                        };
-                                    })} onSelect={handleManageMenuSelect}>
-                                        <Button variant="text" size="xs" startDecorator="DotsThreeOutline"  rounded />
-                                    </DropdownMenu>
-                                </View>
-                            }
-                            {!!oReport && oReport}
+                            <Menu {...data.menu_actions} displayType="element" showMatched={true} params={{ show_action: true, show_counter: true, show_combined: true, button_size: 'xs', button_variant: 'text' }} />
+                            <View className="ml-auto flex-none"><MenuManage id={data.id} menu={data?.menu_manage} setViewState={setViewState} module={props.module} cmt_object_id={props.data.cmt_object_id} cmt_id={props.data.cmt_id} /></View>
                         </View>
                     </View>
                     }
@@ -252,3 +183,98 @@ export default function UnitComments(props) {
         </View>
     );
 }
+
+const MenuManage = ({ id, menu, setViewState, module, cmt_object_id, cmt_id }) => {
+    const [menuData, setMenuData] = useState(false);
+
+    if (menu.items)
+        return <MenuManage_ id={id} menu={menu} setViewState={setViewState} module={module} cmt_object_id={cmt_object_id} cmt_id={cmt_id} />
+
+    if (!menuData)
+        return (
+            <Button
+                variant="text"
+                size="xs"
+                rounded
+                startDecorator="DotsThreeOutline"
+                onPress={() => {
+                    getDataForMenu(menu, setMenuData);
+                }}
+            />
+        );
+
+    return <MenuManage_ id={id} menu={menuData} defaultOpen={true} setViewState={setViewState} module={module} cmt_object_id={cmt_object_id} cmt_id={cmt_id} />
+
+}
+
+const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen, module, cmt_object_id, cmt_id }) => {
+    let { currentUser, setCurrentUser } = useCurrentUser()
+
+    const refReport = useRef(null);
+    const [reportTitle, setReportTitle] = useState(null);
+    const handleManageMenuSelect = async (oItem, event) => {
+        switch (oItem.name) {
+            case 'item-edit':
+                const result1 = await fetcher('/api.php?r=' + appSetting("urls", "cmts") + '/&params[]={"module":"' + module + '","object_id":' + cmt_object_id + ',"action":"edit","id":' + cmt_id + '}');
+                setViewState({ view: 'edited', data: result1.data.form });
+                break;
+
+            case 'item-delete':
+                const result = await fetcher('/api.php?r=' + appSetting("urls", "cmts") + '/&params[]={"module":"' + module + '","object_id":' + cmt_object_id + ',"action":"remove","id":' + cmt_id + '}');
+                setViewState({ view: 'deleted' });
+                props.handleDelete();
+                break;
+
+            case 'item-report':
+                refReport.current.report(event);
+                break;
+        }
+    }
+
+    let oReport = undefined;
+    // const aMenuManageItems = menuItemsByName('comments_manage_menu', data.menu_manage.items, currentUser).map(
+    const aMenuManageItems = !!currentUser ? menu && menuItemsByName('comments_manage_menu', menu?.items, currentUser).map(
+        (aItem) => {
+            let sTitle = aItem.title;
+            if (!!aItem.display_type && aItem.display_type == 'element') {
+                const Element = componentsMap[aItem.data.type];
+                if (!!Element) {
+                    sTitle = aItem.data?.action ? aItem.data?.action.title : 'Report';
+                    if (!!reportTitle)
+                        sTitle = reportTitle;
+
+                    oReport = (
+                        <View className="w-0 h-0" style={{ opacity: 0 }}>
+                            <Element key={aItem.id ? aItem.id : aItem.name} ref={refReport} onChangeTitle={setReportTitle} {...aItem.data} />
+                        </View>
+                    );
+                }
+            }
+
+            return {
+                id: aItem.id ? aItem.id : aItem.name,
+                name: aItem.name,
+                link: aItem.link,
+                title: sTitle,
+            }
+        }
+    ) : [];
+
+    return aMenuManageItems?.length > 0 && (
+        <>
+
+            <DropdownMenu defaultOpen={defaultOpen} items={aMenuManageItems.map((aItem) => {
+                return {
+                    id: aItem.id ? aItem.id : aItem.name,
+                    name: aItem.name,
+                    link: aItem.link,
+                    title: aItem.title
+                };
+            })} onSelect={handleManageMenuSelect}>
+                <Button variant="text" size="xs" startDecorator="DotsThreeOutline" rounded />
+            </DropdownMenu>
+
+            {!!oReport && oReport}
+        </>
+    );
+});

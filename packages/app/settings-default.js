@@ -1878,6 +1878,31 @@ export const settingsDefault = {
                 showAltTopMenu: true,
             },
         },
+        'persons-profile-subscriptions1': {
+            layout: 'profile-alt',
+            blocks: {
+                col2: {
+                    name: 'system:subscriptions_table',
+                    showTitle: false,
+                    showBg: true,
+                    sidebar: false,
+                },
+                col4: {
+                    name: 'bx_persons:entity_cover',
+                    showTitle: false,
+                    showBg: false,
+                    sidebar: false,
+                    leftbar: true,
+                },
+            },
+            headerSettings: {
+                offset: false,
+                header: false,
+                cover: 'profile',
+                hideLeftmenu: true,
+                showAltTopMenu: true,
+            },
+        },
         //############ ORGS PAGES ############
         'view-organization-profile': {
             layout: 'profile',

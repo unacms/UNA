@@ -9,7 +9,6 @@ const items = Array(5).fill('');
 
 
 export function getSkeletonForList(name, num = 5) {
-    console.log(name)
     if (Array.isArray(name)){
         if (name.includes('feed'))
             name = 'feed';

@@ -20,20 +20,20 @@ import { CommentsBrowse, CommentsParts } from 'app/lib/comments-helpers'
 import { Pressable } from 'app/design/view';
 import Carousel from 'app/ui/molecules/carousel'
 import { subscribe } from 'app/ui/atoms/socket';
-import { FeedbackHaptics } from 'app/lib/util';
+import { FeedbackHaptics, getDataForMenu } from 'app/lib/util';
 import Form from 'app/components/elements/form'
 import useSWR from 'swr'
 import { useTranslation } from 'react-i18next';
 
 export const CommentsModal = memo(({ commentsData, initFormData, itemContent }) => {
     const windowDimensions = useWindowDimensions();
-    const offset = windowDimensions.width>1024 ? 100 :60;
-    const [height, setHeight] = useState( windowDimensions.height  - offset - 100);
+    const offset = windowDimensions.width > 1024 ? 100 : 60;
+    const [height, setHeight] = useState(windowDimensions.height - offset - 100);
     const aItems = [itemContent];
     const CommentsPartsData = CommentsParts(commentsData, aItems, height, initFormData);
 
     const handleLayout = (event) => {
-        const h = windowDimensions.height  - offset - event.nativeEvent.layout.height;
+        const h = windowDimensions.height - offset - event.nativeEvent.layout.height;
         setHeight(h)
     };
 
@@ -49,7 +49,7 @@ export const CommentsModal = memo(({ commentsData, initFormData, itemContent }) 
     );
 });
 
-export const FeedEditForm = memo(({ setViewState, viewState, id  }) => {
+export const FeedEditForm = memo(({ setViewState, viewState, id }) => {
     const { t } = useTranslation();
     const [postData, setPostData] = useState(null);
     const { data: dynamicData, error } = useSWR(
@@ -65,26 +65,26 @@ export const FeedEditForm = memo(({ setViewState, viewState, id  }) => {
     useEffect(() => {
         if (dynamicData?.data?.item)
             setViewState({ view: '' })
-    }),[dynamicData]
+    }), [dynamicData]
 
     return (
         <Modal
-                title={t("Edit post")}
-                onVisible={true}
-                onClose={() => {
-                    setViewState({ view: '' })
-                }}
-                transparent={true}
-                headerBorder={true}
-            >
+            title={t("Edit post")}
+            onVisible={true}
+            onClose={() => {
+                setViewState({ view: '' })
+            }}
+            transparent={true}
+            headerBorder={true}
+        >
 
-                <Form
-                    {...viewState.data}
-                    classContainerName="flex-row flex-wrap  w-full items-start justify-between"
-                    onFormSubmit={onFormSubmit}
-                />
+            <Form
+                {...viewState.data}
+                classContainerName="flex-row flex-wrap  w-full items-start justify-between"
+                onFormSubmit={onFormSubmit}
+            />
 
-            </Modal>
+        </Modal>
     )
 });
 
@@ -95,7 +95,7 @@ export const CommentsSection = memo(({ isCommentsModal, commentsDataInline, data
     </Text>);
     return (
         <View className='border-t border-bdr/50 dark:border-bdr-d/50 pt-4 mt-4'>
-             {isShowMoreComments && (
+            {isShowMoreComments && (
                 <View className='pb-1 mb-3'>
                     {isCommentsModal ? <Pressable onPress={() => { showCommentsModal() }} >
                         {ShowMoreCmts}
@@ -103,12 +103,12 @@ export const CommentsSection = memo(({ isCommentsModal, commentsDataInline, data
                 </View>
             )}
             <CommentsBrowse maxCount={appSetting('layout', 'comments_count_in_feed')} contentUrl={url} browse={commentsDataInline} module={data?.cmts.module} isShort={true}  {...(isCommentsModal && { handleReply: showCommentsModal })} />
-           
+
         </View>
     )
 });
 
-export const MainContent = memo(({ url, data, MarketView,AdView, GroupView, DefaultView }) => {
+export const MainContent = memo(({ url, data, MarketView, AdView, GroupView, DefaultView }) => {
 
     const bIsTitle = data?.content?.title && data?.content?.title?.trim() != '' ? true : false
 
@@ -163,9 +163,9 @@ export const MainContent = memo(({ url, data, MarketView,AdView, GroupView, Defa
     return <DefaultView {...commonProps} files_attach={files_attach} bIsTimelineContent={bIsTimelineContent} />;
 });
 
-export function prepareData(data){
+export function prepareData(data) {
     const url = data.url.includes('://') ? data.url : '/' + data.url
-   
+
     let commentsData = null;
     let isShowMoreComments = false;
     if (data?.cmts?.data?.length > 0) {
@@ -175,7 +175,7 @@ export function prepareData(data){
         }
     }
 
-    return { url, commentsData, isShowMoreComments}
+    return { url, commentsData, isShowMoreComments }
 }
 
 export const ItemInfo = memo(({ data, t }) => {
@@ -249,7 +249,32 @@ export const LinkContent = memo(({ url, data }) => (
     </Link>
 ));
 
-export const MenuManage = memo(({ id, menu, setViewState }) => {
+
+export const MenuManage = ({ id, menu, setViewState }) => {
+    const [menuData, setMenuData] = useState(false);
+    
+    if (menu.items)
+        return <MenuManage_ id={id} menu={menu}  setViewState={setViewState} />
+    
+    if (!menuData)
+        return (
+            <Button
+                variant="text"
+                size="sm"
+                rounded
+                startDecorator="DotsThreeOutline"
+                onPress={() => {
+                    FeedbackHaptics('Medium');
+                    getDataForMenu(menu, setMenuData);
+                }}
+            />
+        );
+
+    return <MenuManage_ id={id} menu={menuData} defaultOpen={true}  setViewState={setViewState} />
+
+}
+
+const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen }) => {
     let { currentUser, setCurrentUser } = useCurrentUser()
 
     const refReport = useRef(null);
@@ -308,15 +333,12 @@ export const MenuManage = memo(({ id, menu, setViewState }) => {
     return aMenuManageItems?.length > 0 && (
         <>
             <View className="flex-none ml-2 x">
-                <DropdownMenu items={aMenuManageItems} onSelect={handleMenuManageSelect}>
+                <DropdownMenu items={aMenuManageItems} defaultOpen={defaultOpen} onSelect={handleMenuManageSelect}>
                     <Button
                         variant="text"
                         size="sm"
                         rounded
                         startDecorator="DotsThreeOutline"
-                       /* onPress={() => {
-                            FeedbackHaptics('Medium')
-                        }}*/
                     />
                 </DropdownMenu>
             </View>
@@ -357,7 +379,7 @@ export const UnitImages = memo(({ images }) => {
     );
 });
 
-export const ActionMenu =  memo(({ data }) => {
+export const ActionMenu = memo(({ data }) => {
     return <Menu
         {...data}
         displayType="button"
@@ -369,7 +391,7 @@ export const ActionMenu =  memo(({ data }) => {
     />
 });
 
-export const Author = memo(({data, url, t}) => (
+export const Author = memo(({ data, url, t }) => (
     <View className='flex-auto overflow-hidden'>
         <Profile
             {...data.author_data}
@@ -389,7 +411,7 @@ export const Author = memo(({data, url, t}) => (
 ));
 
 
-export const SmallUnit = memo(({data}) => {
+export const SmallUnit = memo(({ data }) => {
     let url = '/' + data.url
     return (
         <AnimatedBlock>
@@ -436,7 +458,7 @@ export const SmallUnit = memo(({data}) => {
 
 export const UnitFeed = ({ data, mode, DefaultUnit, SmallUnit }) => {
 
-    
+
     data.mainImage = null
     if (data?.content?.images)
         data.mainImage = data?.content?.images?.length > 0 ? data.content.images[0] : null
@@ -456,19 +478,19 @@ export const UnitFeed = ({ data, mode, DefaultUnit, SmallUnit }) => {
 
     const onItemEdited = useCallback(async (strData) => {
         const data = JSON.parse(strData);
-        if (data.id.toString() == datas.id.toString()){
+        if (data.id.toString() == datas.id.toString()) {
             const result = await fetcher(
-                '/api.php?r='+appSetting("urls", "feed_item")+'{"params":{"browse":"id","value":' + data.id + '}}'
+                '/api.php?r=' + appSetting("urls", "feed_item") + '{"params":{"browse":"id","value":' + data.id + '}}'
             )
             if (result.data && !isObjectsEqual(result.data, datas))
                 setDatas(result.data);
         }
     }, [datas]);
-    
+
     useEffect(() => {
         subscribe('bx_timeline_0', 'edited', onItemEdited);
     }, []);
-    
+
     let unit = mode == 'small' ? SmallUnit(datas) : DefaultUnit(datas)
 
     return <>{unit}</>

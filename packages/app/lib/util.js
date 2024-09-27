@@ -810,6 +810,14 @@ export function getLayout(currentUser, layoutName = '') {
     return a;
 }
 
+export async function getDataForMenu(menu, callback) {
+    const data = await fetcher(
+        '/api.php?r=system/get_menu/TemplServices&params[]={"object":"' + menu?.object + '","params":' + JSON.stringify(menu?.params) + '}'
+    )
+    callback(data.data)
+}
+
+
 export function menuItemsByName(name, items, currentUser, url = '') {
     if (!items)
         return [];

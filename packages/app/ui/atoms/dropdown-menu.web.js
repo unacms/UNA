@@ -6,70 +6,102 @@ import { Pressable, View } from 'app/design/view';
 import React, { memo } from 'react'
 import Redirect from 'app/ui/atoms/redirect';
 import { Icon } from 'app/ui/atoms/icon'
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 
-import { 
-    DropdownMenuRoot, 
-    DropdownMenuContentV, 
-    DropdownMenuContentH, 
-    DropdownMenuTrigger, 
-    DropdownMenuItemV, 
-    DropdownMenuItemH, 
-    DropdownMenuItemTitle,
-    DropdownMenuItemIcon,
-    DropdownMenuItemNoPad
-} from 'app/design/dropdown';
+const DropdownMenuContentV = (props) => (
+    <DropdownMenu.Content
+        className="z-10 min-w-[200px]  backdrop-blur bg-bgrmodal dark:bg-bgrmodal-d mt-1  divide-y divide-bdr dark:divide-bdr-d text-sm  border dark:border-bdr-d border-bdr rounded-lg shadow-2xl"
+        {...props}
+    >
+        {props.children}
+    </DropdownMenu.Content>
+);
+
+const DropdownMenuContentH = (props) => (
+    <DropdownMenu.Content
+        className="flex-row z-10 p-1 bg-bgrmodal dark:bg-bgrmodal-d text-sm text-neutral-800 dark:text-neutral-200 rounded-full shadow"
+        {...props}
+    >
+        {props.children}
+    </DropdownMenu.Content>
+);
+
+const DropdownMenuItemV = (props) => (
+    <DropdownMenu.Item
+        className="flex-row focus:outline-none items-center justify-between px-3 py-2.5 gap-x-3 text-base hover:bg-bgritem dark:hover:bg-bgritem-d text-neutral-700 dark:text-neutral-200 dark:hover:text-white hover:cursor-pointer"
+        {...props}
+    >
+        {props.children}
+    </DropdownMenu.Item>
+);
+
+const DropdownMenuItemNoPad = (props) => (
+    <DropdownMenu.Item
+        className="flex-row focus:outline-none items-center justify-between  hover:bg-bgritem dark:hover:bg-bgritem-d  text-base text-neutral-700 dark:text-neutral-200 dark:hover:text-white hover:cursor-pointer"
+        {...props}
+    >
+        {props.children}
+    </DropdownMenu.Item>
+);
+
+const DropdownMenuItemH = (props) => (
+    <DropdownMenu.Item
+        className=" flex focus:outline-none block px-4 p-2 hover:bg-bgritem dark:hover:bg-bgritem-d dark:hover:text-white rounded-full hover:cursor-pointer text-neutral-700 dark:text-neutral-200"
+        {...props}
+    >
+        {props.children}
+    </DropdownMenu.Item>
+);
 
 
 
-export default function (oProps) {
+export default function ({variant, defaultOpen, onSelect, items, children}) {
 
     const redirectdRef = useRef();
-        const bWeb = Platform.OS === 'web';
-    
-        const handleSelect = (oItem) => {
-            redirectdRef.current.redirect('' + oItem.link);
-        }
-    
-        const sVariant = !!oProps?.variant ? oProps.variant : 'vertical';
-        const onSelect = oProps?.onSelect ? oProps.onSelect : handleSelect;
-    
-        const DmContent = (sVariant == 'vertical' || sVariant == 'nopad') ? DropdownMenuContentV : DropdownMenuContentH;
-        const DmItem = sVariant == 'vertical' ? DropdownMenuItemV : (sVariant == 'nopad' ? DropdownMenuItemNoPad : DropdownMenuItemH);   
-    
-    
-        const aDmItems = oProps.items.map((oItem) => {
-            let sIcon = undefined;
-            if(!!oItem?.icon) {
-                if(isEmoji(oItem.icon))
-                    sIcon = (
-                        <Text className={oItem?.class_item_icon}>{oItem.icon}</Text>
-                    );
-                else
-                    sIcon = (
-                        <Icon className={oItem?.class_item_icon} icon={oItem.icon} />
-                    );
-            }
-    
-            return (
-                <DmItem key={oItem.id} onSelect={(event) => !!oItem?.onClick ? oItem?.onClick(oItem, event) : onSelect(oItem, event)} {...(bWeb ? {className: oItem?.class_item} : {})}>
-                    {!!sIcon && <DropdownMenuItemIcon>{sIcon}</DropdownMenuItemIcon>}
-                    {!!oItem?.title && <DropdownMenuItemTitle {...(bWeb ? {className: oItem?.class_item_title} : {})}>{oItem.title}</DropdownMenuItemTitle>}
-                    {(false && bWeb && oItem.indicator && !oItem.indicator.variant) && <DropdownMenuItemSubtitle>{ oItem.indicator }</DropdownMenuItemSubtitle>}
-                    {(false && bWeb && oItem.indicator && oItem.indicator.variant) && <DropdownMenuItemSubtitleRed>{ oItem.indicator.text }</DropdownMenuItemSubtitleRed>}
-                </DmItem>
-            );
-        });
-    
-        return (
-            <View >
-                <Redirect ref={redirectdRef} />
-                <DropdownMenuRoot>
-                    <DropdownMenuTrigger data-state='open'><Pressable onPress={() => {}}>{oProps.children}</Pressable></DropdownMenuTrigger>
-                    <DmContent>{aDmItems}</DmContent>
-                </DropdownMenuRoot>
-            </View>
-        );
 
-    
+    const handleSelect = (oItem) => {
+        redirectdRef.current.redirect('' + oItem.link);
+    }
+
+    const sVariant = variant || 'vertical';
+    const onSelectInt = onSelect || handleSelect;
+
+    const DmContent = (sVariant == 'vertical' || sVariant == 'nopad') ? DropdownMenuContentV : DropdownMenuContentH;
+    const DmItem = sVariant == 'vertical' ? DropdownMenuItemV : (sVariant == 'nopad' ? DropdownMenuItemNoPad : DropdownMenuItemH);
+
+
+    const aDmItems = items.map((oItem) => {
+        let sIcon = undefined;
+        if (!!oItem?.icon) {
+            if (isEmoji(oItem.icon))
+                sIcon = (
+                    <Text className={oItem?.class_item_icon}>{oItem.icon}</Text>
+                );
+            else
+                sIcon = (
+                    <Icon className={oItem?.class_item_icon} icon={oItem.icon} />
+                );
+        }
+        return (
+            <DmItem key={oItem.id} onSelect={(event) => !!oItem?.onClick ? oItem?.onClick(oItem, event) : onSelectInt(oItem, event)} >
+                {!!sIcon && sIcon}
+                {!!oItem?.title && oItem.title}
+            </DmItem>
+        );
+    });
+
+    return (
+        <View >
+            <Redirect ref={redirectdRef} />
+            <DropdownMenu.Root defaultOpen={defaultOpen}>
+                <DropdownMenu.Trigger className='focus:outline-none' asChild={true}><Pressable onPress={() => { }}>{children}</Pressable></DropdownMenu.Trigger>
+                <DropdownMenu.Portal>
+                    <DmContent>{aDmItems}</DmContent>
+                </DropdownMenu.Portal>
+            </DropdownMenu.Root>
+        </View>
+    );
+
+
 }
 
