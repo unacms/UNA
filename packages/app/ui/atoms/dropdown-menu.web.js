@@ -2,7 +2,7 @@ import { useRef, useState, useEffect } from 'react';
 import { Platform } from 'react-native';
 import { isEmoji } from 'app/lib/util';
 import { Text } from 'app/design/typography';
-import { Pressable, View } from 'app/design/view';
+import { Pressable, View, Row } from 'app/design/view';
 import React, { memo } from 'react'
 import Redirect from 'app/ui/atoms/redirect';
 import { Icon } from 'app/ui/atoms/icon'
@@ -84,8 +84,10 @@ export default function ({variant, defaultOpen, onSelect, items, children}) {
         }
         return (
             <DmItem key={oItem.id} onSelect={(event) => !!oItem?.onClick ? oItem?.onClick(oItem, event) : onSelectInt(oItem, event)} >
-                {!!sIcon && sIcon}
-                {!!oItem?.title && oItem.title}
+                <Row className='items-center'>
+                    {!!sIcon && <Text className="text-xl text-xl text-neutral-700 dark:text-neutral-200 mr-2">{sIcon}</Text>}
+                    {!!oItem?.title && <Text className=" text-base text-neutral-700 dark:text-neutral-200 ">{oItem.title}</Text>}
+                </Row>
             </DmItem>
         );
     });
