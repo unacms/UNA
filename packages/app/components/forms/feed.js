@@ -1,6 +1,6 @@
 import { View, Row, ScrollView } from 'app/design/view'
 import { Button, Modal } from 'app/design/controls'
-import { useState, useContext } from 'react'
+import { useState, useContext, useRef } from 'react'
 import { getFormFieldByData } from 'app/lib/form-helpers'
 import { useLayoutData } from 'app/context/layout'
 import { FeedbackHaptics, getAlert } from 'app/lib/util'
@@ -16,6 +16,7 @@ import { appSetting, stripTags } from 'app/lib/util'
 import { useWindowDimensions } from 'react-native'
 import { Keyboard } from 'react-native';
 import { useFormContext } from 'react-hook-form';
+
 export default function FormFeed(props) {
     const formContext = useFormContext();
     const { t } = useTranslation();
@@ -29,6 +30,8 @@ export default function FormFeed(props) {
     const isSmall = windowDimensions.width < 640 ? true : false;
     const isWeb = Platform.OS === 'web'
     const isIos = Platform.OS === 'ios'
+    const scrollViewRef = useRef(null);
+
     useEffect(() => {
         if (props.response?.id != responseId) {
             //console.log("props.responseprops.response", props.response)
@@ -38,6 +41,18 @@ export default function FormFeed(props) {
         }
     }, [props.response?.id]);
 
+    useEffect(() => {
+        const keyboardDidShowListener = Keyboard.addListener(
+            'keyboardDidShow',
+            () => {
+                scrollViewRef.current?.scrollToEnd({ animated: true });
+            }
+        );
+
+        return () => {
+            keyboardDidShowListener.remove();
+        };
+    }, []);
 
     let text = formContext.watch('text');
     if (!text)
@@ -45,7 +60,6 @@ export default function FormFeed(props) {
     if (typeof text === 'string'){
         text = stripTags(text).trim();
     }
-
 
     function setPlaceHolder(name, previews) {
         if (JSON.stringify(previews) != JSON.stringify(imageSource[name])) {
@@ -97,7 +111,12 @@ export default function FormFeed(props) {
                     {getFormFieldByData(props.data.inputs['type'], props.handleSubmit, 'default')}
                     <KbAvoidingView offset={isIos ? 56: 72}>
                         <View className='justify-between mb-2 h-full  '>
-                            <ScrollView className="w-full h-full flex-1" snapToAlignment='end'>
+                            <ScrollView 
+                                ref={scrollViewRef}
+                                className="w-full h-full flex-1" 
+                                keyboardShouldPersistTaps="handled"
+                                onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({ animated: true })}
+                            >
                                 <View className="w-full  flex-col px-2 sm:p-0 ">
                                     <View className=" flex-row gap-x-3 px-1 sm:px-0 pb-0 pt-3 sm:pt-0 flex-auto justify-between ">
                                         <View className=" mb-auto ">
