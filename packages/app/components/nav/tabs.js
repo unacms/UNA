@@ -23,7 +23,7 @@ import { enableScreens } from 'react-native-screens';
 import { OneSignal } from 'react-native-onesignal';
 import { staticComponents } from 'app/static';
 import { Platform } from 'react-native'
-enableScreens(appSetting('layout', 'naive_enable_screens'));
+enableScreens(appSetting('layout', 'native_enable_screens'));
 
 function processUrl(url, router) {
     if (currentUser?.id) {
@@ -97,7 +97,7 @@ export default function () {
         tabBarActiveBackgroundColor: colors.primaryBg,
         freezeOnBlur: true,
         unmountOnBlur: false,
-        lazy: currentUser ? appSetting('layout', 'naive_lazy_tabs') : true,
+        lazy: currentUser ? appSetting('layout', 'native_lazy_tabs') : true,
     }), [colors, isShowTabs, currentUser?.id]);
 
     // DEEP LINKING

@@ -4,7 +4,7 @@ import { useEffect, useMemo } from 'react';
 
 export default function ElementHtml(props) {
     const { data: propsData, className, htmlStyles } = props;
-    const sCustomClass = props.customClassName ? props.customClassName : 'u-vanilla-html'
+    const sCustomClass = props.customClassName ? props.customClassName : 'u-vanilla-html-small'
     const sClass = `${sCustomClass} font-default ${className}`;
     const scheme = useColorScheme();
 

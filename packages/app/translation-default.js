@@ -60,7 +60,7 @@ export const resourcesDefault = {
             "feed_type_bx_forum": "published a Discussion",
             "feed_type_bx_ads": "published an Ad",
             "feed_type_timeline_common_post": "",
-            "feed_type_timeline_common_repost": "Reposted ",
+            "feed_type_timeline_common_repost": "Reposted",
         }
         
     },

@@ -43,7 +43,7 @@ export default function ElementMenu(oProps) {
      * Display type specified in menu can be overwritten with display type specified in item.
      * default display types: mixed, link, button, element, etc.
      */
-    const sDisplayType = oProps.displayType || 'link';
+    const sDisplayType = oProps.displayType || 'secondary';
 
     //--- auto-filter items using app settings.
     const bAutoFilter = oProps?.autoFilter !== 'false';
@@ -65,7 +65,7 @@ export default function ElementMenu(oProps) {
     //--- show vertical
     const bShowVertical = oProps?.params?.showVertical === true;
 
-    sClassName += bShowVertical ? ' flex-col items-center gap-y-2 w-full ' : ' flex-row items-center gap-x-2 ';
+    sClassName += bShowVertical ? ' flex-col items-center gap-y-2 w-full ' : 'flex-row items-center gap-x-2';
     const oParams = oProps?.params || {};
     //--- horizontal menu items alignment
     const sAlignItems = oProps.alignItems || oParams.align_items || 'left';

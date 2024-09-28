@@ -7,17 +7,32 @@
     /* @apply prose dark:prose-invert; */
     @apply text-neutral-700 dark:text-neutral-300;
     font-size: 1rem;
-    line-height: 1.375rem;
+    line-height: 1.5em;
     max-width: none;
     word-wrap: break-word;
-    /*margin-top: 0.5em !important;
-    margin-bottom: 0.5em !important;*/
+    font-weight: 400;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+.u-vanilla-html-small {
+    /* @apply prose dark:prose-invert; */
+    @apply text-neutral-700 dark:text-neutral-300;
+    font-size: 0.875rem;
+    line-height: 1.5em;
+    max-width: none;
+    word-wrap: break-word;
+    font-weight: 400;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 .u-vanilla-html :where(p):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
     margin-top: 0.5em !important;
     margin-bottom: 0.5em !important;
 }
+.u-vanilla-html-small :where(p):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+    margin-top: 0.5em !important;
+    margin-bottom: 0.5em !important;
+}
+
 
 .u-vanilla-html div> :where(:first-child):not(:where([class~="not-prose"] *)),
 .u-vanilla-html> :where(:first-child):not(:where([class~="not-prose"] *)) {
@@ -28,8 +43,26 @@
 .u-vanilla-html> :where(:last-child):not(:where([class~="not-prose"] *)) {
     margin-bottom: 0 !important;
 }
+.u-vanilla-html-small div> :where(:first-child):not(:where([class~="not-prose"] *)),
+.u-vanilla-html-small> :where(:first-child):not(:where([class~="not-prose"] *)) {
+    margin-top: 0 !important;
+}
 
-.u-vanilla-html H1,
+.u-vanilla-html-small div> :where(:last-child):not(:where([class~="not-prose"] *)),
+.u-vanilla-html-small> :where(:last-child):not(:where([class~="not-prose"] *)) {
+    margin-bottom: 0 !important;
+}
+
+.u-vanilla-html
+H1,
+H2,
+H3,
+H4,
+H5 {
+    @apply text-neutral-900 dark:text-neutral-100;
+}
+.u-vanilla-html-small
+H1,
 H2,
 H3,
 H4,
@@ -37,17 +70,16 @@ H5 {
     @apply text-neutral-900 dark:text-neutral-100;
 }
 
-.u-vanilla-html-small {
-    font-size: 0.875rem; 
-    line-height: 1.25rem;
-}
-
 .u-vanilla-html A, .u-vanilla-html .link{
     color: #0284c7;
     text-decoration: none;
 }
+.u-vanilla-html-small A, .u-vanilla-html-small .link{
+    color: #0284c7;
+    text-decoration: none;
+}
 
-.u-vanilla-html A:hover, .u-vanilla-html .link {
+.u-vanilla-html.u-vanilla-html-small A:hover, .u-vanilla-html.u-vanilla-html-small .link {
     text-decoration: underline;
 }
 .bx-mention-link,
@@ -62,9 +94,7 @@ H5 {
 
 .bx-mention-link:hover {
     text-decoration: underline;
-
     background-color: rgba(37, 99, 235, 0.05);
-
 }
 
 html,
