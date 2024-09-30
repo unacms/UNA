@@ -46,7 +46,7 @@ export function CoverMenu(props) {
     let { width } = useWindowDimensions()
     let size = props.size || 'base'
 
-    if (width < 1280) size = 'sm'
+    if (width < 640) size = 'base'
 
     const isSplitMenu = appSetting('layout', 'split_action_menu')
 
