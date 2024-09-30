@@ -293,7 +293,7 @@ export const Button = memo((props) => {
                 sizeClasses = `${roundingClass} p-1.5 `;
                 iconContainerClass = `h-5 w-5 ${title ? '' : ''}`;
                 iconSize = 20;
-                titleContainerClass += title ? 'mx-1.5 ' : '';
+                titleContainerClass += title ? 'mx-2 ' : '';
                 break;
             case 'base':
                 sizeClasses = `${roundingClass} ${padding ? `p-${padding}` : 'p-2.5'} `;

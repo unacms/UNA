@@ -27,7 +27,7 @@ const DropdownMenuContentH = (props) => (
 
 const DropdownMenuItemV = (props) => (
     <DropdownMenu.Item
-        className=" flex flex-row focus:outline-none items-center p-3 gap-x-3 text-sm font-medium hover:bg-bgritem dark:hover:bg-bgritem-d text-neutral-700 dark:text-neutral-200 dark:hover:text-white hover:cursor-pointer"
+        className=" flex flex-row focus:outline-none items-center px-3 py-2.5 gap-x-3 text-sm font-medium hover:bg-bgritem dark:hover:bg-bgritem-d text-neutral-700 dark:text-neutral-200 dark:hover:text-white hover:cursor-pointer"
         {...props}
     >
         {props.children}
@@ -36,7 +36,7 @@ const DropdownMenuItemV = (props) => (
 
 const DropdownMenuItemNoPad = (props) => (
     <DropdownMenu.Item
-        className="flex flex-row focus:outline-none items-center justify-between  hover:bg-bgritem dark:hover:bg-bgritem-d  text-base text-neutral-700 dark:text-neutral-200 dark:hover:text-white hover:cursor-pointer"
+        className="flex flex-row focus:outline-none items-center justify-between px-1.5 py-1 hover:bg-bgritem dark:hover:bg-bgritem-d  text-base text-neutral-700 dark:text-neutral-200 dark:hover:text-white hover:cursor-pointer"
         {...props}
     >
         {props.children}
@@ -45,7 +45,7 @@ const DropdownMenuItemNoPad = (props) => (
 
 const DropdownMenuItemH = (props) => (
     <DropdownMenu.Item
-        className=" flex focus:outline-none block px-4 p-2 hover:bg-bgritem dark:hover:bg-bgritem-d dark:hover:text-white rounded-full hover:cursor-pointer text-neutral-700 dark:text-neutral-200"
+        className=" flex focus:outline-none block px-3 py-2.5 hover:bg-bgritem dark:hover:bg-bgritem-d dark:hover:text-white rounded-full hover:cursor-pointer text-neutral-700 dark:text-neutral-200"
         {...props}
     >
         {props.children}

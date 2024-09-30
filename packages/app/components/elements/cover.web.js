@@ -37,7 +37,7 @@ export function CoverSmall(props) {
             className={
                 (isUseBg
                     ? ' border-b border-bdr dark:border-bdr-d'
-                    : ' bg-white dark:bg-neutral-800 border-b border-bdr dark:border-bdr-d') +
+                    : ' bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur-lg border-b border-bdr dark:border-bdr-d') +
                 ' w-full '
             }
         >

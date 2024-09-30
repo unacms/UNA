@@ -93,8 +93,8 @@ const colors = {
     },
 
     bgrnavbar: {
-        DEFAULT: 'rgba(255,255,255,0.8)',
-        d: 'rgba(17,24,39,0.8)',
+        DEFAULT: 'rgba(255,255,255,0.9)',
+        d: 'rgba(17,24,39,0.9)',
     },
     bdrnavbar: {
         DEFAULT: 'rgba(209,213,219,0.8)',
