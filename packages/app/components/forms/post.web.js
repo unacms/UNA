@@ -79,7 +79,7 @@ export default function FormPost(props) {
             </View>
             <View className="flex-col ">
                 <View className='w-full flex-wrap my-1 flex-row border rounded-xl border-bdr dark:border-bdr-d  py-1 px-2 items-center '>
-                    <Text className="font-semibold px-3 py-1 justify-center my-auto text-sm flex-auto text-neutral-800 dark:text-neutral-200">Add media</Text>
+                    <Text className="font-semibold px-3 py-1 justify-center my-auto text-sm flex-auto text-neutral-800 dark:text-neutral-200">Add to post</Text>
                     <Row className=" justify-start items-center flex-row flex-wrap px-2 ">
                         <View className="">
                             {getFormFieldByData(

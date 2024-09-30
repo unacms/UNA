@@ -142,8 +142,8 @@ export default function FormFeed(props) {
                                     )}
                                 </View>
                             </ScrollView>
-                            <Row className={"w-full flex-wrap px-1 gap-x-1 mx-auto border-bdr dark:border-bdr-d items-center " + (isWeb ? '' : ' pb-3 ') + (isSmall ? " h-[68px] border-t fixed " + (isIos? ' bottom-4 ': ' bottom-0 ') + " border-bdr dark:border-bdr-d  bg-bgrcard dark:bg-bgrcard-d " : " rounded-lg border px-2 my-2 border")}>
-                                <Text className="hidden sm:flex px-2 mr-auto text-sm font-medium text-neutral-800 dark:text-neutral-200">Add media</Text>
+                            <Row className={"w-full flex-wrap px-1 gap-x-1 mx-auto border-bdr dark:border-bdr-d items-center " + (isWeb ? '' : ' pb-3 ') + (isSmall ? " h-[68px] border-t fixed " + (isIos? ' bottom-4 ': ' bottom-0 ') + " border-bdr dark:border-bdr-d  bg-bgrcard dark:bg-bgrcard-d " : " rounded-xl border px-2 my-2 border")}>
+                                <Text className="hidden sm:flex px-2 mr-auto text-sm font-medium text-neutral-800 dark:text-neutral-200">Add to post</Text>
                                 {props.data.inputs['obfuscate_faces'] && <View className="">
                                     {getFormFieldByData(props.data.inputs['obfuscate_faces'], props.handleSubmit, 'default')}
                                 </View>}

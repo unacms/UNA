@@ -243,9 +243,9 @@ function AtomProfile_(oProps) {
             sSizeFontLetter: 'text-5xl',
         },
         '4xl': {
-            sSize: 'w-48 h-48',
-            iSizeWidth: 192,
-            iSizeHeight: 192,
+            sSize: 'w-44 h-44',
+            iSizeWidth: 176,
+            iSizeHeight: 176,
             sSizeFont: 'text-3xl',
             sSizeFontLetter: 'text-7xl',
         },

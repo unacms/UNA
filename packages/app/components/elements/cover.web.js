@@ -37,7 +37,7 @@ export function CoverSmall(props) {
             className={
                 (isUseBg
                     ? ' border-b border-bdr dark:border-bdr-d'
-                    : '  bg-white dark:bg-neutral-800 border-b border-bdr dark:border-bdr-d') +
+                    : ' bg-white dark:bg-neutral-800 border-b border-bdr dark:border-bdr-d') +
                 ' w-full '
             }
         >
@@ -46,7 +46,7 @@ export function CoverSmall(props) {
                     appSetting('layout', 'max_width') + ' w-full mx-auto'
                 }
             >
-                <View className=" px-3 sm:px-4 py-2 flex-row gap-2">
+                <View className=" px-3 sm:px-4 py-2 max-w-screen-xl mx-auto w-full flex-row gap-2">
                     <Row className=" items-center flex-auto">
                         {getBackButtonWeb()}
                         {bPerson && (
@@ -221,15 +221,15 @@ export default function (props) {
             <View
                 className={
                     appSetting('layout', 'max_width') +
-                    ' sm:px-4 mx-auto w-full'
+                    ' mx-auto w-full max-w-screen-xl '
                 }
             >
                 {mode != 'min' ? (
                     <View
                         className={
-                            ' duration-500 bg-primary-200  dark:bg-primary-950 aspect-video sm:' +
+                            ' duration-300 bg-primary-200 dark:bg-primary-950 aspect-video sm:' +
                             appSetting('layout', 'cover_aspect') +
-                            ' w-auto sm:rounded-b-xl overflow-hidden'
+                            ' w-auto xl:rounded-b-xl overflow-hidden'
                         }
                     >
                         {!!data.cover && (
@@ -273,10 +273,10 @@ export default function (props) {
                         </View>
                     </View>
                 )}
-                <View className=" flex-col md:flex-row gap-x-2 p-4  ">
+                <View className="flex-col md:flex-row gap-x-4 px-4 py-2 ">
                     {bPerson && (
-                        <View className=" w-full h-24 md:h-44 lg:h-28 md:w-52 relative">
-                            <View className="rounded-full absolute w-min p-1 z-50 duration-200 bottom-0 flex-none bg-bgrcard-h dark:bg-bgrcard-dh ">
+                        <View className="w-full h-24 md:h-48 md:w-48 lg:h-28 relative">
+                            <View className="rounded-full absolute w-min p-2 z-50 duration-200 bottom-0 flex-none bg-bgrcard-h dark:bg-bgrcard-dh ">
                                 <Profile
                                     {...data.profile}
                                     displayType="unit_wo_info"
@@ -301,10 +301,10 @@ export default function (props) {
                         </View>
                     )}
 
-                    <View className="flex-col flex-auto gap-y-3  ">
-                        <View className=" flex-auto flex-col gap-y-4 xl:flex-row  justify-between  ">
+                    
+                        <View className=" flex-auto flex-col justify-between my-auto  ">
 
-                            <Row className=" flex-auto items-center gap-x-2  ">
+                            <Row className=" flex-row flex-auto items-center gap-x-2 pb-4 ">
                                 <Text
                                     className="tracking-tight text-2xl sm:text-3xl font-bold text-neutral-900 dark:text-neutral-50"
                                     numberOfLines={2}
@@ -319,12 +319,12 @@ export default function (props) {
 
                                 )}
                             </Row>
+                           
                             <CoverMenuMeta {...data.meta_menu} />
                         </View>
-
-                        <CoverMenu {...data.actions_menu} uri={props?.uri} />
-
-                    </View>
+                        <View className=" max-w-96 py-4 ">
+                            <CoverMenu {...data.actions_menu} uri={props?.uri} />
+                        </View>
                 </View>
             </View>
         </View>

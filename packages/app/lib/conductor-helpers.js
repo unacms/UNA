@@ -380,7 +380,7 @@ export function TopSidebar({ styles, isWeb, leftSideBar, header, headerSettings,
     const isUseBg = appSetting('layout', 'use_background');
     return (
         <View style={styles} className={(leftSideBar ? 'lg:hidden' : '') + " w-full items-left justify-center lg:h-16 bg-bgrnavbar dark:bg-bgrnavbar-d " + (isUseBg ? "  bg-white dark:bg-neutral-800 border-b border-bdr dark:border-bdr-d  " : (isSmall ? "   bg-white dark:bg-neutral-800 border-b border-bdr dark:border-bdr-d  " : "  border-b border-bdr dark:border-bdr-d "))}  >
-            <View className={(leftSideBar ? appSetting('layout', 'max_width') : appSetting('layout', 'max_width') + ' mx-auto ') + ' lala w-full '}>
+            <View className={(leftSideBar ? appSetting('layout', 'max_width') : appSetting('layout', 'max_width') + ' mx-auto ') + '  lala w-full max-w-screen-xl '}>
                 {!header && isWeb && <Row className="lg:hidden flex-row gap-x-1 flex-none items-center justify-between h-16 border-b bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur border-bdrnavbar dark:border-bdrnavbar-d">
                     <Row className="items-center px-3 sm:px-4">
 

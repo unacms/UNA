@@ -44,7 +44,7 @@ export function CoverMenuSmall(props) {
 
 export function CoverMenu(props) {
     let { width } = useWindowDimensions()
-    let size = props.size || 'sm'
+    let size = props.size || 'base'
 
     if (width < 1280) size = 'sm'
 
@@ -120,7 +120,7 @@ export function CoverMenuMeta(props) {
             params={{
                 button_variant: 'text',
                 button_size: 'sm',
-                className: ' lg:flex-wrap',//lg:w-full lg:gap-y-2
+                className: ' lg:flex-wrap ',//lg:w-full lg:gap-y-2
                 button_hide_title_on_small: false,
             }}
         />
