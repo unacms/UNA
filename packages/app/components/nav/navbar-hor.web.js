@@ -109,6 +109,9 @@ export default function (props) {
     const menuSettings = appSetting('menu_items', props?.menu?.object)
     if (menuSettings && menuSettings.name) sTitle = t(menuSettings.name)
 
+    if (!currentUser && appSetting('layout', 'hide_header_for_nonlogged'))
+            return null;
+        
     return (
         <>
             <View className="fixed w-full">
