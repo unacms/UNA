@@ -79,7 +79,7 @@ export default function (props) {
     if (menuSettings && menuSettings.name)
         sTitle = t(menuSettings.name);
 
-    const bIsHideHeader = false; //windowWidth < 1024 && (!headerSettings.header); // MAY BE NEEDED
+    const bIsHideHeader = currentUser ? false: appSetting('layout', 'hide_header_for_nonlogged'); //windowWidth < 1024 && (!headerSettings.header); // MAY BE NEEDED
 
     const showMenu = () => {
         setMenuPopup(!menuPopup)
