@@ -223,7 +223,7 @@ export const settingsDefault = {
             show_action_as_button: true,
             show_action_label: true,
             show_counter: true,
-            show_counter_style: 'divided', //'compound' or 'divided'
+            show_counter_style: 'compound', //'compound' or 'divided'
             show_counter_as_button: false,
             haptics_type: 'Medium',
             icon_type_web: 'emoji', //'svg' or 'emoji'
