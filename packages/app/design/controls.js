@@ -123,7 +123,7 @@ export function ButtonsGroup({
     children = [],
     ...rest
 }) {
-    let sClassContainer = ' group relative flex-row items-center  ';
+    let sClassContainer = 'group';
     sClassContainer += fullWidth ? ' flex-auto' : ' w-fit m-0 truncate';
 
     const ThemeCssClasses = appSetting('theme', 'buttons_group_styles');
@@ -237,7 +237,7 @@ export const Button = memo((props) => {
 
     const sClassContainer = useMemo(() => {
         let classes = 'group relative flex-row items-center ';
-        classes += fullWidth ? 'flex-auto w-full ' : 'm-0 truncate w-fit ';
+        classes += fullWidth ? 'flex-auto w-full ' : ' truncate w-fit ';
         if (disabled) classes += 'opacity-50 ';
         if (variant !== 'custom') {
             classes +=

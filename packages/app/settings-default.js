@@ -24,10 +24,10 @@ export const settingsDefault = {
         },
     },
     layout: {
-        naive_enable_screens: true,
-        naive_lazy_tabs: false,
+        native_enable_screens: true,
+        native_lazy_tabs: false,
         format_list: ['hor', 'ver', 'mixed'],
-        format: 'mixed', //hor, ver, mixed
+        format: 'hor', //hor, ver, mixed
         format_guest: 'hor', //hor, ver, mixed
         max_width: ' full ', // consider for hor = max-w-screen-2xl, for ver = max-w-screen-xl
         max_width_block: 'max-w-screen-xl', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
@@ -63,7 +63,7 @@ export const settingsDefault = {
             'rose',
             'red',
         ],
-        async_workers: ['NotifChecker'], //['EventChecker'], 
+        async_workers: ['NotifChecker'], //['EventChecker'],
         async_workers_interval: 10,
         bluetooth: false,
         bluetooth_device_name_prefix: 'NEO',
@@ -81,7 +81,12 @@ export const settingsDefault = {
         allow_create_new_profile: true,
         form_fields_optional_text1: '',
         form_fields_mandatory_icon: 'Asterisk',
-        form_without_captions: ['sys_login', 'sys_account_create', 'sys_forgot_password', 'bx_invites_request_send'],
+        form_without_captions: [
+            'sys_login',
+            'sys_account_create',
+            'sys_forgot_password',
+            'bx_invites_request_send',
+        ],
         form_visibility_control_names: [
             '*_allow_view_to',
             '*_object_privacy_view',
@@ -98,13 +103,24 @@ export const settingsDefault = {
         add_notifications_count_in_title: true,
         show_nav_non_logged_native: true,
         show_back_button_in_messenger: false,
-        
     },
     forms: {
         sys_login: { hide_errors: true, button_full_width: true },
-        sys_account_create: { hide_errors: true, button_full_width: true, button_hide_on_small: true },
-        sys_forgot_password: { hide_errors: true, button_full_width: true, button_hide_on_small: true },
-        bx_invites_request_send: { hide_errors: true, button_full_width: true, button_hide_on_small: true },
+        sys_account_create: {
+            hide_errors: true,
+            button_full_width: true,
+            button_hide_on_small: true,
+        },
+        sys_forgot_password: {
+            hide_errors: true,
+            button_full_width: true,
+            button_hide_on_small: true,
+        },
+        bx_invites_request_send: {
+            hide_errors: true,
+            button_full_width: true,
+            button_hide_on_small: true,
+        },
     },
     jitsi: {
         prefix: 'prefix_',
@@ -148,8 +164,8 @@ export const settingsDefault = {
         default_view: '',
     },
     suggestion: {
-       list: [
-           /*  {
+        list: [
+            /*  {
                 name: 'friends',
                 request_url:
                     '/api.php?r=system/browse_recommendations_friends/TemplServiceProfiles&params[]={user_id}&params[]=',
@@ -205,9 +221,9 @@ export const settingsDefault = {
         reaction: {
             show_action: true,
             show_action_as_button: true,
-            show_action_label: false,
+            show_action_label: true,
             show_counter: true,
-            show_counter_style: 'compound', //'compound' or 'divided'
+            show_counter_style: 'divided', //'compound' or 'divided'
             show_counter_as_button: false,
             haptics_type: 'Medium',
             icon_type_web: 'emoji', //'svg' or 'emoji'
@@ -220,6 +236,7 @@ export const settingsDefault = {
                 { id: 5, name: 'sadness' },
                 { id: 6, name: 'anger' },
             ],
+            haptics_type: 'Medium',
         },
         score: {
             show_action: true,
@@ -235,6 +252,7 @@ export const settingsDefault = {
             show_action_label: true,
             show_counter: true,
             show_counter_as_button: false,
+            haptics_type: 'Medium',
         },
         report: {
             show_action: true,
@@ -256,6 +274,7 @@ export const settingsDefault = {
             show_action: true,
             show_action_as_button: true,
             show_action_label: true,
+            haptics_type: 'Medium',
         },
         connection: {
             show_action_as_button: true,
@@ -602,11 +621,11 @@ export const settingsDefault = {
             },
         ],
         menu_tabbar_logged: [
-            { 
-                key: '/tab0', 
-                title: 'Home', 
-                url: '/home', 
-                icon: 'House' 
+            {
+                key: '/tab0',
+                title: 'Home',
+                url: '/home',
+                icon: 'House',
             },
             {
                 key: '/tab1',
@@ -614,11 +633,11 @@ export const settingsDefault = {
                 url: '/posts-home',
                 icon: 'ChatTeardropDots',
             },
-            { 
-                key: '/tab2', 
-                title: 'Friends', 
-                url: '/friends', 
-                icon: 'Users' 
+            {
+                key: '/tab2',
+                title: 'Friends',
+                url: '/friends',
+                icon: 'Users',
             },
             {
                 key: '/tab3',
@@ -634,11 +653,11 @@ export const settingsDefault = {
             },
         ],
         menu_tabbar_non_logged: [
-            { 
-                key: '/tab0', 
-                title: 'Home', 
-                url: '/home', 
-                icon: 'House' 
+            {
+                key: '/tab0',
+                title: 'Home',
+                url: '/home',
+                icon: 'House',
             },
             {
                 key: '/tab1',
@@ -646,11 +665,11 @@ export const settingsDefault = {
                 url: '/posts-home',
                 icon: 'ChatCenteredText',
             },
-            { 
-                key: '/tab2', 
-                title: 'About', 
-                url: '/about', 
-                icon: 'Info' 
+            {
+                key: '/tab2',
+                title: 'About',
+                url: '/about',
+                icon: 'Info',
             },
             {
                 key: '/tab3',
@@ -658,11 +677,11 @@ export const settingsDefault = {
                 url: '/terms',
                 icon: 'List',
             },
-            { 
-                key: '/tab4', 
-                title: 'Privacy', 
-                url: '/privacy', 
-                icon: 'EyeSlash' 
+            {
+                key: '/tab4',
+                title: 'Privacy',
+                url: '/privacy',
+                icon: 'EyeSlash',
             },
         ],
         profile_menu: [
@@ -1754,7 +1773,7 @@ export const settingsDefault = {
             headerSettings: { offset: false, header: false, cover: 'profile' }
         },*/
         'view-persons-profile': {
-            layout: 'profile-alt',
+            layout: 'profile', //profile-alt, profile
             blocks: {
                 col5: {
                     name: 'system:block_1572',
@@ -1996,9 +2015,9 @@ export const settingsDefault = {
             'u-btn-primary-trans': ' duration-200 ',
 
             'u-btn-secondary-cnt':
-            ' bg-bgritem dark:bg-bgritem-d hover:bg-bgritem-h dark:hover:bg-bgritem-dh active:opacity-50  ',
+                ' bg-bgritem dark:bg-bgritem-d hover:bg-bgritem-h dark:hover:bg-bgritem-dh active:opacity-50  ',
             'u-btn-secondary-text':
-            ' font-medium text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-white ',
+                ' font-medium text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-white ',
             'u-btn-secondary-trans': ' duration-200 ',
 
             'u-btn-danger-cnt':
@@ -2036,10 +2055,16 @@ export const settingsDefault = {
         },
         buttons_group_styles: {
             'u-btn-default-cnt':
-                ' border border-bdrbutton dark:border-bdrbutton-d bg-bgrbutton dark:bg-bgrbutton-d shadow-sm overflow-hidden ',
+                ' border border-bdrbutton dark:border-bdrbutton-d bg-bgrbutton dark:bg-bgrbutton-d flex flex-row shadow-sm overflow-hidden ',
             'u-btn-outline-cnt':
-                ' border border-bdrbutton dark:border-bdrbutton-d overflow-hidden ',
-            'u-btn-text-cnt': '  active:opacity-50 ',
+                ' border border-bdrbutton dark:border-bdrbutton-d overflow-hidden flex flex-row',
+            'u-btn-text-cnt': 'flex flex-row  active:opacity-50 ',
+
+            'u-btn-secondary-cnt':
+                ' bg-bgritem dark:bg-bgritem-d hover:bg-bgritem-h dark:hover:bg-bgritem-dh active:opacity-50  ',
+            'u-btn-secondary-text':
+                ' font-medium text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-white ',
+            'u-btn-secondary-trans': ' duration-200 ',
         },
     },
 }

@@ -94,7 +94,7 @@ export const CommentsSection = memo(({ isCommentsModal, commentsDataInline, data
         {t('View more comments')}
     </Text>);
     return (
-        <View className='border-t border-bdr/50 dark:border-bdr-d/50 pt-4 mt-4'>
+        <View className='border-t border-bdr/50 dark:border-bdr-d/50 pt-3'>
             {isShowMoreComments && (
                 <View className='pb-1 mb-3'>
                     {isCommentsModal ? <Pressable onPress={() => { showCommentsModal() }} >

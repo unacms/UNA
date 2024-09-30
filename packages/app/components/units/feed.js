@@ -32,18 +32,18 @@ function DefaultUnit(data) {
    // return<View className='w-full h-12 bg-red-500 my-2'><Author data={data} url={url} t={t} /></View>
     return (
         <AnimatedBlock>
-            <Card rounded=' rounded-none ' margin=' mb-1  ' addClassName={' p-3 tl-' + data.id} >
+            <Card rounded=' rounded-none ' margin=' mb-1 ' addClassName={'p-3 tl-' + data.id} >
                 <View className="flex-auto flex-row items-top pb-3 ">
                     <Author data={data} url={url} t={t} />
                     <View className="flex-auto justify-end flex-row mb-auto">
                         <MenuManage id={data.id} menu={data?.menu_manage} setViewState={setViewState} />
                     </View>
                 </View>
-                <View>
+                
                     {MainContentComponent}
                     <View className="pt-3 ">
                         <ActionMenu data={data.menu_actions} showCommentsModal={false} />
-                    </View>
+                    
 
                 </View>
                 {commentsData && <CommentsSection url={url} t={t} isCommentsModal={false} showCommentsModal={false} commentsDataInline={commentsData} data={data} isShowMoreComments={isShowMoreComments} />}

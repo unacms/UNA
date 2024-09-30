@@ -1,5 +1,4 @@
 import { useRef, useState, useEffect } from 'react';
-import { Platform } from 'react-native';
 import { isEmoji } from 'app/lib/util';
 import { Text } from 'app/design/typography';
 import { Pressable, View, Row } from 'app/design/view';
@@ -10,7 +9,7 @@ import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 
 const DropdownMenuContentV = (props) => (
     <DropdownMenu.Content
-        className="z-10 min-w-[200px]  backdrop-blur bg-bgrmodal dark:bg-bgrmodal-d mt-1  divide-y divide-bdr dark:divide-bdr-d text-sm  border dark:border-bdr-d border-bdr rounded-lg shadow-2xl"
+        className="z-10 min-w-[200px] backdrop-blur bg-bgrmodal dark:bg-bgrmodal-d mt-1 divide-y divide-bdr dark:divide-bdr-d text-sm  border dark:border-bdr-d border-bdr rounded-xl shadow-xl overflow-hidden"
         {...props}
     >
         {props.children}
@@ -19,7 +18,7 @@ const DropdownMenuContentV = (props) => (
 
 const DropdownMenuContentH = (props) => (
     <DropdownMenu.Content
-        className="flex-row z-10 p-1 bg-bgrmodal dark:bg-bgrmodal-d text-sm text-neutral-800 dark:text-neutral-200 rounded-full shadow"
+        className=" flex flex-row z-10 p-1 bg-bgrmodal border border-bdr dark:border-bdr-d m-2 dark:bg-bgrmodal-d text-sm text-neutral-800 dark:text-neutral-200 rounded-full shadow-sm"
         {...props}
     >
         {props.children}
@@ -28,7 +27,7 @@ const DropdownMenuContentH = (props) => (
 
 const DropdownMenuItemV = (props) => (
     <DropdownMenu.Item
-        className="flex-row focus:outline-none items-center justify-between px-3 py-2.5 gap-x-3 text-base hover:bg-bgritem dark:hover:bg-bgritem-d text-neutral-700 dark:text-neutral-200 dark:hover:text-white hover:cursor-pointer"
+        className=" flex flex-row focus:outline-none items-center p-3 gap-x-3 text-sm font-medium hover:bg-bgritem dark:hover:bg-bgritem-d text-neutral-700 dark:text-neutral-200 dark:hover:text-white hover:cursor-pointer"
         {...props}
     >
         {props.children}
@@ -37,7 +36,7 @@ const DropdownMenuItemV = (props) => (
 
 const DropdownMenuItemNoPad = (props) => (
     <DropdownMenu.Item
-        className="flex-row focus:outline-none items-center justify-between  hover:bg-bgritem dark:hover:bg-bgritem-d  text-base text-neutral-700 dark:text-neutral-200 dark:hover:text-white hover:cursor-pointer"
+        className="flex flex-row focus:outline-none items-center justify-between  hover:bg-bgritem dark:hover:bg-bgritem-d  text-base text-neutral-700 dark:text-neutral-200 dark:hover:text-white hover:cursor-pointer"
         {...props}
     >
         {props.children}
