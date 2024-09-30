@@ -1,12 +1,11 @@
 import React, { useCallback, useState, useEffect, useMemo, useRef } from "react";
 import { View, ScrollView, Row, Pressable } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
-import { appSetting, deepEqual, getUnitModeBySource, handleFeedLayoutData, updateRouteDataForConnections } from 'app/lib/util';
+import { deepEqual, getUnitModeBySource, handleFeedLayoutData, updateRouteDataForConnections } from 'app/lib/util';
 import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer } from 'app/lib/conductor-helpers';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers';
 import { Button } from 'app/design/controls';
-import { useTranslation } from 'react-i18next';
 import { useCurrentUser } from 'app/context/user'
 import { useLayoutData } from 'app/context/layout';
 import { Theme } from 'app/design/theme';
@@ -14,6 +13,8 @@ import { staticComponents } from 'app/static';
 import { subscribe } from 'app/ui/atoms/socket';
 import { fetcher } from 'app/lib/fetcher';
 import Toaster from 'app/ui/atoms/toaster';
+import { useBottomSheetData } from 'app/context/bottomsheet';
+import { BlockByName } from 'app/components/block';
 
 const TabBar = React.memo(({ routes, index, currentUser, setIndex, onChangeRoute }) => {
     const { colors } = Theme();
@@ -40,6 +41,33 @@ const TabBar = React.memo(({ routes, index, currentUser, setIndex, onChangeRoute
 
         )
     }
+});
+
+
+const AddBlocks = React.memo(({
+    leftSideBarBlocks, data, onFormSubmit
+}) => {
+    if (!leftSideBarBlocks)
+        return null;
+
+    let leftSideBarBlocksObj = leftSideBarBlocks.map((block) => {
+        return <BlockByName
+            data={data}
+            name={block}
+            onFormSubmit={onFormSubmit}
+            saveOnChanges={true}
+        />
+    });
+
+    return <>
+        {(leftSideBarBlocksObj?.length > 0 ) && 
+            <View className="my-3 mx-2 ">
+                {leftSideBarBlocksObj.map((block, index) => {
+                    return <View key={"lb-" + index}>{block}</View>
+                })}
+            </View>
+        }
+    </>
 });
 
 const TabScene = React.memo(({
@@ -96,7 +124,7 @@ const TabScene = React.memo(({
     )
 });
 
-export function ConductorFlat({ header, smallHeader, minHeaderHeight, isHideDefaultHeader, menu, data, blocks, useSectionAsMenu, unitMode, skeleton, onChangeRoute, keyword }) {
+export function ConductorFlat({ header, smallHeader, minHeaderHeight, isHideDefaultHeader,leftSideBarBlocks, menu, layoutName, data, blocks, useSectionAsMenu, unitMode, skeleton, onChangeRoute, keyword }) {
     console.log("ConductorFlat")
     minHeaderHeight = minHeaderHeight || 100;
     isHideDefaultHeader = isHideDefaultHeader || false;
@@ -106,8 +134,7 @@ export function ConductorFlat({ header, smallHeader, minHeaderHeight, isHideDefa
 
     const { currentUser } = useCurrentUser();
     const { layoutData } = useLayoutData();
-    const { t } = useTranslation();
-
+    const { setBottomSheetData } = useBottomSheetData();
     const initedTabs = useMemo(() => fillTabs(menu, data, blocks, currentUser, useSectionAsMenu), [menu, data, blocks, currentUser, useSectionAsMenu]);;
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [routes, setRoutes1] = useState(initedTabs);
@@ -279,11 +306,46 @@ export function ConductorFlat({ header, smallHeader, minHeaderHeight, isHideDefa
         return getUnitModeBySource(currentRoute?.endpoint?.request_url);
     }, [currentRoute?.endpoint?.request_url]); // Dependency on route.endpoint.request_url
 
+    const showFilters = useCallback(() => {
+        setBottomSheetData({ title: 'Filters', content: <AddBlocks leftSideBarBlocks={leftSideBarBlocks} data={data} onFormSubmit={onFormSubmit} />, showClose: true, snapPoints: ['60%', '60%'] });
+    }, [leftSideBarBlocks, data, onFormSubmit, layoutName]);
+
+    const setFilterValue = (values) => {
+
+        const newRoutes = [...routes];
+        values.forEach(function (value) {
+            const name = value.name;
+            const val = value.value;
+            if (newRoutes[index].endpoint.params.filters) {
+                newRoutes[index].endpoint.params.filters[name] = val;
+            }
+            else {
+                newRoutes[index].endpoint.params.filters = { [name]: val };
+            }
+        })
+        newRoutes[index].endpoint.finished = false;
+        newRoutes[index].data = [];
+        newRoutes[index].endpoint.params.start = 0;
+        setRoutes(newRoutes);
+    }
+
+    const onFormSubmit = useCallback((formData, d) => {
+        let filterValues = [];
+        for (let key in d) {
+            filterValues.push({name: key, value: Array.isArray(d[key])?d[key].join(','):d[key]})
+        };
+        setFilterValue(filterValues);
+        setBottomSheetData(false);
+    });
+
     return (
         <View className="w-full flex-1">
             <TabBar routes={routes} index={index} currentUser={currentUser} setIndex={setIndex} onChangeRoute={onChangeRoute} />
             <View className="w-full flex-1 ">
                 <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="New content" size="sm" />
+                {(layoutName == 'navigator' && leftSideBarBlocks ) && <View className="items-start ml-2 mt-2">
+                                <Button title='Filters'  variant="default" size="sm" rounded onPress={showFilters} />
+                            </View>}
                 <TabScene onRefresh={onStartRefresh} refreshing={isRefreshing} route={currentRoute} Preload={Preload} unitType={unitType} unitMode={unitMode} fetchNextPage={fetchNextPage} />
             </View>
         </View>

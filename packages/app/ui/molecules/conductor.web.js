@@ -11,12 +11,10 @@ import Link from 'app/ui/atoms/link'
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers';
 import { BlockByName } from 'app/components/block';
-import { appStatic } from 'app/lib/app-static';
 import { Input } from 'app/design/controls'
 import MenuDrawer from 'app/components/nav/menu-drawer'
 import { useTranslation } from 'react-i18next';
 import Toaster from 'app/ui/atoms/toaster';
-import useDaemon from 'app/lib/hooks/daemon'
 import { useLayoutData } from 'app/context/layout';
 import { useCurrentUser } from 'app/context/user'
 import Dropdown from 'app/ui/atoms/dropdown'
@@ -28,13 +26,14 @@ import Footer from 'app/components/nav/footer';
 import { staticComponents } from 'app/static';
 import { subscribe } from 'app/ui/atoms/socket';
 import { fetcher } from 'app/lib/fetcher';
+import { useBottomSheetData } from 'app/context/bottomsheet';
 
-function AddBlocks({leftSideBarBlocks, data, onFormSubmit, show, setShow, layoutName})
-{
-    const windowDimen = useWindowDimensions();
-    const windowWidth = windowDimen.width;
+const AddBlocks = React.memo(({
+    leftSideBarBlocks, data, onFormSubmit
+}) => {
     if (!leftSideBarBlocks)
         return null;
+
     let leftSideBarBlocksObj = leftSideBarBlocks.map((block) => {
         return <BlockByName
             data={data}
@@ -43,39 +42,32 @@ function AddBlocks({leftSideBarBlocks, data, onFormSubmit, show, setShow, layout
             saveOnChanges={true}
         />
     });
+
     return <>
         {(leftSideBarBlocksObj?.length > 0 ) && 
-            <>
-            {(windowWidth < 1024 && layoutName == 'navigator' ) && <View className="items-start ml-2 mt-2">
-                <Button title={show ?"Hide filters": "Show filters"}  variant="default" size="sm" rounded onPress={() =>{setShow(!show)}} />
-            </View>}
-            {(show || windowWidth>=1024) && <View className="my-3 mx-2 ">
+            <View className="my-3 mx-2 ">
                 {leftSideBarBlocksObj.map((block, index) => {
                     return <View key={"lb-" + index}>{block}</View>
                 })}
-            </View>}
-            </>
+            </View>
         }
     </>
-}
+});
 
 export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, leftSideBarBlocks, leftSideBarWidth = ' w-80 2xl:w-96 ', skeleton = '', onChangeRoute, keyword, cover, layoutName }) {
     const { currentUser } = useCurrentUser();
+    const { setBottomSheetData } = useBottomSheetData();
     const { layoutData } = useLayoutData();
-    const [show, setShow] = useState(false);
     const { t } = useTranslation();
     let uniRef = useRef();
     const [menuPopup, setMenuPopup] = useState(false)
     const showMenu = (params) => {
         setMenuPopup(!menuPopup)
     }
-    //const [maxId, setMaxId] = useState(0);
-    //const toasterRef = useRef();
+
     const toasterRef2 = useRef();
 
     const initedTabs = fillTabs(menu, data, blocks, currentUser, useSectionAsMenu);
-    //console.log("initedTabs", initedTabs)
-
     const windowDimen = useWindowDimensions();
     const windowWidth = windowDimen.width;
     const windowHeight = windowDimen.height;
@@ -335,31 +327,16 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
 
     const onFormSubmit = useCallback((formData, d) => {
+        console.log("onFormSubmit")
         let filterValues = [];
         for (let key in d) {
             filterValues.push({name: key, value: Array.isArray(d[key])?d[key].join(','):d[key]})
         };
         setFilterValue(filterValues)
-
+        setBottomSheetData(false);
     });
 
-    const MemoAddBlocks = React.memo(AddBlocks);
 
-    
-
-    /*const applyFilterValue = () => {
-        const newRoutes = [...routes];
-        newRoutes[index].endpoint.finished = false;
-        newRoutes[index].data = [];
-        newRoutes[index].endpoint.params.start = 0;
-        setRoutes(newRoutes);
-    }
-
-    useEffect(() => {
-        if (currentRoute?.endpoint?.params?.filters)
-            applyFilterValue();
-    }, [currentRoute?.endpoint?.params?.filters]);
-*/
     const handleEndReached = useCallback(async (lastItemIndex) => {
         if (isFetchingNextPage)
             return;
@@ -406,24 +383,6 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
         const tabWidth = 120; //windowWidth > 800 ? 120 : (windowWidth - 64)/routes.length ;
         indicatorOffset.value = withTiming(index * tabWidth, { duration: 200, easing: Easing.inOut(Easing.ease) });
-
-        const indicatorStyle = useAnimatedStyle(() => {
-            return {
-                transform: [{ translateX: indicatorOffset.value }],
-            };
-        }, [indicatorOffset]);
-
-        const styles = StyleSheet.create({
-            indicator: {
-                width: tabWidth,
-                height: 2.5,
-                bottom: 0,
-                position: 'absolute',
-                justifyContent: 'center',
-                alignItems: 'center',
-                display: 'none'
-            },
-        });
 
         if (routes.length > 1) {
             const menuSettings = appSetting('menu_items', menu.object);
@@ -737,7 +696,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                             </Link>
                         )
                     })}
-                    <MemoAddBlocks leftSideBarBlocks={leftSideBarBlocks} data={data} onFormSubmit={onFormSubmit} show={show} setShow={setShow} layoutName={layoutName}/>
+                    <AddBlocks leftSideBarBlocks={leftSideBarBlocks} data={data} onFormSubmit={onFormSubmit} />
                     
                 </LeftSidebar>
 
@@ -780,6 +739,10 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
     }, [routes, index]);
 
+    const showFilters = useCallback(() => {
+        setBottomSheetData({ title: 'Filters', content: <AddBlocks leftSideBarBlocks={leftSideBarBlocks} data={data} onFormSubmit={onFormSubmit}/>, showClose: true, snapPoints: ['60%', '60%'] });
+    }, [leftSideBarBlocks, data, onFormSubmit]);
+
     if (leftSideBar) {
         return (
             <View className={appSetting('layout', 'max_width') + " w-full h-full mx-auto"} scrollEnabled={false} onLayout={handleLayoutTop}>
@@ -794,9 +757,11 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                         </View>
                         <View className=" flex-auto">{/*min-h-screen???*/}
                             {(headerSettings.showAltTopMenu) && topSideBarObj()}
-                            <View className="lg:hidden">
-                                <MemoAddBlocks leftSideBarBlocks={leftSideBarBlocks} data={data} onFormSubmit={onFormSubmit} show={show} setShow={setShow} layoutName={layoutName}/>
-                            </View>
+                            
+                            {(windowWidth < 1024 && layoutName == 'navigator' && leftSideBarBlocks ) && <View className="items-start ml-2 mt-2">
+                                <Button title="Filters"  variant="default" size="sm" rounded onPress={showFilters} />
+                            </View>}
+
                             <RenderScene route={currentRoute} />
                         </View>
                     </Row>

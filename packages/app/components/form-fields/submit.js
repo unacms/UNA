@@ -100,10 +100,10 @@ export default function FormFieldSubmit(props) {
                 />
                 {saveOnChanges && (
                     <Button
-                        variant="default"
-                        title="Reset"
                         {...buttonProps}
                         {...resetHandlers}
+                        variant="default"
+                        title="Reset"
                     />
                 )}
             </Row>

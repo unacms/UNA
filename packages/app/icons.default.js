@@ -12,12 +12,13 @@ import { List, ArrowLeft, House, WarningCircle, Chats, ArrowRight, ChatCircleTex
 	ChartBar, Storefront, Video, ShoppingCart, Check, HouseSimple, Folders, Egg, Binoculars, SquaresFour,
 	UserList, UserCircleGear, ContactlessPayment, Folder, Camera,UserCircleMinus, UserMinus,Spinner, Asterisk,
 	UserFocus, UserSquare, LinkSimple, ChartLine, Star, Translate, Moon,Trash, Minus, Hash, CirclesThree, Megaphone, 
-	Sparkle, MapPin, Wallet,Repeat,Eye,EyeSlash, Globe, PaperPlane 
+	Sparkle, MapPin, Wallet,Repeat,Eye,EyeSlash, Globe, PaperPlane, ArrowClockwise
 }  
 from "phosphor-react-native";
 
 export const IconSet = {
 	PaperPlane: PaperPlane,
+	ArrowClockwise: ArrowClockwise,
 	Spinner: Spinner,
 	Globe: Globe,
 	Eye: Eye,

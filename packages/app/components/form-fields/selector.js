@@ -1,114 +1,19 @@
 import Field from './_field';
 import { View, Row, Pressable, ScrollView } from 'app/design/view'
-import { useState, useRef, useEffect, useContext } from 'react';
+import { useState, useMemo, useCallback, useContext } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
 import { Button, Input, Modal } from "app/design/controls";
-import RadioButton from 'app/ui/atoms/radiobutton';
+import CheckBox from 'app/ui/atoms/checkbox';
+import { Text } from 'app/design/typography';
 
-export default function (props) {
-    const [isModal, setIsModal] = useState(false);
-    const rules = {};
-    const isMultiple = props.origtype == 'select' ? false :true;
-    const defaultValue = props?.value ? (Array.isArray(props.value) ? props.value.map(String) : [props.value.toString()]) : '';
-    const name = props.name ? props.name : '';
-    const { field } = useController({ name, rules, defaultValue });
-    //const { setBottomSheetData } = useBottomSheetData();
-
-    const setFormValue = (value) => {
-        value = value.filter(item => item);
-        field.onChange(value);
-        //setBottomSheetData(false);
-        setIsModal(false)
-    }
-    const removeValue = (valueToRemove) => {
-        const newValue = field.value.filter(item => item !== valueToRemove);
-        field.onChange(newValue);
-    }
-
-    let dataFlat;
-    if (Array.isArray(props.values))
-        dataFlat = props.values.map(obj => ({
-            ...obj,
-            key: obj.key !== undefined ? String(obj.key) : String(obj.value)
-        }));
-    else
-        dataFlat = Object.entries(props.values).map(([key, value]) => ({ key: String(key), value }));
-    const showSelect = (val) => {
-        // if ()
-        //setBottomSheetData({ title: 'Choose', showClose: true, content: <ChkList values={dataFlat} selectedValues={field.value} setFormValue={setFormValue} /> });
-        setIsModal(true);
-    }
-
-    let styles = "justify-start pr-4";
-    if (props.align == 'right')
-        styles += 'justify-end pl-4';
-
-    const ModalCnt = <Modal
-        title={'Choose ' + props.caption}
-        onVisible={isModal}
-        onClose={() => setIsModal(false)}
-        transparent={true}
-        headerBorder={true}
-        scrollable={true}
-    >
-        <View className='m-4 flex-1'>
-            <ChkList values={dataFlat} selectedValues={field.value} setFormValue={setFormValue} isMultiple={isMultiple} />
-        </View>
-
-    </Modal>
-
-
-    return (
-        <>
-            {ModalCnt}
-            <Field {...props}>
-                <View className='w-full justify-between '>
-                    <View className={styles + ' w-full flex-auto  items-center flex-row flex-wrap my-2'}>
-                        {props.align == 'right' && <Button
-                            startDecorator="Plus"
-                            variant="text"
-                            size="base"
-                            onPress={() => showSelect()}
-                        />}
-                        {!!field.value && dataFlat.filter(item => field.value.includes(item.key)).map((item, index) => (
-                            <View className='m-1' key={'label' + index}>
-                                <Button
-                                    endDecorator="X"
-                                    variant={"outline"}
-                                    size="sm"
-                                    title={item.value}
-                                    onPress={() => removeValue(item.key)}
-                                />
-                            </View>
-                        )
-                        )}
-                        {props.align != 'right' && <Button
-                            startDecorator="Plus"
-                            variant="text"
-                            size="sm"
-                            title='Add'
-                            onPress={() => showSelect()}
-                        />}
-                    </View>
-                </View>
-            </Field></>
-    );
-}
-
-function ChkList({ values, selectedValues, setFormValue, isMultiple }) {
-    const [value2, setValue2] = useState(selectedValues)
+function ChkList({ values, value2, addValue2 }) {
     const [inputValue, setInputValue] = useState('');
-    const addValue2 = (value) => {
-        const selectedValues = value2.includes(value)
-            ? (isMultiple? value2.filter(item => item !== value): [value])
-            : (isMultiple? [...value2, value] : [value]);
-        setValue2(selectedValues);
-    }
 
-    
-    let filtred = values;
-    if (inputValue)
-        filtred = values.filter(item => item.value.toLowerCase().includes(inputValue.toLowerCase()));
+    const filteredValues = useMemo(() => {
+        return inputValue
+            ? values.filter(item => item.value.toLowerCase().includes(inputValue.toLowerCase()))
+            : values;
+    }, [inputValue, values]);
 
     return (
         <View className='flex-1'>
@@ -122,32 +27,146 @@ function ChkList({ values, selectedValues, setFormValue, isMultiple }) {
                 </View>)
             }
 
-                {filtred.map((item2, index) => {
-                    const key = item2.key;
-                    return (
-                        <Pressable key={`lbl-${index}`} onPress={() => addValue2(item2.value)}>
-                            <Row className='items-center my-1 border border-bdr dark:border-bdr-d rounded-lg hover:bg-primary/10 active:bg-primary/20 dark:hover:bg-primary-d/10 dark:active:bg-primary-d/20' key={'chk' + index}>
-                                <RadioButton
-                                    value={key}
-                                    status={value2.includes(key) ? 'checked' : 'unchecked'}
-                                    onPress={() => { addValue2(key); }}
-                                    title={item2.value}
-                                />
-                                {/*<Text className="text-neutral-700 dark:text-neutral-200  text-sm">{item2.value}</Text>*/}
-                            </Row>
-                        </Pressable>
-                    )
-                })}
-
-
-            <View className='pt-2 justify-end items-start'>
-                <Button
-                    title='Save'
-                    variant="default"
-                    size="base"
-                    onPress={() => setFormValue(value2)}
-                />
-            </View>
+            {filteredValues.map((item2, index) => {
+                const key = item2.key;
+                return (
+                    <Pressable key={`lbl-${index}`} onPress={() => addValue2(item2.value)}>
+                           <Row className='items-center my-1 px-2 border border-bdr dark:border-bdr-d rounded-lg hover:bg-primary/10 active:bg-primary/20 dark:hover:bg-primary-d/10 dark:active:bg-primary-d/20' key={'chk' + index}>
+                            <CheckBox
+                                value={key}
+                                status={value2.includes(key) ? 'checked' : 'unchecked'}
+                                onPress={() => { addValue2(key); }}
+                                title={item2.value}
+                            />
+                        </Row>
+                    </Pressable>
+                )
+            })}
         </View>
     );
 }
+
+
+export default function (props) {
+    const [isModal, setIsModal] = useState(false);
+    const rules = {};
+    const isMultiple = props.origtype == 'select' ? false : true;
+    const defaultValue = props?.value ? (Array.isArray(props.value) ? props.value.map(String) : [props.value.toString()]) : '';
+    const name = props.name ? props.name : '';
+    const { field } = useController({ name, rules, defaultValue });
+    const [value2, setValue2] = useState(field.value)
+
+    const addValue2 = useCallback(
+        (value) => {
+            const selectedValues = value2.includes(value)
+                ? (isMultiple ? value2.filter(item => item !== value) : [value])
+                : (isMultiple ? [...value2, value] : [value]);
+
+            setValue2(selectedValues);
+        },
+        [value2, isMultiple]
+    );
+
+    const setFormValue = useCallback(
+        (value) => {
+            const filteredValue = value.filter(item => item);
+            field.onChange(filteredValue);
+            setIsModal(false);
+        },
+        [field]
+    );
+    const removeValue = useCallback(
+        (valueToRemove) => {
+            return () => {
+                const newValue = field.value.filter(item => item !== valueToRemove);
+                setValue2(newValue);
+                field.onChange(newValue);
+            };
+        },
+        [field, setValue2]
+    );
+
+    const showSelect = useCallback(
+        () => {
+            setIsModal(true);
+        },
+        []
+    );
+
+    const valuesList = useMemo(() => {
+        return Array.isArray(props.values)
+            ? props.values.map(obj => ({
+                ...obj,
+                key: obj.key !== undefined ? String(obj.key) : String(obj.value),
+            }))
+            : Object.entries(props.values).map(([key, value]) => ({
+                key: String(key),
+                value,
+            }));
+    }, [props.values]);
+
+    const styles = props.align === 'right' ? 'justify-end pl-4' : 'justify-start pr-4';
+
+    const header = <Row className=' w-full justify-between items-center'>
+        <View><Button onPress={() => { setIsModal(null) }} variant='outline' rounded startDecorator="X" /></View>
+        <View className='w-full flex-auto items-center justify-center'><Text className="text-neutral-700 dark:text-neutral-200 text-xl font-bold">{'Choose ' + props.caption}</Text></View>
+        <View >
+            <Button
+                startDecorator="Check"
+                variant="primary"
+                size="base"
+                rounded
+                onPress={() => setFormValue(value2)}
+            />
+        </View>
+    </Row>
+
+    const ModalCnt = <Modal
+        title={header}
+        onVisible={isModal}
+        transparent={true}
+        headerBorder={true}
+        scrollable={true}
+    >
+        <View className='flex-1'>
+            <ChkList values={valuesList} value2={value2} addValue2={addValue2} />
+        </View>
+    </Modal>
+
+    return (
+        <>
+            {ModalCnt}
+            <Field {...props}>
+                <View className='w-full justify-between '>
+                    <View className={styles + ' w-full flex-auto  items-center flex-row flex-wrap my-2'}>
+                        {props.align == 'right' && <Button
+                            startDecorator="Plus"
+                            variant="text"
+                            size="base"
+                            onPress={showSelect}
+                        />}
+                        {field.value?.length > 0 && valuesList.filter(item => field.value.includes(item.key)).map((item, index) => (
+                            <View className='m-1' key={'label' + index}>
+                                <Button
+                                    endDecorator="X"
+                                    variant={"outline"}
+                                    size="sm"
+                                    title={item.value}
+                                    onPress={removeValue(item.key)}
+                                />
+                            </View>
+                        )
+                        )}
+                        {props.align != 'right' && <Button
+                            startDecorator="Plus"
+                            variant="text"
+                            size="sm"
+                            title='Add'
+                            onPress={showSelect}
+                        />}
+                    </View>
+                </View>
+            </Field></>
+    );
+}
+
