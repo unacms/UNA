@@ -16,19 +16,19 @@ export default function ElementCommentForm(props) {
     const styles = StyleSheet.create({
         container: {
             flex: 1,
-            
+
         },
         bottomSheet: {
-            borderWidth:0,
+            borderWidth: 0,
             shadowColor: "#000",
-shadowOffset: {
-	width: 0,
-	height: 3,
-},
-shadowOpacity: 0.27,
-shadowRadius: 4.25,
+            shadowOffset: {
+                width: 0,
+                height: 3,
+            },
+            shadowOpacity: 0.27,
+            shadowRadius: 4.25,
 
-elevation: 10,
+            elevation: 10,
             /*backgroundColor: colors.bottomSheetBackground, // Ensure background color is set*/
         },
     });
@@ -37,27 +37,32 @@ elevation: 10,
         bottomSheetModalRef.current?.present();
     }, []);
 
+    useEffect(() => {
+        bottomSheetModalRef.current?.expand(); 
+    }, [props.children]);
+
     return (
         <BottomSheetModalProvider>
-        <BottomSheetModal 
-            backgroundStyle={{backgroundColor: colors.bottomSheetBackground}}
-            /* ref={bottomSheetRef}*/
-            ref={bottomSheetModalRef}
-            index={1}
-            snapPoints={snapPoints}
-            enableDismissOnClose={false} // prevents closing on dismiss event
-            enablePanDownToClose={false} // prevents closing by sliding down
-            enableDynamicSizing={true}
-            onChange={handleSheetChanges}
-           /* detached={true}*/
-            style={styles.bottomSheet}
+            <BottomSheetModal
+                backgroundStyle={{ backgroundColor: colors.bottomSheetBackground }}
+                /* ref={bottomSheetRef}*/
+                ref={bottomSheetModalRef}
+                index={1}
+                //snapPoints={snapPoints}
+                enableDismissOnClose={false} // prevents closing on dismiss event
+                enablePanDownToClose={props.enablePanDownToClose} // prevents closing by sliding down
+                enableDynamicSizing={true}
 
-        >
-            {props.isListView ? props.children : <BottomSheetScrollView contentContainerStyle={styles.contentContainer}  keyboardShouldPersistTaps="always" keyboardDismissMode="on-drag">
-                {props.children}
-            </BottomSheetScrollView>
-            }
-        </BottomSheetModal>
+                onChange={handleSheetChanges}
+              //  detached={true}
+                style={styles.bottomSheet}
+
+            >
+                {props.isListView ? props.children : <BottomSheetScrollView contentContainerStyle={styles.contentContainer} keyboardShouldPersistTaps="always" keyboardDismissMode="on-drag">
+                    {props.children}
+                </BottomSheetScrollView>
+                }
+            </BottomSheetModal>
         </BottomSheetModalProvider>
     )
 }

@@ -1,12 +1,11 @@
 import { View } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { Button, Modal } from 'app/design/controls'
-
+import { appSetting } from 'app/lib/util'
 import Link from 'app/ui/atoms/link'
-
 import React from 'react'
-
 import BlockByUrl from 'app/ui/molecules/block'
+import Card from 'app/ui/molecules/card'
 
 export default function () {
     return (

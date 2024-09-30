@@ -1783,11 +1783,17 @@ export const settingsDefault = {
                     showBg: false,
                     perLine: 1,
                 },
-                col4: {
+                col2: {
                     name: 'bx_persons:entity_text_block',
                     showTitle: false,
                     showBg: true,
-                    sidebar: false,
+                    sidebar: true,
+                },
+                col3: {
+                    name: 'bx_persons:entity_info',
+                    showTitle: false,
+                    showBg: true,
+                    sidebar: true,
                 },
                 col4: {
                     name: 'bx_persons:entity_cover',

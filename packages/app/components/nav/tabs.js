@@ -69,7 +69,7 @@ export default function () {
 
     const profile = useMemo(() => {
         if (currentUser) {
-            const dUser = { ...currentUser, url_avatar: currentUser.avatar, url: '/dashboard' };
+            const dUser = { ...currentUser, url_avatar: currentUser?.avatar, url: '/dashboard' };
             return <Profile {...dUser} displayType="unit_wo_info" displaySize="xs" />;
         }
         return null;

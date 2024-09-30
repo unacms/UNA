@@ -73,8 +73,9 @@ export default function ElementCommentForm(props) {
         blocking: false,
         snapPoints,
         isListView,
-        header: bottomSheetHeader
-    }), [isShow, snapPoints, isListView, bottomSheetHeader]);
+        header: bottomSheetHeader,
+        enablePanDownToClose: !showClose
+    }), [isShow, snapPoints, isListView, bottomSheetHeader, showClose]);
 
     if (!isShow)
         return <></>

@@ -76,7 +76,7 @@ export function Modal({
     let Cnt = scrollable ? ScrollView : View
 
     return (
-        <ModalDef visible={onVisible} presentationStyle={presentation} animationType={animation} transparent={false}>
+        <ModalDef visible={onVisible} presentationStyle={presentation} animationType={animation} transparent={Platform.OS === 'web' ? true : false}>
             <Wrapper className="flex justify-end w-full h-full bg-white/80 dark:bg-black/80 backdrop-blur" {...(isOuterClose && { onPress: onClose })}>
                 <View className={`flex-row justify-center left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto md:inset-0 h-modal h-full ${sClassPosition}`}>
                     <View className={`${fullWidth ? 'w-full' : ''}  relative h-full max-w-2xl md:h-auto `}>

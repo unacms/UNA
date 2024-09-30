@@ -36,7 +36,7 @@ export default function ({items, onSelect, children, defaultOpen}) {
     const { setBottomSheetData } = useBottomSheetData();
     const handlePress = useCallback(() => {
         FeedbackHaptics('Medium')
-        setBottomSheetData({ title: 'Menu options', showClose: true, snapPoints: ['10%', '50%'], content: <Menu items={items} onSelect={onSelect} setBottomSheetData={setBottomSheetData} /> });
+        setBottomSheetData({ showClose: false, snapPoints: ['10%', '50%'], content: <Menu items={items} onSelect={onSelect} setBottomSheetData={setBottomSheetData} /> });
     }, [setBottomSheetData, items, onSelect]);
 
     useEffect(() => {

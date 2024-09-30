@@ -627,17 +627,17 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                 sidebarUnitType = route.blocks.browse_sidebar.unitType
             }
             return (
-                <Row style={{ paddingTop: header ? 0 : 0 }} className={headerSettings.columns == "reverse" ? 'flex-row-reverse' : ''}>
-                    <View className={(isRightCol ? 'flex-auto sm:border-r border-bdr dark:border-bdr-d ' : ' w-full p-2  ') + (layoutName == 'navigator' ? '' : ' pt-1 sm:pt-4 ')}>
+                <Row style={{ paddingTop: header ? 0 : 0 }} className={(headerSettings.columns == "reverse" ? 'flex-row-reverse' : '') + ' max-w-screen-xl mx-auto w-full'}>
+                    <View className={(isRightCol ? 'flex-auto sm:border-r border-bdr dark:border-bdr-d pr-4 ' : ' w-full max-w-screen-xl mx-auto sm:p-2 ') + (layoutName == 'navigator' ? '' : ' pt-4')}>
                         {TabFlashListM}
                         {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 &&  staticComponents['noContentByUrl'](route?.endpoint?.request_url)))}
 
 
                     </View>
                     {isRightCol && <View className="hidden xl:block xl:w-80 2xl:w-96  ">
-                        <View className="fixed-process xl:w-80 2xl:w-96 p-4">
+                        <View className="fixed-process xl:w-80 2xl:w-96 p-4 ">
                             {route?.sidebar?.content.map((item, index) => {
-                                return <ItemRenderer unitType={sidebarUnitType} key={'item' + index} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''} />
+                                return <View className="mb-4"><ItemRenderer unitType={sidebarUnitType} key={'item' + index} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''} /></View>
                             })}
                             <BlockByName data={route.pageData ? route.pageData : data} name={route.blocks?.browse_sidebar} sidebar={true} perLine={1} maxItems={1} />
                         </View>
