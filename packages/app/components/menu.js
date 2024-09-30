@@ -159,7 +159,7 @@ export default function ElementMenu(oProps) {
                 sDisplayType={sDisplayType} params={oProps.params} />
         }}
         persistent={oProps.persistent}
-        containerClasses="w-full"
+        containerClasses="w-full justify-end"
         items={filteredItems}
         menuClasses={sClassName}
         isButtonOutside={false}

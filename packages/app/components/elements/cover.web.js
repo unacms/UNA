@@ -221,7 +221,7 @@ export default function (props) {
             <View
                 className={
                     appSetting('layout', 'max_width') +
-                    ' mx-auto w-full max-w-screen-xl '
+                    ' mx-auto w-full max-w-screen-xl xl:px-4 '
                 }
             >
                 {mode != 'min' ? (
@@ -322,7 +322,7 @@ export default function (props) {
                            
                             <CoverMenuMeta {...data.meta_menu} />
                         </View>
-                        <View className=" max-w-96 py-4 ">
+                        <View className="flex-auto max-w-96 py-4 ">
                             <CoverMenu {...data.actions_menu} uri={props?.uri} />
                         </View>
                 </View>
