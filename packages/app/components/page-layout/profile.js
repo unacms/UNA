@@ -1,72 +1,81 @@
 import { Conductor } from 'app/ui/molecules/conductor';
-import { useContext, useState, useEffect } from 'react';
-import Cover, {CoverSmall} from 'app/components/elements/cover';
+import { useState, useEffect, useMemo } from 'react';
+import Cover, { CoverSmall } from 'app/components/elements/cover';
 import { getHeaderSettings, getBlocksFromData, cloneObject, getPageData } from 'app/lib/util';
 import { useWindowDimensions } from 'react-native';
 import { useLayoutData } from 'app/context/layout';
+import { processBlocks } from 'app/lib/conductor-helpers';
 
-
-export default function PageLayout(props) {
-    const windowDimen =  useWindowDimensions();
+export default function PageLayout({layoutName, data, uri, blocks}) {
+    const { width: windowWidth } = useWindowDimensions();
     const { layoutData } = useLayoutData();
-    const [ pageData, setPageData] = useState(props.data);
-    let ts = 0;
-    //reload page after some connection actions
-    
+    const [ pageData, setPageData ] = useState(data);
+    const isAltView = layoutName === 'profile-alt';
+
     useEffect(() => {
-        if(layoutData && layoutData?.type == 'сonnections:action' && layoutData?.data?.reload){
+        if (layoutData && layoutData?.type == 'сonnections:action' && layoutData?.data?.reload) {
             (async () => {
                 const sResponse = await getPageData(pageData.url);
                 if (sResponse.data != pageData)
                     setPageData(sResponse.data);
             })();
-            
+
         }
     }, [layoutData?.data?.time]);
-      
 
-    if (!pageData.menu.items){
+    if (!pageData.menu.items) {
         pageData.menu.items = [];
     }
-    let menu = cloneObject(pageData.menu);
-    let blocks = props.blocks;
 
-    if (!menu.items)
-        menu.items = [];
-    
-    const isNamePresent = menu.items.some(item => item.name === props.uri);
-    const isNamePresent2 = pageData.menu.items.some(item => item.name === props.uri);
+    const menu = useMemo(() => {
+        const clonedMenu = cloneObject(pageData.menu || { items: [] });
 
-    if (!isNamePresent){
-        menu.items.push({id:-1, name: props.uri, title:'', link: pageData.url, hideInTop: true});
-    }
+        const isNamePresent = clonedMenu.items.some(item => item.name === uri);
+        if (!isNamePresent) {
+            clonedMenu.items.push({
+                id: -1,
+                name: uri,
+                title: '',
+                link: pageData.url,
+                hideInTop: true
+            });
+        }
 
-    const windowWidth = windowDimen.width;
-    let headerSettings = getHeaderSettings(props.uri, windowWidth, 'profile');
-    let cover = headerSettings.cover;
+        return clonedMenu;
+    }, [pageData.menu, uri, pageData.url]);
 
-    let header = <Cover data={pageData.cover_block} mode={cover} uri={props.uri}/>
-    let smallHeader = <CoverSmall data={pageData.cover_block}/>
+    const headerSettings = useMemo(() => getHeaderSettings(uri, windowWidth, 'profile'), [uri, windowWidth]);
 
-    if (!blocks){
-        blocks = getBlocksFromData(pageData)
-    }
+    const header = useMemo(() => {
+        if (windowWidth > 768 && isAltView) {
+            return null;
+        }
+        return <Cover data={pageData.cover_block} mode={headerSettings.cover} uri={uri} />;
+    }, [windowWidth, pageData.cover_block, headerSettings.cover, uri]);
+
+    const smallHeader = useMemo(() => (windowWidth > 768 && isAltView ? null : <CoverSmall data={pageData.cover_block} />), [windowWidth, pageData.cover_block]);
+
+    const renderedBlocks = useMemo(() => {
+        const initialBlocks = blocks || getBlocksFromData(pageData);
+        return processBlocks(initialBlocks);
+    }, [blocks, pageData]);
 
     return (
-        
-        <Conductor 
-            layoutName={props.layoutName}
-            header={header} 
-            smallHeader={smallHeader} 
-            minHeaderHeight={60} 
+        <Conductor
+            layoutName={layoutName}
+            header={header}
+            smallHeader={smallHeader}
+            minHeaderHeight={60}
             offsetTop={300}
-            isHideDefaultHeader={true} 
-            menu={menu} 
-            data={pageData} 
-            blocks={blocks}
-            cover={cover}
-            ts={ts}
+            isHideDefaultHeader={true}
+            menu={menu}
+            data={pageData}
+            blocks={renderedBlocks.mainBlocks}
+            cover={headerSettings.cover}
+            leftSideBar={isAltView}
+            leftSideBarWidth={isAltView  ? 'w-96' : ''}
+            leftSideBarBlocks={isAltView? renderedBlocks.leftBlocks: null}
+
         />
-       )
-    
+    )
 }

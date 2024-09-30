@@ -8,7 +8,6 @@ import PageCustomDashboard from './dashboard';
 import PageCustomNavigator from './navigator';
 import PageCustomNavigatorSearch from './navigator_search';
 import PageCustomProfile from './profile';
-import PageCustomProfileAlt from './profile-alt';
 import PageCustomHome from './home';
 import PageCustomNotif from './notif';
 import PageCustomCreateAccount from './create-account';
@@ -28,7 +27,7 @@ export const componentsMapDefault = {
     'messenger': PageCustomMessenger,
     'dashboard': PageCustomDashboard,
     'profile': PageCustomProfile,
-    'profile-alt': PageCustomProfileAlt,
+    'profile-alt': PageCustomProfile,
     'home': PageCustomHome,
     'notif': PageCustomNotif,
     'create-account': PageCustomCreateAccount,

@@ -1762,16 +1762,6 @@ export const settingsDefault = {
             headerSettings: { offset: false, header: false, cover: 'min' },
         },
         //############ PERSONS PAGES ############
-        /*'view-persons-profile': {
-            layout: 'profile',
-            blocks: {
-                col0: { name: 'bx_timeline:get_block_post_profile', showTitle: false, showBg: false },
-                col1: { name: 'bx_timeline:get_block_view_profile', showTitle: false, showBg: false, perLine: 1 },
-                col2: { name: 'bx_persons:entity_info', showTitle: false, showBg: true, sidebar: true },
-                col4: { name: 'bx_persons:entity_text_block', showTitle: false, showBg: true, sidebar: true },
-            },
-            headerSettings: { offset: false, header: false, cover: 'profile' }
-        },*/
         'view-persons-profile': {
             layout: 'profile', //profile-alt, profile
             blocks: {
@@ -1816,7 +1806,7 @@ export const settingsDefault = {
             },
         },
         'persons-profile-info': {
-            layout: 'profile-alt',
+            layout: 'profile',
             blocks: {
                 col1: {
                     name: 'bx_persons:entity_info_full',
@@ -1848,7 +1838,7 @@ export const settingsDefault = {
             },
         },
         'persons-profile-friends': {
-            layout: 'profile-alt',
+            layout: 'profile',
             blocks: {
                 col2: {
                     name: 'system:connections_table',
@@ -1873,7 +1863,7 @@ export const settingsDefault = {
             },
         },
         'persons-profile-subscriptions': {
-            layout: 'profile-alt',
+            layout: 'profile',
             blocks: {
                 col2: {
                     name: 'system:subscribed_me_table',
@@ -1898,7 +1888,7 @@ export const settingsDefault = {
             },
         },
         'persons-profile-subscriptions1': {
-            layout: 'profile-alt',
+            layout: 'profile',
             blocks: {
                 col2: {
                     name: 'system:subscriptions_table',
