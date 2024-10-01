@@ -30,9 +30,7 @@ export default function PageLayout(props) {
                             rounded=" rounded-2xl "
                             addClassName=" px-4 py-2 sm:px-6 sm:py-4 w-full  max-w-xl mx-auto flex-auto  "
                         >
-                            <ScrollView>
-                                <BlockByName name={props.blocks.form} data={props.data} />
-                            </ScrollView>
+                            <BlockByName name={props.blocks.form} data={props.data} />
                         </Card>
                         <Link
                             className=" mx-auto  w-full "

@@ -60,7 +60,7 @@ const AddBlocks = React.memo(({
     });
 
     return <>
-        {(leftSideBarBlocksObj?.length > 0 ) && 
+        {(leftSideBarBlocksObj?.length > 0) &&
             <View className="my-3 mx-2 ">
                 {leftSideBarBlocksObj.map((block, index) => {
                     return <View key={"lb-" + index}>{block}</View>
@@ -81,7 +81,7 @@ const TabScene = React.memo(({
 }) => {
 
     const handleEndReached = useCallback(() => {
-       
+
         if (!route?.endpoint || route?.endpoint?.params?.start === 0 || refreshing || route?.endpoint?.finished)
             return;
         fetchNextPage();
@@ -124,7 +124,7 @@ const TabScene = React.memo(({
     )
 });
 
-export function ConductorFlat({ header, smallHeader, minHeaderHeight, isHideDefaultHeader,leftSideBarBlocks, menu, layoutName, data, blocks, useSectionAsMenu, unitMode, skeleton, onChangeRoute, keyword }) {
+export function ConductorFlat({ header, smallHeader, minHeaderHeight, isHideDefaultHeader, leftSideBarBlocks, menu, layoutName, data, blocks, useSectionAsMenu, unitMode, skeleton, onChangeRoute, keyword }) {
     console.log("ConductorFlat")
     minHeaderHeight = minHeaderHeight || 100;
     isHideDefaultHeader = isHideDefaultHeader || false;
@@ -268,7 +268,7 @@ export function ConductorFlat({ header, smallHeader, minHeaderHeight, isHideDefa
 
     const onStartRefresh = useCallback(async () => {
         setRoutes(prevRoutes => {
-            const updatedRoutes =  fillTabs(menu, data, blocks, currentUser, useSectionAsMenu);;
+            const updatedRoutes = fillTabs(menu, data, blocks, currentUser, useSectionAsMenu);;
             return [...prevRoutes.slice(0, index), updatedRoutes[index], ...prevRoutes.slice(index + 1)];
         });
         setIsRefreshing(true);
@@ -286,7 +286,7 @@ export function ConductorFlat({ header, smallHeader, minHeaderHeight, isHideDefa
         if (currentRoute.endpoint?.unit === 'feed' && layoutData && layoutData.data && (layoutData?.type == 'feed:new_content' || layoutData?.type == 'feed:remove_content')) {
             let clonedData = currentRoute.data
             const data = handleFeedLayoutData(layoutData, clonedData)
-             // Create a new route object by spreading the existing one and updating data
+            // Create a new route object by spreading the existing one and updating data
             const updatedRoute = { ...routes[index], data };
 
             // Create a new routes array with the updated route
@@ -332,7 +332,7 @@ export function ConductorFlat({ header, smallHeader, minHeaderHeight, isHideDefa
     const onFormSubmit = useCallback((formData, d) => {
         let filterValues = [];
         for (let key in d) {
-            filterValues.push({name: key, value: Array.isArray(d[key])?d[key].join(','):d[key]})
+            filterValues.push({ name: key, value: Array.isArray(d[key]) ? d[key].join(',') : d[key] })
         };
         setFilterValue(filterValues);
         setBottomSheetData(false);
@@ -343,9 +343,9 @@ export function ConductorFlat({ header, smallHeader, minHeaderHeight, isHideDefa
             <TabBar routes={routes} index={index} currentUser={currentUser} setIndex={setIndex} onChangeRoute={onChangeRoute} />
             <View className="w-full flex-1 ">
                 <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="New content" size="sm" />
-                {(layoutName == 'navigator' && leftSideBarBlocks && leftSideBarBlocks.length > 0 ) && <View className="items-start ml-2 mt-2">
-                                <Button title='Filters'  variant="default" size="sm" rounded onPress={showFilters} />
-                            </View>}
+                {(layoutName == 'navigator' && leftSideBarBlocks && leftSideBarBlocks.length > 0) && <View className="items-start ml-2 mt-2 mb-1">
+                    <Button title='Filters' variant="default" size="sm" rounded onPress={showFilters} />
+                </View>}
                 <TabScene onRefresh={onStartRefresh} refreshing={isRefreshing} route={currentRoute} Preload={Preload} unitType={unitType} unitMode={unitMode} fetchNextPage={fetchNextPage} />
             </View>
         </View>
