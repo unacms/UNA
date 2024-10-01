@@ -103,6 +103,7 @@ export const settingsDefault = {
         add_notifications_count_in_title: true,
         show_nav_non_logged_native: true,
         show_back_button_in_messenger: false,
+        button_style_for_actions: 'secondary',
     },
     forms: {
         sys_login: { hide_errors: true, button_full_width: true },
@@ -2040,7 +2041,7 @@ export const settingsDefault = {
             'u-btn-outline-trans': ' duration-200 ',
 
             'u-btn-group-item-cnt':
-                ' hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50  ',
+                ' hover:bg-bgritem-h dark:hover:bg-bgritem-dh active:opacity-50  ',
             'u-btn-group-item-text':
                 ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
 
@@ -2057,7 +2058,7 @@ export const settingsDefault = {
             'u-btn-text-cnt': 'flex flex-row active:opacity-50 ',
 
             'u-btn-secondary-cnt':
-                ' bg-bgritem dark:bg-bgritem-d hover:bg-bgritem-h dark:hover:bg-bgritem-dh active:opacity-50  ',
+                ' bg-bgritem dark:bg-bgritem-d hover:bg-none dark:hover:bg-none active:opacity-50 overflow-hidden flex flex-row',
             'u-btn-secondary-text':
                 ' font-medium text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-white ',
             'u-btn-secondary-trans': ' duration-200 ',
