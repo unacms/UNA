@@ -16,9 +16,9 @@ import Toaster from 'app/ui/atoms/toaster';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { BlockByName } from 'app/components/block';
 
-const TabBar = React.memo(({ routes, index, currentUser, setIndex, onChangeRoute }) => {
+const TabBar = React.memo(({ routes, index, setIndex, onChangeRoute }) => {
     const { colors } = Theme();
-
+    const { currentUser } = useCurrentUser();
     if (routes.length > 1) {
         return (
             <View className="w-full">
@@ -340,7 +340,7 @@ export function ConductorFlat({ header, smallHeader, minHeaderHeight, isHideDefa
 
     return (
         <View className="w-full flex-1">
-            <TabBar routes={routes} index={index} currentUser={currentUser} setIndex={setIndex} onChangeRoute={onChangeRoute} />
+            <TabBar routes={routes} index={index} setIndex={setIndex} onChangeRoute={onChangeRoute} />
             <View className="w-full flex-1 ">
                 <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="New content" size="sm" />
                 {(layoutName == 'navigator' && leftSideBarBlocks && leftSideBarBlocks.length > 0) && <View className="items-start ml-2 mt-2 mb-1">

@@ -228,7 +228,7 @@ const getAddon = (addon) => {
             <Text className="text-white  text-xs font-semibold">{sButtonAddonText}</Text></View></View> : null;
 }
 
-export const Button = memo((props) => {
+export const Button = (props) => {
     const {
         className = '',
         classTextName = '',
@@ -414,7 +414,7 @@ export const Button = memo((props) => {
     );
 
     return showTooltip ? <Tooltip content={tooltip}>{buttonContent}</Tooltip> : buttonContent;
-});
+};
 
 export const ButtonRef = React.forwardRef((props, forwardedRef) => {
     return (
