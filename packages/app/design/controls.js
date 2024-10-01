@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react';
+import React, { memo, useMemo, useEffect } from 'react';
 import { TextInput as TextInputDef, Modal as ModalDef, Platform, Switch as SwitchDef } from 'react-native'
 import { Pressable, View, ScrollView, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
@@ -34,8 +34,6 @@ export const PickerStyledIos = styled(PickerDef, PickerStyles)
 /* modal */
 export function Modal({
     animation = 'fade',
-    presentation = 'overFullScreen',
-    transparent = true,
     position = 'center',
     onClose,
     outerClickClose = true,
@@ -48,6 +46,10 @@ export function Modal({
     padding = " px-4 py-2 ",
     scrollable = false
 }) {
+    const { width, height } = useWindowDimensions();
+    const styles = width > 768 ? { maxHeight: height - 100 } : {};
+
+    const isWeb = Platform.OS === 'web';
 
     const isOuterClose = (onClose !== 'undefined' && outerClickClose !== false);
     const Wrapper = isOuterClose ? Pressable : View;
@@ -56,33 +58,48 @@ export function Modal({
         'bottom': 'items-end py-8 px-4',
         'center': 'sm:items-center items-start sm:p-4',
     };
-    presentation = 'pageSheet';
-    if (presentation == 'fullScreen') {
-        transparent = false;
-    }
+
     const sClassPosition = positionClasses[position] || positionClasses['center'];
 
-    if (!title && onClose) {
-        textAlign = 'end'
-    }
+    const align = !title && onClose ? 'end' : textAlign;
 
     const type = typeof title;
-    let styles = {}
-    const { width, height } = useWindowDimensions();
-
-    if (width > 768)
-        styles = { maxHeight: height - 100 }
+    
 
     let Cnt = scrollable ? ScrollView : View
 
+
+    useEffect(() => {
+        if (isWeb){
+
+            if (onVisible !== false) {
+                document.body.style.maxHeight = '100vh';
+                document.body.style.minHeight = '';
+                document.body.style.overflow = 'hidden';
+            } else {
+
+             /*   document.body.style.maxHeight = '';
+                document.body.style.minHeight = '100%';
+                document.body.style.overflow = '';*/
+            }
+
+            return () => {
+
+                document.body.style.maxHeight = '';
+                document.body.style.minHeight = '100%';
+                document.body.style.overflow = '';
+            };
+        }
+    }, [onVisible, children]);
+
     return (
-        <ModalDef visible={onVisible} presentationStyle={presentation} animationType={animation} transparent={Platform.OS === 'web' ? true : false}>
+        <ModalDef visible={onVisible} presentationStyle={'pageSheet'} animationType={animation} transparent={isWeb}>
             <Wrapper className="flex justify-end w-full h-full bg-white/80 dark:bg-black/80 backdrop-blur" {...(isOuterClose && { onPress: onClose })}>
                 <View className={`flex-row justify-center left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto md:inset-0 h-modal h-full ${sClassPosition}`}>
                     <View className={`${fullWidth ? 'w-full' : ''}  relative h-full max-w-2xl md:h-auto `}>
                         <Pressable onPress={() => { }} className='relative bg-bgrmodal dark:bg-bgrmodal-d h-full md:h-auto  sm:border sm:border-bdrmodal sm:dark:border-bdrmodal-d sm:rounded-2xl sm:shadow-sm'>
                             {
-                                (title || onClose) && <Row className={`items-center justify-${textAlign} ${headerBorder ? ' border-b border-bdr dark:border-bdr-d ' : ''} px-3 py-2.5 sm:p-4 sm:py-3`}>
+                                (title || onClose) && <Row className={`items-center justify-${align} ${headerBorder ? ' border-b border-bdr dark:border-bdr-d ' : ''} px-3 py-2.5 sm:p-4 sm:py-3`}>
                                     {(title && type === 'string') && (
                                         <View className='flex-auto'>
                                             <Text className='text-neutral-700 dark:text-neutral-200 text-xl font-bold '>{title}</Text>
@@ -267,7 +284,7 @@ export const Button = memo((props) => {
         if (pressed) {
             classes += 'text-neutral-950 dark:text-white ';
         }
-        classes += ' text-'+size+' ';
+        classes += ' text-' + size + ' ';
         return classes;
     }, [variant, ThemeCssClasses, classTextName, pressed, size]);
 

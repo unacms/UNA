@@ -48,11 +48,9 @@ function DefaultUnit(data) {
     if (viewState.view == 'deleted')
         return <></>
 
-    if (viewState.view == 'edited')
-        return <FeedEditForm setViewState ={setViewState} id={data.id} viewState={viewState}/>
-
     return (
         <AnimatedBlock>
+            {viewState.view == 'edited' && <FeedEditForm setViewState ={setViewState} id={data.id} viewState={viewState}/>}
             {isCommentsModal && <Modal
                 outerClickClose={false}
                 onClose={() => setCmtsData(false)}
