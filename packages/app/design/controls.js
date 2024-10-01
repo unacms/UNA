@@ -211,6 +211,22 @@ const getIcon2 = (buttonInfo, classIconName, sClassText, sIconContainer, iIconSi
     }
 }
 
+const getAddon = (addon) => {
+    let sButtonAddonText = "";
+    let sButtonAddonBg = "bg-neutral-500 dark:bg-neutral-500";
+    if (typeof addon === 'object') {
+        sButtonAddonText = addon?.text;
+        if (addon?.variant == 'primary')
+            sButtonAddonBg = 'bg-contrast dark:bg-contrast-d';
+    }
+    else {
+        sButtonAddonText = addon;
+    }
+
+    return sButtonAddonText && sButtonAddonText != '' ? <View className='flex-1 items-end '>
+        <View className={sButtonAddonBg + ' rounded-full px-2 py-0.5 mx-1 text-center items-center'}>
+            <Text className="text-white  text-xs font-semibold">{sButtonAddonText}</Text></View></View> : null;
+}
 
 export const Button = memo((props) => {
     const {
@@ -371,25 +387,7 @@ export const Button = memo((props) => {
         [endDecorator, classIconName, sClassText, sIconContainer, iIconSize, colorIcon]
     );
 
-    const oButtonAddon = useMemo(() => {
-        if (!addon) return null;
-        const addonText = typeof addon === 'object' ? addon.text : addon;
-        if (!addonText) return null
-        const addonVariant = typeof addon === 'object' ? addon.variant : '';
-        const addonBg =
-            addonVariant === 'primary'
-                ? 'bg-contrast dark:bg-contrast-d'
-                : 'bg-neutral-500 dark:bg-neutral-500';
-        return (
-            <View className="flex-1 items-end ">
-                <View
-                    className={`${addonBg} rounded-full px-2 py-0.5 mx-1 text-center items-center`}
-                >
-                    <Text className="text-white text-xs font-semibold">{addonText}</Text>
-                </View>
-            </View>
-        );
-    }, [addon]);
+    const oButtonAddon = getAddon(addon);
 
     const Cnt = onPress && !disabled ? Pressable : View;
     const refProps = forwardedRef ? { ref: forwardedRef } : {};
