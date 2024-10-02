@@ -105,7 +105,7 @@ const Content = ({ pagePath, currentUser, isRoot }) => {
     useEffect(() => {
         const prepareApp = async () => {
             if (pageData?.data) {
-                await new Promise(resolve => setTimeout(resolve, 500));
+                await new Promise(resolve => setTimeout(resolve, 1000));
                 await SplashScreen.hideAsync();
             }
         };
