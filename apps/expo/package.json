@@ -6,6 +6,7 @@
     "@gorhom/bottom-sheet": "^4.6.3",
     "@jitsi/react-native-sdk": "^0.4.1",
     "@native-html/iframe-plugin": "^2.6.1",
+    "@radix-ui/react-dropdown-menu": "^2.1.1",
     "@react-native-assets/slider": "^7.0.6",
     "@react-native-async-storage/async-storage": "1.23.1",
     "@react-native-clipboard/clipboard": "^1.14.1",
@@ -42,6 +43,7 @@
     "html-entities": "^2.4.0",
     "i18next": "^23.5.1",
     "nativewind": "^2.0.11",
+    "onesignal-expo-plugin": "^2.0.3",
     "pako": "^2.1.0",
     "phosphor-react-native": "^2.2.1",
     "pusher-js": "^8.3.0",
@@ -93,7 +95,6 @@
     "swr": "^2.2.0",
     "uuid": "3.4.0",
     "victory-native": "^36.7.0",
-    "@radix-ui/react-dropdown-menu": "^2.1.1",
     "zustand": "^4.5.5"
   },
   "devDependencies": {
