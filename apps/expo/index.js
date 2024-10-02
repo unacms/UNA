@@ -6,7 +6,7 @@ import 'react-native-get-random-values';
 import 'react-native-url-polyfill/auto';
 import { StatusBar } from 'react-native';
 //import 'expo-router/entry';
-
+import * as SplashScreen from 'expo-splash-screen';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { registerRootComponent } from "expo";
@@ -14,8 +14,8 @@ import { ExpoRoot } from "expo-router";
 
 if (__DEV__) {
 	import('./ReactotronConfig').then(() => console.log('Reactotron Configured'));
-  }
-
+}
+SplashScreen.preventAutoHideAsync();
 // Must be exported or Fast Refresh won't update the context
 export function App() {
 	const ctx = require.context("./app");

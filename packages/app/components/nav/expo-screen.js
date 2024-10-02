@@ -10,13 +10,14 @@ import { useUpdateCenterHeader, getRightHeader } from 'app/lib/native-handlers'
 import { useNavigation } from 'expo-router';
 import { menuItemsFilter } from 'app/lib/util';
 import { storageClear, decodeText } from 'app/lib/util';
+import * as SplashScreen from 'expo-splash-screen';
 
 export async function getData(path, token, origin, headers, callback, params) {
-    
+
     path = (!path || path.startsWith('expo-development-client')) ? 'home' : path;
     path = path.startsWith('/') ? path.substr(1) : path;
     path = `/api.php?r=system/get_page_by_request/TemplServicePages&params[]=${path}`;
-    
+
     const uri = getURI(path);
     const settings = appSetting('layouts', uri);
     if (settings?.blocks) {
@@ -37,7 +38,7 @@ export async function getData(path, token, origin, headers, callback, params) {
 }
 
 export function Screen(params) {
-   
+
     const local = useLocalSearchParams();
     const pathname = params.tabname;
     const { currentUser, setCurrentUser } = useCurrentUser();
@@ -54,7 +55,7 @@ export function Screen(params) {
     }
     return <Content key={_path} pagePath={_path} currentUser={currentUser} isRoot={isRoot} />
 
-  
+
 }
 
 const Content = ({ pagePath, currentUser, isRoot }) => {
@@ -66,7 +67,7 @@ const Content = ({ pagePath, currentUser, isRoot }) => {
         if (!(pagePath && pagePath.startsWith('/') && !pagePath.includes('/?url='))) return;
 
         const fetchPageData = async () => {
-            if (pageData?.data?.user?.id  && pageData?.data?.user?.id === currentUser?.id && pageData?.data?.user?.confirmed === currentUser?.confirmed)
+            if (pageData?.data?.user?.id && pageData?.data?.user?.id === currentUser?.id && pageData?.data?.user?.confirmed === currentUser?.confirmed)
                 return;
             const { path: pathWithoutQuery, queryString } = parseUrl(pagePath);
             const params = queryString ? JSON.stringify(parseQueryString(queryString)) : null;
@@ -91,7 +92,7 @@ const Content = ({ pagePath, currentUser, isRoot }) => {
                     updateCenterHeader(pagePath, pageData1.data.name, null, header, settings?.headerSettings);
                 }
 
-                 //console.log('-------------------------------updateCenterHeader', pagePath, pageData1?.data?.name, navigation.getState().routes.length)
+                //console.log('-------------------------------updateCenterHeader', pagePath, pageData1?.data?.name, navigation.getState().routes.length)
 
                 setBottomSheetData(bottomSheetData !== false ? false : bottomSheetData);
                 setPageData(data.props);
@@ -99,6 +100,19 @@ const Content = ({ pagePath, currentUser, isRoot }) => {
         };
         fetchPageData();
     }, [pagePath, currentUser?.id, currentUser?.confirmed]);
+
+
+    useEffect(() => {
+        const prepareApp = async () => {
+            if (pageData?.data) {
+                await new Promise(resolve => setTimeout(resolve, 500));
+                await SplashScreen.hideAsync();
+            }
+        };
+
+        prepareApp();
+    }, [pageData?.data]);
+
     return pageData?.data ? (
 
         <Root path={pagePath} data={pageData.data} uri={pageData.data.uri} />
