@@ -372,8 +372,9 @@ export function CommentsBrowse({ browse, requestUrl, module, handleReply, handle
     return (
         <>
          <Toaster ref={toasterRef} onPress={showNewContent} variant="primary" title="New comment" size="sm" />
-            <UniList
+         <UniList
                 useWindowScroll
+                keyboardShouldPersistTaps="handled"
                 height={height > 0 ? height : undefined}
                 data={dataOut}
                 refer={flashListRef}
