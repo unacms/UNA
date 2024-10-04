@@ -37,6 +37,7 @@ export default function UniList(props) {
                 keyExtractor={item => item.id}
                 renderItem={renderItem}
                 onEndReached = {onEndReached} 
+                keyboardShouldPersistTaps="always" 
                 ListFooterComponent={ListFooterComponent}
                 {...rest}
                 refreshControl={
