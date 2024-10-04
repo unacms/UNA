@@ -44,7 +44,8 @@ export default function Subscriber() {
     const onUpdateConnections = useCallback(async (data) => {
         storageClear();
         const oData = JSON.parse(data);
-        setCurrentUser(oData.user);
+        if (oData.user)
+            setCurrentUser(oData.user);
     }, []);
 
     const onItemEdited = useCallback(async (strData) => {
