@@ -458,7 +458,7 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
                
             }
             form.data.reset = true;
-            form.data.inputs.cmt_text.autofocus = true;
+            form.data.inputs.cmt_text.autofocus = formData.parent_id;
             addCommentData({ formText: formData.text, formAuthor: formData.author.display_name, parentId: formData.parent_id })
         }
     }

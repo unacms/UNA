@@ -35,9 +35,6 @@ export default function ElementCommentForm(props) {
 
     useEffect(() => {
         bottomSheetModalRef.current?.present();
-    }, []);
-
-    useEffect(() => {
         bottomSheetModalRef.current?.expand(); 
     }, [props.children]);
 
@@ -45,10 +42,9 @@ export default function ElementCommentForm(props) {
         <BottomSheetModalProvider>
             <BottomSheetModal
                 backgroundStyle={{ backgroundColor: colors.bottomSheetBackground }}
-                /* ref={bottomSheetRef}*/
                 ref={bottomSheetModalRef}
                 index={1}
-                //snapPoints={snapPoints}
+               // snapPoints={snapPoints}
                 enableDismissOnClose={false} // prevents closing on dismiss event
                 enablePanDownToClose={props.enablePanDownToClose} // prevents closing by sliding down
                 enableDynamicSizing={true}
