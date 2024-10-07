@@ -82,6 +82,11 @@ export default function PageLayout(props) {
     const isWeb = Platform.OS == 'web'
     let { currentUser, setCurrentUser } = useCurrentUser();
 
+    const { layoutName, layoutBlocks, isCustomLayout } = useMemo(() => {
+        const isWeb = Platform.OS === 'web';
+        return getLayoutName(data, data?.uri?.toString(), isWeb);
+    }, [data, data?.uri]);
+
     if (data.page_status === 404 || data.page_status === 403) {
         return <ErrorPage type={data.page_status} />;
     }
@@ -90,10 +95,7 @@ export default function PageLayout(props) {
         return <ConfirmEmail url={url} />;
     }
 
-    const { layoutName, layoutBlocks, isCustomLayout } = useMemo(() => {
-        const isWeb = Platform.OS === 'web';
-        return getLayoutName(data, data?.uri?.toString(), isWeb);
-    }, [data, data?.uri]);
+    
 
     const Component = componentsMap[layoutName];
 

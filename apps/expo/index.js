@@ -33,7 +33,7 @@ export function App() {
 				await SplashScreen.hideAsync();
 				setTimeout(() => {
 					setShowSplashScreen(false);
-				}, 3000);
+				}, Constants.manifest.splash.timeout);
 			}
 		};
 		prepareApp();

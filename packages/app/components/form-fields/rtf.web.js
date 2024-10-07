@@ -3,17 +3,18 @@ import { useMemo } from 'react';
 import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import * as ImagePicker from 'expo-image-picker';
-import Field, { getValidationRules } from 'app/components/form-fields/_field';
+import Field, {getValidationRules} from 'app/components/form-fields/_field';
 import { useController, useFormContext } from 'react-hook-form';
 import { Button, ButtonsGroup } from 'app/design/controls';
-import { uploadImage, linkify2 } from 'app/lib/util';
+import { uploadImage,linkify2 } from 'app/lib/util';
 import { useColorScheme } from 'react-native';
+import { absoluteApiUrl } from 'app/lib/util'
 import { useState, useEffect } from 'react'
 import Image from '@tiptap/extension-image'
 import Link from '@tiptap/extension-link'
 import Placeholder from '@tiptap/extension-placeholder'
 import Iframe from 'app/lib/editor-helpers'
-import { Suggestion } from 'app/lib/editor-helpers2'
+import { Suggestion } from 'app/components/form-fields/custom/editor-helpers2'
 import Mention from '@tiptap/extension-mention'
 import { mergeAttributes, Node, Extension } from '@tiptap/core'
 import { Modal } from 'app/design/controls'
@@ -23,10 +24,11 @@ import Html from 'app/ui/atoms/html'
 import Editor from "app/ui/editor/ui/editor";
 import Embed from 'app/ui/molecules/embed'
 import { fetcher } from 'app/lib/fetcher';
-import { appSetting, } from 'app/lib/util'
+import { appSetting } from 'app/lib/util'
 
-//import "app/ui/editor/styles/globals.css";
-//import "app/ui/editor/styles/prosemirror.css";
+import "app/ui/editor/styles/globals.css";
+import "app/ui/editor/styles/prosemirror.css";
+
 
 const MenuBar = ({ editor }) => {
     const scheme = useColorScheme();
@@ -361,13 +363,13 @@ export default function FormFieldFtf(props) {
         return <></>
     }, [link]);
 
-    const bgClass = props.bg == 'transparent' ? '' : "   "
+    const bgClass = props.bg == 'transparent' ? '' : " dark:focus:bg-bgrinput-dafocus bg-neutral-500/10 border border-bdr dark:border-bdr-d focus:bg-bgrinput-focus focus:outline-none focus:border-bdrinput-focus dark:focus:border-bdrinput-df rounded-lg "
     return (
         <>
             <View>
                 <EditorContent
                     editor={editor}
-                    className={(props?.numLines == 1 ? bgClass + ' text-neutral-800 w-full placeholder-neutral-500 dark:text-neutral-200 font-default ' + size + ' ' : bgClass + ' text-neutral-800 rounded-xl w-full placeholder-neutral-500 dark:text-neutral-200 text-base ') + ' ' + (isFullHtml ? ' p-4 ' : ' p-0 ')}
+                    className={(props?.numLines == 1 ? bgClass + ' text-neutral-800 w-full placeholder-neutral-500 dark:text-neutral-200 font-default ' + size + ' ' : bgClass + ' text-neutral-800 rounded-xl w-full placeholder-neutral-500 dark:text-neutral-200 text-base ') + ' ' + (isFullHtml ? ' p-4 ' : ' p-1 ')}
 
                 />
                 <View className={isFullHtml ? 'm-2' : 'm-0 p-0'}>
