@@ -1,7 +1,7 @@
 import Field from './_field';
 import { Text } from 'app/design/typography'
 import { View, Row, Pressable } from 'app/design/view'
-import { useState, useMemo, useCallback, useContext } from 'react';
+import { useState, useEffect , useCallback, useContext } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
 import { Button, Modal } from "app/design/controls";
 import CheckBox from 'app/ui/atoms/checkbox';
@@ -30,8 +30,12 @@ export default function (props) {
     const defaultValue = props.value ? props.value : '';
     const name = props.name ? props.name : '';
     const { field } = useController({ name, rules, defaultValue });
-    const [isModal, setIsModal] = useState(false);
+    const [isModal, setIsModal] = useState(props.isShow);
     const [value2, setValue2] = useState(field.value)
+console.log("----", isModal, props.isShow)
+    useEffect(() => {
+        setIsModal(props.isShow)
+    }, [props.isShow]);
 
     const addValue2 = (value) => {
         const selectedValues = value2.includes(value)
@@ -119,7 +123,7 @@ export default function (props) {
                             </View>
                         )
                         )}
-                        {props.align != 'right' && <Button
+                        {props.align != 'right' && !props.listOnly && <Button
                             startDecorator="Hash"
                             variant="outline"
                             size="sm"

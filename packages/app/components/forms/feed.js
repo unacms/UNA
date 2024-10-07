@@ -26,7 +26,7 @@ export default function FormFeed(props) {
     const { setLayoutData } = useLayoutData()
     let { currentUser, setCurrentUser } = useCurrentUser()
     const windowDimensions = useWindowDimensions();
-
+    const [isShowHashtag, setIsShowHashtag] = useState(0);
     const isSmall = windowDimensions.width < 640 ? true : false;
     const isWeb = Platform.OS === 'web'
     const isIos = Platform.OS === 'ios'
@@ -94,6 +94,8 @@ export default function FormFeed(props) {
         </View>
     </Row>
 
+    const labels =props.data.inputs['labels'] && getFormFieldByData(props.data.inputs['labels'], props.handleSubmit, 'notitle', { onShowModal: setShowImage, showModal: showImage, listOnly:true, isShow:isShowHashtag })
+
     return (
         <View className="w-full">
             <Modal
@@ -129,7 +131,7 @@ export default function FormFeed(props) {
                                            <View className="mr-auto mt-2">{getFormFieldByData(props.data.inputs['object_privacy_view'], props.handleSubmit, 'nofield', { onShowModal: setShowImage, showModal: showImage })}</View>
                                             {props.data.inputs['labels'] && 
                                         <View className="">
-                                            {props.data.inputs['labels'] && getFormFieldByData(props.data.inputs['labels'], props.handleSubmit, 'notitle', { onShowModal: setShowImage, showModal: showImage })}
+                                            {labels}
                                         </View>
 
                                     } 
@@ -156,8 +158,9 @@ export default function FormFeed(props) {
                                 {props.data.inputs['file'] && <View className="">
                                     {getFormFieldByData(props.data.inputs['file'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder })}
                                 </View>}
-
-
+                                {props.data.inputs['labels'] && <View className="">
+                                    <Button startDecorator="Hash"  size={"base"} variant={ "text"} rounded={false}  onPress={() => {setIsShowHashtag(isShowHashtag+1)}} />
+                                </View>}
                             </Row>
 
                             <View className='hidden sm:flex'>
