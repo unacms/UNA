@@ -65,7 +65,7 @@ export default function ElementMenu(oProps) {
     //--- show vertical
     const bShowVertical = oProps?.params?.showVertical === true;
 
-    sClassName += bShowVertical ? ' flex-col items-center gap-y-2 w-full ' : 'flex-row items-center gap-x-2';
+    sClassName += bShowVertical ? ' flex-col items-center gap-y-2 w-full ' : 'flex-row items-center' + (oProps?.params?.no_gap_between_buttons ? ' ' : ' gap-x-2 ');
     const oParams = oProps?.params || {};
     //--- horizontal menu items alignment
     const sAlignItems = oProps.alignItems || oParams.align_items || 'left';
@@ -129,9 +129,13 @@ export default function ElementMenu(oProps) {
             const ItemType = useMemo(() => {
                 return componentsMap[item.display_type || sDisplayType];
             }, [item.display_type, sDisplayType]);
+
+            const a = <ItemType key={item.id ? item.id : item.name} {...item} params={oProps.params} />
+            if (a == null ) return null;
+
             return (
-                <View key={'menu' + index} className={(bShowVertical) ? 'w-full  ' : ' ' + (sAlignItems == 'stretch' ? 'flex-auto' : '')}>
-                    <ItemType key={item.id ? item.id : item.name} {...item} params={oProps.params} />
+                <View key={'menu' + index} className={((bShowVertical) ? 'w-full  ' : (oProps?.params?.button_full_width === true ? 'w-1/'+filteredItems.length+' ' : ' ')) + (sAlignItems == 'stretch' ? 'flex-auto' : '')+' bg-bxlue-500'}>
+                    {a}
                 </View>
             )
         });

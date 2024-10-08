@@ -91,8 +91,36 @@ export default function ElementComments(oProps) {
 
     const ButtonAction = !bShowCombined ? (bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText) : ButtonMenuGroupItem;
 
-    const sActionButton = useMemo(() => (
-        <ButtonAction
+    const sActionButton = useMemo(() => {
+//counter
+        if (bShowCounter && !bShowAction ){
+             if (iCount > 0){
+                return <ButtonAction
+                key="action"
+                startDecorator="ChatCircleText"
+                title={iCount}
+                onPress={!bShowActionDisabled ? handlePress : undefined}
+                disabled={bShowActionDisabled}
+                {...oButtonProps}
+            />
+            }
+            else{
+                return null
+            }
+        }
+
+        if (!bShowCounter && bShowAction ){
+            return <ButtonAction
+            key="action"
+            startDecorator="ChatCircleText"
+            title={bShowActionLabel ? (sTitle) : false}
+            onPress={!bShowActionDisabled ? handlePress : undefined}
+            disabled={bShowActionDisabled}
+            {...oButtonProps}
+        />
+       }
+
+        return <ButtonAction
             key="action"
             startDecorator="ChatCircleText"
             title={bShowActionLabel ? (iCount > 0 ? iCount : sTitle) : false}
@@ -100,7 +128,10 @@ export default function ElementComments(oProps) {
             disabled={bShowActionDisabled}
             {...oButtonProps}
         />
-    ), [bShowActionLabel, sTitle, bShowActionDisabled, handlePress, oButtonProps]);
+    }, [bShowActionLabel, sTitle, bShowActionDisabled, handlePress, oButtonProps, bShowCounter, iCount]);
+
+    if (sActionButton == null )
+        return null
 
     if(bShowCombined) {
         let aButtonsGroup = [sActionButton];
@@ -112,11 +143,12 @@ export default function ElementComments(oProps) {
         );
     }
 
+    console.log("oProps.params", oProps.params)
+
     return (
         <View className="flex-auto flex-row items-center">
             <Redirect ref={redirectdRef} />
-            <View key={sObject + '-action'} className={'flex-auto' + (bShowFull ? ' mr-1' : '')}>{sActionButton}</View>
-           
+            <View key={sObject + '-action'} className={'flex-auto' +(oProps.params?.no_gap_between_buttons === true ? (oProps.params?.button_full_width ? '  px-1 ': '  px-1 ') : '')+ (bShowFull ? ' mr-1' : '')}>{sActionButton}</View>
         </View>
     );
  }

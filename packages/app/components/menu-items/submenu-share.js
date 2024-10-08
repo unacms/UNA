@@ -16,6 +16,14 @@ export default function MenuItemSubmenuShare(oProps) {
         'item-repost': 'ArrowsClockwise'
     };
 
+    let oButtonProps = {
+        variant: oProps.primary === "1" ? 'primary' : oProps.params?.button_variant,
+        size: oProps.params?.button_size,
+        rounded: oProps.params?.button_rounded,
+        fullWidth: oProps.params?.button_full_width,
+        hideTitleOnSmall: oProps.params?.button_hide_title_on_small
+    };
+
     const bShowActionAsButton = oProps.params?.show_action_as_button == undefined || oProps.params.show_action_as_button === true;
 
     const aSubmenuExcept = [];
@@ -85,9 +93,9 @@ export default function MenuItemSubmenuShare(oProps) {
     return (
         <>
             <Msg onVisible={showMsg} title={showMsg} handleOk={() => { setShowMsg(false) }} />
-            <Pressable className="flex-auto" onPress={(event) => {event.preventDefault()}}>
+            <Pressable className={"flex-auto"+ (oProps.params?.no_gap_between_buttons === true ? (oProps.params?.button_full_width ? '  px-1 ': '  px-1 ') : '')} onPress={(event) => {event.preventDefault()}}>
                 <DropdownMenu items={aSubmenuItems}>
-                    <ButtonAction title={oProps?.title ? oProps.title : ''} startDecorator={oIconAliases[oProps.name] ? oIconAliases[oProps.name] : ''} />
+                    <ButtonAction {...oButtonProps} title={oProps?.title ? oProps.title : ''} startDecorator={oIconAliases[oProps.name] ? oIconAliases[oProps.name] : ''} />
                 </DropdownMenu>
             </Pressable>
         </>

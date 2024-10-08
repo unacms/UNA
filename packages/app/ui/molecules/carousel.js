@@ -138,7 +138,7 @@ const Carousel = memo(({ data = [] }) => {
             setWidth(event.nativeEvent.layout.width);
     }, [width]);
 
-    const offset = useMemo(() => (windowWidthOr > 672 ? 120 : Platform.OS === 'ios' ? 120 : 60), [windowWidthOr]);
+    const offset = useMemo(() => (windowWidthOr > 672 ? 60 : Platform.OS === 'ios' ? 120 : 60), [windowWidthOr]);
 
     useEffect(() => {
         if (currentImageIndex !== false) {
@@ -176,28 +176,32 @@ const Carousel = memo(({ data = [] }) => {
     return <>
         {currentImageIndex !== false && <Modal padding=" " title="Viewer" onVisible={currentImageIndex !== false} onClose={() => { setCurrentImageIndex(false) }} transparent={true} >
             <Row className=' w-full mx-auto items-center justify-center h-full'>
-
                 {
-                    (imageSize2[0] > 0 && data[currentImageIndex].type == 'image') && <ScrollView style={{ height: windowHeightOr - offset }}><Pressable style={{ width: imageSize2[0], height: imageSize2[1] }} onPress={() => setCurrentImageIndex(false)}>
-                        {currentImageIndex !== false && <Image view='cover' sizes="(max-width:1280px) 100vw, 1280px" src={data[currentImageIndex].src} alt='' className=" u-cover  dark:bg-bgritem-d dark:bg-bgritem-d gap-x-1 " />}
-                    </Pressable></ScrollView>
+                    (imageSize2[0] > 0 && data[currentImageIndex].type == 'image') && (
+                        <ScrollView style={{ height: windowHeightOr - offset }}>
+                            <Pressable style={{ width: imageSize2[0], height: imageSize2[1] }} onPress={() => setCurrentImageIndex(false)}>
+                                {currentImageIndex !== false && <Image view='cover' sizes="(max-width:1280px) 100vw, 1280px" src={data[currentImageIndex].src} alt='' className=" u-cover  dark:bg-bgritem-d dark:bg-bgritem-d gap-x-1 " />}
+                                <Row className='absolute w-full -mt-4 top-1/2 items-center justify-between w-full px-4'>
+                                    {
+                                        currentImageIndex > 0 ? <Button variant="default" rounded size="base" onPress={() => setCurrentImageIndex(currentImageIndex - 1)} startDecorator="ArrowLeft" /> : <View className='mr-1 w-10'></View>
+                                    }
+                                    {
+                                        (currentImageIndex != data.length - 1) ? <Button variant="default" rounded size="base" onPress={() => setCurrentImageIndex(currentImageIndex + 1)} startDecorator="ArrowRight" /> : <View className='mr-1 w-10'></View>
+                                    }
+                                </Row>
+                            </Pressable>
+                        </ScrollView>
+                    )
                 }
                 {
                     data[currentImageIndex].type == 'video' && <Pressable onPress={() => setCurrentImageIndex(false)}><View className='aspect-video max-w-xl' style={{ width: windowWidthOr }}><Video autoplay="autoplay" muted={false} controls={true} src={data[currentImageIndex].src} /></View></Pressable>
                 }
 
             </Row>
-            <Row className='mt-4 items-center justify-center w-full'>
-                {
-                    currentImageIndex > 0 ? <View className='mr-2'><Button variant="outline" size="sm" onPress={() => setCurrentImageIndex(currentImageIndex - 1)} startDecorator="ArrowLeft" /></View> : <View className='mr-1 w-10'></View>
-                }
-                {
-                    (currentImageIndex != data.length - 1) ? <View className='ml-2'><Button variant="outline" size="sm" onPress={() => setCurrentImageIndex(currentImageIndex + 1)} startDecorator="ArrowRight" /></View> : <View className='mr-1 w-10'></View>
-                }
-            </Row>
+
         </Modal>}
         <View className='w-full max-w-3xl mx-auto'>
-            <Gallery windowWidthOr={windowWidthOr} data={data}  handleShowImage={handleShowImage} />
+            <Gallery windowWidthOr={windowWidthOr} data={data} handleShowImage={handleShowImage} />
         </View>
 
     </>

@@ -260,8 +260,11 @@ export default function ElementLikes(oProps) {
         );
     }
     else
+        if (bShowCounter && !bShowAction && !iCount)
+            return null
+
         return (
-            <View className="flex-auto flex-row items-center">
+            <View className={"flex-auto flex-row items-center" + (oProps.params?.no_gap_between_buttons === true ? (oProps.params?.button_full_width ? '  px-1 ': '  px-1 ') : '')}>
                 {bShowAction && <View key={sObject + '-action'} className={'flex-auto' + (bShowFull ? ' mr-1' : '')}>{sActionButton}</View>}
                 {bShowCounter &&  !!sCounterButton && <View key={sObject + '-counter-button'}>{sCounterButton}</View>}
                 {bShowCounter && !!sCounterPopup && <View key={sObject + '-counter-popup'}>{sCounterPopup}</View>}

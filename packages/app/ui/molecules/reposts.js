@@ -89,6 +89,8 @@ export default function ElementReposts(oProps) {
         oButtonProps.rounded = oProps.params.button_rounded;
     if(oProps.params?.button_full_width != undefined)
         oButtonProps.fullWidth = oProps.params.button_full_width;
+    if(oProps.params?.button_hide_title_on_small != undefined)
+        oButtonProps.hideTitleOnSmall = oProps.params.button_hide_title_on_small;
 
     const { actionsData, setActionsData } = useActionsData();
     const [ actionsDataState, setActionsDataState ] = useState({});
@@ -161,7 +163,7 @@ export default function ElementReposts(oProps) {
     }
     else
         return (
-            <View className="flex-auto flex-row items-center">
+            <View className={"flex-auto flex-row items-center" + (oProps.params?.no_gap_between_buttons === true ? (oProps.params?.button_full_width ? '  px-1 ': '  px-1 ') : '')}>
                 {bShowAction && <View key={sObject + '-action'} className={'flex-auto' + (bShowFull ? ' mr-1' : '')}>{sActionButton}</View>}
                 {bShowCounter &&  !!sCounterButton && <View key={sObject + '-counter-button'}>{sCounterButton}</View>}
                 {bShowCounter && !!sCounterPopup && <View key={sObject + '-counter-popup'}>{sCounterPopup}</View>}

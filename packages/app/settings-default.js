@@ -164,11 +164,16 @@ export const settingsDefault = {
             show_action: true,
             show_counter: false,
             show_combined: true,
+            button_hide_title_on_small: false,
+            button_full_width: true,
+            no_gap_between_buttons: true,
         },
         counters_menu: {
             show_action: false,
             show_counter: true,
             show_combined: true,
+            button_variant: 'text',
+            no_gap_between_buttons: true,
         }
     },
     entry: {

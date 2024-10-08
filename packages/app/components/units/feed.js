@@ -3,8 +3,9 @@ import { View } from 'app/design/view'
 import Card from 'app/ui/molecules/card'
 import AnimatedBlock from 'app/ui/molecules/animated-block'
 import { useTranslation } from 'react-i18next';
-import { CommentsSection, MenuManage, ActionMenu, Author, UnitFeed, SmallUnit, prepareData, MainContent, FeedEditForm } from 'app/lib/feed-helpers'
+import { CommentsSection, MenuManage, ActionMenu, CounterMenu, Author, UnitFeed, SmallUnit, prepareData, MainContent, FeedEditForm } from 'app/lib/feed-helpers'
 import { GroupView, AdView, MarketView, DefaultView } from 'app/lib/feed-items'
+import { appSetting } from 'app/lib/util'
 
 function DefaultUnit(data) {
     const { t } = useTranslation();
@@ -42,10 +43,10 @@ function DefaultUnit(data) {
 
                 {MainContentComponent}
                 <View className="pt-3 ">
-                    {(!!data.menu_counters && appSetting('feed', 'counters_menu')) && <View className='border-b border-bdr/50 dark:border-bdr-d/50 pb-3'><CounterMenu data={data.menu_counters} showCommentsModal={showCommentsModal} /></View>}
+                    {(!!data.menu_counters && appSetting('feed', 'counters_menu')) && <View className='border-b border-bdr/50 dark:border-bdr-d/50 pb-3'><CounterMenu data={data.menu_counters}  /></View>}
                     <ActionMenu data={data.menu_actions} showCommentsModal={false} />
                 </View>
-                {commentsData && <CommentsSection url={url} t={t} isCommentsModal={false} showCommentsModal={false} commentsDataInline={commentsData} data={data} isShowMoreComments={isShowMoreComments} />}
+                {commentsData && <CommentsSection url={url} t={t} isCommentsModal={false} showCommentsModal={false} commentsDataInline={commentsData} data={data} />}
             </Card>
         </AnimatedBlock>
     )
