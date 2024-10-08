@@ -160,6 +160,16 @@ export const settingsDefault = {
             { name: 'public', icon: 'Egg', title: 'Public', showTitle: true },
             { name: 'channels', icon: 'Hash', title: 'News', showTitle: true },
         ],
+        actions_menu: {
+            show_action: true,
+            show_counter: false,
+            show_combined: true,
+        },
+        counters_menu: {
+            show_action: false,
+            show_counter: true,
+            show_combined: true,
+        }
     },
     entry: {
         default_view: '',

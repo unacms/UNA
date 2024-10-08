@@ -380,14 +380,20 @@ export const UnitImages = memo(({ images }) => {
 });
 
 export const ActionMenu = memo(({ data }) => {
-    return <Menu
+    const settings = appSetting('feed', 'actions_menu');
+    return settings && <Menu
         {...data}
         displayType="button"
-        params={{
-            show_action: true,
-            show_counter: true,
-            show_combined: true,
-        }}
+        params={settings}
+    />
+});
+
+export const CounterMenu = memo(({ data }) => {
+    const settings = appSetting('feed', 'counters_menu');
+    return settings && <Menu
+        {...data}
+        displayType="button"
+        params={settings}
     />
 });
 

@@ -57,12 +57,12 @@ export default function ElementComments(oProps) {
     const isContextVar = useCallback((sName) => {
         const sContextKey = sObject;
         if (bShowFull) return actionsDataState[sContextKey]?.[sName] !== undefined;
-        return actionsData[sContextKey]?.[sName] !== undefined;
+      //  return actionsData[sContextKey]?.[sName] !== undefined;
     }, [actionsData, actionsDataState, bShowFull, sObject]);
 
     const getContextVar = useCallback((sName) => {
         const sContextKey = sObject;
-        return bShowFull ? actionsDataState[sContextKey]?.[sName] : actionsData[sContextKey]?.[sName];
+        return bShowFull ? actionsDataState[sContextKey]?.[sName] : 'hz';
     }, [actionsData, actionsDataState, bShowFull, sObject]);
 
     const handlePress = useCallback(
@@ -115,7 +115,7 @@ export default function ElementComments(oProps) {
     return (
         <View className="flex-auto flex-row items-center">
             <Redirect ref={redirectdRef} />
-            {bShowAction && <View key={sObject + '-action'} className={'flex-auto' + (bShowFull ? ' mr-1' : '')}>{sActionButton}</View>}
+            <View key={sObject + '-action'} className={'flex-auto' + (bShowFull ? ' mr-1' : '')}>{sActionButton}</View>
            
         </View>
     );

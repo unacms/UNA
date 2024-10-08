@@ -7,7 +7,7 @@ import { componentsMap } from 'app/ui/molecules/_map'
 import Card from 'app/ui/molecules/card'
 import AnimatedBlock from 'app/ui/molecules/animated-block'
 import { useTranslation } from 'react-i18next';
-import { CommentsModal, CommentsSection, MenuManage, ActionMenu, Author, UnitFeed, SmallUnit, prepareData, MainContent, FeedEditForm } from 'app/lib/feed-helpers'
+import { CommentsModal, CommentsSection, MenuManage, ActionMenu, CounterMenu, Author, UnitFeed, SmallUnit, prepareData, MainContent, FeedEditForm } from 'app/lib/feed-helpers'
 import { GroupView, AdView, MarketView, DefaultView } from 'app/lib/feed-items'
 
 function DefaultUnit(data) {
@@ -50,14 +50,14 @@ function DefaultUnit(data) {
 
     return (
         <AnimatedBlock>
-            {viewState.view == 'edited' && <FeedEditForm setViewState ={setViewState} id={data.id} viewState={viewState}/>}
+            {viewState.view == 'edited' && <FeedEditForm setViewState={setViewState} id={data.id} viewState={viewState} />}
             {isCommentsModal && <Modal
                 outerClickClose={false}
                 onClose={() => setCmtsData(false)}
                 onVisible={!!cmtsData}
                 title={cmtsData.title}
             >
-                    {cmtsData.data}
+                {cmtsData.data}
             </Modal>}
             <Card rounded=' rounded-none sm:rounded-2xl ' margin=' mb-1 sm:mb-4 sm:mx-4 md:mx-auto ' addClassName={' w-full max-w-screen-lg gap-y-3 p-3 sm:p-4 tl-' + data.id} >
                 <View className="flex-auto flex-row items-top">
@@ -71,21 +71,17 @@ function DefaultUnit(data) {
                         <MenuManage id={data.id} menu={data?.menu_manage} setViewState={setViewState} />
                     </View>
                 </View>
-                
-                    {MainContentComponent}
-                   
-                        <ActionMenu data={data.menu_actions} showCommentsModal={showCommentsModal} />
-                    
-
-                
+                {MainContentComponent}
+                {(!!data.menu_counters && appSetting('feed', 'counters_menu')) && <View className='border-b border-bdr/50 dark:border-bdr-d/50 pb-3'><CounterMenu data={data.menu_counters} showCommentsModal={showCommentsModal} /></View>}
+                <ActionMenu data={data.menu_actions} showCommentsModal={showCommentsModal} />
                 {commentsData && <CommentsSection url={url} t={t} isCommentsModal={isCommentsModal} showCommentsModal={showCommentsModal} commentsDataInline={commentsData} data={data} isShowMoreComments={isShowMoreComments} />}
             </Card>
         </AnimatedBlock>
     )
 }
 
-export default function UnitFeed_({data, mode}) {
-  //  return useMemo(() => (
-    return   <UnitFeed data={data} mode={mode} SmallUnit={SmallUnit} DefaultUnit={DefaultUnit} />
-//), [data, mode]);
+export default function UnitFeed_({ data, mode }) {
+    //  return useMemo(() => (
+    return <UnitFeed data={data} mode={mode} SmallUnit={SmallUnit} DefaultUnit={DefaultUnit} />
+    //), [data, mode]);
 }

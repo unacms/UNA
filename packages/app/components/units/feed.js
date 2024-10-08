@@ -27,9 +27,9 @@ function DefaultUnit(data) {
         return <></>
 
     if (viewState.view == 'edited')
-        return <FeedEditForm setViewState ={setViewState} id={data.id} viewState={viewState}/>
+        return <FeedEditForm setViewState={setViewState} id={data.id} viewState={viewState} />
 
-   // return<View className='w-full h-12 bg-red-500 my-2'><Author data={data} url={url} t={t} /></View>
+    // return<View className='w-full h-12 bg-red-500 my-2'><Author data={data} url={url} t={t} /></View>
     return (
         <AnimatedBlock>
             <Card rounded=' rounded-none ' margin=' mb-1 ' addClassName={'p-3 tl-' + data.id} >
@@ -39,12 +39,11 @@ function DefaultUnit(data) {
                         <MenuManage id={data.id} menu={data?.menu_manage} setViewState={setViewState} />
                     </View>
                 </View>
-                
-                    {MainContentComponent}
-                    <View className="pt-3 ">
-                        <ActionMenu data={data.menu_actions} showCommentsModal={false} />
-                    
 
+                {MainContentComponent}
+                <View className="pt-3 ">
+                    {(!!data.menu_counters && appSetting('feed', 'counters_menu')) && <View className='border-b border-bdr/50 dark:border-bdr-d/50 pb-3'><CounterMenu data={data.menu_counters} showCommentsModal={showCommentsModal} /></View>}
+                    <ActionMenu data={data.menu_actions} showCommentsModal={false} />
                 </View>
                 {commentsData && <CommentsSection url={url} t={t} isCommentsModal={false} showCommentsModal={false} commentsDataInline={commentsData} data={data} isShowMoreComments={isShowMoreComments} />}
             </Card>
@@ -52,8 +51,8 @@ function DefaultUnit(data) {
     )
 }
 
-export default function UnitFeed_({data, mode}) {
+export default function UnitFeed_({ data, mode }) {
     //return useMemo(() => (
-        return <UnitFeed data={data} mode={mode} SmallUnit={SmallUnit} DefaultUnit={DefaultUnit} />
+    return <UnitFeed data={data} mode={mode} SmallUnit={SmallUnit} DefaultUnit={DefaultUnit} />
     //), [data, mode]);
 }
