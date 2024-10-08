@@ -21,11 +21,12 @@ export default function ElementSearch(oProps) {
     const [inputValue, setInputValue] = useState('');
 
     const handleOpenPopupDefault = () => {
-        if (!bottomSheetData){
+        /*if (!bottomSheetData){
             setBottomSheetData({ title: 'Search', content: <ElementSearchData {...oProps} />,showClose: true, snapPoints: ['75%', '100%'] });
         }else{
             setBottomSheetData(false);
-        }
+        }*/
+        setBottomSheetData({ title: 'Search', content: <ElementSearchData {...oProps} />,showClose: true, snapPoints: ['75%', '90%'] });
     }
 
     let sResult = sType == 'input' ? (
@@ -187,6 +188,8 @@ export function ElementSearchData(oProps) {
             </View>
     );
 
+    
+
 
     if (oProps.resInPopup) {
         const dd = <DropdownPopup
@@ -224,7 +227,7 @@ export function ElementSearchData(oProps) {
                 )
             }
             <View className="flex-row p-1 mb-2">
-                <Input name="search" placeholder='Start typing to search...' onKeyPress={(event) => handleKeyPress(event)} value={inputValue} ref={inputRef} onChangeText={(value) => handleSearch(value)} />
+                <Input name="search" autoFocus={true} placeholder='Start typing to search...' onKeyPress={(event) => handleKeyPress(event)} value={inputValue} ref={inputRef} onChangeText={(value) => handleSearch(value)} />
             </View>
             {cnt}
         </View>
