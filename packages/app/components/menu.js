@@ -134,7 +134,7 @@ export default function ElementMenu(oProps) {
             if (a == null ) return null;
 
             return (
-                <View key={'menu' + index} className={((bShowVertical) ? 'w-full  ' : (oProps?.params?.button_full_width === true ? 'w-1/'+filteredItems.length+' ' : ' ')) + (sAlignItems == 'stretch' ? 'flex-auto' : '')+' bg-bxlue-500'}>
+                <View key={'menu' + index} className={((bShowVertical) ? 'w-full  ' : (oProps?.params?.button_full_width === true ? ' flex-1 ' : ' ')) + (sAlignItems == 'stretch' ? 'flex-auto' : '')+'  '}>
                     {a}
                 </View>
             )

@@ -93,7 +93,7 @@ export default function MenuItemSubmenuShare(oProps) {
     return (
         <>
             <Msg onVisible={showMsg} title={showMsg} handleOk={() => { setShowMsg(false) }} />
-            <Pressable className={"flex-auto"+ (oProps.params?.no_gap_between_buttons === true ? (oProps.params?.button_full_width ? '  px-1 ': '  px-1 ') : '')} onPress={(event) => {event.preventDefault()}}>
+            <Pressable className={"flex-auto"+ (oProps.params?.no_gap_between_buttons === true ? (oProps.params?.button_full_width ? '  px-0 ': '  px-1 ') : '')} onPress={(event) => {event.preventDefault()}}>
                 <DropdownMenu items={aSubmenuItems}>
                     <ButtonAction {...oButtonProps} title={oProps?.title ? oProps.title : ''} startDecorator={oIconAliases[oProps.name] ? oIconAliases[oProps.name] : ''} />
                 </DropdownMenu>

@@ -166,14 +166,14 @@ export const settingsDefault = {
             show_combined: true,
             button_hide_title_on_small: false,
             button_full_width: true,
-            no_gap_between_buttons: true,
+            no_gap_between_buttons: false,
         },
         counters_menu: {
             show_action: false,
             show_counter: true,
             show_combined: true,
             button_variant: 'text',
-            no_gap_between_buttons: true,
+            no_gap_between_buttons: false,
         }
     },
     entry: {
@@ -288,7 +288,7 @@ export const settingsDefault = {
         },
         share: {
             show_action: true,
-            show_action_as_button: true,
+            show_action_as_button: false,
             show_action_label: true,
             haptics_type: 'Medium',
         },
