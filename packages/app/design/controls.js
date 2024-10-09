@@ -188,7 +188,7 @@ const getIcon = (sIcon, iIndex, classIconName, sClassText, sIconContainer, iIcon
         sClassText = sClassText.replace('text-lg', 'text-[19px]');
         sClassText = sClassText.replace('text-base', 'text-[17px]');
         sClassText = sClassText.replace('text-sm', 'text-[16px]');
-        sClassText = sClassText.replace('text-xs', 'text-[13px]');
+        sClassText = sClassText.replace('text-xs', 'text-[14px]');
         return (
             <Text key={iIndex} className={classIconName ? classIconName : sClassText + sIconContainer}>{sIcon}</Text>
         );
@@ -223,7 +223,7 @@ const getAddon = (addon) => {
 
     return sButtonAddonText && sButtonAddonText != '' ? <View className='flex-1 items-end '>
         <View className={sButtonAddonBg + ' rounded-full px-2 py-0.5 mx-1 text-center items-center'}>
-            <Text className="text-white  text-xs font-semibold">{sButtonAddonText}</Text></View></View> : null;
+            <Text className="text-white text-xs font-semibold">{sButtonAddonText}</Text></View></View> : null;
 }
 
 export const Button = (props) => {

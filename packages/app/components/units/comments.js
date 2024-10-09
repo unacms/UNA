@@ -129,13 +129,13 @@ export default function UnitComments(props) {
 
     return (
         <View className='w-full'>
-            <View className="flex-row gap-x-2 ">
+            <View className="flex-row gap-x-2 pt-1">
                 {cells}
                 <View className="w-8 z-50 flex-0 ">
                     <Profile {...data.author_data} displayType="unit_wo_info" displaySize="sm" showInfo="false" />
                     {(items.length != 0 && view != 'flat') && <View className="w-0.5 ml-[15px]  flex-auto bg-neutral-100 dark:bg-neutral-800"><Text>&nbsp;</Text></View>}
                 </View>
-                <View className='flex-1 flex-col mb-2 '>
+                <View className='flex-1 flex-col '>
                     <View className='bg-bgritem dark:bg-bgritem-d rounded-xl  px-2 py-1.5 mb-0.5' >
                         <View className="flex-row flex-1 items-center overflow-hidden">
                             <Profile {...data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />

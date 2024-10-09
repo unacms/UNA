@@ -5,7 +5,7 @@
 
 .u-vanilla-html {
     /* @apply prose dark:prose-invert; */
-    @apply text-neutral-700 dark:text-neutral-300;
+    @apply text-neutral-800 dark:text-neutral-200;
     font-size: 1rem;
     line-height: 1.5em;
     max-width: none;
@@ -15,7 +15,7 @@
 }
 .u-vanilla-html-small {
     /* @apply prose dark:prose-invert; */
-    @apply text-neutral-700 dark:text-neutral-300;
+    @apply text-neutral-800 dark:text-neutral-200;
     font-size: 0.875rem;
     line-height: 1.5em;
     max-width: none;

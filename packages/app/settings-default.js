@@ -166,6 +166,7 @@ export const settingsDefault = {
             show_combined: true,
             button_hide_title_on_small: false,
             button_full_width: true,
+            button_size: 'sm',
             no_gap_between_buttons: false,
         },
         counters_menu: {
@@ -173,6 +174,7 @@ export const settingsDefault = {
             show_counter: true,
             show_combined: true,
             button_variant: 'text',
+            button_size: 'sm',
             no_gap_between_buttons: false,
         }
     },
