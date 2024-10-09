@@ -283,7 +283,7 @@ export const Button = (props) => {
             classes += `justify-${align} `;
         }
         if (pressed) {
-            classes += 'bg-primary/10 dark:bg-primary-d/10 border-none ';
+            classes += ' bg-primary/10 dark:bg-primary-d/10 hover:bg-primary/20 dark:hover:bg-primary-d/20 ';
         }
         return classes;
     }, [fullWidth, disabled, variant, solid, ThemeCssClasses, className, align, pressed]);
@@ -296,7 +296,7 @@ export const Button = (props) => {
             classes += classTextName;
         }
         if (pressed) {
-            classes += 'text-neutral-950 dark:text-white ';
+            classes += ' text-primary-700 dark:text-primary-600 group-hover:text-primary-800 dark:group-hover:text-primary-500';
         }
         classes += ' text-' + size + ' ';
         return classes;
