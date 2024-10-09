@@ -84,8 +84,8 @@ export default function ({variant, defaultOpen, onSelect, items, children}) {
         return (
             <DmItem key={oItem.id} onSelect={(event) => !!oItem?.onClick ? oItem?.onClick(oItem, event) : onSelectInt(oItem, event)} >
                 <Row className='items-center'>
-                    {!!sIcon && <Text className="text-xl text-xl text-neutral-700 dark:text-neutral-200 mr-2">{sIcon}</Text>}
-                    {!!oItem?.title && <Text className=" text-base text-neutral-700 dark:text-neutral-200 ">{oItem.title}</Text>}
+                    {!!sIcon && <Text className="text-xl text-xl text-neutral-700 dark:text-neutral-200 ">{sIcon}</Text>}
+                    {!!oItem?.title && <Text className="ml-2 text-base text-neutral-700 dark:text-neutral-200 ">{oItem.title}</Text>}
                 </Row>
             </DmItem>
         );

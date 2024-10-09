@@ -129,26 +129,19 @@ export default function () {
                 urlListener.remove();
             };
         }
-
-        if (OneSignal.User) {
-            if (currentUser) {
-                console.log("OneSignal:" + currentUser.id + ":" + currentUser.hash)
-                OneSignal.login('' + currentUser.id);
-                OneSignal.User.addTag("user_hash", "" + currentUser.hash);
-            }
-            else {
-                /*try {
-                    // MAY BE NEED FIX
-                    let s = OneSignal.User.getOnesignalId();
-                    console.log("OneSignal:logout:" + s)
-                    OneSignal.User.addTag("user_hash", "");
-                } catch (error) {
-                    console.error('Error adding tag:', error);
-                }*/
-            }
-        }
+        
     }, [currentUser?.id]);
     // DEEP LINKING
+
+    useEffect(() => {
+        //!!!NOT MERGE WITH OTHER USEEFFECT!!!
+        if (currentUser) {
+            console.log("OneSignal:" + currentUser.id + ":" + currentUser.hash)
+            OneSignal.login('' + currentUser.id);
+            OneSignal.User.addTag("user_hash", "" + currentUser.hash);
+        }
+        
+    }, [currentUser?.id]); 
 
 
     useEffect(() => {

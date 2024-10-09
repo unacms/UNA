@@ -161,13 +161,13 @@ export const settingsDefault = {
             { name: 'channels', icon: 'Hash', title: 'News', showTitle: true },
         ],
         actions_menu: {
-            show_action: true,
-            show_counter: false,
-            show_combined: true,
-            button_hide_title_on_small: false,
-            button_full_width: true,
+            show_action: true,// show action part or not
+            show_counter: false,// show counter part or not
+            show_combined: true, // leave true
+            button_hide_title_on_small: false, // hide title on small screens
+            button_full_width: true, 
             button_size: 'sm',
-            no_gap_between_buttons: false,
+            no_gap_between_buttons: false,// is false no gap between buttons + right margin, is true  gap between buttons + no margin
         },
         counters_menu: {
             show_action: false,
@@ -175,8 +175,17 @@ export const settingsDefault = {
             show_combined: true,
             button_variant: 'text',
             button_size: 'sm',
-            no_gap_between_buttons: false,
+            no_gap_between_buttons: true,
         }
+        /*
+        FOR COMBINED BUTTONS SHOULD BE SET IN THE FOLLOWING WAY:
+        settingsDefault.feed.actions_menu = {
+            show_action: true,
+            show_counter: true,
+            show_combined: true,
+            }
+
+        */
     },
     entry: {
         default_view: '',
