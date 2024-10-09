@@ -45,7 +45,7 @@ const DropdownMenuItemNoPad = (props) => (
 
 const DropdownMenuItemH = (props) => (
     <DropdownMenu.Item
-        className=" flex focus:outline-none block px-3 py-2.5 hover:bg-bgritem dark:hover:bg-bgritem-d dark:hover:text-white rounded-full hover:cursor-pointer text-neutral-700 dark:text-neutral-200"
+        className=" flex focus:outline-none block px-3 py-2 hover:bg-bgritem dark:hover:bg-bgritem-d dark:hover:text-white rounded-full hover:cursor-pointer text-neutral-700 dark:text-neutral-200"
         {...props}
     >
         {props.children}
