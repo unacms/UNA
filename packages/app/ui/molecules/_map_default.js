@@ -13,10 +13,10 @@ import Recommendation from './recommendations'; // optimized
 
 export const componentsMapDefault = {
     likes: memo(Likes),
-    stars: memo(Stars),
-    reactions: memo(Reactions),
+    stars: (Stars),
+    reactions: (Reactions),
     scores: memo(Scores),
-    comments: memo(Comments),
+    comments: (Comments),
     features:memo(Features),
     reports: memo(Reports),
     reposts: memo(Reposts),

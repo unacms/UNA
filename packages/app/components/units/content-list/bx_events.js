@@ -76,7 +76,6 @@ export default function Unit(props) {
                             primary: true,
                             params: {
                                 button_rounded: false,
-                                button_hide_title_on_small: false,
                                 button_full_width: true,
                                 on_done: (sAction, oData) => {
                                     //--- Do something after the primary action was performed.

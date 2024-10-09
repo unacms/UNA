@@ -132,7 +132,7 @@ export default function ElementLikes(oProps) {
         size: oProps.params?.button_size,
         rounded: oProps.params?.button_rounded,
         fullWidth: oProps.params?.button_full_width,
-        hideTitleOnSmall: oProps.params?.button_hide_title_on_small
+        showTitleFromSize: oProps.params?.button_show_title_from_size
     };
 
     const { actionsData, setActionsData } = useActionsData();
@@ -264,7 +264,7 @@ export default function ElementLikes(oProps) {
             return null
 
         return (
-            <View className={"flex-auto flex-row items-center" + (oProps.params?.no_gap_between_buttons === true ? (oProps.params?.button_full_width ? '  px-0 ': '  px-2 ') : '')}>
+            <View className={"flex-auto flex-row items-center" + (oProps.params?.no_gap_between_buttons === true ? (oProps.params?.button_full_width ? '  px-0 ': '  pr-2 ') : '')}>
                 {bShowAction && <View key={sObject + '-action'} className={'flex-auto' + (bShowFull ? ' mr-1' : '')}>{sActionButton}</View>}
                 {bShowCounter &&  !!sCounterButton && <View key={sObject + '-counter-button'}>{sCounterButton}</View>}
                 {bShowCounter && !!sCounterPopup && <View key={sObject + '-counter-popup'}>{sCounterPopup}</View>}

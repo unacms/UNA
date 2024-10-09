@@ -133,7 +133,7 @@ export function ButtonsGroup({
     variant = 'default',
     size = 'base',
     fullWidth = false,
-    hideTitleOnSmall = true,
+    showTitleFromSize = '',
     rounded = false,
     children = [],
     ...rest
@@ -155,7 +155,7 @@ export function ButtonsGroup({
 
         let childItem;
         if (child.type === Button) {
-            childItem = <Button hideTitleOnSmall={hideTitleOnSmall} variant={'group-item' + ((!!variant && variant == 'text') || bTextContainer ? '-text' : '')} size={size} fullWidth={fullWidth} {...restChild} />;
+            childItem = <Button showTitleFromSize={showTitleFromSize} variant={'group-item' + ((!!variant && variant == 'text') || bTextContainer ? '-text' : '')} size={size} fullWidth={fullWidth} {...restChild} />;
         } else {
             childItem = child;
         }
@@ -235,7 +235,7 @@ export const Button = (props) => {
         forwardedRef,
         variant = 'default',
         size = 'base',
-        hideTitleOnSmall = false,
+        showTitleFromSize = '',
         tooltip = false,
         pressed = false,
         disabled = false,
@@ -303,10 +303,10 @@ export const Button = (props) => {
     }, [variant, ThemeCssClasses, classTextName, pressed, size]);
 
     const { sIconContainer, iIconSize, sTitleContainer, sizeClasses } = useMemo(() => {
-        const titleVisible = !hideTitleOnSmall || !isIcon || !isNaN(title);
+        const titleVisible = !isIcon || !isNaN(title);
         let iconSize = 24;
         let iconContainerClass = '';
-        let titleContainerClass = titleVisible ? '' : ' hidden sm:block ';
+        let titleContainerClass = titleVisible ? '' : ' hidden ' + (showTitleFromSize ? showTitleFromSize : 'sm') + ':block ';
         let sizeClasses = '';
 
         const sClassDefaultRounding = variant !== 'group-item' ? `rounded-${size === 'lg' ? 'xl' : 'lg'}` : '';
@@ -351,7 +351,7 @@ export const Button = (props) => {
             sTitleContainer: titleContainerClass,
             sizeClasses,
         };
-    }, [size, rounded, padding, variant, title, hideTitleOnSmall, isIcon]);
+    }, [size, rounded, padding, variant, title, isIcon, showTitleFromSize]);
 
     const sButtonIconStart = useMemo(
         () =>
@@ -421,41 +421,41 @@ export const ButtonRef = React.forwardRef((props, forwardedRef) => {
 });
 
 export function ButtonsGroupMenu(props) {
-    const { variant, size, rounded, hideTitleOnSmall, ...rest } = props
+    const { variant, size, rounded, showTitleFromSize, ...rest } = props
 
-    return <ButtonsGroup fullWidth={true} hideTitleOnSmall={hideTitleOnSmall != undefined ? hideTitleOnSmall : true} variant={!!variant ? variant : appSetting('layout', 'button_style_for_actions')} size={!!size ? size : 'xs'} rounded={rounded != undefined ? rounded : true}>{props.children}</ButtonsGroup>
+    return <ButtonsGroup fullWidth={true} showTitleFromSize={showTitleFromSize} variant={!!variant ? variant : appSetting('layout', 'button_style_for_actions')} size={!!size ? size : 'xs'} rounded={rounded != undefined ? rounded : true}>{props.children}</ButtonsGroup>
 }
 
 export function ButtonMenuGroupItem(props) {
-    let { variant, size, title, startDecorator, endDecorator, onPress, pressed, rounded, fullWidth, disabled, hideTitleOnSmall, ...rest } = props
+    let { variant, size, title, startDecorator, endDecorator, onPress, pressed, rounded, fullWidth, disabled, showTitleFromSize, ...rest } = props
     let sVariant = 'group-item' + (!!variant && variant == 'text' ? '-text' : '');
     if (variant == 'none') {
         sVariant = 'none';
         fullWidth = 'true'
     }
     return (
-        <Button variant={sVariant} hideTitleOnSmall={hideTitleOnSmall != undefined ? hideTitleOnSmall : true} size={!!size ? size : 'sm'} title={title} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} pressed={pressed != undefined ? pressed : false} rounded={rounded != undefined ? rounded : true} disabled={disabled != undefined ? disabled : false} fullWidth={fullWidth != undefined ? fullWidth : false}>
+        <Button variant={sVariant} showTitleFromSize={showTitleFromSize} size={!!size ? size : 'sm'} title={title} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} pressed={pressed != undefined ? pressed : false} rounded={rounded != undefined ? rounded : true} disabled={disabled != undefined ? disabled : false} fullWidth={fullWidth != undefined ? fullWidth : false}>
             {props.children}
         </Button>
     );
 }
 
 export function ButtonMenuActionDefault(props) {
-    const { variant, size, title, startDecorator, endDecorator, onPress, pressed, rounded, fullWidth, disabled, hideTitleOnSmall, ...rest } = props
-    return <Button variant={!!variant ? variant : appSetting('layout', 'button_style_for_actions')} size={!!size ? size : 'sm'} title={title} hideTitleOnSmall={hideTitleOnSmall != undefined ? hideTitleOnSmall : true} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} pressed={pressed != undefined ? pressed : false} rounded={rounded != undefined ? rounded : true} disabled={disabled != undefined ? disabled : false} fullWidth={fullWidth != undefined ? fullWidth : false} />
+    const { variant, size, title, startDecorator, endDecorator, onPress, pressed, rounded, fullWidth, disabled, showTitleFromSize, ...rest } = props
+    return <Button variant={!!variant ? variant : appSetting('layout', 'button_style_for_actions')} size={!!size ? size : 'sm'} title={title} showTitleFromSize={showTitleFromSize} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} pressed={pressed != undefined ? pressed : false} rounded={rounded != undefined ? rounded : true} disabled={disabled != undefined ? disabled : false} fullWidth={fullWidth != undefined ? fullWidth : false} />
 }
 
 export function ButtonMenuActionText(props) {
-    const { variant, size, title, startDecorator, endDecorator, onPress, pressed, rounded, fullWidth, disabled, hideTitleOnSmall, ...rest } = props
-    return <Button variant={!!variant ? variant : 'text'} size={!!size ? size : 'sm'} title={title} hideTitleOnSmall={hideTitleOnSmall != undefined ? hideTitleOnSmall : true} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} pressed={pressed != undefined ? pressed : false} rounded={rounded != undefined ? rounded : true} disabled={disabled != undefined ? disabled : false} fullWidth={fullWidth != undefined ? fullWidth : false} />
+    const { variant, size, title, startDecorator, endDecorator, onPress, pressed, rounded, fullWidth, disabled, showTitleFromSize, ...rest } = props
+    return <Button variant={!!variant ? variant : 'text'} size={!!size ? size : 'sm'} title={title} showTitleFromSize={showTitleFromSize} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} pressed={pressed != undefined ? pressed : false} rounded={rounded != undefined ? rounded : true} disabled={disabled != undefined ? disabled : false} fullWidth={fullWidth != undefined ? fullWidth : false} />
 }
 
 export function ButtonMenuCounterDefault(props) {
-    const { variant, size, title, startDecorator, endDecorator, onPress, pressed, rounded, fullWidth, disabled, hideTitleOnSmall, ...rest } = props
-    return <Button variant={!!variant ? variant : appSetting('layout', 'button_style_for_actions')} size={!!size ? size : 'sm'} title={title} hideTitleOnSmall={hideTitleOnSmall != undefined ? hideTitleOnSmall : true} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} pressed={pressed != undefined ? pressed : false} rounded={rounded != undefined ? rounded : true} disabled={disabled != undefined ? disabled : false} fullWidth={fullWidth != undefined ? fullWidth : false} />
+    const { variant, size, title, startDecorator, endDecorator, onPress, pressed, rounded, fullWidth, disabled, showTitleFromSize, ...rest } = props
+    return <Button variant={!!variant ? variant : appSetting('layout', 'button_style_for_actions')} size={!!size ? size : 'sm'} title={title} showTitleFromSize={showTitleFromSize} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} pressed={pressed != undefined ? pressed : false} rounded={rounded != undefined ? rounded : true} disabled={disabled != undefined ? disabled : false} fullWidth={fullWidth != undefined ? fullWidth : false} />
 }
 
 export function ButtonMenuCounterText(props) {
-    const { variant, size, title, startDecorator, endDecorator, onPress, pressed, rounded, fullWidth, disabled, hideTitleOnSmall, ...rest } = props
-    return <Button variant={!!variant ? variant : appSetting('layout', 'button_style_for_actions')} size={!!size ? size : 'sm'} title={title} hideTitleOnSmall={hideTitleOnSmall != undefined ? hideTitleOnSmall : true} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} pressed={pressed != undefined ? pressed : false} rounded={rounded != undefined ? rounded : true} disabled={disabled != undefined ? disabled : false} fullWidth={fullWidth != undefined ? fullWidth : false} />
+    const { variant, size, title, startDecorator, endDecorator, onPress, pressed, rounded, fullWidth, disabled, showTitleFromSize, ...rest } = props
+    return <Button variant={!!variant ? variant : appSetting('layout', 'button_style_for_actions')} size={!!size ? size : 'sm'} title={title} showTitleFromSize={showTitleFromSize} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} pressed={pressed != undefined ? pressed : false} rounded={rounded != undefined ? rounded : true} disabled={disabled != undefined ? disabled : false} fullWidth={fullWidth != undefined ? fullWidth : false} />
 }

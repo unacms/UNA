@@ -62,7 +62,6 @@ function CoverMenu(props) {
                 button_variant: 'default',
                 button_size: size,
                 button_rounded: false,
-                button_hide_title_on_small: false,
             }}
         />
             {(isSplitMenu && propsCopy.items.length > 0) && <View className='ml-2'>
@@ -76,7 +75,7 @@ function CoverMenu(props) {
 
 function CoverMenuMeta(props) {
     return (
-        <Menu {...props} displayType="mixed" params={{ button_variant: 'text', button_size: 'sm', button_hide_title_on_small: false }} />
+        <Menu {...props} displayType="mixed" params={{ button_variant: 'text', button_size: 'sm' }} />
     )
 }
 

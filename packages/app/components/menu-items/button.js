@@ -34,7 +34,7 @@ export default function MenuItemButton(oProps) {
                 size: oProps.params?.button_size,
                 rounded: oProps.params?.button_rounded,
                 fullWidth: oProps.params?.button_full_width,
-                hideTitleOnSmall: oProps.params?.button_hide_title_on_small
+                showTitleFromSize: oProps.params?.button_show_title_from_size
             };
             
             const handleClick = (event) => {

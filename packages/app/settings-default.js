@@ -164,7 +164,7 @@ export const settingsDefault = {
             show_action: true,// show action part or not
             show_counter: false,// show counter part or not
             show_combined: true, // leave true
-            button_hide_title_on_small: false, // hide title on small screens
+            button_show_title_from_size: 'sm',
             button_full_width: true, 
             button_size: 'sm',
             no_gap_between_buttons: false,// is false no gap between buttons + right margin, is true  gap between buttons + no margin
@@ -176,10 +176,11 @@ export const settingsDefault = {
             button_variant: 'text',
             button_size: 'sm',
             no_gap_between_buttons: true,
+         
         }
         /*
         FOR COMBINED BUTTONS SHOULD BE SET IN THE FOLLOWING WAY:
-        settingsDefault.feed.actions_menu = {
+        , actions_menu : {
             show_action: true,
             show_counter: true,
             show_combined: true,

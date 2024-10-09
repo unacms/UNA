@@ -383,23 +383,23 @@ export default function ElementGrid({data}) {
             <Row className="gap-x-2 ml-1">
                 {
                     data.actions.bulk.delete && (
-                        <Button startDecorator="Trash" size="base"  hideTitleOnSmall={true} title={t("Delete selected")} disabled={selected.length == 0} onPress={() => {handleDeleteSelected()}} />)
+                        <Button startDecorator="Trash" size="base"  showTitleFromSize='sm' title={t("Delete selected")} disabled={selected.length == 0} onPress={() => {handleDeleteSelected()}} />)
                 }
                 {/*
                     data.actions.bulk.credits && (
-                        <Button  size="base" title={t("Checkout with Credits")}  hideTitleOnSmall={true} disabled={selected.length == 0} onPress={() => {alert("TODO Checkout with Credits")}} />)
+                        <Button  size="base" title={t("Checkout with Credits")}  showTitleFromSize='sm' disabled={selected.length == 0} onPress={() => {alert("TODO Checkout with Credits")}} />)
                     */}
                 {/*
                     data.actions.bulk.paypal_api && (
-                        <Button  size="base" title={t("Checkout with PayPal")}  hideTitleOnSmall={true} disabled={selected.length == 0} onPress={() => {alert("TODO CheCheckout with PayPal")}} />)
+                        <Button  size="base" title={t("Checkout with PayPal")}  showTitleFromSize='sm' disabled={selected.length == 0} onPress={() => {alert("TODO CheCheckout with PayPal")}} />)
                     */ }
                 {
                     data.actions.bulk.stripe_v3 && (
-                        <Button  size="base" title={t("Checkout with Stripe")}  hideTitleOnSmall={true} disabled={selected.length == 0} onPress={() => {handleActionBlockPayment('stripe_v3')}} />)
+                        <Button  size="base" title={t("Checkout with Stripe")}  showTitleFromSize='sm' disabled={selected.length == 0} onPress={() => {handleActionBlockPayment('stripe_v3')}} />)
                 }
                 {
                     data.actions.independent.add && (
-                        <Button startDecorator="Plus" size="base"  hideTitleOnSmall={true} title={t(data.actions.independent.add?.title && data.actions.independent.add.title.length > 0 ? data.actions.independent.add.title : "Add new")} onPress={() => {handleActionBlock(data.actions.independent.add)}} />)
+                        <Button startDecorator="Plus" size="base"  showTitleFromSize='sm' title={t(data.actions.independent.add?.title && data.actions.independent.add.title.length > 0 ? data.actions.independent.add.title : "Add new")} onPress={() => {handleActionBlock(data.actions.independent.add)}} />)
                 }
             </Row>
         </Row>

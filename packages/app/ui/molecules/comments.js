@@ -42,7 +42,7 @@ export default function ElementComments(oProps) {
         size: oProps.params?.button_size,
         rounded: oProps.params?.button_rounded,
         fullWidth: oProps.params?.button_full_width,
-        hideTitleOnSmall: oProps.params?.button_hide_title_on_small
+        showTitleFromSize: oProps.params?.button_show_title_from_size
     };
 
     const bShowAction = useMemo(() => (oParams.show_action !== false) && (sDisplayType === 'action' || sDisplayType === 'both'), [oParams.show_action, sDisplayType]);
@@ -146,7 +146,7 @@ export default function ElementComments(oProps) {
     return (
         <View className="flex-auto flex-row items-center">
             <Redirect ref={redirectdRef} />
-            <View key={sObject + '-action'} className={'flex-auto' +(oProps.params?.no_gap_between_buttons === true ? (oProps.params?.button_full_width ? ' 0 ': '  px-2 ') : '')+ (bShowFull ? ' mr-1' : '')}>{sActionButton}</View>
+            <View key={sObject + '-action'} className={'flex-auto' +(oProps.params?.no_gap_between_buttons === true ? (oProps.params?.button_full_width ? ' 0 ': '  pr-2 ') : '')+ (bShowFull ? ' mr-1' : '')}>{sActionButton}</View>
         </View>
     );
  }

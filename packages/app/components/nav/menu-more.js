@@ -19,7 +19,6 @@ export default function ({ data, oMenuItemsMore, popupVisible, setPopupVisible})
         setPopupVisible(true);
     };
 
-    oMenuItemsMore.params.button_hide_title_on_small = false;
     return (
         <View className='ml-2'>
             <Button

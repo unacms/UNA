@@ -34,7 +34,6 @@ export function CoverMenuSmall(props) {
                         button_rounded: false,
 
                         button_full_width: false,
-                        button_hide_title_on_small: false,
                     }}
                 />,
             ]}
@@ -92,7 +91,6 @@ export function CoverMenu(props) {
                     button_size: size,
                     button_rounded: false,
                     button_full_width: false,
-                    button_hide_title_on_small: false,
                 }}
             />
             {isSplitMenu && propsCopy.items.length > 0 && (
@@ -121,7 +119,6 @@ export function CoverMenuMeta(props) {
                 button_variant: 'text',
                 button_size: 'sm',
                 className: ' lg:flex-wrap ',//lg:w-full lg:gap-y-2
-                button_hide_title_on_small: false,
             }}
         />
     )
