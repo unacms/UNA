@@ -140,17 +140,9 @@ const getSkeleton = () => {
 const ElementReports = forwardRef((oProps, ref) => {
     const { t } = useTranslation();
     const elementRef = useRef(null);
+    const [ popupVisibleDo, setPopupVisibleDo ] = useState(false);
 
-    useImperativeHandle(ref, () => {
-        return {
-            report(e) {
-                if(!elementRef.current.is_reported)
-                    handleGetDo(e);
-                else
-                    handleUndo(e);
-            }
-        };
-    }, []);
+    
 
     const oSettings = appSetting('social_actions', 'report');
 
@@ -172,7 +164,7 @@ const ElementReports = forwardRef((oProps, ref) => {
     const { actionsData, setActionsData } = useActionsData();
     const [ actionsDataState, setActionsDataState ] = useState({});
 
-    const [ popupVisibleDo, setPopupVisibleDo ] = useState(false);
+
     const [ popupVisiblePerformed, setPopupVisiblePerformed ] = useState(false);
     const [ performedBy, setPerformedBy ] = useState();
 
@@ -199,6 +191,17 @@ const ElementReports = forwardRef((oProps, ref) => {
     useEffect(() => {
         subscribe(oProps.system + '_' + oProps.type + '_' + oProps.object_id, 'reported', cb);
     }, [])
+
+    useImperativeHandle(ref, () => {
+        return {
+            report(e) {
+                if(!elementRef.current.is_reported)
+                    handleGetDo(setPopupVisibleDo, e);
+                else
+                    handleUndo(_performAction, _setContextVars, (oProps?.onChangeTitle ? oProps.onChangeTitle : false), e);
+            }
+        };
+    }, []);
 
     const cb = (data) => {
         let aData = JSON.parse(data);

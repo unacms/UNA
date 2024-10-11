@@ -69,12 +69,17 @@ export function Modal({
 
 
    // DISABLED - MODALS IN FEED ITEMS is not shown
-    useEffect(() => {
+    /*useEffect(() => {
         if (isWeb){
 
             if (onVisible !== false) {
                 let element = document.querySelector('.cnt-root');
                 if (element) {
+
+                   // element.style.overflow = 'hidden';
+                   // console.log("visibility", 'hidden')
+                   // element.style.visibility = 'hidden';
+                //   element.style.zIndex = -1;
                     element.style.display = 'none';
                 }
             } 
@@ -82,11 +87,32 @@ export function Modal({
 
                 let element = document.querySelector('.cnt-root');
                 if (element) {
+                  //  console.log("visibility", 'visible')
+                   // element.style.display = 'flex';
+                   //element.style.visibility = 'visible';
+                   element.style.display = 'flex';
+                }
+            };
+        }
+    }, [onVisible, children]);*/
+
+    useEffect(() => {
+        if (isWeb) {
+            let element = document.querySelector('.cnt-root');
+    
+            if (element && onVisible !== false) {
+                element.style.display = 'none';
+            }
+    
+            return () => {
+                let element = document.querySelector('.cnt-root');
+                if (element) {
+                    // Возвращаем display обратно при удалении эффекта
                     element.style.display = 'flex';
                 }
             };
         }
-    }, [onVisible, children]);
+    }, [onVisible]); 
 
     return (
         <ModalDef visible={onVisible} presentationStyle={'pageSheet'} animationType={animation} transparent={isWeb}>

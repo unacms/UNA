@@ -393,8 +393,6 @@ export default function ElementReactions(oProps) {
         if (_isContextVar('title'))
             sTitle = _getContextVar('title');
 
-        console.log("oButtonProps", oButtonProps, oProps)
-
         const ButtonAction = !bShowCombined ? (bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText) : ButtonMenuGroupItem;
 
         if (bShowActionUndo && bShowActionVoted) {
