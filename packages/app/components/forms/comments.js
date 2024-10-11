@@ -29,7 +29,7 @@ export default function FormComments(props) {
     props.data.inputs['cmt_image'].rounded = 'true';
     props.data.inputs['cmt_image'].variant = 'default';
 
-    const sPad = isWeb ? 'p-3' : (isIos || isWeb) ? 'px-2 pb-2' : 'px-1';
+    const sPad = isWeb ? 'p-2' : (isIos || isWeb) ? 'px-2 pb-2' : 'px-1';
     return <View className='w-full ' >
         <Row className='w-full items-end  '>
         <View className={'mr-2 ' + (isWeb ? '' : ' w-11 ')}>
