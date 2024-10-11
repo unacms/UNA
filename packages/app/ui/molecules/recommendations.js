@@ -150,6 +150,7 @@ export default function ElementRecommendations(oProps) {
     const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
 
     let sIcon = undefined;
+    console.log("sAction", oProps.o)
     switch(sAction) {
         case 'ignore':
             if (oButtonProps.onlyIcon){
@@ -157,6 +158,16 @@ export default function ElementRecommendations(oProps) {
                 sIcon = 'X';
             }
            
+            break;
+        case 'add':
+            if (oButtonProps.onlyIcon){
+                sTitle = '';
+                if (oProps.o == 'sys_friends')
+                    sIcon = 'UserCirclePlus';
+                if (oProps.o == 'sys_subscriptions')
+                    sIcon = 'UserCircleCheck';
+            }
+            
             break;
     }
 

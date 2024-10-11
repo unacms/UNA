@@ -654,7 +654,7 @@ function getButtonForConductor(a, index, currentUser) {
 
     return (
         <Button
-            variant={a.index == index ? 'outline' : 'text'}
+            variant='text'
             size={!a.ident ? 'lg' : 'sm'}
             pressed={a.index == index ? true : false}
             fullWidth

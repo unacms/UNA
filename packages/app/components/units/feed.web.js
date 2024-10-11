@@ -56,6 +56,7 @@ function DefaultUnit(data) {
                 onClose={() => setCmtsData(false)}
                 onVisible={!!cmtsData}
                 title={cmtsData.title}
+                padding= ''
             >
                 {cmtsData.data}
             </Modal>}

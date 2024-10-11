@@ -87,9 +87,9 @@ export default function FormFeed(props) {
     };
 
     const header = <Row className=' w-full justify-between items-center'>
-        <View className=''><Button onPress={() => { setShowImage(null) }} variant='outline' rounded startDecorator="X" /></View>
+        <View className='pl-2'><Button onPress={() => { setShowImage(null) }} variant='outline' rounded startDecorator="X" /></View>
         <View className='w-full flex-auto items-center justify-center'><Text className="text-neutral-700 dark:text-neutral-200 text-xl font-bold">Create post</Text></View>
-        <View className=' '>
+        <View className=' pr-2'>
             <Button onPress={() => { handlePress() }} variant='primary' disabled={text!='' ? false : true}  rounded  startDecorator="PaperPlane" />
         </View>
     </Row>

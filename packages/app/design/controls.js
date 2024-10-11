@@ -65,9 +65,7 @@ export function Modal({
 
     const type = typeof title;
     
-
     let Cnt = scrollable ? ScrollView : View
-
 
     /*
     DISABLED - MODALS IN FEED ITEMS is not shown
@@ -97,15 +95,13 @@ export function Modal({
                     <View className={`${fullWidth ? 'w-full' : ''}  relative h-full max-w-2xl md:h-auto `}>
                         <Pressable onPress={() => { }} className='relative bg-bgrmodal dark:bg-bgrmodal-d h-full md:h-auto  sm:border sm:border-bdrmodal sm:dark:border-bdrmodal-d sm:rounded-2xl sm:shadow-sm'>
                             {
-                                (title || onClose) && <Row className={`items-center justify-${align} ${headerBorder ? ' border-b border-bdr dark:border-bdr-d ' : ''} px-3 py-2.5 sm:p-4 sm:py-3`}>
+                                (title || onClose) && <Row className={`items-center justify-${align} ${headerBorder ? ' border-b border-bdr dark:border-bdr-d ' : ''} px-1 py-2.5 sm:p-4 sm:py-3`}>
                                     {(title && type === 'string') && (
-                                        <View className='flex-auto'>
+                                        <View className='flex-auto pl-4'>
                                             <Text className='text-neutral-700 dark:text-neutral-200 text-xl font-bold '>{title}</Text>
                                         </View>
                                     )}
-                                    {(title && type !== 'string') && (title
-
-                                    )}
+                                    {(title && type !== 'string') && (title)}
                                     {onClose && (
                                         <View className=''>
                                             <Button variant='text' size='sm' rounded startDecorator='X' onPress={onClose} />
@@ -303,7 +299,7 @@ export const Button = (props) => {
     }, [variant, ThemeCssClasses, classTextName, pressed, size]);
 
     const { sIconContainer, iIconSize, sTitleContainer, sizeClasses } = useMemo(() => {
-        const titleVisible = !isIcon || !isNaN(title);
+        const titleVisible = !isIcon || !isNaN(title) || showTitleFromSize == '';
         let iconSize = 24;
         let iconContainerClass = '';
         let titleContainerClass = titleVisible ? '' : ' hidden ' + (showTitleFromSize ? showTitleFromSize : 'sm') + ':block ';

@@ -39,10 +39,11 @@ export const CommentsModal = memo(({ commentsData, initFormData, itemContent }) 
 
     return (
         <View className='w-full h-full'>
-            <View className='w-full ' style={{ height: height }}>
+            <View className='w-full px-4 pt-4 pb-2' style={{ height: height }}>
                 {CommentsPartsData[0]}
+
             </View>
-            <View onLayout={handleLayout} className=' w-full  border-t border-bdr dark:border-bdr-d' >
+            <View onLayout={handleLayout} className=' w-full px-4 border-t border-bdr dark:border-bdr-d' >
                 {CommentsPartsData[1]}
             </View>
         </View>
