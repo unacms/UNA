@@ -153,7 +153,7 @@ export default function (props) {
                     )}
 
                     <View className="flex-auto w-full lg:w-auto flex-row ">
-                        <View className="flex-auto  xl:mx-2">
+                        <View className="flex-auto sm:px-4 ">
                             <View className=" w-full mx-auto max-w-3xl">
                                 <ScrollView horizontal={true} className="w-full sm:justify-center ">
                                 <Row className="  rounded-full mx-3 sm:mx-4 my-2 sm:mt-4 sm:mb-4   gap-x-1 sm:gap-x-2  ">

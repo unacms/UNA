@@ -387,7 +387,7 @@ export function TopSidebar({ styles, isWeb, leftSideBar, header, headerSettings,
                         {headerSettings.header && getBackButtonWeb()}
                         {(headerSettings.header == false && headerSettings.menu == true && isDrawer) && <View className="lg:hidden mr-3 sm:mr-4"><Pressable onPress={showMenu}>
                             <Button
-                                variant="outline"
+                                variant="secondary"
                                 startDecorator="List"
                                 rounded
                                 align="start"

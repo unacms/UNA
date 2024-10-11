@@ -221,7 +221,7 @@ const ComponentsContentEmpty = () => {
                     </Text>
                     <Text className="text-center text-base text-neutral-600 dark:text-neutral-400 ">
                         {t(
-                            'This is like searching for a needle in a haystack, but without the needle.'
+                            'It’s like chasing shadows, but there’s no light.'
                         )}
                     </Text>
                 </View>

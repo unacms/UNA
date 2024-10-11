@@ -154,7 +154,7 @@ export const resourcesDefault = {
             "lang_en": "English",
             "lang_ru": "Русский",
             "theme": "Тема",
-            "This is like searching for a needle in a haystack, but without the needle.": "Это как поиск иголки в стоге сена, но без иголки.",
+            "It’s like chasing shadows, but there’s no light.": "Это как искать тени там, где нет света.",
             "Community Intro": "Создатели, лидеры и разработчики сообществ."
           
           }

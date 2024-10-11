@@ -2062,7 +2062,7 @@ export const settingsDefault = {
             'u-btn-link-trans': ' duration-200 ',
 
             'u-btn-outline-cnt':
-                ' border border-bdrbutton dark:border-bdrbutton-d hover:border-bdrbutton-h dark:hover:border-bdrbutton-dh hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:shadow-none  active:opacity-50 hover:shadow-sm ',
+                ' ring-1 ring-bdrbutton dark:ring-bdrbutton-d hover:ring-bdrbutton-h dark:hover:ring-bdrbutton-dh hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:shadow-none  active:opacity-50 hover:shadow-sm ',
             'u-btn-outline-text':
                 ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
             'u-btn-outline-trans': ' duration-200 ',

@@ -151,7 +151,7 @@ export function ButtonsGroup({
     const aChildren = children.map((child, iIndex) => {
         const { variant, size, fullWidth, ...restChild } = child.props;
         const isLastChild = iIndex < children.length - 1;
-        const childClass = 'flex-auto ' + (isLastChild ? 'border-r border-bdr dark:border-bdr-d' : '');
+        const childClass = 'flex-auto ' + (isLastChild ? ' border-none border-bdr dark:border-bdr-d' : '');
 
         let childItem;
         if (child.type === Button) {
@@ -283,7 +283,7 @@ export const Button = (props) => {
             classes += `justify-${align} `;
         }
         if (pressed) {
-            classes += ' bg-primary/10 dark:bg-primary-d/10 hover:bg-primary/20 dark:hover:bg-primary-d/20 ring-1 ring-inset ring-primary/10 ';
+            classes += ' bg-primary/10 dark:bg-primary-d/10 hover:bg-primary/20 dark:hover:bg-primary-d/20 ';
         }
         return classes;
     }, [fullWidth, disabled, variant, solid, ThemeCssClasses, className, align, pressed]);
@@ -315,7 +315,7 @@ export const Button = (props) => {
 
         switch (size) {
             case 'xs':
-                sizeClasses = `${roundingClass} p-1.5 `;
+                sizeClasses = `${roundingClass} py-1.5 px-2 `;
                 iconContainerClass = `h-4 w-4 ${title ? 'mx-[1px]' : ''}`;
                 iconSize = 16;
                 titleContainerClass += title ? 'mx-1 ' : '';

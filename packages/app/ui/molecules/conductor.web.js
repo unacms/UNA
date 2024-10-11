@@ -396,7 +396,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                 if (button.section)
                     btn = <Search section={button.section} />
                 else {
-                    btn = <Button title={button.title} startDecorator={button.icon} variant="outline" rounded />;
+                    btn = <Button title={button.title} startDecorator={button.icon} variant="secondary" rounded />;
                     btn = button.link ? <Link href={button.link} >{btn}</Link> : btn
                 }
 
@@ -628,7 +628,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             }
             return (
                 <Row style={{ paddingTop: header ? 0 : 0 }} className={(headerSettings.columns == "reverse" ? 'flex-row-reverse' : '') + ' max-w-screen-xl mx-auto w-full'}>
-                    <View className={(isRightCol ? 'flex-auto sm:border-r border-bdr dark:border-bdr-d pr-4 ' : ' w-full max-w-screen-xl mx-auto sm:p-2 ') + (layoutName == 'navigator' ? '' : ' pt-4')}>
+                    <View className={(isRightCol ? 'flex-auto sm:border-r border-bdr dark:border-bdr-d px-4 ' : ' w-full max-w-screen-xl mx-auto sm:p-2 ') + (layoutName == 'navigator' ? '' : ' pt-4')}>
                         {TabFlashListM}
                         {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 &&  staticComponents['noContentByUrl'](route?.endpoint?.request_url)))}
 
@@ -709,7 +709,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             {routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
 
                 let btn = <Button
-                    variant={a.index == index ? 'outline' : "text"}
+                    variant={a.index == index ? 'secondary' : "text"}
                     size={!a.ident ? "base" : "sm"}
                     pressed={a.index == index ? true : false}
 
@@ -788,7 +788,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
     let filteredItems = routes.filter((aItem) => aItem.hideInTop != true)
 
     const MenuItem = memo(({ item: a, itemRefs, index: index2, visibleItemsCount }) => {
-        const btn = <Button fullWidth={true} id="tab" pressed={a.index == index ? true : false} variant={a.index == index ? 'outline' : "text"} rounded size='sm' title={t(a.title)} addon={!appSetting('layout', 'show_nav_counters') && a.addon ? null : a.addon} />
+        const btn = <Button fullWidth={true} id="tab" pressed={a.index == index ? true : false} variant={a.index == index ? 'secondary' : "text"} rounded size='sm' title={t(a.title)} addon={!appSetting('layout', 'show_nav_counters') && a.addon ? null : a.addon} />
         if (a.icon == '*') {
             return <View className={"justify-center" + (index2 > visibleItemsCount - 1 ? ' item-overlap ' : '')} ref={el => itemRefs.current[index2] = el}><Link href={a.link}>{btn}</Link></View>
         }
@@ -852,7 +852,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
     });
 
     const ButtonEx = memo(({ visibleItemsCount }) => {
-        return <View key="btn" className='ml-1'><Button title={'More...'} variant={visibleItemsCount <= index ? 'outline' : "text"} pressed={visibleItemsCount <= index ? true : false} size="sm" rounded/></View>;
+        return <View key="btn" className='ml-1'><Button title={'More...'} variant={visibleItemsCount <= index ? 'secondary' : "text"} pressed={visibleItemsCount <= index ? true : false} size="sm" rounded/></View>;
     });
 
     return <DynamicMenu

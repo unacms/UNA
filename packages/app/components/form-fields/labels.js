@@ -112,7 +112,7 @@ console.log("----", isModal, props.isShow)
                             onPress={showSelect}
                         />}
                         {!!field.value && field.value.map((item, index) => (
-                            <View className='mr-2 mt-1' key={'label' + index}>
+                            <View className='mr-2' key={'label' + index}>
                                 <Button
                                     endDecorator="X"
                                     variant={"outline"}

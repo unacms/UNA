@@ -120,21 +120,28 @@ export default function FormFeed(props) {
                                 onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({ animated: true })}
                             >
                                 <View className="w-full  flex-col px-2 sm:p-0 ">
-                                    <View className=" flex-row gap-x-3 px-1 sm:px-0 pb-0 pt-3 sm:pt-0 flex-auto justify-between ">
+                                    <View className=" flex-row gap-x-3 px-1 sm:px-0 pb-0 pt-3 sm:pt-0 flex-auto ">
                                         <View className=" mb-auto ">
-                                            <Profile {...currentUser} displayType="unit_wo_info" displaySize="lg" />
+                                            <Profile {...currentUser} displayType="unit_wo_info" displaySize="base" />
                                         </View>
-                                        <View className="flex-col  flex-auto ">
+                                        <View className="flex-col flex-auto ">
                                             <Profile {...currentUser} displayType="unit_wo_image" displaySize="lg" />
 
                                            
-                                           <View className="mr-auto mt-2">{getFormFieldByData(props.data.inputs['object_privacy_view'], props.handleSubmit, 'nofield', { onShowModal: setShowImage, showModal: showImage })}</View>
-                                            {props.data.inputs['labels'] && 
-                                        <View className="">
+                                           <View className="gap-x-2 flex-row flex-wrap ">
+                                           <View className=" my-auto mt-2">
+                                            {getFormFieldByData(props.data.inputs['object_privacy_view'], props.handleSubmit, 'nofield', { onShowModal: setShowImage, showModal: showImage })}
+                                            </View>
+                                           {props.data.inputs['labels'] && 
+                                            <View className=" ">
                                             {labels}
-                                        </View>
+                                            </View>
 
                                     } 
+
+
+                                           </View>
+                                          
                                         </View>
 
                                     </View>
