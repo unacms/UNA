@@ -128,6 +128,7 @@ export function storageSet(pref, key, data, isLocal = false) {
     }
 }
 
+
 export function storageGet(pref, key, isLocal = false) {
     if (Platform.OS !== 'web') {
         if (!isLocal && pref == 'layout:shmo') {

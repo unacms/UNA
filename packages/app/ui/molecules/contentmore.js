@@ -41,7 +41,6 @@ export function ContentMore({ content, embed, numberOfSymbols = 350, textStyle, 
         }
     }
 
-
     const handleToggle = (e) => {
         if (id){
             let sm = storageGet('layout:shmo', '');
