@@ -65,7 +65,7 @@ export default function ElementMenu(oProps) {
     //--- show vertical
     const bShowVertical = oProps?.params?.showVertical === true;
 
-    sClassName += bShowVertical ? ' flex-col items-center gap-y-2 w-full ' : 'flex-row items-center  ' + (oProps?.params?.no_gap_between_buttons ? ' ' : ' gap-x-2  ');
+    sClassName += bShowVertical ? ' flex-col items-center gap-y-2 w-full ' : 'flex-row items-center ' + (oProps?.params?.no_gap_between_buttons ? ' ' : ' gap-x-2 ');
     const oParams = oProps?.params || {};
     //--- horizontal menu items alignment
     const sAlignItems = oProps.alignItems || oParams.align_items || 'left';

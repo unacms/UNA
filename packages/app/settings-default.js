@@ -166,7 +166,7 @@ export const settingsDefault = {
             show_combined: true, // leave true
             button_show_title_from_size: 'sm',
             button_full_width: true, 
-            button_size: 'sm',
+            button_size: 'base',
             no_gap_between_buttons: false,// is false no gap between buttons + right margin, is true  gap between buttons + no margin
         },
         counters_menu: {

@@ -59,7 +59,7 @@ function DefaultUnit(data) {
             >
                 {cmtsData.data}
             </Modal>}
-            <Card rounded=' rounded-none sm:rounded-2xl ' margin=' mb-1 sm:mb-4 sm:mx-4 md:mx-auto ' addClassName={' w-full max-w-screen-lg gap-y-3 p-3 sm:p-4 tl-' + data.id} >
+            <Card rounded=' rounded-none sm:rounded-2xl ' margin=' mb-1 sm:mb-4 sm:mx-4 md:mx-auto ' addClassName={' w-full max-w-screen-lg gap-y-3 sm:gap-y-3.5 p-3 sm:p-4 tl-' + data.id} >
                 <View className="flex-auto flex-row items-top">
                     <Author data={data} url={url} t={t} />
                     <View className="flex-auto justify-end flex-row mb-auto">
@@ -72,7 +72,7 @@ function DefaultUnit(data) {
                     </View>
                 </View>
                 {MainContentComponent}
-                {(!!data.menu_counters && appSetting('feed', 'counters_menu')) && <View className=' border-b border-bdr/50 dark:border-bdr-d/50 pb-1.5'><CounterMenu data={data.menu_counters} showCommentsModal={showCommentsModal} /></View>}
+                {(!!data.menu_counters && appSetting('feed', 'counters_menu')) && <View className=' border-none border-bdr/50 dark:border-bdr-d/50 '><CounterMenu data={data.menu_counters} showCommentsModal={showCommentsModal} /></View>}
                 <ActionMenu data={data.menu_actions} showCommentsModal={showCommentsModal} />
                 {commentsData && <CommentsSection url={url} t={t} isCommentsModal={isCommentsModal} showCommentsModal={showCommentsModal} commentsDataInline={commentsData} data={data} isShowMoreComments={isShowMoreComments} />}
             </Card>

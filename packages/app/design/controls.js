@@ -185,10 +185,10 @@ const getIcon = (sIcon, iIndex, classIconName, sClassText, sIconContainer, iIcon
     sClassText = sClassText.replace('overflow-hidden', '');
 
     if (isEmoji(sIcon)) {
-        sClassText = sClassText.replace('text-lg', 'text-[19px]');
-        sClassText = sClassText.replace('text-base', 'text-[17px]');
-        sClassText = sClassText.replace('text-sm', 'text-[16px]');
-        sClassText = sClassText.replace('text-xs', 'text-[14px]');
+        sClassText = sClassText.replace('text-lg', 'text-[32px] leading-[32px]  ');
+        sClassText = sClassText.replace('text-base', 'text-[24px] leading-[24px]');
+        sClassText = sClassText.replace('text-sm', 'text-[20px]  leading-[20px]');
+        sClassText = sClassText.replace('text-xs', 'text-[16px] leading-[16px]');
         return (
             <Text key={iIndex} className={classIconName ? classIconName : sClassText + sIconContainer}>{sIcon}</Text>
         );
@@ -283,7 +283,7 @@ export const Button = (props) => {
             classes += `justify-${align} `;
         }
         if (pressed) {
-            classes += ' bg-primary/10 dark:bg-primary-d/10 hover:bg-primary/20 dark:hover:bg-primary-d/20 ';
+            classes += ' bg-primary/10 dark:bg-primary-d/10 hover:bg-primary/20 dark:hover:bg-primary-d/20 ring-1 ring-inset ring-primary/10 ';
         }
         return classes;
     }, [fullWidth, disabled, variant, solid, ThemeCssClasses, className, align, pressed]);

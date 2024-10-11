@@ -146,7 +146,7 @@ export default function ElementComments(oProps) {
     return (
         <View className="flex-auto flex-row items-center">
             <Redirect ref={redirectdRef} />
-            <View key={sObject + '-action'} className={'flex-auto' +(oProps.params?.no_gap_between_buttons === true ? (oProps.params?.button_full_width ? ' 0 ': '  pr-2 ') : '')+ (bShowFull ? ' mr-1' : '')}>{sActionButton}</View>
+            <View key={sObject + '-action'} className={'flex-auto' +(oProps.params?.no_gap_between_buttons === true ? (oProps.params?.button_full_width ? ' 0 ': '  pr-1 ') : '')+ (bShowFull ? ' mr-1' : '')}>{sActionButton}</View>
         </View>
     );
  }
