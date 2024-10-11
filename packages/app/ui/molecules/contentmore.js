@@ -46,12 +46,15 @@ export function ContentMore({ content, embed, numberOfSymbols = 350, textStyle, 
         if (id){
             let sm = storageGet('layout:shmo', '');
             if (!sm){
-                sm =[];
+                sm = [];
             }
+            console.log('layoutlayout--1', sm , Array.isArray(sm), id, typeof sm);
             sm.filter(item => item !== id);
             if (!showFull)
                 sm.push(id);
-
+            else
+            sm = sm.filter(item => item !== id);
+            console.log('layoutlayout--2', sm , Array.isArray(sm), id, typeof sm);
             storageSet('layout:shmo', '', sm)
         }
         setShowFull((prevShowFull) => !prevShowFull);

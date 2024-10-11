@@ -117,7 +117,7 @@ export function storageSet(pref, key, data, isLocal = false) {
 
     if (Platform.OS !== 'web') {
         if (!isLocal && pref == 'layout:shmo') {
-            nativeCache[pref + '-' + key] = JSON.stringify(data);
+            nativeCache[pref + '-' + key] = data;
             //  await AsyncStorage.setItem(`${pref}-${key}`, serializedData);
         }
     }
