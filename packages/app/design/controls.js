@@ -67,26 +67,26 @@ export function Modal({
     
     let Cnt = scrollable ? ScrollView : View
 
-    /*
-    DISABLED - MODALS IN FEED ITEMS is not shown
+
+   // DISABLED - MODALS IN FEED ITEMS is not shown
     useEffect(() => {
         if (isWeb){
 
             if (onVisible !== false) {
-                document.body.style.maxHeight = '100vh';
-                document.body.style.minHeight = '';
-                document.body.style.overflow = 'hidden';
-            } else {
-            }
-
+                let element = document.querySelector('.cnt-root');
+                if (element) {
+                    element.style.display = 'none';
+                }
+            } 
             return () => {
 
-                document.body.style.maxHeight = '';
-                document.body.style.minHeight = '100%';
-                document.body.style.overflow = '';
+                let element = document.querySelector('.cnt-root');
+                if (element) {
+                    element.style.display = 'flex';
+                }
             };
         }
-    }, [onVisible, children]);*/
+    }, [onVisible, children]);
 
     return (
         <ModalDef visible={onVisible} presentationStyle={'pageSheet'} animationType={animation} transparent={isWeb}>
