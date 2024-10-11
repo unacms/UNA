@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Countdown from 'react-countdown';
 import { View, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
 
