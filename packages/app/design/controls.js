@@ -315,13 +315,13 @@ export const Button = (props) => {
 
         switch (size) {
             case 'xs':
-                sizeClasses = `${roundingClass} p-1 `;
+                sizeClasses = `${roundingClass} p-1.5 `;
                 iconContainerClass = `h-4 w-4 ${title ? 'mx-[1px]' : ''}`;
                 iconSize = 16;
                 titleContainerClass += title ? 'mx-1 ' : '';
                 break;
             case 'sm':
-                sizeClasses = `${roundingClass} p-1.5 `;
+                sizeClasses = `${roundingClass} p-2 `;
                 iconContainerClass = `h-5 w-5 ${title ? '' : ''}`;
                 iconSize = 20;
                 titleContainerClass += title ? 'mx-2 ' : '';
