@@ -265,7 +265,6 @@ export const MenuManage = ({ id, menu, setViewState }) => {
                 rounded
                 startDecorator="DotsThreeOutline"
                 onPress={() => {
-                    FeedbackHaptics('Medium');
                     getDataForMenu(menu, setMenuData);
                 }}
             />
@@ -278,8 +277,8 @@ export const MenuManage = ({ id, menu, setViewState }) => {
 const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen }) => {
     let { currentUser, setCurrentUser } = useCurrentUser()
 
-    const refReport = useRef(null);
-    const [reportTitle, setReportTitle] = useState(null);
+  //  const refReport = useRef(null);
+   // const [reportTitle, setReportTitle] = useState(null);
 
     const handleMenuManageSelect = async (oItem, event) => {
         switch (oItem.name) {
@@ -297,9 +296,9 @@ const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen }) => {
                 setViewState({ view: 'deleted' })
                 break
 
-            case 'item-report':
+           /* case 'item-report':
                 refReport.current.report(event);
-                break;
+                break;*/
         }
     }
 
@@ -310,15 +309,15 @@ const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen }) => {
             if (!!aItem.display_type && aItem.display_type == 'element') {
                 const Element = componentsMap[aItem.data.type];
                 if (!!Element) {
-                    sTitle = aItem.data?.action ? aItem.data?.action.title : 'Report';
+                   /* sTitle = aItem.data?.action ? aItem.data?.action.title : 'Report';
                     if (!!reportTitle)
-                        sTitle = reportTitle;
-
-                    oReport = (
+                        sTitle = reportTitle;*/
+                    sTitle= <Element mode="text" key={aItem.id ? aItem.id : aItem.name}   {...aItem.data} />
+                   /* oReport = (
                         <View className="w-0 h-0" style={{ opacity: 0 }}>
                             <Element key={aItem.id ? aItem.id : aItem.name} ref={refReport} onChangeTitle={setReportTitle} {...aItem.data} />
                         </View>
-                    );
+                    );*/
                 }
             }
 

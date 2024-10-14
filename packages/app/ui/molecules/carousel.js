@@ -174,7 +174,7 @@ const Carousel = memo(({ data = [] }) => {
     }, [currentImageIndex]);
 
     return <>
-        {currentImageIndex !== false && <Modal padding=" " title="Viewer" onVisible={currentImageIndex !== false} onClose={() => { setCurrentImageIndex(false) }} transparent={true} >
+        {currentImageIndex !== false && <Modal padding="" title="Viewer" onVisible={currentImageIndex !== false} onClose={() => { setCurrentImageIndex(false) }} transparent={true} >
             <Row className=' w-full mx-auto items-center justify-center h-full'>
                 {
                     (imageSize2[0] > 0 && data[currentImageIndex].type == 'image') && (

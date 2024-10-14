@@ -73,7 +73,7 @@ function DefaultUnit(data) {
                     </View>
                 </View>
                 {MainContentComponent}
-                {(!!data.menu_counters && appSetting('feed', 'counters_menu')) && <View className=' pt-3  border-none border-bdr/50 dark:border-bdr-d/50 '><CounterMenu data={data.menu_counters} showCommentsModal={showCommentsModal} /></View>}
+                {(!!data.menu_counters && appSetting('feed', 'counters_menu')) && <View className=' pt-3'><CounterMenu data={data.menu_counters} showCommentsModal={showCommentsModal} /></View>}
                 <ActionMenu data={data.menu_actions} showCommentsModal={showCommentsModal} />
                 {commentsData && <CommentsSection url={url} t={t} isCommentsModal={isCommentsModal} showCommentsModal={showCommentsModal} commentsDataInline={commentsData} data={data} isShowMoreComments={isShowMoreComments} />}
             </Card>

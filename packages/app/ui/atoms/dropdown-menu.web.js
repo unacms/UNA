@@ -9,6 +9,7 @@ import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 
 const DropdownMenuContentV = (props) => (
     <DropdownMenu.Content
+  
         className="z-10 min-w-[200px] backdrop-blur bg-bgrmodal dark:bg-bgrmodal-d mt-1 divide-y divide-bdr dark:divide-bdr-d text-sm  border dark:border-bdr-d border-bdr rounded-xl shadow-xl overflow-hidden"
         {...props}
     >
@@ -18,6 +19,7 @@ const DropdownMenuContentV = (props) => (
 
 const DropdownMenuContentH = (props) => (
     <DropdownMenu.Content
+   
         className=" flex flex-row z-10 p-1 bg-bgrmodal border border-bdr dark:border-bdr-d m-2 dark:bg-bgrmodal-d text-sm text-neutral-800 dark:text-neutral-200 rounded-full shadow-sm"
         {...props}
     >
@@ -97,7 +99,7 @@ export default function ({variant, defaultOpen, onSelect, items, children}) {
             <DropdownMenu.Root defaultOpen={defaultOpen}>
                 <DropdownMenu.Trigger className='focus:outline-none' asChild={true}><Pressable onPress={() => { }}>{children}</Pressable></DropdownMenu.Trigger>
                 <DropdownMenu.Portal>
-                    <DmContent>{aDmItems}</DmContent>
+                    <DmContent >{aDmItems}</DmContent>
                 </DropdownMenu.Portal>
             </DropdownMenu.Root>
         </View>

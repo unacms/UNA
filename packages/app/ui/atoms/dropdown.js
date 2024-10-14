@@ -14,7 +14,6 @@ export default function Dropdown(props) {
     const [selectedVal, setSelectedVal] = useState(props.value? props.value : '');
     const { colors } = Theme();
     const isShow = Platform.OS == 'ios'
-    
 
     function handleChange(itemValue, itemIndex) {
         setSelectedVal(itemValue)
@@ -33,9 +32,10 @@ export default function Dropdown(props) {
         pickerRef.current.focus();
     }
 
+
     if (!isShow){
         return (
-            <PickerStyled  ref={pickerRef} className={Platform.OS == 'web' ? ' h-11' : ''} style={{ borderRadius:10, color:colors.default  }}
+            <PickerStyled  ref={pickerRef} className={Platform.OS == 'web' ? ' h-11' : 'h-16'} style={{ borderRadius:10, color:colors.default  }}
                 selectedValue={selectedVal}
                 onValueChange={(itemValue, itemIndex) =>
                 handleChange(itemValue, itemIndex)

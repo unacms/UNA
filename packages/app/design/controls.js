@@ -64,55 +64,48 @@ export function Modal({
     const align = !title && onClose ? 'end' : textAlign;
 
     const type = typeof title;
-    
+
     let Cnt = scrollable ? ScrollView : View
 
-
-   // DISABLED - MODALS IN FEED ITEMS is not shown
-    /*useEffect(() => {
-        if (isWeb){
-
-            if (onVisible !== false) {
-                let element = document.querySelector('.cnt-root');
-                if (element) {
-
-                   // element.style.overflow = 'hidden';
-                   // console.log("visibility", 'hidden')
-                   // element.style.visibility = 'hidden';
-                //   element.style.zIndex = -1;
-                    element.style.display = 'none';
-                }
-            } 
-            return () => {
-
-                let element = document.querySelector('.cnt-root');
-                if (element) {
-                  //  console.log("visibility", 'visible')
-                   // element.style.display = 'flex';
-                   //element.style.visibility = 'visible';
-                   element.style.display = 'flex';
-                }
-            };
-        }
-    }, [onVisible, children]);*/
+    /* useEffect(() => {
+         if (isWeb) {
+             let element = document.querySelector('.cnt-root');
+     
+             if (onVisible) {
+                 element.style.display = 'none';
+             }
+            else{
+             element.style.display = 'flex';
+            }
+     
+             return () => {
+                 element.style.display = 'flex';
+             };
+         }
+     }, [onVisible]); */
 
     useEffect(() => {
         if (isWeb) {
-            let element = document.querySelector('.cnt-root');
-    
-            if (element && onVisible !== false) {
-                element.style.display = 'none';
+
+
+            if (onVisible) {
+
+                document.body.style.overflow = 'hidden';
+                document.documentElement.style.overflow = 'hidden';
+
             }
-    
+            else {
+                document.body.style.overflow = 'auto';
+                document.documentElement.style.overflow = 'auto';
+            }
+
             return () => {
-                let element = document.querySelector('.cnt-root');
-                if (element) {
-                    // Возвращаем display обратно при удалении эффекта
-                    element.style.display = 'flex';
-                }
+                document.body.style.overflow = 'auto';
+                document.documentElement.style.overflow = 'auto';
             };
         }
-    }, [onVisible]); 
+    }, [onVisible]);
+
 
     return (
         <ModalDef visible={onVisible} presentationStyle={'pageSheet'} animationType={animation} transparent={isWeb}>
@@ -315,7 +308,7 @@ export const Button = (props) => {
         if (variant !== 'custom') {
             classes += ThemeCssClasses[`u-btn-${variant}-text`];
         } else {
-            classes += classTextName;
+            classes +=  ` ${classTextName}`;
         }
         if (pressed) {
             classes += ' text-primary-700 dark:text-primary-600 group-hover:text-primary-800 dark:group-hover:text-primary-500';
@@ -335,6 +328,7 @@ export const Button = (props) => {
         const sClassFullRounding = variant !== 'group-item' ? 'rounded-full' : '';
         const roundingClass = rounded ? sClassFullRounding : sClassDefaultRounding;
 
+if (variant != 'custom'){
         switch (size) {
             case 'xs':
                 sizeClasses = `${roundingClass} py-1.5 px-2 `;
@@ -349,7 +343,7 @@ export const Button = (props) => {
                 titleContainerClass += title ? 'mx-2 ' : '';
                 break;
             case 'base':
-                sizeClasses = `${roundingClass} ${padding ? `p-${padding}` : 'p-2.5'} `;
+                sizeClasses = `lalal ${padding} ${roundingClass} ${padding ? `p-${padding}` : 'p-2.5'} `;
                 iconContainerClass = `h-6 w-6 ${title ? 'mx-1' : ''}`;
                 iconSize = 24;
                 titleContainerClass += title ? 'mx-2 ' : '';
@@ -366,7 +360,7 @@ export const Button = (props) => {
                 iconSize = 24;
                 titleContainerClass += title ? 'mx-2 ' : '';
         }
-
+}
         return {
             sIconContainer: iconContainerClass,
             iIconSize: iconSize,
@@ -463,21 +457,21 @@ export function ButtonMenuGroupItem(props) {
 }
 
 export function ButtonMenuActionDefault(props) {
-    const { variant, size, title, startDecorator, endDecorator, onPress, pressed, rounded, fullWidth, disabled, showTitleFromSize, ...rest } = props
-    return <Button variant={!!variant ? variant : appSetting('layout', 'button_style_for_actions')} size={!!size ? size : 'sm'} title={title} showTitleFromSize={showTitleFromSize} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} pressed={pressed != undefined ? pressed : false} rounded={rounded != undefined ? rounded : true} disabled={disabled != undefined ? disabled : false} fullWidth={fullWidth != undefined ? fullWidth : false} />
+    const { variant, size, title, startDecorator, endDecorator, onPress, pressed, rounded, fullWidth, disabled, showTitleFromSize,padding,classTextName, ...rest } = props
+    return <Button variant={!!variant ? variant : appSetting('layout', 'button_style_for_actions')} size={!!size ? size : 'sm'} padding={padding} classTextName={classTextName} title={title} showTitleFromSize={showTitleFromSize} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} pressed={pressed != undefined ? pressed : false} rounded={rounded != undefined ? rounded : true} disabled={disabled != undefined ? disabled : false} fullWidth={fullWidth != undefined ? fullWidth : false} />
 }
 
 export function ButtonMenuActionText(props) {
-    const { variant, size, title, startDecorator, endDecorator, onPress, pressed, rounded, fullWidth, disabled, showTitleFromSize, ...rest } = props
-    return <Button variant={!!variant ? variant : 'text'} size={!!size ? size : 'sm'} title={title} showTitleFromSize={showTitleFromSize} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} pressed={pressed != undefined ? pressed : false} rounded={rounded != undefined ? rounded : true} disabled={disabled != undefined ? disabled : false} fullWidth={fullWidth != undefined ? fullWidth : false} />
+    const { variant, size, title, startDecorator, endDecorator, onPress, pressed, rounded, fullWidth, disabled, showTitleFromSize,padding,classTextName,  ...rest } = props
+    return <Button variant={!!variant ? variant : 'text'} size={!!size ? size : 'sm'} title={title} showTitleFromSize={showTitleFromSize} padding={padding} classTextName={classTextName} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} pressed={pressed != undefined ? pressed : false} rounded={rounded != undefined ? rounded : true} disabled={disabled != undefined ? disabled : false} fullWidth={fullWidth != undefined ? fullWidth : false} />
 }
 
 export function ButtonMenuCounterDefault(props) {
-    const { variant, size, title, startDecorator, endDecorator, onPress, pressed, rounded, fullWidth, disabled, showTitleFromSize, ...rest } = props
-    return <Button variant={!!variant ? variant : appSetting('layout', 'button_style_for_actions')} size={!!size ? size : 'sm'} title={title} showTitleFromSize={showTitleFromSize} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} pressed={pressed != undefined ? pressed : false} rounded={rounded != undefined ? rounded : true} disabled={disabled != undefined ? disabled : false} fullWidth={fullWidth != undefined ? fullWidth : false} />
+    const { variant, size, title, startDecorator, endDecorator, onPress, pressed, rounded, fullWidth, disabled, showTitleFromSize, padding,classTextName, ...rest } = props
+    return <Button variant={!!variant ? variant : appSetting('layout', 'button_style_for_actions')} size={!!size ? size : 'sm'} padding={padding} title={title} classTextName={classTextName} showTitleFromSize={showTitleFromSize} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} pressed={pressed != undefined ? pressed : false} rounded={rounded != undefined ? rounded : true} disabled={disabled != undefined ? disabled : false} fullWidth={fullWidth != undefined ? fullWidth : false} />
 }
 
 export function ButtonMenuCounterText(props) {
-    const { variant, size, title, startDecorator, endDecorator, onPress, pressed, rounded, fullWidth, disabled, showTitleFromSize, ...rest } = props
-    return <Button variant={!!variant ? variant : appSetting('layout', 'button_style_for_actions')} size={!!size ? size : 'sm'} title={title} showTitleFromSize={showTitleFromSize} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} pressed={pressed != undefined ? pressed : false} rounded={rounded != undefined ? rounded : true} disabled={disabled != undefined ? disabled : false} fullWidth={fullWidth != undefined ? fullWidth : false} />
+    const { variant, size, title, startDecorator, endDecorator, onPress, pressed, rounded, fullWidth, disabled, showTitleFromSize, padding,classTextName, ...rest } = props
+    return <Button variant={!!variant ? variant : appSetting('layout', 'button_style_for_actions')} size={!!size ? size : 'sm'} padding={padding} title={title} classTextName={classTextName} showTitleFromSize={showTitleFromSize} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} pressed={pressed != undefined ? pressed : false} rounded={rounded != undefined ? rounded : true} disabled={disabled != undefined ? disabled : false} fullWidth={fullWidth != undefined ? fullWidth : false} />
 }

@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useEffect, forwardRef, useRef, useImperativeHandle } from 'react';
+import { useState, useMemo, useCallback, useEffect, forwardRef, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { appSetting, FeedbackHaptics } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
@@ -60,13 +60,15 @@ const performAction = async (sSystem, iObjectId, sAction, aParams, onLoad) => {
 };
 
 const handleGetDo = (setPopupVisibleDo, oEvent) => {
-    if(!!oEvent)
-        oEvent.preventDefault();
+    //if(!!oEvent)
+     //   oEvent.preventDefault();
 
     if(Platform.OS == 'web') {
         const popperDiv = document.querySelector('div[data-radix-popper-content-wrapper]');
-        if(popperDiv)
+        if(popperDiv){
             popperDiv.classList.add('radix-hide');
+            document.body.style.pointerEvents = 'auto';
+        }
     }
 
     setPopupVisibleDo(true);
@@ -142,12 +144,12 @@ const ElementReports = forwardRef((oProps, ref) => {
     const elementRef = useRef(null);
     const [ popupVisibleDo, setPopupVisibleDo ] = useState(false);
 
-    
+    const isTextMode = oProps.mode === 'text';
 
     const oSettings = appSetting('social_actions', 'report');
 
     const oParams = {...oSettings, ...oProps.params};
-    const sIcon = oSettings[oProps['system']]?.icon != undefined ? oSettings[oProps['system']].icon : "WarningCircle"
+    const sIcon = isTextMode ? '' : oSettings[oProps['system']]?.icon != undefined ? oSettings[oProps['system']].icon : "WarningCircle"
     const oAction = oProps.action;
     const oCounter = oProps.counter;
 
@@ -192,7 +194,7 @@ const ElementReports = forwardRef((oProps, ref) => {
         subscribe(oProps.system + '_' + oProps.type + '_' + oProps.object_id, 'reported', cb);
     }, [])
 
-    useImperativeHandle(ref, () => {
+   /* useImperativeHandle(ref, () => {
         return {
             report(e) {
                 if(!elementRef.current.is_reported)
@@ -201,7 +203,7 @@ const ElementReports = forwardRef((oProps, ref) => {
                     handleUndo(_performAction, _setContextVars, (oProps?.onChangeTitle ? oProps.onChangeTitle : false), e);
             }
         };
-    }, []);
+    }, []);*/
 
     const cb = (data) => {
         let aData = JSON.parse(data);
@@ -227,12 +229,16 @@ const ElementReports = forwardRef((oProps, ref) => {
         oAction.title = _getContextVar('title');
     let sTitle = oAction?.title || '';
 
+   
+    console.log("oProps", oProps)
     const oButtonProps = {
-        variant: oProps?.primary ? 'primary' : oProps.params?.button_variant,
-        size: oProps.params?.button_size,
+        variant: oProps?.primary ? 'primary' :  (isTextMode ? 'custom' :oProps.params?.button_variant),
+        size: isTextMode? 'base' : oProps.params?.button_size,
+        classTextName: Platform.OS == 'web' ? '' : " font-medium",
         rounded: oProps.params?.button_rounded,
         fullWidth: oProps.params?.button_full_width,
         showTitleFromSize: oProps.params?.button_show_title_from_size
+       
     };
 
     const ButtonAction = !bShowCombined ? (bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText) : ButtonMenuGroupItem;
@@ -355,9 +361,9 @@ const ElementReports = forwardRef((oProps, ref) => {
     else
         return (
             <View className={'flex-auto flex-row items-center' + (bShowActionUndo && bShowActionReported ? ' undo' : ' do')}>
-                {bShowAction && !!sActionButton && <View key={sObject + '-action-button'} className={'flex-auto' + (bShowFull ? ' mr-1' : '')}>{sActionButton}</View>}
+                {bShowAction && !!sActionButton && <View key={sObject + '-action-button'} className={'flex-auto' + (bShowFull ? (isTextMode?  ' mr-4' : ' mr-1') : '')}>{sActionButton}</View>}
                 {bShowAction && !!sActionPopup && <View key={sObject + '-action-popup'}>{sActionPopup}</View>}
-                {bShowCounter &&  !!sCounterButton && <View key={sObject + '-counter-button'}>{sCounterButton}</View>}
+                {(bShowCounter &&  !!sCounterButton && !isTextMode) && <View key={sObject + '-counter-button'}>{sCounterButton}</View>}
                 {bShowCounter && !!sCounterPopup && <View key={sObject + '-counter-popup'}>{sCounterPopup}</View>}
             </View>
         );

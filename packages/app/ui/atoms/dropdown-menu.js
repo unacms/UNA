@@ -19,7 +19,7 @@ const Menu = memo(({ items, onSelect, setBottomSheetData }) => {
         <View className='w-full mt-0 mb-2'>
             {items.map(
                 (item, index) =>
-                    <View key={item.id} className='mb-0'><Button
+                    <View key={item.id} className={'' + (index!=items.length-1 ? 'mb-1 border-b border-bdr dark:border-bdr-d' : '')}><Button
                         variant="text"
                         size="base"
                         fullWidth

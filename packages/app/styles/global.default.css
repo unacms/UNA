@@ -505,6 +505,9 @@ html[theme="dark"]:root {
 div[data-radix-popper-content-wrapper]:not(.radix-hide){
     z-index: 1000000 !important;
 }
+div[data-radix-popper-content-wrapper].radix-hide{
+    display: none;
+}
 
 .tiptap-default{
     max-height: 250px;

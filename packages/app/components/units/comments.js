@@ -210,8 +210,8 @@ const MenuManage = ({ id, menu, setViewState, module, cmt_object_id, cmt_id }) =
 const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen, module, cmt_object_id, cmt_id }) => {
     let { currentUser, setCurrentUser } = useCurrentUser()
 
-    const refReport = useRef(null);
-    const [reportTitle, setReportTitle] = useState(null);
+    //const refReport = useRef(null);
+    //const [reportTitle, setReportTitle] = useState(null);
     const handleManageMenuSelect = async (oItem, event) => {
         switch (oItem.name) {
             case 'item-edit':
@@ -225,9 +225,9 @@ const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen, module, cmt_obj
                 props.handleDelete();
                 break;
 
-            case 'item-report':
+           /* case 'item-report':
                 refReport.current.report(event);
-                break;
+                break;*/
         }
     }
 
@@ -239,15 +239,15 @@ const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen, module, cmt_obj
             if (!!aItem.display_type && aItem.display_type == 'element') {
                 const Element = componentsMap[aItem.data.type];
                 if (!!Element) {
-                    sTitle = aItem.data?.action ? aItem.data?.action.title : 'Report';
+                    /*sTitle = aItem.data?.action ? aItem.data?.action.title : 'Report';
                     if (!!reportTitle)
-                        sTitle = reportTitle;
-
-                    oReport = (
+                        sTitle = reportTitle;*/
+                    sTitle= <Element mode="text" key={aItem.id ? aItem.id : aItem.name}   {...aItem.data} />
+                    /*oReport = (
                         <View className="w-0 h-0" style={{ opacity: 0 }}>
                             <Element key={aItem.id ? aItem.id : aItem.name} ref={refReport} onChangeTitle={setReportTitle} {...aItem.data} />
                         </View>
-                    );
+                    );*/
                 }
             }
 
