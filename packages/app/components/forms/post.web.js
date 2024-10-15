@@ -34,10 +34,10 @@ export default function FormPost(props) {
         props.data.inputs['allow_comments'].caption = '';
 
     return (
-        <View className="w-full max-w-5xl flex-col px-3">
+        <View className="w-full max-w-5xl flex-col">
             <View className="  overflow-hidden flex-col  ">
-                <View className=" flex-row flex-wrap gap-x-2  flex-auto justify-between ">
-                    <View className=" flex-auto mb-4 text-base font-bold text-neutral-800 my-auto ">
+                <View className=" flex-row flex-wrap gap-x-2 flex-auto justify-between items-center mr-1">
+                    <View className=" flex-auto mb-4 ">
                         <Profile {...currentUser} displayType="unit" displaySize="base" />
                     </View>
                     <View className=" mb-4  ">

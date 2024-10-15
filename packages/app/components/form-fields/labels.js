@@ -32,9 +32,9 @@ export default function (props) {
     const { field } = useController({ name, rules, defaultValue });
     const [isModal, setIsModal] = useState(props.isShow);
     const [value2, setValue2] = useState(field.value)
-console.log("----", isModal, props.isShow)
+    console.log("props.isShow", props.isShow)
     useEffect(() => {
-        setIsModal(props.isShow)
+        setIsModal(props.isShow > 0)
     }, [props.isShow]);
 
     const addValue2 = (value) => {

@@ -79,12 +79,12 @@ export function SelectUsers({ onSave, initedData = [], requestUrl, isSingle = fa
         onSave(state.selectedUsers, !isSingle);
     }, [state.selectedUsers, isSingle]);
 
-    return <View className="">
+    return <View className="px-1">
         <KbAvoidingView>
             <Row className="text-center w-full  flex-wrap gap-x-2 ">
                 {state.selectedUsers && state.selectedUsers.map((item) => <User key={item.id} data={item} onSelect={onRemove} />)}
             </Row>
-            <Row className="py-2">
+            <Row className="py-2 gap-x-2 ">
                 <InputRounded
                     placeholder={"Select users..."}
                     className="px-2 mr-2 w-full"

@@ -493,6 +493,12 @@ export const settingsDefault = {
                 link: '/create-ad',
                 icon: 'Megaphone',
             },
+            {
+                name: 'create-course-profile',
+                title: 'Add course',
+                link: '/create-course-profile',
+                icon: 'Books',
+            },
         ],
         menu_account: [
             {
@@ -555,6 +561,7 @@ export const settingsDefault = {
             { title: 'Events', link: '/events-home', icon: 'CalendarCheck' },
             { title: 'Posts', link: '/posts-home', icon: 'ChatCenteredText' },
             { title: 'Discussions', link: '/discussions-home', icon: 'Chats' },
+            { title: 'Courses', link: '/courses-home', icon: 'Books' },
             { title: 'People', link: '/persons-home', icon: 'UsersFour' },
             { title: 'About', link: '/about', icon: 'Info' },
             { title: 'Terms', link: '/terms', icon: 'Question' },
@@ -1376,6 +1383,134 @@ export const settingsDefault = {
             },
             headerSettings: { header: false, footer: false, offset: false },
         },
+
+        //############ COURCES PAGES ############
+        'view-course-profile': {
+            layout: 'profile', //profile-alt, profile
+            blocks: {
+               
+                col0: {
+                    name: 'bx_timeline:get_block_post_profile',
+                    showTitle: false,
+                    showBg: false,
+                },
+                col1: {
+                    name: 'bx_timeline:get_block_view_profile',
+                    showTitle: false,
+                    showBg: false,
+                    perLine: 1,
+                },
+                col2: {
+                    name: 'bx_courses:entity_text_block',
+                    showTitle: false,
+                    showBg: true,
+                    sidebar: true,
+                },
+                col3: {
+                    name: 'bx_courses:entity_info',
+                    showTitle: false,
+                    showBg: true,
+                    sidebar: true,
+                },
+                col4: {
+                    name: 'bx_courses:entity_cover',
+                    showTitle: false,
+                    showBg: false,
+                    sidebar: false,
+                    leftbar: true,
+                },
+            },
+            headerSettings: {
+                offset: false,
+                header: false,
+                cover: 'profile',
+                hideLeftmenu: true,
+                showAltTopMenu: true,
+            },
+        },
+        'course-profile-info': {
+            layout: 'profile',
+            blocks: {
+                col1: {
+                    name: 'bx_courses:entity_info_full',
+                    showTitle: false,
+                    showBg: true,
+                    showPad: true,
+                    perLine: 1,
+                },
+                col2: {
+                    name: 'bx_courses:entity_text_block',
+                    showTitle: false,
+                    showBg: true,
+                    sidebar: false,
+                },
+                col4: {
+                    name: 'bx_persons:entity_cover',
+                    showTitle: false,
+                    showBg: false,
+                    sidebar: false,
+                    leftbar: true,
+                },
+            },
+            headerSettings: {
+                offset: false,
+                header: false,
+                cover: 'profile',
+                hideLeftmenu: true,
+                showAltTopMenu: true,
+            },
+        },
+        'course-profile-friends': {
+            layout: 'profile',
+            blocks: {
+                col2: {
+                    name: 'system:connections_table',
+                    showTitle: false,
+                    showBg: true,
+                    sidebar: false,
+                },
+                col4: {
+                    name: 'bx_courses:entity_cover',
+                    showTitle: false,
+                    showBg: false,
+                    sidebar: false,
+                    leftbar: true,
+                },
+            },
+            headerSettings: {
+                offset: false,
+                header: false,
+                cover: 'profile',
+                hideLeftmenu: true,
+                showAltTopMenu: true,
+            },
+        },
+        'course-profile-subscriptions': {
+            layout: 'profile',
+            blocks: {
+                col2: {
+                    name: 'system:subscribed_me_table',
+                    showTitle: false,
+                    showBg: true,
+                    sidebar: false,
+                },
+                col4: {
+                    name: 'bx_courses:entity_cover',
+                    showTitle: false,
+                    showBg: false,
+                    sidebar: false,
+                    leftbar: true,
+                },
+            },
+            headerSettings: {
+                offset: false,
+                header: false,
+                cover: 'profile',
+                hideLeftmenu: true,
+                showAltTopMenu: true,
+            },
+        },
+
 
         //############ MARKET PAGES ############
         'products-home': {

@@ -16,8 +16,8 @@ export default function DynamicMenu({ name, MenuItem, MenuItemEx, ButtonEx, cont
         let visibleWidth = offsetWidth + (itemRefsMore?.current ? itemRefsMore?.current?.offsetWidth : 0);
         let visibleCount = 0;
         for (let i = 0; i < itemRefs.current.length; i++) {
-            const itemWidth = itemRefs.current[i].offsetWidth;
-            if (!itemRefs?.current[i].className?.includes('hidden')) {
+            const itemWidth = itemRefs.current[i] ? itemRefs.current[i].offsetWidth : 80;
+            if (!itemRefs?.current[i]?.className?.includes('hidden')) {
                 if (visibleWidth + itemWidth > menuWidth) break;
                 visibleWidth += itemWidth;
                 visibleCount++;
