@@ -1510,7 +1510,157 @@ export const settingsDefault = {
                 showAltTopMenu: true,
             },
         },
+        //############ PHOTOS PAGES ############
+        'view-photo': {
+            layout: 'post',
+            top: true,
+            blocks: {
+                author: {
+                    name: 'bx_photos:entity_author',
+                    showTitle: false,
+                    showBg: false,
+                    forList: true,
+                    forHeader: true,
+                },
+                text: {
+                    name: 'bx_photos:entity_text_block',
+                    showTitle: false,
+                    showBg: false,
+                    forList: true,
+                },
+                attachments: {
+                    name: 'bx_photos:entity_attachments',
+                    showTitle: false,
+                    showBg: false,
+                    forList: true,
+                },
+                actions: {
+                    name: 'bx_photos:entity_all_actions',
+                    showTitle: false,
+                    showBg: false,
+                    forList: true,
+                },
+                'comments-empty': {
+                    name: 'static:comments_empty',
+                    showTitle: false,
+                    showBg: false,
+                    forList: true,
+                },
+                comments: {
+                    name: 'bx_photos:entity_comments',
+                    showTitle: false,
+                    showBg: false,
+                },
+            },
+            headerSettings: {
+                header: false,
+                footer: false,
+                offset: false,
+                backButton: true,
+                title: false,
+            },
+        },
+        //############ PHOTOS PAGES ############
+        'view-video': {
+            layout: 'post',
+            top: true,
+            blocks: {
+                author: {
+                    name: 'bx_videos:entity_author',
+                    showTitle: false,
+                    showBg: false,
+                    forList: true,
+                    forHeader: true,
+                },
+                text: {
+                    name: 'bx_videos:entity_text_block',
+                    showTitle: false,
+                    showBg: false,
+                    forList: true,
+                },
+                attachments: {
+                    name: 'bx_videos:entity_attachments',
+                    showTitle: false,
+                    showBg: false,
+                    forList: true,
+                },
+                actions: {
+                    name: 'bx_videos:entity_all_actions',
+                    showTitle: false,
+                    showBg: false,
+                    forList: true,
+                },
+                'comments-empty': {
+                    name: 'static:comments_empty',
+                    showTitle: false,
+                    showBg: false,
+                    forList: true,
+                },
+                comments: {
+                    name: 'bx_videos:entity_comments',
+                    showTitle: false,
+                    showBg: false,
+                },
+            },
+            headerSettings: {
+                header: false,
+                footer: false,
+                offset: false,
+                backButton: true,
+                title: false,
+            },
+        },
 
+        //############ PHOTOS PAGES ############
+        'view-file': {
+            layout: 'post',
+            top: true,
+            blocks: {
+                author: {
+                    name: 'bx_files:entity_author',
+                    showTitle: false,
+                    showBg: false,
+                    forList: true,
+                    forHeader: true,
+                },
+                text: {
+                    name: 'bx_files:entity_text_block',
+                    showTitle: false,
+                    showBg: false,
+                    forList: true,
+                },
+                attachments: {
+                    name: 'bx_files:entity_attachments',
+                    showTitle: false,
+                    showBg: false,
+                    forList: true,
+                },
+                actions: {
+                    name: 'bx_files:entity_all_actions',
+                    showTitle: false,
+                    showBg: false,
+                    forList: true,
+                },
+                'comments-empty': {
+                    name: 'static:comments_empty',
+                    showTitle: false,
+                    showBg: false,
+                    forList: true,
+                },
+                comments: {
+                    name: 'bx_files:entity_comments',
+                    showTitle: false,
+                    showBg: false,
+                },
+            },
+            headerSettings: {
+                header: false,
+                footer: false,
+                offset: false,
+                backButton: true,
+                title: false,
+            },
+        },
 
         //############ MARKET PAGES ############
         'products-home': {
