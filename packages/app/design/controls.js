@@ -304,7 +304,7 @@ export const Button = (props) => {
         if (variant != 'custom') {
             switch (size) {
                 case 'xs':
-                    sizeClasses = `${roundingClass} py-1.5 px-2 `;
+                    sizeClasses = `${roundingClass} p-1.5`;
                     iconContainerClass = `h-4 w-4 ${title ? 'mx-[1px]' : ''}`;
                     iconSize = 16;
                     titleContainerClass += title ? 'mx-1 ' : '';
