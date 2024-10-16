@@ -10,6 +10,7 @@ import { Theme } from 'app/design/theme';
 import Tooltip from 'app/ui/atoms/tooltip';
 import { useWindowDimensions } from 'react-native';
 import Loading from 'app/ui/atoms/loading'
+import { RemoveScroll } from 'react-remove-scroll';
 
 let h11 = '';
 if (Platform.OS === 'android') {
@@ -65,74 +66,38 @@ export function Modal({
 
     const type = typeof title;
 
-    let Cnt = scrollable ? ScrollView : View
+    const Cnt = scrollable ? ScrollView : View
 
-    /* useEffect(() => {
-         if (isWeb) {
-             let element = document.querySelector('.cnt-root');
-     
-             if (onVisible) {
-                 element.style.display = 'none';
-             }
-            else{
-             element.style.display = 'flex';
+    const Content = <View className={`flex-row justify-center left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto md:inset-0 h-modal h-full ${sClassPosition}`}>
+    <View className={`${fullWidth ? 'w-full' : ''}  relative h-full max-w-2xl md:h-auto `}>
+        <Pressable onPress={() => { }} className='relative bg-bgrmodal dark:bg-bgrmodal-d h-full md:h-auto  sm:border sm:border-bdrmodal sm:dark:border-bdrmodal-d sm:rounded-2xl sm:shadow-sm'>
+            {
+                (title || onClose) && <Row className={`items-center justify-${align} ${headerBorder ? ' border-b border-bdr dark:border-bdr-d ' : ''} px-1 py-2.5 sm:p-4 sm:py-3`}>
+                    {(title && type === 'string') && (
+                        <View className='flex-auto pl-1'>
+                            <Text className='text-neutral-700 dark:text-neutral-200 text-xl font-bold '>{title}</Text>
+                        </View>
+                    )}
+                    {(title && type !== 'string') && (title)}
+                    {onClose && (
+                        <View className=''>
+                            <Button variant='text' size='sm' rounded startDecorator='X' onPress={onClose} />
+                        </View>
+                    )}
+                </Row>
             }
-     
-             return () => {
-                 element.style.display = 'flex';
-             };
-         }
-     }, [onVisible]); */
-
-    useEffect(() => {
-        if (isWeb) {
-
-
-            if (onVisible) {
-
-                document.body.style.overflow = 'hidden';
-                document.documentElement.style.overflow = 'hidden';
-
-            }
-            else {
-                document.body.style.overflow = 'auto';
-                document.documentElement.style.overflow = 'auto';
-            }
-
-            return () => {
-                document.body.style.overflow = 'auto';
-                document.documentElement.style.overflow = 'auto';
-            };
-        }
-    }, [onVisible]);
-
+            <Cnt style={styles} className={padding + " eweee overflow-y-auto flex-auto md:h-auto"}>{children}</Cnt>
+        </Pressable>
+    </View>
+</View>
 
     return (
         <ModalDef visible={onVisible} presentationStyle={'pageSheet'} animationType={animation} transparent={isWeb}>
-            <Wrapper className="flex justify-end w-full h-full bg-white/80 dark:bg-black/80 backdrop-blur" {...(isOuterClose && { onPress: onClose })}>
-                <View className={`flex-row justify-center left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto md:inset-0 h-modal h-full ${sClassPosition}`}>
-                    <View className={`${fullWidth ? 'w-full' : ''}  relative h-full max-w-2xl md:h-auto `}>
-                        <Pressable onPress={() => { }} className='relative bg-bgrmodal dark:bg-bgrmodal-d h-full md:h-auto  sm:border sm:border-bdrmodal sm:dark:border-bdrmodal-d sm:rounded-2xl sm:shadow-sm'>
-                            {
-                                (title || onClose) && <Row className={`items-center justify-${align} ${headerBorder ? ' border-b border-bdr dark:border-bdr-d ' : ''} px-1 py-2.5 sm:p-4 sm:py-3`}>
-                                    {(title && type === 'string') && (
-                                        <View className='flex-auto pl-4'>
-                                            <Text className='text-neutral-700 dark:text-neutral-200 text-xl font-bold '>{title}</Text>
-                                        </View>
-                                    )}
-                                    {(title && type !== 'string') && (title)}
-                                    {onClose && (
-                                        <View className=''>
-                                            <Button variant='text' size='sm' rounded startDecorator='X' onPress={onClose} />
-                                        </View>
-                                    )}
-                                </Row>
-                            }
-                            <Cnt style={styles} className={padding + " eweee overflow-y-auto flex-auto md:h-auto"}>{children}</Cnt>
-                        </Pressable>
-                    </View>
-                </View>
+
+            <Wrapper className="pointerEvents flex justify-end w-full h-full bg-white/80 dark:bg-black/80 backdrop-blur" {...(isOuterClose && { onPress: onClose })}>
+               {isWeb ? <RemoveScroll forwardProps>{Content}</RemoveScroll> : Content}
             </Wrapper>
+
         </ModalDef>
     );
 }
@@ -246,6 +211,8 @@ export const Button = (props) => {
         className = '',
         classTextName = '',
         classIconName = '',
+        bgColor = '',
+        textColor = '',
         onPress,
         forwardedRef,
         variant = 'default',
@@ -292,6 +259,9 @@ export const Button = (props) => {
         } else {
             classes += className;
         }
+        if (bgColor){
+            classes = classes.replaceAll(/bg-\S+/g, '').replaceAll(/ring-\S+/g, '') + ` ${bgColor} `;
+        }
         if (variant === 'none') {
             classes += 'justify-start ';
         } else {
@@ -301,14 +271,17 @@ export const Button = (props) => {
             classes += ' bg-primary/10 dark:bg-primary-d/10 hover:bg-primary/20 dark:hover:bg-primary-d/20 ';
         }
         return classes;
-    }, [fullWidth, disabled, variant, solid, ThemeCssClasses, className, align, pressed]);
+    }, [fullWidth, disabled, variant, solid, ThemeCssClasses, className, align, pressed, bgColor]);
 
     const sClassText = useMemo(() => {
         let classes = 'whitespace-nowrap text-ellipsis overflow-hidden tracking-tight';
         if (variant !== 'custom') {
             classes += ThemeCssClasses[`u-btn-${variant}-text`];
         } else {
-            classes +=  ` ${classTextName}`;
+            classes += ` ${classTextName}`;
+        }
+        if (textColor){
+            classes = classes.replaceAll(/text-\S+/g, '') + ` ${textColor} `;
         }
         if (pressed) {
             classes += ' text-primary-700 dark:text-primary-600 group-hover:text-primary-800 dark:group-hover:text-primary-500';
@@ -328,39 +301,39 @@ export const Button = (props) => {
         const sClassFullRounding = variant !== 'group-item' ? 'rounded-full' : '';
         const roundingClass = rounded ? sClassFullRounding : sClassDefaultRounding;
 
-if (variant != 'custom'){
-        switch (size) {
-            case 'xs':
-                sizeClasses = `${roundingClass} py-1.5 px-2 `;
-                iconContainerClass = `h-4 w-4 ${title ? 'mx-[1px]' : ''}`;
-                iconSize = 16;
-                titleContainerClass += title ? 'mx-1 ' : '';
-                break;
-            case 'sm':
-                sizeClasses = `${roundingClass} p-2 `;
-                iconContainerClass = `h-5 w-5 ${title ? '' : ''}`;
-                iconSize = 20;
-                titleContainerClass += title ? 'mx-2 ' : '';
-                break;
-            case 'base':
-                sizeClasses = `lalal ${padding} ${roundingClass} ${padding ? `p-${padding}` : 'p-2.5'} `;
-                iconContainerClass = `h-6 w-6 ${title ? 'mx-1' : ''}`;
-                iconSize = 24;
-                titleContainerClass += title ? 'mx-2 ' : '';
-                break;
-            case 'lg':
-                sizeClasses = `${roundingClass} ${padding ? `p-${padding}` : 'p-2.5'} `;
-                iconContainerClass = `h-8 w-8 ${title ? 'mx-1.5' : ''}`;
-                iconSize = 32;
-                titleContainerClass += title ? 'mx-1.5 ' : '';
-                break;
-            default:
-                sizeClasses = `${roundingClass} ${padding ? `p-${padding}` : 'p-2.5'} `;
-                iconContainerClass = `h-6 w-6 ${title ? 'mx-1' : ''}`;
-                iconSize = 24;
-                titleContainerClass += title ? 'mx-2 ' : '';
+        if (variant != 'custom') {
+            switch (size) {
+                case 'xs':
+                    sizeClasses = `${roundingClass} py-1.5 px-2 `;
+                    iconContainerClass = `h-4 w-4 ${title ? 'mx-[1px]' : ''}`;
+                    iconSize = 16;
+                    titleContainerClass += title ? 'mx-1 ' : '';
+                    break;
+                case 'sm':
+                    sizeClasses = `${roundingClass} p-2 `;
+                    iconContainerClass = `h-5 w-5 ${title ? '' : ''}`;
+                    iconSize = 20;
+                    titleContainerClass += title ? 'mx-2 ' : '';
+                    break;
+                case 'base':
+                    sizeClasses = `lalal ${padding} ${roundingClass} ${padding ? `p-${padding}` : 'p-2.5'} `;
+                    iconContainerClass = `h-6 w-6 ${title ? 'mx-1' : ''}`;
+                    iconSize = 24;
+                    titleContainerClass += title ? 'mx-2 ' : '';
+                    break;
+                case 'lg':
+                    sizeClasses = `${roundingClass} ${padding ? `p-${padding}` : 'p-2.5'} `;
+                    iconContainerClass = `h-8 w-8 ${title ? 'mx-1.5' : ''}`;
+                    iconSize = 32;
+                    titleContainerClass += title ? 'mx-1.5 ' : '';
+                    break;
+                default:
+                    sizeClasses = `${roundingClass} ${padding ? `p-${padding}` : 'p-2.5'} `;
+                    iconContainerClass = `h-6 w-6 ${title ? 'mx-1' : ''}`;
+                    iconSize = 24;
+                    titleContainerClass += title ? 'mx-2 ' : '';
+            }
         }
-}
         return {
             sIconContainer: iconContainerClass,
             iIconSize: iconSize,
@@ -457,21 +430,21 @@ export function ButtonMenuGroupItem(props) {
 }
 
 export function ButtonMenuActionDefault(props) {
-    const { variant, size, title, startDecorator, endDecorator, onPress, pressed, rounded, fullWidth, disabled, showTitleFromSize,padding,classTextName, ...rest } = props
+    const { variant, size, title, startDecorator, endDecorator, onPress, pressed, rounded, fullWidth, disabled, showTitleFromSize, padding, classTextName, ...rest } = props
     return <Button variant={!!variant ? variant : appSetting('layout', 'button_style_for_actions')} size={!!size ? size : 'sm'} padding={padding} classTextName={classTextName} title={title} showTitleFromSize={showTitleFromSize} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} pressed={pressed != undefined ? pressed : false} rounded={rounded != undefined ? rounded : true} disabled={disabled != undefined ? disabled : false} fullWidth={fullWidth != undefined ? fullWidth : false} />
 }
 
 export function ButtonMenuActionText(props) {
-    const { variant, size, title, startDecorator, endDecorator, onPress, pressed, rounded, fullWidth, disabled, showTitleFromSize,padding,classTextName,  ...rest } = props
+    const { variant, size, title, startDecorator, endDecorator, onPress, pressed, rounded, fullWidth, disabled, showTitleFromSize, padding, classTextName, ...rest } = props
     return <Button variant={!!variant ? variant : 'text'} size={!!size ? size : 'sm'} title={title} showTitleFromSize={showTitleFromSize} padding={padding} classTextName={classTextName} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} pressed={pressed != undefined ? pressed : false} rounded={rounded != undefined ? rounded : true} disabled={disabled != undefined ? disabled : false} fullWidth={fullWidth != undefined ? fullWidth : false} />
 }
 
 export function ButtonMenuCounterDefault(props) {
-    const { variant, size, title, startDecorator, endDecorator, onPress, pressed, rounded, fullWidth, disabled, showTitleFromSize, padding,classTextName, ...rest } = props
+    const { variant, size, title, startDecorator, endDecorator, onPress, pressed, rounded, fullWidth, disabled, showTitleFromSize, padding, classTextName, ...rest } = props
     return <Button variant={!!variant ? variant : appSetting('layout', 'button_style_for_actions')} size={!!size ? size : 'sm'} padding={padding} title={title} classTextName={classTextName} showTitleFromSize={showTitleFromSize} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} pressed={pressed != undefined ? pressed : false} rounded={rounded != undefined ? rounded : true} disabled={disabled != undefined ? disabled : false} fullWidth={fullWidth != undefined ? fullWidth : false} />
 }
 
 export function ButtonMenuCounterText(props) {
-    const { variant, size, title, startDecorator, endDecorator, onPress, pressed, rounded, fullWidth, disabled, showTitleFromSize, padding,classTextName, ...rest } = props
+    const { variant, size, title, startDecorator, endDecorator, onPress, pressed, rounded, fullWidth, disabled, showTitleFromSize, padding, classTextName, ...rest } = props
     return <Button variant={!!variant ? variant : appSetting('layout', 'button_style_for_actions')} size={!!size ? size : 'sm'} padding={padding} title={title} classTextName={classTextName} showTitleFromSize={showTitleFromSize} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} pressed={pressed != undefined ? pressed : false} rounded={rounded != undefined ? rounded : true} disabled={disabled != undefined ? disabled : false} fullWidth={fullWidth != undefined ? fullWidth : false} />
 }

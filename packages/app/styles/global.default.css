@@ -475,6 +475,11 @@ body {
     height: 0;
 }
 
+.pointerEvents {
+   /* overflow: hidden;*/
+   pointer-events: auto;
+}
+
 .ProseMirror .is-editor-empty::before {
     content: attr(data-placeholder);
     float: left;

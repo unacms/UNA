@@ -26,7 +26,9 @@ import Chart from './chart';
 import Comments from './comments';
 import CommentContent from './comment_content';
 import NotificationsSettings from './notifications_settings';
-
+import CourseStructure from './course_structure';
+import ModuleStructure from './module_structure';
+import LessonStructure from './lesson_structure';
 export const componentsMapDefault = {
     chart: Chart,
     comment_content:CommentContent,
@@ -53,6 +55,9 @@ export const componentsMapDefault = {
     notifications_settings: NotificationsSettings,
     dashboard_stat: DashboardStat,
     categories_list: CategoriesList,
+    course_structure: CourseStructure,
+    module_structure: ModuleStructure,
+    lesson_structure: LessonStructure,
     lang: Lang,
     raw: Lang,
     html: Lang,

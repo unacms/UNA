@@ -166,7 +166,6 @@ const theme = {
 }
 
 module.exports = (() => {
-    console.log('mergedConfig');
     const mergedConfig = merge({ theme, colors }, configCustom);
     return mergedConfig;
   })();

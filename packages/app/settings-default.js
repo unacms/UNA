@@ -228,6 +228,12 @@ export const settingsDefault = {
             { width: 768, count: 4 },
             { width: 640, count: 3 },
         ],
+        per_line_bx_courses: [
+            { width: 1280, count: 3 },
+            { width: 1024, count: 2 },
+            { width: 768, count: 1 },
+            { width: 640, count: 1 },
+        ],
     },
     social_actions: {
         like: {
@@ -1389,8 +1395,18 @@ export const settingsDefault = {
             layout: 'profile', //profile-alt, profile
             blocks: {
                
-                col0: {
+                /*col0: {
                     name: 'bx_timeline:get_block_post_profile',
+                    showTitle: false,
+                    showBg: false,
+                },*/
+                col5: {
+                    name: 'bx_courses:entity_structure_l1_block',
+                    showTitle: false,
+                    showBg: false,
+                },
+                col6: {
+                    name: 'bx_courses:entity_structure_l2_block',
                     showTitle: false,
                     showBg: false,
                 },
@@ -1400,7 +1416,7 @@ export const settingsDefault = {
                     showBg: false,
                     perLine: 1,
                 },
-                col2: {
+               /* col2: {
                     name: 'bx_courses:entity_text_block',
                     showTitle: false,
                     showBg: true,
@@ -1418,7 +1434,7 @@ export const settingsDefault = {
                     showBg: false,
                     sidebar: false,
                     leftbar: true,
-                },
+                },*/
             },
             headerSettings: {
                 offset: false,

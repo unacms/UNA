@@ -185,10 +185,13 @@ const Cell = React.memo(({ cell, indexRow, id, toggleSwitch, setSelection, selec
     return  <Text className="text-neutral-800 dark:text-neutral-200">{JSON.stringify(cell)}</Text>
 });
 
-export default function ElementGrid({data}) {
+export default function ElementGrid(props) {
     const { setBottomSheetData } = useBottomSheetData();
-
+const data = props.data;
     let settings = data.settings;
+    console.log("datadata", props)
+    if (!data.header)
+        return <></>
     let header = data.header.filter((item) => (item?.name != 'reports'))
     const [dataItems, setDataItems] = useState({data: data.data, settings:settings });
     const [selected, setSelected] = useState([]);
@@ -221,7 +224,7 @@ export default function ElementGrid({data}) {
         if (data.type == 'modal'){
             let fetchedData = await fetchData(data.action, data.params);
             let cnt = {content: fetchedData.data, designbox_id: 0}
-            setBottomSheetData({title:cnt.content[0]?.title ? cnt.content[0]?.title : " ", content:<BlockByData onFormEmpty = {() => handleUpdate()} block = {cnt}  />});
+            setBottomSheetData({title:cnt.content[0]?.title ? cnt.content[0]?.title : " ", content:<View className='px-1'><BlockByData onFormEmpty = {() => handleUpdate()} block = {cnt}  /></View>});
             //setModalContent(cnt);
         }
     };

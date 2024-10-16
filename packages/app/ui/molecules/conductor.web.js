@@ -243,6 +243,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     const getNumCols = (width) => {
 
         let blocksroutes = currentRoute?.blocks;
+       
         width = windowWidth;
         // if (!blocksroutes)
         //    return 1;
@@ -262,7 +263,11 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         if (leftSideBar) {
             perLineSettings = appSetting('browse', 'per_line_left_side_bar');
         }
-
+        const perLineSettingsByModule = appSetting('browse', 'per_line_'+currentRoute?.endpoint?.module);
+        if (perLineSettingsByModule){
+            perLineSettings=perLineSettingsByModule;
+        }
+        console.log("blocksroutes", perLineSettings, currentRoute?.endpoint?.module)
         for (let i = 0; i < perLineSettings.length; i++) {
             if (width > perLineSettings[i].width) {
                 return perLineSettings[i].count;
