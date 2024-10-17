@@ -3,103 +3,137 @@ import { VirtuosoGrid, Virtuoso } from 'react-virtuoso'
 import { View } from 'app/design/view'
 import { View as ReactNativeView } from 'react-native'
 import { styled } from 'nativewind'
-import { Dimensions } from 'react-native';   
 import { storageSet, appSetting } from 'app/lib/util'
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
+import { useCallback } from 'react';
 
 export default function UniList(props) {
-    let { data, renderItem, onEndReached,maxToRenderPerBatch, initialNumToRender, contentContainerStyle, initialScrollIndex, ListHeaderComponent, ListFooterComponent, refer, onScrollToIndex,
-          numColumns, keyExtractor, useWindowScroll, height, listState, endpoint, index, viewParams, topItemCount, scrollToLastItem,refreshing, onRefresh, ...rest } = props
-   
-    data = data.filter((v,i,a)=>a.findIndex(t=>(t.id === v.id)) === i);
-    
-    const itemContent = (index, data) => {
-        return renderItem({item: data, index});
-    }
+    let { sortable, data, renderItem, onEndReached, maxToRenderPerBatch, initialNumToRender, contentContainerStyle, initialScrollIndex, ListHeaderComponent, ListFooterComponent, refer, onScrollToIndex,
+        onSort, numColumns, keyExtractor, useWindowScroll, height, listState, endpoint, index, viewParams, topItemCount, scrollToLastItem, refreshing, onRefresh, ...rest } = props
 
-    if (props.no_scroll){
+    data = data.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i);
+
+    const itemContent = useCallback((index, data) => {
+        return renderItem({ item: data, index });
+    }, [renderItem]);
+
+    const itemContentSorted = useCallback((index, data, provided, isDragging) => {
+        return (
+
+            <div
+                {...provided.draggableProps}
+                {...provided.dragHandleProps}
+                ref={provided.innerRef}
+                style={provided.draggableProps.style}
+                className={`item ${isDragging ? "is-dragging" : ""}`}
+            >
+                {itemContent(index, data)}
+            </div>
+
+        );
+
+    }, [itemContent]);
+
+    if (props.no_scroll) {
         return <View>
             {data.map((item, index) => {
-                return renderItem({item: item, index});
+                return renderItem({ item: item, index });
             })}
         </View>;
     }
-    let windowHeight = Dimensions.get('window').height;
-    let style={}
-    if (height){
-        windowHeight = height;
-        style={ height: height + 'px' }
-    }
+
+    const style = height ? { height: `${height}px` } : {};
 
     const isScrolling = (isFinished) => {
-        
-        if (!isFinished && refer?.current && refer.current.getState && rest.storagekey){
-            
+
+        if (!isFinished && refer?.current && refer.current.getState && rest.storagekey) {
+
             refer.current.getState((state) => {
-                const ch = {state: state}
+                const ch = { state: state }
                 storageSet('ul:state', rest.storagekey, ch);
             });
         }
     }
 
     const stateChanged = (state) => {
-        const ch = {state: state}
+        const ch = { state: state }
         storageSet('ul:state', rest.storagekey, ch);
     }
 
-    if (numColumns > 1){
-        const itemComponent = styled(ReactNativeView, ' w-1/' + props.numColumns)
-        const listComponent = styled(ReactNativeView, appSetting('layout', 'max_width_block') + ' mx-auto flex flex-wrap flex-row')
+    const ItemComponent = styled(ReactNativeView, ' w-1/' + props.numColumns)
+    const ListComponent = styled(ReactNativeView, appSetting('layout', 'max_width_block') + ' mx-auto flex flex-wrap flex-row')
 
-        return ( <><VirtuosoGrid 
-                useWindowScroll = {!height ? true : false}
-                data={data}
-                style={style}
-                itemContent={itemContent} 
-                stateChanged = {stateChanged}
-                     /*  
-        restore it on fix https://github.com/petyosi/react-virtuoso/issues/1114
-        {...(listState?.viewport ? { restoreStateFrom: listState } : {})} */
+    const commonVirtuosoProps = {
+        data,
+        useWindowScroll: !height,
+        style,
+        ref: refer,
+        endReached: onEndReached,
+        overscan: 2500,
+        components: numColumns > 1 ? {
+            List: ListComponent,
+            Item: ItemComponent,
+            Footer: () => {
+                return ListFooterComponent
+            },
+        } : {
+            Footer: () => ListFooterComponent,
+            Header: () => ListHeaderComponent,
+        },
+        isScrolling,
+        ...rest,
+    };
+
+    if (numColumns > 1) {
+        return (
+            <VirtuosoGrid
+                {...commonVirtuosoProps}
+                itemContent={itemContent}
+                stateChanged={stateChanged}
                 {...(scrollToLastItem ? { initialTopMostItemIndex: data.length } : {})}
-                overscan={900}
-                ref = {refer}   
-                endReached={onEndReached}
                 atBottomStateChange={onEndReached}
-                components={{
-                    List: listComponent,
-                    Item: itemComponent,
-                    Footer: () => {
-                        return ListFooterComponent
-                    },
-                }}
-                {...rest}
-            /></>
+            />
         )
     }
-    else{
-        //increaseViewportBy={windowHeight - 400}
+    else {
+        if (sortable) {
+            return (
+                <DragDropContext onDragEnd={onSort}>
+                    <Droppable
+                        droppableId="droppable"
+                        mode="virtual"
+                        renderClone={(provided, snapshot, rubric) => (
+                            itemContentSorted(rubric.source.index, data[rubric.source.index], provided, snapshot.isDragging)
+
+                        )}
+                    >
+                        {(provided) => (
+                            <View {...provided.droppableProps} ref={provided.innerRef}>
+                                <Virtuoso
+                                    itemContent={(index, item) => (
+                                        <Draggable draggableId={`${item.id}`} index={index} key={item.id}>
+                                            {(provided) => itemContentSorted(index, item, provided, false)}
+                                        </Draggable>
+                                    )}
+                                    {...commonVirtuosoProps}
+                                    {...(listState?.ranges && { restoreStateFrom: listState })}
+                                    {...(scrollToLastItem && { initialTopMostItemIndex: data.length })}
+
+                                />
+                                {provided.placeholder}
+                            </View>
+                        )}
+                    </Droppable>
+                </DragDropContext>
+            )
+        }
         return (
-            <><Virtuoso 
-                useWindowScroll = {!height ? true : false}
-                data={data}
-                topItemCount={topItemCount}
-                isScrolling = {isScrolling}
-                style={style}
-                {...(listState?.ranges ? { restoreStateFrom: listState } : {})}
+            <Virtuoso
                 itemContent={itemContent}
-                ref = {refer}  
-                endReached={onEndReached}
-                overscan={2500}
-                {...(scrollToLastItem ? { initialTopMostItemIndex: data.length } : {})}
-                components={{
-                    Footer: () => {
-                        return ListFooterComponent
-                    },
-                    Header: () => {
-                        return ListHeaderComponent
-                    },
-                }}
-                {...rest}
-            /></>
+                {...commonVirtuosoProps}
+                {...(listState?.ranges && { restoreStateFrom: listState })}
+                {...(scrollToLastItem && { initialTopMostItemIndex: data.length })}
+            />
         )
     }
 }

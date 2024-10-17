@@ -18,9 +18,8 @@ import { stripTags } from 'app/lib/util';
 import { Modal } from 'app/design/controls'
 import { BlockByData } from 'app/components/blocks-content/object-data-array-int';
 import { useWindowDimensions} from 'react-native';
-//import dynamic from 'next/dynamic'
-import { getAlert } from 'app/lib/util';
 import { useBottomSheetData } from 'app/context/bottomsheet';
+import { Icon } from 'app/ui/atoms/icon'
 
 function Stripe(props) {
     const computedData = useMemo(() => {
@@ -33,7 +32,14 @@ function Stripe(props) {
     return computedData;
 }
 
-const getWidth = (width) => {
+const getWidth1 = (width) => {
+    if(!width)
+        return'';
+
+    return width
+}
+
+/*const getWidth = (width) => {
     if(!width)
         return'';
 
@@ -65,7 +71,7 @@ const getWidth = (width) => {
         }
     
         return closest;
-};
+};*/
 
 
 
@@ -142,8 +148,10 @@ const Cell = React.memo(({ cell, indexRow, id, toggleSwitch, setSelection, selec
             return <Link href={cell.data.url}><Text>{cell.data.text}</Text></Link>
         case 'text':
             return <Text className="text-neutral-800 dark:text-neutral-200">{stripTags(cell.value)}</Text>
-        case 'order': //TODO
-            return <Text></Text>
+        case 'order': 
+            return <Text className="text-neutral-800 dark:text-neutral-200 text-lg">
+                <Icon icon='ArrowsVertical'/>
+                </Text>
         case 'switcher':
             return <>
                 <Switch
@@ -189,10 +197,10 @@ export default function ElementGrid(props) {
     const { setBottomSheetData } = useBottomSheetData();
 const data = props.data;
     let settings = data.settings;
-    console.log("datadata", props)
     if (!data.header)
         return <></>
-    let header = data.header.filter((item) => (item?.name != 'reports'))
+    const header = data.header.filter((item) => (item?.name != 'reports'))
+    const isSortable = header.find((item) => item?.name == 'order');
     const [dataItems, setDataItems] = useState({data: data.data, settings:settings });
     const [selected, setSelected] = useState([]);
     const [showConfirm, setShowConfirm] = useState({show:false, cb:null});
@@ -329,6 +337,16 @@ const data = props.data;
         setSelectedFilter(value);       
     };
 
+    const handleSort = useCallback((result) => {
+        if (!result.destination) return;
+        const updatedData = [...dataItems.data];
+        const [removed] = updatedData.splice(result.source.index, 1);
+        updatedData.splice(result.destination.index, 0, removed);
+        setDataItems({ ...dataItems, data: updatedData });
+        fetchData('reorder', '&' + updatedData.map(item => `${settings.object}_row[]=${item.id}`).join('&'));
+    }, [dataItems, settings, fetchData]);
+    
+
     const resetData = () => {
         setEndReached(false);
         let s = dataItems.settings;
@@ -407,12 +425,13 @@ const data = props.data;
             </Row>
         </Row>
         <View className='border border-bdrnavbar dark:border-bdrnavbar-d rounded-xl'>
-            <Row className='w-full border-b  rounded-t-xl border-bdrnavbar dark:border-bdrnavbar-d justify-between py-2  bg-bgrcard dark:bg-bgrcard-d lg:px-2'>
+            <Row className='w-full border-b  rounded-t-xl border-bdrnavbar dark:border-bdrnavbar-d justify-between py-2  bg-bgrcard dark:bg-bgrcard-d '>
                 {
                     header.map((itemCell, index) => {
+                        //getWidth(itemCell.width) 
                         return (
-                            <View key={'header'  + index} className={getWidth(itemCell.width) + ' py-1 p-1 xl:p-2 '}>
-                                <Text className="font-bold text-neutral-800 dark:text-neutral-200">{itemCell.title}</Text>
+                            <View key={'header'  + index} style={{width:getWidth1(itemCell.width)}} className={' py-1 p-1 xl:p-2 '}>
+                                <Text className="font-bold text-neutral-800 dark:text-neutral-200">{itemCell.title == 'Select' ? '' : itemCell.title}</Text>
                             </View>
                             
                         );
@@ -422,13 +441,16 @@ const data = props.data;
             {(endReached && dataItems.data.length == 0) && <View className=" items-center pt-4"><Text className="text-neutral-800 dark:text-neutral-200">Nothing to show</Text></View>}
             <UniList
                 height={400}
+                sortable={isSortable}
+                onSort={handleSort}
                 data={dataItems.data}
                 onEndReached = {handleEndReached} 
                 renderItem={({item, index: indexRow }) => {
                     return (
-                        <Row className='border-b border-bdrnavbar dark:border-bdrnavbar-d justify-between px-2'>
+                        //className={`${getWidth(cellHeader.width)}
+                        <Row className='border-b border-bdrnavbar dark:border-bdrnavbar-d justify-between '>
                             {header.map((cellHeader, index) => (
-                                <View key={'cell_' + indexRow + '_' + index} className={`${getWidth(cellHeader.width)} py-1 p-1 xl:p-2 justify-center`}>
+                                <View key={'cell_' + indexRow + '_' + index} style={{width:getWidth1(cellHeader.width)}}  className={`py-1 p-1 xl:p-2 justify-center`}>
                                     <Cell 
                                         cell={item[cellHeader.name]} 
                                         indexRow={indexRow} 

@@ -671,7 +671,7 @@ export const settingsDefault = {
             {
                 key: '/tab1',
                 title: 'Messages',
-                url: '/posts-home',
+                url: '/edit-course-content/test-cource?parent_id=1',
                 icon: 'ChatTeardropDots',
             },
             {

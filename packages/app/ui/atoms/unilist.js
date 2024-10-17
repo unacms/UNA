@@ -4,6 +4,11 @@ import { RefreshControl } from 'react-native';
 import { View } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { FlatList} from 'react-native';
+/*
+import DraggableFlatList, {
+    RenderItemParams,
+  } from "react-native-draggable-flatlist";
+*/
 
 export default function UniList(props) {
     let { data,mode, renderItem, onEndReached,maxToRenderPerBatch, initialNumToRender, ListFooterComponent, refer, onScrollToIndex, numColumns, keyExtractor, unit, refreshing, onRefresh, ...rest } = props

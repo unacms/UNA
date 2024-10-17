@@ -145,43 +145,48 @@ export default function Unit(props) {
 }
 
 function BaseUnit({ data, imageSizes, oMenuItemPrimary, oMenuItemsMore, bMenuItemsMoreShow }) {
-    const persents = 56
-    const buttonCaption = "Продолжить";
-    const m_counter = [5, 10];
+    const persents = data.percent;
+    const buttonCaption = data.pass_title;
+    const m_counter = [data.counters, 10];
     const l_counter = [10, 40];
+    console.log("datadatadata", data)
     return (
         <>
-            <Card margin="m-2" rounded="rounded-2xl">
+            <Card margin="m-2" rounded="rounded-2xl bg-gray-400">
                 <Link className="course " href={data.url} >
                     <View className="flex-col p-4  flex-auto items-between justify-between h-52 ">
                         <View >
-                        <Row className='w-full mb-4'>
-                            <View className='w-4/5'>
-                                <Row className='mb-2'>
-                                    <Progress value={persents} />   
-                                </Row>
-                                <Text className={"text-xs"}>Пройдено {persents}%</Text>
-                            </View>
-                            <View className="flex-row w-full ">
-                                {(bMenuItemsMoreShow && !!oMenuItemsMore &&
-                                    oMenuItemsMore.items.length > 0) && (
-                                        <MoreMenu oMenuItemsMore={oMenuItemsMore} data={data} popupVisible={popupVisible} setPopupVisible={setPopupVisible} />
-                                    )}
-                            </View>
-                        </Row>
-                        <Text
-                            numberOfLines={2}
-                            className=" text-lg leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-primary group-hover:dark:text-primary-d"
-                        >
-                            {data.title}
-                        </Text>
+                            <Row className='w-full mb-4'>
+                                <View className='w-4/5'>
+                                    <Row className='mb-2'>
+                                        <Progress value={persents} />
+                                    </Row>
+                                    <Text className={"text-xs text-white"}>Пройдено {persents}%</Text>
+                                </View>
+                                <View className="flex-row w-full ">
+                                    {(bMenuItemsMoreShow && !!oMenuItemsMore &&
+                                        oMenuItemsMore.items.length > 0) && (
+                                            <MoreMenu oMenuItemsMore={oMenuItemsMore} data={data} popupVisible={popupVisible} setPopupVisible={setPopupVisible} />
+                                        )}
+                                </View>
+                            </Row>
+                            <Text
+                                numberOfLines={2}
+                                className="text-white text-lg leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-primary group-hover:dark:text-primary-d"
+                            >
+                                {data.title}
+                            </Text>
                         </View>
                         <Row className='gap-x-2 justify-between w-full '>
                             <Row className='gap-x-2 items-end'>
-                                <Button variant="outline" title={`${m_counter[0]}/${m_counter[1]} modules`} size="xs" rounded />
-                                <Button variant="outline" title={`${l_counter[0]}/${l_counter[1]} lessons`} size="xs" rounded />
+                                {data.counters.map((item) => {
+                                    return (
+                                        <Button bgColor={`bg-white`} variant="outline" title={`${item.progress} ${item.title}`} size="xs" rounded />
+                                    )
+
+                                })}
                             </Row>
-                            <Button variant="primary" title={buttonCaption} size="sm" rounded />
+                            {data.show_pass && <Button variant="primary" title={buttonCaption} size="sm" rounded />}
                         </Row>
                     </View>
                 </Link>

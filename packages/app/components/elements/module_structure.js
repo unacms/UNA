@@ -1,15 +1,22 @@
 import { View, Row, Pressable, ScrollView } from 'app/design/view'
+import { useState } from 'react'
 import { Text, H1C } from 'app/design/typography'
 import Link from 'app/ui/atoms/link'
 import Card from 'app/ui/molecules/card'
 import CircularProgress from 'app/ui/atoms/circular_progress'
-import { Button } from 'app/design/controls'
+import { Button, Modal } from 'app/design/controls'
 import { Icon } from 'app/ui/atoms/icon'
+import { fetcher } from 'app/lib/fetcher'
+
+async function GetLessonData() {
+    const sResponse = await fetcher(['/api.php?r=system/set_page_block_data/TemplServicePages&params[]=' + blockId + '&params[]=' + contentId + '&params[]=' + contentModule, null, JSON.stringify(data)]);
+//https://ci.una.io/test3/api.php?r=bx_courses/entity_node_block/&params[]=1&params[]=4&demo=1
+}
 
 export default function CourseStructure(props) {
     const data = props.data;
-    console.log("data555", props)
-
+    //console.log("data555", props)
+    const [lessonData, setLessonData] = useState(null)
     return <View >
         {
             props.data.map((item) => {
@@ -20,18 +27,20 @@ export default function CourseStructure(props) {
                 if (item.pass_status == "in process") {
                     icon = "HourglassSimple";
                     color = "red-400";
-textColor = "white"
+                    textColor = "white"
                 }
                 if (item.pass_status == "not started") {
                     icon = "BookmarkSimple";
                     color = "gray-500";
-textColor = "white"
+                    textColor = "white"
                 }
 
-
+// <Link href={item.link}>
                 return (
+<>
+                     {lessonData > 0  && <Modal></Modal>}
                     <Card rounded=' rounded-none sm:rounded-2xl  ' margin='mx-2  w-full p-3 sm:p-4 mb-1 sm:mb-4 '>
-                        <Link href={item.link}>
+                       
                             <Row className='w-full'>
                                 <View className='items-center ml-4 pr-8 mr-8 border-r border-bdr dark:border-bdr-d justify-between'>
 
@@ -48,14 +57,15 @@ textColor = "white"
                                     <Button startDecorator={icon} variant="default" textColor={`text-${textColor}`} bgColor={`bg-${color}`} title={item.pass_status} size="xs" rounded />
                                 </View>
                                 <View className='items-end justify-center'>
-                                <Button endDecorator="ArrowRight" variant="default" title={item.pass_title} size="sm" rounded />
+                                    <Button endDecorator="ArrowRight" variant="default" title={item.pass_title} size="sm" rounded onPress={() => { setLessonData(item.id) }} />
                                 </View>
                             </Row>
                             <View>
-                               
+
                             </View>
-                        </Link>
+                        
                     </Card>
+                    </>
                 )
             })
         }
