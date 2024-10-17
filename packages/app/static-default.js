@@ -490,7 +490,7 @@ const ComponentsDummy = (
             </Text>
         </Row>
 
-        <Row className="w-1/5 mb-auto  text-gray-800 bg-gray-200 dark:bg-gray-950 gap-x-1 py-1 px-2 rounded-full dark:text-gray-200 ">
+        <Row className="w-1/5 mb-auto bg-sky-400 bg-indigo-400 text-gray-800 bg-gray-200 dark:bg-gray-950 gap-x-1 py-1 px-2 rounded-full dark:text-gray-200 ">
             <Icon
                 className="text-gray-600 dark:text-gray-400"
                 icon="ArrowFatUp"
