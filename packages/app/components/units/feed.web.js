@@ -42,7 +42,7 @@ function DefaultUnit(data) {
                 commentsData={res.data} />
         })
     }
-    if (isCommentsModal && data.menu_actions?.items[0].data?.callback)
+    if (isCommentsModal && data.menu_actions?.items[0] && data.menu_actions?.items[0].data?.callback)
         data.menu_actions.items.find(x => x.name == "item-comment").data.callback = showCommentsModal
 
     if (viewState.view == 'deleted')
