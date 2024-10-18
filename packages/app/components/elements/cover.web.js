@@ -75,8 +75,8 @@ export default function (props) {
     const { t } = useTranslation();
     const { currentUser, setCurrentUser } = useCurrentUser()
     const data = props.data
-    const mode = props.mode
-    let { width } = useWindowDimensions()
+    const cover_mode_by_type = appSetting('layout', 'cover_mode', props.data?.profile?.module);
+    const mode = cover_mode_by_type || props.mode
     let bPerson = props.data.profile.module == 'bx_persons' ? true : false
     const [coverUrl, setCoverUrl] = useState(data.cover.src)
     const [pictureUrl, setPictureUrl] = useState(data.profile.url_avatar)
@@ -85,6 +85,7 @@ export default function (props) {
     const so = data.cover.storage
     const img_trans = ''
     const c = data.profile.info.id
+
     const handleUpload = async (mode) => {
         const url =
             '/api.php?r=system/get_data_api/TemplUploaderServices/&params[]=&uo=' +
@@ -265,13 +266,7 @@ export default function (props) {
                         </View>
                     </View>
                 ) : (
-                    <View
-                        className={' h-24 w-auto sm:rounded-xl overflow-hidden'}
-                    >
-                        <View className="absolute lg:hidden top-4 left-4 z-50">
-                            {getBackButtonWeb()}
-                        </View>
-                    </View>
+                    <></>
                 )}
                 <View className="flex-col md:flex-row gap-x-4 px-4 py-2 ">
                     {bPerson && (
@@ -304,7 +299,7 @@ export default function (props) {
                     
                         <View className=" flex-auto flex-col justify-between my-auto  ">
 
-                            <Row className=" flex-row flex-auto items-center gap-x-2 pb-4 ">
+                            <Row className=" flex-row flex-auto items-center gap-x-2 ">{/* pb-4*/}
                                 <Text
                                     className="tracking-tight text-2xl sm:text-3xl font-bold text-neutral-900 dark:text-neutral-50"
                                     numberOfLines={2}
@@ -322,7 +317,7 @@ export default function (props) {
                            
                             <CoverMenuMeta {...data.meta_menu} />
                         </View>
-                        <View className="flex-auto max-w-96 py-4 ">
+                        <View className={`flex-auto max-w-96 ${mode !== 'min' && 'py-4'}`}>
                             <CoverMenu {...data.actions_menu} uri={props?.uri} />
                         </View>
                 </View>
