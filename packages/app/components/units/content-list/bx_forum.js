@@ -85,10 +85,10 @@ export default function Unit(props) {
                         <View className="flex-col gap-y-2 hidden sm:flex w-24 flex-none">
                             <View className="border p-1 border-primary/10 relative flex-none  h-24 w-24 flex-col gap-y-1 bg-primary/10 rounded-xl overflow-hidden items-center justify-center">
                                 <Text className="text-4xl">
-                                    {data.category.icon}
+                                    {data.category?.icon}
                                 </Text>
                                 <Text className="text-primary-600 dark:text-primary-400 tracking-tighter text-xs">
-                                    {data.category.name}
+                                    {data.category?.name}
                                 </Text>
                             </View>
                             <Time
@@ -159,10 +159,10 @@ export default function Unit(props) {
                                 />
                                 <View className="sm:hidden flex-row gap-x-1 my-auto  ml-auto bg-primary/10 border border-primary/10 px-2.5 py-1 my-auto  rounded-full ">
                                     <Text className=" text-base rounded-full text-primary-600 dark:text-primary-400 tracking-tighter  my-auto">
-                                        {data.category.icon}{" "}
+                                        {data.category?.icon}
                                     </Text>
                                     <Text className="text-sm rounded-full text-primary-600 dark:text-primary-400 tracking-tighter my-auto">
-                                        {data.category.name}
+                                        {data.category?.name}
                                     </Text>
                                 </View>
                                 <View className="flex-row hidden flex-auto items-center sm:flex gap-x-4 justify-end">
