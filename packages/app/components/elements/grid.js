@@ -193,6 +193,23 @@ const Cell = React.memo(({ cell, indexRow, id, toggleSwitch, setSelection, selec
     return  <Text className="text-neutral-800 dark:text-neutral-200">{JSON.stringify(cell)}</Text>
 });
 
+
+const MultiAdd = React.memo(({ data, setBottomSheetData, handleUpdate }) => {
+
+    const handleAction = async (item) => {
+
+            const fetchedData = await fetcher("/api.php?r="+ item.callback);
+            console.log('item', fetchedData);
+            let cnt = {content: fetchedData.data, designbox_id: 0}
+            setBottomSheetData({title:cnt.content[0]?.title ? cnt.content[0]?.title : " ", content:<View className='px-1'><BlockByData onFormEmpty = {() => handleUpdate()} block = {cnt}  /></View>});
+    };
+    
+     return <DropdownMenu items={data.values} onSelect={(oItem) => {handleAction(oItem)}}>
+        <Button variant="default"  title={data.title} />
+     </DropdownMenu>
+})
+;
+
 export default function ElementGrid(props) {
     const { setBottomSheetData } = useBottomSheetData();
 const data = props.data;
@@ -370,6 +387,8 @@ const data = props.data;
         return []; // Return an empty array if the condition is not met
     }, [settings.filters?.filter1]);
 
+
+
     let a = <View className="w-full xl:px-6">
         {modalContent && (
                 <Modal title={modalContent.content[0]?.title ? modalContent.content[0]?.title : " "} onVisible={!!modalContent} outerClickClose={false} onClose={() => handleCloseModal()}>
@@ -421,6 +440,12 @@ const data = props.data;
                 {
                     data.actions.independent.add && (
                         <Button startDecorator="Plus" size="base"  showTitleFromSize='sm' title={t(data.actions.independent.add?.title && data.actions.independent.add.title.length > 0 ? data.actions.independent.add.title : "Add new")} onPress={() => {handleActionBlock(data.actions.independent.add)}} />)
+                }
+                {
+                    data.actions.independent.add_st && ( <MultiAdd handleUpdate={handleUpdate} setBottomSheetData={setBottomSheetData} data={data.actions.independent.add_st} />)
+                }
+                {
+                    data.actions.independent.add_at && ( <MultiAdd handleUpdate={handleUpdate} setBottomSheetData={setBottomSheetData}  data={data.actions.independent.add_at} />)
                 }
             </Row>
         </Row>

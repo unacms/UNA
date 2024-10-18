@@ -103,7 +103,6 @@ export function fillTabs(menu, data, blocks, currentUser, useSectionAsMenu) {
             i.icon = item.icon;
             i.endpoint = contentAndEndpoint.endpoint;
             i.sidebar = contentAndEndpoint.sidebar;
-            console.log("i.linki.link", i.link)
             i.storageKeyValue = storageKey(i.link, false)
             i.blocks = blocks;
 

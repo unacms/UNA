@@ -17,10 +17,11 @@ const getColorByType = (type) => {
     if (type == 'poll') return 'red-400'
 };
 
-const getColorByTypeLesson = (item, index) => {
-    if (index == 0) return ['#34D399', 'Check', 'bg-emerald-400', 'bg-emerald-400']
-    if (index == 1) return ['#F87171', 'ArrowsClockwise', 'bg-emerald-400', 'bg-gray-400']
-    return ['#9CA3AF', 'HourglassSimple', 'bg-gray-400', 'bg-gray-400']
+const getColorByTypeLesson = (item, index, passing) => {
+    const mainColor = passing ? 'bg-gray-400' : 'bg-emerald-400';
+    if (item.passed) return ['#34D399', 'Check', 'bg-emerald-400', 'bg-emerald-400']
+    if (!item.passed && item.link_pass !='') return ['#F87171', 'ArrowsClockwise', 'bg-emerald-400', mainColor]
+    return ['#9CA3AF', 'HourglassSimple', mainColor, mainColor]
 };
 
 function LessonStructure({ lessonData, startLessonPart }) {
@@ -29,7 +30,6 @@ function LessonStructure({ lessonData, startLessonPart }) {
 
     return (
         <ScrollView className='w-full'>
-            <Text className="text-xs mb-4">{lessonData?.sample} {lessonData?.index}</Text>
             <View className='mb-4'>
                 <ContentMore numberOfSymbols={200} showLess={true} content={lessonData?.text} numberOfLines={3} openSmall={false} textClassName="  text-base text-neutral-600 dark:text-neutral-400" />
             </View>
@@ -37,20 +37,21 @@ function LessonStructure({ lessonData, startLessonPart }) {
                 <Button variant="default" textColor={`text-white`} bgColor={`${viewType === 0 ? 'bg-red-400' : 'bg-gray-400'}`} title='Lesson' size="sm" onPress={() => { setViewType(0) }} />
                 <Button variant="default" textColor={`text-white`} bgColor={`${viewType === 1 ? 'bg-red-400' : 'bg-gray-400'}`} title='Attachments' size="sm" onPress={() => { setViewType(1) }} />
             </Row>
-            {viewType === 0 && <LessonSteps steps={lessonData.steps} startLessonPart={startLessonPart} />}
+            {viewType === 0 && <LessonSteps lessonData={lessonData} startLessonPart={startLessonPart} />}
             {viewType === 1 && <LessonAttach attachments={lessonData.attachments} />}
         </ScrollView>
     );
 }
 
 function LessonAttach({ attachments }) {
+
     return <>
         {attachments.map((item, index) => {
 
             return (
                 <Row key={`step-${index}`} className={`${index != 0 ? 'border-t border-bdr dark:border-bdr-d' : ''} py-2 px-2`}>
-                    <View className={`w-24 justify-center`}>
-                        <Text className="text-red-400  text-2xl"  ><Icon icon={'FileText'} /></Text>
+                    <View className={`w-16 justify-center`}>
+                        <Text className="text-neutral-700 dark:text-neutral-300  text-2xl"  ><Icon icon={'FileText'} /></Text>
                     </View>
                     <View className='flex-auto justify-center'>
 
@@ -67,18 +68,21 @@ function LessonAttach({ attachments }) {
     </>
 }
 
-function LessonSteps({ steps, startLessonPart }) {
+function LessonSteps({ lessonData, startLessonPart }) {
+    const steps = lessonData.steps;
     //TODO lines
     return <>
         {steps.map((item, index) => {
-            const [color, icon, color2, color3] = getColorByTypeLesson(item, index);
+            const [color, icon, color2, color3] = getColorByTypeLesson(item, index, lessonData.passing);
             return (
-                <Pressable onPress={() => { startLessonPart(item.id, false) }}>
-                    <Row key={`step-${index}`} >
+                <Pressable key={`step-${index}`} onPress={() => { startLessonPart(item.id, false) }}>
+                    <Row  >
+
+
                         <View className={`w-24 aspect-square items-center ${index === 0 ? 'justify-end' : ''}`}>
                             <View className={`w-2 ${color2} h-1/2`}></View>
                             {index != 0 && index != steps.length - 1 && <View className={`w-2 ${color3} ${(index == 0 || index == steps.length - 1 ? 'h-1/2' : 'h-1/2')}`}></View>}
-                            <View className='items-center justify-center h-10 absolute top-[30px]'>
+                            <View className='items-center justify-center h-10 absolute top-[42px]'>
                                 <Svg height="100" width="100" viewBox="0 0 100 100">
                                     <Circle cx="50" cy="50" r="50" fill={color} />
                                     <Circle cx="50" cy="50" r="40" fill="white" />
@@ -87,19 +91,21 @@ function LessonSteps({ steps, startLessonPart }) {
                                 <Text className="text-white absolute text-base"  ><Icon icon={icon} /></Text>
                             </View>
                         </View>
-                        <View className='mb-4 aspect-video w-40 mr-5 rounded bg-gray-500' >
-                            {item.image?.src && <Image view='cover' sizes="(max-width:1024px) 100vw, 1024px" alt='' className="rounded" src={item.image?.src} />}
-                        </View>
-                        <View className={`${index != 0 ? 'border-t border-bdr dark:border-bdr-d' : ''} flex-auto`}>
-                            <Button variant="default" textColor={`text-white`} bgColor={`bg-` + getColorByType(item.type)} title={item.type} size="xs" rounded />
-                            <Text className="mt-2 text-lg leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200" numberOfLines={2}>{item.title}</Text>
-                        </View>
-                        <View className='justify-center'>
-                            {item.link_pass && (
-                                <Button endDecorator="ArrowRight" variant="default" title={item.link_title} size="sm" rounded onPress={() => { startLessonPart(item.id, true) }} />
-                            )
-                            }
-                        </View>
+                        <Row className={`${index != 0 ? 'border-t border-bdr dark:border-bdr-d' : ''} pt-4 flex-1`}>
+                            <View className='mb-4 aspect-video w-40 mr-5 rounded bg-gray-500' >
+                                {item.image?.src && <Image view='cover' sizes="(max-width:1024px) 100vw, 1024px" alt='' className="rounded" src={item.image?.src} />}
+                            </View>
+                            <View className={`flex-auto`}>
+                                <Button variant="default" textColor={`text-white`} bgColor={`bg-` + getColorByType(item.type)} title={item.type} size="xs" rounded />
+                                <Text className="mt-2 text-lg leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200" numberOfLines={2}>{item.title}</Text>
+                            </View>
+                            <View className='justify-center'>
+                                {item.link_pass && (
+                                    <Button endDecorator="ArrowRight" variant="default" title={item.link_title} size="sm" rounded onPress={() => { startLessonPart(item.id, true) }} />
+                                )
+                                }
+                            </View>
+                        </Row>
                     </Row>
                 </Pressable>
             )
@@ -108,14 +114,50 @@ function LessonSteps({ steps, startLessonPart }) {
     </>
 }
 
-function LessonItem({ lessonItemData }) {
+function LessonItem({ lessonItemData, lessonIndex, lessonData, startLessonPart }) {
+    const steps = lessonData.steps;
     return (
         <ScrollView className='w-full'>
-            <Text className="mb-4  text-base leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200">{lessonItemData.title} </Text>
+            <Row className='w-full '>
+                {steps.map((item, index) => {
+                    const [color, icon, color2, color3] = getColorByTypeLesson(item, index, lessonData.passing);
+                    return (
+                        <Row className={`flex-auto h-10 items-center ${index === 0 ? 'justify-end' : ''}`}>
+                            <View className={`h-2 ${color2} w-1/2`}></View>
+                            {index != 0 && index != steps.length - 1 && <View className={`h-2 ${color3} ${(index == 0 || index == steps.length - 1 ? 'w-1/2' : 'w-1/2')}`}></View>}
+                            <View className='items-center justify-center h-10 w-full absolute '>
+                                <Svg height="100" width="100" viewBox="0 0 100 100">
+                                    <Circle cx="50" cy="50" r="50" fill={color} />
+                                    <Circle cx="50" cy="50" r="40" fill="white" />
+                                    <Circle cx="50" cy="50" r="30" fill={color} />
+                                </Svg>
+                                <Text className="text-white absolute text-base"  ><Icon icon={icon} /></Text>
+                              
+                            </View>
+                          
+                        </Row>)
+                })}
+            </Row>
+            <Row className='w-full h-8 mb-4 '>
+                {steps.map((item, index) => {
+                    return (
+                        <View className={`flex-auto items-center justify-end`}>
+                        <View className=' items-center justify-end  w-full absolute'>
+                        <Text className={`text-xs ${index == lessonIndex ? 'text-red-400':''}`}  >Step {index+1}</Text>
+                        <Text className={`text-xs ${index == lessonIndex ? 'text-red-400':''} font-medium`} >{item.type}</Text>
+                        </View>
+                    </View>)
+                })}
+            </Row>
+
+            <Text className="mb-4  text-base leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200">{lessonItemData?.title} </Text>
             <View className='mb-4'>
-                <ContentMore numberOfSymbols={200} showLess={true} content={lessonItemData?.text} numberOfLines={3} openSmall={false} textClassName="  text-base text-neutral-600 dark:text-neutral-400" />
+                <ContentMore numberOfSymbols={200} showLess={false} content={lessonItemData?.text} numberOfLines={3} openSmall={true} textClassName="  text-base text-neutral-600 dark:text-neutral-400" />
             </View>
-            TODO create content view depends on type
+            {lessonIndex != steps.length - 1 &&
+                <Button endDecorator="ArrowRight" variant="default" title={'Next'} size="sm" rounded onPress={() => { startLessonPart(lessonData.steps[lessonIndex + 1].id) }} />
+            }
+
         </ScrollView>
     );
 }
@@ -145,18 +187,28 @@ export default function ModuleStructure(props) {
         setLessonId(id);
     };
 
-    const lessonItemData = lessonData ? lessonData.steps.find(item => item.id === lessonId) : null;
-    console.log("lessonIdlessonId", lessonId, lessonData, lessonItemData)
+    const lessonIndex = lessonData ? lessonData.steps.findIndex(item => item.id === lessonId) : -1;
+    const lessonItemData = lessonIndex !== -1 ? lessonData.steps[lessonIndex] : null;
+
+
+
+    let title = lessonId > 0 ? <View className='flex-1'>
+        <Button startDecorator="ArrowLeft" variant="default" title={'Back'} size="sm" rounded onPress={() => { setLessonId(null) }} />
+    </View> : <View className='flex-1'>
+        <Text className="text-xl leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200">{lessonData?.title}</Text>
+        <Text className="text-xs text-neutral-800 dark:text-neutral-200">{lessonData?.sample} {lessonData?.index}</Text>
+    </View>;
+
     //lessonItemData
     return (
         <>
             {lessonData && (
                 <Modal
                     onClose={() => { setLessonData(null); setLessonId(null) }}
-                    title={lessonData?.title}
+                    title={title}
                     scrollable={true}
                 >
-                    {lessonId ? <LessonItem lessonItemData={lessonItemData} /> : <LessonStructure startLessonPart={startLessonPart} lessonData={lessonData} />}
+                    {lessonId ? <LessonItem startLessonPart={startLessonPart} lessonItemData={lessonItemData} lessonIndex={lessonIndex} lessonData={lessonData} /> : <LessonStructure startLessonPart={startLessonPart} lessonData={lessonData} />}
                 </Modal>
 
             )}

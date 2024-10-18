@@ -27,12 +27,10 @@ export default function PageLayout({layoutName, data, uri, blocks}) {
         pageData.menu.items = [];
     }
 
-    console.log("pageData.menu", pageData.menu, uri, pageData.url)
     const menu = useMemo(() => {
         const clonedMenu = cloneObject(pageData.menu || { items: [] });
 
         const isNamePresent = clonedMenu.items.some(item => item.link === pageData.url);
-        console.log("isNamePresentisNamePresent", isNamePresent)
         //const isNamePresent = clonedMenu.items.some(item => item.name === uri);
         if (!isNamePresent) {
             clonedMenu.items.push({
