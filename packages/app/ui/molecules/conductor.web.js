@@ -635,7 +635,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                 <Row style={{ paddingTop: header ? 0 : 0 }} className={(headerSettings.columns == "reverse" ? 'flex-row-reverse' : '') + ' max-w-screen-xl mx-auto w-full'}>
                     <View className={(isRightCol ? 'flex-auto sm:border-r border-bdr dark:border-bdr-d px-4 ' : ' w-full max-w-screen-xl mx-auto sm:p-2 ') + (layoutName == 'navigator' ? '' : ' pt-4')}>
                         {TabFlashListM}
-                        {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 &&  staticComponents['noContentByUrl'](route?.endpoint?.request_url)))}
+                        {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 &&  staticComponents['noContentByUrl'](route?.endpoint)))}
 
 
                     </View>

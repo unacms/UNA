@@ -822,7 +822,7 @@ function updateRouteDataForConnections(
     )
 }
 
-function noContentByUrl(url){
+function noContentByUrl(endpoint){
     return <ComponentsContentEmpty/>
 }
 

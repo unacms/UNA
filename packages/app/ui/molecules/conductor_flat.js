@@ -110,7 +110,7 @@ const TabScene = React.memo(({
             unit={route.endpoint?.unit}
             renderItem={renderItem}
             ListFooterComponent={
-                (route?.endpoint?.request_url ? (route?.endpoint?.finished ? (route.data.length == 0 ? staticComponents['noContentByUrl'](route?.endpoint?.request_url) : <></>) : Preload) : <></>)
+                (route?.endpoint?.request_url ? (route?.endpoint?.finished ? (route.data.length == 0 ? staticComponents['noContentByUrl'](route?.endpoint) : <></>) : Preload) : <></>)
             }
             maxToRenderPerBatch={5}
             initialNumToRender={5}
