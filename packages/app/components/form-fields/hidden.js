@@ -11,7 +11,7 @@ export default function FormFieldHidden(props) {
     const { field } = useController({ name, rules, defaultValue });
     
     return (
-        <>555{JSON.stringify(props)}<Hidden 
+        <><Hidden 
             name={props.name}
             onChangeText={field.onChange}
             onBlur={field.onBlur}
