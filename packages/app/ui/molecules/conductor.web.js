@@ -763,7 +763,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                         <View className=" flex-auto">{/*min-h-screen???*/}
                             {(headerSettings.showAltTopMenu) && topSideBarObj()}
                             
-                            {(windowWidth < 1024 && layoutName == 'navigator' && leftSideBarBlocks ) && <View className="items-start ml-2 mt-2">
+                            {(windowWidth < 1024 && layoutName == 'navigator' && leftSideBarBlocks.length > 0) && <View className="items-start ml-2 mt-2">
                                 <Button title="Filters"  variant="default" size="sm" rounded onPress={showFilters} />
                             </View>}
 
@@ -791,12 +791,14 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, onChangeRoute }) {
 
     let filteredItems = routes.filter((aItem) => aItem.hideInTop != true)
-
+  
     const MenuItem = memo(({ item: a, itemRefs, index: index2, visibleItemsCount }) => {
-        const btn = <Button fullWidth={true} id="tab" pressed={a.index == index ? true : false} variant={a.index == index ? 'secondary' : "text"} rounded size='sm' title={t(a.title)} addon={!appSetting('layout', 'show_nav_counters') && a.addon ? null : a.addon} />
+        const { currentUser } = useCurrentUser();
+        const btn = staticComponents['getButtonForConductorSmall'](a, index, currentUser)
+        /*const btn = <Button fullWidth={true} id="tab" pressed={a.index == index ? true : false} variant={a.index == index ? 'secondary' : "text"} rounded size='sm' title={t(a.title)} addon={!appSetting('layout', 'show_nav_counters') && a.addon ? null : a.addon} />
         if (a.icon == '*') {
             return <View className={"justify-center" + (index2 > visibleItemsCount - 1 ? ' item-overlap ' : '')} ref={el => itemRefs.current[index2] = el}><Link href={a.link}>{btn}</Link></View>
-        }
+        }*/
         return (
             <Pressable ref={el => itemRefs.current[index2] = el} className={" py-2 items-center " + a?.menu_settings?.class + (index2 > visibleItemsCount - 1 ? ' item-overlap ' : '')}
                 key={`tab-${index2}`}
@@ -817,18 +819,8 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
     const MenuItemEx = memo(({ item, index }) => {
         const { title, addon, icon, link, menu_settings, key } = item;
         const translatedTitle = <Text>{t(title)}</Text>;
-        let addonContent = null;
-        if (addon) {
-            const addonClasses = addon.variant === 'primary' ? "bg-contrast dark:bg-contrast-d" : "bg-neutral-500 dark:bg-neutral-500";
-            const addonText = addon.variant === 'primary' ? addon.text : addon;
-            if (addonText) {
-                addonContent = (
-                    <Text className={`${addonClasses} rounded-full px-2 py-0.5 mx-1 text-center items-center text-white text-xs font-semibold`}>
-                        {t(addonText)}
-                    </Text>
-                );
-            }
-        }
+        const { currentUser } = useCurrentUser();
+        let addonContent = staticComponents['getAddonForConductor'](item, index, currentUser)
 
         const handlePress = () => {
             setIndex(index);

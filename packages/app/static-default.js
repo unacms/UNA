@@ -666,6 +666,66 @@ function getButtonForConductor(a, index, currentUser) {
     )
 }
 
+function getButtonForConductorSmall(a, index, currentUser) {
+    let settings = appSetting('layouts', a.key)
+    let icon = !a.ident
+        ? settings?.icon
+            ? settings?.icon
+            : a?.icon.replace('*', '')
+        : a.icon.replace('*', '')
+
+    let addon = a.addon ? a.addon : null
+    if (!appSetting('layout', 'show_nav_counters')) addon = null
+    if (
+        appSetting('layout', 'show_nav_counters') == 'primary' &&
+        a?.addon?.variant != 'primary'
+    )
+        addon = null
+
+    return (
+        <Button
+            variant={a.index == index ? 'outline' : "text"}
+            size={!a.ident ? "lg" : "sm"}
+            pressed={a.index == index ? true : false}
+            fullWidth
+            title={(a.title)}
+            align="start"
+            startDecorator={icon}
+            addon={addon}
+        />
+    )
+}
+
+function getAddonForConductor(a, index, currentUser) {
+    let addonContent = null;
+    let settings = appSetting('layouts', a.key)
+    let icon = !a.ident
+        ? settings?.icon
+            ? settings?.icon
+            : a?.icon.replace('*', '')
+        : a.icon.replace('*', '')
+
+    let addon = a.addon ? a.addon : null
+    if (!appSetting('layout', 'show_nav_counters')) addon = null
+    if (
+        appSetting('layout', 'show_nav_counters') == 'primary' &&
+        a?.addon?.variant != 'primary'
+    )
+        addon = null
+
+    if (addon) {
+        const addonClasses = addon.variant === 'primary' ? "bg-contrast dark:bg-contrast-d" : "bg-neutral-500 dark:bg-neutral-500";
+        const addonText = addon.variant === 'primary' ? addon.text : addon;
+        if (addonText) {
+            addonContent = (
+                <Text className={`${addonClasses} rounded-full px-2 py-0.5 mx-1 text-center items-center text-white text-xs font-semibold`}>
+                    {addonText}
+                </Text>
+            );
+        }
+    }
+    return addonContent;
+}
 
 function getButtonForConductorNative(a, index, currentUser, setIndex, onChangeRoute) {
     let settings = appSetting('layouts', a.key)
@@ -786,6 +846,8 @@ export const staticDefault = {
 
     getBadgeForTab: getBadgeForTab,
     getButtonForConductor: getButtonForConductor,
+    getButtonForConductorSmall: getButtonForConductorSmall,
+    getAddonForConductor: getAddonForConductor,
     getButtonForConductorNative: getButtonForConductorNative,
     updateRouteDataForConnections: updateRouteDataForConnections,
     noContentByUrl: noContentByUrl,
