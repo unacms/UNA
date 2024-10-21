@@ -229,9 +229,9 @@ export default function FormFieldFtf(props) {
         //formContext.setValue(props.name, props.value)
     }, [props.name, props.value]);
 
-    // may be need not, fix foe edit post text content
+    // may be need not, fix for edit post text content
     useEffect(() => {
-        if (props.html == 2)
+        if (props.html == 2 && props.value)
             formContext.setValue(props.name, props.value)
     }, []);
 

@@ -684,13 +684,12 @@ function getButtonForConductorSmall(a, index, currentUser) {
 
     return (
         <Button
-            variant={a.index == index ? 'outline' : "text"}
-            size={!a.ident ? "lg" : "sm"}
+            variant={a.index == index ? 'secondary' : "text"}
+            size={"sm"}
             pressed={a.index == index ? true : false}
             fullWidth
             title={(a.title)}
             align="start"
-            startDecorator={icon}
             addon={addon}
         />
     )

@@ -4,9 +4,10 @@ import { useState, useMemo, useCallback, useContext } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
 import { Button, Input, Modal } from "app/design/controls";
 import CheckBox from 'app/ui/atoms/checkbox';
+import RadioButton from 'app/ui/atoms/radiobutton';
 import { Text } from 'app/design/typography';
 
-function ChkList({ values, value2, addValue2 }) {
+function ChkList({ values, value2, addValue2, isMultiple }) {
     const [inputValue, setInputValue] = useState('');
 
     const filteredValues = useMemo(() => {
@@ -14,6 +15,8 @@ function ChkList({ values, value2, addValue2 }) {
             ? values.filter(item => item.value.toLowerCase().includes(inputValue.toLowerCase()))
             : values;
     }, [inputValue, values]);
+
+    const Cnt = isMultiple ? CheckBox : RadioButton;
 
     return (
         <View className='flex-1'>
@@ -32,7 +35,7 @@ function ChkList({ values, value2, addValue2 }) {
                 return (
                     <Pressable key={`lbl-${index}`} onPress={() => addValue2(item2.value)}>
                            <Row className='items-center my-1 px-2 border border-bdr dark:border-bdr-d rounded-lg hover:bg-primary/10 active:bg-primary/20 dark:hover:bg-primary-d/10 dark:active:bg-primary-d/20' key={'chk' + index}>
-                            <CheckBox
+                            <Cnt
                                 value={key}
                                 status={value2.includes(key) ? 'checked' : 'unchecked'}
                                 onPress={() => { addValue2(key); }}
@@ -129,7 +132,7 @@ export default function (props) {
         scrollable={true}
     >
         <View className='flex-1'>
-            <ChkList values={valuesList} value2={value2} addValue2={addValue2} />
+            <ChkList isMultiple={isMultiple} values={valuesList} value2={value2} addValue2={addValue2} />
         </View>
     </Modal>
 

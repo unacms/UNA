@@ -7,6 +7,8 @@ import { useCurrentUser } from 'app/context/user';
 import { Text } from 'app/design/typography'
 
 export default function FormPost(props) {
+
+
     const [imageSource, setImageSource] = useState([])
     let { currentUser, setCurrentUser } = useCurrentUser();
     function setPlaceHolder(name, previews) {
@@ -33,8 +35,20 @@ export default function FormPost(props) {
     if (props.data.inputs['allow_comments'])
         props.data.inputs['allow_comments'].caption = '';
 
+    let hiddenFields = [];
+    Object.keys(props.data.inputs).forEach(function (key) {
+        if (props.data.inputs[key].type == "hidden"){
+            hiddenFields.push(props.data.inputs[key]);
+        }
+    });
+    // TODO: hiddenFields is not used
+
+   
+    console.log("hiddenFields", hiddenFields)
     return (
-        <View className="w-full max-w-5xl flex-col">
+        <View className="w-full max-w-5xl flex-col">xx
+           {}
+        
             <View className="  overflow-hidden flex-col  ">
                 <View className=" flex-row flex-wrap gap-x-2 flex-auto justify-between items-center mr-1">
                     <View className=" flex-auto mb-4 ">
