@@ -83,6 +83,7 @@ export function CoverMenu(props) {
                 {...propsCopy}
                 displayType="button"
                 autoSize={true}
+                containerClasses={props.containerClasses}
                 params={{
                     show_action: true,
                     show_counter: true,

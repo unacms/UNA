@@ -11,7 +11,14 @@ import { useState, useContext, useRef, useMemo, memo } from 'react'
 import { getImageSizes, FeedbackHaptics, tp, t } from 'app/lib/util'
 import { Button, Modal } from 'app/design/controls'
 
-export default function ({ data, oMenuItemsMore, popupVisible, setPopupVisible}) {
+export default function ({ data, oMenuItemsMore, popupVisible, setPopupVisible, defaultButtonProps}) {
+
+    const buttonProps = defaultButtonProps || {
+        variant:"outline",
+        size:"sm",
+        className:" my-auto ",
+        startDecorator:"DotsThreeOutline"
+    }
 
     const handleClickMore = (event) => {
         event.preventDefault();
@@ -22,10 +29,7 @@ export default function ({ data, oMenuItemsMore, popupVisible, setPopupVisible})
     return (
         <View className='ml-2'>
             <Button
-                variant="outline"
-                size="sm"
-                className=" my-auto "
-                startDecorator="DotsThreeOutline"
+               {...buttonProps}
                 onPress={(event) =>
                     handleClickMore(event)
                 }

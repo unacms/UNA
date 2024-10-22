@@ -47,7 +47,7 @@ export default function ElementCommentForm(props) {
                         bottomSheetData.onClose();
                 }}
                 padding={bottomSheetData?.modal?.padding}
-
+                outerClickClose={false}
                 transparent={true}
             >
                 <View className='w-full ' style={{ maxHeight: windowDimensions.height - 100 }}>
