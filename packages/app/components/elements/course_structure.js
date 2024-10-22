@@ -20,7 +20,7 @@ import Scroll from 'app/ui/molecules/scroll'
 import { memo } from 'react'
 
 function CourseStructure(props) {
-    // console.log("props.data", props.data)
+     console.log("props.data", props.data)
     //initialValue={400}
     return <Scroll horizontal={true} step={250} className='w-full'>
         {
@@ -59,7 +59,6 @@ function CourseStructure(props) {
                                         return (
                                             <Button key={`cnt-${index}`} bgColor={`bg-white`} variant="default" title={`${item2.cn_progress} ${item2.cn_title}`} size="xs" rounded />
                                         )
-
                                     })}
                                 </Row>
                             </Link>

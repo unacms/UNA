@@ -15,6 +15,8 @@ export default function MenuItemButton(oProps) {
     const bTitleOnly = oProps?.params && oProps.params?.showTitleOnly === true;
     const oIconset = oProps?.params && !!oProps.params?.iconset ? oProps.params.iconset : {};
 
+    const isTextMode = oProps.mode === 'text';
+
     let sContent = undefined;
     switch(oProps.content_type) {
         case 'submenu':
@@ -30,8 +32,8 @@ export default function MenuItemButton(oProps) {
 
         default:
             let oButtonProps = {
-                variant: oProps.primary === "1" ? 'primary' : oProps.params?.button_variant,
-                size: oProps.params?.button_size,
+                variant: oProps.primary === "1" ? 'primary' :(isTextMode ? 'custom' :oProps.params?.button_variant),
+                size: isTextMode? 'base' : oProps.params?.button_size,
                 rounded: oProps.params?.button_rounded,
                 fullWidth: oProps.params?.button_full_width,
                 showTitleFromSize: oProps.params?.button_show_title_from_size
@@ -62,6 +64,9 @@ export default function MenuItemButton(oProps) {
                 if(sButtonIcon == '')
                     sButtonIcon = getIconByNameFromIconset(oIconset, oProps.name);
             }
+
+            if (isTextMode)
+                sButtonIcon = '';
 
             let buttonAction = <ButtonAction title={oProps.title} startDecorator={sButtonIcon} {...oButtonProps} />;
             if (oProps?.list?.length > 0){

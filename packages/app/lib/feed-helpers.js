@@ -309,15 +309,7 @@ const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen }) => {
             if (!!aItem.display_type && aItem.display_type == 'element') {
                 const Element = componentsMap[aItem.data.type];
                 if (!!Element) {
-                   /* sTitle = aItem.data?.action ? aItem.data?.action.title : 'Report';
-                    if (!!reportTitle)
-                        sTitle = reportTitle;*/
                     sTitle= <Element mode="text" key={aItem.id ? aItem.id : aItem.name}   {...aItem.data} />
-                   /* oReport = (
-                        <View className="w-0 h-0" style={{ opacity: 0 }}>
-                            <Element key={aItem.id ? aItem.id : aItem.name} ref={refReport} onChangeTitle={setReportTitle} {...aItem.data} />
-                        </View>
-                    );*/
                 }
             }
 
