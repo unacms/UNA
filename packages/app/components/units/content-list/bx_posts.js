@@ -72,10 +72,10 @@ function Search({ data, imageSizes }) {
 
 function Base({ data, imageSizes }) {
     return (
-        <View className=" p-0.5 mx-auto w-full max-w-3xl">
-            <Card addClassName=" p-1 sm:p-2 flex-auto  mx-auto w-full flex-row-reverse duration-300 ">
+        <View className=" mx-auto pt-1 sm:p-2 w-full max-w-3xl">
+            <Card addClassName=" rounded-none sm:rounded-2xl p-1 sm:p-2 flex-auto  mx-auto w-full flex-row-reverse duration-300 ">
                 {data.image && (
-                    <View className="aspect-square md:aspect-video flex-none  d sm:rounded-lg overflow-hidden h-24 sm:h-36 mb-auto  ">
+                    <View className="aspect-square md:aspect-video flex-none rounded sm:rounded-lg overflow-hidden h-24 sm:h-36 mb-auto  ">
                         <Image
                             {...data.image}
                             alt={data.title}

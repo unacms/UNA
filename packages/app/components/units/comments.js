@@ -88,7 +88,7 @@ export default function UnitComments(props) {
                         <View className="ml-[15px] w-0.5 flex-auto bg-neutral-100 dark:bg-neutral-800" />
                     )}
                     {i === level - 1 && (
-                        <View className="ml-[15px] h-6 w-6 border-neutral-100 dark:border-neutral-800 border-l-2 border-b-2 absolute -top-1.5 rounded-bl-2xl flex-auto" />
+                        <View className="ml-[15px] h-8 w-[23px] border-neutral-100 dark:border-neutral-800 border-l-2 border-b-2 absolute -top-3.5 rounded-bl-2xl flex-auto" />
                     )}
                 </View>
             );
@@ -131,18 +131,18 @@ export default function UnitComments(props) {
         <View className='w-full'>
             <View className="flex-row gap-x-2">
                 {cells}
-                <View className="w-8 z-50 flex-0  mt-3">
+                <View className="w-8 z-50 flex-0 relative">
                     <Profile {...data.author_data} displayType="unit_wo_info" displaySize="sm" showInfo="false" />
-                    {(items.length != 0 && view != 'flat') && <View className="w-0.5 ml-[15px] flex-auto bg-neutral-100 dark:bg-neutral-800"><Text>&nbsp;</Text></View>}
+                    {(items.length != 0 && view != 'flat') && <View className="w-0.5 ml-[15px] top-0.5 flex-auto bg-neutral-100 dark:bg-neutral-800"></View>}
                 </View>
-                <View className='flex-1 flex-col  mt-3 '>
-                    <View className='bg-bgritem dark:bg-bgritem-d rounded-xl  px-2.5 py-2 mb-0.5' >
+                <View className='flex-1 flex-col '>
+                    <View className='bg-bgritem dark:bg-bgritem-d rounded-xl px-2.5 py-1.5 mb-1' >
                         <View className="flex-row flex-1 items-center overflow-hidden">
                             <Profile {...data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
                             <View><Text className="text-neutral-500 px-1">·</Text></View>
                             <Link href={data.cmt_url} className="flex items-center"><Time ts={data.cmt_time}></Time></Link>
                             {(maxLevel < data.cmt_level && appSetting('layout', 'show_in_reply_comments')) && parent?.data && <Row>
-                                <Text className="text-neutral-500 px-1 text-xs">· In reply to</Text>
+                                <Text className="text-neutral-500 px-1 text-sm ">· In reply to</Text>
                                 <Profile {...parent.data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
                                 {false && <Text className="text-neutral-500 px-1 text-sm whitespace-nowrap text-ellipsis overflow-hidden"> {stripTags(parent?.data?.cmt_text)}</Text>}
                             </Row>}
@@ -151,19 +151,19 @@ export default function UnitComments(props) {
                         {
                             (view == 'flat' && data.cmt_parent_id > 0) && <View className='   border border-bdr dark:border-bdr-d  rounded-md p-2 my-1'>
                                 <View className="flex-row items-baseline" >
-                                    <View><Text className='text-sm text-neutral-800 dark:text-neutral-200'>In Reply to </Text></View>
+                                    <View><Text className='text-xs text-neutral-800 dark:text-neutral-200'>In Reply to </Text></View>
                                     <View className=" "></View>
                                 </View>
                                 <ContentMore content={data.cmt_parent.data.cmt_text} numberOfLines={1} openSmall={false} textClassName="text-base text-neutral-600 dark:text-neutral-400" />
                             </View>
                         }
-                        <View className='text-neutral-900 dark:text-neutral-50'>
+                        <View className='text-neutral-900 dark:text-neutral-50 py-0.5'>
                             <Html htmlStyles={{ fontSize: 14 }} customClassName='u-vanilla-html u-vanilla-html-small' data={linkify(data.cmt_text)} />
                             {!!data.cmt_mood && <StarsView rating={data.cmt_mood} starSize={20} />}
                         </View>
                         {(viewState.view != 'edited' && imageList.length > 0) && <View className=' max-w-lg'><Carousel data={imageList} /></View>}
                     </View>
-                    {viewState.view != 'edited' && <View className=' flex-row w-full items-center'>
+                    {viewState.view != 'edited' && <View className=' flex-row w-full mb-2 items-center'>
                         {(!!currentUser && !!props.handleReply && !props.module.includes('_reviews')) ? <View className='mr-2'>
                             <Button align="start" title={t("Reply")} size="xs" startDecorator="ArrowBendLeftUp" variant="text" onPress={() => handleReply(data)} rounded />
                         </View> : <View></View>

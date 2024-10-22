@@ -37,7 +37,7 @@ function DefaultUnit(data) {
         setCmtsData({
             title: data.author_data.display_name + "'s post", data: <CommentsModal initFormData={initFormData}
                 itemContent={{
-                    id: "block-comments", data: <><View className='pb-4'><Author data={data} url={url} t={t} /></View>{MainContentComponent}</>
+                    id: "block-comments", data: <><Author data={data} url={url} t={t} />{MainContentComponent}</>
                 }}
                 commentsData={res.data} />
         })
