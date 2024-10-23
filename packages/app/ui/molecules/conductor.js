@@ -16,7 +16,7 @@ import { Theme } from 'app/design/theme';
 import { subscribe } from 'app/ui/atoms/socket';
 import { fetcher } from 'app/lib/fetcher';
 import Toaster from 'app/ui/atoms/toaster';
-import { getButtonForConductorNative, noContentByUrl, updateRouteDataForConnections } from 'app/functions-default';
+import { callFn } from 'app/lib/functions/call';
 
 export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultHeader, menu, data, blocks, useSectionAsMenu, unitMode, skeleton, onChangeRoute, keyword }) {
     minHeaderHeight = minHeaderHeight || 100;
@@ -255,7 +255,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
             newRoutes[index].data = data
             setRoutes(newRoutes);
         }
-        updateRouteDataForConnections(currentRoute, layoutData, routes, index, setRoutes)
+        callFn("updateRouteDataForConnections", [currentRoute, layoutData, routes, index, setRoutes])
     }, [layoutData]);
     /* NEW POST TO FEED */
 
@@ -302,7 +302,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
                     return item.type;
                 }}
                 ListFooterComponent={
-                    (route?.endpoint?.request_url ? (route?.endpoint?.finished ? noContentByUrl(route?.endpoint) : Preload) : <></>)
+                    (route?.endpoint?.request_url ? (route?.endpoint?.finished ? callFn("noContentByUrl", [route?.endpoint]) : Preload) : <></>)
                 }
             />
         )
@@ -346,7 +346,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
                         {props.navigationState.routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
                             const counter = appSetting('layout', 'show_nav_counters') ? 0 : a.addon ? (a.addon.text ? a.addon.text : a.addon) : 0;
                             const counter2 = counter > 0 ? ' (' + counter + ')' : ''
-                            const btn = getButtonForConductorNative(a, props.navigationState.index, currentUser, setIndex, onChangeRoute)
+                            const btn = callFn('getButtonForConductorNative' [a, props.navigationState.index, currentUser, setIndex, onChangeRoute])
 
                             return (
                                 <Pressable className="items-center py-2 px-1 justify-center"

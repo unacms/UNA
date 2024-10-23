@@ -1,5 +1,3 @@
-import * as customFunctions from './functions.js';
-
 import { Text } from 'app/design/typography'
 import { Button, Modal } from 'app/design/controls'
 import { fetcher } from 'app/lib/fetcher'
@@ -9,9 +7,6 @@ import { Platform } from 'react-native'
 import { componentsMap } from 'app/ui/molecules/_map'
 
 export function getBadgeForTab(currentUser, url) {
-    if (customFunctions.getBadgeForTab)
-        return customFunctions.getBadgeForTab( currentUser, url )
-   
     if (
         url == appSetting('layout', 'notifications') &&
         currentUser?.notifications
@@ -33,8 +28,6 @@ export function getBadgeForTab(currentUser, url) {
 }
 
 export function getButtonForConductor(a, index, currentUser) {
-    if (customFunctions.getButtonForConductor)
-        return customFunctions.getButtonForConductor( a, index, currentUser )
 
     let settings = appSetting('layouts', a.key)
     let icon = !a.ident
@@ -66,9 +59,6 @@ export function getButtonForConductor(a, index, currentUser) {
 }
 
 export function getButtonForConductorSmall(a, index, currentUser) {
-    if (customFunctions.getButtonForConductorSmall)
-        return customFunctions.getButtonForConductorSmall( a, index, currentUser )
-
     let settings = appSetting('layouts', a.key)
     let icon = !a.ident
         ? settings?.icon
@@ -98,10 +88,6 @@ export function getButtonForConductorSmall(a, index, currentUser) {
 }
 
 export function getAddonForConductor(a, index, currentUser) {
-    
-    if (customFunctions.getAddonForConductor)
-        return customFunctions.getAddonForConductor( a, index, currentUser )
-
     let addonContent = null;
     let settings = appSetting('layouts', a.key)
     let icon = !a.ident
@@ -133,8 +119,6 @@ export function getAddonForConductor(a, index, currentUser) {
 }
 
 export function getButtonForConductorNative(a, index, currentUser, setIndex, onChangeRoute) {
-    if (customFunctions.getButtonForConductorNative)
-        return customFunctions.getButtonForConductorNative( a, index, currentUser, setIndex, onChangeRoute )
 
     let settings = appSetting('layouts', a.key)
     let icon = !a.ident
@@ -168,14 +152,6 @@ export function updateRouteDataForConnections(
     index,
     setRoutes
 ) {
-
-    if (customFunctions.updateRouteDataForConnections)
-        return customFunctions.updateRouteDataForConnections( currentRoute,
-            layoutData,
-            routes,
-            index,
-            setRoutes)
-
     updateRouteDataForConnection(
         'system/browse_subscriptions',
         ['remove'],
@@ -275,9 +251,6 @@ const createMenuItem = (menuItem, isPrimary) => {
 
 export function getUnitMenuItems(unitType, data, handleClick, t, moduleName) {
 
-    if (customFunctions.getUnitMenuItems)
-        return customFunctions.getUnitMenuItems(unitType, data, handleClick, t, moduleName)
-
     let oMenuItemPrimary = null;
     let oMenuItemSecondary = null;
     let bMenuItemsMoreShow = true;
@@ -359,9 +332,5 @@ export function getUnitMenuItems(unitType, data, handleClick, t, moduleName) {
 }
 
 export function noContentByUrl(endpoint){
-
-    if (customFunctions.noContentByUrl)
-        return customFunctions.noContentByUrl(endpoint)
-
     return <ComponentsContentEmpty/>
 }

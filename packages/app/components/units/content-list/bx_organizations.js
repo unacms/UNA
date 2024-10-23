@@ -10,7 +10,7 @@ import Redirect from 'app/ui/atoms/redirect'
 import ProfilesList from 'app/ui/molecules/profile_list'
 import { useTranslation } from 'react-i18next';
 import Letter from 'app/ui/atoms/letter'
-import { getUnitMenuItems } from 'app/functions-default';
+import { callFn } from 'app/lib/functions/call';
 
 export default function Unit(props) {
     const { t } = useTranslation();
@@ -36,7 +36,7 @@ export default function Unit(props) {
         return;
 
         const { oMenuItemPrimary, oMenuItemSecondary } = useMemo(() => {
-            return getUnitMenuItems(props.unitType, data, handleClick, t, props.module);
+            return callFn("getUnitMenuItems", [props.unitType, data, handleClick, t, props.module]);
         }, [props.unitType, data, handleClick, t]);
         
 

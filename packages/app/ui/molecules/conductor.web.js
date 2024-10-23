@@ -26,7 +26,7 @@ import Footer from 'app/components/nav/footer';
 import { subscribe } from 'app/ui/atoms/socket';
 import { fetcher } from 'app/lib/fetcher';
 import { useBottomSheetData } from 'app/context/bottomsheet';
-import { updateRouteDataForConnections, noContentByUrl, getButtonForConductor, getButtonForConductorSmall, getAddonForConductor } from 'app/functions-default';
+import { callFn } from 'app/lib/functions/call';
 
 const AddBlocks = React.memo(({
     leftSideBarBlocks, data, onFormSubmit
@@ -221,7 +221,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             newRoutes[index].data = data
             setRoutes(newRoutes);
         }
-        updateRouteDataForConnections(currentRoute, layoutData, routes, index, setRoutes)
+        callFn("updateRouteDataForConnections", [currentRoute, layoutData, routes, index, setRoutes])
         
     }, [layoutData]);
     /* NEW POST TO FEED */
@@ -595,7 +595,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                 <Row style={{ paddingTop: header ? 0 : 0 }} className={(headerSettings.columns == "reverse" ? 'flex-row-reverse' : '') + ' max-w-screen-xl mx-auto w-full'}>
                     <View className={(isRightCol ? 'flex-auto sm:border-r border-bdr dark:border-bdr-d px-4 ' : ' w-full max-w-screen-xl mx-auto sm:p-2 ') + (layoutName == 'navigator' ? '' : ' pt-4')}>
                         {TabFlashListM}
-                        {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 &&  noContentByUrl(route?.endpoint)))}
+                        {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 &&  callFn("noContentByUrl", [route?.endpoint])))}
 
 
                     </View>
@@ -640,7 +640,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             <>
                 <LeftSidebar title={t(menuSettings?.name)} addButtons={addButtons} width={leftSideBarWidth}>
                     {headerSettings.hideLeftmenu != true && routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
-                        const btn = getButtonForConductor(a, index, currentUser)
+                        const btn = callFn('getButtonForConductor', [a, index, currentUser])
                         
                         if (a?.icon == '*') {
                             return (
@@ -754,7 +754,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
   
     const MenuItem = memo(({ item: a, itemRefs, index: index2, visibleItemsCount }) => {
         const { currentUser } = useCurrentUser();
-        const btn = getButtonForConductorSmall(a, index, currentUser)
+        const btn = callFn('getButtonForConductorSmall', [a, index, currentUser])
         /*const btn = <Button fullWidth={true} id="tab" pressed={a.index == index ? true : false} variant={a.index == index ? 'secondary' : "text"} rounded size='sm' title={t(a.title)} addon={!appSetting('layout', 'show_nav_counters') && a.addon ? null : a.addon} />
         if (a.icon == '*') {
             return <View className={"justify-center" + (index2 > visibleItemsCount - 1 ? ' item-overlap ' : '')} ref={el => itemRefs.current[index2] = el}><Link href={a.link}>{btn}</Link></View>

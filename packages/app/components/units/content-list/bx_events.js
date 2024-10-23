@@ -13,7 +13,7 @@ import Time from 'app/ui/atoms/time'
 import MoreMenu from 'app/components/nav/menu-more'
 import { useTranslation } from 'react-i18next';
 import { staticComponents } from 'app/static';
-import { getUnitMenuItems } from 'app/functions-default';
+import { callFn } from 'app/lib/functions/call';
 
 export default function Unit(props) {
 
@@ -41,7 +41,7 @@ export default function Unit(props) {
     const friendsLabel1 = data.members_count > 0 ? tp("going", data?.followers_count) : ''
 
     const { oMenuItemPrimary, oMenuItemSecondary } = useMemo(() => {
-        return getUnitMenuItems(props.unitType, data, handleClick, t);
+        return callFn("getUnitMenuItems", [props.unitType, data, handleClick, t, props.module]);
     }, [props.unitType, data, handleClick, t]);
 
     return (

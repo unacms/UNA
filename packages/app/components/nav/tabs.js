@@ -21,7 +21,7 @@ import { useFonts } from 'expo-font';
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
 import { enableScreens } from 'react-native-screens';
 import { OneSignal } from 'react-native-onesignal';
-import { getBadgeForTab } from 'app/functions-default';
+import { callFn } from 'app/lib/functions/call';
 import { Platform } from 'react-native'
 enableScreens(appSetting('layout', 'native_enable_screens'));
 
@@ -165,7 +165,7 @@ export default function () {
                     {
                         TabList.map((tab, index) => {
                             const options = {
-                                tabBarBadge: getBadgeForTab(currentUser, tab.url),
+                                tabBarBadge:  callFn("getBadgeForTab", [currentUser, tab.url]),
                                 tabBarBadgeAllowFontScaling: false,
                                 title: t(tab.title),
                                 headerShown: false,

@@ -15,7 +15,7 @@ import { fetcher } from 'app/lib/fetcher';
 import Toaster from 'app/ui/atoms/toaster';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { BlockByName } from 'app/components/block';
-import { getButtonForConductorNative, noContentByUrl, updateRouteDataForConnections } from 'app/functions-default';
+import { callFn } from 'app/lib/functions/call';
 
 const TabBar = React.memo(({ routes, index, setIndex, onChangeRoute }) => {
     const { colors } = Theme();
@@ -26,7 +26,7 @@ const TabBar = React.memo(({ routes, index, setIndex, onChangeRoute }) => {
                 <ScrollView horizontal={true} style={{ backgroundColor: colors.barsBackground }} className=" border-b border-bdr dark:border-bdr-d ">
                     <Row className="px-1.5  justify-center" >
                         {routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
-                            const btn = getButtonForConductorNative(a, index, currentUser, setIndex, onChangeRoute)
+                            const btn =  callFn("getButtonForConductorNative", [a, index, currentUser, setIndex, onChangeRoute]);
                             return (
                                 <View className="py-2 px-1 items-center justify-center"
                                     key={`tab-${a.index}`}
@@ -112,7 +112,7 @@ const TabScene = React.memo(({
             unit={route.endpoint?.unit}
             renderItem={renderItem}
             ListFooterComponent={
-                (route?.endpoint?.request_url ? (route?.endpoint?.finished ? (route.data.length == 0 ? noContentByUrl(route?.endpoint) : <></>) : Preload) : <></>)
+                (route?.endpoint?.request_url ? (route?.endpoint?.finished ? (route.data.length == 0 ?  callFn("noContentByUrl", [route?.endpoint]) : <></>) : Preload) : <></>)
             }
             maxToRenderPerBatch={5}
             initialNumToRender={5}
@@ -302,7 +302,7 @@ export function ConductorFlat({ header, smallHeader, minHeaderHeight, isHideDefa
             newRoutes[index] = updatedRoute;
             setRoutes(newRoutes);
         }
-        updateRouteDataForConnections(currentRoute, layoutData, routes, index, setRoutes)
+        callFn("updateRouteDataForConnections", [currentRoute, layoutData, routes, index, setRoutes])
     }, [layoutData]);
     /* NEW POST TO FEED */
 
