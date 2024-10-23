@@ -17,9 +17,10 @@ import Link from 'app/ui/atoms/link'
 import Card from 'app/ui/molecules/card'
 import Progress from 'app/ui/atoms/progress'
 import Scroll from 'app/ui/molecules/scroll'
+import { memo } from 'react'
 
-export default function CourseStructure(props) {
-    // console.log("props.data", props.data)
+function CourseStructure(props) {
+     console.log("props.data", props.data)
     //initialValue={400}
     return <Scroll horizontal={true} step={250} className='w-full'>
         {
@@ -58,7 +59,6 @@ export default function CourseStructure(props) {
                                         return (
                                             <Button key={`cnt-${index}`} bgColor={`bg-white`} variant="default" title={`${item2.cn_progress} ${item2.cn_title}`} size="xs" rounded />
                                         )
-
                                     })}
                                 </Row>
                             </Link>
@@ -69,3 +69,5 @@ export default function CourseStructure(props) {
         }
     </Scroll>
 }
+
+export default memo(CourseStructure);

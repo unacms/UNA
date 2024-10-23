@@ -1,14 +1,16 @@
 import { View, Row } from 'app/design/view'
 import { useState } from 'react'
-import { getFormFieldByData } from 'app/lib/form-helpers'
+import { getFormFieldByData, getHiddenFields } from 'app/lib/form-helpers'
 import Profile from 'app/ui/molecules/profile';
 import React from 'react'
 import { useCurrentUser } from 'app/context/user';
 import { Text } from 'app/design/typography'
 
 export default function FormPost(props) {
+    const {data, handleSubmit} = props;
+    const inputs = data.inputs;
 
-
+    console.log("inputsinputs", inputs)
     const [imageSource, setImageSource] = useState([])
     let { currentUser, setCurrentUser } = useCurrentUser();
     function setPlaceHolder(name, previews) {
@@ -20,34 +22,24 @@ export default function FormPost(props) {
         }
     }
 
-    let prevList = Object.values(imageSource).flat()
-    if (props.data.inputs['covers']) {
-        props.data.inputs['covers'].viewClasses =
+    const prevList = Object.values(imageSource).flat()
+    if (inputs['covers']) {
+        inputs['covers'].viewClasses =
             'p-4 border-dashed border-bdrcard dark:border-bdrcard-d'
-        props.data.inputs['covers'].caption = 'Add cover image'
+        inputs['covers'].caption = 'Add cover image'
     }
-    props.data.inputs['title'].type = 'textarea'
-    props.data.inputs['title'].height = 12
-    props.data.inputs['title'].viewClasses =
+    inputs['title'].type = 'textarea'
+    inputs['title'].height = 12
+    inputs['title'].viewClasses =
         ' text-2xl lg:text-3xl font-bold my-2 placeholder-neutral-500 text-neutral-900 dark:text-neutral-50  focus:outline-none'
-    props.data.inputs['text'].viewClasses = 'dark:focus:bg-red-500'
+    inputs['text'].viewClasses = 'dark:focus:bg-red-500'
 
-    if (props.data.inputs['allow_comments'])
-        props.data.inputs['allow_comments'].caption = '';
+    if (inputs['allow_comments'])
+        inputs['allow_comments'].caption = '';
 
-    let hiddenFields = [];
-    Object.keys(props.data.inputs).forEach(function (key) {
-        if (props.data.inputs[key].type == "hidden"){
-            hiddenFields.push(props.data.inputs[key]);
-        }
-    });
-    // TODO: hiddenFields is not used
-
-   
-    console.log("hiddenFields", hiddenFields)
     return (
-        <View className="w-full max-w-5xl flex-col">xx
-           {}
+        <View className="w-full max-w-5xl flex-col">
+          {getHiddenFields(inputs, handleSubmit)}
         
             <View className="  overflow-hidden flex-col  ">
                 <View className=" flex-row flex-wrap gap-x-2 flex-auto justify-between items-center mr-1">
@@ -56,36 +48,36 @@ export default function FormPost(props) {
                     </View>
                     <View className=" mb-4  ">
                         {getFormFieldByData(
-                            props.data.inputs['allow_view_to'],
-                            props.handleSubmit,
+                            inputs['allow_view_to'],
+                            handleSubmit,
                             'nofield'
                         )}
                     </View>
                     <View className=" mb-4  ">
                         {getFormFieldByData(
-                            props.data.inputs['covers'],
-                            props.handleSubmit,
+                            inputs['covers'],
+                            handleSubmit,
                             'notitle',
                             { format: 'custom', view: 'button' }
                         )}
                     </View>
                 </View>
                 {getFormFieldByData(
-                    props.data.inputs['covers'],
-                    props.handleSubmit,
+                    inputs['covers'],
+                    handleSubmit,
                     'notitle',
                     { format: 'custom', view: 'preview' }
                 )}
                 <View className="  ">
                     {getFormFieldByData(
-                        props.data.inputs['title'],
-                        props.handleSubmit,
+                        inputs['title'],
+                        handleSubmit,
                         'notitle',
                         { placeholder: 'Title...', format: 'custom' }
                     )}
                     {getFormFieldByData(
-                        props.data.inputs['text'],
-                        props.handleSubmit,
+                        inputs['text'],
+                        handleSubmit,
                         'notitle',
                         { placeholder: 'Write your text here...' }
                     )}
@@ -97,32 +89,32 @@ export default function FormPost(props) {
                     <Row className=" justify-start items-center flex-row flex-wrap px-2 ">
                         <View className="">
                             {getFormFieldByData(
-                                props.data.inputs['pictures'],
-                                props.handleSubmit,
+                                inputs['pictures'],
+                                handleSubmit,
                                 'custom',
                                 { previewPlaceHolder: setPlaceHolder }
                             )}
                         </View>
                         <View className="">
                             {getFormFieldByData(
-                                props.data.inputs['videos'],
-                                props.handleSubmit,
+                                inputs['videos'],
+                                handleSubmit,
                                 'custom',
                                 { previewPlaceHolder: setPlaceHolder }
                             )}
                         </View>
                         <View className="">
                             {getFormFieldByData(
-                                props.data.inputs['files'],
-                                props.handleSubmit,
+                                inputs['files'],
+                                handleSubmit,
                                 'custom',
                                 { previewPlaceHolder: setPlaceHolder }
                             )}
                         </View>
                         <View className="">
                             {getFormFieldByData(
-                                props.data.inputs['sounds'],
-                                props.handleSubmit,
+                                inputs['sounds'],
+                                handleSubmit,
                                 'custom',
                                 { previewPlaceHolder: setPlaceHolder }
                             )}
@@ -139,8 +131,8 @@ export default function FormPost(props) {
                     <Text className="font-semibold px-3 py-1 justify-center my-auto text-sm  text-neutral-800 dark:text-neutral-200">Labels</Text>
                     <Row className=" justify-start items-center flex-auto px-2 ">
                         {getFormFieldByData(
-                            props.data.inputs['labels'],
-                            props.handleSubmit,
+                            inputs['labels'],
+                            handleSubmit,
                             'notitle'
                         )}
                     </Row>
@@ -150,8 +142,8 @@ export default function FormPost(props) {
                     <Text className="font-semibold px-3 py-1 my-auto text-sm  text-neutral-800 dark:text-neutral-200">Category</Text>
                     <Row className=" gap-x-2 max-w-xl px-2 justify-start items-center flex-auto flex-row flex-wrap ">
                         {getFormFieldByData(
-                            props.data.inputs['cat'],
-                            props.handleSubmit,
+                            inputs['cat'],
+                            handleSubmit,
                             'notitle'
                         )}
                     </Row>
@@ -161,20 +153,20 @@ export default function FormPost(props) {
                     <Text className="font-semibold px-3 py-1  my-auto text-sm flex-auto text-neutral-800 dark:text-neutral-200">Allow Comments</Text>
                     <Row className=" gap-x-2 p-2 justify-start items-center flex-row flex-wrap ">
                         {getFormFieldByData(
-                            props.data.inputs['allow_comments'],
-                            props.handleSubmit,
+                            inputs['allow_comments'],
+                            handleSubmit,
                             'default'
                         )}
                     </Row>
                 </View>
                 {getFormFieldByData(
-                    props.data.inputs['do_publish'],
-                    props.handleSubmit,
+                    inputs['do_publish'],
+                    handleSubmit,
                     'default'
                 )}
                 {getFormFieldByData(
-                    props.data.inputs['do_submit'],
-                    props.handleSubmit,
+                    inputs['do_submit'],
+                    handleSubmit,
                     'default'
                 )}
             </View>

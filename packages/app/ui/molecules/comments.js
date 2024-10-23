@@ -33,13 +33,13 @@ export default function ElementComments(oProps) {
  
     const oAction = oProps.action;
     const oCounter = oProps.counter;
-
+    const isTextMode = oProps.mode === 'text';
     //--- default display type: action, counter, both.
     const sDisplayType = oProps.displayType || 'both';
 
     const oButtonProps = {
-        variant: oProps.primary ? 'primary' : oProps.params?.button_variant,
-        size: oProps.params?.button_size,
+        variant: oProps?.primary ? 'primary' :  (isTextMode ? 'custom' :oProps.params?.button_variant),
+        size: isTextMode? 'base' : oProps.params?.button_size,
         rounded: oProps.params?.button_rounded,
         fullWidth: oProps.params?.button_full_width,
         showTitleFromSize: oProps.params?.button_show_title_from_size
@@ -91,13 +91,14 @@ export default function ElementComments(oProps) {
 
     const ButtonAction = !bShowCombined ? (bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText) : ButtonMenuGroupItem;
 
+    const sIcon = isTextMode ? "" : "ChatCircleText";
     const sActionButton = useMemo(() => {
 //counter
         if (bShowCounter && !bShowAction ){
              if (iCount > 0){
                 return <ButtonAction
                 key="action"
-                startDecorator="ChatCircleText"
+                startDecorator={sIcon}
                 title={iCount}
                 onPress={!bShowActionDisabled ? handlePress : undefined}
                 disabled={bShowActionDisabled}
@@ -112,7 +113,7 @@ export default function ElementComments(oProps) {
         if (!bShowCounter && bShowAction ){
             return <ButtonAction
             key="action"
-            startDecorator="ChatCircleText"
+            startDecorator={sIcon}
             title={bShowActionLabel ? (sTitle) : false}
             onPress={!bShowActionDisabled ? handlePress : undefined}
             disabled={bShowActionDisabled}
@@ -122,7 +123,7 @@ export default function ElementComments(oProps) {
 
         return <ButtonAction
             key="action"
-            startDecorator="ChatCircleText"
+            startDecorator={sIcon}
             title={bShowActionLabel ? (iCount > 0 ? iCount : sTitle) : false}
             onPress={!bShowActionDisabled ? handlePress : undefined}
             disabled={bShowActionDisabled}

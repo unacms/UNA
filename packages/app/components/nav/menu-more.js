@@ -10,22 +10,70 @@ import Menu from 'app/components/menu'
 import { useState, useContext, useRef, useMemo, memo } from 'react'
 import { getImageSizes, FeedbackHaptics, tp, t } from 'app/lib/util'
 import { Button, Modal } from 'app/design/controls'
+import DropdownMenu from 'app/ui/atoms/dropdown-menu'
+import { componentsMap } from 'app/components/menu-items/_map';
 
-export default function ({ data, oMenuItemsMore, popupVisible, setPopupVisible}) {
+export default function ({ data, oMenuItemsMore, popupVisible, setPopupVisible, defaultButtonProps }) {
+    let { currentUser, setCurrentUser } = useCurrentUser()
 
-    const handleClickMore = (event) => {
+    //TODO CONNECTIONS AND LINKS LIKE REPORTS AND BUTTON (const isTextMode = oProps.mode === 'text';)
+    
+    const handleMenuManageSelect = async (oItem, event) => {
+    }
+
+    const buttonProps = defaultButtonProps || {
+        variant: "outline",
+        size: "sm",
+        className: " my-auto ",
+        startDecorator: "DotsThreeOutline"
+    }
+
+    const sDisplayType = 'secondary';
+    const aMenuManageItems = !!currentUser ? menuItemsByName(oMenuItemsMore?.object, oMenuItemsMore.items, currentUser).map(
+        (aItem) => {
+            let sTitle = aItem.title;
+            const ItemType = useMemo(() => {
+                return componentsMap[aItem.display_type || sDisplayType];
+            }, [aItem.display_type, sDisplayType]);
+
+        
+            const a = <ItemType mode="text" key={aItem.id || aItem.name} {...aItem} />
+            sTitle = a;
+
+
+            return {
+                id: aItem.id ? aItem.id : aItem.name,
+                name: aItem.name,
+                link: aItem.link,
+                title: sTitle,
+            }
+        }
+    ) : []
+
+    return (
+        <DropdownMenu items={aMenuManageItems} defaultOpen={false} onSelect={handleMenuManageSelect}>
+            <View className='ml-2'>
+                <Button
+                    {...buttonProps}
+                    startDecorator="DotsThreeOutline"
+                />
+            </View>
+        </DropdownMenu>
+
+    );
+}
+/*
+
+ const handleClickMore = (event) => {
         event.preventDefault();
         FeedbackHaptics("Medium");
         setPopupVisible(true);
     };
 
-    return (
+return (
         <View className='ml-2'>
             <Button
-                variant="outline"
-                size="sm"
-                className=" my-auto "
-                startDecorator="DotsThreeOutline"
+               {...buttonProps}
                 onPress={(event) =>
                     handleClickMore(event)
                 }
@@ -46,5 +94,6 @@ export default function ({ data, oMenuItemsMore, popupVisible, setPopupVisible})
                 </View>
             </Modal>
         </View>
-    );
-}
+    );*/
+
+    

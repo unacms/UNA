@@ -18,7 +18,7 @@ export default function MenuItemElement(oProps) {
 
     return (
         <View className={sClassName}>
-            <Element key={oProps.id || oProps.name} {...oProps.data} />
+            <Element mode={oProps.mode} key={oProps.id || oProps.name} {...oProps.data} />
         </View>
     );
 }

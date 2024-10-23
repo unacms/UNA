@@ -37,8 +37,8 @@ export default function MenuItemLink(oProps) {
 
     let sIcon = '';
     if(!bTitleOnly) {
-        if(sButtonIcon == '')
-            sButtonIcon = getIconByNameFromIconset(oIconset, oProps.name);
+        //if(sButtonIcon == '')
+         //   sButtonIcon = getIconByNameFromIconset(oIconset, oProps.name);
     }
 
     let sContent = undefined;

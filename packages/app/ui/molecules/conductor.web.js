@@ -267,7 +267,6 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         if (perLineSettingsByModule){
             perLineSettings=perLineSettingsByModule;
         }
-        console.log("blocksroutes", perLineSettings, currentRoute?.endpoint?.module)
         for (let i = 0; i < perLineSettings.length; i++) {
             if (width > perLineSettings[i].width) {
                 return perLineSettings[i].count;
@@ -278,11 +277,8 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     };
 
     const queryKey = [currentRoute?.endpoint?.request_url, index, keyword, JSON.stringify(currentRoute?.endpoint?.params?.filters), data.uri];
-    const queryClient = useQueryClient();
     const [numColumns, setNumColumns] = useState(getNumCols(windowWidth));
     const {
-        status: rqtStatus,
-        data: newData,
         fetchNextPage,
         hasNextPage,
         isFetchingNextPage,
@@ -539,7 +535,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             </>
         )
     }
-        , [numColumns, windowWidth, rqtStatus, index]);
+        , [numColumns, windowWidth, index]);
 
     const TabFlashList = React.forwardRef((props, ref) => {
 

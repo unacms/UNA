@@ -3,17 +3,28 @@ import { Text } from 'app/design/typography'
 import { appSetting } from 'app/lib/util'
 import Link from 'app/ui/atoms/link'
 
-export function getFormFieldByData(inputData, handleSubmit, format, externalProps){
-   
+export function getFormFieldByData(inputData, handleSubmit, format, externalProps) {
+
     if (!inputData)
         return <></>;
-    
+
     const InputType = componentsMap[String(inputData.type)];
 
-    if (!InputType) 
+    if (!InputType)
         return <Text>Unsupported field type: {JSON.stringify(inputData)}</Text>
-    return <InputType key={inputData.name} {...inputData} format = {format} handleSubmit = {handleSubmit} {...externalProps}/>;
+    return <InputType key={inputData.name} {...inputData} format={format} handleSubmit={handleSubmit} {...externalProps} />;
 
+}
+
+export function getHiddenFields(inputs, handleSubmit) {
+    return Object.keys(inputs)
+        .map((key) => {
+            if (inputs[key].type === "hidden") {
+                return getFormFieldByData(inputs[key], handleSubmit, 'nofield');
+            }
+            return null;
+        })
+        .filter((element) => element !== null);
 }
 
 export function inputByKey(array, value) {

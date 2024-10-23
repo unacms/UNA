@@ -39,7 +39,7 @@ export default function Unit(props) {
         let sPrimary = "join";
         if (props.module == "bx_channels") sPrimary = "subscribe";
         oMenuItemPrimary = data.meta.items
-            .filter((aItem) => aItem.name == sPrimary)
+            .filter((aItem) => aItem.primary == true)
             .shift();
         if (!oMenuItemPrimary) {
             oMenuItemPrimary = {
@@ -49,29 +49,17 @@ export default function Unit(props) {
                 },
             };
         }
-        if (!oMenuItemPrimary) {
-            sExclude = sPrimary;
-            oMenuItemPrimary = data.meta.items
-                .filter((aItem) => aItem.name == sPrimary)
-                .shift();
-            if (!oMenuItemPrimary) {
-                sExclude = sSecondary;
-                oMenuItemPrimary = data.meta.items
-                    .filter((aItem) => aItem.name == sSecondary)
-                    .shift();
-            }
-        }
+        
 
-        if (!!oMenuItemPrimary) {
+        if (oMenuItemPrimary) {
             if (oMenuItemPrimary?.data && oMenuItemPrimary.data?.type) {
                 const Element = componentsMap[oMenuItemPrimary.data.type];
                 if (!!Element) {
                     const oElementParams = {
                         ...oMenuItemPrimary.data,
                         ...{
-                            primary: true,
                             params: {
-                                button_rounded: false,
+                                button_rounded: true,
                                 button_full_width: true,
                                 on_done: (sAction, oData) => {
                                     //--- Do something after the primary action was performed.
@@ -87,6 +75,7 @@ export default function Unit(props) {
                                     ? oMenuItemPrimary.id
                                     : oMenuItemPrimary.name
                             }
+                            
                             {...oElementParams}
                         />
                     );
@@ -96,6 +85,7 @@ export default function Unit(props) {
                     <Button
                         variant="primary"
                         size="sm"
+                        rounded = {true}
                         title={oMenuItemPrimary.title}
                         className=" my-auto "
                         startDecorator={
@@ -114,7 +104,7 @@ export default function Unit(props) {
             ...data.meta,
             ...{
                 items: data.meta.items.filter(
-                    (aItem) => aItem.name != sPrimary,
+                    (aItem) => aItem.primary != true,
                 ),
                 params: {
                     showVertical: true,
@@ -128,7 +118,6 @@ export default function Unit(props) {
             },
         };
     }
-    const friendsLabel = data.members_count > 0 ? tp("members", data?.members_count) : ''
 
     if (
         !!cardData?.hidden &&
@@ -138,35 +127,37 @@ export default function Unit(props) {
 
     switch (props.unitType) {
         case 'search':
-            return <BaseUnit data={data} imageSizes={imageSizes} oMenuItemPrimary={oMenuItemPrimary} oMenuItemsMore={oMenuItemsMore} bMenuItemsMoreShow={bMenuItemsMoreShow} />
+            return <BaseUnit data={data} popupVisible={popupVisible} setPopupVisible={setPopupVisible} imageSizes={imageSizes} oMenuItemPrimary={oMenuItemPrimary} oMenuItemsMore={oMenuItemsMore} bMenuItemsMoreShow={bMenuItemsMoreShow} />
         default:
-            return <BaseUnit data={data} imageSizes={imageSizes} oMenuItemPrimary={oMenuItemPrimary} oMenuItemsMore={oMenuItemsMore} bMenuItemsMoreShow={bMenuItemsMoreShow} />
+            return <BaseUnit data={data} popupVisible={popupVisible} setPopupVisible={setPopupVisible} imageSizes={imageSizes} oMenuItemPrimary={oMenuItemPrimary} oMenuItemsMore={oMenuItemsMore} bMenuItemsMoreShow={bMenuItemsMoreShow} />
     }
 }
 
-function BaseUnit({ data, imageSizes, oMenuItemPrimary, oMenuItemsMore, bMenuItemsMoreShow }) {
+function BaseUnit({ data, imageSizes, oMenuItemPrimary, oMenuItemsMore, bMenuItemsMoreShow, popupVisible,setPopupVisible  }) {
     const persents = data.percent;
     const buttonCaption = data.pass_title;
-    const m_counter = [data.counters, 10];
-    const l_counter = [10, 40];
-    console.log("datadatadata", data)
     return (
         <>
-            <Card margin="m-2" rounded="rounded-2xl bg-gray-400">
+            <Card margin="m-2" rounded="rounded-2xl bg-gray-400 hover:bg-indigo-400">
                 <Link className="course " href={data.url} >
                     <View className="flex-col p-4  flex-auto items-between justify-between h-52 ">
                         <View >
-                            <Row className='w-full mb-4'>
-                                <View className='w-4/5'>
-                                    <Row className='mb-2'>
+                            <Row className='w-full mb-4 justify-end items-center'>
+                                {persents !== undefined  && <View className='flex-auto'>
+                                    <Row className='mb-1'>
                                         <Progress value={persents} />
                                     </Row>
                                     <Text className={"text-xs text-white"}>Пройдено {persents}%</Text>
-                                </View>
-                                <View className="flex-row w-full ">
+                                </View>}
+                                <View className="flex-row  justify-end w-10 items-center h-8">
                                     {(bMenuItemsMoreShow && !!oMenuItemsMore &&
                                         oMenuItemsMore.items.length > 0) && (
-                                            <MoreMenu oMenuItemsMore={oMenuItemsMore} data={data} popupVisible={popupVisible} setPopupVisible={setPopupVisible} />
+                                            <MoreMenu defaultButtonProps={{ variant:"outline",
+                                                size:"xs",
+                                                startDecorator:"DotsThreeOutline",
+                                                rounded:true
+                                                }}
+                                                oMenuItemsMore={oMenuItemsMore} setPopupVisible={setPopupVisible} data={data} popupVisible={popupVisible} setPopupVisible={setPopupVisible} />
                                         )}
                                 </View>
                             </Row>
@@ -179,14 +170,17 @@ function BaseUnit({ data, imageSizes, oMenuItemPrimary, oMenuItemsMore, bMenuIte
                         </View>
                         <Row className='gap-x-2 justify-between w-full '>
                             <Row className='gap-x-2 items-end'>
-                                {data.counters.map((item) => {
+                                {data.counters.map((item, index) => {
                                     return (
-                                        <Button bgColor={`bg-white`} variant="outline" title={`${item.progress} ${item.title}`} size="xs" rounded />
+                                        <Button key={`counter-${index}`}  bgColor={`bg-white`} variant="outline" title={`${item.progress || item.total} ${item.title}`} size="xs" rounded />
                                     )
 
                                 })}
                             </Row>
-                            {data.show_pass && <Button variant="primary" title={buttonCaption} size="sm" rounded />}
+                            {/*data.show_pass && <Button variant="primary" title={buttonCaption} size="sm" rounded />*/}
+                            <View className="flex-row">
+                                    {oMenuItemPrimary}
+                            </View>
                         </Row>
                     </View>
                 </Link>
