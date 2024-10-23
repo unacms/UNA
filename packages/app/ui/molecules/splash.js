@@ -4,7 +4,7 @@ import { Button, Modal } from 'app/design/controls'
 import Card from 'app/components/card'
 import { useState } from 'react'
 import React from 'react'
-import { appSetting,BlockDataByName } from 'app/lib/util'
+import { appSetting, BlockDataByName, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { Platform } from 'react-native'
 import { useWindowDimensions } from 'react-native'
 import { BlockByData } from 'app/components/blocks-content/object-data-array-int';
@@ -18,7 +18,7 @@ export default function Splash(props) {
 
     const windowDimensions = useWindowDimensions();
     const isIos = Platform.OS === 'ios'
-    const isSmall = windowDimensions.width < 640 ? true : false;
+    const isSmall = windowDimensions.width < LAYOUT_BREAKPOINTS.sm ? true : false;
 
     const dataSignUp = BlockDataByName(props.data, 'system:create_account_form');
     const dataJoin = BlockDataByName(props.data, 'bx_invites:get_block_form_request');

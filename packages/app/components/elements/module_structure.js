@@ -10,6 +10,7 @@ import { fetcher } from 'app/lib/fetcher'
 import { ContentMore } from 'app/ui/molecules/contentmore';
 import Image from 'app/ui/atoms/image';
 import Svg, { Line, Circle } from 'react-native-svg';
+import { LAYOUT_BREAKPOINTS } from 'app/lib/util'
 
 export default function ModuleStructure(props) {
 
@@ -263,7 +264,7 @@ function LessonSteps({ lessonData, startLessonPart }) {
                         </View>
                         <Row className={`${index != 0 ? 'border-t border-bdr dark:border-bdr-d' : ''} pt-4 flex-1`}>
                             <View className='mb-4 aspect-video w-40 mr-5 rounded bg-gray-500' >
-                                {item.image?.src && <Image view='cover' sizes="(max-width:1024px) 100vw, 1024px" alt='' className="rounded" src={item.image?.src} />}
+                                {item.image?.src && <Image view='cover' sizes={LAYOUT_BREAKPOINTS.lg} alt='' className="rounded" src={item.image?.src} />}
                             </View>
                             <View className={`flex-auto`}>
                                 <Button variant="default" textColor={`text-white`} bgColor={`bg-` + getColorByType(item.type)} title={item.type} size="xs" rounded />

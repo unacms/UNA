@@ -1,6 +1,6 @@
 import { View, Row, Pressable, ScrollView } from 'app/design/view'
 import { Text, H1C } from 'app/design/typography'
-import { stripTags, appSetting } from 'app/lib/util'
+import { stripTags, appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import Profile from 'app/ui/molecules/profile'
 import { useWindowDimensions } from 'react-native'
 import Image from 'app/ui/atoms/image'
@@ -12,7 +12,7 @@ import { BlurView } from 'expo-blur';
 import ProfilesList from 'app/ui/molecules/profile_list'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { Button } from 'app/design/controls'
-import { FeedbackHaptics } from 'app/lib/util';
+
 
 function CoverMenu(props) {
 
@@ -92,7 +92,7 @@ export function CoverSmall(props) {
             <View className="absolute h-80 w-full">
                 {!!data.cover && (
                     <><Image view="cover"
-                        sizes="(max-width:1280px) 100vw, 1280px"
+                        sizes={LAYOUT_BREAKPOINTS.xl}
                         className="u-cover "
                         src={data.cover.src} />
                         <BlurView intensity={90} tint="dark" style={{ width: '100%', height: 320 }} >
@@ -139,7 +139,7 @@ export default function ElementCover(props) {
                     <Image
                         alt={data.group_name}
                         view="cover"
-                        sizes="(max-width:1280px) 100vw, 1280px"
+                        sizes={LAYOUT_BREAKPOINTS.xl}
                         className="u-cover "
                         src={data.cover.src}
                     />

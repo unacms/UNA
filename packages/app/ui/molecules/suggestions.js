@@ -2,7 +2,7 @@ import { View, ScrollView, Row, Pressable } from 'app/design/view'
 import { Modal } from 'app/design/controls'
 import { useState, useEffect, useContext } from 'react';
 import { useCurrentUser } from 'app/context/user';
-import { appSetting, storageSet, storageGet } from 'app/lib/util'
+import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import Browse from 'app/components/elements/browse'
 import { fetcher } from 'app/lib/fetcher';
 import { useWindowDimensions } from 'react-native';
@@ -62,11 +62,11 @@ export default function Suggestions(props) {
 
     useEffect(() => {
         if (currentUser && currentUser.confirmed && dataModal && dataCount > 0) {
-            if (dataModal.perLine > 1 && windowWidth < 1024)
+            if (dataModal.perLine > 1 && windowWidth < LAYOUT_BREAKPOINTS.lg)
                 dataModal.perLine = 1
             let cnt = (
-                <View className={(windowWidth > 1024 ? 'max-h-96' : '') + ''}>
-                    <Browse sidebar={windowWidth > 1024 ? false : true} only_one_page={true} data={{ request_url: dataModal.request_url.replace('{user_id}', currentUser.id), "type": "obj_own_and_con", unit: "general-content-list" }} perLine={dataModal.perLine} unitType={dataModal.unitType} />
+                <View className={(windowWidth > LAYOUT_BREAKPOINTS.lg ? 'max-h-96' : '') + ''}>
+                    <Browse sidebar={windowWidth > LAYOUT_BREAKPOINTS.lg ? false : true} only_one_page={true} data={{ request_url: dataModal.request_url.replace('{user_id}', currentUser.id), "type": "obj_own_and_con", unit: "general-content-list" }} perLine={dataModal.perLine} unitType={dataModal.unitType} />
                 </View>
             );
             setBottomSheetData({ title: dataModal.title, content: cnt, showClose: true, onClose: onCloseEvent, snapPoints: ['50%', '65%'] });

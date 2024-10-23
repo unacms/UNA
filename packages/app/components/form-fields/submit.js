@@ -4,7 +4,7 @@ import { useController, useFormContext } from 'react-hook-form';
 import { Button, Hidden } from 'app/design/controls';
 import { View, Row } from 'app/design/view';
 import { useWindowDimensions, Keyboard, Platform } from 'react-native';
-import { appSetting } from 'app/lib/util';
+import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util';
 
 export default function FormFieldSubmit(props) {
     // Destructure props with default values
@@ -65,7 +65,7 @@ export default function FormFieldSubmit(props) {
         rounded,
         size,
         disabled: formState.isSubmitting || disabled,
-        fullWidth: formProps.button_full_width || width < 1024,
+        fullWidth: formProps.button_full_width || width < LAYOUT_BREAKPOINTS.lg,
     };
 
     const buttonHandlers = Platform.select({

@@ -4,7 +4,7 @@ import { Pressable, View, ScrollView, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { styled } from 'nativewind'
 import { Icon } from 'app/ui/atoms/icon'
-import { appSetting, isEmoji } from 'app/lib/util'
+import { appSetting, isEmoji, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { Picker as PickerDef } from '@react-native-picker/picker';
 import { Theme } from 'app/design/theme';
 import Tooltip from 'app/ui/atoms/tooltip';
@@ -245,7 +245,7 @@ export const Button = (props) => {
 
     const { colors } = Theme();
     const { width } = useWindowDimensions();
-    const showTooltip = useMemo(() => width >= 1024 && tooltip, [width, tooltip]);
+    const showTooltip = useMemo(() => width >= LAYOUT_BREAKPOINTS.lg && tooltip, [width, tooltip]);
 
     const colorIcon = useMemo(() => {
         if (variant === 'link') return colors.primary;

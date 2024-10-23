@@ -1,7 +1,7 @@
 import { Conductor } from 'app/ui/molecules/conductor';
 import { useState, useEffect, useMemo } from 'react';
 import Cover, { CoverSmall } from 'app/components/elements/cover';
-import { getHeaderSettings, getBlocksFromData, cloneObject, getPageData } from 'app/lib/util';
+import { getHeaderSettings, getBlocksFromData, cloneObject, getPageData, LAYOUT_BREAKPOINTS  } from 'app/lib/util';
 import { useWindowDimensions } from 'react-native';
 import { useLayoutData } from 'app/context/layout';
 import { processBlocks } from 'app/lib/conductor-helpers';
@@ -48,13 +48,13 @@ export default function PageLayout({layoutName, data, uri, blocks}) {
     const headerSettings = useMemo(() => getHeaderSettings(uri, windowWidth, 'profile'), [uri, windowWidth]);
 
     const header = useMemo(() => {
-        if (windowWidth > 768 && isAltView) {
+        if (windowWidth > LAYOUT_BREAKPOINTS.md && isAltView) {
             return null;
         }
         return <Cover data={pageData.cover_block} mode={headerSettings.cover} uri={uri} />;
     }, [windowWidth, pageData.cover_block, headerSettings.cover, uri]);
 
-    const smallHeader = useMemo(() => (windowWidth > 768 && isAltView ? null : <CoverSmall data={pageData.cover_block} />), [windowWidth, pageData.cover_block]);
+    const smallHeader = useMemo(() => (windowWidth > LAYOUT_BREAKPOINTS.md && isAltView ? null : <CoverSmall data={pageData.cover_block} />), [windowWidth, pageData.cover_block]);
 
     const renderedBlocks = useMemo(() => {
         const initialBlocks = blocks || getBlocksFromData(pageData);

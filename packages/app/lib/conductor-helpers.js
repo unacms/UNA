@@ -7,8 +7,8 @@ import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon';
 import { Pressable } from 'app/design/view'
 import { Button } from 'app/design/controls';
-import { getBlocksFromData } from 'app/lib/util';
-import { memo, useCallback, useRef, useMemo } from 'react';
+import { getBlocksFromData, LAYOUT_BREAKPOINTS } from 'app/lib/util';
+import { memo } from 'react';
 import { Platform } from 'react-native'
 
 export function getBackButtonWeb() {
@@ -363,7 +363,7 @@ export function getNumCols(width, currentRoute, leftSideBar) {
     if (blocksroutes) {
         const blockKeys = Object.keys(blocksroutes);
         for (const key of blockKeys) {
-            if (blocksroutes[key].perLine > 0 && width> 640) {
+            if (blocksroutes[key].perLine > 0 && width> LAYOUT_BREAKPOINTS.sm) {
                 return blocksroutes[key].perLine;
             }
         }

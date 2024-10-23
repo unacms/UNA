@@ -9,7 +9,7 @@ import { appSetting, formatDateInterval } from 'app/lib/util'
 import Profile from 'app/ui/molecules/profile'
 import { useWindowDimensions } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
-import { uploadImage, md5 } from 'app/lib/util'
+import { uploadImage, md5, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { genRnd, getLayout } from 'app/lib/util'
 import { fetcher } from 'app/lib/fetcher'
 import * as ImageManipulator from 'expo-image-manipulator'
@@ -27,8 +27,8 @@ export function CoverSmall(props) {
     let bPerson = props.data.profile.module == 'bx_persons' ? true : false
 
     let styles = {}
-    if (windowWidth > 1024 && getLayout(currentUser) != 'hor') {
-       // styles = { width: 1536 - 20 * 16 }
+    if (windowWidth > LAYOUT_BREAKPOINTS.lg && getLayout(currentUser) != 'hor') {
+        // styles = { width: 1536 - 20 * 16 }
     }
 
     return (
@@ -237,7 +237,7 @@ export default function (props) {
                             <Image
                                 alt={data.group_name}
                                 view="cover"
-                                sizes="(max-width:1280px) 100vw, 1280px"
+                                sizes={LAYOUT_BREAKPOINTS.xl}
                                 className="u-cover "
                                 src={coverUrl}
                             />
@@ -268,7 +268,7 @@ export default function (props) {
                 ) : (
                     <></>
                 )}
-                <View className={`flex-col ${mode === 'min'? 'lg': 'md'}:flex-row gap-x-4 px-4 py-2`}>
+                <View className={`flex-col ${mode === 'min' ? 'lg' : 'md'}:flex-row gap-x-4 px-4 py-2`}>
                     {bPerson && (
                         <View className="w-full h-24 md:h-48 md:w-48 lg:h-28 relative">
                             <View className="rounded-full absolute w-min p-2 z-50 duration-200 bottom-0 flex-none bg-bgrcard-h dark:bg-bgrcard-dh ">
@@ -296,30 +296,30 @@ export default function (props) {
                         </View>
                     )}
 
-                    
-                        <View className=" flex-auto flex-col justify-between my-auto  ">
 
-                            <Row className=" flex-row flex-auto items-center gap-x-2 pb-8 sdas lg:pb-0">{/* pb-4*/}
-                                <Text
-                                    className="tracking-tight text-2xl sm:text-3xl font-bold text-neutral-900 dark:text-neutral-50"
-                                    numberOfLines={2}
-                                >
-                                    {data.profile.display_name}
+                    <View className=" flex-auto flex-col justify-between my-auto  ">
+
+                        <Row className=" flex-row flex-auto items-center gap-x-2 pb-8 sdas lg:pb-0">{/* pb-4*/}
+                            <Text
+                                className="tracking-tight text-2xl sm:text-3xl font-bold text-neutral-900 dark:text-neutral-50"
+                                numberOfLines={2}
+                            >
+                                {data.profile.display_name}
+                            </Text>
+                            <Badges badges={data.badges} />
+                            {data.profile.info?.date_start && (
+                                <Text className="  text-neutral-600 dark:text-neutral-400 text-xs uppercase font-semibold tracking-tight overflow-hidden  rounded-md flex-none items-center">
+                                    {formatDateInterval(data.profile.info?.date_start, data.profile.info?.date_end, t)}
                                 </Text>
-                                <Badges badges={data.badges} />
-                                {data.profile.info?.date_start && (
-                                    <Text className="  text-neutral-600 dark:text-neutral-400 text-xs uppercase font-semibold tracking-tight overflow-hidden  rounded-md flex-none items-center">
-                                        {formatDateInterval(data.profile.info?.date_start, data.profile.info?.date_end, t)}
-                                    </Text>
 
-                                )}
-                            </Row>
-                           
-                            <CoverMenuMeta {...data.meta_menu} />
-                        </View>
-                        <View className={`flex-auto max-w-96 ${mode !== 'min' && 'py-4'}`}>
-                            <CoverMenu {...data.actions_menu} uri={props?.uri} containerClasses={`${mode === 'min' && 'w-full lg:justify-end' }`} />
-                        </View>
+                            )}
+                        </Row>
+
+                        <CoverMenuMeta {...data.meta_menu} />
+                    </View>
+                    <View className={`flex-auto max-w-96 ${mode !== 'min' && ' md:items-end py-4'}`}>
+                        <CoverMenu {...data.actions_menu} uri={props?.uri} containerClasses={`${mode === 'min' && 'w-full lg:justify-end'}`} />
+                    </View>
                 </View>
             </View>
         </View>

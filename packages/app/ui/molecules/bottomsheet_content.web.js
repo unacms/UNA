@@ -1,14 +1,12 @@
-import React, { useContext } from 'react';
 import BottomSheet2 from 'app/ui/molecules/bottomsheet';
-import { getAlert } from 'app/lib/util';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { View, Row } from 'app/design/view'
 import { Button } from 'app/design/controls'
 import { Text } from 'app/design/typography'
-import { Platform, Dimensions } from 'react-native'
 import { Modal } from 'app/design/controls'
 import { ScrollView } from 'app/design/view'
 import { useWindowDimensions } from 'react-native'
+import { LAYOUT_BREAKPOINTS } from 'app/lib/util'
 
 export default function ElementCommentForm(props) {
     const { bottomSheetData, setBottomSheetData } = useBottomSheetData();
@@ -36,7 +34,7 @@ export default function ElementCommentForm(props) {
     if (!isShow)
         return <></>
 
-    if (windowDimensions.width > 1024) {
+    if (windowDimensions.width > LAYOUT_BREAKPOINTS.lg) {
         return (
             <Modal
                 title={bottomSheetData.title}

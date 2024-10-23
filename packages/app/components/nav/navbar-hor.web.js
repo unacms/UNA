@@ -5,7 +5,7 @@ import { Text } from 'app/design/typography'
 import { View, Row, Pressable } from 'app/design/view'
 import { Button, ButtonRef } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user'
-import { appSetting } from 'app/lib/util'
+import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { getBackButtonWeb } from 'app/lib/conductor-helpers'
 import { appStatic } from 'app/lib/app-static'
 import { menuItemsByName } from 'app/lib/util'
@@ -29,7 +29,7 @@ const HeaderLine = memo(
         title,
     }) => {
         const { width } = useWindowDimensions()
-        if (width > 1280 && menuPopup) setMenuPopup(false)
+        if (width > LAYOUT_BREAKPOINTS.xl && menuPopup) setMenuPopup(false)
 
         const isDrawer =
             menuItemsByName(
@@ -54,7 +54,7 @@ const HeaderLine = memo(
                         </Pressable>
                     </View>
                 )}
-                {(uri == 'home' || width >= 1024) && (
+                {(uri == 'home' || width >= LAYOUT_BREAKPOINTS.lg) && (
                     <Link href="/home" aria-label="Logo">
                         <View className="group mr-4 flex-row flex-none items-center my-auto">
                             {appStatic('logo_mark')}

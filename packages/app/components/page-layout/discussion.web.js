@@ -6,8 +6,7 @@ import { getBackButtonWeb } from 'app/lib/conductor-helpers';
 import { CommentsBrowse, CommentsForm } from 'app/lib/comments-helpers'
 import { Dimensions } from 'react-native';
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
-import { Platform } from 'react-native'
-import { stripTags,parseUrl, parseQueryString } from 'app/lib/util';
+import { stripTags,parseUrl, parseQueryString, LAYOUT_BREAKPOINTS } from 'app/lib/util';
 import { useWindowDimensions } from 'react-native'
 
 export default function PageLayout(props) {
@@ -52,7 +51,7 @@ export default function PageLayout(props) {
             viewFormRef.current.measure((x, y, width, height, pageX, pageY) => {
                 let  FormH = height
                 let offset = 100;
-                if (Dimensions.get('window').width < 1024){
+                if (Dimensions.get('window').width < LAYOUT_BREAKPOINTS.lg){
                     FormH = FormH 
                     offset = 500;
                 }
@@ -84,7 +83,7 @@ export default function PageLayout(props) {
     let header = <></>
     actionsItemIndex = aItems.findIndex(item => item.id === 'block_author');
     if (actionsItemIndex !== -1) {
-        if(windowWidthOr < 1024){
+        if(windowWidthOr < LAYOUT_BREAKPOINTS.lg){
             header = (
                 <><Row className='py-2 px-2 w-full items-center fixed top-0 z-50 border-b  bg-bgrnavbar   dark:bg-bgrnavbar-d backdrop-blur   border-bdrnavbar dark:border-bdrnavbar-d flex-row justify-between'>
                     {getBackButtonWeb()}
@@ -104,7 +103,7 @@ export default function PageLayout(props) {
         }
 
     }
-    let isStycky = Dimensions.get('window').width < 1024 || sizes.otherHeight < sizes.cntHeight;
+    let isStycky = Dimensions.get('window').width < LAYOUT_BREAKPOINTS.lg || sizes.otherHeight < sizes.cntHeight;
     useEffect(() => {
         if (props.data.url.includes('parent_id=')){
             let b = parseUrl(props.data.url);

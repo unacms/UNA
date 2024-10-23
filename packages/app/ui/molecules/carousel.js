@@ -6,7 +6,7 @@ import { Modal } from "app/design/controls";
 import { Text } from 'app/design/typography';
 import { Image as ImageOr } from 'react-native';
 import { useWindowDimensions } from 'react-native';
-import { appSetting } from 'app/lib/util'
+import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { Platform } from 'react-native'
 import Video from 'app/ui/atoms/video';
 
@@ -19,8 +19,8 @@ const Image2 = memo((item) => {
         <View className={(item.len > 1 ? 'w-1/2' : 'w-full') + ' h-full bg-bgritem dark:bg-bgritem-d '}>
             <Pressable style={{ flex: 1, justifyContent: 'center' }} onPress={handlePress} >
                 {item.type == 'image' ? ((item.width && item.height) ?
-                    <Image sizes="1280px" src={item.src} alt='' height={item.height} width={item.width} className=" u-cover dark:bg-bgritem-d dark:bg-bgritem-d gap-x-1 " /> :
-                    <Image sizes="1280px" src={item.src} alt='' view="cover" className=" u-cover dark:bg-bgritem-d dark:bg-bgritem-d gap-x-1 " />
+                    <Image sizes={LAYOUT_BREAKPOINTS.xl} src={item.src} alt='' height={item.height} width={item.width} className=" u-cover dark:bg-bgritem-d dark:bg-bgritem-d gap-x-1 " /> :
+                    <Image sizes={LAYOUT_BREAKPOINTS.xl} src={item.src} alt='' view="cover" className=" u-cover dark:bg-bgritem-d dark:bg-bgritem-d gap-x-1 " />
                 ) : <Video cover={true} src={item.src} controls={false} muted={"muted"} autoplay={"autoplay"} />}
 
                 {item.row == 1 && item?.index2 == 1 && item.data.length > 3 && <View className='absolute z-50 w-full h-full text-center items-center justify-center'><Text className='text-5xl lg:text-7xl text-white'>+{item.data.length - 3}</Text></View>}
@@ -180,7 +180,7 @@ const Carousel = memo(({ data = [] }) => {
                     (imageSize2[0] > 0 && data[currentImageIndex].type == 'image') && (
                         <ScrollView style={{ height: windowHeightOr - offset }}>
                             <Pressable style={{ width: imageSize2[0], height: imageSize2[1] }} onPress={() => setCurrentImageIndex(false)}>
-                                {currentImageIndex !== false && <Image view='cover' sizes="(max-width:1280px) 100vw, 1280px" src={data[currentImageIndex].src} alt='' className=" u-cover  dark:bg-bgritem-d dark:bg-bgritem-d gap-x-1 " />}
+                                {currentImageIndex !== false && <Image view='cover' sizes={LAYOUT_BREAKPOINTS.xl} src={data[currentImageIndex].src} alt='' className=" u-cover  dark:bg-bgritem-d dark:bg-bgritem-d gap-x-1 " />}
                                 <Row className='absolute w-full -mt-4 top-1/2 items-center justify-between w-full px-4'>
                                     {
                                         currentImageIndex > 0 ? <Button variant="default" rounded size="base" onPress={() => setCurrentImageIndex(currentImageIndex - 1)} startDecorator="ArrowLeft" /> : <View className='mr-1 w-10'></View>

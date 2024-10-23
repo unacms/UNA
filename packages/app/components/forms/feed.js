@@ -12,7 +12,7 @@ import Profile from 'app/ui/molecules/profile'
 import Card from 'app/ui/molecules/card'
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { appSetting, stripTags } from 'app/lib/util'
+import { appSetting, stripTags, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { useWindowDimensions } from 'react-native'
 import { Keyboard } from 'react-native';
 import { useFormContext } from 'react-hook-form';
@@ -28,7 +28,7 @@ export default function FormFeed(props) {
     const windowDimensions = useWindowDimensions();
     const [isShowHashtag, setIsShowHashtag] = useState(0);
     const isWeb = Platform.OS === 'web'
-    const isSmall = windowDimensions.width < 640 || !isWeb ? true : false;
+    const isSmall = windowDimensions.width < LAYOUT_BREAKPOINTS.sm || !isWeb ? true : false;
     const isIos = Platform.OS === 'ios'
     const scrollViewRef = useRef(null);
 

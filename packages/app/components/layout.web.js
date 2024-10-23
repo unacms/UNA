@@ -11,7 +11,7 @@ import { useCurrentUser } from 'app/context/user'
 import BottomSheet from 'app/ui/molecules/bottomsheet_content';
 import { getHeaderSettings, getLayout, deepEqual } from 'app/lib/util';
 import { useColorScheme } from 'react-native';
-import { appSetting } from 'app/lib/util'
+import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 //import BottomSheetDataContext from 'app/context/bottomsheet';
 import { appStatic } from 'app/lib/app-static'
 import { storageSet, storageClear, storageGet } from 'app/lib/util'
@@ -247,7 +247,7 @@ export default function (props) {
     useEffect(() => {
         let a = getHeaderSettings(uri, width, layoutName);
         if (getLayout(currentUser, layoutName) == 'ver') {
-            if (width > 1024)
+            if (width > LAYOUT_BREAKPOINTS.lg)
                 a.offset = false;
         }
         if (!deepEqual(headerSettings, a)) {
@@ -283,7 +283,7 @@ export default function (props) {
 
 const Content = React.memo(({ children, headerSettings, stylesBgImage, currentUser, layoutName, url, width }) => {
 
-    const isHideHeader = appSetting('layout', 'hide_header_for_non_logged') && !currentUser;//&& width > 1024;
+    const isHideHeader = appSetting('layout', 'hide_header_for_non_logged') && !currentUser;
 
     return (
         <>

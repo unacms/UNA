@@ -20,14 +20,14 @@ import { CommentsBrowse, CommentsParts } from 'app/lib/comments-helpers'
 import { Pressable } from 'app/design/view';
 import Carousel from 'app/ui/molecules/carousel'
 import { subscribe } from 'app/ui/atoms/socket';
-import { FeedbackHaptics, getDataForMenu } from 'app/lib/util';
+import { LAYOUT_BREAKPOINTS, getDataForMenu } from 'app/lib/util';
 import Form from 'app/components/elements/form'
 import useSWR from 'swr'
 import { useTranslation } from 'react-i18next';
 
 export const CommentsModal = memo(({ commentsData, initFormData, itemContent }) => {
     const windowDimensions = useWindowDimensions();
-    const offset = windowDimensions.width > 1024 ? 100 : 60;
+    const offset = windowDimensions.width > LAYOUT_BREAKPOINTS.lg ? 100 : 60;
     const [height, setHeight] = useState(windowDimensions.height - offset - 100);
     const aItems = [itemContent];
     const CommentsPartsData = CommentsParts(commentsData, aItems, height, initFormData);

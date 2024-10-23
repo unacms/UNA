@@ -5,7 +5,7 @@ import { useWindowDimensions } from 'react-native';
 import { Platform } from 'react-native'
 import UniList from 'app/ui/atoms/unilist'
 import { fetcher } from 'app/lib/fetcher';
-import { appSetting, storageKey, getDataFromCache, storageSet, handleFeedLayoutData, cloneObject } from 'app/lib/util'
+import { appSetting, storageKey, getDataFromCache, storageSet, handleFeedLayoutData, cloneObject, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers';
@@ -106,7 +106,7 @@ export default function (props) {
         }
     };
 
-    const hOffset = Platform.OS === 'web' ? (windowWidth < 1024 ? 126 : 64) : 106;
+    const hOffset = Platform.OS === 'web' ? (windowWidth < LAYOUT_BREAKPOINTS.lg ? 126 : 64) : 106;
     const styles = Platform.OS === 'web' ? {} : { height: (defParams?.height ? defParams.height : windowHeight - hOffset) }
 
     const fetchData = useCallback(async ({ }) => {

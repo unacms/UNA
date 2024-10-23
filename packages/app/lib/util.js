@@ -14,6 +14,13 @@ import { parse as flatted_parse, stringify as flatted_stringify } from 'flatted'
 
 const nativeCache = [];
 
+export const LAYOUT_BREAKPOINTS = {
+    xl: 1280,
+    lg: 1024, 
+    md: 768,  
+    sm: 640   
+  };
+
 export function appSetting(section, name, path) {
     return setting(section, name, path, remoteSettings.data);
 }
@@ -332,7 +339,7 @@ export function getHeaderSettings(uri, width, layout) {
     let bHeader = typeof settings?.headerSettings?.header !== 'undefined' ? settings.headerSettings.header : true;
 
     let bFooter = typeof settings?.headerSettings?.footer !== 'undefined' ? settings.headerSettings.footer : true;
-    if (width > 1024) {
+    if (width > LAYOUT_BREAKPOINTS.lg) {
         bHeader = true;
     }
 
@@ -349,7 +356,7 @@ export function getHeaderSettings(uri, width, layout) {
     let bHideLeftmenu = typeof settings?.headerSettings?.hideLeftmenu !== 'undefined' ? settings.headerSettings.hideLeftmenu : false;
     let bShowAltTopMenu = typeof settings?.headerSettings?.showAltTopMenu !== 'undefined' ? settings.headerSettings.showAltTopMenu : false;
 
-    if (width >= 1024)
+    if (width >= LAYOUT_BREAKPOINTS.lg)
         bOffset = true;
 
     return {
@@ -505,7 +512,7 @@ export function getImageSizes() {
             str += "(max-width:" + perLineSettings[i].width + "px) " + Math.round(100 / perLineSettings[i + 1].count) + "vw, ";
         }
     }
-    str += '' + (1280 / perLineSettings[0].count) + 'px';
+    str += '' + (LAYOUT_BREAKPOINTS.xl / perLineSettings[0].count) + 'px';
     return str
 }
 
@@ -818,7 +825,6 @@ export async function getDataForMenu(menu, callback) {
     )
     callback(data.data)
 }
-
 
 export function menuItemsByName(name, items, currentUser, url = '') {
     if (!items)

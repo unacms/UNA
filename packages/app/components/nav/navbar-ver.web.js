@@ -7,7 +7,7 @@ import { View, Row, Pressable, ScrollView } from 'app/design/view'
 import MenuDrawer from 'app/components/nav/menu-drawer'
 import { Button } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user'
-import { appSetting, getHeaderSettings } from 'app/lib/util'
+import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { appStatic } from 'app/lib/app-static'
 import { menuItemsByName } from 'app/lib/util'
 import Redirect from 'app/ui/atoms/redirect'
@@ -22,7 +22,7 @@ import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 const HeaderLine = memo(({ headerSettings, currentUser, uri, bSearch, menuPopup, setMenuPopup, showMenu }) => {
 
     const { width } = useWindowDimensions();
-    if (width > 1280 && menuPopup)
+    if (width > LAYOUT_BREAKPOINTS.xl && menuPopup)
         setMenuPopup(false)
 
     const isDrawer = menuItemsByName('main_menu', appSetting('menu_items', 'menu_drawer'), currentUser).length > 0;

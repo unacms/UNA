@@ -3,7 +3,7 @@ import { Button } from 'app/design/controls'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu'
 import Menu from 'app/components/menu'
 import { useWindowDimensions } from 'react-native'
-import { appSetting } from 'app/lib/util'
+import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { useState } from 'react'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 
@@ -45,7 +45,7 @@ export function CoverMenu(props) {
     let { width } = useWindowDimensions()
     let size = props.size || 'base'
 
-    if (width < 640) size = 'base'
+    if (width < LAYOUT_BREAKPOINTS.sm) size = 'base'
 
     const isSplitMenu = appSetting('layout', 'split_action_menu')
 

@@ -21,7 +21,7 @@ import Dropdown from 'app/ui/atoms/dropdown'
 import Search from 'app/ui/molecules/search';
 import Location from 'app/components/form-fields/location'
 import DynamicMenu from 'app/components/nav/menu-dynamic';
-import { storageClear, menuItemsFilter } from 'app/lib/util';
+import { storageClear, menuItemsFilter, LAYOUT_BREAKPOINTS } from 'app/lib/util';
 import Footer from 'app/components/nav/footer';
 import { staticComponents } from 'app/static';
 import { subscribe } from 'app/ui/atoms/socket';
@@ -264,7 +264,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     });
 
     const scrollToCover = (cover, windowWidth, offset) => {
-        const baseScroll = windowWidth < 1024 ? 280 : offset;
+        const baseScroll = windowWidth < LAYOUT_BREAKPOINTS.lg ? 280 : offset;
         const adjustment = cover === 'group' ? -100 : -200;
         if (cover != 'min') {
             window.scroll({
@@ -317,9 +317,9 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         fetchNextPage();
     }, [routes, index, isFetchingNextPage, hasNextPage]);
 
-    let offset = header ? (windowWidth < 1024 ? 400 : 400) : 50;
+    let offset = header ? (windowWidth < LAYOUT_BREAKPOINTS.lg ? 400 : 400) : 50;
     if (cover == 'min' && header > 50) {
-        offset = windowWidth < 1024 ? 80 : 200
+        offset = windowWidth < LAYOUT_BREAKPOINTS.lg ? 80 : 200
     }
     useEffect(() => {
         const handleScroll = () => {
@@ -417,7 +417,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         let tOffset = getLayout(currentUser) == 'ver' ? 0 : 63;
         return (
             <>
-                <Animated.View style={[{ width: cntWidth + 'px', position: 'fixed', overflow: 'hidden', zIndex: 40, top: windowWidth >= 1024 ? tOffset : 0 }, animatedStyle6]}>
+                <Animated.View style={[{ width: cntWidth + 'px', position: 'fixed', overflow: 'hidden', zIndex: 40, top: windowWidth >= LAYOUT_BREAKPOINTS.lg ? tOffset : 0 }, animatedStyle6]}>
                     {smallHeader}
                     {tabBarObjSmall}
                 </Animated.View>
@@ -723,7 +723,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                         <View className=" flex-auto">{/*min-h-screen???*/}
                             {(headerSettings.showAltTopMenu) && topSideBarObj()}
                             
-                            {(windowWidth < 1024 && layoutName == 'navigator' && leftSideBarBlocks.length > 0) && <View className="items-start ml-2 mt-2">
+                            {(windowWidth < LAYOUT_BREAKPOINTS.lg && layoutName == 'navigator' && leftSideBarBlocks.length > 0) && <View className="items-start ml-2 mt-2">
                                 <Button title="Filters"  variant="default" size="sm" rounded onPress={showFilters} />
                             </View>}
 

@@ -10,7 +10,7 @@ import { genRnd, appSetting } from 'app/lib/util';
 import * as DocumentPicker from 'expo-document-picker';
 import { fetcher } from 'app/lib/fetcher';
 import { useFormContext, useController } from 'react-hook-form';
-import { uploadImage, md5 } from 'app/lib/util';
+import { uploadImage, md5, LAYOUT_BREAKPOINTS } from 'app/lib/util';
 import Loading from 'app/ui/atoms/loading'
 import { Text } from 'app/design/typography'
 import { Image as ImageNative, Alert, Platform } from 'react-native';
@@ -420,7 +420,7 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
                         <Text className='text-neutral-500/50 text-lg  justify-center  flex-col text-center'>Drag & Drop or browse files...</Text>
                     </View>
                     {img != null && (<>
-                        {isImage && <Image view='cover' sizes="(max-width:1024px) 100vw, 1024px" className=" u-cover " alt='' src={img.file_url} />}
+                        {isImage && <Image view='cover' sizes={LAYOUT_BREAKPOINTS.lg} className=" u-cover " alt='' src={img.file_url} />}
                         {imagesList && imagesList.find(item => item.preload === true) && <View className='absolute w-full h-full justify-center items-center z-50'><Loading /></View>}
                         <View className='absolute top-1 right-1 w-6.5 text-center mx-auto'>
                             <Button onPress={() => handleDelete(img.file_id)} variant="default" startDecorator="X" align="start" title="" rounded size="xs" />

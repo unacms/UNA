@@ -10,6 +10,7 @@ import { Icon } from 'app/ui/atoms/icon';
 import { Pressable } from 'app/design/view';
 import { ContentMore } from 'app/ui/molecules/contentmore';
 import { LinkContent, UnitImages } from 'app/lib/feed-helpers'
+import { LAYOUT_BREAKPOINTS } from 'app/lib/util'
 
 export const GroupView = memo(({data, styles, url, isCompact}) => {
     const pref = isCompact ? '' : 'md:';
@@ -25,7 +26,7 @@ export const GroupView = memo(({data, styles, url, isCompact}) => {
                         alt={data.title}
                         view="cover"
                         className=" rounded u-cover "
-                        sizes="(max-width:768px) 100vw, 500px"
+                        sizes={LAYOUT_BREAKPOINTS.md}
                     />
                 </View>
             </View>
@@ -101,7 +102,7 @@ export const AdView = memo(({data, styles, url, isCompact}) => {
                         alt={data.title}
                         view="cover"
                         className=" rounded u-cover "
-                        sizes="(max-width:768px) 100vw, 500px"
+                        sizes={LAYOUT_BREAKPOINTS.md}
                     />
                 </View>
             </View>
@@ -142,7 +143,7 @@ export const MarketView = memo(({data, styles, url, isCompact}) => {
                         alt={data.title}
                         view="cover"
                         className=" rounded u-cover "
-                        sizes="(max-width:768px) 100vw, 500px"
+                        sizes={LAYOUT_BREAKPOINTS.md}
                     />
                 </View>
             </View>
@@ -191,7 +192,7 @@ export const DefaultView = memo(({data, styles, bIsTitle, bIsTimelineContent, co
                             alt={data.title}
                             view="cover"
                             className=" u-cover rounded-xl "
-                            sizes="(max-width:768px) 100vw, 500px"
+                            sizes={LAYOUT_BREAKPOINTS.md}
                         />
                     </View>
                 </View>

@@ -1,7 +1,7 @@
 import { View, Pressable, ScrollView } from 'app/design/view'
 import Link from 'app/ui/atoms/link'
 import { Button } from 'app/design/controls'
-import { menuItemsByName } from 'app/lib/util'
+import { menuItemsByName, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { appSetting } from 'app/lib/util'
 import { MotiView, AnimatePresence } from 'moti'
 import { useTranslation } from 'react-i18next';
@@ -22,7 +22,7 @@ export default function ({ menuPopup, showMenu, cssClass }) {
     let windowWidth = Dimensions.get('window').width
     let styles = {}
     styles = { height: windowHeight - 170 }
-    if (windowWidth < 1024)
+    if (windowWidth < LAYOUT_BREAKPOINTS.lg)
         styles = { height: windowHeight - 65 }
     
     return (

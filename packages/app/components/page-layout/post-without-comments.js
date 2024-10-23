@@ -1,10 +1,9 @@
 import { View, Row } from 'app/design/view';
 import {BlockByName, DataByName} from 'app/components/block';
 import { useState, useRef } from 'react';
-import { stripTags } from 'app/lib/util';
+import { stripTags, LAYOUT_BREAKPOINTS } from 'app/lib/util';
 import { Dimensions } from 'react-native';
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
-import { Platform, Keyboard } from 'react-native'
 import Card from 'app/ui/molecules/card'
 
 export default function PageLayout(props) {
@@ -42,7 +41,7 @@ export default function PageLayout(props) {
             viewFormRef.current.measure((x, y, width, height, pageX, pageY) => {
                 let  FormH = height
                 let offset = 100;
-                if (Dimensions.get('window').width < 1024){
+                if (Dimensions.get('window').width < LAYOUT_BREAKPOINTS.lg){
                     FormH = FormH 
                     offset = 128;
                 }
@@ -79,7 +78,7 @@ export default function PageLayout(props) {
             </View>
         );
     }
-    let isStycky = Dimensions.get('window').width < 1024 || sizes.otherHeight < sizes.cntHeight;
+    let isStycky = Dimensions.get('window').width < LAYOUT_BREAKPOINTS.lg || sizes.otherHeight < sizes.cntHeight;
 
     return ( 
         <View className="lg:py-4">

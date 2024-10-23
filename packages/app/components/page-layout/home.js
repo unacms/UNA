@@ -7,7 +7,7 @@ import {
     filterContent,
     storageSet,
     storageGet,
-    getLayout,
+    LAYOUT_BREAKPOINTS,
 } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import { ConductorFlat as Conductor} from 'app/ui/molecules/conductor_flat'
@@ -26,7 +26,7 @@ function SplashBlock(props) {
         let url = '/splash.webp'
         return (
             <Image
-                sizes="1024px"
+                sizes={LAYOUT_BREAKPOINTS.lg}
                 view="cover"
                 className="u-cover"
                 src={url}

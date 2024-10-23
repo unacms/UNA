@@ -5,7 +5,7 @@ import { Text } from 'app/design/typography'
 import { View, Row, Pressable } from 'app/design/view'
 import { Button, ButtonRef } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user'
-import { appSetting, getHeaderSettings } from 'app/lib/util'
+import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { getBackButtonWeb } from 'app/lib/conductor-helpers';
 import { appStatic } from 'app/lib/app-static'
 import { menuItemsByName } from 'app/lib/util'
@@ -21,7 +21,7 @@ import ProfileSwitcher from 'app/components/elements/profile_switcher';
 const HeaderLine = memo(({headerSettings, currentUser, uri, title, menuPopup, setMenuPopup, showMenu}) => {
     
     const { width } = useWindowDimensions();
-    if (width > 1280 && menuPopup)
+    if (width > LAYOUT_BREAKPOINTS.xl && menuPopup)
         setMenuPopup(false)
 
     const isDrawer = menuItemsByName('main_menu', appSetting('menu_items', 'menu_drawer'), currentUser).length > 0;
@@ -43,7 +43,7 @@ const HeaderLine = memo(({headerSettings, currentUser, uri, title, menuPopup, se
                     
                 </View>
             )}
-            {(uri === 'home' || width >= 1024) && (
+            {(uri === 'home' || width >= LAYOUT_BREAKPOINTS.lg) && (
                 <Link href="/home" aria-label="Logo">
                     <View className="group mr-auto flex-row flex-none items-center rounded-lg my-auto">
                         {appStatic('logo_mark')}

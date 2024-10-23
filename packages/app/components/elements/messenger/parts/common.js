@@ -2,7 +2,7 @@ import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import { fetcher } from 'app/lib/fetcher';
 import React, { memo, useState, useEffect, useContext, useRef, useCallback, useMemo } from 'react';
-import { appSetting } from 'app/lib/util'
+import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import UniList from 'app/ui/atoms/unilist'
 import { Button, InputRounded, InputRoundedSmall } from 'app/design/controls'
 import Form from 'app/components/elements/form';
@@ -29,7 +29,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     const { setBottomSheetData } = useBottomSheetData();
     const [convoId, setConvoId] = useState(defaultConvoId);
     const [jots, setJots] = useState(false);
-    const [isSmallScreen, setIsSmallScreen] = useState(width < 768);
+    const [isSmallScreen, setIsSmallScreen] = useState(width < LAYOUT_BREAKPOINTS.md);
     const [panelsVisible, setPanelsVisible] = useState({ convos: true, jots: isSmallScreen ? false : true });
     const [commentForm, setCommentForm] = useState(false);
     const [jotUpdated, setJotUpdated] = useState(false);
@@ -112,7 +112,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     }
 
     useEffect(() => {
-        setIsSmallScreen(width < 768);
+        setIsSmallScreen(width < LAYOUT_BREAKPOINTS.md);
     }, [width]);
 
 

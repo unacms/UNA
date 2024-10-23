@@ -2,7 +2,7 @@ import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
-import { getRandomColor } from 'app/lib/util';
+import { getRandomColor, LAYOUT_BREAKPOINTS } from 'app/lib/util';
 import { Icon } from 'app/ui/atoms/icon'
 import { memo } from 'react';
 /**
@@ -68,7 +68,7 @@ function UnitWoInfo({ oProps, sSize, sSizeFontLetter, iSizeWidth, bShowLinks, em
                 <Text className={sSizeFontLetter + ' text-white '}>{name}</Text>
             </View>}
             {!!oProps.url_avatar && <Image
-                sizes="(max-width:1024px) 100vw, 1024px"
+                sizes={LAYOUT_BREAKPOINTS.lg}
                 className={sSize + " z-50"}
                 view="cover"
                 width={iSizeWidth}

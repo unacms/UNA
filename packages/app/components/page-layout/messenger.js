@@ -1,7 +1,7 @@
 
 import { View, Row, Pressable } from 'app/design/view'
 import React, { memo, useState, useEffect, useContext, useMemo } from 'react';
-import { appSetting, getLayout, menuItemsByName, getHeaderSettings, getURI,parseUrl } from 'app/lib/util'
+import { appSetting, getLayout, menuItemsByName, getHeaderSettings, getURI, parseUrl, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import { DataByName } from 'app/components/block';
 import { LeftSidebar, TopSidebar } from 'app/lib/conductor-helpers';
@@ -151,7 +151,7 @@ const MessengerContainer = memo(({ convos, selectedMenu, url, data, windowWHeigh
         if (layout == 'mixed') {
             heightInit = windowWHeight - 64 - 64;
         }
-        if (windowWidth < 1024) {
+        if (windowWidth < LAYOUT_BREAKPOINTS.lg) {
             heightInit = windowWHeight - 64 - 64 - 50;
         }
         if (!isWeb) {
