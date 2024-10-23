@@ -79,7 +79,7 @@ const TabScene = React.memo(({
     fetchNextPage,
     onRefresh,
     refreshing,
-    windowWidth
+    numColumns
 }) => {
 
     const handleEndReached = useCallback(() => {
@@ -103,7 +103,7 @@ const TabScene = React.memo(({
     if (!route.inited) {
         return <></>;
     }
-    const numColumns = getNumCols(windowWidth, route, null);
+    
     console.log("numColumns!!", numColumns)
     return (
         <UniList
@@ -147,6 +147,7 @@ export function ConductorFlat({ header, smallHeader, minHeaderHeight, isHideDefa
     const toasterRef2 = useRef();
     const windowDimen = useWindowDimensions();
     const windowWidth = windowDimen.width;
+   
 
     useEffect(() => {
         if (!deepEqual(menu, menuState)) {
@@ -181,6 +182,8 @@ export function ConductorFlat({ header, smallHeader, minHeaderHeight, isHideDefa
     const qKey = useMemo(() => [currentRoute?.endpoint?.request_url, index, keyword, JSON.stringify(currentRoute?.endpoint?.params?.filters)], [currentRoute, index, keyword]);
     const queryClient = useQueryClient();
 
+    const numColumns = getNumCols(windowWidth, currentRoute, null);
+    console.log("numColumnsnumColumns", numColumns)
     useEffect(() => {
         if (currentRoute.cached) {
             revalidateData();
@@ -305,7 +308,7 @@ export function ConductorFlat({ header, smallHeader, minHeaderHeight, isHideDefa
     /* NEW POST TO FEED */
 
     const Preload = useMemo(() => {
-        return getSkeletonForList(skeleton !== '' ? skeleton : (data.module ? data.module : data.unit), 1);
+        return getSkeletonForList(skeleton !== '' ? skeleton : (data.module ? data.module : data.unit), numColumns);
     }, [skeleton, data.module, data.unit]);
 
     const unitType = useMemo(() => {
@@ -352,7 +355,7 @@ export function ConductorFlat({ header, smallHeader, minHeaderHeight, isHideDefa
                 {(layoutName == 'navigator' && leftSideBarBlocks && leftSideBarBlocks.length > 0) && <View className="items-start ml-2 mt-2 mb-1">
                     <Button title='Filters' variant="default" size="sm" rounded onPress={showFilters} />
                 </View>}
-                <TabScene windowWidth={windowWidth} onRefresh={onStartRefresh} refreshing={isRefreshing} route={currentRoute} Preload={Preload} unitType={unitType} unitMode={unitMode} fetchNextPage={fetchNextPage} />
+                <TabScene numColumns={numColumns} onRefresh={onStartRefresh} refreshing={isRefreshing} route={currentRoute} Preload={Preload} unitType={unitType} unitMode={unitMode} fetchNextPage={fetchNextPage} />
             </View>
         </View>
     );
