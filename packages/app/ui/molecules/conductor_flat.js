@@ -103,8 +103,8 @@ const TabScene = React.memo(({
     if (!route.inited) {
         return <></>;
     }
-    const numColumns = getNumCols(route?.endpoint?.unit, windowWidth);
-    console.log("numColumns", numColumns)
+    const numColumns = getNumCols(windowWidth, route, null);
+    console.log("numColumns!!", numColumns)
     return (
         <UniList
             index={route.index}
