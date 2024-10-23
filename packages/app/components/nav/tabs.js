@@ -25,7 +25,7 @@ import { staticComponents } from 'app/static';
 import { Platform } from 'react-native'
 enableScreens(appSetting('layout', 'native_enable_screens'));
 
-function processUrl(url, router, currentUser) {
+function processUrl(url, router, currentUser, TabList) {
     if (currentUser?.id) {
         let a = parseUrl(url);
         let _path = '/' + a.path + (a.queryString ? '?' + a.queryString : '')
@@ -107,7 +107,7 @@ export default function () {
         const fetchInitialUrl = async () => {
             const url = await Linking.getInitialURL();
             if (url) {
-                processUrl(url, router, currentUser);
+                processUrl(url, router, currentUser, TabList);
             }
         };
 
@@ -117,7 +117,7 @@ export default function () {
             const url = event.url;
             if (url) {
                 setTimeout(() => {
-                    processUrl(url, router, currentUser);
+                    processUrl(url, router, currentUser, TabList);
                 }, 3000);
             }
         };
