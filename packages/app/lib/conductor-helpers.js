@@ -404,7 +404,7 @@ export function TopSidebar({ styles, isWeb, leftSideBar, header, headerSettings,
                 <Row className="items-center ">
                     {title ? <Text className="text-3xl my-auto mx-5 font-semibold text-neutral-800  tracking-tight dark:text-neutral-200 hidden lg:flex">{title}</Text> : <Text className=" hidden lg:flex"></Text>}
                     {children}
-                    {layout != 'mixed' && <Row className="hidden lg:flex px-4 cond-buttons-add">
+                    {layout != 'mixed' && <Row className="hidden lg:flex px-4 cond-buttons-add ">
                         {addButtons}
                     </Row>}
                 </Row>

@@ -343,7 +343,7 @@ export function CommentsBrowse({ browse, requestUrl, module, handleReply, handle
         title = t(commentsTitle);
     
     let header = commentData.total_count > 0 ? (
-        <Row className={'flex-row ' + (classesBrowse? classesBrowse: 'items-center my-4 pt-4 border-t border-bdr/50 dark:border-bdr-d/50')}>
+        <Row className={'flex-row ' + (classesBrowse? classesBrowse: 'items-center mt-3 pt-1 border-t border-bdr/50 dark:border-bdr-d/50')}>
             <Text className='flex-auto text-base font-bold text-neutral-900 dark:text-neutral-50'>{title} ({commentData.total_count})</Text>
             {!appSetting('layout', 'hide_comments_sort') && <View className="ml-4">
                 <Pressable className="flex-auto" onPress={(event) => { event.preventDefault() }}>
@@ -351,7 +351,7 @@ export function CommentsBrowse({ browse, requestUrl, module, handleReply, handle
                         { id: 'newest', name: 'desc', title: t('Oldest first') },
                         { id: 'oldest', name: 'asc', title: t('Newest first') }
                     ]} onSelect={(oItem) => { handleOrder(oItem.name) }}>
-                        <Button variant="outline" startDecorator="SortAscending" size="xs" />
+                        <Button variant="secondary" startDecorator="SortAscending" size="xs" />
                     </DropdownMenu>
                 </Pressable>
             </View>}

@@ -39,7 +39,7 @@ export const CommentsModal = memo(({ commentsData, initFormData, itemContent }) 
 
     return (
         <View className='w-full h-full'>
-            <View className='w-full px-4 pt-4 pb-2' style={{ height: height }}>
+            <View className='w-full px-4 pt-4' style={{ height: height }}>
                 {CommentsPartsData[0]}
 
             </View>
@@ -91,11 +91,11 @@ export const FeedEditForm = memo(({ setViewState, viewState, id }) => {
 
 export const CommentsSection = memo(({ isCommentsModal, commentsDataInline, data, isShowMoreComments, showCommentsModal, url, t }) => {
 
-    const ShowMoreCmts = (<Text className='text-neutral-600 dark:text-neutral-400 hover:text-primary dark:hover:text-primary-d text-sm font-semibold'>
+    const ShowMoreCmts = (<Text className='text-neutral-600 dark:text-neutral-400 hover:text-primary dark:hover:text-primary-d px-2 py-1 mb-2 mr-auto bg-neutral-500/10 hover:bg-primary-500/20 rounded-full text-xs font-semibold'>
         {t('View more comments')}
     </Text>);
     return (
-        <View className=' pt-3  border-none border-bdr/50 dark:border-bdr-d/50  '>
+        <View className=' border-t mt-3 pt-3  border-bdr/50 dark:border-bdr-d/50  '>
             {isShowMoreComments && (
                 <View className=''>
                     {isCommentsModal ? <Pressable onPress={() => { showCommentsModal() }} >
