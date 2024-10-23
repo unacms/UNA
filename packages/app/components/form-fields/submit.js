@@ -27,7 +27,7 @@ export default function FormFieldSubmit(props) {
     const formContext = useFormContext();
     const { formState } = formContext;
     const { width } = useWindowDimensions();
-    const isSubmitting = useRef(false);
+
 
     // Initialize controller for form field
     const { field } = useController({ name, rules: {}, defaultValue: value });
@@ -36,15 +36,10 @@ export default function FormFieldSubmit(props) {
     const formProps = appSetting('forms', form_name) || {};
 
     // Memoize handlers to prevent unnecessary re-renders
-    const handlePress = useCallback(() => {
-        if (isSubmitting.current) return;
-
-        isSubmitting.current = true;
-        if (!disabled) {
-            handleSubmit();
-        }
-        isSubmitting.current = false;
-    }, [disabled, handleSubmit, isSubmitting]);
+    const handlePress =  useCallback(async() => {
+        if (formState.isSubmitting || disabled) return;
+        handleSubmit();
+    }, [disabled, handleSubmit, formState.isSubmitting]);
 
     const handleReset = useCallback(() => {
         const values = formContext.getValues();
@@ -62,12 +57,14 @@ export default function FormFieldSubmit(props) {
     const showErrors =
         errorKeys.length > 0 && !hide_errors && !formProps.hide_errors;
 
+
+
     // Prepare button properties
     const buttonProps = {
         variant,
         rounded,
         size,
-        disabled: isSubmitting.current || disabled,
+        disabled: formState.isSubmitting || disabled,
         fullWidth: formProps.button_full_width || width < 1024,
     };
 
