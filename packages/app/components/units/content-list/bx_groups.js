@@ -13,8 +13,7 @@ import Redirect from 'app/ui/atoms/redirect'
 import { componentsMap } from 'app/ui/molecules/_map'
 import ProfilesList from 'app/ui/molecules/profile_list'
 import { useTranslation } from 'react-i18next';
-import MoreMenu from 'app/components/nav/menu-more'
-import { staticComponents } from 'app/static';
+import { getUnitMenuItems } from 'app/functions-default';
 
 export default function Unit(props) {
     const { t } = useTranslation();
@@ -34,7 +33,7 @@ export default function Unit(props) {
     const friendsLabel = data.members_count > 0 ? tp("members", data?.members_count) : ''
 
     const { oMenuItemPrimary, oMenuItemSecondary } = useMemo(() => {
-        return staticComponents['getUnitMenuItems'](props.unitType, data, handleClick, t);
+        return getUnitMenuItems(props.unitType, data, handleClick, t);
     }, [props.unitType, data, handleClick, t]);
 
     switch (props.unitType) {

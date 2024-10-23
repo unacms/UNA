@@ -6,13 +6,11 @@ import { getImageSizes, FeedbackHaptics, tp, t } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import Card from 'app/ui/molecules/card'
-
 import Redirect from 'app/ui/atoms/redirect'
 import ProfilesList from 'app/ui/molecules/profile_list'
 import { useTranslation } from 'react-i18next';
 import Letter from 'app/ui/atoms/letter'
-
-import { staticComponents } from 'app/static';
+import { getUnitMenuItems } from 'app/functions-default';
 
 export default function Unit(props) {
     const { t } = useTranslation();
@@ -38,7 +36,7 @@ export default function Unit(props) {
         return;
 
         const { oMenuItemPrimary, oMenuItemSecondary } = useMemo(() => {
-            return staticComponents['getUnitMenuItems'](props.unitType, data, handleClick, t, props.module);
+            return getUnitMenuItems(props.unitType, data, handleClick, t, props.module);
         }, [props.unitType, data, handleClick, t]);
         
 

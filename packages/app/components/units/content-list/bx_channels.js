@@ -8,7 +8,7 @@ import Card from 'app/ui/molecules/card'
 import Redirect from 'app/ui/atoms/redirect'
 import ProfilesList from 'app/ui/molecules/profile_list'
 import { useTranslation } from 'react-i18next';
-import { staticComponents } from 'app/static';
+import { getUnitMenuItems } from 'app/functions-default';
 
 export default function Unit(props) {
     const { t } = useTranslation();
@@ -26,7 +26,7 @@ export default function Unit(props) {
     };
 
     const { oMenuItemPrimary, oMenuItemSecondary } = useMemo(() => {
-        return staticComponents['getUnitMenuItems'](props.unitType, data, handleClick, t);
+        return getUnitMenuItems(props.unitType, data, handleClick, t);
     }, [props.unitType, data, handleClick, t]);
 
     const friendsLabel = data.members_count > 0 ? tp("members", data?.members_count) : ''

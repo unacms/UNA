@@ -3,7 +3,7 @@ import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "
 import { TabView, useHeaderTabContext, SceneComponent } from "@showtime-xyz/tab-view";
 import { View, ScrollView, Row, Pressable } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
-import { appSetting, deepEqual, getUnitModeBySource, handleFeedLayoutData, updateRouteDataForConnections } from 'app/lib/util';
+import { appSetting, deepEqual, getUnitModeBySource, handleFeedLayoutData } from 'app/lib/util';
 import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer } from 'app/lib/conductor-helpers';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers';
@@ -13,10 +13,10 @@ import { useCurrentUser } from 'app/context/user'
 import { useRouter, useGlobalSearchParams } from 'expo-router';
 import { useLayoutData } from 'app/context/layout';
 import { Theme } from 'app/design/theme';
-import { staticComponents } from 'app/static';
 import { subscribe } from 'app/ui/atoms/socket';
 import { fetcher } from 'app/lib/fetcher';
 import Toaster from 'app/ui/atoms/toaster';
+import { getButtonForConductorNative, noContentByUrl, updateRouteDataForConnections } from 'app/functions-default';
 
 export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultHeader, menu, data, blocks, useSectionAsMenu, unitMode, skeleton, onChangeRoute, keyword }) {
     minHeaderHeight = minHeaderHeight || 100;
@@ -255,7 +255,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
             newRoutes[index].data = data
             setRoutes(newRoutes);
         }
-        staticComponents['updateRouteDataForConnections'](currentRoute, layoutData, routes, index, setRoutes)
+        updateRouteDataForConnections(currentRoute, layoutData, routes, index, setRoutes)
     }, [layoutData]);
     /* NEW POST TO FEED */
 
@@ -302,7 +302,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
                     return item.type;
                 }}
                 ListFooterComponent={
-                    (route?.endpoint?.request_url ? (route?.endpoint?.finished ? staticComponents['noContentByUrl'](route?.endpoint) : Preload) : <></>)
+                    (route?.endpoint?.request_url ? (route?.endpoint?.finished ? noContentByUrl(route?.endpoint) : Preload) : <></>)
                 }
             />
         )
@@ -346,7 +346,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
                         {props.navigationState.routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
                             const counter = appSetting('layout', 'show_nav_counters') ? 0 : a.addon ? (a.addon.text ? a.addon.text : a.addon) : 0;
                             const counter2 = counter > 0 ? ' (' + counter + ')' : ''
-                            const btn = staticComponents['getButtonForConductorNative'](a, props.navigationState.index, currentUser, setIndex, onChangeRoute)
+                            const btn = getButtonForConductorNative(a, props.navigationState.index, currentUser, setIndex, onChangeRoute)
 
                             return (
                                 <Pressable className="items-center py-2 px-1 justify-center"

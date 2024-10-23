@@ -4,7 +4,7 @@ import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "
 import { View, Row, Pressable } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
 import { useWindowDimensions } from 'react-native';
-import { appSetting, getHeaderSettings, getUnitModeBySource, getURI, getLayout, handleFeedLayoutData, updateRouteDataForConnections, menuItemsByName } from 'app/lib/util';
+import { appSetting, getHeaderSettings, getUnitModeBySource, getURI, getLayout, handleFeedLayoutData, menuItemsByName } from 'app/lib/util';
 import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer,ItemRendererMemo, LeftSidebar, TopSidebar, getNumCols } from 'app/lib/conductor-helpers';
 import { Button } from 'app/design/controls';
 import Link from 'app/ui/atoms/link'
@@ -23,10 +23,10 @@ import Location from 'app/components/form-fields/location'
 import DynamicMenu from 'app/components/nav/menu-dynamic';
 import { storageClear, menuItemsFilter, LAYOUT_BREAKPOINTS } from 'app/lib/util';
 import Footer from 'app/components/nav/footer';
-import { staticComponents } from 'app/static';
 import { subscribe } from 'app/ui/atoms/socket';
 import { fetcher } from 'app/lib/fetcher';
 import { useBottomSheetData } from 'app/context/bottomsheet';
+import { updateRouteDataForConnections, noContentByUrl, getButtonForConductor, getButtonForConductorSmall, getAddonForConductor } from 'app/functions-default';
 
 const AddBlocks = React.memo(({
     leftSideBarBlocks, data, onFormSubmit
@@ -221,7 +221,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             newRoutes[index].data = data
             setRoutes(newRoutes);
         }
-        staticComponents['updateRouteDataForConnections'](currentRoute, layoutData, routes, index, setRoutes)
+        updateRouteDataForConnections(currentRoute, layoutData, routes, index, setRoutes)
         
     }, [layoutData]);
     /* NEW POST TO FEED */
@@ -595,7 +595,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                 <Row style={{ paddingTop: header ? 0 : 0 }} className={(headerSettings.columns == "reverse" ? 'flex-row-reverse' : '') + ' max-w-screen-xl mx-auto w-full'}>
                     <View className={(isRightCol ? 'flex-auto sm:border-r border-bdr dark:border-bdr-d px-4 ' : ' w-full max-w-screen-xl mx-auto sm:p-2 ') + (layoutName == 'navigator' ? '' : ' pt-4')}>
                         {TabFlashListM}
-                        {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 &&  staticComponents['noContentByUrl'](route?.endpoint)))}
+                        {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 &&  noContentByUrl(route?.endpoint)))}
 
 
                     </View>
@@ -640,7 +640,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             <>
                 <LeftSidebar title={t(menuSettings?.name)} addButtons={addButtons} width={leftSideBarWidth}>
                     {headerSettings.hideLeftmenu != true && routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
-                        const btn = staticComponents['getButtonForConductor'](a, index, currentUser)
+                        const btn = getButtonForConductor(a, index, currentUser)
                         
                         if (a?.icon == '*') {
                             return (
@@ -754,7 +754,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
   
     const MenuItem = memo(({ item: a, itemRefs, index: index2, visibleItemsCount }) => {
         const { currentUser } = useCurrentUser();
-        const btn = staticComponents['getButtonForConductorSmall'](a, index, currentUser)
+        const btn = getButtonForConductorSmall(a, index, currentUser)
         /*const btn = <Button fullWidth={true} id="tab" pressed={a.index == index ? true : false} variant={a.index == index ? 'secondary' : "text"} rounded size='sm' title={t(a.title)} addon={!appSetting('layout', 'show_nav_counters') && a.addon ? null : a.addon} />
         if (a.icon == '*') {
             return <View className={"justify-center" + (index2 > visibleItemsCount - 1 ? ' item-overlap ' : '')} ref={el => itemRefs.current[index2] = el}><Link href={a.link}>{btn}</Link></View>
@@ -780,7 +780,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
         const { title, addon, icon, link, menu_settings, key } = item;
         const translatedTitle = <Text>{t(title)}</Text>;
         const { currentUser } = useCurrentUser();
-        let addonContent = staticComponents['getAddonForConductor'](item, index, currentUser)
+        let addonContent = getAddonForConductor(item, index, currentUser)
 
         const handlePress = () => {
             setIndex(index);
