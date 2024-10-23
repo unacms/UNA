@@ -216,7 +216,6 @@ export default function (props) {
         location.reload();
     };
 
-
     return (
         <View className=' border-b border-bdrnavbar dark:border-bdr-d bg-bgrnavbar dark:bg-bgrnavbar-d ' >
             <View

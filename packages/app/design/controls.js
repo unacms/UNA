@@ -54,7 +54,7 @@ export function Modal({
 }) {
     const { width, height } = useWindowDimensions();
     const isWeb = Platform.OS === 'web';
-    const styles = width > 768 && !isWeb ? { maxHeight: height - 100 } : {};
+    const styles = width > LAYOUT_BREAKPOINTS.md && !isWeb ? { maxHeight: height - 100 } : {};
     const isOuterClose = (onClose !== 'undefined' && outerClickClose !== false);
     const Wrapper = isOuterClose ? Pressable : View;
 
