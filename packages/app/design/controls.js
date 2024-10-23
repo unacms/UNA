@@ -53,16 +53,18 @@ export function Modal({
     scrollable = false
 }) {
     const { width, height } = useWindowDimensions();
-    const styles = width > 768 ? { maxHeight: height - 100 } : {};
-
     const isWeb = Platform.OS === 'web';
-
+    const styles = width > 768 && !isWeb ? { maxHeight: height - 100 } : {};
     const isOuterClose = (onClose !== 'undefined' && outerClickClose !== false);
     const Wrapper = isOuterClose ? Pressable : View;
+
+    const layoutShift = isWeb ? 'sm' : '2xl';
+    const layoutShift2 = isWeb ? 'sm' : '2xl';// may be need to fix
+
     const positionClasses = {
         'top': 'items-start py-8 px-4',
         'bottom': 'items-end py-8 px-4',
-        'center': 'sm:items-center items-start sm:p-4',
+        'center': `sm:items-center items-start ${layoutShift}:p-4`,
     };
 
     const sClassPosition = positionClasses[position] || positionClasses['center'];
@@ -73,11 +75,11 @@ export function Modal({
 
     const Cnt = scrollable ? ScrollView : View
 
-    const Content = <View className={`flex-row justify-center left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto md:inset-0 h-modal h-full ${sClassPosition}`}>
-    <View className={`${fullWidth ? 'w-full' : ''}  relative h-full max-w-2xl md:h-auto `}>
-        <Pressable onPress={() => { }} className='relative bg-bgrmodal dark:bg-bgrmodal-d h-full md:h-auto  sm:border sm:border-bdrmodal sm:dark:border-bdrmodal-d sm:rounded-2xl sm:shadow-sm'>
+    const Content = <View className={`flex-row justify-center left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto ${layoutShift2}:inset-0 h-modal h-full ${sClassPosition}`}>
+    <View className={`w-full ${fullWidth ? '' : 'sm:w-auto'} relative h-full ${isWeb && 'max-w-2xl'} ${layoutShift2}:h-auto `}>
+        <Pressable onPress={() => { }} className={`relative bg-bgrmodal dark:bg-bgrmodal-d h-full ${layoutShift2}:h-auto ${layoutShift}:border ${layoutShift}:border-bdrmodal ${layoutShift}:dark:border-bdrmodal-d ${layoutShift}:rounded-2xl ${layoutShift}:shadow-sm`}>
             {
-                (title || onClose) && <Row className={`items-center justify-${align} ${headerBorder ? ' border-b border-bdr dark:border-bdr-d ' : ''} px-1 py-2.5 sm:p-4 sm:py-3`}>
+                (title || onClose) && <Row className={`items-center justify-${align} ${headerBorder ? ' border-b border-bdr dark:border-bdr-d ' : ''} px-1 py-2.5 ${layoutShift}:p-4 ${layoutShift}:py-3`}>
                     {(title && type === 'string') && (
                         <View className='flex-auto pl-1'>
                             <Text className='text-neutral-700 dark:text-neutral-200 text-xl font-bold '>{title}</Text>
@@ -91,7 +93,7 @@ export function Modal({
                     )}
                 </Row>
             }
-            <Cnt style={styles} className={padding + " overflow-y-auto flex-auto md:h-auto"}>{children}</Cnt>
+            <Cnt style={styles} className={`${padding} overflow-y-auto flex-auto ${layoutShift2}:h-auto justify-center`}>{children}</Cnt>
         </Pressable>
     </View>
 </View>

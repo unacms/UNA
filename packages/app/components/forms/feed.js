@@ -27,8 +27,8 @@ export default function FormFeed(props) {
     let { currentUser, setCurrentUser } = useCurrentUser()
     const windowDimensions = useWindowDimensions();
     const [isShowHashtag, setIsShowHashtag] = useState(0);
-    const isSmall = windowDimensions.width < 640 ? true : false;
     const isWeb = Platform.OS === 'web'
+    const isSmall = windowDimensions.width < 640 || !isWeb ? true : false;
     const isIos = Platform.OS === 'ios'
     const scrollViewRef = useRef(null);
 

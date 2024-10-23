@@ -3,9 +3,9 @@ import { Text } from 'app/design/typography';
 import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "react-native-reanimated";
 import { View, Row, Pressable } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
-import { StyleSheet, useWindowDimensions } from 'react-native';
+import { useWindowDimensions } from 'react-native';
 import { appSetting, getHeaderSettings, getUnitModeBySource, getURI, getLayout, handleFeedLayoutData, updateRouteDataForConnections, menuItemsByName } from 'app/lib/util';
-import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer,ItemRendererMemo, LeftSidebar, TopSidebar } from 'app/lib/conductor-helpers';
+import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer,ItemRendererMemo, LeftSidebar, TopSidebar, getNumCols } from 'app/lib/conductor-helpers';
 import { Button } from 'app/design/controls';
 import Link from 'app/ui/atoms/link'
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
@@ -117,8 +117,9 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     }, [isRevalidate]);
 
     useEffect(() => {
-        if (getNumCols(cntWidth) != numColumns) {
-            setNumColumns(getNumCols(cntWidth));
+        const numColumnsN = getNumCols(windowWidth, currentRoute, leftSideBar);
+        if (numColumnsN != numColumns) {
+            setNumColumns(numColumnsN);
         }
     }, [cntWidth, currentRoute]);
 
@@ -240,44 +241,10 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
     }
 
-    const getNumCols = (width) => {
-
-        let blocksroutes = currentRoute?.blocks;
-       
-        width = windowWidth;
-        // if (!blocksroutes)
-        //    return 1;
-        if (blocksroutes) {
-            const blockKeys = Object.keys(blocksroutes);
-            for (const key of blockKeys) {
-                if (blocksroutes[key].perLine > 0 && width> 640) {
-                    return blocksroutes[key].perLine;
-                }
-            }
-        }
-
-        let perLineSettings = appSetting('browse', 'per_line');
-        if (currentRoute?.endpoint?.request_url.includes('TemplServiceProfiles') || currentRoute?.endpoint?.unit.includes('-profile-') || currentRoute?.endpoint?.unit.includes('-context-')) {
-            perLineSettings = appSetting('browse', 'per_line_profile');
-        }
-        if (leftSideBar) {
-            perLineSettings = appSetting('browse', 'per_line_left_side_bar');
-        }
-        const perLineSettingsByModule = appSetting('browse', 'per_line_'+currentRoute?.endpoint?.module);
-        if (perLineSettingsByModule){
-            perLineSettings=perLineSettingsByModule;
-        }
-        for (let i = 0; i < perLineSettings.length; i++) {
-            if (width > perLineSettings[i].width) {
-                return perLineSettings[i].count;
-            }
-        }
-
-        return 1;
-    };
+    
 
     const queryKey = [currentRoute?.endpoint?.request_url, index, keyword, JSON.stringify(currentRoute?.endpoint?.params?.filters), data.uri];
-    const [numColumns, setNumColumns] = useState(getNumCols(windowWidth));
+    const [numColumns, setNumColumns] = useState(getNumCols(windowWidth, currentRoute, leftSideBar));
     const {
         fetchNextPage,
         hasNextPage,
@@ -539,9 +506,6 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
     const TabFlashList = React.forwardRef((props, ref) => {
 
-        /*if (getNumCols(0) != numColumns)
-            setNumColumns(getNumCols(0));
-*/
         if (props.data.length == 1 && !props.endpoint) {
             let a = props.data.map((item, index) => {
                 return <View className={appSetting('layout', 'max_width_block') + " mx-auto w-full"} key={"tab-" + index}><ItemRendererMemo route={props.route} key={'item' + index} numColumns={1} item={item} /></View>
@@ -725,7 +689,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                         key={`tab-${a.index}`}
                         onPress={() => {
                             setIndex(a.index);
-                            getNumCols(windowWidth)
+                            getNumCols(windowWidth, currentRoute, leftSideBar)
                             window.history.pushState({}, '', '/' + a.key);
                             if (onChangeRoute) {
                                 onChangeRoute(a);
@@ -800,7 +764,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
                 key={`tab-${index2}`}
                 onPress={() => {
                     setIndex(a.index);
-                    getNumCols(windowWidth)
+                    getNumCols(windowWidth, currentRoute, leftSideBar)
                     window.history.pushState({}, '', '/' + a.key);
                     if (onChangeRoute) {
                         onChangeRoute(a);
@@ -820,7 +784,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
 
         const handlePress = () => {
             setIndex(index);
-            getNumCols(windowWidth);
+            getNumCols(windowWidth, currentRoute, leftSideBar);
             window.history.pushState({}, '', '/' + key);
             if (onChangeRoute) {
                 onChangeRoute(item);

@@ -9,6 +9,7 @@ import { Pressable } from 'app/design/view'
 import { Button } from 'app/design/controls';
 import { getBlocksFromData } from 'app/lib/util';
 import { memo, useCallback, useRef, useMemo } from 'react';
+import { Platform } from 'react-native'
 
 export function getBackButtonWeb() {
     if (history.length > 2) {
@@ -331,13 +332,13 @@ function ItemRenderer_({ route, numColumns, item, unit, module, unitMode, unitTy
             return <View className='h-[1px]'><Text>&nbsp;</Text></View>;
         }
         return (
-            <View key={`${route.index}-${item.id}`} className={numColumns > 1 ? 'w-full' : 'w-full'}>
+            <View key={`${route.index}-${item.id}`}>
                 {block}
             </View>
         );
     } else {
         return (
-            <View key={`${route.index}-${item.id}`} className={numColumns > 1 ? 'w-full' : 'w-full'}>
+            <View key={`${route.index}-${item.id}`}>
                 <Unit unitType={unitType} module={module} unit={unit} data={item} mode={unitMode} />
             </View>
         );
@@ -355,6 +356,39 @@ export const ItemRendererMemo = memo(ItemRenderer);
 });*/
 
 
+export function getNumCols(width, currentRoute, leftSideBar) {
+    const isWeb = Platform.OS === 'web';
+    const blocksroutes = currentRoute?.blocks;
+
+    if (blocksroutes) {
+        const blockKeys = Object.keys(blocksroutes);
+        for (const key of blockKeys) {
+            if (blocksroutes[key].perLine > 0 && width> 640) {
+                return blocksroutes[key].perLine;
+            }
+        }
+    }
+
+    let perLineSettings = appSetting('browse', 'per_line');
+    if (currentRoute?.endpoint?.request_url.includes('TemplServiceProfiles') || currentRoute?.endpoint?.unit.includes('-profile-') || currentRoute?.endpoint?.unit.includes('-context-')) {
+        perLineSettings = appSetting('browse', 'per_line_profile');
+    }
+    if (leftSideBar) {
+        perLineSettings = appSetting('browse', 'per_line_left_side_bar');
+    }
+    const perLineSettingsByModule = appSetting('browse', 'per_line_'+currentRoute?.endpoint?.module);
+    if (perLineSettingsByModule){
+        perLineSettings=perLineSettingsByModule;
+    }
+    for (let i = 0; i < perLineSettings.length; i++) {
+        if (width > perLineSettings[i].width) {
+            const count = perLineSettings[i].count;
+            return isWeb ? count : (count > 1 ? count - 1 : count);
+        }
+    }
+
+    return 1;
+};
 
 export function LeftSidebar({ title, addButtons, children, width }) {
     return (
@@ -404,7 +438,7 @@ export function TopSidebar({ styles, isWeb, leftSideBar, header, headerSettings,
                 <Row className="items-center ">
                     {title ? <Text className="text-3xl my-auto mx-5 font-semibold text-neutral-800  tracking-tight dark:text-neutral-200 hidden lg:flex">{title}</Text> : <Text className=" hidden lg:flex"></Text>}
                     {children}
-                    {layout != 'mixed' && <Row className="hidden lg:flex px-4 cond-buttons-add ">
+                    {layout != 'mixed' && <Row className="hidden lg:flex px-4 cond-buttons-add">
                         {addButtons}
                     </Row>}
                 </Row>

@@ -20,9 +20,11 @@ export default function UniList(props) {
     const estimatedItemSize = unitSizeMap[unit] || 400;
     
     const filteredData = data.filter((v, i, a) => a.findIndex(t => t.id === v.id) === i);
-    
 
-    if (mode == 'simple'){
+    if (numColumns > 1)
+        mode = '';
+    console.log("numColumns", numColumns, mode)
+    if (mode == 'simple') {
       /*  
          const renderedItems = [];
    filteredData.forEach((item, index) => {
@@ -55,7 +57,7 @@ export default function UniList(props) {
        
         )
     }
-    console.log("FlashList", filteredData.length)
+
     return (
         <FlashList  
            // onLoad={onLoadListener}

@@ -33,8 +33,8 @@ function DefaultUnit(data) {
     // return<View className='w-full h-12 bg-red-500 my-2'><Author data={data} url={url} t={t} /></View>
     return (
         <AnimatedBlock>
-            <Card rounded=' rounded-none ' margin=' mb-1 ' addClassName={'p-3 tl-' + data.id} >
-                <View className="flex-auto flex-row items-top pb-3 ">
+            <Card rounded=' rounded-none sm:rounded-2xl ' margin=' mb-1 sm:mb-4 md:mx-auto ' addClassName={' w-full max-w-screen-lg p-3 sm:p-4 tl-' + data.id} >
+                <View className="flex-auto flex-row items-top pb-3">
                     <Author data={data} url={url} t={t} />
                     <View className="flex-auto justify-end flex-row mb-auto">
                         <MenuManage id={data.id} menu={data?.menu_manage} setViewState={setViewState} />

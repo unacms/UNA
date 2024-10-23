@@ -2,9 +2,10 @@ import React, { useCallback, useState, useEffect, useMemo, useRef } from "react"
 import { View, ScrollView, Row, Pressable } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
 import { deepEqual, getUnitModeBySource, handleFeedLayoutData, updateRouteDataForConnections } from 'app/lib/util';
-import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer } from 'app/lib/conductor-helpers';
+import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer, getNumCols } from 'app/lib/conductor-helpers';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers';
+import { useWindowDimensions } from 'react-native';
 import { Button } from 'app/design/controls';
 import { useCurrentUser } from 'app/context/user'
 import { useLayoutData } from 'app/context/layout';
@@ -77,7 +78,8 @@ const TabScene = React.memo(({
     unitMode,
     fetchNextPage,
     onRefresh,
-    refreshing
+    refreshing,
+    windowWidth
 }) => {
 
     const handleEndReached = useCallback(() => {
@@ -101,7 +103,8 @@ const TabScene = React.memo(({
     if (!route.inited) {
         return <></>;
     }
-
+    const numColumns = getNumCols(route?.endpoint?.unit, windowWidth);
+    console.log("numColumns", numColumns)
     return (
         <UniList
             index={route.index}
@@ -114,6 +117,7 @@ const TabScene = React.memo(({
             }
             maxToRenderPerBatch={5}
             initialNumToRender={5}
+            numColumns={numColumns}
             mode="simple"
             url={route?.endpoint?.request_url}
             onRefresh={onRefresh}
@@ -125,7 +129,7 @@ const TabScene = React.memo(({
 });
 
 export function ConductorFlat({ header, smallHeader, minHeaderHeight, isHideDefaultHeader, leftSideBarBlocks, menu, layoutName, data, blocks, useSectionAsMenu, unitMode, skeleton, onChangeRoute, keyword }) {
-    console.log("ConductorFlat")
+
     minHeaderHeight = minHeaderHeight || 100;
     isHideDefaultHeader = isHideDefaultHeader || false;
     useSectionAsMenu = useSectionAsMenu || false;
@@ -141,6 +145,8 @@ export function ConductorFlat({ header, smallHeader, minHeaderHeight, isHideDefa
     const [menuState, setMenuState] = useState(menu);
     const [isRevalidate, setIsRevalidate] = useState(false);
     const toasterRef2 = useRef();
+    const windowDimen = useWindowDimensions();
+    const windowWidth = windowDimen.width;
 
     useEffect(() => {
         if (!deepEqual(menu, menuState)) {
@@ -346,7 +352,7 @@ export function ConductorFlat({ header, smallHeader, minHeaderHeight, isHideDefa
                 {(layoutName == 'navigator' && leftSideBarBlocks && leftSideBarBlocks.length > 0) && <View className="items-start ml-2 mt-2 mb-1">
                     <Button title='Filters' variant="default" size="sm" rounded onPress={showFilters} />
                 </View>}
-                <TabScene onRefresh={onStartRefresh} refreshing={isRefreshing} route={currentRoute} Preload={Preload} unitType={unitType} unitMode={unitMode} fetchNextPage={fetchNextPage} />
+                <TabScene windowWidth={windowWidth} onRefresh={onStartRefresh} refreshing={isRefreshing} route={currentRoute} Preload={Preload} unitType={unitType} unitMode={unitMode} fetchNextPage={fetchNextPage} />
             </View>
         </View>
     );

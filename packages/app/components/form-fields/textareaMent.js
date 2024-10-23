@@ -2,7 +2,7 @@ import Field from './_field';
 import { View, Pressable } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { useController } from 'react-hook-form';
-import { useState, useRef, useEffect} from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { fetcher } from 'app/lib/fetcher';
 import { replaceMentionValues } from 'react-native-controlled-mentions';
 import { MentionInput as MentionInputDef } from 'react-native-controlled-mentions'
@@ -15,9 +15,9 @@ const MentionInputMultiTransparent = styled(MentionInputDef, '  rounded-lg   w-f
 
 function formatText(text) {
     //TODO REPLACE TO BR
-   // let v =  text.replace(/<\/?p>/g, '\n').trim();
-   let v =  text.replace(/<br>/g, '\n');
-    v =  v.replace(/&nbsp;/g, ' ');
+    // let v =  text.replace(/<\/?p>/g, '\n').trim();
+    let v = text.replace(/<br>/g, '\n');
+    v = v.replace(/&nbsp;/g, ' ');
     v = v.replace(
         /<a(.*?)class="bx-mention-link(.*?)"[^>]*href="([^"]+)"[^>]*>([^<]+)<\/a>/g,
         (match, p1, p2, href, name) => {
@@ -28,21 +28,21 @@ function formatText(text) {
     );
 
     v = v.replace(/<p>/g, '\n');
-    
+
     // Remove </p>
     v = v.replace(/<\/p>/g, '');
-    
 
-    
+
+
     // Remove first \n if it exists
     if (v.startsWith('\n')) {
         v = v.slice(1);
     }
-    
+
     // Remove last \n if it exists
-   /* if (v.endsWith('\n')) {
-        v = v.slice(0, -1);
-    }*/
+    /* if (v.endsWith('\n')) {
+         v = v.slice(0, -1);
+     }*/
 
     return v;
 }
@@ -52,18 +52,18 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
     const inputRef = useRef(null);
     const { colors } = Theme();
     const { field } = useController({ name, rules: {}, defaultValue: value });
-   // const [localValue, setLocalValue] = useState(formatText(field.value));
+    // const [localValue, setLocalValue] = useState(formatText(field.value));
     const [suggestions, setSuggestions] = useState([]);
     const [keywordval, setKeyword] = useState(['', '']);
 
     useEffect(() => {
         if (keywordval[0] === '') return;
-        
+
         const fetchData = async () => {
             let url = `/searchExtended.php?action=get_mention&symbol=${keywordval[1] === '#' ? '%23' : '%40'}&term=${keywordval[0]}`;
-            const result = await fetcher(url); 
+            const result = await fetcher(url);
             let p = result.map(k => ({ id: k.value, name: k.label }));
-            
+
             setSuggestions(p);
         };
 
@@ -72,28 +72,32 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
 
     useEffect(() => {
         if (inputRef.current && props.autofocus) {
-        inputRef.current.focus();
-      }
-    }, [props.autofocus]);    
-   /* useEffect(() => {
-        if (field.value == ''){
-            setLocalValue('');
+            setTimeout(() => {
+                if (inputRef.current) {
+                    inputRef.current.focus();
+                }
+            }, 300); // задержка для избежания проблем с ранней фокусировкой
         }
-        else{
-            setLocalValue(formatText(field.value));
-        }
-    }, [field.value]);    
-*/
+    }, [props.autofocus]);
+    /* useEffect(() => {
+         if (field.value == ''){
+             setLocalValue('');
+         }
+         else{
+             setLocalValue(formatText(field.value));
+         }
+     }, [field.value]);    
+ */
     const handleChange2 = (val) => {
-      //  setLocalValue(val);
-        
-        let v = replaceMentionValues(val, ({trigger, name, id}) => `<a class="bx-mention-link" href="${id}" title="${name}" dchar="${trigger}" data-profile-id="${id}">${name}</a>`)
+        //  setLocalValue(val);
+
+        let v = replaceMentionValues(val, ({ trigger, name, id }) => `<a class="bx-mention-link" href="${id}" title="${name}" dchar="${trigger}" data-profile-id="${id}">${name}</a>`)
         // v = v.split('\n').map(line => `<p>${line}</p>`).join('');
         v = v.split('\n').map(line => `<p>${line}</p>`).join('');
-       if (v){
-      //  v = '<p>'+v+'</p>'
-       }
-       field.onChange(v)
+        if (v) {
+            //  v = '<p>'+v+'</p>'
+        }
+        field.onChange(v)
     }
 
     const renderSuggestions = ({ keyword, onSuggestionPress, trigger }) => {
@@ -109,7 +113,7 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
                     <Pressable
                         key={one.id}
                         onPress={() => onSuggestionPress(one)}
-                        style={{padding: 12}}
+                        style={{ padding: 12 }}
                     >
                         <Text>{one.name}</Text>
                     </Pressable>
@@ -118,21 +122,21 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
         );
     };
 
-    let styles ={verticalAlign:'top'};
-    if(name != 'cmt_text') {
-        styles = {...styles, minHeight: 100}
+    let styles = { verticalAlign: 'top' };
+    if (name != 'cmt_text') {
+        styles = { ...styles, minHeight: 100 }
     }
     else {
-        styles = {...styles, maxHeight: 100}
+        styles = { ...styles, maxHeight: 100 }
     }
-    if (props.maxHeight){
+    if (props.maxHeight) {
         styles.maxHeight = props.maxHeight;
     }
 
     if (typeof props.styles === 'object')
-        styles = {...styles, ...props.styles};
+        styles = { ...styles, ...props.styles };
 
-    let MentionInput = props.bg =='transparent' ? MentionInputMultiTransparent : MentionInputMulti
+    let MentionInput = props.bg == 'transparent' ? MentionInputMultiTransparent : MentionInputMulti
     let ft = formatText(field.value);
     return (
         <Field {...props}>
@@ -142,18 +146,18 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
                 allowFontScaling={false}
                 autoFocus={field.value ? true : false}
                 value={ft}
-                placeholder = {props.placeholder}
+                placeholder={props.placeholder}
                 onChange={handleChange2}
                 partTypes={[
                     {
-                        trigger: '@', 
-                        renderSuggestions: (params) => renderSuggestions({...params, trigger: '@'}),
-                        textStyle: {fontWeight: 'bold', color: colors.primary}, 
+                        trigger: '@',
+                        renderSuggestions: (params) => renderSuggestions({ ...params, trigger: '@' }),
+                        textStyle: { fontWeight: 'bold', color: colors.primary },
                     },
                     {
-                        trigger: '#', 
-                        renderSuggestions: (params) => renderSuggestions({...params, trigger: '#'}),
-                        textStyle: {fontWeight: 'bold', color: colors.primary}, 
+                        trigger: '#',
+                        renderSuggestions: (params) => renderSuggestions({ ...params, trigger: '#' }),
+                        textStyle: { fontWeight: 'bold', color: colors.primary },
                     },
                 ]}
             />
