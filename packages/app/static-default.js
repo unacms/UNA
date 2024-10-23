@@ -15,6 +15,7 @@ import ProfilesList from 'app/ui/molecules/profile_list'
 import { Platform } from 'react-native'
 import PopupModal from 'app/ui/molecules/popup_modal'
 import Splash from 'app/ui/molecules/splash'
+import { componentsMap } from 'app/ui/molecules/_map'
 
 const LogoText = (
     <Svg
@@ -821,6 +822,122 @@ function updateRouteDataForConnections(
     )
 }
 
+const createMenuItem = (menuItem, isPrimary) => {
+    if (!menuItem) return null;
+    if (menuItem.data?.type) {
+        const Element = componentsMap[menuItem.data.type];
+        if (Element) {
+            const oElementParams = {
+                ...menuItem.data,
+                primary: isPrimary,
+                params: {
+                    button_rounded: false,
+                    button_full_width: true,
+                    on_done: (sAction, oData) => {
+                        // Handle action completion
+                    },
+                },
+            };
+            return <Element key={menuItem.id || menuItem.name} {...oElementParams} />;
+        }
+    } else {
+        return (
+            <Button
+                variant={isPrimary ? "primary" : "secondary"}
+                size="sm"
+                title={menuItem.title}
+                className="my-auto"
+                startDecorator={menuItem.icon || false}
+                fullWidth={true}
+                onPress={menuItem.onPress}
+            />
+        );
+    }
+    return null;
+};
+
+function getUnitMenuItems(unitType, data, handleClick, t, moduleName) {
+
+    let oMenuItemPrimary = null;
+    let oMenuItemSecondary = null;
+    let bMenuItemsMoreShow = true;
+
+    if (data?.meta) {
+        let sPrimary = "";
+        let sSecondary = "";
+
+        if (moduleName == 'bx_persons' || moduleName == 'bx_organizations' || moduleName == 'system'){
+            switch (unitType) {
+                case "person_friends":
+                    oMenuItemPrimary = {
+                        title: t("Message"),
+                        icon: "ChatTeardropDots",
+                        onPress: async (event) => {
+                            event.preventDefault();
+                            const request_url = `/api.php?r=bx_messenger/get_convo_url/Services&params[]=${JSON.stringify({ recipient: data.author_data.id })}`;
+                            const sResponse = await fetcher(request_url);
+                            handleClick(event, sResponse.data);
+                        },
+                    };
+                    break;
+                case "person_friends_recommendations":
+                case "browse_friend_requests":
+                    sPrimary = "befriend";
+                    sSecondary = unitType === "browse_friend_requests" ? "unfriend" : "ignore-befriend";
+                    break;
+                case "person_friends_suggestion":
+                    sPrimary = "befriend";
+                    bMenuItemsMoreShow = false;
+                    break;
+                case "person_friend_requested":
+                    sPrimary = "unfriend";
+                    break;
+                case "person_following_recommendations":
+                    sPrimary = "subscribe";
+                    break;
+                case "person_followers":
+                    sPrimary = "subscribe";
+                    sSecondary = "unsubscribe";
+                    break;
+                case "person_following":
+                    sPrimary = "unsubscribe";
+                    break;
+                default:
+                    oMenuItemPrimary = {
+                        title: "View",
+                        onPress: (event) => handleClick(event, data.url),
+                    };
+            }
+        }
+        else{
+            sPrimary = "join";
+            sSecondary = "leave";
+            if (moduleName == "bx_channels") {
+                sPrimary = "subscribe";
+                sSecondary = "unsubscribe";
+            }
+        }
+
+        
+        if (!oMenuItemPrimary) {
+            oMenuItemPrimary = data.meta.items.find(item => item.name === sPrimary);
+        }
+
+        oMenuItemPrimary = createMenuItem(oMenuItemPrimary, true);
+
+        if (!oMenuItemSecondary) {
+            oMenuItemSecondary = data.meta.items.find(item => item.name === sSecondary);
+        }
+
+        oMenuItemSecondary = createMenuItem(oMenuItemSecondary, false);
+    }
+
+    return {
+        oMenuItemPrimary,
+        oMenuItemSecondary,
+    };
+}
+
 function noContentByUrl(endpoint){
     return <ComponentsContentEmpty/>
 }
@@ -850,4 +967,5 @@ export const staticDefault = {
     getButtonForConductorNative: getButtonForConductorNative,
     updateRouteDataForConnections: updateRouteDataForConnections,
     noContentByUrl: noContentByUrl,
+    getUnitMenuItems: getUnitMenuItems
 }

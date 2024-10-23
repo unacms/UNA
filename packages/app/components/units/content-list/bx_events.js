@@ -1,4 +1,4 @@
-import { useState, useContext, useRef } from 'react'
+import { useState, useMemo, useRef } from 'react'
 import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
 import { getImageSizes, FeedbackHaptics, tp, t, formatDateInterval } from 'app/lib/util'
@@ -12,6 +12,7 @@ import ProfilesList from 'app/ui/molecules/profile_list'
 import Time from 'app/ui/atoms/time'
 import MoreMenu from 'app/components/nav/menu-more'
 import { useTranslation } from 'react-i18next';
+import { staticComponents } from 'app/static';
 
 export default function Unit(props) {
 
@@ -35,105 +36,12 @@ export default function Unit(props) {
         setPopupVisible(true);
     };
 
-    let oMenuItemPrimary = undefined;
-    let oMenuItemsMore = undefined;
-    let bMenuItemsMoreShow = true;
-    if (data?.meta) {
-        //--- Primary button
-        let sPrimary = "join";
-        if (props.module == "bx_channels") sPrimary = "subscribe";
-        oMenuItemPrimary = data.meta.items
-            .filter((aItem) => aItem.name == sPrimary)
-            .shift();
-        if (!oMenuItemPrimary) {
-            oMenuItemPrimary = {
-                title: "View",
-                onPress: (event) => {
-                    handleClick(event, data.url);
-                },
-            };
-        }
-        if (!oMenuItemPrimary) {
-            sExclude = sPrimary;
-            oMenuItemPrimary = data.meta.items
-                .filter((aItem) => aItem.name == sPrimary)
-                .shift();
-            if (!oMenuItemPrimary) {
-                sExclude = sSecondary;
-                oMenuItemPrimary = data.meta.items
-                    .filter((aItem) => aItem.name == sSecondary)
-                    .shift();
-            }
-        }
-
-        if (!!oMenuItemPrimary) {
-            if (oMenuItemPrimary?.data && oMenuItemPrimary.data?.type) {
-                const Element = componentsMap[oMenuItemPrimary.data.type];
-                if (!!Element) {
-                    const oElementParams = {
-                        ...oMenuItemPrimary.data,
-                        ...{
-                            primary: true,
-                            params: {
-                                button_rounded: false,
-                                button_full_width: true,
-                                on_done: (sAction, oData) => {
-                                    //--- Do something after the primary action was performed.
-                                },
-                            },
-                        },
-                    };
-
-                    oMenuItemPrimary = (
-                        <Element
-                            key={
-                                oMenuItemPrimary.id
-                                    ? oMenuItemPrimary.id
-                                    : oMenuItemPrimary.name
-                            }
-                            {...oElementParams}
-                        />
-                    );
-                }
-            } else
-                oMenuItemPrimary = (
-                    <Button
-                        variant="primary"
-                        size="sm"
-                        title={oMenuItemPrimary.title}
-                        className=" my-auto "
-                        startDecorator={
-                            oMenuItemPrimary?.icon
-                                ? oMenuItemPrimary.icon
-                                : false
-                        }
-                        fullWidth={true}
-                        onPress={oMenuItemPrimary?.onPress}
-                    />
-                );
-        }
-
-        //--- More menu
-        oMenuItemsMore = {
-            ...data.meta,
-            ...{
-                items: data.meta.items.filter(
-                    (aItem) => aItem.name != sPrimary,
-                ),
-                params: {
-                    showVertical: true,
-                    button_size: "base",
-                    button_full_width: true,
-                    button_rounded: false,
-                    on_do: (sAction) => {
-                        setPopupVisible(false);
-                    },
-                },
-            },
-        };
-    }
     const friendsLabel = data.followers_count > 0 ? tp("intrested", data?.followers_count) : ''
     const friendsLabel1 = data.members_count > 0 ? tp("going", data?.followers_count) : ''
+
+    const { oMenuItemPrimary, oMenuItemSecondary } = useMemo(() => {
+        return staticComponents['getUnitMenuItems'](props.unitType, data, handleClick, t);
+    }, [props.unitType, data, handleClick, t]);
 
     return (
         <>
@@ -190,7 +98,7 @@ export default function Unit(props) {
                                         )}
                                     </Text>
                                 </Row>
-                                
+
                                 <Row className='mb-3 w-full bg-primary/30 px-2 py-1 rounded-md justify-between'>
 
                                     {data.date_start && (
@@ -199,16 +107,13 @@ export default function Unit(props) {
                                         </Text>
 
                                     )}
-                                   
+
 
                                 </Row>
                             </View>
-                            <View className="flex-row w-full ">
+                            <View className="flex-row gap-x-2 sm:flex-col  w-full  justify-end">
                                 {oMenuItemPrimary}
-                                {bMenuItemsMoreShow && !!oMenuItemsMore &&
-                                    oMenuItemsMore.items.length > 0 && (
-                                        <MoreMenu oMenuItemsMore={oMenuItemsMore} data={data} popupVisible={popupVisible} setPopupVisible={setPopupVisible}/>
-                                    )}
+                                {!!oMenuItemSecondary && <View className={`${!!oMenuItemPrimary && 'sm:mt-2'}`}>{oMenuItemSecondary}</View>}
                             </View>
                         </View>
                     </View>

@@ -1,5 +1,6 @@
 import { View, Row } from 'app/design/view'
 import Profile from 'app/ui/molecules/profile';
+import { memo } from 'react'
 
 function fillArrayToLength(arr, maxCount, defaultValue) {
     while (arr.length < maxCount) {
@@ -8,7 +9,7 @@ function fillArrayToLength(arr, maxCount, defaultValue) {
     return arr;
   }
 
-export default function ({maxCount, showEmpty, data, displaySize="base"}) {
+function ProfilesList ({maxCount, showEmpty, data, displaySize="base"}) {
 
     let sSize = ''
     switch (displaySize) {
@@ -49,3 +50,16 @@ export default function ({maxCount, showEmpty, data, displaySize="base"}) {
     )
 
 }
+
+const MemoizedProfilesList = memo(function({ data }) {
+    return (
+        <ProfilesList
+            data={data}
+            showEmpty={false}
+            maxCount={3}
+            displaySize="xs"
+        />
+    );
+});
+
+export default MemoizedProfilesList;

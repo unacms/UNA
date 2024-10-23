@@ -1,4 +1,4 @@
-import { useState, useContext, useRef } from 'react'
+import { useState, useMemo, useRef } from 'react'
 import { useCardData } from 'app/context/card'
 import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
@@ -14,6 +14,7 @@ import { componentsMap } from 'app/ui/molecules/_map'
 import ProfilesList from 'app/ui/molecules/profile_list'
 import { useTranslation } from 'react-i18next';
 import MoreMenu from 'app/components/nav/menu-more'
+import { staticComponents } from 'app/static';
 
 export default function Unit(props) {
     const { t } = useTranslation();
@@ -30,121 +31,15 @@ export default function Unit(props) {
         redirectdRef.current.redirect(sUrl);
     };
 
-    const handleClickMore = (event) => {
-        event.preventDefault();
-
-        FeedbackHaptics("Medium");
-        setPopupVisible(true);
-    };
-
-    let oMenuItemPrimary = undefined;
-    let oMenuItemsMore = undefined;
-    let bMenuItemsMoreShow = true;
-    if (data?.meta) {
-        //--- Primary button
-        let sPrimary = "join";
-        if (props.module == "bx_channels") sPrimary = "subscribe";
-        oMenuItemPrimary = data.meta.items
-            .filter((aItem) => aItem.name == sPrimary)
-            .shift();
-        if (!oMenuItemPrimary) {
-            oMenuItemPrimary = {
-                title: "View",
-                onPress: (event) => {
-                    handleClick(event, data.url);
-                },
-            };
-        }
-        if (!oMenuItemPrimary) {
-            sExclude = sPrimary;
-            oMenuItemPrimary = data.meta.items
-                .filter((aItem) => aItem.name == sPrimary)
-                .shift();
-            if (!oMenuItemPrimary) {
-                sExclude = sSecondary;
-                oMenuItemPrimary = data.meta.items
-                    .filter((aItem) => aItem.name == sSecondary)
-                    .shift();
-            }
-        }
-
-        if (!!oMenuItemPrimary) {
-            if (oMenuItemPrimary?.data && oMenuItemPrimary.data?.type) {
-                const Element = componentsMap[oMenuItemPrimary.data.type];
-                if (!!Element) {
-                    const oElementParams = {
-                        ...oMenuItemPrimary.data,
-                        ...{
-                            primary: true,
-                            params: {
-                                button_rounded: false,
-                                button_full_width: true,
-                                on_done: (sAction, oData) => {
-                                    //--- Do something after the primary action was performed.
-                                },
-                            },
-                        },
-                    };
-
-                    oMenuItemPrimary = (
-                        <Element
-                            key={
-                                oMenuItemPrimary.id
-                                    ? oMenuItemPrimary.id
-                                    : oMenuItemPrimary.name
-                            }
-                            {...oElementParams}
-                        />
-                    );
-                }
-            } else
-                oMenuItemPrimary = (
-                    <Button
-                        variant="primary"
-                        size="sm"
-                        title={oMenuItemPrimary.title}
-                        className=" my-auto "
-                        startDecorator={
-                            oMenuItemPrimary?.icon
-                                ? oMenuItemPrimary.icon
-                                : false
-                        }
-                        fullWidth={true}
-                        onPress={oMenuItemPrimary?.onPress}
-                    />
-                );
-        }
-
-        //--- More menu
-        oMenuItemsMore = {
-            ...data.meta,
-            ...{
-                items: data.meta.items.filter(
-                    (aItem) => aItem.name != sPrimary,
-                ),
-                params: {
-                    showVertical: true,
-                    button_size: "base",
-                    button_full_width: true,
-                    button_rounded: false,
-                    on_do: (sAction) => {
-                        setPopupVisible(false);
-                    },
-                },
-            },
-        };
-    }
     const friendsLabel = data.members_count > 0 ? tp("members", data?.members_count) : ''
 
-    if (
-        !!cardData?.hidden &&
-        props.unitType == "person_friends_recommendations"
-    )
-        return;
+    const { oMenuItemPrimary, oMenuItemSecondary } = useMemo(() => {
+        return staticComponents['getUnitMenuItems'](props.unitType, data, handleClick, t);
+    }, [props.unitType, data, handleClick, t]);
 
     switch (props.unitType) {
         case 'search':
-            return getSearch();
+            return getBase();
         default:
             return getBase();
     }
@@ -203,12 +98,9 @@ export default function Unit(props) {
                                         </Text>
                                     </Row>
                                 </View>
-                                <View className="flex-row w-full ">
+                                <View className="flex-row gap-x-2 sm:flex-col  w-full  justify-end">
                                     {oMenuItemPrimary}
-                                    {(bMenuItemsMoreShow && !!oMenuItemsMore &&
-                                        oMenuItemsMore.items.length > 0) && (
-                                            <MoreMenu oMenuItemsMore={oMenuItemsMore} data={data} popupVisible={popupVisible} setPopupVisible={setPopupVisible}/>
-                                        )}
+                                    {!!oMenuItemSecondary && <View className={`${!!oMenuItemPrimary && 'sm:mt-2'}`}>{oMenuItemSecondary}</View>}
                                 </View>
                             </View>
                         </View>
@@ -217,7 +109,8 @@ export default function Unit(props) {
             </>
         );
     }
-
+}
+/*
     function getSearch() {
         return (
             <>
@@ -265,49 +158,7 @@ export default function Unit(props) {
                                 </View>
                                 <View className="flex-row w-full ">
                                     {oMenuItemPrimary}
-                                    {bMenuItemsMoreShow && !!oMenuItemsMore &&
-                                        oMenuItemsMore.items.length > 0 && (
-                                            <View className='ml-2'>
-                                                <Button
-                                                    variant="outline"
-                                                    size="sm"
-                                                    className=" my-auto "
-                                                    startDecorator="DotsThreeOutline"
-                                                    onPress={(event) =>
-                                                        handleClickMore(event)
-                                                    }
-                                                />
-                                                <Modal
-                                                    key="more-popup"
-                                                    onVisible={popupVisible}
-                                                    onClose={() => {
-                                                        setPopupVisible(false);
-                                                    }}
-                                                >
-                                                    <View className="gap-y-4">
-                                                        <View className="flex-row items-center gap-x-4">
-                                                            <Profile
-                                                                display_type="unit"
-                                                                display_name={
-                                                                    data.title
-                                                                }
-                                                                url={data.url}
-                                                                url_avatar={
-                                                                    data?.image?.src
-                                                                }
-                                                                showInfo={false}
-                                                            />
-                                                        </View>
-                                                        <View>
-                                                            <Menu
-                                                                displayType="mixed"
-                                                                {...oMenuItemsMore}
-                                                            />
-                                                        </View>
-                                                    </View>
-                                                </Modal>
-                                            </View>
-                                        )}
+
                                 </View>
                             </View>
                         </View>
@@ -316,4 +167,4 @@ export default function Unit(props) {
             </>
         );
     }
-}
+}*/

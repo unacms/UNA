@@ -1,181 +1,31 @@
-import { useState, useContext, useRef } from 'react'
+import { useState, useMemo, useRef } from 'react'
 import { useCardData } from 'app/context/card'
 import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
-import Profile from 'app/ui/molecules/profile'
 import { getImageSizes, FeedbackHaptics, tp, t } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
-import Menu from 'app/components/menu'
 import Card from 'app/ui/molecules/card'
-import { Button, Modal } from 'app/design/controls'
+
 import Redirect from 'app/ui/atoms/redirect'
-import { componentsMap } from 'app/ui/molecules/_map'
 import ProfilesList from 'app/ui/molecules/profile_list'
 import { useTranslation } from 'react-i18next';
 import Letter from 'app/ui/atoms/letter'
-import { appSetting } from 'app/lib/util'
-import MoreMenu from 'app/components/nav/menu-more'
+
+import { staticComponents } from 'app/static';
 
 export default function Unit(props) {
     const { t } = useTranslation();
     const data = props.data;
     const imageSizes = getImageSizes();
     const redirectdRef = useRef();
-    const [popupVisible, setPopupVisible] = useState(false);
-
     const { cardData } = useCardData();
-
     const handleClick = (event, sUrl) => {
         event.preventDefault();
 
         redirectdRef.current.redirect(sUrl);
     };
-
-    const handleClickMore = (event) => {
-        event.preventDefault();
-
-        FeedbackHaptics("Medium");
-        setPopupVisible(true);
-    };
-
-    let oMenuItemPrimary = undefined;
-    let oMenuItemsMore = undefined;
-    let bMenuItemsMoreShow = true;
-    if (data?.meta) {
-        let sPrimary = "",
-            sSecondary = "",
-            sExclude = "";
-
-        switch (props.unitType) {
-            case "person_friends":
-                oMenuItemPrimary = {
-                    title: t("Message"),
-                    icon: "ChatTeardropDots",
-                    onPress: (event) => {
-                        handleClick(event, appSetting('layout', 'messenger'));
-                    },
-                };
-                break;
-
-            case "person_friends_recommendations":
-                sPrimary = "befriend";
-                break;
-
-            case "person_friends_suggestion":
-                sPrimary = "befriend";
-                bMenuItemsMoreShow = false;
-                break;
-
-            case "browse_friend_requests":
-                sPrimary = "befriend";
-                break;
-
-            case "person_friend_requested":
-                sPrimary = "unfriend";
-                break;
-
-            case "person_following_recommendations":
-                sPrimary = "subscribe";
-                break;
-
-            case "person_followers":
-                sPrimary = "subscribe";
-                sSecondary = "unsubscribe";
-                break;
-
-            case "person_following":
-                sPrimary = "unsubscribe";
-                break;
-
-            default:
-                oMenuItemPrimary = {
-                    title: "View",
-                    onPress: (event) => {
-                        handleClick(event, data.url);
-                    },
-                };
-        }
-
-        if (!oMenuItemPrimary) {
-            sExclude = sPrimary;
-            oMenuItemPrimary = data.meta.items
-                .filter((aItem) => aItem.name == sPrimary)
-                .shift();
-            if (!oMenuItemPrimary) {
-                sExclude = sSecondary;
-                oMenuItemPrimary = data.meta.items
-                    .filter((aItem) => aItem.name == sSecondary)
-                    .shift();
-            }
-        }
-
-        if (!!oMenuItemPrimary) {
-            if (oMenuItemPrimary?.data && oMenuItemPrimary.data?.type) {
-                const Element = componentsMap[oMenuItemPrimary.data.type];
-                if (!!Element) {
-                    const oElementParams = {
-                        ...oMenuItemPrimary.data,
-                        ...{
-                            primary: true,
-                            params: {
-                                button_rounded: false,
-                                button_full_width: true,
-                                on_done: (sAction, oData) => {
-                                    //--- Do something after the primary action was performed.
-                                },
-                            },
-                        },
-                    };
-
-                    oMenuItemPrimary = (
-                        <Element
-                            key={
-                                oMenuItemPrimary.id
-                                    ? oMenuItemPrimary.id
-                                    : oMenuItemPrimary.name
-                            }
-                            {...oElementParams}
-                        />
-                    );
-                }
-            } else
-                oMenuItemPrimary = (
-                    <Button
-                        variant="primary"
-                        size="sm"
-                        title={oMenuItemPrimary.title}
-                        className=" my-auto "
-                        startDecorator={
-                            oMenuItemPrimary?.icon
-                                ? oMenuItemPrimary.icon
-                                : false
-                        }
-                        fullWidth={true}
-                        onPress={oMenuItemPrimary?.onPress}
-                    />
-                );
-        }
-
-        //--- More menu
-        oMenuItemsMore = {
-            ...data.meta,
-            ...{
-                items: data.meta.items.filter(
-                    (aItem) => aItem.name != sPrimary,
-                ),
-                params: {
-                    showVertical: true,
-                    button_size: "base",
-                    button_full_width: true,
-                    button_rounded: false,
-                    on_do: (sAction) => {
-                        setPopupVisible(false);
-                    },
-                },
-            },
-        };
-    }
+    
     const friendsLabel =
         data.mutual_friends_count > 0
             ? tp("mutual_friends", data?.mutual_friends_count, false)
@@ -187,6 +37,10 @@ export default function Unit(props) {
     )
         return;
 
+        const { oMenuItemPrimary, oMenuItemSecondary } = useMemo(() => {
+            return staticComponents['getUnitMenuItems'](props.unitType, data, handleClick, t, props.module);
+        }, [props.unitType, data, handleClick, t]);
+        
 
     return (
         <>
@@ -262,13 +116,10 @@ export default function Unit(props) {
                                     )}
                                 </Row>
                             </View>
-                            <View className="flex-row w-full ">
-                                {oMenuItemPrimary}
-                                {bMenuItemsMoreShow && !!oMenuItemsMore &&
-                                    oMenuItemsMore.items.length > 0 && (
-                                        <MoreMenu oMenuItemsMore={oMenuItemsMore} data={data} popupVisible={popupVisible} setPopupVisible={setPopupVisible}/>
-                                    )}
-                            </View>
+                            <View className="flex-row gap-x-2 sm:flex-col  w-full  justify-end">
+                                    {oMenuItemPrimary}
+                                    {!!oMenuItemSecondary && <View className={`${!!oMenuItemPrimary && 'sm:mt-2'}`}>{oMenuItemSecondary}</View>}
+                                </View>
                         </View>
                     </View>
                 </Link>

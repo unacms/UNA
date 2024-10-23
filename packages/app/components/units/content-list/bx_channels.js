@@ -1,19 +1,14 @@
-import { useState, useContext, useRef } from 'react'
+import { useState, useMemo, useRef } from 'react'
 import { useCardData } from 'app/context/card'
 import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
-import Profile from 'app/ui/molecules/profile'
 import { getImageSizes, FeedbackHaptics, tp, t } from 'app/lib/util'
 import { Text } from 'app/design/typography'
-import { View, Row } from 'app/design/view'
-import Menu from 'app/components/menu'
 import Card from 'app/ui/molecules/card'
-import { Button, Modal } from 'app/design/controls'
 import Redirect from 'app/ui/atoms/redirect'
-import { componentsMap } from 'app/ui/molecules/_map'
 import ProfilesList from 'app/ui/molecules/profile_list'
 import { useTranslation } from 'react-i18next';
-import MoreMenu from 'app/components/nav/menu-more'
+import { staticComponents } from 'app/static';
 
 export default function Unit(props) {
     const { t } = useTranslation();
@@ -30,110 +25,10 @@ export default function Unit(props) {
         redirectdRef.current.redirect(sUrl);
     };
 
-    const handleClickMore = (event) => {
-        event.preventDefault();
+    const { oMenuItemPrimary, oMenuItemSecondary } = useMemo(() => {
+        return staticComponents['getUnitMenuItems'](props.unitType, data, handleClick, t);
+    }, [props.unitType, data, handleClick, t]);
 
-        FeedbackHaptics("Medium");
-        setPopupVisible(true);
-    };
-
-    let oMenuItemPrimary = undefined;
-    let oMenuItemsMore = undefined;
-    let bMenuItemsMoreShow = true;
-    if (data?.meta) {
-        //--- Primary button
-        let sPrimary = "join";
-        if (props.module == "bx_channels") sPrimary = "subscribe";
-        oMenuItemPrimary = data.meta.items
-            .filter((aItem) => aItem.name == sPrimary)
-            .shift();
-        if (!oMenuItemPrimary) {
-            oMenuItemPrimary = {
-                title: "View",
-                onPress: (event) => {
-                    handleClick(event, data.url);
-                },
-            };
-        }
-        if (!oMenuItemPrimary) {
-            sExclude = sPrimary;
-            oMenuItemPrimary = data.meta.items
-                .filter((aItem) => aItem.name == sPrimary)
-                .shift();
-            if (!oMenuItemPrimary) {
-                sExclude = sSecondary;
-                oMenuItemPrimary = data.meta.items
-                    .filter((aItem) => aItem.name == sSecondary)
-                    .shift();
-            }
-        }
-
-        if (!!oMenuItemPrimary) {
-            if (oMenuItemPrimary?.data && oMenuItemPrimary.data?.type) {
-                const Element = componentsMap[oMenuItemPrimary.data.type];
-                if (!!Element) {
-                    const oElementParams = {
-                        ...oMenuItemPrimary.data,
-                        ...{
-                            primary: true,
-                            params: {
-                                button_rounded: false,
-                                button_full_width: true,
-                                on_done: (sAction, oData) => {
-                                    //--- Do something after the primary action was performed.
-                                },
-                            },
-                        },
-                    };
-
-                    oMenuItemPrimary = (
-                        <Element
-                            key={
-                                oMenuItemPrimary.id
-                                    ? oMenuItemPrimary.id
-                                    : oMenuItemPrimary.name
-                            }
-                            {...oElementParams}
-                        />
-                    );
-                }
-            } else
-                oMenuItemPrimary = (
-                    <Button
-                        variant="primary"
-                        size="sm"
-                        title={oMenuItemPrimary.title}
-                        className=" my-auto "
-                        startDecorator={
-                            oMenuItemPrimary?.icon
-                                ? oMenuItemPrimary.icon
-                                : false
-                        }
-                        fullWidth={true}
-                        onPress={oMenuItemPrimary?.onPress}
-                    />
-                );
-        }
-
-        //--- More menu
-        oMenuItemsMore = {
-            ...data.meta,
-            ...{
-                items: data.meta.items.filter(
-                    (aItem) => aItem.name != sPrimary,
-                ),
-                params: {
-                    showVertical: true,
-                    button_size: "base",
-                    button_full_width: true,
-                    button_rounded: false,
-                    on_do: (sAction) => {
-                        setPopupVisible(false);
-                    },
-                },
-            },
-        };
-    }
     const friendsLabel = data.members_count > 0 ? tp("members", data?.members_count) : ''
 
     if (
@@ -141,7 +36,6 @@ export default function Unit(props) {
         props.unitType == "person_friends_recommendations"
     )
         return;
-
 
     return (
         <>
@@ -167,8 +61,6 @@ export default function Unit(props) {
                                     {data.title}
                                 </Text>
                                 <Row className="items-center h-6 my-3">
-
-
                                     <View className="mr-2 h-6">
                                         <ProfilesList
                                             data={
@@ -185,16 +77,11 @@ export default function Unit(props) {
                                             {friendsLabel}
                                         </Text>
                                     }
-
-
                                 </Row>
                             </View>
-                            <View className="flex-row w-full ">
+                            <View className="flex-row gap-x-2 sm:flex-col  w-full  justify-end">
                                 {oMenuItemPrimary}
-                                {bMenuItemsMoreShow && !!oMenuItemsMore &&
-                                    oMenuItemsMore.items.length > 0 && (
-                                        <MoreMenu oMenuItemsMore={oMenuItemsMore} data={data} popupVisible={popupVisible} setPopupVisible={setPopupVisible}/>
-                                    )}
+                                {!!oMenuItemSecondary && <View className={`${!!oMenuItemPrimary && 'sm:mt-2'}`}>{oMenuItemSecondary}</View>}
                             </View>
                         </View>
                     </View>
