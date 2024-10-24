@@ -47,7 +47,7 @@ export default function Splash(props) {
                 onVisible={!!isCreateAccount}
                 outerClickClose={false}
                 {...(!isSmall && { onClose: () => setIsCreateAccount(false) })}
-                padding='sm:p-4 sm:pb-0'
+
                 transparent={true}
                 headerBorder={true}
             >

@@ -220,7 +220,7 @@ export default function ElementHtml(props) {
 
 
     if (data) {
-        data = data.replace(/(((<[^\/(br)>]*>)+[ \n(<br\s*\/*>)]*(<\/[^>]+>)+)+)/g, '');
+        data = data.replace(/<([a-z]+)(?:\s[^>]*)?>((?:\s|<br\s*\/?>)*)<\/\1>/gi, '');
         data = data.replace('/(<br\s*\/?>\s*){2,}/i', '<br>', data);
     }
     data = data.replace(/<br\s*\/?>\s*$/, '');

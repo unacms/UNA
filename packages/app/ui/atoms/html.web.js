@@ -67,7 +67,7 @@ export default function ElementHtml(props) {
                     `<iframe scrolling="no" id=${hash} height=140 class="w-full h-30 mx-auto " src="${absoluteApiUrl("embeds")}${capture}&theme=${scheme}&hash=${hash}"></iframe>`
                 );
             });
-            newData = newData.replace(/(((<[^\/(br)>]*>)+[ \n(<br\s*\/*>)]*(<\/[^>]+>)+)+)/g, '');
+            newData = newData.replace(/<([a-z]+)(?:\s[^>]*)?>((?:\s|<br\s*\/?>)*)<\/\1>/gi, '');
             newData = newData.replace('/(<br\s*\/?>\s*){2,}/i', '<br>', newData);
         }
         return newData;

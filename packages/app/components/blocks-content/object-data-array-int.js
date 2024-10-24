@@ -82,13 +82,14 @@ export default function BlockContentObjectDataArray(props) {
 
     // display each block element from static data or from dynamic data
     return (
-        <View className={(Platform.OS == 'web' ? 'gap-y-4' : '') + " relative"}>
+        <View className={(Platform.OS == 'web' ? '' : '') + " relative"}>
             {realData?.map(a => {
-                const type = !dynamicData ? props.block.content[0].type : a?.type;
+                //const type = !dynamicData ? props.block.content[0].type : a?.type;
+                const type = a?.type;
                 if (!type)
                     return <></>
                 const Component = components[type];
-                return <Component key={a.id + a?.type} type={a?.type} {...props} onSubmittig={postData && !dynamicData} onFormSubmit={onFormSubmit} {...a} />
+                return <Component key={a.id + a?.type} type={a?.type} onSubmittig={postData && !dynamicData} onFormSubmit={onFormSubmit} {...a} />
             }
             )}
         </View>
