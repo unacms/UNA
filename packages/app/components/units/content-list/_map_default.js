@@ -10,7 +10,7 @@ import UnitPerson from './bx_persons';
 import UnitDefault from './default';
 import UnitPosts from './bx_posts';
 import UnitCourses from './bx_courses';
-
+import UnitVideos from './bx_videos';
 export const componentsMapDefault = {
     'bx_groups': memo(UnitGroup),
     'bx_ads': memo(UnitAd),
@@ -22,6 +22,7 @@ export const componentsMapDefault = {
     'bx_persons': memo(UnitPerson),
     'bx_posts': memo(UnitPosts),
     'bx_courses': memo(UnitCourses),
+    'bx_videos': memo(UnitVideos),
     'default': memo(UnitDefault),
     
 };

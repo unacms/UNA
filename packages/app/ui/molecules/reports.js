@@ -229,8 +229,6 @@ const ElementReports = forwardRef((oProps, ref) => {
         oAction.title = _getContextVar('title');
     let sTitle = oAction?.title || '';
 
-   
-    console.log("oProps", oProps)
     const oButtonProps = {
         variant: oProps?.primary ? 'primary' :  (isTextMode ? 'custom' :oProps.params?.button_variant),
         size: isTextMode? 'base' : oProps.params?.button_size,

@@ -6,6 +6,7 @@ import { appSetting, clearLinks, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { ContentMore } from 'app/ui/molecules/contentmore';
 import EntityAttachments from './entity_attachments';
 import TextMore from 'app/ui/molecules/textmore';
+import Video from 'app/ui/atoms/video';
 
 export default function (props) {
     const data = props.data;
@@ -60,7 +61,10 @@ function Default({ data, showPad, sidebar, block }) {
     const isSmall = block?.module == "bx_market";
     return (
         <View className="w-full">
-            {(data.image) && <View className="w-full aspect-[2/1] rounded-xl overflow-hidden my-2 lg:mt-6"><Image {...data.image} alt={data.title} sizes={LAYOUT_BREAKPOINTS.lg} className=" u-cover" view="cover" /></View>}
+            {(!!data.video) && <View className='w-full aspect-video rounded-xl overflow-hidden my-2 lg:mt-6'>
+                <Video poster={data.video.src_poster} src={data.video.src_mp4} cover={true}  controls={true} muted={"muted"} />
+            </View>}
+            {(!!data.image && !data.video) && <View className="w-full aspect-[2/1] rounded-xl overflow-hidden my-2 lg:mt-6"><Image {...data.image} alt={data.title} sizes={LAYOUT_BREAKPOINTS.lg} className=" u-cover" view="cover" /></View>}
             <View className={"mx-auto w-full " + (showPad == false || sidebar ? '' : ' ')}>
                 {isSmall ? <TextMore tagName='h1' text={data.entry_title} numberOfLines={2} className="font-bold tracking-tight  text-neutral-900 dark:text-neutral-50 "></TextMore> :  <H1 className="font-bold tracking-tight  text-neutral-900 dark:text-neutral-50 ">{data.entry_title}</H1>}
                 {isSmall ? <ContentMore numberOfSymbols={200} showLess={true} content={text} numberOfLines={3}  openSmall={false} textClassName="  text-sm text-neutral-600 dark:text-neutral-400" /> :  <Html data={text} />}

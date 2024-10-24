@@ -11,6 +11,7 @@ import { ContentMore } from 'app/ui/molecules/contentmore';
 import Image from 'app/ui/atoms/image';
 import Svg, { Line, Circle } from 'react-native-svg';
 import { LAYOUT_BREAKPOINTS } from 'app/lib/util'
+import Video from 'app/ui/atoms/video';
 
 export default function ModuleStructure(props) {
 
@@ -18,9 +19,7 @@ export default function ModuleStructure(props) {
         moduleData: props.data,
         lessonData: null,
         lessonId: null,
-      };
-
-      
+    };
 
     const [state, dispatch] = useReducer(reducer, initialState);
 
@@ -31,34 +30,34 @@ export default function ModuleStructure(props) {
     function reducer(state, action) {
         switch (action.type) {
             case 'SET_LESSON_DATA':
-                return { 
-                    ...state, 
-                    lessonData: action.lessonData 
+                return {
+                    ...state,
+                    lessonData: action.lessonData
                 };
-                
+
             case 'SET_LESSON_ID':
-                return { 
-                    ...state, 
-                    lessonId: action.lessonId 
+                return {
+                    ...state,
+                    lessonId: action.lessonId
                 };
-            
+
             case 'SET_MODULE_DATA':
-                return { 
-                    ...state, 
-                    moduleData: action.moduleData, 
-                    lessonData: null, 
-                    lessonId: null 
+                return {
+                    ...state,
+                    moduleData: action.moduleData,
+                    lessonData: null,
+                    lessonId: null
                 };
-                
+
             case 'SET_LESSON_DATA_AND_LESSON_ID':
-                return { 
-                    ...state, 
-                    lessonData: action.lessonData, 
-                    lessonId: action.lessonId 
+                return {
+                    ...state,
+                    lessonData: action.lessonData,
+                    lessonId: action.lessonId
                 };
-                
+
             default:
-                return state; 
+                return state;
         }
     }
 
@@ -69,7 +68,7 @@ export default function ModuleStructure(props) {
             }
             const lessonResponse = await fetcher(`/api.php?r=bx_courses/entity_node_block/&params[]=${parent_id}&params[]=${id}`);
             dispatch({ type: 'SET_LESSON_DATA', lessonData: lessonResponse.data[0].data });
-            
+
         } catch (error) {
             console.error("Error fetching lesson data or resetting:", error);
         }
@@ -85,34 +84,34 @@ export default function ModuleStructure(props) {
     };
 
     const startLessonPart = async (id, isStart) => {
-        if (isStart){
-            let currentIndex =-1;
+        if (isStart) {
+            let currentIndex = -1;
             const updatedSteps = lessonData.steps.map((item, index) => {
                 if (item.id == id) {
                     currentIndex = index;
                     item = { ...item, passed: true }
                 }
-                if (lessonData.passing && currentIndex + 1 !== index){
+                if (lessonData.passing && currentIndex + 1 !== index) {
                     item = { ...item, pass_link: '' }
                 }
-                if (currentIndex> -1 && currentIndex + 1 == index) {
+                if (currentIndex > -1 && currentIndex + 1 == index) {
                     item = { ...item, pass_link: 'hz' }
                 }
                 return item;
             })
-            dispatch({ type: 'SET_LESSON_DATA_AND_LESSON_ID', lessonData:{ ...lessonData, steps: updatedSteps }, lessonId:id});
+            dispatch({ type: 'SET_LESSON_DATA_AND_LESSON_ID', lessonData: { ...lessonData, steps: updatedSteps }, lessonId: id });
             await fetcher(`/api.php?r=bx_courses/pass_data/&params[]=${id}`);
         }
-       // setLessonId(id);
+        // setLessonId(id);
 
     };
 
     const lessonIndex = lessonData ? lessonData.steps.findIndex(item => item.id === lessonId) : -1;
     const lessonItemData = lessonIndex !== -1 ? lessonData.steps[lessonIndex] : null;
 
-    let title = lessonId > 0 ? <View className='flex-1'>
-        <Button startDecorator="ArrowLeft" variant="default" title={'Back'} size="sm" rounded onPress={() => { dispatch({ type: 'SET_LESSON_ID', lessonId:null}) }} />
-    </View> : <View className='flex-1'>
+    let title = lessonId > 0 ? <View className='flex-1 ml-4 sm:ml-0'>
+        <Button startDecorator="ArrowLeft" variant="default" title={'Back'} size="sm" rounded onPress={() => { dispatch({ type: 'SET_LESSON_ID', lessonId: null }) }} />
+    </View> : <View className='flex-1 ml-4 sm:ml-0'>
         <Text className="text-xl leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200">{lessonData?.title}</Text>
         <Text className="text-xs text-neutral-800 dark:text-neutral-200">{lessonData?.sample} {lessonData?.index}</Text>
     </View>;
@@ -122,10 +121,12 @@ export default function ModuleStructure(props) {
         <>
             {lessonData && (
                 <Modal
-                    onClose={() => { getModuleData();  }}
+                    onClose={() => { getModuleData(); }}
                     title={title}
                     scrollable={true}
                     outerClickClose={false}
+                    fullWidth={true}
+
                 >
                     {lessonId ? <LessonItem startLessonPart={startLessonPart} lessonItemData={lessonItemData} lessonIndex={lessonIndex} lessonData={lessonData} /> : <LessonStructure startLessonPart={startLessonPart} lessonData={lessonData} />}
                 </Modal>
@@ -202,7 +203,9 @@ function LessonStructure({ lessonData, startLessonPart }) {
     const [viewType, setViewType] = useState(0)
 
     return (
+        <View className='w-full '>
         <ScrollView className='w-full'>
+           
             <View className='mb-4'>
                 <ContentMore numberOfSymbols={200} showLess={true} content={lessonData?.text} numberOfLines={3} openSmall={false} textClassName="  text-base text-neutral-600 dark:text-neutral-400" />
             </View>
@@ -212,7 +215,9 @@ function LessonStructure({ lessonData, startLessonPart }) {
             </Row>
             {viewType === 0 && <LessonSteps lessonData={lessonData} startLessonPart={startLessonPart} />}
             {viewType === 1 && <LessonAttach attachments={lessonData.attachments} />}
+            
         </ScrollView>
+        </View>
     );
 }
 
@@ -288,7 +293,7 @@ function LessonSteps({ lessonData, startLessonPart }) {
 function LessonItem({ lessonItemData, lessonIndex, lessonData, startLessonPart }) {
     const steps = lessonData.steps;
     return (
-        <ScrollView className='w-full'>
+        <>
             <Row className='w-full '>
                 {steps.map((item, index) => {
                     const [color, icon, color2, color3] = getColorByTypeLesson(item, index, lessonData.passing, lessonIndex);
@@ -312,7 +317,7 @@ function LessonItem({ lessonItemData, lessonIndex, lessonData, startLessonPart }
             <Row className='w-full h-8 mb-4 '>
                 {steps.map((item, index) => {
                     return (
-                        <View key={"index"+index} className={`flex-auto items-center justify-end`}>
+                        <View key={"index" + index} className={`flex-auto items-center justify-end`}>
                             <View className=' items-center justify-end  w-full absolute'>
                                 <Text className={`text-xs ${index == lessonIndex ? '' : ''}`}  >Step {index + 1}</Text>
                                 <Text className={`text-xs ${index == lessonIndex ? 'text-red-400' : ''} font-medium`} >{item.type}</Text>
@@ -320,15 +325,18 @@ function LessonItem({ lessonItemData, lessonIndex, lessonData, startLessonPart }
                         </View>)
                 })}
             </Row>
-
-            <Text className="mb-4  text-base leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200">{lessonItemData?.title} </Text>
-            <View className='mb-4'>
+            {!!lessonItemData?.title && <Text className="mb-4  text-base leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200">{lessonItemData?.title}</Text>}
+            {!!lessonItemData?.image && !lessonItemData?.video && <View className="w-full aspect-[2/1] rounded-xl overflow-hidden "><Image {...lessonItemData.image} alt={lessonItemData.title} sizes={LAYOUT_BREAKPOINTS.lg} className=" u-cover" view="cover" /></View>}
+            {!!lessonItemData?.video && <View className='w-full aspect-video rounded-xl overflow-hidden '>
+                <Video poster={lessonItemData.video.src_poster} src={lessonItemData.video.src_mp4} cover={true}  controls={true} muted={"muted"} />
+            </View>}
+            <View className='my-4'>
                 <ContentMore numberOfSymbols={200} showLess={false} content={lessonItemData?.text} numberOfLines={3} openSmall={true} textClassName="  text-base text-neutral-600 dark:text-neutral-400" />
             </View>
             {lessonIndex != steps.length - 1 &&
                 <Button endDecorator="ArrowRight" variant="default" title={'Next'} size="sm" rounded onPress={() => { startLessonPart(lessonData.steps[lessonIndex + 1].id, true) }} />
             }
-        </ScrollView>
+       </>
     );
 }
 
