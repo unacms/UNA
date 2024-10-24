@@ -11,6 +11,7 @@ import ProfilesList from 'app/ui/molecules/profile_list'
 import { useTranslation } from 'react-i18next';
 import Letter from 'app/ui/atoms/letter'
 import { callFn } from 'app/lib/functions/call';
+import { Platform } from 'react-native'
 
 function ImageSection({ data, imageSizes }) {
     return (
@@ -33,7 +34,7 @@ export default function Unit(props) {
     const imageSizes = getImageSizes();
     const redirectdRef = useRef();
     const { cardData } = useCardData();
-
+    const isWeb = Platform.OS == 'web'
     const friendsLabel = data.mutual_friends_count > 0
         ? tp("mutual_friends", data?.mutual_friends_count, false)
         : tp("friends", data?.friends_count, false);
@@ -57,8 +58,9 @@ export default function Unit(props) {
             <Redirect ref={redirectdRef} />
             <Card margin=" mb-[1px] sm:m-2 " border=" border-none shadow-none sm:shadow "  rounded=" sm:rounded-2xl ">
                 <Link className="group " href={data.url}>
-                    <View className="flex-row  sm:flex-col p-4 sm:p-1  sm:h-full">
+                    <View className={`flex-row  sm:flex-col p-4 sm:p-1 ${isWeb && 'h-32'} sm:h-full`}>
                         <ImageSection data={data} imageSizes={imageSizes} />
+                        
                         <View className="flex-col pl-4 sm:p-3  flex-auto items-between justify-between ">
                             <View className='flex-auto mb-auto'>
                                 <Text numberOfLines={1} className=" mb-2 text-lg leading-tight tracking-tight font-semibold text-neutral-800 dark:text-neutral-200 group-hover:text-primary group-hover:dark:text-primary-d">

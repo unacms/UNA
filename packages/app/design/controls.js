@@ -144,10 +144,10 @@ export function Modal({
     const Cnt = scrollable ? ScrollView : View
 
     const layoutShift = isWeb ? 'sm' : '2xl';
-    const layoutShift2 = isWeb ? 'md' : '2xl';
+    const layoutShift2 = isWeb ? 'sm' : '2xl';
 
     const Content = <View className={`flex-row justify-center left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto ${layoutShift2}:inset-0 h-modal h-full ${sClassPosition}`}>
-    <View className={`${fullWidth ? 'w-full' : ''} 98989 relative h-full max-w-2xl ${layoutShift2}:h-auto `}>
+    <View className={`w-full  ${fullWidth ? '' : `${layoutShift}:w-auto`} 989891 relative h-full max-w-2xl ${layoutShift2}:h-auto `}>
         <Pressable onPress={() => { }} className={`relative bg-bgrmodal dark:bg-bgrmodal-d h-full ${layoutShift2}:h-auto  ${layoutShift}:border ${layoutShift}:border-bdrmodal ${layoutShift}:dark:border-bdrmodal-d ${layoutShift}:rounded-2xl ${layoutShift}:shadow-sm`}>
             {
                 (title || onClose) && <Row className={`items-center justify-${align} ${headerBorder ? ' border-b border-bdr dark:border-bdr-d ' : ''} px-1 py-2.5 ${layoutShift}:p-4 ${layoutShift}:py-3`}>
@@ -164,7 +164,7 @@ export function Modal({
                     )}
                 </Row>
             }
-            <Cnt style={styles} className={`${padding} 8888888 overflow-y-auto flex-auto ${layoutShift2}:h-auto`}>{children}</Cnt>
+            <Cnt style={styles} className={`${padding} 8888888 overflow-y-auto flex-auto ${layoutShift2}:h-auto justify-center`}>{children}</Cnt>
         </Pressable>
     </View>
 </View>
@@ -209,11 +209,11 @@ export function ButtonsGroup({
     const aChildren = children.map((child, iIndex) => {
         const { variant, size, fullWidth, ...restChild } = child.props;
         const isLastChild = iIndex < children.length - 1;
-        const childClass = 'flex-auto ' + (isLastChild ? ' border-none border-bdr dark:border-bdr-d' : '');
+        const childClass = 'flex-auto ' + (isLastChild ? ' border-r border-bdr dark:border-bdr-d' : '');
 
         let childItem;
         if (child.type === Button) {
-            childItem = <Button showTitleFromSize={showTitleFromSize} variant={'group-item' + ((!!variant && variant == 'text') || bTextContainer ? '-text' : '')} size={size} fullWidth={fullWidth} {...restChild} />;
+            childItem = <Button  showTitleFromSize={showTitleFromSize} variant={'group-item' + ((!!variant && variant == 'text') || bTextContainer ? '-text' : '')} size={size} fullWidth={fullWidth} {...restChild} />;
         } else {
             childItem = child;
         }

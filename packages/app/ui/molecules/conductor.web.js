@@ -381,7 +381,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
             return (
                 <TopSidebar isDrawer={isDrawer} isWeb={true} style={styles} leftSideBar={leftSideBar} header={header} headerSettings={headerSettings} addButtons={addButtons} isSmall={isSmall} showMenu={showMenu} layout={getLayout(currentUser)} title={t(menuSettings?.name)} >
-                    <ConductorMenu routes={routes} index={index} t={t} setIndex={setIndex} getNumCols={getNumCols} windowWidth={windowWidth} onChangeRoute={onChangeRoute} />
+                    <ConductorMenu leftSideBar={leftSideBar} routes={routes} index={index} t={t} setIndex={setIndex} getNumCols={getNumCols} windowWidth={windowWidth} onChangeRoute={onChangeRoute} />
                 </TopSidebar>
 
             )
@@ -748,7 +748,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         </View>
     );
 }
-function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, onChangeRoute }) {
+function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, onChangeRoute, leftSideBar }) {
 
     let filteredItems = routes.filter((aItem) => aItem.hideInTop != true)
   
@@ -764,7 +764,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
                 key={`tab-${index2}`}
                 onPress={() => {
                     setIndex(a.index);
-                    getNumCols(windowWidth, currentRoute, leftSideBar)
+                    getNumCols(windowWidth, routes[index], leftSideBar)
                     window.history.pushState({}, '', '/' + a.key);
                     if (onChangeRoute) {
                         onChangeRoute(a);
@@ -780,11 +780,11 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
         const { title, addon, icon, link, menu_settings, key } = item;
         const translatedTitle = <Text>{t(title)}</Text>;
         const { currentUser } = useCurrentUser();
-        let addonContent = getAddonForConductor(item, index, currentUser)
+        let addonContent = callFn("getAddonForConductor", [item, index, currentUser])
 
         const handlePress = () => {
             setIndex(index);
-            getNumCols(windowWidth, currentRoute, leftSideBar);
+            getNumCols(windowWidth, routes[index], leftSideBar);
             window.history.pushState({}, '', '/' + key);
             if (onChangeRoute) {
                 onChangeRoute(item);

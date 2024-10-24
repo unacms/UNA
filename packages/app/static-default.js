@@ -499,14 +499,14 @@ const ComponentsDummy = (
                 height={16}
             />
             <Text
-                className={'flex-none text-gray-800 dark:text-gray-200 text-xs'}
+                className={'flex-none text-gray-800 dark:text-gray-200 text-xs dark:bg-bgrmodal-d h-full md:h-auto  sm:border sm:border-bdrmodal sm:dark:border-bdrmodal-d sm:rounded-2xl sm:shadow-sm bg-bgrmodal dark:bg-bgrmodal-d h-full md:h-auto  md:border md:border-bdrmodal md:dark:border-bdrmodal-d md:rounded-2xl md:shadow-sm'}
             >
                 123
             </Text>
         </Row>
         <Row className="font-default bg-orange-500 text-red-400 bg-red-400 bg-gray-300 bg-gray-400 bg-gray-600 bg-yellow-500 bg-green-500 bg-teal-500 bg-sky-500 bg-indigo-500 bg-purple-500 bg-pink-500 bg-rose-500 bg-red-500">
             <Icon
-                className="text-gray-600 dark:text-gray-400"
+                className="text-gray-600 dark:text-gray-400 sm:h-auto"
                 icon="ArrowFatUp"
                 width={16}
                 height={16}
