@@ -15,7 +15,7 @@ export default function ElementLink(props) {
         return currentUser
             ? appSetting('menu_items', 'menu_tabbar_logged')
             : appSetting('menu_items', 'menu_tabbar_non_logged');
-    }, [currentUser.id]);
+    }, [currentUser?.id]);
 
     // Список невалидных значений href
     const invalidHrefs = ['javascript:', '/javascript:', undefined, null];

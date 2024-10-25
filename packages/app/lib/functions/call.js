@@ -19,6 +19,6 @@ export const callFn = (function () {
             return defaultFunctions[functionName].apply(null, argsArray); // Вызов с аргументами
         }
 
-        console.error(`Function ${functionName} not found in either custom or default functions.`);
+        console.log(`Function ${functionName} not found in either custom or default functions.`, argsArray);
     };
 })();
