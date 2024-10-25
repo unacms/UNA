@@ -369,17 +369,21 @@ export function getNumCols(width, currentRoute, leftSideBar) {
         }
     }
 
-    let perLineSettings = appSetting('browse', 'per_line');
+    let perLineSettings = [];
+    if (currentRoute?.endpoint && currentRoute?.endpoint?.request_url){
+        perLineSettings = appSetting('browse', 'per_line_profile');
+    }
     if (currentRoute?.endpoint?.request_url.includes('TemplServiceProfiles') || currentRoute?.endpoint?.unit.includes('-profile-') || currentRoute?.endpoint?.unit.includes('-context-')) {
         perLineSettings = appSetting('browse', 'per_line_profile');
     }
-    if (leftSideBar) {
+    if (leftSideBar && currentRoute?.endpoint && currentRoute?.endpoint?.request_url) {
         perLineSettings = appSetting('browse', 'per_line_left_side_bar');
     }
     const perLineSettingsByModule = appSetting('browse', 'per_line_'+currentRoute?.endpoint?.module);
     if (perLineSettingsByModule){
         perLineSettings=perLineSettingsByModule;
     }
+
     for (let i = 0; i < perLineSettings.length; i++) {
         if (width > perLineSettings[i].width) {
             const count = perLineSettings[i].count;
