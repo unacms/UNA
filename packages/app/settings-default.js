@@ -1542,7 +1542,7 @@ export const settingsDefault = {
                     forHeader: true,
                 },
                 text: {
-                    name: 'bx_photos:entity_text_block',
+                    name: 'bx_photos:entity_photo_block',
                     showTitle: false,
                     showBg: false,
                     forList: true,
