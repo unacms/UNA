@@ -5,7 +5,7 @@ import { useState, useEffect, useMemo } from 'react'
 import Carousel from 'app/ui/molecules/carousel'
 import { useLayoutData } from 'app/context/layout';
 import Embed from 'app/ui/molecules/embed'
-import { storageSet, getDataFromCache  } from 'app/lib/util';
+import { storageSet, getDataFromCache } from 'app/lib/util';
 import { Platform } from 'react-native'
 
 export default function ElementFeedItem({ data }) {
@@ -18,10 +18,10 @@ export default function ElementFeedItem({ data }) {
         }
     }, [layoutData]);
 
-    if (isWeb){
+    if (isWeb) {
         const sKey = 'feed_' + data.event.id;
         const dataCache = getDataFromCache('li:data', sKey)
-        if (dataCache){
+        if (dataCache) {
             dataCache.ts = -1;
         }
         storageSet('li:data', sKey, dataCache)
@@ -35,9 +35,9 @@ export default function ElementFeedItem({ data }) {
         if (link){
             tlContent = tlContent + '<br><div class="bx-embed-link" source="' + link + '">' + link + '</div>'
         }*/
-       /* if (content.embed) {
-            tlContent = tlContent + content.embed
-        }*/
+        /* if (content.embed) {
+             tlContent = tlContent + content.embed
+         }*/
     }
 
     let content_attach = [];
@@ -52,14 +52,14 @@ export default function ElementFeedItem({ data }) {
 
         const aImg = useMemo(() => {
             if (!images?.images || images?.images?.length === 0) return [];
-    
+
             let photo = images.images.filter(item => item.src).map((obj) => ({
                 src: obj.src_orig ? obj.src_orig : obj.src,
                 width: obj.width,
                 height: obj.height,
                 type: 'image',
             }));
-    
+
             let video = images.images.filter(item => item.src_poster).map((obj) => ({
                 src: obj.src_poster ? obj.src_poster : obj.src_poster,
                 type: 'video',
@@ -67,10 +67,12 @@ export default function ElementFeedItem({ data }) {
             return [...photo, ...video]
         }, [images]);
 
+        if (!aImg.length) return null;
+
         return (
-            
-                <Carousel data={aImg} />
-            
+
+            <View className='mb-4'><Carousel data={aImg} /></View>
+
         )
     }
 
@@ -78,7 +80,7 @@ export default function ElementFeedItem({ data }) {
         <View className="relative sm:my-0 w-full mx-auto max-w-5xl">
             <View className="my-4">
                 <Html data={tlContent} />
-                {!!content.embed && <Embed data={content.embed}/>}
+                {!!content.embed && <Embed data={content.embed} />}
             </View>
             <UnitImages images={content_attach} />
             {

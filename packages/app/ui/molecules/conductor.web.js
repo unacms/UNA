@@ -602,7 +602,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                     {isRightCol && <View className="hidden xl:block xl:w-80 2xl:w-96  ">
                         <View className="fixed-process xl:w-80 2xl:w-96 p-4 ">
                             {route?.sidebar?.content.map((item, index) => {
-                                return <View className="mb-4"><ItemRenderer unitType={sidebarUnitType} key={'item' + index} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''} /></View>
+                                return <View className="mb-4" key={'item' + index}><ItemRenderer unitType={sidebarUnitType}  route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''} /></View>
                             })}
                             <BlockByName data={route.pageData ? route.pageData : data} name={route.blocks?.browse_sidebar} sidebar={true} perLine={1} maxItems={1} />
                         </View>
