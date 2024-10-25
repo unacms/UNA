@@ -92,6 +92,7 @@
     "react-native-web": "~0.19.6",
     "react-native-webrtc": "111.0.3",
     "react-native-webview": "13.8.6",
+    "react-native-youtube-iframe": "^2.3.0",
     "react-remove-scroll": "^2.6.0",
     "react-spring-bottom-sheet": "^3.4.1",
     "set-cookie-parser": "^2.6.0",

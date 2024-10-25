@@ -1,13 +1,10 @@
 import React, { useState, useEffect, useCallback, useMemo, memo } from 'react';
 import { View, Pressable, Row, ScrollView } from 'app/design/view'
 import Image from 'app/ui/atoms/image';
-import { Button } from 'app/design/controls';
-import { Modal } from "app/design/controls";
+import { Modal, Button } from "app/design/controls";
 import { Text } from 'app/design/typography';
-import { Image as ImageOr } from 'react-native';
-import { useWindowDimensions } from 'react-native';
+import { Image as ImageOr, useWindowDimensions,Platform } from 'react-native';
 import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
-import { Platform } from 'react-native'
 import Video from 'app/ui/atoms/video';
 
 
@@ -74,8 +71,8 @@ const Gallery = React.memo(({ data, handleShowImage, windowWidthOr }) => {
 
             return (
                 /*bg-neutral-200  dark:bg-neutral-600*/
-                <View className={`${max_image_width}  ${aspect} w-full items-start justify-center rounded sm:rounded-lg overflow-hidden 002`}>
-                    <View style={{ aspectRatio: aspectStyle, width: w, height: h }} >
+                <View className={`${max_image_width}  ${aspect} w-full items-start justify-center  002`}>
+                    <View className='rounded sm:rounded-lg overflow-hidden' style={{ aspectRatio: aspectStyle, width: w, height: h }} >
                         <Image2 handleShowImage={handleShowImage} data={data} row={0} index={0} key={0} src={data[0].src} type={data[0].type} />
                     </View>
                 </View>
@@ -87,8 +84,8 @@ const Gallery = React.memo(({ data, handleShowImage, windowWidthOr }) => {
             w = "";
             return (
                 /*bg-neutral-200  dark:bg-neutral-600*/
-                <View className={`${max_image_width}  ${aspect} w-full max-w-lg items-start justify-center rounded sm:rounded-lg overflow-hidden 001`}>
-                    <View style={{ aspectRatio: aspectStyle }} className='h-full '>
+                <View className={`${max_image_width}  ${aspect} w-full max-w-lg items-start justify-center 001`}>
+                    <View style={{ aspectRatio: aspectStyle }} className='h-full  rounded sm:rounded-lg overflow-hidden'>
                         <Image2 handleShowImage={handleShowImage} data={data} row={0} index={0} key={0} width={w} height={h} src={data[0].src} type={data[0].type} />
                     </View>
                 </View>
