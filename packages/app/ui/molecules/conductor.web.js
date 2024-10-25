@@ -439,6 +439,8 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
     const RenderScene = useCallback(({ route, status }) => {
         let inputs = route?.endpoint?.filters?.inputs;
+        if (appSetting('layout', 'hide_browse_filter') === true)
+            inputs =null
         const counter = appSetting('layout', 'show_nav_counters') ? 0 : route.addon ? (route.addon.text ? route.addon.text : route.addon) : 0;
         return (
             <>
