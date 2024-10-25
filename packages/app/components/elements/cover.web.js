@@ -317,7 +317,8 @@ export default function (props) {
                         <CoverMenuMeta {...data.meta_menu} />
                     </View>
                     <View className={`flex-auto max-w-96 ${mode !== 'min' && ' md:items-end py-4'}`}>
-                        <CoverMenu {...data.actions_menu} uri={props?.uri} containerClasses={`${mode === 'min' && 'w-full lg:justify-end'}`} />
+                        <CoverMenu {...data.actions_menu} uri={props?.uri} />
+                        {/*containerClasses={`${mode === 'min' && 'w-full lg:justify-end'}`}*/}
                     </View>
                 </View>
             </View>
