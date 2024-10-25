@@ -9,7 +9,7 @@ function fillArrayToLength(arr, maxCount, defaultValue) {
     return arr;
   }
 
-function ProfilesList ({maxCount, showEmpty, data, displaySize="base"}) {
+  export default function ProfilesList ({maxCount, showEmpty, data, displaySize="base"}) {
 
     let sSize = ''
     switch (displaySize) {
@@ -50,16 +50,3 @@ function ProfilesList ({maxCount, showEmpty, data, displaySize="base"}) {
     )
 
 }
-
-const MemoizedProfilesList = memo(function({ data }) {
-    return (
-        <ProfilesList
-            data={data}
-            showEmpty={false}
-            maxCount={3}
-            displaySize="xs"
-        />
-    );
-});
-
-export default MemoizedProfilesList;

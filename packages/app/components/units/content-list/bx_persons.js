@@ -13,6 +13,15 @@ import Letter from 'app/ui/atoms/letter'
 import { callFn } from 'app/lib/functions/call';
 import { Platform } from 'react-native'
 
+const ProfilesListCnt = memo(({ data }) => (
+    <ProfilesList
+        data={data}
+        showEmpty={false}
+        maxCount={3}
+        displaySize="xs"
+    />
+));
+
 function ImageSection({ data, imageSizes }) {
     return (
         <View className=" aspect-square  sm:w-full rounded-xl overflow-hidden items-center justify-center">
@@ -68,7 +77,7 @@ export default function Unit(props) {
                                 </Text>
                                 <Row className="items-center  mb-2 h-6">
                                     <View className="mr-2">
-                                        <ProfilesList data={isFollowers ? data.followers_list : (data.mutual_friends_count > 0 ? data.mutual_friends_list : data.friends_list)} />
+                                        <ProfilesListCnt data={isFollowers ? data.followers_list : (data.mutual_friends_count > 0 ? data.mutual_friends_list : data.friends_list)} />
                                     </View>
                                     <Text className="truncate text-sm leading-tight flex-auto text-neutral-600 dark:text-neutral-400">
                                         {isFollowers ? data?.followers_count + " followers" : friendsLabel}
