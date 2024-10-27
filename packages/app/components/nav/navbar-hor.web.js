@@ -39,7 +39,7 @@ const HeaderLine = memo(
             ).length > 0
 
         return (
-            <View className="flex-row xl:w-80 2xl:w-96 pl-4 pr-2 flex-auto lg:flex-none my-auto items-center">
+            <View className="flex-row xl:w-80 2xl:w-96 pl-3 sm:pl-4 pr-2 flex-auto lg:flex-none my-auto items-center">
                 {headerSettings.menu && isDrawer && (
                     <View className="lg:hidden mr-3 sm:mr-4">
                         <Pressable onPress={showMenu}>
