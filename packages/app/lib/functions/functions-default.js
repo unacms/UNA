@@ -241,7 +241,6 @@ const createMenuItem = (menuItem, isPrimary) => {
                 title={menuItem.title}
                 className="my-auto"
                 startDecorator={menuItem.icon || false}
-                fullWidth={true}
                 onPress={menuItem.onPress}
             />
         );
