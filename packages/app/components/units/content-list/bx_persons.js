@@ -84,7 +84,7 @@ export default function Unit(props) {
                                     </Text>
                                 </Row>
                             </View>
-                            <View className="flex-row gap-x-2 sm:flex-col pt-3  w-full  justify-end">
+                            <View className="flex-row gap-x-2 sm:flex-col pt-3 justify-end">
                                 {oMenuItemPrimary}
                                 {!!oMenuItemSecondary && <View className={`${!!oMenuItemPrimary && 'sm:mt-2'}`}>{oMenuItemSecondary}</View>}
                             </View>

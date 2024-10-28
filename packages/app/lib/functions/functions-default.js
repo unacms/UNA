@@ -225,7 +225,7 @@ const createMenuItem = (menuItem, isPrimary) => {
                 primary: isPrimary,
                 params: {
                     button_rounded: false,
-                    button_full_width: true,
+      
                     on_done: (sAction, oData) => {
                         // Handle action completion
                     },

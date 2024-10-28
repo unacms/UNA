@@ -6,7 +6,7 @@ import { Text } from 'app/design/typography';
 import { Image as ImageOr, useWindowDimensions,Platform } from 'react-native';
 import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import Video from 'app/ui/atoms/video';
-
+import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
 
 const Image2 = memo((item) => {
 
@@ -177,7 +177,20 @@ const Carousel = memo(({ data = [] }) => {
                     (imageSize2[0] > 0 && data[currentImageIndex].type == 'image') && (
                         <ScrollView style={{ height: windowHeightOr - offset }}>
                             <Pressable style={{ width: imageSize2[0], height: imageSize2[1] }} onPress={() => setCurrentImageIndex(false)}>
-                                {currentImageIndex !== false && <Image view='cover' sizes={LAYOUT_BREAKPOINTS.xl} src={data[currentImageIndex].src} alt='' className=" u-cover  dark:bg-bgritem-d dark:bg-bgritem-d gap-x-1 " />}
+                                {currentImageIndex !== false && (
+                                       <ReactNativeZoomableView
+                                       maxZoom={30}
+                                       // Give these to the zoomable view so it can apply the boundaries around the actual content.
+                                       // Need to make sure the content is actually centered and the width and height are
+                                       // dimensions when it's rendered naturally. Not the intrinsic size.
+                                       // For example, an image with an intrinsic size of 400x200 will be rendered as 300x150 in this case.
+                                       // Therefore, we'll feed the zoomable view the 300x150 size.
+                                       contentWidth={300}
+                                       contentHeight={150}
+                                     >
+                                    <Image view='cover' sizes={LAYOUT_BREAKPOINTS.xl} src={data[currentImageIndex].src} alt='' className=" u-cover  dark:bg-bgritem-d dark:bg-bgritem-d gap-x-1 " />
+                                    </ReactNativeZoomableView>
+                                )}
                                 <Row className='absolute w-full -mt-4 top-1/2 items-center justify-between w-full px-4'>
                                     {
                                         currentImageIndex > 0 ? <Button variant="default" rounded size="base" onPress={() => setCurrentImageIndex(currentImageIndex - 1)} startDecorator="ArrowLeft" /> : <View className='mr-1 w-10'></View>

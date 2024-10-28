@@ -2057,6 +2057,13 @@
   dependencies:
     semver "^7.3.5"
 
+"@openspacelabs/react-native-zoomable-view@^2.1.6":
+  version "2.1.6"
+  resolved "https://registry.yarnpkg.com/@openspacelabs/react-native-zoomable-view/-/react-native-zoomable-view-2.1.6.tgz#4ff8d06ba820818cd0a5f6d505d79a2c6db2ce9a"
+  integrity sha512-Eb8ro4a1DGkVBT9xIl7RQHSlpKQD7q62JeVXJKtLKZIZ+FNHDVfLGxwyeqUMevLHbBUTbAqX9+zsgOMk/mrHWg==
+  dependencies:
+    prop-types "^15.7.2"
+
 "@phosphor-icons/core@^2.1.1":
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/@phosphor-icons/core/-/core-2.1.1.tgz#62a4cfbec9772f1a613a647da214fbb96f3ad39d"

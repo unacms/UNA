@@ -62,7 +62,8 @@ const nextConfig = {
     'react-native-localize',
     'victory-native',
     '@stripe/stripe-react-native',
-    'react-native-star-rating-widget'
+    'react-native-star-rating-widget',
+    '@openspacelabs/react-native-zoomable-view'
   ],
   images: {
     remotePatterns: [
