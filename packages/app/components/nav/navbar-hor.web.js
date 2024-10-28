@@ -68,7 +68,7 @@ const HeaderLine = memo(
                         <Text
                             numberOfLines={1}
                             ellipsizeMode="tail"
-                            className="text-2xl sm:text-3xl lg:hidden font-bold text-neutral-800 dark:text-neutral-200 "
+                            className="text-2xl lg:hidden font-bold text-neutral-800 dark:text-neutral-200 "
                         >
                             {title}
                         </Text>
@@ -115,11 +115,11 @@ export default function (props) {
     return (
         <>
             <View className="fixed w-full">
-                <View className="backdrop-blur h-16 items-center w-full border-b border-bdrnavbar dark:border-bdrnavbar-d shadow-sm bg-bgrnavbar dark:bg-bgrnavbar-d ">
+                <View className="backdrop-blur h-16 items-center w-full lg:border-b border-bdrnavbar dark:border-bdrnavbar-d lg:shadow-sm bg-bgrnavbar dark:bg-bgrnavbar-d ">
                     <View
                         className={
                             appSetting('layout', 'max_width') +
-                            ' w-full flex-row flex-auto items-center'
+                            ' w-full flex-row flex-auto gap-x-4 items-center'
                         }
                     >
                         <HeaderLine
@@ -133,7 +133,7 @@ export default function (props) {
                             setMenuPopup={setMenuPopup}
                         />
                         <Row className="hidden lg:flex flex-auto ">
-                            <Row className="w-full mx-auto gap-x-0.5 px-4 max-w-3xl justify-between">
+                            <Row className="w-full mx-auto gap-x-0.5 max-w-2xl justify-between">
                                 {menu_navbar_items.map((item, index) => (
                                     <Link
                                         className="flex-auto"

@@ -124,10 +124,10 @@ const FeedSmall = memo(() => (<View className="sm:px-4 sm:pb-2 flex-auto ">
 </View>))
 
 const FeedDefault = memo(() => (<View className=" pb-1 sm:pb-2 flex-auto">
-    <View className="bg-bgrcard dark:bg-bgrcard-d mb-1 sm:mb-4 p-3 sm:p-4 sm:rounded-xl flex flex-col animate-pulse ">
+    <View className="bg-bgrcard max-w-2xl w-full mx-auto dark:bg-bgrcard-d mb-1 sm:mb-4 p-3 sm:p-4 sm:rounded-2xl flex flex-col animate-pulse ">
         <View className="flex-row gap-x-2 mb-2">
             <View className="relative flex-row">
-                <View className="h-10 w-10 aspect-square overflow-hidden bg-neutral-500/20 mx-auto rounded-full">
+                <View className="h-11 w-11 aspect-square overflow-hidden bg-neutral-500/20 mx-auto rounded-full">
                     <View className="w-[50%] z-20 aspect-square bg-neutral-500/20  mx-auto rounded-full mt-[15%] "></View>
                     <View className="w-[80%] translate-y-0.5 aspect-square bg-neutral-500/20 mx-auto rounded-t-full "></View>
                 </View>
@@ -137,7 +137,7 @@ const FeedDefault = memo(() => (<View className=" pb-1 sm:pb-2 flex-auto">
                     <View className="h-3  w-24 bg-neutral-500/20 rounded-full"></View>
                     <View className="h-3  w-6 bg-neutral-500/20 rounded-full"></View>
                 </View>
-                <View className="h-2  w-16 bg-neutral-500/20 rounded-full"></View>
+                <View className="h-3  w-16 bg-neutral-500/20 rounded-full"></View>
             </View>
         </View>
 

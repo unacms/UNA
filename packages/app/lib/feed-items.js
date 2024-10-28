@@ -180,11 +180,11 @@ export const DefaultView = memo(({data, styles, bIsTitle, bIsTimelineContent, co
     let imgs = content_attach;
    
     return <>
-        <View className={isCompact ? "flex-row-reverse" : " flex-col md:flex-row-reverse "}>
+        <View className={isCompact ? "flex-row-reverse" : " flex-col "}>
             {data.mainImage && (
-                <View className={isCompact ? " w-48 mb-auto pr-4" : "w-full  md:w-48 mb-3 md:mb-auto md:ml-4"}>
+                <View className={isCompact ? " w-48 mb-auto pr-4" : "w-full mt-3"}>
                     <View
-                        className="w-full aspect-[2/1] md:aspect-square    "
+                        className="w-full aspect-video    "
                         style={styles.card_image}
                     >
                         <Image

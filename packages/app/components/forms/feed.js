@@ -181,7 +181,7 @@ export default function FormFeed(props) {
             {props.exProps?.mode == 'button' ? <Button variant="primary" title="Post" tooltip="Post" rounded fullWidth onPress={() => {
                 FeedbackHaptics('Medium')
                 setShowImage(true)
-            }} /> : <Card rounded=' rounded-none sm:rounded-2xl  ' margin=' max-w-screen-lg mx-auto w-full p-3 sm:p-4 mb-1 sm:mb-4 '  >
+            }} /> : <Card rounded=' rounded-none sm:rounded-2xl  ' margin=' max-w-2xl mx-auto w-full p-3 sm:p-4 mb-1 sm:mb-4 '  >
                 <View className=" flex-row gap-x-2 sm:gap-x-3 ">
                     <View className=' my-auto'>{profile}</View>
                     <Button

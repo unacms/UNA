@@ -687,7 +687,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                 />
 
                 return (
-                    <Pressable className={" py-2 items-center "}
+                    <Pressable className={" pb-3 pt-1 items-center "}
                         key={`tab-${a.index}`}
                         onPress={() => {
                             setIndex(a.index);
@@ -762,7 +762,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
             return <View className={"justify-center" + (index2 > visibleItemsCount - 1 ? ' item-overlap ' : '')} ref={el => itemRefs.current[index2] = el}><Link href={a.link}>{btn}</Link></View>
         }*/
         return (
-            <Pressable ref={el => itemRefs.current[index2] = el} className={" py-2 items-center " + a?.menu_settings?.class + (index2 > visibleItemsCount - 1 ? ' item-overlap ' : '')}
+            <Pressable ref={el => itemRefs.current[index2] = el} className={" pb-3 pt-1 items-center " + a?.menu_settings?.class + (index2 > visibleItemsCount - 1 ? ' item-overlap ' : '')}
                 key={`tab-${index2}`}
                 onPress={() => {
                     setIndex(a.index);
@@ -811,7 +811,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
     });
 
     const ButtonEx = memo(({ visibleItemsCount }) => {
-        return <View key="btn" className='ml-1'><Button title={'More...'} variant={visibleItemsCount <= index ? 'secondary' : "text"} pressed={visibleItemsCount <= index ? true : false} size="sm" /></View>;
+        return <View key="btn" className='ml-1 mb-3 mt-1'><Button title={'More...'} variant={visibleItemsCount <= index ? 'secondary' : "text"} pressed={visibleItemsCount <= index ? true : false} size="sm" /></View>;
     });
 
     return <DynamicMenu

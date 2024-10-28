@@ -93,12 +93,12 @@ const colors = {
     },
 
     bgrnavbar: {
-        DEFAULT: 'rgba(255,255,255,0.9)',
-        d: 'rgba(17,24,39,0.9)',
+        DEFAULT: 'rgba(255,255,255,1)',
+        d: 'rgba(17,24,39,1)',
     },
     bdrnavbar: {
-        DEFAULT: 'rgba(209,213,219,0.8)',
-        d: 'rgba(31,41,55,0.8)',
+        DEFAULT: 'rgba(209,213,219,1)',
+        d: 'rgba(31,41,55,1)',
     },
 
     bgrtabbar: {
@@ -107,8 +107,8 @@ const colors = {
     },
 
     bdrtabbar: {
-        DEFAULT: 'rgba(229,231,235,0.8)',
-        d: 'rgba(31,41,55,0.6)',
+        DEFAULT: 'rgba(229,231,235,1)',
+        d: 'rgba(31,41,55,1)',
     },
 
     bgritem: {
@@ -126,9 +126,9 @@ const colors = {
 
     bgrbutton: {
         DEFAULT: 'rgba(229,231,235,1)',
-        h: 'rgba(209,213,219,0.8)',
+        h: 'rgba(209,213,219,1)',
         d: 'rgba(31,41,55,1)',
-        dh: 'rgba(55,65,81,0.5)',
+        dh: 'rgba(55,65,81,1)',
     },
     bdrbutton: {
         DEFAULT: 'rgba(209,213,219,1)',
