@@ -144,13 +144,19 @@ const expoConfig = {
     ],
 };
 
-if (typeof(expoConfigCustom.ios?.infoPlist) !== 'undefined')
-    expoConfig.ios.infoPlist = {};
+if (typeof (expoConfigCustom.ios?.infoPlist) !== 'undefined')
+  expoConfig.ios.infoPlist = {};
 
-if (typeof(expoConfigCustom.android?.permissions) !== 'undefined')
-    expoConfig.android.permissions = [];
+if (typeof (expoConfigCustom.ios?.associatedDomains) !== 'undefined')
+  expoConfig.ios.associatedDomains = [];
 
-if (typeof(expoConfigCustom.android?.intentFilters) !== 'undefined')
-    expoConfig.android.intentFilters = [];
+if (typeof (expoConfigCustom.android?.permissions) !== 'undefined')
+  expoConfig.android.permissions = [];
+
+if (typeof (expoConfigCustom.android?.intentFilters) !== 'undefined')
+  expoConfig.android.intentFilters = [];
+
+if (typeof (expoConfigCustom.plugins) !== 'undefined')
+  expoConfig.plugins = [];
 
 module.exports = merge(expoConfig, expoConfigCustom);
