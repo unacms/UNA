@@ -16,7 +16,7 @@ export default function ({ values, selectedValue, setValue }) {
                         title={item2.label}
                     />
                    {/*<Pressable  onPress={() => { setValue2(item2.value); setValue(item2.value) }}><Text className="text-neutral-700 dark:text-neutral-200  text-sm">{item2.label}</Text></Pressable>*/}
-                </> : <Text className="text-neutral-700 dark:text-neutral-200  text-sm font-medium mt-4">{item2.label}</Text>}
+                </> : <Text className="text-neutral-800 dark:text-neutral-200 text-sm font-semibold mt-4 mb-2">{item2.label}</Text>}
             </Row>
         )
     });

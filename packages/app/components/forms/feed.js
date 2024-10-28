@@ -122,7 +122,7 @@ export default function FormFeed(props) {
                                 <View className="w-full  flex-col px-2 sm:p-0 ">
                                     <View className=" flex-row gap-x-3 px-1 sm:px-0 pb-0 pt-3 sm:pt-0 flex-auto ">
                                         <View className=" mb-auto ">
-                                            <Profile {...currentUser} displayType="unit_wo_info" displaySize="base" />
+                                            <Profile {...currentUser} displayType="unit_wo_info" displaySize="lg" />
                                         </View>
                                         <View className="flex-col flex-auto ">
                                             <Profile {...currentUser} displayType="unit_wo_image" displaySize="lg" />
@@ -130,7 +130,12 @@ export default function FormFeed(props) {
                                            
                                            <View className="gap-x-2 flex-row flex-wrap ">
                                            <View className=" my-auto mt-2">
-                                            {getFormFieldByData(props.data.inputs['object_privacy_view'], props.handleSubmit, 'nofield', { onShowModal: setShowImage, showModal: showImage })}
+                                            {getFormFieldByData(
+                                                { ...props.data.inputs['object_privacy_view'], size: 'xs' },
+                                                props.handleSubmit,
+                                                'nofield',
+                                                { onShowModal: setShowImage, showModal: showImage }
+                                            )}
                                             </View>
                                            {props.data.inputs['labels'] && 
                                             <View className=" ">
