@@ -46,7 +46,7 @@ export function CoverSmall(props) {
                     appSetting('layout', 'max_width') + ' w-full mx-auto'
                 }
             >
-                <View className=" px-3 sm:px-4 py-2 max-w-screen-xl mx-auto w-full flex-row gap-2">
+                <View className=" px-3 sm:px-4 py-2 max-w-2xl mx-auto w-full flex-row gap-2">
                     <Row className=" items-center flex-auto">
                         {getBackButtonWeb()}
                         {bPerson && (

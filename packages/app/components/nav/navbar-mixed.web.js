@@ -53,7 +53,7 @@ const HeaderLine = memo(({headerSettings, currentUser, uri, title, menuPopup, se
             )}
             {headerSettings.backButton && getBackButtonWeb()}
             {headerSettings.title && <View className='flex-auto overflow-hidden'>
-                <Text numberOfLines={1} ellipsizeMode='tail' className="text-2xl sm:text-3xl lg:hidden font-bold text-neutral-800 dark:text-neutral-200 ">
+                <Text numberOfLines={1} ellipsizeMode='tail' className="text-2xl lg:hidden font-bold text-neutral-800 dark:text-neutral-200 ">
                     {title}
                 </Text>
             </View>}

@@ -115,7 +115,7 @@ export default function (props) {
                                 <Button
                                     endDecorator="X"
                                     variant={"outline"}
-                                    size="sm"
+                                    size="xs"
                                     title={item}
                                     onPress={removeValue(item)}
                                 />

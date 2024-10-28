@@ -24,7 +24,7 @@ const ProfilesListCnt = memo(({ data }) => (
 
 function ImageSection({ data, imageSizes }) {
     return (
-        <View className=" aspect-square  sm:w-full rounded-xl overflow-hidden items-center justify-center">
+        <View className=" aspect-square  sm:w-full rounded-full sm:rounded-xl overflow-hidden items-center justify-center">
             <Image
                 src={data?.image?.src}
                 alt={data.title}
@@ -67,15 +67,15 @@ export default function Unit(props) {
             <Redirect ref={redirectdRef} />
             <Card margin=" mb-[1px] sm:m-2 " border=" border-none shadow-none sm:shadow "  rounded=" sm:rounded-2xl ">
                 <Link className="group " href={data.url}>
-                    <View className={`flex-row  sm:flex-col p-4 sm:p-1 ${isWeb && 'h-32'} sm:h-full`}>
+                    <View className={`flex-row  sm:flex-col p-3 sm:p-1 ${isWeb && 'h-32'} sm:h-full`}>
                         <ImageSection data={data} imageSizes={imageSizes} />
                         
-                        <View className="flex-col pl-4 sm:p-3  flex-auto items-between justify-between ">
-                            <View className='flex-auto mb-auto'>
-                                <Text numberOfLines={1} className=" mb-2 text-lg leading-tight tracking-tight font-semibold text-neutral-800 dark:text-neutral-200 group-hover:text-primary group-hover:dark:text-primary-d">
+                        <View className="flex-col pl-3 my-auto sm:p-2 ">
+                            <View className=''>
+                                <Text numberOfLines={1} className=" pb-2 text-lg leading-tight tracking-tight font-semibold text-neutral-800 dark:text-neutral-200 group-hover:text-primary group-hover:dark:text-primary-d">
                                    {data.title}
                                 </Text>
-                                <Row className="items-center  mb-2 h-6">
+                                <Row className="items-center h-6 ">
                                     <View className="mr-2">
                                         <ProfilesListCnt data={isFollowers ? data.followers_list : (data.mutual_friends_count > 0 ? data.mutual_friends_list : data.friends_list)} />
                                     </View>
@@ -84,7 +84,7 @@ export default function Unit(props) {
                                     </Text>
                                 </Row>
                             </View>
-                            <View className="flex-row gap-x-2 sm:flex-col  w-full  justify-end">
+                            <View className="flex-row gap-x-2 sm:flex-col pt-3  w-full  justify-end">
                                 {oMenuItemPrimary}
                                 {!!oMenuItemSecondary && <View className={`${!!oMenuItemPrimary && 'sm:mt-2'}`}>{oMenuItemSecondary}</View>}
                             </View>
