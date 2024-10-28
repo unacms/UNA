@@ -24,7 +24,7 @@ const ProfilesListCnt = memo(({ data }) => (
 
 function ImageSection({ data, imageSizes }) {
     return (
-        <View className=" aspect-square  sm:w-full rounded-xl overflow-hidden items-center justify-center">
+        <View className=" aspect-square  sm:w-full rounded-full sm:rounded-xl overflow-hidden items-center justify-center">
             <Image
                 src={data?.image?.src}
                 alt={data.title}
@@ -67,7 +67,7 @@ export default function Unit(props) {
             <Redirect ref={redirectdRef} />
             <Card margin=" mb-[1px] sm:m-2 " border=" border-none shadow-none sm:shadow "  rounded=" sm:rounded-2xl ">
                 <Link className="group " href={data.url}>
-                    <View className={`flex-row  sm:flex-col px-3 py-2 sm:p-1 ${isWeb && 'h-32'} sm:h-full`}>
+                    <View className={`flex-row  sm:flex-col p-3 sm:p-1 ${isWeb && 'h-32'} sm:h-full`}>
                         <ImageSection data={data} imageSizes={imageSizes} />
                         
                         <View className="flex-col pl-3 my-auto sm:p-2 ">
