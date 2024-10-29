@@ -1,5 +1,5 @@
 import { View } from 'app/design/view'
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import * as ImagePicker from 'expo-image-picker';
@@ -220,7 +220,7 @@ export default function FormFieldFtf(props) {
     const object_privacy_view = formContext.watch('object_privacy_view');
     const object_id = formContext.watch('id');
     const m = name == "cmt_text" ? "sys_cmts" : "bx_timeline";
-
+    const editorRef = useRef(null);
 
     useEffect(() => {
         if (props.value !== undefined) {
@@ -255,7 +255,6 @@ export default function FormFieldFtf(props) {
     });
 
     const editor = useEditor({
-        autofocus: true,
         parseOptions: {
             preserveWhitespace: 'full',
         },
@@ -348,7 +347,16 @@ export default function FormFieldFtf(props) {
 
     useEffect(() => {
         if (editor && props.focus == true) {
-            editor.commands.focus('end')
+            
+           
+            setTimeout(() => {
+                const editorContainer = document.getElementsByClassName('tiptap')[0];
+                editorContainer.focus(); 
+                console.log("zzzzzzzzzzz", editorContainer)
+                   // editorRef.current?.click();  
+             
+            }, 1500);
+            //editor.commands.focus('end')
         }
     }, [editor]);
 
@@ -369,6 +377,7 @@ export default function FormFieldFtf(props) {
         <>
             <View>
                 <EditorContent
+                 ref={editorRef}
                     editor={editor}
                     className={(props?.numLines == 1 ? bgClass + ' text-neutral-800 w-full placeholder-neutral-500 dark:text-neutral-200 font-default ' + size + ' ' : bgClass + ' text-neutral-800 rounded-xl w-full placeholder-neutral-500 dark:text-neutral-200 text-base ') + ' ' + (isFullHtml ? ' p-4 ' : ' p-1 ')}
 
