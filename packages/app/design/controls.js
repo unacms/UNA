@@ -164,7 +164,7 @@ export function Modal({
                     )}
                 </Row>
             }
-            <Cnt style={styles} className={`${padding} 8888888 overflow-y-auto flex-auto ${layoutShift2}:h-auto justify-center`}>{children}</Cnt>
+            <Cnt style={styles} className={`${padding} 8888888 overflow-y-auto flex-auto ${layoutShift2}:h-auto `}>{children}</Cnt>
         </Pressable>
     </View>
 </View>

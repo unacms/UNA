@@ -66,7 +66,7 @@ export default function (props) {
             startDecorator="Globe"
             variant="outline"
 
-            size="sm"
+            size="xs"
             onPress={() => showSelect()}
         /></>
     }
