@@ -347,8 +347,30 @@ export default function FormFieldFtf(props) {
 
     useEffect(() => {
         if (editor && props.focus == true) {
-            editor.view.dom.focus();
-            editor.commands.focus("end")
+           
+            
+        
+            setTimeout(() => {
+                if (inputRef.current) {
+                    console.log(11)
+                    editor.view.dom.focus();
+                }
+            }, 300);
+
+            setTimeout(() => {
+                if (inputRef.current) {
+                    console.log(12)
+                    editor.commands.focus("end")
+                }
+            }, 1000);
+
+            setTimeout(() => {
+                if (inputRef.current) {
+                    console.log(13)
+                    editor.commands.focus()
+                }
+            }, 1500);
+
         }
     }, [editor]);
 
