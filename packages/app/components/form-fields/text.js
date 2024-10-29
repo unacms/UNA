@@ -4,7 +4,7 @@ import { Input } from 'app/design/controls'
 import React, { useEffect, useRef } from 'react';
 
 export default function FormFieldText(props) {
-    const inputRef = useRef(null);
+    //const inputRef = useRef(null);
 
     const name = props.name;
     const defaultValue = props.value ? props.value : '';
@@ -19,18 +19,21 @@ export default function FormFieldText(props) {
            formContext.setValue(props.name, props.value)
     }, [props.name, props.value]);
 
-    useEffect(() => {
+    /*useEffect(() => {
         if (inputRef.current && props.autoFocus) {
             inputRef.current.focus();
     }
     }, []);
+      ref={inputRef}
+    */
 
     const placeholder = props.use_caption_as_placeholder? props.caption : props.placeholder;
 
     return (
         <Field {...props} error2={formContext.formState.errors[name]}>
             <Input 
-                ref={inputRef}
+                autoFocus= {true}
+              
                 name={props.name}
                 placeholder = {placeholder}
                 placeholderTextColor="#6b7280"

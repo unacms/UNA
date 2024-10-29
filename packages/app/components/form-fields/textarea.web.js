@@ -87,6 +87,7 @@ export default function FormFieldText(props) {
 
     return (
         <Field {...props} error2={formContext.formState.errors[name]}>
+             <View className='h-0 w-0 absolute top-0 z-0 opacity-0'><Input autoFocus={true}/></View>
             {input}
         </Field>
     );
