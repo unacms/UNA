@@ -371,6 +371,14 @@ export default function FormFieldFtf(props) {
             
             }, 1500);
 
+            setTimeout(() => {
+               
+                console.log(14)
+                editor.chain().focus().run()
+        
+        }, 1500);
+          
+
         }
     }, [editor]);
 
