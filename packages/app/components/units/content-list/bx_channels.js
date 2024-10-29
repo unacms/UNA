@@ -9,6 +9,7 @@ import Redirect from 'app/ui/atoms/redirect'
 import ProfilesList from 'app/ui/molecules/profile_list'
 import { useTranslation } from 'react-i18next';
 import { callFn } from 'app/lib/functions/call';
+import { View, Row } from 'app/design/view'
 
 export default function Unit(props) {
     const { t } = useTranslation();

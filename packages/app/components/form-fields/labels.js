@@ -74,7 +74,7 @@ export default function (props) {
         []
     );
 
-    const styles = props.align === 'right' ? 'justify-end pl-4' : 'justify-start pr-4';
+    const styles = props.align === 'right' ? 'justify-end pl-4' : 'justify-start ';
 
     const header = <Row className=' w-full justify-between items-center'>
         <View><Button onPress={() => { setIsModal(null) }} variant='outline' rounded startDecorator="X" /></View>
@@ -111,7 +111,7 @@ export default function (props) {
                             onPress={showSelect}
                         />}
                         {!!field.value && field.value.map((item, index) => (
-                            <View className='mr-2' key={'label' + index}>
+                            <View className='mr-2 mb-2' key={'label' + index}>
                                 <Button
                                     endDecorator="X"
                                     variant={"outline"}

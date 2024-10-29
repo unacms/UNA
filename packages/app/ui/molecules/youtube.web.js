@@ -3,7 +3,7 @@ import { View, Row } from 'app/design/view'
 export default function Youtube({ videoId }) {
     return (
         <View className='aspect-video'>
-            <iframe className="absolute inset-0 w-full h-full" src={"https://www.youtube.com/embed/" + videoId} frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            <iframe className="absolute inset-0 w-full h-full" src={"https://www.youtube.com/embed/" + videoId} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
         </View>
     )
 }

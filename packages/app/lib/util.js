@@ -388,7 +388,7 @@ export function getUnitModeBySource(source) {
 }
 
 
-export function truncateHTML(html, maxLength) {
+/*export function truncateHTML(html, maxLength) {
     if (!html) return '';
 
     // Limit the length
@@ -418,6 +418,64 @@ export function truncateHTML(html, maxLength) {
     }
 
     // Close all unclosed tags in the reverse order they were opened
+    while (tags.length) {
+        truncated += `</${tags.pop()}>`;
+    }
+
+    return truncated;
+}*/
+
+export function truncateHTML(html, maxLength) {
+    if (!html) return '';
+
+    let textLength = 0;
+    let truncated = '';
+    
+    // Регулярное выражение для поиска тегов и текстовых фрагментов
+    const tagOrTextRegex = /<\/?([a-z][a-z0-9]*)\b[^>]*>|[^<]+/gi;
+    let match;
+
+    // Стек для отслеживания открытых тегов
+    const tags = [];
+
+    // Идем по HTML и обрезаем текстовый контент до maxLength
+    while ((match = tagOrTextRegex.exec(html))) {
+        const part = match[0];
+        
+        if (part[0] === '<') {
+            // Если это тег, проверяем открывающий или закрывающий
+            const tagName = match[1];
+            const isClosingTag = part[1] === '/';
+
+            if (!isClosingTag && !/br|hr|img|input|link|meta|area|base|col|command|embed|keygen|param|source|track|wbr/.test(tagName)) {
+                tags.push(tagName);
+            } else if (isClosingTag) {
+                const lastIndex = tags.lastIndexOf(tagName);
+                if (lastIndex !== -1) {
+                    tags.splice(lastIndex, 1);
+                }
+            }
+
+            // Добавляем тег к результату, но не увеличиваем счетчик текста
+            truncated += part;
+        } else {
+            // Это текстовая часть
+            const remainingLength = maxLength - textLength;
+
+            if (part.length > remainingLength) {
+                // Обрезаем текст, если он превышает оставшуюся длину
+                truncated += part.substring(0, remainingLength);
+                textLength += remainingLength;
+                break;
+            } else {
+                // Добавляем весь текст, так как он не превышает maxLength
+                truncated += part;
+                textLength += part.length;
+            }
+        }
+    }
+
+    // Закрываем все незакрытые теги
     while (tags.length) {
         truncated += `</${tags.pop()}>`;
     }

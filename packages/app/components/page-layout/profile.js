@@ -28,8 +28,11 @@ export default function PageLayout({layoutName, data, uri, blocks}) {
     }
 
     const menu = useMemo(() => {
-        const clonedMenu = cloneObject(pageData.menu || { items: [] });
-
+        //const clonedMenu = cloneObject(pageData.menu || { items: [] });
+        let clonedMenu = { items: [] }
+        if (pageData.menu && pageData.menu.items.length > 0) {
+            clonedMenu = cloneObject(pageData.menu)
+        }
         const isNamePresent = clonedMenu.items.some(item => item.link === pageData.url);
         //const isNamePresent = clonedMenu.items.some(item => item.name === uri);
         if (!isNamePresent) {

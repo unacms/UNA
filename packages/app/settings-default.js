@@ -1049,7 +1049,7 @@ export const settingsDefault = {
                     showBg: false,
                 },
                 foryou_feed: {
-                    name: 'bx_timeline:get_block_view_custom',
+                    name: 'bx_timeline:get_block_view_feed_and_hot',
                     showTitle: false,
                     showBg: false,
                 },

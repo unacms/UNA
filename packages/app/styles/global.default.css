@@ -502,8 +502,13 @@ div{
 html[theme="dark"]:root {
     --rsbs-bg: rgba(17,24,39,1);
 }
-.tippy-content .items:not(:has(div))::after{
+.tippy-box[data-theme="mention mention_user"] .tippy-content .items:not(:has(div))::after{
     content:'Mention a user';
+    display: block;
+}
+
+.tippy-box[data-theme="mention mention_channel"] .tippy-content .items:not(:has(div))::after{
+    content:'Select channel';
     display: block;
 }
 

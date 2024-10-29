@@ -164,7 +164,7 @@ export function Modal({
                     )}
                 </Row>
             }
-            <Cnt style={styles} className={`${padding} 8888888 overflow-y-auto flex-auto ${layoutShift2}:h-auto `}>{children}</Cnt>
+            <Cnt style={styles} className={`${padding}  overflow-y-auto flex-auto ${layoutShift2}:h-auto `}>{children}</Cnt>
         </Pressable>
     </View>
 </View>
@@ -172,7 +172,7 @@ export function Modal({
     return (
         <ModalDef visible={onVisible} presentationStyle={'pageSheet'} animationType={animation} transparent={isWeb}>
 
-            <Wrapper className="pointerEvents flex justify-end w-full h-full bg-white/80 dark:bg-black/80 backdrop-blur" {...(isOuterClose && { onPress: onClose })}>
+            <Wrapper className="pointerEvents cursor-default flex justify-end w-full h-full bg-white/80 dark:bg-black/80 backdrop-blur" {...(isOuterClose && { onPress: onClose })}>
                {isWeb ? <RemoveScroll className='flex-1'>{Content}</RemoveScroll> : Content}
             </Wrapper>
 

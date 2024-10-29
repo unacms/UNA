@@ -128,7 +128,7 @@ export default function FormFeed(props) {
                                             <Profile {...currentUser} displayType="unit_wo_image" displaySize="lg" />
 
                                            
-                                           <View className="gap-x-2 flex-row flex-wrap ">
+                                           <View className="gap-x-2 flex-wrap ">
                                            <View className=" my-auto mt-2">
                                             {getFormFieldByData(
                                                 { ...props.data.inputs['object_privacy_view'], size: 'xs' },
