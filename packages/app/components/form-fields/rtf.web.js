@@ -255,6 +255,7 @@ export default function FormFieldFtf(props) {
     });
 
     const editor = useEditor({
+        autofocus: true,
         parseOptions: {
             preserveWhitespace: 'full',
         },
@@ -347,38 +348,7 @@ export default function FormFieldFtf(props) {
 
     useEffect(() => {
         if (editor && props.focus == true) {
-           
-            
-        
-            setTimeout(() => {
-               
-                    console.log(11)
-                    editor.view.dom.focus();
- 
-            }, 300);
-
-            setTimeout(() => {
-                
-                    console.log(12)
-                    editor.commands.focus("end")
-           
-            }, 1000);
-
-            setTimeout(() => {
-               
-                    console.log(13)
-                    editor.commands.focus()
-            
-            }, 1500);
-
-            setTimeout(() => {
-               
-                console.log(14)
-                editor.chain().focus().run()
-        
-        }, 1500);
-          
-
+            editor.commands.focus('end')
         }
     }, [editor]);
 
