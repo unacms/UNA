@@ -14,7 +14,7 @@ export default function (props) {
         caption = '';
     let sClassName = ' w-full form-control form-control-' + props.name + (props?.classes ? ' ' + props?.classes : '');
     if (Platform.OS != 'web')
-        sClassName += '  ';
+        sClassName += ' my-2 ';
 
 
 
