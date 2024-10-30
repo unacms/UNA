@@ -54,7 +54,7 @@ export default function Splash(props) {
                 <View className=' w-full h-full pt-2 sm:pt-0'>
                     <KbAvoidingView offset={isIos ? 56 : 72} className="flex-1 w-full h-full">
                         <ScrollView className="w-full h-full flex-1">
-                            <View className="w-full px-4 sm:px-1">
+                            <View className="w-full px-4 sm:p-0">
 
                                 <BlockByData block={isCreateAccount == 'signup' ? data.create : data.forgot} isSubmit={isCreateAccountSubmit} />
                             </View>
