@@ -16,7 +16,7 @@ export default function ({ item, index, changeConvo, selectedIndex }) {
     //memo(
     const Item = ({item, index, changeConvo, selectedIndex }) => (<Pressable onPress={() => changeConvo(item)}>
         <Card border="mb-[1px] border-dashed sm:hover:bg-bgritem dark:sm:hover:bg-bgritem-d border-bdrcard dark:border-bdrcard-d" addClassName={(selectedIndex == index ? ' bg-neutral-500/10 ' : '') + 'group  active:opacity-50 active:translate-y-1 flex-row px-3 py-2 '} rounded="rounded-none" margin=" -mb-[1px]">
-            <View className="w-12 h-12 mr-2 rounded-full flex-none bg-secondary-500/10">
+            <View className="w-14 h-14 mr-2 rounded-full flex-none bg-secondary-500/10">
                 <Profile
                     {...participants[0]}
                     displayType="unit_wo_info"

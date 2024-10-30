@@ -54,9 +54,12 @@ export default function FormFeed(props) {
                     <View className='w-12'>{getFormFieldByData(props.data.inputs['file'], props.handleSubmit, 'custom', {previewPlaceHolder: setPlaceHolder})}</View>
                 </Row>
                 { (prevList.length> 0 && prevList[0]?.key) && <Row className='flex-wrap gap-2 mb-4'>{prevList}</Row>}
+                <View className='mt-4'>
                 {getFormFieldByData(props.data.inputs['object_privacy_view'], props.handleSubmit,  'notitle')}
+                </View>
+                <View className='mt-4'>
                 {getFormFieldByData(props.data.inputs['tlb_do_submit'], props.handleSubmit,  'default')}
-
+                </View>
             </View>  
         </KbAvoidingView> 
     </View>

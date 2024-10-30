@@ -16,6 +16,7 @@ import { storageClear } from 'app/lib/util';
 import { useLayoutData } from 'app/context/layout';
 import { subscribe } from 'app/ui/atoms/socket';
 import { useCurrentUser } from 'app/context/user'
+import { callFn } from 'app/lib/functions/call';
 
 const Item = memo(({ item, index, numColumns, data, unitMode, props }) => (
     <View className={numColumns > 1 ? 'w-full pb-2 ' : '  ' + (data.unit != 'feed' ? '   w-full' : '  ') + '  '}>
@@ -313,7 +314,7 @@ export default function (props) {
                                 Preload
                             ) : null
                         }
-                    /></> : <></>}
+                    /></> : (data.unit == 'notifications' ? callFn("noContentByUrl", [data.request_url]) : null)}
             </View>
         </View>
     );

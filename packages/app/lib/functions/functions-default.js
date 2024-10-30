@@ -5,6 +5,7 @@ import React from 'react'
 import { appSetting, updateRouteDataForConnection } from 'app/lib/util'
 import { Platform } from 'react-native'
 import { componentsMap } from 'app/ui/molecules/_map'
+import { appStatic } from 'app/lib/app-static';
 
 export function getBadgeForTab(currentUser, url) {
     if (
@@ -341,5 +342,5 @@ export function getUnitMenuItems(unitType, data, handleClick, t, moduleName) {
 }
 
 export function noContentByUrl(endpoint){
-    return <ComponentsContentEmpty/>
+    return appStatic('components_content_empty')
 }

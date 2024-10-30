@@ -269,7 +269,7 @@ export default function (props) {
                 )}
                 <View className={`flex-col ${mode === 'min' ? 'lg' : 'md'}:flex-row gap-x-2 p-2 max-w-6xl mx-auto w-full`}>
                     {bPerson && (
-                        <View className="w-full h-24 sm:h-48 sm:w-48 sm:h-28 relative">
+                        <View className="w-full h-24 sm:w-48 relative">
                             <View className="rounded-full absolute w-min p-2 z-50 duration-200 bottom-0 flex-none bg-bgrcard-h dark:bg-bgrcard-dh ">
                                 <Profile
                                     {...data.profile}

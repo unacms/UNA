@@ -64,6 +64,11 @@ export default function JotItem({ item, index, handleReply }) {
         handleReply(item);
     }, [handleReply]);
 
+    const reactionsWithUpdatedParams = {
+        ...item.reactions,
+        params: { ...item.reactions.params, button_size: "xs" }
+      };
+
     const Jot = <View className='w-full pb-4'>
         <View className="flex-row gap-x-2 ">
             <View className="w-10 flex-0 ">
@@ -116,9 +121,9 @@ export default function JotItem({ item, index, handleReply }) {
             <View className="pl-10">
                 <Button align="start" title={t("Reply")} size="xs" startDecorator="ArrowBendLeftUp" variant="outline" onPress={() => handleReplyInner(item)} rounded />
             </View>
-            <Row className=''>
+            <Row className='mr-1'>
                 <View className='mr-2'>
-                    <Reactions displaySize="xs" key={'reactions_' + item.id} {...item.reactions} />
+                    <Reactions key={'reactions_' + item.id} {...reactionsWithUpdatedParams} />
                 </View>
                 {aManageMenu.length > 0 &&
                     <DropdownMenu items={aManageMenu.map((aItem) => {
