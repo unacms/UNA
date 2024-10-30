@@ -302,7 +302,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
                     return item.type;
                 }}
                 ListFooterComponent={
-                    (route?.endpoint?.request_url ? (route?.endpoint?.finished ? callFn("noContentByUrl", [route?.endpoint]) : Preload) : <></>)
+                    (route?.endpoint?.request_url ? ((route?.endpoint?.finished) ? (route.data.length == 0 ? callFn("noContentByUrl", [route?.endpoint]) : null) : Preload) : null)
                 }
             />
         )
