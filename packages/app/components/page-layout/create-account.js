@@ -56,7 +56,7 @@ export default function PageLayout(props) {
                     <View className="  w-full   "><ScrollView>
                     <Card
                             rounded=" rounded-2xl "
-                            addClassName=" px-4 py-2 sm:px-6 sm:py-4 w-full  max-w-xl mx-auto flex-auto  "
+                            addClassName=" p-4 sm:p-6 w-full max-w-xl mx-auto flex-auto"
                         >
                                 {!isAllowJoin && <BlockByName name={props.blocks.form_invitation} data={props.data} />}
                                 {isAllowJoin && <BlockByName name={props.blocks.form_join} data={props.data} />}
