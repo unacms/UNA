@@ -37,7 +37,7 @@ export function CoverSmall(props) {
             className={
                 (isUseBg
                     ? ' border-b border-bdr dark:border-bdr-d'
-                    : ' bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur-lg border-b border-bdr dark:border-bdr-d') +
+                    : ' bg-bgrnavbar dark:bg-bgrnavbar-d ') +
                 ' w-full '
             }
         >
@@ -46,7 +46,7 @@ export function CoverSmall(props) {
                     appSetting('layout', 'max_width') + ' w-full mx-auto'
                 }
             >
-                <View className=" px-3 sm:px-4 py-2 max-w-2xl mx-auto w-full flex-row gap-2">
+                <View className=" px-3 sm:px-4 py-2 max-w-6xl mx-auto w-full flex-row gap-2">
                     <Row className=" items-center flex-auto">
                         {getBackButtonWeb()}
                         {bPerson && (
@@ -217,7 +217,7 @@ export default function (props) {
     };
 
     return (
-        <View className=' border-b border-bdrnavbar dark:border-bdr-d bg-bgrnavbar dark:bg-bgrnavbar-d ' >
+        <View className=' bg-bgrnavbar dark:bg-bgrnavbar-d ' >
             <View
                 className={
                     appSetting('layout', 'max_width') +
@@ -267,9 +267,9 @@ export default function (props) {
                 ) : (
                     <></>
                 )}
-                <View className={`flex-col ${mode === 'min' ? 'lg' : 'md'}:flex-row gap-x-4 px-4 py-2`}>
+                <View className={`flex-col ${mode === 'min' ? 'lg' : 'md'}:flex-row gap-x-2 p-2 max-w-6xl mx-auto w-full`}>
                     {bPerson && (
-                        <View className="w-full h-24 md:h-48 md:w-48 lg:h-28 relative">
+                        <View className="w-full h-24 sm:h-48 sm:w-48 sm:h-28 relative">
                             <View className="rounded-full absolute w-min p-2 z-50 duration-200 bottom-0 flex-none bg-bgrcard-h dark:bg-bgrcard-dh ">
                                 <Profile
                                     {...data.profile}
@@ -296,9 +296,9 @@ export default function (props) {
                     )}
 
 
-                    <View className=" flex-auto flex-col justify-between my-auto  ">
+                    <View className=" flex-auto flex-col justify-between my-auto  px-1 sm:px-2 ">
 
-                        <Row className=" flex-row flex-auto items-center gap-x-2 pb-8 sdas lg:pb-0">{/* pb-4*/}
+                        <Row className=" flex-row flex-auto items-center gap-x-2 pb-4">{/* pb-4*/}
                             <Text
                                 className="tracking-tight text-2xl sm:text-3xl font-bold text-neutral-900 dark:text-neutral-50"
                                 numberOfLines={2}
@@ -316,7 +316,7 @@ export default function (props) {
 
                         <CoverMenuMeta {...data.meta_menu} />
                     </View>
-                    <View className={`flex-auto max-w-96 ${mode !== 'min' && ' md:items-end py-4'}`}>
+                    <View className={`flex-auto max-w-96 ${mode !== 'min' && ' md:items-end py-3 px-1 sm:px-2'}`}>
                         <CoverMenu {...data.actions_menu} uri={props?.uri} />
                         {/*containerClasses={`${mode === 'min' && 'w-full lg:justify-end'}`}*/}
                     </View>

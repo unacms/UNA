@@ -594,15 +594,15 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                 sidebarUnitType = route.blocks.browse_sidebar.unitType
             }
             return (
-                <Row style={{ paddingTop: header ? 0 : 0 }} className={(headerSettings.columns == "reverse" ? 'flex-row-reverse' : '') + ' max-w-screen-xl mx-auto w-full'}>
-                    <View className={(isRightCol ? 'flex-auto sm:border-r border-bdr dark:border-bdr-d px-4 ' : ' w-full max-w-screen-xl mx-auto sm:p-2 ') + (layoutName == 'navigator' ? '' : ' pt-4')}>
+                <Row style={{ paddingTop: header ? 0 : 0 }} className={(headerSettings.columns == "reverse" ? 'flex-row-reverse' : '') + ' max-w-6xl mx-auto w-full'}>
+                    <View className={(isRightCol ? 'flex-auto sm:border-r border-bdr dark:border-bdr-d px-4 flex-auto ' : ' w-full mx-auto sm:p-2 ') + (layoutName == 'navigator' ? '' : ' pt-4')}>
                         {TabFlashListM}
                         {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 &&  callFn("noContentByUrl", [route?.endpoint])))}
 
 
                     </View>
-                    {isRightCol && <View className="hidden xl:block xl:w-80 2xl:w-96  ">
-                        <View className="fixed-process xl:w-80 2xl:w-96 p-4 ">
+                    {isRightCol && <View className="hidden xl:flex flex-auto max-w-md ">
+                        <View className="fixed-process p-4 max-w-md">
                             {route?.sidebar?.content.map((item, index) => {
                                 return <View className="mb-4" key={'item' + index}><ItemRenderer unitType={sidebarUnitType}  route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''} /></View>
                             })}
