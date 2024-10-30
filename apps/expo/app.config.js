@@ -159,4 +159,6 @@ if (typeof (expoConfigCustom.android?.intentFilters) !== 'undefined')
 if (typeof (expoConfigCustom.plugins) !== 'undefined')
   expoConfig.plugins = [];
 
+console.log("merge(expoConfig, expoConfigCustom)", merge(expoConfig, expoConfigCustom))
+
 module.exports = merge(expoConfig, expoConfigCustom);
