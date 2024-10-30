@@ -111,7 +111,7 @@ export default function PageLayout(props) {
         <>
             {header}
             <View className=" py-0 lg:px-4 mt-14 lg:mt-4 flex-1">
-                <View ref={viewCntRef} className="max-w-5xl flex-1 overflow-hidden mx-auto h-full w-full border-bdrcard dark:border-bdrcard-d group duration-500  lg:rounded-2xl bg-bgrcard dark:bg-bgrcard-d">
+                <View ref={viewCntRef} className="max-w-5xl flex-1 overflow-hidden mx-auto shadow h-full w-full border-bdrcard dark:border-bdrcard-d group duration-500  lg:rounded-2xl bg-bgrcard dark:bg-bgrcard-d">
                     <Row className='w-full p-3 sm:p-4' style={{ marginBottom: sizes.formHeight + 28 }}>
                         <View className='w-full' >
                             {CommentsPartsData[0]}

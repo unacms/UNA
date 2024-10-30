@@ -87,11 +87,11 @@ export default function FormFeed(props) {
     };
 
     const header = <Row className=' w-full justify-between items-center'>
-        <View className='pl-2'><Button onPress={() => { setShowImage(null) }} variant='outline' rounded startDecorator="X" /></View>
-        <View className='w-full flex-auto items-center justify-center'><Text className="text-neutral-700 dark:text-neutral-200 text-xl font-bold">Create post</Text></View>
-        <View className=' pr-2'>
+        <Button onPress={() => { setShowImage(null) }} variant='outline' rounded startDecorator="X" />
+        <View className='flex-auto items-center justify-center'><Text className="text-neutral-700 dark:text-neutral-200 text-xl font-bold">Create post</Text></View>
+        
             <Button onPress={() => { handlePress() }} variant='primary' disabled={text != '' ? false : true} rounded startDecorator="PaperPlane" />
-        </View>
+        
     </Row>
 
     const labels = props.data.inputs['labels'] && getFormFieldByData(props.data.inputs['labels'], props.handleSubmit, 'notitle', { onShowModal: setShowImage, showModal: showImage, listOnly: true, isShow: isShowHashtag })
@@ -103,7 +103,7 @@ export default function FormFeed(props) {
                 onVisible={showImage}
                 outerClickClose={false}
                 {...(!isSmall && { onClose: () => setShowImage(null) })}
-                padding='sm:p-4 sm:pb-0'
+                padding=' sm:p-4 '
                 transparent={true}
                 headerBorder={true}
             >
@@ -112,24 +112,26 @@ export default function FormFeed(props) {
                 {getFormFieldByData(props.data.inputs['owner_id'], props.handleSubmit, 'default')}
                 {getFormFieldByData(props.data.inputs['type'], props.handleSubmit, 'default')}
                 <KbAvoidingView offset={isIos ? 56 : 72}>
-                    <View className='justify-between mb-2 h-full  '>
+                    <View className='justify-between  h-full  '>
                         <ScrollView
                             ref={scrollViewRef}
                             className="w-full h-full flex-1"
                             keyboardShouldPersistTaps="handled"
                             onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({ animated: true })}
                         >
-                            <View className="w-full  flex-col px-2 sm:p-0 ">
-                                <View className=" flex-row gap-x-3 px-1 sm:px-0 pb-0 pt-3 sm:pt-0 flex-auto ">
+                            <View className="w-full flex-col p-3 sm:p-0 ">
+                                <View className=" flex-row gap-x-3 pb-3 flex-auto ">
                                     <View className=" mb-auto ">
                                         <Profile {...currentUser} displayType="unit_wo_info" displaySize="lg" />
                                     </View>
                                     <View className="flex-col flex-auto ">
-                                        <Profile {...currentUser} displayType="unit_wo_image" displaySize="lg" />
+                                        <Profile {...currentUser} displayType="unit_wo_image" displaySize="sm" />
 
 
                                         <View className="gap-x-2 flex-wrap ">
-                                            <View className=" my-auto mt-2">
+
+                                            
+                                            <View className="mt-1.5 ">
                                                 {getFormFieldByData(
                                                     { ...props.data.inputs['object_privacy_view'], size: 'xs' },
                                                     props.handleSubmit,

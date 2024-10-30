@@ -119,7 +119,7 @@ export function Modal({
     headerBorder = true,
     fullWidth = true,
     children,
-    padding = " px-4 py-2 ",
+    padding = " px-3 sm:px-4 py-2 ",
     scrollable = false
 }) {
     const { width, height } = useWindowDimensions();
@@ -150,7 +150,7 @@ export function Modal({
     <View className={`w-full  ${fullWidth ? '' : `${layoutShift}:w-auto`} 989891 relative h-full max-w-2xl ${layoutShift2}:h-auto `}>
         <Pressable onPress={() => { }} className={`relative bg-bgrmodal dark:bg-bgrmodal-d h-full ${layoutShift2}:h-auto  ${layoutShift}:border ${layoutShift}:border-bdrmodal ${layoutShift}:dark:border-bdrmodal-d ${layoutShift}:rounded-2xl ${layoutShift}:shadow-sm`}>
             {
-                (title || onClose) && <Row className={`items-center justify-${align} ${headerBorder ? ' border-b border-bdr dark:border-bdr-d ' : ''} px-1 py-2.5 ${layoutShift}:p-4 ${layoutShift}:py-3`}>
+                (title || onClose) && <Row className={`items-center justify-${align} ${headerBorder ? ' border-b border-bdr dark:border-bdr-d ' : ''} px-3 py-2.5 ${layoutShift}:p-4 ${layoutShift}:py-3`}>
                     {(title && type === 'string') && (
                         <View className='flex-auto pl-1'>
                             <Text className='text-neutral-700 dark:text-neutral-200 text-xl font-bold '>{title}</Text>

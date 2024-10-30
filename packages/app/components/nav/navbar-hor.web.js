@@ -115,7 +115,7 @@ export default function (props) {
     return (
         <>
             <View className="fixed w-full">
-                <View className="backdrop-blur h-16 items-center w-full lg:border-b border-bdrnavbar dark:border-bdrnavbar-d lg:shadow-sm bg-bgrnavbar dark:bg-bgrnavbar-d ">
+                <View className="backdrop-blur h-16 items-center w-full lg:shadow bg-bgrnavbar dark:bg-bgrnavbar-d ">
                     <View
                         className={
                             appSetting('layout', 'max_width') +
