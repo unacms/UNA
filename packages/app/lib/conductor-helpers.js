@@ -417,8 +417,8 @@ export function LeftSidebar({ title, addButtons, children, width }) {
 export function TopSidebar({ styles, isWeb, leftSideBar, header, headerSettings, addButtons, children, isSmall, title, layout, showMenu, isDrawer }) {
     const isUseBg = appSetting('layout', 'use_background');
     return (
-        <View style={styles} className={(leftSideBar ? 'lg:hidden' : '') + " w-full items-left justify-center lg:h-16 bg-bgrnavbar dark:bg-bgrnavbar-d " + (isUseBg ? "  bg-bgrnavbar dark:bg-bgrnavbar-d border-b border-bdr dark:border-bdr-d  " : (isSmall ? "   bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur-lg border-b border-bdr dark:border-bdr-d  " : "  border-b border-bdr dark:border-bdr-d "))}  >
-            <View className={(leftSideBar ? appSetting('layout', 'max_width') : appSetting('layout', 'max_width') + ' mx-auto ') + '  lala w-full max-w-screen-xl '}>
+        <View style={styles} className={(leftSideBar ? 'lg:hidden' : '') + " w-full items-left justify-center bg-bgrnavbar dark:bg-bgrnavbar-d " + (isUseBg ? "  bg-bgrnavbar dark:bg-bgrnavbar-d border-b border-bdr dark:border-bdr-d  " : (isSmall ? "   bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur-lg border-b border-bdr dark:border-bdr-d  " : "  border-b border-bdr dark:border-bdr-d "))}  >
+            <View className={(leftSideBar ? appSetting('layout', 'max_width') : appSetting('layout', 'max_width') + ' mx-auto ') + ' w-full max-w-6xl '}>
                 {!header && isWeb && <Row className="lg:hidden flex-row gap-x-1 flex-none items-center justify-between h-16 border-b bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur border-bdrnavbar dark:border-bdrnavbar-d">
                     <Row className="items-center px-3 sm:px-4">
 
@@ -440,7 +440,7 @@ export function TopSidebar({ styles, isWeb, leftSideBar, header, headerSettings,
                 </Row>
                 }
                 <Row className="items-center ">
-                    {title ? <Text className="text-3xl my-auto mx-5 font-semibold text-neutral-800  tracking-tight dark:text-neutral-200 hidden lg:flex">{title}</Text> : <Text className=" hidden lg:flex"></Text>}
+                    {title ? <Text className="text-2xl my-auto mx-5 pb-1 font-semibold text-neutral-800  tracking-tight dark:text-neutral-200 hidden lg:flex">{title}</Text> : <Text className=" hidden lg:flex"></Text>}
                     {children}
                     {layout != 'mixed' && <Row className="hidden lg:flex px-4 cond-buttons-add">
                         {addButtons}

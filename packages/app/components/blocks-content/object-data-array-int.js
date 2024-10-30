@@ -89,7 +89,7 @@ export default function BlockContentObjectDataArray(props) {
                 if (!type)
                     return <></>
                 const Component = components[type];
-                return <Component key={a.id + a?.type} type={a?.type} onSubmittig={postData && !dynamicData} onFormSubmit={onFormSubmit} {...a} />
+                return <Component key={a.id + a?.type} type={a?.type} onSubmittig={postData && !dynamicData} onFormSubmit={onFormSubmit} {...a} exProps={props.exProps}/>
             }
             )}
         </View>

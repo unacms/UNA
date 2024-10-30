@@ -11,63 +11,130 @@ import Menu from 'app/components/menu'
 import { BlurView } from 'expo-blur';
 import ProfilesList from 'app/ui/molecules/profile_list'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
-import { Button } from 'app/design/controls'
+import { Button, Modal } from 'app/design/controls'
 import { FeedbackHaptics } from 'app/lib/util';
 import Link from 'app/ui/atoms/link'
 import Card from 'app/ui/molecules/card'
 import Progress from 'app/ui/atoms/progress'
 import Scroll from 'app/ui/molecules/scroll'
 import { memo } from 'react'
+import { useState, useReducer, useCallback } from 'react'
+import { fetcher } from 'app/lib/fetcher'
+import { BlockByData } from 'app/components/blocks-content/object-data-array-int';
+import { useBottomSheetData } from 'app/context/bottomsheet';
 
-function CourseStructure(props) {
-     console.log("props.data", props.data)
-    //initialValue={400}
-    return <Scroll horizontal={true} step={250} className='w-full'>
-        {
-            props.data.map((item) => {
-                let icon = "Check";
-                let color = "gray-600";
-                let colorButton = "emerald-400";
-                let colorButtonText = "emerald-400";
-                if (item.status == "in process") {
-                    icon = "HourglassSimple";
-                    color = "red-400";
-                    colorButton = "white";
-                    colorButtonText = "red-400";
-                }
-                if (item.status == "not started") {
-                    icon = "BookmarkSimple";
-                    color = "gray-400";
-                    colorButton = "gray-500";
-                    colorButtonText = "white";
-                }
+function CourseStructure({ data }) {
+    const { setBottomSheetData } = useBottomSheetData();
+    const isEditable = data.isEditable;
+    const courseId = data.course_id;
 
-                return (
-                    <View className='m-2 w-72' key={item.index}>
-                        <Card rounded=' rounded-none sm:rounded-2xl  ' margin={'bg-' + color + ' max-w-screen-lg mx-auto w-full p-3 sm:p-4 mb-1 sm:mb-4 '}>
-                            <Link href={item.link}>
-                                <View className={`mb-2 bg-${color}`}>
-                                    <Progress value={item.percent} />
-                                    <View className='my-2 text-xs '><Text className="text-white">Module {item.index}</Text></View>
-                                    <View className='h-12'>
-                                        <Text className="text-white text-lg leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200" numberOfLines={2}>{item.title}</Text>
-                                    </View>
-                                </View>
-                                <Row className='gap-x-2 items-end mt-4'>
-                                    <Button textColor={`text-${colorButtonText}`} bgColor={`bg-${colorButton}`} startDecorator={icon} variant="outline" title={item.status} size="xs" rounded />
-                                    {item.counters.map((item2, index) => {
-                                        return (
-                                            <Button key={`cnt-${index}`} bgColor={`bg-white`} variant="default" title={`${item2.cn_progress} ${item2.cn_title}`} size="xs" rounded />
-                                        )
-                                    })}
-                                </Row>
-                            </Link>
-                        </Card>
-                    </View>
-                )
-            })
+    const initialState = {
+        action: null,
+        modal: null,
+        data: data,
+    };
+
+    const [state, dispatch] = useReducer(reducer, initialState);
+
+    function reducer(state, action) {
+        switch (action.type) {
+            case 'SET_DATA':
+                return {
+                    ...state,
+                    action: null,
+                    modal: null,
+                    data: action.data
+                };
+
+            default:
+                return state;
         }
-    </Scroll>
+    }
+
+    const handleEditModule = useCallback(async (event, id) => {
+        event.preventDefault();
+        const fetchedData = await fetcher(`/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o=bx_courses_cnt_structure_manage&a=edit&parent_id=0&entry_id=${courseId}&id=${id}`);
+        const content = { content: fetchedData.data, designbox_id: 0 };
+        setBottomSheetData({ title: content.content[0]?.title || " ", content: <View className='px-1'><BlockByData onFormEmpty={handleUpdate} block={content} /></View> });
+    }, [courseId, setBottomSheetData]);
+
+    const handleAddModule = useCallback(async (event) => {
+        event.preventDefault();
+        const fetchedData = await fetcher(`/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o=bx_courses_cnt_structure_manage&a=add&parent_id=0&entry_id=${courseId}`);
+        const content = { content: fetchedData.data, designbox_id: 0 };
+        setBottomSheetData({ title: content.content[0]?.title || " ", content: <View className='px-1'><BlockByData onFormEmpty={handleUpdate} block={content} /></View> });
+    }, [courseId, setBottomSheetData]);
+
+    const resetData = useCallback(async () => {
+        const response = await fetcher(`/api.php?r=bx_courses/entity_structure_l1_block/&params[]=${courseId}`);
+        dispatch({ type: 'SET_DATA', data: response.data[0].data });
+    }, [courseId]);
+
+    const handleUpdate = useCallback(() => {
+        setTimeout(() => {
+            setBottomSheetData(false);
+            resetData();
+        }, 100);
+    }, [setBottomSheetData, resetData]);
+
+    return <>
+
+        <Scroll horizontal={true} step={250} className='w-full'>
+            {
+                state.data.items.map((item) => {
+                    let icon = "Check";
+                    let color = "gray-600";
+                    let colorButton = "emerald-400";
+                    let colorButtonText = "emerald-400";
+                    if (item.status == "in process") {
+                        icon = "HourglassSimple";
+                        color = "red-400";
+                        colorButton = "white";
+                        colorButtonText = "red-400";
+                    }
+                    if (item.status == "not started") {
+                        icon = "BookmarkSimple";
+                        color = "gray-400";
+                        colorButton = "gray-500";
+                        colorButtonText = "white";
+                    }
+
+                    return (
+                        <View className='m-2 w-72' key={item.index}>
+                            <Card rounded=' rounded-none sm:rounded-2xl  ' margin={'bg-' + color + ' max-w-screen-lg mx-auto w-full p-3 sm:p-4 mb-1 sm:mb-4 '}>
+                                <Link href={item.link}>
+                                    <View className={`mb-2 bg-${color}`}>
+                                        {!isEditable && <Progress value={item.percent} />}
+
+                                        <Row className='justify-between'>
+                                            <View className='my-2 text-xs '><Text className="text-white">Module {item.index}</Text></View>
+                                            {isEditable && <Button rounded startDecorator="Gear" onPress={(event) => { handleEditModule(event, item.id) }} size='sm' />}
+                                        </Row>
+                                        <View className='h-12'>
+                                            <Text className="text-white text-lg leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200" numberOfLines={2}>{item.title}</Text>
+                                        </View>
+                                    </View>
+                                    <Row className='gap-x-2 items-end mt-4'>
+                                        <Button textColor={`text-${colorButtonText}`} bgColor={`bg-${colorButton}`} startDecorator={icon} variant="outline" title={item.status} size="xs" rounded />
+                                        {item.counters.map((item2, index) => {
+                                            return (
+                                                <Button key={`cnt-${index}`} bgColor={`bg-white`} variant="default" title={`${item2.cn_progress} ${item2.cn_title}`} size="xs" rounded />
+                                            )
+                                        })}
+                                    </Row>
+                                </Link>
+                            </Card>
+                        </View>
+                    )
+                })
+            }
+            {isEditable && (<View className='m-2 w-72'>
+                <Card rounded=' rounded-none sm:rounded-2xl  ' >
+                <Button rounded startDecorator="Plus" title="Add new" onPress={(event) => { handleAddModule(event, courseId) }} size='sm' />
+                </Card>
+            </View>)
+            }
+        </Scroll></>
 }
 
 export default memo(CourseStructure);

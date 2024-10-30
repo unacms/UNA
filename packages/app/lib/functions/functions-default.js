@@ -294,11 +294,6 @@ export function getUnitMenuItems(unitType, data, handleClick, t, moduleName) {
                 case "person_following":
                     sPrimary = "unsubscribe";
                     break;
-                default:
-                    oMenuItemPrimary = {
-                        title: "View",
-                        onPress: (event) => handleClick(event, data.url),
-                    };
             }
         }
         else{
@@ -313,6 +308,12 @@ export function getUnitMenuItems(unitType, data, handleClick, t, moduleName) {
         
         if (!oMenuItemPrimary) {
             oMenuItemPrimary = data.meta.items.find(item => item.name === sPrimary);
+        }
+        if (!oMenuItemPrimary){
+            oMenuItemPrimary = {
+                title: "View",
+                onPress: (event) => handleClick(event, data.url),
+            };
         }
 
         oMenuItemPrimary = createMenuItem(oMenuItemPrimary, true);

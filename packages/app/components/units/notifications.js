@@ -19,8 +19,8 @@ function Unit({ data }) {
             <Link href={url}>
                 <Card margin=" mt-[1px] sm:mb-2 sm:mx-2 p-3 sm:p-4 " border="border-none" rounded=" sm:rounded-2xl " >
                     <View className="flex-row items-center">
-                        <View className="w-12 h-12 mr-2 rounded-full flex-none " >
-                            <Profile {...data.author_data} displayType="unit_wo_info" displaySize="lg" />
+                        <View className="mr-2 rounded-full flex-none " >
+                            <Profile {...data.author_data} displayType="unit_wo_info" displaySize="base" />
                         </View>
                         <View className="flex-auto my-auto ">
                             <View className='flex-row '>

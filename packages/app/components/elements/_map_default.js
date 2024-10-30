@@ -28,6 +28,7 @@ import CommentContent from './comment_content';
 import NotificationsSettings from './notifications_settings';
 import CourseStructure from './course_structure';
 import ModuleStructure from './module_structure';
+import EditCourseContent from './edit_course_content';
 
 export const componentsMapDefault = {
     chart: Chart,
@@ -56,6 +57,7 @@ export const componentsMapDefault = {
     dashboard_stat: DashboardStat,
     categories_list: CategoriesList,
     course_structure: CourseStructure,
+    edit_course_content: EditCourseContent,
     module_structure: ModuleStructure,
     lang: Lang,
     raw: Lang,

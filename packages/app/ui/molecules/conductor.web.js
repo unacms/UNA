@@ -594,15 +594,15 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                 sidebarUnitType = route.blocks.browse_sidebar.unitType
             }
             return (
-                <Row style={{ paddingTop: header ? 0 : 0 }} className={(headerSettings.columns == "reverse" ? 'flex-row-reverse' : '') + ' max-w-screen-xl mx-auto w-full'}>
-                    <View className={(isRightCol ? 'flex-auto sm:border-r border-bdr dark:border-bdr-d px-4 ' : ' w-full max-w-screen-xl mx-auto sm:p-2 ') + (layoutName == 'navigator' ? '' : ' pt-4')}>
+                <Row style={{ paddingTop: header ? 0 : 0 }} className={(headerSettings.columns == "reverse" ? 'flex-row-reverse' : '') + ' max-w-6xl mx-auto w-full'}>
+                    <View className={(isRightCol ? 'flex-auto sm:border-r border-bdr dark:border-bdr-d px-4 flex-auto ' : ' w-full mx-auto sm:p-2 ') + (layoutName == 'navigator' ? '' : ' pt-4')}>
                         {TabFlashListM}
                         {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 &&  callFn("noContentByUrl", [route?.endpoint])))}
 
 
                     </View>
-                    {isRightCol && <View className="hidden xl:block xl:w-80 2xl:w-96  ">
-                        <View className="fixed-process xl:w-80 2xl:w-96 p-4 ">
+                    {isRightCol && <View className="hidden xl:flex flex-auto max-w-md ">
+                        <View className="fixed-process p-4 max-w-md">
                             {route?.sidebar?.content.map((item, index) => {
                                 return <View className="mb-4" key={'item' + index}><ItemRenderer unitType={sidebarUnitType}  route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''} /></View>
                             })}
@@ -742,7 +742,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             {headerObj}
             <MenuDrawer showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden fixed z-50 top-16 w-full" />
             <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="New content" size="sm" />
-            <View className={appSetting('layout', 'max_width') + ' mx-auto w-full min-h-screen'}>
+            <View className={'max-w-6xl mx-auto w-full min-h-screen'}>
 
                 <RenderScene route={currentRoute} />
             </View>
@@ -762,7 +762,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
             return <View className={"justify-center" + (index2 > visibleItemsCount - 1 ? ' item-overlap ' : '')} ref={el => itemRefs.current[index2] = el}><Link href={a.link}>{btn}</Link></View>
         }*/
         return (
-            <Pressable ref={el => itemRefs.current[index2] = el} className={" pb-3 pt-1 items-center " + a?.menu_settings?.class + (index2 > visibleItemsCount - 1 ? ' item-overlap ' : '')}
+            <Pressable ref={el => itemRefs.current[index2] = el} className={" py-2 items-center " + a?.menu_settings?.class + (index2 > visibleItemsCount - 1 ? ' item-overlap ' : '')}
                 key={`tab-${index2}`}
                 onPress={() => {
                     setIndex(a.index);
@@ -811,7 +811,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
     });
 
     const ButtonEx = memo(({ visibleItemsCount }) => {
-        return <View key="btn" className='ml-1 mb-3 mt-1'><Button title={'More...'} variant={visibleItemsCount <= index ? 'secondary' : "text"} pressed={visibleItemsCount <= index ? true : false} size="sm" /></View>;
+        return <View key="btn" className='ml-1 py-2 '><Button title={'More...'} variant={visibleItemsCount <= index ? 'secondary' : "text"} pressed={visibleItemsCount <= index ? true : false} size="sm" /></View>;
     });
 
     return <DynamicMenu

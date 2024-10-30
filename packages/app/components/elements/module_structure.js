@@ -1,5 +1,5 @@
 import { View, Row, Pressable, ScrollView } from 'app/design/view'
-import { useState, useReducer } from 'react'
+import { useState, useReducer, useCallback } from 'react'
 import { Text, H1C } from 'app/design/typography'
 import Link from 'app/ui/atoms/link'
 import Card from 'app/ui/molecules/card'
@@ -12,11 +12,18 @@ import Image from 'app/ui/atoms/image';
 import Svg, { Line, Circle } from 'react-native-svg';
 import { LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import Video from 'app/ui/atoms/video';
+import { useBottomSheetData } from 'app/context/bottomsheet';
+import { BlockByData } from 'app/components/blocks-content/object-data-array-int';
 
-export default function ModuleStructure(props) {
+export default function ModuleStructure({ data }) {
+    const { setBottomSheetData } = useBottomSheetData();
+
+    const isEditable = data.isEditable;
+    const courseId = data.course_id;
+    const moduleId = data.parent_id;
 
     const initialState = {
-        moduleData: props.data,
+        moduleData: data,
         lessonData: null,
         lessonId: null,
     };
@@ -66,8 +73,8 @@ export default function ModuleStructure(props) {
             if (isReset) {
                 await fetcher(`/api.php?r=bx_courses/pass_node/&params[]=${id}`);
             }
-            const lessonResponse = await fetcher(`/api.php?r=bx_courses/entity_node_block/&params[]=${parent_id}&params[]=${id}`);
-            dispatch({ type: 'SET_LESSON_DATA', lessonData: lessonResponse.data[0].data });
+            const fetchedData = await fetcher(`/api.php?r=bx_courses/entity_node_block/&params[]=${parent_id}&params[]=${id}`);
+            dispatch({ type: 'SET_LESSON_DATA', lessonData: fetchedData.data[0].data });
 
         } catch (error) {
             console.error("Error fetching lesson data or resetting:", error);
@@ -76,8 +83,8 @@ export default function ModuleStructure(props) {
 
     const getModuleData = async () => {
         try {
-            const lessonResponse = await fetcher(`/api.php?r=bx_courses/entity_structure_l2_block/&params[]=${moduleData[0].parent_id}&params[]=${moduleData[0].entry_id}`);
-            dispatch({ type: 'SET_MODULE_DATA', moduleData: lessonResponse.data[0].data });
+            const fetchedData = await fetcher(`/api.php?r=bx_courses/entity_structure_l2_block/&params[]=${courseId}&params[]=${moduleId}`);
+            dispatch({ type: 'SET_MODULE_DATA', moduleData: fetchedData.data[0].data });
         } catch (error) {
             console.error("Error fetching lesson data or resetting:", error);
         }
@@ -103,8 +110,29 @@ export default function ModuleStructure(props) {
             await fetcher(`/api.php?r=bx_courses/pass_data/&params[]=${id}`);
         }
         // setLessonId(id);
-
     };
+
+    const handleEditLesson = useCallback(async (event, id) => {
+        event.preventDefault();
+        const fetchedData = await fetcher(`/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o=bx_courses_cnt_structure_manage&a=edit&parent_id=${moduleId}&entry_id=${courseId}&id=${id}`);
+        console.log("fetchedDatafetchedData", fetchedData)
+        setBottomSheetData({ title: fetchedData.data[0]?.title || " ", content: <View className='px-1'><EditLesson handleUpdate={handleUpdate} data={fetchedData.data} /></View> });
+    }, [courseId, setBottomSheetData, moduleId]);
+
+    const handleAddLesson = useCallback(async (event) => {
+        event.preventDefault();
+        const fetchedData = await fetcher(`/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o=bx_courses_cnt_structure_manage&a=add&parent_id=${moduleId}&entry_id=${courseId}`);
+        const content = { content: fetchedData.data, designbox_id: 0 };
+        setBottomSheetData({ title: content.content[0]?.title || " ", content: <View className='px-1'><BlockByData onFormEmpty={handleUpdate} block={content} /></View> });
+    }, [courseId, setBottomSheetData, moduleId]);
+
+
+    const handleUpdate = useCallback(() => {
+        setTimeout(() => {
+            setBottomSheetData(false);
+            getModuleData();
+        }, 100);
+    }, [setBottomSheetData, getModuleData]);
 
     const lessonIndex = lessonData ? lessonData.steps.findIndex(item => item.id === lessonId) : -1;
     const lessonItemData = lessonIndex !== -1 ? lessonData.steps[lessonIndex] : null;
@@ -134,7 +162,7 @@ export default function ModuleStructure(props) {
             )}
             <View >
                 {
-                    moduleData.map((item) => {
+                    moduleData?.items?.map((item) => {
 
                         let icon = "Check";
                         let textColor = ""
@@ -150,7 +178,6 @@ export default function ModuleStructure(props) {
                             textColor = "white"
                         }
 
-                        // <Link href={item.link}>
                         return (
                             <Card key={item.index} rounded=' rounded-none sm:rounded-2xl  ' margin='mx-2  w-full p-3 sm:p-4 mb-1 sm:mb-4 '>
                                 <Pressable onPress={() => { getLessonData(item.id, item.parent_id, false) }}>
@@ -170,7 +197,8 @@ export default function ModuleStructure(props) {
                                             <Button startDecorator={icon} variant="default" textColor={`text-${textColor}`} bgColor={`bg-${color}`} title={item.pass_status} size="xs" rounded />
                                         </View>
                                         <View className='items-end justify-center'>
-                                            <Button endDecorator="ArrowRight" variant="default" title={item.pass_title} size="sm" rounded onPress={() => { getLessonData(item.id, item.parent_id, true) }} />
+                                            {!isEditable && <Button endDecorator="ArrowRight" variant="default" title={item.pass_title} size="sm" rounded onPress={() => { getLessonData(item.id, item.parent_id, true) }} />}
+                                            {isEditable && <Button variant="default" title={"Edit lesson"} size="sm" rounded onPress={(event) => { handleEditLesson(event, item.id) }} />}
                                         </View>
                                     </Row>
                                     <View>
@@ -180,6 +208,15 @@ export default function ModuleStructure(props) {
                             </Card>
                         )
                     })
+                }
+
+                {isEditable && (<Card rounded=' rounded-none sm:rounded-2xl  ' margin='mx-2  w-full p-3 sm:p-4 mb-1 sm:mb-4 '>
+
+                    <Row className='w-full'>
+                        <Button rounded startDecorator="Plus" title="Add new" onPress={(event) => { handleAddLesson(event, courseId) }} size='sm' />
+                    </Row>
+                </Card>
+                )
                 }
             </View>
         </>)
@@ -199,24 +236,38 @@ const getColorByTypeLesson = (item, index, passing, byIndex = false) => {
     return ['#9CA3AF', 'HourglassSimple', mainColor, mainColor]
 };
 
+
+
+function EditLesson({ data, handleUpdate }) {
+    const content = { content: data, designbox_id: 0 };
+    //TODO
+    return (
+        <View>
+            <Row className='gap-x-2'><Button variant="default" title={'Main info'} size="sm" rounded />
+            <Button variant="default" title={'Steps'} size="sm" rounded />
+            <Button variant="default" title={'Attachments'} size="sm" rounded />
+            </Row>
+            <BlockByData onFormEmpty={handleUpdate} block={content} />
+        </View>
+    );
+}
+
 function LessonStructure({ lessonData, startLessonPart }) {
     const [viewType, setViewType] = useState(0)
 
     return (
         <View className='w-full '>
-        <ScrollView className='w-full'>
-           
-            <View className='mb-4'>
-                <ContentMore numberOfSymbols={200} showLess={true} content={lessonData?.text} numberOfLines={3} openSmall={false} textClassName="  text-base text-neutral-600 dark:text-neutral-400" />
-            </View>
-            <Row className='gap-x-4 mb-4'>
-                <Button variant="default" textColor={`text-white`} bgColor={`${viewType === 0 ? 'bg-red-400' : 'bg-gray-400'}`} title='Lesson' size="sm" onPress={() => { setViewType(0) }} />
-                <Button variant="default" textColor={`text-white`} bgColor={`${viewType === 1 ? 'bg-red-400' : 'bg-gray-400'}`} title='Attachments' size="sm" onPress={() => { setViewType(1) }} />
-            </Row>
-            {viewType === 0 && <LessonSteps lessonData={lessonData} startLessonPart={startLessonPart} />}
-            {viewType === 1 && <LessonAttach attachments={lessonData.attachments} />}
-            
-        </ScrollView>
+            <ScrollView className='w-full'>
+                <View className='mb-4'>
+                    <ContentMore numberOfSymbols={200} showLess={true} content={lessonData?.text} numberOfLines={3} openSmall={false} textClassName="  text-base text-neutral-600 dark:text-neutral-400" />
+                </View>
+                <Row className='gap-x-4 mb-4'>
+                    <Button variant="default" textColor={`text-white`} bgColor={`${viewType === 0 ? 'bg-red-400' : 'bg-gray-400'}`} title='Lesson' size="sm" onPress={() => { setViewType(0) }} />
+                    <Button variant="default" textColor={`text-white`} bgColor={`${viewType === 1 ? 'bg-red-400' : 'bg-gray-400'}`} title='Attachments' size="sm" onPress={() => { setViewType(1) }} />
+                </Row>
+                {viewType === 0 && <LessonSteps lessonData={lessonData} startLessonPart={startLessonPart} />}
+                {viewType === 1 && <LessonAttach attachments={lessonData.attachments} />}
+            </ScrollView>
         </View>
     );
 }
@@ -328,7 +379,7 @@ function LessonItem({ lessonItemData, lessonIndex, lessonData, startLessonPart }
             {!!lessonItemData?.title && <Text className="mb-4  text-base leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200">{lessonItemData?.title}</Text>}
             {!!lessonItemData?.image && !lessonItemData?.video && <View className="w-full aspect-[2/1] rounded-xl overflow-hidden "><Image {...lessonItemData.image} alt={lessonItemData.title} sizes={LAYOUT_BREAKPOINTS.lg} className=" u-cover" view="cover" /></View>}
             {!!lessonItemData?.video && <View className='w-full aspect-video rounded-xl overflow-hidden '>
-                <Video poster={lessonItemData.video.src_poster} src={lessonItemData.video.src_mp4} cover={true}  controls={true} muted={"muted"} />
+                <Video poster={lessonItemData.video.src_poster} src={lessonItemData.video.src_mp4} cover={true} controls={true} muted={"muted"} />
             </View>}
             <View className='my-4'>
                 <ContentMore numberOfSymbols={200} showLess={false} content={lessonItemData?.text} numberOfLines={3} openSmall={true} textClassName="  text-base text-neutral-600 dark:text-neutral-400" />
@@ -336,7 +387,7 @@ function LessonItem({ lessonItemData, lessonIndex, lessonData, startLessonPart }
             {lessonIndex != steps.length - 1 &&
                 <Button endDecorator="ArrowRight" variant="default" title={'Next'} size="sm" rounded onPress={() => { startLessonPart(lessonData.steps[lessonIndex + 1].id, true) }} />
             }
-       </>
+        </>
     );
 }
 
