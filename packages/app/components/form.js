@@ -165,7 +165,7 @@ export default function (props) {
     }
 
     return (
-        <View className=' w-full '>
+        <View className=' w-full gap-y-3 sm:gap-y-4 '>
             {props.onSubmittig && <View className='absolute w-full h-full bg-bgrcard dark:bg-bgrcard-d opacity-70 z-50'></View>}
             {methods.formState.isSubmitting}
             <FormProvider {...methods}>
