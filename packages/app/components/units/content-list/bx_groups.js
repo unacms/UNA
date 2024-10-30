@@ -50,7 +50,7 @@ export default function Unit(props) {
                 <Card margin="m-2" rounded="rounded-2xl">
                     <Link className="group " href={data.url}>
                         <View className="flex-row sm:flex-col p-1">
-                            <View className="aspect-square sm:aspect-video w-1/3 sm:w-full rounded-xl overflow-hidden items-center justify-center">
+                            <View className="aspect-square sm:aspect-video w-1/3 sm:w-full rounded-xl overflow-hidden items-center justify-center bg-neutral-500/20">
                                 <Image
                                     {...data.cover}
                                     alt={data.title}
@@ -97,9 +97,9 @@ export default function Unit(props) {
                                         </Text>
                                     </Row>
                                 </View>
-                                <View className="flex-row gap-x-2 sm:flex-col  w-full  justify-end">
+                                <View className="flex-row  sm:flex-col  w-full">
                                     {oMenuItemPrimary}
-                                    {!!oMenuItemSecondary && <View className={`${!!oMenuItemPrimary && 'sm:mt-2'}`}>{oMenuItemSecondary}</View>}
+                                    {!!oMenuItemSecondary && <View className={`${!!oMenuItemPrimary && 'sm:mt-2  ml-2 sm:ml-0'}`}>{oMenuItemSecondary}</View>}
                                 </View>
                             </View>
                         </View>

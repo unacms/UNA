@@ -24,7 +24,7 @@ const ProfilesListCnt = memo(({ data }) => (
 
 function ImageSection({ data, imageSizes }) {
     return (
-        <View className=" aspect-square  sm:w-full rounded-full sm:rounded-xl overflow-hidden items-center justify-center">
+        <View className=" aspect-square  sm:w-full rounded-full sm:rounded-xl overflow-hidden items-center bg-neutral-500/20 justify-center">
             <Image
                 src={data?.image?.src}
                 alt={data.title}
@@ -67,10 +67,10 @@ export default function Unit(props) {
             <Redirect ref={redirectdRef} />
             <Card margin=" mb-[1px] sm:m-2 " border=" border-none shadow-none sm:shadow "  rounded=" sm:rounded-2xl ">
                 <Link className="group " href={data.url}>
-                    <View className={`flex-row  sm:flex-col p-3 sm:p-1 ${isWeb && 'h-32'} sm:h-full`}>
-                        <ImageSection data={data} imageSizes={imageSizes} />
+                    <View className={`flex-row sm:flex-col p-3 sm:p-1 ${isWeb && 'h-32'} sm:h-full`}>
                         
-                        <View className="flex-col pl-3 my-auto sm:p-2 ">
+                    <ImageSection data={data} imageSizes={imageSizes} />
+                        <View className="flex-col pl-3 my-auto sm:p-2 flex-auto">
                             <View className=''>
                                 <Text numberOfLines={1} className=" pb-2 text-lg leading-tight tracking-tight font-semibold text-neutral-800 dark:text-neutral-200 group-hover:text-primary group-hover:dark:text-primary-d">
                                    {data.title}
@@ -84,9 +84,9 @@ export default function Unit(props) {
                                     </Text>
                                 </Row>
                             </View>
-                            <View className="flex-row gap-x-2 sm:flex-col pt-3 justify-end">
-                                {oMenuItemPrimary}
-                                {!!oMenuItemSecondary && <View className={`${!!oMenuItemPrimary && 'sm:mt-2'}`}>{oMenuItemSecondary}</View>}
+                            <View className="flex-row sm:flex-col pt-3  ">
+                            {oMenuItemPrimary}
+                                {!!oMenuItemSecondary && <View className={`${!!oMenuItemPrimary && 'sm:mt-2 ml-2 sm:ml-0'}`}>{oMenuItemSecondary}</View>}
                             </View>
                         </View>
                     </View>

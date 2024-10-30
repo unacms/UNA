@@ -328,7 +328,7 @@ export const Button = (props) => {
 
     const sClassContainer = useMemo(() => {
         let classes = 'group relative flex-row items-center ';
-        classes += fullWidth ? 'flex-auto w-full ' : ' truncate w-fit ';
+        classes += fullWidth ? 'flex-1 ' : ' truncate w-fit ';
         if (disabled) classes += 'opacity-50 ';
         if (variant !== 'custom') {
             classes +=

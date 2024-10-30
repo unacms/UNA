@@ -225,7 +225,7 @@ const createMenuItem = (menuItem, isPrimary) => {
                 primary: isPrimary,
                 params: {
                     button_rounded: false,
-      
+                    button_full_width: true,
                     on_done: (sAction, oData) => {
                         // Handle action completion
                     },
@@ -238,6 +238,7 @@ const createMenuItem = (menuItem, isPrimary) => {
             <Button
                 variant={isPrimary ? "primary" : "secondary"}
                 size="sm"
+                fullWidth
                 title={menuItem.title}
                 className="my-auto"
                 startDecorator={menuItem.icon || false}
@@ -309,6 +310,17 @@ export function getUnitMenuItems(unitType, data, handleClick, t, moduleName) {
         if (!oMenuItemPrimary) {
             oMenuItemPrimary = data.meta.items.find(item => item.name === sPrimary);
         }
+        
+
+        if (!oMenuItemSecondary) {
+            oMenuItemSecondary = data.meta.items.find(item => item.name === sSecondary);
+        }
+
+        if (!oMenuItemPrimary && oMenuItemSecondary){
+            oMenuItemPrimary=oMenuItemSecondary;
+            oMenuItemSecondary=null;
+        }
+
         if (!oMenuItemPrimary){
             oMenuItemPrimary = {
                 title: "View",
@@ -318,10 +330,7 @@ export function getUnitMenuItems(unitType, data, handleClick, t, moduleName) {
 
         oMenuItemPrimary = createMenuItem(oMenuItemPrimary, true);
 
-        if (!oMenuItemSecondary) {
-            oMenuItemSecondary = data.meta.items.find(item => item.name === sSecondary);
-        }
-
+        
         oMenuItemSecondary = createMenuItem(oMenuItemSecondary, false);
     }
 
