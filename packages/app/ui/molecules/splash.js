@@ -66,7 +66,7 @@ export default function Splash(props) {
                 <View className=" flex-auto w-full   ">
                     <Card
                         rounded=" rounded-2xl "
-                        addClassName=" px-4 py-2 sm:px-6 sm:py-4 w-full  max-w-xl mx-auto flex-auto  "
+                        addClassName=" p-4 sm:p-6 w-full max-w-xl mx-auto "
                     >
                         <View className="">{props.block}</View>
                     </Card>

@@ -28,7 +28,7 @@ export default function PageLayout(props) {
                     <View className=" flex-auto w-full   ">
                         <Card
                             rounded=" rounded-2xl "
-                            addClassName=" px-4 py-2 sm:px-6 sm:py-4 w-full  max-w-xl mx-auto flex-auto  "
+                            addClassName=" p-4 p-6 w-full max-w-xl mx-auto flex-auto "
                         >
                             <BlockByName name={props.blocks.form} data={props.data} />
                         </Card>
