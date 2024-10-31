@@ -60,7 +60,12 @@ const performAction = async (sSystem, iObjectId, sAction, aParams, onLoad) => {
     aParams = aParams ? { ...aParamsDefault, ...aParams } : aParamsDefault;
     const sRequest = '/api.php?r=system/' + sAction + '/TemplVoteServices&params[]=' + JSON.stringify(aParams);
 
+    if (sAction == 'do'){
+        onLoad({reaction:aParams.reaction});
+    }
     const sResponse = await fetcher(sRequest);
+
+    
     if (typeof onLoad === 'function')
         onLoad(sResponse?.data);
 };

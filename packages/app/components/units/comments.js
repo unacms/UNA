@@ -23,6 +23,7 @@ import Carousel from 'app/ui/molecules/carousel'
 import { componentsMap } from 'app/ui/molecules/_map'
 import { StarsView } from 'app/ui/atoms/stars';
 import { Modal } from 'app/design/controls'
+import Loading from 'app/ui/atoms/loading'
 
 export default function UnitComments(props) {
     const { t } = useTranslation();
@@ -198,6 +199,7 @@ const MenuManage = ({ id, menu, setViewState, module, cmt_object_id, cmt_id }) =
                 rounded
                 startDecorator="DotsThreeOutline"
                 onPress={() => {
+                    setMenuData({...menu, items: [{'name': 'loader'}]});
                     getDataForMenu(menu, setMenuData);
                 }}
             />
@@ -239,16 +241,12 @@ const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen, module, cmt_obj
             if (!!aItem.display_type && aItem.display_type == 'element') {
                 const Element = componentsMap[aItem.data.type];
                 if (!!Element) {
-                    /*sTitle = aItem.data?.action ? aItem.data?.action.title : 'Report';
-                    if (!!reportTitle)
-                        sTitle = reportTitle;*/
                     sTitle= <Element mode="text" key={aItem.id ? aItem.id : aItem.name}   {...aItem.data} />
-                    /*oReport = (
-                        <View className="w-0 h-0" style={{ opacity: 0 }}>
-                            <Element key={aItem.id ? aItem.id : aItem.name} ref={refReport} onChangeTitle={setReportTitle} {...aItem.data} />
-                        </View>
-                    );*/
                 }
+            }
+
+            if (aItem.name == 'loader') {
+                sTitle= <Loading size="small" />
             }
 
             return {

@@ -110,15 +110,12 @@ export default function ElementConnections(oProps) {
     const _handleCloseModal = useCallback(() => handleCloseModal(setModalContent), [setModalContent]);
     const _handleFormSubmittedAndValid = useCallback(() => handleFormSubmittedAndValid(_handleDo, _handleCloseModal), []);
 
-    //TODO: For Roman check if handleOnDo is calling at all. If not 'questionnaire' won't work.
-    /*
     useEffect(() => {
        if(layoutData && layoutData?.type == 'сonnections:action' && layoutData?.data.key == sKey) {
             _handleOnDo(layoutData.data.data)
         }
     }, [layoutData?.data?.time]);
-    */
-
+    
     let sAction = oProps?.a || '';
     if(_isElementVar('a'))
         sAction = _getElementVar('a');

@@ -150,7 +150,6 @@ export default function ElementRecommendations(oProps) {
     const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
 
     let sIcon = undefined;
-    console.log("sAction", oProps.o)
     switch(sAction) {
         case 'ignore':
             if (oButtonProps.onlyIcon){

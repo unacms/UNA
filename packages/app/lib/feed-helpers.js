@@ -24,6 +24,7 @@ import { LAYOUT_BREAKPOINTS, getDataForMenu } from 'app/lib/util';
 import Form from 'app/components/elements/form'
 import useSWR from 'swr'
 import { useTranslation } from 'react-i18next';
+import Loading from 'app/ui/atoms/loading'
 
 export const CommentsModal = memo(({ commentsData, initFormData, itemContent }) => {
     const windowDimensions = useWindowDimensions();
@@ -253,7 +254,7 @@ export const LinkContent = memo(({ url, data }) => (
 
 export const MenuManage = ({ id, menu, setViewState }) => {
     const [menuData, setMenuData] = useState(false);
-    
+
     if (menu.items)
         return <MenuManage_ id={id} menu={menu}  setViewState={setViewState} />
     
@@ -265,12 +266,13 @@ export const MenuManage = ({ id, menu, setViewState }) => {
                 rounded
                 startDecorator="DotsThreeOutline"
                 onPress={() => {
+                    setMenuData({...menu, items: [{'name': 'loader'}]});
                     getDataForMenu(menu, setMenuData);
                 }}
             />
         );
 
-    return <MenuManage_ id={id} menu={menuData} defaultOpen={true}  setViewState={setViewState} />
+    return <MenuManage_ id={id} menu={menuData} defaultOpen={true} setViewState={setViewState} />
 
 }
 
@@ -311,6 +313,10 @@ const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen }) => {
                 if (!!Element) {
                     sTitle= <Element mode="text" key={aItem.id ? aItem.id : aItem.name}   {...aItem.data} />
                 }
+            }
+            
+            if (aItem.name == 'loader') {
+                sTitle= <Loading size="small" />
             }
 
             return {

@@ -159,7 +159,6 @@ export default function (props) {
             return;
         if (lastItemIndex == false)
             return;
-        console.log("fetchNextPage");
         fetchNextPage();
     }, [hasNextPage, props.only_one_page, isFetchingNextPage]);
 
