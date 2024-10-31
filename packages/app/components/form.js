@@ -24,7 +24,7 @@ function getFormFieldList(name, inputs, handleSubmit, isInitial = false, lastCha
     }
 
     return Object.keys(inputs).map(function (key) {
-        return getFormFieldByData(inputs[key], handleSubmit, 'default', { form_name: name, last_changed:lastChangedField, saveOnChanges:saveOnChanges  })
+        return getFormFieldByData(inputs[key], handleSubmit, 'default', { form_name: name, last_changed: lastChangedField, saveOnChanges: saveOnChanges })
     });
 }
 
@@ -55,7 +55,7 @@ export default function (props) {
                 data.inputs[key].type = 'visibility'
             }
             if (checkInputType('selector', name, data.inputs[key].name)) {
-                if (!data.inputs[key].origtype){
+                if (!data.inputs[key].origtype) {
                     data.inputs[key].origtype = data.inputs[key].type;
                     data.inputs[key].type = 'selector'
                 }
@@ -131,11 +131,11 @@ export default function (props) {
 
     const { watch } = methods;
     useEffect(() => {
-        if (props.saveOnChanges){
+        if (props.saveOnChanges) {
             const subscription = watch((value, { name, type }) =>
                 setLastChangedField(name)
             )
-        
+
             return () => subscription.unsubscribe()
         }
     }, [watch])
@@ -143,15 +143,17 @@ export default function (props) {
     let inputs = getFormFieldList(name, data.inputs, _handleSubmit, true, lastChangedField, props.saveOnChanges);
     if (inputs?.length > 0)
         inputs = inputs.filter(item => item.key !== null && item.key.toString() !== '')
-   
-    inputs = inputs.map((input, index) => ({
-        ...input,
-        props: {
-            ...input.props,
-            use_caption_as_placeholder: appSetting('layout', 'form_without_captions').includes(name) ? true : false,
-            ...(index === inputs.length - 1 - inputs.slice().reverse().findIndex(input => input.props?.type !== "hidden") && { noMargin: true })
-        },
-    }));
+
+    if (inputs) {
+        inputs = inputs.map((input, index) => ({
+            ...input,
+            props: {
+                ...input.props,
+                use_caption_as_placeholder: appSetting('layout', 'form_without_captions').includes(name) ? true : false,
+                ...(index === inputs.length - 1 - inputs.slice().reverse().findIndex(input => input.props?.type !== "hidden") && { noMargin: true })
+            },
+        }));
+    }
 
     const ElementForm = getFormType(name)
     if ('undefined' !== typeof ElementForm) {
