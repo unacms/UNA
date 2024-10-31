@@ -18,8 +18,7 @@ export default function FormComments(props) {
     }
 
     let prevList = Object.values(imageSource).flat();
-
-
+    
     props.data.inputs['cmt_submit'].hide_errors = true;
 
     props.data.inputs['cmt_submit'].icon = 'PaperPlane';
@@ -33,18 +32,18 @@ export default function FormComments(props) {
     return <View className='w-full ' >
         <Row className='w-full items-end  '>
         <View className={'mr-2 ' + (isWeb ? '' : ' w-11 ')}>
-                {getFormFieldByData(props.data.inputs['cmt_image'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder, classes: 'mb-0 mt-0 ' })}
+                {getFormFieldByData(props.data.inputs['cmt_image'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder, noMargin: true })}
             </View>
             <View className={`flex-auto bg-bgritem dark:bg-bgritem-d rounded-3xl justify-center ${isWeb && 'min-h-[44px]'} items-end ${sPad}`} >
                 {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['cmt_cf'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['cmt_parent_id'], props.handleSubmit, 'custom')}
-                {getFormFieldByData(props.data.inputs['cmt_text'], props.handleSubmit, 'custom', {container_class:'comments', focus:true, bg:'transparent', placeholder: 'Write your comment here...', classes: 'mb-0 mt-0' })}
+                {getFormFieldByData(props.data.inputs['cmt_text'], props.handleSubmit, 'custom', {container_class:'comments', focus:true, bg:'transparent', placeholder: 'Write your comment here...',  noMargin:true })}
                 {getFormFieldByData(props.data.inputs['id'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['sys'], props.handleSubmit, 'custom')}
             </View>
            
-            <View className={'ml-2 ' + (isWeb ? '' : ' w-11 ')}>{getFormFieldByData(props.data.inputs['cmt_submit'], props.handleSubmit, 'custom', { classes: isWeb ? 'mb-0 ml-0 mt-0' : 'mb-0 mt-0' })}</View>
+            <View className={'ml-2 ' + (isWeb ? '' : ' w-11 ')}>{getFormFieldByData(props.data.inputs['cmt_submit'], props.handleSubmit, 'custom', { classes: isWeb ? 'ml-0 ' : '', noMargin: true  })}</View>
         </Row>
         {(prevList.length > 0 && prevList[0]?.key) && <Row className='flex-wrap gap-2 mt-3'>{prevList}</Row>}
         {getFormFieldByData(props.data.inputs['cmt_mood'], props.handleSubmit, 'custom')}

@@ -12,6 +12,13 @@ import Profile from 'app/ui/molecules/profile';
 import { subscribe } from 'app/ui/atoms/socket';
 import { useTranslation } from 'react-i18next';
 
+// TODO REWORK: remove setContextVars, pass title in optimistic update, split do/undo to control 
+/*
+if (sAction == 'do'){
+        onLoad({reaction:aParams.reaction, title:'xxx'});
+    }
+        */
+
 const getName = (sType, sSystem, sObjectId, sName) => {
     let aName = [sType, sSystem.replace(/_/g, '-'), sObjectId];
     if (sName)
@@ -23,7 +30,6 @@ const getName = (sType, sSystem, sObjectId, sName) => {
 const getIconAlias = (oParams, oAliases, sName) => {
     const sKey = Platform.OS === 'web' ? 'web' : 'native';
     const sType = sName != 'default' ? oParams['icon_type_' + sKey] : 'svg';
-
 
     return oAliases[sKey][sName] && oAliases[sKey][sName][sType];
 };
@@ -61,12 +67,12 @@ const performAction = async (sSystem, iObjectId, sAction, aParams, onLoad) => {
     const sRequest = '/api.php?r=system/' + sAction + '/TemplVoteServices&params[]=' + JSON.stringify(aParams);
 
     if (sAction == 'do'){
-        onLoad({reaction:aParams.reaction});
+        onLoad({reaction:aParams.reaction, title:'xxx'});
     }
     const sResponse = await fetcher(sRequest);
 
     
-    if (typeof onLoad === 'function')
+    if (typeof onLoad === 'function' && sAction != 'do')
         onLoad(sResponse?.data);
 };
 

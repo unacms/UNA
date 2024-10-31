@@ -143,16 +143,16 @@ export default function (props) {
     let inputs = getFormFieldList(name, data.inputs, _handleSubmit, true, lastChangedField, props.saveOnChanges);
     if (inputs?.length > 0)
         inputs = inputs.filter(item => item.key !== null && item.key.toString() !== '')
-
-    if (appSetting('layout', 'form_without_captions').includes(name)) {
-        inputs = inputs.map(input => ({
-            ...input,
-            props: {
-                ...input.props,
-                use_caption_as_placeholder: true
-            },
-        }));
-    }
+   
+    inputs = inputs.map((input, index) => ({
+        ...input,
+        props: {
+            ...input.props,
+            use_caption_as_placeholder: appSetting('layout', 'form_without_captions').includes(name) ? true : false,
+            sdas: index+'x'+inputs.length,
+            ...(index === inputs.length - 1 - inputs.slice().reverse().findIndex(input => input.props?.type !== "hidden") && { noMargin: true })
+        },
+    }));
 
     const ElementForm = getFormType(name)
     if ('undefined' !== typeof ElementForm) {
@@ -165,7 +165,7 @@ export default function (props) {
     }
 
     return (
-        <View className=' w-full gap-y-3 sm:gap-y-4 '>
+        <View className='w-full'>
             {props.onSubmittig && <View className='absolute w-full h-full bg-bgrcard dark:bg-bgrcard-d opacity-70 z-50'></View>}
             {methods.formState.isSubmitting}
             <FormProvider {...methods}>

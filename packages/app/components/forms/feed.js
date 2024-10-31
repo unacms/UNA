@@ -94,7 +94,7 @@ export default function FormFeed(props) {
         
     </Row>
 
-    const labels = props.data.inputs['labels'] && getFormFieldByData(props.data.inputs['labels'], props.handleSubmit, 'notitle', { onShowModal: setShowImage, showModal: showImage, listOnly: true, isShow: isShowHashtag })
+    const labels = props.data.inputs['labels'] && getFormFieldByData(props.data.inputs['labels'], props.handleSubmit, 'notitle', { onShowModal: setShowImage, showModal: showImage, listOnly: true, isShow: isShowHashtag, noMargin:true })
 
     return (
         <View className="w-full">
