@@ -228,9 +228,9 @@ export const formatDateInterval = (dateStart, dateEnd, t) => {
     let sRv = formatDate2(new Date(dateStart * 1000), t);
 
     if (isSingleDate) {
-        sRv += isSingleTime ? formatTime(dateStart) : ` ${formatTime(dateStart)} - ${formatTime(dateEnd)}`;
+        sRv += isSingleTime ? formatTime(dateStart) : `${formatTime(dateStart)} - ${formatTime(dateEnd)}`;
     } else {
-        sRv += formatTime(dateStart) + ' - ' + formatDate2(new Date(dateEnd * 1000), t) + ' ' + formatTime(dateEnd);
+        sRv += ' ' + formatTime(dateStart) + ' - ' + formatDate2(new Date(dateEnd * 1000), t) +' '+ formatTime(dateEnd);
     }
 
     return sRv;
