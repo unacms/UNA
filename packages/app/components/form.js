@@ -149,7 +149,6 @@ export default function (props) {
         props: {
             ...input.props,
             use_caption_as_placeholder: appSetting('layout', 'form_without_captions').includes(name) ? true : false,
-            sdas: index+'x'+inputs.length,
             ...(index === inputs.length - 1 - inputs.slice().reverse().findIndex(input => input.props?.type !== "hidden") && { noMargin: true })
         },
     }));
