@@ -502,6 +502,8 @@ div{
 html[theme="dark"]:root {
     --rsbs-bg: rgba(17,24,39,1);
 }
+
+
 .tippy-box[data-theme="mention mention_user"] .tippy-content .items:not(:has(div))::after{
     content:'Mention a user';
     display: block;
@@ -510,6 +512,12 @@ html[theme="dark"]:root {
 .tippy-box[data-theme="mention mention_channel"] .tippy-content .items:not(:has(div))::after{
     content:'Select channel';
     display: block;
+  
+}
+
+.tippy-box[data-theme~=mention]{
+    max-height: 90vh; 
+    overflow-y: auto;
 }
 
 div[data-radix-popper-content-wrapper]:not(.radix-hide){
@@ -582,4 +590,5 @@ div[data-radix-popper-content-wrapper].radix-hide{
     height: 100%;
     object-fit: cover;
     transform: translate(-50%, -50%);
-    z-index: -1;}
+    z-index: -1;
+}

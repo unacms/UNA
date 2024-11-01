@@ -35,13 +35,13 @@ export function Suggestion(startfrom) {
                     popup = tippy('body', {
                         theme: 'mention mention_' + (startfrom == '#' ? 'channel' : 'user'),
                         getReferenceClientRect: props.clientRect,
-                        appendTo: () => document.body,
+                        appendTo: document.body,
                         content: component.element,
                         showOnCreate: true,
                         interactive: true,
                         trigger: 'manual',
-                        placement: 'bottom-start',
-                         className: 'your-custom-class'
+                        placement: 'auto',
+                        
                     })
                 },
 

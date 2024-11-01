@@ -252,7 +252,10 @@ export default function (props) {
                             />
 
                             }
-                            {bAllowEdit && (<Button
+                            {(bAllowEdit && !appSetting(
+                                        'layout',
+                                        'hide_edit_covers'
+                                    ))&& (<Button
                                 rounded
                                 startDecorator="Camera"
                                 onPress={() => handleUpload('cover')}
@@ -277,7 +280,7 @@ export default function (props) {
                                     displaySize="4xl"
                                 />
                                 {bAllowEdit &&
-                                    appSetting(
+                                    !appSetting(
                                         'layout',
                                         'hide_edit_covers'
                                     ) && (

@@ -108,7 +108,8 @@ export const settingsDefault = {
             bx_courses: 'min'
         },
         hide_browse_filter: true,
-        use_youtube_player: true
+        use_youtube_player: true,
+        hide_edit_covers: false
     },
     forms: {
         sys_login: { hide_errors: true, button_full_width: true },
