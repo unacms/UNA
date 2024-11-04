@@ -263,7 +263,8 @@ export default function FormFieldFtf(props) {
             Iframe,
             SubmitOnEnter,
             BxMentionSpan,
-            Link.configure({
+            Link.extend({ inclusive: false }).configure({
+                autolink: true,
                 openOnClick: false,
             }),
             Placeholder.configure({

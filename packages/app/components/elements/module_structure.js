@@ -1,4 +1,4 @@
-import { View, Row, Pressable, ScrollView } from 'app/design/view'
+import { View, Row, Pressable, ScrollView  } from 'app/design/view'
 import { useState, useReducer, useCallback } from 'react'
 import { Text, H1C } from 'app/design/typography'
 import Link from 'app/ui/atoms/link'
@@ -14,10 +14,11 @@ import { LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import Video from 'app/ui/atoms/video';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { BlockByData } from 'app/components/blocks-content/object-data-array-int';
+import DropdownMenu from 'app/ui/atoms/dropdown-menu';
+import { DragContext, DragItem, DragControl } from 'app/ui/molecules/dropable'
 
 export default function ModuleStructure({ data }) {
     const { setBottomSheetData } = useBottomSheetData();
-
     const isEditable = data.isEditable;
     const courseId = data.course_id;
     const moduleId = data.parent_id;
@@ -112,12 +113,29 @@ export default function ModuleStructure({ data }) {
         // setLessonId(id);
     };
 
-    const handleEditLesson = useCallback(async (event, id) => {
+    /*const handleEditLesson = useCallback(async (event, id) => {
         event.preventDefault();
-        const fetchedData = await fetcher(`/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o=bx_courses_cnt_structure_manage&a=edit&parent_id=${moduleId}&entry_id=${courseId}&id=${id}`);
-        console.log("fetchedDatafetchedData", fetchedData)
-        setBottomSheetData({ title: fetchedData.data[0]?.title || " ", content: <View className='px-1'><EditLesson handleUpdate={handleUpdate} data={fetchedData.data} /></View> });
-    }, [courseId, setBottomSheetData, moduleId]);
+        const formData = await fetcher(`/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o=bx_courses_cnt_structure_manage&a=edit&parent_id=${moduleId}&entry_id=${courseId}&id=${id}`);
+        const lessonData = await fetcher(`/api.php?r=bx_courses/entity_node_block/&params[]=${courseId}&params[]=${id}`);
+        const gridData = await fetcher(`/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o=bx_courses_cnt_data_manage&a=display&parent_id=${id}&entry_id=${courseId}`);
+
+        setBottomSheetData({ title: formData.data[0]?.title || " ", content: <View className='px-1'><EditLesson gridData={gridData} handleUpdate={handleUpdate} formData={formData.data} courseId={courseId} lessonId={id} lessonData={lessonData.data[0].data} /></View> });
+    }, [courseId, setBottomSheetData, moduleId]);*/
+
+    const handleManage = async (item, id) => {
+        if (item.action == "edit") {
+
+            const formData = await fetcher(`/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o=bx_courses_cnt_structure_manage&a=edit&parent_id=${moduleData.parent_id}&entry_id=${courseId}&id=${id}`);
+            const lessonData = await fetcher(`/api.php?r=bx_courses/entity_node_block/&params[]=${courseId}&params[]=${id}`);
+            const gridData = await fetcher(`/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o=bx_courses_cnt_data_manage&a=display&parent_id=${id}&entry_id=${courseId}`);
+            setBottomSheetData({ title: formData.data[0]?.title || " ", content: <View className='px-1'><EditLesson dispatch={dispatch} gridData={gridData} handleUpdate={handleUpdate} formData={formData.data} courseId={courseId} moduleId={moduleId} lessonId={id} lessonData={lessonData.data[0].data} /></View> });
+
+        }
+        if (item.action == "delete") {
+            await fetcher(`/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o=bx_courses_cnt_structure_manage&a=delete&parent_id=${moduleId}&entry_id=${courseId}&ids[]=${id}`);
+            handleUpdate();
+        }
+    };
 
     const handleAddLesson = useCallback(async (event) => {
         event.preventDefault();
@@ -144,7 +162,73 @@ export default function ModuleStructure({ data }) {
         <Text className="text-xs text-neutral-800 dark:text-neutral-200">{lessonData?.sample} {lessonData?.index}</Text>
     </View>;
 
-    //lessonItemData
+
+    const handleLessonsSort = async (result) => {
+        console.log("moduleData", moduleData.items.map(item => `bx_courses_cnt_structure_manage_row[]=${item.id}`).join('&'));
+        if (!result.destination) return;
+        const updatedData = [...moduleData.items];
+        const [removed] = updatedData.splice(result.source.index, 1);
+        updatedData.splice(result.destination.index, 0, removed);
+        updatedData.forEach((item, index) => {
+            item.order = index; 
+        });
+        dispatch({ type: 'SET_MODULE_DATA', moduleData: { ...moduleData, items: updatedData }});
+        await fetcher(`/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o=bx_courses_cnt_structure_manage&a=reorder&parent_id=${moduleId}&entry_id=${courseId}&` + updatedData.map(item => `bx_courses_cnt_structure_manage_row[]=${item.id}`).join('&'));
+    };
+
+    const renderLessonItem = (index, item, dragHandleProps) => {
+
+        let icon = "Check";
+        let textColor = ""
+        let color = "emerald-400";
+        if (item.pass_status == "in process") {
+            icon = "HourglassSimple";
+            color = "red-400";
+            textColor = "white"
+        }
+        if (item.pass_status == "not started") {
+            icon = "BookmarkSimple";
+            color = "gray-500";
+            textColor = "white"
+        }
+
+
+        const manageMenu = [
+            { title: "Edit lesson", action: "edit" },
+            { title: "Delete lesson", action: "delete" },
+        ];
+
+        return <Card rounded=' rounded-none sm:rounded-2xl  ' margin='mx-2 w-full p-3 sm:p-4 mb-1 sm:mb-4 '>
+            <Pressable onPress={() => { getLessonData(item.id, item.parent_id, false) }}>
+                <Row className='w-full'>
+                    {!isEditable && <View className='items-center ml-4 pr-8 mr-8 border-r border-bdr dark:border-bdr-d justify-between'>
+                        {item.pass_status == 'completed' && <View className='h-16 w-16 rounded-full bg-emerald-400 items-center justify-center'><Text className=" text-white text-4xl"><Icon icon={icon} /></Text></View>}
+                        {item.pass_status == 'in process' && <CircularProgress classes='h-16 w-16' progressColor="#F87171" percentage={item.pass_percent} />}
+                        {item.pass_status == 'not started' && <View className='h-16 w-16 rounded-full bg-gray-500 items-center justify-center'><Text className=" text-white text-4xl"><Icon icon={icon} /></Text></View>}
+                        <Button variant="default" title={item.pass_progress} size="xs" rounded />
+                    </View>}
+                    <View className='flex-1'>
+                        <View className='my-2 text-xs'><Text>Lesson {index+1}</Text></View>
+                        <View className='h-12'>
+                            <Text className="text-lg leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200" numberOfLines={2}>{item.title}</Text>
+                        </View>
+                        {(!isEditable && !!item.pass_title) && <Button startDecorator={icon} variant="default" textColor={`text-${textColor}`} bgColor={`bg-${color}`} title={item.pass_status} size="xs" rounded />}
+                        {isEditable && <Button variant="default" title={item.pass_progress} size="xs" rounded />}
+                    </View>
+                    <Row className='items-center justify-center gap-x-2'>
+                        {(!isEditable && !!item.pass_title) && <Button endDecorator="ArrowRight" variant="default" title={item.pass_title} size="sm" rounded onPress={() => { getLessonData(item.id, item.parent_id, true) }} />}
+                        {isEditable && <>
+                            <DropdownMenu items={manageMenu} onSelect={(oItem) => { handleManage(oItem, item.id) }}><Button rounded startDecorator="Gear" size='sm' /></DropdownMenu><DragControl dragHandleProps={dragHandleProps}><Button rounded startDecorator="ArrowsVertical" size='sm' /></DragControl>
+                            </>}
+                    </Row>
+                </Row>
+                <View>
+
+                </View>
+            </Pressable>
+        </Card>
+    };
+
     return (
         <>
             {lessonData && (
@@ -160,65 +244,26 @@ export default function ModuleStructure({ data }) {
                 </Modal>
 
             )}
-            <View >
-                {
-                    moduleData?.items?.map((item) => {
+            <DragContext onSort={handleLessonsSort} renderItem={renderLessonItem}>
+                <View >
+                    {
+                        moduleData?.items?.sort((a, b) => a.order - b.order).map((item, index) => {
+                            return (
+                                <DragItem data={item} index={index} key={index} renderItem={renderLessonItem} isDragEnabled={isEditable} />
+                            )
+                        })
+                    }
 
-                        let icon = "Check";
-                        let textColor = ""
-                        let color = "emerald-400";
-                        if (item.pass_status == "in process") {
-                            icon = "HourglassSimple";
-                            color = "red-400";
-                            textColor = "white"
-                        }
-                        if (item.pass_status == "not started") {
-                            icon = "BookmarkSimple";
-                            color = "gray-500";
-                            textColor = "white"
-                        }
+                    {isEditable && (<Card rounded=' rounded-none sm:rounded-2xl  ' margin='mx-2  w-full p-3 sm:p-4 mb-1 sm:mb-4 '>
 
-                        return (
-                            <Card key={item.index} rounded=' rounded-none sm:rounded-2xl  ' margin='mx-2  w-full p-3 sm:p-4 mb-1 sm:mb-4 '>
-                                <Pressable onPress={() => { getLessonData(item.id, item.parent_id, false) }}>
-                                    <Row className='w-full'>
-                                        <View className='items-center ml-4 pr-8 mr-8 border-r border-bdr dark:border-bdr-d justify-between'>
-
-                                            {item.pass_status == 'completed' && <View className='h-16 w-16 rounded-full bg-emerald-400 items-center justify-center'><Text className=" text-white text-4xl"><Icon icon={icon} /></Text></View>}
-                                            {item.pass_status == 'in process' && <CircularProgress classes='h-16 w-16' progressColor="#F87171" percentage={item.pass_percent} />}
-                                            {item.pass_status == 'not started' && <View className='h-16 w-16 rounded-full bg-gray-500 items-center justify-center'><Text className=" text-white text-4xl"><Icon icon={icon} /></Text></View>}
-                                            <Button variant="default" title={item.pass_progress} size="xs" rounded />
-                                        </View>
-                                        <View className='flex-1'>
-                                            <View className='my-2 text-xs'><Text>Lesson {item.index}</Text></View>
-                                            <View className='h-12'>
-                                                <Text className="text-lg leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200" numberOfLines={2}>{item.title}</Text>
-                                            </View>
-                                            <Button startDecorator={icon} variant="default" textColor={`text-${textColor}`} bgColor={`bg-${color}`} title={item.pass_status} size="xs" rounded />
-                                        </View>
-                                        <View className='items-end justify-center'>
-                                            {!isEditable && <Button endDecorator="ArrowRight" variant="default" title={item.pass_title} size="sm" rounded onPress={() => { getLessonData(item.id, item.parent_id, true) }} />}
-                                            {isEditable && <Button variant="default" title={"Edit lesson"} size="sm" rounded onPress={(event) => { handleEditLesson(event, item.id) }} />}
-                                        </View>
-                                    </Row>
-                                    <View>
-
-                                    </View>
-                                </Pressable>
-                            </Card>
-                        )
-                    })
-                }
-
-                {isEditable && (<Card rounded=' rounded-none sm:rounded-2xl  ' margin='mx-2  w-full p-3 sm:p-4 mb-1 sm:mb-4 '>
-
-                    <Row className='w-full'>
-                        <Button rounded startDecorator="Plus" title="Add new" onPress={(event) => { handleAddLesson(event, courseId) }} size='sm' />
-                    </Row>
-                </Card>
-                )
-                }
-            </View>
+                        <Row className='w-full'>
+                            <Button rounded startDecorator="Plus" title="Add new" onPress={(event) => { handleAddLesson(event, courseId) }} size='sm' />
+                        </Row>
+                    </Card>
+                    )
+                    }
+                </View>
+            </DragContext>
         </>)
 }
 
@@ -236,18 +281,42 @@ const getColorByTypeLesson = (item, index, passing, byIndex = false) => {
     return ['#9CA3AF', 'HourglassSimple', mainColor, mainColor]
 };
 
+function EditLesson({ formData, handleUpdate, lessonData: initedLessonData, courseId, lessonId, moduleId, gridData, dispatch }) {
 
+    const [viewType, setViewType] = useState(0);
+    const [lessonData, setLessonData] = useState(initedLessonData);
+    const content = { content: formData, designbox_id: 0 };
 
-function EditLesson({ data, handleUpdate }) {
-    const content = { content: data, designbox_id: 0 };
-    //TODO
+    const buttonConfigs = [
+        { title: 'Main info', viewType: 0 },
+        { title: 'Steps', viewType: 1 },
+        { title: 'Attachments', viewType: 2 },
+    ];
+
+    const reloadData = async () => {
+        const fetchedData = await fetcher(`/api.php?r=bx_courses/entity_node_block/&params[]=${courseId}&params[]=${lessonId}`);
+        setLessonData(fetchedData.data[0].data)
+    }
+
     return (
         <View>
-            <Row className='gap-x-2'><Button variant="default" title={'Main info'} size="sm" rounded />
-            <Button variant="default" title={'Steps'} size="sm" rounded />
-            <Button variant="default" title={'Attachments'} size="sm" rounded />
+            <Row className='gap-x-2'>
+
+                {buttonConfigs.map(({ title, viewType: type }) => (
+                    <Button
+                        key={type}
+                        variant="default"
+                        title={title}
+                        size="sm"
+                        rounded
+                        onPress={() => setViewType(type)}
+                        pressed={viewType === type}
+                    />
+                ))}
             </Row>
-            <BlockByData onFormEmpty={handleUpdate} block={content} />
+            {viewType == 0 && <BlockByData onFormEmpty={handleUpdate} block={content} />}
+            {viewType == 1 && <LessonSteps dispatch={dispatch} lessonData={lessonData} isEditable={true} reloadData={reloadData} courseId={courseId} moduleId={moduleId} lessonId={lessonId} addParams={gridData.data.actions.independent.add_st} />}
+            {viewType == 2 && <LessonAttach lessonData={lessonData} isEditable={true} reloadData={reloadData} courseId={courseId} lessonId={lessonId} addParams={gridData.data.actions.independent.add_at} />}
         </View>
     );
 }
@@ -266,78 +335,207 @@ function LessonStructure({ lessonData, startLessonPart }) {
                     <Button variant="default" textColor={`text-white`} bgColor={`${viewType === 1 ? 'bg-red-400' : 'bg-gray-400'}`} title='Attachments' size="sm" onPress={() => { setViewType(1) }} />
                 </Row>
                 {viewType === 0 && <LessonSteps lessonData={lessonData} startLessonPart={startLessonPart} />}
-                {viewType === 1 && <LessonAttach attachments={lessonData.attachments} />}
+                {viewType === 1 && <LessonAttach lessonData={lessonData} />}
             </ScrollView>
         </View>
     );
 }
 
-function LessonAttach({ attachments }) {
+function LessonAttach({ lessonData, isEditable, reloadData, courseId, lessonId, addParams }) {
+    const attachments = lessonData.attachments;
+    const [formData, setFormData] = useState(null)
+
+    const deleteAttachment = async (id) => {
+        await fetcher(`/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o=bx_courses_cnt_data_manage&a=delete&parent_id=${lessonId}&entry_id=${courseId}&ids[]=${id}`);
+        reloadData();
+    }
+
+    const editAttachment = async (id) => {
+        //TODO
+        reloadData();
+    }
+
+    const handleUpdate = (url) => {
+        setFormData(null);
+        reloadData();
+    }
+
+    const handleClose = () => {
+        setFormData(null);
+    }
+
+    const handleAction = async (item) => {
+        const fetchedData = await fetcher("/api.php?r=" + item.callback);
+        setFormData({ content: fetchedData.data, designbox_id: 0, title: item.title })
+    };
+
+    const renderAttachment = (item, index) => (
+        <Row
+            key={`step-${index}`}
+            className={`${index !== 0 ? 'border-t border-bdr dark:border-bdr-d' : ''} py-2 px-2`}
+        >
+            <View className="w-16 justify-center">
+                <Text className="text-neutral-700 dark:text-neutral-300 text-2xl">
+                    <Icon icon={'FileText'} />
+                </Text>
+            </View>
+            <View className="flex-auto justify-center">
+                <Text className="text-lg leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200" numberOfLines={2}>
+                    {item.title}
+                </Text>
+                <Text className="leading-tight tracking-tight text-neutral-800 dark:text-neutral-200">
+                    {item.size}
+                </Text>
+            </View>
+            <Row className="justify-center items-start gap-x-2">
+                <Link href={item.download_link}>
+                    <Button startDecorator="DownloadSimple" variant="outline" title="Download" size="sm" />
+                </Link>
+                {isEditable && (
+                    <>
+                        <Button startDecorator="Trash" variant="outline" size="sm" onPress={() => deleteAttachment(item.id)} />
+                        <Button startDecorator="Pencil" variant="outline" size="sm" onPress={() => editAttachment(item.id)} />
+                    </>
+                )}
+            </Row>
+        </Row>
+    );
+
     return <>
-        {attachments.map((item, index) => {
-
-            return (
-                <Row key={`step-${index}`} className={`${index != 0 ? 'border-t border-bdr dark:border-bdr-d' : ''} py-2 px-2`}>
-                    <View className={`w-16 justify-center`}>
-                        <Text className="text-neutral-700 dark:text-neutral-300  text-2xl"  ><Icon icon={'FileText'} /></Text>
-                    </View>
-                    <View className='flex-auto justify-center'>
-                        <Text className=" text-lg leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200" numberOfLines={2}>{item.title}</Text>
-                        <Text className="eading-tight tracking-tight text-neutral-800 dark:text-neutral-200">{item.size}</Text>
-                    </View>
-                    <View className='justify-center'>
-                        <Link href={item.download_link}><Button startDecorator="DownloadSimple" variant="outline" title={'Download'} size="sm" /></Link>
-                    </View>
-                </Row>
-
-            )
-        })
+        {attachments.map(renderAttachment)}
+        {isEditable && <View className='py-2'><DropdownMenu items={addParams.values} onSelect={(oItem) => { handleAction(oItem) }}>
+            <Button startDecorator="Plus" variant="default" size="sm" title={addParams.title} />
+        </DropdownMenu></View>
         }
+        {formData && <Modal onClose={handleClose} title={`Add ${formData.title}`}><BlockByData onFormEmpty={() => handleUpdate()} block={formData} /></Modal>}
     </>
 }
 
-function LessonSteps({ lessonData, startLessonPart }) {
-    const steps = lessonData.steps;
+/*isEditable && (<View className='my-2'><Button startDecorator="Plus" variant="outline" title={addParams.title} size="sm" onPress={() => addAttachment()} />
+        {viewType === 1 && (
+            <Row className=' gap-x-2 my-2'>
+                {addParams.values.map((item2, index2) => {
+                    return (
+                        <Button key={`btn-${index2}`} startDecorator="Plus" variant="outline" size="sm" title={`Add ${item2.title}`} onPress={() => showAddForm(item2.callback)} />)
+                })}
+            </Row>
+        )}
+    </View>)
+     /*
+const addAttachment = () => {
+    setViewType(1)
+}
+const showAddForm = async (url) => {
+    const fetchedData = await fetcher("/api.php?r=" + url);
+    setFormData({ content: fetchedData.data, designbox_id: 0 })
+}
+*/
 
-    //TODO lines
-    return <>
-        {steps.map((item, index) => {
-            const [color, icon, color2, color3] = getColorByTypeLesson(item, index, lessonData.passing);
-            return (
-                <Pressable key={`step-${index}`} onPress={() => { startLessonPart(item.id, false) }}>
-                    <Row>
-                        <View className={`w-24 aspect-square items-center ${index === 0 ? 'justify-end' : ''}`}>
-                            <View className={`w-2 ${color2} h-1/2`}></View>
-                            {(index != 0 && index != steps.length - 1) && <View className={`w-2 ${color3} ${(index == 0 || index == steps.length - 1 ? 'h-1/2' : 'h-1/2')}`}></View>}
-                            <View className='items-center justify-center h-10 absolute top-[42px]'>
-                                <Svg height="100" width="100" viewBox="0 0 100 100">
-                                    <Circle cx="50" cy="50" r="50" fill={color} />
-                                    <Circle cx="50" cy="50" r="40" fill="white" />
-                                    <Circle cx="50" cy="50" r="30" fill={color} />
-                                </Svg>
-                                <Text className="text-white absolute text-base"  ><Icon icon={icon} /></Text>
-                            </View>
+
+function LessonSteps({ lessonData, startLessonPart, isEditable, reloadData, courseId, lessonId, moduleId, addParams, dispatch  }) {
+    const steps = lessonData.steps;
+    const [formData, setFormData] = useState(null);
+
+    const deleteStep = async (id) => {
+        await fetcher(`/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o=bx_courses_cnt_data_manage&a=delete&parent_id=${lessonId}&entry_id=${courseId}&ids[]=${id}`);
+        reloadData();
+    }
+
+    const editStep = async (id) => {
+        //TODO
+        /*const fetchedData = await fetcher(`/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o=bx_courses_cnt_structure_manage&a=edit&parent_id=${moduleId}&entry_id=${courseId}&id=${id}`);
+        console.log("fetchedDatafetchedData", fetchedData)*/
+    }
+
+    const handleUpdate = (url) => {
+        setFormData(null);
+        reloadData();
+    }
+
+    const handleClose = () => {
+        setFormData(null);
+    }
+
+    const handleAction = async (item) => {
+        const fetchedData = await fetcher("/api.php?r=" + item.callback);
+        setFormData({ content: fetchedData.data, designbox_id: 0, title: item.title })
+    };
+
+    const handleStepsSort = async (result) => {
+        console.log("stepssteps", steps);
+        if (!result.destination) return;
+        const updatedData = [...lessonData.steps];
+        const [removed] = updatedData.splice(result.source.index, 1);
+        updatedData.splice(result.destination.index, 0, removed);
+        /*updatedData.forEach((item, index) => {
+            item.order = index; 
+        });*/
+        console.log("stepssteps22", updatedData);
+        dispatch({ type: 'SET_LESSON_DATA', lessonData: { ...lessonData, steps: updatedData }});
+        await fetcher(`/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o=bx_courses_cnt_data_manage&a=reorder&parent_id=${lessonId}&entry_id=${courseId}&` + updatedData.map(item => `bx_courses_cnt_data_manage_row[]=${item.id}`).join('&'));
+ 
+        };
+
+    const renderStep = (index, item, dragHandleProps) => {
+        const [color, icon, color2, color3] = getColorByTypeLesson(item, index, lessonData.passing);
+        return (
+            <Pressable key={`step-${index}`} onPress={() => { startLessonPart(item.id, false) }}>
+                <Row>
+                    {!isEditable && <View className={`w-24 aspect-square items-center ${index === 0 ? 'justify-end' : ''}`}>
+                        <View className={`w-2 ${color2} h-1/2`}></View>
+                        {(index != 0 && index != steps.length - 1) && <View className={`w-2 ${color3} ${(index == 0 || index == steps.length - 1 ? 'h-1/2' : 'h-1/2')}`}></View>}
+                        <View className='items-center justify-center h-10 absolute top-[42px]'>
+                            <Svg height="100" width="100" viewBox="0 0 100 100">
+                                <Circle cx="50" cy="50" r="50" fill={color} />
+                                <Circle cx="50" cy="50" r="40" fill="white" />
+                                <Circle cx="50" cy="50" r="30" fill={color} />
+                            </Svg>
+                            <Text className="text-white absolute text-base"  ><Icon icon={icon} /></Text>
                         </View>
-                        <Row className={`${index != 0 ? 'border-t border-bdr dark:border-bdr-d' : ''} pt-4 flex-1`}>
-                            <View className='mb-4 aspect-video w-40 mr-5 rounded bg-gray-500' >
-                                {item.image?.src && <Image view='cover' sizes={LAYOUT_BREAKPOINTS.lg} alt='' className="rounded" src={item.image?.src} />}
-                            </View>
-                            <View className={`flex-auto`}>
-                                <Button variant="default" textColor={`text-white`} bgColor={`bg-` + getColorByType(item.type)} title={item.type} size="xs" rounded />
-                                <Text className="mt-2 text-lg leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200" numberOfLines={2}>{item.title}</Text>
-                            </View>
-                            <View className='justify-center'>
-                                {!!item.pass_link && (
-                                    <Button endDecorator="ArrowRight" variant="default" title={item.pass_title} size="sm" rounded onPress={() => { startLessonPart(item.id, true) }} />
-                                )
-                                }
-                            </View>
+                    </View>}
+                    <Row className={`${index != 0 ? 'border-t border-bdr dark:border-bdr-d' : ''} pt-4 flex-1`}>
+                        <View className='mb-4 aspect-video w-40 mr-5 rounded bg-gray-500' >
+                            {item.image?.src && <Image view='cover' sizes={LAYOUT_BREAKPOINTS.lg} alt='' className="rounded" src={item.image?.src} />}
+                        </View>
+                        <View className={`flex-auto`}>
+                            <Button variant="default" textColor={`text-white`} bgColor={`bg-` + getColorByType(item.type)} title={item.type} size="xs" rounded />
+                            <Text className="mt-2 text-lg leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200" numberOfLines={2}>{item.title}</Text>
+                        </View>
+                        <Row className="justify-center items-center gap-x-2">
+                            {(!!item.pass_link && !isEditable) && (
+                                <Button endDecorator="ArrowRight" variant="default" title={item.pass_title} size="sm" rounded onPress={() => { startLessonPart(item.id, true) }} />
+                            )}
+                            {isEditable && (
+                                <>
+                                    <Button startDecorator="Trash" variant="outline" size="sm" onPress={() => deleteStep(item.id)} />
+                                    <Button startDecorator="Pencil" variant="outline" size="sm" onPress={() => editStep(item.id)} />
+                                    <DragControl dragHandleProps={dragHandleProps}><Button  variant="outline" startDecorator="ArrowsVertical" size='sm' /></DragControl>
+                                </>
+                            )}
                         </Row>
                     </Row>
-                </Pressable>
-            )
-        })
+                </Row>
+            </Pressable>
+        )
+    }
+    console.log("stepssteps3333", steps);
+    //TODO lines
+    return <>
+      <DragContext onSort={handleStepsSort} renderItem={renderStep}>
+        {steps.map((item, index) => {
+                            return (
+                                <DragItem data={item} index={index} renderItem={renderStep} isDragEnabled={isEditable} />
+                            )
+                        })
+
         }
+   
+        </DragContext>
+        {isEditable && <View className='py-2'><DropdownMenu items={addParams.values} onSelect={(oItem) => { handleAction(oItem) }}>
+            <Button startDecorator="Plus" variant="default" size="sm" title={addParams.title} />
+        </DropdownMenu></View>
+        }
+        {formData && <Modal onClose={handleClose} title={`Add ${formData.title}`}><BlockByData onFormEmpty={() => handleUpdate()} block={formData} /></Modal>}
     </>
 }
 

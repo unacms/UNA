@@ -60,7 +60,8 @@ export default function DropdownMenuComponent({ variant = 'vertical', defaultOpe
     const DmContent = (sVariant == 'vertical' || sVariant == 'nopad') ? DropdownMenuContentV : DropdownMenuContentH;
     const DmItem = sVariant == 'vertical' ? DropdownMenuItemV : (sVariant == 'nopad' ? DropdownMenuItemNoPad : DropdownMenuItemH);
 
-    const aDmItems = items.map((oItem) => {
+    const aDmItems = items.map((oItem, index) => {
+        const key = oItem.id || index; 
         let sIcon = undefined;
         if (!!oItem?.icon) {
             if (isEmoji(oItem.icon))
@@ -69,7 +70,7 @@ export default function DropdownMenuComponent({ variant = 'vertical', defaultOpe
                 sIcon = <Icon className={oItem?.class_item_icon} icon={oItem.icon} />;
         }
         return (
-            <DmItem key={oItem.id} onSelect={(event) => !!oItem?.onClick ? oItem?.onClick(oItem, event) : onSelectInt(oItem, event)}>
+            <DmItem key={key} onSelect={(event) => !!oItem?.onClick ? oItem?.onClick(oItem, event) : onSelectInt(oItem, event)}>
                 <Row className="items-center gap-x-3">
                     {!!sIcon && <Text className="text-xl text-neutral-700 dark:text-neutral-200">{sIcon}</Text>}
                     {!!oItem?.title && <Text className="text-base text-neutral-700 dark:text-neutral-200">{oItem.title}</Text>}

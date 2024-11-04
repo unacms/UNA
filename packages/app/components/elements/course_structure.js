@@ -23,6 +23,7 @@ import { fetcher } from 'app/lib/fetcher'
 import { BlockByData } from 'app/components/blocks-content/object-data-array-int';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 
+
 function CourseStructure({ data }) {
     const { setBottomSheetData } = useBottomSheetData();
     const isEditable = data.isEditable;
@@ -51,13 +52,6 @@ function CourseStructure({ data }) {
         }
     }
 
-    const handleEditModule = useCallback(async (event, id) => {
-        event.preventDefault();
-        const fetchedData = await fetcher(`/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o=bx_courses_cnt_structure_manage&a=edit&parent_id=0&entry_id=${courseId}&id=${id}`);
-        const content = { content: fetchedData.data, designbox_id: 0 };
-        setBottomSheetData({ title: content.content[0]?.title || " ", content: <View className='px-1'><BlockByData onFormEmpty={handleUpdate} block={content} /></View> });
-    }, [courseId, setBottomSheetData]);
-
     const handleAddModule = useCallback(async (event) => {
         event.preventDefault();
         const fetchedData = await fetcher(`/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o=bx_courses_cnt_structure_manage&a=add&parent_id=0&entry_id=${courseId}`);
@@ -77,11 +71,23 @@ function CourseStructure({ data }) {
         }, 100);
     }, [setBottomSheetData, resetData]);
 
-    return <>
+    const handleManage = async (item, id) => {
+        if (item.action == "edit") {
+            const fetchedData = await fetcher(`/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o=bx_courses_cnt_structure_manage&a=edit&parent_id=0&entry_id=${courseId}&id=${id}`);
+            const content = { content: fetchedData.data, designbox_id: 0 };
+            setBottomSheetData({ title: content.content[0]?.title || " ", content: <View className='px-1'><BlockByData onFormEmpty={handleUpdate} block={content} /></View> });
+        }
+        if (item.action == "delete") {
+            await fetcher(`/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o=bx_courses_cnt_structure_manage&a=delete&parent_id=0&entry_id=${courseId}&ids[]=${id}`);
+            resetData();
+        }
+    };
+
+    return (
 
         <Scroll horizontal={true} step={250} className='w-full'>
             {
-                state.data.items.map((item) => {
+                state.data.items.map((item, index) => {
                     let icon = "Check";
                     let color = "gray-600";
                     let colorButton = "emerald-400";
@@ -99,6 +105,11 @@ function CourseStructure({ data }) {
                         colorButtonText = "white";
                     }
 
+                    const manageMenu = [
+                        { title: "Edit module", action: "edit" },
+                        { title: "Delete module", action: "delete" },
+                    ];
+
                     return (
                         <View className='m-2 w-72' key={item.index}>
                             <Card rounded=' rounded-none sm:rounded-2xl  ' margin={'bg-' + color + ' max-w-screen-lg mx-auto w-full p-3 sm:p-4 mb-1 sm:mb-4 '}>
@@ -108,7 +119,7 @@ function CourseStructure({ data }) {
 
                                         <Row className='justify-between'>
                                             <View className='my-2 text-xs '><Text className="text-white">Module {item.index}</Text></View>
-                                            {isEditable && <Button rounded startDecorator="Gear" onPress={(event) => { handleEditModule(event, item.id) }} size='sm' />}
+                                            {isEditable && <DropdownMenu items={manageMenu} onSelect={(oItem) => { handleManage(oItem, item.id) }}><Button rounded startDecorator="Gear" size='sm' /></DropdownMenu>}
                                         </Row>
                                         <View className='h-12'>
                                             <Text className="text-white text-lg leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200" numberOfLines={2}>{item.title}</Text>
@@ -130,11 +141,12 @@ function CourseStructure({ data }) {
             }
             {isEditable && (<View className='m-2 w-72'>
                 <Card rounded=' rounded-none sm:rounded-2xl  ' >
-                <Button rounded startDecorator="Plus" title="Add new" onPress={(event) => { handleAddModule(event, courseId) }} size='sm' />
+                    <View className='h-40 items-center justify-center'>
+                        <Button rounded startDecorator="Plus" title="Add new" onPress={(event) => { handleAddModule(event, courseId) }} size='sm' />
+                    </View>
                 </Card>
             </View>)
             }
-        </Scroll></>
+        </Scroll>)
 }
-
 export default memo(CourseStructure);
