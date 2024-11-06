@@ -208,10 +208,13 @@ export default function (props) {
                 const offset1 = 24;
                 const h = scrollY - offset;
                 const style = window.getComputedStyle(element);
+
                 const marginTop = parseInt(style.marginTop, 10);
                 const marginBottom = parseInt(style.marginBottom, 10);
                 const elementHeight = element.offsetHeight;
                 const elementHeightParent = element.parentNode.parentNode.offsetHeight;
+
+                element.style.width = `${element.offsetWidth}px`;
 
                 if (elementHeightParent > elementHeight) {
                     element.classList.add('fixed');
@@ -224,6 +227,7 @@ export default function (props) {
 
                         if (height > h) {
                             element.setAttribute('a', `${topValue}px`);
+                            
                         }
                     }
                 } else {

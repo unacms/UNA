@@ -308,7 +308,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     const handleEndReached = useCallback(async (lastItemIndex) => {
         if (isFetchingNextPage)
             return;
-        if (!hasNextPage)
+        if (!hasNextPage === false)
             return;
         if (currentRoute?.endpoint.finished)
             return;

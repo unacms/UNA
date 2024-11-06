@@ -381,7 +381,7 @@ export default function ElementReactions(oProps) {
                     icon: _getIconAlias(oItem.name),
                     class_item: ' transition active:scale-150 duration-300 active:-translate-y-4  ',
                     class_item_icon: ' text-3xl ',
-                    tooltip: '', //TODO: oParams.t[oItem.name] for Roman use provided Tooltips in popup menus
+                    tooltip: oParams.t? oParams.t[oItem.name] : '', //TODO: oParams.t[oItem.name] for Roman use provided Tooltips in popup menus
                 };
             });
             if (bWeb) {

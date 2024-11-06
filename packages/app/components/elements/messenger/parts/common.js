@@ -22,6 +22,7 @@ import Msg from 'app/ui/molecules/msg';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import Profile from 'app/ui/molecules/profile'
 import { useRouter } from "expo-router";
+import ElementMsg from 'app/components/elements/msg';
 
 export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, fetchConvos, data, onSave, addButtons }) {
     const isWeb = Platform.OS == 'web'
@@ -29,6 +30,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     const { setBottomSheetData } = useBottomSheetData();
     const [convoId, setConvoId] = useState(defaultConvoId);
     const [jots, setJots] = useState(false);
+    const [listError, setListError] = useState(false);
     const [isSmallScreen, setIsSmallScreen] = useState(width < LAYOUT_BREAKPOINTS.md);
     const [panelsVisible, setPanelsVisible] = useState({ convos: true, jots: isSmallScreen ? false : true });
     const [commentForm, setCommentForm] = useState(false);
@@ -47,8 +49,9 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     const [replyItem, setReplyItem] = useState(false);
 
     const layoutHeightLeft = layoutHeight;
-    const layoutHeightRight = isWeb ? layoutHeight - 48 - formHeight - 10 : layoutHeight - formHeight - 10;
-
+    let layoutHeightRight = isWeb ? layoutHeight - 48 - formHeight - 10 : layoutHeight - formHeight - 10 ;
+ if (listError)
+    layoutHeightRight = layoutHeightRight-60
     let { data: dynamicData, error } = useSWR(
         commentForm ? ['/api.php?r=bx_messenger/get_send_form/Services&params=' + JSON.stringify({ id: selectedConvo.id, convo_id: selectedConvo.id, reply_id: replyItem ? replyItem.id : 0 }), '', commentForm] : null,
         fetcher,
@@ -183,13 +186,19 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
         if (jotUpdated) {
             
             if (jotUpdated.action == 'added') {
-                setJots(prevJots => ({
-                    ...prevJots,
-                    data: {
-                        ...prevJots.data,
-                        jots: [...prevJots.data.jots, ...jotUpdated.data.jots]
-                    }
-                }));
+                console.log("jotUpdated", jotUpdated)
+                if (jotUpdated.data.jots){
+                    setJots(prevJots => ({
+                        ...prevJots,
+                        data: {
+                            ...prevJots.data,
+                            jots: [...prevJots.data.jots, ...jotUpdated.data.jots]
+                        }
+                    }));
+                }
+                if (jotUpdated.data.msg){
+                    setListError(jotUpdated.data.msg);
+                }
             }
             if (jotUpdated.action == 'edited') {
                 let newJots = jots.data.jots.map(item => item.id === jotUpdated.data.jots[0].id ? jotUpdated.data.jots[0] : item);
@@ -331,11 +340,9 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
         searchValue={searchValue}
         onSave={onSave}
     />
-
     const jotsComponent = (panelsVisible.jots && selectedConvo && jots?.data?.jots) && <View className={' w-full md:w-3/5 h-full flex-1 bg-bgrcard dark:bg-bgrcard-d'}>
           <KbAvoidingView className='w-full h-full flex-1'>
         <View className='w-full flex-auto'>
-      
             <Jots
                 isSmallScreen={isSmallScreen}
                 title={selectedConvo.title}
@@ -350,7 +357,9 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
                 handleReply={handleReply}
                 startReached={handleStartReached}
             />
+            {listError && <View className='mx-4'><ElementMsg data={listError}/></View>}
         </View>
+        
         <FormContainer
             form={data.form}
             replyItem={replyItem}
