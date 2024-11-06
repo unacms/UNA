@@ -20,7 +20,7 @@ import { DragContext, DragItem, DragControl } from 'app/ui/molecules/dropable'
 export default function ModuleStructure({ data }) {
     const { setBottomSheetData } = useBottomSheetData();
     const isEditable = data.isEditable;
-    const courseId = data.course_id;
+    const courseId = data.entry_id;
     const moduleId = data.parent_id;
 
     const initialState = {

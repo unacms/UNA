@@ -310,7 +310,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             return;
         if (!hasNextPage === false)
             return;
-        if (currentRoute?.endpoint.finished)
+        if (currentRoute?.endpoint?.finished)
             return;
         if (lastItemIndex == false)
             return;

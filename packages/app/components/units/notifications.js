@@ -9,7 +9,7 @@ import Card from 'app/ui/molecules/card'
 import Profile from 'app/ui/molecules/profile';
 
 function Unit({ data }) {
-    const url = addParameterToUrl(data?.content?.entry_url?.replace('{bx_url_root}', ''), 'ts', data.id);
+    const url = data?.content?.entry_url_api? addParameterToUrl(data?.content?.entry_url_api?.replace('{bx_url_root}', ''), 'ts', data.id) : addParameterToUrl(data?.content?.entry_url?.replace('{bx_url_root}', ''), 'ts', data.id);
 
     let content_parsed = data?.content_parsed?.site || data?.content_parsed || '';
     content_parsed = content_parsed.replace('&#8230;', '...');

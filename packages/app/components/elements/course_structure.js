@@ -27,7 +27,7 @@ import { useBottomSheetData } from 'app/context/bottomsheet';
 function CourseStructure({ data }) {
     const { setBottomSheetData } = useBottomSheetData();
     const isEditable = data.isEditable;
-    const courseId = data.course_id;
+    const courseId = data.entry_id;
 
     const initialState = {
         action: null,
