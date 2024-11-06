@@ -4,20 +4,12 @@ import { Reaction, ReactionProvider } from 'react-native-reactions';
 import { appSetting, FeedbackHaptics } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { useCurrentUser } from 'app/context/user';
-import { useActionsData } from 'app/context/actions';
 import { Button, ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounterDefault, ButtonMenuCounterText, ButtonMenuGroupItem, ButtonsGroupMenu, Modal } from 'app/design/controls';
 import { View, Pressable } from 'app/design/view';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import Profile from 'app/ui/molecules/profile';
 import { subscribe } from 'app/ui/atoms/socket';
 import { useTranslation } from 'react-i18next';
-
-// TODO REWORK: remove setContextVars, pass title in optimistic update, split do/undo to control 
-/*
-if (sAction == 'do'){
-        onLoad({reaction:aParams.reaction, title:'xxx'});
-    }
-        */
 
 const getName = (sType, sSystem, sObjectId, sName) => {
     let aName = [sType, sSystem.replace(/_/g, '-'), sObjectId];
@@ -34,64 +26,36 @@ const getIconAlias = (oParams, oAliases, sName) => {
     return oAliases[sKey][sName] && oAliases[sKey][sName][sType];
 };
 
-const isContextVar = (actionsData, actionsDataState, bShowFull, sContextKey, sName) => {
-    return bShowFull ? actionsDataState?.[sContextKey]?.[sName] != undefined : actionsData?.[sContextKey]?.[sName] != undefined;
-};
-
-const getContextVar = (actionsData, actionsDataState, bShowFull, sContextKey, sName) => {
-    return bShowFull ? actionsDataState[sContextKey][sName] : actionsData[sContextKey][sName];
-};
-
-const setContextVars = (actionsData, setActionsData, actionsDataState, setActionsDataState, bShowFull, sContextKey, mValue) => {
-    let oValue = {};
-    oValue[sContextKey] = mValue;
-
-    if (bShowFull) {
-        if (!actionsDataState)
-            setActionsDataState(oValue);
-        else
-            setActionsDataState({ ...actionsDataState, ...oValue });
-    }
-    else {
-        if (!actionsData)
-            setActionsData(oValue);
-        else
-            setActionsData({ ...actionsData, ...oValue });
-    }
-};
-
 const performAction = async (sSystem, iObjectId, sAction, aParams, onLoad) => {
-    const aParamsDefault = { s: sSystem, o: iObjectId };
+    const aParamsDefault = {s: sSystem, o: iObjectId};
 
-    aParams = aParams ? { ...aParamsDefault, ...aParams } : aParamsDefault;
+    aParams = aParams ? {...aParamsDefault, ...aParams} : aParamsDefault;
     const sRequest = '/api.php?r=system/' + sAction + '/TemplVoteServices&params[]=' + JSON.stringify(aParams);
 
-    if (sAction == 'do'){
-        onLoad({reaction:aParams.reaction, title:'xxx'});
-    }
-    const sResponse = await fetcher(sRequest);
-
-    
-    if (typeof onLoad === 'function' && sAction != 'do')
+    const sResponse = await fetcher(sRequest);    
+    if (typeof onLoad === 'function')
         onLoad(sResponse?.data);
 };
 
-const handleDo = (performAction, setContextVars, sHapticsType, sReaction, oEvent) => {
+const handleDo = (performAction, actionsDataState, setActionsDataState, sReaction, oParams, oEvent) => {
     if (oEvent)
         oEvent.preventDefault();
 
-    FeedbackHaptics(sHapticsType);
+    FeedbackHaptics(oParams.haptics_type);
 
-    performAction('do', { value: 1, reaction: sReaction }, (oData) => {
-        setContextVars(oData);
+    const oDataPreset = {reaction:sReaction, title:oParams.t[sReaction]}
+    setActionsDataState(!actionsDataState ? oDataPreset : {...actionsDataState, ...oDataPreset});
+
+    performAction('do', {value: 1, reaction: sReaction}, (oData) => {
+        setActionsDataState(!actionsDataState ? oData : {...actionsDataState, ...oData});
     });
 };
 
-const handleUndo = (performAction, setContextVars, isContextVar, getContextVar, sReaction, oEvent) => {
+const handleUndo = (performAction, actionsDataState, setActionsDataState, sReaction, oEvent) => {
     oEvent.preventDefault();
 
-    performAction('do', { value: 1, reaction: (isContextVar('reaction') ? getContextVar('reaction') : sReaction) }, (oData) => {
-        setContextVars(oData);
+    performAction('do', {value: 1, reaction: (actionsDataState?.['reaction'] != undefined ? actionsDataState['reaction'] : sReaction)}, (oData) => {
+        setActionsDataState(!actionsDataState ? oData : {...actionsDataState, ...oData});
     });
 };
 
@@ -149,7 +113,7 @@ const getSkeleton = () => {
     );
 };
 
-const getCounterDivided = (getIconAlias, isContextVar, getContextVar, handleGetPerformedByDvd, performedBy, popupVisibleByDvd, setPopupVisibleByDvd, bShowCombined, oParams, oCounter, oButtonProps) => {
+const getCounterDivided = (getIconAlias, handleGetPerformedByDvd, actionsDataState, performedBy, popupVisibleByDvd, setPopupVisibleByDvd, bShowCombined, oParams, oCounter, oButtonProps) => {
     const { t } = useTranslation();
 
     let aButtons = [];
@@ -163,8 +127,8 @@ const getCounterDivided = (getIconAlias, isContextVar, getContextVar, handleGetP
             return;
 
         let iCount = aItem.count;
-        if (isContextVar('counter')) {
-            const oCounterGlobal = getContextVar('counter');
+        if (actionsDataState?.['counter'] != undefined) {
+            const oCounterGlobal = actionsDataState['counter'];
             const sCounterKey = 'count_' + aItem.name;
             if (oCounterGlobal[sCounterKey] != undefined)
                 iCount = oCounterGlobal[sCounterKey];
@@ -196,7 +160,7 @@ const getCounterDivided = (getIconAlias, isContextVar, getContextVar, handleGetP
     return [aButtons, aPopups];
 };
 
-const getCounterCompound = (getIconAlias, isContextVar, getContextVar, handleGetPerformedByCpd, performedBy, popupVisibleByCpd, setPopupVisibleByCpd, tabVisibleByCpd, setTabVisibleByCpd, bShowCombined, oParams, oCounter, oButtonProps) => {
+const getCounterCompound = (getIconAlias, handleGetPerformedByCpd, actionsDataState, performedBy, popupVisibleByCpd, setPopupVisibleByCpd, tabVisibleByCpd, setTabVisibleByCpd, bShowCombined, oParams, oCounter, oButtonProps) => {
     const { t } = useTranslation();
 
     let iTotal = 0;
@@ -208,8 +172,8 @@ const getCounterCompound = (getIconAlias, isContextVar, getContextVar, handleGet
             return;
 
         let iCount = aItem.count;
-        if (isContextVar('counter')) {
-            const oCounterGlobal = getContextVar('counter');
+        if (actionsDataState?.['counter'] != undefined) {
+            const oCounterGlobal = actionsDataState['counter'];
             const sCounterKey = 'count_' + aItem.name;
             if (oCounterGlobal[sCounterKey] != undefined)
                 iCount = oCounterGlobal[sCounterKey];
@@ -342,7 +306,6 @@ export default function ElementReactions(oProps) {
         showTitleFromSize: oProps.params?.button_show_title_from_size
     };
 
-    const { actionsData, setActionsData } = useActionsData();
     const [actionsDataState, setActionsDataState] = useState({});
 
     const [performedBy, setPerformedBy] = useState();
@@ -359,12 +322,9 @@ export default function ElementReactions(oProps) {
     const bAllowViewVoted = oSettings[oProps['system']]?.allow_view_voted != undefined ? oSettings[oProps['system']].allow_view_voted : true;
 
     const _getIconAlias = useCallback((sName) => getIconAlias(oParams, oAliases, sName), [oParams, oAliases]);
-    const _isContextVar = useCallback((sName) => isContextVar(actionsData, actionsDataState, bShowFull, sObject, sName), [actionsData, actionsDataState, bShowFull, sObject]);
-    const _getContextVar = useCallback((sName) => getContextVar(actionsData, actionsDataState, bShowFull, sObject, sName), [actionsData, actionsDataState, bShowFull, sObject]);
-    const _setContextVars = useCallback((mValue) => setContextVars(actionsData, setActionsData, actionsDataState, setActionsDataState, bShowFull, sObject, mValue), [actionsData, setActionsData, actionsDataState, setActionsDataState, bShowFull, sObject]);
     const _performAction = useCallback((sAction, aParams, onLoad) => performAction(oProps.system, oProps.object_id, sAction, aParams, onLoad), [oProps.system, oProps.object_id]);
-    const _handleDo = useCallback((sReaction, event) => handleDo(_performAction, _setContextVars, oParams.haptics_type, sReaction, event), [_performAction, _setContextVars, oParams.haptics_type]);
-    const _handleUndo = useCallback((event) => handleUndo(_performAction, _setContextVars, _isContextVar, _getContextVar, oProps.action.reaction, event), [_performAction, _setContextVars, _isContextVar, _getContextVar, oProps.action.reaction]);
+    const _handleDo = useCallback((sReaction, event) => handleDo(_performAction, actionsDataState, setActionsDataState, sReaction, oParams, event), [_performAction, actionsDataState, setActionsDataState, oParams]);
+    const _handleUndo = useCallback((event) => handleUndo(_performAction, actionsDataState, setActionsDataState, oProps.action.reaction, event), [_performAction, actionsDataState, setActionsDataState, oProps.action.reaction]);
     const _handleGetPerformedByCpd = useCallback((event) => handleGetPerformedByCpd(_performAction, setPerformedBy, setTabVisibleByCpd, setPopupVisibleByCpd, bAllowViewVoted, oParams.haptics_type, event), [_performAction, setPerformedBy, setTabVisibleByCpd, setPopupVisibleByCpd, bAllowViewVoted, oParams.haptics_type]);
     const _handleGetPerformedByDvd = useCallback((sReaction, event) => handleGetPerformedByDvd(_performAction, setPerformedBy, setPopupVisibleByDvd, bAllowViewVoted, oParams.haptics_type, sReaction, event), [_performAction, setPerformedBy, setPopupVisibleByDvd, bAllowViewVoted, oParams.haptics_type]);
 
@@ -375,8 +335,10 @@ export default function ElementReactions(oProps) {
 
     const cb = (data) => {
         let aData = JSON.parse(data);
-        if (!!aData?.api)
-            _setContextVars(aData.api.performer_id == currentUser.id ? aData.api : { counter: aData.api.counter });
+        if (!!aData?.api) {
+            const aDataSet = aData.api.performer_id == currentUser.id ? aData.api : { counter: aData.api.counter }; 
+            setActionsDataState(!actionsDataState ? aDataSet : { ...actionsDataState, ...aDataSet})
+        }
     }
 
     //--- show action
@@ -389,20 +351,20 @@ export default function ElementReactions(oProps) {
         const bShowActionUndo = oAction?.is_undo === true;
 
         let bShowActionVoted = oAction?.is_voted === true || false;
-        if (_isContextVar('is_voted'))
-            bShowActionVoted = _getContextVar('is_voted') === true;
+        if (actionsDataState?.['is_voted'] != undefined)
+            bShowActionVoted = actionsDataState['is_voted'] === true;
 
         let bShowActionDisabled = oAction?.is_disabled === true || false;
-        if (_isContextVar('is_disabled'))
-            bShowActionDisabled = _getContextVar('is_disabled') === true;
+        if (actionsDataState?.['is_disabled'] != undefined)
+            bShowActionDisabled = actionsDataState['is_disabled'] === true;
 
         let sReaction = oAction?.reaction || '';
-        if (_isContextVar('reaction'))
-            sReaction = _getContextVar('reaction');
-        //TODO: 'default' word shouldn't be sent as selected reaction.
+        if (actionsDataState?.['reaction'] != undefined)
+            sReaction = actionsDataState['reaction'];
+
         let sTitle = oAction?.title || '';
-        if (_isContextVar('title'))
-            sTitle = _getContextVar('title');
+        if (actionsDataState?.['title'] != undefined)
+            sTitle = actionsDataState['title'];
 
         const ButtonAction = !bShowCombined ? (bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText) : ButtonMenuGroupItem;
 
@@ -419,7 +381,7 @@ export default function ElementReactions(oProps) {
                     icon: _getIconAlias(oItem.name),
                     class_item: ' transition active:scale-150 duration-300 active:-translate-y-4  ',
                     class_item_icon: ' text-3xl ',
-                    tooltip: "TODO",
+                    tooltip: oParams.t[oItem.name], //TODO: for Roman use provided Tooltips in popup menus
                 };
             });
             if (bWeb) {
@@ -467,8 +429,8 @@ export default function ElementReactions(oProps) {
     //--- show counter
     const sShowCounterStyle = oParams?.show_counter_style || 'compound';
 
-    const _getCounterDivided = useCallback(() => getCounterDivided(_getIconAlias, _isContextVar, _getContextVar, _handleGetPerformedByDvd, performedBy, popupVisibleByDvd, setPopupVisibleByDvd, bShowCombined, oParams, oCounter, oButtonProps), [_getIconAlias, _isContextVar, _getContextVar, _handleGetPerformedByDvd, performedBy, popupVisibleByDvd, setPopupVisibleByDvd, bShowCombined, oParams, oCounter, oButtonProps]);
-    const _getCounterCompound = useCallback(() => getCounterCompound(_getIconAlias, _isContextVar, _getContextVar, _handleGetPerformedByCpd, performedBy, popupVisibleByCpd, setPopupVisibleByCpd, tabVisibleByCpd, setTabVisibleByCpd, bShowCombined, oParams, oCounter, oButtonProps), [_getIconAlias, _isContextVar, _getContextVar, _handleGetPerformedByCpd, performedBy, popupVisibleByCpd, setPopupVisibleByCpd, tabVisibleByCpd, setTabVisibleByCpd, bShowCombined, oParams, oCounter, oButtonProps]);
+    const _getCounterDivided = useCallback(() => getCounterDivided(_getIconAlias, _handleGetPerformedByDvd, actionsDataState, performedBy, popupVisibleByDvd, setPopupVisibleByDvd, bShowCombined, oParams, oCounter, oButtonProps), [_getIconAlias, _handleGetPerformedByDvd, actionsDataState, performedBy, popupVisibleByDvd, setPopupVisibleByDvd, bShowCombined, oParams, oCounter, oButtonProps]);
+    const _getCounterCompound = useCallback(() => getCounterCompound(_getIconAlias, _handleGetPerformedByCpd, actionsDataState, performedBy, popupVisibleByCpd, setPopupVisibleByCpd, tabVisibleByCpd, setTabVisibleByCpd, bShowCombined, oParams, oCounter, oButtonProps), [_getIconAlias, _handleGetPerformedByCpd, actionsDataState, performedBy, popupVisibleByCpd, setPopupVisibleByCpd, tabVisibleByCpd, setTabVisibleByCpd, bShowCombined, oParams, oCounter, oButtonProps]);
 
     let aCounter = [];
     if (bShowCounter && oCounter?.items != undefined)

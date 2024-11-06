@@ -69,7 +69,7 @@ export async function generateMetadata(props) {
             icon: isClientProject ? '/static/favicon.ico' : '/favicon.ico',
         },
         other: {
-            'apple-mobile-web-app-capable': 'yes',
+            'mobile-web-app-capable': 'yes',
             // 'og:title': data?.data?.title
         },
 
