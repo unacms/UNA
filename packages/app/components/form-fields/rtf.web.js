@@ -25,6 +25,8 @@ import Editor from "app/ui/editor/ui/editor";
 import Embed from 'app/ui/molecules/embed'
 import { fetcher } from 'app/lib/fetcher';
 import { appSetting } from 'app/lib/util'
+import  { useLayoutData } from 'app/context/layout';
+import { getAlert } from 'app/lib/util';
 
 import "app/ui/editor/styles/globals.css";
 import "app/ui/editor/styles/prosemirror.css";
@@ -209,6 +211,38 @@ const BxMentionSpan = Node.create({
     },
 });
 
+function InnerEmbed({ html, linkify }) {
+    const [link, setLink] = useState(null);
+
+    useEffect(() => {
+        const fetchAndSetLink = async () => {
+            if (linkify) {
+                const l = linkify2(html);
+                if (l && l !== link?.link) {
+                    const data = await fetcher('/api.php?r=' + appSetting("urls", "embeds_new") + l);
+                    setLink({ link: l, data:data.data });
+                }
+                if (!l) {
+                    setLink(null);
+                }
+            }
+        };
+
+        fetchAndSetLink();
+    }, [html, linkify, link]);
+
+    if (link && link.data) {
+        console.log("Link data available:", link);
+        return (
+            <View className="w-full mt-2">
+                <Embed data={link.data} />
+            </View>
+        );
+    }
+    
+    return <></>;
+}
+
 export default function FormFieldFtf(props) {
 
     const rules = getValidationRules(props);
@@ -220,7 +254,7 @@ export default function FormFieldFtf(props) {
     const object_privacy_view = formContext.watch('object_privacy_view');
     const object_id = formContext.watch('id');
     const m = name == "cmt_text" ? "sys_cmts" : "bx_timeline";
-
+    const { setLayoutData } = useLayoutData();
 
     useEffect(() => {
         if (props.value !== undefined) {
@@ -253,6 +287,45 @@ export default function FormFieldFtf(props) {
             };
         },
     });
+
+    const processImages = async (items) => {
+        let images =[]
+        const imagePromises = Array.from(items).map(item => {
+            return new Promise((resolve, reject) => {
+                if (item.type.indexOf('image') !== -1) {
+                    console.log('1111')
+                    const file = item.getAsFile(); // Получаем файл изображения
+                    console.log('file', file)
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = () => {
+                            const base64Data = reader.result;
+                            const imageData = {
+                                uri: base64Data,
+                                
+                                mimeType: file.type,
+                                fileName: file.name
+                            };
+
+                            images.push(imageData); // Добавляем в массив images
+                            resolve(); // Указываем, что обработка завершена
+                        };
+    
+                        reader.onerror = reject; // Если ошибка при чтении файла
+                        reader.readAsDataURL(file); // Читаем файл как Data URL
+                    } else {
+                        resolve(); // Если файл пустой, просто пропускаем
+                    }
+                } else {
+                    resolve(); // Если item не изображение, пропускаем
+                }
+            });
+        });
+        console.log('images555',)   
+        await Promise.all(imagePromises); // Ждем, пока все изображения будут обработаны
+        console.log('images', images)   
+        setLayoutData(getAlert('images:pasted', images)); // Вызов после завершения всех обработок
+    };
 
     const editor = useEditor({
         parseOptions: {
@@ -301,12 +374,6 @@ export default function FormFieldFtf(props) {
         ],
         content: field.value,
         onUpdate({ editor }) {
-            if (props.linkify) {
-                let l = linkify2(editor.getHTML());
-                if (l != link) {
-                    setLink(l);
-                }
-            }
             field.onChange(editor.getHTML());
         },
         editorProps: {
@@ -319,6 +386,9 @@ export default function FormFieldFtf(props) {
                 );
 
                 if (hasImages) {
+                    processImages(event.clipboardData.items).catch(error => {
+                        console.error("Ошибка при обработке изображений:", error);
+                    });
                     return true; // Prevent image pasting
                 }
 
@@ -354,16 +424,7 @@ export default function FormFieldFtf(props) {
 
     const isFullHtml = (props.html == 2 || props.html == 1);
 
-    const  computedData = useMemo(async () => {
-        if (link){
-            const a = await fetcher('/api.php?r=' + appSetting("urls", "embeds_new") + link);
-            return <View className='w-full mt-2'>
-                <Embed data={a.data}/>
-            </View>
-        }
-        return <></>
-    }, [link]);
-
+   
     const bgClass = props.bg == 'transparent' ? '' : " dark:focus:bg-bgrinput-dafocus bg-neutral-500/10 border border-bdr dark:border-bdr-d focus:bg-bgrinput-focus focus:outline-none focus:border-bdrinput-focus dark:focus:border-bdrinput-df rounded-lg "
     return (
         <>
@@ -377,7 +438,7 @@ export default function FormFieldFtf(props) {
                     {isFullHtml && <MenuBar editor={editor} />}
                 </View>
             </View>
-            {computedData}
+            { editor && <InnerEmbed linkify={props.linkify} html={editor.getHTML()}></InnerEmbed>}
         </>
     )
 }

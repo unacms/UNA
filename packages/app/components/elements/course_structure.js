@@ -92,7 +92,6 @@ function CourseStructure({ data }) {
             item.order = index; 
         });
         dispatch({ type: 'SET_DATA', data: { ...state.data, items: updatedData }});
-       // dispatch({ type: 'SET_MODULE_DATA', moduleData: { ...moduleData, items: updatedData }});
         await fetcher(`/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o=bx_courses_cnt_structure_manage&a=reorder&parent_id=0&entry_id=${courseId}&` + updatedData.map(item => `bx_courses_cnt_structure_manage_row[]=${item.id}`).join('&'));
     };
 

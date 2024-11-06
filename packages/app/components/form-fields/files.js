@@ -15,7 +15,7 @@ import Loading from 'app/ui/atoms/loading'
 import { Text } from 'app/design/typography'
 import { Image as ImageNative, Alert, Platform } from 'react-native';
 import { Camera } from "expo-camera";
-
+import  { useLayoutData } from 'app/context/layout';
 
 export default function (props) {
     const name = props.name;
@@ -25,7 +25,7 @@ export default function (props) {
     let obfuscateFaces = formContext.watch('obfuscate_faces');
     const rules = getValidationRules(props);
     let defaultValue = props?.value ? props.value : '';
-
+    const { layoutData } = useLayoutData();
     const { field } = useController({ name, rules, defaultValue });
     const bMultiple = props.multiple;
     const [hasPermissionCamera, requestPermissionCamera] = ImagePicker.useCameraPermissions();
@@ -34,6 +34,18 @@ export default function (props) {
         return '/api.php?r=system/get_data_api/TemplUploaderServices/&params[]=&obfuscate_faces=' + obfuscateFaces + '&&uo=' + props.uploaders[0] + '&so=' + props.storage_object + '&uid=' + genRnd(8) + '&img_trans=' + props.images_transcoder + '&m=' + (bMultiple ? 1 : 0) + '&c=' + props.content_id + '&p=' + (props.privacy ? 1 : 0);
     }, [props, obfuscateFaces]);
 
+
+
+    useEffect(() => {
+        const uploadImagesAsync = async (assets) => {
+            const k = await uploadImages(assets);
+            setImageSource({ images: k });
+        };
+
+        if (layoutData?.type == 'images:pasted' && props.asDefaultStorage){
+            uploadImagesAsync(layoutData.data)
+        }
+    }, [layoutData]);
 
    /* useEffect(() => {
         pickFromGallery = async () => {
@@ -184,8 +196,6 @@ export default function (props) {
         if (!bIsMedia && props.ext_deny.length && !'jpg,jpeg,jpe,gif,png,svg,webp'.split(',').filter((s) => ~props.ext_deny.split(',').indexOf(s)).length)
             bIsMedia = true;
 
-        console.log("bIsMedia", bIsMedia)
-
         if (Platform.OS !== 'web' && bIsMedia) {
             const { status } = await Camera.requestCameraPermissionsAsync();
             if (status === "granted"){
@@ -280,12 +290,12 @@ export default function (props) {
                 });
             }
             if (!result.cancelled) {
+                console.log("result.assets", result.assets)
                 let k = await uploadImages(result.assets);
                 setImageSource({ images: k });
             }
         }
         else {
-            console.log("DocumentPicker")
             try {
                 const result = await DocumentPicker.getDocumentAsync({
                     type: '*/*', // This allows all file types
@@ -363,7 +373,7 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
 
 
     useEffect(() => {
-        if (drop.current) {
+        if (drop.current && Platform.OS === 'web') {
             drop.current.addEventListener('dragover', handleDragOver);
             drop.current.addEventListener('drop', handleDrop);
             return () => {
