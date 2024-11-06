@@ -164,15 +164,15 @@ export default function FormFeed(props) {
                                 {getFormFieldByData(props.data.inputs['obfuscate_faces'], props.handleSubmit, 'default')}
                             </View>}
                             {props.data.inputs['photo'] && <View className="">
-                                {getFormFieldByData(props.data.inputs['photo'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder })}
+                                {getFormFieldByData(props.data.inputs['photo'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder, noMargin:true })}
                             </View>}
                             {props.data.inputs['video'] && <View className="">
-                                {getFormFieldByData(props.data.inputs['video'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder })}
+                                {getFormFieldByData(props.data.inputs['video'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder, noMargin:true })}
                             </View>}
-                            {props.data.inputs['file'] && <View className="">
-                                {getFormFieldByData(props.data.inputs['file'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder })}
+                            {props.data.inputs['file'] && <View>
+                                {getFormFieldByData(props.data.inputs['file'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder, noMargin:true })}
                             </View>}
-                            {props.data.inputs['labels'] && <View className="">
+                            {props.data.inputs['labels'] && <View>
                                 <Button startDecorator="Hash" size={"base"} variant={"text"} rounded={false} onPress={() => { setIsShowHashtag(isShowHashtag + 1) }} />
                             </View>}
                         </Row>
