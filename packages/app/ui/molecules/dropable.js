@@ -18,12 +18,13 @@ const itemContentSorted = (index, data, provided, isDragging, renderItem) => {
     );
 };
 
-export function DragContext({ children, onSort, renderItem }) {
+export function DragContext({ children, onSort, renderItem, direction="vertical" }) {
     return (
         <DragDropContext onDragEnd={onSort}>
             <Droppable
                 droppableId="droppable"
                 mode="virtual"
+                direction={direction}
                 renderClone={(provided, snapshot, rubric) => (
                     itemContentSorted(rubric.source.index, rubric, provided, snapshot.isDragging, renderItem)
                 )}

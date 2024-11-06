@@ -164,7 +164,6 @@ export default function ModuleStructure({ data }) {
 
 
     const handleLessonsSort = async (result) => {
-        console.log("moduleData", moduleData.items.map(item => `bx_courses_cnt_structure_manage_row[]=${item.id}`).join('&'));
         if (!result.destination) return;
         const updatedData = [...moduleData.items];
         const [removed] = updatedData.splice(result.source.index, 1);
