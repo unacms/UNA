@@ -75,7 +75,7 @@ const getWidth1 = (width) => {
 
 
 
-const ActionButton = React.memo(({ id, index, itemAction, setShowConfirm, deleteRows, fetchData, handleBlock }) => {
+const ActionButton = React.memo(({ id, index, itemAction, setShowConfirm, deleteRows, fetchData, handleBlock, item }) => {
     const [hide, setHide] = useState(false);
 
     const getActionAfter = async (itemAction) => {
@@ -147,7 +147,6 @@ const ActionButton = React.memo(({ id, index, itemAction, setShowConfirm, delete
             <Button
                 {...commonProps}
                 onPress={() => {
-                    console.log(itemAction);
                     handleBlock(itemAction);
                 }}
             />
@@ -278,7 +277,7 @@ export default function ElementGrid(props) {
 
     const handleActionBlock = async (data) => {
         if (data.type == 'modal') {
-            let fetchedData = await fetchData(data.action, data.params);
+            let fetchedData = await fetchData(data.action, data.params, data.callback);
             let cnt = { content: fetchedData.data, designbox_id: 0 }
             setBottomSheetData({ title: cnt.content[0]?.title ? cnt.content[0]?.title : " ", content: <View className='px-1'><BlockByData onFormEmpty={() => handleUpdate()} block={cnt} /></View> });
         }
@@ -306,14 +305,14 @@ export default function ElementGrid(props) {
         }, 100);
     }
 
-    const fetchData = useCallback(async (action, params) => {
-        let sUrl = '/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o=' + settings.object + '&a=' + action;
-        if (settings?.query_append)
+    const fetchData = useCallback(async (action, params, callback) => {
+        let sUrl = callback ? '/api.php?r='+callback : '/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o=' + settings.object + '&a=' + action;
+        if (settings?.query_append && !callback)
             Object.keys(settings.query_append).forEach((sKey) => {
                 sUrl += '&' + sKey + '=' + settings.query_append[sKey];
             });
-
-        return await fetcher(sUrl + params);
+      
+        return await fetcher(sUrl + (callback? '' :params));
     }, [settings.object]);
 
 

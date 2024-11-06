@@ -25,7 +25,7 @@ export default function (props) {
     let obfuscateFaces = formContext.watch('obfuscate_faces');
     const rules = getValidationRules(props);
     let defaultValue = props?.value ? props.value : '';
-    const { layoutData } = useLayoutData();
+    const { layoutData, setLayoutData } = useLayoutData();
     const { field } = useController({ name, rules, defaultValue });
     const bMultiple = props.multiple;
     const [hasPermissionCamera, requestPermissionCamera] = ImagePicker.useCameraPermissions();
@@ -44,6 +44,7 @@ export default function (props) {
 
         if (layoutData?.type == 'images:pasted' && props.asDefaultStorage){
             uploadImagesAsync(layoutData.data)
+            setLayoutData(null);
         }
     }, [layoutData]);
 

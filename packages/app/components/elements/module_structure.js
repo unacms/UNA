@@ -281,7 +281,7 @@ const getColorByTypeLesson = (item, index, passing, byIndex = false) => {
 };
 
 function EditLesson({ formData, handleUpdate, lessonData: initedLessonData, courseId, lessonId, moduleId, gridData, dispatch }) {
-
+    console.log("gridDatagridData", gridData)
     const [viewType, setViewType] = useState(0);
     const [lessonData, setLessonData] = useState(initedLessonData);
     const content = { content: formData, designbox_id: 0 };
@@ -314,7 +314,7 @@ function EditLesson({ formData, handleUpdate, lessonData: initedLessonData, cour
                 ))}
             </Row>
             {viewType == 0 && <BlockByData onFormEmpty={handleUpdate} block={content} />}
-            {viewType == 1 && <LessonSteps dispatch={dispatch} lessonData={lessonData} isEditable={true} reloadData={reloadData} courseId={courseId} moduleId={moduleId} lessonId={lessonId} addParams={gridData.data.actions.independent.add_st} />}
+            {viewType == 1 && <LessonSteps dispatch={dispatch} lessonData={lessonData} isEditable={true} reloadData={reloadData} courseId={courseId} moduleId={moduleId} lessonId={lessonId} addParams={gridData.data.actions.independent.add_st} gridData={gridData} />}
             {viewType == 2 && <LessonAttach lessonData={lessonData} isEditable={true} reloadData={reloadData} courseId={courseId} lessonId={lessonId} addParams={gridData.data.actions.independent.add_at} />}
         </View>
     );
@@ -431,7 +431,8 @@ const showAddForm = async (url) => {
 */
 
 
-function LessonSteps({ lessonData, startLessonPart, isEditable, reloadData, courseId, lessonId, moduleId, addParams, dispatch  }) {
+function LessonSteps({ lessonData, startLessonPart, isEditable, reloadData, courseId, lessonId, moduleId, addParams, dispatch, gridData  }) {
+    console.log("gridData2", gridData);
     const steps = lessonData.steps;
     const [formData, setFormData] = useState(null);
 
@@ -440,10 +441,11 @@ function LessonSteps({ lessonData, startLessonPart, isEditable, reloadData, cour
         reloadData();
     }
 
-    const editStep = async (id) => {
-        //TODO
-        /*const fetchedData = await fetcher(`/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o=bx_courses_cnt_structure_manage&a=edit&parent_id=${moduleId}&entry_id=${courseId}&id=${id}`);
-        console.log("fetchedDatafetchedData", fetchedData)*/
+    const editStep = async (actionEdit) => {
+        console.log("itemitem", actionEdit)
+        const fetchedData = await fetcher("/api.php?r=" + actionEdit.callback);
+        setFormData({ content: fetchedData.data, designbox_id: 0, title: "Edit" })
+        
     }
 
     const handleUpdate = (url) => {
@@ -456,8 +458,9 @@ function LessonSteps({ lessonData, startLessonPart, isEditable, reloadData, cour
     }
 
     const handleAction = async (item) => {
+       
         const fetchedData = await fetcher("/api.php?r=" + item.callback);
-        setFormData({ content: fetchedData.data, designbox_id: 0, title: item.title })
+        setFormData({ content: fetchedData.data, designbox_id: 0, title: 'Add ' + item.title })
     };
 
     const handleStepsSort = async (result) => {
@@ -466,16 +469,15 @@ function LessonSteps({ lessonData, startLessonPart, isEditable, reloadData, cour
         const updatedData = [...lessonData.steps];
         const [removed] = updatedData.splice(result.source.index, 1);
         updatedData.splice(result.destination.index, 0, removed);
-        /*updatedData.forEach((item, index) => {
-            item.order = index; 
-        });*/
-        console.log("stepssteps22", updatedData);
         dispatch({ type: 'SET_LESSON_DATA', lessonData: { ...lessonData, steps: updatedData }});
         await fetcher(`/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o=bx_courses_cnt_data_manage&a=reorder&parent_id=${lessonId}&entry_id=${courseId}&` + updatedData.map(item => `bx_courses_cnt_data_manage_row[]=${item.id}`).join('&'));
  
         };
 
     const renderStep = (index, item, dragHandleProps) => {
+        console.log("gridData22", gridData, item);
+        const actionEdit = gridData?.data?.data?.find(item2 => item2.id == item.id).actions.data.find(item2 => item2.name == 'edit')
+
         const [color, icon, color2, color3] = getColorByTypeLesson(item, index, lessonData.passing);
         return (
             <Pressable key={`step-${index}`} onPress={() => { startLessonPart(item.id, false) }}>
@@ -507,7 +509,7 @@ function LessonSteps({ lessonData, startLessonPart, isEditable, reloadData, cour
                             {isEditable && (
                                 <>
                                     <Button startDecorator="Trash" variant="outline" size="sm" onPress={() => deleteStep(item.id)} />
-                                    <Button startDecorator="Pencil" variant="outline" size="sm" onPress={() => editStep(item.id)} />
+                                    <Button startDecorator="Pencil" variant="outline" size="sm" onPress={() => editStep(actionEdit)} />
                                     <DragControl dragHandleProps={dragHandleProps}><Button  variant="outline" startDecorator="ArrowsVertical" size='sm' /></DragControl>
                                 </>
                             )}
@@ -517,7 +519,7 @@ function LessonSteps({ lessonData, startLessonPart, isEditable, reloadData, cour
             </Pressable>
         )
     }
-    console.log("stepssteps3333", steps);
+
     //TODO lines
     return <>
       <DragContext onSort={handleStepsSort} renderItem={renderStep}>
@@ -534,7 +536,7 @@ function LessonSteps({ lessonData, startLessonPart, isEditable, reloadData, cour
             <Button startDecorator="Plus" variant="default" size="sm" title={addParams.title} />
         </DropdownMenu></View>
         }
-        {formData && <Modal onClose={handleClose} title={`Add ${formData.title}`}><BlockByData onFormEmpty={() => handleUpdate()} block={formData} /></Modal>}
+        {formData && <Modal onClose={handleClose} title={`${formData.title}`}><BlockByData onFormEmpty={() => handleUpdate()} block={formData} /></Modal>}
     </>
 }
 
