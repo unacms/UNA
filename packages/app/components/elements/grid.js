@@ -298,6 +298,7 @@ export default function ElementGrid(props) {
     };
 
     const handleUpdate = () => {
+        console.log("aaa");
         setTimeout(() => {
             handleCloseModal();
             resetData();
@@ -306,6 +307,7 @@ export default function ElementGrid(props) {
     }
 
     const fetchData = useCallback(async (action, params, callback) => {
+        console.log("999")
         let sUrl = callback ? '/api.php?r='+callback : '/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o=' + settings.object + '&a=' + action;
         if (settings?.query_append && !callback)
             Object.keys(settings.query_append).forEach((sKey) => {

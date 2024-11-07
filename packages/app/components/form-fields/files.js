@@ -478,7 +478,7 @@ function ButtonCover({ imageSource, selectImage }) {
         title="Add Cover"
         startDecorator={img?.preload ? "_loading" : "Image"}
         variant="outline"
-        size="sm"
+        size="xs"
         onPress={selectImage}
     />
 

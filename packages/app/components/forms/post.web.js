@@ -10,7 +10,6 @@ export default function FormPost(props) {
     const {data, handleSubmit} = props;
     const inputs = data.inputs;
 
-    console.log("inputsinputs", inputs)
     const [imageSource, setImageSource] = useState([])
     let { currentUser, setCurrentUser } = useCurrentUser();
     function setPlaceHolder(name, previews) {
@@ -84,15 +83,15 @@ export default function FormPost(props) {
                 </View>
             </View>
             <View className="flex-col ">
-                <View className='w-full flex-wrap my-1 flex-row border rounded-xl border-bdr dark:border-bdr-d  py-1 px-2 items-center '>
+                <View className='w-full flex-wrap my-1 flex-row border rounded-xl border-bdr dark:border-bdr-d  py-1 px-2 items-center'>
                     <Text className="font-semibold px-3 py-1 justify-center my-auto text-sm flex-auto text-neutral-800 dark:text-neutral-200">Add to post</Text>
-                    <Row className=" justify-start items-center flex-row flex-wrap px-2 ">
-                        <View className="">
+                    <Row className=" justify-center items-center flex-row flex-wrap px-2">
+                        <View className="items-center justify-center">
                             {getFormFieldByData(
                                 inputs['pictures'],
                                 handleSubmit,
                                 'custom',
-                                { previewPlaceHolder: setPlaceHolder }
+                                { previewPlaceHolder: setPlaceHolder, noMargin:true }
                             )}
                         </View>
                         <View className="">
@@ -100,7 +99,7 @@ export default function FormPost(props) {
                                 inputs['videos'],
                                 handleSubmit,
                                 'custom',
-                                { previewPlaceHolder: setPlaceHolder }
+                                { previewPlaceHolder: setPlaceHolder, noMargin:true }
                             )}
                         </View>
                         <View className="">
@@ -108,7 +107,7 @@ export default function FormPost(props) {
                                 inputs['files'],
                                 handleSubmit,
                                 'custom',
-                                { previewPlaceHolder: setPlaceHolder }
+                                { previewPlaceHolder: setPlaceHolder, noMargin:true }
                             )}
                         </View>
                         <View className="">
@@ -116,7 +115,7 @@ export default function FormPost(props) {
                                 inputs['sounds'],
                                 handleSubmit,
                                 'custom',
-                                { previewPlaceHolder: setPlaceHolder }
+                                { previewPlaceHolder: setPlaceHolder, noMargin:true }
                             )}
                         </View>
                     </Row>
@@ -129,33 +128,36 @@ export default function FormPost(props) {
 
                 <View className='w-full my-1 flex-row border rounded-xl border-bdr dark:border-bdr-d py-1 px-2'>
                     <Text className="font-semibold px-3 py-1 justify-center my-auto text-sm  text-neutral-800 dark:text-neutral-200">Labels</Text>
-                    <Row className=" justify-start items-center flex-auto px-2 ">
+                    <Row className=" justify-end items-center flex-auto px-2 ">
                         {getFormFieldByData(
                             inputs['labels'],
                             handleSubmit,
-                            'notitle'
+                            'notitle',
+                            { noMargin:true, variant: 'text', align: 'right', size: 'sm' }
                         )}
                     </Row>
                 </View>
 
-                <View className='w-full flex-wrap my-1 flex-row border rounded-xl border-bdr dark:border-bdr-d py-1 px-2'>
+                <View className='w-full my-1 flex-row border rounded-xl border-bdr dark:border-bdr-d py-1 px-2'>
                     <Text className="font-semibold px-3 py-1 my-auto text-sm  text-neutral-800 dark:text-neutral-200">Category</Text>
-                    <Row className=" gap-x-2 max-w-xl px-2 justify-start items-center flex-auto flex-row flex-wrap ">
+                    <Row className=" justify-end items-center flex-auto px-2 ">
                         {getFormFieldByData(
                             inputs['cat'],
                             handleSubmit,
-                            'notitle'
+                            'notitle',
+                            { noMargin:true,  align: 'right',  variant: 'text', size: 'sm' }
                         )}
                     </Row>
                 </View>
 
-                <View className='w-full flex-wrap my-1   flex-row border rounded-xl border-bdr dark:border-bdr-d py-1 px-2'>
+                <View className='w-full flex-wrap my-1   flex-row border rounded-xl border-bdr dark:border-bdr-d py-1 px-2 mb-2'>
                     <Text className="font-semibold px-3 py-1  my-auto text-sm flex-auto text-neutral-800 dark:text-neutral-200">Allow Comments</Text>
-                    <Row className=" gap-x-2 p-2 justify-start items-center flex-row flex-wrap ">
+                    <Row className=" gap-x-2 px-2 py-0.5 justify-start items-center flex-row flex-wrap ">
                         {getFormFieldByData(
                             inputs['allow_comments'],
                             handleSubmit,
-                            'default'
+                            'default',
+                            { noMargin:true }
                         )}
                     </Row>
                 </View>

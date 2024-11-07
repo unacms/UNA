@@ -59,6 +59,9 @@ export default function (props) {
     const { field } = useController({ name, rules, defaultValue });
     const [value2, setValue2] = useState(field.value)
 
+    const variant = props.variant || 'outline';
+    const size = props.size || 'sm';
+
     const addValue2 = useCallback(
         (value) => {
             const selectedValues = value2.includes(value)
@@ -141,19 +144,19 @@ export default function (props) {
             {ModalCnt}
             <Field {...props}>
                 <View className='w-full justify-between '>
-                    <View className={styles + ' w-full flex-auto  items-center flex-row flex-wrap my-2'}>
+                    <View className={styles + ' w-full flex-auto  items-center flex-row flex-wrap'}>
                         {props.align == 'right' && <Button
                             startDecorator="Plus"
-                            variant="text"
-                            size="base"
+                            variant={variant}
+                            size={size}
                             onPress={showSelect}
                         />}
                         {field.value?.length > 0 && valuesList.filter(item => field.value.includes(item.key)).map((item, index) => (
-                            <View className='m-1' key={'label' + index}>
+                            <View className='mx-1' key={'label' + index}>
                                 <Button
                                     endDecorator="X"
-                                    variant={"outline"}
-                                    size="sm"
+                                    variant={variant}
+                                    size={size}
                                     title={item.value}
                                     onPress={removeValue(item.key)}
                                 />
@@ -162,8 +165,8 @@ export default function (props) {
                         )}
                         {props.align != 'right' && <Button
                             startDecorator="Plus"
-                            variant="text"
-                            size="sm"
+                            variant={variant}
+                            size={size}
                             title='Add'
                             onPress={showSelect}
                         />}

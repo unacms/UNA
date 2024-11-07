@@ -140,7 +140,7 @@ export default function FormFeed(props) {
                                                 )}
                                             </View>
                                             {props.data.inputs['labels'] &&
-                                                <View className=" ">
+                                                <View className="mt-2">
                                                     {labels}
                                                 </View>
 

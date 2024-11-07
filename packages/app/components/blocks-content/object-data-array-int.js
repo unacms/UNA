@@ -65,7 +65,7 @@ export default function BlockContentObjectDataArray(props) {
     if (dynamicData) {
         realData = dynamicData.data;
     }
-
+    console.log("----", props?.onFormEmpty, dynamicData?.data?.length)
     if (dynamicData && dynamicData.data?.length == 0) {
 
         if (props.onFormEmpty) {

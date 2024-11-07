@@ -29,6 +29,8 @@ export default function (props) {
     const rules = {};
     const defaultValue = props.value ? props.value : '';
     const name = props.name ? props.name : '';
+    const variant = props.variant || 'outline';
+    const size = props.size || 'xs';
     const { field } = useController({ name, rules, defaultValue });
     const [isModal, setIsModal] = useState(props.isShow);
     const [value2, setValue2] = useState(field.value)
@@ -106,26 +108,27 @@ export default function (props) {
                     <View className={styles + ' w-full flex-auto  items-center flex-row flex-wrap'}>
                         {props.align == 'right' && <Button
                             startDecorator="Plus"
-                            variant="text"
-                            size="base"
+                            title='Tags'
+                            variant={variant}
+                            size={size}
                             onPress={showSelect}
                         />}
                         {!!field.value && field.value.map((item, index) => (
-                            <View className='mr-2 mb-2' key={'label' + index}>
+                            
                                 <Button
                                     endDecorator="X"
-                                    variant={"outline"}
-                                    size="xs"
+                                    variant={variant}
+                                    size={size}
                                     title={item}
                                     onPress={removeValue(item)}
                                 />
-                            </View>
+                           
                         )
                         )}
                         {props.align != 'right' && !props.listOnly && <Button
                             startDecorator="Hash"
-                            variant="outline"
-                            size="sm"
+                            variant={variant}
+                            size={size}
                             title='Tags'
                             onPress={() => showSelect()}
                         />}
