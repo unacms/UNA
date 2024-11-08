@@ -63,7 +63,7 @@ export const settingsDefault = {
             'rose',
             'red',
         ],
-        async_workers: ['NotifChecker'], //['EventChecker'],
+        async_workers: ['CounterChecker'], //['EventChecker'],//NotifChecker
         async_workers_interval: 10,
         bluetooth: false,
         bluetooth_device_name_prefix: 'NEO',
@@ -677,7 +677,7 @@ export const settingsDefault = {
             {
                 key: '/tab1',
                 title: 'Messages',
-                url: '/edit-course-content/test-cource?parent_id=1',
+                url: '/messenger',
                 icon: 'ChatTeardropDots',
             },
             {

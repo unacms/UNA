@@ -196,12 +196,13 @@ export default function (props) {
                                                     )}
                                                     alt={t('Messenger')}
                                                 >
-                                                    <ButtonRef
+                                                    <Button
                                                         tooltip={t('Messenger')}
                                                         variant="secondary"
                                                         rounded
                                                         startDecorator="ChatTeardropDots"
                                                         id="m2"
+                                                        addon={{variant:'primary', text: currentUser?.counters?.bx_messenger_new_messages, hideZero: true}}
                                                     />
                                                 </Link>
                                             )}

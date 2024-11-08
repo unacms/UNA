@@ -209,7 +209,7 @@ export function ButtonsGroup({
     const aChildren = children.map((child, iIndex) => {
         const { variant, size, fullWidth, ...restChild } = child.props;
         const isLastChild = iIndex < children.length - 1;
-        const childClass = 'flex-auto ' + (isLastChild ? ' border-r border-bdr dark:border-bdr-d' : '');
+        const childClass = 'flex-auto ' + (isLastChild && !bTextContainer ? ' border-r border-bdr dark:border-bdr-d' : '');
 
         let childItem;
         if (child.type === Button) {
@@ -267,17 +267,22 @@ const getIcon2 = (buttonInfo, classIconName, sClassText, sIconContainer, iIconSi
     }
 }
 
-const getAddon = (addon) => {
+const getAddon = (addon, isTitle) => {
     let sButtonAddonText = "";
     let sButtonAddonBg = "bg-neutral-500 dark:bg-neutral-500";
     if (typeof addon === 'object') {
         sButtonAddonText = addon?.text;
+        if (addon?.hideZero && sButtonAddonText == '0')
+            return null;
         if (addon?.variant == 'primary')
             sButtonAddonBg = 'bg-contrast dark:bg-contrast-d';
     }
     else {
         sButtonAddonText = addon;
     }
+
+    if (!isTitle)
+        return <View className={`absolute ${sButtonAddonBg} border-2 border-white dark:border-neutral-900 rounded-full  px-1.5 items-center justify-center -right-1 -top-2`}><Text className='text-white text-xs font-semibold'>{sButtonAddonText}</Text></View>
 
     return sButtonAddonText && sButtonAddonText != '' ? <View className='flex-1 items-end '>
         <View className={sButtonAddonBg + ' rounded-full px-2 py-0.5 mx-1 text-center items-center'}>
@@ -451,31 +456,37 @@ export const Button = (props) => {
                 : null,
         [endDecorator, classIconName, sClassText, sIconContainer, iIconSize, colorIcon]
     );
-
-    const oButtonAddon = getAddon(addon);
+    const isTitle = !!title;
+    const oButtonAddon = getAddon(addon, isTitle);
 
     const Cnt = onPress && !disabled ? Pressable : View;
     const refProps = forwardedRef ? { ref: forwardedRef } : {};
+
+  
+
     const buttonContent = (
-        <Cnt
-            className={`${sClassContainer} ${sizeClasses}`}
-            {...rest}
-            {...(rest.alt
-                ? { 'aria-label': rest.alt, role: 'button', alt: rest.alt }
-                : {})}
-            onPress={onPress && !disabled ? onPress : undefined}
-            {...refProps}
-        >
-            {sButtonIconStart}
-            {title !== undefined && (
-                <Text className={`${sClassText} ${sTitleContainer}`} numberOfLines={1}>
-                    {title}
-                </Text>
-            )}
-            {sButtonIconEnd}
-            {oButtonAddon}
-            {children}
-        </Cnt>
+        <>
+            <Cnt
+                className={`${sClassContainer} ${sizeClasses}`}
+                {...rest}
+                {...(rest.alt
+                    ? { 'aria-label': rest.alt, role: 'button', alt: rest.alt }
+                    : {})}
+                onPress={onPress && !disabled ? onPress : undefined}
+                {...refProps}
+            >
+                {sButtonIconStart}
+                {isTitle && (
+                    <Text className={`${sClassText} ${sTitleContainer}`} numberOfLines={1}>
+                        {title}
+                    </Text>
+                )}
+                {sButtonIconEnd}
+                {isTitle && oButtonAddon}
+                {children}
+            </Cnt>
+            {!isTitle && oButtonAddon}
+        </>
     );
 
     return showTooltip ? <Tooltip content={tooltip}>{buttonContent}</Tooltip> : buttonContent;

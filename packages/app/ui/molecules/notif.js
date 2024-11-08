@@ -50,10 +50,9 @@ export default function (props) {
             tooltip={props.tooltip === undefined ? "Notifications" : props.tooltip}
             rounded
             startDecorator="Bell"
-            id="m1"
+            addon={{variant:'primary', text: notifCount, hideZero: true}}
         />
-        {(notifCount > 0 /*&& !ntfsOpen*/) && <View className='absolute bg-contrast border-2 border-white dark:border-neutral-900 rounded-full  px-1.5 items-center justify-center -right-1 -top-2'><Text className='text-white text-xs font-semibold'>{notifCount}</Text></View>}
-
+ 
     </View>
 
     if (props.children) {

@@ -17,14 +17,22 @@ export function getBadgeForTab(currentUser, url) {
                 {currentUser?.notifications}
             </Text>
         )
-
-    if (url == '/friends-all' && currentUser?.counters)
+        if (
+            url == appSetting('layout', 'messenger') &&
+            currentUser?.counters?.bx_messenger_new_messages
+        )
+            return (
+                <Text className={Platform.OS === 'ios' ? 'text-xs' : 'text-sm'}>
+                    {currentUser?.counters?.bx_messenger_new_messages}
+                </Text>
+            )
+   /* if (url == '/friends-all' && currentUser?.counters)
         return (
             <Text className={Platform.OS === 'ios' ? 'text-xs' : 'text-sm'}>
                 {currentUser.counters.respects + currentUser.counters.trust}
             </Text>
         )
-
+*/
     return null
 }
 
