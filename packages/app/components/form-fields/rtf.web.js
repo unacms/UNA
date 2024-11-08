@@ -321,9 +321,7 @@ export default function FormFieldFtf(props) {
                 }
             });
         });
-        console.log('images555',)   
-        await Promise.all(imagePromises); // Ждем, пока все изображения будут обработаны
-        console.log('images', images)   
+        await Promise.all(imagePromises); // Ждем, пока все изображения будут обработаны 
         setLayoutData(getAlert('images:pasted', images)); // Вызов после завершения всех обработок
     };
 
@@ -387,7 +385,7 @@ export default function FormFieldFtf(props) {
 
                 if (hasImages) {
                     processImages(event.clipboardData.items).catch(error => {
-                        console.error("Ошибка при обработке изображений:", error);
+                        console.error("Error", error);
                     });
                     return true; // Prevent image pasting
                 }

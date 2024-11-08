@@ -829,6 +829,10 @@ export function genRnd(length) {
     return result;
 }
 
+export function isNumeric(str) {
+    return !isNaN(str) && !isNaN(parseFloat(str));
+}
+
 export function getIconByNameFromIconset(iconset, name) {
     let icon = iconset[name];
     if (!icon) {

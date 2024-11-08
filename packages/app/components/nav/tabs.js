@@ -9,7 +9,7 @@ import Profile from 'app/ui/molecules/profile';
 import { useState, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next';
 //import BottomSheetDataContext from 'app/context/bottomsheet';
-import { FeedbackHaptics } from 'app/lib/util';
+import { FeedbackHaptics, isNumeric } from 'app/lib/util';
 import * as Linking from 'expo-linking';
 import { useRouter } from 'expo-router';
 import { parseUrl } from 'app/lib/util'
@@ -145,10 +145,10 @@ export default function () {
 
 
     useEffect(() => {
-        if (Platform.OS == 'ios') {
+        if (currentUser && Platform.OS == 'ios' && isNumeric(currentUser?.notifications)) {
             PushNotificationIOS.setApplicationIconBadgeNumber(currentUser?.notifications);
         }
-    }, [currentUser?.notifications]);
+    }, [currentUser?.id]);
 
 
     if (!fontsLoaded) {

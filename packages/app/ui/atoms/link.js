@@ -11,6 +11,13 @@ export default function ElementLink(props) {
     const glob = useGlobalSearchParams();
     const { currentUser } = useCurrentUser();
 
+    // Обработчик для Haptics
+    const handleHapticsPress = useCallback(() => {
+        if (haptics) {
+            FeedbackHaptics(haptics);
+        }
+    }, [haptics]);
+
     const TabList = useMemo(() => {
         return currentUser
             ? appSetting('menu_items', 'menu_tabbar_logged')
@@ -22,9 +29,7 @@ export default function ElementLink(props) {
     const sanitizedHref = invalidHrefs.includes(href) ? '' : href;
 
     // Если href невалиден или пуст, возвращаем детей без обертки
-    if (!sanitizedHref) {
-        return children;
-    }
+    
 
     let finalHref = sanitizedHref === '/home' ? '/' : sanitizedHref;
 
@@ -53,6 +58,10 @@ export default function ElementLink(props) {
         await WebBrowser.openBrowserAsync(finalHref);
     }, [finalHref]);
 
+    if (!sanitizedHref) {
+        return children;
+    }
+
     // Если ссылка внешняя, открываем в браузере
     if (domain && domain !== rootUrl) {
         return (
@@ -61,13 +70,6 @@ export default function ElementLink(props) {
             </Pressable>
         );
     }
-
-    // Обработчик для Haptics
-    const handleHapticsPress = useCallback(() => {
-        if (haptics) {
-            FeedbackHaptics(haptics);
-        }
-    }, [haptics]);
 
     return (
         <Link push href={p} asChild {...rest}>

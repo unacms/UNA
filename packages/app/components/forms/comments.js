@@ -32,7 +32,7 @@ export default function FormComments(props) {
     return <View className='w-full ' >
         <Row className='w-full items-end  '>
         <View className={'mr-2 ' + (isWeb ? '' : ' w-11 ')}>
-                {getFormFieldByData(props.data.inputs['cmt_image'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder, noMargin: true })}
+                {getFormFieldByData(props.data.inputs['cmt_image'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder, noMargin: true, asDefaultStorage:true })}
             </View>
             <View className={`flex-auto bg-bgritem dark:bg-bgritem-d rounded-3xl justify-center ${isWeb && 'min-h-[44px]'} items-end ${sPad}`} >
                 {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'custom')}
