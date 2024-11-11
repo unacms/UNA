@@ -149,6 +149,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
 
 
     useEffect(() => {
+        console.log("aaaa");
     setListError(null);
 }, [convoId]);
     const onNewMessage = (data) => {
