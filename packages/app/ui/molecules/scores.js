@@ -3,7 +3,6 @@ import { Platform } from 'react-native';
 import { appSetting, FeedbackHaptics } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { useCurrentUser } from 'app/context/user';
-import { useActionsData } from 'app/context/actions';
 import { Text } from 'app/design/typography';
 import { View } from 'app/design/view';
 import { ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounterDefault, ButtonMenuCounterText, ButtonMenuGroupItem, ButtonsGroupMenu, Modal } from 'app/design/controls';
@@ -18,32 +17,6 @@ const getName = (sType, sSystem, sObjectId, sName) => {
         aName.push(sName);
 
     return [].concat(aName).join('-');
-};
-
-const isContextVar = (actionsData, actionsDataState, bShowFull, sContextKey, sName) => {
-    return bShowFull ? actionsDataState?.[sContextKey]?.[sName] != undefined : actionsData?.[sContextKey]?.[sName] != undefined;
-};
-
-const getContextVar = (actionsData, actionsDataState, bShowFull, sContextKey, sName) => {
-    return bShowFull ? actionsDataState[sContextKey][sName] : actionsData[sContextKey][sName];
-};
-
-const setContextVars = (actionsData, setActionsData, actionsDataState, setActionsDataState, bShowFull, sContextKey, mValue) => {
-    let oValue = {};
-    oValue[sContextKey] = mValue;
-
-    if(bShowFull) {
-        if(!actionsDataState)
-            setActionsDataState(oValue);
-        else
-            setActionsDataState({...actionsDataState, ...oValue});
-    }
-    else {
-        if(!actionsData)
-            setActionsData(oValue);
-        else
-            setActionsData({...actionsData, ...oValue});
-    }
 };
 
 const performAction = async (sSystem, iObjectId, sAction, aParams, onLoad) => {
@@ -65,25 +38,18 @@ const handleDo = (performAction, onHandleDo, sHapticsType, sAction, oEvent) => {
     performAction('do', {a: sAction}, (oData) => onHandleDo(oData));
 };
 
-const onHandleDo = (isContextVar, getContextVar, setContextVars, setCounterClass, oCounter, oData) => {
-    let iScoreOld = oCounter.score;
-    if(isContextVar('counter'))
-        iScoreOld = getContextVar('counter').score;
-
+const onHandleDo = (objectData, setObjectData, setCounterClass, oCounter, oData) => {
     if(oData?.counter != undefined) {
-        oData.counter.score_old = iScoreOld;
-        if(oData.counter.score != iScoreOld) {
-            let iScore = parseInt(oData.counter.score);
-            iScoreOld = parseInt(iScoreOld);
-
-            if(iScore > iScoreOld)
+        oData.counter.score_old = objectData?.['counter'] != undefined ? objectData['counter'].score : oCounter.score;
+        if(oData.counter.score != oData.counter.score_old) {
+            if(parseInt(oData.counter.score) > parseInt(oData.counter.score_old))
                 setCounterClass('translate-y-1/2');
             else 
                 setCounterClass('-translate-y-1/2');
         }
     }
 
-    setContextVars(oData);
+    setObjectData(!objectData ? oData : {...objectData, ...oData});
 };
 
 const handleGetPerformedBy = (performAction, setPerformedBy, setPopupVisible, sHapticsType, oEvent) => {
@@ -150,18 +116,14 @@ export default function ElementScore(oProps) {
         showTitleFromSize: oProps.params?.button_show_title_from_size
     };
 
-    const { actionsData, setActionsData } = useActionsData();
-    const [ actionsDataState, setActionsDataState ] = useState({});
+    const [ objectData, setObjectData ] = useState({...oAction, ...{counter: oCounter}});
     const [ counterClass, setCounterClass ] = useState('');
 
     const [ popupVisible, setPopupVisible ] = useState(false);
     const [ performedBy, setPerformedBy ] = useState();
 
-    const _isContextVar = useCallback((sName) => isContextVar(actionsData, actionsDataState, bShowFull, sObject, sName), [actionsData, actionsDataState, bShowFull, sObject]);
-    const _getContextVar = useCallback((sName) => getContextVar(actionsData, actionsDataState, bShowFull, sObject, sName), [actionsData, actionsDataState, bShowFull, sObject]);
-    const _setContextVars = useCallback((mValue) => setContextVars(actionsData, setActionsData, actionsDataState, setActionsDataState, bShowFull, sObject, mValue), [actionsData, setActionsData, actionsDataState, setActionsDataState, bShowFull, sObject]);
     const _performAction = useCallback((sAction, aParams, onLoad) => performAction(oProps.system, oProps.object_id, sAction, aParams, onLoad), [oProps.system, oProps.object_id]);
-    const _onHandleDo = useCallback((oData) => onHandleDo(_isContextVar, _getContextVar, _setContextVars, setCounterClass, oCounter, oData), [_isContextVar, _getContextVar, _setContextVars, setCounterClass, oCounter]);
+    const _onHandleDo = useCallback((oData) => onHandleDo(objectData, setObjectData, setCounterClass, oCounter, oData), [objectData, setObjectData, setCounterClass, oCounter]);
     const _handleDo = useCallback((sAction, event) => handleDo(_performAction, _onHandleDo, oParams.haptics_type, sAction, event), [_performAction, _onHandleDo, oParams.haptics_type]);
     const _handleGetPerformedBy = useCallback((event) => handleGetPerformedBy(_performAction, setPerformedBy, setPopupVisible, oParams.haptics_type, event), [_performAction, setPerformedBy, setPopupVisible, oParams.haptics_type]);
 
@@ -183,17 +145,9 @@ export default function ElementScore(oProps) {
     const ButtonAction = !bShowCombined ? (bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText) : ButtonMenuGroupItem;
 
     const aActionButtons = Object.keys(oAction).map(function(sAction) {
-        const oItem = oAction[sAction];
-
-        const bShowActionVoted = oItem?.is_voted === true || (_isContextVar('is_voted') && _getContextVar('is_voted') === true);
-        const bShowActionDisabled = oItem?.is_disabled === true || (_isContextVar('is_disabled') && _getContextVar('is_disabled') === true);
-
-        let sTitle = oItem?.title || '';
-        if(_isContextVar(sAction)) {
-            const oItemGlobal = _getContextVar(sAction);
-            if(oItemGlobal?.title)
-                sTitle = oItemGlobal.title;
-        }
+        const bShowActionVoted = objectData?.[sAction]?.['is_voted'] != undefined ?  objectData[sAction]['is_voted'] === true : false;
+        const bShowActionDisabled = objectData?.[sAction]?.['is_disabled'] != undefined ?  objectData[sAction]['is_disabled'] === true : false;
+        const sTitle = objectData?.[sAction]?.['title'] != undefined ? objectData[sAction]['title'] : '';
 
         return (
             <ButtonAction key={'action-' + sAction} startDecorator={oIconAliases[sAction]} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? (event) => {_handleDo(sAction, event)} : () => {}} disabled={bShowActionDisabled} {...oButtonProps} />
@@ -208,27 +162,13 @@ export default function ElementScore(oProps) {
 
     let sCounterButton = undefined;
     let sCounterPopup = undefined;
-    if(bShowCounter && oCounter?.score != undefined) {
-        let iScore = oCounter.score;
-        let iScoreOld = oCounter.score;
-        let iScoreCountUp = oCounter.count_up;
-        let iScoreCountDown = oCounter.count_down;
-        if(_isContextVar('counter')) {
-            const oCounterGlobal = _getContextVar('counter');
-            if(oCounterGlobal?.score != undefined)
-                iScore = oCounterGlobal.score;
-            if(oCounterGlobal?.score_old != undefined)
-                iScoreOld = oCounterGlobal.score_old;
-            if(oCounterGlobal?.count_up != undefined)
-                iScoreCountUp = oCounterGlobal.count_up;
-            if(oCounterGlobal?.count_down != undefined)
-                iScoreCountDown = oCounterGlobal.count_down;
-        }
-
+    if(bShowCounter && objectData?.['counter'] != undefined && objectData['counter']?.score != undefined) {
+        const iScore = parseInt(objectData['counter'].score);
+        const iScoreOld = objectData['counter']?.score_old != undefined ? parseInt(objectData['counter'].score_old) : iScore;
+        const iScoreCountUp = objectData['counter'].count_up;
+        const iScoreCountDown = objectData['counter'].count_down;
         const bScore = iScoreCountUp != 0 || iScoreCountDown != 0;
 
-        iScore = parseInt(iScore);
-        iScoreOld = parseInt(iScoreOld);
         const sScore = bWeb ? (
             <Text className={'flex' + (iScore > iScoreOld ? ' items-end' : ' items-start') + ' h-5 overflow'}>
                 <Text className={'flex' + (iScore > iScoreOld ? ' flex-col-reverse' : ' flex-col') + ' transition-all duration-500 ' + counterClass}>
