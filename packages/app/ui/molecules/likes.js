@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { appSetting, FeedbackHaptics } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { useCurrentUser } from 'app/context/user';
-import { useActionsData } from 'app/context/actions';
 import { View } from 'app/design/view'
 import { ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounterDefault, ButtonMenuCounterText, ButtonMenuGroupItem, ButtonsGroupMenu, Modal } from 'app/design/controls';
 import Profile from 'app/ui/molecules/profile';
@@ -18,32 +17,6 @@ const getName = (sType, sSystem, sObjectId, sName) => {
     return [].concat(aName).join('-');
 };
 
-const isContextVar = (actionsData, actionsDataState, bShowFull, sContextKey, sName) => {
-    return bShowFull ? actionsDataState?.[sContextKey]?.[sName] != undefined : actionsData?.[sContextKey]?.[sName] != undefined;
-};
-
-const getContextVar = (actionsData, actionsDataState, bShowFull, sContextKey, sName) => {
-    return bShowFull ? actionsDataState[sContextKey][sName] : actionsData[sContextKey][sName];
-};
-
-const setContextVars = (actionsData, setActionsData, actionsDataState, setActionsDataState, bShowFull, sContextKey, mValue) => {
-    let oValue = {};
-    oValue[sContextKey] = mValue;
-
-    if(bShowFull) {
-        if(!actionsDataState)
-            setActionsDataState(oValue);
-        else
-            setActionsDataState({...actionsDataState, ...oValue});
-    }
-    else {
-        if(!actionsData)
-            setActionsData(oValue);
-        else
-            setActionsData({...actionsData, ...oValue});
-    }
-};
-
 const performAction = async (sSystem, iObjectId, sAction, aParams, onLoad) => {
     const aParamsDefault = {s: sSystem, o:iObjectId};
 
@@ -55,21 +28,21 @@ const performAction = async (sSystem, iObjectId, sAction, aParams, onLoad) => {
         onLoad(sResponse?.data);
 };
 
-const handleDo = (performAction, setContextVars, sHapticsType, oEvent) => {
+const handleDo = (performAction, objectData, setObjectData, sHapticsType, oEvent) => {
     oEvent.preventDefault();
 
     FeedbackHaptics(sHapticsType);
 
     performAction('do', {value: 1}, (oData) => {
-        setContextVars(oData);
+        setObjectData(!objectData ? oData : { ...objectData, ...oData});
     });
 };
 
-const handleUndo = (performAction, setContextVars, oEvent) => {
+const handleUndo = (performAction, objectData, setObjectData, oEvent) => {
     oEvent.preventDefault();
 
     performAction('do', {value: 1}, (oData) => {
-        setContextVars(oData);
+        setObjectData(!objectData ? oData : { ...objectData, ...oData});
     });
 };
 
@@ -135,20 +108,15 @@ export default function ElementLikes(oProps) {
         showTitleFromSize: oProps.params?.button_show_title_from_size
     };
 
-    const { actionsData, setActionsData } = useActionsData();
-    const [ actionsDataState, setActionsDataState ] = useState({});
-
+    const [ objectData, setObjectData ] = useState({...oAction, ...{counter: oCounter}});
     const [ popupVisible, setPopupVisible ] = useState(false);
     const [ performedBy, setPerformedBy ] = useState();
 
     const bAllowViewVoted = oSettings[oProps['system']]?.allow_view_voted != undefined ? oSettings[oProps['system']].allow_view_voted : true;
 
-    const _isContextVar = useCallback((sName) => isContextVar(actionsData, actionsDataState, bShowFull, sObject, sName), [actionsData, actionsDataState, bShowFull, sObject]);
-    const _getContextVar = useCallback((sName) => getContextVar(actionsData, actionsDataState, bShowFull, sObject, sName), [actionsData, actionsDataState, bShowFull, sObject]);
-    const _setContextVars = useCallback((mValue) => setContextVars(actionsData, setActionsData, actionsDataState, setActionsDataState, bShowFull, sObject, mValue), [actionsData, setActionsData, actionsDataState, setActionsDataState, bShowFull, sObject]);
     const _performAction = useCallback((sAction, aParams, onLoad) => performAction(oProps.system, oProps.object_id, sAction, aParams, onLoad), [oProps.system, oProps.object_id]);
-    const _handleDo = useCallback((event) => handleDo(_performAction, _setContextVars, oParams.haptics_type, event), [_performAction, _setContextVars, oParams.haptics_type]);
-    const _handleUndo = useCallback((event) => handleUndo(_performAction, _setContextVars, event), [_performAction, _setContextVars]);
+    const _handleDo = useCallback((event) => handleDo(_performAction, objectData, setObjectData, oParams.haptics_type, event), [_performAction, objectData, setObjectData, oParams.haptics_type]);
+    const _handleUndo = useCallback((event) => handleUndo(_performAction, objectData, setObjectData, event), [_performAction, objectData, setObjectData]);
     const _handleGetPerformedBy = useCallback((event) => handleGetPerformedBy(_performAction, setPerformedBy, setPopupVisible, bAllowViewVoted, oParams.haptics_type, event), [_performAction, setPerformedBy, setPopupVisible, bAllowViewVoted, oParams.haptics_type]);
 
     let { currentUser, setCurrentUser } = useCurrentUser();
@@ -158,8 +126,10 @@ export default function ElementLikes(oProps) {
 
     const cb = (data) => {
         let aData = JSON.parse(data);
-        if(!!aData?.api)
-            _setContextVars(aData.api.performer_id == currentUser.id ? aData.api : {counter: aData.api.counter});
+        if(!!aData?.api) {
+            const aDataSet = aData.api.performer_id == currentUser.id ? aData.api : {counter: aData.api.counter}; 
+            setObjectData(!objectData ? aDataSet : { ...objectData, ...aDataSet})
+        }
     }
 
     //--- show action
@@ -167,12 +137,9 @@ export default function ElementLikes(oProps) {
     const bShowActionLabel = oParams?.show_action_label == undefined || oParams.show_action_label === true;
 
     const bShowActionUndo = oAction?.is_undo === true;
-    const bShowActionVoted = oAction?.is_voted === true || (_isContextVar('is_voted') && _getContextVar('is_voted') === true);
-    const bShowActionDisabled = oAction?.is_disabled === true || (_isContextVar('is_disabled') && _getContextVar('is_disabled') === true);
-
-    let sTitle = oAction?.title || '';
-    if(_isContextVar('title'))
-        sTitle = _getContextVar('title');
+    const bShowActionVoted = objectData?.['is_voted'] != undefined ? objectData['is_voted'] === true : false;
+    const bShowActionDisabled = objectData?.['is_disabled'] != undefined ? objectData['is_disabled'] === true : false;
+    const sTitle = objectData?.['title'] != undefined ? objectData['title'] : '';
 
     const ButtonAction = !bShowCombined ? (bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText) : ButtonMenuGroupItem;
 
@@ -190,17 +157,9 @@ export default function ElementLikes(oProps) {
 
     //--- Counter
     const bShowCounterAsButton = oParams?.show_counter_as_button != undefined && oParams.show_counter_as_button === true;
+    const iCount = objectData?.['counter'] != undefined && objectData['counter']?.count != undefined ? objectData['counter'].count : '';
 
     const ButtonCounter = !bShowCombined ? (bShowCounterAsButton ? ButtonMenuCounterDefault : ButtonMenuCounterText) : ButtonMenuGroupItem;
-
-    let iCount = '';
-    if (oCounter?.count)
-        iCount = oCounter.count;
-    if(_isContextVar('counter')) {
-        const oCounterGlobal = _getContextVar('counter');
-        if(oCounterGlobal?.count)
-            iCount = oCounterGlobal.count;
-    }    
 
     const sharedValue = useSharedValue(1);
     const indicatorStyle = useAnimatedStyle(() => {
@@ -218,33 +177,30 @@ export default function ElementLikes(oProps) {
 
     let sCounterButton = undefined;
     let sCounterPopup = undefined;
-    if(bShowCounter && oCounter?.count != undefined) {
-
-        if(iCount > 0) {
-            let sUsers = undefined;
-            if(performedBy) {
-                sUsers = performedBy.map(aUser => {
-                    return (
-                        <View key={aUser.id}><Profile {...aUser} /></View>
-                    );
-                });
-            }
-
-            if(!sUsers || sUsers.length == 0)
-                sUsers = getSkeleton();
-
-            sCounterButton = (
-                <Animated.View key="counter" style={indicatorStyle}>
-                    <ButtonCounter startDecorator={!bShowCombined ? 'ThumbsUp' : false} title={iCount+''} onPress={_handleGetPerformedBy} {...oButtonProps} />
-                </Animated.View>
-            );
-
-            sCounterPopup = (
-                <Modal title={t('Likes')} onVisible={popupVisible} onClose={() => {setPopupVisible(false)}}>
-                    <View className="p-2 gap-y-4 overflow-y-auto text-neutral-700 dark:text-neutral-200">{sUsers}</View>
-                </Modal>
-            );
+    if(bShowCounter && iCount > 0) {
+        let sUsers = undefined;
+        if(performedBy) {
+            sUsers = performedBy.map(aUser => {
+                return (
+                    <View key={aUser.id}><Profile {...aUser} /></View>
+                );
+            });
         }
+
+        if(!sUsers || sUsers.length == 0)
+            sUsers = getSkeleton();
+
+        sCounterButton = (
+            <Animated.View key="counter" style={indicatorStyle}>
+                <ButtonCounter startDecorator={!bShowCombined ? 'ThumbsUp' : false} title={iCount+''} onPress={_handleGetPerformedBy} {...oButtonProps} />
+            </Animated.View>
+        );
+
+        sCounterPopup = (
+            <Modal title={t('Likes')} onVisible={popupVisible} onClose={() => {setPopupVisible(false)}}>
+                <View className="p-2 gap-y-4 overflow-y-auto text-neutral-700 dark:text-neutral-200">{sUsers}</View>
+            </Modal>
+        );
     }
 
     if(bShowCombined) {
