@@ -281,10 +281,10 @@ const getAddon = (addon, isTitle) => {
         sButtonAddonText = addon;
     }
 
-    if (!isTitle)
+    if (!isTitle && sButtonAddonText)
         return <View className={`absolute ${sButtonAddonBg} border-2 border-white dark:border-neutral-900 rounded-full  px-1.5 items-center justify-center -right-1 -top-2`}><Text className='text-white text-xs font-semibold'>{sButtonAddonText}</Text></View>
 
-    return sButtonAddonText && sButtonAddonText != '' ? <View className='flex-1 items-end '>
+    return sButtonAddonText && sButtonAddonText ? <View className='flex-1 items-end '>
         <View className={sButtonAddonBg + ' rounded-full px-2 py-0.5 mx-1 text-center items-center'}>
             <Text className="text-white text-xs font-semibold">{sButtonAddonText}</Text></View></View> : null;
 }
