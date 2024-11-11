@@ -147,6 +147,10 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
         }
     }, [convos]);
 
+
+    useEffect(() => {
+    setListError(null);
+}, [convoId]);
     const onNewMessage = (data) => {
         if (data.id == convoId) {
             setJotUpdated(data);
