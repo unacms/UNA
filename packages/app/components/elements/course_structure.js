@@ -152,7 +152,7 @@ function CourseStructure({ data }) {
                 <Scroll horizontal={true} step={250} className='w-full'>
                     
                     {
-                        state.data.items.map((item, index) => {
+                        state.data.items && state.data.items.map((item, index) => {
                             return (
                                 <DragItem data={item} index={index} key={index} renderItem={renderModuleItem} isDragEnabled={isEditable} />
                             )

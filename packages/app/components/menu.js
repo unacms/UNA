@@ -81,7 +81,12 @@ export default function ElementMenu(oProps) {
     if (!oProps?.items?.length)
         return [];
 
-
+    // sort by primary
+    oProps.items.sort((a, b) => {
+        const primaryA = a.primary === true || a.primary === 1;
+        const primaryB = b.primary === true || b.primary === 1;
+        return primaryB - primaryA;
+    })
     const filteredItems = useMemo(() => {
         return (bAutoFilter ? menuItemsByName(oProps.object, oProps.items, currentUser) : oProps.items).filter((aItem) => {
             // Check if item should be shown based on `bShowMatched` and `sDisplayType`
@@ -114,7 +119,6 @@ export default function ElementMenu(oProps) {
             return true;
         });
     }, [bAutoFilter, oProps.object, oProps.items, currentUser, bShowMatched, sDisplayType, sShowSelected, aExcept, aExceptTitle, componentsMap]);
-
 
     let isUseStaticWidth = bShowContent || !bAutoSize || !isWeb;
     if (oProps.persistent > 0) {

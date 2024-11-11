@@ -17,7 +17,8 @@ const setMembership = async (val) => {
     await fetcher(request_url);
     setBottomSheetData(false);
 }
-const handleClick = async (event, oProps, setBottomSheetData, setLayoutData, redirectdRef) => {
+
+const handleClick = async (event, oProps, setBottomSheetData, setLayoutData, redirectdRef, buttonProps, setButtonProps) => {
     if (oProps.content_type == 'memberships') {
         if (Platform.OS == 'web') {
             const popperDiv = document.querySelector('div[data-radix-popper-content-wrapper]');
@@ -29,12 +30,17 @@ const handleClick = async (event, oProps, setBottomSheetData, setLayoutData, red
         return;
     }
 
-    let request_url = '/api.php?r=' + oProps.data.request_url;
+    let request_url = '/api.php?r=' + buttonProps.request_url;
     const sResponse = await fetcher(request_url);
     if (oProps.data.on_callback == 'hide')
-        setIsVisible(false)
+        setButtonProps({...buttonProps, visible:false})
+
+    if (oProps.data.on_callback == 'change')
+        setButtonProps({...buttonProps, title:sResponse.data?.title, request_url:sResponse.data?.request_url})
+
     if (oProps.data.on_callback == 'redirect')
         redirectdRef.current.redirect(sResponse.data?.url ? sResponse.data?.url : sResponse.data);
+    
     if (oProps.data.on_callback == 'alert') {
         if (oProps.data.on_callback_clear_cache)
             storageClear();
@@ -45,7 +51,8 @@ const handleClick = async (event, oProps, setBottomSheetData, setLayoutData, red
 export default function MenuItemButton(oProps) {
     const redirectdRef = useRef();
     const { setBottomSheetData } = useBottomSheetData();
-    const [isVisible, setIsVisible] = useState(true);
+    //const [isVisible, setIsVisible] = useState(true);
+    const [ buttonProps, setButtonProps ] = useState({isVisible:true, title:oProps.title, request_url:oProps.data?.request_url});
     const { setLayoutData } = useLayoutData();
 
     const oIconAliases = {
@@ -74,13 +81,13 @@ export default function MenuItemButton(oProps) {
 
         default:
             let oButtonProps = {
-                variant: oProps.primary === "1" ? 'primary' : oProps.params?.button_variant,
+                variant: oProps.primary.toString() === "1" ? 'primary' : oProps.params?.button_variant,
                 size: oProps.params?.button_size,
                 rounded: oProps.params?.button_rounded,
                 fullWidth: oProps.params?.button_full_width,
                 showTitleFromSize: oProps.params?.button_show_title_from_size
             };
-
+            console.log("oButtonProps", oButtonProps, buttonProps.title,oProps.primary)
             const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
 
             let sButtonIcon = '';
@@ -94,12 +101,12 @@ export default function MenuItemButton(oProps) {
             sContent = (
                 <View className="flex-auto">
                     <Redirect ref={redirectdRef} />
-                    <ButtonAction onPress={(event) => handleClick(event, oProps, setBottomSheetData, setLayoutData, redirectdRef)} title={oProps.title} startDecorator={sButtonIcon} {...oButtonProps} />
+                    <ButtonAction onPress={(event) => handleClick(event, oProps, setBottomSheetData, setLayoutData, redirectdRef, buttonProps, setButtonProps)} title={buttonProps.title} startDecorator={sButtonIcon} {...oButtonProps} />
                 </View>
             );
     }
 
-    if (!isVisible)
+    if (!buttonProps.isVisible)
         return <></>
 
     return (
