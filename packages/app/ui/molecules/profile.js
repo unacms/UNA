@@ -211,7 +211,7 @@ function AtomProfile_(oProps) {
             sSize: 'w-11 h-11',
             iSizeWidth: 44,
             iSizeHeight: 44,
-            sSizeFont: 'text-sm',
+            sSizeFont: 'text-base',
             sSizeFontLetter: 'text-xl',
         },
         lg: {
