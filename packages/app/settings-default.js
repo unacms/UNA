@@ -672,7 +672,7 @@ export const settingsDefault = {
                 key: '/tab0',
                 title: 'Home',
                 url: '/home',
-                icon: 'House',
+                icon: 'CustomIcon',
             },
             {
                 key: '/tab1',
@@ -2333,6 +2333,14 @@ export const settingsDefault = {
             bdrModal: 'rgba(55,65,81,0.4)',
             checkbox: '#0ea5e9',
         },
+
+        modal: {
+            fog: 'bg-white/80 dark:bg-black/80 backdrop-blur',
+            container: 'max-w-2xl {ls}:h-auto',
+            content: 'bg-bgrmodal dark:bg-bgrmodal-d {ls}:h-auto  {ls}:border {ls}:border-bdrmodal {ls}:dark:border-bdrmodal-d {ls}:rounded-xl {ls}:shadow-sm',
+            header: 'border-b border-bdr dark:border-bdr-d px-3 py-2.5',
+        },
+
         button_styles: {
             'u-btn-default-cnt':
                 ' bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-300 dark:sm:hover:bg-neutral-700 active:opacity-50  ',
