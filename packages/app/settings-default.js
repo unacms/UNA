@@ -67,7 +67,7 @@ export const settingsDefault = {
         async_workers_interval: 10,
         bluetooth: false,
         bluetooth_device_name_prefix: 'NEO',
-        use_custom_font: false,
+        use_custom_font: false,//'font-main'
         lock_unconfirmed: true,
         entity_info_icon: 'Info',
         disable_screenshots: false,

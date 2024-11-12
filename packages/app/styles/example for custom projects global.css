@@ -1,0 +1,19 @@
+@font-face {
+    font-family: 'MainFont';
+    src: url('/fonts/TimesNewRoman.ttf') format('truetype');
+  }
+  
+  @font-face {
+    font-family: 'TitleFont';
+    src: url('/fonts/CenturyGothic.ttf') format('truetype');
+  }
+
+  .font-main {
+    font-family: 'MainFont';
+  }
+
+  .font-title {
+    font-family: 'TitleFont';
+  }
+
+  //fontFamily="font-title"

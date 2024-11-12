@@ -22,6 +22,7 @@ import PushNotificationIOS from "@react-native-community/push-notification-ios";
 import { enableScreens } from 'react-native-screens';
 import { OneSignal } from 'react-native-onesignal';
 import { callFn } from 'app/lib/functions/call';
+import fonts from 'app/design/fonts/fonts';
 import { Platform } from 'react-native'
 enableScreens(appSetting('layout', 'native_enable_screens'));
 
@@ -54,7 +55,8 @@ export default function () {
     const { currentUser, setCurrentUser } = useCurrentUser();
 
     const isUseCustomFont = appSetting('layout', 'use_custom_font');
-    const fontsToLoad = isUseCustomFont ? { default: require('app/design/fonts/DefaultFont.ttf') } : {};
+    const fontsToLoad = isUseCustomFont ? fonts : {};
+
     const [fontsLoaded] = useFonts(fontsToLoad);
     const { t } = useTranslation();
     
