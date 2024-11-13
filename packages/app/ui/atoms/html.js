@@ -37,6 +37,23 @@ const customHTMLElementModels = {
     }),
 };
 
+const customHTMLElementModelsCustom =(width, height) =>{ 
+    return {
+    iframe: iframeModel.extend({
+        mixedUAStyles: {
+          width: width,
+          height: height - 110,
+        },
+      }),
+    video: HTMLElementModel.fromCustomModel({
+        tagName: "video",
+        mixedUAStyles: {
+            alignSelf: "center",
+        },
+        contentModel: HTMLContentModel.block,
+    }),
+}};
+
 function onElement(element) {
     if (element?.parent?.children[0].name === 'p') {
         if (element?.parent?.children.length === 1)
@@ -91,7 +108,7 @@ export default function ElementHtml(props) {
     const routerExpo = useRouter();
     const { colors } = Theme();
     const [iframeH, setIframeH] = useState({});
-    let { width } = useWindowDimensions();
+    let { width, height } = useWindowDimensions();
     let customClassName = props.customClassName ? props.customClassName : '';
     let fontSize = 16;
     let lineHeight = 20;
@@ -219,7 +236,7 @@ export default function ElementHtml(props) {
 
 
 
-    if (data) {
+    if (data && !props.pureHtml) {
         data = data.replace(/<([a-z]+)(?:\s[^>]*)?>((?:\s|<br\s*\/?>)*)<\/\1>/gi, '');
         data = data.replace('/(<br\s*\/?>\s*){2,}/i', '<br>', data);
     }
@@ -245,7 +262,7 @@ export default function ElementHtml(props) {
             renderers={renderers}
             ignoredDomTags={[]}
             WebView={WebView}
-            customHTMLElementModels={customHTMLElementModels}
+            customHTMLElementModels={props.pureHtml? customHTMLElementModelsCustom(width, height) : customHTMLElementModels}
             defaultWebViewProps={
                 {
                     bounces: false,         // IOS Only

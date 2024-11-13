@@ -7,7 +7,7 @@ import * as WebBrowser from 'expo-web-browser';
 import React, { useMemo, useCallback } from 'react';
 
 export default function ElementLink(props) {
-    const { href = '', target, haptics, children, ...rest } = props;
+    const { href = '', target, haptics, children, asExternal, ...rest } = props;
     const glob = useGlobalSearchParams();
     const { currentUser } = useCurrentUser();
 
@@ -55,6 +55,7 @@ export default function ElementLink(props) {
 
     // Обработчик внешних ссылок
     const handleExternalLinkPress = useCallback(async () => {
+        console.log("finalHreffinalHref", finalHref)
         await WebBrowser.openBrowserAsync(finalHref);
     }, [finalHref]);
 
@@ -63,7 +64,7 @@ export default function ElementLink(props) {
     }
 
     // Если ссылка внешняя, открываем в браузере
-    if (domain && domain !== rootUrl) {
+    if (domain && domain !== rootUrl || asExternal === true) {
         return (
             <Pressable onPress={handleExternalLinkPress}>
                 {children}

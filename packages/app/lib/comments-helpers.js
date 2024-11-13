@@ -406,7 +406,7 @@ export function CommentsBrowse({ browse, requestUrl, module, handleReply, handle
 
 export function CommentsForm({ form, requestUrl, module, browse, formData, handleForm, isModal }) {
 
-    if (!form)
+    if (!form?.data?.inputs)
         return <></>
     const [commentData, setCommentData] = useState({
         parentId: 0,
@@ -468,7 +468,7 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
 
     const [commentForm, setCommentForm] = useState();
 
-    let immutable = form ? form.request.immutable : false;
+    let immutable = form ? form?.request?.immutable : false;
     let { data: dynamicData, error } = useSWR(
         commentForm ? [prepareUrl(), '', commentForm] : null,
         fetcher,
@@ -517,7 +517,7 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
     return (
         <View className={className} style={{ backgroundColor: colors.barsBackground, paddingTop: padding, paddingBottom: padding }}>
             {
-                form.data.inputs.cmt_parent_id.value > 0 && (<View className=' rounded-sm border-l-2 border-primary/50  py-1 pl-2 mx-3 mb-2'>
+                form?.data?.inputs?.cmt_parent_id?.value > 0 && (<View className=' rounded-sm border-l-2 border-primary/50  py-1 pl-2 mx-3 mb-2'>
                     <Row className='items-start justify-between max-w-full relative'>
                         <View className=' flex-auto pr-4'>
                             <Row className='max-w-full '>

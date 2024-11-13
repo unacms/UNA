@@ -6,6 +6,7 @@ import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { setClipboard } from 'app/lib/util'
 import Msg from 'app/ui/molecules/msg';
 import { useState } from 'react';
+import { appSetting } from 'app/lib/util'
 
 export default function MenuItemSubmenuShare(oProps) {
     const [showMsg, setShowMsg] = useState(false);
@@ -55,7 +56,9 @@ export default function MenuItemSubmenuShare(oProps) {
                 handleClick = async () => {
                     try {
                         const result = await Share.share({
-                            message: oItem.link,
+                            title: appSetting('layout', 'share_text'),
+                            url: oItem.link,
+                            message: appSetting('layout', 'share_text') + " "+ oItem.link
                         });
 
                         switch(result.action) {

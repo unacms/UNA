@@ -42,7 +42,11 @@ const getData = cache(async (props) => {
 
     console.log('^^^^^^^^^^^^^^^^^^^^^^^^^', searchParams, l);
     const res = await fetch(l, opts)
-    //console.log('^^^^^^^^^^^^^^^^^^^^^^^^^', res);
+    /*
+    trace server  errors
+     console.log('^^^^^^^^^^^^^^^^^^^^^^^^^', await res.text());
+    return {}
+    */
     return await res.json()
 });
 
