@@ -7,8 +7,17 @@ import 'app/styles/global.default.css'
 import 'app/styles/global.css'
 import { notFound } from 'next/navigation'
 const SITE_TITLE = 'NEO';
-let remote_config = {hash: null, data: null};
+let remote_config = { hash: null, data: null };
 //export const runtime = 'edge'
+let cachedData = null;
+
+
+async function getCachedData(props) {
+    if (!cachedData) {
+        cachedData = await getData(props);
+    }
+    return cachedData;
+}
 
 const getData = cache(async (props) => {
     let path = props.params.path.join('/');
@@ -64,6 +73,10 @@ export const viewport = {
 
 
 export async function generateMetadata(props) {
+    const data = await getCachedData(props);
+    const description = data.data.description || SITE_TITLE;
+    const name = data.data.name || SITE_TITLE;
+    const image = data.data.image;
     const isClientProject = UNA_URL != 'https://api.neo.so';
 
     return {
@@ -76,22 +89,43 @@ export async function generateMetadata(props) {
             'mobile-web-app-capable': 'yes',
             // 'og:title': data?.data?.title
         },
+        openGraph: {
+            title: name,
+            description: description,
+            ...(image && {
+                images: [
+                    {
+                        url: image,
+                        alt: name,
+                    },
+                ],
+            }),
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title: name,
+            description: description,
+            ...(image && {
+                images: [image],
+            }),
+            
+        },
 
     }
 }
 
 export default async function Page(props) {
-    
-    const data = await getData(props);    
-    if (!remote_config.data || data.hash != remote_config.hash){
-        remote_config = await getRemoteSettings(true);   
+
+    const data = await getCachedData(props);
+    if (!remote_config.data || data.hash != remote_config.hash) {
+        remote_config = await getRemoteSettings(true);
     }
-    if (data?.data.page_status == 404){
+    if (data?.data.page_status == 404) {
         notFound(props)
     }
-    
+
     return (
-        <Suspense fallback={<Loading/>}>
+        <Suspense fallback={<Loading />}>
             <Root settings={remote_config.data} path={'home'} data={data?.data} uri={data?.data?.uri} url={data?.data?.url} code={data.code}></Root>
         </Suspense>
     )
