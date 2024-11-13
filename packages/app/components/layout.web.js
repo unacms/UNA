@@ -17,7 +17,6 @@ import { appStatic } from 'app/lib/app-static'
 import { storageSet, storageClear, storageGet } from 'app/lib/util'
 import { menuItemsByName } from 'app/lib/util'
 import OneSignal from 'react-onesignal';
-import { SpeedInsights } from '@vercel/speed-insights/next';
 
 
 const Navbar = lazy(() => import('app/components/nav/navbar'));
@@ -301,7 +300,6 @@ const Content = React.memo(({ children, headerSettings, stylesBgImage, currentUs
                             {(headerSettings.offset && !isHideHeader) && <View className='w-full h-16' />}
                             <Informer />
                             {children}
-                            <SpeedInsights />
                         </View>
 
                     </View>
