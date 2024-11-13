@@ -186,12 +186,12 @@ export const ItemInfo = memo(({ data, t }) => {
     const OwnersList = () => data.owners?.length > 0 ? data.owners?.length == 1 ? <>
         <Text className="text-neutral-500/50 text-sm"> · </Text>
         <Link href={data.owners[0].url} emulate={true}>
-            <Text className=" bg-primary-500/10 px-1 rounded text-neutral-600 dark:text-neutral-400 hover:text-linkhover text-sm font-medium">
+            <Text className=" bg-primary/10 hover:bg-primary/20 px-1.5 py-0.5 rounded-md text-primary dark:text-primary-d hover:text-linkhover text-sm font-medium">
                 {data.owners[0].title}
             </Text>
         </Link></> : <><Text className="text-neutral-500/50 text-sm"> · </Text>
         <Pressable onPress={() => { setShowContextList(true) }} >
-            <Text className=" bg-primary-500/10 px-1 rounded text-neutral-600 dark:text-neutral-400 hover:text-linkhover text-sm font-medium">
+            <Text className=" bg-primary/10 hover:bg-primary/20 px-1.5 py-0.5 rounded-md text-primary dark:text-primary-d hover:text-linkhover text-sm font-medium">
                 {data.owners[0].title} + {data.owners.length - 1}
             </Text>
         </Pressable>
@@ -221,8 +221,8 @@ export const ItemInfo = memo(({ data, t }) => {
         }
         return l && (
             <>
-                <Text className=" text-neutral-500/50 text-sm"> · </Text>
-                <Text className=" text-neutral-600 dark:text-neutral-400 text-sm font-medium text-center ">
+                <Text className=" text-neutral-500/50 text-sm leading-6"> · </Text>
+                <Text className=" text-neutral-600 dark:text-neutral-400 text-sm font-medium leading-6 text-center ">
                     {l}
                 </Text>
             </>
@@ -403,9 +403,9 @@ export const Author = memo(({ data, url, t }) => (
             displayType="unit"
             displaySize="base"
             showInfo={
-                <Row className="flex-wrap items-center text-sm leading-4 ">
+                <Row className=" flex-wrap items-center  ">
                     <Link href={url}>
-                        <Time stylesNameAdd=" hover:text-linkhover  align-center text-center" ts={data.date}></Time>
+                        <Time ts={data.date}></Time>
                     </Link>
                     <ItemInfo data={data} t={t} />
                 </Row>
