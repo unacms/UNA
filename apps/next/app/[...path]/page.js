@@ -9,15 +9,28 @@ import { notFound } from 'next/navigation'
 const SITE_TITLE = 'NEO';
 let remote_config = { hash: null, data: null };
 //export const runtime = 'edge'
-let cachedData = null;
-
+let cachedData = {};
 
 async function getCachedData(props) {
-    if (!cachedData) {
-        cachedData = await getData(props);
+    // Generate a unique key for each `props` input to store cache separately for each set of `props`
+    const cacheKey = JSON.stringify(props);
+    const currentTime = Date.now();
+
+    // Check if data is in cache and if it's still valid (not older than 1 second)
+    if (cachedData[cacheKey] && (currentTime - cachedData[cacheKey].timestamp < 1000)) {
+        return cachedData[cacheKey].data;
     }
-    return cachedData;
+
+    // If not cached or expired, fetch new data and store it in cache with a timestamp
+    const data = await getData(props);
+    cachedData[cacheKey] = {
+        data,
+        timestamp: currentTime,
+    };
+
+    return data;
 }
+
 
 const getData = cache(async (props) => {
     let path = props.params.path.join('/');
@@ -75,7 +88,7 @@ export const viewport = {
 export async function generateMetadata(props) {
     const data = await getCachedData(props);
     const description = data.data.description || SITE_TITLE;
-    const name = data.data.name || SITE_TITLE;
+    const name = data.data.title || SITE_TITLE;
     const image = data.data.image;
     const isClientProject = UNA_URL != 'https://api.neo.so';
 
