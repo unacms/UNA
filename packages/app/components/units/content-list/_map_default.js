@@ -1,5 +1,6 @@
 import { memo } from "react";
 import UnitGroup from './bx_groups';
+import UnitSpace from './bx_spaces';
 import UnitAd from './bx_ads';
 import UnitChannel from './bx_channels';
 import UnitEvent from './bx_events';
@@ -13,6 +14,7 @@ import UnitCourses from './bx_courses';
 import UnitVideos from './bx_videos';
 export const componentsMapDefault = {
     'bx_groups': memo(UnitGroup),
+    'bx_spaces': memo(UnitSpace),
     'bx_ads': memo(UnitAd),
     'bx_channels': memo(UnitChannel),
     'bx_events': memo(UnitEvent),

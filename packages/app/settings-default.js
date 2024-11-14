@@ -387,6 +387,12 @@ export const settingsDefault = {
                 icon: 'UsersThree',
             },
             {
+                name: 'spaces-home',
+                title: 'Spaces',
+                link: '/spaces-home',
+                icon: 'IntersectSquare',
+            },
+            {
                 name: 'events-home',
                 title: 'Events',
                 link: '/events-home',
@@ -435,6 +441,12 @@ export const settingsDefault = {
                 title: 'Groups',
                 link: '/groups-home',
                 icon: 'UsersThree',
+            },
+            {
+                name: 'spaces-home',
+                title: 'Spaces',
+                link: '/spaces-home',
+                icon: 'IntersectSquare',
             },
             {
                 name: 'events-home',
@@ -487,6 +499,12 @@ export const settingsDefault = {
                 link: '/create-group-profile',
                 icon: 'UsersThree',
                 membership_level: 8,
+            },
+            {
+                name: 'create-space-profile',
+                title: 'Add space',
+                link: '/create-space-profile',
+                icon: 'IntersectSquare',
             },
             {
                 name: 'create-event-profile',
@@ -571,6 +589,7 @@ export const settingsDefault = {
                 nonlogged: false,
             },
             { title: 'Groups', link: '/groups-home', icon: 'UsersThree' },
+            { title: 'Spaces', link: '/spaces-home', icon: 'IntersectSquare' },
             { title: 'Events', link: '/events-home', icon: 'CalendarCheck' },
             { title: 'Posts', link: '/posts-home', icon: 'ChatCenteredText' },
             { title: 'Discussions', link: '/discussions-home', icon: 'Chats' },
@@ -621,6 +640,15 @@ export const settingsDefault = {
                 action_icon: 'UsersFour',
             },
             {
+                key: 'bx_spaces',
+                title: 'Spaces',
+                icon: 'IntersectSquare',
+                link: '/spaces-home',
+                link2: '/create-space-profile',
+                action: 'members',
+                action_icon: 'UsersFour',
+            },
+            {
                 key: 'bx_events',
                 title: 'Events',
                 icon: 'CalendarCheck',
@@ -654,6 +682,12 @@ export const settingsDefault = {
                 title: 'Groups',
                 icon: 'UsersThree',
                 link: '/groups-administration',
+            },
+            {
+                key: 'bx_spaces',
+                title: 'Spaces',
+                icon: 'IntersectSquare',
+                link: '/spaces-administration',
             },
             {
                 key: 'bx_persons',
@@ -915,6 +949,24 @@ export const settingsDefault = {
                     name: 'Search',
                     link: '',
                     section: 'bx_groups',
+                },
+            ],
+        },
+        bx_spaces_submenu: {
+            name: 'Spaces',
+            icon: 'IntersectSquare',
+            add: [
+                {
+                    icon: 'Plus',
+                    name: 'Add',
+                    link: '/create-space-profile',
+                    nonlogged: false,
+                },
+                {
+                    icon: 'MagnifyingGlass',
+                    name: 'Search',
+                    link: '',
+                    section: 'bx_spaces',
                 },
             ],
         },
@@ -2076,6 +2128,39 @@ export const settingsDefault = {
                     showPad: true,
                     sidebar: true,
                 },
+            },
+            headerSettings: { offset: false, header: false, cover: 'group' },
+        },
+        //############ SPACES PAGES ############
+        'view-space-profile': {
+            layout: 'profile',
+            blocks: {
+                col0: {
+                    name: 'bx_timeline:get_block_post_profile',
+                    showTitle: false,
+                    showBg: false,
+                },
+                col1: {
+                    name: 'bx_timeline:get_block_view_profile',
+                    showTitle: false,
+                    showBg: false,
+                    perLine: 1,
+                },
+                col2: {
+                    name: 'bx_spaces:entity_info',
+                    showTitle: false,
+                    showBg: true,
+                    showPad: true,
+                    sidebar: true,
+                },
+                col4: {
+                    name: 'bx_spaces:entity_text_block',
+                    showTitle: false,
+                    showBg: true,
+                    showPad: true,
+                    sidebar: true,
+                },
+                
             },
             headerSettings: { offset: false, header: false, cover: 'group' },
         },
