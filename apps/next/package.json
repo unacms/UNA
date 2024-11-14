@@ -31,7 +31,6 @@
     "@tiptap/starter-kit": "^2.0.4",
     "@tiptap/suggestion": "^2.0.4",
     "@vercel/analytics": "^1.0.1",
-    "@vercel/speed-insights": "^1.1.0",
     "ai": "^2.2.7",
     "app": "*",
     "eslint-config-next": "^14.0.3",

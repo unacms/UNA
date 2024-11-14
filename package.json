@@ -30,7 +30,6 @@
     "**/expo-router/**"
   ],
   "dependencies": {
-    "@vercel/speed-insights": "^1.1.0",
     "dotenv-cli": "^7.0.0"
   },
   "packageManager": "yarn@1.22.22"

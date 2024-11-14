@@ -20,7 +20,6 @@
     "@tiptap/react": "^2.0.4",
     "@tiptap/starter-kit": "^2.0.4",
     "@tiptap/suggestion": "^2.0.4",
-    "@vercel/speed-insights": "^1.1.0",
     "ai": "^2.2.7",
     "clsx": "^2.0.0",
     "crypto": "file:../../crypto-shim",
