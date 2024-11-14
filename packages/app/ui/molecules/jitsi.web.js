@@ -1,5 +1,5 @@
 import { View } from 'app/design/view'
-import { JitsiMeeting } from '@jitsi/react-sdk';
+//import { JitsiMeeting } from '@jitsi/react-sdk';
 import { appSetting } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 
@@ -9,8 +9,8 @@ export default function (props) {
         email: currentUser?.email,
         displayName: currentUser?.display_name
     }
-
- 	return (
+    return <></>
+ 	/*return (
         <View className='h-96'>
             <JitsiMeeting className='h-96' styles={{height:250}} 
                 roomName = { appSetting('jitsi', 'prefix') + props.roomName } 
@@ -19,5 +19,5 @@ export default function (props) {
                 userInfo = {userInfo}
             />
         </View>
-    );
+    );*/
 } 
