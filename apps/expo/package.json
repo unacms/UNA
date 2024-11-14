@@ -5,6 +5,7 @@
     "@giphy/react-native-sdk": "2.3.0",
     "@gorhom/bottom-sheet": "^4.6.3",
     "@hello-pangea/dnd": "^17.0.0",
+    "@jitsi/react-native-sdk": "^0.4.1",
     "@native-html/iframe-plugin": "^2.6.1",
     "@openspacelabs/react-native-zoomable-view": "^2.1.6",
     "@radix-ui/react-dropdown-menu": "^2.1.1",
