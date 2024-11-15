@@ -138,7 +138,7 @@ export default function UnitComments(props) {
                 </View>
                 <View className='flex-1 flex-col '>
                     <View className='bg-bgritem dark:bg-bgritem-d rounded-xl px-2.5 py-1.5 mb-1' >
-                        <View className="flex-row flex-1 items-center overflow-hidden">
+                        <View className="flex-row items-center overflow-hidden">
                             <Profile {...data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
                             <View><Text className="text-neutral-500 px-1">·</Text></View>
                             <Link href={data.cmt_url} className="flex items-center"><Time ts={data.cmt_time}></Time></Link>

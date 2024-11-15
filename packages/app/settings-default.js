@@ -1599,7 +1599,7 @@ export const settingsDefault = {
                     forHeader: true,
                 },
                 text: {
-                    name: 'bx_photos:entity_photo_block',
+                    name: 'bx_photos:entity_text_block',
                     showTitle: false,
                     showBg: false,
                     forList: true,
@@ -2464,7 +2464,7 @@ export const settingsDefault = {
             'u-btn-link-trans': ' duration-200 ',
 
             'u-btn-outline-cnt':
-                ' ring-1 ring-bdrbutton dark:ring-bdrbutton-d hover:ring-bdrbutton-h dark:hover:ring-bdrbutton-dh hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:shadow-none  active:opacity-50 hover:shadow-sm ',
+                ' border border-bdrbutton dark:border-bdrbutton-d  hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:shadow-none  active:opacity-50 hover:shadow-sm ',
             'u-btn-outline-text':
                 ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
             'u-btn-outline-trans': ' duration-200 ',
