@@ -51,6 +51,7 @@ export const settingsDefault = {
         background_cover_color: '',
         background_native: false,
         hide_header_for_non_logged: false,
+        hide_header_for_all: false,
         profile_colors: [
             'orange',
             'yellow',
