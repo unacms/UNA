@@ -2428,6 +2428,53 @@ export const settingsDefault = {
             header: 'border-b border-bdr dark:border-bdr-d px-3 py-2.5',
         },
 
+        inputs: {
+            default: 'bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-bdrinput dark:border-bdrinput-d focus:outline-none focus:outline-primary dark:focus-outline-primary-d placeholder-neutral-500 duration-100 text-neutral-900 rounded-lg flex-auto px-3  dark:text-neutral-100 text-base leading-5 h-11 ',
+            multi: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg flex-auto p-2 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 ',
+            rounded: ' placeholder-neutral-500 bg-bgritem dark:bg-bgritem-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-transparent focus:border-bdrinput dark:focus:border-bdrinput-d focus:outline-none focus:outline-primary dark:focus-outline-primary-d duration-100 text-neutral-900 rounded-full flex-auto px-3 dark:text-neutral-100 text-base leading-5 h-11  ',
+            roundedsmall: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-full flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[34px] ',
+            small: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[36px] '
+        },
+
+        button_sizes: {
+            default_size: 'base',
+            default_variant: 'default',
+            pressed_container: 'bg-primary/10 dark:bg-primary-d/10 hover:bg-primary/20 dark:hover:bg-primary-d/20',
+            pressed_text: 'text-primary-700 dark:text-primary-600 group-hover:text-primary-800 dark:group-hover:text-primary-500',
+            'xs': {
+                rounded: 'rounded-lg',
+                padding: 'p-1.5',
+                icon_sizes: 'h-4 w-4',
+                icon_size: 16,
+                icon_margin: 'mx-[1px]',
+                margin: 'mx-1'
+            },
+            'sm': {
+                rounded: 'rounded-lg',
+                padding: 'p-2.5',
+                icon_sizes: 'h-5 w-5',
+                icon_size: 20,
+                icon_margin: '',
+                margin: 'mx-2'
+            },
+            'base': {
+                rounded: 'rounded-lg',
+                padding: 'p-2.5',
+                icon_sizes: 'h-6 w-6',
+                icon_size: 24,
+                icon_margin: 'mx-1',
+                margin: 'mx-2'
+            },
+            'lg': {
+                rounded: 'rounded-xl',
+                padding: 'p-2.5',
+                icon_sizes: 'h-8 w-8',
+                icon_size: 32,
+                icon_margin: 'mx-1.5',
+                margin: 'mx-1.5'
+            }
+        },
+
         button_styles: {
             'u-btn-default-cnt':
                 ' bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-300 dark:sm:hover:bg-neutral-700 active:opacity-50  ',

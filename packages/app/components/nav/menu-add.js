@@ -1,27 +1,24 @@
 import { View } from 'app/design/view'
-import { ButtonRef } from 'app/design/controls'
+import { Button } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user'
 import { menuItemsByName, appSetting } from 'app/lib/util'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { useTranslation } from 'react-i18next';
 
 
-export default function ({buttonProps}) {
+export default function MenuAdd({buttonProps}) {
     const { currentUser, setCurrentUser } = useCurrentUser();
     const menu_add_items = menuItemsByName('', appSetting('menu_items', 'menu_add'), currentUser)
     const { t } = useTranslation();
     if (menu_add_items.length == 0)
         return <></>;
 
-    const buttonPropsDef = {
+    buttonProps = buttonProps || {
         variant: "secondary",
         rounded: 'rounded',
         startDecorator: "Plus",
-        id: "m3",
         tooltip: "Create",
-    }
-    if (!buttonProps)
-        buttonProps = buttonPropsDef;
+    };
 
     return (
         <View>
@@ -43,7 +40,7 @@ export default function ({buttonProps}) {
                 )}
             >
 
-                <ButtonRef
+                <Button
                     {...buttonProps}
                   
                 />

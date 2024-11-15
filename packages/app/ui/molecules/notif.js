@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 import Browse from 'app/components/elements/browse'
 import { Link } from 'solito/link'
 
-export default function (props) {
+export default function ({buttonProps, children, tooltip, fullWidth}) {
     const { currentUser, setCurrentUser } = useCurrentUser();
     const [ntfsOpen, setNtfsOpen] = useState(false);
     const notifCount = currentUser.notifications;
@@ -20,6 +20,14 @@ export default function (props) {
     const memoizedBrowse = useMemo(() => {
         return<Browse key={notifCount} only_one_page={true} cachePrefix={Date.now()} height={400} data={data} />;
     }, [notifCount]);
+
+    buttonProps = buttonProps || {
+        variant:"secondary",
+        tooltip: tooltip || "Notifications",
+        rounded: true,
+        startDecorator: "Bell",
+        addon:{variant:'primary', text: notifCount, hideZero: true}
+    };
 
     const ntfsContent = (
         ntfsOpen && <View key="ddp-content" className="px-1.5 pb-1.5">
@@ -44,27 +52,11 @@ export default function (props) {
         </View>
     )
 
-    let ntfsTrigger = <View key="ddp-trigger3">
-        <ButtonRef
-            variant="secondary"
-            tooltip={props.tooltip === undefined ? "Notifications" : props.tooltip}
-            rounded
-            startDecorator="Bell"
-            addon={{variant:'primary', text: notifCount, hideZero: true}}
+    const ntfsTrigger = children || <View key="ddp-trigger3">
+        <Button
+            {...buttonProps}
         />
- 
     </View>
-
-    if (props.children) {
-        ntfsTrigger = props.children
-    }
-
-    if (props.buttonProps) {
-        ntfsTrigger = <View className='w-full' key="ddp-trigger3"><ButtonRef
-            addon={{ text: notifCount, variant: 'primary' }}
-            {...props.buttonProps}
-        /></View>
-    }
 
     const dd = <DropdownPopup
         open={ntfsOpen}
@@ -82,7 +74,7 @@ export default function (props) {
         ]}
     </DropdownPopup>
 
-    if (props.buttonProps)
+    if (fullWidth)
         return <View className='w-full'>{dd}</View>
 
     return dd

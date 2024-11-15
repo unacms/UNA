@@ -17,97 +17,27 @@ if (Platform.OS === 'android') {
     h11 = ' h-11'
 }
 
-//import { Dropdown as DropdownDef} from 'react-native-element-dropdown';
 
 /* inputs */
-export const Input = styled(TextInputDef, ' bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-bdrinput dark:border-bdrinput-d focus:outline-none focus:outline-primary dark:focus-outline-primary-d placeholder-neutral-500 duration-100 text-neutral-900 rounded-lg flex-auto px-3  dark:text-neutral-100 text-base leading-5 h-11 ')
-export const InputMulti = styled(TextInputDef, ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg flex-auto p-2 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 ')
-export const InputRounded = styled(TextInputDef, ' placeholder-neutral-500 bg-bgritem dark:bg-bgritem-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-transparent focus:border-bdrinput dark:focus:border-bdrinput-d focus:outline-none focus:outline-primary dark:focus-outline-primary-d duration-100 text-neutral-900 rounded-full flex-auto px-3 dark:text-neutral-100 text-base leading-5 h-11  ')
-export const InputRoundedSmall = styled(TextInputDef, ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-full flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[34px] ')
-export const InputSmall = styled(TextInputDef, ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[36px] ')
+const inputSettings = appSetting('theme', 'inputs');
+
+export const Input = styled(TextInputDef, inputSettings.default)
+export const InputMulti = styled(TextInputDef, inputSettings.multi)
+export const InputRounded = styled(TextInputDef, inputSettings.rounded )
+export const InputRoundedSmall = styled(TextInputDef, inputSettings.roundedsmall )
+export const InputSmall = styled(TextInputDef, inputSettings.small )
+export const Hidden = styled(TextInputDef, 'hidden')
 
 export const Switch = (props) => Platform.OS == 'web' ? <View className="w-16 h-8 pl-2 pt-1.5"><SwitchDef {...props} style={{
     ...(props.size != 'sm' ? { transform: [{ scaleX: 1.4 }, { scaleY: 1.4 }] } : {}),
     ...props.style
   }} /></View> : <SwitchDef {...props} style={props.style} />;
-export const Hidden = styled(TextInputDef, 'hidden')
-//export const Dropdown = styled(DropdownDef, ' bg-bgrinput  border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg   w-full p-2 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus   dark:text-neutral-100 text-base leading-5 h-[40px]')
+
 
 const PickerStyles = ' appearance-none bg-bgrinput  border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg  flex-auto px-3 py-2 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus   dark:text-neutral-100 text-base '
 export const PickerStyled = styled(PickerDef, PickerStyles + ' ')
 export const PickerStyledIos = styled(PickerDef, PickerStyles)
 
-/* modal */
-/*export function Modal({
-    animation = 'fade',
-    position = 'center',
-    onClose,
-    outerClickClose = true,
-    onVisible,
-    title,
-    textAlign = 'center',
-    headerBorder = true,
-    fullWidth = true,
-    children,
-    padding = " px-4 py-2 ",
-    scrollable = false
-}) {
-    const { width, height } = useWindowDimensions();
-    const isWeb = Platform.OS === 'web';
-    const styles = width > LAYOUT_BREAKPOINTS.md && !isWeb ? { maxHeight: height - 100 } : {};
-    const isOuterClose = (onClose !== 'undefined' && outerClickClose !== false);
-    const Wrapper = isOuterClose ? Pressable : View;
-
-    const layoutShift = isWeb ? 'sm' : '2xl';
-    const layoutShift2 = isWeb ? 'sm' : '2xl';// may be need to fix
-
-    const positionClasses = {
-        'top': 'items-start py-8 px-4',
-        'bottom': 'items-end py-8 px-4',
-        'center': `sm:items-center items-start ${layoutShift}:p-4`,
-    };
-
-    const sClassPosition = positionClasses[position] || positionClasses['center'];
-
-    const align = !title && onClose ? 'end' : textAlign;
-
-    const type = typeof title;
-
-    const Cnt = scrollable ? ScrollView : View
-
-    const Content = <View className={`flex-row justify-center left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto ${layoutShift2}:inset-0 h-modal h-full ${sClassPosition}`}>
-    <View className={`w-full ${fullWidth ? '' : 'sm:w-auto'} relative h-full ${isWeb && 'max-w-2xl'} ${layoutShift2}:h-auto `}>
-        <Pressable onPress={() => { }} className={`relative bg-bgrmodal dark:bg-bgrmodal-d h-full ${layoutShift2}:h-auto ${layoutShift}:border ${layoutShift}:border-bdrmodal ${layoutShift}:dark:border-bdrmodal-d ${layoutShift}:rounded-2xl ${layoutShift}:shadow-sm`}>
-            {
-                (title || onClose) && <Row className={`items-center justify-${align} ${headerBorder ? ' border-b border-bdr dark:border-bdr-d ' : ''} px-1 py-2.5 ${layoutShift}:p-4 ${layoutShift}:py-3`}>
-                    {(title && type === 'string') && (
-                        <View className='flex-auto pl-1'>
-                            <Text className='text-neutral-700 dark:text-neutral-200 text-xl font-bold '>{title}</Text>
-                        </View>
-                    )}
-                    {(title && type !== 'string') && (title)}
-                    {onClose && (
-                        <View className=''>
-                            <Button variant='text' size='sm' rounded startDecorator='X' onPress={onClose} />
-                        </View>
-                    )}
-                </Row>
-            }
-            <Cnt style={styles} className={`${padding} overflow-y-auto flex-auto ${layoutShift2}:h-auto justify-center`}>{children}</Cnt>
-        </Pressable>
-    </View>
-</View>
-
-    return (
-        <ModalDef visible={onVisible} presentationStyle={'pageSheet'} animationType={animation} transparent={isWeb}>
-
-            <Wrapper className="pointerEvents flex justify-end w-full h-full bg-white/80 dark:bg-black/80 backdrop-blur" {...(isOuterClose && { onPress: onClose })}>
-               {isWeb ? <RemoveScroll className='flex-1'>{Content}</RemoveScroll> : Content}
-            </Wrapper>
-
-        </ModalDef>
-    );
-}*/
 const modalSettings = appSetting('theme', 'modal');
 
 export function Modal({
@@ -185,6 +115,8 @@ export function MenuButton(props) {
     return <Button>TODO</Button>
 }
 
+const ThemeCssClassesButtonGroups = appSetting('theme', 'buttons_group_styles');
+
 /* buttons group */
 export function ButtonsGroup({
     className = '',
@@ -199,8 +131,8 @@ export function ButtonsGroup({
     let sClassContainer = 'group';
     sClassContainer += fullWidth ? ' flex-auto' : ' w-fit m-0 truncate';
 
-    const ThemeCssClasses = appSetting('theme', 'buttons_group_styles');
-    sClassContainer += ThemeCssClasses['u-btn-' + variant + '-cnt'] ? ThemeCssClasses['u-btn-' + variant + '-cnt'] + ' ' : ' ';
+    
+    sClassContainer += ThemeCssClassesButtonGroups['u-btn-' + variant + '-cnt'] ? ThemeCssClassesButtonGroups['u-btn-' + variant + '-cnt'] + ' ' : ' ';
     sClassContainer += rounded ? 'rounded-full ' : 'rounded-lg ';
     sClassContainer += className;
 
@@ -289,6 +221,8 @@ const getAddon = (addon, isTitle) => {
             <Text className="text-white text-xs font-semibold">{sButtonAddonText}</Text></View></View> : null;
 }
 
+const ThemeCssClassesButton = appSetting('theme', 'button_styles');
+const ThemeButtonSizes = appSetting('theme', 'button_sizes');
 export const Button = (props) => {
     const {
         className = '',
@@ -298,8 +232,8 @@ export const Button = (props) => {
         textColor = '',
         onPress,
         forwardedRef,
-        variant = 'default',
-        size = 'base',
+        variant = ThemeButtonSizes.default_variant,
+        size = ThemeButtonSizes.default_size,
         showTitleFromSize = '',
         tooltip = false,
         pressed = false,
@@ -329,16 +263,14 @@ export const Button = (props) => {
         return '';
     }, [variant, colors]);
 
-    const ThemeCssClasses = useMemo(() => appSetting('theme', 'button_styles'), []);
+  
 
     const sClassContainer = useMemo(() => {
         let classes = 'group relative flex-row items-center ';
         classes += fullWidth ? 'flex-auto w-full ' : ' truncate w-fit ';
         if (disabled) classes += 'opacity-50 ';
         if (variant !== 'custom') {
-            classes +=
-                (solid ? '' : ThemeCssClasses[`u-btn-${variant}-trans`]) +
-                ThemeCssClasses[`u-btn-${variant}-cnt`];
+            classes += (solid ? '' : ThemeCssClassesButton[`u-btn-${variant}-trans`]) +ThemeCssClassesButton[`u-btn-${variant}-cnt`]+ '  ';
         } else {
             classes += className;
         }
@@ -351,15 +283,15 @@ export const Button = (props) => {
             classes += `justify-${align} `;
         }
         if (pressed) {
-            classes += ' bg-primary/10 dark:bg-primary-d/10 hover:bg-primary/20 dark:hover:bg-primary-d/20 ';
+            classes += ` ${ThemeButtonSizes.pressed_container} `;
         }
         return classes;
-    }, [fullWidth, disabled, variant, solid, ThemeCssClasses, className, align, pressed, bgColor]);
+    }, [fullWidth, disabled, variant, solid, ThemeCssClassesButton, className, align, pressed, bgColor]);
 
     const sClassText = useMemo(() => {
         let classes = 'whitespace-nowrap text-ellipsis overflow-hidden tracking-tight';
         if (variant !== 'custom') {
-            classes += ThemeCssClasses[`u-btn-${variant}-text`];
+            classes += ThemeCssClassesButton[`u-btn-${variant}-text`];
         } else {
             classes += ` ${classTextName}`;
         }
@@ -367,11 +299,12 @@ export const Button = (props) => {
             classes = classes.replaceAll(/text-\S+/g, '') + ` ${textColor} `;
         }
         if (pressed) {
-            classes += ' text-primary-700 dark:text-primary-600 group-hover:text-primary-800 dark:group-hover:text-primary-500';
+            classes += ` ${ThemeButtonSizes.pressed_text} `;
+            
         }
         classes += ' text-' + size + ' ';
         return classes;
-    }, [variant, ThemeCssClasses, classTextName, pressed, size]);
+    }, [variant, ThemeCssClassesButton, classTextName, pressed, size]);
 
     const { sIconContainer, iIconSize, sTitleContainer, sizeClasses } = useMemo(() => {
         const titleVisible = !isIcon || !isNaN(title) || showTitleFromSize == '';
@@ -380,42 +313,15 @@ export const Button = (props) => {
         let titleContainerClass = titleVisible ? '' : ' hidden ' + (showTitleFromSize ? showTitleFromSize : 'sm') + ':block ';
         let sizeClasses = '';
 
-        const sClassDefaultRounding = variant !== 'group-item' ? `rounded-${size === 'lg' ? 'xl' : 'lg'}` : '';
+        const sClassDefaultRounding = variant !== 'group-item' ? ThemeButtonSizes[size].rounded : '';
         const sClassFullRounding = variant !== 'group-item' ? 'rounded-full' : '';
         const roundingClass = rounded ? sClassFullRounding : sClassDefaultRounding;
 
         if (variant != 'custom') {
-            switch (size) {
-                case 'xs':
-                    sizeClasses = `${roundingClass} p-1.5`;
-                    iconContainerClass = `h-4 w-4 ${title ? 'mx-[1px]' : ''}`;
-                    iconSize = 16;
-                    titleContainerClass += title ? 'mx-1 ' : '';
-                    break;
-                case 'sm':
-                    sizeClasses = `${roundingClass} p-2 `;
-                    iconContainerClass = `h-5 w-5 ${title ? '' : ''}`;
-                    iconSize = 20;
-                    titleContainerClass += title ? 'mx-2 ' : '';
-                    break;
-                case 'base':
-                    sizeClasses = `lalal ${padding} ${roundingClass} ${padding ? `p-${padding}` : 'p-2.5'} `;
-                    iconContainerClass = `h-6 w-6 ${title ? 'mx-1' : ''}`;
-                    iconSize = 24;
-                    titleContainerClass += title ? 'mx-2 ' : '';
-                    break;
-                case 'lg':
-                    sizeClasses = `${roundingClass} ${padding ? `p-${padding}` : 'p-2.5'} `;
-                    iconContainerClass = `h-8 w-8 ${title ? 'mx-1.5' : ''}`;
-                    iconSize = 32;
-                    titleContainerClass += title ? 'mx-1.5 ' : '';
-                    break;
-                default:
-                    sizeClasses = `${roundingClass} ${padding ? `p-${padding}` : 'p-2.5'} `;
-                    iconContainerClass = `h-6 w-6 ${title ? 'mx-1' : ''}`;
-                    iconSize = 24;
-                    titleContainerClass += title ? 'mx-2 ' : '';
-            }
+            sizeClasses = `${roundingClass} ${ThemeButtonSizes[size].padding} a`;
+            iconContainerClass = `${ThemeButtonSizes[size].icon_sizes} ${title ? ThemeButtonSizes[size].icon_margin : ''}`;
+            iconSize = ThemeButtonSizes[size].icon_size;
+            titleContainerClass += title ? ThemeButtonSizes[size].margin : '';
         }
         return {
             sIconContainer: iconContainerClass,

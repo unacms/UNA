@@ -208,7 +208,7 @@ export function ElementSearchData(oProps) {
         </DropdownPopup>
         return (
 
-            <View className=''>
+            <View className='w-full'>
                 <Redirect ref={redirectdRef} />
                 <InputRounded name="search" placeholder={t("Search") + '...'} onKeyPress={(event) => handleKeyPress(event)} value={inputValue} ref={inputRef} onChangeText={(value) => handleSearch(value)} />
                 {dd}
