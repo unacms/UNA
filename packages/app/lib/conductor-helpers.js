@@ -417,6 +417,7 @@ export function LeftSidebar({ title, addButtons, children, width }) {
 
 export function TopSidebar({ styles, isWeb, leftSideBar, header, headerSettings, addButtons, children, isSmall, title, layout, showMenu, isDrawer }) {
     const isUseBg = appSetting('layout', 'use_background');
+    //TODO REMOVE BG & BORED
     return (
         <View style={styles} className={(leftSideBar ? 'lg:hidden' : '') + " w-full items-left justify-center bg-bgrnavbar dark:bg-bgrnavbar-d " + (isUseBg ? "  bg-bgrnavbar dark:bg-bgrnavbar-d border-b border-bdr dark:border-bdr-d  " : (isSmall ? "   bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur-lg border-b border-bdr dark:border-bdr-d  " : "  border-b border-bdr dark:border-bdr-d "))}  >
             <View className={(leftSideBar ? appSetting('layout', 'max_width') : appSetting('layout', 'max_width') + ' mx-auto ') + ' w-full max-w-6xl '}>

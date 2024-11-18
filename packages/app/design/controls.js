@@ -213,8 +213,10 @@ const getAddon = (addon, isTitle) => {
         sButtonAddonText = addon;
     }
 
+    const position = addon?.position == 'bottom' ? 'bottom-0' : '-top-2';
+
     if (!isTitle && sButtonAddonText)
-        return <View className={`absolute ${sButtonAddonBg} border-2 border-white dark:border-neutral-900 rounded-full  px-1.5 items-center justify-center -right-1 -top-2`}><Text className='text-white text-xs font-semibold'>{sButtonAddonText}</Text></View>
+        return <View className={`absolute ${sButtonAddonBg} border-2 border-white dark:border-neutral-900 rounded-full  px-1.5 items-center justify-center -right-1 ${position}`}><Text className='text-white text-xs font-semibold'>{sButtonAddonText}</Text></View>
 
     return sButtonAddonText && sButtonAddonText ? <View className='flex-1 items-end '>
         <View className={sButtonAddonBg + ' rounded-full px-2 py-0.5 mx-1 text-center items-center'}>
@@ -306,6 +308,9 @@ export const Button = (props) => {
         return classes;
     }, [variant, ThemeCssClassesButton, classTextName, pressed, size]);
 
+
+    console.log("sizesize", size, ThemeButtonSizes[size])
+
     const { sIconContainer, iIconSize, sTitleContainer, sizeClasses } = useMemo(() => {
         const titleVisible = !isIcon || !isNaN(title) || showTitleFromSize == '';
         let iconSize = 24;
@@ -313,15 +318,15 @@ export const Button = (props) => {
         let titleContainerClass = titleVisible ? '' : ' hidden ' + (showTitleFromSize ? showTitleFromSize : 'sm') + ':block ';
         let sizeClasses = '';
 
-        const sClassDefaultRounding = variant !== 'group-item' ? ThemeButtonSizes[size].rounded : '';
+        const sClassDefaultRounding = variant !== 'group-item' ? ThemeButtonSizes[size]?.rounded : '';
         const sClassFullRounding = variant !== 'group-item' ? 'rounded-full' : '';
         const roundingClass = rounded ? sClassFullRounding : sClassDefaultRounding;
 
         if (variant != 'custom') {
-            sizeClasses = `${roundingClass} ${padding || ThemeButtonSizes[size].padding} `;
-            iconContainerClass = `${ThemeButtonSizes[size].icon_sizes} ${title ? ThemeButtonSizes[size].icon_margin : ''}`;
-            iconSize = ThemeButtonSizes[size].icon_size;
-            titleContainerClass += title ? ThemeButtonSizes[size].margin : '';
+            sizeClasses = `${roundingClass} ${padding || ThemeButtonSizes[size]?.padding} `;
+            iconContainerClass = `${ThemeButtonSizes[size]?.icon_sizes} ${title ? ThemeButtonSizes[size]?.icon_margin : ''}`;
+            iconSize = ThemeButtonSizes[size]?.icon_size;
+            titleContainerClass += title ? ThemeButtonSizes[size]?.margin : '';
         }
         return {
             sIconContainer: iconContainerClass,
