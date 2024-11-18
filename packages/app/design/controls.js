@@ -318,7 +318,7 @@ export const Button = (props) => {
         const roundingClass = rounded ? sClassFullRounding : sClassDefaultRounding;
 
         if (variant != 'custom') {
-            sizeClasses = `${roundingClass} ${ThemeButtonSizes[size].padding} a`;
+            sizeClasses = `${roundingClass} ${padding || ThemeButtonSizes[size].padding} `;
             iconContainerClass = `${ThemeButtonSizes[size].icon_sizes} ${title ? ThemeButtonSizes[size].icon_margin : ''}`;
             iconSize = ThemeButtonSizes[size].icon_size;
             titleContainerClass += title ? ThemeButtonSizes[size].margin : '';

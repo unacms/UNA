@@ -29,7 +29,6 @@ export default function MenuItemSubmenuShare(oProps) {
         switch(oItem.name) {
             case 'item-repost':
                 const sResponse = await fetcher('/api.php?r=bx_timeline/repost/Module&params=' + JSON.stringify(Object.values(oItem.data)));
-                console.log("sResponse", sResponse)
                 if(sResponse?.data ){
                     const sMsg = sResponse.data?.message ? sResponse.data?.message : 'The item was successfully reposted.';
                     console.log("sMsg", sMsg)
@@ -44,9 +43,9 @@ export default function MenuItemSubmenuShare(oProps) {
             case 'item-share':
                 try {
                     const result = await Share.share({
-                        title: appSetting('layout', 'share_text'),
-                        url: oItem.link,
-                        message: appSetting('layout', 'share_text') + " "+ oItem.link
+                       // title: appSetting('layout', 'share_text'),
+                       // url: oItem.link,
+                        message: appSetting('layout', 'share_text') +" \n"+ oItem.link
                     });
 
                     switch(result.action) {
