@@ -28,6 +28,8 @@ import { fetcher } from 'app/lib/fetcher';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { callFn } from 'app/lib/functions/call';
 
+const conductorTheme = appSetting('theme', 'conductor');
+
 const AddBlocks = React.memo(({
     leftSideBarBlocks, data, onFormSubmit
 }) => {
@@ -751,19 +753,18 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         </View>
     );
 }
+
 function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, onChangeRoute, leftSideBar }) {
 
-    let filteredItems = routes.filter((aItem) => aItem.hideInTop != true)
-  
+    const name="cnd-main-menu"
+    const filteredItems = routes.filter((aItem) => aItem.hideInTop != true)
+    const menuClasses=conductorTheme.menu_cnt
+    
     const MenuItem = memo(({ item: a, itemRefs, index: index2, visibleItemsCount }) => {
         const { currentUser } = useCurrentUser();
         const btn = callFn('getButtonForConductorSmall', [a, index, currentUser])
-        /*const btn = <Button fullWidth={true} id="tab" pressed={a.index == index ? true : false} variant={a.index == index ? 'secondary' : "text"} rounded size='sm' title={t(a.title)} addon={!appSetting('layout', 'show_nav_counters') && a.addon ? null : a.addon} />
-        if (a.icon == '*') {
-            return <View className={"justify-center" + (index2 > visibleItemsCount - 1 ? ' item-overlap ' : '')} ref={el => itemRefs.current[index2] = el}><Link href={a.link}>{btn}</Link></View>
-        }*/
         return (
-            <Pressable ref={el => itemRefs.current[index2] = el} className={" py-2 items-center " + a?.menu_settings?.class + (index2 > visibleItemsCount - 1 ? ' item-overlap ' : '')}
+            <Pressable ref={el => (itemRefs?.current ? (itemRefs.current[index2] = el) : (el = null))} className={" py-2 items-center " + a?.menu_settings?.class + (index2 > visibleItemsCount - 1 ? ' item-overlap ' : '')}
                 key={`tab-${index2}`}
                 onPress={() => {
                     setIndex(a.index);
@@ -778,6 +779,18 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
             </Pressable>
         )
     });
+
+    if (!conductorTheme.memu_is_dynamic){
+        return (
+                <View className={menuClasses} >
+                    {
+                        filteredItems.map((aItem, iKey) => {
+                            return <MenuItem key={name +'menu'+ iKey} item={aItem} index={iKey} />
+                        })
+                    }
+                </View>
+        );
+    }
 
     const MenuItemEx = memo(({ item, index }) => {
         const { title, addon, icon, link, menu_settings, key } = item;
@@ -815,8 +828,10 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
         return <View key="btn" className='ml-1 py-2 '><Button title={'More...'} variant={visibleItemsCount <= index ? 'secondary' : "text"} pressed={visibleItemsCount <= index ? true : false} size="sm" /></View>;
     });
 
+
+
     return <DynamicMenu
-        name="main-menu"
+        name={name}
         offsetWidth={120}
         ButtonEx={ButtonEx}
         MenuItemEx={MenuItemEx}
@@ -824,7 +839,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
         containerClasses="w-full"
         items={filteredItems}
         isButtonOutside={false}
-        menuClasses=" ml-3 sm:ml-4 gap-x-1 flex-row"
+        menuClasses={menuClasses}
         menuExClasses="mr-auto ml-4 items-end"
     />
 }

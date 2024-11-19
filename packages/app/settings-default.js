@@ -2421,6 +2421,12 @@ export const settingsDefault = {
             bdrModal: 'rgba(55,65,81,0.4)',
             checkbox: '#0ea5e9',
         },
+        conductor: {
+            menu: 'w-full items-left justify-center bg-bgrnavbar dark:bg-bgrnavbar-d border-b border-bdr dark:border-bdr-d',
+            menu_max_width: 'max-w-6xl',
+            memu_is_dynamic: false,
+            menu_cnt: ' ml-3 sm:ml-4 gap-x-1 flex-row '
+        },
         dropdown_menu: {
             content_ver: 'z-10 min-w-[200px] backdrop-blur bg-bgrmodal dark:bg-bgrmodal-d mt-1 p-1 text-sm border dark:border-bdr-d border-bdr rounded-xl shadow-xl overflow-hidden',
             content_hor: 'flex flex-row z-10 p-1 bg-bgrmodal border border-bdr dark:border-bdr-d m-2 dark:bg-bgrmodal-d text-sm text-neutral-800 dark:text-neutral-200 rounded-full shadow-sm',
