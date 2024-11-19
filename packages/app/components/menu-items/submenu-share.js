@@ -45,7 +45,7 @@ export default function MenuItemSubmenuShare(oProps) {
                     const result = await Share.share({
                        // title: appSetting('layout', 'share_text'),
                        // url: oItem.link,
-                        message: appSetting('layout', 'share_text') +" \n"+ oItem.link
+                        message: appSetting('layout', 'share_text') +""+ oItem.link
                     });
 
                     switch(result.action) {
