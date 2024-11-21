@@ -401,9 +401,9 @@ export const Author = memo(({ data, url, t }) => (
             {...data.author_data}
             showLink={true}
             displayType="unit"
-            displaySize="base"
+            displaySize="lg"
             showInfo={
-                <Row className=" flex-wrap items-center  ">
+                <Row className=" flex-wrap items-center ">
                     <Link href={url}>
                         <Time ts={data.date}></Time>
                     </Link>
@@ -428,9 +428,9 @@ export const SmallUnit = memo(({ data }) => {
                             displaySize="base"
                         />
                     </View>
-                    <View className="flex-auto flex-col my-auto ">
+                    <View className="flex-auto flex-col my-auto">
                         <View className="flex-row gap-x-3">
-                            <Text className="text-base flex-auto font-semibold text-neutral-800 dark:text-neutral-200">
+                            <Text className=" text-base flex-auto font-semibold text-neutral-800 dark:text-neutral-200">
                                 {data.author_data.display_name}
                             </Text>
                             <Time className="text-xs flex-none" ts={data.date}></Time>

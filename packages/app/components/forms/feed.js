@@ -77,7 +77,7 @@ export default function FormFeed(props) {
         let dUser = Object.assign({}, currentUser)
         dUser.url_avatar = dUser.avatar
         dUser.url = appSetting('layout', 'dashboard')
-        profile = <Profile {...dUser} displaySize="base" displayType="unit_wo_info" />
+        profile = <Profile {...dUser} displaySize="lg" displayType="unit_wo_info" />
     }
 
     const handlePress = () => {
@@ -192,7 +192,7 @@ export default function FormFeed(props) {
                 <View className=" flex-row gap-x-2 sm:gap-x-3 ">
                     <View className=' my-auto'>{profile}</View>
                     <Button
-                        size="base"
+                        size="lg"
                         variant="secondary"
                         fullWidth
                         rounded
