@@ -124,7 +124,7 @@ const FeedSmall = memo(() => (<View className="sm:px-4 sm:pb-2 flex-auto ">
 </View>))
 
 const FeedDefault = memo(() => (<View className=" pb-1 sm:pb-2 flex-auto">
-    <View className="bg-bgrcard max-w-2xl w-full mx-auto dark:bg-bgrcard-d mb-1 sm:mb-4 p-3 sm:p-4 sm:rounded-2xl flex flex-col animate-pulse ">
+    <View className="bg-bgrcard max-w-3xl w-full mx-auto dark:bg-bgrcard-d mb-1 sm:mb-4 p-3 sm:p-4 sm:rounded-2xl flex flex-col animate-pulse ">
         <View className="flex-row gap-x-2 mb-2">
             <View className="relative flex-row">
                 <View className="h-11 w-11 aspect-square overflow-hidden bg-neutral-500/20 mx-auto rounded-full">

@@ -125,7 +125,7 @@ export default function (props) {
                     appSetting('layout', 'max_width') + ' mx-auto w-full'
                 }
             >
-                <View className="flex-auto  relative w-full flex-row mx-auto ">
+                <View className="flex-auto  relative w-full flex-row mx-auto max-w-screen-2xl ">
                     {getLayout(currentUser) == 'hor' && (
                         <View className="hidden xl:block xl:w-80 2xl:w-96 ">
                             <View className="fixed fixed-process xl:w-80 2xl:w-96">

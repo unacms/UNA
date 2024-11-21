@@ -75,7 +75,7 @@ export default function DropdownMenuComponent({ variant = 'vertical', defaultOpe
         return (
             <DmItem key={key} onSelect={(event) => !!oItem?.onClick ? oItem?.onClick(oItem, event) : onSelectInt(oItem, event)}>
                 <Row className={menuSettings.item_cnt}>
-                    {!!sIcon && <Text className={menuSettings.item_text}>{sIcon}</Text>}
+                    {!!sIcon && <Text className={menuSettings.item_icon}>{sIcon}</Text>}
                     {!!oItem?.title && <Text className={menuSettings.item_text}>{oItem.title}</Text>}
                 </Row>
             </DmItem>

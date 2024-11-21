@@ -84,8 +84,8 @@ const colors = {
 
 
     bgrmodal: {
-        DEFAULT: 'rgba(255,255,255,1)',
-        d: 'rgba(31,41,55,1)',
+        DEFAULT: 'rgba(255,255,255,0.8)',
+        d: 'rgba(31,41,55,0.8)',
     },
     bdrmodal: {
         DEFAULT: 'rgba(229,231,235,1)',

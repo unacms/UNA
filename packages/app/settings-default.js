@@ -2428,18 +2428,19 @@ export const settingsDefault = {
             menu_cnt: ' ml-3 sm:ml-4 gap-x-1 flex-row '
         },
         dropdown_menu: {
-            content_ver: 'z-10 min-w-[200px] backdrop-blur bg-bgrmodal dark:bg-bgrmodal-d mt-1 p-1 text-sm border dark:border-bdr-d border-bdr rounded-xl shadow-xl overflow-hidden',
-            content_hor: 'flex flex-row z-10 p-1 bg-bgrmodal border border-bdr dark:border-bdr-d m-2 dark:bg-bgrmodal-d text-sm text-neutral-800 dark:text-neutral-200 rounded-full shadow-sm',
-            item_ver: 'flex flex-row focus:outline-none items-center px-3 py-2.5 gap-x-2 text-sm rounded-lg font-medium hover:bg-bgritem dark:hover:bg-bgritem-d text-neutral-700 dark:text-neutral-200 dark:hover:text-white hover:cursor-pointer',
-            item_hor: 'flex block px-3 py-2 hover:-translate-y-1 active:-translate-y-1 dark:hover:text-white rounded-full hover:cursor-pointer text-neutral-700 active:opacity-50 hover:scale-125 active:scale-95 duration-200 dark:text-neutral-200',
-            item_np: 'flex flex-row focus:outline-none items-center justify-between px-1 py-0.5 rounded-lg font-medium hover:bg-bgritem dark:hover:bg-bgritem-d text-sm text-neutral-700 dark:text-neutral-200 dark:hover:text-white hover:cursor-pointer',
+            content_ver: ' z-10 min-w-[200px] shadow-xl backdrop-blur-xl bg-bgrmodal dark:bg-bgrmodal-d mt-1 p-1 text-sm rounded-xl shadow-xl overflow-hidden gap-y-1 ',
+            content_hor: ' flex flex-row z-10 p-1 bg-bgrmodal border border-bdr dark:border-bdr-d m-2 dark:bg-bgrmodal-d text-sm text-neutral-800 dark:text-neutral-200 rounded-full shadow-sm',
+            item_ver: 'flex flex-row focus:outline-none items-center px-3 py-2 gap-x-3 text-sm rounded-lg font-medium hover:bg-bgritem dark:hover:bg-bgritem-d text-neutral-700 dark:text-neutral-300 dark:hover:text-white hover:cursor-pointer',
+            item_hor: 'flex block px-3 py-2 hover:-translate-y-1 active:-translate-y-1 dark:hover:text-white rounded-full hover:cursor-pointer text-neutral-700 active:opacity-50 hover:scale-125 active:scale-95 duration-200 dark:text-neutral-300',
+            item_np: 'flex flex-row focus:outline-none items-center justify-between px-1 py-0.5 rounded-lg font-medium hover:bg-bgritem dark:hover:bg-bgritem-d text-sm text-neutral-700 dark:text-neutral-300 dark:hover:text-white hover:cursor-pointer',
             item_cnt: 'items-center gap-x-3',
-            item_text: 'text-base text-neutral-700 dark:text-neutral-200',
+            item_text: 'text-sm font-medium text-neutral-700 dark:text-neutral-200',
+            item_icon: 'text-2xl text-neutral-700 dark:text-neutral-300',
 
         },
         modal: {
             fog: 'bg-white/80 dark:bg-black/80 backdrop-blur',
-            container: 'max-w-2xl {ls}:h-auto',
+            container: 'max-w-3xl {ls}:h-auto',
             content: 'bg-bgrmodal dark:bg-bgrmodal-d {ls}:h-auto  {ls}:border {ls}:border-bdrmodal {ls}:dark:border-bdrmodal-d {ls}:rounded-xl {ls}:shadow-sm',
             header: 'border-b border-bdr dark:border-bdr-d px-3 py-2.5',
         },
@@ -2455,8 +2456,8 @@ export const settingsDefault = {
         button_sizes: {
             default_size: 'base',
             default_variant: 'default',
-            pressed_container: 'bg-primary/10 dark:bg-primary-d/10 hover:bg-primary/20 dark:hover:bg-primary-d/20',
-            pressed_text: 'text-primary-700 dark:text-primary-600 group-hover:text-primary-800 dark:group-hover:text-primary-500',
+            pressed_container: 'bg-primary/10 dark:bg-primary-d/10 hover:bg-primary/20 dark:hover:bg-primary-d/20 ',
+            pressed_text: 'text-primary-700 dark:text-primary-600 group-hover:text-primary-800 dark:group-hover:text-primary-500 ',
             'xs': {
                 rounded: 'rounded-lg',
                 padding: 'p-1.5',
@@ -2506,7 +2507,7 @@ export const settingsDefault = {
             'u-btn-secondary-cnt':
                 ' bg-bgrbutton dark:bg-bgrbutton-d hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50 ',
             'u-btn-secondary-text':
-                ' font-medium text-neutral-700 hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-white',
+                ' font-medium text-neutral-700 hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-white ',
             'u-btn-secondary-trans': ' duration-200',
 
             'u-btn-danger-cnt':
