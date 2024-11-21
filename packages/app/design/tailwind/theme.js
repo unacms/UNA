@@ -65,7 +65,7 @@ const colors = {
         dh: 'rgba(31,41,55,1)',
     },
     bdrcard: {
-        DEFAULT: 'rgba(0,0,0,0.15)',
+        DEFAULT: 'rgba(0,0,0,0.1)',
         d: 'rgba(255,255,255,0.05)',
     },
 
@@ -97,7 +97,7 @@ const colors = {
         d: 'rgba(17,24,39,0.8)',
     },
     bdrnavbar: {
-        DEFAULT: 'rgba(0,0,0,0.15)',
+        DEFAULT: 'rgba(0,0,0,0.1)',
         d: 'rgba(255,255,255,0.05)',
     },
 
