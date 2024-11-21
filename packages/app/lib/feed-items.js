@@ -213,7 +213,7 @@ export const DefaultView = memo(({data, styles, bIsTitle, bIsTimelineContent, co
                         {bIsTimelineContent && (
                             <View className={' ' + ((data.content.text && content_attach.length > 0) ? ' pb-3 sm:pb-4 ' : '')}>
                                 <ContentMore id={'feed-' + data.id} showLink={data?.content?.images_attach?.length == 0} content={data.content.text ? data.content.text : ''} numberOfLines={3} openSmall={false} textClassName=" text-neutral-600 dark:text-neutral-400 text-sm " />
-                                {!!data.content.embed && <Embed data={data.content.embed} />}
+                                {!!data.content.embed && <View className='pt-3'><Embed data={data.content.embed} /></View>}
                             </View>
                         )}
                         {!bIsTimelineContent && (

@@ -8,17 +8,27 @@ import Redirect from 'app/ui/atoms/redirect';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { Platform } from 'react-native';
 import RbList from 'app/ui/molecules/radio_list';
+import ChkList from 'app/ui/molecules/checkbox_list';
 import { storageClear, getAlert } from 'app/lib/util';
 import { useLayoutData } from 'app/context/layout';
 
-const setMembership = async (val) => {
-    oProps.data.value = val;
-    let request_url = '/api.php?r=system/set_membership/TemplServiceProfiles&params[]=' + oProps.data.profile_id + '&params[]=' + val;
-    await fetcher(request_url);
-    setBottomSheetData(false);
-}
-
 const handleClick = async (event, oProps, setBottomSheetData, setLayoutData, redirectdRef, buttonProps, setButtonProps) => {
+
+
+    const setMembership = async (val) => {
+        oProps.data.value = val;
+        const request_url = '/api.php?r=system/set_membership/TemplServiceProfiles&params[]=' + oProps.data.profile_id + '&params[]=' + val;
+        await fetcher(request_url);
+        setBottomSheetData(false);
+    }
+
+    const setBadges = async (val) => {
+        oProps.data.value = val;
+        const request_url = '/api.php?r=system/set_badges/TemplServiceProfiles&params[]=' + oProps.data.content_id + '&params[]=' + val+ '&params[]=' + oProps.data.module;
+        await fetcher(request_url);
+        setBottomSheetData(false);
+    }
+
     if (oProps.content_type == 'memberships') {
         if (Platform.OS == 'web') {
             const popperDiv = document.querySelector('div[data-radix-popper-content-wrapper]');
@@ -27,6 +37,17 @@ const handleClick = async (event, oProps, setBottomSheetData, setLayoutData, red
             }
         }
         setBottomSheetData({ title: 'Choose membership', showClose: true, snapPoints: ['70%', '70%'], content: <RbList values={oProps.data.values} setValue={setMembership} selectedValue={oProps.data.value} /> });
+        return;
+    }
+
+    if (oProps.content_type == 'badges') {
+        if (Platform.OS == 'web') {
+            const popperDiv = document.querySelector('div[data-radix-popper-content-wrapper]');
+            if (popperDiv) {
+                popperDiv.classList.add('radix-hide');
+            }
+        }
+        setBottomSheetData({ title: 'Choose badges', showClose: true, snapPoints: ['70%', '70%'], content: <ChkList values={oProps.data.values} setValue={setBadges} selectedValue={oProps.data.value} /> });
         return;
     }
 
@@ -87,7 +108,7 @@ export default function MenuItemButton(oProps) {
                 fullWidth: oProps.params?.button_full_width,
                 showTitleFromSize: oProps.params?.button_show_title_from_size
             };
-            console.log("oButtonProps", oButtonProps, buttonProps.title,oProps.primary)
+
             const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
 
             let sButtonIcon = '';

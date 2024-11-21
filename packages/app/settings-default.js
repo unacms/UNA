@@ -366,6 +366,7 @@ export const settingsDefault = {
             messenger: 'ChatTeardropDots',
             'profile-confirm': 'Check',
             'profile-set-acl-level': 'UserList',
+            'profile-set-badges': 'SealCheck',
         },
         menu_navbar: [
             { name: 'home', title: 'Home', link: '/', icon: 'House' },

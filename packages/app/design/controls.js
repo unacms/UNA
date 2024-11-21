@@ -308,9 +308,6 @@ export const Button = (props) => {
         return classes;
     }, [variant, ThemeCssClassesButton, classTextName, pressed, size]);
 
-
-    console.log("sizesize", size, ThemeButtonSizes[size])
-
     const { sIconContainer, iIconSize, sTitleContainer, sizeClasses } = useMemo(() => {
         const titleVisible = !isIcon || !isNaN(title) || showTitleFromSize == '';
         let iconSize = 24;

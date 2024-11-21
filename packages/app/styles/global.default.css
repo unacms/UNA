@@ -341,11 +341,11 @@ div::-webkit-scrollbar {
 .editor-height {
     min-height: 120px !important;
 }
-
+/*
 .editor-height .ProseMirror {
     min-height: 120px;
 }
-
+*/
 .editor-height-3 .ProseMirror {
     max-height: auto;
     overflow-y: scroll;
