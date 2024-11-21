@@ -63,7 +63,7 @@ function DisplayInfo(oProps) {
 function UnitWoInfo({ oProps, sSize, sSizeFontLetter, iSizeWidth, bShowLinks, emulate }) {
     let name = oProps.display_name ? oProps.display_name.substr(0, 1) : ''
     const content = <View className="relative flex-row">
-        <View className={sSize + " aspect-square overflow-hidden bg-neutral-50 dark:bg-neutral-700 mx-auto rounded-full "}>
+        <View className={sSize + " hover:animate-pulse overflow-hidden bg-bgritem dark:bg-bgritem-d  mx-auto rounded-full "}>
             {!oProps.url_avatar && <View className={'h-full items-center justify-center bg-' + getRandomColor(oProps.id) + '-500 uppercase'}>
                 <Text className={sSizeFontLetter + ' text-white '}>{name}</Text>
             </View>}
@@ -208,9 +208,9 @@ function AtomProfile_(oProps) {
             sSizeFontLetter: 'text-base',
         },
         base: {
-            sSize: 'w-11 h-11',
-            iSizeWidth: 44,
-            iSizeHeight: 44,
+            sSize: 'w-10 h-10',
+            iSizeWidth: 40,
+            iSizeHeight: 40,
             sSizeFont: 'text-base',
             sSizeFontLetter: 'text-xl',
         },
@@ -273,7 +273,7 @@ function AtomProfile_(oProps) {
     switch (sDisplayType) {
         case 'unit':
             return (
-                <Row className="flex-row items-center">
+                <Row className="flex-row items-center ">
                     <View className="flex-none mr-2 sm:mr-3">
                         <UnitWoInfo oProps={oProps} sSize={sSize} sSizeFontLetter={sSizeFontLetter} emulate={emulate} iSizeWidth={iSizeWidth} bShowLinks={bShowLinks} />
                     </View>
