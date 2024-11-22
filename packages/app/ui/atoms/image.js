@@ -53,6 +53,9 @@ export default function ElementImage(props) {
         sizes = "(max-width:1280px) 100vw, 1280px";
     if (sizes === LAYOUT_BREAKPOINTS.md)
         sizes = "(max-width:768px) 100vw, 500px";
+    if (!sizes){
+        sizes = "(max-width:768px) 100vw, 500px";
+    }
 
 
     if (null === src)
@@ -115,7 +118,8 @@ export default function ElementImage(props) {
             {...rest} 
             src={src} 
             alt={alt} 
+            sizes={sizes}
             style={style} 
         />
-    ), [rest, src, alt, style]);
+    ), [rest, src, alt, style, sizes]);
 }

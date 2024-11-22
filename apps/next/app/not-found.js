@@ -10,7 +10,8 @@ import { cookies } from 'next/headers'
 
 export const getData = cache(async (props) => {
     
-    let c = cookies().getAll();
+    const cookieStore = await cookies()
+    let c = cookieStore.getAll();
     let cookieString = '';
     
     c.map(function (item) {

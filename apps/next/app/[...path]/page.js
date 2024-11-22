@@ -12,8 +12,11 @@ let remote_config = { hash: null, data: null };
 let cachedData = {};
 
 async function getCachedData(props) {
+    const params = await props.params
+    const search_params = await props.searchParams
+
     // Generate a unique key for each `props` input to store cache separately for each set of `props`
-    const cacheKey = JSON.stringify(props);
+    const cacheKey = JSON.stringify({ params, search_params });
     const currentTime = Date.now();
 
     // Check if data is in cache and if it's still valid (not older than 1 second)
@@ -22,7 +25,7 @@ async function getCachedData(props) {
     }
 
     // If not cached or expired, fetch new data and store it in cache with a timestamp
-    const data = await getData(props);
+    const data = await getData(params, search_params);
     cachedData[cacheKey] = {
         data,
         timestamp: currentTime,
@@ -32,9 +35,10 @@ async function getCachedData(props) {
 }
 
 
-const getData = cache(async (props) => {
-    let path = props.params.path.join('/');
-    let cookieString = props.searchParams.cookieString;
+const getData = cache(async (params, search_params) => {
+    
+    let path = params.path.join('/');
+    let cookieString = search_params.cookieString;
 
     const opts = {
         headers: {
@@ -44,7 +48,7 @@ const getData = cache(async (props) => {
         cache: 'no-store'
     };
     let l = UNA_URL + '/api.php' + '?r=system/get_page_by_request/TemplServicePages&params[]=' + path;
-    let searchParams = JSON.parse(JSON.stringify(props.searchParams));
+    let searchParams = JSON.parse(JSON.stringify(search_params));
 
     delete searchParams.cookieString;
     delete searchParams.path;

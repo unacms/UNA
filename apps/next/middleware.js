@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { UNA_URL, UNA_API_KEY } from 'app/config';
 import * as Icons from  "@phosphor-icons/react/dist/ssr";
-import ReactDOMServer from 'react-dom/server';
+
 export const config = {
     matcher: ["/((?!static|_next|sw.js|manifest.json|logo192.png|loader.svg|favicon.ico|_vercel).*)"],
    // runtime: 'experimental-edge',
@@ -10,47 +10,25 @@ export const config = {
 export function middleware(request) {
     
     if (!request.nextUrl.pathname.includes('.php')) {
-        
-        if (!request.nextUrl.pathname.includes('.icon')) {
-            let c = request.cookies.getAll();
-            let cookieString = '';
-            c.map(function (item) {
-                cookieString += item.name + '=' + encodeURIComponent(item.value) + '; '
-            });
-            let url = request.nextUrl.origin + request.nextUrl.pathname + request.nextUrl.search;
-            if (request.nextUrl.pathname == '/')
-                url = request.nextUrl.origin + '/home' + request.nextUrl.search
+        let c = request.cookies.getAll();
+        let cookieString = '';
+        c.map(function (item) {
+            cookieString += item.name + '=' + encodeURIComponent(item.value) + '; '
+        });
+        let url = request.nextUrl.origin + request.nextUrl.pathname + request.nextUrl.search;
+        if (request.nextUrl.pathname == '/')
+            url = request.nextUrl.origin + '/home' + request.nextUrl.search
 
-            if (cookieString != ''){
-                const response =  NextResponse.rewrite(new URL(url + (url.includes('?') ? '&' : '?') + "cookieString=" + cookieString));
-                return response
-            }
-            else{
-                const response = NextResponse.rewrite(new URL(url))
-                response.headers.set('Cache-Control', 'public, s-maxage=1')
-                response.headers.set('CDN-Cache-Control', 'public, s-maxage=60')
-                response.headers.set('Vercel-CDN-Cache-Control', 'public, s-maxage=3600')
-                return response
-            }
+        if (cookieString != ''){
+            const response =  NextResponse.rewrite(new URL(url + (url.includes('?') ? '&' : '?') + "cookieString=" + cookieString));
+            return response
         }
         else{
-            const url = new URL(request.url);
-            const IconComponent = Icons[url.searchParams.get('icon')];
-            let iconString = "";
-            if (IconComponent){
-                const width = url.searchParams.get('width');
-                const height = url.searchParams.get('height');
-                const size = url.searchParams.get('size');
-                const iconProps = {
-                    color: "currentColor",
-                    ...(width && { width }),
-                    ...(height && { height }),
-                    ...(size && { size }),
-                };
-                iconString = ReactDOMServer.renderToString(<IconComponent {...iconProps}  />);
-            }
-            return NextResponse.json({ icon: iconString }, { status: 200 });
-          
+            const response = NextResponse.rewrite(new URL(url))
+            response.headers.set('Cache-Control', 'public, s-maxage=1')
+            response.headers.set('CDN-Cache-Control', 'public, s-maxage=60')
+            response.headers.set('Vercel-CDN-Cache-Control', 'public, s-maxage=3600')
+            return response
         }
     }
     else{

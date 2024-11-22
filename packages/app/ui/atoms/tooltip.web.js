@@ -6,7 +6,9 @@ import 'tippy.js/dist/tippy.css'; // optional
 import 'app/styles/tippyjs.css'
 
 export default function Tooltip(props) {
-    return (
+    //DISABLED AFTER REACT 19 UPDATE
+    return props.children
+    /*return (
         <Tippy theme='tooltip' content={props.content}>{props.children}</Tippy>
-    );
+    );*/
 }

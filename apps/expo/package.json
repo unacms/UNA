@@ -90,7 +90,7 @@
     "react-native-url-polyfill": "^2.0.0",
     "react-native-video": "^6.4.3",
     "react-native-watch-connectivity": "1.1.0",
-    "react-native-web": "~0.19.6",
+    "react-native-web": "~0.19.13",
     "react-native-webrtc": "111.0.3",
     "react-native-webview": "13.8.6",
     "react-native-youtube-iframe": "^2.3.0",

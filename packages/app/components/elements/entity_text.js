@@ -56,7 +56,6 @@ const getImagesData = (data) => {
 };
 
 function Default({ data, showPad, sidebar, block }) {
-    console.log("datadatadata", data)
     let att = getImagesData(data);
     const text = clearLinks(data.entry_text);
     const isSmall = block?.module == "bx_market";
