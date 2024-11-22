@@ -13,14 +13,14 @@ function getYouTubeVideoId(url) {
     return match ? match[1] : null;
 }
 
-const Embed = memo(function ({ data }) {
+const Embed = memo(function ({ data, size }) {
 
     const videoId = getYouTubeVideoId(data.url);
     if (videoId)
-        return <Youtube videoId={videoId} />
+        return <Youtube videoId={videoId} size={size} />
 
     return <Link target='_blank' href={data.url} >
-        <Row className='rounded-lg mt-4 border border-bdr dark:border-bdr-d'>
+        <Row className='rounded-lg mt-3 border border-bdr dark:border-bdr-d'>
             <View className='aspect-square h-32 mr-4'>
                 {(data.image) ? <Image view="cover" sizes={LAYOUT_BREAKPOINTS.lg} resizeMode="cover" className="rounded-tl-lg rounded-bl-lg " src={data.image} />
                     : (data.logo ? <Image view="cover" sizes={LAYOUT_BREAKPOINTS.lg} resizeMode="cover" className="rounded-tl-lg rounded-bl-lg " src={data.logo} /> : <></>)}

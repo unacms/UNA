@@ -8,6 +8,7 @@ import Html from 'app/ui/atoms/html';
 import Time from 'app/ui/atoms/time';
 import Profile from 'app/ui/molecules/profile';
 import { ContentMore } from 'app/ui/molecules/contentmore';
+import Embed from 'app/ui/molecules/embed'
 import Menu from 'app/components/menu';
 import { useCurrentUser } from 'app/context/user';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
@@ -156,13 +157,15 @@ export default function UnitComments(props) {
                                     <View className=" "></View>
                                 </View>
                                 <ContentMore content={data.cmt_parent.data.cmt_text} numberOfLines={1} openSmall={false} textClassName="text-base text-neutral-600 dark:text-neutral-400" />
+                               
                             </View>
                         }
                         <View className='text-neutral-900 dark:text-neutral-50 py-0.5'>
                             <Html htmlStyles={{ fontSize: 14 }} customClassName='u-vanilla-html u-vanilla-html-small' data={linkify(data.cmt_text)} />
+                            {!!data.embed && <View><Embed data={data.embed} size="small" /></View>}
                             {!!data.cmt_mood && <StarsView rating={data.cmt_mood} starSize={20} />}
                         </View>
-                        {(viewState.view != 'edited' && imageList.length > 0) && <View className=' max-w-lg'><Carousel data={imageList} /></View>}
+                        {(viewState.view != 'edited' && imageList.length > 0) && <View className='max-w-xs w-full'><Carousel data={imageList} /></View>}
                     </View>
                     {viewState.view != 'edited' && <View className=' flex-row w-full mb-2 items-center'>
                         {(!!currentUser && !!props.handleReply && !props.module.includes('_reviews')) ? <View className='mr-2'>
