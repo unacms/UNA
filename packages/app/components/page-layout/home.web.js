@@ -125,7 +125,7 @@ export default function (props) {
                     appSetting('layout', 'max_width') + ' mx-auto w-full'
                 }
             >
-                <View className="flex-auto  relative w-full flex-row mx-auto max-w-screen-2xl ">
+                <View className="flex-auto  relative w-full flex-row mx-auto max-w-[1920px] ">
                     {getLayout(currentUser) == 'hor' && (
                         <View className="hidden xl:block xl:w-80 2xl:w-96 ">
                             <View className="fixed fixed-process xl:w-80 2xl:w-96">
@@ -156,7 +156,7 @@ export default function (props) {
                     <View className="flex-auto w-full lg:w-auto flex-row ">
                         <View className="flex-auto lg:px-4 ">
                             <View className=" w-full mx-auto lg:max-w-3xl relative">
-                                <ScrollView horizontal={true} className="fixed lg:relative top-14 lg:top-0 z-50 w-full sm:justify-center bg-bgrcard dark:bg-bgrcard-d lg:bg-transparent dark:lg:bg-transparent mb-1 sm:mb-4 lg:m-0 shadow-sm lg:shadow-none  ">
+                                <ScrollView horizontal={true} className="fixed lg:relative top-16 lg:top-0 z-50 w-full sm:justify-center bg-bgrcard dark:bg-bgrcard-d lg:bg-transparent dark:lg:bg-transparent mb-1 sm:mb-4 lg:m-0 shadow-sm lg:shadow-none  ">
                                 <Row className="  rounded-full mx-3 sm:mx-4 my-2 lg:mt-4 lg:mb-4  gap-x-1 sm:gap-x-2  ">
                                     {feedList.length > 1 &&
                                         feedList.map((item, index) => {
@@ -228,7 +228,7 @@ export default function (props) {
                                         )}
                                 </Row>
                                 </ScrollView>
-                                <View className="relative w-full mx-auto max-w-3xl mt-12 lg:mt-0">
+                                <View className="relative w-full mx-auto max-w-3xl mt-16 lg:mt-0">
                                     {feedList.map((item, index) => {
                                         if (feedType == item.name) {
                                             return (

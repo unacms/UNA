@@ -93,8 +93,8 @@ const colors = {
     },
 
     bgrnavbar: {
-        DEFAULT: 'rgba(255,255,255,0.8)',
-        d: 'rgba(17,24,39,0.8)',
+        DEFAULT: 'rgba(255,255,255,0.9)',
+        d: 'rgba(17,24,39,0.9)',
     },
     bdrnavbar: {
         DEFAULT: 'rgba(0,0,0,0.1)',
@@ -126,20 +126,20 @@ const colors = {
 
     bgrbutton: {
         DEFAULT: 'rgba(107,114,128,0.15)',
-        h: 'rgba(107,114,128,0.3)',
+        h: 'rgba(107,114,128,0.25)',
         d: 'rgba(107,114,128,0.15)',
-        dh: 'rgba(107,114,128,0.3)',
+        dh: 'rgba(107,114,128,0.25)',
     },
     bdrbutton: {
-        DEFAULT: 'rgba(107,114,128,0.15)',
-        h: 'rgba(107,114,128,0.3)',
-        d: 'rgba(107,114,128,0.15)',
-        dh: 'rgba(107,114,128,0.3)',
+        DEFAULT: 'rgba(0,0,0,0.05)',
+        h: 'rgba(0,0,0,0.1)',
+        d: 'rgba(255,255,255,0.05)',
+        dh: 'rgba(255,255,255,255.1)',
     },
 
     bdr: {
-        DEFAULT: 'rgba(229,231,235,1)',
-        d: 'rgba(31,41,55,1)',
+        DEFAULT: 'rgba(0,0,0,0.05)',
+        d: 'rgba(255,255,255,0.05)',
     },
     bgr: {
         DEFAULT: 'rgba(255,255,255,1)',
@@ -157,11 +157,21 @@ const theme = {
         fontFamily: {
             default: ['default-font', 'sans-serif']
         },
+
         aspectRatio: {
             '3/1': '3 / 1',
             '4/1': '4 / 1',
             '5/1': '5 / 1',
         },
+        boxShadow: {
+            'xs': '0px 1px 0px 0px rgba(0, 0, 0, 0.08)',
+            'xsd': '0px 1px 0px 0px rgba(0, 0, 0, 0.8)',
+            'xsr': '1px 0px 0px 0px rgba(0, 0, 0, 0.08)',
+            'xsrd': '1px 0px 0px 0px rgba(0, 0, 0, 0.8)',
+            'ring': '0px 0px 0px 1px rgba(0, 0, 0, 0.15)',
+            'ringd': '0px 0px 0px 1px rgba(255, 255, 255, 0.15)',
+                
+        }
     },
 }
 
