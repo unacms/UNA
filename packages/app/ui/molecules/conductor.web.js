@@ -780,7 +780,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
         )
     });
 
-    if (!conductorTheme.memu_is_dynamic){
+    if (!conductorTheme.menu_is_dynamic){
         return (
                 <View className={menuClasses} >
                     {

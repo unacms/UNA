@@ -2425,7 +2425,7 @@ export const settingsDefault = {
         conductor: {
             menu: ' w-full items-left justify-center border-b border-bdr dark:border-bdr-d',
             menu_max_width: ' max-w-6xl ',
-            memu_is_dynamic: false,
+            menu_is_dynamic: true,
             menu_cnt: ' ml-3 sm:ml-4 gap-x-1 flex-row '
         },
         dropdown_menu: {
