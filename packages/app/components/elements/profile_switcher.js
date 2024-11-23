@@ -52,8 +52,8 @@ export default function (props) {
                     {props.children}
                 </Pressable> :
                 <Link href={currentUser.url} emulate={true} >
-                    <Row className={rounded + " items-center p-1.5 justify-between cursor-pointer hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50"}>
-                        <Row className='flex-row px-1.5 items-center'>
+                    <Row className={rounded + " items-center px-2 py-1.5 justify-between cursor-pointer hover:bg-bgrbutton dark:hover:bg-bgrbutton active:opacity-50"}>
+                        <Row className='flex-row items-center'>
                             <Profile
                                 {...currentUser}
                                 url_avatar={currentUser.avatar}

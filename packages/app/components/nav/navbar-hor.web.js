@@ -59,7 +59,7 @@ const HeaderLine = memo(
                     <Link href="/home" aria-label="Logo">
                         <View className="group mr-4 flex-row flex-none items-center my-auto">
                             {appStatic('logo_mark')}
-                            {appStatic('logo_text')}
+                            {/*{appStatic('logo_text')}*/}
                         </View>
                     </Link>
                 )}

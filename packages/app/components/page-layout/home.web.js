@@ -133,7 +133,7 @@ export default function (props) {
                                     'layout',
                                     'show_profile_info'
                                 ) && (
-                                    <View className="px-2 pt-3 pb-1">
+                                    <View className=" px-2 pt-4 pb-1 ">
                                             <ProfileSwitcher hideTitle={true} useDefault={true} />
                                         </View>
                                     )}
@@ -153,11 +153,11 @@ export default function (props) {
                         </View>
                     )}
 
-                    <View className="flex-auto w-full lg:w-auto flex-row ">
-                        <View className="flex-auto lg:px-4 ">
-                            <View className=" w-full mx-auto lg:max-w-3xl relative">
-                                <ScrollView horizontal={true} className="fixed lg:relative top-16 lg:top-0 z-50 w-full sm:justify-center bg-bgrcard dark:bg-bgrcard-d lg:bg-transparent dark:lg:bg-transparent mb-1 sm:mb-4 lg:m-0 shadow-sm lg:shadow-none  ">
-                                <Row className="  rounded-full mx-3 sm:mx-4 my-2 lg:mt-4 lg:mb-4  gap-x-1 sm:gap-x-2  ">
+                  
+                        
+                            <View className="flex-auto lg:w-auto mx-auto lg:max-w-3xl relative pt-1 sm:p-4 md:px-0">
+                                <ScrollView horizontal={true} className="fixed lg:relative lg:top-0 z-50 w-full sm:justify-center  ">
+                                <Row className="  rounded-full mx-3 sm:mx-4 gap-x-1 sm:gap-x-2  ">
                                     {feedList.length > 1 &&
                                         feedList.map((item, index) => {
                                             return (
@@ -228,7 +228,7 @@ export default function (props) {
                                         )}
                                 </Row>
                                 </ScrollView>
-                                <View className="relative w-full mx-auto max-w-3xl mt-16 lg:mt-0">
+                                <View className="relative w-full mx-auto max-w-3xl ">
                                     {feedList.map((item, index) => {
                                         if (feedType == item.name) {
                                             return (
@@ -285,9 +285,9 @@ export default function (props) {
                                 </View>
                                
                             </View>
-                        </View>
-                    </View>
-                    <View className="hidden lg:block xl:w-80 2xl:w-96 ">
+                        
+                    
+                    <View className="hidden lg:block xl:w-80 2xl:w-96  ">
                         <View className="fixed-process xl:w-80 2xl:w-96 max-w-md  p-4 flex-col space-y-4 duration-200">
                             {sideBarBlocks.map((item, index) => {
                                 return (
