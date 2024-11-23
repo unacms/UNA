@@ -164,10 +164,12 @@ const theme = {
             '5/1': '5 / 1',
         },
         boxShadow: {
-            'xs': '0px 1px 0px 0px rgba(0, 0, 0, 0.08)',
-            'xsd': '0px 1px 0px 0px rgba(0, 0, 0, 0.8)',
+            'xsb': '0px 1px 0px 0px rgba(0, 0, 0, 0.08)',
+            'xsbd': '0px 1px 0px 0px rgba(0, 0, 0, 0.8)',
             'xsr': '1px 0px 0px 0px rgba(0, 0, 0, 0.08)',
             'xsrd': '1px 0px 0px 0px rgba(0, 0, 0, 0.8)',
+            'xs': '0px 0px 0px 1px rgba(0, 0, 0, 0.08)',
+            'xsd': '0px 0px 0px 1px rgba(0, 0, 0, 0.8)',
             'ring': '0px 0px 0px 1px rgba(0, 0, 0, 0.15)',
             'ringd': '0px 0px 0px 1px rgba(255, 255, 255, 0.15)',
                 

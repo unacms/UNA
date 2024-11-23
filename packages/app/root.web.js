@@ -11,12 +11,16 @@ const Layouts = dynamic(() => import('app/components/layouts'), { ssr: false });
 
 
 const metaAdder = (queryProperty, value) => {
+    if (!value) return;
     let element = document.querySelector(`meta[${queryProperty}]`);
     if (element) {
         element.setAttribute("content", value);
     } else {
-        element = `<meta ${queryProperty} content="${value}" />`;
-        document.head.insertAdjacentHTML("beforeend", element);
+        const newElement = document.createElement('meta');
+        const [attr, val] = queryProperty.split('=');
+        newElement.setAttribute(attr.replace(/['"]/g, ''), val.replace(/['"]/g, ''));
+        newElement.setAttribute('content', value);
+        document.head.appendChild(newElement);
     }
 };
 
@@ -27,27 +31,44 @@ export function Root(props) {
     const isWeb = Platform.OS == 'web'
 
     useEffect(() => {
+        if (isWeb) {
+            // Add preconnect for OneSignal main domain
+            const preconnectLink = document.createElement('link');
+            preconnectLink.rel = 'preconnect';
+            preconnectLink.href = 'https://onesignal.com';
+            preconnectLink.crossOrigin = 'anonymous';
+            document.head.appendChild(preconnectLink);
 
-            if (data?.title) {
+            // Add preconnect for OneSignal CDN
+            const preconnectCDNLink = document.createElement('link');
+            preconnectCDNLink.rel = 'preconnect';
+            preconnectCDNLink.href = 'https://cdn.onesignal.com';
+            preconnectCDNLink.crossOrigin = 'anonymous';
+            document.head.appendChild(preconnectCDNLink);
 
-                if (appSetting('layout', 'add_notifications_count_in_title')) {
-                    if (currentUser?.notifications > 0) {
-                        document.title = decodeText('(' + currentUser?.notifications + ') ' + data?.title);
-                    }
-                    else {
-                        document.title = decodeText(data?.title);
-                    }
-                }
-                else {
-                    document.title = decodeText(data?.title);
-                }
+            // Optional: Add DNS prefetch as fallback
+            const dnsPrefetchLink = document.createElement('link');
+            dnsPrefetchLink.rel = 'dns-prefetch';
+            dnsPrefetchLink.href = 'https://onesignal.com';
+            document.head.appendChild(dnsPrefetchLink);
+        }
+    }, []);
 
-            }
-            metaAdder('property="og:title"', decodeText(data?.title))
-        if (props.settings)
+    useEffect(() => {
+        if (data?.title && isWeb) {
+            const title = decodeText(
+                appSetting('layout', 'add_notifications_count_in_title') && currentUser?.notifications > 0
+                    ? `(${currentUser.notifications}) ${data.title}`
+                    : data.title
+            );
+            document.title = title;
+            metaAdder('property="og:title"', title);
+        }
+        
+        if (props.settings) {
             remoteSettings.data = props.settings;
-
-    }, [currentUser?.notifications]);
+        }
+    }, [currentUser?.notifications, data?.title]);
 
 
     useEffect(() => {
