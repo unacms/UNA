@@ -2,7 +2,10 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
-    "noEmit": true
+    "noEmit": true,
+    "sourceMap": true,
+    "inlineSourceMap": false,
+    "inlineSources": true
   },
   "include": [
     "app/**/*.ts",

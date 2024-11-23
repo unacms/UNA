@@ -50,6 +50,7 @@ const HeaderLine = memo(
                                 align="start"
                                 aria-label={'Menu'}
                                 alt={'Menu'}
+                                role="button"
                             />
                         </Pressable>
                     </View>
@@ -241,6 +242,7 @@ export default function (props) {
                     showMenu={showMenu}
                     menuPopup={menuPopup}
                     cssClass=""
+                    role="navigation"
                 />
             </View>
         </>

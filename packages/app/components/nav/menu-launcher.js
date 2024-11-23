@@ -24,8 +24,7 @@ export default function () {
                 link: item.link,
                 title: t(item.title),
                 icon: item.icon.includes(' ') ? item.icon.split(' ')[0] : item.icon,
-            }))
-            }
+            }))}
             >
                 <ButtonRef
                     tooltip="All Apps"
@@ -35,7 +34,6 @@ export default function () {
                     rounded
                     alt={t("All Apps")}
                     startDecorator="CirclesFour"
-                    aria-label="All Apps"
                 />
             </DropdownMenu>
         </View>

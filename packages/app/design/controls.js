@@ -372,14 +372,20 @@ export const Button = (props) => {
 
   
 
+    const buttonAttributes = {
+        ...(rest.alt ? { 
+            'aria-label': rest.alt,
+            alt: rest.alt 
+        } : {}),
+        role: rest['aria-haspopup'] === 'menu' ? 'menubutton' : 'button',
+    };
+
     const buttonContent = (
         <>
             <Cnt
                 className={`${sClassContainer} ${sizeClasses}`}
                 {...rest}
-                {...(rest.alt
-                    ? { 'aria-label': rest.alt, role: 'button', alt: rest.alt }
-                    : {})}
+                {...buttonAttributes}
                 onPress={onPress && !disabled ? onPress : undefined}
                 {...refProps}
             >

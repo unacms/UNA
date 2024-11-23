@@ -113,6 +113,11 @@ export const settingsDefault = {
         hide_edit_covers: false,
         share_text: '',
         fixed_cover: false,
+        button_attributes: {
+            role: "button",
+            "aria-expanded": "false",
+            "aria-haspopup": "menu"
+        },
     },
     forms: {
         sys_login: { hide_errors: true, button_full_width: true },
