@@ -9,7 +9,15 @@ export async function GET(request) {
         const iconName = searchParams.get("icon");
 
         if (!iconName || !Icons[iconName]) {
-            return new Response("Icon not found", { status: 404 });
+            return new Response(
+                JSON.stringify({ icon: '' }),
+                {
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                }
+    
+            );
         }
 
         const IconComponent = Icons[iconName];

@@ -9,6 +9,8 @@ import Tooltip from 'app/ui/atoms/tooltip';
 import 'app/styles/dropdown.css';
 
 export default function DropdownPopup(oProps) {
+     //DISABLED AFTER REACT 19 UPDATE
+    return <></>
     let { open, onOpenChange, asChildTrigger, title, ...restProps } = oProps;
 
     let bModal = true;

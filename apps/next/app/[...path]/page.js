@@ -12,6 +12,7 @@ let remote_config = { hash: null, data: null };
 let cachedData = {};
 
 async function getCachedData(props) {
+     //AFTER REACT 19 UPDATE NEED REMOVE DOUBLE CALLS
     const params = await props.params
     const search_params = await props.searchParams
 

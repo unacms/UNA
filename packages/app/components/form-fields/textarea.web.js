@@ -7,14 +7,15 @@ import React from 'react';
 import { View } from 'app/design/view'
 import { TextInput as TextInputDef} from 'react-native'
 import { styled } from 'nativewind'
+import FormFieldFtf from './rtf'
 
-function FormFieldFtf(props) {
+/*function FormFieldFtf(props) {
     const computedData = useMemo(() => {
         const FormFieldFtf_ = React.memo(dynamic(() => import('./rtf')));
             return  <FormFieldFtf_ {...props} />
     }, [props.b, props.placeholder]); 
     return computedData;
-}
+}*/
 
 export default function FormFieldText(props) {
     
