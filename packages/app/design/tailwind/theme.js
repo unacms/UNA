@@ -71,9 +71,9 @@ const colors = {
 
     bgrinput: {
         DEFAULT: 'rgba(107,114,128,0.15)',
-        f: 'rgba(107,114,128,0.1)',
+        f: 'rgba(255,255,255,0.8)',
         d: 'rgba(107,114,128,0.15)',
-        df: 'rgba(107,114,128,0.1)',
+        df: 'rgba(17,29,39,0.8)',
     },
     bdrinput: {
         DEFAULT: 'rgba(107,114,128,0.15)',
@@ -88,17 +88,17 @@ const colors = {
         d: 'rgba(17,24,39,0.8)',
     },
     bdrmodal: {
-        DEFAULT: 'rgba(229,231,235,1)',
-        d: 'rgba(31,41,55,0.8)',
+        DEFAULT: 'rgba(255,255,255,0.8)',
+        d: 'rgba(255,255,255,0.04)',
     },
 
     bgrnavbar: {
-        DEFAULT: 'rgba(255,255,255,0.9)',
-        d: 'rgba(17,24,39,0.9)',
+        DEFAULT: 'rgba(255,255,255,0.8)',
+        d: 'rgba(17,24,39,0.8)',
     },
     bdrnavbar: {
-        DEFAULT: 'rgba(0,0,0,0.1)',
-        d: 'rgba(255,255,255,0.05)',
+        DEFAULT: 'rgba(255,255,255,0.8)',
+        d: 'rgba(255,255,255,0.04)',
     },
 
     bgrtabbar: {
@@ -131,9 +131,9 @@ const colors = {
         dh: 'rgba(107,114,128,0.25)',
     },
     bdrbutton: {
-        DEFAULT: 'rgba(0,0,0,0.05)',
-        h: 'rgba(0,0,0,0.1)',
-        d: 'rgba(255,255,255,0.05)',
+        DEFAULT: 'rgba(255,255,255,0.4)',
+        d: 'rgba(255,255,255,0.04)',
+        h: 'rgba(0,0,0,0.16)',
         dh: 'rgba(255,255,255,255.1)',
     },
 
@@ -164,9 +164,14 @@ const theme = {
             '5/1': '5 / 1',
         },
         boxShadow: {
-            'xsb': '0px 1px 0px 0px rgba(0, 0, 0, 0.08)',
-            'xsbd': '0px 1px 0px 0px rgba(0, 0, 0, 0.8)',
-            'xsr': '1px 0px 0px 0px rgba(0, 0, 0, 0.08)',
+
+            'navbar': ' 0px 4px 8px 0px rgba(0 0 0 / 4%), 0 1px rgba(0 0 0 / 4%) ',
+            'navbar-d': ' 0px 4px 8px 0px rgba(0 0 0 / 40%), 0 1px rgba(0 0 0 / 80%) ',
+            'modal': ' 0px 8px 16px 0px rgba(0 0 0 / 8%), 0 0 0 1px rgba(0 0 0 / 8%) ',
+            'modal-d': ' 0px 8px 16px 0px rgba(0 0 0 / 40%), 0 0 0 1px rgba(0 0 0 / 80%) ',
+            'button': ' 0px 4px 8px 0px rgba(0 0 0 / 8%), 0 0 0 1px rgba(0 0 0 / 16%) ',
+            'button-d': ' 0px 4px 8px 0px rgba(0 0 0 / 40%), 0 0 0 1px rgba(0 0 0 / 80%) ',
+            'xsr': '1px 0px 0px 0px rgba(0 0 0 / 8%)',
             'xsrd': '1px 0px 0px 0px rgba(0, 0, 0, 0.8)',
             'xs': '0px 0px 0px 1px rgba(0, 0, 0, 0.08)',
             'xsd': '0px 0px 0px 1px rgba(0, 0, 0, 0.8)',

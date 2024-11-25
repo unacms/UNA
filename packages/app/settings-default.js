@@ -2433,7 +2433,7 @@ export const settingsDefault = {
         },
         dropdown_menu: {
             content_ver:
-                ' z-10 min-w-[200px] shadow-xl backdrop-blur-xl bg-bgrmodal dark:bg-bgrmodal-d mt-1 p-1 text-sm rounded-xl shadow-xl overflow-hidden gap-y-1 ',
+                ' z-10 min-w-[200px] border border-bdrmodal dark:border-bdrmodal-d backdrop-blur-xl bg-bgrmodal dark:bg-bgrmodal-d mt-1 p-1 text-sm rounded-xl shadow-modal dark:shadow-modal-d overflow-hidden gap-y-1 ',
             content_hor:
                 ' flex flex-row z-10 p-1 bg-bgrmodal border border-bdr dark:border-bdr-d m-2 dark:bg-bgrmodal-d text-sm text-neutral-800 dark:text-neutral-200 rounded-full shadow-sm',
             item_ver:
@@ -2457,10 +2457,10 @@ export const settingsDefault = {
 
         inputs: {
             default:
-                'bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-bdrinput dark:border-bdrinput-d focus:outline-none focus:outline-primary dark:focus-outline-primary-d placeholder-neutral-500 duration-100 text-neutral-900 rounded-lg flex-auto px-3  dark:text-neutral-100 text-base leading-5 h-11 ',
+                ' bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-bdrinput dark:border-bdrinput-d focus:outline-none focus:outline-primary dark:focus-outline-primary-d placeholder-neutral-500 duration-100 text-neutral-900 rounded-lg flex-auto px-3 dark:text-neutral-100 text-base px-3 py-2  ',
             multi: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg flex-auto p-2 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 ',
             rounded:
-                ' placeholder-neutral-500 bg-bgritem dark:bg-bgritem-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-transparent focus:border-bdrinput dark:focus:border-bdrinput-d focus:outline-none focus:outline-primary dark:focus-outline-primary-d duration-100 text-neutral-900 rounded-full flex-auto px-3 dark:text-neutral-100 text-base leading-5 h-11  ',
+                ' placeholder-neutral-500 bg-bgritem dark:bg-bgritem-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-transparent focus:border-bdrinput-f dark:focus:border-bdrinput-fd focus:outline-none focus:outline-primary dark:focus-outline-primary-d duration-100 text-neutral-900 rounded-full flex-auto px-3 py-2 dark:text-neutral-100 text-base   ',
             roundedsmall:
                 ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-full flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[34px] ',
             small: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[36px] ',
@@ -2483,7 +2483,7 @@ export const settingsDefault = {
             },
             sm: {
                 rounded: 'rounded-lg',
-                padding: 'p-2.5',
+                padding: 'p-1.5',
                 icon_sizes: 'h-5 w-5',
                 icon_size: 20,
                 icon_margin: '',
@@ -2491,7 +2491,7 @@ export const settingsDefault = {
             },
             base: {
                 rounded: 'rounded-lg',
-                padding: 'p-2',
+                padding: ' p-[7px] ',
                 icon_sizes: 'h-6 w-6',
                 icon_size: 24,
                 icon_margin: 'mx-1',
@@ -2520,7 +2520,7 @@ export const settingsDefault = {
             'u-btn-primary-trans': ' duration-200 ',
 
             'u-btn-secondary-cnt':
-                ' bg-bgrbutton dark:bg-bgrbutton-d hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50 hover:shadow-ring dark:hover:shadow-ringd active:shadow-none',
+                ' border border-transparent hover:border-bdrbutton dark:hover:border-bdrbutton-d bg-bgrbutton dark:bg-bgrbutton-d hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50 hover:shadow-button dark:hover:shadow-button-d active:shadow-none',
             'u-btn-secondary-text':
                 ' font-medium text-neutral-700 hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-white ',
             'u-btn-secondary-trans': ' duration-200',
