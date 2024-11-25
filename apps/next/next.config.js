@@ -59,6 +59,7 @@ const nextConfig = {
     'expo-router',
     'i18next',
     'react-i18next',
+    'zustand',
     'react-native-localize',
     'victory-native',
     '@stripe/stripe-react-native',
