@@ -17,7 +17,7 @@ export const Icon = memo(function Icon(props) {
     useEffect(() => {
         // Функция для получения иконки с сервера
         const fetchIcon = async () => {
-            let url = `/api/icon?icon=${icon}`;
+            let url = `/api/api.icon?icon=${icon}`;
             if (width) url += `&width=${width}`;
             if (height) url += `&height=${height}`;
             if (size) url += `&size=${size}`;

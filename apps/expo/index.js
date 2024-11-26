@@ -29,12 +29,12 @@ export function App() {
 	const [showSplashScreen, setShowSplashScreen] = useState(customScreenDelay > 0);
 	useEffect(() => {
 		const prepareApp = async () => {
-			if (customScreenDelay) {
+
 				await SplashScreen.hideAsync();
 				setTimeout(() => {
 					setShowSplashScreen(false);
-				}, Constants.manifest.splash.timeout);
-			}
+				}, customScreenDelay);
+
 		};
 		prepareApp();
 	}, []);
