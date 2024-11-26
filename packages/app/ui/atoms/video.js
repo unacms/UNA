@@ -1,10 +1,10 @@
-//import Video from 'react-native-video';
+import Video from 'react-native-video';
 import {StyleSheet} from 'react-native';
-
+/*
 export default function ElementVideo(props) {
     return <></>
-}
-/*
+}*/
+
 export default function ElementVideo({src, controls, cover, autoplay, muted}) {
     var styles = StyleSheet.create({
         backgroundVideo: {
@@ -32,4 +32,4 @@ export default function ElementVideo({src, controls, cover, autoplay, muted}) {
             style={styles.backgroundVideo}
         />
     )
-}*/
+}

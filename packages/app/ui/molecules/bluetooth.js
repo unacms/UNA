@@ -9,7 +9,7 @@ import { Button } from 'app/design/controls'
 import Profile from 'app/ui/molecules/profile';
 import { Switch } from 'app/design/controls'
 import { Theme } from 'app/design/theme';
-//import { BleManager } from 'react-native-ble-plx';
+import { BleManager } from 'react-native-ble-plx';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import * as Location from 'expo-location';
 import {
@@ -17,20 +17,19 @@ import {
     Alert,
     PermissionsAndroid,
 } from 'react-native';
-/*
+
 import Peripheral, {
     TxPowerLevel,
     AdvertiseMode,
     Permission,
     Property,
 } from 'react-native-multi-ble-peripheral';
-*/
+
 import { Buffer } from 'buffer';
 import Msg from 'app/ui/molecules/msg';
 
 export default function Bluetooth(props) {
-    return <></>
-   /* const { colors } = Theme();
+    const { colors } = Theme();
     let { currentUser, setCurrentUser } = useCurrentUser();
     const [hasPerm, setHasPerm] = React.useState(false);
     const [isEnabled, setIsEnabled] = React.useState({ bt: false, gps: false });
@@ -314,5 +313,5 @@ export default function Bluetooth(props) {
             </Row>
             <Button startDecorator="UserFocus" title="Scan Profile" onPress={() => scan()} />
         </Row>
-    );*/
+    );
 }

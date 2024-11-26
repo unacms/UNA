@@ -28,6 +28,7 @@ const nextConfig = {
     'react-native',
     'react-native-web',
     'solito',
+    '@radix-ui/react-dropdown-menu',
     'dripsy',
     '@dripsy/core',
     'react-native-reanimated',

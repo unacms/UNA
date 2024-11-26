@@ -119,25 +119,25 @@ const expoConfig = {
           largeIcons:["./assets/images/ic_onesignal_large_icon_default.png"]
         }
       ],*/
-      /*[
+      [
         "react-native-ble-plx",
         {
           "isBackgroundEnabled": true,
           "modes": ["peripheral", "central"],
           "bluetoothAlwaysPermission": "Allow $(PRODUCT_NAME) to connect to bluetooth devices"
         }
-      ],*/
+      ],
       [
         'expo-build-properties',
         {
           ios: {
-            deploymentTarget: '15.1',
+            deploymentTarget: '13.4',
           },
           android: {
             minSdkVersion: 29, // Android 10
-            compileSdkVersion: 35,
-            targetSdkVersion: 35,
-            buildToolsVersion: "35.0.0"
+            compileSdkVersion: 34,
+            targetSdkVersion: 34,
+            buildToolsVersion: "34.0.0"
           }
         },
       ],
