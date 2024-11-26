@@ -14,6 +14,7 @@ const expoConfig = {
     "splash": {
       "image": "./assets/images/splash.png",
       "contentFit": "contain",
+      "timeout": 0,
       "backgroundColor": "#000000"
     },
     "platforms": [
