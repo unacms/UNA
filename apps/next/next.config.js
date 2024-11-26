@@ -58,7 +58,6 @@ const nextConfig = {
     'expo-router',
     'i18next',
     'react-i18next',
-    'zustand',
     'react-native-localize',
     'victory-native',
     '@stripe/stripe-react-native',
@@ -100,15 +99,6 @@ const nextConfig = {
       transform: "@phosphor-icons/react/{{member}}",
     },
   } */ 
-  productionBrowserSourceMaps: true,
-  webpack: (config, { dev, isServer }) => {
-    // Enable source maps in both development and production
-    if (!isServer) {
-      config.devtool = dev ? 'eval-source-map' : 'hidden-source-map'
-    }
-
-    return config
-  },
 }
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',

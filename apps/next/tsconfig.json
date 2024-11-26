@@ -22,10 +22,7 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
-    "target": "ESNext",
-    "sourceMap": true,
-    "inlineSourceMap": false,
-    "inlineSources": true
+    "target": "ESNext"
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]

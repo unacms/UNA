@@ -164,7 +164,7 @@ const theme = {
             '5/1': '5 / 1',
         },
         boxShadow: {
-
+/*
             'navbar': ' 0px 4px 8px 0px rgba(0 0 0 / 4%), 0 1px rgba(0 0 0 / 4%) ',
             'navbar-d': ' 0px 4px 8px 0px rgba(0 0 0 / 40%), 0 1px rgba(0 0 0 / 80%) ',
             'modal': ' 0px 8px 16px 0px rgba(0 0 0 / 8%), 0 0 0 1px rgba(0 0 0 / 8%) ',
@@ -177,7 +177,7 @@ const theme = {
             'xsd': '0px 0px 0px 1px rgba(0, 0, 0, 0.8)',
             'ring': '0px 0px 0px 1px rgba(0, 0, 0, 0.15)',
             'ringd': '0px 0px 0px 1px rgba(255, 255, 255, 0.15)',
-                
+      */          
         }
     },
 }

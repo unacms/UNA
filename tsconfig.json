@@ -5,10 +5,7 @@
     "noUncheckedIndexedAccess": true,
     "paths": {
       "app/*": ["./packages/app/*"]
-    },
-    "sourceMap": true,
-    "inlineSourceMap": false,
-    "inlineSources": true
+    }
   },  
   "exclude": [
     "**/node_modules",

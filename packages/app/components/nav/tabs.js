@@ -18,7 +18,7 @@ import Suggestions from 'app/ui/molecules/suggestions';
 import AsyncWorker from 'app/ui/molecules/async_worker';
 import Subscriber from 'app/ui/molecules/subscriber';
 import { useFonts } from 'expo-font';
-import PushNotificationIOS from "@react-native-community/push-notification-ios";
+//import PushNotificationIOS from "@react-native-community/push-notification-ios";
 import { enableScreens } from 'react-native-screens';
 import { OneSignal } from 'react-native-onesignal';
 import { callFn } from 'app/lib/functions/call';
@@ -148,7 +148,7 @@ export default function () {
 
     useEffect(() => {
         if (currentUser && Platform.OS == 'ios' && isNumeric(currentUser?.notifications)) {
-            PushNotificationIOS.setApplicationIconBadgeNumber(currentUser?.notifications);
+            //PushNotificationIOS.setApplicationIconBadgeNumber(currentUser?.notifications);
         }
     }, [currentUser?.id]);
 
