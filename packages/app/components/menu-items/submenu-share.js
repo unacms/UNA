@@ -81,8 +81,7 @@ export default function MenuItemSubmenuShare(oProps) {
             link: oItem.link,
             name: oItem.name,
             title: oItem.title,
-            icon: oIconAliases[oItem.name],
-            
+            icon: oIconAliases[oItem.name],  
         };
     });
 
