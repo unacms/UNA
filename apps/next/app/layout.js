@@ -8,21 +8,32 @@ import { initReactI18next } from 'react-i18next';
 import { useColorScheme } from 'react-native';
 import { resources } from 'app/translation';
 import Subscriber from 'app/ui/molecules/subscriber';
-import { useEffect } from 'react';
-
-i18n
-  .use(initReactI18next)
-  .init({
-    compatibilityJSON: 'v3',
-    resources: resources,
-    lng: 'en', // default language
-    fallbackLng: 'en',
-    interpolation: {
-      escapeValue: false
-    }
-  });
 
 export default function RootLayout({ children }) {
+
+    const languageDetector = {
+        type: 'languageDetector',
+        async: true,
+        detect: async (callback) => {
+            const locale = await RNLocalize.getLocales();
+            callback(locale[0].languageCode);
+        },
+        init: () => { },
+        cacheUserLanguage: () => { },
+    };
+
+    i18n
+        .use(initReactI18next)
+        .use(languageDetector)
+        .init({
+            compatibilityJSON: 'v3',
+            resources: resources,
+            lng: 'en', // default language
+            fallbackLng: 'en',
+            interpolation: {
+                escapeValue: false
+            }
+        });
 
     const queryClient = new QueryClient()
     let theme = '';
@@ -41,23 +52,6 @@ export default function RootLayout({ children }) {
         const root = window.document.documentElement;
         //root.setAttribute('theme', scheme);
     }
-
-    useEffect(() => {
-        const detectLanguage = async () => {
-            const locale = await RNLocalize.getLocales();
-            i18n.changeLanguage(locale[0].languageCode);
-        };
-        
-        if (typeof window !== 'undefined') {
-            const lang = storageGet('layout:lang', '', true);
-            if (lang) {
-                i18n.changeLanguage(lang);
-            } else {
-                detectLanguage();
-            }
-        }
-    }, []);
-
     return (
         <html lang="en" >
             <body className='bg-bgrbody dark:bg-bgrbody-d' style={{ overflowY: 'initial' }}>
