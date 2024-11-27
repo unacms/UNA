@@ -14,14 +14,14 @@ export default function DropdownPopup(oProps) {
     let bModal = true;
     let sTrigger = (
         <Tooltip content={title} asChildTrigger={true} {...restProps}>
-            <DmTrigger asChild={asChildTrigger} role="button" aria-label={title}>{oProps.children[0]}</DmTrigger>
+            <DmTrigger asChild={asChildTrigger} role="button" aria-label={title}>xa{oProps.children[0]}</DmTrigger>
         </Tooltip>
     );
 
     if(oProps.children[0].type !== ButtonRef) {
         bModal = false;
         sTrigger = (
-            <DmTrigger asChild={asChildTrigger}>{oProps.children[0]}</DmTrigger>
+            <DmTrigger asChild={asChildTrigger}>xx{oProps.children[0]}</DmTrigger>
         );
     }
 

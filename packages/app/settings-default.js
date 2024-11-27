@@ -1,4 +1,5 @@
 import { env } from 'app/lib/env'
+import Tooltip from './ui/atoms/tooltip.web'
 
 export const settingsDefault = {
     config: {
@@ -113,6 +114,7 @@ export const settingsDefault = {
         hide_edit_covers: false,
         share_text: '',
         fixed_cover: false,
+        tooltips: true
     },
     forms: {
         sys_login: { hide_errors: true, button_full_width: true },
@@ -710,7 +712,7 @@ export const settingsDefault = {
                 key: '/tab0',
                 title: 'Home',
                 url: '/home',
-                icon: 'CustomIcon',
+                icon: 'House',
             },
             {
                 key: '/tab1',

@@ -372,13 +372,13 @@ export const Button = (props) => {
 
   
 
-    const buttonAttributes = {
+    const buttonAttributes = onPress && !disabled  ?{
         ...(rest.alt ? { 
             'aria-label': rest.alt,
             alt: rest.alt 
         } : {}),
         role: rest['aria-haspopup'] === 'menu' ? 'menubutton' : 'button',
-    };
+    } : {};
 
     const buttonContent = (
         <>

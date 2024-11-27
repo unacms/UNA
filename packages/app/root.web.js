@@ -11,72 +11,67 @@ const Layouts = dynamic(() => import('app/components/layouts'), { ssr: false });
 
 
 const metaAdder = (queryProperty, value) => {
-    if (!value) return;
     let element = document.querySelector(`meta[${queryProperty}]`);
     if (element) {
         element.setAttribute("content", value);
     } else {
-        const newElement = document.createElement('meta');
-        const [attr, val] = queryProperty.split('=');
-        newElement.setAttribute(attr.replace(/['"]/g, ''), val.replace(/['"]/g, ''));
-        newElement.setAttribute('content', value);
-        document.head.appendChild(newElement);
+        element = `<meta ${queryProperty} content="${value}" />`;
+        document.head.insertAdjacentHTML("beforeend", element);
     }
 };
 
 export function Root(props) {
-    //return <></>
     let { currentUser, setCurrentUser } = useCurrentUser();
     let data = props?.data;
-    const isWeb = Platform.OS == 'web'
 
     useEffect(() => {
-        if (isWeb) {
-            // Add preconnect for OneSignal main domain
-            const preconnectLink = document.createElement('link');
-            preconnectLink.rel = 'preconnect';
-            preconnectLink.href = 'https://onesignal.com';
-            preconnectLink.crossOrigin = 'anonymous';
-            document.head.appendChild(preconnectLink);
+        // Add preconnect for OneSignal main domain
+        const preconnectLink = document.createElement('link');
+        preconnectLink.rel = 'preconnect';
+        preconnectLink.href = 'https://onesignal.com';
+        preconnectLink.crossOrigin = 'anonymous';
+        document.head.appendChild(preconnectLink);
 
-            // Add preconnect for OneSignal CDN
-            const preconnectCDNLink = document.createElement('link');
-            preconnectCDNLink.rel = 'preconnect';
-            preconnectCDNLink.href = 'https://cdn.onesignal.com';
-            preconnectCDNLink.crossOrigin = 'anonymous';
-            document.head.appendChild(preconnectCDNLink);
+        // Add preconnect for OneSignal CDN
+        const preconnectCDNLink = document.createElement('link');
+        preconnectCDNLink.rel = 'preconnect';
+        preconnectCDNLink.href = 'https://cdn.onesignal.com';
+        preconnectCDNLink.crossOrigin = 'anonymous';
+        document.head.appendChild(preconnectCDNLink);
 
-            // Optional: Add DNS prefetch as fallback
-            const dnsPrefetchLink = document.createElement('link');
-            dnsPrefetchLink.rel = 'dns-prefetch';
-            dnsPrefetchLink.href = 'https://onesignal.com';
-            document.head.appendChild(dnsPrefetchLink);
-        }
+        // Optional: Add DNS prefetch as fallback
+        const dnsPrefetchLink = document.createElement('link');
+        dnsPrefetchLink.rel = 'dns-prefetch';
+        dnsPrefetchLink.href = 'https://onesignal.com';
+        document.head.appendChild(dnsPrefetchLink);
     }, []);
 
     useEffect(() => {
-        if (data?.title && isWeb) {
-            const title = decodeText(
-                appSetting('layout', 'add_notifications_count_in_title') && currentUser?.notifications > 0
-                    ? `(${currentUser.notifications}) ${data.title}`
-                    : data.title
-            );
-            document.title = title;
-            metaAdder('property="og:title"', title);
+        if (data?.title) {
+            if (appSetting('layout', 'add_notifications_count_in_title')) {
+                if (currentUser?.notifications > 0) {
+                    document.title = decodeText('(' + currentUser?.notifications + ') ' + data?.title);
+                }
+                else {
+                    document.title = decodeText(data?.title);
+                }
+            }
+            else {
+                document.title = decodeText(data?.title);
+            }
+
         }
-        
-        if (props.settings) {
+        metaAdder('property="og:title"', decodeText(data?.title))
+        if (props.settings)
             remoteSettings.data = props.settings;
-        }
-    }, [currentUser?.notifications, data?.title]);
+
+    }, [currentUser?.notifications]);
 
 
     useEffect(() => {
 
         if (data?.user) {
             if (currentUser?.id != data.user.id) {
-               // let b = Object.assign({}, data.user)
-                //console.log('data.user', b)
                 setCurrentUser(data.user);
                 storageClear();
             }

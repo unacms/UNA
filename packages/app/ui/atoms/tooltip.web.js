@@ -1,14 +1,32 @@
-import React from 'react';
-import { Theme } from 'app/design/theme';
+'use client'
+import React, { useState } from 'react';
 import { Text } from 'app/design/typography'
-import Tippy from '@tippyjs/react';
-import 'tippy.js/dist/tippy.css'; // optional
-import 'app/styles/tippyjs.css'
+import { View } from 'app/design/view'
+import { appSetting } from 'app/lib/util';
+
 
 export default function Tooltip(props) {
-    //DISABLED AFTER REACT 19 UPDATE
-    return props.children
-    /*return (
-        <Tippy theme='tooltip' content={props.content}>{props.children}</Tippy>
-    );*/
-}
+    const [visible, setVisible] = useState(false);
+
+    const eventHandlers = {
+        onMouseEnter: () => setVisible(true),
+        onMouseLeave: () => setVisible(false),
+    }
+
+    if (!appSetting('layout', 'tooltips')){
+        return props.children;
+    }
+
+    return (
+        <View  {...eventHandlers}>
+            {props.children}
+            {visible && (
+                <View className='absolute top-full bg-green-500 rounded-full p-3'>
+                    <Text className="text-red-500">{props.content}</Text>
+                </View>
+            )}
+        </View>
+    );
+};
+
+
