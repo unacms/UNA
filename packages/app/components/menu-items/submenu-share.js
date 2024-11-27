@@ -85,6 +85,7 @@ export default function MenuItemSubmenuShare(oProps) {
         };
     });
 
+    
     const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
 
     if (aSubmenuItems.length === 1) {

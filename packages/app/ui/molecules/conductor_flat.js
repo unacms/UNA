@@ -103,7 +103,7 @@ const TabScene = React.memo(({
         return <></>;
     }
     
-    console.log("numColumns!!", numColumns)
+
     return (
         <UniList
             index={route.index}
@@ -182,7 +182,7 @@ export function ConductorFlat({ header, smallHeader, minHeaderHeight, isHideDefa
     const queryClient = useQueryClient();
 
     const numColumns = getNumCols(windowWidth, currentRoute, null);
-    console.log("numColumnsnumColumns", numColumns)
+
     useEffect(() => {
         if (currentRoute.cached) {
             revalidateData();
