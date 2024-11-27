@@ -97,7 +97,6 @@ const expoConfig = {
       ]
     },
     extra: {
-      "UNA_API_KEY": process.env.UNA_API_KEY,
       "UNA_URL": process.env.UNA_URL,
       "API_PROXY_URL": process.env.API_PROXY_URL,
       "APP_ORIGIN": process.env.APP_ORIGIN,
