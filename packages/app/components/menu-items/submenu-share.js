@@ -82,10 +82,11 @@ export default function MenuItemSubmenuShare(oProps) {
             name: oItem.name,
             title: oItem.title,
             icon: oIconAliases[oItem.name],
+            
         };
     });
 
-    
+
     const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
 
     if (aSubmenuItems.length === 1) {
