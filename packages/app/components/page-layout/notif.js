@@ -16,8 +16,13 @@ export default function PageLayout(props) {
 
 
     useEffect(() => {
-        if (currentUser && currentUser.notifications > 0){
-            setToaster2Visible(true);
+        if (currentUser){
+            if(currentUser.notifications > 0){
+                setToaster2Visible(true);
+            }
+            else{
+                setToaster2Visible(false);
+            }
         }
     }, [currentUser.notifications])
 

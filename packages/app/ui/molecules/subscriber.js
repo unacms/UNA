@@ -21,13 +21,13 @@ export default function Subscriber() {
 
     useEffect(() => {
         if (currentUser?.id) {
-            subscribe('sys_connections_' + currentUser.id, 'changed', onUpdateConnections);
+            subscribe('sys_connections_' + currentUser?.id, 'changed', onUpdateConnections);
             subscribe('bx_timeline_0', 'edited', onItemEdited);
         }
 
         //if (currentUser?.account_id)
         //    subscribe('sys_account_' + currentUser.account_id, 'confirmed', onUpdateAccount);
-
+        
     }, [currentUser?.id])
 
     const onUpdateAccount = useCallback((data) => {
@@ -44,20 +44,23 @@ export default function Subscriber() {
     const onUpdateConnections = useCallback(async (data) => {
         storageClear();
         const oData = JSON.parse(data);
-        if (oData.user)
+        if (oData?.user)
             setCurrentUser(oData.user);
     }, []);
 
     const onItemEdited = useCallback(async (strData) => {
         const data = JSON.parse(strData);
-        const sKey = 'feed_' + data.id;
-        const dataCache = getDataFromCache('li:data', sKey)
-        if (dataCache) {
-            const result = await fetcher(
-                '/api.php?r=' + appSetting("urls", "feed_item") + '{"params":{"browse":"id","value":' + data.id + '}}'
-            )
-            if (result.data)
-                storageSet('li:data', sKey, { data: result.data, ts: Date.now() });
+        const dataId = data?.id;
+        if (dataId){
+            const sKey = 'feed_' + dataId;
+            const dataCache = getDataFromCache('li:data', sKey)
+            if (dataCache) {
+                const result = await fetcher(
+                    '/api.php?r=' + appSetting("urls", "feed_item") + '{"params":{"browse":"id","value":' + dataId + '}}'
+                )
+                if (result.data)
+                    storageSet('li:data', sKey, { data: result.data, ts: Date.now() });
+            }
         }
     }, []);
 
