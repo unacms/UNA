@@ -2471,7 +2471,7 @@ export const settingsDefault = {
             },
             'sm': {
                 rounded: 'rounded-lg',
-                padding: 'p-2.5',
+                padding: 'h-9 px-2',
                 icon_sizes: 'h-5 w-5',
                 icon_size: 20,
                 icon_margin: '',

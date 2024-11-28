@@ -46,7 +46,7 @@ function getRightHeader(items, currentUser, pagePath) {
             }
 
             return (
-                <View className="w-11" key={`add-${button.icon}`} >{btn}</View>
+                <View className="w-10" key={`add-${button.icon}`} >{btn}</View>
             )
         })
 
@@ -85,7 +85,9 @@ const Header = memo(({ backButtonPresented, header, pagePath, rightComponents })
     text = text.replace('__notification__', '');
 
     return (
-        <Row style={{ backgroundColor: colors.barsBackground }} className="w-full justify-between items-center h-12 px-3">
+        <Row style={{ 
+            backgroundColor: colors.barsBackground,
+        }} className="w-full shadow-sm justify-between items-center h-16 px-3 ">
             <Row>
                 {(isHome && currentUser) && <SvgLogoNative />}
                 {backButtonPresented && (
