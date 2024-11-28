@@ -24,7 +24,7 @@ const handleClick = async (event, oProps, setBottomSheetData, setLayoutData, red
 
     const setBadges = async (val) => {
         oProps.data.value = val;
-        const request_url = '/api.php?r=system/set_badges/TemplServiceProfiles&params[]=' + oProps.data.content_id + '&params[]=' + val+ '&params[]=' + oProps.data.module;
+        const request_url = '/api.php?r=system/set_badges/TemplServices&params[]=' + oProps.data.content_id + '&params[]=' + val+ '&params[]=' + oProps.data.module;
         await fetcher(request_url);
         setBottomSheetData(false);
     }

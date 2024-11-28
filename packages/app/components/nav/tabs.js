@@ -150,7 +150,7 @@ export default function () {
         if (currentUser && Platform.OS == 'ios' && isNumeric(currentUser?.notifications)) {
             PushNotificationIOS.setApplicationIconBadgeNumber(currentUser?.notifications);
         }
-    }, [currentUser?.id]);
+    }, [currentUser?.notifications]);
 
 
     if (!fontsLoaded) {
