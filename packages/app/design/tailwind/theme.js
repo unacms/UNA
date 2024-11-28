@@ -88,8 +88,8 @@ const colors = {
         d: 'rgba(17,24,39,0.8)',
     },
     bdrmodal: {
-        DEFAULT: 'rgba(255,255,255,0.8)',
-        d: 'rgba(255,255,255,0.04)',
+        DEFAULT: 'rgba(0,0,0,0.1)',
+        d: 'rgba(255,255,255,0.1)',
     },
 
     bgrnavbar: {
@@ -131,10 +131,10 @@ const colors = {
         dh: 'rgba(107,114,128,0.25)',
     },
     bdrbutton: {
-        DEFAULT: 'rgba(255,255,255,0.4)',
-        d: 'rgba(255,255,255,0.04)',
-        h: 'rgba(0,0,0,0.16)',
-        dh: 'rgba(255,255,255,255.1)',
+        DEFAULT: 'rgba(0,0,0,0.1)',
+        d: 'rgba(255,255,255,0.1)',
+        h: 'rgba(0,0,0,0.15)',
+        dh: 'rgba(255,255,255,0.15)',
     },
 
     bdr: {

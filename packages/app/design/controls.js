@@ -175,10 +175,10 @@ const getIcon = (sIcon, iIndex, classIconName, sClassText, sIconContainer, iIcon
     sClassText = sClassText.replace('overflow-hidden', '');
 
     if (isEmoji(sIcon)) {
-        sClassText = sClassText.replace('text-lg', 'text-[32px] leading-[32px]  ');
-        sClassText = sClassText.replace('text-base', 'text-[24px] leading-[24px]');
-        sClassText = sClassText.replace('text-sm', 'text-base leading-5');
-        sClassText = sClassText.replace('text-xs', 'text-[16px] leading-[16px]');
+        sClassText = sClassText.replace('text-lg', 'text-2xl text-center leading-[32px]  ');
+        sClassText = sClassText.replace('text-base', 'text-xl text-center leading-[24px]');
+        sClassText = sClassText.replace('text-sm', ' align-middle text-[20px] text-center  ');
+        sClassText = sClassText.replace('text-xs', 'text-base text-center leading-[16px]');
         return (
             <Text key={iIndex} className={classIconName ? classIconName : sClassText + sIconContainer}>{sIcon}</Text>
         );
