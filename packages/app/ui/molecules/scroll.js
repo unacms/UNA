@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { View, Row, Pressable, ScrollView } from 'app/design/view'
 import { Button, Modal } from 'app/design/controls'
 
-export default function ScrollControl({ horisontal, children, step, initialValue }) {
+export default function ScrollControl({ horisontal, children, step, initialValue, leftButton, rightButton }) {
     // Используем ref для доступа к ScrollView
     const scrollViewRef = useRef(null);
     const [offset, setOffset] = useState({offset: 0, contentWidth:0, scrollViewWidth:0});
@@ -70,17 +70,15 @@ export default function ScrollControl({ horisontal, children, step, initialValue
             >
                 {children}
             </ScrollView>
-
-                {(offset.offset > 0) && (
-                    <View className="absolute h-full bg-gradient-to-r to-transparent from-bgrbody px-1 justify-center">
-                        <Button startDecorator="CaretLeft" variant="outline" rounded onPress={scrollUp} />
-                    </View>)
-               }
-                {(offset.offset + offset.scrollViewWidth < offset.contentWidth) && (
-                    <View className="absolute right-0 h-full bg-gradient-to-l to-transparent from-bgrbody px-1 justify-center">
-                        <Button startDecorator="CaretRight" variant="outline" rounded onPress={scrollDown} />
-                    </View>) }
-
+            {(offset.offset > 0) && (
+                <View className="absolute w-24 h-full bg-gradient-to-r to-transparent from-bgrbody px-1 justify-center">
+                    {leftButton ? <Pressable onPress={scrollUp}>{leftButton}</Pressable> : <Button startDecorator="CaretLeft" variant="outline" rounded onPress={scrollUp} />}
+                </View>)
+            }
+            {(offset.offset + offset.scrollViewWidth < offset.contentWidth) && (
+                <View className="absolute w-24 right-0 h-full bg-gradient-to-l to-transparent from-bgrbody px-1 justify-center items-end">
+                        {rightButton ? <Pressable onPress={scrollDown}>{rightButton}</Pressable> : <Button startDecorator="CaretRight" variant="outline" rounded onPress={scrollDown} />}
+                </View>) }
         </View>
     );
 };
