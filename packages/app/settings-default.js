@@ -178,6 +178,8 @@ export const settingsDefault = {
             button_show_title_from_size: 'sm',
             button_full_width: true, 
             button_size: 'sm',
+            button_variant: 'text',
+            button_rounded: false,
             no_gap_between_buttons: false,// is false no gap between buttons + right margin, is true  gap between buttons + no margin
         },
         counters_menu: {
