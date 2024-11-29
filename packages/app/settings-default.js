@@ -178,6 +178,8 @@ export const settingsDefault = {
             button_show_title_from_size: 'sm',
             button_full_width: true, 
             button_size: 'sm',
+            button_variant: 'text',
+            button_rounded: false,
             no_gap_between_buttons: false,// is false no gap between buttons + right margin, is true  gap between buttons + no margin
         },
         counters_menu: {
@@ -2432,7 +2434,7 @@ export const settingsDefault = {
         },
         dropdown_menu: {
             content_ver: ' z-10 min-w-[200px] shadow-xl backdrop-blur-xl bg-bgrmodal dark:bg-bgrmodal-d mt-1 p-1 text-sm rounded-xl shadow-xl overflow-hidden gap-y-1 ',
-            content_hor: ' flex flex-row z-10 p-1 bg-bgrmodal border border-bdr dark:border-bdr-d m-2 dark:bg-bgrmodal-d text-sm text-neutral-800 dark:text-neutral-200 rounded-full shadow-sm',
+            content_hor: ' flex flex-row z-10 p-1 bg-bgrmodal border border-bdr dark:border-bdr-d m-2 backdrop-blur-xl dark:bg-bgrmodal-d text-sm text-neutral-800 dark:text-neutral-200 rounded-full shadow-sm',
             item_ver: 'flex flex-row focus:outline-none items-center px-3 py-2 gap-x-3 text-sm rounded-lg font-medium hover:bg-bgritem dark:hover:bg-bgritem-d text-neutral-700 dark:text-neutral-300 dark:hover:text-white hover:cursor-pointer',
             item_hor: 'flex block px-3 py-2 hover:-translate-y-1 active:-translate-y-1 dark:hover:text-white rounded-full hover:cursor-pointer text-neutral-700 active:opacity-50 hover:scale-125 active:scale-95 duration-200 dark:text-neutral-300',
             item_np: 'flex flex-row focus:outline-none items-center justify-between px-1 py-0.5 rounded-lg font-medium hover:bg-bgritem dark:hover:bg-bgritem-d text-sm text-neutral-700 dark:text-neutral-300 dark:hover:text-white hover:cursor-pointer',
@@ -2472,8 +2474,8 @@ export const settingsDefault = {
             'sm': {
                 rounded: 'rounded-lg',
                 padding: 'p-1.5',
-                icon_sizes: 'h-6 w-6 content-center text-center align-middle ',
-                icon_size: 20,
+                icon_sizes: 'h-6 w-6 content-center text-center align-middle justify-center ',
+                icon_size: 24,
                 icon_margin: '',
                 margin: 'mx-2'
             },
@@ -2490,7 +2492,7 @@ export const settingsDefault = {
                 padding: 'p-2.5',
                 icon_sizes: 'h-8 w-8',
                 icon_size: 32,
-                icon_margin: 'mx-1.5',
+                icon_margin: 'mx-0.5',
                 margin: 'mx-2'
             }
         },

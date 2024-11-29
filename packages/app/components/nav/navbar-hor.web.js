@@ -116,7 +116,7 @@ export default function (props) {
     return (
         <>
             <View className="fixed w-full">
-                <View className=" backdrop-blur-xl h-16 items-center w-full shadow-navbar dark:shadow-navbar-d border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d ">
+                <View className=" backdrop-blur-xl h-16 items-center w-full shadow-sm dark:shadow-navbar-d border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d ">
                     <View
                         className={
                             appSetting('layout', 'max_width') +
@@ -134,7 +134,7 @@ export default function (props) {
                             setMenuPopup={setMenuPopup}
                         />
                         <Row className="hidden lg:flex flex-auto ">
-                            <Row className="w-full mx-auto gap-x-0.5 max-w-3xl justify-between">
+                            <Row className="w-full px-4 mx-auto gap-x-0.5 max-w-3xl justify-between">
                                 {menu_navbar_items.map((item, index) => (
                                     <Link
                                         className="flex-auto"

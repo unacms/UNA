@@ -42,8 +42,8 @@ function DefaultUnit(data) {
                 </View>
 
                 {MainContentComponent}
-                <View className="pt-3 ">
-                    {(!!data.menu_counters && appSetting('feed', 'counters_menu')) && <View className=' pt-3'><CounterMenu data={data.menu_counters}  /></View>}
+                <View className="pt-3">
+                    {(!!data.menu_counters && appSetting('feed', 'counters_menu')) && <View className=' pt-3 sm:pt-4'><CounterMenu data={data.menu_counters}  /></View>}
                     <ActionMenu data={data.menu_actions} showCommentsModal={false} />
                 </View>
                 {commentsData && <CommentsSection url={url} t={t} isCommentsModal={false} showCommentsModal={false} commentsDataInline={commentsData} data={data} />}
