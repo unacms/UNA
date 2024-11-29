@@ -2492,7 +2492,7 @@ export const settingsDefault = {
                 padding: 'p-2.5',
                 icon_sizes: 'h-8 w-8',
                 icon_size: 32,
-                icon_margin: 'mx-1.5',
+                icon_margin: 'mx-0.5',
                 margin: 'mx-2'
             }
         },
