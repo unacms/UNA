@@ -2394,7 +2394,7 @@ export const settingsDefault = {
     },
     theme: {
         light: {
-            primary: '#0284c7',
+            primary: '#2563eb',
             barsBackground: 'rgba(255,255,255,1)',
             bottomSheetBackground: 'rgba(255,255,255,1)',
             barsColor: '#4B5563',
@@ -2408,7 +2408,7 @@ export const settingsDefault = {
             screenBackground: '#E5E7EB',
             bgrmodal: 'rgba(255,255,255,1)',
             bdrModal: 'rgba(229,231,235,1)',
-            checkbox: '#0284c7',
+            checkbox: '#2563eb',
         },
         dark: {
             default: '#D1D5DB', //fix for icons color in iOS

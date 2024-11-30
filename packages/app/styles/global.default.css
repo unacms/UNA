@@ -71,11 +71,11 @@ H5 {
 }
 
 .u-vanilla-html A, .u-vanilla-html .link{
-    color: #0284c7;
+    color: #2563eb;
     text-decoration: none;
 }
 .u-vanilla-html-small A, .u-vanilla-html-small .link{
-    color: #0284c7;
+    color: #2563eb;
     text-decoration: none;
 }
 
@@ -84,11 +84,12 @@ H5 {
 }
 .bx-mention-link,
 .bx-tag{
-    color: rgba(37, 99, 235, 1);
-    text-decoration: none;
-    background-color: rgba(37, 99, 235, 0.1);
+    color: rgba(29, 78, 216, 1);
+    
+    background-color: rgba(29, 78, 216, 0.1);
     border-radius: 6px;
     padding: 2px 4px;
+    
 
 }
 

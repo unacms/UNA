@@ -59,9 +59,9 @@ const colors = {
     },
 
     bgrcard: {
-        DEFAULT: 'rgba(255,255,255,0.8)',
+        DEFAULT: 'rgba(255,255,255,0.6)',
         h: 'rgba(255,255,255,1)',
-        d: 'rgba(17,24,39,0.8)',
+        d: 'rgba(17,24,39,0.6)',
         dh: 'rgba(31,41,55,1)',
     },
     bdrcard: {
