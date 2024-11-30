@@ -211,7 +211,7 @@ function AtomProfile_(oProps) {
             sSize: 'w-10 h-10',
             iSizeWidth: 40,
             iSizeHeight: 40,
-            sSizeFont: 'text-base',
+            sSizeFont: 'text-sm',
             sSizeFontLetter: 'text-2xl opacity-50 font-semibold',
         },
         lg: {
@@ -274,7 +274,7 @@ function AtomProfile_(oProps) {
         case 'unit':
             return (
                 <Row className="flex-row items-center ">
-                    <View className="flex-none mr-2 sm:mr-3 mb-auto">
+                    <View className="flex-none mr-2 mb-auto">
                         <UnitWoInfo oProps={oProps} sSize={sSize} sSizeFontLetter={sSizeFontLetter} emulate={emulate} iSizeWidth={iSizeWidth} bShowLinks={bShowLinks} />
                     </View>
                     <View className="flex-auto">

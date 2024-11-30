@@ -61,9 +61,9 @@ function DefaultUnit(data) {
                 {cmtsData.data}
             </Modal>}
             <Card rounded='rounded-none sm:rounded-2xl' margin='mb-1 sm:mb-4 md:mx-auto' addClassName={' border-y sm:border w-full max-w-3xl p-3 sm:p-4 pb-2 sm:pb-3 tl-' + data.id} >
-                <View className="flex-auto flex-row items-top">
+                <View className="flex-auto flex-row">
                     <Author data={data} url={url} t={t} />
-                    <View className="flex-auto justify-end flex-row mb-auto">
+                    <View className="flex-none flex-row mb-auto">
                         {data.author_actions.map((item, index) => {
                             const Element = componentsMap[item.type]
                             if (!Element) return

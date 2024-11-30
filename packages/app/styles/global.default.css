@@ -15,13 +15,13 @@
 }
 .u-vanilla-html-small {
     /* @apply prose dark:prose-invert; */
-    @apply text-neutral-800 dark:text-neutral-200;
+    @apply text-neutral-900 dark:text-neutral-100;
     font-size: 0.875rem;
-    line-height: 1.5em;
+    line-height: 1.3333em;
     max-width: none;
     word-wrap: break-word;
     font-weight: 400;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 .u-vanilla-html :where(p):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
@@ -85,12 +85,6 @@ H5 {
 .bx-mention-link,
 .bx-tag{
     color: rgba(29, 78, 216, 1);
-    
-    background-color: rgba(29, 78, 216, 0.1);
-    border-radius: 6px;
-    padding: 2px 4px;
-    
-
 }
 
 .bx-mention-link:hover {
