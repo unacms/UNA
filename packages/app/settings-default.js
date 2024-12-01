@@ -186,9 +186,9 @@ export const settingsDefault = {
             show_action: false,
             show_counter: true,
             show_combined: true,
-            button_variant: 'text',
-            button_size: 'sm',
-            no_gap_between_buttons: true,
+            button_variant: 'link',
+            button_size: 'xs',
+            no_gap_between_buttons: false,
          
         }
         /*
@@ -2465,9 +2465,9 @@ export const settingsDefault = {
             pressed_text: 'text-primary-700 dark:text-primary-600 group-hover:text-primary-800 dark:group-hover:text-primary-500 ',
             'xs': {
                 rounded: 'rounded-lg',
-                padding: 'p-1.5',
-                icon_sizes: 'h-4 w-4',
-                icon_size: 16,
+                padding: 'p-1',
+                icon_sizes: 'h-5 w-5 content-center text-center align-middle justify-center ',
+                icon_size: 20,
                 icon_margin: 'mx-[1px]',
                 margin: 'mx-1'
             },
@@ -2527,9 +2527,9 @@ export const settingsDefault = {
                 ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50',
             'u-btn-text-trans': ' duration-200 ',
 
-            'u-btn-link-cnt': ' border border-transparent ',
+            'u-btn-link-cnt': ' px-0 ',
             'u-btn-link-text':
-                ' font-medium group-hover:underline text-primary dark:text-primary group-hover:opacity-90 active:opacity-50 ',
+                ' font-medium group-hover:underline text-neutral-700 dark:text-neutral-300  hover:text-neutral-950 dark:hover:text-neutral-50 active:opacity-50 ',
             'u-btn-link-trans': ' duration-200 ',
 
             'u-btn-outline-cnt':

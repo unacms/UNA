@@ -134,7 +134,7 @@ export default function (props) {
                             setMenuPopup={setMenuPopup}
                         />
                         <Row className="hidden lg:flex flex-auto ">
-                            <Row className="w-full px-4 mx-auto gap-x-0.5 max-w-3xl justify-between">
+                            <Row className="w-full mx-auto gap-x-0.5 max-w-3xl justify-between">
                                 {menu_navbar_items.map((item, index) => (
                                     <Link
                                         className="flex-auto"

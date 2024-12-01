@@ -83,7 +83,7 @@ function UnitWoInfo({ oProps, sSize, sSizeFontLetter, iSizeWidth, bShowLinks, em
 
 }
 
-function UnitWoImage({ oProps, bShowLinks, emulate, info,sSizeFont }) {
+function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont }) {
     return (
         <View className="flex-col my-auto ">
 

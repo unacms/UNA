@@ -178,7 +178,7 @@ const getIcon = (sIcon, iIndex, classIconName, sClassText, sIconContainer, iIcon
         sClassText = sClassText.replace('text-lg', 'text-2xl text-center leading-[32px]  ');
         sClassText = sClassText.replace('text-base', 'text-xl text-center leading-[24px]');
         sClassText = sClassText.replace('text-sm', ' align-middle text-[24px] leading-[16px] text-center  ');
-        sClassText = sClassText.replace('text-xs', 'text-base text-center leading-[16px]');
+        sClassText = sClassText.replace('text-xs', 'text-[20px] text-center leading-[20px] group-hover:no-underline  ');
         return (
             <Text key={iIndex} className={classIconName ? classIconName : sClassText + sIconContainer}>{sIcon}</Text>
         );

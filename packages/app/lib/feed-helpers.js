@@ -221,8 +221,8 @@ export const ItemInfo = memo(({ data, t }) => {
         }
         return l && (
             <>
-                <Text className=" text-neutral-500/50 text-sm leading-6"> · </Text>
-                <Text className=" text-neutral-600 dark:text-neutral-400 text-sm font-medium leading-6 text-center ">
+                <Text className=" text-neutral-500/50 text-sm "> · </Text>
+                <Text className=" text-neutral-600 dark:text-neutral-400 text-sm font-medium text-center ">
                     {l}
                 </Text>
             </>

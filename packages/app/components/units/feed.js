@@ -36,14 +36,14 @@ function DefaultUnit(data) {
             <Card rounded=' rounded-none sm:rounded-2xl ' margin=' mb-1 sm:mb-4 md:mx-auto ' addClassName={' border-y w-full max-w-3xl p-3 sm:p-4 tl-' + data.id} >
                 <View className="flex-auto flex-row items-top pb-3">
                     <Author data={data} url={url} t={t} />
-                    <View className="flex-auto justify-end flex-row mb-auto">
+                    <View className="flex-auto justify-end flex-row mb-auto ">
                         <MenuManage id={data.id} menu={data?.menu_manage} setViewState={setViewState} />
                     </View>
                 </View>
 
                 {MainContentComponent}
                 <View className="pt-3">
-                    {(!!data.menu_counters && appSetting('feed', 'counters_menu')) && <View className=' pt-3 sm:pt-4'><CounterMenu data={data.menu_counters}  /></View>}
+                    {(!!data.menu_counters && appSetting('feed', 'counters_menu')) && <View className=' py-3 sm:py-4'><CounterMenu data={data.menu_counters}  /></View>}
                     <ActionMenu data={data.menu_actions} showCommentsModal={false} />
                 </View>
                 {commentsData && <CommentsSection url={url} t={t} isCommentsModal={false} showCommentsModal={false} commentsDataInline={commentsData} data={data} />}
