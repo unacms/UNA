@@ -2465,11 +2465,11 @@ export const settingsDefault = {
             pressed_text: 'text-primary-700 dark:text-primary-600 group-hover:text-primary-800 dark:group-hover:text-primary-500 ',
             'xs': {
                 rounded: 'rounded-lg',
-                padding: 'p-1',
+                padding: 'p-1.5',
                 icon_sizes: ' content-center text-center align-middle justify-center ',
                 icon_size: 20,
                 icon_margin: 'mx-0.5',
-                margin: 'mx-2'
+                margin: 'mx-1'
             },
             'sm': {
                 rounded: 'rounded-lg',
@@ -2527,7 +2527,7 @@ export const settingsDefault = {
                 ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50',
             'u-btn-text-trans': ' duration-200 ',
 
-            'u-btn-link-cnt': ' px-0 ',
+            'u-btn-link-cnt': ' px-0  ',
             'u-btn-link-text':
                 ' font-medium group-hover:underline text-neutral-700 dark:text-neutral-300  hover:text-neutral-950 dark:hover:text-neutral-50 active:opacity-50 ',
             'u-btn-link-trans': ' duration-200 ',
@@ -2553,13 +2553,23 @@ export const settingsDefault = {
                 ' border border-bdrbutton dark:border-bdrbutton-d bg-bgrbutton dark:bg-bgrbutton-d flex flex-row shadow-sm overflow-hidden ',
             'u-btn-outline-cnt':
                 ' border border-bdrbutton dark:border-bdrbutton-d overflow-hidden flex flex-row ',
-            'u-btn-text-cnt': 'flex flex-row active:opacity-50 ',
+
+
+            'u-btn-text-cnt': 'flex flex-row active:opacity-50 items-center ',
+
 
             'u-btn-secondary-cnt':
                 ' bg-bgritem dark:bg-bgritem-d hover:bg-none dark:hover:bg-none active:opacity-50 overflow-hidden flex flex-row',
             'u-btn-secondary-text':
                 ' font-medium text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-white ',
             'u-btn-secondary-trans': ' duration-200 ',
+
+            'u-btn-link-cnt': 'flex flex-row active:opacity-50 items-center ',
+            'u-btn-link-text':
+                ' font-medium group-hover:underline text-neutral-700 dark:text-neutral-300  hover:text-neutral-950 dark:hover:text-neutral-50 active:opacity-50 ',
+            'u-btn-link-trans': ' duration-200 ',
+
+
         },
     },
 }
