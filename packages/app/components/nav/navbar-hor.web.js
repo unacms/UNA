@@ -39,7 +39,7 @@ const HeaderLine = memo(
             ).length > 0
 
         return (
-            <View className="flex-row xl:w-80 2xl:w-96 pl-3 sm:pl-4 pr-2 flex-auto lg:flex-none my-auto items-center">
+            <View className="flex-row 2xl:w-96 pl-3 sm:pl-4 pr-2 flex-auto lg:flex-none my-auto items-center">
                 {headerSettings.menu && isDrawer && (
                     <View className="lg:hidden mr-3 sm:mr-4">
                         <Pressable onPress={showMenu}>
@@ -176,7 +176,7 @@ export default function (props) {
                             {!!currentUser && (
                                 <Row className="flex-row justify-end ">
                                     <View className=" flex-row my-auto gap-x-2 ">
-                                        <View className="xl:hidden ">
+                                        <View className=" 2xl:hidden ">
                                             {bSearch && <Search />}
                                         </View>
                                         <View className="hidden sm:block">

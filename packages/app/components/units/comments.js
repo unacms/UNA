@@ -169,7 +169,7 @@ export default function UnitComments(props) {
                     </View>
                     {viewState.view != 'edited' && <View className=' flex-row w-full mb-1 items-center'>
                         {(!!currentUser && !!props.handleReply && !props.module.includes('_reviews')) ? <View className='mr-2'>
-                            <Button align="start" title={t("Reply")} size="xs" startDecorator="ArrowBendLeftUp" variant="text" onPress={() => handleReply(data)} rounded />
+                            <Button align="start" title={t("Reply")} size="xs" startDecorator="ArrowBendLeftUp" variant="link" onPress={() => handleReply(data)} rounded />
                         </View> : <View></View>
                         }
                         {(!!currentUser && !props.handleReply && !props.module.includes('_reviews')) ? <View className='mr-2'>

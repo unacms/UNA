@@ -39,7 +39,7 @@ const CalendarHeader = (dValue, addMonth) => (
     <Row className='w-full justify-between mb-4 items-center mt-2'>
         <Button size="sm" rounded startDecorator="CaretDoubleLeft" onPress={() => addMonth('y', -1)} />
         <Button size="sm" rounded startDecorator="CaretLeft" onPress={() => addMonth('m', -1)} />
-        <Text className="font-font-medium text-neutral-700 text-lg">{formatValueDate(dValue)}</Text>
+        <Text className=" font-medium text-neutral-700 text-lg">{formatValueDate(dValue)}</Text>
         <Button size="sm" rounded startDecorator="CaretRight" onPress={() => addMonth('m', 1)} />
         <Button size="sm" rounded startDecorator="CaretDoubleRight" onPress={() => addMonth('y', 1)} />
     </Row>
