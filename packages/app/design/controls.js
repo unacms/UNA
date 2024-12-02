@@ -177,8 +177,8 @@ const getIcon = (sIcon, iIndex, classIconName, sClassText, sIconContainer, iIcon
     if (isEmoji(sIcon)) {
         sClassText = sClassText.replace('text-lg', 'text-2xl text-center leading-[32px]  ');
         sClassText = sClassText.replace('text-base', 'text-xl text-center leading-[24px]');
-        sClassText = sClassText.replace('text-sm', ' align-middle text-[24px] leading-[16px] text-center  ');
-        sClassText = sClassText.replace('text-xs', 'text-[20px] text-center leading-[20px] group-hover:no-underline  ');
+        sClassText = sClassText.replace('text-sm', ' group-hover:no-underline text-xl leading-[24px] ');
+        sClassText = sClassText.replace('text-xs', ' group-hover:no-underline text-base ');
         return (
             <Text key={iIndex} className={classIconName ? classIconName : sClassText + sIconContainer}>{sIcon}</Text>
         );
@@ -269,7 +269,7 @@ export const Button = (props) => {
 
     const sClassContainer = useMemo(() => {
         let classes = 'group relative flex-row items-center ';
-        classes += fullWidth ? 'flex-auto w-full ' : ' truncate w-fit ';
+        classes += fullWidth ? ' flex-auto w-full ' : ' w-fit ';
         if (disabled) classes += 'opacity-50 ';
         if (variant !== 'custom') {
             classes += (solid ? '' : ThemeCssClassesButton[`u-btn-${variant}-trans`]) +ThemeCssClassesButton[`u-btn-${variant}-cnt`]+ '  ';

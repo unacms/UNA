@@ -2466,10 +2466,10 @@ export const settingsDefault = {
             'xs': {
                 rounded: 'rounded-lg',
                 padding: 'p-1',
-                icon_sizes: 'h-5 w-5 content-center text-center align-middle justify-center ',
+                icon_sizes: ' content-center text-center align-middle justify-center ',
                 icon_size: 20,
-                icon_margin: 'mx-[1px]',
-                margin: 'mx-1'
+                icon_margin: 'mx-0.5',
+                margin: 'mx-2'
             },
             'sm': {
                 rounded: 'rounded-lg',
