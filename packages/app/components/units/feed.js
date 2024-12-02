@@ -42,9 +42,9 @@ function DefaultUnit(data) {
                 </View>
 
                 {MainContentComponent}
-                <View className="pt-3">
-                    {(!!data.menu_counters && appSetting('feed', 'counters_menu')) && <View className=' py-3 sm:py-4'><CounterMenu data={data.menu_counters}  /></View>}
-                    <ActionMenu data={data.menu_actions} showCommentsModal={false} />
+                <View className="">
+                    {(!!data.menu_counters && appSetting('feed', 'counters_menu')) && <View className=' py-2 border-b border-bdr dark:border-bdr-d '><CounterMenu data={data.menu_counters}  /></View>}
+                    <View className=' pt-3'><ActionMenu data={data.menu_actions} showCommentsModal={false} /></View>
                 </View>
                 {commentsData && <CommentsSection url={url} t={t} isCommentsModal={false} showCommentsModal={false} commentsDataInline={commentsData} data={data} />}
             </Card>
