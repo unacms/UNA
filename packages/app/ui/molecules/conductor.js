@@ -346,7 +346,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
                         {props.navigationState.routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
                             const counter = appSetting('layout', 'show_nav_counters') ? 0 : a.addon ? (a.addon.text ? a.addon.text : a.addon) : 0;
                             const counter2 = counter > 0 ? ' (' + counter + ')' : ''
-                            const btn = callFn('getButtonForConductorNative' [a, props.navigationState.index, currentUser, setIndex, onChangeRoute])
+                            const btn = callFn("getButtonForConductorNative", [a, props.navigationState.index, currentUser, setIndex, onChangeRoute])
 
                             return (
                                 <Pressable className="items-center py-2 px-1 justify-center"

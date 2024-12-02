@@ -99,6 +99,7 @@ export function clearNotif(currentUser, setCurrentUser) {
 
         setCurrentUser({
             notifications: 0,
+            notificationsTs:Date.now()
         });
 
         const clearNotifications = async () => {
@@ -107,9 +108,6 @@ export function clearNotif(currentUser, setCurrentUser) {
         }
 
         clearNotifications();
-
-
-
     }
 }
 

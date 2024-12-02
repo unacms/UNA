@@ -26,12 +26,12 @@ import useSWR from 'swr'
 import { useTranslation } from 'react-i18next';
 import Loading from 'app/ui/atoms/loading'
 
-export const CommentsModal = memo(({ commentsData, initFormData, itemContent }) => {
+export const CommentsModal = memo(({ commentsData, initFormData, itemContent, closeOnPost }) => {
     const windowDimensions = useWindowDimensions();
     const offset = windowDimensions.width > LAYOUT_BREAKPOINTS.lg ? 100 : 60;
     const [height, setHeight] = useState(windowDimensions.height - offset - 100);
     const aItems = [itemContent];
-    const CommentsPartsData = CommentsParts(commentsData, aItems, height, initFormData);
+    const CommentsPartsData = CommentsParts(commentsData, aItems, height, initFormData, false, closeOnPost);
 
     const handleLayout = (event) => {
         const h = windowDimensions.height - offset - event.nativeEvent.layout.height;

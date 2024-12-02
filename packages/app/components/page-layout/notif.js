@@ -8,12 +8,16 @@ import Toaster from 'app/ui/atoms/toaster';
 export default function PageLayout(props) {
     const toasterRef2 = useRef();
     const { currentUser, setCurrentUser } = useCurrentUser();
-    const [timeStamp, setTimeStamp] = useState(Date.now());
+    const [timeStamp, setTimeStamp] = useState({ts:Date.now(), nts: currentUser.notificationsTs});
+   
     
     useEffect(() => {
         clearNotif(currentUser, setCurrentUser);
     }, [])
 
+    if (currentUser.notificationsTs != timeStamp.nts){
+        setTimeStamp({ts:Date.now(), nts: currentUser.notificationsTs});   
+    }
 
     useEffect(() => {
         if (currentUser){
@@ -35,7 +39,7 @@ export default function PageLayout(props) {
     }
 
     const showNewContent2 = async () => {
-        setTimeStamp(Date.now())
+        setTimeStamp({ts:Date.now(), nts: currentUser.notificationsTs});   
         clearNotif(currentUser, setCurrentUser);
         setToaster2Visible(false);
     }
@@ -43,7 +47,7 @@ export default function PageLayout(props) {
     return (  
         <View className='sm:p-2'>
             <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="New notifications" size="sm" />
-            <BlockByName data={props.data} key={timeStamp} cachePrefix={timeStamp} name={props.blocks.browse} />
+            <BlockByName data={props.data} key={timeStamp.ts} cachePrefix={timeStamp.ts} name={props.blocks.browse} />
         </View>
     )
 }

@@ -79,7 +79,7 @@ export function parseData(browse, dynamicData) {
     return browse;
 }
 
-export function CommentsParts(commentsData, aItems, height = 0, initFormData, isModal = false) {
+export function CommentsParts(commentsData, aItems, height = 0, initFormData, isModal = false, closeOnPost=false) {
     const [formData, setFormData] = useState({});
     const [addData, setAddData] = useState({});
 
@@ -94,7 +94,10 @@ export function CommentsParts(commentsData, aItems, height = 0, initFormData, is
     }, []);
 
     const handleForm = async (data) => {
-        setAddData(data)
+        setAddData(data);
+        if (closeOnPost){
+            closeOnPost()
+        }
     }
 
     return [
