@@ -264,6 +264,7 @@ export const MenuManage = ({ id, menu, setViewState }) => {
                 variant="text"
                 size="sm"
                 rounded
+                
                 startDecorator="DotsThreeOutline"
                 onPress={() => {
                     setMenuData({...menu, items: [{'name': 'loader'}]});
@@ -401,7 +402,7 @@ export const Author = memo(({ data, url, t }) => (
             {...data.author_data}
             
             displayType="unit"
-            displaySize="base"
+            displaySize="lg"
             showInfo={
                 <Row className="flex-wrap items-center ">
                     <Link href={url}>

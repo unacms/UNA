@@ -18,7 +18,7 @@ export const GroupView = memo(({data, styles, url, isCompact}) => {
         {data.mainImage && (
             <View className={isCompact ? "w-64" : "w-full md:w-1/3 "}>
                 <View
-                    className="w-full aspect-video   "
+                    className="w-full aspect-video"
                     style={styles.card_image}
                 >
                     <Image
