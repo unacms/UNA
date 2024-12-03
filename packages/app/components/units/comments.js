@@ -137,7 +137,7 @@ export default function UnitComments(props) {
                     <Profile {...data.author_data} displayType="unit_wo_info" displaySize="sm" showInfo="false" />
                     {(items.length != 0 && view != 'flat') && <View className="w-0.5 ml-[15px] top-0.5 flex-auto bg-neutral-100 dark:bg-neutral-800"></View>}
                 </View>
-                <View className=' flex-col  min-w-[320px] '>
+                <View className=' flex-col flex-1 '>
                     <View className=' bg-bgritem dark:bg-bgritem-d rounded-xl px-3 py-1.5' >
                         <View className="flex-row items-center overflow-hidden">
                             <Profile {...data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
