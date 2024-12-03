@@ -18,6 +18,8 @@ import { useCurrentUser } from 'app/context/user'
 import { CoverMenuMeta, CoverMenu, CoverMenuSmall } from 'app/components/nav/menu-cover'
 import { useTranslation } from 'react-i18next';
 
+const conductorTheme = appSetting('theme', 'conductor');
+
 export function CoverSmall(props) {
     const data = props.data
     const { currentUser, setCurrentUser } = useCurrentUser()
@@ -46,7 +48,7 @@ export function CoverSmall(props) {
                     appSetting('layout', 'max_width') + ' w-full mx-auto'
                 }
             >
-                <View className=" px-3 sm:px-4 py-2 max-w-6xl mx-auto w-full flex-row gap-2">
+                <View className={`px-3 sm:px-4 py-2 ${conductorTheme.content_max_width} mx-auto w-full flex-row gap-2`}>
                     <Row className=" items-center flex-auto">
                         {getBackButtonWeb()}
                         {bPerson && (
@@ -270,7 +272,7 @@ export default function (props) {
                 ) : (
                     <></>
                 )}
-                <View className={`flex-col ${mode === 'min' ? 'lg' : 'md'}:flex-row gap-x-2 p-2 max-w-6xl mx-auto w-full`}>
+                <View className={`flex-col ${mode === 'min' ? 'lg' : 'md'}:flex-row gap-x-2 p-2 ${conductorTheme.content_max_width} mx-auto w-full`}>
                     {bPerson && (
                         <View className="w-full h-24 sm:w-48 relative">
                             <View className="rounded-full absolute w-min p-2 z-50 duration-200 bottom-0 flex-none bg-bgrcard-h dark:bg-bgrcard-dh ">

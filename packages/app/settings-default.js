@@ -177,11 +177,11 @@ export const settingsDefault = {
             show_combined: true, // leave true
             button_show_title_from_size: 'sm',
             button_full_width: true,
-            button_size: 'sm',
+            button_size: 'base',
             button_variant: 'text',
             pressed_classes: {
-                pressed_container: ' bg-red-500/10 dark:bg-red-500/10 hover:bg-primary/20 dark:hover:bg-primary-d/20 ',
-                pressed_text: 'text-pink-700 dark:text-pink-600 group-hover:text-primary-800 dark:group-hover:text-primary-500 ',
+                pressed_container: ' hover:bg-primary/20 dark:hover:bg-primary-d/20 ',
+                pressed_text: ' text-primary dark:text-primary-d group-hover:text-primary-700 dark:group-hover:text-primary-500 ',
             },
             button_rounded: false,
             align_items: 'between',
@@ -192,7 +192,8 @@ export const settingsDefault = {
             show_counter: true,
             show_combined: true,
             button_variant: 'link',
-            button_size: 'xs',
+            button_size: 'sm',
+            align_items: 'between',
             no_gap_between_buttons: false,
         },
         /*
@@ -2431,6 +2432,7 @@ export const settingsDefault = {
         conductor: {
             menu: ' w-full items-left justify-center border-b border-bdr dark:border-bdr-d',
             menu_max_width: ' max-w-6xl ',
+            content_max_width: ' max-w-6xl ',
             menu_is_dynamic: true,
             menu_cnt: ' ml-3 sm:ml-4 gap-x-1 flex-row ',
         },
@@ -2456,6 +2458,9 @@ export const settingsDefault = {
             content:
                 'bg-bgrmodal dark:bg-bgrmodal-d {ls}:h-auto  {ls}:border {ls}:border-bdrmodal {ls}:dark:border-bdrmodal-d {ls}:rounded-xl {ls}:shadow-sm',
             header: 'border-b border-bdr dark:border-bdr-d px-3 py-2.5',
+        },
+        card: {
+            default: 'shadow-sm overflow-hidden bg-bgrcard dark:bg-bgrcard-d backdrop-blur-xl'
         },
 
         inputs: {
@@ -2537,7 +2542,7 @@ export const settingsDefault = {
             'u-btn-danger-trans': ' duration-200 ',
 
             'u-btn-text-cnt':
-                '  hover:bg-neutral-200 dark:hover:bg-neutral-800 active:opacity-50 ',
+                '  hover:bg-bgrbutton dark:hover:bg-bgrbutton-d active:opacity-50 ',
             'u-btn-text-text':
                 ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50',
             'u-btn-text-trans': ' duration-200 ',

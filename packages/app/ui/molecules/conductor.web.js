@@ -597,7 +597,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                 sidebarUnitType = route.blocks.browse_sidebar.unitType
             }
             return (
-                <Row style={{ paddingTop: header ? 0 : 0 }} className={(headerSettings.columns == "reverse" ? 'flex-row-reverse' : '') + ' max-w-6xl mx-auto w-full'}>
+                <Row style={{ paddingTop: header ? 0 : 0 }} className={(headerSettings.columns == "reverse" ? 'flex-row-reverse' : '') + conductorTheme.content_max_width + '  mx-auto w-full'}>
                     <View className={(isRightCol ? 'flex-auto sm:border-r border-bdr dark:border-bdr-d px-4 flex-auto ' : ' w-full mx-auto sm:p-2 ') + (layoutName == 'navigator' ? '' : ' pt-4')}>
                         {TabFlashListM}
                         {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 &&  callFn("noContentByUrl", [route?.endpoint])))}
@@ -745,8 +745,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             {headerObj}
             <MenuDrawer showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden fixed z-50 top-16 w-full" />
             <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="New content" size="sm" />
-            <View className={'max-w-6xl mx-auto w-full min-h-screen'}>
-
+            <View className={`${conductorTheme.content_max_width} mx-auto w-full min-h-screen`}>
                 <RenderScene route={currentRoute} />
             </View>
             <Footer />
@@ -827,8 +826,6 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
     const ButtonEx = memo(({ visibleItemsCount }) => {
         return <View key="btn" className='ml-1 py-2 '><Button title={'More...'} variant={visibleItemsCount <= index ? 'secondary' : "text"} pressed={visibleItemsCount <= index ? true : false} size="sm" /></View>;
     });
-
-
 
     return <DynamicMenu
         name={name}
