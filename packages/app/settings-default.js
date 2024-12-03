@@ -179,6 +179,10 @@ export const settingsDefault = {
             button_full_width: true,
             button_size: 'sm',
             button_variant: 'text',
+            pressed_classes: {
+                pressed_container: ' bg-red-500/10 dark:bg-red-500/10 hover:bg-primary/20 dark:hover:bg-primary-d/20 ',
+                pressed_text: 'text-pink-700 dark:text-pink-600 group-hover:text-primary-800 dark:group-hover:text-primary-500 ',
+            },
             button_rounded: false,
             align_items: 'between',
             no_gap_between_buttons: false, // is false no gap between buttons + right margin, is true  gap between buttons + no margin

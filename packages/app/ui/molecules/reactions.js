@@ -298,12 +298,14 @@ export default function ElementReactions(oProps) {
     const bShowFull = bShowAction && bShowCounter;
     const bShowCombined = bShowFull && oParams?.show_combined != undefined && oParams.show_combined === true;
 
+    console.log("oProps.params", oProps.params)
     const oButtonProps = {
         variant: oProps?.primary ? 'primary' : oProps.params?.button_variant,
         size: oProps.params?.button_size,
         rounded: oProps.params?.button_rounded,
         fullWidth: oProps.params?.button_full_width,
-        showTitleFromSize: oProps.params?.button_show_title_from_size
+        showTitleFromSize: oProps.params?.button_show_title_from_size,
+        pressedClasses: oProps.params?.pressed_classes,
     };
 
     const [actionsDataState, setActionsDataState] = useState({});
