@@ -54,18 +54,18 @@ const colors = {
     },
 
     bgrbody: {
-        DEFAULT: 'rgba(243,244,246,1)',
+        DEFAULT: 'rgba(229,231,235,1)',
         d: 'rgba(3,7,18,1)',
     },
 
     bgrcard: {
-        DEFAULT: 'rgba(255,255,255,0.8)',
+        DEFAULT: 'rgba(255,255,255,0.6)',
         h: 'rgba(255,255,255,1)',
-        d: 'rgba(17,24,39,0.8)',
+        d: 'rgba(17,24,39,0.6)',
         dh: 'rgba(31,41,55,1)',
     },
     bdrcard: {
-        DEFAULT: 'rgba(0,0,0,0.1)',
+        DEFAULT: 'rgba(255,255,255,1)',
         d: 'rgba(255,255,255,0.05)',
     },
 

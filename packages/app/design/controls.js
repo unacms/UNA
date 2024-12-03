@@ -176,7 +176,7 @@ const getIcon = (sIcon, iIndex, classIconName, sClassText, sIconContainer, iIcon
 
     if (isEmoji(sIcon)) {
         sClassText = sClassText.replace('text-lg', 'text-2xl text-center leading-[32px]  ');
-        sClassText = sClassText.replace('text-base', 'text-xl text-center leading-[24px]');
+        sClassText = sClassText.replace('text-base', ' group-hover:no-underline text-2xl leading-[24px] ');
         sClassText = sClassText.replace('text-sm', ' group-hover:no-underline text-xl leading-[24px] ');
         sClassText = sClassText.replace('text-xs', ' group-hover:no-underline text-lg leading-[20px] ');
         return (
