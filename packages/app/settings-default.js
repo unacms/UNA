@@ -177,11 +177,11 @@ export const settingsDefault = {
             show_combined: true, // leave true
             button_show_title_from_size: 'sm',
             button_full_width: true,
-            button_size: 'sm',
+            button_size: 'base',
             button_variant: 'text',
             pressed_classes: {
-                pressed_container: ' bg-red-500/10 dark:bg-red-500/10 hover:bg-primary/20 dark:hover:bg-primary-d/20 ',
-                pressed_text: 'text-pink-700 dark:text-pink-600 group-hover:text-primary-800 dark:group-hover:text-primary-500 ',
+                pressed_container: ' hover:bg-primary/20 dark:hover:bg-primary-d/20 ',
+                pressed_text: ' text-primary dark:text-primary-d group-hover:text-primary-700 dark:group-hover:text-primary-500 ',
             },
             button_rounded: false,
             align_items: 'between',
@@ -192,7 +192,8 @@ export const settingsDefault = {
             show_counter: true,
             show_combined: true,
             button_variant: 'link',
-            button_size: 'xs',
+            button_size: 'sm',
+            align_items: 'between',
             no_gap_between_buttons: false,
         },
         /*

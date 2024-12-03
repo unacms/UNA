@@ -137,8 +137,8 @@ export default function UnitComments(props) {
                     <Profile {...data.author_data} displayType="unit_wo_info" displaySize="sm" showInfo="false" />
                     {(items.length != 0 && view != 'flat') && <View className="w-0.5 ml-[15px] top-0.5 flex-auto bg-neutral-100 dark:bg-neutral-800"></View>}
                 </View>
-                <View className='flex-1 flex-col '>
-                    <View className='bg-bgritem dark:bg-bgritem-d rounded-xl px-2.5 py-1.5 mb-1' >
+                <View className=' flex-col  min-w-[320px] '>
+                    <View className=' bg-bgritem dark:bg-bgritem-d rounded-xl px-3 py-1.5' >
                         <View className="flex-row items-center overflow-hidden">
                             <Profile {...data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
                             <View><Text className="text-neutral-500 px-1">·</Text></View>
@@ -160,7 +160,7 @@ export default function UnitComments(props) {
                                
                             </View>
                         }
-                        <View className='text-neutral-900 dark:text-neutral-50 py-0.5'>
+                        <View className='text-neutral-900 dark:text-neutral-50 pb-0.5'>
                             <Html htmlStyles={{ fontSize: 14 }} customClassName='u-vanilla-html u-vanilla-html-small' data={linkify(data.cmt_text)} />
                             {!!data.embed && <View><Embed data={data.embed} size="small" /></View>}
                             {!!data.cmt_mood && <StarsView rating={data.cmt_mood} starSize={20} />}
@@ -173,7 +173,7 @@ export default function UnitComments(props) {
                         </View> : <View></View>
                         }
                         {(!!currentUser && !props.handleReply && !props.module.includes('_reviews')) ? <View className='mr-2'>
-                            <Link href={props.contentUrl + '#cmt_id=' + data.cmt_id}><Button align="start" title={t("Reply")} size="xs" startDecorator="ArrowBendLeftUp" variant="link" rounded /></Link>
+                            <Link href={props.contentUrl + '#cmt_id=' + data.cmt_id}><Button align="start" title={t("Reply")} size="xs" startDecorator="ArrowBendLeftUp" variant="text" rounded /></Link>
                         </View> : <View></View>
                         }
                         <View className='flex-row flex-auto '>
