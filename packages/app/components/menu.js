@@ -65,7 +65,7 @@ export default function ElementMenu(oProps) {
     //--- show vertical
     const bShowVertical = oProps?.params?.showVertical === true;
 
-    sClassName += bShowVertical ? ' flex-col items-center gap-y-2 w-full ' : ' flex-row items-center ' + (oProps?.params?.no_gap_between_buttons ? ' ' : ' gap-x-3 justify-between ');
+    sClassName += bShowVertical ? ' flex-col items-center gap-y-2 w-full ' : ' flex-row items-center ' + (oProps?.params?.no_gap_between_buttons ? ' ' : ' gap-x-3');
     const oParams = oProps?.params || {};
 
   
