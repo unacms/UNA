@@ -69,12 +69,11 @@ const getData = cache(async (params, search_params) => {
 
     console.log('^^^^^^^^^^^^^^^^^^^^^^^^^', searchParams, l);
     const res = await fetch(l, opts)
-    /*
-    trace server  errors
-     console.log('^^^^^^^^^^^^^^^^^^^^^^^^^', await res.text());
-    return {}
-    */
-    return await res.json()
+    try {
+        return await res.json();
+    } catch (error) {
+        console.error("!-------------------------! JSON error:", await res.text());
+    }
 });
 
 
