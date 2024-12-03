@@ -69,7 +69,7 @@ export const settingsDefault = {
         async_workers_interval: 10,
         bluetooth: false,
         bluetooth_device_name_prefix: 'NEO',
-        use_custom_font: false,//'font-main'
+        use_custom_font: false, //'font-main'
         lock_unconfirmed: true,
         entity_info_icon: 'Info',
         disable_screenshots: false,
@@ -107,14 +107,14 @@ export const settingsDefault = {
         show_back_button_in_messenger: false,
         button_style_for_actions: 'secondary',
         cover_mode: {
-            bx_courses: 'min'
+            bx_courses: 'min',
         },
         hide_browse_filter: true,
         use_youtube_player: true,
         hide_edit_covers: false,
         share_text: '',
         fixed_cover: false,
-        tooltips: true
+        tooltips: true,
     },
     forms: {
         sys_login: { hide_errors: true, button_full_width: true },
@@ -161,7 +161,7 @@ export const settingsDefault = {
                 title: 'For you',
                 showTitle: true,
             },
-         /*   {
+            /*   {
                 name: 'account',
                 icon: 'Binoculars',
                 title: 'Following',
@@ -172,15 +172,15 @@ export const settingsDefault = {
             { name: 'channels', icon: 'Hash', title: 'News', showTitle: true },*/
         ],
         actions_menu: {
-            show_action: true,// show action part or not
-            show_counter: false,// show counter part or not
+            show_action: true, // show action part or not
+            show_counter: false, // show counter part or not
             show_combined: true, // leave true
             button_show_title_from_size: 'sm',
-            button_full_width: true, 
+            button_full_width: true,
             button_size: 'sm',
             button_variant: 'text',
             button_rounded: false,
-            no_gap_between_buttons: false,// is false no gap between buttons + right margin, is true  gap between buttons + no margin
+            no_gap_between_buttons: false, // is false no gap between buttons + right margin, is true  gap between buttons + no margin
         },
         counters_menu: {
             show_action: false,
@@ -189,8 +189,7 @@ export const settingsDefault = {
             button_variant: 'link',
             button_size: 'xs',
             no_gap_between_buttons: false,
-         
-        }
+        },
         /*
         FOR COMBINED BUTTONS SHOULD BE SET IN THE FOLLOWING WAY:
         , actions_menu : {
@@ -1460,7 +1459,6 @@ export const settingsDefault = {
         'view-course-profile': {
             layout: 'profile', //profile-alt, profile
             blocks: {
-               
                 /*col0: {
                     name: 'bx_timeline:get_block_post_profile',
                     showTitle: false,
@@ -1482,7 +1480,7 @@ export const settingsDefault = {
                     showBg: false,
                     perLine: 1,
                 },
-               /* col2: {
+                /* col2: {
                     name: 'bx_courses:entity_text_block',
                     showTitle: false,
                     showBg: true,
@@ -2167,7 +2165,6 @@ export const settingsDefault = {
                     showPad: true,
                     sidebar: true,
                 },
-                
             },
             headerSettings: { offset: false, header: false, cover: 'group' },
         },
@@ -2430,76 +2427,89 @@ export const settingsDefault = {
             menu: ' w-full items-left justify-center border-b border-bdr dark:border-bdr-d',
             menu_max_width: ' max-w-6xl ',
             menu_is_dynamic: true,
-            menu_cnt: ' ml-3 sm:ml-4 gap-x-1 flex-row '
+            menu_cnt: ' ml-3 sm:ml-4 gap-x-1 flex-row ',
         },
         dropdown_menu: {
-            content_ver: ' z-10 min-w-[200px] shadow-xl backdrop-blur-xl bg-bgrmodal dark:bg-bgrmodal-d mt-1 p-1 text-sm rounded-xl shadow-xl overflow-hidden gap-y-1 ',
-            content_hor: ' flex flex-row z-10 p-1 bg-bgrmodal border border-bdr dark:border-bdr-d m-2 backdrop-blur-xl dark:bg-bgrmodal-d text-sm text-neutral-800 dark:text-neutral-200 rounded-full shadow-sm',
-            item_ver: 'flex flex-row focus:outline-none items-center px-3 py-2 gap-x-3 text-sm rounded-lg font-medium hover:bg-bgritem dark:hover:bg-bgritem-d text-neutral-700 dark:text-neutral-300 dark:hover:text-white hover:cursor-pointer',
-            item_hor: 'flex block px-3 py-2 hover:-translate-y-1 active:-translate-y-1 dark:hover:text-white rounded-full hover:cursor-pointer text-neutral-700 active:opacity-50 hover:scale-125 active:scale-95 duration-200 dark:text-neutral-300',
-            item_np: 'flex flex-row focus:outline-none items-center justify-between px-1 py-0.5 rounded-lg font-medium hover:bg-bgritem dark:hover:bg-bgritem-d text-sm text-neutral-700 dark:text-neutral-300 dark:hover:text-white hover:cursor-pointer',
+            content_ver:
+                ' z-10 min-w-[200px] shadow-xl backdrop-blur-xl bg-bgrmodal dark:bg-bgrmodal-d mt-1 p-1 text-sm rounded-xl shadow-xl overflow-hidden gap-y-1 ',
+            content_hor:
+                ' flex flex-row z-10 p-1 bg-bgrmodal border border-bdr dark:border-bdr-d m-2 backdrop-blur-xl dark:bg-bgrmodal-d text-sm text-neutral-800 dark:text-neutral-200 rounded-full shadow-sm',
+            item_ver:
+                'flex flex-row focus:outline-none items-center px-3 py-2 gap-x-3 text-sm rounded-lg font-medium hover:bg-bgritem dark:hover:bg-bgritem-d text-neutral-700 dark:text-neutral-300 dark:hover:text-white hover:cursor-pointer',
+            item_hor:
+                'flex block px-3 py-2 hover:-translate-y-1 active:-translate-y-1 dark:hover:text-white rounded-full hover:cursor-pointer text-neutral-700 active:opacity-50 hover:scale-125 active:scale-95 duration-200 dark:text-neutral-300',
+            item_np:
+                'flex flex-row focus:outline-none items-center justify-between px-1 py-0.5 rounded-lg font-medium hover:bg-bgritem dark:hover:bg-bgritem-d text-sm text-neutral-700 dark:text-neutral-300 dark:hover:text-white hover:cursor-pointer',
             item_cnt: 'items-center gap-x-3',
-            item_text: 'text-sm font-medium text-neutral-700 dark:text-neutral-200',
+            item_text:
+                'text-sm font-medium text-neutral-700 dark:text-neutral-200',
             item_icon: 'text-2xl text-neutral-700 dark:text-neutral-300',
-
         },
         modal: {
             fog: 'bg-white/80 dark:bg-black/80 backdrop-blur',
             container: 'max-w-3xl {ls}:h-auto',
-            content: 'bg-bgrmodal dark:bg-bgrmodal-d {ls}:h-auto  {ls}:border {ls}:border-bdrmodal {ls}:dark:border-bdrmodal-d {ls}:rounded-xl {ls}:shadow-sm',
+            content:
+                'bg-bgrmodal dark:bg-bgrmodal-d {ls}:h-auto  {ls}:border {ls}:border-bdrmodal {ls}:dark:border-bdrmodal-d {ls}:rounded-xl {ls}:shadow-sm',
             header: 'border-b border-bdr dark:border-bdr-d px-3 py-2.5',
         },
 
         inputs: {
-            default: 'bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-bdrinput dark:border-bdrinput-d focus:outline-none focus:outline-primary dark:focus-outline-primary-d placeholder-neutral-500 duration-100 text-neutral-900 rounded-lg flex-auto px-3  dark:text-neutral-100 text-base leading-5 h-11 ',
+            default:
+                'bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-bdrinput dark:border-bdrinput-d focus:outline-none focus:outline-primary dark:focus-outline-primary-d placeholder-neutral-500 duration-100 text-neutral-900 rounded-lg flex-auto px-3  dark:text-neutral-100 text-base leading-5 h-11 ',
             multi: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg flex-auto p-2 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 ',
-            rounded: ' placeholder-neutral-500 bg-bgritem dark:bg-bgritem-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-transparent focus:border-bdrinput dark:focus:border-bdrinput-d focus:outline-none focus:outline-primary dark:focus-outline-primary-d duration-100 text-neutral-900 rounded-full flex-auto px-3 dark:text-neutral-100 text-base leading-5 h-11  ',
-            roundedsmall: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-full flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[34px] ',
-            small: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[36px] '
+            rounded:
+                ' placeholder-neutral-500 bg-bgritem dark:bg-bgritem-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-transparent focus:border-bdrinput dark:focus:border-bdrinput-d focus:outline-none focus:outline-primary dark:focus-outline-primary-d duration-100 text-neutral-900 rounded-full flex-auto px-3 dark:text-neutral-100 text-base leading-5 h-11  ',
+            roundedsmall:
+                ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-full flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[34px] ',
+            small: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[36px] ',
         },
 
         button_sizes: {
             default_size: 'base',
             default_variant: 'default',
-            pressed_container: 'bg-primary/10 dark:bg-primary-d/10 hover:bg-primary/20 dark:hover:bg-primary-d/20 ',
-            pressed_text: 'text-primary-700 dark:text-primary-600 group-hover:text-primary-800 dark:group-hover:text-primary-500 ',
-            'xs': {
+            pressed_container:
+                ' bg-primary/10 dark:bg-primary-d/10 hover:bg-primary/20 dark:hover:bg-primary-d/20 ',
+            pressed_text:
+                'text-primary-700 dark:text-primary-600 group-hover:text-primary-800 dark:group-hover:text-primary-500 ',
+            xs: {
                 rounded: 'rounded-lg',
-                padding: 'p-1.5',
-                icon_sizes: ' content-center text-center align-middle justify-center ',
+                padding: 'p-1',
+                icon_sizes:
+                    ' content-center text-center align-middle justify-center ',
                 icon_size: 20,
                 icon_margin: 'mx-0.5',
-                margin: 'mx-1'
+                margin: 'mx-1',
             },
-            'sm': {
+            sm: {
                 rounded: 'rounded-lg',
                 padding: 'p-1.5',
-                icon_sizes: 'h-6 w-6 content-center text-center align-middle justify-center ',
+                icon_sizes:
+                    'h-6 w-6 content-center text-center align-middle justify-center ',
                 icon_size: 24,
                 icon_margin: '',
-                margin: 'mx-2'
+                margin: 'mx-2',
             },
-            'base': {
+            base: {
                 rounded: 'rounded-lg',
                 padding: 'p-2',
                 icon_sizes: 'h-6 w-6',
                 icon_size: 24,
                 icon_margin: 'mx-1',
-                margin: 'mx-2'
+                margin: 'mx-2',
             },
-            'lg': {
+            lg: {
                 rounded: 'rounded-xl',
                 padding: 'p-2.5',
                 icon_sizes: 'h-8 w-8',
                 icon_size: 32,
                 icon_margin: 'mx-0.5',
-                margin: 'mx-3'
-            }
+                margin: 'mx-3',
+            },
         },
 
         button_styles: {
             'u-btn-default-cnt':
-            ' bg-bgrbutton dark:bg-bgrbutton-d hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50 border border-bdrbutton dark:border-bdrbutton-d',
+                ' bg-bgrbutton dark:bg-bgrbutton-d hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50 border border-bdrbutton dark:border-bdrbutton-d',
             'u-btn-default-text':
                 ' font-medium text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-white ',
             'u-btn-default-trans': 'duration-200',
@@ -2527,7 +2537,7 @@ export const settingsDefault = {
                 ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50',
             'u-btn-text-trans': ' duration-200 ',
 
-            'u-btn-link-cnt': ' px-0  ',
+            'u-btn-link-cnt': ' px-0 py-0  ',
             'u-btn-link-text':
                 ' font-medium group-hover:underline text-neutral-700 dark:text-neutral-300  hover:text-neutral-950 dark:hover:text-neutral-50 active:opacity-50 ',
             'u-btn-link-trans': ' duration-200 ',
@@ -2554,9 +2564,7 @@ export const settingsDefault = {
             'u-btn-outline-cnt':
                 ' border border-bdrbutton dark:border-bdrbutton-d overflow-hidden flex flex-row ',
 
-
             'u-btn-text-cnt': 'flex flex-row active:opacity-50 items-center ',
-
 
             'u-btn-secondary-cnt':
                 ' bg-bgritem dark:bg-bgritem-d hover:bg-none dark:hover:bg-none active:opacity-50 overflow-hidden flex flex-row',
@@ -2564,12 +2572,10 @@ export const settingsDefault = {
                 ' font-medium text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-white ',
             'u-btn-secondary-trans': ' duration-200 ',
 
-            'u-btn-link-cnt': 'flex flex-row active:opacity-50 items-center ',
+            'u-btn-link-cnt': ' flex flex-row active:opacity-50 items-center ',
             'u-btn-link-text':
                 ' font-medium group-hover:underline text-neutral-700 dark:text-neutral-300  hover:text-neutral-950 dark:hover:text-neutral-50 active:opacity-50 ',
             'u-btn-link-trans': ' duration-200 ',
-
-
         },
     },
 }

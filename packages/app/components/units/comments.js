@@ -173,7 +173,7 @@ export default function UnitComments(props) {
                         </View> : <View></View>
                         }
                         {(!!currentUser && !props.handleReply && !props.module.includes('_reviews')) ? <View className='mr-2'>
-                            <Link href={props.contentUrl + '#cmt_id=' + data.cmt_id}><Button align="start" title={t("Reply")} size="xs" startDecorator="ArrowBendLeftUp" variant="text" rounded /></Link>
+                            <Link href={props.contentUrl + '#cmt_id=' + data.cmt_id}><Button align="start" title={t("Reply")} size="xs" startDecorator="ArrowBendLeftUp" variant="link" rounded /></Link>
                         </View> : <View></View>
                         }
                         <View className='flex-row flex-auto '>

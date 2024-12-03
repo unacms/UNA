@@ -245,12 +245,12 @@ const ElementReports = forwardRef((oProps, ref) => {
     let sActionPopup = undefined;
     if(bShowActionUndo && bShowActionReported) {
         sActionButton = (
-            <ButtonAction key="action"  startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} onPress={_handleUndo} {...oButtonProps} />
+            <ButtonAction key="action" startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} onPress={_handleUndo} {...oButtonProps} />
         );
     }
     else {
         sActionButton = (
-            <ButtonAction key="action"  startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? _handleGetDo : () => {}} disabled={bShowActionDisabled} {...oButtonProps} />
+            <ButtonAction key="action" startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? _handleGetDo : () => {}} disabled={bShowActionDisabled} {...oButtonProps} />
         );
 
         sActionPopup = (

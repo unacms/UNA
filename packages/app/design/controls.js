@@ -207,7 +207,7 @@ const getAddon = (addon, isTitle) => {
         if (addon?.hideZero && sButtonAddonText == '0')
             return null;
         if (addon?.variant == 'primary')
-            sButtonAddonBg = 'bg-contrast dark:bg-contrast-d';
+            sButtonAddonBg = ' bg-contrast dark:bg-contrast-d';
     }
     else {
         sButtonAddonText = addon;

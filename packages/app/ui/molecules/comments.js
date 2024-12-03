@@ -96,7 +96,7 @@ export default function ElementComments(oProps) {
 //counter
         if (bShowCounter && !bShowAction ){
              if (iCount > 0){
-                return <ButtonAction
+                return <View className="pb-2"><ButtonAction
                 key="action"
                 startDecorator={sIcon}
                 title={iCount}
@@ -104,6 +104,7 @@ export default function ElementComments(oProps) {
                 disabled={bShowActionDisabled}
                 {...oButtonProps}
             />
+            </View>
             }
             else{
                 return null
@@ -145,7 +146,7 @@ export default function ElementComments(oProps) {
     }
 
     return (
-        <View className="flex-auto flex-row items-center">
+        <View className="flex-auto flex-row items-center ">
             <Redirect ref={redirectdRef} />
             <View key={sObject + '-action'} className={'flex-auto' +(oProps.params?.no_gap_between_buttons === true ? (oProps.params?.button_full_width ? ' 0 ': '  pr-1 pb-2 ') : '')+ (bShowFull ? ' mr-1' : '')}>{sActionButton}</View>
         </View>

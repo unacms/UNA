@@ -67,6 +67,10 @@ export default function ElementMenu(oProps) {
 
     sClassName += bShowVertical ? ' flex-col items-center gap-y-2 w-full ' : ' flex-row items-center ' + (oProps?.params?.no_gap_between_buttons ? ' ' : ' gap-x-3 justify-between ');
     const oParams = oProps?.params || {};
+
+  
+
+
     //--- horizontal menu items alignment
     const sAlignItems = oProps.alignItems || oParams.align_items || 'left';
     sClassName += ` justify-${sAlignItems}`;
