@@ -2430,11 +2430,12 @@ export const settingsDefault = {
             checkbox: '#0ea5e9',
         },
         conductor: {
-            menu: ' w-full items-left justify-center border-b border-bdr dark:border-bdr-d',
+            menu: ' w-full items-left justify-center border-b border-bdrtabbar dark:border-bdrtabbar-d bg-bgrtabbar dark:bg-bgrtabbar-d shadow-sm ',
             menu_max_width: ' max-w-6xl ',
             content_max_width: ' max-w-6xl ',
             menu_is_dynamic: true,
             menu_cnt: ' ml-3 sm:ml-4 gap-x-1 flex-row ',
+            
         },
         dropdown_menu: {
             content_ver:
@@ -2508,8 +2509,8 @@ export const settingsDefault = {
                 margin: 'mx-2',
             },
             lg: {
-                rounded: 'rounded-xl',
-                padding: 'py-2.5 px-3',
+                rounded: 'rounded-lg',
+                padding: 'py-2 px-3',
                 icon_sizes: 'h-8 w-8',
                 icon_size: 32,
                 icon_margin: '',

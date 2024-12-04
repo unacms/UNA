@@ -102,13 +102,13 @@ const colors = {
     },
 
     bgrtabbar: {
-        DEFAULT: 'rgba(255,255,255,0.75)',
-        d: 'rgba(17,24,39,0.75)',
+        DEFAULT: 'rgba(243,244,246,1)',
+        d: 'rgba(17,24,39,1)',
     },
 
     bdrtabbar: {
-        DEFAULT: 'rgba(0,0,0,0.05)',
-        d: 'rgba(255,255,255,0.05)',
+        DEFAULT: 'rgba(255,255,255,0.75)',
+        d: 'rgba(255,255,255,0.03)',
     },
 
     bgritem: {
@@ -146,7 +146,7 @@ const colors = {
         d: 'rgba(17,24,39,1)',
     },
     screen: {
-        DEFAULT: '#f3f4f6',
+        DEFAULT: '#d1d5db',
         d: '#030712',
     },
 }
