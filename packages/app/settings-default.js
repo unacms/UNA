@@ -1172,12 +1172,12 @@ export const settingsDefault = {
                     leftbar: true,
                 },
 
-                intro: {
+                /*intro: {
                     name: 'static:intro',
                     showTitle: false,
                     showBg: false,
                     sidebar: true,
-                },
+                },*/
                 friends: {
                     name: 'system:browse_recommendations_friends',
                     showTitle: false,
@@ -2438,7 +2438,7 @@ export const settingsDefault = {
         },
         dropdown_menu: {
             content_ver:
-                ' z-10 min-w-[200px] shadow-xl backdrop-blur-xl bg-bgrmodal dark:bg-bgrmodal-d mt-1 p-1 text-sm rounded-xl shadow-xl overflow-hidden gap-y-1 ',
+                ' z-10 min-w-[200px] shadow-xl backdrop-blur-xl border border-bdrmodal dark:border-bdrmodal-d bg-bgrmodal dark:bg-bgrmodal-d mt-1 p-1 text-sm rounded-xl shadow-xl overflow-hidden gap-y-1 ',
             content_hor:
                 ' flex flex-row z-10 p-1 bg-bgrmodal border border-bdr dark:border-bdr-d m-2 backdrop-blur-xl dark:bg-bgrmodal-d text-sm text-neutral-800 dark:text-neutral-200 rounded-full shadow-sm',
             item_ver:

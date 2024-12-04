@@ -38,8 +38,8 @@ export function CoverSmall(props) {
             style={styles}
             className={
                 (isUseBg
-                    ? ' border-b border-bdr dark:border-bdr-d'
-                    : ' bg-bgrnavbar dark:bg-bgrnavbar-d ') +
+                    ? ' border-b border-bdrnavbar dark:border-bdrnavbar-d'
+                    : ' bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur-xl ') +
                 ' w-full '
             }
         >
@@ -48,7 +48,7 @@ export function CoverSmall(props) {
                     appSetting('layout', 'max_width') + ' w-full mx-auto'
                 }
             >
-                <View className={`px-3 sm:px-4 py-2 ${conductorTheme.content_max_width} mx-auto w-full flex-row gap-2`}>
+                <View className={`px-3 sm:px-4 py-2  ${conductorTheme.content_max_width} mx-auto w-full flex-row gap-2`}>
                     <Row className=" items-center flex-auto">
                         {getBackButtonWeb()}
                         {bPerson && (
