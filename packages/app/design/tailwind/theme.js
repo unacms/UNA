@@ -60,9 +60,7 @@ const colors = {
 
     bgrcard: {
         DEFAULT: 'rgba(255,255,255,1)',
-        h: 'rgba(255,255,255,0.8)',
         d: 'rgba(17,24,39,1)',
-        dh: 'rgba(17,24,39,0.8)',
     },
     bdrcard: {
         DEFAULT: 'rgba(255,255,255,1)',
@@ -93,11 +91,11 @@ const colors = {
     },
 
     bgrnavbar: {
-        DEFAULT: 'rgba(255,255,255,0.8)',
-        d: 'rgba(17,24,39,0.8)',
+        DEFAULT: 'rgba(255,255,255,1)',
+        d: 'rgba(17,24,39,1)',
     },
     bdrnavbar: {
-        DEFAULT: 'rgba(255,255,255,0.8)',
+        DEFAULT: 'rgba(255,255,255,1)',
         d: 'rgba(255,255,255,0.03)',
     },
 
@@ -107,7 +105,7 @@ const colors = {
     },
 
     bdrtabbar: {
-        DEFAULT: 'rgba(255,255,255,0.8)',
+        DEFAULT: 'rgba(255,255,255,1)',
         d: 'rgba(255,255,255,0.03)',
     },
 

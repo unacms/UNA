@@ -80,7 +80,7 @@ export default function FormFeed(props) {
         dUser.url_avatar = dUser.avatar
         dUser.url = appSetting('layout', 'dashboard')
         profile = (
-            <Profile {...dUser} displaySize="lg" displayType="unit_wo_info" />
+            <Profile {...dUser} displaySize="base" displayType="unit_wo_info" />
         )
     }
 
@@ -343,12 +343,12 @@ export default function FormFeed(props) {
                 <Card
                     rounded=" rounded-none sm:rounded-2xl  "
                     margin=" mx-auto mb-1 sm:mb-4 "
-                    addClassName=" border-y w-full max-w-3xl sm:border px-3 sm:px-4 pt-3 sm:pt-4 "
+                    addClassName="  w-full max-w-3xl sm:border p-3 sm:p-4 "
                 >
-                    <View className=" flex-row gap-x-2 sm:gap-x-3 pb-3 ">
+                    <View className=" flex-row gap-x-2 sm:gap-x-3 ">
                         <View className=" my-auto">{profile}</View>
                         <Button
-                            size="lg"
+                            size="base"
                             variant="secondary"
                             fullWidth
                             rounded

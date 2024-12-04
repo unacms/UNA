@@ -186,12 +186,12 @@ export const ItemInfo = memo(({ data, t }) => {
     const OwnersList = () => data.owners?.length > 0 ? data.owners?.length == 1 ? <>
         <Text className="text-neutral-500/50 text-sm"> · </Text>
         <Link href={data.owners[0].url} emulate={true}>
-            <Text className=" bg-primary/10 hover:bg-primary/20 px-1.5 py-0.5 rounded-md text-primary dark:text-primary-d hover:text-linkhover text-sm font-medium">
+            <Text className=" bg-primary/10 hover:bg-primary/20 px-1.5 py-0.5 rounded-md text-primary dark:text-primary-d hover:text-linkhover text-xs font-medium">
                 {data.owners[0].title}
             </Text>
         </Link></> : <><Text className="text-neutral-500/50 text-sm"> · </Text>
         <Pressable onPress={() => { setShowContextList(true) }} >
-            <Text className=" bg-primary/10 hover:bg-primary/20 px-1.5 py-0.5 rounded-md text-primary dark:text-primary-d hover:text-linkhover text-sm font-medium">
+            <Text className=" bg-primary/10 hover:bg-primary/20 px-1.5 py-0.5 rounded-md text-primary dark:text-primary-d hover:text-linkhover text-xs font-medium">
                 {data.owners[0].title} + {data.owners.length - 1}
             </Text>
         </Pressable>
@@ -402,7 +402,7 @@ export const Author = memo(({ data, url, t }) => (
             {...data.author_data}
             
             displayType="unit"
-            displaySize="lg"
+            displaySize="base"
             showInfo={
                 <Row className="flex-wrap items-center ">
                     <Link href={url}>

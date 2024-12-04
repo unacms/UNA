@@ -46,7 +46,7 @@ function DefaultUnit(data) {
                     {(!!data.menu_counters && appSetting('feed', 'counters_menu')) && <View className='sm:py-2 sm:border-b border-bdr dark:border-bdr-d'><CounterMenu data={data.menu_counters}  /></View>}
                     <View className=' pb-2 pt-2 border-t border-bdr dark:border-bdr-d '><ActionMenu data={data.menu_actions} showCommentsModal={false} /></View>
                 </View>
-                {commentsData && <View className=' pt-3 border-t border-bdr dark:border-bdr-d '><CommentsSection url={url} t={t} isCommentsModal={false} showCommentsModal={false} commentsDataInline={commentsData} data={data} /></View>}
+                {commentsData && <View className='   '><CommentsSection url={url} t={t} isCommentsModal={false} showCommentsModal={false} commentsDataInline={commentsData} data={data} /></View>}
             </Card>
         </AnimatedBlock>
     )

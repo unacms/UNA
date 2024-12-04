@@ -106,7 +106,7 @@ export default function ElementEntityAuthor(oProps) {
     }
 
     return (
-        <View className={false ? "mx-auto w-full max-w-5xl flex-row justify-between pt-4 px-4  sm:rounded-t-lg bg-bgrcard dark:bg-bgrcard-d sm:border-t  sm:m-0 border-bdr dark:border-bdr-d sm:border-x" : " w-full items-center flex-row justify-between  "}>
+        <View className={false ? "mx-auto w-full max-w-5xl flex-row justify-between pt-4 px-4 sm:rounded-t-lg bg-bgrcard dark:bg-bgrcard-d sm:border-t  sm:m-0 border-bdr dark:border-bdr-d sm:border-x" : " w-full items-center flex-row justify-between  "}>
             <Redirect ref={redirectdRef} />
             {viewState.view == 'edited' && (<Modal
                 title={t("Edit post")}
