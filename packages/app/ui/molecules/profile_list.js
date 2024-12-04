@@ -22,7 +22,7 @@ function fillArrayToLength(arr, maxCount, defaultValue) {
             break
 
         case 'base':
-            sSize = 'w-11 h-11 '
+            sSize = 'w-10 h-10 '
             break
     }
 

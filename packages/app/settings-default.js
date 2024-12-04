@@ -2414,17 +2414,17 @@ export const settingsDefault = {
             checkbox: '#2563eb',
         },
         dark: {
-            default: '#D1D5DB', //fix for icons color in iOS
-            primary: '#0ea5e9',
-            barsBackground: 'rgba(0,0,0,1)',
-            bottomSheetBackground: 'rgba(31,41,55,1)',
-            barsColor: '#D1D5DB',
-            selectBorder: 'rgba(55, 65, 81, 0.3)',
+            default: 'rgba(209,213,219,1)', //fix for icons color in iOS
+            primary: 'rgba(37,99,235,1)',
+            barsBackground: 'rgba(0,0,0,1)', //header background in native
+            bottomSheetBackground: 'rgba(17,24,39,1)',
+            barsColor: 'rgba(209,213,219,1)', //tabbar icons color in native
+            selectBorder: 'rgba(55, 65, 81, 0.3)', 
             fieldBackground: '#030712',
             blockBorder: '#030712',
             tabText: 'rgba(156,163,175,1)',
             activeTabText: 'rgba(249,250,251,1)',
-            screenBackground: '#030407',
+            screenBackground: 'rgba(17,24,39,1)',
             bgrmodal: 'rgba(31,41,55,1)',
             bdrModal: 'rgba(55,65,81,0.4)',
             checkbox: '#0ea5e9',
@@ -2461,15 +2461,15 @@ export const settingsDefault = {
             header: 'border-b border-bdr dark:border-bdr-d px-3 py-2.5',
         },
         card: {
-            default: ' shadow-sm overflow-hidden bg-bgrcard dark:bg-bgrcard-d backdrop-blur-xl '
+            default: ' shadow-sm overflow-hidden bg-bgrcard dark:bg-bgrcard-d '
         },
 
         inputs: {
             default:
-                'bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-bdrinput dark:border-bdrinput-d focus:outline-none focus:outline-primary dark:focus-outline-primary-d placeholder-neutral-500 duration-100 text-neutral-900 rounded-lg flex-auto px-3  dark:text-neutral-100 text-base leading-5 h-11 ',
+                'bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-bdrinput dark:border-bdrinput-d focus:outline-none focus:outline-primary dark:focus-outline-primary-d placeholder-neutral-500 duration-100 text-neutral-900 rounded-lg flex-auto px-3  dark:text-neutral-100 text-base leading-5 h-10 ',
             multi: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg flex-auto p-2 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 ',
             rounded:
-                ' placeholder-neutral-500 bg-bgritem dark:bg-bgritem-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-transparent focus:border-bdrinput dark:focus:border-bdrinput-d focus:outline-none focus:outline-primary dark:focus-outline-primary-d duration-100 text-neutral-900 rounded-full flex-auto px-3 dark:text-neutral-100 text-base leading-5 h-11  ',
+                ' placeholder-neutral-500 bg-bgritem dark:bg-bgritem-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-transparent focus:border-bdrinput dark:focus:border-bdrinput-d focus:outline-none focus:outline-primary dark:focus-outline-primary-d duration-100 text-neutral-900 rounded-full flex-auto px-3 dark:text-neutral-100 text-base leading-5 h-10  ',
             roundedsmall:
                 ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-full flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[34px] ',
             small: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[36px] ',
@@ -2496,14 +2496,14 @@ export const settingsDefault = {
                 padding: 'p-1',
                 icon_sizes:
                     ' h-6 w-6 text-center align-middle items-center justify-center flex ',
-                icon_size: 20,
+                icon_size: 24,
                 icon_margin: '',
-                margin: 'mx-1',
+                margin: 'mx-1.5',
             },
             base: {
                 rounded: ' rounded-lg ',
-                padding: ' p-[7px] ',
-                icon_sizes: ' h-[26px] w-[26px]  text-center align-middle items-center justify-center flex ',
+                padding: ' p-2 ',
+                icon_sizes: ' h-6 w-6 text-center align-middle items-center justify-center flex ',
                 icon_size: 24,
                 icon_margin: '',
                 margin: 'mx-2',

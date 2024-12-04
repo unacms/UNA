@@ -207,7 +207,7 @@ export default function PageLayout(props) {
                 <View className=" w-full ">
                     
                     <ElementDashboardStat {...props}/>
-                    <Card addClassName="flex-col m-2 p-3 sm:p-4">
+                    <Card addClassName=" shadow flex-col m-2 p-3 sm:p-4">
                                
                             
                                
