@@ -175,9 +175,9 @@ export const settingsDefault = {
             show_action: true, // show action part or not
             show_counter: false, // show counter part or not
             show_combined: true, // leave true
-            button_show_title_from_size: 'sm',
+            button_show_title_from_size: '',
             button_full_width: true,
-            button_size: 'base',
+            button_size: 'sm',
             button_variant: 'text',
             pressed_classes: {
                 pressed_container: ' hover:bg-primary/20 dark:hover:bg-primary-d/20 ',
@@ -191,7 +191,7 @@ export const settingsDefault = {
             show_action: false,
             show_counter: true,
             show_combined: true,
-            button_variant: 'link',
+            button_variant: 'secondary',
             button_size: 'sm',
             align_items: 'between',
             no_gap_between_buttons: false,
@@ -2460,7 +2460,7 @@ export const settingsDefault = {
             header: 'border-b border-bdr dark:border-bdr-d px-3 py-2.5',
         },
         card: {
-            default: 'shadow-sm overflow-hidden bg-bgrcard dark:bg-bgrcard-d backdrop-blur-xl'
+            default: ' shadow-sm overflow-hidden bg-bgrcard dark:bg-bgrcard-d backdrop-blur-xl '
         },
 
         inputs: {
@@ -2485,34 +2485,34 @@ export const settingsDefault = {
                 rounded: 'rounded-lg',
                 padding: 'p-1',
                 icon_sizes:
-                    ' content-center text-center align-middle justify-center ',
-                icon_size: 20,
-                icon_margin: 'mx-0.5',
+                    ' content-center text-center align-middle justify-center flex items-center justify-center ',
+                icon_size: 16,
+                icon_margin: '',
                 margin: 'mx-1',
             },
             sm: {
                 rounded: 'rounded-lg',
-                padding: 'p-1.5',
+                padding: 'p-1',
                 icon_sizes:
-                    'h-6 w-6 content-center text-center align-middle justify-center ',
+                    ' h-6 w-6 text-center align-middle items-center justify-center flex ',
+                icon_size: 20,
+                icon_margin: '',
+                margin: 'mx-1',
+            },
+            base: {
+                rounded: ' rounded-lg ',
+                padding: ' p-[7px] ',
+                icon_sizes: ' h-[26px] w-[26px]  text-center align-middle items-center justify-center flex ',
                 icon_size: 24,
                 icon_margin: '',
                 margin: 'mx-2',
             },
-            base: {
-                rounded: 'rounded-lg',
-                padding: 'p-2',
-                icon_sizes: 'h-6 w-6',
-                icon_size: 24,
-                icon_margin: 'mx-1',
-                margin: 'mx-2',
-            },
             lg: {
                 rounded: 'rounded-xl',
-                padding: 'p-2.5',
+                padding: 'py-2.5 px-3',
                 icon_sizes: 'h-8 w-8',
                 icon_size: 32,
-                icon_margin: 'mx-0.5',
+                icon_margin: '',
                 margin: 'mx-3',
             },
         },
