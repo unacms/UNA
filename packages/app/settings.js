@@ -4,5 +4,3 @@ import { settingsDefault } from './settings-default';
 // only for custom projects change some specific settings here if needed
 
 export const settings = settingsDefault;
-
-settingsDefault.list = [{ name: 'public', icon: 'Binoculars' }];
