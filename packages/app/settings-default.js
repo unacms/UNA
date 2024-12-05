@@ -2461,7 +2461,7 @@ export const settingsDefault = {
             header: 'border-b border-bdr dark:border-bdr-d px-3 py-2.5',
         },
         card: {
-            default: ' shadow-sm overflow-hidden bg-bgrcard dark:bg-black '
+            default: ' shadow-sm overflow-hidden bg-bgrcard dark:bg-bgrcard-d'
         },
 
         inputs: {

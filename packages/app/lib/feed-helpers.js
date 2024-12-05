@@ -404,7 +404,7 @@ export const Author = memo(({ data, url, t }) => (
             displayType="unit"
             displaySize="base"
             showInfo={
-                <Row className="flex-wrap items-center ">
+                <Row className="flex-wrap leading-4 items-center  ">
                     <Link href={url}>
                         <Time ts={data.date}></Time>
                     </Link>
