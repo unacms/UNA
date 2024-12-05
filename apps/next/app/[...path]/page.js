@@ -69,10 +69,12 @@ const getData = cache(async (params, search_params) => {
 
     console.log('^^^^^^^^^^^^^^^^^^^^^^^^^', searchParams, l);
     const res = await fetch(l, opts)
+    const resClone = res.clone();
     try {
         return await res.json();
     } catch (error) {
-        console.error("!-------------------------! JSON error:", await res.text());
+        const text = await resClone.text();
+        console.error("!-------------------------! JSON error:", text);
     }
 });
 
@@ -90,9 +92,9 @@ export const viewport = {
 
 export async function generateMetadata(props) {
     const data = await getCachedData(props);
-    const description = data.data.description || SITE_TITLE;
-    const name = data.data.title || SITE_TITLE;
-    const image = data.data.image;
+    const description = data?.data?.description || SITE_TITLE;
+    const name = data?.data?.title || SITE_TITLE;
+    const image = data?.data?.image;
     const isClientProject = UNA_URL != 'https://api.neo.so';
 
     return {
@@ -133,6 +135,7 @@ export async function generateMetadata(props) {
 export default async function Page(props) {
 
     const data = await getCachedData(props);
+    console.log("-----------------------------------------------------", data)
     if (!remote_config.data || data.hash != remote_config.hash) {
         remote_config = await getRemoteSettings(true);
     }

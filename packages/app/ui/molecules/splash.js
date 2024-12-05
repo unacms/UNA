@@ -23,7 +23,7 @@ export default function Splash(props) {
     const dataSignUp = BlockDataByName(props.data, 'system:create_account_form');
     const dataJoin = BlockDataByName(props.data, 'bx_invites:get_block_form_request');
     const dataForgotPass = BlockDataByName(props.data, 'system:forgot_password');
-    const isSignUp = dataSignUp.content[0].type == "form" ? true : false
+    const isSignUp = dataSignUp?.content[0].type == "form" ? true : false
 
     const data = {
         create: { content: isSignUp ? dataSignUp?.content : dataJoin?.content, designbox_id: 0, title: isSignUp ? "Create new account" : "Request invitation" },
