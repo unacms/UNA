@@ -2488,6 +2488,7 @@ export const settingsDefault = {
                     ' content-center text-center align-middle justify-center ',
                 icon_size: 20,
                 icon_margin: 'mx-0.5',
+                min_height: 'leading-5 ',
                 margin: 'mx-1',
             },
             sm: {
@@ -2497,6 +2498,7 @@ export const settingsDefault = {
                     'h-6 w-6 content-center text-center align-middle justify-center ',
                 icon_size: 24,
                 icon_margin: '',
+                min_height: 'leading-6 ',
                 margin: 'mx-2',
             },
             base: {
@@ -2505,6 +2507,7 @@ export const settingsDefault = {
                 icon_sizes: 'h-6 w-6',
                 icon_size: 24,
                 icon_margin: 'mx-1',
+                min_height: 'leading-6 ',
                 margin: 'mx-2',
             },
             lg: {
@@ -2513,6 +2516,7 @@ export const settingsDefault = {
                 icon_sizes: 'h-8 w-8',
                 icon_size: 32,
                 icon_margin: 'mx-0.5',
+                min_height: 'leading-8 ',
                 margin: 'mx-3',
             },
         },
@@ -2563,9 +2567,38 @@ export const settingsDefault = {
             'u-btn-group-item-text':
                 ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
 
+            'u-btn-group-item-default-cnt':
+                ' hover:bg-bgritem-h dark:hover:bg-bgritem-dh active:opacity-50  ',
+            'u-btn-group-item-default-text':
+                ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
+
+            'u-btn-group-item-primary-cnt':
+                ' hover:bg-bgritem-h dark:hover:bg-bgritem-dh active:opacity-50  ',
+            'u-btn-group-item-primary-text':
+                ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
+
+            'u-btn-group-item-secondary-cnt':
+                ' hover:bg-bgritem-h dark:hover:bg-bgritem-dh active:opacity-50  ',
+            'u-btn-group-item-secondary-text':
+                ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
+
             'u-btn-group-item-text-cnt':
                 ' hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50 ',
             'u-btn-group-item-text-text':
+                ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
+
+            'u-btn-group-item-link-cnt':
+                ' ',
+            'u-btn-group-item-link-text':
+                ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
+            'u-btn-group-item-link-pressed-cnt':
+                ' ',
+            'u-btn-group-item-link-pressed-text':
+                'text-primary-700 dark:text-primary-600 group-hover:text-primary-800 dark:group-hover:text-primary-500 ',
+
+            'u-btn-group-item-outline-cnt':
+                ' hover:bg-bgritem-h dark:hover:bg-bgritem-dh active:opacity-50  ',
+            'u-btn-group-item-outline-text':
                 ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
         },
         buttons_group_styles: {

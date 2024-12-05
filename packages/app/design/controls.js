@@ -145,7 +145,7 @@ export function ButtonsGroup({
 
         let childItem;
         if (child.type === Button) {
-            childItem = <Button  showTitleFromSize={showTitleFromSize} variant={'group-item' + ((!!variant && variant == 'text') || bTextContainer ? '-text' : '')} size={size} fullWidth={fullWidth} {...restChild} />;
+            childItem = <Button  showTitleFromSize={showTitleFromSize} variant={'group-item' + (!!variant ? '-' + variant : '')} size={size} fullWidth={fullWidth} {...restChild} />;
         } else {
             childItem = child;
         }
@@ -282,13 +282,13 @@ export const Button = (props) => {
         if (bgColor){
             classes = classes.replaceAll(/bg-\S+/g, '').replaceAll(/ring-\S+/g, '') + ` ${bgColor} `;
         }
-        if (variant === 'none') {
+        if (variant === 'group-item-none') {
             classes += 'justify-start ';
         } else {
             classes += `justify-${align} `;
         }
         if (pressed) {
-            classes += ` ${pressedClasses?.pressed_container || ThemeButtonSizes.pressed_container} `;
+            classes += ` ${pressedClasses?.pressed_container || ThemeCssClassesButton[`u-btn-${variant}-pressed-cnt`] || ThemeButtonSizes.pressed_container} `;
         }
         return classes;
     }, [fullWidth, disabled, variant, solid, ThemeCssClassesButton, className, align, pressed, bgColor, pressedClasses]);
@@ -304,7 +304,7 @@ export const Button = (props) => {
             classes = classes.replaceAll(/text-\S+/g, '') + ` ${textColor} `;
         }
         if (pressed) {
-            classes += ` ${pressedClasses?.pressed_text || ThemeButtonSizes.pressed_text} `;
+            classes += ` ${pressedClasses?.pressed_text || ThemeCssClassesButton[`u-btn-${variant}-pressed-text`] || ThemeButtonSizes.pressed_text} `;
             
         }
         classes += ' text-' + size + ' ';
@@ -318,15 +318,15 @@ export const Button = (props) => {
         let titleContainerClass = titleVisible ? '' : ' hidden ' + (showTitleFromSize ? showTitleFromSize : 'sm') + ':block ';
         let sizeClasses = '';
 
-        const sClassDefaultRounding = variant !== 'group-item' ? ThemeButtonSizes[size]?.rounded : '';
-        const sClassFullRounding = variant !== 'group-item' ? 'rounded-full' : '';
+        const sClassDefaultRounding = !variant.startsWith('group-item') ? ThemeButtonSizes[size]?.rounded : '';
+        const sClassFullRounding = !variant.startsWith('group-item') ? 'rounded-full' : '';
         const roundingClass = rounded ? sClassFullRounding : sClassDefaultRounding;
 
         if (variant != 'custom') {
             sizeClasses = `${roundingClass} ${padding || ThemeButtonSizes[size]?.padding} `;
             iconContainerClass = `${ThemeButtonSizes[size]?.icon_sizes} ${title ? ThemeButtonSizes[size]?.icon_margin : ''}`;
             iconSize = ThemeButtonSizes[size]?.icon_size;
-            titleContainerClass += title ? ThemeButtonSizes[size]?.margin : '';
+            titleContainerClass += title ? ThemeButtonSizes[size]?.min_height + ThemeButtonSizes[size]?.margin : '';
         }
         return {
             sIconContainer: iconContainerClass,
@@ -449,21 +449,14 @@ export function ButtonMenuGroupItem(props) {
         ...rest
     } = props;
 
-    let _fullWidth = fullWidth; 
-    let sVariant = 'group-item' + (!!variant && variant == 'text' ? '-text' : '');
-    if (variant == 'none') {
-        sVariant = 'none';
-        _fullWidth = 'true'
-    }
-
     return (
         <Button 
-            variant={sVariant} 
+            variant={'group-item' + (!!variant ? '-' + variant : '')} 
             size={size} 
             rounded={rounded} 
             pressed={pressed}
             disabled={disabled}
-            fullWidth = {_fullWidth}
+            fullWidth = {!!variant && variant == 'none' ? 'true' : fullWidth}
             {...rest}
         >
             {props.children}

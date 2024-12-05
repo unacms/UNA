@@ -298,7 +298,6 @@ export default function ElementReactions(oProps) {
     const bShowFull = bShowAction && bShowCounter;
     const bShowCombined = bShowFull && oParams?.show_combined != undefined && oParams.show_combined === true;
 
-    console.log("oProps.params", oProps.params)
     const oButtonProps = {
         variant: oProps?.primary ? 'primary' : oProps.params?.button_variant,
         size: oProps.params?.button_size,
