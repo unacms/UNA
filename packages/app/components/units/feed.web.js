@@ -60,7 +60,7 @@ function DefaultUnit(data) {
             >
                 {cmtsData.data}
             </Modal>}
-            <Card rounded='rounded-none sm:rounded-2xl' margin='mb-1 sm:mb-4 md:mx-auto' addClassName={' border-y sm:border w-full max-w-3xl px-3 sm:px-4 pt-3 sm:pt-4 tl-' + data.id} >
+            <Card rounded=' rounded-none sm:rounded-2xl' margin='mb-1 sm:mb-4 md:mx-auto' addClassName={' border-y sm:border w-full max-w-3xl px-3 sm:px-4 pt-3 sm:pt-4 tl-' + data.id} >
                 <View className="flex-auto flex-row">
                     <Author data={data} url={url} t={t} />
                     <View className="flex-none flex-row mb-auto">
@@ -74,7 +74,7 @@ function DefaultUnit(data) {
                 </View>
                 {MainContentComponent}
                 {(!!data.menu_counters && appSetting('feed', 'counters_menu')) && <CounterMenu data={data.menu_counters} showCommentsModal={showCommentsModal} />}
-                <View className=' pb-2 sm:pt-2 sm:border-t border-bdr dark:border-bdr-d '><ActionMenu data={data.menu_actions} showCommentsModal={showCommentsModal} /></View>
+                <View className=' py-2 border-t border-bdr dark:border-bdr-d '><ActionMenu data={data.menu_actions} showCommentsModal={showCommentsModal} /></View>
                 {commentsData && <CommentsSection url={url} t={t} isCommentsModal={isCommentsModal} showCommentsModal={showCommentsModal} commentsDataInline={commentsData} data={data} isShowMoreComments={isShowMoreComments} />}
             </Card>
         </AnimatedBlock>

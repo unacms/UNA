@@ -426,11 +426,11 @@ export function TopSidebar({ styles, isWeb, leftSideBar, header, headerSettings,
                 } ${isUseBg
                     ? ' '
                     : isSmall
-                        ? ' backdrop-blur-lg '
+                        ? ' backdrop-blur-xl '
                         : ''
                 }`}
         >
-            <View className={`${leftSideBar ? '' : ' mx-auto'} w-full ${conductorTheme.menu_max_width}`}>
+            <View className={`${leftSideBar ? '' : ' mx-auto'}  w-full ${conductorTheme.menu_max_width}`}>
                 {!header && isWeb && <Row className="lg:hidden flex-row gap-x-1 flex-none items-center justify-between h-16 border-b bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur border-bdrnavbar dark:border-bdrnavbar-d">
                     <Row className="items-center px-3 sm:px-4">
 
@@ -451,7 +451,7 @@ export function TopSidebar({ styles, isWeb, leftSideBar, header, headerSettings,
                     </Row>
                 </Row>
                 }
-                <Row className="items-center bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur-xl ">
+                <Row className=" items-center  ">
                     {title ? <Text className="text-2xl my-auto mx-5 pb-1 font-semibold text-neutral-800  tracking-tight dark:text-neutral-200 hidden lg:flex">{title}</Text> : <Text className=" hidden lg:flex"></Text>}
                     {children}
                     {layout != 'mixed' && <Row className="hidden lg:flex px-4 cond-buttons-add">

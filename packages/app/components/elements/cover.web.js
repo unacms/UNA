@@ -38,8 +38,8 @@ export function CoverSmall(props) {
             style={styles}
             className={
                 (isUseBg
-                    ? ' border-b border-bdrnavbar dark:border-bdrnavbar-d'
-                    : ' bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur-xl ') +
+                    ? ' border-b border-bdrtabbar dark:border-bdrtabbar-d'
+                    : ' bg-bgrtabbar dark:bg-bgrtabbar-d ') +
                 ' w-full '
             }
         >
@@ -219,7 +219,7 @@ export default function (props) {
     };
 
     return (
-        <View className=' bg-bgrnavbar dark:bg-bgrnavbar-d ' >
+        <View className=' bg-bgrtabbar dark:bg-bgrtabbar-d ' >
             <View
                 className={
                     appSetting('layout', 'max_width') +

@@ -20,7 +20,7 @@ import { componentsMap } from 'app/ui/molecules/_map'
 const LogoText = (
     <Svg
         aria-label="Logo Text"
-        className="h-11 w-20 group-active:scale-90 text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-900 dark:group-hover:text-neutral-100 duration-500"
+        className="h-10 w-20 group-active:scale-90 text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-900 dark:group-hover:text-neutral-100 duration-500"
         viewBox="0 0 6400 2400"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -279,7 +279,7 @@ export function ComponentsIntro(props) {
 
     const CounterText = React.memo(({ data }) => {
         return (
-            <View className="absolute right-0 flex-col bg-gradient-to-r pl-16 from-transparent via-white dark:via-neutral-900 dark:to-neutral-900 to-white h-11 justify-end gap-y-0.5 items-end flex-none my-auto whitespace-nowrap nowrap ">
+            <View className="absolute right-0 flex-col bg-gradient-to-r pl-16 from-transparent via-white dark:via-neutral-900 dark:to-neutral-900 to-white h-10 justify-end gap-y-0.5 items-end flex-none my-auto whitespace-nowrap nowrap ">
                 <Text className="font-bold text-neutral-950 leading-5 dark:text-neutral-50 text-3xl font-bold">
                     <AnimatedCounter
                         value={data}

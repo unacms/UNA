@@ -55,25 +55,23 @@ const colors = {
 
     bgrbody: {
         DEFAULT: 'rgba(229,231,235,1)',
-        d: 'rgba(3,7,18,1)',
+        d: 'rgba(0,0,0,1)',
     },
 
     bgrcard: {
-        DEFAULT: 'rgba(255,255,255,0.75)',
-        h: 'rgba(255,255,255,1)',
-        d: 'rgba(17,24,39,0.75)',
-        dh: 'rgba(31,41,55,0.75)',
+        DEFAULT: 'rgba(255,255,255,1)',
+        d: 'rgba(17,24,39,1)',
     },
     bdrcard: {
-        DEFAULT: 'rgba(255,255,255,0.75)',
-        d: 'rgba(255,255,255,0.03)',
+        DEFAULT: 'rgba(255,255,255,1)',
+        d: 'rgba(17,24,39,1)',
     },
 
     bgrinput: {
         DEFAULT: 'rgba(107,114,128,0.15)',
-        f: 'rgba(255,255,255,0.75)',
+        f: 'rgba(255,255,255,0.8)',
         d: 'rgba(107,114,128,0.15)',
-        df: 'rgba(17,29,39,0.75)',
+        df: 'rgba(17,29,39,0.8)',
     },
     bdrinput: {
         DEFAULT: 'rgba(107,114,128,0.15)',
@@ -84,31 +82,31 @@ const colors = {
 
 
     bgrmodal: {
-        DEFAULT: 'rgba(255,255,255,0.75)',
-        d: 'rgba(17,24,39,0.75)',
+        DEFAULT: 'rgba(255,255,255,0.8)',
+        d: 'rgba(17,24,39,0.8)',
     },
     bdrmodal: {
-        DEFAULT: 'rgba(255,255,255,0.75)',
+        DEFAULT: 'rgba(255,255,255,0.8)',
         d: 'rgba(255,255,255,0.03)',
     },
 
     bgrnavbar: {
-        DEFAULT: 'rgba(255,255,255,0.75)',
-        d: 'rgba(17,24,39,0.75)',
+        DEFAULT: 'rgba(255,255,255,1)',
+        d: 'rgba(17,24,39,1)',
     },
     bdrnavbar: {
-        DEFAULT: 'rgba(255,255,255,0.75)',
+        DEFAULT: 'rgba(255,255,255,1)',
         d: 'rgba(255,255,255,0.03)',
     },
 
     bgrtabbar: {
-        DEFAULT: 'rgba(255,255,255,0.75)',
-        d: 'rgba(17,24,39,0.75)',
+        DEFAULT: 'rgba(243,244,246,1)',
+        d: 'rgba(17,24,39,1)',
     },
 
     bdrtabbar: {
-        DEFAULT: 'rgba(0,0,0,0.05)',
-        d: 'rgba(255,255,255,0.05)',
+        DEFAULT: 'rgba(255,255,255,1)',
+        d: 'rgba(255,255,255,0.03)',
     },
 
     bgritem: {
@@ -146,7 +144,7 @@ const colors = {
         d: 'rgba(17,24,39,1)',
     },
     screen: {
-        DEFAULT: '#f3f4f6',
+        DEFAULT: '#d1d5db',
         d: '#030712',
     },
 }

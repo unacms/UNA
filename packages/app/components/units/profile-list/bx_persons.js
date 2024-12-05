@@ -37,9 +37,9 @@ export default function Unit(props) {
             <Link href={data.url} emulate={true}>
                 <View
                     className=" px-3 py-2 flex-row  
-                group duration-200 rounded-xl  
+                group duration-200 rounded-lg  
                 active:opacity-50 active:translate-y-1 
-                hover:bg-bgritem-h dark:hover:bg-bgritem-dh
+                hover:bg-bgritem dark:hover:bg-bgritem
                 max-w-5xl self-center w-full  "
                 >
                     <View className=" mr-2 rounded-full flex-none ">

@@ -175,9 +175,9 @@ export const settingsDefault = {
             show_action: true, // show action part or not
             show_counter: false, // show counter part or not
             show_combined: true, // leave true
-            button_show_title_from_size: 'sm',
+            button_show_title_from_size: '',
             button_full_width: true,
-            button_size: 'base',
+            button_size: 'sm',
             button_variant: 'text',
             pressed_classes: {
                 pressed_container: ' hover:bg-primary/20 dark:hover:bg-primary-d/20 ',
@@ -191,7 +191,7 @@ export const settingsDefault = {
             show_action: false,
             show_counter: true,
             show_combined: true,
-            button_variant: 'link',
+            button_variant: 'secondary',
             button_size: 'sm',
             align_items: 'between',
             no_gap_between_buttons: false,
@@ -2414,27 +2414,28 @@ export const settingsDefault = {
             checkbox: '#2563eb',
         },
         dark: {
-            default: '#D1D5DB', //fix for icons color in iOS
-            primary: '#0ea5e9',
-            barsBackground: 'rgba(0,0,0,1)',
-            bottomSheetBackground: 'rgba(31,41,55,1)',
-            barsColor: '#D1D5DB',
-            selectBorder: 'rgba(55, 65, 81, 0.3)',
+            default: 'rgba(209,213,219,1)', //fix for icons color in iOS
+            primary: 'rgba(37,99,235,1)',
+            barsBackground: 'rgba(0,0,0,1)', //header background in native
+            bottomSheetBackground: 'rgba(17,24,39,1)',
+            barsColor: 'rgba(209,213,219,1)', //tabbar icons color in native
+            selectBorder: 'rgba(55, 65, 81, 0.3)', 
             fieldBackground: '#030712',
             blockBorder: '#030712',
             tabText: 'rgba(156,163,175,1)',
             activeTabText: 'rgba(249,250,251,1)',
-            screenBackground: '#030407',
+            screenBackground: 'rgba(17,24,39,1)',
             bgrmodal: 'rgba(31,41,55,1)',
             bdrModal: 'rgba(55,65,81,0.4)',
             checkbox: '#0ea5e9',
         },
         conductor: {
-            menu: ' w-full items-left justify-center border-b border-bdr dark:border-bdr-d',
+            menu: ' w-full items-left justify-center border-b border-bdrtabbar dark:border-bdrtabbar-d bg-bgrtabbar dark:bg-bgrtabbar-d shadow-sm ',
             menu_max_width: ' max-w-6xl ',
             content_max_width: ' max-w-6xl ',
             menu_is_dynamic: true,
             menu_cnt: ' ml-3 sm:ml-4 gap-x-1 flex-row ',
+            
         },
         dropdown_menu: {
             content_ver:
@@ -2460,15 +2461,15 @@ export const settingsDefault = {
             header: 'border-b border-bdr dark:border-bdr-d px-3 py-2.5',
         },
         card: {
-            default: 'shadow-sm overflow-hidden bg-bgrcard dark:bg-bgrcard-d backdrop-blur-xl'
+            default: ' shadow-sm overflow-hidden bg-bgrcard dark:bg-black '
         },
 
         inputs: {
             default:
-                'bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-bdrinput dark:border-bdrinput-d focus:outline-none focus:outline-primary dark:focus-outline-primary-d placeholder-neutral-500 duration-100 text-neutral-900 rounded-lg flex-auto px-3  dark:text-neutral-100 text-base leading-5 h-11 ',
+                'bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-bdrinput dark:border-bdrinput-d focus:outline-none focus:outline-primary dark:focus-outline-primary-d placeholder-neutral-500 duration-100 text-neutral-900 rounded-lg flex-auto px-3  dark:text-neutral-100 text-base leading-5 h-10 ',
             multi: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg flex-auto p-2 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 ',
             rounded:
-                ' placeholder-neutral-500 bg-bgritem dark:bg-bgritem-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-transparent focus:border-bdrinput dark:focus:border-bdrinput-d focus:outline-none focus:outline-primary dark:focus-outline-primary-d duration-100 text-neutral-900 rounded-full flex-auto px-3 dark:text-neutral-100 text-base leading-5 h-11  ',
+                ' placeholder-neutral-500 bg-bgritem dark:bg-bgritem-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-transparent focus:border-bdrinput dark:focus:border-bdrinput-d focus:outline-none focus:outline-primary dark:focus-outline-primary-d duration-100 text-neutral-900 rounded-full flex-auto px-3 dark:text-neutral-100 text-base leading-5 h-10  ',
             roundedsmall:
                 ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-full flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[34px] ',
             small: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[36px] ',
@@ -2485,37 +2486,37 @@ export const settingsDefault = {
                 rounded: 'rounded-lg',
                 padding: 'p-1',
                 icon_sizes:
-                    ' content-center text-center align-middle justify-center ',
-                icon_size: 20,
-                icon_margin: 'mx-0.5',
+                    ' content-center text-center align-middle justify-center flex items-center justify-center ',
+                icon_size: 16,
+                icon_margin: '',
                 min_height: 'leading-5 ',
                 margin: 'mx-1',
             },
             sm: {
                 rounded: 'rounded-lg',
-                padding: 'p-1.5',
+                padding: 'p-1',
                 icon_sizes:
-                    'h-6 w-6 content-center text-center align-middle justify-center ',
+                    ' h-6 w-6 text-center align-middle items-center justify-center flex ',
+                icon_size: 24,
+                icon_margin: '',
+                min_height: 'leading-6 ',
+                margin: 'mx-1.5',
+            },
+            base: {
+                rounded: ' rounded-lg ',
+                padding: ' p-2 ',
+                icon_sizes: ' h-6 w-6 text-center align-middle items-center justify-center flex ',
                 icon_size: 24,
                 icon_margin: '',
                 min_height: 'leading-6 ',
                 margin: 'mx-2',
             },
-            base: {
-                rounded: 'rounded-lg',
-                padding: 'p-2',
-                icon_sizes: 'h-6 w-6',
-                icon_size: 24,
-                icon_margin: 'mx-1',
-                min_height: 'leading-6 ',
-                margin: 'mx-2',
-            },
             lg: {
-                rounded: 'rounded-xl',
-                padding: 'p-2.5',
+                rounded: 'rounded-lg',
+                padding: 'py-2 px-3',
                 icon_sizes: 'h-8 w-8',
                 icon_size: 32,
-                icon_margin: 'mx-0.5',
+                icon_margin: '',
                 min_height: 'leading-8 ',
                 margin: 'mx-3',
             },
