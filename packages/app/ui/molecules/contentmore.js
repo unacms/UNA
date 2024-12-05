@@ -42,6 +42,7 @@ export function ContentMore({ content, embed, numberOfSymbols = 350, textStyle, 
     }
 
     const handleToggle = (e) => {
+        console.log("ee-*---------------------", e)
         if (id){
             let sm = storageGet('layout:shmo', '');
             if (!sm){
@@ -55,7 +56,7 @@ export function ContentMore({ content, embed, numberOfSymbols = 350, textStyle, 
             storageSet('layout:shmo', '', sm)
         }
         setShowFull((prevShowFull) => !prevShowFull);
-        e.preventDefault();
+        //e.preventDefault(); commented by links in html text
     };
 
     if (showButton) {

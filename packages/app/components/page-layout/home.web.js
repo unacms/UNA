@@ -140,12 +140,12 @@ export default function (props) {
                                 <View className="flex-auto px-2 w-full">
                                     {navBarBlocks.map((item, index) => {
                                         return (
-                                            <BlockByName
-                                                key={'block_' + index}
+                                            <View className='mb-3' key={'block_' + index}><BlockByName
+                                                
                                                 name={item.block}
                                                 data={props.data}
                                                 {...item.block.props}
-                                            />
+                                            /></View>
                                         )
                                     })}
                                 </View>

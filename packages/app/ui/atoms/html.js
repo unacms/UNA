@@ -10,7 +10,6 @@ import { appSetting, md5, absoluteApiUrl, getDomainFromUrl } from 'app/lib/util'
 import { Theme } from 'app/design/theme';
 import { useState } from 'react';
 import Video from 'app/ui/atoms/video';
-import { Linking } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
 import { useRouter, useGlobalSearchParams } from 'expo-router';
 

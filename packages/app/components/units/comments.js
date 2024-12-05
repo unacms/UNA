@@ -161,7 +161,7 @@ export default function UnitComments(props) {
                             </View>
                         }
                         <View className='text-neutral-900 dark:text-neutral-50 pb-0.5'>
-                            <Html htmlStyles={{ fontSize: 14 }} customClassName='u-vanilla-html u-vanilla-html-small' data={linkify(data.cmt_text)} />
+                            <Html htmlStyles={{ fontSize: 14 }}  data={linkify(data.cmt_text)} />
                             {!!data.embed && <View><Embed data={data.embed} size="small" /></View>}
                             {!!data.cmt_mood && <StarsView rating={data.cmt_mood} starSize={20} />}
                         </View>

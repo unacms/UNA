@@ -78,7 +78,7 @@ export const settingsDefault = {
         show_login_modal: 5000,
         extended_search: true,
         show_in_reply_comments: true,
-        show_nav_counters: true,
+        show_nav_counters: 'primary',
         allow_edit_covers: true,
         allow_create_new_profile: true,
         form_fields_optional_text1: '',
@@ -387,10 +387,10 @@ export const settingsDefault = {
                 nonlogged: false,
             },
             {
-                name: 'posts-home',
-                title: 'Posts',
-                link: '/posts-home',
-                icon: 'ChatCenteredText',
+                name: 'videos-home',
+                title: 'Video',
+                link: '/videos-home',
+                icon: 'Video',
             },
             {
                 name: 'groups-home',
@@ -496,6 +496,12 @@ export const settingsDefault = {
                 link: '/channels-home',
                 icon: 'Hash',
             },
+            {
+                name: 'videos-home',
+                title: 'Videos',
+                link: '/videos-home',
+                icon: 'Video',
+            }
         ],
         menu_add: [
             {
@@ -1219,7 +1225,7 @@ export const settingsDefault = {
                     name: 'static:footer',
                     showTitle: false,
                     showBg: false,
-                    sidebar: true,
+                    leftbar: true,
                 },
             },
             header: [

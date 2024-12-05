@@ -48,12 +48,10 @@ export default function ElementLink(props) {
             </Pressable>
         );
 
-    let prefetch = true;
-    if (rest?.noprefetch || href == '/logout' || href == 'logout')
-        prefetch = false;
+    const prefetch = rest?.noprefetch || href == '/logout' || href == 'logout' ? false : true;
 
     return (
-        <Link target={target} href={href} {...rest} prefetch={prefetch} onClick={(e) => handleLinkClick(e, href, target)} legacyBehavior={false}> 
+        <Link target={target} href={href} {...rest} prefetch={prefetch} onClick={(e) => handleLinkClick(e, href, target)} > 
             {props.children}
         </Link>
     );

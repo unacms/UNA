@@ -231,13 +231,15 @@ const ElementReports = forwardRef((oProps, ref) => {
 
     const oButtonProps = {
         variant: oProps?.primary ? 'primary' :  (isTextMode ? 'custom' :oProps.params?.button_variant),
-        size: isTextMode? 'base' : oProps.params?.button_size,
+        size: isTextMode? 'sm' : oProps.params?.button_size,
         classTextName: Platform.OS == 'web' ? '' : " font-medium",
         rounded: oProps.params?.button_rounded,
         fullWidth: oProps.params?.button_full_width,
         showTitleFromSize: oProps.params?.button_show_title_from_size
        
     };
+
+    console.log("oButtonPropsoButtonProps", oProps)
 
     const ButtonAction = !bShowCombined ? (bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText) : ButtonMenuGroupItem;
 

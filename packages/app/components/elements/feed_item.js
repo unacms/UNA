@@ -1,4 +1,4 @@
-import { View } from 'app/design/view';
+import { View, Row } from 'app/design/view';
 import Html from 'app/ui/atoms/html';
 import Menu from 'app/components/menu';
 import { useState, useEffect, useMemo } from 'react'
@@ -7,6 +7,9 @@ import { useLayoutData } from 'app/context/layout';
 import Embed from 'app/ui/molecules/embed'
 import { storageSet, getDataFromCache } from 'app/lib/util';
 import { Platform } from 'react-native'
+import { appSetting } from 'app/lib/util'
+import { ActionMenu, CounterMenu } from 'app/lib/feed-helpers'
+
 
 export default function ElementFeedItem({ data }) {
     const { layoutData } = useLayoutData();
@@ -79,14 +82,15 @@ export default function ElementFeedItem({ data }) {
     return (
         <View className="relative sm:my-0 w-full mx-auto max-w-5xl">
             <View className="my-4">
-                <Html data={tlContent} />
+                <Html data={tlContent} customClassName='u-vanilla-html'/>
                 {!!content.embed && <Embed data={content.embed} />}
             </View>
             <UnitImages images={content_attach} />
             {
                 data.event.menu_actions.items.length > 0 && (<View className=" flex-row items-center ">
-                    <View className=" flex-row flex-auto flex-wrap text-wrap ">
-                        <Menu {...data.event.menu_actions} displayType="element" showMatched={true} params={{ show_action: true, show_counter: true, show_combined: true }} />
+                    <View className=" flex-auto flex-wrap text-wrap ">
+                        {(!!data.event.menu_counters && appSetting('feed', 'counters_menu')) && <Row><CounterMenu data={data.event.menu_counters}  /></Row>}
+                        <View className=' py-2 border-t border-bdr dark:border-bdr-d '><ActionMenu data={data.event.menu_actions}  /></View>
                     </View>
                 </View>)
             }
