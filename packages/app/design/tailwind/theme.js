@@ -86,8 +86,8 @@ const colors = {
         d: 'rgba(17,24,39,0.8)',
     },
     bdrmodal: {
-        DEFAULT: 'rgba(255,255,255,0.8)',
-        d: 'rgba(255,255,255,0.03)',
+        DEFAULT: 'rgba(107,114,128,0.15)',
+        d: 'rgba(107,114,128,0.15)',
     },
 
     bgrnavbar: {

@@ -2416,7 +2416,7 @@ export const settingsDefault = {
             activeTabText: 'rgba(3,7,18,1)',
             screenBackground: '#E5E7EB',
             bgrmodal: 'rgba(255,255,255,1)',
-            bdrModal: 'rgba(229,231,235,1)',
+            bdrModal: 'rgba(107,114,128,0.15)',
             checkbox: '#2563eb',
         },
         dark: {
@@ -2432,7 +2432,7 @@ export const settingsDefault = {
             activeTabText: 'rgba(249,250,251,1)',
             screenBackground: 'rgba(17,24,39,1)',
             bgrmodal: 'rgba(31,41,55,1)',
-            bdrModal: 'rgba(55,65,81,0.4)',
+            bdrModal: 'rgba(107,114,128,0.15)',
             checkbox: '#0ea5e9',
         },
         conductor: {
@@ -2463,7 +2463,7 @@ export const settingsDefault = {
             fog: 'bg-white/80 dark:bg-black/80 backdrop-blur',
             container: 'max-w-3xl {ls}:h-auto',
             content:
-                'bg-bgrmodal dark:bg-bgrmodal-d {ls}:h-auto  {ls}:border {ls}:border-bdrmodal {ls}:dark:border-bdrmodal-d {ls}:rounded-xl {ls}:shadow-sm',
+                'bg-bgrmodal dark:bg-bgrmodal-d {ls}:h-auto  {ls}:border {ls}:border-bdrmodal {ls}:dark:border-bdrmodal-d {ls}:rounded-xl {ls}:shadow-xl',
             header: 'border-b border-bdr dark:border-bdr-d px-3 py-2.5',
         },
         card: {
