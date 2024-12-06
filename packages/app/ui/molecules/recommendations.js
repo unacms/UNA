@@ -105,6 +105,7 @@ const handleDo = (performAction, setElementVars, t, sO, fOnDone, sAction, oEvent
 };
 
 export default function ElementRecommendations(oProps) {
+    console.log("oProps", oProps)
     const { t } = useTranslation();
     const { layoutData, setLayoutData } = useLayoutData()
     const { cardData, setCardData } = useCardData();

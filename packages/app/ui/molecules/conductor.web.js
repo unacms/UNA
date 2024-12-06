@@ -445,6 +445,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         if (appSetting('layout', 'hide_browse_filter') === true)
             inputs =null
         const counter = appSetting('layout', 'show_nav_counters') ? 0 : route.addon ? (route.addon.text ? route.addon.text : route.addon) : 0;
+        const isTitle = appSetting('layout', 'show_nav_titles');
         return (
             <>
                 {
@@ -503,6 +504,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                     )
                 }
                 {counter > 0 && <View className="mx-4 mb-0 mt-2"><Text className="text-lg font-bold text-neutral-800  dark:text-neutral-200 ">{route.title} ({counter})</Text></View>}
+                {isTitle && <View className={`${conductorTheme.content_max_width} mx-auto w-full mt-4 px-4`}><Text className="text-lg font-bold text-neutral-800  dark:text-neutral-200 ">{route.title}</Text></View>}
                 <TabScene status={status} route={route} width={windowWidth} index={index} />
             </>
         )

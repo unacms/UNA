@@ -597,12 +597,15 @@ export function tp(key, count, isHideData = false) {
     return _t(getPlural(key, count), { count: ct });
 }
 
-export function linkify2(text) {
+export function linkify2(text, excluded = []) {
     const urlRegex = /\b((https?:\/\/)|(www\.))((([0-9a-zA-Z_!~*'().&=+$%-]+:)?[0-9a-zA-Z_!~*'().&=+$%-]+@)?(([0-9]{1,3}\.){3}[0-9]{1,3}|([0-9a-zA-Z_!~*'()-]+\.)*([0-9a-zA-Z][0-9a-zA-Z-]{0,61})?[0-9a-zA-Z]\.[a-zA-Z]{2,16})(:[0-9]{1,4})?((\/[0-9a-zA-Z_!~*'().;?:@&=+$,%#-]*)*))/g;
     let matches = Array.from(text.matchAll(urlRegex)).reverse();
     for (let match of matches) {
         if ([APP_URL, UNA_URL].every(domain => !match[0].includes(domain))) {
-            return match[0];
+            const url = match[0];
+            if (!excluded.some(ex => url.includes(ex))) {
+                return url; 
+            }
         }
     }
     return null;

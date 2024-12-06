@@ -5,6 +5,8 @@ import { getImageSizes } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
 import Menu from 'app/components/menu'
+import Recommendation from 'app/ui/molecules/recommendations';
+
 
 export default function Unit(props) {
     const imageSizes = getImageSizes()
@@ -14,22 +16,12 @@ export default function Unit(props) {
 
     if (!!cardData?.hidden) return
 
+    console.log ("data?.meta.items", data?.meta.items[0]?.data)
     let sMeta = <></>
-    if (data?.meta)
+    if (data?.meta.items[0]?.data)
         sMeta = (
             <View className="text-center flex-col  h-auto justify-end">
-                <Menu
-                    {...data.meta}
-                    displayType="mixed"
-                    params={{
-                        showVertical: false,
-                        button_size: 'sm',
-                        button_full_width: true,
-                        button_rounded: false,
-                        only_icon: true,
-                        on_done: 'hide',
-                    }}
-                />
+                <Recommendation {...{...data?.meta.items[0]?.data, primary: false} } params={{button_full_width:true, button_variant:'outline', size:'xs'}}/>
             </View>
         )
     return (

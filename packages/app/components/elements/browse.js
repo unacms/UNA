@@ -1,6 +1,6 @@
 import Unit from 'app/components/unit';
 import { useState, useCallback, useEffect, useRef, useContext, memo } from 'react';
-import { View } from 'app/design/view'
+import { View, Row } from 'app/design/view'
 import { useWindowDimensions } from 'react-native';
 import { Platform } from 'react-native'
 import UniList from 'app/ui/atoms/unilist'
@@ -17,6 +17,9 @@ import { useLayoutData } from 'app/context/layout';
 import { subscribe } from 'app/ui/atoms/socket';
 import { useCurrentUser } from 'app/context/user'
 import { callFn } from 'app/lib/functions/call';
+import Link from 'app/ui/atoms/link'
+import { Button } from 'app/design/controls';
+
 
 const Item = memo(({ item, index, numColumns, data, unitMode, props }) => (
     <View className={numColumns > 1 ? 'w-full pb-2 ' : '  ' + (data.unit != 'feed' ? '   w-full' : '  ') + '  '}>
@@ -287,7 +290,11 @@ export default function (props) {
             <View className='w-full' onLayout={handleLayout}></View>
             <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" />
             <View className='w-full ' style={styles} >
-                {dataItems.data.length > 0 ? <>{props.showTitleInside ? <View className='px-3 pb-2'><Text className="text-base font-bold text-neutral-800 dark:text-neutral-200 ">{t(props.block.title)}</Text></View> : <></>}
+            {dataItems.data.length > 0 ? <>{props.showTitleInside ? (
+                    <Row className='px-3 pb-2 items-center justify-between'>
+                        <Text className="text-base font-bold text-neutral-800 dark:text-neutral-200 ">{t(props.block.title)}</Text>
+                            {props.addLink ? (<Link href = {props.addLink.url}><Button variant='text' size='xs' title = {props.addLink.text} /></Link>): null}
+                    </Row>) : <></>}
                     <UniList
                         numColumns={numColumns}
                         mode='simple'

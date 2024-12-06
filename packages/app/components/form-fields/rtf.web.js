@@ -212,35 +212,67 @@ const BxMentionSpan = Node.create({
 });
 
 function InnerEmbed({ html, linkify }) {
-    const [link, setLink] = useState(null);
+    const formContext = useFormContext();
+    const [state, setState] = useState({
+        link: null,
+        excluded: []
+    });
+
+    const handleDelete = () => {
+        setState(prevState => ({
+            ...prevState,
+            excluded: [...prevState.excluded, prevState.link?.link],
+            link: null
+        }));
+    };
 
     useEffect(() => {
         const fetchAndSetLink = async () => {
             if (linkify) {
-                const l = linkify2(html);
-                if (l && l !== link?.link) {
-                    const data = await fetcher('/api.php?r=' + appSetting("urls", "embeds_new") + l);
-                    setLink({ link: l, data:data.data });
-                }
-                if (!l) {
-                    setLink(null);
+                const newLink = linkify2(html, state.excluded);
+                if (newLink && newLink !== state.link?.link) {
+                    const response = await fetcher(`/api.php?r=${appSetting("urls", "embeds_new")}${newLink}`);
+
+                        setState(prevState => ({
+                            ...prevState,
+                            link: { link: newLink, data: response.data }
+                        }));
+                } else if (!newLink) {
+                    setState(prevState => ({
+                        ...prevState,
+                        link: null
+                    }));
                 }
             }
         };
 
         fetchAndSetLink();
-    }, [html, linkify, link]);
+    }, [html, linkify, state.excluded, state.link]); 
 
-    if (link && link.data) {
-        console.log("Link data available:", link);
+    useEffect(() => {
+        formContext.setValue('link', state.link?.link || '');
+    }, [state.link?.link, formContext]);
+
+    if (state.link && state.link.data) {
         return (
             <View className="w-full mt-2">
-                <Embed data={link.data} />
+                <Embed data={state.link.data} />
+                <View className="absolute top-4 right-1 w-6.5 text-center mx-auto">
+                    <Button
+                        onPress={handleDelete}
+                        variant="default"
+                        startDecorator="X"
+                        align="start"
+                        title=""
+                        rounded
+                        size="xs"
+                    />
+                </View>
             </View>
         );
     }
-    
-    return <></>;
+
+    return null;
 }
 
 export default function FormFieldFtf(props) {
@@ -248,7 +280,6 @@ export default function FormFieldFtf(props) {
     const rules = getValidationRules(props);
     let name = props.name;
     let defaultValue = props.value ? props.value : '';
-    const [link, setLink] = useState(null);
     const formContext = useFormContext();
     const { field } = useController({ name, rules, defaultValue });
     const object_privacy_view = formContext.watch('object_privacy_view');

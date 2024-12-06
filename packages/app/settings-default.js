@@ -79,6 +79,7 @@ export const settingsDefault = {
         extended_search: true,
         show_in_reply_comments: true,
         show_nav_counters: 'primary',
+        show_nav_titles: true,
         allow_edit_covers: true,
         allow_create_new_profile: true,
         form_fields_optional_text1: '',
@@ -1207,6 +1208,10 @@ export const settingsDefault = {
                         skeleton: 'one_column_browse',
                         perLine: 1,
                         showTitleInside: true,
+                        addLink: {
+                            text: 'View all',
+                            url: '/friend-suggestions',
+                        }
                     },
                 },
                 subscriptions: {
@@ -1219,6 +1224,10 @@ export const settingsDefault = {
                         skeleton: 'one_column_browse',
                         perLine: 1,
                         showTitleInside: true,
+                        addLink: {
+                            text: 'View all',
+                            url: '/follow-suggestions',
+                        }
                     },
                 },
                 footer: {

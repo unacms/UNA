@@ -74,13 +74,15 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, layoutName, d
     if (getLayout(currentUser, layoutName) == 'hor') {
         return (
             <>
-                <Content width={width} layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} url={data?.url} />
 
                 <Suggestions />
                 <AsyncWorker />
-                <NavbarMemo headerSettings={headerSettings} layoutName={layoutName} title={data.name} menu={data.menu} menu_add={data.menu_add || false} uri={uri} />
+                <NavbarMemo headerSettings={headerSettings} layoutName={layoutName} title={data?.name} menu={data?.menu} menu_add={data?.menu_add || false} uri={uri} >
+                    <Content width={width}  layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser}  url={data?.url}/>
+                </NavbarMemo>
                 <BottomSheet />
                 <ModalPopup />
+
             </>
         );
     }

@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, memo } from 'react'
+import { memo, useState, useRef, useEffect } from 'react'
 import { useWindowDimensions } from 'react-native'
 import Link from 'app/ui/atoms/link'
 import { Text } from 'app/design/typography'
@@ -6,16 +6,17 @@ import { View, Row, Pressable } from 'app/design/view'
 import { Button, ButtonRef } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user'
 import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
-import { getBackButtonWeb } from 'app/lib/conductor-helpers'
+import { getBackButtonWeb } from 'app/lib/conductor-helpers';
 import { appStatic } from 'app/lib/app-static'
 import { menuItemsByName } from 'app/lib/util'
 import Search from 'app/ui/molecules/search'
 import NotificationButton from 'app/ui/molecules/notif'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 import MenuAdd from 'app/components/nav/menu-add'
 import MenuAccount from 'app/components/nav/menu-account'
 import MenuLauncher from 'app/components/nav/menu-launcher'
 import MenuDrawer from 'app/components/nav/menu-drawer'
+import ProfileSwitcher from 'app/components/elements/profile_switcher';
 
 const HeaderLine = memo(
     ({
@@ -86,38 +87,44 @@ const HeaderLine = memo(
 )
 
 export default function (props) {
-    const { currentUser, setCurrentUser } = useCurrentUser()
+    const { currentUser, setCurrentUser } = useCurrentUser();
     const [menuPopup, setMenuPopup] = useState(false)
-    const { t } = useTranslation()
+    const { t } = useTranslation();
+    const bSearch = appSetting('layout', 'search') == true;
+    const bMessenger = appSetting('layout', 'messenger') ? true : false;
+    const bNotifs = appSetting('layout', 'notifications') ? true : false;
 
-    const showMenu = (params) => {
-        setMenuPopup(!menuPopup)
-    }
-
-    const bSearch = appSetting('layout', 'search') == true
-    const bMessenger = appSetting('layout', 'messenger') ? true : false
-    const bNotifs = appSetting('layout', 'notifications') ? true : false
-
+    const headerSettings = props.headerSettings;
+    
     const menu_navbar_items = menuItemsByName(
         'main_menu',
         appSetting('menu_items', 'menu_navbar'),
         currentUser
     )
 
-    const headerSettings = props.headerSettings
+    let sTitle = props.title;
+    const menuSettings = appSetting('menu_items', props?.menu?.object);
+    if (menuSettings && menuSettings.name)
+        sTitle = t(menuSettings.name);
 
-    let sTitle = props.title
-    const menuSettings = appSetting('menu_items', props?.menu?.object)
-    if (menuSettings && menuSettings.name) sTitle = t(menuSettings.name)
+    const bIsHideHeader = currentUser ? false: appSetting('layout', 'hide_header_for_nonlogged'); //windowWidth < 1024 && (!headerSettings.header); // MAY BE NEEDED
 
-    if (!currentUser && appSetting('layout', 'hide_header_for_non_logged'))
-            return null;
-        
+    const showMenu = () => {
+        setMenuPopup(!menuPopup)
+    }
+
     return (
         <>
-            <View className="fixed w-full">
-                <View className=" backdrop-blur-xl h-16 items-center w-full shadow-sm dark:shadow-navbar-d border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d ">
-                    <View
+            <View className={appSetting('layout', 'max_width') + " w-full flex-row flex-auto mx-auto"}>
+                <Row className='w-full'>
+                    <View className='flex-auto border-x border-bdr dark:border-bdr-d'>
+                        {props.children}
+                    </View>
+                </Row>
+            </View>
+            {!bIsHideHeader && <View className={(props.layoutName == 'profile' || props.layoutName == 'messenger' || props.layoutName == 'post' ? 'hidden lg:flex ' : '') + " fixed w-full"}>
+                <View className=" backdrop-blur h-16  items-center w-full shadow-sm border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d  ">
+                <View
                         className={
                             appSetting('layout', 'max_width') +
                             ' w-full flex-row flex-auto gap-x-4 items-center'
@@ -238,13 +245,8 @@ export default function (props) {
                         </Row>
                     </View>
                 </View>
-                <MenuDrawer
-                    showMenu={showMenu}
-                    menuPopup={menuPopup}
-                    cssClass=""
-                    role="navigation"
-                />
-            </View>
+                <MenuDrawer showMenu={showMenu} menuPopup={menuPopup} />
+            </View>}
         </>
     )
 }
