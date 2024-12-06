@@ -1195,7 +1195,12 @@ export const settingsDefault = {
                         skeleton: 'one_column_browse',
                         perLine: 1,
                         showTitleInside: true,
+                        addLink: {
+                            text: 'View all',
+                            url: '/friend-suggestions',
+                        }
                     },
+                    
                 },
                 messenger_contacts: {
                     name: 'bx_messenger:get_block_contacts_messenger',
@@ -1208,10 +1213,7 @@ export const settingsDefault = {
                         skeleton: 'one_column_browse',
                         perLine: 1,
                         showTitleInside: true,
-                        addLink: {
-                            text: 'View all',
-                            url: '/friend-suggestions',
-                        }
+                       
                     },
                 },
                 subscriptions: {
