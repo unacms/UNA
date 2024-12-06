@@ -16,7 +16,6 @@ export default function Unit(props) {
 
     if (!!cardData?.hidden) return
 
-    console.log ("data?.meta.items", data?.meta.items[0]?.data)
     let sMeta = <></>
     if (data?.meta.items[0]?.data)
         sMeta = (

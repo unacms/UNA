@@ -10,7 +10,6 @@ import { View, Row } from 'app/design/view'
 import { Platform, useWindowDimensions, StyleSheet } from 'react-native'
 import { Button, Modal } from 'app/design/controls'
 import Menu from 'app/components/menu'
-//import DropdownMenu from 'app/ui/atoms/dropdown-menu'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu'
 import { fetcher } from 'app/lib/fetcher'
 import { componentsMap } from 'app/ui/molecules/_map'
@@ -267,21 +266,18 @@ export const MenuManage = ({ id, menu, setViewState }) => {
                 
                 startDecorator="DotsThreeOutline"
                 onPress={() => {
-                    setMenuData({...menu, items: [{'name': 'loader'}]});
+                    if (Platform.OS === 'web')
+                        setMenuData({...menu, items: [{'name': 'loader'}]});
                     getDataForMenu(menu, setMenuData);
                 }}
             />
         );
 
     return <MenuManage_ id={id} menu={menuData} defaultOpen={true} setViewState={setViewState} />
-
 }
 
 const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen }) => {
     let { currentUser, setCurrentUser } = useCurrentUser()
-
-  //  const refReport = useRef(null);
-   // const [reportTitle, setReportTitle] = useState(null);
 
     const handleMenuManageSelect = async (oItem, event) => {
         switch (oItem.name) {
@@ -298,10 +294,6 @@ const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen }) => {
                 )
                 setViewState({ view: 'deleted' })
                 break
-
-           /* case 'item-report':
-                refReport.current.report(event);
-                break;*/
         }
     }
 

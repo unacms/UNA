@@ -82,7 +82,6 @@ const TabScene = React.memo(({
 }) => {
 
     const handleEndReached = useCallback(() => {
-
         if (!route?.endpoint || route?.endpoint?.params?.start === 0 || refreshing || route?.endpoint?.finished)
             return;
         fetchNextPage();
@@ -103,7 +102,6 @@ const TabScene = React.memo(({
         return <></>;
     }
     
-
     return (
         <UniList
             index={route.index}

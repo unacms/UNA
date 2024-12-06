@@ -229,17 +229,18 @@ const ElementReports = forwardRef((oProps, ref) => {
         oAction.title = _getContextVar('title');
     let sTitle = oAction?.title || '';
 
+
     const oButtonProps = {
         variant: oProps?.primary ? 'primary' :  (isTextMode ? 'custom' :oProps.params?.button_variant),
-        size: isTextMode? 'sm' : oProps.params?.button_size,
-        classTextName: Platform.OS == 'web' ? '' : " font-medium",
+        size: isTextMode? (Platform.OS == 'web' ? 'sm' : 'base') : oProps.params?.button_size,
+        classTextName: Platform.OS == 'web' ? '' : " font-medium text-neutral-700  dark:text-neutral-300 ",
         rounded: oProps.params?.button_rounded,
         fullWidth: oProps.params?.button_full_width,
         showTitleFromSize: oProps.params?.button_show_title_from_size
        
     };
 
-    console.log("oButtonPropsoButtonProps", oProps)
+
 
     const ButtonAction = !bShowCombined ? (bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText) : ButtonMenuGroupItem;
 

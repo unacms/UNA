@@ -166,15 +166,15 @@ export async function parseData(routes, index, setRoutes, newData) {
         const sResponse = await fetcher(sRequest);
         const newData = sResponse.data[0]?.data?.data ? sResponse.data[0]?.data?.data : [];
         let finished = newData?.length === 0 || !newData;
-       // let zeroRes = currentRoute.endpoint.request_url.includes('bx_timeline') ? newData?.length == 0 : newData?.length < params.per_page //FIX COUNT FROM FEED less then per_page it's normal
-
-        let zeroRes =  newData?.length == 0 || newData?.length < params.per_page 
+      
+        let zeroRes =  newData?.length == 0 //|| newData?.length < params.per_page Commented for valid timeline calculation if some items groupped
         if (params?.per_page && zeroRes) {
             finished = true;
         }
         let isFinished = (currentRoute.endpoint.finished !== finished)
         let endpoint = currentRoute.endpoint
-        endpoint.finished = finished;
+        console.log('###################', finished, newData?.length, params.per_page)
+        //endpoint.finished = finished;
 
 
         let ld = sResponse.data[0]?.data.params;

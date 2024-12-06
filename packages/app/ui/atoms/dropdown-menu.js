@@ -19,14 +19,16 @@ const Menu = memo(({ items, onSelect, setBottomSheetData }) => {
         <View className='w-full mt-0 mb-2'>
             {items.map(
                 (item, index) =>
-                    <View key={item.id} className={'' + (index!=items.length-1 ? 'mb-1 border-b border-bdr dark:border-bdr-d' : '')}><Button
-                        variant="text"
-                        size="base"
-                        fullWidth
-                        onPress={handlePressMenu(item)}
-                        align="start"
-                        title={item.title}
-                    /></View>
+                    <View key={item.id} className={' ' + (index!=items.length-1 ? 'mb-1 border-b border-bdr dark:border-bdr-d ' : '')}>
+                         <Button
+                            variant="text"
+                            size="base"
+                            fullWidth
+                            onPress={handlePressMenu(item)}
+                            align="start"
+                            title={item.title}
+                        />
+                    </View>
             )}
         </View>
     );
@@ -43,8 +45,6 @@ export default function ({items, onSelect, children, defaultOpen}) {
         if (defaultOpen)
             handlePress()
     }, []);
-
-
 
     return (
         <Pressable onPress={handlePress}>{children}</Pressable>
