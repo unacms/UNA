@@ -350,7 +350,7 @@ export function ConductorFlat({ header, smallHeader, minHeaderHeight, isHideDefa
         <View className="w-full flex-1">
             <TabBar routes={routes} index={index} setIndex={setIndex} onChangeRoute={onChangeRoute} />
             <View className="w-full flex-1 ">
-                <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="New content" size="sm" />
+                <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" />
                 {(layoutName == 'navigator' && leftSideBarBlocks && leftSideBarBlocks.length > 0) && <View className="items-start ml-2 mt-2 mb-1">
                     <Button title='Filters' variant="default" size="sm" rounded onPress={showFilters} />
                 </View>}

@@ -719,7 +719,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                 {headerObj}
                 <MenuDrawer showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden fixed z-50 top-16  w-full" />
                 {/*<Toaster ref={toasterRef} onPress={showNewContent} variant="primary" title="New content" size="sm" />*/}
-                <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="New content" size="sm" />
+                <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" />
                 <View style={{ minHeight: (windowHeight - 64) }} className={appSetting('layout', 'max_width  ') + '  mx-auto w-full '} >
                     <Row>
                         <View style={{ minHeight: (windowHeight - 64) }} className={leftSideBarWidth + ' hidden lg:block shadow-xsr dark:shadow-xsrd border-r border-white/80 dark:border-white/5 bg-bgrnavbar dark:bg-bgrnavbar-d fixed lg:relative top-0 z-50'}>
@@ -744,7 +744,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         <View className="w-full h-full" scrollEnabled={false} onLayout={handleLayoutTop}>
             {headerObj}
             <MenuDrawer showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden fixed z-50 top-16 w-full" />
-            <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="New content" size="sm" />
+            <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" />
             <View className={`${conductorTheme.content_max_width} mx-auto w-full min-h-screen`}>
                 <RenderScene route={currentRoute} />
             </View>

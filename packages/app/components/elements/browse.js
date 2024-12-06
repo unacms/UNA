@@ -285,7 +285,7 @@ export default function (props) {
     return (
         <View className='w-full h-full' >
             <View className='w-full' onLayout={handleLayout}></View>
-            <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="New content" size="sm" />
+            <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" />
             <View className='w-full ' style={styles} >
                 {dataItems.data.length > 0 ? <>{props.showTitleInside ? <View className='px-3 pb-2'><Text className="text-base font-bold text-neutral-800 dark:text-neutral-200 ">{t(props.block.title)}</Text></View> : <></>}
                     <UniList

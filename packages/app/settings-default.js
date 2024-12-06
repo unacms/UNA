@@ -191,8 +191,8 @@ export const settingsDefault = {
             show_action: false,
             show_counter: true,
             show_combined: true,
-            button_variant: 'secondary',
-            button_size: 'sm',
+            button_variant: 'link',
+            button_size: 'xs',
             align_items: 'between',
             no_gap_between_buttons: false,
         },
@@ -2485,14 +2485,14 @@ export const settingsDefault = {
             default_size: 'base',
             default_variant: 'default',
             pressed_container:
-                ' bg-primary/10 dark:bg-primary-d/10 hover:bg-primary/20 dark:hover:bg-primary-d/20 ',
+                ' bg-primary/10 dark:bg-primary-d/10 ',
             pressed_text:
                 'text-primary-700 dark:text-primary-600 group-hover:text-primary-800 dark:group-hover:text-primary-500 ',
             xs: {
                 rounded: 'rounded-lg',
                 padding: 'p-1',
                 icon_sizes:
-                    ' content-center text-center align-middle justify-center flex items-center justify-center ',
+                    ' content-center text-center align-middle justify-center flex items-center ',
                 icon_size: 16,
                 icon_margin: '',
                 min_height: 'leading-5 ',
@@ -2506,7 +2506,7 @@ export const settingsDefault = {
                 icon_size: 24,
                 icon_margin: '',
                 min_height: 'leading-6 ',
-                margin: 'mx-1.5',
+                margin: 'mx-2',
             },
             base: {
                 rounded: ' rounded-lg ',
@@ -2558,7 +2558,7 @@ export const settingsDefault = {
                 ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50',
             'u-btn-text-trans': ' duration-200 ',
 
-            'u-btn-link-cnt': ' px-0 py-0  ',
+            'u-btn-link-cnt': ' bg-transparent px-0 ',
             'u-btn-link-text':
                 ' font-medium group-hover:underline text-neutral-700 dark:text-neutral-300  hover:text-neutral-950 dark:hover:text-neutral-50 active:opacity-50 ',
             'u-btn-link-trans': ' duration-200 ',

@@ -178,7 +178,7 @@ const getIcon = (sIcon, iIndex, classIconName, sClassText, sIconContainer, iIcon
         sClassText = sClassText.replace('text-lg', ' text-3xl text-center leading-[32px]  ');
         sClassText = sClassText.replace('text-base', ' group-hover:no-underline text-2xl leading-[26px] ');
         sClassText = sClassText.replace('text-sm', ' group-hover:no-underline text-[20px] leading-[24px] ');
-        sClassText = sClassText.replace('text-xs', ' group-hover:no-underline  ');
+        sClassText = sClassText.replace('text-xs', ' group-hover:no-underline text-[16px] leading-[16px] ');
         return (
             <Text key={iIndex} className={classIconName ? classIconName : sClassText + sIconContainer}>{sIcon}</Text>
         );
@@ -517,7 +517,7 @@ function _ButtonMenuCounter(props) {
 
     return <Button 
         variant={_variant}
-        size = 'sm'
+        size = {size}
         rounded = {rounded}
         pressed = {pressed}
         disabled = {disabled}

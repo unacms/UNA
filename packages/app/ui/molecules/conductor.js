@@ -308,7 +308,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
         )
     }, [skeleton, data, unitMode]);
 
-    const renderScene = useCallback(({ route }) => <><Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="New content" size="sm" /><TabScene route={route} index={route.index} /></>, [unitMode]);
+    const renderScene = useCallback(({ route }) => <><Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" /><TabScene route={route} index={route.index} /></>, [unitMode]);
     const { colors } = Theme();
 
     const renderTabBar = (props) => {

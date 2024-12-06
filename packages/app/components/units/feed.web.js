@@ -74,7 +74,7 @@ function DefaultUnit(data) {
                 </View>
                 {MainContentComponent}
                 {(!!data.menu_counters && appSetting('feed', 'counters_menu')) && <CounterMenu data={data.menu_counters} showCommentsModal={showCommentsModal} />}
-                <View className=' py-2 border-t border-bdr dark:border-bdr-d '><ActionMenu data={data.menu_actions} showCommentsModal={showCommentsModal} /></View>
+                <View className=' py-2 border-t mt-1 border-bdr dark:border-bdr-d '><ActionMenu data={data.menu_actions} showCommentsModal={showCommentsModal} /></View>
                 {commentsData && <CommentsSection url={url} t={t} isCommentsModal={isCommentsModal} showCommentsModal={showCommentsModal} commentsDataInline={commentsData} data={data} isShowMoreComments={isShowMoreComments} />}
             </Card>
         </AnimatedBlock>

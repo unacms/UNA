@@ -96,7 +96,7 @@ export default function ElementComments(oProps) {
 //counter
         if (bShowCounter && !bShowAction ){
              if (iCount > 0){
-                return <View className="pb-2"><ButtonAction
+                return <ButtonAction
                 key="action"
                 startDecorator={sIcon}
                 title={iCount}
@@ -104,7 +104,7 @@ export default function ElementComments(oProps) {
                 disabled={bShowActionDisabled}
                 {...oButtonProps}
             />
-            </View>
+            
             }
             else{
                 return null

@@ -4,13 +4,15 @@ import { View } from 'app/design/view';
 import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing, withSequence } from "react-native-reanimated";
 import { useEffect, useState, useImperativeHandle, forwardRef } from 'react';
 
+
+
 const ElementToster = forwardRef((props, ref) => {
     const [isVisible, setIsVisible] = useState(false);
     const sharedValue = useSharedValue(50); 
 
     const isWeb = Platform.OS === 'web';
-    const sClassName = isWeb ? ' fixed bottom-32 left-0 w-full items-center z-50' : 'absolute bottom-12 w-full items-center z-50';
-    const sClassName2 = isWeb ? 'items-center' : 'w-1/2 items-center';
+    const sClassName = isWeb ? ' mb-4 w-full items-center z-50' : 'absolute top-24 w-full items-center z-50';
+    const sClassName2 = isWeb ? 'items-center rounded-full shadow-xl ' : 'w-1/2 items-center';
         
     const indicatorStyle = useAnimatedStyle(() => {
         return {
@@ -21,7 +23,7 @@ const ElementToster = forwardRef((props, ref) => {
 
     useEffect(() => {
         sharedValue.value = withSequence(
-            withTiming(isVisible ? 25 : -50, { duration: 300 }), // fade out
+            withTiming(isVisible ? 0 : -50, { duration: 300 }), // fade out
           );
     }, [isVisible]);
 
@@ -31,8 +33,8 @@ const ElementToster = forwardRef((props, ref) => {
     }));
     return (
         <View style={{ display: isVisible ? 'flex' : 'none' }} className={sClassName}>
-            <Animated.View style={indicatorStyle} >
-                <View className={sClassName2}>
+            <Animated.View className="w-full" style={indicatorStyle} >
+                <View margin="max-w-screen-lg w-full p-3 sm:p-4 " rounded='rounded-xl' addClassName="w-full" className={sClassName2}>
                     <Button variant="primary" title={props.title} size={props.size} rounded onPress={props.onPress} />
                 </View>
             </Animated.View>
