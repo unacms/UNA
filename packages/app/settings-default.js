@@ -2452,7 +2452,7 @@ export const settingsDefault = {
             content_max_width: ' max-w-6xl ',
             menu_is_dynamic: true,
             menu_cnt: ' ml-3 sm:ml-4 gap-x-1 flex-row ',
-            
+            right_column_cnt: 'fixed-process p-4 max-w-md'
         },
         dropdown_menu: {
             content_ver:

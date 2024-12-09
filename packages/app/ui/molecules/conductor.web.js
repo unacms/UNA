@@ -607,7 +607,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
                     </View>
                     {isRightCol && <View className="hidden xl:flex flex-auto max-w-md ">
-                        <View className="fixed-process p-4 max-w-md">
+                        <View className={`${conductorTheme.right_column_cnt}`}>
                             {route?.sidebar?.content.map((item, index) => {
                                 return <View className="mb-4" key={'item' + index}><ItemRenderer unitType={sidebarUnitType}  route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''} /></View>
                             })}
