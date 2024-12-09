@@ -2478,9 +2478,11 @@ export const settingsDefault = {
             header: 'border-b border-bdr dark:border-bdr-d px-3 py-2.5',
         },
         card: {
-            default: ' shadow-sm overflow-hidden bg-bgrcard dark:bg-bgrcard-d'
+            bg: ' shadow-sm overflow-hidden bg-bgrcard dark:bg-bgrcard-d',
+            border: 'border-bdrcard dark:border-bdrcard-d',
+            rounded: 'rounded-2xl',
+            margin: ''
         },
-
         inputs: {
             default:
                 'bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-bdrinput dark:border-bdrinput-d focus:outline-none focus:outline-primary dark:focus-outline-primary-d placeholder-neutral-500 duration-100 text-neutral-900 rounded-lg flex-auto px-3  dark:text-neutral-100 text-base leading-5 h-10 ',
