@@ -7,32 +7,32 @@ import { Platform } from 'react-native'
 import { componentsMap } from 'app/ui/molecules/_map'
 import { appStatic } from 'app/lib/app-static';
 
+export function getFriendsCounter(currentUser) {
+    return currentUser?.counters?.bx_persons_friend_requests
+}
+
 export function getBadgeForTab(currentUser, url) {
     if (
         url == appSetting('layout', 'notifications') &&
         currentUser?.notifications
-    )
+    ){
         return (
             <Text className={Platform.OS === 'ios' ? 'text-xs' : 'text-sm'}>
                 {currentUser?.notifications}
             </Text>
         )
-        if (
-            url == appSetting('layout', 'messenger') &&
-            currentUser?.counters?.bx_messenger_new_messages
-        )
-            return (
-                <Text className={Platform.OS === 'ios' ? 'text-xs' : 'text-sm'}>
-                    {currentUser?.counters?.bx_messenger_new_messages}
-                </Text>
-            )
-   /* if (url == '/friends-all' && currentUser?.counters)
+    }
+
+    if (
+        url == appSetting('layout', 'messenger') &&
+        currentUser?.counters?.bx_messenger_new_messages
+    ){
         return (
             <Text className={Platform.OS === 'ios' ? 'text-xs' : 'text-sm'}>
-                {currentUser.counters.respects + currentUser.counters.trust}
+                {currentUser?.counters?.bx_messenger_new_messages}
             </Text>
         )
-*/
+    }
     return null
 }
 
