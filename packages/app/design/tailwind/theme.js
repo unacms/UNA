@@ -54,7 +54,7 @@ const colors = {
     },
 
     bgrbody: {
-        DEFAULT: 'rgba(229,231,235,1)',
+        DEFAULT: 'rgba(243,244,246,1)',
         d: 'rgba(0,0,0,1)',
     },
 
@@ -91,22 +91,22 @@ const colors = {
     },
 
     bgrnavbar: {
-        DEFAULT: 'rgba(255,255,255,1)',
-        d: 'rgba(17,24,39,1)',
+        DEFAULT: 'rgba(255,255,255,0.9)',
+        d: 'rgba(17,24,39,0.9)',
     },
     bdrnavbar: {
-        DEFAULT: 'rgba(107,114,128,0.2)',
-        d: 'rgba(107,114,128,0.2)',
+        DEFAULT: 'rgba(0,0,0,0.1)',
+        d: 'rgba(0,0,0,1)',
     },
 
     bgrtabbar: {
-        DEFAULT: 'rgba(243,244,246,1)',
-        d: 'rgba(17,24,39,1)',
+        DEFAULT: 'rgba(255,255,255,0.9)',
+        d: 'rgba(17,24,39,0.9)',
     },
 
     bdrtabbar: {
-        DEFAULT: 'rgba(255,255,255,1)',
-        d: 'rgba(255,255,255,0.03)',
+        DEFAULT: 'rgba(0,0,0,0.1)',
+        d: 'rgba(0,0,0,1)',
     },
 
     bgritem: {

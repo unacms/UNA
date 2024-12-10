@@ -2478,8 +2478,8 @@ export const settingsDefault = {
             header: 'border-b border-bdr dark:border-bdr-d px-3 py-2.5',
         },
         card: {
-            bg: ' shadow-sm overflow-hidden bg-bgrcard dark:bg-bgrcard-d',
-            border: 'border-bdrcard dark:border-bdrcard-d',
+            default: ' shadow-sm overflow-hidden bg-bgrcard dark:bg-bgrcard-d ',
+            border: ' border-bdrcard dark:border-bdrcard-d ',
             rounded: 'rounded-2xl',
             margin: ''
         },
@@ -2516,7 +2516,7 @@ export const settingsDefault = {
                 padding: 'p-1',
                 icon_sizes:
                     ' h-6 w-6 text-center align-middle items-center justify-center flex ',
-                icon_size: 24,
+                icon_size: 20,
                 icon_margin: '',
                 min_height: 'leading-6 ',
                 margin: 'mx-2',
