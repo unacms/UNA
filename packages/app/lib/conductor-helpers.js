@@ -173,8 +173,8 @@ export async function parseData(routes, index, setRoutes, newData) {
         }
         let isFinished = (currentRoute.endpoint.finished !== finished)
         let endpoint = currentRoute.endpoint
-        console.log('###################', finished, newData?.length, params.per_page)
-        //endpoint.finished = finished;
+        //console.log('###################', finished, newData?.length, params.per_page)
+        endpoint.finished = finished;
 
 
         let ld = sResponse.data[0]?.data.params;
