@@ -161,8 +161,7 @@ export default function () {
         <><Suggestions />
             <Subscriber />
             <View className="flex-1">
-                <View className="w-full"><AsyncWorker /></View>
-
+                <View className="w-full z-50"><AsyncWorker /></View>
                 <Tabs screenOptions={screenOptions}>
                     {
                         TabList.map((tab, index) => {
