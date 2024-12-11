@@ -123,7 +123,7 @@ export default function (props) {
                 </Row>
             </View>
             {!bIsHideHeader && <View className={(props.layoutName == 'profile' || props.layoutName == 'messenger' || props.layoutName == 'post' ? 'hidden lg:flex ' : '') + " fixed w-full"}>
-                <View className=" backdrop-blur h-16 border-b border-bdrnavbar dark:border-bdrnavbar-d items-center w-full bg-bgrnavbar dark:bg-bgrnavbar-d sm:shadow-[0_1px_0_0_rgba(0,0,0,0.1)] dark:sm:shadow-[0_1px_0_0_rgba(0,0,0,1)] ">
+                <View className=" backdrop-blur h-16 border-b border-bdrnavbar dark:border-bdrnavbar-d items-center w-full bg-bgrnavbar dark:bg-bgrnavbar-d shadow-[0_1px_0_0_rgba(0,0,0,0.1)] dark:shadow-[0_1px_0_0_rgba(0,0,0,1)] ">
                 <View
                         className={
                             appSetting('layout', 'max_width') +
