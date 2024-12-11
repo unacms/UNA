@@ -175,7 +175,7 @@ export default function ElementCover(props) {
                         </Row>
                     </View>
 
-                    <View className="flex-none mt-auto lg:mt-6 max-w-3xl overflow-hidden mb-2">
+                    <View className="flex-none mt-auto lg:mt-6 max-w-2xl overflow-hidden mb-2">
                         <ScrollView horizontal={true} className={(data.actions_menu.items.length > (100) ? '' : 'mx-auto md:ml-0') + ''}>
                             <CoverMenu {...data.actions_menu} uri={props?.uri} />
                         </ScrollView>

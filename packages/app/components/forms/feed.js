@@ -242,7 +242,7 @@ export default function FormFeed(props) {
                                     ? ' h-[68px] border-t fixed ' +
                                       (isIos ? ' bottom-4 ' : ' bottom-0 ') +
                                       ' border-bdr dark:border-bdr-d px-3 bg-bgrcard dark:bg-bgrcard-d '
-                                    : ' rounded-xl border p-1 my-2 border')
+                                    : ' rounded-lg border p-1 my-2 border')
                             }
                         >
                             <Text className="hidden sm:flex px-2 mr-auto text-sm font-medium text-neutral-800 dark:text-neutral-200">
@@ -266,6 +266,7 @@ export default function FormFeed(props) {
                                         {
                                             previewPlaceHolder: setPlaceHolder,
                                             noMargin: true,
+                                            rounded: true,
                                         }
                                     )}
                                 </View>
@@ -280,6 +281,7 @@ export default function FormFeed(props) {
                                             previewPlaceHolder: setPlaceHolder,
                                             noMargin: true,
                                             asDefaultStorage: true,
+                                            rounded: true,
                                         }
                                     )}
                                 </View>
@@ -293,6 +295,7 @@ export default function FormFeed(props) {
                                         {
                                             previewPlaceHolder: setPlaceHolder,
                                             noMargin: true,
+                                            rounded: true,
                                         }
                                     )}
                                 </View>
@@ -303,7 +306,7 @@ export default function FormFeed(props) {
                                         startDecorator="Hash"
                                         size={'base'}
                                         variant={'text'}
-                                        rounded={false}
+                                        rounded={true}
                                         onPress={() => {
                                             setIsShowHashtag(isShowHashtag + 1)
                                         }}
@@ -343,7 +346,7 @@ export default function FormFeed(props) {
                 <Card
                     rounded=" rounded-none sm:rounded-2xl  "
                     margin=" mx-auto mb-1 sm:mb-4 "
-                    addClassName="  w-full max-w-3xl sm:border p-3 sm:p-4 "
+                    addClassName="  w-full max-w-2xl p-3 sm:p-4 "
                 >
                     <View className=" flex-row gap-x-2 sm:gap-x-3 ">
                         <View className=" my-auto">{profile}</View>

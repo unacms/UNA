@@ -394,29 +394,30 @@ export const settingsDefault = {
                 icon: 'Video',
             },
             {
+                name: 'products-home',
+                title: 'Market',
+                link: '/products-home',
+                icon: 'Storefront',
+            },
+            {
                 name: 'groups-home',
                 title: 'Groups',
                 link: '/groups-home',
                 icon: 'UsersThree',
             },
-            {
+            /* {
                 name: 'spaces-home',
-                title: 'Spaces',
+                title: 'Spaces', 
                 link: '/spaces-home',
                 icon: 'IntersectSquare',
-            },
+            }, */
             {
                 name: 'events-home',
                 title: 'Events',
                 link: '/events-home',
                 icon: 'Calendar',
             },
-            {
-                name: 'products-home',
-                title: 'Market',
-                link: '/products-home',
-                icon: 'Storefront',
-            },
+           
         ],
         menu_drawer: [
             /* { name: 'home', title: 'Home', link: '/', icon: 'House'},
@@ -2472,14 +2473,14 @@ export const settingsDefault = {
         },
         modal: {
             fog: 'bg-white/80 dark:bg-black/80 backdrop-blur',
-            container: 'max-w-3xl {ls}:h-auto',
+            container: 'max-w-2xl {ls}:h-auto',
             content:
                 'bg-bgrmodal dark:bg-bgrmodal-d {ls}:h-auto  {ls}:border {ls}:border-bdrmodal {ls}:dark:border-bdrmodal-d {ls}:rounded-xl {ls}:shadow-xl',
             header: 'border-b border-bdr dark:border-bdr-d px-3 py-2.5',
         },
         card: {
             default: ' shadow-sm overflow-hidden bg-bgrcard dark:bg-bgrcard-d ',
-            border: ' border-bdrcard dark:border-bdrcard-d ',
+            border: '  border-bdrcard dark:border-bdrcard-d ',
             rounded: 'rounded-2xl',
             margin: ''
         },
@@ -2533,10 +2534,10 @@ export const settingsDefault = {
             lg: {
                 rounded: 'rounded-lg',
                 padding: 'py-2 px-3',
-                icon_sizes: 'h-8 w-8',
+                icon_sizes: ' h-8 w-8',
                 icon_size: 32,
                 icon_margin: '',
-                min_height: 'leading-8 ',
+                min_height: ' h-8 ',
                 margin: 'mx-3',
             },
         },

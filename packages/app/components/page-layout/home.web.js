@@ -155,7 +155,7 @@ export default function (props) {
 
                     <View className="flex-auto w-full lg:w-auto flex-row ">
                         <View className="flex-auto lg:px-4 ">
-                            <View className=" w-full mx-auto lg:max-w-3xl relative">
+                            <View className=" w-full mx-auto lg:max-w-2xl relative">
                                 <ScrollView horizontal={true} className="fixed lg:relative top-14 lg:top-0 z-50 w-full  ">
                                 <Row className={`  rounded-full mx-3 sm:mx-4 ${feedList.length > 1 ? 'lg:mt-4 lg:mb-4': ''}  gap-x-1 sm:gap-x-2  `}>
                                     {feedList.length > 1 &&
@@ -228,7 +228,7 @@ export default function (props) {
                                         )}
                                 </Row>
                                 </ScrollView>
-                                <View className="relative w-full mx-auto max-w-3xl mt-1 sm:mt-4 ">
+                                <View className="relative w-full mx-auto max-w-2xl mt-1 sm:mt-4 ">
                                     {feedList.map((item, index) => {
                                         if (feedType == item.name) {
                                             return (

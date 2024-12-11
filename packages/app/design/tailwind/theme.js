@@ -63,8 +63,8 @@ const colors = {
         d: 'rgba(17,24,39,1)',
     },
     bdrcard: {
-        DEFAULT: 'rgba(255,255,255,1)',
-        d: 'rgba(17,24,39,1)',
+        DEFAULT: 'rgba(0,0,0,0.1)',
+        d: 'rgba(255,255,255,0.05)',
     },
 
     bgrinput: {
