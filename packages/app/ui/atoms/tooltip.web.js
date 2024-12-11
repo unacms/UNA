@@ -55,7 +55,7 @@ export default function Tooltip(props) {
             {visible && (
                 <View
                     ref={tooltipRef}
-                    className="absolute shadow top-full w-auto bg-neutral-900/80 dark:bg-neutral-100/80 rounded-full py-2.5 px-5 mt-3"
+                    className="absolute z-50 shadow top-full w-auto bg-neutral-900/80 dark:bg-neutral-100/80 rounded-full py-2.5 px-5 mt-2"
                     style={tooltipStyle}
                 >
                     <Text className="text-neutral-100 dark:text-neutral-900 whitespace-nowrap">{props.content}</Text>

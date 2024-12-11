@@ -86,8 +86,8 @@ const colors = {
         d: 'rgba(17,24,39,0.8)',
     },
     bdrmodal: {
-        DEFAULT: 'rgba(107,114,128,0.15)',
-        d: 'rgba(107,114,128,0.15)',
+        DEFAULT: 'rgba(255,255,255,1)',
+        d: 'rgba(255,255,255,0.05)',
     },
 
     bgrnavbar: {
@@ -95,8 +95,8 @@ const colors = {
         d: 'rgba(17,24,39,0.9)',
     },
     bdrnavbar: {
-        DEFAULT: 'rgba(0,0,0,0.1)',
-        d: 'rgba(0,0,0,1)',
+        DEFAULT: 'rgba(255,255,255,1)',
+        d: 'rgba(255,255,255,0.05)',
     },
 
     bgrtabbar: {

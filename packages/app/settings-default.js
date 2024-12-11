@@ -2472,10 +2472,10 @@ export const settingsDefault = {
             item_icon: 'text-2xl text-neutral-700 dark:text-neutral-300',
         },
         modal: {
-            fog: 'bg-white/80 dark:bg-black/80 backdrop-blur',
-            container: 'max-w-2xl {ls}:h-auto',
+            fog: 'bg-white/50 dark:bg-black/50 backdrop-blur-xl',
+            container: 'max-w-2xl {ls}:h-auto shadow-xl {ls}:rounded-xl',
             content:
-                'bg-bgrmodal dark:bg-bgrmodal-d {ls}:h-auto  {ls}:border {ls}:border-bdrmodal {ls}:dark:border-bdrmodal-d {ls}:rounded-xl {ls}:shadow-xl',
+                'bg-bgrmodal dark:bg-bgrmodal-d {ls}:h-auto  {ls}:border {ls}:border-bdrmodal {ls}:dark:border-bdrmodal-d {ls}:rounded-xl sm:shadow-[0_0_0_1px_rgba(0,0,0,0.1)] dark:sm:shadow-[0_0_0_1px_rgba(0,0,0,1)]',
             header: 'border-b border-bdr dark:border-bdr-d px-3 py-2.5',
         },
         card: {
@@ -2507,7 +2507,7 @@ export const settingsDefault = {
                 padding: 'p-1',
                 icon_sizes:
                     ' content-center text-center align-middle justify-center flex items-center ',
-                icon_size: 16,
+                icon_size: 20,
                 icon_margin: '',
                 min_height: 'leading-5 ',
                 margin: 'mx-1',
@@ -2517,7 +2517,7 @@ export const settingsDefault = {
                 padding: 'p-1',
                 icon_sizes:
                     ' h-6 w-6 text-center align-middle items-center justify-center flex ',
-                icon_size: 20,
+                icon_size: 24,
                 icon_margin: '',
                 min_height: 'leading-6 ',
                 margin: 'mx-2',
@@ -2525,10 +2525,10 @@ export const settingsDefault = {
             base: {
                 rounded: ' rounded-lg ',
                 padding: ' p-2 ',
-                icon_sizes: ' h-6 w-6 text-center align-middle items-center justify-center flex ',
-                icon_size: 24,
+                icon_sizes: ' h-[28px] w-[28px] text-center align-middle items-center justify-center flex ',
+                icon_size: 28,
                 icon_margin: '',
-                min_height: 'leading-6 ',
+                min_height: 'leading-[28px] ',
                 margin: 'mx-2',
             },
             lg: {
