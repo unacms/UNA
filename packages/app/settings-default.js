@@ -2456,8 +2456,9 @@ export const settingsDefault = {
             right_column_cnt: 'fixed-process p-4 max-w-md'
         },
         dropdown_menu: {
+            content_shadow: ' shadow-xl  ',
             content_ver:
-                ' z-10 min-w-[200px] shadow-xl backdrop-blur-xl border border-bdrmodal dark:border-bdrmodal-d bg-bgrmodal dark:bg-bgrmodal-d mt-1 p-1 text-sm rounded-xl shadow-xl overflow-hidden gap-y-1 ',
+                ' z-10 min-w-[200px] backdrop-blur-xl border border-bdrmodal dark:border-bdrmodal-d bg-bgrmodal dark:bg-bgrmodal-d mt-1 p-1 text-sm rounded-xl shadow-xl sm:shadow-[0_0_0_1px_rgba(0,0,0,0.1)] dark:sm:shadow-[0_0_0_1px_rgba(0,0,0,1)] overflow-hidden gap-y-1 ',
             content_hor:
                 ' flex flex-row z-10 p-1 bg-bgrmodal border border-bdr dark:border-bdr-d m-2 backdrop-blur-xl dark:bg-bgrmodal-d text-sm text-neutral-800 dark:text-neutral-200 rounded-full shadow-sm',
             item_ver:
@@ -2514,7 +2515,7 @@ export const settingsDefault = {
             },
             sm: {
                 rounded: 'rounded-lg',
-                padding: 'p-1',
+                padding: 'p-1.5',
                 icon_sizes:
                     ' h-6 w-6 text-center align-middle items-center justify-center flex ',
                 icon_size: 24,
@@ -2537,7 +2538,7 @@ export const settingsDefault = {
                 icon_sizes: ' h-8 w-8',
                 icon_size: 32,
                 icon_margin: '',
-                min_height: ' h-8 ',
+                min_height: ' leading-[32px] ',
                 margin: 'mx-3',
             },
         },
