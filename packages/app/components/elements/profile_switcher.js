@@ -58,7 +58,7 @@ export default function (props) {
                                 {...currentUser}
                                 url_avatar={currentUser.avatar}
                                 displayType="unit_wo_info"
-                                displaySize="babse"
+                                displaySize="base"
                             />
                             <Text className="text-lg pl-2.5 flex-auto my-auto font-semibold truncate text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
                                 {currentUser.display_name}

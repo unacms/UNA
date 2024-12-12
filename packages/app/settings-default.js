@@ -576,12 +576,11 @@ export const settingsDefault = {
                 link: '/account-settings-email',
                 icon: 'Gear',
             },
-          /*  {
+            {
                 name: 'Switch profile',
                 title: 'Switch profile',
                 link: '{switch_profile}',
-                icon: 'UserSwitch',
-            },*/
+            },
             {
                 name: 'Logout',
                 title: 'Sign out',

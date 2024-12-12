@@ -17,8 +17,6 @@ function DefaultUnit(data) {
     const [cmtsData, setCmtsData] = useState(false)
 
     const isCommentsModal = appSetting('layout', 'comments_in_modal');
-
-
     const { url, commentsData, isShowMoreComments } = useMemo(() => prepareData(data), [data]);
 
     const MainContentComponent = useMemo(() => (

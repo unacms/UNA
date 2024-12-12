@@ -1,4 +1,4 @@
-import { View } from 'app/design/view'
+import { Row } from 'app/design/view'
 import { Button } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user'
 import { appSetting } from 'app/lib/util'
@@ -7,6 +7,7 @@ import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { useTranslation } from 'react-i18next';
 import Profile from 'app/ui/molecules/profile'
 import ProfileSwitcher from 'app/components/elements/profile_switcher';
+import { Text } from 'app/design/typography'
 
 export default function MenuAccount({ buttonProps, children }) {
 
@@ -21,10 +22,6 @@ export default function MenuAccount({ buttonProps, children }) {
         dUser.url = appSetting('layout', 'dashboard')
         profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="base" />
     }
-
-    const handleManage = async (item) => {
-        console.log(item)       
-    };
 
     buttonProps = buttonProps || {
         tooltip: t("Dashboard"),
@@ -41,32 +38,44 @@ export default function MenuAccount({ buttonProps, children }) {
     const trigger = children ||  <Button
         {...buttonProps}
     />
-
-/* <ProfileSwitcher hideTitle={true} >
-                                    <Button variant="outline" startDecorator="UserSwitch" tooltip={t('Switch profile')} rounded  />
-                                </ProfileSwitcher>*/
     
     return (
 
         <DropdownMenu
-        onSelect={(oItem) => { handleManage(oItem) }}
-        items={menu_account_items.map(
-            (item, index) => {
-                return (
-                    {
-                        id: 'menu-' + index,
-                        link: item.link,
-                        title: t(item.title),
-                        icon:
-                            item.icon.indexOf(' ') == -1
-                                ? item.icon
-                                : item.icon.split(' ')[0],
+            items={menu_account_items.map(
+                (item, index) => {
+                    let sTitle = t(item.title);
+                    if (item.link == '{switch_profile}') {
+                        sTitle = (
+                            <ProfileSwitcher hideTitle={true} >
+                                <Row className='items-center justify-center h-6'>
+                                    <Profile
+                                        {...currentUser}
+                                        url_avatar={currentUser.avatar}
+                                        displayType="unit_wo_info"
+                                        displaySize="xs"
+                                    />
+                                    <Text className="pl-2.5 text-sm font-medium text-neutral-700 dark:text-neutral-200 ">
+                                        {sTitle}
+                                    </Text>
+                                </Row>
+                            </ProfileSwitcher>)
                     }
-                )
-            }
-        )}
+                    return (
+                        {
+                            id: 'menu-' + index,
+                            link: item.link,
+                            title: sTitle,
+                            icon:
+                                item?.icon ? (item.icon.indexOf(' ') == -1
+                                    ? item.icon
+                                    : item.icon.split(' ')[0]) : '',
+                        }
+                    )
+                }
+            )}
         >
-           {trigger}
+            {trigger}
         </DropdownMenu>
 
     );

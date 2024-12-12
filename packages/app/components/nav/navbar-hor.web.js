@@ -143,10 +143,9 @@ export default function (props) {
                         <Row className="hidden lg:flex flex-auto ">
                             <Row className="w-full mx-auto gap-x-0.5 max-w-2xl justify-between">
                                 {menu_navbar_items.map((item, index) => (
-                                    <View className="flex-auto">
+                                    <View className="flex-auto" key={`menu-${index}`}>
                                     <Link
                                         href={item.link}
-                                        key={`menu-${index}`}
                                         alt={item.title}
                                     >
                                         <Button
