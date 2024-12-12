@@ -2505,7 +2505,7 @@ export const settingsDefault = {
             default_size: 'base',
             default_variant: 'default',
             pressed_container:
-                ' bg-primary/20 dark:bg-primary-d/20 ',
+                ' bg-primary/10 dark:bg-primary-d/10 ',
             pressed_text:
                 ' text-primary-700 dark:text-primary-500 group-hover:text-primary-800 dark:group-hover:text-primary-500 ',
             xs: {

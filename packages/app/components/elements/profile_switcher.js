@@ -60,7 +60,7 @@ export default function (props) {
                                 displayType="unit_wo_info"
                                 displaySize="base"
                             />
-                            <Text className="text-lg pl-2.5 flex-auto my-auto font-semibold truncate text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
+                            <Text className="text-base pl-2.5 flex-auto my-auto font-semibold truncate text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
                                 {currentUser.display_name}
                             </Text>
                         </Row>
@@ -106,7 +106,7 @@ export default function (props) {
                             </Link>
                         )
                     })}
-                    <View className='sm:flex-row justity-between mt-4 m-2 w-full sm:mx-0'>
+                    <View className='sm:flex-row justity-between mt-4 w-full sm:mx-0'>
                         {currentUser?.menu?.items && currentUser.menu.items.map((item, index) => (
                             <View key={index} className={'mb-2 sm:mb-0 w-full sm:w-1/' + (currentUser.menu.items.length + 1) + ' pr-2 '}>
                                 <Link href={item.name}>

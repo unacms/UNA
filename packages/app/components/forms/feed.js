@@ -177,7 +177,7 @@ export default function FormFeed(props) {
                             }
                         >
                             <View className="w-full flex-col p-3 sm:p-0 ">
-                                <View className=" flex-row gap-x-3 pb-3 flex-auto ">
+                                <View className=" flex-row gap-x-3 pb-1 flex-auto ">
                                     <View className=" mb-auto ">
                                         <Profile
                                             {...currentUser}
@@ -242,7 +242,7 @@ export default function FormFeed(props) {
                                     ? ' h-[68px] border-t fixed ' +
                                       (isIos ? ' bottom-4 ' : ' bottom-0 ') +
                                       ' border-bdr dark:border-bdr-d px-3 bg-bgrcard dark:bg-bgrcard-d '
-                                    : ' rounded-lg border p-1 my-2 border')
+                                    : ' rounded-lg border p-1 mb-3 border')
                             }
                         >
                             <Text className="hidden sm:flex px-2 mr-auto text-sm font-medium text-neutral-800 dark:text-neutral-200">
