@@ -389,7 +389,7 @@ export const CounterMenu = memo(({ data }) => {
 });
 
 export const Author = memo(({ data, url, t }) => (
-    <View className='flex-auto overflow-hidden'>
+    <View className='flex-auto'>
         <Profile
             {...data.author_data}
             

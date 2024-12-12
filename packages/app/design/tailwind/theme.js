@@ -55,7 +55,7 @@ const colors = {
 
     bgrbody: {
         DEFAULT: 'rgba(243,244,246,1)',
-        d: 'rgba(0,0,0,1)',
+        d: 'rgba(3,7,18,1)',
     },
 
     bgrcard: {
@@ -69,14 +69,16 @@ const colors = {
 
     bgrinput: {
         DEFAULT: 'rgba(107,114,128,0.15)',
-        f: 'rgba(255,255,255,0.8)',
+        h: 'rgba(107,114,128,0.2)',
+        f: 'rgba(107,114,128,0)',
         d: 'rgba(107,114,128,0.15)',
-        df: 'rgba(17,29,39,0.8)',
+        dh: 'rgba(107,114,128,0.2)',
+        df: 'rgba(107,114,128,0)',
     },
     bdrinput: {
-        DEFAULT: 'rgba(107,114,128,0.15)',
+        DEFAULT: 'rgba(107,114,128,0.2)',
         f: 'rgba(107,114,128,0.3)',
-        d: 'rgba(107,114,128,0.15)',
+        d: 'rgba(107,114,128,0.2)',
         df: 'rgba(107,114,128,0.3)',
     },
 
@@ -144,8 +146,8 @@ const colors = {
         d: 'rgba(17,24,39,1)',
     },
     screen: {
-        DEFAULT: '#d1d5db',
-        d: '#030712',
+        DEFAULT: 'rgba(243,244,246,1)',
+        d: 'rgba(3,7,18,1)',
     },
 }
 

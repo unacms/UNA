@@ -57,8 +57,8 @@ const HeaderLine = memo(
                     </View>
                 )}
                 {(uri == 'home' || width >= LAYOUT_BREAKPOINTS.lg) && (
-                    <Link href="/home" aria-label="Logo">
-                        <View className="group mr-4 flex-row flex-none items-center my-auto">
+                    <Link className=" focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus:outline-primary dark:focus-outline-primary-d duration-100 rounded-full " href="/home" aria-label="Logo">
+                        <View className="group flex-row flex-none items-center my-auto">
                             {appStatic('logo_mark')}
                             {/*{appStatic('logo_text')}*/}
                         </View>
@@ -77,7 +77,7 @@ const HeaderLine = memo(
                     </View>
                 )}
                 {bSearch && (
-                    <View className=" w-full flex-auto hidden xl:flex ">
+                    <View className="ml-3 w-full flex-auto hidden xl:flex ">
                         <Search type="input" placeholder="Enter search text" />
                     </View>
                 )}
@@ -123,7 +123,7 @@ export default function (props) {
                 </Row>
             </View>
             {!bIsHideHeader && <View className={(props.layoutName == 'profile' || props.layoutName == 'messenger' || props.layoutName == 'post' ? 'hidden lg:flex ' : '') + " fixed w-full"}>
-                <View className=" backdrop-blur h-16 border-b border-bdrnavbar dark:border-bdrnavbar-d items-center w-full bg-bgrnavbar dark:bg-bgrnavbar-d shadow-[0_1px_0_0_rgba(0,0,0,0.1)] dark:shadow-[0_1px_0_0_rgba(0,0,0,1)] ">
+                <View className=" backdrop-blur h-14 border-b border-bdrnavbar dark:border-bdrnavbar-d items-center w-full bg-bgrnavbar dark:bg-bgrnavbar-d shadow-[0_1px_0_0_rgba(0,0,0,0.1)] dark:shadow-[0_1px_0_0_rgba(0,0,0,1)] ">
                 <View
                         className={
                             appSetting('layout', 'max_width') +

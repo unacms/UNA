@@ -17,8 +17,8 @@ export default function ElementProfileMenu(props) {
     }
 
     return (
-        <View className="profile-menu overflow-hidden">
-            <View className="flex-col ">
+        <View className="profile-menu ">
+            <View className="flex-col gap-y-1 ">
                 {menuItemsByName('main_menu', appSetting('menu_items', 'menu_sidebar'), currentUser).map((item, index) => (
                     <Link key={`menu-${index}`} href={item.link.replace('{profile}', currentUser.url)}>
                         <Button
