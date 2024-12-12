@@ -6,7 +6,7 @@ import { View } from 'app/design/view'
 export function StarsView(props) {
     const maxStars = props.maxStars || 1;
     const { colors } = Theme();
-    return <View className="-ml-2"><StarRatingDisplay maxStars={1} {...props} starSize={props.starSize ? props.starSize: 24} color={colors.stars} enableHalfStar={false} /></View>;
+    return <View className="-ml-2"><StarRatingDisplay starStyle={props.starStyle} maxStars={1} {...props} starSize={props.starSize ? props.starSize: 24} color={colors.stars} enableHalfStar={false} /></View>;
 }
 
 export function StarsAction(props) {
