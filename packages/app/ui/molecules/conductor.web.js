@@ -724,10 +724,9 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                 <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" />
                 <View style={{ minHeight: (windowHeight - 64) }} className={appSetting('layout', 'max_width  ') + '  mx-auto w-full '} >
                     <Row>
-                        <View style={{ minHeight: (windowHeight - 64) }} className={leftSideBarWidth + ' hidden lg:block shadow-xsr dark:shadow-xsrd border-r border-white dark:border-white/5 bg-bgrnavbar dark:bg-bgrnavbar-d fixed lg:relative top-0 z-50'}>
+                        <View style={{ minHeight: (windowHeight - 64) }} className={leftSideBarWidth + ' hidden lg:block shadow-[1px_0_0_0_rgba(0,0,0,0.1)] dark:shadow-[1px_0_0_0_rgba(0,0,0,1)] border-r border-white dark:border-white/5 bg-bgrnavbar dark:bg-bgrnavbar-d fixed lg:relative top-0 z-50'}>
                             {leftSideBarObj()}
                         </View>
-                        <View className="hidden lg:block border-r border-bdrnavbar bg-bgrnavbar dark:bg-bgrnavbar-d dark:border-bdrnavbar-d "></View>
                         <View className=" flex-auto">{/*min-h-screen???*/}
                             {(headerSettings.showAltTopMenu) && topSideBarObj()}
                             

@@ -84,7 +84,7 @@ const Gallery = React.memo(({ data, handleShowImage, windowWidthOr }) => {
             w = "";
             return (
                 /*bg-neutral-200  dark:bg-neutral-600*/
-                <View className={`${max_image_width}  ${aspect} w-full max-w-lg items-start justify-center 001`}>
+                <View className={`${max_image_width}  ${aspect} w-full items-start justify-center 001`}>
                     <View style={{ aspectRatio: aspectStyle }} className='h-full  rounded sm:rounded-lg overflow-hidden'>
                         <Image2 handleShowImage={handleShowImage} data={data} row={0} index={0} key={0} width={w} height={h} src={data[0].src} type={data[0].type} />
                     </View>
@@ -210,7 +210,7 @@ const Carousel = memo(({ data = [] }) => {
             </Row>
 
         </Modal>}
-        <View className='w-full max-w-2xl mx-auto'>
+        <View className='w-full mx-auto'>
             <Gallery windowWidthOr={windowWidthOr} data={data} handleShowImage={handleShowImage} />
         </View>
 

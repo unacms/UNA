@@ -98,7 +98,7 @@ export const settingsDefault = {
         card_animation_duration: 0,
         comments_mentions: true,
         carousel_image_width: '',
-        carousel_image_aspect: 'aspect-square',
+        carousel_image_aspect: ' aspect-square ',
         show_navigation_non_logged_native: false,
         hide_comments_sort: false,
         comments_in_modal: true,
@@ -181,7 +181,7 @@ export const settingsDefault = {
             button_size: 'sm',
             button_variant: 'text',
             pressed_classes: {
-                pressed_container: ' hover:bg-primary/20 dark:hover:bg-primary-d/20 ',
+                pressed_container: ' hover:bg-primary/20 dark:hover:bg-primary-d/20  ',
                 pressed_text: ' text-primary dark:text-primary-d group-hover:text-primary-700 dark:group-hover:text-primary-500 ',
             },
             button_rounded: false,
@@ -2500,9 +2500,9 @@ export const settingsDefault = {
             default_size: 'base',
             default_variant: 'default',
             pressed_container:
-                ' bg-primary/10 dark:bg-primary-d/10 ',
+                ' bg-primary/20 dark:bg-primary-d/20 ',
             pressed_text:
-                'text-primary-700 dark:text-primary-600 group-hover:text-primary-800 dark:group-hover:text-primary-500 ',
+                ' text-primary-700 dark:text-primary-500 group-hover:text-primary-800 dark:group-hover:text-primary-500 ',
             xs: {
                 rounded: 'rounded-lg',
                 padding: 'p-1',
@@ -2534,11 +2534,11 @@ export const settingsDefault = {
             },
             lg: {
                 rounded: 'rounded-lg',
-                padding: 'py-2 px-3',
-                icon_sizes: ' h-8 w-8',
-                icon_size: 32,
-                icon_margin: '',
-                min_height: ' leading-[32px] ',
+                padding: 'p-2.5',
+                icon_sizes: ' h-7 w-7',
+                icon_size: 28,
+                icon_margin: 'mx-1',
+                min_height: ' leading-[28px] sm:text-base ',
                 margin: 'mx-3',
             },
         },

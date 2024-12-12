@@ -35,7 +35,7 @@ export default function ({ data }) {
     const ImageItem = ({ data, handleShowImage }) => (
         <Container>
             <Pressable className="w-full h-full" onPress={() => handleShowImage([data.src, 'image'])}>
-                <Image sizes="96px" src={data.src} alt='' view="cover" />
+                <Image sizes="160px" src={data.src} alt='' view="cover" />
             </Pressable>
         </Container>
     );
