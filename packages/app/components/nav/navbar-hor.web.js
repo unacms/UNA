@@ -143,13 +143,13 @@ export default function (props) {
                         <Row className="hidden lg:flex flex-auto ">
                             <Row className="w-full mx-auto gap-x-0.5 max-w-2xl justify-between">
                                 {menu_navbar_items.map((item, index) => (
+                                    <View className="flex-auto">
                                     <Link
-                                        className="flex-auto"
                                         href={item.link}
                                         key={`menu-${index}`}
                                         alt={item.title}
                                     >
-                                        <ButtonRef
+                                        <Button
                                             pressed={
                                                 item.link == '/' + props.uri ||
                                                 (item.link == '/' &&
@@ -176,6 +176,7 @@ export default function (props) {
                                             align="center"
                                         />
                                     </Link>
+                                    </View>
                                 ))}
                             </Row>
                         </Row>

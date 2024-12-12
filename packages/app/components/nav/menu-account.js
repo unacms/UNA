@@ -6,6 +6,7 @@ import { menuItemsByName } from 'app/lib/util'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { useTranslation } from 'react-i18next';
 import Profile from 'app/ui/molecules/profile'
+import ProfileSwitcher from 'app/components/elements/profile_switcher';
 
 export default function MenuAccount({ buttonProps, children }) {
 
@@ -20,6 +21,10 @@ export default function MenuAccount({ buttonProps, children }) {
         dUser.url = appSetting('layout', 'dashboard')
         profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="base" />
     }
+
+    const handleManage = async (item) => {
+        console.log(item)       
+    };
 
     buttonProps = buttonProps || {
         tooltip: t("Dashboard"),
@@ -37,9 +42,15 @@ export default function MenuAccount({ buttonProps, children }) {
         {...buttonProps}
     />
 
+/* <ProfileSwitcher hideTitle={true} >
+                                    <Button variant="outline" startDecorator="UserSwitch" tooltip={t('Switch profile')} rounded  />
+                                </ProfileSwitcher>*/
+    
     return (
 
-        <DropdownMenu items={menu_account_items.map(
+        <DropdownMenu
+        onSelect={(oItem) => { handleManage(oItem) }}
+        items={menu_account_items.map(
             (item, index) => {
                 return (
                     {

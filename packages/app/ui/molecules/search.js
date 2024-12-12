@@ -211,8 +211,9 @@ export function ElementSearchData(oProps) {
             <Row className='w-full'>
                 <Redirect ref={redirectdRef} />
                 {oProps.icon}
+                {!!popupContent && dd}
                 <InputRounded name="search" placeholder={t("Search") + '...'} onKeyPress={(event) => handleKeyPress(event)} value={inputValue} ref={inputRef} onChangeText={(value) => handleSearch(value)} />
-                {dd}
+               
             </Row>
         )
     }
