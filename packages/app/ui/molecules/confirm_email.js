@@ -11,6 +11,7 @@ import Redirect from 'app/ui/atoms/redirect';
 import { storageClear } from 'app/lib/util';
 import { Platform } from 'react-native'
 import { useRouter } from "expo-router";
+import Link from 'app/ui/atoms/link'
 
 export default function ElementConfirmEmail(props) {
     const isWeb = Platform.OS == 'web'
@@ -62,7 +63,10 @@ export default function ElementConfirmEmail(props) {
                         {inputError && <View className="label" >
                             <Text className="ml-0.5 mt-0.5 label-text-alt text-sm text-red-600 animate-pulse dark:text-red-400 font-medium">{t("Code invalid")}</Text>
                         </View>}
-                        <Button variant="link" size="sm" title={t("Resend email")} onPress={pressBack} />
+                        <Row className='w-full gap-x-4 items-start justify-between'>
+                            <Button variant="link" size="sm" title={t("Resend email")} onPress={pressBack} />
+                            <Link href="/logout"><Button variant="link" size="sm" title={t("Sign out")}  /></Link>
+                        </Row>
                     </View>
                 </Card>
             </View>

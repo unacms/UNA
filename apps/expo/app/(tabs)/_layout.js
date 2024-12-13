@@ -52,9 +52,9 @@ const AppLayout = React.memo(() => {
         OneSignal.Notifications.requestPermission(true);
 
         // Method for listening for notification clicks
-        OneSignal.Notifications.addEventListener('click', (event) => {
-            console.log('OneSignal: notification clicked:', event);
-        });
+        /*OneSignal.Notifications.addEventListener('click', (event) => {
+            //console.log('OneSignal: notification clicked:', event);
+        });*/
     }, []);
 
 

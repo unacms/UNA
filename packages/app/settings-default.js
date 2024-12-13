@@ -365,6 +365,11 @@ export const settingsDefault = {
         },
     },
     menu_items: {
+        transpile_urls: [// URLS for tabs in native app index = tab index
+            {"index": 1, "url": "/friend-suggestions"},
+            {"index": 1, "url": "/friend-requests"},
+            {"index": 1, "url": "/sent-friend-requests"},
+        ],
         iconset: {
             'profile-check-in': 'Check',
             'edit-event-questionnaire': 'List',

@@ -23,6 +23,17 @@ export default function ElementLink(props) {
             ? appSetting('menu_items', 'menu_tabbar_logged')
             : appSetting('menu_items', 'menu_tabbar_non_logged');
     }, [currentUser?.id]);
+    
+
+    const LinksForTabs = useMemo(() => {
+        const baseLinks = TabList.map((item, index) => ({
+            url: item.url,
+            index
+        }));
+    
+        const additionalLinks = appSetting('menu_items', 'transpile_urls');
+        return [...baseLinks, ...additionalLinks];
+    }, [TabList]);
 
     // Список невалидных значений href
     const invalidHrefs = ['javascript:', '/javascript:', undefined, null];
@@ -33,10 +44,10 @@ export default function ElementLink(props) {
 
     let finalHref = sanitizedHref === '/home' ? '/' : sanitizedHref;
 
-    // Поиск индекса в TabList
     const index = useMemo(() => {
-        return TabList.findIndex((item) => finalHref.includes(item.url));
-    }, [TabList, finalHref]);
+        const match = LinksForTabs.find((item) => finalHref.includes(item.url));
+        return match ? match.index : -1; 
+    }, [LinksForTabs, finalHref]);
 
     // Формирование пути навигации
     const p = useMemo(() => {

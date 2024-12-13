@@ -28,21 +28,32 @@ enableScreens(appSetting('layout', 'native_enable_screens'));
 
 function processUrl(url, router, currentUser, TabList) {
     if (currentUser?.id) {
+        const LinksForTabs = (() => {
+            const baseLinks = TabList.map((item, index) => ({
+                url: item.url,
+                index
+            }));
+        
+            const additionalLinks = appSetting('menu_items', 'transpile_urls');
+            return [...baseLinks, ...additionalLinks];
+        })();
+
         let a = parseUrl(url);
         let _path = '/' + a.path + (a.queryString ? '?' + a.queryString : '')
         if (_path == '/')
             _path = '/home';
-        const index = TabList.findIndex((item) => {
-            if (item.url == _path) {
-                return true;
-            }
-        });
-        if (index !== null && index > -1) {
-            router.push({
-                pathname: '/tab' + index
-            });
-        }
-        else {
+
+        const index = LinksForTabs?.find((item) => _path.includes(item.url))?.index ?? -1;
+        const isRoot = TabList.some((item) => item.url === _path); // to root of tab or not
+
+
+        if (index != null && index > -1) {
+            const route = {
+                pathname: `/tab${index}`,
+                ...(isRoot ? {} : { params: { url: _path } })
+            };
+            router.push(route);
+        } else {
             router.push({
                 pathname: '/tab0',
                 params: { url: _path }
@@ -50,6 +61,7 @@ function processUrl(url, router, currentUser, TabList) {
         }
     }
 }
+
 
 export default function () {
     const { currentUser, setCurrentUser } = useCurrentUser();
