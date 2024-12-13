@@ -436,7 +436,7 @@ export default function FormFieldFtf(props) {
 
     }, [field.value]);
 
-    let size = props.name == 'cmt_text' ? 'text-basetest' : 'text-base';
+    let size = props.name == 'cmt_text' ? 'text-base' : 'text-base';
     /*useEffect(() => {
         
         if (editor && props.name == 'cmt_text'){
@@ -451,7 +451,7 @@ export default function FormFieldFtf(props) {
         }
     }, [editor]);
 
-    const isFullHtml = (props.html == 2 || props.html == 1);te
+    const isFullHtml = (props.html == 2 || props.html == 1);
 
    
     const bgClass = props.bg == 'transparent' ? '' : " dark:focus:bg-bgrinput-dafocus bg-neutral-500/10 border border-bdr dark:border-bdr-d focus:bg-bgrinput-focus focus:outline-none focus:border-bdrinput-focus dark:focus:border-bdrinput-df rounded-lg "
