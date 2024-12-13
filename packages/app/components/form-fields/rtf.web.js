@@ -436,7 +436,7 @@ export default function FormFieldFtf(props) {
 
     }, [field.value]);
 
-    let size = props.name == 'cmt_text' ? 'text-sm' : 'text-base';
+    let size = props.name == 'cmt_text' ? 'text-basetest' : 'text-base';
     /*useEffect(() => {
         
         if (editor && props.name == 'cmt_text'){
@@ -451,7 +451,7 @@ export default function FormFieldFtf(props) {
         }
     }, [editor]);
 
-    const isFullHtml = (props.html == 2 || props.html == 1);
+    const isFullHtml = (props.html == 2 || props.html == 1);te
 
    
     const bgClass = props.bg == 'transparent' ? '' : " dark:focus:bg-bgrinput-dafocus bg-neutral-500/10 border border-bdr dark:border-bdr-d focus:bg-bgrinput-focus focus:outline-none focus:border-bdrinput-focus dark:focus:border-bdrinput-df rounded-lg "
@@ -460,7 +460,7 @@ export default function FormFieldFtf(props) {
             <View>
                 <EditorContent
                     editor={editor}
-                    className={(props?.numLines == 1 ? bgClass + ' text-neutral-800 w-full placeholder-neutral-500 dark:text-neutral-200 font-default ' + size + ' ' : bgClass + ' text-neutral-800 rounded-xl w-full placeholder-neutral-500 dark:text-neutral-200 text-base ') + ' ' + (isFullHtml ? ' p-4 ' : ' px-0.5 ')}
+                    className={(props?.numLines == 1 ? bgClass + ' text-neutral-800 w-full placeholder-neutral-500 dark:text-neutral-200 font-default ' + size + ' ' : bgClass + ' text-neutral-800 rounded-xl w-full placeholder-neutral-500 dark:text-neutral-200 text-base ') + ' ' + (isFullHtml ? ' p-4 ' : ' px-1.5 ')}
 
                 />
                 <View className={isFullHtml ? 'm-2' : 'm-0 p-0'}>

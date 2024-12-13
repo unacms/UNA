@@ -2463,7 +2463,7 @@ export const settingsDefault = {
         dropdown_menu: {
             content_shadow: ' shadow-xl  ',
             content_ver:
-                ' z-10 min-w-[200px] backdrop-blur-xl border border-bdrmodal dark:border-bdrmodal-d bg-bgrmodal dark:bg-bgrmodal-d mt-1 p-1 text-sm rounded-xl shadow-xl sm:shadow-[0_0_0_1px_rgba(0,0,0,0.1)] dark:sm:shadow-[0_0_0_1px_rgba(0,0,0,1)] overflow-hidden gap-y-1 ',
+                ' z-10 min-w-[200px] backdrop-blur-xl border border-bdrmodal dark:border-bdrmodal-d bg-bgrmodal dark:bg-bgrmodal-d mt-1 p-1 text-sm rounded-xl shadow-xl shadow-[0_0_0_1px_rgba(0,0,0,0.1)] dark:shadow-[0_0_0_1px_rgba(0,0,0,1)] overflow-hidden gap-y-1 ',
             content_hor:
                 ' flex flex-row z-10 p-1 bg-bgrmodal border border-bdr dark:border-bdr-d m-2 backdrop-blur-xl dark:bg-bgrmodal-d text-sm text-neutral-800 dark:text-neutral-200 rounded-full shadow-sm',
             item_ver:
@@ -2481,7 +2481,7 @@ export const settingsDefault = {
             fog: 'bg-white/50 dark:bg-black/50 backdrop-blur-xl',
             container: 'max-w-2xl {ls}:h-auto shadow-xl {ls}:rounded-xl',
             content:
-                'bg-bgrmodal dark:bg-bgrmodal-d {ls}:h-auto  {ls}:border {ls}:border-bdrmodal {ls}:dark:border-bdrmodal-d {ls}:rounded-xl sm:shadow-[0_0_0_1px_rgba(0,0,0,0.1)] dark:sm:shadow-[0_0_0_1px_rgba(0,0,0,1)]',
+                'bg-bgrmodal dark:bg-bgrmodal-d {ls}:h-auto  {ls}:border {ls}:border-bdrmodal {ls}:dark:border-bdrmodal-d {ls}:rounded-xl shadow-[0_0_0_1px_rgba(0,0,0,0.1)] dark:shadow-[0_0_0_1px_rgba(0,0,0,1)]',
             header: 'border-b border-bdr dark:border-bdr-d px-3 py-2.5',
         },
         card: {

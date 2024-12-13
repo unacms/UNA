@@ -294,7 +294,7 @@ export const Button = (props) => {
     }, [fullWidth, disabled, variant, solid, ThemeCssClassesButton, className, align, pressed, bgColor, pressedClasses]);
 
     const sClassText = useMemo(() => {
-        let classes = ' whitespace-nowrap text-ellipsis overflow-hidden tracking-tight ';
+        let classes = ' whitespace-nowrap text-ellipsis overflow-hidden tracking-tight';
         if (variant !== 'custom') {
             classes += ThemeCssClassesButton[`u-btn-${variant}-text`];
         } else {
