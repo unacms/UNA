@@ -4,7 +4,6 @@ import { useController, useFormContext } from 'react-hook-form';
 import Calendar from 'app/ui/atoms/calendar'
 
 export default function ({ name, value = '', type, ...props }) {
-    console.log("props", props, value, name)
     const formContext = useFormContext();
     const rules = getValidationRules(props);
     const bIsTime = type === 'datetime';

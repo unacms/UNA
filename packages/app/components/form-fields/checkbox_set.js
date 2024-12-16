@@ -35,7 +35,6 @@ export default function FormFieldCheckboxSet(props) {
 
     const values = Array.isArray(props.values) ? props.values.map(obj => ({id: obj.key, label: obj.value})) : Object.entries(props.values).map(([key, value]) => ({id: key, label: value}));
     
-    console.log("values", value)
     return (
         <Field {...props}>
             <Row className='gap-x-2 items-center'>

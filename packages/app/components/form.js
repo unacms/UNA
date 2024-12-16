@@ -42,7 +42,6 @@ export default function (props) {
     let onFormSubmit = props.onFormSubmit;
     const [lastChangedField, setLastChangedField] = useState(null);
 
-
     let name = props.data.params?.display?.includes('_delete') ? '' : (props.name ? props.name : props.data.params?.display)
 
     const defaultValues = {}
@@ -130,6 +129,16 @@ export default function (props) {
 
 
     const { watch } = methods;
+
+    const allFields = watch();
+
+    useEffect(() => {
+       if (props.onChange){
+            props.onChange(allFields);
+       }
+    }, [allFields]);
+
+
     useEffect(() => {
         if (props.saveOnChanges) {
             const subscription = watch((value, { name, type }) =>

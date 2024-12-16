@@ -47,6 +47,7 @@ const getNumCols = (width, props, data) => {
 };
 
 export default function (props) {
+    const isValidateActive = props.validate ?? true;
     const { layoutData } = useLayoutData();
     const toasterRef2 = useRef();
     const { t } = useTranslation();
@@ -61,7 +62,7 @@ export default function (props) {
    
 
     useEffect(() => {
-        if (cachedData){
+        if (cachedData && isValidateActive){
             revalidateData();
             //TODO revaliadate
         }
@@ -72,7 +73,8 @@ export default function (props) {
     }, []);
 
     useEffect(() => {
-        revalidateData();
+        if (isValidateActive)
+            revalidateData();
     }, [isRevalidate]);
 
     if (data.unit == 'mixed') {
