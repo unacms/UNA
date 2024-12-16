@@ -48,6 +48,7 @@ const getNumCols = (width, props, data) => {
 
 export default function (props) {
     const isValidateActive = props.validate ?? true;
+    const isShowEmptyMessage = props.empty_message ?? true;
     const { layoutData } = useLayoutData();
     const toasterRef2 = useRef();
     const { t } = useTranslation();
@@ -322,7 +323,7 @@ export default function (props) {
                                 Preload
                             ) : null
                         }
-                    /></> : (data.unit == 'notifications' ? callFn("noContentByUrl", [data.request_url]) : null)}
+                    /></> : (data.unit == 'notifications' || isShowEmptyMessage ? callFn("noContentByUrl", [data.request_url]) : null)}
             </View>
         </View>
     );

@@ -2465,6 +2465,24 @@ export const settingsDefault = {
             menu_cnt: ' ml-3 sm:ml-4 gap-x-1 flex-row ',
             right_column_cnt: 'fixed-process p-4 max-w-md'
         },
+        checkbox : {
+            container: 'h-5 w-5 rounded-sm border-2 border-bdrinput dark:border-bdrinput-d justify-center items-center mr-2',
+            container_selected: 'h-5 w-5 rounded-sm border-2 border-bdrinput dark:border-bdrinput-d justify-center items-center mr-2',
+            selected: 'h-2.5 w-2.5 rounded-sm bg-primary',
+            text: 'text-neutral-700 dark:text-neutral-200  text-sm',
+            selected_icon: false,
+        },
+        checkbox_set : {
+            container:  'gap-x-2 items-center',
+        },
+        switcher: {
+            container:  'gap-x-2 items-center',
+            text:  'text-neutral-700 dark:text-neutral-200  text-sm',
+            track: '#cccccc',
+            active_track: '#0ea5e9',
+            thumb: '#ffffff',
+            active_thumb: '#ffffff'
+        },
         dropdown_menu: {
             content_shadow: ' shadow-xl  ',
             content_ver:
