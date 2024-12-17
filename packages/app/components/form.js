@@ -166,7 +166,7 @@ export default function (props) {
 
     const ElementForm = getFormType(name)
     if ('undefined' !== typeof ElementForm) {
-        inputs = <ElementForm data={data} response={response} handleSubmit={_handleSubmit} exProps={props.exProps}></ElementForm>
+        inputs = <ElementForm name={name} data={data} response={response} handleSubmit={_handleSubmit} exProps={props.exProps}></ElementForm>
         return (
             <FormProvider {...methods}>
                 {inputs}

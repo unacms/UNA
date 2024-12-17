@@ -6,7 +6,7 @@ import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { useTranslation } from 'react-i18next';
 
 
-export default function MenuAdd({buttonProps}) {
+export default function MenuAdd({buttonProps, children}) {
     const { currentUser, setCurrentUser } = useCurrentUser();
     const menu_add_items = menuItemsByName('', appSetting('menu_items', 'menu_add'), currentUser)
     const { t } = useTranslation();
@@ -40,10 +40,10 @@ export default function MenuAdd({buttonProps}) {
                 )}
             >
 
-                <Button
+                {!!children ? children :  <Button
                     {...buttonProps}
                   
-                />
+                />}
             </DropdownMenu>
         </View>
     );

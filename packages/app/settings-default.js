@@ -2483,6 +2483,26 @@ export const settingsDefault = {
             thumb: '#ffffff',
             active_thumb: '#ffffff'
         },
+        doublerange: {
+            container:  'w-full items-center justify-between mt-2',
+            value_container:  'w-36 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput py-2 px-4 text-center rounded-lg justify-between',
+            text_value: 'text-neutral-700 dark:text-neutral-300',
+            text_info: '',
+            track_height: 4,
+            thumb_size: 15,
+            outbound_color:{
+                light: 'rgb(242, 242, 242)',
+                dark: 'rgb(242, 242, 242)',
+            },
+            inbound_color:{
+                light: 'rgb(242, 242, 242)',
+                dark: 'rgb(242, 242, 242)',
+            }, 
+            thumb_tint_color:{
+                light: '#2563eb',
+                dark: '#2563eb',
+            } 
+        },
         dropdown_menu: {
             content_shadow: ' shadow-xl  ',
             content_ver:
