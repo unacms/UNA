@@ -250,7 +250,8 @@ function InnerEmbed({ html, linkify }) {
     }, [html, linkify, state.excluded, state.link]); 
 
     useEffect(() => {
-        formContext.setValue('link', state.link?.link || '');
+        if (state.link?.link && formContext.getValues('link') != state.link?.link)
+            formContext.setValue('link', state.link?.link || '');
     }, [state.link?.link, formContext]);
 
     if (state.link && state.link.data) {
