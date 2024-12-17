@@ -98,7 +98,9 @@ export default function ElementConnections(oProps) {
         size: oProps.params?.button_size,
         rounded: oProps.params?.button_rounded,
         fullWidth: oProps.params?.button_full_width,
-        showTitleFromSize: oProps.params?.button_show_title_from_size
+        showTitleFromSize: oProps.params?.button_show_title_from_size,
+        hide_icon: oProps.params?.hide_icon,
+        padding: oProps.params?.padding,
     };    
 
     const _isElementVar = useCallback((sName) => isElementVar(elementData, sName), [elementData]);
@@ -124,8 +126,9 @@ export default function ElementConnections(oProps) {
     if(_isElementVar('title'))
         sTitle = _getElementVar('title');
 
+
     const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
-    if(oIcons && !!oIcons[sAction])
+    if(oIcons && !!oIcons[sAction] && oButtonProps.hide_icon !== true)
         oButtonProps.startDecorator = oIcons[sAction];
 
     return (

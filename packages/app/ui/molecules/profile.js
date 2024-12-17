@@ -21,7 +21,7 @@ import { memo } from 'react';
  * 
  */
 
-function DisplayNameLink({ title, url, href, fontSize }) {
+function DisplayNameLink({ title, url, href, fontSize, actions }) {
 
     if (href && (href == 'javascript:' || href === undefined))
         href = '';
@@ -41,9 +41,12 @@ function DisplayNameLink({ title, url, href, fontSize }) {
     }
 
     return (
-        <Text className={'text-neutral-900 dark:text-neutral-100 hover:text-linkhover font-semibold ' + fontSize + ' truncate '}>
-            {title}
-        </Text>
+        <Row className='items-center'>
+            <Text className={'text-neutral-900 dark:text-neutral-100 hover:text-linkhover font-semibold ' + fontSize + ' truncate '}>
+                {title} 
+            </Text>
+            {actions}
+        </Row>
     )
 }
 
@@ -83,7 +86,8 @@ function UnitWoInfo({ oProps, sSize, sSizeFontLetter, iSizeWidth, bShowLinks, em
 
 }
 
-function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont }) {
+function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont, actions }) {
+    console.log("actionsactionsactions", actions)
     return (
         <View className="flex-col my-auto ">
 
@@ -94,6 +98,7 @@ function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont }) {
                         url={oProps.url}
                         fontSize={sSizeFont}
                         href={oProps.href}
+                        actions={actions}
                     /></Link>
             ) : (
                 <DisplayNameText title={oProps.display_name} fontSize={sSizeFont} />
@@ -114,84 +119,6 @@ function AtomProfile_(oProps) {
     //--- the profile image size
     const sDisplaySize = oProps.displaySize ? oProps.displaySize : 'base'
 
-    /* let sSize = ''
-     let iSizeWidth = 0;
-     let iSizeHeight = 0;
-     let sSizeFont = '';
-     let sSizeFontLetter = '';
-     switch (sDisplaySize) {
-         case 'xs':
-             sSize = 'w-6 h-6'
-             iSizeWidth = 24
-             iSizeHeight = 24
-             sSizeFont = 'text-xs tracking-tight font-semibold';
-             sSizeFontLetter = 'text-base font-semibold';
-             break
- 
-         case 'sm':
-             sSize = 'w-8 h-8'
-             iSizeWidth = 32
-             iSizeHeight = 32
-             sSizeFont = 'text-sm tracking-tight font-semibold';
-             sSizeFontLetter = 'text-base font-bold';
-             break
- 
-         case 'base':
-             sSize = ' w-11 h-11 '
-             iSizeWidth = 44
-             iSizeHeight = 44
-             sSizeFont = ' text-sm leading-4 tracking-tight font-bold ';
-             sSizeFontLetter = 'text-xl font-semibold';
-             break
- 
-         case 'lg':
-             sSize = 'w-12 h-12'
-             iSizeWidth = 56
-             iSizeHeight = 56
-             sSizeFont = 'text-base tracking-tight font-bold';
-             sSizeFontLetter = 'text-xl font-semibold';
-             break
- 
-         case 'xl':
-             sSize = 'w-20 h-20'
-             iSizeWidth = 80
-             iSizeHeight = 80
-             sSizeFont = 'text-lg tracking-tight font-semibold';
-             sSizeFontLetter = 'text-xl  font-semibold';
-             break
- 
-         case '2xl':
-             sSize = 'w-24 h-24'
-             iSizeWidth = 96
-             iSizeHeight = 96
-             sSizeFont = 'text-xl tracking-tight font-semibold';
-             sSizeFontLetter = 'text-2xl font-semibold';
-             break
- 
-         case '3xl':
-             sSize = 'w-32 h-32'
-             iSizeWidth = 128
-             iSizeHeight = 128
-             sSizeFont = 'text-2xl tracking-tight font-semibold';
-             sSizeFontLetter = 'text-5xl font-semibold';
-             break
- 
-         case '4xl':
-             sSize = 'w-48 h-48'
-             iSizeWidth = 192
-             iSizeHeight = 192
-             sSizeFont = 'text-3xl tracking-tight font-semibold';
-             sSizeFontLetter = 'text-7xl font-semibold';
-             break
- 
-         case 'full':
-             sSize = ' w-full aspect-square rounded-xl '
-             iSizeWidth = 400
-             iSizeHeight = 400
-             sSizeFont = 'text-4xl tracking-tight font-semibold';
-             sSizeFontLetter = 'text-7xl font-semibold';
-             break
-     }*/
     const sizes = {
         xs: {
             sSize: 'w-6 h-6',
@@ -278,7 +205,7 @@ function AtomProfile_(oProps) {
                         <UnitWoInfo oProps={oProps} sSize={sSize} sSizeFontLetter={sSizeFontLetter} emulate={emulate} iSizeWidth={iSizeWidth} bShowLinks={bShowLinks} />
                     </View>
                     <View className="flex-auto">
-                        <UnitWoImage oProps={oProps} sSizeFont={sSizeFont} bShowLinks={bShowLinks} emulate={emulate} info={sShowInfo} />
+                        <UnitWoImage oProps={oProps} sSizeFont={sSizeFont} bShowLinks={bShowLinks} emulate={emulate} info={sShowInfo} actions={oProps.showActions} />
                     </View>
                 </Row>
             )
@@ -287,7 +214,7 @@ function AtomProfile_(oProps) {
             return <UnitWoInfo oProps={oProps} sSize={sSize} sSizeFontLetter={sSizeFontLetter} emulate={emulate} iSizeWidth={iSizeWidth} bShowLinks={bShowLinks} />
 
         case 'unit_wo_image':
-            return <UnitWoImage oProps={oProps} sSizeFont={sSizeFont} bShowLinks={bShowLinks} emulate={emulate} info={sShowInfo} />
+            return <UnitWoImage oProps={oProps} sSizeFont={sSizeFont} bShowLinks={bShowLinks} emulate={emulate} info={sShowInfo} actions={oProps.showActions} />
 
         case 'text':
             return (
@@ -298,6 +225,7 @@ function AtomProfile_(oProps) {
                             url={oProps.url}
                             fontSize={sSizeFont}
                             href={oProps.href}
+                            actions={oProps.showActions}
                         />
                     ) : (
                         <DisplayNameText title={oProps.display_name} fontSize={sSizeFont} />

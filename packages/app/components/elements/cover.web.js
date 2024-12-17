@@ -311,7 +311,7 @@ export default function (props) {
                                 {data.profile.display_name}
                             </Text>
                             <Badges badges={data.badges} />
-                            {data.profile.info?.date_start && (
+                            {!!data.profile.info?.date_start && (
                                 <Text className="  text-neutral-600 dark:text-neutral-400 text-xs uppercase font-semibold tracking-tight overflow-hidden  rounded-md flex-none items-center">
                                     {formatDateInterval(data.profile.info?.date_start, data.profile.info?.date_end, t)}
                                 </Text>

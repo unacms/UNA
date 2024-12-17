@@ -524,46 +524,4 @@ function _ButtonMenuCounter(props) {
         fullWidth = {fullWidth}
         {...rest}
     />
- }
-
-/*
-export function ButtonsGroupMenu(props) {
-    const { variant, size, rounded, showTitleFromSize, ...rest } = props
-
-    return <ButtonsGroup fullWidth={true} showTitleFromSize={showTitleFromSize} variant={!!variant ? variant : appSetting('layout', 'button_style_for_actions')} size={!!size ? size : 'xs'} rounded={rounded != undefined ? rounded : true}>{props.children}</ButtonsGroup>
 }
-
-export function ButtonMenuGroupItem(props) {
-    let { variant, size, title, startDecorator, endDecorator, onPress, pressed, rounded, fullWidth, disabled, showTitleFromSize, ...rest } = props
-    let sVariant = 'group-item' + (!!variant && variant == 'text' ? '-text' : '');
-    if (variant == 'none') {
-        sVariant = 'none';
-        fullWidth = 'true'
-    }
-    return (
-        <Button variant={sVariant} showTitleFromSize={showTitleFromSize} size={!!size ? size : 'sm'} title={title} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} pressed={pressed != undefined ? pressed : false} rounded={rounded != undefined ? rounded : true} disabled={disabled != undefined ? disabled : false} fullWidth={fullWidth != undefined ? fullWidth : false}>
-            {props.children}
-        </Button>
-    );
-}
-
-export function ButtonMenuActionDefault(props) {
-    const { variant, size, title, startDecorator, endDecorator, onPress, pressed, rounded, fullWidth, disabled, showTitleFromSize, padding, classTextName, ...rest } = props
-    return <Button variant={!!variant ? variant : appSetting('layout', 'button_style_for_actions')} size={!!size ? size : 'sm'} padding={padding} classTextName={classTextName} title={title} showTitleFromSize={showTitleFromSize} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} pressed={pressed != undefined ? pressed : false} rounded={rounded != undefined ? rounded : true} disabled={disabled != undefined ? disabled : false} fullWidth={fullWidth != undefined ? fullWidth : false} />
-}
-
-export function ButtonMenuActionText(props) {
-    const { variant, size, title, startDecorator, endDecorator, onPress, pressed, rounded, fullWidth, disabled, showTitleFromSize, padding, classTextName, ...rest } = props
-    return <Button variant={!!variant ? variant : 'text'} size={!!size ? size : 'sm'} title={title} showTitleFromSize={showTitleFromSize} padding={padding} classTextName={classTextName} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} pressed={pressed != undefined ? pressed : false} rounded={rounded != undefined ? rounded : true} disabled={disabled != undefined ? disabled : false} fullWidth={fullWidth != undefined ? fullWidth : false} />
-}
-
-export function ButtonMenuCounterDefault(props) {
-    const { variant, size, title, startDecorator, endDecorator, onPress, pressed, rounded, fullWidth, disabled, showTitleFromSize, padding, classTextName, ...rest } = props
-    return <Button variant={!!variant ? variant : appSetting('layout', 'button_style_for_actions')} size={!!size ? size : 'sm'} padding={padding} title={title} classTextName={classTextName} showTitleFromSize={showTitleFromSize} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} pressed={pressed != undefined ? pressed : false} rounded={rounded != undefined ? rounded : true} disabled={disabled != undefined ? disabled : false} fullWidth={fullWidth != undefined ? fullWidth : false} />
-}
-
-export function ButtonMenuCounterText(props) {
-    const { variant, size, title, startDecorator, endDecorator, onPress, pressed, rounded, fullWidth, disabled, showTitleFromSize, padding, classTextName, ...rest } = props
-    return <Button variant={!!variant ? variant : appSetting('layout', 'button_style_for_actions')} size={!!size ? size : 'sm'} padding={padding} title={title} classTextName={classTextName} showTitleFromSize={showTitleFromSize} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} pressed={pressed != undefined ? pressed : false} rounded={rounded != undefined ? rounded : true} disabled={disabled != undefined ? disabled : false} fullWidth={fullWidth != undefined ? fullWidth : false} />
-}
-*/

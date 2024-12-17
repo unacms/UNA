@@ -143,13 +143,13 @@ export default function PageLayout(props) {
                                 </View> 
                                 <View className="flex-none">
                                 <ProfileSwitcher hideTitle={true} >
-                                    <Button variant="outline" startDecorator="UserSwitch" tooltip={t('Switch profile')} rounded  />
+                                    <Button variant="outline" startDecorator="UserSwitch"  rounded  />
                                 </ProfileSwitcher>
                                 </View>
                             </View>
                             <View className="flex-row  items-center gap-x-2 my-auto hidden">
                                <ProfileSwitcher hideTitle={true} >
-                                    <Button variant="outline" startDecorator="UserSwitch" tooltip={t('Switch profile')} rounded  />
+                                    <Button variant="outline" startDecorator="UserSwitch"  rounded  />
                                 </ProfileSwitcher>
                                 {
                                     appSetting('layout', 'switch_lang').length > 1 && (

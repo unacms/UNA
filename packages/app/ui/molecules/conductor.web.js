@@ -57,6 +57,7 @@ const AddBlocks = React.memo(({
 });
 
 export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, leftSideBarBlocks, leftSideBarWidth = ' w-80 2xl:w-96 ', skeleton = '', onChangeRoute, keyword, cover, layoutName }) {
+
     const { currentUser } = useCurrentUser();
     const { setBottomSheetData } = useBottomSheetData();
     const { layoutData } = useLayoutData();

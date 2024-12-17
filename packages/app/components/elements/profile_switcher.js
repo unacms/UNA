@@ -63,6 +63,9 @@ export default function (props) {
                             <Text className="text-base pl-2.5 flex-auto my-auto font-semibold truncate text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
                                 {currentUser.display_name}
                             </Text>
+                            <Text className="pl-8 text-sm pl-2.5 flex-auto my-auto  truncate text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
+                                {currentUser.membership_name}
+                            </Text>
                         </Row>
                         <View className='flex-none '>
                             {currentUser.profiles_count > 1 && <Button

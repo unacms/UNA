@@ -109,6 +109,7 @@ export const settingsDefault = {
         button_style_for_actions: 'secondary',
         cover_mode: {
             bx_courses: 'min',
+            bx_jobs: 'min',
         },
         hide_browse_filter: true,
         use_youtube_player: true,
@@ -382,6 +383,8 @@ export const settingsDefault = {
             'profile-confirm': 'Check',
             'profile-set-acl-level': 'UserList',
             'profile-set-badges': 'SealCheck',
+            'job-questionnaire': 'List',
+            'invite-to-job': 'UserPlus',
         },
         menu_navbar: [
             { name: 'home', title: 'Home', link: '/', icon: 'House' },
@@ -555,6 +558,7 @@ export const settingsDefault = {
                 link: '/create-course-profile',
                 icon: 'Books',
             },
+            { name: 'create-job-profile', title: 'Add job', link: '/create-job-profile', icon: 'CalendarBlank' },
         ],
         menu_account: [
             {
@@ -625,6 +629,7 @@ export const settingsDefault = {
             { title: 'Discussions', link: '/discussions-home', icon: 'Chats' },
             { title: 'Courses', link: '/courses-home', icon: 'Books' },
             { title: 'People', link: '/persons-home', icon: 'UsersFour' },
+            { title: 'Jobs', link: '/jobs-home', icon: 'CalendarBlank' },
             { title: 'About', link: '/about', icon: 'Info' },
             { title: 'Terms', link: '/terms', icon: 'Question' },
             { title: 'Contact', link: '/contact', icon: 'AddressBook' },
@@ -823,6 +828,17 @@ export const settingsDefault = {
                     link: '',
                     section: 'bx_posts',
                 },
+            ],
+        },
+        bx_jobs_submenu : {
+            name: 'Jobs',
+            icon: 'UsersFour',
+            items: [
+                { name: 'jobs-home', icon: 'Storefront' },
+                { name: 'jobs-top', icon: 'Fire' },
+            ],
+            add: [
+                { icon: 'Plus', name: 'Add', link: '/create-job-profile', nonlogged: false },
             ],
         },
         bx_ads_submenu: {
@@ -2124,6 +2140,16 @@ export const settingsDefault = {
                 title: false,
             },
         },
+
+        //############ JOBS PAGES ############
+        'jobs-home' : {
+            layout: 'navigator',
+            blocks: {
+                browse: { name: 'system:get_results', showTitle: false, showBg: false, perLine: 1 },
+                search: { name: 'system:get_form', showTitle: false, showBg: false, sidebar: false, leftbar: true },
+            },
+        },
+        
         //############ GROUPS PAGES ############
         'view-group-profile': {
             layout: 'profile',

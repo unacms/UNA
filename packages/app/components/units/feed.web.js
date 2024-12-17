@@ -62,11 +62,6 @@ function DefaultUnit(data) {
                 <View className="flex-auto flex-row">
                     <Author data={data} url={url} t={t} />
                     <View className="flex-none flex-row mb-auto">
-                        {data.author_actions.map((item, index) => {
-                            const Element = componentsMap[item.type]
-                            if (!Element) return
-                            return <Element params={{ button_variant: 'text' }} key={`action-${index}`} {...item} />
-                        })}
                         <MenuManage id={data.id} menu={data?.menu_manage} setViewState={setViewState} />
                     </View>
                 </View>

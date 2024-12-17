@@ -30,18 +30,8 @@ export default function ElementFeedItem({ data }) {
         storageSet('li:data', sKey, dataCache)
     }
 
-    let tlContent = '';
+    const tlContent = content.text;//truncateHTML(data.content.text, 380);
 
-    tlContent = content.text;//truncateHTML(data.content.text, 380);
-    if (content.images_attach.length == 0) {
-        /*let link = linkify2(data.event.content.text);
-        if (link){
-            tlContent = tlContent + '<br><div class="bx-embed-link" source="' + link + '">' + link + '</div>'
-        }*/
-        /* if (content.embed) {
-             tlContent = tlContent + content.embed
-         }*/
-    }
 
     let content_attach = [];
     if (content.images_attach && content.images_attach.length > 0) {

@@ -388,7 +388,21 @@ export const CounterMenu = memo(({ data }) => {
     />
 });
 
-export const Author = memo(({ data, url, t }) => (
+export const Author = memo(({ data, url, t }) => {
+
+    const ActionsElements = data.author_actions.map((item, index) => {
+        const Element = componentsMap[item.type];
+        if (!Element) return null; // Explicitly return null for no component
+        return (
+            <Element
+                params={{ button_variant: 'link', button_size: 'sm', hide_icon: true, padding: ' ' }}
+                key={`action-${index}`}
+                {...item}
+            />
+        );
+    }); 
+
+    return(
     <View className='flex-auto'>
         <Profile
             {...data.author_data}
@@ -403,9 +417,11 @@ export const Author = memo(({ data, url, t }) => (
                     <ItemInfo data={data} t={t} />
                 </Row>
             }
+            showActions = {ActionsElements}
         />
     </View>
-));
+    )
+});
 
 
 export const SmallUnit = memo(({ data }) => {

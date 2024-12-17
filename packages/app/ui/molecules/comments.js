@@ -22,7 +22,7 @@ const handleDo = (redirectdRef, link, callback, event) => {
     }
 
     if (!link) return;
-
+    console.log('link', link);
     redirectdRef.current.redirect(link);
 };
 

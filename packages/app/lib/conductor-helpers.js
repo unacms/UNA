@@ -396,7 +396,7 @@ export function getNumCols(width, currentRoute, leftSideBar) {
     return 1;
 };
 
-export function LeftSidebar({ title, addButtons, children, width }) {
+export function LeftSidebar({ title, addButtons, children, width, menu }) {
     return (
         <View className={" hidden lg:block " + width}>
             <View className={' fixed-process ' + width + ' lg:px-2 lg:py-3 '}>
