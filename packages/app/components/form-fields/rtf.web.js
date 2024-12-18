@@ -286,14 +286,15 @@ export default function FormFieldFtf(props) {
     const object_privacy_view = formContext.watch('object_privacy_view');
     const object_id = formContext.watch('id');
     const m = name == "cmt_text" ? "sys_cmts" : "bx_timeline";
-    const { setLayoutData } = useLayoutData();
+    const { layoutData, setLayoutData } = useLayoutData();
 
     useEffect(() => {
         if (props.value !== undefined) {
             field.onChange(props.value);
         }
-        //formContext.setValue(props.name, props.value)
     }, [props.name, props.value]);
+
+   
 
     // may be need not, fix for edit post text content
     useEffect(() => {
@@ -325,9 +326,7 @@ export default function FormFieldFtf(props) {
         const imagePromises = Array.from(items).map(item => {
             return new Promise((resolve, reject) => {
                 if (item.type.indexOf('image') !== -1) {
-                    console.log('1111')
                     const file = item.getAsFile(); // Получаем файл изображения
-                    console.log('file', file)
                     if (file) {
                         const reader = new FileReader();
                         reader.onload = () => {
@@ -436,6 +435,12 @@ export default function FormFieldFtf(props) {
         }
 
     }, [field.value]);
+
+    useEffect(() => {
+        if (layoutData && layoutData.type == 'comment:activate') {
+            editor.commands.focus()
+        }
+    }, [layoutData]);
 
     let size = props.name == 'cmt_text' ? 'text-base' : 'text-base';
     /*useEffect(() => {

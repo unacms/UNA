@@ -10,7 +10,6 @@ import { Text } from 'app/design/typography'
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers';
 import { useTranslation } from 'react-i18next';
-import useDaemon from 'app/lib/hooks/daemon'
 import Toaster from 'app/ui/atoms/toaster';
 import { storageClear } from 'app/lib/util';
 import { useLayoutData } from 'app/context/layout';

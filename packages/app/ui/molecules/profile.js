@@ -87,7 +87,6 @@ function UnitWoInfo({ oProps, sSize, sSizeFontLetter, iSizeWidth, bShowLinks, em
 }
 
 function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont, actions }) {
-    console.log("actionsactionsactions", actions)
     return (
         <View className="flex-col my-auto ">
 

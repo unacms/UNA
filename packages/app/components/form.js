@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { getFormFieldByData } from 'app/lib/form-helpers'
-import { View } from 'app/design/view'
+import { View, Row } from 'app/design/view'
+import { Text } from 'app/design/typography'
 import { componentsMap } from 'app/components/forms/_map';
 import { FeedbackHaptics } from 'app/lib/util';
 import { Platform } from 'react-native';
 import { appSetting } from 'app/lib/util';
-
+import useDebounce from 'app/lib/hooks/debounce'
+import { Button } from 'app/design/controls';
+import { isObjectsEqual } from 'app/lib/util'
 function getFormType(name) {
     return componentsMap[name];
 }
@@ -37,9 +40,10 @@ const checkInputType = (name, form_name, input_name) => {
 }
 
 export default function (props) {
-    let data = props.data;
-    let response = props.response;
-    let onFormSubmit = props.onFormSubmit;
+    const data = props.data;
+    const response = props.response;
+    const onFormSubmit = props.onFormSubmit;
+    const isAutoChange = !!props.onChange;
     const [lastChangedField, setLastChangedField] = useState(null);
 
     let name = props.data.params?.display?.includes('_delete') ? '' : (props.name ? props.name : props.data.params?.display)
@@ -80,9 +84,8 @@ export default function (props) {
     const onError = async d => {
         //TODO: gandle error
     }
-    //const {...methods} = useForm({defaultValues: defaultValues});  
     const { ...methods } = useForm({
-        mode: 'onChange' // This will validate the form fields on change
+        mode: 'onChange'
     });
     const { formState: { isSubmitted } } = methods;
 
@@ -127,19 +130,29 @@ export default function (props) {
         }
     }, [props.isSubmit]);
 
-
     const { watch } = methods;
-
     const allFields = watch();
+    const debouncedFields = useDebounce(allFields, 500);
 
     useEffect(() => {
-       if (props.onChange){
-            props.onChange(allFields);
-       }
-    }, [allFields]);
+        if (isAutoChange) {
+            props.onChange(debouncedFields);
+        }
+    }, [debouncedFields]);
 
 
-    useEffect(() => {
+    if (isAutoChange) {
+        for (const key in data.inputs) {
+            if (data.inputs[key] && typeof data.inputs[key] === "object" && data.inputs[key].type === "submit") {
+                delete data.inputs[key];
+            }
+            if (data.inputs[key] && typeof data.inputs[key] === "object" && data.inputs[key].name === "csrf_token") {
+                delete data.inputs[key];
+            }
+        }
+
+    }
+    /*useEffect(() => {
         if (props.saveOnChanges) {
             const subscription = watch((value, { name, type }) =>
                 setLastChangedField(name)
@@ -147,7 +160,7 @@ export default function (props) {
 
             return () => subscription.unsubscribe()
         }
-    }, [watch])
+    }, [watch])*/
 
     let inputs = getFormFieldList(name, data.inputs, _handleSubmit, true, lastChangedField, props.saveOnChanges);
     if (inputs?.length > 0)
@@ -164,6 +177,8 @@ export default function (props) {
         }));
     }
 
+
+
     const ElementForm = getFormType(name)
     if ('undefined' !== typeof ElementForm) {
         inputs = <ElementForm name={name} data={data} response={response} handleSubmit={_handleSubmit} exProps={props.exProps}></ElementForm>
@@ -174,8 +189,26 @@ export default function (props) {
         )
     }
 
+    const filteredDefaultValues = Object.keys(allFields).reduce((result, key) => {
+        if (defaultValues.hasOwnProperty(key)) {
+            result[key] = defaultValues[key];
+        }
+        return result;
+    }, {});
+
     return (
         <View className='w-full'>
+            {(isAutoChange) && <Row className='items-center justify-between mb-3'>
+                <Text className="text-xl font-bold text-neutral-800  dark:text-neutral-200 ">Filters</Text>
+                {!isObjectsEqual(filteredDefaultValues, allFields) &&  <Button
+                title='Reset'
+                startDecorator='X'
+                size='xs'
+                variant='text'
+                onPress={() => methods.reset()}
+                />
+                }
+            </Row>}
             {props.onSubmittig && <View className='absolute w-full h-full bg-bgrcard dark:bg-bgrcard-d z-50'></View>}
             {methods.formState.isSubmitting}
             <FormProvider {...methods}>

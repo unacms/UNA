@@ -1,11 +1,11 @@
 import { useState, useMemo , useCallback, useRef } from 'react';
-import { appSetting } from 'app/lib/util';
+import { appSetting, getAlert } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { useActionsData } from 'app/context/actions';
 import { View } from 'app/design/view'
 import { ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounterDefault, ButtonMenuCounterText, ButtonMenuGroupItem, ButtonsGroupMenu, Modal } from 'app/design/controls';
 import Redirect from 'app/ui/atoms/redirect';
-import Profile from 'app/ui/molecules/profile';
+import  { useLayoutData } from 'app/context/layout'
 
 const getName = (type, system, object_id, sName) => {
     let aName = [type, system.replace(/_/g, '-'), object_id];
@@ -13,7 +13,7 @@ const getName = (type, system, object_id, sName) => {
     return aName.join('-');
 };
 
-const handleDo = (redirectdRef, link, callback, event) => {
+const handleDo = (redirectdRef, link, callback, event, setLayoutData) => {
     event.preventDefault();
 
     if (callback) {
@@ -22,11 +22,12 @@ const handleDo = (redirectdRef, link, callback, event) => {
     }
 
     if (!link) return;
-    console.log('link', link);
+    setLayoutData(getAlert('comment:activate'))
     redirectdRef.current.redirect(link);
 };
 
 export default function ElementComments(oProps) {
+    const { setLayoutData } = useLayoutData();
     const redirectdRef = useRef();
 
     const oParams = useMemo(() => ({ ...appSetting('social_actions', 'comment'), ...oProps.params }), [oProps.params]);
@@ -66,7 +67,7 @@ export default function ElementComments(oProps) {
     }, [actionsData, actionsDataState, bShowFull, sObject]);
 
     const handlePress = useCallback(
-        (event) => handleDo(redirectdRef, oAction?.link, oProps.callback, event),
+        (event) => handleDo(redirectdRef, oAction?.link, oProps.callback, event, setLayoutData),
         [oAction?.link, oProps.callback]
     );
 

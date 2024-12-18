@@ -28,20 +28,21 @@ import { fetcher } from 'app/lib/fetcher';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { callFn } from 'app/lib/functions/call';
 
+
 const conductorTheme = appSetting('theme', 'conductor');
 
-const AddBlocks = React.memo(({
-    leftSideBarBlocks, data, onFormSubmit
-}) => {
+const AddBlocks = (leftSideBarBlocks, data, onFormSubmit, onFormChangedValues) => {
     if (!leftSideBarBlocks)
         return null;
 
     let leftSideBarBlocksObj = leftSideBarBlocks.map((block) => {
+       
         return <BlockByName
             data={data}
             name={block}
-            onFormSubmit={onFormSubmit}
-            saveOnChanges={true}
+           //onFormSubmit={onFormSubmit}
+            //saveOnChanges={true}
+            onChange={onFormChangedValues}
         />
     });
 
@@ -54,7 +55,7 @@ const AddBlocks = React.memo(({
             </View>
         }
     </>
-});
+};
 
 export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, leftSideBarBlocks, leftSideBarWidth = ' w-80 2xl:w-96 ', skeleton = '', onChangeRoute, keyword, cover, layoutName }) {
 
@@ -167,39 +168,6 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         }
     }, [currentRoute, isRevalidate, currentUser?.id]);
 
-    /*c
-
-    if (hasEndpoint) {
-        const a = [...new Set(currentRoute.data
-            .filter(item => item.type !== 'block')
-            .map(item => item.id)
-        )].slice(0, 10).join(',');
-
-        if ((a || true) && !currentRoute.endpoint.request_url.includes("system/get_results/TemplSearchExtendedServices")) {
-            
-            endpointUpdateContent = currentRoute.endpoint.request_url + JSON.stringify({
-                'params': { ...currentRoute.endpoint.params, validate: a }
-            });
-            bUpdateContent = true;
-        }
-    }
-
-    const { daemonData, daemonUrl } = useDaemon(endpointUpdateContent, false, bUpdateContent, 10000);
-
-    useEffect(() => {
-        if (daemonUrl == endpointUpdateContent) {
-            if (daemonData) {
-                const data = daemonData?.[0]?.data?.data;
-                if (data && (data == 'valid' || data == 'invalid')) {
-                    setToaster2Visible(data !== 'valid');
-                }
-            }
-            else {
-                setToaster2Visible(false);
-            }
-        }
-    }, [daemonData, daemonUrl]);
-*/
     const showNewContent2 = async () => {
         storageClear('ul:data', currentRoute.storageKeyValue)
         storageClear('ul:state', currentRoute.storageKeyValue)
@@ -297,16 +265,24 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     }
 
 
-    const onFormSubmit = useCallback((formData, d) => {
-        console.log("onFormSubmit")
+    const onFormChangedValues = useCallback((values) => {
         let filterValues = [];
-        for (let key in d) {
-            filterValues.push({name: key, value: Array.isArray(d[key])?d[key].join(','):d[key]})
+        for (let key in values) {
+            filterValues.push({name: key, value: Array.isArray(values[key])?values[key].join(','):values[key]})
         };
+
         setFilterValue(filterValues)
         setBottomSheetData(false);
-    });
+    }, []);
 
+
+    const onFormSubmit = useCallback((formData, d) => {
+        onFormChangedValues(d);
+    }, []);
+
+
+
+    //console.log("setFilterValue", routes[index].endpoint.filters)
 
     const handleEndReached = useCallback(async (lastItemIndex) => {
         if (isFetchingNextPage)
@@ -626,8 +602,14 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
     };
 
-
+    const AddBlocksCnt = useMemo(() => AddBlocks(leftSideBarBlocks, data, onFormSubmit, onFormChangedValues), [leftSideBarBlocks, data, onFormSubmit, onFormChangedValues]);
+    
     const leftSideBarObj = useCallback(() => {
+        const renderForm = (formProps, onFormChange) => {
+            return (
+                <Form {...formProps} key="form" name={formProps.name} onChange={onFormChange} />
+            )
+        }
 
         const menuSettings = appSetting('menu_items', menu.object);
         const addButtons = menuSettings?.add?.filter(item => item.hideInSideBar !== true).map((button) => {
@@ -669,7 +651,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                             </Link>
                         )
                     })}
-                    <AddBlocks leftSideBarBlocks={leftSideBarBlocks} data={data} onFormSubmit={onFormSubmit} />
+                    {AddBlocksCnt}
                     
                 </LeftSidebar>
 
@@ -713,7 +695,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     }, [routes, index]);
 
     const showFilters = useCallback(() => {
-        setBottomSheetData({ title: 'Filters', content: <AddBlocks leftSideBarBlocks={leftSideBarBlocks} data={data} onFormSubmit={onFormSubmit}/>, showClose: true, snapPoints: ['60%', '60%'] });
+        setBottomSheetData({ title: 'Filters', content: AddBlocksCnt, showClose: true, snapPoints: ['60%', '60%'] });
     }, [leftSideBarBlocks, data, onFormSubmit]);
 
     if (leftSideBar) {
