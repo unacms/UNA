@@ -150,7 +150,7 @@ export default function (props) {
                                     >
                                         <Button
                                             pressed={
-                                                item.link == '/' + props.uri ||
+                                                item.link == '/' + props.url ||
                                                 (item.link == '/' &&
                                                     props.uri == 'home')
                                                     ? true

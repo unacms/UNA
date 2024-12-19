@@ -437,7 +437,7 @@ export default function FormFieldFtf(props) {
     }, [field.value]);
 
     useEffect(() => {
-        if (layoutData && layoutData.type == 'comment:activate') {
+        if (editor && layoutData && layoutData.type == 'comment:activate') {
             editor.commands.focus()
         }
     }, [layoutData]);

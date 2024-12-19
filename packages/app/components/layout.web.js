@@ -77,7 +77,7 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, layoutName, d
 
                 <Suggestions />
                 <AsyncWorker />
-                <NavbarMemo headerSettings={headerSettings} layoutName={layoutName} title={data?.name} menu={data?.menu} menu_add={data?.menu_add || false} uri={uri} >
+                <NavbarMemo headerSettings={headerSettings} layoutName={layoutName} title={data?.name} menu={data?.menu} menu_add={data?.menu_add || false} uri={uri} url={data?.url} >
                     <Content width={width}  layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser}  url={data?.url}/>
                 </NavbarMemo>
                 <BottomSheet />
@@ -94,7 +94,7 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, layoutName, d
 
                 <Suggestions />
                 <AsyncWorker />
-                <NavbarMemo headerSettings={headerSettings} layoutName={layoutName} title={data?.name} menu={data?.menu} menu_add={data?.menu_add || false} uri={uri} >
+                <NavbarMemo headerSettings={headerSettings} layoutName={layoutName} title={data?.name} menu={data?.menu} menu_add={data?.menu_add || false} uri={uri} url={data?.url} >
                     <Content width={width}  layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser}  url={data?.url}/>
                 </NavbarMemo>
                 <BottomSheet />
@@ -118,7 +118,7 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, layoutName, d
                             <AsyncWorker />
                         </View>
                         {menuItems.length > 0 && <View className='w-full lg:w-80 '>
-                            <NavbarMemo headerSettings={headerSettings} layoutName={layoutName} title={data.name} menu={data.menu} menu_add={data.menu_add || false} uri={uri} />
+                            <NavbarMemo headerSettings={headerSettings} layoutName={layoutName} title={data.name} menu={data.menu} menu_add={data.menu_add || false} uri={uri} url={data?.url} />
                         </View>}
                     </Row>
                     <BottomSheet />
