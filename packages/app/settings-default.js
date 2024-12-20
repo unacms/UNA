@@ -1065,7 +1065,7 @@ export const settingsDefault = {
             blocks: {
                 main: {
                     name: 'bx_messenger:get_main_messenger_page',
-                    showTitle: false,
+                    fullWidth:true
                 },
             },
             headerSettings: { backButton: false, offset: false },
@@ -1287,6 +1287,7 @@ export const settingsDefault = {
             layout: 'navigator',
             blocks: {
                 browse: {
+                    perLine: 2,
                     name: 'bx_events:browse_recent_profiles',
                     showTitle: false,
                     showBg: false,

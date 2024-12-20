@@ -17,7 +17,7 @@ import { useTranslation } from 'react-i18next';
 import MenuAdd from 'app/components/nav/menu-add'
 import BlockByUrl from 'app/ui/molecules/block'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
-
+import MenuAccount from 'app/components/nav/menu-account'
 
 const HeaderLine = memo(({ headerSettings, currentUser, uri, bSearch, menuPopup, setMenuPopup, showMenu }) => {
 
@@ -68,7 +68,7 @@ const HeaderLine = memo(({ headerSettings, currentUser, uri, bSearch, menuPopup,
                                     title={item.title}
                                     addon={item.link == '/notifications-view' && { text: currentUser.notifications, variant: 'primary' }}
                                 />
-                                
+
                             </Link>
                     )}
                     {!!currentUser && (
@@ -127,7 +127,7 @@ export default function (props) {
                     width: '100%',
                 }}
                 className={"dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur border-b border-bdrnavbar shadow-sm lg:bg-transparent lg:border-none lg:shadow-none" + "  fixed w-full lg:w-80 top-0 items-start lg:h-screen" + (!headerSettings.header ? ' hidden lg:flex' : '')}>
-                <View className=' flex-row lg:flex-col  h-16 lg:h-auto items-center lg:items-start bg-red-500' >
+                <View className=' flex-row lg:flex-col  h-16 lg:h-auto items-center lg:items-start' >
                     <View className=' justify-between  lg:h-screen flex-auto '>
                         <HeaderLine headerSettings={headerSettings} currentUser={currentUser} uri={props.uri} bSearch={bSearch} showMenu={showMenu} menuPopup={menuPopup} setMenuPopup={setMenuPopup} />
                         <View className='hidden lg:flex flex-col flex-auto justify-between h-full'>
@@ -138,11 +138,27 @@ export default function (props) {
                                             <BlockByUrl url="/api.php?r=bx_timeline/get_block_post_account" exProps={{ "mode": "button" }} />
                                         </View>
                                     </Row>
-                                
+
                                     <View className='py-4'>
                                         <Row className='flex-row px-4 '>
                                             <View className='flex-auto'>
-                                                <DropdownMenu items={menu_account_items.map(
+                                                <MenuAccount>
+                                                    <Row className={"rounded-full items-center justify-between  p-1  hover:border-transparent  cursor-pointer hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50"}>
+                                                        <Row className='flex-row gap-x-3 items-center'>
+                                                            <Profile
+                                                                {...currentUser}
+                                                                url_avatar={currentUser.avatar}
+                                                                displayType="unit_wo_info"
+                                                                displaySize="sm"
+                                                            />
+                                                            <Text className="text-base flex-auto my-auto font-semibold truncate text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
+                                                                {currentUser.display_name}
+                                                            </Text>
+                                                        </Row>
+
+                                                    </Row>
+                                                </MenuAccount>
+                                                {/*<DropdownMenu items={menu_account_items.map(
                                                     (item, index) => {
                                                         return (
                                                             {
@@ -158,21 +174,8 @@ export default function (props) {
                                                     }
                                                 )}
                                                 >
-                                                    <Row className={"rounded-full items-center justify-between  p-1  hover:border-transparent  cursor-pointer hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50"}>
-                                                        <Row className='flex-row gap-x-3 items-center'>
-                                                            <Profile
-                                                                {...currentUser}
-                                                                url_avatar={currentUser.avatar}
-                                                                displayType="unit_wo_info"
-                                                                displaySize="sm"
-                                                            />
-                                                            <Text className="text-base flex-auto my-auto font-semibold truncate text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
-                                                                {currentUser.display_name}
-                                                            </Text>
-                                                        </Row>
-
-                                                    </Row>
-                                                </DropdownMenu>
+                                                    
+                                                </DropdownMenu>*/}
                                             </View>
                                             <View className='ml-2'>
                                                 {menu_add_items.length > 0 && <MenuAdd typestyle="button" buttonProps={buttonProps} />}
