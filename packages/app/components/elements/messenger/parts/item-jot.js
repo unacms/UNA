@@ -66,7 +66,7 @@ export default function JotItem({ item, index, handleReply }) {
 
     const reactionsWithUpdatedParams = {
         ...item.reactions,
-        params: { ...item.reactions.params, button_size: "xs" }
+        params: { ...item.reactions.params, button_size: "xs", button_variant: "link" }
       };
 
     const Jot = <View className='w-full pb-4'>
@@ -74,8 +74,8 @@ export default function JotItem({ item, index, handleReply }) {
             <View className="w-10 flex-0 ">
                 <Profile {...item.author_data} displayType="unit_wo_info" displaySize="base" showInfo="false" />
             </View>
-            <View className='flex-1 flex-col gap-y-1 mb-2 '>
-                <View className={'bg-neutral-500/10 border border-neutral-500/10 rounded-lg px-2.5 u-vanilla-html-small  py-2'} >
+            <View className='flex-1 flex-col gap-y-1  '>
+                <View className={'bg-bgritem dark:bg-bgritem-d rounded-xl px-3 u-vanilla-html-small  py-2'} >
                     <View className="flex-row flex-1 items-center mb-0.5 overflow-hidden">
                         <Profile {...item.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
                         <View><Text className="text-neutral-500 px-1">·</Text></View>
@@ -117,9 +117,9 @@ export default function JotItem({ item, index, handleReply }) {
                 </View>
             </View>
         </View>
-        <View className="flex-row justify-between items-center ml-2">
+        <View className="flex-row justify-between items-center ml-2 mt-0.5">
             <View className="pl-10">
-                <Button align="start" title={t("Reply")} size="xs" startDecorator="ArrowBendLeftUp" variant="outline" onPress={() => handleReplyInner(item)} rounded />
+                <Button align="start" title={t("Reply")} size="xs" startDecorator="ArrowBendLeftUp" variant="link" onPress={() => handleReplyInner(item)} rounded />
             </View>
             <Row className='mr-1'>
                 <View className='mr-2'>
@@ -134,7 +134,7 @@ export default function JotItem({ item, index, handleReply }) {
                             title: aItem.title
                         };
                     })} onSelect={handleManageMenuSelect}>
-                        <Button variant="outline" size="xs" startDecorator="DotsThreeOutline"  rounded />
+                        <Button variant="text" size="xs" startDecorator="DotsThreeOutline"  rounded />
                     </DropdownMenu>
                 }
             </Row>

@@ -407,8 +407,8 @@ const Convos = memo(({ layoutHeightLeft, data, refListConvos, selectedConvoIndex
     const srch = <InputRounded name="search" placeholder={("Search") + '...'} value={searchValue} onChangeText={(value) => handleSearch(value)} />;
 
 
-    return <View style={{ height: layoutHeightLeft }} className={' w-full bg-bgrcard dark:bg-bgrcard-d md:w-2/5  border-bdr dark:border-bdr-d border-r'}>
-        <Row className='py-2 px-3 border-b border-bdr dark:border-bdr-d gap-x-4'>
+    return <View style={{ height: layoutHeightLeft }} className={' w-full bg-bgrcard dark:bg-bgrcard-d lg:w-80 2xl:w-96 border-bdrtabbar dark:border-bdrtabbar-d border-r'}>
+        <Row className='py-2 px-3 sm:px-4 border-b border-bdrtabbar dark:border-bdrtabbar-d gap-x-4'>
             <View className='flex-auto hidden lg:flex'>
                 {srch}
             </View>
