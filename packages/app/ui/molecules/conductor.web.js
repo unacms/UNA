@@ -418,68 +418,12 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     }, [windowWidth, currentUser, cntWidth, header, smallHeader]);
 
     const RenderScene = useCallback(({ route, status }) => {
-        let inputs = route?.endpoint?.filters?.inputs;
-        if (appSetting('layout', 'hide_browse_filter') === true)
-            inputs =null
+        const filters = appSetting('layout', 'hide_browse_filter') ? null : route?.endpoint?.filters;
         const counter = appSetting('layout', 'show_nav_counters') ? 0 : route.addon ? (route.addon.text ? route.addon.text : route.addon) : 0;
         const isTitle = appSetting('layout', 'show_nav_titles');
         return (
             <>
-                {
-                    inputs && (
-
-                        <Row className={appSetting('layout', 'max_width') + " mx-auto w-full p-3 sm:p-4 pb-1 sm:pb-0 w-full gap-x-4 items-center "}>
-
-                            {Object.keys(inputs).map((key, index) => {
-                                if (inputs[key].type == 'radio_set') {
-                                    let values = [];
-                                    if (Array.isArray(inputs[key].values)) {
-                                        values = inputs[key].values.map(function (key) {
-                                            return key.value && key.key != "date_range" ? { label: key.value, value: key.key } : null;
-                                        });
-                                        values = values.filter(Boolean);
-                                    }
-                                    return (
-                                        <Row key={index} className="items-center">
-                                            {/* <Text className="text-neutral-800 dark:text-neutral-200 text-base">{inputs[key].caption}: </Text>*/}
-                                            <Dropdown
-                                                labelField="label"
-                                                valueField="value"
-                                                value={route?.endpoint?.params?.filters?.[inputs[key].name]}
-                                                onChange={(value) => setFilterValue([{ name: inputs[key].name, value: value }])}
-                                                data={values}
-                                            />
-                                        </Row>
-                                    );
-                                } else if (inputs[key].type == 'text') {
-                                    return (
-                                        <Row key={index} className="items-center">
-                                            <Input
-                                                name="search"
-                                                placeholder={inputs[key].caption}
-                                                value={route?.endpoint?.params?.filters?.[inputs[key].name]}
-
-                                                onChangeText={(value) => setFilterValue(inputs[key].name, value)}
-                                            />
-                                        </Row>
-                                    );
-                                } else if (inputs[key].type == 'location') {
-                                    return (
-                                        <Row key={index} className="items-center">
-                                            <Location
-                                                name="search"
-                                                value={{ location_string: route?.endpoint?.params?.filters?.[inputs[key].name] }}
-                                                onChange={(value) => { setFilterValue([{ name: inputs[key].name, value: value.location_string }, { name: inputs[key].name + '_country', value: value.country }, { name: inputs[key].name + '_state', value: value.state }, { name: inputs[key].name + '_city', value: value.city }]) }}
-                                            />
-                                        </Row>
-                                    );
-                                }
-                                return null; // Return null if none of the conditions are met
-                            })}
-                        </Row>
-
-                    )
-                }
+                {callFn("getFiltersForConductor", [filters, setFilterValue, route?.endpoint?.params?.filters])}
                 {counter > 0 && <View className="mx-4 mb-0 mt-2"><Text className="text-xl font-bold text-neutral-800  dark:text-neutral-200 ">{route.title} ({counter})</Text></View>}
                 {isTitle && <View className={`${conductorTheme.content_max_width} mx-auto w-full mt-4 px-4`}><Text className="text-2xl font-bold text-neutral-800  dark:text-neutral-200 ">{route.title}</Text></View>}
                 <TabScene status={status} route={route} width={windowWidth} index={index} />
@@ -594,7 +538,6 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                 </Row>
             )
         }
-
     };
 
     const handleLayoutTop = (event) => {

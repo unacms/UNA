@@ -10,6 +10,7 @@ import { Button } from 'app/design/controls';
 import { getBlocksFromData, LAYOUT_BREAKPOINTS } from 'app/lib/util';
 import { memo } from 'react';
 import { Platform } from 'react-native'
+import { callFn } from 'app/lib/functions/call';
 
 const conductorTheme = appSetting('theme', 'conductor');
 
@@ -359,6 +360,11 @@ export const ItemRendererMemo = memo(ItemRenderer);
 
 
 export function getNumCols(width, currentRoute, leftSideBar) {
+    const customNumCol = callFn("getNumColsForConductor", [width, currentRoute, leftSideBar]);
+    console.log("customNumCol", customNumCol)
+    if (customNumCol > 0)
+        return customNumCol;
+    console.log("currentRoutecurrentRoute", currentRoute)
     const isWeb = Platform.OS === 'web';
     const blocksroutes = currentRoute?.blocks;
 
