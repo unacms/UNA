@@ -23,6 +23,7 @@ import { useBottomSheetData } from 'app/context/bottomsheet';
 import Profile from 'app/ui/molecules/profile'
 import { useRouter } from "expo-router";
 import ElementMsg from 'app/components/elements/msg';
+import { getBackButtonWeb } from 'app/lib/conductor-helpers'
 
 export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, fetchConvos, data, onSave, addButtons }) {
     const isWeb = Platform.OS == 'web'
@@ -49,9 +50,9 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     const [replyItem, setReplyItem] = useState(false);
 
     const layoutHeightLeft = layoutHeight;
-    let layoutHeightRight = isWeb ? layoutHeight - 48 - formHeight - 10 : layoutHeight - formHeight - 10 ;
- if (listError)
-    layoutHeightRight = layoutHeightRight-60
+    let layoutHeightRight = isWeb ? layoutHeight - 40 - formHeight : layoutHeight - formHeight - 10;
+    if (listError)
+        layoutHeightRight = layoutHeightRight - 60
     let { data: dynamicData, error } = useSWR(
         commentForm ? ['/api.php?r=bx_messenger/get_send_form/Services&params=' + JSON.stringify({ id: selectedConvo.id, convo_id: selectedConvo.id, reply_id: replyItem ? replyItem.id : 0 }), '', commentForm] : null,
         fetcher,
@@ -63,13 +64,13 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     );
 
     useEffect(() => {
-        data.form.data.inputs.message.value='';
+        data.form.data.inputs.message.value = '';
         setReplyItem(false);
         setCommentForm(false);
         if (dynamicData?.data?.jot_id > 0)
             scrolTo();
 
-        if (dynamicData?.data?.data){
+        if (dynamicData?.data?.data) {
             setJotUpdated(dynamicData?.data?.data);
         }
 
@@ -150,8 +151,8 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
 
     useEffect(() => {
         console.log("aaaa");
-    setListError(null);
-}, [convoId]);
+        setListError(null);
+    }, [convoId]);
     const onNewMessage = (data) => {
         if (data.id == convoId) {
             setJotUpdated(data);
@@ -171,17 +172,10 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
             if (selectedConvo.unread > 0)
                 offset = selectedConvo.unread - 1;
             if (isWeb) {
-                //offset
-                // if (jots?.data?.params?.start == 0){
                 setTimeout(() => {
-                    refListJots.current.scrollToIndex({ animated: false, align: "end", behavior: "smooth", index: 9999999999 });
+                    if (refListJots?.current)
+                        refListJots.current.scrollToIndex({ animated: false, align: "end", behavior: "smooth", index: 9999999999 });
                 }, 100);
-
-                //  }
-            }
-            else {
-                //console.log('-----------------', jots.data?.jots?.length - offset - 1)
-                //refListJots.current.scrollToEnd();
             }
         }
 
@@ -189,10 +183,10 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
 
     useEffect(() => {
         if (jotUpdated) {
-            
+
             if (jotUpdated.action == 'added') {
                 console.log("jotUpdated", jotUpdated)
-                if (jotUpdated.data.jots){
+                if (jotUpdated.data.jots) {
                     setJots(prevJots => ({
                         ...prevJots,
                         data: {
@@ -201,7 +195,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
                         }
                     }));
                 }
-                if (jotUpdated.data.msg){
+                if (jotUpdated.data.msg) {
                     setListError(jotUpdated.data.msg);
                 }
             }
@@ -326,10 +320,10 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     };
 
     const handleBackButton = () => {
-        if (!panelsVisible.convos){
+        if (!panelsVisible.convos) {
             showConvo()
         }
-        else{
+        else {
             setConvoId(-1);
             routerExpo.back();
         }
@@ -344,35 +338,36 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
         handleSearch={handleSearch}
         searchValue={searchValue}
         onSave={onSave}
+        addButtons={addButtons}
     />
     const jotsComponent = (panelsVisible.jots && selectedConvo && jots?.data?.jots) && <View className={' w-full md:w-3/5 h-full flex-1 bg-bgrcard dark:bg-bgrcard-d'}>
-          <KbAvoidingView className='w-full h-full flex-1'>
-        <View className='w-full flex-auto'>
-            <Jots
-                isSmallScreen={isSmallScreen}
-                title={selectedConvo.title}
-                layoutHeightRight={layoutHeightRight}
-                data={jots?.data?.jots}
-                refListJots={refListJots}
-                showConvo={showConvo}
-                deleteConvo={deleteConvo}
-                leaveConvo={leaveConvo}
-                getConvo={getConvo}
-                editConvo={editConvo}
-                handleReply={handleReply}
-                startReached={handleStartReached}
+        <KbAvoidingView className='w-full h-full flex-1'>
+            <View className='w-full flex-auto'>
+                <Jots
+                    isSmallScreen={isSmallScreen}
+                    title={selectedConvo.title}
+                    layoutHeightRight={layoutHeightRight}
+                    data={jots?.data?.jots}
+                    refListJots={refListJots}
+                    showConvo={showConvo}
+                    deleteConvo={deleteConvo}
+                    leaveConvo={leaveConvo}
+                    getConvo={getConvo}
+                    editConvo={editConvo}
+                    handleReply={handleReply}
+                    startReached={handleStartReached}
+                />
+                {listError && <View className='mx-4'><ElementMsg data={listError} /></View>}
+            </View>
+
+            <FormContainer
+                form={data.form}
+                replyItem={replyItem}
+                onFormSubmit={onFormSubmit}
+                handleCancelReply={handleCancelReply}
+                handleLayout={handleLayout}
             />
-            {listError && <View className='mx-4'><ElementMsg data={listError}/></View>}
-        </View>
-        
-        <FormContainer
-            form={data.form}
-            replyItem={replyItem}
-            onFormSubmit={onFormSubmit}
-            handleCancelReply={handleCancelReply}
-            handleLayout={handleLayout}
-        />
-         </KbAvoidingView>
+        </KbAvoidingView>
     </View>
 
     if (!isWeb) {
@@ -387,7 +382,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     }
 
     return (
-        <View style={{ height: layoutHeight }} className={appSetting('layout', 'max_width') + ' mx-auto xl:border-x border-bdr dark:border-bdr-d w-full items-stretch bg-bgrcard dark:bg-bgrcard-d'}>
+        <View style={{ height: layoutHeight }} className={appSetting('layout', 'max_width') + ' mx-auto  w-full items-stretch '}>
             <Msg onVisible={showMsg} title={showMsg} handleOk={() => { setShowMsg(false) }} />
             <Row className='items-stretch '>
                 {convosComponent}
@@ -397,16 +392,39 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     );
 }
 
-const Convos = memo(({ layoutHeightLeft, data, refListConvos, selectedConvoIndex, changeConvo, onSave, searchValue, handleSearch }) => {
+const Convos = memo(({ layoutHeightLeft, data, refListConvos, selectedConvoIndex, changeConvo, onSave, searchValue, handleSearch, addButtons }) => {
+
+    const [showSearch, setShowSearch] = useState(false);
+
+    function handleSearch2() {
+        setShowSearch(!showSearch)
+    }
 
     function onSave2() {
         handleSearch('')
     }
 
+    const srch = <InputRounded name="search" placeholder={("Search") + '...'} value={searchValue} onChangeText={(value) => handleSearch(value)} />;
 
-    return <View style={{ height: layoutHeightLeft }} className={' w-full bg-bgrcard dark:bg-bgrcard-d md:w-2/5  border-bdr dark:border-bdr-d border-r'}>
-        <Row className='py-2 px-3 border-b border-bdr dark:border-bdr-d'>
-            <InputRounded name="search" placeholder={("Search") + '...'} value={searchValue} onChangeText={(value) => handleSearch(value)} />
+
+    return <View style={{ height: layoutHeightLeft }} className={' w-full bg-bgrcard dark:bg-bgrcard-d lg:w-80 2xl:w-96 border-bdrtabbar dark:border-bdrtabbar-d border-r'}>
+        <Row className='py-2 px-3 sm:px-4 border-b border-bdrtabbar dark:border-bdrtabbar-d gap-x-4'>
+            <View className='flex-auto hidden lg:flex'>
+                {srch}
+            </View>
+            {!showSearch && <Row className='lg:hidden flex-auto  items-center '>
+                {getBackButtonWeb()}
+                <Text className="text-2xl lg:hidden font-bold text-neutral-800 dark:text-neutral-200 ">Messenger</Text>
+            </Row>}
+            {showSearch && <Row className='lg:hidden flex-auto  items-center '>
+                {srch}
+            </Row>}
+            <Row className='flex-row my-auto gap-x-2'>
+                <View className='lg:hidden  '>
+                <Button startDecorator="MagnifyingGlass" variant="secondary" rounded onPress={() => handleSearch2()} />
+                </View>
+                {addButtons}
+            </Row>
         </Row>
         {data && data.length > 0 ? <>
 
@@ -439,35 +457,35 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
     const [keyboardHeight, setKeyboardHeight] = useState(initValue);
 
     useEffect(() => {
-      const showSubscription = Keyboard.addListener('keyboardDidShow', (e) => {
-        setKeyboardHeight(e.endCoordinates.height);
-      });
-      const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
-        setKeyboardHeight(initValue); // Reset keyboard height
-      });
-  
-      return () => {
-        showSubscription.remove();
-        hideSubscription.remove();
-      };
+        const showSubscription = Keyboard.addListener('keyboardDidShow', (e) => {
+            setKeyboardHeight(e.endCoordinates.height);
+        });
+        const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
+            setKeyboardHeight(initValue); // Reset keyboard height
+        });
+
+        return () => {
+            showSubscription.remove();
+            hideSubscription.remove();
+        };
     }, []);
 
     return (<>
         <View className='md:px-0 border-bdrcard dark:border-bdrcard-d border-b'>
-            {isWeb && <Row className='px-2 py-3 items-center justify-between w-full h-[60px]'>
+            {isWeb && <Row className='px-3 py-2 items-center justify-between w-full h-[56px]'>
                 <Row className='items-center justify-start overflow-hidden flex-auto '>
-                    {isSmallScreen && <Button variant="text" startDecorator='ArrowLeft' rounded align="start" onPress={() => showConvo()} />}
-                    <Text  numberOfLines={1} className="text-lg lg:text-xl font-bold font-bold tracking-tight  text-neutral-900 dark:text-neutral-50">{title}</Text>
+                    {isSmallScreen && <View className='mr-2'><Button variant="secondary" startDecorator='ArrowLeft' rounded align="start" onPress={() => showConvo()} /></View>}
+                    <Text numberOfLines={1} className="text-lg lg:text-xl font-bold font-bold tracking-tight  text-neutral-900 dark:text-neutral-50">{title}</Text>
                 </Row>
                 <Row className='items-center gap-x-2 '>
-                    <Button buttonTooltip="Edit participants list" startDecorator="Users" variant="outline" rounded size="sm" onPress={() => editConvo()} />
-                    <Button buttonTooltip="Leave" startDecorator="SignOut" variant="outline" rounded size="sm" onPress={() => leaveConvo()} />
-                    <Button buttonTooltip="Delete" startDecorator='Trash' variant="outline" rounded size="sm" onPress={() => deleteConvo()} />
-                    <Button buttonTooltip="Info" startDecorator='Info' variant="outline" rounded size="sm" onPress={() => getConvo()} />
+                    <Button buttonTooltip="Edit participants list" startDecorator="Users" variant="secondary" rounded onPress={() => editConvo()} />
+                    <Button buttonTooltip="Leave" startDecorator="SignOut" variant="secondary" rounded  onPress={() => leaveConvo()} />
+                    <Button buttonTooltip="Delete" startDecorator='Trash' variant="secondary" rounded  onPress={() => deleteConvo()} />
+                    <Button buttonTooltip="Info" startDecorator='Info' variant="secondary" rounded  onPress={() => getConvo()} />
                 </Row>
             </Row>}
         </View>
-        <View style={{ height: layoutHeightRight-keyboardHeight }} className='m-2'>
+        <View style={{ height: layoutHeightRight - keyboardHeight }} className='mx-2'>
             {data.length > 0 && <UniList
                 refer={refListJots}
                 {...(Platform.OS !== 'web' ? { inverted: true } : {})}
@@ -476,7 +494,7 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
                 onEndReached={!isWeb ? startReached : null}
                 scrollToLastItem={true}
                 data={isWeb ? data : data.slice().reverse()}
-                height={layoutHeightRight-keyboardHeight}
+                height={layoutHeightRight - keyboardHeight}
 
                 useWindowScroll
                 renderItem={({ item, index }) => <ItemJot handleReply={handleReply} item={item} index={index} />}
@@ -488,26 +506,26 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
 const FormContainer = memo(({ form, replyItem, onFormSubmit, handleCancelReply, handleLayout }) => {
     let padding = 12;
     return (
-            <View className='bg-bgrcard dark:bg-bgrcard-d border-t border-bdr dark:border-bdr-d' onLayout={handleLayout} style={{ paddingTop: padding, paddingBottom: padding }}>
-                <View className=' ' >
-                    {
-                        replyItem && (<View className='bg-bgrcard dark:bg-bgrcard-d rounded-sm border-l-2 border-primary/50 py-1 pl-2 mt-2 mx-2'>
-                            <Row className='items-start justify-between max-w-full relative'>
-                                <View className=' flex-auto pr-4'>
-                                    <Row className='max-w-full '>
-                                        <Text className='text-xs text-neutral-900 dark:text-neutral-50'>Reply to: </Text>
-                                        <Text className='font-semibold text-xs text-neutral-900 dark:text-neutral-50'>{replyItem.author_data.display_name}</Text>
-                                    </Row>
-                                    <Text className='text-sm overflow-hidden text-neutral-900 dark:text-neutral-50' numberOfLines={3}>{linkedText(replyItem.message, "hover:text-linkhover")}</Text>
-                                </View>
-                                <View className=" right-0 t-0">
-                                    <Button align="start" rounded startDecorator="X" size="xs" variant="outline" onPress={() => handleCancelReply()} />
-                                </View>
-                            </Row>
-                        </View>)
-                    }
-                    <Form {...form} name='bx_messenger' resetOnSubmit={true} classContainerName={" flex-row flex-wrap w-full items-start justify-between"} onFormSubmit={onFormSubmit} />
-                </View>
+        <View className='bg-bgrcard dark:bg-bgrcard-d border-t border-bdr dark:border-bdr-d' onLayout={handleLayout} style={{ paddingTop: padding, paddingBottom: padding }}>
+            <View className=' ' >
+                {
+                    replyItem && (<View className='bg-bgrcard dark:bg-bgrcard-d rounded-sm border-l-2 border-primary/50 py-1 pl-2 mt-2 mx-2'>
+                        <Row className='items-start justify-between max-w-full relative'>
+                            <View className=' flex-auto pr-4'>
+                                <Row className='max-w-full '>
+                                    <Text className='text-xs text-neutral-900 dark:text-neutral-50'>Reply to: </Text>
+                                    <Text className='font-semibold text-xs text-neutral-900 dark:text-neutral-50'>{replyItem.author_data.display_name}</Text>
+                                </Row>
+                                <Text className='text-sm overflow-hidden text-neutral-900 dark:text-neutral-50' numberOfLines={3}>{linkedText(replyItem.message, "hover:text-linkhover")}</Text>
+                            </View>
+                            <View className=" right-0 t-0">
+                                <Button align="start" rounded startDecorator="X" size="xs" variant="outline" onPress={() => handleCancelReply()} />
+                            </View>
+                        </Row>
+                    </View>)
+                }
+                <Form {...form} name='bx_messenger' resetOnSubmit={true} classContainerName={" flex-row flex-wrap w-full items-start justify-between"} onFormSubmit={onFormSubmit} />
             </View>
+        </View>
     )
 });

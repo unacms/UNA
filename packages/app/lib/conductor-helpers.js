@@ -10,15 +10,16 @@ import { Button } from 'app/design/controls';
 import { getBlocksFromData, LAYOUT_BREAKPOINTS } from 'app/lib/util';
 import { memo } from 'react';
 import { Platform } from 'react-native'
+import { callFn } from 'app/lib/functions/call';
 
 const conductorTheme = appSetting('theme', 'conductor');
 
 export function getBackButtonWeb() {
     if (history.length > 2) {
         return (
-            <Pressable className=" lg:hidden bg-bgrcard backdrop-blur dark:bg-bgrcard-d mr-2 w-10 h-10 text-neutral-800 dark:text-neutral-200 border border-bdrcard dark:border-bdrcard-d rounded-full justify-center items-center" onPress={() => history.back()} >
-                <Icon icon="ArrowLeft" width={24} height={24} />
-            </Pressable>
+            <View className="lg:hidden mr-2"  >
+               <Button rounded={true} variant="secondary" startDecorator="ArrowLeft" onPress={() => history.back()}/>
+            </View>
         )
     }
     return <></>
@@ -359,6 +360,11 @@ export const ItemRendererMemo = memo(ItemRenderer);
 
 
 export function getNumCols(width, currentRoute, leftSideBar) {
+    const customNumCol = callFn("getNumColsForConductor", [width, currentRoute, leftSideBar]);
+    console.log("customNumCol", customNumCol)
+    if (customNumCol > 0)
+        return customNumCol;
+    console.log("currentRoutecurrentRoute", currentRoute)
     const isWeb = Platform.OS === 'web';
     const blocksroutes = currentRoute?.blocks;
 

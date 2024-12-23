@@ -90,7 +90,7 @@ export default function (props) {
             <View className={appSetting('layout', 'max_width') + " w-full flex-row flex-auto mx-auto"}>
                 <Row className='w-full'>
                     {(menu_sidebar_items.length > 0 && (props.uri != 'home' || (props.uri == 'home' && currentUser))) && <View className='hidden lg:block w-full lg:w-80 '>
-                        <View className=' pt-16 fixed-process w-80'>
+                        <View className=' pt-16 fixed-process w-80 max-h-screen overflow-scroll	'>
                             <View className='px-4 py-3'>
                                 <ProfileSwitcher hideTitle={true} useDefault={true} />
                                 {menu_sidebar_items.map(
@@ -126,7 +126,7 @@ export default function (props) {
                 </Row>
             </View>
             {!bIsHideHeader && <View className={(props.layoutName == 'profile' || props.layoutName == 'messenger' || props.layoutName == 'post' ? 'hidden lg:flex ' : '') + " fixed w-full"}>
-                <View className=" backdrop-blur h-16  items-center w-full shadow-sm border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d  ">
+                <View className=" backdrop-blur h-14  items-center w-full shadow-sm border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d  ">
                     <View className={appSetting('layout', 'max_width') + "  w-full flex-row flex-auto  items-center "}>
                         <HeaderLine headerSettings={headerSettings} currentUser={currentUser} uri={props.uri} title={sTitle} showMenu={showMenu} menuPopup={menuPopup} setMenuPopup={setMenuPopup} />
 

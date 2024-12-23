@@ -29,8 +29,10 @@ import NotificationsSettings from './notifications_settings';
 import CourseStructure from './course_structure';
 import ModuleStructure from './module_structure';
 import EditCourseContent from './edit_course_content';
+import Messenger from './messenger';
 
 export const componentsMapDefault = {
+    messenger_main_page: Messenger,
     chart: Chart,
     comment_content:CommentContent,
     browse: Browse,
