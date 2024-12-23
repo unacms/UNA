@@ -3,21 +3,6 @@ import { appSetting, FeedbackHaptics } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { ButtonMenuActionDefault, ButtonMenuActionText } from 'app/design/controls';
 
-const isElementVar = (elementData, sName) => {
-    return elementData?.[sName] != undefined;
-};
-
-const getElementVar = (elementData, sName) => {
-    return elementData[sName];
-};
-
-const setElementVars = (elementData, setElementData, mValue) => {
-    if(!elementData)
-        setElementData(mValue);
-    else
-        setElementData({...elementData, ...mValue});
-};
-
 const performAction = async (sSystem, iObjectId, sAction, aParams, onLoad) => {
     const aParamsDefault = {s: sSystem, o: iObjectId};
 
@@ -29,7 +14,7 @@ const performAction = async (sSystem, iObjectId, sAction, aParams, onLoad) => {
         onLoad(sResponse?.data);
 };      
 
-const handleDo = (performAction, setElementVars, sHapticsType, fOnDo, fOnDone, oEvent) => {
+const handleDo = (performAction, objectData, setObjectData, sHapticsType, fOnDo, fOnDone, oEvent) => {
     if(!!oEvent)
         oEvent.preventDefault();
 
@@ -39,7 +24,7 @@ const handleDo = (performAction, setElementVars, sHapticsType, fOnDo, fOnDone, o
         fOnDo();
 
     performAction('perform', {}, (oData) => {
-        setElementVars(oData);
+        setObjectData(!objectData ? oData : { ...objectData, ...oData})
 
         if(fOnDone && typeof fOnDone === 'function')
             fOnDone(oData);
@@ -47,8 +32,6 @@ const handleDo = (performAction, setElementVars, sHapticsType, fOnDo, fOnDone, o
 };
 
 export default function ElementFeatures(oProps) {
-    const [ elementData, setElementData ] = useState(false);
-
     const oSettings = appSetting('social_actions', 'feature');
     const oParams = {...oSettings, ...oProps.params};
     const oAction = oProps.action;
@@ -66,29 +49,19 @@ export default function ElementFeatures(oProps) {
         showTitleFromSize: oProps.params?.button_show_title_from_size
     };
 
-    const _isElementVar = useCallback((sName) => isElementVar(elementData, sName), [elementData]);
-    const _getElementVar = useCallback((sName) => getElementVar(elementData, sName), [elementData]);
-    const _setElementVars = useCallback((mValue) => setElementVars(elementData, setElementData, mValue), [elementData, setElementData]);
+    const [ objectData, setObjectData ] = useState(oAction);
+
     const _performAction = useCallback((sAction, aParams, onLoad) => performAction(oProps.system, oProps.object_id, sAction, aParams, onLoad), [oProps.system, oProps.object_id]);
-    const _handleDo = useCallback((event) => handleDo(_performAction, _setElementVars, oParams.haptics_type, (oProps.params?.on_do ? oProps.params.on_do : false), (oProps.params?.on_done ? oProps.params.on_done : false), event), [_performAction, _setElementVars, oParams.haptics_type, oProps.params.on_do, oProps.params.on_done]);
+    const _handleDo = useCallback((event) => handleDo(_performAction, objectData, setObjectData, oParams.haptics_type, (oProps.params?.on_do ? oProps.params.on_do : false), (oProps.params?.on_done ? oProps.params.on_done : false), event), [_performAction, objectData, setObjectData, oParams.haptics_type, oProps.params.on_do, oProps.params.on_done]);
 
     //--- show action
     const bShowActionAsButton = oParams?.show_action_as_button == undefined || oParams.show_action_as_button === true;
     const bShowActionLabel = oParams?.show_action_label == undefined || oParams.show_action_label === true;
 
     const bShowActionUndo = oAction?.is_undo === true;
-
-    let bShowActionFeatured = oAction?.is_featured === true;
-    if(_isElementVar('is_featured'))
-        bShowActionFeatured = _getElementVar('is_featured') === true;
-
-    let bShowActionDisabled = oAction?.is_disabled === true;
-    if(_isElementVar('is_disabled'))
-        bShowActionDisabled = _getElementVar('is_disabled') === true;
-
-    let sTitle = oAction?.title || '';
-    if(_isElementVar('title'))
-        sTitle = _getElementVar('title');
+    const bShowActionFeatured = objectData?.['is_featured'] != undefined ? objectData['is_featured'] === true : false;
+    const bShowActionDisabled = objectData?.['is_disabled'] != undefined ? objectData['is_disabled'] === true : false;
+    const sTitle = objectData?.['title'] != undefined ? objectData['title'] : '';
 
     const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
     if(oIcons)

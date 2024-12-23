@@ -5,6 +5,7 @@ import Reactions from './reactions';    // optimized
 import Scores from './scores';  // optimized
 import Comments from './comments';  // optimized
 import Features from './features';  // optimized
+import Favorites from './favorites';  // optimized
 import Reports from './reports';    // optimized
 import Reposts from './reposts';    // optimized
 import Shares from './shares';  // optimized
@@ -18,6 +19,7 @@ export const componentsMapDefault = {
     scores: memo(Scores),
     comments: (Comments),
     features:memo(Features),
+    favorites:memo(Favorites),
     reports: memo(Reports),
     reposts: memo(Reposts),
     shares: memo(Shares),

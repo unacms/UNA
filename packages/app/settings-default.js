@@ -347,6 +347,15 @@ export const settingsDefault = {
         },
         feature: {
             show_action_as_button: true,
+            haptics_type: 'Medium',
+        },
+        favorite: {
+            show_action: true,
+            show_action_as_button: true,
+            show_action_label: true,
+            show_counter: true,
+            show_counter_as_button: false,
+            haptics_type: 'Medium',
         },
     },
     menu_meta: {
