@@ -2,7 +2,7 @@ import { View, Row } from 'app/design/view'
 import { fetcher } from 'app/lib/fetcher';
 import { useState, useEffect, useRef, useContext } from 'react';
 import { useCurrentUser } from 'app/context/user';
-import * as Location from 'expo-location';
+//import * as Location from 'expo-location'; //EXPO 52 UPDATE
 import { stripTags } from 'app/lib/util';
 import { Button } from 'app/design/controls';
 import Image from 'app/ui/atoms/image'
@@ -14,12 +14,12 @@ import Redirect from 'app/ui/atoms/redirect';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 
 const getGeo = async () => {
-    let { status } = await Location.requestForegroundPermissionsAsync();
+  /*  let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== 'granted') {
         console.log('Permission to access location was denied');
         return;
     }
-    return await Location.getCurrentPositionAsync({})
+    return await Location.getCurrentPositionAsync({})*/
 };
 
 function toRadians(degrees) {

@@ -1,4 +1,5 @@
-import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps'; // remove PROVIDER_GOOGLE import if not using Google Maps
+//import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps'; //EXPO 52 UPDATE
+// 
 import { Text } from 'app/design/typography'
 import { StyleSheet } from 'react-native'
 import { View, Row } from 'app/design/view'
@@ -7,7 +8,8 @@ import { Icon } from 'app/ui/atoms/icon'
 
 export default function ElementMap({data}) {
 
-    const tokyoRegion = {
+    return <>TODO</>
+   /* const tokyoRegion = {
         latitude: 35.6762,
         longitude: 139.6503,
         latitudeDelta: 0.01,
@@ -61,5 +63,5 @@ export default function ElementMap({data}) {
             </MapView>
 
         </View>
-    );
+    );*/
 }

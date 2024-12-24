@@ -17,7 +17,6 @@ const fixReanimatedIssue = () => {
 }
 fixReanimatedIssue()
 
-import { Provider } from 'app/provider'
 import 'app/styles/global.css'
 
 export  function Page (props) {
@@ -48,14 +47,14 @@ export  function Page (props) {
 
   return (
     <>
-        <Provider>
+
           <QueryClientProvider client={queryClient}>
               {!!process.env['VERCEL'] ? <Analytics /> : null}
               <Layout path={props?.path} data={props.data} uri={props?.uri}>
                 <StaticBlock  name='static:dummy'></StaticBlock>
               </Layout>
           </QueryClientProvider>
-        </Provider>
+
       
     </>
   )

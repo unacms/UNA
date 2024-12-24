@@ -2,7 +2,6 @@
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Tabs from 'app/components/nav/tabs';
 import React, { useMemo } from 'react';
-import { Provider } from 'app/provider'
 import { Theme } from 'app/design/theme'
 import { ThemeProvider } from "@react-navigation/native";
 import { useColorScheme } from 'react-native';
@@ -104,7 +103,6 @@ const AppLayout = React.memo(() => {
             <StatusBar backgroundColor={colors.barsBackground}
 
                 translucent={true} />
-            <Provider>
                 <QueryClientProvider client={queryClient}>
                     <SafeAreaView edges={['left', 'right']} style={containerStyle}>
 
@@ -112,7 +110,6 @@ const AppLayout = React.memo(() => {
 
                     </SafeAreaView>
                 </QueryClientProvider>
-            </Provider>
         </ThemeProvider>
     );
 });

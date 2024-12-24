@@ -3,13 +3,14 @@ import Link from 'app/ui/atoms/link'
 import { Button } from 'app/design/controls'
 import { menuItemsByName, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { appSetting } from 'app/lib/util'
-import { MotiView, AnimatePresence } from 'moti'
+//import { MotiView, AnimatePresence } from 'moti'
 import { useTranslation } from 'react-i18next';
 import { Dimensions, Platform } from 'react-native'
 import { useCurrentUser } from 'app/context/user'
 
 export default function ({ menuPopup, showMenu, cssClass }) {
-    const { currentUser, setCurrentUser } = useCurrentUser();
+    return <></>
+    /*const { currentUser, setCurrentUser } = useCurrentUser();
     const items = menuItemsByName('main_menu', appSetting('menu_items', 'menu_drawer'), currentUser);
     const handleHideMenu = (params) => { }
 
@@ -93,5 +94,5 @@ export default function ({ menuPopup, showMenu, cssClass }) {
                 </View>
             )}
         </AnimatePresence>
-    );
+    );*/
 }

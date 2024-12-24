@@ -18,7 +18,7 @@ const fixReanimatedIssue = () => {
 }
 fixReanimatedIssue()
 
-import { Provider } from 'app/provider'
+
 
 
 import 'app/styles/global.css'
@@ -51,7 +51,7 @@ export  function Page (props) {
 // <PageCustomHome {...props} blocks={layoutBlocks}></PageCustomHome>
   return (
     <>
-        <Provider>
+
           <QueryClientProvider client={queryClient}>
           
               {!!process.env['VERCEL'] ? <Analytics /> : null}
@@ -60,7 +60,7 @@ export  function Page (props) {
               </Layout>
 
           </QueryClientProvider>
-        </Provider>
+
       
     </>
   )

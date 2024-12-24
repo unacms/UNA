@@ -3,7 +3,7 @@ import Field, { getValidationRules } from './_field';
 import { View, Row, Pressable } from 'app/design/view'
 import Image from 'app/ui/atoms/image';
 import * as ImagePicker from 'expo-image-picker';
-import * as ImageManipulator from 'expo-image-manipulator'
+//import * as ImageManipulator from 'expo-image-manipulator'
 import { Button } from 'app/design/controls';
 import { Icon } from 'app/ui/atoms/icon';
 import { genRnd, appSetting } from 'app/lib/util';
@@ -150,10 +150,10 @@ export default function (props) {
                             manipulatedWidth = Math.round((width * manipulatedHeight) / height);
                         }
 
-                        const resizedPhoto = await ImageManipulator.manipulateAsync(uri, [
+                        /*const resizedPhoto = await ImageManipulator.manipulateAsync(uri, [
                             { resize: { width: manipulatedWidth, height: manipulatedHeight } }
-                        ]);
-                        uri = resizedPhoto.uri;
+                        ]);*/
+                        //uri = resizedPhoto.uri;
                     }
 
                     let hash = md5(uri);

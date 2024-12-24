@@ -1,4 +1,4 @@
-import Video from 'react-native-video';
+//import Video from 'react-native-video'; //EXPO 52 UPDATE
 import {StyleSheet} from 'react-native';
 /*
 export default function ElementVideo(props) {
@@ -19,7 +19,7 @@ export default function ElementVideo({src, controls, cover, autoplay, muted}) {
     });    
 
     return (
-        <Video 
+        /*<Video 
             controls={controls}
             ref={(ref) => {
                 this.player = ref
@@ -30,6 +30,6 @@ export default function ElementVideo({src, controls, cover, autoplay, muted}) {
             onError={this.videoError}        
             source={{uri:src}}    
             style={styles.backgroundVideo}
-        />
+        />*/
     )
 }

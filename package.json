@@ -6,8 +6,8 @@
     "packages/*"
   ],
   "devDependencies": {
-    "@types/react": "~18.2.14",
-    "eslint": "^8.21.0",
+    "@types/react": "~18.3.12",
+    "eslint": "^9.17.0",
     "lerna-update-wizard": "^1.1.2",
     "turbo": "^1.4.2",
     "typescript": "^5.7.2"

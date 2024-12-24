@@ -21,7 +21,6 @@ import CreateConvo, { CreateConvoButton } from 'app/components/elements/messenge
 import Msg from 'app/ui/molecules/msg';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import Profile from 'app/ui/molecules/profile'
-import { useRouter } from "expo-router";
 import ElementMsg from 'app/components/elements/msg';
 import { getBackButtonWeb } from 'app/lib/conductor-helpers'
 
@@ -38,9 +37,6 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     const [jotUpdated, setJotUpdated] = useState(false);
     const [formHeight, setFormHeight] = useState(100);
     const [showMsg, setShowMsg] = useState(false);
-
-    const routerExpo = useRouter()
-
     const refListConvos = useRef();
     const refListJots = useRef();
     const selectedConvoIndex = convos?.data && convoId ? convos.data.findIndex(item => item.id === convoId) : -1;

@@ -10,12 +10,10 @@ import Card from 'app/ui/molecules/card'
 import Redirect from 'app/ui/atoms/redirect';
 import { storageClear } from 'app/lib/util';
 import { Platform } from 'react-native'
-import { useRouter } from "expo-router";
 import Link from 'app/ui/atoms/link'
 
 export default function ElementConfirmEmail(props) {
     const isWeb = Platform.OS == 'web'
-    const router = useRouter();
     let { currentUser, setCurrentUser } = useCurrentUser();
     const [showMsg, setShowMsg] = useState(false);
     const [inputValue, setInputValue] = useState("");

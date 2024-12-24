@@ -1,3 +1,4 @@
+const path = require('path'); // Импорт path
 const { withExpo } = require('@expo/next-adapter')
 const merge = require('deepmerge');
 const nextConfigCustom = require('./next.config.custom.js');
@@ -25,12 +26,10 @@ const nextConfig = {
     swcPlugins: [[require.resolve('./plugins/swc_plugin_reanimated.wasm')]],
   },*/
   transpilePackages: [
+    
     'react-native',
     'react-native-web',
     'solito',
-    '@radix-ui/react-dropdown-menu',
-    'dripsy',
-    '@dripsy/core',
     'react-native-reanimated',
     'nativewind',
     '@expo/html-elements',
@@ -38,8 +37,7 @@ const nextConfig = {
     '@react-native-clipboard/clipboard',
     'react-native-reactions',
     '@babel/core',
-    '@babel/plugin-proposal-export-namespace-from',
-   // '@react-navigation/native',
+    '@react-navigation/native',
     'react-native-calendars',
     'react-native-image-pan-zoom',
     'react-native-swipe-gestures',
@@ -52,11 +50,10 @@ const nextConfig = {
     'expo-location',
     'expo-camera',
     'expo-document-picker',
-    'react-native-svg',
     'expo-image-manipulator',
-    'react-native-svg-transformer',
     'expo-constants',
-    'expo-router',
+    "react-native-svg",
+    '@expo/metro-runtime',
     'i18next',
     'react-i18next',
     'react-native-localize',
@@ -65,6 +62,10 @@ const nextConfig = {
     'react-native-star-rating-widget',
     '@openspacelabs/react-native-zoomable-view'
   ],
+  webpack: (config) => {
+    config.resolve.alias['react-native-svg'] = path.resolve(__dirname, 'node_modules/react-native-svg');
+    return config;
+  },
   images: {
     remotePatterns: [
       {
