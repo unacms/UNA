@@ -6,7 +6,7 @@ export default function ElementVideo(props) {
 }*/
 
 export default function ElementVideo({src, controls, cover, autoplay, muted}) {
-    var styles = StyleSheet.create({
+   /* var styles = StyleSheet.create({
         backgroundVideo: {
             position: 'absolute',
             top: 0,
@@ -17,8 +17,8 @@ export default function ElementVideo({src, controls, cover, autoplay, muted}) {
             height: '100%',
         }
     });    
-
-    return (
+*/
+    return ( <></>
         /*<Video 
             controls={controls}
             ref={(ref) => {

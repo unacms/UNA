@@ -512,13 +512,13 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
     let padding = 12;
     if (isModal)
         padding = 0;
-    const { colors } = useTheme();
+
 
     let className = "w-full backdrop-blur rounded-b-xl";
     if (isModal)
         className = "w-full h-screen bg-bgrcard dark:bg-bgrcard-d";
     return (
-        <View className={className} style={{ backgroundColor: colors.barsBackground, paddingTop: padding, paddingBottom: padding }}>
+        <View className={className} style={{  paddingTop: padding, paddingBottom: padding }}>
             {
                 form?.data?.inputs?.cmt_parent_id?.value > 0 && (<View className=' rounded-sm border-l-2 border-primary/50  py-1 pl-2 mx-3 mb-2'>
                     <Row className='items-start justify-between max-w-full relative'>

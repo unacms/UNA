@@ -34,7 +34,7 @@ export default function FormComments(props) {
         <View className={'mr-2 ' + (isWeb ? '' : ' w-11 ')}>
                 {getFormFieldByData(props.data.inputs['cmt_image'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder, noMargin: true, asDefaultStorage:true })}
             </View>
-            <View className={`flex-auto bg-bgritem dark:bg-bgritem-d rounded-3xl justify-center ${isWeb && 'min-h-[44px]'} items-end ${sPad}`} >
+            <View className={`flex-auto bg-bgritem dark:bg-bgritem-d rounded-3xl justify-center  ${isWeb ? 'min-h-[44px]' : 'min-h-[44px]'} items-end ${sPad}`} >
                 {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['cmt_cf'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['cmt_parent_id'], props.handleSubmit, 'custom')}

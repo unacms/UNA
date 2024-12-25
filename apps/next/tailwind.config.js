@@ -14,7 +14,8 @@ module.exports = {
   },
   darkMode: ['class', '[theme="dark"]'],
   important: 'html',
-  plugins: [require('nativewind/tailwind/css'), require('@tailwindcss/typography')],
+  presets: [require("nativewind/preset")],
+  plugins: [],
   future: {hoverOnlyWhenSupported: true}
 }
 

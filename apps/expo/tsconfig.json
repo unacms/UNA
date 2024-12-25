@@ -6,7 +6,8 @@
   },
   "include": [
     "app/**/*.ts",
-    "app/**/*.tsx"
+    "app/**/*.tsx",
+    "nativewind-env.d.ts"
   ],
   "references": []
 }

@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "allowJs": true,
+    "jsxImportSource": "nativewind",
     "baseUrl": ".",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,

@@ -85,8 +85,6 @@ export default function Block(props) {
 }
 
 export function BlockWrapper(props) {
-
-    console.log("propsprops!", props)
     let { block, showTitle, showBg, fullWidth, showPad, ...rest } = props
     block.designbox_id = Number(block.designbox_id);
     const aNoTitle = [0, 10, 13, 3];

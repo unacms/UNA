@@ -1,8 +1,8 @@
 import { Text as NativeText, Platform } from 'react-native'
-import { styled } from 'nativewind'
+
 import { appSetting, decodeText } from 'app/lib/util'
 
-const Text_ = styled(NativeText)
+const Text_ = NativeText
 
 export const Text = ({ children, className, fontFamily, style: propStyle, ...rest }) => {
 
@@ -20,25 +20,44 @@ export const Text = ({ children, className, fontFamily, style: propStyle, ...res
 /**
  * Components can have defaultProps and styles
  */
-const H1_ = styled(NativeText, 'text-2xl lg:text-3xl font-bold my-4')
-
-export const H1 = ({ children, ...rest }) => {
-    const correctedChildren = typeof children === 'string' ? decodeText(children) : children;
-    return <H1_ {...rest} allowFontScaling={false}>{correctedChildren}</H1_>;
-};
-
-const H1C_ = styled(NativeText, ' text-2xl lg:text-3xl font-bold ')
-
-
-export const H1C = ({ children, ...rest }) => {
-    const correctedChildren = typeof children === 'string' ? decodeText(children) : children;
-    return <H1C_ {...rest} allowFontScaling={false}>{correctedChildren}</H1C_>;
-};
-
-export const H2_ = styled(NativeText, 'text-xl font-extrabold mt-2 mb-3')
-
-
-export const H2 = ({ children, ...rest }) => {
-    const correctedChildren = typeof children === 'string' ? decodeText(children) : children;
-    return <H2_ {...rest} allowFontScaling={false}>{correctedChildren}</H2_>;
-};
+export const H1 = ({ children, className, ...rest }) => {
+    const correctedChildren =
+      typeof children === 'string' ? decodeText(children) : children;
+    return (
+      <NativeText
+        className={`text-2xl lg:text-3xl font-bold my-4 ${className || ''}`}
+        {...rest}
+        allowFontScaling={false}
+      >
+        {correctedChildren}
+      </NativeText>
+    );
+  };
+  
+  export const H1C = ({ children, className, ...rest }) => {
+    const correctedChildren =
+      typeof children === 'string' ? decodeText(children) : children;
+    return (
+      <NativeText
+        className={`text-2xl lg:text-3xl font-bold ${className || ''}`}
+        {...rest}
+        allowFontScaling={false}
+      >
+        {correctedChildren}
+      </NativeText>
+    );
+  };
+  
+  export const H2 = ({ children, className, ...rest }) => {
+    const correctedChildren =
+      typeof children === 'string' ? decodeText(children) : children;
+    return (
+      <NativeText
+        className={`text-xl font-extrabold mt-2 mb-3 ${className || ''}`}
+        {...rest}
+        allowFontScaling={false}
+      >
+        {correctedChildren}
+      </NativeText>
+    );
+  };

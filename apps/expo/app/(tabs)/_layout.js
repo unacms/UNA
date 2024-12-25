@@ -25,6 +25,7 @@ import { Platform } from 'react-native'
 import { LogLevel, OneSignal } from 'react-native-onesignal';
 
 
+
 const AppLayout = React.memo(() => {
 
     if (appSetting('layout', 'disable_screenshots')) {

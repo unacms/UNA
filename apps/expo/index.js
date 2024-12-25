@@ -15,6 +15,9 @@ import { memo, useState, useEffect, useContext, useMemo } from 'react'
 import InitialScreen from './initial_screen'
 import Constants from 'expo-constants';
 import { View } from 'react-native';
+//import { verifyInstallation } from 'nativewind';
+import "./global.combined.css";
+
 
 if (__DEV__) {
 	import('./ReactotronConfig').then(() => console.log('Reactotron Configured'));
@@ -42,7 +45,8 @@ export function App() {
 	const ctx = useMemo(() => require.context('./app'), []);
 
 	const expoRootComponent = useMemo(() => <ExpoRoot context={ctx} />, [ctx]);
-
+	//verifyInstallation();
+	
 	return <GestureHandlerRootView style={{ flex: 1 }}>
 
 		{expoRootComponent}

@@ -2,7 +2,7 @@
 import { VirtuosoGrid, Virtuoso } from 'react-virtuoso'
 import { View } from 'app/design/view'
 import { View as ReactNativeView } from 'react-native'
-import { styled } from 'nativewind'
+
 import { storageSet, appSetting } from 'app/lib/util'
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { useCallback } from 'react';
@@ -60,8 +60,17 @@ export default function UniList(props) {
         storageSet('ul:state', rest.storagekey, ch);
     }
 
-    const ItemComponent = styled(ReactNativeView, ' w-1/' + props.numColumns)
-    const ListComponent = styled(ReactNativeView, appSetting('layout', 'max_width_block') + ' mx-auto flex flex-wrap flex-row')
+    const ItemComponent = ({ className, ...props }) => (
+        <ReactNativeView className={`w-1/${numColumns} ${className || ''}`} {...props} />
+    );
+
+    const ListComponent = ({ className, ...props }) => {
+        const maxWidthBlock = appSetting('layout', 'max_width_block');
+        return(
+        <ReactNativeView className={`${maxWidthBlock} mx-auto flex flex-wrap flex-row ${className || ''}`} {...props} />
+        )
+    };
+
 
     const commonVirtuosoProps = {
         data,

@@ -21,6 +21,7 @@ const expoConfig = {
       "ios",
       "android"
     ],
+    "userInterfaceStyle": "automatic",
     "ios": {
       "supportsTablet": true,
       "associatedDomains": ["neo.so"],

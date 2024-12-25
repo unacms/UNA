@@ -8,10 +8,10 @@ module.exports = {
   safelist: [
     'gap-x-2',
   ],
+  presets: [require("nativewind/preset")],
   theme: {
     ...theme,
   },
   plugins: [],
-  future: {hoverOnlyWhenSupported: true}
 }
 

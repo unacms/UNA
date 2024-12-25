@@ -2,7 +2,6 @@ import React, { memo, useMemo, useEffect } from 'react';
 import { TextInput as TextInputDef, Modal as ModalDef, Platform, Switch as SwitchDef } from 'react-native'
 import { Pressable, View, ScrollView, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
-import { styled } from 'nativewind'
 import { Icon } from 'app/ui/atoms/icon'
 import { appSetting, isEmoji, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { Picker as PickerDef } from '@react-native-picker/picker';
@@ -12,21 +11,27 @@ import { useWindowDimensions } from 'react-native';
 import Loading from 'app/ui/atoms/loading'
 import { RemoveScroll } from 'react-remove-scroll';
 
-let h11 = '';
-if (Platform.OS === 'android') {
-    h11 = ' h-11'
-}
-
-
 /* inputs */
 const inputSettings = appSetting('theme', 'inputs');
 
-export const Input = styled(TextInputDef, inputSettings.default)
-export const InputMulti = styled(TextInputDef, inputSettings.multi)
-export const InputRounded = styled(TextInputDef, inputSettings.rounded )
-export const InputRoundedSmall = styled(TextInputDef, inputSettings.roundedsmall )
-export const InputSmall = styled(TextInputDef, inputSettings.small )
-export const Hidden = styled(TextInputDef, 'hidden')
+export const Input = ({ className, ...props }) => (
+    <TextInputDef className={inputSettings.default} {...props} />
+);
+export const InputMulti = ({ className, ...props }) => (
+    <TextInputDef className={inputSettings.multi} {...props} />
+);
+export const InputRounded = ({ className, ...props }) => (
+    <TextInputDef className={inputSettings.rounded} {...props} />
+);
+export const InputRoundedSmall = ({ className, ...props }) => (
+    <TextInputDef className={inputSettings.roundedsmall} {...props} />
+);
+export const InputSmall = ({ className, ...props }) => (
+    <TextInputDef className={inputSettings.small} {...props} />
+);
+export const Hidden = ({ className, ...props }) => (
+    <TextInputDef className={'hidden'} {...props} />
+);
 
 export const Switch = (props) => Platform.OS == 'web' ? <View className="w-16 h-8 pl-2 pt-1.5"><SwitchDef {...props} style={{
     ...(props.size != 'sm' ? { transform: [{ scaleX: 1.4 }, { scaleY: 1.4 }] } : {}),
@@ -35,8 +40,13 @@ export const Switch = (props) => Platform.OS == 'web' ? <View className="w-16 h-
 
 
 const PickerStyles = ' appearance-none bg-bgrinput  border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg  flex-auto px-3 py-2 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus dark:text-neutral-100 text-base '
-export const PickerStyled = styled(PickerDef, PickerStyles + ' ')
-export const PickerStyledIos = styled(PickerDef, PickerStyles)
+export const PickerStyled = ({ className, ...props }) => (
+    <PickerDef className={PickerStyles} {...props} />
+);
+
+export const PickerStyledIos = ({ className, ...props }) => (
+    <PickerDef className={PickerStyles} {...props} />
+);
 
 const modalSettings = appSetting('theme', 'modal');
 

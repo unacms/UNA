@@ -6,7 +6,7 @@ import { useState, useMemo, useEffect } from 'react';
 import React from 'react';
 import { View } from 'app/design/view'
 import { TextInput as TextInputDef} from 'react-native'
-import { styled } from 'nativewind'
+
 import FormFieldFtf from './rtf'
 
 /*function FormFieldFtf(props) {
@@ -58,7 +58,7 @@ export default function FormFieldText(props) {
     if (props.viewClasses){
 
         const InputMulti2 = useMemo(() => {
-            return styled(TextInputDef, props.viewClasses)
+            return TextInputDef
         }, []);
     
         input = <InputMulti2

@@ -6,12 +6,19 @@ import { useState, useRef, useEffect } from 'react';
 import { fetcher } from 'app/lib/fetcher';
 import { replaceMentionValues } from 'react-native-controlled-mentions';
 import { MentionInput as MentionInputDef } from 'react-native-controlled-mentions'
-import { styled } from 'nativewind'
 import { Theme } from 'app/design/theme';
 
-const MentionInput = styled(MentionInputDef, ' bg-bgrinput  border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg   w-full p-2 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus placeholder-neutral-500 dark:text-neutral-100 text-base leading-5 h-[40px]')
-const MentionInputMulti = styled(MentionInputDef, ' bg-bgrinput text-neutral-900 border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df rounded-lg   w-full p-2 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus placeholder-neutral-500 dark:text-neutral-100 text-base leading-5')
-const MentionInputMultiTransparent = styled(MentionInputDef, '  rounded-lg   w-full px-2 pb-1 pt-3  dark:focus:bg-bgrinput-dafocus placeholder-neutral-500 text-neutral-900 dark:text-neutral-100 text-base leading-5 ')
+export const MentionInput = ({ className, ...props }) => (
+    <MentionInputDef className={'bg-bgrinput border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg   w-full p-2 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus placeholder-neutral-500 dark:text-neutral-100 text-base leading-5 h-[40px]'} {...props} />
+);
+
+export const MentionInputMulti = ({ className, ...props }) => (
+    <MentionInputDef className={'bg-bgrinput text-neutral-900 border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df rounded-lg   w-full p-2 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus placeholder-neutral-500 dark:text-neutral-100 text-base leading-5'} {...props} />
+);
+
+export const MentionInputMultiTransparent = ({ className, ...props }) => (
+    <MentionInputDef className={'rounded-lg w-full px-2 pb-1 pt-3 dark:focus:bg-bgrinput-dafocus placeholder-neutral-500 text-neutral-900 dark:text-neutral-100 text-base leading-5 '} {...props} />
+);
 
 function formatText(text) {
     //TODO REPLACE TO BR

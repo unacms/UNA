@@ -32,6 +32,7 @@ const nextConfig = {
     'solito',
     'react-native-reanimated',
     'nativewind',
+    "react-native-css-interop",
     '@expo/html-elements',
     'react-native-gesture-handler',
     '@react-native-clipboard/clipboard',
