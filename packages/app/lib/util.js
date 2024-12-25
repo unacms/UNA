@@ -1,4 +1,4 @@
-import * as Haptics from 'expo-haptics'; //EXPO 52 UPDATE
+//import * as Haptics from 'expo-haptics'; //EXPO 52 UPDATE
 import { Platform } from 'react-native'
 import { fetcher } from 'app/lib/fetcher';
 import { stringMd5 } from 'react-native-quick-md5';
@@ -698,7 +698,7 @@ export function mergeDeep(target, ...sources) {
 }
 
 export function FeedbackHaptics(type) {
-    const bWeb = Platform.OS === 'web';
+    /*const bWeb = Platform.OS === 'web';
     if (bWeb) return;
     //https://docs.expo.dev/versions/latest/sdk/haptics/
     switch (type) {
@@ -730,7 +730,7 @@ export function FeedbackHaptics(type) {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy)
             break;
 
-    }
+    }*/
 }
 
 function isObject(item) {
