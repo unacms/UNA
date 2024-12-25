@@ -361,10 +361,8 @@ export const ItemRendererMemo = memo(ItemRenderer);
 
 export function getNumCols(width, currentRoute, leftSideBar) {
     const customNumCol = callFn("getNumColsForConductor", [width, currentRoute, leftSideBar]);
-    console.log("customNumCol", customNumCol)
     if (customNumCol > 0)
         return customNumCol;
-    console.log("currentRoutecurrentRoute", currentRoute)
     const isWeb = Platform.OS === 'web';
     const blocksroutes = currentRoute?.blocks;
 

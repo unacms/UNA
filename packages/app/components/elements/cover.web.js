@@ -12,7 +12,7 @@ import * as ImagePicker from 'expo-image-picker'
 import { uploadImage, md5, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { genRnd, getLayout } from 'app/lib/util'
 import { fetcher } from 'app/lib/fetcher'
-//import * as ImageManipulator from 'expo-image-manipulator' //EXPO 52 UPDATE
+import { manipulateAsync, FlipType, SaveFormat } from 'expo-image-manipulator'
 import { Image as ImageNative } from 'react-native'
 import { useCurrentUser } from 'app/context/user'
 import { CoverMenuMeta, CoverMenu, CoverMenuSmall } from 'app/components/nav/menu-cover'
@@ -133,14 +133,15 @@ export default function (props) {
                             }
 
                             const resizedPhoto =
-                                /*await ImageManipulator.manipulateAsync(uri, [
+                                await manipulateAsync(uri, [
                                     {
                                         resize: {
                                             width: manipulatedWidth,
                                             height: manipulatedHeight,
                                         },
                                     },
-                                ])*/
+                                ])
+                                //console.log("resizedPhotoresizedPhoto", resizedPhoto, manipulatedWidth,manipulatedHeight)
                             uri = resizedPhoto.uri
                         }
                     }
@@ -170,7 +171,7 @@ export default function (props) {
                             acts.push({ resize: { width: 500, height: 500 } })
                         }
                         const resizedPhoto =
-                            await ImageManipulator.manipulateAsync(uri, acts)
+                            await manipulateAsync(uri, acts)
                         uri = resizedPhoto.uri
                     }
                     let hash = md5(uri)

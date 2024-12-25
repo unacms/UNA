@@ -756,7 +756,7 @@ export const settingsDefault = {
             {
                 key: '/tab1',
                 title: 'Messages',
-                url: '/messenger',
+                url: '/view-video/video-for-timeline',
                 icon: 'ChatTeardropDots',
             },
             {

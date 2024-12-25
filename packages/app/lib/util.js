@@ -1,11 +1,10 @@
-//import * as Haptics from 'expo-haptics'; //EXPO 52 UPDATE
+import * as Haptics from 'expo-haptics'; //EXPO 52 UPDATE
 import { Platform } from 'react-native'
 import { fetcher } from 'app/lib/fetcher';
 import { stringMd5 } from 'react-native-quick-md5';
 import pako from 'pako';
 import { useTranslation } from 'react-i18next';
 //import AsyncStorage from '@react-native-async-storage/async-storage';
-//import Clipboard from '@react-native-community/clipboard';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { decode } from 'html-entities';
 import { appSetting as setting, UNA_URL, APP_URL } from 'app/config';
@@ -699,7 +698,7 @@ export function mergeDeep(target, ...sources) {
 }
 
 export function FeedbackHaptics(type) {
-   /* const bWeb = Platform.OS === 'web';
+    const bWeb = Platform.OS === 'web';
     if (bWeb) return;
     //https://docs.expo.dev/versions/latest/sdk/haptics/
     switch (type) {
@@ -731,7 +730,7 @@ export function FeedbackHaptics(type) {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy)
             break;
 
-    }*/
+    }
 }
 
 function isObject(item) {

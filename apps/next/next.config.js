@@ -47,6 +47,7 @@ const nextConfig = {
     'recyclerlistview',
     'react-native-quick-md5',
     '@react-native-picker/picker',
+    'expo',
     'expo-image-picker',
     'expo-location',
     'expo-camera',

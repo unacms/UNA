@@ -5,7 +5,7 @@ import { View as ReactNativeView } from 'react-native'
 
 import { storageSet, appSetting } from 'app/lib/util'
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
-import { useCallback } from 'react';
+import { useCallback, forwardRef } from 'react';
 
 export default function UniList(props) {
     let { sortable, data, renderItem, onEndReached, maxToRenderPerBatch, initialNumToRender, contentContainerStyle, initialScrollIndex, ListHeaderComponent, ListFooterComponent, refer, onScrollToIndex,
@@ -64,12 +64,16 @@ export default function UniList(props) {
         <ReactNativeView className={`w-1/${numColumns} ${className || ''}`} {...props} />
     );
 
-    const ListComponent = ({ className, ...props }) => {
+    const ListComponent = forwardRef(({ className, ...props }, ref) => {
         const maxWidthBlock = appSetting('layout', 'max_width_block');
-        return(
-        <ReactNativeView className={`${maxWidthBlock} mx-auto flex flex-wrap flex-row ${className || ''}`} {...props} />
-        )
-    };
+        return (
+            <ReactNativeView
+                ref={ref}
+                className={`${maxWidthBlock} mx-auto flex flex-wrap flex-row ${className || ''}`}
+                {...props}
+            />
+        );
+    });
 
 
     const commonVirtuosoProps = {

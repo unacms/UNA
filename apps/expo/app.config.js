@@ -112,6 +112,13 @@ const expoConfig = {
          
         }
       ],
+      [
+        "expo-video",
+        {
+          "supportsBackgroundPlayback": true,
+          "supportsPictureInPicture": true
+        }
+      ],
       /*[
         "onesignal-expo-plugin",
         {

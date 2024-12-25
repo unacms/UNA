@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, forwardRef } from 'react';
 import { Text } from 'app/design/typography';
 import { Pressable, View, Row } from 'app/design/view';
 import { Icon } from 'app/ui/atoms/icon';
@@ -9,12 +9,13 @@ import { isEmoji, appSetting } from 'app/lib/util';
 
 const menuSettings = appSetting('theme', 'dropdown_menu');
 
-const DropdownMenuContentV = (props) => (
+const DropdownMenuContentV = forwardRef((props, ref) => (
     <DropdownMenu.Content
+        ref={ref}
         className={menuSettings.content_ver}
         {...props}
     />
-);
+));
 
 const DropdownMenuContentH = (props) => (
     <DropdownMenu.Content

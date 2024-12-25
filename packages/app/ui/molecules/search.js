@@ -4,7 +4,7 @@ import { appSetting } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { Text } from 'app/design/typography'
 import { Pressable, View, Row, ScrollView } from 'app/design/view'
-import { Button, ButtonRef, Input, InputRounded, Modal } from 'app/design/controls';
+import { Button, ButtonRef, Input, InputRounded, InputRoundedRef, Modal } from 'app/design/controls';
 import Redirect from 'app/ui/atoms/redirect';
 import { UnitSearchResultsSmall as SearchResults } from 'app/components/units/search-results';
 import Link from 'app/ui/atoms/link';
@@ -69,8 +69,6 @@ export function ElementSearchData(oProps) {
     const redirectdRef = useRef();
     const sSection = oProps?.section ? oProps.section : '';
     const sUrlRedirect = '/search-keyword?keyword={keyword}' + (!!sSection ? '&section=' + sSection : '');
-
-    const oParams = oProps?.params ? oProps.params : {};
 
     const [inputValue, setInputValue] = useState('');
     const [popupOpenHandle, setPopupOpenHandle] = useState(true);
@@ -212,7 +210,7 @@ export function ElementSearchData(oProps) {
                 <Redirect ref={redirectdRef} />
                 {oProps.icon}
                 {!!popupContent && dd}
-                <InputRounded name="search" placeholder={t("Search") + '...'} onKeyPress={(event) => handleKeyPress(event)} value={inputValue} ref={inputRef} onChangeText={(value) => handleSearch(value)} />
+                <InputRoundedRef name="search" placeholder={t("Search") + '...'} onKeyPress={(event) => handleKeyPress(event)} value={inputValue} ref={inputRef} onChangeText={(value) => handleSearch(value)} />
                
             </Row>
         )

@@ -1,5 +1,4 @@
 import { View } from 'app/design/view'
-import { useMemo } from 'react';
 import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import * as ImagePicker from 'expo-image-picker';
@@ -406,6 +405,7 @@ export default function FormFieldFtf(props) {
             field.onChange(editor.getHTML());
         },
         editorProps: {
+            immediatelyRender: false,
             attributes: {
                 class: 'tiptap-'+(props.container_class ? props.container_class : 'default'),
             },

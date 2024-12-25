@@ -353,6 +353,10 @@ export function noContentByUrl(endpoint){
     return appStatic('components_content_empty')
 }
 
+export function getNumColsForConductor(width, currentRoute, leftSideBar) {
+    return 0;
+}
+
 export function getFiltersForConductor(filters, setFilterValue, filterValues) {
     const inputs = filters?.inputs;
     if (!inputs)

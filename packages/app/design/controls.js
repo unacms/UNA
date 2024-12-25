@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useEffect } from 'react';
+import React, { useMemo, forwardRef } from 'react';
 import { TextInput as TextInputDef, Modal as ModalDef, Platform, Switch as SwitchDef } from 'react-native'
 import { Pressable, View, ScrollView, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
@@ -23,8 +23,11 @@ export const InputMulti = ({ className, ...props }) => (
 export const InputRounded = ({ className, ...props }) => (
     <TextInputDef className={inputSettings.rounded} {...props} />
 );
+export const InputRoundedRef = forwardRef((className, ref, ...props) => (
+    <TextInputDef className={inputSettings.rounded} {...props}  />
+));
 export const InputRoundedSmall = ({ className, ...props }) => (
-    <TextInputDef className={inputSettings.roundedsmall} {...props} />
+    <TextInputDef className={inputSettings.roundedsmall} ref={ref} {...props} />
 );
 export const InputSmall = ({ className, ...props }) => (
     <TextInputDef className={inputSettings.small} {...props} />

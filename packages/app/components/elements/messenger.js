@@ -16,12 +16,10 @@ import MenuDrawer from 'app/components/nav/menu-drawer'
 
 export default function MessengerEl(props) {
    // console.log({ url, data, layoutName, blocks: { main } })
-    console.log(props);
     const url=props.url;
     const layoutName=props.layoutName;
     const data=props.data;
     const data2 = props;
-    console.log(data2);
 
     const isWeb = Platform.OS == 'web'
     const sTitle = 'Messenger';
