@@ -356,6 +356,7 @@ export default function FormFieldFtf(props) {
     };
 
     const editor = useEditor({
+        immediatelyRender: false,
         parseOptions: {
             preserveWhitespace: 'full',
         },
@@ -405,7 +406,7 @@ export default function FormFieldFtf(props) {
             field.onChange(editor.getHTML());
         },
         editorProps: {
-            immediatelyRender: false,
+            
             attributes: {
                 class: 'tiptap-'+(props.container_class ? props.container_class : 'default'),
             },

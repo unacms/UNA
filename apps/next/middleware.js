@@ -5,6 +5,7 @@ import ReactDOMServer from 'react-dom/server';
 export const config = {
     matcher: ["/((?!static|_next|sw.js|manifest.json|logo192.png|loader.svg|favicon.ico|_vercel).*)"],
     //runtime: 'experimental-edge',
+    runtime: 'nodejs',
 };
 
 export function middleware(request) {
