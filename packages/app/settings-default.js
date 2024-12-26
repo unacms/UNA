@@ -116,6 +116,7 @@ export const settingsDefault = {
         share_text: '',
         fixed_cover: false,
         tooltips: true,
+        back_for_profile: '/friends'
     },
     forms: {
         sys_login: { hide_errors: true, button_full_width: true },
@@ -755,7 +756,7 @@ export const settingsDefault = {
             {
                 key: '/tab1',
                 title: 'Messages',
-                url: '/view-video/video-for-timeline',
+                url: '/messenger',
                 icon: 'ChatTeardropDots',
             },
             {
@@ -1076,7 +1077,7 @@ export const settingsDefault = {
                     fullWidth:true
                 },
             },
-            headerSettings: { backButton: false, offset: false },
+            headerSettings: { header: false, footer: true, offset: false },
         },
         login: {
             layout: 'login',

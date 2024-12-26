@@ -15,6 +15,8 @@ import { callFn } from 'app/lib/functions/call';
 const conductorTheme = appSetting('theme', 'conductor');
 
 export function getBackButtonWeb() {
+    const isWeb = Platform.OS === 'web';
+    if (!isWeb) return <></>;
     if (history.length > 2) {
         return (
             <View className="lg:hidden mr-2"  >

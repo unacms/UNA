@@ -21,10 +21,10 @@ export default function ElementCommentForm(props) {
         bottomSheet: {
             borderWidth: 0,
             shadowColor: "#000",
-            shadowOffset: {
+            /*shadowOffset: {
                 width: 0,
                 height: 3,
-            },
+            },*/
             shadowOpacity: 0.27,
             shadowRadius: 4.25,
 

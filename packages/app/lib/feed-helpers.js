@@ -506,5 +506,5 @@ export const UnitFeed = ({ data, mode, DefaultUnit, SmallUnit }) => {
 
     let unit = mode == 'small' ? SmallUnit(datas) : DefaultUnit(datas)
 
-    return <>{unit}</>
+    return unit
 };

@@ -28,13 +28,13 @@ export default function FormComments(props) {
     props.data.inputs['cmt_image'].rounded = 'true';
     props.data.inputs['cmt_image'].variant = 'default';
 
-    const sPad = isWeb ? 'p-2' : (isIos || isWeb) ? 'px-2 pb-2' : 'px-1';
+    const sPad = 'p-2';//isWeb ? 'p-2' : (isIos || isWeb) ? 'px-2 pb-2' : 'px-1';
     return <View className='w-full ' >
         <Row className='w-full items-end  '>
         <View className={'mr-2 ' + (isWeb ? '' : ' w-11 ')}>
                 {getFormFieldByData(props.data.inputs['cmt_image'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder, noMargin: true, asDefaultStorage:true })}
             </View>
-            <View className={`flex-auto bg-bgritem dark:bg-bgritem-d rounded-3xl justify-center  ${isWeb ? 'min-h-[44px]' : 'min-h-[44px]'} items-end ${sPad}`} >
+            <View className={`flex-auto bg-bgritem dark:bg-bgritem-d rounded-3xl justify-center  ${isWeb ? 'min-h-[44px]' : 'min-h-[36px] '} items-end ${sPad}`} >
                 {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['cmt_cf'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['cmt_parent_id'], props.handleSubmit, 'custom')}

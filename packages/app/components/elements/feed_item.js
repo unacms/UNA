@@ -80,7 +80,7 @@ export default function ElementFeedItem({ data }) {
                 data.event.menu_actions.items.length > 0 && (<View className=" flex-row items-center ">
                     <View className=" flex-auto flex-wrap text-wrap ">
                         {(!!data.event.menu_counters && appSetting('feed', 'counters_menu')) && <Row><CounterMenu data={data.event.menu_counters}  /></Row>}
-                        <View className=' py-2 border-t mt-1 border-bdr dark:border-bdr-d '><ActionMenu data={data.event.menu_actions}  /></View>
+                        <View className=' py-2 border-t mt-1 border-bdr dark:border-bdr-d w-full'><ActionMenu data={data.event.menu_actions}  /></View>
                     </View>
                 </View>)
             }

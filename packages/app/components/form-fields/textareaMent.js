@@ -16,9 +16,18 @@ export const MentionInputMulti = ({ className, ...props }) => (
     <MentionInputDef className={'bg-bgrinput text-neutral-900 border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df rounded-lg   w-full p-2 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus placeholder-neutral-500 dark:text-neutral-100 text-base leading-5'} {...props} />
 );
 
-export const MentionInputMultiTransparent = ({ className, ...props }) => (
-    <MentionInputDef className={'rounded-lg w-full px-2 pb-1 pt-3 dark:focus:bg-bgrinput-dafocus placeholder-neutral-500 text-neutral-900 dark:text-neutral-100 text-base leading-5 '} {...props} />
-);
+export const MentionInputMultiTransparent = ({ className,  ...props }) => {
+    console.log ("props", props);
+    return(
+    
+    <MentionInputDef style={{
+        borderColor: 'gray',
+        borderWidth: 1,
+        height:20,
+        padding: 0,
+        borderRadius: 5,
+    }}  {...props} />
+)};
 
 function formatText(text) {
     //TODO REPLACE TO BR
@@ -129,7 +138,7 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
         );
     };
 
-    let styles = { verticalAlign: 'top' };
+    let styles = { };
     if (name != 'cmt_text') {
         styles = { ...styles, minHeight: 100 }
     }
