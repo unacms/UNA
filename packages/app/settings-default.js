@@ -1,5 +1,4 @@
 import { env } from 'app/lib/env'
-import Tooltip from './ui/atoms/tooltip.web'
 
 export const settingsDefault = {
     config: {

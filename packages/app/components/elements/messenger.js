@@ -3,15 +3,11 @@ import { View, Row, Pressable } from 'app/design/view'
 import React, { memo, useState, useEffect, useContext, useMemo } from 'react';
 import { appSetting, getLayout, menuItemsByName, getHeaderSettings, getURI, parseUrl, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
-import { DataByName } from 'app/components/block';
-import { LeftSidebar, TopSidebar } from 'app/lib/conductor-helpers';
 import { useWindowDimensions } from 'react-native';
-import { Button } from 'app/design/controls'
 import Messenger from 'app/components/elements/messenger/parts/common'
 import { CreateConvoButton } from 'app/components/elements/messenger/parts/new-convo';
 import { fetcher } from 'app/lib/fetcher';
 import { Platform } from 'react-native'
-import MenuDrawer from 'app/components/nav/menu-drawer'
  
 
 export default function MessengerEl(props) {
@@ -132,7 +128,7 @@ const MessengerContainer = memo(({ convos, selectedMenu, url, data, windowWHeigh
     );
 });
 
-
+/*
 const TopMenu = memo(({ url, currentUser, windowWidth, isLeftMenu, addButtons, layoutName, sTitle, menu, changeMenu, isDrawer }) => {
     const isWeb = Platform.OS == 'web'
     const [menuPopup, setMenuPopup] = useState(false)
@@ -169,6 +165,6 @@ const TopMenu = memo(({ url, currentUser, windowWidth, isLeftMenu, addButtons, l
         </>);
 }
 );
-
+*/
 
 

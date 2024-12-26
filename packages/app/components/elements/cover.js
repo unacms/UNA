@@ -4,7 +4,7 @@ import { stripTags, appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import Profile from 'app/ui/molecules/profile'
 import { useWindowDimensions } from 'react-native'
 import Image from 'app/ui/atoms/image'
-import { useRouter } from 'expo-router'
+import { useRouter, useSegments  } from 'expo-router'
 import { Theme } from 'app/design/theme'
 import { Icon } from 'app/ui/atoms/icon'
 import Menu from 'app/components/menu'
@@ -12,7 +12,7 @@ import { BlurView } from 'expo-blur';
 import ProfilesList from 'app/ui/molecules/profile_list'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { Button } from 'app/design/controls'
-
+import Link from 'app/ui/atoms/link'
 
 function CoverMenu(props) {
 
@@ -100,7 +100,8 @@ export function CoverSmall(props) {
 
                 )}
             </View>
-            <Pressable
+            <Link href={appSetting('layout', 'back_for_profile')}>
+            <View
                 className="mx-4 bg-bgrcard dark:bg-bgrcard-d w-10 h-10 rounded-full justify-center items-center"
                 onPress={routerExpo.back}
             >
@@ -110,7 +111,8 @@ export function CoverSmall(props) {
                     height={24}
                     color={colors.barsColor}
                 />
-            </Pressable>
+            </View>
+            </Link>
             <Profile
                 {...data.profile}
                 displayType="unit_wo_info"
@@ -127,6 +129,8 @@ export function CoverSmall(props) {
 
 export default function ElementCover(props) {
     const routerExpo = useRouter()
+    const segments = useSegments();
+    console.log ("segments", segments, segments.length)
     const data = props.data
     const { colors } = Theme()
 
@@ -146,12 +150,14 @@ export default function ElementCover(props) {
                 )}
             </View>
             <Row className=" justify-left w-full h-24 pt-4">
-                <Pressable
+                <Link href={appSetting('layout', 'back_for_profile')}>
+                <View
                     className="mr-2 ml-2 bg-bgrnavbar dark:bg-bgrnavbar-d    w-10 h-10 rounded-full justify-center items-center"
-                    onPress={() => routerExpo.back()}
+                 
                 >
                     <Icon icon="ArrowLeft" width={24} height={24} color={colors.barsColor} />
-                </Pressable>
+                </View>
+                </Link>
             </Row>
             <View className="flex-col md:flex-row  px-2  ">
                 {bPerson ? <View className=" w-full  items-center  ">
@@ -167,7 +173,7 @@ export default function ElementCover(props) {
                 <View className="flex-col lg:flex-row px-2  my-4 flex-auto">
                     <View className=" flex-col  items-center md:items-start flex-auto  mb-2">
                         <Text className="tracking-tight text-3xl lg:text-4xl font-bold text-neutral-900 dark:text-neutral-50">
-                            {data.profile.display_name}
+                            {data.profile.display_name}{segments.length}
                         </Text>
 
                         <Row className='mb-2'>
