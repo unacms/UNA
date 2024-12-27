@@ -51,11 +51,11 @@ export default function JotItem({ item, index, handleReply }) {
         }
     }), [item]);
 
-    const onFormSubmit = (formData, d) => {
+    const onFormSubmit = useCallback((formData, d) => {
         formData.set("id", item.lot_id);
         setViewState({ view: '' })
         setPostData(formData);
-    }
+    },[]);
 
     const aManageMenu = useMemo(() => item.menu?.items.filter(item => ['remove', 'edit'].includes(item.name)), [item]);
 
@@ -69,7 +69,7 @@ export default function JotItem({ item, index, handleReply }) {
         params: { ...item.reactions.params, button_size: "xs", button_variant: "link" }
       };
 
-    const Jot = <View className='w-full pb-4'>
+    const Jot = <View className='w-full py-2'>
         <View className="flex-row gap-x-2 ">
             <View className="w-10 flex-0 ">
                 <Profile {...item.author_data} displayType="unit_wo_info" displaySize="base" showInfo="false" />
@@ -77,7 +77,7 @@ export default function JotItem({ item, index, handleReply }) {
             <View className='flex-1 flex-col gap-y-1  '>
                 <View className={'bg-bgritem dark:bg-bgritem-d rounded-xl px-3 u-vanilla-html-small  py-2'} >
                     <View className="flex-row flex-1 items-center mb-0.5 overflow-hidden">
-                        <Profile {...item.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
+                        <Profile {...item.author_data} displayType="unit_text_link"  />
                         <View><Text className="text-neutral-500 px-1">·</Text></View>
                         <Time ts={item.created}></Time>
                     </View>

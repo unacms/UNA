@@ -245,11 +245,11 @@ export default function (props) {
     const selectImage1 = useCallback(async (type, bIsMedia) => {
         if (bIsMedia) {
 
-            let mediaTypes = ImagePicker.MediaTypeOptions.All;
+            let mediaTypes = ['images', 'videos'];
             if (props.ext_allow.includes('jpg') && !props.ext_allow.includes('mp4'))
-                mediaTypes = ImagePicker.MediaTypeOptions.Images;
+                mediaTypes =  ['images'];
             if (props.ext_allow.includes('mp4') && !props.ext_allow.includes('mp4'))
-                mediaTypes = ImagePicker.MediaTypeOptions.Videos;
+                mediaTypes = ['videos'];
 
             let result = null
 

@@ -17,7 +17,6 @@ export const MentionInputMulti = ({ className, ...props }) => (
 );
 
 export const MentionInputMultiTransparent = ({ className,  ...props }) => {
-    console.log ("props", props);
     return(
     
     <MentionInputDef style={{

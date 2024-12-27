@@ -52,7 +52,7 @@ function DisplayNameLink({ title, url, href, fontSize, actions }) {
 
 function DisplayNameText({ title, fontSize }) {
     return (
-        <Text className={'text-neutral-700 hover:text-neutral-900 dark:text-neutral-200 dark:hover:text-neutral-50 ' + fontSize + ' tracking-tight truncate hover:underline'}>
+        <Text className={'text-neutral-700 hover:text-neutral-900 dark:text-neutral-200 dark:hover:text-neutral-50 ' + fontSize + '  font-semibold tracking-tight truncate hover:underline'}>
             {title}
         </Text>
     )
@@ -65,7 +65,7 @@ function DisplayInfo(oProps) {
 
 function UnitWoInfo({ oProps, sSize, sSizeFontLetter, iSizeWidth, bShowLinks, emulate }) {
     let name = oProps.display_name ? oProps.display_name.substr(0, 1) : ''
-    const content = <View className="relative flex-row">
+    const content = 
         <View className={sSize + " hover:animate-pulse overflow-hidden bg-bgritem dark:bg-bgritem-d  mx-auto rounded-full "}>
             {!oProps.url_avatar && <View className={'h-full items-center justify-center bg-' + getRandomColor(oProps.id) + '-500 uppercase'}>
                 <Text className={sSizeFontLetter + ' text-white '}>{name}</Text>
@@ -80,7 +80,7 @@ function UnitWoInfo({ oProps, sSize, sSizeFontLetter, iSizeWidth, bShowLinks, em
             />
             }
         </View>
-    </View>;
+;
 
     return oProps.url && bShowLinks ? <Link emulate={emulate} href={oProps.url}>{content}</Link> : content
 
@@ -105,6 +105,21 @@ function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont, actions }) 
 
             <View>{info}</View>
         </View>
+
+    )
+}
+
+function UnitText({ oProps, sSizeFont }) {
+    return (
+        <DisplayNameText title={oProps.display_name} fontSize={sSizeFont} />
+
+    )
+}
+
+function UnitTextLink({ oProps, sSizeFont,  emulate }) {
+    return (
+        <Link emulate={emulate} haptics="Select" href={oProps.url}>
+                    <DisplayNameText title={oProps.display_name} fontSize={sSizeFont} /></Link>
 
     )
 }
@@ -214,6 +229,13 @@ function AtomProfile_(oProps) {
 
         case 'unit_wo_image':
             return <UnitWoImage oProps={oProps} sSizeFont={sSizeFont} bShowLinks={bShowLinks} emulate={emulate} info={sShowInfo} actions={oProps.showActions} />
+
+        case 'unit_text':
+            return <UnitText oProps={oProps} sSizeFont={sSizeFont}  />
+
+        case 'unit_text_link':
+                return <UnitTextLink oProps={oProps} sSizeFont={sSizeFont} emulate={emulate} />
+    
 
         case 'text':
             return (

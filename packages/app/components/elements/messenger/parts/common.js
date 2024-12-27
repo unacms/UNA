@@ -22,7 +22,7 @@ import Msg from 'app/ui/molecules/msg';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import Profile from 'app/ui/molecules/profile'
 import ElementMsg from 'app/components/elements/msg';
-import { getBackButtonWeb } from 'app/lib/conductor-helpers'
+import { getBackButtonWeb } from 'app/lib/common-helpers'
 
 export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, fetchConvos, data, onSave, addButtons }) {
     const isWeb = Platform.OS == 'web'
@@ -37,7 +37,6 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     const [jotUpdated, setJotUpdated] = useState(false);
     const [formHeight, setFormHeight] = useState(100);
     const [showMsg, setShowMsg] = useState(false);
-    const refListConvos = useRef();
     const refListJots = useRef();
     const selectedConvoIndex = convos?.data && convoId ? convos.data.findIndex(item => item.id === convoId) : -1;
     const selectedConvo = convos?.data ? convos.data[selectedConvoIndex] : false;
@@ -46,7 +45,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     const [replyItem, setReplyItem] = useState(false);
 
     const layoutHeightLeft = layoutHeight;
-    let layoutHeightRight = isWeb ? layoutHeight - 40 - formHeight : layoutHeight - formHeight - 10;
+    let layoutHeightRight = isWeb ? layoutHeight - 40 - formHeight : layoutHeight - 40 - formHeight;
     if (listError)
         layoutHeightRight = layoutHeightRight - 60
     let { data: dynamicData, error } = useSWR(
@@ -72,11 +71,9 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
 
     }, [dynamicData]);
 
-
-
-    const handleSearch = async (sValue) => {
+    const handleSearch = useCallback(async (sValue) => {
         setSearchValue(sValue);
-    }
+    }, []);
 
     useEffect(() => {
         fetchConvos(searchValue);
@@ -146,7 +143,6 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
 
 
     useEffect(() => {
-        console.log("aaaa");
         setListError(null);
     }, [convoId]);
     const onNewMessage = (data) => {
@@ -227,17 +223,18 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
             scrolTo();
         }
     }, [refListJots?.current]);//selectedConvo refListJots?.current, jots?.index
-    const changeConvo = (convo) => {
+
+    const changeConvo = useCallback((convo) => {
         setConvoId(convo.id);
         if (isSmallScreen)
             setPanelsVisible({ convos: false, jots: true })
-    }
+    }, [isSmallScreen, setConvoId, setPanelsVisible]);
 
-    const showConvo = () => {
+    const showConvo = useCallback(() => {
         setPanelsVisible({ convos: true, jots: false })
-    }
+    },[]);
 
-    const deleteConvo = async () => {
+    const deleteConvo = useCallback(async () => {
         let request_url = '/api.php?r=bx_messenger/delete_convo/Services&params=' + JSON.stringify({ lot: selectedConvo.id2 });
         const sResponse = await fetcher(request_url);
         if (sResponse.data?.message) {
@@ -247,9 +244,9 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
             fetchConvos();
             setConvoId(convos.data[0].id);
         }
-    }
+    }, [selectedConvo?.id2, convos.data]);
 
-    const leaveConvo = async () => {
+    const leaveConvo = useCallback(async () => {
         let request_url = '/api.php?r=bx_messenger/leave_convo/Services&params=' + JSON.stringify({ lot: selectedConvo.id2 });
         const sResponse = await fetcher(request_url);
         if (sResponse.data?.message) {
@@ -259,8 +256,9 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
             fetchConvos();
             setConvoId(convos.data[0].id);
         }
-    }
-    const getConvo = async () => {
+    }, [selectedConvo?.id2, convos.data]);
+
+    const getConvo = useCallback(async () => {
         let request_url = '/api.php?r=bx_messenger/get_convo/Services&params=' + JSON.stringify({ lot: selectedConvo.id2 });
         const sResponse = await fetcher(request_url);
         if (sResponse.data?.message) {
@@ -278,42 +276,41 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
                 </Row>
             </View>)
             setBottomSheetData({ title: 'Conversation info', content: content, showClose: true, snapPoints: ['25%', '50%'] });
-
         }
-    }
+    }, [selectedConvo?.id2, convos.data]);
 
     const onSaveHandler = (data) => {
         setBottomSheetData(false);
         onSave(data);
     }
 
-    const editConvo = async () => {
+    const editConvo = useCallback(async () => {
         let request_url = '/api.php?r=bx_messenger/get_parts_list/Services&params=' + JSON.stringify({ lot: selectedConvo.id2 });
         const sResponse = await fetcher(request_url);
         setBottomSheetData({ title: 'Add users to start messaging', content: <CreateConvo onSave={onSaveHandler} initedData={sResponse.data} convoId={selectedConvo.id2} />, showClose: true, snapPoints: ['85%', '85%'] });
-    }
+    }, [selectedConvo?.id2, convos.data]);
 
-    const onFormSubmit = (formData, d) => {
+    const onFormSubmit = useCallback((formData, d) => {
         //Keyboard.dismiss();
         setCommentForm(formData);
-    }
+    },[]);
 
-    const handleLayout = (event) => {
+    const handleLayout = useCallback((event) => {
         setFormHeight(event.nativeEvent.layout.height + 16)
-    };
+    },[]);
 
-    const handleReply = (item) => {
+    const handleReply = useCallback((item) => {
         setReplyItem(item)
-    };
+    },[])
 
-    const handleCancelReply = (item) => {
+    const handleCancelReply = useCallback((item) => {
         setReplyItem(false)
-    };
+    },[])
 
-    const handleStartReached = () => {
+    const handleStartReached = useCallback(() => {
         if (selectedConvo)
             fetchItems(selectedConvo.id, true);
-    };
+    },[selectedConvo?.id])
 
     const handleBackButton = () => {
         if (!panelsVisible.convos) {
@@ -325,50 +322,124 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
         }
     };
 
-    const convosComponent = panelsVisible.convos && <Convos
-        layoutHeightLeft={layoutHeightLeft}
-        data={convos?.data}
-        refListConvos={refListConvos}
-        selectedConvoIndex={selectedConvoIndex}
-        changeConvo={changeConvo}
-        handleSearch={handleSearch}
-        searchValue={searchValue}
-        onSave={onSave}
-        addButtons={addButtons}
-    />
-    const jotsComponent = (panelsVisible.jots && selectedConvo && jots?.data?.jots) && <View className={' w-full md:w-3/5 h-full flex-1 bg-bgrcard dark:bg-bgrcard-d'}>
-        <KbAvoidingView className='w-full h-full flex-1'>
-            <View className='w-full flex-auto'>
-                <Jots
-                    isSmallScreen={isSmallScreen}
-                    title={selectedConvo.title}
-                    layoutHeightRight={layoutHeightRight}
-                    data={jots?.data?.jots}
-                    refListJots={refListJots}
-                    showConvo={showConvo}
-                    deleteConvo={deleteConvo}
-                    leaveConvo={leaveConvo}
-                    getConvo={getConvo}
-                    editConvo={editConvo}
-                    handleReply={handleReply}
-                    startReached={handleStartReached}
-                />
-                {listError && <View className='mx-4'><ElementMsg data={listError} /></View>}
-            </View>
+    const convosComponent = useMemo(() => {
+        return panelsVisible.convos && <Convos
+            layoutHeightLeft={layoutHeightLeft}
+            data={convos?.data}
+            selectedConvoIndex={selectedConvoIndex}
+            changeConvo={changeConvo}
+            handleSearch={handleSearch}
+            searchValue={searchValue}
+            onSave={onSave}
+            addButtons={addButtons}
+        />
+    }, [
+        panelsVisible.convos,
+        layoutHeightLeft,
+        convos?.data.length,
+        selectedConvoIndex,
+        changeConvo,
+        handleSearch,
+        searchValue,
+        onSave,
+        addButtons,
+    ]);
+    //const previousValues = useRef({});
+    const jotsComponent = useMemo(() => {
 
-            <FormContainer
-                form={data.form}
-                replyItem={replyItem}
-                onFormSubmit={onFormSubmit}
-                handleCancelReply={handleCancelReply}
-                handleLayout={handleLayout}
-            />
-        </KbAvoidingView>
-    </View>
+       /* const dependencies = {
+            panelsVisibleJots: panelsVisible.jots,
+            selectedConvo,
+            jotsDataJots: jots?.data?.jots,
+            isSmallScreen,
+            layoutHeightRight,
+            refListJots,
+            showConvo,
+            deleteConvo,
+            leaveConvo,
+            getConvo,
+            editConvo,
+            handleReply,
+            handleStartReached,
+            listError,
+            dataForm: data.form,
+            replyItem,
+            onFormSubmit,
+            handleCancelReply,
+            handleLayout,
+        };
+
+        Object.keys(dependencies).forEach((key) => {
+            if (previousValues.current[key] !== dependencies[key]) {
+                console.log(`${key} rerender555 :`, {
+                    previous: previousValues.current[key],
+                    current: dependencies[key],
+                });
+            }
+        });
+        previousValues.current = dependencies;*/
+        return (
+            (!!panelsVisible.jots && !!selectedConvo && jots?.data?.jots) && (
+                <View className="w-full md:w-3/5 flex-1 bg-bgrcard dark:bg-bgrcard-d">
+                    <View className="w-full flex-auto">
+                        <Jots
+                              isSmallScreen={isSmallScreen}
+                              title={selectedConvo.title}
+                              layoutHeightRight={layoutHeightRight}
+                              data={jots?.data?.jots}
+                              refListJots={refListJots}
+                              showConvo={showConvo}
+                              deleteConvo={deleteConvo}
+                              leaveConvo={leaveConvo}
+                              getConvo={getConvo}
+                              editConvo={editConvo}
+                              handleReply={handleReply}
+                              startReached={handleStartReached}
+                        />
+                        {listError && (
+                            <View className="mx-4">
+                                <ElementMsg data={listError} />
+                            </View>
+                        )}
+                    </View>
+                    <KbAvoidingView>
+                        <FormContainer
+                            form={data.form}
+                            replyItem={replyItem}
+                            onFormSubmit={onFormSubmit}
+                            handleCancelReply={handleCancelReply}
+                            handleLayout={handleLayout}
+                        />
+                    </KbAvoidingView>
+                </View>
+            )
+        );
+    }, [
+        panelsVisible.jots,
+        selectedConvo,
+        jots?.data?.jots,
+        isSmallScreen,
+        layoutHeightRight,
+        refListJots,
+        showConvo,
+        deleteConvo,
+        leaveConvo,
+        getConvo,
+        editConvo,
+        handleReply,
+        handleStartReached,
+        listError,
+        data.form,
+        replyItem,
+        onFormSubmit,
+        handleCancelReply,
+        handleLayout,
+    ]);
+
 
     if (!isWeb) {
         return (
-            <View style={{ height: layoutHeight }} className={appSetting('layout', 'max_width') + ' mx-auto w-full h-full items-stretch flex-1'}>
+            <View style={{ height: layoutHeight }} className={appSetting('layout', 'max_width') + ' mx-auto w-full h-full items-stretch'}>
                 <Msg onVisible={showMsg} title={showMsg} handleOk={() => { setShowMsg(false) }} />
                 {convosComponent}
                 {jotsComponent}
@@ -388,8 +459,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     );
 }
 
-const Convos = memo(({ layoutHeightLeft, data, refListConvos, selectedConvoIndex, changeConvo, onSave, searchValue, handleSearch, addButtons }) => {
-
+const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, onSave, searchValue, handleSearch, addButtons }) => {
     const [showSearch, setShowSearch] = useState(false);
 
     function handleSearch2() {
@@ -410,14 +480,14 @@ const Convos = memo(({ layoutHeightLeft, data, refListConvos, selectedConvoIndex
             </View>
             {!showSearch && <Row className='lg:hidden flex-auto  items-center '>
                 {getBackButtonWeb()}
-                <Text className="text-2xl lg:hidden font-bold text-neutral-800 dark:text-neutral-200 ">Messenger</Text>
+                <Text className={`${Platform.OS == 'web' ? 'text-2xl' : 'text-3xl'} lg:hidden font-bold text-neutral-800 dark:text-neutral-200`}>Messenger</Text>
             </Row>}
             {showSearch && <Row className='lg:hidden flex-auto  items-center '>
                 {srch}
             </Row>}
             <Row className='flex-row my-auto gap-x-2'>
                 <View className='lg:hidden  '>
-                <Button startDecorator="MagnifyingGlass" variant="secondary" rounded onPress={() => handleSearch2()} />
+                    <Button startDecorator="MagnifyingGlass" variant="secondary" rounded onPress={() => handleSearch2()} />
                 </View>
                 {addButtons}
             </Row>
@@ -425,10 +495,9 @@ const Convos = memo(({ layoutHeightLeft, data, refListConvos, selectedConvoIndex
         {data && data.length > 0 ? <>
 
             <UniList
-                refer={refListConvos}
                 height={layoutHeightLeft}
-
                 data={data}
+                mode="simple"
                 renderItem={({ item, index }) => <ItemConvo selectedIndex={selectedConvoIndex} item={item} index={index} changeConvo={changeConvo} />}
             /></>
             : <View className='items-center justify-center w-full h-full'><View className="pt-8">
@@ -468,16 +537,16 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
 
     return (<>
         <View className='md:px-0 border-bdrcard dark:border-bdrcard-d border-b'>
-            {isWeb && <Row className='px-3 py-2 items-center justify-between w-full h-[56px]'>
+            {(isWeb || true) && <Row className='px-3 py-2 items-center justify-between w-full h-[56px]'>
                 <Row className='items-center justify-start overflow-hidden flex-auto '>
                     {isSmallScreen && <View className='mr-2'><Button variant="secondary" startDecorator='ArrowLeft' rounded align="start" onPress={() => showConvo()} /></View>}
                     <Text numberOfLines={1} className="text-lg lg:text-xl font-bold font-bold tracking-tight  text-neutral-900 dark:text-neutral-50">{title}</Text>
                 </Row>
                 <Row className='items-center gap-x-2 '>
                     <Button buttonTooltip="Edit participants list" startDecorator="Users" variant="secondary" rounded onPress={() => editConvo()} />
-                    <Button buttonTooltip="Leave" startDecorator="SignOut" variant="secondary" rounded  onPress={() => leaveConvo()} />
-                    <Button buttonTooltip="Delete" startDecorator='Trash' variant="secondary" rounded  onPress={() => deleteConvo()} />
-                    <Button buttonTooltip="Info" startDecorator='Info' variant="secondary" rounded  onPress={() => getConvo()} />
+                    <Button buttonTooltip="Leave" startDecorator="SignOut" variant="secondary" rounded onPress={() => leaveConvo()} />
+                    <Button buttonTooltip="Delete" startDecorator='Trash' variant="secondary" rounded onPress={() => deleteConvo()} />
+                    <Button buttonTooltip="Info" startDecorator='Info' variant="secondary" rounded onPress={() => getConvo()} />
                 </Row>
             </Row>}
         </View>
@@ -491,7 +560,7 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
                 scrollToLastItem={true}
                 data={isWeb ? data : data.slice().reverse()}
                 height={layoutHeightRight - keyboardHeight}
-
+                mode="simple"
                 useWindowScroll
                 renderItem={({ item, index }) => <ItemJot handleReply={handleReply} item={item} index={index} />}
             />}
@@ -500,9 +569,10 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
 });
 
 const FormContainer = memo(({ form, replyItem, onFormSubmit, handleCancelReply, handleLayout }) => {
+    const isWeb = Platform.OS == 'web'
     let padding = 12;
     return (
-        <View className='bg-bgrcard dark:bg-bgrcard-d border-t border-bdr dark:border-bdr-d' onLayout={handleLayout} style={{ paddingTop: padding, paddingBottom: padding }}>
+        <View className={`border-t border-bdr dark:border-bdr-d ${isWeb ? '' : 'min-h-20'}`} onLayout={handleLayout} style={{ paddingTop: padding, paddingBottom: padding }}>
             <View className=' ' >
                 {
                     replyItem && (<View className='bg-bgrcard dark:bg-bgrcard-d rounded-sm border-l-2 border-primary/50 py-1 pl-2 mt-2 mx-2'>

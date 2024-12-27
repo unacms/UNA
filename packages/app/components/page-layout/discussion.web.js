@@ -2,7 +2,7 @@ import { View, Row } from 'app/design/view';
 import { BlockByName, DataByName } from 'app/components/block';
 import { useRouter } from  'next/navigation';
 import { useState, useRef, useEffect} from 'react';
-import { getBackButtonWeb } from 'app/lib/conductor-helpers';
+import { getBackButtonWeb } from 'app/lib/common-helpers';
 import { CommentsBrowse, CommentsForm } from 'app/lib/comments-helpers'
 import { Dimensions } from 'react-native';
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';

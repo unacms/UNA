@@ -9,7 +9,7 @@ import { FeedbackHaptics } from 'app/lib/util';
 import { useEffect } from 'react';
 
 export function Nav2({ text, onPress, backButton, addButtons }) {
-    const navigation = useNavigation();
+    /*const navigation = useNavigation();
     const updateCenterHeader = useUpdateCenterHeader(navigation);
     const { colors } = useTheme();
     let header = <Row className='overflow-hidden items-center w-full'>
@@ -26,5 +26,6 @@ export function Nav2({ text, onPress, backButton, addButtons }) {
 
         return () => clearTimeout(timer);
     }, [header, backButton, addButtons]);
-
+*/
+return
 }

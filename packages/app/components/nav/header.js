@@ -56,9 +56,7 @@ function getRightHeader(items, currentUser, pagePath) {
 };
 
 const Header = memo(({ backButtonPresented, header, pagePath, rightComponents }) => {
-
     const { currentUser } = useCurrentUser();
-
     const memoizedRightComponents = useMemo(() => {
         if (Array.isArray(rightComponents) && !isValidElement(rightComponents[0])) {
             return getRightHeader(rightComponents, currentUser, pagePath);

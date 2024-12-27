@@ -6,7 +6,7 @@ import { View, Row, Pressable } from 'app/design/view'
 import { Button, ButtonRef } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user'
 import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
-import { getBackButtonWeb } from 'app/lib/conductor-helpers';
+import { getBackButtonWeb } from 'app/lib/common-helpers';
 import { appStatic } from 'app/lib/app-static'
 import { menuItemsByName } from 'app/lib/util'
 import Search from 'app/ui/molecules/search'

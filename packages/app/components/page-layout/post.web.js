@@ -1,7 +1,7 @@
 import { View, Row } from 'app/design/view';
 import { BlockByName, DataByName } from 'app/components/block';
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
-import { getBackButtonWeb } from 'app/lib/conductor-helpers';
+import { getBackButtonWeb } from 'app/lib/common-helpers';
 import { useWindowDimensions } from 'react-native'
 import { CommentsParts } from 'app/lib/comments-helpers'
 import { getPageData, getDataFromCache, storageSet, LAYOUT_BREAKPOINTS } from 'app/lib/util';

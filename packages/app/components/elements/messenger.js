@@ -1,6 +1,6 @@
 
 import { View, Row, Pressable } from 'app/design/view'
-import React, { memo, useState, useEffect, useContext, useMemo } from 'react';
+import React, { memo, useState, useEffect, useCallback, useMemo } from 'react';
 import { appSetting, getLayout, menuItemsByName, getHeaderSettings, getURI, parseUrl, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import { useWindowDimensions } from 'react-native';
@@ -13,12 +13,8 @@ import { Platform } from 'react-native'
 export default function MessengerEl(props) {
    // console.log({ url, data, layoutName, blocks: { main } })
     const url=props.url;
-    const layoutName=props.layoutName;
-    const data=props.data;
     const data2 = props;
-
-    const isWeb = Platform.OS == 'web'
-    const sTitle = 'Messenger';
+    
     let defaultMenuName = 'inbox';
     let defaultConvoId = '';
     let b = parseUrl(url);
@@ -42,7 +38,7 @@ export default function MessengerEl(props) {
     const [initedConvoId, setInitedConvoId] = useState(defaultConvoId);
     const { width: windowWidth, height: windowWHeight } = useWindowDimensions();
 
-    const fetchConvos = async (term) => {
+    const fetchConvos = useCallback(async (term) => {
         if (menu) {
             const menuItem = menu?.data[menu?.index].name;
             if (menuItem) {
@@ -59,24 +55,24 @@ export default function MessengerEl(props) {
 
             }
         }
-    }
+    }, []);
 
     useEffect(() => {
         fetchConvos();
     }, [menu.index]);
 
-    const onSave = (data) => {
+    const onSave = useCallback((data) => {
         setConvos(prevConvos => ({
             ...prevConvos,
             data: [data.convo, ...prevConvos.data]
         }));
         setInitedConvoId(data.convo.id)
-    }
+    },[]);
 
-    const changeMenu = (index) => {
+    const changeMenu = useCallback((index) => {
         setMenu(prevMenu => ({ ...prevMenu, index: index }));
         setInitedConvoId(convos.data[0].id)
-    }
+    }, []);
 
     const addButtons = useMemo(() => {
         return [

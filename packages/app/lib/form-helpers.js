@@ -1,7 +1,5 @@
 import { componentsMap } from 'app/components/form-fields/_map';
 import { Text } from 'app/design/typography'
-import { appSetting } from 'app/lib/util'
-import Link from 'app/ui/atoms/link'
 
 export function getFormFieldByData(inputData, handleSubmit, format, externalProps) {
 
