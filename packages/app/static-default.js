@@ -460,7 +460,7 @@ const ComponentsDummy = (
                 height={16}
             />
             <Text
-                className={'flex-none text-gray-800 dark:text-gray-200 text-xs dark:bg-bgrmodal-d h-full md:h-auto  sm:border sm:border-bdrmodal sm:dark:border-bdrmodal-d sm:rounded-2xl sm:shadow-sm bg-bgrmodal dark:bg-bgrmodal-d h-full md:h-auto  md:border md:border-bdrmodal md:dark:border-bdrmodal-d md:rounded-2xl md:shadow-sm'}
+                className={'flex-none text-gray-800 dark:text-gray-200 text-xs dark:bg-bgrmodal-d h-full md:h-auto  sm:border sm:border-bdrmodal sm:dark:border-bdrmodal-d sm:rounded-2xl bg-bgrmodal dark:bg-bgrmodal-d h-full md:h-auto  md:border md:border-bdrmodal md:dark:border-bdrmodal-d md:rounded-2xl'}
             >
                 123
             </Text>

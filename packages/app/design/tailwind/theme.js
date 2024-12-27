@@ -163,22 +163,7 @@ const theme = {
             '4/1': '4 / 1',
             '5/1': '5 / 1',
         },
-        boxShadow: {
-/*
-            'navbar': ' 0px 4px 8px 0px rgba(0 0 0 / 4%), 0 1px rgba(0 0 0 / 4%) ',
-            'navbar-d': ' 0px 4px 8px 0px rgba(0 0 0 / 40%), 0 1px rgba(0 0 0 / 80%) ',
-            'modal': ' 0px 8px 16px 0px rgba(0 0 0 / 8%), 0 0 0 1px rgba(0 0 0 / 8%) ',
-            'modal-d': ' 0px 8px 16px 0px rgba(0 0 0 / 40%), 0 0 0 1px rgba(0 0 0 / 80%) ',
-            'button': ' 0px 4px 8px 0px rgba(0 0 0 / 8%), 0 0 0 1px rgba(0 0 0 / 16%) ',
-            'button-d': ' 0px 4px 8px 0px rgba(0 0 0 / 40%), 0 0 0 1px rgba(0 0 0 / 80%) ',
-            'xsr': '1px 0px 0px 0px rgba(0 0 0 / 8%)',
-            'xsrd': '1px 0px 0px 0px rgba(0, 0, 0, 0.8)',
-            'xs': '0px 0px 0px 1px rgba(0, 0, 0, 0.08)',
-            'xsd': '0px 0px 0px 1px rgba(0, 0, 0, 0.8)',
-            'ring': '0px 0px 0px 1px rgba(0, 0, 0, 0.15)',
-            'ringd': '0px 0px 0px 1px rgba(255, 255, 255, 0.15)',
-      */          
-        }
+        
     },
 }
 

@@ -126,7 +126,7 @@ export default function (props) {
                 contentContainerStyle={{
                     width: '100%',
                 }}
-                className={"dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur border-b border-bdrnavbar shadow-sm lg:bg-transparent lg:border-none lg:shadow-none" + "  fixed w-full lg:w-80 top-0 items-start lg:h-screen" + (!headerSettings.header ? ' hidden lg:flex' : '')}>
+                className={"dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur border-b border-bdrnavbar lg:bg-transparent lg:border-none lg:shadow-none" + "  fixed w-full lg:w-80 top-0 items-start lg:h-screen" + (!headerSettings.header ? ' hidden lg:flex' : '')}>
                 <View className=' flex-row lg:flex-col  h-16 lg:h-auto items-center lg:items-start' >
                     <View className=' justify-between  lg:h-screen flex-auto '>
                         <HeaderLine headerSettings={headerSettings} currentUser={currentUser} uri={props.uri} bSearch={bSearch} showMenu={showMenu} menuPopup={menuPopup} setMenuPopup={setMenuPopup} />

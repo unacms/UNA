@@ -2494,7 +2494,7 @@ export const settingsDefault = {
             checkbox: '#0ea5e9',
         },
         conductor: {
-            menu: ' w-full items-left justify-center border-b border-bdrtabbar dark:border-bdrtabbar-d bg-bgrtabbar dark:bg-bgrtabbar-d shadow-sm ',
+            menu: ' w-full items-left justify-center border-b border-bdrtabbar dark:border-bdrtabbar-d bg-bgrtabbar dark:bg-bgrtabbar-d  ',
             menu_max_width: ' max-w-6xl ',
             content_max_width: ' max-w-6xl ',
             menu_is_dynamic: true,
@@ -2544,7 +2544,7 @@ export const settingsDefault = {
             content_ver:
                 ' z-10 min-w-[200px] backdrop-blur-xl border border-bdrmodal dark:border-bdrmodal-d bg-bgrmodal dark:bg-bgrmodal-d mt-1 p-1 text-sm rounded-xl shadow-xl shadow-[0_0_0_1px_rgba(0,0,0,0.1)] dark:shadow-[0_0_0_1px_rgba(0,0,0,1)] overflow-hidden gap-y-1 ',
             content_hor:
-                ' flex flex-row z-10 p-1 bg-bgrmodal border border-bdr dark:border-bdr-d m-2 backdrop-blur-xl dark:bg-bgrmodal-d text-sm text-neutral-800 dark:text-neutral-200 rounded-full shadow-sm',
+                ' flex flex-row z-10 p-1 bg-bgrmodal border border-bdr dark:border-bdr-d m-2 backdrop-blur-xl dark:bg-bgrmodal-d text-sm text-neutral-800 dark:text-neutral-200 rounded-full ',
             item_ver:
                 'flex flex-row focus:outline-none items-center px-3 py-2 gap-x-3 text-sm rounded-lg font-medium hover:bg-bgritem dark:hover:bg-bgritem-d text-neutral-700 dark:text-neutral-300 dark:hover:text-white hover:cursor-pointer',
             item_hor:
@@ -2564,7 +2564,7 @@ export const settingsDefault = {
             header: 'border-b border-bdr dark:border-bdr-d px-3 py-2.5',
         },
         card: {
-            default: ' shadow-sm overflow-hidden bg-bgrcard dark:bg-bgrcard-d ',
+            default: ' overflow-hidden bg-bgrcard dark:bg-bgrcard-d ',
             border: '  border-bdrcard dark:border-bdrcard-d ',
             rounded: 'rounded-2xl',
             margin: ''
@@ -2646,7 +2646,7 @@ export const settingsDefault = {
             'u-btn-secondary-trans': ' duration-200',
 
             'u-btn-danger-cnt':
-                ' bg-red-600 hover:bg-red-500 border border-bg-red-700 shadow-sm hover:shadow active:opacity-50 active:shadow-none  ',
+                ' bg-red-600 hover:bg-red-500 border border-bg-red-700  hover:shadow active:opacity-50 active:shadow-none  ',
             'u-btn-danger-text':
                 ' font-medium text-neutral-100 group-hover:text-white ',
             'u-btn-danger-trans': ' duration-200 ',
@@ -2663,7 +2663,7 @@ export const settingsDefault = {
             'u-btn-link-trans': ' duration-200 ',
 
             'u-btn-outline-cnt':
-                ' border border-bdrbutton dark:border-bdrbutton-d  hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:shadow-none  active:opacity-50 hover:shadow-sm ',
+                ' border border-bdrbutton dark:border-bdrbutton-d  hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:shadow-none  active:opacity-50 ',
             'u-btn-outline-text':
                 ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
             'u-btn-outline-trans': ' duration-200 ',
@@ -2709,7 +2709,7 @@ export const settingsDefault = {
         },
         buttons_group_styles: {
             'u-btn-default-cnt':
-                ' border border-bdrbutton dark:border-bdrbutton-d bg-bgrbutton dark:bg-bgrbutton-d flex flex-row shadow-sm overflow-hidden ',
+                ' border border-bdrbutton dark:border-bdrbutton-d bg-bgrbutton dark:bg-bgrbutton-d flex flex-row  overflow-hidden ',
             'u-btn-outline-cnt':
                 ' border border-bdrbutton dark:border-bdrbutton-d overflow-hidden flex flex-row ',
 

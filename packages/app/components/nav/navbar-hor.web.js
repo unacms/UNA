@@ -245,7 +245,6 @@ export default function (props) {
                         </Row>
                     </View>
                 </View>
-                <View className="  border-b border-transparent shadow "></View>
                 <MenuDrawer showMenu={showMenu} menuPopup={menuPopup} />
             </View>}
         </>
