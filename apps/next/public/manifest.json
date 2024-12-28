@@ -43,5 +43,5 @@
   "background_color": "#ffffff",
   "display": "standalone",
   "scope": "/",
-  "theme_color": "#000000"
+  "theme_color": "rgba(17,24,39,1)"
 }

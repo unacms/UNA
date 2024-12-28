@@ -2461,18 +2461,18 @@ export const settingsDefault = {
     },
     theme: {
         light: {
-            primary: '#2563eb',
-            barsBackground: 'rgba(255,255,255,1)',
+            primary: 'rgba(37,99,235,1)',
+            barsBackground: 'rgba(255,255,255,1)', //header and tabbar background in native light mode
             bottomSheetBackground: 'rgba(255,255,255,1)',
             barsColor: '#4B5563',
             selectBorder: 'rgba(156, 163, 175, 0.3)',
             fieldBackground: 'rgba(249, 240, 251, 1)',
             blockBorder: '#E5E7EB',
-            tabsBackground: '#F3F4F6',
+            tabsBackground: 'rgba(255,0,0,1)',
             activeTabBackground: '#DBEAFE',
             tabText: 'rgba(75,85,99,1)',
             activeTabText: 'rgba(3,7,18,1)',
-            screenBackground: '#E5E7EB',
+            screenBackground: 'rgba(229,231,235,1)',
             bgrmodal: 'rgba(255,255,255,1)',
             bdrModal: 'rgba(107,114,128,0.15)',
             checkbox: '#2563eb',
@@ -2480,7 +2480,7 @@ export const settingsDefault = {
         dark: {
             default: 'rgba(209,213,219,1)', //fix for icons color in iOS
             primary: 'rgba(37,99,235,1)',
-            barsBackground: 'rgba(0,0,0,1)', //header background in native
+            barsBackground: 'rgba(17,24,39,1)', //header background in native
             bottomSheetBackground: 'rgba(17,24,39,1)',
             barsColor: 'rgba(209,213,219,1)', //tabbar icons color in native
             selectBorder: 'rgba(55, 65, 81, 0.3)', 
@@ -2571,7 +2571,7 @@ export const settingsDefault = {
         },
         inputs: {
             default:
-                'bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-bdrinput dark:border-bdrinput-d focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus:outline-primary dark:focus-outline-primary-d duration-100 placeholder-neutral-500 duration-100 text-neutral-900 rounded-lg flex-auto px-3  dark:text-neutral-100 text-base leading-5 h-10 ',
+                'bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-bdrinput dark:border-bdrinput-d focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus:outline-primary dark:focus-outline-primary-d duration-100 placeholder-neutral-500 duration-100 text-neutral-900 rounded-lg flex-auto p-3 leading-5 dark:text-neutral-100 text-base ',
             multi: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg flex-auto p-2 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 ',
             rounded:
                 ' placeholder-neutral-600 dark:placeholder-neutral-400 bg-bgrinput dark:bg-bgrinput-d hover:bg-bgrinput-h dark:hover:bg-bgrinput-dh focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-transparent focus:border-bdrinput-f dark:focus:border-bdrinput-f focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus:outline-primary dark:focus-outline-primary-d duration-100 text-neutral-900 rounded-full flex-auto px-3 dark:text-neutral-100 text-base leading-5 h-10  ',
@@ -2609,8 +2609,8 @@ export const settingsDefault = {
             },
             base: {
                 rounded: ' rounded-lg ',
-                padding: ' p-2 ',
-                icon_sizes: ' h-[24px] w-[24px] text-center align-middle items-center justify-center flex ',
+                padding: ' p-2.5 ',
+                icon_sizes: ' h-6 w-6 text-center align-middle items-center justify-center flex ',
                 icon_size: 24,
                 icon_margin: '',
                 min_height: 'leading-[24px] ',

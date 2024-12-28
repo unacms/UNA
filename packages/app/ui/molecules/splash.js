@@ -63,10 +63,10 @@ export default function Splash(props) {
                 </View>
             </Modal>
             <View className="mx-auto w-full max-w-lg md:w-1/2 lg:w-1/3 my-auto mx-auto items-center xl:p-4 p-2  ">
-                <View className=" flex-auto w-full   ">
+                <View className=" flex-auto w-full  p-3 sm:p-4 ">
                     <Card
                         rounded=" rounded-2xl "
-                        addClassName=" p-4 sm:p-6 w-full max-w-xl mx-auto "
+                        addClassName=" p-6 w-full max-w-xl mx-auto "
                     >
                         <View className="">{props.block}</View>
                     </Card>
@@ -80,7 +80,7 @@ export default function Splash(props) {
                     />
                     <Card
                         rounded=" rounded-2xl "
-                        addClassName=" p-4 mt-4 sm:p-6 sm:mt-6 w-full max-w-xl mx-auto flex-auto  "
+                        addClassName=" mt-4 p-6 w-full max-w-xl mx-auto flex-auto  "
                     >
                         <Text className="text-center mb-4 sm:mb-6 text-lg font-semibold  mx-auto text-neutral-700 dark:text-neutral-300  ">
                             Don't have an account?
@@ -99,15 +99,15 @@ export default function Splash(props) {
 
     if (!isWeb) {
         return (
-            <View className=" w-full  w-full justify-center mt-16 ">
-                <View className="   ">
-                    <View className="items-center mb-4 ">
+            <View className="justify-center">
+                
+                    <View className="items-center my-8 ">
                         <View className="w-60 h-16">
                             {props.logo_native}
                         </View>
                     </View>
                     {cnt}
-                </View>
+                
             </View>
         )
     }

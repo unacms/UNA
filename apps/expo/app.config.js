@@ -12,10 +12,9 @@ const expoConfig = {
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "splash": {
-      "image": "./assets/images/splash.png",
       "contentFit": "contain",
       "timeout": 0,
-      "backgroundColor": "#000000"
+      "backgroundColor": "rgba(17,24,39,1)"
     },
     "platforms": [
       "ios",
@@ -26,7 +25,7 @@ const expoConfig = {
       "supportsTablet": true,
       "associatedDomains": ["neo.so"],
       "bundleIdentifier": "so.neo.app",
-      "backgroundColor": "#000000",
+      "backgroundColor": "rgba(17,24,39,1)",
       "infoPlist": {
         "NSCameraUsageDescription": "This app uses the camera allow calls in Jitsi.",
         "NSPhotoLibraryUsageDescription": "This app uses the camera allow calls in Jitsi.",

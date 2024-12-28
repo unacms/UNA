@@ -60,10 +60,10 @@ const LogoMark = (
 
 const LogoNative = (
     <Svg
-        className=" text-primary"
         viewBox="0 0 8000 2400"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
+        
     >
         <Path
             d="M4762.09 2000L3697.63 1064.15L3703.83 1939.62H3400V400H3412.4L4474.79 1349.94L4468.59 458.365H4770.35V2000H4762.09Z"
@@ -100,7 +100,6 @@ const LogoNative = (
 
 const LogoNativeDark = (
     <Svg
-        className=" text-primary"
         viewBox="0 0 8000 2400"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"

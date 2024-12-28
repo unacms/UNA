@@ -11,7 +11,6 @@ export default function ElementLink(props) {
     const glob = useGlobalSearchParams();
     const { currentUser } = useCurrentUser();
 
-    // Обработчик для Haptics
     const handleHapticsPress = useCallback(() => {
         if (haptics) {
             FeedbackHaptics(haptics);
