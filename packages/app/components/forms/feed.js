@@ -345,7 +345,7 @@ export default function FormFeed(props) {
             ) : (
                 <Card
                     rounded=" rounded-none sm:rounded-2xl  "
-                    margin=" mx-auto mb-1 sm:mb-4 "
+                    margin=" mx-auto mb-1 sm:mb-3 "
                     addClassName="  w-full max-w-2xl p-3 sm:p-4 "
                 >
                     <View className=" flex-row sm:gap-x-3 ">

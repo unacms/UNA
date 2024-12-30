@@ -133,7 +133,7 @@ export default function (props) {
                                     'layout',
                                     'show_profile_info'
                                 ) && (
-                                    <View className="px-2 pt-3 pb-1">
+                                    <View className="px-2 pt-2">
                                             <ProfileSwitcher hideTitle={true} useDefault={true} />
                                         </View>
                                     )}
@@ -228,7 +228,7 @@ export default function (props) {
                                         )}
                                 </Row>
                                 </ScrollView>
-                                <View className="relative w-full mx-auto max-w-2xl sm:mt-4 ">
+                                <View className="relative w-full mx-auto max-w-2xl sm:mt-3 ">
                                     {feedList.map((item, index) => {
                                         if (feedType == item.name) {
                                             return (

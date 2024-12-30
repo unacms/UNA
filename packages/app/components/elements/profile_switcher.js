@@ -52,7 +52,7 @@ export default function (props) {
                     {props.children}
                 </Pressable> :
                 <Link href={currentUser.url} emulate={true} >
-                    <Row className={rounded + " items-center px-2 py-1.5 justify-between cursor-pointer hover:bg-bgrbutton dark:hover:bg-bgrbutton active:opacity-50"}>
+                    <Row className={rounded + " group items-center px-2 py-1.5 justify-between cursor-pointer hover:bg-bgrbutton dark:hover:bg-bgrbutton active:opacity-50"}>
                         <Row className='flex-row items-center'>
                             <Profile
                                 {...currentUser}
@@ -61,10 +61,10 @@ export default function (props) {
                                 displaySize="base"
                             />
                             <View className='flex-col'>
-                            <Text className="text-base pl-2.5 flex-auto my-auto font-semibold truncate text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
+                            <Text className="text-base pl-3 flex-auto my-auto font-semibold truncate text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-white duration-200">
                                 {currentUser.display_name}
                             </Text>
-                            <Text className=" text-xs pl-2.5 flex-auto my-auto  truncate text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
+                            <Text className=" text-xs pl-3 flex-auto my-auto truncate text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-800 dark:group-hover:text-neutral-200 duration-200">
                                 {currentUser.membership_name}
                             </Text></View>
                         </Row>

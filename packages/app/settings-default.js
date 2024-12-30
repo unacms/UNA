@@ -2617,15 +2617,15 @@ export const settingsDefault = {
                 icon_sizes: ' h-6 w-6 text-center align-middle items-center justify-center flex ',
                 icon_size: 24,
                 icon_margin: ' ',
-                min_height: ' text-base ',
+                min_height: '  ',
                 margin: ' mx-2',
             },
             lg: {
-                rounded: 'rounded-lg',
-                padding: 'p-2.5',
-                icon_sizes: ' h-7 w-7',
+                rounded: 'rounded-xl',
+                padding: 'px-2 py-1.5',
+                icon_sizes: ' p-2 h-11 w-11 ',
                 icon_size: 28,
-                icon_margin: 'mx-1',
+                icon_margin: 'p-2 w-11 h-11 bg-neutral-200 dark:bg-neutral-800 rounded-full group-hover:bg-neutral-300 dark:group-hover:bg-neutral-700  ',
                 min_height: ' leading-[28px] sm:text-base ',
                 margin: 'mx-3',
             },
@@ -2656,7 +2656,7 @@ export const settingsDefault = {
             'u-btn-danger-trans': ' duration-200 ',
 
             'u-btn-text-cnt':
-                '  hover:bg-bgrbutton dark:hover:bg-bgrbutton-d  ',
+                '  hover:bg-neutral-200 dark:hover:bg-neutral-800  ',
             'u-btn-text-text':
                 ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50',
             'u-btn-text-trans': ' duration-200 ',
