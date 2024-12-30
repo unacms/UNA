@@ -17,6 +17,7 @@ import Constants from 'expo-constants';
 import { View } from 'react-native';
 //import { verifyInstallation } from 'nativewind';
 import "./global.combined.css";
+import { useColorScheme } from 'react-native';
 
 
 if (__DEV__) {
@@ -46,8 +47,9 @@ export function App() {
 
 	const expoRootComponent = useMemo(() => <ExpoRoot context={ctx} />, [ctx]);
 	//verifyInstallation();
-	
-	return <GestureHandlerRootView style={{ flex: 1 }}>
+	const scheme = useColorScheme();
+	console.log(scheme);
+	return <GestureHandlerRootView style={{ flex: 1, backgroundColor: scheme === 'dark' ? 'rgba(17,24,39,1)' : 'rgba(255,255,255,1)' }}>
 
 		{expoRootComponent}
 		{showSplashScreen && <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}><InitialScreen /></View>}

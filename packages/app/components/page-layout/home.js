@@ -144,7 +144,7 @@ export default function PageLayout(props) {
             )}
             {!!currentUser && (
                 <>
-                    <View style={{ backgroundColor: colors.barsBackground }} className=' border-b border-bdr dark:border-bdr-d  min-w-full'>
+                    <View style={{ backgroundColor: colors.barsBackground }} className='  min-w-full'>
                         <ScrollView horizontal={true} className="w-full ">
                             <Row className=" px-1.5  justify-center  ">
                                 {feedList.length > 1 &&
