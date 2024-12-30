@@ -117,6 +117,9 @@ html {
     /* Prevent text size change on orientation change https://gist.github.com/tfausak/2222823#file-ios-8-web-app-html-L138 */
     -webkit-text-size-adjust: 100%;
     height: 100%;
+    min-height: calc(100% + env(safe-area-inset-top));
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    background-color: var(--safe-area-background, YOUR_DEFAULT_COLOR);
 }
 
 body {
@@ -370,7 +373,7 @@ div::-webkit-scrollbar {
 html {
     min-height: calc(100% + env(safe-area-inset-top));
     padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-
+    background-color: var(--safe-area-background, YOUR_DEFAULT_COLOR);
 }
 
 body {

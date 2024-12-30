@@ -59,6 +59,7 @@ const LogoMark = (
 )
 
 const LogoNative = (
+    <View className='w-36 h-11'>
     <Svg
         viewBox="0 0 8000 2400"
         fill="none"
@@ -96,9 +97,11 @@ const LogoNative = (
             fill="#f59e0b"
         />
     </Svg>
+    </View>
 )
 
 const LogoNativeDark = (
+    <View className='w-36 h-11'>
     <Svg
         viewBox="0 0 8000 2400"
         fill="none"
@@ -135,6 +138,7 @@ const LogoNativeDark = (
             fill="#f59e0b"
         />
     </Svg>
+    </View>
 )
 
 const ComponentsAbout = (

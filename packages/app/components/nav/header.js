@@ -19,8 +19,7 @@ import { parseUrl } from 'app/lib/util'
 function SvgLogoNative() {
     const scheme = useColorScheme();
     const logo = scheme === 'dark' ? 'logo_nativedark' : 'logo_native';
-
-    return <View className='w-32 h-10'>{appStatic(logo)}</View>;
+    return <View>{appStatic(logo)}</View>;
 };
 
 function getRightHeader(items, currentUser, pagePath) {
@@ -35,7 +34,7 @@ function getRightHeader(items, currentUser, pagePath) {
     if (items?.length == 0 && !addMenu)
         return null;
 
-    return <Row className='gap-x-2'>{
+    return <Row className='gap-x-2 items-center'>{
         items?.map((button) => {
             let btn = undefined;
             if (button.section || button.link == 'search')
@@ -46,12 +45,12 @@ function getRightHeader(items, currentUser, pagePath) {
             }
 
             return (
-                <View className="w-12" key={`add-${button.icon}`} >{btn}</View>
+                <View className=" w-11 " key={`add-${button.icon}`} >{btn}</View>
             )
         })
 
     }
-        {!!addMenu && <View>{addMenu}</View>}
+        {!!addMenu && <View className=' '>{addMenu}</View>}
     </Row>;
 };
 
@@ -84,8 +83,8 @@ const Header = memo(({ backButtonPresented, header, pagePath, rightComponents })
 
     return (
         <Row style={{ 
-            backgroundColor: colors.barsBackground,
-        }} className="w-full justify-between items-center h-16 px-3 ">
+            backgroundColor: colors.headerBackground,
+        }} className=" shadow-[0_1px_0_rgba(229,231,235,0.5)] dark:shadow-[0_1px_0_rgba(0,0,0,1)] justify-between items-center h-14 px-3 ">
             <Row>
                 {(isHome && currentUser) && <SvgLogoNative />}
                 {backButtonPresented && (
@@ -105,7 +104,7 @@ const Header = memo(({ backButtonPresented, header, pagePath, rightComponents })
                 )}
             </Row>
             {type !== 'string' && <View className="flex-auto">{header}</View>}
-            {memoizedRightComponents && <Row className="gap-x-2">{memoizedRightComponents}</Row>}
+            {memoizedRightComponents && <Row className="">{memoizedRightComponents}</Row>}
         </Row>
     );
 });

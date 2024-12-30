@@ -49,7 +49,7 @@ export default function ElementSearch(oProps) {
 export function SearchPanel(props) {
     const { t } = useTranslation();
     const [inputValue, setInputValue] = useState(props.value); return (
-        <View className=' backdrop-blur  bg-bgrnavbar dark:bg-bgrnavbar-d ' >
+        <View className=' backdrop-blur bg-bgrnavbar dark:bg-bgrnavbar-d ' >
             <View className={appSetting('layout', 'max_width') + '  mx-auto w-full px-3 sm:px-4 pb-3 pt-1'}>
                 <Row className='gap-x-2 justify-center items-center'>
                     <Input name="search" placeholder={t("Search") + '...'} defaultValue={inputValue} role="textbox" aria-label="Search"

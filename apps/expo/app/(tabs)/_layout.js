@@ -90,8 +90,8 @@ const AppLayout = React.memo(() => {
         justifyContent: 'space-between',
         alignItems: 'center',
         height: '100%',
-        backgroundColor: colors.barsBackground,
-    }), [colors.barsBackground]);
+        backgroundColor: colors.safeAreaBackground || colors.barsBackground,
+    }), [colors.safeAreaBackground, colors.barsBackground]);
 
     const scheme = useColorScheme();
     const queryClient = new QueryClient()

@@ -93,17 +93,17 @@ const colors = {
     },
 
     bgrnavbar: {
-        DEFAULT: 'rgba(255,255,255,0.9)',
-        d: 'rgba(17,24,39,0.9)',
+        DEFAULT: 'rgba(255,255,255,0.8)',
+        d: 'rgba(17,24,39,0.8)',
     },
     bdrnavbar: {
-        DEFAULT: 'rgba(255,255,255,1)',
-        d: 'rgba(255,255,255,0.05)',
+        DEFAULT: 'rgba(229,231,235,1)',
+        d: 'rgba(0,0,0,1)',
     },
 
     bgrtabbar: {
-        DEFAULT: 'rgba(255,255,255,0.9)',
-        d: 'rgba(17,24,39,0.9)',
+        DEFAULT: 'rgba(255,255,255,0.8)',
+        d: 'rgba(17,24,39,0.8)',
     },
 
     bdrtabbar: {

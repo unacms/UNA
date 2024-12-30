@@ -2462,7 +2462,8 @@ export const settingsDefault = {
     theme: {
         light: {
             primary: 'rgba(37,99,235,1)',
-            barsBackground: 'rgba(255,255,255,1)', //header and tabbar background in native light mode
+            headerBackground: 'rgba(255,255,255,1)',
+            barsBackground: 'YOUR_CUSTOM_COLOR', // Change this for light mode
             bottomSheetBackground: 'rgba(255,255,255,1)',
             barsColor: '#4B5563',
             selectBorder: 'rgba(156, 163, 175, 0.3)',
@@ -2476,9 +2477,11 @@ export const settingsDefault = {
             bgrmodal: 'rgba(255,255,255,1)',
             bdrModal: 'rgba(107,114,128,0.15)',
             checkbox: '#2563eb',
+            safeAreaBackground: 'rgba(255,255,255,1)', // Add this new property
         },
         dark: {
             default: 'rgba(209,213,219,1)', //fix for icons color in iOS
+            headerBackground: 'rgba(17,24,39,1)',
             primary: 'rgba(37,99,235,1)',
             barsBackground: 'rgba(17,24,39,1)', //header background in native
             bottomSheetBackground: 'rgba(17,24,39,1)',
@@ -2492,6 +2495,7 @@ export const settingsDefault = {
             bgrmodal: 'rgba(31,41,55,1)',
             bdrModal: 'rgba(107,114,128,0.15)',
             checkbox: '#0ea5e9',
+            safeAreaBackground: 'rgba(17,24,39,1)', // Add this new property
         },
         conductor: {
             menu: ' w-full items-left justify-center border-b border-bdrtabbar dark:border-bdrtabbar-d bg-bgrtabbar dark:bg-bgrtabbar-d  ',
@@ -2604,17 +2608,17 @@ export const settingsDefault = {
                     ' h-6 w-6 text-center align-middle items-center justify-center flex ',
                 icon_size: 24,
                 icon_margin: '',
-                min_height: 'leading-6 ',
+                min_height: ' leading-6 ',
                 margin: 'mx-2',
             },
             base: {
                 rounded: ' rounded-lg ',
-                padding: ' p-2.5 ',
+                padding: ' p-2 h-11 min-w-11 ',
                 icon_sizes: ' h-6 w-6 text-center align-middle items-center justify-center flex ',
                 icon_size: 24,
-                icon_margin: '',
-                min_height: 'leading-[24px] ',
-                margin: 'mx-2',
+                icon_margin: ' ',
+                min_height: '  ',
+                margin: ' mx-2',
             },
             lg: {
                 rounded: 'rounded-lg',
@@ -2640,7 +2644,7 @@ export const settingsDefault = {
             'u-btn-primary-trans': ' duration-200 ',
 
             'u-btn-secondary-cnt':
-                ' bg-bgrbutton dark:bg-bgrbutton-d hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50  ',
+                ' bg-neutral-200 dark:bg-neutral-800 sm:hover:bg-neutral-300 sm:dark:hover:bg-neutral-700  ',
             'u-btn-secondary-text':
                 ' font-medium text-neutral-700 hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-white ',
             'u-btn-secondary-trans': ' duration-200',

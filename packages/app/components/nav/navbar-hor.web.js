@@ -123,11 +123,11 @@ export default function (props) {
                 </Row>
             </View>
             {!bIsHideHeader && <View className={(props.layoutName == 'profile' || props.layoutName == 'messenger' || props.layoutName == 'post' ? 'hidden lg:flex ' : '') + " fixed w-full"}>
-                <View className=" backdrop-blur h-14 border-b border-bdrnavbar dark:border-bdrnavbar-d items-center w-full bg-bgrnavbar dark:bg-bgrnavbar-d shadow-[0_1px_0_0_rgba(0,0,0,0.1)] dark:shadow-[0_1px_0_0_rgba(0,0,0,1)] ">
+                <View className=" backdrop-blur shadow-[0_1px_0_rgba(0,0,0,0.1)] dark:shadow-[0_1px_0_rgba(255,255,255,0.1)] h-14 items-center w-full bg-bgrnavbar dark:bg-bgrnavbar-d  ">
                 <View
                         className={
                             appSetting('layout', 'max_width') +
-                            ' w-full flex-row flex-auto gap-x-4 items-center'
+                            ' w-full flex-row flex-auto items-center'
                         }
                     >
                         <HeaderLine
@@ -179,7 +179,7 @@ export default function (props) {
                                 ))}
                             </Row>
                         </Row>
-                        <Row className="flex-none xl:w-80 2xl:w-96  flex-auto pr-3 sm:pr-4 justify-end ">
+                        <Row className="flex-none xl:w-80 2xl:w-96  flex-auto px-3 sm:px-4 justify-end ">
                             {!!currentUser && (
                                 <Row className="flex-row justify-end ">
                                     <View className=" flex-row my-auto gap-x-2 ">
