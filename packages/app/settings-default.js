@@ -2656,7 +2656,7 @@ export const settingsDefault = {
             'u-btn-danger-trans': ' duration-200 ',
 
             'u-btn-text-cnt':
-                '  hover:bg-neutral-200 dark:hover:bg-neutral-800  ',
+                '  hover:bg-neutral-200 dark:hover:bg-neutral-800 bg-transparent ',
             'u-btn-text-text':
                 ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50',
             'u-btn-text-trans': ' duration-200 ',

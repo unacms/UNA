@@ -1,6 +1,6 @@
 import { Text as NativeText, Platform } from 'react-native'
 
-import { appSetting, decodeText } from 'app/lib/util'
+import { appSetting, decodeText, normalizeClasses } from 'app/lib/util'
 
 const Text_ = NativeText
 
@@ -10,8 +10,7 @@ export const Text = ({ children, className, fontFamily, style: propStyle, ...res
     const correctedChildren = typeof children === 'string' ? decodeText(children) : children;
     
     const isUseCustomFont = appSetting('layout', 'use_custom_font');
-    const finalClassName = `${className} ${isUseCustomFont ? fontFamily || isUseCustomFont : ''}`;
-    
+    let finalClassName = normalizeClasses(`${className} ${isUseCustomFont ? fontFamily || isUseCustomFont : ''}`);
     const fontStyle = !isWeb && isUseCustomFont ? { fontFamily: fontFamily || isUseCustomFont } : {};
     const combinedStyle = [fontStyle, propStyle];
     return <Text_ {...rest} className={finalClassName} allowFontScaling={false} style={combinedStyle}>{correctedChildren}</Text_>;

@@ -52,6 +52,7 @@ export default function ElementHtml(props) {
         line-height: ${lineHeight}px;
         margin: 0;
         padding: 0;
+        font-family: 'sans-serif';
     }
 
     a {
