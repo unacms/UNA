@@ -2617,7 +2617,7 @@ export const settingsDefault = {
                 icon_sizes: ' h-6 w-6 text-center align-middle items-center justify-center flex ',
                 icon_size: 24,
                 icon_margin: ' ',
-                min_height: '  ',
+                min_height: ' text-base ',
                 margin: ' mx-2',
             },
             lg: {

@@ -102,12 +102,12 @@ const colors = {
     },
 
     bgrtabbar: {
-        DEFAULT: 'rgba(255,255,255,0.8)',
-        d: 'rgba(17,24,39,0.8)',
+        DEFAULT: 'rgba(255,255,255,1)',
+        d: 'rgba(17,24,39,1)',
     },
 
     bdrtabbar: {
-        DEFAULT: 'rgba(0,0,0,0.1)',
+        DEFAULT: 'rgba(229,231,235,1)',
         d: 'rgba(0,0,0,1)',
     },
 
@@ -162,6 +162,9 @@ const theme = {
             '3/1': '3 / 1',
             '4/1': '4 / 1',
             '5/1': '5 / 1',
+        },
+        fontSize: {
+            base: '16px',
         },
         
     },

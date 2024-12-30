@@ -436,7 +436,7 @@ export function TopSidebar({ styles, isWeb, leftSideBar, header, headerSettings,
                 }`}
         >
             <View className={`${leftSideBar ? '' : ' mx-auto'}  w-full ${conductorTheme.menu_max_width}`}>
-                {!header && isWeb && <Row className="lg:hidden flex-row gap-x-1 flex-none items-center justify-between h-16 border-b bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur border-bdrnavbar dark:border-bdrnavbar-d">
+                {!header && isWeb && <Row className="lg:hidden flex-row gap-x-1 flex-none items-center justify-between h-14 bg-bgrnavbar dark:bg-bgrnavbar-d ">
                     <Row className="items-center px-3 sm:px-4">
 
                         {headerSettings.header && getBackButtonWeb()}

@@ -23,7 +23,7 @@ const TabBar = React.memo(({ routes, index, setIndex, onChangeRoute }) => {
     if (routes.length > 1) {
         return (
             <View className="w-full">
-                <ScrollView horizontal={true} style={{ backgroundColor: colors.barsBackground }} className=" border-b border-bdr dark:border-bdr-d ">
+                <ScrollView horizontal={true}  className=" bg-bgrtabbar dark:bg-bgrtabbar-d border-b border-bdrtabbar dark:border-bdrtabbar-d ">
                     <Row className="px-1.5  justify-center" >
                         {routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
                             const btn =  callFn("getButtonForConductorNative", [a, index, currentUser, setIndex, onChangeRoute]);
