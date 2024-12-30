@@ -1,8 +1,36 @@
 import React, { useCallback, useMemo, useRef, useContext, useEffect } from 'react';
-import BottomSheet, { BottomSheetModalProvider, BottomSheetModal, BottomSheetScrollView, BottomSheetFooter } from '@gorhom/bottom-sheet';
+import BottomSheet, { BottomSheetModalProvider, BottomSheetModal, BottomSheetScrollView, BottomSheetFooter, BottomSheetBackdropProps } from '@gorhom/bottom-sheet';
 import { StyleSheet } from "react-native";
 import { Theme } from 'app/design/theme';
+import Animated, {
+    Extrapolate,
+    interpolate,
+    useAnimatedStyle,
+} from "react-native-reanimated";
 
+const CustomBackdrop = ({ animatedIndex, style }) => {
+    const containerAnimatedStyle = useAnimatedStyle(() => ({
+        opacity: interpolate(
+            animatedIndex.value,
+            [0, 1],
+            [0, 0.5],
+            Extrapolate.CLAMP
+        ),
+    }));
+
+    const containerStyle = useMemo(
+        () => [
+            style,
+            {
+                backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            },
+            containerAnimatedStyle,
+        ],
+        [style, containerAnimatedStyle]
+    );
+
+    return <Animated.View style={containerStyle} />;
+};
 
 export default function ElementCommentForm(props) {
     const { colors } = Theme();
@@ -16,17 +44,17 @@ export default function ElementCommentForm(props) {
     const styles = StyleSheet.create({
         container: {
             flex: 1,
-
+            
         },
         bottomSheet: {
             borderWidth: 0,
-            shadowColor: "#000",
+            shadowColor: "rgba(0,0,0,15)",
             /*shadowOffset: {
                 width: 0,
                 height: 3,
             },*/
-            shadowOpacity: 0.27,
-            shadowRadius: 4.25,
+            shadowOpacity: 0.15,
+            shadowRadius: 8,
 
             elevation: 10,
             /*backgroundColor: colors.bottomSheetBackground, // Ensure background color is set*/
@@ -41,6 +69,7 @@ export default function ElementCommentForm(props) {
     return (
         <BottomSheetModalProvider>
             <BottomSheetModal
+                backdropComponent={CustomBackdrop}
                 backgroundStyle={{ backgroundColor: colors.bottomSheetBackground }}
                 ref={bottomSheetModalRef}
                 index={1}

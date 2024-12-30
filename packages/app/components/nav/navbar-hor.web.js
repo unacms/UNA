@@ -40,7 +40,7 @@ const HeaderLine = memo(
             ).length > 0
 
         return (
-            <View className="flex-row xl:w-80 2xl:w-96 pl-3 sm:pl-4 pr-2 flex-auto lg:flex-none my-auto items-center">
+            <View className="flex-row xl:w-80 2xl:w-96 px-3 sm:px-4 flex-auto lg:flex-none my-auto items-center">
                 {headerSettings.menu && isDrawer && (
                     <View className="lg:hidden mr-3 sm:mr-4">
                         <Pressable onPress={showMenu}>
@@ -123,7 +123,7 @@ export default function (props) {
                 </Row>
             </View>
             {!bIsHideHeader && <View className={(props.layoutName == 'profile' || props.layoutName == 'messenger' || props.layoutName == 'post' ? 'hidden lg:flex ' : '') + " fixed w-full"}>
-                <View className=" backdrop-blur shadow-[0_1px_0_rgba(0,0,0,0.1)] dark:shadow-[0_1px_0_rgba(255,255,255,0.1)] h-14 items-center w-full bg-bgrnavbar dark:bg-bgrnavbar-d  ">
+                <View className=" shadow-[0_1px_0_rgba(0,0,0,0.1)] dark:shadow-[0_1px_0_rgba(255,255,255,0.1)] h-14 items-center w-full bg-bgrnavbar dark:bg-bgrnavbar-d  ">
                 <View
                         className={
                             appSetting('layout', 'max_width') +

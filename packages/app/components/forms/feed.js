@@ -348,8 +348,23 @@ export default function FormFeed(props) {
                     margin=" mx-auto mb-1 sm:mb-4 "
                     addClassName="  w-full max-w-2xl p-3 sm:p-4 "
                 >
-                    <View className=" flex-row gap-x-2 sm:gap-x-3 ">
+                    <View className=" flex-row sm:gap-x-3 ">
                         <View className=" my-auto">{profile}</View>
+                        <View className="flex-auto sm:hidden">
+                        <Button
+                            size="base"
+                            variant="text"
+                            fullWidth
+                            rounded
+                            title={t('Create new post') + '...'}
+                            align="start"
+                            onPress={() => {
+                                FeedbackHaptics('Medium')
+                                setShowImage(true)
+                            }}
+                        />
+                        </View>
+                        <View className="hidden sm:flex flex-auto">
                         <Button
                             size="base"
                             variant="secondary"
@@ -362,6 +377,7 @@ export default function FormFeed(props) {
                                 setShowImage(true)
                             }}
                         />
+                        </View>
                     </View>
                 </Card>
             )}

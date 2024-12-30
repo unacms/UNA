@@ -2463,7 +2463,7 @@ export const settingsDefault = {
         light: {
             primary: 'rgba(37,99,235,1)',
             headerBackground: 'rgba(255,255,255,1)',
-            barsBackground: 'YOUR_CUSTOM_COLOR', // Change this for light mode
+            barsBackground: 'rgba(255,255,255,1)', //header and tabbar background in native light mode
             bottomSheetBackground: 'rgba(255,255,255,1)',
             barsColor: '#4B5563',
             selectBorder: 'rgba(156, 163, 175, 0.3)',
@@ -2656,7 +2656,7 @@ export const settingsDefault = {
             'u-btn-danger-trans': ' duration-200 ',
 
             'u-btn-text-cnt':
-                '  hover:bg-bgrbutton dark:hover:bg-bgrbutton-d active:opacity-50  ',
+                '  hover:bg-bgrbutton dark:hover:bg-bgrbutton-d  ',
             'u-btn-text-text':
                 ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50',
             'u-btn-text-trans': ' duration-200 ',
