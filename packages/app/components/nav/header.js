@@ -84,7 +84,7 @@ const Header = memo(({ backButtonPresented, header, pagePath, rightComponents })
     return (
         <Row style={{ 
             backgroundColor: colors.headerBackground,
-        }} className=" shadow-[0_1px_0_rgba(255,255,255,1)] dark:shadow-[0_1px_0_rgba(17,24,39,1)] justify-between items-center h-14 px-3 ">
+        }} className="  justify-between items-center h-14 px-3 ">
             <Row>
                 {(isHome && currentUser) && <SvgLogoNative />}
                 {backButtonPresented && (
