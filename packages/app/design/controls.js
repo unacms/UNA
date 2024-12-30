@@ -301,6 +301,7 @@ export const Button = (props) => {
             classes += `justify-${align} `;
         }
         if (pressed) {
+            classes= classes.replace(/\b(bg-[^\s]*)\b|\b(dark:bg-[^\s]*)\b/g, "").replace(/\s+/g, " ").trim();
             classes += ` ${pressedClasses?.pressed_container || ThemeCssClassesButton[`u-btn-${variant}-pressed-cnt`] || ThemeButtonSizes.pressed_container} `;
         }
         return classes;
