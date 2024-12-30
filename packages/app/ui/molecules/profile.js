@@ -135,9 +135,9 @@ function AtomProfile_(oProps) {
 
     const sizes = {
         xs: {
-            sSize: 'w-6 h-6',
-            iSizeWidth: 24,
-            iSizeHeight: 24,
+            sSize: 'w-7 h-7',
+            iSizeWidth: 28,
+            iSizeHeight: 28,
             sSizeFont: 'text-xs',
             sSizeFontLetter: 'text-base  opacity-50 font-semibold',
         },

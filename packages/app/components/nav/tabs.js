@@ -74,8 +74,8 @@ export default function () {
     
     const router = useRouter();
     const { colors } = Theme();
-    const iconWidth = 24;
-    const iconHeight = 24;
+    const iconWidth = 28;
+    const iconHeight = 28;
     const isShowTabs = currentUser || appSetting('layout', 'show_nav_non_logged_native')
     const notificationUrl =  appSetting('layout', 'notifications');
 
@@ -84,7 +84,7 @@ export default function () {
     const profile = useMemo(() => {
         if (currentUser) {
             const dUser = { ...currentUser, url_avatar: currentUser?.avatar, url: '/dashboard' };
-            return <Profile {...dUser} displayType="unit_wo_info" displaySize="xs" />;
+            return <View className=" items-center justify-center border-[1.5px] border-neutral-700 dark:border-neutral-300 rounded-full mb-1.5 h-[30px] w-[30px]"><Profile {...dUser} displayType="unit_wo_info" displaySize="xs" /></View>;
         }
         return null;
     }, [currentUser?.id]);
@@ -100,7 +100,7 @@ export default function () {
         tabBarItemStyle: {
             marginBottom: 0,
             height: 44,
-            marginTop: 0,
+            marginTop: 6,
             borderRadius: 8,
             marginLeft: 0,
             marginRight: 0,
@@ -183,7 +183,7 @@ export default function () {
                                 title: t(tab.title),
                                 headerShown: false,
                                 tabBarIcon: ({ color }) => (
-                                    (tab.url == '/dashboard' && profile) ? profile : <Icon icon={tab.icon} width={iconWidth} height={iconHeight} color={color} />
+                                    (tab.url == '/dashboard' && profile) ? profile : <View className="mb-2"><Icon icon={tab.icon} width={iconWidth} height={iconHeight} color={color} /></View>
                                 )
                             };
 
