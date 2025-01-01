@@ -101,9 +101,22 @@ export default function FormFeed(props) {
                 startDecorator="X"
             />
             <View className="flex-auto items-center justify-center">
-                <Text className="text-neutral-700 dark:text-neutral-200 text-xl font-bold">
-                    Create post
-                </Text>
+            <View className=" flex-row gap-x-3 flex-auto ">
+                    
+                    <Profile
+                        {...currentUser}
+                        displayType="unit_wo_info"
+                        displaySize="base"
+                    />
+                
+                    <Profile
+                        {...currentUser}
+                        displayType="unit_wo_image"
+                        displaySize="lg"
+                    />
+
+                   
+            </View>
             </View>
 
             <Button
@@ -136,7 +149,22 @@ export default function FormFeed(props) {
     return (
         <View className="w-full">
             <Modal
-                title={isSmall ? header : t('Create new post')}
+                title={isSmall ? header :  <View className=" flex-row gap-x-3 flex-auto ">
+                    
+                        <Profile
+                            {...currentUser}
+                            displayType="unit_wo_info"
+                            displaySize="base"
+                        />
+                    
+                        <Profile
+                            {...currentUser}
+                            displayType="unit_wo_image"
+                            displaySize="lg"
+                        />
+
+                       
+                </View>}
                 onVisible={showImage}
                 outerClickClose={false}
                 {...(!isSmall && { onClose: () => setShowImage(null) })}
@@ -164,7 +192,7 @@ export default function FormFeed(props) {
                     props.handleSubmit,
                     'default'
                 )}
-                <KbAvoidingView className='flex-col flex-auto' offset={isIos ? 120 : 20}>
+                <KbAvoidingView className='flex-col flex-auto' offset={isIos ? 68 : 74}>
                     <View className="justify-between flex-col flex-auto ">
                         <ScrollView
                             ref={scrollViewRef}
@@ -177,29 +205,14 @@ export default function FormFeed(props) {
                             }
                         >
                             <View className="w-full flex-col p-3 sm:p-0 ">
-                                <View className=" flex-row gap-x-3 pb-1 flex-auto ">
-                                    <View className=" mb-auto ">
-                                        <Profile
-                                            {...currentUser}
-                                            displayType="unit_wo_info"
-                                            displaySize="base"
-                                        />
-                                    </View>
-                                    <View className="flex-col flex-auto ">
-                                        <Profile
-                                            {...currentUser}
-                                            displayType="unit_wo_image"
-                                            displaySize="lg"
-                                        />
-
-                                        <View className="gap-x-2 flex-wrap ">
-                                            <View className="mt-1.5 ">
-                                                {getFormFieldByData(
+                                <View className=" flex-row gap-x-3 pb-3 flex-auto ">
+                                    
+                                    {getFormFieldByData(
                                                     {
                                                         ...props.data.inputs[
                                                             'object_privacy_view'
                                                         ],
-                                                        size: 'xs',
+                                                        size: 'sm',
                                                     },
                                                     props.handleSubmit,
                                                     'nofield',
@@ -209,14 +222,6 @@ export default function FormFeed(props) {
                                                         showModal: showImage,
                                                     }
                                                 )}
-                                            </View>
-                                            {props.data.inputs['labels'] && (
-                                                <View className="mt-2">
-                                                    {labels}
-                                                </View>
-                                            )}
-                                        </View>
-                                    </View>
                                 </View>
                                 {getFormFieldByData(
                                     props.data.inputs['text'],
@@ -230,15 +235,30 @@ export default function FormFeed(props) {
                                     }
                                 )}
                                 {prevList.length > 0 && prevList[0]?.key && (
-                                    <Row className="flex-wrap ">{prevList}</Row>
+                                    <Row className="flex-wrap">{prevList}</Row>
                                 )}
                             </View>
+                            <Row className="pb-3">
+                            {props.data.inputs['labels'] && (
+                                                <Row className="pb-3">
+                                                    {labels}
+                                                    
+                                                </Row>
+                                            )}
+                           
+                                            
+
+                                               
+                            </Row>
                         </ScrollView>
 
-                        <Row className="w-full flex-wrap gap-x-2 mx-auto border-t border-bdr dark:border-bdr-d items-center pt-2.5 px-3 sm:px-0 ">
+                        <Row className="w-full justify-between flex-wrap gap-x-2 mx-auto items-center pt-2 px-3  ">
+                      
+                                           
+                                           
                         <Row
                             className={
-                                'gap-x-2 mr-auto  ' +
+                                'gap-x-2  ' +
                                 (isWeb ? '' : ' pb-3 ') +
                                 (isSmall
                                     ? ' pb-2.5 ' +
@@ -247,7 +267,9 @@ export default function FormFeed(props) {
                                     : ' my-auto ')
                             }
                         >
-                           
+                            
+                                          
+                                        
                             {props.data.inputs['obfuscate_faces'] && (
                                 <View className="">
                                     {getFormFieldByData(
@@ -314,6 +336,9 @@ export default function FormFeed(props) {
                                 </View>
                             )}
                         </Row>
+                        
+                                               
+                        
 
                         <View className="hidden sm:flex">
                             {/* <Button onPress={() => { handlePress() }} variant='primary' disabled={text!='' ? false : true}   startDecorator="PaperPlane" title="Post" />*/}
