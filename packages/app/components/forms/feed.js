@@ -164,7 +164,7 @@ export default function FormFeed(props) {
                     props.handleSubmit,
                     'default'
                 )}
-                <KbAvoidingView className='flex-col flex-auto' offset={isIos ? 64 : 72}>
+                <KbAvoidingView className='flex-col flex-auto' offset={isIos ? 120 : 20}>
                     <View className="justify-between flex-col flex-auto ">
                         <ScrollView
                             ref={scrollViewRef}
