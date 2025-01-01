@@ -84,12 +84,12 @@ const colors = {
 
 
     bgrmodal: {
-        DEFAULT: 'rgba(255,255,255,0.8)',
-        d: 'rgba(17,24,39,0.8)',
+        DEFAULT: 'rgba(255,255,255,1)',
+        d: 'rgba(17,24,39,1)',
     },
     bdrmodal: {
-        DEFAULT: 'rgba(255,255,255,1)',
-        d: 'rgba(255,255,255,0.05)',
+        DEFAULT: 'rgba(0,0,0,0.1)',
+        d: 'rgba(255,255,255,0.1)',
     },
 
     bgrnavbar: {
@@ -153,6 +153,10 @@ const colors = {
 
 const theme = {
     extend: {
+        boxShadow: {
+            'sm': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+            'md': '0 4px 8px 0 rgba(0, 0, 0, 0.10)',
+          },
         colors: colors,
         fontFamily: {
             default: ['default-font', 'sans-serif']

@@ -65,7 +65,7 @@ export default function Unit(props) {
     return (
         <>
             <Redirect ref={redirectdRef} />
-            <Card margin=" mb-[1px] sm:m-2 " border=" border-none shadow-none sm:shadow "  rounded=" sm:rounded-2xl ">
+            <Card margin=" mb-[1px] sm:m-2 " border=" border-none shadow-none sm:shadow-sm dark:shadow-[0_0_0_-2px_rgba(255,255,255,0.3)] "  rounded=" sm:rounded-2xl ">
                 <Link className="group " href={data.url}>
                     <View className={`flex-row  sm:flex-col p-3 sm:p-1 ${isWeb && 'h-32'} sm:h-full`}>
                         <ImageSection data={data} imageSizes={imageSizes} />

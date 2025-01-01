@@ -94,21 +94,21 @@ export function Modal({
     <View className={`w-full ${fullWidth ? '' : `${layoutShift}:w-auto`} relative h-full ${modalSettings.container.replaceAll("{ls}", layoutShift)} `}>
         <Pressable onPress={() => { }} className={`relative h-full ${modalSettings.content.replaceAll("{ls}", layoutShift)}`}>
             {
-                (title || onClose) && <Row className={`items-center justify-${align} ${headerBorder && modalSettings.header}  ${layoutShift}:p-4 ${layoutShift}:py-3`}>
+                (title || onClose) && <Row className={`items-center justify-${align} ${headerBorder && modalSettings.header}  ${layoutShift}:px-4 ${layoutShift}:py-3`}>
                     {(title && type === 'string') && (
                         <View className='flex-auto'>
-                            <Text className='text-neutral-900 dark:text-neutral-100 text-xl font-bold '>{title}</Text>
+                            <Text className='text-neutral-800 dark:text-neutral-200 text-xl font-bold '>{title}</Text>
                         </View>
                     )}
                     {(title && type !== 'string') && (title)}
                     {onClose && (
                         <View className=''>
-                            <Button variant='text' size='sm' rounded startDecorator='X' onPress={onClose} />
+                            <Button variant='secondary' size='base' rounded startDecorator='X' onPress={onClose} />
                         </View>
                     )}
                 </Row>
             }
-            <Cnt style={styles} className={`${padding}  overflow-y-auto flex-auto ${layoutShift}:h-auto `}>{children}</Cnt>
+            <Cnt style={styles} className={`${padding} overflow-y-auto flex-auto ${layoutShift}:h-auto `}>{children}</Cnt>
         </Pressable>
     </View>
 </View>
@@ -190,8 +190,8 @@ const getIcon = (sIcon, iIndex, classIconName, sClassText, sIconContainer, iIcon
     if (isEmoji(sIcon)) {
         sClassText = sClassText.replace('text-lg', ' text-3xl text-center leading-[32px]  ');
         sClassText = sClassText.replace('text-base', ' group-hover:no-underline text-2xl leading-[26px] ');
-        sClassText = sClassText.replace('text-sm', ' group-hover:no-underline text-[22px] leading-[24px] ');
-        sClassText = sClassText.replace('text-xs', ' group-hover:no-underline text-[18px] leading-[20px] ');
+        sClassText = sClassText.replace('text-sm', ' group-hover:no-underline text-[18px] leading-[21px] ');
+        sClassText = sClassText.replace('text-xs', ' group-hover:no-underline text-[16px] leading-[20px] ');
         return (
             <Text key={iIndex} className={classIconName ? classIconName : sClassText + sIconContainer}>{sIcon}</Text>
         );

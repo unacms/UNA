@@ -123,7 +123,7 @@ export default function (props) {
                 </Row>
             </View>
             {!bIsHideHeader && <View className={(props.layoutName == 'profile' || props.layoutName == 'messenger' || props.layoutName == 'post' ? 'hidden lg:flex ' : '') + " fixed w-full"}>
-                <View className=" h-16 items-center w-full bg-bgrnavbar dark:bg-bgrnavbar-d sm:border-b border-bdrnavbar dark:border-bdrnavbar-d">
+                <View className=" h-16 shadow-sm items-center w-full bg-bgrnavbar dark:bg-bgrnavbar-d sm:border-b border-bdrnavbar dark:border-bdrnavbar-d">
                 <View
                         className={
                             appSetting('layout', 'max_width') +
@@ -195,7 +195,7 @@ export default function (props) {
                                         <View className="hidden sm:block">
                                             {bNotifs && <NotificationButton />}
                                         </View>
-                                        <View className="sm:block">
+                                        <View className="hidden sm:block">
                                             {bMessenger && (
                                                 <Link
                                                     href={appSetting(
@@ -224,12 +224,14 @@ export default function (props) {
                             )}
                             {!currentUser && (
                                 <Row className="flex-row flex-auto sm:flex-none justify-end my-auto gap-x-1.5 sm:gap-x-2">
+                                    <MenuLauncher />
+
                                     {bSearch && (
                                         <View>
                                             <Search />
                                         </View>
                                     )}
-                                    <MenuLauncher />
+                                    
                                     <Link href="/login">
                                         <ButtonRef
                                             variant="secondary"

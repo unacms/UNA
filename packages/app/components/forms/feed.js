@@ -164,8 +164,8 @@ export default function FormFeed(props) {
                     props.handleSubmit,
                     'default'
                 )}
-                <KbAvoidingView offset={isIos ? 56 : 72}>
-                    <View className="justify-between  h-full  ">
+                <KbAvoidingView className='flex-col flex-auto' offset={isIos ? 56 : 72}>
+                    <View className="justify-between flex-col flex-auto ">
                         <ScrollView
                             ref={scrollViewRef}
                             className="w-full h-full flex-1"
@@ -234,20 +234,20 @@ export default function FormFeed(props) {
                                 )}
                             </View>
                         </ScrollView>
+
+                        <Row className="w-full flex-wrap gap-x-2 mx-auto border-t border-bdr dark:border-bdr-d items-center pt-3 px-3 sm:px-0 ">
                         <Row
                             className={
-                                'w-full flex-wrap gap-x-2 mx-auto border-bdr dark:border-bdr-d items-center ' +
+                                'gap-x-2 mr-auto  ' +
                                 (isWeb ? '' : ' pb-3 ') +
                                 (isSmall
-                                    ? ' h-[68px] border-t fixed ' +
+                                    ? ' pb-3 ' +
                                       (isIos ? ' bottom-4 ' : ' bottom-0 ') +
-                                      ' border-bdr dark:border-bdr-d px-3 bg-bgrcard dark:bg-bgrcard-d '
-                                    : ' rounded-lg border p-1 mb-3 border')
+                                      '  '
+                                    : ' my-auto ')
                             }
                         >
-                            <Text className="hidden sm:flex px-2 mr-auto text-sm font-medium text-neutral-800 dark:text-neutral-200">
-                                Add to post
-                            </Text>
+                           
                             {props.data.inputs['obfuscate_faces'] && (
                                 <View className="">
                                     {getFormFieldByData(
@@ -327,6 +327,7 @@ export default function FormFeed(props) {
                                 }
                             )}
                         </View>
+                        </Row>
                     </View>
                 </KbAvoidingView>
             </Modal>
