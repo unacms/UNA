@@ -164,7 +164,7 @@ export default function FormFeed(props) {
                     props.handleSubmit,
                     'default'
                 )}
-                <KbAvoidingView className='flex-col flex-auto' offset={isIos ? 56 : 72}>
+                <KbAvoidingView className='flex-col flex-auto' offset={isIos ? 58 : 72}>
                     <View className="justify-between flex-col flex-auto ">
                         <ScrollView
                             ref={scrollViewRef}
@@ -182,14 +182,14 @@ export default function FormFeed(props) {
                                         <Profile
                                             {...currentUser}
                                             displayType="unit_wo_info"
-                                            displaySize="lg"
+                                            displaySize="base"
                                         />
                                     </View>
                                     <View className="flex-col flex-auto ">
                                         <Profile
                                             {...currentUser}
                                             displayType="unit_wo_image"
-                                            displaySize="sm"
+                                            displaySize="lg"
                                         />
 
                                         <View className="gap-x-2 flex-wrap ">
@@ -235,13 +235,13 @@ export default function FormFeed(props) {
                             </View>
                         </ScrollView>
 
-                        <Row className="w-full flex-wrap gap-x-2 mx-auto border-t border-bdr dark:border-bdr-d items-center pt-3 px-3 sm:px-0 ">
+                        <Row className="w-full flex-wrap gap-x-2 mx-auto border-t border-bdr dark:border-bdr-d items-center py-2.5 px-3 sm:px-0 ">
                         <Row
                             className={
                                 'gap-x-2 mr-auto  ' +
                                 (isWeb ? '' : ' pb-3 ') +
                                 (isSmall
-                                    ? ' pb-3 ' +
+                                    ? ' ' +
                                       (isIos ? ' bottom-4 ' : ' bottom-0 ') +
                                       '  '
                                     : ' my-auto ')
