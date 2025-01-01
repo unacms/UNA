@@ -164,7 +164,7 @@ export default function FormFeed(props) {
                     props.handleSubmit,
                     'default'
                 )}
-                <KbAvoidingView className='flex-col flex-auto' offset={isIos ? 58 : 72}>
+                <KbAvoidingView className='flex-col flex-auto' offset={isIos ? 64 : 72}>
                     <View className="justify-between flex-col flex-auto ">
                         <ScrollView
                             ref={scrollViewRef}
@@ -235,13 +235,13 @@ export default function FormFeed(props) {
                             </View>
                         </ScrollView>
 
-                        <Row className="w-full flex-wrap gap-x-2 mx-auto border-t border-bdr dark:border-bdr-d items-center py-2.5 px-3 sm:px-0 ">
+                        <Row className="w-full flex-wrap gap-x-2 mx-auto border-t border-bdr dark:border-bdr-d items-center pt-2.5 px-3 sm:px-0 ">
                         <Row
                             className={
                                 'gap-x-2 mr-auto  ' +
                                 (isWeb ? '' : ' pb-3 ') +
                                 (isSmall
-                                    ? ' ' +
+                                    ? ' pb-2.5 ' +
                                       (isIos ? ' bottom-4 ' : ' bottom-0 ') +
                                       '  '
                                     : ' my-auto ')
