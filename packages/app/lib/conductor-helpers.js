@@ -414,7 +414,7 @@ export function LeftSidebar({ title, addButtons, children, width, menu }) {
                         {addButtons}
                     </Row>
                 </Row>}
-                <View className=' hidden flex-col lg:flex '>
+                <View className=' hidden flex-col lg:flex gap-y-0.5'>
                     {children}
                 </View>
             </View>

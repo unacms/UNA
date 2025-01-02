@@ -105,7 +105,7 @@ export default function (props) {
             </Modal>
             <Field {...props}>
                 <View className='w-full justify-between '>
-                    <View className={styles + ' w-full flex-auto  items-center flex-row flex-wrap'}>
+                    <View className={styles + ' w-full flex-auto items-center flex-row flex-wrap'}>
                         {props.align == 'right' && <Button
                             startDecorator="Plus"
                             title='Tags'
@@ -114,6 +114,7 @@ export default function (props) {
                             onPress={showSelect}
                         />}
                         {!!field.value && field.value.map((item, index) => (
+                            <View className='pr-1 pb-1'>
                             
                                 <Button
                                     endDecorator="X"
@@ -122,7 +123,7 @@ export default function (props) {
                                     title={item}
                                     onPress={removeValue(item)}
                                 />
-                           
+                            </View>
                         )
                         )}
                         {props.align != 'right' && !props.listOnly && <Button

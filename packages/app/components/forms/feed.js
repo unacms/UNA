@@ -205,7 +205,7 @@ export default function FormFeed(props) {
                             }
                         >
                             <View className="w-full flex-col p-3 sm:p-0 ">
-                                <View className=" flex-row gap-x-3 pb-3 flex-auto ">
+                                <View className="  pb-3 flex-auto ">
                                     
                                     {getFormFieldByData(
                                                     {
@@ -238,9 +238,9 @@ export default function FormFeed(props) {
                                     <Row className="flex-wrap">{prevList}</Row>
                                 )}
                             </View>
-                            <Row className="pb-3">
+                            
                             {props.data.inputs['labels'] && (
-                                                <Row className="pb-3">
+                                                <Row className="px-3 sm:px-0">
                                                     {labels}
                                                     
                                                 </Row>
@@ -249,10 +249,10 @@ export default function FormFeed(props) {
                                             
 
                                                
-                            </Row>
+                            
                         </ScrollView>
 
-                        <Row className="w-full justify-between flex-wrap gap-x-2 mx-auto items-center pt-2 px-3  ">
+                        <Row className="w-full justify-between flex-wrap gap-x-2 mx-auto items-center pt-2 ">
                       
                                            
                                            
@@ -261,7 +261,7 @@ export default function FormFeed(props) {
                                 'gap-x-2  ' +
                                 (isWeb ? '' : ' pb-3 ') +
                                 (isSmall
-                                    ? ' pb-2.5 ' +
+                                    ? ' pb-2.5 px-3 ' +
                                       (isIos ? ' bottom-4 ' : ' bottom-0 ') +
                                       '  '
                                     : ' my-auto ')
@@ -373,7 +373,7 @@ export default function FormFeed(props) {
                 <Card
                     rounded=" rounded-none sm:rounded-2xl  "
                     margin=" mx-auto mb-1 sm:mb-3 "
-                    addClassName="  w-full max-w-2xl p-3 sm:p-4 "
+                    addClassName=" shadow-sm  w-full max-w-2xl p-3 sm:p-4 "
                 >
                     <View className=" flex-row sm:gap-x-3 ">
                         <View className=" my-auto">{profile}</View>
