@@ -88,8 +88,8 @@ const colors = {
         d: 'rgba(17,24,39,1)',
     },
     bdrmodal: {
-        DEFAULT: 'rgba(0,0,0,0.1)',
-        d: 'rgba(0,0,0,1)',
+        DEFAULT: 'rgba(255,255,255,1)',
+        d: 'rgba(255,255,255,0.05)',
     },
 
     bgrnavbar: {
@@ -154,6 +154,8 @@ const colors = {
 const theme = {
     extend: {
         boxShadow: {
+            'modal': '0 0px 2px 0 rgba(0, 0, 0, 0.25), 0 10px 20px 0 rgba(0, 0, 0, 0.15)',
+            'modal-d': '0 0px 2px 0 rgba(0, 0, 0, 1), 0 10px 20px 0 rgba(0, 0, 0, 0.15)',
             'sm': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
             'md': '0 4px 8px 0 rgba(0, 0, 0, 0.10)',
           },

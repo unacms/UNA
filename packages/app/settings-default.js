@@ -2564,9 +2564,9 @@ export const settingsDefault = {
         },
         modal: {
             fog: 'bg-white/50 dark:bg-black/80 backdrop-blur ',
-            container: 'max-w-2xl {ls}:h-auto shadow-md {ls}:rounded-2xl sm:border border-bdrmodal dark:border-bdrmodal-d overflow-hidden',
+            container: 'max-w-2xl {ls}:h-auto shadow-modal dark:shadow-modal-d bg-bgrmodal dark:bg-bgrmodal-d {ls}:rounded-2xl sm:border border-bdrmodal dark:border-bdrmodal-d overflow-hidden',
             content:
-                'bg-bgrmodal dark:bg-bgrmodal-d {ls}:h-auto ',
+                ' {ls}:h-auto ',
             header: 'border-b border-bdr dark:border-bdr-d px-3 py-2.5',
         },
         card: {
