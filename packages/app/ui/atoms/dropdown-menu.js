@@ -3,6 +3,7 @@ import { useBottomSheetData } from 'app/context/bottomsheet';
 import { Button } from 'app/design/controls'
 import { memo, useCallback, useEffect } from 'react'
 import { FeedbackHaptics } from 'app/lib/util';
+import { Keyboard } from 'react-native' 
 
 const Menu = memo(({ items, onSelect, setBottomSheetData }) => {
 
@@ -39,6 +40,7 @@ export default function ({items, onSelect, children, defaultOpen}) {
     const handlePress = useCallback(() => {
         FeedbackHaptics('Medium')
         setBottomSheetData({ showClose: false, snapPoints: ['10%', '50%'], content: <Menu items={items} onSelect={onSelect} setBottomSheetData={setBottomSheetData} /> });
+        Keyboard.dismiss();
     }, [setBottomSheetData, items, onSelect]);
 
     useEffect(() => {

@@ -173,7 +173,7 @@ export default function ElementCover(props) {
                 <View className="flex-col lg:flex-row px-2  my-4 flex-auto">
                     <View className=" flex-col  items-center md:items-start flex-auto  mb-2">
                         <Text className="tracking-tight text-3xl lg:text-4xl font-bold text-neutral-900 dark:text-neutral-50">
-                            {data.profile.display_name}{segments.length}
+                            {data.profile.display_name}
                         </Text>
 
                         <Row className='mb-2'>

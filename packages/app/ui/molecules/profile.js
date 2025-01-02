@@ -31,13 +31,14 @@ function DisplayNameLink({ title, url, href, fontSize, actions }) {
     if (isAnon || title.includes("(anonymized)")) {
         return (
             <Row className={' text-neutral-900  dark:text-neutral-100 gap-x-2 items-center ' + fontSize}>
-                <Text className={'text-neutral-900 dark:text-neutral-100 font-semibold ' + fontSize + ' truncate '}>
-                    {title && title.replace(" (anonymized)", '')} (protected)
-                </Text>
+                <View>
+                    <Text numberOfLines={1} className={'text-neutral-900 dark:text-neutral-100 font-semibold ' + fontSize + ' truncate '}>
+                        {title && title.replace(" (anonymized)", '')} (protected)
+                    </Text>
+                </View>
                 <Icon icon="ShieldCheckered"/>
             </Row>
         )
-
     }
 
     return (
