@@ -182,7 +182,7 @@ export const settingsDefault = {
             button_size: 'sm',
             button_variant: 'text',
             pressed_classes: {
-                pressed_container: ' hover:bg-primary/20 dark:hover:bg-primary-d/20  ',
+                pressed_container: ' sm:hover:bg-primary/20 sm:dark:hover:bg-primary-d/20 ',
                 pressed_text: ' text-primary dark:text-primary-d group-hover:text-primary-700 dark:group-hover:text-primary-500 ',
             },
             button_rounded: false,
@@ -753,17 +753,18 @@ export const settingsDefault = {
                 url: '/home',
                 icon: 'House',
             },
+        
             {
                 key: '/tab1',
-                title: 'Messages',
-                url: '/messenger',
-                icon: 'ChatTeardropDots',
-            },
-            {
-                key: '/tab2',
                 title: 'Friends',
                 url: '/friends',
                 icon: 'Users',
+            },
+            {
+                key: '/tab2',
+                title: 'Messages',
+                url: '/messenger',
+                icon: 'ChatTeardropDots',
             },
             {
                 key: '/tab3',
@@ -809,6 +810,7 @@ export const settingsDefault = {
                 url: '/privacy',
                 icon: 'EyeSlash',
             },
+            
         ],
         profile_menu: [
             'view-persons-profile',
@@ -2561,10 +2563,10 @@ export const settingsDefault = {
             item_icon: 'text-2xl text-neutral-700 dark:text-neutral-300',
         },
         modal: {
-            fog: 'bg-white/50 dark:bg-black/50 backdrop-blur-xl',
-            container: 'max-w-2xl {ls}:h-auto shadow-xl {ls}:rounded-xl',
+            fog: 'bg-white/50 dark:bg-black/80 backdrop-blur ',
+            container: 'max-w-2xl {ls}:h-auto shadow-modal dark:shadow-modal-d bg-bgrmodal dark:bg-bgrmodal-d {ls}:rounded-2xl sm:border border-bdrmodal dark:border-bdrmodal-d overflow-hidden',
             content:
-                'bg-bgrmodal dark:bg-bgrmodal-d {ls}:h-auto  {ls}:border {ls}:border-bdrmodal {ls}:dark:border-bdrmodal-d {ls}:rounded-xl shadow-[0_0_0_1px_rgba(0,0,0,0.1)] dark:shadow-[0_0_0_1px_rgba(0,0,0,1)]',
+                ' {ls}:h-auto ',
             header: 'border-b border-bdr dark:border-bdr-d px-3 py-2.5',
         },
         card: {
@@ -2578,7 +2580,7 @@ export const settingsDefault = {
                 'bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-bdrinput dark:border-bdrinput-d focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus:outline-primary dark:focus-outline-primary-d duration-100 placeholder-neutral-500 duration-100 text-neutral-900 rounded-lg flex-auto p-3 leading-5 dark:text-neutral-100 text-base ',
             multi: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg flex-auto p-2 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 ',
             rounded:
-                ' placeholder-neutral-600 dark:placeholder-neutral-400 bg-bgrinput dark:bg-bgrinput-d hover:bg-bgrinput-h dark:hover:bg-bgrinput-dh focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-transparent focus:border-bdrinput-f dark:focus:border-bdrinput-f focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus:outline-primary dark:focus-outline-primary-d duration-100 text-neutral-900 rounded-full flex-auto px-3 dark:text-neutral-100 text-base leading-5 h-10  ',
+                ' placeholder-neutral-600 dark:placeholder-neutral-400 bg-bgrinput dark:bg-bgrinput-d hover:bg-bgrinput-h dark:hover:bg-bgrinput-dh focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-transparent focus:border-bdrinput-f dark:focus:border-bdrinput-f focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus:outline-primary dark:focus-outline-primary-d duration-100 text-neutral-900 rounded-full flex-auto px-3 dark:text-neutral-100 text-base leading-5 h-11  ',
             roundedsmall:
                 ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-full flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[34px] ',
             small: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[36px] ',
@@ -2588,9 +2590,9 @@ export const settingsDefault = {
             default_size: 'base',
             default_variant: 'default',
             pressed_container:
-                ' bg-primary/10 dark:bg-primary-d/10 ',
+                ' bg-primary/5 dark:bg-primary-d/10 shadow-sm ring-1 ring-inset ring-primary/10 dark:ring-primary-d/10 ',
             pressed_text:
-                ' text-primary-700 dark:text-primary-500 group-hover:text-primary-800 dark:group-hover:text-primary-500 ',
+                ' text-primary-700 dark:text-primary-400 group-hover:text-primary-800 dark:group-hover:text-primary-300 ',
             xs: {
                 rounded: 'rounded-lg',
                 padding: 'p-1',
@@ -2606,7 +2608,7 @@ export const settingsDefault = {
                 padding: 'p-1.5',
                 icon_sizes:
                     ' h-6 w-6 text-center align-middle items-center justify-center flex ',
-                icon_size: 24,
+                icon_size: 22,
                 icon_margin: '',
                 min_height: ' leading-6 ',
                 margin: 'mx-2',
@@ -2617,16 +2619,16 @@ export const settingsDefault = {
                 icon_sizes: ' h-6 w-6 text-center align-middle items-center justify-center flex ',
                 icon_size: 24,
                 icon_margin: ' ',
-                min_height: '  ',
+                min_height: ' leading-6 ',
                 margin: ' mx-2',
             },
             lg: {
-                rounded: 'rounded-xl',
+                rounded: 'rounded-2xl',
                 padding: 'px-2 py-1.5',
                 icon_sizes: ' p-2 h-11 w-11 ',
                 icon_size: 28,
                 icon_margin: 'p-2 w-11 h-11 bg-neutral-200 dark:bg-neutral-800 rounded-full group-hover:bg-neutral-300 dark:group-hover:bg-neutral-700  ',
-                min_height: ' leading-[28px] sm:text-base ',
+                min_height: ' leading-[44px] sm:text-base ',
                 margin: 'mx-3',
             },
         },
@@ -2656,7 +2658,7 @@ export const settingsDefault = {
             'u-btn-danger-trans': ' duration-200 ',
 
             'u-btn-text-cnt':
-                '  hover:bg-neutral-200 dark:hover:bg-neutral-800 bg-transparent ',
+                '  hover:bg-bgrbutton dark:hover:bg-bgrbutton-d bg-transparent hover:shadow-sm hover:ring-1 hover:ring-inset hover:ring-neutral-500/10 ',
             'u-btn-text-text':
                 ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50',
             'u-btn-text-trans': ' duration-200 ',
@@ -2704,7 +2706,7 @@ export const settingsDefault = {
             'u-btn-group-item-link-pressed-cnt':
                 ' ',
             'u-btn-group-item-link-pressed-text':
-                'text-primary-700 dark:text-primary-600 group-hover:text-primary-800 dark:group-hover:text-primary-500 ',
+                'text-primary-700 dark:text-neutral-600 group-hover:text-primary-800 dark:group-hover:text-primary-500 ',
 
             'u-btn-group-item-outline-cnt':
                 ' hover:bg-bgritem-h dark:hover:bg-bgritem-dh active:opacity-50  ',

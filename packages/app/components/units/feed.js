@@ -44,7 +44,7 @@ function DefaultUnit(data) {
                 {MainContentComponent}
                 <View className="">
                     {(!!data.menu_counters && appSetting('feed', 'counters_menu')) && <View className='sm:py-2 sm:border-b border-bdr dark:border-bdr-d'><CounterMenu data={data.menu_counters}  /></View>}
-                    <View className=' pb-2 pt-2 border-t border-bdr dark:border-bdr-d '><ActionMenu data={data.menu_actions} showCommentsModal={false} /></View>
+                    <View className=' py-2 mt-1 border-t border-bdr dark:border-bdr-d '><ActionMenu data={data.menu_actions} showCommentsModal={false} /></View>
                 </View>
                 {commentsData && <View className='   '><CommentsSection url={url} t={t} isCommentsModal={false} showCommentsModal={false} commentsDataInline={commentsData} data={data} /></View>}
             </Card>

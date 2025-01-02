@@ -129,20 +129,20 @@ export default function (props) {
                 <View className="flex-auto  relative w-full flex-row mx-auto max-w-[1920px] ">
                     
                     {getLayout(currentUser) == 'hor' && (
-                        <View className="hidden xl:block xl:w-80 2xl:w-96 ">
+                        <View className="hidden xl:block flex-auto max-w-96 ">
                             <View className="fixed fixed-process xl:w-80 2xl:w-96">
                                 {appSetting(
                                     'layout',
                                     'show_profile_info'
                                 ) && (
-                                    <View className="px-2 pt-2">
+                                    <View className="px-2 pt-2 pb-0.5">
                                             <ProfileSwitcher hideTitle={true} useDefault={true} />
-                                        </View>
+                                    </View>
                                     )}
                                 <View className="flex-auto px-2 w-full">
                                     {navBarBlocks.map((item, index) => {
                                         return (
-                                            <View className='mb-3' key={'block_' + index}><BlockByName
+                                            <View className='mb-3 ' key={'block_' + index}><BlockByName
                                                 
                                                 name={item.block}
                                                 data={props.data}
@@ -289,8 +289,8 @@ export default function (props) {
                             </View>
                         </View>
                     </View>
-                    <View className="hidden lg:block xl:w-80 2xl:w-96 ">
-                        <View className="fixed-process xl:w-80 2xl:w-96 max-w-md  p-4 flex-col space-y-4 duration-200">
+                    <View className="hidden lg:block flex-auto max-w-96 ">
+                        <View className="fixed-process w-full max-w-md  p-4 flex-col space-y-4 duration-200">
                             {sideBarBlocks.map((item, index) => {
                                 return (
                                     <BlockByName

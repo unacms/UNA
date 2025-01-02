@@ -18,7 +18,7 @@ export default function ElementProfileMenu(props) {
 
     return (
         <View className="profile-menu ">
-            <View className="flex-col">
+            <View className="flex-col gap-y-0.5">
                 {menuItemsByName('main_menu', appSetting('menu_items', 'menu_sidebar'), currentUser).map((item, index) => (
                     <Link key={`menu-${index}`} href={item.link.replace('{profile}', currentUser.url)}>
                         <Button
