@@ -2462,6 +2462,16 @@ export const settingsDefault = {
         },
     },
     theme: {
+        native_tabs:{
+            tabBarItemStyle:{
+                marginBottom: 0,
+                height: 44,
+                marginTop: 6,
+                borderRadius: 8,
+                marginLeft: 0,
+                marginRight: 0,
+            }
+        },
         light: {
             primary: 'rgba(37,99,235,1)',
             headerBackground: 'rgba(255,255,255,1)',

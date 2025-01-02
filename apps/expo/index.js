@@ -48,7 +48,6 @@ export function App() {
 	const expoRootComponent = useMemo(() => <ExpoRoot context={ctx} />, [ctx]);
 	//verifyInstallation();
 	const scheme = useColorScheme();
-	console.log(scheme);
 	return <GestureHandlerRootView style={{ flex: 1, backgroundColor: scheme === 'dark' ? 'rgba(17,24,39,1)' : 'rgba(255,255,255,1)' }}>
 
 		{expoRootComponent}

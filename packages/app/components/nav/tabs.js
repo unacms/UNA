@@ -20,11 +20,13 @@ import Subscriber from 'app/ui/molecules/subscriber';
 import { useFonts } from 'expo-font';
 //import PushNotificationIOS from "@react-native-community/push-notification-ios";
 import { enableScreens } from 'react-native-screens';
-import { OneSignal } from 'react-native-onesignal';
+import { LogLevel, OneSignal } from 'react-native-onesignal';
 import { callFn } from 'app/lib/functions/call';
 import fonts from 'app/design/fonts/fonts';
 import { Platform } from 'react-native'
 enableScreens(appSetting('layout', 'native_enable_screens'));
+
+const themeSettings = appSetting('theme', 'native_tabs');
 
 function processUrl(url, router, currentUser, TabList) {
     if (currentUser?.id) {
@@ -97,14 +99,7 @@ export default function () {
             elevation: 0,
             boxShadow: 'none',
         },
-        tabBarItemStyle: {
-            marginBottom: 0,
-            height: 44,
-            marginTop: 6,
-            borderRadius: 8,
-            marginLeft: 0,
-            marginRight: 0,
-        },
+        tabBarItemStyle: themeSettings.tabBarItemStyle,
         tabBarAllowFontScaling: false,
         tabBarInactiveTintColor: colors.barsColor,
         tabBarActiveTintColor: colors.primary,
@@ -150,6 +145,16 @@ export default function () {
     useEffect(() => {
         //!!!NOT MERGE WITH OTHER USEEFFECT!!!
         if (currentUser) {
+            console.log('OneSignal: Start initialization');
+            OneSignal.Debug.setLogLevel(LogLevel.Verbose);
+
+            // OneSignal Initialization
+            OneSignal.initialize(appSetting('config', 'api_keys', 'onesignal'));
+
+            // requestPermission will show the native iOS or Android notification permission prompt.
+            // We recommend removing the following code and instead using an In-App Message to prompt for notification permission
+            OneSignal.Notifications.requestPermission(true);
+
             console.log("OneSignal:" + currentUser.id + ":" + currentUser.hash)
             OneSignal.login('' + currentUser.id);
             OneSignal.User.addTag("user_hash", "" + currentUser.hash);
@@ -183,7 +188,7 @@ export default function () {
                                 title: t(tab.title),
                                 headerShown: false,
                                 tabBarIcon: ({ color }) => (
-                                    (tab.url == '/dashboard' && profile) ? profile : <View className="mb-2"><Icon icon={tab.icon} width={iconWidth} height={iconHeight} color={color} /></View>
+                                    (tab.url == '/dashboard' && profile) ? <View className="h-full ">{profile}</View> : <View className="h-full"><Icon icon={tab.icon} width={iconWidth} height={iconHeight} color={color} /></View>
                                 )
                             };
 
