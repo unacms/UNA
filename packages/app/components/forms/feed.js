@@ -101,22 +101,22 @@ export default function FormFeed(props) {
                 startDecorator="X"
             />
             <View className="flex-auto items-center justify-center">
-            <View className=" flex-row gap-x-3 flex-auto ">
-                    
+                <View className=" flex-row gap-x-3 flex-auto ">
+
                     <Profile
                         {...currentUser}
                         displayType="unit_wo_info"
                         displaySize="base"
                     />
-                
+
                     <Profile
                         {...currentUser}
                         displayType="unit_wo_image"
                         displaySize="lg"
                     />
 
-                   
-            </View>
+
+                </View>
             </View>
 
             <Button
@@ -149,21 +149,21 @@ export default function FormFeed(props) {
     return (
         <View className="w-full">
             <Modal
-                title={isSmall ? header :  <View className=" flex-row gap-x-3 flex-auto ">
-                    
-                        <Profile
-                            {...currentUser}
-                            displayType="unit_wo_info"
-                            displaySize="base"
-                        />
-                    
-                        <Profile
-                            {...currentUser}
-                            displayType="unit_wo_image"
-                            displaySize="lg"
-                        />
+                title={isSmall ? header : <View className=" flex-row gap-x-3 flex-auto ">
 
-                       
+                    <Profile
+                        {...currentUser}
+                        displayType="unit_wo_info"
+                        displaySize="base"
+                    />
+
+                    <Profile
+                        {...currentUser}
+                        displayType="unit_wo_image"
+                        displaySize="lg"
+                    />
+
+
                 </View>}
                 onVisible={showImage}
                 outerClickClose={false}
@@ -206,22 +206,21 @@ export default function FormFeed(props) {
                         >
                             <View className="w-full flex-col p-3 sm:p-0 ">
                                 <View className="  pb-3 flex-auto ">
-                                    
                                     {getFormFieldByData(
-                                                    {
-                                                        ...props.data.inputs[
-                                                            'object_privacy_view'
-                                                        ],
-                                                        size: 'sm',
-                                                    },
-                                                    props.handleSubmit,
-                                                    'nofield',
-                                                    {
-                                                        onShowModal:
-                                                            setShowImage,
-                                                        showModal: showImage,
-                                                    }
-                                                )}
+                                        {
+                                            ...props.data.inputs[
+                                            'object_privacy_view'
+                                            ],
+                                        },
+                                        props.handleSubmit,
+                                        'nofield',
+                                        {
+                                            onShowModal:setShowImage,
+                                            showModal: showImage,
+                                            size: 'sm',
+                                            maxLength:0
+                                        }
+                                    )}
                                 </View>
                                 {getFormFieldByData(
                                     props.data.inputs['text'],
@@ -238,120 +237,116 @@ export default function FormFeed(props) {
                                     <Row className="flex-wrap">{prevList}</Row>
                                 )}
                             </View>
-                            
-                            {props.data.inputs['labels'] && (
-                                                <Row className="px-3 sm:px-0">
-                                                    {labels}
-                                                    
-                                                </Row>
-                                            )}
-                           
-                                            
 
-                                               
-                            
+                            {props.data.inputs['labels'] && (
+                                <Row className="px-3 sm:px-0">
+                                    {labels}
+
+                                </Row>
+                            )}
+
+
+
+
+
                         </ScrollView>
 
                         <Row className="w-full justify-between flex-wrap gap-x-2 mx-auto items-center pt-2 ">
-                      
-                                           
-                                           
-                        <Row
-                            className={
-                                'gap-x-2  ' +
-                                (isWeb ? '' : ' pb-3 ') +
-                                (isSmall
-                                    ? ' pb-2.5 px-3 ' +
-                                      (isIos ? ' bottom-4 ' : ' bottom-0 ') +
-                                      '  '
-                                    : ' my-auto ')
-                            }
-                        >
-                            
-                                          
-                                        
-                            {props.data.inputs['obfuscate_faces'] && (
-                                <View className="">
-                                    {getFormFieldByData(
-                                        props.data.inputs['obfuscate_faces'],
-                                        props.handleSubmit,
-                                        'default'
-                                    )}
-                                </View>
-                            )}
-                            {props.data.inputs['photo'] && (
-                                <View className="">
-                                    {getFormFieldByData(
-                                        props.data.inputs['photo'],
-                                        props.handleSubmit,
-                                        'custom',
-                                        {
-                                            previewPlaceHolder: setPlaceHolder,
-                                            noMargin: true,
-                                            rounded: true,
-                                        }
-                                    )}
-                                </View>
-                            )}
-                            {props.data.inputs['video'] && (
-                                <View className="">
-                                    {getFormFieldByData(
-                                        props.data.inputs['video'],
-                                        props.handleSubmit,
-                                        'custom',
-                                        {
-                                            previewPlaceHolder: setPlaceHolder,
-                                            noMargin: true,
-                                            asDefaultStorage: true,
-                                            rounded: true,
-                                        }
-                                    )}
-                                </View>
-                            )}
-                            {props.data.inputs['file'] && (
-                                <View>
-                                    {getFormFieldByData(
-                                        props.data.inputs['file'],
-                                        props.handleSubmit,
-                                        'custom',
-                                        {
-                                            previewPlaceHolder: setPlaceHolder,
-                                            noMargin: true,
-                                            rounded: true,
-                                        }
-                                    )}
-                                </View>
-                            )}
-                            {props.data.inputs['labels'] && (
-                                <View>
-                                    <Button
-                                        startDecorator="Hash"
-                                        size={'base'}
-                                        variant={'text'}
-                                        rounded={true}
-                                        onPress={() => {
-                                            setIsShowHashtag(isShowHashtag + 1)
-                                        }}
-                                    />
-                                </View>
-                            )}
-                        </Row>
-                        
-                                               
-                        
 
-                        <View className="hidden sm:flex">
-                            {/* <Button onPress={() => { handlePress() }} variant='primary' disabled={text!='' ? false : true}   startDecorator="PaperPlane" title="Post" />*/}
-                            {getFormFieldByData(
-                                props.data.inputs['tlb_do_submit'],
-                                props.handleSubmit,
-                                'default',
-                                {
-                                    disabled: text != '' ? false : true,
-                                    noMargin: true,
+
+
+                            <Row
+                                className={
+                                    'gap-x-2  ' +
+                                    (isWeb ? '' : ' pb-3 ') +
+                                    (isSmall
+                                        ? ' pb-2.5 px-3 ' +
+                                        (isIos ? ' bottom-4 ' : ' bottom-0 ') +
+                                        '  '
+                                        : ' my-auto ')
                                 }
-                            )}
-                        </View>
+                            >
+
+
+
+                                {props.data.inputs['obfuscate_faces'] && (
+                                    <View className="">
+                                        {getFormFieldByData(
+                                            props.data.inputs['obfuscate_faces'],
+                                            props.handleSubmit,
+                                            'default'
+                                        )}
+                                    </View>
+                                )}
+                                {props.data.inputs['photo'] && (
+                                    <View className="">
+                                        {getFormFieldByData(
+                                            props.data.inputs['photo'],
+                                            props.handleSubmit,
+                                            'custom',
+                                            {
+                                                previewPlaceHolder: setPlaceHolder,
+                                                noMargin: true,
+                                                rounded: true,
+                                            }
+                                        )}
+                                    </View>
+                                )}
+                                {props.data.inputs['video'] && (
+                                    <View className="">
+                                        {getFormFieldByData(
+                                            props.data.inputs['video'],
+                                            props.handleSubmit,
+                                            'custom',
+                                            {
+                                                previewPlaceHolder: setPlaceHolder,
+                                                noMargin: true,
+                                                asDefaultStorage: true,
+                                                rounded: true,
+                                            }
+                                        )}
+                                    </View>
+                                )}
+                                {props.data.inputs['file'] && (
+                                    <View>
+                                        {getFormFieldByData(
+                                            props.data.inputs['file'],
+                                            props.handleSubmit,
+                                            'custom',
+                                            {
+                                                previewPlaceHolder: setPlaceHolder,
+                                                noMargin: true,
+                                                rounded: true,
+                                            }
+                                        )}
+                                    </View>
+                                )}
+                                {props.data.inputs['labels'] && (
+                                    <View>
+                                        <Button
+                                            startDecorator="Hash"
+                                            size={'base'}
+                                            variant={'text'}
+                                            rounded={true}
+                                            onPress={() => {
+                                                setIsShowHashtag(isShowHashtag + 1)
+                                            }}
+                                        />
+                                    </View>
+                                )}
+                            </Row>
+                            <View className="hidden sm:flex">
+                                {/* <Button onPress={() => { handlePress() }} variant='primary' disabled={text!='' ? false : true}   startDecorator="PaperPlane" title="Post" />*/}
+                                {getFormFieldByData(
+                                    props.data.inputs['tlb_do_submit'],
+                                    props.handleSubmit,
+                                    'default',
+                                    {
+                                        disabled: text != '' ? false : true,
+                                        noMargin: true,
+                                    }
+                                )}
+                            </View>
                         </Row>
                     </View>
                 </KbAvoidingView>
@@ -378,32 +373,32 @@ export default function FormFeed(props) {
                     <View className=" flex-row sm:gap-x-3 ">
                         <View className=" my-auto">{profile}</View>
                         <View className="flex-auto sm:hidden">
-                        <Button
-                            size="base"
-                            variant="text"
-                            fullWidth
-                            rounded
-                            title={t('Create new post') + '...'}
-                            align="start"
-                            onPress={() => {
-                                FeedbackHaptics('Medium')
-                                setShowImage(true)
-                            }}
-                        />
+                            <Button
+                                size="base"
+                                variant="text"
+                                fullWidth
+                                rounded
+                                title={t('Create new post') + '...'}
+                                align="start"
+                                onPress={() => {
+                                    FeedbackHaptics('Medium')
+                                    setShowImage(true)
+                                }}
+                            />
                         </View>
                         <View className="hidden sm:flex flex-auto">
-                        <Button
-                            size="base"
-                            variant="secondary"
-                            fullWidth
-                            rounded
-                            title={t('Create new post') + '...'}
-                            align="start"
-                            onPress={() => {
-                                FeedbackHaptics('Medium')
-                                setShowImage(true)
-                            }}
-                        />
+                            <Button
+                                size="base"
+                                variant="secondary"
+                                fullWidth
+                                rounded
+                                title={t('Create new post') + '...'}
+                                align="start"
+                                onPress={() => {
+                                    FeedbackHaptics('Medium')
+                                    setShowImage(true)
+                                }}
+                            />
                         </View>
                     </View>
                 </Card>

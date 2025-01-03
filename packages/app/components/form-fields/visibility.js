@@ -8,6 +8,7 @@ import { truncateString } from 'app/lib/util';
 import RbList from 'app/ui/molecules/radio_list';
 import { View } from 'app/design/view'
 export default function (props) {
+
     const name = props.name;
     const rules = getValidationRules(props);
     const formContext = useFormContext();
@@ -17,34 +18,20 @@ export default function (props) {
     const { field } = useController({ name, rules, defaultValue });
     const [isModal, setIsModal] = useState(false);
 
-    /*useEffect(() => {
-        console.log("----", field.value, value)
-        if (value != field.value)
-            field.onChange(value);
-    }, [value]);
-*/
     const setValueF = (val) => {
         field.onChange(val);
-        //setValue(val);
         if (props.onChange) {
             props.onChange(val)
         }
-        /* if (props.onShowModal){
-             props.onShowModal(true);
-         }*/
-        // setBottomSheetData(false);
         setIsModal(false);
     }
 
+    const size = props.size || 'xs';
+    const maxLength = props.maxLength ?? 20;
 
     let values = getVisibilityValues(props.values);
     values = values.filter(item => item.value != '6' && item.value != '8');
     const showSelect = (val) => {
-        //todo madal
-        // setBottomSheetData({ title: 'Choose audience',showClose: props.onShowModal ? false : true, snapPoints: ['100%', '100%'], content: <RbList values={values} setValue={setValueF} selectedValue={field.value} /> });
-        /* if (props.onShowModal){
-             props.onShowModal(false);
-         }*/
         setIsModal(true);
     }
 
@@ -61,12 +48,13 @@ export default function (props) {
     </Modal>
 
     if (props.format == 'nofield') {
+        const v = values.find(item => item.value == field.value)?.label || values[0].label;
         return <>{ModalCnt}<Button
-            title={truncateString(values.find(item => item.value == field.value)?.label || values[0].label, 20)}
+            title={maxLength > 0 ? truncateString(v, maxLength) : v}
             startDecorator="Globe"
             variant="outline"
 
-            size="xs"
+            size={size}
             onPress={() => showSelect()}
         /></>
     }
