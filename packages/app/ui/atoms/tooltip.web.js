@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
 import { Text } from 'app/design/typography';
-import { View } from 'app/design/view';
+import { View, ViewRef } from 'app/design/view';
 import { appSetting } from 'app/lib/util';
 
 export default function Tooltip(props) {
@@ -46,21 +46,21 @@ export default function Tooltip(props) {
     }
 
     return (
-        <View
+        <ViewRef
             {...eventHandlers}
             className="relative"
             ref={wrapperRef}
         >
             {props.children}
             {visible && (
-                <View
+                <ViewRef
                     ref={tooltipRef}
                     className="absolute z-50 shadow top-full w-auto bg-neutral-900/80 dark:bg-neutral-100/80 rounded-full py-2.5 px-5 mt-2"
                     style={tooltipStyle}
                 >
                     <Text className="text-neutral-100 dark:text-neutral-900 whitespace-nowrap">{props.content}</Text>
-                </View>
+                </ViewRef>
             )}
-        </View>
+        </ViewRef>
     );
 }

@@ -761,12 +761,41 @@ export function stripTagsWithLinks(s) {
     return s;
 }
 
-function urltoFile(url, filename, mimeType) {
-    return (fetch(url)
-        .then(function (res) { return res.arrayBuffer(); })
-        .then(function (buf) { return new File([buf], filename, { type: mimeType }); })
-    );
+function urltoFile(url, defaultFilename = 'file', defaultMimeType = 'application/octet-stream') {
+    return fetch(url)
+        .then(function (response) {
+            return response.blob().then(function (blob) {
+                const mimeType = blob.type || defaultMimeType;
+                const contentDisposition = response.headers.get('Content-Disposition');
+                let filename = defaultFilename;
+
+                if (contentDisposition && contentDisposition.includes('filename')) {
+                    const matches = contentDisposition.match(/filename="?(.+?)"?$/);
+                    if (matches && matches[1]) {
+                        filename = matches[1]; 
+                    }
+                } else {
+                    const urlParts = url.split('/');
+                    const rawFilename = urlParts[urlParts.length - 1];
+
+                    if (rawFilename.includes('.') && rawFilename.split('.').length > 1) {
+                        filename = rawFilename; 
+                    } else {
+                        const ext = mimeType.split('/')[1] || 'bin';
+                        filename = `${rawFilename || defaultFilename}.${ext}`;
+                    }
+                }
+
+                console.log("xxx", filename, mimeType)
+                return new File([blob], filename, { type: mimeType });
+            });
+        })
+        .catch(function (error) {
+            console.error('Error converting URL to File:', error);
+            throw error;
+        });
 }
+
 
 export const uploadImageFile = async (file, fetchUrl, calback, extraVar) => {
     const isWeb = Platform.OS == 'web'
@@ -786,11 +815,23 @@ export const uploadImage = async (uri, fetchUrl, calback, extraVar) => {
     const isWeb = Platform.OS == 'web'
     const formData = new FormData();
     if (isWeb) {
-        const fileExt = uri.split(';').shift().split('/').pop();
-        const fileType = uri.split(';').shift().split(':').pop();
+        let fileType = '';
+        let fileExt = '';
+        if (uri.startsWith('data:')) {
+            // Для data URI
+            fileType = uri.split(';')[0].split(':')[1]; // MIME-тип
+            fileExt = fileType.split('/')[1]; // Расширение
+        } else {
+            // Для локального пути или URL
+            const fileName = uri.split('/').pop(); // Имя файла
+            fileExt = fileName.split('.').pop(); // Расширение
+            fileType = `image/${fileExt}`; // MIME-тип
+        }
+        console.log("xxx",uri,  fileExt, fileType)
         urltoFile(uri, genRnd(8) + '.' + fileExt, fileType)
             .then(async function (file) {
                 formData.append("file", file);
+
                 const result = await fetcher([fetchUrl, null, formData]);
                 if (result?.data?.link) {
                     calback(result?.data?.link, extraVar);
@@ -810,7 +851,7 @@ export const uploadImage = async (uri, fetchUrl, calback, extraVar) => {
             name: fileName,
             type: `image/${fileType}`,
         });
-
+        
         const result = await fetcher([fetchUrl, null, formData]);
         if (result?.data?.link) {
             calback(result?.data?.link, extraVar);

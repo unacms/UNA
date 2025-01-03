@@ -7,7 +7,7 @@ import { normalizeClasses } from 'app/lib/util'
 
 export const ScrollView = ReactNativeScrollView
 export const Pressable = ReactNativePressable
-
+export const ViewRef = ReactNativeView
 
 export const Row = ({ children, className, ...props }) => (
     <ReactNativeView className={'flex-row ' + normalizeClasses(className)} {...props}>
