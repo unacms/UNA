@@ -2605,7 +2605,7 @@ export const settingsDefault = {
                 ' text-primary-700 dark:text-primary-400 group-hover:text-primary-800 dark:group-hover:text-primary-300 ',
             xs: {
                 rounded: 'rounded-lg',
-                padding: 'p-1',
+                padding: 'px-1 py-0.5',
                 icon_sizes:
                     ' content-center text-center align-middle justify-center flex items-center ',
                 icon_size: 20,
@@ -2714,7 +2714,7 @@ export const settingsDefault = {
             'u-btn-group-item-link-text':
                 ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
             'u-btn-group-item-link-pressed-cnt':
-                ' ',
+                ' bg-transparent ',
             'u-btn-group-item-link-pressed-text':
                 'text-primary-700 dark:text-neutral-600 group-hover:text-primary-800 dark:group-hover:text-primary-500 ',
 
