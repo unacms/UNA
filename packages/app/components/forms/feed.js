@@ -217,7 +217,7 @@ export default function FormFeed(props) {
                                         {
                                             onShowModal:setShowImage,
                                             showModal: showImage,
-                                            size: 'sm',
+                                            size: 'base',
                                             maxLength:0
                                         }
                                     )}
@@ -251,7 +251,7 @@ export default function FormFeed(props) {
 
                         </ScrollView>
 
-                        <Row className="w-full justify-between flex-wrap gap-x-2 mx-auto items-center pt-2 ">
+                        <Row className="w-full justify-between gap-x-2 mx-auto items-center pt-2 ">
 
 
 
@@ -334,7 +334,9 @@ export default function FormFeed(props) {
                                         />
                                     </View>
                                 )}
+                                
                             </Row>
+                           
                             <View className="hidden sm:flex">
                                 {/* <Button onPress={() => { handlePress() }} variant='primary' disabled={text!='' ? false : true}   startDecorator="PaperPlane" title="Post" />*/}
                                 {getFormFieldByData(

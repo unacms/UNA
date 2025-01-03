@@ -44,7 +44,7 @@ export default function (props) {
         return <></>;
     }
 
-    const rounded = props.rounded ? props.rounded : 'rounded-2xl'
+    const rounded = props.rounded ? props.rounded : 'rounded-xl'
     return (
         <>
             {!props.useDefault ?
@@ -52,7 +52,7 @@ export default function (props) {
                     {props.children}
                 </Pressable> :
                 <Link href={currentUser.url} emulate={true} >
-                    <Row className={rounded + " group items-center px-2 py-1.5 justify-between cursor-pointer hover:bg-bgrbutton dark:hover:bg-bgrbutton active:opacity-50"}>
+                    <Row className={rounded + " group items-center px-2 py-1 hover:ring-1 hover:ring-inset hover:ring-neutral-500/10 justify-between cursor-pointer hover:bg-bgrbutton dark:hover:bg-bgrbutton-d"}>
                         <Row className='flex-row items-center'>
                             <Profile
                                 {...currentUser}

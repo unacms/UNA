@@ -362,10 +362,10 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
         photo: "ImageSquare",
         cmt_image: "ImageSquare",
         pictures: "ImageSquare",
-        video: "MonitorPlay",
-        videos: "MonitorPlay",
-        files: "FilePlus",
-        file: "FilePlus",
+        video: "Image",
+        videos: "Image",
+        files: "Paperclip",
+        file: "Paperclip",
         sounds: "FileAudio"
     };
 

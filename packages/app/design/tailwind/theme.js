@@ -125,10 +125,10 @@ const colors = {
     },
 
     bgrbutton: {
-        DEFAULT: 'rgba(107,114,128,0.15)',
-        h: 'rgba(107,114,128,0.25)',
-        d: 'rgba(107,114,128,0.15)',
-        dh: 'rgba(107,114,128,0.25)',
+        DEFAULT: 'rgba(229,231,235,1)',
+        h: 'rgba(209,213,219,1)',
+        d: 'rgba(31,41,55,1)',
+        dh: 'rgba(55,65,81,1)',
     },
     bdrbutton: {
         DEFAULT: 'rgba(0,0,0,0.1)',

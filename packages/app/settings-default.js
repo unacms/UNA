@@ -2590,7 +2590,7 @@ export const settingsDefault = {
                 'bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-bdrinput dark:border-bdrinput-d focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus:outline-primary dark:focus-outline-primary-d duration-100 placeholder-neutral-500 duration-100 text-neutral-900 rounded-lg flex-auto p-3 leading-5 dark:text-neutral-100 text-base ',
             multi: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg flex-auto p-2 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 ',
             rounded:
-                ' placeholder-neutral-600 dark:placeholder-neutral-400 bg-bgrinput dark:bg-bgrinput-d hover:bg-bgrinput-h dark:hover:bg-bgrinput-dh focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-transparent focus:border-bdrinput-f dark:focus:border-bdrinput-f focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus:outline-primary dark:focus-outline-primary-d duration-100 text-neutral-900 rounded-full flex-auto px-3 dark:text-neutral-100 text-base leading-5 h-11  ',
+                ' placeholder-neutral-600 dark:placeholder-neutral-400 bg-bgrinput dark:bg-bgrinput-d hover:bg-bgrinput-h dark:hover:bg-bgrinput-dh focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-transparent focus:border-bdrinput-f dark:focus:border-bdrinput-f focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus:outline-primary dark:focus-outline-primary-d duration-100 text-neutral-900 rounded-full flex-auto px-3 dark:text-neutral-100 text-base leading-5 h-10  ',
             roundedsmall:
                 ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-full flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[34px] ',
             small: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[36px] ',
@@ -2600,7 +2600,7 @@ export const settingsDefault = {
             default_size: 'base',
             default_variant: 'default',
             pressed_container:
-                ' bg-primary/5 dark:bg-primary-d/10 shadow-sm ring-1 ring-inset ring-primary/10 dark:ring-primary-d/10 ',
+                ' bg-primary-100 dark:bg-primary-950',
             pressed_text:
                 ' text-primary-700 dark:text-primary-400 group-hover:text-primary-800 dark:group-hover:text-primary-300 ',
             xs: {
@@ -2625,7 +2625,7 @@ export const settingsDefault = {
             },
             base: {
                 rounded: ' rounded-lg ',
-                padding: ' p-2 h-11 min-w-11 ',
+                padding: ' p-2 h-10 min-w-10 ',
                 icon_sizes: ' h-6 w-6 text-center align-middle items-center justify-center flex ',
                 icon_size: 24,
                 icon_margin: ' ',
@@ -2633,12 +2633,12 @@ export const settingsDefault = {
                 margin: ' mx-2',
             },
             lg: {
-                rounded: 'rounded-2xl',
-                padding: 'px-2 py-1.5',
-                icon_sizes: ' p-2 h-11 w-11 ',
+                rounded: 'rounded-xl',
+                padding: 'px-2 py-1',
+                icon_sizes: ' p-1.5 h-10 w-10 ',
                 icon_size: 28,
-                icon_margin: 'p-2 w-11 h-11 bg-neutral-200 dark:bg-neutral-800 rounded-full group-hover:bg-neutral-300 dark:group-hover:bg-neutral-700  ',
-                min_height: ' leading-[44px] sm:text-base ',
+                icon_margin: 'p-1.5  bg-neutral-200 dark:bg-neutral-800 rounded-full group-hover:bg-neutral-300 dark:group-hover:bg-neutral-700  ',
+                min_height: ' leading-10 sm:text-base ',
                 margin: 'mx-3',
             },
         },
