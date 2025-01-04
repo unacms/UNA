@@ -58,7 +58,7 @@ const HeaderLine = memo(
                 )}
                 {(uri == 'home' || width >= LAYOUT_BREAKPOINTS.lg) && (
                     <Link className=" focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus:outline-primary dark:focus-outline-primary-d duration-100 rounded-full " href="/home" aria-label="Logo">
-                        <View className="group flex-row flex-none items-center my-auto">
+                        <View className="group flex-row w-10 h-10 flex-none items-center my-auto">
                             {appStatic('logo_mark')}
                             {/*{appStatic('logo_text')}*/}
                         </View>

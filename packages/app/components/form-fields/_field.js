@@ -12,7 +12,7 @@ export default function (props) {
     let caption = props.caption;
     if (props.format == 'notitle')
         caption = '';
-    let sClassName = ' w-full form-control form-control-' + props.name + (props.noMargin === true ? '' : ' mb-3 ') +  (props?.classes ? ' ' + props?.classes : '');
+    let sClassName = ' w-full form-control form-control-' + props.name + (props.noMargin === true ? '' : ' mb-4 ') +  (props?.classes ? ' ' + props?.classes : '');
 
 
     const isShowOptional = appSetting('layout', 'form_fields_optional_text1') != '' ? '(' + appSetting('layout', 'form_fields_optional_text1') + ')' : '';
