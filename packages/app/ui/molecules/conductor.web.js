@@ -561,7 +561,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             if (button.section)
                 btn = <Search section={button.section} params={{ trigger: { size: 'sm' } }} />
             else {
-                btn = <Button title={t(button.title)} startDecorator={button.icon} variant="outline" rounded size="sm" />;
+                btn = <Button title={t(button.title)} startDecorator={button.icon} variant="secondary" rounded size="sm" />;
                 btn = button.link ? <Link href={button.link} >{btn}</Link> : btn
             }
 
