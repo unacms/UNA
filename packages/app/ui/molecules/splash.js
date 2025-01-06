@@ -156,10 +156,10 @@ export default function Splash(props) {
             <View className=" md:h-[calc(100vh-128px)]  md:flex-row border-b border-bdr dark:border-bdr-d p-4 sm:p-6 gap-y-4 gap-x-4 duration-300">
                 <View className="max-w-2xl p-4 sm:p-6 flex-col mx-auto justify-center my-auto sm:justify-start items-center md:items-start xl:items-center flex-auto">
                     <View className="mb-8 w-full">
-                        <View className="group flex-row mx-auto md:mx-0 flex-none gap-x-6 items-center my-auto">
+                        <View className="group flex-row mx-auto md:mx-0 flex-none gap-x-6 my-auto">
                             <View className="w-16 h-16">
-                                {' '}
-                                {appStatic('logo_mark')}{' '}
+                                
+                                {appStatic('logo_mark')}
                             </View>
                             <View className="items-center w-[136px] h-[64px]">
                                 {' '}

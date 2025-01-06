@@ -46,9 +46,9 @@ const LogoText = (
 const LogoMark = (
     <Svg
         aria-label="Logo Mark"
-        className=" group-hover:rotate-[180deg] group-hover:scale-125 group-active:scale-90 duration-500 group-active:scale-90 text-neutral-800 dark:text-neutral-200 hover:text-neutral-900 dark:hover:text-neutral-100  "
+        className=" w-auto h-fit text-neutral-800 dark:text-neutral-200 hover:text-neutral-900 dark:hover:text-neutral-100  "
         viewBox="0 0 40 40"
-        fill="currentColor"
+        
         xmlns="http://www.w3.org/2000/svg"
     >
         <Path
