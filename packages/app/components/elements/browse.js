@@ -293,7 +293,7 @@ export default function (props) {
             <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" />
             <View className='w-full ' style={styles} >
             {dataItems.data.length > 0 ? <>{props.showTitleInside ? (
-                    <Row className='px-3 pb-2 items-center justify-between'>
+                    <Row className='p-2 items-center justify-between'>
                         <Text className="text-base font-bold text-neutral-800 dark:text-neutral-200 ">{t(props.block.title)}</Text>
                             {props.addLink ? (<Link href = {props.addLink.url}><Button variant='text' size='xs' title = {props.addLink.text} /></Link>): null}
                     </Row>) : <></>}

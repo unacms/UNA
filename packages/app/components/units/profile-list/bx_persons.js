@@ -27,11 +27,11 @@ export default function Unit(props) {
         <View className="">
             <Link href={data.url} emulate={true}>
                 <View
-                    className=" px-3 py-2 flex-row  
+                    className=" px-2 py-1.5 flex-row  
                 group duration-200 rounded-lg  
                 active:opacity-50 active:translate-y-1 
-                hover:bg-bgritem dark:hover:bg-bgritem
-                max-w-5xl self-center w-full  "
+                hover:bg-bgrbutton dark:hover:bg-bgrbutton-d hover:shadow-sm
+                max-w-5xl  hover:ring-1 hover:ring-inset hover:ring-neutral-500/10 self-center w-full  "
                 >
                     <View className=" mr-2 rounded-full flex-none ">
                         <Profile

@@ -129,17 +129,17 @@ export default function (props) {
                 <View className="flex-auto  relative w-full flex-row mx-auto max-w-[1920px] ">
                     
                     {getLayout(currentUser) == 'hor' && (
-                        <View className="hidden xl:block flex-auto max-w-96 ">
-                            <View className="fixed fixed-process xl:w-80 2xl:w-96">
+                        <View className="hidden xl:block flex-none w-96 ">
+                            <View className="fixed fixed-process w-96 flex-col p-2 gap-y-0.5">
                                 {appSetting(
                                     'layout',
                                     'show_profile_info'
                                 ) && (
-                                    <View className="px-2 pt-2 pb-0.5">
+                                    
                                             <ProfileSwitcher hideTitle={true} useDefault={true} />
-                                    </View>
+                                    
                                     )}
-                                <View className="flex-auto px-2 w-full">
+                                
                                     {navBarBlocks.map((item, index) => {
                                         return (
                                             <View className='mb-3 ' key={'block_' + index}><BlockByName
@@ -150,13 +150,13 @@ export default function (props) {
                                             /></View>
                                         )
                                     })}
-                                </View>
+                                
                             </View>
                         </View>
                     )}
 
-                    <View className="flex-auto w-full lg:w-auto flex-row ">
-                        <View className="flex-auto sm:px-4 ">
+                    <View className="flex-auto w-full lg:w-auto sm:px-4 xl:px-2 ">
+                        <View className="flex-auto  ">
                             <View className=" w-full mx-auto lg:max-w-2xl relative">
                                 <ScrollView horizontal={true} className="fixed lg:relative top-14 lg:top-0 z-50 w-full  ">
                                 <Row className={`  rounded-full mx-3 sm:mx-4 ${feedList.length > 1 ? 'lg:mt-4 lg:mb-4': ''}  gap-x-1 sm:gap-x-2  `}>
@@ -289,8 +289,8 @@ export default function (props) {
                             </View>
                         </View>
                     </View>
-                    <View className="hidden lg:block flex-auto max-w-96 ">
-                        <View className="fixed-process w-full max-w-md  p-4 flex-col space-y-4 duration-200">
+                    <View className="hidden lg:flex flex-auto max-w-96 ">
+                        <View className="fixed-process w-full max-w-md p-2 flex-col space-y-4 duration-200">
                             {sideBarBlocks.map((item, index) => {
                                 return (
                                     <BlockByName

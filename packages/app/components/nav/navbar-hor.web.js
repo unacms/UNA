@@ -40,7 +40,7 @@ const HeaderLine = memo(
             ).length > 0
 
         return (
-            <View className="flex-row xl:w-80 2xl:w-96 px-3 sm:px-4 flex-auto lg:flex-none my-auto items-center">
+            <View className="flex-row xl:w-96 px-3 sm:px-4 flex-none my-auto items-center">
                 {headerSettings.menu && isDrawer && (
                     <View className="lg:hidden mr-3 sm:mr-4">
                         <Pressable onPress={showMenu}>
@@ -127,7 +127,7 @@ export default function (props) {
                 <View
                         className={
                             appSetting('layout', 'max_width') +
-                            ' w-full flex-row flex-auto items-center'
+                            ' w-full flex-row flex-auto items-center justify-between'
                         }
                     >
                         <HeaderLine
@@ -140,7 +140,7 @@ export default function (props) {
                             menuPopup={menuPopup}
                             setMenuPopup={setMenuPopup}
                         />
-                        <Row className="hidden lg:flex flex-auto ">
+                        <Row className="hidden lg:flex flex-auto px-2">
                             <Row className="w-full mx-auto gap-x-0.5 max-w-2xl justify-between">
                                 {menu_navbar_items.map((item, index) => (
                                     <View className="flex-auto" key={`menu-${index}`}>
@@ -179,7 +179,7 @@ export default function (props) {
                                 ))}
                             </Row>
                         </Row>
-                        <Row className="flex-none xl:w-80 2xl:w-96  flex-auto px-3 sm:px-4 justify-end ">
+                        <Row className="flex-none xl:w-96 flex-none px-3 sm:px-4 justify-end ">
                             {!!currentUser && (
                                 <Row className="flex-row justify-end ">
                                     <View className=" flex-row my-auto gap-x-2 ">

@@ -44,7 +44,7 @@ export default function (props) {
         return <></>;
     }
 
-    const rounded = props.rounded ? props.rounded : 'rounded-xl'
+    const rounded = props.rounded ? props.rounded : 'rounded-lg'
     return (
         <>
             {!props.useDefault ?
