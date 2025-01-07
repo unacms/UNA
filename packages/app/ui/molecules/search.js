@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useContext } from 'react';
-
+import { Icon } from 'app/ui/atoms/icon'
 import { appSetting } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { Text } from 'app/design/typography'
@@ -211,7 +211,7 @@ export function ElementSearchData(oProps) {
                 {oProps.icon}
                 {!!popupContent && dd}
                 <InputRoundedRef name="search" placeholder={t("Search") + '...'} onKeyPress={(event) => handleKeyPress(event)} value={inputValue} ref={inputRef} onChangeText={(value) => handleSearch(value)} />
-               
+                <View className="absolute h-10 w-6 items-center justify-center ml-2"><Icon icon="MagnifyingGlass" size={22} /></View>
             </Row>
         )
     }
