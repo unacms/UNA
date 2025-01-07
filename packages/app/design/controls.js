@@ -23,8 +23,9 @@ export const InputMulti = ({ className, ...props }) => (
 export const InputRounded = ({ className, ...props }) => (
     <TextInputDef className={inputSettings.rounded} {...props} />
 );
-export const InputRoundedRef = forwardRef((className, ref, ...props) => (
-    <TextInputDef className={inputSettings.rounded} {...props}  />
+
+export const InputRoundedRef = forwardRef(({ className, ...props }, ref) => (
+    <TextInputDef className={inputSettings.rounded} ref={ref} {...props}  />
 ));
 export const InputRoundedSmall = ({ className, ...props }) => (
     <TextInputDef className={inputSettings.roundedsmall} ref={ref} {...props} />
