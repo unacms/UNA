@@ -175,7 +175,7 @@ export default function Splash(props) {
 
                 {cnt}
             </View>
-            
+            <View className=" mx-auto mt-2">{appStatic('components_footer')}</View>
         </View>
     )
 }
