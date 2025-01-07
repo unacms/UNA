@@ -2605,7 +2605,7 @@ export const settingsDefault = {
                 ' text-primary-700 dark:text-primary-400 group-hover:text-primary-800 dark:group-hover:text-primary-300 ',
             xs: {
                 rounded: 'rounded-lg',
-                padding: 'px-1 py-0.5',
+                padding: 'p-1',
                 icon_sizes:
                     ' content-center text-center align-middle justify-center flex items-center ',
                 icon_size: 20,
@@ -2645,7 +2645,7 @@ export const settingsDefault = {
 
         button_styles: {
             'u-btn-default-cnt':
-                ' bg-bgrbutton dark:bg-bgrbutton-d hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50 ',
+                ' bg-bgrbutton dark:bg-bgrbutton-d shadow-button dark:shadow-button-d hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50 ',
             'u-btn-default-text':
                 ' font-medium text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-white ',
             'u-btn-default-trans': 'duration-200',

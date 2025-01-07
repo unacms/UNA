@@ -205,23 +205,7 @@ export default function FormFeed(props) {
                             }
                         >
                             <View className="w-full flex-col p-3 sm:p-0 ">
-                                <View className="  pb-3 flex-auto ">
-                                    {getFormFieldByData(
-                                        {
-                                            ...props.data.inputs[
-                                            'object_privacy_view'
-                                            ],
-                                        },
-                                        props.handleSubmit,
-                                        'nofield',
-                                        {
-                                            onShowModal:setShowImage,
-                                            showModal: showImage,
-                                            size: 'base',
-                                            maxLength:0
-                                        }
-                                    )}
-                                </View>
+                           
                                 {getFormFieldByData(
                                     props.data.inputs['text'],
                                     props.handleSubmit,
@@ -251,9 +235,9 @@ export default function FormFeed(props) {
 
                         </ScrollView>
 
-                        <Row className="w-full justify-between gap-x-2 mx-auto items-center pt-2 ">
+                        <Row className="w-full justify-between  mx-auto items-center pt-2 ">
 
-
+                            <Row className='flex-auto pr-3 justify-between'>
 
                             <Row
                                 className={
@@ -302,7 +286,8 @@ export default function FormFeed(props) {
                                                 previewPlaceHolder: setPlaceHolder,
                                                 noMargin: true,
                                                 asDefaultStorage: true,
-                                                rounded: true,
+                                                size: 'base',
+                                                variant: 'default',
                                             }
                                         )}
                                     </View>
@@ -316,7 +301,9 @@ export default function FormFeed(props) {
                                             {
                                                 previewPlaceHolder: setPlaceHolder,
                                                 noMargin: true,
-                                                rounded: true,
+                                                
+                                                size: 'base',
+                                                variant: 'default',
                                             }
                                         )}
                                     </View>
@@ -326,17 +313,32 @@ export default function FormFeed(props) {
                                         <Button
                                             startDecorator="Hash"
                                             size={'base'}
-                                            variant={'text'}
-                                            rounded={true}
+                                            variant={'default'}
+                                            
                                             onPress={() => {
                                                 setIsShowHashtag(isShowHashtag + 1)
                                             }}
                                         />
                                     </View>
                                 )}
-                                
+                               
                             </Row>
-                           
+                            {getFormFieldByData(
+                                        {
+                                            ...props.data.inputs[
+                                            'object_privacy_view'
+                                            ],
+                                        },
+                                        props.handleSubmit,
+                                        'nofield',
+                                        {
+                                            onShowModal:setShowImage,
+                                            showModal: showImage,
+                                            size: 'base',
+                                            maxLength:0
+                                        }
+                                    )}
+                            </Row>
                             <View className="hidden sm:flex">
                                 {/* <Button onPress={() => { handlePress() }} variant='primary' disabled={text!='' ? false : true}   startDecorator="PaperPlane" title="Post" />*/}
                                 {getFormFieldByData(
@@ -346,6 +348,7 @@ export default function FormFeed(props) {
                                     {
                                         disabled: text != '' ? false : true,
                                         noMargin: true,
+                                        size: 'base',
                                     }
                                 )}
                             </View>
