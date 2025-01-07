@@ -101,9 +101,9 @@ export default function ElementImage(props) {
 
         if (rest.view === "cover") {
             updatedRest.fill = 'fill';
-            if (Platform.OS !== 'web') {
+            //if (Platform.OS !== 'web') {
                 updatedRest.contentFit = "cover";
-            }
+            //}
         } else {
             updatedRest.height = rest.pref_height || height;
             updatedRest.width = rest.pref_width || width;
