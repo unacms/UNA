@@ -785,8 +785,6 @@ function urltoFile(url, defaultFilename = 'file', defaultMimeType = 'application
                         filename = `${rawFilename || defaultFilename}.${ext}`;
                     }
                 }
-
-                console.log("xxx", filename, mimeType)
                 return new File([blob], filename, { type: mimeType });
             });
         })
@@ -821,17 +819,17 @@ export const uploadImage = async (uri, fetchUrl, calback, extraVar) => {
             // Для data URI
             fileType = uri.split(';')[0].split(':')[1]; // MIME-тип
             fileExt = fileType.split('/')[1]; // Расширение
+            
         } else {
             // Для локального пути или URL
+            
             const fileName = uri.split('/').pop(); // Имя файла
             fileExt = fileName.split('.').pop(); // Расширение
             fileType = `image/${fileExt}`; // MIME-тип
         }
-        console.log("xxx",uri,  fileExt, fileType)
         urltoFile(uri, genRnd(8) + '.' + fileExt, fileType)
             .then(async function (file) {
                 formData.append("file", file);
-
                 const result = await fetcher([fetchUrl, null, formData]);
                 if (result?.data?.link) {
                     calback(result?.data?.link, extraVar);

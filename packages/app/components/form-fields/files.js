@@ -3,7 +3,7 @@ import Field, { getValidationRules } from './_field';
 import { View, Row, Pressable } from 'app/design/view'
 import Image from 'app/ui/atoms/image';
 import * as ImagePicker from 'expo-image-picker';
-import { manipulateAsync } from 'expo-image-manipulator'
+import { manipulateAsync, SaveFormat } from 'expo-image-manipulator'
 import { Button } from 'app/design/controls';
 import { Icon } from 'app/ui/atoms/icon';
 import { genRnd, appSetting } from 'app/lib/util';
@@ -140,19 +140,23 @@ export default function (props) {
             let isImage = i?.mimeType?.includes('image/');
             if (isImage){
                 ImageNative.getSize(uri, async (width, height) => {
-                    let manipulatedWidth = 2000;
-                    let manipulatedHeight = 2000;
-
+                    let manipulatedWidth = 1600;
+                    let manipulatedHeight = 1600;
+                  
                     if (width > manipulatedWidth || height > manipulatedHeight) {
+                        //console.log('resize', width, height)
                         if (width > height) {
                             manipulatedHeight = Math.round((height * manipulatedWidth) / width);
                         } else {
                             manipulatedWidth = Math.round((width * manipulatedHeight) / height);
                         }
 
-                        const resizedPhoto = await manipulateAsync(uri, [
-                            { resize: { width: manipulatedWidth, height: manipulatedHeight } }
-                        ]);
+                        const resizedPhoto = await manipulateAsync(
+                            uri,
+                            [{ resize: { width: manipulatedWidth, height: manipulatedHeight } }], // Изменение ширины до 800 пикселей; высота будет рассчитана автоматически
+                            { compress: 0.4, format: SaveFormat.JPEG }
+                          );
+
                         uri = resizedPhoto.uri;
                     }
 
@@ -291,7 +295,6 @@ export default function (props) {
                 });
             }
             if (!result.cancelled) {
-                console.log("result.assets", result.assets)
                 let k = await uploadImages(result.assets);
                 setImageSource({ images: k });
             }
