@@ -67,7 +67,7 @@ function DisplayInfo(oProps) {
 function UnitWoInfo({ oProps, sSize, sSizeFontLetter, iSizeWidth, bShowLinks, emulate }) {
     let name = oProps.display_name ? oProps.display_name.substr(0, 1) : ''
     const content = 
-        <View className={sSize + " hover:animate-pulse overflow-hidden bg-bgritem dark:bg-bgritem-d mx-auto rounded-full "}>
+        <View className={`${sSize} hover:animate-pulse overflow-hidden bg-bgritem dark:bg-bgritem-d rounded-full`}>
             {!oProps.url_avatar && <View className={'h-full items-center justify-center bg-' + getRandomColor(oProps.id) + '-500 uppercase'}>
                 <Text className={sSizeFontLetter + ' text-white '}>{name}</Text>
             </View>}
