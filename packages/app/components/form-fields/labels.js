@@ -114,7 +114,7 @@ export default function (props) {
                             onPress={showSelect}
                         />}
                         {!!field.value && field.value.map((item, index) => (
-                            <View className='pr-1 pb-1'>
+                            <View className='pr-2 pb-1'>
                             
                                 <Button
                                     endDecorator="X"

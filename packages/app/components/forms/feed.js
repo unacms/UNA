@@ -146,6 +146,7 @@ export default function FormFeed(props) {
                 listOnly: true,
                 isShow: isShowHashtag,
                 noMargin: true,
+                size: 'sm',
             }
         )
 
@@ -197,6 +198,7 @@ export default function FormFeed(props) {
                 )}
                 <KbAvoidingView className='flex-col flex-auto' offset={isIos ? 68 : 74}>
                     <View className="justify-between flex-col flex-auto ">
+                 
                         <ScrollView
                             ref={scrollViewRef}
                             className="w-full h-full flex-1"
@@ -208,7 +210,31 @@ export default function FormFeed(props) {
                             }
                         >
                             <View className="w-full flex-col p-[12px] sm:p-0 ">
-                           
+                                   <View className="flex-row flex-wrap flex-auto"> 
+                                    <View className="flex-none pb-3">
+                                     {getFormFieldByData(
+                                        {
+                                            ...props.data.inputs[
+                                            'object_privacy_view'
+                                            ],
+                                        },
+                                        props.handleSubmit,
+                                        'nofield',
+                                        {
+                                            onShowModal:setShowImage,
+                                            showModal: showImage,
+                                            size: 'sm',
+                                            maxLength:0
+                                        }
+                                    )}
+                                    </View>
+                                    {props.data.inputs['labels'] && (
+                                    <View className="flex-auto pl-2">
+                                    {labels}
+
+                                    </View>
+                                 )}
+                                 </View>
                                 {getFormFieldByData(
                                     props.data.inputs['text'],
                                     props.handleSubmit,
@@ -225,12 +251,7 @@ export default function FormFeed(props) {
                                 )}
                             </View>
 
-                            {props.data.inputs['labels'] && (
-                                <Row className="px-[12px] sm:px-0">
-                                    {labels}
-
-                                </Row>
-                            )}
+                            
 
 
 
@@ -325,21 +346,7 @@ export default function FormFeed(props) {
                                 )}
                                
                             </Row>
-                            {getFormFieldByData(
-                                        {
-                                            ...props.data.inputs[
-                                            'object_privacy_view'
-                                            ],
-                                        },
-                                        props.handleSubmit,
-                                        'nofield',
-                                        {
-                                            onShowModal:setShowImage,
-                                            showModal: showImage,
-                                            size: 'base',
-                                            maxLength:0
-                                        }
-                                    )}
+                            
                             </Row>
                             <View className="hidden sm:flex">
                                 {/* <Button onPress={() => { handlePress() }} variant='primary' disabled={text!='' ? false : true}   startDecorator="PaperPlane" title="Post" />*/}
