@@ -47,8 +47,11 @@ export default function (props) {
 
     const setFormValue = useCallback(
         (value) => {
-            const filteredValue = value.filter(item => item);
-            field.onChange(filteredValue);
+            if (value){
+                const filteredValue = value.filter(item => item);
+                field.onChange(filteredValue);
+            }
+            
             setIsModal(false);
         },
         [field]

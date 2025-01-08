@@ -12,7 +12,7 @@ import Profile from 'app/ui/molecules/profile'
 import Card from 'app/ui/molecules/card'
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { appSetting, stripTags, LAYOUT_BREAKPOINTS } from 'app/lib/util'
+import { stripTags, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { useWindowDimensions } from 'react-native'
 import { Keyboard } from 'react-native'
 import { useFormContext } from 'react-hook-form'
@@ -49,12 +49,10 @@ export default function FormFeed(props) {
     const [responseId, setResponseId] = useState(0)
     const [imageSource, setImageSource] = useState([])
     const { setLayoutData } = useLayoutData()
-    const { currentUser, setCurrentUser } = useCurrentUser()
     const windowDimensions = useWindowDimensions()
     const [isShowHashtag, setIsShowHashtag] = useState(0)
     const isWeb = Platform.OS === 'web'
-    const isSmall =
-        windowDimensions.width < LAYOUT_BREAKPOINTS.sm || !isWeb ? true : false
+    const isSmall = windowDimensions.width < LAYOUT_BREAKPOINTS.sm || !isWeb ? true : false
     const isIos = Platform.OS === 'ios'
     const scrollViewRef = useRef(null)
 
@@ -68,13 +66,19 @@ export default function FormFeed(props) {
     }, [props.response?.id])
 
     useEffect(() => {
+        if (showImage) {
+            scrollViewRef.current?.scrollToEnd({ animated: true })
+            console.log("showImage", showImage)
+        }
+    }, [showImage])
+
+    useEffect(() => {
         const keyboardDidShowListener = Keyboard.addListener(
             'keyboardDidShow',
             () => {
                 scrollViewRef.current?.scrollToEnd({ animated: true })
             }
         )
-
         return () => {
             keyboardDidShowListener.remove()
         }
@@ -99,10 +103,7 @@ export default function FormFeed(props) {
         .flat()
         .filter((element) => element !== undefined)
 
-
-
     const handlePress = () => {
-        Keyboard.dismiss()
         setShowImage(null)
         props.handleSubmit()
     }
@@ -116,13 +117,11 @@ export default function FormFeed(props) {
                 variant="outline"
                 rounded
                 size="base"
-
                 startDecorator="X"
             />
             <View className="flex-auto items-center justify-center">
-                    <ProfileView/>
+                <ProfileView/>
             </View>
-
             <Button
                 onPress={() => {
                     handlePress()
@@ -164,26 +163,10 @@ export default function FormFeed(props) {
                 transparent={true}
                 headerBorder={true}
             >
-                {getFormFieldByData(
-                    props.data.inputs['action'],
-                    props.handleSubmit,
-                    'default'
-                )}
-                {getFormFieldByData(
-                    props.data.inputs['object_cf'],
-                    props.handleSubmit,
-                    'default'
-                )}
-                {getFormFieldByData(
-                    props.data.inputs['owner_id'],
-                    props.handleSubmit,
-                    'default'
-                )}
-                {getFormFieldByData(
-                    props.data.inputs['type'],
-                    props.handleSubmit,
-                    'default'
-                )}
+                {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'default')}
+                {getFormFieldByData(props.data.inputs['object_cf'], props.handleSubmit, 'default')}
+                {getFormFieldByData(props.data.inputs['owner_id'], props.handleSubmit, 'default')}
+                {getFormFieldByData(props.data.inputs['type'], props.handleSubmit, 'default')}
                 <KbAvoidingView className='flex-col flex-auto' offset={isIos ? 68 : 74}>
                     <View className="justify-between flex-col flex-auto ">
                         <ScrollView
@@ -231,6 +214,7 @@ export default function FormFeed(props) {
                                         bg: 'transparent',
                                         placeholder: 'Write here...',
                                         linkify: true,
+                                        autofocus: Date.now()
                                     }
                                 )}
                                 {prevList.length > 0 && prevList[0]?.key && (
@@ -285,6 +269,24 @@ export default function FormFeed(props) {
                                                     asDefaultStorage: true,
                                                     size: 'base',
                                                     variant: 'secondary',
+                                                    source: 'library',
+                                                }
+                                            )}
+                                        </View>
+                                    )}
+                                     {(props.data.inputs['video'] && !isWeb) && (
+                                        <View className="">
+                                            {getFormFieldByData(
+                                                props.data.inputs['video'],
+                                                props.handleSubmit,
+                                                'custom',
+                                                {
+                                                    previewPlaceHolder: setPlaceHolder,
+                                                    noMargin: true,
+                                                    asDefaultStorage: true,
+                                                    size: 'base',
+                                                    variant: 'secondary',
+                                                    source: 'camera',
                                                 }
                                             )}
                                         </View>

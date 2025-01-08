@@ -35,7 +35,6 @@ export default function (props) {
     }, [props, obfuscateFaces]);
 
 
-
     useEffect(() => {
         const uploadImagesAsync = async (assets) => {
             const k = await uploadImages(assets);
@@ -128,6 +127,8 @@ export default function (props) {
 
     const uploadImages = async (asset) => {
         let k = imageSource.images ? imageSource.images : [];
+        if (!asset)
+            return 
         let objectsToAdd = Array(asset.length).fill({ preload: true });
         k = [
             ...k,
@@ -204,25 +205,7 @@ export default function (props) {
         if (Platform.OS !== 'web' && bIsMedia) {
             const { status } = await Camera.requestCameraPermissionsAsync();
             if (status === "granted"){
-                Alert.alert(
-                    "Upload Photo",
-                    "Choose an option",
-                    [
-                        {
-                            text: "Take Photo",
-                            onPress: () => { selectImage1('camera', bIsMedia) }
-                        },
-                        {
-                            text: "Choose from Library",
-                            onPress: () => { selectImage1('library', bIsMedia) }
-                        },
-                        {
-                            text: "Cancel",
-                            style: "cancel"
-                        }
-                    ],
-                    { cancelable: true }
-                );
+                selectImage1(props.source, bIsMedia)
             }
             else{
                 Alert.alert(
@@ -243,7 +226,7 @@ export default function (props) {
         else {
             selectImage1('library', bIsMedia)
         }
-    }, [props.ext_deny, props.ext_allow, imageSource, url]);
+    }, [props.ext_deny, props.ext_allow, props.source, imageSource, url]);
 
 
     const selectImage1 = useCallback(async (type, bIsMedia) => {
@@ -256,10 +239,8 @@ export default function (props) {
                 mediaTypes = ['videos'];
 
             let result = null
-
+            console.log("type", type)
             if (type == 'library') {
-                //const permissions = Permissions.CAMERA_ROLL;
-                //const { status } = await Permissions.askAsync(permissions);
                 
                 if (!hasPermissionLibrary) {
                     const { status2 } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -277,8 +258,7 @@ export default function (props) {
                 });
             }
             else {
-                //const permissions = Permissions.CAMERA;
-                //const { status } = await Permissions.askAsync(permissions);
+                
                 if (!hasPermissionCamera) {
                     const permission = await requestPermissionCamera();
                     if (!permission.granted) {
@@ -374,7 +354,9 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
 
     let sIcon = iconMap[props.name] || "Plus";
     let sTitle = sIcon === "Plus" ? "Select " + props.name : "";
-
+    if (props.source == 'camera') {
+        sIcon = 'Camera';
+    }
 
     useEffect(() => {
         if (drop.current && Platform.OS === 'web') {

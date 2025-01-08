@@ -4,8 +4,7 @@ import { Text } from 'app/design/typography'
 import { useController } from 'react-hook-form';
 import { useState, useRef, useEffect } from 'react';
 import { fetcher } from 'app/lib/fetcher';
-import { replaceMentionValues } from 'react-native-controlled-mentions';
-import { MentionInput as MentionInputDef } from 'react-native-controlled-mentions'
+import { MentionInput as MentionInputDef, replaceMentionValues } from 'react-native-controlled-mentions'
 import { Theme } from 'app/design/theme';
 
 export const MentionInput = ({ className, ...props }) => (
@@ -94,24 +93,10 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
             }, 300); // задержка для избежания проблем с ранней фокусировкой
         }
     }, [props.autofocus]);
-    /* useEffect(() => {
-         if (field.value == ''){
-             setLocalValue('');
-         }
-         else{
-             setLocalValue(formatText(field.value));
-         }
-     }, [field.value]);    
- */
     const handleChange2 = (val) => {
-        //  setLocalValue(val);
-
         let v = replaceMentionValues(val, ({ trigger, name, id }) => `<a class="bx-mention-link" href="${id}" title="${name}" dchar="${trigger}" data-profile-id="${id}">${name}</a>`)
-        // v = v.split('\n').map(line => `<p>${line}</p>`).join('');
         v = v.split('\n').map(line => `<p>${line}</p>`).join('');
-        if (v) {
-            //  v = '<p>'+v+'</p>'
-        }
+
         field.onChange(v)
     }
 
