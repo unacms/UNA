@@ -98,6 +98,8 @@ export default function FormFeed(props) {
                 }}
                 variant="outline"
                 rounded
+                size="base"
+
                 startDecorator="X"
             />
             <View className="flex-auto items-center justify-center">
@@ -124,6 +126,7 @@ export default function FormFeed(props) {
                     handlePress()
                 }}
                 variant="primary"
+                size="base"
                 disabled={text != '' ? false : true}
                 rounded
                 startDecorator="PaperPlane"
@@ -204,7 +207,7 @@ export default function FormFeed(props) {
                                 })
                             }
                         >
-                            <View className="w-full flex-col p-3 sm:p-0 ">
+                            <View className="w-full flex-col p-[12px] sm:p-0 ">
                            
                                 {getFormFieldByData(
                                     props.data.inputs['text'],
@@ -223,7 +226,7 @@ export default function FormFeed(props) {
                             </View>
 
                             {props.data.inputs['labels'] && (
-                                <Row className="px-3 sm:px-0">
+                                <Row className="px-[12px] sm:px-0">
                                     {labels}
 
                                 </Row>
@@ -235,20 +238,19 @@ export default function FormFeed(props) {
 
                         </ScrollView>
 
-                        <Row className="w-full justify-between  mx-auto items-center pt-2 ">
-
-                            <Row className='flex-auto pr-3 justify-between'>
-
-                            <Row
-                                className={
-                                    'gap-x-2  ' +
-                                    (isWeb ? '' : ' pb-3 ') +
+                        <Row className="w-full justify-between gap-x-2 mx-auto items-center pt-2 ">
+                            <Row className={
+                                    ' flex-auto justify-between gap-x-2  ' +
+                                    (isWeb ? '' : ' pb-[12px] ') +
                                     (isSmall
-                                        ? ' pb-2.5 px-3 ' +
-                                        (isIos ? ' bottom-4 ' : ' bottom-0 ') +
+                                        ? ' pb-[12px] px-[12px] ' +
+                                        (isIos ? ' bottom-[8px] ' : ' bottom-0 ') +
                                         '  '
                                         : ' my-auto ')
-                                }
+                                }>
+
+                            <Row
+                                className="gap-x-2"
                             >
 
 
@@ -287,7 +289,7 @@ export default function FormFeed(props) {
                                                 noMargin: true,
                                                 asDefaultStorage: true,
                                                 size: 'base',
-                                                variant: 'default',
+                                                variant: 'secondary',
                                             }
                                         )}
                                     </View>
@@ -303,7 +305,7 @@ export default function FormFeed(props) {
                                                 noMargin: true,
                                                 
                                                 size: 'base',
-                                                variant: 'default',
+                                                variant: 'secondary',
                                             }
                                         )}
                                     </View>
@@ -312,8 +314,8 @@ export default function FormFeed(props) {
                                     <View>
                                         <Button
                                             startDecorator="Hash"
-                                            size={'base'}
-                                            variant={'default'}
+                                            size='base'
+                                            variant='secondary'
                                             
                                             onPress={() => {
                                                 setIsShowHashtag(isShowHashtag + 1)
