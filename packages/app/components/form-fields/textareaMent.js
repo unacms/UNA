@@ -137,7 +137,7 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
         );
     };
 
-    let styles = { };
+    let styles = { fontSize:props.fontSize || 16 };
     if (name != 'cmt_text') {
         styles = { ...styles, minHeight: 100 }
     }

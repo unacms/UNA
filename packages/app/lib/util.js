@@ -29,7 +29,7 @@ export function isObjectsEqual(obj, obj2) {
 
 export function normalizeClasses(a) {
     if (!a) return a
-    return Platform.OS === 'web' ? a : a.replace(/\b\S*(hover|focus|active|group-hover):\S*\b/g, "") .replace(/\s{2,}/g, " ").trim();
+    return Platform.OS === 'web' ? a : a.replace(/\b\S*(hover|focus|active|group|duration|group-hover):\S*\b/g, "") .replace(/\s{2,}/g, " ").trim();
 }
 
 export function decodeText(str) {

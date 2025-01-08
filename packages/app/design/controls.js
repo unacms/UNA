@@ -285,7 +285,7 @@ export const Button = (props) => {
   
 
     const sClassContainer = useMemo(() => {
-        let classes = 'group relative flex-row items-center ';
+        let classes = '  flex-row items-center ';
         classes += fullWidth ? ' flex-auto w-full ' : ' w-fit ';
         if (disabled) classes += 'opacity-50 ';
         if (variant !== 'custom') {
@@ -397,7 +397,6 @@ export const Button = (props) => {
         } : {}),
         role: rest['aria-haspopup'] === 'menu' ? 'menubutton' : 'button',
     } : {};
-
     const buttonContent = (
         <>
             <Cnt

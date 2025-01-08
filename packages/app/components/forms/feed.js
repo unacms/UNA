@@ -205,7 +205,7 @@ export default function FormFeed(props) {
                             }
                         >
                             <View className="w-full flex-col p-3 sm:p-0 ">
-                           
+
                                 {getFormFieldByData(
                                     props.data.inputs['text'],
                                     props.handleSubmit,
@@ -221,123 +221,110 @@ export default function FormFeed(props) {
                                     <Row className="flex-wrap">{prevList}</Row>
                                 )}
                             </View>
-
                             {props.data.inputs['labels'] && (
                                 <Row className="px-3 sm:px-0">
                                     {labels}
-
                                 </Row>
                             )}
-
-
-
-
-
                         </ScrollView>
-
                         <Row className="w-full justify-between  mx-auto items-center pt-2 ">
-
                             <Row className='flex-auto pr-3 justify-between'>
-
-                            <Row
-                                className={
-                                    'gap-x-2  ' +
-                                    (isWeb ? '' : ' pb-3 ') +
-                                    (isSmall
-                                        ? ' pb-2.5 px-3 ' +
-                                        (isIos ? ' bottom-4 ' : ' bottom-0 ') +
-                                        '  '
-                                        : ' my-auto ')
-                                }
-                            >
-
-
-
-                                {props.data.inputs['obfuscate_faces'] && (
-                                    <View className="">
-                                        {getFormFieldByData(
-                                            props.data.inputs['obfuscate_faces'],
-                                            props.handleSubmit,
-                                            'default'
-                                        )}
-                                    </View>
-                                )}
-                                {props.data.inputs['photo'] && (
-                                    <View className="">
-                                        {getFormFieldByData(
-                                            props.data.inputs['photo'],
-                                            props.handleSubmit,
-                                            'custom',
-                                            {
-                                                previewPlaceHolder: setPlaceHolder,
-                                                noMargin: true,
-                                                rounded: true,
-                                            }
-                                        )}
-                                    </View>
-                                )}
-                                {props.data.inputs['video'] && (
-                                    <View className="">
-                                        {getFormFieldByData(
-                                            props.data.inputs['video'],
-                                            props.handleSubmit,
-                                            'custom',
-                                            {
-                                                previewPlaceHolder: setPlaceHolder,
-                                                noMargin: true,
-                                                asDefaultStorage: true,
-                                                size: 'base',
-                                                variant: 'default',
-                                            }
-                                        )}
-                                    </View>
-                                )}
-                                {props.data.inputs['file'] && (
-                                    <View>
-                                        {getFormFieldByData(
-                                            props.data.inputs['file'],
-                                            props.handleSubmit,
-                                            'custom',
-                                            {
-                                                previewPlaceHolder: setPlaceHolder,
-                                                noMargin: true,
-                                                
-                                                size: 'base',
-                                                variant: 'default',
-                                            }
-                                        )}
-                                    </View>
-                                )}
-                                {props.data.inputs['labels'] && (
-                                    <View>
-                                        <Button
-                                            startDecorator="Hash"
-                                            size={'base'}
-                                            variant={'default'}
-                                            
-                                            onPress={() => {
-                                                setIsShowHashtag(isShowHashtag + 1)
-                                            }}
-                                        />
-                                    </View>
-                                )}
-                               
-                            </Row>
-                            {getFormFieldByData(
-                                        {
-                                            ...props.data.inputs[
-                                            'object_privacy_view'
-                                            ],
-                                        },
-                                        props.handleSubmit,
-                                        'nofield',
-                                        {
-                                            onShowModal:setShowImage,
-                                            showModal: showImage,
-                                            size: 'base',
-                                            maxLength:0
-                                        }
+                                <Row
+                                    className={
+                                        'gap-x-2  ' +
+                                        (isWeb ? '' : ' pb-3 ') +
+                                        (isSmall
+                                            ? ' pb-2.5 px-3 ' +
+                                            (isIos ? ' bottom-4 ' : ' bottom-0 ') +
+                                            '  '
+                                            : ' my-auto ')
+                                    }
+                                >
+                                    {props.data.inputs['obfuscate_faces'] && (
+                                        <View className="">
+                                            {getFormFieldByData(
+                                                props.data.inputs['obfuscate_faces'],
+                                                props.handleSubmit,
+                                                'default'
+                                            )}
+                                        </View>
                                     )}
+                                    {props.data.inputs['photo'] && (
+                                        <View className="">
+                                            {getFormFieldByData(
+                                                props.data.inputs['photo'],
+                                                props.handleSubmit,
+                                                'custom',
+                                                {
+                                                    previewPlaceHolder: setPlaceHolder,
+                                                    noMargin: true,
+                                                    rounded: true,
+                                                }
+                                            )}
+                                        </View>
+                                    )}
+                                    {props.data.inputs['video'] && (
+                                        <View className="">
+                                            {getFormFieldByData(
+                                                props.data.inputs['video'],
+                                                props.handleSubmit,
+                                                'custom',
+                                                {
+                                                    previewPlaceHolder: setPlaceHolder,
+                                                    noMargin: true,
+                                                    asDefaultStorage: true,
+                                                    size: 'base',
+                                                    variant: 'default',
+                                                }
+                                            )}
+                                        </View>
+                                    )}
+                                    {props.data.inputs['file'] && (
+                                        <View>
+                                            {getFormFieldByData(
+                                                props.data.inputs['file'],
+                                                props.handleSubmit,
+                                                'custom',
+                                                {
+                                                    previewPlaceHolder: setPlaceHolder,
+                                                    noMargin: true,
+
+                                                    size: 'base',
+                                                    variant: 'default',
+                                                }
+                                            )}
+                                        </View>
+                                    )}
+                                    {props.data.inputs['labels'] && (
+                                        <View>
+                                            <Button
+                                                startDecorator="Hash"
+                                                size={'base'}
+                                                variant={'default'}
+
+                                                onPress={() => {
+                                                    setIsShowHashtag(isShowHashtag + 1)
+                                                }}
+                                            />
+                                        </View>
+                                    )}
+
+                                </Row>
+                                {getFormFieldByData(
+                                    {
+                                        ...props.data.inputs[
+                                        'object_privacy_view'
+                                        ],
+                                    },
+                                    props.handleSubmit,
+                                    'nofield',
+                                    {
+                                        onShowModal: setShowImage,
+                                        showModal: showImage,
+                                        size: 'base',
+                                        maxLength: 0
+                                    }
+                                )}
                             </Row>
                             <View className="hidden sm:flex">
                                 {/* <Button onPress={() => { handlePress() }} variant='primary' disabled={text!='' ? false : true}   startDecorator="PaperPlane" title="Post" />*/}
@@ -369,7 +356,6 @@ export default function FormFeed(props) {
                     }}
                 />
             ) : (
-
                 <Card
                     rounded=" rounded-none sm:rounded-2xl  "
                     margin=" mx-auto mb-1 sm:mb-3 "
