@@ -207,7 +207,8 @@ const MenuManage = ({ id, menu, setViewState, module, cmt_object_id, cmt_id }) =
                 rounded
                 startDecorator="DotsThreeOutline"
                 onPress={() => {
-                    setMenuData({...menu, items: [{'name': 'loader'}]});
+                    if (Platform.OS === 'web')
+                        setMenuData({...menu, items: [{'name': 'loader'}]});
                     getDataForMenu(menu, setMenuData);
                 }}
             />

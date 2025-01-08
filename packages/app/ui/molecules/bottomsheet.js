@@ -74,7 +74,7 @@ export default function ElementCommentForm(props) {
                 ref={bottomSheetModalRef}
                 index={1}
                 snapPoints={snapPoints}
-                enableDismissOnClose={false} // prevents closing on dismiss event
+                enableDismissOnClose={true} // changed to true => not hide fully in more menus
                 enablePanDownToClose={props.enablePanDownToClose} // prevents closing by sliding down
                // enableDynamicSizing={true}
 
