@@ -13,6 +13,7 @@ import { List, ArrowLeft, House, WarningCircle, Chats, ArrowRight, ChatCircleTex
 	UserList, UserCircleGear, ContactlessPayment, Folder, Camera,UserCircleMinus, UserMinus,Spinner, Asterisk,
 	UserFocus, UserSquare, LinkSimple, ChartLine, Star, Translate, Moon,Trash, Minus, Hash, CirclesThree, Megaphone, 
 	Sparkle, MapPin, Wallet,Repeat,Eye,EyeSlash, Globe, PaperPlane, ArrowClockwise, Paperclip
+
 }  
 from "phosphor-react-native";
 

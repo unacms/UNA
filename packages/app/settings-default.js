@@ -2564,7 +2564,7 @@ export const settingsDefault = {
             item_ver:
                 'flex flex-row focus:outline-none items-center px-3 py-2 gap-x-3 text-sm rounded-lg font-medium hover:bg-bgritem dark:hover:bg-bgritem-d text-neutral-700 dark:text-neutral-300 dark:hover:text-white hover:cursor-pointer',
             item_hor:
-                'flex block px-3 py-2 hover:-translate-y-1 active:-translate-y-1 dark:hover:text-white rounded-full hover:cursor-pointer text-neutral-700 active:opacity-50 hover:scale-125 active:scale-95 duration-200 dark:text-neutral-300 outline-none ',
+                'flex block px-3 py-2 hover:-translate-y-1 active:-translate-y-1 dark:hover:text-white rounded-full hover:cursor-pointer text-neutral-700  hover:scale-125 active:scale-95 duration-200 dark:text-neutral-300 outline-none ',
             item_np:
                 'flex flex-row focus:outline-none items-center justify-between px-1 py-0.5 rounded-lg font-medium hover:bg-bgritem dark:hover:bg-bgritem-d text-sm text-neutral-700 dark:text-neutral-300 dark:hover:text-white hover:cursor-pointer',
             item_cnt: 'items-center gap-x-3',
@@ -2577,7 +2577,7 @@ export const settingsDefault = {
             container: 'max-w-2xl {ls}:h-auto shadow-modal dark:shadow-modal-d bg-bgrmodal dark:bg-bgrmodal-d {ls}:rounded-2xl sm:border border-bdrmodal dark:border-bdrmodal-d overflow-hidden',
             content:
                 ' {ls}:h-auto ',
-            header: 'border-b border-bdr dark:border-bdr-d px-3 py-2.5',
+            header: 'border-b border-bdr dark:border-bdr-d p-[12px]',
         },
         card: {
             default: ' overflow-hidden bg-bgrcard dark:bg-bgrcard-d ',
@@ -2615,17 +2615,17 @@ export const settingsDefault = {
             },
             sm: {
                 rounded: 'rounded-lg',
-                padding: 'p-1.5',
+                padding: 'p-[5px] ',
                 icon_sizes:
-                    ' h-6 w-6 text-center align-middle items-center justify-center flex ',
-                icon_size: 22,
-                icon_margin: '',
-                min_height: ' leading-6 ',
+                    ' h-5 w-5 text-center align-middle items-center justify-center flex ',
+                icon_size: 20,
+                icon_margin: '  ',
+                min_height: ' leading-5 ',
                 margin: 'mx-2',
             },
             base: {
                 rounded: ' rounded-lg ',
-                padding: ' p-2 h-10 min-w-10 ',
+                padding: ' p-[7px] ',
                 icon_sizes: ' h-6 w-6 text-center align-middle items-center justify-center flex ',
                 icon_size: 24,
                 icon_margin: ' ',
@@ -2645,18 +2645,18 @@ export const settingsDefault = {
 
         button_styles: {
             'u-btn-default-cnt':
-                ' bg-bgrbutton dark:bg-bgrbutton-d shadow-button dark:shadow-button-d hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50 ',
+                ' bg-bgrbutton dark:bg-bgrbutton-d border border-bdrbutton dark:border-bdrbutton-d hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50 ',
             'u-btn-default-text':
                 ' font-medium text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-white ',
             'u-btn-default-trans': 'web:duration-200',
 
             'u-btn-primary-cnt':
-                ' bg-primary dark:bg-primary-d sm:hover:bg-primary-600 dark:sm:hover:bg-primary-700  ',
-            'u-btn-primary-text': '  font-medium text-white ',
+            ' bg-primary-600 dark:bg-primary-700  border border-primary-600 dark:border-primary-700 dark:border-primary-600 sm:hover:bg-primary-700 dark:sm:hover:bg-primary-800  ',
+            'u-btn-primary-text': '  font-medium text-neutral-100 hover:text-white ',
             'u-btn-primary-trans': ' web:duration-200 ',
 
             'u-btn-secondary-cnt':
-                ' bg-neutral-200 dark:bg-neutral-800 sm:hover:bg-neutral-300 sm:dark:hover:bg-neutral-700  ',
+                ' bg-neutral-200 dark:bg-neutral-800 border border-transparent sm:hover:bg-neutral-300 sm:dark:hover:bg-neutral-700  ',
             'u-btn-secondary-text':
                 ' font-medium text-neutral-700 hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-white ',
             'u-btn-secondary-trans': ' web:duration-200',
@@ -2679,7 +2679,7 @@ export const settingsDefault = {
             'u-btn-link-trans': ' web:duration-200 ',
 
             'u-btn-outline-cnt':
-                ' border border-bdrbutton dark:border-bdrbutton-d  hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:shadow-none  active:opacity-50 ',
+                ' border border-bdrbutton dark:border-bdrbutton-d hover:bg-bgrbutton dark:hover:bg-bgrbutton-dh ',
             'u-btn-outline-text':
                 ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
             'u-btn-outline-trans': ' web:duration-200',
