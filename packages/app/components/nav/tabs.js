@@ -94,7 +94,7 @@ export default function () {
     const screenOptions = useMemo(() => ({
         tabBarStyle: {
             backgroundColor: colors.barsBackground,
-            height: isShowTabs ? 44 : 0,
+            height: isShowTabs ? 50 : 0,
             opacity: isShowTabs ? 1 : 0,
             elevation: 0,
             boxShadow: 'none',
