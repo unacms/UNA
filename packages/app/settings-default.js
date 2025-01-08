@@ -2490,7 +2490,7 @@ export const settingsDefault = {
             bdrModal: 'rgba(107,114,128,0.15)',
             checkbox: '#2563eb',
             safeAreaBackground: 'rgba(255,255,255,1)', // Add this new property
-            primaryBg: 'rgba(20,113,106,0.1)'
+            primaryBg: 'rgba(37,99,235,0.1)'
         },
         dark: {
             default: 'rgba(209,213,219,1)', //fix for icons color in iOS
@@ -2509,7 +2509,7 @@ export const settingsDefault = {
             bdrModal: 'rgba(107,114,128,0.15)',
             checkbox: '#0ea5e9',
             safeAreaBackground: 'rgba(17,24,39,1)', // Add this new property
-            primaryBg: 'rgba(20,113,106,0.1)'
+            primaryBg: 'rgba(37,99,235,0.1)'
         },
         conductor: {
             menu: ' w-full items-left justify-center border-b border-bdrtabbar dark:border-bdrtabbar-d bg-bgrtabbar dark:bg-bgrtabbar-d  ',
