@@ -418,7 +418,7 @@ export default function ElementReactions(oProps) {
 
                 sActionButton = sActionButton = oItems.length > 1 ? (
                     <Reaction key="action" type="modal" showPopupType="onPress" items={aReactionItems} onTap={(item) => { _handleDo(item.name) }} disabled={bShowActionDisabled} cardStyle={oReactionStyles.cardStyle}>
-                        <ButtonAction startDecorator={_getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : false} {...oButtonProps} />
+                        <ButtonAction startDecorator={_getIconAlias(sReaction)} disabled={bShowActionDisabled} title={bShowActionLabel ? sTitle : false} {...oButtonProps} />
                     </Reaction>
                 ) : (
                     <ButtonAction key="action" startDecorator={_getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : false} onPress={() => { _handleDo(aItems[0].name) }} disabled={bShowActionDisabled} {...oButtonProps} />
