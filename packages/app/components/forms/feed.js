@@ -355,14 +355,14 @@ export default function FormFeed(props) {
                     margin=" mx-auto mb-1 sm:mb-3 "
                     addClassName=" shadow-sm  w-full max-w-2xl p-[12px] sm:p-[16px] "
                 >
-                    <View className=" flex-row sm:gap-x-3 ">
+                    <View className=" flex-row sm:gap-x-[12px] ">
                         <View className=" my-auto">
                             <ProfileView isImageOnly={true}/>
                         </View>
                         <View className="flex-auto sm:hidden">
                             <Button
                                 size="base"
-                                variant="text"
+                                variant="link"
                                 fullWidth
                                 rounded
                                 title={t('Create new post') + '...'}
