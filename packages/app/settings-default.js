@@ -37,7 +37,6 @@ export const settingsDefault = {
         cell_style: '',
         show_user_icon: false,
         search: true,
-        messenger: '/messenger',
         notifications: '/notifications-view',
         dashboard: '/dashboard',
         apps: true,
@@ -104,7 +103,6 @@ export const settingsDefault = {
         comments_count_in_feed: 3,
         add_notifications_count_in_title: true,
         show_nav_non_logged_native: true,
-        show_back_button_in_messenger: false,
         button_style_for_actions: 'secondary',
         cover_mode: {
             bx_courses: 'min',
@@ -116,8 +114,13 @@ export const settingsDefault = {
         share_text: '',
         fixed_cover: false,
         tooltips: true,
-        back_for_profile: '/friends'
+        back_for_profile: '/friends',   
     },
+    messenger: {
+        url: '/messenger', //OLD appSetting('layout', 'messenger')
+        back_button: false, //OLD appSetting('layout', 'show_back_button_in_messenger')
+    },
+
     forms: {
         sys_login: { hide_errors: true, button_full_width: true },
         sys_account_create: {

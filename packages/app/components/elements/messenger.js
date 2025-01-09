@@ -98,7 +98,7 @@ export default function MessengerEl(props) {
 
 const MessengerContainer = memo(({ convos, selectedMenu, url, data, windowWHeight, windowWidth, layout, fetchConvos, defaultConvoId, onSave, addButtons }) => {
     const isWeb = Platform.OS == 'web'
-    const layoutHeaderHeight = 57;
+    const layoutHeaderHeight = 64;
     let height = useMemo(() => {
         let heightInit = windowWHeight;
         if (layout == 'ver') {

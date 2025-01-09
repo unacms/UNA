@@ -406,7 +406,7 @@ export function LeftSidebar({ title, addButtons, children, width, menu }) {
     return (
         <View className={" hidden lg:block " + width}>
             <View className={' fixed-process ' + width + ' lg:px-2 lg:py-3 '}>
-                {(!!title && !!addButtons) && <Row className="justify-between items-center mt-1 mb-4 px-2 ">
+                {(!!title && !!addButtons) && <Row className="justify-between items-center mt-1 mb-4 px-2 z-10">
                     <Text className="text-2xl truncate mr-auto font-bold  text-neutral-900 dark:text-neutral-100 hidden lg:flex  ">
                         {title}
                     </Text>
@@ -430,15 +430,15 @@ export function TopSidebar({ styles, isWeb, leftSideBar, header, headerSettings,
             className={ `${conductorTheme.menu} ${leftSideBar ? 'lg:hidden' : ''
                 } ${isUseBg
                     ? ' '
-                    : isSmall
+                    : /*isSmall
                         ? ' backdrop-blur-xl '
-                        : ''
+                        : */''
                 }`}
         >
             <View className={`${leftSideBar ? '' : ' mx-auto'}  w-full ${conductorTheme.menu_max_width}`}>
                 {!header && isWeb && <Row className="lg:hidden flex-row gap-x-1 flex-none items-center justify-between h-16 bg-bgrnavbar dark:bg-bgrnavbar-d ">
-                    <Row className="items-center px-3 sm:px-4">
-
+                    
+                    { layout === 'ver' && (<><Row className="items-center px-3 sm:px-4">
                         {headerSettings.header && getBackButtonWeb()}
                         {(headerSettings.header == false && headerSettings.menu == true && isDrawer) && <View className="lg:hidden mr-3 sm:mr-4"><Pressable onPress={showMenu}>
                             <Button
@@ -453,7 +453,8 @@ export function TopSidebar({ styles, isWeb, leftSideBar, header, headerSettings,
                     </Row>
                     <Row className="px-3 sm:px-4">
                         {addButtons}
-                    </Row>
+                    </Row></>)
+}
                 </Row>
                 }
                 <Row className=" items-center  ">

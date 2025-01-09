@@ -72,9 +72,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     const toasterRef2 = useRef();
 
     const initedTabs = fillTabs(menu, data, blocks, currentUser, useSectionAsMenu);
-    const windowDimen = useWindowDimensions();
-    const windowWidth = windowDimen.width;
-    const windowHeight = windowDimen.height;
+    const { width: windowWidth, height: windowHeight } = useWindowDimensions();
     const [routes, setRoutes] = useState(initedTabs);
     const [cntWidth, setCntWidth] = useState(0);
     const [isRevalidate, setIsRevalidate] = useState(false);
@@ -369,6 +367,15 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     };
 
     const renderHeader = useCallback((tabBarObj, tabBarObjSmall) => {
+        const tOffset = getLayout(currentUser) == 'ver' ? 0 : 63;
+        if (!header && !smallHeader){
+            return (
+                <><View style={{ position: 'fixed', width: cntWidth + 'px', overflow: 'hidden', zIndex: 40, top: windowWidth >= LAYOUT_BREAKPOINTS.lg ? tOffset : 0 }}>
+                    {tabBarObj}
+                </View><View className="h-28 w-full lg:hidden"></View></>
+            )
+        }
+
         const d = 200;
         const animatedStyle5 = useAnimatedStyle(() => {
             const opacityValue = withTiming(scrollValue.value, { duration: d });
@@ -387,14 +394,8 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             };
         }, [scrollValue]);
 
-        /* if (!header){
-             if (tabBarObj)
-                 return <>
-                     <View className="w-full h-12 lg:h-12"></View>
-                     <Animated.View style={[{ width: '100%',  overflow: 'hidden', zIndex: 50  }]}>{tabBarObj}</Animated.View>
-                 </>
-         }*/
-        let tOffset = getLayout(currentUser) == 'ver' ? 0 : 63;
+        
+      
         return (
             <>
                 <Animated.View style={[{ width: cntWidth + 'px', position: 'fixed', overflow: 'hidden', zIndex: 40, top: windowWidth >= LAYOUT_BREAKPOINTS.lg ? tOffset : 0 }, animatedStyle6]}>
@@ -450,8 +451,8 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         );
     });
     const tabBarObj = renderTabBar();
-    const tabBarObjSmall = renderTabBar(true);
-    const headerObj = renderHeader(tabBarObj, tabBarObjSmall);
+   // const tabBarObjSmall = renderTabBar(true);
+    const headerObj = renderHeader(tabBarObj, tabBarObj/*tabBarObjSmall*/);
 
     const TabScene = ({ route, width, status }) => {
         const dataItems = route?.data
@@ -548,11 +549,11 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     const AddBlocksCnt = useMemo(() => AddBlocks(leftSideBarBlocks, data, onFormSubmit, onFormChangedValues), [leftSideBarBlocks, data, onFormSubmit, onFormChangedValues]);
     
     const leftSideBarObj = useCallback(() => {
-        const renderForm = (formProps, onFormChange) => {
+        /*const renderForm = (formProps, onFormChange) => {
             return (
                 <Form {...formProps} key="form" name={formProps.name} onChange={onFormChange} />
             )
-        }
+        }*/
 
         const menuSettings = appSetting('menu_items', menu.object);
         const addButtons = menuSettings?.add?.filter(item => item.hideInSideBar !== true).map((button) => {
@@ -600,7 +601,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
             </>
         )
-    }, [routes, index, currentUser]);
+    }, [routes, index, currentUser, windowWidth]);
 
     const topSideBarObj = useCallback(() => {
         return <Row className="w-full px-8 pt-6 items-stretch justify-stretch sticky z-50 t-8 gap-x-8 hidden lg:flex">
@@ -642,15 +643,16 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     }, [leftSideBarBlocks, data, onFormSubmit]);
 
     if (leftSideBar) {
+        const offset = 64
         return (
             <View className={appSetting('layout', 'max_width') + " w-full h-full mx-auto"} scrollEnabled={false} onLayout={handleLayoutTop}>
                 {headerObj}
                 <MenuDrawer showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden fixed z-50 top-14  w-full" />
                 {/*<Toaster ref={toasterRef} onPress={showNewContent} variant="primary" title="New content" size="sm" />*/}
                 <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" />
-                <View style={{ minHeight: (windowHeight - 56) }} className={appSetting('layout', 'max_width  ') + ' mx-auto w-full '} >
+                <View style={{ minHeight: (windowHeight - offset) }} className={appSetting('layout', 'max_width  ') + ' mx-auto w-full '} >
                     <Row>
-                        <View style={{ minHeight: (windowHeight - 56) }} className={leftSideBarWidth + ' hidden lg:block border-r border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d fixed lg:relative top-0 z-50'}>
+                        <View style={{ minHeight: (windowHeight - offset) }} className={leftSideBarWidth + ' hidden lg:block border-r border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d fixed lg:relative top-0 z-50'}>
                             {leftSideBarObj()}
                         </View>
                         <View className=" flex-auto">{/*min-h-screen???*/}

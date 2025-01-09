@@ -2,14 +2,17 @@ import { View, ScrollView } from 'app/design/view'
 import React, { useState, useEffect, useRef, useCallback} from "react";
 import { Platform } from 'react-native' 
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
-   
+import { useWindowDimensions } from 'react-native'
+import { LAYOUT_BREAKPOINTS } from 'app/lib/util'
 export default function DynamicMenu({ name, MenuItem, MenuItemEx, ButtonEx, containerClasses, items, menuClasses, menuExClasses, isButtonOutside, offsetWidth=50, persistent = 0 }) {
 
     const isWeb = Platform.OS == 'web'
     const itemRefs = useRef([]);
     const itemRefsMore = useRef();
-    const [visibleItemsCount, setVisibleItemsCount] = useState(0);
-    const [width, setWidth] = useState(0);
+    const [ visibleItemsCount, setVisibleItemsCount ] = useState(0);
+    const [ width, setWidth ] = useState(0);
+    const { width: windowWidth } = useWindowDimensions();
+    const isDynamicMenu = windowWidth > LAYOUT_BREAKPOINTS.sm;
 
     useEffect(() => {
         const menuWidth = width;
@@ -34,8 +37,8 @@ export default function DynamicMenu({ name, MenuItem, MenuItemEx, ButtonEx, cont
     }, [width]);
 
     const handleLayout = useCallback((event) => {
-        setWidth(event.nativeEvent.layout.width );
-    }, []);
+        isDynamicMenu ?  setWidth(event.nativeEvent.layout.width) : setVisibleItemsCount(itemRefs.current.length)
+    }, [isDynamicMenu]);
 
     let ExMenu = (visibleItemsCount < items.length && isWeb) && (
         <DropdownMenu 

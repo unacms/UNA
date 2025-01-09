@@ -24,7 +24,7 @@ export function getBadgeForTab(currentUser, url) {
     }
 
     if (
-        url == appSetting('layout', 'messenger') &&
+        url == appSetting('messenger', 'url') &&
         currentUser?.counters?.bx_messenger_new_messages
     ){
         return (

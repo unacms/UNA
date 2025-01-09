@@ -91,7 +91,7 @@ export default function (props) {
     const [menuPopup, setMenuPopup] = useState(false)
     const { t } = useTranslation();
     const bSearch = appSetting('layout', 'search') == true;
-    const bMessenger = appSetting('layout', 'messenger') ? true : false;
+    const bMessenger = appSetting('messenger', 'url') ? true : false;
     const bNotifs = appSetting('layout', 'notifications') ? true : false;
 
     const headerSettings = props.headerSettings;
@@ -197,13 +197,7 @@ export default function (props) {
                                         </View>
                                         <View className="hidden sm:block">
                                             {bMessenger && (
-                                                <Link
-                                                    href={appSetting(
-                                                        'layout',
-                                                        'messenger'
-                                                    )}
-                                                    alt={t('Messenger')}
-                                                >
+                                                <Link href={appSetting('messenger','url')} alt={t('Messenger')}>
                                                     <Button
                                                         tooltip={t('Messenger')}
                                                         variant="secondary"

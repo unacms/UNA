@@ -104,7 +104,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
         if (!isWeb)
             return;
         if (selectedMenu && selectedConvo) {
-            window.history.pushState(null, null, appSetting('layout', 'messenger') + '/' + selectedMenu + '/' + selectedConvo.id + '/');
+            window.history.pushState(null, null, appSetting('messenger', 'url') + '/' + selectedMenu + '/' + selectedConvo.id + '/');
         }
     }
 
@@ -443,7 +443,6 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
                 <Msg onVisible={showMsg} title={showMsg} handleOk={() => { setShowMsg(false) }} />
                 {convosComponent}
                 {jotsComponent}
-                <Nav2 addButtons={addButtons} text={panelsVisible.convos ? "Messenger" : selectedConvo.title} onPress={handleBackButton} backButton={!panelsVisible.convos || appSetting('layout', 'show_back_button_in_messenger')} />
             </View>
         );
     }
@@ -479,7 +478,7 @@ const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, 
                 {srch}
             </View>
             {!showSearch && <Row className='lg:hidden flex-auto  items-center '>
-                {getBackButtonWeb()}
+                {appSetting('messenger', 'back_button') && getBackButtonWeb()}
                 <Text className={`${Platform.OS == 'web' ? 'text-2xl' : 'text-3xl'} lg:hidden font-bold text-neutral-800 dark:text-neutral-200`}>Messenger</Text>
             </Row>}
             {showSearch && <Row className='lg:hidden flex-auto  items-center '>
