@@ -4,6 +4,8 @@ import { Platform } from 'react-native'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { useWindowDimensions } from 'react-native'
 import { LAYOUT_BREAKPOINTS } from 'app/lib/util'
+import FormModal, { handleMenuManageSelect } from 'app/ui/molecules/form_modal';
+
 export default function DynamicMenu({ name, MenuItem, MenuItemEx, ButtonEx, containerClasses, items, menuClasses, menuExClasses, isButtonOutside, offsetWidth=50, persistent = 0 }) {
 
     const isWeb = Platform.OS == 'web'
@@ -11,6 +13,8 @@ export default function DynamicMenu({ name, MenuItem, MenuItemEx, ButtonEx, cont
     const itemRefsMore = useRef();
     const [ visibleItemsCount, setVisibleItemsCount ] = useState(0);
     const [ width, setWidth ] = useState(0);
+    const [pageData, setPageData] = useState(false);
+
     const { width: windowWidth } = useWindowDimensions();
     const isDynamicMenu = windowWidth > LAYOUT_BREAKPOINTS.sm;
 
@@ -41,19 +45,20 @@ export default function DynamicMenu({ name, MenuItem, MenuItemEx, ButtonEx, cont
     }, [isDynamicMenu]);
 
     let ExMenu = (visibleItemsCount < items.length && isWeb) && (
-        <DropdownMenu 
+        <><DropdownMenu 
+            onSelect={(oItem, event) => handleMenuManageSelect(oItem, event, setPageData)}
             variant = 'nopad'
             items={items.slice(visibleItemsCount).map((aItem, iKey) => ({
             id: 'menu-' + iKey,
             link: aItem.link,
             title: <MenuItemEx  key={name +'menuex'+ iKey} item={aItem} index={iKey+visibleItemsCount}  />,
             indicator: aItem.addon,
-            onClick: () => console.log('TODO'),
+
         }))
         }
         >
             <ButtonEx visibleItemsCount={visibleItemsCount} />
-        </DropdownMenu>
+        </DropdownMenu><FormModal pageData={pageData} setPageData={setPageData} /></>
     )
 
     return (

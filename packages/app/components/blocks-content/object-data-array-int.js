@@ -65,7 +65,7 @@ export default function BlockContentObjectDataArray(props) {
     if (dynamicData) {
         realData = dynamicData.data;
     }
-    console.log("----", props?.onFormEmpty, dynamicData?.data?.length)
+
     if (dynamicData && dynamicData.data?.length == 0) {
 
         if (props.onFormEmpty) {
@@ -79,11 +79,15 @@ export default function BlockContentObjectDataArray(props) {
         'msg': Msg,
         'redirect': Redirect
     };
+    
+    if (realData && !Array.isArray(realData)){
+        realData = [realData];
+    }
 
     // display each block element from static data or from dynamic data
     return (
         <View className={(Platform.OS == 'web' ? '' : '') + " relative"}>
-            {realData?.map(a => {
+            {realData && realData?.map(a => {
                 //const type = !dynamicData ? props.block.content[0].type : a?.type;
                 const type = a?.type;
                 if (!type)

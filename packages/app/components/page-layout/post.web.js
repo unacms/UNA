@@ -1,4 +1,4 @@
-import { View, Row } from 'app/design/view';
+import { View, Row, ViewRef } from 'app/design/view';
 import { BlockByName, DataByName } from 'app/components/block';
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { getBackButtonWeb } from 'app/lib/common-helpers';
@@ -111,16 +111,16 @@ export default function PageLayout(props) {
         <>
             {header}
             <View className=" py-0 lg:px-4 mt-14 lg:mt-4 flex-1">
-                <View ref={viewCntRef} className="max-w-5xl flex-1 overflow-hidden mx-auto h-full w-full border-bdrcard dark:border-bdrcard-d lg:rounded-2xl bg-bgrcard dark:bg-bgrcard-d">
+                <ViewRef ref={viewCntRef} className="max-w-5xl flex-1 overflow-hidden mx-auto h-full w-full border-bdrcard dark:border-bdrcard-d lg:rounded-2xl bg-bgrcard dark:bg-bgrcard-d">
                     <Row className='w-full p-3 sm:p-4' style={{ marginBottom: sizes.formHeight + 28 }}>
                         <View className='w-full' >
                             {CommentsPartsData[0]}
                         </View>
                     </Row>
-                    <View ref={viewFormRef} style={{ width: sizes.formWidth }} onLayout={handleLayout} className='px-3 bg-bgrcard dark:bg-bgrcard-d border-t border-bdr dark:border-bdr-d fixed bottom-0 w-full' >
+                    <ViewRef ref={viewFormRef} style={{ width: sizes.formWidth }} onLayout={handleLayout} className='px-3 bg-bgrcard dark:bg-bgrcard-d border-t border-bdr dark:border-bdr-d fixed bottom-0 w-full' >
                         {CommentsPartsData[1]}
-                    </View>
-                </View>
+                    </ViewRef>
+                </ViewRef>
             </View>
         </>
     )

@@ -1,4 +1,4 @@
-import { FeedbackHaptics, getAlert } from 'app/lib/util';
+import { getAlert, getPageData } from 'app/lib/util';
 import { useCurrentUser } from 'app/context/user';
 import { Button } from 'app/design/controls';
 import { View, Row } from 'app/design/view';
@@ -15,6 +15,7 @@ import { Modal } from 'app/design/controls'
 import { useTranslation } from 'react-i18next';
 import Form from 'app/components/elements/form'
 import { useLayoutData } from 'app/context/layout';
+import FormModal, { handleMenuManageSelect as handleMenuManageSelectModal } from 'app/ui/molecules/form_modal';
 
 export default function ElementEntityAuthor(oProps) {
     let { currentUser, setCurrentUser } = useCurrentUser();
@@ -22,6 +23,7 @@ export default function ElementEntityAuthor(oProps) {
     const [postData, setPostData] = useState(null)
     const { setLayoutData } = useLayoutData()
     const { t } = useTranslation();
+    const [pageData, setPageData] = useState(false);
 
     const sInfo = (
         <Row className='items-center '>
@@ -80,6 +82,7 @@ export default function ElementEntityAuthor(oProps) {
     }
 
     aMenuManageItems = aMenuManageItems.filter((item) => (item.title != ''))
+    
     if (oProps?.data?.menu_manage?.object == 'bx_timeline_menu_item_manage') {
         handleMenuManageSelect = async (oItem, event) => {
            
@@ -100,13 +103,15 @@ export default function ElementEntityAuthor(oProps) {
             }
         }
     }
-    let a = {}
-    if (handleMenuManageSelect){
-        a = {onSelect:handleMenuManageSelect}
+    else{
+        handleMenuManageSelect = handleMenuManageSelectModal;
     }
+
+    const menuOptions = handleMenuManageSelect ? { onSelect: (oItem, event) => handleMenuManageSelect(oItem, event, setPageData) } : {};
 
     return (
         <View className={false ? "mx-auto w-full max-w-5xl flex-row justify-between pt-4 px-4 sm:rounded-t-lg bg-bgrcard dark:bg-bgrcard-d sm:border-t  sm:m-0 border-bdr dark:border-bdr-d sm:border-x" : " w-full items-center flex-row justify-between  "}>
+            <FormModal pageData={pageData} setPageData={setPageData} />
             <Redirect ref={redirectdRef} />
             {viewState.view == 'edited' && (<Modal
                 title={t("Edit post")}
@@ -141,7 +146,7 @@ export default function ElementEntityAuthor(oProps) {
             }
             <View>
                 {aMenuManageItems.length > 0 &&
-                    <DropdownMenu items={aMenuManageItems} {...a}>
+                    <DropdownMenu items={aMenuManageItems} {...menuOptions}>
                         <Button variant="text" rounded="true" startDecorator="DotsThreeOutline" />
                     </DropdownMenu>
                 }

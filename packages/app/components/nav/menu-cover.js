@@ -94,7 +94,7 @@ export function CoverMenu(props) {
                     button_full_width: false,
                 }}
             />
-            {isSplitMenu && propsCopy.items.length > 0 && (
+            {/*isSplitMenu && propsCopy.items.length > 0 && (
                 <View className="ml-2">
                     <DropdownMenu items={aMenuManageItems}>
                         <Button
@@ -106,7 +106,7 @@ export function CoverMenu(props) {
                         />
                     </DropdownMenu>
                 </View>
-            )}
+            )*/}
         </>
     )
 }

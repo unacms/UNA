@@ -1,5 +1,5 @@
 
-import { View } from 'app/design/view'
+import { View, ViewRef } from 'app/design/view'
 import { appSetting, menuItemsByName } from 'app/lib/util';
 import { componentsMap } from './menu-items/_map';
 import { useCurrentUser } from 'app/context/user'
@@ -18,10 +18,8 @@ const ButtonEx = memo(({ visibleItemsCount, params }) => {
 
 const MenuItemEx = memo(({ item, index, sDisplayType, params }) => {
     const ItemType = componentsMap[item.display_type ? item.display_type : sDisplayType];
-    let modifiedParams = { ...params, button_variant: 'none', button_size: 'sm' };
-
     return (
-        <ItemType key={item.id ? item.id : item.name} {...item} params={modifiedParams} />
+        <ItemType key={item.id ? item.id : item.name} {...item} params={{ ...params, button_variant: 'none', button_size: 'sm' }} />
     )
 });
 
@@ -29,9 +27,9 @@ const MenuItemEx = memo(({ item, index, sDisplayType, params }) => {
 const MenuItem = memo(({ item, itemRefs, index, visibleItemsCount, params, bShowVertical, sAlignItems, isUseStaticWidth, isWeb, sDisplayType }) => {
     const ItemType = componentsMap[item.display_type ? item.display_type : sDisplayType];
     return (
-        <View ref={el => itemRefs.current[index] = el} key={'menu' + index} className={(!isWeb ? ' ml-2' : ' ') + (bShowVertical ? 'w-full  ' : ' ') + (sAlignItems == 'stretch' ? 'flex-auto' : '') + ((index > visibleItemsCount - 1 && !isUseStaticWidth) ? ' item-overlap ' : '')}>
+        <ViewRef ref={el => itemRefs.current[index] = el} key={'menu' + index} className={(!isWeb ? ' ml-2' : ' ') + (bShowVertical ? 'w-full  ' : ' ') + (sAlignItems == 'stretch' ? 'flex-auto' : '') + ((index > visibleItemsCount - 1 && !isUseStaticWidth) ? ' item-overlap ' : '')}>
             <ItemType key={item.id ? item.id : item.name} {...item} params={params} />
-        </View>
+        </ViewRef>
     )
 });
 
