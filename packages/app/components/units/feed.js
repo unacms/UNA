@@ -33,7 +33,7 @@ function DefaultUnit(data) {
     // return<View className='w-full h-12 bg-red-500 my-2'><Author data={data} url={url} t={t} /></View>
     return (
         <AnimatedBlock>
-            <Card rounded=' rounded-none sm:rounded-2xl ' margin=' mb-1 sm:mb-4 md:mx-auto ' addClassName={' w-full max-w-2xl px-3 sm:px-4 pt-3 sm:pt-4 tl-' + data.id} >
+            <Card rounded=' rounded-none sm:rounded-2xl ' margin=' mb-[4px] sm:mb-[16px] md:mx-auto ' addClassName={' w-full max-w-2xl px-[12px] sm:px-[16px] pt-[12px] sm:pt-[16px] tl-' + data.id} >
                 <View className="flex-auto flex-row items-top">
                     <Author data={data} url={url} t={t} />
                     <View className="flex-auto justify-end flex-row mb-auto ">
@@ -43,8 +43,8 @@ function DefaultUnit(data) {
 
                 {MainContentComponent}
                 <View className="">
-                    {(!!data.menu_counters && appSetting('feed', 'counters_menu')) && <View className='sm:py-2 sm:border-b border-bdr dark:border-bdr-d'><CounterMenu data={data.menu_counters}  /></View>}
-                    <View className=' py-2 mt-1 border-t border-bdr dark:border-bdr-d '><ActionMenu data={data.menu_actions} showCommentsModal={false} /></View>
+                    {(!!data.menu_counters && appSetting('feed', 'counters_menu')) && <View className='sm:py-[8px] sm:border-b border-bdr dark:border-bdr-d'><CounterMenu data={data.menu_counters}  /></View>}
+                    <View className=' py-[8px] mt-[4px] border-t border-bdr dark:border-bdr-d '><ActionMenu data={data.menu_actions} showCommentsModal={false} /></View>
                 </View>
                 {commentsData && <View className='   '><CommentsSection url={url} t={t} isCommentsModal={false} showCommentsModal={false} commentsDataInline={commentsData} data={data} /></View>}
             </Card>

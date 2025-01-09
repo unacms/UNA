@@ -176,7 +176,7 @@ export default function ElementHtml(props) {
     let { width, height } = useWindowDimensions();
     let customClassName = props.customClassName ? props.customClassName : '';
     let fontSize = 16;
-    let lineHeight = 20;
+    let lineHeight = 22;
     if (customClassName == 'u-vanilla-html-small') {
         fontSize = 14;
         lineHeight = 18;
@@ -217,8 +217,8 @@ export default function ElementHtml(props) {
              margin: 2
          },*/
         p: {
-            marginTop: 5,
-            marginBottom: 5,
+            marginTop: 8,
+            marginBottom: 8,
 
         },
         ul: {

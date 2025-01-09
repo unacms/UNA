@@ -75,7 +75,7 @@ export default function JotItem({ item, index, handleReply }) {
                 <Profile {...item.author_data} displayType="unit_wo_info" displaySize="base" showInfo="false" />
             </View>
             <View className='flex-1 flex-col gap-y-1  '>
-                <View className={'bg-bgritem dark:bg-bgritem-d rounded-xl px-3 u-vanilla-html-small  py-2'} >
+                <View className={'bg-bgritem dark:bg-bgritem-d rounded-xl px-3 u-vanilla-html-small py-2'} >
                     <View className="flex-row flex-1 items-center mb-0.5 overflow-hidden">
                         <Profile {...item.author_data} displayType="unit_text_link"  />
                         <View><Text className="text-neutral-500 px-1">·</Text></View>

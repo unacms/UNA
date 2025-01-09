@@ -68,7 +68,7 @@ export const GroupView = memo(({data, styles, url, isCompact}) => {
             <View>
                 <View className="flex-col relative">
                     <Text
-                        className="text-neutral-950 dark:text-neutral-50 text-sm "
+                        className="text-neutral-800 dark:text-neutral-200 text-base "
                         numberOfLines={2}
                     >
                         {data.content.text}
@@ -118,7 +118,7 @@ export const AdView = memo(({data, styles, url, isCompact}) => {
             <View>
                 <View className="flex-col relative">
                     <Text
-                        className="text-neutral-950 dark:text-neutral-50 pb-4  text-sm "
+                        className="text-neutral-800 dark:text-neutral-200 pb-4 text-base "
                         numberOfLines={3}
                     >
                         {data.content.text}
@@ -164,7 +164,7 @@ export const MarketView = memo(({data, styles, url, isCompact}) => {
             <View>
                 <View className="flex-col relative">
                     <Text
-                        className="text-neutral-950 dark:text-neutral-50 pb-4 text-sm "
+                        className="text-neutral-800 dark:text-neutral-200 pb-4 text-base "
                         numberOfLines={3}
                     >
                         {data.content.text}
@@ -197,7 +197,7 @@ export const DefaultView = memo(({data, styles, bIsTitle, bIsTimelineContent, co
                     </View>
                 </View>
             )}
-            <View className="flex-auto my-auto flex-col pt-3 pb-2 ">
+            <View className="flex-auto my-auto flex-col pt-[12px] pb-[8px] ">
                 {bIsTitle && (
                     <Link href={url} className="">
                         <Text
@@ -212,13 +212,13 @@ export const DefaultView = memo(({data, styles, bIsTitle, bIsTimelineContent, co
                     <View className="flex-col relative ">
                         {bIsTimelineContent && (
                             <View className={' ' + ((data.content.text && content_attach.length > 0) ? ' pb-2 ' : '')}>
-                                <ContentMore id={'feed-' + data.id} showLink={data?.content?.images_attach?.length == 0} content={data.content.text ? data.content.text : ''} numberOfLines={3} openSmall={false} textClassName=" text-neutral-600 dark:text-neutral-400 text-sm " />
+                                <ContentMore id={'feed-' + data.id} showLink={data?.content?.images_attach?.length == 0} content={data.content.text ? data.content.text : ''} numberOfLines={3} openSmall={false} textClassName=" text-neutral-800 dark:text-neutral-200 text-base " />
                                 {!!data.content.embed && <View className=''><Embed data={data.content.embed} /></View>}
                             </View>
                         )}
                         {!bIsTimelineContent && (
                             <Text
-                                className="text-neutral-600 dark:text-neutral-400 text-sm"
+                                className="text-neutral-800 dark:text-neutral-200 text-base"
                                 numberOfLines={3}
                             >
                                 {data.content.text}

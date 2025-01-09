@@ -33,7 +33,7 @@ function ProfileView({ isImageOnly = false }) {
     }
 
     return (
-        <View className=" flex-row gap-x-3 flex-auto items-center">
+        <View className=" flex-row gap-x-2 flex-auto items-center">
             <Profile {...profileData} displaySize="base" displayType="unit_wo_info" />
             <Text className="text-neutral-900 dark:text-neutral-100 font-semibold text-base truncate">
                 {currentUser.display_name}
