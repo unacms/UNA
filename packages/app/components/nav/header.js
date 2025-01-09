@@ -45,7 +45,7 @@ function getRightHeader(items, currentUser, pagePath) {
             }
 
             return (
-                <View className=" w-11 " key={`add-${button.icon}`} >{btn}</View>
+                <View className=" w-[40px] " key={`add-${button.icon}`} >{btn}</View>
             )
         })
 
@@ -84,15 +84,15 @@ const Header = memo(({ backButtonPresented, header, pagePath, rightComponents })
     return (
         <Row style={{ 
             backgroundColor: colors.headerBackground,
-        }} className="  justify-between items-center h-16 px-3 ">
+        }} className="  justify-between items-center h-[64px] px-[12px] ">
             <Row>
                 {(isHome && currentUser) && <SvgLogoNative />}
                 {backButtonPresented && (
-                    <Pressable className="mr-3 rounded-full justify-center items-center" onPress={() => {
+                    <Pressable className="mr-[12px] rounded-full justify-center items-center" onPress={() => {
                         FeedbackHaptics('Medium');
                         routerExpo.back();
                     }}>
-                        <Icon icon="ArrowLeft" width={24} height={24} color={colors.barsColor} />
+                        <Icon icon="CaretLeft" width={24} height={24} color={colors.barsColor} />
                     </Pressable>
                 )}
                 {text && (

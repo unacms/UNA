@@ -2628,11 +2628,11 @@ export const settingsDefault = {
             base: {
                 rounded: ' rounded-lg ',
                 padding: ' p-[7px] ',
-                icon_sizes: ' h-6 w-6 text-center align-middle items-center justify-center flex ',
-                icon_size: 24,
+                icon_sizes: ' h-[24px] w-[24px] text-center align-middle items-center justify-center flex ',
+                icon_size: '24px',
                 icon_margin: ' ',
-                min_height: ' leading-6 ',
-                margin: ' mx-2',
+                min_height: ' leading-[24px] ',
+                margin: ' mx-[8px]',
             },
             lg: {
                 rounded: 'rounded-lg',
