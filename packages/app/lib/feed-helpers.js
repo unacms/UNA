@@ -220,8 +220,8 @@ export const ItemInfo = memo(({ data, t }) => {
         }
         return l && (
             <>
-                <Text className=" text-neutral-500/50 text-sm "> · </Text>
-                <Text className=" text-neutral-600 dark:text-neutral-400 text-sm font-medium text-center ">
+                <Text className=" text-neutral-600 dark:text-neutral-400 text-[14px] text-center leading-[20px] font-medium tracking-tight ">·</Text>
+                <Text className=" text-neutral-600 dark:text-neutral-400 text-[14px] text-center leading-[20px] font-medium tracking-tight ">
                     {l}
                 </Text>
             </>
@@ -410,7 +410,7 @@ export const Author = memo(({ data, url, t }) => {
             displayType="unit"
             displaySize="base"
             showInfo={
-                <Row className="flex-wrap leading-[16px] items-center  ">
+                <Row className="flex-wrap leading-[20px] gap-x-[4px] items-center  ">
                     <Link href={url}>
                         <Time ts={data.date}></Time>
                     </Link>

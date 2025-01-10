@@ -8,11 +8,11 @@ import { MentionInput as MentionInputDef, replaceMentionValues } from 'react-nat
 import { Theme } from 'app/design/theme';
 
 export const MentionInput = ({ className, ...props }) => (
-    <MentionInputDef className={'bg-bgrinput border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg   w-full p-2 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus placeholder-neutral-500 dark:text-neutral-100 text-base leading-5 h-[40px]'} {...props} />
+    <MentionInputDef className={'bg-bgrinput border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg   w-full p-2 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus placeholder-neutral-500 dark:text-neutral-100 text-[16px] leading-[22px] h-[40px]'} {...props} />
 );
 
 export const MentionInputMulti = ({ className, ...props }) => (
-    <MentionInputDef className={'bg-bgrinput text-neutral-900 border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df rounded-lg   w-full p-2 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus placeholder-neutral-500 dark:text-neutral-100 text-base leading-5'} {...props} />
+    <MentionInputDef className={'bg-bgrinput text-neutral-900 border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df rounded-lg   w-full p-2 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus placeholder-neutral-500 dark:text-neutral-100 text-[16px] leading-[22px]'} {...props} />
 );
 
 export const MentionInputMultiTransparent = ({ className,  ...props }) => {
@@ -21,7 +21,7 @@ export const MentionInputMultiTransparent = ({ className,  ...props }) => {
     <MentionInputDef style={{
         borderColor: 'gray',
         borderWidth: 1,
-        height:20,
+        height: '22px',
         padding: 0,
         borderRadius: 5,
     }}  {...props} />

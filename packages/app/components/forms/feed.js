@@ -184,7 +184,7 @@ export default function FormFeed(props) {
                         >
                             <View className="w-full flex-col p-[12px] sm:p-0 ">
                                 <View className="flex-row flex-wrap flex-auto">
-                                    <View className="flex-none pb-3">
+                                    <View className="flex-none pb-[12px]">
                                         {getFormFieldByData(
                                             {
                                                 ...props.data.inputs[

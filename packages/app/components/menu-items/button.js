@@ -70,7 +70,7 @@ export default function MenuItemButton(oProps) {
 
             let buttonAction = <ButtonAction title={oProps.title} startDecorator={sButtonIcon} {...oButtonProps} />;
             if (oProps?.list?.length > 0){
-                buttonAction = <Text className="hover:text-linkhover px-2 text-neutral-700 dark:text-neutral-300 font-medium hover:underline">{oProps.title}</Text>
+                buttonAction = <Text className="hover:text-linkhover px-[8px] text-neutral-800 dark:text-neutral-200 font-semibold hover:underline">{oProps.title}</Text>
             }
             sContent = (
                 <Row className={bShowVertical ? "flex-col flex-auto items-stretch" : "flex-auto items-center"}>
