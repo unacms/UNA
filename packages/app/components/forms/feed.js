@@ -356,7 +356,7 @@ export default function FormFeed(props) {
                 <Card
                     rounded=" rounded-none sm:rounded-2xl  "
                     margin=" mx-auto mb-1 sm:mb-3 "
-                    addClassName=" shadow-sm  w-full max-w-2xl p-[12px] sm:p-[16px] "
+                    addClassName=" shadow-sm  w-full max-w-2xl px-[12px] pt-[8px] pb-[8px] sm:p-[16px]  sm:pb-[12px] "
                 >
                     {
                         props?.exProps?.showForm !== false && (
@@ -396,9 +396,9 @@ export default function FormFeed(props) {
                     }
                     {(props?.exProps?.showLinks && menu_add_items.length > 0) && (<>
                         <FormModal pageData={pageData} setPageData={setPageData} />
-                        <Row className={`gap-x-2 justify-between ${props.exProps.showLinks && props.exProps.showForm ? 'mt-3' : ''}`}>
+                        <Row className={` justify-between ${props.exProps.showLinks && props.exProps.showForm ? 'mt-[8px] pt-[8px] border-t border-bdr dark:border-bdr-d' : ''}`}>
                             {menu_add_items.map((item, index) => (
-                                <Button rounded variant="text" onPress={() => handleMenuManageSelect(item, null, setPageData)} startDecorator={item.icon} title={item.title} />
+                                <Button size="sm" fullWidth variant="text" onPress={() => handleMenuManageSelect(item, null, setPageData)} startDecorator={item.icon} title={item.title} />
                             ))}
                         </Row>
                     </>)
