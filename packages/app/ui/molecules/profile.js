@@ -30,9 +30,9 @@ function DisplayNameLink({ title, url, href, fontSize, actions }) {
 
     if (isAnon || title.includes("(anonymized)")) {
         return (
-            <Row className={' text-neutral-900  dark:text-neutral-100 gap-x-2 items-center ' + fontSize}>
+            <Row className={' text-neutral-800  dark:text-neutral-200 gap-x-2 items-center ' + fontSize}>
                 <View>
-                    <Text numberOfLines={1} className={'text-neutral-900 dark:text-neutral-100 font-semibold ' + fontSize + ' truncate '}>
+                    <Text numberOfLines={1} className={'text-neutral-800 dark:text-neutral-200 font-semibold ' + fontSize + ' truncate '}>
                         {title && title.replace(" (anonymized)", '')} (protected)
                     </Text>
                 </View>
@@ -43,7 +43,7 @@ function DisplayNameLink({ title, url, href, fontSize, actions }) {
 
     return (
         <Row className='items-center'>
-            <Text className={'text-neutral-900 dark:text-neutral-100 hover:text-linkhover font-semibold ' + fontSize + ' truncate '}>
+            <Text className={'text-neutral-800 dark:text-neutral-200 hover:text-linkhover font-semibold ' + fontSize + ' truncate '}>
                 {title} 
             </Text>
             {actions}
@@ -53,7 +53,7 @@ function DisplayNameLink({ title, url, href, fontSize, actions }) {
 
 function DisplayNameText({ title, fontSize }) {
     return (
-        <Text className={'text-neutral-700 hover:text-neutral-900 dark:text-neutral-200 dark:hover:text-neutral-50 ' + fontSize + '  font-semibold tracking-tight truncate hover:underline'}>
+        <Text className={'text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 dark:hover:text-white ' + fontSize + '  font-semibold tracking-tight truncate hover:underline'}>
             {title}
         </Text>
     )
@@ -67,7 +67,7 @@ function DisplayInfo(oProps) {
 function UnitWoInfo({ oProps, sSize, sSizeFontLetter, iSizeWidth, bShowLinks, emulate }) {
     let name = oProps.display_name ? oProps.display_name.substr(0, 1) : ''
     const content = 
-        <View className={`${sSize} hover:animate-pulse overflow-hidden bg-bgritem dark:bg-bgritem-d rounded-full`}>
+        <View className={`${sSize} hover:scale-105 transition-all duration-300 active:scale-95 overflow-hidden bg-bgritem dark:bg-bgritem-d rounded-full`}>
             {!oProps.url_avatar && <View className={'h-full items-center justify-center bg-' + getRandomColor(oProps.id) + '-500 uppercase'}>
                 <Text className={sSizeFontLetter + ' text-white '}>{name}</Text>
             </View>}
@@ -147,21 +147,21 @@ function AtomProfile_(oProps) {
             iSizeWidth: 36,
             iSizeHeight: 36,
             sSizeFont: 'text-[14px]',
-            sSizeFontLetter: 'text-base  opacity-50 font-semibold',
+            sSizeFontLetter: 'text-base opacity-50 font-semibold',
         },
         base: {
             sSize: 'w-[40px] h-[40px]',
             iSizeWidth: 40,
             iSizeHeight: 40,
-            sSizeFont: 'text-[16px]',
+            sSizeFont: 'text-[16px] leading-[20px] tracking-tight',
             sSizeFontLetter: ' p-[8px] leading-[24px] text-center text-[20px] font-semibold',
         },
         lg: {
             sSize: 'w-12 h-12',
             iSizeWidth: 48,
             iSizeHeight: 48,
-            sSizeFont: 'text-[20px]',
-            sSizeFontLetter: 'text-3xl opacity-50 font-semibold',
+            sSizeFont: ' text-[20px]',
+            sSizeFontLetter: 'text-3xl  font-semibold',
         },
         xl: {
             sSize: 'w-16 h-16',
