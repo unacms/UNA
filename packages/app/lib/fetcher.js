@@ -86,7 +86,7 @@ export async function fetcherRaw (host, mixed) {
         return r;
     })
     .catch((error) => {
-        console.log("Api call error: " + error.message);
+        console.log("Api call error: ",error,host + path + "&lang=" + lang);
         throw error;
     });
 }

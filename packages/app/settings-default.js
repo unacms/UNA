@@ -1116,6 +1116,7 @@ export const settingsDefault = {
                     showTitle: false,
                     showBg: false,
                 },
+               
             },
             headerSettings: {
                 header: true,
@@ -1123,6 +1124,7 @@ export const settingsDefault = {
                 menu: true,
                 title: true,
             },
+            
         },
         /*  dashboard: {
             layout: 'navigator',
@@ -1145,6 +1147,21 @@ export const settingsDefault = {
             icon: 'MagnifyingGlass',
             headerSettings: { backButton: false, header: true, menu: true },
         },
+        'donations-make': {
+            layout: 'navigator',
+            blocks: {
+              
+                footer: {
+                    name: 'static:dummy',
+                    showTitle: false,
+                    showBg: false,
+                    leftbar: true,
+                }
+            },
+            icon: 'MagnifyingGlass',
+            headerSettings: { backButton: false, header: true, menu: true },
+        },
+        
         home: {
             layout: 'home',
             top: true,
