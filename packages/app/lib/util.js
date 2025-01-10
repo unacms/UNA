@@ -1,7 +1,8 @@
 import * as Haptics from 'expo-haptics';
 import { Platform } from 'react-native'
 import { fetcher } from 'app/lib/fetcher';
-import { stringMd5 } from 'react-native-quick-md5';
+//import { stringMd5 } from 'react-native-quick-md5';
+import * as Crypto from 'expo-crypto';
 import pako from 'pako';
 import { useTranslation } from 'react-i18next';
 import Clipboard from '@react-native-clipboard/clipboard';
@@ -154,14 +155,12 @@ export function storageGet(pref, key, isLocal = false) {
 }
 
 export function storageKey(url, useUrl = true) {
-    //stringMd5
     if (Platform.OS !== 'web')
         return;
 
     let s = url;
     if (!useUrl)
         s = url;
-    //stringMd5
     return (s);
 }
 
@@ -276,7 +275,14 @@ function decompress(data) {
 }
 
 export function md5(str) {
-    return stringMd5(str);
+    //stringMd5(str); from react-native-quick-md5
+    return Crypto.randomUUID();
+}
+export async function md52(str) {
+    return  await Crypto.digestStringAsync(
+        Crypto.CryptoDigestAlgorithm.SHA256,
+        str
+      );
 }
 
 export function getPageWidth(uri) {

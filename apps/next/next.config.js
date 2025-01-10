@@ -45,7 +45,7 @@ const nextConfig = {
     'expo-haptics',
     'expo-modules-core',
     'recyclerlistview',
-    'react-native-quick-md5',
+    'expo-crypto',
     '@react-native-picker/picker',
     'expo',
     'expo-image-picker',
