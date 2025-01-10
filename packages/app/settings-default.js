@@ -2628,7 +2628,7 @@ export const settingsDefault = {
             pressed_container:
                 ' bg-primary-100 dark:bg-primary-950',
             pressed_text:
-                ' text-primary-700 dark:text-primary-400 group-hover:text-primary-800 dark:group-hover:text-primary-300 ',
+                ' text-primary-700 dark:text-primary-300 group-hover:text-primary-800 dark:group-hover:text-primary-200 ',
             xs: {
                 rounded: 'rounded-lg',
                 padding: 'p-1',
@@ -2643,10 +2643,10 @@ export const settingsDefault = {
                 rounded: 'rounded-lg',
                 padding: 'p-[5px] ',
                 icon_sizes:
-                    ' h-5 w-5 text-center align-middle items-center justify-center flex ',
-                icon_size: 20,
+                    ' h-[20px] w-[20px] text-center align-middle items-center justify-center flex ',
+                icon_size: '20px',
                 icon_margin: '  ',
-                min_height: ' leading-5 ',
+                min_height: ' leading-[20px] ',
                 margin: 'mx-2',
             },
             base: {
@@ -2664,7 +2664,7 @@ export const settingsDefault = {
                 icon_sizes: ' p-1.5 h-10 w-10 ',
                 icon_size: 28,
                 icon_margin: 'p-1.5  bg-neutral-200 dark:bg-neutral-800 rounded-full group-hover:bg-neutral-300 dark:group-hover:bg-neutral-700  ',
-                min_height: ' leading-10 sm:text-base ',
+                min_height: ' leading-10 sm:text-[16px] ',
                 margin: 'mx-3',
             },
         },
