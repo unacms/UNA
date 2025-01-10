@@ -3,7 +3,7 @@ import { Button, Modal } from 'app/design/controls'
 import { useState, useContext, useRef } from 'react'
 import { getFormFieldByData } from 'app/lib/form-helpers'
 import { useLayoutData } from 'app/context/layout'
-import { FeedbackHaptics, getAlert } from 'app/lib/util'
+import { FeedbackHaptics, getAlert, menuItemsByName, appSetting } from 'app/lib/util'
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view'
 import { Platform } from 'react-native'
 import { Text } from 'app/design/typography'
@@ -16,7 +16,7 @@ import { stripTags, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { useWindowDimensions } from 'react-native'
 import { Keyboard } from 'react-native'
 import { useFormContext } from 'react-hook-form'
-
+import FormModal, { handleMenuManageSelect } from 'app/ui/molecules/form_modal';
 function ProfileView({ isImageOnly = false }) {
     const { currentUser } = useCurrentUser();
 
@@ -43,6 +43,7 @@ function ProfileView({ isImageOnly = false }) {
 }
 
 export default function FormFeed(props) {
+    const { currentUser } = useCurrentUser();
     const formContext = useFormContext()
     const { t } = useTranslation()
     const [showImage, setShowImage] = useState(false)
@@ -55,6 +56,7 @@ export default function FormFeed(props) {
     const isSmall = windowDimensions.width < LAYOUT_BREAKPOINTS.sm || !isWeb ? true : false
     const isIos = Platform.OS === 'ios'
     const scrollViewRef = useRef(null)
+    const [pageData, setPageData] = useState(false);
 
     useEffect(() => {
         if (props.response?.id != responseId) {
@@ -68,7 +70,6 @@ export default function FormFeed(props) {
     useEffect(() => {
         if (showImage) {
             scrollViewRef.current?.scrollToEnd({ animated: true })
-            console.log("showImage", showImage)
         }
     }, [showImage])
 
@@ -120,7 +121,7 @@ export default function FormFeed(props) {
                 startDecorator="X"
             />
             <View className="flex-auto items-center justify-center">
-                <ProfileView/>
+                <ProfileView />
             </View>
             <Button
                 onPress={() => {
@@ -150,12 +151,14 @@ export default function FormFeed(props) {
                 size: 'sm',
             }
         )
+    const menu_add_items = menuItemsByName('', appSetting('menu_items', 'menu_add'), currentUser).filter((item) => (item.showInFeed));
+
 
     return (
         <View className="w-full">
             <Modal
                 title={isSmall ? header : (
-                    <ProfileView/>)}
+                    <ProfileView />)}
                 onVisible={showImage}
                 outerClickClose={false}
                 {...(!isSmall && { onClose: () => setShowImage(null) })}
@@ -274,7 +277,7 @@ export default function FormFeed(props) {
                                             )}
                                         </View>
                                     )}
-                                     {(props.data.inputs['video'] && !isWeb) && (
+                                    {(props.data.inputs['video'] && !isWeb) && (
                                         <View className="">
                                             {getFormFieldByData(
                                                 props.data.inputs['video'],
@@ -355,9 +358,11 @@ export default function FormFeed(props) {
                     margin=" mx-auto mb-1 sm:mb-3 "
                     addClassName=" shadow-sm  w-full max-w-2xl p-[12px] sm:p-[16px] "
                 >
+                    {
+                        props.exProps.showForm && (
                     <View className=" flex-row sm:gap-x-[12px] ">
                         <View className=" my-auto">
-                            <ProfileView isImageOnly={true}/>
+                            <ProfileView isImageOnly={true} />
                         </View>
                         <View className="flex-auto sm:hidden">
                             <Button
@@ -387,7 +392,17 @@ export default function FormFeed(props) {
                                 }}
                             />
                         </View>
-                    </View>
+                    </View>)
+                    }
+                    {(props.exProps.showLinks && menu_add_items.length > 0) && (<>
+                        <FormModal pageData={pageData} setPageData={setPageData} />
+                        <Row className={`gap-x-2 justify-between ${props.exProps.showLinks && props.exProps.showForm ? 'mt-3' : ''}`}>
+                            {menu_add_items.map((item, index) => (
+                                <Button rounded variant="text" onPress={() => handleMenuManageSelect(item, null, setPageData)} startDecorator={item.icon} title={item.title} />
+                            ))}
+                        </Row>
+                    </>)
+                    }
                 </Card>
             )}
         </View>

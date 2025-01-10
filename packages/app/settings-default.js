@@ -531,6 +531,7 @@ export const settingsDefault = {
                 title: 'Add post',
                 link: '/create-post',
                 icon: 'ChatCenteredText',
+                showInFeed: true,
                 nonoperator: false,
             },
             {
@@ -556,6 +557,7 @@ export const settingsDefault = {
                 name: 'create-discussion',
                 title: 'Add discussion',
                 link: '/create-discussion',
+                showInFeed: true,
                 icon: 'Chats',
             },
             {
@@ -567,6 +569,7 @@ export const settingsDefault = {
             {
                 name: 'create-course-profile',
                 title: 'Add course',
+                showInFeed: true,
                 link: '/create-course-profile',
                 icon: 'Books',
             },
@@ -1161,6 +1164,7 @@ export const settingsDefault = {
                     name: 'bx_timeline:get_block_post_account',
                     showTitle: false,
                     showBg: false,
+                    exProps: {showLinks:true, showForm:true}
                 },
                 foryou_feed: {
                     name: 'bx_timeline:get_block_view_feed_and_hot',

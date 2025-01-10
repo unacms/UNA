@@ -35,7 +35,7 @@ export function BlockByName(props) {
         });
     }
     if (b)
-        return <Block key={b.id} uri={data.uri} url={data.url} block={b} showTitle={name.showTitle} fullWidth={name.fullWidth} showPad={name.showPad} showBg={name.showBg} unitType={name.unitType} {...rest} />;
+        return <Block exProps={name.exProps} key={b.id} uri={data.uri} url={data.url} block={b} showTitle={name.showTitle} fullWidth={name.fullWidth} showPad={name.showPad} showBg={name.showBg} unitType={name.unitType} {...rest} />;
 }
 
 export function DataByName(data, name) {
@@ -72,10 +72,6 @@ export default function Block(props) {
     const aAllowTypes = ['html', 'raw', 'lang'];
     if (type == 'string' && !aAllowTypes.includes(block.type))
         return null;
-
-
-    //  if (block.content.length == 0)
-    //     return null;
 
     return (
         <BlockWrapper block={block} showBg={props.showBg} showPad={props.showPad} showTitle={props.showTitle} fullWidth={props.fullWidth} extraProps={props.extraProps}>
