@@ -64,7 +64,7 @@ export const resourcesDefault = {
             "feed_type_timeline_common_repost": "Reposted",
             "feed_type_bx_photos": "published an Photo",
             "feed_type_bx_courses": "published an Courses",
-            
+            "feed_type_bx_spaces": "published an Space",
         }
         
     },

@@ -1005,6 +1005,9 @@ export function menuItemsFilter(items, currentUser) {
         if (item.link === '{profile}') {
             return { ...item, link: currentUser?.url };
         }
+        if (item?.link?.includes("{profile_url_postfix}") ) { // SHOULD BE IMPROVED by url_postfix
+            return { ...item, link: item.link.replace("{profile_url_postfix}", currentUser?.url.replace('/view-persons-profile/', '')) };
+        }
         return item;
     });
     return items;
