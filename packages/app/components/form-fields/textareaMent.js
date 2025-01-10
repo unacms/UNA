@@ -122,7 +122,7 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
         );
     };
 
-    let styles = { fontSize:props.fontSize || 16 };
+    let styles = { fontSize:props.fontSize || 16, lineHeight:props.lineHeight || 22 };
     if (name != 'cmt_text') {
         styles = { ...styles, minHeight: 100 }
     }

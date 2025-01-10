@@ -3,7 +3,7 @@ import { uploadImageFile } from 'app/lib/util';
 
 export const TiptapEditorProps: EditorProps = {
   attributes: {
-    class: `u-vanilla-html  focus:outline-none max-w-full`,
+    class: `u-vanilla-html focus:outline-none max-w-full`,
   },
   handleDOMEvents: {
     keydown: (_view, event) => {
