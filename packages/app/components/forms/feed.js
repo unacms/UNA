@@ -359,7 +359,7 @@ export default function FormFeed(props) {
                     addClassName=" shadow-sm  w-full max-w-2xl p-[12px] sm:p-[16px] "
                 >
                     {
-                        props.exProps.showForm && (
+                        props?.exProps?.showForm !== false && (
                     <View className=" flex-row sm:gap-x-[12px] ">
                         <View className=" my-auto">
                             <ProfileView isImageOnly={true} />
@@ -394,7 +394,7 @@ export default function FormFeed(props) {
                         </View>
                     </View>)
                     }
-                    {(props.exProps.showLinks && menu_add_items.length > 0) && (<>
+                    {(props?.exProps?.showLinks && menu_add_items.length > 0) && (<>
                         <FormModal pageData={pageData} setPageData={setPageData} />
                         <Row className={`gap-x-2 justify-between ${props.exProps.showLinks && props.exProps.showForm ? 'mt-3' : ''}`}>
                             {menu_add_items.map((item, index) => (
