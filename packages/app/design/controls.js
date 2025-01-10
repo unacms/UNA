@@ -14,6 +14,8 @@ import { RemoveScroll } from 'react-remove-scroll';
 /* inputs */
 const inputSettings = appSetting('theme', 'inputs');
 
+export const TextInputClear = TextInputDef
+
 export const Input = ({ className, ...props }) => (
     <TextInputDef className={inputSettings.default} {...props} />
 );

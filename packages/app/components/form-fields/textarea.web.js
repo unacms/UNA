@@ -1,7 +1,7 @@
 import dynamic from 'next/dynamic'
 import Field, {getValidationRules} from './_field';
 import { useController, useFormContext } from 'react-hook-form';
-import { InputMulti, Input } from 'app/design/controls'
+import { InputMulti, Input, TextInputClear } from 'app/design/controls'
 import { useState, useMemo, useEffect } from 'react';
 import React from 'react';
 import { View } from 'app/design/view'
@@ -56,12 +56,7 @@ export default function FormFieldText(props) {
         />
 
     if (props.viewClasses){
-
-        const InputMulti2 = useMemo(() => {
-            return TextInputDef
-        }, []);
-    
-        input = <InputMulti2
+        input = <TextInputClear
             multiline
             editable
             style={{height: height}}
@@ -71,6 +66,7 @@ export default function FormFieldText(props) {
             onChangeText={field.onChange}
             onBlur={field.onBlur}
             value={field.value}
+            className='placeholder-neutral-500 text-neutral-900 leading-6 dark:text-neutral-100 text-lg font-medium py-3'
             aria-label={accessibility}
         />
     }
