@@ -36,7 +36,7 @@ export default function () {
     }
 
     return (
-        <View className={"fixed bottom-0 left-0 z-30 w-full backdrop-blur lg:hidden border-t border-bdrnavbar dark:border-bdrnavbar-d tabbar bg-bgrtabbar dark:bg-bgrtabbar-d "+ (isInStandaloneMode()? "pb-4": "")}>
+        <View className={"fixed bottom-0 left-0 z-30 w-full  lg:hidden border-t border-bdrnavbar dark:border-bdrnavbar-d tabbar bg-bgrtabbar dark:bg-bgrtabbar-d "+ (isInStandaloneMode()? "pb-4": "")}>
             
             <View className={" z-50 w-full px-2 pb-1 "+ (isInStandaloneMode()? "h-12": "h-16")}>
                 <Row className="flex-auto items-center flex-row  justify-around  w-full ">

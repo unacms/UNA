@@ -528,52 +528,61 @@ export const settingsDefault = {
         menu_add: [
             {
                 name: 'create-post',
-                title: 'Add post',
+                title: 'Blog post',
                 link: '/create-post',
                 icon: 'ChatCenteredText',
-                showInFeed: true,
+                showInFeed: false,
                 nonoperator: false,
             },
             {
-                name: 'create-group-profile',
-                title: 'Add group',
-                link: '/create-group-profile',
-                icon: 'UsersThree',
-                membership_level: 8,
+                name: 'create-video',
+                title: 'Video',
+                link: '/create-video',
+                icon: 'Video',
+                showInFeed: true,
+                nonoperator: false,
             },
+          
             {
                 name: 'create-space-profile',
-                title: 'Add space',
+                title: 'Space',
                 link: '/create-space-profile',
                 icon: 'IntersectSquare',
             },
             {
                 name: 'create-event-profile',
-                title: 'Add event',
+                title: 'Event',
                 link: '/create-event-profile',
                 icon: 'Calendar',
             },
             {
                 name: 'create-discussion',
-                title: 'Add discussion',
+                title: 'Discussion',
                 link: '/create-discussion',
                 showInFeed: true,
                 icon: 'Chats',
             },
             {
+                name: 'create-group-profile',
+                title: 'Group',
+                link: '/create-group-profile',
+                icon: 'UsersThree',
+                showInFeed: true,
+                nonoperator: false,
+            },
+            {
                 name: 'create-ad',
-                title: 'Add ad',
+                title: 'Ad',
                 link: '/create-ad',
                 icon: 'Megaphone',
             },
             {
                 name: 'create-course-profile',
-                title: 'Add course',
-                showInFeed: true,
+                title: 'Course',
                 link: '/create-course-profile',
                 icon: 'Books',
             },
-            { name: 'create-job-profile', title: 'Add job', link: '/create-job-profile', icon: 'CalendarBlank' },
+            { name: 'create-job-profile', title: 'Job', link: '/create-job-profile', icon: 'CalendarBlank' },
         ],
         menu_account: [
             {
@@ -2489,11 +2498,13 @@ export const settingsDefault = {
         native_tabs:{
             tabBarItemStyle:{
                 marginBottom: 0,
-                height: 58,
-                marginTop: 0,
-                borderRadius: 8,
+                height: 54,
+                marginTop: 4,
+                paddingBottom: 0,
+                borderRadius: 16,
                 marginLeft: 0,
                 marginRight: 0,
+                overflow: 'hidden',
             }
         },
         light: {
@@ -2616,7 +2627,7 @@ export const settingsDefault = {
                 'bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-bdrinput dark:border-bdrinput-d focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus:outline-primary dark:focus-outline-primary-d duration-100 placeholder-neutral-500 duration-100 text-neutral-900 rounded-lg h-12 flex-auto p-3 leading-6 dark:text-neutral-100 text-base ',
             multi: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg flex-auto p-2 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 ',
             rounded:
-                ' placeholder-neutral-600 pl-10 dark:placeholder-neutral-400 bg-bgrinput dark:bg-bgrinput-d hover:bg-bgrinput-h dark:hover:bg-bgrinput-dh focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-transparent focus:border-bdrinput-f dark:focus:border-bdrinput-f focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus:outline-primary dark:focus-outline-primary-d duration-100 text-neutral-900 rounded-full flex-auto px-3 dark:text-neutral-100 text-base leading-5 h-10  ',
+                ' placeholder-neutral-500 pl-10 bg-bgrinput dark:bg-bgrinput-d hover:bg-bgrinput-h dark:hover:bg-bgrinput-dh focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-transparent focus:border-bdrinput-f dark:focus:border-bdrinput-f focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus:outline-primary dark:focus-outline-primary-d duration-100 text-neutral-900 rounded-full flex-auto px-3 dark:text-neutral-100 text-base leading-5 h-10  ',
             roundedsmall:
                 ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-full flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[34px] ',
             small: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[36px] ',

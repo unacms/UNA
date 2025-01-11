@@ -396,9 +396,9 @@ export default function FormFeed(props) {
                     }
                     {(props?.exProps?.showLinks && menu_add_items.length > 0) && (<>
                         <FormModal pageData={pageData} setPageData={setPageData} />
-                        <Row className={` justify-between ${props.exProps.showLinks && props.exProps.showForm ? 'mt-[8px] pt-[8px] border-t border-bdr dark:border-bdr-d' : ''}`}>
+                        <Row className={` justify-between ${props.exProps.showLinks && props.exProps.showForm ? ' hidden sm:flex mt-[12px] sm:mt-[16px] pt-[8px] border-t border-bdr dark:border-bdr-d' : ''}`}>
                             {menu_add_items.map((item, index) => (
-                                <Button size="sm" fullWidth variant="text" onPress={() => handleMenuManageSelect(item, null, setPageData)} startDecorator={item.icon} title={item.title} />
+                                <Button size="base" fullWidth variant="text" onPress={() => handleMenuManageSelect(item, null, setPageData)} startDecorator={item.icon} title={item.title} />
                             ))}
                         </Row>
                     </>)
