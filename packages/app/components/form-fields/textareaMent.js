@@ -124,10 +124,10 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
 
     let styles = { fontSize:props.fontSize || 16, lineHeight:props.lineHeight || 22 };
     if (name != 'cmt_text') {
-        styles = { ...styles, minHeight: 100 }
+        styles = { ...styles, minHeight: 300 }
     }
     else {
-        styles = { ...styles, maxHeight: 100 }
+        styles = { ...styles, maxHeight: 300 }
     }
     if (props.maxHeight) {
         styles.maxHeight = props.maxHeight;

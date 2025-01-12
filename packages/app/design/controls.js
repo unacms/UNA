@@ -97,7 +97,7 @@ export function Modal({
     <View className={`w-full ${fullWidth ? '' : `${layoutShift}:w-auto`} relative h-full ${modalSettings.container.replaceAll("{ls}", layoutShift)} `}>
         <Pressable onPress={() => { }} className={`relative h-full ${modalSettings.content.replaceAll("{ls}", layoutShift)}`}>
             {
-                (title || onClose) && <Row className={`items-center justify-${align} ${headerBorder && modalSettings.header}  ${layoutShift}:px-4 ${layoutShift}:py-3`}>
+                (title || onClose) && <Row className={`items-center justify-${align} ${headerBorder && modalSettings.header}  ${layoutShift}:px-4 ${layoutShift}:pt-4`}>
                     {(title && type === 'string') && (
                         <View className='flex-auto'>
                             <Text className='text-neutral-800 dark:text-neutral-200 text-xl font-bold '>{title}</Text>

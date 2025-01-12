@@ -2614,7 +2614,7 @@ export const settingsDefault = {
             container: 'max-w-2xl {ls}:h-auto shadow-modal dark:shadow-modal-d bg-bgrmodal dark:bg-bgrmodal-d {ls}:rounded-2xl sm:border border-bdrmodal dark:border-bdrmodal-d overflow-hidden',
             content:
                 ' {ls}:h-auto ',
-            header: 'border-b border-bdr dark:border-bdr-d p-[12px]',
+            header: 'p-[12px]',
         },
         card: {
             default: ' overflow-hidden bg-bgrcard dark:bg-bgrcard-d ',
@@ -2624,7 +2624,7 @@ export const settingsDefault = {
         },
         inputs: {
             default:
-                'bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-bdrinput dark:border-bdrinput-d focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus:outline-primary dark:focus-outline-primary-d duration-100 placeholder-neutral-500 duration-100 text-neutral-900 rounded-lg h-12 flex-auto p-3 leading-6 dark:text-neutral-100 text-base ',
+                ' bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-bdrinput dark:border-bdrinput-d focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus:outline-primary dark:focus-outline-primary-d duration-100 placeholder-neutral-500 duration-100 text-neutral-900 rounded-lg h-12 flex-auto p-3 leading-6 dark:text-neutral-100 text-base ',
             multi: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg flex-auto p-2 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 ',
             rounded:
                 ' placeholder-neutral-500 pl-10 bg-bgrinput dark:bg-bgrinput-d hover:bg-bgrinput-h dark:hover:bg-bgrinput-dh focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-transparent focus:border-bdrinput-f dark:focus:border-bdrinput-f focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus:outline-primary dark:focus-outline-primary-d duration-100 text-neutral-900 rounded-full flex-auto px-3 dark:text-neutral-100 text-base leading-5 h-10  ',

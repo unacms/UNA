@@ -337,7 +337,7 @@ div::-webkit-scrollbar {
 }*/
 
 .editor-height {
-    min-height: 120px !important;
+    min-height: 800 !important;
 }
 /*
 .editor-height .ProseMirror {
