@@ -236,7 +236,7 @@ export default function FormFeed(props) {
                             </ScrollView>
                             <Row className="w-full justify-between gap-x-[8px] mx-auto items-center pt-2 ">
                                 <Row className={
-                                    ' flex-auto justify-between gap-x-[2px]  ' +
+                                    ' flex-auto w-full justify-between gap-x-[24px]  ' +
                                     (isWeb ? '' : ' pb-[12px] ') +
                                     (isSmall
                                         ? ' pb-[12px] px-[12px] ' +
@@ -245,7 +245,7 @@ export default function FormFeed(props) {
                                         : ' my-auto ')
                                 }>
 
-                                    <Row className="gap-x-[4px] flex-auto">
+                                    <Row className="gap-x-[4px]  ">
                                         {props.data.inputs['obfuscate_faces'] && (
                                             <View className="">
                                                 {getFormFieldByData(
@@ -338,7 +338,7 @@ export default function FormFeed(props) {
 
 
                                     </Row>
-                                    <View className="flex">
+                                    <Row className="flex-none w-1/3">
                                         {getFormFieldByData(
                                             props.data.inputs['tlb_do_submit'],
                                             props.handleSubmit,
@@ -348,10 +348,11 @@ export default function FormFeed(props) {
                                                 noMargin: true,
                                                 size: 'base',
                                                 rounded: true,
-                                                startDecorator: "PaperPlane"
+                                                startDecorator: "PaperPlane",
+                                               
                                             }
                                         )}
-                                    </View>
+                                    </Row>
 
                                 </Row>
 
