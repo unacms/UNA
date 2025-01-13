@@ -2641,14 +2641,14 @@ export const settingsDefault = {
             pressed_text:
                 ' text-primary-700 dark:text-primary-300 group-hover:text-primary-800 dark:group-hover:text-primary-200 ',
             xs: {
-                rounded: 'rounded-[6px]',
-                padding: ' h-[28px] min-w-[28px] ',
+                rounded: ' rounded-[6px]',
+                padding: ' h-[24px] min-w-[24px] px-[4px] ',
                 icon_sizes:
-                    ' h-[20px] w-[20px] ',
-                icon_size: ' 20px ',
+                    ' h-[16px] w-[16px] ',
+                icon_size: ' 16px ',
                 icon_margin: ' ',
                 min_height: ' ',
-                margin: 'mx-[2px] my-auto native:text-[12px] ',
+                margin: 'mx-[4px] my-auto native:text-[12px] ',
             },
             sm: {
                 rounded: ' rounded-[8px] ] ',
