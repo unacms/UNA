@@ -17,6 +17,7 @@ export default function FormFieldSubmit(props) {
         icon_only = false,
         variant = 'primary',
         rounded = false,
+        startDecorator = null,
         icon,
         size = 'lg',
         saveOnChanges = false,
@@ -63,6 +64,7 @@ export default function FormFieldSubmit(props) {
     const buttonProps = {
         variant,
         rounded,
+        startDecorator,
         size,
         disabled: formState.isSubmitting || disabled,
         fullWidth: formProps.button_full_width || width < LAYOUT_BREAKPOINTS.lg,

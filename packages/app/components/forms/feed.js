@@ -52,7 +52,7 @@ function ProfileView({ isImageOnly = false, data, handleSubmit, showImage, setSh
                             onShowModal: setShowImage,
                             showModal: showImage,
                             size: 'xs',
-                            maxLength: 0, 
+                            maxLength: 0,
                             variant: 'link'
                         }
                     )}
@@ -131,16 +131,16 @@ export default function FormFeed(props) {
 
     const header = (
         <Row className="w-full justify-between items-center">
-            
+
             <View className="flex-auto">
-                <ProfileView 
-                    data={props.data} 
+                <ProfileView
+                    data={props.data}
                     handleSubmit={props.handleSubmit}
                     showImage={showImage}
                     setShowImage={setShowImage}
                 />
             </View>
-            
+
             <Button
                 onPress={() => {
                     setShowImage(false)
@@ -180,8 +180,8 @@ export default function FormFeed(props) {
             {showImage && (
                 <Modal
                     title={isSmall ? header : (
-                        <ProfileView 
-                            data={props.data} 
+                        <ProfileView
+                            data={props.data}
                             handleSubmit={props.handleSubmit}
                             showImage={showImage}
                             setShowImage={setShowImage}
@@ -211,7 +211,7 @@ export default function FormFeed(props) {
                                 }
                             >
                                 <View className="w-full flex-col px-[12px] sm:p-0 ">
-                                   
+
                                     {getFormFieldByData(
                                         props.data.inputs['text'],
                                         props.handleSubmit,
@@ -227,11 +227,11 @@ export default function FormFeed(props) {
                                     {prevList.length > 0 && prevList[0]?.key && (
                                         <Row className="flex-wrap">{prevList}</Row>
                                     )}
-                                     {props.data.inputs['labels'] && (
-                                            <View className="flex-auto">
-                                                {labels}
-                                            </View>
-                                        )}
+                                    {props.data.inputs['labels'] && (
+                                        <View className="flex-auto">
+                                            {labels}
+                                        </View>
+                                    )}
                                 </View>
                             </ScrollView>
                             <Row className="w-full justify-between gap-x-[8px] mx-auto items-center pt-2 ">
@@ -334,28 +334,28 @@ export default function FormFeed(props) {
                                                 />
                                             </View>
                                         )}
-                                       
-                                        
+
+
 
                                     </Row>
                                     <View className="flex">
-                                    
-                                    <Button
-                onPress={() => {
-                    handlePress()
-                }}
-                variant="primary"
-                size="base"
-                disabled={text != '' ? false : true}
-                title="Post"
-                rounded
-                startDecorator="PaperPlane"
-            />
-                                </View>
-                                   
+                                        {getFormFieldByData(
+                                            props.data.inputs['tlb_do_submit'],
+                                            props.handleSubmit,
+                                            'default',
+                                            {
+                                                disabled: text != '' ? false : true,
+                                                noMargin: true,
+                                                size: 'base',
+                                                rounded: true,
+                                                startDecorator: "PaperPlane"
+                                            }
+                                        )}
+                                    </View>
+
                                 </Row>
-                               
-                                
+
+
                             </Row>
                         </View>
                     </KbAvoidingView>
@@ -382,31 +382,31 @@ export default function FormFeed(props) {
                 >
                     {
                         props?.exProps?.showForm !== false && (
-                    <View className=" flex-row gap-x-[8px] ">
-                        <View className="my-auto">
-                            <ProfileView isImageOnly={true} />                            
-                        </View>
-                        <View className="flex-auto">
-                            <Button
-                                size="base"
-                                variant="secondary"
-                                fullWidth
-                                rounded
-                                title={t('Create new post') + '...'}
-                                align="start"
-                                onPress={() => {
-                                    FeedbackHaptics('Medium')
-                                    setShowImage(true)
-                                }}
-                            />
-                        </View>
-                    </View>)
+                            <View className=" flex-row gap-x-[8px] ">
+                                <View className="my-auto">
+                                    <ProfileView isImageOnly={true} />
+                                </View>
+                                <View className="flex-auto">
+                                    <Button
+                                        size="base"
+                                        variant="secondary"
+                                        fullWidth
+                                        rounded
+                                        title={t('Create new post') + '...'}
+                                        align="start"
+                                        onPress={() => {
+                                            FeedbackHaptics('Medium')
+                                            setShowImage(true)
+                                        }}
+                                    />
+                                </View>
+                            </View>)
                     }
                     {(props?.exProps?.showLinks && menu_add_items.length > 0) && (<>
                         <FormModal pageData={pageData} setPageData={setPageData} />
                         <Row className={` justify-between ${props.exProps.showLinks && props.exProps.showForm ? ' gap-x-[8px] hidden sm:flex mt-[12px] sm:mt-[12px] sm:pt-[12px] border-t border-bdr dark:border-bdr-d ' : ''}`}>
                             {menu_add_items.map((item, index) => (
-                                <Button size="base" rounded  fullWidth variant="secondary" onPress={() => handleMenuManageSelect(item, null, setPageData)} startDecorator={item.icon} title={item.title} />
+                                <Button key={item.name} size="base" rounded fullWidth variant="secondary" onPress={() => handleMenuManageSelect(item, null, setPageData)} startDecorator={item.icon} title={item.title} />
                             ))}
                         </Row>
                     </>)
