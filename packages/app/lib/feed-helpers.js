@@ -220,8 +220,8 @@ export const ItemInfo = memo(({ data, t }) => {
         }
         return l && (
             <>
-                <Text className=" text-neutral-600 dark:text-neutral-400 text-[14px] text-center leading-[20px] font-medium tracking-tight ">·</Text>
-                <Text className=" text-neutral-600 dark:text-neutral-400 text-[14px] text-center leading-[20px] font-medium tracking-tight ">
+                <Text className=" text-neutral-600 dark:text-neutral-400 text-[14px] text-center leading-[22px] font-medium tracking-tight ">·</Text>
+                <Text className=" text-neutral-600 dark:text-neutral-400 text-[14px] text-center leading-[22px] font-medium tracking-tight ">
                     {l}
                 </Text>
             </>
@@ -410,9 +410,9 @@ export const Author = memo(({ data, url, t }) => {
             displayType="unit"
             displaySize="base"
             showInfo={
-                <Row className=" flex-wrap h-[20px] text-center gap-x-[4px] items-center  ">
+                <Row className=" flex-wrap h-[22px] gap-x-[4px] ">
                     <Link href={url}>
-                        <Time ts={data.date}></Time>
+                        <Time className='leading-[22px]' ts={data.date}></Time>
                     </Link>
                     <ItemInfo data={data} t={t} />
                 </Row>
@@ -442,7 +442,7 @@ export const SmallUnit = memo(({ data }) => {
                             <Text className=" text-sm flex-auto font-semibold text-neutral-800 dark:text-neutral-200">
                                 {data.author_data.display_name}
                             </Text>
-                            <Time className="text-xs flex-none" ts={data.date}></Time>
+                            <Time className=" text-sm flex-none " ts={data.date}></Time>
                         </View>
                         <Text className="flex-auto text-lg  font-bold text-neutral-800 dark:text-neutral-200 sm:group-hover:text-neutral-950 sm:dark:group-hover:text-neutral-50" numberOfLines={1}>
                             {data.content.title}

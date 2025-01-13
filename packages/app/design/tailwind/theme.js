@@ -151,9 +151,11 @@ const theme = {
             'md': '0 4px 8px 0 rgba(0, 0, 0, 0.10)',
             'button': '0 0px 2px 0 rgba(0, 0, 0, 0.25), 0 1px 2px 0 rgba(0, 0, 0, 0.25)',
             'button-d': '0 0px 1px 0 rgba(0, 0, 0, 1), 0 1px 2px 0 rgba(0, 0, 0, 0.15)',
-            'outline': '0 0 0 1px rgba(0, 0, 0, 0.25)',
-            'outline-d': '0 0 0 1px rgba(255, 255, 255, 0.25)',
-          },
+            'outline': 'inset 0 0 0 1px rgba(209, 213, 219, 1)',
+            'outline-d': 'inset 0 0 0 1px rgba(55, 65, 81, 1)',
+            'native': '0 0px 4px 0 rgba(0, 0, 0, 0.35), 0 10px 20px 0 rgba(0, 0, 0, 0.25)',
+            'native-d': '0 0px 4px 0 rgba(0, 0, 0, 1), 0 10px 20px 0 rgba(0, 0, 0, 0.25)',
+        },
         colors: colors,
         fontFamily: {
             default: ['default-font', 'sans-serif']

@@ -36,7 +36,7 @@ function ProfileView({ isImageOnly = false, data, handleSubmit, showImage, setSh
 
     return (
         <View className="flex-row flex-auto items-center justify-between gap-x-1 text-neutral-400 dark:text-neutral-600  ">
-            <View className="gap-x-2 flex-row items-center">
+            <View className="gap-x-[8px] flex-row items-center">
             <Profile {...profileData} displaySize="base" displayType="unit_wo_info" />
             
             <Text className=" text-neutral-900 dark:text-neutral-100 font-semibold text-base truncate">
@@ -228,9 +228,9 @@ export default function FormFeed(props) {
                                         )}
                                 </View>
                             </ScrollView>
-                            <Row className="w-full justify-between gap-x-2 mx-auto items-center pt-2 ">
+                            <Row className="w-full justify-between gap-x-[8px] mx-auto items-center pt-2 ">
                                 <Row className={
-                                    ' flex-auto justify-between gap-x-2  ' +
+                                    ' flex-auto justify-between gap-x-[8px]  ' +
                                     (isWeb ? '' : ' pb-[12px] ') +
                                     (isSmall
                                         ? ' pb-[12px] px-[12px] ' +
@@ -239,7 +239,7 @@ export default function FormFeed(props) {
                                         : ' my-auto ')
                                 }>
 
-                                    <Row className="gap-x-2 flex-auto">
+                                    <Row className="gap-x-[8px] flex-auto">
                                         {props.data.inputs['obfuscate_faces'] && (
                                             <View className="">
                                                 {getFormFieldByData(
@@ -381,7 +381,7 @@ export default function FormFeed(props) {
                 >
                     {
                         props?.exProps?.showForm !== false && (
-                    <View className=" flex-row sm:gap-x-[12px] ">
+                    <View className=" flex-row sm:gap-x-[8px] ">
                         <View className=" my-auto">
                             <ProfileView isImageOnly={true} />
                         </View>
@@ -417,7 +417,7 @@ export default function FormFeed(props) {
                     }
                     {(props?.exProps?.showLinks && menu_add_items.length > 0) && (<>
                         <FormModal pageData={pageData} setPageData={setPageData} />
-                        <Row className={` justify-between ${props.exProps.showLinks && props.exProps.showForm ? ' gap-x-2 hidden sm:flex mt-[12px] sm:mt-[12px] sm:pt-[12px] border-t border-bdr dark:border-bdr-d ' : ''}`}>
+                        <Row className={` justify-between ${props.exProps.showLinks && props.exProps.showForm ? ' gap-x-[8px] hidden sm:flex mt-[12px] sm:mt-[12px] sm:pt-[12px] border-t border-bdr dark:border-bdr-d ' : ''}`}>
                             {menu_add_items.map((item, index) => (
                                 <Button size="base" rounded  fullWidth variant="secondary" onPress={() => handleMenuManageSelect(item, null, setPageData)} startDecorator={item.icon} title={item.title} />
                             ))}

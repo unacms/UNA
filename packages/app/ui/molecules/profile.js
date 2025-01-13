@@ -30,7 +30,7 @@ function DisplayNameLink({ title, url, href, fontSize, actions }) {
 
     if (isAnon || title.includes("(anonymized)")) {
         return (
-            <Row className={' text-neutral-800  dark:text-neutral-200 gap-x-2 items-center ' + fontSize}>
+            <Row className={' text-neutral-800  dark:text-neutral-200 gap-x-[8px] items-center ' + fontSize}>
                 <View>
                     <Text numberOfLines={1} className={'text-neutral-800 dark:text-neutral-200 font-semibold ' + fontSize + ' truncate '}>
                         {title && title.replace(" (anonymized)", '')} (protected)
@@ -89,7 +89,7 @@ function UnitWoInfo({ oProps, sSize, sSizeFontLetter, iSizeWidth, bShowLinks, em
 
 function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont, actions }) {
     return (
-        <View className="flex-col my-auto ">
+        <View className="flex-col my-auto">
 
             {bShowLinks ? (
                 <Link emulate={emulate} haptics="Select" href={oProps.url}>
@@ -139,7 +139,7 @@ function AtomProfile_(oProps) {
             sSize: 'w-[24px] h-[24px]',
             iSizeWidth: 24,
             iSizeHeight: 24,
-            sSizeFont: 'text-[12px]',
+            sSizeFont: 'text-[12px]', 
             sSizeFontLetter: 'text-base  font-semibold',
         },
         sm: {
@@ -150,11 +150,11 @@ function AtomProfile_(oProps) {
             sSizeFontLetter: 'text-base opacity-50 font-semibold',
         },
         base: {
-            sSize: 'w-[40px] h-[40px]',
-            iSizeWidth: 40,
-            iSizeHeight: 40,
-            sSizeFont: 'text-[16px] leading-[20px] tracking-tight',
-            sSizeFontLetter: ' p-[8px] leading-[24px] text-center text-[20px] font-semibold',
+            sSize: 'w-[44px] h-[44px]',
+            iSizeWidth: 44,
+            iSizeHeight: 44,
+            sSizeFont: ' text-[16px] leading-[22px] tracking-tight',
+            sSizeFontLetter: ' p-[8px] leading-[22px] text-center text-[20px] font-semibold',
         },
         lg: {
             sSize: 'w-[48px] h-[48px]',
@@ -215,7 +215,7 @@ function AtomProfile_(oProps) {
     switch (sDisplayType) {
         case 'unit':
             return (
-                <Row className="flex-row gap-x-2 sm:gap-x-3 items-center ">
+                <Row className="flex-row gap-x-[8px] items-center ">
                     <View className="flex-none mb-auto">
                         <UnitWoInfo oProps={oProps} sSize={sSize} sSizeFontLetter={sSizeFontLetter} emulate={emulate} iSizeWidth={iSizeWidth} bShowLinks={bShowLinks} />
                     </View>

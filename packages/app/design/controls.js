@@ -193,8 +193,8 @@ const getIcon = (sIcon, iIndex, classIconName, sClassText, sIconContainer, iIcon
     if (isEmoji(sIcon)) {
         sClassText = sClassText.replace('text-lg', ' text-3xl text-center leading-[32px]  ');
         sClassText = sClassText.replace('text-base', ' group-hover:no-underline text-2xl leading-[26px] ');
-        sClassText = sClassText.replace('text-sm', ' group-hover:no-underline text-[16px] leading-[20px] ');
-        sClassText = sClassText.replace('text-xs', ' group-hover:no-underline text-[14px] leading-[18px] ');
+        sClassText = sClassText.replace('text-sm', ' group-hover:no-underline text-[21px] leading-[24px] text-center justify-center ');
+        sClassText = sClassText.replace('text-xs', ' group-hover:no-underline text-[16px] leading-[20px] text-center justify-center');
         return (
             <Text key={iIndex} className={classIconName ? classIconName : sClassText + sIconContainer}>{sIcon}</Text>
         );

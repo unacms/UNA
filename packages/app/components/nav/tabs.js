@@ -86,7 +86,7 @@ export default function () {
     const profile = useMemo(() => {
         if (currentUser) {
             const dUser = { ...currentUser, url_avatar: currentUser?.avatar, url: '/dashboard' };
-            return <View className=" items-center justify-center border-[1px] border-neutral-700 dark:border-neutral-300 rounded-full mb-1.5 h-[28px] w-[28px]"><Profile {...dUser} displayType="unit_wo_info" displaySize="xs" /></View>;
+            return <View className=" items-center justify-center border-[1.5px] border-neutral-600 dark:border-neutral-400 rounded-full mb-[8px] h-[29px] w-[29px]"><Profile {...dUser} displayType="unit_wo_info" displaySize="xs" /></View>;
         }
         return null;
     }, [currentUser?.id]);
@@ -98,8 +98,10 @@ export default function () {
             opacity: isShowTabs ? 1 : 0,
             elevation: 0,
             boxShadow: 'none',
-            marginRight: 8,
-            marginLeft: 8,
+            marginRight: 0,
+            marginLeft: 0,
+            paddingRight: 6,
+            paddingLeft: 6,
         },
         tabBarItemStyle: themeSettings.tabBarItemStyle,
         tabBarAllowFontScaling: false,
