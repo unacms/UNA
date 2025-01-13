@@ -381,25 +381,12 @@ export default function FormFeed(props) {
                 >
                     {
                         props?.exProps?.showForm !== false && (
-                    <View className=" flex-row sm:gap-x-[8px] ">
+                    <View className=" flex-row gap-x-[8px] ">
                         <View className=" my-auto">
                             <ProfileView isImageOnly={true} />
                         </View>
-                        <View className="flex-auto sm:hidden">
-                            <Button
-                                size="base"
-                                variant="link"
-                                fullWidth
-                                rounded
-                                title={t('Create new post') + '...'}
-                                align="start"
-                                onPress={() => {
-                                    FeedbackHaptics('Medium')
-                                    setShowImage(true)
-                                }}
-                            />
-                        </View>
-                        <View className="hidden sm:flex flex-auto">
+                       
+                        <View className="flex-auto">
                             <Button
                                 size="base"
                                 variant="secondary"
