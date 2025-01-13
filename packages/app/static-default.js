@@ -79,10 +79,10 @@ const LogoMark = (
 )
 
 const LogoNative = (
-    <View className="w-[40px] h-[40px]">
+    <View className="w-[44px] h-[44px]">
         <Svg
             aria-label="Logo Mark"
-            className="  h-[40px] w-[40px]  text-neutral-800 dark:text-neutral-200  "
+            className="  h-[44px] w-[44px]  text-neutral-800 dark:text-neutral-200  "
             viewBox="0 0 40 40"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -116,10 +116,10 @@ const LogoNative = (
 )
 
 const LogoNativeDark = (
-    <View className="w-[40px] h-[40px]">
+    <View className="w-[44px] h-[44px]">
          <Svg
             aria-label="Logo Mark"
-            className="  h-[40px] w-[40px]  text-neutral-800 dark:text-neutral-200  "
+            className="  h-[44px] w-[44px]  text-neutral-800 dark:text-neutral-200  "
             viewBox="0 0 40 40"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"

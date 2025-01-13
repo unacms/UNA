@@ -377,7 +377,7 @@ export default function FormFeed(props) {
                 <Card
                     rounded=" rounded-none sm:rounded-2xl  "
                     margin=" mx-auto mb-1 sm:mb-3 "
-                    addClassName=" shadow-sm  w-full max-w-2xl px-[12px] pt-[8px] pb-[8px] sm:p-[16px]  "
+                    addClassName=" shadow-sm  w-full max-w-2xl px-[12px] pt-[8px] pb-[12px] sm:p-[16px]  "
                 >
                     {
                         props?.exProps?.showForm !== false && (

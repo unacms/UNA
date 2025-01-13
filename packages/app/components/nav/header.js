@@ -34,7 +34,7 @@ function getRightHeader(items, currentUser, pagePath) {
     if (items?.length == 0 && !addMenu)
         return null;
 
-    return <Row className='gap-x-2 items-center'>{
+    return <Row className='gap-x-[8px] items-center'>{
         items?.map((button) => {
             let btn = undefined;
             if (button.section || button.link == 'search')
