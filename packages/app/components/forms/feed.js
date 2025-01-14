@@ -130,7 +130,7 @@ export default function FormFeed(props) {
     }
 
     const header = (
-        <Row className="w-full ">
+        <Row className="w-full">
 
             <View className="flex-auto">
                 <ProfileView
@@ -198,7 +198,7 @@ export default function FormFeed(props) {
                     {getFormFieldByData(props.data.inputs['object_cf'], props.handleSubmit, 'default')}
                     {getFormFieldByData(props.data.inputs['owner_id'], props.handleSubmit, 'default')}
                     {getFormFieldByData(props.data.inputs['type'], props.handleSubmit, 'default')}
-                    <KbAvoidingView className='flex-col flex-auto' offset={isIos ? 68 : 74}>
+                    <KbAvoidingView className='flex-col flex-auto' offset={isIos ? 74 : 74}>
                         <View className="justify-between flex-col flex-auto ">
                             <ScrollView
                                 ref={scrollViewRef}
@@ -234,12 +234,12 @@ export default function FormFeed(props) {
                                     )}
                                 </View>
                             </ScrollView>
-                            <Row className="w-full justify-between gap-x-[8px] mx-auto items-center pt-2 ">
+                            <Row className="w-full justify-between gap-x-[8px] mx-auto items-center   ">
                                 <Row className={
                                     ' flex-auto w-full justify-between gap-x-[24px]  ' +
                                     (isWeb ? '' : ' pb-[12px] ') +
                                     (isSmall
-                                        ? ' pb-[12px] px-[12px] ' +
+                                        ? ' pb-[12px] px-[8px] ' +
                                         (isIos ? ' bottom-[8px] ' : ' bottom-0 ') +
                                         '  '
                                         : ' my-auto ')

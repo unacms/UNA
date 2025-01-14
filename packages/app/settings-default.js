@@ -2673,7 +2673,7 @@ export const settingsDefault = {
                 padding: 'px-2 py-1',
                 icon_sizes: ' p-1.5 h-10 w-10 ',
                 icon_size: 28,
-                icon_margin: 'p-1.5  bg-neutral-200 dark:bg-neutral-800 rounded-full group-hover:bg-neutral-300 dark:group-hover:bg-neutral-700  ',
+                icon_margin: 'p-1.5     ',
                 min_height: ' leading-10 sm:text-[16px] ',
                 margin: 'mx-3',
             },
@@ -2704,7 +2704,7 @@ export const settingsDefault = {
             'u-btn-danger-trans': ' web:duration-200 ',
 
             'u-btn-text-cnt':
-                '  hover:bg-bgrbutton dark:hover:bg-bgrbutton-d bg-transparent hover:shadow-sm hover:ring-1 hover:ring-inset hover:ring-neutral-500/10 ',
+                '  hover:bg-bgrbutton dark:hover:bg-bgrbutton-d bg-transparent active:bg-bgrbutton-h dark:active:bg-bgrbutton-dh ',
             'u-btn-text-text':
                 ' font-medium text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-neutral-50',
             'u-btn-text-trans': ' web:duration-200 ',
