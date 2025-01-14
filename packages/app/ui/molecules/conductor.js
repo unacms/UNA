@@ -102,7 +102,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
 
             return;
         },
-        enabled: false//routes[index]?.data?.length == 0
+        enabled: routes[index]?.data?.length == 0//false
     });
 
     useEffect(() => {
@@ -288,6 +288,8 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
            
             return cache.current[cacheKey];
         };
+
+        console.log("route?.endpoint?.finished", route?.endpoint?.finished, route.data.length)
 
         return (
             <TabFlashList

@@ -30,8 +30,8 @@ export default function ElementLink(props) {
             index
         }));
     
-        const additionalLinks = appSetting('menu_items', 'transpile_urls');
-        return [...baseLinks, ...additionalLinks];
+       // const additionalLinks = appSetting('menu_items', 'transpile_urls');
+        return baseLinks;//[...baseLinks, ...additionalLinks];
     }, [TabList]);
 
     // Список невалидных значений href
@@ -65,7 +65,6 @@ export default function ElementLink(props) {
 
     // Обработчик внешних ссылок
     const handleExternalLinkPress = useCallback(async () => {
-        console.log("finalHreffinalHref", finalHref)
         await WebBrowser.openBrowserAsync(finalHref);
     }, [finalHref]);
 

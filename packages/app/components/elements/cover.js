@@ -4,7 +4,7 @@ import { stripTags, appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import Profile from 'app/ui/molecules/profile'
 import { useWindowDimensions } from 'react-native'
 import Image from 'app/ui/atoms/image'
-import { useRouter, useSegments  } from 'expo-router'
+import { useRouter, useSegments } from 'expo-router'
 import { Theme } from 'app/design/theme'
 import { Icon } from 'app/ui/atoms/icon'
 import Menu from 'app/components/menu'
@@ -101,17 +101,17 @@ export function CoverSmall(props) {
                 )}
             </View>
             <Link href={appSetting('layout', 'back_for_profile')}>
-            <View
-                className="mx-4 bg-bgrcard dark:bg-bgrcard-d w-10 h-10 rounded-full justify-center items-center"
-                onPress={routerExpo.back}
-            >
-                <Icon
-                    icon="ArrowLeft"
-                    width={24}
-                    height={24}
-                    color={colors.barsColor}
-                />
-            </View>
+                <View
+                    className="mx-4 bg-bgrcard dark:bg-bgrcard-d w-10 h-10 rounded-full justify-center items-center"
+                    onPress={routerExpo.back}
+                >
+                    <Icon
+                        icon="ArrowLeft"
+                        width={24}
+                        height={24}
+                        color={colors.barsColor}
+                    />
+                </View>
             </Link>
             <Profile
                 {...data.profile}
@@ -130,7 +130,7 @@ export function CoverSmall(props) {
 export default function ElementCover(props) {
     const routerExpo = useRouter()
     const segments = useSegments();
-    console.log ("segments", segments, segments.length)
+    console.log("segments", segments, segments.length)
     const data = props.data
     const { colors } = Theme()
 
@@ -150,14 +150,17 @@ export default function ElementCover(props) {
                 )}
             </View>
             <Row className=" justify-left w-full h-24 pt-4">
-                <Link href={appSetting('layout', 'back_for_profile')}>
-                <View
-                    className="mr-2 ml-2 bg-bgrnavbar dark:bg-bgrnavbar-d    w-10 h-10 rounded-full justify-center items-center"
-                 
+                <Pressable
+                    className="mx-4 bg-bgrcard dark:bg-bgrcard-d w-10 h-10 rounded-full justify-center items-center"
+                    onPress={routerExpo.back}
                 >
-                    <Icon icon="ArrowLeft" width={24} height={24} color={colors.barsColor} />
-                </View>
-                </Link>
+                    <Icon
+                        icon="ArrowLeft"
+                        width={24}
+                        height={24}
+                        color={colors.barsColor}
+                    />
+                </Pressable>
             </Row>
             <View className="flex-col md:flex-row  px-2  ">
                 {bPerson ? <View className=" w-full  items-center  ">
@@ -168,7 +171,7 @@ export default function ElementCover(props) {
                             displaySize='4xl'
                         />
                     </View>
-                </View> : <View className=" w-full  items-center h-24 "/>
+                </View> : <View className=" w-full  items-center h-24 " />
                 }
                 <View className="flex-col lg:flex-row px-2  my-4 flex-auto">
                     <View className=" flex-col  items-center md:items-start flex-auto  mb-2">
