@@ -234,9 +234,9 @@ export default function FormFeed(props) {
                                     )}
                                 </View>
                             </ScrollView>
-                            <Row className="w-full justify-between gap-x-[8px] mx-auto items-center   ">
+                            <View className="  ">
                                 <Row className={
-                                    ' flex-auto w-full justify-between gap-x-[24px]  ' +
+                                    '  items-center flex-auto w-full gap-x-[24px]  ' +
                                     (isWeb ? '' : ' pb-[12px] ') +
                                     (isSmall
                                         ? ' pb-[12px] px-[8px] ' +
@@ -245,7 +245,8 @@ export default function FormFeed(props) {
                                         : ' my-auto ')
                                 }>
 
-                                    <Row className="gap-x-[4px]  ">
+                                    <Row className="gap-x-[4px] flex-auto justify-between ">
+                                        <Row className="flex-auto">
                                         {props.data.inputs['obfuscate_faces'] && (
                                             <View className="">
                                                 {getFormFieldByData(
@@ -334,12 +335,9 @@ export default function FormFeed(props) {
                                                 />
                                             </View>
                                         )}
-
-
-
-                                    </Row>
-                                    <Row className="flex-none w-1/3">
-                                        {getFormFieldByData(
+                                        </Row>
+                                        <View className=" flex-1 web:flex-none">
+                                          {getFormFieldByData(
                                             props.data.inputs['tlb_do_submit'],
                                             props.handleSubmit,
                                             'default',
@@ -351,13 +349,16 @@ export default function FormFeed(props) {
                                                 startDecorator: "PaperPlane",
                                                
                                             }
-                                        )}
+                                        )}</View>
+
+
                                     </Row>
+                                    
 
                                 </Row>
 
 
-                            </Row>
+                            </View>
                         </View>
                     </KbAvoidingView>
                 </Modal>
