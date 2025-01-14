@@ -36,10 +36,10 @@ function ProfileView({ isImageOnly = false, data, handleSubmit, showImage, setSh
 
     return (
         <View className="flex-row flex-auto items-center justify-between gap-x-1 text-neutral-400 dark:text-neutral-600  ">
-            <View className="gap-x-[8px] flex-row items-center">
+            <View className="gap-x-[8px] flex-row ">
                 <Profile {...profileData} displaySize="base" displayType="unit_wo_info" />
                 <View className="flex-col ">
-                    <Text className="mb-[2px] text-neutral-900 dark:text-neutral-100 font-semibold text-base truncate">
+                    <Text className="mb-[4px] text-neutral-900 dark:text-neutral-100 font-semibold text-[16px] truncate">
                         {currentUser.display_name}
                     </Text>
                     {data?.inputs?.['object_privacy_view'] && getFormFieldByData(

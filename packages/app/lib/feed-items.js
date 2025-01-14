@@ -197,7 +197,7 @@ export const DefaultView = memo(({data, styles, bIsTitle, bIsTimelineContent, co
                     </View>
                 </View>
             )}
-            <View className="flex-auto my-auto flex-col pt-[12px] pb-[8px] ">
+            <View className="flex-auto my-auto flex-col py-[8px] ">
                 {bIsTitle && (
                     <Link href={url} className="">
                         <Text
