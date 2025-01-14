@@ -66,7 +66,8 @@ export default function FormFeed(props) {
     const { currentUser } = useCurrentUser();
     const formContext = useFormContext()
     const { t } = useTranslation()
-    const [showImage, setShowImage] = useState(false)
+    const isFormOnly = props.exProps?.formOnly === true;
+    const [showImage, setShowImage] = useState(isFormOnly ? true : false);
     const [responseId, setResponseId] = useState(0)
     const [imageSource, setImageSource] = useState([])
     const { setLayoutData } = useLayoutData()
@@ -79,7 +80,7 @@ export default function FormFeed(props) {
     const [pageData, setPageData] = useState(false);
 
     useEffect(() => {
-        if (props.response?.id != responseId) {
+        if (props.response?.id && props.response?.id != responseId) {
             //console.log("props.responseprops.response", props.response)
             setLayoutData(getAlert('feed:new_content', props.response))
             setShowImage(false)
@@ -123,11 +124,6 @@ export default function FormFeed(props) {
     let prevList = Object.values(imageSource)
         .flat()
         .filter((element) => element !== undefined)
-
-    const handlePress = () => {
-        setShowImage(false)
-        props.handleSubmit()
-    }
 
     const header = (
         <Row className="w-full">
@@ -175,6 +171,8 @@ export default function FormFeed(props) {
         setShowImage(false)
     }, [])
 
+console.log("showImage", showImage)
+
     return (
         <View className="w-full">
             {showImage && (
@@ -209,7 +207,7 @@ export default function FormFeed(props) {
                                         animated: true,
                                     })
                                 }
-                                onClick={(event) => {event.target.querySelector('.tiptap').focus()}}
+                                onClick={(event) => {event.target.querySelector('.tiptap')?.focus()}}
                             >
                                 <View className="w-full flex-col px-[12px] sm:p-0 ">
 
@@ -364,7 +362,7 @@ export default function FormFeed(props) {
                     </KbAvoidingView>
                 </Modal>
             )}
-            {props.exProps?.mode == 'button' ? (
+            {isFormOnly ? (<></>) : props.exProps?.mode == 'button' ? (
                 <Button
                     variant="primary"
                     title="Post"

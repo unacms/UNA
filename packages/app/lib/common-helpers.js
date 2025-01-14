@@ -1,6 +1,7 @@
 import { View, Row } from 'app/design/view';
 import { Button } from 'app/design/controls';
 import { Platform } from 'react-native'
+import Link from 'app/ui/atoms/link'
 
 export function getBackButtonWeb() {
     const isWeb = Platform.OS === 'web';
@@ -12,5 +13,13 @@ export function getBackButtonWeb() {
             </View>
         )
     }
-    return <></>
+    else{
+        return (
+            <View className="lg:hidden mr-2"  >
+                <Link href='/'>
+                    <Button rounded={true} variant="secondary" startDecorator="ArrowLeft" />
+                </Link>
+            </View>
+        )
+    }
 }

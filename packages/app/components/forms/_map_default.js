@@ -15,7 +15,7 @@ export const componentsMapDefault = {
    // bx_invites_request_send: Invite,
     comment: FormComments,
     feed: FormFeed,
-    feed_edit: FormFeedEdit,
+    feed_edit: FormFeed,
     bx_posts: FormPost,
     bx_forum: FormPost,
     bx_messenger: Messenger
