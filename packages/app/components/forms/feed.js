@@ -209,6 +209,7 @@ export default function FormFeed(props) {
                                         animated: true,
                                     })
                                 }
+                                onClick={(event) => {event.target.querySelector('.tiptap').focus()}}
                             >
                                 <View className="w-full flex-col px-[12px] sm:p-0 ">
 
@@ -346,7 +347,7 @@ export default function FormFeed(props) {
                                                 noMargin: true,
                                                 size: 'base',
                                                 rounded: true,
-                                                startDecorator: "PaperPlane",
+                                                icon: "PaperPlane",
                                                
                                             }
                                         )}</View>
