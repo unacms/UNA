@@ -2641,12 +2641,12 @@ export const settingsDefault = {
             pressed_text:
                 ' text-primary-700 dark:text-primary-300 group-hover:text-primary-800 dark:group-hover:text-primary-200 ',
             xs: {
-                rounded: ' rounded-[6px]',
-                padding: ' h-[24px] min-w-[24px] px-[4px] ',
+                rounded: ' rounded-[8px]',
+                padding: ' h-[28px] min-w-[28px] px-[4px] ',
                 icon_sizes:
-                    ' h-[16px] w-[16px] ',
-                icon_size: ' 16px ',
-                icon_margin: ' ',
+                    ' h-[20px] w-[20px] ', //icon container size
+                icon_size: ' 20px ', //icon size
+                icon_margin: ' ', //conditional margin for icon container when title is present
                 min_height: ' ',
                 margin: 'mx-[4px] my-auto native:text-[12px] ',
             },
@@ -2662,9 +2662,9 @@ export const settingsDefault = {
             base: {
                 rounded: ' rounded-[8px] ',
                 padding: ' h-[44px] min-w-[44px] px-[10px] ',
-                icon_sizes: ' h-[24px] w-[24px] text-center align-middle items-center justify-center flex ',
+                icon_sizes: ' h-[24px] w-[24px]',
                 icon_size: '24px',
-                icon_margin: ' ',
+                icon_margin: ' mx-1 ',
                 min_height: '  ',
                 margin: ' mx-[6px] my-auto native:text-[16px] ',
             },

@@ -130,7 +130,7 @@ export default function FormFeed(props) {
     }
 
     const header = (
-        <Row className="w-full justify-between items-center">
+        <Row className="w-full ">
 
             <View className="flex-auto">
                 <ProfileView
