@@ -1,12 +1,13 @@
-import { PickerStyled,PickerStyledIos } from 'app/design/controls'
+import { PickerStyledRef, PickerStyledIos } from 'app/design/controls'
 import { Picker } from '@react-native-picker/picker';
 import { useState, useRef } from 'react'
 import { Theme } from 'app/design/theme';
 import { Modal } from 'app/design/controls'
-import { View,Pressable } from 'app/design/view'
+import { View, Pressable } from 'app/design/view'
 import { Platform } from 'react-native'
 import { Button } from 'app/design/controls';
 //settings https://www.npmjs.com/package/@react-native-picker/picker#mode
+
 export default function Dropdown(props) {
     const pickerRef = useRef();
 
@@ -35,7 +36,7 @@ export default function Dropdown(props) {
 
     if (!isShow){
         return (
-            <PickerStyled  ref={pickerRef} className={Platform.OS == 'web' ? ' h-11' : 'h-16'} style={{ borderRadius:10, color:colors.default  }}
+            <PickerStyledRef className={Platform.OS == 'web' ? ' h-11' : 'h-16'} style={{ borderRadius:10, color:colors.default  }}
                 selectedValue={selectedVal}
                 onValueChange={(itemValue, itemIndex) =>
                 handleChange(itemValue, itemIndex)
@@ -43,7 +44,7 @@ export default function Dropdown(props) {
                 {props.data.map((item, index) => (
                     <Picker.Item key={'item-' + index} label={item[props.labelField]} value={item[props.valueField]} />
                 ))}
-            </PickerStyled>
+            </PickerStyledRef>
         );
     }
     else{

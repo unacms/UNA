@@ -1,7 +1,7 @@
 import Field from './_field';
 import {Text} from 'app/design/typography'
 import { usePlacesWidget } from "react-google-autocomplete";
-import { Input } from 'app/design/controls'
+import { InputRef } from 'app/design/controls'
 import { use, useState, } from 'react';
 import { useFormContext, useController } from 'react-hook-form';
 import { appSetting } from 'app/lib/util'
@@ -101,7 +101,7 @@ export default function FormFieldLocation(props) {
 
     return (
         <Field {...props}>   
-            <Input 
+            <InputRef 
                 ref={ref} 
                 defaultValue={defaultValue.location_string}   
                 placeholder='Start typing your address'     

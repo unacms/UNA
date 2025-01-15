@@ -4,7 +4,6 @@ import Card from 'app/ui/molecules/card'
 import AnimatedBlock from 'app/ui/molecules/animated-block'
 import { useTranslation } from 'react-i18next';
 import { CommentsSection, MenuManage, ActionMenu, CounterMenu, Author, UnitFeed, SmallUnit, prepareData, MainContent, FeedEditForm } from 'app/lib/feed-helpers'
-import { GroupView, AdView, MarketView, DefaultView } from 'app/lib/feed-items'
 import { appSetting } from 'app/lib/util'
 
 function DefaultUnit(data) {
@@ -17,10 +16,6 @@ function DefaultUnit(data) {
         <MainContent
             url={url}
             data={data}
-            GroupView={GroupView}
-            AdView={AdView}
-            MarketView={MarketView}
-            DefaultView={DefaultView}
         />
     ), [url, data]);
 

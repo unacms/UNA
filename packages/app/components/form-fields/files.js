@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import Field, { getValidationRules } from './_field';
-import { View, Row, Pressable } from 'app/design/view'
+import { View, ViewRef, Row, Pressable } from 'app/design/view'
 import Image from 'app/ui/atoms/image';
 import * as ImagePicker from 'expo-image-picker';
 import { manipulateAsync, SaveFormat } from 'expo-image-manipulator'
@@ -412,9 +412,9 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
         button = (
             <Pressable onPress={selectImage} >
                 <View className={w + '  items-center justify-center bg-primary/5 ' + (isImage ? appSetting('layout', 'cover_aspect') : 'h-32')}>
-                    <View ref={drop} className=' text-neutral-500/50 text-lg  flex-auto w-full border-neutral-300 dark:border-neutral-700 rounded-lg  justify-center  flex-col border border-dashed text-center'>
+                    <ViewRef ref={drop} className=' text-neutral-500/50 text-lg  flex-auto w-full border-neutral-300 dark:border-neutral-700 rounded-lg  justify-center  flex-col border border-dashed text-center'>
                         <Text className='text-neutral-500/50 text-lg  justify-center  flex-col text-center'>Drag & Drop or browse files...</Text>
-                    </View>
+                    </ViewRef>
                     {img != null && (<>
                         {isImage && <Image view='cover' sizes={LAYOUT_BREAKPOINTS.lg} className=" u-cover " alt='' src={img.file_url} />}
                         {imagesList && imagesList.find(item => item.preload === true) && <View className='absolute w-full h-full justify-center items-center z-50'><Loading /></View>}

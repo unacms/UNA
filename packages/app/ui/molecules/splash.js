@@ -139,7 +139,7 @@ export default function Splash(props) {
         return (
             <View className="justify-center">
                 <View className="items-center my-8 ">
-                    <View className="w-60 h-16">{props.logo_native}</View>
+                    <View className="w-60 h-16 items-center">{props.logo_native}</View>
                 </View>
                 {cnt}
             </View>

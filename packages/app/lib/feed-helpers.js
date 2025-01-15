@@ -24,6 +24,7 @@ import Form from 'app/components/elements/form'
 import useSWR from 'swr'
 import { useTranslation } from 'react-i18next';
 import Loading from 'app/ui/atoms/loading'
+import { GroupView, AdView, MarketView, DefaultView } from 'app/lib/feed-items'
 
 export const CommentsModal = memo(({ commentsData, initFormData, itemContent, closeOnPost }) => {
     const windowDimensions = useWindowDimensions();
@@ -98,7 +99,7 @@ export const CommentsSection = memo(({ isCommentsModal, commentsDataInline, data
     )
 });
 
-export const MainContent = memo(({ url, data, MarketView, AdView, GroupView, DefaultView }) => {
+export const MainContent = memo(({ url, data }) => {
 
     const bIsTitle = data?.content?.title && data?.content?.title?.trim() != '' ? true : false
 
@@ -124,10 +125,12 @@ export const MainContent = memo(({ url, data, MarketView, AdView, GroupView, Def
             : {}
     );
 
+
+
     const bIsTimelineContent = data?.type?.includes('timeline') || data?.type == 'bx_channels' ? true : false
-    const bIsGroupContent = (data.type == 'bx_groups' || data.type == 'bx_events') && data.action == 'added'
-    const bIsMarketContent = (data.type == 'bx_market') && data.action == 'added'
-    const bIsAddContent = (data.type == 'bx_ads') && data.action == 'added'
+    const bIsGroupContent = (data.type == 'bx_groups' || data.type == 'bx_events' || data.type == 'bx_courses'  || data.type == 'bx_spaces')
+    const bIsMarketContent = (data.type == 'bx_market') 
+    const bIsAddContent = (data.type == 'bx_ads')
 
     const commonProps = {
         isCompact: false,

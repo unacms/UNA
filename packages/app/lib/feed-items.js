@@ -10,11 +10,11 @@ import { Icon } from 'app/ui/atoms/icon';
 import { Pressable } from 'app/design/view';
 import { ContentMore } from 'app/ui/molecules/contentmore';
 import { LinkContent, UnitImages } from 'app/lib/feed-helpers'
-import { LAYOUT_BREAKPOINTS } from 'app/lib/util'
+import { LAYOUT_BREAKPOINTS, stripTags } from 'app/lib/util'
 
 export const GroupView = memo(({data, styles, url, isCompact}) => {
     const pref = isCompact ? '' : 'md:';
-    return (<View className={isCompact ? " flex-row space-x-2 mx-4 overflow-hidden rounded-lg border border-bdritem dark:border-bdritem-d bg-bgritem dark:bg-bgritem-d p-1" : " flex-col md:flex-row space-x-2 overflow-hidden rounded-lg bg-bgritem dark:bg-bgritem-d p-1"}>
+    return (<View className={isCompact ? " flex-row space-x-2 mx-4 overflow-hidden rounded-lg border border-bdritem dark:border-bdritem-d bg-bgritem dark:bg-bgritem-d p-1" : " flex-col md:flex-row space-x-2 overflow-hidden rounded-lg bg-bgritem dark:bg-bgritem-d p-1 my-3"}>
         {data.mainImage && (
             <View className={isCompact ? "w-64" : "w-full md:w-1/3 "}>
                 <View
@@ -69,9 +69,9 @@ export const GroupView = memo(({data, styles, url, isCompact}) => {
                 <View className="flex-col relative">
                     <Text
                         className="text-neutral-800 dark:text-neutral-200 text-base "
-                        numberOfLines={2}
+                        numberOfLines={3}
                     >
-                        {data.content.text}
+                        {stripTags(data.content.text)}
                     </Text>
                 </View>
             </View>
@@ -221,7 +221,7 @@ export const DefaultView = memo(({data, styles, bIsTitle, bIsTimelineContent, co
                                 className="text-neutral-800 dark:text-neutral-200 text-base"
                                 numberOfLines={3}
                             >
-                                {data.content.text}
+                                {stripTags(data.content.text)}
                             </Text>
                         )}
                     </View>

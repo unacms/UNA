@@ -2498,7 +2498,7 @@ export const settingsDefault = {
         native_tabs:{
             tabBarItemStyle:{
                 marginBottom: 0,
-                height: 54,
+                height: 48,
                 marginTop: 4,
                 paddingBottom: 0,
                 borderRadius: 16,

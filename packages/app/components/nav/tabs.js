@@ -91,10 +91,12 @@ export default function () {
         return null;
     }, [currentUser?.id]);
 
+    const tabsHeight = Platform.OS == 'ios' ? 52 : 56;
+
     const screenOptions = useMemo(() => ({
         tabBarStyle: {
             backgroundColor: colors.barsBackground,
-            height: isShowTabs ? 48 : 0,
+            height: isShowTabs ? tabsHeight : 0,
             opacity: isShowTabs ? 1 : 0,
             elevation: 0,
             boxShadow: 'none',

@@ -19,9 +19,15 @@ export const TextInputClear = TextInputDef
 export const Input = ({ className, ...props }) => (
     <TextInputDef className={inputSettings.default} {...props} />
 );
+
+export const InputRef = forwardRef(({ className, ...props }, ref) => (
+    <TextInputDef className={inputSettings.default} {...props} />
+));
+
 export const InputMulti = ({ className, ...props }) => (
     <TextInputDef className={inputSettings.multi} {...props} />
 );
+
 export const InputRounded = ({ className, ...props }) => (
     <TextInputDef className={inputSettings.rounded} {...props} />
 );
@@ -29,12 +35,15 @@ export const InputRounded = ({ className, ...props }) => (
 export const InputRoundedRef = forwardRef(({ className, ...props }, ref) => (
     <TextInputDef className={inputSettings.rounded} ref={ref} {...props}  />
 ));
+
 export const InputRoundedSmall = ({ className, ...props }) => (
     <TextInputDef className={inputSettings.roundedsmall} ref={ref} {...props} />
 );
+
 export const InputSmall = ({ className, ...props }) => (
     <TextInputDef className={inputSettings.small} {...props} />
 );
+
 export const Hidden = ({ className, ...props }) => (
     <TextInputDef className={'hidden'} {...props} />
 );
@@ -49,6 +58,10 @@ const PickerStyles = ' appearance-none bg-bgrinput  border border-bdrinput dark:
 export const PickerStyled = ({ className, ...props }) => (
     <PickerDef className={PickerStyles} {...props} />
 );
+
+export const PickerStyledRef = forwardRef(({ className, ...props }, ref) => (
+    <PickerDef ref={ref} className={PickerStyles} {...props} />
+  ));
 
 export const PickerStyledIos = ({ className, ...props }) => (
     <PickerDef className={PickerStyles} {...props} />
