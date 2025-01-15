@@ -61,7 +61,7 @@ function Default({ data, showPad, sidebar, block }) {
     const text = clearLinks(data.entry_text);
     const isSmall = block?.module == "bx_market";
 
-    const videoId = getYouTubeVideoId(data.video_embed);
+    const videoId = data.video_embed && getYouTubeVideoId(data.video_embed) || null;
 
     return (
         <View className="w-full">
