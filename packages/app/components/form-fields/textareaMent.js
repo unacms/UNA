@@ -139,7 +139,6 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
     let MentionInput = props.bg == 'transparent' ? MentionInputMultiTransparent : MentionInputMulti
     let ft = formatText(field.value);
     return (
-        <Field {...props}>
             <MentionInput style={styles}
                 inputRef={inputRef}
                 multiline
@@ -161,6 +160,6 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
                     },
                 ]}
             />
-        </Field>
+
     );
 }

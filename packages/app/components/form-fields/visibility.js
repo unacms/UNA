@@ -70,6 +70,7 @@ export default function (props) {
                     size="base"
                     onPress={() => showSelect()}
                 />
-            </Field>  </>
+            </Field>
+        </>
     );
 }
