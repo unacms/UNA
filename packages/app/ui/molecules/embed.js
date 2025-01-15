@@ -2,22 +2,15 @@ import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
-import { memo, useState, useCallback } from "react";
-import { LAYOUT_BREAKPOINTS } from 'app/lib/util'
+import { memo } from "react";
+import { LAYOUT_BREAKPOINTS, getYouTubeVideoId } from 'app/lib/util'
 import Youtube from 'app/ui/molecules/youtube'
-import { Button } from 'app/design/controls';
-
-function getYouTubeVideoId(url) {
-    const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
-    const match = url.match(regex);
-    return match ? match[1] : null;
-}
 
 const Embed = memo(function ({ data, size }) {
 
     const videoId = getYouTubeVideoId(data.url);
     if (videoId)
-        return <Youtube videoId={videoId} size={size} />
+        return <Youtube url={data.url} size={size} />
 
     return <Link target='_blank' href={data.url} >
         <Row className='rounded-lg mt-3 border border-bdr dark:border-bdr-d'>

@@ -2,11 +2,12 @@ import { View } from 'app/design/view';
 import Image from 'app/ui/atoms/image';
 import Html from 'app/ui/atoms/html';
 import { Text, H1 } from 'app/design/typography';
-import { appSetting, clearLinks, LAYOUT_BREAKPOINTS } from 'app/lib/util'
+import { appSetting, clearLinks, getYouTubeVideoId, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { ContentMore } from 'app/ui/molecules/contentmore';
 import EntityAttachments from './entity_attachments';
 import TextMore from 'app/ui/molecules/textmore';
 import Video from 'app/ui/atoms/video';
+import Youtube from 'app/ui/molecules/youtube'
 
 export default function (props) {
     const data = props.data;
@@ -59,10 +60,16 @@ function Default({ data, showPad, sidebar, block }) {
     let att = getImagesData(data);
     const text = clearLinks(data.entry_text);
     const isSmall = block?.module == "bx_market";
+
+    const videoId = getYouTubeVideoId(data.video_embed);
+
     return (
         <View className="w-full">
-            {(!!data.video) && <View className='w-full aspect-video rounded-xl overflow-hidden lg:mt-6'>
+            {(!!data.video?.src_mp4) && <View className='w-full aspect-video rounded-xl overflow-hidden lg:mt-6'>
                 <Video poster={data.video.src_poster} src={data.video.src_mp4} cover={true}  controls={true} muted={"muted"} />
+            </View>}
+            {(videoId) && <View className='w-full aspect-video rounded-xl overflow-hidden lg:mt-6'>
+                <Youtube videoId={videoId} size={3} />
             </View>}
             {(!!data.image && !data.video) && <View className="w-full aspect-[2/1] rounded-xl overflow-hidden lg:mt-6"><Image {...data.image} alt={data.title} sizes={LAYOUT_BREAKPOINTS.lg} className=" u-cover" view="cover" /></View>}
             <View className={"mx-auto w-full " + (showPad == false || sidebar ? '' : ' ')}>
