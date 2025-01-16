@@ -24,7 +24,7 @@ import Form from 'app/components/elements/form'
 import useSWR from 'swr'
 import { useTranslation } from 'react-i18next';
 import Loading from 'app/ui/atoms/loading'
-import { GroupView, AdView, MarketView, DefaultView } from 'app/lib/feed-items'
+import * as FeedItems from 'app/lib/feed-items'
 
 export const CommentsModal = memo(({ commentsData, initFormData, itemContent, closeOnPost }) => {
     const windowDimensions = useWindowDimensions();
@@ -93,7 +93,7 @@ export const CommentsSection = memo(({ isCommentsModal, commentsDataInline, data
                     </Pressable> : <Link href={url}>{ShowMoreCmts}</Link>}
                 </View>
             )}
-            <CommentsBrowse maxCount={appSetting('layout', 'comments_count_in_feed')} contentUrl={url} browse={commentsDataInline} module={data?.cmts.module} isShort={true}  {...(isCommentsModal && { handleReply: showCommentsModal })} />
+            <CommentsBrowse maxCount={appSetting('comments', 'count_in_feed')} contentUrl={url} browse={commentsDataInline} module={data?.cmts.module} isShort={true}  {...(isCommentsModal && { handleReply: showCommentsModal })} />
 
         </View>
     )
@@ -125,13 +125,6 @@ export const MainContent = memo(({ url, data }) => {
             : {}
     );
 
-
-
-    const bIsTimelineContent = data?.type?.includes('timeline') || data?.type == 'bx_channels' ? true : false
-    const bIsGroupContent = (data.type == 'bx_groups' || data.type == 'bx_events' || data.type == 'bx_courses'  || data.type == 'bx_spaces')
-    const bIsMarketContent = (data.type == 'bx_market') 
-    const bIsAddContent = (data.type == 'bx_ads')
-
     const commonProps = {
         isCompact: false,
         content_attach,
@@ -141,19 +134,22 @@ export const MainContent = memo(({ url, data }) => {
         bIsTitle
     };
 
-    if (bIsMarketContent) {
-        return <MarketView {...commonProps} />;
-    }
+    const unitTypes = appSetting('feed', 'units');
+    const contentType = data?.type;
+    const componentName = unitTypes[contentType];
 
-    if (bIsAddContent) {
-        return <AdView {...commonProps} />;
-    }
-
-    if (bIsGroupContent) {
-        return <GroupView {...commonProps} />;
-    }
-
-    return <DefaultView {...commonProps} files_attach={files_attach} bIsTimelineContent={bIsTimelineContent} />;
+    const ContentComponent = FeedItems[componentName];
+ 
+    
+    return ContentComponent ? (
+        <ContentComponent {...commonProps} />
+    ) : (
+        <FeedItems.DefaultView
+            {...commonProps}
+            files_attach={files_attach}
+            bIsTimelineContent={data?.type?.includes('timeline') || data?.type === 'bx_channels'}
+        />
+    );
 });
 
 export function prepareData(data) {
@@ -163,7 +159,7 @@ export function prepareData(data) {
     let isShowMoreComments = false;
     if (data?.cmts?.data?.length > 0) {
         commentsData = { id: 'cmt_list', insert: 'before', 'type': 'browse', 'data': data.cmts };
-        if (data?.cmts.total_count > appSetting('layout', 'comments_count_in_feed')) {
+        if (data?.cmts.total_count > appSetting('comments', 'count_in_feed')) {
             isShowMoreComments = true;
         }
     }

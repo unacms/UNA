@@ -13,7 +13,7 @@ export function getFriendsCounter(currentUser) {
 
 export function getBadgeForTab(currentUser, url) {
     if (
-        url == appSetting('layout', 'notifications') &&
+        url == appSetting('notifications', 'url') &&
         currentUser?.notifications
     ){
         return (
@@ -46,9 +46,9 @@ export function getButtonForConductor(a, index, currentUser) {
         : a.icon.replace('*', '')
 
     let addon = a.addon ? a.addon : null
-    if (!appSetting('layout', 'show_nav_counters')) addon = null
+    if (!appSetting('conductor', 'show_nav_counters')) addon = null
     if (
-        appSetting('layout', 'show_nav_counters') == 'primary' &&
+        appSetting('conductor', 'show_nav_counters') == 'primary' &&
         a?.addon?.variant != 'primary'
     )
         addon = null
@@ -76,9 +76,9 @@ export function getButtonForConductorSmall(a, index, currentUser) {
         : a.icon.replace('*', '')
 
     let addon = a.addon ? a.addon : null
-    if (!appSetting('layout', 'show_nav_counters')) addon = null
+    if (!appSetting('conductor', 'show_nav_counters')) addon = null
     if (
-        appSetting('layout', 'show_nav_counters') == 'primary' &&
+        appSetting('conductor', 'show_nav_counters') == 'primary' &&
         a?.addon?.variant != 'primary'
     )
         addon = null
@@ -106,9 +106,9 @@ export function getAddonForConductor(a, index, currentUser) {
         : a.icon.replace('*', '')
 
     let addon = a.addon ? a.addon : null
-    if (!appSetting('layout', 'show_nav_counters')) addon = null
+    if (!appSetting('conductor', 'show_nav_counters')) addon = null
     if (
-        appSetting('layout', 'show_nav_counters') == 'primary' &&
+        appSetting('conductor', 'show_nav_counters') == 'primary' &&
         a?.addon?.variant != 'primary'
     )
         addon = null
@@ -137,9 +137,9 @@ export function getButtonForConductorNative(a, index, currentUser, setIndex, onC
         : a.icon.replace('*', '')
 
     let addon = a.addon ? a.addon : null
-    if (!appSetting('layout', 'show_nav_counters')) addon = null
+    if (!appSetting('conductor', 'show_nav_counters')) addon = null
     if (
-        appSetting('layout', 'show_nav_counters') == 'primary' &&
+        appSetting('conductor', 'show_nav_counters') == 'primary' &&
         a?.addon?.variant != 'primary'
     )
         addon = null

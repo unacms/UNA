@@ -346,7 +346,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
                 <ScrollView horizontal={true} style={{ backgroundColor: colors.barsBackground }} className=" border-b border-bdr dark:border-bdr-d min-w-full">
                     <Row className="px-1.5 " >
                         {props.navigationState.routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
-                            const counter = appSetting('layout', 'show_nav_counters') ? 0 : a.addon ? (a.addon.text ? a.addon.text : a.addon) : 0;
+                            const counter = appSetting('conductor', 'show_nav_counters') ? 0 : a.addon ? (a.addon.text ? a.addon.text : a.addon) : 0;
                             const counter2 = counter > 0 ? ' (' + counter + ')' : ''
                             const btn = callFn("getButtonForConductorNative", [a, props.navigationState.index, currentUser, setIndex, onChangeRoute])
 

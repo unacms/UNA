@@ -16,7 +16,7 @@ import Image from 'app/ui/atoms/image'
 import ProfileSwitcher from 'app/components/elements/profile_switcher';
 
 function SplashBlock(props) {
-    if (appSetting('layout', 'block') == 'image') {
+    if (appSetting('layout', 'splash_block') == 'image') {
         let url = '/splash.webp'
         return (
             <Image
@@ -28,11 +28,11 @@ function SplashBlock(props) {
         )
     }
 
-    if (appSetting('layout', 'block') == 'login') {
+    if (appSetting('layout', 'splash_block') == 'login') {
         return <BlockByName name={props.blocks.login} data={props.data} />
     }
 
-    if (appSetting('layout', 'block') == 'signup') {
+    if (appSetting('layout', 'splash_block') == 'signup') {
         return <BlockByName name={props.blocks.signup} data={props.data} />
     }
 
@@ -116,7 +116,7 @@ export default function (props) {
     if (currentUser) {
         let dUser = Object.assign({}, currentUser)
         dUser.url_avatar = dUser.avatar
-        dUser.url = appSetting('layout', 'dashboard')
+        dUser.url = appSetting('dashboard', 'url')
 
 
         return (

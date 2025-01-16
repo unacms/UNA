@@ -92,7 +92,7 @@ export default function (props) {
     const { t } = useTranslation();
     const bSearch = appSetting('layout', 'search') == true;
     const bMessenger = appSetting('messenger', 'url') ? true : false;
-    const bNotifs = appSetting('layout', 'notifications') ? true : false;
+    const bNotifs = appSetting('notifications', 'url') ? true : false;
 
     const headerSettings = props.headerSettings;
     

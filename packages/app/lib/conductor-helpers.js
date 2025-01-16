@@ -423,7 +423,7 @@ export function LeftSidebar({ title, addButtons, children, width, menu }) {
 }
 
 export function TopSidebar({ styles, isWeb, leftSideBar, header, headerSettings, addButtons, children, isSmall, title, layout, showMenu, isDrawer }) {
-    const isUseBg = appSetting('layout', 'use_background');
+    const isUseBg = appSetting('cover', 'use_background');
     return (
         <View
             style={styles}

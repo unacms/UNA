@@ -350,7 +350,7 @@ export function CommentsBrowse({ browse, requestUrl, module, handleReply, handle
         <Row className={'flex-row ' + (classesBrowse? classesBrowse: 'items-center mb-3 pt-1 border-t border-bdr dark:border-bdr-d')}>
 
             <Text className='flex-auto text-base font-bold text-neutral-900 dark:text-neutral-50'>{title} ({commentData.total_count})</Text>
-            {!appSetting('layout', 'hide_comments_sort') && <View className="ml-4">
+            {!appSetting('e', 'hide_sort') && <View className="ml-4">
                 <Pressable className="flex-auto" onPress={(event) => { event.preventDefault() }}>
                     <DropdownMenu items={[
                         { id: 'newest', name: 'desc', title: t('Oldest first') },
@@ -438,7 +438,7 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
         const updateFormData = async () => {
         if (formData.parent_id > 0) {
             form.data.inputs.cmt_parent_id.value = formData.parent_id;
-            if (appSetting('layout', 'comments_mentions')){
+            if (appSetting('comments', 'mentions')){
                 const sUrl = appSetting('urls', 'cmts_menthion_url');
                 if (sUrl){
                     const sResponse = await fetcher('/api.php?r='+sUrl+'&params[]='+formData.cmt_id+'&params[]='+formData.cmt_object_id+'');

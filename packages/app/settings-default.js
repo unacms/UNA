@@ -24,104 +24,108 @@ export const settingsDefault = {
         },
     },
     layout: {
-        native_enable_screens: true,
-        native_lazy_tabs: false,
-        format_list: ['hor', 'ver', 'mixed'],
-        format: 'hor', //hor, ver, mixed
-        format_guest: 'hor', //hor, ver, mixed
+        avaliable_layouts: ['hor', 'ver', 'mixed'], // OLD appSetting('layout', 'format_list')
+        default_layout: 'hor', //hor, ver, mixed// OLD appSetting('layout', 'format')
         max_width: ' full ', // consider for hor = max-w-screen-2xl, for ver = max-w-screen-xl
         max_width_block: 'max-w-screen-xl', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
-        use_background: false,
-        cover_aspect: 'aspect-3/1',
-        cell_gap: 4,
-        cell_style: '',
-        show_user_icon: false,
         search: true,
-        notifications: '/notifications-view',
-        dashboard: '/dashboard',
+        extended_search: true,
         apps: true,
-        block: 'login',
         show_profile_info: true,
-        allow_switch_profile: true,
-        switch_lang: ['ru', 'en'],
-        switch_theme: true,
-        background_image: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239C92AC' fill-opacity='0.08' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E")`,
-        background_image_dark: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239C92AC' fill-opacity='0.08' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E")`,
-        background_cover_color: '',
-        background_native: false,
+        tooltips: true,
         hide_header_for_non_logged: false,
         hide_header_for_all: false,
-        profile_colors: [
-            'orange',
-            'yellow',
-            'green',
-            'teal',
-            'sky',
-            'indigo',
-            'purple',
-            'pink',
-            'rose',
-            'red',
-        ],
-        async_workers: ['CounterChecker'], //['EventChecker'],//NotifChecker
-        async_workers_interval: 10,
-        bluetooth: false,
-        bluetooth_device_name_prefix: 'NEO',
-        use_custom_font: false, //'font-main'
-        lock_unconfirmed: true,
-        entity_info_icon: 'Info',
-        disable_screenshots: false,
-        redirect_on_forbidden: '/home',
-        split_action_menu: false,
-        show_login_modal: 5000,
-        extended_search: true,
-        show_in_reply_comments: true,
-        show_nav_counters: 'primary',
-        show_nav_titles: true,
-        allow_edit_covers: true,
-        allow_create_new_profile: true,
-        form_fields_optional_text1: '',
-        form_fields_mandatory_icon: 'Asterisk',
-        form_without_captions: [
-            'sys_login',
-            'sys_account_create',
-            'sys_forgot_password',
-            'bx_invites_request_send',
-        ],
-        form_visibility_control_names: [
-            '*_allow_view_to',
-            '*_object_privacy_view',
-        ],
-        form_selector_control_names: ['*_cat'],
         card_animation_duration: 0,
-        comments_mentions: true,
-        carousel_image_width: '',
-        carousel_image_aspect: ' aspect-square ',
-        show_navigation_non_logged_native: false,
-        hide_comments_sort: false,
-        comments_in_modal: true,
-        comments_count_in_feed: 3,
-        add_notifications_count_in_title: true,
-        show_nav_non_logged_native: true,
+        
+        background_image_color: '', //OLD appSetting('layout', 'background_cover_color')
+        background_image: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239C92AC' fill-opacity='0.08' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E")`,
+        background_image_dark: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239C92AC' fill-opacity='0.08' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E")`,
+        
+        splash_block: 'login', //OLD appSetting('layout', 'block')
+        show_login_modal: 5000,
+        redirect_on_forbidden: '/home',
+        lock_unconfirmed: true,
+        allow_create_new_profile: true,
+
         button_style_for_actions: 'secondary',
-        cover_mode: {
+       
+        share_text: '',
+    },
+
+    native:{
+        enable_screens: true, //OLD appSetting('layout', 'native_enable_screens')
+        lazy_tabs: false, // OLD appSetting('layout', 'native_lazy_tabs')
+        disable_screenshots: false, // OLD appSetting('layout', 'disable_screenshots')
+        show_tabs_non_logged: true, // OLD appSetting('layout', 'show_nav_non_logged_native')
+        use_custom_font: false, //'font-main' //OLD appSetting('layout', 'use_custom_font')
+        bluetooth: false, //OLD appSetting('layout', 'bluetooth')
+        bluetooth_device_name_prefix: 'NEO', //OLD appSetting('layout', 'bluetooth_device_name_prefix')
+    },
+    async_workers: {
+        list: ['CounterChecker'], //['EventChecker'],//NotifChecker OLD appSetting('layout', 'async_workers')
+        interval: 10, //OLD appSetting('layout', 'async_workers_interval')
+    },
+    cover:{
+        use_background: false, //appSetting('layout', 'use_background')
+        aspect_ratio: 'aspect-3/1', //appSetting('layout', 'cover_aspect')
+        allow_edit: true, //appSetting('layout', 'allow_edit_covers')
+        fixed: false, //appSetting('layout', 'fixed_cover')
+        scroll: false, 
+        split_action_menu: false, //OLD appSetting('layout', 'split_action_menu')
+        back_button_url_for_profile: '/friends',  //OLD appSetting('layout', 'back_for_profile') 
+        view_by_module: { //appSetting('layout', 'cover_mode'
             bx_courses: 'min',
             bx_jobs: 'min',
         },
-        hide_browse_filter: true,
-        use_youtube_player: true,
-        hide_edit_covers: false,
-        share_text: '',
-        fixed_cover: false,
-        tooltips: true,
-        back_for_profile: '/friends',   
+    },
+    comments:{
+        hide_sort: false, //OLD appSetting('layout', 'hide_comments_sort')
+        show_modal_in_feed: true, //OLD appSetting('layout', 'comments_in_modal')
+        count_in_feed: 3, //OLD appSetting('layout', 'comments_count_in_feed')
+        mentions: true, //OLD appSetting('layout', 'comments_mentions')
+        in_reply: true, //OLD appSetting('layout', 'show_in_reply_comments')
+    },
+    dashboard:{
+        url: '/dashboard',
+        langs: ['ru', 'en'], //OLD appSetting('layout', 'switch_lang')
+        switch_theme: true, //OLD appSetting('layout', 'switch_theme')
+    },
+    notifications:{
+        url: '/notifications-view', //OLD appSetting('layout', 'notifications') 
+        count_in_title: true, //OLD appSetting('layout', 'add_notifications_count_in_title')
+    },
+    carousel:{
+        image_width: '', //appSetting('layout', 'carousel_image_width')
+        image_aspect_ratio: ' aspect-square ',//appSetting('layout', 'carousel_image_aspect')
+    },
+    conductor:{
+        show_nav_counters: 'primary', // OLD appSetting('layout', 'show_nav_counters')
+        show_nav_titles: true, // OLD appSetting('layout', 'show_nav_titles')
+        hide_browse_filter: true, // OLD appSetting('layout', 'hide_browse_filter')
+    },
+    entry: {
+        default_view: '',
+        default_info_icon: 'Info', //appSetting('layout', 'entity_info_icon')
     },
     messenger: {
         url: '/messenger', //OLD appSetting('layout', 'messenger')
         back_button: false, //OLD appSetting('layout', 'show_back_button_in_messenger')
     },
-
     forms: {
+        optional_text: '',// OLD appSetting('layout', 'form_fields_optional_text')
+        mandatory_icon: 'Asterisk',// OLD appSetting('layout', 'form_fields_mandatory_icon')
+        without_captions: [ // OLD appSetting('forms', 'form_without_captions')
+            'sys_login',
+            'sys_account_create',
+            'sys_forgot_password',
+            'bx_invites_request_send',
+        ],
+        visibility_control_names: [ // appSetting('layout', 'form_' + name + '_control_names')
+            '*_allow_view_to',
+            '*_object_privacy_view',
+        ],
+        selector_control_names: ['*_cat'],
+
         sys_login: { hide_errors: true, button_full_width: true },
         sys_account_create: {
             hide_errors: true,
@@ -176,6 +180,14 @@ export const settingsDefault = {
             { name: 'public', icon: 'Egg', title: 'Public', showTitle: true },
             { name: 'channels', icon: 'Hash', title: 'News', showTitle: true },*/
         ],
+        units:{
+            bx_market: 'MarketView',
+            bx_ads: 'AdView',
+            bx_groups: 'GroupView',
+            bx_events: 'GroupView',
+            bx_courses: 'GroupView',
+            bx_spaces: 'GroupView',
+        },
         actions_menu: {
             show_action: true, // show action part or not
             show_counter: false, // show counter part or not
@@ -211,9 +223,7 @@ export const settingsDefault = {
 
         */
     },
-    entry: {
-        default_view: '',
-    },
+   
     suggestion: {
         list: [
             /*  {
@@ -2495,6 +2505,18 @@ export const settingsDefault = {
         },
     },
     theme: {
+        profile_colors: [//OLD appSetting('layout', 'profile_colors')
+            'orange',
+            'yellow',
+            'green',
+            'teal',
+            'sky',
+            'indigo',
+            'purple',
+            'pink',
+            'rose',
+            'red',
+        ],
         native_tabs:{
             tabBarItemStyle:{
                 marginBottom: 0,

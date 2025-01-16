@@ -48,7 +48,7 @@ export function Root(props) {
 
     useEffect(() => {
         if (data?.title) {
-            if (appSetting('layout', 'add_notifications_count_in_title')) {
+            if (appSetting('notifications', 'count_in_title')) {
                 if (currentUser?.notifications > 0) {
                     document.title = decodeText('(' + currentUser?.notifications + ') ' + data?.title);
                 }

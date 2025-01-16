@@ -22,7 +22,7 @@ import { Theme } from 'app/design/theme';
 
 
 function SplashBlock(props) {
-    if (appSetting('layout', 'block') == 'image') {
+    if (appSetting('layout', 'splash_block') == 'image') {
         let url = '/splash.webp'
         return (
             <Image
@@ -34,11 +34,11 @@ function SplashBlock(props) {
         )
     }
 
-    if (appSetting('layout', 'block') == 'login') {
+    if (appSetting('layout', 'splash_block') == 'login') {
         return <BlockByName name={props.blocks.login} data={props.data} />
     }
 
-    if (appSetting('layout', 'block') == 'signup') {
+    if (appSetting('layout', 'splash_block') == 'signup') {
         return <BlockByName name={props.blocks.signup} data={props.data} />
     }
 

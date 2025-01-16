@@ -309,9 +309,9 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         };
 
         // Add the event listener when the component mounts
-        if (!appSetting('layout', 'fixed_cover'))
+        if (!appSetting('cover', 'fixed'))
             window.addEventListener('scroll', handleScroll);
-        if (appSetting('layout', 'cover_scroll'))
+        if (appSetting('cover', 'scroll'))
             scrollToCover(cover, windowWidth, offset)
 
         // Clean up the event listener when the component unmounts
@@ -419,9 +419,9 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     }, [windowWidth, currentUser, cntWidth, header, smallHeader]);
 
     const RenderScene = useCallback(({ route, status }) => {
-        const filters = appSetting('layout', 'hide_browse_filter') ? null : route?.endpoint?.filters;
-        const counter = appSetting('layout', 'show_nav_counters') ? 0 : route.addon ? (route.addon.text ? route.addon.text : route.addon) : 0;
-        const isTitle = appSetting('layout', 'show_nav_titles');
+        const filters = appSetting('conductor', 'hide_browse_filter') ? null : route?.endpoint?.filters;
+        const counter = appSetting('conductor', 'show_nav_counters') ? 0 : route.addon ? (route.addon.text ? route.addon.text : route.addon) : 0;
+        const isTitle = appSetting('conductor', 'show_nav_titles');
         return (
             <>
                 {callFn("getFiltersForConductor", [filters, setFilterValue, route?.endpoint?.params?.filters])}
@@ -615,7 +615,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                     title={(a.title)}
                     align="start"
 
-                    addon={!appSetting('layout', 'show_nav_counters') && a.addon ? null : a.addon}
+                    addon={!appSetting('conductor', 'show_nav_counters') && a.addon ? null : a.addon}
                 />
 
                 return (

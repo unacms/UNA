@@ -112,7 +112,7 @@ export default function PageLayout(props) {
 
     let currentFormat =  storageGet('layout:format','', true);
     if (!currentFormat)
-        currentFormat = appSetting('layout', 'format');
+        currentFormat = appSetting('layout', 'default_layout');
 
 
 
@@ -152,9 +152,9 @@ export default function PageLayout(props) {
                                     <Button variant="outline" startDecorator="UserSwitch"  rounded  />
                                 </ProfileSwitcher>
                                 {
-                                    appSetting('layout', 'switch_lang').length > 1 && (
+                                    appSetting('dashboard', 'langs').length > 1 && (
                                         <View><DropdownMenu 
-                                            items={appSetting('layout', 'switch_lang').map(lang => ({
+                                            items={appSetting('dashboard', 'langs').map(lang => ({
                                                 id: lang,
                                                 key: lang,
                                                 name: lang,
@@ -173,7 +173,7 @@ export default function PageLayout(props) {
                                 }
                                 
                                 {
-                                    appSetting('layout', 'switch_theme') && (
+                                    appSetting('dashboard', 'switch_theme') && (
                                         <View><DropdownMenu items={['dark', 'light','auto'].map(theme => ({
                                                 key: theme,
                                                 id: theme,
@@ -199,7 +199,7 @@ export default function PageLayout(props) {
                         </View>
                     </Card>
                 </View>
-                {/* appSetting('layout', 'bluetooth') && Platform.OS != 'web' && <View className=" w-full  p-2">
+                {/* appSetting('native', 'bluetooth') && Platform.OS != 'web' && <View className=" w-full  p-2">
                     <Card rounded=" rounded-2xl " addClassName="w-full p-4 flex-row ">
                         <Bluetooth/>
                     </Card>
@@ -213,9 +213,9 @@ export default function PageLayout(props) {
                                
                                 {
                                     
-                                    appSetting('layout', 'switch_lang').length > 1 && (
+                                    appSetting('dashboard', 'langs').length > 1 && (
                                         <View className="mb-2">
-                                        <DropdownMenu items={appSetting('layout', 'switch_lang').map(lang => ({
+                                        <DropdownMenu items={appSetting('dashboard', 'langs').map(lang => ({
                                                 id: lang,
                                                 key: lang,
                                                 name: lang,
@@ -236,7 +236,7 @@ export default function PageLayout(props) {
                                         )
                                 }
                                 {
-                                    appSetting('layout', 'switch_theme') && (
+                                    appSetting('dashboard', 'switch_theme') && (
                                         <View className="mb-2">
 
                                         <DropdownMenu items={['dark', 'light','auto'].map(theme => ({
@@ -261,11 +261,11 @@ export default function PageLayout(props) {
                                 }
                                 
                                 {
-                                    appSetting('layout', 'format_list').length > 1 && (
+                                    appSetting('layout', 'avaliable_layouts').length > 1 && (
                                         
                                         <View className='hidden sm:flex mb-2'>
                                             <DropdownMenu 
-                                            items={appSetting('layout', 'format_list').map(lang => ({
+                                            items={appSetting('layout', 'avaliable_layouts').map(lang => ({
                                                 id: lang,
                                                 key: lang,
                                                 name: lang,

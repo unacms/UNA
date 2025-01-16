@@ -310,7 +310,7 @@ export function getRandomColor(str) {
         hash = ((hash << 5) - hash) + char;
         hash |= 0; // Convert to 32bit integer
     }
-    var arr = appSetting('layout', 'profile_colors')
+    var arr = appSetting('theme', 'profile_colors')
     return arr[Math.abs(hash % 10)];
 }
 
@@ -920,11 +920,9 @@ const getNameFromSetting = (setting) => {
 };
 
 export function getLayout(currentUser, layoutName = '') {
-    // if (layoutName != 'profile' && layoutName != 'navigator')
-    //   return currentUser ? appSetting('layout', 'format') :  appSetting('layout', 'format_guest');
     let a = storageGet('layout:format', '', true);
     if (!a)
-        return appSetting('layout', 'format');
+        return appSetting('layout', 'default_layout');
 
     return a;
 }

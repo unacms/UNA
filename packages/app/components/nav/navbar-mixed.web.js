@@ -68,7 +68,7 @@ export default function (props) {
     const { t } = useTranslation();
     const bSearch = appSetting('layout', 'search') == true;
     const bMessenger = appSetting('messenger', 'url') ? true : false;
-    const bNotifs = appSetting('layout', 'notifications') ? true : false;
+    const bNotifs = appSetting('notifications', 'url') ? true : false;
 
     const menu_sidebar_items = menuItemsByName('main_menu', appSetting('menu_items', 'menu_sidebar'), currentUser);
 

@@ -6,7 +6,7 @@ import { Icon } from 'app/ui/atoms/icon'
 import { appSetting } from 'app/lib/util'
 
 export default function ElementEntityInfo({ data }) {
-    const defaultIcon = appSetting('layout', 'entity_info_icon');
+    const defaultIcon = appSetting('entry', 'default_info_icon');
 
     const inputs = Object.keys(data.inputs).map(function (key) {
         const a = data.inputs[key]

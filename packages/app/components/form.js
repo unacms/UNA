@@ -32,7 +32,7 @@ function getFormFieldList(name, inputs, handleSubmit, isInitial = false, lastCha
 }
 
 const checkInputType = (name, form_name, input_name) => {
-    const setting = appSetting('layout', 'form_' + name + '_control_names');
+    const setting = appSetting('forms', name + '_control_names');
     if (setting && (setting.includes(form_name + '_' + input_name) || setting.includes('*_' + input_name)))
         return true;
 
@@ -171,7 +171,7 @@ export default function (props) {
             ...input,
             props: {
                 ...input.props,
-                use_caption_as_placeholder: appSetting('layout', 'form_without_captions').includes(name) ? true : false,
+                use_caption_as_placeholder: appSetting('layout', 'without_captions').includes(name) ? true : false,
                 ...(index === inputs.length - 1 - inputs.slice().reverse().findIndex(input => input.props?.type !== "hidden") && { noMargin: true })
             },
         }));

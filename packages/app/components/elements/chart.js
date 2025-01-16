@@ -115,7 +115,7 @@ export default function ElementChart({ data }) {
         const transformedData = data.labels.map((label, index) => {
             return { x: '', y: data.data.data[index] };
         });
-        var backgroundColor = appSetting('layout', 'profile_colors');
+        var backgroundColor = appSetting('theme', 'profile_colors');
         var backgroundColor2 = backgroundColor.map(color => getColor(color));
         CharComponent = (
             <View>

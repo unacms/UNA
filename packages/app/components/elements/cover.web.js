@@ -23,7 +23,7 @@ const conductorTheme = appSetting('theme', 'conductor');
 export function CoverSmall(props) {
     const data = props.data
     const { currentUser, setCurrentUser } = useCurrentUser()
-    const isUseBg = appSetting('layout', 'use_background')
+    const isUseBg = appSetting('cover', 'use_background')
     const windowDimen = useWindowDimensions()
     const windowWidth = windowDimen.width
     let bPerson = props.data.profile.module == 'bx_persons' ? true : false
@@ -77,7 +77,7 @@ export default function (props) {
     const { t } = useTranslation();
     const { currentUser, setCurrentUser } = useCurrentUser()
     const data = props.data
-    const cover_mode_by_type = appSetting('layout', 'cover_mode', props.data?.profile?.module);
+    const cover_mode_by_type = appSetting('cover', 'view_by_module', props.data?.profile?.module);
     const mode = cover_mode_by_type || props.mode
     let bPerson = props.data.profile.module == 'bx_persons' ? true : false
     const [coverUrl, setCoverUrl] = useState(data.cover.src)
@@ -203,9 +203,9 @@ export default function (props) {
 
     data.profile.url_avatar = pictureUrl
 
-    const isUseBg = appSetting('layout', 'use_background')
+    const isUseBg = appSetting('cover', 'use_background')
 
-    const bAllowEdit = data.allow_edit && appSetting('layout', 'allow_edit_covers');
+    const bAllowEdit = data.allow_edit && appSetting('cover', 'allow_edit');
 
     const foundItem = currentUser?.informer?.find((item) => { return item.id == 'sys-switch-profile-context' });
     let isAllowSwitch = foundItem ? foundItem.msg : false;
@@ -231,7 +231,7 @@ export default function (props) {
                     <View
                         className={
                             ' duration-300 bg-primary-200 dark:bg-primary-950 aspect-video sm:' +
-                            appSetting('layout', 'cover_aspect') +
+                            appSetting('cover', 'aspect_ratio') +
                             ' w-auto xl:rounded-b-xl overflow-hidden'
                         }
                     >
@@ -255,10 +255,7 @@ export default function (props) {
                             />
 
                             }
-                            {(bAllowEdit && !appSetting(
-                                        'layout',
-                                        'hide_edit_covers'
-                                    ))&& (<Button
+                            {(bAllowEdit) && (<Button
                                 rounded
                                 startDecorator="Camera"
                                 onPress={() => handleUpload('cover')}
@@ -282,11 +279,7 @@ export default function (props) {
                                     displayType="unit_wo_info"
                                     displaySize="4xl"
                                 />
-                                {bAllowEdit &&
-                                    !appSetting(
-                                        'layout',
-                                        'hide_edit_covers'
-                                    ) && (
+                                {bAllowEdit && (
                                         <View className="p-4 absolute -bottom-2 right-0">
                                             <Button
                                                 rounded

@@ -47,7 +47,7 @@ export function CoverMenu(props) {
 
     if (width < LAYOUT_BREAKPOINTS.sm) size = 'base'
 
-    const isSplitMenu = appSetting('layout', 'split_action_menu')
+    const isSplitMenu = appSetting('cover', 'split_action_menu')
 
     let aMenuManageItems = []
 

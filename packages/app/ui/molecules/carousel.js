@@ -33,8 +33,8 @@ const Gallery = React.memo(({ data, handleShowImage, windowWidthOr }) => {
     const dataR1 = useMemo(() => (len === 3 ? data2.slice(0, 1) : data2.slice(0, 2)), [data2, len]);
     const dataR2 = useMemo(() => (len === 3 ? data2.slice(1, 3) : data2.slice(2, 4)), [data2, len]);
     const isWeb = Platform.OS == 'web'
-    const max_image_width = appSetting('layout', 'carousel_image_width');
-    const max_image_aspect = appSetting('layout', 'carousel_image_aspect');
+    const max_image_width = appSetting('carousel', 'image_width');
+    const max_image_aspect = appSetting('carousel', 'image_aspect_ratio');
 
     if (data2.length == 1) {
 

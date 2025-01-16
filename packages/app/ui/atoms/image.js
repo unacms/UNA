@@ -67,7 +67,7 @@ export default function ElementImage(props) {
         if (nobg) return {};
 
         if (Platform.OS !== 'web' || !bg_image) {
-            return { ...style, backgroundColor: appSetting('layout', 'background_cover_color') };
+            return { ...style, backgroundColor: appSetting('layout', 'background_image_color') };
         } else {
             if (bg_image)
                 return { ...style, backgroundImage: bg_image };

@@ -96,7 +96,7 @@ export default function Bluetooth(props) {
 
     React.useEffect(() => {
         if (!hasPerm || !isEnabled) return;
-        Peripheral.setDeviceName(appSetting('layout', 'bluetooth_device_name_prefix') + "-" + currentUser.id).catch((err) =>
+        Peripheral.setDeviceName(appSetting('native', 'bluetooth_device_name_prefix') + "-" + currentUser.id).catch((err) =>
             console.error('SET NAME', err)
         );
     }, [hasPerm, isEnabled]);
@@ -184,8 +184,8 @@ export default function Bluetooth(props) {
             //console.log("Discovered device:", device.name, device.id, device.rssi, distance);
 
             currentUser?.settings?.forgotted_users
-            if (device?.name?.includes(appSetting('layout', 'bluetooth_device_name_prefix') + "-") && distance < 1) {
-                let userId = device.name.replace(appSetting('layout', 'bluetooth_device_name_prefix') + "-", '');
+            if (device?.name?.includes(appSetting('native', 'bluetooth_device_name_prefix') + "-") && distance < 1) {
+                let userId = device.name.replace(appSetting('native', 'bluetooth_device_name_prefix') + "-", '');
                 //console.log("----", currentUser?.settings?.forgotted_users, userId, "----")
                 if (!currentUser?.settings?.forgotted_users || !currentUser?.settings?.forgotted_users.includes(parseInt(userId))) {
                     manager.stopDeviceScan();

@@ -24,7 +24,8 @@ import { LogLevel, OneSignal } from 'react-native-onesignal';
 import { callFn } from 'app/lib/functions/call';
 import fonts from 'app/design/fonts/fonts';
 import { Platform } from 'react-native'
-enableScreens(appSetting('layout', 'native_enable_screens'));
+
+enableScreens(appSetting('native', 'enable_screens'));
 
 const themeSettings = appSetting('theme', 'native_tabs');
 
@@ -68,7 +69,7 @@ function processUrl(url, router, currentUser, TabList) {
 export default function () {
     const { currentUser, setCurrentUser } = useCurrentUser();
 
-    const isUseCustomFont = appSetting('layout', 'use_custom_font');
+    const isUseCustomFont = appSetting('native', 'use_custom_font');
     const fontsToLoad = isUseCustomFont ? fonts : {};
 
     const [fontsLoaded] = useFonts(fontsToLoad);
@@ -78,7 +79,7 @@ export default function () {
     const { colors } = Theme();
     const iconWidth = 28;
     const iconHeight = 28;
-    const isShowTabs = currentUser || appSetting('layout', 'show_nav_non_logged_native')
+    const isShowTabs = currentUser || appSetting('native', 'show_tabs_non_logged')
     const notificationUrl =  appSetting('layout', 'notifications');
 
     const TabList = useMemo(() => currentUser ? appSetting('menu_items', 'menu_tabbar_logged') : appSetting('menu_items', 'menu_tabbar_non_logged'), [currentUser?.id]);
@@ -112,7 +113,7 @@ export default function () {
         tabBarActiveBackgroundColor: colors.primaryBg,
         freezeOnBlur: true,
         unmountOnBlur: false,
-        lazy: currentUser ? appSetting('layout', 'native_lazy_tabs') : true,
+        lazy: currentUser ? appSetting('native', 'lazy_tabs') : true,
     }), [colors, isShowTabs, currentUser?.id]);
 
     // DEEP LINKING

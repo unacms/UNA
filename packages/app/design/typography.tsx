@@ -9,7 +9,7 @@ export const Text = ({ children, className, fontFamily, style: propStyle, ...res
     const isWeb = Platform.OS == 'web'
     const correctedChildren = typeof children === 'string' ? decodeText(children) : children;
     
-    const isUseCustomFont = appSetting('layout', 'use_custom_font');
+    const isUseCustomFont = appSetting('native', 'use_custom_font');
     let finalClassName = normalizeClasses(`${className} ${isUseCustomFont ? fontFamily || isUseCustomFont : ''}`);
     const fontStyle = !isWeb && isUseCustomFont ? { fontFamily: fontFamily || isUseCustomFont } : {};
     const combinedStyle = [fontStyle, propStyle];

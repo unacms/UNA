@@ -17,7 +17,7 @@ import Link from 'app/ui/atoms/link'
 function CoverMenu(props) {
 
     let size = "sm"
-    const isSplitMenu = appSetting('layout', 'split_action_menu');
+    const isSplitMenu = appSetting('cover', 'split_action_menu');
 
     let aMenuManageItems = [];
 
@@ -100,7 +100,7 @@ export function CoverSmall(props) {
 
                 )}
             </View>
-            <Link href={appSetting('layout', 'back_for_profile')}>
+            <Link href={appSetting('cover', 'back_button_url_for_profile')}>
                 <View
                     className="mx-4 bg-bgrcard dark:bg-bgrcard-d w-10 h-10 rounded-full justify-center items-center"
                     onPress={routerExpo.back}

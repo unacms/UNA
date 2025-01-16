@@ -28,7 +28,7 @@ import { LogLevel, OneSignal } from 'react-native-onesignal';
 
 const AppLayout = React.memo(() => {
 
-    if (appSetting('layout', 'disable_screenshots')) {
+    if (appSetting('native', 'disable_screenshots')) {
         RNScreenshotPrevent.enabled(true);
         RNScreenshotPrevent.enableSecureView();
     }
