@@ -14,12 +14,11 @@ import { ConductorFlat as Conductor} from 'app/ui/molecules/conductor_flat'
 import { Text } from 'app/design/typography'
 import { Button } from 'app/design/controls'
 
-import { appStatic } from 'app/lib/app-static'
 import { useTranslation } from 'react-i18next'
 import { useWindowDimensions } from 'react-native';
 import Image from 'app/ui/atoms/image'
 import { Theme } from 'app/design/theme';
-
+import Splash from 'app/ui/molecules/splash'
 
 function SplashBlock(props) {
     if (appSetting('layout', 'splash_block') == 'image') {
@@ -115,7 +114,7 @@ export default function PageLayout(props) {
         items: menuItems,
     }
 
-    let p = {
+    const p = {
         blocks: props.blocks,
         data: props.data,
         block: SplashBlock(props),
@@ -138,7 +137,7 @@ export default function PageLayout(props) {
                             ' mx-auto w-full'
                         }
                     >
-                        {appStatic('components_splash', p)}
+                        <Splash {...p}  />
                     </View>
                 </ScrollView>
             )}

@@ -2,15 +2,60 @@ import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
 import Time from 'app/ui/atoms/time'
 import Embed from 'app/ui/molecules/embed'
-import React, { memo, useEffect } from 'react'
+import { memo, useEffect , useMemo} from 'react'
 import { Text } from 'app/design/typography'
 import { View, Row, ScrollView } from 'app/design/view'
 import { fetcher } from 'app/lib/fetcher'
 import { Icon } from 'app/ui/atoms/icon';
 import { Pressable } from 'app/design/view';
 import { ContentMore } from 'app/ui/molecules/contentmore';
-import { LinkContent, UnitImages } from 'app/lib/feed-helpers'
 import { LAYOUT_BREAKPOINTS, stripTags } from 'app/lib/util'
+
+export const LinkContent = memo(({ url, data }) => (
+    <Link href={url}>
+        <Text className="mr-auto  bg-primary-100 dark:bg-primary-900 rounded-lg font-semibold px-2 py-1 flex-none flex-auto text-neutral-800 dark:text-neutral-200">
+            {data.content.price ? data.content.price.replace("&#36;", "$") : 'Free'}
+        </Text>
+        <Text
+            numberOfLines={2}
+            className=" text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-lg sm:text-xl tracking-tight font-bold"
+        >
+            {data.content.title}
+        </Text>
+    </Link>
+));
+
+export const UnitImages = memo(({ images }) => {
+    const aImg = useMemo(() => {
+        if (!images?.length) return [];
+
+        const photo = images
+            .filter(item => item.src)
+            .map(obj => ({
+                src: obj.src_orig || obj.src,
+                width: obj.width,
+                height: obj.height,
+                type: 'image',
+            }));
+
+        const video = images
+            .filter(item => item.src_poster)
+            .map(obj => ({
+                src: obj.src_poster || obj.src_poster,
+                type: 'video',
+            }));
+
+        return [...photo, ...video];
+    }, [images]);
+
+    if (aImg.length === 0) return null; // Or <></>
+
+    return (
+        <View className="w-full">
+            <Carousel data={aImg} />
+        </View>
+    );
+});
 
 export const GroupView = memo(({data, styles, url, isCompact}) => {
     const pref = isCompact ? '' : 'md:';

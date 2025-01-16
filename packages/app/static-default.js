@@ -12,10 +12,8 @@ import { Animated } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { tp, appSetting, updateRouteDataForConnection } from 'app/lib/util'
 import ProfilesList from 'app/ui/molecules/profile_list'
-import { Platform } from 'react-native'
 import PopupModal from 'app/ui/molecules/popup_modal'
-import Splash from 'app/ui/molecules/splash'
-import { componentsMap } from 'app/ui/molecules/_map'
+
 
 const LogoText = (
     <Svg
@@ -323,9 +321,6 @@ function ComponentModal({ title = 'test' }) {
     return <PopupModal />
 }
 
-function ComponentsSplash(props) {
-    return <Splash {...props} logo_native={LogoNative} />
-}
 
 const ComponentsLoginContent = (
     <View className="flex-row hidden lg:flex  gap-x-12 gap-y-2">
@@ -647,7 +642,6 @@ export const staticDefault = {
     components_comments_empty: ComponentsCommentsEmpty,
     components_content_empty: ComponentsContentEmpty,
     components_intro: ComponentsIntro,
-    components_splash: ComponentsSplash,
     components_modal: ComponentModal,
     components_dummy: ComponentsDummy,
     components_footer: ComponentsFooter,

@@ -3,7 +3,6 @@ import { Text } from 'app/design/typography'
 import { Button, Modal } from 'app/design/controls'
 import Card from 'app/components/card'
 import { useState } from 'react'
-import React from 'react'
 import { appSetting, BlockDataByName, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { Platform } from 'react-native'
 import { useWindowDimensions } from 'react-native'
@@ -139,7 +138,7 @@ export default function Splash(props) {
         return (
             <View className="justify-center">
                 <View className="items-center my-8 ">
-                    <View className="w-60 h-16 items-center">{props.logo_native}</View>
+                    <View className="w-60 h-16 items-center">{appStatic('logo_native')}</View>
                 </View>
                 {cnt}
             </View>

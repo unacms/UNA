@@ -9,7 +9,7 @@ import { storageSet, getDataFromCache } from 'app/lib/util';
 import { Platform } from 'react-native'
 import { appSetting } from 'app/lib/util'
 import { ActionMenu, CounterMenu } from 'app/lib/feed-helpers'
-
+import { UnitImages } from 'app/lib/feed-items'
 
 export default function ElementFeedItem({ data }) {
     const { layoutData } = useLayoutData();
@@ -41,7 +41,7 @@ export default function ElementFeedItem({ data }) {
         content_attach = content_attach.concat(content.videos_attach);
     }
 
-    function UnitImages(images) {
+    /*function UnitImages(images) {
 
         const aImg = useMemo(() => {
             if (!images?.images || images?.images?.length === 0) return [];
@@ -67,7 +67,7 @@ export default function ElementFeedItem({ data }) {
             <View className='mb-4'><Carousel data={aImg} /></View>
 
         )
-    }
+    }*/
 
     return (
         <View className="relative sm:my-0 w-full mx-auto max-w-5xl">

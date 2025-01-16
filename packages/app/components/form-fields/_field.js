@@ -15,10 +15,10 @@ export default function (props) {
     let sClassName = ' w-full form-control form-control-' + props.name + (props.noMargin === true ? '' : ' mb-2 ') +  (props?.classes ? ' ' + props?.classes : '');
 
     const optionalText = appSetting('forms', 'optional_text');
-
+    const mandatoryIcon = appSetting('forms', 'mandatory_icon');
     const isShowOptional = optionalText != '' ? '(' + optionalText + ')' : '';
-    
     const isShowCaption = !!props.caption && props.format == 'default' && !props.use_caption_as_placeholder && ['switcher', 'checkbox'].includes(props.type) == false;
+    
     return (
         <View className={sClassName}>
             {isShowCaption &&
@@ -26,8 +26,7 @@ export default function (props) {
                     <Row className='items-center gap-x-1' >
                         <Text className="font-semibold">{caption}</Text>
                         {((props.checker || props.required) ? <></> : <Text>{isShowOptional}</Text>)}
-                        {((props.checker || props.required) ? <Text className="text-red-600 h-4 text-xs"><Icon icon={appSetting('forms', 'mandatory_icon')} /></Text> : <></>)}
-
+                        {((!!mandatoryIcon && (props.checker || props.required)) ? <Text className="text-red-600 h-4 text-xs"><Icon icon={mandatoryIcon} /></Text> : <></>)}
                     </Row >
                 </Text>
             }

@@ -14,6 +14,7 @@ import { appStatic } from 'app/lib/app-static'
 import { useTranslation } from 'react-i18next'
 import Image from 'app/ui/atoms/image'
 import ProfileSwitcher from 'app/components/elements/profile_switcher';
+import Splash from 'app/ui/molecules/splash'
 
 function SplashBlock(props) {
     if (appSetting('layout', 'splash_block') == 'image') {
@@ -95,7 +96,7 @@ export default function (props) {
 
 
     if (!currentUser && renderBlock) {
-        let p = {
+        const p = {
             blocks: props.blocks,
             data: props.data,
             block: SplashBlock(props),
@@ -108,7 +109,7 @@ export default function (props) {
                     ' mx-auto w-full'
                 }
             >
-                {appStatic('components_splash', p)}
+                <Splash {...p}  />
             </View>
         </ScrollView>);
 
