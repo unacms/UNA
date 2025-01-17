@@ -87,7 +87,7 @@ export default function (props) {
         .map((key) => {
             return { name: key, block: props.blocks[key] }
         })
-
+    
     let navBarBlocks = Object.keys(props.blocks)
         .filter((key) => props.blocks[key].leftbar)
         .map((key) => {

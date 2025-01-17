@@ -6,7 +6,7 @@ import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { useTranslation } from 'react-i18next';
 import { getPageData, getBlocksFromData } from 'app/lib/util';
 import { useState, useEffect, useMemo } from 'react';
-import FormModal, { handleMenuManageSelect } from 'app/ui/molecules/form_modal';
+import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal';
 
 export default function MenuAdd({ buttonProps, children }) {
     const { currentUser, setCurrentUser } = useCurrentUser();
@@ -28,7 +28,7 @@ export default function MenuAdd({ buttonProps, children }) {
         <>
             <FormModal pageData={pageData} setPageData={setPageData} />
             <DropdownMenu
-                onSelect={(oItem, event) => handleMenuManageSelect(oItem, event, setPageData)}
+                onSelect={(oItem, event) => handleFormModal(oItem, event, setPageData)}
                 items={menu_add_items.map(
                     (item, index) => {
                         return (

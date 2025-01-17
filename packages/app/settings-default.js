@@ -547,13 +547,44 @@ export const settingsDefault = {
                 icon: 'Video',
             }
         ],
+        menu_post: {
+            items: [
+                {
+                    name: 'bx_timeline',
+                    title: 'Update',
+                    link: '/timeline-view',
+                    icon: 'ChatCenteredText',
+                    nonoperator: false,
+                },
+                {
+                    name: 'bx_posts',
+                    title: 'Blog post',
+                    link: '/create-post',
+                    icon: 'ChatCenteredText',
+                    nonoperator: false,
+                },
+                {
+                    name: 'bx_videos',
+                    title: 'Video',
+                    link: '/create-video',
+                    icon: 'Video',
+
+                    nonoperator: false,
+                },
+                {
+                    name: 'bx_forum',
+                    title: 'Discussion',
+                    link: '/create-discussion',
+                    icon: 'Chats',
+                },
+            ]
+        },
         menu_add: [
             {
                 name: 'create-post',
                 title: 'Blog post',
                 link: '/create-post',
                 icon: 'ChatCenteredText',
-                showInFeed: false,
                 nonoperator: false,
             },
             {
@@ -561,7 +592,7 @@ export const settingsDefault = {
                 title: 'Video',
                 link: '/create-video',
                 icon: 'Video',
-                showInFeed: true,
+
                 nonoperator: false,
             },
           
@@ -581,7 +612,6 @@ export const settingsDefault = {
                 name: 'create-discussion',
                 title: 'Discussion',
                 link: '/create-discussion',
-                showInFeed: true,
                 icon: 'Chats',
             },
             {
@@ -589,7 +619,6 @@ export const settingsDefault = {
                 title: 'Group',
                 link: '/create-group-profile',
                 icon: 'UsersThree',
-                showInFeed: true,
                 nonoperator: false,
             },
             {
@@ -1197,10 +1226,17 @@ export const settingsDefault = {
             layout: 'home',
             top: true,
             blocks: {
+                get_create_post_form: {
+                    name: 'system:get_create_post_form',
+                    showTitle: false,
+                    showBg: false,
+                    topbar: true,
+                },
                 public_feed_form: {
                     name: 'bx_timeline:get_block_post_home',
                     showTitle: false,
                     showBg: false,
+                    lalala: 'zxdc'
                 },
                 public_feed: {
                     name: 'bx_timeline:get_block_view_home',
@@ -1212,7 +1248,7 @@ export const settingsDefault = {
                     name: 'bx_timeline:get_block_post_account',
                     showTitle: false,
                     showBg: false,
-                    exProps: {showLinks:true, showForm:true}
+                    exProps: {formOnly:false}
                 },
                 foryou_feed: {
                     name: 'bx_timeline:get_block_view_feed_and_hot',
@@ -2221,11 +2257,16 @@ export const settingsDefault = {
         'view-group-profile': {
             layout: 'profile',
             blocks: {
-                col0: {
-                    name: 'bx_timeline:get_block_post_profile',
+                col00: {
+                    name: 'system:get_create_post_form',
                     showTitle: false,
                     showBg: false,
                 },
+               /* col0: {
+                    name: 'bx_timeline:get_block_post_profile',
+                    showTitle: false,
+                    showBg: false,
+                },*/
                 col1: {
                     name: 'bx_timeline:get_block_view_profile',
                     showTitle: false,

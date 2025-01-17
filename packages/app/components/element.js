@@ -9,7 +9,6 @@ const FallbackComponent = (props) => (
 );
 
 export default function (a) {
-
     const ElementType = useMemo(
         () => componentsMap[a.type] || FallbackComponent,
         [a.type]

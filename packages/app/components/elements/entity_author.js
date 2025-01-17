@@ -15,7 +15,7 @@ import { Modal } from 'app/design/controls'
 import { useTranslation } from 'react-i18next';
 import Form from 'app/components/elements/form'
 import { useLayoutData } from 'app/context/layout';
-import FormModal, { handleMenuManageSelect as handleMenuManageSelectModal } from 'app/ui/molecules/form_modal';
+import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal';
 
 export default function ElementEntityAuthor(oProps) {
     let { currentUser, setCurrentUser } = useCurrentUser();
@@ -104,7 +104,7 @@ export default function ElementEntityAuthor(oProps) {
         }
     }
     else{
-        handleMenuManageSelect = handleMenuManageSelectModal;
+        handleMenuManageSelect = handleFormModal;
     }
 
     const menuOptions = handleMenuManageSelect ? { onSelect: (oItem, event) => handleMenuManageSelect(oItem, event, setPageData) } : {};

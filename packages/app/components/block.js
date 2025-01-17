@@ -67,10 +67,9 @@ export function StaticBlock(props) {
 export default function Block(props) {
     let block = props.block;
 
-    let type = block.content && Array.isArray(block.content) ? 'array' : typeof block.content;
+    const type = block.content && Array.isArray(block.content) ? 'array' : typeof block.content;
     const BlockType = componentsMap[type];
-    const aAllowTypes = ['html', 'raw', 'lang'];
-    if (type == 'string' && !aAllowTypes.includes(block.type))
+    if (type == 'string' && !['html', 'raw', 'lang'].includes(block.type))
         return null;
 
     return (

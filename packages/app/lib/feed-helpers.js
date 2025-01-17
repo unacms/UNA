@@ -70,12 +70,20 @@ export const FeedEditForm = memo(({ setViewState, viewState, id }) => {
     }), [dynamicData]
 
     return (
+        <Modal
+            onVisible={true}
+            transparent={true}
+            headerBorder={true}
+        >
             <Form
-                exProps = {{formOnly:true}}
                 {...viewState.data}    
                 classContainerName="flex-row flex-wrap w-full items-start justify-between"
                 onFormSubmit={onFormSubmit}
+                exProps={{
+                    onClose: () => { setViewState({ view: '' }) }
+                }}
             />
+        </Modal>
     )
 });
 

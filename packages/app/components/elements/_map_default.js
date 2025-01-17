@@ -23,6 +23,7 @@ import Map from './map';
 import Calendar from './calendar';
 import Grid from './grid';
 import Chart from './chart';
+import MultiPostForm from './multi_post_form';
 import Comments from './comments';
 import CommentContent from './comment_content';
 import NotificationsSettings from './notifications_settings';
@@ -66,7 +67,7 @@ export const componentsMapDefault = {
     html: Lang,
     custom: Lang,
     get_block_contacts_messenger: ProfileContacts,
-    //messenger_main_page: MessengerPage,
+    get_create_post_form: MultiPostForm,
     simple_list: SimpleList
 };
 

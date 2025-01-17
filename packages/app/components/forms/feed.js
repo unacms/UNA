@@ -3,7 +3,7 @@ import { Button, Modal } from 'app/design/controls'
 import { useState, useContext, useRef, useCallback } from 'react'
 import { getFormFieldByData } from 'app/lib/form-helpers'
 import { useLayoutData } from 'app/context/layout'
-import { FeedbackHaptics, getAlert, menuItemsByName, appSetting } from 'app/lib/util'
+import { FeedbackHaptics, getAlert } from 'app/lib/util'
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view'
 import { Platform } from 'react-native'
 import { Text } from 'app/design/typography'
@@ -16,8 +16,7 @@ import { stripTags, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { useWindowDimensions } from 'react-native'
 import { Keyboard } from 'react-native'
 import { useFormContext } from 'react-hook-form'
-import FormModal, { handleMenuManageSelect } from 'app/ui/molecules/form_modal';
-import { Icon } from 'app/ui/atoms/icon'
+
 
 function ProfileView({ isImageOnly = false, data, handleSubmit, showImage, setShowImage }) {
     const { currentUser } = useCurrentUser();
@@ -66,7 +65,8 @@ export default function FormFeed(props) {
     const { currentUser } = useCurrentUser();
     const formContext = useFormContext()
     const { t } = useTranslation()
-    const isFormOnly = props.exProps?.formOnly === true;
+    const isFormOnly = props.exProps?.formOnly !== false;
+
     const [showImage, setShowImage] = useState(isFormOnly ? true : false);
     const [responseId, setResponseId] = useState(0)
     const [imageSource, setImageSource] = useState([])
@@ -77,13 +77,19 @@ export default function FormFeed(props) {
     const isSmall = windowDimensions.width < LAYOUT_BREAKPOINTS.sm || !isWeb ? true : false
     const isIos = Platform.OS === 'ios'
     const scrollViewRef = useRef(null)
-    const [pageData, setPageData] = useState(false);
+
+    function onClose() {
+        setShowImage(false)
+        if (props.exProps?.onClose) {
+            props.exProps.onClose()
+        }
+    }
 
     useEffect(() => {
         if (props.response?.id && props.response?.id != responseId) {
             //console.log("props.responseprops.response", props.response)
             setLayoutData(getAlert('feed:new_content', props.response))
-            setShowImage(false)
+            onClose();
             setResponseId(props.response?.id)
         }
     }, [props.response?.id])
@@ -138,9 +144,7 @@ export default function FormFeed(props) {
             </View>
 
             <Button
-                onPress={() => {
-                    setShowImage(false)
-                }}
+                onPress={onClose}
                 variant="secondary"
                 rounded
                 size="base"
@@ -164,14 +168,186 @@ export default function FormFeed(props) {
                 size: 'sm',
             }
         )
-    const menu_add_items = menuItemsByName('', appSetting('menu_items', 'menu_add'), currentUser).filter((item) => (item.showInFeed));
-
+    
     const handleModalClose = useCallback(() => {
         Keyboard.dismiss()
         setShowImage(false)
     }, [])
 
-console.log("showImage", showImage)
+
+    const form = <KbAvoidingView className='flex-col flex-auto' offset={isIos ? 74 : 74}>
+        {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'default')}
+        {getFormFieldByData(props.data.inputs['object_cf'], props.handleSubmit, 'default')}
+        {getFormFieldByData(props.data.inputs['owner_id'], props.handleSubmit, 'default')}
+        {getFormFieldByData(props.data.inputs['type'], props.handleSubmit, 'default')}
+        <View className="justify-between flex-col flex-auto ">
+            <ScrollView
+                ref={scrollViewRef}
+                className="w-full h-full flex-1"
+                keyboardShouldPersistTaps="handled"
+                onContentSizeChange={() =>
+                    scrollViewRef.current?.scrollToEnd({
+                        animated: true,
+                    })
+                }
+                onClick={(event) => { event.target.querySelector('.tiptap')?.focus() }}
+            >
+                <View className="w-full flex-col px-[12px] sm:p-0 ">
+
+                    {getFormFieldByData(
+                        props.data.inputs['text'],
+                        props.handleSubmit,
+                        'custom',
+                        {
+                            focus: true,
+                            bg: 'transparent',
+                            placeholder: 'Write here...',
+                            linkify: true,
+                            autofocus: Date.now()
+                        }
+                    )}
+                    {prevList.length > 0 && prevList[0]?.key && (
+                        <Row className="flex-wrap">{prevList}</Row>
+                    )}
+                    {props.data.inputs['labels'] && (
+                        <View className="flex-auto">
+                            {labels}
+                        </View>
+                    )}
+                </View>
+            </ScrollView>
+            <View className="  ">
+                <Row className={
+                    '  items-center flex-auto w-full gap-x-[24px]  ' +
+                    (isWeb ? '' : ' pb-[12px] ') +
+                    (isSmall
+                        ? ' pb-[12px] px-[8px] ' +
+                        (isIos ? ' bottom-[8px] ' : ' bottom-0 ') +
+                        '  '
+                        : ' my-auto ')
+                }>
+
+                    <Row className="gap-x-[4px] flex-auto justify-between ">
+                        <Row className="flex-auto">
+                            {props.data.inputs['obfuscate_faces'] && (
+                                <View className="">
+                                    {getFormFieldByData(
+                                        props.data.inputs['obfuscate_faces'],
+                                        props.handleSubmit,
+                                        'default'
+                                    )}
+                                </View>
+                            )}
+                            {props.data.inputs['photo'] && (
+                                <View className="">
+                                    {getFormFieldByData(
+                                        props.data.inputs['photo'],
+                                        props.handleSubmit,
+                                        'custom',
+                                        {
+                                            previewPlaceHolder: setPlaceHolder,
+                                            noMargin: true,
+                                            rounded: true,
+                                        }
+                                    )}
+                                </View>
+                            )}
+                            {props.data.inputs['video'] && (
+                                <View className="">
+                                    {getFormFieldByData(
+                                        props.data.inputs['video'],
+                                        props.handleSubmit,
+                                        'custom',
+                                        {
+                                            previewPlaceHolder: setPlaceHolder,
+                                            noMargin: true,
+                                            asDefaultStorage: true,
+                                            rounded: true,
+                                            size: 'base',
+                                            variant: 'text',
+                                            source: 'library',
+                                        }
+                                    )}
+                                </View>
+                            )}
+                            {(props.data.inputs['video'] && !isWeb) && (
+                                <View className="">
+                                    {getFormFieldByData(
+                                        props.data.inputs['video'],
+                                        props.handleSubmit,
+                                        'custom',
+                                        {
+                                            previewPlaceHolder: setPlaceHolder,
+                                            noMargin: true,
+                                            asDefaultStorage: true,
+                                            size: 'base',
+                                            variant: 'text',
+                                            rounded: true,
+                                            source: 'camera',
+                                        }
+                                    )}
+                                </View>
+                            )}
+                            {props.data.inputs['file'] && (
+                                <View>
+                                    {getFormFieldByData(
+                                        props.data.inputs['file'],
+                                        props.handleSubmit,
+                                        'custom',
+                                        {
+                                            previewPlaceHolder: setPlaceHolder,
+                                            noMargin: true,
+                                            size: 'base',
+                                            variant: 'text',
+                                            rounded: true,
+                                        }
+                                    )}
+                                </View>
+                            )}
+                            {props.data.inputs['labels'] && (
+                                <View>
+                                    <Button
+                                        startDecorator="Hash"
+                                        size='base'
+                                        variant='text'
+                                        rounded
+                                        onPress={() => {
+                                            setIsShowHashtag(isShowHashtag + 1)
+                                        }}
+                                    />
+                                </View>
+                            )}
+                        </Row>
+                        <View className=" flex-1 web:flex-none">
+                            {getFormFieldByData(
+                                props.data.inputs['tlb_do_submit'],
+                                props.handleSubmit,
+                                'default',
+                                {
+                                    disabled: text != '' ? false : true,
+                                    noMargin: true,
+                                    size: 'base',
+                                    rounded: true,
+                                    icon: "PaperPlane",
+
+                                }
+                            )}</View>
+                    </Row>
+                </Row>
+            </View>
+        </View>
+    </KbAvoidingView>
+
+    if (isFormOnly){
+        return (
+            <View className="w-full">
+                <View className=" py-[12px] sm:pt-4">
+                   {header}
+                </View>
+                {form}
+            </View>
+        )
+    }
 
     return (
         <View className="w-full">
@@ -192,177 +368,10 @@ console.log("showImage", showImage)
                     transparent={true}
                     onRequestClose={handleModalClose}
                 >
-                    {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'default')}
-                    {getFormFieldByData(props.data.inputs['object_cf'], props.handleSubmit, 'default')}
-                    {getFormFieldByData(props.data.inputs['owner_id'], props.handleSubmit, 'default')}
-                    {getFormFieldByData(props.data.inputs['type'], props.handleSubmit, 'default')}
-                    <KbAvoidingView className='flex-col flex-auto' offset={isIos ? 74 : 74}>
-                        <View className="justify-between flex-col flex-auto ">
-                            <ScrollView
-                                ref={scrollViewRef}
-                                className="w-full h-full flex-1"
-                                keyboardShouldPersistTaps="handled"
-                                onContentSizeChange={() =>
-                                    scrollViewRef.current?.scrollToEnd({
-                                        animated: true,
-                                    })
-                                }
-                                onClick={(event) => {event.target.querySelector('.tiptap')?.focus()}}
-                            >
-                                <View className="w-full flex-col px-[12px] sm:p-0 ">
-
-                                    {getFormFieldByData(
-                                        props.data.inputs['text'],
-                                        props.handleSubmit,
-                                        'custom',
-                                        {
-                                            focus: true,
-                                            bg: 'transparent',
-                                            placeholder: 'Write here...',
-                                            linkify: true,
-                                            autofocus: Date.now()
-                                        }
-                                    )}
-                                    {prevList.length > 0 && prevList[0]?.key && (
-                                        <Row className="flex-wrap">{prevList}</Row>
-                                    )}
-                                    {props.data.inputs['labels'] && (
-                                        <View className="flex-auto">
-                                            {labels}
-                                        </View>
-                                    )}
-                                </View>
-                            </ScrollView>
-                            <View className="  ">
-                                <Row className={
-                                    '  items-center flex-auto w-full gap-x-[24px]  ' +
-                                    (isWeb ? '' : ' pb-[12px] ') +
-                                    (isSmall
-                                        ? ' pb-[12px] px-[8px] ' +
-                                        (isIos ? ' bottom-[8px] ' : ' bottom-0 ') +
-                                        '  '
-                                        : ' my-auto ')
-                                }>
-
-                                    <Row className="gap-x-[4px] flex-auto justify-between ">
-                                        <Row className="flex-auto">
-                                        {props.data.inputs['obfuscate_faces'] && (
-                                            <View className="">
-                                                {getFormFieldByData(
-                                                    props.data.inputs['obfuscate_faces'],
-                                                    props.handleSubmit,
-                                                    'default'
-                                                )}
-                                            </View>
-                                        )}
-                                        {props.data.inputs['photo'] && (
-                                            <View className="">
-                                                {getFormFieldByData(
-                                                    props.data.inputs['photo'],
-                                                    props.handleSubmit,
-                                                    'custom',
-                                                    {
-                                                        previewPlaceHolder: setPlaceHolder,
-                                                        noMargin: true,
-                                                        rounded: true,
-                                                    }
-                                                )}
-                                            </View>
-                                        )}
-                                        {props.data.inputs['video'] && (
-                                            <View className="">
-                                                {getFormFieldByData(
-                                                    props.data.inputs['video'],
-                                                    props.handleSubmit,
-                                                    'custom',
-                                                    {
-                                                        previewPlaceHolder: setPlaceHolder,
-                                                        noMargin: true,
-                                                        asDefaultStorage: true,
-                                                        rounded: true,
-                                                        size: 'base',
-                                                        variant: 'text',
-                                                        source: 'library',
-                                                    }
-                                                )}
-                                            </View>
-                                        )}
-                                        {(props.data.inputs['video'] && !isWeb) && (
-                                            <View className="">
-                                                {getFormFieldByData(
-                                                    props.data.inputs['video'],
-                                                    props.handleSubmit,
-                                                    'custom',
-                                                    {
-                                                        previewPlaceHolder: setPlaceHolder,
-                                                        noMargin: true,
-                                                        asDefaultStorage: true,
-                                                        size: 'base',
-                                                        variant: 'text',
-                                                        rounded: true,
-                                                        source: 'camera',
-                                                    }
-                                                )}
-                                            </View>
-                                        )}
-                                        {props.data.inputs['file'] && (
-                                            <View>
-                                                {getFormFieldByData(
-                                                    props.data.inputs['file'],
-                                                    props.handleSubmit,
-                                                    'custom',
-                                                    {
-                                                        previewPlaceHolder: setPlaceHolder,
-                                                        noMargin: true,
-                                                        size: 'base',
-                                                        variant: 'text',
-                                                        rounded: true,
-                                                    }
-                                                )}
-                                            </View>
-                                        )}
-                                        {props.data.inputs['labels'] && (
-                                            <View>
-                                                <Button
-                                                    startDecorator="Hash"
-                                                    size='base'
-                                                    variant='text'
-                                                    rounded
-                                                    onPress={() => {
-                                                        setIsShowHashtag(isShowHashtag + 1)
-                                                    }}
-                                                />
-                                            </View>
-                                        )}
-                                        </Row>
-                                        <View className=" flex-1 web:flex-none">
-                                          {getFormFieldByData(
-                                            props.data.inputs['tlb_do_submit'],
-                                            props.handleSubmit,
-                                            'default',
-                                            {
-                                                disabled: text != '' ? false : true,
-                                                noMargin: true,
-                                                size: 'base',
-                                                rounded: true,
-                                                icon: "PaperPlane",
-                                               
-                                            }
-                                        )}</View>
-
-
-                                    </Row>
-                                    
-
-                                </Row>
-
-
-                            </View>
-                        </View>
-                    </KbAvoidingView>
+                    {form}
                 </Modal>
             )}
-            {isFormOnly ? (<></>) : props.exProps?.mode == 'button' ? (
+            {props.exProps?.mode == 'button' ? (
                 <Button
                     variant="primary"
                     title="Post"
@@ -402,15 +411,6 @@ console.log("showImage", showImage)
                                     />
                                 </View>
                             </View>)
-                    }
-                    {(props?.exProps?.showLinks && menu_add_items.length > 0) && (<>
-                        <FormModal pageData={pageData} setPageData={setPageData} />
-                        <Row className={` justify-between ${props.exProps.showLinks && props.exProps.showForm ? ' gap-x-[8px] hidden sm:flex mt-[12px] sm:mt-[12px] sm:pt-[12px] border-t border-bdr dark:border-bdr-d ' : ''}`}>
-                            {menu_add_items.map((item, index) => (
-                                <Button key={item.name} size="base" rounded fullWidth variant="secondary" onPress={() => handleMenuManageSelect(item, null, setPageData)} startDecorator={item.icon} title={item.title} />
-                            ))}
-                        </Row>
-                    </>)
                     }
                 </Card>
             )}

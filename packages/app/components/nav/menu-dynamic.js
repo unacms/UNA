@@ -4,7 +4,7 @@ import { Platform } from 'react-native'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { useWindowDimensions } from 'react-native'
 import { LAYOUT_BREAKPOINTS } from 'app/lib/util'
-import FormModal, { handleMenuManageSelect } from 'app/ui/molecules/form_modal';
+import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal';
 
 export default function DynamicMenu({ name, MenuItem, MenuItemEx, ButtonEx, containerClasses, items, menuClasses, menuExClasses, isButtonOutside, offsetWidth=50, persistent = 0 }) {
 
@@ -46,7 +46,7 @@ export default function DynamicMenu({ name, MenuItem, MenuItemEx, ButtonEx, cont
 
     let ExMenu = (visibleItemsCount < items.length && isWeb) && (
         <><DropdownMenu 
-            onSelect={(oItem, event) => handleMenuManageSelect(oItem, event, setPageData)}
+            onSelect={(oItem, event) => handleFormModal(oItem, event, setPageData)}
             variant = 'nopad'
             items={items.slice(visibleItemsCount).map((aItem, iKey) => ({
             id: 'menu-' + iKey,

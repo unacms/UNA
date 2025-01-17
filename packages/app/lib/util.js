@@ -381,6 +381,7 @@ export function getHeaderSettings(uri, width, layout) {
 }
 
 export function getUnitModeBySource(endpoint) {
+
     const source = endpoint?.request_url
     if (!source)
         return 'default';
