@@ -10,6 +10,7 @@ import { Icon } from 'app/ui/atoms/icon';
 import { Pressable } from 'app/design/view';
 import { ContentMore } from 'app/ui/molecules/contentmore';
 import { LAYOUT_BREAKPOINTS, stripTags } from 'app/lib/util'
+import Carousel from 'app/ui/molecules/carousel'
 
 export const LinkContent = memo(({ url, data }) => (
     <Link href={url}>
