@@ -1232,24 +1232,22 @@ export const settingsDefault = {
                     showBg: false,
                     topbar: true,
                 },
-                public_feed_form: {
+               /* public_feed_form: {
                     name: 'bx_timeline:get_block_post_home',
                     showTitle: false,
                     showBg: false,
-                    lalala: 'zxdc'
-                },
+                },*/
                 public_feed: {
                     name: 'bx_timeline:get_block_view_home',
                     showTitle: false,
                     showBg: false,
                 },
 
-                foryou_feed_form: {
+                /*foryou_feed_form: {
                     name: 'bx_timeline:get_block_post_account',
                     showTitle: false,
                     showBg: false,
-                    exProps: {formOnly:false}
-                },
+                },*/
                 foryou_feed: {
                     name: 'bx_timeline:get_block_view_feed_and_hot',
                     showTitle: false,
