@@ -380,15 +380,20 @@ export function getHeaderSettings(uri, width, layout) {
     }
 }
 
-export function getUnitModeBySource(source) {
+export function getUnitModeBySource(endpoint) {
+    const source = endpoint?.request_url
     if (!source)
         return 'default';
 
-    let unit_by_source = appSetting('menu_meta', 'unit_by_source');
+    let unit_by_source = appSetting('browse', 'unit_by_source');
 
     for (let key in unit_by_source) {
         if (source.includes(key))
             return unit_by_source[key];
+    }
+
+    if (endpoint?.params?.type == 'context'){
+        return 'context';
     }
 
     return 'default';

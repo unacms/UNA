@@ -309,7 +309,7 @@ export function ConductorFlat({ header, smallHeader, minHeaderHeight, isHideDefa
     }, [skeleton, data.module, data.unit]);
 
     const unitType = useMemo(() => {
-        return getUnitModeBySource(currentRoute?.endpoint?.request_url);
+        return getUnitModeBySource(currentRoute?.endpoint);
     }, [currentRoute?.endpoint?.request_url]); // Dependency on route.endpoint.request_url
 
     const showFilters = useCallback(() => {

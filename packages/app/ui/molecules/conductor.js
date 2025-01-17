@@ -266,7 +266,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
             //Preload
             return <></>
         }
-        const unitType = getUnitModeBySource(route?.endpoint?.request_url);
+        const unitType = getUnitModeBySource(route?.endpoint);
 
         const renderCachedItem = ({ item, index }) => {
             const cacheKey = item.id || index; // Use id or index as the cache key

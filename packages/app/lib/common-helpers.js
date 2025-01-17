@@ -2,6 +2,8 @@ import { View, Row } from 'app/design/view';
 import { Button } from 'app/design/controls';
 import { Platform } from 'react-native'
 import Link from 'app/ui/atoms/link'
+import { memo } from 'react';
+import Profile from "app/ui/molecules/profile";
 
 export function getBackButtonWeb() {
     const isWeb = Platform.OS === 'web';
@@ -23,3 +25,12 @@ export function getBackButtonWeb() {
         )
     }
 }
+
+export const AuthorData = memo(({ authorData }) => (
+    <Profile
+        {...authorData}
+        displayType="unit"
+        displaySize={authorData.displaySize || "xs"}
+        showInfo="false"
+    />
+));

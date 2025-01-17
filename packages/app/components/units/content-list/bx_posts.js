@@ -1,24 +1,16 @@
 import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
-import Profile from 'app/ui/molecules/profile'
-import { getImageSizes } from 'app/lib/util'
+import { getImageSizes, appSetting } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
 import Card from 'app/ui/molecules/card'
 import { memo, useMemo } from 'react';
+import { AuthorData } from 'app/lib/common-helpers'
 
-const ProfileCnt = memo(({ authorData }) => (
-    <Profile
-        {...authorData}
-        displayType="unit"
-        displaySize={authorData.displaySize || "xs"}
-        showInfo="false"
-    />
-));
+const Units = {};
 
-function Small({ data, imageSizes }) {
+Units.Small = function Small({ data, imageSizes }) {
     return (
-
         <Card margin="  m-1 sm:m-2 " rounded=" rounded-2xl " addClassName=" p-2  ">
             <View className="  aspect-video flex-none rounded-lg overflow-hidden mb-auto w-full bg-bgritem dark:bg-bgritem-d  ">
                 {data.image && (
@@ -41,15 +33,14 @@ function Small({ data, imageSizes }) {
                     {data.summary_plain}
                 </Text>
                 <View className="mt-2 ">
-                    <ProfileCnt authorData={data.author_data} />
+                    <AuthorData authorData={data.author_data} />
                 </View>
             </View>
         </Card>
-
     )
 }
 
-function Search({ data, imageSizes }) {
+Units.Search = function Search({ data, imageSizes }) {
     return (
         <Card margin="  m-1 sm:m-2 " rounded=" rounded-2xl " addClassName=" p-2  ">
             <View className="flex-auto mt-2 flex-col p-2">
@@ -62,7 +53,7 @@ function Search({ data, imageSizes }) {
                     {data.summary_plain}
                 </Text>
                 <View className="mt-2 ">
-                    <ProfileCnt authorData={data.author_data} />
+                    <AuthorData authorData={data.author_data} />
                 </View>
             </View>
         </Card>
@@ -70,7 +61,7 @@ function Search({ data, imageSizes }) {
     )
 }
 
-function Base({ data, imageSizes }) {
+Units.Base = function Base({ data, imageSizes }) {
     return (
         <View className=" mx-auto pt-1 sm:p-2 w-full max-w-2xl">
             <Card addClassName=" rounded-none sm:rounded-2xl p-1 sm:p-2 flex-auto  mx-auto w-full flex-row-reverse duration-300 ">
@@ -96,8 +87,7 @@ function Base({ data, imageSizes }) {
                         </Text>
                     </Link>
                     <View className="mt-auto">
-
-                        <ProfileCnt authorData={data.author_data} />
+                        <AuthorData authorData={data.author_data} />
                     </View>
 
                 </View>
@@ -106,15 +96,9 @@ function Base({ data, imageSizes }) {
     )
 }
 
-export default function (props) {
-    const data = props.data
+export default function BxPosts (props) {
     const imageSizes = useMemo(() => getImageSizes(), []);
-    const componentMap = {
-        small: Small,
-        search: Search,
-        default: Base
-    };
-
-    const Component = componentMap[props.unitType] || Base;
-    return <Component data={data} imageSizes={imageSizes} />;
+    const unitTypes = appSetting('browse', 'unit_by_mode_' + props.module) || appSetting('browse', 'unit_by_mode_default');
+    const Component = Units[unitTypes[props.unitType] || 'Base'];
+    return <Component data={props.data} imageSizes={imageSizes} />;
 }

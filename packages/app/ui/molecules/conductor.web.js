@@ -462,7 +462,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             return <></>
         }
         if (route.inited) {
-            let unitType = getUnitModeBySource(route?.endpoint?.request_url)
+            let unitType = getUnitModeBySource(route?.endpoint)
             if (unitType == 'default')
                 unitType = getUnitType(route);
 

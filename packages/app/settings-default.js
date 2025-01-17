@@ -267,6 +267,34 @@ export const settingsDefault = {
             { width: 768, count: 1 },
             { width: 640, count: 1 },
         ],
+        unit_by_source: {
+            'system/browse_friends': 'person_friends',
+            'system/browse_recommendations_friends': 'person_friends_recommendations',
+            'system/browse_friend_requested': 'person_friend_requested',
+            'system/browse_friend_requests': 'browse_friend_requests',
+            'system/browse_recommendations_subscriptions': 'person_following_recommendations',
+            'system/browse_subscribed_me': 'person_followers',
+            'browse_subscriptions': 'person_following',
+            'r=bx_events': 'event',
+            'r=bx_groups': 'group',
+            'r=bx_timeline': 'feed',
+        },
+        unit_by_mode_default: {
+            context: 'Base',
+            search: 'Search',
+            default: 'Base'
+        },
+        unit_by_mode_bx_posts: {
+            small: 'Small',
+            context: 'Small',
+            search: 'Search',
+            default: 'Base'
+        },
+        unit_by_mode_bx_forum: {
+            small: 'Small',
+            context: 'Small',
+            default: 'Base'
+        },
     },
     social_actions: {
         like: {
@@ -369,22 +397,6 @@ export const settingsDefault = {
             show_counter: true,
             show_counter_as_button: false,
             haptics_type: 'Medium',
-        },
-    },
-    menu_meta: {
-        unit_by_source: {
-            'system/browse_friends': 'person_friends',
-            'system/browse_recommendations_friends':
-                'person_friends_recommendations',
-            'system/browse_friend_requested': 'person_friend_requested',
-            'system/browse_friend_requests': 'browse_friend_requests',
-            'system/browse_recommendations_subscriptions':
-                'person_following_recommendations',
-            'system/browse_subscribed_me': 'person_followers',
-            browse_subscriptions: 'person_following',
-            'r=bx_events': 'event',
-            'r=bx_groups': 'group',
-            'r=bx_timeline': 'feed',
         },
     },
     menu_items: {
