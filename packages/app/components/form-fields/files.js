@@ -442,9 +442,9 @@ function GhostsList(imagesList, bMultiple, handleDelete, props) {
         const isImage = img?.file_type?.includes('image/');
         const isVideo = img?.file_type?.includes('video/');
         return (
-            <View key={`file-${props.name}-${index}`} className='h-40 w-40 justify-center items-center bg-bgritem dark:bg-bgritem-d rounded-lg mr-2 mt-2 mb-2 overflow-hidden' >
+            <View key={`file-${props.name}-${index}`} className=' mb-[8px] w-[100px] h-[100px] m-[1px] justify-center items-center bg-bgritem dark:bg-bgritem-d rounded-lg overflow-hidden' >
                 {isImage && <Image view='cover' alt='' src={img.file_url} />}
-                {!isImage && !img?.preload && <View className='h-16 w-16  text-neutral-700 dark:text-neutral-300 items-center justify-center'>{isVideo ? <Icon icon="Video" className="w-8 h-8" size={32}  /> : <Icon  icon="File" className="w-8 h-8" size={32} />}</View>}
+                {!isImage && !img?.preload && <View className=' h-16 w-16 text-neutral-700 dark:text-neutral-300 items-center justify-center'>{isVideo ? <Icon icon="Video" className="w-8 h-8" size={32}  /> : <Icon  icon="File" className="w-8 h-8" size={32} />}</View>}
                 {img?.preload && <View className='absolute w-full h-full justify-center items-center'><Loading /></View>}
                 {img?.file_id && <View className='absolute top-1 right-1 w-6.5 text-center mx-auto'>
                     <Button onPress={() => handleDelete(img.file_id)} variant="default" startDecorator="X" align="start" title="" rounded size="xs" />
