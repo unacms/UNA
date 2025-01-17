@@ -80,7 +80,7 @@ export function Modal({
     headerBorder = true,
     fullWidth = true,
     children,
-    padding = " p-3 sm:p-4  ",
+    padding = " p-3 sm:p-4 sm:pt-0  ",
     scrollable = false
 }) {
     const { width, height } = useWindowDimensions();
@@ -112,13 +112,13 @@ export function Modal({
             {
                 (title || onClose) && <Row className={`items-center justify-${align} ${headerBorder && modalSettings.header}  ${layoutShift}:px-4 ${layoutShift}:pt-4`}>
                     {(title && type === 'string') && (
-                        <View className='flex-auto'>
-                            <Text className='text-neutral-800 dark:text-neutral-200 text-xl font-bold '>{title}</Text>
+                        <View className='flex-auto absolute left-0 right-0'>
+                            <Text className='text-neutral-800 dark:text-neutral-200 text-2xl font-bold tracking-tight text-center '>{title}</Text>
                         </View>
                     )}
                     {(title && type !== 'string') && (title)}
                     {onClose && (
-                        <View className=''>
+                        <View className='ml-auto'>
                             <Button variant='secondary' size='base' rounded startDecorator='X' onPress={onClose} />
                         </View>
                     )}

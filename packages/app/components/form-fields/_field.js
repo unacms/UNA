@@ -12,7 +12,7 @@ export default function (props) {
     let caption = props.caption;
     if (props.format == 'notitle')
         caption = '';
-    let sClassName = ' w-full form-control form-control-' + props.name + (props.noMargin === true ? '' : ' mb-2 ') +  (props?.classes ? ' ' + props?.classes : '');
+    let sClassName = ' w-full form-control form-control-' + props.name + (props.noMargin === true ? '  ' : ' mb-[12px]  ') +  (props?.classes ? ' ' + props?.classes : '');
 
     const optionalText = appSetting('forms', 'optional_text');
     const mandatoryIcon = appSetting('forms', 'mandatory_icon');
@@ -22,7 +22,7 @@ export default function (props) {
     return (
         <View className={sClassName}>
             {isShowCaption &&
-                <Text className="label-text block mb-2 text-sm sm:text-base text-neutral-700 dark:text-neutral-300">
+                <Text className="label-text block mb-[4px] ml-[1px] text-sm sm:text-base text-neutral-700 dark:text-neutral-300">
                     <Row className='items-center gap-x-1' >
                         <Text className="font-semibold">{caption}</Text>
                         {((props.checker || props.required) ? <></> : <Text>{isShowOptional}</Text>)}

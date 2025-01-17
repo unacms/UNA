@@ -2716,14 +2716,14 @@ export const settingsDefault = {
             pressed_text:
                 ' text-primary-700 dark:text-primary-300 group-hover:text-primary-800 dark:group-hover:text-primary-200 ',
             xs: {
-                rounded: ' rounded-[8px]',
-                padding: ' h-[28px] min-w-[28px] px-[4px] ',
+                rounded: ' rounded-[6px]',
+                padding: ' h-[24px] min-w-[24px] px-[4px]',
                 icon_sizes:
                     ' h-[20px] w-[20px] ', //icon container size
                 icon_size: ' 20px ', //icon size
-                icon_margin: ' ', //conditional margin for icon container when title is present
+                icon_margin: ' mx-[0px] ', //conditional margin for icon container when title is present
                 min_height: ' ',
-                margin: 'mx-[4px] my-auto native:text-[12px] ',
+                margin: ' px-[4px] my-auto native:text-[12px] ',
             },
             sm: {
                 rounded: ' rounded-[8px] ] ',

@@ -243,12 +243,12 @@ export const DefaultView = memo(({data, styles, bIsTitle, bIsTimelineContent, co
                     </View>
                 </View>
             )}
-            <View className="flex-auto my-auto flex-col py-[8px] ">
+            <View className="flex-auto my-auto flex-col pb-[8px] pt-[12px] ">
                 {bIsTitle && (
                     <Link href={url} className="">
                         <Text
                             numberOfLines={3}
-                            className="  text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-lg sm:text-xl tracking-tight font-bold"
+                            className=" pb-[8px] text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-lg sm:text-xl tracking-tight font-bold"
                         >
                             {data.content.title}
                         </Text>

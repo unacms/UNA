@@ -100,8 +100,8 @@ export default function (props) {
                                 <View key={'index' + index} className=" p-2 flex-row  
                                 group duration-200 overflow-hidden rounded-lg  
                                 hover:bg-bgritem dark:hover:bg-bgritem-d
-                                max-w-5xl self-center w-full gap-x-2">
-                                    <View className="w-10 h-10 bg-blue-500/50 rounded-full flex-none ">{profile}</View>
+                                max-w-5xl self-center w-full gap-x-[12px]">
+                                    <View className="w-[44px] h-[44px] bg-blue-500/50 rounded-full flex-none ">{profile}</View>
                                     <Text className='text-sm my-auto flex-auto font-semibold truncate text-neutral-900 dark:text-neutral-100'>{item.display_name}</Text>
                                     <View className="text-sm bont-semibold flex-none my-auto">
                                         <Button id="menu" startDecorator="UserSwitch" tooltip={t('Switch profile')} variant='outline' size='sm' onPress={() => handleSwitch(item.id)} />
