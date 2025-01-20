@@ -27,13 +27,16 @@ export default function (props) {
     );
 
 
+
+
     const handleValueChange = (val) => {
         field.onChange(val);
         if (props.onChange) {
             props.onChange(val)
         }
-        if ([6, 8, 9].includes(val)) {
+        if (val != field.value)
             setSubValues([])
+        if ([6, 8, 9].includes(val)) {
             setIsModalSub(val);
         }
         else {
@@ -90,7 +93,7 @@ export default function (props) {
         }
     });
 
-    console.log("subOptionssubOptions", subOptions,'xxx', subValues, field.value, selectedSubLabels)
+    console.log("subOptionssubOptions", subValues)
 
 
     const selectedItem = filteredValues.find(item => item.value == isModalSub);
