@@ -86,7 +86,7 @@ export const settingsDefault = {
         in_reply: true, //OLD appSetting('layout', 'show_in_reply_comments')
     },
     dashboard:{
-        url: '/dashboard',
+        url: '/dashboard',  //OLD appSetting('layout', 'dashboard')
         langs: ['ru', 'en'], //OLD appSetting('layout', 'switch_lang')
         switch_theme: true, //OLD appSetting('layout', 'switch_theme')
     },
@@ -1232,22 +1232,23 @@ export const settingsDefault = {
                     showBg: false,
                     topbar: true,
                 },
-               /* public_feed_form: {
+                public_feed_form: {
                     name: 'bx_timeline:get_block_post_home',
                     showTitle: false,
                     showBg: false,
-                },*/
+                },
                 public_feed: {
                     name: 'bx_timeline:get_block_view_home',
                     showTitle: false,
                     showBg: false,
                 },
 
-                /*foryou_feed_form: {
+                foryou_feed_form: {
                     name: 'bx_timeline:get_block_post_account',
                     showTitle: false,
                     showBg: false,
-                },*/
+                    exProps: {formOnly:false}
+                },
                 foryou_feed: {
                     name: 'bx_timeline:get_block_view_feed_and_hot',
                     showTitle: false,

@@ -9,7 +9,6 @@ import { useTranslation } from 'react-i18next'
 import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal';
 
 export default function MultiPostForm({ data }) {
-    console.log("sdfsd", data)
     const { currentUser } = useCurrentUser();
     const { t } = useTranslation()
     const [pageData, setPageData] = useState(false);

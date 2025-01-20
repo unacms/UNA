@@ -180,7 +180,7 @@ export default function FormFeed(props) {
         {getFormFieldByData(props.data.inputs['object_cf'], props.handleSubmit, 'default')}
         {getFormFieldByData(props.data.inputs['owner_id'], props.handleSubmit, 'default')}
         {getFormFieldByData(props.data.inputs['type'], props.handleSubmit, 'default')}
-        <View className="justify-between flex-col flex-auto ">
+        <View className="justify-between flex-col flex-auto">
             <ScrollView
                 ref={scrollViewRef}
                 className="w-full h-full flex-1"
@@ -340,8 +340,8 @@ export default function FormFeed(props) {
 
     if (isFormOnly){
         return (
-            <View className="w-full">
-                <View className=" py-[12px] sm:pt-4">
+            <View className="w-full flex-1 bg-breen-500 h-full">
+                <View className="p-[12px] sm:p-[16px] items-start justify-start  sm:px-4 sm:pt-4">
                    {header}
                 </View>
                 {form}

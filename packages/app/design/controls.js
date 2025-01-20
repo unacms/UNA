@@ -84,8 +84,8 @@ export function Modal({
     scrollable = false
 }) {
     const { width, height } = useWindowDimensions();
-    const styles = width > LAYOUT_BREAKPOINTS.md  ? { maxHeight: height - 100 } : { maxHeight: height - 60 };
-
+    const offset = (title || onClose  ? (width > LAYOUT_BREAKPOINTS.md ? 100 : 68)  : 0);
+    const styles = { maxHeight: height - offset };
     const isWeb = Platform.OS === 'web';
 
     const isOuterClose = (onClose !== 'undefined' && outerClickClose !== false);

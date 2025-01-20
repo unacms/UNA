@@ -1,7 +1,7 @@
 import { Modal } from 'app/design/controls'
 import { getPageData } from 'app/lib/util';
 import { BlockByData } from 'app/components/blocks-content/object-data-array-int';
-import { ScrollView } from 'app/design/view'
+import { ScrollView, View } from 'app/design/view'
 import { useCallback } from 'react'
 import { Keyboard } from 'react-native'
 
@@ -14,7 +14,7 @@ export default function FormModal({ pageData, setPageData }) {
     }, [])
 
     const isShowHeader = pageData.module != "bx_timeline";
-
+    const Container = isShowHeader ? ScrollView : View;
     return (
         <Modal
             title={isShowHeader ? pageData.title : null}
@@ -25,7 +25,7 @@ export default function FormModal({ pageData, setPageData }) {
             transparent={true}
             onRequestClose={handleModalClose}
         >
-            <ScrollView>
+            <Container className={`flex-1 ${isShowHeader ? 'px-3 sm:px-0' : ''}`}>
                 {
                     Object.keys(pageData?.elements || {}).map(key =>
                         Object.keys(pageData.elements[key] || {}).map(key2 => (
@@ -40,7 +40,7 @@ export default function FormModal({ pageData, setPageData }) {
                         ))
                     )
                 }
-            </ScrollView>
+            </Container>
         </Modal>
     )
 }

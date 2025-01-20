@@ -21,7 +21,11 @@ export default function (props) {
     const { field } = useController({ name, rules, defaultValue });
     const [isModal, setIsModal] = useState(false);
     const [isModalSub, setIsModalSub] = useState(false);
-    const [subValues, setSubValues] = useState(props?.subvalue ? props.subvalue.split(","): []);
+
+    const [subValues, setSubValues] = useState(
+        props?.subvalue ? props.subvalue.split(",").map(value => parseInt(value, 10)) : []
+    );
+
 
     const handleValueChange = (val) => {
         field.onChange(val);
@@ -75,15 +79,19 @@ export default function (props) {
 
     const subOptions = subOptionsMap[field.value] || [];
 
+    
     const selectedSubLabels = subOptions.filter(item => subValues.includes(item.value)).map(item => item.label);
 
     const subLabelDisplay = selectedSubLabels.length > 3 ? `${selectedSubLabels.slice(0, 3).join(', ')} + ${selectedSubLabels.length - 3} more` : selectedSubLabels.join(', ');
 
     filteredValues.forEach(item => {
-        if (item.value === field.value && [6, 8, 9].includes(field.value)) {
+        if (parseInt(item.value, 10) === parseInt(field.value, 10) && [6, 8, 9].includes(parseInt(field.value, 10))) {
             item.info = subLabelDisplay;
         }
     });
+
+    console.log("subOptionssubOptions", subOptions,'xxx', subValues, field.value, selectedSubLabels)
+
 
     const selectedItem = filteredValues.find(item => item.value == isModalSub);
 
@@ -136,7 +144,7 @@ export default function (props) {
             {modalElement}
             <Field {...props} error2={formContext.formState.errors[name]}>
                 <Button
-                    title={values.find(item => item.value == field.value)?.label || values[0].label}
+                    title={filteredValues.find(item => item.value == field.value)?.label || filteredValues[0].label}
                     startDecorator="Globe"
                     variant="outline"
                     size="base"
