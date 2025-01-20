@@ -32,7 +32,7 @@ export default function (props) {
     const variant = props.variant || 'outline';
     const size = props.size || 'xs';
     const { field } = useController({ name, rules, defaultValue });
-    const [isModal, setIsModal] = useState(props.isShow);
+    const [isModal, setIsModal] = useState(!!props.isShow);
     const [value2, setValue2] = useState(field.value)
     useEffect(() => {
         setIsModal(props.isShow > 0)
