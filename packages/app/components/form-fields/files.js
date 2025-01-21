@@ -316,9 +316,16 @@ export default function (props) {
     }, []);
 
     const handleDelete = useCallback(async (id) => {
+
+        const filteredArr = imageSource?.images?.filter(item => item.file_id != id);
+        setImageSource({ images: [...filteredArr] });
+     
         const result = await fetcher(url + "&a=delete&id=" + id);
-        RestoreGhosts(0);
-    }, [url]);
+
+        //RestoreGhosts(0);
+    }, [url, imageSource]);
+
+   
 
     if (props.view == 'button') {
         return <ButtonCover imageSource={imageSource} selectImage={selectImage} />
@@ -437,7 +444,7 @@ function GhostsList(imagesList, bMultiple, handleDelete, props) {
         return;
     }
    
-    //console.log("imagesList", imagesList, props)
+
     return imagesList.map((img, index) => {
         const isImage = img?.file_type?.includes('image/');
         const isVideo = img?.file_type?.includes('video/');

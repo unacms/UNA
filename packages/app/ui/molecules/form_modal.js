@@ -21,7 +21,7 @@ export default function FormModal({ pageData, setPageData }) {
             onVisible={!!pageData}
             outerClickClose={false}
             {...(isShowHeader && { onClose: () => { setPageData(false); handleModalClose() } })}
-            padding=" sm:px-4 sm:pb-4 "
+            padding=" "
             transparent={true}
             onRequestClose={handleModalClose}
         >
@@ -47,7 +47,6 @@ export default function FormModal({ pageData, setPageData }) {
 
 export const handleFormModal = async (oItem, event, setPageData, params) => {
     const url = oItem.link.replace(/^\/*/, "") + (params ? `&params[]=&params[]=${encodeURIComponent(JSON.stringify({ params }))}` : "");
-    console.log("urlurl", url)
     const sResponse = await getPageData(url);
     setPageData(sResponse.data);
 }

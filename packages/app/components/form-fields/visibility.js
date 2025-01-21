@@ -93,9 +93,6 @@ export default function (props) {
         }
     });
 
-    console.log("subOptionssubOptions", subValues)
-
-
     const selectedItem = filteredValues.find(item => item.value == isModalSub);
 
     const modalHeader = <Row className={` w-full items-center justify-:px-4 :pt-4`}>
