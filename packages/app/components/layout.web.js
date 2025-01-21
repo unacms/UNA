@@ -217,8 +217,7 @@ export default function (props) {
                 const marginBottom = parseInt(style.marginBottom, 10);
                 const elementHeight = element.offsetHeight;
                 const elementHeightParent = element.parentNode.parentNode.offsetHeight;
-
-                element.style.width = `${element.offsetWidth}px`;
+                element.style.width = `${element.parentNode.offsetWidth}px`;
 
                 if (elementHeightParent > elementHeight) {
                     element.classList.add('fixed');
@@ -231,7 +230,6 @@ export default function (props) {
 
                         if (height > h) {
                             element.setAttribute('a', `${topValue}px`);
-                            
                         }
                     }
                 } else {
