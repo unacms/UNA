@@ -21,7 +21,7 @@ export default function FormModal({ pageData, setPageData }) {
             onVisible={!!pageData}
             outerClickClose={false}
             {...(isShowHeader && { onClose: () => { setPageData(false); handleModalClose() } })}
-            padding=" "
+            padding={isShowHeader ? " p-3 " : " p-0 "}
             transparent={true}
             onRequestClose={handleModalClose}
         >

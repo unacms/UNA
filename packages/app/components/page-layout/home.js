@@ -291,7 +291,7 @@ export default function (props) {
                         </View>
                     </View>
                     <View className="hidden lg:flex flex-auto max-w-96 ">
-                        <View className="fixed-process w-full max-w-md p-2 flex-col space-y-4 duration-200">
+                        <View className="fixed fixed-process w-full  max-w-96 p-2 flex-col space-y-4 duration-200">
                             {sideBarBlocks.map((item, index) => {
                                 return (
                                     <BlockByName

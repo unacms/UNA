@@ -106,7 +106,7 @@ export function Modal({
 
     const layoutShift = isWeb ? 'sm' : '2xl';
 
-    if (!title){
+    if (!title && padding == " p-3 sm:p-4 sm:pt-0  "){
         padding = 'p-3 sm:p-4';
     }
 

@@ -192,7 +192,7 @@ export default function FormFeed(props) {
                 }
                 onClick={(event) => { event.target.querySelector('.tiptap')?.focus() }}
             >
-                <View className="w-full flex-col px-[12px] sm:p-0 ">
+                <View className="w-full flex-col px-3 ">
 
                     {getFormFieldByData(
                         props.data.inputs['text'],
@@ -218,10 +218,10 @@ export default function FormFeed(props) {
             </ScrollView>
             <View className="  ">
                 <Row className={
-                    '  items-center flex-auto w-full gap-x-[24px]  ' +
-                    (isWeb ? '' : ' pb-[12px] ') +
+                    '  items-center flex-auto w-full gap-x-6 bg-red-500 py-3  px-3' +
+                    (isWeb ? '' : '  ') +
                     (isSmall
-                        ? ' pb-[12px] px-[8px] ' +
+                        ? ' ' +
                         (isIos ? ' bottom-[8px] ' : ' bottom-0 ') +
                         '  '
                         : ' my-auto ')
@@ -341,7 +341,7 @@ export default function FormFeed(props) {
     if (isFormOnly){
         return (
             <View className="w-full flex-1 bg-breen-500 h-full">
-                <View className="p-[12px] sm:p-[16px] items-start justify-start  sm:px-4 sm:pt-4">
+                <View className="items-start justify-start p-3 ">
                    {header}
                 </View>
                 {form}
@@ -364,7 +364,7 @@ export default function FormFeed(props) {
                     onVisible={showImage}
                     outerClickClose={false}
                     {...(!isSmall && { onClose: handleModalClose })}
-                    padding=" sm:px-4 sm:pb-4 "
+                    padding=" p-0 "
                     transparent={true}
                     onRequestClose={handleModalClose}
                 >
