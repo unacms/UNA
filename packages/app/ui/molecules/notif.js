@@ -35,7 +35,7 @@ export default function ({buttonProps, children, tooltip, fullWidth}) {
                 <Text className="text-neutral-700 dark:text-neutral-300 text-lg flex-auto font-bold ml-0.5">
                     { t("Notifications")}
                 </Text>
-                <Link href={appSetting('layout', 'notifications')}>
+                <Link href={appSetting('notifications', 'url')}>
                     <Button
                         variant="text"
                         size="sm"
