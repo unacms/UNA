@@ -449,7 +449,7 @@ function GhostsList(imagesList, bMultiple, handleDelete, props) {
         const isImage = img?.file_type?.includes('image/');
         const isVideo = img?.file_type?.includes('video/');
         return (
-            <View key={`file-${props.name}-${index}`} className=' mb-[8px] w-[100px] h-[100px] m-[1px] justify-center items-center bg-bgritem dark:bg-bgritem-d rounded-lg overflow-hidden' >
+            <View key={`file-${props.name}-${index}`} className=' w-[100px] h-[100px] m-[2px] justify-center items-center bg-bgritem dark:bg-bgritem-d rounded-lg overflow-hidden' >
                 {isImage && <Image view='cover' alt='' src={img.file_url} />}
                 {!isImage && !img?.preload && <View className=' h-16 w-16 text-neutral-700 dark:text-neutral-300 items-center justify-center'>{isVideo ? <Icon icon="Video" className="w-8 h-8" size={32}  /> : <Icon  icon="File" className="w-8 h-8" size={32} />}</View>}
                 {img?.preload && <View className='absolute w-full h-full justify-center items-center'><Loading /></View>}

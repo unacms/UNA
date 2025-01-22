@@ -192,7 +192,7 @@ export default function FormFeed(props) {
                 }
                 onClick={(event) => { event.target.querySelector('.tiptap')?.focus() }}
             >
-                <View className="w-full flex-col px-3 ">
+                <View className="w-full flex-col px-[12px] pb-[10px] ">
 
                     {getFormFieldByData(
                         props.data.inputs['text'],
@@ -248,6 +248,9 @@ export default function FormFeed(props) {
                                             previewPlaceHolder: setPlaceHolder,
                                             noMargin: true,
                                             rounded: true,
+                                            variant: 'secondary',
+                                            size: 'base',
+
                                         }
                                     )}
                                 </View>
@@ -281,7 +284,7 @@ export default function FormFeed(props) {
                                             noMargin: true,
                                             asDefaultStorage: true,
                                             size: 'base',
-                                            variant: 'text',
+                                            variant: 'secondary',
                                             rounded: true,
                                             source: 'camera',
                                         }
