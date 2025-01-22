@@ -38,7 +38,7 @@ function ProfileView({ isImageOnly = false, data, handleSubmit, showImage, setSh
             <View className="gap-x-[8px] flex-row ">
                 <Profile {...profileData} displaySize="base" displayType="unit_wo_info" />
                 <View className="flex-col ">
-                    <Text className="mb-[4px] text-neutral-900 dark:text-neutral-100 font-semibold text-[16px] truncate">
+                    <Text className="mb-[4px] text-neutral-900 dark:text-neutral-100 leading-[22px] font-semibold text-[16px] truncate">
                         {currentUser.display_name}
                     </Text>
                     {data?.inputs?.['object_privacy_view'] && getFormFieldByData(
@@ -50,7 +50,7 @@ function ProfileView({ isImageOnly = false, data, handleSubmit, showImage, setSh
                         {
                             onShowModal: setShowImage,
                             showModal: showImage,
-                            size: 'xs',
+                            size: 'sm',
                             maxLength: 0,
                             variant: 'link'
                         }
@@ -218,7 +218,7 @@ export default function FormFeed(props) {
             </ScrollView>
             <View className="  ">
                 <Row className={
-                    '  items-center flex-auto w-full gap-x-6 bg-red-500 py-3  px-3' +
+                    '  items-center flex-auto w-full gap-x-6 py-3 border-t border-neutral-200 dark:border-neutral-800 px-3' +
                     (isWeb ? '' : '  ') +
                     (isSmall
                         ? ' ' +
@@ -228,7 +228,7 @@ export default function FormFeed(props) {
                 }>
 
                     <Row className="gap-x-[4px] flex-auto justify-between ">
-                        <Row className="flex-auto">
+                        <Row className="flex-auto gap-x-[8px]">
                             {props.data.inputs['obfuscate_faces'] && (
                                 <View className="">
                                     {getFormFieldByData(
@@ -264,7 +264,7 @@ export default function FormFeed(props) {
                                             asDefaultStorage: true,
                                             rounded: true,
                                             size: 'base',
-                                            variant: 'text',
+                                            variant: 'secondary',
                                             source: 'library',
                                         }
                                     )}
@@ -298,7 +298,7 @@ export default function FormFeed(props) {
                                             previewPlaceHolder: setPlaceHolder,
                                             noMargin: true,
                                             size: 'base',
-                                            variant: 'text',
+                                            variant: 'secondary',
                                             rounded: true,
                                         }
                                     )}
@@ -309,7 +309,7 @@ export default function FormFeed(props) {
                                     <Button
                                         startDecorator="Hash"
                                         size='base'
-                                        variant='text'
+                                        variant='secondary'
                                         rounded
                                         onPress={() => {
                                             setIsShowHashtag(isShowHashtag + 1)
