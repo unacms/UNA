@@ -22,7 +22,7 @@ export default function (props) {
     const name = props.name;
 
     const [uploadFinished, setUploadFinished] = useState(null);
-
+    const [uploadFinishedArr, setUploadFinishedArr] = useState([]);
     const [imageSource, setImageSource] = useState({ images: null });
     const formContext = useFormContext();
     const formValue = formContext.watch(name);
@@ -81,10 +81,11 @@ export default function (props) {
         if (a.length == 0 && field.value != '')
             field.onChange('');
 
-
         let filteredArr = []
         if (imageSource?.images)
-            filteredArr = imageSource?.images?.filter(item => item.preload === true).filter(item => item.hash != data.hash);
+            filteredArr = imageSource?.images?.filter(
+                item => item.preload === true && !uploadFinishedArr.some(finished => finished == item.hash)
+            );
 
         setImageSource({ images: [...a, ...filteredArr] });
     };
@@ -123,9 +124,15 @@ export default function (props) {
 
     useEffect(() => {
         if (uploadFinished?.result) {
-            RestoreGhosts({ hash: uploadFinished.extraVar.hash, id: uploadFinished.result?.data?.id });
+            console.log("uploadFinisheduploadFinished", uploadFinished);
+            setUploadFinishedArr((prevArr) => [...prevArr, uploadFinished.extraVar.hash]);
+            
         }
     }, [uploadFinished]);
+
+    useEffect(() => {
+        RestoreGhosts();
+    }, [uploadFinishedArr]);
 
     const uploadImages = async (asset) => {
         let k = imageSource.images ? imageSource.images : [];
@@ -447,6 +454,7 @@ function GhostsList(imagesList, bMultiple, handleDelete, props) {
         const showPreloadFile = img?.preload && img.type !== 'image';
 
         return (
+
             <View
                 key={`file-${props.name}-${index}`}
                 className="mb-[8px] w-[100px] h-[100px] m-[1px] justify-center items-center bg-bgritem dark:bg-bgritem-d rounded-lg overflow-hidden"
