@@ -44,11 +44,11 @@ export default function FormFieldFtf(props) {
         }
     };
 
-    const handleInsertImageFinish = async (url) => {
+    const handleInsertImageFinish = async (uploadInfo) => {
         _editor.current?.insertEmbed(
             0,
             'image',
-            url
+            uploadInfo.result
         );
     }
 

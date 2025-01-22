@@ -186,16 +186,16 @@ export default function (props) {
         }
     }
 
-    const handleInsertImageFinish = async (result, extraVar) => {
+    const handleInsertImageFinish = async (uploadInfo) => {
         const sRequest =
             '/api.php?r=' +
             props.data.profile.module +
             '/update_image/&params[]=' +
-            extraVar.mode +
+            uploadInfo.extraVar.mode +
             '&params[]=' +
             c +
             '&params[]=' +
-            result.data.id
+            uploadInfo.result.data.id
         const sResponse = await fetcher(sRequest)
         if (extraVar.mode == 'cover') setCoverUrl(sResponse.data)
         else setPictureUrl(sResponse.data)

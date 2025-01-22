@@ -15,10 +15,14 @@ import Loading from 'app/ui/atoms/loading'
 import { Text } from 'app/design/typography'
 import { Image as ImageNative, Alert, Platform } from 'react-native';
 import { Camera } from "expo-camera";
-import  { useLayoutData } from 'app/context/layout';
+import { useLayoutData } from 'app/context/layout';
+import { Image as ImageRN } from 'react-native';
 
 export default function (props) {
     const name = props.name;
+
+    const [uploadFinished, setUploadFinished] = useState(null);
+
     const [imageSource, setImageSource] = useState({ images: null });
     const formContext = useFormContext();
     const formValue = formContext.watch(name);
@@ -34,33 +38,18 @@ export default function (props) {
         return '/api.php?r=system/get_data_api/TemplUploaderServices/&params[]=&obfuscate_faces=' + obfuscateFaces + '&&uo=' + props.uploaders[0] + '&so=' + props.storage_object + '&uid=' + genRnd(8) + '&img_trans=' + props.images_transcoder + '&m=' + (bMultiple ? 1 : 0) + '&c=' + props.content_id + '&p=' + (props.privacy ? 1 : 0);
     }, [props, obfuscateFaces]);
 
-
     useEffect(() => {
         const uploadImagesAsync = async (assets) => {
             const k = await uploadImages(assets);
             setImageSource({ images: k });
         };
 
-        if (layoutData?.type == 'images:pasted' && props.asDefaultStorage){
+        if (layoutData?.type == 'images:pasted' && props.asDefaultStorage) {
             uploadImagesAsync(layoutData.data)
             setLayoutData(null);
         }
     }, [layoutData]);
 
-   /* useEffect(() => {
-        pickFromGallery = async () => {
-            const permissions = Permissions.CAMERA_ROLL;
-            const { status } = await Permissions.askAsync(permissions);
-          }
-        
-          pickFromCamera = async () => {
-            const permissions = Permissions.CAMERA;
-            const { status } = await Permissions.askAsync(permissions);
-          }
-
-          pickFromGallery();
-          pickFromCamera();
-    }, []);*/
 
     const RestoreGhosts = async (data) => {
 
@@ -74,6 +63,7 @@ export default function (props) {
                 av.push(result.data[0][k].file_id)
             });
         }
+
         a.forEach(function (k) {
             if (k.file_id) {
                 const val = av.join(',');
@@ -91,11 +81,12 @@ export default function (props) {
         if (a.length == 0 && field.value != '')
             field.onChange('');
 
+
         let filteredArr = []
         if (imageSource?.images)
-            filteredArr = imageSource?.images?.filter(item => item.preload === true);
+            filteredArr = imageSource?.images?.filter(item => item.preload === true).filter(item => item.hash != data.hash);
 
-        setImageSource({ images: [...a] });
+        setImageSource({ images: [...a, ...filteredArr] });
     };
 
     useEffect(() => {
@@ -125,27 +116,36 @@ export default function (props) {
         }
     }, [formContext.formState.isSubmitted, imageSource.images]);
 
+
+    /* const handleInsertImageFinish = useCallback(async (result, extraVar) => {
+         RestoreGhosts({ hash: extraVar.hash, id: result?.data?.id });
+     }, []);*/
+
+    useEffect(() => {
+        if (uploadFinished?.result) {
+            RestoreGhosts({ hash: uploadFinished.extraVar.hash, id: uploadFinished.result?.data?.id });
+        }
+    }, [uploadFinished]);
+
     const uploadImages = async (asset) => {
         let k = imageSource.images ? imageSource.images : [];
         if (!asset)
-            return 
-        let objectsToAdd = Array(asset.length).fill({ preload: true });
-        k = [
-            ...k,
-            ...objectsToAdd
-        ];
+            return
+        let objectsToAdd = [];
         setImageSource({ images: k });
 
         for (const i of asset) {
             let uri = i.uri;
-            let isImage = i?.mimeType?.includes('image/');
-            if (isImage){
+            const hash = md5(uri);
+            objectsToAdd.push({ preload: true, file_type: i.mimeType, type: i.type, hash: hash, uri: uri });
+
+            const isImage = i?.mimeType?.includes('image/');
+            if (isImage) {
                 ImageNative.getSize(uri, async (width, height) => {
                     let manipulatedWidth = 1600;
                     let manipulatedHeight = 1600;
-                  
+
                     if (width > manipulatedWidth || height > manipulatedHeight) {
-                        //console.log('resize', width, height)
                         if (width > height) {
                             manipulatedHeight = Math.round((height * manipulatedWidth) / width);
                         } else {
@@ -156,16 +156,15 @@ export default function (props) {
                             uri,
                             [{ resize: { width: manipulatedWidth, height: manipulatedHeight } }], // Изменение ширины до 800 пикселей; высота будет рассчитана автоматически
                             { compress: 0.4, format: SaveFormat.JPEG }
-                          );
+                        );
 
                         uri = resizedPhoto.uri;
                     }
 
-                    let hash = md5(uri);
                     uploadImage(
                         uri,
                         url + '&a=upload',
-                        handleInsertImageFinish,
+                        setUploadFinished,
                         { hash: hash }
                     );
 
@@ -176,22 +175,29 @@ export default function (props) {
                     ];
                 });
             }
-            else{
+            else {
                 let hash = md5(uri);
-                    uploadImage(
-                        uri,
-                        url + '&a=upload',
-                        handleInsertImageFinish,
-                        { hash: hash }
-                    );
 
-                    let fileType = i.type ? i.type + '/' : uri.split(';')[0].split(':')[1];
-                    /*k = [
-                        ...k,
-                        { file_url: uri, file_type: fileType, preload: true, hash: hash }
-                    ];*/
+                uploadImage(
+                    uri,
+                    url + '&a=upload',
+                    setUploadFinished,
+                    { hash: hash }
+                );
+
+                let fileType = i.type ? i.type + '/' : uri.split(';')[0].split(':')[1];
+                /*k = [
+                    ...k,
+                    { file_url: uri, file_type: fileType, preload: true, hash: hash }
+                ];*/
             }
         }
+
+        k = [
+            ...k,
+            ...objectsToAdd
+        ];
+
         return k;
     }
 
@@ -204,10 +210,10 @@ export default function (props) {
 
         if (Platform.OS !== 'web' && bIsMedia) {
             const { status } = await Camera.requestCameraPermissionsAsync();
-            if (status === "granted"){
+            if (status === "granted") {
                 selectImage1(props.source, bIsMedia)
             }
-            else{
+            else {
                 Alert.alert(
                     "Upload Photo",
                     "Gallery permissions are needed",
@@ -234,14 +240,13 @@ export default function (props) {
 
             let mediaTypes = ['images', 'videos'];
             if (props.ext_allow.includes('jpg') && !props.ext_allow.includes('mp4'))
-                mediaTypes =  ['images'];
+                mediaTypes = ['images'];
             if (props.ext_allow.includes('mp4') && !props.ext_allow.includes('mp4'))
                 mediaTypes = ['videos'];
 
             let result = null
-            console.log("type", type)
             if (type == 'library') {
-                
+
                 if (!hasPermissionLibrary) {
                     const { status2 } = await ImagePicker.requestMediaLibraryPermissionsAsync();
                     if (status2 !== 'granted') {
@@ -258,7 +263,7 @@ export default function (props) {
                 });
             }
             else {
-                
+
                 if (!hasPermissionCamera) {
                     const permission = await requestPermissionCamera();
                     if (!permission.granted) {
@@ -283,26 +288,25 @@ export default function (props) {
             try {
                 const result = await DocumentPicker.getDocumentAsync({
                     type: '*/*', // This allows all file types
-                    multiple:true
+                    multiple: true
                 });
-              /*   if (result.type === 'success') {
-                    let k = imageSource.images;
-                    let hash = crypto.createHash('sha256').update(result.uri).digest('hex');
-                    uploadImage(
-                        result.uri,
-                        url + '&a=upload',
-                        handleInsertImageFinish,
-                        { hash: hash }
-
-                    );
-
-                    let fileType = i.type ? i.type + '/' : result.uri.split(';')[0].split(':')[1];
-                    k = [...k, { file_url: result.uri, file_type: fileType, preload: true, hash: hash }];
-                    setImageSource({ images: k });
-                }*/
+                /*   if (result.type === 'success') {
+                      let k = imageSource.images;
+                      let hash = crypto.createHash('sha256').update(result.uri).digest('hex');
+                      uploadImage(
+                          result.uri,
+                          url + '&a=upload',
+                          handleInsertImageFinish,
+                          { hash: hash }
+  
+                      );
+  
+                      let fileType = i.type ? i.type + '/' : result.uri.split(';')[0].split(':')[1];
+                      k = [...k, { file_url: result.uri, file_type: fileType, preload: true, hash: hash }];
+                      setImageSource({ images: k });
+                  }*/
                 if (!result.cancelled) {
                     let k = await uploadImages(result.assets);
-                    console.log("k", k)
                     setImageSource({ images: k });
                 }
             } catch (err) {
@@ -311,21 +315,15 @@ export default function (props) {
         }
     }, [props.ext_deny, props.ext_allow, imageSource, url]);
 
-    const handleInsertImageFinish = useCallback(async (result, extraVar) => {
-        RestoreGhosts({ hash: extraVar.hash, id: result?.data?.id });
-    }, []);
+
+
 
     const handleDelete = useCallback(async (id) => {
-
         const filteredArr = imageSource?.images?.filter(item => item.file_id != id);
         setImageSource({ images: [...filteredArr] });
-     
-        const result = await fetcher(url + "&a=delete&id=" + id);
-
-        //RestoreGhosts(0);
+        await fetcher(url + "&a=delete&id=" + id);
     }, [url, imageSource]);
 
-   
 
     if (props.view == 'button') {
         return <ButtonCover imageSource={imageSource} selectImage={selectImage} />
@@ -438,24 +436,75 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
 }
 
 function GhostsList(imagesList, bMultiple, handleDelete, props) {
-    
-
-    if (!imagesList || imagesList.length === 0 || props.name == 'cover') {//|| !bMultiple
-        return;
+    if (!imagesList || imagesList.length === 0 || props.name === 'cover') {
+        return null;
     }
-   
 
     return imagesList.map((img, index) => {
         const isImage = img?.file_type?.includes('image/');
         const isVideo = img?.file_type?.includes('video/');
+        const showPreloadImage = img?.preload && img.type === 'image';
+        const showPreloadFile = img?.preload && img.type !== 'image';
+
         return (
-            <View key={`file-${props.name}-${index}`} className=' mb-[8px] w-[100px] h-[100px] m-[1px] justify-center items-center bg-bgritem dark:bg-bgritem-d rounded-lg overflow-hidden' >
-                {isImage && <Image view='cover' alt='' src={img.file_url} />}
-                {!isImage && !img?.preload && <View className=' h-16 w-16 text-neutral-700 dark:text-neutral-300 items-center justify-center'>{isVideo ? <Icon icon="Video" className="w-8 h-8" size={32}  /> : <Icon  icon="File" className="w-8 h-8" size={32} />}</View>}
-                {img?.preload && <View className='absolute w-full h-full justify-center items-center'><Loading /></View>}
-                {img?.file_id && <View className='absolute top-1 right-1 w-6.5 text-center mx-auto'>
-                    <Button onPress={() => handleDelete(img.file_id)} variant="default" startDecorator="X" align="start" title="" rounded size="xs" />
-                </View>}
+            <View
+                key={`file-${props.name}-${index}`}
+                className="mb-[8px] w-[100px] h-[100px] m-[1px] justify-center items-center bg-bgritem dark:bg-bgritem-d rounded-lg overflow-hidden"
+            >
+                {isImage && <Image view="cover" alt="" src={img.file_url} />}
+
+                {!isImage && !img?.preload && (
+                    <View className="h-16 w-16 text-neutral-700 dark:text-neutral-300 items-center justify-center">
+                        {isVideo ? (
+                            <Icon icon="Video" className="w-8 h-8" size={32} />
+                        ) : (
+                            <Icon icon="File" className="w-8 h-8" size={32} />
+                        )}
+                    </View>
+                )}
+
+                {showPreloadImage && (
+                    <View className="absolute w-full h-full justify-center items-center">
+                        <View className="opacity-50 w-full h-full absolute">
+                            {Platform.OS !== 'web' ? (
+                                <ImageRN
+                                    source={{ uri: img.uri }}
+                                    style={{ width: 128, height: 128 }}
+                                    resizeMode="cover"
+                                    view="cover"
+                                    alt=""
+                                    src={img.uri}
+                                />
+                            ) : (
+                                <Image view="cover" alt="" src={img.uri} />
+                            )}
+                        </View>
+                        <Loading />
+                    </View>
+                )}
+
+                {showPreloadFile && (
+                    <View className="absolute w-full h-full justify-center items-center">
+                        <View className="opacity-50 w-full h-full absolute">
+                            <Icon icon="File" className="w-8 h-8" size={32} />
+                        </View>
+                        <Loading />
+                    </View>
+                )}
+
+                {img?.file_id && (
+                    <View className="absolute top-1 right-1 w-6.5 text-center mx-auto">
+                        <Button
+                            onPress={() => handleDelete(img.file_id)}
+                            variant="default"
+                            startDecorator="X"
+                            align="start"
+                            title=""
+                            rounded
+                            size="xs"
+                        />
+                    </View>
+                )}
             </View>
         );
     });

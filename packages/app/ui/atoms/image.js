@@ -115,6 +115,7 @@ export default function ElementImage(props) {
 
     return useMemo(() => (
         <SolitoImageStyled 
+            onError={(e) => console.log('!!!!Image loading error:', e, src)}
             {...rest} 
             src={src} 
             alt={alt} 

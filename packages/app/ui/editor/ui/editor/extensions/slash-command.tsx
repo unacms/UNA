@@ -231,12 +231,12 @@ const getSuggestionItems = ({ query }: { query: string }) => {
   });
 };
 
-const handleInsertImageFinish = async (url, extraVar) => {
+const handleInsertImageFinish = async (uploadInfo) => {
   //extraVar.editor.chain().focus().setImage({ src: url }).run()
- const view = extraVar.view;
-  const pos = extraVar.pos;
+ const view = uploadInfo.extraVar.view;
+  const pos = uploadInfo.extraVar.pos;
   const { schema } = view.state;
-  const node = schema.nodes.image.create({ src: url });
+  const node = schema.nodes.image.create({ src: uploadInfo.url });
     const transaction = view.state.tr
       .replaceWith(pos, pos, node);
     view.dispatch(transaction);

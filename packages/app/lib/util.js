@@ -844,10 +844,10 @@ export const uploadImage = async (uri, fetchUrl, calback, extraVar) => {
                 formData.append("file", file);
                 const result = await fetcher([fetchUrl, null, formData]);
                 if (result?.data?.link) {
-                    calback(result?.data?.link, extraVar);
+                    calback({result:result?.data?.link, extraVar:extraVar});
                 }
                 else {
-                    calback(result, extraVar)
+                    calback({result:result, extraVar:extraVar})
                 }
 
             });
@@ -861,13 +861,14 @@ export const uploadImage = async (uri, fetchUrl, calback, extraVar) => {
             name: fileName,
             type: `image/${fileType}`,
         });
+
         
         const result = await fetcher([fetchUrl, null, formData]);
         if (result?.data?.link) {
-            calback(result?.data?.link, extraVar);
+            calback({result:result?.data?.link, extraVar:extraVar});
         }
         else {
-            calback(result, extraVar)
+            calback({result:result, extraVar:extraVar})
         }
     }
 };

@@ -247,6 +247,8 @@ export default function FormFeed(props) {
                                         {
                                             previewPlaceHolder: setPlaceHolder,
                                             noMargin: true,
+                                            size: 'base',
+                                            variant: 'secondary',
                                             rounded: true,
                                         }
                                     )}
@@ -281,7 +283,7 @@ export default function FormFeed(props) {
                                             noMargin: true,
                                             asDefaultStorage: true,
                                             size: 'base',
-                                            variant: 'text',
+                                            variant: 'secondary',
                                             rounded: true,
                                             source: 'camera',
                                         }

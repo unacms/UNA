@@ -108,8 +108,8 @@ const MenuBar = ({ editor }) => {
         }
     };
 
-    const handleInsertImageFinish = async (url, extraVar) => {
-        extraVar.editor.chain().focus().setImage({ src: url }).run()
+    const handleInsertImageFinish = async (uploadInfo) => {
+        extraVar.editor.chain().focus().setImage({ src: uploadInfo.result }).run()
     }
 
     let aButtonsGroup = [];
