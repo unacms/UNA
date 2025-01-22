@@ -20,20 +20,22 @@ import { Image as ImageRN } from 'react-native';
 
 export default function (props) {
     const name = props.name;
-
     const [uploadFinished, setUploadFinished] = useState(null);
     const [uploadFinishedArr, setUploadFinishedArr] = useState([]);
     const [imageSource, setImageSource] = useState({ images: null });
     const formContext = useFormContext();
     const formValue = formContext.watch(name);
-    let obfuscateFaces = formContext.watch('obfuscate_faces');
+    const obfuscateFaces = formContext.watch('obfuscate_faces');
     const rules = getValidationRules(props);
-    let defaultValue = props?.value ? props.value : '';
+    const defaultValue = props?.value ? props.value : '';
     const { layoutData, setLayoutData } = useLayoutData();
     const { field } = useController({ name, rules, defaultValue });
     const bMultiple = props.multiple;
     const [hasPermissionCamera, requestPermissionCamera] = ImagePicker.useCameraPermissions();
     const [hasPermissionLibrary, requestPermissionLibrary] = ImagePicker.useMediaLibraryPermissions();
+
+    const isAutoGhosts = appSetting('forms', 'auto_ghosts_in_files')
+
     const url = useMemo(() => {
         return '/api.php?r=system/get_data_api/TemplUploaderServices/&params[]=&obfuscate_faces=' + obfuscateFaces + '&&uo=' + props.uploaders[0] + '&so=' + props.storage_object + '&uid=' + genRnd(8) + '&img_trans=' + props.images_transcoder + '&m=' + (bMultiple ? 1 : 0) + '&c=' + props.content_id + '&p=' + (props.privacy ? 1 : 0);
     }, [props, obfuscateFaces]);
@@ -52,6 +54,8 @@ export default function (props) {
 
 
     const RestoreGhosts = async (data) => {
+        if (isAutoGhosts)
+            return;
 
         let a = [];
         let av = [];
@@ -64,22 +68,22 @@ export default function (props) {
             });
         }
 
-        a.forEach(function (k) {
-            if (k.file_id) {
-                const val = av.join(',');
-                if (name == 'covers') {
-                    formContext.setValue('thumb', val)
-                }
-                if (props.useUrl) {
-                    field.onChange(a[0].file_url);
-                }
-                else {
-                    field.onChange(val);
-                }
-            }
-        });
-        if (a.length == 0 && field.value != '')
-            field.onChange('');
+        /* a.forEach(function (k) {
+             if (k.file_id) {
+                 const val = av.join(',');
+                 if (name == 'covers') {
+                     formContext.setValue('thumb', val)
+                 }
+                 if (props.useUrl) {
+                     field.onChange(a[0].file_url);
+                 }
+                 else {
+                     field.onChange(val);
+                 }
+             }
+         });
+         if (a.length == 0 && field.value != '')
+             field.onChange('');*/
 
         let filteredArr = []
         if (imageSource?.images)
@@ -94,6 +98,20 @@ export default function (props) {
         if (props.previewPlaceHolder) {
             props.previewPlaceHolder(name, GhostsList(imageSource.images, bMultiple, handleDelete, props));
         }
+        if (imageSource.images) {
+            const fileIds = imageSource.images
+                .filter(item => item.file_id !== undefined) // Оставляем только элементы с file_id
+                .map(item => item.file_id) // Извлекаем file_id
+                .join(',');
+            if (name == 'covers') {
+                formContext.setValue('thumb', fileIds)
+            }
+            field.onChange(fileIds);
+        }
+        else {
+            field.onChange('');
+        }
+       // console.log("imageSourceimageSource", imageSource.images)
     }, [imageSource]);
 
     useEffect(() => {
@@ -124,10 +142,19 @@ export default function (props) {
 
     useEffect(() => {
         if (uploadFinished?.result) {
-            console.log("uploadFinisheduploadFinished", uploadFinished);
-            setUploadFinishedArr((prevArr) => [...prevArr, uploadFinished.extraVar.hash]);
-            
+            if (isAutoGhosts) {
+                const updatedImages = imageSource?.images?.map(item =>
+                    item.hash === uploadFinished.extraVar.hash ? { ...uploadFinished?.result.data.ghost, uri: item.uri } : item
+                );
+
+                setImageSource({ images: updatedImages });
+            }
+            else {
+                setUploadFinishedArr((prevArr) => [...prevArr, uploadFinished.extraVar.hash]);
+            }
+
         }
+       // console.log("uploadFinished", uploadFinished)
     }, [uploadFinished]);
 
     useEffect(() => {
@@ -183,7 +210,7 @@ export default function (props) {
                 });
             }
             else {
-                let hash = md5(uri);
+
 
                 uploadImage(
                     uri,
@@ -239,7 +266,7 @@ export default function (props) {
         else {
             selectImage1('library', bIsMedia)
         }
-    }, [props.ext_deny, props.ext_allow, props.source, imageSource, url]);
+    }, [props.ext_deny, props.ext_allow, props.source, imageSource, url, hasPermissionCamera, hasPermissionLibrary]);
 
 
     const selectImage1 = useCallback(async (type, bIsMedia) => {
@@ -320,10 +347,7 @@ export default function (props) {
                 console.error('Error picking document:', err);
             }
         }
-    }, [props.ext_deny, props.ext_allow, imageSource, url]);
-
-
-
+    }, [props.ext_deny, props.ext_allow, imageSource, url, hasPermissionCamera, hasPermissionLibrary]);
 
     const handleDelete = useCallback(async (id) => {
         const filteredArr = imageSource?.images?.filter(item => item.file_id != id);
@@ -450,18 +474,21 @@ function GhostsList(imagesList, bMultiple, handleDelete, props) {
     return imagesList.map((img, index) => {
         const isImage = img?.file_type?.includes('image/');
         const isVideo = img?.file_type?.includes('video/');
-        const showPreloadImage = img?.preload && img.type === 'image';
-        const showPreloadFile = img?.preload && img.type !== 'image';
+        const isPreload = img?.preload;
 
+       // console.log("imgimgimgimg", img, isImage, isVideo)
         return (
-
             <View
                 key={`file-${props.name}-${index}`}
                 className="mb-[8px] w-[100px] h-[100px] m-[1px] justify-center items-center bg-bgritem dark:bg-bgritem-d rounded-lg overflow-hidden"
             >
-                {isImage && <Image view="cover" alt="" src={img.file_url} />}
-
-                {!isImage && !img?.preload && (
+                {isImage ? <ImageRN
+                    source={{ uri: img.uri }}
+                    style={{ width: 128, height: 128, opacity: isPreload ? 0.5 : 1 }}
+                    resizeMode="cover"
+                    view="cover"
+                    alt=""
+                /> : (
                     <View className="h-16 w-16 text-neutral-700 dark:text-neutral-300 items-center justify-center">
                         {isVideo ? (
                             <Icon icon="Video" className="w-8 h-8" size={32} />
@@ -471,35 +498,7 @@ function GhostsList(imagesList, bMultiple, handleDelete, props) {
                     </View>
                 )}
 
-                {showPreloadImage && (
-                    <View className="absolute w-full h-full justify-center items-center">
-                        <View className="opacity-50 w-full h-full absolute">
-                            {Platform.OS !== 'web' ? (
-                                <ImageRN
-                                    source={{ uri: img.uri }}
-                                    style={{ width: 128, height: 128 }}
-                                    resizeMode="cover"
-                                    view="cover"
-                                    alt=""
-                                    src={img.uri}
-                                />
-                            ) : (
-                                <Image view="cover" alt="" src={img.uri} />
-                            )}
-                        </View>
-                        <Loading />
-                    </View>
-                )}
-
-                {showPreloadFile && (
-                    <View className="absolute w-full h-full justify-center items-center">
-                        <View className="opacity-50 w-full h-full absolute">
-                            <Icon icon="File" className="w-8 h-8" size={32} />
-                        </View>
-                        <Loading />
-                    </View>
-                )}
-
+                {isPreload && <View className={`w-full h-full absolute top-8`}><Loading className="absolute" /></View>}
                 {img?.file_id && (
                     <View className="absolute top-1 right-1 w-6.5 text-center mx-auto">
                         <Button

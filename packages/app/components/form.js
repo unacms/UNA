@@ -54,15 +54,12 @@ export default function (props) {
             if ((data.inputs[key].type == "switcher" || data.inputs[key].type == "checkbox") && data.inputs[key].checked == false)
                 data.inputs[key].value = 0;
 
-            if (checkInputType('visibility', name, data.inputs[key].name)) {
-                data.inputs[key].type = 'visibility'
-            }
-            if (checkInputType('selector', name, data.inputs[key].name)) {
-                if (!data.inputs[key].origtype) {
-                    data.inputs[key].origtype = data.inputs[key].type;
-                    data.inputs[key].type = 'selector'
+            ['visibility', 'selector'].forEach(type => {
+                if (checkInputType(type, name, data.inputs[key].name)) {
+                    data.inputs[key].origtype = data.inputs[key].origtype || data.inputs[key].type;
+                    data.inputs[key].type = type;
                 }
-            }
+            });
 
             if (data.inputs[key].value || data.inputs[key].value == 0)
                 defaultValues[key] = data.inputs[key].value;

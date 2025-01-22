@@ -4,7 +4,7 @@ import Time from 'app/ui/atoms/time'
 import Profile from 'app/ui/molecules/profile'
 import React, { memo, useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import { useCurrentUser } from 'app/context/user'
-import { appSetting, getDataFromCache, storageSet, isObjectsEqual, menuItemsByName } from 'app/lib/util'
+import { appSetting, getDataFromCache, storageSet, isObjectsEqual, menuItemsByName, visibilityById} from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import { Platform, useWindowDimensions, StyleSheet } from 'react-native'
@@ -177,17 +177,17 @@ export function prepareData(data) {
 
 export const ItemInfo = memo(({ data, t }) => {
     const [showContextList, setShowContextList] = useState(false);
-
-    const OwnersList = () => data.owners?.length > 0 ? data.owners?.length == 1 ? <>
+    const owners = data.owners ? data.owners.filter((item) => item.author_data.id != data.context_data.id) : [];
+    const OwnersList = () => owners?.length > 0 ? owners?.length == 1 ? <>
         <Text className="text-neutral-500/50 text-sm"> · </Text>
         <Link href={data.owners[0].url} emulate={true}>
             <Text className=" bg-primary/10 hover:bg-primary/20 px-1.5 py-0.5 rounded-md text-primary dark:text-primary-d hover:text-linkhover text-xs font-medium">
-                {data.owners[0].title}
+                {owners[0].title}
             </Text>
         </Link></> : <><Text className="text-neutral-500/50 text-sm"> · </Text>
         <Pressable onPress={() => { setShowContextList(true) }} >
             <Text className=" bg-primary/10 hover:bg-primary/20 px-1.5 py-0.5 rounded-md text-primary dark:text-primary-d hover:text-linkhover text-xs font-medium">
-                {data.owners[0].title} + {data.owners.length - 1}
+                {owners[0].title} + {owners.length - 1}
             </Text>
         </Pressable>
         <Modal
@@ -200,7 +200,7 @@ export const ItemInfo = memo(({ data, t }) => {
             title="Posted to"
         >
             <View className='gap-x-2 mb-2'>{
-                data.owners.map((item, index) => (
+                owners.map((item, index) => (
                     <Row className='items-center py-1 pl-2 my-1 border border-bdr dark:border-bdr-d rounded-lg hover:bg-primary/10 active:bg-primary/20 dark:hover:bg-primary-d/10 dark:active:bg-primary-d/20' key={'chk' + index}>
                         <Link key={`link-{$index}`} href={item.url} emulate={true}>
                             <Text className="text-neutral-700 dark:text-neutral-200 text-sm"> {item.title}</Text>
@@ -339,6 +339,28 @@ export const CounterMenu = memo(({ data }) => {
     />
 });
 
+export const VisibilityInfo = memo(({ data }) => {
+   
+    let { icon = 'Unknown', text = 'Unknown' } = visibilityById(data.object_privacy_view);
+
+    if (data.object_privacy_view < 0){
+        icon = <Profile {...data.author_data} displayType="unit_wo_info" displaySize="xxs" />
+        text = data.context_data.display_name
+    }
+   
+    return (
+        <>
+        <Text className="text-neutral-600 dark:text-neutral-400 text-[14px] h-[22px] leading-[22px] text-center tracking-tight ml-1">·</Text>
+        <Button
+                title={text}
+                startDecorator={icon}
+                variant="text"
+                size="xs"
+            />
+        </>
+    );
+});
+
 export const Author = memo(({ data, url, t }) => {
 
     const ActionsElements = data.author_actions.map((item, index) => {
@@ -353,18 +375,22 @@ export const Author = memo(({ data, url, t }) => {
         );
     }); 
 
+    const dataIcon = data.object_privacy_view < 0 ? data.context_data : data.author_data;
+
     return(
     <View className='flex-auto'>
         <Profile
-            {...data.author_data}
+            {...dataIcon}
             
             displayType="unit"
             displaySize="base"
             showInfo={
-                <Row className=" flex-wrap h-[22px] gap-x-[4px] ">
+                <Row className=" flex-wrap h-[22px] gap-x-[4px] items-center">
                     <Link href={url}>
                         <Time className='leading-[22px]' ts={data.date}></Time>
                     </Link>
+                   
+                    <VisibilityInfo data={data}/>
                     <ItemInfo data={data} t={t} />
                 </Row>
             }

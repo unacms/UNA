@@ -38,9 +38,7 @@ function ProfileView({ isImageOnly = false, data, handleSubmit, showImage, setSh
             <View className="gap-x-[8px] flex-row ">
                 <Profile {...profileData} displaySize="base" displayType="unit_wo_info" />
                 <View className="flex-col ">
-                    <Text className="mb-[4px] text-neutral-900 dark:text-neutral-100 leading-[22px] font-semibold text-[16px] truncate">
-                        {currentUser.display_name}
-                    </Text>
+                    
                     {data?.inputs?.['object_privacy_view'] && getFormFieldByData(
                         {
                             ...data.inputs['object_privacy_view'],
@@ -50,9 +48,12 @@ function ProfileView({ isImageOnly = false, data, handleSubmit, showImage, setSh
                         {
                             onShowModal: setShowImage,
                             showModal: showImage,
-                            size: 'sm',
+                            size: 'xs',
                             maxLength: 0,
-                            variant: 'link'
+                            variant: 'text',
+                            addElement: <Text className="text-neutral-900 dark:text-neutral-100 leading-[22px] font-semibold text-[16px] truncate">
+                            {currentUser.display_name}
+                        </Text>
                         }
                     )}
                 </View>

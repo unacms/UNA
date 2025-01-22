@@ -13,7 +13,7 @@ export default function MultiPostForm({ data }) {
     const { t } = useTranslation()
     const [pageData, setPageData] = useState(false);
     const menu_add_items = menuItemsByName('menu_post', data.menu.items, currentUser);
-
+    console.log("datadatadata", data)
     if (menu_add_items.length == 0)
         return;
 
@@ -46,7 +46,7 @@ export default function MultiPostForm({ data }) {
                             align="start"
                             onPress={() => {
                                 FeedbackHaptics('Medium')
-                                handleFormModal(firstForm, null, setPageData)
+                                handleFormModal(firstForm, null, setPageData, data.params)
                             }}
                         />
                     </View>

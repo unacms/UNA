@@ -1,16 +1,16 @@
 import { useState, useEffect, useContext } from 'react';
 import Field, { getValidationRules } from './_field';
 import { useFormContext, useController } from 'react-hook-form';
-import { Button, Modal } from 'app/design/controls'
+import { Button, Modal, Hidden } from 'app/design/controls'
 import { getVisibilityValues } from './select';
-import { truncateString } from 'app/lib/util';
+import { truncateString, visibilityById } from 'app/lib/util';
 import RbList from 'app/ui/molecules/radio_list';
 import ChkList from 'app/ui/molecules/checkbox_list';
-import { View, Row } from 'app/design/view'
+import { View, Row, Pressable } from 'app/design/view'
 import { Text } from 'app/design/typography'
+import { Icon } from 'app/ui/atoms/icon'
 
 export default function (props) {
-
     const name = props.name;
     const rules = getValidationRules(props);
     const formContext = useFormContext();
@@ -25,9 +25,6 @@ export default function (props) {
     const [subValues, setSubValues] = useState(
         props?.subvalue ? props.subvalue.split(",").map(value => parseInt(value, 10)) : []
     );
-
-
-
 
     const handleValueChange = (val) => {
         field.onChange(val);
@@ -82,7 +79,6 @@ export default function (props) {
 
     const subOptions = subOptionsMap[field.value] || [];
 
-    
     const selectedSubLabels = subOptions.filter(item => subValues.includes(item.value)).map(item => item.label);
 
     const subLabelDisplay = selectedSubLabels.length > 3 ? `${selectedSubLabels.slice(0, 3).join(', ')} + ${selectedSubLabels.length - 3} more` : selectedSubLabels.join(', ');
@@ -126,17 +122,41 @@ export default function (props) {
         </Modal>
     );
 
+
+    if (props.origtype == 'hidden') {
+        return <Hidden
+            name={name}
+            onChangeText={field.onChange}
+            onBlur={field.onBlur}
+            defaultValue={props.value}
+        />
+    }
+
     if (props.format == 'nofield') {
+        let { icon = 'Unknown', text = 'Unknown' } = visibilityById(field.value);
+
         const v = filteredValues.find(item => item.value == field.value)?.label || filteredValues[0].label;
-        return <>
+        return (<>
             {modalElement}
-            <Button
-                title={maxLength > 0 ? truncateString(v, maxLength) : v}
-                startDecorator="Globe"
-                variant="outline"
-                size={size}
-                onPress={() => handleShowModal()}
-            /></>
+            <Pressable onPress={() => handleShowModal()}>
+                {props.addElement}
+                <Row className=" items-center text-neutral-800  dark:text-neutral-200 gap-x-1">
+                    <Icon
+                        icon={icon}
+                        width={20}
+                        height={20}
+
+                    />
+                    <Text className="whitespace-nowrap text-ellipsis overflow-hidden tracking-tight font-medium text-neutral-800  dark:text-neutral-200  text-xs px-[4px] my-auto native:text-[12px] ">{text}</Text>
+                    <Icon
+                        icon="CaretDown"
+                        width={16}
+                        height={16}
+
+                    />
+                </Row>
+            </Pressable>
+        </>);
     }
 
     return (

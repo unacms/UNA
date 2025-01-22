@@ -135,6 +135,13 @@ function AtomProfile_(oProps) {
     const sDisplaySize = oProps.displaySize ? oProps.displaySize : 'base'
 
     const sizes = {
+        xxs: {
+            sSize: 'w-[18px] h-[18px]',
+            iSizeWidth: 18,
+            iSizeHeight: 18,
+            sSizeFont: 'text-[12px]', 
+            sSizeFontLetter: 'text-base  font-semibold',
+        },
         xs: {
             sSize: 'w-[24px] h-[24px]',
             iSizeWidth: 24,

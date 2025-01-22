@@ -873,6 +873,19 @@ export const uploadImage = async (uri, fetchUrl, calback, extraVar) => {
     }
 };
 
+export function visibilityById(visibility) {
+    const visibilityOptions = {
+        2: { icon: 'EyeSlash', text: 'Me only' },
+        3: { icon: 'Globe', text: 'Public' },
+        5: { icon: 'Users', text: 'Friends ' },
+        6: { icon: 'UserCheck', text: 'Selected Friends ' },
+        8: { icon: 'Graph', text: 'Selected Relationships ' },
+        9: { icon: 'UserList', text: 'Selected Membership ' },
+         
+    };
+    
+    return  visibilityOptions[visibility] || {};
+}
 export function genRnd(length) {
     let result = '';
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
