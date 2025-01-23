@@ -82,7 +82,7 @@ export default function UniList(props) {
         style,
         ref: refer,
         endReached: onEndReached,
-        overscan: 2500,
+        /*overscan: 2500,*/
         components: numColumns > 1 ? {
             List: ListComponent,
             Item: ItemComponent,
