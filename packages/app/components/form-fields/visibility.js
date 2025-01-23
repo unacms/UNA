@@ -140,7 +140,7 @@ export default function (props) {
             {modalElement}
             <Pressable onPress={() => handleShowModal()}>
                 {props.addElement}
-                <Row className=" items-center text-neutral-800  dark:text-neutral-200 gap-x-1">
+                <Row className=" web:group-hover:bg-bgritem web:dark:group-hover:bg-bgritem-d rounded-[6px] flex-none mr-auto px-1 items-center text-neutral-800 dark:text-neutral-200 h-[22px] web:duration-300">
                     <Icon
                         icon={icon}
                         width={20}
@@ -150,8 +150,8 @@ export default function (props) {
                     <Text className="whitespace-nowrap text-ellipsis overflow-hidden tracking-tight font-medium text-neutral-800  dark:text-neutral-200  text-xs px-[4px] my-auto native:text-[12px] ">{text}</Text>
                     <Icon
                         icon="CaretDown"
-                        width={16}
-                        height={16}
+                        width={14}
+                        height={14}
 
                     />
                 </Row>
