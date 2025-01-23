@@ -1244,23 +1244,23 @@ export const settingsDefault = {
                     showBg: false,
                 },
 
-                foryou_feed_form: {
+              /*  foryou_feed_form: {
                     name: 'bx_timeline:get_block_post_account',
                     showTitle: false,
                     showBg: false,
                     exProps: {formOnly:false}
-                },
+                },*/
                 foryou_feed: {
                     name: 'bx_timeline:get_block_view_feed_and_hot',
                     showTitle: false,
                     showBg: false,
                 },
 
-                account_feed_form: {
+                /*account_feed_form: {
                     name: 'bx_timeline:get_block_post_account',
                     showTitle: false,
                     showBg: false,
-                },
+                },*/
                 account_feed: {
                     name: 'bx_timeline:get_block_view_account',
                     showTitle: false,
@@ -2760,40 +2760,54 @@ export const settingsDefault = {
             'u-btn-default-text':
                 ' font-medium text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-white ',
             'u-btn-default-trans': 'web:duration-200',
+            /*'u-btn-default-color-icon-light': 'rgb(243, 244, 246)',
+            'u-btn-default-color-icon-dark': 'rgb(243, 244, 246)',*/
 
             'u-btn-primary-cnt':
             ' bg-primary-600 dark:bg-primary-700   sm:hover:bg-primary-700 dark:sm:hover:bg-primary-800  ',
             'u-btn-primary-text': '  font-medium text-neutral-100 hover:text-white ',
             'u-btn-primary-trans': ' web:duration-200 ',
+            /*'u-btn-primary-color-icon-light': 'rgb(243, 244, 246)',
+            'u-btn-primary-color-icon-dark': 'rgb(243, 244, 246)',*/
 
             'u-btn-secondary-cnt':
                 ' bg-neutral-200 dark:bg-neutral-800  sm:hover:bg-neutral-300 sm:dark:hover:bg-neutral-700  ',
             'u-btn-secondary-text':
                 ' font-medium text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-white ',
             'u-btn-secondary-trans': ' web:duration-200',
+            /*'u-btn-secondary-color-icon-light': 'rgb(243, 244, 246)',
+            'u-btn-secondary-color-icon-dark': 'rgb(243, 244, 246)',*/
 
             'u-btn-danger-cnt':
                 ' bg-red-600 hover:bg-red-500 hover:shadow active:opacity-50 active:shadow-none  ',
             'u-btn-danger-text':
                 ' font-medium text-neutral-100 group-hover:text-white ',
             'u-btn-danger-trans': ' web:duration-200 ',
+            /*'u-btn-danger-color-icon-light': 'rgb(243, 244, 246)',
+            'u-btn-danger-color-icon-dark': 'rgb(243, 244, 246)',*/
 
             'u-btn-text-cnt':
                 '  hover:bg-bgrbutton dark:hover:bg-bgrbutton-d bg-transparent active:bg-bgrbutton-h dark:active:bg-bgrbutton-dh text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
             'u-btn-text-text':
                 ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50',
             'u-btn-text-trans': ' web:duration-200 ',
+            /*'u-btn-text-color-icon-light': 'rgb(243, 244, 246)',
+            'u-btn-text-color-icon-dark': 'rgb(243, 244, 246)',*/
 
             'u-btn-link-cnt': ' bg-transparent px-0 ',
             'u-btn-link-text':
                 ' font-semibold group-hover:underline text-neutral-800 dark:text-neutral-200 hover:text-neutral-950 dark:hover:text-neutral-50 ',
             'u-btn-link-trans': ' web:duration-200 ',
+            'u-btn-link-color-icon-light': 'rgba(37,99,235,1)',
+            'u-btn-link-color-icon-dark': 'rgba(37,99,235,1)',
 
             'u-btn-outline-cnt':
                 ' shadow-outline bg-bgrcard dark:shadow-outline-d native:border border-bdrbutton dark:border-bdrbutton-d dark:bg-bgrcard-d hover:bg-bgrbutton dark:hover:bg-bgrbutton-dh ',
             'u-btn-outline-text':
                 ' font-medium text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-neutral-50 ',
             'u-btn-outline-trans': ' web:duration-200',
+            /*'u-btn-outline-color-icon-light': 'rgb(243, 244, 246)',
+            'u-btn-outline-color-icon-dark': 'rgb(243, 244, 246)',*/
 
             'u-btn-group-item-cnt':
                 ' hover:bg-bgritem-h dark:hover:bg-bgritem-dh active:opacity-50  ',

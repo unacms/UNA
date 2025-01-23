@@ -4,7 +4,7 @@ import Time from 'app/ui/atoms/time'
 import Profile from 'app/ui/molecules/profile'
 import React, { memo, useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import { useCurrentUser } from 'app/context/user'
-import { appSetting, getDataFromCache, storageSet, isObjectsEqual, menuItemsByName, visibilityById} from 'app/lib/util'
+import { appSetting, getDataFromCache, storageSet, isObjectsEqual, menuItemsByName, visibilityById } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import { Platform, useWindowDimensions, StyleSheet } from 'react-native'
@@ -25,6 +25,7 @@ import useSWR from 'swr'
 import { useTranslation } from 'react-i18next';
 import Loading from 'app/ui/atoms/loading'
 import * as FeedItems from 'app/lib/feed-items'
+import { Icon } from 'app/ui/atoms/icon'
 
 export const CommentsModal = memo(({ commentsData, initFormData, itemContent, closeOnPost }) => {
     const windowDimensions = useWindowDimensions();
@@ -76,7 +77,7 @@ export const FeedEditForm = memo(({ setViewState, viewState, id }) => {
             headerBorder={true}
         >
             <Form
-                {...viewState.data}    
+                {...viewState.data}
                 classContainerName="flex-row flex-wrap w-full items-start justify-between"
                 onFormSubmit={onFormSubmit}
                 exProps={{
@@ -147,8 +148,8 @@ export const MainContent = memo(({ url, data }) => {
     const componentName = unitTypes[contentType];
 
     const ContentComponent = FeedItems[componentName];
- 
-    
+
+
     return ContentComponent ? (
         <ContentComponent {...commonProps} />
     ) : (
@@ -238,19 +239,19 @@ export const MenuManage = ({ id, menu, setViewState }) => {
     const [menuData, setMenuData] = useState(false);
 
     if (menu.items)
-        return <MenuManage_ id={id} menu={menu}  setViewState={setViewState} />
-    
+        return <MenuManage_ id={id} menu={menu} setViewState={setViewState} />
+
     if (!menuData)
         return (
             <Button
                 variant="text"
                 size="sm"
                 rounded
-                
+
                 startDecorator="DotsThreeOutline"
                 onPress={() => {
                     if (Platform.OS === 'web')
-                        setMenuData({...menu, items: [{'name': 'loader'}]});
+                        setMenuData({ ...menu, items: [{ 'name': 'loader' }] });
                     getDataForMenu(menu, setMenuData);
                 }}
             />
@@ -287,12 +288,12 @@ const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen }) => {
             if (!!aItem.display_type && aItem.display_type == 'element') {
                 const Element = componentsMap[aItem.data.type];
                 if (!!Element) {
-                    sTitle= <Element mode="text" key={aItem.id ? aItem.id : aItem.name}   {...aItem.data} />
+                    sTitle = <Element mode="text" key={aItem.id ? aItem.id : aItem.name}   {...aItem.data} />
                 }
             }
-            
+
             if (aItem.name == 'loader') {
-                sTitle= <Loading size="small" />
+                sTitle = <Loading size="small" />
             }
 
             return {
@@ -340,24 +341,15 @@ export const CounterMenu = memo(({ data }) => {
 });
 
 export const VisibilityInfo = memo(({ data }) => {
-   
-    let { icon = 'Unknown', text = 'Unknown' } = visibilityById(data.object_privacy_view);
 
-    if (data.object_privacy_view < 0){
-        icon = <Profile {...data.author_data} displayType="unit_wo_info" displaySize="xxs" />
-        text = data.context_data.display_name
-    }
-   
+    const { icon = 'Unknown', text = 'Unknown' } = visibilityById(data.object_privacy_view);
+    const isUser = data.object_privacy_view < 0;
     return (
-        <>
-        <Text className="text-neutral-600 dark:text-neutral-400 text-[14px] h-[22px] leading-[22px] text-center tracking-tight mx-1">·</Text>
-        <Button
-                title={text}
-                startDecorator={icon}
-                variant=""
-                size="xs"
-            />
-        </>
+        <Row className="text-neutral-600 dark:text-neutral-400 items-center">
+            <Text className="text-neutral-600 dark:text-neutral-400 text-[14px] h-[22px] leading-[22px] text-center tracking-tight mx-1">·</Text>
+            {isUser ? <Profile {...data.author_data} displayType="unit_wo_info" displaySize="xxs" /> : <Icon icon={icon} width={18} height={18} />}
+            <Text className="text-neutral-600 dark:text-neutral-400 text-[14px] h-[22px] leading-[22px] text-center tracking-tight text-sm ml-1">{ isUser ? data.author_data.display_name : text}</Text>
+        </Row>
     );
 });
 
@@ -373,30 +365,30 @@ export const Author = memo(({ data, url, t }) => {
                 {...item}
             />
         );
-    }); 
+    });
 
     const dataIcon = data.object_privacy_view < 0 ? data.context_data : data.author_data;
 
-    return(
-    <View className='flex-auto'>
-        <Profile
-            {...dataIcon}
-            
-            displayType="unit"
-            displaySize="base"
-            showInfo={
-                <Row className=" flex-wrap h-[22px] items-center">
-                    <Link href={url}>
-                        <Time className='leading-[22px]' ts={data.date}></Time>
-                    </Link>
-                   
-                    <VisibilityInfo data={data}/>
-                    <ItemInfo data={data} t={t} />
-                </Row>
-            }
-            showActions = {ActionsElements}
-        />
-    </View>
+    return (
+        <View className='flex-auto'>
+            <Profile
+                {...dataIcon}
+
+                displayType="unit"
+                displaySize="base"
+                showInfo={
+                    <Row className=" flex-wrap h-[22px] items-center">
+                        <Link href={url}>
+                            <Time className='leading-[22px]' ts={data.date}></Time>
+                        </Link>
+
+                        <VisibilityInfo data={data} />
+                        <ItemInfo data={data} t={t} />
+                    </Row>
+                }
+                showActions={ActionsElements}
+            />
+        </View>
     )
 });
 

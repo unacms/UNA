@@ -21,7 +21,10 @@ export default function FormPost(props) {
         }
     }
 
-    const prevList = Object.values(imageSource).flat()
+    const prevList = Object.values(imageSource)
+        .flat()
+        .filter((element) => element !== undefined && element !== null)
+
     if (inputs['covers']) {
         inputs['covers'].viewClasses =
             'p-4 border-dashed border-bdrcard dark:border-bdrcard-d'

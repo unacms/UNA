@@ -84,7 +84,7 @@ export default function (props) {
             }
             {(show && data) && <Modal id='file-preview' title={t("Your Profiles")} onVisible={show} onClose={() => { setShow(false) }}>
                 <Redirect ref={redirectdRef} />
-                <View className="  overflow-hidden flex-col">
+                <View className="   flex-col">
                     {!props.hideTitle && <View className="flex-row items-center  justify-between">
                         <Text className="text-lg px-1.5 py-2 font-bold text-neutral-800 dark:text-neutral-200 ">
                             Your Profiles
@@ -98,13 +98,13 @@ export default function (props) {
                         return (
                             <Link href={dUser.url} emulate={true} key={index}>
                                 <View key={'index' + index} className=" p-2 flex-row  
-                                group duration-200 overflow-hidden rounded-lg  
+                                group duration-200  rounded-lg  
                                 hover:bg-bgritem dark:hover:bg-bgritem-d
                                 max-w-5xl self-center w-full gap-x-[12px]">
                                     <View className="w-[44px] h-[44px] bg-blue-500/50 rounded-full flex-none ">{profile}</View>
                                     <Text className='text-sm my-auto flex-auto font-semibold truncate text-neutral-900 dark:text-neutral-100'>{item.display_name}</Text>
                                     <View className="text-sm bont-semibold flex-none my-auto">
-                                        <Button id="menu" startDecorator="UserSwitch" tooltip={t('Switch profile')} variant='outline' size='sm' onPress={() => handleSwitch(item.id)} />
+                                        <Button id="menu" startDecorator="UserSwitch" title="Switch"  variant='outline' size='sm' onPress={() => handleSwitch(item.id)} />
                                     </View>
                                 </View>
                             </Link>

@@ -129,9 +129,11 @@ export default function FormFeed(props) {
         }
     }
 
-    let prevList = Object.values(imageSource)
+    const prevList = Object.values(imageSource)
         .flat()
-        .filter((element) => element !== undefined)
+        .filter((element) => element !== undefined && element !== null)
+
+
 
     const header = (
         <Row className="w-full">
@@ -208,9 +210,9 @@ export default function FormFeed(props) {
                             autofocus: Date.now()
                         }
                     )}
-                    {prevList.length > 0 && prevList[0]?.key && (
-                        <Row className="flex-wrap">{prevList}</Row>
-                    )}
+                    
+                    <Row className="flex-wrap min-h-[110px]">{prevList}</Row>
+                    
                     {props.data.inputs['labels'] && (
                         <View className="flex-auto">
                             {labels}

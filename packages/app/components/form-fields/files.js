@@ -476,7 +476,6 @@ function GhostsList(imagesList, bMultiple, handleDelete, props) {
         const isVideo = img?.file_type?.includes('video/');
         const isPreload = img?.preload;
 
-       // console.log("imgimgimgimg", img, isImage, isVideo)
         return (
             <View
                 key={`file-${props.name}-${index}`}
@@ -484,7 +483,7 @@ function GhostsList(imagesList, bMultiple, handleDelete, props) {
             >
                 {isImage ? <ImageRN
                     source={{ uri: img.uri }}
-                    style={{ width: 128, height: 128, opacity: isPreload ? 0.5 : 1 }}
+                    style={{ width: 100, height: 100, opacity: isPreload ? 0.5 : 1 }}
                     resizeMode="cover"
                     view="cover"
                     alt=""

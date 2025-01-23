@@ -197,8 +197,10 @@ export default function (props) {
             '&params[]=' +
             uploadInfo.result.data.id
         const sResponse = await fetcher(sRequest)
-        if (extraVar.mode == 'cover') setCoverUrl(sResponse.data)
-        else setPictureUrl(sResponse.data)
+        if (uploadInfo.extraVar.mode == 'cover')
+            setCoverUrl(sResponse.data)
+        else 
+            setPictureUrl(sResponse.data)
     }
 
     data.profile.url_avatar = pictureUrl

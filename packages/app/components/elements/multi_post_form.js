@@ -1,19 +1,19 @@
 import { View, Row, ScrollView } from 'app/design/view'
 import { Button, Modal } from 'app/design/controls'
-import { useState, useContext, useRef, useCallback } from 'react'
+import { useState, useContext, useEffect, useCallback } from 'react'
 import { FeedbackHaptics, getAlert, menuItemsByName, appSetting } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import Profile from 'app/ui/molecules/profile'
 import Card from 'app/ui/molecules/card'
 import { useTranslation } from 'react-i18next'
-import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal';
+import FormModal, { handleFormModal, getFormModal } from 'app/ui/molecules/form_modal';
 
 export default function MultiPostForm({ data }) {
     const { currentUser } = useCurrentUser();
     const { t } = useTranslation()
     const [pageData, setPageData] = useState(false);
+    const [pageDataDef, setPageDataDef] = useState(false);
     const menu_add_items = menuItemsByName('menu_post', data.menu.items, currentUser);
-    console.log("datadatadata", data)
     if (menu_add_items.length == 0)
         return;
 
@@ -24,6 +24,14 @@ export default function MultiPostForm({ data }) {
         url_avatar: currentUser.avatar,
         url: null,
     };
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const sResponse = await getFormModal(firstForm, data.params);
+            setPageDataDef(sResponse.data);
+        };
+        fetchData();
+    }, []);
 
     return (
         <View className="w-full">
@@ -46,7 +54,7 @@ export default function MultiPostForm({ data }) {
                             align="start"
                             onPress={() => {
                                 FeedbackHaptics('Medium')
-                                handleFormModal(firstForm, null, setPageData, data.params)
+                                setPageData(pageDataDef)
                             }}
                         />
                     </View>

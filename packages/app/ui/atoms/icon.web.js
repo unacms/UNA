@@ -5,7 +5,7 @@ import { storageGet, storageSet } from 'app/lib/util'
 import SvgIcons from  'app/icons-svg';
 
 export const Icon = memo(function Icon(props) {
-    const { icon, className, width, height, size, ...rest } = props;
+    const { icon, className, width, height, color, size, ...rest } = props;
 
     // Мемоизируем ключ, чтобы он не пересчитывался при каждом рендере
     const key = useMemo(() => `${icon}-${width || ''}-${height || ''}-${size || ''}`, [icon, width, height, size]);
@@ -57,7 +57,7 @@ export const Icon = memo(function Icon(props) {
     }
 
     return (
-        <div className={className} {...rest} dangerouslySetInnerHTML={{ __html: currentIcon }} />
+        <div style={{color:color}}  className={className} {...rest} dangerouslySetInnerHTML={{ __html: currentIcon }} />
     );
 });
 

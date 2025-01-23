@@ -5,7 +5,7 @@ import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
 import { appSetting, isEmoji, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { Picker as PickerDef } from '@react-native-picker/picker';
-import { Theme } from 'app/design/theme';
+import { Theme, ThemeName } from 'app/design/theme';
 import Tooltip from 'app/ui/atoms/tooltip';
 import { useWindowDimensions } from 'react-native';
 import Loading from 'app/ui/atoms/loading'
@@ -70,7 +70,7 @@ export const PickerStyledIos = ({ className, ...props }) => (
 const modalSettings = appSetting('theme', 'modal');
 
 export function Modal({
-    animation = 'fade',
+    animation,
     position = 'center',
     onClose,
     outerClickClose = true,
@@ -85,6 +85,11 @@ export function Modal({
 }) {
     const { width, height } = useWindowDimensions();
     const offset = (title || onClose  ? (width > LAYOUT_BREAKPOINTS.md ? 100 : 68)  : 0);
+
+    if (!animation){
+        animation = width > LAYOUT_BREAKPOINTS.md ? 'fade' : 'slide';
+    }
+
     const styles = { maxHeight: height - offset };
     const isWeb = Platform.OS === 'web';
 
@@ -216,6 +221,7 @@ const getIcon = (sIcon, iIndex, classIconName, sClassText, sIconContainer, iIcon
             <Text key={iIndex} className={classIconName ? classIconName : sClassText + sIconContainer}>{sIcon}</Text>
         );
     }
+
     return (
         <Icon key={iIndex} className={classIconName ? classIconName : sClassText + sIconContainer} size={iIconSize} color={colorIcon} icon={sIcon}></Icon>
     );
@@ -292,14 +298,20 @@ export const Button = (props) => {
     const isIcon = !!startDecorator || !!endDecorator;
 
     const { colors } = Theme();
+    const themeName = ThemeName();
     const { width } = useWindowDimensions();
     const showTooltip = useMemo(() => width >= LAYOUT_BREAKPOINTS.lg && tooltip, [width, tooltip]);
 
     const colorIcon = useMemo(() => {
-        if (variant === 'link') return colors.primary;
-        if (variant === 'primary') return 'rgb(243, 244, 246)';
-        return '';
-    }, [variant, colors]);
+        let a = ThemeCssClassesButton[`u-btn-${variant}-color-icon-${themeName}`];
+        /*if (!a){
+            if (variant === 'link') 
+                a = colors.primary;
+            if (variant === 'primary') 
+                a='rgb(243, 244, 246)';
+        }*/
+        return a;
+    }, [variant, ThemeName, colors]);
 
   
 
