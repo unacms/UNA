@@ -2717,13 +2717,13 @@ export const settingsDefault = {
                 ' text-primary-700 dark:text-primary-300 group-hover:text-primary-800 dark:group-hover:text-primary-200 ',
             xs: {
                 rounded: ' rounded-[6px]',
-                padding: ' h-[24px] min-w-[24px] px-[4px]',
+                padding: ' h-[22px] min-w-[22px] px-[4px]',
                 icon_sizes:
-                    ' h-[20px] w-[20px] ', //icon container size
-                icon_size: ' 20px ', //icon size
+                ' h-[18px] w-[18px] ', //icon container size
+                icon_size: ' 18px ', //icon size
                 icon_margin: ' mx-[0px] ', //conditional margin for icon container when title is present
                 min_height: ' ',
-                margin: ' px-[4px] my-auto native:text-[12px] ',
+                margin: ' px-[2px] leading-[20px] native:text-[14px] ',
             },
             sm: {
                 rounded: ' rounded-[8px] ] ',
@@ -2779,9 +2779,9 @@ export const settingsDefault = {
             'u-btn-danger-trans': ' web:duration-200 ',
 
             'u-btn-text-cnt':
-                '  hover:bg-bgrbutton dark:hover:bg-bgrbutton-d bg-transparent active:bg-bgrbutton-h dark:active:bg-bgrbutton-dh ',
+                '  hover:bg-bgrbutton dark:hover:bg-bgrbutton-d bg-transparent active:bg-bgrbutton-h dark:active:bg-bgrbutton-dh text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
             'u-btn-text-text':
-                ' font-medium text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-neutral-50',
+                ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50',
             'u-btn-text-trans': ' web:duration-200 ',
 
             'u-btn-link-cnt': ' bg-transparent px-0 ',

@@ -43,7 +43,7 @@ function DisplayNameLink({ title, url, href, fontSize, actions }) {
 
     return (
         <Row className='items-center'>
-            <Text className={'text-neutral-800 dark:text-neutral-200 hover:text-linkhover font-semibold ' + fontSize + ' truncate '}>
+            <Text className={'text-neutral-800 dark:text-neutral-200 hover:text-linkhover font-bold tracking-tight ' + fontSize + ' truncate '}>
                 {title} 
             </Text>
             {actions}
@@ -160,8 +160,8 @@ function AtomProfile_(oProps) {
             sSize: 'w-[44px] h-[44px]',
             iSizeWidth: 44,
             iSizeHeight: 44,
-            sSizeFont: ' text-[16px] leading-[22px] tracking-tight',
-            sSizeFontLetter: ' p-[8px] leading-[22px] text-center text-[20px] font-semibold',
+            sSizeFont: ' text-[16px] leading-[22px] tracking-tight font-bold ',
+            sSizeFontLetter: ' p-[8px] leading-[22px] text-center text-[20px] font-bold',
         },
         lg: {
             sSize: 'w-[48px] h-[48px]',

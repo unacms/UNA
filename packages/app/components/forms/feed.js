@@ -49,10 +49,10 @@ function ProfileView({ isImageOnly = false, data, handleSubmit, showImage, setSh
                         {
                             onShowModal: setShowImage,
                             showModal: showImage,
-                            size: 'xs',
+                            size: 'sm',
                             maxLength: 0,
                             variant: 'text',
-                            addElement: <Text className="text-neutral-900 dark:text-neutral-100 leading-[22px] px-1 font-semibold text-[16px] truncate">
+                            addElement: <Text className="text-neutral-900 dark:text-neutral-100 leading-[22px] px-[4px] font-bold tracking-tight text-[16px] truncate">
                             {currentUser.display_name}
                         </Text>
                         }
@@ -194,7 +194,7 @@ export default function FormFeed(props) {
                 }
                 onClick={(event) => { event.target.querySelector('.tiptap')?.focus() }}
             >
-                <View className="w-full flex-col px-[12px] pb-[10px] ">
+                <View className="w-full flex-col px-[12px] ">
 
                     {getFormFieldByData(
                         props.data.inputs['text'],
@@ -220,7 +220,7 @@ export default function FormFeed(props) {
             </ScrollView>
             <View className="  ">
                 <Row className={
-                    '  items-center flex-auto w-full gap-x-6 py-3 border-t border-neutral-200 dark:border-neutral-800 px-3' +
+                    '  items-center flex-auto w-full gap-x-[12px] px-[12px] pb-[12px]  ' +
                     (isWeb ? '' : '  ') +
                     (isSmall
                         ? ' ' +

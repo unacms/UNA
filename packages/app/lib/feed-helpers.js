@@ -89,7 +89,7 @@ export const FeedEditForm = memo(({ setViewState, viewState, id }) => {
 
 export const CommentsSection = memo(({ isCommentsModal, commentsDataInline, data, isShowMoreComments, showCommentsModal, url, t }) => {
 
-    const ShowMoreCmts = (<Text className='text-neutral-600 dark:text-neutral-400 hover:text-primary dark:hover:text-primary-d px-2 py-1 mb-2 mr-auto bg-neutral-500/10 hover:bg-primary-500/20 rounded-full text-xs font-semibold'>
+    const ShowMoreCmts = (<Text className='text-neutral-600 dark:text-neutral-400 hover:text-primary dark:hover:text-primary-d px-2 py-1 mb-2 mr-auto bg-neutral-500/10 hover:bg-primary-500/20 rounded-full text-sm font-medium'>
         {t('View more comments')}
     </Text>);
     return (
@@ -181,12 +181,12 @@ export const ItemInfo = memo(({ data, t }) => {
     const OwnersList = () => owners?.length > 0 ? owners?.length == 1 ? <>
         <Text className="text-neutral-500/50 text-sm"> · </Text>
         <Link href={data.owners[0].url} emulate={true}>
-            <Text className=" bg-primary/10 hover:bg-primary/20 px-1.5 py-0.5 rounded-md text-primary dark:text-primary-d hover:text-linkhover text-xs font-medium">
+            <Text className=" bg-primary/10 hover:bg-primary/20 px-1.5 py-0.5 rounded-md text-primary dark:text-primary-d hover:text-linkhover text-sm font-medium">
                 {owners[0].title}
             </Text>
         </Link></> : <><Text className="text-neutral-500/50 text-sm"> · </Text>
         <Pressable onPress={() => { setShowContextList(true) }} >
-            <Text className=" bg-primary/10 hover:bg-primary/20 px-1.5 py-0.5 rounded-md text-primary dark:text-primary-d hover:text-linkhover text-xs font-medium">
+            <Text className=" bg-primary/10 hover:bg-primary/20 px-1.5 py-0.5 rounded-md text-primary dark:text-primary-d hover:text-linkhover text-sm font-medium">
                 {owners[0].title} + {owners.length - 1}
             </Text>
         </Pressable>
@@ -350,11 +350,11 @@ export const VisibilityInfo = memo(({ data }) => {
    
     return (
         <>
-        <Text className="text-neutral-600 dark:text-neutral-400 text-[14px] h-[22px] leading-[22px] text-center tracking-tight ml-1">·</Text>
+        <Text className="text-neutral-600 dark:text-neutral-400 text-[14px] h-[22px] leading-[22px] text-center tracking-tight mx-1">·</Text>
         <Button
                 title={text}
                 startDecorator={icon}
-                variant="text"
+                variant=""
                 size="xs"
             />
         </>
@@ -385,7 +385,7 @@ export const Author = memo(({ data, url, t }) => {
             displayType="unit"
             displaySize="base"
             showInfo={
-                <Row className=" flex-wrap h-[22px] gap-x-[4px] items-center">
+                <Row className=" flex-wrap h-[22px] items-center">
                     <Link href={url}>
                         <Time className='leading-[22px]' ts={data.date}></Time>
                     </Link>
