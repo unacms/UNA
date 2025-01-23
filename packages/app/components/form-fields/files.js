@@ -479,7 +479,7 @@ function GhostsList(imagesList, bMultiple, handleDelete, props) {
         return (
             <View
                 key={`file-${props.name}-${index}`}
-                className="mb-[8px] w-[100px] h-[100px] m-[1px] justify-center items-center bg-bgritem dark:bg-bgritem-d rounded-lg overflow-hidden"
+                className="mb-[12px] w-[100px] h-[100px] m-[1px] justify-center items-center bg-bgritem dark:bg-bgritem-d rounded-lg overflow-hidden"
             >
                 {isImage ? <ImageRN
                     source={{ uri: img.uri }}

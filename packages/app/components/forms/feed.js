@@ -211,7 +211,7 @@ export default function FormFeed(props) {
                         }
                     )}
                     
-                    <Row className="flex-wrap min-h-[110px]">{prevList}</Row>
+                    <Row className="flex-wrap lalal">{prevList}</Row>
                     
                     {props.data.inputs['labels'] && (
                         <View className="flex-auto">
