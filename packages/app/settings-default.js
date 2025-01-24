@@ -2722,13 +2722,13 @@ export const settingsDefault = {
                 ' text-primary-700 dark:text-primary-300 group-hover:text-primary-800 dark:group-hover:text-primary-200 ',
             xs: {
                 rounded: ' rounded-[6px]',
-                padding: ' h-[22px] min-w-[22px] px-[4px]',
+                padding: ' h-[28px] min-w-[28px] p-[4px] ',
                 icon_sizes:
-                ' h-[18px] w-[18px] ', //icon container size
-                icon_size: ' 18px ', //icon size
+                ' h-[20px] w-[20px] ', //icon container size
+                icon_size: ' 20px ', //icon size
                 icon_margin: ' mx-[0px] ', //conditional margin for icon container when title is present
                 min_height: ' ',
-                margin: ' px-[2px] leading-[20px] native:text-[14px] ',
+                margin: ' px-[4px] leading-[20px] native:text-[14px] ',
             },
             sm: {
                 rounded: ' rounded-[8px] ] ',

@@ -34,7 +34,7 @@ export default function MultiPostForm({ data }) {
     }, []);
 
     return (
-        <View className="w-full">
+       
             <Card
                 rounded=" rounded-none sm:rounded-2xl  "
                 margin=" mx-auto mb-1 sm:mb-3 "
@@ -60,12 +60,12 @@ export default function MultiPostForm({ data }) {
                     </View>
                 </View>
                 <FormModal pageData={pageData} setPageData={setPageData} />
-                {menu_add_items.length > 0 && <Row className={` justify-between gap-x-[8px] sm:flex mt-[12px] sm:mt-[12px] sm:pt-[12px] border-t border-bdr dark:border-bdr-d ' : ''}`}>
+                {menu_add_items.length > 0 && <Row className={` justify-between gap-x-[8px] sm:flex mt-[12px] sm:mt-[12px] sm:pt-[12px] sm:border-t border-bdr dark:border-bdr-d ' : ''}`}>
                     {menu_add_items.map((item, index) => (
-                        <Button key={item.name} size="base" rounded fullWidth variant="secondary" onPress={() => handleFormModal(item, null, setPageData, data.params)} startDecorator={item.icon} title={item.title} />
+                        <Button key={item.name} size="sm" rounded fullWidth variant="text" onPress={() => handleFormModal(item, null, setPageData, data.params)} startDecorator={item.icon} title={item.title} />
                     ))}
                 </Row>}
             </Card>
-        </View>
+        
     )
 }
