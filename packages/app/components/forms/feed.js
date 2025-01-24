@@ -179,7 +179,7 @@ export default function FormFeed(props) {
     }, [])
 
 
-    const form = <KbAvoidingView className='flex-col flex-auto' offset={isIos ? 74 : 74}>
+    const form = <KbAvoidingView className='flex-col flex-auto' offset={isIos ? 0 : 74}>
         {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'default')}
         {getFormFieldByData(props.data.inputs['object_cf'], props.handleSubmit, 'default')}
         {getFormFieldByData(props.data.inputs['owner_id'], props.handleSubmit, 'default')}
@@ -211,7 +211,7 @@ export default function FormFeed(props) {
                         }
                     )}
                     
-                    <Row className="flex-wrap lalal">{prevList}</Row>
+                    <Row className="w-full overflow-scroll lalal">{prevList}</Row>
                     
                     {props.data.inputs['labels'] && (
                         <View className="flex-auto">
@@ -220,13 +220,13 @@ export default function FormFeed(props) {
                     )}
                 </View>
             </ScrollView>
-            <View className="  ">
+            <View className=" py-[8px] ">
                 <Row className={
                     '  items-center flex-auto w-full gap-x-[12px] px-[12px] pb-[12px]  ' +
                     (isWeb ? '' : '  ') +
                     (isSmall
                         ? ' ' +
-                        (isIos ? ' bottom-[8px] ' : ' bottom-0 ') +
+                        (isIos ? '  ' : ' bottom-0 ') +
                         '  '
                         : ' my-auto ')
                 }>

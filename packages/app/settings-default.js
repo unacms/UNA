@@ -2772,8 +2772,8 @@ export const settingsDefault = {
             ' bg-primary-600 dark:bg-primary-700   sm:hover:bg-primary-700 dark:sm:hover:bg-primary-800  ',
             'u-btn-primary-text': '  font-medium text-neutral-100 hover:text-white ',
             'u-btn-primary-trans': ' web:duration-200 ',
-            /*'u-btn-primary-color-icon-light': 'rgb(243, 244, 246)',
-            'u-btn-primary-color-icon-dark': 'rgb(243, 244, 246)',*/
+            'u-btn-primary-color-icon-light': 'rgb(243, 244, 246)',
+            'u-btn-primary-color-icon-dark': 'rgb(243, 244, 246)',
 
             'u-btn-secondary-cnt':
                 ' bg-neutral-200 dark:bg-neutral-800  sm:hover:bg-neutral-300 sm:dark:hover:bg-neutral-700  ',
