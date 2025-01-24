@@ -51,7 +51,7 @@ export const handleFormModal = async (oItem, event, setPageData, params) => {
 }
 
 export const getFormModal = async (oItem, params) => {
-    const url = oItem.link.replace(/^\/*/, "") + (params ? `&params[]=&params[]=${encodeURIComponent(JSON.stringify({ params }))}` : "");
+    const url = oItem.link.replace(/^\/*/, "") + (params ? `&params[]=&params[]=${(JSON.stringify({ params }))}` : "");
     return await getPageData(url);
 
 }

@@ -82,7 +82,7 @@ export default function ElementChart({ data }) {
     const fetchData = async () => {
         if (data.endpoint) {
             const queryParams = Object.entries(chartParams)
-                .map(([key, value]) => `&params[]=${encodeURIComponent(value)}`)
+                .map(([key, value]) => `&params[]=${(value)}`)
                 .join('');
             const sUrl = '/api.php?r=' + data.endpoint + queryParams;
             const sResponse = await fetcher(sUrl);
