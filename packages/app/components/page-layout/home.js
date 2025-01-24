@@ -156,12 +156,12 @@ export default function (props) {
                         <View className=" w-full mx-auto lg:max-w-2xl relative">
                             <ScrollView
                                 horizontal={true}
-                                className="fixed lg:relative top-14 lg:top-0 z-50 w-full  "
+                                className="   max-w-2xl mx-auto w-full  "
                             >
                                 <Row
                                     className={`  rounded-full mx-3 sm:mx-4 ${
                                         feedList.length > 1
-                                            ? 'lg:mt-4 lg:mb-4'
+                                            ? 'my-3 lg:my-4'
                                             : ''
                                     }  gap-x-1 sm:gap-x-2  `}
                                 >
@@ -234,7 +234,7 @@ export default function (props) {
                                     )}
                                 </Row>
                             </ScrollView>
-                            <View className="relative w-full mx-auto max-w-2xl sm:mt-3 ">
+                            <View className={`relative w-full mx-auto max-w-2xl ${ feedList.length > 1 ? '': 'sm:mt-3'} `}>
                                 {feedList.map((item, index) => {
                                     if (feedType == item.name) {
                                         return (
