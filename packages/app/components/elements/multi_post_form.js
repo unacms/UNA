@@ -50,7 +50,7 @@ export default function MultiPostForm({ data }) {
                             variant="secondary"
                             fullWidth
                             rounded
-                            title={t('Create new ') + '...'}
+                            title={t('Create new ') + firstForm.title.toLowerCase()}
                             align="start"
                             onPress={() => {
                                 FeedbackHaptics('Medium')
@@ -60,11 +60,11 @@ export default function MultiPostForm({ data }) {
                     </View>
                 </View>
                 <FormModal pageData={pageData} setPageData={setPageData} />
-                <Row className={` justify-between gap-x-[8px] hidden sm:flex mt-[12px] sm:mt-[12px] sm:pt-[12px] border-t border-bdr dark:border-bdr-d ' : ''}`}>
+                {menu_add_items.length > 0 && <Row className={` justify-between gap-x-[8px] sm:flex mt-[12px] sm:mt-[12px] sm:pt-[12px] border-t border-bdr dark:border-bdr-d ' : ''}`}>
                     {menu_add_items.map((item, index) => (
                         <Button key={item.name} size="base" rounded fullWidth variant="secondary" onPress={() => handleFormModal(item, null, setPageData, data.params)} startDecorator={item.icon} title={item.title} />
                     ))}
-                </Row>
+                </Row>}
             </Card>
         </View>
     )

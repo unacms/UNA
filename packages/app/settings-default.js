@@ -1453,6 +1453,11 @@ export const settingsDefault = {
         'view-event-profile': {
             layout: 'profile',
             blocks: {
+                col00: {
+                    name: 'system:get_create_post_form',
+                    showTitle: false,
+                    showBg: false,
+                },
                 col0: {
                     name: 'bx_timeline:get_block_post_profile',
                     showTitle: false,
