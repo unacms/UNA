@@ -178,7 +178,7 @@ export function prepareData(data) {
 
 export const ItemInfo = memo(({ data, t }) => {
     const [showContextList, setShowContextList] = useState(false);
-    const owners = data.owners ? data.owners.filter((item) => item.author_data.id != data.context_data.id) : [];
+    const owners = data.owners ? data.owners.filter((item) => item.author_data?.id != data.context_data?.id) : [];
     const OwnersList = () => owners?.length > 0 ? owners?.length == 1 ? <>
         <Text className="text-neutral-500/50 text-sm"> · </Text>
         <Link href={data.owners[0].url} emulate={true}>

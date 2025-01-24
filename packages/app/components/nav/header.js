@@ -17,8 +17,8 @@ import { isValidElement, useMemo, memo } from 'react';
 import { parseUrl } from 'app/lib/util'
 
 function SvgLogoNative() {
-    const scheme = useColorScheme();
-    const logo = scheme === 'dark' ? 'logo_nativedark' : 'logo_native';
+
+    const logo = 'logo_native';
     return <View>{appStatic(logo)}</View>;
 };
 

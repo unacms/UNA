@@ -154,6 +154,7 @@ export default function (props) {
                 <View className="flex-auto w-full lg:w-auto sm:px-4 xl:px-2 ">
                     <View className="flex-auto  ">
                         <View className=" w-full mx-auto lg:max-w-2xl relative">
+                            <View >
                             <ScrollView
                                 horizontal={true}
                                 className="   max-w-2xl mx-auto w-full  "
@@ -168,9 +169,9 @@ export default function (props) {
                                     {feedList.length > 1 &&
                                         feedList.map((item, index) => {
                                             return (
-                                                <Row key={'row_' + index}>
+                                                <View key={'row_' + index}>
                                                     <Button
-                                                        fullWidth={true}
+                                                        
                                                         tooltip={t(item.title)}
                                                         startDecorator={
                                                             item.icon
@@ -194,7 +195,7 @@ export default function (props) {
                                                             )
                                                         }}
                                                     />
-                                                </Row>
+                                                </View>
                                             )
                                         })}
                                     {appSetting(
@@ -234,6 +235,7 @@ export default function (props) {
                                     )}
                                 </Row>
                             </ScrollView>
+                            </View>
                             <View className={`relative w-full mx-auto max-w-2xl ${ feedList.length > 1 ? '': 'sm:mt-3'} `}>
                                 {feedList.map((item, index) => {
                                     if (feedType == item.name) {

@@ -137,8 +137,8 @@ export default function Splash(props) {
     if (!isWeb) {
         return (
             <View className="justify-center">
-                <View className="items-center my-8 ">
-                    <View className="w-60 h-16 items-center">{appStatic('logo_native')}</View>
+                <View className="items-center my-8  ">
+                    <View className="w-60 items-center ">{appStatic('logo_native')}</View>
                 </View>
                 {cnt}
             </View>
