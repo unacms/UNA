@@ -179,7 +179,7 @@ export default function FormFeed(props) {
     }, [])
 
 
-    const form = <KbAvoidingView className='flex-col flex-auto' offset={isIos ? 8 : 74}>
+    const form = <KbAvoidingView className='flex-col flex-auto' offset={isIos ? 8 : 8}>
         {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'default')}
         {getFormFieldByData(props.data.inputs['object_cf'], props.handleSubmit, 'default')}
         {getFormFieldByData(props.data.inputs['owner_id'], props.handleSubmit, 'default')}
