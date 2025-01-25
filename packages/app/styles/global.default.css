@@ -519,7 +519,7 @@ div[data-radix-popper-content-wrapper].radix-hide{
 }
 
 .tiptap-default{
-    max-height: 250px;
+    max-height: calc(100vh - 180px);
     overflow-y: scroll;
     scrollbar-width: none;
 }

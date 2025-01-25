@@ -222,7 +222,7 @@ export default function FormFeed(props) {
             </ScrollView>
             <View className=" py-[8px] ">
                 <Row className={
-                    '  items-center flex-auto w-full gap-x-[12px] px-[12px] pb-[12px]  ' +
+                    '  items-center flex-auto w-full gap-x-[12px] px-[12px] pb-[4px]  ' +
                     (isWeb ? '' : '  ') +
                     (isSmall
                         ? ' ' +
