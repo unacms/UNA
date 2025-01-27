@@ -4,7 +4,7 @@ import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "
 import { View, Row, Pressable } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
 import { useWindowDimensions } from 'react-native';
-import { appSetting, getHeaderSettings, getUnitModeBySource, getURI, getLayout, handleFeedLayoutData, menuItemsByName } from 'app/lib/util';
+import { appSetting, getHeaderSettings, getUnitModeBySource, getURI, getLayout, handleFeedLayoutData, menuItemsByName, getMenuSettings } from 'app/lib/util';
 import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer,ItemRendererMemo, LeftSidebar, TopSidebar, getNumCols } from 'app/lib/conductor-helpers';
 import { Button } from 'app/design/controls';
 import Link from 'app/ui/atoms/link'
@@ -331,12 +331,12 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         indicatorOffset.value = withTiming(index * tabWidth, { duration: 200, easing: Easing.inOut(Easing.ease) });
 
         if (routes.length > 1) {
-            const menuSettings = appSetting('menu_items', menu.object);
+            //const menuSettings = appSetting('menu_items', menu.object);
+            const menuSettings = getMenuSettings(menu.object, menu.config);
+            console.log("menuSettingsmenuSettings", menuSettings.add)
             let addButtonsSet = menuSettings?.add?.filter(item => item.hideInTopBar !== true);
             addButtonsSet = menuItemsFilter(addButtonsSet, currentUser);
-            /* if (!currentUser) {
-                 addButtonsSet = addButtonsSet?.filter(item => item.nonlogged !== false && item.nonoperator !== false );
-             }*/
+
             const addButtons = addButtonsSet?.map((button) => {
                 let btn = undefined;
                 if (button.section)
@@ -555,7 +555,8 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             )
         }*/
 
-        const menuSettings = appSetting('menu_items', menu.object);
+        //const menuSettings = appSetting('menu_items', menu.object);
+        const menuSettings = getMenuSettings(menu.object, menu.config);
         const addButtons = menuSettings?.add?.filter(item => item.hideInSideBar !== true).map((button) => {
 
             let btn = undefined;

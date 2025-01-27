@@ -77,7 +77,7 @@ export function handleFeedLayoutData(layoutData, data) {
 }
 
 export function fillTabs(menu, data, blocks, currentUser, useSectionAsMenu) {
-    const m = menuItemsByName(menu.object, menu.items, currentUser, data.url);
+    const m = menuItemsByName(menu.object, menu.items, currentUser, data.url, menu.config);
     return m.map((item, index) => {
 
         item.link = item.link.replace('page/', '')

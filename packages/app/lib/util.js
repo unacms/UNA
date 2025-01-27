@@ -886,6 +886,33 @@ export function visibilityById(visibility) {
     
     return  visibilityOptions[visibility] || {};
 }
+
+export function strToObj(s) {
+    try {
+        const jsonReadyString = s
+            .replace(/\s*([{}[\],:])\s*/g, '$1') // Убираем пробелы вокруг {}, [], :, ,
+            .replace(/([{,])([a-zA-Z0-9_]+)\s*:/g, '$1"$2":') // Оборачиваем ключи в двойные кавычки
+            .replace(/'/g, '"') // Заменяем одинарные кавычки на двойные
+            .replace(/,\s*}/g, '}') // Убираем конечные запятые перед }
+            .replace(/,\s*]/g, ']') // Убираем конечные запятые перед ]
+            .trim(); // Убираем пробелы в начале и конце строки
+        const a = JSON.parse(jsonReadyString);
+        return a
+    } catch (error) {
+        return null
+    }
+}
+
+export function getMenuSettings(object, config) {
+    const isRemote = appSetting('layout', 'user_remote_config');
+
+    if (isRemote && config){
+        return strToObj(config);
+    }
+
+    return appSetting('menu_items', object);
+}
+
 export function genRnd(length) {
     let result = '';
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -954,10 +981,11 @@ export async function getDataForMenu(menu, callback) {
     callback(data.data)
 }
 
-export function menuItemsByName(name, items, currentUser, url = '') {
+export function menuItemsByName(name, items, currentUser, url = '', config = null) {
     if (!items)
         return [];
-    const menuSettings = appSetting('menu_items', name)
+    
+    const menuSettings = getMenuSettings(name, config);//appSetting('menu_items', name)
     let menuSettingNames = []
 
     if (menuSettings) {

@@ -36,6 +36,7 @@ export const settingsDefault = {
         hide_header_for_non_logged: false,
         hide_header_for_all: false,
         card_animation_duration: 0,
+        user_remote_config: true,
         
         background_image_color: '', //OLD appSetting('layout', 'background_cover_color')
         background_image: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239C92AC' fill-opacity='0.08' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E")`,
@@ -886,28 +887,7 @@ export const settingsDefault = {
             'posts-home',
         ],
         comments_manage_menu: ['item-edit', 'item-delete'],
-        bx_posts_submenu: {
-            name: 'Posts',
-            icon: 'File',
-            items: [
-                { name: 'posts-home', icon: 'ChatCenteredText' },
-                { name: 'posts-popular', icon: 'Fire' },
-            ],
-            add: [
-                {
-                    icon: 'Plus',
-                    name: 'Add',
-                    link: '/create-post',
-                    nonlogged: false,
-                },
-                {
-                    icon: 'MagnifyingGlass',
-                    name: 'Search',
-                    link: '',
-                    section: 'bx_posts',
-                },
-            ],
-        },
+       
         bx_jobs_submenu : {
             name: 'Jobs',
             icon: 'UsersFour',
