@@ -1,7 +1,7 @@
 import { Root } from 'app/root'
 import { memo, useState, useEffect, useContext, useMemo } from 'react'
 import { useCurrentUser } from 'app/context/user';
-import { appSetting, parseUrl, parseQueryString, getURI } from 'app/lib/util'
+import { appSetting, parseUrl, parseQueryString, getURI, getPageSettings } from 'app/lib/util'
 import { Loading } from 'app/loading'
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { fetcher } from 'app/lib/fetcher';
@@ -19,12 +19,12 @@ export async function getData(path, token, origin, headers, callback, params) {
     path = `/api.php?r=system/get_page_by_request/TemplServicePages&params[]=${path}`;
 
     const uri = getURI(path);
-    const settings = appSetting('layouts', uri);
-    if (settings?.blocks) {
+   // const settings = appSetting('l-ayouts', uri);
+    /*if (settings?.blocks) {
         const blockNames = Object.values(settings.blocks).map(block => block.name).join(',');
         path += `&params[]=${blockNames}`;
     }
-
+*/
     if (params) {
         path += `&params[]=&params[]=${params}`;
     }
@@ -74,14 +74,16 @@ const Content = ({ pagePath, currentUser, isRoot }) => {
             const data = await getData(pathWithoutQuery, null, null, null, null, params);
             if (data?.props) {
                 const pageData1 = data.props;
-                const settings = appSetting('layouts', pageData1.data.uri)
+                const settings = getPageSettings(pageData1.data.config, pageData1.data.uri);
+
                 data.props.data['timestamp'] = Date.now();
 
                 let header = settings?.header
                 if (!header) {
                     const menu_name = pageData1.data?.menu?.object;
                     if (menu_name) {
-                        const menuSettings = appSetting('menu_items', menu_name);
+                        //const menuSettings = appSetting('menu_items', menu_name);
+                        const menuSettings = getMenuSettings(pageData1.data?.menu?.object, pageData1.data?.menu?.config);
 
                         let addButtonsSet = menuSettings?.add?.filter(item => item.hideInTopBar !== true);
                         addButtonsSet = menuItemsFilter(addButtonsSet, currentUser);

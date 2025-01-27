@@ -248,10 +248,10 @@ export default function (props) {
     }, []);
 
     const { layoutName } = getLayoutName(data, uri, true);
-    const [headerSettings, setHeaderSettings] = useState(getHeaderSettings(uri, width, layoutName));
+    const [headerSettings, setHeaderSettings] = useState(getHeaderSettings(uri, width, layoutName, data.config));
 
     useEffect(() => {
-        let a = getHeaderSettings(uri, width, layoutName);
+        let a = getHeaderSettings(uri, width, layoutName, data.config);
         if (getLayout(currentUser, layoutName) == 'ver') {
             if (width > LAYOUT_BREAKPOINTS.lg)
                 a.offset = false;
@@ -259,7 +259,7 @@ export default function (props) {
         if (!deepEqual(headerSettings, a)) {
             setHeaderSettings(a);
         }
-    }, [uri, width, layoutName]);
+    }, [uri, width, layoutName, data.config]);
 
 
     if (data?.empty)

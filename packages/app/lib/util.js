@@ -285,8 +285,9 @@ export async function md52(str) {
       );
 }
 
-export function getPageWidth(uri) {
-    let settings = appSetting('layouts', uri)
+export function getPageWidth(uri, config) {
+    //let settings = appSetting('l-ayouts', uri)
+    const settings = getPageSettings(config, uri);
     if (settings?.max_width)
         return settings.max_width;
 
@@ -327,8 +328,8 @@ export function getBlocksFromData(data) {
     return blocks;
 }
 
-export function getHeaderSettings(uri, width, layout) {
-    let settings = appSetting('layouts', uri);
+export function getHeaderSettings(uri, width, layout, config) {
+    let settings = getPageSettings(config, uri);
     if (!settings?.headerSettings) {
         if (layout == 'navigator') {
             settings = { headerSettings: { offset: false, header: false, backButton: false, menu: true, footer: false } }
@@ -903,14 +904,12 @@ export function strToObj(s) {
     }
 }
 
+export function getPageSettings(config, uri) {
+    return appSetting('layout', 'user_remote_config') && config ? strToObj(config) : appSetting('layouts', uri);
+}
+
 export function getMenuSettings(object, config) {
-    const isRemote = appSetting('layout', 'user_remote_config');
-
-    if (isRemote && config){
-        return strToObj(config);
-    }
-
-    return appSetting('menu_items', object);
+    return appSetting('layout', 'user_remote_config') && config ? strToObj(config) : appSetting('menu_items', object)
 }
 
 export function genRnd(length) {
@@ -979,6 +978,10 @@ export async function getDataForMenu(menu, callback) {
         '/api.php?r=system/get_menu/TemplServices&params[]={"object":"' + menu?.object + '","params":' + JSON.stringify(menu?.params) + '}'
     )
     callback(data.data)
+}
+
+export function menuItemsByNameNew(name, menu, currentUser, url = '') {
+    return menuItemsByName(name, menu.items, currentUser, url, menu.config)
 }
 
 export function menuItemsByName(name, items, currentUser, url = '', config = null) {

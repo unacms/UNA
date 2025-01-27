@@ -1,5 +1,5 @@
 import { componentsMap } from 'app/components/page-layout/_map';
-import { appSetting } from 'app/lib/util'
+import { appSetting, getPageSettings } from 'app/lib/util'
 import { Platform } from 'react-native'
 import Cell from 'app/components/cell';
 import { View } from 'app/design/view'
@@ -42,7 +42,8 @@ export function getLayoutName(data, uri, isWeb) {
         return { layoutName: 'default', layoutBlocks: '', isCustomLayout: false };
     }
 
-    const layoutCustomKey = appSetting('layouts', uri);
+    const layoutCustomKey = getPageSettings(data.config, uri);
+    
     let layoutKey = '';
     let layoutBlocks = '';
     let isCustomLayout = false;

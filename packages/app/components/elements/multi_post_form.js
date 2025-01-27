@@ -1,7 +1,7 @@
 import { View, Row, ScrollView } from 'app/design/view'
 import { Button, Modal } from 'app/design/controls'
 import { useState, useContext, useEffect, useCallback } from 'react'
-import { FeedbackHaptics, getAlert, menuItemsByName, appSetting } from 'app/lib/util'
+import { FeedbackHaptics, getAlert, menuItemsByNameNew, appSetting } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import Profile from 'app/ui/molecules/profile'
 import Card from 'app/ui/molecules/card'
@@ -13,7 +13,7 @@ export default function MultiPostForm({ data }) {
     const { t } = useTranslation()
     const [pageData, setPageData] = useState(false);
     const [pageDataDef, setPageDataDef] = useState(false);
-    const menu_add_items = menuItemsByName('menu_post', data.menu.items, currentUser);
+    const menu_add_items = menuItemsByNameNew('menu_post', data.menu, currentUser);
     if (menu_add_items.length == 0)
         return;
 

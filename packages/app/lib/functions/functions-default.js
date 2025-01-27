@@ -2,7 +2,7 @@ import { Text } from 'app/design/typography'
 import { Button, Modal } from 'app/design/controls'
 import { fetcher } from 'app/lib/fetcher'
 import React from 'react'
-import { appSetting, updateRouteDataForConnection } from 'app/lib/util'
+import { appSetting, updateRouteDataForConnection, getPageSettings } from 'app/lib/util'
 import { Platform } from 'react-native'
 import { componentsMap } from 'app/ui/molecules/_map'
 import { appStatic } from 'app/lib/app-static';
@@ -38,7 +38,8 @@ export function getBadgeForTab(currentUser, url) {
 
 export function getButtonForConductor(a, index, currentUser) {
 
-    let settings = appSetting('layouts', a.key)
+    const settings = getPageSettings(a.config, a.key);
+    //let settings = appSetting('l--ayouts', a.key)
     let icon = !a.ident
         ? settings?.icon
             ? settings?.icon
@@ -68,7 +69,8 @@ export function getButtonForConductor(a, index, currentUser) {
 }
 
 export function getButtonForConductorSmall(a, index, currentUser) {
-    let settings = appSetting('layouts', a.key)
+    //let settings = appSetting('l-ayouts', a.key)
+    const settings = getPageSettings(a.config, a.key);
     let icon = !a.ident
         ? settings?.icon
             ? settings?.icon
@@ -98,7 +100,8 @@ export function getButtonForConductorSmall(a, index, currentUser) {
 
 export function getAddonForConductor(a, index, currentUser) {
     let addonContent = null;
-    let settings = appSetting('layouts', a.key)
+    //let settings = appSetting('l-+ayouts', a.key)
+    const settings = getPageSettings(a.config, a.key);
     let icon = !a.ident
         ? settings?.icon
             ? settings?.icon
@@ -128,8 +131,8 @@ export function getAddonForConductor(a, index, currentUser) {
 }
 
 export function getButtonForConductorNative(a, index, currentUser, setIndex, onChangeRoute) {
-
-    let settings = appSetting('layouts', a.key)
+    const settings = getPageSettings(a.config, a.key);
+   // let settings = appSetting('l-ayouts', a.key)
     let icon = !a.ident
         ? settings?.icon
             ? settings?.icon

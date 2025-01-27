@@ -7,7 +7,7 @@ import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon';
 import { Pressable } from 'app/design/view'
 import { Button } from 'app/design/controls';
-import { getBlocksFromData, LAYOUT_BREAKPOINTS } from 'app/lib/util';
+import { getBlocksFromData, getPageSettings, LAYOUT_BREAKPOINTS } from 'app/lib/util';
 import { memo } from 'react';
 import { Platform } from 'react-native'
 import { callFn } from 'app/lib/functions/call';
@@ -84,6 +84,7 @@ export function fillTabs(menu, data, blocks, currentUser, useSectionAsMenu) {
         //TOFIX
         const i = { key: item.link, title: item.title, index };
         //  let bCurrent = getURI(item.link) === data.uri;
+        console.log("data.urldata.url", data.url, item.link)
         let bCurrent = data.url.includes(item.link);
         if (useSectionAsMenu) {
             let b = parseUrl(item.link);
@@ -96,6 +97,7 @@ export function fillTabs(menu, data, blocks, currentUser, useSectionAsMenu) {
         if (bCurrent) {
 
             let contentAndEndpoint = processUrl(data, blocks);
+            console.log("contentAndEndpointcontentAndEndpoint", data, blocks)
             i.data = contentAndEndpoint.content;
             i.inited = true;
             i.link = item.link;
@@ -109,9 +111,10 @@ export function fillTabs(menu, data, blocks, currentUser, useSectionAsMenu) {
             i.icon = item.icon;
             i.endpoint = contentAndEndpoint.endpoint;
             i.sidebar = contentAndEndpoint.sidebar;
+            i.config = data.config
             i.storageKeyValue = storageKey(i.link, false)
             i.blocks = blocks;
-
+           
             if (appSetting('cache', 'list')) {
                 let stateC = getDataFromCache('ul:state', i.storageKeyValue);
                 if (stateC) {
@@ -142,6 +145,7 @@ export function fillTabs(menu, data, blocks, currentUser, useSectionAsMenu) {
             i.inited = false;
             i.storageKeyValue = storageKey(i.link, false);
             i.data = [];
+            i.config = null
             if (appSetting('cache', 'list')) {
                 let stateC = getDataFromCache('ul:state', i.storageKeyValue);
                 if (stateC) {
@@ -209,7 +213,9 @@ export async function fetchAndUpdateData(routes, index, setRoutes) {
 
         }
         const sResponse = await fetcher('/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' + link);
-        let settings = appSetting('layouts', getURI(currentRoute.link));
+        console.log("currentRoutecurrentRoute", currentRoute)
+      //  let settings = appSetting('l-ayouts', getURI(currentRoute.link));
+        const settings = getPageSettings(currentRoute.config, getURI(currentRoute.link));
         let blocks = settings?.blocks;
         if (!blocks)
             blocks = getBlocksFromData(sResponse.data);
@@ -406,7 +412,7 @@ export function LeftSidebar({ title, addButtons, children, width, menu }) {
     return (
         <View className={" hidden lg:block " + width}>
             <View className={' fixed-process ' + width + ' lg:px-2 lg:py-3 '}>
-                {(!!title && !!addButtons) && <Row className="justify-between items-center mt-1 mb-4 px-2 z-10">
+                {(!!title || !!addButtons) && <Row className="justify-between items-center mt-1 mb-4 px-2 z-10">
                     <Text className="text-2xl truncate mr-auto font-bold  text-neutral-900 dark:text-neutral-100 hidden lg:flex  ">
                         {title}
                     </Text>

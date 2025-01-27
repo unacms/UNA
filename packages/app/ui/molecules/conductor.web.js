@@ -97,9 +97,9 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         return foundIndex !== -1 ? foundIndex : 0;
     });
 
-    //let maxIdLocal = 0;
+
     const currentRoute = routes.find((item) => item.index === index);
-    let headerSettings = getHeaderSettings(getURI(currentRoute?.key), windowWidth, layoutName);
+    let headerSettings = getHeaderSettings(getURI(currentRoute?.key), windowWidth, layoutName, currentRoute.config);
 
 
     useEffect(() => {
@@ -333,7 +333,6 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         if (routes.length > 1) {
             //const menuSettings = appSetting('menu_items', menu.object);
             const menuSettings = getMenuSettings(menu.object, menu.config);
-            console.log("menuSettingsmenuSettings", menuSettings.add)
             let addButtonsSet = menuSettings?.add?.filter(item => item.hideInTopBar !== true);
             addButtonsSet = menuItemsFilter(addButtonsSet, currentUser);
 

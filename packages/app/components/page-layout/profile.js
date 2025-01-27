@@ -48,7 +48,7 @@ export default function PageLayout({layoutName, data, uri, blocks}) {
         return clonedMenu;
     }, [pageData.menu, uri, pageData.url]);
 
-    const headerSettings = useMemo(() => getHeaderSettings(uri, windowWidth, 'profile'), [uri, windowWidth]);
+    const headerSettings = useMemo(() => getHeaderSettings(uri, windowWidth, 'profile', pageData.config), [uri, windowWidth]);
 
     const header = useMemo(() => {
         if (windowWidth > LAYOUT_BREAKPOINTS.md && isAltView) {
