@@ -1,4 +1,3 @@
-
 import { View, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import Link from 'app/ui/atoms/link'
@@ -22,10 +21,10 @@ export default function (props) {
     return (
         <View className={sClassName}>
             {isShowCaption &&
-                <Text className="label-text block mb-[4px] ml-[1px] text-sm sm:text-base text-neutral-700 dark:text-neutral-300">
+                <Text className="label-text block mb-[4px] ml-[1px] ">
                     <Row className='items-center gap-x-1' >
-                        <Text className="font-semibold">{caption}</Text>
-                        {((props.checker || props.required) ? <></> : <Text>{isShowOptional}</Text>)}
+                        <Text className="font-semibold text-sm sm:text-base text-neutral-700 dark:text-neutral-300">{caption}</Text>
+                        {((props.checker || props.required) ? <></> : <Text className="text-sm sm:text-base text-neutral-700 dark:text-neutral-300">{isShowOptional}</Text>)}
                         {((!!mandatoryIcon && (props.checker || props.required)) ? <Text className="text-red-600 h-4 text-xs"><Icon icon={mandatoryIcon} /></Text> : <></>)}
                     </Row >
                 </Text>
