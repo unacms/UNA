@@ -719,19 +719,19 @@ export const settingsDefault = {
                 margin: ' mx-[6px] my-auto native:text-[16px] ',
             },
             lg: {
-                rounded: ' rounded-[12px] ',
+                rounded: ' rounded-[12px] overflow-hidden ',
                 padding: ' px-[8px] h-[48px] ',
-                icon_sizes: ' p-[6px] h-[48px] w-[48px] ',
+                icon_sizes: ' p-[10px] h-[48px] w-[48px] ',
                 icon_size: 28,
-                icon_margin: 'p-[6px]     ',
+                icon_margin: ' p-[6px] ',
                 min_height: ' leading-[40px] sm:text-[16px] ',
-                margin: ' mx-[12px] ',
+                margin: ' mx-[12px] native:text-[16px] ',
             },
         },
 
         button_styles: {
             'u-btn-default-cnt':
-                ' bg-bgrbutton dark:bg-bgrbutton-d border border-bdrbutton dark:border-bdrbutton-d hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50 ',
+                ' bg-bgrbutton dark:bg-bgrbutton-d border-bdrbutton dark:border-bdrbutton-d hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50 ',
             'u-btn-default-text':
                 ' font-medium text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-white ',
             'u-btn-default-trans': 'web:duration-200',
@@ -739,7 +739,7 @@ export const settingsDefault = {
             'u-btn-default-color-icon-dark': 'rgb(243, 244, 246)',*/
 
             'u-btn-primary-cnt':
-            ' bg-primary-600 dark:bg-primary-700 border border-bdrbutton dark:border-bdrbutton-d sm:hover:bg-primary-700 dark:sm:hover:bg-primary-800  ',
+            ' bg-primary-600 dark:bg-primary-700 border border-primary-500 sm:hover:border-primary-600 dark:border-primary-600 sm:hover:bg-primary-700 dark:sm:hover:bg-primary-800 sm:dark:hover:border-primary-700 ',
             'u-btn-primary-text': '  font-medium text-neutral-100 hover:text-white ',
             'u-btn-primary-trans': ' web:duration-200 ',
             'u-btn-primary-color-icon-light': 'rgb(243, 244, 246)',
