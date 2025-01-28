@@ -661,7 +661,7 @@ export const settingsDefault = {
         },
         modal: {
             fog: 'bg-white/50 dark:bg-black/80 backdrop-blur ',
-            container: 'max-w-2xl h-auto shadow-modal dark:shadow-modal-d bg-bgrmodal dark:bg-bgrmodal-d {ls}:rounded-2xl sm:border border-bdrmodal dark:border-bdrmodal-d overflow-hidden',
+            container: 'max-w-2xl h-full sm:h-auto shadow-modal dark:shadow-modal-d bg-bgrmodal dark:bg-bgrmodal-d {ls}:rounded-2xl sm:border border-bdrmodal dark:border-bdrmodal-d overflow-hidden',
             content:
                 ' h-auto ',
             header: ' p-[12px] sm:p-[16px] items-start justify-start',
