@@ -179,7 +179,7 @@ export default function FormFeed(props) {
     }, [])
 
 
-    const form = <KbAvoidingView className='flex-col h-full flex-auto' offset={isIos ? 8 : 74}>
+    const form = <KbAvoidingView className='flex-col h-full flex-auto' offset={isIos ? 9 : 74}>
         {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'default')}
         {getFormFieldByData(props.data.inputs['object_cf'], props.handleSubmit, 'default')}
         {getFormFieldByData(props.data.inputs['owner_id'], props.handleSubmit, 'default')}
@@ -220,15 +220,15 @@ export default function FormFeed(props) {
                     )}
                 </View>
             </ScrollView>
-            <View className=" py-[8px] ">
+            <View className="  ">
                 <Row className={
-                    '  items-center flex-auto w-full gap-x-[12px] px-[12px] pb-[4px]  ' +
-                    (isWeb ? '' : '  ') +
+                    '  items-center flex-auto w-full gap-x-[8px] p-[8px] sm:p-[12px] bg-neutral-100 dark:bg-neutral-800  ' +
+                    (isWeb ? ' ' : ' ') +
                     (isSmall
                         ? ' ' +
                         (isIos ? '  ' : ' bottom-0 ') +
                         '  '
-                        : ' my-auto ')
+                        : ' lalal ')
                 }>
 
                     <Row className="gap-x-[4px] flex-auto justify-between ">
@@ -239,6 +239,8 @@ export default function FormFeed(props) {
                                         props.data.inputs['obfuscate_faces'],
                                         props.handleSubmit,
                                         'default'
+                                        
+                                       
                                     )}
                                 </View>
                             )}

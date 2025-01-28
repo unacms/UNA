@@ -57,6 +57,10 @@ const colors = {
         DEFAULT: 'rgba(243,244,246,1)',
         d: 'rgba(3,7,18,1)',
     },
+    bgrsecondary: {
+        DEFAULT: 'rgba(0,0,0,0.05)',
+        d: 'rgba(255,255,255,0.05)',
+    },
 
     bgrcard: {
         DEFAULT: 'rgba(255,255,255,1)',
