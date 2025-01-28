@@ -84,7 +84,6 @@ export function fillTabs(menu, data, blocks, currentUser, useSectionAsMenu) {
         //TOFIX
         const i = { key: item.link, title: item.title, index };
         //  let bCurrent = getURI(item.link) === data.uri;
-        console.log("data.urldata.url", data.url, item.link)
         let bCurrent = data.url.includes(item.link);
         if (useSectionAsMenu) {
             let b = parseUrl(item.link);
@@ -97,7 +96,6 @@ export function fillTabs(menu, data, blocks, currentUser, useSectionAsMenu) {
         if (bCurrent) {
 
             let contentAndEndpoint = processUrl(data, blocks);
-            console.log("contentAndEndpointcontentAndEndpoint", data, blocks)
             i.data = contentAndEndpoint.content;
             i.inited = true;
             i.link = item.link;
