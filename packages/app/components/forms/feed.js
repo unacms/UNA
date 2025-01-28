@@ -211,7 +211,7 @@ export default function FormFeed(props) {
                         }
                     )}
                     
-                    <Row className="w-full overflow-scroll ">{prevList}</Row>
+                    <ScrollView className="w-full  " horizontal={true}>{prevList}</ScrollView>
                     
                     {props.data.inputs['labels'] && (
                         <View className="flex-auto">
