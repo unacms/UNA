@@ -350,7 +350,7 @@ export function CommentsBrowse({ browse, requestUrl, module, handleReply, handle
         <Row className={'flex-row ' + (classesBrowse? classesBrowse: 'items-center mb-3 pt-1 border-t border-bdr dark:border-bdr-d')}>
 
             <Text className='flex-auto text-base font-bold text-neutral-900 dark:text-neutral-50'>{title} ({commentData.total_count})</Text>
-            {!appSetting('e', 'hide_sort') && <View className="ml-4">
+            {!appSetting('comments', 'hide_sort') && <View className="ml-4">
                 <Pressable className="flex-auto" onPress={(event) => { event.preventDefault() }}>
                     <DropdownMenu items={[
                         { id: 'newest', name: 'desc', title: t('Oldest first') },

@@ -341,13 +341,16 @@ export const CounterMenu = memo(({ data }) => {
 });
 
 export const VisibilityInfo = memo(({ data }) => {
+    if (data.feed_type == 'owner')
+        return null;
 
-    const { icon = 'Unknown', text = 'Unknown' } = visibilityById(data.object_privacy_view);
-    const isUser = data.object_privacy_view < 0;
+    const { icon = '', text = '' } = visibilityById(data.object_privacy_view);
+    const isUser = data.object_privacy_view < 0 ;
+   
     return (
         <Row className="text-neutral-600 dark:text-neutral-400 items-center">
             <Text className="text-neutral-600 dark:text-neutral-400 native:text-[14px] web:text-sm h-[22px] leading-[22px] text-center tracking-tight mx-1">·</Text>
-            {isUser ? <Profile {...data.author_data} displayType="unit_wo_info" displaySize="xxs" /> : <Icon icon={icon} width={18} height={18} />}
+            {isUser ? <Profile {...data.author_data} displayType="unit_wo_info" displaySize="xxs" /> : (icon ? <Icon icon={icon} width={18} height={18} /> : null)}
             <Text className="text-neutral-600 dark:text-neutral-400 native:text-[14px] web:text-sm h-[22px] font-medium leading-[22px] text-center tracking-tight text-sm ml-1">{ isUser ? data.author_data.display_name : text}</Text>
         </Row>
     );
@@ -367,7 +370,7 @@ export const Author = memo(({ data, url, t }) => {
         );
     });
 
-    const dataIcon = data.object_privacy_view < 0 ? data.context_data : data.author_data;
+    const dataIcon = data.object_privacy_view < 0 && data.feed_type != 'owner' ? data.context_data : data.author_data;
 
     return (
         <View className='flex-auto'>
@@ -438,7 +441,7 @@ export const SmallUnit = memo(({ data }) => {
     )
 });
 
-export const UnitFeed = ({ data, mode, DefaultUnit, SmallUnit }) => {
+export const UnitFeed = ({ data, mode, DefaultUnit, SmallUnit, feed_type }) => {
 
 
     data.mainImage = null

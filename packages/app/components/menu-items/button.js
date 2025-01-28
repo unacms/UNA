@@ -72,8 +72,7 @@ export default function MenuItemButton(oProps) {
             if (oProps?.list?.length > 0){
                 buttonAction = <Text className="hover:text-linkhover px-[8px] text-neutral-800 dark:text-neutral-200 font-semibold hover:underline">{oProps.title}</Text>
             }
-
-            console.log("oProps?.link", oProps?.link)
+            
             sContent = (
                 <Row className={bShowVertical ? "flex-col flex-auto items-stretch" : "flex-auto items-center"}>
                     { (oProps.list && oProps.list.length> 0) && <ProfilesList data ={oProps.list} showEmpty={false} maxCount={3} displaySize="sm"/> }

@@ -11,7 +11,6 @@ import { CommentsModal, CommentsSection, MenuManage, ActionMenu, CounterMenu, Au
 import { GroupView, AdView, MarketView, DefaultView } from 'app/lib/feed-items'
 
 function DefaultUnit(data) {
-
     const { t } = useTranslation();
     const [viewState, setViewState] = useState({ view: '' })
     const [cmtsData, setCmtsData] = useState(false)

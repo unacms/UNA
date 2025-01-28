@@ -486,7 +486,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                     refer={uniRef}
                     route={route}
                     unit={route.endpoint?.unit}
-                    renderItem={({ item, index }) => <ItemRenderer unitType={unitType} route={route} numColumns={numColumns} item={item} unit={route?.endpoint?.unit} module={route?.endpoint?.module} />}
+                    renderItem={({ item, index }) => <ItemRenderer unitType={unitType} route={route} numColumns={numColumns} item={{ ...item, feed_type: route?.endpoint?.params?.type }} unit={route?.endpoint?.unit}  module={route?.endpoint?.module} />}
                     ListFooterComponent={
                         <View>
                             {(hasNextPage && isFetchingNextPage) ? (

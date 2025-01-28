@@ -92,7 +92,7 @@ const TabScene = React.memo(({
             unitType={unitType}
             unitMode={unitMode}
             route={route}
-            item={item}
+            item={{ ...item, feed_type: route?.endpoint?.params?.type }}
             unit={route?.endpoint?.unit}
             module={route?.endpoint?.module}
         />

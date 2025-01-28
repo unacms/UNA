@@ -9,6 +9,7 @@ import ChkList from 'app/ui/molecules/checkbox_list';
 import { View, Row, Pressable } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
+import Profile from 'app/ui/molecules/profile'
 
 export default function (props) {
     const name = props.name;
@@ -121,15 +122,28 @@ export default function (props) {
             {modalContent}
         </Modal>
     );
-
-
     if (props.origtype == 'hidden') {
-        return <Hidden
-            name={name}
-            onChangeText={field.onChange}
-            onBlur={field.onBlur}
-            defaultValue={props.value}
-        />
+        return (
+            <>
+                {props.addElement}
+                <Hidden
+                    name={name}
+                    onChangeText={field.onChange}
+                    onBlur={field.onBlur}
+                    defaultValue={props.value}
+                />
+                <Row className="  flex-none mr-auto px-[4px] items-center text-neutral-600 web:group-hover:text-neutral-800 web:dark:group-hover:text-neutral-200 dark:text-neutral-400 h-[22px] web:duration-300">
+                    <Profile
+                        {...props.owner_info}
+
+                        displayType="unit"
+                        displaySize="xs"
+
+
+                    />
+                </Row>
+            </>
+        )
     }
 
     if (props.format == 'nofield') {
