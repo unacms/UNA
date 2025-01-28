@@ -23,6 +23,7 @@ import { useBottomSheetData } from 'app/context/bottomsheet';
 import Profile from 'app/ui/molecules/profile'
 import ElementMsg from 'app/components/elements/msg';
 import { getBackButtonWeb } from 'app/lib/common-helpers'
+import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 
 export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, fetchConvos, data, onSave, addButtons }) {
     const isWeb = Platform.OS == 'web'
@@ -265,13 +266,14 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
             setShowMsg(sResponse.data?.message)
         }
         else {
+            console.log("sResponse.data.lot.author_data", sResponse.data.lot.author_data)
             const content = (<View className='items-center justify-center'>
                 <Row className='mb-4 gap-x-4'>
-                    <Profile {...sResponse.data.lot.author_data} />
+                    <Profile  displaySize="base" displayType="unit_wo_info" {...sResponse.data.lot.author_data} />
                     <View>
-                        <Text>Participants: {sResponse.data.lot.parts}</Text>
-                        <Text>Messages: {sResponse.data.lot.messages}</Text>
-                        <Text>Files: {sResponse.data.lot.files}</Text>
+                        <Text className="text-neutral-900 dark:text-neutral-100">Participants: {sResponse.data.lot.parts}</Text>
+                        <Text className="text-neutral-900 dark:text-neutral-100">Messages: {sResponse.data.lot.messages}</Text>
+                        <Text className="text-neutral-900 dark:text-neutral-100">Files: {sResponse.data.lot.files}</Text>
                     </View>
                 </Row>
             </View>)
@@ -534,18 +536,51 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
         };
     }, []);
 
+
+    const menuItems =[
+        {'id': 'edit',  'title': 'Edit participants list', 'icon': 'Users'},
+        {'id': 'info', 'title': 'Info', 'icon': 'Info'},
+        {'id': 'leave', 'title': 'Leave chat', 'icon': 'SignOut'},
+        {'id': 'delete', 'title': 'Delete chat', 'icon': 'Trash'}
+    ]
+
+    const handleManage = async (item) => {
+        if (item.id == "edit") {
+            editConvo();
+        }
+        if (item.id == "leave") {
+            leaveConvo();
+        }
+        if (item.id == "info") {
+            getConvo();
+        }
+        if (item.id == "delete") {
+            deleteConvo();
+        }
+    };
+
     return (<>
-        <View className='md:px-0 border-bdrcard dark:border-bdrcard-d border-b'>
+        <View className='md:px-0 border-bdrcard dark:border-bdrcard-d border-b w-full '>
             {(isWeb || true) && <Row className='px-3 py-2 items-center justify-between w-full h-[56px]'>
                 <Row className='items-center justify-start overflow-hidden flex-auto '>
                     {isSmallScreen && <View className='mr-2'><Button variant="secondary" startDecorator='ArrowLeft' rounded align="start" onPress={() => showConvo()} /></View>}
                     <Text numberOfLines={1} className="text-lg lg:text-xl font-bold font-bold tracking-tight  text-neutral-900 dark:text-neutral-50">{title}</Text>
                 </Row>
                 <Row className='items-center gap-x-2 '>
-                    <Button buttonTooltip="Edit participants list" startDecorator="Users" variant="secondary" rounded onPress={() => editConvo()} />
-                    <Button buttonTooltip="Leave" startDecorator="SignOut" variant="secondary" rounded onPress={() => leaveConvo()} />
-                    <Button buttonTooltip="Delete" startDecorator='Trash' variant="secondary" rounded onPress={() => deleteConvo()} />
-                    <Button buttonTooltip="Info" startDecorator='Info' variant="secondary" rounded onPress={() => getConvo()} />
+                    <View>
+                    <DropdownMenu onSelect={(oItem) => { handleManage(oItem) }} items={menuItems}
+                                >
+                                    <Button
+                                        tooltip="All Apps"
+                                        variant="secondary"
+                                        size="base"
+                                        rounded
+
+                                        startDecorator="Gear"
+                                    />
+                                </DropdownMenu>
+                                </View>
+                  
                 </Row>
             </Row>}
         </View>

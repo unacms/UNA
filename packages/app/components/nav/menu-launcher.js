@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 
 
 export default function () {
-
+//http://localhost:3000/api/api.php?r=system/get_menu/TemplServices&params[]={%22object%22:%22sys_homepage%22}&lang=en
     const bApps = appSetting('layout', 'apps') == true;
     const { currentUser, setCurrentUser } = useCurrentUser();
     const menu_launcher_items = menuItemsByName('', appSetting('menu_items', 'menu_launcher'), currentUser);
