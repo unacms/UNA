@@ -664,7 +664,7 @@ export const settingsDefault = {
             container: 'max-w-2xl h-full sm:h-auto shadow-modal dark:shadow-modal-d bg-bgrmodal dark:bg-bgrmodal-d {ls}:rounded-2xl sm:border border-bdrmodal dark:border-bdrmodal-d overflow-hidden',
             content:
                 ' h-auto ',
-            header: ' p-[12px] sm:p-[16px] items-start justify-start',
+            header: ' p-[12px] items-start justify-start border-b border-bdr dark:border-bdr-d',
         },
         card: {
             default: ' overflow-hidden bg-bgrcard dark:bg-bgrcard-d ',

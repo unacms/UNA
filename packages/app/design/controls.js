@@ -119,7 +119,7 @@ export function Modal({
     <View className={`w-full ${fullWidth ? '' : `${layoutShift}:w-auto`} relative ${modalSettings.container.replaceAll("{ls}", layoutShift)} `}>
         <View className={`relative h-full ${modalSettings.content.replaceAll("{ls}", layoutShift)}`}>
             {
-                (title || onClose) && <Row className={`items-center justify-${align} ${headerBorder && modalSettings.header}  ${layoutShift}:px-4 ${layoutShift}:pt-4`}>
+                (title || onClose) && <Row className={`items-center justify-${align} ${headerBorder && modalSettings.header} `}>
                     {(title && type === 'string') && (
                         <View className='flex-auto absolute left-0 right-0'>
                             <Text className='text-neutral-800 dark:text-neutral-200 text-2xl font-bold tracking-tight text-center '>{title}</Text>

@@ -140,7 +140,7 @@ export default function (props) {
             {modalElement}
             <Pressable onPress={() => handleShowModal()}>
                 {props.addElement}
-                <Row className=" web:group-hover:bg-bgritem web:dark:group-hover:bg-bgritem-d rounded-[6px] flex-none mr-auto px-[3px] items-center text-neutral-600 web:group-hover:text-neutral-800 web:dark:group-hover:text-neutral-200 dark:text-neutral-400 h-[22px] web:duration-300">
+                <Row className="  flex-none mr-auto px-[4px] items-center text-neutral-600 web:group-hover:text-neutral-800 web:dark:group-hover:text-neutral-200 dark:text-neutral-400 h-[22px] web:duration-300">
                     <Icon
                         icon={icon}
                         width={18}

@@ -34,11 +34,11 @@ function ProfileView({ isImageOnly = false, data, handleSubmit, showImage, setSh
     }
 
     return (
-        <View className="flex-row flex-auto items-center justify-between gap-x-1 text-neutral-400 dark:text-neutral-600  ">
-            <View className="gap-x-[4px] flex-row ">
+        <View className="flex-row flex-auto items-center justify-between gap-x-[8px] text-neutral-400 dark:text-neutral-600  ">
+            <View className="gap-x-[8px] mr-[8px] flex-row flex-auto ">
                 <Profile {...profileData} displaySize="base" displayType="unit_wo_info" />
                 
-                <View className="flex-col group ">
+                <View className="flex-col  flex-auto group hover:bg-neutral-100 dark:group-hover:bg-neutral-800 active:bg-neutral-200 dark:active:bg-neutral-700 rounded-[8px]  ">
                     
                     {data?.inputs?.['object_privacy_view'] && getFormFieldByData(
                         {
