@@ -179,7 +179,7 @@ export default function FormFeed(props) {
     }, [])
 
 
-    const form = <KbAvoidingView className='flex-col h-full flex-auto' offset={isIos ? 9 : 74}>
+    const form = <KbAvoidingView className='flex-col h-full flex-auto' offset={isIos ? 10 : 74}>
         {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'default')}
         {getFormFieldByData(props.data.inputs['object_cf'], props.handleSubmit, 'default')}
         {getFormFieldByData(props.data.inputs['owner_id'], props.handleSubmit, 'default')}
@@ -196,7 +196,7 @@ export default function FormFeed(props) {
                 }
                 onClick={(event) => { event.target.querySelector('.tiptap')?.focus() }}
             >
-                <View className="w-full flex-col px-[12px] ">
+                <View className="w-full h-full flex-col px-[12px] ">
 
                     {getFormFieldByData(
                         props.data.inputs['text'],
@@ -222,7 +222,7 @@ export default function FormFeed(props) {
             </ScrollView>
             <View className="  ">
                 <Row className={
-                    '  items-center flex-auto w-full gap-x-[8px] p-[8px] sm:p-[12px] bg-neutral-100 dark:bg-neutral-800  ' +
+                    '  items-center flex-auto w-full gap-x-[8px] p-[8px] sm:p-[12px] bg-neutral-500/5  ' +
                     (isWeb ? ' ' : ' ') +
                     (isSmall
                         ? ' ' +
@@ -355,6 +355,7 @@ export default function FormFeed(props) {
                 <View className="items-start justify-start p-3 ">
                    {header}
                 </View>
+                
                 {form}
             </View>
         )

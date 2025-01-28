@@ -217,8 +217,8 @@ export const ItemInfo = memo(({ data, t }) => {
         }
         return l && (
             <>
-                <Text className=" text-neutral-600 dark:text-neutral-400 text-[14px] text-center leading-[22px] font-medium tracking-tight mx-1">·</Text>
-                <Text className=" text-neutral-600 dark:text-neutral-400 text-[14px] text-center leading-[22px] font-medium tracking-tight ">
+                <Text className=" text-neutral-600 dark:text-neutral-400 native:text-[14px] web:text-sm text-center leading-[22px] font-medium tracking-tight mx-1">·</Text>
+                <Text className=" text-neutral-600 dark:text-neutral-400 native:text-[14px] web:text-sm text-center leading-[22px] font-medium tracking-tight ">
                     {l}
                 </Text>
             </>
@@ -346,9 +346,9 @@ export const VisibilityInfo = memo(({ data }) => {
     const isUser = data.object_privacy_view < 0;
     return (
         <Row className="text-neutral-600 dark:text-neutral-400 items-center">
-            <Text className="text-neutral-600 dark:text-neutral-400 text-[14px] h-[22px] leading-[22px] text-center tracking-tight mx-1">·</Text>
+            <Text className="text-neutral-600 dark:text-neutral-400 native:text-[14px] web:text-sm h-[22px] leading-[22px] text-center tracking-tight mx-1">·</Text>
             {isUser ? <Profile {...data.author_data} displayType="unit_wo_info" displaySize="xxs" /> : <Icon icon={icon} width={18} height={18} />}
-            <Text className="text-neutral-600 dark:text-neutral-400 text-[14px] h-[22px] font-medium leading-[22px] text-center tracking-tight text-sm ml-1">{ isUser ? data.author_data.display_name : text}</Text>
+            <Text className="text-neutral-600 dark:text-neutral-400 native:text-[14px] web:text-sm h-[22px] font-medium leading-[22px] text-center tracking-tight text-sm ml-1">{ isUser ? data.author_data.display_name : text}</Text>
         </Row>
     );
 });

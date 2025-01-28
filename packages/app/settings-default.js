@@ -551,7 +551,7 @@ export const settingsDefault = {
                 height: 48,
                 marginTop: 4,
                 paddingBottom: 0,
-                borderRadius: 16,
+                borderRadius: 12,
                 marginLeft: 0,
                 marginRight: 0,
                 overflow: 'hidden',
@@ -698,7 +698,7 @@ export const settingsDefault = {
                 icon_size: ' 20px ', //icon size
                 icon_margin: ' mx-[0px] ', //conditional margin for icon container when title is present
                 min_height: ' ',
-                margin: ' px-[4px] leading-[20px] native:text-[14px] ',
+                margin: ' px-[4px] leading-[20px] native:text-[14px] web:text-sm ',
             },
             sm: {
                 rounded: ' rounded-[8px] ] ',
@@ -707,7 +707,7 @@ export const settingsDefault = {
                 icon_size: ' 24px ',
                 icon_margin: ' ',
                 min_height: ' ',
-                margin: ' mx-[4px] my-auto native:text-[14px] ', // margin around text
+                margin: ' mx-[4px] my-auto native:text-[14px]  web:text-sm ', // margin around text
             },
             base: {
                 rounded: ' rounded-[8px] ',
@@ -719,13 +719,13 @@ export const settingsDefault = {
                 margin: ' mx-[6px] my-auto native:text-[16px] ',
             },
             lg: {
-                rounded: 'rounded-lg',
-                padding: 'px-2 py-1',
-                icon_sizes: ' p-1.5 h-10 w-10 ',
+                rounded: ' rounded-[12px] ',
+                padding: ' px-[8px] h-[48px] ',
+                icon_sizes: ' p-[6px] h-[48px] w-[48px] ',
                 icon_size: 28,
-                icon_margin: 'p-1.5     ',
-                min_height: ' leading-10 sm:text-[16px] ',
-                margin: 'mx-3',
+                icon_margin: 'p-[6px]     ',
+                min_height: ' leading-[40px] sm:text-[16px] ',
+                margin: ' mx-[12px] ',
             },
         },
 
@@ -739,14 +739,14 @@ export const settingsDefault = {
             'u-btn-default-color-icon-dark': 'rgb(243, 244, 246)',*/
 
             'u-btn-primary-cnt':
-            ' bg-primary-600 dark:bg-primary-700   sm:hover:bg-primary-700 dark:sm:hover:bg-primary-800  ',
+            ' bg-primary-600 dark:bg-primary-700 border border-bdrbutton dark:border-bdrbutton-d sm:hover:bg-primary-700 dark:sm:hover:bg-primary-800  ',
             'u-btn-primary-text': '  font-medium text-neutral-100 hover:text-white ',
             'u-btn-primary-trans': ' web:duration-200 ',
             'u-btn-primary-color-icon-light': 'rgb(243, 244, 246)',
             'u-btn-primary-color-icon-dark': 'rgb(243, 244, 246)',
 
             'u-btn-secondary-cnt':
-                ' bg-neutral-200 dark:bg-neutral-800  sm:hover:bg-neutral-300 sm:dark:hover:bg-neutral-700  ',
+                ' bg-neutral-200 dark:bg-neutral-800 sm:hover:bg-neutral-300 sm:dark:hover:bg-neutral-700  ',
             'u-btn-secondary-text':
                 ' font-medium text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-white ',
             'u-btn-secondary-trans': ' web:duration-200',

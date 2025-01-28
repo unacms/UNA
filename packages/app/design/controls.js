@@ -116,7 +116,7 @@ export function Modal({
     }
 
     const Content = <View className={`flex-row justify-center left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto ${layoutShift}:inset-0 h-modal h-full ${sClassPosition}`}>
-    <View className={`w-full ${fullWidth ? '' : `${layoutShift}:w-auto`} relative h-full ${modalSettings.container.replaceAll("{ls}", layoutShift)} `}>
+    <View className={`w-full ${fullWidth ? '' : `${layoutShift}:w-auto`} relative ${modalSettings.container.replaceAll("{ls}", layoutShift)} `}>
         <View className={`relative h-full ${modalSettings.content.replaceAll("{ls}", layoutShift)}`}>
             {
                 (title || onClose) && <Row className={`items-center justify-${align} ${headerBorder && modalSettings.header}  ${layoutShift}:px-4 ${layoutShift}:pt-4`}>
