@@ -4,7 +4,7 @@ import { Button } from 'app/design/controls'
 import { memo, useCallback, useEffect } from 'react'
 import { FeedbackHaptics } from 'app/lib/util';
 import { Keyboard } from 'react-native' 
-
+import {Alert} from 'react-native';
 const Menu = memo(({ items, onSelect, setBottomSheetData }) => {
 
     const handlePressMenu = useCallback(
@@ -35,12 +35,35 @@ const Menu = memo(({ items, onSelect, setBottomSheetData }) => {
     );
 });
 
-export default function ({items, onSelect, children, defaultOpen}) {
+export default function ({items, onSelect, children, defaultOpen, mode}) {
     const { setBottomSheetData } = useBottomSheetData();
     const handlePress = useCallback(() => {
-        FeedbackHaptics('Medium')
-        setBottomSheetData({ showClose: false, snapPoints: ['10%', '50%'], content: <Menu items={items} onSelect={onSelect} setBottomSheetData={setBottomSheetData} /> });
-        Keyboard.dismiss();
+        if (mode != "alert"){
+            FeedbackHaptics('Medium')
+            setBottomSheetData({ showClose: false, snapPoints: ['10%', '50%'], content: <Menu items={items} onSelect={onSelect} setBottomSheetData={setBottomSheetData} /> });
+            Keyboard.dismiss();
+        }
+        else{
+            const alertOptions = items.map(item => ({
+                text: item.title,
+                onPress: () => {
+                    console.log(`Selected: ${item.title}`);
+                    onSelect(item);
+                   
+                    // Add your logic here for each option
+                }
+            }));
+            alertOptions.push({
+                text: "Cancel",
+                style: "cancel"
+            });
+            Alert.alert(
+                "Select identity",
+                null,
+                alertOptions,
+                { cancelable: true }
+            );
+        }
     }, [setBottomSheetData, items, onSelect]);
 
     useEffect(() => {
@@ -52,8 +75,3 @@ export default function ({items, onSelect, children, defaultOpen}) {
         <Pressable onPress={handlePress}>{children}</Pressable>
     );
 }
-
-
-
-
-

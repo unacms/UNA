@@ -1,7 +1,7 @@
 import { Root } from 'app/root'
 import { memo, useState, useEffect, useContext, useMemo } from 'react'
 import { useCurrentUser } from 'app/context/user';
-import { appSetting, parseUrl, parseQueryString, getURI, getPageSettings } from 'app/lib/util'
+import { appSetting, parseUrl, parseQueryString, getURI, getPageSettings, getMenuSettings } from 'app/lib/util'
 import { Loading } from 'app/loading'
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { fetcher } from 'app/lib/fetcher';

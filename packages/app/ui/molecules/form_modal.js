@@ -25,7 +25,7 @@ export default function FormModal({ pageData, setPageData }) {
             transparent={true}
             onRequestClose={handleModalClose}
         >
-            <Container className={`flex-1 ${isShowHeader ? 'px-3 sm:px-0' : ''}`}>
+            <Container className={`flex-1 ${isShowHeader ? '' : ''}`}>{/*px-3 sm:px-0*/}
                 {
                     Object.keys(pageData?.elements || {}).map(key =>
                         Object.keys(pageData.elements[key] || {}).map(key2 => (
