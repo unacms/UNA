@@ -432,15 +432,16 @@ export default function FormFieldFtf(props) {
             editor.commands.setContent(field.value, false, {
                 preserveWhitespace: "full",
               });
-            editor.commands.focus()
+              setTimeout(() => {  editor.commands.focus()
+            }, 500);
         }
 
     }, [field.value]);
 
     useEffect(() => {
         if (editor && layoutData && layoutData.type == 'comment:activate') {
-            editor.commands.focus()
-        }
+            setTimeout(() => {  editor.commands.focus()
+            }, 500);        }
     }, [layoutData]);
 
     let size = props.name == 'cmt_text' ? 'text-base' : 'text-base';
@@ -454,8 +455,8 @@ export default function FormFieldFtf(props) {
 
     useEffect(() => {
         if (editor && props.focus == true) {
-            editor.commands.focus('end')
-        }
+            setTimeout(() => {  editor.commands.focus()
+            }, 500);        }
     }, [editor]);
 
     const isFullHtml = (props.html == 2 || props.html == 1);
