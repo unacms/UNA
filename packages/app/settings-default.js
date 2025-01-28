@@ -431,40 +431,7 @@ export const settingsDefault = {
             { name: 'events-home', title: 'Events', link: '/events-home', icon: 'Calendar' }
         ],
         menu_drawer: [
-            /* { name: 'home', title: 'Home', link: '/', icon: 'House'},
-            { name: 'friends', title: 'Friends', link: '/friends', icon: 'Users', nonlogged: false }, 
-            { name: 'posts-home', title: 'Posts', link: '/posts-home', icon: 'ChatCenteredText' }, 
-            { name: 'groups-home', title: 'Groups', link: '/groups-home', icon: 'UsersThree' },
-            { name: 'events-home', title: 'Events', link: '/events-home', icon: 'Calendar' }, 
-            { name: 'products-home', title: 'Market', link: '/products-home', icon: 'Storefront' }, 
-            { name: 'persons-home', title: 'People', link: '/persons-home', icon: 'UsersFour' }, 
-            { name: 'discussion-home', title: 'Discussions', link: '/discussions-home', icon: 'Chats' }, 
-            { name: 'Logout',title: 'Sign out', link: '/logout', icon: 'SignOut', nonlogged: false},*/
-        ],
-        menu_launcher: [
-            { name: 'friends', title: 'Friends', link: '/friends', icon: 'Users', nonlogged: false },
-            { name: 'posts-home', title: 'Posts', link: '/posts-home', icon: 'ChatCenteredText' },
-            { name: 'discussion-home', title: 'Discussions', link: '/discussions-home', icon: 'Chats' },
-            { name: 'groups-home', title: 'Groups', link: '/groups-home', icon: 'UsersThree' },
-            { name: 'spaces-home', title: 'Spaces', link: '/spaces-home', icon: 'IntersectSquare' },
-            { name: 'events-home', title: 'Events', link: '/events-home', icon: 'Calendar' },
-            { name: 'products-home', title: 'Market', link: '/products-home', icon: 'Storefront' },
-            { name: 'persons-home', title: 'People', link: '/persons-home', icon: 'UsersFour' },
-            { name: 'organizations-home', title: 'Organizations', link: '/organizations-home', icon: 'CirclesThree' },
-            { name: 'ads-home', title: 'Ads', link: '/ads-home', icon: 'Megaphone' },
-            { name: 'channels-home', title: 'Channels', link: '/channels-home', icon: 'Hash' },
-            { name: 'videos-home', title: 'Videos', link: '/videos-home', icon: 'Video' }
-        ],
-        menu_add: [
-            { name: 'create-post', title: 'Blog post', link: '/create-post', icon: 'ChatCenteredText', nonoperator: false },
-            { name: 'create-video', title: 'Video', link: '/create-video', icon: 'Video', nonoperator: false },
-            { name: 'create-space-profile', title: 'Space', link: '/create-space-profile', icon: 'IntersectSquare' },
-            { name: 'create-event-profile', title: 'Event', link: '/create-event-profile', icon: 'Calendar' },
-            { name: 'create-discussion', title: 'Discussion', link: '/create-discussion', icon: 'Chats' },
-            { name: 'create-group-profile', title: 'Group', link: '/create-group-profile', icon: 'UsersThree', nonoperator: false },
-            { name: 'create-ad', title: 'Ad', link: '/create-ad', icon: 'Megaphone' },
-            { name: 'create-course-profile', title: 'Course', link: '/create-course-profile', icon: 'Books' },
-            { name: 'create-job-profile', title: 'Job', link: '/create-job-profile', icon: 'CalendarBlank' }
+          
         ],
         menu_account: [
             { name: 'dashboard', title: 'Dashboard', link: '/dashboard', icon: 'SquaresFour' },

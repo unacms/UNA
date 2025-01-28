@@ -2,19 +2,28 @@ import { View } from 'app/design/view'
 import { ButtonRef } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user'
 import { appSetting } from 'app/lib/util'
-import { menuItemsByName } from 'app/lib/util'
+import { menuItemsByName, menuItemsByNameNew, getDataForMenu } from 'app/lib/util'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { useTranslation } from 'react-i18next';
-
+import { useState, useEffect, useMemo } from 'react';
 
 export default function () {
-//http://localhost:3000/api/api.php?r=system/get_menu/TemplServices&params[]={%22object%22:%22sys_homepage%22}&lang=en
+
     const bApps = appSetting('layout', 'apps') == true;
+    const [menuData, setMenuData] = useState(false);
     const { currentUser, setCurrentUser } = useCurrentUser();
-    const menu_launcher_items = menuItemsByName('', appSetting('menu_items', 'menu_launcher'), currentUser);
     const { t } = useTranslation();
 
-    if (menu_launcher_items.length == 0 || !bApps)
+    useEffect(() => {
+        const fetchData = async () => {
+            getDataForMenu({ object: 'sys_homepage', params: null }, setMenuData);
+        };
+        fetchData();
+    }, []);
+
+    const menu_launcher_items = appSetting('layout', 'user_remote_config') ? menuItemsByNameNew('menu_post', menuData, currentUser) : menuItemsByName('', appSetting('menu_items', 'menu_launcher'), currentUser);
+
+    if ((menu_launcher_items.length == 0 && menuData) || !bApps)
         return <></>;
 
     return (
