@@ -351,7 +351,7 @@ export default function FormFeed(props) {
 
     if (isFormOnly){
         return (
-            <View className="w-full flex-1 bg-breen-500 h-full">
+            <View className="w-full flex-1 h-full">
                 <View className="items-start justify-start p-3 ">
                    {header}
                 </View>
