@@ -32,7 +32,7 @@ function DisplayNameLink({ title, url, href, fontSize, actions }) {
         return (
             <Row className={' text-neutral-800  dark:text-neutral-200 gap-x-[8px] items-center ' + fontSize}>
                 <View>
-                    <Text numberOfLines={1} className={'text-neutral-800 dark:text-neutral-200 font-semibold ' + fontSize + ' truncate '}>
+                    <Text numberOfLines={1} className={'text-neutral-800 dark:text-neutral-200 font-semibold ' + fontSize + ' line-clamp-1 truncate '}>
                         {title && title.replace(" (anonymized)", '')} (protected)
                     </Text>
                 </View>
@@ -53,7 +53,7 @@ function DisplayNameLink({ title, url, href, fontSize, actions }) {
 
 function DisplayNameText({ title, fontSize }) {
     return (
-        <Text className={'text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 dark:hover:text-white ' + fontSize + '  font-semibold tracking-tight truncate hover:underline'}>
+        <Text className={' text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 dark:hover:text-white ' + fontSize + ' font-medium tracking-tight '}>
             {title}
         </Text>
     )
@@ -136,32 +136,32 @@ function AtomProfile_(oProps) {
 
     const sizes = {
         xxs: {
-            sSize: 'w-[18px] h-[18px]',
-            iSizeWidth: 18,
-            iSizeHeight: 18,
+            sSize: 'w-[20px] h-[20px]',
+            iSizeWidth: 20,
+            iSizeHeight: 20,
             sSizeFont: 'text-[12px]', 
-            sSizeFontLetter: 'text-base  font-semibold',
+            sSizeFontLetter: ' text-[12px] font-medium',
         },
         xs: {
             sSize: 'w-[24px] h-[24px]',
             iSizeWidth: 24,
             iSizeHeight: 24,
-            sSizeFont: 'text-[12px]', 
-            sSizeFontLetter: 'text-base  font-semibold',
+            sSizeFont: 'text-[14px]', 
+            sSizeFontLetter: 'text-base font-medium',
         },
         sm: {
             sSize: 'w-[32px] h-[32px]',
             iSizeWidth: 32,
             iSizeHeight: 32,
-            sSizeFont: 'native:text-[14px] web:text-sm',
-            sSizeFontLetter: 'text-base opacity-50 font-semibold',
+            sSizeFont: ' text-[14px] leading-[20px] font-medium tracking-tight line-clamp-1 ',
+            sSizeFontLetter: 'text-base opacity-50 font-bold',
         },
         base: {
             sSize: 'w-[44px] h-[44px]',
             iSizeWidth: 44,
             iSizeHeight: 44,
-            sSizeFont: ' text-[16px] leading-[22px] tracking-tight font-bold ',
-            sSizeFontLetter: ' p-[8px] leading-[22px] text-center text-[20px] font-bold',
+            sSizeFont: ' text-[16px] leading-[22px] font-semibold tracking-tight line-clamp-1 ',
+            sSizeFontLetter: ' leading-[44px] text-center text-[24px] font-bold ',
         },
         lg: {
             sSize: 'w-[48px] h-[48px]',
@@ -222,11 +222,11 @@ function AtomProfile_(oProps) {
     switch (sDisplayType) {
         case 'unit':
             return (
-                <Row className="flex-row gap-x-[8px] items-center ">
-                    <View className="flex-none mb-auto">
+                <Row className="flex-row items-center gap-x-[8px]">
+                    <View className="flex-none">
                         <UnitWoInfo oProps={oProps} sSize={sSize} sSizeFontLetter={sSizeFontLetter} emulate={emulate} iSizeWidth={iSizeWidth} bShowLinks={bShowLinks} />
                     </View>
-                    <View className="flex-auto">
+                    <View className="flex-auto ">
                         <UnitWoImage oProps={oProps} sSizeFont={sSizeFont} bShowLinks={bShowLinks} emulate={emulate} info={sShowInfo} actions={oProps.showActions} />
                     </View>
                 </Row>

@@ -572,14 +572,14 @@ export const settingsDefault = {
             right_column_cnt: 'fixed-process p-4 max-w-md'
         },
         checkbox : {
-            container: 'h-5 w-5 rounded-sm border-2 border-bdrinput dark:border-bdrinput-d justify-center items-center mr-2',
-            container_selected: 'h-5 w-5 rounded-sm border-2 border-bdrinput dark:border-bdrinput-d justify-center items-center mr-2',
-            selected: 'h-2.5 w-2.5 rounded-sm bg-primary',  
-            text: 'text-neutral-800 dark:text-neutral-200  text-sm',
+            container: ' h-[20px] w-[20px] rounded-[4px] border-[2px] border-neutral-500 bg-transparent justify-center items-center   ',
+            container_selected: ' h-[20px] w-[20px] rounded-[4px] border-[2px] border-neutral-500 bg-transparent justify-center items-center ',
+            selected: ' h-[10px] w-[10px] rounded-[2px] bg-primary ',  
+            text: '  text-neutral-800 dark:text-neutral-200 text-[16px] leading-[20px] font-medium ',
             selected_icon: false,
         },  
         checkbox_set : {
-            container:  'gap-x-2 items-center',
+            container:  '  gap-x-2 items-center',
         },
         switcher: {
             container:  'gap-x-2 items-center',
@@ -677,22 +677,22 @@ export const settingsDefault = {
                 margin: ' mx-[4px] my-auto native:text-[14px]  web:text-sm ', // margin around text
             },
             base: {
-                rounded: ' rounded-[8px] ',
+                rounded: ' rounded-[8px] overflow-hidden ',
                 padding: ' h-[44px] min-w-[44px] px-[10px] ',
                 icon_sizes: ' h-[24px] w-[24px]',
                 icon_size: '24px',
-                icon_margin: ' mx-1 ',
+                icon_margin: ' mx-[4px] ',
                 min_height: '  ',
                 margin: ' mx-[6px] my-auto native:text-[16px] ',
             },
             lg: {
                 rounded: ' rounded-[12px] overflow-hidden ',
-                padding: ' px-[8px] h-[48px] ',
+                padding: ' px-[10px] min-w-[44px] h-[48px] ',
                 icon_sizes: ' p-[10px] h-[48px] w-[48px] ',
                 icon_size: 28,
-                icon_margin: ' p-[6px] ',
+                icon_margin: ' mx-[6px] ',
                 min_height: ' leading-[40px] sm:text-[16px] ',
-                margin: ' mx-[12px] native:text-[16px] ',
+                margin: ' mx-[12px] my-auto native:text-[16px] ',
             },
         },
 

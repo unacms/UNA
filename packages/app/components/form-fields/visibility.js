@@ -9,7 +9,8 @@ import ChkList from 'app/ui/molecules/checkbox_list';
 import { View, Row, Pressable } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
-import Profile from 'app/ui/molecules/profile'
+import Profile from 'app/ui/molecules/profile';
+import React from 'react';
 
 export default function (props) {
     const name = props.name;
@@ -106,7 +107,8 @@ export default function (props) {
     ) : (
         <>
             <RbList values={filteredValues} setValue={handleValueChange} selectedValue={field.value} />
-            <Button title="Apply" size="sm" variant="primary" onPress={applyVisibility} />
+            <View className='flex-row justify-end pt-[12px] mt-[12px] border-t border-bdr dark:border-bdr-d'>
+            <Button title="Done" size="base" variant="primary" onPress={applyVisibility} /></View>
         </>
     );
 
@@ -132,15 +134,23 @@ export default function (props) {
                     onBlur={field.onBlur}
                     defaultValue={props.value}
                 />
-                <Row className="  flex-none mr-auto px-[4px] items-center text-neutral-600 web:group-hover:text-neutral-800 web:dark:group-hover:text-neutral-200 dark:text-neutral-400 h-[22px] web:duration-300">
-                    <Profile
-                        {...props.owner_info}
-
-                        displayType="unit"
-                        displaySize="xs"
-
-
-                    />
+                <Row className=" h-[22px] items-center px-[4px] text-neutral-600 web:group-hover:text-neutral-800 web:dark:group-hover:text-neutral-200 dark:text-neutral-400 web:duration-300">
+                    <View className='flex-none mb-auto'>
+                        <Profile
+                            {...props.owner_info}
+                            displayType="unit_wo_info"
+                            displaySize="xxs"
+                        />
+                    </View>
+                    <View className='px-[4px]  flex-auto'>
+                        <Profile 
+                            {...props.owner_info} 
+                            displayType="unit_wo_image" 
+                            displaySize="sm" 
+                            showInfo={false}
+                            showLinks={false}
+                        />
+                    </View>
                 </Row>
             </>
         )
@@ -157,16 +167,15 @@ export default function (props) {
                 <Row className="  flex-none mr-auto px-[4px] items-center text-neutral-600 web:group-hover:text-neutral-800 web:dark:group-hover:text-neutral-200 dark:text-neutral-400 h-[22px] web:duration-300">
                     <Icon
                         icon={icon}
-                        width={18}
-                        height={18}
-
+                        width={20}
+                        height={20}
                     />
-                    <Text className="whitespace-nowrap text-ellipsis overflow-hidden tracking-tight text-neutral-600 web:group-hover:text-neutral-800 dark:text-neutral-400 web:dark:group-hover:text-neutral-200   font-medium  text-sm px-[4px] my-auto native:text-[14px] ">{text}</Text>
+                    <Text className=" leading-[20px] whitespace-nowrap text-ellipsis overflow-hidden tracking-tight text-neutral-600 web:group-hover:text-neutral-800 dark:text-neutral-400 web:dark:group-hover:text-neutral-200 font-medium text-sm px-[4px] native:text-[14px] ">{text}</Text>
+                    
                     <Icon
                         icon="CaretRight"
                         width={12}
                         height={12}
-
                     />
                 </Row>
             </Pressable>

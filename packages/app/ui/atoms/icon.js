@@ -27,7 +27,7 @@ export function Icon(props) {
 
     if (!IconComponent) {
         console.log('Icon not found:', processedIcon);
-        return null; // Возвращаем null, а не пустой элемент
+        return null; // return null and not an empty element
     }
 
     return (
