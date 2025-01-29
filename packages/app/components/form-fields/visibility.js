@@ -164,13 +164,13 @@ export default function (props) {
             {modalElement}
             <Pressable onPress={() => handleShowModal()}>
                 {props.addElement}
-                <Row className="  flex-none mr-auto px-[4px] items-center text-neutral-600 web:group-hover:text-neutral-800 web:dark:group-hover:text-neutral-200 dark:text-neutral-400 h-[22px] web:duration-300">
+                <Row className="  flex-none mr-auto px-[4px] items-center text-neutral-600 web:group-hover:text-neutral-800 web:dark:group-hover:text-neutral-200 dark:text-neutral-400 h-[24px] web:duration-300">
                     <Icon
                         icon={icon}
                         width={20}
                         height={20}
                     />
-                    <Text className=" leading-[20px] whitespace-nowrap text-ellipsis overflow-hidden tracking-tight text-neutral-600 web:group-hover:text-neutral-800 dark:text-neutral-400 web:dark:group-hover:text-neutral-200 font-medium text-sm px-[4px] native:text-[14px] ">{text}</Text>
+                    <Text className=" leading-[24px] whitespace-nowrap text-ellipsis overflow-hidden tracking-tight text-neutral-600 web:group-hover:text-neutral-800 dark:text-neutral-400 web:dark:group-hover:text-neutral-200 font-medium text-sm px-[4px] native:text-[14px] ">{text}</Text>
                     
                     <Icon
                         icon="CaretRight"
