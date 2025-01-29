@@ -7,13 +7,20 @@ import { appSetting, setClipboard } from 'app/lib/util'
 import Dropdown from 'app/ui/atoms/dropdown'
 import Calendar from 'app/ui/atoms/calendar'
 
-function getColor(color) {
+export function getColor(color) {
     if (color == 'orange') return '#f97316';
     if (color == 'yellow') return '#eab308';
     if (color == 'green') return '#22c55e';
+    if (color == 'teal') return '#14b8a6';
+    if (color == 'sky') return '#0ea5e9';
+    if (color == 'indigo') return '#6366f1';
+    if (color == 'purple') return '#8b5cf6';
+    if (color == 'pink') return '#ec4899';
+    if (color == 'rose') return '#f43f5e';
+    if (color == 'red') return '#ef4444';
 }
 
-function VictoryPieChart({data, colorScale}) {
+export function VictoryPieChart({data, colorScale}) {
     const [VictoryPie, setVictoryPie] = useState(null);
     useEffect(() => {
         const loadVictoryComponents = async () => {

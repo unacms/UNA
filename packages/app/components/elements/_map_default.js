@@ -4,6 +4,7 @@ import Msg from './msg';
 import Login from './login';
 import Redirect from './redirect';
 import EntityText from './entity_text';
+import EntityPoll from './entity_poll';
 import EntityAttachments from './entity_attachments';
 import EntityAuthor from './entity_author';
 import EntityActions from './entity_actions';
@@ -47,6 +48,7 @@ export const componentsMapDefault = {
     login: Login,
     redirect: Redirect,
     entity_text: EntityText,
+    entity_poll: EntityPoll,
     entity_author: EntityAuthor,
     entity_actions: EntityActions,
     entity_attachments: EntityAttachments,
