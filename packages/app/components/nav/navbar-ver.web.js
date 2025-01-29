@@ -58,11 +58,7 @@ const HeaderLine = memo(({ headerSettings, currentUser, uri, bSearch, menuPopup,
                                     variant="text"
                                     size="base"
                                     fullWidth={true}
-                                    startDecorator={
-                                        item.icon.indexOf(' ') == -1
-                                            ? item.icon
-                                            : item.icon.split(' ')[0]
-                                    }
+                                    startDecorator={item.icon}
                                     rounded
                                     align="start"
                                     title={item.title}
@@ -117,8 +113,6 @@ export default function (props) {
         rounded: 'rounded',
     }
 
-    const menu_account_items = menuItemsByName('', appSetting('menu_items', 'menu_account'), currentUser)
-
     return (
         <>
             <Redirect ref={redirectdRef} />
@@ -158,24 +152,6 @@ export default function (props) {
 
                                                     </Row>
                                                 </MenuAccount>
-                                                {/*<DropdownMenu items={menu_account_items.map(
-                                                    (item, index) => {
-                                                        return (
-                                                            {
-                                                                id: 'menu-' + index,
-                                                                link: item.link,
-                                                                title: t(item.title),
-                                                                icon:
-                                                                    item.icon.indexOf(' ') == -1
-                                                                        ? item.icon
-                                                                        : item.icon.split(' ')[0],
-                                                            }
-                                                        )
-                                                    }
-                                                )}
-                                                >
-                                                    
-                                                </DropdownMenu>*/}
                                             </View>
                                             <View className='ml-2'>
                                                 {menu_add_items.length > 0 && <MenuAdd typestyle="button" buttonProps={buttonProps} />}

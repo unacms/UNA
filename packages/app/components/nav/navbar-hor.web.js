@@ -167,11 +167,7 @@ export default function (props) {
                                             alt={t(item.title)}
                                             aria-label={t(item.title)}
                                             fullWidth
-                                            startDecorator={
-                                                item.icon.indexOf(' ') == -1
-                                                    ? item.icon
-                                                    : item.icon.split(' ')[0]
-                                            }
+                                            startDecorator={item.icon}
                                             align="center"
                                         />
                                     </Link>

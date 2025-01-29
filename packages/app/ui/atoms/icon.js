@@ -1,7 +1,7 @@
 'use client'
 
 import { IconSet } from 'app/icons';
-import { appSetting } from 'app/lib/util'
+import { findIconFromRemote } from 'app/lib/util'
 import { Theme } from 'app/design/theme';
 import { useMemo } from 'react';
 import SvgIcons from  'app/icons-svg';
@@ -10,9 +10,7 @@ export function Icon(props) {
     const { colors } = Theme();
 
     let { icon, className, color, size, ...rest } = props
-    icon = icon.replace('far ', '').replace('fa-','').replace('fa ', '')
-    let a = icon.split(' ')[0];
-    let  ic = a;
+    icon = findIconFromRemote(icon);
 
     const InlineIcon = SvgIcons[icon];
 

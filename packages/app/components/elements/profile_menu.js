@@ -1,25 +1,18 @@
 import { View } from 'app/design/view'
 import Link from 'app/ui/atoms/link'
 import { Button } from 'app/design/controls'
-import { Dimensions, Platform } from 'react-native'
-import { appSetting, menuItemsByName } from 'app/lib/util'
+import { appSetting, menuItemsByName, menuItemsByNameNew } from 'app/lib/util'
 import { useTranslation } from 'react-i18next';
 import { useCurrentUser } from 'app/context/user'
 
 export default function ElementProfileMenu(props) {
     const { t } = useTranslation();
-    let windowHeight = Dimensions.get('window').height
     const { currentUser, setCurrentUser } = useCurrentUser();
-
-    let styles = {}
-    if (Platform.OS === 'web') {
-        styles = { maxHeight: windowHeight - 64 }
-    }
-
+    const menu_items = appSetting('layout', 'user_remote_config') ? menuItemsByNameNew('menu_post', props.data, currentUser) : menuItemsByName('', appSetting('menu_items', 'menu_sidebar'), currentUser);
     return (
-        <View className="profile-menu ">
+        <View className="profile-menu">
             <View className="flex-col gap-y-0.5">
-                {menuItemsByName('main_menu', appSetting('menu_items', 'menu_sidebar'), currentUser).map((item, index) => (
+                {menu_items.map((item, index) => (
                     <Link key={`menu-${index}`} href={item.link.replace('{profile}', currentUser.url)}>
                         <Button
                             variant="text"

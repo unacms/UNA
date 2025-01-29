@@ -755,8 +755,7 @@ function isObject(item) {
 }
 
 export function isEmoji(s) {
-    const emojiRegex = /\p{Emoji}|\p{Extended_Pictographic}/u;
-
+    const emojiRegex = /(?:\p{Extended_Pictographic}|\p{Emoji_Presentation})/u;
     return !!s.match(emojiRegex);
 }
 
@@ -908,8 +907,18 @@ export function getPageSettings(config, uri) {
     return appSetting('layout', 'user_remote_config') && config ? strToObj(config) : appSetting('layouts', uri);
 }
 
-export function getMenuSettings(object, config) {
-    return appSetting('layout', 'user_remote_config') && config ? strToObj(config) : appSetting('menu_items', object)
+export function getMenuSettings(object, config, menu) {
+    if (!appSetting('layout', 'user_remote_config')) 
+        return appSetting('menu_items', object);
+
+    let a = {}
+    if (appSetting('layout', 'user_remote_config') && config)
+        a = strToObj(config);
+    
+    if (a && !a.name && menu?.title)
+        a.name = menu.title;
+
+    return a
 }
 
 export function genRnd(length) {
@@ -980,9 +989,26 @@ export async function getDataForMenu(menu, callback) {
     callback(data.data)
 }
 
+export function findIconFromRemote(s) {
+    if (!s || /^[A-Z][^\s]*$/.test(s))
+       return s;
+    const data = appSetting('menu_items', 'iconset');
+    for (let word of s.replace(/\bcol-\S*\b/g, '').trim().split(/\s+/)) {
+       
+        if (data[word]) {
+            return data[word];
+        }
+    }
+
+    return s;
+}
+
+
 export function menuItemsByNameNew(name, menu, currentUser, url = '') {
     return menuItemsByName(name, menu.items, currentUser, url, menu.config)
 }
+
+
 
 export function menuItemsByName(name, items, currentUser, url = '', config = null) {
     if (!items)

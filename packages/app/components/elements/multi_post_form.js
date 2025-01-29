@@ -13,7 +13,8 @@ export default function MultiPostForm({ data }) {
     const { t } = useTranslation()
     const [pageData, setPageData] = useState(false);
     const [pageDataDef, setPageDataDef] = useState(false);
-    const menu_add_items = menuItemsByNameNew('menu_post', data.menu, currentUser);
+    const menu_add_items = menuItemsByNameNew('', data.menu, currentUser).filter(item => item.name != 'more-auto');
+    
     if (menu_add_items.length == 0)
         return;
 

@@ -1,12 +1,15 @@
 'use client'
 
 import { useEffect, useState, memo, useMemo } from 'react';
-import { storageGet, storageSet } from 'app/lib/util'
+import { storageGet, storageSet, findIconFromRemote } from 'app/lib/util'
 import SvgIcons from  'app/icons-svg';
 
 export const Icon = memo(function Icon(props) {
-    const { icon, className, width, height, color, size, ...rest } = props;
+    let { icon, className, width, height, color, size, ...rest } = props;
 
+    icon = findIconFromRemote(icon);
+
+    
     // Мемоизируем ключ, чтобы он не пересчитывался при каждом рендере
     const key = useMemo(() => `${icon}-${width || ''}-${height || ''}-${size || ''}`, [icon, width, height, size]);
 

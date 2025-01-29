@@ -105,11 +105,7 @@ export default function (props) {
                                                 variant="text"
                                                 size="base"
                                                 fullWidth
-                                                startDecorator={
-                                                    item.icon.indexOf(' ') == -1
-                                                        ? item.icon
-                                                        : item.icon.split(' ')[0]
-                                                }
+                                                startDecorator={item.icon}
                                                 align="start"
                                                 title={item.title}
                                             />

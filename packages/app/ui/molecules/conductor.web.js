@@ -27,7 +27,7 @@ import { subscribe } from 'app/ui/atoms/socket';
 import { fetcher } from 'app/lib/fetcher';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { callFn } from 'app/lib/functions/call';
-
+import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal';
 
 const conductorTheme = appSetting('theme', 'conductor');
 
@@ -56,6 +56,55 @@ const AddBlocks = (leftSideBarBlocks, data, onFormSubmit, onFormChangedValues) =
         }
     </>
 };
+
+const AddMenu = (menu, filter) => {
+    const [pageData, setPageData] = useState(false);
+
+    const { currentUser } = useCurrentUser();
+    const { t } = useTranslation();
+    const menuSettings = getMenuSettings(menu.object, menu.config);
+    let addButtonsSet = menuSettings?.add?.filter(item => item[filter] !== true);
+    addButtonsSet = menuItemsFilter(addButtonsSet, currentUser);
+
+    if (!addButtonsSet){
+        addButtonsSet = [];
+
+        if (menu.add_url && currentUser) {
+            addButtonsSet.push({
+                icon: 'Plus',
+                name: 'Add',
+                link: menu.add_url,
+            });
+        }
+        if (menu.name) {
+            addButtonsSet.push({
+                icon: 'MagnifyingGlass',
+                name: 'Search',
+                link: '',
+                section: menu.name,
+            },);
+        }
+    }
+
+    return addButtonsSet.map((button) => {
+
+        let btn = undefined;
+        if (button.section)
+            btn = <Search section={button.section} params={{ trigger: { size: 'sm' } }} />
+        else {
+            btn = <Button title={t(button.title)} startDecorator={button.icon} variant="secondary" rounded size="sm" onPress={() => (handleFormModal(button, event, setPageData))} />;
+            btn = (button.link && button.name != "Add") ? <Link href={button.link} >{btn}</Link> : btn
+        }
+
+        return (
+            <View className="ml-2 " key={`add-${button.icon}`} >
+                {btn}
+                <FormModal pageData={pageData} setPageData={setPageData} />
+            </View>
+            
+        )
+    });
+}
 
 export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, leftSideBarBlocks, leftSideBarWidth = ' w-80 2xl:w-96 ', skeleton = '', onChangeRoute, keyword, cover, layoutName }) {
 
@@ -329,35 +378,11 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
         const tabWidth = 120; //windowWidth > 800 ? 120 : (windowWidth - 64)/routes.length ;
         indicatorOffset.value = withTiming(index * tabWidth, { duration: 200, easing: Easing.inOut(Easing.ease) });
-
+        const menuSettings = getMenuSettings(menu.object, menu.config, menu);
         if (routes.length > 1) {
-            //const menuSettings = appSetting('menu_items', menu.object);
-            const menuSettings = getMenuSettings(menu.object, menu.config);
-            let addButtonsSet = menuSettings?.add?.filter(item => item.hideInTopBar !== true);
-            addButtonsSet = menuItemsFilter(addButtonsSet, currentUser);
-
-            const addButtons = addButtonsSet?.map((button) => {
-                let btn = undefined;
-                if (button.section)
-                    btn = <Search section={button.section} />
-                else {
-                    btn = <Button title={button.title} startDecorator={button.icon} variant="secondary" rounded />;
-                    btn = button.link ? <Link href={button.link} >{btn}</Link> : btn
-                }
-
-                return (
-                    <View className="ml-2 " key={`add-${button.icon}`} >{btn}</View>
-                )
-            });
-
-            let styles = {}
-            /* if (windowWidth > 600 && getLayout(currentUser) != 'hor') {
-                 styles = { width: 1536 - 20 * 16 }
-             }
- */
-
+            const addButtons = AddMenu(menu, 'hideInTopBar') 
             return (
-                <TopSidebar isDrawer={isDrawer} isWeb={true} style={styles} leftSideBar={leftSideBar} header={header} headerSettings={headerSettings} addButtons={addButtons} isSmall={isSmall} showMenu={showMenu} layout={getLayout(currentUser)} title={t(menuSettings?.name)} >
+                <TopSidebar isDrawer={isDrawer} isWeb={true}  leftSideBar={leftSideBar} header={header} headerSettings={headerSettings} addButtons={addButtons} isSmall={isSmall} showMenu={showMenu} layout={getLayout(currentUser)} title={t(menuSettings?.name)} >
                     <ConductorMenu leftSideBar={leftSideBar} routes={routes} index={index} t={t} setIndex={setIndex} getNumCols={getNumCols} windowWidth={windowWidth} onChangeRoute={onChangeRoute} />
                 </TopSidebar>
 
@@ -548,28 +573,8 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     const AddBlocksCnt = useMemo(() => AddBlocks(leftSideBarBlocks, data, onFormSubmit, onFormChangedValues), [leftSideBarBlocks, data, onFormSubmit, onFormChangedValues]);
     
     const leftSideBarObj = useCallback(() => {
-        /*const renderForm = (formProps, onFormChange) => {
-            return (
-                <Form {...formProps} key="form" name={formProps.name} onChange={onFormChange} />
-            )
-        }*/
-
-        //const menuSettings = appSetting('menu_items', menu.object);
-        const menuSettings = getMenuSettings(menu.object, menu.config);
-        const addButtons = menuSettings?.add?.filter(item => item.hideInSideBar !== true).map((button) => {
-
-            let btn = undefined;
-            if (button.section)
-                btn = <Search section={button.section} params={{ trigger: { size: 'sm' } }} />
-            else {
-                btn = <Button title={t(button.title)} startDecorator={button.icon} variant="secondary" rounded size="sm" />;
-                btn = button.link ? <Link href={button.link} >{btn}</Link> : btn
-            }
-
-            return (
-                <View className="ml-2 " key={`add-${button.icon}`} >{btn}</View>
-            )
-        });
+        const menuSettings = getMenuSettings(menu.object, menu.config, menu);
+        const addButtons = AddMenu(menu, 'hideInSideBar');
         return (
             <>
                 <LeftSidebar title={t(menuSettings?.name)} addButtons={addButtons} width={leftSideBarWidth}>
