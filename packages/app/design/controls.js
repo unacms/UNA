@@ -80,7 +80,7 @@ export function Modal({
     headerBorder = true,
     fullWidth = true,
     children,
-    padding = " p-3 sm:p-4 ",
+    padding = " p-[12px] ",
     scrollable = false
 }) {
     const { width, height } = useWindowDimensions();

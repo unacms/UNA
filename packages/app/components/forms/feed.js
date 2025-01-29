@@ -229,7 +229,7 @@ export default function FormFeed(props) {
             </ScrollView>
             <View className="  ">
                 <Row className={
-                    '  items-center flex-auto w-full gap-x-[8px] p-[8px] sm:p-[12px] bg-neutral-500/5  ' +
+                    '  items-center flex-auto w-full gap-x-[8px] p-[12px] bg-neutral-500/5  ' +
                     (isWeb ? ' ' : ' ') +
                     (isSmall
                         ? ' ' +
@@ -345,7 +345,7 @@ export default function FormFeed(props) {
                                     disabled: text != '' ? false : true,
                                     noMargin: true,
                                     size: 'base',
-                                    rounded: true,
+                                    fullWidth: false,
                                     icon: "PaperPlane",
 
                                 }
@@ -359,7 +359,7 @@ export default function FormFeed(props) {
     if (isFormOnly){
         return (
             <View className="w-full flex-1 h-full">
-                <View className="items-start justify-start p-3 ">
+                <View className="items-start justify-start p-[12px] ">
                    {header}
                 </View>
                 
