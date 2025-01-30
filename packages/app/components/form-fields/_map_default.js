@@ -21,10 +21,12 @@ import DoubleRange from './doublerange';
 import CheckboxSet from './checkbox_set';
 import Visibility from './visibility';
 import Stars from './stars';
+import MultiField from './multi_field';
 
 export const componentsMapDefault = {
     input_set: InputSet,
     visibility: Visibility,
+    multi_field: MultiField,
     initial_members: InitialMembers,
     captcha: Captcha,
     custom: Custom,

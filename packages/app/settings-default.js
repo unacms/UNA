@@ -190,6 +190,7 @@ export const settingsDefault = {
             bx_events: 'GroupView',
             bx_courses: 'GroupView',
             bx_spaces: 'GroupView',
+            bx_polls: 'PollView',
         },
         actions_menu: {
             show_action: true, // show action part or not

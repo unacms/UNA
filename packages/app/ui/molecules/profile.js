@@ -129,7 +129,7 @@ function AtomProfile_(oProps) {
     //--- display type
     const sDisplayType = oProps.displayType
         ? oProps.displayType
-        : oProps.display_type
+        : (oProps.display_type ? oProps.display_type : 'unit')
 
     //--- the profile image size
     const sDisplaySize = oProps.displaySize ? oProps.displaySize : 'base'

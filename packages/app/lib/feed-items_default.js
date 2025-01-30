@@ -11,6 +11,7 @@ import { Pressable } from 'app/design/view';
 import { ContentMore } from 'app/ui/molecules/contentmore';
 import { LAYOUT_BREAKPOINTS, stripTags } from 'app/lib/util'
 import Carousel from 'app/ui/molecules/carousel'
+import { PollItem } from 'app/components/elements/entity_poll';
 
 export const LinkContent = memo(({ url, data }) => (
     <Link href={url}>
@@ -282,5 +283,50 @@ export const DefaultView = memo(({data, styles, bIsTitle, bIsTimelineContent, co
         {files_attach.map((item, index) => {
             return <Link key={"att" + index} target='_blank' href={item.url}><Row className='gap-x-2 w-full items-center p-3 bg-bgritem dark:bg-bgritem-d rounded-lg mt-1'><Text className="text-sm text-neutral-700 dark:text-neutral-300"><Icon icon="File" className="w-6 h-6" size={24} /></Text><Text className="text-sm text-neutral-700 dark:text-neutral-300">{item.title}</Text></Row></Link>
         })}
+    </>
+});
+
+export const PollView = memo(({data, styles, bIsTitle, bIsTimelineContent, content_attach, files_attach, url, isCompact}) => {
+   console.log("datadata",data)
+   
+    return <>
+        <View className={isCompact ? "flex-row-reverse" : " flex-col "}>
+            {data.mainImage && (
+                <View className={isCompact ? " w-48 mb-auto pr-4" : "w-full mt-3"}>
+                    <View
+                        className="w-full aspect-video    "
+                        style={styles.card_image}
+                    >
+                        <Image
+                            {...data.mainImage}
+                            alt={data.title}
+                            view="cover"
+                            className=" u-cover rounded-xl "
+                            sizes={LAYOUT_BREAKPOINTS.md}
+                        />
+                    </View>
+                </View>
+            )}
+            <View className="flex-auto my-auto flex-col pb-[8px] pt-[12px] ">
+                {bIsTitle && (
+                    <Link href={url} className="">
+                        <Text
+                            numberOfLines={3}
+                            className=" pb-[8px] text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-lg sm:text-xl tracking-tight font-bold"
+                        >
+                            {data.content.title}
+                        </Text>
+                    </Link>
+                )}
+                <View>
+                    <View className="flex-col relative ">
+                        <PollItem data={data.content} />
+                       
+                    </View>
+                </View>
+            </View>
+        </View>
+        
+       
     </>
 });

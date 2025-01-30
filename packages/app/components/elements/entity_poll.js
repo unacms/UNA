@@ -9,9 +9,10 @@ import TextMore from 'app/ui/molecules/textmore';
 import Video from 'app/ui/atoms/video';
 import Youtube from 'app/ui/molecules/youtube'
 import { fetcher } from 'app/lib/fetcher';
-import { useState } from 'react'
+import { useReducer } from 'react'
 import RadioButton from 'app/ui/atoms/radiobutton';
 import { VictoryPieChart, getColor } from 'app/components/elements/chart';
+import { Button } from 'app/design/controls'
 
 function Results({ data }) {
     if (data) {
@@ -40,22 +41,77 @@ function Results({ data }) {
     }
 }
 
-export default function ElementEntityPoll({ data }) {
+export function PollItem({ data }) {
+    const initialState = {
+        isShowResults: data.is_performed,
+        isVoted: data.is_performed,
+        results: data.results,
+        value: data.value
+    };
 
-    const [voted, setVoted] = useState(false);
-    const [results, setResults] = useState(data.results);
-    const Vote = async (value) => {
-        setVoted(true);
-        const sRequest = '/api.php?r=system/do/TemplVoteServices&params[]={"s":"'+data.object+'","o":'+value+',"value":1}' ;
-        await fetcher(sRequest);
-        const sRequest1 = `/api.php?r=bx_polls/get_block_results/&params[]=${data.id}` ;
-        const sResponse1 = await fetcher(sRequest1);
-        setResults(sResponse1.data)
-
+    function reducer(state, action) {
+        switch (action.type) {
+            case 'SHOW_RESULTS':
+                return { ...state, isShowResults: true };
+            case 'TOGGLE_RESULTS':
+                return { ...state, isShowResults: !state.isShowResults };
+            case 'VOTE':
+                return { ...state, isShowResults: true, isVoted: true, value: action.value  };
+            case 'SET_RESULTS':
+                return { ...state, results: action.payload };
+            default:
+                return state;
+        }
     }
 
-    const videoId = data.video_embed && getYouTubeVideoId(data.video_embed) || null;
+    const [state, dispatch] = useReducer(reducer, initialState);
 
+    console.log("statestate", state)
+
+    const Vote = async (value) => {
+        dispatch({ type: 'VOTE', value: value });
+
+        const sRequest = `/api.php?r=system/do/TemplVoteServices&params[]={"s":"${data.object}","o":${value},"value":1}`;
+        await fetcher(sRequest);
+
+        const sRequest1 = `/api.php?r=bx_polls/get_block_results/&params[]=${data.id}`;
+        const sResponse1 = await fetcher(sRequest1);
+
+        dispatch({ type: 'SET_RESULTS', payload: sResponse1.data });
+    };
+
+    const totalVotes = state.results.reduce((acc, item) => acc + item.votes.count, 0);
+
+    return (
+        <>
+            {state.isShowResults && <Results data={state.results} />}
+            {!!data.subentries && !state.isShowResults && data.subentries.map((item2, index) => (
+                <Row key={`lbl-${index}`} className={`items-center my-1 border border-bdr dark:border-bdr-d rounded-lg ${state.isVoted ? 'opacity-50' : 'hover:bg-primary/10 active:bg-primary/20 dark:hover:bg-primary-d/10 dark:active:bg-primary-d/20'}`}>
+                    <RadioButton
+                        value={item2.entry_id}
+                        status={item2.id == state.value ? 'checked': 'unchecked'}
+                        title={item2.title}
+                        disabled={state.isVoted}
+                        onPress={() => Vote(item2.id)}
+                    />
+                </Row>
+            ))}
+            {(!data.is_hidden_results && totalVotes > 0) && (
+                <Row className="justify-end">
+                    <Button 
+                        title={state.isShowResults ? "Show poll" : "Show results"} 
+                        variant="link" 
+                        size="sm" 
+                        onPress={() => dispatch({ type: 'TOGGLE_RESULTS' })} 
+                    />
+                </Row>
+            )}
+        </>
+    );
+}
+
+export default function ElementEntityPoll({ data }) {
+    const videoId = data.video_embed && getYouTubeVideoId(data.video_embed) || null;
     return (
         <View className="w-full">
             <View className="w-full">
@@ -69,24 +125,8 @@ export default function ElementEntityPoll({ data }) {
                 <View className={"mx-auto w-full"}>
                     <H1 className="font-bold tracking-tight  text-neutral-900 dark:text-neutral-50 ">{data.title}</H1>
                 </View>
-
+                <PollItem data={data} />
             </View>
-            {voted && <Results data={results} />}
-            {(!!data.subentries && !voted) && data.subentries.map((item2, index) => {
-
-                return (
-
-                        <Row key={`lbl-${index}`} className='items-center my-1 border border-bdr dark:border-bdr-d rounded-lg hover:bg-primary/10 active:bg-primary/20 dark:hover:bg-primary-d/10 dark:active:bg-primary-d/20' key={'chk' + index}>
-                            <RadioButton
-                                value={item2.entry_id}
-                                status={'unchecked'}
-                                title={item2.title}
-                                onPress={() => Vote(item2.id)}
-                            />
-                        </Row>
-
-                )
-            })}
         </View>
     );
 }
