@@ -17,9 +17,7 @@ import { isValidElement, useMemo, memo } from 'react';
 import { parseUrl } from 'app/lib/util'
 
 function SvgLogoNative() {
-
-    const logo = 'logo_native';
-    return <View>{appStatic(logo)}</View>;
+    return <View>{appStatic('logo_native')}</View>;
 };
 
 function getRightHeader(items, currentUser, pagePath) {

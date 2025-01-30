@@ -13,7 +13,12 @@ import { useTranslation } from 'react-i18next'
 import { tp, appSetting, updateRouteDataForConnection } from 'app/lib/util'
 import ProfilesList from 'app/ui/molecules/profile_list'
 import PopupModal from 'app/ui/molecules/popup_modal'
+import { useColorScheme } from 'react-native';
 
+const LogoNative = () => {
+    const scheme = useColorScheme();
+    return scheme === 'dark' ? LogoNativeDark : LogoNativeLight;
+}
 
 const LogoText = (
     <Svg
@@ -76,7 +81,7 @@ const LogoMark = (
     </Svg>
 )
 
-const LogoNative = (
+const LogoNativeLight = (
     <View className="w-[44px] h-[44px]">
         <Svg
             aria-label="Logo Mark"
@@ -635,7 +640,6 @@ export const staticDefault = {
     logo_text: LogoText,
     logo_mark: LogoMark,
     logo_native: LogoNative,
-    logo_nativedark: LogoNativeDark,
     components_about: ComponentsAbout,
     page_not_found: PageNotFound,
     page_not_allowed: PageNotAllowed,

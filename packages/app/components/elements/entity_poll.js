@@ -22,16 +22,24 @@ function Results({ data }) {
             return { x: '', y: label.votes.count };
         });
         return (
-            <View className="lg:flex-row mx-auto gap-x-8 items-center justify-center">
-                <View className="w-full max-w-xs">
+            <View className="lg:flex-row mx-auto w-full items-center justify-center ">
+                <View className=" w-full lg:w-1/2 lg:pr-8">
                     <VictoryPieChart colorScale={backgroundColor2} data={transformedData} />
                 </View>
-                <View>
+                <View className=" w-full lg:w-1/2 mt-4 lg:mt-0">
                     {data.map((item2, index) => {
                         return (
-                            <Row className="items-center gap-x-4 mb-2" key={'chk' + index}>
-                                <View className="w-8 h-8" style={{ backgroundColor: backgroundColor2[index] }}></View>
-                                <Text className="text-neutral-900 dark:text-neutral-50 text-base">{item2.title} <Text className="font-bold">{item2.width}</Text> ({item2.votes.count} votes)</Text>
+                            <Row className="items-start w-full mb-2" key={'chk' + index}>
+                                <View className="w-12 h-12 rounded-full" style={{ backgroundColor: backgroundColor2[index] }}></View>
+                                <View className='flex-auto ml-4'>
+                                    <Text numberOfLines={10} className=" flex-wrap w-full text-neutral-900 dark:text-neutral-50 text-base flex-wrap ">
+                                        {item2.title} 
+                                    </Text>
+                                     <Text className="font-bold flex-wrap w-full text-neutral-900 dark:text-neutral-50 text-base flex-wrap">
+                                        {item2.width} ({item2.votes.count} votes)
+                                    </Text>
+                                </View>
+                            
                             </Row>
                         )
                     })}
