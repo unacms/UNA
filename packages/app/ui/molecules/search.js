@@ -211,7 +211,7 @@ export function ElementSearchData(oProps) {
                 {oProps.icon}
                 {!!popupContent && dd}
                 <InputRoundedRef name="search" placeholder={t("Search") + '...'} onKeyPress={(event) => handleKeyPress(event)} value={inputValue} ref={inputRef} onChangeText={(value) => handleSearch(value)} />
-                <View className="absolute h-10 w-6 items-center justify-center ml-2 text-neutral-500  "><Icon icon="MagnifyingGlass" size={22} /></View>
+                <View className="absolute h-11 w-6 items-center justify-center ml-2 text-neutral-500  "><Icon icon="MagnifyingGlass" size={22} /></View>
             </Row>
         )
     }

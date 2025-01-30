@@ -98,7 +98,7 @@ export function Modal({
     const positionClasses = {
         'top': 'items-start py-8 px-4',
         'bottom': 'items-end py-8 px-4',
-        'center': 'sm:items-center items-start sm:p-4',
+        'center': 'sm:items-center items-start ',
     };
 
     const sClassPosition = positionClasses[position] || positionClasses['center'];
@@ -115,7 +115,7 @@ export function Modal({
         padding = 'p-3 sm:p-4';
     }
 
-    const Content = <View className={`flex-row justify-center left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto ${layoutShift}:inset-0 h-modal h-full ${sClassPosition}`}>
+    const Content = <View className={`flex-row justify-center left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto ${layoutShift}:inset-0 h-full h-modal ${sClassPosition}`}>
     <View className={`w-full ${fullWidth ? '' : `${layoutShift}:w-auto`} relative ${modalSettings.container.replaceAll("{ls}", layoutShift)} `}>
         <View className={`relative h-full ${modalSettings.content.replaceAll("{ls}", layoutShift)}`}>
             {

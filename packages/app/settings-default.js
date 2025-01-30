@@ -603,7 +603,7 @@ export const settingsDefault = {
         },
         modal: {
             fog: 'bg-white/50 dark:bg-black/80 backdrop-blur ',
-            container: 'max-w-2xl h-full sm:h-auto shadow-modal dark:shadow-modal-d bg-bgrmodal dark:bg-bgrmodal-d {ls}:rounded-2xl sm:border border-bdrmodal dark:border-bdrmodal-d overflow-hidden',
+            container: 'max-w-2xl h-full sm:h-auto  shadow-modal dark:shadow-modal-d bg-bgrmodal dark:bg-bgrmodal-d {ls}:rounded-2xl sm:border border-bdrmodal dark:border-bdrmodal-d overflow-hidden',
             content:
                 ' h-auto ',
             header: ' p-[12px] items-start justify-start border-b border-bdr dark:border-bdr-d',
@@ -682,7 +682,7 @@ export const settingsDefault = {
 
             'u-btn-primary-cnt':
             ' group bg-primary-500 dark:bg-primary-600 border border-transparent sm:hover:border-transparent dark:border-primary-500 sm:hover:bg-primary-600 dark:sm:hover:bg-primary-700 sm:dark:hover:border-primary-600 ',
-            'u-btn-primary-text': '  font-medium text-primary-100 group-hover:text-white ',
+            'u-btn-primary-text': '  font-medium text-white ',
             'u-btn-primary-trans': ' web:duration-200 ',
             'u-btn-primary-color-icon-light': 'rgb(243, 244, 246)',
             'u-btn-primary-color-icon-dark': 'rgb(243, 244, 246)',

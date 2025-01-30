@@ -28,7 +28,7 @@ function DefaultUnit(data) {
     // return<View className='w-full h-12 bg-red-500 my-2'><Author data={data} url={url} t={t} /></View>
     return (
         <AnimatedBlock>
-            <Card rounded=' rounded-none sm:rounded-2xl ' margin=' mb-[4px] sm:mb-[16px] md:mx-auto ' addClassName={' w-full max-w-2xl px-[12px] sm:px-[16px] pt-[12px] sm:pt-[16px] tl-' + data.id} >
+            <Card rounded=' rounded-none sm:rounded-2xl ' margin=' mt-[4px] sm:mb-[16px] md:mx-auto ' addClassName={' w-full max-w-2xl px-[12px] sm:px-[16px] pt-[12px] sm:pt-[16px] tl-' + data.id} >
                 <View className="flex-auto flex-row items-top">
                     <Author data={data} url={url} t={t} />
                     <View className="flex-auto justify-end flex-row mb-auto ">
