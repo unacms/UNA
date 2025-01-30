@@ -64,6 +64,10 @@ export default function PageLayout({layoutName, data, uri, blocks}) {
         return processBlocks(initialBlocks);
     }, [blocks, pageData]);
 
+    if (!menu.config){
+        menu.title= '';
+        menu.config = '{add:[]}';
+    }
     return (
         <Conductor
             layoutName={layoutName}

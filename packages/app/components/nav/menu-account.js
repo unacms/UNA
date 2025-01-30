@@ -74,7 +74,7 @@ export default function MenuAccount({ buttonProps, children }) {
                     return (
                         {
                             id: 'menu-' + index,
-                            link: item.link,
+                            link: item.link.includes("://") ? item.link : '/' + item.link,
                             title: sTitle,
                             icon: item.icon
                         }

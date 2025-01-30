@@ -30,9 +30,9 @@ export default function () {
         <View className="relative flex-row">
             <DropdownMenu items={menu_launcher_items.map((item, index) => ({
                 id: 'menu-' + index,
-                link: item.link,
+                link: '/' + item.link,
                 title: t(item.title),
-                icon: item.icon.includes(' ') ? item.icon.split(' ')[0] : item.icon,
+                icon: item.icon,
             }))}
             >
                 <ButtonRef

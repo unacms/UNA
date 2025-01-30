@@ -66,8 +66,6 @@ export function PollItem({ data }) {
 
     const [state, dispatch] = useReducer(reducer, initialState);
 
-    console.log("statestate", state)
-
     const Vote = async (value) => {
         dispatch({ type: 'VOTE', value: value });
 
