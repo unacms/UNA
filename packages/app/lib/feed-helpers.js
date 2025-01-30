@@ -180,12 +180,12 @@ export const ItemInfo = memo(({ data, t }) => {
     const [showContextList, setShowContextList] = useState(false);
     const owners = data.owners ? data.owners.filter((item) => item.author_data?.id != data.context_data?.id) : [];
     const OwnersList = () => owners?.length > 0 ? owners?.length == 1 ? <>
-        <Text className="text-neutral-500/50 text-sm"> · </Text>
+        <Text className="text-neutral-400 dark:text-neutral-600 text-sm"> · </Text>
         <Link href={data.owners[0].url} emulate={true}>
             <Text className=" bg-primary/10 hover:bg-primary/20 px-1.5 py-0.5 rounded-md text-primary dark:text-primary-d hover:text-linkhover text-sm font-medium">
                 {owners[0].title}
             </Text>
-        </Link></> : <><Text className="text-neutral-500/50 text-sm"> · </Text>
+        </Link></> : <><Text className="text-neutral-400 dark:text-neutral-600 px-[4px]">·</Text>
         <Pressable onPress={() => { setShowContextList(true) }} >
             <Text className=" bg-primary/10 hover:bg-primary/20 px-1.5 py-0.5 rounded-md text-primary dark:text-primary-d hover:text-linkhover text-sm font-medium">
                 {owners[0].title} + {owners.length - 1}
@@ -217,7 +217,7 @@ export const ItemInfo = memo(({ data, t }) => {
         }
         return l && (
             <>
-                <Text className=" text-neutral-600 dark:text-neutral-400 native:text-[14px] web:text-sm text-center leading-[22px] font-medium tracking-tight mx-1">·</Text>
+                <Text className=" text-neutral-400 dark:text-neutral-600 native:text-[14px] web:text-sm text-center px-[4px]">·</Text>
                 <Text className=" text-neutral-600 dark:text-neutral-400 native:text-[14px] web:text-sm text-center leading-[22px] font-medium tracking-tight ">
                     {l}
                 </Text>
@@ -349,9 +349,9 @@ export const VisibilityInfo = memo(({ data }) => {
    
     return (
         <Row className="text-neutral-600 dark:text-neutral-400 items-center">
-            <Text className="text-neutral-600 dark:text-neutral-400 native:text-[14px] web:text-sm h-[22px] leading-[22px] text-center tracking-tight mx-1">·</Text>
+            <Text className="text-neutral-400 dark:text-neutral-600 native:text-[14px] web:text-sm text-center px-[4px]">·</Text>
             {isUser ? <Profile {...data.author_data} displayType="unit_wo_info" displaySize="xxs" /> : (icon ? <Icon icon={icon} width={18} height={18} /> : null)}
-            <Text className="text-neutral-600 dark:text-neutral-400 native:text-[14px] web:text-sm h-[22px] font-medium leading-[22px] text-center tracking-tight text-sm ml-1">{ isUser ? data.author_data.display_name : text}</Text>
+            <Text className="text-neutral-600 dark:text-neutral-400 native:text-[14px] web:text-sm font-medium leading-[22px] text-center tracking-tight text-sm ml-[2px]">{ isUser ? data.author_data.display_name : text}</Text>
         </Row>
     );
 });
@@ -410,7 +410,7 @@ export const SmallUnit = memo(({ data }) => {
                         />
                     </View>
                     <View className="flex-auto flex-col my-auto">
-                        <View className="flex-row gap-x-[8px]">
+                        <View className="flex-row gap-x-[8px] sm:gap-x-[10px] ">
                             <Text className=" text-sm flex-auto font-semibold text-neutral-800 dark:text-neutral-200">
                                 {data.author_data.display_name}
                             </Text>

@@ -106,7 +106,7 @@ const MsgFeed = memo(({ item, handlerMenuSelect }) => {
                     <View className={sCommentClass + ' py-2'} >
                         <View className="flex-row flex-1 items-center pb-0.5">
                             <Profile {...author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
-                            <Text className="text-neutral-500 px-1">·</Text>
+                            <Text className="text-neutral-400 dark:text-neutral-600 px-[4px]">·</Text>
                             <Time className="" ts={created}></Time>
                             {
                                 mode === 'edit' && <View className="absolute right-0">

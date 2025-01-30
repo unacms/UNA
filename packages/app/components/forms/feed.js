@@ -35,7 +35,7 @@ function ProfileView({ isImageOnly = false, data, handleSubmit, showImage, setSh
 
     const isHiddenVisibility = data?.inputs?.['object_privacy_view']?.origtype == 'hidden'
 
-    const authorName = (<Text className="text-neutral-900 dark:text-neutral-100 leading-[22px] px-[4px] font-bold tracking-tight text-[16px] truncate">
+    const authorName = (<Text className="text-neutral-900 dark:text-neutral-100 leading-[22px] sm:px-[4px] font-bold tracking-tight text-[16px] truncate">
                 {currentUser.display_name}
             </Text>
     )
@@ -45,7 +45,7 @@ function ProfileView({ isImageOnly = false, data, handleSubmit, showImage, setSh
             <View className="gap-x-[8px] mr-[8px] flex-row flex-auto ">
                 <Profile {...profileData} displaySize="base" displayType="unit_wo_info" />
                 
-                <View className={`flex-col flex-auto rounded-[8px] ${!isHiddenVisibility ?'group hover:bg-neutral-100 dark:hover:bg-neutral-800 active:bg-neutral-300 dark:active:bg-neutral-700': ''}`}>
+                <View className={`flex-col flex-auto rounded-[8px] ${!isHiddenVisibility ?'group sm:hover:bg-neutral-100 sm:dark:hover:bg-neutral-800 sm:active:bg-neutral-300 sm:dark:active:bg-neutral-700': ''}`}>
                     
                     {data?.inputs?.['object_privacy_view'] && getFormFieldByData(
                         {
@@ -411,7 +411,7 @@ export default function FormFeed(props) {
                 >
                     {
                         props?.exProps?.showForm !== false && (
-                            <View className=" flex-row gap-x-[8px] ">
+                            <View className=" flex-row gap-x-[8px] sm:gap-x-[10px] ">
                                 <View className="my-auto">
                                     <ProfileView isImageOnly={true} />
                                 </View>

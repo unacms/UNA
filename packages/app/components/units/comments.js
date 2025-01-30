@@ -141,10 +141,10 @@ export default function UnitComments(props) {
                     <View className=' bg-bgritem dark:bg-bgritem-d rounded-xl px-3 py-1.5' >
                         <View className="flex-row items-center overflow-hidden">
                             <Profile {...data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
-                            <View><Text className="text-neutral-500 px-1">·</Text></View>
+                            <View><Text className="text-neutral-400 dark:text-neutral-600 px-[4px]">·</Text></View>
                             <Link href={data.cmt_url} className="flex items-center"><Time ts={data.cmt_time}></Time></Link>
                             {(maxLevel < data.cmt_level && appSetting('comments', 'in_reply')) && parent?.data && <Row>
-                                <Text className="text-neutral-500 px-1 text-sm ">· In reply to</Text>
+                                <Text className="text-neutral-400 dark:text-neutral-600 px-[4px] text-sm ">· In reply to</Text>
                                 <Profile {...parent.data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
                                 {false && <Text className="text-neutral-500 px-1 text-sm whitespace-nowrap text-ellipsis overflow-hidden"> {stripTags(parent?.data?.cmt_text)}</Text>}
                             </Row>}

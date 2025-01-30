@@ -226,7 +226,7 @@ export default function (props) {
             <View
                 className={
                     appSetting('layout', 'max_width') +
-                    ' mx-auto w-full max-w-[1920px] xl:px-4 '
+                    ' mx-auto w-full max-w-[1280px] xl:px-4 '
                 }
             >
                 {mode != 'min' ? (
