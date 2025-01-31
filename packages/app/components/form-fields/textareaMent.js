@@ -124,7 +124,7 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
 
     let styles = { fontSize:props.fontSize || 16, lineHeight:props.lineHeight || 22, color: colors.text,  verticalAlign:'top' };
     if (name != 'cmt_text') {
-        styles = { ...styles, minHeight: 240 }
+        styles = { ...styles, minHeight: 200 }
     }
     else {
         styles = { ...styles, maxHeight: 300 }

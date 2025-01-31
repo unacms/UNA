@@ -192,19 +192,9 @@ export default function FormFeed(props) {
         {getFormFieldByData(props.data.inputs['owner_id'], props.handleSubmit, 'default')}
         {getFormFieldByData(props.data.inputs['type'], props.handleSubmit, 'default')}
         <View className="justify-between flex-col flex-auto">
-            <ScrollView
-                ref={scrollViewRef}
-                className="w-full h-full flex-1"
-                keyboardShouldPersistTaps="handled"
-                onContentSizeChange={() =>
-                    scrollViewRef.current?.scrollToEnd({
-                        animated: true,
-                    })
-                }
-                onClick={(event) => { event.target.querySelector('.tiptap')?.focus() }}
-            >
-                <View className="w-full h-full flex-col px-[12px]  ">
-
+            
+                <View className="w-full h-full  flex-1 justify-end px-[12px] ">
+                    <View className="flex-auto">
                     {getFormFieldByData(
                         props.data.inputs['text'],
                         props.handleSubmit,
@@ -217,16 +207,18 @@ export default function FormFeed(props) {
                             autofocus: Date.now()
                         }
                     )}
-                    
-                    <ScrollView keyboardDismissMode="on-drag" keyboardShouldPersistTaps="handled" className="w-full  " horizontal={true}>{prevList}</ScrollView>
+                    </View>
+                    <View className="">
+                    <ScrollView keyboardDismissMode="on-drag" keyboardShouldPersistTaps="handled" className="w-full " horizontal={true}>{prevList}</ScrollView>
                     
                     {props.data.inputs['labels'] && (
                         <View className="flex-auto">
                             {labels}
                         </View>
                     )}
+                    </View>
                 </View>
-            </ScrollView>
+            
             <View className="  ">
                 <Row className={
                     '  items-center flex-auto w-full gap-x-[8px] p-[12px] bg-neutral-500/5  ' +
