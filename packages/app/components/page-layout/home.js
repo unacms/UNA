@@ -153,7 +153,7 @@ export default function (props) {
 
                 <View className="flex-auto w-full lg:w-auto sm:px-4 xl:px-2 ">
                     <View className="flex-auto  ">
-                        <View className=" w-full mx-auto lg:max-w-2xl relative">
+                        <View className=" w-full mx-auto lg:max-w-2xl relative ">
                             <View >
                             <ScrollView
                                 horizontal={true}

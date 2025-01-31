@@ -173,7 +173,7 @@ export const settingsDefault = {
                 title: 'For you',
                 showTitle: true,
             },
-             {
+            /*   {
                 name: 'account',
                 icon: 'Binoculars',
                 title: 'Following',
@@ -181,7 +181,7 @@ export const settingsDefault = {
             },
             { name: 'hot', icon: 'Fire', title: 'Hot', showTitle: true },
             { name: 'public', icon: 'Egg', title: 'Public', showTitle: true },
-            { name: 'channels', icon: 'Hash', title: 'News', showTitle: true },
+            { name: 'channels', icon: 'Hash', title: 'News', showTitle: true },*/
         ],
         units:{
             bx_market: 'MarketView',
