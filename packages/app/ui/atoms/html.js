@@ -350,8 +350,10 @@ export default function ElementHtml(props) {
                     onPress(event, url, htmlAttribs, target) {
                         onPress(event, url, htmlAttribs, target);
                     }
-                }
+                },
+               
             }}
+            defaultTextProps={{ selectable: true }} 
             contentWidth={width}
             tagsStyles={tagsStyles}
             classesStyles={classesStyles}
