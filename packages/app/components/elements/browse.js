@@ -18,7 +18,7 @@ import { useCurrentUser } from 'app/context/user'
 import { callFn } from 'app/lib/functions/call';
 import Link from 'app/ui/atoms/link'
 import { Button } from 'app/design/controls';
-
+import { BlockByName } from 'app/components/block'
 
 const Item = memo(({ item, index, numColumns, data, unitMode, props }) => (
     <View className={numColumns > 1 ? 'w-full pb-2 ' : '  ' + (data.unit != 'feed' ? '   w-full' : '  ') + '  '}>
@@ -46,6 +46,7 @@ const getNumCols = (width, props, data) => {
 };
 
 export default function (props) {
+    console.log("propspropsprops", props)
     const isValidateActive = props.validate ?? true;
     const isShowEmptyMessage = props.empty_message ?? true;
     const { layoutData } = useLayoutData();
@@ -317,6 +318,26 @@ export default function (props) {
                         refreshing={isRefreshing}
                         renderItem={({ item, index }) => Platform.OS === 'web' ? <Item key={'item' + item.id} item={item} index={index} numColumns={numColumns} data={data} unitMode={unitMode} props={props} /> : <Item item={item} index={index} numColumns={numColumns} data={data} unitMode={unitMode} props={props} />}
                         onEndReached={handleEndReached}
+                        ListHeaderComponent={props.exProps?.addBlocks ? <>{props.exProps?.addBlocks?.map(
+                                                                            (item, index) => {
+                                                                                return (
+                                                                                    <BlockByName
+                                                                                        key={
+                                                                                            'block_' +
+                                                                                            index
+                                                                                        }
+                                                                                        name={
+                                                                                            item.block
+                                                                                        }
+                                                                                        data={
+                                                                                            props.exProps.addBlocksData
+                                                                                        }
+                                                                                        {...item.block
+                                                                                            .props}
+                                                                                    />
+                                                                                )
+                                                                            }
+                                                                        )}</>: ''}
                         ListFooterComponent={
                             ((hasNextPage && isFetchingNextPage)) ? (
                                 Preload

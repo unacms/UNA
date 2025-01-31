@@ -241,7 +241,7 @@ export default function (props) {
                                     if (feedType == item.name) {
                                         return (
                                             <View key={'view' + index}>
-                                                {topBlocks.map(
+                                                {/*topBlocks.map(
                                                     (item, index) => {
                                                         return (
                                                             <BlockByName
@@ -260,7 +260,7 @@ export default function (props) {
                                                             />
                                                         )
                                                     }
-                                                )}
+                                                )*/}
                                                 <BlockByName
                                                     data={props.data}
                                                     name={
@@ -278,6 +278,7 @@ export default function (props) {
                                                         ]
                                                     }
                                                     unitMode={unitMode}
+                                                    exProps={{addBlocks:topBlocks, addBlocksData:props.data}}
                                                 />
                                             </View>
                                         )

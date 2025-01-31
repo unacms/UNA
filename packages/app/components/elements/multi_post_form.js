@@ -1,4 +1,4 @@
-import { View, Row, ScrollView } from 'app/design/view'
+import { View, Row, ScrollView, Pressable } from 'app/design/view'
 import { Button, Modal } from 'app/design/controls'
 import { useState, useContext, useEffect, useCallback } from 'react'
 import { FeedbackHaptics, getAlert, menuItemsByNameNew, appSetting } from 'app/lib/util'
@@ -7,6 +7,7 @@ import Profile from 'app/ui/molecules/profile'
 import Card from 'app/ui/molecules/card'
 import { useTranslation } from 'react-i18next'
 import FormModal, { handleFormModal, getFormModal } from 'app/ui/molecules/form_modal';
+import { Text, H2 } from 'app/design/typography'
 
 export default function MultiPostForm({ data }) {
     const { currentUser } = useCurrentUser();
