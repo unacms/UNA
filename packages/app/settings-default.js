@@ -654,7 +654,7 @@ export const settingsDefault = {
             },
             base: {
                 rounded: ' rounded-[10px] overflow-hidden ',
-                padding: ' h-[44px] min-w-[44px] px-[10px] ',
+                padding: ' h-[44px] min-w-[44px] px-[8px] ',
                 icon_sizes: ' h-[24px] w-[24px]',
                 icon_size: '24px',
                 icon_margin: ' mx-[4px] ',
