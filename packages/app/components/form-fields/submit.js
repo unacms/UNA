@@ -19,6 +19,7 @@ export default function FormFieldSubmit(props) {
         rounded = false,
         icon,
         size = 'lg',
+        notFullWidth = false,
         saveOnChanges = false,
         hide_errors = false,
         ...restProps
@@ -58,14 +59,17 @@ export default function FormFieldSubmit(props) {
         errorKeys.length > 0 && !hide_errors && !formProps.hide_errors;
 
 
-
+    let fb = formProps.button_full_width || width < LAYOUT_BREAKPOINTS.lg;
+    if (notFullWidth){
+        fb = false;
+    }
     // Prepare button properties
     const buttonProps = {
         variant,
         rounded,
         size,
         disabled: formState.isSubmitting || disabled,
-        fullWidth: formProps.button_full_width || width < LAYOUT_BREAKPOINTS.lg,
+        fullWidth: fb,
     };
 
     const buttonHandlers = Platform.select({

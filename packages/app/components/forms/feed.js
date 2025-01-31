@@ -230,7 +230,7 @@ export default function FormFeed(props) {
                         : ' lalal ')
                 }>
 
-                    <Row className="gap-x-[32px] flex-auto justify-between ">
+                    <Row className="gap-x-[8px] flex-auto justify-between ">
                         <Row className="flex-none gap-x-[8px]">
                             {props.data.inputs['obfuscate_faces'] && (
                                 <View className="">
@@ -328,7 +328,8 @@ export default function FormFeed(props) {
                                 </View>
                             )}
                         </Row>
-                        <View className=" flex-1 web:flex-none">
+                        <View className=" flex-1 web:flex-none items-end ">
+                            <View>
                             {getFormFieldByData(
                                 props.data.inputs['tlb_do_submit'],
                                 props.handleSubmit,
@@ -337,11 +338,11 @@ export default function FormFeed(props) {
                                     disabled: text != '' ? false : true,
                                     noMargin: true,
                                     size: 'base',
-                                    fullWidth: false,
+                                    notFullWidth: true,
                                     icon: "PaperPlane",
 
                                 }
-                            )}</View>
+                            )}</View></View>
                     </Row>
                 </Row>
             </View>
