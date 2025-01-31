@@ -18,13 +18,13 @@ function Results({ data }) {
     if (data) {
         const backgroundColor = appSetting('theme', 'profile_colors');
         const backgroundColor2 = backgroundColor.map(color => getColor(color));
-        const transformedData = data.map((label, index) => {
-            return { x: '', y: label.votes.count };
+        const transformedData = data.filter(label => label.votes.count > 0).map((label, index) => {
+            return { x: label.votes.count, y: label.votes.count };
         });
         return (
             <View className="lg:flex-row mx-auto w-full items-center justify-center ">
                 <View className=" w-full lg:w-1/2 lg:pr-8">
-                    <VictoryPieChart colorScale={backgroundColor2} data={transformedData} />
+                    <VictoryPieChart labelComponent={null}  colorScale={backgroundColor2} data={transformedData} />
                 </View>
                 <View className=" w-full lg:w-1/2 mt-4 lg:mt-0">
                     {data.map((item2, index) => {

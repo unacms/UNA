@@ -17,6 +17,7 @@ import { Image as ImageNative, Alert, Platform } from 'react-native';
 import { Camera } from "expo-camera";
 import { useLayoutData } from 'app/context/layout';
 import { Image as ImageRN } from 'react-native';
+import Video from 'app/ui/atoms/video';
 
 export default function (props) {
     const name = props.name;
@@ -111,7 +112,7 @@ export default function (props) {
         else {
             field.onChange('');
         }
-       // console.log("imageSourceimageSource", imageSource.images)
+        // console.log("imageSourceimageSource", imageSource.images)
     }, [imageSource]);
 
     useEffect(() => {
@@ -154,7 +155,7 @@ export default function (props) {
             }
 
         }
-       // console.log("uploadFinished", uploadFinished)
+        // console.log("uploadFinished", uploadFinished)
     }, [uploadFinished]);
 
     useEffect(() => {
@@ -476,6 +477,7 @@ function GhostsList(imagesList, bMultiple, handleDelete, props) {
         const isVideo = img?.file_type?.includes('video/');
         const isPreload = img?.preload;
 
+        console.log("imgimg", img)
         return (
             <View
                 key={`file-${props.name}-${index}`}
@@ -488,29 +490,29 @@ function GhostsList(imagesList, bMultiple, handleDelete, props) {
                     view="cover"
                     alt=""
                 /> : (
-                    <View className="h-16 w-16 text-neutral-700 dark:text-neutral-300 items-center justify-center">
-                        {isVideo ? (
-                            <Icon icon="Video" className="w-8 h-8" size={32} />
+                    
+                        isVideo ? (
+                            <Video src={img.uri}/>
                         ) : (
-                            <Icon icon="File" className="w-8 h-8" size={32} />
-                        )}
-                    </View>
+                            <View className="h-16 w-16 text-neutral-700 dark:text-neutral-300 items-center justify-center"><Icon icon="File" className="w-8 h-8" size={32} /></View>
+                        )
+                   
                 )}
 
                 {isPreload && <View className={`w-full h-full absolute top-8`}><Loading className="absolute" /></View>}
-                {img?.file_id && (
-                    <View className="absolute top-1 right-1 w-6.5 text-center mx-auto">
-                        <Button
-                            onPress={() => handleDelete(img.file_id)}
-                            variant="default"
-                            startDecorator="X"
-                            align="start"
-                            title=""
-                            rounded
-                            size="xs"
-                        />
-                    </View>
-                )}
+
+                <View className="absolute top-1 right-1 w-6.5 text-center mx-auto">
+                    <Button
+                        onPress={() => handleDelete(img.file_id)}
+                        variant="default"
+                        startDecorator="X"
+                        align="start"
+                        title=""
+                        rounded
+                        size="xs"
+                    />
+                </View>
+
             </View>
         );
     });

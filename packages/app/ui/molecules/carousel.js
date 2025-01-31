@@ -114,7 +114,7 @@ const Gallery = React.memo(({ data, handleShowImage, windowWidthOr }) => {
 }, (prevProps, nextProps) => prevProps.data2 === nextProps.data2);
 
 const Carousel = memo(({ data = [] }) => {
-
+    console.log("data", data)
     if (!data.length) return null;
 
     const [currentImageIndex, setCurrentImageIndex] = useState(false);

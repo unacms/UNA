@@ -203,7 +203,7 @@ export default function FormFeed(props) {
                 }
                 onClick={(event) => { event.target.querySelector('.tiptap')?.focus() }}
             >
-                <View className="w-full h-full flex-col px-[12px] ">
+                <View className="w-full h-full flex-col px-[12px]  ">
 
                     {getFormFieldByData(
                         props.data.inputs['text'],
@@ -218,7 +218,7 @@ export default function FormFeed(props) {
                         }
                     )}
                     
-                    <ScrollView className="w-full  " horizontal={true}>{prevList}</ScrollView>
+                    <ScrollView keyboardDismissMode="on-drag" keyboardShouldPersistTaps="handled" className="w-full  " horizontal={true}>{prevList}</ScrollView>
                     
                     {props.data.inputs['labels'] && (
                         <View className="flex-auto">

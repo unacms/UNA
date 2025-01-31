@@ -43,7 +43,7 @@ export const UnitImages = memo(({ images }) => {
         const video = images
             .filter(item => item.src_poster)
             .map(obj => ({
-                src: obj.src_poster || obj.src_poster,
+                src: obj.src_mp4 || obj.src_mp4_hd,
                 type: 'video',
             }));
 

@@ -11,6 +11,7 @@ import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
 import Profile from 'app/ui/molecules/profile';
 import React from 'react';
+import { Theme } from 'app/design/theme';
 
 export default function (props) {
     const name = props.name;
@@ -27,6 +28,8 @@ export default function (props) {
     const [subValues, setSubValues] = useState(
         props?.subvalue ? props.subvalue.split(",").map(value => parseInt(value, 10)) : []
     );
+
+    const { colors } = Theme();
 
     const handleValueChange = (val) => {
         field.onChange(val);
@@ -171,11 +174,11 @@ export default function (props) {
                         height={20}
                     />
                     <Text className=" leading-[22px] whitespace-nowrap text-ellipsis overflow-hidden tracking-tight text-neutral-600 web:group-hover:text-neutral-800 dark:text-neutral-400 web:dark:group-hover:text-neutral-200 font-medium text-sm native:text-[14px] ">{text}</Text>
-                    
                     <Icon
                         icon="CaretRight"
                         width={12}
                         height={12}
+                        color={ colors.primary}
                     />
                 </Row>
             </Pressable>

@@ -13,7 +13,7 @@ export const Text = ({ children, className, fontFamily, style: propStyle, ...res
     let finalClassName = normalizeClasses(`${className} ${isUseCustomFont ? fontFamily || isUseCustomFont : ''}`);
     const fontStyle = !isWeb && isUseCustomFont ? { fontFamily: fontFamily || isUseCustomFont } : {};
     const combinedStyle = [fontStyle, propStyle];
-    return <Text_  selectable={true} {...rest} className={finalClassName} allowFontScaling={false} style={combinedStyle}>{correctedChildren}</Text_>;
+    return <Text_  {...rest} className={finalClassName} allowFontScaling={false} style={combinedStyle}>{correctedChildren}</Text_>;
 };
 
 /**
