@@ -34,7 +34,7 @@ export default function ElementSearch(oProps) {
     ) : (
         <Row>
             <View key="ddp-trigger" className="flex-row">
-                <ButtonRef variant="secondary" fullWidth startDecorator={oParams?.trigger?.icon ? oParams?.trigger.icon : "MagnifyingGlass"} rounded tooltip={oProps.tooltip === undefined ? "Search" : oProps.tooltip} onPress={() => handleOpenPopupDefault()} {...oParams?.trigger} />
+                <ButtonRef title={oProps.title === undefined ? "" : oProps.title} variant="secondary"  startDecorator={oParams?.trigger?.icon ? oParams?.trigger.icon : "MagnifyingGlass"} rounded tooltip={oProps.tooltip === undefined ? "Search" : oProps.tooltip} onPress={() => handleOpenPopupDefault()} {...oParams?.trigger} />
             </View>
         </Row>
     );
@@ -211,7 +211,7 @@ export function ElementSearchData(oProps) {
                 {oProps.icon}
                 {!!popupContent && dd}
                 <InputRoundedRef name="search" placeholder={t("Search") + '...'} onKeyPress={(event) => handleKeyPress(event)} value={inputValue} ref={inputRef} onChangeText={(value) => handleSearch(value)} />
-                <View className="absolute h-11 w-6 items-center justify-center ml-2 text-neutral-500  "><Icon icon="MagnifyingGlass" size={22} /></View>
+                <View className="absolute h-10 w-6 items-center justify-center ml-2 text-neutral-500  "><Icon icon="MagnifyingGlass" size={22} /></View>
             </Row>
         )
     }

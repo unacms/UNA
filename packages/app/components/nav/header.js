@@ -17,7 +17,9 @@ import { isValidElement, useMemo, memo } from 'react';
 import { parseUrl } from 'app/lib/util'
 
 function SvgLogoNative() {
-    return <View>{appStatic('logo_native')}</View>;
+
+    const logo = 'logo_native';
+    return <View>{appStatic(logo)}</View>;
 };
 
 function getRightHeader(items, currentUser, pagePath) {
@@ -36,14 +38,14 @@ function getRightHeader(items, currentUser, pagePath) {
         items?.map((button) => {
             let btn = undefined;
             if (button.section || button.link == 'search')
-                btn = <Search section={button.section} params={{ trigger: { size: 'base', variant: 'secondary' } }} />
+                btn = <Search section={button.section} params={{ trigger: { title:button.title, icon:button.icon? button.icon: 'MagnifyingGlass', size: 'base', variant: 'secondary' } }} />
             else {
                 btn = <Button rounded title={button.title} variant='secondary' startDecorator={button.icon} size="base" />;
                 btn = button.link ? <Link href={button.link} >{btn}</Link> : btn
             }
 
             return (
-                <View className=" w-[44px] " key={`add-${button.icon}`} >{btn}</View>
+                <View className="" key={`add-${button.icon}`} >{btn}</View>
             )
         })
 

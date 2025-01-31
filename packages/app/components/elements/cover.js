@@ -73,6 +73,26 @@ function CoverMenu(props) {
     )
 }
 
+const BackButton = ({ isPerson }) => {
+    const routerExpo = useRouter()
+
+    const { colors } = Theme()
+
+    const ButtonContent = (
+      <View className="mx-4 bg-bgrcard dark:bg-bgrcard-d w-10 h-10 rounded-full justify-center items-center">
+        <Icon icon="ArrowLeft" width={24} height={24} color={colors.barsColor} />
+      </View>
+    );
+  
+    return isPerson ? (
+      <Link href={appSetting("cover", "back_button_url_for_profile")}>
+        {ButtonContent}
+      </Link>
+    ) : (
+      <Pressable onPress={routerExpo.back}>{ButtonContent}</Pressable>
+    );
+  };
+
 function CoverMenuMeta(props) {
     return (
         <Menu {...props} displayType="mixed" params={{ button_variant: 'text', button_size: 'sm' }} />
@@ -80,10 +100,8 @@ function CoverMenuMeta(props) {
 }
 
 export function CoverSmall(props) {
-    const routerExpo = useRouter()
     const data = props.data
-    const { colors } = Theme()
-    const windowWidth = useWindowDimensions().width;
+    const bPerson = props.data.profile.module == 'bx_persons' ? true : false
     // 
     return (
         <Row
@@ -100,19 +118,7 @@ export function CoverSmall(props) {
 
                 )}
             </View>
-            <Link href={appSetting('cover', 'back_button_url_for_profile')}>
-                <View
-                    className="mx-4 bg-bgrcard dark:bg-bgrcard-d w-10 h-10 rounded-full justify-center items-center"
-                    onPress={routerExpo.back}
-                >
-                    <Icon
-                        icon="ArrowLeft"
-                        width={24}
-                        height={24}
-                        color={colors.barsColor}
-                    />
-                </View>
-            </Link>
+            <BackButton isPerson={bPerson} />
             <Profile
                 {...data.profile}
                 displayType="unit_wo_info"
@@ -128,13 +134,9 @@ export function CoverSmall(props) {
 }
 
 export default function ElementCover(props) {
-    const routerExpo = useRouter()
-    const segments = useSegments();
-    console.log("segments", segments, segments.length)
     const data = props.data
-    const { colors } = Theme()
 
-    let bPerson = props.data.profile.module == 'bx_persons' ? true : false
+    const bPerson = props.data.profile.module == 'bx_persons' ? true : false
 
     return (
         <View className=" bg-white dark:bg-neutral-900">
@@ -150,17 +152,7 @@ export default function ElementCover(props) {
                 )}
             </View>
             <Row className=" justify-left w-full h-24 pt-4">
-                <Pressable
-                    className="mx-4 bg-bgrcard dark:bg-bgrcard-d w-10 h-10 rounded-full justify-center items-center"
-                    onPress={routerExpo.back}
-                >
-                    <Icon
-                        icon="ArrowLeft"
-                        width={24}
-                        height={24}
-                        color={colors.barsColor}
-                    />
-                </Pressable>
+                <BackButton isPerson={bPerson} />
             </Row>
             <View className="flex-col md:flex-row  px-2  ">
                 {bPerson ? <View className=" w-full  items-center  ">
