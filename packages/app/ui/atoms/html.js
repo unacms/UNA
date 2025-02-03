@@ -353,7 +353,7 @@ export default function ElementHtml(props) {
                 },
                
             }}
-            defaultTextProps={{ selectable: true }} 
+            defaultTextProps={{ selectable: true, allowFontScaling: false }} 
             contentWidth={width}
             tagsStyles={tagsStyles}
             classesStyles={classesStyles}
