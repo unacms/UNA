@@ -119,7 +119,7 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
         );
     };
 
-    let styles = { fontSize:props.fontSize || 16, lineHeight:props.lineHeight || 22, color: colors.text,  verticalAlign:'top' };
+    let styles = { fontSize:props.fontSize || 16, lineHeight:props.lineHeight || 22, color: colors.text,  verticalAlign:'middle' };
     if (name != 'cmt_text') {
         styles = { ...styles, minHeight: 200 }
     }

@@ -31,10 +31,10 @@ export default function FormComments(props) {
     const sPad = 'px-3 py-2';//isWeb ? 'p-2' : (isIos || isWeb) ? 'px-2 pb-2' : 'px-1';
     return <View className='w-full ' >
         <Row className='w-full items-end  '>
-        <View className={'mr-2 ' + (isWeb ? '' : ' w-11 ')}>
+        <View className={'mr-2 ' + (isWeb ? '' : ' w-12 ')}>
                 {getFormFieldByData(props.data.inputs['cmt_image'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder, noMargin: true, asDefaultStorage:true })}
             </View>
-            <View className={`flex-auto bg-bgritem dark:bg-bgritem-d rounded-3xl justify-center  ${isWeb ? 'min-h-[44px]' : 'min-h-[36px] '} items-end ${sPad}`} >
+            <View className={`flex-auto bg-bgritem dark:bg-bgritem-d rounded-3xl justify-center  ${isWeb ? 'min-h-[44px]' : 'min-h-[44px] '} items-end ${sPad}`} >
                 {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['cmt_cf'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['cmt_parent_id'], props.handleSubmit, 'custom')}
@@ -43,7 +43,7 @@ export default function FormComments(props) {
                 {getFormFieldByData(props.data.inputs['sys'], props.handleSubmit, 'custom')}
             </View>
            
-            <View className={'ml-2 ' + (isWeb ? '' : ' w-11 ')}>{getFormFieldByData(props.data.inputs['cmt_submit'], props.handleSubmit, 'custom', { classes: isWeb ? 'ml-0 ' : '', noMargin: true, size:'base'  })}</View>
+            <View className={'ml-2 ' + (isWeb ? '' : ' w-12 ')}>{getFormFieldByData(props.data.inputs['cmt_submit'], props.handleSubmit, 'custom', { classes: isWeb ? 'ml-0 ' : '', noMargin: true, size:'base'  })}</View>
         </Row>
         {(prevList.length > 0 && prevList[0]?.key) && <Row className='flex-wrap gap-2 mt-3'>{prevList}</Row>}
         {getFormFieldByData(props.data.inputs['cmt_mood'], props.handleSubmit, 'custom')}

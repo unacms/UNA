@@ -383,7 +383,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
         return (
             (!!panelsVisible.jots && !!selectedConvo && jots?.data?.jots) && (
                 <View className="w-full md:w-3/5 flex-1 bg-bgrcard dark:bg-bgrcard-d">
-                    <View className="w-full flex-auto">
+                    <View className="w-full web:flex-auto">
                         <Jots
                               isSmallScreen={isSmallScreen}
                               title={selectedConvo.title}
@@ -518,7 +518,7 @@ const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, 
 /*bg-neutral-500/10 border-b border-neutral-500/10*/
 const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots, showConvo, deleteConvo, leaveConvo, getConvo, editConvo, handleReply, startReached }) => {
     const isWeb = Platform.OS == 'web'
-    const initValue = Platform.OS === 'ios' ? 48 : 0;
+    const initValue = Platform.OS === 'ios' ? 48 : 0; // const initValue = Platform.OS === 'ios' ? 48 : 0;
 
     const [keyboardHeight, setKeyboardHeight] = useState(initValue);
 

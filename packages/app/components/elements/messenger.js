@@ -116,7 +116,7 @@ const MessengerContainer = memo(({ convos, selectedMenu, url, data, windowWHeigh
         if (!isWeb) {
             heightInit = windowWHeight - 56;
             if (Platform.OS == 'ios'){
-                heightInit = windowWHeight - 56 - 76;
+                heightInit = windowWHeight - 56 //- 76;
             }
         }
         return heightInit;
