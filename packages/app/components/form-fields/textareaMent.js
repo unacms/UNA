@@ -33,14 +33,11 @@ function formatText(text) {
     let v = text.replace(/<br>/g, '\n');
     v = v.replace(/&nbsp;/g, ' ');
     v = v.replace(
-        /<a(.*?)class="bx-mention-link(.*?)"[^>]*href="([^"]+)"[^>]*>([^<]+)<\/a>/g,
-        (match, p1, p2, href, name) => {
-            const trigger = '@'; // Assuming '@' is the trigger in this context
-            name = name.replace('@', '');
-            return `@[${name}](${href})`; // Use the captured href value
+        /<a[^>]*href="([^"]+)"[^>]*class="bx-mention-link[^"]*"[^>]*>([^<]+)<\/a>/g,
+        (match, href, name) => {
+            return `@[${name}](${href})`; // Используем name и href без лишних манипуляций
         }
     );
-
     v = v.replace(/<p>/g, '\n');
 
     // Remove </p>
