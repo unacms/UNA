@@ -16,8 +16,7 @@ export default function MultiPostForm({ data }) {
     const [pageDataDef, setPageDataDef] = useState(false);
     const menu_add_items = menuItemsByNameNew('', data.menu, currentUser).filter(item => item.name != 'more-auto');
     
-    if (menu_add_items.length == 0)
-        return;
+   
 
     const firstForm = menu_add_items.shift();
 
@@ -34,6 +33,9 @@ export default function MultiPostForm({ data }) {
         };
         fetchData();
     }, []);
+
+     if (menu_add_items.length == 0)
+        return;
 
     return (
        

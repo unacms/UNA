@@ -878,9 +878,11 @@ export function visibilityById(visibility) {
         2: { icon: 'EyeSlash', text: 'Me only' },
         3: { icon: 'Globe', text: 'Public' },
         5: { icon: 'Users', text: 'Friends ' },
-        6: { icon: 'UserCheck', text: 'Selected Friends ' },
-        8: { icon: 'Graph', text: 'Selected Relationships ' },
-        9: { icon: 'UserList', text: 'Selected Membership ' },
+        6: { icon: 'UserCheck', text: 'Specific Friends... ' },
+        7: { icon: 'Graph', text: 'Relationships ' },
+        8: { icon: 'Graph', text: 'Specific Relationships... ' },
+        9: { icon: 'UserList', text: 'Specific Memberships... ' },
+       
          
     };
     

@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next'
 import Image from 'app/ui/atoms/image'
 import ProfileSwitcher from 'app/components/elements/profile_switcher'
 import Splash from 'app/ui/molecules/splash'
+import { Platform } from 'react-native'
 
 function SplashBlock(props) {
     if (appSetting('layout', 'splash_block') == 'image') {
@@ -42,7 +43,7 @@ function SplashBlock(props) {
 
 export default function (props) {
     const { t } = useTranslation()
-
+    const isWeb = Platform.OS == 'web';
     const [renderBlock, setRenderBlock] = useState(false)
     let { currentUser, setCurrentUser } = useCurrentUser()
     const feedMode = storageGet('feed:mode', '', true)
@@ -65,6 +66,7 @@ export default function (props) {
     function setFeedTypeEx(mode) {
         storageSet('feed:type', '', mode, true)
         setFeedType(mode)
+        console.log("modemode", mode)
     }
 
     useEffect(() => {
@@ -157,7 +159,7 @@ export default function (props) {
                             <View >
                             <ScrollView
                                 horizontal={true}
-                                className="   max-w-2xl mx-auto w-full  "
+                                className="   max-w-2xl mx-auto w-full overflow-y-visible  "
                             >
                                 <Row
                                     className={`  rounded-full mx-3 sm:mx-4 ${
@@ -166,39 +168,38 @@ export default function (props) {
                                             : ''
                                     }  gap-x-1 sm:gap-x-2  `}
                                 >
-                                    {feedList.length > 1 &&
-                                        feedList.map((item, index) => {
-                                            return (
-                                                <View key={'row_' + index}>
-                                                    <Button
-                                                        
-                                                        tooltip={t(item.title)}
-                                                        startDecorator={
-                                                            item.icon
-                                                        }
-                                                        title={
-                                                            item.showTitle
-                                                                ? t(item.title)
-                                                                : ''
-                                                        }
-                                                        variant={
-                                                            feedType ==
-                                                            item.name
-                                                                ? 'primary'
-                                                                : 'text'
-                                                        }
-                                                        rounded
-                                                        size="sm"
-                                                        onPress={() => {
-                                                            setFeedTypeEx(
+                                        {feedList.length > 1 &&
+                                            feedList.map((item, index) => {
+                                                return (
+                                                    <View key={'row_' + index}>
+                                                        <Button
+                                                            key={'row_' + index+(feedType == item.name)}
+                                                            startDecorator={
+                                                                item.icon
+                                                            }
+                                                            title={
+                                                                item.showTitle
+                                                                    ? t(item.title)
+                                                                    : ''
+                                                            }
+                                                            variant={
+                                                                feedType ==
                                                                 item.name
-                                                            )
-                                                        }}
-                                                    />
-                                                </View>
-                                            )
-                                        })}
-                                    {appSetting(
+                                                                    ? 'primary'
+                                                                    : 'text'
+                                                            }
+                                                            rounded
+                                                            size="sm"
+                                                            onPress={() => {
+                                                                setFeedTypeEx(
+                                                                    item.name
+                                                                )
+                                                            }}
+                                                        />
+                                                    </View>
+                                                )
+                                            })}
+                                        {appSetting(
                                         'feed',
                                         'show_selector_view'
                                     ) && (
@@ -241,7 +242,7 @@ export default function (props) {
                                     if (feedType == item.name) {
                                         return (
                                             <View key={'view' + index}>
-                                                {/*topBlocks.map(
+                                                {isWeb && topBlocks.map(
                                                     (item, index) => {
                                                         return (
                                                             <BlockByName
@@ -260,7 +261,7 @@ export default function (props) {
                                                             />
                                                         )
                                                     }
-                                                )*/}
+                                                )}
                                                 <BlockByName
                                                     data={props.data}
                                                     name={
@@ -278,7 +279,7 @@ export default function (props) {
                                                         ]
                                                     }
                                                     unitMode={unitMode}
-                                                    exProps={{addBlocks:topBlocks, addBlocksData:props.data}}
+                                                    exProps={!isWeb && {addBlocks:topBlocks, addBlocksData:props.data}}
                                                 />
                                             </View>
                                         )

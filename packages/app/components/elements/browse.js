@@ -46,7 +46,6 @@ const getNumCols = (width, props, data) => {
 };
 
 export default function (props) {
-    console.log("propspropsprops", props)
     const isValidateActive = props.validate ?? true;
     const isShowEmptyMessage = props.empty_message ?? true;
     const { layoutData } = useLayoutData();

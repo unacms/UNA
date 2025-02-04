@@ -48,7 +48,7 @@ export function getVisibilityValues(valuesIn){
             if (typeof valuesIn[key] == 'string')
                 return {label: valuesIn[key], value: key}
             else{
-                return {label: valuesIn[key].value, value: valuesIn[key].key}
+                return {label: valuesIn[key].value, value: valuesIn[key].key,  icon: valuesIn[key].icon}
             }
                 
         }); 
@@ -59,7 +59,7 @@ export function getVisibilityValues(valuesIn){
                 return {label: key, value: key};
             }
             else{
-                return key.value ? {label: key.value, value: key.key} : null
+                return key.value ? {label: key.value, value: key.key, icon: key.icon} : null
             }
             
         }); 

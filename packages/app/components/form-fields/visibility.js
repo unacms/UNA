@@ -13,6 +13,7 @@ import Profile from 'app/ui/molecules/profile';
 import React from 'react';
 import { Theme } from 'app/design/theme';
 
+
 export default function (props) {
     const name = props.name;
     const rules = getValidationRules(props);
@@ -63,7 +64,12 @@ export default function (props) {
     const prepareValuesFriends = (values) => {
         return values.map(item => ({
             key: item.key,
-            value: item.value.display_name
+            value: item.value.display_name,
+            icon: <Profile
+            {...item.value}
+            displayType="unit_wo_info"
+            displaySize="sm"
+        />
         }));
     };
 
@@ -73,6 +79,7 @@ export default function (props) {
         if (item.value == '9' && !props.values_memberships) return false;
         return true;
     });
+
 
     const values_friends = props.values_friends ? prepareValuesFriends(props.values_friends) : null;
 
@@ -92,6 +99,13 @@ export default function (props) {
         if (parseInt(item.value, 10) === parseInt(field.value, 10) && [6, 8, 9].includes(parseInt(field.value, 10))) {
             item.info = subLabelDisplay;
         }
+        const visibilityIcon = visibilityById(item.value);
+        item.label = visibilityIcon.text;
+        item.icon = <Icon
+            icon={visibilityIcon.icon}
+            width={32}
+            height={32}
+        />
     });
 
     const selectedItem = filteredValues.find(item => item.value == isModalSub);
@@ -104,6 +118,8 @@ export default function (props) {
             <Button variant='secondary' size='base' rounded startDecorator='ArrowLeft' onPress={() => { setIsModalSub(false) }} />
         </View>
     </Row>
+
+    console.log("subOptions", filteredValues)
 
     const modalContent = isModalSub ? (
         <ChkList values={subOptions} setValue={handleSubValueChange} selectedValue={subValues} />
