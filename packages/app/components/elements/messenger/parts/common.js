@@ -518,7 +518,7 @@ const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, 
 /*bg-neutral-500/10 border-b border-neutral-500/10*/
 const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots, showConvo, deleteConvo, leaveConvo, getConvo, editConvo, handleReply, startReached }) => {
     const isWeb = Platform.OS == 'web'
-    const initValue = Platform.OS === 'ios' ? 48 : 0; // const initValue = Platform.OS === 'ios' ? 48 : 0;
+    const initValue = Platform.OS === 'ios' ? 0 : 0; // const initValue = Platform.OS === 'ios' ? 48 : 0;
 
     const [keyboardHeight, setKeyboardHeight] = useState(initValue);
 
@@ -527,7 +527,7 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
             setKeyboardHeight(e.endCoordinates.height);
         });
         const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
-            setKeyboardHeight(initValue); // Reset keyboard height
+            setKeyboardHeight(initValue - 74); // Reset keyboard height
         });
 
         return () => {
@@ -606,7 +606,7 @@ const FormContainer = memo(({ form, replyItem, onFormSubmit, handleCancelReply, 
     const isWeb = Platform.OS == 'web'
     let padding = 12;
     return (
-        <View className={`border-t border-bdr dark:border-bdr-d ${isWeb ? '' : 'min-h-20'}`} onLayout={handleLayout} style={{ paddingTop: padding, paddingBottom: padding }}>
+        <View className={`border-t bg-bgrtabbar dark:bg-bgrtabbar-d border-bdr dark:border-bdr-d ${isWeb ? '' : 'min-h-20'}`} onLayout={handleLayout} style={{ paddingTop: padding, paddingBottom: padding }}>
             <View className=' ' >
                 {
                     replyItem && (<View className='bg-bgrcard dark:bg-bgrcard-d rounded-sm border-l-2 border-primary/50 py-1 pl-2 mt-2 mx-2'>

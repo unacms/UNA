@@ -4,7 +4,7 @@ import { stripTags, appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import Profile from 'app/ui/molecules/profile'
 import { useWindowDimensions } from 'react-native'
 import Image from 'app/ui/atoms/image'
-import { useRouter, useSegments } from 'expo-router'
+import { useRouter, useNavigation } from 'expo-router'
 import { Theme } from 'app/design/theme'
 import { Icon } from 'app/ui/atoms/icon'
 import Menu from 'app/components/menu'
@@ -75,23 +75,24 @@ function CoverMenu(props) {
 
 const BackButton = ({ isPerson }) => {
     const routerExpo = useRouter()
-
+    const navigation = useNavigation();
+    
     const { colors } = Theme()
 
     const ButtonContent = (
-      <View className="mx-4 bg-bgrcard dark:bg-bgrcard-d w-10 h-10 rounded-full justify-center items-center">
-        <Icon icon="ArrowLeft" width={24} height={24} color={colors.barsColor} />
-      </View>
+        <View className="mx-4 bg-bgrcard dark:bg-bgrcard-d w-10 h-10 rounded-full justify-center items-center">
+            <Icon icon="ArrowLeft" width={24} height={24} color={colors.barsColor} />
+        </View>
     );
-  
-    return isPerson ? (
-      <Link href={appSetting("cover", "back_button_url_for_profile")}>
-        {ButtonContent}
-      </Link>
+
+    return isPerson && navigation.getState().index == 0 ? (
+        <Link href={appSetting("cover", "back_button_url_for_profile")}>
+            {ButtonContent}
+        </Link>
     ) : (
-      <Pressable onPress={routerExpo.back}>{ButtonContent}</Pressable>
+        <Pressable onPress={routerExpo.back}>{ButtonContent}</Pressable>
     );
-  };
+};
 
 function CoverMenuMeta(props) {
     return (

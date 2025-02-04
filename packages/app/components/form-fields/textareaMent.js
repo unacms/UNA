@@ -30,12 +30,19 @@ export const MentionInputMultiTransparent = ({ className,  ...props }) => {
 function formatText(text) {
     //TODO REPLACE TO BR
     // let v =  text.replace(/<\/?p>/g, '\n').trim();
+    console.log("vv", text)
     let v = text.replace(/<br>/g, '\n');
     v = v.replace(/&nbsp;/g, ' ');
-    v = v.replace(
+    /*v = v.replace(
         /<a[^>]*href="([^"]+)"[^>]*class="bx-mention-link[^"]*"[^>]*>([^<]+)<\/a>/g,
         (match, href, name) => {
             return `@[${name}](${href})`; // Используем name и href без лишних манипуляций
+        }
+    );*/
+    v = v.replace(
+        /<a[^>]*class="[^"]*\bbx-mention-link\b[^"]*"[^>]*href="([^"]+)"[^>]*>([^<]+)<\/a>/g,
+        (match, href, name) => {
+            return `@[${name}](${href})`;
         }
     );
     v = v.replace(/<p>/g, '\n');

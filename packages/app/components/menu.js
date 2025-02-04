@@ -132,9 +132,8 @@ export default function ElementMenu(oProps) {
 
     if (isUseStaticWidth) {
         const sItems = filteredItems.map((item, index) => {
-            const ItemType = useMemo(() => {
-                return componentsMap[item.display_type || sDisplayType];
-            }, [item.display_type, sDisplayType]);
+            const ItemType = componentsMap[item.display_type || sDisplayType];
+            
 
             const a = <ItemType key={item.id ? item.id : item.name} {...item} params={oProps.params} />
             if (a == null ) return null;
