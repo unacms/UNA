@@ -13,7 +13,7 @@ export default function defaultUnit(props) {
     <Profile
       {...data.author_data}
       displayType="unit"
-      displaySize="xs"
+      displaySize="sm"
       showInfo="false"
     />
   )
@@ -49,10 +49,10 @@ export default function defaultUnit(props) {
                     sizes={imageSizes}
                   />
                 </View>
-                <View className="flex-auto flex-col sm:h-24 mb-auto">
+                <View className="flex-auto flex-col sm:h-16 mb-auto">
                   <View
                     className={`flex-auto flex-col ${data.image ? '  ' : ' '
-                      } gap-y-2 sm:p-2`}
+                      } gap-y-2 sm:p-3`}
                   >
                     {true && (
                       <Text
@@ -62,17 +62,12 @@ export default function defaultUnit(props) {
                         {data.title}
                       </Text>
                     )}
-                    <Text
-                      numberOfLines={true ? 2 : 6}
-                      className="text-neutral-700 dark:text-neutral-300 mb-auto text-xs"
-                    >
-                      {data.summary_plain}
-                    </Text>
+                    
                   </View>
                 </View>
               </View>
             </Link>
-            <View className="border-t border-bdr/50 mx-2.5 dark:border-bdr-d/50 mt-auto  pt-2 pb-2.5 ">
+            <View className=" mt-auto sm:px-4 sm:pb-3 ">
               {sMeta}
             </View>
           </View>

@@ -518,7 +518,8 @@ export const settingsDefault = {
             bdrModal: 'rgba(107,114,128,0.15)',
             checkbox: '#2563eb',
             safeAreaBackground: 'rgba(255,255,255,1)', // Add this new property
-            primaryBg: 'rgba(37,99,235,0.1)'
+            primaryBg: 'rgba(37,99,235,0.1)',
+            fgTertiary: 'rgba(75,85,99,1)'
         },
         dark: {
             default: 'rgba(209,213,219,1)', //fix for icons color in iOS
@@ -537,7 +538,8 @@ export const settingsDefault = {
             bdrModal: 'rgba(107,114,128,0.15)',
             checkbox: '#0ea5e9',
             safeAreaBackground: 'rgba(17,24,39,1)', // Add this new property
-            primaryBg: 'rgba(37,99,235,0.1)'
+            primaryBg: 'rgba(37,99,235,0.1)',
+            fgTertiary: 'rgba(156,163,175,1)'
         },
         conductor: {
             menu: ' w-full items-left justify-center border-b border-bdrtabbar dark:border-bdrtabbar-d bg-bgrtabbar dark:bg-bgrtabbar-d  ',
@@ -663,12 +665,12 @@ export const settingsDefault = {
             },
             lg: {
                 rounded: ' rounded-[12px] overflow-hidden ',
-                padding: ' min-w-[44px] h-[48px] ',
+                padding: ' min-w-[48px] h-[48px] px-[6px] ',
                 icon_sizes: ' p-[10px] h-[48px] w-[48px] ',
                 icon_size: 28,
-                icon_margin: ' mx-[6px] ',
+                icon_margin: '  ',
                 min_height: ' leading-[40px] sm:text-[16px] ',
-                margin: ' mx-[4px] my-auto native:text-[16px] ',
+                margin: ' mx-[10px] my-auto native:text-[16px] ',
             },
         },
 
