@@ -17,7 +17,7 @@ export default function ElementVideo({ src, controls, cover, autoplay, muted }) 
     const player = useVideoPlayer(src, player => {
         player.muted = muted ? true : false;
         player.loop = autoplay ? true : false;
-        player.play();
+       // player.play();
     });
 
     return (
