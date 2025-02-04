@@ -10,13 +10,13 @@ export function Icon(props) {
     const { colors } = Theme();
 
     let { icon, className, color, size, ...rest } = props
-    icon = findIconFromRemote(icon);
+    const processedIcon = findIconFromRemote(icon);
 
     const InlineIcon = SvgIcons[icon];
 
-    const processedIcon = useMemo(() => {
+    /*const processedIcon = useMemo(() => {
         return icon.replace('far ', '').replace('fa-', '').replace('fa ', '').split(' ')[0];
-    }, [icon]);
+    }, [icon]);*/
 
 
     const IconComponent = useMemo(() => IconSet[processedIcon], [processedIcon]);

@@ -383,7 +383,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
         return (
             (!!panelsVisible.jots && !!selectedConvo && jots?.data?.jots) && (
                 <View className="w-full md:w-3/5 flex-1 bg-bgrcard dark:bg-bgrcard-d">
-                    <View className="w-full web:flex-auto">
+                    <View className="w-full web:flex-auto ios:flex-auto">
                         <Jots
                               isSmallScreen={isSmallScreen}
                               title={selectedConvo.title}
