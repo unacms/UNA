@@ -119,8 +119,6 @@ export default function (props) {
         </View>
     </Row>
 
-    console.log("subOptions", filteredValues)
-
     const modalContent = isModalSub ? (
         <ChkList values={subOptions} setValue={handleSubValueChange} selectedValue={subValues} />
     ) : (
@@ -178,6 +176,8 @@ export default function (props) {
     if (props.format == 'nofield') {
         let { icon = 'Unknown', text = 'Unknown' } = visibilityById(field.value);
 
+       // const selectedSubLabels5 = subOptions.filter(item => subValues.includes(item.value)).map(item => item.label);
+        console.log("subOptionsMapsubOptionsMap", selectedSubLabels, selectedSubLabels.join(', '))
         const v = filteredValues.find(item => item.value == field.value)?.label || filteredValues[0].label;
         return (<>
             {modalElement}
@@ -189,7 +189,7 @@ export default function (props) {
                         width={20}
                         height={20}
                     />
-                    <Text className=" leading-[22px] ml-[4px] whitespace-nowrap text-ellipsis overflow-hidden tracking-tight text-neutral-600 web:group-hover:text-neutral-800 dark:text-neutral-400 web:dark:group-hover:text-neutral-200 font-medium text-sm native:text-[14px] ">{text}</Text>
+                    <Text className=" leading-[22px] ml-[4px] whitespace-nowrap text-ellipsis overflow-hidden tracking-tight text-neutral-600 web:group-hover:text-neutral-800 dark:text-neutral-400 web:dark:group-hover:text-neutral-200 font-medium text-sm native:text-[14px] ">{selectedSubLabels.length> 0 ? selectedSubLabels.slice(0, 3).join(', ') + (selectedSubLabels.length > 3 ? ' + ' + (selectedSubLabels.length - 3) + ' more' : '') : text}</Text>
                     <Icon
                         icon="CaretRight"
                         width={12}

@@ -875,7 +875,7 @@ export const uploadImage = async (uri, fetchUrl, calback, extraVar) => {
 
 export function visibilityById(visibility) {
     const visibilityOptions = {
-        2: { icon: 'EyeSlash', text: 'Me only' },
+        2: { icon: 'Lock', text: 'Me only' },
         3: { icon: 'Globe', text: 'Public' },
         5: { icon: 'Users', text: 'Friends ' },
         6: { icon: 'UserCheck', text: 'Specific Friends... ' },
