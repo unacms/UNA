@@ -10,12 +10,13 @@ import { List, ArrowLeft, House, WarningCircle, Chats, ArrowRight, ChatCircleTex
 	ArrowsClockwise, Graph, ChatsTeardrop, MagicWand, Student, Handshake, At, CaretUp, CaretDown, CaretLeft, ChatCenteredText, Clipboard, CirclesFour,FileAudio, 
 	DotsThreeVertical, ChatCircle, Calendar, UserPlus, Fire, Rows, ShareFat, CheckCircle, IntersectThree, Cake, IdentificationBadge, Heart, 
 	ChartBar, Storefront, Video, ShoppingCart, Check, HouseSimple, Folders, Egg, Binoculars, SquaresFour,
-	UserList, UserCircleGear, ContactlessPayment, Folder,
+	UserList, UserCircleGear, ContactlessPayment, Folder, Lock,
 	UserFocus, UserSquare, LinkSimple, ChartLine, Translate, Moon,Trash, Minus, Hash, CirclesThree, Megaphone, Sparkle, MapPin, Wallet
 }  
 from "phosphor-react-native";
 
 export const IconSet = {
+	Lock: Lock,
 	Folder: Folder,
 	Wallet: Wallet,
 	ContactlessPayment: ContactlessPayment,
