@@ -6,6 +6,7 @@ import { useState, useRef, useEffect } from 'react';
 import { fetcher } from 'app/lib/fetcher';
 import { MentionInput as MentionInputDef, replaceMentionValues } from 'react-native-controlled-mentions'
 import { Theme } from 'app/design/theme';
+import { Platform } from 'react-native'
 
 export const MentionInput = ({ className, ...props }) => (
     <MentionInputDef className={'bg-bgrinput border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg   w-full p-2 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus placeholder-neutral-500 dark:text-neutral-100 text-[16px] leading-[22px] h-[40px]'} {...props} />
@@ -32,19 +33,24 @@ function formatText(text) {
     // let v =  text.replace(/<\/?p>/g, '\n').trim();
     console.log("vv", text)
     let v = text.replace(/<br>/g, '\n');
-    v = v.replace(/&nbsp;/g, ' ');
-    /*v = v.replace(
+    v = v.replace(
         /<a[^>]*href="([^"]+)"[^>]*class="bx-mention-link[^"]*"[^>]*>([^<]+)<\/a>/g,
         (match, href, name) => {
             return `@[${name}](${href})`; // Используем name и href без лишних манипуляций
         }
-    );*/
+    );
     v = v.replace(
         /<a[^>]*class="[^"]*\bbx-mention-link\b[^"]*"[^>]*href="([^"]+)"[^>]*>([^<]+)<\/a>/g,
         (match, href, name) => {
             return `@[${name}](${href})`;
         }
     );
+    /*v = v.replace(
+        /<a\b(?=[^>]*\bclass="[^"]*\bbx-mention-link\b")(?=[^>]*\bhref="([^"]+)")[^>]*>([^<]+)<\/a>/gi,
+        (match, href, name) => {
+          return `@[${name}](${href})`;
+        }
+      );*/
     v = v.replace(/<p>/g, '\n');
 
     // Remove </p>
@@ -66,11 +72,10 @@ function formatText(text) {
 }
 
 export default function ({ name, value = '', numLines = 4, ...props }) {
-
+    const isIos = Platform.OS == 'ios'
     const inputRef = useRef(null);
     const { colors } = Theme();
     const { field } = useController({ name, rules: {}, defaultValue: value });
-    // const [localValue, setLocalValue] = useState(formatText(field.value));
     const [suggestions, setSuggestions] = useState([]);
     const [keywordval, setKeyword] = useState(['', '']);
 
@@ -126,13 +131,16 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
         );
     };
 
-    let styles = { fontSize:props.fontSize || 16, lineHeight:props.lineHeight || 20, color: colors.text, paddingVertical: 0 };
-    if (name != 'cmt_text') {
-        styles = { ...styles, minHeight: 200 }
-    }
-    else {
-        styles = { ...styles, maxHeight: 300 }
-    }
+
+    let styles = {
+        fontSize: props.fontSize || 16,
+        lineHeight: props.lineHeight || 20,
+        color: colors.text,
+        ...(isIos ? {  paddingVertical: 4 } : { verticalAlign: 'middle' }),
+        ...(name !== 'cmt_text' ? { minHeight: 200 } : { maxHeight: 300 }),
+        ...(props.maxHeight ? { maxHeight: props.maxHeight } : {})
+    };
+
     if (props.maxHeight) {
         styles.maxHeight = props.maxHeight;
     }
