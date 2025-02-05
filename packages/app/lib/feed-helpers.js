@@ -442,8 +442,6 @@ export const SmallUnit = memo(({ data }) => {
 });
 
 export const UnitFeed = ({ data, mode, DefaultUnit, SmallUnit, feed_type }) => {
-
-    console.log("data, mode, DefaultUnit, SmallUnit, feed_type", data, mode, feed_type)
     data.mainImage = null
     if (data?.content?.images)
         data.mainImage = data?.content?.images?.length > 0 ? data.content.images[0] : null

@@ -37,6 +37,7 @@ export default function MultiPostForm({ data }) {
      if (menu_add_items.length == 0)
         return;
 
+
     return (
        
             <Card
@@ -58,12 +59,12 @@ export default function MultiPostForm({ data }) {
                             align="start"
                             onPress={() => {
                                 FeedbackHaptics('Medium')
-                                setPageData(pageDataDef)
+                                setPageData({...pageDataDef, ts: Date.now()})
                             }}
                         />
                     </View>
                 </View>
-                <FormModal pageData={pageData} setPageData={setPageData} />
+                <FormModal key={pageData?.ts} pageData={pageData} setPageData={setPageData} />
                 {menu_add_items.length > 0 && <Row className={` justify-between gap-x-[8px] sm:flex mt-[12px] sm:mt-[12px] sm:pt-[12px] sm:border-t border-bdr dark:border-bdr-d ' : ''}`}>
                     {menu_add_items.map((item, index) => (
                         <Button key={item.name} size="sm" rounded fullWidth variant="text" onPress={() => handleFormModal(item, null, setPageData, data.params)} startDecorator={item.icon} title={item.title} />

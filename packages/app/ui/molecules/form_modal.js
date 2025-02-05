@@ -15,8 +15,12 @@ export default function FormModal({ pageData, setPageData }) {
 
     const isShowHeader = pageData.module != "bx_timeline";
     const Container = isShowHeader ? ScrollView : View;
+    if (!pageData)
+        return null;
+
     return (
         <Modal
+            
             title={isShowHeader ? pageData.title : null}
             onVisible={!!pageData}
             outerClickClose={false}
@@ -25,7 +29,7 @@ export default function FormModal({ pageData, setPageData }) {
             transparent={true}
             onRequestClose={handleModalClose}
         >
-            <Container className={`flex-1 ${isShowHeader ? '' : ''}`}>{/*px-3 sm:px-0*/}
+            <Container key={pageData.module + (pageData ? "open" : "closed")} className={`flex-1 ${isShowHeader ? '' : ''}`}>{/*px-3 sm:px-0*/}
                 {
                     Object.keys(pageData?.elements || {}).map(key =>
                         Object.keys(pageData.elements[key] || {}).map(key2 => (
@@ -34,7 +38,8 @@ export default function FormModal({ pageData, setPageData }) {
                                 onFormEmpty={() => { setPageData(false) }}
                                 block={pageData.elements[key][key2]}
                                 exProps={{
-                                    onClose: () => { setPageData(false); }
+                                    onClose: () => { setPageData(false); },
+                                    resetOnSubmit: true,
                                 }}
                             />
                         ))
@@ -47,7 +52,7 @@ export default function FormModal({ pageData, setPageData }) {
 
 export const handleFormModal = async (oItem, event, setPageData, params) => {
     const sResponse = await getFormModal(oItem, params);
-    setPageData(sResponse.data);
+    setPageData({...sResponse.data, ts: Date.now()});
 }
 
 export const getFormModal = async (oItem, params) => {

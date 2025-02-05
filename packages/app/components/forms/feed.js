@@ -71,7 +71,6 @@ function ProfileView({ isImageOnly = false, data, handleSubmit, showImage, setSh
 }
 
 export default function FormFeed(props) {
-    const { currentUser } = useCurrentUser();
     const formContext = useFormContext()
     const { t } = useTranslation()
     const isFormOnly = props.exProps?.formOnly !== false;
@@ -96,7 +95,6 @@ export default function FormFeed(props) {
 
     useEffect(() => {
         if (props.response?.id && props.response?.id != responseId) {
-            //console.log("props.responseprops.response", props.response)
             setLayoutData(getAlert('feed:new_content', props.response))
             onClose();
             setResponseId(props.response?.id)
@@ -194,7 +192,7 @@ export default function FormFeed(props) {
         <View className="justify-between flex-col flex-auto">
             
                 <View className="w-full h-full  flex-1 justify-end px-[12px] ">
-                    <View className="flex-auto">
+                    <View className="flex-auto ">
                     {getFormFieldByData(
                         props.data.inputs['text'],
                         props.handleSubmit,
