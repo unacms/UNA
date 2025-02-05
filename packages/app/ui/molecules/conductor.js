@@ -102,7 +102,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
 
             return;
         },
-        enabled: routes[index]?.data?.length == 0//false
+        enabled: false
     });
 
     useEffect(() => {
