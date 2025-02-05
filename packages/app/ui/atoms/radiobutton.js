@@ -7,8 +7,8 @@ export default function ({ title, info, onPress, status, value, disabled, icon }
     const { colors } = Theme();
     const selected = status == 'checked';
     return (
-        <Pressable disabled={disabled} onPress={onPress} className={`flex-row gap-x-[12px] items-center py-[8px] px-[12px] rounded-lg w-full ${disabled ? '': 'hover:bg-bgritem dark:hover:bg-bgritem-d'} `}>
-            { !!icon && <View className=" "><Text className=" text-neutral-600 dark:text-neutral-400 my-auto h-[32px] w-[32px]">{icon}</Text></View>}
+        <Pressable disabled={disabled} onPress={onPress} className={`flex-row gap-x-[12px] items-center p-[8px] active:bg-neutral-200 dark:active:bg-neutral-700 rounded-lg w-full ${disabled ? '' : ' hover:bg-neutral-100 dark:hover:bg-neutral-800'} `}>
+            { !!icon && <View className=" "><View className="text-neutral-600 dark:text-neutral-400 my-auto h-[32px] w-[32px]">{icon}</View></View>}
             
             <View className='flex-auto '>
                 <Text className=" text-neutral-800 dark:text-neutral-200 text-[16px] leading-[22px] font-medium">{title}</Text>

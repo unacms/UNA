@@ -10,12 +10,13 @@ export default function CheckBox2({title, onPress, status, value , icon, margin=
     const { colors } = Theme();
     const selected = status == 'checked';
     return (
-        <Pressable onPress={onPress} className={' flex-row gap-x-[12px] items-center p-[12px] rounded-lg w-full hover:bg-bgritem dark:hover:bg-bgritem-d ' + margin}>
+        <Pressable onPress={onPress} className={' flex-row gap-x-[12px] items-center p-[8px] active:bg-neutral-200 dark:active:bg-neutral-700 rounded-lg w-full hover:bg-neutral-100 dark:hover:bg-neutral-800 ' + margin}>
              { !!icon && <View className="w-8">{icon}</View>}
+            
+            <View className="flex-auto"><Text className={themeSettings.text}>{title}</Text></View>
             <View className={selected ? themeSettings.container_selected : themeSettings.container}>
                 {selected ? <View className={`${themeSettings.selected} items-center justify-center`} >{themeSettings.selected_icon ? <Icon icon={themeSettings.selected_icon}/> : null}</View> : null}
             </View>
-            <Text className={themeSettings.text}>{title}</Text>
         </Pressable>
     );
 }

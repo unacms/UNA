@@ -550,9 +550,9 @@ export const settingsDefault = {
             right_column_cnt: 'fixed-process p-4 max-w-md'
         },
         checkbox : {
-            container: ' h-[20px] w-[20px] rounded-[4px] border-[2px] border-neutral-500 bg-transparent justify-center items-center   ',
-            container_selected: ' h-[20px] w-[20px] rounded-[4px] border-[2px] border-neutral-500 bg-transparent justify-center items-center ',
-            selected: ' h-[10px] w-[10px] rounded-[2px] bg-primary ',  
+            container: ' h-[20px] w-[20px] m-[4px] rounded-[4px] border-[2px] border-neutral-500 bg-transparent justify-center items-center   ',
+            container_selected: ' m-[4px] h-[20px] w-[20px] rounded-[4px] border-[2px] border-neutral-500 bg-transparent justify-center items-center ',
+            selected: ' h-[10px] w-[10px] rounded-[2px] bg-primary m-[4px]',  
             text: '  text-neutral-800 dark:text-neutral-200 text-[16px] leading-[20px] font-medium ',
             selected_icon: false,
         },  
