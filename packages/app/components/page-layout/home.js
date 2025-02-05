@@ -154,17 +154,17 @@ export default function (props) {
                 )}
 
                 <View className="flex-auto w-full lg:w-auto sm:px-4 xl:px-2 ">
-                    <View className="flex-auto  ">
+                    
                         <View className=" w-full mx-auto lg:max-w-2xl relative ">
-                            <View >
+                            <View className="bg-bgrnavbar dark:bg-bgrnavbar-d sm:bg-transparent border-b border-bdrcard dark:border-bdrcard-d shadow-sm sm:shadow-none sm:border-none">
                             <ScrollView
                                 horizontal={true}
-                                className="   max-w-2xl mx-auto w-full overflow-y-visible  "
+                                className="  max-w-2xl mx-auto w-full overflow-y-visible  "
                             >
                                 <Row
                                     className={`  rounded-full mx-3 sm:mx-4 ${
                                         feedList.length > 1
-                                            ? 'my-3 lg:my-4'
+                                            ? 'my-2 lg:my-4'
                                             : ''
                                     }  gap-x-1 sm:gap-x-2  `}
                                 >
@@ -237,7 +237,7 @@ export default function (props) {
                                 </Row>
                             </ScrollView>
                             </View>
-                            <View className={`relative w-full mx-auto max-w-2xl ${ feedList.length > 1 ? '': 'sm:mt-3'} `}>
+                            <View className={`relative w-full mx-auto max-w-2xl ${ feedList.length > 1 ? '' : 'sm:mt-3'} `}>
                                 {feedList.map((item, index) => {
                                     if (feedType == item.name) {
                                         return (
@@ -292,7 +292,7 @@ export default function (props) {
                                 })}
                             </View>
                         </View>
-                    </View>
+                    
                 </View>
                 <View className="hidden lg:flex w-96 ">
                     <View className="fixed fixed-process w-full  max-w-96 p-2 flex-col space-y-4 duration-200">
