@@ -443,7 +443,7 @@ export const SmallUnit = memo(({ data }) => {
 
 export const UnitFeed = ({ data, mode, DefaultUnit, SmallUnit, feed_type }) => {
 
-
+    console.log("data, mode, DefaultUnit, SmallUnit, feed_type", data, mode, feed_type)
     data.mainImage = null
     if (data?.content?.images)
         data.mainImage = data?.content?.images?.length > 0 ? data.content.images[0] : null
@@ -452,7 +452,7 @@ export const UnitFeed = ({ data, mode, DefaultUnit, SmallUnit, feed_type }) => {
     if (data?.cmts?.data?.length > 0) {
         data.comments = data.cmts.data[0][Object.keys(data.cmts.data[0])[0]].data
     }
-    const sKey = 'feed_' + data.id;
+    const sKey = `feed_${data.id}_${data.feed_type}`;
     data.showMore = true;
     const dataCache = getDataFromCache('li:data', sKey)
     const [datas, setDatas] = useState(dataCache ? dataCache.data : data);
