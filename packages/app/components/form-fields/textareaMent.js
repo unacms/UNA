@@ -136,8 +136,8 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
         fontSize: props.fontSize || 16,
         lineHeight: props.lineHeight || 20,
         color: colors.text,
-        ...(isIos ? {  paddingVertical: 4 } : { verticalAlign: 'middle' }),
-        ...(name !== 'cmt_text' ? { minHeight: 200 } : { maxHeight: 300 }),
+        ...(isIos ? {  paddingVertical: 4 } : { }),
+        ...(name !== 'cmt_text' ? { minHeight: 160 } : { maxHeight: 300 }),
         ...(props.maxHeight ? { maxHeight: props.maxHeight } : {})
     };
 

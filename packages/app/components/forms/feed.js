@@ -200,7 +200,9 @@ export default function FormFeed(props) {
                         props.handleSubmit,
                         'custom',
                         {
+                            styles:{verticalAlign: 'top'},
                             focus: true,
+                            noMargin: true,
                             bg: 'transparent',
                             placeholder: 'Write here...',
                             linkify: true,
@@ -209,8 +211,6 @@ export default function FormFeed(props) {
                     )}
                     </View>
                     <View className="">
-                    <ScrollView keyboardDismissMode="on-drag" keyboardShouldPersistTaps="handled" className="w-full " horizontal={true}>{prevList}</ScrollView>
-                    
                     {props.data.inputs['labels'] && (
                         <View className="flex-auto">
                             {labels}
@@ -220,7 +220,8 @@ export default function FormFeed(props) {
                 </View>
             
             <View className="  ">
-                <Row className={
+                
+                <View className={
                     '  items-center flex-auto w-full gap-x-[8px] p-[12px] bg-neutral-500/5  ' +
                     (isWeb ? ' ' : ' ') +
                     (isSmall
@@ -229,8 +230,9 @@ export default function FormFeed(props) {
                         '  '
                         : ' lalal ')
                 }>
+                     <ScrollView keyboardDismissMode="on-drag" keyboardShouldPersistTaps="handled" className="w-full " horizontal={true}>{prevList}</ScrollView>
 
-                    <Row className="gap-x-[8px] flex-auto justify-between ">
+                    <Row className="gap-x-[8px] w-full justify-between ">
                         <Row className="flex-none gap-x-[8px]">
                             {props.data.inputs['obfuscate_faces'] && (
                                 <View className="">
@@ -344,7 +346,7 @@ export default function FormFeed(props) {
                                 }
                             )}</View></View>
                     </Row>
-                </Row>
+                </View>
             </View>
         </View>
     </KbAvoidingView>

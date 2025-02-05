@@ -87,9 +87,9 @@ export function getButtonForConductorSmall(a, index, currentUser) {
 
     return (
         <Button
-            variant={a.index == index ? 'secondary' : "text"}
+            variant={a.index == index ? 'primary' : "text"}
             size={"sm"}
-            pressed={a.index == index ? true : false}
+            rounded
             fullWidth
             title={(a.title)}
             align="start"
