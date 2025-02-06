@@ -177,7 +177,6 @@ export default function (props) {
         let { icon = 'Unknown', text = 'Unknown' } = visibilityById(field.value);
 
        // const selectedSubLabels5 = subOptions.filter(item => subValues.includes(item.value)).map(item => item.label);
-        console.log("subOptionsMapsubOptionsMap", selectedSubLabels, selectedSubLabels.join(', '))
         const v = filteredValues.find(item => item.value == field.value)?.label || filteredValues[0].label;
         return (<>
             {modalElement}

@@ -82,8 +82,8 @@ export default function FormFeed(props) {
     const windowDimensions = useWindowDimensions()
     const [isShowHashtag, setIsShowHashtag] = useState(0)
     const isWeb = Platform.OS === 'web'
-    const isSmall = windowDimensions.width < LAYOUT_BREAKPOINTS.sm || !isWeb ? true : false
     const isIos = Platform.OS === 'ios'
+    const isSmall = windowDimensions.width < LAYOUT_BREAKPOINTS.sm || !isWeb ? true : false
     const scrollViewRef = useRef(null)
 
     function onClose() {
@@ -192,7 +192,7 @@ export default function FormFeed(props) {
         <View className="justify-between flex-col flex-auto">
             
                 <View className="w-full h-full  flex-1 justify-end px-[12px] ">
-                    <View className="flex-auto ">
+                    <View className="flex-auto web:overflow-auto">
                     {getFormFieldByData(
                         props.data.inputs['text'],
                         props.handleSubmit,

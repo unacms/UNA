@@ -5,9 +5,8 @@ import * as ImagePicker from 'expo-image-picker';
 import Field, {getValidationRules} from 'app/components/form-fields/_field';
 import { useController, useFormContext } from 'react-hook-form';
 import { Button, ButtonsGroup } from 'app/design/controls';
-import { uploadImage,linkify2 } from 'app/lib/util';
+import { uploadImage, linkify2, appSetting, getAlert } from 'app/lib/util';
 import { useColorScheme } from 'react-native';
-import { absoluteApiUrl } from 'app/lib/util'
 import { useState, useEffect } from 'react'
 import Image from '@tiptap/extension-image'
 import Link from '@tiptap/extension-link'
@@ -19,13 +18,10 @@ import { mergeAttributes, Node, Extension } from '@tiptap/core'
 import { Modal } from 'app/design/controls'
 import { Input } from 'app/design/controls'
 import { Text as TextTag } from 'app/design/typography'
-import Html from 'app/ui/atoms/html'
 import Editor from "app/ui/editor/ui/editor";
 import Embed from 'app/ui/molecules/embed'
 import { fetcher } from 'app/lib/fetcher';
-import { appSetting } from 'app/lib/util'
 import  { useLayoutData } from 'app/context/layout';
-import { getAlert } from 'app/lib/util';
 
 import "app/ui/editor/styles/globals.css";
 import "app/ui/editor/styles/prosemirror.css";

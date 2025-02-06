@@ -27,6 +27,8 @@ export default function (props) {
     const formContext = useFormContext();
     const formValue = formContext.watch(name);
     const obfuscateFaces = formContext.watch('obfuscate_faces');
+    const video_source = formContext.watch('video_source');
+
     const rules = getValidationRules(props);
     const defaultValue = props?.value ? props.value : '';
     const { layoutData, setLayoutData } = useLayoutData();
@@ -144,11 +146,17 @@ export default function (props) {
     useEffect(() => {
         if (uploadFinished?.result) {
             if (isAutoGhosts) {
-                const updatedImages = imageSource?.images?.map(item =>
-                    item.hash === uploadFinished.extraVar.hash ? { ...uploadFinished?.result.data.ghost, uri: item.uri } : item
-                );
-
-                setImageSource({ images: updatedImages });
+                if (uploadFinished?.result?.data?.ghost){
+                    const updatedImages = imageSource?.images?.map(item =>
+                        item.hash === uploadFinished.extraVar.hash ? { ...uploadFinished?.result.data.ghost, uri: item.uri } : item
+                    );
+                    setImageSource({ images: updatedImages });
+                }
+                else{
+                    const updatedImages = imageSource?.images.filter(item => item.hash != uploadFinished.extraVar.hash);
+                    setImageSource({ images: updatedImages });
+                }
+                
             }
             else {
                 setUploadFinishedArr((prevArr) => [...prevArr, uploadFinished.extraVar.hash]);
@@ -356,6 +364,10 @@ export default function (props) {
         await fetcher(url + "&a=delete&id=" + id);
     }, [url, imageSource]);
 
+
+    // may be need improve in future
+    if (video_source == 'embed')
+        return null;
 
     if (props.view == 'button') {
         return <ButtonCover imageSource={imageSource} selectImage={selectImage} />

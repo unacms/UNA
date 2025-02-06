@@ -22,11 +22,13 @@ import CheckboxSet from './checkbox_set';
 import Visibility from './visibility';
 import Stars from './stars';
 import MultiField from './multi_field';
+import Embed from './embed';
 
 export const componentsMapDefault = {
     input_set: InputSet,
     visibility: Visibility,
     multi_field: MultiField,
+    embed: Embed,
     initial_members: InitialMembers,
     captcha: Captcha,
     custom: Custom,

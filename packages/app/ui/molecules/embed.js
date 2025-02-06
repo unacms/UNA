@@ -8,9 +8,11 @@ import Youtube from 'app/ui/molecules/youtube'
 
 const Embed = memo(function ({ data, size }) {
 
+  
     const videoId = getYouTubeVideoId(data.url);
+    console.log("data.urldata.url", data.url, videoId)
     if (videoId)
-        return <Youtube url={data.url} size={size} />
+        return <Youtube videoId={videoId} url={data.url} size={size}  />
 
     return <Link target='_blank' href={data.url} >
         <Row className='rounded-lg mt-3 border border-bdr dark:border-bdr-d'>
