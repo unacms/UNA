@@ -524,10 +524,10 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
 
     useEffect(() => {
         const showSubscription = Keyboard.addListener('keyboardDidShow', (e) => {
-            setKeyboardHeight(e.endCoordinates.height - 64);
+            setKeyboardHeight(e.endCoordinates.height - (Platform.OS === 'ios' ? 64 : 0));
         });
         const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
-            setKeyboardHeight(initValue - 74); // Reset keyboard height
+            setKeyboardHeight(initValue - - (Platform.OS === 'ios' ? 74 : 0)); // Reset keyboard height
         });
 
         return () => {
