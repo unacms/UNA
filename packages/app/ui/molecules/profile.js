@@ -53,7 +53,7 @@ function DisplayNameLink({ title, url, href, fontSize, actions }) {
 
 function DisplayNameText({ title, fontSize }) {
     return (
-        <Text className={'text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 dark:hover:text-white ' + fontSize + '  font-semibold tracking-tight truncate hover:underline'}>
+        <Text className={'text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 dark:hover:text-white ' + fontSize + '  font-semibold tracking-tight truncate '}>
             {title}
         </Text>
     )

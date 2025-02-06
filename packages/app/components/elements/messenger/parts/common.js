@@ -524,7 +524,7 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
 
     useEffect(() => {
         const showSubscription = Keyboard.addListener('keyboardDidShow', (e) => {
-            setKeyboardHeight(e.endCoordinates.height);
+            setKeyboardHeight(e.endCoordinates.height - 64);
         });
         const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
             setKeyboardHeight(initValue - 74); // Reset keyboard height
