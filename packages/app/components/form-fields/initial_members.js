@@ -22,6 +22,7 @@ const User = ({ data, onSelect, type }) => {
     );
 };
 
+
 export function SelectUsers({ onSave, initedData = [], requestUrl, isSingle = false }) {
 
     const initialState = {
