@@ -36,24 +36,24 @@ function ProfileView({ isImageOnly = false, data, handleSubmit, showImage, setSh
     const isHiddenVisibility = data?.inputs?.['object_privacy_view']?.origtype == 'hidden'
 
     const authorName = (<Text className="text-neutral-900 dark:text-neutral-100 leading-[22px] sm:px-[4px] font-bold tracking-tight text-[16px] truncate">
-                {currentUser.display_name}
-            </Text>
+        {currentUser.display_name}
+    </Text>
     )
 
     return (
         <View className="flex-row flex-auto items-center justify-between gap-x-[8px] text-neutral-400 dark:text-neutral-600  ">
             <View className="gap-x-[8px] mr-[8px] flex-row flex-auto ">
                 <Profile {...profileData} displaySize="base" displayType="unit_wo_info" />
-                
-                <View className={`flex-col flex-auto rounded-[8px] ${!isHiddenVisibility ?'group sm:hover:bg-neutral-100 sm:dark:hover:bg-neutral-800 sm:active:bg-neutral-300 sm:dark:active:bg-neutral-700': ''}`}>
-                    
+
+                <View className={`flex-col flex-auto rounded-[8px] ${!isHiddenVisibility ? 'group sm:hover:bg-neutral-100 sm:dark:hover:bg-neutral-800 sm:active:bg-neutral-300 sm:dark:active:bg-neutral-700' : ''}`}>
+
                     {data?.inputs?.['object_privacy_view'] && getFormFieldByData(
                         {
                             ...data.inputs['object_privacy_view'],
                         },
                         handleSubmit,
                         'nofield',
-                        
+
                         {
                             onShowModal: setShowImage,
                             showModal: showImage,
@@ -63,7 +63,7 @@ function ProfileView({ isImageOnly = false, data, handleSubmit, showImage, setSh
                             addElement: authorName,
                         }
                     )}
-                   
+
                 </View>
             </View>
         </View>
@@ -177,12 +177,11 @@ export default function FormFeed(props) {
                 size: 'sm',
             }
         )
-    
+
     const handleModalClose = useCallback(() => {
         Keyboard.dismiss()
         setShowImage(false)
     }, [])
-
 
     const form = <KbAvoidingView className='flex-col h-full flex-auto' offset={isIos ? 10 : 74}>
         {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'default')}
@@ -190,35 +189,37 @@ export default function FormFeed(props) {
         {getFormFieldByData(props.data.inputs['owner_id'], props.handleSubmit, 'default')}
         {getFormFieldByData(props.data.inputs['type'], props.handleSubmit, 'default')}
         <View className="justify-between flex-col flex-auto">
-            
                 <View className="w-full h-full  flex-1 justify-end px-[12px] ">
-                    <View className="flex-auto web:overflow-auto">
-                    {getFormFieldByData(
-                        props.data.inputs['text'],
-                        props.handleSubmit,
-                        'custom',
-                        {
-                            styles:{verticalAlign: 'top'},
-                            focus: true,
-                            noMargin: true,
-                            bg: 'transparent',
-                            placeholder: 'Write here...',
-                            linkify: true,
-                            autofocus: Date.now()
-                        }
-                    )}
+                    <View className="flex-auto web:overflow-auto ">
+                        {getFormFieldByData(
+                            props.data.inputs['text'],
+                            props.handleSubmit,
+                            'custom',
+                            {
+                                styles: { verticalAlign: 'top' },
+                                focus: true,
+                                noMargin: true,
+                                bg: 'transparent',
+                                placeholder: 'Write here...',
+                                linkify: true,
+                                autofocus: Date.now()
+                            }
+                        )}
                     </View>
-                    <View className="">
-                    {props.data.inputs['labels'] && (
-                        <View className="flex-auto">
-                            {labels}
+                    <View >
+                        <Row className="w-full flex-wrap">{prevList}</Row>
+                        <View className="">
+                            {props.data.inputs['labels'] && (
+                                <View className="flex-auto">
+                                    {labels}
+                                </View>
+                            )}
                         </View>
-                    )}
                     </View>
                 </View>
-            
+
             <View className="  ">
-                
+
                 <View className={
                     '  items-center flex-auto w-full gap-x-[8px] p-[12px] bg-neutral-500/5  ' +
                     (isWeb ? ' ' : ' ') +
@@ -228,7 +229,6 @@ export default function FormFeed(props) {
                         '  '
                         : ' lalal ')
                 }>
-                     <ScrollView keyboardDismissMode="on-drag" keyboardShouldPersistTaps="handled" className="w-full " horizontal={true}>{prevList}</ScrollView>
 
                     <Row className="gap-x-[8px] w-full justify-between ">
                         <Row className="flex-none gap-x-[8px]">
@@ -238,8 +238,8 @@ export default function FormFeed(props) {
                                         props.data.inputs['obfuscate_faces'],
                                         props.handleSubmit,
                                         'default'
-                                        
-                                       
+
+
                                     )}
                                 </View>
                             )}
@@ -330,32 +330,32 @@ export default function FormFeed(props) {
                         </Row>
                         <View className=" flex-1 web:flex-none items-end ">
                             <View>
-                            {getFormFieldByData(
-                                props.data.inputs['tlb_do_submit'],
-                                props.handleSubmit,
-                                'default',
-                                {
-                                    disabled: text != '' ? false : true,
-                                    noMargin: true,
-                                    size: 'base',
-                                    notFullWidth: true,
-                                    icon: "PaperPlane",
+                                {getFormFieldByData(
+                                    props.data.inputs['tlb_do_submit'],
+                                    props.handleSubmit,
+                                    'default',
+                                    {
+                                        disabled: text != '' ? false : true,
+                                        noMargin: true,
+                                        size: 'base',
+                                        notFullWidth: true,
+                                        icon: "PaperPlane",
 
-                                }
-                            )}</View></View>
+                                    }
+                                )}</View></View>
                     </Row>
                 </View>
             </View>
         </View>
     </KbAvoidingView>
 
-    if (isFormOnly){
+    if (isFormOnly) {
         return (
             <View className="w-full flex-1 h-full">
                 <View className="items-start justify-start p-[12px] ">
-                   {header}
+                    {header}
                 </View>
-                
+
                 {form}
             </View>
         )
