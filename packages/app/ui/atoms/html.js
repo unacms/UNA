@@ -34,7 +34,17 @@ const customHTMLElementModels = {
         },
         contentModel: HTMLContentModel.block,
     }),
+    p: HTMLElementModel.fromCustomModel({
+        tagName: "p",
+        mixedUAStyles: {
+            userSelect: 'text',
+            WebkitUserSelect: 'text',
+            WebkitTouchCallout: 'default'
+        },
+        contentModel: HTMLContentModel.block,
+    }),
 };
+
 
 const customHTMLElementModelsCustom =(width, height) =>{ 
     return {
@@ -328,17 +338,26 @@ export default function ElementHtml(props) {
             ignoredDomTags={[]}
             WebView={WebView}
             customHTMLElementModels={props.pureHtml? customHTMLElementModelsCustom(width, height) : customHTMLElementModels}
-            defaultWebViewProps={
-                {
-                    bounces: false,         // IOS Only
-                    dataDetectorTypes: 'link',
-                    scalesPageToFit: true,
-                    scrollEnabled: true,
-                    automaticallyAdjustContentInsets: true,
-                    mediaPlaybackRequiresUserAction: true,
-
-                }
-            }
+            defaultWebViewProps={{
+                bounces: false,
+                dataDetectorTypes: 'link',
+                scalesPageToFit: true,
+                scrollEnabled: true,
+                automaticallyAdjustContentInsets: true,
+                mediaPlaybackRequiresUserAction: true,
+                javaScriptEnabled: true,
+                domStorageEnabled: true,
+                injectedJavaScript: `
+                    document.addEventListener('DOMContentLoaded', function() {
+                        document.body.style.webkitUserSelect = 'text';
+                        document.body.style.webkitTouchCallout = 'default';
+                        document.querySelectorAll('p, span, div').forEach(el => {
+                            el.style.webkitUserSelect = 'text';
+                        });
+                    });
+                    true; // Для работы на Android
+                `,
+            }}
             renderersProps={{
                 iframe: {
                     scalesPageToFit: true,
@@ -351,9 +370,24 @@ export default function ElementHtml(props) {
                         onPress(event, url, htmlAttribs, target);
                     }
                 },
+                p: {
+                    nativeProps: {
+                        selectable: true,
+                        allowFontScaling: false,
+                        style: { userSelect: 'text' }
+                    }
+                }
                
             }}
-            defaultTextProps={{ selectable: true, allowFontScaling: false }} 
+            defaultTextProps={{
+                selectable: true,
+                allowFontScaling: false,
+                style: {
+                    userSelect: 'text',
+                    WebkitUserSelect: 'text',  // Для Safari на iOS
+                    WebkitTouchCallout: 'default' // Показывает стандартное меню копирования
+                }
+            }} 
             contentWidth={width}
             tagsStyles={tagsStyles}
             classesStyles={classesStyles}
