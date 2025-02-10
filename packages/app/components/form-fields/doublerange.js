@@ -15,10 +15,10 @@ export default function FormFieldText(props) {
 
 
     let range = [props.attrs.min, props.attrs.max]
-    if (props.value != '') {
+    if (props.value != '' && Array.isArray(props.value)) {
         range = props.value.split('-').map(str => parseInt(str, 10));
     }
-
+   
     const [value, setValue] = useState(range)
 
     useEffect(() => {

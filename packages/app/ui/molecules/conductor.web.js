@@ -48,7 +48,7 @@ const AddBlocks = (leftSideBarBlocks, data, onFormSubmit, onFormChangedValues) =
 
     return <>
         {(leftSideBarBlocksObj?.length > 0 ) && 
-            <View className="my-3 mx-2 ">
+            <View className="my-0 mx-2 ">
                 {leftSideBarBlocksObj.map((block, index) => {
                     return <View key={"lb-" + index}>{block}</View>
                 })}

@@ -25,10 +25,11 @@ export default function MenuItemSubmenuShare(oProps) {
         showTitleFromSize: oProps.params?.button_show_title_from_size
     };
 
+
     const handleMenuManageSelect = async (oItem, event) => {
         switch(oItem.name) {
             case 'item-repost':
-                const sResponse = await fetcher('/api.php?r=bx_timeline/repost/Module&params=' + JSON.stringify(Object.values(oItem.data)));
+                const sResponse = await fetcher('/api.php?r=bx_timeline/repost/&params=' + JSON.stringify(Object.values(oItem.data)));
                 if(sResponse?.data ){
                     const sMsg = sResponse.data?.message ? sResponse.data?.message : 'The item was successfully reposted.';
                     console.log("sMsg", sMsg)
@@ -81,6 +82,7 @@ export default function MenuItemSubmenuShare(oProps) {
             link: oItem.link,
             name: oItem.name,
             title: oItem.title,
+            data: oItem.data,
             icon: oIconAliases[oItem.name],  
         };
     });

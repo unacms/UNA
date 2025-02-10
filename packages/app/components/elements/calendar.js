@@ -1,182 +1,159 @@
-import { Text } from 'app/design/typography'
-//import { AgendaList, CalendarProvider, ExpandableCalendar, calendarTheme } from 'react-native-calendars';
 import { View, Row } from 'app/design/view'
-import Time from 'app/ui/atoms/time';
-import Link from 'app/ui/atoms/link'
-import { fetcher } from 'app/lib/fetcher';
-import { useEffect, useState, useRef } from 'react';
-import Card from 'app/ui/molecules/card'
-import { Theme } from 'app/design/theme';
-import { stripTags } from 'app/lib/util';
+import Dropdown from 'app/ui/atoms/dropdown'
+import { useState, useReducer, useMemo, useCallback, useEffect } from 'react';
+import { Modal } from 'app/design/controls'
 import { Button } from 'app/design/controls';
-import Image from 'app/ui/atoms/image'
-import { getImageSizes } from 'app/lib/util'
-import { appStatic } from 'app/lib/app-static';
+import { Text } from 'app/design/typography';
+import { Icon } from 'app/ui/atoms/icon';
+import { Theme } from 'app/design/theme';
 
-export default function ElementCalendar({ data }) {
-    const [cdata, setData] = useState(false);
-    const [showCalendar, setShowCalendar] = useState(true);
+const formatValueDate = (v) => {
+    const date = new Date(v.dt);
+    const localDate = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+    return localDate.toLocaleDateString();
+}
 
-    const [Calendars, setCalendars] = useState(null);
+const formatValue = (v, bIsTime) => {
+    if (v.dt != '') {
+        let v3 = formatValueDate(v);
+        if (bIsTime)
+            return `${v3} ${v.h}:${v.m}`
+        else
+            return v3;
+    }
+    else {
+        return bIsTime ? 'Select date/time' : 'Select date';
+    }
+}
+
+const setdValue_ = (state, action) => {
+    return { ...state, [action.type]: action.value };
+}
+
+const loadCalendar = async (setDynamicCalendar) => {
+    const Calendars = await import('react-native-calendars');
+    setDynamicCalendar(() => Calendars.Calendar);
+};
+
+const CalendarHeader = (dValue, addMonth) => {
     
-    useEffect(() => {
-        const loadComponents = async () => {
-            const CalendarsModule = await import('react-native-calendars');
-            setCalendars(() => CalendarsModule);
-        };
+    if (dValue.dt == ''){
+        return (<Row className='w-full justify-center mb-4 items-center mt-2'><Text className=" font-medium text-neutral-700 text-lg">Select date</Text></Row>)
+    }
 
-        loadComponents();
-    }, []);
+    return (<Row className='w-full justify-between mb-4 items-center mt-2'>
+        <Button size="sm" rounded startDecorator="CaretDoubleLeft" onPress={() => addMonth('y', -1)} />
+        <Button size="sm" rounded startDecorator="CaretLeft" onPress={() => addMonth('m', -1)} />
+        <Text className=" font-medium text-neutral-700 text-lg">{formatValueDate(dValue)}</Text>
+        <Button size="sm" rounded startDecorator="CaretRight" onPress={() => addMonth('m', 1)} />
+        <Button size="sm" rounded startDecorator="CaretDoubleRight" onPress={() => addMonth('y', 1)} />
+    </Row>)
+};
 
+const generateValues = range => Array.from({ length: range }, (_, i) => ({ label: i.toString().padStart(2, '0'), value: i.toString().padStart(2, '0') }));
+
+export default function ({ name, value = '', type, onChange }) {
     const { colors } = Theme();
-
-    function getMarkedDates() {
-        const marked = {};
-        transformedData?.forEach(item => {
-            if (item.data && item.data.length > 0) {
-                marked[item.title] = { marked: true };
-            } else {
-                marked[item.title] = { disabled: true };
-            }
-        });
-        return marked;
-    }
-
-    const fetchData = async () => {
-        let params = {params: data.params};
-        if (cdata){
-            params.params = {start: cdata.params.end, end: cdata.params.end + 24*60*60*30};
-        }
-        
-        let url = '/api.php?r=' + data.request_url;
-        if (params.start){
-            url+= JSON.stringify(params);
-        }
-        const sResponse = await fetcher(url);
-        setData(sResponse.data);
-    };
+    const bIsTime = type === 'datetime';
+    const [showModal, setShowModal] = useState(false);
+    const [DynamicCalendar, setDynamicCalendar] = useState(null);
+    
+    const [date, hour = '00', minute = '00'] = value.split(/[: ]/);
+    const [dValue, setdValue] = useReducer(setdValue_, { dt: date, h: hour, m: minute });
+    const [cValue, setcValue] = useState({ dt: date, h: hour, m: minute });
 
     useEffect(() => {
-        fetchData();
+        let isMounted = true;
+        loadCalendar(setDynamicCalendar).catch(console.error).then(() => {
+            if (!isMounted) setDynamicCalendar(null);
+        });
+        return () => { isMounted = false; };
     }, []);
 
-    if (!cdata)
-        return <></>;
-
-    const transformedData = transformToCalendarFormat(cdata);
-    const marked = getMarkedDates();
-
-    function transformToCalendarFormat(data) {
-        const groupedEvents = {};
-
-        data.data.forEach(event => {
-            const date = new Date(event.start).toISOString().split('T')[0];
-            if (!groupedEvents[date]) {
-                groupedEvents[date] = [];
-            }
-            groupedEvents[date].push(event);
-        });
-
-        const items = Object.keys(groupedEvents).map(date => {
-            return { title: date, data: groupedEvents[date] };
-        });
-        return items;
+    const setFieldValue = (val, hide = true) => {
+        setcValue(val)
+        onChange((new Date(`${val.dt} ${val.h}:${val.m}`).getTime()) / 1000)
+        if (hide)
+            setShowModal(false);
     }
 
-
-    const imageSizes = getImageSizes()
-
-    if (transformedData.length == 0)
-        return<>{appStatic('components_content_empty')}</>
-
-    const onEndReached = () => {
-        fetchData();
+    const setValueDay = (day, hide = true) => {
+        setdValue({ type: 'dt', value: day.dateString })
+        if (!bIsTime) {
+            setFieldValue({ dt: day.dateString, h: dValue.h, m: dValue.m }, hide);
+        }
     };
 
-    const onDateChanged = (a) => {
-        // console.log(a);
-    }
+    const addMonth = (type, val) => {
+        let newDate = new Date(dValue.dt);
+        if (type === 'y')
+            newDate.setFullYear(newDate.getFullYear() + val);
+        if (type === 'm')
+            newDate.setMonth(newDate.getMonth() + val);
+
+        setValueDay({ dateString: newDate.toISOString().slice(0, 10) }, false)
+    };
+
+    const hours = useMemo(() => generateValues(24), []);
+    const minutes = useMemo(() => generateValues(60), []);
 
     return (
-        <View className='w-full'>
-            <Calendars.CalendarProvider
-                date={transformedData[0]?.title}
-                onDateChanged={onDateChanged}
-            >
-            <View className='w-full space-x-2 sm:flex-row-reverse'>
-                
-                <View className={(!showCalendar ? 'hidden' : '') +' md:block f-full sm:w-1/3 '}>
-                    <Card margin="m-2 pb-2" rounded="rounded">
-                        <Calendars.ExpandableCalendar 
-                            firstDay={1}
-                            markedDates={marked}
-                            animateScroll
-                            initialPosition={'closed'}
-                            hideKnob={false}
+        <>
+            <Modal onVisible={!!showModal} onClose={() => { setShowModal(false) }} transparent={false}>
+                <View className='  max-w-sm w-full mx-auto'>
+                    <View className='  max-w-sm w-full mx-auto '>
+                        {DynamicCalendar && <DynamicCalendar
+                            className=' bg-bgrcard dark:bg-bgrcard-d'
                             theme={{
-                              calendarBackground: 'transparent', 
-                              textDayColor: "#000",
-                              dayTextColor: colors.default,
-                              dotColor: colors.primary,
-                              monthTextColor: colors.default,
+                                calendarBackground: colors.background2,
+                                dayTextColor: colors.text,
+                                textDisabledColor: colors.text,
+                                monthTextColor: colors.text,
                             }}
+                            renderArrow={direction => { return <View className="text-neutral-800 dark:text-neutral-200"><Icon icon={direction == 'left' ? 'ArrowLeft' : 'ArrowRight'} width={24} height={24} /></View> }}
+                            initialDate={dValue.dt}
+                            customHeader={() => CalendarHeader(dValue, addMonth)}
+                            onDayPress={day => {
+                                setValueDay(day)
+                            }}
+                            markedDates={{
+                                [dValue.dt]: { selected: true, selectedColor: colors.primary }
+                            }}
+                        />}
+                    </View>
 
-                        />
-                        
-                    </Card>
-                    
+                    {
+                        bIsTime && (<View className='w-full justify-center items-center gap-y-4'><Row className='justify-center items-center w-64 mt-2'>
+                            <Text className="text-base justify-center items-center text-neutral-900 dark:text-neutral-50"> Time </Text>
+                            <View>
+                                <Dropdown
+                                    labelField="label"
+                                    valueField="value"
+                                    onChange={(v) => setdValue({ type: 'h', value: v })}
+                                    value={dValue.h}
+                                    data={hours}
+                                />
+                            </View>
+                            <Text className="text-base justify-center items-center text-neutral-900 dark:text-neutral-50"> : </Text>
+                            <View>
+                                <Dropdown
+                                    labelField="label"
+                                    valueField="value"
+                                    onChange={(v) => setdValue({ type: 'm', value: v })}
+                                    value={dValue.m}
+                                    data={minutes}
+                                />
+                            </View>
+                        </Row>
+                            <Button title="Apply" onPress={() => { setFieldValue(dValue) }} />
+                        </View>
+                        )
+                    }
                 </View>
-                <View className='sm:hidden w-full justify-center pr-4'><Button size="xs" fullWidth title ={showCalendar ? "Hide Calendar" : "Show Calendar"} onPress={() => {setShowCalendar(!showCalendar)}} /></View>
-                <View className='h-screen pt-2 w-full md:w-2/3 pr-4 sm:pr-0'>
-                    <Calendars.AgendaList
-                        sections={transformedData}
-                        avoidDateUpdates={false}
-                        scrollToNextEvent={true}
-                        onEndReached={onEndReached}
-                        viewOffset={0}
-                        sectionStyle={{ fontSize:16, paddingBottom:12, paddingTop:12, marginHorizontal:2, marginBottom:16, color:colors.default, backgroundColor:colors.barsBackground, borderRadius:8, borderColor:colors.selectBorder, borderWidth:1, borderStyle:'solid' }}
-                        renderItem={(item, firstItemInDay) => {
-                            return (
-                                <Link href={item.item.url}>
-                                    <View className='   pl-8 pb-4 pr-2 '>
-                                        <View className='absolute z-50 top-0 left-2 w-4 h-4 border-2 border-bgrbody dark:border-bgrbody-d flex-none rounded-full bg-neutral-300 dark:bg-neutral-700'></View>
-                                        <View className='absolute z-10   -top-4 left-3.5 w-1 h-full  flex-none  bg-neutral-200 dark:bg-neutral-900'></View>
-                                        <Card addClassName="flex-auto p-4  flex-col gap-y-2" margin="" >
-                                            <Row>
-                                                <View className={(item.item.cover? 'w-4/5': 'w-full') + ' gap-y-2'}>
-                                                    <Text className=" text-neutral-900 dark:text-neutral-100 tracking-tight dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-d leading-tight text-base font-bold">{item.item.title}</Text>
-                                                    { item.item.date_start > 0 && (
-                                                        <Row className='text-center gap-x-2 items-center'> 
-                                                            <Button startDecorator='CalendarCheck' size="xs"/>
-                                                            <Time className="text-base text-neutral-700 dark:text-neutral-300" ts={item.item.date_start}/>
-                                                            <Text className="text-base text-neutral-700 dark:text-neutral-300" >-</Text>
-                                                            <Time className="text-base text-neutral-700 dark:text-neutral-300" ts={item.item.date_end}/>   
-                                                        </Row>  
-                                                        )
-                                                    }
-                                                    {item.item.location != '' && (<Row  className='text-center gap-x-2 items-center'><Button startDecorator='MapPin' size="xs"/><Text  className="text-xs text-neutral-700 dark:text-neutral-300">{item.item.location}</Text></Row>)}
-                                                    <Text className="text-neutral-700 dark:text-neutral-300" numberOfLines={2}> {stripTags(item.item.description)}</Text>
-                                                </View>
-                                                { item.item.cover && <View className='w-1/5 mb-auto bg-bgritem dark:bg-bgritem-d aspect-video overflow-hidden rounded-xl'>
-                                                    <Image
-                                                        {...item.item.cover}
-                                                        view="cover"
-                                                        className="u-cover"
-                                                        sizes={imageSizes}
-                                                    />
-                                                </View>}
-                                            </Row>
-                                        </Card>
-                                    </View>
-                                </Link>
-                            );
-                        }}
-                        renderEmptyData={() => {
-                            return <View />;
-                        }}
-                    /></View>
-                </View>
-            </Calendars.CalendarProvider>
-        </View>
+            </Modal>
+            <Row>
+                <Button title={formatValue(cValue, bIsTime)} endDecorator="Calendar" onPress={() => { setShowModal(true) }} />
+            </Row>
+        </>
     );
 }
