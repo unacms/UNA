@@ -114,22 +114,19 @@ export default function ElementEntityAuthor(oProps) {
             <FormModal pageData={pageData} setPageData={setPageData} />
             <Redirect ref={redirectdRef} />
             {viewState.view == 'edited' && (<Modal
-                title={t("Edit post")}
                 onVisible={true}
-                onClose={() => {
-                    setViewState({ view: '' })
-                }}
-
                 transparent={true}
                 headerBorder={true}
+                padding= ' '
             >
-
                 <Form
                     {...viewState.data}
                     classContainerName="flex-row flex-wrap px-2 w-full items-start justify-between"
                     onFormSubmit={onFormSubmit}
+                    exProps={{
+                        onClose: () => { setViewState({ view: '' }) }
+                    }}
                 />
-
             </Modal>)
             }
 

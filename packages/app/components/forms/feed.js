@@ -18,12 +18,12 @@ import { Keyboard } from 'react-native'
 import { useFormContext } from 'react-hook-form'
 
 
-function ProfileView({ isImageOnly = false, data, handleSubmit, showImage, setShowImage }) {
+function ProfileView({ isImageOnly = false, data, handleSubmit, showImage, setShowImage, author }) {
     const { currentUser } = useCurrentUser();
 
     if (!currentUser) return null;
 
-    const profileData = {
+    const profileData = author? author : {
         ...currentUser,
         url_avatar: currentUser.avatar,
         url: null,
@@ -33,10 +33,10 @@ function ProfileView({ isImageOnly = false, data, handleSubmit, showImage, setSh
         return <Profile {...profileData} displaySize="base" displayType="unit_wo_info" />;
     }
 
-    const isHiddenVisibility = data?.inputs?.['object_privacy_view']?.origtype == 'hidden'
+    const isHiddenVisibility = data?.inputs?.['object_privacy_view']?.origtype == 'hidden' || !data?.inputs?.['object_privacy_view']
 
     const authorName = (<Text className="text-neutral-900 dark:text-neutral-100 leading-[22px] sm:px-[4px] font-bold tracking-tight text-[16px] truncate">
-        {currentUser.display_name}
+        {author? author.display_name : currentUser.display_name}
     </Text>
     )
 
@@ -46,8 +46,8 @@ function ProfileView({ isImageOnly = false, data, handleSubmit, showImage, setSh
                 <Profile {...profileData} displaySize="base" displayType="unit_wo_info" />
 
                 <View className={`flex-col flex-auto rounded-[8px] ${!isHiddenVisibility ? 'group sm:hover:bg-neutral-100 sm:dark:hover:bg-neutral-800 sm:active:bg-neutral-300 sm:dark:active:bg-neutral-700' : ''}`}>
-
-                    {data?.inputs?.['object_privacy_view'] && getFormFieldByData(
+        
+                    {data?.inputs?.['object_privacy_view'] ? getFormFieldByData(
                         {
                             ...data.inputs['object_privacy_view'],
                         },
@@ -62,7 +62,7 @@ function ProfileView({ isImageOnly = false, data, handleSubmit, showImage, setSh
                             variant: 'text',
                             addElement: authorName,
                         }
-                    )}
+                    ): authorName}
 
                 </View>
             </View>
@@ -139,12 +139,12 @@ export default function FormFeed(props) {
         .filter((element) => element !== undefined && element !== null)
 
 
-
     const header = (
         <Row className="w-full">
 
             <View className="flex-auto">
                 <ProfileView
+                    author={props.exProps?.item?.author_data}
                     data={props.data}
                     handleSubmit={props.handleSubmit}
                     showImage={showImage}
@@ -355,7 +355,6 @@ export default function FormFeed(props) {
                 <View className="items-start justify-start p-[12px] ">
                     {header}
                 </View>
-
                 {form}
             </View>
         )

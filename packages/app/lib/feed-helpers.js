@@ -75,13 +75,15 @@ export const FeedEditForm = memo(({ setViewState, viewState, id }) => {
             onVisible={true}
             transparent={true}
             headerBorder={true}
+            padding=' '
         >
             <Form
-                {...viewState.data}
+                {...viewState.data.form}
                 classContainerName="flex-row flex-wrap w-full items-start justify-between"
                 onFormSubmit={onFormSubmit}
                 exProps={{
-                    onClose: () => { setViewState({ view: '' }) }
+                    onClose: () => { setViewState({ view: '' }) },
+                    item: viewState?.data?.item
                 }}
             />
         </Modal>
@@ -269,7 +271,7 @@ const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen }) => {
                 const oResultEdit = await fetcher(
                     '/api.php?r=bx_timeline/get_edit_form/&params[]=' + id
                 )
-                setViewState({ view: 'edited', data: oResultEdit.data.form })
+                setViewState({ view: 'edited', data: oResultEdit.data })
                 break
 
             case 'item-delete':
