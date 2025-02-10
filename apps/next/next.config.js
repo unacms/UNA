@@ -13,6 +13,12 @@ const nextConfig = {
     /*experimental: {
       ppr: true,
     },*/
+    experimental: {
+      staleTimes: {
+        dynamic: 0,/* default 30, set to 0 to disable serverside case */
+        static: 180,
+      },
+    },
   // reanimated (and thus, Moti) doesn't work with strict mode currently...
   // https://github.com/nandorojo/moti/issues/224
   // https://github.com/necolas/react-native-web/pull/2330
