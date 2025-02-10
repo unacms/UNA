@@ -51,13 +51,13 @@ export default function PageLayout({layoutName, data, uri, blocks}) {
     const headerSettings = useMemo(() => getHeaderSettings(uri, windowWidth, 'profile', pageData.config), [uri, windowWidth]);
 
     const header = useMemo(() => {
-        if (windowWidth > LAYOUT_BREAKPOINTS.md && isAltView) {
+        if (windowWidth > LAYOUT_BREAKPOINTS.lg && isAltView) {
             return null;
         }
         return <Cover data={pageData.cover_block} mode={headerSettings.cover} uri={uri} />;
     }, [windowWidth, pageData.cover_block, headerSettings.cover, uri]);
 
-    const smallHeader = useMemo(() => (windowWidth > LAYOUT_BREAKPOINTS.md && isAltView ? null : <CoverSmall data={pageData.cover_block} />), [windowWidth, pageData.cover_block]);
+    const smallHeader = useMemo(() => (windowWidth > LAYOUT_BREAKPOINTS.lg && isAltView ? null : <CoverSmall data={pageData.cover_block} />), [windowWidth, pageData.cover_block]);
 
     const renderedBlocks = useMemo(() => {
         const initialBlocks = blocks || getBlocksFromData(pageData);

@@ -328,9 +328,6 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     }, []);
 
 
-
-    //console.log("setFilterValue", routes[index].endpoint.filters)
-
     const handleEndReached = useCallback(async (lastItemIndex) => {
         if (isFetchingNextPage)
             return;
@@ -390,16 +387,10 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         }
     };
 
-    const renderHeader = useCallback((tabBarObj, tabBarObjSmall) => {
-        const tOffset = getLayout(currentUser) == 'ver' ? 0 : 63;
-        if (!header && !smallHeader){
-            return (
-                <><View style={{ position: 'fixed', width: cntWidth + 'px', overflow: 'hidden', zIndex: 40, top: windowWidth >= LAYOUT_BREAKPOINTS.lg ? tOffset : 0 }}>
-                    {tabBarObj}
-                </View><View className="h-28 w-full lg:hidden"></View></>
-            )
-        }
+    const renderHeader = (tabBarObj, tabBarObjSmall) => {
 
+        const tOffset = getLayout(currentUser) == 'ver' ? 0 : 63;
+        
         const d = 200;
         const animatedStyle5 = useAnimatedStyle(() => {
             const opacityValue = withTiming(scrollValue.value, { duration: d });
@@ -418,7 +409,14 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             };
         }, [scrollValue]);
 
-        
+        if (!header && !smallHeader){
+            return (
+                <><View style={{ position: 'fixed', width: cntWidth + 'px', overflow: 'hidden', zIndex: 40, top: windowWidth >= LAYOUT_BREAKPOINTS.lg ? tOffset : 0 }}>
+                    {tabBarObj}
+                </View><View className="h-28 w-full lg:hidden"></View></>
+            )
+        }
+
       
         return (
             <>
@@ -440,7 +438,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                 </Animated.View>
             </>
         );
-    }, [windowWidth, currentUser, cntWidth, header, smallHeader]);
+    };
 
     const RenderScene = useCallback(({ route, status }) => {
         const filters = appSetting('conductor', 'hide_browse_filter') ? null : route?.endpoint?.filters;
@@ -569,7 +567,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         setCntWidth(event.nativeEvent.layout.width)
 
     };
-
+    
     const AddBlocksCnt = useMemo(() => AddBlocks(leftSideBarBlocks, data, onFormSubmit, onFormChangedValues), [leftSideBarBlocks, data, onFormSubmit, onFormChangedValues]);
     
     const leftSideBarObj = useCallback(() => {
