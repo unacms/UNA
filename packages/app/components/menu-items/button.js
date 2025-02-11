@@ -85,7 +85,7 @@ export default function MenuItemButton(oProps) {
                     <FormModal pageData={pageData} setPageData={setPageData} />
                     {(oProps.list && oProps.list.length > 0) && <ProfilesList data={oProps.list} showEmpty={false} maxCount={3} displaySize="sm" />}
                     {oProps?.link ? /*buttonAction*/
-                        (isShowModalForm ?
+                        (!isShowModalForm ?
                             /*MAY BE NEED IMPROVE disabled by modal forms edit/delete ENABLED BY DownloadCV Ling*/
                             <Link emulate={true} href={oProps.link[0] === '/' ? oProps.link : (oProps.link.includes("://") ? oProps.link : '/' + oProps.link)}>
                                 {buttonAction}

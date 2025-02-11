@@ -177,7 +177,7 @@ export async function parseData(routes, index, setRoutes, newData) {
         }
         let isFinished = (currentRoute.endpoint.finished !== finished)
         let endpoint = currentRoute.endpoint
-        //console.log('###################', finished, newData?.length, params.per_page)
+
         endpoint.finished = finished;
 
 
@@ -211,9 +211,9 @@ export async function fetchAndUpdateData(routes, index, setRoutes) {
 
         }
         const sResponse = await fetcher('/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' + link);
-        console.log("currentRoutecurrentRoute", currentRoute)
+
       //  let settings = appSetting('l-ayouts', getURI(currentRoute.link));
-        const settings = getPageSettings(currentRoute.config, getURI(currentRoute.link));
+        const settings = getPageSettings(sResponse.data.config, getURI(currentRoute.link));
         let blocks = settings?.blocks;
         if (!blocks)
             blocks = getBlocksFromData(sResponse.data);
@@ -247,6 +247,10 @@ export function addMoreData(newItems, endpoint, setRoutes, index, blocks, routes
 
         if (pageData && !route.pageData) {
             updatedRoute.pageData = pageData;
+        }
+
+        if (pageData?.config && !route.config) {
+            updatedRoute.config = pageData?.config;
         }
 
         if (sidebar) {

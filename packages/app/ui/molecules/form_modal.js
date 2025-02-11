@@ -40,6 +40,7 @@ export default function FormModal({ pageData, setPageData }) {
                                 exProps={{
                                     onClose: () => { setPageData(false); },
                                     resetOnSubmit: true,
+                                    formOnly: true,
                                 }}
                             />
                         ))
@@ -59,4 +60,3 @@ export const getFormModal = async (oItem, params) => {
     const url = oItem.link.replace(/^\/*/, "") + (params ? `&params[]=&params[]=${JSON.stringify({ params })}` : "");
     return await getPageData(url);
 }
-

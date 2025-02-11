@@ -151,7 +151,7 @@ export default function (props) {
                     onBlur={field.onBlur}
                     defaultValue={props.value}
                 />
-                <Row className=" h-[22px] items-center px-[4px] text-neutral-600 web:group-hover:text-neutral-800 web:dark:group-hover:text-neutral-200 dark:text-neutral-400 web:duration-300">
+                {!!props.owner_info && <Row className=" h-[22px] items-center px-[4px] text-neutral-600 web:group-hover:text-neutral-800 web:dark:group-hover:text-neutral-200 dark:text-neutral-400 web:duration-300">
                     <View className='flex-none mb-auto'>
                         <Profile
                             {...props.owner_info}
@@ -168,7 +168,7 @@ export default function (props) {
                             showLinks={false}
                         />
                     </View>
-                </Row>
+                </Row>}
             </>
         )
     }
