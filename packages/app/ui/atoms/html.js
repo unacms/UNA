@@ -38,8 +38,8 @@ const customHTMLElementModels = {
         tagName: "p",
         mixedUAStyles: {
             userSelect: 'text',
-            WebkitUserSelect: 'text',
-            WebkitTouchCallout: 'default'
+            /*WebkitUserSelect: 'text',
+            WebkitTouchCallout: 'default'*/
         },
         contentModel: HTMLContentModel.block,
     }),
