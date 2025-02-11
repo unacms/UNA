@@ -15,8 +15,6 @@ export default function MultiPostForm({ data }) {
     const [pageData, setPageData] = useState(false);
     const [pageDataDef, setPageDataDef] = useState(false);
     const menu_add_items = menuItemsByNameNew('', data.menu, currentUser).filter(item => item.name != 'more-auto');
-    
-   
 
     const firstForm = menu_add_items.shift();
 
@@ -35,6 +33,16 @@ export default function MultiPostForm({ data }) {
     }, []);
 
    
+    const getFirstForm = async () => {
+        if (pageDataDef){
+            setPageData({...cloneObject(pageDataDef), ts: Date.now()});
+        }
+        else{
+            const a = await getFormModal(firstForm, data.params);
+            console.log(a.data);
+            setPageData({...a.data, ts: Date.now()});
+        }
+    }
 
      if (menu_add_items.length == 0)
         return;
@@ -58,10 +66,7 @@ export default function MultiPostForm({ data }) {
                             rounded
                             title={t('Create new ') + firstForm.title.toLowerCase()}
                             align="start"
-                            onPress={() => {
-                                FeedbackHaptics('Medium')
-                                setPageData({...cloneObject(pageDataDef), ts: Date.now()})
-                            }}
+                            onPress={getFirstForm}
                         />
                     </View>
                 </View>
