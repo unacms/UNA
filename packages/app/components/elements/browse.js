@@ -38,7 +38,7 @@ const Item = memo(({ item, index, numColumns, data, unitMode, props }) => (
 const getNumCols = (width, props, data) => {
     if (props.perLine)
         return props.perLine;
-
+   
     if (data.unit.startsWith('general-') || data.unit.startsWith('search-')) {
         return width > 600 ? 4 : 1
     }

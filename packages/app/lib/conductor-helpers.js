@@ -384,6 +384,8 @@ export function getNumCols(width, currentRoute, leftSideBar) {
             }
         }
     }
+    if (currentRoute?.endpoint?.unit == 'feed')
+        return 1;
 
     let perLineSettings = [];
     if (currentRoute?.endpoint && currentRoute?.endpoint?.request_url){

@@ -453,6 +453,7 @@ export const settingsDefault = {
         menu_navbar: [
             { name: 'home', title: 'Home', link: '/', icon: 'House' },
             { name: 'friends', title: 'Friends', link: '/friends', icon: 'Users', nonlogged: false },
+            { name: 'explore', title: 'Explore', link: '/explore', icon: 'Compass', logged: false },
             { name: 'videos-home', title: 'Video', link: '/videos-home', icon: 'Video' },
             { name: 'products-home', title: 'Market', link: '/products-home', icon: 'Storefront' },
             { name: 'groups-home', title: 'Groups', link: '/groups-home', icon: 'UsersThree' },
@@ -463,15 +464,15 @@ export const settingsDefault = {
             { key: '/tab1', title: 'Friends', url: '/friends', icon: 'Users' },
             { key: '/tab2', title: 'Messages', url: '/messenger', icon: 'ChatTeardropDots' },
             { key: '/tab3', title: 'Notifications', url: '/notifications-view', icon: 'Bell' },
-            { key: '/tab4', title: 'Menu', url: '/dashboard', icon: 'UserList' }
+            { key: '/tab4', title: 'Dashboard', url: '/dashboard', icon: 'UserList' }
         ],
         
         menu_tabbar_non_logged: [
             { key: '/tab0', title: 'Home', url: '/home', icon: 'House' },
-            { key: '/tab1', title: 'Posts', url: '/posts-home', icon: 'ChatCenteredText' },
+            { key: '/tab1', title: 'Explore', url: '/explore', icon: 'Compass' },
             { key: '/tab2', title: 'About', url: '/about', icon: 'Info' },
-            { key: '/tab3', title: 'Terms', url: '/terms', icon: 'List' },
-            { key: '/tab4', title: 'Privacy', url: '/privacy', icon: 'EyeSlash' }
+            { key: '/tab3', title: 'Contact', url: '/contact', icon: 'AddressBook' },
+            { key: '/tab4', title: 'Account', url: '/login', icon: 'UserCircle' }
         ],
     },
     layouts: {},

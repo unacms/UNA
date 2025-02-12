@@ -9,7 +9,7 @@ import { AuthorData } from 'app/lib/common-helpers'
 
 const Units = {};
 
-Units.Small = function Small({ data, imageSizes }) {
+Units.Base = function Base({ data, imageSizes }) {
     return (
         <Card margin="  m-1 sm:m-2 " rounded=" rounded-2xl " addClassName=" p-2  ">
             <View className="  aspect-video flex-none rounded-lg overflow-hidden mb-auto w-full bg-bgritem dark:bg-bgritem-d  ">
@@ -61,7 +61,7 @@ Units.Search = function Search({ data, imageSizes }) {
     )
 }
 
-Units.Base = function Base({ data, imageSizes }) {
+Units.Small = function Small({ data, imageSizes }) {
     return (
         <View className=" mx-auto pt-1 sm:p-2 w-full max-w-2xl">
             <Card addClassName=" rounded-none sm:rounded-2xl p-1 sm:p-2 flex-auto  mx-auto w-full flex-row-reverse duration-300 ">
