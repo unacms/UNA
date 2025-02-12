@@ -72,7 +72,7 @@ yarn
 
 ## 🛠️ List of files that can be changed for customization
 
-### apps\next\next.config.custom.js - allows you to change configuration for native apps's build
+### apps\expo\app.config.custom.js - allows you to change configuration for native apps's build
 
 Example:
 ```
@@ -215,7 +215,7 @@ module.exports = nextConfigCustom;
 
 ```
 
-### settings.js - allows you to override default/add new settings  
+### packages\app\settings.js - allows you to override default/add new settings  
 
 Example:
 ```
@@ -225,7 +225,7 @@ settingsDefault.layout.default_layout = 'hor';
 export const settings = settingsDefault;
 ```
 
-### translation.js - allows you to override default/add new translations
+### packages\app\translation.js - allows you to override default/add new translations
 
 ```
 import { resourcesDefault } from './translation-default';
@@ -234,7 +234,7 @@ resourcesDefault.en.translation['bx_market_reviews_title'] = 'Reviews'
 export const resources = resourcesDefault;
 ```
 
-### static.js - allows you to override default/add new static content or design parts 
+### packages\app\static.js - allows you to override default/add new static content or design parts 
 
 ```
 import { staticDefault } from './static-default';
@@ -257,7 +257,7 @@ export const staticComponents = staticDefault;
 
 ### override default/add new icons 
 
-#### icons.js - icons for native app from phosphor-react-native
+#### packages\app\icons.js - icons for native app from phosphor-react-native
 
 ```
 'use client'
@@ -272,7 +272,7 @@ export const IconSet = {
 }
 ```
 
-#### icons-svg.js - custom SVG icons
+#### packages\app\icons-svg.js - custom SVG icons
 
 ```
 'use client'
