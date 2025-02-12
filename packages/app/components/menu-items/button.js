@@ -9,6 +9,7 @@ import { Text } from 'app/design/typography'
 import { getIconByNameFromIconset } from 'app/lib/util';
 import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal';
 import { useState } from 'react'
+import { Platform } from 'react-native';
 
 export default function MenuItemButton(oProps) {
 
@@ -72,7 +73,17 @@ export default function MenuItemButton(oProps) {
 
             const isShowModalForm = oProps.link.includes('delete-') || oProps.link.includes('edit-')
             if (isShowModalForm) {
-                oButtonProps.onPress = () => handleFormModal(oProps, event, setPageData);
+                oButtonProps.onPress = () => 
+                    {
+                        if (Platform.OS == 'web') {
+                            const popperDiv = document.querySelector('div[data-radix-popper-content-wrapper]');
+                            if (popperDiv) {
+                                popperDiv.classList.add('radix-hide');
+                            }
+                        }
+                        console.log("pageData18")
+                        handleFormModal(oProps, event, setPageData)
+                    }
             }
 
             let buttonAction = <ButtonAction title={oProps.title} startDecorator={sButtonIcon} {...oButtonProps} />;
@@ -82,7 +93,7 @@ export default function MenuItemButton(oProps) {
 
             sContent = (
                 <Row className={bShowVertical ? "flex-col flex-auto items-stretch" : "flex-auto items-center"}>
-                    <FormModal pageData={pageData} setPageData={setPageData} />
+                    
                     {(oProps.list && oProps.list.length > 0) && <ProfilesList data={oProps.list} showEmpty={false} maxCount={3} displaySize="sm" />}
                     {oProps?.link ? /*buttonAction*/
                         (!isShowModalForm ?
@@ -100,7 +111,12 @@ export default function MenuItemButton(oProps) {
             );
     }
 
+    console.log("pageData15", pageData)
+
     return (
-        <View className={'menu-item flex-auto  ' + (bShowVertical ? ' w-full ' : ' flex-row ')}>{sContent}</View>
+        <View className={'menu-item flex-auto  ' + (bShowVertical ? ' w-full ' : ' flex-row ')}>
+            <FormModal pageData={pageData} setPageData={setPageData} />
+            {sContent}
+        </View>
     );
 }

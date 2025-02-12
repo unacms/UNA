@@ -6,8 +6,7 @@ import { useCallback } from 'react'
 import { Keyboard } from 'react-native'
 
 export default function FormModal({ pageData, setPageData }) {
-    if (!pageData)
-        return null
+
 
     const handleModalClose = useCallback(() => {
         Keyboard.dismiss()
@@ -15,6 +14,9 @@ export default function FormModal({ pageData, setPageData }) {
 
     const isShowHeader = pageData.module != "bx_timeline";
     const Container = isShowHeader ? ScrollView : View;
+
+    console.log("pageDatapageData", pageData.module + (pageData.ts))
+
     if (!pageData)
         return null;
 
@@ -29,7 +31,7 @@ export default function FormModal({ pageData, setPageData }) {
             transparent={true}
             onRequestClose={handleModalClose}
         >
-            <Container key={pageData.module + (pageData.ts)} className={`flex-1 ${isShowHeader ? '' : ''}`}>{/*px-3 sm:px-0*/}
+            <Container key={pageData.module + (pageData.ts)} className={`flex-1 overflow-visible ${isShowHeader ? '' : ''}`}>{/*px-3 sm:px-0*/}
                 {
                     Object.keys(pageData?.elements || {}).map(key =>
                         Object.keys(pageData.elements[key] || {}).map(key2 => (
@@ -53,6 +55,7 @@ export default function FormModal({ pageData, setPageData }) {
 
 export const handleFormModal = async (oItem, event, setPageData, params) => {
     const sResponse = await getFormModal(oItem, params);
+    console.log('pageData16');
     setPageData({...sResponse.data, ts: Date.now()});
 }
 
