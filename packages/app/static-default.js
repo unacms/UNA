@@ -24,7 +24,7 @@ const LogoText = (
     <Svg
         aria-label="Logo Text"
         className=" group-active:scale-90 text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-900 dark:group-hover:text-neutral-100 duration-500"
-       
+
         viewBox="0 0 68 32"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -51,7 +51,7 @@ const LogoMark = (
         aria-label="Logo Mark"
         className=" w-auto h-fit text-neutral-800 dark:text-neutral-200 hover:text-neutral-900 dark:hover:text-neutral-100  "
         viewBox="0 0 40 40"
-        
+
         xmlns="http://www.w3.org/2000/svg"
     >
         <Path
@@ -120,7 +120,7 @@ const LogoNativeLight = (
 
 const LogoNativeDark = (
     <View className="w-[44px] h-[44px]">
-         <Svg
+        <Svg
             aria-label="Logo Mark"
             className="h-[44px] w-[44px]"
             viewBox="0 0 40 40"
@@ -183,6 +183,21 @@ const ComponentsCommentsEmpty = () => {
                 </View>
             </View>
         </>
+    )
+}
+
+const ComponentsCommentsLogin = () => {
+    const { t } = useTranslation()
+    return (
+        <View className="py-2">
+            <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto  py-4 px-8  items-center rounded-2xl  bg-neutral-500/10 ">
+
+
+                <Text className="text-center text-base text-neutral-800 dark:text-neutral-200 ">
+                    <Link className="text-primary" href="/login">Login</Link> or <Link className="text-primary" href="/create-account">create an account</Link> to comment
+                </Text>
+            </View>
+        </View>
     )
 }
 
@@ -434,54 +449,54 @@ const ComponentsLoginContent = (
 
 const ComponentsDummy = (
     <>
-    <Row className="gap-x-2 items-start mb-4">
-        <Button size="xs" variant='primary' title="text"></Button>
-        <Button size="xs" variant='primary' title="text" startDecorator="Plus"></Button>
-        <Button size="xs" variant='text' title="text"></Button>
-        <Button size="xs" variant='text' title="text" startDecorator="Plus"></Button>
-        <Button size="xs" variant='default' title="text"></Button>
-        <Button size="xs" variant='default' title="text" startDecorator="Plus"></Button>
-        <Button size="xs" variant='secondary' title="text"></Button>
-        <Button size="xs" variant='secondary' title="text" startDecorator="Plus"></Button>
-        <Button size="xs" variant='outline' title="text"></Button>
-        <Button size="xs" variant='outline' title="text" startDecorator="Plus"></Button>
-    </Row>
-    <Row className="gap-x-2 items-start mb-4">
-        <Button size="sm" variant='primary' title="text"></Button>
-        <Button size="sm" variant='primary' title="text" startDecorator="Plus"></Button>
-        <Button size="sm" variant='text' title="text"></Button>
-        <Button size="sm" variant='text' title="text" startDecorator="Plus"></Button>
-        <Button size="sm" variant='default' title="text"></Button>
-        <Button size="sm" variant='default' title="text" startDecorator="Plus"></Button>
-        <Button size="sm" variant='secondary' title="text"></Button>
-        <Button size="sm" variant='secondary' title="text" startDecorator="Plus"></Button>
-        <Button size="sm" variant='outline' title="text"></Button>
-        <Button size="sm" variant='outline' title="text" startDecorator="Plus"></Button>
-    </Row>
-    <Row className="gap-x-2 items-start mb-4">
-        <Button size="base" variant='primary' title="text"></Button>
-        <Button size="base" variant='primary' title="text" startDecorator="Plus"></Button>
-        <Button size="base" variant='text' title="text"></Button>
-        <Button size="base" variant='text' title="text" startDecorator="Plus"></Button>
-        <Button size="base" variant='default' title="text"></Button>
-        <Button size="base" variant='default' title="text" startDecorator="Plus"></Button>
-        <Button size="base" variant='secondary' title="text"></Button>
-        <Button size="base" variant='secondary' title="text" startDecorator="Plus"></Button>
-        <Button size="base" variant='outline' title="text"></Button>
-        <Button size="base" variant='outline' title="text" startDecorator="Plus"></Button>
-    </Row>
-    <Row className="gap-x-2 items-start mb-4">
-        <Button size="lg" variant='primary' title="text"></Button>
-        <Button size="lg" variant='primary' title="text" startDecorator="Plus"></Button>
-        <Button size="lg" variant='text' title="text"></Button>
-        <Button size="lg" variant='text' title="text" startDecorator="Plus"></Button>
-        <Button size="lg" variant='default' title="text"></Button>
-        <Button size="lg" variant='default' title="text" startDecorator="Plus"></Button>
-        <Button size="lg" variant='secondary' title="text"></Button>
-        <Button size="lg" variant='secondary' title="text" startDecorator="Plus"></Button>
-        <Button size="lg" variant='outline' title="text"></Button>
-        <Button size="lg" variant='outline' title="text" startDecorator="Plus"></Button>
-    </Row>
+        <Row className="gap-x-2 items-start mb-4">
+            <Button size="xs" variant='primary' title="text"></Button>
+            <Button size="xs" variant='primary' title="text" startDecorator="Plus"></Button>
+            <Button size="xs" variant='text' title="text"></Button>
+            <Button size="xs" variant='text' title="text" startDecorator="Plus"></Button>
+            <Button size="xs" variant='default' title="text"></Button>
+            <Button size="xs" variant='default' title="text" startDecorator="Plus"></Button>
+            <Button size="xs" variant='secondary' title="text"></Button>
+            <Button size="xs" variant='secondary' title="text" startDecorator="Plus"></Button>
+            <Button size="xs" variant='outline' title="text"></Button>
+            <Button size="xs" variant='outline' title="text" startDecorator="Plus"></Button>
+        </Row>
+        <Row className="gap-x-2 items-start mb-4">
+            <Button size="sm" variant='primary' title="text"></Button>
+            <Button size="sm" variant='primary' title="text" startDecorator="Plus"></Button>
+            <Button size="sm" variant='text' title="text"></Button>
+            <Button size="sm" variant='text' title="text" startDecorator="Plus"></Button>
+            <Button size="sm" variant='default' title="text"></Button>
+            <Button size="sm" variant='default' title="text" startDecorator="Plus"></Button>
+            <Button size="sm" variant='secondary' title="text"></Button>
+            <Button size="sm" variant='secondary' title="text" startDecorator="Plus"></Button>
+            <Button size="sm" variant='outline' title="text"></Button>
+            <Button size="sm" variant='outline' title="text" startDecorator="Plus"></Button>
+        </Row>
+        <Row className="gap-x-2 items-start mb-4">
+            <Button size="base" variant='primary' title="text"></Button>
+            <Button size="base" variant='primary' title="text" startDecorator="Plus"></Button>
+            <Button size="base" variant='text' title="text"></Button>
+            <Button size="base" variant='text' title="text" startDecorator="Plus"></Button>
+            <Button size="base" variant='default' title="text"></Button>
+            <Button size="base" variant='default' title="text" startDecorator="Plus"></Button>
+            <Button size="base" variant='secondary' title="text"></Button>
+            <Button size="base" variant='secondary' title="text" startDecorator="Plus"></Button>
+            <Button size="base" variant='outline' title="text"></Button>
+            <Button size="base" variant='outline' title="text" startDecorator="Plus"></Button>
+        </Row>
+        <Row className="gap-x-2 items-start mb-4">
+            <Button size="lg" variant='primary' title="text"></Button>
+            <Button size="lg" variant='primary' title="text" startDecorator="Plus"></Button>
+            <Button size="lg" variant='text' title="text"></Button>
+            <Button size="lg" variant='text' title="text" startDecorator="Plus"></Button>
+            <Button size="lg" variant='default' title="text"></Button>
+            <Button size="lg" variant='default' title="text" startDecorator="Plus"></Button>
+            <Button size="lg" variant='secondary' title="text"></Button>
+            <Button size="lg" variant='secondary' title="text" startDecorator="Plus"></Button>
+            <Button size="lg" variant='outline' title="text"></Button>
+            <Button size="lg" variant='outline' title="text" startDecorator="Plus"></Button>
+        </Row>
 
         <Row className="mb-auto  text-green-800 bg-green-200 dark:bg-green-950 gap-x-1 py-1 px-2 rounded-full dark:text-green-200 sm:aspect-5/1 aspect-5/1 aspect-[5/1] sm:aspect-4/1 aspect-4/1 aspect-[4/1] sm:aspect-3/1 aspect-3/1 aspect-[3/1]">
             <Icon
@@ -645,6 +660,7 @@ export const staticDefault = {
     page_not_allowed: PageNotAllowed,
     components_comments_empty: ComponentsCommentsEmpty,
     components_content_empty: ComponentsContentEmpty,
+    components_content_login: ComponentsCommentsLogin,
     components_intro: ComponentsIntro,
     components_modal: ComponentModal,
     components_dummy: ComponentsDummy,

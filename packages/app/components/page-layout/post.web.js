@@ -5,9 +5,13 @@ import { getBackButtonWeb } from 'app/lib/common-helpers';
 import { useWindowDimensions } from 'react-native'
 import { CommentsParts } from 'app/lib/comments-helpers'
 import { getPageData, getDataFromCache, storageSet, LAYOUT_BREAKPOINTS } from 'app/lib/util';
+import { useCurrentUser } from 'app/context/user';
+import { Text } from 'app/design/typography'
+import Link from 'app/ui/atoms/link'
+import { appStatic } from 'app/lib/app-static'
 
 export default function PageLayout(props) {
-
+    const { currentUser, setCurrentUser } = useCurrentUser();
     //console.log
     const sKey = 'page_' + props.data.url;
     const dataCache = getDataFromCache('pg:data', sKey)
@@ -119,6 +123,7 @@ export default function PageLayout(props) {
                     </Row>
                     <ViewRef ref={viewFormRef} style={{ width: sizes.formWidth }} onLayout={handleLayout} className='px-3 bg-bgrcard dark:bg-bgrcard-d border-t border-bdr dark:border-bdr-d fixed bottom-0 w-full' >
                         {CommentsPartsData[1]}
+                        {!currentUser && appStatic('components_content_login')}
                     </ViewRef>
                 </ViewRef>
             </View>
