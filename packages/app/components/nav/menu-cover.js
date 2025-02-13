@@ -77,6 +77,14 @@ export function CoverMenu(props) {
         })
     }
 
+    propsCopy.items = propsCopy.items.map((aItem) => {
+        if (aItem.name.includes('delete-') || aItem.name.includes('edit-')) {
+            return { ...aItem, noAction: true }; 
+        }
+        return aItem; 
+    });
+    
+
     return (
         <>
             <Menu

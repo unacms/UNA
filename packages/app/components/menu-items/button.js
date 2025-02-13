@@ -71,20 +71,6 @@ export default function MenuItemButton(oProps) {
             if (isTextMode)
                 sButtonIcon = '';
 
-            const isShowModalForm = oProps.link.includes('delete-') || oProps.link.includes('edit-')
-            if (isShowModalForm) {
-                oButtonProps.onPress = () => 
-                    {
-                        if (Platform.OS == 'web') {
-                            const popperDiv = document.querySelector('div[data-radix-popper-content-wrapper]');
-                            if (popperDiv) {
-                                popperDiv.classList.add('radix-hide');
-                            }
-                        }
-                        console.log("pageData18")
-                        handleFormModal(oProps, event, setPageData)
-                    }
-            }
 
             let buttonAction = <ButtonAction title={oProps.title} startDecorator={sButtonIcon} {...oButtonProps} />;
             if (oProps?.list?.length > 0) {
@@ -96,7 +82,7 @@ export default function MenuItemButton(oProps) {
                     
                     {(oProps.list && oProps.list.length > 0) && <ProfilesList data={oProps.list} showEmpty={false} maxCount={3} displaySize="sm" />}
                     {oProps?.link ? /*buttonAction*/
-                        (!isShowModalForm ?
+                        (!oProps.noAction ?
                             /*MAY BE NEED IMPROVE disabled by modal forms edit/delete ENABLED BY DownloadCV Ling*/
                             <Link emulate={true} href={oProps.link[0] === '/' ? oProps.link : (oProps.link.includes("://") ? oProps.link : '/' + oProps.link)}>
                                 {buttonAction}
@@ -111,7 +97,6 @@ export default function MenuItemButton(oProps) {
             );
     }
 
-    console.log("pageData15", pageData)
 
     return (
         <View className={'menu-item flex-auto  ' + (bShowVertical ? ' w-full ' : ' flex-row ')}>

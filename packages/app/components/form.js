@@ -194,7 +194,7 @@ export default function (props) {
     return (
         <View className='w-full'>
             {(isAutoChange) && <Row className='items-center justify-between mb-3'>
-                <Text className="text-xl font-bold text-neutral-800  dark:text-neutral-200 ">Filters</Text>
+                {/*<Text className="text-xl font-bold text-neutral-800  dark:text-neutral-200 ">Filters</Text>*/}
                 {!isObjectsEqual(filteredDefaultValues, allFields) &&  <Button
                 title='Reset'
                 startDecorator='X'

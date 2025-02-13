@@ -40,6 +40,7 @@ const getUnitType = (currentRoute) => {
 }
 
 const AddBlocks = (leftSideBarBlocks, data, onFormChangedValues) => {
+    
     if (!leftSideBarBlocks)
         return null;
 
@@ -309,7 +310,7 @@ const HeaderContainer = ({ tabBarObj, tabBarObjSmall, currentUser, smallHeader, 
                 <View style={{ position: 'fixed', width: cntWidth + 'px', overflow: 'hidden', zIndex: 40, top: windowWidth >= LAYOUT_BREAKPOINTS.lg ? tOffset : 0 }}>
                     {tabBarObj}
                 </View>
-                <View className="h-28 w-full lg:hidden"></View>
+                {/*<View className="h-28 w-full lg:hidden"></View>*/}
             </>
         )
     }
@@ -597,7 +598,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         };
 
         setFilterValue(filterValues)
-        setBottomSheetData(false);
+      //  setBottomSheetData(false);
     }, []);
 
     const onFormSubmit = useCallback((formData, d) => {
@@ -653,7 +654,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     }, [numColumns]);
 */
     const showFilters = useCallback(() => {
-        setBottomSheetData({ title: 'Filters', content: AddBlocksCnt, showClose: true, snapPoints: ['60%', '60%'] });
+        setBottomSheetData({ title: 'Filters', content: AddBlocksCnt, showClose: true, snapPoints: ['75%', '90%'] });
     }, [leftSideBarBlocks, data, onFormSubmit]);
 
     const unitType = useMemo(() => {

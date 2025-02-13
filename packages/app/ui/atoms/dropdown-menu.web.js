@@ -73,6 +73,7 @@ export default function DropdownMenuComponent({ variant = 'vertical', defaultOpe
             else
                 sIcon = <Icon className={oItem?.class_item_icon} icon={oItem.icon} />;
         }
+
         return (
             <DmItem key={key} onSelect={(event) => !!oItem?.onClick ? oItem?.onClick(oItem, event) : onSelectInt(oItem, event)}>
                 <Row className={menuSettings.item_cnt}>

@@ -46,7 +46,11 @@ export default function DynamicMenu({ name, MenuItem, MenuItemEx, ButtonEx, cont
 
     let ExMenu = (visibleItemsCount < items.length && isWeb) && (
         <><DropdownMenu 
-            onSelect={(oItem, event) => handleFormModal(oItem, event, setPageData)}
+            onSelect={(oItem, event) => {
+                if (oItem.noAction){
+                    handleFormModal(oItem, event, setPageData)
+                }
+            }}
             variant = 'nopad'
             items={items.slice(visibleItemsCount).map((aItem, iKey) => ({
             id: 'menu-' + iKey,
