@@ -38,6 +38,25 @@ export function BlockByName(props) {
         return <Block exProps={name.exProps} key={b.id} uri={data.uri} url={data.url} block={b} showTitle={name.showTitle} fullWidth={name.fullWidth} showPad={name.showPad} showBg={name.showBg} unitType={name.unitType} {...rest} />;
 }
 
+export function BlockByServiceName(props) {
+    let { data, name, ...rest } = props
+    let b = null;
+    if (name) {
+        Object.keys(data?.elements).forEach(key => {
+            Object.keys(data.elements[key]).forEach(key2 => {
+                if (data.elements[key][key2].content) {
+                    Object.keys(data.elements[key][key2].content).forEach(key3 => {
+                        if (data.elements[key][key2].source == name.toString())
+                            b = data.elements[key][key2];
+                    });
+                }
+            });
+        });
+    }
+    if (b)
+        return <Block exProps={name.exProps} key={b.id} uri={data.uri} url={data.url} block={b} showTitle={name.showTitle} fullWidth={name.fullWidth} showPad={name.showPad} showBg={name.showBg} unitType={name.unitType} {...rest} />;
+}
+
 export function DataByName(data, name) {
 
     let b = null;

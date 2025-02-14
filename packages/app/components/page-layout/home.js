@@ -16,35 +16,11 @@ import Image from 'app/ui/atoms/image'
 import ProfileSwitcher from 'app/components/elements/profile_switcher'
 import Splash from 'app/ui/molecules/splash'
 import { Platform } from 'react-native'
-
-function SplashBlock(props) {
-    if (appSetting('layout', 'splash_block') == 'image') {
-        let url = '/splash.webp'
-        return (
-            <Image
-                sizes={LAYOUT_BREAKPOINTS.lg}
-                view="cover"
-                className="u-cover"
-                src={url}
-            />
-        )
-    }
-
-    if (appSetting('layout', 'splash_block') == 'login') {
-        return <BlockByName name={props.blocks.login} data={props.data} />
-    }
-
-    if (appSetting('layout', 'splash_block') == 'signup') {
-        return <BlockByName name={props.blocks.signup} data={props.data} />
-    }
-
-    return <></>
-}
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function (props) {
     const { t } = useTranslation()
     const isWeb = Platform.OS == 'web';
-    const [renderBlock, setRenderBlock] = useState(false)
     let { currentUser, setCurrentUser } = useCurrentUser()
     const feedMode = storageGet('feed:mode', '', true)
     const feedTypeD = storageGet('feed:type', '', true)
@@ -69,51 +45,33 @@ export default function (props) {
         console.log("modemode", mode)
     }
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            if (!currentUser) setRenderBlock(true)
-        }, 250)
+    if (!currentUser) {
+        return (
+            <Splash {...props} />
+        )
+    }
 
-        return () => clearTimeout(timer) // This will clear the timer when the component is unmounted.
-    }, [])
-
-    let sideBarBlocks = Object.keys(props.blocks)
+    const sideBarBlocks = Object.keys(props.blocks)
         .filter((key) => props.blocks[key].sidebar)
         .map((key) => {
             return { name: key, block: props.blocks[key] }
         })
 
-    let topBlocks = Object.keys(props.blocks)
+    const topBlocks = Object.keys(props.blocks)
         .filter((key) => props.blocks[key].topbar)
         .map((key) => {
             return { name: key, block: props.blocks[key] }
         })
 
-    let navBarBlocks = Object.keys(props.blocks)
+    const navBarBlocks = Object.keys(props.blocks)
         .filter((key) => props.blocks[key].leftbar)
         .map((key) => {
             return { name: key, block: props.blocks[key] }
         })
 
-    if (!currentUser && renderBlock) {
-        const p = {
-            blocks: props.blocks,
-            data: props.data,
-            block: SplashBlock(props),
-        }
-        return (
-            <ScrollView>
-                <View
-                    className={
-                        appSetting('layout', 'theme') + ' mx-auto w-full'
-                    }
-                >
-                    <Splash {...p} />
-                </View>
-            </ScrollView>
-        )
-    }
+    
     if (currentUser) {
+        AsyncStorage.setItem('visited', 'true');
         let dUser = Object.assign({}, currentUser)
         dUser.url_avatar = dUser.avatar
         dUser.url = appSetting('dashboard', 'url')

@@ -17,7 +17,7 @@ export default function (props) {
     const mandatoryIcon = appSetting('forms', 'mandatory_icon');
     const isShowOptional = optionalText != '' ? '(' + optionalText + ')' : '';
     const isShowCaption = !!props.caption && props.format == 'default' && !props.use_caption_as_placeholder && ['switcher', 'checkbox'].includes(props.type) == false;
-    
+
     return (
         <View className={sClassName}>
             {isShowCaption &&
@@ -33,7 +33,7 @@ export default function (props) {
                 <Button onPress={props.handleSubmit} startDecorator="ArrowClockwise" variant="primary" size="xs" rounded />
             </View>}
             {props.children}
-            {!!props.error && Array.isArray(props.error) && <FormError errorText={error[0]} errorLink={error[1]} />}
+            {!!props.error && Array.isArray(props.error) && <FormError errorText={props.error[0]} errorLink={props.error[1]} />}
             {!!props.error && !Array.isArray(props.error) && <FormError errorText={props.error} />}
             {(props.error2 && props.checker.error!='') && <FormError errorText={props.checker.error} />}
             {!!props.info &&
