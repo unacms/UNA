@@ -180,7 +180,7 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
         font-size: ${props.fontSize || 16}px;
         line-height:  ${props.lineHeight || 20}px;
         color:  ${colors.text};
-        backgroundColor: transparent;
+        background-color:  #111827; 
     }
      img{
      display: none;
@@ -239,8 +239,9 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
 
 
       return (
-        <View className="h-full bg-blue-500 ">
+        <View className="h-full ">
         <RichText editor={editor} />
+        <Toolbar editor={editor} />
     </View>
     )
 }
