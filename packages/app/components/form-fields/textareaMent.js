@@ -214,14 +214,15 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
                 const fileName = src.split('/').pop()+'.png';
                 const fileTypeMatch = src.match(/\.([a-z0-9]+)$/i);
                 const fileType = fileTypeMatch ? `image/${fileTypeMatch[1]}` : 'image/png';
-        
+               
                 images.push({
                   uri:src,
                   fileName: fileName,
                   mimeType: fileType,
                 });
+               
               }
-        
+              console.log("imagesimages", images)
               if (images.length > 0) {
     
         
