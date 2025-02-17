@@ -191,7 +191,7 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
         autofocus: field.value ? true : false,
         avoidIosKeyboard: true,
         placeholder:props.placeholder,
-        initialContent: '<img src="https://placehold.co/800x400/6A00F5/white">dfsd',
+        initialContent: field.value,
         bridgeExtensions: [
             // It is important to spread StarterKit BEFORE our extended plugin,
             // as plugin duplicated will be ignored
