@@ -204,7 +204,7 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
         onChange: async () => {
             if (editor) {
               const htmlContent = await editor.getHTML();
-             /* const imgRegex = /<img[^>]+src=["']([^"']+)["'][^>]*>/g;
+              const imgRegex = /<img[^>]+src=["']([^"']+)["'][^>]*>/g;
               let match;
               let images = [];
 
@@ -230,7 +230,7 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
             
                 setLayoutData(getAlert('images:pasted', images));
                 
-              }*/
+              }
               field.onChange(htmlContent)
             }
         }
@@ -241,7 +241,7 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
       return (
         <View className="h-full ">
         <RichText editor={editor} />
-        <Toolbar editor={editor} />
+        <View className="h-12 bg-red-500"><Toolbar editor={editor} /></View>
     </View>
     )
 }
