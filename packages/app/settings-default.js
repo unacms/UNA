@@ -129,12 +129,8 @@ export const settingsDefault = {
         ],
         selector_control_names: ['*_cat'],
 
-        sys_login: { hide_errors: true, button_full_width: true },
-        sys_account_create: {
-            hide_errors: true,
-            button_full_width: true,
-            button_hide_on_small: true,
-        },
+       /* sys_login: { hide_errors: true, button_full_width: true },
+        
         sys_forgot_password: {
             hide_errors: true,
             button_full_width: true,
@@ -144,7 +140,7 @@ export const settingsDefault = {
             hide_errors: true,
             button_full_width: true,
             button_hide_on_small: true,
-        },
+        },*/
     },
     jitsi: {
         prefix: 'prefix_',
@@ -472,7 +468,7 @@ export const settingsDefault = {
             { key: '/tab1', title: 'Explore', url: '/explore', icon: 'Compass' },
             { key: '/tab2', title: 'About', url: '/about', icon: 'Info' },
             { key: '/tab3', title: 'Contact', url: '/contact', icon: 'AddressBook' },
-            { key: '/tab4', title: 'Account', url: '/login', icon: 'UserCircle' }
+            { key: '/tab4', title: 'Terms', url: '/terms', icon: 'Info' }
         ],
     },
     layouts: {},

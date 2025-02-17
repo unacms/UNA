@@ -178,7 +178,7 @@ export default function (props) {
                                         </View>
                                     )}
                                     <MenuLauncher />
-                                    <Link href="/login">
+                                    <Link href="/">
                                         <ButtonRef
                                             variant="secondary"
                                             tooltip="Account"

@@ -189,7 +189,7 @@ export default function FormFeed(props) {
         {getFormFieldByData(props.data.inputs['owner_id'], props.handleSubmit, 'default')}
         {getFormFieldByData(props.data.inputs['type'], props.handleSubmit, 'default')}
         <View className="justify-between flex-col flex-auto">
-                <View className="w-full h-full  flex-1 justify-end px-[12px] ">
+                <View className="w-full h-full  flex-1 justify-start px-[12px] ">
                     <View className="flex-auto web:overflow-auto ">
                         {getFormFieldByData(
                             props.data.inputs['text'],

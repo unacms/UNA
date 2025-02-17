@@ -4,24 +4,50 @@ import { Button, Modal } from 'app/design/controls'
 import Card from 'app/components/card'
 import { useState, useEffect } from 'react'
 import { appSetting, BlockDataByName, LAYOUT_BREAKPOINTS } from 'app/lib/util'
-import { Platform } from 'react-native'
+import { Platform, Keyboard } from 'react-native'
 import { useWindowDimensions } from 'react-native'
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view'
 import { appStatic } from 'app/lib/app-static'
 import { BlockByServiceName } from 'app/components/block'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+
 export default function Splash(props) {
     const isWeb = Platform.OS == 'web'
     const [defaultForm, setDefaultForm] = useState(isWeb ? 'login' : false)
+    const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+
     useEffect(() => {
         const checkFirstLaunch = async () => {
             const hasLaunched = await AsyncStorage.getItem('visited');
-            hasLaunched === null ?  setDefaultForm('signup') :  setDefaultForm('login')
+
+            hasLaunched === null ? setDefaultForm('signup') : setDefaultForm('login')
         }
-            if (!isWeb)
-                checkFirstLaunch();
-        }, []);
+        if (!isWeb)
+            checkFirstLaunch();
+    }, []);
+
+    useEffect(() => {
+        // Subscribe to keyboard events
+        const keyboardDidShowListener = Keyboard.addListener(
+            'keyboardDidShow',
+            () => {
+                setKeyboardVisible(true); // Set to true when the keyboard is shown
+            }
+        );
+        const keyboardDidHideListener = Keyboard.addListener(
+            'keyboardDidHide',
+            () => {
+                setKeyboardVisible(false); // Set to false when the keyboard is hidden
+            }
+        );
+
+        // Cleanup the event listeners when the component unmounts
+        return () => {
+            keyboardDidHideListener.remove();
+            keyboardDidShowListener.remove();
+        };
+    }, []);
 
     const [modalForm, setModalForm] = useState(false)
     const [isCreateAccountSubmit, setIsCreateAccountSubmit] = useState(false)
@@ -34,8 +60,8 @@ export default function Splash(props) {
     const useInvite = false; //TODO accountForm == 'form' ? false : true
 
     const forms = {
-        signup: { name: 'system:create_account_form', title: 'Create new account',  button: 'Login', icon: 'SignIn', action: 'login' },
-        fp: { name: 'system:forgot_password', title: 'Create new account' },
+        signup: { name: 'system:create_account_form', title: 'Create new account', button: 'Login', icon: 'SignIn', action: 'login' },
+        fp: { name: 'system:forgot_password', title: 'Restore password' },
         invite: { name: 'bx_invites:get_block_form_request', title: 'Request invitation', button: 'Login', icon: 'SignIn', action: 'login' },
         login: { name: 'system:login_form', title: 'Log in', button: 'Create new account', icon: 'UserCirclePlus', action: 'signup' }
     };
@@ -87,13 +113,14 @@ export default function Splash(props) {
                 headerBorder={true}
             >
                 <View className=" w-full h-full pt-2 sm:pt-0 ">
+
                     <KbAvoidingView
                         offset={isIos ? 56 : 72}
                         className="flex-1 w-full h-full"
                     >
                         <ScrollView className="w-full h-full flex-1 overflow-visible">
                             <View className="w-full px-4 sm:p-0 ">
-                                <BlockByServiceName name={modalFormData?.name} data={props.data} isSubmit={isCreateAccountSubmit} />
+                                <BlockByServiceName name={modalFormData?.name} formProps={{ button_hide_on_small: true, hide_errors: true, button_full_width: true }} data={props.data} isSubmit={isCreateAccountSubmit} />
                             </View>
                         </ScrollView>
                     </KbAvoidingView>
@@ -135,11 +162,18 @@ export default function Splash(props) {
 
     if (!isWeb) {
         return (
-            <View className="justify-center">
-                <View className="items-center my-8  ">
-                    <View className="w-60 items-center ">{appStatic('logo_native')}</View>
-                </View>
-                {cnt}
+            <View className="justify-around flex-1">
+
+
+                <KbAvoidingView className="flex-1">
+                    <ScrollView>
+                        {!isKeyboardVisible && <View className="items-center my-8 ">
+                            <View className="w-60 items-center ">{appStatic('logo_native')}</View>
+                        </View>}
+                        {cnt}
+                    </ScrollView>
+                </KbAvoidingView>
+
             </View>
         )
     }
@@ -164,7 +198,6 @@ export default function Splash(props) {
                             with people who share your interests.
                         </Text>
                     </View>
-
                     {cnt}
                 </View>
                 <View className=" mx-auto mt-2">{appStatic('components_footer')}</View>

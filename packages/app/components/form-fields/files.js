@@ -288,7 +288,7 @@ export default function (props) {
                 mediaTypes = ['videos'];
 
             let result = null
-            if (type == 'library') {
+            if (type != 'camera') {
 
                 if (!hasPermissionLibrary) {
                     const { status2 } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -489,7 +489,6 @@ function GhostsList(imagesList, bMultiple, handleDelete, props) {
         const isVideo = img?.file_type?.includes('video/');
         const isPreload = img?.preload;
 
-        console.log("imgimg", img)
         return (
             <View
                 key={`file-${props.name}-${index}`}

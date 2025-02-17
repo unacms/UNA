@@ -24,6 +24,8 @@ export default function FormFieldSubmit(props) {
         hide_errors = false,
         ...restProps
     } = props;
+    
+    console.log("propspropsprops", props)
 
     const formContext = useFormContext();
     const { formState } = formContext;
@@ -59,7 +61,7 @@ export default function FormFieldSubmit(props) {
         errorKeys.length > 0 && !hide_errors && !formProps.hide_errors;
 
 
-    let fb = formProps.button_full_width || width < LAYOUT_BREAKPOINTS.lg;
+    let fb = formProps.button_full_width || props.button_full_width || width < LAYOUT_BREAKPOINTS.lg;
     if (notFullWidth){
         fb = false;
     }
@@ -84,7 +86,7 @@ export default function FormFieldSubmit(props) {
 
     // Prepare row className
     const rowClassName = [
-        formProps.button_hide_on_small ? 'hidden sm:flex' : '',
+        formProps.button_hide_on_small || props.button_hide_on_small ? 'hidden sm:flex' : '',
         'gap-x-2',
     ]
         .filter(Boolean)

@@ -1,133 +1,12 @@
-import { SafeAreaView, KeyboardAvoidingView } from 'react-native';
-import { useEditorBridge, RichText, Toolbar, TenTapStartKit, CodeBridge,BridgeExtension  } from '@10play/tentap-editor';
-import { View, Row, Pressable, ScrollView } from 'app/design/view'
+import Field from './_field';
+import { View, Pressable } from 'app/design/view'
+import { Text } from 'app/design/typography'
 import { useController } from 'react-hook-form';
+import { useState, useRef, useEffect } from 'react';
+import { fetcher } from 'app/lib/fetcher';
+import { MentionInput as MentionInputDef, replaceMentionValues } from 'react-native-controlled-mentions'
 import { Theme } from 'app/design/theme';
-import Mention from '@tiptap/extension-mention'
-import { Suggestion } from 'app/lib/editor-helpers2'
-import { getAlert } from 'app/lib/util';
-import  { useLayoutData } from 'app/context/layout';
-
-
-export const MentionBridge = new BridgeExtension({
-    tiptapExtension: Mention.configure({
-        HTMLAttributes: {
-            class: 'mention',
-          },
-      suggestion: {
-        items: ({ query }) => {
-          return [
-            'Lea Thompson', 'Cyndi Lauper', 'Tom Cruise', 'Madonna', 'Jerry Hall', 'Joan Collins', 'Winona Ryder', 'Christina Applegate', 'Alyssa Milano', 'Molly Ringwald', 'Ally Sheedy', 'Debbie Harry', 'Olivia Newton-John', 'Elton John', 'Michael J. Fox', 'Axl Rose', 'Emilio Estevez', 'Ralph Macchio', 'Rob Lowe', 'Jennifer Grey', 'Mickey Rourke', 'John Cusack', 'Matthew Broderick', 'Justine Bateman', 'Lisa Bonet',
-          ].filter(item => item.toLowerCase().startsWith(query.toLowerCase())).slice(0, 5)
-        },
-      
-        render: () => {
-          let reactRenderer
-          let popup
-      
-          return {
-            onStart: props => {
-      
-              if (!props.clientRect) {
-                return
-              }
-      
-              reactRenderer = new ReactRenderer(MentionList, {
-                props,
-                editor: props.editor,
-              })
-      
-              popup = tippy('body', {
-                getReferenceClientRect: props.clientRect,
-                appendTo: () => document.body,
-                content: reactRenderer.element,
-                showOnCreate: true,
-                interactive: true,
-                trigger: 'manual',
-                placement: 'bottom-start',
-              })
-            },
-      
-            onUpdate(props) {
-              reactRenderer.updateProps(props)
-      
-              if (!props.clientRect) {
-                return
-              }
-      
-              popup[0].setProps({
-                getReferenceClientRect: props.clientRect,
-              })
-            },
-      
-            onKeyDown(props) {
-              if (props.event.key === 'Escape') {
-                popup[0].hide()
-      
-                return true
-              }
-      
-              return reactRenderer.ref?.onKeyDown(props)
-            },
-      
-            onExit() {
-              popup[0].destroy()
-              reactRenderer.destroy()
-            },
-          }
-        }
-    }
-    }),
-    onBridgeMessage: (editor, message) => {
-      console.log('render2 - onBridgeMessage called', message);
-    },
-    extendEditorInstance: (sendBridgeMessage) => {
-      console.log('render3 - extendEditorInstance called');
-      return {
-        mentionUser: (user) => sendBridgeMessage({
-          type: 'MentionUser',
-          payload: user,
-        }),
-      };
-    },
-    extendEditorState: () => {
-      return {};
-    },
-  });
-
-  
-  // Компонент списка упоминаний
-  const MentionList = ({ items, command }) => {
-    const [visible, setVisible] = useState(true);
-  
-    if (!visible || items.length === 0) return null;
-  
-    return (
-      <View style={{
-        position: 'absolute',
-        backgroundColor: 'white',
-        padding: 10,
-        borderRadius: 5,
-        elevation: 5,
-        top: 40, left: 10, right: 10,
-      }}>
-        <FlatList
-          data={items}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => { 
-              console.log('Mention selected:', item.label);
-              command(item);
-              setVisible(false);
-            }}>
-              <Text style={{ padding: 8 }}>{item.label}</Text>
-            </TouchableOpacity>
-          )}
-        />
-      </View>
-    );
-  };
-  
+import { Platform } from 'react-native'
 
 export const MentionInput = ({ className, ...props }) => (
     <MentionInputDef className={'bg-bgrinput border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg   w-full p-2 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus placeholder-neutral-500 dark:text-neutral-100 text-[16px] leading-[22px] h-[40px]'} {...props} />
@@ -149,100 +28,152 @@ export const MentionInputMultiTransparent = ({ className,  ...props }) => {
     }}  {...props} />
 )};
 
-const processImages = async (items) => {
+function formatText(text) {
+    //TODO REPLACE TO BR
+    // let v =  text.replace(/<\/?p>/g, '\n').trim();
+    let v = text.replace(/<br>/g, '\n');
+    v = v.replace(
+        /<a[^>]*href="([^"]+)"[^>]*class="bx-mention-link[^"]*"[^>]*>([^<]+)<\/a>/g,
+        (match, href, name) => {
+            return `@[${name}](${href})`; // Используем name и href без лишних манипуляций
+        }
+    );
+    v = v.replace(
+        /<a[^>]*class="[^"]*\bbx-mention-link\b[^"]*"[^>]*href="([^"]+)"[^>]*>([^<]+)<\/a>/g,
+        (match, href, name) => {
+            return `@[${name}](${href})`;
+        }
+    );
+    /*v = v.replace(
+        /<a\b(?=[^>]*\bclass="[^"]*\bbx-mention-link\b")(?=[^>]*\bhref="([^"]+)")[^>]*>([^<]+)<\/a>/gi,
+        (match, href, name) => {
+          return `@[${name}](${href})`;
+        }
+      );*/
+    v = v.replace(/<p>/g, '\n');
 
-    
-    const imagePromises = items.map((src) => {
-        const fileName = src.split('/').pop();
-        const fileType = src.match(/\.([a-z0-9]+)$/i)[1];
-        return {
-            src,
-            name: fileName,
-            type: `image/${fileType}`,
-        };
+    // Remove </p>
+    v = v.replace(/<\/p>/g, '');
 
-    });
 
-    // Ждём завершения всех операций и собираем массив изображений
 
-    
-    console.log("Processed Images:", imagePromises);
-    return images;
-};
+    // Remove first \n if it exists
+    if (v.startsWith('\n')) {
+        v = v.slice(1);
+    }
 
+    // Remove last \n if it exists
+    /* if (v.endsWith('\n')) {
+         v = v.slice(0, -1);
+     }*/
+
+    return v;
+}
 
 export default function ({ name, value = '', numLines = 4, ...props }) {
-    const { layoutData, setLayoutData } = useLayoutData();
-    const { field } = useController({ name, rules: {}, defaultValue: value });
+    const isIos = Platform.OS == 'ios'
+    const inputRef = useRef(null);
     const { colors } = Theme();
-    const customCodeBlockCSS = `
-    body{
-        font-size: ${props.fontSize || 16}px;
-        line-height:  ${props.lineHeight || 20}px;
-        color:  ${colors.text};
-        background-color:  #111827; 
-    }
-     img{
-     display: none;
-    }
-    `;
+    const { field } = useController({ name, rules: {}, defaultValue: value });
+    const [suggestions, setSuggestions] = useState([]);
+    const [keywordval, setKeyword] = useState(['', '']);
 
-    const editor = useEditorBridge({
-        autofocus: field.value ? true : false,
-        avoidIosKeyboard: true,
-        placeholder:props.placeholder,
-        initialContent: field.value,
-        bridgeExtensions: [
-            // It is important to spread StarterKit BEFORE our extended plugin,
-            // as plugin duplicated will be ignored
-            ...TenTapStartKit,
-            MentionBridge,
-          
-          
-            CodeBridge.configureCSS(customCodeBlockCSS), // Custom codeblock css
-          ],
-        onChange: async () => {
-            if (editor) {
-              const htmlContent = await editor.getHTML();
-              const imgRegex = /<img[^>]+src=["']([^"']+)["'][^>]*>/g;
-              let match;
-              let images = [];
+    useEffect(() => {
+        if (keywordval[0] === '') return;
 
-     
-              while ((match = imgRegex.exec(htmlContent)) !== null) {
-                const src = match[1];
-                const fileName = src.split('/').pop()+'.png';
-                const fileTypeMatch = src.match(/\.([a-z0-9]+)$/i);
-                const fileType = fileTypeMatch ? `image/${fileTypeMatch[1]}` : 'image/png';
-               
-                images.push({
-                  uri:src,
-                  fileName: fileName,
-                  mimeType: fileType,
-                });
-               
-              }
-              console.log("imagesimages", images)
-              if (images.length > 0) {
-    
-        
-                // 🔹 Удаляем все <img> из HTML
-              //  htmlContent = htmlContent.replace(imgRegex, "");
-            
-                setLayoutData(getAlert('images:pasted', images));
-                
-              }
-              field.onChange(htmlContent)
-            }
+        const fetchData = async () => {
+            let url = `/searchExtended.php?action=get_mention&symbol=${keywordval[1] === '#' ? '%23' : '%40'}&term=${keywordval[0]}`;
+            const result = await fetcher(url);
+            let p = result.map(k => ({ id: k.value, name: k.label }));
+
+            setSuggestions(p);
+        };
+
+        fetchData();
+    }, [keywordval]);
+
+    useEffect(() => {
+        if (inputRef.current && props.autofocus) {
+            setTimeout(() => {
+                if (inputRef.current) {
+                    inputRef.current.focus();
+                }
+            }, 300); // задержка для избежания проблем с ранней фокусировкой
         }
-      });
+    }, [props.autofocus]);
+    const handleChange2 = (val) => {
+        if (props.onFocus)
+            props.onFocus();
+        let v = replaceMentionValues(val, ({ trigger, name, id }) => `<a class="bx-mention-link" href="${id}" title="${name}" dchar="${trigger}" data-profile-id="${id}">${name}</a>`)
+        v = v.split('\n').map(line => `<p>${line}</p>`).join('');
+
+        field.onChange(v)
+    }
+
+    const renderSuggestions = ({ keyword, onSuggestionPress, trigger }) => {
+        if (keyword == null) {
+            return null;
+        }
+        if (keyword != keywordval[0] || trigger != keywordval[1])
+            setKeyword([keyword, trigger]);
+
+        return (
+            <View>
+                {suggestions.map(one => (
+                    <Pressable
+                        key={one.id}
+                        onPress={() => onSuggestionPress(one)}
+                        style={{ padding: 12 }}
+                    >
+                        <Text>{one.name}</Text>
+                    </Pressable>
+                ))}
+            </View>
+        );
+    };
 
 
+    let styles = {
+        fontSize: props.fontSize || 16,
+        lineHeight: props.lineHeight || 20,
+        color: colors.text,
+        ...(isIos ? {  paddingVertical: 4 } : { }),
+        ...(name !== 'cmt_text' ? {  } : { maxHeight: 300 }),/*minHeight: 160*/
+        ...(props.maxHeight ? { maxHeight: props.maxHeight } : {})
+    };
 
-      return (
-        <View className="h-full ">
-        <RichText editor={editor} />
-        <View className="h-12 bg-red-500"><Toolbar editor={editor} /></View>
-    </View>
-    )
+    if (props.maxHeight) {
+        styles.maxHeight = props.maxHeight;
+    }
+
+    if (typeof props.styles === 'object')
+        styles = { ...styles, ...props.styles };
+
+    let MentionInput = props.bg == 'transparent' ? MentionInputMultiTransparent : MentionInputMulti
+    let ft = formatText(field.value);
+
+    return (
+            <MentionInput style={styles}
+                inputRef={inputRef}
+                multiline
+                allowFontScaling={false}
+                autoFocus={field.value ? true : false}
+                value={ft}
+                placeholder={props.placeholder}
+                onChange={handleChange2}
+                partTypes={[
+                    {
+                        trigger: '@',
+                        renderSuggestions: (params) => renderSuggestions({ ...params, trigger: '@' }),
+                        textStyle: { fontWeight: 'bold', color: colors.primary },
+                    },
+                    {
+                        trigger: '#',
+                        renderSuggestions: (params) => renderSuggestions({ ...params, trigger: '#' }),
+                        textStyle: { fontWeight: 'bold', color: colors.primary },
+                    },
+                ]}
+            />
+
+    );
 }
