@@ -10,6 +10,7 @@ import { appSetting } from 'app/lib/util';
 import useDebounce from 'app/lib/hooks/debounce'
 import { Button } from 'app/design/controls';
 import { isObjectsEqual } from 'app/lib/util'
+
 function getFormType(name) {
     return componentsMap[name];
 }
@@ -25,6 +26,9 @@ function getFormFieldList(name, inputs, handleSubmit, isInitial = false, lastCha
     if (!inputs) {
         return;
     }
+
+    console.log("formPropsformProps", formProps)
+
     return Object.keys(inputs).map(function (key) {
         return getFormFieldByData(inputs[key], handleSubmit, 'default', { ...formProps, form_name: name, last_changed: lastChangedField, saveOnChanges: saveOnChanges })
     });

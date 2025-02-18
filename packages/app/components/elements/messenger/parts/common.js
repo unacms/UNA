@@ -15,7 +15,6 @@ import { subscribe } from 'app/ui/atoms/socket';
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
 import ItemConvo from 'app/components/elements/messenger/parts/item-convo';
 import ItemJot from 'app/components/elements/messenger/parts/item-jot';
-import { Nav2 } from 'app/components/elements/messenger/parts/nav';
 import { linkedText } from 'app/lib/text-helpers';
 import CreateConvo, { CreateConvoButton } from 'app/components/elements/messenger/parts/new-convo';
 import Msg from 'app/ui/molecules/msg';
@@ -24,6 +23,7 @@ import Profile from 'app/ui/molecules/profile'
 import ElementMsg from 'app/components/elements/msg';
 import { getBackButtonWeb } from 'app/lib/common-helpers'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
+import BackButton from 'app/components/nav/back';
 
 export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, fetchConvos, data, onSave, addButtons }) {
     const isWeb = Platform.OS == 'web'
@@ -266,7 +266,6 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
             setShowMsg(sResponse.data?.message)
         }
         else {
-            console.log("sResponse.data.lot.author_data", sResponse.data.lot.author_data)
             const content = (<View className='items-center justify-center'>
                 <Row className='mb-4 gap-x-4'>
                     <Profile  displaySize="base" displayType="unit_wo_info" {...sResponse.data.lot.author_data} />
@@ -521,6 +520,7 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
     const initValue = Platform.OS === 'ios' ? 0 : 0; // const initValue = Platform.OS === 'ios' ? 48 : 0;
 
     const [keyboardHeight, setKeyboardHeight] = useState(initValue);
+    
 
     useEffect(() => {
         const showSubscription = Keyboard.addListener('keyboardDidShow', (e) => {
@@ -559,11 +559,13 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
         }
     };
 
+    
+
     return (<>
         <View className='md:px-0 border-bdrcard dark:border-bdrcard-d border-b w-full '>
             {(isWeb || true) && <Row className='px-3 py-2 items-center justify-between w-full h-[56px]'>
                 <Row className='items-center justify-start overflow-hidden flex-auto '>
-                    {isSmallScreen && <View className='mr-2'><Button variant="secondary" startDecorator='ArrowLeft' rounded align="start" onPress={() => showConvo()} /></View>}
+                    {isSmallScreen && <View className='mr-2'><BackButton buttonProps={{variant:"secondary", startDecorator:'ArrowLeft', rounded, align:"start"}} callback={handleBack} /></View>}
                     <Text numberOfLines={1} className="text-lg lg:text-xl font-bold font-bold tracking-tight  text-neutral-900 dark:text-neutral-50">{title}</Text>
                 </Row>
                 <Row className='items-center gap-x-2 '>

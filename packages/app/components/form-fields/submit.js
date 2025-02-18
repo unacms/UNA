@@ -24,8 +24,6 @@ export default function FormFieldSubmit(props) {
         hide_errors = false,
         ...restProps
     } = props;
-    
-    console.log("propspropsprops", props)
 
     const formContext = useFormContext();
     const { formState } = formContext;
@@ -59,7 +57,6 @@ export default function FormFieldSubmit(props) {
     const errorKeys = Object.keys(errors);
     const showErrors =
         errorKeys.length > 0 && !hide_errors && !formProps.hide_errors;
-
 
     let fb = formProps.button_full_width || props.button_full_width || width < LAYOUT_BREAKPOINTS.lg;
     if (notFullWidth){

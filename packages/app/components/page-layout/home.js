@@ -1,22 +1,13 @@
 import { View, Row, Pressable, ScrollView } from 'app/design/view'
 import { BlockByName } from 'app/components/block'
 import React, { useState, useEffect } from 'react'
-import {
-    appSetting,
-    storageSet,
-    storageGet,
-    getLayout,
-    LAYOUT_BREAKPOINTS,
-} from 'app/lib/util'
+import { appSetting, storageSet, storageGet, getLayout, LAYOUT_BREAKPOINTS, asyncStorageSet } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import { Button } from 'app/design/controls'
-import { appStatic } from 'app/lib/app-static'
 import { useTranslation } from 'react-i18next'
-import Image from 'app/ui/atoms/image'
 import ProfileSwitcher from 'app/components/elements/profile_switcher'
 import Splash from 'app/ui/molecules/splash'
 import { Platform } from 'react-native'
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function (props) {
     const { t } = useTranslation()
@@ -71,7 +62,7 @@ export default function (props) {
 
     
     if (currentUser) {
-        AsyncStorage.setItem('visited', 'true');
+        asyncStorageSet('layout:visited', true);
         let dUser = Object.assign({}, currentUser)
         dUser.url_avatar = dUser.avatar
         dUser.url = appSetting('dashboard', 'url')

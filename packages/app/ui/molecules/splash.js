@@ -3,28 +3,24 @@ import { Text } from 'app/design/typography'
 import { Button, Modal } from 'app/design/controls'
 import Card from 'app/components/card'
 import { useState, useEffect } from 'react'
-import { appSetting, BlockDataByName, LAYOUT_BREAKPOINTS } from 'app/lib/util'
+import { appSetting, BlockDataByName, LAYOUT_BREAKPOINTS, asyncStorageGet } from 'app/lib/util'
 import { Platform, Keyboard } from 'react-native'
 import { useWindowDimensions } from 'react-native'
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view'
 import { appStatic } from 'app/lib/app-static'
 import { BlockByServiceName } from 'app/components/block'
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
 
 export default function Splash(props) {
     const isWeb = Platform.OS == 'web'
-    const [defaultForm, setDefaultForm] = useState(isWeb ? 'login' : false)
+    const [defaultForm, setDefaultForm] = useState(false)
     const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
     useEffect(() => {
         const checkFirstLaunch = async () => {
-            const hasLaunched = await AsyncStorage.getItem('visited');
-
+            const hasLaunched = await asyncStorageGet('layout:visited');
             hasLaunched === null ? setDefaultForm('signup') : setDefaultForm('login')
         }
-        if (!isWeb)
-            checkFirstLaunch();
+        checkFirstLaunch();
     }, []);
 
     useEffect(() => {
@@ -132,8 +128,7 @@ export default function Splash(props) {
                         rounded=" rounded-2xl "
                         addClassName="flex-col gap-y-3 p-4 sm:p-6 w-full max-w-xl mx-auto "
                     >
-                        <BlockByServiceName name={defalulFormData.name} data={props.data} />
-
+                        <BlockByServiceName name={defalulFormData.name} data={props.data} formProps={{ hide_errors: true, button_full_width: true }} />
                         <Button
                             title="Forgot password?"
                             variant="link"

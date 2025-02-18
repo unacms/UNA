@@ -10,8 +10,10 @@ import { decode } from 'html-entities';
 import { appSetting as setting, UNA_URL, APP_URL } from 'app/config';
 import { remoteSettings } from 'app/settings-remote';
 import { parse as flatted_parse, stringify as flatted_stringify } from 'flatted';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const nativeCache = [];
+const isWeb = Platform.OS === 'web'
 
 export const LAYOUT_BREAKPOINTS = {
     xl: 1280,
@@ -30,7 +32,7 @@ export function isObjectsEqual(obj, obj2) {
 
 export function normalizeClasses(a) {
     if (!a) return a
-    return Platform.OS === 'web' ? a : a.replace(/\b\S*(hover|focus|active|group|duration|group-hover):\S*\b/g, "") .replace(/\s{2,}/g, " ").trim();
+    return isWeb ? a : a.replace(/\b\S*(hover|focus|active|group|duration|group-hover):\S*\b/g, "") .replace(/\s{2,}/g, " ").trim();
 }
 
 export function decodeText(str) {
@@ -48,11 +50,12 @@ export function truncateString(str, num) {
 }
 
 export async function getClipboard() {
-    if (Platform.OS !== 'web') {
-        return await Clipboard.getString();
+    if (isWeb) {
+        return await navigator.clipboard.readText();
+       
     }
     else {
-        return await navigator.clipboard.readText();
+        return await Clipboard.getString();
     }
 }
 
@@ -84,7 +87,7 @@ export function getDomainFromUrl(url) {
 }
 
 export async function setClipboard(str) {
-    if (Platform.OS !== 'web') {
+    if (!isWeb) {
         Clipboard.setString(str);
     }
     else {
@@ -116,18 +119,35 @@ export function clearNotif(currentUser, setCurrentUser) {
 }
 
 export const getDataFromCache = (pref, storageKeyValue) => {
-    if (appSetting('cache', 'list') && Platform.OS == 'web') {
+    if (appSetting('cache', 'list') && isWeb) {
         return storageGet(pref, storageKeyValue);
     }
     return false;
 }
 
+export async function asyncStorageSet(key, data) {
+    if (isWeb) {
+        storageSet(key, '', data, true);
+    }
+    else{
+        AsyncStorage.setItem(key, data);
+    }
+}
+
+export async function asyncStorageGet(key) {
+    if (isWeb) {
+        return storageGet(key, '', true);
+    }
+    else{
+        return await AsyncStorage.getItem(key)
+    }
+}
+
 export function storageSet(pref, key, data, isLocal = false) {
 
-    if (Platform.OS !== 'web') {
+    if (!isWeb) {
         if (!isLocal && pref == 'layout:shmo') {
             nativeCache[pref + '-' + key] = data;
-            //  await AsyncStorage.setItem(`${pref}-${key}`, serializedData);
         }
     }
     else {
@@ -139,7 +159,7 @@ export function storageSet(pref, key, data, isLocal = false) {
 
 
 export function storageGet(pref, key, isLocal = false) {
-    if (Platform.OS !== 'web') {
+    if (!isWeb) {
         if (!isLocal && pref == 'layout:shmo') {
             if (nativeCache[pref + '-' + key])
                 return nativeCache[pref + '-' + key]
@@ -155,7 +175,7 @@ export function storageGet(pref, key, isLocal = false) {
 }
 
 export function storageKey(url, useUrl = true) {
-    if (Platform.OS !== 'web')
+    if (!isWeb)
         return;
 
     let s = url;
@@ -165,7 +185,7 @@ export function storageKey(url, useUrl = true) {
 }
 
 export function storageClear(pref, key) {
-    if (Platform.OS !== 'web')
+    if (!isWeb)
         return;
 
     if (pref && key)
@@ -237,7 +257,7 @@ export const formatDateInterval = (dateStart, dateEnd, t) => {
 }
 
 export function storageRemove(pref, key, isLocal = false) {
-    if (Platform.OS !== 'web') {
+    if (!isWeb) {
 
     }
     else {
@@ -715,8 +735,7 @@ export function mergeDeep(target, ...sources) {
 }
 
 export function FeedbackHaptics(type) {
-    const bWeb = Platform.OS === 'web';
-    if (bWeb) return;
+    if (isWeb) return;
     //https://docs.expo.dev/versions/latest/sdk/haptics/
     switch (type) {
         case 'Success':
@@ -808,7 +827,6 @@ function urltoFile(url, defaultFilename = 'file', defaultMimeType = 'application
 
 
 export const uploadImageFile = async (file, fetchUrl, calback, extraVar) => {
-    const isWeb = Platform.OS == 'web'
     const formData = new FormData();
 
     formData.append("file", file);
@@ -822,7 +840,6 @@ export const uploadImageFile = async (file, fetchUrl, calback, extraVar) => {
 }
 
 export const uploadImage = async (uri, fetchUrl, calback, extraVar) => {
-    const isWeb = Platform.OS == 'web'
     const formData = new FormData();
     if (isWeb) {
         let fileType = '';
