@@ -565,7 +565,7 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
         <View className='md:px-0 border-bdrcard dark:border-bdrcard-d border-b w-full '>
             {(isWeb || true) && <Row className='px-3 py-2 items-center justify-between w-full h-[56px]'>
                 <Row className='items-center justify-start overflow-hidden flex-auto '>
-                    {isSmallScreen && <View className='mr-2'><BackButton buttonProps={{variant:"secondary", startDecorator:'ArrowLeft', rounded, align:"start"}} callback={handleBack} /></View>}
+                    {isSmallScreen && <View className='mr-2'><BackButton buttonProps={{variant:"secondary", startDecorator:'ArrowLeft', rounded:'rounded', align:"start"}} callback={showConvo} /></View>}
                     <Text numberOfLines={1} className="text-lg lg:text-xl font-bold font-bold tracking-tight  text-neutral-900 dark:text-neutral-50">{title}</Text>
                 </Row>
                 <Row className='items-center gap-x-2 '>

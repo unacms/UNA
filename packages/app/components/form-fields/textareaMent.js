@@ -98,12 +98,10 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
                 if (inputRef.current) {
                     inputRef.current.focus();
                 }
-            }, 300); // задержка для избежания проблем с ранней фокусировкой
+            }, 300); 
         }
     }, [props.autofocus]);
     const handleChange2 = (val) => {
-        if (props.onFocus)
-            props.onFocus();
         let v = replaceMentionValues(val, ({ trigger, name, id }) => `<a class="bx-mention-link" href="${id}" title="${name}" dchar="${trigger}" data-profile-id="${id}">${name}</a>`)
         v = v.split('\n').map(line => `<p>${line}</p>`).join('');
 
@@ -154,7 +152,20 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
 
     return (
             <MentionInput style={styles}
-                inputRef={inputRef}
+                inputRef={(ref) => {
+                    if (ref) {
+                        inputRef.current = ref;
+                        const originalFocus = ref.focus;
+                        ref.focus = (...args) => {
+                            if (props.onFocus) {
+                                props.onFocus();
+                            }
+                            if (originalFocus) {
+                                originalFocus.apply(ref, args); 
+                            }
+                        };
+                    }
+                }}
                 multiline
                 allowFontScaling={false}
                 autoFocus={field.value ? true : false}
