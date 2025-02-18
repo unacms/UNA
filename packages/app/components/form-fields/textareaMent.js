@@ -136,7 +136,7 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
         lineHeight: props.lineHeight || 20,
         color: colors.text,
         ...(isIos ? {  paddingVertical: 4 } : { }),
-        ...(name !== 'cmt_text' ? {  } : { maxHeight: 300 }),/*minHeight: 160*/
+        ...(name !== 'cmt_text' ? {  } : { maxHeight: 160 }),/*minHeight: 160*/
         ...(props.maxHeight ? { maxHeight: props.maxHeight } : {})
     };
 

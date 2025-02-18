@@ -101,10 +101,10 @@ export default function Splash(props) {
     const cnt = (
         <>
             <Modal
-                title={isSmall ? headerCreateAccount : modalFormData?.title}
+                title={modalFormData?.title}
                 onVisible={!!modalForm}
                 outerClickClose={false}
-                {...(!isSmall && { onClose: () => setModalForm(false) })}
+                {...(true && { onClose: () => setModalForm(false) })}
                 transparent={true}
                 headerBorder={true}
             >
@@ -116,7 +116,7 @@ export default function Splash(props) {
                     >
                         <ScrollView className="w-full h-full flex-1 overflow-visible">
                             <View className="w-full px-4 sm:p-0 ">
-                                <BlockByServiceName name={modalFormData?.name} formProps={{ button_hide_on_small: true, hide_errors: true, button_full_width: true }} data={props.data} isSubmit={isCreateAccountSubmit} />
+                                <BlockByServiceName name={modalFormData?.name} formProps={{ hide_errors: true, button_full_width: true }} data={props.data} isSubmit={isCreateAccountSubmit} />
                             </View>
                         </ScrollView>
                     </KbAvoidingView>

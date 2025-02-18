@@ -1,8 +1,9 @@
-import { View, Row } from 'app/design/view'
+import { View, Row, ScrollView } from 'app/design/view'
 import { useState, useCallback } from 'react';
 import { getFormFieldByData } from 'app/lib/form-helpers'
 import { Platform } from 'react-native'
-import { Button } from '../../design/controls';
+import { Button } from 'app/design/controls'
+import Animated, { SlideInLeft, SlideOutLeft } from 'react-native-reanimated';
 
 export default function FormComments(props) {
     const [imageSource, setImageSource] = useState([]);
@@ -38,6 +39,8 @@ export default function FormComments(props) {
                 {isWeb && getFormFieldByData(props.data.inputs['cmt_image'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder, noMargin: true, asDefaultStorage: true, source: 'library', })}
                 {!isWeb && !isExImage && <Button startDecorator="Plus" rounded onPress={() => setIsExImage(true)}></Button>}
                 {!isWeb && !!isExImage &&
+                    <Animated.View  entering={SlideInLeft.duration(300)} 
+                    exiting={SlideOutLeft.duration(300)}>
                     <Row className="gap-x-2">
                         <View>
                             {getFormFieldByData(props.data.inputs['cmt_image'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder, noMargin: true, asDefaultStorage: true, source: 'library', })}
@@ -46,6 +49,7 @@ export default function FormComments(props) {
                             {getFormFieldByData(props.data.inputs['cmt_image'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder, noMargin: true, asDefaultStorage: true, source: 'camera', })}
                         </View>
                     </Row>
+                    </Animated.View>
                 }
 
             </View>
@@ -60,7 +64,7 @@ export default function FormComments(props) {
 
             <View className={'ml-2 ' + (isWeb ? '' : ' w-12 ')}>{getFormFieldByData(props.data.inputs['cmt_submit'], props.handleSubmit, 'custom', { classes: isWeb ? 'ml-0 ' : '', noMargin: true, size: 'base' })}</View>
         </Row>
-        {(prevList.length > 0 && prevList[0]?.key) && <Row className='flex-wrap gap-2 mt-3'>{prevList}</Row>}
+        {(prevList.length > 0 && prevList[0]?.key) && <ScrollView horizontal={true}><Row className='flex-wrap gap-2 mt-3'>{prevList}</Row></ScrollView>}
         {getFormFieldByData(props.data.inputs['cmt_mood'], props.handleSubmit, 'custom')}
     </View>
 }

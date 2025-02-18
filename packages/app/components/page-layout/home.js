@@ -62,7 +62,7 @@ export default function (props) {
 
     
     if (currentUser) {
-        asyncStorageSet('layout:visited', true);
+        asyncStorageSet('layout:visited', 'true');
         let dUser = Object.assign({}, currentUser)
         dUser.url_avatar = dUser.avatar
         dUser.url = appSetting('dashboard', 'url')
