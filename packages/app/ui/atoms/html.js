@@ -139,7 +139,7 @@ const parseHtmlToReact = (html, textStyles, parentKey = "0") => {
         const srcClass = attributes.match(/class=['"]?([^'"\s>]+)['"]?/);
         elements.push(
             <Component
-            
+                key={getKey(tag)}
                 className={srcClass && srcClass[1]}
                 isFirst={false}
                 isLast={false}
@@ -164,8 +164,8 @@ const parseHtmlToReact = (html, textStyles, parentKey = "0") => {
 };
 
 export default function ElementHtml({ customClassName, data }) {
-    console.log("htmlhtml", data)
-    const textStyles = customClassName == 'u-vanilla-html-small' ? 'text-sm leading-[18px]' : 'text-base leading-[20px]';
+
+    const textStyles = customClassName == 'u-vanilla-html-small' ? 'text-sm leading-[18px]  text-neutral-800 dark:text-neutral-200' : 'text-base leading-[20px]  text-neutral-800 dark:text-neutral-200';
     const html = data.replace(/\n|\r/g, '').replace(/&nbsp;/g, ' ');
     return <View>{parseHtmlToReact(html, textStyles)}</View>;
 }

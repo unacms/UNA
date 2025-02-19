@@ -54,6 +54,7 @@ export const settingsDefault = {
     },
 
     native:{
+        default_theme: 'auto',
         enable_screens: true, //OLD appSetting('layout', 'native_enable_screens')
         lazy_tabs: false, // OLD appSetting('layout', 'native_lazy_tabs')
         disable_screenshots: false, // OLD appSetting('layout', 'disable_screenshots')

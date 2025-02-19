@@ -50,7 +50,7 @@ export default function PageLayout(props) {
 
     if (!appSetting('layout', 'user_remote_config'))
         return <DasbordStatOld {...props}/>
-
+    const isWeb = Platform.OS == 'web'
     const { t } = useTranslation();
     let { currentUser, setCurrentUser } = useCurrentUser()
 
@@ -68,7 +68,7 @@ export default function PageLayout(props) {
 
     const handleLang = async (item) => {
         i18n.changeLanguage(item);
-        if (Platform.OS == 'web') {
+        if (isWeb) {
             storageClear();
             storageSet('layout:lang', '', item, true);
             window.location.href = window.location.href
@@ -82,7 +82,7 @@ export default function PageLayout(props) {
 
 
     const handleTheme = async (item) => {
-        if (Platform.OS == 'web') {
+        if (isWeb) {
             const root = window.document.documentElement;
             if (item == 'auto')
                 item = '';
@@ -96,7 +96,6 @@ export default function PageLayout(props) {
             // setCurrentUser(Object.assign({}, currentUser));
         }
         else {
-            console.log("item", item)
             if (item == 'auto')
                 item = null;
             Appearance.setColorScheme(item);
@@ -112,10 +111,16 @@ export default function PageLayout(props) {
     if (!currentTheme)
         currentTheme = 'auto';
 
+    if (!isWeb){
+        currentTheme = Appearance.getColorScheme();
+        console.log("currentThemecurrentTheme", currentTheme)
+    }
+
     let currentFormat = storageGet('layout:format', '', true);
     if (!currentFormat)
         currentFormat = appSetting('layout', 'default_layout');
 
+    
 
 
     return (

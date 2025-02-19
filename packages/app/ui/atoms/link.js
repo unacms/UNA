@@ -73,7 +73,7 @@ export default function ElementLink(props) {
     if (!sanitizedHref) {
         return children;
     }
-    console.log("pppppppp", p, domain, rootUrl)
+
     // Если ссылка внешняя, открываем в браузере
     if (domain && domain !== rootUrl || asExternal === true) {
         return (

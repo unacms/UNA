@@ -24,6 +24,7 @@ import { LogLevel, OneSignal } from 'react-native-onesignal';
 import { callFn } from 'app/lib/functions/call';
 import fonts from 'app/design/fonts/fonts';
 import { Platform } from 'react-native'
+import { Appearance } from 'react-native';
 
 enableScreens(appSetting('native', 'enable_screens'));
 
@@ -91,6 +92,13 @@ export default function () {
         }
         return null;
     }, [currentUser?.id]);
+
+    const theme = appSetting('native', 'default_theme')
+    useEffect(() => {
+        if (theme != 'auto') {
+            Appearance.setColorScheme(theme);
+        }
+    }, [theme]);
 
     const tabsHeight = Platform.OS == 'ios' ? 52 : 56;
 
