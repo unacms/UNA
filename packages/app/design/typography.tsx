@@ -60,3 +60,17 @@ export const H1 = ({ children, className, ...rest }) => {
       </NativeText>
     );
   };
+
+  export const H3 = ({ children, className, ...rest }) => {
+    const correctedChildren =
+      typeof children === 'string' ? decodeText(children) : children;
+    return (
+      <NativeText
+        className={`text-lg font-extrabold mt-2 mb-3 ${className || ''}`}
+        {...rest}
+        allowFontScaling={false}
+      >
+        {correctedChildren}
+      </NativeText>
+    );
+  };

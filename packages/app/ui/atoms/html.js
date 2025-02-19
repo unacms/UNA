@@ -1,399 +1,171 @@
-import { useWindowDimensions, useColorScheme, View } from 'react-native'
-import IframeRenderer, { iframeModel } from '@native-html/iframe-plugin';
-import WebView from 'react-native-webview';
-import RenderHtml, {
-    HTMLContentModel,
-    HTMLElementModel,
-} from 'react-native-render-html'
-import { mergeDeep } from 'app/lib/util';
-import { appSetting, md5, absoluteApiUrl, getDomainFromUrl } from 'app/lib/util'
-import { Theme } from 'app/design/theme';
-import { useState } from 'react';
-import Video from 'app/ui/atoms/video';
-import * as WebBrowser from 'expo-web-browser';
-import { useRouter, useGlobalSearchParams } from 'expo-router';
+import React from "react";
+import Image from 'app/ui/atoms/image';
+import { Row, View } from 'app/design/view';
+import {
+    H4,
+    H5,
+    H6,
+    P,
+    A,
+    Strong,
+    I,
+    EM,
+    Div,
+    Li,
+    Span,
+    UL,
+    Code,
+    BR
+} from "@expo/html-elements";
+import Link from 'app/ui/atoms/link'
+import { Text, H1, H2, H3 } from 'app/design/typography'
 
-const renderers = {
-    iframe: IframeRenderer,
-    video: (obj1, obj2) => {
-        let link = obj1["tnode"].domNode?.attribs?.src ? obj1["tnode"].domNode.attribs.src : obj1["tnode"].domNode.children[0].attribs.src;
-        return (
-            <View className='w-full aspect-video'>
-                <Video src={link} />
-            </View>
-        );
-    },
+const StyledP = (props) => (
+    <P className={`${!props.isLast ? 'mb-1' : 'mb-0'} ${!props.isFirst ? 'mt-1' : 'mb-0'} ${props.textStyles} `} >
+        {props.children}
+    </P>
+);
+
+const StyledLi = (props) => (
+    <Row className={`ml-4 `}>
+        <Text className={`${props.textStyles}`}>- {props.children}</Text>
+    </Row>
+);
+
+const StyledUl = (props) => (
+    <UL>
+        {props.children}
+    </UL>
+);
+
+const StyledText = (props) => {
+    return <Text className={props.className}>
+        {props.children}
+    </Text>
 };
 
-const customHTMLElementModels = {
-    iframe: iframeModel,
-    video: HTMLElementModel.fromCustomModel({
-        tagName: "video",
-        mixedUAStyles: {
-            alignSelf: "center",
-        },
-        contentModel: HTMLContentModel.block,
-    }),
-    p: HTMLElementModel.fromCustomModel({
-        tagName: "p",
-        mixedUAStyles: {
-            userSelect: 'text',
-            /*WebkitUserSelect: 'text',
-            WebkitTouchCallout: 'default'*/
-        },
-        contentModel: HTMLContentModel.block,
-    }),
+const StyledDiv = (props) => (
+    <View className={'p-0 m-0'} >
+        {props.children}
+    </View>
+);
+
+const tagMapping = {
+    h1: H1,
+    h2: H2,
+    h3: H3,
+    h4: StyledP,
+    h5: StyledP,
+    h6: StyledP,
+    p: StyledP,
+    strong: Strong,
+    b: Strong,
+    i: I,
+    em: EM,
+    code: Code,
+    div: StyledDiv,
+    li: StyledLi,
+    span: StyledText,
+
+    ul: StyledUl,
+    ol: StyledUl,
 };
 
+const parseHtmlToReact = (html, textStyles, parentKey = "0") => {
+    let childIndex = 0;
+    const getKey = (tag) => `${parentKey}-${childIndex++}-${tag}`;
+    const elements = [];
+    html = html.replace(/<br\s*\/?>/gi, (_, index) => `<br key="${parentKey}-${index}-br"></br>`);
 
-const customHTMLElementModelsCustom =(width, height) =>{ 
-    return {
-    iframe: iframeModel.extend({
-        mixedUAStyles: {
-          width: width,
-          height: height - 110,
-        },
-      }),
-    video: HTMLElementModel.fromCustomModel({
-        tagName: "video",
-        mixedUAStyles: {
-            alignSelf: "center",
-        },
-        contentModel: HTMLContentModel.block,
-    }),
-}};
 
-function onElement(element) {
-    if (element?.parent?.children[0].name === 'p') {
-        if (element?.parent?.children.length === 1)
-            element.parent.children[0].attribs.class = 'firstP lastP';
-        else
-            element.parent.children[0].attribs.class = 'firstP'
-    }
-    if (element?.parent?.children[element.parent.children.length - 1].name === 'p' && element.parent.children.length > 1) {
-        element.parent.children[element.parent.children.length - 1].attribs.class = 'lastP'
-    }
-
-}
-
-const domVisitors = {
-    // onElement: onElement
-};
-
-function addClassesToP(htmlString) {
-    // Regular expression to match <p> tags
-    const pTagRegex = /<p\b[^>]*>/g;
-    let match;
-    let pTags = [];
-
-    // Find all <p> tag matches
-    while ((match = pTagRegex.exec(htmlString)) !== null) {
-        pTags.push(match.index);
-    }
-
-    // Check if there are any <p> tags
-    if (pTags.length > 0) {
-        // Add class1 to the first <p> tag
-        let firstPIndex = pTags[0];
-        htmlString = htmlString.slice(0, firstPIndex) + htmlString.slice(firstPIndex).replace('<p', '<p class="firstP"');
-
-        // Add class2 to the last <p> tag if there are multiple <p> tags
-        if (pTags.length > 1) {
-            let lastPIndex = pTags[pTags.length - 1];
-            // Recalculate lastPIndex after modifying the first <p>
-            lastPIndex += '<p class="class1"'.length - 2; // Adjust length change due to added class
-            htmlString = htmlString.slice(0, lastPIndex) + htmlString.slice(lastPIndex).replace('<p', '<p class="lastP"');
-        } else {
-            // If only one <p> tag, append class2 to the existing class1
-            htmlString = htmlString.replace('class="firstP"', 'class="firstP lastP"');
-        }
-    }
-
-    return htmlString;
-}
-/*
-const logToReactNative = (message) => {
-    window.ReactNativeWebView.postMessage(JSON.stringify({ log: message }));
-};
-
-const observer = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-        logToReactNative(mutation.type);
-        logToReactNative(mutation.target.tagName);
+    html = html.replace(/<img\s*([^>]*)\/?>/gi, (match, attributes, index) => {
+        return `<customimg ${attributes} key="${parentKey}-${index}-img"></customimg>`;
     });
-    const height = document.body.scrollHeight;
-    window.ReactNativeWebView.postMessage(JSON.stringify({ height }));
-});
 
-document.addEventListener("DOMContentLoaded", () => {
+    const mainTagRegex = /<([a-zA-Z0-9]+)([^>]*)>(.*?)<\/\1>/gis;
+    let lastIndex = 0;
+    let match;
 
-    logToReactNative('DOM loaded');
-   observer.observe(document.body, {
-    childList: true, 
-    subtree: true, 
-    attributes: true, 
-    characterData: true
-});
-    logToReactNative('aaa')
-     const height = document.body.scrollHeight;
-  // window.ReactNativeWebView.postMessage(JSON.stringify({ height }));
-});
-
-window.onload = () => {
-
-const height = document.body.scrollHeight;
-   window.ReactNativeWebView.postMessage(JSON.stringify({ height }));
-
-       const element = document.querySelector('.b');
-  const rect = element.getBoundingClientRect();
-                       logToReactNative(rect.width+'----- = '+rect.height);
-    observer.observe(document.body, {
-    childList: true,
-    subtree: true,
-    attributes: true,
-    characterData: true,
-});
-
-    
-    window.ReactNativeWebView.postMessage(JSON.stringify({ height }));
-  };  
-
-logToReactNative('aaa')
-
-
-    setTimeout(() => {
-         const element = document.querySelector('.b');
-                       const rect = element.getBoundingClientRect();
-                       logToReactNative(rect.width+'setTimeout b.height = '+rect.height);
-                    }, 10000);
-
-        document.querySelectorAll('a').forEach(anchor => {
-            anchor.addEventListener('click', (event) => {
-                event.preventDefault();
-                window.ReactNativeWebView.postMessage(JSON.stringify({ 
-                    type: 'link', 
-                    url: anchor.href 
-                }));
-            });
-        });
-        true; // Required for injectedJavaScript to work on Android
-        */
-export default function ElementHtml(props) {
-    const glob = useGlobalSearchParams();
-    const routerExpo = useRouter();
-    const { colors } = Theme();
-    const [iframeH, setIframeH] = useState({});
-    let { width, height } = useWindowDimensions();
-    let customClassName = props.customClassName ? props.customClassName : '';
-    let fontSize = 16;
-    let lineHeight = 22;
-    if (customClassName == 'u-vanilla-html-small') {
-        fontSize = 14;
-        lineHeight = 18;
-    }
-
-    const theme = useColorScheme();
-    let tagsStyles = {
-        body: {
-            whiteSpace: 'normal',
-            color: colors.default,
-            fontSize: fontSize,
-            lineHeight: lineHeight,
-            marginLeft: 0,
-            marginRight: 0,
-            marginTop: 0,
-            marginBottom: 0,
-            paddingTop: 0,
-            paddingBottom: 0,
-
-        },
-        a: {
-            color: colors.primary,
-            textDecorationLine: 'none',
-        },
-        h1: {
-            color: colors.default
-        },
-        h2: {
-            color: colors.default
-        },
-        h3: {
-            color: colors.default
-        },
-        h4: {
-            color: colors.default
-        },
-        /* p: {
-             margin: 2
-         },*/
-        p: {
-            marginTop: 8,
-            marginBottom: 8,
-
-        },
-        ul: {
-            margin: 0,
-            padding: 0
-        },
-        ol: {
-            padding: 0
-        }
-    };
-
-    const classesStyles = {
-        firstP: {
-            marginTop: 0,
-        },
-        lastP: {
-            marginBottom: 0,
-
-        },
-        'bx-menthion-link': {
-            color: colors.primary,
-            textDecorationLine: 'none',
-        },
-        'bx-embeded-link': {
-            color: colors.default
-        },
-        'link': {
-            color: colors.primary,
-            textDecorationLine: 'none',
-        }
-        , 'bx-embeded': {
-            lineHeight: 18,
-            fontSize: 14,
+    while ((match = mainTagRegex.exec(html)) !== null) {
+        const [fullMatch, tag, attributes, content] = match;
+        const normalizedTag = tag.toLowerCase();
+        const textBefore = html.slice(lastIndex, match.index);
+        lastIndex = mainTagRegex.lastIndex;
+        if (textBefore.trim()) {
+            elements.push(<Text>{textBefore.trimStart()}</Text>);
         }
 
-    }
+        if (normalizedTag === "br") {
+            elements.push(<Text>{"\n"}</Text>);
+            continue;
+        }
 
+        const Component = tagMapping[normalizedTag] || Text;
 
-    if (props.htmlStyles)
-        tagsStyles = mergeDeep(tagsStyles, props.htmlStyles);
-
-    let data = props.data;
-
-    if (data) {
-        var pattern = /<p>(\s|(&nbsp))*<\/p>/gmi;
-        data = data.replace(pattern, '');
-        const regex = /<div class="bx-embed-link" source="(.*?)">[\s\S]*?<\/div>/g;
-        data = data.replace(regex, function (match, capture) {
-            // Customize the className based on the captured value
-            let widthIfr = width - 32
-            let heightIfr = widthIfr * 9 / 16 + 4;
-
-            let hash = md5(capture);
-            let item = iframeH[hash];
-            heightIfr = 120;
-            if (item && !capture.includes('youtube.com')) {
-                heightIfr = item[0];
+        // Обработка изображений
+        if (tag === "customimg") {
+            const srcMatch = attributes.match(/src=['"]?([^'"\s>]+)['"]?/);
+            if (srcMatch && srcMatch[1]) {
+                elements.push(
+                    <Image
+                       
+                    src={srcMatch[1]}
+                    width={100}
+                    height={100}
+                />
+                );
             }
-
-            if (item && !capture.includes('oembed.php')) {
-                heightIfr = widthIfr * 0.3;
-            }
-
-            return (
-                '<iframe scrolling="no" width="' + widthIfr + '" height="' + heightIfr + '"  src="' + absoluteApiUrl("embeds") + capture + '&theme=' + theme + '&hash=' + hash + '"></iframe>'
-            );
-        });
-    }
-
-    if (!data)
-        return <></>
-
-    const onMessage = (event) => {
-        let a = {};
-        b = event.nativeEvent.data;
-        let data = JSON.parse(event.nativeEvent.data)
-        a[data[0]] = [data[1], data[2]];
-        //setIframeH({...iframeH, ...a})
-    };
-
-
-
-    if (data && !props.pureHtml) {
-        data = data.replace(/<([a-z]+)(?:\s[^>]*)?>((?:\s|<br\s*\/?>)*)<\/\1>/gi, '');
-        data = data.replace('/(<br\s*\/?>\s*){2,}/i', '<br>', data);
-    }
-    data = data.replace(/<br\s*\/?>\s*$/, '');
-    data = addClassesToP(data);
-
-    const onPress = async (event, url, htmlAttribs, target) => {
-        const rootUrl = appSetting('config', 'native_app_images_url');// MAY BE NEED TO CHANGE
-        const domain = getDomainFromUrl(url);
-
-        if (domain !== '' && domain !== rootUrl) {
-            let result = await WebBrowser.openBrowserAsync(url);
-        } else {
-            routerExpo.push({
-                pathname: '/' + glob.name,
-                params: { url: '/' + url.replace(rootUrl+'/', '') }
-            });
+            continue;
         }
-    };
 
-    return (
-        <RenderHtml
-            renderers={renderers}
-            ignoredDomTags={[]}
-            WebView={WebView}
-            customHTMLElementModels={props.pureHtml? customHTMLElementModelsCustom(width, height) : customHTMLElementModels}
-            defaultWebViewProps={{
-                bounces: false,
-                dataDetectorTypes: 'link',
-                scalesPageToFit: true,
-                scrollEnabled: true,
-                automaticallyAdjustContentInsets: true,
-                mediaPlaybackRequiresUserAction: true,
-                javaScriptEnabled: true,
-                domStorageEnabled: true,
-                injectedJavaScript: `
-                    document.addEventListener('DOMContentLoaded', function() {
-                        document.body.style.webkitUserSelect = 'text';
-                        document.body.style.webkitTouchCallout = 'default';
-                        document.querySelectorAll('p, span, div').forEach(el => {
-                            el.style.webkitUserSelect = 'text';
-                        });
-                    });
-                    true; // Для работы на Android
-                `,
-            }}
-            renderersProps={{
-                iframe: {
-                    scalesPageToFit: true,
-                    webViewProps: {
-                        onMessage: onMessage
-                    }
-                },
-                a: {
-                    onPress(event, url, htmlAttribs, target) {
-                        onPress(event, url, htmlAttribs, target);
-                    }
-                },
-                p: {
-                    nativeProps: {
-                        selectable: true,
-                        allowFontScaling: false,
-                        style: { userSelect: 'text' }
-                    }
-                }
-               
-            }}
-            defaultTextProps={{
-                selectable: true,
-                allowFontScaling: false,
-                style: {
-                    userSelect: 'text',
-                    WebkitUserSelect: 'text',  // Для Safari на iOS
-                    WebkitTouchCallout: 'default' // Показывает стандартное меню копирования
-                }
-            }} 
-            contentWidth={width}
-            tagsStyles={tagsStyles}
-            classesStyles={classesStyles}
-            source={{ html: data }}
-            domVisitors={domVisitors}
-        />
+        // Обработка ссылок
+        if (tag === "a") {
+            const hrefMatch = attributes.match(/href="([^"]+)"/);
+            if (hrefMatch) {
+                console.log('!!!content', content)
+                elements.push(
+                    <Link
+                        href={hrefMatch[1]}
+                        mode="text"
+                    >
+                        <Text className="text-primary">{content}</Text>
 
-    );
+
+                    </Link>
+                );
+            }
+            continue;
+        }
+        const srcClass = attributes.match(/class=['"]?([^'"\s>]+)['"]?/);
+        elements.push(
+            <Component
+            
+                className={srcClass && srcClass[1]}
+                isFirst={false}
+                isLast={false}
+                textStyles={textStyles}
+            >
+                {parseHtmlToReact(content, textStyles, getKey("content"))}
+            </Component>
+        );
+    }
+
+    const remainingText = html.slice(lastIndex);
+    if (remainingText.trim()) {
+        elements.push(<Text key={getKey("end")}>{remainingText.trim()}</Text>);
+    }
+
+    if (elements.length > 0) {
+        elements[0] = React.cloneElement(elements[0], { isFirst: true });
+        elements[elements.length - 1] = React.cloneElement(elements[elements.length - 1], { isLast: true });
+    }
+
+    return elements;
+};
+
+export default function ElementHtml({ customClassName, data }) {
+    console.log("htmlhtml", data)
+    const textStyles = customClassName == 'u-vanilla-html-small' ? 'text-sm leading-[18px]' : 'text-base leading-[20px]';
+    const html = data.replace(/\n|\r/g, '').replace(/&nbsp;/g, ' ');
+    return <View>{parseHtmlToReact(html, textStyles)}</View>;
 }

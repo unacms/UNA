@@ -37,7 +37,7 @@ export function ContentMore({ content, embed, numberOfSymbols = 350, textStyle, 
     if (showButton) {
         const lastIndex = shortHtml.lastIndexOf('</p>');
         if (lastIndex !== -1) {
-            shortHtml = shortHtml.slice(0, lastIndex) + (showLess ? '...' : '... <span class="link">Show more</a>') + '</p>' + shortHtml.slice(lastIndex + 4);
+            shortHtml = shortHtml.slice(0, lastIndex) + (showLess ? '...' : '... <span class="text-primary">Show more</span>') + '</p>' + shortHtml.slice(lastIndex + 4);
         }
     }
 

@@ -86,7 +86,7 @@ const Header = memo(({ backButtonPresented, header, pagePath, rightComponents })
             backgroundColor: colors.headerBackground,
         }} className="  justify-between items-center h-[64px] px-[12px] ">
             <Row>
-                {(isHome && currentUser) && <SvgLogoNative />}
+                {(isHome) && <SvgLogoNative />}
                 {backButtonPresented && (
                     <Pressable className="mr-[12px] rounded-full justify-center items-center" onPress={() => {
                         FeedbackHaptics('Medium');

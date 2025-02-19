@@ -2,6 +2,7 @@
   "main": "index.js",
   "dependencies": {
     "@10play/tentap-editor": "^0.6.1",
+    "@expo/html-elements": "^0.11.2",
     "@gorhom/bottom-sheet": "^4.6.3",
     "@hello-pangea/dnd": "^17.0.0",
     "@native-html/iframe-plugin": "^2.6.1",

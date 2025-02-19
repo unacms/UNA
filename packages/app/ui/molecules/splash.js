@@ -164,6 +164,12 @@ export default function Splash(props) {
                     <ScrollView>
                         {!isKeyboardVisible && <View className="items-center my-8 ">
                             <View className="w-60 items-center ">{appStatic('logo_native')}</View>
+                            <View className="my-4 mx-12">
+                                <Text className=" text-xl sm:text-2xl text-center md:text-start text-neutral-800 dark:text-neutral-200 ">
+                                Discover the community where you can connect and engage
+                                with people who share your interests.
+                                </Text>
+                            </View>
                         </View>}
                         {cnt}
                     </ScrollView>

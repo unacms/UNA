@@ -7,7 +7,7 @@ import * as WebBrowser from 'expo-web-browser';
 import React, { useMemo, useCallback } from 'react';
 
 export default function ElementLink(props) {
-    const { href = '', target, haptics, children, asExternal, ...rest } = props;
+    const { href = '', target, haptics, children, asExternal, mode,  ...rest } = props;
     const glob = useGlobalSearchParams();
     const { currentUser } = useCurrentUser();
 
@@ -39,9 +39,12 @@ export default function ElementLink(props) {
     const sanitizedHref = invalidHrefs.includes(href) ? '' : href;
 
     // Если href невалиден или пуст, возвращаем детей без обертки
-    
-
     let finalHref = sanitizedHref === '/home' ? '/' : sanitizedHref;
+
+    const domain = useMemo(() => getDomainFromUrl(finalHref), [finalHref]);
+    const rootUrl = appSetting('config', 'native_app_images_url');
+
+    finalHref = finalHref.replace(domain, '');
 
     const index = useMemo(() => {
         const match = LinksForTabs.find((item) => finalHref.includes(item.url));
@@ -60,8 +63,7 @@ export default function ElementLink(props) {
     }, [target, finalHref, index, glob.name]);
 
     // Получение домена и корневого URL
-    const domain = useMemo(() => getDomainFromUrl(finalHref), [finalHref]);
-    const rootUrl = appSetting('config', 'native_app_images_url');
+    
 
     // Обработчик внешних ссылок
     const handleExternalLinkPress = useCallback(async () => {
@@ -71,7 +73,7 @@ export default function ElementLink(props) {
     if (!sanitizedHref) {
         return children;
     }
-
+    console.log("pppppppp", p, domain, rootUrl)
     // Если ссылка внешняя, открываем в браузере
     if (domain && domain !== rootUrl || asExternal === true) {
         return (
@@ -80,6 +82,15 @@ export default function ElementLink(props) {
             </Pressable>
         );
     }
+
+
+if (mode == 'text'){
+    return (
+        <Link push href={p} asChild {...rest}>
+                {children}
+        </Link>
+    );
+}
 
     return (
         <Link push href={p} asChild {...rest}>
