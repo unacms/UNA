@@ -105,6 +105,8 @@ export const settingsDefault = {
         show_nav_counters: 'primary', // OLD appSetting('layout', 'show_nav_counters')
         show_nav_titles: true, // OLD appSetting('layout', 'show_nav_titles')
         hide_browse_filter: true, // OLD appSetting('layout', 'hide_browse_filter')
+        sidebar: '',
+        sidebar_position: 'fixed'
     },
     entry: {
         default_view: '',

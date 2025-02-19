@@ -413,9 +413,10 @@ export function getNumCols(width, currentRoute, leftSideBar) {
 };
 
 export function LeftSidebar({ title, addButtons, children, width, menu }) {
+    const sidebar = appSetting('conductor', 'sidebar_position')
     return (
         <View className={" hidden lg:block " + width}>
-            <View className={' fixed-process ' + width + ' lg:px-2 lg:py-3 '}>
+            <View className={` ${sidebar =='fixed'? 'fixed-process' : ''} ${width} lg:px-2 lg:py-3`}>
                 {(!!title || !!addButtons?.length > 0) && <Row className="justify-between items-center mt-1 mb-4 px-2 z-10">
                     <Text className="text-2xl truncate mr-auto font-bold  text-neutral-900 dark:text-neutral-100 hidden lg:flex  ">
                         {title}

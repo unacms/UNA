@@ -771,17 +771,30 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
     ), [routes, index, setIndex, onChangeRoute]);
 
+    
+
     if (leftSideBar) {
+
         const offset = 64
+    let a = <View style={{ minHeight: (windowHeight - offset) }} className={`${leftSideBarWidth} hidden lg:block border-r border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d fixed lg:relative top-0 z-50`}>
+    {leftSideBarComponent}
+</View>
+    const sidebar = appSetting('conductor', 'sidebar')
+    let rc = ""
+    if (sidebar == 'rounded'){
+        rc = "items-start justify-start"
+        a = <View className={`${leftSideBarWidth} mt-4 mr-4  sm:rounded-2xl  border-r border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d`}>
+        {leftSideBarComponent}
+    </View>
+    }
+       
         return (
             <View className={appSetting('layout', 'max_width') + " w-full h-full mx-auto"} scrollEnabled={false} onLayout={handleLayoutTop}>
                 {headerComponent}
                 <Toaster ref={toasterRef} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" />
                 <View style={{ minHeight: (windowHeight - offset) }} className={appSetting('layout', 'max_width  ') + ' mx-auto w-full '} >
-                    <Row>
-                        <View style={{ minHeight: (windowHeight - offset) }} className={`${leftSideBarWidth} hidden lg:block border-r border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d fixed lg:relative top-0 z-50`}>
-                            {leftSideBarComponent}
-                        </View>
+                    <Row className={rc}> 
+                        {a}
                         <View className=" flex-auto">{/*min-h-screen???*/}
                             {(headerSettings.showAltTopMenu) && topSideBarComponent}
                             {(windowWidth < LAYOUT_BREAKPOINTS.lg && layoutName == 'navigator' && leftSideBarBlocks.length > 0) && <View className="items-start ml-2 mt-2">
