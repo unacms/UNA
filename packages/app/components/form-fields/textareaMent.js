@@ -1,7 +1,7 @@
 import Field from './_field';
 import { View, Pressable } from 'app/design/view'
 import { Text } from 'app/design/typography'
-import { useController } from 'react-hook-form';
+import { useController, useFormContext } from 'react-hook-form';
 import { useState, useRef, useEffect } from 'react';
 import { fetcher } from 'app/lib/fetcher';
 import { MentionInput as MentionInputDef, replaceMentionValues } from 'react-native-controlled-mentions'
@@ -77,12 +77,25 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
     const { field } = useController({ name, rules: {}, defaultValue: value });
     const [suggestions, setSuggestions] = useState([]);
     const [keywordval, setKeyword] = useState(['', '']);
+    const formContext = useFormContext();
+
+    const object_privacy_view = formContext.watch('object_privacy_view');
+    const object_id = formContext.watch('id');
+    const m = name == "cmt_text" ? "sys_cmts" : "bx_timeline";
+
+    let url1 = '/searchExtended.php?action=get_mention';
+    if (m)
+        url1 += '&m='+m;
+    if (object_privacy_view)
+        url1 += '&object_privacy_view='+object_privacy_view;
+    if (object_id)
+        url1 += '&cid='+object_id;
 
     useEffect(() => {
         if (keywordval[0] === '') return;
 
         const fetchData = async () => {
-            let url = `/searchExtended.php?action=get_mention&symbol=${keywordval[1] === '#' ? '%23' : '%40'}&term=${keywordval[0]}`;
+            let url = url1+`&symbol=${keywordval[1] === '#' ? '%23' : '%40'}&term=${keywordval[0]}`;
             const result = await fetcher(url);
             let p = result.map(k => ({ id: k.value, name: k.label }));
 
