@@ -1,13 +1,15 @@
 import { View, Row, ScrollView } from 'app/design/view'
-import { useState, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { getFormFieldByData } from 'app/lib/form-helpers'
 import { Platform } from 'react-native'
 import { Button } from 'app/design/controls'
 import Animated, { SlideInLeft, SlideOutLeft } from 'react-native-reanimated';
+import { useFormContext } from 'react-hook-form';
+import { stripTags } from 'app/lib/util'
 
 export default function FormComments(props) {
     const [imageSource, setImageSource] = useState([]);
-
+    const formContext = useFormContext();
     const [isExImage, setIsExImage] = useState(false);
     const isWeb = Platform.OS == 'web';
     const isIos = Platform.OS == 'ios'
@@ -20,6 +22,17 @@ export default function FormComments(props) {
             }));
         }
     }
+
+    let text = formContext.watch('cmt_text')
+    if (!text) text = ''
+    if (typeof text === 'string') {
+        text = stripTags(text).trim()
+    }
+
+    useEffect(() => {
+        if (formContext.formState.isSubmitted)
+            setImageSource([]);
+    }, [formContext.formState.isSubmitted]);
 
     let prevList = Object.values(imageSource).flat();
 
@@ -62,7 +75,7 @@ export default function FormComments(props) {
                 {getFormFieldByData(props.data.inputs['sys'], props.handleSubmit, 'custom')}
             </View>
 
-            <View className={'ml-2 ' + (isWeb ? '' : ' w-12 ')}>{getFormFieldByData(props.data.inputs['cmt_submit'], props.handleSubmit, 'custom', { classes: isWeb ? 'ml-0 ' : '', noMargin: true, size: 'base' })}</View>
+            <View className={'ml-2 ' + (isWeb ? '' : ' w-12 ')}>{getFormFieldByData(props.data.inputs['cmt_submit'], props.handleSubmit, 'custom', {  disabled: text != '' ? false : true, classes: isWeb ? 'ml-0 ' : '', noMargin: true, size: 'base' })}</View>
         </Row>
         {(prevList.length > 0 && prevList[0]?.key) && <ScrollView horizontal={true}><Row className='flex-wrap gap-2 mt-3'>{prevList}</Row></ScrollView>}
         {getFormFieldByData(props.data.inputs['cmt_mood'], props.handleSubmit, 'custom')}

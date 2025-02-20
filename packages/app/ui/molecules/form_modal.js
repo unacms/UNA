@@ -15,8 +15,6 @@ export default function FormModal({ pageData, setPageData }) {
     const isShowHeader = pageData.module != "bx_timeline";
     const Container = isShowHeader ? ScrollView : View;
 
-    console.log("pageDatapageData", pageData.module + (pageData.ts))
-
     if (!pageData)
         return null;
 

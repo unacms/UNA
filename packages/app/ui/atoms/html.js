@@ -21,31 +21,31 @@ import Link from 'app/ui/atoms/link'
 import { Text, H1, H2, H3 } from 'app/design/typography'
 
 const StyledP = (props) => (
-    <P className={`${!props.isLast ? 'mb-1' : 'mb-0'} ${!props.isFirst ? 'mt-1' : 'mb-0'} ${props.textStyles} `} >
+    <P className={`${!props.isLast ? 'mb-1' : 'mb-0'} ${!props.isFirst ? 'mt-1' : 'mb-0'} ${props.textStyles} `}>
         {props.children}
     </P>
 );
 
 const StyledLi = (props) => (
-    <Row className={`ml-4 `}>
+    <Row className={`ml-4`} key={props.key}>
         <Text className={`${props.textStyles}`}>- {props.children}</Text>
     </Row>
 );
 
 const StyledUl = (props) => (
-    <UL>
+    <UL key={props.key}>
         {props.children}
     </UL>
 );
 
-const StyledText = (props) => {
-    return <Text className={props.className}>
+const StyledText = (props) => (
+    <Text className={props.className} key={props.key}>
         {props.children}
     </Text>
-};
+);
 
 const StyledDiv = (props) => (
-    <View className={'p-0 m-0'} >
+    <View className={'p-0 m-0'} key={props.key}>
         {props.children}
     </View>
 );
@@ -66,7 +66,6 @@ const tagMapping = {
     div: StyledDiv,
     li: StyledLi,
     span: StyledText,
-
     ul: StyledUl,
     ol: StyledUl,
 };
@@ -75,11 +74,10 @@ const parseHtmlToReact = (html, textStyles, parentKey = "0") => {
     let childIndex = 0;
     const getKey = (tag) => `${parentKey}-${childIndex++}-${tag}`;
     const elements = [];
-    html = html.replace(/<br\s*\/?>/gi, (_, index) => `<br key="${parentKey}-${index}-br"></br>`);
 
-
+    html = html.replace(/<br\s*\/?>/gi, (_, index) => `<br key="${getKey("br")}"></br>`);
     html = html.replace(/<img\s*([^>]*)\/?>/gi, (match, attributes, index) => {
-        return `<customimg ${attributes} key="${parentKey}-${index}-img"></customimg>`;
+        return `<customimg ${attributes} key="${getKey("img")}"></customimg>`;
     });
 
     const mainTagRegex = /<([a-zA-Z0-9]+)([^>]*)>(.*?)<\/\1>/gis;
@@ -91,51 +89,40 @@ const parseHtmlToReact = (html, textStyles, parentKey = "0") => {
         const normalizedTag = tag.toLowerCase();
         const textBefore = html.slice(lastIndex, match.index);
         lastIndex = mainTagRegex.lastIndex;
+        
         if (textBefore.trim()) {
-            elements.push(<Text>{textBefore.trimStart()}</Text>);
+            elements.push(<Text key={getKey("text-before")}>{textBefore.trimStart()}</Text>);
         }
 
         if (normalizedTag === "br") {
-            elements.push(<Text>{"\n"}</Text>);
+            elements.push(<Text key={getKey("br")}>{"\n"}</Text>);
             continue;
         }
 
         const Component = tagMapping[normalizedTag] || Text;
 
-        // Обработка изображений
         if (tag === "customimg") {
             const srcMatch = attributes.match(/src=['"]?([^'"\s>]+)['"]?/);
             if (srcMatch && srcMatch[1]) {
                 elements.push(
-                    <Image
-                       
-                    src={srcMatch[1]}
-                    width={100}
-                    height={100}
-                />
+                    <Image key={getKey("image")} src={srcMatch[1]} width={100} height={100} />
                 );
             }
             continue;
         }
 
-        // Обработка ссылок
         if (tag === "a") {
             const hrefMatch = attributes.match(/href="([^"]+)"/);
             if (hrefMatch) {
-                console.log('!!!content', content)
                 elements.push(
-                    <Link
-                        href={hrefMatch[1]}
-                        mode="text"
-                    >
-                        <Text className="text-primary">{content}</Text>
-
-
+                    <Link key={getKey("link")} href={hrefMatch[1]} mode="text">
+                        <Text className="text-primary">{content} </Text>
                     </Link>
                 );
             }
             continue;
         }
+
         const srcClass = attributes.match(/class=['"]?([^'"\s>]+)['"]?/);
         elements.push(
             <Component
@@ -164,8 +151,10 @@ const parseHtmlToReact = (html, textStyles, parentKey = "0") => {
 };
 
 export default function ElementHtml({ customClassName, data }) {
-
-    const textStyles = customClassName == 'u-vanilla-html-small' ? 'text-sm leading-[18px]  text-neutral-800 dark:text-neutral-200' : 'text-base leading-[20px]  text-neutral-800 dark:text-neutral-200';
+    const textStyles = customClassName === 'u-vanilla-html-small' 
+        ? 'text-sm leading-[18px] text-neutral-800 dark:text-neutral-200' 
+        : 'text-base leading-[20px] text-neutral-800 dark:text-neutral-200';
+    
     const html = data.replace(/\n|\r/g, '').replace(/&nbsp;/g, ' ');
     return <View>{parseHtmlToReact(html, textStyles)}</View>;
 }
