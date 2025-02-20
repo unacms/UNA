@@ -62,6 +62,7 @@ export const settingsDefault = {
         use_custom_font: false, //'font-main' //OLD appSetting('layout', 'use_custom_font')
         bluetooth: false, //OLD appSetting('layout', 'bluetooth')
         bluetooth_device_name_prefix: 'NEO', //OLD appSetting('layout', 'bluetooth_device_name_prefix')
+        onesignal_request_on_load: true
     },
     async_workers: {
         list: ['CounterChecker'], //['EventChecker'],//NotifChecker OLD appSetting('layout', 'async_workers')

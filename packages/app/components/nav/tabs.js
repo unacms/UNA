@@ -9,7 +9,7 @@ import Profile from 'app/ui/molecules/profile';
 import { useState, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next';
 //import BottomSheetDataContext from 'app/context/bottomsheet';
-import { FeedbackHaptics, isNumeric } from 'app/lib/util';
+import { FeedbackHaptics, isNumeric, subscribeOneSignal } from 'app/lib/util';
 import * as Linking from 'expo-linking';
 import { useRouter } from 'expo-router';
 import { parseUrl } from 'app/lib/util'
@@ -157,7 +157,7 @@ export default function () {
     }, [currentUser?.id]);
     // DEEP LINKING
 
-    useEffect(() => {
+    /*useEffect(() => {
         //!!!NOT MERGE WITH OTHER USEEFFECT!!!
         if (currentUser) {
             console.log('OneSignal: Start initialization');
@@ -175,14 +175,19 @@ export default function () {
             OneSignal.User.addTag("user_hash", "" + currentUser.hash);
         }
         
-    }, [currentUser?.id]); 
-
+    }, [currentUser?.id]); */
 
     useEffect(() => {
+        if (currentUser) {
+            subscribeOneSignal(currentUser, appSetting('native', 'onesignal_request_on_load'));
+        }
+    }, [currentUser?.id]); 
+
+    /*useEffect(() => {
         if (currentUser && Platform.OS == 'ios' && isNumeric(currentUser?.notifications)) {
             //PushNotificationIOS.setApplicationIconBadgeNumber(currentUser?.notifications);
         }
-    }, [currentUser?.notifications]);
+    }, [currentUser?.notifications]);*/
 
 
     if (!fontsLoaded) {

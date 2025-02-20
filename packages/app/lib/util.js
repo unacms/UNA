@@ -11,6 +11,7 @@ import { appSetting as setting, UNA_URL, APP_URL } from 'app/config';
 import { remoteSettings } from 'app/settings-remote';
 import { parse as flatted_parse, stringify as flatted_stringify } from 'flatted';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { LogLevel, OneSignal } from 'react-native-onesignal';
 
 const nativeCache = [];
 const isWeb = Platform.OS === 'web'
@@ -29,6 +30,25 @@ export function appSetting(section, name, path) {
 export function isObjectsEqual(obj, obj2) {
     return flatted_stringify(obj) == flatted_stringify(obj2)
 }
+
+export async function subscribeOneSignal(currentUser, askPermission = false) {
+    OneSignal.Debug.setLogLevel(LogLevel.Verbose);
+    OneSignal.initialize(appSetting('config', 'api_keys', 'onesignal'));
+
+    let permissionStatus = await OneSignal.Notifications.getPermissionAsync();
+
+    if (permissionStatus !== "granted" && askPermission) {
+        await OneSignal.Notifications.requestPermission(true);
+        permissionStatus = await OneSignal.Notifications.getPermissionAsync(); 
+    }
+
+    if (permissionStatus) {
+        await OneSignal.login(String(currentUser.id));
+        await OneSignal.User.addTag("user_hash", String(currentUser.hash));
+    }
+}
+
+
 
 export function normalizeClasses(a) {
     if (!a) return a
