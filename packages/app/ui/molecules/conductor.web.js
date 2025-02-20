@@ -355,34 +355,29 @@ const TabBar = ({ isSmall = false, menu, routes, leftSideBar, header, headerSett
 };
 
 const TopSideBarContainer = ({ routes, index, setIndex, onChangeRoute }) => {
-    return <Row className="w-full px-8 pt-6 items-stretch justify-stretch sticky z-50 t-8 gap-x-8 hidden lg:flex">
+    return <Row className={conductorTheme.topmenu_cnt}>
         {routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
 
             let btn = <Button
-                variant={a.index == index ? 'secondary' : "text"}
-                size={!a.ident ? "base" : "sm"}
-                pressed={a.index == index ? true : false}
+                variant={a.index == index ? conductorTheme.topmenu_button_variant_active : conductorTheme.topmenu_button_variant}
+                size={conductorTheme.topmenu_button_size}
+                pressed={a.index == index ? conductorTheme.topmenu_button_pressed : false}
 
                 title={(a.title)}
-                align="start"
-
+                align={conductorTheme.topmenu_button_align}
+                fullWidth={conductorTheme.topmenu_button_fullWidth}
                 addon={!appSetting('conductor', 'show_nav_counters') && a.addon ? null : a.addon}
+                key={`tab-${a.index}`}
+                onPress={() => {
+                    setIndex(a.index);
+                    window.history.pushState({}, '', '/' + a.key);
+                    if (onChangeRoute) {
+                        onChangeRoute(a);
+                    }
+                }}
             />
 
-            return (
-                <Pressable className={" pb-3 pt-1 items-center "}
-                    key={`tab-${a.index}`}
-                    onPress={() => {
-                        setIndex(a.index);
-                        window.history.pushState({}, '', '/' + a.key);
-                        if (onChangeRoute) {
-                            onChangeRoute(a);
-                        }
-                    }}
-                >
-                    {btn}
-                </Pressable>
-            )
+            return btn
         })}
     </Row>
 };

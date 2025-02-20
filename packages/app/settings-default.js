@@ -548,7 +548,14 @@ export const settingsDefault = {
             content_max_width: ' max-w-6xl ',
             menu_is_dynamic: true,
             menu_cnt: ' ml-3 sm:ml-4 gap-x-1 flex-row ',
-            right_column_cnt: 'fixed-process p-4 max-w-md'
+            right_column_cnt: 'fixed-process p-4 max-w-md',
+            topmenu_cnt: 'w-full px-8 pt-6 items-stretch justify-stretch sticky z-50 t-8 gap-x-8 hidden lg:flex p',
+            topmenu_button_variant: 'text',
+            topmenu_button_variant_active: 'secondary',
+            topmenu_button_align: 'start',
+            topmenu_button_fullWidth: false,
+            topmenu_button_size: 'base',
+            topmenu_button_pressed: true
         },
         checkbox : {
             container: ' h-[20px] w-[20px] m-[4px] rounded-[4px] border-[2px] border-neutral-500 bg-transparent justify-center items-center   ',
