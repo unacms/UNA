@@ -11,7 +11,7 @@ export default function (props) {
     let caption = props.caption;
     if (props.format == 'notitle')
         caption = '';
-    let sClassName = ' w-full form-control form-control-' + props.name + (props.noMargin === true ? '  ' : ' mb-[12px]  ') +  (props?.classes ? ' ' + props?.classes : '');
+    let sClassName = ' w-full  form-control form-control-' + props.name + (props.noMargin === true ? '  ' : ' mb-[12px]  ') +  (props?.classes ? ' ' + props?.classes : '');
 
     const optionalText = appSetting('forms', 'optional_text');
     const mandatoryIcon = appSetting('forms', 'mandatory_icon');

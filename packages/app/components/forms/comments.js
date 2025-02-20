@@ -11,6 +11,7 @@ export default function FormComments(props) {
     const [imageSource, setImageSource] = useState([]);
     const formContext = useFormContext();
     const [isExImage, setIsExImage] = useState(false);
+    const [isFocused, setIsFocused] = useState(false);
     const isWeb = Platform.OS == 'web';
     const isIos = Platform.OS == 'ios'
 
@@ -22,6 +23,17 @@ export default function FormComments(props) {
             }));
         }
     }
+    function setIsFocus() {
+        console.log("setIsFocussetIsFocus" )
+        setIsExImage(false)
+        setIsFocused(true)
+    }
+
+    function setIsBlur() {
+        console.log("setIsBlursetIsBlur" )
+        setIsFocused(false)
+    }
+    
 
     let text = formContext.watch('cmt_text')
     if (!text) text = ''
@@ -30,8 +42,10 @@ export default function FormComments(props) {
     }
 
     useEffect(() => {
-        if (formContext.formState.isSubmitted)
+        if (formContext.formState.isSubmitted){
             setImageSource([]);
+            formContext.setValue('cmt_text', '')
+        }
     }, [formContext.formState.isSubmitted]);
 
     let prevList = Object.values(imageSource).flat();
@@ -66,11 +80,11 @@ export default function FormComments(props) {
                 }
 
             </View>
-            <View className={`flex-auto bg-bgritem dark:bg-bgritem-d rounded-3xl justify-center  ${isWeb ? 'min-h-[44px]' : 'min-h-[44px] '} items-end ${sPad}`} >
+            <View className={`flex-auto bg-bgritem dark:bg-bgritem-d rounded-3xl justify-center  ${isWeb ? 'min-h-[44px]' : (isFocused ? 'min-h-[160px] ': 'min-h-[44px] ')} items-end ${sPad}`} >
                 {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['cmt_cf'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['cmt_parent_id'], props.handleSubmit, 'custom')}
-                {getFormFieldByData(props.data.inputs['cmt_text'], props.handleSubmit, 'custom', { container_class: 'comments', focus: true, bg: 'transparent', placeholder: 'Write your comment here...', noMargin: true, onFocus: () => setIsExImage(false) })}
+                {getFormFieldByData(props.data.inputs['cmt_text'], props.handleSubmit, 'custom', { container_class: 'comments', classes: "flex-1", focus: true, bg: 'transparent', placeholder: 'Write your comment here...', noMargin: true, onFocus: () => setIsFocus(false), onBlur: () => setIsBlur(false) })}
                 {getFormFieldByData(props.data.inputs['id'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['sys'], props.handleSubmit, 'custom')}
             </View>
