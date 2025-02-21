@@ -377,12 +377,14 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
         const animatedStyleB = useAnimatedStyle(() => {
             return {
                 opacity: withTiming(1 - scroll.value, { duration: 500 }),
+                zIndex: (1 - scroll.value)*500
             };
         }, [scroll]);
 
         const parentAnimatedStyle = useAnimatedStyle(() => {
             return {
                 height: headerMaxHeight.value,
+                zIndex: (scroll.value)*500
             };
         }, [headerMaxHeight]);
 
@@ -394,7 +396,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
             return <></>
         return (
             <Animated.View className='w-full h-80' style={parentAnimatedStyle}>
-                <Animated.View style={[{ width: '100%', position: 'absolute', zIndex: 500 }, animatedStyleA]}>
+                <Animated.View style={[{ width: '100%', position: 'absolute' }, animatedStyleA]}>
                     <View onLayout={handleHeaderMaxLayout}>
                         {header}
                     </View>
