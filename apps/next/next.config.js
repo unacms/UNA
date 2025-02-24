@@ -70,8 +70,23 @@ const nextConfig = {
     'react-native-star-rating-widget',
     '@openspacelabs/react-native-zoomable-view'
   ],
-  webpack: (config) => {
-    config.resolve.alias['react-native-svg'] = path.resolve(__dirname, 'node_modules/react-native-svg');
+  webpack: (config, { isServer }) => {
+    // Добавляем алиасы
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      'react-native': 'react-native-web',
+      'react-native-webview': '@10play/react-native-web-webview',
+      'crypto': 'expo-crypto',
+      'react-native-svg': path.resolve(__dirname, 'node_modules/react-native-svg'),
+    };
+
+    // Добавляем fallback для codegenNativeComponent
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      'react-native/Libraries/Utilities/codegenNativeComponent':
+        '@10play/react-native-web-webview/shim',
+    };
+
     return config;
   },
   images: {

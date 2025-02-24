@@ -118,6 +118,7 @@ export const settingsDefault = {
         back_button: false, //OLD appSetting('layout', 'show_back_button_in_messenger')
     },
     forms: {
+        single_editor: true,
         optional_text: '',// OLD appSetting('layout', 'form_fields_optional_text')
         mandatory_icon: 'Asterisk',// OLD appSetting('layout', 'form_fields_mandatory_icon')
         auto_ghosts_in_files: true, 

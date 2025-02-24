@@ -6,6 +6,7 @@ import Submit from './submit';
 import Switcher from './switcher';
 import TextField from './text';
 import Textarea from './textarea';
+import Editor from './editor';
 import Select from './select';
 import Files from './files';
 import Location from './location';
@@ -24,11 +25,14 @@ import Stars from './stars';
 import MultiField from './multi_field';
 import Embed from './embed';
 
+import { appSetting } from 'app/lib/util';
+
 export const componentsMapDefault = {
     input_set: InputSet,
     visibility: Visibility,
     multi_field: MultiField,
     embed: Embed,
+    editor: Editor,
     initial_members: InitialMembers,
     captcha: Captcha,
     custom: Custom,
@@ -40,7 +44,7 @@ export const componentsMapDefault = {
     checkbox: Switcher,
     text: TextField,
     price: TextField,
-    textarea: Textarea,
+    textarea: appSetting('forms', 'single_editor') ? Editor : Textarea,
     select: Select,
     radio_set: Select,
     files: Files,
