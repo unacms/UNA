@@ -1,9 +1,9 @@
 import Field, { getValidationRules } from './_field';
 import { useController, useFormContext } from 'react-hook-form';
-import { InputMulti, Input, TextInputClear } from 'app/design/controls'
+import { InputMulti, Input, TextInputClear, Button } from 'app/design/controls'
 import { useState, useRef, useEffect } from 'react';
 import { View } from 'app/design/view'
-import { useEditorBridge, RichText, Toolbar, TenTapStartKit, CodeBridge, useEditorContent, ImageBridge, DropCursorBridge, PlaceholderBridge } from '@10play/tentap-editor';
+import { useEditorBridge, RichText, Toolbar, TenTapStartKit, LinkBridge, CodeBridge, useEditorContent, ImageBridge, DropCursorBridge, PlaceholderBridge } from '@10play/tentap-editor';
 import { useLayoutData } from 'app/context/layout';
 import { Keyboard } from 'react-native';
 import { Theme } from 'app/design/theme';
@@ -91,7 +91,7 @@ function PlainText(props) {
     /*img{
         display: none;
     }*/
-function RftText({ name, value = '', numLines = 4, minHeight, maxHeight,  ...props }) {
+function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, ...props }) {
     const { layoutData, setLayoutData } = useLayoutData();
     const { field } = useController({ name, rules: {}, defaultValue: value });
     const { colors } = Theme();
@@ -101,90 +101,77 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight,  ...pro
     const [suggestions, setSuggestions] = useState([]);
     const [keywordval, setKeyword] = useState(['', '']);
 
-     const object_privacy_view = formContext.watch('object_privacy_view');
-        const object_id = formContext.watch('id');
-        const m = name == "cmt_text" ? "sys_cmts" : "bx_timeline";
-    
-        let url1 = '/searchExtended.php?action=get_mention';
-        if (m)
-            url1 += '&m='+m;
-        if (object_privacy_view)
-            url1 += '&object_privacy_view='+object_privacy_view;
-        if (object_id)
-            url1 += '&cid='+object_id;
-    
-        useEffect(() => {
-            if (keywordval[0] === '') return;
+    const object_privacy_view = formContext.watch('object_privacy_view');
+    const object_id = formContext.watch('id');
+    const m = name == "cmt_text" ? "sys_cmts" : "bx_timeline";
 
-            const fetchData = async () => {
-                let url = url1+`&symbol=${keywordval[1] === '#' ? '%23' : '%40'}&term=${keywordval[0]}`;
-                const result = await fetcher(url);
-                let p = result.map(k => ({ id: k.value, name: k.label }));
-    
-                setSuggestions(p);
-            };
-    
-            fetchData();
-        }, [keywordval]);
-    
+    let url1 = '/searchExtended.php?action=get_mention';
+    if (m)
+        url1 += '&m=' + m;
+    if (object_privacy_view)
+        url1 += '&object_privacy_view=' + object_privacy_view;
+    if (object_id)
+        url1 += '&cid=' + object_id;
+
+    useEffect(() => {
+        if (keywordval[0] === '') return;
+
+        const fetchData = async () => {
+            let url = url1 + `&symbol=${keywordval[1] === '#' ? '%23' : '%40'}&term=${keywordval[0]}`;
+            const result = await fetcher(url);
+            let p = result.map(k => ({ url: k.url,  value: k.value, label: k.label }));
+
+            setSuggestions(p);
+        };
+
+        fetchData();
+    }, [keywordval]);
+
 
     const customCodeBlockCSS = `
     body{
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, ".SFNSText-Regular", sans-serif;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, ".SFNSText-Regular", sans-serif;
         font-size: ${props.fontSize || 16}px;
         line-height:  ${props.lineHeight || 20}px;
         color:  ${colors.text};
-
         margin:0
-        
     }
-
-    body   P {
+    body P {
         margin-bottom: 4px;
         margin-top: 4px;
     }
-
-        body   P:first-child {
+    body P:first-child {
         margin-top: 6px;
     }
-         .mention-list {
-            position: absolute;
-            background: white;
-            border: 1px solid #ccc;
-            list-style: none;
-            padding: 5px;
-            margin: 0;
-            max-height: 150px;
-            overflow-y: auto;
-        }
-        .mention-list li {
-            padding: 5px;
-            cursor: pointer;
-        }
-        .mention-list li:hover,
-        .mention-list li.active {
-            background: lightblue;
-        }
+    .mention-list {
+        position: absolute;
+        background: white;
+        border: 1px solid #ccc;
+        list-style: none;
+        padding: 5px;
+        margin: 0;
+        max-height: 150px;
+        overflow-y: auto;
+    }
+    .mention-list li {
+        padding: 5px;
+        cursor: pointer;
+    }
+    .mention-list li:hover,
+    .mention-list li.active {
+        background: lightblue;
+    }`;
 
-    `;
-
-    useEffect(() => {
+    /*useEffect(() => {
         if (formContext.formState.isSubmitted)
             console.log("field.value", field.value)
-    }, [formContext.formState.isSubmitted]);
-
-    
-
-    
+    }, [formContext.formState.isSubmitted]);*/
 
     useEffect(() => {
-
         if (editor && field.value == '' && editor.getHTML() != field.value) {
             editor.setContent(field.value);
         }
-
     }, [field.value]);
-
 
     const editor = useEditorBridge({
         autofocus: field.value ? true : (props.autofocus || false),
@@ -194,49 +181,94 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight,  ...pro
 
         initialContent: field.value,
         bridgeExtensions: [
-            // It is important to spread StarterKit BEFORE our extended plugin,
-            // as plugin duplicated will be ignored
             ...TenTapStartKit,
             ImageBridge.configureExtension({
                 inline: false,
                 allowBase64: false,
 
-              }),
+            }),
             DropCursorBridge,
+            LinkBridge.configureExtension({
+                HTMLAttributes: {
+                  class: 'bx-mention-link',
+                },
+              }),
             PlaceholderBridge.configureExtension({
                 placeholder: props.placeholder,
                 showOnlyWhenEditable: true,
 
-              }),
+            }),
             CodeBridge.configureCSS(customCodeBlockCSS), // Custom codeblock css
         ],
 
     });
+
+    const htmlContent = useEditorContent(editor, { type: 'html' });
     useEffect(() => {
-        if (suggestions.length > 0){
-            console.log("suggestions", suggestions)
-        let a = JSON.stringify(suggestions);
-        editor.injectJS(`
+        if (htmlContent) {
+            field.onChange(htmlContent)
+        }
+    }, [htmlContent]);
+
+    useEffect(() => {
+        if (suggestions.length > 0) {
+            let a = JSON.stringify(suggestions);
+            editor.injectJS(`
             document.getElementById("mention-list").innerHTML = "";
-            ${a}.forEach(user => {
+            ${ a }.forEach(user => {
                 const li = document.createElement("li");
-                li.textContent = user.name;
+                li.textContent = user.label;
                 li.data = user;
+               
                 li.style.cursor = "pointer";
-                li.addEventListener("click", () => { document.getElementsByClassName("tiptap")[0].textContent += user.name;
-                  document.getElementById("mention-list").style.display = "none";});
+                li.addEventListener("click", () => {
+
+                    document.getElementsByClassName("tiptap")[0].focus();
+                    const selection = window.getSelection();
+                    if (selection.rangeCount > 0) {
+                        const range = selection.getRangeAt(0);
+                        const startContainer = range.startContainer;
+                        const startOffset = range.startOffset;
+
+                        // Проверяем, есть ли возможность отступить на N символов назад
+                        const newOffset = Math.max(startOffset - document.getElementsByClassName("tiptap")[0].getAttribute('query').length, 0);
+
+                        // Создаем новый Range
+                        const newRange = document.createRange();
+                        newRange.setStart(startContainer, newOffset);
+                        newRange.setEnd(startContainer, startOffset);
+                        newRange.deleteContents();
+
+                        // Вставляем новый текст
+                        const textNode = document.createTextNode(user.label);
+                        newRange.insertNode(textNode);
+
+                        // Добавляем пробел после textNode
+                        const spaceNode = document.createTextNode(" ");
+                        textNode.after(spaceNode); // Вставляем пробел после textNode
+
+                        // Выделяем только вставленный текст (без пробела)
+                        const finalRange = document.createRange();
+                        finalRange.setStart(textNode, 0);
+                        finalRange.setEnd(textNode, user.label.length);
+
+                        // Устанавливаем новое выделение
+                        selection.removeAllRanges();
+                        selection.addRange(finalRange);
+                        window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'addmention', payload: user.url }));
+                    }
+                    document.getElementById("mention-list").style.display = "none";
+                });
                 document.getElementById("mention-list").appendChild(li);
             });
             document.getElementById("mention-list").style.display = "block";
-        
-            const rect = document.getElementsByClassName("tiptap")[0].getBoundingClientRect();
-            document.getElementById("mention-list").style.left = rect.left + 'px';
-            document.getElementById("mention-list").style.top = rect.bottom + 'px';`);
+
+            document.getElementById("mention-list").style.left = document.getElementsByClassName("tiptap")[0].getBoundingClientRect().left + 'px';
+            document.getElementById("mention-list").style.top = document.getElementsByClassName("tiptap")[0].getBoundingClientRect().bottom + 'px';`);
         }
     }, [suggestions]);
 
-
-    const processImages =  (src) => {
+    const processImages = (src) => {
         let images = [];
         const fileName = src.split('/').pop() + '.png';
         const fileTypeMatch = src.match(/\.([a-z0-9]+)$/i);
@@ -250,101 +282,104 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight,  ...pro
 
         if (images.length > 0) {
             setLayoutData(getAlert('images:pasted', images));
-
         }
     }
-
-    
-
-    const htmlContent = useEditorContent(editor, { type: 'html' });
-    useEffect(() => {
-        if (htmlContent) {
-            field.onChange(htmlContent)
-        }
-    }, [htmlContent]);
 
     const onMessage = (event) => {
         try {
             const message = JSON.parse(event.nativeEvent.data);
-            console.log("message", message)
             if (message?.type == "document-height") {
                 const h = parseInt(message.payload);
-                if (h != height && h< maxHeight)
+                if (h != height && h < maxHeight)
                     setHeight(message.payload);
             }
             if (message?.type == "paste") {
-                console.log("message.payload", message.payload)
                 processImages(message.payload)
-               
             }
 
             if (message?.type == "mention") {
-          setKeyword([message.payload, message.sym])
-             
+                setKeyword([message.payload, message.sym])
             }
+            if (message?.type == "addmention") {
+                editor.setLink(message.payload)
+                editor.focus('end');
+            }
+            
 
             if (message?.type == "editor-ready") {
                 editor.injectJS(`
-                   
+                    let lastSelectionRange = null;
+                    const editor = document.getElementsByClassName("tiptap")[0];
+
+                    editor.addEventListener("blur", () => {
+                        console.log("blur")
+                        const selection = window.getSelection();
+                        if (selection.rangeCount > 0) {
+                            lastSelectionRange = selection.getRangeAt(0).cloneRange();
+                        }
+                    });
+
+                    // Восстановление позиции курсора при фокусе
+                    editor.addEventListener("focus", () => {
+                        if (lastSelectionRange) {
+                            console.log("focus")
+                            const selection = window.getSelection();
+                            selection.removeAllRanges();
+                            selection.addRange(lastSelectionRange);
+                        }
+                    });
+
                     const mentionList = document.createElement("ul");
-mentionList.id = "mention-list";
-mentionList.className = "mention-list";
-mentionList.style.display = "none";
-mentionList.style.position = "absolute";
-document.body.appendChild(mentionList);
+                    mentionList.id = "mention-list";
+                    mentionList.className = "mention-list";
+                    mentionList.style.display = "none";
+                    mentionList.style.position = "absolute";
+                    document.body.appendChild(mentionList);
 
+                    document.addEventListener("click", function (event) {
+                        if (!mentionList.contains(event.target)) {
+                            mentionList.style.display = "none";
+                            editor.focus();
+                        }
+                    });
 
-document.addEventListener("click", function (event) {
-    if (!mentionList.contains(event.target)) {
-        mentionList.style.display = "none"; // Скрываем div
-    }
-});
+                    editor.addEventListener("input", async function (event) {
 
+                        const text = getTextBeforeCursor();
+                        if (text.startsWith("@")) {
+                            const query = text.substring(1).toLowerCase();
+                            editor.setAttribute('query', '@' + query);
+                            window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'mention', payload: query, sym: '@' }));
+                        }
 
-    const editor = document.getElementsByClassName("tiptap")[0];
-    let mentionIndex = -1; // Индекс активного элемента
+                        if (text.startsWith("#")) {
+                            const query = text.substring(1).toLowerCase();
+                            editor.setAttribute('query', '#' + query);
+                            window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'mention', payload: query, sym: '#' }));
+                        }
+                    });
 
-   editor.addEventListener("input", async function(event) {
-
-    const text = getTextBeforeCursor();
-    if (text.startsWith("@") ) {
-        const query = text.substring(1).toLowerCase();
-        window.ReactNativeWebView.postMessage(JSON.stringify({type: 'mention', payload: query, sym: '@' }));
-    }
-
-    if (text.startsWith("#")) {
-        const query = text.substring(1).toLowerCase();
-        window.ReactNativeWebView.postMessage(JSON.stringify({type: 'mention', payload: query, sym: '#' }));
-    }
-});
-
-
-
-      function getTextBeforeCursor() {
-        const selection = window.getSelection();
-        if (!selection.rangeCount) return "";
-        const range = selection.getRangeAt(0);
-        const text = range.startContainer.textContent.substring(0, range.startOffset);
-        return text.split(" ").pop();
-    }
-
-    
-
-    
+                    function getTextBeforeCursor() {
+                        const selection = window.getSelection();
+                        if (!selection.rangeCount) return "";
+                        const range = selection.getRangeAt(0);
+                        const text = range.startContainer.textContent.substring(0, range.startOffset);
+                        return text.split(" ").pop();
+                    }
 
                     document.addEventListener('paste', (event) => {
-                        console.log("Paste event:", event.clipboardData); 
+                        console.log("Paste event:", event.clipboardData);
                         console.log("Types:", event.clipboardData.types); // Посмотрим, какие данные доступны
                         if (event.clipboardData.items.length > 0) {
                             console.log("Items:", event.clipboardData.items);
-                            
+
                             for (let item of event.clipboardData.items) {
                                 if (item.kind === 'file') {
                                     const file = item.getAsFile();
                                     if (file) {
                                         const reader = new FileReader();
-                                        reader.onload = function(e) {
-                                            window.ReactNativeWebView.postMessage(JSON.stringify({type: 'paste', payload: e.target.result }));
+                                        reader.onload = function (e) {
+                                            window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'paste', payload: e.target.result }));
                                         };
                                         reader.readAsDataURL(file);
                                     }
@@ -361,8 +396,9 @@ document.addEventListener("click", function (event) {
         }
     }
 
-    return <View className="flex-auto" style={{height:height}}>
+    return <View className="flex-auto" style={{ height: height }}>
         <RichText exclusivelyUseCustomOnMessage={false} style={{ backgroundColor: 'transparent' }} editor={editor} onMessage={onMessage} />
+
     </View>
 }
 /*  <View className="h-24 w-full"><Toolbar editor={editor} /></View>*/
