@@ -3,12 +3,13 @@ import { useController, useFormContext } from 'react-hook-form';
 import { InputMulti, Input, TextInputClear, Button } from 'app/design/controls'
 import { useState, useRef, useEffect } from 'react';
 import { View } from 'app/design/view'
-import { useEditorBridge, RichText, Toolbar, TenTapStartKit, LinkBridge, CodeBridge, useEditorContent, ImageBridge, DropCursorBridge, PlaceholderBridge } from '@10play/tentap-editor';
+import { DEFAULT_TOOLBAR_ITEMS, useEditorBridge, RichText, Toolbar, TenTapStartKit, LinkBridge, CodeBridge, useEditorContent, ImageBridge, DropCursorBridge, PlaceholderBridge } from '@10play/tentap-editor';
 import { useLayoutData } from 'app/context/layout';
 import { Keyboard } from 'react-native';
 import { Theme } from 'app/design/theme';
 import { getAlert } from 'app/lib/util';
-
+import { Text } from 'app/design/typography'
+import { KeyboardAvoidingView, Platform } from 'react-native'
 import { fetcher } from 'app/lib/fetcher';
 
 export default function FormFieldText(props) {
@@ -91,11 +92,27 @@ function PlainText(props) {
     /*img{
         display: none;
     }*/
-function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, ...props }) {
+function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus, onBlur, html, ...props }) {
+    
+    let b = [...DEFAULT_TOOLBAR_ITEMS]; 
+
+    if(Platform.OS == 'web'){
+        const images = [
+            "bold.png", "italic.png", "link.png", "checklist.png", "Aa.png",
+            "code.png", "underline.png", "strikethrough.png", "quote.png",
+            "ul.png", "ol.png", "indent.png", "unindent.png", "undo.png", "redo.png"
+          ];
+          
+          images.forEach((img, index) => {
+            b[index].image = () => `/editor/${img}`;
+          });
+
+          b.splice(4, 1);
+    }
+    
     const { layoutData, setLayoutData } = useLayoutData();
     const { field } = useController({ name, rules: {}, defaultValue: value });
     const { colors } = Theme();
-    const webviewRef = useRef(null);
     const formContext = useFormContext();
     const [height, setHeight] = useState(minHeight);
     const [suggestions, setSuggestions] = useState([]);
@@ -127,6 +144,36 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, ...prop
         fetchData();
     }, [keywordval]);
 
+     /*useEffect(() => {
+        if (Platform.OS == 'web' ){
+            const images = {
+                "tint-0": "bold.png",
+                "tint-1": "italic.png",
+                "tint-2": "link.png",
+                "tint-3": "checklist.png",
+                "tint-4": "Aa.png",
+                "tint-5": "code.png",
+                "tint-6": "underline.png",
+                "tint-7": "strikethrough.png",
+                "tint-8": "quote.png",
+                "tint-9": "ul.png",
+                "tint-10": "ol.png",
+                "tint-11": "indent.png",
+                "tint-12": "unindent.png",
+                "tint-13": "undo.png",
+                "tint-14": "redo.png",
+              };
+              
+              Object.entries(images).forEach(([tint, img]) => {
+                document.querySelectorAll(`[style*="filter: url(\\"#${tint}\\")"]`).forEach(el => {
+                  el.style.backgroundImage = `url('/editor/${img}')`;
+                });
+              });
+              
+          
+        }
+     }, []);*/
+
 
     const customCodeBlockCSS = `
     body{
@@ -135,6 +182,9 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, ...prop
         line-height:  ${props.lineHeight || 20}px;
         color:  ${colors.text};
         margin:0
+    }
+    img{
+        display:none;
     }
     body P {
         margin-bottom: 4px;
@@ -176,7 +226,7 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, ...prop
     const editor = useEditorBridge({
         autofocus: field.value ? true : (props.autofocus || false),
         avoidIosKeyboard: true,
-        dynamicHeight: true,
+        dynamicHeight: false,
         placeholder: props.placeholder,
 
         initialContent: field.value,
@@ -206,9 +256,19 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, ...prop
     const htmlContent = useEditorContent(editor, { type: 'html' });
     useEffect(() => {
         if (htmlContent) {
+            if(onFocus)
+                onFocus()
             field.onChange(htmlContent)
         }
     }, [htmlContent]);
+
+   /* useEffect(() => {
+        console.log("aaaa", height)
+        if (onHeight) {
+            onHeight(height)
+        }
+    }, [height]);
+    */
 
     useEffect(() => {
         if (suggestions.length > 0) {
@@ -286,15 +346,29 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, ...prop
     }
 
     const onMessage = (event) => {
+      
         try {
             const message = JSON.parse(event.nativeEvent.data);
-            if (message?.type == "document-height") {
+            console.log("document-height", message?.type)
+           /* if (message?.type == "document-height") {
+                console.log("document-height", message.payload)
                 const h = parseInt(message.payload);
                 if (h != height && h < maxHeight)
                     setHeight(message.payload);
-            }
+                editor.focus('end');
+            }*/
             if (message?.type == "paste") {
                 processImages(message.payload)
+            }
+
+            if (message?.type == "focus") {
+                if (onFocus)
+                    onFocus()                
+            }
+
+            if (message?.type == "blur") {
+                if (onBlur)
+                    onBlur()
             }
 
             if (message?.type == "mention") {
@@ -302,7 +376,7 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, ...prop
             }
             if (message?.type == "addmention") {
                 editor.setLink(message.payload)
-                editor.focus('end');
+                
             }
             
 
@@ -312,7 +386,7 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, ...prop
                     const editor = document.getElementsByClassName("tiptap")[0];
 
                     editor.addEventListener("blur", () => {
-                        console.log("blur")
+                        window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'blur' }));
                         const selection = window.getSelection();
                         if (selection.rangeCount > 0) {
                             lastSelectionRange = selection.getRangeAt(0).cloneRange();
@@ -321,6 +395,7 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, ...prop
 
                     // Восстановление позиции курсора при фокусе
                     editor.addEventListener("focus", () => {
+                          window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'focus' }));
                         if (lastSelectionRange) {
                             console.log("focus")
                             const selection = window.getSelection();
@@ -396,9 +471,22 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, ...prop
         }
     }
 
-    return <View className="flex-auto" style={{ height: height }}>
-        <RichText exclusivelyUseCustomOnMessage={false} style={{ backgroundColor: 'transparent' }} editor={editor} onMessage={onMessage} />
+    const isToolBar = (html == 2 || html == 1)
 
+    return <View className={`flex-1 ${isToolBar ? 'h-48': ''}`} >
+        <RichText exclusivelyUseCustomOnMessage={false} style={{ backgroundColor: 'transparent' }} editor={editor} onMessage={onMessage} />
+        {isToolBar &&  <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{
+          position: 'absolute',
+          width: '100%',
+          bottom: 0,
+        }}
+      >
+        <View className="bg-blue-500 h-18">
+            <Toolbar hidden={false} editor={editor} items={b} />
+        </View>
+        </KeyboardAvoidingView>}
     </View>
 }
 /*  <View className="h-24 w-full"><Toolbar editor={editor} /></View>*/
