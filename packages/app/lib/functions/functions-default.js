@@ -6,6 +6,7 @@ import { appSetting, updateRouteDataForConnection, getPageSettings } from 'app/l
 import { Platform } from 'react-native'
 import { componentsMap } from 'app/ui/molecules/_map'
 import { appStatic } from 'app/lib/app-static';
+import { View, Row } from 'app/design/view'
 
 export function getFriendsCounter(currentUser) {
     return currentUser?.counters?.bx_persons_friend_requests

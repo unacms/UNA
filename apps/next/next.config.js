@@ -53,6 +53,7 @@ const nextConfig = {
     'recyclerlistview',
     'expo-crypto',
     '@react-native-picker/picker',
+    '@10play/tentap-editor',
     'expo',
     'expo-image-picker',
     'expo-location',
