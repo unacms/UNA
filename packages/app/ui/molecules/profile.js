@@ -3,9 +3,8 @@ import { View, Row } from 'app/design/view'
 import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
 import { getRandomColor, LAYOUT_BREAKPOINTS } from 'app/lib/util';
-import { Icon } from 'app/ui/atoms/icon'
 import { memo } from 'react';
-import { Theme } from 'app/design/theme'
+import { callFn } from 'app/lib/functions/call';
 
 /**
  * displayType: 
@@ -24,50 +23,7 @@ import { Theme } from 'app/design/theme'
  */
 
 function DisplayNameLink({ title, url, href, fontSize, actions }) {
-
-    if (href && (href == 'javascript:' || href === undefined))
-        href = '';
-
-    const isAnon = !url || url == '' || url == 'javascript:' || url == '/javascript:';
-    const { colors } = Theme()
-    if (isAnon || title.includes("(anonymized)")) {
-
-        if (title.includes("(me)")) {
-            return (
-                <Row>
-                <Row style={{backgroundColor:'#d8eee9'}} className={' text-neutral-800  dark:text-neutral-200 gap-x-[4px] items-center  rounded px-1 ' + fontSize}>
-                    <View>
-                        <Text numberOfLines={1} className={'text-neutral-800 dark:text-neutral-200 font-semibold ' + fontSize + ' truncate '}>
-                            {title && title.replace(" (anonymized)", '').replace(" (me)", '')} 
-                        </Text>
-                    </View>
-                    <Text className="text-primary"><Icon icon="Ghost" /></Text>
-                </Row>
-                <View className="ml-2 bg-primary px-1 py-0.5 rounded"><Text className="text-white text-xs">Me</Text></View>
-                </Row>
-            )
-        }
-
-        return (
-            <Row style={{backgroundColor:'#d8eee9'}} className={' text-neutral-800  dark:text-neutral-200 gap-x-[4px] items-center  rounded px-1 ' + fontSize}>
-                <View>
-                    <Text numberOfLines={1} className={'text-neutral-800 dark:text-neutral-200 font-semibold ' + fontSize + ' truncate '}>
-                        {title && title.replace(" (anonymized)", '')} 
-                    </Text>
-                </View>
-                <Text className="text-primary"><Icon icon="Ghost" /></Text>
-            </Row>
-        )
-    }
-
-    return (
-        <Row className='items-center'>
-            <Text className={'text-neutral-800 dark:text-neutral-200 hover:text-linkhover font-bold tracking-tight ' + fontSize + ' truncate '}>
-                {title} 
-            </Text>
-            {actions}
-        </Row>
-    )
+    return callFn("DisplayNameLink", [title, url, href, fontSize, actions])
 }
 
 function DisplayNameText({ title, fontSize }) {
