@@ -483,7 +483,7 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
           bottom: 0,
         }}
       >
-        <View className="bg-blue-500 h-18">
+        <View className="h-18">
             <Toolbar hidden={false} editor={editor} items={b} />
         </View>
         </KeyboardAvoidingView>}

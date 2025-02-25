@@ -69,7 +69,11 @@ const nextConfig = {
     'victory-native',
     '@stripe/stripe-react-native',
     'react-native-star-rating-widget',
-    '@openspacelabs/react-native-zoomable-view'
+    '@openspacelabs/react-native-zoomable-view',
+    '@gluestack-ui/input',
+    '@gluestack-ui/nativewind-utils',
+    '@gluestack-ui/overlay',
+    '@gluestack-ui/toast'
   ],
   webpack: (config, { isServer }) => {
     // Добавляем алиасы
