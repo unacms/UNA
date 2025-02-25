@@ -17,7 +17,7 @@ import { subscribe } from 'app/ui/atoms/socket';
 import { fetcher } from 'app/lib/fetcher';
 import Toaster from 'app/ui/atoms/toaster';
 import { callFn } from 'app/lib/functions/call';
-
+import { Text } from 'app/design/typography'
 export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultHeader, menu, data, blocks, useSectionAsMenu, unitMode, skeleton, onChangeRoute, keyword }) {
     minHeaderHeight = minHeaderHeight || 100;
     isHideDefaultHeader = isHideDefaultHeader || false;
@@ -370,6 +370,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
         const animatedStyleA = useAnimatedStyle(() => {
             return {
                 opacity: withTiming(scroll.value, { duration: 500 }),
+                zIndex: (scroll.value)*500
             };
         }, [scroll]);
 
@@ -384,7 +385,6 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
         const parentAnimatedStyle = useAnimatedStyle(() => {
             return {
                 height: headerMaxHeight.value,
-                zIndex: (scroll.value)*500
             };
         }, [headerMaxHeight]);
 
