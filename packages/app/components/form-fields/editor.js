@@ -274,7 +274,7 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
 
                         // Проверяем, есть ли возможность отступить на N символов назад
                         const newOffset = Math.max(startOffset - document.getElementsByClassName("tiptap")[0].getAttribute('query').length, 0);
-
+/*
                         // Создаем новый Range
                         const newRange = document.createRange();
                         newRange.setStart(startContainer, newOffset);
@@ -297,8 +297,9 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
                         // Устанавливаем новое выделение
                         selection.removeAllRanges();
                         selection.addRange(finalRange);
-                        window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'addmention', payload: user.url }));
+                        console.log("user.url", user.url)*/
                     }
+                    window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'addmention', payload: {url:user.url, label:user.label, query: document.getElementsByClassName("tiptap")[0].getAttribute('query')} }));
                     document.getElementById("mention-list").style.display = "none";
                 });
                 document.getElementById("mention-list").appendChild(li);
@@ -327,7 +328,7 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
         }
     }
 
-    const onMessage = (event) => {
+    const onMessage = async (event) => {
       
         try {
             const message = JSON.parse(event.nativeEvent.data);
@@ -354,12 +355,19 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
             }
 
             if (message?.type == "mention") {
+                console.log("mention", [message.payload, message.sym])
                 setKeyword([message.payload, message.sym])
             }
             if (message?.type == "addmention") {
-                console.log("message.payload", "/"+message.payload)
-                editor.setLink("/"+message.payload)
+                const html = await editor.getHTML();
+                const mentionLink = `<a class="bx-mention-link" href="${message.payload.url}">${message.payload.label}</a> &shy; `;
                 
+       
+                const updatedContent = html.replace(message.payload.query, mentionLink);
+                
+                console.log("updatedContent", updatedContent);
+                editor.setContent(updatedContent);
+                editor.focus('end');
             }
             
 
