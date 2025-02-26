@@ -115,7 +115,7 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
     const { colors } = Theme();
     const formContext = useFormContext();
     const [height, setHeight] = useState(minHeight);
-    const [suggestions, setSuggestions] = useState([]);
+    const [suggestions, setSuggestions] = useState(false);
     const [keywordval, setKeyword] = useState(['', '']);
 
     const object_privacy_view = formContext.watch('object_privacy_view');
@@ -253,7 +253,7 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
     */
 
     useEffect(() => {
-        if (suggestions.length > 0) {
+        if (suggestions) {
             let a = JSON.stringify(suggestions);
             editor.injectJS(`
             document.getElementById("mention-list").innerHTML = "";
@@ -264,47 +264,16 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
                
                 li.style.cursor = "pointer";
                 li.addEventListener("click", () => {
-
-                    document.getElementsByClassName("tiptap")[0].focus();
-                    const selection = window.getSelection();
-                    if (selection.rangeCount > 0) {
-                        const range = selection.getRangeAt(0);
-                        const startContainer = range.startContainer;
-                        const startOffset = range.startOffset;
-
-                        // Проверяем, есть ли возможность отступить на N символов назад
-                        const newOffset = Math.max(startOffset - document.getElementsByClassName("tiptap")[0].getAttribute('query').length, 0);
-/*
-                        // Создаем новый Range
-                        const newRange = document.createRange();
-                        newRange.setStart(startContainer, newOffset);
-                        newRange.setEnd(startContainer, startOffset);
-                        newRange.deleteContents();
-
-                        // Вставляем новый текст
-                        const textNode = document.createTextNode(user.label);
-                        newRange.insertNode(textNode);
-
-                        // Добавляем пробел после textNode
-                        const spaceNode = document.createTextNode(" ");
-                        textNode.after(spaceNode); // Вставляем пробел после textNode
-
-                        // Выделяем только вставленный текст (без пробела)
-                        const finalRange = document.createRange();
-                        finalRange.setStart(textNode, 0);
-                        finalRange.setEnd(textNode, user.label.length);
-
-                        // Устанавливаем новое выделение
-                        selection.removeAllRanges();
-                        selection.addRange(finalRange);
-                        console.log("user.url", user.url)*/
-                    }
                     window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'addmention', payload: {url:user.url, label:user.label, query: document.getElementsByClassName("tiptap")[0].getAttribute('query')} }));
                     document.getElementById("mention-list").style.display = "none";
                 });
                 document.getElementById("mention-list").appendChild(li);
             });
-            document.getElementById("mention-list").style.display = "block";
+            console.log(document.getElementById("mention-list").children.length)
+            if (document.getElementById("mention-list").children.length > 0)
+                document.getElementById("mention-list").style.display = "block";
+            else
+                 document.getElementById("mention-list").style.display = "none";
 
             document.getElementById("mention-list").style.left = document.getElementsByClassName("tiptap")[0].getAttribute('queryX') + 'px';
             document.getElementById("mention-list").style.top = document.getElementsByClassName("tiptap")[0].getAttribute('queryY') + 'px';`);
