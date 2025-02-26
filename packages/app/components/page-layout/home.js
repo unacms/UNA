@@ -108,10 +108,10 @@ export default function (props) {
                             <View className="web:fixed web:top-16 web:sm:top-0 web:z-50 web:w-full sm:relative bg-bgrnavbar dark:bg-bgrnavbar-d sm:bg-transparent border-b border-bdrcard dark:border-bdrcard-d shadow-sm sm:shadow-none sm:border-none">
                             <ScrollView
                                 horizontal={true}
-                                className="  max-w-2xl mx-auto w-full overflow-y-visible  "
+                                className="  max-w-2xl mx-auto w-full overflow-y-visible sm:justify-center "
                             >
                                 <Row
-                                    className={`  rounded-full mx-3 sm:mx-4 ${
+                                    className={`  rounded-full mx-3 sm:mx-auto ${
                                         feedList.length > 1
                                             ? 'my-2 lg:my-4'
                                             : ''
