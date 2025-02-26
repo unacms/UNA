@@ -97,6 +97,7 @@ const expoConfig = {
         }
       ]
     },
+    "newArchEnabled": true,
     extra: {
       "UNA_URL": process.env.UNA_URL,
       "API_PROXY_URL": process.env.API_PROXY_URL,

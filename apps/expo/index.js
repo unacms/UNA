@@ -4,7 +4,7 @@
 
 import 'react-native-get-random-values';
 import 'react-native-url-polyfill/auto';
-import { StatusBar } from 'react-native';
+import { StatusBar, Platform } from 'react-native';
 //import 'expo-router/entry';
 import * as SplashScreen from 'expo-splash-screen';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -19,6 +19,10 @@ import { View } from 'react-native';
 import "./global.combined.css";
 import { useColorScheme } from 'react-native';
 
+// Set the platform for babel-preset-expo
+if (!process.env.EXPO_PUBLIC_PLATFORM) {
+	process.env.EXPO_PUBLIC_PLATFORM = Platform.OS;
+}
 
 if (__DEV__) {
 	import('./ReactotronConfig').then(() => console.log('Reactotron Configured'));
@@ -28,7 +32,9 @@ SplashScreen.preventAutoHideAsync();
 
 // Must be exported or Fast Refresh won't update the context
 export function App() {
-	const customScreenDelay = Constants.manifest.splash.timeout
+	// Update to use Constants.expoConfig which is the newer pattern
+	// and add a safe fallback for the splash timeout
+	const customScreenDelay = Constants.expoConfig?.splash?.timeout || 0;
 
 	const [showSplashScreen, setShowSplashScreen] = useState(customScreenDelay > 0);
 	useEffect(() => {
