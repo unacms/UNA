@@ -537,7 +537,7 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
                     </Row>
                 </View>)
             }
-            <Form {...form} resetOnSubmit={true} classContainerName={(isModal ? "" : "  ") + " flex-row flex-wrap w-full items-start justify-between"} onFormSubmit={onFormSubmit} />
+            <Form {...form} exProps={{browse:dynamicData?.data?.browse}} resetOnSubmit={true} classContainerName={(isModal ? "" : "  ") + " flex-row flex-wrap w-full items-start justify-between"} onFormSubmit={onFormSubmit} />
         </View>
     )
 }

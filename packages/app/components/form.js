@@ -48,12 +48,17 @@ export default function (props) {
     const [lastChangedField, setLastChangedField] = useState(null);
 
     let name = props.data.params?.display?.includes('_delete') ? '' : (props.name ? props.name : props.data.params?.display)
-
     const defaultValues = {}
+    let isAutofocus = true;
     if (data.inputs) {
         Object.keys(data.inputs).forEach(function (key) {
             if ((data.inputs[key].type == "switcher" || data.inputs[key].type == "checkbox") && data.inputs[key].checked == false)
                 data.inputs[key].value = 0;
+
+            if((data.inputs[key].type == "text" || data.inputs[key].type == "textarea") && isAutofocus){
+                data.inputs[key].auto_focus = true;
+                isAutofocus = false
+            }
 
             ['visibility', 'selector'].forEach(type => {
                 if (checkInputType(type, name, data.inputs[key].name)) {
@@ -161,6 +166,7 @@ export default function (props) {
     }, [watch])*/
 
     let inputs = getFormFieldList(name, data.inputs, _handleSubmit, true, lastChangedField, props.saveOnChanges, props.formProps);
+
     if (inputs?.length > 0)
         inputs = inputs.filter(item => item.key !== null && item.key.toString() !== '')
 

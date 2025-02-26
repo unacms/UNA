@@ -28,12 +28,10 @@ export default function FormFieldText(props) {
     */
 
     const placeholder = props.use_caption_as_placeholder? props.caption : props.placeholder;
-
     return (
         <Field {...props} error2={formContext.formState.errors[name]}>
             <Input 
-                autoFocus= {true}
-              
+                autoFocus= {props.auto_focus}
                 name={props.name}
                 placeholder = {placeholder}
                 placeholderTextColor="#6b7280"

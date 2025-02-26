@@ -32,19 +32,21 @@ export function isObjectsEqual(obj, obj2) {
 }
 
 export async function subscribeOneSignal(currentUser, askPermission = false) {
-    OneSignal.Debug.setLogLevel(LogLevel.Verbose);
-    OneSignal.initialize(appSetting('config', 'api_keys', 'onesignal'));
+    if (!isWeb){
+        OneSignal.Debug.setLogLevel(LogLevel.Verbose);
+        OneSignal.initialize(appSetting('config', 'api_keys', 'onesignal'));
 
-    let permissionStatus = await OneSignal.Notifications.getPermissionAsync();
+        let permissionStatus = await OneSignal.Notifications.getPermissionAsync();
+        console.log("OneSignal: Permission status", permissionStatus);
+        if (permissionStatus !== "granted" && askPermission) {
+            await OneSignal.Notifications.requestPermission(true);
+            permissionStatus = await OneSignal.Notifications.getPermissionAsync(); 
+        }
 
-    if (permissionStatus !== "granted" && askPermission) {
-        await OneSignal.Notifications.requestPermission(true);
-        permissionStatus = await OneSignal.Notifications.getPermissionAsync(); 
-    }
-
-    if (permissionStatus) {
-        await OneSignal.login(String(currentUser.id));
-        await OneSignal.User.addTag("user_hash", String(currentUser.hash));
+        if (permissionStatus) {
+            await OneSignal.login(String(currentUser.id));
+            await OneSignal.User.addTag("user_hash", String(currentUser.hash));
+        }
     }
 }
 

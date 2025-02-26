@@ -126,8 +126,17 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
             }
         };
     */
+
+        const handleFocus = () => {
+            console.log("Редактор получил фокус");
+            // Ваши действия при фокусе
+            if (props.onFocus) {
+                props.onFocus();
+            }
+        };
+        
         const handleBlur = () => {
-            console.log("Редактор потерял фокус");
+
             // Ваши действия при потере фокуса
             if (props.onBlur) {
                 props.onBlur();
@@ -135,7 +144,7 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
         };
    
         // Подписываемся на события клавиатуры
-     //   const keyboardDidShowListener = Keyboard.addListener("keyboardDidShow", handleFocus);
+        const keyboardDidShowListener = Keyboard.addListener("keyboardDidShow", handleFocus);
         const keyboardDidHideListener = Keyboard.addListener("keyboardDidHide", handleBlur);
     
         return () => {
@@ -197,7 +206,7 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
 
     return (
             <MentionInput style={styles}
-                inputRef={(ref) => {
+                /*inputRef={(ref) => {
                     if (ref) {
                         inputRef.current = ref;
                         const originalFocus = ref.focus;
@@ -212,7 +221,8 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
 
                         
                     }
-                }}
+                }}*/
+                inputRef={inputRef}
                 multiline
                 allowFontScaling={false}
                 autoFocus={field.value ? true : false}
