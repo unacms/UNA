@@ -7,7 +7,7 @@ import { DEFAULT_TOOLBAR_ITEMS, useEditorBridge, RichText, Toolbar, TenTapStartK
 import { useLayoutData } from 'app/context/layout';
 import { Keyboard } from 'react-native';
 import { Theme } from 'app/design/theme';
-import { getAlert } from 'app/lib/util';
+import { getAlert,stripTags } from 'app/lib/util';
 import { Text } from 'app/design/typography'
 import { KeyboardAvoidingView, Platform } from 'react-native'
 import { fetcher } from 'app/lib/fetcher';
@@ -93,7 +93,7 @@ function PlainText(props) {
         display: none;
     }*/
 function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus, onBlur, html, ...props }) {
-    
+    console.log("valuevaluevalue", value)
     let b = [...DEFAULT_TOOLBAR_ITEMS]; 
 
     if(Platform.OS == 'web'){
@@ -144,44 +144,15 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
         fetchData();
     }, [keywordval]);
 
-     /*useEffect(() => {
-        if (Platform.OS == 'web' ){
-            const images = {
-                "tint-0": "bold.png",
-                "tint-1": "italic.png",
-                "tint-2": "link.png",
-                "tint-3": "checklist.png",
-                "tint-4": "Aa.png",
-                "tint-5": "code.png",
-                "tint-6": "underline.png",
-                "tint-7": "strikethrough.png",
-                "tint-8": "quote.png",
-                "tint-9": "ul.png",
-                "tint-10": "ol.png",
-                "tint-11": "indent.png",
-                "tint-12": "unindent.png",
-                "tint-13": "undo.png",
-                "tint-14": "redo.png",
-              };
-              
-              Object.entries(images).forEach(([tint, img]) => {
-                document.querySelectorAll(`[style*="filter: url(\\"#${tint}\\")"]`).forEach(el => {
-                  el.style.backgroundImage = `url('/editor/${img}')`;
-                });
-              });
-              
-          
-        }
-     }, []);*/
-
-
+   
     const customCodeBlockCSS = `
     body{
         font-family: system-ui, -apple-system, BlinkMacSystemFont, ".SFNSText-Regular", sans-serif;
         font-size: ${props.fontSize || 16}px;
         line-height:  ${props.lineHeight || 20}px;
         color:  ${colors.text};
-        margin:0
+        margin:0;
+        white-space: pre;
     }
     img{
         display:none;
@@ -220,8 +191,16 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
     useEffect(() => {
         if (editor && field.value == '' && editor.getHTML() != field.value) {
             editor.setContent(field.value);
+            editor.focus('end');
         }
     }, [field.value]);
+
+    useEffect(() => {
+        if (editor && editor.getHTML() != value) {
+            editor.setContent(value);
+            editor.focus('end');
+        }
+    }, [value]);
 
     const editor = useEditorBridge({
         autofocus: field.value ? true : (props.autofocus || false),
@@ -255,12 +234,15 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
 
     const htmlContent = useEditorContent(editor, { type: 'html' });
     useEffect(() => {
-        if (htmlContent) {
+        if (stripTags(htmlContent)) {
             if(onFocus)
                 onFocus()
             field.onChange(htmlContent)
         }
     }, [htmlContent]);
+
+    
+
 
    /* useEffect(() => {
         console.log("aaaa", height)
@@ -323,8 +305,8 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
             });
             document.getElementById("mention-list").style.display = "block";
 
-            document.getElementById("mention-list").style.left = document.getElementsByClassName("tiptap")[0].getBoundingClientRect().left + 'px';
-            document.getElementById("mention-list").style.top = document.getElementsByClassName("tiptap")[0].getBoundingClientRect().bottom + 'px';`);
+            document.getElementById("mention-list").style.left = document.getElementsByClassName("tiptap")[0].getAttribute('queryX') + 'px';
+            document.getElementById("mention-list").style.top = document.getElementsByClassName("tiptap")[0].getAttribute('queryY') + 'px';`);
         }
     }, [suggestions]);
 
@@ -375,7 +357,8 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
                 setKeyword([message.payload, message.sym])
             }
             if (message?.type == "addmention") {
-                editor.setLink(message.payload)
+                console.log("message.payload", "/"+message.payload)
+                editor.setLink("/"+message.payload)
                 
             }
             
@@ -421,17 +404,29 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
                     editor.addEventListener("input", async function (event) {
 
                         const text = getTextBeforeCursor();
-                        if (text.startsWith("@")) {
+                        const symbol = text.charAt(0);
+
+                        if (symbol === '@' || symbol === '#') {
                             const query = text.substring(1).toLowerCase();
-                            editor.setAttribute('query', '@' + query);
-                            window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'mention', payload: query, sym: '@' }));
+                            editor.setAttribute('query', symbol + query);
+                            const selection = window.getSelection();
+                            
+
+                            if (selection.rangeCount > 0) {
+                                const range = selection.getRangeAt(0);
+                                const rect = range.getBoundingClientRect();
+      
+                                editor.setAttribute('queryX', rect.left);
+                                editor.setAttribute('queryY', rect.bottom);
+                            }
+
+                            window.ReactNativeWebView.postMessage(JSON.stringify({
+                                type: 'mention',
+                                payload: query,
+                                sym: symbol
+                            }));
                         }
 
-                        if (text.startsWith("#")) {
-                            const query = text.substring(1).toLowerCase();
-                            editor.setAttribute('query', '#' + query);
-                            window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'mention', payload: query, sym: '#' }));
-                        }
                     });
 
                     function getTextBeforeCursor() {
@@ -441,6 +436,12 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
                         const text = range.startContainer.textContent.substring(0, range.startOffset);
                         return text.split(" ").pop();
                     }
+
+                    document.addEventListener('click', (event) => {
+                        if (event.target.tagName === 'A') {
+                            event.preventDefault();
+                        }
+                    });
 
                     document.addEventListener('paste', (event) => {
                         console.log("Paste event:", event.clipboardData);
