@@ -18,7 +18,7 @@ import { useCurrentUser } from 'app/context/user'
 import { callFn } from 'app/lib/functions/call';
 import Link from 'app/ui/atoms/link'
 import { Button } from 'app/design/controls';
-import { BlockByName } from 'app/components/block'
+//import { BlockByName } from 'app/components/block'
 
 const Item = memo(({ item, index, numColumns, data, unitMode, props }) => (
     <View className={numColumns > 1 ? 'w-full pb-2 ' : '  ' + (data.unit != 'feed' ? '   w-full' : '  ') + '  '}>
@@ -38,7 +38,7 @@ const Item = memo(({ item, index, numColumns, data, unitMode, props }) => (
 const getNumCols = (width, props, data) => {
     if (props.perLine)
         return props.perLine;
-   
+
     if (data.unit.startsWith('general-') || data.unit.startsWith('search-')) {
         return width > 600 ? 4 : 1
     }
@@ -59,14 +59,14 @@ export default function (props) {
     const storageKeyValue = storageKey((props.uri ? props.uri : '') + (data.request_url ? ':' + data.request_url : '') + (data.params?.type ? ':' + data.params?.type : '') + (data.params?.category ? ':' + data.params?.category : '') + (props.cachePrefix ? ':' + props.cachePrefix : ''))
     //const [cachedData, setCachedData] = useState(props.cachePrefix ? false : { state: getDataFromCache('ul:state', storageKeyValue), data: getDataFromCache('ul:data', storageKeyValue) });
     const cachedData = { state: getDataFromCache('ul:state', storageKeyValue), data: getDataFromCache('ul:data', storageKeyValue) };
-   
+
 
     useEffect(() => {
-        if (cachedData && isValidateActive){
+        if (cachedData && isValidateActive) {
             revalidateData();
             //TODO revaliadate
         }
-        if (props.data.unit == 'feed'){
+        if (props.data.unit == 'feed') {
             subscribe('bx_timeline_0', 'added', setIsRevalidate);
             subscribe('bx_timeline_0', 'deleted', setIsRevalidate);
         }
@@ -226,7 +226,7 @@ export default function (props) {
                 bUpdateContent = true;
             }
         }
-        if (bUpdateContent){
+        if (bUpdateContent) {
 
             const validatedData = (await fetcher(endpointUpdateContent)).data?.[0]?.data?.data;
             if (validatedData && (validatedData == 'valid' || validatedData == 'invalid')) {
@@ -240,7 +240,7 @@ export default function (props) {
         storageClear('ul:state', storageKeyValue);
         setDataItems({ data: [], params: browseParams });
         // HECH HERE !!!
-       // setToaster2Visible(false);
+        // setToaster2Visible(false);
     }
     /* UPDATE CONTENT PART */
 
@@ -262,7 +262,7 @@ export default function (props) {
     }, [dataItems.data]);
 
     useEffect(() => {
-        if (dataItems.data.length == 0 && dataItems.params == browseParams){
+        if (dataItems.data.length == 0 && dataItems.params == browseParams) {
             //console.log('refetch2');
             refetch();
         }
@@ -292,10 +292,10 @@ export default function (props) {
             <View className='w-full' onLayout={handleLayout}></View>
             <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" />
             <View className='w-full ' style={styles} >
-            {dataItems.data.length > 0 ? <>{props.showTitleInside ? (
+                {dataItems.data.length > 0 ? <>{props.showTitleInside ? (
                     <Row className='p-2 items-center justify-between'>
                         <Text className="text-base font-bold text-neutral-800 dark:text-neutral-200 ">{t(props.block.title)}</Text>
-                            {props.addLink ? (<Link href = {props.addLink.url}><Button variant='text' size='xs' title = {props.addLink.text} /></Link>): null}
+                        {props.addLink ? (<Link href={props.addLink.url}><Button variant='text' size='xs' title={props.addLink.text} /></Link>) : null}
                     </Row>) : <></>}
                     <UniList
                         numColumns={numColumns}
@@ -317,26 +317,28 @@ export default function (props) {
                         refreshing={isRefreshing}
                         renderItem={({ item, index }) => Platform.OS === 'web' ? <Item key={'item' + item.id} item={item} index={index} numColumns={numColumns} data={data} unitMode={unitMode} props={props} /> : <Item item={item} index={index} numColumns={numColumns} data={data} unitMode={unitMode} props={props} />}
                         onEndReached={handleEndReached}
-                        ListHeaderComponent={props.exProps?.addBlocks ? <>{props.exProps?.addBlocks?.map(
-                                                                            (item, index) => {
-                                                                                return (
-                                                                                    <BlockByName
-                                                                                        key={
-                                                                                            'block_' +
-                                                                                            index
-                                                                                        }
-                                                                                        name={
-                                                                                            item.block
-                                                                                        }
-                                                                                        data={
-                                                                                            props.exProps.addBlocksData
-                                                                                        }
-                                                                                        {...item.block
-                                                                                            .props}
-                                                                                    />
-                                                                                )
-                                                                            }
-                                                                        )}</>: ''}
+                        // disabled to avoid _map_default.js:1 Require cycle: ..\..\packages\app\components\elements\browse.js -> ..\..\packages\app\components\block.js -> ..\..\packages\app\components\blocks-content\object-data-array.js -> ..\..\packages\app\components\element.js -> ..\..\packages\app\components\elements\_map.js -> ..\..\packages\app\components\elements\_map_default.js -> ..\..\packages\app\components\elements\browse.js
+                                
+                        /* ListHeaderComponent={props.exProps?.addBlocks ? <>{props.exProps?.addBlocks?.map(
+                            (item, index) => {
+                                return (<></>
+                                     <BlockByName
+                                        key={
+                                            'block_' +
+                                            index
+                                        }
+                                        name={
+                                            item.block
+                                        }
+                                        data={
+                                            props.exProps.addBlocksData
+                                        }
+                                        {...item.block
+                                            .props}
+                                    />
+                                )
+                            }
+                        )}</> : ''}*/
                         ListFooterComponent={
                             ((hasNextPage && isFetchingNextPage)) ? (
                                 Preload

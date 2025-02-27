@@ -13,7 +13,7 @@ export default function FormComments(props) {
     const formContext = useFormContext();
     const [isExImage, setIsExImage] = useState(false);
     const [isFocused, setIsFocused] = useState(false);
-    const [editorHeight, setEditorHeight] = useState(initialHeight); 
+    const [editorHeight, setEditorHeight] = useState(initialHeight);
     const isWeb = Platform.OS == 'web';
 
 
@@ -37,23 +37,24 @@ export default function FormComments(props) {
     }
 
     function checkEditorHeight(height1) {
-        console.log("height1height1height1", height1)
-        let height = height1+10;
-        let h = initialHeight;
+        console.log("height1height1height1", height1, editorHeight)
+        let height = height1 + 10;
+        let h = 0;
         if (height <= 160 && height > initialHeight) {
             h = height;
         }
-            if (height > 160){
-                h = 160;
-            }   
-        if (editorHeight != height) {
-            setEditorHeight(h)
+        if (height > 160) {
+            h = 160;
         }
-        
-        console.log("checkEditorHeight",height )
-     
+        if (height1 < initialHeight) {
+            h = initialHeight;
+        }
+
+        setEditorHeight(h)
+
+
     }
-    
+
 
     let text = formContext.watch('cmt_text')
     if (!text) text = ''
@@ -62,7 +63,7 @@ export default function FormComments(props) {
     }
 
     useEffect(() => {
-        if (formContext.formState.isSubmitted){
+        if (formContext.formState.isSubmitted) {
             setImageSource([]);
             formContext.setValue('cmt_text', '')
         }
@@ -86,21 +87,21 @@ export default function FormComments(props) {
                 {isWeb && getFormFieldByData(props.data.inputs['cmt_image'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder, noMargin: true, asDefaultStorage: true, source: 'library', })}
                 {!isWeb && !isExImage && <Button startDecorator="Plus" rounded onPress={() => setIsExImage(true)}></Button>}
                 {!isWeb && !!isExImage &&
-                    <Animated.View  entering={SlideInLeft.duration(300)} 
-                    exiting={SlideOutLeft.duration(300)}>
-                    <Row className="gap-x-2">
-                        <View>
-                            {getFormFieldByData(props.data.inputs['cmt_image'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder, noMargin: true, asDefaultStorage: true, source: 'library', })}
-                        </View>
-                        <View>
-                            {getFormFieldByData(props.data.inputs['cmt_image'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder, noMargin: true, asDefaultStorage: true, source: 'camera', })}
-                        </View>
-                    </Row>
+                    <Animated.View entering={SlideInLeft.duration(300)}
+                        exiting={SlideOutLeft.duration(300)}>
+                        <Row className="gap-x-2">
+                            <View>
+                                {getFormFieldByData(props.data.inputs['cmt_image'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder, noMargin: true, asDefaultStorage: true, source: 'library', })}
+                            </View>
+                            <View>
+                                {getFormFieldByData(props.data.inputs['cmt_image'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder, noMargin: true, asDefaultStorage: true, source: 'camera', })}
+                            </View>
+                        </Row>
                     </Animated.View>
                 }
 
             </View>
-            <View className={`flex-auto bg-bgritem dark:bg-bgritem-d rounded-3xl justify-center  items-end ${sPad}`} style={{height: editorHeight }}>
+            <View className={`flex-auto bg-bgritem dark:bg-bgritem-d rounded-3xl justify-center  items-end ${sPad}`} style={{ height: editorHeight }}>
                 {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['cmt_cf'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['cmt_parent_id'], props.handleSubmit, 'custom')}
@@ -109,7 +110,7 @@ export default function FormComments(props) {
                 {getFormFieldByData(props.data.inputs['sys'], props.handleSubmit, 'custom')}
             </View>
 
-            <View className={'ml-2 ' + (isWeb ? '' : ' w-12 ')}>{getFormFieldByData(props.data.inputs['cmt_submit'], props.handleSubmit, 'custom', {  disabled: text != '' ? false : true, classes: isWeb ? 'ml-0 ' : '', noMargin: true, size: 'base' })}</View>
+            <View className={'ml-2 ' + (isWeb ? '' : ' w-12 ')}>{getFormFieldByData(props.data.inputs['cmt_submit'], props.handleSubmit, 'custom', { disabled: text != '' ? false : true, classes: isWeb ? 'ml-0 ' : '', noMargin: true, size: 'base' })}</View>
         </Row>
         {(prevList.length > 0 && prevList[0]?.key) && <ScrollView horizontal={true}><Row className='flex-wrap gap-2 mt-3'>{prevList}</Row></ScrollView>}
         {getFormFieldByData(props.data.inputs['cmt_mood'], props.handleSubmit, 'custom')}

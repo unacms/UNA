@@ -208,7 +208,9 @@ export default function FormFeed(props) {
                         )}
                     </View>
                     <View >
-                        <Row className="w-full flex-wrap">{prevList}</Row>
+                    <ScrollView keyboardDismissMode="on-drag" keyboardShouldPersistTaps="handled" className="w-full " horizontal={true}>
+                        {prevList}
+                    </ScrollView>
                         <View className="">
                             {props.data.inputs['labels'] && (
                                 <View className="flex-auto">

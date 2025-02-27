@@ -2,7 +2,7 @@ import Field, { getValidationRules } from './_field';
 import { useController, useFormContext } from 'react-hook-form';
 import { InputMulti, Input, TextInputClear, Button } from 'app/design/controls'
 import { useState, useRef, useEffect } from 'react';
-import { View } from 'app/design/view'
+import { View, ScrollView } from 'app/design/view'
 import { DEFAULT_TOOLBAR_ITEMS, useEditorBridge, RichText, Toolbar, TenTapStartKit, LinkBridge, CodeBridge, useEditorContent, ImageBridge, DropCursorBridge, PlaceholderBridge } from '@10play/tentap-editor';
 import { useLayoutData } from 'app/context/layout';
 import { Keyboard } from 'react-native';
@@ -32,7 +32,6 @@ function PlainText(props) {
     let h = props.height ? props.height : null;
     const [height, setHeight] = useState(h);
     const accessibility = props.caption.length > 0 ? props.caption : 'text';
-
     const placeholder = props.use_caption_as_placeholder ? props.caption : props.placeholder;
 
     let input = <InputMulti
@@ -109,12 +108,14 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
         b.splice(4, 1);
     }
 
+
     const { layoutData, setLayoutData } = useLayoutData();
     const { field } = useController({ name, rules: {}, defaultValue: value });
     const { colors } = Theme();
     const formContext = useFormContext();
-    const [suggestions, setSuggestions] = useState(false);
+    const [suggestions, setSuggestions] = useState([]);
     const [keywordval, setKeyword] = useState(['', '']);
+    const [editorHeight, setEditorHeight] = useState(0); 
 
     const object_privacy_view = formContext.watch('object_privacy_view');
     const object_id = formContext.watch('id');
@@ -252,33 +253,33 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
         }
     }, [htmlContent]);
 
-    useEffect(() => {
-        if (suggestions) {
-            let a = JSON.stringify(suggestions);
-            editor.injectJS(`
-            document.getElementById("mention-list").innerHTML = "";
-            ${a}.forEach(user => {
-                const li = document.createElement("li");
-                li.textContent = user.label;
-                li.data = user;
-               
-                li.style.cursor = "pointer";
-                li.addEventListener("click", () => {
-                    window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'addmention', payload: {url:user.url, label:user.label, query: document.getElementsByClassName("tiptap")[0].getAttribute('query')} }));
-                    document.getElementById("mention-list").style.display = "none";
-                });
-                document.getElementById("mention-list").appendChild(li);
-            });
-            console.log(document.getElementById("mention-list").children.length)
-            if (document.getElementById("mention-list").children.length > 0)
-                document.getElementById("mention-list").style.display = "block";
-            else
-                 document.getElementById("mention-list").style.display = "none";
-
-            document.getElementById("mention-list").style.left = document.getElementsByClassName("tiptap")[0].getAttribute('queryX') + 'px';
-            document.getElementById("mention-list").style.top = document.getElementsByClassName("tiptap")[0].getAttribute('queryY') + 'px';`);
-        }
-    }, [suggestions]);
+    /* useEffect(() => {
+         if (suggestions) {
+             let a = JSON.stringify(suggestions);
+             editor.injectJS(`
+             document.getElementById("mention-list").innerHTML = "";
+             ${a}.forEach(user => {
+                 const li = document.createElement("li");
+                 li.textContent = user.label;
+                 li.data = user;
+                
+                 li.style.cursor = "pointer";
+                 li.addEventListener("click", () => {
+                     window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'addmention', payload: {url:user.url, label:user.label, query: document.getElementsByClassName("tiptap")[0].getAttribute('query')} }));
+                     document.getElementById("mention-list").style.display = "none";
+                 });
+                 document.getElementById("mention-list").appendChild(li);
+             });
+             console.log(document.getElementById("mention-list").children.length)
+             if (document.getElementById("mention-list").children.length > 0)
+                 document.getElementById("mention-list").style.display = "block";
+             else
+                  document.getElementById("mention-list").style.display = "none";
+ 
+             document.getElementById("mention-list").style.left = document.getElementsByClassName("tiptap")[0].getAttribute('queryX') + 'px';
+             document.getElementById("mention-list").style.top = document.getElementsByClassName("tiptap")[0].getAttribute('queryY') + 'px';`);
+         }
+     }, [suggestions]);*/
 
     const processImages = (src) => {
         let images = [];
@@ -297,6 +298,15 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
         }
     }
 
+    const insertMention = async (label, url, query) => {
+        const html = await editor.getHTML();
+        const mentionLink = `<a class="bx-mention-link" href="${url}">${label}</a> &shy; `;
+        const updatedContent = html.replace(query, mentionLink);
+        editor.setContent(updatedContent);
+        editor.focus('end');
+        setSuggestions([])
+    }
+
     const onMessage = async (event) => {
 
         try {
@@ -307,6 +317,7 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
             }
 
             if (message?.type == "height") {
+                setEditorHeight(message.payload);
                 if (props.onHeight) {
                     props.onHeight(message.payload);
                 }
@@ -324,18 +335,10 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
 
             if (message?.type == "mention") {
                 console.log("mention", [message.payload, message.sym])
-                setKeyword([message.payload, message.sym])
+                setKeyword([message.payload, message.sym, message.left, message.bottom])
             }
             if (message?.type == "addmention") {
-                const html = await editor.getHTML();
-                const mentionLink = `<a class="bx-mention-link" href="${message.payload.url}">${message.payload.label}</a> &shy; `;
-
-
-                const updatedContent = html.replace(message.payload.query, mentionLink);
-
-
-                editor.setContent(updatedContent);
-                editor.focus('end');
+                insertMention(message.payload.label, message.payload.url, message.payload.query)
             }
 
 
@@ -400,10 +403,11 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
                             const query = text.substring(1).toLowerCase();
                             editor.setAttribute('query', symbol + query);
                             const selection = window.getSelection();
-                            
+                            let range;
+                            let rect;
                             if (selection.rangeCount > 0) {
-                                const range = selection.getRangeAt(0);
-                                const rect = range.getBoundingClientRect();
+                                range = selection.getRangeAt(0);
+                                rect = range.getBoundingClientRect();
 
                                 editor.setAttribute('queryX', rect.left);
                                 editor.setAttribute('queryY', rect.bottom);
@@ -412,7 +416,9 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
                             window.ReactNativeWebView.postMessage(JSON.stringify({
                                 type: 'mention',
                                 payload: query,
-                                sym: symbol
+                                sym: symbol,
+                                left:rect.left,
+                                bottom:rect.bottom
                             }));
                         }
                     });
@@ -468,12 +474,31 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
 
     const isToolBar = (html == 2 || html == 1)
 
+    const style = {left: keywordval[2]}
+    if (editorHeight-keywordval[3] > 144){
+        style.top = keywordval[3]
+    }
+    else{
+        style.bottom = 0; 
+    }
+
     return <View className={`flex-1 ${isToolBar ? 'h-48' : ''}`} >
-        
-        <RichText 
-            exclusivelyUseCustomOnMessage={false} 
-            style={{ backgroundColor: 'transparent' }} 
-            editor={editor} 
+        {(suggestions && suggestions.length > 0) && (
+            <View 
+                className="absolute h-36 w-48 bottom-0 p-1 z-50 rounded border-bdr dark:border-bdr-d border bg-bgrcard dark:bg-bgrcard-d " 
+                style={style}>
+                <ScrollView>
+                    {suggestions.map((user) => (
+                        <Button key={user.url} variant="text" fullWidth align="left" size="sm" title={user.label} onPress={() => { insertMention(user.label, user.url, keywordval[1] + keywordval[0]) }} />
+
+                    ))}
+                </ScrollView>
+            </View>
+        )}
+        <RichText
+            exclusivelyUseCustomOnMessage={false}
+            style={{ backgroundColor: 'transparent' }}
+            editor={editor}
             onMessage={onMessage} />
         {isToolBar && <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}

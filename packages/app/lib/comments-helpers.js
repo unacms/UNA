@@ -498,7 +498,7 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
         form.data.reset = true;
         formData.parent_id = 0;
         
-         //addCommentData({ formText: '', formAuthor: '', parentId: 0 }) // DISABLED TO AVOID ANY REREBDERS AFTER NEW COMMENTS
+        addCommentData({ formText: '', formAuthor: '', parentId: 0 }) // DISABLED TO AVOID ANY REREBDERS AFTER NEW COMMENTS
     }
 
     function prepareUrl(params) {

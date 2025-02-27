@@ -8,22 +8,10 @@ import { componentsMap } from 'app/ui/molecules/_map'
 import { appStatic } from 'app/lib/app-static';
 import { View, Row } from 'app/design/view'
 
+
 export function getFriendsCounter(currentUser) {
     return currentUser?.counters?.bx_persons_friend_requests
 }
-
-export function DisplayNameLink(title, url, href, fontSize, actions) {
-
-    return (
-        <Row className='items-center'>
-            <Text className={'text-neutral-800 dark:text-neutral-200 hover:text-linkhover font-bold tracking-tight ' + fontSize + ' truncate '}>
-                {title} 
-            </Text>
-            {actions}
-        </Row>
-    )
-}
-
 
 export function getBadgeForTab(currentUser, url) {
     if (
