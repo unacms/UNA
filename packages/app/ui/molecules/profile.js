@@ -5,7 +5,7 @@ import Link from 'app/ui/atoms/link'
 import { getRandomColor, LAYOUT_BREAKPOINTS } from 'app/lib/util';
 import { memo } from 'react';
 import { Theme } from 'app/design/theme';
-
+import { Icon } from 'app/ui/atoms/icon'
 /**
  * displayType: 
  *    1. unit, 
