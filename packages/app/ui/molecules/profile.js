@@ -6,6 +6,7 @@ import { getRandomColor, LAYOUT_BREAKPOINTS } from 'app/lib/util';
 import { memo } from 'react';
 import { Theme } from 'app/design/theme';
 import { Icon } from 'app/ui/atoms/icon'
+import { getPart } from 'app/lib/functions/call';
 /**
  * displayType: 
  *    1. unit, 
@@ -23,76 +24,7 @@ import { Icon } from 'app/ui/atoms/icon'
  */
 
 export function DisplayNameLink({title, url, href, fontSize, actions}) {
-
-    const { colors } = Theme();
-
-    if (href && (href == 'javascript:' || href === undefined))
-        href = '';
-
-    const isAnon = !url || url == '' || url == 'javascript:' || url == '/javascript:';
-
-    if (isAnon || title.includes("(anonymized)")) {
-
-        if (title.includes("(me)")) {
-            return (
-                <Row className="items-center">
-                <Row style={{backgroundColor:'#d8eee9'}} className={' text-neutral-800  dark:text-neutral-200 gap-x-[4px] items-center  rounded px-1 ' + fontSize}>
-                    <View>
-                        <Text numberOfLines={1} className={'text-neutral-800 dark:text-neutral-200 font-semibold ' + fontSize + ' truncate '}>
-                            {title && title.replace(" (anonymized)", '').replace(" (me)", '')} 
-                        </Text>
-                    </View>
-                    <Icon icon="Ghost" color={colors.primary} width={16} height={16} />
-                </Row>
-                <View className="ml-2 bg-primary px-1 py-0.5 rounded"><Text className="text-white text-xs">Me</Text></View>
-                </Row>
-            )
-        }
-
-        if (title.includes("(real friend)")) {
-            return (
-                <Row className="items-center">
-                <Row style={{backgroundColor:'#d8eee9'}} className={' text-neutral-800  dark:text-neutral-200 gap-x-[4px] items-center  rounded px-1 ' + fontSize}>
-                    <View>
-                        <Text numberOfLines={1} className={'text-neutral-800 dark:text-neutral-200 font-semibold ' + fontSize + ' truncate '}>
-                            {title && title.replace(" (anonymized)", '').replace(" (real friend)", '')} 
-                        </Text>
-                    </View>
-                    <Icon icon="Ghost" color={colors.primary} />
-                </Row>
-                <View className="ml-2 bg-primary px-1 py-0.5 rounded"><Text className="text-white text-xs">Real friend</Text></View>
-                </Row>
-            )
-        }
-
-        return (
-            <Row style={{backgroundColor:'#d8eee9'}} className={' text-neutral-800  dark:text-neutral-200 gap-x-[4px] items-center  rounded px-1 ' + fontSize}>
-                <View>
-                    <Text numberOfLines={1} className={'text-neutral-800 dark:text-neutral-200 font-semibold ' + fontSize + ' truncate '}>
-                        {title && title.replace(" (anonymized)", '')} 
-                    </Text>
-                </View>
-                <Icon icon="Ghost" color={colors.primary} />
-            </Row>
-        )
-    }
-
-    return (
-        <Row className='items-center'>
-            <Text className={'text-neutral-800 dark:text-neutral-200 hover:text-linkhover font-bold tracking-tight ' + fontSize + ' truncate '}>
-                {title} 
-            </Text>
-            {actions}
-        </Row>
-    )
-}
-
-function DisplayNameText({ title, fontSize }) {
-    return (
-        <Text className={'text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 dark:hover:text-white ' + fontSize + '  font-semibold tracking-tight truncate '}>
-            {title}
-        </Text>
-    )
+    return callFn("ProfileDisplayNameLink", [title, url, href, fontSize, actions])
 }
 
 //--- with custom or default info section
