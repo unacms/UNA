@@ -8,12 +8,14 @@ import { useFormContext } from 'react-hook-form';
 import { stripTags } from 'app/lib/util'
 
 export default function FormComments(props) {
+    const initialHeight = 44;
     const [imageSource, setImageSource] = useState([]);
     const formContext = useFormContext();
     const [isExImage, setIsExImage] = useState(false);
     const [isFocused, setIsFocused] = useState(false);
+    const [editorHeight, setEditorHeight] = useState(initialHeight); 
     const isWeb = Platform.OS == 'web';
-    const isIos = Platform.OS == 'ios'
+
 
     function setPlaceHolder(name, previews) {
         if (JSON.stringify(previews) != JSON.stringify(imageSource[name])) {
@@ -24,14 +26,32 @@ export default function FormComments(props) {
         }
     }
     function setIsFocus() {
-        console.log("setIsFocussetIsFocus" )
+
         setIsExImage(false)
         setIsFocused(true)
     }
 
     function setIsBlur() {
-        console.log("setIsBlursetIsBlur" )
+
         setIsFocused(false)
+    }
+
+    function checkEditorHeight(height1) {
+        console.log("height1height1height1", height1)
+        let height = height1+10;
+        let h = initialHeight;
+        if (height <= 160 && height > initialHeight) {
+            h = height;
+        }
+            if (height > 160){
+                h = 160;
+            }   
+        if (editorHeight != height) {
+            setEditorHeight(h)
+        }
+        
+        console.log("checkEditorHeight",height )
+     
     }
     
 
@@ -80,11 +100,11 @@ export default function FormComments(props) {
                 }
 
             </View>
-            <View className={`flex-auto bg-bgritem dark:bg-bgritem-d rounded-3xl justify-center  ${isWeb ? 'min-h-[44px]' : (isFocused ? 'min-h-[160px] ': 'min-h-[44px] ')} items-end ${sPad}`} >
+            <View className={`flex-auto bg-bgritem dark:bg-bgritem-d rounded-3xl justify-center  items-end ${sPad}`} style={{height: editorHeight }}>
                 {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['cmt_cf'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['cmt_parent_id'], props.handleSubmit, 'custom')}
-                {getFormFieldByData(props.data.inputs['cmt_text'], props.handleSubmit, 'custom', { container_class: 'comments', classes: "flex-1", focus: true, bg: 'transparent', placeholder: 'Write your comment here...', noMargin: true, minHeight:44, maxHeight:160, onFocus: () => setIsFocus(false), onBlur: () => setIsBlur(false) })}
+                {getFormFieldByData(props.data.inputs['cmt_text'], props.handleSubmit, 'custom', { container_class: 'comments', classes: "flex-1", focus: true, bg: 'transparent', placeholder: 'Write your comment here...', noMargin: true, onHeight: checkEditorHeight, onFocus: setIsFocus, onBlur: setIsBlur })}
                 {getFormFieldByData(props.data.inputs['id'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['sys'], props.handleSubmit, 'custom')}
             </View>

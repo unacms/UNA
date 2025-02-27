@@ -7,7 +7,7 @@ import { DEFAULT_TOOLBAR_ITEMS, useEditorBridge, RichText, Toolbar, TenTapStartK
 import { useLayoutData } from 'app/context/layout';
 import { Keyboard } from 'react-native';
 import { Theme } from 'app/design/theme';
-import { getAlert,stripTags } from 'app/lib/util';
+import { getAlert, stripTags } from 'app/lib/util';
 import { Text } from 'app/design/typography'
 import { KeyboardAvoidingView, Platform } from 'react-native'
 import { fetcher } from 'app/lib/fetcher';
@@ -93,28 +93,26 @@ function PlainText(props) {
         display: none;
     }*/
 function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus, onBlur, html, ...props }) {
-    console.log("valuevaluevalue", value)
-    let b = [...DEFAULT_TOOLBAR_ITEMS]; 
+    let b = [...DEFAULT_TOOLBAR_ITEMS];
 
-    if(Platform.OS == 'web'){
+    if (Platform.OS == 'web') {
         const images = [
             "bold.png", "italic.png", "link.png", "checklist.png", "Aa.png",
             "code.png", "underline.png", "strikethrough.png", "quote.png",
             "ul.png", "ol.png", "indent.png", "unindent.png", "undo.png", "redo.png"
-          ];
-          
-          images.forEach((img, index) => {
-            b[index].image = () => `/editor/${img}`;
-          });
+        ];
 
-          b.splice(4, 1);
+        images.forEach((img, index) => {
+            b[index].image = () => `/editor/${img}`;
+        });
+
+        b.splice(4, 1);
     }
-    
+
     const { layoutData, setLayoutData } = useLayoutData();
     const { field } = useController({ name, rules: {}, defaultValue: value });
     const { colors } = Theme();
     const formContext = useFormContext();
-    const [height, setHeight] = useState(minHeight);
     const [suggestions, setSuggestions] = useState(false);
     const [keywordval, setKeyword] = useState(['', '']);
 
@@ -136,7 +134,7 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
         const fetchData = async () => {
             let url = url1 + `&symbol=${keywordval[1] === '#' ? '%23' : '%40'}&term=${keywordval[0]}`;
             const result = await fetcher(url);
-            let p = result.map(k => ({ url: k.url,  value: k.value, label: k.label }));
+            let p = result.map(k => ({ url: k.url, value: k.value, label: k.label }));
 
             setSuggestions(p);
         };
@@ -144,7 +142,7 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
         fetchData();
     }, [keywordval]);
 
-   
+
     const customCodeBlockCSS = `
     body{
         font-family: system-ui, -apple-system, BlinkMacSystemFont, ".SFNSText-Regular", sans-serif;
@@ -153,6 +151,8 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
         color:  ${colors.text};
         margin:0;
         white-space: pre;
+
+        overflow: hidden;
     }
     img{
         display:none;
@@ -160,9 +160,10 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
     body P {
         margin-bottom: 4px;
         margin-top: 4px;
+        
     }
     body P:first-child {
-        margin-top: 6px;
+        margin-top: 4px;
     }
     .mention-list {
         position: absolute;
@@ -181,12 +182,22 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
     .mention-list li:hover,
     .mention-list li.active {
         background: lightblue;
-    }`;
+    }
+    .bx-mention-link,
+    .bx-tag{
+        color: rgba(29, 78, 216, 1);
+    }
 
-    /*useEffect(() => {
-        if (formContext.formState.isSubmitted)
-            console.log("field.value", field.value)
-    }, [formContext.formState.isSubmitted]);*/
+    .tiptap{
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none;  /* IE и Edge */
+        &::-webkit-scrollbar {
+            display: none; /* Chrome, Safari и Opera */
+            width: 0;
+            height: 0;
+        }
+    }   
+    `;
 
     useEffect(() => {
         if (editor && field.value == '' && editor.getHTML() != field.value) {
@@ -204,7 +215,7 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
 
     const editor = useEditorBridge({
         autofocus: field.value ? true : (props.autofocus || false),
-        avoidIosKeyboard: true,
+        avoidIosKeyboard: false,
         dynamicHeight: false,
         placeholder: props.placeholder,
 
@@ -219,9 +230,9 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
             DropCursorBridge,
             LinkBridge.configureExtension({
                 HTMLAttributes: {
-                  class: 'bx-mention-link',
+                    class: 'bx-mention-link',
                 },
-              }),
+            }),
             PlaceholderBridge.configureExtension({
                 placeholder: props.placeholder,
                 showOnlyWhenEditable: true,
@@ -235,29 +246,18 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
     const htmlContent = useEditorContent(editor, { type: 'html' });
     useEffect(() => {
         if (stripTags(htmlContent)) {
-            if(onFocus)
+            if (onFocus)
                 onFocus()
             field.onChange(htmlContent)
         }
     }, [htmlContent]);
-
-    
-
-
-   /* useEffect(() => {
-        console.log("aaaa", height)
-        if (onHeight) {
-            onHeight(height)
-        }
-    }, [height]);
-    */
 
     useEffect(() => {
         if (suggestions) {
             let a = JSON.stringify(suggestions);
             editor.injectJS(`
             document.getElementById("mention-list").innerHTML = "";
-            ${ a }.forEach(user => {
+            ${a}.forEach(user => {
                 const li = document.createElement("li");
                 li.textContent = user.label;
                 li.data = user;
@@ -298,24 +298,23 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
     }
 
     const onMessage = async (event) => {
-      
+
         try {
             const message = JSON.parse(event.nativeEvent.data);
-            console.log("document-height", message?.type)
-           /* if (message?.type == "document-height") {
-                console.log("document-height", message.payload)
-                const h = parseInt(message.payload);
-                if (h != height && h < maxHeight)
-                    setHeight(message.payload);
-                editor.focus('end');
-            }*/
+
             if (message?.type == "paste") {
                 processImages(message.payload)
             }
 
+            if (message?.type == "height") {
+                if (props.onHeight) {
+                    props.onHeight(message.payload);
+                }
+            }
+
             if (message?.type == "focus") {
                 if (onFocus)
-                    onFocus()                
+                    onFocus()
             }
 
             if (message?.type == "blur") {
@@ -330,20 +329,39 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
             if (message?.type == "addmention") {
                 const html = await editor.getHTML();
                 const mentionLink = `<a class="bx-mention-link" href="${message.payload.url}">${message.payload.label}</a> &shy; `;
-                
-       
+
+
                 const updatedContent = html.replace(message.payload.query, mentionLink);
-                
-                console.log("updatedContent", updatedContent);
+
+
                 editor.setContent(updatedContent);
                 editor.focus('end');
             }
-            
+
 
             if (message?.type == "editor-ready") {
                 editor.injectJS(`
                     let lastSelectionRange = null;
                     const editor = document.getElementsByClassName("tiptap")[0];
+
+                    function updateHeight() {
+                        const currentHeight = editor.scrollHeight;
+                        window.ReactNativeWebView.postMessage(JSON.stringify({
+                            type: 'height',
+                            payload: currentHeight,
+                        }));
+                    }
+
+                    // Отслеживаем изменения через MutationObserver
+                    const observer = new MutationObserver(() => {
+                        updateHeight();
+                    });
+
+                    observer.observe(editor, {
+                        childList: true,
+                        subtree: true,
+                        characterData: true
+                    });
 
                     editor.addEventListener("blur", () => {
                         window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'blur' }));
@@ -351,16 +369,51 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
                         if (selection.rangeCount > 0) {
                             lastSelectionRange = selection.getRangeAt(0).cloneRange();
                         }
+                        updateHeight();
                     });
 
-                    // Восстановление позиции курсора при фокусе
                     editor.addEventListener("focus", () => {
-                          window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'focus' }));
+                        window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'focus' }));
                         if (lastSelectionRange) {
-                            console.log("focus")
                             const selection = window.getSelection();
                             selection.removeAllRanges();
                             selection.addRange(lastSelectionRange);
+                        }
+                        updateHeight();
+                    });
+
+                    function getTextBeforeCursor() {
+                        const selection = window.getSelection();
+                        if (!selection.rangeCount) return "";
+                        const range = selection.getRangeAt(0);
+                        const text = range.startContainer.textContent.substring(0, range.startOffset);
+                        return text.split(" ").pop();
+                    }
+
+                    editor.addEventListener("input", function (event) {
+                        updateHeight();
+
+                        const text = getTextBeforeCursor();
+                        const symbol = text.charAt(0);
+
+                        if (symbol === '@' || symbol === '#') {
+                            const query = text.substring(1).toLowerCase();
+                            editor.setAttribute('query', symbol + query);
+                            const selection = window.getSelection();
+                            
+                            if (selection.rangeCount > 0) {
+                                const range = selection.getRangeAt(0);
+                                const rect = range.getBoundingClientRect();
+
+                                editor.setAttribute('queryX', rect.left);
+                                editor.setAttribute('queryY', rect.bottom);
+                            }
+
+                            window.ReactNativeWebView.postMessage(JSON.stringify({
+                                type: 'mention',
+                                payload: query,
+                                sym: symbol
+                            }));
                         }
                     });
 
@@ -377,42 +430,6 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
                             editor.focus();
                         }
                     });
-
-                    editor.addEventListener("input", async function (event) {
-
-                        const text = getTextBeforeCursor();
-                        const symbol = text.charAt(0);
-
-                        if (symbol === '@' || symbol === '#') {
-                            const query = text.substring(1).toLowerCase();
-                            editor.setAttribute('query', symbol + query);
-                            const selection = window.getSelection();
-                            
-
-                            if (selection.rangeCount > 0) {
-                                const range = selection.getRangeAt(0);
-                                const rect = range.getBoundingClientRect();
-      
-                                editor.setAttribute('queryX', rect.left);
-                                editor.setAttribute('queryY', rect.bottom);
-                            }
-
-                            window.ReactNativeWebView.postMessage(JSON.stringify({
-                                type: 'mention',
-                                payload: query,
-                                sym: symbol
-                            }));
-                        }
-
-                    });
-
-                    function getTextBeforeCursor() {
-                        const selection = window.getSelection();
-                        if (!selection.rangeCount) return "";
-                        const range = selection.getRangeAt(0);
-                        const text = range.startContainer.textContent.substring(0, range.startOffset);
-                        return text.split(" ").pop();
-                    }
 
                     document.addEventListener('click', (event) => {
                         if (event.target.tagName === 'A') {
@@ -451,20 +468,24 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
 
     const isToolBar = (html == 2 || html == 1)
 
-    return <View className={`flex-1 ${isToolBar ? 'h-48': ''}`} >
-        <RichText exclusivelyUseCustomOnMessage={false} style={{ backgroundColor: 'transparent' }} editor={editor} onMessage={onMessage} />
-        {isToolBar &&  <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{
-          position: 'absolute',
-          width: '100%',
-          bottom: 0,
-        }}
-      >
-        <View className="h-18">
-            <Toolbar hidden={false} editor={editor} items={b} />
-        </View>
+    return <View className={`flex-1 ${isToolBar ? 'h-48' : ''}`} >
+        
+        <RichText 
+            exclusivelyUseCustomOnMessage={false} 
+            style={{ backgroundColor: 'transparent' }} 
+            editor={editor} 
+            onMessage={onMessage} />
+        {isToolBar && <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={{
+                position: 'absolute',
+                width: '100%',
+                bottom: 0,
+            }}
+        >
+            <View className="h-18">
+                <Toolbar hidden={false} editor={editor} items={b} />
+            </View>
         </KeyboardAvoidingView>}
     </View>
 }
-/*  <View className="h-24 w-full"><Toolbar editor={editor} /></View>*/
