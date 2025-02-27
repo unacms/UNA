@@ -18,7 +18,6 @@ import { useCurrentUser } from 'app/context/user'
 import { callFn } from 'app/lib/functions/call';
 import Link from 'app/ui/atoms/link'
 import { Button } from 'app/design/controls';
-//import { BlockByName } from 'app/components/block'
 
 const Item = memo(({ item, index, numColumns, data, unitMode, props }) => (
     <View className={numColumns > 1 ? 'w-full pb-2 ' : '  ' + (data.unit != 'feed' ? '   w-full' : '  ') + '  '}>
@@ -317,28 +316,7 @@ export default function (props) {
                         refreshing={isRefreshing}
                         renderItem={({ item, index }) => Platform.OS === 'web' ? <Item key={'item' + item.id} item={item} index={index} numColumns={numColumns} data={data} unitMode={unitMode} props={props} /> : <Item item={item} index={index} numColumns={numColumns} data={data} unitMode={unitMode} props={props} />}
                         onEndReached={handleEndReached}
-                        // disabled to avoid _map_default.js:1 Require cycle: ..\..\packages\app\components\elements\browse.js -> ..\..\packages\app\components\block.js -> ..\..\packages\app\components\blocks-content\object-data-array.js -> ..\..\packages\app\components\element.js -> ..\..\packages\app\components\elements\_map.js -> ..\..\packages\app\components\elements\_map_default.js -> ..\..\packages\app\components\elements\browse.js
-                                
-                        /* ListHeaderComponent={props.exProps?.addBlocks ? <>{props.exProps?.addBlocks?.map(
-                            (item, index) => {
-                                return (<></>
-                                     <BlockByName
-                                        key={
-                                            'block_' +
-                                            index
-                                        }
-                                        name={
-                                            item.block
-                                        }
-                                        data={
-                                            props.exProps.addBlocksData
-                                        }
-                                        {...item.block
-                                            .props}
-                                    />
-                                )
-                            }
-                        )}</> : ''}*/
+                        ListHeaderComponent={props.exProps?.headerBlocks ? props.exProps?.headerBlocks : ''}
                         ListFooterComponent={
                             ((hasNextPage && isFetchingNextPage)) ? (
                                 Preload

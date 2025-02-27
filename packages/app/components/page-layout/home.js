@@ -67,6 +67,31 @@ export default function (props) {
         dUser.url_avatar = dUser.avatar
         dUser.url = appSetting('dashboard', 'url')
 
+        
+        const headerBlocks = <>{topBlocks?.map(
+            (item, index) => {
+                return (
+                     <BlockByName
+                        key={
+                            'block_' +
+                            index
+                        }
+                        name={
+                            item.block
+                        }
+                        data={
+                            props.data
+                        }
+                        {...item.block
+                            .props}
+                    />
+                )
+            }
+        )}</>
+        
+      
+
+
         return (
             <View
                 className={
@@ -228,7 +253,7 @@ export default function (props) {
                                                         ]
                                                     }
                                                     unitMode={unitMode}
-                                                    exProps={!isWeb && {addBlocks:topBlocks, addBlocksData:props.data}}
+                                                    exProps={{headerBlocks:headerBlocks}}
                                                 />
                                             </View>
                                         )

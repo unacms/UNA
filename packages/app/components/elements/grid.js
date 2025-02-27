@@ -228,7 +228,6 @@ const MultiAdd = React.memo(({ data, setBottomSheetData, handleUpdate }) => {
     const handleAction = async (item) => {
 
         const fetchedData = await fetcher("/api.php?r=" + item.callback);
-        console.log('item', fetchedData);
         let cnt = { content: fetchedData.data, designbox_id: 0 }
         setBottomSheetData({ title: cnt.content[0]?.title ? cnt.content[0]?.title : " ", content: <View className='px-1'><BlockByData onFormEmpty={() => handleUpdate()} block={cnt} /></View> });
     };

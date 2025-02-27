@@ -23,7 +23,7 @@ export default function UniList(props) {
 
     if (numColumns > 1)
         mode = '';
-    console.log("numColumns", numColumns, mode)
+    
     if (mode == 'simple') {
       /*  
          const renderedItems = [];

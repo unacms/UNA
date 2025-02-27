@@ -4,9 +4,7 @@ import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
 import { getRandomColor, LAYOUT_BREAKPOINTS } from 'app/lib/util';
 import { memo } from 'react';
-import { Theme } from 'app/design/theme';
-import { Icon } from 'app/ui/atoms/icon'
-import { getPart } from 'app/lib/functions/call';
+import { getPart } from 'app/lib/parts/part';
 /**
  * displayType: 
  *    1. unit, 
@@ -24,7 +22,7 @@ import { getPart } from 'app/lib/functions/call';
  */
 
 export function DisplayNameLink({title, url, href, fontSize, actions}) {
-    return callFn("ProfileDisplayNameLink", [title, url, href, fontSize, actions])
+    return getPart("ProfileDisplayNameLink", [title, url, href, fontSize, actions])
 }
 
 //--- with custom or default info section
