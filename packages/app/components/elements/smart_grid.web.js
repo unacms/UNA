@@ -312,7 +312,7 @@ export default function (props) {
     }
 
     return (
-        <View className="px-2 w-full">
+        <View className="px-3 sm:px-4 pt-3 pb-0.5 sm:pt-4 mb-3 w-full   rounded-none sm:rounded-2xl   border-bdrcard dark:border-bdrcard-d  shadow-sm overflow-hidden bg-bgrcard dark:bg-bgrcard-d">
             <View className="w-full overflow-hidden">
                 {addType && <Modal
                     outerClickClose={false}
