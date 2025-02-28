@@ -81,13 +81,12 @@ export default function MenuItemButton(oProps) {
                 <Row className={bShowVertical ? "flex-col flex-auto items-stretch" : "flex-auto items-center"}>
                     
                     {(oProps.list && oProps.list.length > 0) && <ProfilesList data={oProps.list} showEmpty={false} maxCount={3} displaySize="sm" />}
-                    {oProps?.link ? /*buttonAction*/
+                    {oProps?.link ? 
                         (!oProps.noAction ?
-                            /*MAY BE NEED IMPROVE disabled by modal forms edit/delete ENABLED BY DownloadCV Ling*/
                             <Link emulate={true} href={oProps.link[0] === '/' ? oProps.link : (oProps.link.includes("://") ? oProps.link : '/' + oProps.link)}>
                                 {buttonAction}
                             </Link>
-                            : buttonAction
+                            : (!oProps.onPress ? buttonAction : React.cloneElement(buttonAction, { onPress: oProps.onPress }))
                         )
                         :
                         React.cloneElement(buttonAction, { onPress: handleClick })

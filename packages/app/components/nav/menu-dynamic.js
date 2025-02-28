@@ -45,7 +45,7 @@ export default function DynamicMenu({ name, MenuItem, MenuItemEx, ButtonEx, cont
     }, [isDynamicMenu]);
 
     let ExMenu = (visibleItemsCount < items.length && isWeb) && (
-        <><DropdownMenu 
+        <DropdownMenu 
             onSelect={(oItem, event) => {
                 if (oItem.noAction){
                     handleFormModal(oItem, event, setPageData)
@@ -62,16 +62,17 @@ export default function DynamicMenu({ name, MenuItem, MenuItemEx, ButtonEx, cont
         }
         >
             <ButtonEx visibleItemsCount={visibleItemsCount} />
-        </DropdownMenu><FormModal pageData={pageData} setPageData={setPageData} /></>
+        </DropdownMenu>
     )
 
     return (
         <>
+            <FormModal pageData={pageData} setPageData={setPageData} />
             <ScrollView contentContainerStyle={{alignItems: 'center'}} className={isWeb ? containerClasses : ""} horizontal={true}  onLayout={handleLayout}>
                 <View className={menuClasses} >
                     {
                         items.map((aItem, iKey) => {
-                            return <MenuItem key={name +'menu'+ iKey} item={aItem} itemRefs={itemRefs} index={iKey} visibleItemsCount={visibleItemsCount}/>
+                            return <MenuItem  key={name +'menu'+ iKey} item={{...aItem, onPress:(event) => handleFormModal(aItem, event, setPageData)}} itemRefs={itemRefs} index={iKey} visibleItemsCount={visibleItemsCount}/>
                         })
                     }
                 </View>
