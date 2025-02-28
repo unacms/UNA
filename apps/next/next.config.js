@@ -70,6 +70,7 @@ const nextConfig = {
     '@stripe/stripe-react-native',
     'react-native-star-rating-widget',
     '@openspacelabs/react-native-zoomable-view',
+    'lucide-react-native'
   ],
   webpack: (config, { isServer }) => {
     // Добавляем алиасы
@@ -120,11 +121,6 @@ const nextConfig = {
     ],
     disableStaticImages: false
   },
-  /*modularizeImports: {
-    "@phosphor-icons/react": {
-      transform: "@phosphor-icons/react/{{member}}",
-    },
-  } */ 
 }
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',

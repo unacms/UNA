@@ -80,7 +80,7 @@ export default function ({ name, value = '', numLines = 4, ...props }) {
     const [keywordval, setKeyword] = useState(['', '']);
     const formContext = useFormContext();
 
-    const object_privacy_view = formContext.watch('object_privacy_view');
+    const object_privacy_view = formContext.watch('object_privacy_view') || formContext.watch('cmt_privacy_view');
     const object_id = formContext.watch('id');
     const m = name == "cmt_text" ? "sys_cmts" : "bx_timeline";
 

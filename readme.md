@@ -257,13 +257,13 @@ export const staticComponents = staticDefault;
 
 ### override default/add new icons 
 
-#### packages\app\icons.js - icons for native app from phosphor-react-native
+#### packages\app\icons.js - icons for native app from lucide.dev
 
 ```
 'use client'
 
 import { IconSet as IconSetDedault } from './icons.default';
-import { Airplane}  from "phosphor-react-native";
+import { Airplane}  from "lucide-react-native";
 
 
 export const IconSet = {

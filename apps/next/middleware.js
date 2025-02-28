@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { UNA_URL, UNA_API_KEY } from 'app/config';
-import * as Icons from  "@phosphor-icons/react/dist/ssr";
+import * as Icons from 'lucide-react-native'
 import ReactDOMServer from 'react-dom/server';
 export const config = {
     matcher: ["/((?!static|_next|sw.js|manifest.json|logo192.png|loader.svg|favicon.ico|_vercel).*)"],
@@ -41,13 +41,18 @@ export function middleware(request) {
                 const width = url.searchParams.get('width');
                 const height = url.searchParams.get('height');
                 const size = url.searchParams.get('size');
+                const strokeWidth = url.searchParams.get('strokeWidth');
                 const iconProps = {
                     color: "currentColor",
                     ...(width && { width }),
                     ...(height && { height }),
                     ...(size && { size }),
+                    ...(strokeWidth && { strokeWidth }),
                 };
                 iconString = ReactDOMServer.renderToString(<IconComponent {...iconProps}  />);
+            }
+            else{
+                console.log('!  '+url.searchParams.get('icon'));
             }
             return NextResponse.json({ icon: iconString }, { status: 200 });
           

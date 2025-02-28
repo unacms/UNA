@@ -117,7 +117,7 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
     const [keywordval, setKeyword] = useState(['', '']);
     const [editorHeight, setEditorHeight] = useState(0); 
 
-    const object_privacy_view = formContext.watch('object_privacy_view');
+    const object_privacy_view = formContext.watch('object_privacy_view') || formContext.watch('cmt_privacy_view');
     const object_id = formContext.watch('id');
     const m = name == "cmt_text" ? "sys_cmts" : "bx_timeline";
 
@@ -474,18 +474,22 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
 
     const isToolBar = (html == 2 || html == 1)
 
-    const style = {left: keywordval[2]}
-    if (editorHeight-keywordval[3] > 144){
+    const style = {left: 0 /*keywordval[2]*/}
+   
+    const editorContH = maxHeight ? Math.min(maxHeight, editorHeight) : editorHeight
+
+    if (editorContH-keywordval[3] > 144){
         style.top = keywordval[3]
     }
     else{
-        style.bottom = 0; 
+        style.bottom = editorContH - keywordval[3] + 24; 
     }
 
-    return <View className={`flex-1 ${isToolBar ? 'h-48' : ''}`} >
+
+    return <View className={`flex-1 relative ${isToolBar ? 'h-48' : ''}`} >
         {(suggestions && suggestions.length > 0) && (
             <View 
-                className="absolute h-36 w-48 bottom-0 p-1 z-50 rounded border-bdr dark:border-bdr-d border bg-bgrcard dark:bg-bgrcard-d " 
+                className="absolute max-h-[144px] w-full max-w-md bottom-0 p-1 z-50 rounded border-bdr dark:border-bdr-d border bg-bgrcard dark:bg-bgrcard-d " 
                 style={style}>
                 <ScrollView>
                     {suggestions.map((user) => (

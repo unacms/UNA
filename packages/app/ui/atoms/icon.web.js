@@ -1,17 +1,16 @@
 'use client'
 
 import { useEffect, useState, memo, useMemo } from 'react';
-import { storageGet, storageSet, findIconFromRemote } from 'app/lib/util'
+import { storageGet, storageSet, findIconFromRemote, appSetting } from 'app/lib/util'
 import SvgIcons from  'app/icons-svg';
 
 export const Icon = memo(function Icon(props) {
-    let { icon, className, width, height, color, size, ...rest } = props;
-
+    let { icon, className, width, height, color, size, strokeWidth, ...rest } = props;
     icon = findIconFromRemote(icon);
-
+    strokeWidth = strokeWidth || appSetting('layout', 'default_icon_stroke_width');
     
     // Мемоизируем ключ, чтобы он не пересчитывался при каждом рендере
-    const key = useMemo(() => `${icon}-${width || ''}-${height || ''}-${size || ''}`, [icon, width, height, size]);
+    const key = useMemo(() => `${icon}-${width || ''}-${height || ''}-${size || ''}`, [icon, width, height, size, strokeWidth]);
 
     // Инициализируем состояние с иконкой из локального хранилища
     const [currentIcon, setCurrentIcon] = useState(() => storageGet(`icon-${key}`, '', true));
@@ -24,7 +23,7 @@ export const Icon = memo(function Icon(props) {
             if (width) url += `&width=${width}`;
             if (height) url += `&height=${height}`;
             if (size) url += `&size=${size}`;
-
+            if (strokeWidth) url += `&strokeWidth=${strokeWidth}`;
             try {
                 const response = await fetch(url);
                 const data = await response.json();

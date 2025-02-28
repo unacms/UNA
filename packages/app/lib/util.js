@@ -1031,7 +1031,7 @@ export async function getDataForMenu(menu, callback) {
 }
 
 export function findIconFromRemote(s) {
-    if (!s || /^[A-Z][^\s]*$/.test(s))
+    if (!s/* || /^[A-Z][^\s]*$/.test(s)*/)
        return s;
     const data = appSetting('menu_items', 'iconset');
     for (let word of s.replace(/\bcol-\S*\b/g, '').trim().split(/\s+/)) {

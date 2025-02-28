@@ -42,6 +42,7 @@
     "flatted": "^3.3.1",
     "html-entities": "^2.4.0",
     "i18next": "^23.5.1",
+    "lucide-react-native": "^0.476.0",
     "nativewind": "^4.1.23",
     "onesignal-expo-plugin": "^2.0.3",
     "pako": "^2.1.0",

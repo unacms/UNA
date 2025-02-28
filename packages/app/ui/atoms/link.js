@@ -5,7 +5,7 @@ import { useCurrentUser } from 'app/context/user';
 import { appSetting, getDomainFromUrl } from 'app/lib/util';
 import * as WebBrowser from 'expo-web-browser';
 import React, { useMemo, useCallback } from 'react';
-
+import { Text } from 'app/design/typography'
 export default function ElementLink(props) {
     const { href = '', target, haptics, children, asExternal, mode,  ...rest } = props;
     const glob = useGlobalSearchParams();
@@ -40,7 +40,9 @@ export default function ElementLink(props) {
 
     // Если href невалиден или пуст, возвращаем детей без обертки
     let finalHref = sanitizedHref === '/home' ? '/' : sanitizedHref;
-
+    if (!finalHref.includes('/')) {
+        finalHref = `/${finalHref}`;
+    }
     const domain = useMemo(() => getDomainFromUrl(finalHref), [finalHref]);
     const rootUrl = appSetting('config', 'native_app_images_url');
 
@@ -73,9 +75,15 @@ export default function ElementLink(props) {
     if (!sanitizedHref) {
         return children;
     }
-
     // Если ссылка внешняя, открываем в браузере
     if (domain && domain !== rootUrl || asExternal === true) {
+        if (mode == 'text'){
+            return (
+                <Text onPress={handleExternalLinkPress}>
+                    {children}
+                </Text>
+            );
+        }
         return (
             <Pressable onPress={handleExternalLinkPress}>
                 {children}

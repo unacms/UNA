@@ -216,26 +216,7 @@ export default function (props) {
                                     if (feedType == item.name) {
                                         return (
                                             <View key={'view' + index}>
-                                                {isWeb && topBlocks.map(
-                                                    (item, index) => {
-                                                        return (
-                                                            <BlockByName
-                                                                key={
-                                                                    'block_' +
-                                                                    index
-                                                                }
-                                                                name={
-                                                                    item.block
-                                                                }
-                                                                data={
-                                                                    props.data
-                                                                }
-                                                                {...item.block
-                                                                    .props}
-                                                            />
-                                                        )
-                                                    }
-                                                )}
+                                               
                                                 <BlockByName
                                                     data={props.data}
                                                     name={
