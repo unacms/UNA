@@ -76,7 +76,7 @@ export default function FormComments(props) {
     props.data.inputs['cmt_submit'].icon = 'PaperPlane';
     props.data.inputs['cmt_submit'].variant = 'primary';
     props.data.inputs['cmt_submit'].rounded = 'true';
-
+    props.data.inputs['cmt_submit'].icon_only = true;
     props.data.inputs['cmt_image'].rounded = 'true';
     props.data.inputs['cmt_image'].variant = 'default';
 
