@@ -19,11 +19,6 @@ import { View } from 'react-native';
 import "./global.combined.css";
 import { useColorScheme } from 'react-native';
 
-// Set the platform for babel-preset-expo
-if (!process.env.EXPO_PUBLIC_PLATFORM) {
-	process.env.EXPO_PUBLIC_PLATFORM = Platform.OS;
-}
-
 if (__DEV__) {
 	import('./ReactotronConfig').then(() => console.log('Reactotron Configured'));
 }

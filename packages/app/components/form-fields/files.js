@@ -23,12 +23,11 @@ export default function (props) {
     const name = props.name;
     const [uploadFinished, setUploadFinished] = useState(null);
     const [uploadFinishedArr, setUploadFinishedArr] = useState([]);
-    const [imageSource, setImageSource] = useState({ images: null });
+    const [imageSource, setImageSource] = useState({ images: props?.values_src });
     const formContext = useFormContext();
     const formValue = formContext.watch(name);
     const obfuscateFaces = formContext.watch('obfuscate_faces');
     const video_source = formContext.watch('video_source');
-
     const rules = getValidationRules(props);
     const defaultValue = props?.value ? props.value : '';
     const { layoutData, setLayoutData } = useLayoutData();
@@ -59,7 +58,7 @@ export default function (props) {
     const RestoreGhosts = async (data) => {
         if (isAutoGhosts)
             return;
-
+/*
         let a = [];
         let av = [];
 
@@ -71,7 +70,7 @@ export default function (props) {
             });
         }
 
-        /* a.forEach(function (k) {
+        a.forEach(function (k) {
              if (k.file_id) {
                  const val = av.join(',');
                  if (name == 'covers') {
@@ -86,15 +85,16 @@ export default function (props) {
              }
          });
          if (a.length == 0 && field.value != '')
-             field.onChange('');*/
+             field.onChange('');
 
         let filteredArr = []
         if (imageSource?.images)
             filteredArr = imageSource?.images?.filter(
                 item => item.preload === true && !uploadFinishedArr.some(finished => finished == item.hash)
             );
-
-        setImageSource({ images: [...a, ...filteredArr] });
+      //  console.log("aaa",{ images: [...a, ...filteredArr] })
+       // console.log("aaa1", props.values_src.g)
+        setImageSource({ images: [...a, ...filteredArr] });*/
     };
 
     useEffect(() => {
@@ -122,7 +122,7 @@ export default function (props) {
             RestoreGhosts(0);
         }
         if (!formValue) {
-            setImageSource({ images: null });
+            //setImageSource({ images: null });  //TOFIX
         }
     }, [formValue]);
 
@@ -153,6 +153,7 @@ export default function (props) {
                     setImageSource({ images: updatedImages });
                 }
                 else{
+                  
                     const updatedImages = imageSource?.images.filter(item => item.hash != uploadFinished.extraVar.hash);
                     setImageSource({ images: updatedImages });
                 }
@@ -163,7 +164,6 @@ export default function (props) {
             }
 
         }
-        // console.log("uploadFinished", uploadFinished)
     }, [uploadFinished]);
 
     useEffect(() => {
@@ -235,12 +235,17 @@ export default function (props) {
                 ];*/
             }
         }
-
-        k = [
-            ...k,
-            ...objectsToAdd
-        ];
-
+        if (bMultiple){
+            k = [
+                ...k,
+                ...objectsToAdd
+            ];
+        }
+        else{
+            k = [
+                ...objectsToAdd
+            ];
+        }
         return k;
     }
 
@@ -333,21 +338,7 @@ export default function (props) {
                     type: '*/*', // This allows all file types
                     multiple: true
                 });
-                /*   if (result.type === 'success') {
-                      let k = imageSource.images;
-                      let hash = crypto.createHash('sha256').update(result.uri).digest('hex');
-                      uploadImage(
-                          result.uri,
-                          url + '&a=upload',
-                          handleInsertImageFinish,
-                          { hash: hash }
-  
-                      );
-  
-                      let fileType = i.type ? i.type + '/' : result.uri.split(';')[0].split(':')[1];
-                      k = [...k, { file_url: result.uri, file_type: fileType, preload: true, hash: hash }];
-                      setImageSource({ images: k });
-                  }*/
+
                 if (!result.cancelled) {
                     let k = await uploadImages(result.assets);
                     setImageSource({ images: k });
@@ -377,7 +368,6 @@ export default function (props) {
         return imageSource?.images?.length > 0 ? <ActionButton uploadImages={uploadImages} imagesList={imageSource.images} bMultiple={bMultiple} props={props} selectImage={selectImage} handleDelete={handleDelete} />
             : <></>;
     }
-
     return (
         <Field {...props} error2={formContext.formState.errors[name]}>
             <View className={bMultiple ? "" : ""} >
@@ -434,15 +424,17 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
         if (files && files.length) {
             if (files && files.length) {
                 const reader = new FileReader();
-                reader.onload = (event) => {
-                    uploadImages([{ uri: event.target.result }])
+                reader.onload = async (event) => {
+                    const k = await uploadImages([{ uri: event.target.result }]);
+                    console.log("imageSource3", k)
+                    setImageSource({ images: k });
                 };
                 reader.readAsDataURL(files[0]);
             }
         }
     };
     let button = <Button startDecorator={props.icon ? props.icon : sIcon} title={props.title ? props.title : sTitle} size={props.size ? props.size : "base"} variant={props.variant ? props.variant : "text"} rounded={props.rounded ? props.rounded : false} onPress={selectImage} />
-
+   
     if (!bMultiple) {
         let img = imagesList && imagesList.length > 0 ? imagesList[0] : null;
         if (!img && props.useUrl) {
@@ -456,17 +448,24 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
             w += ' ' + props.viewClasses
         }
 
-        let isImage = img?.file_type?.includes('image/');
+        const isImage = img?.file_type?.includes('image/');
+        const isPreload = img?.preload;
 
         button = (
             <Pressable onPress={selectImage} >
                 <View className={w + '  items-center justify-center bg-primary/5 ' + (isImage ? appSetting('cover', 'aspect_ratio') : 'h-32')}>
-                    <ViewRef ref={drop} className=' text-neutral-500/50 text-lg  flex-auto w-full border-neutral-300 dark:border-neutral-700 rounded-lg  justify-center  flex-col border border-dashed text-center'>
+                {!img && (<ViewRef ref={drop} className=' text-neutral-500/50 text-lg  flex-auto w-full border-neutral-300 dark:border-neutral-700 rounded-lg  justify-center  flex-col border border-dashed text-center'>
                         <Text className='text-neutral-500/50 text-lg  justify-center  flex-col text-center'>Drag & Drop or browse files...</Text>
-                    </ViewRef>
+                    </ViewRef>)}
                     {img != null && (<>
-                        {isImage && <Image view='cover' sizes={LAYOUT_BREAKPOINTS.lg} className=" u-cover " alt='' src={img.file_url} />}
-                        {imagesList && imagesList.find(item => item.preload === true) && <View className='absolute w-full h-full justify-center items-center z-50'><Loading /></View>}
+                        {isImage && <ImageRN
+                    source={{ uri: img.uri || img.file_url }}
+                    style={{ width: '100%', height: '100%', opacity: isPreload ? 0.5 : 1 }}
+                    resizeMode="cover"
+                    view="cover"
+                    alt=""
+                />}
+                         {isPreload && <View className={`w-full h-full absolute top-8`}><Loading className="absolute" /></View>}
                         <View className='absolute top-1 right-1 w-6.5 text-center mx-auto'>
                             <Button onPress={() => handleDelete(img.file_id)} variant="default" startDecorator="X" align="start" title="" rounded size="xs" />
                         </View>
@@ -480,7 +479,7 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
 }
 
 function GhostsList(imagesList, bMultiple, handleDelete, props) {
-    if (!imagesList || imagesList.length === 0 || props.name === 'cover') {
+    if (!imagesList || imagesList.length === 0 || props.name === 'cover' || props.name === 'picture') {
         return null;
     }
 

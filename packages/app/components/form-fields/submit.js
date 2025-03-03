@@ -21,7 +21,7 @@ export default function FormFieldSubmit(props) {
         size = 'lg',
         notFullWidth = false,
         saveOnChanges = false,
-        hide_errors = false,
+        hide_errors = true,
         ...restProps
     } = props;
 
