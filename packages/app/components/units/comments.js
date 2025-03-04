@@ -170,11 +170,11 @@ export default function UnitComments(props) {
                     </View>
                     {viewState.view != 'edited' && <View className=' flex-row w-full mt-1 mb-2 items-center'>
                         {(!!currentUser && !!props.handleReply && !props.module.includes('_reviews')) ? <View className='mr-2'>
-                            <Button align="start" title={t("Reply")} size="xs" startDecorator="ArrowBendLeftUp" variant="text" onPress={() => handleReply(data)} rounded />
+                            <Button align="start" title={t("Reply")} size="xs" startDecorator="Reply" variant="text" onPress={() => handleReply(data)} rounded />
                         </View> : <View></View>
                         }
                         {(!!currentUser && !props.handleReply && !props.module.includes('_reviews')) ? <View className='mr-2'>
-                            <Link href={props.contentUrl + '#cmt_id=' + data.cmt_id}><Button align="start" title={t("Reply")} size="xs" startDecorator="ArrowBendLeftUp" variant="text" rounded /></Link>
+                            <Link href={props.contentUrl + '#cmt_id=' + data.cmt_id}><Button align="start" title={t("Reply")} size="xs" startDecorator="Reply" variant="text" rounded /></Link>
                         </View> : <View></View>
                         }
                         <View className='flex-row flex-auto '>
@@ -206,7 +206,7 @@ const MenuManage = ({ id, menu, setViewState, module, cmt_object_id, cmt_id }) =
                 variant="text"
                 size="xs"
                 rounded
-                startDecorator="DotsThreeOutline"
+                startDecorator="Ellipsis"
                 onPress={() => {
                     if (Platform.OS === 'web')
                         setMenuData({...menu, items: [{'name': 'loader'}]});
@@ -279,7 +279,7 @@ const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen, module, cmt_obj
                     title: aItem.title
                 };
             })} onSelect={handleManageMenuSelect}>
-                <Button variant="text" size="xs" startDecorator="DotsThreeOutline" rounded />
+                <Button variant="text" size="xs" startDecorator="Ellipsis" rounded />
             </DropdownMenu>
 
             {!!oReport && oReport}

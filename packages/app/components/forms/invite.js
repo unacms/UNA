@@ -11,7 +11,6 @@ export default function FormComments(props) {
             {getFormFieldByData(props.data.inputs['receive_news'], props.handleSubmit, 'default')}
 
             <View className='hidden sm:flex'>
-                {/* <Button onPress={() => { handlePress() }} variant='primary' disabled={text!='' ? false : true}   startDecorator="PaperPlane" title="Post" />*/}
                 {getFormFieldByData(props.data.inputs['ifr_do_submit'], props.handleSubmit, 'default',)}
             </View>
 

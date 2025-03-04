@@ -73,7 +73,7 @@ export default function (props) {
                                 variant="text"
                                 size="sm"
                                 tooltip={t('Switch profile')}
-                                startDecorator="UserSwitch"
+                                startDecorator="RefreshCw"
                                 fullWidth
                                 align="right"
                                 onPress={() => handleClick()}
@@ -104,7 +104,7 @@ export default function (props) {
                                     <View className="w-[44px] h-[44px] bg-blue-500/50 rounded-full flex-none ">{profile}</View>
                                     <Text className='text-sm my-auto flex-auto font-semibold truncate text-neutral-900 dark:text-neutral-100'>{item.display_name}</Text>
                                     <View className="text-sm bont-semibold flex-none my-auto">
-                                        <Button id="menu" startDecorator="UserSwitch" title="Switch"  variant='outline' size='sm' onPress={() => handleSwitch(item.id)} />
+                                        <Button id="menu" startDecorator="RefreshCw" title="Switch"  variant='outline' size='sm' onPress={() => handleSwitch(item.id)} />
                                     </View>
                                 </View>
                             </Link>
@@ -128,7 +128,7 @@ export default function (props) {
                                 <Button
                                     variant="outline"
                                     title={t("Sign out")}
-                                    startDecorator="SignOut"
+                                    startDecorator="LogOut"
                                     fullWidth
                                 />
                             </Link>

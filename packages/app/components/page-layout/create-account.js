@@ -75,7 +75,7 @@ export default function PageLayout(props) {
                                 <Button
                                     title="Log in with email"
 
-                                    startDecorator="SignIn"
+                                    startDecorator="LogIn"
                                     size="base"
                                     fullWidth
                                 />

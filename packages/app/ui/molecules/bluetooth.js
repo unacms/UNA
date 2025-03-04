@@ -311,7 +311,7 @@ export default function Bluetooth(props) {
                 />
                 <Text className="text-base font-semibold text-neutral-800 dark:text-neutral-200 ">Share  Profile</Text>
             </Row>
-            <Button startDecorator="UserFocus" title="Scan Profile" onPress={() => scan()} />
+            <Button startDecorator="SquareUser" title="Scan Profile" onPress={() => scan()} />
         </Row>
     );*/
 }

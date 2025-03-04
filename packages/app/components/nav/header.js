@@ -38,7 +38,7 @@ function getRightHeader(items, currentUser, pagePath) {
         items?.map((button) => {
             let btn = undefined;
             if (button.section || button.link == 'search')
-                btn = <Search section={button.section} params={{ trigger: { title:button.title, icon:button.icon? button.icon: 'MagnifyingGlass', size: 'base', variant: 'secondary' } }} />
+                btn = <Search section={button.section} params={{ trigger: { title:button.title, icon:button.icon? button.icon: 'Search', size: 'base', variant: 'secondary' } }} />
             else {
                 btn = <Button rounded title={button.title} variant='secondary' startDecorator={button.icon} size="base" />;
                 btn = button.link ? <Link href={button.link} >{btn}</Link> : btn
@@ -92,7 +92,7 @@ const Header = memo(({ backButtonPresented, header, pagePath, rightComponents })
                         FeedbackHaptics('Medium');
                         routerExpo.back();
                     }}>
-                        <Icon icon="CaretLeft" width={24} height={24} color={colors.barsColor} />
+                        <Icon icon="ChevronLeft" width={24} height={24} color={colors.barsColor} />
                     </Pressable>
                 )}
                 {text && (

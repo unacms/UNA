@@ -251,7 +251,7 @@ export default function (props) {
                             {isAllowSwitch && <Button
                                 rounded
                                 variant="primary"
-                                startDecorator="UserSwitch"
+                                startDecorator="RefreshCw"
                                 tooltip={'Switch to profile'}
                                 onPress={() => handleSwitch(isAllowSwitch)}
                             />

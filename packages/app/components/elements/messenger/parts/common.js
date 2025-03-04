@@ -487,7 +487,7 @@ const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, 
             </Row>}
             <Row className='flex-row my-auto gap-x-2'>
                 <View className='lg:hidden  '>
-                    <Button startDecorator="MagnifyingGlass" variant="secondary" rounded onPress={() => handleSearch2()} />
+                    <Button startDecorator="Search" variant="secondary" rounded onPress={() => handleSearch2()} />
                 </View>
                 {addButtons}
             </Row>
@@ -540,7 +540,7 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
     const menuItems =[
         {'id': 'edit',  'title': 'Edit participants list', 'icon': 'Users'},
         {'id': 'info', 'title': 'Info', 'icon': 'Info'},
-        {'id': 'leave', 'title': 'Leave chat', 'icon': 'SignOut'},
+        {'id': 'leave', 'title': 'Leave chat', 'icon': 'LogOut'},
         {'id': 'delete', 'title': 'Delete chat', 'icon': 'Trash'}
     ]
 
@@ -578,7 +578,7 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
                                         size="base"
                                         rounded
 
-                                        startDecorator="Gear"
+                                        startDecorator="Cog"
                                     />
                                 </DropdownMenu>
                                 </View>

@@ -36,13 +36,13 @@ export default function FormMessenger(props) {
     };
 
     if (typeof props.data.inputs['send'] !== 'undefined')
-        props.data.inputs['submit'].icon = 'PaperPlaneRight';
+        props.data.inputs['submit'].icon = 'SendHorizontal';
 
     props.data.inputs['payload'].value = parseInt((new Date()).getTime() / 1000);
 
     props.data.inputs['submit'].hide_errors = true;
 
-    props.data.inputs['submit'].icon = 'PaperPlane';
+    props.data.inputs['submit'].icon = 'SendHorizontal';
     props.data.inputs['submit'].variant = 'primary';
     props.data.inputs['submit'].rounded = 'true';
 

@@ -34,7 +34,7 @@ export default function ElementSearch(oProps) {
     ) : (
         <Row>
             <View key="ddp-trigger" className="flex-row">
-                <ButtonRef title={oProps.title === undefined ? "" : oProps.title} variant="secondary"  startDecorator={oParams?.trigger?.icon ? oParams?.trigger.icon : "MagnifyingGlass"} rounded tooltip={oProps.tooltip === undefined ? "Search" : oProps.tooltip} onPress={() => handleOpenPopupDefault()} {...oParams?.trigger} />
+                <ButtonRef title={oProps.title === undefined ? "" : oProps.title} variant="secondary"  startDecorator={oParams?.trigger?.icon ? oParams?.trigger.icon : "Search"} rounded tooltip={oProps.tooltip === undefined ? "Search" : oProps.tooltip} onPress={() => handleOpenPopupDefault()} {...oParams?.trigger} />
             </View>
         </Row>
     );
@@ -57,7 +57,7 @@ export function SearchPanel(props) {
                             setInputValue(value)
                         }}
                     />
-                    <Link href={'/search-keyword?keyword=' + inputValue + '&section=' + props.section}><Button variant="outline" size="base" endDecorator="MagnifyingGlass" /></Link>
+                    <Link href={'/search-keyword?keyword=' + inputValue + '&section=' + props.section}><Button variant="outline" size="base" endDecorator="Search" /></Link>
                 </Row>
             </View>
         </View>
@@ -182,7 +182,7 @@ export function ElementSearchData(oProps) {
 
     const cnt2 = (
             <View className=" flex-row items-center justify-end">
-                <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtViewExtended} onPress={() => handleRedirect()} />
+                <Button variant="text" size="sm" rounded endDecorator="ChevronsRight" title={sTxtViewExtended} onPress={() => handleRedirect()} />
             </View>
     );
 
@@ -211,7 +211,7 @@ export function ElementSearchData(oProps) {
                 {oProps.icon}
                 {!!popupContent && dd}
                 <InputRoundedRef name="search" placeholder={t("Search") + '...'} onKeyPress={(event) => handleKeyPress(event)} value={inputValue} ref={inputRef} onChangeText={(value) => handleSearch(value)} />
-                <View className="absolute h-11 w-6 items-center justify-center ml-2 text-neutral-500  "><Icon icon="MagnifyingGlass" size={24} /></View>
+                <View className="absolute h-11 w-6 items-center justify-center ml-2 text-neutral-500  "><Icon icon="Search" size={24} /></View>
             </Row>
         )
     }
@@ -222,7 +222,7 @@ export function ElementSearchData(oProps) {
             {
                 (!!inputValue && appSetting('layout', 'extended_search')) && (
                     <View className="hidden flex-row items-center mb-2 justify-end">
-                        <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtViewExtended} onPress={() => handleRedirect()} />
+                        <Button variant="text" size="sm" rounded endDecorator="ChevronsRight" title={sTxtViewExtended} onPress={() => handleRedirect()} />
                     </View>
                 )
             }

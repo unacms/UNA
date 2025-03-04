@@ -36,7 +36,7 @@ function CourseStructure(props) {
                     colorButtonText = "red-400";
                 }
                 if (item.status == "not started") {
-                    icon = "BookmarkSimple";
+                    icon = "Bookmark";
                     color = "gray-400";
                     colorButton = "gray-500";
                     colorButtonText = "white";

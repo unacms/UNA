@@ -84,7 +84,7 @@ const AddMenu = (menu, filter) => {
         }
         if (menu.name) {
             addButtonsSet.push({
-                icon: 'MagnifyingGlass',
+                icon: 'Search',
                 name: 'Search',
                 link: '',
                 section: menu.name,

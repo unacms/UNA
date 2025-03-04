@@ -123,7 +123,7 @@ export default function Nfc(props) {
         <Row className='justify-between w-full '>
             <Button disabled={nfcStatus=='write'} startDecorator="Megaphone" onPress={() => writeUserId1()} title="Share  Profile" />
             
-                <Button disabled={nfcStatus=='read'} startDecorator="UserFocus" onPress={() => readNdef1()} title="Scan Profile" />
+                <Button disabled={nfcStatus=='read'} startDecorator="SquareUser" onPress={() => readNdef1()} title="Scan Profile" />
 
            
 

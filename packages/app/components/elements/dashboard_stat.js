@@ -30,12 +30,12 @@ function getCounter(num, icon = '', add = '', color = '') {
     if (num > 0) {
         sColor = 'green'
         if (icon == '')
-            icon = 'ArrowFatUp';
+            icon = 'ArrowBigUp';
     }
     if (num < 0) {
         sColor = 'red'
         if (icon == '')
-            icon = 'ArrowFatDown';
+            icon = 'ArrowBigDown';
     }
 
     return (
@@ -150,13 +150,13 @@ export default function PageLayout(props) {
                                 </View>
                                 <View className="flex-none">
                                     <ProfileSwitcher hideTitle={true} >
-                                        <Button variant="outline" startDecorator="UserSwitch" rounded />
+                                        <Button variant="outline" startDecorator="RefreshCw" rounded />
                                     </ProfileSwitcher>
                                 </View>
                             </View>
                             <View className="flex-row  items-center gap-x-2 my-auto hidden">
                                 <ProfileSwitcher hideTitle={true} >
-                                    <Button variant="outline" startDecorator="UserSwitch" rounded />
+                                    <Button variant="outline" startDecorator="RefreshCw" rounded />
                                 </ProfileSwitcher>
                                 {
                                     appSetting('dashboard', 'langs').length > 1 && (
@@ -171,7 +171,7 @@ export default function PageLayout(props) {
 
                                             <Button
                                                 variant="outline"
-                                                startDecorator="Translate"
+                                                startDecorator="Languages"
                                                 rounded
                                                 align="left"
                                             />
@@ -200,7 +200,7 @@ export default function PageLayout(props) {
                                 }
 
 
-                                <Link href="/logout"><Button variant="outline" startDecorator="SignOut" rounded /></Link>
+                                <Link href="/logout"><Button variant="outline" startDecorator="LogOut" rounded /></Link>
                             </View>
 
                         </View>
@@ -233,7 +233,7 @@ export default function PageLayout(props) {
                                         <Button
                                             variant="secondary"
                                             title={t('lang_' + i18n.language)}
-                                            startDecorator="Translate"
+                                            startDecorator="Languages"
                                             fullWidth
 
                                             align="left"
@@ -294,7 +294,7 @@ export default function PageLayout(props) {
                         <Link href="/logout"><Button
                             variant="secondary"
                             title={t("Sign out")}
-                            startDecorator="SignOut"
+                            startDecorator="LogOut"
                             fullWidth
 
                             align="left"

@@ -186,7 +186,7 @@ export default function ModuleStructure({ data }) {
             textColor = "white"
         }
         if (item.pass_status == "not started") {
-            icon = "BookmarkSimple";
+            icon = "Bookmark";
             color = "gray-500";
             textColor = "white"
         }
@@ -217,7 +217,7 @@ export default function ModuleStructure({ data }) {
                     <Row className='items-center justify-center gap-x-2'>
                         {(!isEditable && !!item.pass_title) && <Button endDecorator="ArrowRight" variant="default" title={item.pass_title} size="sm" rounded onPress={() => { getLessonData(item.id, item.parent_id, true) }} />}
                         {isEditable && <>
-                            <DropdownMenu items={manageMenu} onSelect={(oItem) => { handleManage(oItem, item.id) }}><Button rounded startDecorator="Gear" size='sm' /></DropdownMenu><DragControl dragHandleProps={dragHandleProps}><Button rounded startDecorator="ArrowsVertical" size='sm' /></DragControl>
+                            <DropdownMenu items={manageMenu} onSelect={(oItem) => { handleManage(oItem, item.id) }}><Button rounded startDecorator="Cog" size='sm' /></DropdownMenu><DragControl dragHandleProps={dragHandleProps}><Button rounded startDecorator="ArrowsVertical" size='sm' /></DragControl>
                             </>}
                     </Row>
                 </Row>
@@ -274,9 +274,9 @@ const getColorByType = (type) => {
 
 const getColorByTypeLesson = (item, index, passing, byIndex = false) => {
     const mainColor = passing ? 'bg-gray-400' : 'bg-emerald-400';
-    if (byIndex === index) return ['#F87171', 'ArrowsClockwise', 'bg-emerald-400', mainColor]
+    if (byIndex === index) return ['#F87171', 'RotateCw', 'bg-emerald-400', mainColor]
     if (item.passed) return ['#34D399', 'Check', 'bg-emerald-400', 'bg-emerald-400']
-    if (!item.passed && item.pass_link != '' && byIndex === false) return ['#F87171', 'ArrowsClockwise', 'bg-emerald-400', mainColor]
+    if (!item.passed && item.pass_link != '' && byIndex === false) return ['#F87171', 'RotateCw', 'bg-emerald-400', mainColor]
     return ['#9CA3AF', 'HourglassSimple', mainColor, mainColor]
 };
 

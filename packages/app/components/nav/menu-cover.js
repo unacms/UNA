@@ -22,7 +22,7 @@ export function CoverMenuSmall(props) {
                     key="btn"
                     variant="text"
                     rounded
-                    startDecorator="DotsThreeOutline"
+                    startDecorator="Ellipsis"
                 />,
                 <Menu
                     key="menu"
@@ -109,7 +109,7 @@ export function CoverMenu(props) {
                             variant="default"
                             size={size}
                             tooltip="Settings"
-                            startDecorator="DotsThreeOutline"
+                            startDecorator="Ellipsis"
                           
                         />
                     </DropdownMenu>

@@ -56,9 +56,9 @@ export default function Splash(props) {
     const useInvite = false; //TODO accountForm == 'form' ? false : true
 
     const forms = {
-        signup: { name: 'system:create_account_form', title: 'Create new account', button: 'Login', icon: 'SignIn', action: 'login' },
+        signup: { name: 'system:create_account_form', title: 'Create new account', button: 'Login', icon: 'LogIn', action: 'login' },
         fp: { name: 'system:forgot_password', title: 'Restore password' },
-        invite: { name: 'bx_invites:get_block_form_request', title: 'Request invitation', button: 'Login', icon: 'SignIn', action: 'login' },
+        invite: { name: 'bx_invites:get_block_form_request', title: 'Request invitation', button: 'Login', icon: 'LogIn', action: 'login' },
         login: { name: 'system:login_form', title: 'Log in', button: 'Create new account', icon: 'UserCirclePlus', action: 'signup' }
     };
 
@@ -89,7 +89,7 @@ export default function Splash(props) {
                     }}
                     variant="primary"
                     rounded
-                    startDecorator="PaperPlane"
+                    startDecorator="SendHorizontal"
                 />
             </View>
         </Row>

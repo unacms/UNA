@@ -64,7 +64,7 @@ export default function ElementReposts(oProps) {
     const oSettings = appSetting('social_actions', 'repost');
 
     const oParams = {...oSettings, ...oProps.params};
-    const sIcon = oSettings[oProps['system']]?.icon ? oSettings[oProps['system']].icon : "ArrowsClockwise"
+    const sIcon = oSettings[oProps['system']]?.icon ? oSettings[oProps['system']].icon : "RotateCw"
     const oAction = oProps.action;
     const oCounter = oProps?.counter;
 

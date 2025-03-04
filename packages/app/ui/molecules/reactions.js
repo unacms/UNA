@@ -271,10 +271,10 @@ export default function ElementReactions(oProps) {
     const oItems = oSettings[oProps['system']]?.items ? oSettings[oProps['system']].items : oParams.items;
     const oAliases = oSettings[oProps['system']]?.iconset ? oSettings[oProps['system']].iconset : {
         web: {
-            default: { svg: 'Smiley', emoji: '🙂' },
+            default: { svg: 'Smile', emoji: '🙂' },
             like: { svg: 'ThumbsUp', emoji: '👍' },
             love: { svg: 'Heart', emoji: '🥰' },
-            joy: { svg: 'Smiley', emoji: '😂' },
+            joy: { svg: 'Smile', emoji: '😂' },
             surprise: { svg: 'SmileyXEyes', emoji: '😮' },
             sadness: { svg: 'SmileySad', emoji: '😔' },
             anger: { svg: 'SmileyAngry', emoji: '😠' },

@@ -24,7 +24,7 @@ export default function ({ data, oMenuItemsMore, popupVisible, setPopupVisible, 
         variant: "outline",
         size: "sm",
         className: " my-auto ",
-        startDecorator: "DotsThreeOutline"
+        startDecorator: "Ellipsis"
     }
 
     const sDisplayType = 'secondary';
@@ -54,7 +54,7 @@ export default function ({ data, oMenuItemsMore, popupVisible, setPopupVisible, 
             <View className='ml-2'>
                 <Button
                     {...buttonProps}
-                    startDecorator="DotsThreeOutline"
+                    startDecorator="Ellipsis"
                 />
             </View>
         </DropdownMenu>

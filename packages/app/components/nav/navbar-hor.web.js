@@ -198,7 +198,7 @@ export default function (props) {
                                                         tooltip={t('Messenger')}
                                                         variant="secondary"
                                                         rounded
-                                                        startDecorator="ChatTeardropDots"
+                                                        startDecorator="MessageCircleMore"
                                                         id="m2"
                                                         addon={{variant:'primary', text: currentUser?.counters?.bx_messenger_new_messages, hideZero: true}}
                                                     />

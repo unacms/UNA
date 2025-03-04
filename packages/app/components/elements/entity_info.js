@@ -91,13 +91,13 @@ export default function ElementEntityInfo({ data }) {
     function getIcon(a) {
         switch (a.name) {
             case 'gender':
-                return <Icon icon="IntersectThree" />
+                return <Icon icon="VenusAndMars" />
 
             case 'birthday':
                 return <Icon icon="Cake" />
 
             case 'fullname':
-                return <Icon icon="IdentificationBadge" />
+                return <Icon icon="FileBadge2" />
 
             default:
                 return defaultIcon ? <Icon icon={defaultIcon} /> : <></>

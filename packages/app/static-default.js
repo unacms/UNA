@@ -172,7 +172,7 @@ const ComponentsCommentsEmpty = () => {
             <View className="pt-8">
                 <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto  py-4 px-8  items-center rounded-2xl  bg-neutral-500/10 ">
                     <View className="flex-col mx-auto  text-neutral-800 dark:text-neutral-200 ">
-                        <Icon icon="ChatCircle" width={32} height={32} />
+                        <Icon icon="MessageCircle" width={32} height={32} />
                     </View>
                     <Text className="text-center text-lg text-neutral-800 dark:text-neutral-200 lg:text-xl font-semibold  ">
                         {t('No comments yet')}
@@ -361,7 +361,7 @@ const ComponentsLoginContent = (
             <View className="flex-row gap-x-2 ">
                 <Button
                     variant="outline"
-                    startDecorator="UsersThree"
+                    startDecorator="Group"
                     rounded
                     size="sm"
                 />
@@ -373,7 +373,7 @@ const ComponentsLoginContent = (
             <View className="flex-row gap-x-2 ">
                 <Button
                     variant="outline"
-                    startDecorator="ChatCenteredText"
+                    startDecorator="MessageSquareText"
                     rounded
                     size="sm"
                 />
@@ -399,7 +399,7 @@ const ComponentsLoginContent = (
             <View className="flex-row gap-x-2 ">
                 <Button
                     variant="outline"
-                    startDecorator="ChatTeardropDots"
+                    startDecorator="MessageCircleMore"
                     rounded
                     size="sm"
                 />
@@ -411,7 +411,7 @@ const ComponentsLoginContent = (
             <View className="flex-row gap-x-2 ">
                 <Button
                     variant="outline"
-                    startDecorator="Chats"
+                    startDecorator="MessageSquare"
                     rounded
                     size="sm"
                 />
@@ -423,7 +423,7 @@ const ComponentsLoginContent = (
             <View className="flex-row gap-x-2 ">
                 <Button
                     variant="outline"
-                    startDecorator="Storefront"
+                    startDecorator="Store"
                     rounded
                     size="sm"
                 />
@@ -501,7 +501,7 @@ const ComponentsDummy = (
         <Row className="mb-auto  text-green-800 bg-green-200 dark:bg-green-950 gap-x-1 py-1 px-2 rounded-full dark:text-green-200 sm:aspect-5/1 aspect-5/1 aspect-[5/1] sm:aspect-4/1 aspect-4/1 aspect-[4/1] sm:aspect-3/1 aspect-3/1 aspect-[3/1]">
             <Icon
                 className="text-green-600 dark:text-green-400"
-                icon="ArrowFatUp"
+                icon="ArrowBigUp"
                 width={16}
                 height={16}
             />
@@ -513,7 +513,7 @@ const ComponentsDummy = (
         <Row className="mb-auto  text-red-800 bg-red-200 dark:bg-red-950 gap-x-1 py-1 px-2 rounded-full dark:text-red-200 ">
             <Icon
                 className="text-red-600 dark:text-red-400"
-                icon="ArrowFatUp"
+                icon="ArrowBigUp"
                 width={16}
                 height={16}
             />
@@ -527,7 +527,7 @@ const ComponentsDummy = (
         <Row className="w-1/5 mb-auto bg-sky-400 bg-indigo-400 text-gray-800 bg-gray-200 dark:bg-gray-950 gap-x-1 py-1 px-2 rounded-full dark:text-gray-200 ">
             <Icon
                 className="text-gray-600 dark:text-gray-400"
-                icon="ArrowFatUp"
+                icon="ArrowBigUp"
                 width={16}
                 height={16}
             />
@@ -542,7 +542,7 @@ const ComponentsDummy = (
         <Row className="font-default bg-orange-500 text-red-400 bg-red-400 bg-gray-300 bg-gray-400 bg-gray-600 bg-yellow-500 bg-green-500 bg-teal-500 bg-sky-500 bg-indigo-500 bg-purple-500 bg-pink-500 bg-rose-500 bg-red-500">
             <Icon
                 className="text-gray-600 dark:text-gray-400 sm:h-auto"
-                icon="ArrowFatUp"
+                icon="ArrowBigUp"
                 width={16}
                 height={16}
             />

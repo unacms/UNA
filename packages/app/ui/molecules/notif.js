@@ -40,7 +40,7 @@ export default function ({buttonProps, children, tooltip, fullWidth}) {
                         variant="text"
                         size="sm"
                         rounded
-                        endDecorator="CaretDoubleRight"
+                        endDecorator="ChevronsRight"
                         title={t("View all")}
                         onPress={() => {
                             setNtfsOpen(false)

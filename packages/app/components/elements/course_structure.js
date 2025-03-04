@@ -106,7 +106,7 @@ function CourseStructure({ data }) {
                 colorButtonText = "red-400";
             }
             if (item.status == "not started") {
-                icon = "BookmarkSimple";
+                icon = "Bookmark";
                 color = "gray-400";
                 colorButton = "gray-500";
                 colorButtonText = "white";
@@ -126,7 +126,7 @@ function CourseStructure({ data }) {
 
                                 <Row className='justify-between'>
                                     <View className='my-2 text-xs '><Text className="text-white">Module {item.index}</Text></View>
-                                    {isEditable && <Row className='items-center justify-center gap-x-2'><DropdownMenu items={manageMenu} onSelect={(oItem) => { handleManage(oItem, item.id) }}><Button rounded startDecorator="Gear" size='sm' /></DropdownMenu><DragControl dragHandleProps={dragHandleProps}><Button rounded startDecorator="ArrowsHorizontal" size='sm' /></DragControl></Row>}
+                                    {isEditable && <Row className='items-center justify-center gap-x-2'><DropdownMenu items={manageMenu} onSelect={(oItem) => { handleManage(oItem, item.id) }}><Button rounded startDecorator="Cog" size='sm' /></DropdownMenu><DragControl dragHandleProps={dragHandleProps}><Button rounded startDecorator="ArrowsHorizontal" size='sm' /></DragControl></Row>}
                                 </Row>
                                 <View className='h-12'>
                                     <Text className="text-white text-lg leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200" numberOfLines={2}>{item.title}</Text>

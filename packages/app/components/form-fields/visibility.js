@@ -190,7 +190,7 @@ export default function (props) {
                     />
                     <Text className=" leading-[22px] ml-[4px] whitespace-nowrap text-ellipsis overflow-hidden tracking-tight text-neutral-600 web:group-hover:text-neutral-800 dark:text-neutral-400 web:dark:group-hover:text-neutral-200 font-medium text-sm native:text-[14px] ">{selectedSubLabels.length> 0 ? selectedSubLabels.slice(0, 3).join(', ') + (selectedSubLabels.length > 3 ? ' + ' + (selectedSubLabels.length - 3) + ' more' : '') : text}</Text>
                     <Icon
-                        icon="CaretRight"
+                        icon="ChevronRight"
                         width={12}
                         height={12}
                         color={ colors.fgTertiary}

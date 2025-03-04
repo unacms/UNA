@@ -37,19 +37,24 @@ export default function FormComments(props) {
     }
 
     function checkEditorHeight(height1) {
-        console.log("height1height1height1", height1, editorHeight)
-        let height = height1 + 10;
         let h = 0;
-        if (height <= 160 && height > initialHeight) {
-            h = height;
-        }
-        if (height > 160) {
-            h = 160;
-        }
-        if (height1 < initialHeight) {
+        console.log("height1height1height1", height1, editorHeight)
+        if (height1 <= initialHeight){
             h = initialHeight;
         }
-
+        else{
+            let height = height1 + 16;
+        
+            if (height <= 160 && height > initialHeight) {
+                h = height;
+            }
+            if (height > 160) {
+                h = 160;
+            }
+            if (height1 < initialHeight) {
+                h = initialHeight;
+            }
+        }
         setEditorHeight(h)
 
 
@@ -73,7 +78,7 @@ export default function FormComments(props) {
 
     props.data.inputs['cmt_submit'].hide_errors = true;
 
-    props.data.inputs['cmt_submit'].icon = 'PaperPlane';
+    props.data.inputs['cmt_submit'].icon = 'SendHorizontal';
     props.data.inputs['cmt_submit'].variant = 'primary';
     props.data.inputs['cmt_submit'].rounded = 'true';
     props.data.inputs['cmt_submit'].icon_only = true;

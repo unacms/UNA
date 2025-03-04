@@ -278,7 +278,7 @@ export function getUnitMenuItems(unitType, data, handleClick, t, moduleName) {
                 case "person_friends":
                     oMenuItemPrimary = {
                         title: t("Message"),
-                        icon: "ChatTeardropDots",
+                        icon: "MessageCircleMore",
                         onPress: async (event) => {
                             event.preventDefault();
                             const request_url = `/api.php?r=bx_messenger/get_convo_url/Services&params[]=${JSON.stringify({ recipient: data.author_data.id })}`;

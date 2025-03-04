@@ -152,7 +152,7 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
         color:  ${colors.text};
         margin:0;
         white-space: pre;
-
+        
         overflow: hidden;
     }
     img{
@@ -189,7 +189,7 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
         color: rgba(29, 78, 216, 1);
     }
 
-    .tiptap{
+    .tiptap, #root > div:nth-of-type(1){
         scrollbar-width: none; /* Firefox */
         -ms-overflow-style: none;  /* IE и Edge */
         &::-webkit-scrollbar {
@@ -198,6 +198,9 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
             height: 0;
         }
     }   
+    .ProseMirror.tiptap{
+        height:auto !important;
+    }
     `;
 
     useEffect(() => {

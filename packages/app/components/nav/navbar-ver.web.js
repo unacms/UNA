@@ -75,7 +75,7 @@ const HeaderLine = memo(({ headerSettings, currentUser, uri, bSearch, menuPopup,
                                     variant="text"
                                     size="base"
                                     fullWidth={true}
-                                    startDecorator="MagnifyingGlass"
+                                    startDecorator="Search"
                                     align="start"
                                     rounded
                                     title={"Search"}

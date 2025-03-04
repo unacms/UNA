@@ -42,7 +42,7 @@ export default function ElementShares(oProps) {
     const oSettings = appSetting('social_actions', 'share');
 
     const oParams = {...oSettings, ...oProps.params};
-    const sIcon = oSettings[oProps['system']]?.icon || "ShareFat";
+    const sIcon = oSettings[oProps['system']]?.icon || "Share2";
     const oAction = oProps.action;
 
     const bShowAction = oParams?.show_action !== false;

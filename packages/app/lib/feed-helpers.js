@@ -250,7 +250,7 @@ export const MenuManage = ({ id, menu, setViewState }) => {
                 size="sm"
                 rounded
 
-                startDecorator="DotsThreeOutline"
+                startDecorator="Ellipsis"
                 onPress={() => {
                     if (Platform.OS === 'web')
                         setMenuData({ ...menu, items: [{ 'name': 'loader' }] });
@@ -315,7 +315,7 @@ const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen }) => {
                         variant="text"
                         size="sm"
                         rounded
-                        startDecorator="DotsThreeOutline"
+                        startDecorator="Ellipsis"
                     />
                 </DropdownMenu>
             </View>

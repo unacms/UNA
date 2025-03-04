@@ -342,7 +342,7 @@ export default function FormFeed(props) {
                                         noMargin: true,
                                         size: 'base',
                                         notFullWidth: true,
-                                        icon: "PaperPlane",
+                                        icon: "SendHorizontal",
 
                                     }
                                 )}</View></View>

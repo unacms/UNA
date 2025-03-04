@@ -920,7 +920,7 @@ export function visibilityById(visibility) {
         6: { icon: 'UserCheck', text: 'Specific Friends... ' },
         7: { icon: 'Graph', text: 'Relationships ' },
         8: { icon: 'Graph', text: 'Specific Relationships... ' },
-        9: { icon: 'UserList', text: 'Specific Memberships... ' },
+        9: { icon: 'Award', text: 'Specific Memberships... ' },
        
          
     };
@@ -1031,7 +1031,7 @@ export async function getDataForMenu(menu, callback) {
 }
 
 export function findIconFromRemote(s) {
-    if (!s/* || /^[A-Z][^\s]*$/.test(s)*/)
+    if (!s || /^[A-Z][^\s]*$/.test(s))
        return s;
     const data = appSetting('menu_items', 'iconset');
     for (let word of s.replace(/\bcol-\S*\b/g, '').trim().split(/\s+/)) {

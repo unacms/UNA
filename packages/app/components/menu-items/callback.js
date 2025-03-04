@@ -77,8 +77,8 @@ export default function MenuItemButton(oProps) {
     const { setLayoutData } = useLayoutData();
 
     const oIconAliases = {
-        'item-comment': 'ChatTeardropDots',
-        'item-share': 'ShareFat'
+        'item-comment': 'MessageCircleMore',
+        'item-share': 'Share2'
     };
 
     const bShowActionAsButton = oProps.params?.show_action_as_button == undefined || oProps.params.show_action_as_button === true;

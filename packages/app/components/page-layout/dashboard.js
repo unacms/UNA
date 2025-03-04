@@ -105,7 +105,7 @@ export default function PageLayout(props) {
                             </View>
                             <View className="flex-row  items-center gap-x-2 my-auto lg:hidden">
                                 <ProfileSwitcher hideTitle={true} >
-                                    <Button variant="outline" startDecorator="UserSwitch" tooltip={t('Switch profile')} rounded  />
+                                    <Button variant="outline" startDecorator="RefreshCw" tooltip={t('Switch profile')} rounded  />
                                 </ProfileSwitcher>
                                 {
                                     appSetting('dashboard', 'langs').length > 1 && (
@@ -120,7 +120,7 @@ export default function PageLayout(props) {
                                                
                                                     <Button
                                                         variant="outline"                                               
-                                                        startDecorator="Translate"
+                                                        startDecorator="Languages"
                                                         rounded
                                                         align="left"
                                                     />
@@ -149,13 +149,13 @@ export default function PageLayout(props) {
                                 }
                                
                                 
-                                <Link href="/logout"><Button variant="outline" startDecorator="SignOut" rounded /></Link>
+                                <Link href="/logout"><Button variant="outline" startDecorator="LogOut" rounded /></Link>
                             </View>
                             <View className="flex-row gap-x-2 hidden lg:flex">
                                 <ProfileSwitcher hideTitle={true} ><Button
                                     variant="text"
                                     title={ t("Switch Profile") }
-                                    startDecorator="UserSwitch"
+                                    startDecorator="RefreshCw"
                                     fullWidth
                                     align="left"
                                 /></ProfileSwitcher>
@@ -174,7 +174,7 @@ export default function PageLayout(props) {
                                                 <Button
                                                     variant="text"
                                                     title= {t('lang_' + i18n.language)}
-                                                    startDecorator="Translate"
+                                                    startDecorator="Languages"
                                                     fullWidth
                                                     align="left"
                                             />
@@ -224,7 +224,7 @@ export default function PageLayout(props) {
                                 <Link href="/logout"><Button
                                     variant="text"
                                     title= {t("Sign out")}
-                                    startDecorator="SignOut"
+                                    startDecorator="LogOut"
                                     fullWidth
                                     align="left"
                                 /></Link>

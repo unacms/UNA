@@ -87,8 +87,8 @@ export default function ElementFavorites(oProps) {
     const oCounter = oProps.counter;
 
     const oIcons = oProps?.o && oSettings[oProps.o]?.icons != undefined ? oSettings[oProps.o].icons : {
-        do: 'BookmarkSimple', 
-        undo: 'BookmarkSimple'
+        do: 'Bookmark', 
+        undo: 'Bookmark'
     };
 
     const sObject = useMemo(() => getName(oProps.type, oProps.system, oProps.object_id), [oProps.type, oProps.system, oProps.object_id]);
@@ -175,7 +175,7 @@ export default function ElementFavorites(oProps) {
 
         sCounterButton = (
             <Animated.View key="counter" style={indicatorStyle}>
-                <ButtonCounter startDecorator={!bShowCombined ? 'BookmarkSimple' : false} title={iCount + ''} onPress={_handleGetPerformedBy} {...oButtonProps} />
+                <ButtonCounter startDecorator={!bShowCombined ? 'Bookmark' : false} title={iCount + ''} onPress={_handleGetPerformedBy} {...oButtonProps} />
             </Animated.View>
         );
 

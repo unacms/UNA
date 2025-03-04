@@ -90,8 +90,8 @@ export default function ElementScore(oProps) {
     const bWeb = Platform.OS === 'web';
 
     const oIconAliases = {
-        'up': 'ArrowFatUp',
-        'down': 'ArrowFatDown'
+        'up': 'ArrowBigUp',
+        'down': 'ArrowBigDown'
     };
 
     const oParams = {...appSetting('social_actions', 'score'), ...oProps.params};
@@ -179,7 +179,7 @@ export default function ElementScore(oProps) {
         ) : iScore.toString();
 
         sCounterButton = (
-            <ButtonCounter key="counter" startDecorator={!bShowCombined ? 'ArrowFatUp' : false} title={sScore} onPress={_handleGetPerformedBy} disabled={!bScore} {...oButtonProps} />
+            <ButtonCounter key="counter" startDecorator={!bShowCombined ? 'ArrowBigUp' : false} title={sScore} onPress={_handleGetPerformedBy} disabled={!bScore} {...oButtonProps} />
         );
 
         if(bScore) {

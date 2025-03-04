@@ -381,9 +381,9 @@ export default function (props) {
 function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple, uploadImages }) {
     const drop = useRef(null);
     const iconMap = {
-        photo: "ImageSquare",
-        cmt_image: "ImageSquare",
-        pictures: "ImageSquare",
+        photo: "Image",
+        cmt_image: "Image",
+        pictures: "Image",
         video: "Image",
         videos: "Image",
         files: "Paperclip",

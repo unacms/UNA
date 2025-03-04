@@ -92,7 +92,7 @@ export default function ElementComments(oProps) {
 
     const ButtonAction = !bShowCombined ? (bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText) : ButtonMenuGroupItem;
 
-    const sIcon = isTextMode ? "" : "ChatCircleText";
+    const sIcon = isTextMode ? "" : "MessageCircleMore";
     const sActionButton = useMemo(() => {
 //counter
         if (bShowCounter && !bShowAction ){

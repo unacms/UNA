@@ -146,7 +146,7 @@ export default function ElementEntityAuthor(oProps) {
             <View>
                 {aMenuManageItems.length > 0 &&
                     <DropdownMenu items={aMenuManageItems} {...menuOptions}>
-                        <Button variant="text" rounded="true" startDecorator="DotsThreeOutline" />
+                        <Button variant="text" rounded="true" startDecorator="Ellipsis" />
                     </DropdownMenu>
                 }
             </View>

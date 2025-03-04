@@ -12,9 +12,9 @@ export default function MenuItemSubmenuShare(oProps) {
     const [showMsg, setShowMsg] = useState(false);
 
     const oIconAliases = {
-        'item-share': 'ShareFat',
+        'item-share': 'Share2',
         'item-copy': 'Clipboard',
-        'item-repost': 'ArrowsClockwise'
+        'item-repost': 'RotateCw'
     };
 
     let oButtonProps = {

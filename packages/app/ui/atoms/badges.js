@@ -9,7 +9,7 @@ export default function ({ badges }) {
     return (
         <Row className='items-center gap-x-1'>
             {badges.map((item, index) => (
-                <Button  key={`badge-${index}`} rounded startDecorator='SealCheck' title={item.text} size="xs" variant="primary" />
+                <Button  key={`badge-${index}`} rounded startDecorator='BadgeCheck' title={item.text} size="xs" variant="primary" />
             ))}
         </Row>
     )
