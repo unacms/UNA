@@ -280,7 +280,7 @@ export default function ElementReactions(oProps) {
             anger: { svg: 'SmileyAngry', emoji: '😠' },
         },
         native: {
-            default: { svg: 'Smiley', emoji: '🙂' },
+            default: { svg: 'Smile', emoji: '🙂' },
             like: { svg: '', emoji: '👍' },
             love: { svg: '', emoji: '🥰' },
             joy: { svg: '', emoji: '😂' },

@@ -164,7 +164,7 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
         
     }
     body P:first-child {
-        margin-top: 4px;
+        margin-top: ${Platform.OS == 'web' ? '4' : '6'}px;
     }
     .mention-list {
         position: absolute;

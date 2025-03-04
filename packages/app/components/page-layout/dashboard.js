@@ -214,7 +214,7 @@ export default function PageLayout(props) {
                                                     <Button
                                                         variant="text"
                                                         title= {t('format_' + currentFormat)}
-                                                        startDecorator="Layout"
+                                                        startDecorator="LayoutDashboard"
                                                         fullWidth
                                                         align="left"
                                                     />
