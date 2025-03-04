@@ -151,7 +151,7 @@ const parseHtmlToReact = (html, textStyles, parentKey = "0") => {
 };
 
 export default function ElementHtml({ customClassName, data }) {
-    const textStyles = customClassName === 'u-vanilla-html-small' // MAY BE NEED TO IMPROVE
+    const textStyles = customClassName?.includes('u-vanilla-html-small') // MAY BE NEED TO IMPROVE
         ? 'text-sm leading-[18px] text-neutral-800 dark:text-neutral-200' 
         : 'text-base leading-[20px] text-neutral-800 dark:text-neutral-200';
     
