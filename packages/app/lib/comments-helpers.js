@@ -356,7 +356,7 @@ export function CommentsBrowse({ browse, requestUrl, module, handleReply, handle
                         { id: 'newest', name: 'desc', title: t('Oldest first') },
                         { id: 'oldest', name: 'asc', title: t('Newest first') }
                     ]} onSelect={(oItem) => { handleOrder(oItem.name) }}>
-                        <Button variant="secondary" startDecorator="SortAscending" size="xs" />
+                        <Button variant="secondary" startDecorator="ArrowDownAZ" size="xs" />
                     </DropdownMenu>
                 </Pressable>
             </View>}

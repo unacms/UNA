@@ -87,8 +87,8 @@ export default function ElementConnections(oProps) {
     const sKey = useMemo(() => getKey(oProps.o, oProps.iid, oProps.cid), [oProps.o, oProps.iid, oProps.cid]);
 
     const oIcons = oProps?.o && oSettings[oProps.o]?.icons != undefined ? oSettings[oProps.o].icons : {
-        add: 'UserPlus', 
-        remove: 'UserMinus'
+        add: 'UserCheck', 
+        remove: 'UserX'
     };
 
     const bShowActionAsButton = oParams?.show_action_as_button == undefined || oParams.show_action_as_button === true;
