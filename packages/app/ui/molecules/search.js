@@ -217,7 +217,7 @@ export function ElementSearchData(oProps) {
     }
 
     return (
-        <View className=''>
+        <View className='lg:h-96'>
             <Redirect ref={redirectdRef} />
             {
                 (!!inputValue && appSetting('layout', 'extended_search')) && (

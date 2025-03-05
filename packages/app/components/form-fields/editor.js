@@ -247,6 +247,11 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
 
     });
 
+    useEffect(() => {
+        editor.setPlaceholder(props.placeholder)
+    }, [props.placeholder]);
+    
+
     const htmlContent = useEditorContent(editor, { type: 'html' });
     useEffect(() => {
         if (stripTags(htmlContent)) {
