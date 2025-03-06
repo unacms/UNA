@@ -59,7 +59,7 @@ export default function Splash(props) {
         signup: { name: 'system:create_account_form', title: 'Create new account', button: 'Login', icon: 'LogIn', action: 'login' },
         fp: { name: 'system:forgot_password', title: 'Restore password' },
         invite: { name: 'bx_invites:get_block_form_request', title: 'Request invitation', button: 'Login', icon: 'LogIn', action: 'login' },
-        login: { name: 'system:login_form', title: 'Log in', button: 'Create new account', icon: 'UserCirclePlus', action: 'signup' }
+        login: { name: 'system:login_form', title: 'Log in', button: 'Create new account', icon: 'UserPlus', action: 'signup' }
     };
 
     const defalulFormData = forms[defaultForm];

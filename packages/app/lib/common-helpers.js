@@ -26,11 +26,11 @@ export function getBackButtonWeb() {
     }
 }
 
-export const AuthorData = memo(({ authorData }) => (
+export const AuthorData = memo(({ authorData, displaySize }) => (
     <Profile
         {...authorData}
         displayType="unit"
-        displaySize={authorData.displaySize || "xs"}
+        displaySize={displaySize || "xs"}
         showInfo="false"
     />
 ));

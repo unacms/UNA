@@ -72,7 +72,7 @@ export default function (props) {
                             {currentUser.profiles_count > 1 && <Button
                                 variant="text"
                                 size="sm"
-                                tooltip={t('Switch profile')}
+                             
                                 startDecorator="RefreshCw"
                                 fullWidth
                                 align="right"

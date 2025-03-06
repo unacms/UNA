@@ -329,7 +329,7 @@ export default function (props) {
                     </View>
                 </Modal>}
                 {bAllowEdit && <Row className="gap-x-4 items-center justify-center">
-                    <Button variant='text' size='base' rounded startDecorator='Article' onPress={() => { onAdd('text') }} />
+                    <Button variant='text' size='base' rounded startDecorator='NotepadText' onPress={() => { onAdd('text') }} />
                     <Button variant='text' size='base' rounded startDecorator='Link' onPress={() => { onAdd('link') }} />
                     <Button variant='text' size='base' rounded startDecorator='Image' onPress={() => { onAdd('image') }} />
                     <Button variant='text' size='base' rounded startDecorator='MapPin' onPress={() => { onAdd('map') }} />

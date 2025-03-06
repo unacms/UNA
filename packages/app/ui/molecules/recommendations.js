@@ -162,9 +162,9 @@ export default function ElementRecommendations(oProps) {
             if (oButtonProps.onlyIcon){
                 sTitle = '';
                 if (oProps.o == 'sys_friends')
-                    sIcon = 'UserCirclePlus';
+                    sIcon = 'UserPlus';
                 if (oProps.o == 'sys_subscriptions')
-                    sIcon = 'UserCircleCheck';
+                    sIcon = 'UserCheck';
             }
             
             break;

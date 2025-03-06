@@ -40,7 +40,7 @@ const getUnitType = (currentRoute) => {
 }
 
 const AddBlocks = (leftSideBarBlocks, data, onFormChangedValues) => {
-    
+
     if (!leftSideBarBlocks)
         return null;
 
@@ -119,24 +119,24 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
     const menuClasses = conductorTheme.menu_cnt
 
     const MenuItem = memo(({ item: a, itemRefs, index: index2, visibleItemsCount }) => {
-            const { currentUser } = useCurrentUser();
-            const btn = callFn('getButtonForConductorSmall', [a, index, currentUser])
-            return (
-                <Pressable ref={el => (itemRefs?.current ? (itemRefs.current[index2] = el) : (el = null))} className={" py-2 items-center " + a?.menu_settings?.class + (index2 > visibleItemsCount - 1 ? ' item-overlap ' : '')}
-                    key={`tab-${index2}`}
-                    onPress={() => {
-                        setIndex(a.index);
-                        getNumCols(windowWidth, routes[index], leftSideBar)
-                        window.history.pushState({}, '', '/' + a.key);
-                        if (onChangeRoute) {
-                            onChangeRoute(a);
-                        }
-                    }}
-                >
-                    {btn}
-                </Pressable>
-            )
-        });
+        const { currentUser } = useCurrentUser();
+        const btn = callFn('getButtonForConductorSmall', [a, index, currentUser])
+        return (
+            <Pressable ref={el => (itemRefs?.current ? (itemRefs.current[index2] = el) : (el = null))} className={" py-2 items-center " + a?.menu_settings?.class + (index2 > visibleItemsCount - 1 ? ' item-overlap ' : '')}
+                key={`tab-${index2}`}
+                onPress={() => {
+                    setIndex(a.index);
+                    getNumCols(windowWidth, routes[index], leftSideBar)
+                    window.history.pushState({}, '', '/' + a.key);
+                    if (onChangeRoute) {
+                        onChangeRoute(a);
+                    }
+                }}
+            >
+                {btn}
+            </Pressable>
+        )
+    });
 
     if (!conductorTheme.menu_is_dynamic) {
         return (
@@ -432,7 +432,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     const [headerSettings, setHeaderSettings] = useState(getHeaderSettings(getURI(currentRoute?.key), windowWidth, layoutName, currentRoute.config));
 
     const [numColumns, setNumColumns] = useState(getNumCols(windowWidth, currentRoute, leftSideBar));
-    console.log("numColumns",numColumns)
+
     const {
         fetchNextPage,
         hasNextPage,
@@ -593,7 +593,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         };
 
         setFilterValue(filterValues)
-      //  setBottomSheetData(false);
+        //  setBottomSheetData(false);
     }, []);
 
     const onFormSubmit = useCallback((formData, d) => {
@@ -620,34 +620,34 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             index={index}
             setIndex={setIndex}
             getNumCols={getNumCols}
-            windowWidth={windowWidth} 
+            windowWidth={windowWidth}
             onChangeRoute={onChangeRoute}
-    />
+        />
     ), [menu, routes, leftSideBar, header, headerSettings, currentUser, index, setIndex, getNumCols, windowWidth, onChangeRoute]);
 
     const AddBlocksCnt = useMemo(() => AddBlocks(leftSideBarBlocks, data, onFormChangedValues), [leftSideBarBlocks, data, onFormChangedValues]);
 
-   /* console.log("Reload!");
-
-    useEffect(() => {
-        console.log("Reload- index", index)
-    }, [index]);
-    useEffect(() => {
-        console.log("Reload- cntWidth", cntWidth)
-    }, [cntWidth]);
-    useEffect(() => {
-        console.log("Reload- isRevalidate", isRevalidate)
-    }, [isRevalidate]);
-    useEffect(() => {
-        console.log("Reload- routes", routes)
-    }, [routes]);
-    useEffect(() => {
-        console.log("Reload- headerSettings", headerSettings)
-    }, [headerSettings]);
-    useEffect(() => {
-        console.log("Reload- numColumns", numColumns)
-    }, [numColumns]);
-*/
+    /* console.log("Reload!");
+ 
+     useEffect(() => {
+         console.log("Reload- index", index)
+     }, [index]);
+     useEffect(() => {
+         console.log("Reload- cntWidth", cntWidth)
+     }, [cntWidth]);
+     useEffect(() => {
+         console.log("Reload- isRevalidate", isRevalidate)
+     }, [isRevalidate]);
+     useEffect(() => {
+         console.log("Reload- routes", routes)
+     }, [routes]);
+     useEffect(() => {
+         console.log("Reload- headerSettings", headerSettings)
+     }, [headerSettings]);
+     useEffect(() => {
+         console.log("Reload- numColumns", numColumns)
+     }, [numColumns]);
+ */
     const showFilters = useCallback(() => {
         setBottomSheetData({ title: 'Filters', content: AddBlocksCnt, showClose: true, snapPoints: ['75%', '90%'] });
     }, [leftSideBarBlocks, data, onFormSubmit]);
@@ -670,7 +670,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
         if (dataItems.length == 1 && !route.endpoint) {
             const a = dataItems.map((item, index) => {
-                return <View className={appSetting('layout', 'max_width_block') + " mx-auto w-full"} key={"tab-" + index}><ItemRendererMemo route={route} key={'item' + index} numColumns={1} item={item} /></View>
+                return <View className={` mx-auto mt-2 w-full ${appSetting('layout', 'max_width_block')}`} key={`tab-${index}`}><ItemRendererMemo route={route} key={'item' + index} numColumns={1} item={item} /></View>
             });
             return a;
         }
@@ -709,7 +709,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
         return (
             <Row style={{ paddingTop: header ? 0 : 0 }} className={(headerSettings.columns == "reverse" ? 'flex-row-reverse' : '') + conductorTheme.content_max_width + '  mx-auto w-full'}>
-                <View className={(isRightCol ? 'flex-auto sm:border-r border-bdr dark:border-bdr-d px-4 flex-auto ' : ' w-full mx-auto sm:p-2 ') + (layoutName == 'navigator' ? '' : ' pt-4')}>
+                <View className={(isRightCol ? 'flex-auto sm:border-r border-bdr dark:border-bdr-d px-4 flex-auto ' : ' w-full mx-auto sm:py-2 ') + (layoutName == 'navigator' ? '' : ' pt-4')}>
                     {TabFlashListM}
                     {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 && callFn("noContentByUrl", [route?.endpoint])))}
 
@@ -728,19 +728,6 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
     }, [numColumns, windowWidth, index]);
 
-    const headerComponent = useMemo(() => (
-        <HeaderContainer
-            cover={cover}
-            cntWidth={cntWidth}
-            tabBarObj={tabBarObj}
-            tabBarObjSmall={tabBarObj}
-            currentUser={currentUser}
-            smallHeader={smallHeader}
-            header={header}
-            windowWidth={windowWidth}
-        />
-    ), [cover, cntWidth, tabBarObj, currentUser, smallHeader, header, windowWidth]);
-
     const sceneHeaderComponent = useMemo(() => (
         <RenderSceneHeader route={currentRoute} setFilterValue={setFilterValue} />
     ), [currentRoute, setFilterValue]);
@@ -757,6 +744,19 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             AddBlocksCnt={AddBlocksCnt} />
     ), [index, setIndex, menu, routes, currentUser, leftSideBarWidth, headerSettings, AddBlocksCnt]);
 
+    const headerComponent = useMemo(() => (
+        <HeaderContainer
+            cover={cover}
+            cntWidth={cntWidth}
+            tabBarObj={tabBarObj}
+            tabBarObjSmall={tabBarObj}
+            currentUser={currentUser}
+            smallHeader={smallHeader}
+            header={leftSideBar && layoutName != 'navigator'  ? <View className="bg-bgrcard dark:bg-bgrcard-d lg:hidden pt-20 px-3">{leftSideBarComponent}</View> : header}
+            windowWidth={windowWidth}
+        />
+    ), [cover, cntWidth, tabBarObj, currentUser, smallHeader, header, windowWidth]);
+
     const topSideBarComponent = useMemo(() => (
         <TopSideBarContainer
             routes={routes}
@@ -766,33 +766,33 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
     ), [routes, index, setIndex, onChangeRoute]);
 
-    
+
 
     if (leftSideBar) {
 
         const offset = 64
-    let a = <View style={{ minHeight: (windowHeight - offset) }} className={`${leftSideBarWidth} hidden lg:block border-r border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d fixed lg:relative top-0 z-50`}>
-    {leftSideBarComponent}
-</View>
-    const sidebar = appSetting('conductor', 'sidebar')
-    let rc = ""
-    if (sidebar == 'rounded'){
-        rc = "items-start justify-start"
-        a = <View className={`${leftSideBarWidth} mt-4 mr-4  sm:rounded-2xl   bg-bgrnavbar dark:bg-bgrnavbar-d`}>
-        {leftSideBarComponent}
-    </View>
-    }
-       
+        let a = <View style={{ minHeight: (windowHeight - offset) }} className={`${leftSideBarWidth} hidden lg:block border-r border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d fixed lg:relative top-0 z-50`}>
+            {leftSideBarComponent}
+        </View>
+        const sidebar = appSetting('conductor', 'sidebar')
+        let rc = ""
+        if (sidebar == 'rounded') {
+            rc = "items-start justify-start"
+            a = <View className={`${leftSideBarWidth} mt-4 mr-4 hidden lg:block sm:rounded-2xl   bg-bgrnavbar dark:bg-bgrnavbar-d`}>
+                {leftSideBarComponent}
+            </View>
+        }
+
         return (
             <View className={appSetting('layout', 'max_width') + " w-full h-full mx-auto"} scrollEnabled={false} onLayout={handleLayoutTop}>
                 {headerComponent}
                 <Toaster ref={toasterRef} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" />
                 <View style={{ minHeight: (windowHeight - offset) }} className={appSetting('layout', 'max_width  ') + ' mx-auto w-full '} >
-                    <Row className={rc}> 
+                    <Row className={rc}>
                         {a}
                         <View className=" flex-auto">{/*min-h-screen???*/}
                             {(headerSettings.showAltTopMenu) && topSideBarComponent}
-                            {(windowWidth < LAYOUT_BREAKPOINTS.lg && layoutName == 'navigator' && leftSideBarBlocks.length > 0) && <View className="items-start ml-2 mt-2">
+                            {(windowWidth < LAYOUT_BREAKPOINTS.lg && layoutName == 'navigator' && leftSideBarBlocks.length > 0) && <View className="items-start ml-4 mt-2">
                                 <Button title="Filters" variant="default" size="sm" rounded onPress={showFilters} />
                             </View>}
                             {sceneHeaderComponent}

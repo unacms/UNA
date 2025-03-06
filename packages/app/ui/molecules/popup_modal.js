@@ -57,7 +57,7 @@ export default function () {
                             <Link className=" w-full " href="/create-account">
                                 <Button
                                     title="Create new account"
-                                    startDecorator="UserCirclePlus"
+                                    startDecorator="UserPlus"
                                     size="base"
                                     fullWidth
                                 />
