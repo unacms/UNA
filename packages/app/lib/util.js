@@ -918,8 +918,8 @@ export function visibilityById(visibility) {
         3: { icon: 'Globe', text: 'Public' },
         5: { icon: 'Users', text: 'Friends ' },
         6: { icon: 'UserCheck', text: 'Specific Friends... ' },
-        7: { icon: 'Graph', text: 'Relationships ' },
-        8: { icon: 'Graph', text: 'Specific Relationships... ' },
+        7: { icon: 'Workflow', text: 'Relationships ' },
+        8: { icon: 'Workflow', text: 'Specific Relationships... ' },
         9: { icon: 'Award', text: 'Specific Memberships... ' },
        
          

@@ -54,7 +54,7 @@ export const Icon = memo(function Icon(props) {
             return <InlineIcon width={width || size} height={height || size} />;
         }
         console.log("Icon not found:", icon)
-        return icon; // Возвращаем null, если иконка не загружена
+        return null; // Возвращаем null, если иконка не загружена
         
     }
 

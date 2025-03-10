@@ -12,7 +12,7 @@ import {
     MessageCircle, Calendar, UserPlus, Flame, Rows, Share2, CheckCircle, Cake, Ellipsis,UserX,
     Badge, Heart, ChartBar, Store, Video, ShoppingCart, Check,
     Folders, Egg, Binoculars, UserCog, Folder, Bookmark, ChevronsRight,
-    Camera, UserMinus, Loader, Asterisk, CircleUser, UserSquare, ShieldCheck,
+    Camera, UserMinus, Loader, Asterisk, CircleUser, UserSquare, ShieldCheck, Workflow, KeyRound, Mail, Trash2,
     ChartLine, Star, Languages, Moon, Contact, Trash, Minus, Hash, Megaphone, Sparkle, LayoutDashboard, Award,
     MapPin, Wallet, Repeat, Eye, EyeOff, Globe, Send, RotateCw, Paperclip, ArrowBigUp, ArrowBigDown, PanelsTopLeft, BadgeCheck,
     ChevronRight, LibraryBig, Lock, MoreHorizontal, Building2, SendHorizontal, UsersRound, SquareStack, MessagesSquare, HelpCircle, Reply,Clock, RefreshCw
@@ -21,7 +21,7 @@ import {
 export const IconSet = { 
     List, ArrowLeft, House, AlertCircle, MessageSquare, ArrowRight, MessageCircleMore, Plus, MessagesSquare, HelpCircle, Reply,Clock,RefreshCw,
     Search, User, Compass, Bell, Link, CalendarCheck, ListChecks, ArrowDownAZ,
-    StickyNote, Users, Info, CircleHelp, BookUser, Pencil, Building2, UsersRound, SquareStack,
+    StickyNote, Users, Info, CircleHelp, BookUser, Pencil, Building2, UsersRound, SquareStack, Workflow, KeyRound, Mail, Trash2,
     Smile, UserCircle, File, ChevronsRight, Contact, 
     UserCheck, Cog, LogOut, LogIn, Files, Ellipsis,UserX, 
     Image, Code, ThumbsUp, FilePlus, MonitorPlay, X, MoreHorizontal, ShieldCheck, LayoutDashboard, BadgeCheck, Award,
