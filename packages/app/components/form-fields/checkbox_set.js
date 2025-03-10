@@ -40,11 +40,11 @@ export default function FormFieldCheckboxSet(props) {
     
     return (
         <Field {...props}>
-            <Row className={themeSettings.container}>
+            <Row className={`${themeSettings.container} flex-wrap`}>
             {values.map((item2, index) => {
                 const status = value.includes(String(item2.id)) ? 'checked' : 'unchecked';
                 return (
-                    <Row className='items-center' key={'chk' + index}>
+                    <Row className='items-center flex-wrap' key={'chk' + index}>
                         <CheckBox
                             value={value.includes(String(item2.id))}
                             status={status}

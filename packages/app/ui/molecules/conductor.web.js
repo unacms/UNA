@@ -670,7 +670,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
         if (dataItems.length == 1 && !route.endpoint) {
             const a = dataItems.map((item, index) => {
-                return <View className={` mx-auto mt-2 w-full ${appSetting('layout', 'max_width_block')}`} key={`tab-${index}`}><ItemRendererMemo route={route} key={'item' + index} numColumns={1} item={item} /></View>
+                return <View className={`mt-[116px] lg:mt-0 mx-auto mt-2 w-full ${appSetting('layout', 'max_width_block')}`} key={`tab-${index}`}><ItemRendererMemo route={route} key={'item' + index} numColumns={1} item={item} /></View>
             });
             return a;
         }
@@ -708,7 +708,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         const sidebarUnitType = route.blocks?.browse_sidebar?.unitType || 'default';
 
         return (
-            <Row style={{ paddingTop: header ? 0 : 0 }} className={(headerSettings.columns == "reverse" ? 'flex-row-reverse' : '') + conductorTheme.content_max_width + '  mx-auto w-full'}>
+            <Row style={{ paddingTop: header ? 0 : 0 }} className={(headerSettings.columns == "reverse" ? 'flex-row-reverse' : '') + conductorTheme.content_max_width + '  mx-auto w-full '}>
                 <View className={(isRightCol ? 'flex-auto sm:border-r border-bdr dark:border-bdr-d px-4 flex-auto ' : ' w-full mx-auto sm:py-2 ') + (layoutName == 'navigator' ? '' : ' pt-4')}>
                     {TabFlashListM}
                     {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 && callFn("noContentByUrl", [route?.endpoint])))}
@@ -787,12 +787,12 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             <View className={appSetting('layout', 'max_width') + " w-full h-full mx-auto"} scrollEnabled={false} onLayout={handleLayoutTop}>
                 {headerComponent}
                 <Toaster ref={toasterRef} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" />
-                <View style={{ minHeight: (windowHeight - offset) }} className={appSetting('layout', 'max_width  ') + ' mx-auto w-full '} >
+                <View style={{ minHeight: (windowHeight - offset) }} className={appSetting('layout', 'max_width  ') + ' mx-auto w-full mt-[52px] lg:mt-0 '} >
                     <Row className={rc}>
                         {a}
-                        <View className=" flex-auto">{/*min-h-screen???*/}
+                        <View className=" flex-auto m">
                             {(headerSettings.showAltTopMenu) && topSideBarComponent}
-                            {(windowWidth < LAYOUT_BREAKPOINTS.lg && layoutName == 'navigator' && leftSideBarBlocks.length > 0) && <View className="items-start ml-4 mt-2">
+                            {(windowWidth < LAYOUT_BREAKPOINTS.lg && layoutName == 'navigator' && leftSideBarBlocks.length > 0) && <View className="items-start ml-4 mt-2 mb-2">
                                 <Button title="Filters" variant="default" size="sm" rounded onPress={showFilters} />
                             </View>}
                             {sceneHeaderComponent}
