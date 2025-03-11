@@ -43,12 +43,19 @@ const HeaderLine = memo(({ headerSettings, currentUser, uri, bSearch, menuPopup,
                     </Pressable>
                 </View>
             )}
-            <View className='justify-center px-4'>
+            <View className='justify-center px-4 '>
+
                 <Link href="/home" aria-label="Logo">
-                    <View className="group  mr-auto flex-row flex-none items-center my-auto lg:py-2.5 px-1">
-                        {appStatic('logo_mark')}
-                        {appStatic('logo_text')}
-                    </View>
+                    <Row className="my-3 group">
+                        <View className="  w-11 h-11 ">
+                            {appStatic('logo_mark')}
+
+                        </View>
+                        <View className=" h-11 w-32  ml-4">
+                            {appStatic('logo_text')}
+
+                        </View>
+                    </Row>
                 </Link>
                 <View className='hidden lg:block'>
                     {menu_sidebar_items.map(

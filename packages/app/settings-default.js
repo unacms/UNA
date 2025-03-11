@@ -531,6 +531,44 @@ export const settingsDefault = {
             { key: '/tab3', title: 'Contact', url: '/contact', icon: 'Contact' },
             { key: '/tab4', title: 'Terms', url: '/terms', icon: 'Info' }
         ],
+        /* for vertical layout*/
+        menu_sidebar: [
+            {
+                title: 'Profile',
+                link: '{profile}',
+                icon: 'User',
+                nonlogged: false,
+            },
+            {
+                title: 'Notifications',
+                link: '/notifications-view',
+                icon: 'Bell',
+                nonlogged: false,
+            },
+            {
+                title: 'Messages',
+                link: '/messenger',
+                icon: 'MessageCircleMore',
+                nonlogged: false,
+            },
+            {
+                title: 'Friends',
+                link: '/friends',
+                icon: 'Link',
+                nonlogged: false,
+            },
+            { title: 'Groups', link: '/groups-home', icon: 'Group' },
+            { title: 'Spaces', link: '/spaces-home', icon: 'SquareStack' },
+            { title: 'Events', link: '/events-home', icon: 'CalendarCheck' },
+            { title: 'Posts', link: '/posts-home', icon: 'MessageSquareText' },
+            { title: 'Discussions', link: '/discussions-home', icon: 'MessageSquare' },
+            { title: 'Courses', link: '/courses-home', icon: 'LibraryBig' },
+            { title: 'People', link: '/persons-home', icon: 'Users' },
+            { title: 'Jobs', link: '/jobs-home', icon: 'BriefcaseBusiness' },
+            { title: 'About', link: '/about', icon: 'Info' },
+            { title: 'Terms', link: '/terms', icon: 'HelpCircle' },
+            { title: 'Contact', link: '/contact', icon: 'Mail' },
+        ],
     },
     layouts: {},
     theme: {

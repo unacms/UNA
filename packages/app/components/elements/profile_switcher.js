@@ -47,7 +47,7 @@ export default function (props) {
     const rounded = props.rounded ? props.rounded : 'rounded-lg'
     return (
         <>
-            {/* {!props.useDefault ?
+            {!props.useDefault ?
                 <Pressable onPress={() => handleClick()}>
                     {props.children}
                 </Pressable> :
@@ -81,7 +81,7 @@ export default function (props) {
                         </View>
                     </Row>
                 </Link>
-            } */}
+            }
             {(show && data) && <Modal id='file-preview' title={t("Your Profiles")} onVisible={show} onClose={() => { setShow(false) }}>
                 <Redirect ref={redirectdRef} />
                 <View className="   flex-col">
