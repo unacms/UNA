@@ -771,7 +771,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     if (leftSideBar) {
 
         const offset = 64
-        let a = <View style={{ minHeight: (windowHeight - offset) }} className={`${leftSideBarWidth} hidden lg:block border-r border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d fixed lg:relative top-0 z-50`}>
+        let a = <View style={{ minHeight: (windowHeight - offset) }} className={`${leftSideBarWidth} hidden lg:block ${conductorTheme.left_menu_cnt} fixed lg:relative top-0 z-50`}>
             {leftSideBarComponent}
         </View>
         const sidebar = appSetting('conductor', 'sidebar')

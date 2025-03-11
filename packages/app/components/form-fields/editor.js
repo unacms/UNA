@@ -125,7 +125,7 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
         url1 += '&cid=' + object_id;
 
     useEffect(() => {
-        if (keywordval[0] === '') return;
+      //  if (keywordval[0] === '') return;
 
         const fetchData = async () => {
             let url = url1 + `&symbol=${keywordval[1] === '#' ? '%23' : '%40'}&term=${keywordval[0]}`;
@@ -181,7 +181,7 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
     }
     .bx-mention-link,
     .bx-tag{
-        color: rgba(29, 78, 216, 1);
+        color: ${colors.primary};
     }
 
     .tiptap, #root > div:nth-of-type(1){
@@ -256,34 +256,6 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
         }
     }, [htmlContent]);
 
-    /* useEffect(() => {
-         if (suggestions) {
-             let a = JSON.stringify(suggestions);
-             editor.injectJS(`
-             document.getElementById("mention-list").innerHTML = "";
-             ${a}.forEach(user => {
-                 const li = document.createElement("li");
-                 li.textContent = user.label;
-                 li.data = user;
-                
-                 li.style.cursor = "pointer";
-                 li.addEventListener("click", () => {
-                     window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'addmention', payload: {url:user.url, label:user.label, query: document.getElementsByClassName("tiptap")[0].getAttribute('query')} }));
-                     document.getElementById("mention-list").style.display = "none";
-                 });
-                 document.getElementById("mention-list").appendChild(li);
-             });
-             console.log(document.getElementById("mention-list").children.length)
-             if (document.getElementById("mention-list").children.length > 0)
-                 document.getElementById("mention-list").style.display = "block";
-             else
-                  document.getElementById("mention-list").style.display = "none";
- 
-             document.getElementById("mention-list").style.left = document.getElementsByClassName("tiptap")[0].getAttribute('queryX') + 'px';
-             document.getElementById("mention-list").style.top = document.getElementsByClassName("tiptap")[0].getAttribute('queryY') + 'px';`);
-         }
-     }, [suggestions]);*/
-
     const processImages = (src) => {
         let images = [];
         const fileName = src.split('/').pop() + '.png';
@@ -340,6 +312,12 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
                 console.log("mention", [message.payload, message.sym])
                 setKeyword([message.payload, message.sym, message.left, message.bottom])
             }
+
+            if (message?.type == "mention_hide") {
+                console.log("mention", [message.payload, message.sym])
+                setSuggestions([])
+            }
+
             if (message?.type == "addmention") {
                 insertMention(message.payload.label, message.payload.url, message.payload.query)
             }
@@ -348,6 +326,7 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
             if (message?.type == "editor-ready") {
                 editor.injectJS(`
                     let lastSelectionRange = null;
+                    let mentionVisible = false; 
                     const editor = document.getElementsByClassName("tiptap")[0];
 
                     function updateHeight() {
@@ -396,6 +375,31 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
                         return text.split(" ").pop();
                     }
 
+                    editor.addEventListener("keydown", function (event) {
+                        if (event.key === "Backspace") {
+                            const selection = window.getSelection();
+                            if (selection.rangeCount === 0) return;
+
+                            const range = selection.getRangeAt(0);
+                            const node = range.startContainer;
+
+                            // Проверяем, находится ли курсор внутри ссылки
+                            const link = node.nodeType === 3 ? node.parentElement.closest("a") : node.closest("a");
+
+                            if (link) {
+                                event.preventDefault(); // Отменяем стандартное удаление
+                                link.remove(); // Удаляем ссылку целиком
+
+                                // Перемещаем курсор в правильное место
+                                const newRange = document.createRange();
+                                newRange.setStartBefore(link.nextSibling || editor);
+                                newRange.collapse(true);
+                                selection.removeAllRanges();
+                                selection.addRange(newRange);
+                            }
+                        }
+                    });
+
                     editor.addEventListener("input", function (event) {
                         updateHeight();
 
@@ -415,6 +419,9 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
                                 editor.setAttribute('queryX', rect.left);
                                 editor.setAttribute('queryY', rect.bottom);
                             }
+                            if (!mentionVisible) { // Отправляем сообщение только если ментшены ещё не были показаны
+                                mentionVisible = true;
+                            }
 
                             window.ReactNativeWebView.postMessage(JSON.stringify({
                                 type: 'mention',
@@ -422,6 +429,14 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
                                 sym: symbol,
                                 left:rect.left,
                                 bottom:rect.bottom
+                            }));
+                        } else if (mentionVisible) { 
+                            // Если ментшены были показаны, но теперь их нужно скрыть
+                            mentionVisible = false;
+                            editor.removeAttribute('query');
+
+                            window.ReactNativeWebView.postMessage(JSON.stringify({
+                                type: 'mention_hide'
                             }));
                         }
                     });

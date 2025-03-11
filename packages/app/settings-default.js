@@ -650,7 +650,8 @@ export const settingsDefault = {
             topmenu_button_align: 'start',
             topmenu_button_fullWidth: false,
             topmenu_button_size: 'base',
-            topmenu_button_pressed: true
+            topmenu_button_pressed: true,
+            left_menu_cnt: 'border-r border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d'
         },
         checkbox : {
             container: ' h-[20px] w-[20px] m-[4px] rounded-[4px] border-[2px] border-neutral-500 bg-transparent justify-center items-center   ',

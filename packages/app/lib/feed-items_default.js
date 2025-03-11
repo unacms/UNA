@@ -2,7 +2,7 @@ import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
 import Time from 'app/ui/atoms/time'
 import Embed from 'app/ui/molecules/embed'
-import { memo, useEffect , useMemo} from 'react'
+import { memo, useEffect, useMemo } from 'react'
 import { Text } from 'app/design/typography'
 import { View, Row, ScrollView } from 'app/design/view'
 import { fetcher } from 'app/lib/fetcher'
@@ -12,6 +12,7 @@ import { ContentMore } from 'app/ui/molecules/contentmore';
 import { LAYOUT_BREAKPOINTS, stripTags } from 'app/lib/util'
 import Carousel from 'app/ui/molecules/carousel'
 import { PollItem } from 'app/components/elements/entity_poll';
+import Html from 'app/ui/atoms/html';
 
 export const LinkContent = memo(({ url, data }) => (
     <Link href={url}>
@@ -59,7 +60,7 @@ export const UnitImages = memo(({ images }) => {
     );
 });
 
-export const GroupView = memo(({data, styles, url, isCompact}) => {
+export const GroupView = memo(({ data, styles, url, isCompact }) => {
     const pref = isCompact ? '' : 'md:';
     return (<View className={isCompact ? " flex-row space-x-2 mx-4 overflow-hidden rounded-lg border border-bdritem dark:border-bdritem-d bg-bgritem dark:bg-bgritem-d p-1" : " flex-col md:flex-row space-x-2 overflow-hidden rounded-lg bg-bgritem dark:bg-bgritem-d p-1 my-3"}>
         {data.mainImage && (
@@ -84,11 +85,11 @@ export const GroupView = memo(({data, styles, url, isCompact}) => {
                     numberOfLines={1}
                     className=" text-neutral-600 dark:text-neutral-400 text-xs uppercase tracking-tight overflow-hidden"
                 >
-                   
-                   
+
+
                     {data.content.date_start && (
                         <>
-                            
+
                             <Time
                                 stylesName="text-xs flex-none"
                                 ts={data.content.date_start}
@@ -126,7 +127,7 @@ export const GroupView = memo(({data, styles, url, isCompact}) => {
     </View>);
 });
 
-export const AdView = memo(({data, styles, url, isCompact}) => {
+export const AdView = memo(({ data, styles, url, isCompact }) => {
 
     useEffect(() => {
         (async () => {
@@ -136,7 +137,7 @@ export const AdView = memo(({data, styles, url, isCompact}) => {
         })();
     }, []);
 
-    
+
     return <View className=" flex-col md:flex-row space-x-2  overflow-hidden rounded-lg border border-bdritem dark:border-bdritem-d bg-bgritem dark:bg-bgritem-d p-1 my-3">
         {data.mainImage && (
             <View className="w-full md:w-1/3  ">
@@ -156,12 +157,12 @@ export const AdView = memo(({data, styles, url, isCompact}) => {
         )}
         <View className="flex-auto p-2 my-auto flex-col">
             {data?.content?.register_click ? (
-        <Pressable onPress={async () => { await fetcher('/api.php?r=' + data.content.register_click) }}>
-            <LinkContent url={url} data={data} />
-        </Pressable>
-    ) : (
-        <LinkContent url={url} data={data} />
-    )}
+                <Pressable onPress={async () => { await fetcher('/api.php?r=' + data.content.register_click) }}>
+                    <LinkContent url={url} data={data} />
+                </Pressable>
+            ) : (
+                <LinkContent url={url} data={data} />
+            )}
             <View>
                 <View className="flex-col relative">
                     <Text
@@ -177,7 +178,7 @@ export const AdView = memo(({data, styles, url, isCompact}) => {
     </View>
 })
 
-export const MarketView = memo(({data, styles, url, isCompact}) => {
+export const MarketView = memo(({ data, styles, url, isCompact }) => {
     return <View className=" flex-col md:flex-row space-x-2  overflow-hidden rounded-lg border border-bdritem dark:border-bdritem-d bg-bgritem dark:bg-bgritem-d p-1">
         {data.mainImage && (
             <View className="w-full md:w-1/3  ">
@@ -223,9 +224,9 @@ export const MarketView = memo(({data, styles, url, isCompact}) => {
     </View>
 })
 
-export const DefaultView = memo(({data, styles, bIsTitle, bIsTimelineContent, content_attach, files_attach, url, isCompact}) => {
+export const DefaultView = memo(({ data, styles, bIsTitle, bIsTimelineContent, content_attach, files_attach, url, isCompact, fulltext }) => {
     let imgs = content_attach;
-   
+
     return <>
         <View className={isCompact ? "flex-row-reverse" : " flex-col "}>
             {data.mainImage && (
@@ -259,7 +260,7 @@ export const DefaultView = memo(({data, styles, bIsTitle, bIsTimelineContent, co
                     <View className="flex-col relative ">
                         {bIsTimelineContent && (
                             <View className={' ' + ((data.content.text && content_attach.length > 0) ? ' pb-2 ' : '')}>
-                                <ContentMore id={'feed-' + data.id} showLink={data?.content?.images_attach?.length == 0} content={data.content.text ? data.content.text : ''} numberOfLines={3} openSmall={false} textClassName=" text-neutral-800 dark:text-neutral-200 text-base " />
+                                {fulltext ? <Html data={data.content.text ? data.content.text : ''} /> : <ContentMore id={'feed-' + data.id} showLink={data?.content?.images_attach?.length == 0} content={data.content.text ? data.content.text : ''} numberOfLines={3} openSmall={false} textClassName=" text-neutral-800 dark:text-neutral-200 text-base " />}
                                 {!!data.content.embed && <View className=''><Embed data={data.content.embed} /></View>}
                             </View>
                         )}
@@ -286,9 +287,9 @@ export const DefaultView = memo(({data, styles, bIsTitle, bIsTimelineContent, co
     </>
 });
 
-export const PollView = memo(({data, styles, bIsTitle, bIsTimelineContent, content_attach, files_attach, url, isCompact}) => {
-   console.log("datadata",data)
-   
+export const PollView = memo(({ data, styles, bIsTitle, bIsTimelineContent, content_attach, files_attach, url, isCompact }) => {
+    console.log("datadata", data)
+
     return <>
         <View className={isCompact ? "flex-row-reverse" : " flex-col "}>
             {data.mainImage && (
@@ -321,12 +322,9 @@ export const PollView = memo(({data, styles, bIsTitle, bIsTimelineContent, conte
                 <View>
                     <View className="flex-col relative ">
                         <PollItem data={data.content} />
-                       
                     </View>
                 </View>
             </View>
         </View>
-        
-       
     </>
 });

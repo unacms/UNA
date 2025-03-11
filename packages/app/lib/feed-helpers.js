@@ -110,7 +110,7 @@ export const CommentsSection = memo(({ isCommentsModal, commentsDataInline, data
     )
 });
 
-export const MainContent = memo(({ url, data }) => {
+export const MainContent = memo(({ url, data, fulltext }) => {
 
     const bIsTitle = data?.content?.title && data?.content?.title?.trim() != '' ? true : false
 
@@ -142,7 +142,8 @@ export const MainContent = memo(({ url, data }) => {
         url,
         data,
         styles,
-        bIsTitle
+        bIsTitle,
+        fulltext
     };
 
     const unitTypes = appSetting('feed', 'units');

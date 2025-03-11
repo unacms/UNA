@@ -21,7 +21,7 @@ export function getSkeletonForList(name, num = 5) {
     return (
         <View>
             {items.map((item, index) => (
-                <View key={'browse_item' + index} className="flex-row w-full animate-pulse max-w-screen-xl mx-auto">
+                <View key={'browse_item' + index} className="flex-row w-full animate-pulse max-w-screen-xl mx-auto overflow-hidden">
                     {[...Array(num)].map((_, i) => <Item key={i} />)}
                 </View>
             ))}
