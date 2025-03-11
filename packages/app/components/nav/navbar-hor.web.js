@@ -57,7 +57,7 @@ const HeaderLine = memo(
                     </View>
                 )}
                 {(uri == 'home' || width >= LAYOUT_BREAKPOINTS.lg) && (
-                    <Link className=" focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus:outline-primary dark:focus-outline-primary-d duration-100 rounded-full " href="/home" aria-label="Logo">
+                    <Link className=" focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus:outline-primary/50 duration-100 rounded-full " href="/home" aria-label="Logo">
                         <View className="group flex-row w-11 h-11 flex-none items-center my-auto">
                             {appStatic('logo_mark')}
                             {/*{appStatic('logo_text')}*/}
@@ -123,7 +123,7 @@ export default function (props) {
                 </Row>
             </View>
             {!bIsHideHeader && <View className={(props.layoutName == 'profile' || props.layoutName == 'messenger' || props.layoutName == 'post' ? 'hidden lg:flex ' : '') + " fixed w-full"}>
-                <View className=" h-16 sm:shadow-sm items-center w-full bg-bgrnavbar dark:bg-bgrnavbar-d sm:border-b border-bdrnavbar dark:border-bdrnavbar-d">
+                <View className=" h-16 sm:shadow-sm items-center w-full bg-bgrnavbar dark:bg-bgrnavbar-d ">
                 <View
                         className={
                             appSetting('layout', 'max_width') +
@@ -141,7 +141,7 @@ export default function (props) {
                             setMenuPopup={setMenuPopup}
                         />
                         <Row className="hidden lg:flex flex-auto px-2">
-                            <Row className="w-full mx-auto gap-x-0.5 max-w-2xl justify-between">
+                            <Row className="w-full mx-auto gap-x-2 max-w-2xl justify-between">
                                 {menu_navbar_items.map((item, index) => (
                                     <View className="flex-auto" key={`menu-${index}`}>
                                     <Link
@@ -157,7 +157,7 @@ export default function (props) {
                                                     : false
                                             }
                                             variant="text"
-                                            size="lg"
+                                            size="base"
                                             tooltip={t(item.title)}
                                             title={
                                                 item.showTitle
@@ -175,10 +175,10 @@ export default function (props) {
                                 ))}
                             </Row>
                         </Row>
-                        <Row className="flex-none xl:w-96 flex-none px-3 sm:px-4 justify-end ">
+                        <Row className="flex-none  xl:w-96 flex-none px-3 sm:px-4 justify-end ">
                             {!!currentUser && (
-                                <Row className="flex-row justify-end ">
-                                    <View className=" flex-row my-auto gap-x-2 ">
+                                <Row className="flex-row justify-end  ">
+                                    <View className=" flex-row my-auto gap-x-2  ">
                                         <View className=" xl:hidden ">
                                             {bSearch && <Search />}
                                         </View>

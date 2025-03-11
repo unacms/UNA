@@ -416,8 +416,8 @@ export function LeftSidebar({ title, addButtons, children, width, menu }) {
     const sidebar = appSetting('conductor', 'sidebar_position')
     return (
         <View className={`lg:${width}`}>
-            <View className={` ${sidebar =='fixed'? 'fixed-process' : ''} lg:${width} lg:px-2 lg:py-3`}>
-                {(!!title || !!addButtons?.length > 0) && <Row className="justify-between items-center mt-1 mb-4 px-2 z-10">
+            <View className={` ${sidebar =='fixed'? 'fixed-process' : ''} lg:${width} lg:p-2`}>
+                {(!!title || !!addButtons?.length > 0) && <Row className="justify-between items-center mb-2.5 px-2 z-10">
                     <Text className="text-2xl truncate mr-auto font-bold  text-neutral-900 dark:text-neutral-100 hidden lg:flex  ">
                         {title}
                     </Text>
@@ -425,9 +425,9 @@ export function LeftSidebar({ title, addButtons, children, width, menu }) {
                         {addButtons}
                     </Row>
                 </Row>}
-                <View className=' gap-y-0.5'>
+                
                     {children}
-                </View>
+                
             </View>
         </View>
     )

@@ -199,7 +199,7 @@ export function ButtonsGroup({
 }
 
 /* buttons */
-const getIcon = (sIcon, iIndex, classIconName, sClassText, sIconContainer, iIconSize, colorIcon, buttonIconStart) => {
+const getIcon = (sIcon, iIndex, classIconName, sClassText, sIconContainer, iIconSize, colorIcon, buttonIconStart, variant, pressed) => {
 
     if (!sIcon)
         return;
@@ -212,29 +212,40 @@ const getIcon = (sIcon, iIndex, classIconName, sClassText, sIconContainer, iIcon
 
     sClassText = sClassText.replace('overflow-hidden', '');
 
+    // Check for icon-specific style for the current variant
+    let iconSpecificClass = variant ? ThemeCssClassesButton[`u-btn-${variant}-icon`] : null;
+    
+    // Use pressed icon style if available and button is pressed
+    if (pressed && variant) {
+        const pressedIconClass = ThemeCssClassesButton[`u-btn-${variant}-pressed-icon`];
+        if (pressedIconClass) {
+            iconSpecificClass = pressedIconClass;
+        }
+    }
+
     if (isEmoji(sIcon)) {
         sClassText = sClassText.replace('text-lg', ' text-3xl text-center leading-[32px]  ');
         sClassText = sClassText.replace('text-base', ' group-hover:no-underline text-2xl leading-[26px] ');
         sClassText = sClassText.replace('text-sm', ' group-hover:no-underline text-[21px] leading-[24px] text-center justify-center ');
         sClassText = sClassText.replace('text-xs', ' group-hover:no-underline text-[16px] leading-[20px] text-center justify-center');
         return (
-            <Text key={iIndex} className={classIconName ? classIconName : sClassText + sIconContainer}>{sIcon}</Text>
+            <Text key={iIndex} className={classIconName ? classIconName : (iconSpecificClass || sClassText) + sIconContainer}>{sIcon}</Text>
         );
     }
 
     return (
-        <Icon key={iIndex} className={classIconName ? classIconName : sClassText + sIconContainer} size={iIconSize} color={colorIcon} icon={sIcon}></Icon>
+        <Icon key={iIndex} className={classIconName ? classIconName : (iconSpecificClass || sClassText) + sIconContainer} size={iIconSize} color={colorIcon} icon={sIcon}></Icon>
     );
 };
 
-const getIcon2 = (buttonInfo, classIconName, sClassText, sIconContainer, iIconSize, colorIcon, buttonIconStart) => {
+const getIcon2 = (buttonInfo, classIconName, sClassText, sIconContainer, iIconSize, colorIcon, buttonIconStart, variant, pressed) => {
     if (Array.isArray(buttonInfo)) {
         return buttonInfo.map((sIcon, iIndex) => {
-            return getIcon(sIcon, iIndex, classIconName, sClassText, sIconContainer, iIconSize, colorIcon, buttonIconStart);
+            return getIcon(sIcon, iIndex, classIconName, sClassText, sIconContainer, iIconSize, colorIcon, buttonIconStart, variant, pressed);
         });
     }
     else {
-        return getIcon(buttonInfo, null, classIconName, sClassText, sIconContainer, iIconSize, colorIcon, buttonIconStart);
+        return getIcon(buttonInfo, null, classIconName, sClassText, sIconContainer, iIconSize, colorIcon, buttonIconStart, variant, pressed);
     }
 }
 
@@ -370,7 +381,7 @@ export const Button = (props) => {
 
         if (variant != 'custom') {
             sizeClasses = `${roundingClass} ${padding || ThemeButtonSizes[size]?.padding} `;
-            iconContainerClass = `${ThemeButtonSizes[size]?.icon_sizes} ${title ? ThemeButtonSizes[size]?.icon_margin : ''}`;
+            iconContainerClass = `${ThemeButtonSizes[size]?.icon_container} ${title ? ThemeButtonSizes[size]?.icon_margin : ''}`;
             iconSize = ThemeButtonSizes[size]?.icon_size;
             titleContainerClass += title ? ThemeButtonSizes[size]?.min_height + ThemeButtonSizes[size]?.margin : '';
         }
@@ -392,10 +403,12 @@ export const Button = (props) => {
                     sIconContainer,
                     iIconSize,
                     colorIcon,
-                    startDecorator
+                    startDecorator,
+                    variant,
+                    pressed
                 )
                 : null,
-        [startDecorator, classIconName, sClassText, sIconContainer, iIconSize, colorIcon]
+        [startDecorator, classIconName, sClassText, sIconContainer, iIconSize, colorIcon, variant, pressed]
     );
 
     const sButtonIconEnd = useMemo(
@@ -408,10 +421,12 @@ export const Button = (props) => {
                     sIconContainer,
                     iIconSize,
                     colorIcon,
-                    endDecorator
+                    endDecorator,
+                    variant,
+                    pressed
                 )
                 : null,
-        [endDecorator, classIconName, sClassText, sIconContainer, iIconSize, colorIcon]
+        [endDecorator, classIconName, sClassText, sIconContainer, iIconSize, colorIcon, variant, pressed]
     );
     const isTitle = !!title;
     const oButtonAddon = getAddon(addon, isTitle);

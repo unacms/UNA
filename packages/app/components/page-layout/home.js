@@ -101,7 +101,7 @@ export default function (props) {
             >
                 {getLayout(currentUser) == 'hor' && (
                     <View className="hidden xl:flex w-96 ">
-                        <View className="fixed fixed-process w-96 flex-col p-2 gap-y-0.5">
+                        <View className="fixed fixed-process w-96 flex-col p-2 ">
                             {appSetting('layout', 'show_profile_info') && (
                                 <ProfileSwitcher
                                     hideTitle={true}

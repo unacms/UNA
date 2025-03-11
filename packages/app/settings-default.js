@@ -51,7 +51,7 @@ export const settingsDefault = {
         button_style_for_actions: 'secondary',
        
         share_text: '',
-        default_icon_stroke_width: 1.5
+        default_icon_stroke_width: 2
     },
 
     native:{
@@ -429,7 +429,7 @@ export const settingsDefault = {
             'camera-retro': 'Video',
             'file-alt': 'File',
             'info-circle': 'Info',
-            'user': 'User',
+            'user': 'UserRound',
             'building': 'Building2',
             'image': 'Image',
             'farx': 'MessagesSquare',
@@ -509,11 +509,11 @@ export const settingsDefault = {
         },
         menu_navbar: [
             { name: 'home', title: 'Home', link: '/', icon: 'House' },
-            { name: 'friends', title: 'Friends', link: '/friends', icon: 'Users', nonlogged: false },
+            { name: 'friends', title: 'Friends', link: '/friends', icon: 'UsersRound', nonlogged: false },
             { name: 'explore', title: 'Explore', link: '/explore', icon: 'Compass', logged: false },
-            { name: 'videos-home', title: 'Video', link: '/videos-home', icon: 'Video' },
+            { name: 'videos-home', title: 'Video', link: '/videos-home', icon: 'TvMinimalPlay' },
             { name: 'products-home', title: 'Market', link: '/products-home', icon: 'Store' },
-            { name: 'groups-home', title: 'Groups', link: '/groups-home', icon: 'Group' },
+            { name: 'groups-home', title: 'Groups', link: '/groups-home', icon: 'Shapes' },
             { name: 'events-home', title: 'Events', link: '/events-home', icon: 'Calendar' }
         ],
         menu_tabbar_logged: [
@@ -684,10 +684,10 @@ export const settingsDefault = {
         },
         inputs: {
             default:
-                ' bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-bdrinput dark:border-bdrinput-d focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus:outline-primary dark:focus-outline-primary-d duration-100 placeholder-neutral-500 duration-100 text-neutral-900 rounded-lg h-12 flex-auto p-3 leading-6 dark:text-neutral-100 text-base ',
+                ' bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-bdrinput dark:border-bdrinput-d focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus:outline-primary/50 duration-100 placeholder-neutral-500 duration-100 text-neutral-900 rounded-lg h-12 flex-auto p-3 leading-6 dark:text-neutral-100 text-base ',
             multi: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg flex-auto p-2 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 ',
             rounded:
-                ' placeholder-neutral-500 pl-10 bg-bgrinput dark:bg-bgrinput-d hover:bg-bgrinput-h dark:hover:bg-bgrinput-dh focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-transparent focus:border-bdrinput-f dark:focus:border-bdrinput-f focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus:outline-primary dark:focus-outline-primary-d duration-100 text-neutral-900 rounded-full flex-auto px-3 dark:text-neutral-100 text-base leading-5 h-11  ',
+                ' placeholder-neutral-500 pl-10 bg-bgrinput dark:bg-bgrinput-d hover:bg-bgrinput-h dark:hover:bg-bgrinput-dh focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-transparent focus:border-bdrinput-f dark:focus:border-bdrinput-f focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-primary/50 text-neutral-900 rounded-full flex-auto px-3 dark:text-neutral-100 text-base leading-5 h-11  ',
             roundedsmall:
                 ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-full flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[34px] ',
             small: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[36px] ',
@@ -703,7 +703,7 @@ export const settingsDefault = {
             xs: {
                 rounded: ' rounded-[6px] overflow-hidden ',
                 padding: ' h-[28px] min-w-[28px] p-[4px] ',
-                icon_sizes:
+                icon_container:
                 ' h-[20px] w-[20px] ', //icon container size
                 icon_size: ' 20px ', //icon size
                 icon_margin: ' mx-[0px] ', //conditional margin for icon container when title is present
@@ -712,30 +712,30 @@ export const settingsDefault = {
             },
             sm: {
                 rounded: ' rounded-[8px] overflow-hidden ',
-                padding: ' h-[36px] min-w-[36px] px-[6px] ',
-                icon_sizes: ' h-[24px] w-[24px] ',
-                icon_size: ' 24px ',
-                icon_margin: ' ',
-                min_height: ' ',
-                margin: ' mx-[4px] my-auto native:text-[14px]  web:text-sm ', // margin around text
+                padding: ' h-[40px] p-[6px]  ',
+                icon_container: ' w-[28px] h-[28px] p-[4px] ',
+                icon_size: '20px',
+                icon_margin: ' p-[4px] ',
+                min_height: ' leading-[24px] web:text-[14px] ',
+                margin: ' leading-none bg-transparent px-[4px] my-auto native:text-[14px] ',
             },
             base: {
-                rounded: ' rounded-[10px] overflow-hidden ',
-                padding: ' h-[44px] min-w-[44px] px-[8px] ',
-                icon_sizes: ' h-[24px] w-[24px]',
+                rounded: ' rounded-[8px] overflow-hidden  ',
+                padding: ' h-[44px] p-[4px]  ',
+                icon_container: ' w-[36px] h-[36px] p-[6px] ',
                 icon_size: '24px',
-                icon_margin: ' mx-[4px] ',
-                min_height: '  ',
-                margin: ' mx-[6px] my-auto native:text-[16px] ',
+                icon_margin: ' p-[6px] ',
+                min_height: ' leading-[24px] web:text-[16px] ',
+                margin: ' leading-[36px] bg-transparent px-[6px] my-auto native:text-[16px] ',
             },
             lg: {
-                rounded: ' rounded-[12px] overflow-hidden ',
-                padding: ' min-w-[48px] h-[48px] px-[6px] ',
-                icon_sizes: ' p-[10px] h-[48px] w-[48px] ',
-                icon_size: 28,
-                icon_margin: '  ',
-                min_height: ' leading-[40px] sm:text-[16px] ',
-                margin: ' mx-[10px] my-auto native:text-[16px] ',
+                rounded: ' rounded-[12px] overflow-hidden  ',
+                padding: ' h-[56px] p-[8px]   ',
+                icon_container: ' w-[44px] h-[44px] p-[10px] bg-neutral-500/10 rounded-full ',
+                icon_size: '24px',
+                icon_margin: ' p-[10px] ',
+                min_height: '  web:text-[16px] ',
+                margin: '  bg-transparent px-[8px] my-auto native:text-[16px] ',
             },
         },
 
@@ -745,6 +745,8 @@ export const settingsDefault = {
             'u-btn-default-text':
                 ' font-medium text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-white ',
             'u-btn-default-trans': 'web:duration-200',
+            'u-btn-default-icon': ' text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-white ',
+            'u-btn-default-pressed-icon': ' text-neutral-950 dark:text-white ',
             /*'u-btn-default-color-icon-light': 'rgb(243, 244, 246)',
             'u-btn-default-color-icon-dark': 'rgb(243, 244, 246)',*/
 
@@ -752,6 +754,8 @@ export const settingsDefault = {
             ' group bg-primary-500 dark:bg-primary-600 border border-transparent sm:hover:border-transparent dark:border-primary-500 sm:hover:bg-primary-600 dark:sm:hover:bg-primary-700 sm:dark:hover:border-primary-600 ',
             'u-btn-primary-text': '  font-medium text-white ',
             'u-btn-primary-trans': ' web:duration-200 ',
+            'u-btn-primary-icon': ' text-white ',
+            'u-btn-primary-pressed-icon': ' text-white ',
             'u-btn-primary-color-icon-light': 'rgb(243, 244, 246)',
             'u-btn-primary-color-icon-dark': 'rgb(243, 244, 246)',
 
@@ -760,6 +764,8 @@ export const settingsDefault = {
             'u-btn-secondary-text':
                 ' font-medium text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-white ',
             'u-btn-secondary-trans': ' web:duration-200',
+            'u-btn-secondary-icon': ' text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-white ',
+            'u-btn-secondary-pressed-icon': ' text-neutral-950 dark:text-white ',
             /*'u-btn-secondary-color-icon-light': 'rgb(243, 244, 246)',
             'u-btn-secondary-color-icon-dark': 'rgb(243, 244, 246)',*/
 
@@ -768,14 +774,18 @@ export const settingsDefault = {
             'u-btn-danger-text':
                 ' font-medium text-neutral-100 group-hover:text-white ',
             'u-btn-danger-trans': ' web:duration-200 ',
+            'u-btn-danger-icon': ' text-neutral-100 group-hover:text-white ',
+            'u-btn-danger-pressed-icon': ' text-white ',
             /*'u-btn-danger-color-icon-light': 'rgb(243, 244, 246)',
             'u-btn-danger-color-icon-dark': 'rgb(243, 244, 246)',*/
 
             'u-btn-text-cnt':
-                '  hover:bg-bgrbutton dark:hover:bg-bgrbutton-d bg-transparent active:bg-bgrbutton-h dark:active:bg-bgrbutton-dh text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
+                '  hover:bg-bgrbutton dark:hover:bg-bgrbutton-d bg-transparent active:bg-bgrbutton-h dark:active:bg-bgrbutton-dh text-neutral-600 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
             'u-btn-text-text':
-                ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50',
+                '  font-medium text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-neutral-50',
             'u-btn-text-trans': ' web:duration-200 ',
+            'u-btn-text-icon': ' text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50',            
+            'u-btn-text-pressed-icon': ' text-primary-700 dark:text-primary-d ',
             /*'u-btn-text-color-icon-light': 'rgb(243, 244, 246)',
             'u-btn-text-color-icon-dark': 'rgb(243, 244, 246)',*/
 
@@ -783,6 +793,8 @@ export const settingsDefault = {
             'u-btn-link-text':
                 ' font-semibold group-hover:underline text-neutral-800 dark:text-neutral-200 hover:text-neutral-950 dark:hover:text-neutral-50 ',
             'u-btn-link-trans': ' web:duration-200 ',
+            'u-btn-link-icon': ' text-primary-600 group-hover:text-primary-700 dark:text-primary-500 dark:group-hover:text-primary-400 ',
+            'u-btn-link-pressed-icon': ' text-primary-700 dark:text-primary-400 ',
             'u-btn-link-color-icon-light': 'rgba(37,99,235,1)',
             'u-btn-link-color-icon-dark': 'rgba(37,99,235,1)',
 
@@ -791,6 +803,8 @@ export const settingsDefault = {
             'u-btn-outline-text':
                 ' font-medium text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-neutral-50 ',
             'u-btn-outline-trans': ' web:duration-200',
+            'u-btn-outline-icon': ' text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-neutral-50 ',
+            'u-btn-outline-pressed-icon': ' text-neutral-950 dark:text-neutral-50 ',
             /*'u-btn-outline-color-icon-light': 'rgb(243, 244, 246)',
             'u-btn-outline-color-icon-dark': 'rgb(243, 244, 246)',*/
 
@@ -798,40 +812,55 @@ export const settingsDefault = {
                 ' hover:bg-bgritem-h dark:hover:bg-bgritem-dh active:opacity-50  ',
             'u-btn-group-item-text':
                 ' font-medium text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-neutral-50 ',
+            'u-btn-group-item-icon': ' text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
 
             'u-btn-group-item-default-cnt':
                 ' hover:bg-bgritem-h dark:hover:bg-bgritem-dh active:opacity-50  ',
             'u-btn-group-item-default-text':
                 ' font-medium text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-neutral-50 ',
+            'u-btn-group-item-default-icon': 
+                ' text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
 
             'u-btn-group-item-primary-cnt':
                 ' hover:bg-bgritem-h dark:hover:bg-bgritem-dh active:opacity-50  ',
             'u-btn-group-item-primary-text':
                 ' font-medium text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-neutral-50 ',
+            'u-btn-group-item-primary-icon': 
+                ' text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
 
             'u-btn-group-item-secondary-cnt':
                 ' hover:bg-bgritem-h dark:hover:bg-bgritem-dh active:opacity-50  ',
             'u-btn-group-item-secondary-text':
                 ' font-medium text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-neutral-50 ',
+            'u-btn-group-item-secondary-icon': 
+                ' text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
 
             'u-btn-group-item-text-cnt':
                 ' hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50 ',
             'u-btn-group-item-text-text':
                 ' font-medium text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-neutral-50 ',
+            'u-btn-group-item-text-icon': 
+                ' text-neutral-600 group-hover:text-neutral-950 dark:text-neutral-400 dark:group-hover:text-neutral-50 ',
 
             'u-btn-group-item-link-cnt':
                 ' ',
             'u-btn-group-item-link-text':
                 ' font-medium text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-neutral-50 ',
+            'u-btn-group-item-link-icon': 
+                ' text-primary-600 group-hover:text-primary-700 dark:text-primary-500 dark:group-hover:text-primary-400 ',
             'u-btn-group-item-link-pressed-cnt':
                 ' bg-transparent ',
             'u-btn-group-item-link-pressed-text':
                 'text-primary-700 dark:text-neutral-600 group-hover:text-primary-800 dark:group-hover:text-primary-500 ',
+            'u-btn-group-item-link-pressed-icon':
+                'text-primary-700 dark:text-primary-600 group-hover:text-primary-800 dark:group-hover:text-primary-500 ',
 
             'u-btn-group-item-outline-cnt':
                 ' hover:bg-bgritem-h dark:hover:bg-bgritem-dh active:opacity-50  ',
             'u-btn-group-item-outline-text':
                 ' font-medium text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-neutral-50 ',
+            'u-btn-group-item-outline-icon': 
+                ' text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
         },
         buttons_group_styles: {
             'u-btn-default-cnt':
