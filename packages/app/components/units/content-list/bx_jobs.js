@@ -36,23 +36,13 @@ export default function Unit(props) {
         });
       //  console.log("datadata", data)
     return (
-        <View className=" p-1.5 sm:p-2 mx-auto w-full ">
-        <Card addClassName=" p-2 flex-auto  mx-auto w-full flex-row-reverse ">
-            {data?.cover?.src && (
-                <View className="aspect-square md:aspect-video flex-none rounded-lg overflow-hidden h-24 sm:h-36 mb-auto  ">
-                    <Image
-                        {...data.cover}
-                        alt={data.title}
-                        view="cover"
-                        className="u-cover"
-                        sizes={imageSizes}
-                    />
-                </View>
-            )}
+        <View className=" p-4 mx-auto w-full ">
+        <Card addClassName=" p-4 flex-auto mx-auto w-full flex-row">
+            
 
-            <View className="flex-auto px-2 py-2 h-36">
+            <View className="flex-auto">
                 <Link href={data.url}>
-                    <Text numberOfLines={2} className="text-neutral-800  mb-2 tracking-tight leading-tight dark:text-neutral-200 sm:hover:text-primary sm:dark:hover:text-primary-d text-base font-bold">
+                    <Text numberOfLines={2} className="text-neutral-800 mb-2 dark:text-neutral-200 sm:hover:text-primary sm:dark:hover:text-primary-d text:lg sm:text-xl d">
                         {data.title}
                     </Text>
                     <Text numberOfLines={2} className="text-neutral-600 mb-2 dark:text-neutral-400 text-xs sm:text-sm">
@@ -66,6 +56,17 @@ export default function Unit(props) {
                 </View>
 
             </View>
+            {data?.cover?.src && (
+                <View className="aspect-square md:aspect-video flex-none rounded-lg overflow-hidden h-24 sm:h-36 mb-auto  ">
+                    <Image
+                        {...data.cover}
+                        alt={data.title}
+                        view="cover"
+                        className="u-cover"
+                        sizes={imageSizes}
+                    />
+                </View>
+            )}
         </Card>
     </View>
     );
