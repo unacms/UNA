@@ -204,7 +204,6 @@ const LeftSideBarContainer = ({ menu, routes, currentUser, index, setIndex, left
     const menuSettings = getMenuSettings(menu.object, menu.config, menu);
     const { t } = useTranslation();
     const addButtons = AddMenu(menu, 'hideInSideBar');
-    console.log("menumenu", menu)
     return (
         <LeftSidebar title={t(menuSettings?.name)} addButtons={addButtons} width={leftSideBarWidth}>
             {headerSettings.hideLeftmenu != true && routes.filter((aItem) => aItem.hideInTop != true).map((a) => {

@@ -45,6 +45,7 @@ const getNumCols = (width, props, data) => {
 };
 
 export default function (props) {
+    const isWeb = Platform.OS === 'web';
     const isValidateActive = props.validate ?? true;
     const isShowEmptyMessage = props.empty_message ?? true;
     const { layoutData } = useLayoutData();
@@ -111,8 +112,8 @@ export default function (props) {
         }
     };
 
-    const hOffset = Platform.OS === 'web' ? (windowWidth < LAYOUT_BREAKPOINTS.lg ? 126 : 64) : 106;
-    const styles = Platform.OS === 'web' ? {} : { height: (defParams?.height ? defParams.height : windowHeight - hOffset) }
+    const hOffset = isWeb ? (windowWidth < LAYOUT_BREAKPOINTS.lg ? 126 : 64) : 106;
+    const styles = isWeb ? {} : { height: (defParams?.height ? defParams.height : windowHeight - hOffset) }
 
     const fetchData = useCallback(async ({ }) => {
         const sUrl = data.request_url + JSON.stringify({ 'params': dataItems.params });
@@ -137,7 +138,7 @@ export default function (props) {
 
             return lastPage.params;
         },
-        enabled: Platform.OS === 'web' ? false : false, // on native no cashed data
+        enabled: isWeb ? false : false, // on native no cashed data
     });
 
     const onStartRefresh = () => {
@@ -286,6 +287,7 @@ export default function (props) {
         ));
     }
 
+
     return (
         <View className='w-full h-full' >
             <View className='w-full' onLayout={handleLayout}></View>
@@ -296,6 +298,7 @@ export default function (props) {
                         <Text className="text-base font-bold text-neutral-800 dark:text-neutral-200 ">{t(props.block.title)}</Text>
                         {props.addLink ? (<Link href={props.addLink.url}><Button variant='text' size='xs' title={props.addLink.text} /></Link>) : null}
                     </Row>) : <></>}
+                    {(isWeb && props.exProps?.headerBlocks) ? props.exProps?.headerBlocks : ''}
                     <UniList
                         numColumns={numColumns}
                         mode='simple'
@@ -314,9 +317,9 @@ export default function (props) {
                         no_scroll={props.no_scroll}
                         onRefresh={onStartRefresh}
                         refreshing={isRefreshing}
-                        renderItem={({ item, index }) => Platform.OS === 'web' ? <Item key={'item' + item.id} item={item} index={index} numColumns={numColumns} data={data} unitMode={unitMode} props={props} /> : <Item item={item} index={index} numColumns={numColumns} data={data} unitMode={unitMode} props={props} />}
+                        renderItem={({ item, index }) => isWeb ? <Item key={'item' + item.id} item={item} index={index} numColumns={numColumns} data={data} unitMode={unitMode} props={props} /> : <Item item={item} index={index} numColumns={numColumns} data={data} unitMode={unitMode} props={props} />}
                         onEndReached={handleEndReached}
-                        ListHeaderComponent={props.exProps?.headerBlocks ? props.exProps?.headerBlocks : ''}
+                        ListHeaderComponent={(!isWeb && props.exProps?.headerBlocks) ? props.exProps?.headerBlocks : ''}
                         ListFooterComponent={
                             ((hasNextPage && isFetchingNextPage)) ? (
                                 Preload

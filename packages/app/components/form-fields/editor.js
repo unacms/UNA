@@ -125,7 +125,7 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
         url1 += '&cid=' + object_id;
 
     useEffect(() => {
-      //  if (keywordval[0] === '') return;
+        if (keywordval[1] === '') return;
 
         const fetchData = async () => {
             let url = url1 + `&symbol=${keywordval[1] === '#' ? '%23' : '%40'}&term=${keywordval[0]}`;
@@ -309,12 +309,12 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
             }
 
             if (message?.type == "mention") {
-                console.log("mention", [message.payload, message.sym])
+                //console.log("mention", [message.payload, message.sym])
                 setKeyword([message.payload, message.sym, message.left, message.bottom])
             }
 
             if (message?.type == "mention_hide") {
-                console.log("mention", [message.payload, message.sym])
+                //console.log("mention", [message.payload, message.sym])
                 setSuggestions([])
             }
 
@@ -462,11 +462,7 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
                     });
 
                     document.addEventListener('paste', (event) => {
-                        console.log("Paste event:", event.clipboardData);
-                        console.log("Types:", event.clipboardData.types); // Посмотрим, какие данные доступны
                         if (event.clipboardData.items.length > 0) {
-                            console.log("Items:", event.clipboardData.items);
-
                             for (let item of event.clipboardData.items) {
                                 if (item.kind === 'file') {
                                     const file = item.getAsFile();

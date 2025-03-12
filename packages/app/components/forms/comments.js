@@ -38,7 +38,6 @@ export default function FormComments(props) {
 
     function checkEditorHeight(height1) {
         let h = 0;
-        console.log("height1height1height1", height1, editorHeight)
         if (height1 <= initialHeight){
             h = initialHeight;
         }

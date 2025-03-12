@@ -7,7 +7,10 @@ import { Platform } from 'react-native'
 export default function FormMessenger(props) {
     const isWeb = Platform.OS == 'web';
     const isIos = Platform.OS == 'ios'
-    
+    const initialHeight = 44;
+    const [isExImage, setIsExImage] = useState(false);
+    const [isFocused, setIsFocused] = useState(false);
+    const [editorHeight, setEditorHeight] = useState(initialHeight);
     const [imageSource, setImageSource] = useState([]);
     function setPlaceHolder(name, previews) {
         if (JSON.stringify(previews) != JSON.stringify(imageSource[name])) {
@@ -35,6 +38,40 @@ export default function FormMessenger(props) {
             });
     };
 
+    function setIsFocus() {
+
+        setIsExImage(false)
+        setIsFocused(true)
+    }
+
+    function setIsBlur() {
+
+        setIsFocused(false)
+    }
+
+    function checkEditorHeight(height1) {
+        let h = 0;
+        if (height1 <= initialHeight){
+            h = initialHeight;
+        }
+        else{
+            let height = height1 + 16;
+        
+            if (height <= 160 && height > initialHeight) {
+                h = height;
+            }
+            if (height > 160) {
+                h = 160;
+            }
+            if (height1 < initialHeight) {
+                h = initialHeight;
+            }
+        }
+        setEditorHeight(h)
+
+
+    }
+
     if (typeof props.data.inputs['send'] !== 'undefined')
         props.data.inputs['submit'].icon = 'SendHorizontal';
 
@@ -49,17 +86,18 @@ export default function FormMessenger(props) {
     props.data.inputs['files'].rounded = 'true';
     props.data.inputs['files'].variant = 'default';
 
+    console.log("editorHeighteditorHeight", editorHeight)
     const sPad = 'px-3 py-2';
     return <View className='w-full px-2' >
         <Row className='w-full items-end  '>
             <View className={'mr-2 ' + (isWeb ? '' : ' w-12 ')}>{/* className={'mr-2 ' + (isWeb ? '' : ' w-11 ')}*/}
                 {getFormFieldByData(props.data.inputs['files'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder, noMargin:true })}
             </View>
-            <View className={`flex-auto bg-bgritem dark:bg-bgritem-d rounded-3xl justify-center ${isWeb ? 'min-h-[44px]' : 'min-h-[44px]'} items-end ${sPad}`} >
+            <View className={`flex-auto bg-bgritem dark:bg-bgritem-d rounded-3xl justify-center items-end ${sPad}`} style={{ height: editorHeight }}>
                 {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['cf'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['payload'], props.handleSubmit, 'custom')}
-                {getFormFieldByData(props.data.inputs['message'], props.handleSubmit, 'custom', { container_class: 'comments', focus: true, bg: 'transparent', submitOnEnter: true, styles: { minHeight: "auto" }, noMargin:true, placeholder: 'Message ...' })}
+                {getFormFieldByData(props.data.inputs['message'], props.handleSubmit, 'custom', { container_class: 'comments', classes: "flex-1",  focus: true, bg: 'transparent', submitOnEnter: true, noMargin:true, placeholder: 'Message ...', onHeight: checkEditorHeight, onFocus: setIsFocus, onBlur: setIsBlur })}
                 {getFormFieldByData(props.data.inputs['id'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['message_id'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['send'], props.handleSubmit, 'custom')}
