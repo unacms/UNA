@@ -736,7 +736,7 @@ export const settingsDefault = {
             default_size: 'base',
             default_variant: 'default',
             pressed_container:
-                ' bg-primary-100 dark:bg-primary-950',
+                ' bg-primary/10 dark:bg-primary-d/10',
             pressed_text:
                 ' text-primary-700 dark:text-primary-300 group-hover:text-primary-800 dark:group-hover:text-primary-200 ',
             xs: {
@@ -768,13 +768,13 @@ export const settingsDefault = {
                 margin: ' leading-[36px] bg-transparent px-[6px] my-auto native:text-[16px] ',
             },
             lg: {
-                rounded: ' rounded-[12px] overflow-hidden  ',
-                padding: ' h-[56px] p-[8px]   ',
-                icon_container: ' w-[44px] h-[44px] p-[10px] bg-neutral-500/10 rounded-full ',
-                icon_size: '24px',
-                icon_margin: ' p-[10px] ',
-                min_height: '  web:text-[16px] ',
-                margin: '  bg-transparent px-[8px] my-auto native:text-[16px] ',
+                rounded: ' rounded-[10px] overflow-hidden  ',
+                padding: ' h-[48px] py-[6px] px-[8px]    ',
+                icon_container: ' w-[36px] h-[36px] p-[8px] bg-neutral-500/10 rounded-full ',
+                icon_size: '20px',
+                icon_margin: '  ',
+                min_height: '  web:text-[14px] ',
+                margin: '  bg-transparent px-[12px] my-auto native:text-[14px] ',
             },
         },
 
@@ -819,7 +819,7 @@ export const settingsDefault = {
             'u-btn-danger-color-icon-dark': 'rgb(243, 244, 246)',*/
 
             'u-btn-text-cnt':
-                '  hover:bg-bgrbutton dark:hover:bg-bgrbutton-d bg-transparent active:bg-bgrbutton-h dark:active:bg-bgrbutton-dh text-neutral-600 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
+                '  hover:bg-bgrbutton/60 dark:hover:bg-bgrbutton-d/60 bg-transparent active:bg-bgrbutton-h dark:active:bg-bgrbutton-dh text-neutral-600 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
             'u-btn-text-text':
                 '  font-medium text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-neutral-50',
             'u-btn-text-trans': ' web:duration-200 ',

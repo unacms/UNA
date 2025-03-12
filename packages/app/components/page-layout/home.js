@@ -107,16 +107,16 @@ export default function (props) {
                         <View className="fixed fixed-process w-96 flex-col p-2 ">
                             {appSetting('layout', 'show_profile_info') && (
                                 <Link href={currentUser.url} emulate={true} >
-                                    <Row className={"rounded-lg group items-center px-2 py-1 justify-between hover:bg-bgrbutton dark:hover:bg-bgrbutton-d  active:bg-bgrbutton-h dark:active:bg-bgrbutton-dh  "}>
+                                    <Row className={" rounded-[10px] group items-center px-2 py-1.5 justify-between hover:bg-bgrbutton dark:hover:bg-bgrbutton-d  active:bg-bgrbutton-h dark:active:bg-bgrbutton-dh  "}>
                                         <Row className='flex-row items-center'>
                                             <Profile
                                                 {...currentUser}
                                                 url_avatar={currentUser.avatar}
                                                 displayType="unit_wo_info"
-                                                displaySize="base"
+                                                displaySize="sm"
                                             />
                                             <View className='flex-col'>
-                                                <Text className="text-base pl-3 flex-auto my-auto font-semibold truncate text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-white duration-200">
+                                                <Text className=" text-sm pl-3 flex-auto my-auto font-semibold truncate text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-white duration-200">
                                                     {currentUser.display_name}
                                                 </Text>
                                                 <Text className=" text-xs pl-3 flex-auto my-auto truncate text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-800 dark:group-hover:text-neutral-200 duration-200">
