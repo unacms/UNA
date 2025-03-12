@@ -111,8 +111,8 @@ export function Modal({
 
     const layoutShift = isWeb ? 'sm' : '2xl';
 
-    if (!title && padding == " p-3 sm:p-4 sm:pt-0  "){
-        padding = 'p-3 sm:p-4';
+    if (!title && padding == " p-4 sm:pt-0  "){
+        padding = 'p-4';
     }
 
     const Content = <View className={`flex-row justify-center left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto ${layoutShift}:inset-0 h-full h-modal ${sClassPosition}`}>

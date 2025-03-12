@@ -79,7 +79,7 @@ export const settingsDefault = {
         back_button_url_for_profile: '/friends',  //OLD appSetting('layout', 'back_for_profile') 
         view_by_module: { //appSetting('layout', 'cover_mode'
             bx_courses: 'min',
-            bx_jobs: 'min',
+            bx_jobs: 'max',
         },
     },
     comments:{
@@ -639,10 +639,10 @@ export const settingsDefault = {
         },
         conductor: {
             menu: ' w-full items-left justify-center border-b border-bdrtabbar dark:border-bdrtabbar-d bg-bgrtabbar dark:bg-bgrtabbar-d  ',
-            menu_max_width: ' max-w-6xl ',
-            content_max_width: ' max-w-6xl ',
+            menu_max_width: ' max-w-7xl ',
+            content_max_width: ' max-w-7xl ',
             menu_is_dynamic: true,
-            menu_cnt: ' ml-3 sm:ml-4 gap-x-1 flex-row ',
+            menu_cnt: ' ml-4 gap-x-1 flex-row ',
             right_column_cnt: 'fixed-process p-4 max-w-md',
             topmenu_cnt: 'w-full px-8 pt-6 items-stretch justify-stretch sticky z-50 t-8 gap-x-8 hidden lg:flex p',
             topmenu_button_variant: 'text',
@@ -751,7 +751,7 @@ export const settingsDefault = {
             },
             sm: {
                 rounded: ' rounded-[8px] overflow-hidden ',
-                padding: ' h-[40px] p-[6px]  ',
+                padding: ' h-[36px] p-[4px]  ',
                 icon_container: ' w-[28px] h-[28px] p-[4px] ',
                 icon_size: '20px',
                 icon_margin: ' p-[4px] ',

@@ -226,7 +226,7 @@ export default function (props) {
             <View
                 className={
                     appSetting('layout', 'max_width') +
-                    ' mx-auto w-full max-w-[1280px] xl:px-4 '
+                    ' mx-auto w-full max-w-7xl  '
                 }
             >
                 {mode != 'min' ? (
@@ -272,19 +272,22 @@ export default function (props) {
                 ) : (
                     <></>
                 )}
-                <View className={`flex-col ${mode === 'min' ? 'lg' : 'md'}:flex-row gap-x-2 p-2 ${conductorTheme.content_max_width} mx-auto w-full`}>
+                <View className="px-4" >
+                    <View className={` py-2 flex-col ${mode === 'min' ? 'lg' : 'md'}:flex-row gap-x-4 ${conductorTheme.content_max_width} mx-auto w-full border-b border-bdrtabbar dark:border-bdrtabbar-d `}>
                     {bPerson && (
-                        <View className="w-full h-24 sm:w-48 relative">
-                            <View className="rounded-full absolute w-min p-2 z-50 duration-200 bottom-0 flex-none bg-bgrcard-h dark:bg-bgrcard-dh ">
+                        <View className="w-full h-24 sm:w-48 relative   ">
+                            
+                            <View className=" flex-auto absolute w-min  z50 rounded-full w-min p-2 z-50 bottom-0 flex-none bg-bgrcard dark:bg-bgrcard-d ">
                                 <Profile
                                     {...data.profile}
                                     displayType="unit_wo_info"
                                     displaySize="4xl"
                                 />
                                 {bAllowEdit && (
-                                        <View className="p-4 absolute -bottom-2 right-0">
+                                        <View className=" p-1 bg-bgrcard dark:bg-bgrcard-d rounded-full absolute bottom-3 right-1">
                                             <Button
                                                 rounded
+                                                size="sm"
                                                 startDecorator="Camera"
                                                 onPress={() =>
                                                     handleUpload('picture')
@@ -293,33 +296,36 @@ export default function (props) {
                                         </View>
                                     )}
                             </View>
+                            
                         </View>
                     )}
 
 
-                    <View className=" flex-auto flex-col justify-between my-auto  px-1 sm:px-2 ">
+                    <View className=" flex-auto flex-col pb-2 ">
 
-                        <Row className=" flex-row flex-auto items-center gap-x-2 pb-4">{/* pb-4*/}
+                        <Row className=" flex-row flex-auto items-center py-2 gap-x-2">
                             <Text
-                                className="tracking-tight text-2xl sm:text-3xl font-bold text-neutral-900 dark:text-neutral-50"
+                                className="tracking-tight text-xl sm:text-2xl font-bold text-neutral-900 dark:text-neutral-50"
                                 numberOfLines={2}
                             >
                                 {data.profile.display_name}
                             </Text>
                             <Badges badges={data.badges} />
-                            {!!data.profile.info?.date_start && (
+                            
+                        </Row>
+                        {!!data.profile.info?.date_start && (
                                 <Text className="  text-neutral-600 dark:text-neutral-400 text-xs uppercase font-semibold tracking-tight overflow-hidden  rounded-md flex-none items-center">
                                     {formatDateInterval(data.profile.info?.date_start, data.profile.info?.date_end, t)}
                                 </Text>
 
                             )}
-                        </Row>
 
                         <CoverMenuMeta {...data.meta_menu} />
                     </View>
-                    <View className={`flex-auto max-w-96 ${mode !== 'min' && ' md:items-end py-3 px-1 sm:px-2'}`}>
+                    <View className={` flex-auto w-full max-w-[320px] ${mode !== 'min' && ' lg:items-end '}`}>
                         <CoverMenu {...data.actions_menu} uri={props?.uri} />
                         {/*containerClasses={`${mode === 'min' && 'w-full lg:justify-end'}`}*/}
+                    </View>
                     </View>
                 </View>
             </View>
