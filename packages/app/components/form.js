@@ -138,7 +138,7 @@ export default function (props) {
     const debouncedFields = useDebounce(allFields, 500);
 
     useEffect(() => {
-        if (isAutoChange) {
+        if (isAutoChange && Object.keys(debouncedFields).length > 0) {
             props.onChange(debouncedFields);
         }
     }, [debouncedFields]);

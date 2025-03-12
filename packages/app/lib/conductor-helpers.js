@@ -76,7 +76,7 @@ export function handleFeedLayoutData(layoutData, data) {
     return data;
 }
 
-export function fillTabs(menu, data, blocks, currentUser, useSectionAsMenu) {
+export function fillTabs(menu, data, blocks, currentUser, useSectionAsMenu, leftSideBarBlocks) {
     const m = menuItemsByName(menu.object, menu.items, currentUser, data.url, menu.config);
     return m.map((item, index) => {
 
@@ -112,7 +112,8 @@ export function fillTabs(menu, data, blocks, currentUser, useSectionAsMenu) {
             i.config = data.config
             i.storageKeyValue = storageKey(i.link, false)
             i.blocks = blocks;
-           
+            i.leftSideBarBlocks = leftSideBarBlocks;
+            i.pageData = data;
             if (appSetting('cache', 'list')) {
                 let stateC = getDataFromCache('ul:state', i.storageKeyValue);
                 if (stateC) {
@@ -225,6 +226,7 @@ export async function fetchAndUpdateData(routes, index, setRoutes) {
 
 export function addMoreData(newItems, endpoint, setRoutes, index, blocks, routes, sidebar = false, pageData = null) {
 
+    console.log("initedTabs2", pageData)
     let hasChanged = false;
 
     const updatedRoutes = routes.map((route) => {
@@ -246,7 +248,13 @@ export function addMoreData(newItems, endpoint, setRoutes, index, blocks, routes
         }
 
         if (pageData && !route.pageData) {
+           
             updatedRoute.pageData = pageData;
+
+            const blocks2 = processBlocks(updatedRoute.blocks);
+
+            updatedRoute.leftSideBarBlocks = blocks2.leftBlocks;
+            console.log("initedTabs3", updatedRoute.pageData)
         }
 
         if (pageData?.config && !route.config) {

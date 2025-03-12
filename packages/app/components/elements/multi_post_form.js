@@ -15,7 +15,7 @@ export default function MultiPostForm({ data }) {
     const [pageData, setPageData] = useState(false);
     const [pageDataDef, setPageDataDef] = useState(false);
     const menu_add_items = menuItemsByNameNew('', data.menu, currentUser).filter(item => item.name != 'more-auto');
-
+  
     const firstForm = menu_add_items.shift();
 
     const profileData = {
@@ -44,7 +44,7 @@ export default function MultiPostForm({ data }) {
         }
     }
 
-     if (menu_add_items.length == 0)
+     if (menu_add_items.length == 0 && !firstForm)
         return;
     
     return (

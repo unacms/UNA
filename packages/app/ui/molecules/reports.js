@@ -149,7 +149,7 @@ const ElementReports = forwardRef((oProps, ref) => {
     const oSettings = appSetting('social_actions', 'report');
 
     const oParams = {...oSettings, ...oProps.params};
-    const sIcon = isTextMode ? '' : oSettings[oProps['system']]?.icon != undefined ? oSettings[oProps['system']].icon : "WarningCircle"
+    const sIcon = isTextMode ? '' : oSettings[oProps['system']]?.icon != undefined ? oSettings[oProps['system']].icon : "AlertCircle"
     const oAction = oProps.action;
     const oCounter = oProps.counter;
 

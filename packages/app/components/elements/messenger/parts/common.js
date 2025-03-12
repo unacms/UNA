@@ -573,7 +573,7 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
                     <DropdownMenu onSelect={(oItem) => { handleManage(oItem) }} items={menuItems}
                                 >
                                     <Button
-                                        tooltip="All Apps"
+                                      
                                         variant="secondary"
                                         size="base"
                                         rounded

@@ -5,7 +5,7 @@ import { View, Row, Pressable } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
 import { useWindowDimensions } from 'react-native';
 import { appSetting, getHeaderSettings, getUnitModeBySource, getURI, getLayout, handleFeedLayoutData, menuItemsByName, getMenuSettings, isObjectsEqual } from 'app/lib/util';
-import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer, ItemRendererMemo, LeftSidebar, TopSidebar, getNumCols } from 'app/lib/conductor-helpers';
+import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer, ItemRendererMemo, LeftSidebar, TopSidebar, getNumCols, processBlocks } from 'app/lib/conductor-helpers';
 import { Button } from 'app/design/controls';
 import Link from 'app/ui/atoms/link'
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
@@ -41,7 +41,7 @@ const getUnitType = (currentRoute) => {
 
 const AddBlocks = (leftSideBarBlocks, data, onFormChangedValues) => {
 
-    if (!leftSideBarBlocks)
+    if (!leftSideBarBlocks || !data)
         return null;
 
     const leftSideBarBlocksObj = leftSideBarBlocks.map((block) => {
@@ -98,7 +98,7 @@ const AddMenu = (menu, filter) => {
         if (button.section)
             btn = <Search section={button.section} params={{ trigger: { size: 'base' } }} />
         else {
-            btn = <Button title={t(button.title)} startDecorator={button.icon} variant="secondary" rounded size="sm" onPress={() => (handleFormModal(button, event, setPageData))} />;
+            btn = <Button title={t(button.title)} startDecorator={button.icon} variant="secondary" rounded size="base" onPress={() => (handleFormModal(button, event, setPageData))} />;
             btn = (button.link && button.name != "Add") ? <Link href={button.link} >{btn}</Link> : btn
         }
 
@@ -204,6 +204,7 @@ const LeftSideBarContainer = ({ menu, routes, currentUser, index, setIndex, left
     const menuSettings = getMenuSettings(menu.object, menu.config, menu);
     const { t } = useTranslation();
     const addButtons = AddMenu(menu, 'hideInSideBar');
+    console.log("menumenu", menu)
     return (
         <LeftSidebar title={t(menuSettings?.name)} addButtons={addButtons} width={leftSideBarWidth}>
             {headerSettings.hideLeftmenu != true && routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
@@ -405,9 +406,10 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
     const { width: windowWidth, height: windowHeight } = useWindowDimensions();
 
-    const initedTabs = fillTabs(menu, data, blocks, currentUser, useSectionAsMenu);
-
+    const initedTabs = fillTabs(menu, data, blocks, currentUser, useSectionAsMenu, leftSideBarBlocks);
+    
     const [routes, setRoutes] = useState(initedTabs);
+   
     const [cntWidth, setCntWidth] = useState(0);
     const [isRevalidate, setIsRevalidate] = useState(false);
 
@@ -503,6 +505,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     /* UPDATE CONTENT PART */
     useEffect(() => {
         setToaster2Visible(false);
+        setBottomSheetData(false)
     }, [index]);
 
     const setToaster2Visible = (val) => {
@@ -569,22 +572,34 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     /* NEW POST TO FEED */
 
     const setFilterValue = (values) => {
-        const newRoutes = [...routes];
-        values.forEach(function (value) {
-            const name = value.name;
-            const val = value.value;
-            if (newRoutes[index].endpoint.params.filters) {
-                newRoutes[index].endpoint.params.filters[name] = val;
-            }
-            else {
-                newRoutes[index].endpoint.params.filters = { [name]: val };
-            }
-        })
-        newRoutes[index].endpoint.finished = false;
-        newRoutes[index].data = [];
-        newRoutes[index].endpoint.params.start = 0;
-        setRoutes(newRoutes);
-    }
+        setIndex((prevIndex) => {
+            setRoutes((prevRoutes) => {
+                const newRoutes = [...prevRoutes]; // Актуальные маршруты
+    
+                console.log("newRoutes1", newRoutes);
+    
+                values.forEach((value) => {
+                    const name = value.name;
+                    const val = value.value;
+    
+                    if (newRoutes[prevIndex].endpoint.params.filters) {
+                        newRoutes[prevIndex].endpoint.params.filters[name] = val;
+                    } else {
+                        newRoutes[prevIndex].endpoint.params.filters = { [name]: val };
+                    }
+                });
+    
+                newRoutes[prevIndex].endpoint.finished = false;
+                newRoutes[prevIndex].data = [];
+                newRoutes[prevIndex].endpoint.params.start = 0;
+    
+                console.log("newRoutes2", newRoutes);
+                return newRoutes; // Обновляем состояние
+            });
+    
+            return prevIndex; // Возвращаем актуальный index (он не изменяется в этой функции)
+        });
+    };
 
     const onFormChangedValues = useCallback((values) => {
         let filterValues = [];
@@ -625,7 +640,9 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         />
     ), [menu, routes, leftSideBar, header, headerSettings, currentUser, index, setIndex, getNumCols, windowWidth, onChangeRoute]);
 
-    const AddBlocksCnt = useMemo(() => AddBlocks(leftSideBarBlocks, data, onFormChangedValues), [leftSideBarBlocks, data, onFormChangedValues]);
+    console.log("datadata1", currentRoute.pageData)
+
+    const AddBlocksCnt = useMemo(() => AddBlocks(currentRoute.leftSideBarBlocks, currentRoute.pageData, onFormChangedValues), [currentRoute.leftSideBarBlocks, currentRoute.pageData, onFormChangedValues]);
 
     /* console.log("Reload!");
  
@@ -649,8 +666,8 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
      }, [numColumns]);
  */
     const showFilters = useCallback(() => {
-        setBottomSheetData({ title: 'Filters', content: AddBlocksCnt, showClose: true, snapPoints: ['75%', '90%'] });
-    }, [leftSideBarBlocks, data, onFormSubmit]);
+        setBottomSheetData({ title: 'Filters', content: AddBlocksCnt, showClose: true, snapPoints: ['50%', '75%'] });
+    }, [currentRoute.leftSideBarBlocks, currentRoute.pageData, onFormSubmit]);
 
     const unitType = useMemo(() => {
         const type = getUnitModeBySource(currentRoute?.endpoint);
@@ -670,7 +687,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
         if (dataItems.length == 1 && !route.endpoint) {
             const a = dataItems.map((item, index) => {
-                return <View className={`mt-[116px] lg:mt-0 mx-auto mt-2 w-full ${appSetting('layout', 'max_width_block')}`} key={`tab-${index}`}><ItemRendererMemo route={route} key={'item' + index} numColumns={1} item={item} /></View>
+                return <View className={`mt-[64px] lg:mt-0 mx-auto mt-2 w-full ${appSetting('layout', 'max_width_block')}`} key={`tab-${index}`}><ItemRendererMemo route={route} key={'item' + index} numColumns={1} item={item} /></View>
             });
             return a;
         }
