@@ -42,7 +42,7 @@ export default function Unit(props) {
 
             <View className="flex-auto">
                 <Link href={data.url}>
-                    <Text numberOfLines={2} className="text-neutral-800 mb-2 dark:text-neutral-200 sm:hover:text-primary sm:dark:hover:text-primary-d text:lg sm:text-xl font-semibold ">
+                    <Text numberOfLines={2} className="text-neutral-800 mb-1 dark:text-neutral-200 sm:hover:text-primary sm:dark:hover:text-primary-d text:lg sm:text-xl font-semibold ">
                         {data.title}
                     </Text>
                     <Text numberOfLines={2} className="text-neutral-600 mb-4 dark:text-neutral-400 text-xs sm:text-sm">
@@ -50,6 +50,8 @@ export default function Unit(props) {
                     </Text>
                 </Link>
                 <View className="mt-auto flex-row gap-x-1.5">
+                <Text className="font-semibold text-neutral-800 dark:text-neutral-200 text-sm border border-neutral-200 dark:border-neutral-800 rounded-full px-2 py-1">Author</Text>
+
                 {data.pay_hourly > 0 && <Text className="font-semibold text-neutral-800 dark:text-neutral-200 text-sm bg-green-200 dark:bg-green-800 rounded-full px-2 py-1">Hourly: {data.pay_hourly}$</Text>}
                 {data.pay_total > 0 && <Text className="font-semibold text-neutral-800 dark:text-neutral-200 text-sm bg-blue-200 dark:bg-blue-800 rounded-full px-2 py-1">Total: {data.pay_total}$</Text>}
 
