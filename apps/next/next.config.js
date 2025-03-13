@@ -36,7 +36,7 @@ const nextConfig = {
     'react-native',
     'react-native-web',
     'solito',
-    '@nandorojo/galeria',
+
     'react-native-reanimated',
     'nativewind',
     "react-native-css-interop",
