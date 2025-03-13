@@ -52,7 +52,8 @@ const LogoMark = (
         aria-label="Logo Mark"
         className=" w-auto h-fit text-neutral-800 dark:text-neutral-200 hover:text-neutral-900 dark:hover:text-neutral-100  "
         viewBox="0 0 40 40"
-
+        width={40}
+        height={40}
         xmlns="http://www.w3.org/2000/svg"
     >
         <Path
