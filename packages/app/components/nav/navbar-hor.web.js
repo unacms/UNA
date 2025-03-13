@@ -57,11 +57,17 @@ const HeaderLine = memo(
                     </View>
                 )}
                 {(uri == 'home' || width >= LAYOUT_BREAKPOINTS.lg) && (
-                    <Link className=" focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus:outline-primary/50 duration-100 rounded-full " href="/home" aria-label="Logo">
-                        <View className="group flex-row w-11 h-11 flex-none items-center my-auto">
+                    <Link className=" focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus:outline-primary/50 duration-100 " href="/home" aria-label="Logo">
+                            
+                            <Row className="group flex-row h-[40px] gap-x-2 flex-auto max-w-[176px] items-center my-auto">
+                            <View className=" w-[40px] flex-none items-center my-auto">
                             {appStatic('logo_mark')}
+                            </View>
+                            <View className="hidden xl:flex flex-auto items-center my-auto">
+                            {appStatic('logo_text')}
+                            </View>
                             {/*{appStatic('logo_text')}*/}
-                        </View>
+                        </Row>
                     </Link>
                 )}
                 {headerSettings.backButton && getBackButtonWeb()}
@@ -77,7 +83,7 @@ const HeaderLine = memo(
                     </View>
                 )}
                 {bSearch && (
-                    <View className="ml-3 w-full flex-auto hidden xl:flex ">
+                    <View className="ml-4 flex-auto hidden xl:flex ">
                         <Search type="input" placeholder="Enter search text" />
                     </View>
                 )}

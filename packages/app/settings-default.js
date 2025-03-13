@@ -698,7 +698,7 @@ export const settingsDefault = {
             content_hor:
                 ' flex flex-row z-10 p-1 bg-bgrmodal border border-bdr dark:border-bdr-d m-2 backdrop-blur-xl dark:bg-bgrmodal-d text-sm text-neutral-800 dark:text-neutral-200 rounded-full ',
             item_ver:
-                'flex flex-row focus:outline-none items-center px-3 py-2 gap-x-3 text-sm rounded-lg font-medium hover:bg-bgritem dark:hover:bg-bgritem-d text-neutral-700 dark:text-neutral-300 dark:hover:text-white hover:cursor-pointer',
+                'flex flex-row focus:outline-none items-center px-3 py-2.5 gap-x-3 text-sm rounded-lg font-medium hover:bg-bgritem dark:hover:bg-bgritem-d text-neutral-700 dark:text-neutral-300 dark:hover:text-white hover:cursor-pointer',
             item_hor:
                 'flex block px-3 py-2 hover:-translate-y-1 active:-translate-y-1 dark:hover:text-white rounded-full hover:cursor-pointer text-neutral-700  hover:scale-125 active:scale-95 duration-200 dark:text-neutral-300 outline-none ',
             item_np:
@@ -706,7 +706,8 @@ export const settingsDefault = {
             item_cnt: 'items-center gap-x-3',
             item_text:
                 'text-sm font-medium text-neutral-800 dark:text-neutral-200',
-            item_icon: 'text-2xl text-neutral-700 dark:text-neutral-300',
+            item_icon: 'flex items-center justify-center',
+            icon_size: 20, // Default icon size for dropdown menu icons
         },
         modal: {
             fog: 'bg-white/50 dark:bg-black/80 backdrop-blur ',
@@ -726,7 +727,7 @@ export const settingsDefault = {
                 ' bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-bdrinput dark:border-bdrinput-d focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus:outline-primary/50 duration-100 placeholder-neutral-500 duration-100 text-neutral-900 rounded-lg h-12 flex-auto p-3 leading-6 dark:text-neutral-100 text-base ',
             multi: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg flex-auto p-2 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 ',
             rounded:
-                ' placeholder-neutral-500 pl-10 bg-bgrinput dark:bg-bgrinput-d hover:bg-bgrinput-h dark:hover:bg-bgrinput-dh focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-transparent focus:border-bdrinput-f dark:focus:border-bdrinput-f focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-primary/50 text-neutral-900 rounded-full flex-auto px-3 dark:text-neutral-100 text-base leading-5 h-11  ',
+                ' placeholder-neutral-500 pl-10 bg-bgrinput dark:bg-bgrinput-d hover:bg-bgrinput-h dark:hover:bg-bgrinput-dh focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-transparent focus:border-bdrinput-f dark:focus:border-bdrinput-f focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-primary/50 text-neutral-900 rounded-full flex-auto px-3 dark:text-neutral-100 text-base leading-[20px] h-[40px]  ',
             roundedsmall:
                 ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-full flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[34px] ',
             small: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[36px] ',
@@ -760,9 +761,9 @@ export const settingsDefault = {
             },
             base: {
                 rounded: ' rounded-[8px] overflow-hidden  ',
-                padding: ' h-[44px] p-[4px]  ',
-                icon_container: ' w-[36px] h-[36px] p-[6px] ',
-                icon_size: '24px',
+                padding: ' p-[4px]  ',
+                icon_container: ' w-[32px] h-[32px] p-[6px] ',
+                icon_size: '20px',
                 icon_margin: ' p-[6px] ',
                 min_height: ' leading-[24px] web:text-[16px] ',
                 margin: ' leading-[36px] bg-transparent px-[6px] my-auto native:text-[16px] ',

@@ -64,6 +64,9 @@ export default function DropdownMenuComponent({ variant = 'vertical', defaultOpe
     const DmContent = (sVariant == 'vertical' || sVariant == 'nopad') ? DropdownMenuContentV : DropdownMenuContentH;
     const DmItem = sVariant == 'vertical' ? DropdownMenuItemV : (sVariant == 'nopad' ? DropdownMenuItemNoPad : DropdownMenuItemH);
 
+    // Get icon size from menuSettings or default to a reasonable size
+    const iconSize = menuSettings.icon_size || 16;
+
     const aDmItems = items.map((oItem, index) => {
         const key = oItem.id || index; 
         let sIcon = undefined;
@@ -71,13 +74,17 @@ export default function DropdownMenuComponent({ variant = 'vertical', defaultOpe
             if (isEmoji(oItem.icon))
                 sIcon = <Text className={oItem?.class_item_icon}>{oItem.icon}</Text>;
             else
-                sIcon = <Icon className={oItem?.class_item_icon} icon={oItem.icon} />;
+                sIcon = <Icon 
+                    className={oItem?.class_item_icon} 
+                    icon={oItem.icon} 
+                    size={oItem?.icon_size || iconSize} 
+                />;
         }
 
         return (
             <DmItem key={key} onSelect={(event) => !!oItem?.onClick ? oItem?.onClick(oItem, event) : onSelectInt(oItem, event)}>
                 <Row className={menuSettings.item_cnt}>
-                    {!!sIcon && <Text className={menuSettings.item_icon}>{sIcon}</Text>}
+                    {!!sIcon && <View className={menuSettings.item_icon}>{sIcon}</View>}
                     {!!oItem?.title && (typeof oItem?.title === 'string' ? <Text className={menuSettings.item_text}>{oItem.title}</Text> : oItem.title)}
                 </Row>
             </DmItem>
