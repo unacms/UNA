@@ -1,8 +1,6 @@
 import { useState } from 'react';
-import { useRequest } from 'app/hooks/useRequest';
-import { fetcher } from 'app/lib/fetcher';
+import { useFetchForm } from 'app/hooks/useRequest';
 import Element from 'app/components/element';
-
 import { View } from 'app/design/view'
 import { Text} from 'app/design/typography'
 
@@ -18,14 +16,15 @@ export default function BlockContentObjectDataArray(props) {
         return a.request ? false : true;
     });
 
-    const { data: dynamicData, error, isLoading } = useRequest(
+   /* const { data: dynamicData, error, isLoading } = useRequest(
         postData ? [requestUrl, '', postData] : null,
         immutable ? {
             revalidateIfStale: false,
             revalidateOnFocus: false,
             revalidateOnReconnect: false
         } : undefined
-    );
+    );*/
+    const { data: dynamicData, error } = useFetchForm(requestUrl, postData);
 
     // update state when form is submitted
     const onFormSubmit = (formData, d) => {
