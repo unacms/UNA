@@ -42,31 +42,38 @@ export default function Unit(props) {
 
             <View className="flex-auto">
                 <Link href={data.url}>
-                    <Text numberOfLines={2} className="text-neutral-800 mb-2 dark:text-neutral-200 sm:hover:text-primary sm:dark:hover:text-primary-d text:lg sm:text-xl d">
+                    <Text numberOfLines={2} className="text-neutral-800 mb-2 dark:text-neutral-200 sm:hover:text-primary sm:dark:hover:text-primary-d text:lg sm:text-xl font-semibold ">
                         {data.title}
                     </Text>
-                    <Text numberOfLines={2} className="text-neutral-600 mb-2 dark:text-neutral-400 text-xs sm:text-sm">
+                    <Text numberOfLines={2} className="text-neutral-600 mb-4 dark:text-neutral-400 text-xs sm:text-sm">
                         {data.description}
                     </Text>
                 </Link>
-                <View className="mt-auto">
-                {data.pay_hourly > 0 && <Text className="font-semibold text-lg">Hourly: {data.pay_hourly}$</Text>}
-                {data.pay_total > 0 && <Text className="font-semibold text-lg">Total: {data.pay_total}$</Text>}
+                <View className="mt-auto flex-row gap-x-1.5">
+                {data.pay_hourly > 0 && <Text className="font-semibold text-neutral-800 dark:text-neutral-200 text-sm bg-green-200 dark:bg-green-800 rounded-full px-2 py-1">Hourly: {data.pay_hourly}$</Text>}
+                {data.pay_total > 0 && <Text className="font-semibold text-neutral-800 dark:text-neutral-200 text-sm bg-blue-200 dark:bg-blue-800 rounded-full px-2 py-1">Total: {data.pay_total}$</Text>}
+
+                </View>
+                <View className="mt-4 flex-row flex-wrap gap-x-2 gap-y-1">
+                <Text className="font-semibold text-neutral-800 dark:text-neutral-200 text-sm bg-neutral-200 dark:bg-neutral-800 rounded px-2 py-1">tag</Text>
+                <Text className="font-semibold text-neutral-800 dark:text-neutral-200 text-sm bg-neutral-200 dark:bg-neutral-800 rounded px-2 py-1">tag</Text>
+                <Text className="font-semibold text-neutral-800 dark:text-neutral-200 text-sm bg-neutral-200 dark:bg-neutral-800 rounded px-2 py-1">tag</Text>
+                <Text className="font-semibold text-neutral-800 dark:text-neutral-200 text-sm bg-neutral-200 dark:bg-neutral-800 rounded px-2 py-1">tag</Text>
+                <Text className="font-semibold text-neutral-800 dark:text-neutral-200 text-sm bg-neutral-200 dark:bg-neutral-800 rounded px-2 py-1">React</Text>
+                <Text className="font-semibold text-neutral-800 dark:text-neutral-200 text-sm bg-neutral-200 dark:bg-neutral-800 rounded px-2 py-1">Node.js</Text>
+                <Text className="font-semibold text-neutral-800 dark:text-neutral-200 text-sm bg-neutral-200 dark:bg-neutral-800 rounded px-2 py-1">TypeScript</Text>
+                <Text className="font-semibold text-neutral-800 dark:text-neutral-200 text-sm bg-neutral-200 dark:bg-neutral-800 rounded px-2 py-1">Remote</Text>
+                <Text className="font-semibold text-neutral-800 dark:text-neutral-200 text-sm bg-neutral-200 dark:bg-neutral-800 rounded px-2 py-1">Full-time</Text>
+                <Text className="font-semibold text-neutral-800 dark:text-neutral-200 text-sm bg-neutral-200 dark:bg-neutral-800 rounded px-2 py-1">Senior</Text>
+                <Text className="font-semibold text-neutral-800 dark:text-neutral-200 text-sm bg-neutral-200 dark:bg-neutral-800 rounded px-2 py-1">AWS</Text>
+                <Text className="font-semibold text-neutral-800 dark:text-neutral-200 text-sm bg-neutral-200 dark:bg-neutral-800 rounded px-2 py-1">Docker</Text>
+                <Text className="font-semibold text-neutral-800 dark:text-neutral-200 text-sm bg-neutral-200 dark:bg-neutral-800 rounded px-2 py-1">CI/CD</Text>
+                <Text className="font-semibold text-neutral-800 dark:text-neutral-200 text-sm bg-neutral-200 dark:bg-neutral-800 rounded px-2 py-1">Agile</Text>
 
                 </View>
 
             </View>
-            {data?.cover?.src && (
-                <View className="aspect-square md:aspect-video flex-none rounded-lg overflow-hidden h-24 sm:h-36 mb-auto  ">
-                    <Image
-                        {...data.cover}
-                        alt={data.title}
-                        view="cover"
-                        className="u-cover"
-                        sizes={imageSizes}
-                    />
-                </View>
-            )}
+            
         </Card>
     </View>
     );
