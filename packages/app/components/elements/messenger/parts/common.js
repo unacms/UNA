@@ -60,7 +60,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
         }
     );*/
 
-    const { data: dynamicData, error } = useFetchForm('/api.php?r=bx_messenger/get_send_form/Services&params=' + JSON.stringify({ id: selectedConvo.id, convo_id: selectedConvo.id, reply_id: replyItem ? replyItem.id : 0 }), commentForm);
+    const { data: dynamicData, error } = useFetchForm('/api.php?r=bx_messenger/get_send_form/Services&params=' + JSON.stringify({ id: selectedConvo?.id, convo_id: selectedConvo?.id, reply_id: replyItem ? replyItem?.id : 0 }), commentForm);
 
     useEffect(() => {
         data.form.data.inputs.message.value = '';
