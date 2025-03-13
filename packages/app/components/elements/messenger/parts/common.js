@@ -562,8 +562,6 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
         }
     };
 
-    
-
     return (<>
         <View className='md:px-0 border-bdrcard dark:border-bdrcard-d border-b w-full '>
             {(isWeb || true) && <Row className='px-3 py-2 items-center justify-between w-full h-[56px]'>
