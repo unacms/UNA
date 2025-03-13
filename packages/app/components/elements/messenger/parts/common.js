@@ -9,7 +9,8 @@ import Form from 'app/components/elements/form';
 import { Keyboard } from 'react-native'
 import { useWindowDimensions } from 'react-native';
 import { Platform } from 'react-native'
-import useSWR from "swr";
+//import use-SWR from "swr";
+import useFetchForm from 'app/lib/hooks/fetch'
 import { useCurrentUser } from 'app/context/user';
 import { subscribe } from 'app/ui/atoms/socket';
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
@@ -49,7 +50,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     let layoutHeightRight = isWeb ? layoutHeight - 40 - formHeight : layoutHeight - 40 - formHeight;
     if (listError)
         layoutHeightRight = layoutHeightRight - 60
-    let { data: dynamicData, error } = useSWR(
+   /* let { data: dynamicData, error } = useSWR(
         commentForm ? ['/api.php?r=bx_messenger/get_send_form/Services&params=' + JSON.stringify({ id: selectedConvo.id, convo_id: selectedConvo.id, reply_id: replyItem ? replyItem.id : 0 }), '', commentForm] : null,
         fetcher,
         !true ? undefined : {
@@ -57,7 +58,9 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
             revalidateOnFocus: false,
             revalidateOnReconnect: false
         }
-    );
+    );*/
+    
+    const { data: dynamicData, error } = useFetch('/api.php?r=bx_messenger/get_send_form/Services&params=' + JSON.stringify({ id: selectedConvo.id, convo_id: selectedConvo.id, reply_id: replyItem ? replyItem.id : 0 }), commentForm);
 
     useEffect(() => {
         data.form.data.inputs.message.value = '';

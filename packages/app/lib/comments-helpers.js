@@ -5,7 +5,8 @@ import { Text } from 'app/design/typography'
 import { useState, useContext, useRef, useEffect } from 'react';
 import { componentsMap } from 'app/components/units/_map_internal';
 import { Button, Modal } from 'app/design/controls'
-import useSWR from "swr";
+//import useSWR from "swr";
+import useFetchForm from 'app/lib/hooks/fetch'
 import { fetcher } from 'app/lib/fetcher';
 import Loading from 'app/ui/atoms/loading'
 import Form from 'app/components/elements/form';
@@ -474,7 +475,7 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
     const [commentForm, setCommentForm] = useState();
 
     let immutable = form ? form?.request?.immutable : false;
-    let { data: dynamicData, error } = useSWR(
+    /*let { data: dynamicData, error } = useSWR(
         commentForm ? [prepareUrl(), '', commentForm] : null,
         fetcher,
         !immutable ? undefined : {
@@ -482,7 +483,8 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
             revalidateOnFocus: false,
             revalidateOnReconnect: false
         }
-    );
+    );*/
+    const { data: dynamicData, error } = useFetchForm(prepareUrl(), commentForm);
 
     useEffect(() => {
         if (dynamicData?.data?.browse) {

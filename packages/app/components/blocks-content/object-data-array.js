@@ -1,6 +1,5 @@
-import { useState,  } from 'react';
-import useSWR from "swr";
-
+import { useState } from 'react';
+import { useRequest } from 'app/hooks/useRequest';
 import { fetcher } from 'app/lib/fetcher';
 import Element from 'app/components/element';
 
@@ -9,6 +8,7 @@ import { Text} from 'app/design/typography'
 
 export default function BlockContentObjectDataArray(props) {
     const [postData, setPostData] = useState(null);
+    
     // check if any element in a block has request URL
     let immutable = false;
     let requestUrl = null;
@@ -18,16 +18,15 @@ export default function BlockContentObjectDataArray(props) {
         return a.request ? false : true;
     });
 
-    // get data from URL if needed
-    let { data: dynamicData, error } = useSWR(
+    const { data: dynamicData, error, isLoading } = useRequest(
         postData ? [requestUrl, '', postData] : null,
-        fetcher,
-        !immutable ? undefined : {
+        immutable ? {
             revalidateIfStale: false,
             revalidateOnFocus: false,
             revalidateOnReconnect: false
-        }
+        } : undefined
     );
+
     // update state when form is submitted
     const onFormSubmit = (formData, d) => {
         setPostData(formData);

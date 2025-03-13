@@ -1,11 +1,9 @@
 import { useState, } from 'react';
-import useSWR from "swr";
-import { fetcher } from 'app/lib/fetcher';
+//import use-SWR from "swr";
+import useFetchForm from 'app/lib/hooks/fetch'
 import Form from 'app/components/elements/form';
 import SimpleList from 'app/components/elements/simple_list';
-import { View } from 'app/design/view'
 import { Text } from 'app/design/typography'
-import { Platform } from 'react-native'
 import Msg from 'app/components/elements/msg';
 import Redirect from 'app/components/elements/redirect';
 
@@ -26,7 +24,7 @@ export default function BlockContentObjectDataArray(props) {
     });
 
     // get data from URL if needed
-    let { data: dynamicData, error } = useSWR(
+   /* let { data: dynamicData, error } = useSWR(
         postData ? [requestUrl, '', postData] : null,
         fetcher,
         !immutable ? undefined : {
@@ -34,7 +32,9 @@ export default function BlockContentObjectDataArray(props) {
             revalidateOnFocus: false,
             revalidateOnReconnect: false
         }
-    );
+    );*/
+    const { data: dynamicData, error } = useFetchForm(requestUrl, postData);
+
     // update state when form is submitted
     const onFormSubmit = (formData, d) => {
         setPostData(formData);

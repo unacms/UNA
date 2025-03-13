@@ -16,7 +16,8 @@ import React from 'react';
 import { fetcher } from 'app/lib/fetcher';
 import { useState, useEffect } from 'react';
 import Form from 'app/components/elements/form';
-import useSWR from "swr";
+//import useSWR from "swr";
+import useFetchForm from 'app/lib/hooks/fetch'
 import { useTranslation } from 'react-i18next';
 import Link from 'app/ui/atoms/link'
 import { stripTags, appSetting, getDataForMenu } from 'app/lib/util';
@@ -58,7 +59,7 @@ export default function UnitComments(props) {
     if (!data)
         return null;
 
-    let { data: dynamicData, error } = useSWR(
+   /* let { data: dynamicData, error } = useSWR(
         postData ? ['/api.php?r=' + appSetting("urls", "cmts") + '/&params[]={"module":"' + props.module + '","object_id":' + props.data.cmt_object_id + ',"action":"edit","id":' + props.data.cmt_id + '}', '', postData] : null,
         fetcher,
         !true ? undefined : {
@@ -66,7 +67,8 @@ export default function UnitComments(props) {
             revalidateOnFocus: false,
             revalidateOnReconnect: false
         }
-    );
+    );*/
+    const { data: dynamicData, error } = useFetchForm('/api.php?r=' + appSetting("urls", "cmts") + '/&params[]={"module":"' + props.module + '","object_id":' + props.data.cmt_object_id + ',"action":"edit","id":' + props.data.cmt_id + '}', postData);
 
 
     if (dynamicData?.data?.browse?.data?.data[0]['i' + props.data.cmt_id]) {

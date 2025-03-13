@@ -21,7 +21,8 @@ import Carousel from 'app/ui/molecules/carousel'
 import { subscribe } from 'app/ui/atoms/socket';
 import { LAYOUT_BREAKPOINTS, getDataForMenu } from 'app/lib/util';
 import Form from 'app/components/elements/form'
-import useSWR from 'swr'
+//import useSWR from 'swr'
+import useFetchForm from 'app/lib/hooks/fetch'
 import { useTranslation } from 'react-i18next';
 import Loading from 'app/ui/atoms/loading'
 import * as FeedItems from 'app/lib/feed-items'
@@ -55,11 +56,12 @@ export const CommentsModal = memo(({ commentsData, initFormData, itemContent, cl
 export const FeedEditForm = memo(({ setViewState, viewState, id }) => {
     const { t } = useTranslation();
     const [postData, setPostData] = useState(null);
-    const { data: dynamicData, error } = useSWR(
+    /*const { data: dynamicData, error } = useSWR(
         postData ? ['/api.php?r=bx_timeline/get_edit_form/&params[]=' + id, '', postData] : null,
         fetcher,
         !true ? undefined : { revalidateIfStale: false, revalidateOnFocus: false, revalidateOnReconnect: false }
-    )
+    )*/
+    const { data: dynamicData, error } = useFetchForm('/api.php?r=bx_timeline/get_edit_form/&params[]=' + id, postData);
 
     const onFormSubmit = (formData, d) => {
         setPostData(formData)

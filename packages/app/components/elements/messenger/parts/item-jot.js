@@ -6,7 +6,8 @@ import Profile from 'app/ui/molecules/profile'
 import Time from 'app/ui/atoms/time'
 import { Button } from 'app/design/controls'
 import Form from 'app/components/elements/form';
-import useSWR from "swr";
+//import use-SWR from "swr";
+import useFetchForm from 'app/lib/hooks/fetch'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import Reactions from 'app/ui/molecules/reactions';
 import { useTranslation } from 'react-i18next';
@@ -36,11 +37,12 @@ export default function JotItem({ item, index, handleReply }) {
         }
     }, [item]);
 
-    let { data: dynamicData, error } = useSWR(
+    /*let { data: dynamicData, error } = useSWR(
         postData ? ['/api.php?r=bx_messenger/get_send_form/Services&params[]=', '', postData] : null,
         fetcher,
         !true ? undefined : { revalidateIfStale: false, revalidateOnFocus: false, revalidateOnReconnect: false }
-    )
+    )*/
+    const { data: dynamicData, error } = useFetchForm('/api.php?r=bx_messenger/get_send_form/Services&params[]=', postData);
 
     let aImg = useMemo(() => item?.files.map((obj) => {
         return {
