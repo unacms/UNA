@@ -4,8 +4,8 @@
   "main": "index.ts",
   "dependencies": {
     "clsx": "^2.0.0",
-    "crypto": "file:../../crypto-shim",
-    "solito": "4.3.0"
+    "solito": "4.3.0",
+    "crypto": "file:../../crypto-shim"
   },
   "sideEffects": false
 }

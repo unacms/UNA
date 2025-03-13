@@ -7,22 +7,21 @@ import { Image as ImageOr, useWindowDimensions,Platform } from 'react-native';
 import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import Video from 'app/ui/atoms/video';
 import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
-import { Galeria } from '@nandorojo/galeria'
 
 const Image2 = memo((item) => {
 
+    const handlePress = useCallback(() => item.handleShowImage(item), [item]);
+
     return (
         <View className={(item.len > 1 ? 'w-1/2' : 'w-full') + ' h-full bg-bgritem dark:bg-bgritem-d '}>
-             <Galeria.Image index={item?.index} >
-          
+            <Pressable style={{ flex: 1, justifyContent: 'center' }} onPress={handlePress} >
                 {item.type == 'image' ? ((item.width && item.height) ?
                     <Image sizes={LAYOUT_BREAKPOINTS.xl} src={item.src} alt='' height={item.height} width={item.width} className=" u-cover dark:bg-bgritem-d dark:bg-bgritem-d gap-x-1 " /> :
                     <Image sizes={LAYOUT_BREAKPOINTS.xl} src={item.src} alt='' view="cover" className=" u-cover dark:bg-bgritem-d dark:bg-bgritem-d gap-x-1 " />
                 ) : <Video cover={true} src={item.src} controls={false} muted={"muted"} autoplay={"autoplay"} />}
 
-                {item.row == 1 && item?.index2 == 1 && item.data.length > 3 && <View className='absolute z-50 w-1/4 h-1/4 text-center bottom-3 right-3 items-center justify-center'><Text className='text-5xl lg:text-7xl text-white'>+{item.data.length - 3}</Text></View>}
-
-            </Galeria.Image>
+                {item.row == 1 && item?.index2 == 1 && item.data.length > 3 && <View className='absolute z-50 w-full h-full text-center items-center justify-center'><Text className='text-5xl lg:text-7xl text-white'>+{item.data.length - 3}</Text></View>}
+            </Pressable>
         </View>
     )
 });
@@ -95,7 +94,7 @@ const Gallery = React.memo(({ data, handleShowImage, windowWidthOr }) => {
         }
 
     }
- 
+
     return (
         <View className={(data.length == 2 ? "aspect-video" : "aspect-square") + " w-full " + max_image_width + " gap-y-0.5 rounded sm:rounded-lg overflow-hidden mx-auto "}>
             <Row className={(len > 2 ? 'h-1/2' : 'h-full') + ' gap-x-0.5 w-full '}>
@@ -171,15 +170,48 @@ const Carousel = memo(({ data = [] }) => {
         }
     }, [currentImageIndex]);
 
-    const urls = data.map(item => item.src);
-
     return <>
-      
-        <View className='w-full mx-auto pb-1'>
-        <Galeria urls={urls}>
+        {currentImageIndex !== false && <Modal padding="" title="Viewer" onVisible={currentImageIndex !== false} onClose={() => { setCurrentImageIndex(false) }} transparent={true} >
+            <Row className=' w-full mx-auto items-center justify-center h-full'>
+                {
+                    (imageSize2[0] > 0 && data[currentImageIndex].type == 'image') && (
+                        <ScrollView style={{ height: windowHeightOr - offset }}>
+                            <Pressable style={{ width: imageSize2[0], height: imageSize2[1] }} onPress={() => setCurrentImageIndex(false)}>
+                                {currentImageIndex !== false && (
+                                       <ReactNativeZoomableView
+                                       maxZoom={30}
+                                       // Give these to the zoomable view so it can apply the boundaries around the actual content.
+                                       // Need to make sure the content is actually centered and the width and height are
+                                       // dimensions when it's rendered naturally. Not the intrinsic size.
+                                       // For example, an image with an intrinsic size of 400x200 will be rendered as 300x150 in this case.
+                                       // Therefore, we'll feed the zoomable view the 300x150 size.
+                                       contentWidth={300}
+                                       contentHeight={150}
+                                     >
+                                    <Image view='cover' sizes={LAYOUT_BREAKPOINTS.xl} src={data[currentImageIndex].src} alt='' className=" u-cover  dark:bg-bgritem-d dark:bg-bgritem-d gap-x-1 " />
+                                    </ReactNativeZoomableView>
+                                )}
+                                <Row className='absolute w-full -mt-4 top-1/2 items-center justify-between w-full px-4'>
+                                    {
+                                        currentImageIndex > 0 ? <Button variant="default" rounded size="base" onPress={() => setCurrentImageIndex(currentImageIndex - 1)} startDecorator="ArrowLeft" /> : <View className='mr-1 w-10'></View>
+                                    }
+                                    {
+                                        (currentImageIndex != data.length - 1) ? <Button variant="default" rounded size="base" onPress={() => setCurrentImageIndex(currentImageIndex + 1)} startDecorator="ArrowRight" /> : <View className='mr-1 w-10'></View>
+                                    }
+                                </Row>
+                            </Pressable>
+                        </ScrollView>
+                    )
+                }
+                {
+                    data[currentImageIndex].type == 'video' && <Pressable onPress={() => setCurrentImageIndex(false)}><View className='aspect-video max-w-xl' style={{ width: windowWidthOr }}><Video autoplay="autoplay" muted={false} controls={true} src={data[currentImageIndex].src} /></View></Pressable>
+                }
 
+            </Row>
+
+        </Modal>}
+        <View className='w-full mx-auto pb-1'>
             <Gallery windowWidthOr={windowWidthOr} data={data} handleShowImage={handleShowImage} />
-            </Galeria>
         </View>
 
     </>
