@@ -19,6 +19,7 @@ import {
 } from "@expo/html-elements";
 import Link from 'app/ui/atoms/link'
 import { Text, H1, H2, H3 } from 'app/design/typography'
+import { Platform } from 'react-native'
 
 const StyledP = (props) => (
     <P className={`${!props.isLast ? 'mb-1' : 'mb-0'} ${!props.isFirst ? 'mt-1' : 'mt-0'} ${props.textStyles} `}>
@@ -151,7 +152,7 @@ const parseHtmlToReact = (html, textStyles, parentKey = "0") => {
 };
 
 export default function ElementHtml({ customClassName, data }) {
-    const textStyles = customClassName?.includes('u-vanilla-html-small') // MAY BE NEED TO IMPROVE
+    const textStyles = (customClassName?.includes('u-vanilla-html-small')  && Platform.OS ==='web') // MAY BE NEED TO IMPROVE
         ? 'text-sm leading-[18px] text-neutral-800 dark:text-neutral-200' 
         : 'text-base leading-[20px] text-neutral-800 dark:text-neutral-200';
     if (!data)

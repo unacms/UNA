@@ -46,6 +46,7 @@ export default function ElementLink(props) {
     const domain = useMemo(() => getDomainFromUrl(finalHref), [finalHref]);
     const rootUrl = appSetting('config', 'native_app_images_url');
 
+    const finalHrefWithDomain = finalHref;
     finalHref = finalHref.replace(domain, '');
 
     const index = useMemo(() => {
@@ -69,8 +70,9 @@ export default function ElementLink(props) {
 
     // Обработчик внешних ссылок
     const handleExternalLinkPress = useCallback(async () => {
-        await WebBrowser.openBrowserAsync(finalHref);
-    }, [finalHref]);
+        console.log("finalHreffinalHref", finalHrefWithDomain)
+        await WebBrowser.openBrowserAsync(finalHrefWithDomain);
+    }, [finalHrefWithDomain]);
 
     if (!sanitizedHref) {
         return children;
