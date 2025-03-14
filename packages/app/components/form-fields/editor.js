@@ -16,7 +16,6 @@ export default function FormFieldText(props) {
     const formContext = useFormContext();
     return (
         <Field {...props} error2={formContext.formState.errors[props.name]}>
-            <View className='h-0 w-0 absolute top-0 z-0 opacity-0'></View>
             {props.html == 1 || props.html == 2 || props.html == 3 ? <RftText {...props} /> : <PlainText {...props} />}
         </Field>
     );
