@@ -487,14 +487,13 @@ function GhostsList(imagesList, bMultiple, handleDelete, props) {
         const isImage = img?.file_type?.includes('image/');
         const isVideo = img?.file_type?.includes('video/');
         const isPreload = img?.preload;
-
         return (
             <View
                 key={`file-${props.name}-${index}`}
                 className="mb-[12px] w-[100px] h-[100px] m-[1px] justify-center items-center bg-bgritem dark:bg-bgritem-d rounded-lg overflow-hidden"
             >
                 {isImage ? <ImageRN
-                    source={{ uri: img.uri }}
+                    source={{ uri: img.uri || img.file_url }}
                     style={{ width: 100, height: 100, opacity: isPreload ? 0.5 : 1 }}
                     resizeMode="cover"
                     view="cover"
@@ -502,7 +501,7 @@ function GhostsList(imagesList, bMultiple, handleDelete, props) {
                 /> : (
                     
                         isVideo ? (
-                            <Video src={img.uri}/>
+                            <Video src={img.uri || img.file_url}/>
                         ) : (
                             <View className="h-16 w-16 text-neutral-700 dark:text-neutral-300 items-center justify-center"><Icon icon="File" className="w-8 h-8" size={32} /></View>
                         )

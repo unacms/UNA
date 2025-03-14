@@ -148,7 +148,7 @@ export default function (props) {
 
                 <View className="flex-auto w-full lg:w-auto sm:px-4 xl:px-2 ">
 
-                    <View className=" w-full mx-auto lg:max-w-2xl relative  web:pt-[52px] sm:web:pt-[0px]">
+                    <View className=" w-full mx-auto lg:max-w-2xl relative  ">{/*web:pt-[52px] sm:web:pt-[0px]*/}
                         <View className="web:fixed web:top-16 web:sm:top-0 web:z-50 web:w-full sm:relative bg-bgrnavbar dark:bg-bgrnavbar-d sm:bg-transparent border-b border-bdrcard dark:border-bdrcard-d shadow-sm sm:shadow-none sm:border-none">
                             <ScrollView
                                 horizontal={true}

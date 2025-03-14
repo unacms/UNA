@@ -37,10 +37,10 @@ export default function FormPost(props) {
         props.data.inputs['allow_comments'].caption = '';
 
     return (
-        <View className="w-full max-w-5xl flex-col px-3">
-            <View className="  overflow-hidden flex-col  ">
-                <View className=" flex-row flex-wrap gap-x-2  flex-auto justify-between ">
-                    <View className=" flex-auto mb-4 text-base font-bold text-neutral-800 my-auto ">
+        <View className="w-full max-w-5xl flex-col px-3 overflow-visible mx-2">
+            <View className="  overflow-hidden flex-col  overflow-visible">
+                <View className=" flex-row flex-wrap gap-x-2  flex-auto justify-between overflow-visible">
+                    <View className=" flex-auto mb-4 text-base font-bold text-neutral-800 my-auto overflow-visible">
                         <Profile {...currentUser} displayType="unit" displaySize="base" />
                     </View>
                     <View className=" mb-4  ">
@@ -65,7 +65,7 @@ export default function FormPost(props) {
                     'notitle',
                     { format: 'custom', view: 'preview' }
                 )}
-                <View className="  ">
+                <View className=" overflow-visible ">
                     {getFormFieldByData(
                         props.data.inputs['title'],
                         props.handleSubmit,

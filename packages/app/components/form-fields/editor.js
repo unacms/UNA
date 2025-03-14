@@ -69,7 +69,7 @@ function PlainText(props) {
             onChangeText={field.onChange}
             onBlur={field.onBlur}
             value={field.value}
-            className='placeholder-neutral-500 text-neutral-900 leading-6 dark:text-neutral-100 text-lg font-medium py-3'
+            className='focus:bg-bgrinput-f dark:focus:bg-bgrinput-df focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus:outline-primary/50 duration-100 placeholder-neutral-500 text-neutral-900 rounded-lgflex-auto p-3 leading-6 dark:text-neutral-100 text-base'
             aria-label={accessibility}
         />
     }
