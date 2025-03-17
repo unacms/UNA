@@ -40,7 +40,7 @@ const HeaderLine = memo(
             ).length > 0
 
         return (
-            <View className="flex-row xl:max-w-80 2xl:max-w-96 pl-4 flex-auto lg:flex-none xl:flex-auto overflow-hidden items-center ">
+            <View className="flex-row xl:max-w-80 2xl:max-w-96 px-4 flex-auto lg:flex-none xl:flex-auto items-center ">
                 {headerSettings.menu && isDrawer && (
                     <View className="lg:hidden ">
                         <Pressable onPress={showMenu}>
@@ -76,7 +76,7 @@ const HeaderLine = memo(
                         <Text
                             numberOfLines={1}
                             ellipsizeMode="tail"
-                            className="text-2xl lg:hidden font-bold text-neutral-800 dark:text-neutral-200 "
+                            className="text-3xl leading-[40px] tracking-tight lg:hidden font-bold text-neutral-800 dark:text-neutral-200 "
                         >
                             {title}
                         </Text>
@@ -158,7 +158,7 @@ export default function (props) {
                             menuPopup={menuPopup}
                             setMenuPopup={setMenuPopup}
                         />
-                        <Row className="hidden lg:flex flex-auto px-2">
+                        <Row className="hidden lg:flex flex-auto ">
                             <Row className="w-full mx-auto gap-x-2 max-w-2xl justify-between">
                                 {menu_navbar_items.map((item, index) => (
                                     <View
@@ -194,7 +194,7 @@ export default function (props) {
                                 ))}
                             </Row>
                         </Row>
-                        <Row className="flex-none w-80 2xl:w-96 flex-none px-3 sm:px-4 justify-end ">
+                        <Row className="flex-none xl:w-80 2xl:w-96 flex-none px-4 justify-end ">
                             {!!currentUser && (
                                 <Row className="flex-row justify-end  ">
                                     <View className=" flex-row  gap-x-2  ">

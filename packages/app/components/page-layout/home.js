@@ -103,8 +103,8 @@ export default function (props) {
                 }
             >
                 {getLayout(currentUser) == 'hor' && (
-                    <View className="hidden xl:flex w-96 ">
-                        <View className="fixed fixed-process w-96 flex-col p-2 ">
+                    <View className="hidden xl:flex w-80 2xl:w-96 ">
+                        <View className="fixed fixed-process w-80 2xl:w-96 flex-col p-2 ">
                             {appSetting('layout', 'show_profile_info') && (
                                 <Link href={currentUser.url} emulate={true} >
                                     <Row className={" rounded-[10px] group items-center px-2 py-1.5 justify-between hover:bg-bgrbutton dark:hover:bg-bgrbutton-d  active:bg-bgrbutton-h dark:active:bg-bgrbutton-dh  "}>
@@ -267,8 +267,8 @@ export default function (props) {
                     </View>
 
                 </View>
-                <View className="hidden lg:flex w-96 ">
-                    <View className="fixed fixed-process w-full  max-w-96 p-2 flex-col space-y-4 duration-200">
+                <View className="hidden lg:flex w-80 2xl:w-96 ">
+                    <View className="fixed fixed-process w-full max-w-80 2xl:max-w-96 p-2 flex-col space-y-4 ">
                         {sideBarBlocks.map((item, index) => {
                             return (
                                 <BlockByName

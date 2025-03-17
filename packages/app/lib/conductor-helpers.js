@@ -424,9 +424,9 @@ export function LeftSidebar({ title, addButtons, children, width, menu }) {
     const sidebar = appSetting('conductor', 'sidebar_position')
     return (
         <View className={`lg:${width}`}>
-            <View className={` ${sidebar =='fixed'? 'fixed-process' : ''} lg:${width} lg:p-2`}>
-                {(!!title || !!addButtons?.length > 0) && <Row className="justify-between items-center px-2 py-1 z-10">
-                    <Text className="text-2xl truncate mr-auto font-bold leading-[40px] text-neutral-900 dark:text-neutral-100 hidden lg:flex  ">
+            <View className={` ${sidebar =='fixed'? 'fixed-process' : ''} lg:${width} lg:p-2 gap-y-0.5`}>
+                {(!!title || !!addButtons?.length > 0) && <Row className="justify-between items-center pt-1 pb-2.5 px-2 z-10 ">
+                    <Text className="text-3xl tracking-tight truncate mr-auto font-bold leading-[40px] text-neutral-900 dark:text-neutral-100 hidden lg:flex  ">
                         {title}
                     </Text>
                     <Row className=" ">
@@ -468,7 +468,7 @@ export function TopSidebar({ styles, isWeb, leftSideBar, header, headerSettings,
                             />
 
                         </Pressable></View>}
-                        {headerSettings.title && <Text className="text-2xl lg:hidden font-bold text-neutral-800 dark:text-neutral-200">{title}</Text>}
+                        {headerSettings.title && <Text className="text-3xl leading-[40px] lg:hidden font-bold text-neutral-800 dark:text-neutral-200">{title}</Text>}
                     </Row>
                     <Row className="px-3 sm:px-4">
                         {addButtons}

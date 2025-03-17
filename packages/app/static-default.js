@@ -159,7 +159,7 @@ const LogoNativeDark = (
 
 const ComponentsAbout = (
     <>
-        <Text className="text-3xl lg:text-4xl xl:text-5xl  font-bold text-neutral-800 dark:text-neutral-200">
+        <Text className="text-3xl lg:text-4xl xl:text-5xl font-bold text-neutral-800 dark:text-neutral-200">
             About
         </Text>
         <Text className="text-lg lg:text-xl xl:text-2xl  text-neutral-600 dark:text-neutral-400">
@@ -207,7 +207,7 @@ const ComponentsContentEmpty = () => {
     const { t } = useTranslation()
     return (
         <>
-            <View className="p-8">
+            <View className="p-2">
                 <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto mb-auto py-4 px-8 h-full items-center rounded-2xl  bg-neutral-500/10 ">
                     <View className="flex-col mx-auto m-4 text-neutral-800 dark:text-neutral-200 ">
                         <Icon icon="Binoculars" width={32} height={32} />

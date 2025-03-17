@@ -390,7 +390,7 @@ const RenderSceneHeader = ({ route, setFilterValue }) => {
         <>
             {callFn("getFiltersForConductor", [filters, setFilterValue, route?.endpoint?.params?.filters])}
             {counter > 0 && <View className="mx-4 mb-0 mt-2"><Text className="text-xl font-bold text-neutral-800  dark:text-neutral-200 ">{route.title} ({counter})</Text></View>}
-            {isTitle && <View className={`${conductorTheme.content_max_width} mx-auto w-full pt-4 px-4`}><Text className="text-2xl font-bold text-neutral-800  dark:text-neutral-200 ">{route.title}</Text></View>}
+            {isTitle && <View className={`${conductorTheme.content_max_width} mx-auto w-full pt-3 px-4`}><Text className="text-3xl tracking-tight leading-[40px] font-bold text-neutral-800  dark:text-neutral-200 ">{route.title}</Text></View>}
         </>
     )
 };
@@ -803,7 +803,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             <View className={appSetting('layout', 'max_width') + " w-full h-full mx-auto"} scrollEnabled={false} onLayout={handleLayoutTop}>
                 {headerComponent}
                 <Toaster ref={toasterRef} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" />
-                <View style={{ minHeight: (windowHeight - offset) }} className={appSetting('layout', 'max_width  ') + ' mx-auto w-full mt-16 lg:mt-0 '} >
+                <View style={{ minHeight: (windowHeight - offset) }} className={appSetting('layout', 'max_width  ') + ' mx-auto w-full mt-28 lg:mt-0 '} >
                     <Row className={rc}>
                         {a}
                         <View className=" flex-auto m">
