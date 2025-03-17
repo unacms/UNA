@@ -425,8 +425,8 @@ export function LeftSidebar({ title, addButtons, children, width, menu }) {
     return (
         <View className={`lg:${width}`}>
             <View className={` ${sidebar =='fixed'? 'fixed-process' : ''} lg:${width} lg:p-2`}>
-                {(!!title || !!addButtons?.length > 0) && <Row className="justify-between items-center mb-2.5 px-2 z-10">
-                    <Text className="text-2xl truncate mr-auto font-bold  text-neutral-900 dark:text-neutral-100 hidden lg:flex  ">
+                {(!!title || !!addButtons?.length > 0) && <Row className="justify-between items-center px-2 py-1 z-10">
+                    <Text className="text-2xl truncate mr-auto font-bold leading-[40px] text-neutral-900 dark:text-neutral-100 hidden lg:flex  ">
                         {title}
                     </Text>
                     <Row className=" ">

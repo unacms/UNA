@@ -205,7 +205,7 @@ const LeftSideBarContainer = ({ menu, routes, currentUser, index, setIndex, left
     const { t } = useTranslation();
     const addButtons = AddMenu(menu, 'hideInSideBar');
     return (
-        <LeftSidebar title={t(menuSettings?.name)} addButtons={addButtons} width={leftSideBarWidth}>
+        <LeftSidebar title={t(menuSettings?.name)} addButtons={addButtons} >
             {headerSettings.hideLeftmenu != true && routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
                 const btn = callFn('getButtonForConductor', [a, index, currentUser])
 
@@ -390,12 +390,12 @@ const RenderSceneHeader = ({ route, setFilterValue }) => {
         <>
             {callFn("getFiltersForConductor", [filters, setFilterValue, route?.endpoint?.params?.filters])}
             {counter > 0 && <View className="mx-4 mb-0 mt-2"><Text className="text-xl font-bold text-neutral-800  dark:text-neutral-200 ">{route.title} ({counter})</Text></View>}
-            {isTitle && <View className={`${conductorTheme.content_max_width} mx-auto w-full mt-4 px-4`}><Text className="text-2xl font-bold text-neutral-800  dark:text-neutral-200 ">{route.title}</Text></View>}
+            {isTitle && <View className={`${conductorTheme.content_max_width} mx-auto w-full pt-4 px-4`}><Text className="text-2xl font-bold text-neutral-800  dark:text-neutral-200 ">{route.title}</Text></View>}
         </>
     )
 };
 
-export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, leftSideBarBlocks, leftSideBarWidth = ' w-80 2xl:w-96 ', skeleton = '', onChangeRoute, keyword, cover, layoutName }) {
+export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, leftSideBarBlocks, leftSideBarWidth = ' lg:w-80 2xl:w-96 ', skeleton = '', onChangeRoute, keyword, cover, layoutName }) {
     const uniRef = useRef();
     const { currentUser } = useCurrentUser();
     const { setBottomSheetData } = useBottomSheetData();
@@ -725,7 +725,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
         return (
             <Row style={{ paddingTop: header ? 0 : 0 }} className={(headerSettings.columns == "reverse" ? 'flex-row-reverse' : '') + conductorTheme.content_max_width + '  mx-auto w-full '}>
-                <View className={(isRightCol ? 'flex-auto sm:border-r border-bdr dark:border-bdr-d px-4 flex-auto ' : ' w-full mx-auto sm:py-2 ') + (layoutName == 'navigator' ? '' : ' pt-4')}>
+                <View className={(isRightCol ? 'flex-auto sm:border-r border-bdr dark:border-bdr-d px-4 flex-auto ' : ' w-full mx-auto sm:p-2 ') + (layoutName == 'navigator' ? '' : ' pt-4')}>
                     {TabFlashListM}
                     {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 && callFn("noContentByUrl", [route?.endpoint])))}
 
@@ -803,7 +803,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             <View className={appSetting('layout', 'max_width') + " w-full h-full mx-auto"} scrollEnabled={false} onLayout={handleLayoutTop}>
                 {headerComponent}
                 <Toaster ref={toasterRef} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" />
-                <View style={{ minHeight: (windowHeight - offset) }} className={appSetting('layout', 'max_width  ') + ' mx-auto w-full mt-[52px] lg:mt-0 '} >
+                <View style={{ minHeight: (windowHeight - offset) }} className={appSetting('layout', 'max_width  ') + ' mx-auto w-full mt-16 lg:mt-0 '} >
                     <Row className={rc}>
                         {a}
                         <View className=" flex-auto m">

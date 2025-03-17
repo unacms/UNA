@@ -26,7 +26,8 @@ export const settingsDefault = {
     layout: {
         avaliable_layouts: ['hor', 'ver', 'mixed'], // OLD appSetting('layout', 'format_list')
         default_layout: 'hor', //hor, ver, mixed// OLD appSetting('layout', 'format')
-        max_width: ' full ', // consider for hor = max-w-screen-2xl, for ver = max-w-screen-xl
+        max_width: 'w-full', // consider for hor = max-w-screen-2xl, for ver = max-w-screen-xl
+        max_width_header_content: 'max-w-[1920px]', 
         max_width_block: 'max-w-screen-xl', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
         search: true,
         extended_search: true,

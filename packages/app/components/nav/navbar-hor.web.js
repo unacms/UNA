@@ -6,17 +6,17 @@ import { View, Row, Pressable } from 'app/design/view'
 import { Button, ButtonRef } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user'
 import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
-import { getBackButtonWeb } from 'app/lib/common-helpers';
+import { getBackButtonWeb } from 'app/lib/common-helpers'
 import { appStatic } from 'app/lib/app-static'
 import { menuItemsByName } from 'app/lib/util'
 import Search from 'app/ui/molecules/search'
 import NotificationButton from 'app/ui/molecules/notif'
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next'
 import MenuAdd from 'app/components/nav/menu-add'
 import MenuAccount from 'app/components/nav/menu-account'
 import MenuLauncher from 'app/components/nav/menu-launcher'
 import MenuDrawer from 'app/components/nav/menu-drawer'
-import ProfileSwitcher from 'app/components/elements/profile_switcher';
+import ProfileSwitcher from 'app/components/elements/profile_switcher'
 
 const HeaderLine = memo(
     ({
@@ -40,9 +40,9 @@ const HeaderLine = memo(
             ).length > 0
 
         return (
-            <View className="flex-row xl:w-96 px-3 sm:px-4 flex-none my-auto items-center">
+            <View className="flex-row xl:max-w-80 2xl:max-w-96 pl-4 flex-auto lg:flex-none xl:flex-auto overflow-hidden items-center ">
                 {headerSettings.menu && isDrawer && (
-                    <View className="lg:hidden mr-3 sm:mr-4">
+                    <View className="lg:hidden ">
                         <Pressable onPress={showMenu}>
                             <Button
                                 variant="outline"
@@ -57,22 +57,22 @@ const HeaderLine = memo(
                     </View>
                 )}
                 {(uri == 'home' || width >= LAYOUT_BREAKPOINTS.lg) && (
-                    <Link className=" flex flex-row group gap-x-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus:outline-primary/50 rounded-lg " href="/home" aria-label="Logo">
-                            
-                           
-                            <View className=" items-center justify-center">
+                    <Link
+                        className=" flex flex-row group gap-x-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus:outline-primary/50 rounded-lg "
+                        href="/home"
+                        aria-label="Logo"
+                    >
+                        <View className=" items-center justify-center">
                             {appStatic('logo_mark')}
-                            </View>
-                            <View className=" items-center justify-center">
+                        </View>
+                        {/*<View className=" items-center justify-center">
                             {appStatic('logo_text')}
-                            </View>
-                            {/*{appStatic('logo_text')}*/}
-                        
+                        </View>*/}
+                        {/*{appStatic('logo_text')}*/}
                     </Link>
                 )}
                 {headerSettings.backButton && getBackButtonWeb()}
                 {headerSettings.title && (
-                    <View className="flex-auto overflow-hidden">
                         <Text
                             numberOfLines={1}
                             ellipsizeMode="tail"
@@ -80,10 +80,9 @@ const HeaderLine = memo(
                         >
                             {title}
                         </Text>
-                    </View>
                 )}
                 {bSearch && (
-                    <View className="ml-4 flex-auto hidden xl:flex ">
+                    <View className="flex-auto hidden xl:flex px-4">
                         <Search type="input" placeholder="Enter search text" />
                     </View>
                 )}
@@ -93,27 +92,28 @@ const HeaderLine = memo(
 )
 
 export default function (props) {
-    const { currentUser, setCurrentUser } = useCurrentUser();
+    const { currentUser, setCurrentUser } = useCurrentUser()
     const [menuPopup, setMenuPopup] = useState(false)
-    const { t } = useTranslation();
-    const bSearch = appSetting('layout', 'search') == true;
-    const bMessenger = appSetting('messenger', 'url') ? true : false;
-    const bNotifs = appSetting('notifications', 'url') ? true : false;
+    const { t } = useTranslation()
+    const bSearch = appSetting('layout', 'search') == true
+    const bMessenger = appSetting('messenger', 'url') ? true : false
+    const bNotifs = appSetting('notifications', 'url') ? true : false
 
-    const headerSettings = props.headerSettings;
-    
+    const headerSettings = props.headerSettings
+
     const menu_navbar_items = menuItemsByName(
         'main_menu',
         appSetting('menu_items', 'menu_navbar'),
         currentUser
     )
 
-    let sTitle = props.title;
-    const menuSettings = appSetting('menu_items', props?.menu?.object);
-    if (menuSettings && menuSettings.name)
-        sTitle = t(menuSettings.name);
+    let sTitle = props.title
+    const menuSettings = appSetting('menu_items', props?.menu?.object)
+    if (menuSettings && menuSettings.name) sTitle = t(menuSettings.name)
 
-    const bIsHideHeader = currentUser ? false: appSetting('layout', 'hide_header_for_nonlogged'); //windowWidth < 1024 && (!headerSettings.header); // MAY BE NEEDED
+    const bIsHideHeader = currentUser
+        ? false
+        : appSetting('layout', 'hide_header_for_nonlogged') //windowWidth < 1024 && (!headerSettings.header); // MAY BE NEEDED
 
     const showMenu = () => {
         setMenuPopup(!menuPopup)
@@ -121,19 +121,31 @@ export default function (props) {
 
     return (
         <>
-            <View className={appSetting('layout', 'max_width') + " w-full flex-row flex-auto mx-auto"}>
-                <Row className='w-full'>
-                    <View className='flex-auto'>
-                        {props.children}
-                    </View>
+            <View
+                className={
+                    appSetting('layout', 'max_width') +
+                    ' w-full flex-row flex-auto mx-auto'
+                }
+            >
+                <Row className="w-full">
+                    <View className="flex-auto">{props.children}</View>
                 </Row>
             </View>
-            {!bIsHideHeader && <View className={(props.layoutName == 'profile' || props.layoutName == 'messenger' || props.layoutName == 'post' ? 'hidden lg:flex ' : '') + " fixed w-full"}>
-                <View className=" h-16 sm:shadow-sm items-center w-full bg-bgrnavbar dark:bg-bgrnavbar-d ">
+            {!bIsHideHeader && (
                 <View
+                    className={
+                        (props.layoutName == 'profile' ||
+                        props.layoutName == 'messenger' ||
+                        props.layoutName == 'post'
+                            ? 'hidden lg:flex'
+                            : '') +
+                        ' fixed w-full h-16 lg:border-b border-bdrnavbar dark:border-bdrnavbar-d lg:shadow-sm items-center w-full bg-bgrnavbar dark:bg-bgrnavbar-d '
+                    }
+                >
+                    <View
                         className={
-                            appSetting('layout', 'max_width') +
-                            ' w-full flex-row flex-auto items-center justify-between'
+                            appSetting('layout', 'max_width_header_content') +
+                            ' w-full flex-row flex-auto items-center '
                         }
                     >
                         <HeaderLine
@@ -149,42 +161,43 @@ export default function (props) {
                         <Row className="hidden lg:flex flex-auto px-2">
                             <Row className="w-full mx-auto gap-x-2 max-w-2xl justify-between">
                                 {menu_navbar_items.map((item, index) => (
-                                    <View className="flex-auto" key={`menu-${index}`}>
-                                    <Link
-                                        href={item.link}
-                                        alt={item.title}
+                                    <View
+                                        className="flex-auto"
+                                        key={`menu-${index}`}
                                     >
-                                        <Button
-                                            pressed={
-                                                item.link == '/' + props.url ||
-                                                (item.link == '/' &&
-                                                    props.uri == 'home')
-                                                    ? true
-                                                    : false
-                                            }
-                                            variant="text"
-                                            size="base"
-                                            tooltip={t(item.title)}
-                                            title={
-                                                item.showTitle
-                                                    ? t(item.title)
-                                                    : ''
-                                            }
-                                            alt={t(item.title)}
-                                            aria-label={t(item.title)}
-                                            fullWidth
-                                            startDecorator={item.icon}
-                                            align="center"
-                                        />
-                                    </Link>
+                                        <Link href={item.link} alt={item.title}>
+                                            <Button
+                                                pressed={
+                                                    item.link ==
+                                                        '/' + props.url ||
+                                                    (item.link == '/' &&
+                                                        props.uri == 'home')
+                                                        ? true
+                                                        : false
+                                                }
+                                                variant="text"
+                                                size="base"
+                                                tooltip={t(item.title)}
+                                                title={
+                                                    item.showTitle
+                                                        ? t(item.title)
+                                                        : ''
+                                                }
+                                                alt={t(item.title)}
+                                                aria-label={t(item.title)}
+                                                fullWidth
+                                                startDecorator={item.icon}
+                                                align="center"
+                                            />
+                                        </Link>
                                     </View>
                                 ))}
                             </Row>
                         </Row>
-                        <Row className="flex-none  xl:w-96 flex-none px-3 sm:px-4 justify-end ">
+                        <Row className="flex-none w-80 2xl:w-96 flex-none px-3 sm:px-4 justify-end ">
                             {!!currentUser && (
                                 <Row className="flex-row justify-end  ">
-                                    <View className=" flex-row my-auto gap-x-2  ">
+                                    <View className=" flex-row  gap-x-2  ">
                                         <View className=" xl:hidden ">
                                             {bSearch && <Search />}
                                         </View>
@@ -199,14 +212,26 @@ export default function (props) {
                                         </View>
                                         <View className="hidden sm:block">
                                             {bMessenger && (
-                                                <Link href={appSetting('messenger','url')} alt={t('Messenger')}>
+                                                <Link
+                                                    href={appSetting(
+                                                        'messenger',
+                                                        'url'
+                                                    )}
+                                                    alt={t('Messenger')}
+                                                >
                                                     <Button
                                                         tooltip={t('Messenger')}
                                                         variant="secondary"
                                                         rounded
                                                         startDecorator="MessageCircleMore"
                                                         id="m2"
-                                                        addon={{variant:'primary', text: currentUser?.counters?.bx_messenger_new_messages, hideZero: true}}
+                                                        addon={{
+                                                            variant: 'primary',
+                                                            text: currentUser
+                                                                ?.counters
+                                                                ?.bx_messenger_new_messages,
+                                                            hideZero: true,
+                                                        }}
                                                     />
                                                 </Link>
                                             )}
@@ -227,7 +252,7 @@ export default function (props) {
                                             <Search />
                                         </View>
                                     )}
-                                    
+
                                     <Link href="/">
                                         <ButtonRef
                                             variant="secondary"
@@ -242,10 +267,10 @@ export default function (props) {
                             )}
                         </Row>
                     </View>
-                </View>
 
-                <MenuDrawer showMenu={showMenu} menuPopup={menuPopup} />
-            </View>}
+                    <MenuDrawer showMenu={showMenu} menuPopup={menuPopup} />
+                </View>
+            )}
         </>
     )
 }

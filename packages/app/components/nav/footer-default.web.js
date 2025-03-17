@@ -44,7 +44,7 @@ export default function () {
             }
         >
             <View
-                className={`z-50 w-full px-2 pb-0 ${isInStandaloneMode() ? "h-12" : "h-16"}`}
+                className={`z-50 w-full pb-0 ${isInStandaloneMode() ? "h-12" : "h-16"}`}
             >
                 <Row className="flex-auto items-center flex-row justify-around w-full">
                     {TabList.filter(item => !item.hide).map((tab, index) => {
