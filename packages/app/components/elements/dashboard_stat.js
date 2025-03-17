@@ -148,16 +148,16 @@ export default function PageLayout(props) {
                                         </View>
                                     </Link>
                                 </View>
-                                <View className="flex-none">
+                                {currentUser.profiles_count > 1 && <View className="flex-none">
                                     <ProfileSwitcher hideTitle={true} >
                                         <Button variant="outline" startDecorator="RefreshCw" rounded />
                                     </ProfileSwitcher>
-                                </View>
+                                </View>}
                             </View>
                             <View className="flex-row  items-center gap-x-2 my-auto hidden">
-                                <ProfileSwitcher hideTitle={true} >
+                            {currentUser.profiles_count > 1 && <ProfileSwitcher hideTitle={true} >
                                     <Button variant="outline" startDecorator="RefreshCw" rounded />
-                                </ProfileSwitcher>
+                                </ProfileSwitcher>}
                                 {
                                     appSetting('dashboard', 'langs').length > 1 && (
                                         <View><DropdownMenu
