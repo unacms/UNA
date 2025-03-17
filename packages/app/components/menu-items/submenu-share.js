@@ -11,11 +11,7 @@ import { appSetting } from 'app/lib/util'
 export default function MenuItemSubmenuShare(oProps) {
     const [showMsg, setShowMsg] = useState(false);
 
-    const oIconAliases = {
-        'item-share': 'Share2',
-        'item-copy': 'Clipboard',
-        'item-repost': 'RotateCw'
-    };
+    const oIconAliases = appSetting('menu_items', 'iconset')
 
     let oButtonProps = {
         variant: oProps.primary === "1" ? 'primary' : oProps.params?.button_variant,

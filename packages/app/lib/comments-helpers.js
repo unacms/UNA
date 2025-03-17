@@ -445,7 +445,7 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
                     const sResponse = await fetcher('/api.php?r='+sUrl+'&params[]='+formData.cmt_id+'&params[]='+formData.cmt_object_id+'');
                     
                     if (sResponse.data){
-                        form.data.inputs.cmt_text.value = '<a class="bx-mention-link" data-id="[object Object]" href="/mention'+sResponse.data.id+'" title="'+sResponse.data.name+'" dchar="@" data-profile-id="-1" contenteditable="false">'+sResponse.data.name+'</a> ';
+                        form.data.inputs.cmt_text.value = '<a class="bx-mention-link" data-id="[object Object]" href="/mention'+sResponse.data.id+'" title="'+sResponse.data.name+'" dchar="@" data-profile-id="-1" contenteditable="false">'+sResponse.data.name+'</a> &shy; ';
                     }
                     else{
                         form.data.inputs.cmt_text.value = '';
@@ -453,7 +453,7 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
                 }
                 else{
                     if (formData.author.url == "/javascript:"){
-                        form.data.inputs.cmt_text.value = '<a class="bx-mention-link" data-id="[object Object]" href="#" title="'+formData.author.display_name+'" dchar="@" data-profile-id="-1" contenteditable="false">'+formData.author.display_name+'</a> ';
+                        form.data.inputs.cmt_text.value = '<a class="bx-mention-link" data-id="[object Object]" href="#" title="'+formData.author.display_name+'" dchar="@" data-profile-id="-1" contenteditable="false">'+formData.author.display_name+'</a> &shy; ';
                     }
                     else{
                         form.data.inputs.cmt_text.value = '<a class="bx-mention-link" href="' + formData.author.url + '">' + formData.author.display_name + '</a> ';

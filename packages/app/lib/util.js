@@ -32,13 +32,16 @@ export function isObjectsEqual(obj, obj2) {
 }
 
 export async function subscribeOneSignal(currentUser, askPermission = false) {
+    console.log("*------5");
     if (!isWeb){
+        console.log("*------");
         OneSignal.Debug.setLogLevel(LogLevel.Verbose);
         OneSignal.initialize(appSetting('config', 'api_keys', 'onesignal'));
 
         let permissionStatus = await OneSignal.Notifications.getPermissionAsync();
-        console.log("OneSignal: Permission status", permissionStatus);
+        
         if (permissionStatus !== "granted" && askPermission) {
+            console.log("!!!!");
             await OneSignal.Notifications.requestPermission(true);
             permissionStatus = await OneSignal.Notifications.getPermissionAsync(); 
         }

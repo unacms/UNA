@@ -11,11 +11,13 @@ import { getAlert, stripTags } from 'app/lib/util';
 import { Text } from 'app/design/typography'
 import { KeyboardAvoidingView, Platform } from 'react-native'
 import { fetcher } from 'app/lib/fetcher';
+import { appSetting } from 'app/lib/util'
 
 export default function FormFieldText(props) {
     const formContext = useFormContext();
     return (
         <Field {...props} error2={formContext.formState.errors[props.name]}>
+            <View className='h-0 w-0 absolute top-0 z-0 opacity-0'></View>
             {props.html == 1 || props.html == 2 || props.html == 3 ? <RftText {...props} /> : <PlainText {...props} />}
         </Field>
     );
@@ -69,7 +71,7 @@ function PlainText(props) {
             onChangeText={field.onChange}
             onBlur={field.onBlur}
             value={field.value}
-            className='focus:bg-bgrinput-f dark:focus:bg-bgrinput-df focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus:outline-primary/50 duration-100 placeholder-neutral-500 text-neutral-900 rounded-lgflex-auto p-3 leading-6 dark:text-neutral-100 text-base'
+            className='placeholder-neutral-500 text-neutral-900 leading-6 dark:text-neutral-100 text-lg font-medium py-3'
             aria-label={accessibility}
         />
     }
@@ -160,6 +162,10 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
     body P:first-child {
         margin-top: ${Platform.OS == 'web' ? '4' : '6'}px;
     }
+    .is-editor-empty:first-child::before{
+        float:none !important;
+        position:absolute;
+    }
     .mention-list {
         position: absolute;
         background: white;
@@ -178,10 +184,11 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
     .mention-list li.active {
         background: lightblue;
     }
-    .bx-mention-link,
-    .bx-tag{
+    A.bx-mention-link,
+    A.bx-tag{
         color: ${colors.primary};
     }
+    ${appSetting('editor', 'css') }
 
     .tiptap, #root > div:nth-of-type(1){
         scrollbar-width: none; /* Firefox */
