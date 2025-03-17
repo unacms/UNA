@@ -72,6 +72,10 @@ export default function MenuAccount({ buttonProps, children }) {
         item.link === "{switch_profile}" ? (profileList ? [{ ...currentUser, link: "{switch_profile}" }, ...profileList] : []) : item
     );
 
+    // Find the last switch_profile index
+    const lastSwitchProfileIndex = updatedMenu.reduce((lastIndex, item, index) => 
+        item.link === '{switch_profile}' ? index : lastIndex, -1);
+
     const handleSwitch = async (id) => {
         const result = await fetcher('/api.php?r=system/switch_profile/TemplServiceAccount&params[]=' + id);
         setCurrentUser(result.data);
@@ -84,24 +88,24 @@ export default function MenuAccount({ buttonProps, children }) {
                 (item, index) => {
                     let sTitle = t(item.title);
                     if (item.link == '{switch_profile}') {
-
-                        sTitle = <Pressable onPress={() => handleSwitch(item.id)}><Row key={index} className="items-center justify-center h-6 gap-x-3">
+                        sTitle = <Pressable className="w-full" onPress={() => handleSwitch(item.id)}><Row key={index} className="items-center justify-between gap-x-3">
+                            <Row className="items-center flex-auto gap-x-3">
+                            <Profile
+                                {...item}
+                                url_avatar={item.avatar}
+                                displayType="unit_wo_info"
+                                displaySize="sm"
+                            />
+                            <Text className="text-sm font-medium text-neutral-700 dark:text-neutral-200">
+                                {item.display_name}
+                            </Text>
+                            </Row>
                             <RadioButton
                                 rb_obly={true}
                                 value={''}
                                 status={item.id == currentUser.id ? 'checked' : 'unchecked'}
                                 title={''}
                             />
-                            <Profile
-                                {...item}
-                                url_avatar={item.avatar}
-                                displayType="unit_wo_info"
-                                displaySize="xs"
-                            />
-                            <Text className="text-sm font-medium text-neutral-700 dark:text-neutral-200">
-                                {item.display_name}
-                            </Text>
-
                         </Row></Pressable>
                     }
                     return (

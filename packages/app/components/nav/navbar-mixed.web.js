@@ -44,12 +44,18 @@ const HeaderLine = memo(({headerSettings, currentUser, uri, title, menuPopup, se
                 </View>
             )}
             {(uri === 'home' || width >= LAYOUT_BREAKPOINTS.lg) && (
-                <Link href="/home" aria-label="Logo">
-                    <View className="group mr-auto flex-row flex-none items-center rounded-lg my-auto">
-                        {appStatic('logo_mark')}
-                        {appStatic('logo_text')}
-                    </View>
-                </Link>
+                 <Link className=" flex flex-row group gap-x-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus:outline-primary/50 rounded-lg " href="/home" aria-label="Logo">
+                            
+                           
+                 <View className=" items-center justify-center">
+                 {appStatic('logo_mark')}
+                 </View>
+                 <View className=" items-center justify-center">
+                 {appStatic('logo_text')}
+                 </View>
+                 {/*{appStatic('logo_text')}*/}
+             
+         </Link>
             )}
             {headerSettings.backButton && getBackButtonWeb()}
             {headerSettings.title && <View className='flex-auto overflow-hidden'>

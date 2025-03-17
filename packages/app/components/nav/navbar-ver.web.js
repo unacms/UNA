@@ -43,20 +43,20 @@ const HeaderLine = memo(({ headerSettings, currentUser, uri, bSearch, menuPopup,
                     </Pressable>
                 </View>
             )}
-            <View className='justify-center px-4 '>
+            <View className='justify-center px-4  my-3 gap-y-3 '>
 
-                <Link href="/home" aria-label="Logo">
-                    <Row className="my-3 group">
-                        <View className="  w-11 h-11 ">
+                    <Link className=" flex flex-row group gap-x-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus:outline-primary/50 rounded-lg " href="/home" aria-label="Logo">
+                            
+                           
+                            <View className=" items-center justify-center">
                             {appStatic('logo_mark')}
-
-                        </View>
-                        <View className=" h-11 w-32  ml-4">
+                            </View>
+                            <View className=" items-center justify-center">
                             {appStatic('logo_text')}
-
-                        </View>
-                    </Row>
-                </Link>
+                            </View>
+                            {/*{appStatic('logo_text')}*/}
+                        
+                    </Link>
                 <View className='hidden lg:block'>
                     {menu_sidebar_items.map(
                         (item, index) =>

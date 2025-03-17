@@ -694,19 +694,19 @@ export const settingsDefault = {
         dropdown_menu: {
             content_shadow: ' shadow-xl  ',
             content_ver:
-                ' z-10 min-w-[200px] backdrop-blur-xl border border-bdrmodal dark:border-bdrmodal-d bg-bgrmodal dark:bg-bgrmodal-d mt-1 p-1 text-sm rounded-xl shadow-xl shadow-[0_0_0_1px_rgba(0,0,0,0.1)] dark:shadow-[0_0_0_1px_rgba(0,0,0,1)] overflow-hidden gap-y-1 ',
+                ' z-10 min-w-[200px] border border-bdrmodal dark:border-bdrmodal-d bg-bgrmodal dark:bg-bgrmodal-d mx-4 my-1 p-1 text-sm rounded-xl min-w-[200px] max-w-[360px] shadow-xl shadow-[0_0_0_1px_rgba(0,0,0,0.1)] dark:shadow-[0_0_0_1px_rgba(0,0,0,1)] overflow-hidden gap-y-1 ',
             content_hor:
-                ' flex flex-row z-10 p-1 bg-bgrmodal border border-bdr dark:border-bdr-d m-2 backdrop-blur-xl dark:bg-bgrmodal-d text-sm text-neutral-800 dark:text-neutral-200 rounded-full ',
+                ' flex flex-row z-10 p-1 bg-bgrmodal border border-bdr dark:border-bdr-d m-2 dark:bg-bgrmodal-d text-sm text-neutral-800 dark:text-neutral-200 rounded-full ',
             item_ver:
-                'flex flex-row focus:outline-none items-center px-3 py-2.5 gap-x-3 text-sm rounded-lg font-medium hover:bg-bgritem dark:hover:bg-bgritem-d text-neutral-700 dark:text-neutral-300 dark:hover:text-white hover:cursor-pointer',
+                'flex flex-row focus:outline-none items-center px-2 h-12 gap-x-3 text-sm rounded-lg font-medium hover:bg-bgritem dark:hover:bg-bgritem-d text-neutral-700 dark:text-neutral-300 dark:hover:text-white hover:cursor-pointer',
             item_hor:
-                'flex block px-3 py-2 hover:-translate-y-1 active:-translate-y-1 dark:hover:text-white rounded-full hover:cursor-pointer text-neutral-700  hover:scale-125 active:scale-95 duration-200 dark:text-neutral-300 outline-none ',
+                'flex block p-[8px] dark:hover:text-white rounded-full hover:cursor-pointer text-neutral-700 dark:text-neutral-300 outline-none ',
             item_np:
                 'flex flex-row focus:outline-none items-center justify-between px-1 py-0.5 rounded-lg font-medium hover:bg-bgritem dark:hover:bg-bgritem-d text-sm text-neutral-700 dark:text-neutral-300 dark:hover:text-white hover:cursor-pointer',
-            item_cnt: 'items-center gap-x-3',
+            item_cnt: 'items-center gap-x-3 w-full',
             item_text:
                 'text-sm font-medium text-neutral-800 dark:text-neutral-200',
-            item_icon: 'flex items-center justify-center',
+            item_icon: 'flex items-center justify-center h-9 w-9 bg-neutral-500/10 rounded-full',
             icon_size: 20, // Default icon size for dropdown menu icons
         },
         modal: {
