@@ -31,6 +31,7 @@ export default function FormFieldText(props) {
     return (
         <Field {...props} error2={formContext.formState.errors[name]}>
             <Input 
+                autoComplete="off"
                 autoFocus= {props.auto_focus}
                 name={props.name}
                 placeholder = {placeholder}

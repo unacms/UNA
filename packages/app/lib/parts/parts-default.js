@@ -3,6 +3,14 @@ import { Button, Modal } from 'app/design/controls'
 import { Platform } from 'react-native'
 import { View, Row } from 'app/design/view'
 
+export function ProfileDisplayName(title) {
+   return title;
+}
+
+export function ParseHtmlClasses(className, tag) {
+    return className;
+}
+
 export function ProfileDisplayNameLink(title, url, href, fontSize, actions) {
 
     return (

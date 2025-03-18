@@ -19,6 +19,7 @@ import Toaster from 'app/ui/atoms/toaster';
 import { useTranslation } from 'react-i18next';
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
 import { stripTags } from 'app/lib/util';
+import { getPart } from 'app/lib/parts/part';
 
 export function findParent(data, c, o, insert) {
     if (Array.isArray(data)) {
@@ -529,7 +530,7 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
                         <View className=' flex-auto pr-4'>
                             <Row className='max-w-full '>
                                 <Text className='text-xs text-neutral-900 dark:text-neutral-50'>Reply to: </Text>
-                                <Text className='font-semibold text-xs text-neutral-900 dark:text-neutral-50'>{commentData.formAuthor.replace(" (anonymized)", '')}</Text>
+                                <Text className='font-semibold text-xs text-neutral-900 dark:text-neutral-50'>{getPart("ProfileDisplayName", [commentData.formAuthor])}</Text>
                             </Row>
                             <Text className='text-sm overflow-hidden text-neutral-900 dark:text-neutral-50' numberOfLines={3}>{form.data.inputs.cmt_parent_id.value == 0 ? '' : '' + commentData.formText}</Text>
                         </View>

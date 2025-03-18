@@ -20,6 +20,7 @@ import {
 import Link from 'app/ui/atoms/link'
 import { Text, H1, H2, H3 } from 'app/design/typography'
 import { Platform } from 'react-native'
+import { getPart } from 'app/lib/parts/part';
 
 const StyledP = (props) => (
     <P className={`${!props.isLast ? 'mb-1' : 'mb-0'} ${!props.isFirst ? 'mt-1' : 'mt-0'} ${props.textStyles} `}>
@@ -114,10 +115,11 @@ const parseHtmlToReact = (html, textStyles, parentKey = "0") => {
 
         if (tag === "a") {
             const hrefMatch = attributes.match(/href="([^"]+)"/);
+            const srcClass = attributes.match(/class=['"]?([^'"\s>]+)['"]?/);
             if (hrefMatch) {
                 elements.push(
                     <Link key={getKey("link")} href={hrefMatch[1]} mode="text">
-                        <Text className="text-primary">{content} </Text>
+                        <Text className={" " + ((srcClass && srcClass[1]) ? getPart("ParseHtmlClasses", [srcClass[1], 'link']) : '')}>{content} </Text>
                     </Link>
                 );
             }
@@ -128,7 +130,7 @@ const parseHtmlToReact = (html, textStyles, parentKey = "0") => {
         elements.push(
             <Component
                 key={getKey(tag)}
-                className={srcClass && srcClass[1]}
+                className={srcClass && srcClass[1] ?  getPart("ParseHtmlClasses", [srcClass[1], 'text']) : '' }
                 isFirst={false}
                 isLast={false}
                 textStyles={textStyles}

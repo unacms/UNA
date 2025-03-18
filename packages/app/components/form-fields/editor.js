@@ -201,6 +201,7 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
     }   
     .ProseMirror.tiptap{
         height:auto !important;
+        overflow:visible !important;
     }
     `;
 
@@ -219,7 +220,7 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
     }, [value]);
 
     const editor = useEditorBridge({
-        autofocus: field.value ? true : (props.autofocus || false),
+        autofocus: props.autofocus,
         avoidIosKeyboard: false,
         dynamicHeight: false,
         placeholder: props.placeholder,

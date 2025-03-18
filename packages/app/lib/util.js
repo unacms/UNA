@@ -32,16 +32,13 @@ export function isObjectsEqual(obj, obj2) {
 }
 
 export async function subscribeOneSignal(currentUser, askPermission = false) {
-    console.log("*------5");
     if (!isWeb){
-        console.log("*------");
         OneSignal.Debug.setLogLevel(LogLevel.Verbose);
         OneSignal.initialize(appSetting('config', 'api_keys', 'onesignal'));
 
         let permissionStatus = await OneSignal.Notifications.getPermissionAsync();
         
-        if (permissionStatus !== "granted" && askPermission) {
-            console.log("!!!!");
+        if (!permissionStatus && askPermission) {
             await OneSignal.Notifications.requestPermission(true);
             permissionStatus = await OneSignal.Notifications.getPermissionAsync(); 
         }
@@ -886,9 +883,11 @@ export const uploadImage = async (uri, fetchUrl, calback, extraVar) => {
                 formData.append("file", file);
                 const result = await fetcher([fetchUrl, null, formData]);
                 if (result?.data?.link) {
+                    console.log('555', result)
                     calback({result:result?.data?.link, extraVar:extraVar});
                 }
                 else {
+                    console.log('666', result)
                     calback({result:result, extraVar:extraVar})
                 }
 
@@ -896,6 +895,7 @@ export const uploadImage = async (uri, fetchUrl, calback, extraVar) => {
     }
     else {
         const formData = new FormData();
+        console.log("555")
         const fileName = uri.split('/').pop();
         const fileType = uri.match(/\.([a-z0-9]+)$/i)[1];
         formData.append("file", {
@@ -906,10 +906,13 @@ export const uploadImage = async (uri, fetchUrl, calback, extraVar) => {
 
         
         const result = await fetcher([fetchUrl, null, formData]);
+        console.log("result", result)
         if (result?.data?.link) {
+            console.log('777', result)
             calback({result:result?.data?.link, extraVar:extraVar});
         }
         else {
+            console.log('888', result)
             calback({result:result, extraVar:extraVar})
         }
     }
