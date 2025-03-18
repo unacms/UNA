@@ -773,11 +773,11 @@ export const settingsDefault = {
             },
             lg: {
                 rounded: ' rounded-[10px] relative ',
-                padding: ' h-[48px] py-[4px] px-[8px]    ',
-                icon_container: ' w-[40px] h-[40px] p-[8px] ',
+                padding: '  px-[8px] py-[6px] flex  ',
+                icon_container: ' flex h-[36px] w-[36px] items-center justify-center text-center  ',
                 icon_size: '24px',
                 icon_margin: '  ',
-                min_height: '  web:text-[14px] ',
+                min_height: '  web:text-[14px] leading-[36px] ',
                 margin: '  bg-transparent px-[12px] my-auto native:text-[14px] ',
             },
         },
@@ -868,10 +868,10 @@ export const settingsDefault = {
                 ' font-medium text-neutral-600 group-hover:text-neutral-950 dark:text-neutral-400 dark:group-hover:text-neutral-50 ',
             'u-btn-tab-trans': ' web:duration-200 ',
             'u-btn-tab-icon': ' text-neutral-600 group-hover:text-neutral-950 dark:text-neutral-400 dark:group-hover:text-neutral-50 ',
-            'u-btn-tab-pressed-icon': ' text-primary-600 dark:text-primary-400 ',
+            'u-btn-tab-pressed-icon': ' text-primary dark:text-primary-d ',
             'u-btn-tab-decorator': ' bg-neutral-500/10 ',
             'u-btn-tab-pressed-decorator': ' bg-primary/20 dark:bg-primary-d/20 ',
-            'u-btn-tab-pressed-cnt': ' bg-primary/10 dark:bg-primary-d/10  ',
+            'u-btn-tab-pressed-cnt': ' bg-transparent  ',
 
 
             'u-btn-group-item-cnt':

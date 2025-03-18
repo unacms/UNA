@@ -110,16 +110,16 @@ function AtomProfile_(oProps) {
 
     const sizes = {
         xxs: {
-            sSize: 'w-[18px] h-[18px]',
-            iSizeWidth: 18,
-            iSizeHeight: 18,
+            sSize: 'w-[24px] h-[24px]',
+            iSizeWidth: 24,
+            iSizeHeight: 24,
             sSizeFont: 'text-[12px]', 
             sSizeFontLetter: 'text-base  font-semibold',
         },
         xs: {
-            sSize: 'w-[24px] h-[24px]',
-            iSizeWidth: 24,
-            iSizeHeight: 24,
+            sSize: 'w-[32px] h-[32px]',
+            iSizeWidth: 32,
+            iSizeHeight: 32,
             sSizeFont: 'text-[12px]', 
             sSizeFontLetter: 'text-base  font-semibold',
         },

@@ -32,7 +32,7 @@ export default function () {
         let dUser = Object.assign({}, currentUser);
         dUser.url_avatar = dUser.avatar
         dUser.url = appSetting('dashboard', 'url')
-        profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="xs" />
+        profile = <View className="w-[36px] h-[36px] p-[2px]"><Profile {...dUser} displayType="unit_wo_info" displaySize="xs" /></View>
     }
 
     if (pathname == '/')
@@ -41,13 +41,13 @@ export default function () {
     return (
         <View
             className={
-                ` fixed bottom-0 left-0 z-30 w-full lg:hidden border-t border-bdrnavbar dark:border-bdrnavbar-d tabbar bg-bgrtabbar dark:bg-bgrtabbar-d ${isInStandaloneMode() ? "pb-4" : ""}`
+                ` fixed bottom-0 left-0 z-30 w-full lg:hidden shadow-[0px_-1px_0px_0px_rgba(0,0,0,0.05)] dark:shadow-[0px_-1px_0px_0px_rgba(255,255,255,0.1] tabbar bg-bgrtabbar dark:bg-bgrtabbar-d ${isInStandaloneMode() ? "pb-4" : ""}`
             }
         >
             <View
                 className={`z-50 w-full pb-0 ${isInStandaloneMode() ? "h-12" : "h-16"}`}
             >
-                <Row className="flex-auto items-center flex-row justify-around w-full">
+                <Row className="flex-auto items-center flex-row w-full px-2 gap-x-2">
                     {TabList.filter(item => !item.hide).map((tab, index) => {
                         const isActive = pathname === tab.url;
                         const textColor = isActive ? "text-primary" : "text-neutral-700 dark:text-neutral-300";
@@ -55,22 +55,26 @@ export default function () {
                         return (
                             <View
                                 key={"fl" + index}
-                                className="w-1/6 flex items-center"
+                                className=" w-full flex-auto items-center "
                             >
                                 <Link
                                     href={tab.url}
                                     noprefetch={tab.url === appSetting('notifications', 'url') ? "false" : "true"}
+                                    className="w-full"
                                 >
                                     <Button
-                                        variant="text"
-                                        size="base"
+                                        variant="tab"
+                                        
+                                        size="lg"
+                                        fullWidth={true}
                                         pressed={isActive}
-                                        className={isActive ? 'bg-primary/10' : 'transparent'}
                                         indicator={isActive}
                                         indicatorPosition="top"
-                                        indicatorClassName=" h-1 translate-y-[1px] w-full bg-primary-500 rounded-b-full"
+                                        indicatorOffset={0}
+                                        className={isActive ? 'bg-transparent' : 'transparent'}
+                                        indicatorClassName=" h-[3px] w-full bg-primary dark:bg-primary-d -translate-y-[2px] rounded-b-[3px]"
                                         startDecorator={tab.url === appSetting('dashboard', 'url') && profile ? null : tab.icon}
-                                        direction="flex-col"
+                                        direction="flex-col bg-transparent "
                                         addon={tab.url === appSetting('notifications', 'url') && notifCount > 0 ? 
                                             {variant: 'primary', text: notifCount} : 
                                           tab.url === appSetting('messenger', 'url') && currentUser?.counters?.bx_messenger_new_messages > 0 ? 
@@ -82,14 +86,14 @@ export default function () {
                                         {tab.url === appSetting('dashboard', 'url') && profile ? (
                                             profile
                                         ) : null}
-                                        
-                                        {!!tab.title && (
+                                            {!!tab.title && (
                                             <Text
-                                                className={`group-hover:text-primary dark:group-hover:text-primary text-[10px] whitespace-nowrap ${textColor}`}
+                                                className={`group-hover:text-primary dark:group-hover:text-primary text-[12px] tracking-tight  leading-none whitespace-nowrap ${textColor}`}
                                             >
                                                 {tab.title}
                                             </Text>
                                         )}
+                                    
                                     </Button>
                                 </Link>
                             </View>

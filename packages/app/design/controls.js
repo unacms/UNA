@@ -349,18 +349,7 @@ export const Button = (props) => {
         };
 
         switch(indicatorPosition) {
-            case 'top-right':
-                return `top-0 right-0 translate-y-[${indicatorOffset}]`;
-            case 'top-left':
-                return `top-0 left-0 translate-y-[${indicatorOffset}]`;
-            case 'bottom-right':
-                return `bottom-0 right-0 translate-y-[${indicatorOffset}]`;
-            case 'bottom-left':
-                return `bottom-0 left-0 translate-y-[${indicatorOffset}]`;
-            case 'bottom-center':
-                return `${getPositionClass('bottom', indicatorOffset)} inset-x-0 w-full`;
-            case 'top-center':
-                return `${getPositionClass('top', indicatorOffset)} inset-x-0 w-full`;
+            
             case 'top':
                 return `${getPositionClass('top', indicatorOffset)} inset-x-0 w-full`;
             case 'bottom':
