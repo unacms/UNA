@@ -8,6 +8,7 @@ import Profile from 'app/ui/molecules/profile';
 import { usePathname } from 'next/navigation'
 import { useTranslation } from 'react-i18next';
 import { callFn } from 'app/lib/functions/call';
+import { Button } from 'app/design/controls';
 
 function isInStandaloneMode() {
     if (window.navigator.standalone) {
@@ -54,19 +55,34 @@ export default function () {
                         return (
                             <View
                                 key={"fl" + index}
-                                className={` ${ isActive ? 'bg-primary/10' : 'transparent' } w-1/6 flex items-center rounded-lg text-base p-1.5 duration-200 group hover:text-primary dark:hover:text-primary ${textColor}`}
+                                className="w-1/6 flex items-center"
                             >
                                 <Link
                                     href={tab.url}
                                     noprefetch={tab.url === appSetting('notifications', 'url') ? "false" : "true"}
                                 >
-                                    <View className="flex-col gap-1 items-center">
+                                    <Button
+                                        variant="text"
+                                        size="base"
+                                        pressed={isActive}
+                                        className={isActive ? 'bg-primary/10' : 'transparent'}
+                                        indicator={isActive}
+                                        indicatorPosition="top"
+                                        indicatorClassName=" h-1 translate-y-[1px] w-full bg-primary-500 rounded-b-full"
+                                        startDecorator={tab.url === appSetting('dashboard', 'url') && profile ? null : tab.icon}
+                                        direction="flex-col"
+                                        addon={tab.url === appSetting('notifications', 'url') && notifCount > 0 ? 
+                                            {variant: 'primary', text: notifCount} : 
+                                          tab.url === appSetting('messenger', 'url') && currentUser?.counters?.bx_messenger_new_messages > 0 ? 
+                                            {variant: 'primary', text: currentUser.counters.bx_messenger_new_messages} :
+                                          tab.url === '/friends-all' && iFrCounter > 0 ?
+                                            {variant: 'primary', text: iFrCounter} : 
+                                          null}
+                                    >
                                         {tab.url === appSetting('dashboard', 'url') && profile ? (
                                             profile
-                                        ) : (
-                                            <Icon icon={tab.icon} width={24} height={24} />
-                                        )}
-    
+                                        ) : null}
+                                        
                                         {!!tab.title && (
                                             <Text
                                                 className={`group-hover:text-primary dark:group-hover:text-primary text-[10px] whitespace-nowrap ${textColor}`}
@@ -74,27 +90,7 @@ export default function () {
                                                 {tab.title}
                                             </Text>
                                         )}
-    
-                                        {tab.url === appSetting('notifications', 'url') && notifCount > 0 && (
-                                            <View className="absolute bg-contrast border-2 border-white dark:border-neutral-900 rounded-full px-1.5 items-center justify-center -right-1 -top-2">
-                                                <Text className="text-white text-xs font-semibold">{notifCount}</Text>
-                                            </View>
-                                        )}
-    
-                                        {tab.url === appSetting('messenger', 'url') && currentUser?.counters?.bx_messenger_new_messages > 0 && (
-                                            <View className="absolute bg-contrast border-2 border-white dark:border-neutral-900 rounded-full px-1.5 items-center justify-center -right-1 -top-2">
-                                                <Text className="text-white text-xs font-semibold">
-                                                    {currentUser.counters.bx_messenger_new_messages}
-                                                </Text>
-                                            </View>
-                                        )}
-    
-                                        {tab.url === '/friends-all' && iFrCounter > 0 && (
-                                            <View className="absolute bg-contrast border-2 border-white dark:border-neutral-900 rounded-full px-1.5 items-center justify-center -right-1 -top-2">
-                                                <Text className="text-white text-xs font-semibold">{iFrCounter}</Text>
-                                            </View>
-                                        )}
-                                    </View>
+                                    </Button>
                                 </Link>
                             </View>
                         );

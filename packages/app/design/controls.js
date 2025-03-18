@@ -304,6 +304,12 @@ export const Button = (props) => {
         padding,
         children,
         bgrDecorator = false,
+        indicator = false,
+        indicatorPosition = 'top-right',
+        indicatorOffset = -2,
+        indicatorContent = '',
+        indicatorClassName = '',
+        direction = 'flex-row',
         ...rest
     } = props;
 
@@ -327,10 +333,71 @@ export const Button = (props) => {
 
   
 
+    const getIndicatorPosition = () => {
+        // Helper function to generate a position class based on the offset
+        const getPositionClass = (position, offset) => {
+            // Convert to number if it's a string that can be parsed as a number
+            const numValue = typeof offset === 'string' && !isNaN(parseInt(offset)) ? 
+                parseInt(offset) : offset;
+            
+            if (typeof numValue === 'number') {
+                return numValue < 0 ? `-${position}-${Math.abs(numValue)}` : `${position}-${numValue}`;
+            }
+            // If it's a string with special format already, use it directly
+            return typeof offset === 'string' && offset.startsWith('-') ? 
+                `-${position}-${offset.substring(1)}` : `${position}-${offset || 0}`;
+        };
+
+        switch(indicatorPosition) {
+            case 'top-right':
+                return `top-0 right-0 translate-y-[${indicatorOffset}]`;
+            case 'top-left':
+                return `top-0 left-0 translate-y-[${indicatorOffset}]`;
+            case 'bottom-right':
+                return `bottom-0 right-0 translate-y-[${indicatorOffset}]`;
+            case 'bottom-left':
+                return `bottom-0 left-0 translate-y-[${indicatorOffset}]`;
+            case 'bottom-center':
+                return `${getPositionClass('bottom', indicatorOffset)} inset-x-0 w-full`;
+            case 'top-center':
+                return `${getPositionClass('top', indicatorOffset)} inset-x-0 w-full`;
+            case 'top':
+                return `${getPositionClass('top', indicatorOffset)} inset-x-0 w-full`;
+            case 'bottom':
+                return `${getPositionClass('bottom', indicatorOffset)} inset-x-0 w-full`;
+            case 'left':
+                return `${getPositionClass('left', indicatorOffset)} inset-y-0 h-full`;
+            case 'right':
+                return `${getPositionClass('right', indicatorOffset)} inset-y-0 h-full`;
+            default:
+                return `${getPositionClass('bottom', indicatorOffset)} inset-x-0 w-full`;
+        }
+    };
+
+    const renderIndicator = () => {
+        if (!indicator || !pressed) return null;
+        
+        const positionClass = getIndicatorPosition();
+        let defaultClass = 'absolute z-10 flex items-center justify-center';
+        
+        // For center positions, adjust the default class
+        if (indicatorPosition === 'bottom-center' || indicatorPosition === 'top-center') {
+            defaultClass = 'absolute z-10';
+        }
+        
+        const finalClass = `${defaultClass} ${positionClass} ${indicatorClassName || ''}`;
+        
+        return (
+            <View className={finalClass}>
+                {indicatorContent}
+            </View>
+        );
+    };
+    
     const sClassContainer = useMemo(() => {
-        let classes = '  flex-row items-center ';
+        let classes = ` ${direction} items-center relative `;
         classes += fullWidth ? ' flex-auto w-full ' : ' w-fit ';
-        if (disabled) classes += 'opacity-50 ';
+        if (disabled) classes += ' opacity-50 ';
         if (variant !== 'custom') {
             classes += (solid ? '' : ThemeCssClassesButton[`u-btn-${variant}-trans`]) +ThemeCssClassesButton[`u-btn-${variant}-cnt`]+ '  ';
         } else {
@@ -349,7 +416,7 @@ export const Button = (props) => {
             classes += ` ${pressedClasses?.pressed_container || ThemeCssClassesButton[`u-btn-${variant}-pressed-cnt`] || ThemeButtonSizes.pressed_container} `;
         }
         return classes;
-    }, [fullWidth, disabled, variant, solid, ThemeCssClassesButton, className, align, pressed, bgColor, pressedClasses]);
+    }, [fullWidth, disabled, variant, solid, ThemeCssClassesButton, className, align, pressed, bgColor, pressedClasses, direction]);
 
     const sClassText = useMemo(() => {
         let classes = ' whitespace-nowrap text-ellipsis overflow-hidden tracking-tight';
@@ -450,6 +517,7 @@ export const Button = (props) => {
         } : {}),
         role: rest['aria-haspopup'] === 'menu' ? 'menubutton' : 'button',
     } : {};
+
     const buttonContent = (
         <>
             <Cnt
@@ -468,6 +536,7 @@ export const Button = (props) => {
                 {sButtonIconEnd}
                 {isTitle && oButtonAddon}
                 {children}
+                {renderIndicator()}
             </Cnt>
             {!isTitle && oButtonAddon}
         </>

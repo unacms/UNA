@@ -744,7 +744,7 @@ export const settingsDefault = {
             pressed_text:
                 ' text-primary-700 dark:text-primary-300 group-hover:text-primary-800 dark:group-hover:text-primary-200 ',
             xs: {
-                rounded: ' rounded-[6px] overflow-hidden ',
+                rounded: ' rounded-[6px] ',
                 padding: ' h-[28px] min-w-[28px] p-[4px] ',
                 icon_container:
                 ' h-[20px] w-[20px] ', //icon container size
@@ -754,7 +754,7 @@ export const settingsDefault = {
                 margin: ' px-[4px] leading-[20px] native:text-[14px] web:text-sm ',
             },
             sm: {
-                rounded: ' rounded-[8px] overflow-hidden ',
+                rounded: ' rounded-[8px] ',
                 padding: ' h-[36px] p-[4px]  ',
                 icon_container: ' w-[28px] h-[28px] p-[4px] ',
                 icon_size: '20px',
@@ -763,7 +763,7 @@ export const settingsDefault = {
                 margin: ' leading-none bg-transparent px-[4px] my-auto native:text-[14px] ',
             },
             base: {
-                rounded: ' rounded-[8px] overflow-hidden  ',
+                rounded: ' rounded-[8px] ',
                 padding: ' p-[4px]  ',
                 icon_container: ' w-[32px] h-[32px] p-[6px] ',
                 icon_size: '20px',
@@ -772,7 +772,7 @@ export const settingsDefault = {
                 margin: ' leading-[36px] bg-transparent px-[6px] my-auto native:text-[16px] ',
             },
             lg: {
-                rounded: ' rounded-[10px] overflow-hidden  ',
+                rounded: ' rounded-[10px] relative ',
                 padding: ' h-[48px] py-[4px] px-[8px]    ',
                 icon_container: ' w-[40px] h-[40px] p-[8px] ',
                 icon_size: '24px',
@@ -792,6 +792,7 @@ export const settingsDefault = {
             'u-btn-default-pressed-icon': ' text-neutral-950 dark:text-white ',
             'u-btn-default-decorator': ' bg-neutral-500/10 ',
             'u-btn-default-pressed-decorator': ' bg-neutral-500/20 ',
+            'u-btn-default-pressed-cnt': ' bg-primary/10 dark:bg-primary-d/10 ',
 
             'u-btn-primary-cnt':
             ' group bg-primary-500 dark:bg-primary-600 border border-transparent sm:hover:border-transparent dark:border-primary-500 sm:hover:bg-primary-600 dark:sm:hover:bg-primary-700 sm:dark:hover:border-primary-600 ',
@@ -803,6 +804,7 @@ export const settingsDefault = {
             'u-btn-primary-color-icon-dark': 'rgb(243, 244, 246)',
             'u-btn-primary-decorator': ' bg-white/20 ',
             'u-btn-primary-pressed-decorator': ' bg-white/30 ',
+            'u-btn-primary-pressed-cnt': ' bg-primary-600 dark:bg-primary-700 ',
 
             'u-btn-secondary-cnt':
                 ' bg-neutral-200 dark:bg-neutral-800 sm:hover:bg-neutral-300 sm:dark:hover:bg-neutral-700  ',
@@ -813,6 +815,7 @@ export const settingsDefault = {
             'u-btn-secondary-pressed-icon': ' text-neutral-950 dark:text-white ',
             'u-btn-secondary-decorator': ' bg-neutral-500/10 ',
             'u-btn-secondary-pressed-decorator': ' bg-neutral-500/20 ',
+            'u-btn-secondary-pressed-cnt': ' bg-neutral-300 dark:bg-neutral-700 ',
 
             'u-btn-danger-cnt':
                 ' bg-red-600 hover:bg-red-500 hover:shadow active:opacity-50 active:shadow-none  ',
@@ -823,6 +826,7 @@ export const settingsDefault = {
             'u-btn-danger-pressed-icon': ' text-white ',
             'u-btn-danger-decorator': ' bg-white/20 ',
             'u-btn-danger-pressed-decorator': ' bg-white/30 ',
+            'u-btn-danger-pressed-cnt': ' bg-red-700 ',
 
             'u-btn-text-cnt':
                 '  hover:bg-bgrbutton/60 dark:hover:bg-bgrbutton-d/60 bg-transparent active:bg-bgrbutton-h dark:active:bg-bgrbutton-dh text-neutral-600 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
@@ -833,6 +837,7 @@ export const settingsDefault = {
             'u-btn-text-pressed-icon': ' text-primary-600 dark:text-primary-400 ',
             'u-btn-text-decorator': ' bg-neutral-500/10  ',
             'u-btn-text-pressed-decorator': ' bg-primary dark:bg-primary-d text-white dark:text-neutral-50 ',
+            'u-btn-text-pressed-cnt': ' relative bg-primary/10 dark:bg-primary-d/10 ',
 
             'u-btn-link-cnt': ' bg-transparent px-0 ',
             'u-btn-link-text':
@@ -844,6 +849,7 @@ export const settingsDefault = {
             'u-btn-link-color-icon-dark': 'rgba(37,99,235,1)',
             'u-btn-link-decorator': ' bg-bgritem dark:bg-bgritem-d ',
             'u-btn-link-pressed-decorator': ' bg-bgritem-h dark:bg-bgritem-dh ',
+            'u-btn-link-pressed-cnt': ' bg-primary/10 dark:bg-primary-d/10 ',
 
             'u-btn-outline-cnt':
                 ' shadow-outline bg-bgrcard dark:shadow-outline-d native:border border-bdrbutton dark:border-bdrbutton-d dark:bg-bgrcard-d hover:bg-bgrbutton dark:hover:bg-bgrbutton-dh ',
@@ -854,6 +860,19 @@ export const settingsDefault = {
             'u-btn-outline-pressed-icon': ' text-neutral-950 dark:text-neutral-50 ',
             'u-btn-outline-decorator': ' bg-neutral-200/50 dark:bg-neutral-700/50 ',
             'u-btn-outline-pressed-decorator': ' bg-neutral-200/70 dark:bg-neutral-700/70 ',
+            'u-btn-outline-pressed-cnt': ' bg-primary/10 dark:bg-primary-d/10 ',
+
+            'u-btn-tab-cnt':
+                ' bg-transparent hover:bg-bgrbutton/60 dark:hover:bg-bgrbutton-d/60 active:bg-bgrbutton-h dark:active:bg-bgrbutton-dh ',
+            'u-btn-tab-text':
+                ' font-medium text-neutral-600 group-hover:text-neutral-950 dark:text-neutral-400 dark:group-hover:text-neutral-50 ',
+            'u-btn-tab-trans': ' web:duration-200 ',
+            'u-btn-tab-icon': ' text-neutral-600 group-hover:text-neutral-950 dark:text-neutral-400 dark:group-hover:text-neutral-50 ',
+            'u-btn-tab-pressed-icon': ' text-primary-600 dark:text-primary-400 ',
+            'u-btn-tab-decorator': ' bg-neutral-500/10 ',
+            'u-btn-tab-pressed-decorator': ' bg-primary/20 dark:bg-primary-d/20 ',
+            'u-btn-tab-pressed-cnt': ' bg-primary/10 dark:bg-primary-d/10  ',
+
 
             'u-btn-group-item-cnt':
                 ' hover:bg-bgritem-h dark:hover:bg-bgritem-dh active:opacity-50  ',

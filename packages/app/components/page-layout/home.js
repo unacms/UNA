@@ -216,9 +216,9 @@ export default function (props) {
                 )}
 
                 <View className="flex-auto w-full lg:w-auto lg:px-4 xl:px-2 ">
-                    <View className=" w-full mx-auto lg:max-w-2xl relative  ">
-                        {/*web:pt-[52px] sm:web:pt-[0px]*/}
-                        <View className="web:fixed web:top-16 web:lg:top-0 web:z-50 web:w-full lg:relative bg-bgrnavbar dark:bg-bgrnavbar-d lg:bg-transparent border-b border-bdrcard dark:border-bdrcard-d shadow-sm lg:shadow-none lg:border-none">
+                    <View className=" w-full mx-auto lg:max-w-2xl relative xl:pt-4  ">
+                        
+                        <View className="web:fixed web:top-16 xl:hidden web:lg:top-0 web:z-50 web:w-full lg:relative bg-bgrnavbar dark:bg-bgrnavbar-d lg:bg-transparent border-b border-bdrcard dark:border-bdrcard-d shadow-sm lg:shadow-none lg:border-none">
                             <ScrollView
                                 horizontal={true}
                                 className="  max-w-2xl mx-auto w-full overflow-y-visible sm:justify-center "

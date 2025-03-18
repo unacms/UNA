@@ -159,7 +159,7 @@ export default function (props) {
                             setMenuPopup={setMenuPopup}
                         />
                         <Row className="hidden lg:flex flex-auto ">
-                            <Row className="w-full mx-auto gap-x-2 max-w-2xl justify-between">
+                            <Row className="w-full mx-auto gap-x-0.5 max-w-2xl justify-between">
                                 {menu_navbar_items.map((item, index) => (
                                     <View
                                         className="flex-auto"
@@ -175,7 +175,7 @@ export default function (props) {
                                                         ? true
                                                         : false
                                                 }
-                                                variant="text"
+                                                variant="tab"
                                                 size="lg"
                                                 tooltip={t(item.title)}
                                                 title={
@@ -189,6 +189,17 @@ export default function (props) {
                                                 
                                                 startDecorator={item.icon}
                                                 align="center"
+                                                indicator={
+                                                    item.link ==
+                                                        '/' + props.url ||
+                                                    (item.link == '/' &&
+                                                        props.uri == 'home')
+                                                        ? true
+                                                        : false
+                                                }
+                                                indicatorPosition="bottom-center"
+                                                indicatorOffset={-2}
+                                                indicatorClassName=" h-1 w-full bg-primary-500 rounded-t-full"
                                             />
                                         </Link>
                                     </View>
