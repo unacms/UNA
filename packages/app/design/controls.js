@@ -306,7 +306,6 @@ export const Button = (props) => {
         bgrDecorator = false,
         indicator = false,
         indicatorPosition = 'top-right',
-        indicatorOffset = -2,
         indicatorContent = '',
         indicatorClassName = '',
         direction = 'flex-row',
@@ -334,32 +333,17 @@ export const Button = (props) => {
   
 
     const getIndicatorPosition = () => {
-        // Helper function to generate a position class based on the offset
-        const getPositionClass = (position, offset) => {
-            // Convert to number if it's a string that can be parsed as a number
-            const numValue = typeof offset === 'string' && !isNaN(parseInt(offset)) ? 
-                parseInt(offset) : offset;
-            
-            if (typeof numValue === 'number') {
-                return numValue < 0 ? `-${position}-${Math.abs(numValue)}` : `${position}-${numValue}`;
-            }
-            // If it's a string with special format already, use it directly
-            return typeof offset === 'string' && offset.startsWith('-') ? 
-                `-${position}-${offset.substring(1)}` : `${position}-${offset || 0}`;
-        };
-
         switch(indicatorPosition) {
-            
             case 'top':
-                return `${getPositionClass('top', indicatorOffset)} inset-x-0 w-full`;
+                return 'top-0 inset-x-0 w-full';
             case 'bottom':
-                return `${getPositionClass('bottom', indicatorOffset)} inset-x-0 w-full`;
+                return 'bottom-0 inset-x-0 w-full';
             case 'left':
-                return `${getPositionClass('left', indicatorOffset)} inset-y-0 h-full`;
+                return 'left-0 inset-y-0 h-full';
             case 'right':
-                return `${getPositionClass('right', indicatorOffset)} inset-y-0 h-full`;
+                return 'right-0 inset-y-0 h-full';
             default:
-                return `${getPositionClass('bottom', indicatorOffset)} inset-x-0 w-full`;
+                return 'bottom-0 inset-x-0 w-full';
         }
     };
 

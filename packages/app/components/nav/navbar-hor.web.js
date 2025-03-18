@@ -198,8 +198,7 @@ export default function (props) {
                                                         : false
                                                 }
                                                 indicatorPosition="bottom"
-                                                indicatorOffset={-2}
-                                                indicatorClassName=" h-[3px] w-full bg-primary-500 rounded-t-full"
+                                                indicatorClassName=" translate-y-[6px] h-[3px] w-full bg-primary-500 rounded-t-[2px]"
                                             />
                                         </Link>
                                     </View>

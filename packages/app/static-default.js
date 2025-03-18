@@ -24,8 +24,8 @@ const LogoText = (
     <Svg
         aria-label="Logo Text"
         className=" group-active:scale-90 text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-900 dark:group-hover:text-neutral-100 duration-500"
-        width={80}
-        height={36}
+        width={68}
+        height={32}
         viewBox="0 0 68 32"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -52,8 +52,8 @@ const LogoMark = (
         aria-label="Logo Mark"
         className=" w-auto h-fit text-neutral-800 dark:text-neutral-200 hover:text-neutral-900 dark:hover:text-neutral-100  "
         viewBox="0 0 40 40"
-        width={48}
-        height={48}
+        width={40}
+        height={40}
         xmlns="http://www.w3.org/2000/svg"
     >
         <Path
@@ -84,10 +84,10 @@ const LogoMark = (
 )
 
 const LogoNativeLight = (
-    <View className="w-[48px] h-[48px]">
+    <View className="w-[40px] h-[40px]">
         <Svg
             aria-label="Logo Mark"
-            class="  h-[48px] w-[48px] text-neutral-800 dark:text-neutral-200  "
+            class="  h-[40px] w-[40px] text-neutral-800 dark:text-neutral-200  "
             viewBox="0 0 40 40"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -121,10 +121,10 @@ const LogoNativeLight = (
 )
 
 const LogoNativeDark = (
-    <View className="w-[48px] h-[48px]">
+    <View className="w-[40px] h-[40px]">
         <Svg
             aria-label="Logo Mark"
-            className="h-[48px] w-[48px]"
+            className="h-[40px] w-[40px]"
             viewBox="0 0 40 40"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"

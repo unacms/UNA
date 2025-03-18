@@ -32,7 +32,7 @@ export default function () {
         let dUser = Object.assign({}, currentUser);
         dUser.url_avatar = dUser.avatar
         dUser.url = appSetting('dashboard', 'url')
-        profile = <View className="w-[36px] h-[36px] p-[2px]"><Profile {...dUser} displayType="unit_wo_info" displaySize="xs" /></View>
+        profile = <View className="w-[32px] h-[32px] p-[4px]"><Profile {...dUser} displayType="unit_wo_info" displaySize="xs" /></View>
     }
 
     if (pathname == '/')
@@ -65,14 +65,12 @@ export default function () {
                                     <Button
                                         variant="tab"
                                         
-                                        size="lg"
+                                        size="base"
                                         fullWidth={true}
                                         pressed={isActive}
                                         indicator={isActive}
                                         indicatorPosition="top"
-                                        indicatorOffset={0}
-                                        className={isActive ? 'bg-transparent' : 'transparent'}
-                                        indicatorClassName=" h-[3px] w-full bg-primary dark:bg-primary-d -translate-y-[2px] rounded-b-[3px]"
+                                        indicatorClassName=" h-[3px] w-full bg-primary dark:bg-primary-d -translate-y-[4px] rounded-b-[3px]"
                                         startDecorator={tab.url === appSetting('dashboard', 'url') && profile ? null : tab.icon}
                                         direction="flex-col bg-transparent "
                                         addon={tab.url === appSetting('notifications', 'url') && notifCount > 0 ? 
@@ -88,7 +86,7 @@ export default function () {
                                         ) : null}
                                             {!!tab.title && (
                                             <Text
-                                                className={`group-hover:text-primary dark:group-hover:text-primary text-[12px] tracking-tight  leading-none whitespace-nowrap ${textColor}`}
+                                                className={`group-hover:text-primary dark:group-hover:text-primary text-[12px] tracking-tight  leading-[16px] whitespace-nowrap ${textColor}`}
                                             >
                                                 {tab.title}
                                             </Text>

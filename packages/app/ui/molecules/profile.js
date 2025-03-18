@@ -110,18 +110,18 @@ function AtomProfile_(oProps) {
 
     const sizes = {
         xxs: {
+            sSize: 'w-[16px] h-[16px]',
+            iSizeWidth: 16,
+            iSizeHeight: 16,
+            sSizeFont: 'text-[12px]', 
+            sSizeFontLetter: 'text-base font-semibold',
+        },
+        xs: {
             sSize: 'w-[24px] h-[24px]',
             iSizeWidth: 24,
             iSizeHeight: 24,
             sSizeFont: 'text-[12px]', 
-            sSizeFontLetter: 'text-base  font-semibold',
-        },
-        xs: {
-            sSize: 'w-[32px] h-[32px]',
-            iSizeWidth: 32,
-            iSizeHeight: 32,
-            sSizeFont: 'text-[12px]', 
-            sSizeFontLetter: 'text-base  font-semibold',
+            sSizeFontLetter: 'text-base font-semibold',
         },
         sm: {
             sSize: 'w-[36px] h-[36px]',
@@ -134,8 +134,8 @@ function AtomProfile_(oProps) {
             sSize: 'w-[40px] h-[40px]',
             iSizeWidth: 40,
             iSizeHeight: 40,
-            sSizeFont: ' text-[16px] leading-[22px] tracking-tight font-bold ',
-            sSizeFontLetter: ' p-[8px] leading-[22px] text-center text-[20px] font-bold',
+            sSizeFont: ' text-[14px] leading-[20px] tracking-tight font-semibold ',
+            sSizeFontLetter: ' p-[8px] text-center text-[20px] font-semibold',
         },
         lg: {
             sSize: 'w-[48px] h-[48px]',

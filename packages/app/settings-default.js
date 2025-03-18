@@ -751,7 +751,7 @@ export const settingsDefault = {
                 icon_size: ' 20px ', //icon size
                 icon_margin: ' mx-[0px] ', //conditional margin for icon container when title is present
                 min_height: ' ',
-                margin: ' px-[4px] leading-[20px] native:text-[14px] web:text-sm ',
+                margin: ' px-[4px] leading-[20px] text-[14px] ',
             },
             sm: {
                 rounded: ' rounded-[8px] ',
@@ -763,22 +763,22 @@ export const settingsDefault = {
                 margin: ' leading-none bg-transparent px-[4px] my-auto native:text-[14px] ',
             },
             base: {
-                rounded: ' rounded-[8px] ',
-                padding: ' p-[4px]  ',
-                icon_container: ' w-[32px] h-[32px] p-[6px] ',
+                rounded: ' rounded-[8px] relative ',
+                padding: ' p-[4px] flex  ',
+                icon_container: ' flex w-[32px] h-[32px] items-center justify-center text-center ',
                 icon_size: '20px',
-                icon_margin: ' p-[6px] ',
-                min_height: ' leading-[24px] web:text-[16px] ',
-                margin: ' leading-[36px] bg-transparent px-[6px] my-auto native:text-[16px] ',
+                icon_margin: '  ',
+                min_height: ' web:text-[14px] leading-[40px] ',
+                margin: '  bg-transparent px-[6px] my-auto native:text-[14px] ',
             },
             lg: {
-                rounded: ' rounded-[10px] relative ',
+                rounded: ' rounded-[12px] relative ',
                 padding: '  px-[8px] py-[6px] flex  ',
-                icon_container: ' flex h-[36px] w-[36px] items-center justify-center text-center  ',
+                icon_container: ' flex h-[40px] w-[40px] items-center justify-center text-center  ',
                 icon_size: '24px',
                 icon_margin: '  ',
-                min_height: '  web:text-[14px] leading-[36px] ',
-                margin: '  bg-transparent px-[12px] my-auto native:text-[14px] ',
+                min_height: '  web:text-[16px] leading-[40px] ',
+                margin: '  bg-transparent px-[12px] my-auto native:text-[16px] ',
             },
         },
 
