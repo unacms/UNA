@@ -81,7 +81,7 @@ export default function () {
     const iconWidth = 28;
     const iconHeight = 28;
     const isShowTabs = currentUser || appSetting('native', 'show_tabs_non_logged')
-    const notificationUrl =  appSetting('layout', 'notifications');
+    const notificationUrl =  appSetting('notifications', 'url');
 
     const TabList = useMemo(() => currentUser ? appSetting('menu_items', 'menu_tabbar_logged') : appSetting('menu_items', 'menu_tabbar_non_logged'), [currentUser?.id]);
 
