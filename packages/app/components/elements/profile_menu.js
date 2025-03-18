@@ -22,6 +22,7 @@ export default function ElementProfileMenu(props) {
                             align="start"
                             title={t(item.title)}
                             size="lg"
+                            bgrDecorator
                         />
                     </Link>
                 ))}

@@ -66,6 +66,7 @@ export function getButtonForConductor(a, index, currentUser) {
             align="start"
             startDecorator={icon}
             addon={addon}
+            bgrDecorator={appSetting('conductor', 'bgrDecorator')}
         />
     )
 }

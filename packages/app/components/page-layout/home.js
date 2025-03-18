@@ -1,7 +1,14 @@
 import { View, Row, Pressable, ScrollView } from 'app/design/view'
 import { BlockByName } from 'app/components/block'
 import React, { useState, useEffect } from 'react'
-import { appSetting, storageSet, storageGet, getLayout, LAYOUT_BREAKPOINTS, asyncStorageSet } from 'app/lib/util'
+import {
+    appSetting,
+    storageSet,
+    storageGet,
+    getLayout,
+    LAYOUT_BREAKPOINTS,
+    asyncStorageSet,
+} from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import { Button } from 'app/design/controls'
 import { useTranslation } from 'react-i18next'
@@ -14,7 +21,7 @@ import { Text } from 'app/design/typography'
 
 export default function (props) {
     const { t } = useTranslation()
-    const isWeb = Platform.OS == 'web';
+    const isWeb = Platform.OS == 'web'
     let { currentUser, setCurrentUser } = useCurrentUser()
     const feedMode = storageGet('feed:mode', '', true)
     const feedTypeD = storageGet('feed:type', '', true)
@@ -36,13 +43,11 @@ export default function (props) {
     function setFeedTypeEx(mode) {
         storageSet('feed:type', '', mode, true)
         setFeedType(mode)
-        console.log("modemode", mode)
+        console.log('modemode', mode)
     }
 
     if (!currentUser) {
-        return (
-            <Splash {...props} />
-        )
+        return <Splash {...props} />
     }
 
     const sideBarBlocks = Object.keys(props.blocks)
@@ -63,37 +68,26 @@ export default function (props) {
             return { name: key, block: props.blocks[key] }
         })
 
-
     if (currentUser) {
-        asyncStorageSet('layout:visited', 'true');
+        asyncStorageSet('layout:visited', 'true')
         let dUser = Object.assign({}, currentUser)
         dUser.url_avatar = dUser.avatar
         dUser.url = appSetting('dashboard', 'url')
 
-
-        const headerBlocks = <>{topBlocks?.map(
-            (item, index) => {
-                return (
-                    <BlockByName
-                        key={
-                            'block_' +
-                            index
-                        }
-                        name={
-                            item.block
-                        }
-                        data={
-                            props.data
-                        }
-                        {...item.block
-                            .props}
-                    />
-                )
-            }
-        )}</>
-
-
-
+        const headerBlocks = (
+            <>
+                {topBlocks?.map((item, index) => {
+                    return (
+                        <BlockByName
+                            key={'block_' + index}
+                            name={item.block}
+                            data={props.data}
+                            {...item.block.props}
+                        />
+                    )
+                })}
+            </>
+        )
 
         return (
             <View
@@ -106,27 +100,102 @@ export default function (props) {
                     <View className="hidden xl:flex w-80 2xl:w-96 ">
                         <View className="fixed fixed-process w-80 2xl:w-96 flex-col p-2 ">
                             {appSetting('layout', 'show_profile_info') && (
-                                <Link href={currentUser.url} emulate={true} >
-                                    <Row className={" rounded-[10px] group items-center px-2 py-1.5 justify-between hover:bg-bgrbutton dark:hover:bg-bgrbutton-d  active:bg-bgrbutton-h dark:active:bg-bgrbutton-dh  "}>
-                                        <Row className='flex-row items-center'>
+                                <Link href={currentUser.url} emulate={true}>
+                                    <Row
+                                        className={
+                                            ' rounded-[10px] group items-center px-2 py-1 justify-between hover:bg-bgrbutton dark:hover:bg-bgrbutton-d  active:bg-bgrbutton-h dark:active:bg-bgrbutton-dh  '
+                                        }
+                                    >
+                                        <Row className="flex-row items-center">
                                             <Profile
                                                 {...currentUser}
                                                 url_avatar={currentUser.avatar}
                                                 displayType="unit_wo_info"
-                                                displaySize="sm"
+                                                displaySize="base"
                                             />
-                                            <View className='flex-col'>
+                                            <View className="flex-col">
                                                 <Text className=" text-sm pl-3 flex-auto my-auto font-semibold truncate text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-white duration-200">
                                                     {currentUser.display_name}
                                                 </Text>
                                                 <Text className=" text-xs pl-3 flex-auto my-auto truncate text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-800 dark:group-hover:text-neutral-200 duration-200">
-                                                    {currentUser.membership_name}
-                                                </Text></View>
+                                                    {
+                                                        currentUser.membership_name
+                                                    }
+                                                </Text>
+                                            </View>
                                         </Row>
-
                                     </Row>
                                 </Link>
                             )}
+
+                            <View
+                                className=' py-2 mb-2 border-b border-bdr dark:border-bdr-d gap-y-0.5'
+                            >
+                                {feedList.length > 1 &&
+                                    feedList.map((item, index) => {
+                                        return (
+                                            <View key={'row_' + index}>
+                                                <Button
+                                                    key={
+                                                        'row_' +
+                                                        index +
+                                                        (feedType == item.name)
+                                                    }
+                                                    startDecorator={item.icon}
+                                                    title={
+                                                        item.showTitle
+                                                            ? t(item.title)
+                                                            : ''
+                                                    }
+                                                    variant={
+                                                        feedType == item.name
+                                                            ? 'text'
+                                                            : 'text'
+                                                    }
+                                                    pressed={feedType == item.name}
+                                                    bgrDecorator
+                                                    fullWidth
+                                                    size="lg"
+                                                    solid
+                                                    align="start"
+                                                    onPress={() => {
+                                                        setFeedTypeEx(item.name)
+                                                    }}
+                                                />
+                                            </View>
+                                        )
+                                    })}
+                                {appSetting('feed', 'show_selector_view') && (
+                                    <Row className="flex-auto gap-x-1 pb-2 sm:pb-4 flex-auto items-end justify-end">
+                                        <Button
+                                            startDecorator="Rows"
+                                            tooltip={t('Full')}
+                                            rounded
+                                            variant={
+                                                unitMode == '' ? 'link' : 'text'
+                                            }
+                                            size="sm"
+                                            onPress={() => {
+                                                setUnitModeEx('')
+                                            }}
+                                        />
+                                        <Button
+                                            startDecorator="ListBullets"
+                                            rounded
+                                            tooltip={t('Short')}
+                                            variant={
+                                                unitMode == 'small'
+                                                    ? 'link'
+                                                    : 'text'
+                                            }
+                                            size="sm"
+                                            onPress={() => {
+                                                setUnitModeEx('small')
+                                            }}
+                                        />
+                                    </Row>
+                                )}
+                            </View>
 
                             {navBarBlocks.map((item, index) => {
                                 return (
@@ -147,25 +216,31 @@ export default function (props) {
                 )}
 
                 <View className="flex-auto w-full lg:w-auto lg:px-4 xl:px-2 ">
-
-                    <View className=" w-full mx-auto lg:max-w-2xl relative  ">{/*web:pt-[52px] sm:web:pt-[0px]*/}
+                    <View className=" w-full mx-auto lg:max-w-2xl relative  ">
+                        {/*web:pt-[52px] sm:web:pt-[0px]*/}
                         <View className="web:fixed web:top-16 web:lg:top-0 web:z-50 web:w-full lg:relative bg-bgrnavbar dark:bg-bgrnavbar-d lg:bg-transparent border-b border-bdrcard dark:border-bdrcard-d shadow-sm lg:shadow-none lg:border-none">
                             <ScrollView
                                 horizontal={true}
                                 className="  max-w-2xl mx-auto w-full overflow-y-visible sm:justify-center "
                             >
                                 <Row
-                                    className={`  rounded-full mx-3 sm:mx-auto ${feedList.length > 1
+                                    className={`  rounded-full mx-3 sm:mx-auto ${
+                                        feedList.length > 1
                                             ? 'my-2 lg:my-4'
                                             : ''
-                                        }  gap-x-1 sm:gap-x-2  `}
+                                    }  gap-x-1 sm:gap-x-2  `}
                                 >
                                     {feedList.length > 1 &&
                                         feedList.map((item, index) => {
                                             return (
                                                 <View key={'row_' + index}>
                                                     <Button
-                                                        key={'row_' + index + (feedType == item.name)}
+                                                        key={
+                                                            'row_' +
+                                                            index +
+                                                            (feedType ==
+                                                                item.name)
+                                                        }
                                                         startDecorator={
                                                             item.icon
                                                         }
@@ -176,7 +251,7 @@ export default function (props) {
                                                         }
                                                         variant={
                                                             feedType ==
-                                                                item.name
+                                                            item.name
                                                                 ? 'primary'
                                                                 : 'text'
                                                         }
@@ -195,52 +270,54 @@ export default function (props) {
                                         'feed',
                                         'show_selector_view'
                                     ) && (
-                                            <Row className="flex-auto gap-x-1 pb-2 sm:pb-4 flex-auto items-end justify-end">
-                                                <Button
-                                                    startDecorator="Rows"
-                                                    tooltip={t('Full')}
-                                                    rounded
-                                                    variant={
-                                                        unitMode == ''
-                                                            ? 'link'
-                                                            : 'text'
-                                                    }
-                                                    size="sm"
-                                                    onPress={() => {
-                                                        setUnitModeEx('')
-                                                    }}
-                                                />
-                                                <Button
-                                                    startDecorator="ListBullets"
-                                                    rounded
-                                                    tooltip={t('Short')}
-                                                    variant={
-                                                        unitMode == 'small'
-                                                            ? 'link'
-                                                            : 'text'
-                                                    }
-                                                    size="sm"
-                                                    onPress={() => {
-                                                        setUnitModeEx('small')
-                                                    }}
-                                                />
-                                            </Row>
-                                        )}
+                                        <Row className="flex-auto gap-x-1 pb-2 sm:pb-4 flex-auto items-end justify-end">
+                                            <Button
+                                                startDecorator="Rows"
+                                                tooltip={t('Full')}
+                                                rounded
+                                                variant={
+                                                    unitMode == ''
+                                                        ? 'link'
+                                                        : 'text'
+                                                }
+                                                size="sm"
+                                                onPress={() => {
+                                                    setUnitModeEx('')
+                                                }}
+                                            />
+                                            <Button
+                                                startDecorator="ListBullets"
+                                                rounded
+                                                tooltip={t('Short')}
+                                                variant={
+                                                    unitMode == 'small'
+                                                        ? 'link'
+                                                        : 'text'
+                                                }
+                                                size="sm"
+                                                onPress={() => {
+                                                    setUnitModeEx('small')
+                                                }}
+                                            />
+                                        </Row>
+                                    )}
                                 </Row>
                             </ScrollView>
                         </View>
-                        <View className={`relative w-full mx-auto max-w-2xl ${feedList.length > 1 ? '' : 'sm:mt-3'} `}>
+                        <View
+                            className={`relative w-full mx-auto max-w-2xl ${
+                                feedList.length > 1 ? '' : 'sm:mt-3'
+                            } `}
+                        >
                             {feedList.map((item, index) => {
                                 if (feedType == item.name) {
                                     return (
                                         <View key={'view' + index}>
-
                                             <BlockByName
                                                 data={props.data}
                                                 name={
                                                     props.blocks[
-                                                    item.name +
-                                                    '_feed_form'
+                                                        item.name + '_feed_form'
                                                     ]
                                                 }
                                             />
@@ -248,11 +325,13 @@ export default function (props) {
                                                 data={props.data}
                                                 name={
                                                     props.blocks[
-                                                    item.name + '_feed'
+                                                        item.name + '_feed'
                                                     ]
                                                 }
                                                 unitMode={unitMode}
-                                                exProps={{ headerBlocks: headerBlocks }}
+                                                exProps={{
+                                                    headerBlocks: headerBlocks,
+                                                }}
                                             />
                                         </View>
                                     )
@@ -265,7 +344,6 @@ export default function (props) {
                             })}
                         </View>
                     </View>
-
                 </View>
                 <View className="hidden lg:flex w-80 2xl:w-96 ">
                     <View className="fixed fixed-process w-full max-w-80 2xl:max-w-96 p-2 flex-col space-y-4 ">

@@ -303,6 +303,7 @@ export const Button = (props) => {
         solid = false,
         padding,
         children,
+        bgrDecorator = false,
         ...rest
     } = props;
 
@@ -382,6 +383,12 @@ export const Button = (props) => {
         if (variant != 'custom') {
             sizeClasses = `${roundingClass} ${padding || ThemeButtonSizes[size]?.padding} `;
             iconContainerClass = `${ThemeButtonSizes[size]?.icon_container} ${title ? ThemeButtonSizes[size]?.icon_margin : ''}`;
+            if (bgrDecorator) {
+                const decoratorStyle = pressed 
+                    ? (ThemeCssClassesButton[`u-btn-${variant}-pressed-decorator`] || ' bg-neutral-500/20 ')
+                    : (ThemeCssClassesButton[`u-btn-${variant}-decorator`] || ' bg-neutral-500/10 ');
+                iconContainerClass += decoratorStyle + ' rounded-full ';
+            }
             iconSize = ThemeButtonSizes[size]?.icon_size;
             titleContainerClass += title ? ThemeButtonSizes[size]?.min_height + ThemeButtonSizes[size]?.margin : '';
         }
@@ -391,7 +398,7 @@ export const Button = (props) => {
             sTitleContainer: titleContainerClass,
             sizeClasses,
         };
-    }, [size, rounded, padding, variant, title, isIcon, showTitleFromSize]);
+    }, [size, rounded, padding, variant, title, isIcon, showTitleFromSize, bgrDecorator, pressed]);
 
     const sButtonIconStart = useMemo(
         () =>

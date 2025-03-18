@@ -794,7 +794,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         let rc = ""
         if (sidebar == 'rounded') {
             rc = "items-start justify-start"
-            a = <View className={`${leftSideBarWidth} mt-4 mr-4 hidden lg:block sm:rounded-2xl   bg-bgrnavbar dark:bg-bgrnavbar-d`}>
+            a = <View className={`${leftSideBarWidth} mt-4 mr-4 hidden lg:block sm:rounded-2xl bg-bgrnavbar dark:bg-bgrnavbar-d`}>
                 {leftSideBarComponent}
             </View>
         }

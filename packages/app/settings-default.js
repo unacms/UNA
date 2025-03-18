@@ -33,7 +33,7 @@ export const settingsDefault = {
         apps: true,
         show_profile_info: true,
         tooltips: true,
-        hide_header_for_non_logged: false,
+        hide_header_for_non_logged: true,
         hide_header_for_all: false,
         card_animation_duration: 0,
         user_remote_config: true,
@@ -108,7 +108,8 @@ export const settingsDefault = {
         show_nav_titles: true, // OLD appSetting('layout', 'show_nav_titles')
         hide_browse_filter: true, // OLD appSetting('layout', 'hide_browse_filter')
         sidebar: '',
-        sidebar_position: 'fixed'
+        sidebar_position: 'fixed',
+        bgrDecorator: true, // Enable/disable decorator background globally for conductor buttons
     },
     entry: {
         default_view: '',
@@ -772,9 +773,9 @@ export const settingsDefault = {
             },
             lg: {
                 rounded: ' rounded-[10px] overflow-hidden  ',
-                padding: ' h-[48px] py-[6px] px-[8px]    ',
-                icon_container: ' w-[36px] h-[36px] p-[8px] bg-neutral-500/10 rounded-full ',
-                icon_size: '20px',
+                padding: ' h-[48px] py-[4px] px-[8px]    ',
+                icon_container: ' w-[40px] h-[40px] p-[8px] ',
+                icon_size: '24px',
                 icon_margin: '  ',
                 min_height: '  web:text-[14px] ',
                 margin: '  bg-transparent px-[12px] my-auto native:text-[14px] ',
@@ -789,8 +790,8 @@ export const settingsDefault = {
             'u-btn-default-trans': 'web:duration-200',
             'u-btn-default-icon': ' text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-white ',
             'u-btn-default-pressed-icon': ' text-neutral-950 dark:text-white ',
-            /*'u-btn-default-color-icon-light': 'rgb(243, 244, 246)',
-            'u-btn-default-color-icon-dark': 'rgb(243, 244, 246)',*/
+            'u-btn-default-decorator': ' bg-neutral-500/10 ',
+            'u-btn-default-pressed-decorator': ' bg-neutral-500/20 ',
 
             'u-btn-primary-cnt':
             ' group bg-primary-500 dark:bg-primary-600 border border-transparent sm:hover:border-transparent dark:border-primary-500 sm:hover:bg-primary-600 dark:sm:hover:bg-primary-700 sm:dark:hover:border-primary-600 ',
@@ -800,6 +801,8 @@ export const settingsDefault = {
             'u-btn-primary-pressed-icon': ' text-white ',
             'u-btn-primary-color-icon-light': 'rgb(243, 244, 246)',
             'u-btn-primary-color-icon-dark': 'rgb(243, 244, 246)',
+            'u-btn-primary-decorator': ' bg-white/20 ',
+            'u-btn-primary-pressed-decorator': ' bg-white/30 ',
 
             'u-btn-secondary-cnt':
                 ' bg-neutral-200 dark:bg-neutral-800 sm:hover:bg-neutral-300 sm:dark:hover:bg-neutral-700  ',
@@ -808,8 +811,8 @@ export const settingsDefault = {
             'u-btn-secondary-trans': ' web:duration-200',
             'u-btn-secondary-icon': ' text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-white ',
             'u-btn-secondary-pressed-icon': ' text-neutral-950 dark:text-white ',
-            /*'u-btn-secondary-color-icon-light': 'rgb(243, 244, 246)',
-            'u-btn-secondary-color-icon-dark': 'rgb(243, 244, 246)',*/
+            'u-btn-secondary-decorator': ' bg-neutral-500/10 ',
+            'u-btn-secondary-pressed-decorator': ' bg-neutral-500/20 ',
 
             'u-btn-danger-cnt':
                 ' bg-red-600 hover:bg-red-500 hover:shadow active:opacity-50 active:shadow-none  ',
@@ -818,8 +821,8 @@ export const settingsDefault = {
             'u-btn-danger-trans': ' web:duration-200 ',
             'u-btn-danger-icon': ' text-neutral-100 group-hover:text-white ',
             'u-btn-danger-pressed-icon': ' text-white ',
-            /*'u-btn-danger-color-icon-light': 'rgb(243, 244, 246)',
-            'u-btn-danger-color-icon-dark': 'rgb(243, 244, 246)',*/
+            'u-btn-danger-decorator': ' bg-white/20 ',
+            'u-btn-danger-pressed-decorator': ' bg-white/30 ',
 
             'u-btn-text-cnt':
                 '  hover:bg-bgrbutton/60 dark:hover:bg-bgrbutton-d/60 bg-transparent active:bg-bgrbutton-h dark:active:bg-bgrbutton-dh text-neutral-600 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
@@ -827,9 +830,9 @@ export const settingsDefault = {
                 '  font-medium text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-neutral-50',
             'u-btn-text-trans': ' web:duration-200 ',
             'u-btn-text-icon': ' text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50',            
-            'u-btn-text-pressed-icon': ' text-primary-700 dark:text-primary-d ',
-            /*'u-btn-text-color-icon-light': 'rgb(243, 244, 246)',
-            'u-btn-text-color-icon-dark': 'rgb(243, 244, 246)',*/
+            'u-btn-text-pressed-icon': ' text-primary-600 dark:text-primary-400 ',
+            'u-btn-text-decorator': ' bg-neutral-500/10  ',
+            'u-btn-text-pressed-decorator': ' bg-primary dark:bg-primary-d text-white dark:text-neutral-50 ',
 
             'u-btn-link-cnt': ' bg-transparent px-0 ',
             'u-btn-link-text':
@@ -839,6 +842,8 @@ export const settingsDefault = {
             'u-btn-link-pressed-icon': ' text-primary-700 dark:text-primary-400 ',
             'u-btn-link-color-icon-light': 'rgba(37,99,235,1)',
             'u-btn-link-color-icon-dark': 'rgba(37,99,235,1)',
+            'u-btn-link-decorator': ' bg-bgritem dark:bg-bgritem-d ',
+            'u-btn-link-pressed-decorator': ' bg-bgritem-h dark:bg-bgritem-dh ',
 
             'u-btn-outline-cnt':
                 ' shadow-outline bg-bgrcard dark:shadow-outline-d native:border border-bdrbutton dark:border-bdrbutton-d dark:bg-bgrcard-d hover:bg-bgrbutton dark:hover:bg-bgrbutton-dh ',
@@ -847,8 +852,8 @@ export const settingsDefault = {
             'u-btn-outline-trans': ' web:duration-200',
             'u-btn-outline-icon': ' text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-neutral-50 ',
             'u-btn-outline-pressed-icon': ' text-neutral-950 dark:text-neutral-50 ',
-            /*'u-btn-outline-color-icon-light': 'rgb(243, 244, 246)',
-            'u-btn-outline-color-icon-dark': 'rgb(243, 244, 246)',*/
+            'u-btn-outline-decorator': ' bg-neutral-200/50 dark:bg-neutral-700/50 ',
+            'u-btn-outline-pressed-decorator': ' bg-neutral-200/70 dark:bg-neutral-700/70 ',
 
             'u-btn-group-item-cnt':
                 ' hover:bg-bgritem-h dark:hover:bg-bgritem-dh active:opacity-50  ',

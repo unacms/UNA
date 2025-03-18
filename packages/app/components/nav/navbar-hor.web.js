@@ -176,7 +176,7 @@ export default function (props) {
                                                         : false
                                                 }
                                                 variant="text"
-                                                size="base"
+                                                size="lg"
                                                 tooltip={t(item.title)}
                                                 title={
                                                     item.showTitle
@@ -186,6 +186,7 @@ export default function (props) {
                                                 alt={t(item.title)}
                                                 aria-label={t(item.title)}
                                                 fullWidth
+                                                
                                                 startDecorator={item.icon}
                                                 align="center"
                                             />
