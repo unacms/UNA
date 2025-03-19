@@ -24,6 +24,7 @@ import Map from './map';
 import Calendar from './calendar';
 import Grid from './grid';
 import Chart from './chart';
+import MapBox from './mapbox';
 import MultiPostForm from './multi_post_form';
 import Comments from './comments';
 import CommentContent from './comment_content';
@@ -44,6 +45,7 @@ export const componentsMapDefault = {
     calendar: Calendar,
     comments: Comments,
     form: Form,
+    mapbox: MapBox,
     msg: Msg,
     login: Login,
     redirect: Redirect,

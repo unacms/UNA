@@ -36,7 +36,6 @@ const nextConfig = {
     'react-native',
     'react-native-web',
     'solito',
-
     'react-native-reanimated',
     'nativewind',
     "react-native-css-interop",
