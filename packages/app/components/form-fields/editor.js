@@ -510,11 +510,11 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
     return <View className={`flex-1 relative ${isToolBar ? 'h-48' : ''}`} >
         {(suggestions && suggestions.length > 0) && (
             <View 
-                className="absolute max-h-[144px] w-full max-w-md bottom-0 p-1 z-50 rounded border-bdr dark:border-bdr-d border bg-bgrcard dark:bg-bgrcard-d " 
+                className="absolute max-h-[144px] w-full max-w-md bottom-0 p-1 z-50 rounded border-bdr dark:border-bdr-d border bg-bgrbody dark:bg-bgrbody-d p-2 " 
                 style={style}>
                 <ScrollView>
                     {suggestions.map((user) => (
-                        <Button key={user.url} variant="text" fullWidth align="left" size="sm" title={user.label} onPress={() => { insertMention(user.label, user.url, keywordval[1] + keywordval[0]) }} />
+                        <Button key={user.url} variant="link" fullWidth align="left" size="sm" title={user.label} onPress={() => { insertMention(user.label, user.url, keywordval[1] + keywordval[0]) }} />
 
                     ))}
                 </ScrollView>

@@ -119,7 +119,7 @@ const parseHtmlToReact = (html, textStyles, parentKey = "0") => {
             if (hrefMatch) {
                 elements.push(
                     <Link key={getKey("link")} href={hrefMatch[1]} mode="text">
-                        <Text className={" " + ((srcClass && srcClass[1]) ? getPart("ParseHtmlClasses", [srcClass[1], 'link']) : '')}>{content} </Text>
+                        <Text className={" text-primary " + ((srcClass && srcClass[1]) ? getPart("ParseHtmlClasses", [srcClass[1], 'link']) : '')}>{content} </Text>
                     </Link>
                 );
             }

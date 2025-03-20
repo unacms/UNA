@@ -20,6 +20,7 @@ export default function FormFieldPassword(props) {
         <Field {...props}>
             <View>
             <Input 
+                textContentType="none"
                 placeholder = {placeholder}
                 secureTextEntry={isVisible}
                 name={props.name}

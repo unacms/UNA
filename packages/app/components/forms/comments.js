@@ -8,7 +8,7 @@ import { useFormContext } from 'react-hook-form';
 import { stripTags } from 'app/lib/util'
 
 export default function FormComments(props) {
-    const initialHeight = 44;
+    const initialHeight = props.data.inputs['cmt_id']?.value ? 160: 44;
     const [imageSource, setImageSource] = useState([]);
     const formContext = useFormContext();
     const [isExImage, setIsExImage] = useState(false);
