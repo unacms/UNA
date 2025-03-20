@@ -11,7 +11,7 @@ import { useWindowDimensions } from 'react-native';
 export default function ElementMapBox({ data }) {
     Mapbox.setAccessToken("sk.eyJ1Ijoicm9tYW5sZXMiLCJhIjoiY204Zm9sMWMzMGJiaTJqcXRvdmpseHBuaiJ9.uajA_y3AmjRkBYgy4i2RdQ");
     const mapRef = useRef(null);
-    const [selectedlayers, setSelectedLayers] = useState([]);
+    const [selectedlayers, setSelectedLayers] = useState(['incarcerees']);
     const [popupInfo, setPopupInfo] = useState(null);
     const windowHeight = useWindowDimensions().height;
 

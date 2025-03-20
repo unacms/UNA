@@ -8,7 +8,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 
 export default function ElementMapBox({ data }) {
     const mapRef = useRef(null);
-    const [selectedlayers, setSelectedLayers] = useState(['descendants']);
+    const [selectedlayers, setSelectedLayers] = useState(['incarcerees']);
     const [popupInfo, setPopupInfo] = useState(null); // Данные для popup
     const viewport = {
         longitude: data.center[0],
