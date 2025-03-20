@@ -183,18 +183,12 @@ export default function Splash(props) {
         <View className={appSetting('layout', 'theme') + ' mx-auto w-full'} >
             <View className={' flex-col w-full mx-auto max-w-screen-2xl mx-auto ' + appSetting('layout', 'max_width')}>
                 <View className=" md:h-[calc(100vh-128px)]  md:flex-row border-b border-bdr dark:border-bdr-d p-4 sm:p-6 gap-y-4 gap-x-4 duration-300">
-                    <View className="max-w-2xl p-4 sm:p-6 flex-col mx-auto justify-center my-auto sm:justify-start items-center md:items-start xl:items-center flex-auto">
-                        <View className="mb-8 w-full">
-                            <View className="group flex-row mx-auto md:mx-0 flex-none gap-x-6 my-auto">
-                                <View className="w-16 h-16">
-                                    {appStatic('logo_mark')}
+                    <View className="max-w-2xl p-4 sm:p-6 flex-col gap-y-12 mx-auto justify-center my-auto sm:justify-start items-center md:items-start  flex-auto">
+                                <View className="w-[320px] h-[240px] text-center md:text-start ">
+                                    {appStatic('splash_image')}
                                 </View>
-                                <View className="items-center w-[136px] h-[64px]">
-                                    {appStatic('logo_text')}
-                                </View>
-                            </View>
-                        </View>
-                        <Text className=" text-xl sm:text-2xl text-center md:text-start text-neutral-800 dark:text-neutral-200 ">
+                                
+                        <Text className=" text-lg sm:text-xl text-center md:text-start text-neutral-800 dark:text-neutral-200 ">
                             Discover the community where you can connect and engage
                             with people who share your interests.
                         </Text>
