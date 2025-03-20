@@ -4,13 +4,16 @@ import { useState, useRef, useCallback } from 'react';
 import { Button } from 'app/design/controls'
 import Link from 'app/ui/atoms/link'
 import Mapbox from "@rnmapbox/maps";
+import { useWindowDimensions } from 'react-native';
+
 //TODO SMALL POINTS + desc
 //https://blog.logrocket.com/building-custom-maps-react-native-mapbox/
 export default function ElementMapBox({ data }) {
     Mapbox.setAccessToken("sk.eyJ1Ijoicm9tYW5sZXMiLCJhIjoiY204Zm9sMWMzMGJiaTJqcXRvdmpseHBuaiJ9.uajA_y3AmjRkBYgy4i2RdQ");
     const mapRef = useRef(null);
-    const [selectedlayers, setSelectedLayers] = useState(['descendants']);
+    const [selectedlayers, setSelectedLayers] = useState([]);
     const [popupInfo, setPopupInfo] = useState(null);
+    const windowHeight = useWindowDimensions().height;
 
     const [viewport, setViewport] = useState({
         longitude: data.center[0],
@@ -73,6 +76,14 @@ export default function ElementMapBox({ data }) {
         }, {});
     };
 
+    const handleOnPress1 = useCallback((event) => {
+        setPopupInfo(null)
+    }, [clickableLayers]);
+
+    const handleOnPress2 = useCallback((event) => {
+        setPopupInfo(null)
+    }, [clickableLayers]);
+
     const handleOnPress = useCallback((event) => {
         const features = event.features;
         if (features.length > 0) {
@@ -95,10 +106,7 @@ export default function ElementMapBox({ data }) {
 
                 if (feature.geometry.type == "Point") {
                     const coordinates = feature.geometry.coordinates.slice();
-                    while (Math.abs(event.lngLat.lng - coordinates[0]) > 180) {
-                        coordinates[0] += event.lngLat.lng > coordinates[0] ? 360 : -360;
-                    }
-
+                    
                     setPopupInfo({
                         coordinates: coordinates,
                         object: feature.properties,
@@ -118,7 +126,6 @@ export default function ElementMapBox({ data }) {
 
     }, [clickableLayers]);
 
-    console.log("setPopupInfo", setPopupInfo)
 
     const layerComponents = {
         circle: Mapbox.CircleLayer,
@@ -128,14 +135,14 @@ export default function ElementMapBox({ data }) {
     };
 
     return (
-        <View>
-            <Row className="gap-x-4 my-2">
+        <View className="w-full " style={{ height: windowHeight - 134 }}>
+            <Row className="gap-x-4 mb-2 justify-center">
                 {dataSources.map((layer, index) => (
-                    <Button size="sm" key={layer.key} title={layer.name} pressed={selectedlayers.includes(layer.key)} onPress={() => selectedlayers.includes(layer.key) ? setSelectedLayers(selectedlayers.filter(name => name !== layer.key)) : setSelectedLayers([...selectedlayers, layer.key])} />
+                    <Button size="xs"  key={layer.key} title={layer.name} pressed={selectedlayers.includes(layer.key)} onPress={() => selectedlayers.includes(layer.key) ? setSelectedLayers(selectedlayers.filter(name => name !== layer.key)) : setSelectedLayers([...selectedlayers, layer.key])} />
                 ))}
             </Row>
-            <View className="aspect-square w-full">
-                <Mapbox.MapView style={{ flex: 1 }} ref={mapRef}>
+            <View className="flex-1" >
+                <Mapbox.MapView style={{ flex: 1 }} ref={mapRef} onPress={handleOnPress1} styleURL="mapbox://styles/mapbox/light-v11">
                     <Mapbox.Camera
                         zoomLevel={viewport.zoom}
                         centerCoordinate={[viewport.longitude, viewport.latitude]}
@@ -163,7 +170,7 @@ export default function ElementMapBox({ data }) {
                             id="popup"
                             coordinate={popupInfo.coordinates}
                         >
-                            <View className="bg-white p-2 rounded-lg shadow-md">
+                            <View className="bg-white p-2 rounded-lg shadow-md max-w-xs">
                                 {popupInfo.object.link ? <Link href={popupInfo.object.link}><Text className=" text-base font-medium mb-2">{popupInfo.object.name}{popupInfo.object.facility_name}{popupInfo.object.order_name}</Text></Link> : <Text className=" text-base font-medium mb-2">{popupInfo.object.name}{popupInfo.object.facility_name}{popupInfo.object.order_name}</Text>}
                                 {Object.entries(popupInfo.object)
                                     .filter(([key]) => Object.keys(infoFields).includes(key)) // Убираем ненужные ключи
