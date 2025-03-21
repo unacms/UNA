@@ -89,7 +89,6 @@ function PlainText(props) {
     }*/
 function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus, onBlur, html, ...props }) {
     let b = [...DEFAULT_TOOLBAR_ITEMS];
-
     if (Platform.OS == 'web') {
         const images = [
             "bold.png", "italic.png", "link.png", "checklist.png", "Aa.png",
@@ -112,7 +111,7 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
     const [suggestions, setSuggestions] = useState([]);
     const [keywordval, setKeyword] = useState(['', '']);
     const [editorHeight, setEditorHeight] = useState(0); 
-
+    const [suggestionsSize, setSuggestionsSize] = useState([0,0]);
     const object_privacy_view = formContext.watch('object_privacy_view') || formContext.watch('cmt_privacy_view');
     const object_id = formContext.watch('id');
     const m = name == "cmt_text" ? "sys_cmts" : "bx_timeline";
@@ -495,26 +494,35 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
 
     const isToolBar = (html == 2 || html == 1)
 
-    const style = {left: 0 /*keywordval[2]*/}
+    const style = {left: 0}
    
     const editorContH = maxHeight ? Math.min(maxHeight, editorHeight) : editorHeight
 
-    if (editorContH-keywordval[3] > 144){
+   /* if (editorContH-keywordval[3] > 144){
         style.top = keywordval[3]
     }
     else{
         style.bottom = editorContH - keywordval[3] + 24; 
-    }
+    }*/
+    //    style.top = editorContH
+
+    const handleLayout = (event) => {
+        const { width, height, x, y } = event.nativeEvent.layout;
+            setSuggestionsSize([width, height]);
+    };
+    style.bottom = suggestionsSize[1]-(keywordval[3]> 0 ? keywordval[3]-24 : 0)
 
 
-    return <View className={`flex-1 relative ${isToolBar ? 'h-48' : ''}`} >
+
+    return <View  onLayout={handleLayout} className={`flex-1 relative ${isToolBar ? 'h-48' : ''}`} >
         {(suggestions && suggestions.length > 0) && (
             <View 
-                className="absolute max-h-[144px] w-full max-w-md bottom-0 p-1 z-50 rounded border-bdr dark:border-bdr-d border bg-bgrbody dark:bg-bgrbody-d p-2 " 
+           
+                className="absolute max-h-[100px] w-full max-w-md bottom-0 p-1 z-50 rounded border-bdr dark:border-bdr-d border bg-bgrbody dark:bg-bgrbody-d p-2 " 
                 style={style}>
                 <ScrollView>
                     {suggestions.map((user) => (
-                        <Button key={user.url} variant="link" fullWidth align="left" size="sm" title={user.label} onPress={() => { insertMention(user.label, user.url, keywordval[1] + keywordval[0]) }} />
+                        <Button key={user.url} variant="link" fullWidth align="left" size="xs" title={user.label} onPress={() => { insertMention(user.label, user.url, keywordval[1] + keywordval[0]) }} />
 
                     ))}
                 </ScrollView>
