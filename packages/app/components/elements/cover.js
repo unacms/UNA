@@ -62,6 +62,7 @@ function CoverMenu(props) {
                 button_variant: 'default',
                 button_size: size,
                 button_rounded: false,
+                className: ' gap-x-2 ',
             }}
         />
             {(isSplitMenu && propsCopy.items.length > 0) && <View className='ml-2'>
@@ -96,7 +97,11 @@ const BackButton = ({ isPerson }) => {
 
 function CoverMenuMeta(props) {
     return (
-        <Menu {...props} displayType="mixed" params={{ button_variant: 'text', button_size: 'sm' }} />
+        <Menu {...props} displayType="mixed" params={
+            { button_variant: 'text', 
+                className: ' gap-x-2 h-12 ',
+                button_size: 'sm' }
+        } />
     )
 }
 
@@ -173,7 +178,9 @@ export default function ElementCover(props) {
                         </Text>
 
                         <Row className='mb-2'>
+                        <ScrollView horizontal={true} className={(data.actions_menu.items.length > (100) ? '' : 'mx-auto md:ml-0') + ''}>
                             <CoverMenuMeta {...data.meta_menu} />
+                            </ScrollView>
                         </Row>
                     </View>
 

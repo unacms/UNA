@@ -128,7 +128,7 @@ export default function Splash(props) {
                         rounded=" rounded-2xl "
                         addClassName="flex-col gap-y-3 p-4 sm:p-6 w-full max-w-xl mx-auto "
                     >
-                        <BlockByServiceName name={defalulFormData.name} data={props.data} formProps={{ hide_errors: true, button_full_width: true }} />
+                        <BlockByServiceName name={defalulFormData.name} data={props.data} formProps={{ auto_focus:false, hide_errors: true, button_full_width: true }} />
                         <Button
                             title="Forgot password?"
                             variant="link"

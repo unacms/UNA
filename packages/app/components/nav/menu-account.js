@@ -65,16 +65,13 @@ export default function MenuAccount({ buttonProps, children }) {
 
     const profileList = data?.profiles?.map(profile => ({
         ...profile,
-        link: "{switch_profile}" // добавляем новое поле
-    })) || [];//?.filter((item) => (item.id != currentUser.id));
+        link: "{switch_profile}" 
+    })) || [];
 
     const updatedMenu = menu_account_items.flatMap(item =>
-        item.link === "{switch_profile}" ? (profileList ? [{ ...currentUser, link: "{switch_profile}" }, ...profileList] : []) : item
+        item.link === "{switch_profile}" ? (profileList ? [{ ...currentUser, link: "{switch_profile}" },{  link: "{separator}" }, ...profileList,{  link: "{separator}" }] : []) : item
     );
 
-    // Find the last switch_profile index
-    const lastSwitchProfileIndex = updatedMenu.reduce((lastIndex, item, index) => 
-        item.link === '{switch_profile}' ? index : lastIndex, -1);
 
     const handleSwitch = async (id) => {
         const result = await fetcher('/api.php?r=system/switch_profile/TemplServiceAccount&params[]=' + id);
@@ -87,8 +84,9 @@ export default function MenuAccount({ buttonProps, children }) {
             items={updatedMenu.map(
                 (item, index) => {
                     let sTitle = t(item.title);
+                    let sType ="";
                     if (item.link == '{switch_profile}') {
-                        sTitle = <Pressable className="w-full" onPress={() => handleSwitch(item.id)}><Row key={index} className="items-center justify-between gap-x-3">
+                        sTitle = <Pressable className="w-full" onPress={() => handleSwitch(item.id)}><Row key={index} className="items-center justify-between gap-x-3 w-full">
                             <Row className="items-center flex-auto gap-x-3">
                             <Profile
                                 {...item}
@@ -108,11 +106,16 @@ export default function MenuAccount({ buttonProps, children }) {
                             />
                         </Row></Pressable>
                     }
+                    if (item.link == '{separator}') {
+                        sTitle = <Row className="items-center flex-auto gap-x-3 bg-gray-500 h-[1px]"></Row>
+                        sType="separator";
+                    }
                     return (
                         {
                             id: 'menu-' + index,
                             link: item.link.includes("://") ? item.link : '/' + item.link,
                             title: sTitle,
+                            type: sType,
                             icon: item.icon
                         }
                     )
@@ -124,3 +127,18 @@ export default function MenuAccount({ buttonProps, children }) {
 
     );
 }
+/*if (item.link == '{switch_profile}') {
+                        sTitle = (
+                            <ProfileSwitcher hideTitle={true} >
+                                <Row className='items-center justify-center h-6'>
+                                    <Profile
+                                        {...currentUser}
+                                        url_avatar={currentUser.avatar}
+                                        displayType="unit_wo_info"
+                                        displaySize="xs"
+                                    />
+                                    <Text className="pl-2.5 text-sm font-medium text-neutral-700 dark:text-neutral-200 ">
+                                        {sTitle}
+                                    </Text>
+                                </Row>
+                            </ProfileSwitcher>)*/

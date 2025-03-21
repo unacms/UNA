@@ -6,19 +6,21 @@ import { useWindowDimensions } from 'react-native'
 import { LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal';
 
-export default function DynamicMenu({ name, MenuItem, MenuItemEx, ButtonEx, containerClasses, items, menuClasses, menuExClasses, isButtonOutside, offsetWidth=50, persistent = 0 }) {
+export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, ButtonEx, containerClasses, items, menuClasses, menuExClasses, isButtonOutside, offsetWidth=50, persistent = 0 }) {
 
     const isWeb = Platform.OS == 'web'
     const itemRefs = useRef([]);
     const itemRefsMore = useRef();
-    const [ visibleItemsCount, setVisibleItemsCount ] = useState(0);
+    const [ visibleItemsCount, setVisibleItemsCount ] = useState(isFixedCount ? persistent : 0);
     const [ width, setWidth ] = useState(0);
     const [pageData, setPageData] = useState(false);
-
     const { width: windowWidth } = useWindowDimensions();
     const isDynamicMenu = windowWidth > LAYOUT_BREAKPOINTS.sm;
 
+
+
     useEffect(() => {
+        if(!isFixedCount){
         const menuWidth = width;
         let visibleWidth = offsetWidth + (itemRefsMore?.current ? itemRefsMore?.current?.offsetWidth : 0);
         let visibleCount = 0;
@@ -38,9 +40,14 @@ export default function DynamicMenu({ name, MenuItem, MenuItemEx, ButtonEx, cont
         if (visibleCount != visibleItemsCount) {
             setVisibleItemsCount(visibleCount);
         }
+
+        
+        }
     }, [width]);
 
     const handleLayout = useCallback((event) => {
+        if (isFixedCount)
+            return
         isDynamicMenu ?  setWidth(event.nativeEvent.layout.width) : setVisibleItemsCount(itemRefs.current.length)
     }, [isDynamicMenu]);
 
@@ -64,7 +71,7 @@ export default function DynamicMenu({ name, MenuItem, MenuItemEx, ButtonEx, cont
             <ButtonEx visibleItemsCount={visibleItemsCount} />
         </DropdownMenu>
     )
-
+    console.log("persistent", name, visibleItemsCount)
     return (
         <>
             <FormModal pageData={pageData} setPageData={setPageData} />

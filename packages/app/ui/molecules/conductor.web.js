@@ -286,7 +286,8 @@ const HeaderContainer = ({ tabBarObj, tabBarObjSmall, currentUser, smallHeader, 
         }
     }
 
-    const tOffset = getLayout(currentUser) == 'ver' ? 0 : 63;
+    const tmplLayout = getLayout(currentUser);
+    const tOffset = tmplLayout == 'ver' ? 0 : 63;
     const d = 200;
     const animatedStyle5 = useAnimatedStyle(() => {
         const opacityValue = withTiming(scrollValue.value, { duration: d });
@@ -400,7 +401,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     const { currentUser } = useCurrentUser();
     const { setBottomSheetData } = useBottomSheetData();
     const { layoutData } = useLayoutData();
-
+    const tmplLayout = getLayout(currentUser);
     const toasterRef = useRef(); // ref for toaster
 
     const { width: windowWidth, height: windowHeight } = useWindowDimensions();
@@ -639,8 +640,6 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         />
     ), [menu, routes, leftSideBar, header, headerSettings, currentUser, index, setIndex, getNumCols, windowWidth, onChangeRoute]);
 
-    console.log("datadata1", currentRoute.pageData)
-
     const AddBlocksCnt = useMemo(() => AddBlocks(currentRoute.leftSideBarBlocks, currentRoute.pageData, onFormChangedValues), [currentRoute.leftSideBarBlocks, currentRoute.pageData, onFormChangedValues]);
 
     /* console.log("Reload!");
@@ -820,12 +819,13 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             </View>
         );
     }
+    console.log("layoutNamelayoutName", layoutName)
 
     return (
         <View className="w-full h-full" scrollEnabled={false} onLayout={handleLayoutTop}>
             {headerComponent}
             <Toaster ref={toasterRef} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" />
-            <View className={`${conductorTheme.content_max_width} mx-auto w-full min-h-screen`}>
+            <View className={`${conductorTheme.content_max_width} mx-auto w-full min-h-screen ${tmplLayout == 'mixed' ? 'mt-12' : ''}`}>
                 {sceneHeaderComponent}
                 <RenderScene route={currentRoute} />
             </View>

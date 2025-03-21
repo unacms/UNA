@@ -93,7 +93,7 @@ export default function (props) {
             <View
                 className={
                     appSetting('layout', 'max_width') +
-                    ' max-w-[1920px] mx-auto w-full flex-auto relative flex-row pt-14 sm:pt-16 lg:pt-0 '
+                    ' max-w-[1920px] mx-auto w-full flex-auto relative flex-row web:pt-14 web:sm:pt-16 lg:pt-0 '
                 }
             >
                 {getLayout(currentUser) == 'hor' && (

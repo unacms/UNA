@@ -47,9 +47,11 @@ export default function (props) {
     const isAutoChange = !!props.onChange;
     const [lastChangedField, setLastChangedField] = useState(null);
 
+    console.log("propsprops", props)
+
     let name = props.data.params?.display?.includes('_delete') ? '' : (props.name ? props.name : props.data.params?.display)
     const defaultValues = {}
-    let isAutofocus = true;
+    let isAutofocus = props.formProps === false ? false : true;
     if (data.inputs) {
         Object.keys(data.inputs).forEach(function (key) {
             if ((data.inputs[key].type == "switcher" || data.inputs[key].type == "checkbox") && data.inputs[key].checked == false)

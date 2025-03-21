@@ -80,7 +80,13 @@ export default function DropdownMenuComponent({ variant = 'vertical', defaultOpe
                     size={oItem?.icon_size || iconSize} 
                 />;
         }
-
+        //TODO!!!
+        console.log("oItem", oItem.type)
+        if (oItem.type=="separator"){
+            return<DmItem key={key} >
+{oItem.title}
+            </DmItem>
+        }
         return (
             <DmItem key={key} onSelect={(event) => !!oItem?.onClick ? oItem?.onClick(oItem, event) : onSelectInt(oItem, event)}>
                 <Row className={menuSettings.item_cnt}>

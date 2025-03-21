@@ -11,7 +11,7 @@ import { Platform } from 'react-native'
 const ButtonEx = memo(({ visibleItemsCount, params }) => {
     return (
         <View key="btn" className="ml-2">
-            <Button size={params.button_size} variant="secondary" startDecorator="Ellipsis" />
+            <Button size={params.button_size}  variant="secondary" startDecorator="Ellipsis" />
         </View>
     );
 });
@@ -27,7 +27,7 @@ const MenuItemEx = memo(({ item, index, sDisplayType, params }) => {
 const MenuItem = memo(({ item, itemRefs, index, visibleItemsCount, params, bShowVertical, sAlignItems, isUseStaticWidth, isWeb, sDisplayType }) => {
     const ItemType = componentsMap[item.display_type ? item.display_type : sDisplayType];
     return (
-        <ViewRef ref={el => itemRefs.current[index] = el} key={'menu' + index} className={(!isWeb ? ' ml-2' : ' ') + (bShowVertical ? 'w-full  ' : ' ') + (sAlignItems == 'stretch' ? 'flex-auto' : '') + ((index > visibleItemsCount - 1 && !isUseStaticWidth) ? ' item-overlap ' : '')}>
+        <ViewRef ref={el => itemRefs.current[index] = el} key={'menu' + index} className={(!isWeb ? ' ml-2' : ' ') + (bShowVertical ? 'w-full  ' : ' ') + (sAlignItems == 'stretch' ? 'flex-auto' : '') + (((index > visibleItemsCount - 1) && !isUseStaticWidth) ? ' item-overlap ' : '')}>
             <ItemType key={item.id ? item.id : item.name} {...item} params={params} />
         </ViewRef>
     )
@@ -63,7 +63,7 @@ export default function ElementMenu(oProps) {
     //--- show vertical
     const bShowVertical = oProps?.params?.showVertical === true;
 
-    sClassName += bShowVertical ? ' flex-col items-center gap-y-2 w-full ' : ' flex-row ' + (oProps?.params?.no_gap_between_buttons ? ' ' : '');
+    sClassName += bShowVertical ? ' flex-col items-center gap-y-2 w-full ' : ' flex-row ';
     const oParams = oProps?.params || {};
 
   
@@ -139,7 +139,13 @@ export default function ElementMenu(oProps) {
             if (a == null ) return null;
 
             return (
-                <View key={'menu' + index} className={((bShowVertical) ? 'w-full  ' : (oProps?.params?.button_full_width === true ? ' flex-1 ' : ' ')) + (sAlignItems == 'stretch' ? 'flex-auto' : '')+'  '}>
+                <View  key={`menu${index}`} className={` ${
+                    bShowVertical
+                      ? 'w-full  '
+                      : oProps?.params?.button_full_width === true
+                      ? ' flex-1 '
+                      : ' '
+                  } ${sAlignItems === 'stretch' ? 'flex-auto' : ''}  `}>
                     {a}
                 </View>
             )
@@ -149,9 +155,11 @@ export default function ElementMenu(oProps) {
             return sItems;
 
         if (!bAutoSize) {
-            return <View className={sClassName}>{sItems}</View>;
+            return <View className={`${sClassName}`}>{sItems}</View>;
         }
     }
+
+
 
     return <DynamicMenu
         name="menu"
@@ -167,6 +175,7 @@ export default function ElementMenu(oProps) {
                 isUseStaticWidth={isUseStaticWidth}
                 sDisplayType={sDisplayType} params={oProps.params} />
         }}
+        isFixedCount={oProps?.params?.isFixedCount}
         persistent={oProps.persistent}
         containerClasses= {oProps.containerClasses || "w-full md:justify-end"}
         items={filteredItems}

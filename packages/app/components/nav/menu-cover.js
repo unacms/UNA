@@ -79,43 +79,30 @@ export function CoverMenu(props) {
 
     propsCopy.items = propsCopy.items.map((aItem) => {
         if (aItem.name.includes('delete-') || aItem.name.includes('edit-')) {
-            return { ...aItem, noAction: true }; 
+            return { ...aItem, noAction: true };
         }
-        return aItem; 
+        return aItem;
     });
-    
+
 
     return (
-        <>
-            <Menu
-                {...propsCopy}
-                displayType="button"
-                autoSize={true}
-                containerClasses={props.containerClasses}
-                params={{
-                    show_action: true,
-                    show_counter: true,
-                    show_combined: true,
-                    button_variant: 'default',
-                    button_size: size,
-                    button_rounded: false,
-                    button_full_width: false,
-                }}
-            />
-            {/*isSplitMenu && propsCopy.items.length > 0 && (
-                <View className="ml-2">
-                    <DropdownMenu items={aMenuManageItems}>
-                        <Button
-                            variant="default"
-                            size={size}
-                            tooltip="Settings"
-                            startDecorator="Ellipsis"
-                          
-                        />
-                    </DropdownMenu>
-                </View>
-            )*/}
-        </>
+        <Menu
+            {...propsCopy}
+            displayType="button"
+            autoSize={true}
+            containerClasses={props.containerClasses}
+            params={{
+                show_action: true,
+                show_counter: true,
+                show_combined: true,
+                button_variant: 'default',
+                button_size: size,
+                button_rounded: false,
+                button_full_width: false,
+                className: ' gap-x-2 ',
+                isFixedCount: true
+            }}
+        />
     )
 }
 
@@ -127,7 +114,7 @@ export function CoverMenuMeta(props) {
             params={{
                 button_variant: 'text',
                 button_size: 'sm',
-                className: ' lg:flex-wrap ',//lg:w-full lg:gap-y-2
+                className: ' lg:flex-wrap',//lg:w-full lg:gap-y-2
             }}
         />
     )
