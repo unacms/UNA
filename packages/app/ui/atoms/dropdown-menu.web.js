@@ -33,6 +33,14 @@ const DropdownMenuItemV = (props) => (
     </DropdownMenu.Item>
 );
 
+const DropdownMenuItemSep = (props) => (
+    <DropdownMenu.Item
+        {...props}
+    >
+        {props.children}
+    </DropdownMenu.Item>
+);
+
 const DropdownMenuItemNoPad = (props) => (
     <DropdownMenu.Item
         className={menuSettings.item_np}
@@ -68,25 +76,25 @@ export default function DropdownMenuComponent({ variant = 'vertical', defaultOpe
     const iconSize = menuSettings.icon_size || 16;
 
     const aDmItems = items.map((oItem, index) => {
-        const key = oItem.id || index; 
+        const key = oItem.id || index;
         let sIcon = undefined;
         if (!!oItem?.icon) {
             if (isEmoji(oItem.icon))
                 sIcon = <Text className={oItem?.class_item_icon}>{oItem.icon}</Text>;
             else
-                sIcon = <Icon 
-                    className={oItem?.class_item_icon} 
-                    icon={oItem.icon} 
-                    size={oItem?.icon_size || iconSize} 
+                sIcon = <Icon
+                    className={oItem?.class_item_icon}
+                    icon={oItem.icon}
+                    size={oItem?.icon_size || iconSize}
                 />;
         }
-        //TODO!!!
-        console.log("oItem", oItem.type)
-        if (oItem.type=="separator"){
-            return<DmItem key={key} >
-{oItem.title}
-            </DmItem>
+
+        if (oItem.type == "separator") {
+            return <DropdownMenuItemSep key={key} >
+                {oItem.title}
+            </DropdownMenuItemSep>
         }
+        
         return (
             <DmItem key={key} onSelect={(event) => !!oItem?.onClick ? oItem?.onClick(oItem, event) : onSelectInt(oItem, event)}>
                 <Row className={menuSettings.item_cnt}>

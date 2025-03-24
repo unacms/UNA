@@ -7,13 +7,14 @@ import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { useTranslation } from 'react-i18next';
 import Profile from 'app/ui/molecules/profile'
 import ProfileSwitcher from 'app/components/elements/profile_switcher';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Text } from 'app/design/typography'
 import { fetcher } from 'app/lib/fetcher';
 import RadioButton from 'app/ui/atoms/radiobutton';
+import Redirect from 'app/ui/atoms/redirect'
 
 export default function MenuAccount({ buttonProps, children }) {
-
+    const redirectdRef = useRef();
     const { currentUser, setCurrentUser } = useCurrentUser();
     const [menuData, setMenuData] = useState(false);
     const [data, setData] = useState(false)
@@ -32,9 +33,6 @@ export default function MenuAccount({ buttonProps, children }) {
         };
         fetchData();
     }, []);
-
-
-
 
     const { t } = useTranslation();
 
@@ -63,67 +61,99 @@ export default function MenuAccount({ buttonProps, children }) {
         {...buttonProps}
     />
 
-    const profileList = data?.profiles?.map(profile => ({
+    let profileList = data?.profiles?.map(profile => ({
         ...profile,
         link: "{switch_profile}" 
-    })) || [];
+    })).slice(0, 3) || [];
+
+    if (data?.profiles?.length > 3) {
+        profileList = [...profileList, {  link: "{separator}" }, { link: "{switch_profile_selector}" }]
+    }
+
+    console.log("profileListprofileList", data?.profiles)
 
     const updatedMenu = menu_account_items.flatMap(item =>
-        item.link === "{switch_profile}" ? (profileList ? [{ ...currentUser, link: "{switch_profile}" },{  link: "{separator}" }, ...profileList,{  link: "{separator}" }] : []) : item
+        item.link === "{switch_profile}" ? (profileList ? [
+            { ...currentUser, link: "{switch_profile}" },
+            {  link: "{separator}" }, 
+            ...profileList,
+            {  link: "{separator}" }] : []) : item
     );
 
 
     const handleSwitch = async (id) => {
-        const result = await fetcher('/api.php?r=system/switch_profile/TemplServiceAccount&params[]=' + id);
-        setCurrentUser(result.data);
-        fetchDataPr();
+        if(id != currentUser.id){
+            const result = await fetcher('/api.php?r=system/switch_profile/TemplServiceAccount&params[]=' + id);
+            setCurrentUser(result.data);
+            redirectdRef.current.redirect('/');
+        }
+        else{
+            redirectdRef.current.redirect(currentUser.url);
+        }
     };
 
     return (
-        <DropdownMenu
-            items={updatedMenu.map(
-                (item, index) => {
-                    let sTitle = t(item.title);
-                    let sType ="";
-                    if (item.link == '{switch_profile}') {
-                        sTitle = <Pressable className="w-full" onPress={() => handleSwitch(item.id)}><Row key={index} className="items-center justify-between gap-x-3 w-full">
-                            <Row className="items-center flex-auto gap-x-3">
-                            <Profile
-                                {...item}
-                                url_avatar={item.avatar}
-                                displayType="unit_wo_info"
-                                displaySize="sm"
-                            />
-                            <Text className="text-sm font-medium text-neutral-700 dark:text-neutral-200">
-                                {item.display_name}
-                            </Text>
-                            </Row>
-                            <RadioButton
-                                rb_obly={true}
-                                value={''}
-                                status={item.id == currentUser.id ? 'checked' : 'unchecked'}
-                                title={''}
-                            />
-                        </Row></Pressable>
-                    }
-                    if (item.link == '{separator}') {
-                        sTitle = <Row className="items-center flex-auto gap-x-3 bg-gray-500 h-[1px]"></Row>
-                        sType="separator";
-                    }
-                    return (
-                        {
-                            id: 'menu-' + index,
-                            link: item.link.includes("://") ? item.link : '/' + item.link,
-                            title: sTitle,
-                            type: sType,
-                            icon: item.icon
+        <>
+            <Redirect ref={redirectdRef} />
+            <DropdownMenu
+                items={updatedMenu.map(
+                    (item, index) => {
+                        let sTitle = t(item.title);
+                        let sType ="";
+                        if (item.link == '{switch_profile}') {
+                            sTitle = <Pressable className="w-full" onPress={() => handleSwitch(item.id)}><Row key={index} className="items-center justify-between gap-x-3 w-full">
+                                <Row className="items-center flex-auto gap-x-3">
+                                <Profile
+                                    {...item}
+                                    url_avatar={item.avatar}
+                                    displayType="unit_wo_info"
+                                    displaySize="sm"
+                                />
+                                <Text className="text-sm font-medium text-neutral-700 dark:text-neutral-200">
+                                    {item.display_name}
+                                </Text>
+                                </Row>
+                                <RadioButton
+                                    rb_obly={true}
+                                    value={''}
+                                    status={item.id == currentUser.id ? 'checked' : 'unchecked'}
+                                    title={''}
+                                />
+                            </Row></Pressable>
                         }
-                    )
-                }
-            )}
-        >
-            {trigger}
-        </DropdownMenu>
+                        if (item.link == '{separator}') {
+                            sTitle = <Row className="items-center flex-auto my-[6px] sm:border-t border-bdr dark:border-bdr-d"></Row>
+                            sType="separator";
+                        }
+                        if (item.link == '{switch_profile_selector}') {
+                            sTitle = (
+                                <Row className="w-full items-center flex-auto my-[6px] ">
+                                    <ProfileSwitcher hideTitle={true} >
+                                    <Button
+                                        variant="secondary"
+                                        size="sm"
+                                        rounded={true}
+                                        startDecorator="RefreshCw"
+                                        fullWidth={true}
+                                        title={t("See all profiles")}/>
+                                </ProfileSwitcher></Row>)
+                            sType="separator";
+                        }
+                        return (
+                            {
+                                id: 'menu-' + index,
+                                link: item.link.includes("://") ? item.link : '/' + item.link,
+                                title: sTitle,
+                                type: sType,
+                                icon: item.icon
+                            }
+                        )
+                    }
+                )}
+            >
+                {trigger}
+            </DropdownMenu>
+        </>
 
     );
 }
