@@ -17,7 +17,7 @@ import { appStatic } from 'app/lib/app-static'
 import { storageSet, storageClear, storageGet } from 'app/lib/util'
 import { menuItemsByName } from 'app/lib/util'
 import OneSignal from 'react-onesignal';
-
+import { ThemeName } from 'app/design/theme';
 
 const Navbar = lazy(() => import('app/components/nav/navbar'));
 
@@ -139,11 +139,7 @@ export default function (props) {
     let children = props.children
     const { width } = useWindowDimensions();
 
-    let theme = storageGet('layout:theme', '', true);
-    const scheme = useColorScheme();
-    if (theme == '') {
-        theme = scheme;
-    }
+    let theme = ThemeName();
     const root = window.document.documentElement;
     root.setAttribute('theme', theme);
 

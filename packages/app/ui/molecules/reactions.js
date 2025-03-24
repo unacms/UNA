@@ -22,7 +22,6 @@ const getName = (sType, sSystem, sObjectId, sName) => {
 const getIconAlias = (oParams, oAliases, sName) => {
     const sKey = Platform.OS === 'web' ? 'web' : 'native';
     const sType = sName != 'default' ? oParams['icon_type_' + sKey] : 'svg';
-
     return oAliases[sKey][sName] && oAliases[sKey][sName][sType];
 };
 
@@ -269,26 +268,7 @@ export default function ElementReactions(oProps) {
     const sObject = useMemo(() => getName(oProps.type, oProps.system, oProps.object_id), [oProps.type, oProps.system, oProps.object_id]);
 
     const oItems = oSettings[oProps['system']]?.items ? oSettings[oProps['system']].items : oParams.items;
-    const oAliases = oSettings[oProps['system']]?.iconset ? oSettings[oProps['system']].iconset : {
-        web: {
-            default: { svg: 'Smile', emoji: '🙂' },
-            like: { svg: 'ThumbsUp', emoji: '👍' },
-            love: { svg: 'Heart', emoji: '🥰' },
-            joy: { svg: 'Smile', emoji: '😂' },
-            surprise: { svg: 'SmileyXEyes', emoji: '😮' },
-            sadness: { svg: 'SmileySad', emoji: '😔' },
-            anger: { svg: 'SmileyAngry', emoji: '😠' },
-        },
-        native: {
-            default: { svg: 'Smile', emoji: '🙂' },
-            like: { svg: '', emoji: '👍' },
-            love: { svg: '', emoji: '🥰' },
-            joy: { svg: '', emoji: '😂' },
-            surprise: { svg: '', emoji: '😮' },
-            sadness: { svg: '', emoji: '😔' },
-            anger: { svg: '', emoji: '😠' },
-        }
-    };
+    const oAliases = oSettings[oProps['system']]?.iconset ? oSettings[oProps['system']].iconset : oSettings.iconset;
 
     //--- default display type: action, counter, both.
     const sDisplayType = oProps.displayType ? oProps.displayType : 'both';

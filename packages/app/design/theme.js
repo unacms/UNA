@@ -27,13 +27,14 @@ export function Theme() {
     return ThemeName() === 'dark' ? CustomDarkTheme : CustomLightTheme;
 }   
 
-
-
 export function ThemeName() {
     let scheme = useColorScheme();
     if (Platform.OS == 'web') {
         let theme = storageGet('layout:theme', '', true);
-        if (theme != '')
+        if (theme === null)
+            scheme = appSetting('native', 'default_theme');
+        
+        if (theme)
             scheme = theme;
     }
     return scheme === 'dark' ? 'dark' : 'light';

@@ -339,6 +339,26 @@ export const settingsDefault = {
                 { id: 6, name: 'anger' },
             ],
             haptics_type: 'Medium',
+            iconset: {
+                web: {
+                    default: { svg: 'Smile', emoji: '🙂' },
+                    like: { svg: 'ThumbsUp', emoji: '👍' },
+                    love: { svg: 'Heart', emoji: '🥰' },
+                    joy: { svg: 'Smile', emoji: '😂' },
+                    surprise: { svg: 'SmileyXEyes', emoji: '😮' },
+                    sadness: { svg: 'SmileySad', emoji: '😔' },
+                    anger: { svg: 'SmileyAngry', emoji: '😠' },
+                },
+                native: {
+                    default: { svg: 'Smile', emoji: '🙂' },
+                    like: { svg: '', emoji: '👍' },
+                    love: { svg: '', emoji: '🥰' },
+                    joy: { svg: '', emoji: '😂' },
+                    surprise: { svg: '', emoji: '😮' },
+                    sadness: { svg: '', emoji: '😔' },
+                    anger: { svg: '', emoji: '😠' },
+                }
+            }
         },
         score: {
             show_action: true,
