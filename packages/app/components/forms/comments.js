@@ -1,6 +1,6 @@
 import { View, Row, ScrollView } from 'app/design/view'
 import { useState, useEffect } from 'react';
-import { getFormFieldByData } from 'app/lib/form-helpers'
+import { getFormFieldByData, getEditorHeight } from 'app/lib/form-helpers'
 import { Platform } from 'react-native'
 import { Button } from 'app/design/controls'
 import Animated, { SlideInLeft, SlideOutLeft } from 'react-native-reanimated';
@@ -36,27 +36,8 @@ export default function FormComments(props) {
         setIsFocused(false)
     }
 
-    function checkEditorHeight(height1) {
-        let h = 0;
-        if (height1 <= initialHeight){
-            h = initialHeight;
-        }
-        else{
-            let height = height1 + 16;
-        
-            if (height <= 160 && height > initialHeight) {
-                h = height;
-            }
-            if (height > 160) {
-                h = 160;
-            }
-            if (height1 < initialHeight) {
-                h = initialHeight;
-            }
-        }
-        setEditorHeight(h)
-
-
+    function checkEditorHeight(height) {
+        setEditorHeight(getEditorHeight(height, initialHeight))
     }
 
 

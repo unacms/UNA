@@ -1,6 +1,6 @@
 import { View, Row } from 'app/design/view'
 import { useRef, useState, useEffect } from 'react';
-import { getFormFieldByData } from 'app/lib/form-helpers'
+import { getFormFieldByData, getEditorHeight } from 'app/lib/form-helpers'
 import { useWindowDimensions } from 'react-native';
 import { Platform } from 'react-native'
 
@@ -49,27 +49,8 @@ export default function FormMessenger(props) {
         setIsFocused(false)
     }
 
-    function checkEditorHeight(height1) {
-        let h = 0;
-        if (height1 <= initialHeight){
-            h = initialHeight;
-        }
-        else{
-            let height = height1 + 16;
-        
-            if (height <= 160 && height > initialHeight) {
-                h = height;
-            }
-            if (height > 160) {
-                h = 160;
-            }
-            if (height1 < initialHeight) {
-                h = initialHeight;
-            }
-        }
-        setEditorHeight(h)
-
-
+    function checkEditorHeight(height) {
+        setEditorHeight(getEditorHeight(height, initialHeight))
     }
 
     if (typeof props.data.inputs['send'] !== 'undefined')

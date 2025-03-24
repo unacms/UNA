@@ -8,8 +8,6 @@ export function getFormFieldByData(inputData, handleSubmit, format, externalProp
 
     const InputType = componentsMap[String(inputData.type)];
 
-
-
     if (!InputType)
         return <Text>Unsupported field type: {JSON.stringify(inputData)}</Text>
     return <InputType key={inputData.name} {...inputData} format={format} handleSubmit={handleSubmit} {...externalProps} />;
@@ -29,4 +27,14 @@ export function getHiddenFields(inputs, handleSubmit) {
 
 export function inputByKey(array, value) {
     return array.find(obj => obj['key'] === value);
+}
+
+export function getEditorHeight(height, initialHeight, paddings = 16, maxHeight = 160) {
+    if (height < initialHeight) {
+        return initialHeight;
+    }
+
+    const h = height + paddings;
+
+    return Math.min(h > initialHeight ? h : initialHeight, maxHeight);
 }
