@@ -432,6 +432,11 @@ export const settingsDefault = {
             {"index": 1, "url": "/friend-requests"},
             {"index": 1, "url": "/sent-friend-requests"},
         ],
+        objects: {
+            account: 'sys_account_notifications',
+            add: 'sys_add_content',
+            launcher: 'sys_homepage',
+        },
         iconset: {
             'profile-check-in': 'Check',
             'edit-event-questionnaire': 'List',
@@ -475,60 +480,6 @@ export const settingsDefault = {
             'item-share': 'Share2',
             'item-copy': 'Clipboard',
             'item-repost': 'RotateCw',
-          
-           
-          
-         
-            /*
-            
-            'MagnifyingGlass': 'Search', 
-               'Chats': 'MessageSquare',
-              'ChatCircleText': 'MessageCircleMore',
-             'CaretLeft': 'ChevronLeft',
-             'ArrowFatUp': 'ArrowBigUp',
-              'ArrowFatDown': 'ArrowBigDown',
-               'ArrowBendLeftUp': 'Reply',
-            'CirclesThree': 'Building2',
-              'ChatCenteredText': 'MessageSquareText',
-              'ChatTeardropDots': 'MessageCircleMore',
-              'AddressBook': 'BookUser',
-              'Layout': 'PanelsTopLeft',
-               'DotsThreeOutline': 'Ellipsis',
-              'Fire': 'Flame',
-             'UsersThree': 'Group',
-            'Question': 'HelpCircle',
-              'SignIn': 'LogIn',
-             'UserSwitch': 'UserCheck',
-            'ShareFat': 'Share2',
-             'Smiley': 'Smile',
-              'CirclesFour': 'LayoutGrid',
-               'Storefront':'Store',
-            'UserList': 'UsersRound',
-            'UserCircleGear': 'UserCog',
-            'UserFocus': 'CircleUser',
-            'UsersFour': 'UserCheck',
-             'Users': 'UsersRound',
-           'UserCirclePlus': 'UserRoundPlus',
-            'ImageSquare': 'Image',
-             'SignOut': 'LogOut',
-           'PaperPlane': 'SendHorizontal',
-            'BookmarkSimple': 'Bookmark',
-            'ArrowsClockwise': 'RefreshCcw',
-            'WarningCircle': 'AlertCircle',
-             'ChatCircle': 'MessageCircle',
-           'UserCircleMinus': 'UserMinus',
-            
-             'SealCheck': 'ShieldCheck',
-           'IdentificationBadge': 'Badge',
-             'LinkSimple': 'Link',
-            
-               'IntersectThree': 'Intersect',
-              'Intersect': 'CircleDashed',
-           'Translate': 'Languages',
-             'MagicWand': 'Wand',
-            'Student': 'GraduationCap',
-          'DotsThreeVertical': 'EllipsisVertical'*/
-
         },
         menu_navbar: [
             { name: 'home', title: 'Home', link: '/', icon: 'House' },

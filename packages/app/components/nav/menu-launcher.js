@@ -16,7 +16,7 @@ export default function () {
 
     useEffect(() => {
         const fetchData = async () => {
-            getDataForMenu({ object: 'sys_homepage', params: null }, setMenuData);
+            getDataForMenu({ object: appSetting('menu_items', 'objects', 'launcher'), params: null }, setMenuData);
         };
         fetchData();
     }, []);

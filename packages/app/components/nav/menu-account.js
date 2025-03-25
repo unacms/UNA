@@ -27,7 +27,7 @@ export default function MenuAccount({ buttonProps, children }) {
 
     useEffect(() => {
         const fetchData = async () => {
-            getDataForMenu({ object: 'sys_account_notifications', params: null }, setMenuData);
+            getDataForMenu({ object: appSetting('menu_items', 'objects', 'account'), params: null }, setMenuData);
             fetchDataPr();
 
         };

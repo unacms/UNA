@@ -16,7 +16,7 @@ export default function MenuAdd({ buttonProps, children }) {
 
     useEffect(() => {
         const fetchData = async () => {
-            getDataForMenu({ object: 'sys_add_content', params: null }, setMenuData);
+            getDataForMenu({ object: appSetting('menu_items', 'objects', 'add'), params: null }, setMenuData);
         };
         fetchData();
     }, []);
