@@ -30,11 +30,10 @@ export function inputByKey(array, value) {
 }
 
 export function getEditorHeight(height, initialHeight, paddings = 16, maxHeight = 160) {
-    if (height < initialHeight) {
+    if (height < initialHeight-paddings) {
         return initialHeight;
     }
 
-    const h = height + paddings;
-
+    const h = Math.max(height + paddings, initialHeight+paddings);
     return Math.min(h > initialHeight ? h : initialHeight, maxHeight);
 }
