@@ -92,7 +92,7 @@ export default function ElementMapBox({ data }) {
             <View className="aspect-square w-full max-w-3xl ">
                 <Map
                     ref={mapRef}
-                    mapboxAccessToken="pk.eyJ1Ijoicm9tYW5sZXMiLCJhIjoiY204Zm9kY3ByMGE4bzJrc2R6Zzg4NW0zMCJ9.Jme_Zudsug5mmqcbjII9cQ"
+                    mapboxAccessToken={appSetting('api_keys', 'mapbox')}
                     initialViewState={viewport}
                     style={{ flex: 1 }}
                     mapStyle="mapbox://styles/mapbox/light-v11"

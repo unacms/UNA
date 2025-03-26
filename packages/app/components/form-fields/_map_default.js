@@ -5,7 +5,7 @@ import Password from './password';
 import Submit from './submit';
 import Switcher from './switcher';
 import TextField from './text';
-import Textarea from './textarea';
+
 import Editor from './editor';
 import Select from './select';
 import Files from './files';
@@ -44,7 +44,7 @@ export const componentsMapDefault = {
     checkbox: Switcher,
     text: TextField,
     price: TextField,
-    textarea: appSetting('forms', 'single_editor') ? Editor : Textarea,
+    textarea: Editor,
     select: Select,
     radio_set: Select,
     files: Files,

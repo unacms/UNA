@@ -25,6 +25,8 @@ import { callFn } from 'app/lib/functions/call';
 import fonts from 'app/design/fonts/fonts';
 import { Platform } from 'react-native'
 import { Appearance } from 'react-native';
+import VersionCheck from 'react-native-version-check';
+import { Alert } from 'react-native';
 
 enableScreens(appSetting('native', 'enable_screens'));
 
@@ -37,7 +39,7 @@ function processUrl(url, router, currentUser, TabList) {
                 url: item.url,
                 index
             }));
-        
+
             const additionalLinks = appSetting('menu_items', 'transpile_urls');
             return [...baseLinks, ...additionalLinks];
         })();
@@ -75,13 +77,13 @@ export default function () {
 
     const [fontsLoaded] = useFonts(fontsToLoad);
     const { t } = useTranslation();
-    
+
     const router = useRouter();
     const { colors } = Theme();
     const iconWidth = 28;
     const iconHeight = 28;
     const isShowTabs = currentUser || appSetting('native', 'show_tabs_non_logged')
-    const notificationUrl =  appSetting('notifications', 'url');
+    const notificationUrl = appSetting('notifications', 'url');
 
     const TabList = useMemo(() => currentUser ? appSetting('menu_items', 'menu_tabbar_logged') : appSetting('menu_items', 'menu_tabbar_non_logged'), [currentUser?.id]);
 
@@ -153,42 +155,63 @@ export default function () {
                 urlListener.remove();
             };
         }
-        
+
     }, [currentUser?.id]);
     // DEEP LINKING
-
-    /*useEffect(() => {
-        //!!!NOT MERGE WITH OTHER USEEFFECT!!!
-        if (currentUser) {
-            console.log('OneSignal: Start initialization');
-            OneSignal.Debug.setLogLevel(LogLevel.Verbose);
-
-            // OneSignal Initialization
-            OneSignal.initialize(appSetting('config', 'api_keys', 'onesignal'));
-
-            // requestPermission will show the native iOS or Android notification permission prompt.
-            // We recommend removing the following code and instead using an In-App Message to prompt for notification permission
-            OneSignal.Notifications.requestPermission(true);
-
-            console.log("OneSignal:" + currentUser.id + ":" + currentUser.hash)
-            OneSignal.login('' + currentUser.id);
-            OneSignal.User.addTag("user_hash", "" + currentUser.hash);
-        }
-        
-    }, [currentUser?.id]); */
 
     useEffect(() => {
         if (currentUser) {
             subscribeOneSignal(currentUser, appSetting('native', 'onesignal_request_on_load'));
         }
-    }, [currentUser?.id]); 
+    }, [currentUser?.id]);
 
-    /*useEffect(() => {
-        if (currentUser && Platform.OS == 'ios' && isNumeric(currentUser?.notifications)) {
-            //PushNotificationIOS.setApplicationIconBadgeNumber(currentUser?.notifications);
-        }
-    }, [currentUser?.notifications]);*/
+    const isCheckVersion = appSetting('native', 'check_version');
 
+    useEffect(() => {
+        const checkVersion = async () => {
+            try {
+                const res = await VersionCheck.needUpdate();
+                const forceUpdate = isCheckVersion == 'required';
+                if (res?.isNeeded) {
+                    const buttons = [
+                        {
+                            text: 'Update',
+                            onPress: () => Linking.openURL(res.storeUrl),
+                        },
+                    ];
+                    if (!forceUpdate) {
+                        buttons.push({
+                            text: 'Later',
+                            style: 'cancel',
+                        });
+                    }
+                    Alert.alert(
+                        'New version avaliable',
+                        'Please, update the app to the latest version',
+                        buttons,
+                        { cancelable: !forceUpdate }
+                    );
+                }
+                //enable for check
+                /*else{
+                    const res = VersionCheck.getCurrentVersion();
+                    const res1 = await VersionCheck.getLatestVersion();
+                    Alert.alert(
+                        'current '+res,
+                        'Store'+res1,
+                        [{
+                            text: 'Later',
+                            style: 'cancel',
+                          }]
+                     
+                    );
+                }*/
+            } catch (e) {
+            }
+        };
+        if (isCheckVersion != 'no')
+            checkVersion();
+    }, []);
 
     if (!fontsLoaded) {
         return null;
@@ -203,7 +226,7 @@ export default function () {
                     {
                         TabList.map((tab, index) => {
                             const options = {
-                                tabBarBadge:  callFn("getBadgeForTab", [currentUser, tab.url]),
+                                tabBarBadge: callFn("getBadgeForTab", [currentUser, tab.url]),
                                 tabBarBadgeAllowFontScaling: false,
                                 title: t(tab.title),
                                 headerShown: false,

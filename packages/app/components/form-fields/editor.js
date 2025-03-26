@@ -103,7 +103,7 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
         b.splice(4, 1);
     }
 
-
+    const suggestionsHeight = 130;
     const { layoutData, setLayoutData } = useLayoutData();
     const { field } = useController({ name, rules: {}, defaultValue: value });
     const { colors } = Theme();
@@ -111,6 +111,7 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
     const [suggestions, setSuggestions] = useState([]);
     const [keywordval, setKeyword] = useState(['', '']);
     const [editorHeight, setEditorHeight] = useState(0); 
+    const [isEnter, setIsEnter] = useState(false); 
     const [suggestionsSize, setSuggestionsSize] = useState([0,0]);
     const object_privacy_view = formContext.watch('object_privacy_view') || formContext.watch('cmt_privacy_view');
     const object_id = formContext.watch('id');
@@ -128,10 +129,15 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
         if (keywordval[1] === '') return;
 
         const fetchData = async () => {
-            let url = url1 + `&symbol=${keywordval[1] === '#' ? '%23' : '%40'}&term=${keywordval[0]}`;
+            const url = url1 + `&symbol=${keywordval[1] === '#' ? '%23' : '%40'}&term=${keywordval[0]}`;
             const result = await fetcher(url);
-            let p = result.map(k => ({ url: k.url, value: k.value, label: k.label }));
-
+            const p = result.map((k, index) => ({
+                url: k.url,
+                value: k.value,
+                label: k.label,
+                index: index,          
+                selected: index === 0       
+              })).slice(0, 4);
             setSuggestions(p);
         };
 
@@ -258,8 +264,8 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
         if (stripTags(htmlContent)) {
             if (onFocus)
                 onFocus()
-            field.onChange(htmlContent)
         }
+        field.onChange(htmlContent)
     }, [htmlContent]);
 
     const processImages = (src) => {
@@ -288,6 +294,35 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
         setSuggestions([])
     }
 
+    const moveSelected = (direction) => {
+        setSuggestions((prevItems) => {
+            const index = prevItems.findIndex(item => item.selected);
+            if (index === -1) return prevItems;
+            const length = prevItems.length;
+            const newIndex =
+              direction === "up"
+                ? (index - 1 + length) % length
+                : (index + 1) % length;
+          
+            const newItems = prevItems.map((item, i) => ({
+              ...item,
+              selected: i === newIndex,
+              index: i,
+            }));
+          
+            return newItems;
+          });
+      };
+
+      useEffect(() => {
+        if (isEnter && suggestions.length > 0) {
+            const index = suggestions.findIndex(item => item.selected);
+            insertMention(suggestions[index].label, suggestions[index].url, keywordval[1] + keywordval[0])
+
+        }
+        setIsEnter(false);
+      }, [isEnter]);
+
     const onMessage = async (event) => {
 
         try {
@@ -309,18 +344,20 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
                     onFocus()
             }
 
-            if (message?.type == "blur") {
-                if (onBlur)
-                    onBlur()
+            if (message?.type == "enter") {
+                setIsEnter(true);
+                
+            }
+
+            if (message?.type == "arrow") {
+                moveSelected(['ArrowDown', 'ArrowRight'].includes(message.payload) ? 'down' : 'up');
             }
 
             if (message?.type == "mention") {
-                //console.log("mention", [message.payload, message.sym])
                 setKeyword([message.payload, message.sym, message.left, message.bottom])
             }
 
             if (message?.type == "mention_hide") {
-                //console.log("mention", [message.payload, message.sym])
                 setSuggestions([])
             }
 
@@ -328,12 +365,22 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
                 insertMention(message.payload.label, message.payload.url, message.payload.query)
             }
 
-
             if (message?.type == "editor-ready") {
                 editor.injectJS(`
                     let lastSelectionRange = null;
                     let mentionVisible = false; 
                     const editor = document.getElementsByClassName("tiptap")[0];
+
+                    document.addEventListener('keydown', function(event) {
+                        if ((event.key === 'Enter' || event.code === 'Enter') && mentionVisible) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                            window.ReactNativeWebView.postMessage(JSON.stringify({
+                                type: 'enter',
+                            }));
+                            return false;
+                        }
+                    }, true);
 
                     function updateHeight() {
                         const currentHeight = editor.scrollHeight;
@@ -343,7 +390,6 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
                         }));
                     }
 
-                    // Отслеживаем изменения через MutationObserver
                     const observer = new MutationObserver(() => {
                         updateHeight();
                     });
@@ -381,6 +427,7 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
                         return text.split(" ").pop();
                     }
 
+
                     editor.addEventListener("keydown", function (event) {
                         if (event.key === "Backspace") {
                             const selection = window.getSelection();
@@ -389,14 +436,12 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
                             const range = selection.getRangeAt(0);
                             const node = range.startContainer;
 
-                            // Проверяем, находится ли курсор внутри ссылки
                             const link = node.nodeType === 3 ? node.parentElement.closest("a") : node.closest("a");
 
                             if (link) {
-                                event.preventDefault(); // Отменяем стандартное удаление
-                                link.remove(); // Удаляем ссылку целиком
+                                event.preventDefault(); 
+                                link.remove(); 
 
-                                // Перемещаем курсор в правильное место
                                 const newRange = document.createRange();
                                 newRange.setStartBefore(link.nextSibling || editor);
                                 newRange.collapse(true);
@@ -404,7 +449,15 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
                                 selection.addRange(newRange);
                             }
                         }
+                        if (event.key === "ArrowUp" || event.key === "ArrowDown" || event.key === "ArrowLeft" || event.key === "ArrowRight") {
+                            window.ReactNativeWebView.postMessage(JSON.stringify({
+                                type: 'arrow',
+                                payload: event.key,
+                            }));
+                        }
                     });
+
+                    
 
                     editor.addEventListener("input", function (event) {
                         updateHeight();
@@ -425,7 +478,7 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
                                 editor.setAttribute('queryX', rect.left);
                                 editor.setAttribute('queryY', rect.bottom);
                             }
-                            if (!mentionVisible) { // Отправляем сообщение только если ментшены ещё не были показаны
+                            if (!mentionVisible) { 
                                 mentionVisible = true;
                             }
 
@@ -437,7 +490,6 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
                                 bottom:rect.bottom
                             }));
                         } else if (mentionVisible) { 
-                            // Если ментшены были показаны, но теперь их нужно скрыть
                             mentionVisible = false;
                             editor.removeAttribute('query');
 
@@ -495,34 +547,29 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
     const isToolBar = (html == 2 || html == 1)
 
     const style = {left: 0}
-   
-    const editorContH = maxHeight ? Math.min(maxHeight, editorHeight) : editorHeight
-
-   /* if (editorContH-keywordval[3] > 144){
-        style.top = keywordval[3]
-    }
-    else{
-        style.bottom = editorContH - keywordval[3] + 24; 
-    }*/
-    //    style.top = editorContH
 
     const handleLayout = (event) => {
         const { width, height, x, y } = event.nativeEvent.layout;
-            setSuggestionsSize([width, height]);
+        setSuggestionsSize([width, height, x, y]);
     };
-    style.bottom = suggestionsSize[1]-(keywordval[3]> 0 ? keywordval[3]-24 : 0)
 
+    if (keywordval[3]-24 < suggestionsHeight && suggestionsSize[1] > suggestionsHeight){
 
+        style.top = suggestionsSize[3]+24
+    }
+    else{
+
+        style.bottom = suggestionsSize[1]-(keywordval[3]> 0 ? keywordval[3]-24 : 0)
+    }
 
     return <View  onLayout={handleLayout} className={`flex-1 relative ${isToolBar ? 'h-48' : ''}`} >
         {(suggestions && suggestions.length > 0) && (
             <View 
-           
-                className="absolute max-h-[100px] w-full max-w-md bottom-0 p-1 z-50 rounded border-bdr dark:border-bdr-d border bg-bgrbody dark:bg-bgrbody-d p-2 " 
+                className={`absolute max-h-[130px] w-full max-w-md bottom-0 p-1 z-50 rounded border-bdr dark:border-bdr-d border bg-bgrbody dark:bg-bgrbody-d p-2`}
                 style={style}>
                 <ScrollView>
                     {suggestions.map((user) => (
-                        <Button key={user.url} variant="link" fullWidth align="left" size="xs" title={user.label} onPress={() => { insertMention(user.label, user.url, keywordval[1] + keywordval[0]) }} />
+                        <Button key={user.url} variant="link" pressed={user.selected} fullWidth align="left" size="xs" title={user.label} onPress={() => { insertMention(user.label, user.url, keywordval[1] + keywordval[0]) }} />
 
                     ))}
                 </ScrollView>

@@ -73,6 +73,7 @@
     "react-native-svg": "^15.11.2",
     "react-native-tab-view": "^3.5.2",
     "react-native-url-polyfill": "^2.0.0",
+    "react-native-version-check": "^3.4.7",
     "react-native-web": "~0.19.13",
     "react-native-webview": "13.12.5",
     "react-native-youtube-iframe": "^2.3.0",

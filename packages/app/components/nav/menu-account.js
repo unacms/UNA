@@ -70,8 +70,6 @@ export default function MenuAccount({ buttonProps, children }) {
         profileList = [...profileList, {  link: "{separator}" }, { link: "{switch_profile_selector}" }]
     }
 
-    console.log("profileListprofileList", data?.profiles)
-
     const updatedMenu = menu_account_items.flatMap(item =>
         item.link === "{switch_profile}" ? (profileList ? [
             { ...currentUser, link: "{switch_profile}" },

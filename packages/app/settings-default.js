@@ -21,6 +21,7 @@ export const settingsDefault = {
             google_maps: 'AIzaSyAhrci201-9xXIRAy0kLOHFGppeTk8AHmo',
             open_ai: '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',
             onesignal: 'a36d17c1-693e-40e1-98e9-41a62a9b5e7d',
+            mapbox:'pk.eyJ1Ijoicm9tYW5sZXMiLCJhIjoiY204Zm9kY3ByMGE4bzJrc2R6Zzg4NW0zMCJ9.Jme_Zudsug5mmqcbjII9cQ'
         },
     },
     layout: {
@@ -63,7 +64,8 @@ export const settingsDefault = {
         use_custom_font: false, //'font-main' //OLD appSetting('layout', 'use_custom_font')
         bluetooth: false, //OLD appSetting('layout', 'bluetooth')
         bluetooth_device_name_prefix: 'NEO', //OLD appSetting('layout', 'bluetooth_device_name_prefix')
-        onesignal_request_on_load: true
+        onesignal_request_on_load: true,
+        check_version: 'optional' //no, required, optional
     },
     async_workers: {
         list: ['CounterChecker'], //['EventChecker'],//NotifChecker OLD appSetting('layout', 'async_workers')
