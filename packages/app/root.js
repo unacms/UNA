@@ -1,27 +1,44 @@
 "use client"
-import { Text } from 'app/design/typography'
-import { useEffect, useCallback } from 'react';
+import React, { useEffect } from 'react';
 import { useCurrentUser } from 'app/context/user';
-import { storageClear, decodeText, getDataFromCache, storageSet } from 'app/lib/util';
+import { storageClear } from 'app/lib/util';
 import { remoteSettings } from 'app/settings-remote';
-import Layouts from 'app/components/layouts';
-import { appSetting } from 'app/lib/util'
+import { Platform } from 'react-native';
+
+let Layouts;
+
+if (Platform.OS === 'web') {
+    const dynamic = require('next/dynamic').default;
+    Layouts = dynamic(() => import('app/components/layouts'), { ssr: false });
+} else {
+    Layouts = require('app/components/layouts').default;
+}
+
+//const Layouts = React.lazy(() => import('app/components/layouts'));
+//import Layouts from 'app/components/layouts';
+// ################## OLD CODE FOR WEB VERSION
+//const dynamic = require('next/dynamic').default;
+//const Layouts = dynamic(() => import('app/components/layouts'), { ssr: false });
+// ################## OLD CODE FOR NATIVE VERSION
+//import Layouts from 'app/components/layouts';
+
 
 export function Root(props) {
-    let { currentUser, setCurrentUser } = useCurrentUser();
-    let data = props?.data;
-
-    useEffect(() => {
+    const { currentUser, setCurrentUser } = useCurrentUser();
+    const data = props?.data;
+    // ################## CODE FOR NATIVE VERSION
+    /*useEffect(() => {
         
         if (props.settings)
             remoteSettings.data = props.settings;
 
-    }, [currentUser?.notifications]);
+    }, [currentUser?.notifications]);*/
 
     useEffect(() => {
         if (data?.user) {
             if (currentUser?.id != data.user.id) {
                 setCurrentUser(data.user);
+                storageClear();
             }
             if (currentUser && currentUser?.informer != data.user.informer) {
                 setCurrentUser({
@@ -31,6 +48,7 @@ export function Root(props) {
         }
         else {
             setCurrentUser(false);
+            storageClear();
         }
 
     }, [data?.user]);
@@ -38,9 +56,7 @@ export function Root(props) {
     if (props.code == 404 && !data?.page_status) {
         data.page_status = 404
     }
-    console.log("************************************************root-render", props?.path)
     return (
-        /*<Text>{props?.path}</Text>*/
         <Layouts path={props?.path} data={data} uri={data?.uri} url={data?.url} />
     );
 }

@@ -10,11 +10,8 @@ import { getLayoutName } from 'app/components/page-layout';
 import { useCurrentUser } from 'app/context/user'
 import BottomSheet from 'app/ui/molecules/bottomsheet_content';
 import { getHeaderSettings, getLayout, deepEqual } from 'app/lib/util';
-import { useColorScheme } from 'react-native';
-import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
-//import BottomSheetDataContext from 'app/context/bottomsheet';
+import { appSetting, storageSet, storageClear, storageGet, decodeText, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { appStatic } from 'app/lib/app-static'
-import { storageSet, storageClear, storageGet } from 'app/lib/util'
 import { menuItemsByName } from 'app/lib/util'
 import OneSignal from 'react-onesignal';
 import { ThemeName } from 'app/design/theme';
@@ -130,9 +127,20 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, layoutName, d
     }
 });
 
+const metaAdder = (queryProperty, value) => {
+    let element = document.querySelector(`meta[${queryProperty}]`);
+    if (element) {
+        element.setAttribute("content", value);
+    } else {
+        element = `<meta ${queryProperty} content="${value}" />`;
+        document.head.insertAdjacentHTML("beforeend", element);
+    }
+};
+
 export default function (props) {
 
     const { currentUser, setCurrentUser } = useCurrentUser();
+    const { layoutName }  = props.layout;
     let data = props.data;
     let blocks = props.blocks;
     let uri = props.uri
@@ -167,11 +175,23 @@ export default function (props) {
 
     }, [handlePageShow]);
 
-
     useEffect(() => {
+        const addLinkTag = (rel, href, crossOrigin) => {
+            const exists = document.querySelector(`link[rel="${rel}"][href="${href}"]`);
+            if (exists) return;
+    
+            const link = document.createElement('link');
+            link.rel = rel;
+            link.href = href;
+            if (crossOrigin) link.crossOrigin = crossOrigin;
+            document.head.appendChild(link);
+        };
+    
+        addLinkTag('preconnect', 'https://onesignal.com', 'anonymous');
+        addLinkTag('preconnect', 'https://cdn.onesignal.com', 'anonymous');
+        addLinkTag('dns-prefetch', 'https://onesignal.com');
 
         runOneSignal();
-
 
     }, []);
 
@@ -243,7 +263,6 @@ export default function (props) {
         };
     }, []);
 
-    const { layoutName } = getLayoutName(data, uri, true);
     const [headerSettings, setHeaderSettings] = useState(getHeaderSettings(uri, width, layoutName, data.config));
 
     useEffect(() => {
@@ -256,6 +275,29 @@ export default function (props) {
             setHeaderSettings(a);
         }
     }, [uri, width, layoutName, data.config]);
+
+    useEffect(() => {
+        if (data?.title) {
+            if (appSetting('notifications', 'count_in_title')) {
+                if (currentUser?.notifications > 0) {
+                    document.title = decodeText('(' + currentUser?.notifications + ') ' + data?.title);
+                }
+                else {
+                    document.title = decodeText(data?.title);
+                }
+            }
+            else {
+                document.title = decodeText(data?.title);
+            }
+
+        }
+        metaAdder('property="og:title"', decodeText(data?.title))
+        if (props.settings)
+            remoteSettings.data = props.settings;
+
+    }, [currentUser?.notifications]);
+
+
 
 
     if (data?.empty)
@@ -300,7 +342,6 @@ const Content = React.memo(({ children, headerSettings, stylesBgImage, currentUs
 
                     </View>
                 </View>
-                {/*layoutName == 'default' && appStatic('components_fullfooter', '')*/}
                 {(headerSettings?.footer !== false || !currentUser) && <Footer />}
             </View>
         </>
