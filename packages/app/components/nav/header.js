@@ -54,7 +54,7 @@ function getRightHeader(items, currentUser, pagePath) {
     </Row>;
 };
 
-const Header = memo(({ backButtonPresented, header, pagePath, rightComponents }) => {
+const Header = memo(({ backButtonPresented, header, pagePath, rightComponents, padding="px-[12px]" }) => {
     const { currentUser } = useCurrentUser();
     const memoizedRightComponents = useMemo(() => {
         if (Array.isArray(rightComponents) && !isValidElement(rightComponents[0])) {
@@ -81,20 +81,22 @@ const Header = memo(({ backButtonPresented, header, pagePath, rightComponents })
 
     text = text.replace('__notification__', '');
 
+    console.log("headerComponent1", header)
+
     return (
         <Row style={{ 
-            backgroundColor: colors.headerBackground,
-        }} className="  justify-between items-center h-[64px] px-[12px] ">
+            backgroundColor: padding ? colors.headerBackground : '',
+        }} className={`justify-between items-center h-[64px] ${padding}`}>
             <Row>
                 {(isHome) && <SvgLogoNative />}
-                {backButtonPresented && (
+                {backButtonPresented ? (
                     <Pressable className="mr-[12px] rounded-full justify-center items-center" onPress={() => {
                         FeedbackHaptics('Medium');
                         routerExpo.back();
                     }}>
                         <Icon icon="ChevronLeft" width={24} height={24} color={colors.barsColor} />
                     </Pressable>
-                )}
+                ): <View className="mr-[12px]"></View>}
                 {text && (
                     <View>
                         <Text className="font-bold text-neutral-800 dark:text-neutral-200 text-3xl tracking-tighter">

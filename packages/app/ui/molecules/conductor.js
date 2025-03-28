@@ -331,17 +331,6 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
          });
  */
         if (props.navigationState.routes.length > 1) {
-
-            /*const menuSettings = appSetting('menu_items', menu.object);
-            setTimeout(() => {
-
-                if (!isHideDefaultHeader){
-                    let addButtonsSet = menuSettings?.add?.filter(item => item.hideInTopBar !== true);
-                    addButtonsSet = menuItemsFilter(addButtonsSet, currentUser);
-                    updateCenterHeader('/'+data.url, data.name, false, navigation, addButtonsSet);
-                }
-            }, 300);*/
-            /* gap-x-2*/
             return (
                 <ScrollView horizontal={true} style={{ backgroundColor: colors.barsBackground }} className=" border-b border-bdr dark:border-bdr-d min-w-full">
                     <Row className="px-1.5 " >

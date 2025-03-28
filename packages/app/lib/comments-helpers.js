@@ -81,7 +81,7 @@ export function parseData(browse, dynamicData) {
     return browse;
 }
 
-export function CommentsParts(commentsData, aItems, height = 0, initFormData, isModal = false, closeOnPost=false) {
+export function CommentsParts(commentsData, aItems, height = 0, initFormData, isModal = false, closeOnPost = false) {
     const [formData, setFormData] = useState({});
     const [addData, setAddData] = useState({});
 
@@ -97,7 +97,7 @@ export function CommentsParts(commentsData, aItems, height = 0, initFormData, is
 
     const handleForm = async (data) => {
         setAddData(data);
-        if (closeOnPost){
+        if (closeOnPost) {
             closeOnPost()
         }
     }
@@ -110,7 +110,7 @@ export function CommentsParts(commentsData, aItems, height = 0, initFormData, is
     ]
 }
 
-export function CommentsBrowse({ browse, requestUrl, module, handleReply, handleEdit, addData, addItems, isShort = false, maxCount, height = 0, showCommentsModal, classesBrowse='', commentsTitle="Comments", contentUrl, replyId, hideActions = false, selectedId=0 }) {
+export function CommentsBrowse({ scrollProps, browse, requestUrl, module, handleReply, handleEdit, addData, addItems, isShort = false, maxCount, height = 0, showCommentsModal, classesBrowse = '', commentsTitle = "Comments", contentUrl, replyId, hideActions = false, selectedId = 0 }) {
     const UnitComments = componentsMap['comments'];
 
     const { t } = useTranslation();
@@ -162,10 +162,10 @@ export function CommentsBrowse({ browse, requestUrl, module, handleReply, handle
                 total_count: browse?.data?.total_count
             }
         );
-    }, [browse?.data]);  
+    }, [browse?.data]);
 
     useEffect(() => {
-        if (isShort){
+        if (isShort) {
             setCommentData(
                 prevData => ({
                     ...prevData,
@@ -202,7 +202,7 @@ export function CommentsBrowse({ browse, requestUrl, module, handleReply, handle
     }, [addData]);
 
     useEffect(() => {
-       
+
         // flashListRef.current.scrollToIndex({ animated: true, index:  });
     }, []);
 
@@ -307,7 +307,7 @@ export function CommentsBrowse({ browse, requestUrl, module, handleReply, handle
     }
 
     const cb2 = (val) => {
-        if(toasterRef){
+        if (toasterRef) {
             const current = toasterRef.current;
             if (current) {
                 current.setVisible(val);
@@ -319,13 +319,13 @@ export function CommentsBrowse({ browse, requestUrl, module, handleReply, handle
 
         if (commentData.lastInserted > 0) {
             let itemIndex = dataOut.findIndex(obj => obj.id == commentData.lastInserted);
-            
-           // NEED CHECK ON IOS
+
+            // NEED CHECK ON IOS
             setTimeout(() => {
-              //  console.log("itemIndex", itemIndex);
+                //  console.log("itemIndex", itemIndex);
                 flashListRef.current.scrollToIndex({ animated: true, index: itemIndex });
             }, 300);
-            
+
         }
     }, [commentData.lastInserted]);
     useEffect(() => {
@@ -334,22 +334,22 @@ export function CommentsBrowse({ browse, requestUrl, module, handleReply, handle
     }, [])
 
     const dataArrayRef = useRef([]);
-    
+
     if (isShort) {
         if (maxCount)
             dataOut = dataOut.slice(0, maxCount);
         return dataOut.map((item, index) => (
             <View key={item.id}>
-                <UnitComments  contentUrl={contentUrl} module={commentData.moduleName} {...item} view={viewMode} max_level={commentData.maxLevel} handleReply={handleReply} handleEdit={handleEdit} handleDelete={handleDelete} />
+                <UnitComments contentUrl={contentUrl} module={commentData.moduleName} {...item} view={viewMode} max_level={commentData.maxLevel} handleReply={handleReply} handleEdit={handleEdit} handleDelete={handleDelete} />
             </View>))
     }
     let title = t(module + '_title');
     if (title == module + '_title')
         title = t(commentsTitle);
-    
+
     let header = commentData.total_count > 0 ? (
 
-        <Row className={'flex-row ' + (classesBrowse? classesBrowse: 'items-center mb-3 pt-1 border-t border-bdr dark:border-bdr-d')}>
+        <Row className={'flex-row ' + (classesBrowse ? classesBrowse : 'items-center mb-3 pt-1 border-t border-bdr dark:border-bdr-d')}>
 
             <Text className='flex-auto text-base font-bold text-neutral-900 dark:text-neutral-50'>{title} ({commentData.total_count})</Text>
             {!appSetting('comments', 'hide_sort') && <View className="ml-4">
@@ -378,8 +378,10 @@ export function CommentsBrowse({ browse, requestUrl, module, handleReply, handle
 
     return (
         <>
-         <Toaster ref={toasterRef} onPress={showNewContent} variant="primary" title="New comment" size="sm" />
-         <UniList
+            <Toaster ref={toasterRef} onPress={showNewContent} variant="primary" title="New comment" size="sm" />
+            <UniList
+                scrollProps={scrollProps}
+                mode='simple'
                 useWindowScroll
                 keyboardShouldPersistTaps="handled"
                 height={height > 0 ? height : undefined}
@@ -406,7 +408,7 @@ export function CommentsBrowse({ browse, requestUrl, module, handleReply, handle
                     ) : null
                 }
             />
-           
+
         </>
     )
 }
@@ -438,39 +440,39 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
 
     useEffect(() => {
         const updateFormData = async () => {
-        if (formData.parent_id > 0) {
-            form.data.inputs.cmt_parent_id.value = formData.parent_id;
-            if (appSetting('comments', 'mentions')){
-                const sUrl = appSetting('urls', 'cmts_menthion_url');
-                if (sUrl){
-                    const sResponse = await fetcher('/api.php?r='+sUrl+'&params[]='+formData.cmt_id+'&params[]='+formData.cmt_object_id+'');
-                    
-                    if (sResponse.data){
-                        form.data.inputs.cmt_text.value = '<a class="bx-mention-link" data-id="[object Object]" href="/mention'+sResponse.data.id+'" title="'+sResponse.data.name+'" dchar="@" data-profile-id="-1" contenteditable="false">'+sResponse.data.name+'</a> &shy; ';
+            if (formData.parent_id > 0) {
+                form.data.inputs.cmt_parent_id.value = formData.parent_id;
+                if (appSetting('comments', 'mentions')) {
+                    const sUrl = appSetting('urls', 'cmts_menthion_url');
+                    if (sUrl) {
+                        const sResponse = await fetcher('/api.php?r=' + sUrl + '&params[]=' + formData.cmt_id + '&params[]=' + formData.cmt_object_id + '');
+
+                        if (sResponse.data) {
+                            form.data.inputs.cmt_text.value = '<a class="bx-mention-link" data-id="[object Object]" href="/mention' + sResponse.data.id + '" title="' + sResponse.data.name + '" dchar="@" data-profile-id="-1" contenteditable="false">' + sResponse.data.name + '</a> &shy; ';
+                        }
+                        else {
+                            form.data.inputs.cmt_text.value = '';
+                        }
                     }
-                    else{
-                        form.data.inputs.cmt_text.value = '';
-                    }
-                }
-                else{
-                    if (formData.author.url == "/javascript:"){
-                        form.data.inputs.cmt_text.value = '<a class="bx-mention-link" data-id="[object Object]" href="#" title="'+formData.author.display_name+'" dchar="@" data-profile-id="-1" contenteditable="false">'+formData.author.display_name+'</a> &shy; ';
-                    }
-                    else{
-                        form.data.inputs.cmt_text.value = '<a class="bx-mention-link" href="' + formData.author.url + '">' + formData.author.display_name + '</a> ';
+                    else {
+                        if (formData.author.url == "/javascript:") {
+                            form.data.inputs.cmt_text.value = '<a class="bx-mention-link" data-id="[object Object]" href="#" title="' + formData.author.display_name + '" dchar="@" data-profile-id="-1" contenteditable="false">' + formData.author.display_name + '</a> &shy; ';
+                        }
+                        else {
+                            form.data.inputs.cmt_text.value = '<a class="bx-mention-link" href="' + formData.author.url + '">' + formData.author.display_name + '</a> ';
+                        }
+
                     }
 
-                }
 
-                
-               
+
+                }
+                form.data.reset = true;
+                form.data.inputs.cmt_text.autofocus = formData.parent_id;
+                addCommentData({ formText: formData.text, formAuthor: formData.author.display_name, parentId: formData.parent_id })
             }
-            form.data.reset = true;
-            form.data.inputs.cmt_text.autofocus = formData.parent_id;
-            addCommentData({ formText: formData.text, formAuthor: formData.author.display_name, parentId: formData.parent_id })
         }
-    }
-    updateFormData();
+        updateFormData();
     }, [formData.parent_id]);
 
     const [commentForm, setCommentForm] = useState();
@@ -500,7 +502,7 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
         form.data.inputs.cmt_text.autofocus = false;
         form.data.reset = true;
         formData.parent_id = 0;
-        
+
         addCommentData({ formText: '', formAuthor: '', parentId: 0 }) // DISABLED TO AVOID ANY REREBDERS AFTER NEW COMMENTS
     }
 
@@ -523,7 +525,7 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
     if (isModal)
         className = "w-full h-screen bg-bgrcard dark:bg-bgrcard-d";
     return (
-        <View className={className} style={{  paddingTop: padding, paddingBottom: padding }}>
+        <View className={className} style={{ paddingTop: padding, paddingBottom: padding }}>
             {
                 form?.data?.inputs?.cmt_parent_id?.value > 0 && (<View className=' rounded-sm border-l-2 border-primary/50  py-1 pl-2 mx-3 mb-2'>
                     <Row className='items-start justify-between max-w-full relative'>
@@ -540,7 +542,7 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
                     </Row>
                 </View>)
             }
-            <Form {...form} exProps={{browse:dynamicData?.data?.browse}} resetOnSubmit={true} classContainerName={(isModal ? "" : "  ") + " flex-row flex-wrap w-full items-start justify-between"} onFormSubmit={onFormSubmit} />
+            <Form {...form} exProps={{ browse: dynamicData?.data?.browse }} resetOnSubmit={true} classContainerName={(isModal ? "" : "  ") + " flex-row flex-wrap w-full items-start justify-between"} onFormSubmit={onFormSubmit} />
         </View>
     )
 }

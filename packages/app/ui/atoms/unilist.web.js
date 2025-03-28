@@ -8,7 +8,7 @@ import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { useCallback, forwardRef } from 'react';
 
 export default function UniList(props) {
-    let { sortable, data, renderItem, onEndReached, maxToRenderPerBatch, initialNumToRender, contentContainerStyle, initialScrollIndex, ListHeaderComponent, ListFooterComponent, refer, onScrollToIndex,
+    let { preloadComponent, sortable, data, renderItem, onEndReached, maxToRenderPerBatch, initialNumToRender, contentContainerStyle, initialScrollIndex, ListHeaderComponent, ListFooterComponent, refer, onScrollToIndex,
         onSort, numColumns, keyboardShouldPersistTaps, keyExtractor, useWindowScroll, height, listState, endpoint, index, viewParams, topItemCount, scrollToLastItem, refreshing, onRefresh, ...rest } = props
 
     data = data.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i);
@@ -96,6 +96,10 @@ export default function UniList(props) {
         isScrolling,
         ...rest,
     };
+
+    if (preloadComponent)
+        return preloadComponent;
+
 
     if (numColumns > 1) {
         return (

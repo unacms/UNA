@@ -1,10 +1,10 @@
 import { Text } from 'app/design/typography'
-import { Button, Modal } from 'app/design/controls'
-import { Platform } from 'react-native'
+import { Button } from 'app/design/controls'
 import { View, Row } from 'app/design/view'
+import Animated from 'react-native-reanimated';
 
 export function ProfileDisplayName(title) {
-   return title;
+    return title;
 }
 
 export function ParseHtmlClasses(className, tag) {
@@ -12,11 +12,10 @@ export function ParseHtmlClasses(className, tag) {
 }
 
 export function ProfileDisplayNameLink(title, url, href, fontSize, actions) {
-
     return (
         <Row className='items-center'>
             <Text className={`text-neutral-800 dark:text-neutral-200 font-bold tracking-tight truncate ${fontSize} ${url ? 'hover:text-linkhover' : ''}>`}>
-                {title} 
+                {title}
             </Text>
             {actions}
         </Row>

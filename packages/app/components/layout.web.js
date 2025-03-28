@@ -6,7 +6,6 @@ import Informer from 'app/components/elements/informer';
 import Suggestions from 'app/ui/molecules/suggestions';
 import AsyncWorker from 'app/ui/molecules/async_worker';
 import { View, Row } from 'app/design/view';
-import { getLayoutName } from 'app/components/page-layout';
 import { useCurrentUser } from 'app/context/user'
 import BottomSheet from 'app/ui/molecules/bottomsheet_content';
 import { getHeaderSettings, getLayout, deepEqual } from 'app/lib/util';

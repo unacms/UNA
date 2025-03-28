@@ -6,10 +6,7 @@ import { Loading } from 'app/loading'
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { fetcher } from 'app/lib/fetcher';
 import { useLocalSearchParams } from 'expo-router';
-import { useUpdateCenterHeader, getRightHeader } from 'app/lib/native-handlers'
-import { useNavigation } from 'expo-router';
 import { menuItemsFilter } from 'app/lib/util';
-import { storageClear, decodeText } from 'app/lib/util';
 import * as SplashScreen from 'expo-splash-screen';
 
 export async function getData(path, token, origin, headers, callback, params) {
@@ -59,8 +56,8 @@ export function Screen(params) {
 }
 
 const Content = ({ pagePath, currentUser, isRoot }) => {
-    const navigation = useNavigation();
-    const updateCenterHeader = useUpdateCenterHeader(navigation);
+
+
     const [pageData, setPageData] = useState(null);
     const { bottomSheetData, setBottomSheetData } = useBottomSheetData();
     useEffect(() => {
@@ -78,24 +75,7 @@ const Content = ({ pagePath, currentUser, isRoot }) => {
 
                 data.props.data['timestamp'] = Date.now();
 
-                let header = settings?.header
-                if (!header) {
-                    const menu_name = pageData1.data?.menu?.object;
-                    if (menu_name) {
-                        //const menuSettings = appSetting('menu_items', menu_name);
-                        const menuSettings = getMenuSettings(pageData1.data?.menu?.object, pageData1.data?.menu?.config);
-
-                        let addButtonsSet = menuSettings?.add?.filter(item => item.hideInTopBar !== true);
-                        addButtonsSet = menuItemsFilter(addButtonsSet, currentUser);
-                        header = addButtonsSet;
-                    }
-                }
-                if (/*currentUser?.id &&*/ (!isRoot || navigation.getState().routes.length <= 1)) {
-                    updateCenterHeader(pagePath, pageData1.data.name, null, header, settings?.headerSettings);
-                }
-
-                //console.log('-------------------------------updateCenterHeader', pagePath, pageData1?.data?.name, navigation.getState().routes.length)
-
+    
                 setBottomSheetData(bottomSheetData !== false ? false : bottomSheetData);
                 setPageData(data.props);
             }

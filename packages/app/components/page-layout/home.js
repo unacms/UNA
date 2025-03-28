@@ -89,6 +89,93 @@ export default function (props) {
             </>
         )
 
+        const subHeader = (
+            
+            <ScrollView
+                horizontal={true}
+                className=" max-w-2xl mx-auto w-full overflow-y-visible sm:justify-center "
+            >
+                <Row
+                    className={`  rounded-full mx-3 sm:mx-auto ${feedList.length > 1
+                            ? 'my-2 lg:my-4'
+                            : ''
+                        }  gap-x-1 sm:gap-x-2  `}
+                >
+                    {feedList.length > 1 &&
+                        feedList.map((item, index) => {
+                            return (
+                                <View key={'row_' + index}>
+                                    <Button
+                                        key={
+                                            'row_' +
+                                            index +
+                                            (feedType ==
+                                                item.name)
+                                        }
+                                        startDecorator={
+                                            item.icon
+                                        }
+                                        title={
+                                            item.showTitle
+                                                ? t(item.title)
+                                                : ''
+                                        }
+                                        variant={
+                                            feedType ==
+                                                item.name
+                                                ? 'primary'
+                                                : 'text'
+                                        }
+                                        rounded
+                                        size="sm"
+                                        onPress={() => {
+                                            setFeedTypeEx(
+                                                item.name
+                                            )
+                                        }}
+                                    />
+                                </View>
+                            )
+                        })}
+                    {appSetting(
+                        'feed',
+                        'show_selector_view'
+                    ) && (
+                            <Row className="flex-auto gap-x-1 pb-2 sm:pb-4 flex-auto items-end justify-end">
+                                <Button
+                                    startDecorator="Rows"
+                                    tooltip={t('Full')}
+                                    rounded
+                                    variant={
+                                        unitMode == ''
+                                            ? 'link'
+                                            : 'text'
+                                    }
+                                    size="sm"
+                                    onPress={() => {
+                                        setUnitModeEx('')
+                                    }}
+                                />
+                                <Button
+                                    startDecorator="ListBullets"
+                                    rounded
+                                    tooltip={t('Short')}
+                                    variant={
+                                        unitMode == 'small'
+                                            ? 'link'
+                                            : 'text'
+                                    }
+                                    size="sm"
+                                    onPress={() => {
+                                        setUnitModeEx('small')
+                                    }}
+                                />
+                            </Row>
+                        )}
+                </Row>
+            </ScrollView>
+        )
+
         return (
             <View
                 className={
@@ -217,97 +304,11 @@ export default function (props) {
 
                 <View className="flex-auto w-full lg:w-auto lg:px-4 xl:px-2 ">
                     <View className=" w-full mx-auto lg:max-w-2xl relative xl:pt-4  ">
-                        
-                        <View className="web:fixed web:top-16 xl:hidden web:lg:top-0 web:z-50 web:w-full lg:relative bg-bgrnavbar dark:bg-bgrnavbar-d lg:bg-transparent border-b border-bdrcard dark:border-bdrcard-d shadow-sm lg:shadow-none lg:border-none">
-                            <ScrollView
-                                horizontal={true}
-                                className="  max-w-2xl mx-auto w-full overflow-y-visible sm:justify-center "
-                            >
-                                <Row
-                                    className={`  rounded-full mx-3 sm:mx-auto ${
-                                        feedList.length > 1
-                                            ? 'my-2 lg:my-4'
-                                            : ''
-                                    }  gap-x-1 sm:gap-x-2  `}
-                                >
-                                    {feedList.length > 1 &&
-                                        feedList.map((item, index) => {
-                                            return (
-                                                <View key={'row_' + index}>
-                                                    <Button
-                                                        key={
-                                                            'row_' +
-                                                            index +
-                                                            (feedType ==
-                                                                item.name)
-                                                        }
-                                                        startDecorator={
-                                                            item.icon
-                                                        }
-                                                        title={
-                                                            item.showTitle
-                                                                ? t(item.title)
-                                                                : ''
-                                                        }
-                                                        variant={
-                                                            feedType ==
-                                                            item.name
-                                                                ? 'primary'
-                                                                : 'text'
-                                                        }
-                                                        rounded
-                                                        size="sm"
-                                                        onPress={() => {
-                                                            setFeedTypeEx(
-                                                                item.name
-                                                            )
-                                                        }}
-                                                    />
-                                                </View>
-                                            )
-                                        })}
-                                    {appSetting(
-                                        'feed',
-                                        'show_selector_view'
-                                    ) && (
-                                        <Row className="flex-auto gap-x-1 pb-2 sm:pb-4 flex-auto items-end justify-end">
-                                            <Button
-                                                startDecorator="Rows"
-                                                tooltip={t('Full')}
-                                                rounded
-                                                variant={
-                                                    unitMode == ''
-                                                        ? 'link'
-                                                        : 'text'
-                                                }
-                                                size="sm"
-                                                onPress={() => {
-                                                    setUnitModeEx('')
-                                                }}
-                                            />
-                                            <Button
-                                                startDecorator="ListBullets"
-                                                rounded
-                                                tooltip={t('Short')}
-                                                variant={
-                                                    unitMode == 'small'
-                                                        ? 'link'
-                                                        : 'text'
-                                                }
-                                                size="sm"
-                                                onPress={() => {
-                                                    setUnitModeEx('small')
-                                                }}
-                                            />
-                                        </Row>
-                                    )}
-                                </Row>
-                            </ScrollView>
-                        </View>
+
+                        {isWeb && <View className="web:fixed web:top-16 xl:hidden web:lg:top-0 web:z-50 web:w-full lg:relative bg-bgrnavbar dark:bg-bgrnavbar-d lg:bg-transparent border-b border-bdrcard dark:border-bdrcard-d shadow-sm lg:shadow-none lg:border-none">{subHeader}</View>}
                         <View
-                            className={`relative w-full mx-auto max-w-2xl ${
-                                feedList.length > 1 ? '' : 'sm:mt-3'
-                            } `}
+                            className={`relative w-full mx-auto max-w-2xl ${feedList.length > 1 ? '' : 'sm:mt-3'
+                                } `}
                         >
                             {feedList.map((item, index) => {
                                 if (feedType == item.name) {
@@ -317,7 +318,7 @@ export default function (props) {
                                                 data={props.data}
                                                 name={
                                                     props.blocks[
-                                                        item.name + '_feed_form'
+                                                    item.name + '_feed_form'
                                                     ]
                                                 }
                                             />
@@ -325,12 +326,13 @@ export default function (props) {
                                                 data={props.data}
                                                 name={
                                                     props.blocks[
-                                                        item.name + '_feed'
+                                                    item.name + '_feed'
                                                     ]
                                                 }
                                                 unitMode={unitMode}
                                                 exProps={{
                                                     headerBlocks: headerBlocks,
+                                                    scrollProps: { pageData: props.data, headerHeight: 116, subHeaderComponent: subHeader },
                                                 }}
                                             />
                                         </View>

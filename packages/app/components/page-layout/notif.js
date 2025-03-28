@@ -5,12 +5,12 @@ import { useCurrentUser } from 'app/context/user'
 import { View } from 'app/design/view'
 import Toaster from 'app/ui/atoms/toaster';
 
+
 export default function PageLayout(props) {
     const toasterRef2 = useRef();
     const { currentUser, setCurrentUser } = useCurrentUser();
     const [timeStamp, setTimeStamp] = useState({ts:Date.now(), nts: currentUser.notificationsTs});
    
-    
     useEffect(() => {
         clearNotif(currentUser, setCurrentUser);
     }, [])
@@ -47,7 +47,7 @@ export default function PageLayout(props) {
     return (  
         <View className='sm:p-2'>
             <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="New notifications" size="sm" />
-            <BlockByName data={props.data} key={timeStamp.ts} cachePrefix={timeStamp.ts} name={props.blocks.browse} />
+            <BlockByName exProps={{ scrollProps: { pageData: props.data, headerHeight: 64 } }} data={props.data} key={timeStamp.ts} cachePrefix={timeStamp.ts} name={props.blocks.browse} />
         </View>
     )
 }

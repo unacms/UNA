@@ -9,6 +9,7 @@ const StackCustom = () => {
             freezeOnBlur: true,
             unmountOnBlur: false,
             lazy: true,
+            headerTransparent:true
     })}/>
 };
 

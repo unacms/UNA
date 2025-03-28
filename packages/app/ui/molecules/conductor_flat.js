@@ -23,7 +23,7 @@ const TabBar = React.memo(({ routes, index, setIndex, onChangeRoute }) => {
     if (routes.length > 1) {
         return (
             <View className="w-full">
-                <ScrollView horizontal={true}  className=" bg-bgrtabbar dark:bg-bgrtabbar-d  ">
+                <ScrollView horizontal={true}  className="  ">
                     <Row className="px-1.5  justify-center" >
                         {routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
                             const btn =  callFn("getButtonForConductorNative", [a, index, currentUser, setIndex, onChangeRoute]);
@@ -72,6 +72,8 @@ const AddBlocks = React.memo(({
 
 const TabScene = React.memo(({
     route,
+    prevRoute,
+    header,
     unitType,
     Preload,
     unitMode,
@@ -98,12 +100,13 @@ const TabScene = React.memo(({
         />
     ), [unitType, unitMode, route]);
 
-    if (!route.inited) {
+    /*if (!route.inited) {
         return <></>;
-    }
-    
+    }*/
     return (
         <UniList
+            scrollProps={{pageData: route.inited ? route.pageData : prevRoute.pageData, subHeaderComponent: header, headerHeight: 116, isBackButton:false }}
+
             index={route.index}
             data={route.data}
             route={route}
@@ -173,9 +176,17 @@ export function ConductorFlat({ header, smallHeader, minHeaderHeight, isHideDefa
         return idx === -1 ? 0 : idx; // Default to 0 if no matching route is found
     }, [routes, data.url, useSectionAsMenu]);
 
-    const [index, setIndex] = useState(initialIndex);
+    const [index, _setIndex] = useState(initialIndex);
+    const [prevIndex, setPrevIndex] = useState(initialIndex);
+    console.log("indexindex", index, prevIndex)
+    const setIndex = (newIndex) => {
+        setPrevIndex(index);
+        _setIndex(newIndex);
+      };
+      
 
-    const currentRoute = useMemo(() => routes.find((item) => item.index === index), [routes, index]);;
+    const currentRoute = useMemo(() => routes.find((item) => item.index === index), [routes, index]);
+    const prevRoute = useMemo(() => routes.find((item) => item.index === prevIndex), [routes, prevIndex]);;
     const qKey = useMemo(() => [currentRoute?.endpoint?.request_url, index, keyword, JSON.stringify(currentRoute?.endpoint?.params?.filters)], [currentRoute, index, keyword]);
     const queryClient = useQueryClient();
 
@@ -344,15 +355,16 @@ export function ConductorFlat({ header, smallHeader, minHeaderHeight, isHideDefa
         setBottomSheetData(false);
     });
 
+    const h =  <TabBar routes={routes} index={index} setIndex={setIndex} onChangeRoute={onChangeRoute} />
+
     return (
         <View className="w-full flex-1">
-            <TabBar routes={routes} index={index} setIndex={setIndex} onChangeRoute={onChangeRoute} />
             <View className="w-full flex-1 ">
                 <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" />
                 {(layoutName == 'navigator' && leftSideBarBlocks && leftSideBarBlocks.length > 0) && <View className="items-start ml-2 mt-2 mb-1">
                     <Button title='Filters' variant="default" size="sm" rounded onPress={showFilters} />
                 </View>}
-                <TabScene numColumns={numColumns} onRefresh={onStartRefresh} refreshing={isRefreshing} route={currentRoute} Preload={Preload} unitType={unitType} unitMode={unitMode} fetchNextPage={fetchNextPage} />
+                <TabScene header={h} prevRoute={prevRoute} numColumns={numColumns} onRefresh={onStartRefresh} refreshing={isRefreshing} route={currentRoute} Preload={Preload} unitType={unitType} unitMode={unitMode} fetchNextPage={fetchNextPage} />
             </View>
         </View>
     );

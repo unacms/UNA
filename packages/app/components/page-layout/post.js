@@ -4,8 +4,6 @@ import { useState, useContext, useMemo, useEffect } from 'react';
 import { stripTags } from 'app/lib/util';
 import { useTheme } from '@react-navigation/native';
 import { CommentsBrowse, CommentsForm } from 'app/lib/comments-helpers'
-import { useNavigation } from "expo-router";
-import { useUpdateCenterHeader } from 'app/lib/native-handlers'
 import { useLocalSearchParams } from 'expo-router';
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
 
@@ -17,8 +15,8 @@ export default function PageLayout(props) {
     const localUrl = useLocalSearchParams();
     const commentsData = useMemo(() => DataByName(props.data, props.blocks.comments), [props.data, props.blocks.comments]);
     const { colors } = useTheme();
-    const navigation = useNavigation();
-    const updateCenterHeader = useUpdateCenterHeader(navigation);
+
+
 
     useEffect(() => {
         if (localUrl?.url) {
@@ -53,20 +51,27 @@ export default function PageLayout(props) {
             }));
     }, [props.blocks, props.data]);
 
-    useEffect(() => {
-        if (headerItems.length === 0) return; // Exit early if no items
-        const timer = setTimeout(() => {
-            updateCenterHeader(null, <View className='items-center'>{headerItems[0].data}</View>, true);
-        }, 100);
-
-        return () => clearTimeout(timer);
-    }, [headerItems]);
 
     return (
         <View className='flex-1 w-full h-full'>
             <View className="w-full  flex-1 bg-bgrcard dark:bg-bgrcard-d px-3">
                 <View className='overflow-hidden flex-1 w-full'>
-                    <CommentsBrowse addItems={aItems} handleReply={data => setFormData({ text: stripTags(data.cmt_text), parent_id: data.cmt_id, author: data.author_data, cmt_id: data.cmt_id, cmt_object_id: data.cmt_object_id })} browse={commentsData.content[0].browse} addData={addData} module={commentsData?.content[0].browse?.data?.module || commentsData?.module} requestUrl={commentsData.content[0].url} replyId={replyId} />
+                    <CommentsBrowse 
+                        scrollProps={
+                            {
+                                headerHeight:64, 
+                                pageData:props.data, 
+                                headerComponent: headerItems[0].data, 
+                                isBackButton: true, 
+                            }} 
+                            addItems={aItems} 
+                            handleReply={data => setFormData({ text: stripTags(data.cmt_text), parent_id: data.cmt_id, author: data.author_data, cmt_id: data.cmt_id, cmt_object_id: data.cmt_object_id })} 
+                            browse={commentsData.content[0].browse} 
+                            addData={addData} 
+                            module={commentsData?.content[0].browse?.data?.module || commentsData?.module} 
+                            requestUrl={commentsData.content[0].url} 
+                            replyId={replyId} 
+                        />
                 </View>
             </View>
             <KbAvoidingView offset={64}>

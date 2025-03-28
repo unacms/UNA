@@ -65,7 +65,9 @@ export const settingsDefault = {
         bluetooth: false, //OLD appSetting('layout', 'bluetooth')
         bluetooth_device_name_prefix: 'NEO', //OLD appSetting('layout', 'bluetooth_device_name_prefix')
         onesignal_request_on_load: true,
-        check_version: 'optional' //no, required, optional
+        check_version: 'optional', // variants: [no, required, optional]
+        collapsible_header: true,
+        scroll_to_top_button: true,
     },
     async_workers: {
         list: ['CounterChecker'], //['EventChecker'],//NotifChecker OLD appSetting('layout', 'async_workers')
@@ -762,7 +764,7 @@ export const settingsDefault = {
             'u-btn-default-pressed-cnt': ' bg-primary/10 dark:bg-primary-d/10 ',
 
             'u-btn-primary-cnt':
-            ' group bg-primary-500 dark:bg-primary-600 border border-transparent sm:hover:border-transparent dark:border-primary-500 sm:hover:bg-primary-600 dark:sm:hover:bg-primary-700 sm:dark:hover:border-primary-600 ',
+            '  bg-primary-500 dark:bg-primary-600 border border-transparent sm:hover:border-transparent dark:border-primary-500 sm:hover:bg-primary-600 dark:sm:hover:bg-primary-700 sm:dark:hover:border-primary-600 ',
             'u-btn-primary-text': '  font-medium text-white ',
             'u-btn-primary-trans': ' web:duration-200 ',
             'u-btn-primary-icon': ' text-white ',

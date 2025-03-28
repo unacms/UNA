@@ -112,7 +112,8 @@ export default function (props) {
         }
     };
 
-    const hOffset = isWeb ? (windowWidth < LAYOUT_BREAKPOINTS.lg ? 126 : 64) : 106;
+    //const hOffset = isWeb ? (windowWidth < LAYOUT_BREAKPOINTS.lg ? 126 : 64) : 106;
+    const hOffset = isWeb ? 0 : 56;
     const styles = isWeb ? {} : { height: (defParams?.height ? defParams.height : windowHeight - hOffset) }
 
     const fetchData = useCallback(async ({ }) => {
@@ -268,9 +269,6 @@ export default function (props) {
         }
     }, [storageKeyValue, dataItems.params, props.cachePrefix]);
 
-    if (dataItems.data.length == 0 && ((dataItems?.params?.start === 0 && (!props.only_one_page && data.unit != 'notifications')) || status === 'loading'))
-        return <>{Preload}</>
-
     if (dataItems.data.length == 0 && status === 'success' && data.unit == 'notifications' && dataItems?.params?.start > 0) {
         return <View className="p-8">
             <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto mb-auto py-4 px-8 h-full items-center rounded-2xl  bg-neutral-500/10 ">
@@ -287,45 +285,57 @@ export default function (props) {
         ));
     }
 
+    const isShowPreloads = dataItems.data.length == 0 && ((dataItems?.params?.start === 0 && (!props.only_one_page && data.unit != 'notifications')) || status === 'loading');
+    let PreloadComponent = null;
+    if (isShowPreloads){
+        PreloadComponent = Preload
+    }
+    else{
+        if (dataItems.data.length == 0 && isShowEmptyMessage){
+            PreloadComponent = callFn("noContentByUrl", [data.request_url])
+        }
+    }
 
     return (
         <View className='w-full h-full' >
             <View className='w-full' onLayout={handleLayout}></View>
             <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" />
-            <View className='w-full ' style={styles} >
-                {dataItems.data.length > 0 ? <>{props.showTitleInside ? (
+            <View className='w-full' style={styles} >
+                {props.showTitleInside ? (
                     <Row className='p-2 items-center justify-between'>
                         <Text className="text-base font-bold text-neutral-800 dark:text-neutral-200 ">{t(props.block.title)}</Text>
                         {props.addLink ? (<Link href={props.addLink.url}><Button variant='text' size='xs' title={props.addLink.text} /></Link>) : null}
                     </Row>) : <></>}
-                    {(isWeb && props.exProps?.headerBlocks) ? props.exProps?.headerBlocks : ''}
-                    <UniList
-                        numColumns={numColumns}
-                        mode='simple'
-                        data={dataItems.data}
-                        viewParams={getCurrentParams()}
-                        listState={cachedData?.state?.state}
-                        unit={data.unit}
-                        storagekey={storageKeyValue}
-                        useWindowScroll
-                        height={props?.height}
-                        url={props?.url}
-                        contentContainerStyle={props?.contentContainerStyle}
-                        refer={uniRef}
-                        maxToRenderPerBatch={10}
-                        initialNumToRender={10}
-                        no_scroll={props.no_scroll}
-                        onRefresh={onStartRefresh}
-                        refreshing={isRefreshing}
-                        renderItem={({ item, index }) => isWeb ? <Item key={'item' + item.id} item={item} index={index} numColumns={numColumns} data={data} unitMode={unitMode} props={props} /> : <Item item={item} index={index} numColumns={numColumns} data={data} unitMode={unitMode} props={props} />}
-                        onEndReached={handleEndReached}
-                        ListHeaderComponent={(!isWeb && props.exProps?.headerBlocks) ? props.exProps?.headerBlocks : ''}
-                        ListFooterComponent={
-                            ((hasNextPage && isFetchingNextPage)) ? (
-                                Preload
-                            ) : null
-                        }
-                    /></> : (data.unit == 'notifications' || isShowEmptyMessage ? callFn("noContentByUrl", [data.request_url]) : null)}
+                {(isWeb && props.exProps?.headerBlocks) ? props.exProps?.headerBlocks : ''}
+                <UniList
+                    scrollProps={props?.exProps?.scrollProps}
+                    preloadComponent={PreloadComponent}
+                    numColumns={numColumns}
+                    mode='simple'
+                    data={dataItems.data}
+                    viewParams={getCurrentParams()}
+                    listState={cachedData?.state?.state}
+                    unit={data.unit}
+                    storagekey={storageKeyValue}
+                    useWindowScroll
+                    height={props?.height}
+                    url={props?.url}
+                    contentContainerStyle={props?.contentContainerStyle}
+                    refer={uniRef}
+                    maxToRenderPerBatch={10}
+                    initialNumToRender={10}
+                    no_scroll={props.no_scroll}
+                    onRefresh={onStartRefresh}
+                    refreshing={isRefreshing}
+                    renderItem={({ item, index }) => isWeb ? <Item key={'item' + item.id} item={item} index={index} numColumns={numColumns} data={data} unitMode={unitMode} props={props} /> : <Item item={item} index={index} numColumns={numColumns} data={data} unitMode={unitMode} props={props} />}
+                    onEndReached={handleEndReached}
+                    ListHeaderComponent={(!isWeb && props.exProps?.headerBlocks) ? props.exProps?.headerBlocks : ''}
+                    ListFooterComponent={
+                        ((hasNextPage && isFetchingNextPage)) ? (
+                            Preload
+                        ) : null
+                    }
+                />
             </View>
         </View>
     );
