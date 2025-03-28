@@ -576,7 +576,7 @@ export const settingsDefault = {
         },
         light: {
             primary: 'rgba(37,99,235,1)',
-            headerBackground: 'rgba(255,255,255,1)',
+            headerBackground: 'rgba(255,255,255,0.9)',
             barsBackground: 'rgba(255,255,255,1)', //header and tabbar background in native light mode
             bottomSheetBackground: 'rgba(255,255,255,1)',
             barsColor: '#4B5563',
@@ -597,7 +597,7 @@ export const settingsDefault = {
         },
         dark: {
             default: 'rgba(209,213,219,1)', //fix for icons color in iOS
-            headerBackground: 'rgba(17,24,39,1)',
+            headerBackground: 'rgba(17,24,39,0.9)',
             primary: 'rgba(37,99,235,1)',
             barsBackground: 'rgba(17,24,39,1)', //header background in native
             bottomSheetBackground: 'rgba(17,24,39,1)',

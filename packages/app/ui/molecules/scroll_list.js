@@ -78,13 +78,14 @@ export default function ScrollList({ content, pageData, headerHeight, isBackButt
 
     const enhanced = React.cloneElement(content, baseProps);
     //, {backgroundColor: colors.headerBackground}
+    console.log("colors.headerBackground", colors.headerBackground)
     return (
         <View className="flex-1">
             <Animated.View className="absolute top-0 w-full z-50" style={[headerStyle]}>
                 <BlurView tint="default"
-                    intensity={80}
+                    intensity={100}
                     experimentalBlurMethod="none" className={`w-full h-[${headerHeight}px]`} >
-                    <View className="w-full"  >
+                    <View className="w-full" style={{backgroundColor: colors.headerBackground}} >
                         <Header
                             backButtonPresented={isBackButton}
                             header={headerComponent ? headerComponent : pageData.name}

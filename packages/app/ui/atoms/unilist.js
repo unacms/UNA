@@ -1,19 +1,7 @@
 import { /*MasonryFlashList,*/ FlashList } from "@shopify/flash-list";
 import { RefreshControl } from 'react-native';
 import { View } from 'app/design/view'
-import { FlatList } from 'react-native';
-import { BlurView } from 'expo-blur';
-import Animated, {
-    useSharedValue,
-    useAnimatedStyle,
-    useAnimatedScrollHandler,
-    useAnimatedRef,
-    useScrollViewOffset,
-    withTiming,
-} from 'react-native-reanimated';
-import Header from 'app/components/nav/header';
-import { Theme } from 'app/design/theme';
-import { Text } from 'app/design/typography'
+import Animated from 'react-native-reanimated';
 import ScrollList from 'app/ui/molecules/scroll_list'
 
 export default function UniList(props) {
@@ -32,7 +20,11 @@ export default function UniList(props) {
         mode = '';
 
     if (mode == 'simple') {
-        const content = preloadComponent ? <View style={{paddingTop:scrollProps?.headerHeight}}>{preloadComponent}</View> : <Animated.FlatList
+        console.log("aaa", scrollProps?.headerHeight)
+        const content = preloadComponent ? <View className="w-full">
+            <View className={`w-full `} style={{ height: scrollProps?.headerHeight }}></View>
+            {preloadComponent}
+        </View> : <Animated.FlatList
             contentContainerStyle={{
                 ...(scrollProps?.headerHeight ? { paddingTop: scrollProps.headerHeight } : {}),
                 ...contentContainerStyle,
@@ -55,13 +47,13 @@ export default function UniList(props) {
         if (!scrollProps)
             return content;
         return (
-            <ScrollList 
-                       content = {content}
-                       contentType = "FlatList"
-                       ref={refer}
-                       {...scrollProps}
-                    />
-            
+            <ScrollList
+                content={content}
+                contentType="FlatList"
+                ref={refer}
+                {...scrollProps}
+            />
+
         )
     }
 
