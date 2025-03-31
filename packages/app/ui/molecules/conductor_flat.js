@@ -74,6 +74,7 @@ const TabScene = React.memo(({
     route,
     prevRoute,
     header,
+    headerHeight,
     unitType,
     Preload,
     unitMode,
@@ -105,7 +106,7 @@ const TabScene = React.memo(({
     }*/
     return (
         <UniList
-            scrollProps={{pageData: route.inited ? route.pageData : prevRoute.pageData, subHeaderComponent: header, headerHeight: 116, isBackButton:false }}
+            scrollProps={{pageData: route.inited ? route.pageData : prevRoute.pageData, subHeaderComponent: header, headerHeight: headerHeight, isBackButton:false }}
 
             index={route.index}
             data={route.data}
@@ -355,16 +356,17 @@ export function ConductorFlat({ header, smallHeader, minHeaderHeight, isHideDefa
         setBottomSheetData(false);
     });
 
-    const h =  <TabBar routes={routes} index={index} setIndex={setIndex} onChangeRoute={onChangeRoute} />
-
+    const isShowFilters = layoutName == 'navigator' && leftSideBarBlocks && leftSideBarBlocks?.length > 0;
+    const sceneHeader =  <TabBar routes={routes} index={index} setIndex={setIndex} onChangeRoute={onChangeRoute} />
+    const filter =  (isShowFilters) && (<View className="items-start ml-3 mt-2 mb-1">
+        <Button title='Filters' variant="default" size="sm" rounded onPress={showFilters} />
+    </View>)
+    const h =<>{sceneHeader}{filter}</>
     return (
         <View className="w-full flex-1">
             <View className="w-full flex-1 ">
                 <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" />
-                {(layoutName == 'navigator' && leftSideBarBlocks && leftSideBarBlocks.length > 0) && <View className="items-start ml-2 mt-2 mb-1">
-                    <Button title='Filters' variant="default" size="sm" rounded onPress={showFilters} />
-                </View>}
-                <TabScene header={h} prevRoute={prevRoute} numColumns={numColumns} onRefresh={onStartRefresh} refreshing={isRefreshing} route={currentRoute} Preload={Preload} unitType={unitType} unitMode={unitMode} fetchNextPage={fetchNextPage} />
+                <TabScene headerHeight={isShowFilters? 150: 116} header={h} prevRoute={prevRoute} numColumns={numColumns} onRefresh={onStartRefresh} refreshing={isRefreshing} route={currentRoute} Preload={Preload} unitType={unitType} unitMode={unitMode} fetchNextPage={fetchNextPage} />
             </View>
         </View>
     );

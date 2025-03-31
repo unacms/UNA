@@ -5,6 +5,7 @@ import { Button } from 'app/design/controls'
 import Link from 'app/ui/atoms/link'
 import Map, { Source, Layer, Popup } from 'react-map-gl/mapbox';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import { appSetting } from 'app/lib/util'
 
 export default function ElementMapBox({ data }) {
     const mapRef = useRef(null);
@@ -92,7 +93,7 @@ export default function ElementMapBox({ data }) {
             <View className="aspect-square w-full max-w-3xl ">
                 <Map
                     ref={mapRef}
-                    mapboxAccessToken={appSetting('api_keys', 'mapbox')}
+                    mapboxAccessToken={appSetting('config', 'api_keys', 'mapbox')}
                     initialViewState={viewport}
                     style={{ flex: 1 }}
                     mapStyle="mapbox://styles/mapbox/light-v11"
