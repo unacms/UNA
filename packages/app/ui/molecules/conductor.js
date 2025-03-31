@@ -26,7 +26,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
     unitMode = unitMode || '';
 
     const { currentUser } = useCurrentUser();
-    const { layoutData } = useLayoutData();
+    const { layoutData, setLayoutData } = useLayoutData();
     const { t } = useTranslation();
 
     const initedTabs = useMemo(() => fillTabs(menu, data, blocks, currentUser, useSectionAsMenu), [menu, data, blocks, currentUser, useSectionAsMenu]);;
@@ -254,6 +254,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
             const newRoutes = [...routes];
             newRoutes[index].data = data
             setRoutes(newRoutes);
+            setLayoutData(null)
         }
         callFn("updateRouteDataForConnections", [currentRoute, layoutData, routes, index, setRoutes])
     }, [layoutData]);

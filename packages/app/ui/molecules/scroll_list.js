@@ -77,10 +77,10 @@ export default function ScrollList({ content, pageData, headerHeight, isBackButt
     };
 
     const enhanced = React.cloneElement(content, baseProps);
-    //, {backgroundColor: colors.headerBackground}
-    console.log("colors.headerBackground", colors.headerBackground)
+
+
     return (
-        <View className="flex-1">
+        <View className="flex-1 bg-red-500">
             <Animated.View className="absolute top-0 w-full z-50" style={[headerStyle]}>
                 <BlurView tint="default"
                     intensity={100}
@@ -117,11 +117,10 @@ const Header = memo(({ backButtonPresented, header, pageData }) => {
     const pagePath = pageData.uri;
 
     let rightComponents = settings?.header
-
     if (!rightComponents) {
-        const menu_name = pageData.data?.menu?.object;
+        const menu_name = pageData.menu?.object;
         if (menu_name) {
-            const menuSettings = getMenuSettings(pageData.data?.menu?.object, pageData.data?.menu?.config);
+            const menuSettings = getMenuSettings(pageData?.menu?.object, pageData.menu?.config);
             const addButtonsSet = menuSettings?.add?.filter(item => item.hideInTopBar !== true);
             rightComponents = menuItemsFilter(addButtonsSet, currentUser);
         }

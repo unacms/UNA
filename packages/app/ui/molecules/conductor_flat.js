@@ -129,7 +129,7 @@ const TabScene = React.memo(({
     )
 });
 
-export function ConductorFlat({ header, smallHeader, minHeaderHeight, isHideDefaultHeader, leftSideBarBlocks, menu, layoutName, data, blocks, useSectionAsMenu, unitMode, skeleton, onChangeRoute, keyword }) {
+export function ConductorFlat({ header, defaultHeaderHeight=116, smallHeader, minHeaderHeight, isHideDefaultHeader, leftSideBarBlocks, menu, layoutName, data, blocks, useSectionAsMenu, unitMode, skeleton, onChangeRoute, keyword }) {
 
     minHeaderHeight = minHeaderHeight || 100;
     isHideDefaultHeader = isHideDefaultHeader || false;
@@ -138,7 +138,7 @@ export function ConductorFlat({ header, smallHeader, minHeaderHeight, isHideDefa
     unitMode = unitMode || '';
 
     const { currentUser } = useCurrentUser();
-    const { layoutData } = useLayoutData();
+    const { layoutData, setLayoutData } = useLayoutData();
     const { setBottomSheetData } = useBottomSheetData();
     const initedTabs = useMemo(() => fillTabs(menu, data, blocks, currentUser, useSectionAsMenu), [menu, data, blocks, currentUser, useSectionAsMenu]);;
     const [isRefreshing, setIsRefreshing] = useState(false);
@@ -311,6 +311,7 @@ export function ConductorFlat({ header, smallHeader, minHeaderHeight, isHideDefa
             const newRoutes = [...routes];
             newRoutes[index] = updatedRoute;
             setRoutes(newRoutes);
+            setLayoutData(null)
         }
         callFn("updateRouteDataForConnections", [currentRoute, layoutData, routes, index, setRoutes])
     }, [layoutData]);
@@ -366,7 +367,7 @@ export function ConductorFlat({ header, smallHeader, minHeaderHeight, isHideDefa
         <View className="w-full flex-1">
             <View className="w-full flex-1 ">
                 <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" />
-                <TabScene headerHeight={isShowFilters? 150: 116} header={h} prevRoute={prevRoute} numColumns={numColumns} onRefresh={onStartRefresh} refreshing={isRefreshing} route={currentRoute} Preload={Preload} unitType={unitType} unitMode={unitMode} fetchNextPage={fetchNextPage} />
+                <TabScene headerHeight={isShowFilters? 150: defaultHeaderHeight} header={h} prevRoute={prevRoute} numColumns={numColumns} onRefresh={onStartRefresh} refreshing={isRefreshing} route={currentRoute} Preload={Preload} unitType={unitType} unitMode={unitMode} fetchNextPage={fetchNextPage} />
             </View>
         </View>
     );

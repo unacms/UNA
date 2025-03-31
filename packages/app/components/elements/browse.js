@@ -48,7 +48,7 @@ export default function (props) {
     const isWeb = Platform.OS === 'web';
     const isValidateActive = props.validate ?? true;
     const isShowEmptyMessage = props.empty_message ?? true;
-    const { layoutData } = useLayoutData();
+    const { layoutData, setLayoutData } = useLayoutData();
     const toasterRef2 = useRef();
     const { t } = useTranslation();
     const [isRefreshing, setIsRefreshing] = useState(false);
@@ -251,6 +251,7 @@ export default function (props) {
             let clonedData = cloneObject(dataItems.data);
             const data2 = handleFeedLayoutData(layoutData, clonedData)
             setDataItems({ data: data2, params: dataItems.params });
+            setLayoutData(null)
         }
     }, [layoutData]);
     /* NEW POST TO FEED */

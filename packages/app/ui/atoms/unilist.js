@@ -20,7 +20,6 @@ export default function UniList(props) {
         mode = '';
 
     if (mode == 'simple') {
-        console.log("aaa", scrollProps?.headerHeight)
         const content = preloadComponent ? <View className="w-full">
             <View className={`w-full `} style={{ height: scrollProps?.headerHeight }}></View>
             {preloadComponent}
@@ -60,6 +59,7 @@ export default function UniList(props) {
     return (
         <FlashList
             ref={refer}
+            contentContainerStyle={contentContainerStyle}
             keyExtractor={item => item.id}
             onEndReachedThreshold={1}
             numColumns={numColumns}

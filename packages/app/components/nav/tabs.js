@@ -93,7 +93,7 @@ export default function () {
             return <View className=" items-center justify-center border-[1.5px] border-neutral-600 dark:border-neutral-400 rounded-full mb-[8px] h-[29px] w-[29px]"><Profile {...dUser} showLinks={false} displayType="unit_wo_info" displaySize="xs" /></View>;
         }
         return null;
-    }, [currentUser?.id]);
+    }, [currentUser?.id, currentUser?.avatar]);
 
     const theme = appSetting('native', 'default_theme')
     useEffect(() => {

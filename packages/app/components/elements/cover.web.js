@@ -322,7 +322,7 @@ export default function (props) {
 
                         <CoverMenuMeta {...data.meta_menu} />
                     </View>
-                    <View className={` flex-auto w-full max-w-[320px] ${mode !== 'min' && ' lg:items-end '}`}>
+                    <View className={` flex-auto w-full max-w-[400px] ${mode !== 'min' && ' lg:items-end '}`}>
                         <CoverMenu {...data.actions_menu} uri={props?.uri} />
                         {/*containerClasses={`${mode === 'min' && 'w-full lg:justify-end'}`}*/}
                     </View>

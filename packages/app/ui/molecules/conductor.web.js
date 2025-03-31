@@ -400,7 +400,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     const uniRef = useRef();
     const { currentUser } = useCurrentUser();
     const { setBottomSheetData } = useBottomSheetData();
-    const { layoutData } = useLayoutData();
+    const { layoutData, setLayoutData } = useLayoutData();
     const tmplLayout = getLayout(currentUser);
     const toasterRef = useRef(); // ref for toaster
 
@@ -565,6 +565,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             const newRoutes = [...routes];
             newRoutes[index].data = data
             setRoutes(newRoutes);
+            setLayoutData(null)
         }
         callFn("updateRouteDataForConnections", [currentRoute, layoutData, routes, index, setRoutes])
 

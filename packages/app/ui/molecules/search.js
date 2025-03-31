@@ -141,7 +141,8 @@ export function ElementSearchData(oProps) {
         if (!sValue || sValue.length < 3)
             return;
 
-        handleSetPopupContent(getSkeleton());
+       // if (sValue.length == 3)
+        //    handleSetPopupContent(getSkeleton());
 
         const aParams = {
             params: {
@@ -166,7 +167,8 @@ export function ElementSearchData(oProps) {
             </View>
         );
         if (oBlock.data.data.length == 0){
-            return appStatic('components_modal')
+            handleSetPopupContent(appStatic('components_content_empty'))
+            return 
         }
 
         handleSetPopupContent(sContent);
@@ -226,7 +228,7 @@ export function ElementSearchData(oProps) {
                     </View>
                 )
             }
-            <View className="flex-row p-1 mb-2">
+        <View className="flex-row p-1 mb-2">
                 <Input name="search" autoFocus={true} placeholder='Start typing to search...' onKeyPress={(event) => handleKeyPress(event)} value={inputValue} ref={inputRef} onChangeText={(value) => handleSearch(value)} />
             </View>
             {cnt}
