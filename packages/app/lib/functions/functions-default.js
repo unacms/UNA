@@ -14,12 +14,14 @@ export function getFriendsCounter(currentUser) {
 }
 
 export function getBadgeForTab(currentUser, url) {
+    const badgeTextSize = appSetting('theme', 'native_tabs', 'badgeTextSize') || 'text-[10px]';
+    
     if (
         url == appSetting('notifications', 'url') &&
         currentUser?.notifications
     ){
         return (
-            <Text className={Platform.OS === 'ios' ? 'text-xs' : 'text-sm'}>
+            <Text className={`${badgeTextSize} text-white font-medium`}>
                 {currentUser?.notifications}
             </Text>
         )
@@ -30,7 +32,7 @@ export function getBadgeForTab(currentUser, url) {
         currentUser?.counters?.bx_messenger_new_messages
     ){
         return (
-            <Text className={Platform.OS === 'ios' ? 'text-xs' : 'text-sm'}>
+            <Text className={`${badgeTextSize} text-white font-medium`}>
                 {currentUser?.counters?.bx_messenger_new_messages}
             </Text>
         )

@@ -572,7 +572,9 @@ export const settingsDefault = {
                 marginLeft: 0,
                 marginRight: 0,
                 overflow: 'hidden',
-            }
+            },
+            badgeBackground: 'rgba(239,68,68,1)', // Red color by default
+            badgeTextSize: 'text-[12px] leading-[16px] font-semibold', // Customizable text size for badge
         },
         light: {
             primary: 'rgba(37,99,235,1)',

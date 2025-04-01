@@ -80,8 +80,8 @@ export default function () {
 
     const router = useRouter();
     const { colors } = Theme();
-    const iconWidth = 28;
-    const iconHeight = 28;
+    const iconWidth = 24;
+    const iconHeight = 24;
     const isShowTabs = currentUser || appSetting('native', 'show_tabs_non_logged')
     const notificationUrl = appSetting('notifications', 'url');
 
@@ -90,7 +90,7 @@ export default function () {
     const profile = useMemo(() => {
         if (currentUser) {
             const dUser = { ...currentUser, url_avatar: currentUser?.avatar, url: '/dashboard' };
-            return <View className=" items-center justify-center border-[1.5px] border-neutral-600 dark:border-neutral-400 rounded-full mb-[8px] h-[29px] w-[29px]"><Profile {...dUser} showLinks={false} displayType="unit_wo_info" displaySize="xs" /></View>;
+            return <View className=" bg-neutral-100 border border-neutral-700 dark:bg-neutral-700 dark:border-neutral-300 rounded-full p-[1px] h-[24px] w-[24px]"><Profile {...dUser} showLinks={false} displayType="unit_wo_info" displaySize="xxs" /></View>;
         }
         return null;
     }, [currentUser?.id, currentUser?.avatar]);
@@ -117,6 +117,20 @@ export default function () {
             paddingLeft: 6,
         },
         tabBarItemStyle: themeSettings.tabBarItemStyle,
+        tabBarBadgeStyle: {
+            backgroundColor: appSetting('theme', 'native_tabs', 'badgeBackground') || colors.primary,
+            position: 'absolute',
+            top: -4,
+            end: -6,
+            minWidth: 22,
+            height: 20,
+            borderRadius: 10,
+            justifyContent: 'center',
+            alignItems: 'center',
+            paddingHorizontal: 4,
+            borderWidth: 2,
+            borderColor: colors.barsBackground,
+        },
         tabBarAllowFontScaling: false,
         tabBarInactiveTintColor: colors.barsColor,
         tabBarActiveTintColor: colors.primary,
