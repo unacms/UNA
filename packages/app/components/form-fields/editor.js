@@ -3,7 +3,7 @@ import { useController, useFormContext } from 'react-hook-form';
 import { InputMulti, Input, TextInputClear, Button } from 'app/design/controls'
 import { useState, useRef, useEffect } from 'react';
 import { View, ScrollView } from 'app/design/view'
-import { DEFAULT_TOOLBAR_ITEMS, useEditorBridge, RichText, Toolbar, TenTapStartKit, LinkBridge, CodeBridge, useEditorContent, ImageBridge, DropCursorBridge, PlaceholderBridge } from '@10play/tentap-editor';
+import { DEFAULT_TOOLBAR_ITEMS, useEditorBridge, RichText, Toolbar, darkEditorTheme, TenTapStartKit, LinkBridge, CodeBridge, useEditorContent, ImageBridge, DropCursorBridge, PlaceholderBridge } from '@10play/tentap-editor';
 import { useLayoutData } from 'app/context/layout';
 import { Keyboard } from 'react-native';
 import { Theme } from 'app/design/theme';
@@ -12,6 +12,7 @@ import { Text } from 'app/design/typography'
 import { KeyboardAvoidingView, Platform } from 'react-native'
 import { fetcher } from 'app/lib/fetcher';
 import { appSetting } from 'app/lib/util'
+import { ThemeName } from 'app/design/theme';
 
 export default function FormFieldText(props) {
     const formContext = useFormContext();
@@ -225,11 +226,12 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
     }, [value]);
 
     const editor = useEditorBridge({
+
         autofocus: props.autofocus,
         avoidIosKeyboard: false,
         dynamicHeight: false,
         placeholder: props.placeholder,
-
+        ...(ThemeName() === 'dark' && { theme: darkEditorTheme }),
         initialContent: field.value,
         bridgeExtensions: [
             ...TenTapStartKit,

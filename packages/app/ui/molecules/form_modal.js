@@ -29,7 +29,7 @@ export default function FormModal({ pageData, setPageData }) {
             transparent={true}
             onRequestClose={handleModalClose}
         >
-            <Container key={pageData.module + (pageData.ts)} className={`flex-1 overflow-visible ${isShowHeader ? '' : ''}`}>{/*px-3 sm:px-0*/}
+            <Container key={pageData.module + (pageData.ts)} className={`flex-1 ${isShowHeader ? '' : 'overflow-visible'}`}>{/*px-3 sm:px-0*/}
                 {
                     Object.keys(pageData?.elements || {}).map(key =>
                         Object.keys(pageData.elements[key] || {}).map(key2 => (

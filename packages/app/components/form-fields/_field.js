@@ -1,9 +1,8 @@
 import { View, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import Link from 'app/ui/atoms/link'
-import { Platform } from 'react-native'
 import { linkedText } from 'app/lib/text-helpers';
-import { appSetting } from 'app/lib/util';
+import { appSetting, stripTags } from 'app/lib/util';
 import { Icon } from 'app/ui/atoms/icon';
 import { Button } from 'app/design/controls';
 
@@ -38,7 +37,7 @@ export default function (props) {
             {(props.error2 && props.checker.error!='') && <FormError errorText={props.checker.error} />}
             {!!props.info &&
                 <View className="label" >
-                    <Text className="mt-1 text-xs sm:text-sm text-neutral-700 dark:text-neutral-300">{props.info}</Text>
+                    <Text className="mt-1 text-xs sm:text-sm text-neutral-700 dark:text-neutral-300">{stripTags(props.info)}</Text>
                 </View>
             }
         </View>
