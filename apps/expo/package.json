@@ -3,7 +3,7 @@
   "dependencies": {
     "@10play/tentap-editor": "^0.6.1",
     "@expo/html-elements": "^0.11.2",
-    "@gorhom/bottom-sheet": "^4.6.3",
+    "@gorhom/bottom-sheet": "^5.1.2",
     "@hello-pangea/dnd": "^17.0.0",
     "@native-html/iframe-plugin": "^2.6.1",
     "@openspacelabs/react-native-zoomable-view": "^2.1.6",
@@ -78,7 +78,6 @@
     "react-native-webview": "13.12.5",
     "react-native-youtube-iframe": "^2.3.0",
     "react-remove-scroll": "^2.6.0",
-    "react-spring-bottom-sheet": "^3.4.1",
     "set-cookie-parser": "^2.6.0",
     "tailwindcss": "^3.4.17",
     "victory-native": "^36.7.0",

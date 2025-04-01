@@ -106,8 +106,15 @@ const TabScene = React.memo(({
     }*/
     return (
         <UniList
-            scrollProps={{pageData: route.inited ? route.pageData : prevRoute.pageData, subHeaderComponent: header, headerHeight: headerHeight, isBackButton:false }}
-
+            scrollProps={
+                {
+                    pageData: route.inited ? route.pageData : prevRoute.pageData, 
+                    subHeaderComponent: header, 
+                    headerHeight: headerHeight, 
+                    isBackButton: false,
+                    isMenuNameAsTitle: true
+                }
+            }
             index={route.index}
             data={route.data}
             route={route}

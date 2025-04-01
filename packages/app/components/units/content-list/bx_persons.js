@@ -70,7 +70,7 @@ export default function Unit(props) {
                     <View className={`flex-row  sm:flex-col p-3 sm:p-1 ${isWeb && 'h-32'} sm:h-full`}>
                         <ImageSection data={data} imageSizes={imageSizes} />
                         
-                        <View className="flex-col pl-3 my-auto sm:p-2 ">
+                        <View className="flex-col pl-3 my-auto sm:p-2 flex-auto">
                             <View className=''>
                                 <Text numberOfLines={1} className=" pb-2 text-lg leading-tight tracking-tight font-semibold text-neutral-800 dark:text-neutral-200 group-hover:text-primary group-hover:dark:text-primary-d">
                                    {data.title}
@@ -84,11 +84,11 @@ export default function Unit(props) {
                                     </Text>
                                 </Row>
                             </View>
-                            <View className="flex-row sm:flex-col pt-3 gap-x-2">
-                                <View className='w-28 sm:w-auto'>
+                            <View className="flex-row sm:flex-col pt-3">
+                                <View className='w-1/2 sm:w-auto pr-2'>
                                     {oMenuItemPrimary}
                                 </View>
-                                {!!oMenuItemSecondary && <View className={`w-28 sm:w-auto ${!!oMenuItemPrimary && 'sm:mt-2'}`}>{oMenuItemSecondary}</View>}
+                                {!!oMenuItemSecondary && <View className={`w-1/2 sm:w-auto ${!!oMenuItemPrimary && 'sm:mt-2'}`}>{oMenuItemSecondary}</View>}
                             </View>
                         </View>
                     </View>

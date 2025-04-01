@@ -7,7 +7,7 @@ import { DEFAULT_TOOLBAR_ITEMS, useEditorBridge, RichText, Toolbar, darkEditorTh
 import { useLayoutData } from 'app/context/layout';
 import { Keyboard } from 'react-native';
 import { Theme } from 'app/design/theme';
-import { getAlert, stripTags } from 'app/lib/util';
+import { getAlert, stripTags, stripTagsWithLinks } from 'app/lib/util';
 import { Text } from 'app/design/typography'
 import { KeyboardAvoidingView, Platform } from 'react-native'
 import { fetcher } from 'app/lib/fetcher';
@@ -103,7 +103,8 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
 
         b.splice(4, 1);
     }
-
+    const isToolBar = (html == 2 || html == 1)
+    const isPlainText = (html == 3);
     const suggestionsHeight = 130;
     const { layoutData, setLayoutData } = useLayoutData();
     const { field } = useController({ name, rules: {}, defaultValue: value });
@@ -146,7 +147,7 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
     }, [keywordval]);
 
 
-    const customCodeBlockCSS = `
+    let customCodeBlockCSS = `
     body{
         font-family: system-ui, -apple-system, BlinkMacSystemFont, ".SFNSText-Regular", sans-serif;
         font-size: ${props.fontSize || 16}px;
@@ -210,6 +211,22 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
         overflow:visible !important;
     }
     `;
+    if (isPlainText){
+        customCodeBlockCSS += `
+        b, strong, font, u, s, i, em, span, code, h1, h2, h3, h4, h5, h6{
+            font-weight: normal !important;
+            font-style: normal !important;
+            text-decoration: none !important;
+            color: initial !important;
+        }
+        blockquote{
+            all: unset;
+            display: block;
+            border:none !important;
+            padding:0 !important;
+        }
+        `
+    }
 
     useEffect(() => {
         if (editor && field.value == '' && editor.getHTML() != field.value) {
@@ -267,7 +284,12 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
             if (onFocus)
                 onFocus()
         }
-        field.onChange(htmlContent)
+        if (isPlainText){
+            field.onChange(stripTagsWithLinks(htmlContent, ['a', 'p', 'br', 'span', 'img']))
+        }
+        else{
+            field.onChange(htmlContent)
+        }
     }, [htmlContent]);
 
     const processImages = (src) => {
@@ -546,7 +568,7 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
         }
     }
 
-    const isToolBar = (html == 2 || html == 1)
+    
 
     const style = {left: 0}
 

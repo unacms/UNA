@@ -807,10 +807,18 @@ export function stripTags(s) {
     return s;
 }
 
-export function stripTagsWithLinks(s) {
+/*export function stripTagsWithLinks(s) {
     if (s)
         return String(s).replace(/<(?!\/?(a|p|br)(?=>|\s.*>))\/?.*?>/ig, '').replace(/\s+/g, ' ');
 
+    return s;
+}*/
+export function stripTagsWithLinks(s, allowed = ['a', 'p', 'br']) {
+    if (s) {
+      const allowedTags = allowed.join('|');
+      const regex = new RegExp(`<(?!(\\/?)(${allowedTags})(?=>|\\s.*>))\\/?.*?>`, 'ig');
+      return String(s).replace(regex, '').replace(/\s+/g, ' ');
+    }
     return s;
 }
 

@@ -54,7 +54,6 @@ export default function (props) {
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [isRevalidate, setIsRevalidate] = useState(false);
     const { currentUser } = useCurrentUser();
-    const uniRef = useRef();
     const data = props.data;
     const storageKeyValue = storageKey((props.uri ? props.uri : '') + (data.request_url ? ':' + data.request_url : '') + (data.params?.type ? ':' + data.params?.type : '') + (data.params?.category ? ':' + data.params?.category : '') + (props.cachePrefix ? ':' + props.cachePrefix : ''))
     //const [cachedData, setCachedData] = useState(props.cachePrefix ? false : { state: getDataFromCache('ul:state', storageKeyValue), data: getDataFromCache('ul:data', storageKeyValue) });
@@ -322,7 +321,6 @@ export default function (props) {
                     height={props?.height}
                     url={props?.url}
                     contentContainerStyle={props?.contentContainerStyle}
-                    refer={uniRef}
                     maxToRenderPerBatch={10}
                     initialNumToRender={10}
                     no_scroll={props.no_scroll}

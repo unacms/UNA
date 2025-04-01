@@ -3,9 +3,10 @@ import { RefreshControl } from 'react-native';
 import { View } from 'app/design/view'
 import Animated from 'react-native-reanimated';
 import ScrollList from 'app/ui/molecules/scroll_list'
+import { useRef} from 'react';
 
 export default function UniList(props) {
-
+    const uniRef = useRef();
     const { preloadComponent, contentContainerStyle, scrollProps, data, mode, renderItem, onEndReached, maxToRenderPerBatch, initialNumToRender, ListFooterComponent, refer, onScrollToIndex, numColumns, keyExtractor, unit, refreshing, onRefresh, height, ...rest } = props
     const unitSizeMap = {
         notifications: 40,
@@ -28,7 +29,7 @@ export default function UniList(props) {
                 ...(scrollProps?.headerHeight ? { paddingTop: scrollProps.headerHeight } : {}),
                 ...contentContainerStyle,
             }}
-            ref={refer}
+            ref={refer? refer : uniRef}
             onEndReachedThreshold={4}
             data={filteredData}
             keyExtractor={item => item.id}
@@ -49,7 +50,7 @@ export default function UniList(props) {
             <ScrollList
                 content={content}
                 contentType="FlatList"
-                ref={refer}
+                refer={refer? refer : uniRef}
                 {...scrollProps}
             />
 

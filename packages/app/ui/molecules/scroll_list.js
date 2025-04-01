@@ -24,7 +24,7 @@ import { Button } from 'app/design/controls';
 import Link from 'app/ui/atoms/link'
 
 // TODO OPTIMIZATION
-export default function ScrollList({ content, pageData, headerHeight, isBackButton = false, contentType, ref, headerComponent, subHeaderComponent }) {
+export default function ScrollList({ content, pageData, headerHeight, isBackButton = false, contentType, refer, headerComponent, isMenuNameAsTitle = false,  subHeaderComponent }) {
 
     const isCollapsibleHeader = appSetting('native', 'collapsible_header');
     const isShowScrollToTopButton = appSetting('native', 'scroll_to_top_button');
@@ -32,15 +32,27 @@ export default function ScrollList({ content, pageData, headerHeight, isBackButt
     const { colors } = Theme();
 
     /* ANIMATION */
-    const scrollRef = useRef();
     const scrollY = useSharedValue(0);
     const scrollDirection = useSharedValue('none');
 
-    const headerStyle = useAnimatedStyle(() => {
+    /*const headerStyle = useAnimatedStyle(() => {
         const isShow = scrollDirection.value == 'up' || scrollY.value < transparencyOffset || scrollY.value == 0;
         return {
             opacity: isShow ? withTiming(1) : withTiming(0),
            // backgroundColor: colors.headerBackground
+        };
+    });*/
+
+    const headerStyle = useAnimatedStyle(() => {
+        const isShow =
+            scrollDirection.value === 'up' ||
+            scrollY.value < transparencyOffset ||
+            scrollY.value === 0;
+        return {
+            opacity: isShow ? withTiming(1) : withTiming(0),
+            transform: [
+                { translateY: isShow ? withTiming(0) : withTiming(-50) },
+            ],
         };
     });
 
@@ -60,43 +72,46 @@ export default function ScrollList({ content, pageData, headerHeight, isBackButt
     });
 
     const scrollToTop = () => {
-        const targetRef = ref ?? scrollRef;
+
         const scrollFn = contentType === 'FlatList' ? 'scrollToOffset' : 'scrollTo';
 
-        targetRef?.current?.[scrollFn]?.({ y: 0, x: 0, animated: true });
+        refer?.current?.[scrollFn]?.({ y: 0, x: 0, animated: true });
     };
-
-
     /* ANIMATION */
 
     const baseProps = {
-        ref: ref ?? scrollRef,
         ...(contentType !== 'FlatList' && { paddingTop: headerHeight }),
         ...(isCollapsibleHeader && { onScroll }),
-        style: {backgroundColor: colors.headerBackground}
+        style: { backgroundColor: colors.headerBackground }
     };
 
     const enhanced = React.cloneElement(content, baseProps);
+    let textName = pageData.name;
 
-
+    if (isMenuNameAsTitle){
+        const menuSettings = getMenuSettings(pageData?.menu?.object, pageData.menu?.config);
+        textName = menuSettings.name;
+    }
     return (
-        <View className="flex-1 bg-red-500">
-            <Animated.View className="absolute top-0 w-full z-50" style={[headerStyle]}>
+        <View className="flex-1">
+            
+            {enhanced}
+            <Animated.View className="absolute top-0 w-full " style={[headerStyle]}>
                 <BlurView tint="default"
                     intensity={100}
                     experimentalBlurMethod="none" className={`w-full h-[${headerHeight}px]`} >
-                    <View className="w-full" style={{backgroundColor: colors.headerBackground}} >
+                    <View className="w-full" style={{ backgroundColor: colors.headerBackground }} >
                         <Header
-                            backButtonPresented={isBackButton}
-                            header={headerComponent ? headerComponent : pageData.name}
-                            pageData={pageData}
+                            backButtonPresented = {isBackButton}
+                            header = {headerComponent ? headerComponent : textName}
+                            pageData = {pageData}
+                            scrollToTop = {scrollToTop}
                         />
                         {subHeaderComponent}
                     </View>
                 </BlurView>
 
             </Animated.View>
-            {enhanced}
             {isShowScrollToTopButton && <Animated.View className="absolute bottom-[10px] right-[10px]" style={[buttonStyle]}>
                 <Button
                     onPress={scrollToTop}
@@ -111,7 +126,7 @@ export default function ScrollList({ content, pageData, headerHeight, isBackButt
     )
 }
 
-const Header = memo(({ backButtonPresented, header, pageData }) => {
+const Header = memo(({ backButtonPresented, header, pageData, scrollToTop }) => {
     const { currentUser } = useCurrentUser();
     const settings = getPageSettings(pageData.config, pageData.uri);
     const pagePath = pageData.uri;
@@ -137,7 +152,6 @@ const Header = memo(({ backButtonPresented, header, pageData }) => {
     let text = type === 'string' ? header : '';
 
     const routerExpo = useRouter();
-    const { colors } = Theme();
 
     const isHome = pagePath === 'home';
     if (isHome) {
@@ -149,14 +163,12 @@ const Header = memo(({ backButtonPresented, header, pageData }) => {
     return (
         <Row className={`justify-between items-center h-[64px] `}>
             <Row>
-                {(isHome) && <View className="ml-[12px]">{appStatic('logo_native')}</View>}
+                {(isHome) && <Pressable onPress={scrollToTop} className="ml-[12px]">{appStatic('logo_native')}</Pressable>}
                 <View className="mr-[12px]">{backButtonPresented && (
                     <Button variant="text" onPress={() => {
                         FeedbackHaptics('Medium');
                         routerExpo.back();
                     }} startDecorator="ChevronLeft" />
-
-
                 )}</View>
 
                 {text && (

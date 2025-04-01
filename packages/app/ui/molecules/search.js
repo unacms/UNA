@@ -4,7 +4,7 @@ import { appSetting } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { Text } from 'app/design/typography'
 import { Pressable, View, Row, ScrollView } from 'app/design/view'
-import { Button, ButtonRef, Input, InputRounded, InputRoundedRef, Modal } from 'app/design/controls';
+import { Button, ButtonRef, InputRef, InputRounded, InputRoundedRef, Modal } from 'app/design/controls';
 import Redirect from 'app/ui/atoms/redirect';
 import { UnitSearchResultsSmall as SearchResults } from 'app/components/units/search-results';
 import Link from 'app/ui/atoms/link';
@@ -229,7 +229,7 @@ export function ElementSearchData(oProps) {
                 )
             }
         <View className="flex-row p-1 mb-2">
-                <Input name="search" autoFocus={true} placeholder='Start typing to search...' onKeyPress={(event) => handleKeyPress(event)} value={inputValue} ref={inputRef} onChangeText={(value) => handleSearch(value)} />
+                <InputRef name="search" autoFocus={true} placeholder='Start typing to search...' onKeyPress={(event) => handleKeyPress(event)} value={inputValue} ref={inputRef} onChangeText={(value) => handleSearch(value)} />
             </View>
             {cnt}
         </View>
