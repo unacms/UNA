@@ -565,7 +565,7 @@ export const settingsDefault = {
         native_tabs:{
             tabBarItemStyle:{
                 marginBottom: 0,
-                height: 48,
+                height: 50,
                 marginTop: 4,
                 paddingBottom: 0,
                 borderRadius: 12,
@@ -725,17 +725,17 @@ export const settingsDefault = {
                 margin: ' px-[4px] leading-[20px] text-[14px] ',
             },
             sm: {
-                rounded: ' rounded-[8px] ',
-                padding: ' h-[36px] p-[4px]  ',
-                icon_container: ' w-[28px] h-[28px] p-[4px] ',
+                rounded: ' rounded-[6px] relative ',
+                padding: ' p-[4px] flex  ',
+                icon_container: ' flex w-[28px] h-[28px] items-center justify-center text-center ',
                 icon_size: '20px',
-                icon_margin: ' p-[4px] ',
-                min_height: ' leading-[24px] web:text-[14px] ',
-                margin: ' leading-none bg-transparent px-[4px] my-auto native:text-[14px] ',
+                icon_margin: '  ',
+                min_height: ' web:text-[12px] leading-[26px] ',
+                margin: '  bg-transparent px-[4px] my-auto native:text-[14px] ',
             },
             base: {
                 rounded: ' rounded-[8px] relative ',
-                padding: ' p-[4px] flex  ',
+                padding: ' p-[6px] flex  ',
                 icon_container: ' flex w-[32px] h-[32px] items-center justify-center text-center ',
                 icon_size: '20px',
                 icon_margin: '  ',
@@ -744,7 +744,7 @@ export const settingsDefault = {
             },
             lg: {
                 rounded: ' rounded-[12px] relative ',
-                padding: '  px-[8px] py-[6px] flex  ',
+                padding: '  p-[8px] flex  ',
                 icon_container: ' flex h-[40px] w-[40px] items-center justify-center text-center  ',
                 icon_size: '24px',
                 icon_margin: '  ',
