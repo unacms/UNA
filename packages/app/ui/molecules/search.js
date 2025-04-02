@@ -34,7 +34,7 @@ export default function ElementSearch(oProps) {
     ) : (
         <Row>
             <View key="ddp-trigger" className="flex-row">
-                <ButtonRef title={oProps.title === undefined ? "" : oProps.title} variant="secondary"  startDecorator={oParams?.trigger?.icon ? oParams?.trigger.icon : "Search"} rounded tooltip={oProps.tooltip === undefined ? "Search" : oProps.tooltip} onPress={() => handleOpenPopupDefault()} {...oParams?.trigger} />
+                <ButtonRef title={oProps.title === undefined ? "" : oProps.title} variant="text" bgrDecorator startDecorator={oParams?.trigger?.icon ? oParams?.trigger.icon : "Search"} rounded tooltip={oProps.tooltip === undefined ? "Search" : oProps.tooltip} onPress={() => handleOpenPopupDefault()} {...oParams?.trigger} />
             </View>
         </Row>
     );

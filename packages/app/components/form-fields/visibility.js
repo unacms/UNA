@@ -182,17 +182,17 @@ export default function (props) {
             {modalElement}
             <Pressable onPress={() => handleShowModal()}>
                 {props.addElement}
-                <Row className="  flex-none mr-auto gap-x-[2px] sm:px-[4px] items-center text-neutral-600 web:group-hover:text-neutral-800 web:dark:group-hover:text-neutral-200 dark:text-neutral-400 h-[22px] web:duration-300">
+                <Row className="  flex-none mr-auto gap-x-[2px] px-[4px] py-[4px] rounded-[8px] items-center text-neutral-600 web:group-hover:bg-bgritem dark:web:group-hover:bg-bgritem-d web:dark:group-hover:text-neutral-200 web:group-hover:text-neutral-800 web:dark:group-hover:text-neutral-200 dark:text-neutral-400 h-[24px] web:duration-300">
                     <Icon
                         icon={icon}
-                        width={20}
-                        height={20}
+                        width={16}
+                        height={16}
                     />
                     <Text className=" leading-[22px] ml-[4px] whitespace-nowrap text-ellipsis overflow-hidden tracking-tight text-neutral-600 web:group-hover:text-neutral-800 dark:text-neutral-400 web:dark:group-hover:text-neutral-200 font-medium text-sm native:text-[14px] ">{selectedSubLabels.length> 0 ? selectedSubLabels.slice(0, 3).join(', ') + (selectedSubLabels.length > 3 ? ' + ' + (selectedSubLabels.length - 3) + ' more' : '') : text}</Text>
                     <Icon
-                        icon="ChevronRight"
-                        width={12}
-                        height={12}
+                        icon="ChevronDown"
+                        width={16}
+                        height={16}
                         color={ colors.fgTertiary}
                     />
                 </Row>

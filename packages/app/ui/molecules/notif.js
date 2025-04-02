@@ -22,7 +22,8 @@ export default function ({buttonProps, children, tooltip, fullWidth}) {
     }, [notifCount]);
 
     buttonProps = buttonProps || {
-        variant:"secondary",
+        variant:"text",
+        bgrDecorator: true,
         tooltip: tooltip || "Notifications",
         rounded: true,
         startDecorator: "Bell",

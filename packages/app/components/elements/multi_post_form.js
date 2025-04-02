@@ -52,11 +52,11 @@ export default function MultiPostForm({ data }) {
             <Card
                 rounded=" rounded-none sm:rounded-2xl  "
                 margin=" mx-auto mb-0 sm:mb-2 lg:mb-3 "
-                addClassName=" shadow-sm w-full max-w-2xl px-[12px] py-[10px] sm:py-[14px] sm:px-[16px]  "
+                addClassName=" shadow-sm w-full max-w-2xl p-[12px] sm:p-[16px]  "
             >
-                <View className=" flex-row gap-x-[8px] sm:gap-x-[10px] ">
+                <View className=" flex-row gap-x-[8px] ">
                     <View className="my-auto">
-                        <Profile {...profileData} displaySize="base" displayType="unit_wo_info" />
+                        <Profile {...profileData} displaySize="lg" displayType="unit_wo_info" />
                     </View>
                     <View className="flex-auto">
                         <Button

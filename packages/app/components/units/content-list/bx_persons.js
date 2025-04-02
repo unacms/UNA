@@ -72,7 +72,7 @@ export default function Unit(props) {
                         
                         <View className="flex-col pl-3 my-auto sm:p-2 flex-auto">
                             <View className=''>
-                                <Text numberOfLines={1} className=" pb-2 text-lg leading-tight tracking-tight font-semibold text-neutral-800 dark:text-neutral-200 group-hover:text-primary group-hover:dark:text-primary-d">
+                                <Text numberOfLines={1} className=" pb-2 text-lg leading-tight tracking-tight font-medium text-neutral-800 dark:text-neutral-200 group-hover:text-primary group-hover:dark:text-primary-d">
                                    {data.title}
                                 </Text>
                                 <Row className="items-center h-6 ">

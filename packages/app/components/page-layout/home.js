@@ -97,7 +97,7 @@ export default function (props) {
             >
                 <Row
                     className={`  rounded-full mx-3 sm:mx-auto ${feedList.length > 1
-                            ? 'my-2 lg:my-4'
+                            ? 'mb-2 lg:my-4'
                             : ''
                         }  gap-x-1 sm:gap-x-2  `}
                 >
@@ -123,9 +123,10 @@ export default function (props) {
                                         variant={
                                             feedType ==
                                                 item.name
-                                                ? 'primary'
+                                                ? 'text'
                                                 : 'text'
                                         }
+                                        pressed={feedType == item.name}
                                         rounded
                                         size="sm"
                                         onPress={() => {

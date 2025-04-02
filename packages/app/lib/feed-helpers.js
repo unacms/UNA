@@ -416,7 +416,7 @@ export const SmallUnit = memo(({ data }) => {
                     </View>
                     <View className="flex-auto flex-col my-auto">
                         <View className="flex-row gap-x-[8px] sm:gap-x-[10px] ">
-                            <Text className=" text-sm flex-auto font-semibold text-neutral-800 dark:text-neutral-200">
+                            <Text className=" text-sm flex-auto font-medium text-neutral-800 dark:text-neutral-200">
                                 {data.author_data.display_name}
                             </Text>
                             <Time className=" text-sm flex-none " ts={data.date}></Time>

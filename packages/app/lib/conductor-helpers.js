@@ -425,7 +425,7 @@ export function LeftSidebar({ title, addButtons, children, width, menu }) {
     return (
         <View className={`lg:${width}`}>
             <View className={` ${sidebar =='fixed'? 'fixed-process' : ''} lg:${width} lg:p-2 gap-y-0.5`}>
-                {(!!title || !!addButtons?.length > 0) && <Row className="justify-between items-center pt-1 pb-2.5 px-2 z-10 ">
+                {(!!title || !!addButtons?.length > 0) && <Row className="justify-between items-center  pb-2 px-1 z-10 ">
                     <Text className="text-3xl tracking-tight truncate mr-auto font-bold leading-[40px] text-neutral-900 dark:text-neutral-100 hidden lg:flex  ">
                         {title}
                     </Text>
@@ -477,7 +477,7 @@ export function TopSidebar({ styles, isWeb, leftSideBar, header, headerSettings,
                 </Row>
                 }
                 <Row className=" items-center  ">
-                    {title ? <Text className="text-2xl my-auto mx-5 pb-1 font-semibold text-neutral-800  tracking-tight dark:text-neutral-200 hidden lg:flex">{title}</Text> : <Text className=" hidden lg:flex"></Text>}
+                    {title ? <Text className="text-2xl my-auto mx-5 pb-1 font-medium text-neutral-800  tracking-tight dark:text-neutral-200 hidden lg:flex">{title}</Text> : <Text className=" hidden lg:flex"></Text>}
                     {children}
                     {layout != 'mixed' && <Row className="hidden lg:flex px-4 cond-buttons-add">
                         {addButtons}

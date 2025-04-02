@@ -35,7 +35,7 @@ function ProfileView({ isImageOnly = false, data, handleSubmit, showImage, setSh
 
     const isHiddenVisibility = data?.inputs?.['object_privacy_view']?.origtype == 'hidden' || !data?.inputs?.['object_privacy_view']
 
-    const authorName = (<Text className="text-neutral-900 dark:text-neutral-100 leading-[22px] sm:px-[4px] font-bold tracking-tight text-[16px] truncate">
+    const authorName = (<Text className="text-neutral-900 dark:text-neutral-100 leading-[24px] px-[4px] font-bold tracking-tight text-[16px] truncate">
         {author? author.display_name : currentUser.display_name}
     </Text>
     )
@@ -43,9 +43,9 @@ function ProfileView({ isImageOnly = false, data, handleSubmit, showImage, setSh
     return (
         <View className="flex-row flex-auto items-center justify-between gap-x-[8px] text-neutral-400 dark:text-neutral-600  ">
             <View className="gap-x-[8px] mr-[8px] flex-row flex-auto ">
-                <Profile {...profileData} displaySize="base" displayType="unit_wo_info" />
+                <Profile {...profileData} displaySize="lg" displayType="unit_wo_info" />
 
-                <View className={`flex-col flex-auto rounded-[8px] ${!isHiddenVisibility ? 'group sm:hover:bg-neutral-100 sm:dark:hover:bg-neutral-800 sm:active:bg-neutral-300 sm:dark:active:bg-neutral-700' : ''}`}>
+                <View className={`flex-col flex-auto ${!isHiddenVisibility ? 'group ' : ''}`}>
         
                     {data?.inputs?.['object_privacy_view'] ? getFormFieldByData(
                         {
@@ -60,6 +60,7 @@ function ProfileView({ isImageOnly = false, data, handleSubmit, showImage, setSh
                             size: 'sm',
                             maxLength: 0,
                             variant: 'text',
+                            
                             addElement: authorName,
                         }
                     ): authorName}
@@ -140,7 +141,7 @@ export default function FormFeed(props) {
 
 
     const header = (
-        <Row className="w-full">
+        <Row className="w-full items-start">
 
             <View className="flex-auto">
                 <ProfileView
@@ -156,7 +157,7 @@ export default function FormFeed(props) {
                 onPress={onClose}
                 variant="secondary"
                 rounded
-                size="base"
+                size="sm"
                 startDecorator="X"
             />
         </Row>

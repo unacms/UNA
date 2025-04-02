@@ -477,7 +477,7 @@ const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, 
 
 
     return <View style={{ height: layoutHeightLeft }} className={'bg-bgrcard dark:bg-bgrcard-d  w-full  md:w-80 2xl:w-96 border-bdrtabbar dark:border-bdrtabbar-d border-r'}>
-        <Row className='py-2 px-3 sm:px-4 border-b border-bdrtabbar dark:border-bdrtabbar-d gap-x-4'>
+        <Row className='p-2 sm:px-3 border-b border-bdrtabbar dark:border-bdrtabbar-d gap-x-3'>
             <View className='flex-auto hidden lg:flex'>
                 {srch}
             </View>
@@ -488,9 +488,9 @@ const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, 
             {showSearch && <Row className='lg:hidden flex-auto  items-center '>
                 {srch}
             </Row>}
-            <Row className='flex-row my-auto gap-x-2'>
+            <Row className='my-auto'>
                 <View className='lg:hidden  '>
-                    <Button startDecorator="Search" variant="secondary" rounded onPress={() => handleSearch2()} />
+                    <Button startDecorator="Search" variant="text" bgrDecorator rounded onPress={() => handleSearch2()} />
                 </View>
                 {addButtons}
             </Row>
@@ -564,9 +564,9 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
 
     return (<>
         <View className='md:px-0 border-bdrcard dark:border-bdrcard-d border-b w-full '>
-            {(isWeb || true) && <Row className='px-3 py-2 items-center justify-between w-full h-[56px]'>
+            {(isWeb || true) && <Row className='p-2 items-center justify-between w-full '>
                 <Row className='items-center justify-start overflow-hidden flex-auto '>
-                    {isSmallScreen && <View className='mr-2'><BackButton buttonProps={{variant:"secondary", startDecorator:'ArrowLeft', rounded:'rounded', align:"start"}} callback={showConvo} /></View>}
+                    {isSmallScreen && <View className='mr-2'><BackButton buttonProps={{variant:"text", startDecorator:'ArrowLeft', bgrDecorator:true, rounded:'rounded', align:"start"}} callback={showConvo} /></View>}
                     <Text numberOfLines={1} className="text-lg lg:text-xl font-bold font-bold tracking-tight  text-neutral-900 dark:text-neutral-50">{title}</Text>
                 </Row>
                 <Row className='items-center gap-x-2 '>
@@ -575,11 +575,11 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
                                 >
                                     <Button
                                       
-                                        variant="secondary"
+                                        variant="text"
                                         size="base"
                                         rounded
-
-                                        startDecorator="Cog"
+                                        bgrDecorator
+                                        startDecorator="Settings"
                                     />
                                 </DropdownMenu>
                                 </View>

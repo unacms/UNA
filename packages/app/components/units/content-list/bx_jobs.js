@@ -50,27 +50,27 @@ export default function Unit(props) {
                     </Text>
                 </Link>
                 <View className="mt-auto flex-row gap-x-1.5">
-                <Text className="font-semibold text-neutral-800 dark:text-neutral-200 text-sm border border-neutral-200 dark:border-neutral-800 rounded-full px-2 py-1">Author</Text>
+                <Text className="font-medium text-neutral-800 dark:text-neutral-200 text-sm border border-neutral-200 dark:border-neutral-800 rounded-full px-2 py-1">Author</Text>
 
-                {data.pay_hourly > 0 && <Text className="font-semibold text-neutral-800 dark:text-neutral-200 text-sm bg-green-200 dark:bg-green-800 rounded-full px-2 py-1">Hourly: {data.pay_hourly}$</Text>}
-                {data.pay_total > 0 && <Text className="font-semibold text-neutral-800 dark:text-neutral-200 text-sm bg-blue-200 dark:bg-blue-800 rounded-full px-2 py-1">Total: {data.pay_total}$</Text>}
+                {data.pay_hourly > 0 && <Text className="font-medium text-neutral-800 dark:text-neutral-200 text-sm bg-green-200 dark:bg-green-800 rounded-full px-2 py-1">Hourly: {data.pay_hourly}$</Text>}
+                {data.pay_total > 0 && <Text className="font-medium text-neutral-800 dark:text-neutral-200 text-sm bg-blue-200 dark:bg-blue-800 rounded-full px-2 py-1">Total: {data.pay_total}$</Text>}
 
                 </View>
                 <View className="mt-4 flex-row flex-wrap gap-x-2 gap-y-1">
-                <Text className="font-semibold text-neutral-800 dark:text-neutral-200 text-sm bg-neutral-200 dark:bg-neutral-800 rounded px-2 py-1">tag</Text>
-                <Text className="font-semibold text-neutral-800 dark:text-neutral-200 text-sm bg-neutral-200 dark:bg-neutral-800 rounded px-2 py-1">tag</Text>
-                <Text className="font-semibold text-neutral-800 dark:text-neutral-200 text-sm bg-neutral-200 dark:bg-neutral-800 rounded px-2 py-1">tag</Text>
-                <Text className="font-semibold text-neutral-800 dark:text-neutral-200 text-sm bg-neutral-200 dark:bg-neutral-800 rounded px-2 py-1">tag</Text>
-                <Text className="font-semibold text-neutral-800 dark:text-neutral-200 text-sm bg-neutral-200 dark:bg-neutral-800 rounded px-2 py-1">React</Text>
-                <Text className="font-semibold text-neutral-800 dark:text-neutral-200 text-sm bg-neutral-200 dark:bg-neutral-800 rounded px-2 py-1">Node.js</Text>
-                <Text className="font-semibold text-neutral-800 dark:text-neutral-200 text-sm bg-neutral-200 dark:bg-neutral-800 rounded px-2 py-1">TypeScript</Text>
-                <Text className="font-semibold text-neutral-800 dark:text-neutral-200 text-sm bg-neutral-200 dark:bg-neutral-800 rounded px-2 py-1">Remote</Text>
-                <Text className="font-semibold text-neutral-800 dark:text-neutral-200 text-sm bg-neutral-200 dark:bg-neutral-800 rounded px-2 py-1">Full-time</Text>
-                <Text className="font-semibold text-neutral-800 dark:text-neutral-200 text-sm bg-neutral-200 dark:bg-neutral-800 rounded px-2 py-1">Senior</Text>
-                <Text className="font-semibold text-neutral-800 dark:text-neutral-200 text-sm bg-neutral-200 dark:bg-neutral-800 rounded px-2 py-1">AWS</Text>
-                <Text className="font-semibold text-neutral-800 dark:text-neutral-200 text-sm bg-neutral-200 dark:bg-neutral-800 rounded px-2 py-1">Docker</Text>
-                <Text className="font-semibold text-neutral-800 dark:text-neutral-200 text-sm bg-neutral-200 dark:bg-neutral-800 rounded px-2 py-1">CI/CD</Text>
-                <Text className="font-semibold text-neutral-800 dark:text-neutral-200 text-sm bg-neutral-200 dark:bg-neutral-800 rounded px-2 py-1">Agile</Text>
+                <Text className="font-medium text-neutral-800 dark:text-neutral-200 text-sm bg-neutral-200 dark:bg-neutral-800 rounded px-2 py-1">tag</Text>
+                <Text className="font-medium text-neutral-800 dark:text-neutral-200 text-sm bg-neutral-200 dark:bg-neutral-800 rounded px-2 py-1">tag</Text>
+                <Text className="font-medium text-neutral-800 dark:text-neutral-200 text-sm bg-neutral-200 dark:bg-neutral-800 rounded px-2 py-1">tag</Text>
+                <Text className="font-medium text-neutral-800 dark:text-neutral-200 text-sm bg-neutral-200 dark:bg-neutral-800 rounded px-2 py-1">tag</Text>
+                <Text className="font-medium text-neutral-800 dark:text-neutral-200 text-sm bg-neutral-200 dark:bg-neutral-800 rounded px-2 py-1">React</Text>
+                <Text className="font-medium text-neutral-800 dark:text-neutral-200 text-sm bg-neutral-200 dark:bg-neutral-800 rounded px-2 py-1">Node.js</Text>
+                <Text className="font-medium text-neutral-800 dark:text-neutral-200 text-sm bg-neutral-200 dark:bg-neutral-800 rounded px-2 py-1">TypeScript</Text>
+                <Text className="font-medium text-neutral-800 dark:text-neutral-200 text-sm bg-neutral-200 dark:bg-neutral-800 rounded px-2 py-1">Remote</Text>
+                <Text className="font-medium text-neutral-800 dark:text-neutral-200 text-sm bg-neutral-200 dark:bg-neutral-800 rounded px-2 py-1">Full-time</Text>
+                <Text className="font-medium text-neutral-800 dark:text-neutral-200 text-sm bg-neutral-200 dark:bg-neutral-800 rounded px-2 py-1">Senior</Text>
+                <Text className="font-medium text-neutral-800 dark:text-neutral-200 text-sm bg-neutral-200 dark:bg-neutral-800 rounded px-2 py-1">AWS</Text>
+                <Text className="font-medium text-neutral-800 dark:text-neutral-200 text-sm bg-neutral-200 dark:bg-neutral-800 rounded px-2 py-1">Docker</Text>
+                <Text className="font-medium text-neutral-800 dark:text-neutral-200 text-sm bg-neutral-200 dark:bg-neutral-800 rounded px-2 py-1">CI/CD</Text>
+                <Text className="font-medium text-neutral-800 dark:text-neutral-200 text-sm bg-neutral-200 dark:bg-neutral-800 rounded px-2 py-1">Agile</Text>
 
                 </View>
 

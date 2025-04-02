@@ -198,7 +198,7 @@ export default function (props) {
                                                         : false
                                                 }
                                                 indicatorPosition="bottom"
-                                                indicatorClassName=" animate-appear translate-y-[8px] h-[3px] w-full bg-primary-500 rounded-t-[2px]"
+                                                indicatorClassName=" animate-appear translate-y-[6px] h-[3px] w-full bg-primary/80 dark:bg-primary-d/80 rounded-full"
                                             />
                                         </Link>
                                     </View>
@@ -208,7 +208,7 @@ export default function (props) {
                         <Row className="flex-none xl:w-80 2xl:w-96 flex-none px-4 justify-end ">
                             {!!currentUser && (
                                 <Row className="flex-row justify-end  ">
-                                    <View className=" flex-row  gap-x-2  ">
+                                    <View className=" flex-row ">
                                         <View className=" xl:hidden ">
                                             {bSearch && <Search />}
                                         </View>
@@ -232,7 +232,8 @@ export default function (props) {
                                                 >
                                                     <Button
                                                         tooltip={t('Messenger')}
-                                                        variant="secondary"
+                                                        variant="text"
+                                                        bgrDecorator
                                                         rounded
                                                         startDecorator="MessageCircleMore"
                                                         id="m2"
@@ -255,7 +256,7 @@ export default function (props) {
                                 </Row>
                             )}
                             {!currentUser && (
-                                <Row className="flex-row flex-auto sm:flex-none justify-end my-auto gap-x-1.5 sm:gap-x-2">
+                                <Row className="flex-row flex-auto sm:flex-none justify-end my-auto ">
                                     <MenuLauncher />
 
                                     {bSearch && (
@@ -266,12 +267,13 @@ export default function (props) {
 
                                     <Link href="/">
                                         <ButtonRef
-                                            variant="secondary"
+                                            variant="text"
+                                            bgrDecorator
                                             tooltip="Account"
                                             rounded
                                             aria-label="Account"
                                             alt={t('Account')}
-                                            startDecorator="User"
+                                            startDecorator="UserRound"
                                         />
                                     </Link>
                                 </Row>

@@ -47,9 +47,10 @@ export default function MenuAccount({ buttonProps, children }) {
 
     buttonProps = buttonProps || {
         tooltip: t("Dashboard"),
-        variant: "secondary",
+        variant: "text",
+        bgrDecorator: true,
         rounded: true,
-        padding: '0px',
+        
         startDecorator: profile,
         onPress: () => { },
     };
