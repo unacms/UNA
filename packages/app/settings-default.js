@@ -723,24 +723,27 @@ export  const settingsDefault = {
                 icon_margin: ' mx-[0px] ', //conditional margin for icon container when title is present
                 min_height: ' ',
                 margin: ' px-[4px] leading-[20px] text-[14px] ',
+                padding_when_title: '  ', //padding when title is present
             },
             sm: {
-                rounded: ' rounded-[6px] relative ',
+                rounded: ' rounded-[8px] relative ',
                 padding: ' p-[4px] flex  ',
                 icon_container: ' flex w-[32px] h-[32px] items-center justify-center text-center ',
                 icon_size: '20px',
                 icon_margin: ' mx-[2px] ',
                 min_height: ' web:text-[14px] leading-[28px] ',
                 margin: '  bg-transparent px-[6px] my-auto native:text-[14px] ',
+                padding_when_title: ' px-[4px] ', //padding when title is present
             },
             base: {
-                rounded: ' rounded-[12px] relative ',
-                padding: ' p-[4px] flex  ',
+                rounded: ' rounded-[10px] relative ',
+                padding: ' p-[4px]  flex  ',
                 icon_container: ' flex h-[40px] w-[40px] items-center justify-center text-center  ',
                 icon_size: '20px',
-                icon_margin: '  mx-[4px] ', //conditional margin for icon container when title is present
+                icon_margin: '  ', //conditional margin for icon container when title is present
                 min_height: '  web:text-[15px] leading-[40px] ',
-                margin: '  bg-transparent px-[10px] my-auto native:text-[15px] ',
+                margin: '  bg-transparent px-[6px] my-auto native:text-[15px] ',
+                padding_when_title: ' px-[12px] ', //padding when title is present
             },
             lg: {
                 rounded: ' rounded-[12px] relative group ',
@@ -750,6 +753,7 @@ export  const settingsDefault = {
                 icon_margin: '  mx-[2px] ', //conditional margin for icon container when title is present
                 min_height: '  web:text-[16px] leading-[40px] ',
                 margin: '  bg-transparent px-[10px] my-auto native:text-[16px] ',
+                padding_when_title: ' px-[6px] ', //padding when title is present
             },
         },
 

@@ -128,7 +128,7 @@ export function Modal({
                     {(title && type !== 'string') && (title)}
                     {onClose && (
                         <View className='ml-auto'>
-                            <Button variant='secondary' size='base' rounded startDecorator='X' onPress={onClose} />
+                            <Button variant='secondary' size='sm' rounded startDecorator='X' onPress={onClose} />
                         </View>
                     )}
                 </Row>
@@ -431,6 +431,11 @@ export const Button = (props) => {
             }
             iconSize = ThemeButtonSizes[size]?.icon_size;
             titleContainerClass += title ? ThemeButtonSizes[size]?.min_height + ThemeButtonSizes[size]?.margin : '';
+            
+            // Add padding when title is present
+            if (title) {
+                sizeClasses += ThemeButtonSizes[size]?.padding_when_title || '';
+            }
         }
         return {
             sIconContainer: iconContainerClass,
@@ -438,7 +443,7 @@ export const Button = (props) => {
             sTitleContainer: titleContainerClass,
             sizeClasses,
         };
-    }, [size, rounded, padding, variant, title, isIcon, showTitleFromSize, bgrDecorator, pressed]);
+    }, [size, rounded, padding, variant, title, isIcon, showTitleFromSize, bgrDecorator, pressed, startDecorator, endDecorator]);
 
     const sButtonIconStart = useMemo(
         () =>

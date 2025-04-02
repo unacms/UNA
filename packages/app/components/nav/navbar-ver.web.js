@@ -79,12 +79,11 @@ const HeaderLine = memo(({ headerSettings, currentUser, uri, bSearch, menuPopup,
 
                             {bSearch && <Search>
                                 <Button
-                                    variant="text"
+                                    variant="secondary"
                                     size="base"
                                     fullWidth={true}
                                     startDecorator="Search"
                                     align="start"
-                                    bgrDecorator
                                     rounded
                                     title={"Search"}
                                 />

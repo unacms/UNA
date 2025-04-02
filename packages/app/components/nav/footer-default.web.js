@@ -70,7 +70,7 @@ export default function () {
                                         pressed={isActive}
                                         indicator={isActive}
                                         indicatorPosition="top"
-                                        indicatorClassName="animate-appear h-[3px] w-full bg-primary dark:bg-primary-d -translate-y-[2px] rounded-full"
+                                        indicatorClassName="animate-appear h-[3px] w-full bg-primary dark:bg-primary-d -translate-y-[5px] rounded-full"
                                         startDecorator={tab.url === appSetting('dashboard', 'url') && profile ? null : tab.icon}
                                         direction="flex-col bg-transparent "
                                         addon={tab.url === appSetting('notifications', 'url') && notifCount > 0 ? 

@@ -122,7 +122,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
         const { currentUser } = useCurrentUser();
         const btn = callFn('getButtonForConductorSmall', [a, index, currentUser])
         return (
-            <Pressable ref={el => (itemRefs?.current ? (itemRefs.current[index2] = el) : (el = null))} className={" py-2 items-center " + a?.menu_settings?.class + (index2 > visibleItemsCount - 1 ? ' item-overlap ' : '')}
+            <Pressable ref={el => (itemRefs?.current ? (itemRefs.current[index2] = el) : (el = null))} className={" pb-2 items-center " + a?.menu_settings?.class + (index2 > visibleItemsCount - 1 ? ' item-overlap ' : '')}
                 key={`tab-${index2}`}
                 onPress={() => {
                     setIndex(a.index);
@@ -183,7 +183,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
     });
 
     const ButtonEx = memo(({ visibleItemsCount }) => {
-        return <View key="btn" className='ml-1 py-2 '><Button title={'More...'} variant={visibleItemsCount <= index ? 'secondary' : "text"} pressed={visibleItemsCount <= index ? true : false} size="sm" /></View>;
+        return <View key="btn" className='ml-1 pb-2 '><Button title={'More...'} variant={visibleItemsCount <= index ? 'secondary' : "text"} rounded pressed={visibleItemsCount <= index ? true : false} size="sm" /></View>;
     });
 
     return <DynamicMenu

@@ -101,11 +101,13 @@ export default function (props) {
         }
         const visibilityIcon = visibilityById(item.value);
         item.label = visibilityIcon.text;
-        item.icon = <Icon
-            icon={visibilityIcon.icon}
-            width={32}
-            height={32}
-        />
+        item.icon = <View className="h-[24px] w-[24px] overflow-hidden">
+            <Icon
+                icon={visibilityIcon.icon}
+                width={24}
+                height={24}
+            />
+        </View>
     });
 
     const selectedItem = filteredValues.find(item => item.value == isModalSub);

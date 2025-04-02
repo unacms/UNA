@@ -208,7 +208,7 @@ export default function (props) {
                         <Row className="flex-none xl:w-80 2xl:w-96 flex-none px-4 justify-end ">
                             {!!currentUser && (
                                 <Row className="flex-row justify-end  ">
-                                    <View className=" flex-row ">
+                                    <View className=" flex-row gap-x-2 ">
                                         <View className=" xl:hidden ">
                                             {bSearch && <Search />}
                                         </View>
@@ -232,10 +232,9 @@ export default function (props) {
                                                 >
                                                     <Button
                                                         tooltip={t('Messenger')}
-                                                        variant="text"
-                                                        bgrDecorator
+                                                        variant="secondary"
                                                         rounded
-                                                        startDecorator="MessageCircleMore"
+                                                        startDecorator="MessageSquare"
                                                         id="m2"
                                                         addon={{
                                                             variant: 'primary',
@@ -256,7 +255,7 @@ export default function (props) {
                                 </Row>
                             )}
                             {!currentUser && (
-                                <Row className="flex-row flex-auto sm:flex-none justify-end my-auto ">
+                                <Row className="flex-row flex-auto sm:flex-none justify-end gap-x-2 my-auto ">
                                     <MenuLauncher />
 
                                     {bSearch && (
@@ -267,8 +266,7 @@ export default function (props) {
 
                                     <Link href="/">
                                         <ButtonRef
-                                            variant="text"
-                                            bgrDecorator
+                                            variant="secondary"
                                             tooltip="Account"
                                             rounded
                                             aria-label="Account"
