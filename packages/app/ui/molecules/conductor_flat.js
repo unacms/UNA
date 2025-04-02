@@ -17,9 +17,7 @@ import { useBottomSheetData } from 'app/context/bottomsheet';
 import { BlockByName } from 'app/components/block';
 import { callFn } from 'app/lib/functions/call';
 
-const TabBar = React.memo(({ routes, index, setIndex, onChangeRoute }) => {
-    const { colors } = Theme();
-    const { currentUser } = useCurrentUser();
+const TabBar = React.memo(({ routes, index, setIndex, onChangeRoute, currentUser }) => {
     if (routes.length > 1) {
         return (
             <View className="w-full">
@@ -365,7 +363,7 @@ export function ConductorFlat({ header, defaultHeaderHeight=116, smallHeader, mi
     });
 
     const isShowFilters = layoutName == 'navigator' && leftSideBarBlocks && leftSideBarBlocks?.length > 0;
-    const sceneHeader =  <TabBar routes={routes} index={index} setIndex={setIndex} onChangeRoute={onChangeRoute} />
+    const sceneHeader =  <TabBar routes={routes} index={index} setIndex={setIndex} onChangeRoute={onChangeRoute} currentUser={currentUser} />
     const filter =  (isShowFilters) && (<View className="items-start ml-3 mt-2 mb-1">
         <Button title='Filters' variant="default" size="sm" rounded onPress={showFilters} />
     </View>)
