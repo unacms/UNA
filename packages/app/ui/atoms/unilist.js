@@ -3,7 +3,7 @@ import { RefreshControl } from 'react-native';
 import { View } from 'app/design/view'
 import Animated from 'react-native-reanimated';
 import ScrollList from 'app/ui/molecules/scroll_list'
-import { useRef} from 'react';
+import { useRef } from 'react';
 
 export default function UniList(props) {
     const uniRef = useRef();
@@ -29,7 +29,7 @@ export default function UniList(props) {
                 ...(scrollProps?.headerHeight ? { paddingTop: scrollProps.headerHeight } : {}),
                 ...contentContainerStyle,
             }}
-            ref={refer? refer : uniRef}
+            ref={refer ? refer : uniRef}
             onEndReachedThreshold={4}
             data={filteredData}
             keyExtractor={item => item.id}
@@ -37,6 +37,12 @@ export default function UniList(props) {
             onEndReached={onEndReached}
             keyboardShouldPersistTaps="always"
             ListFooterComponent={ListFooterComponent}
+            onScrollToIndexFailed={(info) => {
+                console.log('onScrollToIndexFailed', info)
+                /*setTimeout(() => {
+                  flatListRef.current?.scrollToIndex({ index: info.index, animated: true });
+                }, 500);*/
+            }}
             {...rest}
             refreshControl={
                 props.url ? (
@@ -50,7 +56,7 @@ export default function UniList(props) {
             <ScrollList
                 content={content}
                 contentType="FlatList"
-                refer={refer? refer : uniRef}
+                refer={refer ? refer : uniRef}
                 {...scrollProps}
             />
 

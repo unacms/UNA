@@ -348,7 +348,7 @@ const TabBar = ({ isSmall = false, menu, routes, leftSideBar, header, headerSett
         const addButtons = AddMenu(menu, 'hideInTopBar')
         return (
             <TopSidebar isDrawer={isDrawer} isWeb={true} leftSideBar={leftSideBar} header={header} headerSettings={headerSettings} addButtons={addButtons} isSmall={isSmall} showMenu={showMenu} layout={getLayout(currentUser)} title={t(menuSettings?.name)} >
-                <ConductorMenu leftSideBar={leftSideBar} routes={routes} index={index} t={t} setIndex={setIndex} getNumCols={getNumCols} windowWidth={windowWidth} onChangeRoute={onChangeRoute} />
+                <ConductorMenu currentUser={currentUser} leftSideBar={leftSideBar} routes={routes} index={index} t={t} setIndex={setIndex} getNumCols={getNumCols} windowWidth={windowWidth} onChangeRoute={onChangeRoute} />
             </TopSidebar>
 
         )

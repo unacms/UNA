@@ -134,11 +134,9 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
             const url = url1 + `&symbol=${keywordval[1] === '#' ? '%23' : '%40'}&term=${keywordval[0]}`;
             const result = await fetcher(url);
             const p = result.map((k, index) => ({
-                url: k.url,
-                value: k.value,
-                label: k.label,
-                index: index,          
-                selected: index === 0       
+                ...k,
+                index,
+                ...(index === 0 && { selected: true })   
               })).slice(0, 4);
             setSuggestions(p);
         };
@@ -276,7 +274,17 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
     useEffect(() => {
         editor.setPlaceholder(props.placeholder)
     }, [props.placeholder]);
-    
+
+    useEffect(() => {
+        if (formContext.formState.isSubmitted) {
+            setTimeout(() => {
+                console.log("blur")
+                editor.blur();
+            }, 800);
+        
+            
+        }
+    }, [formContext.formState.isSubmitted]);
 
     const htmlContent = useEditorContent(editor, { type: 'html' });
     useEffect(() => {
@@ -309,9 +317,10 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
         }
     }
 
-    const insertMention = async (label, url, query) => {
+    const insertMention = async (user, query) => {
+        console.log("useruser", user)
         const html = await editor.getHTML();
-        const mentionLink = `<a class="bx-mention-link" href="${url}">${label}</a> &shy; `;
+        const mentionLink = `<a class="bx-mention-link ${user.classname}" href="${user.url}">${user.label}</a> &shy; `;
         const updatedContent = html.replace(query, mentionLink);
         editor.setContent(updatedContent);
         editor.focus('end');
@@ -341,14 +350,13 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
       useEffect(() => {
         if (isEnter && suggestions.length > 0) {
             const index = suggestions.findIndex(item => item.selected);
-            insertMention(suggestions[index].label, suggestions[index].url, keywordval[1] + keywordval[0])
+            insertMention(suggestions[index], keywordval[1] + keywordval[0])
 
         }
         setIsEnter(false);
       }, [isEnter]);
 
     const onMessage = async (event) => {
-
         try {
             const message = JSON.parse(event.nativeEvent.data);
 
@@ -385,9 +393,9 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
                 setSuggestions([])
             }
 
-            if (message?.type == "addmention") {
+            /*if (message?.type == "addmention") {
                 insertMention(message.payload.label, message.payload.url, message.payload.query)
-            }
+            }*/
 
             if (message?.type == "editor-ready") {
                 editor.injectJS(`
@@ -547,6 +555,7 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
                         if (event.clipboardData.items.length > 0) {
                             for (let item of event.clipboardData.items) {
                                 if (item.kind === 'file') {
+                                    event.preventDefault();
                                     const file = item.getAsFile();
                                     if (file) {
                                         const reader = new FileReader();
@@ -568,53 +577,53 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
         }
     }
 
-    
-
-    const style = {left: 0}
+    const style = { left: 0 }
 
     const handleLayout = (event) => {
         const { width, height, x, y } = event.nativeEvent.layout;
         setSuggestionsSize([width, height, x, y]);
     };
 
-    if (keywordval[3]-24 < suggestionsHeight && suggestionsSize[1] > suggestionsHeight){
-
+    if (keywordval[3] - 24 < suggestionsHeight && suggestionsSize[1] > suggestionsHeight){
         style.top = suggestionsSize[3]+24
     }
     else{
-
         style.bottom = suggestionsSize[1]-(keywordval[3]> 0 ? keywordval[3]-24 : 0)
     }
 
-    return <View  onLayout={handleLayout} className={`flex-1 relative ${isToolBar ? 'h-48' : ''}`} >
-        {(suggestions && suggestions.length > 0) && (
-            <View 
-                className={`absolute max-h-[130px] w-full max-w-md bottom-0 p-1 z-50 rounded border-bdr dark:border-bdr-d border bg-bgrbody dark:bg-bgrbody-d p-2`}
-                style={style}>
-                <ScrollView>
-                    {suggestions.map((user) => (
-                        <Button key={user.url} variant="link" pressed={user.selected} fullWidth align="left" size="xs" title={user.label} onPress={() => { insertMention(user.label, user.url, keywordval[1] + keywordval[0]) }} />
+    return (
+        <View  onLayout={handleLayout} className={`flex-1 relative ${isToolBar ? 'h-48' : ''}`} >
+            {(suggestions && suggestions.length > 0) && (
+                <View 
+                    className={`absolute max-h-[130px] w-full max-w-md bottom-0 p-1 z-50 rounded border-bdr dark:border-bdr-d border bg-bgrbody dark:bg-bgrbody-d p-2`}
+                    style={style}>
+                    <ScrollView>
+                        {suggestions.map((user) => (
+                            <Button key={user.url} variant="link" pressed={user.selected} fullWidth align="left" size="xs" title={user.label} onPress={() => { insertMention(user, keywordval[1] + keywordval[0]) }} />
 
-                    ))}
-                </ScrollView>
-            </View>
-        )}
-        <RichText
-            exclusivelyUseCustomOnMessage={false}
-            style={{ backgroundColor: 'transparent' }}
-            editor={editor}
-            onMessage={onMessage} />
-        {isToolBar && <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            style={{
-                position: 'absolute',
-                width: '100%',
-                bottom: 0,
-            }}
-        >
-            <View className="h-18">
-                <Toolbar hidden={false} editor={editor} items={b} />
-            </View>
-        </KeyboardAvoidingView>}
-    </View>
+                        ))}
+                    </ScrollView>
+                </View>
+            )}
+            <RichText
+                exclusivelyUseCustomOnMessage={false}
+                style={{ backgroundColor: 'transparent' }}
+                editor={editor}
+                onMessage={onMessage} />
+
+            {isToolBar && <KeyboardAvoidingView
+                    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                    style={{
+                        position: 'absolute',
+                        width: '100%',
+                        bottom: 0,
+                    }}
+                >
+                    <View className="h-18">
+                        <Toolbar hidden={false} editor={editor} items={b} />
+                    </View>
+                </KeyboardAvoidingView>
+            }
+        </View>
+    )
 }

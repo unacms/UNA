@@ -322,7 +322,6 @@ export function CommentsBrowse({ scrollProps, browse, requestUrl, module, handle
 
             // NEED CHECK ON IOS
             setTimeout(() => {
-                //  console.log("itemIndex", itemIndex);
                 flashListRef.current.scrollToIndex({ animated: true, index: itemIndex });
             }, 300);
 
@@ -467,7 +466,7 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
 
 
                 }
-                form.data.reset = true;
+               // form.data.reset = true;
                 form.data.inputs.cmt_text.autofocus = formData.parent_id;
                 addCommentData({ formText: formData.text, formAuthor: formData.author.display_name, parentId: formData.parent_id })
             }
@@ -477,30 +476,21 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
 
     const [commentForm, setCommentForm] = useState();
 
-    let immutable = form ? form?.request?.immutable : false;
-    /*let { data: dynamicData, error } = useSWR(
-        commentForm ? [prepareUrl(), '', commentForm] : null,
-        fetcher,
-        !immutable ? undefined : {
-            revalidateIfStale: false,
-            revalidateOnFocus: false,
-            revalidateOnReconnect: false
-        }
-    );*/
     const { data: dynamicData, error } = useFetchForm(prepareUrl(), commentForm);
 
     useEffect(() => {
+        console.log("dynamicData")
         if (dynamicData?.data?.browse) {
             handleForm(dynamicData);
-            //handleCancel() // DISABLED TO AVOID ANY REREBDERS AFTER NEW COMMENTS
+            handleCancel() // DISABLED TO AVOID ANY REREBDERS AFTER NEW COMMENTS
         }
     }, [dynamicData]);
 
     const handleCancel = async () => {
         form.data.inputs.cmt_parent_id.value = 0;
         form.data.inputs.cmt_text.value = '';
-        form.data.inputs.cmt_text.autofocus = false;
-        form.data.reset = true;
+        //form.data.inputs.cmt_text.autofocus = false;
+      //  form.data.reset = true;
         formData.parent_id = 0;
 
         addCommentData({ formText: '', formAuthor: '', parentId: 0 }) // DISABLED TO AVOID ANY REREBDERS AFTER NEW COMMENTS
@@ -546,4 +536,3 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
         </View>
     )
 }
-

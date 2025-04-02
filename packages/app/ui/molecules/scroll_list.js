@@ -204,7 +204,13 @@ function getRightHeader(items, currentUser, pagePath) {
             if (button.section || button.link == 'search')
                 btn = <Search section={button.section} params={{ trigger: { title: button.title, icon: button.icon ? button.icon : 'Search', size: 'base', variant: 'secondary' } }} />
             else {
-                btn = <Button rounded title={button.title} variant='secondary' startDecorator={button.icon} size="base" />;
+                btn = <Button 
+                    rounded title={button.title} 
+                    variant='secondary' 
+                    startDecorator={button.icon} 
+                    size="base" 
+                    addon={button.link == appSetting('messenger', 'url') ? {variant:'primary', text: currentUser?.counters?.bx_messenger_new_messages, hideZero: true} : undefined}
+                />;
                 btn = button.link ? <Link href={button.link} >{btn}</Link> : btn
             }
 
