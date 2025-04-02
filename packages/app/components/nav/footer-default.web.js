@@ -70,7 +70,7 @@ export default function () {
                                         pressed={isActive}
                                         indicator={isActive}
                                         indicatorPosition="top"
-                                        indicatorClassName=" h-[3px] w-full bg-primary dark:bg-primary-d -translate-y-[2px] rounded-b-[3px]"
+                                        indicatorClassName="animate-appear h-[3px] w-full bg-primary dark:bg-primary-d -translate-y-[6px] rounded-b-[2px]"
                                         startDecorator={tab.url === appSetting('dashboard', 'url') && profile ? null : tab.icon}
                                         direction="flex-col bg-transparent "
                                         addon={tab.url === appSetting('notifications', 'url') && notifCount > 0 ? 
@@ -86,7 +86,7 @@ export default function () {
                                         ) : null}
                                             {!!tab.title && (
                                             <Text
-                                                className={`group-hover:text-primary dark:group-hover:text-primary text-[12px] tracking-tight  leading-[16px] whitespace-nowrap ${textColor}`}
+                                                className={`group-hover:text-primary dark:group-hover:text-primary text-[12px] tracking-tight leading-none whitespace-nowrap ${textColor}`}
                                             >
                                                 {tab.title}
                                             </Text>

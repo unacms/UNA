@@ -48,11 +48,11 @@ export default function (props) {
     return (
         <>
             {!props.useDefault ?
-                <Pressable onPress={() => handleClick()}>
+                <Pressable className="w-full" onPress={() => handleClick()}>
                     {props.children}
                 </Pressable> :
                 <Link href={currentUser.url} emulate={true} >
-                    <Row className={rounded + " group items-center px-2 py-1 hover:ring-1 hover:ring-inset hover:ring-neutral-500/10 justify-between cursor-pointer hover:bg-bgrbutton dark:hover:bg-bgrbutton-d"}>
+                    <Row className={rounded + " w-full group items-center px-2 py-1 justify-between cursor-pointer hover:bg-bgrbutton dark:hover:bg-bgrbutton-d"}>
                         <Row className='flex-row items-center'>
                             <Profile
                                 {...currentUser}
@@ -68,7 +68,7 @@ export default function (props) {
                                 {currentUser.membership_name}
                             </Text></View>
                         </Row>
-                        <View className='flex-none '>
+                        <View className='flex-none'>
                             {currentUser.profiles_count > 1 && <Button
                                 variant="text"
                                 size="sm"
@@ -98,13 +98,13 @@ export default function (props) {
                         return (
                             <Link href={dUser.url} emulate={true} key={index}>
                                 <View key={'index' + index} className=" p-2 flex-row  
-                                group duration-200  rounded-lg  
+                                group duration-200 rounded-lg  
                                 hover:bg-bgritem dark:hover:bg-bgritem-d
                                 max-w-5xl self-center w-full gap-x-[12px]">
                                     <View className="flex-none ">{profile}</View>
                                     <Text className='text-sm my-auto flex-auto font-semibold truncate text-neutral-900 dark:text-neutral-100'>{item.display_name}</Text>
                                     <View className="text-sm bont-semibold flex-none my-auto">
-                                        <Button id="menu" startDecorator="RefreshCw" title="Switch"  variant='outline' size='sm' onPress={() => handleSwitch(item.id)} />
+                                        <Button id="menu" startDecorator="RefreshCw" title="Switch" variant='outline' size='sm' onPress={() => handleSwitch(item.id)} />
                                     </View>
                                 </View>
                             </Link>

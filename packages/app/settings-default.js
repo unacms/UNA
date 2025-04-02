@@ -1,6 +1,6 @@
 import { env } from 'app/lib/env'
 
-export const settingsDefault = {
+export  const settingsDefault = {
     config: {
         una_url: env('UNA_URL'),
         app_url: env('APP_URL'),
@@ -673,15 +673,15 @@ export const settingsDefault = {
         },
         dropdown_menu: {
             content_shadow: ' shadow-xl  ',
-            content_ver: ' z-10 min-w-[200px] backdrop-blur-xl border border-bdrmodal dark:border-bdrmodal-d bg-bgrmodal dark:bg-bgrmodal-d mt-1 p-1 text-sm rounded-xl shadow-xl shadow-[0_0_0_1px_rgba(0,0,0,0.1)] dark:shadow-[0_0_0_1px_rgba(0,0,0,1)] overflow-hidden gap-y-1 ',
+            content_ver: ' z-10 min-w-[200px] backdrop-blur-xl border border-bdrmodal dark:border-bdrmodal-d bg-bgrmodal dark:bg-bgrmodal-d m-1 p-1 text-sm rounded-xl shadow-xl shadow-[0_0_0_1px_rgba(0,0,0,0.1)] dark:shadow-[0_0_0_1px_rgba(0,0,0,1)] overflow-hidden gap-y-1 ',
             content_hor: ' flex flex-row z-10 p-1 bg-bgrmodal border border-bdr dark:border-bdr-d m-2 backdrop-blur-xl dark:bg-bgrmodal-d text-sm text-neutral-800 dark:text-neutral-200 rounded-full ',
-            item_ver: 'flex flex-row focus:outline-none items-center px-[8px] py-[6px] gap-x-3 text-sm rounded-lg font-medium hover:bg-bgritem dark:hover:bg-bgritem-d text-neutral-700 dark:text-neutral-300 dark:hover:text-white hover:cursor-pointer',
-            item_hor: 'flex block px-3 py-2 hover:-translate-y-1 active:-translate-y-1 dark:hover:text-white rounded-full hover:cursor-pointer text-neutral-700  hover:scale-125 active:scale-95 duration-200 dark:text-neutral-300 outline-none ',
+            item_ver: 'flex flex-row focus:outline-none items-center p-[4px] text-sm rounded-lg font-medium hover:bg-bgritem dark:hover:bg-bgritem-d text-neutral-700 dark:text-neutral-300 dark:hover:text-white hover:cursor-pointer',
+            item_hor: 'flex block p-[4px] hover:-translate-y-1 active:-translate-y-1 dark:hover:text-white rounded-full hover:cursor-pointer text-neutral-700  hover:scale-125 active:scale-95 duration-200 dark:text-neutral-300 outline-none ',
             item_np: 'flex flex-row focus:outline-none items-center justify-between px-1 py-0.5 rounded-lg font-medium hover:bg-bgritem dark:hover:bg-bgritem-d text-sm text-neutral-700 dark:text-neutral-300 dark:hover:text-white hover:cursor-pointer',
-            item_cnt: 'items-center gap-x-3 w-full',
-            item_text: 'text-sm leading-[36px] font-medium text-neutral-800 dark:text-neutral-200',
-            item_icon: 'flex items-center w-[36px] h-[36px] bg-bgritem dark:bg-bgritem-d rounded-full justify-center',
-            icon_size: 24, // Default icon size for dropdown menu icons
+            item_cnt: 'items-center w-full',
+            item_text: 'text-sm leading-[32px] px-[6px] font-medium text-neutral-800 dark:text-neutral-200',
+            item_icon: 'flex items-center w-[32px] h-[32px] bg-bgritem mx-[2px] dark:bg-bgritem-d rounded-full justify-center',
+            icon_size: 20, // Default icon size for dropdown menu icons
         },
         modal: {
             fog: 'bg-white/50 dark:bg-black/80 backdrop-blur ',
@@ -730,26 +730,26 @@ export const settingsDefault = {
                 icon_container: ' flex w-[28px] h-[28px] items-center justify-center text-center ',
                 icon_size: '20px',
                 icon_margin: '  ',
-                min_height: ' web:text-[12px] leading-[26px] ',
+                min_height: ' web:text-[12px] leading-[24px] ',
                 margin: '  bg-transparent px-[4px] my-auto native:text-[14px] ',
             },
             base: {
                 rounded: ' rounded-[8px] relative ',
-                padding: ' p-[6px] flex  ',
+                padding: ' p-[4px] flex ',
                 icon_container: ' flex w-[32px] h-[32px] items-center justify-center text-center ',
                 icon_size: '20px',
-                icon_margin: '  ',
-                min_height: ' web:text-[14px]  ',
+                icon_margin: ' mx-[2px] ', //conditional margin for icon container when title is present
+                min_height: ' web:text-[14px] leading-[32px] ',
                 margin: '  bg-transparent px-[6px] my-auto native:text-[14px] ',
             },
             lg: {
                 rounded: ' rounded-[12px] relative ',
-                padding: '  p-[8px] flex  ',
+                padding: ' p-[4px] flex ',
                 icon_container: ' flex h-[40px] w-[40px] items-center justify-center text-center  ',
                 icon_size: '24px',
-                icon_margin: '  ',
-                min_height: '  web:text-[16px] leading-[40px] ',
-                margin: '  bg-transparent px-[12px] my-auto native:text-[16px] ',
+                icon_margin: '  mx-[4px] ', //conditional margin for icon container when title is present
+                min_height: '  web:text-[14px] leading-[40px] ',
+                margin: '  bg-transparent px-[8px] my-auto native:text-[14px] ',
             },
         },
 
@@ -810,11 +810,11 @@ export const settingsDefault = {
             'u-btn-text-pressed-decorator': ' bg-primary dark:bg-primary-d text-white dark:text-neutral-50 ',
             'u-btn-text-pressed-cnt': ' relative bg-primary/10 dark:bg-primary-d/10 ',
 
-            'u-btn-link-cnt': ' bg-transparent px-0 ',
+            'u-btn-link-cnt': ' bg-transparent active:opacity-50 hover:underline text-primary dark:text-primary-d  ',
             'u-btn-link-text':
-                ' font-semibold group-hover:underline text-neutral-800 dark:text-neutral-200 hover:text-neutral-950 dark:hover:text-neutral-50 ',
+                ' font-semibold  text-primary dark:text-primary-d ',
             'u-btn-link-trans': ' web:duration-200 ',
-            'u-btn-link-icon': ' text-primary-600 group-hover:text-primary-700 dark:text-primary-500 dark:group-hover:text-primary-400 ',
+            'u-btn-link-icon': '  text-primary dark:text-primary-d  ',
             'u-btn-link-pressed-icon': ' text-primary-700 dark:text-primary-400 ',
             'u-btn-link-color-icon-light': 'rgba(37,99,235,1)',
             'u-btn-link-color-icon-dark': 'rgba(37,99,235,1)',

@@ -173,6 +173,25 @@ const theme = {
         fontSize: {
             base: '16px',
         },
+        keyframes: {
+            appear: {
+              "0%": {
+                opacity: "0",
+                width: "0%",
+                marginLeft: "auto",
+                marginRight: "auto",
+              },
+              "100%": {
+                opacity: "1",
+                width: "100%",
+                marginLeft: "auto",
+                marginRight: "auto",
+              },
+            },
+           },
+           animation: {
+              appear: "appear 0.5s ease-in-out",
+           }
         
     },
 }

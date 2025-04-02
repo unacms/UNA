@@ -9,11 +9,29 @@ export default function Tooltip(props) {
     const [tooltipStyle, setTooltipStyle] = useState({});
     const tooltipRef = useRef(null);
     const wrapperRef = useRef(null);
+    const timeoutRef = useRef(null);
 
     const eventHandlers = {
-        onMouseEnter: () => setVisible(true),
-        onMouseLeave: () => setVisible(false),
+        onMouseEnter: () => {
+            timeoutRef.current = setTimeout(() => {
+                setVisible(true);
+            }, 500); // 500ms delay
+        },
+        onMouseLeave: () => {
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current);
+            }
+            setVisible(false);
+        },
     };
+
+    useEffect(() => {
+        return () => {
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current);
+            }
+        };
+    }, []);
 
     useEffect(() => {
         if (visible && tooltipRef.current && wrapperRef.current) {
@@ -55,7 +73,7 @@ export default function Tooltip(props) {
             {visible && (
                 <ViewRef
                     ref={tooltipRef}
-                    className="absolute z-50 shadow top-full w-auto bg-neutral-900/80 dark:bg-neutral-100/80 rounded-full py-2.5 px-5 mt-2"
+                    className="absolute z-50 shadow top-full w-auto backdrop-blur bg-black/60 dark:bg-white/60 rounded-full py-2 px-4 mt-[10px]"
                     style={tooltipStyle}
                 >
                     <Text className="text-neutral-100 dark:text-neutral-900 whitespace-nowrap">{props.content}</Text>

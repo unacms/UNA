@@ -263,14 +263,14 @@ const getAddon = (addon, isTitle) => {
         sButtonAddonText = addon;
     }
 
-    const position = addon?.position == 'bottom' ? 'bottom-0' : '-top-2';
+    const position = addon?.position == 'bottom' ? 'bottom-0 -right-1' : ' top-[50%] -translate-y-[24px] translate-x-[2px] start-[50%] ';
 
     if (!isTitle && sButtonAddonText)
-        return <View className={`absolute ${sButtonAddonBg} border-2 border-white dark:border-neutral-900 rounded-full  px-1.5 items-center justify-center -right-1 ${position}`}><Text className='text-white text-xs font-semibold'>{sButtonAddonText}</Text></View>
+        return <View className={`absolute ${sButtonAddonBg} z-20 border-2 border-white dark:border-neutral-900 rounded-full px-1 items-center justify-center ${position}`}><Text className='text-white text-xs font-semibold'>{sButtonAddonText}</Text></View>
 
     return sButtonAddonText && sButtonAddonText ? <View className='flex-1 items-end '>
         <View className={sButtonAddonBg + ' rounded-full px-2 py-0.5 mx-1 text-center items-center'}>
-            <Text className="text-white text-xs font-semibold">{sButtonAddonText}</Text></View></View> : null;
+            <Text className=" text-white text-xs font-semibold">{sButtonAddonText}</Text></View></View> : null;
 }
 
 const ThemeCssClassesButton = appSetting('theme', 'button_styles');

@@ -1,4 +1,4 @@
-import { Row, Pressable } from 'app/design/view'
+import { Row, Pressable, View } from 'app/design/view'
 import { Button } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user'
 import { appSetting } from 'app/lib/util'
@@ -100,14 +100,16 @@ export default function MenuAccount({ buttonProps, children }) {
                         let sType ="";
                         if (item.link == '{switch_profile}') {
                             sTitle = <Pressable className="w-full" onPress={() => handleSwitch(item.id)}><Row key={index} className="items-center justify-between gap-x-3 w-full">
-                                <Row className="items-center flex-auto gap-x-3">
-                                <Profile
-                                    {...item}
-                                    url_avatar={item.avatar}
-                                    displayType="unit_wo_info"
-                                    displaySize="sm"
-                                />
-                                <Text className="text-sm font-medium text-neutral-700 dark:text-neutral-200">
+                                <Row className="items-center flex-auto">
+                                <View className="px-[2px]">
+                                    <Profile
+                                        {...item}
+                                        url_avatar={item.avatar}
+                                        displayType="unit_wo_info"
+                                        displaySize="sm"
+                                    />
+                                </View>
+                                <Text className="text-sm leading-[32px] px-[6px] font-medium text-neutral-700 dark:text-neutral-200">
                                     {item.display_name}
                                 </Text>
                                 </Row>
@@ -120,21 +122,24 @@ export default function MenuAccount({ buttonProps, children }) {
                             </Row></Pressable>
                         }
                         if (item.link == '{separator}') {
-                            sTitle = <Row className="items-center flex-auto my-[6px] sm:border-t border-bdr dark:border-bdr-d"></Row>
+                            sTitle = <Row className="items-center flex-auto my-[4px] sm:border-t border-bdr dark:border-bdr-d"></Row>
                             sType="separator";
                         }
                         if (item.link == '{switch_profile_selector}') {
                             sTitle = (
-                                <Row className="w-full items-center flex-auto my-[6px] ">
-                                    <ProfileSwitcher hideTitle={true} >
+                                <Row className="w-full items-center flex-auto my-[4px]">
+                                    <ProfileSwitcher hideTitle={true}>
                                     <Button
-                                        variant="secondary"
-                                        size="sm"
-                                        rounded={true}
-                                        startDecorator="RefreshCw"
-                                        fullWidth={true}
+                                        variant="link"
+                                        size="base"
+                                        bgrDecorator
+                                        fullWidth
+                                        align="start"
+                                        solid
+                                        startDecorator="CircleUserRound"
                                         title={t("See all profiles")}/>
-                                </ProfileSwitcher></Row>)
+                                </ProfileSwitcher>
+                                </Row>)
                             sType="separator";
                         }
                         return (

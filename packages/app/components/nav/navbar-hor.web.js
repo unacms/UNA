@@ -198,7 +198,7 @@ export default function (props) {
                                                         : false
                                                 }
                                                 indicatorPosition="bottom"
-                                                indicatorClassName=" translate-y-[4px] h-[3px] w-full bg-primary-500 rounded-t-[2px]"
+                                                indicatorClassName=" animate-appear translate-y-[8px] h-[3px] w-full bg-primary-500 rounded-t-[2px]"
                                             />
                                         </Link>
                                     </View>
