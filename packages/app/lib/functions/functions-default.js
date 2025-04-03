@@ -61,7 +61,7 @@ export function getButtonForConductor(a, index, currentUser) {
     return (
         <Button
             variant='text'
-            size={!a.ident ? 'lg' : 'sm'}
+            size={!a.ident ? 'base' : 'sm'}
             pressed={a.index == index ? true : false}
             fullWidth
             title={a.title}

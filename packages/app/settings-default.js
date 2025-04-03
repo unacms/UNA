@@ -740,10 +740,10 @@ export  const settingsDefault = {
                 padding: ' p-[6px]  flex  ',
                 icon_container: ' flex h-[36px] w-[36px] items-center justify-center text-center  ',
                 icon_size: '24px',
-                icon_margin: '  ', //conditional margin for icon container when title is present
-                min_height: '  web:text-[14px] leading-[40px] ',
-                margin: '  bg-transparent px-[6px] my-auto native:text-[14px] ',
-                padding_when_title: ' px-[12px] ', //padding when title is present
+                icon_margin: ' px-[6px] ', //conditional margin for icon container when title is present
+                min_height: '  web:text-[14px] leading-[36px] ',
+                margin: '  bg-transparent px-[12px] my-auto native:text-[14px] ',
+                padding_when_title: '  ', //padding when title is present
             },
             lg: {
                 rounded: ' rounded-[12px] relative group ',

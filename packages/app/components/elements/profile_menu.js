@@ -10,7 +10,7 @@ export default function ElementProfileMenu(props) {
     const { currentUser, setCurrentUser } = useCurrentUser();
     const menu_items = appSetting('layout', 'user_remote_config') ? menuItemsByNameNew('menu_post', props.data, currentUser) : menuItemsByName('', appSetting('menu_items', 'menu_sidebar'), currentUser);
     return (
-        <View className="profile-menu gap-y-0.5">
+        <View className="profile-menu gap-y-1">
             
                 {menu_items.map((item, index) => (
                     <Link key={`menu-${index}`} href={item.link.replace('{profile}', currentUser.url)}>
@@ -21,7 +21,7 @@ export default function ElementProfileMenu(props) {
                             solid
                             align="start"
                             title={t(item.title)}
-                            size="lg"
+                            size="base"
                             bgrDecorator
                         />
                     </Link>

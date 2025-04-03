@@ -385,7 +385,7 @@ export const Button = (props) => {
         addon = '',
         rounded = false,
         solid = false,
-        padding,
+        padding = false,
         children,
         bgrDecorator = false,
         indicator = false,
@@ -505,7 +505,7 @@ export const Button = (props) => {
         const roundingClass = rounded ? sClassFullRounding : sClassDefaultRounding;
 
         if (variant != 'custom') {
-            sizeClasses = `${roundingClass} ${padding || ThemeButtonSizes[size]?.padding} `;
+            sizeClasses = `${roundingClass} ${ThemeButtonSizes[size]?.padding} `;
             iconContainerClass = `${ThemeButtonSizes[size]?.icon_container} ${title ? ThemeButtonSizes[size]?.icon_margin : ''}`;
             if (bgrDecorator) {
                 const decoratorStyle = pressed 
@@ -516,8 +516,8 @@ export const Button = (props) => {
             iconSize = ThemeButtonSizes[size]?.icon_size;
             titleContainerClass += title ? ThemeButtonSizes[size]?.min_height + ThemeButtonSizes[size]?.margin : '';
             
-            // Add padding when title is present
-            if (title) {
+            // Add padding when padding prop is true
+            if (padding) {
                 sizeClasses += ThemeButtonSizes[size]?.padding_when_title || '';
             }
         }

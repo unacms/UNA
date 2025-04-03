@@ -186,7 +186,7 @@ export default function (props) {
             >
                 {getLayout(currentUser) == 'hor' && (
                     <View className="hidden xl:flex w-80 2xl:w-96 ">
-                        <View className="fixed fixed-process w-80 2xl:w-96 flex-col px-3 py-2    ">
+                        <View className="fixed fixed-process w-80 2xl:w-96 flex-col p-3    ">
                             {appSetting('layout', 'show_profile_info') && (
                                 <Link href={currentUser.url} emulate={true}>
                                     <Row
@@ -205,7 +205,7 @@ export default function (props) {
                                                 <Text className=" text-sm pl-3 flex-auto my-auto font-semibold truncate text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-white duration-200">
                                                     {currentUser.display_name}
                                                 </Text>
-                                                <Text className=" text-xs pl-3 flex-auto my-auto truncate text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-800 dark:group-hover:text-neutral-200 duration-200">
+                                                <Text className=" text-xs leading-none pl-3 flex-auto my-auto truncate text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-800 dark:group-hover:text-neutral-200 duration-200">
                                                     {
                                                         currentUser.membership_name
                                                     }
@@ -242,8 +242,9 @@ export default function (props) {
                                                     }
                                                     pressed={feedType == item.name}
                                                     bgrDecorator
+                                                    
                                                     fullWidth
-                                                    size="lg"
+                                                    size="base"
                                                     solid
                                                     align="start"
                                                     onPress={() => {
