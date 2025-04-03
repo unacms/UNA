@@ -44,7 +44,7 @@ const HeaderLine = memo(({headerSettings, currentUser, uri, title, menuPopup, se
                 </View>
             )}
             {(uri === 'home' || width >= LAYOUT_BREAKPOINTS.lg) && (
-                 <Link className=" flex flex-row group gap-x-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus:outline-primary/50 rounded-lg " href="/home" aria-label="Logo">
+                 <Link className=" flex flex-row group gap-x-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus:outline-primary/50 rounded-lg " href="/home" aria-label="Logo">
                             
                            
                  <View className=" items-center justify-center">

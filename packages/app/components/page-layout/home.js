@@ -193,21 +193,22 @@ export default function (props) {
                                 <Link href={currentUser.url} emulate={true}>
                                     <Row
                                         className={
-                                            ' rounded-[12px] group items-center p-[6px] mb-[4px] justify-between hover:bg-bgrbutton dark:hover:bg-bgrbutton-d  active:bg-bgrbutton-h dark:active:bg-bgrbutton-dh  '
+                                            ' rounded-[12px] group items-center p-[6px] mb-[2px] justify-between hover:bg-bgrbutton dark:hover:bg-bgrbutton-d  active:bg-bgrbutton-h dark:active:bg-bgrbutton-dh  '
                                         }
                                     >
                                         <Row className="flex-row items-center">
+                                            <View className="px-[2px]">
                                             <Profile
                                                 {...currentUser}
                                                 url_avatar={currentUser.avatar}
                                                 displayType="unit_wo_info"
                                                 displaySize="sm"
-                                            />
-                                            <View className="flex-col">
-                                                <Text className=" text-sm pl-3 flex-auto my-auto font-semibold truncate text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-white duration-200">
+                                            /></View>
+                                            <View className="flex-col pl-[8px] gap-y-[2px]">
+                                                <Text className=" text-sm leading-[18px] flex-auto my-auto font-semibold truncate text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-white duration-200">
                                                     {currentUser.display_name}
                                                 </Text>
-                                                <Text className=" text-xs leading-none pl-3 flex-auto my-auto truncate text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-800 dark:group-hover:text-neutral-200 duration-200">
+                                                <Text className=" text-xs leading-[16px] leading-none flex-auto my-auto truncate text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-800 dark:group-hover:text-neutral-200 duration-200">
                                                     {
                                                         currentUser.membership_name
                                                     }
@@ -219,7 +220,7 @@ export default function (props) {
                             )}
 
                             <View
-                                className=' pb-2 mb-2 border-b border-bdr dark:border-bdr-d gap-y-[4px]'
+                                className=' pb-2 mb-2 border-b border-bdr dark:border-bdr-d gap-y-[2px]'
                             >
                                 {feedList.length > 1 &&
                                     feedList.map((item, index) => {
