@@ -58,11 +58,11 @@ const HeaderLine = memo(
                 )}
                 {(uri == 'home' || width >= LAYOUT_BREAKPOINTS.lg) && (
                     <Link
-                        className=" flex flex-row group gap-x-[8px] focus-visible:outline p-[6px] focus-visible:outline-2 focus-visible:outline-offset-2 focus:outline-primary/50 rounded-[12px] bg-bgrbutton dark:bg-bgrbutton-d hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh "
+                        className=" flex flex-row group gap-x-[8px] focus-visible:outline p-[4px] focus-visible:outline-2 focus-visible:outline-offset-0 focus:outline-primary/50 rounded-full hover:bg-bgrbutton dark:hover:bg-bgrbutton-d "
                         href="/home"
                         aria-label="Logo"
                     >
-                        <View className=" items-center w-[36px] h-[36px] justify-center">
+                        <View className=" items-center w-[44px] h-[44px] justify-center">
                             {appStatic('logo_mark')}
                         </View>
                         {/*<View className=" items-center justify-center">
@@ -82,7 +82,7 @@ const HeaderLine = memo(
                         </Text>
                 )}
                 {bSearch && (
-                    <View className="flex-auto hidden xl:flex pl-[12px]">
+                    <View className="flex-auto hidden xl:flex pl-[8px]">
                         <Search type="input" placeholder="Enter search text" />
                     </View>
                 )}
@@ -176,7 +176,7 @@ export default function (props) {
                                                         : false
                                                 }
                                                 variant="tab"
-                                                size="base"
+                                                size="lg"
                                                 tooltip={t(item.title)}
                                                 title={
                                                     item.showTitle
@@ -198,17 +198,17 @@ export default function (props) {
                                                         : false
                                                 }
                                                 indicatorPosition="bottom"
-                                                indicatorClassName=" animate-appear translate-y-[8px] h-[3px] w-full bg-indicator dark:bg-indicator-d rounded-full"
+                                                indicatorClassName=" animate-appear translate-y-[6px] h-[3px] w-full bg-indicator dark:bg-indicator-d rounded-full"
                                             />
                                         </Link>
                                     </View>
                                 ))}
                             </Row>
                         </Row>
-                        <Row className="flex-none xl:w-80 2xl:w-96 flex-none px-4 justify-end ">
+                        <Row className="flex-none xl:w-80 2xl:w-96 flex-none px-[12px] justify-end ">
                             {!!currentUser && (
                                 <Row className="flex-row justify-end  ">
-                                    <View className=" flex-row gap-x-2 ">
+                                    <View className=" flex-row gap-x-1 ">
                                         <View className=" xl:hidden ">
                                             {bSearch && <Search />}
                                         </View>
@@ -232,7 +232,9 @@ export default function (props) {
                                                 >
                                                     <Button
                                                         tooltip={t('Messenger')}
-                                                        variant="secondary"
+                                                        variant="text"
+                                                        size="lg"
+                                                        bgrDecorator
                                                         rounded
                                                         startDecorator="MessageSquare"
                                                         id="m2"
@@ -255,7 +257,7 @@ export default function (props) {
                                 </Row>
                             )}
                             {!currentUser && (
-                                <Row className="flex-row flex-auto sm:flex-none justify-end gap-x-2 my-auto ">
+                                <Row className="flex-row flex-auto sm:flex-none justify-end gap-x-1 my-auto ">
                                     <MenuLauncher />
 
                                     {bSearch && (
@@ -266,7 +268,9 @@ export default function (props) {
 
                                     <Link href="/">
                                         <ButtonRef
-                                            variant="secondary"
+                                            variant="text"
+                                            size="lg"
+                                            bgrDecorator
                                             tooltip="Account"
                                             rounded
                                             aria-label="Account"

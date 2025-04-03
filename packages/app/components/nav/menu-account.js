@@ -42,12 +42,14 @@ export default function MenuAccount({ buttonProps, children }) {
         let dUser = Object.assign({}, currentUser)
         dUser.url_avatar = dUser.avatar
         dUser.url = appSetting('dashboard', 'url')
-    profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="sm" />
+    profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="base" />
     }
 
     buttonProps = buttonProps || {
         tooltip: t("Dashboard"),
-        variant: "secondary",
+        variant: "text",
+        size:"lg",
+        bgrDecorator:true,
         rounded: true,
         
         startDecorator: profile,

@@ -37,8 +37,9 @@ export default function () {
             >
                 <ButtonRef
                     tooltip="All Apps"
-                    variant="secondary"
-                    size="base"
+                    variant="text"
+                    bgrDecorator
+                    size="lg"
                     solid
                     fullWidth
                     rounded

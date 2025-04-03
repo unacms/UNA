@@ -27,7 +27,9 @@ export default function MenuAdd({ buttonProps, children }) {
         return <></>;
 
     buttonProps = buttonProps || {
-        variant: "secondary",
+        variant: "text",
+        size:"lg",
+        bgrDecorator:true,
         rounded: 'rounded',
         startDecorator: "Plus",
         tooltip: "Create",

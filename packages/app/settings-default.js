@@ -698,10 +698,10 @@ export  const settingsDefault = {
         },
         inputs: {
             default:
-                ' bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-bdrinput dark:border-bdrinput-d focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus:outline-primary/50 dark:focus:outline-primary/50 duration-100 placeholder-neutral-500 duration-100 text-neutral-900 rounded-lg h-10 flex-auto p-2 leading-6 dark:text-neutral-100 text-base ',
+                ' bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-bdrinput dark:border-bdrinput-d focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus:outline-primary/50 dark:focus:outline-primary/50 duration-100 placeholder-neutral-500 duration-100 text-neutral-900 rounded-lg h-10 flex-auto p-2 leading-6 dark:text-neutral-100 text-base ',
             multi: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg flex-auto p-2 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 ',
             rounded:
-                ' bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus:outline-primary/50 dark:focus:outline-primary/50 duration-100 placeholder-neutral-500 text-neutral-800 hover:bg-bgrinput-h dark:hover:bg-bgrinput-dh outline-2 outline-offset-1 rounded-full flex-auto p-[12px] dark:text-neutral-100 text-base leading-[24px] ',
+                ' border-4 border-white dark:border-neutral-900 bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus:outline-primary/50 dark:focus:outline-primary/50 duration-100 placeholder-neutral-500 text-neutral-800 hover:bg-bgrinput-h dark:hover:bg-bgrinput-dh outline-2 outline-offset-0 rounded-full flex-auto p-[10px] dark:text-neutral-100 text-base leading-[24px] ',
             roundedsmall:
                 ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-full flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[34px] ',
             small: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[36px] ',
@@ -738,19 +738,19 @@ export  const settingsDefault = {
             base: {
                 rounded: ' rounded-[12px] relative ',
                 padding: ' p-[6px]  flex  ',
-                icon_container: ' flex h-[36px] w-[36px] items-center justify-center text-center  ',
-                icon_size: '24px',
-                icon_margin: ' px-[6px] ', //conditional margin for icon container when title is present
+                icon_container: ' flex h-[36px] w-[36px] p-[8px] items-center justify-center text-center  ',
+                icon_size: ' ',
+                icon_margin: ' mx-[2px] ', //conditional margin for icon container when title is present
                 min_height: '  web:text-[14px] leading-[36px] ',
                 margin: '  bg-transparent px-[12px] my-auto native:text-[14px] ',
                 padding_when_title: '  ', //padding when title is present
             },
             lg: {
                 rounded: ' rounded-[12px] relative group ',
-                padding: ' p-[6px] flex ',
-                icon_container: ' flex h-[40px] w-[40px] items-center justify-center text-center  ',
-                icon_size: '24px',
-                icon_margin: '  mx-[2px] ', //conditional margin for icon container when title is present
+                padding: ' p-[4px] flex ',
+                icon_container: ' flex h-[44px] w-[44px] p-[10px] items-center justify-center text-center  ',
+                icon_size: ' ',
+                icon_margin: '   ', //conditional margin for icon container when title is present
                 min_height: '  web:text-[16px] leading-[40px] ',
                 margin: '  bg-transparent px-[10px] my-auto native:text-[16px] ',
                 padding_when_title: ' px-[6px] ', //padding when title is present
