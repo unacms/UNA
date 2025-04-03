@@ -142,7 +142,7 @@ export default function Splash(props) {
                             <Button
                                 title={defalulFormData.button}
                                 startDecorator={defalulFormData.icon}
-                                size="lg"
+                                size="base"
                                 fullWidth
                                 onPress={() => {
                                     setModalForm(defalulFormData.action)
@@ -180,8 +180,10 @@ export default function Splash(props) {
         <View className={appSetting('layout', 'theme') + ' mx-auto w-full'} >
             <View className={' flex-col w-full mx-auto max-w-screen-2xl mx-auto ' + appSetting('layout', 'max_width')}>
                 <View className=" md:h-[calc(100vh-128px)]  md:flex-row border-b border-bdr dark:border-bdr-d p-4 sm:p-6 gap-y-4 gap-x-4 duration-300">
-                    <View className="max-w-2xl p-4 sm:p-6 flex-col gap-y-12 mx-auto justify-center my-auto sm:justify-start items-center md:items-start  flex-auto">
-                        {appStatic('splash_image')}  
+                    <View className="max-w-2xl p-4 sm:p-6 flex-col gap-y-8 mx-auto justify-center my-auto sm:justify-start items-center md:items-start  flex-auto">
+                        <View className="w-32 h-32">
+                            {appStatic('splash_image')}  
+                        </View>
                         {appStatic('splash_text')}  
                     </View>
                     {cnt}
