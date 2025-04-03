@@ -30,7 +30,7 @@ export default function FormFieldPassword(props) {
                 
             />
             <View className="absolute right-0 px-1">
-                <Button startDecorator={isVisible?'Eye':'EyeSlash'} rounded size="base" variant="text" onPress={()=>{setIsVisible(!isVisible)}}  />
+                <Button startDecorator={isVisible?'Eye':'EyeSlash'} rounded size="sm" variant="text" onPress={()=>{setIsVisible(!isVisible)}}  />
             </View>
             </View>
         </Field>

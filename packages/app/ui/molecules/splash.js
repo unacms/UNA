@@ -164,11 +164,8 @@ export default function Splash(props) {
                     <ScrollView>
                         {!isKeyboardVisible && <View className="items-center my-8 ">
                             <View className="w-60 items-center ">{appStatic('logo_native')}</View>
-                            <View className="my-4 translate-y-20 mx-12">
-                                <Text className=" text-xl sm:text-2xl text-center md:text-start text-neutral-800 dark:text-neutral-200 ">
-                                Discover the community where you can connect and engage
-                                with people who share your interests.
-                                </Text>
+                            <View className="my-4  mx-12">
+                                {appStatic('splash_text')}  
                             </View>
                         </View>}
                         {cnt}
@@ -184,14 +181,8 @@ export default function Splash(props) {
             <View className={' flex-col w-full mx-auto max-w-screen-2xl mx-auto ' + appSetting('layout', 'max_width')}>
                 <View className=" md:h-[calc(100vh-128px)]  md:flex-row border-b border-bdr dark:border-bdr-d p-4 sm:p-6 gap-y-4 gap-x-4 duration-300">
                     <View className="max-w-2xl p-4 sm:p-6 flex-col gap-y-12 mx-auto justify-center my-auto sm:justify-start items-center md:items-start  flex-auto">
-                                <View className="w-[320px] h-[240px] text-center md:text-start ">
-                                    {appStatic('splash_image')}
-                                </View>
-                                
-                        <Text className=" text-lg sm:text-xl text-center md:text-start text-neutral-800 dark:text-neutral-200 ">
-                            Discover the community where you can connect and engage
-                            with people who share your interests.
-                        </Text>
+                        {appStatic('splash_image')}  
+                        {appStatic('splash_text')}  
                     </View>
                     {cnt}
                 </View>

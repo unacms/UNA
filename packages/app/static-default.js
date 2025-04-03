@@ -157,7 +157,7 @@ const LogoNativeDark = (
 )
 
 const SplashImage = (
-  <View className=" bg-white p-6 rounded-2xl">
+   <View className="w-[320px] h-[240px] text-center md:text-start "><View className=" bg-white p-6 rounded-2xl">
     <Svg
        
         viewBox="0 0 809.34183 629.87561"
@@ -452,7 +452,14 @@ const SplashImage = (
             transform="translate(-195.32909 -135.0622)"
             fill="#2f2e41"
         />
-    </Svg></View> 
+    </Svg></View></View>
+)
+
+const SplashText = (
+    <Text className=" text-lg sm:text-xl text-center md:text-start text-neutral-800 dark:text-neutral-200 ">
+        Discover the community where you can connect and engage
+        with people who share your interests.
+    </Text>
 )
 
 const ComponentsAbout = (
@@ -968,4 +975,6 @@ export const staticDefault = {
     components_fullfooter: ComponentsFullFooter,
     components_logincontent: ComponentsLoginContent,
     splash_image: SplashImage,
+    splash_text: SplashText,
+    
 }

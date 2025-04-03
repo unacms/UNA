@@ -397,7 +397,7 @@ export function getHeaderSettings(uri, width, layout, config) {
 
     const bTitle = typeof settings?.headerSettings?.title !== 'undefined' ? settings.headerSettings.title : true;
 
-    let bOffset = typeof settings?.headerSettings?.offset !== 'undefined' ? settings.headerSettings.offset : true;
+    let bOffset = typeof settings?.headerSettings?.offset !== 'undefined' ? settings.headerSettings.offset : false;
 
     let sCover = typeof settings?.headerSettings?.cover !== 'undefined' ? settings.headerSettings.cover : 'full';
 
@@ -1058,12 +1058,9 @@ export function findIconFromRemote(s) {
     return s;
 }
 
-
 export function menuItemsByNameNew(name, menu, currentUser, url = '') {
-    return menuItemsByName(name, menu.items, currentUser, url, menu.config)
+    return menuItemsByName(name, menu?.items, currentUser, url, menu?.config)
 }
-
-
 
 export function menuItemsByName(name, items, currentUser, url = '', config = null) {
     if (!items)

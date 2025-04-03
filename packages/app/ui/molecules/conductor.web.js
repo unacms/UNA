@@ -686,7 +686,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
         if (dataItems.length == 1 && !route.endpoint) {
             const a = dataItems.map((item, index) => {
-                return <View className={`mt-[64px] lg:mt-0 mx-auto mt-2 w-full ${appSetting('layout', 'max_width_block')}`} key={`tab-${index}`}><ItemRendererMemo route={route} key={'item' + index} numColumns={1} item={item} /></View>
+                return <View className={`lg:mt-0 mx-auto mt-2 w-full ${appSetting('layout', 'max_width_block')}`} key={`tab-${index}`}><ItemRendererMemo route={route} key={'item' + index} numColumns={1} item={item} /></View>
             });
             return a;
         }
@@ -803,7 +803,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             <View className={appSetting('layout', 'max_width') + " w-full h-full mx-auto"} scrollEnabled={false} onLayout={handleLayoutTop}>
                 {headerComponent}
                 <Toaster ref={toasterRef} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" />
-                <View style={{ minHeight: (windowHeight - offset) }} className={appSetting('layout', 'max_width  ') + ' mx-auto w-full mt-28 lg:mt-0 '} >
+                <View style={{ minHeight: (windowHeight - offset) }} className={appSetting('layout', 'max_width  ') + ' lala mx-auto w-full mt-28 lg:mt-0 '} >
                     <Row className={rc}>
                         {a}
                         <View className=" flex-auto m">
@@ -820,7 +820,6 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             </View>
         );
     }
-    console.log("layoutNamelayoutName", layoutName)
 
     return (
         <View className="w-full h-full" scrollEnabled={false} onLayout={handleLayoutTop}>
