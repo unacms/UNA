@@ -186,12 +186,12 @@ export default function (props) {
             >
                 {getLayout(currentUser) == 'hor' && (
                     <View className="hidden xl:flex w-80 2xl:w-96 ">
-                        <View className="fixed fixed-process w-80 2xl:w-96 flex-col p-2 ">
+                        <View className="fixed fixed-process w-80 2xl:w-96 flex-col px-3 py-2    ">
                             {appSetting('layout', 'show_profile_info') && (
                                 <Link href={currentUser.url} emulate={true}>
                                     <Row
                                         className={
-                                            ' rounded-[10px] group items-center px-2 py-1 justify-between hover:bg-bgrbutton dark:hover:bg-bgrbutton-d  active:bg-bgrbutton-h dark:active:bg-bgrbutton-dh  '
+                                            ' rounded-[12px] group items-center p-[6px] mb-[4px] justify-between hover:bg-bgrbutton dark:hover:bg-bgrbutton-d  active:bg-bgrbutton-h dark:active:bg-bgrbutton-dh  '
                                         }
                                     >
                                         <Row className="flex-row items-center">
@@ -199,7 +199,7 @@ export default function (props) {
                                                 {...currentUser}
                                                 url_avatar={currentUser.avatar}
                                                 displayType="unit_wo_info"
-                                                displaySize="base"
+                                                displaySize="sm"
                                             />
                                             <View className="flex-col">
                                                 <Text className=" text-sm pl-3 flex-auto my-auto font-semibold truncate text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-white duration-200">
@@ -217,7 +217,7 @@ export default function (props) {
                             )}
 
                             <View
-                                className=' py-2 mb-2 border-b border-bdr dark:border-bdr-d gap-y-0.5'
+                                className=' pb-2 mb-2 border-b border-bdr dark:border-bdr-d gap-y-[4px]'
                             >
                                 {feedList.length > 1 &&
                                     feedList.map((item, index) => {

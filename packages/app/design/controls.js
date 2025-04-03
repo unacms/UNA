@@ -16,32 +16,116 @@ const inputSettings = appSetting('theme', 'inputs');
 
 export const TextInputClear = TextInputDef
 
-export const Input = ({ className, ...props }) => (
-    <TextInputDef className={inputSettings.default} {...props} />
+export const Input = ({ className, startDecorator, endDecorator, ...props }) => (
+    <View className="relative flex-row items-center w-full">
+        {startDecorator && (
+            <View className="absolute left-[12px] h-full items-center justify-center">
+                <Icon icon={startDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
+            </View>
+        )}
+        <TextInputDef className={inputSettings.default + (startDecorator ? ' pl-12' : '') + (endDecorator ? ' pr-10' : '')} {...props} />
+        {endDecorator && (
+            <View className="absolute right-3 h-full items-center justify-center">
+                <Icon icon={endDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
+            </View>
+        )}
+    </View>
 );
 
-export const InputRef = forwardRef(({ className, ...props }, ref) => (
-    <TextInputDef className={inputSettings.default} {...props} />
+export const InputRef = forwardRef(({ className, startDecorator, endDecorator, ...props }, ref) => (
+    <View className="relative flex-row items-center  w-full">
+        {startDecorator && (
+            <View className="absolute left-[12px] h-full items-center justify-center">
+                <Icon icon={startDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
+            </View>
+        )}
+        <TextInputDef className={inputSettings.default + (startDecorator ? ' pl-12' : '') + (endDecorator ? ' pr-10' : '')} ref={ref} {...props} />
+        {endDecorator && (
+            <View className="absolute right-[12px] h-full items-center justify-center">
+                <Icon icon={endDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
+            </View>
+        )}
+    </View>
 ));
 
-export const InputMulti = ({ className, ...props }) => (
-    <TextInputDef className={inputSettings.multi} {...props} />
+export const InputMulti = ({ className, startDecorator, endDecorator, ...props }) => (
+    <View className="relative flex-row items-center w-full">
+        {startDecorator && (
+            <View className="absolute left-[12px] h-full items-center justify-center">
+                <Icon icon={startDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
+            </View>
+        )}
+        <TextInputDef className={inputSettings.multi + (startDecorator ? ' pl-12' : '') + (endDecorator ? ' pr-10' : '')} {...props} />
+        {endDecorator && (
+            <View className="absolute right-[12px] h-full items-center justify-center">
+                <Icon icon={endDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
+            </View>
+        )}
+    </View>
 );
 
-export const InputRounded = ({ className, ...props }) => (
-    <TextInputDef className={inputSettings.rounded} {...props} />
+export const InputRounded = ({ className, startDecorator, endDecorator, ...props }) => (
+    <View className="relative flex-row items-center  w-full">
+        {startDecorator && (
+            <View className="absolute left-[12px] h-full items-center justify-center">
+                <Icon icon={startDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
+            </View>
+        )}
+        <TextInputDef className={inputSettings.rounded + (startDecorator ? ' pl-12' : '') + (endDecorator ? ' pr-10' : '')} {...props} />
+        {endDecorator && (
+            <View className="absolute right-[12px] h-full items-center justify-center">
+                <Icon icon={endDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
+            </View>
+        )}
+    </View>
 );
 
-export const InputRoundedRef = forwardRef(({ className, ...props }, ref) => (
-    <TextInputDef className={inputSettings.rounded} ref={ref} {...props}  />
+export const InputRoundedRef = forwardRef(({ className, startDecorator, endDecorator, ...props }, ref) => (
+    <View className="relative flex-row items-center  w-full">
+        {startDecorator && (
+            <View className="absolute left-[12px] h-full items-center justify-center">
+                <Icon icon={startDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
+            </View>
+        )}
+        <TextInputDef className={inputSettings.rounded + (startDecorator ? ' pl-12' : '') + (endDecorator ? ' pr-10' : '')} ref={ref} {...props} />
+        {endDecorator && (
+            <View className="absolute right-[12px] h-full items-center justify-center">
+                <Icon icon={endDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
+            </View>
+        )}
+    </View>
 ));
 
-export const InputRoundedSmall = ({ className, ...props }) => (
-    <TextInputDef className={inputSettings.roundedsmall} ref={ref} {...props} />
+export const InputRoundedSmall = ({ className, startDecorator, endDecorator, ...props }) => (
+    <View className="relative flex-row items-center  w-full">
+        {startDecorator && (
+            <View className="absolute left-[12px] h-full items-center justify-center">
+                <Icon icon={startDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
+            </View>
+        )}
+        <TextInputDef className={inputSettings.roundedsmall + (startDecorator ? ' pl-12' : '') + (endDecorator ? ' pr-10' : '')} {...props} />
+        {endDecorator && (
+            <View className="absolute right-[12px] h-full items-center justify-center">
+                <Icon icon={endDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
+            </View>
+        )}
+    </View>
 );
 
-export const InputSmall = ({ className, ...props }) => (
-    <TextInputDef className={inputSettings.small} {...props} />
+export const InputSmall = ({ className, startDecorator, endDecorator, ...props }) => (
+    <View className="relative flex-row items-center  w-full">
+        {startDecorator && (
+            <View className="absolute left-[12px] h-full items-center justify-center">
+                <Icon icon={startDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
+            </View>
+        )}
+        <TextInputDef className={inputSettings.small + (startDecorator ? ' pl-12' : '') + (endDecorator ? ' pr-10' : '')} {...props} />
+        {endDecorator && (
+            <View className="absolute right-[12px] h-full items-center justify-center">
+                <Icon icon={endDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
+            </View>
+        )}
+    </View>
 );
 
 export const Hidden = ({ className, ...props }) => (

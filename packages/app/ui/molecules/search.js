@@ -212,8 +212,15 @@ export function ElementSearchData(oProps) {
                 <Redirect ref={redirectdRef} />
                 {oProps.icon}
                 {!!popupContent && dd}
-                <InputRoundedRef name="search" placeholder={t("Search") + '...'} onKeyPress={(event) => handleKeyPress(event)} value={inputValue} ref={inputRef} onChangeText={(value) => handleSearch(value)} />
-                <View className="absolute h-[40px] w-[20px] items-center justify-center ml-2 text-neutral-500  "><Icon icon="Search" size={20} /></View>
+                <InputRoundedRef   
+                    name="search" 
+                    placeholder={t("Search") + '...'} 
+                    onKeyPress={(event) => handleKeyPress(event)} 
+                    value={inputValue} 
+                    ref={inputRef} 
+                    onChangeText={(value) => handleSearch(value)}
+                    startDecorator="Search"
+                />
             </Row>
         )
     }

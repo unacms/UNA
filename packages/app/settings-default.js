@@ -698,10 +698,10 @@ export  const settingsDefault = {
         },
         inputs: {
             default:
-                ' bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-bdrinput dark:border-bdrinput-d focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus:outline-primary/50 duration-100 placeholder-neutral-500 duration-100 text-neutral-900 rounded-lg h-10 flex-auto p-2 leading-6 dark:text-neutral-100 text-base ',
+                ' bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-bdrinput dark:border-bdrinput-d focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus:outline-primary/50 dark:focus:outline-primary/50 duration-100 placeholder-neutral-500 duration-100 text-neutral-900 rounded-lg h-10 flex-auto p-2 leading-6 dark:text-neutral-100 text-base ',
             multi: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg flex-auto p-2 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 ',
             rounded:
-                ' placeholder-neutral-500 pl-10 bg-bgrinput dark:bg-bgrinput-d hover:bg-bgrinput-h dark:hover:bg-bgrinput-dh focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-transparent focus:border-bdrinput-f dark:focus:border-bdrinput-f focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-primary/50 text-neutral-900 rounded-full flex-auto px-3 dark:text-neutral-100 text-base leading-[20px] h-[40px]  ',
+                ' bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus:outline-primary/50 dark:focus:outline-primary/50 duration-100 placeholder-neutral-500 text-neutral-800 hover:bg-bgrinput-h dark:hover:bg-bgrinput-dh outline-2 outline-offset-1 rounded-full flex-auto p-[12px] dark:text-neutral-100 text-base leading-[24px] ',
             roundedsmall:
                 ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-full flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[34px] ',
             small: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[36px] ',
@@ -729,20 +729,20 @@ export  const settingsDefault = {
                 rounded: ' rounded-[8px] relative ',
                 padding: ' p-[4px] flex  ',
                 icon_container: ' flex w-[32px] h-[32px] items-center justify-center text-center ',
-                icon_size: '20px',
-                icon_margin: ' mx-[2px] ',
-                min_height: ' web:text-[14px] leading-[28px] ',
+                icon_size: '24px',
+                icon_margin: '  ',
+                min_height: ' web:text-[14px] leading-[32px] ',
                 margin: '  bg-transparent px-[6px] my-auto native:text-[14px] ',
                 padding_when_title: ' px-[4px] ', //padding when title is present
             },
             base: {
-                rounded: ' rounded-[10px] relative ',
-                padding: ' p-[4px]  flex  ',
-                icon_container: ' flex h-[40px] w-[40px] items-center justify-center text-center  ',
-                icon_size: '20px',
+                rounded: ' rounded-[12px] relative ',
+                padding: ' p-[6px]  flex  ',
+                icon_container: ' flex h-[36px] w-[36px] items-center justify-center text-center  ',
+                icon_size: '24px',
                 icon_margin: '  ', //conditional margin for icon container when title is present
-                min_height: '  web:text-[15px] leading-[40px] ',
-                margin: '  bg-transparent px-[6px] my-auto native:text-[15px] ',
+                min_height: '  web:text-[14px] leading-[40px] ',
+                margin: '  bg-transparent px-[6px] my-auto native:text-[14px] ',
                 padding_when_title: ' px-[12px] ', //padding when title is present
             },
             lg: {
@@ -782,15 +782,15 @@ export  const settingsDefault = {
             'u-btn-primary-pressed-cnt': ' bg-primary-600 dark:bg-primary-700 ',
 
             'u-btn-secondary-cnt':
-                ' bg-neutral-200 dark:bg-neutral-800 sm:hover:bg-neutral-300 sm:dark:hover:bg-neutral-700  ',
+                ' bg-bgrbutton dark:bg-bgrbutton-d hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50 ',
             'u-btn-secondary-text':
-                ' font-medium text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-white ',
+                ' font-medium text-neutral-700 hover:text-neutral-900 dark:text-neutral-300 dark:group-hover:text-neutral-100 ',
             'u-btn-secondary-trans': ' web:duration-200',
-            'u-btn-secondary-icon': ' text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-white ',
-            'u-btn-secondary-pressed-icon': ' text-neutral-950 dark:text-white ',
-            'u-btn-secondary-decorator': ' bg-neutral-500/10 ',
-            'u-btn-secondary-pressed-decorator': ' bg-neutral-500/20 ',
-            'u-btn-secondary-pressed-cnt': ' bg-neutral-300 dark:bg-neutral-700 ',
+            'u-btn-secondary-icon': ' text-neutral-700 group-hover:text-neutral-900 dark:text-neutral-300 dark:group-hover:text-neutral-100 ',
+            'u-btn-secondary-pressed-icon': ' text-neutral-900 dark:text-neutral-100 ',
+            'u-btn-secondary-decorator': ' bg-bgrbutton dark:bg-bgrbutton-d group-hover:bg-bgrbutton-h dark:group-hover:bg-bgrbutton-dh ',
+            'u-btn-secondary-pressed-decorator': ' bg-primary dark:bg-primary-d text-white ',
+            'u-btn-secondary-pressed-cnt': ' bg-bgrbutton dark:bg-bgrbutton-d ',
 
             'u-btn-danger-cnt':
                 ' bg-red-600 hover:bg-red-500 hover:shadow active:opacity-50 active:shadow-none  ',
@@ -804,14 +804,14 @@ export  const settingsDefault = {
             'u-btn-danger-pressed-cnt': ' bg-red-700 ',
 
             'u-btn-text-cnt':
-                '  hover:bg-bgrbutton/80 dark:hover:bg-bgrbutton-d/80 bg-transparent active:bg-bgrbutton-h dark:active:bg-bgrbutton-dh text-neutral-600 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
+                '   hover:bg-bgrbutton dark:hover:bg-bgrbutton-d active:opacity-50 ',
             'u-btn-text-text':
-                '  font-medium text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-neutral-50',
+                '  font-medium text-neutral-700 hover:text-neutral-900 dark:text-neutral-300 dark:group-hover:text-neutral-100 ',
             'u-btn-text-trans': ' web:duration-200 ',
-            'u-btn-text-icon': ' text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50',            
-            'u-btn-text-pressed-icon': ' text-primary-600 dark:text-primary-400 ',
-            'u-btn-text-decorator': ' bg-neutral-500/10 group-hover:bg-neutral-500/20 ',
-            'u-btn-text-pressed-decorator': ' bg-primary dark:bg-primary-d text-white dark:text-neutral-50 ',
+            'u-btn-text-icon': ' text-neutral-700 group-hover:text-neutral-900 dark:text-neutral-300 dark:group-hover:text-neutral-100 ',            
+            'u-btn-text-pressed-icon': ' text-white ',
+            'u-btn-text-decorator': ' bg-bgrbutton dark:bg-bgrbutton-d group-hover:bg-bgrbutton-h dark:group-hover:bg-bgrbutton-dh ',
+            'u-btn-text-pressed-decorator': ' bg-primary dark:bg-primary-d text-white ',
             'u-btn-text-pressed-cnt': ' relative bg-primary/10 dark:bg-primary-d/10 ',
 
             'u-btn-link-cnt': ' bg-transparent active:opacity-50 hover:underline text-primary dark:text-primary-d  ',
@@ -838,13 +838,13 @@ export  const settingsDefault = {
             'u-btn-outline-pressed-cnt': ' bg-primary/20 dark:bg-primary-d/20 ',
 
             'u-btn-tab-cnt':
-                ' bg-transparent hover:bg-bgrbutton/80 dark:hover:bg-bgrbutton-d/80 active:bg-bgrbutton-h dark:active:bg-bgrbutton-dh ',
+                ' hover:bg-bgrbutton dark:hover:bg-bgrbutton-d active:opacity-50 ',
             'u-btn-tab-text':
-                ' font-medium text-neutral-600 group-hover:text-neutral-950 dark:text-neutral-400 dark:group-hover:text-neutral-50 ',
+                ' font-medium text-neutral-700 hover:text-neutral-900 dark:text-neutral-300 dark:group-hover:text-neutral-100 ',
             'u-btn-tab-trans': ' web:duration-200 ',
             'u-btn-tab-icon': ' text-neutral-600 group-hover:text-neutral-950 dark:text-neutral-400 dark:group-hover:text-neutral-50 ',
             'u-btn-tab-pressed-icon': ' text-primary dark:text-primary-d ',
-            'u-btn-tab-decorator': ' bg-neutral-500/10 ',
+            'u-btn-tab-decorator': ' bg-bgritem dark:bg-bgritem-d ',
             'u-btn-tab-pressed-decorator': ' bg-primary/20 dark:bg-primary-d/20 ',
             'u-btn-tab-pressed-cnt': ' bg-transparent  ',
 

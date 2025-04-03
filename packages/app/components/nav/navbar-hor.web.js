@@ -40,7 +40,7 @@ const HeaderLine = memo(
             ).length > 0
 
         return (
-            <View className="flex-row xl:max-w-80 2xl:max-w-96 px-4 flex-auto lg:flex-none xl:flex-auto items-center ">
+            <View className="flex-row xl:max-w-80 2xl:max-w-96 px-[12px] flex-auto lg:flex-none xl:flex-auto items-center ">
                 {headerSettings.menu && isDrawer && (
                     <View className="lg:hidden ">
                         <Pressable onPress={showMenu}>
@@ -58,11 +58,11 @@ const HeaderLine = memo(
                 )}
                 {(uri == 'home' || width >= LAYOUT_BREAKPOINTS.lg) && (
                     <Link
-                        className=" flex flex-row group gap-x-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus:outline-primary/50 rounded-lg "
+                        className=" flex flex-row group gap-x-[8px] focus-visible:outline p-[6px] focus-visible:outline-2 focus-visible:outline-offset-2 focus:outline-primary/50 rounded-[12px] bg-bgrbutton dark:bg-bgrbutton-d hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh "
                         href="/home"
                         aria-label="Logo"
                     >
-                        <View className=" items-center justify-center">
+                        <View className=" items-center w-[36px] h-[36px] justify-center">
                             {appStatic('logo_mark')}
                         </View>
                         {/*<View className=" items-center justify-center">
@@ -82,7 +82,7 @@ const HeaderLine = memo(
                         </Text>
                 )}
                 {bSearch && (
-                    <View className="flex-auto hidden xl:flex px-4">
+                    <View className="flex-auto hidden xl:flex pl-[12px]">
                         <Search type="input" placeholder="Enter search text" />
                     </View>
                 )}
@@ -139,7 +139,7 @@ export default function (props) {
                         props.layoutName == 'post'
                             ? 'hidden lg:flex'
                             : '') +
-                        ' fixed w-full h-16 lg:border-b border-bdrnavbar dark:border-bdrnavbar-d lg:shadow-sm items-center w-full bg-bgrnavbar dark:bg-bgrnavbar-d '
+                        ' fixed w-full h-16 lg:shadow-sm items-center w-full bg-bgrnavbar dark:bg-bgrnavbar-d '
                     }
                 >
                     <View
@@ -176,7 +176,7 @@ export default function (props) {
                                                         : false
                                                 }
                                                 variant="tab"
-                                                size="lg"
+                                                size="base"
                                                 tooltip={t(item.title)}
                                                 title={
                                                     item.showTitle
@@ -198,7 +198,7 @@ export default function (props) {
                                                         : false
                                                 }
                                                 indicatorPosition="bottom"
-                                                indicatorClassName=" animate-appear translate-y-[6px] h-[3px] w-full bg-primary/80 dark:bg-primary-d/80 rounded-full"
+                                                indicatorClassName=" animate-appear translate-y-[8px] h-[3px] w-full bg-indicator dark:bg-indicator-d rounded-full"
                                             />
                                         </Link>
                                     </View>

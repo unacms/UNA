@@ -42,7 +42,7 @@ export default function MenuAccount({ buttonProps, children }) {
         let dUser = Object.assign({}, currentUser)
         dUser.url_avatar = dUser.avatar
         dUser.url = appSetting('dashboard', 'url')
-        profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="base" />
+    profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="sm" />
     }
 
     buttonProps = buttonProps || {
