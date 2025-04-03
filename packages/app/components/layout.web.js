@@ -26,7 +26,7 @@ const NavbarMemo = React.memo(function NavbarMemo(props) {
 async function runOneSignal() {
     const ONESIGNAL_KEY = appSetting('config', 'api_keys', 'onesignal');
     const isLocalhost = window.location.hostname === 'localhost';
-    if (!isLocalhost  && ONESIGNAL_KEY && !appSetting('config', 'onesignal_web_disable')) {
+    if (!isLocalhost && ONESIGNAL_KEY && !appSetting('config', 'onesignal_web_disable')) {
         await OneSignal.init({ appId: ONESIGNAL_KEY, allowLocalhostAsSecureOrigin: true });
         OneSignal.Slidedown.promptPush();
     }
@@ -35,7 +35,7 @@ async function runOneSignal() {
 
 const MemoizedContent = React.memo(({ headerSettings, currentUser, layoutName, data, children, uri, blocks, width }) => {
     const [isModal, setIsModal] = useState(false);
-   
+
     useEffect(() => {
         if (currentUser === false && !storageGet('layout:modal', '', true) && appSetting('layout', 'show_login_modal') > 0 && !['create-account', 'home', 'login', 'forgot-password', 'confirm-email'].includes(uri)) {
             setTimeout(() => {
@@ -75,7 +75,7 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, layoutName, d
                 <Suggestions />
                 <AsyncWorker />
                 <NavbarMemo headerSettings={headerSettings} layoutName={layoutName} title={data?.name} menu={data?.menu} menu_add={data?.menu_add || false} uri={uri} url={data?.url} >
-                    <Content width={width}  layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser}  url={data?.url}/>
+                    <Content width={width} layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} url={data?.url} />
                 </NavbarMemo>
                 <BottomSheet />
                 <ModalPopup />
@@ -92,7 +92,7 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, layoutName, d
                 <Suggestions />
                 <AsyncWorker />
                 <NavbarMemo headerSettings={headerSettings} layoutName={layoutName} title={data?.name} menu={data?.menu} menu_add={data?.menu_add || false} uri={uri} url={data?.url} >
-                    <Content width={width}  layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser}  url={data?.url}/>
+                    <Content width={width} layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} url={data?.url} />
                 </NavbarMemo>
                 <BottomSheet />
                 <ModalPopup />
@@ -110,7 +110,7 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, layoutName, d
                 <View className={appSetting('layout', 'max_width') + ' w-full mx-auto'}>
                     <Row className='w-full flex-col lg:flex-row-reverse  lg:min-h-screen '>
                         <View className={(menuItems.length > 0 ? 'lg:w-[calc(100%-20rem)] border-x border-bdr dark:border-bdr-d' : '') + ' w-full '}>
-                            <Content width={width}  layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser}  url={data?.url}/>
+                            <Content width={width} layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} url={data?.url} />
                             <Suggestions />
                             <AsyncWorker />
                         </View>
@@ -139,7 +139,7 @@ const metaAdder = (queryProperty, value) => {
 export default function (props) {
 
     const { currentUser, setCurrentUser } = useCurrentUser();
-    const { layoutName }  = props.layout;
+    const { layoutName } = props.layout;
     let data = props.data;
     let blocks = props.blocks;
     let uri = props.uri
@@ -178,14 +178,14 @@ export default function (props) {
         const addLinkTag = (rel, href, crossOrigin) => {
             const exists = document.querySelector(`link[rel="${rel}"][href="${href}"]`);
             if (exists) return;
-    
+
             const link = document.createElement('link');
             link.rel = rel;
             link.href = href;
             if (crossOrigin) link.crossOrigin = crossOrigin;
             document.head.appendChild(link);
         };
-    
+
         addLinkTag('preconnect', 'https://onesignal.com', 'anonymous');
         addLinkTag('preconnect', 'https://cdn.onesignal.com', 'anonymous');
         addLinkTag('dns-prefetch', 'https://onesignal.com');
@@ -325,7 +325,7 @@ export default function (props) {
 }
 
 const Content = React.memo(({ children, headerSettings, stylesBgImage, currentUser, layoutName, url, width }) => {
-    const isHideHeader = (appSetting('layout', 'hide_header_for_non_logged') && !currentUser) || appSetting('layout', 'hide_header_for_all');
+    const isHideHeader = false;(appSetting('layout', 'hide_header_for_non_logged') && !currentUser) || appSetting('layout', 'hide_header_for_all');
 
     return (
         <>
