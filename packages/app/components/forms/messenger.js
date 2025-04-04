@@ -67,7 +67,6 @@ export default function FormMessenger(props) {
     props.data.inputs['files'].rounded = 'true';
     props.data.inputs['files'].variant = 'default';
 
-    console.log("editorHeighteditorHeight", editorHeight)
     const sPad = 'px-3 py-2';
     return <View className='w-full px-2' >
         <Row className='w-full items-end  '>

@@ -372,6 +372,7 @@ export function getBlocksFromData(data) {
 
 export function getHeaderSettings(uri, width, layout, config) {
     let settings = getPageSettings(config, uri);
+    
     if (!settings?.headerSettings) {
         if (layout == 'navigator') {
             settings = { headerSettings: { offset: false, header: false, backButton: false, menu: true, footer: false } }
@@ -406,8 +407,9 @@ export function getHeaderSettings(uri, width, layout, config) {
     let bHideLeftmenu = typeof settings?.headerSettings?.hideLeftmenu !== 'undefined' ? settings.headerSettings.hideLeftmenu : false;
     let bShowAltTopMenu = typeof settings?.headerSettings?.showAltTopMenu !== 'undefined' ? settings.headerSettings.showAltTopMenu : false;
 
-    // Apply offset on all viewports, not just larger ones
-    bOffset = true;
+    // Apply offset on all viewports, not just larger ones PLAESE DONT CHANGE IT
+    if (width >= LAYOUT_BREAKPOINTS.lg) 
+        bOffset = true;
 
     return {
         backButton: bBackButton,

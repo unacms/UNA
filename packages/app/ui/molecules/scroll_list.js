@@ -24,7 +24,7 @@ import { Button } from 'app/design/controls';
 import Link from 'app/ui/atoms/link'
 
 // TODO OPTIMIZATION
-export default function ScrollList({ content, pageData, headerHeight, isBackButton = false, contentType, refer, headerComponent, isMenuNameAsTitle = false,  subHeaderComponent }) {
+export default function ScrollList({ content, pageData, headerHeight = 64, isBackButton = false, contentType, refer, inverted, headerComponent, subHeaderComponent, rightHeaderComponent, isMenuNameAsTitle = false}) {
 
     const isCollapsibleHeader = appSetting('native', 'collapsible_header');
     const isShowScrollToTopButton = appSetting('native', 'scroll_to_top_button');
@@ -86,10 +86,10 @@ export default function ScrollList({ content, pageData, headerHeight, isBackButt
     };
 
     const enhanced = React.cloneElement(content, baseProps);
-    let textName = pageData.name;
+    let textName = pageData?.name;
 
     if (isMenuNameAsTitle){
-        const menuSettings = getMenuSettings(pageData?.menu?.object, pageData.menu?.config);
+        const menuSettings = getMenuSettings(pageData?.menu?.object, pageData?.menu?.config);
         textName = menuSettings.name;
     }
     return (
@@ -104,6 +104,7 @@ export default function ScrollList({ content, pageData, headerHeight, isBackButt
                         <Header
                             backButtonPresented = {isBackButton}
                             header = {headerComponent ? headerComponent : textName}
+                            rightHeaderComponent = {rightHeaderComponent}
                             pageData = {pageData}
                             scrollToTop = {scrollToTop}
                         />
@@ -115,7 +116,7 @@ export default function ScrollList({ content, pageData, headerHeight, isBackButt
             {isShowScrollToTopButton && <Animated.View className="absolute bottom-[10px] right-[10px]" style={[buttonStyle]}>
                 <Button
                     onPress={scrollToTop}
-                    startDecorator="ChevronUp"
+                    startDecorator={inverted ? "ChevronDown" : "ChevronUp"}
                     size="lg"
                     variant="primary"
                     rounded
@@ -126,16 +127,17 @@ export default function ScrollList({ content, pageData, headerHeight, isBackButt
     )
 }
 
-const Header = memo(({ backButtonPresented, header, pageData, scrollToTop }) => {
+const Header = memo(({ backButtonPresented, header, pageData, scrollToTop, rightHeaderComponent }) => {
     const { currentUser } = useCurrentUser();
-    const settings = getPageSettings(pageData.config, pageData.uri);
-    const pagePath = pageData.uri;
+    const pagePath = pageData?.uri;
+    const settings = getPageSettings(pageData?.config, pagePath);
+   
 
     let rightComponents = settings?.header
     if (!rightComponents) {
-        const menu_name = pageData.menu?.object;
+        const menu_name = pageData?.menu?.object;
         if (menu_name) {
-            const menuSettings = getMenuSettings(pageData?.menu?.object, pageData.menu?.config);
+            const menuSettings = getMenuSettings(pageData?.menu?.object, pageData?.menu?.config);
             const addButtonsSet = menuSettings?.add?.filter(item => item.hideInTopBar !== true);
             rightComponents = menuItemsFilter(addButtonsSet, currentUser);
         }
@@ -180,7 +182,7 @@ const Header = memo(({ backButtonPresented, header, pageData, scrollToTop }) => 
                 )}
             </Row>
             {type !== 'string' && <View className="flex-auto">{header}</View>}
-            {memoizedRightComponents && <Row className="mr-[12px]">{memoizedRightComponents}</Row>}
+            {(memoizedRightComponents || rightHeaderComponent) && <Row className="mr-[12px]">{rightHeaderComponent ? rightHeaderComponent : memoizedRightComponents}</Row>}
         </Row>
     );
 });

@@ -34,7 +34,7 @@ export  const settingsDefault = {
         apps: true,
         show_profile_info: true,
         tooltips: true,
-        hide_header_for_non_logged: true,
+        hide_header_for_non_logged: false,
         hide_header_for_all: false,
         card_animation_duration: 0,
         user_remote_config: true,

@@ -37,11 +37,6 @@ export default function JotItem({ item, index, handleReply }) {
         }
     }, [item]);
 
-    /*let { data: dynamicData, error } = useSWR(
-        postData ? ['/api.php?r=bx_messenger/get_send_form/Services&params[]=', '', postData] : null,
-        fetcher,
-        !true ? undefined : { revalidateIfStale: false, revalidateOnFocus: false, revalidateOnReconnect: false }
-    )*/
     const { data: dynamicData, error } = useFetchForm('/api.php?r=bx_messenger/get_send_form/Services&params[]=', postData);
 
     let aImg = useMemo(() => item?.files.map((obj) => {
@@ -71,18 +66,18 @@ export default function JotItem({ item, index, handleReply }) {
         params: { ...item.reactions.params, button_size: "xs", button_variant: "link" }
       };
 
-    const Jot = <View className='w-full py-2'>
-        <View className="flex-row gap-x-2 ">
+    const Jot = <View className='w-full'>
+        <Row className="gap-x-2 ">
             <View className="w-10 flex-0 ">
                 <Profile {...item.author_data} displayType="unit_wo_info" displaySize="base" showInfo="false" />
             </View>
-            <View className='flex-1 flex-col gap-y-1  '>
-                <View className={'bg-bgritem dark:bg-bgritem-d rounded-xl px-3 u-vanilla-html-small py-2'} >
-                    <View className="flex-row flex-1 items-center mb-0.5 overflow-hidden">
+            <View className='flex-auto'>
+                <View className={'bg-bgritem dark:bg-bgritem-d rounded-xl px-3 u-vanilla-html-small'} >
+                    <Row className="items-center mb-0.5 pt-2">
                         <Profile {...item.author_data} displayType="unit_text_link"  />
                         <View><Text className="text-neutral-400 dark:text-neutral-600 px-[4px]">·</Text></View>
                         <Time ts={item.created}></Time>
-                    </View>
+                    </Row>
 
                     {viewState.view == 'edited' ? (
                         <Modal
@@ -106,19 +101,16 @@ export default function JotItem({ item, index, handleReply }) {
                         </Modal>
 
 
-                    ) : <>
+                    ) : <View className="pb-2">
                         {item.reply > 0 && <View className='   border border-bdr dark:border-bdr-d  rounded-md p-2 my-1  bg-neutral-500/20'>
-                            <View className="flex-row items-baseline" >
-                                {/* <View><Text className='text-xs text-neutral-800 dark:text-neutral-200 pb-1'>In Reply to </Text></View>*/}
-                            </View>
                             <Text className="text-xs text-neutral-800 dark:text-neutral-200 font-default">{linkedText(item?.reply_message, "hover:text-linkhover")}</Text>
                         </View>}
                         <Text className="text-base text-neutral-800 dark:text-neutral-200 font-default">{linkedText(item?.message, "hover:text-linkhover")}</Text>
                         {aImg.length > 0 && <Carousel data={aImg} />}
-                    </>}
+                    </View>}
                 </View>
             </View>
-        </View>
+        </Row>
         <View className="flex-row justify-between items-center ml-2 mt-0.5">
             <View className="pl-[44px]">
                 <Button align="start" title={t("Reply")} size="xs" startDecorator="Reply" variant="link" onPress={() => handleReplyInner(item)} rounded />
@@ -141,17 +133,12 @@ export default function JotItem({ item, index, handleReply }) {
                 }
             </Row>
         </View>
+        <View className="w-full h-4"></View>
     </View>
 
-    //if (!isWeb)
-    return Jot
-    //<Jot viewState={viewState} item={item} onFormSubmit={onFormSubmit} aManageMenu={aManageMenu} handleManageMenuSelect={handleManageMenuSelect}/>;
 
-    /* return (
-         <AnimatedBlock key={'jot' + index}>
-             {Jot}
-         </AnimatedBlock>
-     )*/
+    return Jot
+
 }
 
 

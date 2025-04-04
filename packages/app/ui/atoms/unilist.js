@@ -26,7 +26,8 @@ export default function UniList(props) {
             {preloadComponent}
         </View> : <Animated.FlatList
             contentContainerStyle={{
-                ...(scrollProps?.headerHeight ? { paddingTop: scrollProps.headerHeight } : {}),
+                ...(scrollProps?.headerHeight && !scrollProps?.inverted ? { paddingTop: scrollProps.headerHeight } : {}),
+                ...(scrollProps?.headerHeight && scrollProps?.inverted ? { paddingBottom: scrollProps.headerHeight } : {}),
                 ...contentContainerStyle,
             }}
             ref={refer ? refer : uniRef}
