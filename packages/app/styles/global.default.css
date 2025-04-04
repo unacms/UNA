@@ -8,8 +8,9 @@
 }
 
 *:focus-visible {
-    outline: 2px solid rgba(37, 99, 235, 0.5) !important;
-    outline-offset: 2px !important;
+    outline: 4px solid rgba(37, 99, 235, 0.1) !important;
+    outline-offset: 0px !important;
+
 }
 
 .u-vanilla-html {
