@@ -728,17 +728,17 @@ export  const settingsDefault = {
             sm: {
                 rounded: ' rounded-[8px] relative ',
                 padding: ' p-[4px] flex  ',
-                icon_container: ' flex w-[32px] h-[32px] items-center justify-center text-center ',
-                icon_size: '24px',
-                icon_margin: '  ',
-                min_height: ' web:text-[14px] leading-[32px] ',
-                margin: '  bg-transparent px-[6px] my-auto native:text-[14px] ',
-                padding_when_title: ' px-[4px] ', //padding when title is present
+                icon_container: ' flex h-[32px] w-[32px]  rounded-full items-center justify-center text-center  ',
+                icon_size: ' 20px ',
+                icon_margin: '  ', //conditional margin for icon container when title is present
+                min_height: ' leading-[32px] ',
+                margin: '  bg-transparent pe-[12px] ps-[4px]  my-auto native:text-[16px] ', //margin for title
+                padding_when_title: '  ', //padding when title is present
             },
             base: {
                 rounded: ' rounded-[12px] relative ',
                 padding: ' p-[6px]  flex  ',
-                icon_container: ' flex h-[36px] w-[36px] p-[8px] items-center justify-center text-center  ',
+                icon_container: ' flex h-[36px] w-[36px]  items-center justify-center text-center  ',
                 icon_size: ' 20px ',
                 icon_margin: ' mx-[2px] ', //conditional margin for icon container when title is present
                 min_height: ' leading-[36px] ',
@@ -753,7 +753,7 @@ export  const settingsDefault = {
                 icon_margin: '   ', //conditional margin for icon container when title is present
                 min_height: '  web:text-[16px] leading-[40px] ',
                 margin: '  bg-transparent px-[10px] my-auto native:text-[16px] ',
-                padding_when_title: ' px-[6px] ', //padding when title is present
+                padding_when_title: ' ', //padding when title is present
             },
         },
 
@@ -809,19 +809,19 @@ export  const settingsDefault = {
                 '  font-medium text-neutral-700 hover:text-neutral-900 dark:text-neutral-300 dark:group-hover:text-neutral-100 ',
             'u-btn-text-trans': ' web:duration-200 ',
             'u-btn-text-icon': ' text-neutral-700 group-hover:text-neutral-900 dark:text-neutral-300 dark:group-hover:text-neutral-100 ',            
-            'u-btn-text-pressed-icon': ' text-white ',
+            'u-btn-text-pressed-icon': ' text-primary dark:text-primary-d ',
             'u-btn-text-decorator': ' bg-bgrbutton dark:bg-bgrbutton-d group-hover:bg-bgrbutton-h dark:group-hover:bg-bgrbutton-dh ',
             'u-btn-text-pressed-decorator': ' bg-primary dark:bg-primary-d text-white ',
             'u-btn-text-pressed-cnt': ' relative bg-primary/10 dark:bg-primary-d/10 ',
 
-            'u-btn-link-cnt': ' bg-transparent active:opacity-50 hover:underline text-primary dark:text-primary-d  ',
+            'u-btn-link-cnt': ' bg-transparent active:opacity-50 hover:underline text-neutral-700 dark:text-neutral-300  ',
             'u-btn-link-text':
-                ' font-medium  text-primary dark:text-primary-d ',
+                ' font-medium  text-neutral-700 dark:text-neutral-300 ',
             'u-btn-link-trans': ' web:duration-200 ',
-            'u-btn-link-icon': '  text-primary dark:text-primary-d  ',
-            'u-btn-link-pressed-icon': ' text-primary-700 dark:text-primary-400 ',
-            'u-btn-link-color-icon-light': 'rgba(37,99,235,1)',
-            'u-btn-link-color-icon-dark': 'rgba(37,99,235,1)',
+            'u-btn-link-icon': '  text-neutral-700 dark:text-neutral-300  ',
+            'u-btn-link-pressed-icon': ' text-neutral-700 dark:text-neutral-300 ',
+            'u-btn-link-color-icon-light': ' text-neutral-600  ',
+            'u-btn-link-color-icon-dark': ' text-neutral-500 ',
             'u-btn-link-decorator': ' bg-bgritem dark:bg-bgritem-d ',
             'u-btn-link-pressed-decorator': ' bg-bgritem-h dark:bg-bgritem-dh ',
             'u-btn-link-pressed-cnt': ' bg-primary/20 dark:bg-primary-d/20 ',

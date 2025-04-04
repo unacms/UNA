@@ -257,7 +257,7 @@ export default function (props) {
                                 </Row>
                             )}
                             {!currentUser && (
-                                <Row className="flex-row flex-auto sm:flex-none justify-end gap-x-1 my-auto ">
+                                <Row className="flex-row flex-auto sm:flex-none justify-end my-auto ">
                                     <MenuLauncher />
 
                                     {bSearch && (

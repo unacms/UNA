@@ -53,7 +53,7 @@
     "react-dom": "18.3.1",
     "react-hook-form": "^7.45.2",
     "react-i18next": "^13.2.2",
-    "react-native": "0.76.7",
+    "react-native": "0.76.9",
     "react-native-calendars": "^1.1300.0",
     "react-native-controlled-mentions": "^2.2.5",
     "react-native-draggable-flatlist": "^4.0.1",
