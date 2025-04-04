@@ -47,7 +47,7 @@ export default function (props) {
     }
 
     if (!currentUser) {
-        return <Splash {...props} />
+        return <><View className="lg:hidden" style={{height: 64}} ></View><Splash {...props} /></>
     }
 
     const sideBarBlocks = Object.keys(props.blocks)
