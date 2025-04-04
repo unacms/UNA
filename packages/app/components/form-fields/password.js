@@ -5,6 +5,14 @@ import { Button } from 'app/design/controls'
 import { View } from 'app/design/view'
 import React, { useState } from 'react';
 
+const autofillOverrideStyle = `
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus {
+    transition: background-color 5000s ease-in-out 0s;
+  }
+`;
+
 export default function FormFieldPassword(props) {
     let formContext = useFormContext();
     const [isVisible, setIsVisible] = useState(true)
@@ -18,6 +26,7 @@ export default function FormFieldPassword(props) {
 
     return (
         <Field {...props}>
+            <style>{autofillOverrideStyle}</style>
             <View>
             <Input 
                 textContentType="none"
@@ -27,9 +36,10 @@ export default function FormFieldPassword(props) {
                 onChangeText={field.onChange}
                 onBlur={field.onBlur}
                 value={field.value}
-                
+                style={{paddingRight: 48}}
             />
-            <View className="absolute right-0 px-1">
+            
+            <View className="absolute right-0 top-1 px-1">
                 <Button startDecorator={isVisible?'Eye':'EyeSlash'} rounded size="sm" variant="text" onPress={()=>{setIsVisible(!isVisible)}}  />
             </View>
             </View>

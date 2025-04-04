@@ -123,7 +123,7 @@ export default function Splash(props) {
                 </View>
             </Modal>
                     <Card
-                        rounded=" rounded-2xl "
+                        rounded=" rounded-[24px] "
                         addClassName="flex-col gap-y-3 p-6 w-full max-w-xl mx-auto "
                     >
                         <BlockByServiceName name={defalulFormData.name} data={props.data} formProps={{ auto_focus:false, hide_errors: true, button_full_width: true }} />
