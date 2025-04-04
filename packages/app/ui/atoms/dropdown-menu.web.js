@@ -5,7 +5,7 @@ import { Icon } from 'app/ui/atoms/icon';
 import Redirect from 'app/ui/atoms/redirect';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { isEmoji, appSetting } from 'app/lib/util';
-
+import { SafeMenuTrigger } from 'app/ui/atoms/safe-menu-trigger';
 
 const menuSettings = appSetting('theme', 'dropdown_menu');
 
@@ -94,7 +94,7 @@ export default function DropdownMenuComponent({ variant = 'vertical', defaultOpe
                 {oItem.title}
             </DropdownMenuItemSep>
         }
-        
+
         return (
             <DmItem key={key} onSelect={(event) => !!oItem?.onClick ? oItem?.onClick(oItem, event) : onSelectInt(oItem, event)}>
                 <Row className={menuSettings.item_cnt}>
@@ -109,7 +109,13 @@ export default function DropdownMenuComponent({ variant = 'vertical', defaultOpe
         <View>
             <Redirect ref={redirectdRef} />
             <DropdownMenu.Root defaultOpen={defaultOpen}>
-                <DropdownMenu.Trigger className='focus:outline-none' asChild={true}><Pressable onPress={() => { }}>{children}</Pressable></DropdownMenu.Trigger>
+                <DropdownMenu.Trigger className='focus:outline-none' asChild={true}>
+                    <Pressable onPress={() => { }}>
+                        <SafeMenuTrigger>
+                            {children}
+                        </SafeMenuTrigger>
+                    </Pressable>
+                </DropdownMenu.Trigger>
                 <DropdownMenu.Portal>
                     <DmContent>{aDmItems}</DmContent>
                 </DropdownMenu.Portal>

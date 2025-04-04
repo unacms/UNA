@@ -27,6 +27,7 @@ import { useTranslation } from 'react-i18next';
 import Loading from 'app/ui/atoms/loading'
 import * as FeedItems from 'app/lib/feed-items'
 import { Icon } from 'app/ui/atoms/icon'
+import { SafeMenuTrigger } from 'app/ui/atoms/safe-menu-trigger';
 
 export const CommentsModal = memo(({ commentsData, initFormData, itemContent, closeOnPost }) => {
     const windowDimensions = useWindowDimensions();
@@ -238,8 +239,6 @@ export const ItemInfo = memo(({ data, t }) => {
     );
 });
 
-
-
 export const MenuManage = ({ id, menu, setViewState }) => {
     const [menuData, setMenuData] = useState(false);
 
@@ -248,7 +247,8 @@ export const MenuManage = ({ id, menu, setViewState }) => {
 
     if (!menuData)
         return (
-            <Button
+            <SafeMenuTrigger>
+                <Button
                 variant="text"
                 size="sm"
                 rounded
@@ -259,7 +259,7 @@ export const MenuManage = ({ id, menu, setViewState }) => {
                         setMenuData({ ...menu, items: [{ 'name': 'loader' }] });
                     getDataForMenu(menu, setMenuData);
                 }}
-            />
+            /></SafeMenuTrigger>
         );
 
     return <MenuManage_ id={id} menu={menuData} defaultOpen={true} setViewState={setViewState} />
