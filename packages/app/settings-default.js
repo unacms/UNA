@@ -728,12 +728,12 @@ export  const settingsDefault = {
             sm: {
                 rounded: ' rounded-[8px] relative ',
                 padding: ' p-[4px] flex  ',
-                icon_container: ' flex h-[32px] w-[32px]  rounded-full items-center justify-center text-center  ',
+                icon_container: ' flex h-[32px] w-[32px] rounded-full items-center justify-center text-center  ',
                 icon_size: ' 20px ',
                 icon_margin: '  ', //conditional margin for icon container when title is present
                 min_height: ' leading-[32px] ',
-                margin: '  bg-transparent pe-[12px] ps-[4px]  my-auto native:text-[16px] ', //margin for title
-                padding_when_title: '  ', //padding when title is present
+                margin: '  bg-transparent px-[8px] my-auto native:text-[14px] ', //margin for title
+                padding_when_title: ' px-[4px] ', //padding when title is present
             },
             base: {
                 rounded: ' rounded-[12px] relative ',
