@@ -27,7 +27,7 @@ export  const settingsDefault = {
     layout: {
         avaliable_layouts: ['hor', 'ver', 'mixed'], // OLD appSetting('layout', 'format_list')
         default_layout: 'hor', //hor, ver, mixed// OLD appSetting('layout', 'format')
-        max_width: ' full ', // consider for hor = max-w-screen-2xl, for ver = max-w-screen-xl
+        max_width: ' w-full ', // consider for hor = max-w-screen-2xl, for ver = max-w-screen-xl
         max_width_block: 'max-w-screen-xl', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
         search: true,
         extended_search: true,
@@ -40,8 +40,8 @@ export  const settingsDefault = {
         user_remote_config: true,
         
         background_image_color: '', //OLD appSetting('layout', 'background_cover_color')
-        background_image: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239C92AC' fill-opacity='0.08' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E")`,
-        background_image_dark: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239C92AC' fill-opacity='0.08' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E")`,
+        background_image: '', //`url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239C92AC' fill-opacity='0.08' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E")`,
+        background_image_dark: '', //`url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239C92AC' fill-opacity='0.08' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E")`,
         
         splash_block: 'login', //OLD appSetting('layout', 'block')
         show_login_modal: 5000,
@@ -698,7 +698,7 @@ export  const settingsDefault = {
         },
         inputs: {
             default:
-                ' border-2 focus:bg-transparent border-bdrinput dark:border-bdrinput-d focus:border-transparent bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f  focus-visible:outline-2 focus-visible:outline-offset-0 focus:outline-primary/50 dark:focus:outline-primary/50 duration-100 placeholder-neutral-500 text-neutral-800 hover:bg-bgrinput-h dark:hover:bg-bgrinput-dh outline-2 outline-offset-0 rounded-[12px] flex-auto p-[10px] dark:text-neutral-100 text-base leading-[24px] ',
+                ' border border-bdrinput dark:border-bdrinput-d bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f focus:border-bdrinput-f focus:outline-primary/50 dark:focus:outline-primary/50 duration-100 placeholder-neutral-500 text-neutral-800 dark:text-neutral-100 hover:bg-bgrinput-h dark:hover:bg-bgrinput-dh focus:outline-2 focus:outline-offset-2 rounded-lg flex-auto p-[11px] text-base leading-[24px] ',
             multi: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg flex-auto p-2 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 ',
             rounded:
                 ' border-2 border-white dark:border-neutral-900 bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus:outline-primary/50 dark:focus:outline-primary/50 duration-100 placeholder-neutral-500 text-neutral-800 hover:bg-bgrinput-h dark:hover:bg-bgrinput-dh outline-2 outline-offset-0 rounded-full flex-auto p-[10px] dark:text-neutral-100 text-base leading-[24px] ',
@@ -739,7 +739,7 @@ export  const settingsDefault = {
                 rounded: ' rounded-[12px] relative ',
                 padding: ' p-[6px]  flex  ',
                 icon_container: ' flex h-[36px] w-[36px] p-[8px] items-center justify-center text-center  ',
-                icon_size: ' ',
+                icon_size: ' 20px ',
                 icon_margin: ' mx-[2px] ', //conditional margin for icon container when title is present
                 min_height: ' leading-[36px] ',
                 margin: '  bg-transparent px-[12px] my-auto native:text-[16px] ',
@@ -749,7 +749,7 @@ export  const settingsDefault = {
                 rounded: ' rounded-[12px] relative group ',
                 padding: ' p-[4px] flex ',
                 icon_container: ' flex h-[44px] w-[44px] p-[10px] items-center justify-center text-center  ',
-                icon_size: ' ',
+                icon_size: ' 24px ',
                 icon_margin: '   ', //conditional margin for icon container when title is present
                 min_height: '  web:text-[16px] leading-[40px] ',
                 margin: '  bg-transparent px-[10px] my-auto native:text-[16px] ',

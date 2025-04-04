@@ -122,11 +122,9 @@ export default function Splash(props) {
                     </KbAvoidingView>
                 </View>
             </Modal>
-            <View className="mx-auto w-full max-w-md md:w-1/2  my-auto mx-auto items-center ">
-                <View className=" flex-auto w-full  ">
                     <Card
                         rounded=" rounded-2xl "
-                        addClassName="flex-col gap-y-3 p-4 sm:p-6 w-full max-w-xl mx-auto "
+                        addClassName="flex-col gap-y-3 p-6 w-full max-w-xl mx-auto "
                     >
                         <BlockByServiceName name={defalulFormData.name} data={props.data} formProps={{ auto_focus:false, hide_errors: true, button_full_width: true }} />
                         <Button
@@ -150,8 +148,6 @@ export default function Splash(props) {
                             />
                         </View>
                     </Card>
-                </View>
-            </View>
         </>
     )
 
@@ -177,19 +173,23 @@ export default function Splash(props) {
     }
 
     return (
-        <View className={appSetting('layout', 'theme') + ' mx-auto w-full'} >
-            <View className={' flex-col w-full mx-auto max-w-screen-2xl mx-auto ' + appSetting('layout', 'max_width')}>
-                <View className=" md:h-[calc(100vh-128px)]  md:flex-row border-b border-bdr dark:border-bdr-d p-4 sm:p-6 gap-y-4 gap-x-4 duration-300">
-                    <View className="max-w-2xl p-4 sm:p-6 flex-col gap-y-8 mx-auto justify-center my-auto sm:justify-start items-center md:items-start  flex-auto">
-                        <View className="w-32 h-32">
-                            {appStatic('splash_image')}  
-                        </View>
+        
+            <View className={' flex-col ' + appSetting('layout', 'max_width')}>
+                <View className=" max-w-7xl mx-auto md:flex-row my-6 ">
+                    <View className=" max-w-lg md:max-w-none items-center md:items-start my-auto p-4 sm:p-6 flex-col gap-y-8 flex-auto">            
+                        {appStatic('splash_image')}  
                         {appStatic('splash_text')}  
                     </View>
-                    {cnt}
+                    <View className=" w-full flex-auto max-w-lg mx-auto p-4 sm:p-6">                 
+                        {cnt}
+                    </View>
                 </View>
-                <View className=" mx-auto mt-2">{appStatic('components_footer')}</View>
+                <View className=" w-full p-4 border-t border-bdr dark:border-bdr-d">
+                    <View className=" max-w-7xl mx-auto">
+                        {appStatic('components_footer')}
+                    </View>
+                </View>
             </View>
-        </View>
+        
     )
 }
