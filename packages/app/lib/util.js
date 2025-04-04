@@ -406,8 +406,8 @@ export function getHeaderSettings(uri, width, layout, config) {
     let bHideLeftmenu = typeof settings?.headerSettings?.hideLeftmenu !== 'undefined' ? settings.headerSettings.hideLeftmenu : false;
     let bShowAltTopMenu = typeof settings?.headerSettings?.showAltTopMenu !== 'undefined' ? settings.headerSettings.showAltTopMenu : false;
 
-    if (width >= LAYOUT_BREAKPOINTS.lg)
-        bOffset = true;
+    // Apply offset on all viewports, not just larger ones
+    bOffset = true;
 
     return {
         backButton: bBackButton,

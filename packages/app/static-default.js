@@ -157,7 +157,9 @@ const LogoNativeDark = (
 )
 
 const SplashImage = (
-<Svg
+    <View className="flex-row gap-x-6">
+        <View className="w-16 h-16">
+    <Svg
         aria-label="Logo Mark"
         className=" w-auto h-fit text-neutral-800 dark:text-neutral-200 hover:text-neutral-950 dark:hover:text-neutral-50  "
         viewBox="0 0 40 40"
@@ -189,13 +191,41 @@ const SplashImage = (
             fill="currentColor"
         />
     </Svg>
+    </View>
+    <View className="h-16 w-32 items-start my-auto">
+     <Svg
+     aria-label="Logo Text"
+     className=" group-active:scale-90 text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-900 dark:group-hover:text-neutral-100 duration-500"
+     viewBox="0 0 68 32"
+     fill="none"
+     xmlns="http://www.w3.org/2000/svg"
+ >
+     <Path
+         d="M17.5 16C17.5 20.1421 14.1421 23.5 10 23.5C5.85786 23.5 2.5 20.1421 2.5 16V7.25C2.5 6.55964 1.94036 6 1.25 6C0.559644 6 0 6.55964 0 7.25V16C0 21.5228 4.47715 26 10 26C15.5228 26 20 21.5228 20 16V7.25C20 6.55964 19.4404 6 18.75 6C18.0596 6 17.5 6.55964 17.5 7.25V16Z"
+         fill="currentColor"
+     />
+     <Path
+         d="M41.5 16V24.75C41.5 25.4404 42.0596 26 42.75 26C43.4404 26 44 25.4404 44 24.75V16C44 10.4772 39.5228 6 34 6C28.4772 6 24 10.4772 24 16V24.75C24 25.4404 24.5596 26 25.25 26C25.9404 26 26.5 25.4404 26.5 24.75V16C26.5 11.8579 29.8579 8.5 34 8.5C38.1421 8.5 41.5 11.8579 41.5 16Z"
+         fill="currentColor"
+     />
+     <Path
+         fillRule="evenodd"
+         clipRule="evenodd"
+         d="M65.5 22.6146V24.75C65.5 25.4404 66.0596 26 66.75 26C67.4404 26 68 25.4404 68 24.75V16C68 10.4772 63.5228 6 58 6C52.4772 6 48 10.4772 48 16C48 21.5228 52.4772 26 58 26C60.9867 26 63.6676 24.6906 65.5 22.6146ZM65.5 16C65.5 20.1421 62.1421 23.5 58 23.5C53.8579 23.5 50.5 20.1421 50.5 16C50.5 11.8579 53.8579 8.5 58 8.5C62.1421 8.5 65.5 11.8579 65.5 16Z"
+         fill="currentColor"
+     />
+    </Svg></View>
+</View>
 )
 
 const SplashText = (
-    <Text className=" text-lg sm:text-xl text-center md:text-start text-neutral-800 dark:text-neutral-200 ">
+    <>
+    <Text className=" text-lg md:text-xl font-medium text-center md:text-start text-neutral-800 dark:text-neutral-200 ">
         Discover the community where you can connect and engage
         with people who share your interests.
     </Text>
+     
+ </>
 )
 
 const ComponentsAbout = (
