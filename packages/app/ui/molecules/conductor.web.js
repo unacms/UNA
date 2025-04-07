@@ -307,12 +307,10 @@ const HeaderContainer = ({ tabBarObj, tabBarObjSmall, currentUser, smallHeader, 
 
     if (!header && !smallHeader) {
         return (
-            <>
-                <View style={{ position: 'fixed', width: cntWidth + 'px', overflow: 'hidden', zIndex: 40, top: windowWidth >= LAYOUT_BREAKPOINTS.lg ? tOffset : 0 }}>
-                    {tabBarObj}
-                </View>
-                {/*<View className="h-28 w-full lg:hidden"></View>*/}
-            </>
+            /*style={{ position: 'fixed', width: cntWidth + 'px', overflow: 'hidden', zIndex: 40, top: windowWidth >= LAYOUT_BREAKPOINTS.lg ? tOffset : 0 }}*/
+            <View >
+                {tabBarObj}
+            </View>
         )
     }
 
@@ -396,7 +394,7 @@ const RenderSceneHeader = ({ route, setFilterValue }) => {
     )
 };
 
-export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, leftSideBarBlocks, leftSideBarWidth = ' lg:w-80 2xl:w-96 ', skeleton = '', onChangeRoute, keyword, cover, layoutName }) {
+export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, leftSideBarBlocks, leftSideBarWidth = ' lg:w-80 2xl:w-96 ', skeleton = '', onChangeRoute, keyword, cover, layoutName, defaultHeaderHeight=116 }) {
     const uniRef = useRef();
     const { currentUser } = useCurrentUser();
     const { setBottomSheetData } = useBottomSheetData();
@@ -418,7 +416,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     }, [keyword, data.url, data.elements]);
 
 
-    const [index, setIndex] = useState(() => {
+    const initialIndex = useMemo(() => {
         const foundIndex = routes.findIndex(function (item) {
             if (useSectionAsMenu) {
                 return data.url === item.key;
@@ -427,9 +425,18 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             }
         });
         return foundIndex !== -1 ? foundIndex : 0;
-    });
+    }, [routes, data.url, useSectionAsMenu]);
+
+    const [index, _setIndex] = useState(initialIndex);
+    const [prevIndex, setPrevIndex] = useState(initialIndex);
+
+    const setIndex = (newIndex) => {
+        setPrevIndex(index);
+        _setIndex(newIndex);
+      };
 
     const currentRoute = routes.find((item) => item.index === index);
+    const prevRoute = useMemo(() => routes.find((item) => item.index === prevIndex), [routes, prevIndex]);;
     const queryKey = [currentRoute?.endpoint?.request_url, index, keyword, JSON.stringify(currentRoute?.endpoint?.params?.filters), data.uri];
     const [headerSettings, setHeaderSettings] = useState(getHeaderSettings(getURI(currentRoute?.key), windowWidth, layoutName, currentRoute.config));
 
@@ -680,7 +687,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
     const Preload = useMemo(() => getSkeletonForList(sSkeleton, numColumns), [sSkeleton, numColumns]);
 
-    const RenderScene = useCallback(({ route }) => {
+    const RenderScene = useCallback(({ route, header, prevRoute, headerHeight }) => {
 
         const dataItems = route?.data
 
@@ -691,14 +698,20 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             return a;
         }
 
-        if (!route.inited) {
-            return <></>
-        }
-
+       
         const isRightCol = route?.sidebar?.content?.length > 0 || route?.blocks?.browse_sidebar;
 
         const TabFlashListM = useMemo(() => {
             return <UniList
+                scrollProps={header ?
+                    {
+                        pageData: route.inited ? route.pageData : prevRoute.pageData, 
+                        subHeaderComponent: header, 
+                        headerHeight: headerHeight, 
+                        isBackButton: false,
+                        isMenuNameAsTitle: true
+                    } : null
+                }
                 index={route.index}
                 data={dataItems}
                 endpoint={route.endpoint}
@@ -782,7 +795,8 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
     ), [routes, index, setIndex, onChangeRoute]);
 
-
+    const isShowFilters = false;// todo
+    const isUseCurrentHeader = layoutName !== 'navigator' 
 
     if (leftSideBar) {
 
@@ -801,9 +815,9 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
         return (
             <View className={appSetting('layout', 'max_width') + " w-full h-full mx-auto"} scrollEnabled={false} onLayout={handleLayoutTop}>
-                {headerComponent}
+                {isUseCurrentHeader && headerComponent}
                 <Toaster ref={toasterRef} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" />
-                <View style={{ minHeight: (windowHeight - offset) }} className={appSetting('layout', 'max_width  ') + ' lala mx-auto w-full mt-28 lg:mt-0 '} >
+                <View style={{ minHeight: (windowHeight - offset) }} className={appSetting('layout', 'max_width  ') + ' lala mx-auto w-full  '} >{/*mt-28 lg:mt-0*/}
                     <Row className={rc}>
                         {a}
                         <View className=" flex-auto m">
@@ -812,7 +826,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                                 <Button title="Filters" variant="default" size="sm" rounded onPress={showFilters} />
                             </View>}
                             {sceneHeaderComponent}
-                            <RenderScene route={currentRoute} />
+                            <RenderScene prevRoute={prevRoute} headerHeight={isShowFilters? 150: defaultHeaderHeight} header={isUseCurrentHeader ? null : headerComponent} route={currentRoute} />
                         </View>
                     </Row>
                 </View>
@@ -823,11 +837,11 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
     return (
         <View className="w-full h-full" scrollEnabled={false} onLayout={handleLayoutTop}>
-            {headerComponent}
+            {isUseCurrentHeader && headerComponent}
             <Toaster ref={toasterRef} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" />
             <View className={`${conductorTheme.content_max_width} mx-auto w-full min-h-screen ${tmplLayout == 'mixed' ? 'mt-12' : ''}`}>
                 {sceneHeaderComponent}
-                <RenderScene route={currentRoute} />
+                <RenderScene prevRoute={prevRoute} headerHeight={isShowFilters? 150: defaultHeaderHeight} header={isUseCurrentHeader ? null : headerComponent} route={currentRoute} />
             </View>
             <Footer />
         </View>

@@ -184,7 +184,7 @@ export function ConductorFlat({ header, defaultHeaderHeight=116, smallHeader, mi
 
     const [index, _setIndex] = useState(initialIndex);
     const [prevIndex, setPrevIndex] = useState(initialIndex);
-    console.log("indexindex", index, prevIndex)
+    
     const setIndex = (newIndex) => {
         setPrevIndex(index);
         _setIndex(newIndex);

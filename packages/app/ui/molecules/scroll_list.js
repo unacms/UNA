@@ -1,27 +1,17 @@
-import { View, Row, Pressable } from 'app/design/view';
+import { View } from 'app/design/view';
 import Animated, {
     useSharedValue,
     useAnimatedStyle,
     useAnimatedScrollHandler,
     withTiming,
 } from 'react-native-reanimated';
-import { useRef } from "react";
 import { BlurView } from 'expo-blur';
-import React, { useMemo, memo, isValidElement } from 'react';
-import { getPageSettings } from 'app/lib/util'
-import { Text } from 'app/design/typography'
-import { Icon } from 'app/ui/atoms/icon';
+import React from 'react';
 import { Theme } from 'app/design/theme';
 import { useRouter } from "expo-router";
-import { FeedbackHaptics } from 'app/lib/util';
-import { useCurrentUser } from 'app/context/user';
-import { appStatic } from 'app/lib/app-static';
-import { menuItemsFilter } from 'app/lib/util';
-import MenuAdd from 'app/components/nav/menu-add'
-import { menuItemsByName, appSetting, getMenuSettings } from 'app/lib/util'
-import Search from 'app/ui/molecules/search';
+import { appSetting } from 'app/lib/util'
 import { Button } from 'app/design/controls';
-import Link from 'app/ui/atoms/link'
+import { Header } from 'app/ui/molecules/scroll_list_header';
 
 // TODO OPTIMIZATION
 export default function ScrollList({ content, pageData, headerHeight = 64, isBackButton = false, contentType, refer, inverted, headerComponent, subHeaderComponent, rightHeaderComponent, isMenuNameAsTitle = false}) {
@@ -34,14 +24,6 @@ export default function ScrollList({ content, pageData, headerHeight = 64, isBac
     /* ANIMATION */
     const scrollY = useSharedValue(0);
     const scrollDirection = useSharedValue('none');
-
-    /*const headerStyle = useAnimatedStyle(() => {
-        const isShow = scrollDirection.value == 'up' || scrollY.value < transparencyOffset || scrollY.value == 0;
-        return {
-            opacity: isShow ? withTiming(1) : withTiming(0),
-           // backgroundColor: colors.headerBackground
-        };
-    });*/
 
     const headerStyle = useAnimatedStyle(() => {
         const isShow =
@@ -64,17 +46,13 @@ export default function ScrollList({ content, pageData, headerHeight = 64, isBac
 
     const onScroll = useAnimatedScrollHandler((event) => {
         const currentY = Math.round(event.contentOffset.y / 10) * 10;
-
         if (currentY === scrollY.value) return;
-
         scrollDirection.value = currentY > scrollY.value ? 'down' : 'up';
         scrollY.value = currentY;
     });
 
     const scrollToTop = () => {
-
         const scrollFn = contentType === 'FlatList' ? 'scrollToOffset' : 'scrollTo';
-
         refer?.current?.[scrollFn]?.({ y: 0, x: 0, animated: true });
     };
     /* ANIMATION */
@@ -86,15 +64,10 @@ export default function ScrollList({ content, pageData, headerHeight = 64, isBac
     };
 
     const enhanced = React.cloneElement(content, baseProps);
-    let textName = pageData?.name;
 
-    if (isMenuNameAsTitle){
-        const menuSettings = getMenuSettings(pageData?.menu?.object, pageData?.menu?.config);
-        textName = menuSettings.name;
-    }
+    const routerExpo = useRouter();
     return (
         <View className="flex-1">
-            
             {enhanced}
             <Animated.View className="absolute top-0 w-full " style={[headerStyle]}>
                 <BlurView tint="default"
@@ -103,10 +76,12 @@ export default function ScrollList({ content, pageData, headerHeight = 64, isBac
                     <View className="w-full" style={{ backgroundColor: colors.headerBackground }} >
                         <Header
                             backButtonPresented = {isBackButton}
-                            header = {headerComponent ? headerComponent : textName}
+                            header = {headerComponent}
                             rightHeaderComponent = {rightHeaderComponent}
                             pageData = {pageData}
                             scrollToTop = {scrollToTop}
+                            router={routerExpo}
+                            isMenuNameAsTitle={isMenuNameAsTitle}
                         />
                         {subHeaderComponent}
                     </View>
@@ -126,102 +101,3 @@ export default function ScrollList({ content, pageData, headerHeight = 64, isBac
         </View>
     )
 }
-
-const Header = memo(({ backButtonPresented, header, pageData, scrollToTop, rightHeaderComponent }) => {
-    const { currentUser } = useCurrentUser();
-    const pagePath = pageData?.uri;
-    const settings = getPageSettings(pageData?.config, pagePath);
-   
-
-    let rightComponents = settings?.header
-    if (!rightComponents) {
-        const menu_name = pageData?.menu?.object;
-        if (menu_name) {
-            const menuSettings = getMenuSettings(pageData?.menu?.object, pageData?.menu?.config);
-            const addButtonsSet = menuSettings?.add?.filter(item => item.hideInTopBar !== true);
-            rightComponents = menuItemsFilter(addButtonsSet, currentUser);
-        }
-    }
-
-    const memoizedRightComponents = useMemo(() => {
-        if (Array.isArray(rightComponents) && !isValidElement(rightComponents[0])) {
-            return getRightHeader(rightComponents, currentUser, pagePath);
-        }
-        return rightComponents;
-    }, [rightComponents, currentUser, pagePath]);
-
-    const type = typeof header;
-    let text = type === 'string' ? header : '';
-
-    const routerExpo = useRouter();
-
-    const isHome = pagePath === 'home';
-    if (isHome) {
-        text = '';
-    }
-
-    text = text.replace('__notification__', '');
-
-    return (
-        <Row className={`justify-between items-center h-[64px] `}>
-            <Row>
-                {(isHome) && <Pressable onPress={scrollToTop} className="ml-[12px]">{appStatic('logo_native')}</Pressable>}
-                <View className="mr-[12px]">{backButtonPresented && (
-                    <Button variant="text" onPress={() => {
-                        FeedbackHaptics('Medium');
-                        routerExpo.back();
-                    }} startDecorator="ChevronLeft" />
-                )}</View>
-
-                {text && (
-                    <View>
-                        <Text className="font-bold text-neutral-800 dark:text-neutral-200 text-3xl tracking-tighter">
-                            {text}
-                        </Text>
-                    </View>
-                )}
-            </Row>
-            {type !== 'string' && <View className="flex-auto">{header}</View>}
-            {(memoizedRightComponents || rightHeaderComponent) && <Row className="mr-[12px]">{rightHeaderComponent ? rightHeaderComponent : memoizedRightComponents}</Row>}
-        </Row>
-    );
-});
-
-
-function getRightHeader(items, currentUser, pagePath) {
-    items = menuItemsFilter(items, currentUser);
-    let addMenu = null;
-    if (pagePath == '/home' && currentUser) {
-        const menu_add_items = menuItemsByName('', appSetting('menu_items', 'menu_add'), currentUser);
-        if (menu_add_items.length) {
-            addMenu = <MenuAdd key='menu-add' buttonProps={{ variant: "secondary", rounded: 'rounded', startDecorator: "Plus", id: "m3" }} />;
-        }
-    }
-    if (items?.length == 0 && !addMenu)
-        return null;
-
-    return <Row className='gap-x-[8px] items-center'>{
-        items?.map((button) => {
-            let btn = undefined;
-            if (button.section || button.link == 'search')
-                btn = <Search section={button.section} params={{ trigger: { title: button.title, icon: button.icon ? button.icon : 'Search', size: 'base', variant: 'secondary' } }} />
-            else {
-                btn = <Button 
-                    rounded title={button.title} 
-                    variant='secondary' 
-                    startDecorator={button.icon} 
-                    size="base" 
-                    addon={button.link == appSetting('messenger', 'url') ? {variant:'primary', text: currentUser?.counters?.bx_messenger_new_messages, hideZero: true} : undefined}
-                />;
-                btn = button.link ? <Link href={button.link} >{btn}</Link> : btn
-            }
-
-            return (
-                <View className="" key={`add-${button.icon}`} >{btn}</View>
-            )
-        })
-
-    }
-        {!!addMenu && <View className=' '>{addMenu}</View>}
-    </Row>;
-};

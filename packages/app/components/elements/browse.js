@@ -306,7 +306,7 @@ export default function (props) {
                         <Text className="text-base font-bold text-neutral-800 dark:text-neutral-200 ">{t(props.block.title)}</Text>
                         {props.addLink ? (<Link href={props.addLink.url}><Button variant='text' size='xs' title={props.addLink.text} /></Link>) : null}
                     </Row>) : <></>}
-                {(isWeb && props.exProps?.headerBlocks) ? props.exProps?.headerBlocks : ''}
+                {/*(isWeb && props.exProps?.headerBlocks) ? props.exProps?.headerBlocks : ''*/}
                 <UniList
                     scrollProps={props?.exProps?.scrollProps}
                     preloadComponent={PreloadComponent}
@@ -328,7 +328,7 @@ export default function (props) {
                     refreshing={isRefreshing}
                     renderItem={({ item, index }) => isWeb ? <Item key={'item' + item.id} item={item} index={index} numColumns={numColumns} data={data} unitMode={unitMode} props={props} /> : <Item item={item} index={index} numColumns={numColumns} data={data} unitMode={unitMode} props={props} />}
                     onEndReached={handleEndReached}
-                    ListHeaderComponent={(!isWeb && props.exProps?.headerBlocks) ? props.exProps?.headerBlocks : ''}
+                    ListHeaderComponent={(props.exProps?.headerBlocks) ? props.exProps?.headerBlocks : ''}
                     ListFooterComponent={
                         ((hasNextPage && isFetchingNextPage)) ? (
                             Preload

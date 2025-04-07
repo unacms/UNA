@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  transition: background-color 5000s ease-in-out 0s;
+}
 
 .u-vanilla-html {
     /* @apply prose dark:prose-invert; */

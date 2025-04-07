@@ -122,74 +122,71 @@ export default function Splash(props) {
                     </KbAvoidingView>
                 </View>
             </Modal>
-                    <Card
-                        rounded=" rounded-[24px] "
-                        addClassName="flex-col gap-y-3 p-6 w-full max-w-xl mx-auto "
-                    >
-                        <BlockByServiceName name={defalulFormData.name} data={props.data} formProps={{ auto_focus:false, hide_errors: true, button_full_width: true }} />
-                        <Button
-                            title="Forgot password?"
-                            variant="link"
-                            fullWidth
-                            size="sm"
-                            onPress={() => {
-                                setModalForm('fp')
-                            }}
-                        />
-                        <View className="border-t border-bdr dark:border-bdr-d pt-4 sm:pt-6 ">
-                            <Button
-                                title={defalulFormData.button}
-                                startDecorator={defalulFormData.icon}
-                                size="base"
-                                fullWidth
-                                onPress={() => {
-                                    setModalForm(defalulFormData.action)
-                                }}
-                            />
-                        </View>
-                    </Card>
+            <Card
+                rounded=" rounded-[24px] "
+                addClassName="flex-col gap-y-3 p-6 w-full max-w-xl mx-auto "
+            >
+                <BlockByServiceName name={defalulFormData.name} data={props.data} formProps={{ auto_focus: false, hide_errors: true, button_full_width: true }} />
+                <Button
+                    title="Forgot password?"
+                    variant="link"
+                    fullWidth
+                    size="sm"
+                    onPress={() => {
+                        setModalForm('fp')
+                    }}
+                />
+                <View className="border-t border-bdr dark:border-bdr-d pt-4 sm:pt-6 ">
+                    <Button
+                        title={defalulFormData.button}
+                        startDecorator={defalulFormData.icon}
+                        size="base"
+                        fullWidth
+                        onPress={() => {
+                            setModalForm(defalulFormData.action)
+                        }}
+                    />
+                </View>
+            </Card>
         </>
     )
 
     if (!isWeb) {
         return (
             <View className="justify-around flex-1">
-
-
                 <KbAvoidingView className="flex-1">
                     <ScrollView>
                         {!isKeyboardVisible && <View className="items-center my-8 ">
                             <View className="w-60 items-center ">{appStatic('logo_native')}</View>
                             <View className="my-4  mx-12">
-                                {appStatic('splash_text')}  
+                                {appStatic('splash_text')}
                             </View>
                         </View>}
                         {cnt}
                     </ScrollView>
                 </KbAvoidingView>
-
             </View>
         )
     }
 
     return (
-        
-            <View className={' flex-col ' + appSetting('layout', 'max_width')}>
-                <View className=" max-w-7xl mx-auto md:flex-row my-6 ">
-                    <View className=" max-w-lg md:max-w-none items-center md:items-start my-auto p-4 sm:p-6 flex-col gap-y-8 flex-auto">            
-                        {appStatic('splash_image')}  
-                        {appStatic('splash_text')}  
-                    </View>
-                    <View className=" w-full flex-auto max-w-lg mx-auto p-4 sm:p-6">                 
-                        {cnt}
-                    </View>
+
+        <View className={' flex-col ' + appSetting('layout', 'max_width')}>
+            <View className=" max-w-7xl mx-auto md:flex-row my-6 ">
+                <View className=" max-w-lg md:max-w-none items-center md:items-start my-auto p-4 sm:p-6 flex-col gap-y-8 flex-auto">
+                    {appStatic('splash_image')}
+                    {appStatic('splash_text')}
                 </View>
-                <View className=" w-full p-4 border-t border-bdr dark:border-bdr-d">
-                    <View className=" max-w-7xl mx-auto">
-                        {appStatic('components_footer')}
-                    </View>
+                <View className=" w-full flex-auto max-w-lg mx-auto p-4 sm:p-6">
+                    {cnt}
                 </View>
             </View>
-        
+            <View className=" w-full p-4 border-t border-bdr dark:border-bdr-d">
+                <View className=" max-w-7xl mx-auto">
+                    {appStatic('components_footer')}
+                </View>
+            </View>
+        </View>
+
     )
 }

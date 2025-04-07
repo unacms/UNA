@@ -10,7 +10,6 @@ import useFetchForm from 'app/lib/hooks/fetch'
 import { fetcher } from 'app/lib/fetcher';
 import Loading from 'app/ui/atoms/loading'
 import Form from 'app/components/elements/form';
-import { useTheme } from '@react-navigation/native';
 import { Keyboard } from 'react-native'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { subscribe } from 'app/ui/atoms/socket';
@@ -81,7 +80,7 @@ export function parseData(browse, dynamicData) {
     return browse;
 }
 
-export function CommentsParts(commentsData, aItems, height = 0, initFormData, isModal = false, closeOnPost = false) {
+export function CommentsParts(commentsData, aItems, height = 0, initFormData, isModal = false, closeOnPost = false, header = null, pageData = null) {
     const [formData, setFormData] = useState({});
     const [addData, setAddData] = useState({});
 
@@ -103,7 +102,21 @@ export function CommentsParts(commentsData, aItems, height = 0, initFormData, is
     }
 
     return [
-        <CommentsBrowse height={height > 0 ? height : undefined} addItems={aItems} handleReply={handleReply} browse={commentsData.browse} addData={addData} module={commentsData.browse?.data?.module ? commentsData.browse.data.module : commentsData?.module} requestUrl={commentsData.url} />,
+        <CommentsBrowse 
+            scrollProps={
+                header ? {
+                    headerHeight:64, 
+                    pageData:pageData, 
+                    headerComponent: header, 
+                    isBackButton: true, 
+                } : null
+            } 
+            height={height > 0 ? height : undefined} 
+            addItems={aItems} handleReply={handleReply} 
+            browse={commentsData.browse} addData={addData} 
+            module={commentsData.browse?.data?.module ? commentsData.browse.data.module : commentsData?.module} 
+            requestUrl={commentsData.url} 
+        />,
         <KbAvoidingView>
             <CommentsForm isModal={isModal} handleForm={handleForm} browse={commentsData.browse} module={commentsData.browse?.data?.module ? commentsData.browse.data.module : commentsData?.module} form={commentsData.form} formData={formData} requestUrl={commentsData.url} />
         </KbAvoidingView>

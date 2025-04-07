@@ -309,14 +309,6 @@ export default function (props) {
 
                 <View className="flex-auto w-full lg:w-auto lg:px-4 xl:px-2 ">
                     <View className=" w-full mx-auto lg:max-w-2xl relative xl:pt-4  ">
-
-                        {isWeb && (
-                            <>
-                                <View className="web:fixed web:top-16 xl:hidden web:lg:top-0 web:z-50 web:w-full lg:relative bg-bgrnavbar dark:bg-bgrnavbar-d lg:bg-transparent border-b border-bdrcard dark:border-bdrcard-d shadow-sm lg:shadow-none lg:border-none">{subHeader}</View>
-                                <View className="lg:hidden" style={{height: isFeedMenuPresent ? 116 : 64}} ></View>
-                            </>
-                            )
-                        }
                         <View className={`relative w-full mx-auto max-w-2xl ${feedList.length > 1 ? '' : 'sm:mt-3'} `}>
                             {feedList.map((item, index) => {
                                 if (feedType == item.name) {

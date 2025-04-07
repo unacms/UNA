@@ -443,10 +443,11 @@ export function LeftSidebar({ title, addButtons, children, width, menu }) {
 
 export function TopSidebar({ styles, isWeb, leftSideBar, header, headerSettings, addButtons, children, isSmall, title, layout, showMenu, isDrawer }) {
     const isUseBg = appSetting('cover', 'use_background');
+    
     return (
         <View
             style={styles}
-            className={ `${conductorTheme.menu} ${leftSideBar ? 'lg:hidden' : ''
+            className={ ` ${conductorTheme.menu} ${leftSideBar ? 'lg:hidden' : ''
                 } ${isUseBg
                     ? ' '
                     : /*isSmall
@@ -455,7 +456,7 @@ export function TopSidebar({ styles, isWeb, leftSideBar, header, headerSettings,
                 }`}
         >
             <View className={`${leftSideBar ? '' : ' mx-auto'}  w-full ${conductorTheme.menu_max_width}`}>
-                {!header && isWeb && <Row className="lg:hidden flex-row gap-x-1 flex-none items-center justify-between h-16 bg-bgrnavbar dark:bg-bgrnavbar-d ">
+                {/*!header && isWeb && <Row className="lg:hidden flex-row gap-x-1 flex-none items-center justify-between h-16 bg-bgrnavbar dark:bg-bgrnavbar-d ">
                     
                     { layout === 'ver' && (<><Row className="items-center px-3 sm:px-4">
                         {headerSettings.header && getBackButtonWeb()}
@@ -475,7 +476,7 @@ export function TopSidebar({ styles, isWeb, leftSideBar, header, headerSettings,
                     </Row></>)
 }
                 </Row>
-                }
+                */}
                 <Row className=" items-center  ">
                     {title ? <Text className="text-2xl my-auto mx-5 pb-1 font-medium text-neutral-800  tracking-tight dark:text-neutral-200 hidden lg:flex">{title}</Text> : <Text className=" hidden lg:flex"></Text>}
                     {children}

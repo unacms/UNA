@@ -46,8 +46,9 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     const [searchValue, setSearchValue] = useState('');
     const [replyItem, setReplyItem] = useState(false);
 
+    console.log("formHeight", formHeight)
     const layoutHeightLeft = layoutHeight;
-    let layoutHeightRight = isWeb ? layoutHeight - 40 - formHeight : layoutHeight - formHeight;
+    let layoutHeightRight = isWeb && !isSmallScreen ? layoutHeight - 40 - formHeight : layoutHeight - formHeight;
     if (listError)
         layoutHeightRight = layoutHeightRight - 60
     /* let { data: dynamicData, error } = useSWR(
@@ -301,8 +302,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     }, []);
 
     const handleLayout = useCallback((event) => {
-        console.log("event.nativeEvent.layout.height", event.nativeEvent.layout.height)
-        setFormHeight(event.nativeEvent.layout.height + 16)
+        setFormHeight(event.nativeEvent.layout.height + (isSmallScreen ? 0 : 16))
     }, []);
 
     const handleReply = useCallback((item) => {
@@ -384,6 +384,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
              }
          });
          previousValues.current = dependencies;*/
+
         return (
             (!!panelsVisible.jots && !!selectedConvo && jots?.data?.jots) && (
                 <View className="w-full md:w-3/5 flex-1 bg-bgrcard dark:bg-bgrcard-d  justify-between">
@@ -498,13 +499,13 @@ const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, 
     </Row>
 
     return <View style={{ height: layoutHeightLeft }} className={'bg-bgrcard dark:bg-bgrcard-d  w-full  md:w-80 2xl:w-96 border-bdrtabbar dark:border-bdrtabbar-d border-r'}>
-        {isWeb && header}
+        {/*isWeb && header*/}
         {data && data.length > 0 ? <>
-
             <UniList
                 height={layoutHeightLeft}
                 data={data}
                 mode="simple"
+                useCustomScrollHandler={true}
                 scrollProps={{ pageData: null, headerHeight: 64, headerComponent: header }}
                 renderItem={({ item, index }) => <ItemConvo selectedIndex={selectedConvoIndex} item={item} index={index} changeConvo={changeConvo} />}
             /></>
@@ -569,8 +570,8 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
 
 
     const header = (
-        <View className='md:px-0 border-bdrcard dark:border-bdrcard-d web:border-b w-full '>
-            <Row className='p-2 items-center justify-between w-full '>
+        <View className='md:px-0  w-full '>
+            <Row className='pr-2 items-center justify-between w-full '>
                 <Row className='items-center justify-start overflow-hidden flex-auto '>
                     {isSmallScreen && <View className='mr-2'><BackButton buttonProps={{ variant: "text", startDecorator: 'ArrowLeft', bgrDecorator: true, rounded: 'rounded', align: "start" }} callback={showConvo} /></View>}
                     <Text numberOfLines={1} className="font-bold text-neutral-800 dark:text-neutral-200 text-3xl tracking-tighter">{title}</Text>
@@ -593,7 +594,7 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
     )
 
     return (<>
-        {isWeb && header}
+        {(isWeb && !isSmallScreen) && header}
         <View style={{ height: layoutHeightRight - keyboardHeight }} className='mx-2 '>
             {data.length > 0 && <UniList
                 refer={refListJots}
@@ -606,6 +607,7 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
                 height={layoutHeightRight - keyboardHeight}
                 mode="simple"
                 useWindowScroll
+                useCustomScrollHandler={true}
                 renderItem={({ item, index }) => <ItemJot handleReply={handleReply} item={item} index={index} />}
                 scrollProps={{ pageData: null, headerComponent: header, inverted: true, headerHeight:64, }}
             />}

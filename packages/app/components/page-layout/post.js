@@ -2,7 +2,7 @@ import { View } from 'app/design/view';
 import { BlockByName, DataByName } from 'app/components/block';
 import { useState, useContext, useMemo, useEffect } from 'react';
 import { stripTags } from 'app/lib/util';
-import { useTheme } from '@react-navigation/native';
+import { Theme } from 'app/design/theme';
 import { CommentsBrowse, CommentsForm } from 'app/lib/comments-helpers'
 import { useLocalSearchParams } from 'expo-router';
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
@@ -14,9 +14,7 @@ export default function PageLayout(props) {
     const [replyId, setReplyId] = useState(false);
     const localUrl = useLocalSearchParams();
     const commentsData = useMemo(() => DataByName(props.data, props.blocks.comments), [props.data, props.blocks.comments]);
-    const { colors } = useTheme();
-
-
+    const { colors } = Theme()
 
     useEffect(() => {
         if (localUrl?.url) {
@@ -63,14 +61,15 @@ export default function PageLayout(props) {
                                 pageData:props.data, 
                                 headerComponent: headerItems[0].data, 
                                 isBackButton: true, 
-                            }} 
-                            addItems={aItems} 
-                            handleReply={data => setFormData({ text: stripTags(data.cmt_text), parent_id: data.cmt_id, author: data.author_data, cmt_id: data.cmt_id, cmt_object_id: data.cmt_object_id })} 
-                            browse={commentsData.content[0].browse} 
-                            addData={addData} 
-                            module={commentsData?.content[0].browse?.data?.module || commentsData?.module} 
-                            requestUrl={commentsData.content[0].url} 
-                            replyId={replyId} 
+                            }
+                        } 
+                        addItems={aItems} 
+                        handleReply={data => setFormData({ text: stripTags(data.cmt_text), parent_id: data.cmt_id, author: data.author_data, cmt_id: data.cmt_id, cmt_object_id: data.cmt_object_id })} 
+                        browse={commentsData.content[0].browse} 
+                        addData={addData} 
+                        module={commentsData?.content[0].browse?.data?.module || commentsData?.module} 
+                        requestUrl={commentsData.content[0].url} 
+                        replyId={replyId} 
                         />
                 </View>
             </View>

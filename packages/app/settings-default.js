@@ -499,7 +499,7 @@ export  const settingsDefault = {
             { key: '/tab1', title: 'Friends', url: '/friends', icon: 'UsersRound' },
             { key: '/tab2', title: 'Messages', url: '/messenger', icon: 'MessageCircleMore' },
             { key: '/tab3', title: 'Notifications', url: '/notifications-view', icon: 'Bell' },
-            { key: '/tab4', title: 'Dashboard', url: '/dashboard', icon: 'Award' }
+            { key: '/tab4', title: 'Dashboard', url: '/terms', icon: 'Award' }
         ],
         
         menu_tabbar_non_logged: [

@@ -87,14 +87,8 @@ export default function PageLayout(props) {
         actionsItemIndex = aItems.findIndex(item => item.id === 'block_author');
         if (actionsItemIndex !== -1) {
             if (windowDimensions.width < LAYOUT_BREAKPOINTS.lg) {
-                headerComponent = (
-                    <Row className='py-2 px-3 w-full items-center fixed top-0 z-50 border-b  bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur border-bdrnavbar dark:border-bdrnavbar-d flex-row justify-start'>
-                        {getBackButtonWeb()}
-                        <View style={{ width: windowWidth - 92 }}>
-                            {aItems[actionsItemIndex].data}
-                        </View>
-                    </Row>
-                );
+                headerComponent = aItems[actionsItemIndex].data;
+
                 aItems.splice(actionsItemIndex, 1);
             } else {
                 aItems[actionsItemIndex].data = (
@@ -110,13 +104,13 @@ export default function PageLayout(props) {
     //const commentsData = useMemo(() => DataByName(props.data, props.blocks.comments), [props.data, props.blocks.comments]);
     const commentsData = DataByName(pageData, props.blocks.comments);
     //console.log("commentsData", commentsData)
-    const CommentsPartsData = CommentsParts(commentsData?.content[0], aItems)
+    const CommentsPartsData = CommentsParts(commentsData?.content[0], aItems, 0, null, false, false, header, props.data)
     return (
         <>
-            {header}
-            <View className=" py-0 lg:px-4 mt-14 lg:mt-4 flex-1">
+
+            <View className=" py-0 lg:px-4 mt-0 lg:mt-4 flex-1">
                 <ViewRef ref={viewCntRef} className="max-w-5xl flex-1 overflow-hidden mx-auto h-full w-full border-bdrcard dark:border-bdrcard-d lg:rounded-2xl bg-bgrcard dark:bg-bgrcard-d">
-                    <Row className='w-full p-3 sm:p-4' style={{ marginBottom: sizes.formHeight + 28 }}>
+                    <Row className='w-full px-3 sm:p-4' style={{ marginBottom: sizes.formHeight + 28 }}>
                         <View className='w-full' >
                             {CommentsPartsData[0]}
                         </View>

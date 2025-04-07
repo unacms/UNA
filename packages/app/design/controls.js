@@ -390,7 +390,7 @@ export const Button = (props) => {
         bgrDecorator = false,
         indicator = false,
         indicatorPosition = 'top-right',
-        indicatorContent = '',
+        indicatorContent = <></>,
         indicatorClassName = '',
         direction = 'flex-row',
         ...rest

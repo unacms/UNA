@@ -33,7 +33,7 @@ async function runOneSignal() {
 }
 
 
-const MemoizedContent = React.memo(({ headerSettings, currentUser, layoutName, data, children, uri, blocks, width }) => {
+const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutName, layoutName, data, children, uri, blocks, width }) => {
     const [isModal, setIsModal] = useState(false);
 
     useEffect(() => {
@@ -67,42 +67,55 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, layoutName, d
             {appStatic('maintenance_mode')}
         </>
     }
+    
+    if (width < LAYOUT_BREAKPOINTS.lg) {
+        return (
+            <>
+                <Suggestions />
+                <AsyncWorker />
+                
+                    <Content width={width} layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} url={data?.url} />
+                    {(headerSettings?.footer !== false || !currentUser) && <Footer />}
+                <BottomSheet />
+                <ModalPopup />
+            </>
+        );
 
-    if (getLayout(currentUser, layoutName) == 'hor') {
+    }
+
+    if (pageLayoutName == 'hor') {
+        return (
+            <>
+                <Suggestions />
+                <AsyncWorker />
+                <NavbarMemo pageLayoutName={pageLayoutName} headerSettings={headerSettings} layoutName={layoutName} title={data?.name} menu={data?.menu} menu_add={data?.menu_add || false} uri={uri} url={data?.url} >
+                    <Content width={width} layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} url={data?.url} />
+                </NavbarMemo>
+                <BottomSheet />
+                <ModalPopup />
+            </>
+        );
+    }
+
+    if (pageLayoutName == 'mixed') {
+
         return (
             <>
 
                 <Suggestions />
                 <AsyncWorker />
-                <NavbarMemo headerSettings={headerSettings} layoutName={layoutName} title={data?.name} menu={data?.menu} menu_add={data?.menu_add || false} uri={uri} url={data?.url} >
+                <NavbarMemo pageLayoutName={pageLayoutName} headerSettings={headerSettings} layoutName={layoutName} title={data?.name} menu={data?.menu} menu_add={data?.menu_add || false} uri={uri} url={data?.url} >
                     <Content width={width} layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} url={data?.url} />
                 </NavbarMemo>
                 <BottomSheet />
                 <ModalPopup />
 
             </>
-        );
-    }
-
-    if (getLayout(currentUser, layoutName) == 'mixed') {
-
-        return (
-            <>
-
-                <Suggestions />
-                <AsyncWorker />
-                <NavbarMemo headerSettings={headerSettings} layoutName={layoutName} title={data?.name} menu={data?.menu} menu_add={data?.menu_add || false} uri={uri} url={data?.url} >
-                    <Content width={width} layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} url={data?.url} />
-                </NavbarMemo>
-                <BottomSheet />
-                <ModalPopup />
-
-            </>
 
         );
     }
 
-    if (getLayout(currentUser, layoutName) == 'ver') {
+    if (pageLayoutName == 'ver') {
 
         const menuItems = menuItemsByName('main_menu', appSetting('menu_items', 'menu_sidebar'), currentUser);
         return (
@@ -115,7 +128,7 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, layoutName, d
                             <AsyncWorker />
                         </View>
                         {menuItems.length > 0 && <View className='w-full lg:w-80 '>
-                            <NavbarMemo headerSettings={headerSettings} layoutName={layoutName} title={data.name} menu={data.menu} menu_add={data.menu_add || false} uri={uri} url={data?.url} />
+                            <NavbarMemo pageLayoutName={pageLayoutName} headerSettings={headerSettings} layoutName={layoutName} title={data.name} menu={data.menu} menu_add={data.menu_add || false} uri={uri} url={data?.url} />
                         </View>}
                     </Row>
                     <BottomSheet />
@@ -136,7 +149,7 @@ const metaAdder = (queryProperty, value) => {
     }
 };
 
-export default function (props) {
+export default function Layout(props) {
 
     const { currentUser, setCurrentUser } = useCurrentUser();
     const { layoutName } = props.layout;
@@ -263,10 +276,10 @@ export default function (props) {
     }, []);
 
     const [headerSettings, setHeaderSettings] = useState(getHeaderSettings(uri, width, layoutName, data.config));
-
+    const pageLayoutName = getLayout(currentUser, layoutName);
     useEffect(() => {
         let a = getHeaderSettings(uri, width, layoutName, data.config);
-        if (getLayout(currentUser, layoutName) == 'ver') {
+        if (pageLayoutName == 'ver') {
             if (width > LAYOUT_BREAKPOINTS.lg)
                 a.offset = false;
         }
@@ -296,9 +309,6 @@ export default function (props) {
 
     }, [currentUser?.notifications]);
 
-
-
-
     if (data?.empty)
         return <>{children}</>
 
@@ -321,15 +331,14 @@ export default function (props) {
         applyStyles(stylesBgImage);
         applyStyles(stylesBg);
     }, [stylesBgImage, stylesBg]);
-    return <MemoizedContent width={width} blocks={blocks} headerSettings={headerSettings} currentUser={currentUser} layoutName={layoutName} data={data} children={children} uri={uri} />
+    return <MemoizedContent width={width} pageLayoutName={pageLayoutName} blocks={blocks} headerSettings={headerSettings} currentUser={currentUser} layoutName={layoutName} data={data} children={children} uri={uri} />
 }
 
 const Content = React.memo(({ children, headerSettings, stylesBgImage, currentUser, layoutName, url, width }) => {
     const isHideHeader = (appSetting('layout', 'hide_header_for_non_logged') && !currentUser) || appSetting('layout', 'hide_header_for_all');
-    console.log("headerSettings.offset", headerSettings.offset, isHideHeader)
+
     return (
         <>
-
             <View className="w-full items-stretch cnt-root" key={url}>
                 <View className=" w-full mx-auto flex-row " >
                     <View className={((layoutName != 'messenger' && layoutName != 'post' && !isHideHeader) ? 'pb-16 lg:pb-0' : '') + '  w-full  relative overflow-hidden    mx-auto'}>{/*mb-16* TODO lg:pb-0*/}
@@ -341,7 +350,6 @@ const Content = React.memo(({ children, headerSettings, stylesBgImage, currentUs
 
                     </View>
                 </View>
-                {(headerSettings?.footer !== false || !currentUser) && <Footer />}
             </View>
         </>
     );
