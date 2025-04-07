@@ -7,6 +7,7 @@ import Browse from 'app/components/elements/browse'
 import { fetcher } from 'app/lib/fetcher';
 import { useWindowDimensions } from 'react-native';
 import { useBottomSheetData } from 'app/context/bottomsheet';
+
 export default function Suggestions(props) {
     const windowWidth = useWindowDimensions().width;
     let { currentUser, setCurrentUser } = useCurrentUser();
