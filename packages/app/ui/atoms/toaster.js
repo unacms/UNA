@@ -32,7 +32,7 @@ const ElementToster = forwardRef((props, ref) => {
         setVisible: (visible) => setIsVisible(visible),
     }));
     return (
-        <View style={{ display: isVisible ? 'flex' : 'none' }} className={sClassName}>
+        <View style={{ display: false ? 'flex' : 'none' }} className={sClassName}>{isVisible}
             <Animated.View className={isWeb ? "w-full":""} style={indicatorStyle} >
                 <View margin="max-w-screen-lg w-auto p-3 sm:p-4 " rounded=' rounded-xl ' addClassName=" w-full " className={sClassName2}>
                     <Button variant="primary" title={props.title} size={props.size} rounded onPress={props.onPress} />

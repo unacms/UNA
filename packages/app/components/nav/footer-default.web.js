@@ -38,6 +38,7 @@ export default function () {
     if (pathname == '/')
         pathname = '/home';
 
+   
     return (
         <View
             className={
@@ -49,7 +50,7 @@ export default function () {
             >
                 <Row className="flex-auto items-center flex-row w-full px-2 gap-x-2">
                     {TabList.filter(item => !item.hide).map((tab, index) => {
-                        const isActive = pathname === tab.url;
+                        const isActive = appSetting('messenger', 'url') === tab.url ? pathname.includes(tab.url) : pathname === tab.url;
                         const textColor = isActive ? "text-primary" : "text-neutral-700 dark:text-neutral-300";
     
                         return (
