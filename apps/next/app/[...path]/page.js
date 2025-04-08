@@ -91,6 +91,7 @@ export const viewport = {
 
 
 export async function generateMetadata(props) {
+    
     const data = await getCachedData(props);
     const description = data?.data?.description || SITE_TITLE;
     const name = data?.data?.title || SITE_TITLE;
@@ -98,7 +99,7 @@ export async function generateMetadata(props) {
     const isClientProject = UNA_URL != 'https://api.neo.so';
 
     return {
-        description: SITE_TITLE,
+        description: description,
         manifest: isClientProject ? '/static/manifest.json' : '/manifest.json',
         icons: {
             icon: isClientProject ? '/static/favicon.ico' : '/favicon.ico',

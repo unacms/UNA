@@ -63,7 +63,11 @@ export default function ({buttonProps, children, tooltip, fullWidth}) {
     const dd = <DropdownPopup
         open={ntfsOpen}
         onOpenChange={async (bOpen) => {
-            clearNotif(currentUser, setCurrentUser);
+            clearNotif();
+            setCurrentUser({
+                notifications: 0,
+                notificationsTs:Date.now()
+            });
             setNtfsOpen(bOpen);
            
             

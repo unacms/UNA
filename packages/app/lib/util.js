@@ -121,23 +121,14 @@ export function absoluteApiUrl(url_name) {
     return appSetting("config", "una_url") + appSetting("urls", url_name);
 }
 
-export function clearNotif(currentUser, setCurrentUser) {
+export function clearNotif() {
 
-
-    if (currentUser?.notifications > 0) {
-
-        setCurrentUser({
-            notifications: 0,
-            notificationsTs:Date.now()
-        });
-
-        const clearNotifications = async () => {
-            console.log("ClearNotif", currentUser);
-            await fetcher('/api.php?r=bx_notifications/mark_as_read/')
-        }
-
-        clearNotifications();
+    const clearNotifications = async () => {
+        fetcher('/api.php?r=bx_notifications/mark_as_read/')
     }
+
+    clearNotifications();
+    
 }
 
 export const getDataFromCache = (pref, storageKeyValue) => {

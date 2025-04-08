@@ -12,7 +12,11 @@ export default function PageLayout(props) {
     const [timeStamp, setTimeStamp] = useState({ts:Date.now(), nts: currentUser.notificationsTs});
    
     useEffect(() => {
-        clearNotif(currentUser, setCurrentUser);
+        clearNotif();
+        setCurrentUser({
+            notifications: 0,
+            notificationsTs:Date.now()
+        });
     }, [])
 
     if (currentUser.notificationsTs != timeStamp.nts){
@@ -40,7 +44,11 @@ export default function PageLayout(props) {
 
     const showNewContent2 = async () => {
         setTimeStamp({ts:Date.now(), nts: currentUser.notificationsTs});   
-        clearNotif(currentUser, setCurrentUser);
+        clearNotif();
+        setCurrentUser({
+            notifications: 0,
+            notificationsTs:Date.now()
+        });
         setToaster2Visible(false);
     }
 

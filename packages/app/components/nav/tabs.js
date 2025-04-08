@@ -266,8 +266,14 @@ export default function () {
                                             if (e.type == 'tabPress') {
                                                 let a = e.target.split('-');
                                                 let d = TabList[a[0].replace('tab', '')];
-                                                if (d.url == notificationUrl)
-                                                    clearNotif(currentUser, setCurrentUser)
+                                                if (d.url == notificationUrl){
+                                                    clearNotif()
+                                                    setCurrentUser({
+                                                        notifications: 0,
+                                                        notificationsTs:Date.now()
+                                                    });
+                                                }
+                                                    
                                             }
                                             FeedbackHaptics('Medium');
                                         },
