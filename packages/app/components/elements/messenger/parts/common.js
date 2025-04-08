@@ -42,11 +42,10 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     const refListJots = useRef();
     const selectedConvoIndex = convos?.data && convoId ? convos.data.findIndex(item => item.id === convoId) : -1;
     const selectedConvo = convos?.data ? convos.data[selectedConvoIndex] : false;
-    let { currentUser, setCurrentUser } = useCurrentUser();
+    const { currentUser, setCurrentUser } = useCurrentUser();
     const [searchValue, setSearchValue] = useState('');
     const [replyItem, setReplyItem] = useState(false);
 
-    console.log("formHeight", formHeight)
     const layoutHeightLeft = layoutHeight;
     let layoutHeightRight = isWeb && !isSmallScreen ? layoutHeight - 40 - formHeight : layoutHeight - formHeight;
     if (listError)
@@ -60,6 +59,8 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
              revalidateOnReconnect: false
          }
      );*/
+
+     
 
     const { data: dynamicData, error } = useFetchForm('/api.php?r=bx_messenger/get_send_form/Services&params=' + JSON.stringify({ id: selectedConvo?.id, convo_id: selectedConvo?.id, reply_id: replyItem ? replyItem?.id : 0 }), commentForm);
 
@@ -330,6 +331,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
 
     const convosComponent = useMemo(() => {
         return panelsVisible.convos && <Convos
+            isSmallScreen={isSmallScreen}
             layoutHeightLeft={layoutHeightLeft}
             data={convos?.data}
             selectedConvoIndex={selectedConvoIndex}
@@ -350,41 +352,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
         onSave,
         addButtons,
     ]);
-    //const previousValues = useRef({});
     const jotsComponent = useMemo(() => {
-
-        /* const dependencies = {
-             panelsVisibleJots: panelsVisible.jots,
-             selectedConvo,
-             jotsDataJots: jots?.data?.jots,
-             isSmallScreen,
-             layoutHeightRight,
-             refListJots,
-             showConvo,
-             deleteConvo,
-             leaveConvo,
-             getConvo,
-             editConvo,
-             handleReply,
-             handleStartReached,
-             listError,
-             dataForm: data.form,
-             replyItem,
-             onFormSubmit,
-             handleCancelReply,
-             handleLayout,
-         };
- 
-         Object.keys(dependencies).forEach((key) => {
-             if (previousValues.current[key] !== dependencies[key]) {
-                 console.log(`${key} rerender555 :`, {
-                     previous: previousValues.current[key],
-                     current: dependencies[key],
-                 });
-             }
-         });
-         previousValues.current = dependencies;*/
-
         return (
             (!!panelsVisible.jots && !!selectedConvo && jots?.data?.jots) && (
                 <View className="w-full md:w-3/5 flex-1 bg-bgrcard dark:bg-bgrcard-d  justify-between">
@@ -455,9 +423,9 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     }
 
     return (
-        <View style={{ height: layoutHeight }} className={appSetting('layout', 'max_width') + ' mx-auto  w-full items-stretch '}>
+        <View style={{ height: layoutHeight }} className={appSetting('layout', 'max_width') + ' mx-auto w-full items-stretch '}>
             <Msg onVisible={showMsg} title={showMsg} handleOk={() => { setShowMsg(false) }} />
-            <Row className='items-stretch '>
+            <Row className='items-stretch min-h-24'>
                 {convosComponent}
                 {jotsComponent}
             </Row>
@@ -465,7 +433,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     );
 }
 
-const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, onSave, searchValue, handleSearch, addButtons }) => {
+const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, onSave, searchValue, handleSearch, addButtons, isSmallScreen }) => {
     const isWeb = Platform.OS == 'web'
     const [showSearch, setShowSearch] = useState(false);
 
@@ -505,7 +473,8 @@ const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, 
                 height={layoutHeightLeft}
                 data={data}
                 mode="simple"
-                useCustomScrollHandler={true}
+                useCustomScrollHandler={isSmallScreen ? true : false}
+
                 scrollProps={{ pageData: null, headerHeight: 64, headerComponent: header }}
                 renderItem={({ item, index }) => <ItemConvo selectedIndex={selectedConvoIndex} item={item} index={index} changeConvo={changeConvo} />}
             /></>
@@ -570,8 +539,8 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
 
 
     const header = (
-        <View className='md:px-0  w-full '>
-            <Row className='pr-2 items-center justify-between w-full '>
+        <View className='md:px-0  w-full  '>
+            <Row className='pr-2 items-center justify-between w-full lg:ml-3 h-16'>
                 <Row className='items-center justify-start overflow-hidden flex-auto '>
                     {isSmallScreen && <View className='mr-2'><BackButton buttonProps={{ variant: "text", startDecorator: 'ArrowLeft', bgrDecorator: true, rounded: 'rounded', align: "start" }} callback={showConvo} /></View>}
                     <Text numberOfLines={1} className="font-bold text-neutral-800 dark:text-neutral-200 text-3xl tracking-tighter">{title}</Text>
@@ -607,7 +576,7 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
                 height={layoutHeightRight - keyboardHeight}
                 mode="simple"
                 useWindowScroll
-                useCustomScrollHandler={true}
+                useCustomScrollHandler={isSmallScreen ? true: false}
                 renderItem={({ item, index }) => <ItemJot handleReply={handleReply} item={item} index={index} />}
                 scrollProps={{ pageData: null, headerComponent: header, inverted: true, headerHeight:64, }}
             />}

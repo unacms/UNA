@@ -12,6 +12,10 @@ import { useTranslation } from 'react-i18next';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import { appStatic } from 'app/lib/app-static'
+import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
+import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import { useWindowDimensions } from 'react-native'
+import { LAYOUT_BREAKPOINTS } from 'app/lib/util'
 
 export default function ElementSearch(oProps) {
     const { bottomSheetData, setBottomSheetData } = useBottomSheetData();
@@ -21,12 +25,7 @@ export default function ElementSearch(oProps) {
     const [inputValue, setInputValue] = useState('');
 
     const handleOpenPopupDefault = () => {
-        /*if (!bottomSheetData){
-            setBottomSheetData({ title: 'Search', content: <ElementSearchData {...oProps} />,showClose: true, snapPoints: ['75%', '100%'] });
-        }else{
-            setBottomSheetData(false);
-        }*/
-        setBottomSheetData({ title: 'Search', content: <ElementSearchData {...oProps} />,showClose: true, snapPoints: ['75%', '90%'] });
+        setBottomSheetData({ title: 'Search', content: <ElementSearchData {...oProps} isBottomSheet={true} />, showClose: true, isListView: true, snapPoints: ['75%', '90%'] });
     }
 
     let sResult = sType == 'input' ? (
@@ -69,7 +68,7 @@ export function ElementSearchData(oProps) {
     const redirectdRef = useRef();
     const sSection = oProps?.section ? oProps.section : '';
     const sUrlRedirect = '/search-keyword?keyword={keyword}' + (!!sSection ? '&section=' + sSection : '');
-
+    const windowDimensions = useWindowDimensions();
     const [inputValue, setInputValue] = useState('');
     const [popupOpenHandle, setPopupOpenHandle] = useState(true);
     const [popupContent, setPopupContent] = useState('');
@@ -141,7 +140,7 @@ export function ElementSearchData(oProps) {
         if (!sValue || sValue.length < 3)
             return;
 
-       // if (sValue.length == 3)
+        // if (sValue.length == 3)
         //    handleSetPopupContent(getSkeleton());
 
         const aParams = {
@@ -166,9 +165,9 @@ export function ElementSearchData(oProps) {
                 {oBlock.data.data.map((a, index) => <SearchResults key={index} data={a} onPress={() => handleClose()} />)}
             </View>
         );
-        if (oBlock.data.data.length == 0){
+        if (oBlock.data.data.length == 0) {
             handleSetPopupContent(appStatic('components_content_empty'))
-            return 
+            return
         }
 
         handleSetPopupContent(sContent);
@@ -176,19 +175,15 @@ export function ElementSearchData(oProps) {
 
     }
 
-    const cnt = (
-        <ScrollView className="max-h-96">
-            {!!popupContent && popupContent}
-        </ScrollView>
-    )
+    const cnt = !!popupContent && popupContent
 
     const cnt2 = (
-            <View className=" flex-row items-center justify-end">
-                <Button variant="text" size="sm" rounded endDecorator="ChevronsRight" title={sTxtViewExtended} onPress={() => handleRedirect()} />
-            </View>
+        <View className=" flex-row items-center justify-end">
+            <Button variant="text" size="sm" rounded endDecorator="ChevronsRight" title={sTxtViewExtended} onPress={() => handleRedirect()} />
+        </View>
     );
 
-    
+
 
 
     if (oProps.resInPopup) {
@@ -212,16 +207,35 @@ export function ElementSearchData(oProps) {
                 <Redirect ref={redirectdRef} />
                 {oProps.icon}
                 {!!popupContent && dd}
-                <InputRoundedRef   
-                    name="search" 
-                    placeholder={t("Search") + '...'} 
-                    onKeyPress={(event) => handleKeyPress(event)} 
-                    value={inputValue} 
-                    ref={inputRef} 
+                <InputRoundedRef
+                    name="search"
+                    placeholder={t("Search") + '...'}
+                    onKeyPress={(event) => handleKeyPress(event)}
+                    value={inputValue}
+                    ref={inputRef}
                     onChangeText={(value) => handleSearch(value)}
                     startDecorator="Search"
                 />
             </Row>
+        )
+    }
+
+    if (oProps.isBottomSheet && windowDimensions.width < LAYOUT_BREAKPOINTS.lg) {
+        return (
+            <><View className="flex-row mb-2">
+                <InputRef name="search" autoFocus={true} placeholder='Start typing to search...' onKeyPress={(event) => handleKeyPress(event)} value={inputValue} ref={inputRef} onChangeText={(value) => handleSearch(value)} />
+            </View>
+                <BottomSheetScrollView keyboardShouldPersistTaps="always" keyboardDismissMode="none">
+                    {cnt}
+                    <Redirect ref={redirectdRef} />
+                    {
+                        (!!inputValue && appSetting('layout', 'extended_search')) && (
+                            <View className="hidden flex-row items-center mb-2 justify-end">
+                                <Button variant="text" size="sm" rounded endDecorator="ChevronsRight" title={sTxtViewExtended} onPress={() => handleRedirect()} />
+                            </View>
+                        )
+                    }
+                </BottomSheetScrollView></>
         )
     }
 
@@ -235,10 +249,12 @@ export function ElementSearchData(oProps) {
                     </View>
                 )
             }
-        <View className="flex-row p-1 mb-2">
+            <View className="flex-row p-1 mb-2">
                 <InputRef name="search" autoFocus={true} placeholder='Start typing to search...' onKeyPress={(event) => handleKeyPress(event)} value={inputValue} ref={inputRef} onChangeText={(value) => handleSearch(value)} />
             </View>
-            {cnt}
+            <ScrollView className="max-h-96">
+                {cnt}
+            </ScrollView>
         </View>
     );
 }

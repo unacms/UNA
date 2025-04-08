@@ -16,7 +16,6 @@ import MenuAdd from 'app/components/nav/menu-add'
 import MenuAccount from 'app/components/nav/menu-account'
 import MenuLauncher from 'app/components/nav/menu-launcher'
 import MenuDrawer from 'app/components/nav/menu-drawer'
-import ProfileSwitcher from 'app/components/elements/profile_switcher'
 
 const HeaderLine = memo(
     ({

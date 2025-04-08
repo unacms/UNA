@@ -39,7 +39,7 @@ export default function ElementBottomSheetContent(props) {
                 </View>
             )}
             {showClose && (
-                <View className='absolute right-2 z-50 top-2 '>
+                <View className='absolute right-2 z-50 top-0 '>
                     <Button startDecorator="X" tooltip='Close' variant='text' size='sm' onPress={onClose} />
                 </View>
             )}
@@ -92,14 +92,9 @@ export default function ElementBottomSheetContent(props) {
 
     return (
 
-        <BottomSheet2 {...bottomSheetProps}>
-            <View className="mx-auto w-full flex-1 flex-auto py-2 h-full z-50">
-                {bottomSheetHeader}
-                {isListView ? contentView : (
-                    <ScrollView className='w-full' keyboardShouldPersistTaps="always" keyboardDismissMode="on-drag">
-                        {contentView}
-                    </ScrollView>
-                )}
+        <BottomSheet2 {...bottomSheetProps} header={bottomSheetHeader}>
+            <View className="mx-auto w-full flex-1 flex-auto py-2 web:h-full z-50">
+                {contentView}
             </View>
 
         </BottomSheet2>
@@ -157,7 +152,7 @@ function BottomSheet2(props) {
     const renderWebBackdrop = useCallback(
         ({ style }) => (
             <Pressable
-                onPress={() => setBottomSheetData(null)}
+                onPress={() => {  }}
                 style={[style, { backgroundColor: 'rgba(0, 0, 0, 0.8)' }]}
             />
         ),
@@ -168,6 +163,11 @@ function BottomSheet2(props) {
         web: renderWebBackdrop,
         default: renderBackdrop,
     });
+
+
+    const handleDismiss = () => {
+        setBottomSheetData(null)
+    };
 
     return (
         <BottomSheetModalProvider>
@@ -181,13 +181,14 @@ function BottomSheet2(props) {
                 // enableDismissOnClose={true} // changed to true => not hide fully in more menus
                 enablePanDownToClose={true} // prevents closing by sliding down
                 onChange={handleSheetChanges}
+                onDismiss={handleDismiss}
                 //  detached={true}
                 style={styles.bottomSheet}
 
             >
-                {props.isListView ? props.children : <BottomSheetScrollView contentContainerStyle={styles.contentContainer} keyboardShouldPersistTaps="always" keyboardDismissMode="on-drag">
+                {props.isListView ? props.children : <><View className="w-full ">{props.header}</View><BottomSheetScrollView keyboardShouldPersistTaps="always" keyboardDismissMode="none">
                     {props.children}
-                </BottomSheetScrollView>
+                </BottomSheetScrollView></>
                 }
             </BottomSheetModal></BottomSheetModalProvider>
     )
