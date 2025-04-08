@@ -73,7 +73,7 @@ export const Header = memo(({ backButtonPresented, header, pageData, scrollToTop
             <Row>
                 {(isHome) && <Pressable onPress={scrollToTop} className="ml-[12px]">{appStatic('logo_native')}</Pressable>}
                 <View className="mr-[12px]">{(backButtonPresented && (!isWeb || history.length > 2)) && (
-                    <Button variant="text" onPress={() => {
+                    <Button variant="text"  rounded size="lg" bgrDecorator onPress={() => {
                         FeedbackHaptics('Medium');
                         router? router?.back() : history.back();
                     }} startDecorator="ChevronLeft" />

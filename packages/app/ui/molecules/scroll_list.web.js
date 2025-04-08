@@ -42,7 +42,7 @@ export default function ScrollList({ content, pageData, headerHeight = 64, isBac
 
     const headerStyle = useAnimatedStyle(() => {
         const opacityValue = withTiming(isShow.value ? 1 : 0, { duration: animationDuration });
-        const transformValue = withTiming(isShow.value ? 0 : -50, { duration: animationDuration });
+        const transformValue = withTiming(isShow.value ? 0 : -114, { duration: animationDuration });
         return {
             position: 'fixed',
             top: 0,
@@ -120,10 +120,8 @@ export default function ScrollList({ content, pageData, headerHeight = 64, isBac
         <View className="flex-1" style={{ paddingTop: isSmallScreen && !useCustomScrollHandler ? headerHeight : 0 }}>
             {enhanced}
             {isSmallScreen && <Animated.View style={[headerStyle]}>
-                <BlurView tint="default"
-                    intensity={100}
-                    experimentalBlurMethod="none" className={`w-full h-[${headerHeight}px]`} >
-                    <View className="w-full" style={{ backgroundColor: colors.headerBackground }} >
+                
+                    <View className="w-full backdrop-blur " style={{ backgroundColor: colors.headerBackground }} >
                         <Header
                             backButtonPresented={isBackButton}
                             header={headerComponent}
@@ -135,7 +133,6 @@ export default function ScrollList({ content, pageData, headerHeight = 64, isBac
                         />
                         {subHeaderComponent}
                     </View>
-                </BlurView>
 
             </Animated.View>}
             {isShowScrollToTopButton && <Animated.View style={[buttonStyle]}>
