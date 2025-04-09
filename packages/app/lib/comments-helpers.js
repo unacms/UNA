@@ -474,9 +474,6 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
                         }
 
                     }
-
-
-
                 }
                // form.data.reset = true;
                 form.data.inputs.cmt_text.autofocus = formData.parent_id;
