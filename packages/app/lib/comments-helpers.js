@@ -395,7 +395,7 @@ export function CommentsBrowse({ scrollProps, browse, requestUrl, module, handle
                 scrollProps={scrollProps}
                 mode='simple'
                 useWindowScroll
-                height={height > 0 ? height : '100%'}
+                height={height > 0 ? height : undefined}
                 data={dataOut}
                 refer={flashListRef}
                 //onScrollToIndex={handleScrollToIndex}
