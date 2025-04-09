@@ -1,15 +1,22 @@
 import React, { memo, useState, useEffect, useMemo, useRef } from 'react'
+import { appSetting } from 'app/lib/util'
 import { View } from 'app/design/view'
+import { Modal } from 'app/design/controls'
+import { fetcher } from 'app/lib/fetcher'
+import { componentsMap } from 'app/ui/molecules/_map'
 import Card from 'app/ui/molecules/card'
 import AnimatedBlock from 'app/ui/molecules/animated-block'
 import { useTranslation } from 'react-i18next';
-import { CommentsSection, MenuManage, ActionMenu, CounterMenu, Author, UnitFeed, SmallUnit, prepareData, MainContent, FeedEditForm } from 'app/lib/feed-helpers'
-import { appSetting } from 'app/lib/util'
+import { CommentsModal, CommentsSection, MenuManage, ActionMenu, CounterMenu, Author, UnitFeed, SmallUnit, prepareData, MainContent, FeedEditForm } from 'app/lib/feed-helpers'
+import { Platform } from 'react-native'
 
 function DefaultUnit(data) {
+    const isWeb = Platform.OS === 'web';
     const { t } = useTranslation();
     const [viewState, setViewState] = useState({ view: '' })
+    const [cmtsData, setCmtsData] = useState(false)
 
+    const isCommentsModal = appSetting('comments', 'show_modal_in_feed') && isWeb;
     const { url, commentsData, isShowMoreComments } = useMemo(() => prepareData(data), [data]);
 
     const MainContentComponent = useMemo(() => (
@@ -19,36 +26,50 @@ function DefaultUnit(data) {
         />
     ), [url, data]);
 
+    const showCommentsModal = async (initFormData) => {
+        const res = await fetcher('/api.php?r=' + appSetting("urls", "cmts") + '/&params[]={"module":"' + data?.cmts?.module + '","object_id":' + data?.cmts?.object_id + '}');
+        setCmtsData({
+            title: data.author_data.display_name + "'s post", data: <CommentsModal initFormData={initFormData}
+                itemContent={{
+                    id: "block-comments", data: <><Author data={data} url={url} t={t} />{MainContentComponent}</>
+                }}
+                commentsData={res.data} />
+        })
+    }
+    if (isCommentsModal && data.menu_actions?.items[0] && data.menu_actions?.items[0].data?.callback)
+        data.menu_actions.items.find(x => x.name == "item-comment").data.callback = showCommentsModal
+
     if (viewState.view == 'deleted')
         return <></>
 
-    if (viewState.view == 'edited')
-        return <FeedEditForm setViewState={setViewState} id={data.id} viewState={viewState} />
-
-    // return<View className='w-full h-12 bg-red-500 my-2'><Author data={data} url={url} t={t} /></View>
     return (
         <AnimatedBlock>
-            <Card rounded=' rounded-none sm:rounded-2xl ' margin=' mt-[4px] sm:mb-[16px] md:mx-auto ' addClassName={' w-full max-w-2xl px-[12px] sm:px-[16px] pt-[12px] sm:pt-[16px] tl-' + data.id} >
-                <View className="flex-auto flex-row items-top">
+            {viewState.view == 'edited' && <FeedEditForm setViewState={setViewState} id={data.id} viewState={viewState} />}
+            {isCommentsModal && <Modal
+                outerClickClose={false}
+                onClose={() => setCmtsData(false)}
+                onVisible={!!cmtsData}
+                title={cmtsData.title}
+                padding= ''
+            >
+                {cmtsData.data}
+            </Modal>}
+            <Card rounded=' rounded-none sm:rounded-2xl' margin=' mt-1 sm:mb-2 lg:mb-3 md:mx-auto ' addClassName={' shadow-sm w-full px-3 py-2.5 sm:px-4 sm:py-3.5  tl-' + data.id} >
+                <View className="flex-auto flex-row gap-x-[8px] sm:gap-x-[10px] ">
                     <Author data={data} url={url} t={t} />
-                    <View className="flex-auto justify-end flex-row mb-auto ">
+                    <View className="flex-none flex-row mb-auto">
                         <MenuManage id={data.id} menu={data?.menu_manage} setViewState={setViewState} />
                     </View>
                 </View>
-
                 {MainContentComponent}
-                <View className="">
-                    {(!!data.menu_counters && appSetting('feed', 'counters_menu')) && <View className='sm:py-[8px] sm:border-b border-bdr dark:border-bdr-d'><CounterMenu data={data.menu_counters}  /></View>}
-                    <View className=' py-[8px] mt-[4px] border-t border-bdr dark:border-bdr-d '><ActionMenu data={data.menu_actions} showCommentsModal={false} /></View>
-                </View>
-                {commentsData && <View className='   '><CommentsSection url={url} t={t} isCommentsModal={false} showCommentsModal={false} commentsDataInline={commentsData} data={data} /></View>}
+                {(!!data.menu_counters && appSetting('feed', 'counters_menu')) && <CounterMenu data={data.menu_counters} showCommentsModal={showCommentsModal} />}
+                <View className=' pt-1 border-t mt-1 border-bdr dark:border-bdr-d '><ActionMenu data={data.menu_actions} showCommentsModal={showCommentsModal} /></View>
+                {commentsData && <CommentsSection url={url} t={t} isCommentsModal={isCommentsModal} showCommentsModal={showCommentsModal} commentsDataInline={commentsData} data={data} isShowMoreComments={isShowMoreComments} />}
             </Card>
         </AnimatedBlock>
     )
 }
 
 export default function UnitFeed_({ data, mode }) {
-    //return useMemo(() => (
     return <UnitFeed data={data} mode={mode} SmallUnit={SmallUnit} DefaultUnit={DefaultUnit} />
-    //), [data, mode]);
 }

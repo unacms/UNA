@@ -39,7 +39,6 @@ export default function MultiPostForm({ data }) {
         }
         else{
             const a = await getFormModal(firstForm, data.params);
-            console.log(a.data);
             setPageData({...a.data, ts: Date.now()});
         }
     }

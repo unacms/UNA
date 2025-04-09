@@ -74,7 +74,7 @@ function ProfileView({ isImageOnly = false, data, handleSubmit, showImage, setSh
 export default function FormFeed(props) {
     const formContext = useFormContext()
     const { t } = useTranslation()
-    const isFormOnly = props.exProps?.formOnly === true;
+    const isFormOnly = props.exProps?.formOnly === true || props.name === 'feed_edit';
 
     const [showImage, setShowImage] = useState(isFormOnly ? true : false);
     const [responseId, setResponseId] = useState(0)

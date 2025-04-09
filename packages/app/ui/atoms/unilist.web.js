@@ -45,7 +45,7 @@ export default function UniList(props) {
         </View>;
     }
 
-    const style = height ? { height: `${height}px` } : {};
+    const style = height && height != '100%' ? { height: `${height}px` } : {};
 
     const isScrolling = (isFinished) => {
 
@@ -80,7 +80,7 @@ export default function UniList(props) {
 
     const commonVirtuosoProps = {
         data,
-        useWindowScroll: !height,
+        useWindowScroll: !height ,
         style,
         ref: refer ? refer : uniRef,
         endReached: onEndReached,
@@ -92,6 +92,7 @@ export default function UniList(props) {
                 return ListFooterComponent
             },
         } : {
+            StickyFooter: () => <View className="w-full bg-red-500 h-12'"></View>,
             Footer: () => ListFooterComponent,
             Header: () => useCustomScrollHandler ? <View style={{paddingTop:scrollProps.headerHeight}}></View> :ListHeaderComponent,
         },

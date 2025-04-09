@@ -94,7 +94,7 @@ export const FeedEditForm = memo(({ setViewState, viewState, id }) => {
 });
 
 export const CommentsSection = memo(({ isCommentsModal, commentsDataInline, data, isShowMoreComments, showCommentsModal, url, t }) => {
-
+    console.log("isCommentsModal", isCommentsModal)
     const ShowMoreCmts = (<Text className='text-neutral-600 dark:text-neutral-400 hover:text-primary dark:hover:text-primary-d px-2 py-1 mb-2 mr-auto bg-neutral-500/10 hover:bg-primary-500/20 rounded-full text-sm font-medium'>
         {t('View more comments')}
     </Text>);
