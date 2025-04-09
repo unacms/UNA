@@ -3,7 +3,7 @@ import React, { useRef, forwardRef } from 'react';
 export const SafeMenuTrigger = ({ children, className = '', ...rest }) => {
     const start = useRef({ x: 0, y: 0, time: 0 });
 
-    const MAX_MOVEMENT = 0;
+    const MAX_MOVEMENT = 1;
     const MAX_DURATION = 300;
 
     const handlePointerDownCapture = (e) => {

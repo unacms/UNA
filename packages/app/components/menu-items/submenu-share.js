@@ -21,7 +21,6 @@ export default function MenuItemSubmenuShare(oProps) {
         showTitleFromSize: oProps.params?.button_show_title_from_size
     };
 
-
     const handleMenuManageSelect = async (oItem, event) => {
         switch(oItem.name) {
             case 'item-repost':

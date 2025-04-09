@@ -22,7 +22,7 @@ export default function MultiPostForm({ data }) {
         ...currentUser,
         url_avatar: currentUser.avatar,
         url: null,
-      }), [currentUser]);
+      }));
 
     useEffect(() => {
         const fetchData = async () => {
@@ -46,6 +46,8 @@ export default function MultiPostForm({ data }) {
 
     if (menu_add_items.length == 0 && !firstForm)
        return;
+
+    console.log("dfgdgdf")
     
     return (
        
