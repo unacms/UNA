@@ -48,52 +48,20 @@ export default function Splash(props) {
     const [modalForm, setModalForm] = useState(false)
     const [isCreateAccountSubmit, setIsCreateAccountSubmit] = useState(false)
 
-    const windowDimensions = useWindowDimensions()
     const isIos = Platform.OS === 'ios'
-    const isSmall = windowDimensions.width < LAYOUT_BREAKPOINTS.sm ? true : false
 
-    const accountForm = BlockDataByName(props.data, 'system:create_account_form')
-    const useInvite = false; //TODO accountForm == 'form' ? false : true
+    const accountForm = BlockDataByName(props.data, 'system:create_account_form');
+    console.log("accountForm",accountForm.content[0].type == 'form')
+    const isInvite = accountForm.content[0].type !== 'form';
 
     const forms = {
-        signup: { name: 'system:create_account_form', title: 'Create new account', button: 'Login', icon: 'LogIn', action: 'login' },
+        signup: isInvite ? { name: 'bx_invites:get_block_form_request', title: 'Request invitation', button: 'Login', icon: 'LogIn', action: 'login' } : { name: 'system:create_account_form', title: 'Create new account', button: 'Login', icon: 'LogIn', action: 'login' },
         fp: { name: 'system:forgot_password', title: 'Restore password' },
-        invite: { name: 'bx_invites:get_block_form_request', title: 'Request invitation', button: 'Login', icon: 'LogIn', action: 'login' },
         login: { name: 'system:login_form', title: 'Log in', button: 'Create new account', icon: 'UserPlus', action: 'signup' }
     };
 
     const defalulFormData = forms[defaultForm];
     const modalFormData = forms[modalForm];
-
-    const headerCreateAccount = (
-        <Row className=" w-full justify-between items-center">
-            <View className="">
-                <Button
-                    onPress={() => {
-                        setModalForm(false)
-                    }}
-                    variant="outline"
-                    rounded
-                    startDecorator="X"
-                />
-            </View>
-            <View className="w-full flex-auto items-center justify-center">
-                <Text className="text-neutral-700 dark:text-neutral-200 text-xl font-bold">
-                    {modalFormData?.title}
-                </Text>
-            </View>
-            <View className=" ">
-                <Button
-                    onPress={() => {
-                        setIsCreateAccountSubmit(Date.now())
-                    }}
-                    variant="primary"
-                    rounded
-                    startDecorator="SendHorizontal"
-                />
-            </View>
-        </Row>
-    )
 
     if (!defaultForm)
         return null;
@@ -143,7 +111,8 @@ export default function Splash(props) {
                         size="base"
                         fullWidth
                         onPress={() => {
-                            setModalForm(defalulFormData.action)
+                            setDefaultForm(defaultForm == 'login' ? 'signup' : 'login')
+                            //setModalForm(defalulFormData.action)
                         }}
                     />
                 </View>

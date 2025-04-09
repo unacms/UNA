@@ -23,7 +23,7 @@ import { Platform } from 'react-native'
 import { getPart } from 'app/lib/parts/part';
 
 const StyledP = (props) => (
-    <P className={`${!props.isLast ? 'mb-1' : 'mb-0'} ${!props.isFirst ? 'mt-1' : 'mt-0'} ${props.textStyles} `}>
+    <P className={`${props.islast == "false" ? 'mb-1' : 'mb-0'} ${props.isfirst == "false" ? 'mt-1' : 'mt-0'} ${props.textStyles} `}>
         {props.children}
     </P>
 );
@@ -131,8 +131,8 @@ const parseHtmlToReact = (html, textStyles, parentKey = "0") => {
             <Component
                 key={getKey(tag)}
                 className={srcClass && srcClass[1] ?  getPart("ParseHtmlClasses", [srcClass[1], 'text']) : '' }
-                isFirst={false}
-                isLast={false}
+                isfirst="false"
+                islast="false"
                 textStyles={textStyles}
             >
                 {parseHtmlToReact(content, textStyles, getKey("content"))}
@@ -146,8 +146,8 @@ const parseHtmlToReact = (html, textStyles, parentKey = "0") => {
     }
 
     if (elements.length > 0) {
-        elements[0] = React.cloneElement(elements[0], { isFirst: true });
-        elements[elements.length - 1] = React.cloneElement(elements[elements.length - 1], { isLast: true });
+        elements[0] = React.cloneElement(elements[0], { isfirst: "true" });
+        elements[elements.length - 1] = React.cloneElement(elements[elements.length - 1], { islast: "true" });
     }
 
     return elements;

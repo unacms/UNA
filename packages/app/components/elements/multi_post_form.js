@@ -1,6 +1,6 @@
 import { View, Row, ScrollView, Pressable } from 'app/design/view'
 import { Button, Modal } from 'app/design/controls'
-import { useState, useContext, useEffect, useCallback } from 'react'
+import { useState, useContext, useEffect, useCallback, useMemo } from 'react'
 import { FeedbackHaptics, getAlert, menuItemsByNameNew, cloneObject } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import Profile from 'app/ui/molecules/profile'
@@ -18,11 +18,11 @@ export default function MultiPostForm({ data }) {
   
     const firstForm = menu_add_items.shift();
 
-    const profileData = {
+    const profileData = useMemo(() => ({
         ...currentUser,
         url_avatar: currentUser.avatar,
         url: null,
-    };
+      }), [currentUser]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -44,8 +44,8 @@ export default function MultiPostForm({ data }) {
         }
     }
 
-     if (menu_add_items.length == 0 && !firstForm)
-        return;
+    if (menu_add_items.length == 0 && !firstForm)
+       return;
     
     return (
        
