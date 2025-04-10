@@ -16,9 +16,14 @@ import { Platform } from 'react-native'
 import Link from 'app/ui/atoms/link'
 import Profile from 'app/ui/molecules/profile'
 import { Text } from 'app/design/typography'
-import BackButton from 'app/components/nav/back';
+import UI from 'app/ui/molecules/ui'
 
 export default function (props) {
+
+    if (appSetting('config', 'show_ui')){
+        return <UI/>
+    }
+
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
     const feedMode = storageGet('feed:mode', '', true)

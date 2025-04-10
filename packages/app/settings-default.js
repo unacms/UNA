@@ -23,6 +23,7 @@ export  const settingsDefault = {
             onesignal: 'a36d17c1-693e-40e1-98e9-41a62a9b5e7d',
             mapbox:'pk.eyJ1Ijoicm9tYW5sZXMiLCJhIjoiY204Zm9kY3ByMGE4bzJrc2R6Zzg4NW0zMCJ9.Jme_Zudsug5mmqcbjII9cQ'
         },
+        show_ui: false
     },
     layout: {
         avaliable_layouts: ['hor', 'ver', 'mixed'], // OLD appSetting('layout', 'format_list')

@@ -4,7 +4,7 @@ import { Text } from 'app/design/typography'
 import { appSetting } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user';
 import Profile from 'app/ui/molecules/profile';
-import { usePathname } from 'app/lib/hooks/router'
+import { usePathname } from 'next/navigation'
 import { callFn } from 'app/lib/functions/call';
 import { Button } from 'app/design/controls';
 
