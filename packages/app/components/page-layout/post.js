@@ -4,10 +4,9 @@ import { useState, useCallback, useMemo, useEffect } from 'react';
 import { stripTags, LAYOUT_BREAKPOINTS } from 'app/lib/util';
 import { Theme } from 'app/design/theme';
 import { CommentsBrowse, CommentsForm } from 'app/lib/comments-helpers'
-//import { useLocalSearchParams } from 'expo-router';
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
 import { useWindowDimensions, Platform } from 'react-native'
-import {_useLocalSearchParams} from 'app/lib/hooks/router'
+import { useLocalSearchParams } from 'app/lib/hooks/router'
 
 export default function PageLayout(props) {
     const isWeb = Platform.OS == 'web';
@@ -18,7 +17,7 @@ export default function PageLayout(props) {
 
     const [formHeight, setFormHeight] = useState(0)
 
-    const localUrl = _useLocalSearchParams();
+    const localUrl = useLocalSearchParams();
     
     const commentsData = useMemo(() => DataByName(props.data, props.blocks.comments), [props.data, props.blocks.comments]);
     const { colors } = Theme()

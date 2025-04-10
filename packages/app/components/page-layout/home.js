@@ -6,23 +6,21 @@ import {
     storageSet,
     storageGet,
     getLayout,
-    LAYOUT_BREAKPOINTS,
     asyncStorageSet,
 } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import { Button } from 'app/design/controls'
 import { useTranslation } from 'react-i18next'
-import ProfileSwitcher from 'app/components/elements/profile_switcher'
 import Splash from 'app/ui/molecules/splash'
 import { Platform } from 'react-native'
 import Link from 'app/ui/atoms/link'
 import Profile from 'app/ui/molecules/profile'
 import { Text } from 'app/design/typography'
+import BackButton from 'app/components/nav/back';
 
 export default function (props) {
     const { t } = useTranslation()
-    const isWeb = Platform.OS == 'web'
-    let { currentUser, setCurrentUser } = useCurrentUser()
+    const { currentUser } = useCurrentUser()
     const feedMode = storageGet('feed:mode', '', true)
     const feedTypeD = storageGet('feed:type', '', true)
     const [feedType, setFeedType] = useState(

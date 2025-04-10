@@ -8,17 +8,31 @@ import Animated, {
 import { BlurView } from 'expo-blur';
 import React from 'react';
 import { Theme } from 'app/design/theme';
-import { useRouter } from "expo-router";
 import { appSetting } from 'app/lib/util'
 import { Button } from 'app/design/controls';
 import { Header } from 'app/ui/molecules/scroll_list_header';
-
+import { useEffect } from 'react';
 // TODO OPTIMIZATION
-export default function ScrollList({ content, pageData, headerHeight = 64, isBackButton = false, contentType, refer, inverted, headerComponent, subHeaderComponent, rightHeaderComponent, isMenuNameAsTitle = false}) {
+export default function ScrollList({ 
+    content, 
+    index,
+    pageData, 
+    headerHeight = 64, 
+    isBackButton = false, 
+    contentType, 
+    refer, 
+    inverted, 
+    headerComponent, 
+    subHeaderComponent, 
+    rightHeaderComponent, 
+    isMenuNameAsTitle = false,
+    isProfileHeader = false,
+}) {
 
     const isCollapsibleHeader = appSetting('native', 'collapsible_header');
     const isShowScrollToTopButton = appSetting('native', 'scroll_to_top_button');
     const transparencyOffset = 200
+    const showHeaderForProfileOffset = 350
     const { colors } = Theme();
 
     /* ANIMATION */
@@ -27,9 +41,12 @@ export default function ScrollList({ content, pageData, headerHeight = 64, isBac
 
     const headerStyle = useAnimatedStyle(() => {
         const isShow =
+            isProfileHeader ?
+                scrollY.value > showHeaderForProfileOffset
+            :
             scrollDirection.value === 'up' ||
             scrollY.value < transparencyOffset ||
-            scrollY.value === 0;
+            scrollY.value === 0 ;
         return {
             opacity: isShow ? withTiming(1) : withTiming(0),
             transform: [
@@ -43,6 +60,11 @@ export default function ScrollList({ content, pageData, headerHeight = 64, isBac
             opacity: scrollY.value > transparencyOffset ? withTiming(1) : withTiming(0),
         };
     });
+
+    useEffect(() => {
+        scrollY.value = 0;
+    }, [index]);
+    
 
     const onScroll = useAnimatedScrollHandler((event) => {
         const currentY = Math.round(event.contentOffset.y / 10) * 10;
@@ -65,7 +87,6 @@ export default function ScrollList({ content, pageData, headerHeight = 64, isBac
 
     const enhanced = React.cloneElement(content, baseProps);
 
-    const routerExpo = useRouter();
     return (
         <View className="flex-1">
             {enhanced}
@@ -76,12 +97,13 @@ export default function ScrollList({ content, pageData, headerHeight = 64, isBac
                     <View className="w-full" style={{ backgroundColor: colors.headerBackground }} >
                         <Header
                             backButtonPresented = {isBackButton}
-                            header = {headerComponent}
+                            headerComponent = {headerComponent}
                             rightHeaderComponent = {rightHeaderComponent}
                             pageData = {pageData}
                             scrollToTop = {scrollToTop}
-                            router={routerExpo}
                             isMenuNameAsTitle={isMenuNameAsTitle}
+                            isNoContainer={isProfileHeader}
+                            
                         />
                         {subHeaderComponent}
                     </View>

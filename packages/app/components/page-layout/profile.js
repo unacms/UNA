@@ -6,7 +6,7 @@ import { useWindowDimensions } from 'react-native';
 import { useLayoutData } from 'app/context/layout';
 import { processBlocks } from 'app/lib/conductor-helpers';
 
-export default function PageLayout({layoutName, data, uri, blocks}) {
+export default function PageLayoutProfile({layoutName, data, uri, blocks}) {
     const { width: windowWidth } = useWindowDimensions();
     const { layoutData } = useLayoutData();
     const [ pageData, setPageData ] = useState(data);
@@ -73,8 +73,9 @@ export default function PageLayout({layoutName, data, uri, blocks}) {
             layoutName={layoutName}
             header={header}
             smallHeader={smallHeader}
-            minHeaderHeight={60}
-            offsetTop={300}
+            //minHeaderHeight={60}
+            defaultHeaderHeight={0}
+            //offsetTop={300}
             isHideDefaultHeader={true}
             menu={menu}
             data={pageData}

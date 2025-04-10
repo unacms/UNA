@@ -21,13 +21,23 @@ import { menuItemsByName, appSetting, getMenuSettings } from 'app/lib/util'
 import Search from 'app/ui/molecules/search';
 import { Button } from 'app/design/controls';
 import Link from 'app/ui/atoms/link'
+import { useRouter } from 'app/lib/hooks/router'
 
-
-export const Header = memo(({ backButtonPresented, header, pageData, scrollToTop, rightHeaderComponent, router, isMenuNameAsTitle }) => {
+export const Header = memo(({ 
+    backButtonPresented, 
+    headerComponent, 
+    pageData, 
+    scrollToTop, 
+    rightHeaderComponent, 
+    isMenuNameAsTitle,
+    isNoContainer = false,
+ }) => {
     const { currentUser } = useCurrentUser();
     const pagePath = pageData?.uri;
     const settings = getPageSettings(pageData?.config, pagePath);
    
+    const router = useRouter();
+
     let textName = pageData?.name;
     
     if (isMenuNameAsTitle) {
@@ -36,7 +46,7 @@ export const Header = memo(({ backButtonPresented, header, pageData, scrollToTop
         textName = menuSettings.name;
     }
    
-    const headerContent = header ? header : textName;
+    const headerContent = headerComponent ? headerComponent : textName;
 
     let rightComponents = settings?.header
     if (!rightComponents) {
@@ -67,6 +77,8 @@ export const Header = memo(({ backButtonPresented, header, pageData, scrollToTop
 
     const isWeb = Platform.OS === 'web';
 
+    if (isNoContainer)
+        return headerContent;
 
     return (
         <Row className={`justify-between items-center h-[64px] `}>

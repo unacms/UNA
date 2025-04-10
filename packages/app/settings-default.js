@@ -499,7 +499,7 @@ export  const settingsDefault = {
             { key: '/tab1', title: 'Friends', url: '/friends', icon: 'UsersRound' },
             { key: '/tab2', title: 'Messages', url: '/messenger', icon: 'MessageCircleMore' },
             { key: '/tab3', title: 'Notifications', url: '/notifications-view', icon: 'Bell' },
-            { key: '/tab4', title: 'Dashboard', url: '/terms', icon: 'Award' }
+            { key: '/tab4', title: 'Dashboard', url: '/dashboard', icon: 'Award' }
         ],
         
         menu_tabbar_non_logged: [
@@ -618,7 +618,7 @@ export  const settingsDefault = {
             fgTertiary: 'rgba(156,163,175,1)'
         },
         conductor: {
-            menu: ' w-full items-left justify-center border-b border-bdrtabbar dark:border-bdrtabbar-d bg-bgrtabbar dark:bg-bgrtabbar-d  ',
+            menu: ' w-full items-left justify-center  bg-bgrtabbar dark:bg-bgrtabbar-d  ',
             menu_max_width: ' max-w-7xl ',
             content_max_width: ' max-w-7xl ',
             menu_is_dynamic: true,

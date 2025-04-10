@@ -273,7 +273,7 @@ export default function (props) {
                     <></>
                 )}
                 <View className="px-4" >
-                    <View className={` py-2 flex-col ${mode === 'min' ? 'lg' : 'md'}:flex-row gap-x-4 ${conductorTheme.content_max_width} mx-auto w-full border-b border-bdrtabbar dark:border-bdrtabbar-d items-start lg:items-stretch`}>
+                    <View className={` py-2 flex-col ${mode === 'min' ? 'lg' : 'md'}:flex-row gap-x-4 ${conductorTheme.content_max_width} mx-auto w-full items-start lg:items-stretch`}>
                     {bPerson && (
                         <View className="w-full h-24 sm:w-48 relative   ">
                             

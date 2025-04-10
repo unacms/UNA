@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { Pressable } from 'app/design/view'
-import { useRouter } from  'next/navigation';
+import { useRouter } from 'app/lib/hooks/router'
 import { useCallback } from 'react';
 
 export default function ElementLink(props) {  

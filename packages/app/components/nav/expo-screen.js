@@ -5,7 +5,7 @@ import { appSetting, parseUrl, parseQueryString, getURI, getPageSettings, getMen
 import { Loading } from 'app/loading'
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { fetcher } from 'app/lib/fetcher';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams } from 'app/lib/hooks/router'
 import { menuItemsFilter } from 'app/lib/util';
 import * as SplashScreen from 'expo-splash-screen';
 

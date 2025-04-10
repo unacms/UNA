@@ -1,24 +1,147 @@
 import React, { useCallback, useState, useEffect, useMemo, useRef } from "react";
-import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "react-native-reanimated";
-import { TabView, useHeaderTabContext, SceneComponent } from "@showtime-xyz/tab-view";
 import { View, ScrollView, Row, Pressable } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
-import { appSetting, deepEqual, getUnitModeBySource, handleFeedLayoutData } from 'app/lib/util';
-import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer } from 'app/lib/conductor-helpers';
+import { deepEqual, getUnitModeBySource, handleFeedLayoutData } from 'app/lib/util';
+import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer, getNumCols } from 'app/lib/conductor-helpers';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers';
+import { useWindowDimensions } from 'react-native';
 import { Button } from 'app/design/controls';
-import { useTranslation } from 'react-i18next';
 import { useCurrentUser } from 'app/context/user'
-import { useRouter, useGlobalSearchParams } from 'expo-router';
 import { useLayoutData } from 'app/context/layout';
 import { Theme } from 'app/design/theme';
 import { subscribe } from 'app/ui/atoms/socket';
 import { fetcher } from 'app/lib/fetcher';
 import Toaster from 'app/ui/atoms/toaster';
+import { useBottomSheetData } from 'app/context/bottomsheet';
+import { BlockByName } from 'app/components/block';
 import { callFn } from 'app/lib/functions/call';
-import { Text } from 'app/design/typography'
-export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultHeader, menu, data, blocks, useSectionAsMenu, unitMode, skeleton, onChangeRoute, keyword }) {
+
+const TabBar = React.memo(({ routes, index, setIndex, onChangeRoute, currentUser }) => {
+    if (routes.length > 1) {
+        return (
+            <View className="w-full">
+                <ScrollView horizontal={true}  className="  ">
+                    <Row className="px-1.5  justify-center" >
+                        {routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
+                            const btn =  callFn("getButtonForConductorNative", [a, index, currentUser, setIndex, onChangeRoute]);
+                            return (
+                                <View className="py-2 px-1 items-center justify-center"
+                                    key={`tab-${a.index}`}
+                                >
+                                    {btn}
+                                </View>
+                            )
+                        })}
+
+                    </Row>
+                </ScrollView>
+            </View>
+        )
+    }
+});
+
+
+const AddBlocks = React.memo(({
+    leftSideBarBlocks, data, onFormSubmit
+}) => {
+    if (!leftSideBarBlocks)
+        return null;
+
+    let leftSideBarBlocksObj = leftSideBarBlocks.map((block) => {
+        return <BlockByName
+            data={data}
+            name={block}
+            onFormSubmit={onFormSubmit}
+            saveOnChanges={true}
+        />
+    });
+
+    return <>
+        {(leftSideBarBlocksObj?.length > 0) &&
+            <View className="my-3 mx-2 ">
+                {leftSideBarBlocksObj.map((block, index) => {
+                    return <View key={"lb-" + index}>{block}</View>
+                })}
+            </View>
+        }
+    </>
+});
+
+const TabScene = React.memo(({
+    route,
+    prevRoute,
+    headerComponent,
+    subHeaderComponent,
+    ListHeaderComponent,
+    headerHeight,
+    unitType,
+    Preload,
+    unitMode,
+    fetchNextPage,
+    onRefresh,
+    refreshing,
+    numColumns,
+    layoutName
+}) => {
+
+    const handleEndReached = useCallback(() => {
+        if (!route?.endpoint || route?.endpoint?.params?.start === 0 || refreshing || route?.endpoint?.finished)
+            return;
+        fetchNextPage();
+    }, [route?.endpoint, route?.endpoint?.params?.start, route?.endpoint?.finished, fetchNextPage, refreshing]);
+
+    const renderItem = useCallback(({ item, index }) => (
+        <ItemRenderer
+            unitType={unitType}
+            unitMode={unitMode}
+            route={route}
+            item={{ ...item, feed_type: route?.endpoint?.params?.type }}
+            unit={route?.endpoint?.unit}
+            module={route?.endpoint?.module}
+        />
+    ), [unitType, unitMode, route]);
+
+    /*if (!route.inited) {
+        return <></>;
+    }*/
+    return (
+        <UniList
+            ListHeaderComponent={ListHeaderComponent}
+            scrollProps={
+                {
+                    pageData: route.inited ? route.pageData : prevRoute.pageData,
+                    headerComponent: headerComponent, 
+                    subHeaderComponent: subHeaderComponent, 
+                    headerHeight: headerHeight, 
+                    isBackButton: false,
+                    isMenuNameAsTitle: true,
+                    isProfileHeader: layoutName === 'profile'
+                }
+            }
+            index={route.index}
+            data={route.data}
+            route={route}
+            unit={route.endpoint?.unit}
+            renderItem={renderItem}
+            ListFooterComponent={
+                (route?.endpoint?.request_url ? (route?.endpoint?.finished ? (route.data.length == 0 ?  callFn("noContentByUrl", [route?.endpoint]) : <></>) : Preload) : <></>)
+            }
+            maxToRenderPerBatch={5}
+            initialNumToRender={5}
+            numColumns={numColumns}
+            mode="simple"
+            url={route?.endpoint?.request_url}
+            onRefresh={onRefresh}
+            refreshing={refreshing}
+            onEndReached={handleEndReached}
+        />
+
+    )
+});
+
+export function Conductor({ header, defaultHeaderHeight=116, smallHeader, minHeaderHeight, isHideDefaultHeader, leftSideBarBlocks, menu, layoutName, data, blocks, useSectionAsMenu, unitMode, skeleton, onChangeRoute, keyword }) {
+
     minHeaderHeight = minHeaderHeight || 100;
     isHideDefaultHeader = isHideDefaultHeader || false;
     useSectionAsMenu = useSectionAsMenu || false;
@@ -27,28 +150,33 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
 
     const { currentUser } = useCurrentUser();
     const { layoutData, setLayoutData } = useLayoutData();
-    const { t } = useTranslation();
-
+    const { setBottomSheetData } = useBottomSheetData();
     const initedTabs = useMemo(() => fillTabs(menu, data, blocks, currentUser, useSectionAsMenu), [menu, data, blocks, currentUser, useSectionAsMenu]);;
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [routes, setRoutes1] = useState(initedTabs);
     const [menuState, setMenuState] = useState(menu);
     const [isRevalidate, setIsRevalidate] = useState(false);
     const toasterRef2 = useRef();
+    const windowDimen = useWindowDimensions();
+    const windowWidth = windowDimen.width;
+   
 
     useEffect(() => {
         if (!deepEqual(menu, menuState)) {
             setMenuState(menu);
             setRoutes(initedTabs);
         }
-    }, [menu, menuState, initedTabs, setRoutes]);
+    }, [menu, menuState, initedTabs, setRoutes, data]);
+
+    /*useEffect(() => {
+        setRoutes(initedTabs);
+    }, [data]);*/
 
 
     const setRoutes = /*useCallback(*/(a) => {
         setRoutes1(a);
     }/*, []);*/
 
-    const scroll = useSharedValue(1);
     const initialIndex = useMemo(() => {
         const idx = routes.findIndex(item => {
             if (useSectionAsMenu) {
@@ -60,22 +188,28 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
         return idx === -1 ? 0 : idx; // Default to 0 if no matching route is found
     }, [routes, data.url, useSectionAsMenu]);
 
-    const [index, setIndex] = useState(initialIndex);
-    const animationHeaderPosition = useSharedValue(0);
-    const animationHeaderHeight = useSharedValue(0);
-    const indicatorOffset = useSharedValue(0);
-    const headerMaxHeight = useSharedValue(100);
+    const [index, _setIndex] = useState(initialIndex);
+    const [prevIndex, setPrevIndex] = useState(initialIndex);
+    
+    const setIndex = (newIndex) => {
+        setPrevIndex(index);
+        _setIndex(newIndex);
+      };
+      
 
-    const currentRoute = useMemo(() => routes.find((item) => item.index === index), [routes, index]);;
-    const qKey = [currentRoute?.endpoint?.request_url, index, keyword, JSON.stringify(currentRoute?.endpoint?.params?.filters)];
+    const currentRoute = useMemo(() => routes.find((item) => item.index === index), [routes, index]);
+    const prevRoute = useMemo(() => routes.find((item) => item.index === prevIndex), [routes, prevIndex]);;
+    const qKey = useMemo(() => [currentRoute?.endpoint?.request_url, index, keyword, JSON.stringify(currentRoute?.endpoint?.params?.filters)], [currentRoute, index, keyword]);
     const queryClient = useQueryClient();
 
+    const numColumns = getNumCols(windowWidth, currentRoute, null);
+
     useEffect(() => {
-        if (currentRoute.cached){
+        if (currentRoute.cached) {
             revalidateData();
 
         }
-        if (currentRoute?.endpoint?.unit == 'feed'){
+        if (currentRoute?.endpoint?.unit == 'feed') {
             subscribe('bx_timeline_0', 'added', setIsRevalidate);
             subscribe('bx_timeline_0', 'deleted', setIsRevalidate);
         }
@@ -88,10 +222,8 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
 
     const bEnabled = currentRoute?.endpoint?.params?.start == 0 && !isRefreshing;
 
-   const {
-       
+    const {
         fetchNextPage,
-
     } = useInfiniteQuery({
         queryKey: qKey,
         queryFn: ({ pageParam }) => parseData(routes, index, setRoutes),
@@ -102,13 +234,12 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
 
             return;
         },
-        enabled: false
+        enabled: false//routes[index]?.data?.length == 0
     });
 
     useEffect(() => {
-        if (bEnabled){
-            //parseData(routes, index, setRoutes)
-             fetchNextPage();
+        if (bEnabled) {
+            fetchNextPage();
         }
     }, [bEnabled]);
 
@@ -117,15 +248,12 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
     }, [index]);
 
     const showNewContent2 = async () => {
-      
         const newRoutes = [...routes];
         newRoutes[index].endpoint.finished = false;
         newRoutes[index].data = newRoutes[index].data.filter(item => item.type === 'block');;
         newRoutes[index].endpoint.params.start = 0;
         setRoutes(newRoutes);
         setToaster2Visible(false);
-        // uniRef.current.scrollToIndex({ animated: true, index: -1 });
-
     }
 
     const setToaster2Visible = (val) => {
@@ -135,26 +263,26 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
         }
     }
 
-    const revalidateData =  useCallback(async () => {
+    const revalidateData = useCallback(async () => {
         const hasEndpoint = Boolean(currentRoute?.endpoint);
         let endpointUpdateContent = '';
         let bUpdateContent = false;
         const revalidatedData = JSON.parse(isRevalidate);
         if (hasEndpoint) {
-    
+
             const a = [...new Set(currentRoute.data
                 .filter(item => item.type !== 'block')
                 .map(item => item.id)
             )].slice(0, 10).join(',');
 
-            if ((a || true) && revalidatedData.author_id != currentUser?.id &&  !currentRoute.endpoint.request_url.includes("system/get_results/TemplSearchExtendedServices")) {
+            if ((a || true) && revalidatedData.author_id != currentUser?.id && !currentRoute.endpoint.request_url.includes("system/get_results/TemplSearchExtendedServices")) {
                 endpointUpdateContent = currentRoute.endpoint.request_url + JSON.stringify({
                     'params': { ...currentRoute.endpoint.params, validate: a }
                 });
                 bUpdateContent = true;
             }
         }
-        if (bUpdateContent){
+        if (bUpdateContent) {
             const validatedData = (await fetcher(endpointUpdateContent)).data?.[0]?.data?.data;
 
             if (validatedData && (validatedData == 'valid' || validatedData == 'invalid')) {
@@ -163,96 +291,36 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
         }
     }, [currentRoute, isRevalidate, currentUser?.id]);
 
-    const handleEndReached = async (lastItemIndex) => {
-       
-       /*if (isFetchingNextPage || isRefreshing)
-            return;
-        if (currentRoute?.endpoint?.finished)
-            return;
-
-        fetchNextPage();*/
-        if (!currentRoute?.endpoint)
-            return;
-
-        if (currentRoute?.endpoint?.params?.start == 0)
-            return;
-
-        if (isRefreshing)
-            return;
-        if (currentRoute?.endpoint?.finished)
-            return;
-        console.log('++++++++++++++++++++++++++++++++++++', handleEndReached)
-        fetchNextPage();
-        // parseData(routes, index, setRoutes)
-    };
-
-   
-
-    /*if (isHideDefaultHeader) {
-        setTimeout(() => {
-            navigation.setOptions({ headerShown: false });
-        }, 300);
-    }*/
-
-    const handleLayout = (event) => {
-        scroll.value = event.nativeEvent.contentOffset.y > 200 ? 0 : 1;
-    };
-
-    const TabFlashListScrollView = React.forwardRef((props, ref) => (
-        <SceneComponent
-            {...props}
-            useExternalScrollView
-            forwardedRef={ref}
-            keyboardShouldPersistTaps="always"
-            keyboardDismissMode="on-drag"
-            ContainerView={Animated.ScrollView}
-        />
-    ));
-
-    const TabFlashList = React.forwardRef((props, ref) => {
-        const { scrollViewPaddingTop } = useHeaderTabContext();
-        return (
-            <UniList
-                {...props}
-                renderScrollComponent={TabFlashListScrollView}
-                contentContainerStyle={{ paddingTop: scrollViewPaddingTop + 4, paddingBottom: 20 }}
-                refer={ref}
-
-                onScroll={handleLayout}
-                onEndReached={handleEndReached}
-            />
-        );
-    });
-
     useEffect(() => {
         fetchAndUpdateData(routes, index, setRoutes);
     }, [index]);
 
-    const onStartRefresh = async () => {
-        const newRoutes = [...routes];
-        //TODO CHECK WHY INITEDD TABS  IS RELOADING EVERY TIME
-        let k = fillTabs(menu, data, blocks, currentUser, useSectionAsMenu);
-        newRoutes[index] = k[index];
-        setRoutes(newRoutes);
+    const onStartRefresh = useCallback(async () => {
+        setRoutes(prevRoutes => {
+            const updatedRoutes = fillTabs(menu, data, blocks, currentUser, useSectionAsMenu);;
+            return [...prevRoutes.slice(0, index), updatedRoutes[index], ...prevRoutes.slice(index + 1)];
+        });
         setIsRefreshing(true);
-
-    };
-
+    }, [initedTabs, index]);
 
     useEffect(() => {
         if (isRefreshing) {
             queryClient.removeQueries(qKey);
             setIsRefreshing(false);
         }
-    }, [isRefreshing]);
+    }, [isRefreshing, queryClient, qKey]);
 
     /* NEW POST TO FEED */
     useEffect(() => {
         if (currentRoute.endpoint?.unit === 'feed' && layoutData && layoutData.data && (layoutData?.type == 'feed:new_content' || layoutData?.type == 'feed:remove_content')) {
             let clonedData = currentRoute.data
             const data = handleFeedLayoutData(layoutData, clonedData)
+            // Create a new route object by spreading the existing one and updating data
+            const updatedRoute = { ...routes[index], data };
+
+            // Create a new routes array with the updated route
             const newRoutes = [...routes];
-            newRoutes[index].data = data
+            newRoutes[index] = updatedRoute;
             setRoutes(newRoutes);
             setLayoutData(null)
         }
@@ -260,171 +328,84 @@ export function Conductor({ header, smallHeader, minHeaderHeight, isHideDefaultH
     }, [layoutData]);
     /* NEW POST TO FEED */
 
-    const TabScene = useCallback(({ route, index }) => {
-        const cache = useRef({});
-        const Preload = getSkeletonForList(skeleton != '' ? skeleton : (data.module ? data.module : data.unit), 1);
-        if (!route.inited) {
-            //Preload
-            return <></>
-        }
-        const unitType = getUnitModeBySource(route?.endpoint);
+    const Preload = useMemo(() => {
+        return getSkeletonForList(skeleton !== '' ? skeleton : (data.module ? data.module : data.unit), numColumns);
+    }, [skeleton, data.module, data.unit]);
 
-        const renderCachedItem = ({ item, index }) => {
-            const cacheKey = item.id || index; // Use id or index as the cache key
-    
-            // Check if the item is already cached
-            if (!cache.current[cacheKey]) {
-                // If not cached, render the item and store it in the cache
-                cache.current[cacheKey] = (
-                    <ItemRenderer
-                        unitType={unitType}
-                        unitMode={unitMode}
-                        route={route}
-                        item={item}
-                        unit={route?.endpoint?.unit}
-                        module={route?.endpoint?.module}
-                    />
-                );
+    const unitType = useMemo(() => {
+        return getUnitModeBySource(currentRoute?.endpoint);
+    }, [currentRoute?.endpoint?.request_url]); // Dependency on route.endpoint.request_url
+
+    const showFilters = useCallback(() => {
+        setBottomSheetData({ title: 'Filters', content: <AddBlocks leftSideBarBlocks={leftSideBarBlocks} data={data} onFormSubmit={onFormSubmit} />, showClose: true, snapPoints: ['60%', '60%'] });
+    }, [leftSideBarBlocks, data, onFormSubmit, layoutName]);
+
+    const setFilterValue = (values) => {
+
+        const newRoutes = [...routes];
+        values.forEach(function (value) {
+            const name = value.name;
+            const val = value.value;
+            if (newRoutes[index].endpoint.params.filters) {
+                newRoutes[index].endpoint.params.filters[name] = val;
             }
-           
-            return cache.current[cacheKey];
+            else {
+                newRoutes[index].endpoint.params.filters = { [name]: val };
+            }
+        })
+        newRoutes[index].endpoint.finished = false;
+        newRoutes[index].data = [];
+        newRoutes[index].endpoint.params.start = 0;
+        setRoutes(newRoutes);
+    }
+
+    const onFormSubmit = useCallback((formData, d) => {
+        let filterValues = [];
+        for (let key in d) {
+            filterValues.push({ name: key, value: Array.isArray(d[key]) ? d[key].join(',') : d[key] })
         };
+        setFilterValue(filterValues);
+        setBottomSheetData(false);
+    });
 
-        console.log("route?.endpoint?.finished", route?.endpoint?.finished, route.data.length)
+    const isShowFilters = layoutName == 'navigator' && leftSideBarBlocks && leftSideBarBlocks?.length > 0;
+    const sceneHeader =  <TabBar routes={routes} index={index} setIndex={setIndex} onChangeRoute={onChangeRoute} currentUser={currentUser} />
+    const filter =  (isShowFilters) && (<View className="items-start ml-3 mt-2 mb-1">
+        <Button title='Filters' variant="default" size="sm" rounded onPress={showFilters} />
+    </View>)
 
-        return (
-            <TabFlashList
-                index={route.index}
-                data={route.data}
-                route={route}
-                unit={route.endpoint?.unit}
-                //renderItem={({ item, index }) => renderCachedItem({ item, index })}
-                renderItem={({ item, index }) => <ItemRenderer unitType={unitType} unitMode={unitMode} route={route} item={{ ...item, feed_type: route?.endpoint?.params?.type }} unit={route?.endpoint?.unit} module={route?.endpoint?.module} />}
-                //<View className="w-full h-24 bg-red-500 my-2"></View>}
-                getItemType={(item) => {
-                    return item.type;
-                }}
-                ListFooterComponent={
-                    (route?.endpoint?.request_url ? ((route?.endpoint?.finished) ? (route.data.length == 0 ? callFn("noContentByUrl", [route?.endpoint]) : null) : Preload) : null)
-                }
-            />
-        )
-    }, [skeleton, data, unitMode]);
-
-    const renderScene = useCallback(({ route }) => <><Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" /><TabScene route={route} index={route.index} /></>, [unitMode]);
-    const { colors } = Theme();
-
-    const renderTabBar = (props) => {
-
-        const tabWidth = props.layout.width / props.navigationState.routes.length;
-        indicatorOffset.value = withTiming(props.navigationState.index * tabWidth, { duration: 200, easing: Easing.inOut(Easing.ease) });
-
-        /* const indicatorStyle = useAnimatedStyle(() => {
-             return {
-                 transform: [{ translateX: indicatorOffset.value }],
-             };
-         }, [indicatorOffset]);
- */
-        /* const styles = StyleSheet.create({
-             indicator: {
-                 width: tabWidth
-             },
-         });
- */
-        if (props.navigationState.routes.length > 1) {
-            return (
-                <ScrollView horizontal={true} style={{ backgroundColor: colors.barsBackground }} className=" border-b border-bdr dark:border-bdr-d min-w-full">
-                    <Row className="px-1.5 " >
-                        {props.navigationState.routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
-                            const counter = appSetting('conductor', 'show_nav_counters') ? 0 : a.addon ? (a.addon.text ? a.addon.text : a.addon) : 0;
-                            const counter2 = counter > 0 ? ' (' + counter + ')' : ''
-                            const btn = callFn("getButtonForConductorNative", [a, props.navigationState.index, currentUser, setIndex, onChangeRoute])
-
-                            return (
-                                <Pressable className="items-center py-2 px-1 justify-center"
-                                    key={`tab-${a.index}`}
-                                >
-                                    {btn}
-                                </Pressable>
-                            )
-                        })}
-
-                    </Row>
-                </ScrollView>
-                /*  <Animated.View className="absolute bottom-0 left-0 h-1 flex items-center justify-center " style={[styles.indicator, indicatorStyle]} ><View className="w-full h-1" style={{borderRadius: 2, height: 2.5, backgroundColor: colors.primary, maxWidth:120}}></View></Animated.View>*/
-            )
-        }
+    const tabSceneProps = {
+        prevRoute: prevRoute,
+        numColumns: numColumns,
+        onRefresh: onStartRefresh,
+        refreshing: isRefreshing,
+        route: currentRoute,
+        Preload: Preload,
+        unitType: unitType,
+        unitMode: unitMode,
+        fetchNextPage: fetchNextPage,
+        layoutName: layoutName
     };
-
-    const renderHeader = useCallback(() => {
-        const animatedStyleA = useAnimatedStyle(() => {
-            return {
-                opacity: withTiming(scroll.value, { duration: 500 }),
-                zIndex: (scroll.value)*500
-            };
-        }, [scroll]);
-
-
-        const animatedStyleB = useAnimatedStyle(() => {
-            return {
-                opacity: withTiming(1 - scroll.value, { duration: 500 }),
-                zIndex: (1 - scroll.value)*500
-            };
-        }, [scroll]);
-
-        const parentAnimatedStyle = useAnimatedStyle(() => {
-            return {
-                height: headerMaxHeight.value,
-            };
-        }, [headerMaxHeight]);
-
-        const handleHeaderMaxLayout = useCallback((event) => {
-            headerMaxHeight.value = event.nativeEvent.layout.height;
+    if (layoutName === 'profile'){
+        Object.assign(tabSceneProps, {
+            headerHeight: defaultHeaderHeight,
+            headerComponent: <>{smallHeader}{sceneHeader}</>,
+            ListHeaderComponent: <>{header}{sceneHeader}{filter}</>
         });
+    }
+    else{
+        Object.assign(tabSceneProps, {
+            headerHeight : isShowFilters? 150: defaultHeaderHeight,
+            subHeaderComponent: <>{header}{sceneHeader}{filter}</>
+        });
+    }
 
-        if (!header)
-            return <></>
-        return (
-            <Animated.View className='w-full h-80' style={parentAnimatedStyle}>
-                <Animated.View style={[{ width: '100%', position: 'absolute' }, animatedStyleA]}>
-                    <View onLayout={handleHeaderMaxLayout}>
-                        {header}
-                    </View>
-                </Animated.View>
-                <Animated.View style={[{ width: '100%', position: 'absolute', bottom: 0 }, animatedStyleB]}>
-                    {smallHeader}
-                </Animated.View>
-            </Animated.View>
-        );
-    }, [scroll, headerMaxHeight, header, smallHeader]);
-
-    //console.log("********************************************************RELOAD**********", currentRoute?.endpoint?.params?.start, isRefreshing, currentRoute.data.length)
-   
-   /* 
-       const routerExpo = useRouter();
- const glob = useGlobalSearchParams();
-    <Button title="xx" onPress={() => {
-        routerExpo.replace( {
-            pathname: '/' + glob.name,
-            params: { url: '/' + routes[index].link }
-          })}}>
-        </Button>*/
     return (
-
-        <>
-         <TabView
-            navigationState={{ index, routes }}
-            renderScene={renderScene}
-            onIndexChange={setIndex}
-            lazy
-            renderScrollHeader={renderHeader}
-            minHeaderHeight={minHeaderHeight}
-            animationHeaderPosition={animationHeaderPosition}
-            animationHeaderHeight={animationHeaderHeight}
-            renderTabBar={renderTabBar}
-            onStartRefresh={onStartRefresh}
-            isRefreshing={isRefreshing}
-            enableGestureRunOnJS={false}
-        /></>
+        <View className="w-full flex-1">
+            <View className="w-full flex-1 ">
+                <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" />
+                <TabScene {...tabSceneProps}  />
+            </View>
+        </View>
     );
 }

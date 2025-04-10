@@ -1,6 +1,5 @@
 import { DataByName } from 'app/components/block'
 import { Conductor } from 'app/ui/molecules/conductor';
-import { ConductorFlat } from 'app/ui/molecules/conductor_flat';
 import { getLayout } from 'app/lib/util';
 import { useMemo} from 'react';
 import { useCurrentUser } from 'app/context/user'
@@ -43,9 +42,23 @@ export default function PageLayout(props) {
     const pageData = props.data;
     const blocks = processBlocks(props.blocks);
 
+    return (
+        <Conductor 
+            layoutName={props.layoutName}
+            //minHeaderHeight={0} 
+            isHideDefaultHeader={false} 
+            menu={menu} 
+            data={pageData} 
+            blocks={blocks.mainBlocks}
+            useSectionAsMenu={false}
+            leftSideBar={leftSideBar}
+            leftSideBarBlocks={blocks.leftBlocks}
+        />
+    )
+    /*
 if (!isWeb){
     return (
-        <ConductorFlat 
+        <Conductor 
             layoutName={props.layoutName}
             minHeaderHeight={0} 
             isHideDefaultHeader={false} 
@@ -62,7 +75,7 @@ if (!isWeb){
     return (
         <Conductor 
             layoutName={props.layoutName}
-            minHeaderHeight={0} 
+            //minHeaderHeight={0} 
             isHideDefaultHeader={false} 
             menu={menu} 
             data={pageData} 
@@ -71,5 +84,6 @@ if (!isWeb){
             leftSideBar={leftSideBar}
             leftSideBarBlocks={blocks.leftBlocks}
         />
-    )
+    )*/
 }
+

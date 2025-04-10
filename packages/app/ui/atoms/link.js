@@ -1,11 +1,12 @@
 import { Pressable } from 'app/design/view';
-import { Link, useGlobalSearchParams } from 'expo-router';
+import { useGlobalSearchParams, Link } from 'app/lib/hooks/router'
 import { FeedbackHaptics } from 'app/lib/util';
 import { useCurrentUser } from 'app/context/user';
 import { appSetting, getDomainFromUrl } from 'app/lib/util';
 import * as WebBrowser from 'expo-web-browser';
 import React, { useMemo, useCallback } from 'react';
 import { Text } from 'app/design/typography'
+
 export default function ElementLink(props) {
     const { href = '', target, haptics, children, asExternal, mode,  ...rest } = props;
     const glob = useGlobalSearchParams();

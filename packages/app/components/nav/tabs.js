@@ -1,4 +1,4 @@
-import { Tabs } from "expo-router";
+import { Tabs, useRouter } from 'app/lib/hooks/router';
 import { View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon';
@@ -11,7 +11,6 @@ import { useTranslation } from 'react-i18next';
 //import BottomSheetDataContext from 'app/context/bottomsheet';
 import { FeedbackHaptics, isNumeric, subscribeOneSignal } from 'app/lib/util';
 import * as Linking from 'expo-linking';
-import { useRouter } from 'expo-router';
 import { parseUrl } from 'app/lib/util'
 import { clearNotif } from 'app/lib/util'
 import Suggestions from 'app/ui/molecules/suggestions';

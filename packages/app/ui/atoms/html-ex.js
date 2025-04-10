@@ -11,7 +11,7 @@ import { Theme } from 'app/design/theme';
 import { useState } from 'react';
 import Video from 'app/ui/atoms/video';
 import * as WebBrowser from 'expo-web-browser';
-import { useRouter, useGlobalSearchParams } from 'expo-router';
+import { useRouter, useGlobalSearchParams } from 'app/lib/hooks/router'
 
 const renderers = {
     iframe: IframeRenderer,

@@ -1,4 +1,5 @@
-import { Stack } from "expo-router";
+import { Stack } from 'app/lib/hooks/router'
+
 const StackCustom = () => {
     return <Stack 
         screenOptions={() => ({

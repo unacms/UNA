@@ -2,11 +2,9 @@ import Link from 'app/ui/atoms/link';
 import { View, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { appSetting } from 'app/lib/util'
-import { Icon } from 'app/ui/atoms/icon';
 import { useCurrentUser } from 'app/context/user';
 import Profile from 'app/ui/molecules/profile';
-import { usePathname } from 'next/navigation'
-import { useTranslation } from 'react-i18next';
+import { usePathname } from 'app/lib/hooks/router'
 import { callFn } from 'app/lib/functions/call';
 import { Button } from 'app/design/controls';
 

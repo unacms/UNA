@@ -4,7 +4,7 @@ import { stripTags, appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import Profile from 'app/ui/molecules/profile'
 import { useWindowDimensions } from 'react-native'
 import Image from 'app/ui/atoms/image'
-import { useRouter, useNavigation } from 'expo-router'
+import { useRouter, useNavigation } from 'app/lib/hooks/router'
 import { Theme } from 'app/design/theme'
 import { Icon } from 'app/ui/atoms/icon'
 import Menu from 'app/components/menu'
@@ -113,13 +113,13 @@ export function CoverSmall(props) {
         <Row
             className=" justify-left items-center pt-0 w-full h-16 bg-primary-200 dark:bg-primary-950"
         >
-            <View className="absolute h-80 w-full">
+            <View className="absolute h-[64px] w-full">
                 {!!data.cover && (
                     <><Image view="cover"
                         sizes={LAYOUT_BREAKPOINTS.xl}
                         className="u-cover "
                         src={data.cover.src} />
-                        <BlurView intensity={90} tint="dark" style={{ width: '100%', height: 320 }} >
+                        <BlurView intensity={90} tint="dark" style={{ width: '100%', height: 64 }} >
                         </BlurView></>
 
                 )}

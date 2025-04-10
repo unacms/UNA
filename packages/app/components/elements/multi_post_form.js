@@ -45,8 +45,6 @@ export default function MultiPostForm({ data }) {
 
     if (menu_add_items.length == 0 && !firstForm)
        return;
-
-    console.log("dfgdgdf")
     
     return (
        

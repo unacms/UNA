@@ -1,4 +1,4 @@
-import { /*MasonryFlashList,*/ FlashList } from "@shopify/flash-list";
+//import { /*MasonryFlashList,*/ FlashList } from "@shopify/flash-list";
 import { RefreshControl } from 'react-native';
 import { View } from 'app/design/view'
 import Animated from 'react-native-reanimated';
@@ -7,7 +7,7 @@ import { useRef } from 'react';
 
 export default function UniList(props) {
     const uniRef = useRef();
-    const { preloadComponent, contentContainerStyle, scrollProps, data, mode, renderItem, onEndReached, maxToRenderPerBatch, initialNumToRender, ListFooterComponent, refer, onScrollToIndex, numColumns, keyExtractor, unit, refreshing, onRefresh, height, ...rest } = props
+    const { preloadComponent, contentContainerStyle, scrollProps, data, index, mode, renderItem, onEndReached, maxToRenderPerBatch, initialNumToRender, ListFooterComponent, refer, onScrollToIndex, numColumns, keyExtractor, unit, refreshing, onRefresh, height, ...rest } = props
     const unitSizeMap = {
         notifications: 40,
         feed: 200,
@@ -58,13 +58,14 @@ export default function UniList(props) {
                 content={content}
                 contentType="FlatList"
                 refer={refer ? refer : uniRef}
+                index={index}
                 {...scrollProps}
             />
 
         )
     }
 
-    return (
+    /*return (
         <FlashList
             ref={refer}
             contentContainerStyle={contentContainerStyle}
@@ -83,6 +84,6 @@ export default function UniList(props) {
                 ) : null
             }
         />
-    )
+    )*/
     // }
 }
