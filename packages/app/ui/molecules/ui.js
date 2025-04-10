@@ -3,7 +3,7 @@ import { View, ScrollView, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
 
 export default function UI(props) {
-    const sizes = ['xs', 'sm', 'md', 'lg', 'xl'];
+    const sizes = ['xs', 'sm', 'base', 'lg'];
     const variants = ['default', 'primary', 'secondary', 'danger', 'text', 'link', 'outline', 'tab'];
 
     // Конфигурации отображения кнопок
