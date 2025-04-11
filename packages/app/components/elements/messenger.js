@@ -76,7 +76,7 @@ export default function MessengerEl(props) {
 
     const addButtons = useMemo(() => {
         return [
-            <CreateConvoButton key="a" onSave={onSave} variant='text' />
+            <CreateConvoButton key="a" onSave={onSave} variant='secondary' />
         ]
     }, []);
 

@@ -124,7 +124,7 @@ export default function ScrollList({ content, pageData, headerHeight = 64, isBac
                     <View className="w-full backdrop-blur " style={{ backgroundColor: colors.headerBackground }} >
                         <Header
                             backButtonPresented={isBackButton}
-                            header={headerComponent}
+                            headerComponent={headerComponent}
                             rightHeaderComponent={rightHeaderComponent}
                             pageData={pageData}
                             scrollToTop={scrollToTop}

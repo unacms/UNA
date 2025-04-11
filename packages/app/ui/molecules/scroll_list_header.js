@@ -45,7 +45,6 @@ export const Header = memo(({
         const menuSettings = getMenuSettings(pageData?.menu?.object, pageData?.menu?.config);
         textName = menuSettings.name;
     }
-   
     const headerContent = headerComponent ? headerComponent : textName;
 
     let rightComponents = settings?.header
@@ -77,6 +76,7 @@ export const Header = memo(({
 
     const isWeb = Platform.OS === 'web';
 
+   
     if (isNoContainer)
         return headerContent;
 
@@ -90,8 +90,7 @@ export const Header = memo(({
                         router? router?.back() : history.back();
                     }} startDecorator="ChevronLeft" />
                 )}</View>
-
-                {text && (
+                {!!text && (
                     <View>
                         <Text className="font-bold text-neutral-800 dark:text-neutral-200 text-3xl tracking-tighter">
                             {text}

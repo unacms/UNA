@@ -28,8 +28,9 @@ export default function ({buttonProps, children, tooltip, fullWidth}) {
         tooltip: tooltip || "Notifications",
         rounded: true,
         startDecorator: "Bell",
-        addon:{variant:'primary', text: notifCount, hideZero: true}
     };
+
+    buttonProps.addon = {variant:'primary', text: notifCount, hideZero: true}
 
     const ntfsContent = (
         ntfsOpen && <View key="ddp-content" className="px-1.5 pb-1.5">

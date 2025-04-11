@@ -92,7 +92,6 @@ export default function UniList(props) {
                 return ListFooterComponent
             },
         } : {
-            StickyFooter: () => <View className="w-full bg-red-500 h-12'"></View>,
             Footer: () => ListFooterComponent,
             Header: () => useCustomScrollHandler ? <View style={{paddingTop:scrollProps.headerHeight}}></View> :ListHeaderComponent,
         },

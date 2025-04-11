@@ -13,11 +13,11 @@ export function useGlobalSearchParams() {
 }
 
 export function useRouter() {
-    return _useRouter;
+    return _useRouter();
 }
 
 export function usePathname() {
-    return _usePathname;
+    return _usePathname();
 }
 
 export function useNavigation() {
@@ -25,10 +25,13 @@ export function useNavigation() {
 }
 
 export function goBack(navigation, router, callback){
-    if (window.history.length <= 1) {
-        callback && callback();
-    } else {
-        window.history.back();
+    if (callback){
+        callback(); 
+    }
+    else{
+        if (window.history.length <= 1) {
+            window.history.back();
+        } 
     }
 }
 

@@ -459,8 +459,8 @@ const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, 
             {srch}
         </Row>}
         <Row className='my-auto'>
-            <View className='lg:hidden  '>
-                <Button startDecorator="Search" variant="text" bgrDecorator rounded onPress={() => handleSearch2()} />
+            <View className='lg:hidden mr-2 lg:mr-0 '>
+                <Button startDecorator="Search" variant="secondary" bgrDecorator rounded onPress={() => handleSearch2()} />
             </View>
             {addButtons}
         </Row>
@@ -542,17 +542,17 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
         <View className='md:px-0  w-full  '>
             <Row className='pr-2 items-center justify-between w-full lg:ml-3 h-16'>
                 <Row className='items-center justify-start overflow-hidden flex-auto '>
-                    {isSmallScreen && <View className='mr-2'><BackButton buttonProps={{ variant: "text", startDecorator: 'ArrowLeft', bgrDecorator: true, rounded: 'rounded', align: "start" }} callback={showConvo} /></View>}
+                    {isSmallScreen && <View className='mr-2'><BackButton buttonProps={{ variant: "secondary", startDecorator: 'ArrowLeft', rounded: 'rounded' }} callback={showConvo} /></View>}
                     <Text numberOfLines={1} className="font-bold text-neutral-800 dark:text-neutral-200 text-3xl tracking-tighter">{title}</Text>
                 </Row>
                 <Row className='items-center gap-x-2'>
                     <View>
                         <DropdownMenu onSelect={(oItem) => { handleManage(oItem) }} items={menuItems}>
                             <Button
-                                variant="text"
+                                variant="secondary"
                                 size="base"
                                 rounded
-                                bgrDecorator
+                                
                                 startDecorator="Settings"
                             />
                         </DropdownMenu>

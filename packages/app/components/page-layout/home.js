@@ -335,7 +335,7 @@ export default function (props) {
                                                 unitMode={unitMode}
                                                 exProps={{
                                                     headerBlocks: headerBlocks,
-                                                    scrollProps: { pageData: props.data, headerHeight: isFeedMenuPresent ? 116 : 64, subHeaderComponent: subHeader },
+                                                    scrollProps: { pageData: props.data, headerHeight: isFeedMenuPresent ? 116 : 0, subHeaderComponent: subHeader },
                                                 }}
                                             />
                                         </View>
