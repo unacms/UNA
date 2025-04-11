@@ -13,7 +13,21 @@ import { Button } from 'app/design/controls';
 import { useWindowDimensions } from 'react-native';
 import { Header } from 'app/ui/molecules/scroll_list_header';
 
-export default function ScrollList({ content, pageData, headerHeight = 64, isBackButton = false, contentType, refer, useCustomScrollHandler, inverted, headerComponent, subHeaderComponent, rightHeaderComponent, isMenuNameAsTitle = false }) {
+export default function ScrollList({ 
+    content, 
+    pageData, 
+    headerHeight = 64, 
+    isBackButton = false, 
+    contentType, 
+    refer, 
+    useCustomScrollHandler, 
+    inverted, 
+    headerComponent, 
+    subHeaderComponent, 
+    rightHeaderComponent, 
+    isMenuNameAsTitle = false,
+    isNoContainer = false,
+}) {
     const { width } = useWindowDimensions();
     const isSmallScreen = width < LAYOUT_BREAKPOINTS.lg
     const isCollapsibleHeader = appSetting('native', 'collapsible_header') && isSmallScreen;
@@ -130,6 +144,7 @@ export default function ScrollList({ content, pageData, headerHeight = 64, isBac
                             scrollToTop={scrollToTop}
                             router={null}
                             isMenuNameAsTitle={isMenuNameAsTitle}
+                            isNoContainer={isNoContainer}
                         />
                         {subHeaderComponent}
                     </View>

@@ -404,14 +404,7 @@ export const Button = (props) => {
     const showTooltip = useMemo(() => width >= LAYOUT_BREAKPOINTS.lg && tooltip, [width, tooltip]);
 
     const colorIcon = useMemo(() => {
-        let a = ThemeCssClassesButton[`u-btn-${variant}-color-icon-${themeName}`];
-        /*if (!a){
-            if (variant === 'link') 
-                a = colors.primary;
-            if (variant === 'primary') 
-                a='rgb(243, 244, 246)';
-        }*/
-        return a;
+        return ThemeCssClassesButton[`u-btn-${variant}-color-icon-${themeName}`];
     }, [variant, ThemeName, colors]);
 
   

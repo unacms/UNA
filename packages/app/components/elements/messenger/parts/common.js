@@ -294,7 +294,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     const editConvo = useCallback(async () => {
         let request_url = '/api.php?r=bx_messenger/get_parts_list/Services&params=' + JSON.stringify({ lot: selectedConvo.id2 });
         const sResponse = await fetcher(request_url);
-        setBottomSheetData({ title: 'Add users to start messaging', content: <CreateConvo onSave={onSaveHandler} initedData={sResponse.data} convoId={selectedConvo.id2} />, showClose: true, snapPoints: ['85%', '85%'] });
+        setBottomSheetData({ title: 'Add users to start messaging', content: <CreateConvo onSave={onSaveHandler}  initedData={sResponse.data} convoId={selectedConvo.id2} />, showClose: true, snapPoints: ['85%', '85%'] });
     }, [selectedConvo?.id2, convos.data]);
 
     const onFormSubmit = useCallback((formData, d) => {
@@ -355,8 +355,8 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     const jotsComponent = useMemo(() => {
         return (
             (!!panelsVisible.jots && !!selectedConvo && jots?.data?.jots) && (
-                <View className="w-full md:w-3/5 flex-1 bg-bgrcard dark:bg-bgrcard-d  justify-between">
-                    <View className="w-full web:flex-auto ios:flex-auto">
+                <View className="w-full md:w-3/5 flex-1 bg-bgrcard dark:bg-bgrcard-d ">
+                    <View className="w-full web:flex-auto ">
                         <Jots
                             isSmallScreen={isSmallScreen}
                             title={selectedConvo.title}
@@ -377,7 +377,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
                             </View>
                         )}
                     </View>
-                    <KbAvoidingView>
+                    <KbAvoidingView >
                         <FormContainer
                             form={data.form}
                             replyItem={replyItem}
@@ -385,7 +385,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
                             handleCancelReply={handleCancelReply}
                             handleLayout={handleLayout}
                         />
-                    </KbAvoidingView>
+       </KbAvoidingView>
                 </View>
             )
         );
@@ -447,7 +447,7 @@ const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, 
 
     const srch = <InputRounded name="search" placeholder={("Search") + '...'} value={searchValue} onChangeText={(value) => handleSearch(value)} />;
 
-    const header = <Row className='p-2 sm:px-3 web:border-b border-bdrtabbar dark:border-bdrtabbar-d gap-x-3 '>
+    const header = <Row className='py-2 px-3 web:border-b border-bdrtabbar dark:border-bdrtabbar-d gap-x-3 h-[64px]'>
         <View className='flex-auto hidden lg:flex'>
             {srch}
         </View>
@@ -475,7 +475,7 @@ const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, 
                 mode="simple"
                 useCustomScrollHandler={isSmallScreen ? true : false}
 
-                scrollProps={{ pageData: null, headerHeight: 64, headerComponent: header }}
+                scrollProps={{ pageData: null, headerHeight: 64, headerComponent: header, isNoContainer: true, }}
                 renderItem={({ item, index }) => <ItemConvo selectedIndex={selectedConvoIndex} item={item} index={index} changeConvo={changeConvo} />}
             /></>
             : <View className='items-center justify-center w-full h-full'><View className="pt-8">
@@ -540,8 +540,8 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
 
     const header = (
         <View className='md:px-0  w-full  '>
-            <Row className='pr-2 items-center justify-between w-full lg:ml-3 h-16'>
-                <Row className='items-center justify-start overflow-hidden flex-auto '>
+            <Row className='px-2 items-center justify-between w-full h-[64px] '>
+                <Row className='items-center justify-start overflow-hidden  lg:ml-3 flex-auto '>
                     {isSmallScreen && <View className='mr-2'><BackButton buttonProps={{ variant: "secondary", startDecorator: 'ArrowLeft', rounded: 'rounded' }} callback={showConvo} /></View>}
                     <Text numberOfLines={1} className="font-bold text-neutral-800 dark:text-neutral-200 text-3xl tracking-tighter">{title}</Text>
                 </Row>
@@ -578,7 +578,7 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
                 useWindowScroll
                 useCustomScrollHandler={isSmallScreen ? true: false}
                 renderItem={({ item, index }) => <ItemJot handleReply={handleReply} item={item} index={index} />}
-                scrollProps={{ pageData: null, headerComponent: header, inverted: true, headerHeight:64, }}
+                scrollProps={{ pageData: null, headerComponent: header, inverted: true, headerHeight:64, isNoContainer: true, }}
             />}
         </View>
     </>);
@@ -588,7 +588,8 @@ const FormContainer = memo(({ form, replyItem, onFormSubmit, handleCancelReply, 
     const isWeb = Platform.OS == 'web'
 
     return (
-        <View className={`border-t border-bdr dark:border-bdr-d ${isWeb ? '' : 'min-h-20'}`} onLayout={handleLayout} style={{ paddingTop: 12, paddingBottom: 12 }}>
+        
+        <View className={`  border-t border-bdr dark:border-bdr-d ${isWeb ? '' : 'min-h-20'}`} onLayout={handleLayout} style={{ paddingTop: 12, paddingBottom: 12 }}>
             <View className=' ' >
                 {
                     replyItem && (<View className='bg-bgrcard dark:bg-bgrcard-d rounded-sm border-l-2 border-primary/50 py-1 pl-2 mt-2 mx-2'>
@@ -609,5 +610,6 @@ const FormContainer = memo(({ form, replyItem, onFormSubmit, handleCancelReply, 
                 <Form {...form} name='bx_messenger' resetOnSubmit={true} classContainerName={" flex-row flex-wrap w-full items-start justify-between"} onFormSubmit={onFormSubmit} />
             </View>
         </View>
+       
     )
 });

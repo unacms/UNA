@@ -4,7 +4,7 @@ import { stripTags, appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import Profile from 'app/ui/molecules/profile'
 import { useWindowDimensions } from 'react-native'
 import Image from 'app/ui/atoms/image'
-import { useRouter, useNavigation } from 'app/lib/hooks/router'
+import { useRouter, useNavigation, goBack } from 'app/lib/hooks/router'
 import { Theme } from 'app/design/theme'
 import { Icon } from 'app/ui/atoms/icon'
 import Menu from 'app/components/menu'
@@ -75,7 +75,7 @@ function CoverMenu(props) {
 }
 
 const BackButton = ({ isPerson }) => {
-    const routerExpo = useRouter()
+    const router = useRouter()
     const navigation = useNavigation();
     
     const { colors } = Theme()
@@ -91,7 +91,7 @@ const BackButton = ({ isPerson }) => {
             {ButtonContent}
         </Link>
     ) : (
-        <Pressable onPress={routerExpo.back}>{ButtonContent}</Pressable>
+        <Pressable onPress={() => {goBack(navigation, router)}}>{ButtonContent}</Pressable>
     );
 };
 

@@ -116,7 +116,8 @@ const TabScene = React.memo(({
                     headerHeight: headerHeight, 
                     isBackButton: false,
                     isMenuNameAsTitle: true,
-                    isProfileHeader: layoutName === 'profile'
+                    isProfileHeader: layoutName === 'profile',
+                    isNoContainer: layoutName === 'profile',
                 }
             }
             index={route.index}

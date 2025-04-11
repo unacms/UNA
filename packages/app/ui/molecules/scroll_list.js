@@ -26,6 +26,7 @@ export default function ScrollList({
     subHeaderComponent, 
     rightHeaderComponent, 
     isMenuNameAsTitle = false,
+    isNoContainer = false,
     isProfileHeader = false,
 }) {
 
@@ -48,9 +49,9 @@ export default function ScrollList({
             scrollY.value < transparencyOffset ||
             scrollY.value === 0 ;
         return {
-            opacity: isShow ? withTiming(1) : withTiming(0),
+            opacity: isShow ? withTiming(1) : withTiming(),
             transform: [
-                { translateY: isShow ? withTiming(0) : withTiming(-50) },
+                { translateY: isShow ? withTiming(0) : withTiming(-114) },
             ],
         };
     });
@@ -102,8 +103,7 @@ export default function ScrollList({
                             pageData = {pageData}
                             scrollToTop = {scrollToTop}
                             isMenuNameAsTitle={isMenuNameAsTitle}
-                            isNoContainer={isProfileHeader}
-                            
+                            isNoContainer={isNoContainer}
                         />
                         {subHeaderComponent}
                     </View>

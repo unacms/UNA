@@ -152,7 +152,7 @@ function BottomSheet2(props) {
     const renderWebBackdrop = useCallback(
         ({ style }) => (
             <Pressable
-                onPress={() => {  }}
+                onPress={() => { handleDismiss }}
                 style={[style, { backgroundColor: 'rgba(0, 0, 0, 0.8)' }]}
             />
         ),

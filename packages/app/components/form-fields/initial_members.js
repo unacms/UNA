@@ -15,7 +15,8 @@ const User = ({ data, onSelect, type }) => {
     return (
         <Pressable onPress={() => onSelect(data)}>
             <Row className=" p-[5px] pr-2 sm:pr-3 rounded-full border border-bdr dark:border-bdr-d mb-2 mr-2 items-center justiy-center">
-                <Profile displaySize="sm" {...data} showLinks={false} />
+                {/*<Profile displaySize="sm" {...data} showLinks={false} />*/}
+                <Text>sx</Text>
                 {type == 'remove' && <Icon icon="X" />}
             </Row>
         </Pressable>
