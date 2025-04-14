@@ -1,6 +1,4 @@
-import { useState, useMemo, useCallback, useEffect } from 'react';
-import { Platform, StyleSheet, useColorScheme } from 'react-native';
-import { Reaction, ReactionProvider } from 'react-native-reactions';
+import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { appSetting, FeedbackHaptics } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { useCurrentUser } from 'app/context/user';
@@ -10,6 +8,18 @@ import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import Profile from 'app/ui/molecules/profile';
 import { subscribe } from 'app/ui/atoms/socket';
 import { useTranslation } from 'react-i18next';
+import {
+    Modal as ModalBase,
+    UIManager,
+    findNodeHandle,
+    TouchableWithoutFeedback,
+    Platform, 
+    Dimensions,
+    StyleSheet, 
+    useColorScheme, 
+    TouchableOpacity
+} from 'react-native';
+import { Text } from 'app/design/typography'
 
 const getName = (sType, sSystem, sObjectId, sName) => {
     let aName = [sType, sSystem.replace(/_/g, '-'), sObjectId];
@@ -26,12 +36,12 @@ const getIconAlias = (oParams, oAliases, sName) => {
 };
 
 const performAction = async (sSystem, iObjectId, sAction, aParams, onLoad) => {
-    const aParamsDefault = {s: sSystem, o: iObjectId};
+    const aParamsDefault = { s: sSystem, o: iObjectId };
 
-    aParams = aParams ? {...aParamsDefault, ...aParams} : aParamsDefault;
+    aParams = aParams ? { ...aParamsDefault, ...aParams } : aParamsDefault;
     const sRequest = '/api.php?r=system/' + sAction + '/TemplVoteServices&params[]=' + JSON.stringify(aParams);
 
-    const sResponse = await fetcher(sRequest);    
+    const sResponse = await fetcher(sRequest);
     if (typeof onLoad === 'function')
         onLoad(sResponse?.data);
 };
@@ -41,20 +51,20 @@ const handleDo = (performAction, actionsDataState, setActionsDataState, sReactio
         oEvent.preventDefault();
 
     FeedbackHaptics(oParams.haptics_type);
-console.log("oParams?.t", oParams?.t)
-    const oDataPreset = {reaction:sReaction, title:oParams?.t ? oParams?.t[sReaction]: ''}
-    setActionsDataState(!actionsDataState ? oDataPreset : {...actionsDataState, ...oDataPreset});
 
-    performAction('do', {value: 1, reaction: sReaction}, (oData) => {
-        setActionsDataState(!actionsDataState ? oData : {...actionsDataState, ...oData});
+    const oDataPreset = { reaction: sReaction, title: oParams.t[sReaction] }
+    setActionsDataState(!actionsDataState ? oDataPreset : { ...actionsDataState, ...oDataPreset });
+
+    performAction('do', { value: 1, reaction: sReaction }, (oData) => {
+        setActionsDataState(!actionsDataState ? oData : { ...actionsDataState, ...oData });
     });
 };
 
 const handleUndo = (performAction, actionsDataState, setActionsDataState, sReaction, oEvent) => {
     oEvent.preventDefault();
 
-    performAction('do', {value: 1, reaction: (actionsDataState?.['reaction'] != undefined ? actionsDataState['reaction'] : sReaction)}, (oData) => {
-        setActionsDataState(!actionsDataState ? oData : {...actionsDataState, ...oData});
+    performAction('do', { value: 1, reaction: (actionsDataState?.['reaction'] != undefined ? actionsDataState['reaction'] : sReaction) }, (oData) => {
+        setActionsDataState(!actionsDataState ? oData : { ...actionsDataState, ...oData });
     });
 };
 
@@ -317,8 +327,8 @@ export default function ElementReactions(oProps) {
     const cb = (data) => {
         let aData = JSON.parse(data);
         if (!!aData?.api) {
-            const aDataSet = aData.api.performer_id == currentUser.id ? aData.api : { counter: aData.api.counter }; 
-            setActionsDataState(!actionsDataState ? aDataSet : { ...actionsDataState, ...aDataSet})
+            const aDataSet = aData.api.performer_id == currentUser.id ? aData.api : { counter: aData.api.counter };
+            setActionsDataState(!actionsDataState ? aDataSet : { ...actionsDataState, ...aDataSet })
         }
     }
 
@@ -362,7 +372,7 @@ export default function ElementReactions(oProps) {
                     icon: _getIconAlias(oItem.name),
                     class_item: ' transition active:scale-150 duration-300 active:-translate-y-4  ',
                     class_item_icon: ' text-3xl ',
-                    tooltip: oParams.t? oParams.t[oItem.name] : '', //TODO: oParams.t[oItem.name] for Roman use provided Tooltips in popup menus
+                    tooltip: oParams.t ? oParams.t[oItem.name] : '', //TODO: oParams.t[oItem.name] for Roman use provided Tooltips in popup menus
                 };
             });
             if (bWeb) {
@@ -397,9 +407,9 @@ export default function ElementReactions(oProps) {
                 });
 
                 sActionButton = sActionButton = oItems.length > 1 ? (
-                    <Reaction key="action" type="modal" showPopupType="onPress" items={aReactionItems} onTap={(item) => { _handleDo(item.name) }} disabled={bShowActionDisabled} cardStyle={oReactionStyles.cardStyle}>
+                    <ReactionPopover key="action" type="modal" showPopupType="onPress" items={aReactionItems} onTap={(item) => { _handleDo(item.name) }} disabled={bShowActionDisabled} cardStyle={oReactionStyles.cardStyle}>
                         <ButtonAction startDecorator={_getIconAlias(sReaction)} disabled={bShowActionDisabled} title={bShowActionLabel ? sTitle : false} {...oButtonProps} />
-                    </Reaction>
+                    </ReactionPopover>
                 ) : (
                     <ButtonAction key="action" startDecorator={_getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : false} onPress={() => { _handleDo(aItems[0].name) }} disabled={bShowActionDisabled} {...oButtonProps} />
                 );
@@ -466,7 +476,77 @@ export default function ElementReactions(oProps) {
         ) : null;
     }
 
-    return bWeb ? sResult : (
-        <ReactionProvider>{sResult}</ReactionProvider>
-    )
+    return sResult
 }
+
+const ReactionPopover = ({
+    items,
+    onTap,
+    disabled,
+    children,
+}) => {
+    const SCREEN_WIDTH = Dimensions.get('window').width;
+    const POPOVER_WIDTH = 300;
+    const sTheme = useColorScheme();
+    const [modalVisible, setModalVisible] = useState(false);
+    const [buttonPos, setButtonPos] = useState({ x: 0, y: 0, width: 0, height: 0 });
+    const buttonRef = useRef(null);
+
+    const openModal = () => {
+        if (!buttonRef.current) return;
+
+        UIManager.measure(
+            findNodeHandle(buttonRef.current),
+            (x, y, width, height, pageX, pageY) => {
+                setButtonPos({ x:  Math.min(
+                    pageX,
+                    SCREEN_WIDTH - POPOVER_WIDTH - 8
+                  ), y: pageY -20, width, height });
+                setModalVisible(true);
+            }
+        );
+    };
+
+    const handleSelect = (item) => {
+        setModalVisible(false);
+        onTap?.(item);
+    };
+
+    return (
+        <View style={{ backgroundColor: appSetting('theme', sTheme == 'dark' ? 'dark' : 'light', 'bgrmodal') }}>
+            <TouchableOpacity ref={buttonRef} onPress={openModal} disabled={disabled}>
+                {children}
+            </TouchableOpacity>
+            {modalVisible && (
+                <ModalBase
+                    transparent={true}
+                    visible={modalVisible}
+                    onRequestClose={() => setModalVisible(false)}
+                >
+                    <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+                        <View className="flex-1 bg-transparent">
+                            <View
+                                style={{
+                                    top: buttonPos.y + buttonPos.height + 5,
+                                    left: buttonPos.x,
+                                    elevation: 5,
+                                }}
+                                className=" absolute flex-row bg-white p-2 dark:bg-neutral-800 rounded-full"
+                            >
+                                {items.map((item) => (
+                                    <TouchableOpacity
+                                        key={item.id}
+                                        onPress={() => handleSelect(item)}
+
+                                    ><Text className="text-3xl px-2">{item.emoji}</Text>
+
+                                    </TouchableOpacity>
+                                ))}
+                            </View>
+                        </View>
+                    </TouchableWithoutFeedback>
+                </ModalBase>
+            )}
+        </View>
+    );
+};
