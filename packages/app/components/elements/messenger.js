@@ -11,7 +11,6 @@ import { Platform } from 'react-native'
  
 
 export default function MessengerEl(props) {
-   // console.log({ url, data, layoutName, blocks: { main } })
     const url=props.url;
     const data2 = props;
     
@@ -80,7 +79,7 @@ export default function MessengerEl(props) {
         ]
     }, []);
 
-    const messengerContainer = (menu && convos) && <><MessengerContainer
+    const messengerContainer = (menu && convos) && <MessengerContainer
         fetchConvos={fetchConvos}
         convos={convos}
         data={data2}
@@ -91,7 +90,7 @@ export default function MessengerEl(props) {
         layout={layout}
         onSave={onSave}
         addButtons ={addButtons}
-    /></>
+    />
 
     return messengerContainer;
 }

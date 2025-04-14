@@ -17,15 +17,18 @@ import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { useWindowDimensions } from 'react-native'
 import { LAYOUT_BREAKPOINTS } from 'app/lib/util'
 
+
 export default function ElementSearch(oProps) {
     const { bottomSheetData, setBottomSheetData } = useBottomSheetData();
     const { t } = useTranslation();
     const sType = oProps?.type ? oProps.type : 'default';
     const oParams = oProps?.params ? oProps.params : {};
     const [inputValue, setInputValue] = useState('');
+    const [showModal, setShowModal] = useState(false);
 
     const handleOpenPopupDefault = () => {
-        setBottomSheetData({ title: 'Search', content: <ElementSearchData {...oProps} isBottomSheet={true} />, showClose: true, isListView: true, snapPoints: ['75%', '90%'] });
+        setShowModal(true);
+        //setBottomSheetData({ title: 'Search', content:<ElementSearchData {...oProps} isBottomSheet={true} />, showClose: true, isListView: true, snapPoints: ['75%', '90%'] });
     }
 
     let sResult = sType == 'input' ? (
@@ -42,7 +45,12 @@ export default function ElementSearch(oProps) {
         return <Pressable onPress={() => handleOpenPopupDefault()}>{oProps.children}</Pressable>;
     }
 
-    return sResult;
+    return <>{sResult}
+        <Modal outerClickClose={false} title="" onVisible={!!showModal} onClose={() => { setShowModal(false) }} transparent={false}>
+            <ElementSearchData {...oProps} />
+        </Modal>
+
+    </>;
 }
 
 export function SearchPanel(props) {
@@ -227,6 +235,7 @@ export function ElementSearchData(oProps) {
             </View>
                 <BottomSheetScrollView keyboardShouldPersistTaps="always" keyboardDismissMode="none">
                     {cnt}
+                    <View className="h-20 w-full bg-red-500"></View>
                     <Redirect ref={redirectdRef} />
                     {
                         (!!inputValue && appSetting('layout', 'extended_search')) && (
@@ -252,9 +261,11 @@ export function ElementSearchData(oProps) {
             <View className="flex-row p-1 mb-2">
                 <InputRef name="search" autoFocus={true} placeholder='Start typing to search...' onKeyPress={(event) => handleKeyPress(event)} value={inputValue} ref={inputRef} onChangeText={(value) => handleSearch(value)} />
             </View>
-            <ScrollView className="max-h-96">
-                {cnt}
-            </ScrollView>
+            <KbAvoidingView>
+                <ScrollView className="max-h-96">
+                    {cnt}
+                </ScrollView>
+            </KbAvoidingView>
         </View>
     );
 }

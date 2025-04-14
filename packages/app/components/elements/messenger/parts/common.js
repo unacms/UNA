@@ -6,7 +6,6 @@ import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import UniList from 'app/ui/atoms/unilist'
 import { Button, InputRounded, InputRoundedSmall } from 'app/design/controls'
 import Form from 'app/components/elements/form';
-import { Keyboard } from 'react-native'
 import { useWindowDimensions } from 'react-native';
 import { Platform } from 'react-native'
 //import use-SWR from "swr";
@@ -33,11 +32,11 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     const [convoId, setConvoId] = useState(defaultConvoId);
     const [jots, setJots] = useState(false);
     const [listError, setListError] = useState(false);
-    const [isSmallScreen, setIsSmallScreen] = useState(width < LAYOUT_BREAKPOINTS.md);
+    const [isSmallScreen, setIsSmallScreen] = useState(width < LAYOUT_BREAKPOINTS.lg);
     const [panelsVisible, setPanelsVisible] = useState({ convos: true, jots: isSmallScreen ? false : true });
     const [commentForm, setCommentForm] = useState(false);
     const [jotUpdated, setJotUpdated] = useState(false);
-    const [formHeight, setFormHeight] = useState(74);
+    const [formHeight, setFormHeight] = useState(0);
     const [showMsg, setShowMsg] = useState(false);
     const refListJots = useRef();
     const selectedConvoIndex = convos?.data && convoId ? convos.data.findIndex(item => item.id === convoId) : -1;
@@ -47,7 +46,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     const [replyItem, setReplyItem] = useState(false);
 
     const layoutHeightLeft = layoutHeight;
-    let layoutHeightRight = isWeb && !isSmallScreen ? layoutHeight - 40 - formHeight : layoutHeight - formHeight;
+    let layoutHeightRight = layoutHeight - formHeight;
     if (listError)
         layoutHeightRight = layoutHeightRight - 60
     /* let { data: dynamicData, error } = useSWR(
@@ -60,7 +59,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
          }
      );*/
 
-     
+
 
     const { data: dynamicData, error } = useFetchForm('/api.php?r=bx_messenger/get_send_form/Services&params=' + JSON.stringify({ id: selectedConvo?.id, convo_id: selectedConvo?.id, reply_id: replyItem ? replyItem?.id : 0 }), commentForm);
 
@@ -117,7 +116,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     }
 
     useEffect(() => {
-        setIsSmallScreen(width < LAYOUT_BREAKPOINTS.md);
+        setIsSmallScreen(width < LAYOUT_BREAKPOINTS.lg);
     }, [width]);
 
 
@@ -239,6 +238,10 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
 
     const showConvo = useCallback(() => {
         setPanelsVisible({ convos: true, jots: false })
+        if (!isWeb)
+            return;
+       
+        window.history.pushState(null, null, appSetting('messenger', 'url') );
     }, []);
 
     const deleteConvo = useCallback(async () => {
@@ -294,7 +297,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     const editConvo = useCallback(async () => {
         let request_url = '/api.php?r=bx_messenger/get_parts_list/Services&params=' + JSON.stringify({ lot: selectedConvo.id2 });
         const sResponse = await fetcher(request_url);
-        setBottomSheetData({ title: 'Add users to start messaging', content: <CreateConvo onSave={onSaveHandler}  initedData={sResponse.data} convoId={selectedConvo.id2} />, showClose: true, snapPoints: ['85%', '85%'] });
+        setBottomSheetData({ title: 'Add users to start messaging', content: <CreateConvo onSave={onSaveHandler} initedData={sResponse.data} convoId={selectedConvo.id2} />, showClose: true, snapPoints: ['85%', '85%'] });
     }, [selectedConvo?.id2, convos.data]);
 
     const onFormSubmit = useCallback((formData, d) => {
@@ -302,9 +305,9 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
         setCommentForm(formData);
     }, []);
 
-    const handleLayout = useCallback((event) => {
+    /*const handleLayout = useCallback((event) => {
         setFormHeight(event.nativeEvent.layout.height + (isSmallScreen ? 0 : 16))
-    }, []);
+    }, []);*/
 
     const handleReply = useCallback((item) => {
         setReplyItem(item)
@@ -330,7 +333,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     };
 
     const convosComponent = useMemo(() => {
-        return panelsVisible.convos && <Convos
+        return <Convos
             isSmallScreen={isSmallScreen}
             layoutHeightLeft={layoutHeightLeft}
             data={convos?.data}
@@ -355,38 +358,27 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     const jotsComponent = useMemo(() => {
         return (
             (!!panelsVisible.jots && !!selectedConvo && jots?.data?.jots) && (
-                <View className="w-full md:w-3/5 flex-1 bg-bgrcard dark:bg-bgrcard-d ">
-                    <View className="w-full web:flex-auto ">
-                        <Jots
-                            isSmallScreen={isSmallScreen}
-                            title={selectedConvo.title}
-                            layoutHeightRight={layoutHeightRight}
-                            data={jots?.data?.jots}
-                            refListJots={refListJots}
-                            showConvo={showConvo}
-                            deleteConvo={deleteConvo}
-                            leaveConvo={leaveConvo}
-                            getConvo={getConvo}
-                            editConvo={editConvo}
-                            handleReply={handleReply}
-                            startReached={handleStartReached}
-                        />
-                        {listError && (
-                            <View className="mx-4">
-                                <ElementMsg data={listError} />
-                            </View>
-                        )}
-                    </View>
-                    <KbAvoidingView >
-                        <FormContainer
-                            form={data.form}
-                            replyItem={replyItem}
-                            onFormSubmit={onFormSubmit}
-                            handleCancelReply={handleCancelReply}
-                            handleLayout={handleLayout}
-                        />
-       </KbAvoidingView>
-                </View>
+                <>
+                    <Jots
+                        isSmallScreen={isSmallScreen}
+                        title={selectedConvo.title}
+                        layoutHeightRight={layoutHeightRight}
+                        data={jots?.data?.jots}
+                        refListJots={refListJots}
+                        showConvo={showConvo}
+                        deleteConvo={deleteConvo}
+                        leaveConvo={leaveConvo}
+                        getConvo={getConvo}
+                        editConvo={editConvo}
+                        handleReply={handleReply}
+                        startReached={handleStartReached}
+                    />
+                    {listError && (
+                        <View className="mx-4">
+                            <ElementMsg data={listError} />
+                        </View>
+                    )}
+                </>
             )
         );
     }, [
@@ -408,29 +400,40 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
         replyItem,
         onFormSubmit,
         handleCancelReply,
-        handleLayout,
+        layoutHeightRight,
+        layoutHeightLeft
+
     ]);
 
+    const handleLayout = useCallback((event) => {
+        if (isWeb )
+            setFormHeight(event.nativeEvent.layout.height)
+    }, []);
 
-    if (!isWeb) {
-        return (
-            <View style={{ height: layoutHeight }} className={appSetting('layout', 'max_width') + ' mx-auto w-full h-full items-stretch'}>
-                <Msg onVisible={showMsg} title={showMsg} handleOk={() => { setShowMsg(false) }} />
-                {convosComponent}
-                {jotsComponent}
-            </View>
-        );
-    }
 
     return (
-        <View style={{ height: layoutHeight }} className={appSetting('layout', 'max_width') + ' mx-auto w-full items-stretch '}>
-            <Msg onVisible={showMsg} title={showMsg} handleOk={() => { setShowMsg(false) }} />
-            <Row className='items-stretch min-h-24'>
+        <View className='flex-1 w-full h-full flex-row bg-bgrcard dark:bg-bgrcard-d'>
+            {panelsVisible.convos && <View className='w-full md:w-80 2xl:w-96 border-bdrtabbar dark:border-bdrtabbar-d border-r'>
                 {convosComponent}
+            </View>}
+            <View className='flex-1 '>
+                <Msg onVisible={showMsg} title={showMsg} handleOk={() => { setShowMsg(false) }} />
+                <View className={`w-full border-bdrtabbar dark:border-bdrtabbar-d border-r ${!isWeb ? 'flex-1' : '' }`}  style={{ height: layoutHeightRight- (!isWeb ||isSmallScreen ? 0 : 64) }}>
                 {jotsComponent}
-            </Row>
+                </View>
+                <KbAvoidingView>
+                    <View onLayout={handleLayout} className='  w-full ' >
+                        <FormContainer
+                            form={data.form}
+                            replyItem={replyItem}
+                            onFormSubmit={onFormSubmit}
+                            handleCancelReply={handleCancelReply}
+                        />
+                    </View>
+                </KbAvoidingView>
+            </View>
         </View>
-    );
+    )
 }
 
 const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, onSave, searchValue, handleSearch, addButtons, isSmallScreen }) => {
@@ -466,53 +469,39 @@ const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, 
         </Row>
     </Row>
 
-    return <View style={{ height: layoutHeightLeft }} className={'bg-bgrcard dark:bg-bgrcard-d  w-full  md:w-80 2xl:w-96 border-bdrtabbar dark:border-bdrtabbar-d border-r'}>
-        {/*isWeb && header*/}
-        {data && data.length > 0 ? <>
-            <UniList
-                height={layoutHeightLeft}
-                data={data}
-                mode="simple"
-                useCustomScrollHandler={isSmallScreen ? true : false}
+    return (
+        <>
+         {(isWeb && !isSmallScreen) && header}
+            {data && data.length > 0 ? <>
+                <UniList
+                    height={layoutHeightLeft - (!isWeb ||isSmallScreen ? 0 : 64)}
+                    data={data}
+                    mode="simple"
+                    useCustomScrollHandler={isSmallScreen ? true : false}
 
-                scrollProps={{ pageData: null, headerHeight: 64, headerComponent: header, isNoContainer: true, }}
-                renderItem={({ item, index }) => <ItemConvo selectedIndex={selectedConvoIndex} item={item} index={index} changeConvo={changeConvo} />}
-            /></>
-            : <View className='items-center justify-center w-full h-full'><View className="pt-8">
-                <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto  py-4 px-8  items-center rounded-2xl  bg-neutral-500/10 ">
-                    <View className="flex-col mx-auto  text-neutral-800 dark:text-neutral-200 ">
-                        <Text className="text-center text-lg text-neutral-800 dark:text-neutral-200 lg:text-xl font-semibold  ">
-                            No conversations found
-                        </Text>
+                    scrollProps={{ pageData: null, headerHeight: 64, headerComponent: header, isNoContainer: true, }}
+                    renderItem={({ item, index }) => <ItemConvo selectedIndex={selectedConvoIndex} item={item} index={index} changeConvo={changeConvo} />}
+                /></>
+                : <View className='items-center justify-center w-full h-full'><View className="pt-8">
+                    <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto  py-4 px-8  items-center rounded-2xl  bg-neutral-500/10 ">
+                        <View className="flex-col mx-auto  text-neutral-800 dark:text-neutral-200 ">
+                            <Text className="text-center text-lg text-neutral-800 dark:text-neutral-200 lg:text-xl font-semibold  ">
+                                No conversations found
+                            </Text>
+                        </View>
+                        <CreateConvoButton variant='full' onSave={onSave} onShow={onSave2} />
                     </View>
-                    <CreateConvoButton variant='full' onSave={onSave} onShow={onSave2} />
-                </View>
-            </View></View>
+                </View></View>
 
-        }
-    </View>
+            }
+        </>)
 });
 /*bg-neutral-500/10 border-b border-neutral-500/10*/
 const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots, showConvo, deleteConvo, leaveConvo, getConvo, editConvo, handleReply, startReached }) => {
     const isWeb = Platform.OS == 'web'
-    const initValue = Platform.OS === 'ios' ? 0 : 0; // const initValue = Platform.OS === 'ios' ? 48 : 0;
+    
 
-    const [keyboardHeight, setKeyboardHeight] = useState(initValue);
-
-
-    useEffect(() => {
-        const showSubscription = Keyboard.addListener('keyboardDidShow', (e) => {
-            setKeyboardHeight(e.endCoordinates.height - (Platform.OS === 'ios' ? 64 : 0));
-        });
-        const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
-            setKeyboardHeight(initValue - - (Platform.OS === 'ios' ? 74 : 0)); // Reset keyboard height
-        });
-
-        return () => {
-            showSubscription.remove();
-            hideSubscription.remove();
-        };
-    }, []);
+   
 
 
     const menuItems = [
@@ -539,9 +528,9 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
 
 
     const header = (
-        <View className='md:px-0  w-full  '>
+        <View className='md:px-0 w-full border-bdrcard dark:border-bdrcard-d border-b'>
             <Row className='px-2 items-center justify-between w-full h-[64px] '>
-                <Row className='items-center justify-start overflow-hidden  lg:ml-3 flex-auto '>
+                <Row className='items-center justify-start overflow-hidden  lg:ml-3 flex-auto'>
                     {isSmallScreen && <View className='mr-2'><BackButton buttonProps={{ variant: "secondary", startDecorator: 'ArrowLeft', rounded: 'rounded' }} callback={showConvo} /></View>}
                     <Text numberOfLines={1} className="font-bold text-neutral-800 dark:text-neutral-200 text-3xl tracking-tighter">{title}</Text>
                 </Row>
@@ -552,7 +541,7 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
                                 variant="secondary"
                                 size="base"
                                 rounded
-                                
+
                                 startDecorator="Settings"
                             />
                         </DropdownMenu>
@@ -564,23 +553,21 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
 
     return (<>
         {(isWeb && !isSmallScreen) && header}
-        <View style={{ height: layoutHeightRight - keyboardHeight }} className='mx-2 '>
-            {data.length > 0 && <UniList
-                refer={refListJots}
-                {...(Platform.OS !== 'web' ? { inverted: true } : {})}
-                overscan={900}
-                startReached={isWeb ? startReached : null}
-                onEndReached={!isWeb ? startReached : null}
-                scrollToLastItem={true}
-                data={isWeb ? data : data.slice().reverse()}
-                height={layoutHeightRight - keyboardHeight}
-                mode="simple"
-                useWindowScroll
-                useCustomScrollHandler={isSmallScreen ? true: false}
-                renderItem={({ item, index }) => <ItemJot handleReply={handleReply} item={item} index={index} />}
-                scrollProps={{ pageData: null, headerComponent: header, inverted: true, headerHeight:64, isNoContainer: true, }}
-            />}
-        </View>
+        {<View className="flex-1"><UniList
+            refer={refListJots}
+            {...(Platform.OS !== 'web' ? { inverted: true } : {})}
+            overscan={900}
+            startReached={isWeb ? startReached : null}
+            onEndReached={!isWeb ? startReached : null}
+            scrollToLastItem={true}
+            data={isWeb ? data : data.slice().reverse()}
+            height={layoutHeightRight- (!isWeb ||isSmallScreen ? 0 : 64)}
+            mode="simple"
+            useWindowScroll
+            useCustomScrollHandler={isSmallScreen ? true : false}
+            renderItem={({ item, index }) => <ItemJot handleReply={handleReply} item={item} index={index} />}
+            scrollProps={{ pageData: null, headerComponent: header, inverted: true, headerHeight: 64, isNoContainer: true, }}
+        /></View>}
     </>);
 });
 
@@ -588,7 +575,7 @@ const FormContainer = memo(({ form, replyItem, onFormSubmit, handleCancelReply, 
     const isWeb = Platform.OS == 'web'
 
     return (
-        
+
         <View className={`  border-t border-bdr dark:border-bdr-d ${isWeb ? '' : 'min-h-20'}`} onLayout={handleLayout} style={{ paddingTop: 12, paddingBottom: 12 }}>
             <View className=' ' >
                 {
@@ -610,6 +597,6 @@ const FormContainer = memo(({ form, replyItem, onFormSubmit, handleCancelReply, 
                 <Form {...form} name='bx_messenger' resetOnSubmit={true} classContainerName={" flex-row flex-wrap w-full items-start justify-between"} onFormSubmit={onFormSubmit} />
             </View>
         </View>
-       
+
     )
 });

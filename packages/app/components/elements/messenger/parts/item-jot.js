@@ -52,7 +52,7 @@ export default function JotItem({ item, index, handleReply }) {
         formData.set("id", item.lot_id);
         setViewState({ view: '' })
         setPostData(formData);
-    },[]);
+    }, []);
 
     const aManageMenu = useMemo(() => item.menu?.items.filter(item => ['remove', 'edit'].includes(item.name)), [item]);
 
@@ -64,9 +64,9 @@ export default function JotItem({ item, index, handleReply }) {
     const reactionsWithUpdatedParams = {
         ...item.reactions,
         params: { ...item.reactions.params, button_size: "xs", button_variant: "link" }
-      };
+    };
 
-    const Jot = <View className='w-full'>
+    const Jot = <View className='w-full my-3  px-3'>
         <Row className="gap-x-2 ">
             <View className="w-10 flex-0 ">
                 <Profile {...item.author_data} displayType="unit_wo_info" displaySize="base" showInfo="false" />
@@ -74,7 +74,7 @@ export default function JotItem({ item, index, handleReply }) {
             <View className='flex-auto'>
                 <View className={'bg-bgritem dark:bg-bgritem-d rounded-xl px-3 u-vanilla-html-small'} >
                     <Row className="items-center mb-0.5 pt-2">
-                        <Profile {...item.author_data} displayType="unit_text_link"  />
+                        <Profile {...item.author_data} displayType="unit_text_link" />
                         <View><Text className="text-neutral-400 dark:text-neutral-600 px-[4px]">·</Text></View>
                         <Time ts={item.created}></Time>
                     </Row>
@@ -128,17 +128,14 @@ export default function JotItem({ item, index, handleReply }) {
                             title: aItem.title
                         };
                     })} onSelect={handleManageMenuSelect}>
-                        <Button variant="text" size="xs" startDecorator="Ellipsis"  rounded />
+                        <Button variant="text" size="xs" startDecorator="Ellipsis" rounded />
                     </DropdownMenu>
                 }
             </Row>
         </View>
-        <View className="w-full h-4"></View>
     </View>
 
-
     return Jot
-
 }
 
 

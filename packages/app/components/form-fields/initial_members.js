@@ -1,6 +1,6 @@
 import Field from './_field';
 import { Text } from 'app/design/typography'
-import { View, Row, Pressable } from 'app/design/view'
+import { View, Row, Pressable, ScrollView } from 'app/design/view'
 import { useState, useRef, useEffect, useCallback, useContext, useReducer } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
 import { fetcher } from 'app/lib/fetcher';
@@ -15,8 +15,7 @@ const User = ({ data, onSelect, type }) => {
     return (
         <Pressable onPress={() => onSelect(data)}>
             <Row className=" p-[5px] pr-2 sm:pr-3 rounded-full border border-bdr dark:border-bdr-d mb-2 mr-2 items-center justiy-center">
-                {/*<Profile displaySize="sm" {...data} showLinks={false} />*/}
-                <Text>sx</Text>
+                {<Profile displaySize="sm" {...data} showLinks={false} />}
                 {type == 'remove' && <Icon icon="X" />}
             </Row>
         </Pressable>
@@ -80,8 +79,8 @@ export function SelectUsers({ onSave, initedData = [], requestUrl, isSingle = fa
     }, [state.selectedUsers, isSingle]);
 
     return <View className="px-1">
-        <KbAvoidingView>
-            <Row className="text-center w-full  flex-wrap gap-x-2 ">
+        <ScrollView keyboardDismissMode="none" keyboardShouldPersistTaps="handled" className="w-full " >
+        <Row className="text-center w-full  flex-wrap gap-x-2 ">
                 {state.selectedUsers && state.selectedUsers.map((item) => <User key={item.id} data={item} onSelect={onRemove} />)}
             </Row>
             <Row className="py-2 gap-x-2 ">
@@ -91,14 +90,14 @@ export function SelectUsers({ onSave, initedData = [], requestUrl, isSingle = fa
                     onChangeText={onChangeText}
                     role="textbox"
                 />
-                <Button variant="outline" disabled={state.selectedUsers.length == 0} startDecorator="Check" rounded align="start" onPress={() => onSaveInt()} />
+                <Button variant="outline" disabled={state.selectedUsers.length == 0} startDecorator="Check" rounded  onPress={() => onSaveInt()} />
             </Row>
             <Row className="text-center w-full flex-wrap gap-x-2 ">
                 {state.suggestedUsers && !state.showLoading && state.suggestedUsers.map((item) => <User key={item.id} data={item} onSelect={onSelectUser} />)}
                 {state.showLoading && <View className=' w-full items-center justify-center py-2'><Loading /></View>}
                 {state.suggestedUsers.length == 0 && state.searchText != '' && !state.showLoading && <Text className="text-sm py-2">Nothing found</Text>}
             </Row>
-        </KbAvoidingView>
+        </ScrollView>
     </View>
 };
 

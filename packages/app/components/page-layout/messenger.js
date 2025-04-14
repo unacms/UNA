@@ -1,9 +1,7 @@
-import { ScrollView, View } from 'app/design/view';
-import { getPageWidth } from 'app/lib/util'
-import { appStatic } from 'app/lib/app-static'
-import { Platform } from 'react-native'
-import { BlockByName } from 'app/components/block';
+import { BlockDataByName } from 'app/lib/util'
+import Messenger from 'app/components/elements/messenger';
 
 export default function PageLayout(props) {
-    return  <BlockByName data={props.data} name={props.blocks.main} />
+    const data = BlockDataByName(props.data, 'bx_messenger:get_main_messenger_page')
+    return  <Messenger data = {data.content[0].data} url={props.url} />
 }

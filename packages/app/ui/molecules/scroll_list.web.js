@@ -125,7 +125,7 @@ export default function ScrollList({
     /* ANIMATION */
 
     const baseProps = {
-        ...(useCustomScrollHandler && { onScroll }),
+        ...((useCustomScrollHandler && isCollapsibleHeader) && { onScroll }),
     };
 
     const enhanced = React.cloneElement(content, baseProps);

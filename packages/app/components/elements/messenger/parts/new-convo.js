@@ -1,13 +1,13 @@
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import { fetcher } from 'app/lib/fetcher';
-import React, { useContext, useState  } from 'react';
-import { Button } from 'app/design/controls'
+import React, { useContext, useState } from 'react';
+import { Button, Modal } from 'app/design/controls'
 import { useBottomSheetData } from 'app/context/bottomsheet';
-import {SelectUsers} from 'app/components/form-fields/initial_members';
+import { SelectUsers } from 'app/components/form-fields/initial_members';
 import Loading from 'app/ui/atoms/loading'
 
-export default function CreateConvo ({ onSave, initedData=[], convoId }) {
+export default function CreateConvo({ onSave, initedData = [], convoId }) {
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(false);
     const handleSave = async (data) => {
@@ -30,7 +30,7 @@ export default function CreateConvo ({ onSave, initedData=[], convoId }) {
     return (
         <>
             {!loading && <SelectUsers onlyOnce={false} onSave={handleSave} requestUrl={'/api.php?r=bx_messenger/search_users/Services&params='} initedData={initedData} />}
-            {loading && <View className='w-full pt-8 items-center'><Loading/><Text className="pt-8 text-base text-neutral-600 dark:text-neutral-400 animate-pulse  font-medium">Creating new conversation, please wait...</Text></View>}
+            {loading && <View className='w-full pt-8 items-center'><Loading /><Text className="pt-8 text-base text-neutral-600 dark:text-neutral-400 animate-pulse  font-medium">Creating new conversation, please wait...</Text></View>}
             <Row>
                 <Text className="ml-0.5 mt-0.5 label-text-alt text-sm text-red-600 animate-pulse dark:text-red-400 font-medium">{message}</Text>
             </Row>
@@ -38,10 +38,13 @@ export default function CreateConvo ({ onSave, initedData=[], convoId }) {
     )
 };
 
-export function CreateConvoButton({onSave, onShow, size ='small', variant = 'text', bgrDecorator}) {
+export function CreateConvoButton({ onSave, onShow, size = 'small', variant = 'text', bgrDecorator }) {
     const { setBottomSheetData } = useBottomSheetData();
+
+    const [showModal, setShowModal] = useState(false);
     const newConvo = () => {
-        setBottomSheetData({ title: 'Add users to start messaging', content: <CreateConvo onSave={onSaveHandler} />, showClose: true, snapPoints: ['85%', '85%'] });
+        setShowModal(true);
+        //  setBottomSheetData({ title: 'Add users to start messaging', content: <CreateConvo onSave={onSaveHandler} />,  showClose: true, snapPoints: ['75%', '90%'] });
     }
 
     const onSaveHandler = (data) => {
@@ -49,9 +52,18 @@ export function CreateConvoButton({onSave, onShow, size ='small', variant = 'tex
         onSave(data);
     }
 
-    if (size == 'small')
-        return <View key={`add-1`} ><Button startDecorator={"Plus"} variant={variant} bgrDecorator rounded onPress={() => newConvo()} /></View>
+    let btn = null
 
-    return <Button startDecorator={"Plus"} variant="text" bgrDecorator title="Create your first conversation" rounded  onPress={() => {newConvo(), onShow()}} />
+    if (size == 'small')
+        btn = <View key={`add-1`} ><Button startDecorator={"Plus"} variant={variant} bgrDecorator rounded onPress={() => newConvo()} /></View>
+    else {
+        btn = <Button startDecorator={"Plus"} variant="text" bgrDecorator title="Create your first conversation" rounded onPress={() => { newConvo(), onShow() }} />
+    }
+    return <>
+        {btn}
+        <Modal outerClickClose={false} title="Add users to start messaging" onVisible={!!showModal} onClose={() => { setShowModal(false) }} transparent={false}>
+            <CreateConvo onSave={onSaveHandler} />
+        </Modal>
+    </>
 
 }
