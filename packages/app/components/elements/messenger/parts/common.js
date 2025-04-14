@@ -418,7 +418,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
             </View>}
             <View className='flex-1 '>
                 <Msg onVisible={showMsg} title={showMsg} handleOk={() => { setShowMsg(false) }} />
-                <View className={`w-full border-bdrtabbar dark:border-bdrtabbar-d border-r ${!isWeb ? 'flex-1' : '' }`}  style={{ height: layoutHeightRight- (!isWeb ||isSmallScreen ? 0 : 64) }}>
+                <View className={`w-full border-bdrtabbar dark:border-bdrtabbar-d border-r ${!isWeb ? 'flex-1' : '' }`}  style={{ height: layoutHeightRight }}>
                 {jotsComponent}
                 </View>
                 <KbAvoidingView>

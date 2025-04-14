@@ -66,7 +66,7 @@ export default function JotItem({ item, index, handleReply }) {
         params: { ...item.reactions.params, button_size: "xs", button_variant: "link" }
     };
 
-    const Jot = <View className='w-full my-3  px-3'>
+    const Jot = <View className='w-full py-3 px-3'>
         <Row className="gap-x-2 ">
             <View className="w-10 flex-0 ">
                 <Profile {...item.author_data} displayType="unit_wo_info" displaySize="base" showInfo="false" />
