@@ -41,8 +41,8 @@ const handleDo = (performAction, actionsDataState, setActionsDataState, sReactio
         oEvent.preventDefault();
 
     FeedbackHaptics(oParams.haptics_type);
-
-    const oDataPreset = {reaction:sReaction, title:oParams.t[sReaction]}
+console.log("oParams?.t", oParams?.t)
+    const oDataPreset = {reaction:sReaction, title:oParams?.t ? oParams?.t[sReaction]: ''}
     setActionsDataState(!actionsDataState ? oDataPreset : {...actionsDataState, ...oDataPreset});
 
     performAction('do', {value: 1, reaction: sReaction}, (oData) => {
