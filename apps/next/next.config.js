@@ -42,7 +42,6 @@ const nextConfig = {
     '@expo/html-elements',
     'react-native-gesture-handler',
     '@react-native-clipboard/clipboard',
-    'react-native-reactions',
     '@babel/core',
     '@react-navigation/native',
     'react-native-calendars',
