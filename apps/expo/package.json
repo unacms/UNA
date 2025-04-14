@@ -60,6 +60,7 @@
     "react-native-localize": "^3.2.0",
     "react-native-onesignal": "^5.2.2",
     "react-native-pager-view": "6.5.1",
+    "react-native-reactions": "^1.0.0",
     "react-native-reanimated": "^3.16.6",
     "react-native-render-html": "^6.3.4",
     "react-native-safe-area-context": "4.12.0",
