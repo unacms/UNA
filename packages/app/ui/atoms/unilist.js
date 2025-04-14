@@ -17,8 +17,8 @@ export default function UniList(props) {
 
     const filteredData = data.filter((v, i, a) => a.findIndex(t => t.id === v.id) === i);
 
-    if (numColumns > 1)
-        mode = '';
+    //if (numColumns > 1)
+    //    mode = '';
 
     if (mode == 'simple') {
         const content = preloadComponent ? <View className="w-full">
