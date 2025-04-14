@@ -242,6 +242,9 @@ export const ItemInfo = memo(({ data, t }) => {
 export const MenuManage = ({ id, menu, setViewState }) => {
     const [menuData, setMenuData] = useState(false);
 
+    if (!menu.object)
+        return null;
+
     if (menu.items)
         return <MenuManage_ id={id} menu={menu} setViewState={setViewState} />
 

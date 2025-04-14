@@ -198,7 +198,10 @@ export default function UnitComments(props) {
 
 const MenuManage = ({ id, menu, setViewState, module, cmt_object_id, cmt_id }) => {
     const [menuData, setMenuData] = useState(false);
-
+    
+    if (!menu.object)
+        return null;
+    
     if (menu.items)
         return <MenuManage_ id={id} menu={menu} setViewState={setViewState} module={module} cmt_object_id={cmt_object_id} cmt_id={cmt_id} />
 
