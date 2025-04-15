@@ -4,6 +4,7 @@ import { Button } from 'app/design/controls'
 import { appSetting, menuItemsByName, menuItemsByNameNew } from 'app/lib/util'
 import { useTranslation } from 'react-i18next';
 import { useCurrentUser } from 'app/context/user'
+import MenuItemSidebar from 'app/components/nav/menu-item-sidebar'
 
 export default function ElementProfileMenu(props) {
     const { t } = useTranslation();
@@ -13,18 +14,7 @@ export default function ElementProfileMenu(props) {
         <View className="profile-menu gap-y-[2px]">
             
                 {menu_items.map((item, index) => (
-                    <Link key={`menu-${index}`} href={item.link.replace('{profile}', currentUser.url)}>
-                        <Button
-                            variant="text"
-                            startDecorator={item.icon}
-                            fullWidth
-                            solid
-                            align="start"
-                            title={t(item.title)}
-                            size="base"
-                            bgrDecorator
-                        />
-                    </Link>
+                    <MenuItemSidebar icon = {item.icon} link={item.link} title={t(item.title)} index={index} userUrl={currentUser.url}/>
                 ))}
             
         </View>

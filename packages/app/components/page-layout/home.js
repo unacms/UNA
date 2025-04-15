@@ -260,36 +260,7 @@ export default function (props) {
                                             </View>
                                         )
                                     })}
-                                {appSetting('feed', 'show_selector_view') && (
-                                    <Row className="flex-auto gap-x-1 pb-2 sm:pb-4 flex-auto items-end justify-end">
-                                        <Button
-                                            startDecorator="Rows"
-                                            tooltip={t('Full')}
-                                            rounded
-                                            variant={
-                                                unitMode == '' ? 'link' : 'text'
-                                            }
-                                            size="sm"
-                                            onPress={() => {
-                                                setUnitModeEx('')
-                                            }}
-                                        />
-                                        <Button
-                                            startDecorator="ListBullets"
-                                            rounded
-                                            tooltip={t('Short')}
-                                            variant={
-                                                unitMode == 'small'
-                                                    ? 'link'
-                                                    : 'text'
-                                            }
-                                            size="sm"
-                                            onPress={() => {
-                                                setUnitModeEx('small')
-                                            }}
-                                        />
-                                    </Row>
-                                )}
+                               
                             </View>
 
                             {navBarBlocks.map((item, index) => {
