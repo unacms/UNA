@@ -3,8 +3,8 @@ import { useController, useFormContext } from 'react-hook-form';
 import { InputMulti, Input, TextInputClear, Button } from 'app/design/controls'
 import { useState, useRef, useEffect } from 'react';
 import { View, ScrollView } from 'app/design/view'
-import { DEFAULT_TOOLBAR_ITEMS, useEditorBridge, RichText, Toolbar, darkEditorTheme, TenTapStartKit, LinkBridge, CodeBridge, useEditorContent, ImageBridge, DropCursorBridge, PlaceholderBridge } from '@10play/tentap-editor';
-import { useLayoutData } from 'app/context/layout';
+import { DEFAULT_TOOLBAR_ITEMS, useEditorBridge, RichText, Toolbar, darkEditorTheme, TenTapStartKit, LinkBridge, CoreBridge, CodeBridge, useEditorContent, ImageBridge, DropCursorBridge, PlaceholderBridge } from '@10play/tentap-editor';
+import { useFilesData } from 'app/context/files';
 import { Keyboard } from 'react-native';
 import { Theme } from 'app/design/theme';
 import { getAlert, stripTags, stripTagsWithLinks } from 'app/lib/util';
@@ -16,6 +16,7 @@ import { ThemeName } from 'app/design/theme';
 
 export default function FormFieldText(props) {
     const formContext = useFormContext();
+
     return (
         <Field {...props} error2={formContext.formState.errors[props.name]}>
             <View className='h-0 w-0 absolute top-0 z-0 opacity-0'></View>
@@ -106,15 +107,15 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
     const isToolBar = (html == 2 || html == 1)
     const isPlainText = (html == 3);
     const suggestionsHeight = 130;
-    const { layoutData, setLayoutData } = useLayoutData();
+    const { filesData, setFilesData } = useFilesData();
     const { field } = useController({ name, rules: {}, defaultValue: value });
     const { colors } = Theme();
     const formContext = useFormContext();
     const [suggestions, setSuggestions] = useState([]);
     const [keywordval, setKeyword] = useState(['', '']);
-    const [editorHeight, setEditorHeight] = useState(0); 
-    const [isEnter, setIsEnter] = useState(false); 
-    const [suggestionsSize, setSuggestionsSize] = useState([0,0]);
+    const [editorHeight, setEditorHeight] = useState(0);
+    const [isEnter, setIsEnter] = useState(false);
+    const [suggestionsSize, setSuggestionsSize] = useState([0, 0]);
     const object_privacy_view = formContext.watch('object_privacy_view') || formContext.watch('cmt_privacy_view');
     const object_id = formContext.watch('id');
     const m = name == "cmt_text" ? "sys_cmts" : "bx_timeline";
@@ -136,8 +137,8 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
             const p = result.map((k, index) => ({
                 ...k,
                 index,
-                ...(index === 0 && { selected: true })   
-              })).slice(0, 4);
+                ...(index === 0 && { selected: true })
+            })).slice(0, 4);
             setSuggestions(p);
         };
 
@@ -193,7 +194,7 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
     A.bx-tag{
         color: ${colors.primary};
     }
-    ${appSetting('editor', 'css') }
+    ${appSetting('editor', 'css')}
 
     .tiptap, #root > div:nth-of-type(1){
         scrollbar-width: none; /* Firefox */
@@ -209,7 +210,7 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
         overflow:visible !important;
     }
     `;
-    if (isPlainText){
+    if (isPlainText) {
         customCodeBlockCSS += `
         b, strong, font, u, s, i, em, span, code, h1, h2, h3, h4, h5, h6{
             font-weight: normal !important;
@@ -227,6 +228,7 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
     }
 
     useEffect(() => {
+
         if (editor && field.value == '' && editor.getHTML() != field.value) {
             editor.setContent(field.value);
             editor.focus('end');
@@ -240,6 +242,26 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
         }
     }, [value]);
 
+    const baseExtensions = [
+        ImageBridge.configureExtension({
+            inline: false,
+            allowBase64: false,
+
+        }),
+        DropCursorBridge,
+        LinkBridge.configureExtension({
+            HTMLAttributes: {
+                class: 'bx-mention-link',
+            },
+        }),
+        PlaceholderBridge.configureExtension({
+            placeholder: props.placeholder,
+            showOnlyWhenEditable: true,
+
+        }),
+        CodeBridge.configureCSS(customCodeBlockCSS), // Custom codeblock css
+    ];
+
     const editor = useEditorBridge({
 
         autofocus: props.autofocus,
@@ -249,24 +271,12 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
         ...(ThemeName() === 'dark' && { theme: darkEditorTheme }),
         initialContent: field.value,
         bridgeExtensions: [
-            ...TenTapStartKit,
-            ImageBridge.configureExtension({
-                inline: false,
-                allowBase64: false,
-
-            }),
-            DropCursorBridge,
-            LinkBridge.configureExtension({
-                HTMLAttributes: {
-                    class: 'bx-mention-link',
-                },
-            }),
-            PlaceholderBridge.configureExtension({
-                placeholder: props.placeholder,
-                showOnlyWhenEditable: true,
-
-            }),
-            CodeBridge.configureCSS(customCodeBlockCSS), // Custom codeblock css
+            ...(isPlainText
+                ? [
+                    CoreBridge,
+                ]
+                : TenTapStartKit),
+            ...baseExtensions
         ],
 
     });
@@ -281,8 +291,8 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
                 console.log("blur")
                 editor.blur();
             }, 800);
-        
-            
+
+
         }
     }, [formContext.formState.isSubmitted]);
 
@@ -292,10 +302,10 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
             if (onFocus)
                 onFocus()
         }
-        if (isPlainText){
+        if (isPlainText) {
             field.onChange(stripTagsWithLinks(htmlContent, ['a', 'p', 'br', 'span', 'img']))
         }
-        else{
+        else {
             field.onChange(htmlContent)
         }
     }, [htmlContent]);
@@ -313,12 +323,11 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
         });
 
         if (images.length > 0) {
-            setLayoutData(getAlert('images:pasted', images));
+            setFilesData(getAlert('images:pasted', images));
         }
     }
 
     const insertMention = async (user, query) => {
-        console.log("useruser", user)
         const html = await editor.getHTML();
         const mentionLink = `<a class="bx-mention-link ${user.classname}" href="${user.url}">${user.label}</a> &shy; `;
         const updatedContent = html.replace(query, mentionLink);
@@ -333,28 +342,28 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
             if (index === -1) return prevItems;
             const length = prevItems.length;
             const newIndex =
-              direction === "up"
-                ? (index - 1 + length) % length
-                : (index + 1) % length;
-          
-            const newItems = prevItems.map((item, i) => ({
-              ...item,
-              selected: i === newIndex,
-              index: i,
-            }));
-          
-            return newItems;
-          });
-      };
+                direction === "up"
+                    ? (index - 1 + length) % length
+                    : (index + 1) % length;
 
-      useEffect(() => {
+            const newItems = prevItems.map((item, i) => ({
+                ...item,
+                selected: i === newIndex,
+                index: i,
+            }));
+
+            return newItems;
+        });
+    };
+
+    useEffect(() => {
         if (isEnter && suggestions.length > 0) {
             const index = suggestions.findIndex(item => item.selected);
             insertMention(suggestions[index], keywordval[1] + keywordval[0])
 
         }
         setIsEnter(false);
-      }, [isEnter]);
+    }, [isEnter]);
 
     const onMessage = async (event) => {
         try {
@@ -378,7 +387,7 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
 
             if (message?.type == "enter") {
                 setIsEnter(true);
-                
+
             }
 
             if (message?.type == "arrow") {
@@ -392,10 +401,6 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
             if (message?.type == "mention_hide") {
                 setSuggestions([])
             }
-
-            /*if (message?.type == "addmention") {
-                insertMention(message.payload.label, message.payload.url, message.payload.query)
-            }*/
 
             if (message?.type == "editor-ready") {
                 editor.injectJS(`
@@ -584,17 +589,17 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
         setSuggestionsSize([width, height, x, y]);
     };
 
-    if (keywordval[3] - 24 < suggestionsHeight && suggestionsSize[1] > suggestionsHeight){
-        style.top = suggestionsSize[3]+24
+    if (keywordval[3] - 24 < suggestionsHeight && suggestionsSize[1] > suggestionsHeight) {
+        style.top = suggestionsSize[3] + 24
     }
-    else{
-        style.bottom = suggestionsSize[1]-(keywordval[3]> 0 ? keywordval[3]-24 : 0)
+    else {
+        style.bottom = suggestionsSize[1] - (keywordval[3] > 0 ? keywordval[3] - 24 : 0)
     }
 
     return (
-        <View  onLayout={handleLayout} className={`flex-1 relative ${isToolBar ? 'h-48' : ''}`} >
+        <View onLayout={handleLayout} className={`flex-1 relative ${isToolBar ? 'h-48' : ''}`} >
             {(suggestions && suggestions.length > 0) && (
-                <View 
+                <View
                     className={`absolute max-h-[130px] w-full max-w-md bottom-0 p-1 z-50 rounded border-bdr dark:border-bdr-d border bg-bgrbody dark:bg-bgrbody-d p-2`}
                     style={style}>
                     <ScrollView>
@@ -612,17 +617,17 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
                 onMessage={onMessage} />
 
             {isToolBar && <KeyboardAvoidingView
-                    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                    style={{
-                        position: 'absolute',
-                        width: '100%',
-                        bottom: 0,
-                    }}
-                >
-                    <View className="h-18">
-                        <Toolbar hidden={false} editor={editor} items={b} />
-                    </View>
-                </KeyboardAvoidingView>
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                style={{
+                    position: 'absolute',
+                    width: '100%',
+                    bottom: 0,
+                }}
+            >
+                <View className="h-18">
+                    <Toolbar hidden={false} editor={editor} items={b} />
+                </View>
+            </KeyboardAvoidingView>
             }
         </View>
     )

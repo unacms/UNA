@@ -94,7 +94,6 @@ export const FeedEditForm = memo(({ setViewState, viewState, id }) => {
 });
 
 export const CommentsSection = memo(({ isCommentsModal, commentsDataInline, data, isShowMoreComments, showCommentsModal, url, t }) => {
-    console.log("isCommentsModal", isCommentsModal)
     const ShowMoreCmts = (<Text className='text-neutral-600 dark:text-neutral-400 hover:text-primary dark:hover:text-primary-d px-2 py-1 mb-2 mr-auto bg-neutral-500/10 hover:bg-primary-500/20 rounded-full text-sm font-medium'>
         {t('View more comments')}
     </Text>);
@@ -252,17 +251,17 @@ export const MenuManage = ({ id, menu, setViewState }) => {
         return (
             <SafeMenuTrigger>
                 <Button
-                variant="text"
-                size="sm"
-                rounded
+                    variant="text"
+                    size="sm"
+                    rounded
 
-                startDecorator="Ellipsis"
-                onPress={() => {
-                    if (Platform.OS === 'web')
-                        setMenuData({ ...menu, items: [{ 'name': 'loader' }] });
-                    getDataForMenu(menu, setMenuData);
-                }}
-            /></SafeMenuTrigger>
+                    startDecorator="Ellipsis"
+                    onPress={() => {
+                        if (Platform.OS === 'web')
+                            setMenuData({ ...menu, items: [{ 'name': 'loader' }] });
+                        getDataForMenu(menu, setMenuData);
+                    }}
+                /></SafeMenuTrigger>
         );
 
     return <MenuManage_ id={id} menu={menuData} defaultOpen={true} setViewState={setViewState} />
@@ -353,13 +352,13 @@ export const VisibilityInfo = memo(({ data }) => {
         return null;
 
     const { icon = '', text = '' } = visibilityById(data.object_privacy_view);
-    const isUser = data.object_privacy_view < 0 ;
-   
+    const isUser = data.object_privacy_view < 0;
+
     return (
         <Row className="text-neutral-600 dark:text-neutral-400 items-center">
             <Text className="text-neutral-400 dark:text-neutral-600 text-[12px] leading-[16px] px-[4px]">·</Text>
             {isUser ? <Profile {...data.author_data} displayType="unit_wo_info" displaySize="xxs" /> : (icon ? <Icon icon={icon} width={18} height={18} /> : null)}
-            <Text className="text-neutral-600 dark:text-neutral-400 text-[12px] font-semibold leading-[16px] text-center tracking-tight  ml-[2px]">{ isUser ? data.author_data.display_name : text}</Text>
+            <Text className="text-neutral-600 dark:text-neutral-400 text-[12px] font-semibold leading-[16px] text-center tracking-tight  ml-[2px]">{isUser ? data.author_data.display_name : text}</Text>
         </Row>
     );
 });

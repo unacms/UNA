@@ -12,10 +12,9 @@ export default function FormComments(props) {
     const [imageSource, setImageSource] = useState([]);
     const formContext = useFormContext();
     const [isExImage, setIsExImage] = useState(false);
-    const [isFocused, setIsFocused] = useState(false);
     const [editorHeight, setEditorHeight] = useState(initialHeight);
     const isWeb = Platform.OS == 'web';
-
+    const isAutoFocus = props.data.inputs['cmt_text']?.value || props.data.inputs['cmt_text'].autofocus ? true : false;
 
     function setPlaceHolder(name, previews) {
         if (JSON.stringify(previews) != JSON.stringify(imageSource[name])) {
@@ -26,14 +25,7 @@ export default function FormComments(props) {
         }
     }
     function setIsFocus() {
-
         setIsExImage(false)
-        setIsFocused(true)
-    }
-
-    function setIsBlur() {
-
-        setIsFocused(false)
     }
 
     function checkEditorHeight(height) {
@@ -90,7 +82,7 @@ export default function FormComments(props) {
                 {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['cmt_cf'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['cmt_parent_id'], props.handleSubmit, 'custom')}
-                {getFormFieldByData(props.data.inputs['cmt_text'], props.handleSubmit, 'custom', { container_class: 'comments', classes: "flex-1", focus: true, bg: 'transparent', placeholder: 'Write your comment here...', noMargin: true, onHeight: checkEditorHeight, onFocus: setIsFocus, onBlur: setIsBlur })}
+                {getFormFieldByData(props.data.inputs['cmt_text'], props.handleSubmit, 'custom', { container_class: 'comments', classes: "flex-1", autofocus: isAutoFocus, bg: 'transparent', placeholder: 'Write your comment here...', noMargin: true, onHeight: checkEditorHeight, onFocus: setIsFocus })}
                 {getFormFieldByData(props.data.inputs['id'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['sys'], props.handleSubmit, 'custom')}
             </View>

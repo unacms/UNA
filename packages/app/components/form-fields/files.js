@@ -15,7 +15,7 @@ import Loading from 'app/ui/atoms/loading'
 import { Text } from 'app/design/typography'
 import { Image as ImageNative, Alert, Platform } from 'react-native';
 import { Camera } from "expo-camera";
-import { useLayoutData } from 'app/context/layout';
+import { useFilesData } from 'app/context/files';
 import { Image as ImageRN } from 'react-native';
 import Video from 'app/ui/atoms/video';
 
@@ -30,7 +30,7 @@ export default function (props) {
     const video_source = formContext.watch('video_source');
     const rules = getValidationRules(props);
     const defaultValue = props?.value ? props.value : '';
-    const { layoutData, setLayoutData } = useLayoutData();
+    const { filesData, setFilesData } = useFilesData();
     const { field } = useController({ name, rules, defaultValue });
     const bMultiple = props.multiple;
     const [hasPermissionCamera, requestPermissionCamera] = ImagePicker.useCameraPermissions();
@@ -48,53 +48,53 @@ export default function (props) {
             setImageSource({ images: k });
         };
 
-        if (layoutData?.type == 'images:pasted' && props.asDefaultStorage) {
-            uploadImagesAsync(layoutData.data)
-            setLayoutData(null);
+        if (filesData?.type == 'images:pasted' && props.asDefaultStorage) {
+            uploadImagesAsync(filesData.data)
+            setFilesData(null);
         }
-    }, [layoutData]);
+    }, [filesData]);
 
 
     const RestoreGhosts = async (data) => {
         if (isAutoGhosts)
             return;
-/*
-        let a = [];
-        let av = [];
-
-        const result = await fetcher(url + "&a=restore_ghosts&_t=" + escape(new Date()));
-        if (result && result?.data[0]) {
-            Object.keys(result.data[0]).forEach(function (k) {
-                a.push(result.data[0][k]);
-                av.push(result.data[0][k].file_id)
-            });
-        }
-
-        a.forEach(function (k) {
-             if (k.file_id) {
-                 const val = av.join(',');
-                 if (name == 'covers') {
-                     formContext.setValue('thumb', val)
-                 }
-                 if (props.useUrl) {
-                     field.onChange(a[0].file_url);
-                 }
-                 else {
-                     field.onChange(val);
-                 }
-             }
-         });
-         if (a.length == 0 && field.value != '')
-             field.onChange('');
-
-        let filteredArr = []
-        if (imageSource?.images)
-            filteredArr = imageSource?.images?.filter(
-                item => item.preload === true && !uploadFinishedArr.some(finished => finished == item.hash)
-            );
-      //  console.log("aaa",{ images: [...a, ...filteredArr] })
-       // console.log("aaa1", props.values_src.g)
-        setImageSource({ images: [...a, ...filteredArr] });*/
+        /*
+                let a = [];
+                let av = [];
+        
+                const result = await fetcher(url + "&a=restore_ghosts&_t=" + escape(new Date()));
+                if (result && result?.data[0]) {
+                    Object.keys(result.data[0]).forEach(function (k) {
+                        a.push(result.data[0][k]);
+                        av.push(result.data[0][k].file_id)
+                    });
+                }
+        
+                a.forEach(function (k) {
+                     if (k.file_id) {
+                         const val = av.join(',');
+                         if (name == 'covers') {
+                             formContext.setValue('thumb', val)
+                         }
+                         if (props.useUrl) {
+                             field.onChange(a[0].file_url);
+                         }
+                         else {
+                             field.onChange(val);
+                         }
+                     }
+                 });
+                 if (a.length == 0 && field.value != '')
+                     field.onChange('');
+        
+                let filteredArr = []
+                if (imageSource?.images)
+                    filteredArr = imageSource?.images?.filter(
+                        item => item.preload === true && !uploadFinishedArr.some(finished => finished == item.hash)
+                    );
+              //  console.log("aaa",{ images: [...a, ...filteredArr] })
+               // console.log("aaa1", props.values_src.g)
+                setImageSource({ images: [...a, ...filteredArr] });*/
     };
 
     useEffect(() => {
@@ -146,18 +146,18 @@ export default function (props) {
     useEffect(() => {
         if (uploadFinished?.result) {
             if (isAutoGhosts) {
-                if (uploadFinished?.result?.data?.ghost){
+                if (uploadFinished?.result?.data?.ghost) {
                     const updatedImages = imageSource?.images?.map(item =>
                         item.hash === uploadFinished.extraVar.hash ? { ...uploadFinished?.result.data.ghost, uri: item.uri } : item
                     );
                     setImageSource({ images: updatedImages });
                 }
-                else{
-                  
+                else {
+
                     const updatedImages = imageSource?.images.filter(item => item.hash != uploadFinished.extraVar.hash);
                     setImageSource({ images: updatedImages });
                 }
-                
+
             }
             else {
                 setUploadFinishedArr((prevArr) => [...prevArr, uploadFinished.extraVar.hash]);
@@ -235,13 +235,13 @@ export default function (props) {
                 ];*/
             }
         }
-        if (bMultiple){
+        if (bMultiple) {
             k = [
                 ...k,
                 ...objectsToAdd
             ];
         }
-        else{
+        else {
             k = [
                 ...objectsToAdd
             ];
@@ -434,7 +434,7 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
         }
     };
     let button = <Button startDecorator={props.icon ? props.icon : sIcon} title={props.title ? props.title : sTitle} size={props.size ? props.size : "base"} variant={props.variant ? props.variant : "text"} rounded={props.rounded ? props.rounded : false} onPress={selectImage} />
-   
+
     if (!bMultiple) {
         let img = imagesList && imagesList.length > 0 ? imagesList[0] : null;
         if (!img && props.useUrl) {
@@ -454,18 +454,18 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
         button = (
             <Pressable onPress={selectImage} >
                 <View className={w + '  items-center justify-center bg-primary/5 ' + (isImage ? appSetting('cover', 'aspect_ratio') : 'h-32')}>
-                {!img && (<ViewRef ref={drop} className=' text-neutral-500/50 text-lg  flex-auto w-full border-neutral-300 dark:border-neutral-700 rounded-lg  justify-center  flex-col border border-dashed text-center'>
+                    {!img && (<ViewRef ref={drop} className=' text-neutral-500/50 text-lg  flex-auto w-full border-neutral-300 dark:border-neutral-700 rounded-lg  justify-center  flex-col border border-dashed text-center'>
                         <Text className='text-neutral-500/50 text-lg  justify-center  flex-col text-center'>Drag & Drop or browse files...</Text>
                     </ViewRef>)}
                     {img != null && (<>
                         {isImage && <ImageRN
-                    source={{ uri: img.uri || img.file_url }}
-                    style={{ width: '100%', height: '100%', opacity: isPreload ? 0.5 : 1 }}
-                    resizeMode="cover"
-                    view="cover"
-                    alt=""
-                />}
-                         {isPreload && <View className={`w-full h-full absolute top-8`}><Loading className="absolute" /></View>}
+                            source={{ uri: img.uri || img.file_url }}
+                            style={{ width: '100%', height: '100%', opacity: isPreload ? 0.5 : 1 }}
+                            resizeMode="cover"
+                            view="cover"
+                            alt=""
+                        />}
+                        {isPreload && <View className={`w-full h-full absolute top-8`}><Loading className="absolute" /></View>}
                         <View className='absolute top-1 right-1 w-6.5 text-center mx-auto'>
                             <Button onPress={() => handleDelete(img.file_id)} variant="default" startDecorator="X" align="start" title="" rounded size="xs" />
                         </View>
@@ -499,13 +499,13 @@ function GhostsList(imagesList, bMultiple, handleDelete, props) {
                     view="cover"
                     alt=""
                 /> : (
-                    
-                        isVideo ? (
-                            <Video src={img.uri || img.file_url}/>
-                        ) : (
-                            <View className="h-16 w-16 text-neutral-700 dark:text-neutral-300 items-center justify-center"><Icon icon="File" className="w-8 h-8" size={32} /></View>
-                        )
-                   
+
+                    isVideo ? (
+                        <Video src={img.uri || img.file_url} />
+                    ) : (
+                        <View className="h-16 w-16 text-neutral-700 dark:text-neutral-300 items-center justify-center"><Icon icon="File" className="w-8 h-8" size={32} /></View>
+                    )
+
                 )}
 
                 {isPreload && <View className={`w-full h-full absolute top-8`}><Loading className="absolute" /></View>}

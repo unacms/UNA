@@ -1,55 +1,43 @@
-import Field, {getValidationRules} from './_field';
+import Field, { getValidationRules } from './_field';
 import { useController, useFormContext } from 'react-hook-form';
 import { Input } from 'app/design/controls'
-import React, { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 
 export default function FormFieldText(props) {
-    //const inputRef = useRef(null);
-
     const name = props.name;
     const defaultValue = props.value ? props.value : '';
     const rules = getValidationRules(props);
-    
     const formContext = useFormContext();
-    
     const { field } = useController({ name, rules, defaultValue });
-    
+    const placeholder = props.use_caption_as_placeholder ? props.caption : props.placeholder;
+
     useEffect(() => {
         if (props.value !== undefined)
-           formContext.setValue(props.name, props.value)
+            formContext.setValue(props.name, props.value)
     }, [props.name, props.value]);
 
-    /*useEffect(() => {
-        if (inputRef.current && props.autoFocus) {
-            inputRef.current.focus();
-    }
-    }, []);
-      ref={inputRef}
-    */
-
-    const placeholder = props.use_caption_as_placeholder? props.caption : props.placeholder;
     return (
         <Field {...props} error2={formContext.formState.errors[name]}>
-            <Input 
+            <Input
                 textContentType="none"
 
-                /* experiment */ 
+                /* experiment */
                 autoComplete="off"
                 autoCorrect={false}
                 spellCheck={false}
-                secureTextEntry={false} 
+                secureTextEntry={false}
                 keyboardType="default"
-                 /* experiment */
+                /* experiment */
 
-                autoFocus= {props.auto_focus}
+                autoFocus={props.auto_focus}
                 name={props.name}
-                placeholder = {placeholder}
+                placeholder={placeholder}
                 placeholderTextColor="#6b7280"
                 onChangeText={field.onChange}
                 onBlur={field.onBlur}
                 value={String(field.value)}
                 aria-label={props.caption}
-        />
+            />
         </Field>
     );
 }

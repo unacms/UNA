@@ -27,7 +27,8 @@ function DefaultUnit(data) {
     ), [url, data]);
 
     const showCommentsModal = async (initFormData) => {
-        const res = await fetcher('/api.php?r=' + appSetting("urls", "cmts") + '/&params[]={"module":"' + data?.cmts?.module + '","object_id":' + data?.cmts?.object_id + '}');
+        let res = await fetcher('/api.php?r=' + appSetting("urls", "cmts") + '/&params[]={"module":"' + data?.cmts?.module + '","object_id":' + data?.cmts?.object_id + '}');
+        res?.data?.form?.data?.inputs?.cmt_text && (res.data.form.data.inputs.cmt_text.autofocus = true);
         setCmtsData({
             title: data.author_data.display_name + "'s post", data: <CommentsModal initFormData={initFormData}
                 itemContent={{

@@ -1,5 +1,5 @@
 import Unit from 'app/components/unit';
-import { useState, useCallback, useEffect, useRef, useContext, memo } from 'react';
+import { useState, useCallback, useEffect, useRef, useContext, memo, useMemo } from 'react';
 import { View, Row } from 'app/design/view'
 import { useWindowDimensions } from 'react-native';
 import { Platform } from 'react-native'
@@ -43,6 +43,8 @@ const getNumCols = (width, props, data) => {
     }
     return 1
 };
+
+const MemoizedUniList = memo(UniList);
 
 export default function (props) {
     const isWeb = Platform.OS === 'web';
@@ -245,14 +247,18 @@ export default function (props) {
     /* UPDATE CONTENT PART */
 
     /* NEW POST TO FEED */
-    useEffect(() => {
-        if (data.unit === 'feed' && layoutData && layoutData.data && (layoutData?.type == 'feed:new_content' || layoutData?.type == 'feed:remove_content')) {
+    const handleLayoutDataChange = useCallback((newLayoutData) => {
+        if (data.unit === 'feed' && newLayoutData && newLayoutData.data && (newLayoutData?.type == 'feed:new_content' || newLayoutData?.type == 'feed:remove_content')) {
             let clonedData = cloneObject(dataItems.data);
-            const data2 = handleFeedLayoutData(layoutData, clonedData)
+            const data2 = handleFeedLayoutData(newLayoutData, clonedData)
             setDataItems({ data: data2, params: dataItems.params });
             setLayoutData(null)
         }
-    }, [layoutData]);
+    }, [data.unit, dataItems.data, dataItems.params, setLayoutData]);
+
+    useEffect(() => {
+        handleLayoutDataChange(layoutData);
+    }, [layoutData, handleLayoutDataChange]);
     /* NEW POST TO FEED */
 
     useEffect(() => {
@@ -296,6 +302,57 @@ export default function (props) {
         }
     }
 
+    const memoizedUniListProps = useMemo(() => ({
+        scrollProps: props?.exProps?.scrollProps,
+        preloadComponent: PreloadComponent,
+        numColumns,
+        mode: 'simple',
+        data: dataItems.data,
+        viewParams: getCurrentParams(),
+        listState: cachedData?.state?.state,
+        unit: data.unit,
+        storagekey: storageKeyValue,
+        useWindowScroll: true,
+        height: props?.height,
+        url: props?.url,
+        contentContainerStyle: props?.contentContainerStyle,
+        maxToRenderPerBatch: 10,
+        initialNumToRender: 10,
+        no_scroll: props.no_scroll,
+        onRefresh: onStartRefresh,
+        refreshing: isRefreshing,
+        renderItem: ({ item, index }) => isWeb ? 
+            <Item key={'item' + item.id} item={item} index={index} numColumns={numColumns} data={data} unitMode={unitMode} props={props} /> : 
+            <Item item={item} index={index} numColumns={numColumns} data={data} unitMode={unitMode} props={props} />,
+        onEndReached: handleEndReached,
+        ListHeaderComponent: (props.exProps?.headerBlocks) ? props.exProps?.headerBlocks : '',
+        ListFooterComponent: ((hasNextPage && isFetchingNextPage)) ? Preload : null
+    }), [
+        props?.exProps?.scrollProps,
+        PreloadComponent,
+        numColumns,
+        dataItems.data,
+        getCurrentParams,
+        cachedData?.state?.state,
+        data.unit,
+        storageKeyValue,
+        props?.height,
+        props?.url,
+        props?.contentContainerStyle,
+        props.no_scroll,
+        onStartRefresh,
+        isRefreshing,
+        isWeb,
+        data,
+        unitMode,
+        props,
+        handleEndReached,
+        props.exProps?.headerBlocks,
+        hasNextPage,
+        isFetchingNextPage,
+        Preload
+    ]);
+
     return (
         <View className='w-full h-full' >
             <View className='w-full' onLayout={handleLayout}></View>
@@ -306,38 +363,9 @@ export default function (props) {
                         <Text className="text-base font-bold text-neutral-800 dark:text-neutral-200 ">{t(props.block.title)}</Text>
                         {props.addLink ? (<Link href={props.addLink.url}><Button variant='text' size='xs' title={props.addLink.text} /></Link>) : null}
                     </Row>) : <></>}
-                {/*(isWeb && props.exProps?.headerBlocks) ? props.exProps?.headerBlocks : ''*/}
-                <UniList
-                    scrollProps={props?.exProps?.scrollProps}
-                    preloadComponent={PreloadComponent}
-                    numColumns={numColumns}
-                    mode='simple'
-                    data={dataItems.data}
-                    viewParams={getCurrentParams()}
-                    listState={cachedData?.state?.state}
-                    unit={data.unit}
-                    storagekey={storageKeyValue}
-                    useWindowScroll
-                    height={props?.height}
-                    url={props?.url}
-                    contentContainerStyle={props?.contentContainerStyle}
-                    maxToRenderPerBatch={10}
-                    initialNumToRender={10}
-                    no_scroll={props.no_scroll}
-                    onRefresh={onStartRefresh}
-                    refreshing={isRefreshing}
-                    renderItem={({ item, index }) => isWeb ? <Item key={'item' + item.id} item={item} index={index} numColumns={numColumns} data={data} unitMode={unitMode} props={props} /> : <Item item={item} index={index} numColumns={numColumns} data={data} unitMode={unitMode} props={props} />}
-                    onEndReached={handleEndReached}
-                    ListHeaderComponent={(props.exProps?.headerBlocks) ? props.exProps?.headerBlocks : ''}
-                    ListFooterComponent={
-                        ((hasNextPage && isFetchingNextPage)) ? (
-                            Preload
-                        ) : null
-                    }
-                />
+                <UniList {...memoizedUniListProps} />
             </View>
         </View>
     );
-
 }
 

@@ -79,7 +79,7 @@ export default function PageLayout(props) {
                             }
                         }
                         addItems={aItems}
-                        handleReply={data => setFormData({ text: stripTags(data.cmt_text), parent_id: data.cmt_id, author: data.author_data, cmt_id: data.cmt_id, cmt_object_id: data.cmt_object_id })}
+                        handleReply={data => setFormData({ ts: Date.now(), text: stripTags(data.cmt_text), parent_id: data.cmt_id, author: data.author_data, cmt_id: data.cmt_id, cmt_object_id: data.cmt_object_id })}
                         browse={commentsData.content[0].browse}
                         addData={addData}
                         module={commentsData?.content[0].browse?.data?.module || commentsData?.module}
