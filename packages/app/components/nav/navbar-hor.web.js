@@ -16,6 +16,7 @@ import MenuAdd from 'app/components/nav/menu-add'
 import MenuAccount from 'app/components/nav/menu-account'
 import MenuLauncher from 'app/components/nav/menu-launcher'
 import MenuDrawer from 'app/components/nav/menu-drawer'
+import MenuTop from 'app/components/nav/menu-top'
 
 const HeaderLine = memo(
     ({
@@ -100,11 +101,7 @@ export default function (props) {
 
     const headerSettings = props.headerSettings
 
-    const menu_navbar_items = menuItemsByName(
-        'main_menu',
-        appSetting('menu_items', 'menu_navbar'),
-        currentUser
-    )
+   
 
     let sTitle = props.title
     const menuSettings = appSetting('menu_items', props?.menu?.object)
@@ -157,53 +154,7 @@ export default function (props) {
                             menuPopup={menuPopup}
                             setMenuPopup={setMenuPopup}
                         />
-                        <Row className="hidden lg:flex flex-auto ">
-                            <Row className="w-full mx-auto gap-x-0.5 max-w-2xl justify-between">
-                                {menu_navbar_items.map((item, index) => (
-                                    <View
-                                        className="flex-auto"
-                                        key={`menu-${index}`}
-                                    >
-                                        <Link href={item.link} alt={item.title}>
-                                            <Button
-                                                pressed={
-                                                    item.link ==
-                                                        '/' + props.url ||
-                                                    (item.link == '/' &&
-                                                        props.uri == 'home')
-                                                        ? true
-                                                        : false
-                                                }
-                                                variant="tab"
-                                                size="lg"
-                                                tooltip={t(item.title)}
-                                                title={
-                                                    item.showTitle
-                                                        ? t(item.title)
-                                                        : ''
-                                                }
-                                                alt={t(item.title)}
-                                                aria-label={t(item.title)}
-                                                fullWidth
-                                                
-                                                startDecorator={item.icon}
-                                                align="center"
-                                                indicator={
-                                                    item.link ==
-                                                        '/' + props.url ||
-                                                    (item.link == '/' &&
-                                                        props.uri == 'home')
-                                                        ? true
-                                                        : false
-                                                }
-                                                indicatorPosition="bottom"
-                                                indicatorClassName=" animate-appear translate-y-[6px] h-[3px] w-full bg-indicator dark:bg-indicator-d rounded-full"
-                                            />
-                                        </Link>
-                                    </View>
-                                ))}
-                            </Row>
-                        </Row>
+                        <MenuTop url={props.url} uri={props.uri}/>
                         <Row className="flex-none xl:w-80 2xl:w-96 flex-none px-[12px] justify-end ">
                             {!!currentUser && (
                                 <Row className="flex-row justify-end  ">
