@@ -10,7 +10,7 @@ import { Platform } from 'react-native'
 
 const ButtonEx = memo(({ visibleItemsCount, params }) => {
     return (
-        <View key="btn" className="ml-2">
+        <View key="btn" className="ml-2 w-12">
             <Button size={params.button_size}  variant="secondary" startDecorator="Ellipsis" />
         </View>
     );

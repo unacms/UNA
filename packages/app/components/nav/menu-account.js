@@ -41,7 +41,7 @@ export default function MenuAccount({ buttonProps, children }) {
     if (currentUser) {
         let dUser = Object.assign({}, currentUser)
         dUser.url_avatar = dUser.avatar
-        dUser.url = appSetting('dashboard', 'url')
+        dUser.url = ''
     profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="base" />
     }
 
@@ -53,7 +53,6 @@ export default function MenuAccount({ buttonProps, children }) {
         rounded: true,
         
         startDecorator: profile,
-        onPress: () => { },
     };
 
     if ((menu_account_items.length == 0 && menuData) || !profile)

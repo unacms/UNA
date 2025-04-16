@@ -14,7 +14,7 @@ export default function ElementProfileMenu(props) {
         <View className="profile-menu gap-y-[2px]">
             
                 {menu_items.map((item, index) => (
-                    <MenuItemSidebar icon = {item.icon} link={item.link} title={t(item.title)} index={index} userUrl={currentUser.url}/>
+                    <MenuItemSidebar key={`menu-${index}`}  icon = {item.icon} link={item.link} title={t(item.title)} index={index} userUrl={currentUser.url}/>
                 ))}
             
         </View>

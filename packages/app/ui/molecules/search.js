@@ -3,7 +3,7 @@ import { Icon } from 'app/ui/atoms/icon'
 import { appSetting } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { Text } from 'app/design/typography'
-import { Pressable, View, Row, ScrollView } from 'app/design/view'
+import { Pressable, View, Row, ViewRef, ScrollView } from 'app/design/view'
 import { Button, ButtonRef, InputRef, InputRounded, InputRoundedRef, Modal } from 'app/design/controls';
 import Redirect from 'app/ui/atoms/redirect';
 import { UnitSearchResultsSmall as SearchResults } from 'app/components/units/search-results';
@@ -19,11 +19,9 @@ import { LAYOUT_BREAKPOINTS } from 'app/lib/util'
 
 
 export default function ElementSearch(oProps) {
-    const { bottomSheetData, setBottomSheetData } = useBottomSheetData();
-    const { t } = useTranslation();
+    const { setBottomSheetData } = useBottomSheetData();
     const sType = oProps?.type ? oProps.type : 'default';
     const oParams = oProps?.params ? oProps.params : {};
-    const [inputValue, setInputValue] = useState('');
     const [showModal, setShowModal] = useState(false);
 
     const handleOpenPopupDefault = () => {
@@ -191,39 +189,37 @@ export function ElementSearchData(oProps) {
         </View>
     );
 
-
-
-
     if (oProps.resInPopup) {
-        const dd = <DropdownPopup
-            open={!!popupContent}
-            onOpenChange={async (bOpen) => {
-                setPopupContent(false);
-            }}
-        >
-            {[
-                <View key="search-dbg"></View>,
-                <View key="search-data">
-                    {cnt2}
-                    {cnt}
-                </View>
-            ]}
-        </DropdownPopup>
+
         return (
 
             <Row className='w-full'>
                 <Redirect ref={redirectdRef} />
                 {oProps.icon}
-                {!!popupContent && dd}
-                <InputRoundedRef
-                    name="search"
-                    placeholder={t("Search") + '...'}
-                    onKeyPress={(event) => handleKeyPress(event)}
-                    value={inputValue}
-                    ref={inputRef}
-                    onChangeText={(value) => handleSearch(value)}
-                    startDecorator="Search"
-                />
+                <DropdownPopup
+                    open={!!popupContent}
+                    onOpenChange={async (bOpen) => {
+                        setPopupContent(false);
+                    }}
+                    trigger={<InputRoundedRef
+                        name="search"
+                        placeholder={t("Search") + '...'}
+                        onKeyPress={(event) => handleKeyPress(event)}
+                        value={inputValue}
+                        ref={inputRef}
+                        onChangeText={(value) => handleSearch(value)}
+                        startDecorator="Search"
+                    />}
+                >
+                   <View key="search-data">
+                            {cnt2}
+                            <View className="max-h-96">
+                                <ScrollView>
+                                    {cnt}
+                                </ScrollView>
+                            </View>
+                        </View>
+                </DropdownPopup>
             </Row>
         )
     }

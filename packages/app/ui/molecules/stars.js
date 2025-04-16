@@ -221,11 +221,12 @@ export default function ElementStars(oProps) {
             if(bWeb) {
                 sActionButton = (
                     <Pressable key="action" onPress={(event) => {event.preventDefault()}}>
-                        <DropdownPopup size="auto" open={!!popupVisibleDo} onOpenChange={async (bOpen) => {setPopupVisibleDo(bOpen)}}>
-                        {[
-                            <ButtonAction variant={bShowCombined ? 'group-item' : false}  startDecorator={sIcon} title={bShowActionLabel ? sTitle : ''} onPress={() => {}} disabled={bShowActionDisabled} {...oButtonProps} />,
-                            <StarsAction rating={fRate} onChange={!bShowActionDisabled ? (number) => {_handleDo(number)} : () => {}} />
-                        ]}
+                        <DropdownPopup 
+                            trigger={<ButtonAction variant={bShowCombined ? 'group-item' : false}  startDecorator={sIcon} title={bShowActionLabel ? sTitle : ''} 
+                            onPress={() => {}} disabled={bShowActionDisabled} {...oButtonProps} />} 
+                            size="auto" open={!!popupVisibleDo} 
+                            onOpenChange={async (bOpen) => {setPopupVisibleDo(bOpen)}}>
+                        <StarsAction rating={fRate} onChange={!bShowActionDisabled ? (number) => {_handleDo(number)} : () => {}} />
                         </DropdownPopup>
                     </Pressable>
                 );

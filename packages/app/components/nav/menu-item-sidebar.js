@@ -7,7 +7,7 @@ import { Theme } from 'app/design/theme';
 export default function MenuItemSidebar({ link, title, index, icon, userUrl, isActive }) {
     const { colors } = Theme();
     return (
-        <Link key={`menu-${index}`} href={link.replace('{profile}', userUrl)}>
+        <Link href={link.replace('{profile}', userUrl)}>
             <View className="flex-auto h-12 items-between" key={`menu-${index}`}>
                 <Link href={link} alt={title}>
                     <Row className={` justify-start ${isActive && 'bg-orange-500'}`}>

@@ -22,7 +22,7 @@ export default function MenuTop({ url, uri }) {
             <Row className="w-full mx-auto gap-x-0.5 max-w-2xl justify-between">
                 {menu_navbar_items.map((item, index) => {
                     const isActive = item.link === '/' + url || (item.link === '/' && uri === 'home');
-                    return <MenuTopItem link={item.link} icon={item.icon} isTitle={item.showTitle} title={t(item.title)} isActive={isActive} />
+                    return <MenuTopItem key={`bmi-${index}`} link={item.link} icon={item.icon} isTitle={item.showTitle} title={t(item.title)} isActive={isActive} />
 
                 })}
             </Row>

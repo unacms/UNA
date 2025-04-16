@@ -50,7 +50,7 @@ export default function () {
                 <Row className="flex-auto items-center flex-row w-full px-2 gap-x-2">
                     {TabList.filter(item => !item.hide).map((tab, index) => {
                         const isActive = appSetting('messenger', 'url') === tab.url ? pathname.includes(tab.url) : pathname === tab.url;
-                        return <MenuBottomItem notifCount={notifCount} iFrCounter={iFrCounter} profile={profile} link={tab.url} index={index} icon={tab.icon} title={tab.title} isActive={isActive} />
+                        return <MenuBottomItem key={`bmi-${index}`} notifCount={notifCount} iFrCounter={iFrCounter} profile={profile} link={tab.url} index={index} icon={tab.icon} title={tab.title} isActive={isActive} />
                     })}
                 </Row>
             </View>
@@ -78,7 +78,7 @@ function MenuBottomItem({ link, title, index, icon, isActive, profile, iFrCounte
 
     return (
         <View
-            key={`bmi-${index}`}
+            
             className=" w-full flex-auto items-center "
         >
             <Link

@@ -15,28 +15,28 @@ export function CoverMenuSmall(props) {
             onOpenChange={(bOpen) => {
                 setNtfsOpen(bOpen)
             }}
-            size="small"
+            popupWidth={256}
+            trigger={<Button
+                key="btn"
+                variant="text"
+                rounded
+                startDecorator="Ellipsis"
+            />}
         >
-            {[
-                <Button
-                    key="btn"
-                    variant="text"
-                    rounded
-                    startDecorator="Ellipsis"
-                />,
-                <Menu
-                    key="menu"
-                    {...props}
-                    displayType="button"
-                    params={{
-                        showVertical: true,
-                        button_variant: 'text',
-                        button_rounded: false,
 
-                        button_full_width: false,
-                    }}
-                />,
-            ]}
+            <Menu
+                key="menu"
+                {...props}
+                displayType="button"
+                params={{
+                    showVertical: true,
+                    button_variant: 'text',
+                    button_rounded: false,
+
+                    button_full_width: false,
+                }}
+            />,
+
         </DropdownPopup>
     )
 }

@@ -223,7 +223,7 @@ export function Modal({
 </View>
 
     return (
-        <ModalDef visible={onVisible} presentationStyle={'pageSheet'} animationType={animation} transparent={isWeb}>
+        <ModalDef visible={onVisible} animationType={animation} transparent={isWeb}>
             <Wrapper className={`pointerEvents cursor-default flex justify-end w-full h-full ${modalSettings.fog}`} {...(isOuterClose && { onPress: onClose })}>
                {isWeb ? <RemoveScroll className='flex-1'>{Content}</RemoveScroll> : Content}
             </Wrapper>
