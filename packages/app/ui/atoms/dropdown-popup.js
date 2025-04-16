@@ -50,6 +50,7 @@ export default function DropdownPopup({
     }, [isRealOpen, popupWidth, windowWidth]);
 
     const handleToggle = (bOpen) => {
+        console.log("onOpenChange", onOpenChange)
         isControlledOutside ? onOpenChange(bOpen) : setIsOpen(bOpen);
     }
 
@@ -81,7 +82,9 @@ export default function DropdownPopup({
                     onRequestClose={() => handleToggle(false)}
                 >
                     <TouchableWithoutFeedback onPress={() => handleToggle(false)} >
-                        {isWeb ? <RemoveScroll className='flex-1'>{Content}</RemoveScroll> : Content}
+                        <View className="flex-1">
+                            {isWeb ? <RemoveScroll>{Content}</RemoveScroll> : Content}
+                        </View>
                     </TouchableWithoutFeedback>
                 </ModalBase>
             )}
