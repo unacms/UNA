@@ -6,7 +6,7 @@ import {
     useWindowDimensions,
     Platform
 } from 'react-native';
-import { View } from 'app/design/view'
+import { Pressable, View } from 'app/design/view'
 import { LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { RemoveScroll } from 'react-remove-scroll';
 
@@ -24,7 +24,7 @@ export default function DropdownPopup({
     const windowWidth = useWindowDimensions().width;
     const isWeb = useMemo(() => Platform.OS === 'web', []);
     const animation = useMemo(
-        () => (windowWidth > LAYOUT_BREAKPOINTS.md ? 'fade' : 'slide'),
+        () => (windowWidth > LAYOUT_BREAKPOINTS.md ? 'fade' : 'fade'),
         [windowWidth]
     );
     const [isOpen, setIsOpen] = useState(defaultOpen);
@@ -50,7 +50,6 @@ export default function DropdownPopup({
     }, [isRealOpen, popupWidth, windowWidth]);
 
     const handleToggle = (bOpen) => {
-        console.log("onOpenChange", onOpenChange)
         isControlledOutside ? onOpenChange(bOpen) : setIsOpen(bOpen);
     }
 
@@ -81,11 +80,9 @@ export default function DropdownPopup({
                     animationType={animation}
                     onRequestClose={() => handleToggle(false)}
                 >
-                    <TouchableWithoutFeedback onPress={() => handleToggle(false)} >
-                        <View className="flex-1">
-                            {isWeb ? <RemoveScroll>{Content}</RemoveScroll> : Content}
-                        </View>
-                    </TouchableWithoutFeedback>
+                    <Pressable className="flex-1" onPress={() => handleToggle(false)} >
+                        {isWeb ? <RemoveScroll>{Content}</RemoveScroll> : Content}
+                    </Pressable>
                 </ModalBase>
             )}
         </>

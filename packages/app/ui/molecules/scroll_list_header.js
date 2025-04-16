@@ -22,6 +22,7 @@ import Search from 'app/ui/molecules/search';
 import { Button } from 'app/design/controls';
 import Link from 'app/ui/atoms/link'
 import { useRouter } from 'app/lib/hooks/router'
+import ContextSelector from 'app/ui/molecules/context-selector'
 
 export const Header = memo(({ 
     backButtonPresented, 
@@ -81,9 +82,10 @@ export const Header = memo(({
         return headerContent;
 
     return (
-        <Row className={`justify-between items-center h-[64px] `}>
-            <Row>
+        <Row className={`justify-between items-center h-[64px]`}>
+            <Row className='items-center'>
                 {(isHome) && <Pressable onPress={scrollToTop} className="ml-[12px]">{appStatic('logo_native')}</Pressable>}
+                <ContextSelector data={pageData?.context}/>
                 <View className="mr-[12px]">{(backButtonPresented && (!isWeb || history.length > 2)) && (
                     <Button variant="text"  rounded size="lg" bgrDecorator onPress={() => {
                         FeedbackHaptics('Medium');
@@ -116,7 +118,7 @@ function getRightHeader(items, currentUser, pagePath) {
     if (items?.length == 0 && !addMenu)
         return null;
 
-    return <Row className='gap-x-[8px] items-center'>{
+    return <Row className='gap-x-[8px] items-center '>{
         items?.map((button) => {
             let btn = undefined;
             if (button.section || button.link == 'search')

@@ -17,6 +17,7 @@ import MenuAccount from 'app/components/nav/menu-account'
 import MenuLauncher from 'app/components/nav/menu-launcher'
 import MenuDrawer from 'app/components/nav/menu-drawer'
 import MenuTop from 'app/components/nav/menu-top'
+import ContextSelector from 'app/ui/molecules/context-selector'
 
 const HeaderLine = memo(
     ({
@@ -28,6 +29,7 @@ const HeaderLine = memo(
         setMenuPopup,
         showMenu,
         title,
+        context
     }) => {
         const { width } = useWindowDimensions()
         if (width > LAYOUT_BREAKPOINTS.xl && menuPopup) setMenuPopup(false)
@@ -41,6 +43,7 @@ const HeaderLine = memo(
 
         return (
             <View className="flex-row xl:max-w-80 2xl:max-w-96 px-[12px] flex-auto lg:flex-none xl:flex-auto items-center ">
+                
                 {headerSettings.menu && isDrawer && (
                     <View className="lg:hidden ">
                         <Pressable onPress={showMenu}>
@@ -71,6 +74,7 @@ const HeaderLine = memo(
                         {/*{appStatic('logo_text')}*/}
                     </Link>
                 )}
+                <ContextSelector data={context}/>
                 {headerSettings.backButton && getBackButtonWeb()}
                 {headerSettings.title && (
                         <Text
@@ -100,8 +104,6 @@ export default function (props) {
     const bNotifs = appSetting('notifications', 'url') ? true : false
 
     const headerSettings = props.headerSettings
-
-   
 
     let sTitle = props.title
     const menuSettings = appSetting('menu_items', props?.menu?.object)
@@ -153,6 +155,7 @@ export default function (props) {
                             showMenu={showMenu}
                             menuPopup={menuPopup}
                             setMenuPopup={setMenuPopup}
+                            context={props.context}
                         />
                         <MenuTop url={props.url} uri={props.uri}/>
                         <Row className="flex-none xl:w-80 2xl:w-96 flex-none px-[12px] justify-end ">

@@ -53,7 +53,9 @@ export  const settingsDefault = {
         button_style_for_actions: 'secondary',
        
         share_text: '',
-        default_icon_stroke_width: 2
+        default_icon_stroke_width: 2,
+
+        use_context_selector: true
     },
 
     native:{
@@ -84,6 +86,7 @@ export  const settingsDefault = {
         back_button_url_for_profile: '/friends',  //OLD appSetting('layout', 'back_for_profile') 
         view_by_module: { //appSetting('layout', 'cover_mode'
             bx_courses: 'min',
+            bx_spaces: 'min',
             bx_jobs: 'max',
         },
     },
