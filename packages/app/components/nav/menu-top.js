@@ -32,16 +32,28 @@ export default function MenuTop({ url, uri }) {
 }
 
 function MenuTopItem({ link, title, index, icon, isTitle, isActive }) {
-    const { colors } = Theme();
+    const { colors } = Theme()
     return (
-        <View className="flex-auto" key={`menu-${index}`}>
-            <Link href={link} alt={title}>
-                <Row className={` justify-center ${isActive && 'bg-orange-500'}`}>
-                    <Text className="text-rimary"><Icon icon={icon} color={isActive? colors.primary : colors.default} /></Text>
+        <Link className="flex-auto" href={link} alt={title}>
+            <View className="flex-auto group h-14 p-1" key={`menu-${index}`}>
+                <Row
+                    className={` group-hover:bg-neutral-100 dark:group-hover:bg-neutral-800 duration-300 items-center justify-center h-12 min-w-12 rounded-xl ${
+                        isActive && ' group-hover:bg-transparent'
+                    }`}
+                >
+                    <Text className="text-neutral-600 dark:text-neutral-400">
+                        <Icon
+                            icon={icon}
+                            color={isActive ? colors.primary : colors.default}
+                        />
+                    </Text>
                     {isTitle && <Text>{title}</Text>}
                 </Row>
-            </Link>
-        </View>
+                {isActive && (
+                    <View className="-bottom-1.5 w-full bg-primary dark:bg-primary-d rounded-xl h-0.5 animate-appear" />
+                )}
+            </View>
+        </Link>
     )
 }
 

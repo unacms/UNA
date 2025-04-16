@@ -185,6 +185,18 @@ const theme = {
                 marginLeft: "auto",
                 marginRight: "auto",
               },
+              "60%": {
+                opacity: "0.6",
+                width: "100%",
+                marginLeft: "auto",
+                marginRight: "auto",
+              },
+              "80%": {
+                opacity: "0.8",
+                width: "90%",
+                marginLeft: "auto",
+                marginRight: "auto",
+              },
               "100%": {
                 opacity: "1",
                 width: "100%",
@@ -194,7 +206,7 @@ const theme = {
             },
            },
            animation: {
-              appear: "appear 0.5s ease-in-out",
+              appear: "appear 0.5s forwards ease-in-out",
            }
         
     },
