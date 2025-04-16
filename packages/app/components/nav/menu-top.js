@@ -37,13 +37,14 @@ function MenuTopItem({ link, title, index, icon, isTitle, isActive }) {
         <Link className="flex-auto" href={link} alt={title}>
             <View className="flex-auto group h-14 p-1" key={`menu-${index}`}>
                 <Row
-                    className={` group-hover:bg-neutral-100 dark:group-hover:bg-neutral-800 duration-300 items-center justify-center h-12 min-w-12 rounded-xl ${
+                    className={` group-hover:bg-neutral-500/10 duration-300 items-center justify-center h-12 min-w-12 rounded-xl ${
                         isActive && ' group-hover:bg-transparent'
                     }`}
                 >
                     <Text className="text-neutral-600 dark:text-neutral-400">
                         <Icon
                             icon={icon}
+                            size="24"
                             color={isActive ? colors.primary : colors.default}
                         />
                     </Text>

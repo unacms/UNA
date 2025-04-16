@@ -23,7 +23,7 @@ function renderListItem({ url, url_avatar, display_name }) {
 function renderTrigger(current) {
 
     return (
-        <Row className=" ml-2 h-12 p-1 items-center bg-neutral-100 rounded-full ">
+        <Row className=" ml-2 h-12 hover:bg-neutral-500/10 px-1 items-center rounded-xl ">
             {current?.display_name ? (
                 <>
                     <View className="h-10 w-10 rounded-full overflow-hidden">
@@ -31,12 +31,18 @@ function renderTrigger(current) {
                         <Image src={current?.url_avatar} view="cover"  />
                     )}
                     </View>
-                    <Text className="text-lg font-semibold mx-2">{current.display_name}</Text>
+                    <Text className="text-lg font-semibold ml-2">{current.display_name}</Text>
+                    <View className="h-10 w-10 ml-2 aspect-square p-2 justify-center hover:bg-gray-500/10 text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 rounded-full">
+                        <Icon icon="ChevronsUpDown" />
+                    </View>
                 </>
             ) : (
                 <>
-                    <Text className="text-lg font-semibold ml-2">Discover</Text>
-                    <View className="h-10 w-10 ml-2 aspect-square p-2 justify-center hover:bg-gray-200 rounded-full">
+                    <View className="h-10 w-10 items-center justify-center text-neutral-600 dark:text-neutral-300 bg-neutral-500/10 rounded-full overflow-hidden">
+                     <Icon icon="Compass" />
+                    </View>
+                    <Text className="text-lg font-semibold ml-2 text-neutral-600 dark:text-neutral-300">Discover</Text>
+                    <View className="h-10 w-10 ml-2 aspect-square p-2 justify-center hover:bg-gray-500/10 text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 rounded-full">
                         <Icon icon="ChevronsUpDown" />
                     </View>
                 </>

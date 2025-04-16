@@ -1,7 +1,7 @@
 'use client';
 
 import { 
-    List, ArrowLeft, House, AlertCircle, MessageSquare, ArrowRight, MessageCircleMore, Plus, 
+    List, ArrowLeft, AlertCircle, MessageSquare, ArrowRight, MessageCircleMore, Plus, 
     Search, User, Compass, Bell, Link, CalendarCheck, ListChecks, ArrowDownAZ,
     StickyNote, Users, Info, CircleHelp, BookUser, Pencil,
     Smile, UserCircle, File, Settings,
@@ -19,7 +19,7 @@ import {
 } from "lucide-react-native";
 
 export const IconSet = { 
-    List, ArrowLeft, House, AlertCircle, MessageSquare, ArrowRight, MessageCircleMore, Plus, MessagesSquare, HelpCircle, Reply,Clock,RefreshCw,
+    List, ArrowLeft, AlertCircle, MessageSquare, ArrowRight, MessageCircleMore, Plus, MessagesSquare, HelpCircle, Reply,Clock,RefreshCw,
     Search, User, Compass, Bell, Link, CalendarCheck, ListChecks, ArrowDownAZ,
     StickyNote, Users, Info, CircleHelp, BookUser, Pencil, Building2, UsersRound, SquareStack, Workflow, KeyRound, Mail, Trash2,
     Smile, UserCircle, File, ChevronsRight, Contact, Settings,
