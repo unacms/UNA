@@ -42,7 +42,7 @@ const HeaderLine = memo(
             ).length > 0
 
         return (
-            <View className="flex-row xl:max-w-80 2xl:max-w-96 px-[12px] flex-auto lg:flex-none xl:flex-auto items-center ">
+            <View className="flex-row xl:max-w-80 2xl:max-w-96 px-4 flex-auto gap-x-2 lg:flex-none xl:flex-auto items-center ">
                 
                 {headerSettings.menu && isDrawer && (
                     <View className="lg:hidden ">
@@ -61,11 +61,11 @@ const HeaderLine = memo(
                 )}
                 {(uri == 'home' || width >= LAYOUT_BREAKPOINTS.lg) && (
                     <Link
-                        className=" flex flex-row group gap-x-[8px] p-[4px] focus-visible:outline-2 focus-visible:outline-offset-0 focus:outline-primary/50 rounded-full hover:bg-bgrbutton dark:hover:bg-bgrbutton-d "
+                        className=" flex flex-row group gap-x-2 focus-visible:outline-2 focus-visible:outline-offset-0 focus:outline-primary/50  "
                         href="/home"
                         aria-label="Logo"
                     >
-                        <View className=" items-center w-[44px] h-[44px] p-[2px] justify-center">
+                        <View className=" items-center w-10 h-10 justify-center">
                             {appStatic('logo_mark')}
                         </View>
                         {/*<View className=" items-center justify-center">

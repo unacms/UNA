@@ -23,7 +23,7 @@ function renderListItem({ url, url_avatar, display_name }) {
 function renderTrigger(current) {
 
     return (
-        <Row className=" ml-2 h-12 hover:bg-neutral-500/10 px-1 items-center rounded-xl ">
+        <Row className="  h-12  px-2 items-center rounded-xl ">
             {current?.display_name ? (
                 <>
                     <View className="h-10 w-10 rounded-full overflow-hidden">

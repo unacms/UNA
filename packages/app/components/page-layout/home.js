@@ -191,7 +191,7 @@ export default function (props) {
             >
                 {getLayout(currentUser) == 'hor' && (
                     <View className="hidden xl:flex w-80 2xl:w-96 ">
-                        <View className="fixed fixed-process w-80 2xl:w-96 flex-col p-3    ">
+                        <View className="fixed fixed-process w-80 2xl:w-96 flex-col p-2">
                             {appSetting('layout', 'show_profile_info') && (
                                 <Link href={currentUser.url} emulate={true}>
                                     <Row
