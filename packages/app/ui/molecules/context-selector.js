@@ -23,20 +23,20 @@ function renderListItem({ url, url_avatar, display_name }) {
 function renderTrigger(current) {
 
     return (
-        <Row className=" ml-3 rounded-full bg-red-500 px-1 py-1">
+        <Row className=" ml-2 h-12 p-1 items-center bg-neutral-100 rounded-full ">
             {current?.display_name ? (
                 <>
-                    <View className="h-8 aspect-square mr-2 rounded-full overflow-hidden">
+                    <View className="h-10 w-10 rounded-full overflow-hidden">
                     {!!current?.url_avatar && (
                         <Image src={current?.url_avatar} view="cover"  />
                     )}
                     </View>
-                    <Text className="text-lg">{current.display_name}</Text>
+                    <Text className="text-lg font-semibold mx-2">{current.display_name}</Text>
                 </>
             ) : (
                 <>
-                    <Text className="text-lg">selercy</Text>
-                    <View className="h-8 aspect-square ml-2 justify-center">
+                    <Text className="text-lg font-semibold ml-2">Discover</Text>
+                    <View className="h-10 w-10 ml-2 aspect-square p-2 justify-center hover:bg-gray-200 rounded-full">
                         <Icon icon="ChevronsUpDown" />
                     </View>
                 </>
