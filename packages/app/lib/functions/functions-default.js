@@ -7,7 +7,7 @@ import { Platform } from 'react-native'
 import { componentsMap } from 'app/ui/molecules/_map'
 import { appStatic } from 'app/lib/app-static';
 import { View, Row } from 'app/design/view'
-
+import { MenuItemSidebar } from 'app/components/nav/menu-item-sidebar'
 
 export function getFriendsCounter(currentUser) {
     return currentUser?.counters?.bx_persons_friend_requests
@@ -43,8 +43,7 @@ export function getBadgeForTab(currentUser, url) {
 export function getButtonForConductor(a, index, currentUser) {
 
     const settings = getPageSettings(a.config, a.key);
-    //let settings = appSetting('l--ayouts', a.key)
-    let icon = !a.ident
+    const icon = !a.ident
         ? settings?.icon
             ? settings?.icon
             : a?.icon.replace('*', '')
@@ -52,25 +51,11 @@ export function getButtonForConductor(a, index, currentUser) {
 
     let addon = a.addon ? a.addon : null
     if (!appSetting('conductor', 'show_nav_counters')) addon = null
-    if (
-        appSetting('conductor', 'show_nav_counters') == 'primary' &&
-        a?.addon?.variant != 'primary'
-    )
+    if ( appSetting('conductor', 'show_nav_counters') == 'primary' && a?.addon?.variant != 'primary')
         addon = null
 
-    return (
-        <Button
-            variant='text'
-            size={!a.ident ? 'base' : 'sm'}
-            pressed={a.index == index ? true : false}
-            fullWidth
-            title={a.title}
-            align="start"
-            startDecorator={icon}
-            addon={addon}
-            bgrDecorator={appSetting('conductor', 'bgrDecorator')}
-        />
-    )
+    return <MenuItemSidebar addon={addon} title={a.title} icon={icon} isActive={a.index == index ? true : false} />
+       
 }
 
 export function getButtonForConductorSmall(a, index, currentUser) {

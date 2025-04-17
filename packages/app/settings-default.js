@@ -86,7 +86,7 @@ export  const settingsDefault = {
         back_button_url_for_profile: '/friends',  //OLD appSetting('layout', 'back_for_profile') 
         view_by_module: { //appSetting('layout', 'cover_mode'
             bx_courses: 'min',
-            bx_spaces: 'min',
+            bx_spaces: 'none',
             bx_jobs: 'max',
         },
     },

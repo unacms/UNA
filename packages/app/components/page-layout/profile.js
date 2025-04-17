@@ -5,6 +5,7 @@ import { getHeaderSettings, getBlocksFromData, cloneObject, getPageData, LAYOUT_
 import { useWindowDimensions } from 'react-native';
 import { useLayoutData } from 'app/context/layout';
 import { processBlocks } from 'app/lib/conductor-helpers';
+import { appSetting } from 'app/lib/util'
 
 export default function PageLayoutProfile({layoutName, data, uri, blocks}) {
     const { width: windowWidth } = useWindowDimensions();
@@ -49,15 +50,19 @@ export default function PageLayoutProfile({layoutName, data, uri, blocks}) {
     }, [pageData.menu, uri, pageData.url]);
 
     const headerSettings = useMemo(() => getHeaderSettings(uri, windowWidth, 'profile', pageData.config), [uri, windowWidth]);
+    const coverMode = appSetting('cover', 'view_by_module', pageData.cover_block.profile?.module)
+
+    const isCoverDisabled = ((windowWidth > LAYOUT_BREAKPOINTS.lg || true) && isAltView) || coverMode == 'none';
 
     const header = useMemo(() => {
-        if ((windowWidth > LAYOUT_BREAKPOINTS.lg || true) && isAltView) {
+        if (isCoverDisabled) {
             return null;
         }
         return <Cover data={pageData.cover_block} mode={headerSettings.cover} uri={uri} />;
-    }, [windowWidth, pageData.cover_block, headerSettings.cover, uri]);
+    }, [isCoverDisabled, pageData.cover_block, headerSettings.cover, uri]);
 
-    const smallHeader = useMemo(() => ((windowWidth > LAYOUT_BREAKPOINTS.lg || true) && isAltView ? null : <CoverSmall data={pageData.cover_block} />), [windowWidth, pageData.cover_block]);
+    const smallHeader = useMemo(() => (
+        isCoverDisabled ? null : <CoverSmall data={pageData.cover_block} />), [isCoverDisabled, pageData.cover_block]);
 
     const renderedBlocks = useMemo(() => {
         const initialBlocks = blocks || getBlocksFromData(pageData);
@@ -74,7 +79,7 @@ export default function PageLayoutProfile({layoutName, data, uri, blocks}) {
             header={header}
             smallHeader={smallHeader}
             //minHeaderHeight={60}
-            defaultHeaderHeight={0}
+            {...(!isCoverDisabled ? { defaultHeaderHeight: 0 } : {})}
             //offsetTop={300}
             isHideDefaultHeader={true}
             menu={menu}

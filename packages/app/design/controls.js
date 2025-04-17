@@ -10,6 +10,7 @@ import Tooltip from 'app/ui/atoms/tooltip';
 import { useWindowDimensions } from 'react-native';
 import Loading from 'app/ui/atoms/loading'
 import { RemoveScroll } from 'react-remove-scroll';
+import { getPart } from 'app/lib/parts/part';
 
 /* inputs */
 const inputSettings = appSetting('theme', 'inputs');
@@ -333,30 +334,6 @@ const getIcon2 = (buttonInfo, classIconName, sClassText, sIconContainer, iIconSi
     }
 }
 
-const getAddon = (addon, isTitle) => {
-    let sButtonAddonText = "";
-    let sButtonAddonBg = "bg-neutral-500 dark:bg-neutral-500";
-    if (typeof addon === 'object') {
-        sButtonAddonText = addon?.text;
-        if (addon?.hideZero && sButtonAddonText == '0')
-            return null;
-        if (addon?.variant == 'primary')
-            sButtonAddonBg = ' bg-contrast dark:bg-contrast-d';
-    }
-    else {
-        sButtonAddonText = addon;
-    }
-
-    const position = addon?.position == 'bottom' ? 'bottom-0 -right-1' : ' top-[50%] -translate-y-[24px] translate-x-[2px] start-[50%] ';
-
-    if (!isTitle && sButtonAddonText)
-        return <View className={`absolute ${sButtonAddonBg} z-20 border-2 border-white dark:border-neutral-900 rounded-full px-1 items-center justify-center ${position}`}><Text className='text-white text-xs font-semibold'>{sButtonAddonText}</Text></View>
-
-    return sButtonAddonText && sButtonAddonText ? <View className='flex-1 items-end '>
-        <View className={sButtonAddonBg + ' rounded-full px-2 py-0.5 mx-1 text-center items-center'}>
-            <Text className=" text-white text-xs font-semibold">{sButtonAddonText}</Text></View></View> : null;
-}
-
 const ThemeCssClassesButton = appSetting('theme', 'button_styles');
 const ThemeButtonSizes = appSetting('theme', 'button_sizes');
 
@@ -558,7 +535,7 @@ export const Button = (props) => {
         [endDecorator, classIconName, sClassText, sIconContainer, iIconSize, colorIcon, variant, pressed]
     );
     const isTitle = !!title;
-    const oButtonAddon = getAddon(addon, isTitle);
+    const oButtonAddon = getPart("CounterIndicator", [addon, isTitle]);
 
     const Cnt = onPress && !disabled ? Pressable : View;
     const refProps = forwardedRef ? { ref: forwardedRef } : {};

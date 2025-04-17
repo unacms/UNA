@@ -329,9 +329,10 @@ export function processUrl(data, blocks) {
                 acc = processBrowse(acc, b);
             }
         } else {
-            if (block.sidebar) {
+            if (block.sidebar ) {
                 acc.sidebar.content = processContent(acc.sidebar, b);
-            } else {
+            } 
+            if (!block.sidebar || block.list) {
                 if (!block.hidden && !block.leftbar)
                     acc.content = processContent(acc, b);
             }
@@ -347,13 +348,12 @@ function ItemRenderer_({ route, numColumns, item, unit, module, unitMode, unitTy
     // return <View className='bg-red-500 h-12 w-full'></View>
     //   const b = useMemo(() => {
     if (item?.type === 'block') {
-        //return <></>
-        let block = BlockByName2({ b: item.data, name: item.block });
+        const block = BlockByName2({ b: item.data, name: item.block });
         if (!block) {
             return <View className='h-[1px]'><Text>&nbsp;</Text></View>;
         }
         return (
-            <View key={`${route.index}-${item.id}`}>
+            <View className={`${block?.props?.extraProps?.list && !sidebar ? 'lg:h-[1px] overflow-hidden' : ''}`} key={`${route.index}-${item.id}`}>
                 {block}
             </View>
         );

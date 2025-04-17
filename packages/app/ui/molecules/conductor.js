@@ -82,7 +82,7 @@ const TabScene = React.memo(({
     onRefresh,
     refreshing,
     numColumns,
-    layoutName
+    isProfileHeader
 }) => {
 
     const handleEndReached = useCallback(() => {
@@ -116,8 +116,8 @@ const TabScene = React.memo(({
                     headerHeight: headerHeight, 
                     isBackButton: false,
                     isMenuNameAsTitle: true,
-                    isProfileHeader: layoutName === 'profile',
-                    isNoContainer: layoutName === 'profile',
+                    isProfileHeader: isProfileHeader,
+                    isNoContainer: isProfileHeader,
                 }
             }
             index={route.index}
@@ -375,6 +375,8 @@ export function Conductor({ header, defaultHeaderHeight=116, smallHeader, minHea
         <Button title='Filters' variant="default" size="sm" rounded onPress={showFilters} />
     </View>)
 
+    const isProfileHeader = layoutName === 'profile' && header;
+
     const tabSceneProps = {
         prevRoute: prevRoute,
         numColumns: numColumns,
@@ -385,9 +387,9 @@ export function Conductor({ header, defaultHeaderHeight=116, smallHeader, minHea
         unitType: unitType,
         unitMode: unitMode,
         fetchNextPage: fetchNextPage,
-        layoutName: layoutName
+        isProfileHeader: isProfileHeader
     };
-    if (layoutName === 'profile'){
+    if (isProfileHeader){
         Object.assign(tabSceneProps, {
             headerHeight: defaultHeaderHeight,
             headerComponent: <>{smallHeader}{sceneHeader}</>,

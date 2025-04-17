@@ -77,8 +77,8 @@ export default function (props) {
     const { t } = useTranslation();
     const { currentUser, setCurrentUser } = useCurrentUser()
     const data = props.data
-    const cover_mode_by_type = appSetting('cover', 'view_by_module', props.data?.profile?.module);
-    const mode = cover_mode_by_type || props.mode
+
+    const mode = appSetting('cover', 'view_by_module', props.data?.profile?.module) || props.mode
     let bPerson = props.data.profile.module == 'bx_persons' ? true : false
     const [coverUrl, setCoverUrl] = useState(data.cover.src)
     const [pictureUrl, setPictureUrl] = useState(data.profile.url_avatar)

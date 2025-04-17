@@ -17,6 +17,7 @@ import Link from 'app/ui/atoms/link'
 import Profile from 'app/ui/molecules/profile'
 import { Text } from 'app/design/typography'
 import UI from 'app/ui/molecules/ui'
+import { MenuItemSidebarWithWrapper } from 'app/components/nav/menu-item-sidebar'
 
 export default function (props) {
 
@@ -228,36 +229,17 @@ export default function (props) {
                                 {feedList.length > 1 &&
                                     feedList.map((item, index) => {
                                         return (
-                                            <View key={'row_' + index}>
-                                                <Button
-                                                    key={
-                                                        'row_' +
-                                                        index +
-                                                        (feedType == item.name)
-                                                    }
-                                                    startDecorator={item.icon}
-                                                    title={
-                                                        item.showTitle
-                                                            ? t(item.title)
-                                                            : ''
-                                                    }
-                                                    variant={
-                                                        feedType == item.name
-                                                            ? 'text'
-                                                            : 'text'
-                                                    }
-                                                    pressed={feedType == item.name}
-                                                    bgrDecorator
-
-                                                    fullWidth
-                                                    size="base"
-                                                    solid
-                                                    align="start"
-                                                    onPress={() => {
-                                                        setFeedTypeEx(item.name)
-                                                    }}
-                                                />
-                                            </View>
+                                            <MenuItemSidebarWithWrapper 
+                                                key={`menu-${index}`} 
+                                                onPress={() => {
+                                                    setFeedTypeEx(item.name)
+                                                }} 
+                                                isActive={feedType == item.name}
+                                                icon = {item.icon} 
+                                                title={t(item.title)} 
+                                                index={index} 
+                                                userUrl={currentUser.url}
+                                            /> 
                                         )
                                     })}
                                

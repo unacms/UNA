@@ -122,7 +122,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
         const { currentUser } = useCurrentUser();
         const btn = callFn('getButtonForConductorSmall', [a, index, currentUser])
         return (
-            <Pressable ref={el => (itemRefs?.current ? (itemRefs.current[index2] = el) : (el = null))} className={" pb-2 items-center " + a?.menu_settings?.class + (index2 > visibleItemsCount - 1 ? ' item-overlap ' : '')}
+            <Pressable ref={el => (itemRefs?.current ? (itemRefs.current[index2] = el) : (el = null))} className={" py-2 items-center " + a?.menu_settings?.class + (index2 > visibleItemsCount - 1 ? ' item-overlap ' : '')}
                 key={`tab-${index2}`}
                 onPress={() => {
                     setIndex(a.index);
@@ -738,7 +738,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
         return (
             <Row style={{ paddingTop: header ? 0 : 0 }} className={(headerSettings.columns == "reverse" ? 'flex-row-reverse' : '') + conductorTheme.content_max_width + '  mx-auto w-full '}>
-                <View className={(isRightCol ? 'flex-auto sm:border-r border-bdr dark:border-bdr-d px-4 flex-auto ' : ' w-full mx-auto sm:p-2 ') + (layoutName == 'navigator' ? '' : ' pt-4')}>
+                <View className={(isRightCol ? 'flex-auto sm:border-r border-bdr dark:border-bdr-d lg:px-4 flex-auto ' : ' w-full mx-auto sm:p-2 ') + (layoutName == 'navigator' ? '' : ' lg:pt-4')}>
                     {TabFlashListM}
                     {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 && callFn("noContentByUrl", [route?.endpoint])))}
 
@@ -796,7 +796,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     ), [routes, index, setIndex, onChangeRoute]);
 
     const isShowFilters = false;// todo
-    const isUseCurrentHeader = layoutName !== 'navigator' 
+    const isUseCurrentHeader = layoutName !== 'navigator' && header
 
     if (leftSideBar) {
 
