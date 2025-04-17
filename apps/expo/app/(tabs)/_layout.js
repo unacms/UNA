@@ -106,9 +106,7 @@ const AppLayout = React.memo(() => {
                 translucent={true} />
                 <QueryClientProvider client={queryClient}>
                     <SafeAreaView edges={['left', 'right']} style={containerStyle}>
-
                         <Tabs />
-
                     </SafeAreaView>
                 </QueryClientProvider>
         </ThemeProvider>

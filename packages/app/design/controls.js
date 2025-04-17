@@ -11,7 +11,7 @@ import { useWindowDimensions } from 'react-native';
 import Loading from 'app/ui/atoms/loading'
 import { RemoveScroll } from 'react-remove-scroll';
 import { getPart } from 'app/lib/parts/part';
-
+import { useSafeAreaInsets } from 'app/lib/hooks/router'
 /* inputs */
 const inputSettings = appSetting('theme', 'inputs');
 
@@ -177,6 +177,7 @@ export function Modal({
 
     const styles = { maxHeight: height - offset };
     const isWeb = Platform.OS === 'web';
+    const isIOS = Platform.OS === 'ios';
 
     const isOuterClose = (onClose !== 'undefined' && outerClickClose !== false);
     const Wrapper = isOuterClose ? Pressable : View;
@@ -200,7 +201,9 @@ export function Modal({
         padding = 'p-4';
     }
 
-    const Content = <View className={`flex-row justify-center left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto ${layoutShift}:inset-0 h-full h-modal ${sClassPosition}`}>
+    const insets = useSafeAreaInsets();
+
+    const Content = <View  style={{ paddingTop: isIOS? insets?.top : 0 }} className={`flex-row justify-center left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto ${layoutShift}:inset-0 h-full h-modal ${sClassPosition}`}>
     <View className={`w-full ${fullWidth ? '' : `${layoutShift}:w-auto`} relative ${modalSettings.container.replaceAll("{ls}", layoutShift)} `}>
         <View className={`relative h-full ${modalSettings.content.replaceAll("{ls}", layoutShift)}`}>
             {
@@ -219,17 +222,21 @@ export function Modal({
                 </Row>
             }
             <Cnt style={styles} className={`${padding}  flex-auto h-full `}>{children}</Cnt>{/*overflow-y-auto*/}
+            <Text>{insets?.top}</Text>
         </View>
     </View>
 </View>
 
     return (
+        
         <ModalDef visible={onVisible} animationType={animation} transparent={isWeb}>
+            
             <Wrapper className={`pointerEvents cursor-default flex justify-end w-full h-full ${modalSettings.fog}`} {...(isOuterClose && { onPress: onClose })}>
                {isWeb ? <RemoveScroll className='flex-1'>{Content}</RemoveScroll> : Content}
             </Wrapper>
-
+           
         </ModalDef>
+        
     );
 }
 
@@ -436,7 +443,7 @@ export const Button = (props) => {
         if (variant === 'group-item-none') {
             classes += 'justify-start ';
         } else {
-            classes += `justify-${align} `;
+            classes += `zz justify-${align} `;
         }
         if (pressed) {
             classes= classes.replace(/\b(bg-[^\s]*)\b|\b(dark:bg-[^\s]*)\b/g, "").replace(/\s+/g, " ").trim();

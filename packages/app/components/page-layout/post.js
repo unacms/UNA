@@ -88,7 +88,7 @@ export default function PageLayout(props) {
                     />
                 </View>
             </View>
-            <KbAvoidingView offset={64}>
+            <KbAvoidingView>
                 <View onLayout={handleLayout} className=' border-bdrcard dark:border-bdrcard-d border-t border-bdr dark:border-bdr-d px-3 web:fixed web:bottom-0 w-full max-w-5xl' style={{ backgroundColor: colors.barsBackground }}>
                     <CommentsForm handleForm={setAddData} browse={commentsData.content[0].browse} module={commentsData?.content[0].browse?.data?.module || commentsData?.module} form={commentsData.content[0].form} formData={formData} requestUrl={commentsData.content[0].url} />
                 </View>

@@ -8,6 +8,7 @@ import {
     Redirect as _Redirect,
     Tabs as _Tabs
 } from 'expo-router';
+import { useSafeAreaInsets as _useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export const Stack = _Stack
 export const Link = _Link
@@ -16,6 +17,10 @@ export const Tabs = _Tabs
 
 export function useLocalSearchParams() {
     return _useLocalSearchParams();
+}
+
+export function useSafeAreaInsets() {
+    return _useSafeAreaInsets();
 }
 
 export function useRouter() {
@@ -46,5 +51,3 @@ export function goBack(navigation, router, callback){
 export function redirectTo(router, url){
     router.replace(url)
 }
-
-

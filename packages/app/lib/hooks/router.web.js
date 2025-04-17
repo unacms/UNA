@@ -24,6 +24,10 @@ export function useNavigation() {
     return null;
 }
 
+export function useSafeAreaInsets() {
+    return null;
+}
+
 export function goBack(navigation, router, callback){
     if (callback){
         callback(); 

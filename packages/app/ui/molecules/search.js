@@ -44,7 +44,7 @@ export default function ElementSearch(oProps) {
     }
 
     return <>{sResult}
-        <Modal outerClickClose={false} title="" onVisible={!!showModal} onClose={() => { setShowModal(false) }} transparent={false}>
+        <Modal scrollable outerClickClose={false} title="" onVisible={!!showModal} onClose={() => { setShowModal(false) }} transparent={false}>
             <ElementSearchData {...oProps} />
         </Modal>
 
@@ -257,8 +257,8 @@ export function ElementSearchData(oProps) {
             <View className="flex-row p-1 mb-2">
                 <InputRef name="search" autoFocus={true} placeholder='Start typing to search...' onKeyPress={(event) => handleKeyPress(event)} value={inputValue} ref={inputRef} onChangeText={(value) => handleSearch(value)} />
             </View>
-            <KbAvoidingView>
-                <ScrollView className="max-h-96">
+            <KbAvoidingView style={{ flex: 1 }}>
+                <ScrollView>
                     {cnt}
                 </ScrollView>
             </KbAvoidingView>
