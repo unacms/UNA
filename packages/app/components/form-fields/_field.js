@@ -22,7 +22,7 @@ export default function (props) {
             {isShowCaption &&
                 <Text className="label-text block mb-[4px] ml-[1px] ">
                     <Row className='items-center gap-x-1' >
-                        <Text className="font-semibold text-sm sm:text-base text-neutral-700 dark:text-neutral-300">{caption}</Text>
+                        <Text className={appSetting('forms', 'caption_classes')}>{caption}</Text>
                         {((props.checker || props.required) ? <></> : <Text className="text-sm sm:text-base text-neutral-700 dark:text-neutral-300">{isShowOptional}</Text>)}
                         {((!!mandatoryIcon && (props.checker || props.required)) ? <Text className="text-red-600 h-4 text-xs"><Icon icon={mandatoryIcon} /></Text> : <></>)}
                     </Row >

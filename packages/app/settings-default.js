@@ -132,6 +132,7 @@ export  const settingsDefault = {
         optional_text: '',// OLD appSetting('layout', 'form_fields_optional_text')
         mandatory_icon: 'Asterisk',// OLD appSetting('layout', 'form_fields_mandatory_icon')
         auto_ghosts_in_files: true, 
+        caption_classes: 'font-semibold text-sm sm:text-base text-neutral-700 dark:text-neutral-300',
         without_captions: [ // OLD appSetting('forms', 'form_without_captions')
             'sys_login',
             'sys_account_create',
