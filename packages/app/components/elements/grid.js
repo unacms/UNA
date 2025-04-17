@@ -7,7 +7,7 @@ import Profile from 'app/ui/molecules/profile';
 import Confirm from 'app/ui/molecules/confirm';
 import { Button } from 'app/design/controls'
 import { fetcher } from 'app/lib/fetcher';
-import React, { useEffect, useState, useMemo, useCallback, useContext } from 'react';
+import React, { useEffect, useState, useMemo, useCallback, useRef  } from 'react';
 import { Theme } from 'app/design/theme';
 import { Switch } from 'app/design/controls'
 import CheckBox from 'app/ui/atoms/checkbox';
@@ -20,6 +20,7 @@ import { BlockByData } from 'app/components/blocks-content/object-data-array-int
 import { useWindowDimensions } from 'react-native';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { Icon } from 'app/ui/atoms/icon'
+import Redirect from 'app/ui/atoms/redirect';
 
 function Stripe(props) {
     const computedData = useMemo(() => {
@@ -77,13 +78,17 @@ const getWidth1 = (width) => {
 
 const ActionButton = React.memo(({ id, index, itemAction, setShowConfirm, deleteRows, fetchData, handleBlock, item }) => {
     const [hide, setHide] = useState(false);
-
+    const redirectRef = useRef();
     const getActionAfter = async (itemAction) => {
+        console.log("itemAction.on_callback", itemAction)
         if (itemAction.on_callback == 'hide') {
             setHide(true);
         }
         if (itemAction.on_callback == 'hide_row') {
             deleteRows([itemAction.attr.bx_grid_action_data, id]);
+        }
+        if (itemAction.on_callback == 'redirect') {
+            redirectRef.current.redirect(itemAction.redirect_url);
         }
     }
 
@@ -152,14 +157,17 @@ const ActionButton = React.memo(({ id, index, itemAction, setShowConfirm, delete
             />
         );
     }
+    console.log("redirectRef", redirectRef.current)
 
     if (itemAction.type === 'callback') {
         return (
+            <>
+            <Redirect ref={redirectRef} />
             <Button
                 key={index}
                 {...commonProps}
                 onPress={() => getAction(itemAction, setShowConfirm)}
-            />
+            /></>
         );
     }
 
