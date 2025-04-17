@@ -5,13 +5,14 @@ import Form from 'app/components/elements/form';
 import SimpleList from 'app/components/elements/simple_list';
 import { Text } from 'app/design/typography'
 import Msg from 'app/components/elements/msg';
+import Grid from 'app/components/elements/grid';
 import Redirect from 'app/components/elements/redirect';
 
 export function BlockByData(props) {
-    return <BlockContentObjectDataArray data={props.block.content} type={props.block.type} {...props} />
+    return <BlockContentObjectDataArrayInt data={props.block.content} type={props.block.type} {...props} />
 }
 
-export default function BlockContentObjectDataArray(props) {
+export default function BlockContentObjectDataArrayInt(props) {
 
     const [postData, setPostData] = useState(null);
     // check if any element in a block has request URL
@@ -76,6 +77,7 @@ export default function BlockContentObjectDataArray(props) {
     const components = {
         'simple_list': SimpleList,
         'form': Form,
+        'grid': Grid,
         'msg': Msg,
         'redirect': Redirect
     };

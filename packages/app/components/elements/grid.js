@@ -197,6 +197,7 @@ const Cell = React.memo(({ cell, indexRow, id, toggleSwitch, setSelection, selec
                     value={selected.includes(cell.data)}
                     status={selected.includes(cell.data) ? 'checked' : 'unchecked'}
                     onPress={() => setSelection(cell.data)}
+                    isBackground = {false}
                 /></>
         case 'profile':
             return <Profile {...cell.data} displaySize="sm" />
@@ -422,7 +423,7 @@ export default function ElementGrid(props) {
     const actionsIndependent = Object.values(data.actions.independent);
 
     let a = <View className="w-full xl:px-6">
-        <Text className="tracking-tight text-lg font-bold text-neutral-900 dark:text-neutral-50 mb-2">{stripTags(props.block.title)}</Text>
+        <Text className="tracking-tight text-lg font-bold text-neutral-900 dark:text-neutral-50 mb-2">{stripTags(props?.block?.title)}</Text>
         {modalContent && (
             <Modal title={modalContent.content[0]?.title ? modalContent.content[0]?.title : " "} onVisible={!!modalContent} outerClickClose={false} onClose={() => handleCloseModal()}>
                 <View className='px-4'>
