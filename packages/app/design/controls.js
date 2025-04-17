@@ -222,7 +222,6 @@ export function Modal({
                 </Row>
             }
             <Cnt style={styles} className={`${padding}  flex-auto h-full `}>{children}</Cnt>{/*overflow-y-auto*/}
-            <Text>{insets?.top}</Text>
         </View>
     </View>
 </View>
