@@ -77,13 +77,20 @@ export function CoverMenu(props) {
         })
     }
 
+    
     propsCopy.items = propsCopy.items.map((aItem) => {
-        if (aItem.name.includes('delete-') || aItem.name.includes('edit-') || aItem.name?.includes('join-')) {
+        if (
+            aItem.name.includes('delete-') || 
+            aItem.name.includes('edit-') || 
+            aItem.name?.includes('join-') ||
+            aItem.name?.includes('-pricing') ||
+            aItem.name?.includes('-sessions') ||
+            aItem.name?.includes('-questionnaire')
+        ) {
             return { ...aItem, noAction: true };
         }
         return aItem;
     });
-
 
     return (
         <Menu

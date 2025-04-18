@@ -24,7 +24,7 @@ export default function () {
 
     const notifCount = currentUser ? currentUser.notifications : 0;
     const iFrCounter = callFn("getFriendsCounter", [currentUser]);
-
+    console.log("iFrCounter", iFrCounter)
     let pathname = usePathname()
 
     let profile = null
@@ -71,10 +71,12 @@ function MenuBottomItem({ link, title, index, icon, isActive, profile, iFrCounte
             value: { variant: 'primary', text: currentUser.counters.bx_messenger_new_messages }
         },
         {
-            condition: link === '/friends-all' && iFrCounter > 0,
+            condition: link === '/friends' && iFrCounter > 0,
             value: { variant: 'primary', text: iFrCounter }
         }
     ].find(item => item.condition)?.value || null;
+
+    console.log("badge", link, badge)
 
     return (
         <View
@@ -86,13 +88,17 @@ function MenuBottomItem({ link, title, index, icon, isActive, profile, iFrCounte
                 noprefetch={link === appSetting('notifications', 'url') ? "false" : "true"}
                 className="w-full"
             >
-                <View className={` items-center ${isActive && 'bg-orange-500'}`}>
-                    <Text className="text-rimary">
+                 {isActive && (
+                    <View className="-top-3 w-full bg-primary dark:bg-primary-d rounded-xl h-0.5 animate-appear" />
+                )}
+                <View className={` items-center ${isActive && ''}`}>
+                    <Text className={`${isActive ? 'text-primary' : 'text-neutral-700 dark:text-neutral-300'}`}>
                         {link === appSetting('dashboard', 'url') ? profile : <Icon icon={icon} color={isActive ? colors.primary : colors.default} />}
                     </Text>
-                    {<Text>{title}</Text>}
-                    {badge && <Text className={`absolute right-2 top-2 text-xs bg-primary rounded-full px-1 text-white`}>{badge.text}</Text>}
+                    {<Text className={`group-hover:text-primary dark:group-hover:text-primary text-[12px] tracking-tight  leading-[16px] whitespace-nowrap ${isActive ? 'text-primary' : 'text-neutral-700 dark:text-neutral-300'}`}>{title}</Text>}
+                    {badge && <View className={`absolute  bg-contrast dark:bg-contrast-d border-2 border-white dark:border-neutral-900 rounded-full  px-1.5 items-center justify-center -right-1 -top-2`}><Text className="text-white text-xs ">{badge.text}</Text></View>}
                 </View>
+               
             </Link>
         </View>
     );

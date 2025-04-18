@@ -1,6 +1,5 @@
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
-import { getPart } from 'app/lib/parts/part';
 
 export function ProfileDisplayName(title) {
     return title;
