@@ -17,17 +17,16 @@ import Card from 'app/ui/molecules/card'
 import AnimatedBlock from 'app/ui/molecules/animated-block'
 import { CommentsBrowse, CommentsParts } from 'app/lib/comments-helpers'
 import { Pressable } from 'app/design/view';
-import Carousel from 'app/ui/molecules/carousel'
 import { subscribe } from 'app/ui/atoms/socket';
 import { LAYOUT_BREAKPOINTS, getDataForMenu } from 'app/lib/util';
 import Form from 'app/components/elements/form'
-//import useSWR from 'swr'
 import useFetchForm from 'app/lib/hooks/fetch'
 import { useTranslation } from 'react-i18next';
 import Loading from 'app/ui/atoms/loading'
 import * as FeedItems from 'app/lib/feed-items'
 import { Icon } from 'app/ui/atoms/icon'
 import { SafeMenuTrigger } from 'app/ui/atoms/safe-menu-trigger';
+import  { useLayoutData } from 'app/context/layout';
 
 export const CommentsModal = memo(({ commentsData, initFormData, itemContent, closeOnPost }) => {
     const windowDimensions = useWindowDimensions();
@@ -268,8 +267,8 @@ export const MenuManage = ({ id, menu, setViewState }) => {
 }
 
 const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen }) => {
-    let { currentUser, setCurrentUser } = useCurrentUser()
-
+    const { currentUser, setCurrentUser } = useCurrentUser()
+    const { setLayoutData } = useLayoutData()
     const handleMenuManageSelect = async (oItem, event) => {
         switch (oItem.name) {
             case 'item-edit':
@@ -284,6 +283,7 @@ const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen }) => {
                     '/api.php?r=bx_timeline/delete/&params[]=' + id
                 )
                 setViewState({ view: 'deleted' })
+                setLayoutData(getAlert('feed:remove_content', id));
                 break
         }
     }
@@ -481,7 +481,5 @@ export const UnitFeed = ({ data, mode, DefaultUnit, SmallUnit, feed_type }) => {
         subscribe('bx_timeline_0', 'edited', onItemEdited);
     }, []);
 
-    let unit = mode == 'small' ? SmallUnit(datas) : DefaultUnit(datas)
-
-    return unit
+    return  mode == 'small' ? SmallUnit(datas) : DefaultUnit(datas)
 };

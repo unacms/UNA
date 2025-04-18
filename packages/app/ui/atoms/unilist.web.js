@@ -93,7 +93,7 @@ export default function UniList(props) {
             },
         } : {
             Footer: () => ListFooterComponent,
-            Header: () => useCustomScrollHandler ? <View style={{paddingTop:scrollProps.headerHeight}}></View> :ListHeaderComponent,
+            Header: () => useCustomScrollHandler ? <View style={{paddingTop:scrollProps.headerHeight}}></View> :null,
         },
         isScrolling,
         ...rest,
@@ -153,12 +153,12 @@ export default function UniList(props) {
             }
             else{
                 contentComponent =  (
-                    <Virtuoso
+                    <>{ListHeaderComponent}<Virtuoso
                         itemContent={itemContent}
                         {...commonVirtuosoProps}
                         {...(listState?.ranges && { restoreStateFrom: listState })}
                         {...(scrollToLastItem && { initialTopMostItemIndex: data.length })}
-                    />
+                    /></>
                 )
             }
         }

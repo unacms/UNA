@@ -165,6 +165,7 @@ export function Modal({
     textAlign = 'center',
     headerBorder = true,
     fullWidth = true,
+    maxWidth = 'max-w-2xl',
     children,
     padding = " p-[12px] ",
     scrollable = false
@@ -204,8 +205,9 @@ export function Modal({
 
     const insets = useSafeAreaInsets();
 
-    const Content = <View  style={{ paddingTop: isIOS? insets?.top : 0 }} className={`flex-row justify-center left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto ${layoutShift}:inset-0 h-full h-modal ${sClassPosition}`}>
-    <View className={`w-full ${fullWidth ? '' : `${layoutShift}:w-auto`} relative ${modalSettings.container.replaceAll("{ls}", layoutShift)} `}>
+    const Content = (
+        <View  style={{ paddingTop: isIOS? insets?.top : 0 }} className={`flex-row justify-center left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto ${layoutShift}:inset-0 h-full h-modal ${sClassPosition}`}>
+    <View className={`w-full ${maxWidth} ${fullWidth ? '' : `${layoutShift}:w-auto`} relative ${modalSettings.container.replaceAll("{ls}", layoutShift)} `}>
         <View className={`relative h-full ${modalSettings.content.replaceAll("{ls}", layoutShift)}`}>
             {
                 (title || onClose) && <Row className={`items-center justify-${align} ${headerBorder && modalSettings.header} `}>
@@ -225,18 +227,14 @@ export function Modal({
             <Cnt style={styles} className={`${padding}  flex-auto h-full `}>{children}</Cnt>{/*overflow-y-auto*/}
         </View>
     </View>
-</View>
+</View>)
 
     return (
-        
         <ModalDef visible={onVisible} animationType={animation} transparent={isWeb}>
-            
             <Wrapper className={`pointerEvents cursor-default flex justify-end w-full h-full ${modalSettings.fog}`} {...(isOuterClose && { onPress: onClose })}>
                {isWeb ? <RemoveScroll className='flex-1'>{Content}</RemoveScroll> : Content}
             </Wrapper>
-           
         </ModalDef>
-        
     );
 }
 

@@ -6,8 +6,6 @@ import { useCallback } from 'react'
 import { Keyboard } from 'react-native'
 
 export default function FormModal({ pageData, setPageData }) {
-
-
     const handleModalClose = useCallback(() => {
         Keyboard.dismiss()
     }, [])
@@ -18,9 +16,21 @@ export default function FormModal({ pageData, setPageData }) {
     if (!pageData)
         return null;
 
+    let modalWidth = 'max-w-4xl';
+    Object.keys(pageData?.elements || {}).forEach(key => {
+        Object.keys(pageData.elements[key] || {}).forEach(key2 => {
+            const value = pageData.elements[key][key2]?.content[0];
+            console.log('Результат:', value);
+   
+            if (value?.type === 'form' && value?.name === 'name') {
+                myVar = 'max-w-2xl';
+            }
+        });
+    });
+    
     return (
         <Modal
-            
+            maxWidth={modalWidth}
             title={isShowHeader ? pageData.title : null}
             onVisible={!!pageData}
             outerClickClose={false}

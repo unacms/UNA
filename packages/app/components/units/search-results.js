@@ -6,8 +6,8 @@ import Redirect from 'app/ui/atoms/redirect';
 import Profile from 'app/ui/molecules/profile';
 import GeneralContentList from './general-content-list';
 export default function UnitSearchResults(props) {
-   
-    return <GeneralContentList {...props} unitType="search"/>
+
+    return <GeneralContentList {...props} unitType="search" />
     /*return (     
         <Card margin="mt-4 mx-2">
             <Link href={data.url}>  
@@ -25,38 +25,29 @@ export default function UnitSearchResults(props) {
 }
 
 
-export function UnitSearchResultsSmall({data, onPress}) {
-    const redirectdRef = useRef();
+export function UnitSearchResultsSmall({ data, onPress }) {
+
 
     //TODO: rework url
     let url = data?.url ? data.url.replace('{bx_url_root}', '') : '';
 
-    const handleClick = (sUrl) => {
-        if(!sUrl)
-            return;
 
-        if(!!onPress && typeof onPress == 'function')
-            onPress();
 
-        redirectdRef.current.redirect(sUrl);
-    }
-    
     const sText = data?.title ? data.title : stripTags(data.text);
 
     return (
-        <View className=" my-1  ">
-            <Redirect ref={redirectdRef} />
-            <Pressable onPress={() => handleClick(url)}>
-                <View className=" bg-bgritem dark:bg-bgritem-d flex-row p-2 rounded-lg "> 
-                {data?.author_data &&   
-                    <View className="w-12 h-12 rounded-full flex-none ">
-                         <Profile {...data.author_data} displayType="unit_wo_info" displaySize="lg" />
-                    </View>
+        <Pressable onPress={() => onPress(url)}>
+            <View className=" m-1">
+                <View className=" bg-bgritem dark:bg-bgritem-d flex-row p-2 rounded-lg ">
+                    {data?.author_data &&
+                        <View className="w-12 h-12 rounded-full flex-none ">
+                            <Profile {...data.author_data} displayType="unit_wo_info" displaySize="lg" />
+                        </View>
                     }
                     <View className="flex-auto mx-2 my-auto ">
                         <View className='flex-row  w-full items-end content-end'>
-                            
-                            <Text className='flex-auto  text-sm text-neutral-900 dark:text-neutral-100' numberOfLines={1}>{sText}</Text>    
+
+                            <Text className='flex-auto  text-sm text-neutral-900 dark:text-neutral-100' numberOfLines={1}>{sText}</Text>
                         </View>
                         <View className='flex-row items-center'>
                             {data?.module_title &&
@@ -65,7 +56,8 @@ export function UnitSearchResultsSmall({data, onPress}) {
                         </View>
                     </View>
                 </View>
-            </Pressable>
-        </View>
+
+            </View>
+        </Pressable>
     );
 }

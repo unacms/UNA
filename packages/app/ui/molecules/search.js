@@ -40,12 +40,12 @@ export default function ElementSearch(oProps) {
     );
 
     if (oProps.children) {
-        return <Pressable onPress={() => handleOpenPopupDefault()}>{oProps.children}</Pressable>;
+        sResult = <Pressable onPress={() => handleOpenPopupDefault()}>{oProps.children}</Pressable>;
     }
 
     return <>{sResult}
-        <Modal scrollable outerClickClose={false} title="" onVisible={!!showModal} onClose={() => { setShowModal(false) }} transparent={false}>
-            <ElementSearchData {...oProps} />
+        <Modal title="Search" outerClickClose={false} onVisible={!!showModal} onClose={() => { setShowModal(false) }} transparent={false}>
+            <ElementSearchData onClose={() => { setShowModal(false) }} {...oProps} />
         </Modal>
 
     </>;
@@ -123,9 +123,15 @@ export function ElementSearchData(oProps) {
         redirectdRef.current.redirect(sUrlRedirect.replace('{keyword}', inputValue));
     };
 
-    const handleClose = () => {
-        setBottomSheetData(false);
+    const handleClose = (url) => {
+        console.log("urlurlurl", url)
+        oProps.onClose && oProps.onClose();
+        redirectdRef.current.redirect(url);
+        // setBottomSheetData(false);
+        // 
     }
+
+
 
     const handleSetPopupContent = (sContent) => {
         setPopupContent(sContent);
@@ -168,7 +174,7 @@ export function ElementSearchData(oProps) {
 
         const sContent = (
             <View className="w-full mt-1">
-                {oBlock.data.data.map((a, index) => <SearchResults key={index} data={a} onPress={() => handleClose()} />)}
+                {oBlock.data.data.map((a, index) => <SearchResults key={index} data={a} onPress={(url) => handleClose(url)} />)}
             </View>
         );
         if (oBlock.data.data.length == 0) {
@@ -211,14 +217,14 @@ export function ElementSearchData(oProps) {
                         startDecorator="Search"
                     />}
                 >
-                   <View key="search-data">
-                            {cnt2}
-                            <View className="max-h-96">
-                                <ScrollView>
-                                    {cnt}
-                                </ScrollView>
-                            </View>
+                    <View key="search-data">
+                        {cnt2}
+                        <View className="max-h-96">
+                            <ScrollView>
+                                {cnt}
+                            </ScrollView>
                         </View>
+                    </View>
                 </DropdownPopup>
             </Row>
         )
@@ -245,7 +251,7 @@ export function ElementSearchData(oProps) {
     }
 
     return (
-        <View className='lg:h-96'>
+        <View className='web:h-screen lg:h-96 web:pb-20 web:lg:pb-0'>
             <Redirect ref={redirectdRef} />
             {
                 (!!inputValue && appSetting('layout', 'extended_search')) && (
@@ -257,9 +263,11 @@ export function ElementSearchData(oProps) {
             <View className="flex-row p-1 mb-2">
                 <InputRef name="search" autoFocus={true} placeholder='Start typing to search...' onKeyPress={(event) => handleKeyPress(event)} value={inputValue} ref={inputRef} onChangeText={(value) => handleSearch(value)} />
             </View>
-            <KbAvoidingView style={{ flex: 1 }}>
-                <ScrollView>
-                    {cnt}
+            <KbAvoidingView className="web:flex-1" offset={80}>
+                <ScrollView keyboardShouldPersistTaps="always" keyboardDismissMode="none" >
+                    <View >
+                        {cnt}
+                    </View>
                 </ScrollView>
             </KbAvoidingView>
         </View>

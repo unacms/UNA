@@ -3,6 +3,7 @@ import React, { useState, Suspense } from 'react';
 import useFetchForm from 'app/lib/hooks/fetch'
 import { Text } from 'app/design/typography'
 import { Loading } from 'app/loading'
+import Form from 'app/components/elements/form';
 
 export function BlockByData(props) {
     return <BlockContentObjectDataArrayInt data={props.block.content} type={props.block.type} {...props} />
@@ -81,8 +82,9 @@ export default function BlockContentObjectDataArrayInt(props) {
 */
 
     const components = {
+        'form': Form,
         'simple_list': React.lazy(() => import('app/components/elements/simple_list')),
-        'form': React.lazy(() => import('app/components/elements/form')),
+        //'form': React.lazy(() => import('app/components/elements/form')),
         'grid': React.lazy(() => import('app/components/elements/grid')),
         'msg': React.lazy(() => import('app/components/elements/msg')),
         'redirect': React.lazy(() => import('app/components/elements/redirect'))
