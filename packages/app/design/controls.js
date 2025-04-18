@@ -290,7 +290,7 @@ export function ButtonsGroup({
 }
 
 /* buttons */
-const getIcon = (sIcon, iIndex, classIconName, sClassText, sIconContainer, iIconSize, colorIcon, buttonIconStart, variant, pressed) => {
+const getIcon = (sIcon, iIndex, classIconName, sClassText, sIconContainer, iIconSize, colorIcon, buttonIconStart) => {
 
     if (!sIcon)
         return;
@@ -303,41 +303,54 @@ const getIcon = (sIcon, iIndex, classIconName, sClassText, sIconContainer, iIcon
 
     sClassText = sClassText.replace('overflow-hidden', '');
 
-    // Check for icon-specific style for the current variant
-    let iconSpecificClass = variant ? ThemeCssClassesButton[`u-btn-${variant}-icon`] : null;
-    
-    // Use pressed icon style if available and button is pressed
-    if (pressed && variant) {
-        const pressedIconClass = ThemeCssClassesButton[`u-btn-${variant}-pressed-icon`];
-        if (pressedIconClass) {
-            iconSpecificClass = pressedIconClass;
-        }
-    }
-
     if (isEmoji(sIcon)) {
         sClassText = sClassText.replace('text-lg', ' text-3xl text-center leading-[32px]  ');
         sClassText = sClassText.replace('text-base', ' group-hover:no-underline text-2xl leading-[26px] ');
         sClassText = sClassText.replace('text-sm', ' group-hover:no-underline text-[21px] leading-[24px] text-center justify-center ');
         sClassText = sClassText.replace('text-xs', ' group-hover:no-underline text-[16px] leading-[20px] text-center justify-center');
         return (
-            <Text key={iIndex} className={classIconName ? classIconName : (iconSpecificClass || sClassText) + sIconContainer}>{sIcon}</Text>
+            <Text key={iIndex} className={classIconName ? classIconName : sClassText + sIconContainer}>{sIcon}</Text>
         );
     }
 
     return (
-        <Icon key={iIndex} className={classIconName ? classIconName : (iconSpecificClass || sClassText) + sIconContainer} size={iIconSize} color={colorIcon} icon={sIcon}></Icon>
+        <Icon key={iIndex} className={classIconName ? classIconName : sClassText + sIconContainer} size={iIconSize} color={colorIcon} icon={sIcon}></Icon>
     );
 };
 
-const getIcon2 = (buttonInfo, classIconName, sClassText, sIconContainer, iIconSize, colorIcon, buttonIconStart, variant, pressed) => {
+const getIcon2 = (buttonInfo, classIconName, sClassText, sIconContainer, iIconSize, colorIcon, buttonIconStart) => {
     if (Array.isArray(buttonInfo)) {
         return buttonInfo.map((sIcon, iIndex) => {
-            return getIcon(sIcon, iIndex, classIconName, sClassText, sIconContainer, iIconSize, colorIcon, buttonIconStart, variant, pressed);
+            return getIcon(sIcon, iIndex, classIconName, sClassText, sIconContainer, iIconSize, colorIcon, buttonIconStart);
         });
     }
     else {
-        return getIcon(buttonInfo, null, classIconName, sClassText, sIconContainer, iIconSize, colorIcon, buttonIconStart, variant, pressed);
+        return getIcon(buttonInfo, null, classIconName, sClassText, sIconContainer, iIconSize, colorIcon, buttonIconStart);
     }
+}
+
+const getAddon = (addon, isTitle) => {
+    let sButtonAddonText = "";
+    let sButtonAddonBg = "bg-neutral-500 dark:bg-neutral-500";
+    if (typeof addon === 'object') {
+        sButtonAddonText = addon?.text;
+        if (addon?.hideZero && sButtonAddonText == '0')
+            return null;
+        if (addon?.variant == 'primary')
+            sButtonAddonBg = ' bg-contrast dark:bg-contrast-d';
+    }
+    else {
+        sButtonAddonText = addon;
+    }
+
+    const position = addon?.position == 'bottom' ? 'bottom-0' : '-top-2';
+
+    if (!isTitle && sButtonAddonText)
+        return <View className={`absolute ${sButtonAddonBg} border-2 border-white dark:border-neutral-900 rounded-full  px-1.5 items-center justify-center -right-1 ${position}`}><Text className='text-white text-xs font-semibold'>{sButtonAddonText}</Text></View>
+
+    return sButtonAddonText && sButtonAddonText ? <View className='flex-1 items-end '>
+        <View className={sButtonAddonBg + ' rounded-full px-2 py-0.5 mx-1 text-center items-center'}>
+            <Text className="text-white text-xs font-semibold">{sButtonAddonText}</Text></View></View> : null;
 }
 
 const ThemeCssClassesButton = appSetting('theme', 'button_styles');
@@ -368,14 +381,8 @@ export const Button = (props) => {
         addon = '',
         rounded = false,
         solid = false,
-        padding = false,
+        padding,
         children,
-        bgrDecorator = false,
-        indicator = false,
-        indicatorPosition = 'top-right',
-        indicatorContent = <></>,
-        indicatorClassName = '',
-        direction = 'flex-row',
         ...rest
     } = props;
 
@@ -387,50 +394,22 @@ export const Button = (props) => {
     const showTooltip = useMemo(() => width >= LAYOUT_BREAKPOINTS.lg && tooltip, [width, tooltip]);
 
     const colorIcon = useMemo(() => {
-        return ThemeCssClassesButton[`u-btn-${variant}-color-icon-${themeName}`];
+        let a = ThemeCssClassesButton[`u-btn-${variant}-color-icon-${themeName}`];
+        /*if (!a){
+            if (variant === 'link') 
+                a = colors.primary;
+            if (variant === 'primary') 
+                a='rgb(243, 244, 246)';
+        }*/
+        return a;
     }, [variant, ThemeName, colors]);
 
   
 
-    const getIndicatorPosition = () => {
-        switch(indicatorPosition) {
-            case 'top':
-                return 'top-0 inset-x-0 w-full';
-            case 'bottom':
-                return 'bottom-0 inset-x-0 w-full';
-            case 'left':
-                return 'left-0 inset-y-0 h-full';
-            case 'right':
-                return 'right-0 inset-y-0 h-full';
-            default:
-                return 'bottom-0 inset-x-0 w-full';
-        }
-    };
-
-    const renderIndicator = () => {
-        if (!indicator || !pressed) return null;
-        
-        const positionClass = getIndicatorPosition();
-        let defaultClass = 'absolute z-10 flex items-center justify-center';
-        
-        // For center positions, adjust the default class
-        if (indicatorPosition === 'bottom-center' || indicatorPosition === 'top-center') {
-            defaultClass = 'absolute z-10';
-        }
-        
-        const finalClass = `${defaultClass} ${positionClass} ${indicatorClassName || ''}`;
-        
-        return (
-            <View className={finalClass}>
-                {indicatorContent}
-            </View>
-        );
-    };
-    
     const sClassContainer = useMemo(() => {
-        let classes = ` ${direction} items-center relative `;
+        let classes = '  flex-row items-center ';
         classes += fullWidth ? ' flex-auto w-full ' : ' w-fit ';
-        if (disabled) classes += ' opacity-50 ';
+        if (disabled) classes += 'opacity-50 ';
         if (variant !== 'custom') {
             classes += (solid ? '' : ThemeCssClassesButton[`u-btn-${variant}-trans`]) +ThemeCssClassesButton[`u-btn-${variant}-cnt`]+ '  ';
         } else {
@@ -442,14 +421,14 @@ export const Button = (props) => {
         if (variant === 'group-item-none') {
             classes += 'justify-start ';
         } else {
-            classes += `zz justify-${align} `;
+            classes += `justify-${align} `;
         }
         if (pressed) {
             classes= classes.replace(/\b(bg-[^\s]*)\b|\b(dark:bg-[^\s]*)\b/g, "").replace(/\s+/g, " ").trim();
             classes += ` ${pressedClasses?.pressed_container || ThemeCssClassesButton[`u-btn-${variant}-pressed-cnt`] || ThemeButtonSizes.pressed_container} `;
         }
         return classes;
-    }, [fullWidth, disabled, variant, solid, ThemeCssClassesButton, className, align, pressed, bgColor, pressedClasses, direction]);
+    }, [fullWidth, disabled, variant, solid, ThemeCssClassesButton, className, align, pressed, bgColor, pressedClasses]);
 
     const sClassText = useMemo(() => {
         let classes = ' whitespace-nowrap text-ellipsis overflow-hidden tracking-tight';
@@ -481,21 +460,10 @@ export const Button = (props) => {
         const roundingClass = rounded ? sClassFullRounding : sClassDefaultRounding;
 
         if (variant != 'custom') {
-            sizeClasses = `${roundingClass} ${ThemeButtonSizes[size]?.padding} `;
-            iconContainerClass = `${ThemeButtonSizes[size]?.icon_container} ${title ? ThemeButtonSizes[size]?.icon_margin : ''}`;
-            if (bgrDecorator) {
-                const decoratorStyle = pressed 
-                    ? (ThemeCssClassesButton[`u-btn-${variant}-pressed-decorator`] || ' bg-neutral-500/20 ')
-                    : (ThemeCssClassesButton[`u-btn-${variant}-decorator`] || ' bg-neutral-500/10 ');
-                iconContainerClass += decoratorStyle + ' rounded-full ';
-            }
+            sizeClasses = `${roundingClass} ${padding || ThemeButtonSizes[size]?.padding} `;
+            iconContainerClass = `${ThemeButtonSizes[size]?.icon_sizes} ${title ? ThemeButtonSizes[size]?.icon_margin : ''}`;
             iconSize = ThemeButtonSizes[size]?.icon_size;
             titleContainerClass += title ? ThemeButtonSizes[size]?.min_height + ThemeButtonSizes[size]?.margin : '';
-            
-            // Add padding when padding prop is true
-            if (padding) {
-                sizeClasses += ThemeButtonSizes[size]?.padding_when_title || '';
-            }
         }
         return {
             sIconContainer: iconContainerClass,
@@ -503,7 +471,7 @@ export const Button = (props) => {
             sTitleContainer: titleContainerClass,
             sizeClasses,
         };
-    }, [size, rounded, padding, variant, title, isIcon, showTitleFromSize, bgrDecorator, pressed, startDecorator, endDecorator]);
+    }, [size, rounded, padding, variant, title, isIcon, showTitleFromSize]);
 
     const sButtonIconStart = useMemo(
         () =>
@@ -515,12 +483,10 @@ export const Button = (props) => {
                     sIconContainer,
                     iIconSize,
                     colorIcon,
-                    startDecorator,
-                    variant,
-                    pressed
+                    startDecorator
                 )
                 : null,
-        [startDecorator, classIconName, sClassText, sIconContainer, iIconSize, colorIcon, variant, pressed]
+        [startDecorator, classIconName, sClassText, sIconContainer, iIconSize, colorIcon]
     );
 
     const sButtonIconEnd = useMemo(
@@ -533,15 +499,13 @@ export const Button = (props) => {
                     sIconContainer,
                     iIconSize,
                     colorIcon,
-                    endDecorator,
-                    variant,
-                    pressed
+                    endDecorator
                 )
                 : null,
-        [endDecorator, classIconName, sClassText, sIconContainer, iIconSize, colorIcon, variant, pressed]
+        [endDecorator, classIconName, sClassText, sIconContainer, iIconSize, colorIcon]
     );
     const isTitle = !!title;
-    const oButtonAddon = getPart("CounterIndicator", [addon, isTitle]);
+    const oButtonAddon = getAddon(addon, isTitle);
 
     const Cnt = onPress && !disabled ? Pressable : View;
     const refProps = forwardedRef ? { ref: forwardedRef } : {};
@@ -555,7 +519,6 @@ export const Button = (props) => {
         } : {}),
         role: rest['aria-haspopup'] === 'menu' ? 'menubutton' : 'button',
     } : {};
-
     const buttonContent = (
         <>
             <Cnt
@@ -574,7 +537,6 @@ export const Button = (props) => {
                 {sButtonIconEnd}
                 {isTitle && oButtonAddon}
                 {children}
-                {renderIndicator()}
             </Cnt>
             {!isTitle && oButtonAddon}
         </>

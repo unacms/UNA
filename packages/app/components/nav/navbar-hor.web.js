@@ -185,9 +185,7 @@ export default function (props) {
                                                 >
                                                     <Button
                                                         tooltip={t('Messenger')}
-                                                        variant="text"
-                                                        size="lg"
-                                                        bgrDecorator
+                                                        variant="secondary"
                                                         rounded
                                                         startDecorator="MessageSquare"
                                                         id="m2"
@@ -221,9 +219,8 @@ export default function (props) {
 
                                     <Link href="/">
                                         <ButtonRef
-                                            variant="text"
-                                            size="lg"
-                                            bgrDecorator
+                                            variant="secondary"
+
                                             tooltip="Account"
                                             rounded
                                             aria-label="Account"

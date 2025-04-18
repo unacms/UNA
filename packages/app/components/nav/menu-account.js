@@ -47,11 +47,9 @@ export default function MenuAccount({ buttonProps, children }) {
 
     buttonProps = buttonProps || {
         tooltip: t("Dashboard"),
-        variant: "text",
-        size:"lg",
-        bgrDecorator:true,
+        variant: "secondary",
+        padding: '0px',
         rounded: true,
-        
         startDecorator: profile,
     };
 
@@ -131,9 +129,7 @@ export default function MenuAccount({ buttonProps, children }) {
                                 <Row className="w-full items-center flex-auto my-[4px]">
                                     <ProfileSwitcher hideTitle={true}>
                                     <Button
-                                        variant="text"
-                                        size="sm"
-                                        bgrDecorator
+                                        variant="secondary"
                                         fullWidth
                                         align="start"
                                         solid

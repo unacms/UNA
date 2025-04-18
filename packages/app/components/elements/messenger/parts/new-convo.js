@@ -38,7 +38,7 @@ export default function CreateConvo({ onSave, initedData = [], convoId }) {
     )
 };
 
-export function CreateConvoButton({ onSave, onShow, size = 'small', variant = 'text', bgrDecorator }) {
+export function CreateConvoButton({ onSave, onShow, size = 'small', variant = 'secondary' }) {
     const { setBottomSheetData } = useBottomSheetData();
 
     const [showModal, setShowModal] = useState(false);
@@ -55,9 +55,9 @@ export function CreateConvoButton({ onSave, onShow, size = 'small', variant = 't
     let btn = null
 
     if (size == 'small')
-        btn = <View key={`add-1`} ><Button startDecorator={"Plus"} variant={variant} bgrDecorator rounded onPress={() => newConvo()} /></View>
+        btn = <View key={`add-1`} ><Button startDecorator={"Plus"} variant={variant} rounded onPress={() => newConvo()} /></View>
     else {
-        btn = <Button startDecorator={"Plus"} variant="text" bgrDecorator title="Create your first conversation" rounded onPress={() => { newConvo(), onShow() }} />
+        btn = <Button startDecorator={"Plus"} variant="secondary" title="Create your first conversation" rounded onPress={() => { newConvo(), onShow() }} />
     }
     return <>
         {btn}
