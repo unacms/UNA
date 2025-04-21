@@ -1,5 +1,3 @@
-export default function Tooltip(props) {
-    return (
-        <>{props.children}</>
-    );
+export default function Tooltip({children}) {
+    return children
 }

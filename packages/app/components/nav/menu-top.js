@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next'
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
 import { Theme } from 'app/design/theme';
+import Tooltip from 'app/ui/atoms/tooltip';
 
 export default function MenuTop({ url, uri }) {
     const { currentUser } = useCurrentUser();
@@ -35,6 +36,7 @@ function MenuTopItem({ link, title, index, icon, isTitle, isActive }) {
     const { colors } = Theme()
     return (
         <Link className="flex-auto" href={link} alt={title}>
+            <Tooltip content={title}>
             <View className="flex-auto group h-14 p-1" key={`menu-${index}`}>
                 <Row
                     className={` group-hover:bg-neutral-500/10 duration-300 items-center justify-center h-12 min-w-12 rounded-xl ${
@@ -54,6 +56,7 @@ function MenuTopItem({ link, title, index, icon, isTitle, isActive }) {
                     <View className="-bottom-1.5 w-full bg-primary dark:bg-primary-d rounded-xl h-0.5 animate-appear" />
                 )}
             </View>
+            </Tooltip>
         </Link>
     )
 }

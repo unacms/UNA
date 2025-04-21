@@ -4,7 +4,7 @@ import { Text } from 'app/design/typography';
 import { View, ViewRef } from 'app/design/view';
 import { appSetting } from 'app/lib/util';
 
-export default function Tooltip(props) {
+export default function Tooltip({children, content}) {
     const [visible, setVisible] = useState(false);
     const [tooltipStyle, setTooltipStyle] = useState({});
     const tooltipRef = useRef(null);
@@ -60,7 +60,7 @@ export default function Tooltip(props) {
     }, [visible]);
 
     if (!appSetting('layout', 'tooltips')) {
-        return props.children;
+        return children;
     }
 
     return (
@@ -69,14 +69,14 @@ export default function Tooltip(props) {
             className="relative"
             ref={wrapperRef}
         >
-            {props.children}
+            {children}
             {visible && (
                 <ViewRef
                     ref={tooltipRef}
                     className="absolute z-50 shadow top-full w-auto backdrop-blur bg-black/60 dark:bg-white/60 rounded-full py-2 px-4 mt-[10px]"
                     style={tooltipStyle}
                 >
-                    <Text className="text-neutral-100 dark:text-neutral-900 whitespace-nowrap">{props.content}</Text>
+                    <Text className="text-neutral-100 dark:text-neutral-900 whitespace-nowrap">{content}</Text>
                 </ViewRef>
             )}
         </ViewRef>
