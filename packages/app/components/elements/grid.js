@@ -24,10 +24,15 @@ import Redirect from 'app/ui/atoms/redirect';
 
 function Stripe(props) {
     const computedData = useMemo(() => {
-        //const StripeCont = React.memo(dynamic(() => import('app/ui/molecules/stripe')));
+       // const StripeCont = React.memo(dynamic(() => import('app/ui/molecules/stripe')));
         const StripeCont = React.memo(
-            lazy(() => import('app/ui/molecules/stripe'))
+            React.lazy(() => import('app/ui/molecules/stripe'))
         );
+       /* const StripeCont = React.lazy(() =>
+            import('app/ui/molecules/stripe').then(module => ({
+              default: React.memo(module.default),
+            }))
+          );*/
         return <StripeCont {...props} />
     }, [props.b]);
     return computedData;
@@ -251,7 +256,7 @@ export default function ElementGrid(props) {
 
     const { setBottomSheetData } = useBottomSheetData();
     const data = props.data;
-    let settings = data.settings;
+
     if (!data.header)
         return <></>
     const header = data.header.filter((item) => (item?.name != 'reports'))
@@ -429,7 +434,8 @@ export default function ElementGrid(props) {
 
     const actionsBulk = Object.values(data.actions.bulk);
     const actionsIndependent = Object.values(data.actions.independent);
-
+    console.log("actionsBulk", actionsBulk)
+    
     let a = <View className="w-full xl:px-6">
         <Text className="tracking-tight text-lg font-bold text-neutral-900 dark:text-neutral-50 mb-2">{stripTags(props?.block?.title)}</Text>
         {modalContent && (
@@ -475,7 +481,7 @@ export default function ElementGrid(props) {
                         return <Link href={item.link}><Button size="sm" title={item.title} showTitleFromSize='sm' /></Link>
                     }
                 })}
-
+                
                 {actionsBulk.map((item, index) => {
                     if (item.name == 'delete') {
                         return <Button key={item.name} startDecorator="Trash" size="sm" showTitleFromSize='sm' title={t("Delete selected")} disabled={selected.length == 0} onPress={() => { handleDeleteSelected() }} />
