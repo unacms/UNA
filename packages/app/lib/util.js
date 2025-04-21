@@ -909,11 +909,9 @@ export const uploadImage = async (uri, fetchUrl, calback, extraVar) => {
         const result = await fetcher([fetchUrl, null, formData]);
         console.log("result", result)
         if (result?.data?.link) {
-            console.log('777', result)
             calback({result:result?.data?.link, extraVar:extraVar});
         }
         else {
-            console.log('888', result)
             calback({result:result, extraVar:extraVar})
         }
     }
@@ -924,15 +922,15 @@ export function visibilityById(visibility) {
         2: { icon: 'Lock', text: 'Me only' },
         3: { icon: 'Globe', text: 'Public' },
         5: { icon: 'Users', text: 'Friends ' },
+        'c': { icon: 'EyeClosed', text: 'Closed ' },
+        's': { icon: 'Shield', text: 'Secret ' },
         6: { icon: 'UserCheck', text: 'Specific Friends... ' },
         7: { icon: 'Workflow', text: 'Relationships ' },
         8: { icon: 'Workflow', text: 'Specific Relationships... ' },
         9: { icon: 'Award', text: 'Specific Memberships... ' },
-       
-         
     };
     
-    return  visibilityOptions[visibility] || {};
+    return  visibilityOptions[visibility] || null;
 }
 
 export function strToObj(s) {

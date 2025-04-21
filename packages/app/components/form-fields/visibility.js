@@ -77,9 +77,13 @@ export default function (props) {
         if (item.value == '6' && !props.values_friends) return false;
         if (item.value == '8' && !props.values_relations) return false;
         if (item.value == '9' && !props.values_memberships) return false;
+        if (item.value == '') return false;
         return true;
     });
 
+   
+
+  
 
     const values_friends = props.values_friends ? prepareValuesFriends(props.values_friends) : null;
 
@@ -100,15 +104,17 @@ export default function (props) {
             item.info = subLabelDisplay;
         }
         const visibilityIcon = visibilityById(item.value);
-        item.label = visibilityIcon.text;
-        item.icon = <View className="h-[24px] w-[24px] overflow-hidden">
+        item.label = visibilityIcon?.text || item.label;
+        item.icon = visibilityIcon?.icon ? <View className="h-[24px] w-[24px] overflow-hidden">
             <Icon
-                icon={visibilityIcon.icon}
+                icon={visibilityIcon?.icon}
                 width={24}
                 height={24}
             />
-        </View>
+        </View> : <></>
     });
+
+    console.log("filteredValues0",filteredValues, props.values)
 
     const selectedItem = filteredValues.find(item => item.value == isModalSub);
 
@@ -120,6 +126,8 @@ export default function (props) {
             <Button variant='secondary' size='base' rounded startDecorator='ArrowLeft' onPress={() => { setIsModalSub(false) }} />
         </View>
     </Row>
+
+    console.log("filteredValues", filteredValues)
 
     const modalContent = isModalSub ? (
         <ChkList values={subOptions} setValue={handleSubValueChange} selectedValue={subValues} />
