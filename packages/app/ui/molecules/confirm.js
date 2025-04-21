@@ -3,24 +3,20 @@ import { Alert } from 'react-native';
 import { useState } from 'react';
 
 
-export default function ElementConfirm(props) {
-    const handleCancel = async () => {
-        props.handleCancel();
+export default function ElementConfirm({handleOk, handleCancel, onVisible, title, text, titleOk, titleCancel}) {
+    const _handleCancel = async () => {
+        handleCancel();
     }
 
-    const handleOk = async () => {
-        props.handleOk();
+    const _handleOk = async () => {
+        handleOk();
     }
 
-    if (props.onVisible) {
-        Alert.alert(props.title, props.text, [
-            {
-              text: 'Cancel',
-              onPress: () => handleCancel(),
-              style: 'cancel',
-            },
-            {text: 'OK', onPress: () => handleOk()},
-          ]);
+    if (onVisible) {
+        Alert.alert(title, text, [
+            { text: titleOk, onPress: () => _handleOk() },
+            { text: titleCancel, onPress: () => _handleCancel() },
+        ]);
     }
 
     return <></>

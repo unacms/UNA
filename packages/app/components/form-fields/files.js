@@ -440,7 +440,7 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
         if (!img && props.useUrl) {
             img = { file_url: props.value, file_type: "image/jpeg" };
         }
-        let w = props.name == 'picture' ? 'w-48 h-48' : 'w-full';
+        let w = props.name == 'picture' ? 'w-48 h-48 overflow-hidden' : 'w-full ' + appSetting('cover', 'aspect_ratio');
         if (!props.viewClasses) {
             w += ' bg-bgrinput dark:bg-bgrinput-d border-bdrinput dark:border-bdrinput-d rounded-lg'
         }
@@ -453,7 +453,7 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
 
         button = (
             <Pressable onPress={selectImage} >
-                <View className={w + '  items-center justify-center bg-primary/5 ' + (isImage ? appSetting('cover', 'aspect_ratio') : 'h-32')}>
+                <View className={w + '  items-center justify-center bg-primary/5 ' + (isImage ? '' : 'h-32')}>
                     {!img && (<ViewRef ref={drop} className=' text-neutral-500/50 text-lg  flex-auto w-full border-neutral-300 dark:border-neutral-700 rounded-lg  justify-center  flex-col border border-dashed text-center'>
                         <Text className='text-neutral-500/50 text-lg  justify-center  flex-col text-center'>Drag & Drop or browse files...</Text>
                     </ViewRef>)}
@@ -539,5 +539,4 @@ function ButtonCover({ imageSource, selectImage }) {
         size="xs"
         onPress={selectImage}
     />
-
 }
