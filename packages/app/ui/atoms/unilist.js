@@ -4,7 +4,7 @@ import { View } from 'app/design/view'
 import Animated from 'react-native-reanimated';
 import ScrollList from 'app/ui/molecules/scroll_list'
 import { useRef } from 'react';
-
+import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
 export default function UniList(props) {
     const uniRef = useRef();
     const { preloadComponent, contentContainerStyle, scrollProps, data, index, mode, renderItem, onEndReached, maxToRenderPerBatch, initialNumToRender, ListFooterComponent, refer, onScrollToIndex, numColumns, keyExtractor, unit, refreshing, onRefresh, height, ...rest } = props
@@ -24,7 +24,7 @@ export default function UniList(props) {
         const content = preloadComponent ? <View className="w-full">
             <View className={`w-full `} style={{ height: scrollProps?.headerHeight }}></View>
             {preloadComponent}
-        </View> : <Animated.FlatList
+        </View> : <KbAvoidingView offset={1}><Animated.FlatList
             contentContainerStyle={{
                 ...(scrollProps?.headerHeight && !scrollProps?.inverted ? { paddingTop: scrollProps.headerHeight } : {}),
                 ...(scrollProps?.headerHeight && scrollProps?.inverted ? { paddingBottom: scrollProps.headerHeight } : {}),
@@ -50,7 +50,7 @@ export default function UniList(props) {
                     <RefreshControl progressViewOffset={100} size={'large'} refreshing={refreshing} onRefresh={onRefresh} />
                 ) : null
             }
-        />
+        /></KbAvoidingView>
         if (!scrollProps)
             return content;
         return (
