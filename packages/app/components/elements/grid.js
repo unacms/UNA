@@ -163,7 +163,17 @@ const ActionButton = React.memo(({ id, index, itemAction, setShowConfirm, delete
             />
         );
     }
-    console.log("redirectRef", redirectRef.current)
+
+    if (itemAction.type === 'object') {
+        return (
+            <Button
+                {...commonProps}
+                onPress={() => {
+                    handleBlock(itemAction);
+                }}
+            />
+        );
+    }
 
     if (itemAction.type === 'callback') {
         return (
@@ -295,12 +305,13 @@ export default function ElementGrid(props) {
             let cnt = { content: fetchedData.data, designbox_id: 0 }
             setBottomSheetData({ title: cnt.content[0]?.title ? cnt.content[0]?.title : " ", content: <View className='px-1'><BlockByData onFormEmpty={() => handleUpdate()} block={cnt} /></View> });
         }
+        if (data.type == 'object'){
+            setModalContentElement(<Stripe seller_id={data.seller_id } items={data.items} />);
+        }
     };
 
     const handleActionBlockPayment = async () => {
-        console.log("selected", settings.query_append.seller_id, selected)
-        let cnt = <Stripe seller_id={settings.query_append.seller_id} items={selected} />
-        setModalContentElement(cnt);
+        setModalContentElement(<Stripe seller_id={settings.query_append.seller_id} items={selected} />);
     };
 
     const handleCloseModal = () => {
@@ -322,7 +333,6 @@ export default function ElementGrid(props) {
     }
 
     const fetchData = useCallback(async (action, params, callback) => {
-        console.log("999")
         let sUrl = callback ? '/api.php?r='+callback : '/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o=' + settings.object + '&a=' + action;
         if (settings?.query_append && !callback)
             Object.keys(settings.query_append).forEach((sKey) => {
