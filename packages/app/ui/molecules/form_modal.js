@@ -22,8 +22,8 @@ export default function FormModal({ pageData, setPageData }) {
             const value = pageData.elements[key][key2]?.content[0];
             console.log('Результат:', value);
    
-            if (value?.type === 'form' && value?.name === 'name') {
-                myVar = 'max-w-2xl';
+            if (value?.type === 'form' && value?.name === 'feed') {
+                modalWidth = 'max-w-2xl';
             }
         });
     });

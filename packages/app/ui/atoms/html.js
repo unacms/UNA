@@ -160,5 +160,5 @@ export default function ElementHtml({ customClassName, data }) {
     if (!data)
         return null;
     const html = data.replace(/\n|\r/g, '').replace(/&nbsp;/g, ' ');
-    return <View>{parseHtmlToReact(html, textStyles)}</View>;
+    return <View className={`u-vanilla-html ${customClassName}`}>{parseHtmlToReact(html, textStyles)}</View>;
 }
