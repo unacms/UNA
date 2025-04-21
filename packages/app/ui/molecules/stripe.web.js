@@ -56,7 +56,8 @@ export default function ElementStripe(oProps) {
         performAction('stripe_v3_create_session_api', {type: 'single', seller_id: oProps.seller_id, items: oProps.items.join('&'), return_url: APP_URL}, (oData) => {
             setClientSecret(oData.clientSecret)
         });
-      }, []);
+      }, [])
+
 
     return (
         clientSecret &&

@@ -21,23 +21,24 @@ import { useWindowDimensions } from 'react-native';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { Icon } from 'app/ui/atoms/icon'
 import Redirect from 'app/ui/atoms/redirect';
+import Stripe from 'app/ui/molecules/stripe';
 
-function Stripe(props) {
+/*function Stripe(props) {
     const computedData = useMemo(() => {
        // const StripeCont = React.memo(dynamic(() => import('app/ui/molecules/stripe')));
         const StripeCont = React.memo(
             React.lazy(() => import('app/ui/molecules/stripe'))
         );
-       /* const StripeCont = React.lazy(() =>
+        const StripeCont = React.lazy(() =>
             import('app/ui/molecules/stripe').then(module => ({
               default: React.memo(module.default),
             }))
-          );*/
+          );
         return <StripeCont {...props} />
     }, [props.b]);
     return computedData;
 }
-
+*/
 const getWidth1 = (width) => {
     if (!width)
         return '';
@@ -297,6 +298,7 @@ export default function ElementGrid(props) {
     };
 
     const handleActionBlockPayment = async () => {
+        console.log("selected", settings.query_append.seller_id, selected)
         let cnt = <Stripe seller_id={settings.query_append.seller_id} items={selected} />
         setModalContentElement(cnt);
     };
@@ -434,7 +436,7 @@ export default function ElementGrid(props) {
 
     const actionsBulk = Object.values(data.actions.bulk);
     const actionsIndependent = Object.values(data.actions.independent);
-    console.log("actionsBulk", actionsBulk)
+
     
     let a = <View className="w-full xl:px-6">
         <Text className="tracking-tight text-lg font-bold text-neutral-900 dark:text-neutral-50 mb-2">{stripTags(props?.block?.title)}</Text>
@@ -447,13 +449,15 @@ export default function ElementGrid(props) {
         )
         }
         {modalContentElement && (
-            <Modal title={" "} onVisible={!!modalContentElement} outerClickClose={false} onClose={() => handleCloseModalElement()}>
+            <Modal scrollable title="Checkout" onVisible={!!modalContentElement} outerClickClose={false} onClose={() => handleCloseModalElement()}>
                 <View className='px-4'>
                     {modalContentElement}
                 </View>
             </Modal>
         )
         }
+
+
         <Confirm onVisible={showConfirm.show} title={t("Are you sure?")} handleCancel={() => setShowConfirm({ show: false, cb: null })} handleOk={() => { setShowConfirm({ show: false, cb: null }); showConfirm.cb(); }} />
         <Row className='xl:justify-between mt-2 mb-4 '>
             {Object.keys(settings.filters).length > 0 &&
