@@ -256,7 +256,7 @@ export default function ElementGrid(props) {
 
     const { setBottomSheetData } = useBottomSheetData();
     const data = props.data;
-
+    let settings = data.settings;
     if (!data.header)
         return <></>
     const header = data.header.filter((item) => (item?.name != 'reports'))
