@@ -3,11 +3,12 @@ import { useRef, useState, useEffect } from 'react';
 import { getFormFieldByData, getEditorHeight } from 'app/lib/form-helpers'
 import { useWindowDimensions } from 'react-native';
 import { Platform } from 'react-native'
+import { useFormContext } from 'react-hook-form';
 
 export default function FormMessenger(props) {
     const isWeb = Platform.OS == 'web';
-    const isIos = Platform.OS == 'ios'
     const initialHeight = 44;
+     const formContext = useFormContext();
     const [isExImage, setIsExImage] = useState(false);
     const [isFocused, setIsFocused] = useState(false);
     const [editorHeight, setEditorHeight] = useState(initialHeight);
@@ -29,14 +30,9 @@ export default function FormMessenger(props) {
     }
 
     let prevList = Object.values(imageSource).flat();
-    const [sizes, setSizes] = useState({ formHeight: 0 });
+   
     const viewFormRef = useRef();
-    const handleLayout = () => {
-        if (viewFormRef?.current)
-            viewFormRef.current.measure((x, y, width, height, pageX, pageY) => {
-                setSizes({ formHeight: height });
-            });
-    };
+   
 
     function setIsFocus() {
 
@@ -48,6 +44,14 @@ export default function FormMessenger(props) {
 
         setIsFocused(false)
     }
+
+    useEffect(() => {
+        if (formContext.formState.isSubmitted) {
+            setImageSource([]);
+
+
+        }
+    }, [formContext.formState.isSubmitted]);
 
     function checkEditorHeight(height) {
         setEditorHeight(getEditorHeight(height, initialHeight))
@@ -71,13 +75,13 @@ export default function FormMessenger(props) {
     return <View className='w-full px-2' >
         <Row className='w-full items-end  '>
             <View className={'mr-2 ' + (isWeb ? '' : ' w-12 ')}>{/* className={'mr-2 ' + (isWeb ? '' : ' w-11 ')}*/}
-                {getFormFieldByData(props.data.inputs['files'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder, noMargin:true })}
+                {getFormFieldByData(props.data.inputs['files'], props.handleSubmit, 'custom', {  form_name:props.name, asDefaultStorage: true,  previewPlaceHolder: setPlaceHolder, noMargin:true })}
             </View>
             <View className={`flex-auto bg-bgritem dark:bg-bgritem-d rounded-3xl justify-center items-end ${sPad}`} style={{ height: editorHeight }}>
                 {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['cf'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['payload'], props.handleSubmit, 'custom')}
-                {getFormFieldByData(props.data.inputs['message'], props.handleSubmit, 'custom', { container_class: 'comments', classes: "flex-1",  focus: true, bg: 'transparent', submitOnEnter: true, noMargin:true, placeholder: 'Message ...', onHeight: checkEditorHeight, onFocus: setIsFocus, onBlur: setIsBlur })}
+                {getFormFieldByData(props.data.inputs['message'], props.handleSubmit, 'custom', {  form_name:props.name, container_class: 'comments', classes: "flex-1",  focus: true, bg: 'transparent', submitOnEnter: true, noMargin:true, placeholder: 'Message ...', onHeight: checkEditorHeight, onFocus: setIsFocus, onBlur: setIsBlur })}
                 {getFormFieldByData(props.data.inputs['id'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['message_id'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['send'], props.handleSubmit, 'custom')}

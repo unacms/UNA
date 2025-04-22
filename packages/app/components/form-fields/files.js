@@ -49,8 +49,10 @@ export default function (props) {
         };
 
         if (filesData?.type == 'images:pasted' && props.asDefaultStorage) {
-            uploadImagesAsync(filesData.data)
-            setFilesData(null);
+            if (filesData.data.form_name == props.form_name){
+                uploadImagesAsync(filesData.data.images)
+                setFilesData(null);
+            }
         }
     }, [filesData]);
 

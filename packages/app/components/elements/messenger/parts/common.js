@@ -152,6 +152,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     useEffect(() => {
         setListError(null);
     }, [convoId]);
+
     const onNewMessage = (data) => {
         if (data.id == convoId) {
             setJotUpdated(data);
@@ -170,7 +171,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
             let offset = 0;
             if (selectedConvo.unread > 0)
                 offset = selectedConvo.unread - 1;
-            if (isWeb && selectedConvo.unread > 0) {
+            if (isWeb /*&& selectedConvo.unread > 0*/) {
                 setTimeout(() => {
                     if (refListJots?.current)
                         refListJots.current.scrollToIndex({ animated: false, align: "end", behavior: "smooth", index: 9999999999 });
@@ -226,6 +227,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
 
     useEffect(() => {
         if (jots?.index == 0) {
+            console.log("aaaa")
             scrolTo();
         }
     }, [refListJots?.current]);//selectedConvo refListJots?.current, jots?.index

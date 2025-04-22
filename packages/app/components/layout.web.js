@@ -62,7 +62,7 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutNam
     }
 
 
-    if (data.page_status == 503) {
+    if (data.page_status == 503 || currentUser?.page_status == 503) {
         return <>
             {appStatic('maintenance_mode')}
         </>

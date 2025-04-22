@@ -197,6 +197,7 @@ export default function FormFeed(props) {
                             props.handleSubmit,
                             'custom',
                             {
+                                form_name:props.name,
                                 styles: { verticalAlign: 'top' },
                                 focus: true,
                                 noMargin: true,
@@ -273,6 +274,7 @@ export default function FormFeed(props) {
                                         props.handleSubmit,
                                         'custom',
                                         {
+                                            form_name:props.name,
                                             previewPlaceHolder: setPlaceHolder,
                                             noMargin: true,
                                             asDefaultStorage: true,

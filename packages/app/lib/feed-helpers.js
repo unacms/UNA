@@ -351,7 +351,10 @@ export const VisibilityInfo = memo(({ data }) => {
     if (data.feed_type == 'owner')
         return null;
 
-    const { icon = '', text = '' } = visibilityById(data.object_privacy_view);
+    //const { icon = '', text = '' } = visibilityById(data.object_privacy_view);
+    const visibilityData = visibilityById(data.object_privacy_view);
+    const icon = visibilityData ? visibilityData.icon : ''
+    const text = visibilityData ? visibilityData.text : ''
     const isUser = data.object_privacy_view < 0;
 
     return (

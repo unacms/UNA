@@ -61,17 +61,17 @@ export default function FormComments(props) {
     return <View className='w-full ' >
         <Row className='w-full items-end  '>
             <View className={'mr-2 ' + (isWeb ? '' : (isExImage ? ' w-28 ' : 'w-12'))}>
-                {isWeb && getFormFieldByData(props.data.inputs['cmt_image'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder, noMargin: true, asDefaultStorage: true, source: 'library', })}
+                {isWeb && getFormFieldByData(props.data.inputs['cmt_image'], props.handleSubmit, 'custom', { form_name:props.name, previewPlaceHolder: setPlaceHolder, noMargin: true, asDefaultStorage: true, source: 'library', })}
                 {!isWeb && !isExImage && <Button startDecorator="Plus" rounded onPress={() => setIsExImage(true)}></Button>}
                 {!isWeb && !!isExImage &&
                     <Animated.View entering={SlideInLeft.duration(300)}
                         exiting={SlideOutLeft.duration(300)}>
                         <Row className="gap-x-2">
                             <View>
-                                {getFormFieldByData(props.data.inputs['cmt_image'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder, noMargin: true, asDefaultStorage: true, source: 'library', })}
+                                {getFormFieldByData(props.data.inputs['cmt_image'], props.handleSubmit, 'custom', { form_name:props.name, previewPlaceHolder: setPlaceHolder, noMargin: true, asDefaultStorage: true, source: 'library', })}
                             </View>
                             <View>
-                                {getFormFieldByData(props.data.inputs['cmt_image'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder, noMargin: true, asDefaultStorage: true, source: 'camera', })}
+                                {getFormFieldByData(props.data.inputs['cmt_image'], props.handleSubmit, 'custom', { form_name:props.name, previewPlaceHolder: setPlaceHolder, noMargin: true, asDefaultStorage: true, source: 'camera', })}
                             </View>
                         </Row>
                     </Animated.View>
@@ -82,7 +82,7 @@ export default function FormComments(props) {
                 {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['cmt_cf'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['cmt_parent_id'], props.handleSubmit, 'custom')}
-                {getFormFieldByData(props.data.inputs['cmt_text'], props.handleSubmit, 'custom', { container_class: 'comments', classes: "flex-1", autofocus: isAutoFocus, bg: 'transparent', placeholder: 'Write your comment here...', noMargin: true, onHeight: checkEditorHeight, onFocus: setIsFocus })}
+                {getFormFieldByData(props.data.inputs['cmt_text'], props.handleSubmit, 'custom', { form_name:props.name, container_class: 'comments', classes: "flex-1", autofocus: isAutoFocus, bg: 'transparent', placeholder: 'Write your comment here...', noMargin: true, onHeight: checkEditorHeight, onFocus: setIsFocus })}
                 {getFormFieldByData(props.data.inputs['id'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['sys'], props.handleSubmit, 'custom')}
             </View>

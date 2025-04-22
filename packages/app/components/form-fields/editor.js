@@ -90,6 +90,9 @@ function PlainText(props) {
         display: none;
     }*/
 function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus, onBlur, html, ...props }) {
+    
+    const unicFormName = `${props.form_name}`; // for catch images in editor
+
     let b = [...DEFAULT_TOOLBAR_ITEMS];
     if (Platform.OS == 'web') {
         const images = [
@@ -310,7 +313,7 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
         }
     }, [htmlContent]);
 
-    const processImages = (src) => {
+    const processImages = (src, formName) => {
         let images = [];
         const fileName = src.split('/').pop() + '.png';
         const fileTypeMatch = src.match(/\.([a-z0-9]+)$/i);
@@ -323,7 +326,7 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
         });
 
         if (images.length > 0) {
-            setFilesData(getAlert('images:pasted', images));
+            setFilesData(getAlert('images:pasted', {images:images, form_name:formName}));
         }
     }
 
@@ -370,7 +373,7 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
             const message = JSON.parse(event.nativeEvent.data);
 
             if (message?.type == "paste") {
-                processImages(message.payload)
+                processImages(message.payload, message.form_name);
             }
 
             if (message?.type == "height") {
@@ -387,7 +390,6 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
 
             if (message?.type == "enter") {
                 setIsEnter(true);
-
             }
 
             if (message?.type == "arrow") {
@@ -404,6 +406,7 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
 
             if (message?.type == "editor-ready") {
                 editor.injectJS(`
+                    let formName = "${unicFormName}";
                     let lastSelectionRange = null;
                     let mentionVisible = false; 
                     const editor = document.getElementsByClassName("tiptap")[0];
@@ -494,8 +497,6 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
                         }
                     });
 
-                    
-
                     editor.addEventListener("input", function (event) {
                         updateHeight();
 
@@ -557,6 +558,8 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
                     });
 
                     document.addEventListener('paste', (event) => {
+                        const activeElement = document.activeElement;
+                       
                         if (event.clipboardData.items.length > 0) {
                             for (let item of event.clipboardData.items) {
                                 if (item.kind === 'file') {
@@ -565,7 +568,7 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
                                     if (file) {
                                         const reader = new FileReader();
                                         reader.onload = function (e) {
-                                            window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'paste', payload: e.target.result }));
+                                            window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'paste', form_name: formName, payload: e.target.result }));
                                         };
                                         reader.readAsDataURL(file);
                                     }

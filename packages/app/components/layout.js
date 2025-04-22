@@ -1,9 +1,11 @@
 import { View } from 'app/design/view'
 import BottomSheet from 'app/ui/molecules/bottomsheet_content';
 import { appStatic } from 'app/lib/app-static'
+import { useCurrentUser } from 'app/context/user'
 
 export default function Layout(props) {
-    if (props.data.page_status == 503) {
+    const { currentUser } = useCurrentUser()
+    if (props.data.page_status == 503 || currentUser?.page_status == 503) {
         return <>
             {appStatic('maintenance_mode')}
         </>
