@@ -31,7 +31,7 @@ const getIcon = (oItem, iconSize = 20) => {
     }
 };
 
-function DropdownMenuPopup({ items, onSelect, children, defaultOpen, variant }) {
+function DropdownMenuPopup({ items, onSelect, children, defaultOpen, variant, showOnTop, popupHeight }) {
     const redirectdRef = useRef();
     const [isOpen, setIsOpen] = useState(defaultOpen);
 
@@ -85,6 +85,8 @@ function DropdownMenuPopup({ items, onSelect, children, defaultOpen, variant }) 
         <>
             <Redirect ref={redirectdRef} />
             <DropdownPopup
+                showOnTop = {showOnTop}
+                popupHeight = {popupHeight}
                 popupWidth={200}
                 open={isOpen}
                 onOpenChange={setIsOpen}
@@ -128,12 +130,14 @@ const MenuBottomSheet = memo(({ items, onSelect, setBottomSheetData }) => {
     );
 });
 
-export default function DropdownMenu({ items, onSelect, children, defaultOpen, mode, title, variant }) {
+export default function DropdownMenu({ items, onSelect, children, defaultOpen, mode, title, variant, showOnTop, popupHeight }) {
     const { setBottomSheetData } = useBottomSheetData();
     const isWeb = Platform.OS === 'web';
 
     if (isWeb || mode == "popup") {
         return <DropdownMenuPopup
+            showOnTop = {showOnTop}
+            popupHeight = {popupHeight}
             items={items}
             onSelect={onSelect}
             children={children}

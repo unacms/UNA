@@ -24,7 +24,7 @@ export const Input = ({ className, startDecorator, endDecorator, ...props }) => 
                 <Icon icon={startDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
             </View>
         )}
-        <TextInputDef className={inputSettings.default + (startDecorator ? ' pl-[44px]' : '') + (endDecorator ? ' pr-[44px]' : '')} {...props} />
+        <TextInputDef className={`${className} ${inputSettings.default} ${startDecorator ? 'pl-[44px]' : ''} ${endDecorator ? 'pr-[44px]' : ''}`} {...props} />
         {endDecorator && (
             <View className="absolute right-[12px] h-full items-center justify-center">
                 <Icon icon={endDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
@@ -40,7 +40,7 @@ export const InputRef = forwardRef(({ className, startDecorator, endDecorator, .
                 <Icon icon={startDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
             </View>
         )}
-        <TextInputDef className={inputSettings.default + (startDecorator ? ' pl-[44px]' : '') + (endDecorator ? ' pr-[44px]' : '')} ref={ref} {...props} />
+        <TextInputDef className={`${className} ${inputSettings.default} ${startDecorator ? 'pl-[44px]' : ''} ${endDecorator ? 'pr-[44px]' : ''}`} ref={ref} {...props} />
         {endDecorator && (
             <View className="absolute right-[12px] items-center justify-center">
                 <Icon icon={endDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
@@ -56,7 +56,7 @@ export const InputMulti = ({ className, startDecorator, endDecorator, ...props }
                 <Icon icon={startDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
             </View>
         )}
-        <TextInputDef className={inputSettings.multi + (startDecorator ? ' pl-[44px]' : '') + (endDecorator ? ' pr-[44px]' : '')} {...props} />
+        <TextInputDef className={`${className} ${inputSettings.multi} ${startDecorator ? 'pl-[44px]' : ''} ${endDecorator ? 'pr-[44px]' : ''}`} {...props} />
         {endDecorator && (
             <View className="absolute right-[12px] items-center justify-center">
                 <Icon icon={endDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
@@ -72,7 +72,7 @@ export const InputRounded = ({ className, startDecorator, endDecorator, ...props
                 <Icon icon={startDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
             </View>
         )}
-        <TextInputDef className={inputSettings.rounded + (startDecorator ? ' pl-[44px]' : '') + (endDecorator ? ' pr-[44px]' : '')} {...props} />
+        <TextInputDef className={`${className} ${inputSettings.rounded} ${startDecorator ? 'pl-[44px]' : ''} ${endDecorator ? 'pr-[44px]' : ''}`} {...props} />
         {endDecorator && (
             <View className="absolute right-[10px] h-full items-center justify-center">
                 <Icon icon={endDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
@@ -88,7 +88,7 @@ export const InputRoundedRef = forwardRef(({ className, startDecorator, endDecor
                 <Icon icon={startDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
             </View>
         )}
-        <TextInputDef className={inputSettings.rounded + (startDecorator ? ' pl-[44px]' : '') + (endDecorator ? ' pr-[44px]' : '')} ref={ref} {...props} />
+        <TextInputDef className={`${className} ${inputSettings.rounded} ${startDecorator ? 'pl-[44px]' : ''} ${endDecorator ? 'pr-[44px]' : ''}`} ref={ref} {...props} />
         {endDecorator && (
             <View className="absolute right-[10px] h-full items-center justify-center">
                 <Icon icon={endDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
@@ -104,7 +104,7 @@ export const InputRoundedSmall = ({ className, startDecorator, endDecorator, ...
                 <Icon icon={startDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
             </View>
         )}
-        <TextInputDef className={inputSettings.roundedsmall + (startDecorator ? ' pl-[44px]' : '') + (endDecorator ? ' pr-[44px]' : '')} {...props} />
+        <TextInputDef className={`${className} ${inputSettings.roundedsmall} ${startDecorator ? 'pl-[44px]' : ''} ${endDecorator ? 'pr-[44px]' : ''}`} {...props} />
         {endDecorator && (
             <View className="absolute right-[10px] h-full items-center justify-center">
                 <Icon icon={endDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
@@ -120,7 +120,7 @@ export const InputSmall = ({ className, startDecorator, endDecorator, ...props }
                 <Icon icon={startDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
             </View>
         )}
-        <TextInputDef className={inputSettings.small + (startDecorator ? ' pl-[44px]' : '') + (endDecorator ? ' pr-[44px]' : '')} {...props} />
+        <TextInputDef className={`${className} ${inputSettings.small} ${startDecorator ? 'pl-[44px]' : ''} ${endDecorator ? 'pr-[44px]' : ''}`} {...props} />
         {endDecorator && (
             <View className="absolute right-[12px] h-full items-center justify-center">
                 <Icon icon={endDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
