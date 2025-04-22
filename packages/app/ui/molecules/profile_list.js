@@ -24,6 +24,10 @@ function fillArrayToLength(arr, maxCount, defaultValue) {
         case 'base':
             sSize = 'w-10 h-10 '
             break
+        
+        case 'lg':
+            sSize = 'w-12 h-12 '
+            break
     }
 
     if (data?.length > maxCount){
@@ -37,9 +41,10 @@ function fillArrayToLength(arr, maxCount, defaultValue) {
             {
                 data?.length > 0 && data?.map((profile, index) => {
                     if (profile?.id){
-                        profile.display_name = profile.title
-                        profile.url_avatar = profile.image.src;
-                        return <View key={index} className={sSize + (index > 0 ? " -ml-2 " : " ") + " shadow-[0_0_0_2px_rgba(255,255,255,1) dark:shadow-[0_0_0_2px_rgba(17,24,39,1)] rounded-full "}><Profile {...profile.author_data} displayType="unit_wo_info" displaySize={displaySize} /></View>
+                       // profile.display_name = profile.display_name || profile.title
+                       // profile.url_avatar = profile.url_avatar || profile.image.src;
+                        const pr = profile.author_data || profile;
+                        return <View key={index} className={sSize + (index > 0 ? " -ml-2 " : " ") + " shadow-[0_0_0_2px_rgba(255,255,255,1) dark:shadow-[0_0_0_2px_rgba(17,24,39,1)] rounded-full "}><Profile {...pr} displayType="unit_wo_info" displaySize={displaySize} /></View>
                     }
                     else{
                         return <View key={index} className={sSize + (index > 0 ? " -ml-2 " : " ") + " h-10 w-10 rounded-full border border-white dark:border-neutral-900 dark:bg-neutral-700 bg-neutral-300 "}></View>

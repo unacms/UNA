@@ -33,6 +33,7 @@ import CourseStructure from './course_structure';
 import ModuleStructure from './module_structure';
 import EditCourseContent from './edit_course_content';
 import Messenger from './messenger';
+import ProfileList from './profiles_list';
 
 export const componentsMapDefault = {
     messenger_main_page: Messenger,
@@ -67,6 +68,7 @@ export const componentsMapDefault = {
     edit_course_content: EditCourseContent,
     module_structure: ModuleStructure,
     lang: Lang,
+    profiles_list: ProfileList,
     raw: Lang,
     html: Lang,
     custom: Lang,
