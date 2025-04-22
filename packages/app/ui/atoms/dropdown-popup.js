@@ -21,7 +21,6 @@ export default function DropdownPopup({
     popupHeight = 0,
     contentClasses = 'rounded-lg backdrop-blur bg-bgrmodal dark:bg-bgrmodal-d p-2 shadow-lg'
 }) {
-    console.log("showOnTop", showOnTop, popupHeight)
     const buttonRef = useRef(null);
     const [buttonPos, setButtonPos] = useState({ x: 0, y: 0, width: 0, height: 0 });
     const windowWidth = useWindowDimensions().width;

@@ -12,17 +12,17 @@ import { useCurrentUser } from 'app/context/user'
 import { Button } from 'app/design/controls'
 import { useTranslation } from 'react-i18next'
 import Splash from 'app/ui/molecules/splash'
-import { Platform } from 'react-native'
 import Link from 'app/ui/atoms/link'
 import Profile from 'app/ui/molecules/profile'
 import { Text } from 'app/design/typography'
 import UI from 'app/ui/molecules/ui'
 import { MenuItemSidebarWithWrapper } from 'app/components/nav/menu-item-sidebar'
+import Search from 'app/ui/molecules/search'
 
 export default function (props) {
 
-    if (appSetting('config', 'show_ui')){
-        return <UI/>
+    if (appSetting('config', 'show_ui')) {
+        return <UI />
     }
 
     const { t } = useTranslation()
@@ -51,7 +51,7 @@ export default function (props) {
     }
 
     if (!currentUser) {
-        return <><View className="lg:hidden" style={{height: 64}} ></View><Splash {...props} /></>
+        return <><View className="lg:hidden" style={{ height: 64 }} ></View><Splash {...props} /></>
     }
 
     const sideBarBlocks = Object.keys(props.blocks)
@@ -193,6 +193,11 @@ export default function (props) {
                 {getLayout(currentUser) == 'hor' && (
                     <View className="hidden xl:flex w-80 2xl:w-96 ">
                         <View className="fixed fixed-process w-80 2xl:w-96 flex-col p-2">
+                            {appSetting('layout', 'sidebar_search') && (
+                                <View className="mb-3">
+                                    <Search type="input" placeholder="Enter search text" />
+                                </View>
+                            )}
                             {appSetting('layout', 'show_profile_info') && (
                                 <Link href={currentUser.url} emulate={true}>
                                     <Row
@@ -229,20 +234,20 @@ export default function (props) {
                                 {feedList.length > 1 &&
                                     feedList.map((item, index) => {
                                         return (
-                                            <MenuItemSidebarWithWrapper 
-                                                key={`menu-${index}`} 
+                                            <MenuItemSidebarWithWrapper
+                                                key={`menu-${index}`}
                                                 onPress={() => {
                                                     setFeedTypeEx(item.name)
-                                                }} 
+                                                }}
                                                 isActive={feedType == item.name}
-                                                icon = {item.icon} 
-                                                title={t(item.title)} 
-                                                index={index} 
+                                                icon={item.icon}
+                                                title={t(item.title)}
+                                                index={index}
                                                 userUrl={currentUser.url}
-                                            /> 
+                                            />
                                         )
                                     })}
-                               
+
                             </View>
 
                             {navBarBlocks.map((item, index) => {

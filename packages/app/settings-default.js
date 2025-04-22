@@ -30,7 +30,8 @@ export  const settingsDefault = {
         default_layout: 'hor', //hor, ver, mixed// OLD appSetting('layout', 'format')
         max_width: ' w-full ', // consider for hor = max-w-screen-2xl, for ver = max-w-screen-xl
         max_width_block: 'max-w-screen-xl', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
-        search: true,
+        search: false,
+        sidebar_search: true,
         extended_search: true,
         apps: true,
         show_profile_info: true,
@@ -54,7 +55,6 @@ export  const settingsDefault = {
        
         share_text: '',
         default_icon_stroke_width: 2,
-
         use_context_selector: true
     },
 
