@@ -45,7 +45,7 @@ export function CoverMenu(props) {
     let { width } = useWindowDimensions()
     let size = props.size || 'base'
 
-    if (width < LAYOUT_BREAKPOINTS.sm) size = 'base'
+   // if (width < LAYOUT_BREAKPOINTS.sm) size = 'base'
 
     const isSplitMenu = appSetting('cover', 'split_action_menu')
 
@@ -96,16 +96,17 @@ export function CoverMenu(props) {
         <Menu
             {...propsCopy}
             displayType="button"
-            autoSize={true}
+            autoSize={props.autoSize ?? true}
             containerClasses={props.containerClasses}
             params={{
+                showVertical:props?.params?.showVertical ?? false,
                 show_action: true,
                 show_counter: true,
                 show_combined: true,
                 button_variant: 'default',
                 button_size: size,
                 button_rounded: false,
-                button_full_width: false,
+                button_full_width: props?.params.button_full_width ?? false,
                 className: ' gap-x-2 ',
                 isFixedCount: true
             }}

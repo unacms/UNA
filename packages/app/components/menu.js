@@ -1,12 +1,13 @@
 
-import { View, ViewRef } from 'app/design/view'
+import { View, ViewRef, Pressable } from 'app/design/view'
 import { appSetting, menuItemsByName } from 'app/lib/util';
 import { componentsMap } from './menu-items/_map';
 import { useCurrentUser } from 'app/context/user'
-import { useMemo, memo } from "react";
+import { useMemo, useState, memo } from "react";
 import { Button } from 'app/design/controls';
 import DynamicMenu from 'app/components/nav/menu-dynamic';
 import { Platform } from 'react-native'
+import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal';
 
 const ButtonEx = memo(({ visibleItemsCount, params }) => {
     return (
@@ -36,6 +37,7 @@ const MenuItem = memo(({ item, itemRefs, index, visibleItemsCount, params, bShow
 
 export default function ElementMenu(oProps) {
     const isWeb = Platform.OS == 'web'
+    const [pageData, setPageData] = useState(false);
     const { currentUser, setCurrentUser } = useCurrentUser();
     /*
      * Display type specified in menu can be overwritten with display type specified in item.
@@ -123,8 +125,9 @@ export default function ElementMenu(oProps) {
     }, [bAutoFilter, oProps.object, oProps.items, currentUser, bShowMatched, sDisplayType, sShowSelected, aExcept, aExceptTitle, componentsMap]);
 
     let isUseStaticWidth = bShowContent || !bAutoSize || !isWeb;
-    if (oProps.persistent > 0) {
-        isUseStaticWidth = false;
+
+    if (oProps.persistent > 0 && !bShowVertical) {
+       // isUseStaticWidth = false;
     }
     if (!isWeb) {
         isUseStaticWidth = true;
@@ -133,20 +136,25 @@ export default function ElementMenu(oProps) {
     if (isUseStaticWidth) {
         const sItems = filteredItems.map((item, index) => {
             const ItemType = componentsMap[item.display_type || sDisplayType];
-            
-
-            const a = <ItemType key={item.id ? item.id : item.name} {...item} params={oProps.params} />
+            const Wrapper = item.noAction ? Pressable : View;
+            const a = <ItemType  key={item.id ? item.id : item.name} {...item} params={oProps.params} />
             if (a == null ) return null;
-
+            const cntProps = {}
+            if (item.noAction) {
+                cntProps.onPress = (event) => {
+                      handleFormModal(item, event, setPageData)
+                }
+            }
             return (
-                <View  key={`menu${index}`} className={` ${
+                
+                <View {...cntProps} key={`menu${index}`} className={` ${
                     bShowVertical
                       ? 'w-full  '
                       : oProps?.params?.button_full_width === true
                       ? ' flex-1 '
                       : ' '
                   } ${sAlignItems === 'stretch' ? 'flex-auto' : ''}  `}>
-                    {a}
+                    <Wrapper {...cntProps}>{a}</Wrapper>
                 </View>
             )
         });
@@ -155,7 +163,10 @@ export default function ElementMenu(oProps) {
             return sItems;
 
         if (!bAutoSize) {
-            return <View className={`${sClassName}`}>{sItems}</View>;
+            return <>
+                <FormModal pageData={pageData} setPageData={setPageData} />
+                <View className={`${sClassName}`}>{sItems}</View>
+            </>;
         }
     }
 

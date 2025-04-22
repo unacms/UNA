@@ -68,7 +68,7 @@ function MenuBottomItem({ link, title, index, icon, isActive, profile, iFrCounte
         },
         {
             condition: link === appSetting('messenger', 'url') && currentUser?.counters?.bx_messenger_new_messages > 0,
-            value: { variant: 'primary', text: currentUser.counters.bx_messenger_new_messages }
+            value: { variant: 'primary', text: currentUser?.counters?.bx_messenger_new_messages }
         },
         {
             condition: link === '/friends' && iFrCounter > 0,
