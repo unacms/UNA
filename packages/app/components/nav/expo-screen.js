@@ -35,13 +35,12 @@ export async function getData(path, token, origin, headers, callback, params) {
 }
 
 export function Screen(params) {
-
+    
     const local = useLocalSearchParams();
     const pathname = params.tabname;
     const { currentUser, setCurrentUser } = useCurrentUser();
     let _path = local.url;
     let isRoot = false;
-
     // BOTTOM TABS NAVIGATION
     if (!_path || _path.includes('/tab')) {
         const tabListKey = currentUser ? 'menu_tabbar_logged' : 'menu_tabbar_non_logged';
@@ -50,7 +49,7 @@ export function Screen(params) {
         _path = item ? item.url : null;
         isRoot = true;
     }
-    return <Content key={_path} pagePath={_path} currentUser={currentUser} isRoot={isRoot} />
+    return <Content key={_path+local.refresh} pagePath={_path} currentUser={currentUser} isRoot={isRoot} />
 
 
 }
@@ -66,9 +65,11 @@ const Content = ({ pagePath, currentUser, isRoot }) => {
         const fetchPageData = async () => {
             if (pageData?.data?.user?.id && pageData?.data?.user?.id === currentUser?.id && pageData?.data?.user?.confirmed === currentUser?.confirmed)
                 return;
+            console.log('12323')
             const { path: pathWithoutQuery, queryString } = parseUrl(pagePath);
             const params = queryString ? JSON.stringify(parseQueryString(queryString)) : null;
             const data = await getData(pathWithoutQuery, null, null, null, null, params);
+            console.log('123234', data)
             if (data?.props) {
                 const pageData1 = data.props;
                 const settings = getPageSettings(pageData1.data.config, pageData1.data.uri);
@@ -94,7 +95,7 @@ const Content = ({ pagePath, currentUser, isRoot }) => {
 
         prepareApp();
     }, [pageData?.data]);
-
+    console.log("pageData?.data", pageData?.data)
     return pageData?.data ? (
 
         <Root path={pagePath} data={pageData.data} uri={pageData.data.uri} />

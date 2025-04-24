@@ -6,7 +6,8 @@ import {
     Link as _Link,
     Stack as _Stack,
     Redirect as _Redirect,
-    Tabs as _Tabs
+    Tabs as _Tabs,
+    usePathname as _usePathname
 } from 'expo-router';
 import { useSafeAreaInsets as _useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -27,16 +28,16 @@ export function useRouter() {
     return _useRouter();
 }
 
+export function usePathname() {
+    return _usePathname();
+}
+
 export function useNavigation() {
     return _useNavigation();
 }
 
 export function useGlobalSearchParams() {
     return _useGlobalSearchParams();
-}
-
-export function usePathname() {
-    return null;
 }
 
 export function goBack(navigation, router, callback){

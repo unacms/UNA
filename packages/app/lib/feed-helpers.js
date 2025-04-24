@@ -33,7 +33,7 @@ export const CommentsModal = memo(({ commentsData, initFormData, itemContent, cl
     const offset = windowDimensions.width > LAYOUT_BREAKPOINTS.lg ? 100 : 60;
     const [height, setHeight] = useState(windowDimensions.height - offset - 100);
     const aItems = [itemContent];
-    const CommentsPartsData = CommentsParts(commentsData, aItems, height, initFormData, false, closeOnPost);
+    const CommentsPartsData = CommentsParts(commentsData, aItems, height, initFormData, true, closeOnPost);
 
     const handleLayout = (event) => {
         const h = windowDimensions.height - offset - event.nativeEvent.layout.height;

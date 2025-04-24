@@ -101,6 +101,8 @@ export function CommentsParts(commentsData, aItems, height = 0, initFormData, is
         }
     }
 
+    const scrollToIndex = isModal ? (initFormData?.cmt_id ? initFormData.cmt_id : true) : false;
+
     return [
         <CommentsBrowse 
             scrollProps={
@@ -111,6 +113,7 @@ export function CommentsParts(commentsData, aItems, height = 0, initFormData, is
                     isBackButton: true, 
                 } : null
             } 
+            scrollToIndex = {scrollToIndex}
             height={height > 0 ? height : undefined} 
             addItems={aItems} handleReply={handleReply} 
             browse={commentsData.browse} addData={addData} 
@@ -123,7 +126,7 @@ export function CommentsParts(commentsData, aItems, height = 0, initFormData, is
     ]
 }
 
-export function CommentsBrowse({ scrollProps, browse, requestUrl, module, handleReply, handleEdit, addData, addItems, isShort = false, maxCount, height = 0, showCommentsModal, classesBrowse = '', commentsTitle = "Comments", contentUrl, replyId, hideActions = false, selectedId = 0 }) {
+export function CommentsBrowse({ scrollProps, browse, requestUrl, module, handleReply, handleEdit, addData, addItems, isShort = false, maxCount, height = 0, showCommentsModal, classesBrowse = '', commentsTitle = "Comments", contentUrl, replyId, hideActions = false, selectedId = 0, scrollToIndex = false }) {
     const UnitComments = componentsMap['comments'];
 
     const { t } = useTranslation();
@@ -214,10 +217,6 @@ export function CommentsBrowse({ scrollProps, browse, requestUrl, module, handle
         }
     }, [addData]);
 
-    useEffect(() => {
-
-        // flashListRef.current.scrollToIndex({ animated: true, index:  });
-    }, []);
 
 
 
@@ -329,10 +328,9 @@ export function CommentsBrowse({ scrollProps, browse, requestUrl, module, handle
     }
 
     useEffect(() => {
-
+       
         if (commentData.lastInserted > 0) {
-            let itemIndex = dataOut.findIndex(obj => obj.id == commentData.lastInserted);
-
+            const itemIndex = dataOut.findIndex(obj => obj.id == commentData.lastInserted);
             // NEED CHECK ON IOS
             setTimeout(() => {
                 flashListRef.current.scrollToIndex({ animated: true, index: itemIndex });
@@ -340,6 +338,20 @@ export function CommentsBrowse({ scrollProps, browse, requestUrl, module, handle
 
         }
     }, [commentData.lastInserted]);
+
+
+    useEffect(() => {
+        if (scrollToIndex !== false) {
+            const itemIndex = scrollToIndex === true ? 99999 : dataOut.findIndex(obj => obj.id == scrollToIndex);
+            if (itemIndex > 0){
+                setTimeout(() => {
+                    flashListRef.current.scrollToIndex({ animated: true, index: itemIndex });
+                }, 300);
+            }
+
+        }
+    }, [scrollToIndex]);
+
     useEffect(() => {
         if (!isShort)
             subscribe('cmts_' + commentData.moduleName + '_' + commentData.objectId, 'comment_added', cb);
@@ -424,7 +436,7 @@ export function CommentsBrowse({ scrollProps, browse, requestUrl, module, handle
     )
 }
 
-export function CommentsForm({ form, requestUrl, module, browse, formData, handleForm, isModal }) {
+export function CommentsForm({ form, requestUrl, module, browse, formData, handleForm }) {
 
     if (!form?.data?.inputs)
         return <></>
@@ -456,10 +468,10 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
                 if (appSetting('comments', 'mentions')) {
                     const sUrl = appSetting('urls', 'cmts_menthion_url');
                     if (sUrl) {
-                        const sResponse = await fetcher('/api.php?r=' + sUrl + '&params[]=' + formData.cmt_id + '&params[]=' + formData.cmt_object_id + '');
+                        const sResponse = await fetcher(`/api.php?r=${sUrl}&params[]=${formData.cmt_id}&params[]=${formData.cmt_object_id}`);
 
                         if (sResponse.data) {
-                            form.data.inputs.cmt_text.value = '<a class="bx-mention-link" ts='+formData.ts+' data-id="[object Object]" href="/mention' + sResponse.data.id + '" title="' + sResponse.data.name + '" dchar="@" data-profile-id="-1" contenteditable="false">' + sResponse.data.name + '</a> &shy; ';
+                            form.data.inputs.cmt_text.value = `<a class="bx-mention-link ${sResponse.data.add_classes}" ts="${formData.ts}" data-id="[object Object]" href="/mention${sResponse.data.id}" title="${sResponse.data.name}" dchar="@" data-profile-id="-1" contenteditable="false">${sResponse.data.name}</a> &shy; `;
                         }
                         else {
                             form.data.inputs.cmt_text.value = '';
@@ -467,7 +479,7 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
                     }
                     else {
                         if (formData.author.url == "/javascript:") {
-                            form.data.inputs.cmt_text.value = '<a class="bx-mention-link" ts='+formData.ts+' data-id="[object Object]" href="#" title="' + formData.author.display_name + '" dchar="@" data-profile-id="-1" contenteditable="false">' + formData.author.display_name + '</a> &shy; ';
+                            form.data.inputs.cmt_text.value = `<a class="bx-mention-link" ts="${formData.ts}" data-id="[object Object]" href="#" title="${formData.author.display_name}" dchar="@" data-profile-id="-1" contenteditable="false">${formData.author.display_name}</a> &shy; `;
                         }
                         else {
                             form.data.inputs.cmt_text.value = '<a class="bx-mention-link" ts='+formData.ts+' href="' + formData.author.url + '">' + formData.author.display_name + '</a> ';
@@ -488,7 +500,6 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
     const { data: dynamicData, error } = useFetchForm(prepareUrl(), commentForm);
 
     useEffect(() => {
-        console.log("dynamicData")
         if (dynamicData?.data?.browse) {
             handleForm(dynamicData);
             handleCancel() // DISABLED TO AVOID ANY REREBDERS AFTER NEW COMMENTS
@@ -515,14 +526,9 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
         Keyboard.dismiss();
     }
 
-    let padding = 12;
-    if (isModal)
-        padding = 0;
+    const padding = 12;
+    const className = "w-full backdrop-blur rounded-b-xl";
 
-
-    let className = "w-full backdrop-blur rounded-b-xl";
-    if (isModal)
-        className = "w-full h-screen bg-bgrcard dark:bg-bgrcard-d";
     return (
         <View className={className} style={{ paddingTop: padding, paddingBottom: padding }}>
             {
@@ -541,7 +547,7 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
                     </Row>
                 </View>)
             }
-            <Form {...form} exProps={{ browse: dynamicData?.data?.browse }} resetOnSubmit={true} classContainerName={(isModal ? "" : "  ") + " flex-row flex-wrap w-full items-start justify-between"} onFormSubmit={onFormSubmit} />
+            <Form {...form} exProps={{ browse: dynamicData?.data?.browse }} resetOnSubmit={true} classContainerName={" flex-row flex-wrap w-full items-start justify-between"} onFormSubmit={onFormSubmit} />
         </View>
     )
 }

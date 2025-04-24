@@ -114,8 +114,6 @@ export default function (props) {
         </View> : <></>
     });
 
-    console.log("filteredValues0",filteredValues, props.values)
-
     const selectedItem = filteredValues.find(item => item.value == isModalSub);
 
     const modalHeader = <Row className={` w-full items-center justify-:px-4 :pt-4`}>
@@ -126,8 +124,6 @@ export default function (props) {
             <Button variant='secondary' size='base' rounded startDecorator='ArrowLeft' onPress={() => { setIsModalSub(false) }} />
         </View>
     </Row>
-
-    console.log("filteredValues", filteredValues)
 
     const modalContent = isModalSub ? (
         <ChkList values={subOptions} setValue={handleSubValueChange} selectedValue={subValues} />

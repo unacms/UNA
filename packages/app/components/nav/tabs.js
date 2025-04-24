@@ -1,4 +1,4 @@
-import { Tabs, useRouter } from 'app/lib/hooks/router';
+import { Tabs, useRouter, useNavigation, usePathname } from 'app/lib/hooks/router';
 import { View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon';
@@ -230,6 +230,7 @@ export default function () {
         return null;
     }
 
+    const pathname = usePathname();
     return (
         <><Suggestions />
             <Subscriber />
@@ -262,6 +263,14 @@ export default function () {
                                     initialParams={{ url2: tab.url, name: `tab${index}` }}
                                     listeners={{
                                         tabPress: e => {
+
+                                           
+                                          
+                                            if (pathname == `/tab${index}`) {
+                                                router.setParams({ 
+                                                    refresh: Date.now() 
+                                                });
+                                            }
                                             if (e.type == 'tabPress') {
                                                 let a = e.target.split('-');
                                                 let d = TabList[a[0].replace('tab', '')];
