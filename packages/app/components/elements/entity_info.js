@@ -53,9 +53,10 @@ export default function ElementEntityInfo({ data }) {
 
             case 'select':
                 if (a.value !=0 && a.value != ''){
+                    const sel = a?.values?.find(item => item.key === a.value)
                     return (
                         <Text className=" text-neutral-800 text-base dark:text-neutral-200">
-                            {a.values ? (a.values[a.value].value ? a.values[a.value].value : a.values[a.value]) : a.value}
+                            {a.values ? (sel ? sel.value : a.values[a.value]) : a.value} {/* {a.values ? (a.values[a.value].value ? a.values[a.value].value : a.values[a.value]) : a.value}*/}
                         </Text>
                     )
                 }
