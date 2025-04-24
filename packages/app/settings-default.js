@@ -679,7 +679,7 @@ export  const settingsDefault = {
         dropdown_menu: {
             content_shadow: ' shadow-xl  ',
             content_ver: '',
-            content_hor: '',
+            content_hor: 'flex-row ',
             item_ver: 'flex flex-row focus:outline-none items-center p-[4px] text-sm rounded-lg font-medium hover:bg-bgritem dark:hover:bg-bgritem-d text-neutral-700 dark:text-neutral-300 dark:hover:text-white hover:cursor-pointer',
             item_hor: 'flex block p-[4px] hover:-translate-y-1 active:-translate-y-1 dark:hover:text-white rounded-full hover:cursor-pointer text-neutral-700  hover:scale-125 active:scale-95 duration-200 dark:text-neutral-300 outline-none ',
             item_np: 'flex flex-row focus:outline-none items-center justify-between px-1 py-0.5 rounded-lg font-medium hover:bg-bgritem dark:hover:bg-bgritem-d text-sm text-neutral-700 dark:text-neutral-300 dark:hover:text-white hover:cursor-pointer',
