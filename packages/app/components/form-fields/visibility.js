@@ -180,9 +180,11 @@ export default function (props) {
     }
 
     if (props.format == 'nofield') {
-        let { icon = 'Unknown', text = 'Unknown' } = visibilityById(field.value);
+        
+        const visibilityData = visibilityById(field.value);
+        const icon = visibilityData ? visibilityData.icon : ''
+        const text = visibilityData ? visibilityData.text : ''
 
-       // const selectedSubLabels5 = subOptions.filter(item => subValues.includes(item.value)).map(item => item.label);
         const v = filteredValues.find(item => item.value == field.value)?.label || filteredValues[0].label;
         return (<>
             {modalElement}
