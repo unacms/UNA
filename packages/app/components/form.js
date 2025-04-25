@@ -81,8 +81,6 @@ export default function (props) {
             if (data.inputs[key])
                 data.inputs[key].value = d[key];
         });
-        console.log("onSubmit888", formData, d)
-        console.log("onSubmit889", d)
         await onFormSubmit(formData, d);
     }
 

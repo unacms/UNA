@@ -34,6 +34,7 @@ export default function FormComments(props) {
 
 
     let text = formContext.watch('cmt_text')
+    console.log("texttext", text)
     if (!text) text = ''
     if (typeof text === 'string') {
         text = stripTags(text).trim()
