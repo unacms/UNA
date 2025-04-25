@@ -73,18 +73,20 @@ export default function FormMessenger(props) {
 
     const sPad = 'px-3 py-2';
     return <View className='w-full px-2' >
+        {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'custom')}
+                {getFormFieldByData(props.data.inputs['cf'], props.handleSubmit, 'custom')}
+               a {getFormFieldByData(props.data.inputs['payload'], props.handleSubmit, 'custom')}a
+                {getFormFieldByData(props.data.inputs['id'], props.handleSubmit, 'custom')}
+                {getFormFieldByData(props.data.inputs['message_id'], props.handleSubmit, 'custom')}
+                {getFormFieldByData(props.data.inputs['send'], props.handleSubmit, 'custom')}
         <Row className='w-full items-end  '>
             <View className={'mr-2 ' + (isWeb ? '' : ' w-12 ')}>{/* className={'mr-2 ' + (isWeb ? '' : ' w-11 ')}*/}
                 {getFormFieldByData(props.data.inputs['files'], props.handleSubmit, 'custom', {  form_name:props.name, asDefaultStorage: true,  previewPlaceHolder: setPlaceHolder, noMargin:true })}
             </View>
             <View className={`flex-auto bg-bgritem dark:bg-bgritem-d rounded-3xl justify-center items-end ${sPad}`} style={{ height: editorHeight }}>
-                {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'custom')}
-                {getFormFieldByData(props.data.inputs['cf'], props.handleSubmit, 'custom')}
-                {getFormFieldByData(props.data.inputs['payload'], props.handleSubmit, 'custom')}
+                
                 {getFormFieldByData(props.data.inputs['message'], props.handleSubmit, 'custom', {  form_name:props.name, container_class: 'comments', classes: "flex-1",  focus: true, bg: 'transparent', submitOnEnter: true, noMargin:true, placeholder: 'Message ...', onHeight: checkEditorHeight, onFocus: setIsFocus, onBlur: setIsBlur })}
-                {getFormFieldByData(props.data.inputs['id'], props.handleSubmit, 'custom')}
-                {getFormFieldByData(props.data.inputs['message_id'], props.handleSubmit, 'custom')}
-                {getFormFieldByData(props.data.inputs['send'], props.handleSubmit, 'custom')}
+          
             </View>
           
             <View className={'ml-2 ' + (isWeb ? '' : ' w-12 ')}>{getFormFieldByData(props.data.inputs['submit'], props.handleSubmit, 'custom', {  classes: isWeb ? 'ml-0 ' : '', noMargin: true, size:'base'})}</View>
