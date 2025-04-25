@@ -130,7 +130,7 @@ export const InputSmall = ({ className, startDecorator, endDecorator, ...props }
 );
 
 export const Hidden = ({ className, ...props }) => (
-    <TextInputDef className={'hidden1'} {...props} />
+    <TextInputDef className={'hidden'} {...props} />
 );
 
 export const Switch = (props) => Platform.OS == 'web' ? <View className="w-16 h-8 pl-2 pt-1.5"><SwitchDef {...props} style={{

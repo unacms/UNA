@@ -75,7 +75,7 @@ export default function FormMessenger(props) {
     return <View className='w-full px-2' >
         {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['cf'], props.handleSubmit, 'custom')}
-               a {getFormFieldByData(props.data.inputs['payload'], props.handleSubmit, 'custom')}a
+                {getFormFieldByData(props.data.inputs['payload'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['id'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['message_id'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['send'], props.handleSubmit, 'custom')}
