@@ -131,9 +131,9 @@ function AtomProfile_(oProps) {
             sSizeFontLetter: 'text-base opacity-50 font-semibold',
         },
         base: {
-            sSize: 'w-[44px] h-[44px]',
-            iSizeWidth: 44,
-            iSizeHeight: 44,
+            sSize: 'w-[40px] h-[40px]',
+            iSizeWidth: 40,
+            iSizeHeight: 40,
             sSizeFont: ' text-[14px] leading-[20px] tracking-tight font-semibold ',
             sSizeFontLetter: ' p-[8px] text-center text-[20px] font-semibold',
         },
