@@ -137,7 +137,7 @@ export default function (props) {
                         props.layoutName == 'post'
                             ? 'hidden lg:flex'
                             : '') +
-                        ' fixed w-full h-16 items-center w-full bg-bgrnavbar/80 backdrop-blur-lg dark:bg-bgrnavbar-d/80 dark:backdrop-blur-lg '
+                        ' fixed w-full h-16 items-center w-full shadow-[0_0_3px_rgba(0,0,0,0.03)] border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d '
                     }
                 >
                     <View
@@ -160,9 +160,9 @@ export default function (props) {
                         <MenuTop url={props.url} uri={props.uri}/>
                         <Row className="flex-none xl:w-80 2xl:w-96 flex-none px-[12px] justify-end ">
                             {!!currentUser && (
-                                <Row className="flex-row justify-end  ">
-                                    <View className=" flex-row ">
-                                        <View className=" xl:hidden ">
+                                <Row className="justify-end gap-x-2 ">
+                                    
+                                        <View className=" ">
                                             {bSearch && <Search />}
                                         </View>
                                         <View className="hidden sm:block">
@@ -204,7 +204,7 @@ export default function (props) {
                                         <View className="hidden sm:block">
                                             <MenuAccount />
                                         </View>
-                                    </View>
+                                    
                                 </Row>
                             )}
                             {!currentUser && (

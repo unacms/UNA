@@ -343,7 +343,7 @@ const Content = React.memo(({ children, headerSettings, stylesBgImage, currentUs
                 <View className=" w-full mx-auto flex-row " >
                     <View className={((layoutName != 'messenger' && layoutName != 'post' && !isHideHeader) ? 'pb-16 lg:pb-0' : '') + '  w-full  relative overflow-hidden    mx-auto'}>{/*mb-16* TODO lg:pb-0*/}
                         <View className='w-full mx-auto'>
-                            {(headerSettings.offset && !isHideHeader) && <View className='w-full h-16' />}
+                            {(headerSettings.offset && !isHideHeader) && <View className='w-full h-16 ' />}
                             <Informer />
                             {children}
                         </View>

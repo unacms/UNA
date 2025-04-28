@@ -55,8 +55,8 @@ function DefaultUnit(data) {
             >
                 {cmtsData.data}
             </Modal>}
-            <Card rounded=' rounded-none sm:rounded-2xl' margin=' mt-1 sm:mb-2 lg:mb-3 md:mx-auto ' addClassName={' shadow-sm w-full px-3 py-2.5 sm:px-4 sm:py-3.5  tl-' + data.id} >
-                <View className="flex-auto flex-row gap-x-[8px] sm:gap-x-[10px] ">
+            <Card rounded=' rounded-none sm:rounded-[24px] ' margin=' mt-2 sm:mt-4 md:mx-auto ' addClassName={' border border-bdr dark:border-bdr-d shadow-[0px_0px_4px_0px_rgba(0,0,0,0.04)] animate-slidein max-w-3xl w-full p-4 tl-' + data.id} >
+                <View className="flex-auto flex-row gap-x-[8px] ">
                     <Author data={data} url={url} t={t} />
                     <View className="flex-none flex-row mb-auto">
                         <MenuManage id={data.id} menu={data?.menu_manage} setViewState={setViewState} />

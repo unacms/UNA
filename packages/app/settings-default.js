@@ -636,7 +636,7 @@ export  const settingsDefault = {
             topmenu_button_fullWidth: false,
             topmenu_button_size: 'base',
             topmenu_button_pressed: true,
-            left_menu_cnt: ' border-r border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d '
+            left_menu_cnt: '  '
         },
         checkbox : {
             container: ' h-[20px] w-[20px] m-[4px] rounded-[4px] border-[2px] border-neutral-500 bg-transparent justify-center items-center   ',
@@ -696,8 +696,8 @@ export  const settingsDefault = {
             header: ' p-[12px] items-start justify-start border-b border-bdr dark:border-bdr-d',
         },
         card: {
-            default: ' overflow-hidden bg-bgrcard dark:bg-bgrcard-d ',
-            border: '  border-bdrcard dark:border-bdrcard-d ',
+            default: ' bg-bgrcard dark:bg-bgrcard-d',
+            border: ' ',
             rounded: ' rounded-[24px] ',
             margin: ''
         },

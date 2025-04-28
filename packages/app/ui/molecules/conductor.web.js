@@ -393,7 +393,7 @@ const RenderSceneHeader = ({ route, setFilterValue }) => {
     )
 };
 
-export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, leftSideBarBlocks, leftSideBarWidth = ' lg:w-80 2xl:w-96 ', skeleton = '', onChangeRoute, keyword, cover, layoutName, defaultHeaderHeight=116 }) {
+export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, leftSideBarBlocks, leftSideBarWidth = ' w-full min-w-80 max-w-96 ', skeleton = '', onChangeRoute, keyword, cover, layoutName, defaultHeaderHeight=116 }) {
     const uniRef = useRef();
     const { currentUser } = useCurrentUser();
     const { setBottomSheetData } = useBottomSheetData();
@@ -819,7 +819,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                 <View style={{ minHeight: (windowHeight - offset) }} className={appSetting('layout', 'max_width  ') + ' lala mx-auto w-full  '} >{/*mt-28 lg:mt-0*/}
                     <Row className={rc}>
                         {a}
-                        <View className=" flex-auto m">
+                        <View className=" flex-auto ">
                             {(headerSettings.showAltTopMenu) && topSideBarComponent}
                             {(windowWidth < LAYOUT_BREAKPOINTS.lg && layoutName == 'navigator' && leftSideBarBlocks.length > 0) && <View className="items-start ml-4 mt-2 mb-2">
                                 <Button title="Filters" variant="default" size="sm" rounded onPress={showFilters} />

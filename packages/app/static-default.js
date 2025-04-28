@@ -221,8 +221,7 @@ const SplashImage = (
 const SplashText = (
     <>
     <Text className=" text-xl md:text-2xl font-medium text-center md:text-start text-neutral-800 dark:text-neutral-200 ">
-        Discover the community where you can connect and engage
-        with people who share your interests.
+        Connect and engage with people who share your interests.
     </Text>
      
  </>

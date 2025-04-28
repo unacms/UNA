@@ -67,8 +67,8 @@ const colors = {
         d: 'rgba(17,24,39,1)',
     },
     bdrcard: {
-        DEFAULT: 'rgba(0,0,0,0.1)',
-        d: 'rgba(255,255,255,0.05)',
+        DEFAULT: 'rgba(107,114,128,0.1)',
+        d: 'rgba(107,114,128,0.1)',
     },
 
 
@@ -102,8 +102,9 @@ const colors = {
         d: 'rgba(17,24,39,1)',
     },
     bdrnavbar: {
-        DEFAULT: 'rgba(229,231,235,1)',
-        d: 'rgba(0,0,0,1)',
+        DEFAULT: 'rgba(107,114,128,0.15)',
+        d: 'rgba(107,114,128,0.15)',
+       
     },
     bgrtabbar: {
         DEFAULT: 'rgba(255,255,255,1)',
@@ -165,6 +166,10 @@ const theme = {
         colors: colors,
         fontFamily: {
             default: ['default-font', 'sans-serif']
+        },
+
+        boxShadow: {
+            'sm': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
         },
 
         aspectRatio: {
