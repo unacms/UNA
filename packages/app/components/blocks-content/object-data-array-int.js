@@ -4,6 +4,7 @@ import useFetchForm from 'app/lib/hooks/fetch'
 import { Text } from 'app/design/typography'
 import { Loading } from 'app/loading'
 import Form from 'app/components/elements/form';
+import { componentsMap } from 'app/components/elements/_map_int';
 
 export function BlockByData(props) {
     return <BlockContentObjectDataArrayInt data={props.block.content} type={props.block.type} {...props} />
@@ -81,14 +82,15 @@ export default function BlockContentObjectDataArrayInt(props) {
 };
 */
 
-    const components = {
+   /* const components = {
         'form': Form,
         'simple_list': React.lazy(() => import('app/components/elements/simple_list')),
         //'form': React.lazy(() => import('app/components/elements/form')),
         'grid': React.lazy(() => import('app/components/elements/grid')),
+        'paid_join': React.lazy(() => import('app/components/elements/grid')),
         'msg': React.lazy(() => import('app/components/elements/msg')),
         'redirect': React.lazy(() => import('app/components/elements/redirect'))
-    };
+    };*/
     
     if (realData && !Array.isArray(realData)){
         realData = [realData];
@@ -100,7 +102,7 @@ export default function BlockContentObjectDataArrayInt(props) {
         const type = a?.type;
         if (!type)
             return <></>
-        const Component = components[type];
+        const Component = componentsMap[type];
         return (
         <Suspense fallback={<Loading />} key={a.id + a?.type}>
             <Component key={a.id + a?.type} type={a?.type} onSubmittig={postData && !dynamicData} onFormSubmit={onFormSubmit} {...a} exProps={props.exProps}/>
