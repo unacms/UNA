@@ -50,7 +50,7 @@ const LogoText = (
 const LogoMark = (
     <Svg
         aria-label="Logo Mark"
-        className=" w-auto h-fit text-neutral-800 dark:text-neutral-200 hover:text-neutral-950 dark:hover:text-neutral-50  "
+        className=" w-auto h-fit   "
         viewBox="0 0 40 40"
        
         xmlns="http://www.w3.org/2000/svg"
@@ -195,7 +195,7 @@ const SplashImage = (
     <View className="h-16 w-32 items-start my-auto">
      <Svg
      aria-label="Logo Text"
-     className=" group-active:scale-90 text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-900 dark:group-hover:text-neutral-100 duration-500"
+     className=" group-active:scale-90 duration-500"
      viewBox="0 0 68 32"
      fill="none"
      xmlns="http://www.w3.org/2000/svg"
@@ -418,9 +418,9 @@ function ComponentModal({ title = 'test' }) {
 const ComponentsLoginContent = (
         <View className="flex-col gap-y-8 flex-auto my-4 ">
                 <Text className="text-4xl tracking-tight font-bold text-neutral-800 dark:text-neutral-200 justify-center items-center  ">
-                    Welcome back!
+                Sign in to your account
                 </Text>
-                <View className="flex-col gap-y-4 hidden  lg:flex">
+                <View className="flex-col gap-y-4">
                     <View className="flex-row gap-x-4 ">
                     
                         <Icon

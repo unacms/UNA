@@ -60,7 +60,7 @@ export default function Splash(props) {
         login: { name: 'system:login_form', title: 'Log in', button: 'Create new account', icon: 'UserPlus', action: 'signup' }
     };
 
-    const defalulFormData = forms[defaultForm];
+    const defaultFormData = forms[defaultForm];
     const modalFormData = forms[modalForm];
 
     if (!defaultForm)
@@ -92,27 +92,31 @@ export default function Splash(props) {
             </Modal>
             <Card
                 rounded=" rounded-[24px] "
-                addClassName="flex-col gap-y-3 p-6 w-full max-w-xl mx-auto "
+                addClassName=" animate-slidein flex-col p-4 w-full max-w-xl mx-auto "
             >
-                <BlockByServiceName name={defalulFormData.name} data={props.data} formProps={{ auto_focus: false, hide_errors: true, button_full_width: true }} />
-                <Button
-                    title="Forgot password?"
-                    variant="link"
-                    fullWidth
-                    size="sm"
-                    onPress={() => {
-                        setModalForm('fp')
-                    }}
-                />
-                <View className="border-t border-bdr dark:border-bdr-d pt-4 sm:pt-6 ">
+            
+                <BlockByServiceName name={defaultFormData.name} data={props.data} formProps={{ auto_focus: false, hide_errors: true, button_full_width: true }} />
+                <View
+                                    className=" w-full my-4 "
+                                    href="/forgot-password"
+                                >
+                                    <Button
+                                        title="Forgot password?"
+                                        variant="link"
+                                        fullWidth
+                                        size="sm"
+                                        addClassName="w-full"
+                                    />
+                                </View>
+                <View className="border-t border-bdr dark:border-bdr-d pt-4  ">
                     <Button
-                        title={defalulFormData.button}
-                        startDecorator={defalulFormData.icon}
+                        title={defaultFormData.button}
+                        startDecorator={defaultFormData.icon}
                         size="base"
                         fullWidth
                         onPress={() => {
                             setDefaultForm(defaultForm == 'login' ? 'signup' : 'login')
-                            //setModalForm(defalulFormData.action)
+                            //setModalForm(defaultFormData.action)
                         }}
                     />
                 </View>
@@ -125,13 +129,9 @@ export default function Splash(props) {
             <View className="justify-around flex-1">
                 <KbAvoidingView className="flex-1">
                     <ScrollView>
-                        {!isKeyboardVisible && <View className="items-center my-8 ">
-                            <View className="w-60 items-center ">{appStatic('logo_native')}</View>
-                            <View className="my-4  mx-12">
-                                {appStatic('splash_text')}
-                            </View>
-                        </View>}
+                        <View className=" w-full flex-auto max-w-lg mx-auto p-4">
                         {cnt}
+                        </View>
                     </ScrollView>
                 </KbAvoidingView>
             </View>
@@ -146,7 +146,7 @@ export default function Splash(props) {
                     {appStatic('splash_image')}
                     {appStatic('splash_text')}
                 </View>
-                <View className=" w-full flex-auto max-w-lg mx-auto p-4 sm:p-6">
+                <View className=" w-full flex-auto max-w-lg mx-auto p-4">
                     {cnt}
                 </View>
             </View>

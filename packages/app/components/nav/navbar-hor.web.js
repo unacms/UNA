@@ -208,7 +208,7 @@ export default function (props) {
                                 </Row>
                             )}
                             {!currentUser && (
-                                <Row className="flex-row flex-auto sm:flex-none justify-end my-auto gap-x-1 ">
+                                <Row className="flex-row flex-auto sm:flex-none justify-end my-auto gap-x-2 ">
                                     <MenuLauncher />
 
                                     {bSearch && (
@@ -220,7 +220,6 @@ export default function (props) {
                                     <Link href="/">
                                         <ButtonRef
                                             variant="secondary"
-
                                             tooltip="Account"
                                             rounded
                                             aria-label="Account"

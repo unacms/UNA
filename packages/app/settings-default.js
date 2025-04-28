@@ -703,7 +703,7 @@ export  const settingsDefault = {
         },
         inputs: {
             default:
-                ' h-[48px] min-w-[48px] rounded-[12px] flex-auto px-[12px] py-[11px] text-[16px]  overflow-hidden border border-bdrinput bg-bgrinput hover:bg-bgrinput-h focus:bg-bgrinput-f dark:bg-bgrinput-d dark:hover:border-bdrinput-df dark:focus:bg-bgrinput-df focus:border-bdrinput-f dark:focus:border-bdrinput-df duration-300 placeholder-neutral-400 dark:placeholder-neutral-600 text-neutral-800 dark:text-neutral-200  ',
+                ' h-[48px] min-w-[48px] rounded-[12px] flex-auto px-[12px] py-[11px] text-[16px] hover:border-bdrinput-h focus:border-bdrinput-f overflow-hidden border border-bdrinput focus:bg-bgrinput-f dark:focus:bg-bgrinput-df focus:border-bdrinput-f dark:focus:border-bdrinput-df duration-300 placeholder-neutral-500 text-neutral-800 dark:text-neutral-200 ',
             multi: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg flex-auto p-2 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 ',
             rounded:
                 ' border-2 border-white dark:border-neutral-900 bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f focus-visible:outline-offset-0 focus:outline-primary/50 dark:focus:outline-primary/50 duration-100 placeholder-neutral-500 text-neutral-800 hover:bg-bgrinput-h dark:hover:bg-bgrinput-dh outline-2 outline-offset-0 rounded-full flex-auto p-[10px] dark:text-neutral-100 text-base leading-[24px] ',
@@ -776,7 +776,7 @@ export  const settingsDefault = {
             'u-btn-primary-color-icon-dark': 'rgb(243, 244, 246)',
 
             'u-btn-secondary-cnt':
-                ' bg-neutral-200 dark:bg-neutral-800 sm:group-hover:bg-neutral-200 sm:dark:group-hover:bg-neutral-800 shadow-secondary dark:shadow-secondary-d ',
+                ' bg-bgrbutton dark:bg-bgrbutton-d sm:hover:bg-bgrbutton-h dark:sm:hover:bg-bgrbutton-dh ',
             'u-btn-secondary-text':
                 ' font-medium text-neutral-600 group-hover:text-neutral-800 dark:text-neutral-400 dark:group-hover:text-neutral-200 group-active:text-neutral-900 dark:group-active:text-neutral-100 ',
             'u-btn-secondary-trans': ' web:duration-200',
