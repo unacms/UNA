@@ -70,18 +70,23 @@ const colors = {
         DEFAULT: 'rgba(0,0,0,0.1)',
         d: 'rgba(255,255,255,0.05)',
     },
+
+
+
     bgrinput: {
         DEFAULT: 'rgba(107,114,128,0.15)',
-        h: 'rgba(107,114,128,0.15)',
+        h: 'rgba(107,114,128,0.25)',
         f: 'rgba(255,255,255,1)',
         d: 'rgba(107,114,128,0.15)',
-        dh: 'rgba(107,114,128,0.15)',
+        dh: 'rgba(107,114,128,0.25)',
         df: 'rgba(0,0,0,0.1)',
     },
     bdrinput: {
         DEFAULT: 'rgba(107,114,128,0.15)',
+        h: 'rgba(107,114,128,0.25)',
         f: 'rgba(37, 99, 235, 0.8)',
         d: 'rgba(107,114,128,0.15)',
+        dh: 'rgba(107,114,128,0.25)',
         df: 'rgba(59, 130, 246, 0.8)',
     },
     bgrmodal: {
@@ -134,7 +139,11 @@ const colors = {
     },
     bdr: {
         DEFAULT: 'rgba(107,114,128,0.15)',
+        h: 'rgba(107,114,128,0.25)',
+        f: 'rgba(255,255,255,1)',
         d: 'rgba(107,114,128,0.15)',
+        dh: 'rgba(107,114,128,0.25)',
+        df: 'rgba(0,0,0,0.1)',
     },
     bgr: {
         DEFAULT: 'rgba(255,255,255,1)',
@@ -152,18 +161,7 @@ const colors = {
 
 const theme = {
     extend: {
-        boxShadow: {
-            'modal': '0 0px 2px 0 rgba(0, 0, 0, 0.25), 0 10px 20px 0 rgba(0, 0, 0, 0.15)',
-            'modal-d': '0 0px 2px 0 rgba(0, 0, 0, 1), 0 10px 20px 0 rgba(0, 0, 0, 0.15)',
-            'sm': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-            'md': '0 4px 8px 0 rgba(0, 0, 0, 0.10)',
-            'secondary': 'inset 0 0 0 0.5px rgba(0, 0, 0, 0.05), 0 1px 2px 0px rgba(0, 0, 0, 0.05)',
-            'secondary-d': 'inset 0 0 0 0.5px rgba(255, 255, 255, 0.05), 0 1px 2px 0px rgba(0, 0, 0, 0.05)',
-            'outline': 'inset 0 0 0 1px rgba(209, 213, 219, 1)',
-            'outline-d': 'inset 0 0 0 1px rgba(55, 65, 81, 1)',
-            'native': '0 0px 4px 0 rgba(0, 0, 0, 0.35), 0 10px 20px 0 rgba(0, 0, 0, 0.25)',
-            'native-d': '0 0px 4px 0 rgba(0, 0, 0, 1), 0 10px 20px 0 rgba(0, 0, 0, 0.25)',
-        },
+        
         colors: colors,
         fontFamily: {
             default: ['default-font', 'sans-serif']

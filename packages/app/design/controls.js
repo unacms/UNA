@@ -381,7 +381,7 @@ export const Button = (props) => {
         rounded = false,
         solid = false,
         padding,
-        ring = 'p-1 group',
+        ring = 'group',
         children,
         ...rest
     } = props;
@@ -461,9 +461,9 @@ export const Button = (props) => {
 
         if (variant != 'custom') {
             sizeClasses = `${roundingClass} ${padding || ThemeButtonSizes[size]?.padding} `;
-            iconContainerClass = `${ThemeButtonSizes[size]?.icon_sizes} ${title ? ThemeButtonSizes[size]?.icon_margin : ''}`;
+            iconContainerClass = `${ThemeButtonSizes[size]?.icon_container} ${title ? ThemeButtonSizes[size]?.icon_margin : ''}`;
             iconSize = ThemeButtonSizes[size]?.icon_size;
-            titleContainerClass += title ? ThemeButtonSizes[size]?.min_height + ThemeButtonSizes[size]?.margin : '';
+            titleContainerClass += title ? ThemeButtonSizes[size]?.title_container + (startDecorator || endDecorator ? ThemeButtonSizes[size]?.title_margin : '') : '';
         }
         return {
             sIconContainer: iconContainerClass,

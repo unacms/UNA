@@ -416,108 +416,52 @@ function ComponentModal({ title = 'test' }) {
 
 
 const ComponentsLoginContent = (
-    <View className="flex-row hidden lg:flex  gap-x-12 gap-y-2">
-        <View className="flex-col gap-y-4">
-            <View className="flex-row gap-x-2 ">
-                <Button
-                    variant="outline"
-                    startDecorator="Users"
-                    size="sm"
-                    full
-                    rounded
-                />
-                <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-lg font-semibold ">
-                    Meet People
+        <View className="flex-col gap-y-8 flex-auto my-4 ">
+                <Text className="text-4xl tracking-tight font-bold text-neutral-800 dark:text-neutral-200 justify-center items-center  ">
+                    Welcome back!
                 </Text>
-            </View>
+                <View className="flex-col gap-y-4 hidden  lg:flex">
+                    <View className="flex-row gap-x-4 ">
+                    
+                        <Icon
+                        className="text-neutral-800 dark:text-neutral-200"
+                        icon="UsersRound"
+                        width={24}
+                        height={24}
+                    />
+                        <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-base font-medium">
+                            Meet new people
+                        </Text>
+                    </View>
 
-            <View className="flex-row gap-x-2 ">
-                <Button
-                    variant="outline"
-                    startDecorator="Group"
-                    rounded
-                    size="sm"
+                    <View className="flex-row gap-x-4 ">
+                    
+                    <Icon
+                    className="text-neutral-800 dark:text-neutral-200"
+                    icon="Compass"
+                    width={24}
+                    height={24}
                 />
-                <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-lg font-semibold ">
-                    Join Groups
-                </Text>
-            </View>
+                    <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-base font-medium">
+                        Discover cool spaces
+                    </Text>
+                </View>
 
-            <View className="flex-row gap-x-2 ">
-                <Button
-                    variant="outline"
-                    startDecorator="MessageSquareText"
-                    rounded
-                    size="sm"
-                />
-                <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-lg font-semibold ">
-                    Share Ideas
-                </Text>
-            </View>
+                <View className="flex-row gap-x-4 ">
+                    
+                        <Icon
+                        className="text-neutral-800 dark:text-neutral-200"
+                        icon="Share"
+                        width={24}
+                        height={24}
+                    />
+                        <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-base font-medium">
+                            Share your ideas
+                        </Text>
+                    </View>
+                </View>
 
-            <View className="flex-row gap-x-2 ">
-                <Button
-                    variant="outline"
-                    startDecorator="CalendarCheck"
-                    rounded
-                    size="sm"
-                />
-                <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-lg font-semibold ">
-                    Discover Events
-                </Text>
-            </View>
-        </View>
-
-        <View className="flex-col gap-y-4">
-            <View className="flex-row gap-x-2 ">
-                <Button
-                    variant="outline"
-                    startDecorator="MessageCircleMore"
-                    rounded
-                    size="sm"
-                />
-                <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-lg font-semibold ">
-                    Message Friends
-                </Text>
-            </View>
-
-            <View className="flex-row gap-x-2 ">
-                <Button
-                    variant="outline"
-                    startDecorator="MessageSquare"
-                    rounded
-                    size="sm"
-                />
-                <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-lg font-semibold ">
-                    Discuss Topics
-                </Text>
-            </View>
-
-            <View className="flex-row gap-x-2 ">
-                <Button
-                    variant="outline"
-                    startDecorator="Store"
-                    rounded
-                    size="sm"
-                />
-                <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-lg font-semibold ">
-                    Buy & Sell
-                </Text>
-            </View>
-
-            <View className="flex-row gap-x-2 ">
-                <Button
-                    variant="outline"
-                    startDecorator="Video"
-                    rounded
-                    size="sm"
-                />
-                <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-lg font-semibold ">
-                    Watch Videos
-                </Text>
-            </View>
-        </View>
-    </View>
+       </View>
 )
 
 const ComponentsDummy = (

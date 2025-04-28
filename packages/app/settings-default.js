@@ -698,12 +698,12 @@ export  const settingsDefault = {
         card: {
             default: ' overflow-hidden bg-bgrcard dark:bg-bgrcard-d ',
             border: '  border-bdrcard dark:border-bdrcard-d ',
-            rounded: 'rounded-2xl',
+            rounded: ' rounded-[24px] ',
             margin: ''
         },
         inputs: {
             default:
-                'border-2 border-transparent hover:border-bdrinput dark:hover:border-bdrinput-d bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df focus:border-bdrinput-f dark:focus:border-bdrinput-df duration-300 placeholder-neutral-600 dark:placeholder-neutral-400 text-neutral-800 dark:text-neutral-200 rounded-[12px] flex-auto p-[10px] text-base leading-[24px]',
+                ' h-[48px] min-w-[48px] rounded-[12px] flex-auto px-[12px] py-[11px] text-[16px]  overflow-hidden border border-bdrinput bg-bgrinput hover:bg-bgrinput-h focus:bg-bgrinput-f dark:bg-bgrinput-d dark:hover:border-bdrinput-df dark:focus:bg-bgrinput-df focus:border-bdrinput-f dark:focus:border-bdrinput-df duration-300 placeholder-neutral-400 dark:placeholder-neutral-600 text-neutral-800 dark:text-neutral-200  ',
             multi: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg flex-auto p-2 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 ',
             rounded:
                 ' border-2 border-white dark:border-neutral-900 bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f focus-visible:outline-offset-0 focus:outline-primary/50 dark:focus:outline-primary/50 duration-100 placeholder-neutral-500 text-neutral-800 hover:bg-bgrinput-h dark:hover:bg-bgrinput-dh outline-2 outline-offset-0 rounded-full flex-auto p-[10px] dark:text-neutral-100 text-base leading-[24px] ',
@@ -724,39 +724,39 @@ export  const settingsDefault = {
             xs: {
                 rounded: ' rounded-[6px] overflow-hidden ',
                 padding: ' h-[28px] min-w-[28px] p-[4px] ',
-                icon_sizes:
+                icon_container:
                 ' h-[20px] w-[20px] ', //icon container size
                 icon_size: ' 20px ', //icon size
                 icon_margin: ' mx-[0px] ', //conditional margin for icon container when title is present
-                min_height: ' ',
-                margin: ' px-[4px] leading-[20px] native:text-[14px] web:text-sm ',
+                title_container: ' ',
+                title_margin: ' px-[4px] leading-[20px] native:text-[14px] web:text-sm ',
             },
             sm: {
-                rounded: ' rounded-[8px] overflow-hidden ',
-                padding: ' h-[36px] min-w-[36px] px-[6px] ',
-                icon_sizes: ' h-[24px] w-[24px] ',
-                icon_size: ' 24px ',
-                icon_margin: ' ',
-                min_height: ' ',
-                margin: ' mx-[4px] my-auto native:text-[14px]  web:text-sm ', // margin around text
+                rounded: ' rounded-[10px] ',
+                padding: ' h-[40px] px-[10px] overflow-hidden ',
+                icon_container: ' flex items-center justify-center  ',
+                title_container: ' px-[2px] ',
+                icon_size: 20,
+                icon_margin: ' mx-[2px] ', //conditional margin for icon container when title is present
+                title_margin: ' ', //cond // margin around text
             },
             base: {
-                rounded: ' rounded-[10px] overflow-hidden ',
-                padding: ' h-[40px] min-w-[40px] px-[10px] ',
-                icon_sizes: ' h-[20px] w-[20px]',
-                icon_size: '20px',
-                icon_margin: ' mx-[4px] ',
-                min_height: '  ',
-                margin: ' mx-[6px] my-auto native:text-[16px] ',
+                rounded: ' rounded-[12px] ',
+                padding: ' h-[48px] px-[12px] overflow-hidden ',
+                icon_container: ' flex items-center justify-center  ',
+                title_container: ' px-[4px] ',
+                icon_size: 24,
+                icon_margin: ' mx-[4px] ', //conditional margin for icon container when title is present
+                title_margin: ' ', //conditional margin for text container when icon is present
             },
             lg: {
-                rounded: ' rounded-[12px] overflow-hidden ',
-                padding: ' min-w-[48px] h-[48px] px-[6px] ',
-                icon_sizes: ' p-[10px] h-[48px] w-[48px] ',
-                icon_size: 28,
-                icon_margin: '  ',
-                min_height: ' leading-[40px] sm:text-[16px] ',
-                margin: ' mx-[10px] my-auto native:text-[16px] ',
+                rounded: ' rounded-[12px] ',
+                padding: ' h-[48px] px-[12px] overflow-hidden ',
+                icon_container: ' flex items-center justify-center  ',
+                title_container: ' px-[4px] ',
+                icon_size: 24,
+                icon_margin: ' mx-[4px] ', //conditional margin for icon container when title is present
+                title_margin: ' ', //conditional margin for text container when icon is present
             },
         },
         button_styles: {
@@ -799,10 +799,10 @@ export  const settingsDefault = {
             /*'u-btn-text-color-icon-light': 'rgb(243, 244, 246)',
             'u-btn-text-color-icon-dark': 'rgb(243, 244, 246)',*/
 
-            'u-btn-link-cnt': ' bg-transparent px-0 ',
+            'u-btn-link-cnt': ' hover:bg-primary/10 px-0 ',
             'u-btn-link-text':
-                ' font-semibold group-hover:underline text-neutral-800 dark:text-neutral-200 hover:text-neutral-950 dark:hover:text-neutral-50 ',
-            'u-btn-link-trans': ' web:duration-200 ',
+                ' font-semibold group-hover:underline text-primary dark:text-primary-d ',
+            'u-btn-link-trans': ' web:duration-300 ',
             'u-btn-link-color-icon-light': 'rgba(37,99,235,1)',
             'u-btn-link-color-icon-dark': 'rgba(37,99,235,1)',
 

@@ -53,7 +53,7 @@ export default function PageLayout(props) {
                 </View>}
 
                 <View className="mx-auto w-full max-w-lg md:w-1/2 lg:w-2/5 my-auto mx-auto items-center lg:p-2  ">
-                    <View className="  w-full   "><ScrollView>
+                    <View className="w-full"><ScrollView>
                     <Card
                             rounded=" rounded-2xl "
                             addClassName=" p-4 sm:p-6 w-full max-w-xl mx-auto flex-auto"
@@ -74,9 +74,8 @@ export default function PageLayout(props) {
                             <Link className=" w-full " href="/login">
                                 <Button
                                     title="Log in with email"
-
                                     startDecorator="LogIn"
-                                    size="base"
+                                    size="lg"
                                     fullWidth
                                 />
                             </Link>

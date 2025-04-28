@@ -19,7 +19,7 @@ export default function FormFieldSubmit(props) {
         rounded = false,
         icon,
         size = 'base',
-        notFullWidth = false,
+        notFullWidth = true,
         saveOnChanges = false,
         hide_errors = true,
         ...restProps

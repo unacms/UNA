@@ -9,7 +9,7 @@ export default function (props) {
 
   return (
     <View className={
-        props.addClassName + ' shadow-sm bg-bgrcard dark:bg-bgrcard-d ' + margin + ' ' + rounded + ' overflow-hidden '
+        props.addClassName + ' bg-bgrcard dark:bg-bgrcard-d ' + margin + ' ' + rounded + ' overflow-hidden '
       }
     >
       {props.children}
