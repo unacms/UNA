@@ -742,9 +742,9 @@ export  const settingsDefault = {
             },
             base: {
                 rounded: ' rounded-[10px] overflow-hidden ',
-                padding: ' h-[44px] min-w-[44px] px-[8px] ',
-                icon_sizes: ' h-[24px] w-[24px]',
-                icon_size: '24px',
+                padding: ' h-[40px] min-w-[40px] px-[10px] ',
+                icon_sizes: ' h-[20px] w-[20px]',
+                icon_size: '20px',
                 icon_margin: ' mx-[4px] ',
                 min_height: '  ',
                 margin: ' mx-[6px] my-auto native:text-[16px] ',
@@ -776,9 +776,9 @@ export  const settingsDefault = {
             'u-btn-primary-color-icon-dark': 'rgb(243, 244, 246)',
 
             'u-btn-secondary-cnt':
-                ' bg-neutral-200 dark:bg-neutral-800 sm:hover:bg-neutral-300 sm:dark:hover:bg-neutral-700  ',
+                ' bg-neutral-200 dark:bg-neutral-800 sm:group-hover:bg-neutral-200 sm:dark:group-hover:bg-neutral-800 shadow-secondary dark:shadow-secondary-d ',
             'u-btn-secondary-text':
-                ' font-medium text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-white ',
+                ' font-medium text-neutral-600 group-hover:text-neutral-800 dark:text-neutral-400 dark:group-hover:text-neutral-200 group-active:text-neutral-900 dark:group-active:text-neutral-100 ',
             'u-btn-secondary-trans': ' web:duration-200',
             /*'u-btn-secondary-color-icon-light': 'rgb(243, 244, 246)',
             'u-btn-secondary-color-icon-dark': 'rgb(243, 244, 246)',*/

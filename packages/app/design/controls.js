@@ -381,6 +381,7 @@ export const Button = (props) => {
         rounded = false,
         solid = false,
         padding,
+        ring = 'p-1 group',
         children,
         ...rest
     } = props;
@@ -519,7 +520,7 @@ export const Button = (props) => {
         role: rest['aria-haspopup'] === 'menu' ? 'menubutton' : 'button',
     } : {};
     const buttonContent = (
-        <>
+        <View className={ring}>
             <Cnt
                 className={`${sClassContainer} ${sizeClasses}`}
                 {...rest}
@@ -538,7 +539,7 @@ export const Button = (props) => {
                 {children}
             </Cnt>
             {!isTitle && oButtonAddon}
-        </>
+        </View>
     );
 
     return showTooltip ? <Tooltip content={tooltip}>{buttonContent}</Tooltip> : buttonContent;

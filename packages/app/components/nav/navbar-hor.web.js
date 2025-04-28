@@ -137,7 +137,7 @@ export default function (props) {
                         props.layoutName == 'post'
                             ? 'hidden lg:flex'
                             : '') +
-                        ' fixed w-full h-16 lg:shadow-sm items-center w-full bg-bgrnavbar dark:bg-bgrnavbar-d '
+                        ' fixed w-full h-16 lg:shadow-sm items-center w-full bg-bgrnavbar/80 backdrop-blur-lg dark:bg-bgrnavbar-d/80 dark:backdrop-blur-lg '
                     }
                 >
                     <View
@@ -161,7 +161,7 @@ export default function (props) {
                         <Row className="flex-none xl:w-80 2xl:w-96 flex-none px-[12px] justify-end ">
                             {!!currentUser && (
                                 <Row className="flex-row justify-end  ">
-                                    <View className=" flex-row gap-x-1 ">
+                                    <View className=" flex-row ">
                                         <View className=" xl:hidden ">
                                             {bSearch && <Search />}
                                         </View>
@@ -208,7 +208,7 @@ export default function (props) {
                                 </Row>
                             )}
                             {!currentUser && (
-                                <Row className="flex-row flex-auto sm:flex-none justify-end my-auto ">
+                                <Row className="flex-row flex-auto sm:flex-none justify-end my-auto gap-x-1 ">
                                     <MenuLauncher />
 
                                     {bSearch && (
