@@ -145,18 +145,24 @@ export  const settingsDefault = {
         ],
         selector_control_names: ['*_cat'],
 
-       /* sys_login: { hide_errors: true, button_full_width: true },
+       /* sys_login: { hide_errors: true, button_full_width: true },*/
         
         sys_forgot_password: {
             hide_errors: true,
             button_full_width: true,
-            button_hide_on_small: true,
+
         },
-        bx_invites_request_send: {
+      /* bx_invites_request_send: {
             hide_errors: true,
             button_full_width: true,
-            button_hide_on_small: true,
+
+        },
+        sys_account_create: {
+            hide_errors: true,
+            button_full_width: true,
+
         },*/
+        
     },
     jitsi: {
         prefix: 'prefix_',

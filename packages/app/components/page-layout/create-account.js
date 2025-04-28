@@ -8,7 +8,7 @@ import Link from 'app/ui/atoms/link'
 import { Platform, Keyboard } from 'react-native'
 import { appStatic } from 'app/lib/app-static'
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
-import { useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from 'react-i18next';
 export default function PageLayout(props) {
     const { t } = useTranslation();
@@ -19,70 +19,74 @@ export default function PageLayout(props) {
     useEffect(() => {
         // Subscribe to keyboard events
         const keyboardDidShowListener = Keyboard.addListener(
-          'keyboardDidShow',
-          () => {
-            setKeyboardVisible(true); // Set to true when the keyboard is shown
-          }
+            'keyboardDidShow',
+            () => {
+                setKeyboardVisible(true); // Set to true when the keyboard is shown
+            }
         );
         const keyboardDidHideListener = Keyboard.addListener(
-          'keyboardDidHide',
-          () => {
-            setKeyboardVisible(false); // Set to false when the keyboard is hidden
-          }
+            'keyboardDidHide',
+            () => {
+                setKeyboardVisible(false); // Set to false when the keyboard is hidden
+            }
         );
-    
+
         // Cleanup the event listeners when the component unmounts
         return () => {
-          keyboardDidHideListener.remove();
-          keyboardDidShowListener.remove();
+            keyboardDidHideListener.remove();
+            keyboardDidShowListener.remove();
         };
-      }, []);
+    }, []);
 
     return (
-        <KbAvoidingView style={{ flex: 1 }} offset={1}>
-            <View style={{ flex: 1 }} className={Platform.OS === 'web' ? ' p-4 w-full mx-auto max-w-5xl flex-col items-center lg:flex-row  rounded-3xl lg:bg-bgrnavbar/50 lg:dark:bg-bgrnavbar-d/50 lg:border border-dashed border-bdr dark:border-bdr-d':' p-4'}>
-                {!isKeyboardVisible && <View className={Platform.OS === 'web' ? "flex-col p-4 lg:p-8 flex-auto w-full  items-center lg:items-start gap-y-4 my-auto ":"w-full mx-auto max-w-5xl flex-col items-center lg:flex-row rounded-3xl lg:bg-bgrnavbar/50 lg:dark:bg-bgrnavbar-d/50 lg:border border-dashed border-bdr dark:border-bdr-d"}>
+        <KbAvoidingView style={{ flex: 1 }}>
+            <View style={{ flex: 1 }} className={Platform.OS === 'web' ? 'w-full  px-4 py-12 mx-auto max-w-5xl items-center lg:flex-row gap-x-4 gap-y-4  ' : ' items-center p-4'}>
+                <View className="flex-col gap-y-4 hidden lg:flex flex-auto">
+                    <View className={Platform.OS === 'web' ? "flex-col p-4 lg:p-8 flex-auto w-full  items-center lg:items-start gap-y-4 my-auto " : "w-full mx-auto max-w-5xl flex-col items-center lg:flex-row rounded-3xl lg:bg-bgrnavbar/50 lg:dark:bg-bgrnavbar-d/50 lg:border border-dashed border-bdr dark:border-bdr-d"}>
                         <Text className="text-4xl lg:text-5xl tracking-tight font-bold text-neutral-800 dark:text-neutral-200 ">
-                        {isAllowJoin ? 'Join now!' : 'Request Invitation'}
-                    </Text>
+                            {isAllowJoin ? 'Join now!' : 'Request Invitation'}
+                        </Text>
 
-                    <Text className="text-base lg:text-lg xl:text-xl  text-neutral-700 dark:text-neutral-300  ">
-                        {isAllowJoin ? t('Create an account to get started') : t('Registration is by invitation only.')}
-                    </Text>
-                    <View className="w-full mt-4">{appStatic('components_logincontent')}</View>
-                </View>}
-
-                <View className="mx-auto w-full max-w-lg md:w-1/2 lg:w-2/5 my-auto mx-auto items-center lg:p-2  ">
-                    <View className="w-full"><ScrollView>
-                    <Card
-                            rounded=" rounded-2xl "
-                            addClassName=" p-4 sm:p-6 w-full max-w-xl mx-auto flex-auto"
-                        >
-                                {!isAllowJoin && <BlockByName name={props.blocks.form_invitation} data={props.data} />}
-                                {isAllowJoin && <BlockByName name={props.blocks.form_join} data={props.data} />}
-                                  
-                        </Card>
-                        </ScrollView>    
-                        {!isKeyboardVisible && <><View className="w-full m-2"></View>
-                        <Card
-                            rounded=" rounded-2xl "
-                            addClassName="p-6 w-full  max-w-xl mx-auto flex-auto flex-col "
-                        >
-                            <Text className="text-lg font-bold  mx-auto text-neutral-700 dark:text-neutral-300  mb-6">
-                                Already have an account?
-                            </Text>
-                            <Link className=" w-full " href="/login">
-                                <Button
-                                    title="Log in with email"
-                                    startDecorator="LogIn"
-                                    size="lg"
-                                    fullWidth
-                                />
-                            </Link>
-                        </Card></>}
+                        <Text className="text-base lg:text-lg xl:text-xl  text-neutral-700 dark:text-neutral-300  ">
+                            {isAllowJoin ? t('Create an account to get started') : t('Registration is by invitation only.')}
+                        </Text>
                     </View>
                 </View>
+                <Card
+                    rounded="  rounded-[24px] "
+                    addClassName=" animate-slidein p-4 w-full max-w-md mx-auto flex-auto "
+
+                >
+                    <View className="flex-col lg:hidden items-center mb-4">
+                        <View className="w-12 m-4 items-center mx-auto text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-900 dark:group-hover:text-neutral-100">
+                            {appStatic('logo_mark')}
+                        </View>
+                        <Text className="flex items-center h-12 text-center text-xl font-bold text-neutral-800 dark:text-neutral-200 ">Sign in to your account</Text>
+                    </View>
+                    {!isAllowJoin && <BlockByName name={props.blocks.form_invitation} data={props.data} formProps={{ auto_focus: true, hide_errors: true, button_full_width: true }} />}
+                    {isAllowJoin && <BlockByName name={props.blocks.form_join} data={props.data} formProps={{ auto_focus: true, hide_errors: true, button_full_width: true }} />}
+                    <Link
+                        className=" w-full my-4 "
+                        href="/forgot-password"
+                    >
+                        <Button
+                            title="Forgot password?"
+                            variant="link"
+                            fullWidth
+                            size="sm"
+                        />
+                    </Link>
+                    <View className="flex items-center justify-center pt-4 border-t border-bdr dark:border-bdr-d  ">
+                        <Link className=" w-full " href="/login">
+                            <Button
+                                title="Log in with email"
+                                startDecorator="UserPlus"
+                                size="base"
+                                fullWidth
+                            />
+                        </Link></View>
+                </Card>
             </View>
-</KbAvoidingView>
+        </KbAvoidingView >
     )
 }

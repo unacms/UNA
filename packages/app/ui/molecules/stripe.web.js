@@ -1,5 +1,6 @@
 import * as React from 'react';
-import {loadStripe} from '@stripe/stripe-js';
+//import {loadStripe} from '@stripe/stripe-js';
+import { loadStripe, setLoadParameters } from '@stripe/stripe-js/pure';
 import {
   EmbeddedCheckoutProvider,
   EmbeddedCheckout
