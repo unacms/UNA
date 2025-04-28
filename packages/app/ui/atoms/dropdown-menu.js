@@ -38,7 +38,7 @@ function DropdownMenuPopup({ items, onSelect, children, defaultOpen, variant, sh
     const variantClassMap = {
         vertical: { item: 'item_ver', container: 'content_ver' },
         horizontal: { item: 'item_hor', container: 'content_hor' },
-        nopad: { item: 'item_np', container: 'content_hor' },
+        nopad: { item: 'item_np', container: 'content_ver' },
     };
 
     const classes = variantClassMap[variant] ?? variantClassMap.vertical;

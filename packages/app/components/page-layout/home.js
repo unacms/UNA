@@ -18,9 +18,14 @@ import { Text } from 'app/design/typography'
 import UI from 'app/ui/molecules/ui'
 import { MenuItemSidebarWithWrapper } from 'app/components/nav/menu-item-sidebar'
 import Search from 'app/ui/molecules/search'
+import { Platform } from 'react-native'
+import { useRef } from 'react';
+import { getPageWidth } from 'app/lib/util'
+import ScrollList from 'app/ui/molecules/scroll_list'
+import Animated from 'react-native-reanimated';
 
 export default function (props) {
-
+    const isWeb = Platform.OS == 'web'  
     if (appSetting('config', 'show_ui')) {
         return <UI />
     }
@@ -29,6 +34,9 @@ export default function (props) {
     const { currentUser } = useCurrentUser()
     const feedMode = storageGet('feed:mode', '', true)
     const feedTypeD = storageGet('feed:type', '', true)
+
+    
+
     const [feedType, setFeedType] = useState(
         feedTypeD ? feedTypeD : appSetting('feed', 'default_feed')
     )
@@ -49,9 +57,26 @@ export default function (props) {
         setFeedType(mode)
         console.log('modemode', mode)
     }
+    const refer = useRef();
 
     if (!currentUser) {
-        return <><View className="lg:hidden" style={{ height: 64 }} ></View><Splash {...props} /></>
+        if (!isWeb)
+            return <><View className="lg:hidden" style={{ height: 64 }} ></View><Splash {...props} /></>
+        else{
+            const content = (
+                <Animated.ScrollView ref={refer} className={getPageWidth(props.uri, props.data.config) + '  mx-auto w-full '} keyboardShouldPersistTaps="always" keyboardDismissMode="on-drag">
+                   <Splash {...props} />
+                </Animated.ScrollView>
+            );
+        
+            return (<ScrollList 
+                refer={refer}
+                content = {content}
+                pageData = {props.data}
+                headerHeight = {64}
+                contentType="ScrollList"
+            />)
+        }
     }
 
     const sideBarBlocks = Object.keys(props.blocks)
@@ -192,7 +217,7 @@ export default function (props) {
             >
                 {getLayout(currentUser) == 'hor' && (
                     <View className="hidden xl:flex w-80 2xl:w-96 ">
-                        <View className="fixed fixed-process w-80 2xl:w-96 flex-col p-2">
+                        <View className="fixed fixed-process  p-2">
                             {appSetting('layout', 'sidebar_search') && (
                                 <View className="mb-3">
                                     <Search type="input" placeholder="Enter search text" />

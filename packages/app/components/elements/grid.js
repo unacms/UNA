@@ -22,23 +22,6 @@ import { useBottomSheetData } from 'app/context/bottomsheet';
 import { Icon } from 'app/ui/atoms/icon'
 import Redirect from 'app/ui/atoms/redirect';
 import Stripe from 'app/ui/molecules/stripe';
-
-/*function Stripe(props) {
-    const computedData = useMemo(() => {
-       // const StripeCont = React.memo(dynamic(() => import('app/ui/molecules/stripe')));
-        const StripeCont = React.memo(
-            React.lazy(() => import('app/ui/molecules/stripe'))
-        );
-        const StripeCont = React.lazy(() =>
-            import('app/ui/molecules/stripe').then(module => ({
-              default: React.memo(module.default),
-            }))
-          );
-        return <StripeCont {...props} />
-    }, [props.b]);
-    return computedData;
-}
-*/
 const getWidth1 = (width) => {
     if (!width)
         return '';

@@ -19,7 +19,7 @@ export default function FormFieldSubmit(props) {
         rounded = false,
         icon,
         size = 'base',
-        notFullWidth = true,
+        notFullWidth = false,
         saveOnChanges = false,
         hide_errors = true,
         ...restProps
@@ -28,8 +28,6 @@ export default function FormFieldSubmit(props) {
     const formContext = useFormContext();
     const { formState } = formContext;
     const { width } = useWindowDimensions();
-
-
     // Initialize controller for form field
     const { field } = useController({ name, rules: {}, defaultValue: value });
 
@@ -59,6 +57,7 @@ export default function FormFieldSubmit(props) {
         errorKeys.length > 0 && !hide_errors && !formProps.hide_errors;
 
     let fb = formProps.button_full_width || props.button_full_width || width < LAYOUT_BREAKPOINTS.lg;
+    
     if (notFullWidth){
         fb = false;
     }
@@ -70,7 +69,7 @@ export default function FormFieldSubmit(props) {
         disabled: formState.isSubmitting || disabled,
         fullWidth: fb,
     };
-
+    console.log("fbfb", value, buttonProps)
     const buttonHandlers = Platform.select({
         web: { onPress: handlePress },
         default: { onTouchStart: handlePress },

@@ -217,7 +217,7 @@ export default function (props) {
                                         </View>
                                     )}
 
-                                    <Link href="/">
+                                    <Link href="/login">
                                         <ButtonRef
                                             variant="secondary"
                                             tooltip="Account"
