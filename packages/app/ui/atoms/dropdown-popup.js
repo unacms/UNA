@@ -19,7 +19,7 @@ export default function DropdownPopup({
     defaultOpen = false,
     showOnTop = false,
     popupHeight = 0,
-    contentClasses = ' rounded-xl overflow-hidden border border-bdrmodal dark:border-bdrmodal-d bg-bgrmodal dark:bg-bgrmodal-d shadow-[0_10px_10px_rgba(0,0,0,0.05)]  '
+    contentClasses = ' rounded-2xl overflow-hidden border border-bdrmodal p-2 dark:border-bdrmodal-d bg-bgrmodal dark:bg-bgrmodal-d shadow-[0_10px_10px_rgba(0,0,0,0.05)]  '
 }) {
     const buttonRef = useRef(null);
     const [buttonPos, setButtonPos] = useState({ x: 0, y: 0, width: 0, height: 0 });
@@ -59,7 +59,7 @@ export default function DropdownPopup({
         <View
             style={{
                 top: buttonPos.y + buttonPos.height + 5,
-                left: buttonPos.x,
+                left: Math.min(buttonPos.x, windowWidth - popupWidth - 16),
                 elevation: 5,
                 minWidth: popupWidth,
             }}

@@ -190,9 +190,9 @@ export function ElementSearchData(oProps) {
     const cnt = !!popupContent && popupContent
 
     const cnt2 = (
-        <View className=" flex-row items-center justify-end p-2">
+        
             <Button variant="link" size="sm" fullWidth endDecorator="ChevronsRight" title={sTxtViewExtended} onPress={() => handleRedirect()} />
-        </View>
+        
     );
 
     if (oProps.resInPopup) {

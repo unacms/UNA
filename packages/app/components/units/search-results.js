@@ -37,7 +37,7 @@ export function UnitSearchResultsSmall({ data, onPress }) {
 
     return (
         <Pressable onPress={() => onPress(url)}>
-            <View className=" mx-2 mb-2 ">
+            <View className=" mb-1 ">
                 <View className=" bg-bgritem dark:bg-bgritem-d hover:bg-bgritem-h dark:hover:bg-bgritem-dh flex-row p-2 rounded-[10px] ">
                     {data?.author_data &&
                         <View className="w-12 h-12 rounded-full flex-none ">
