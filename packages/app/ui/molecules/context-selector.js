@@ -11,7 +11,7 @@ import { appStatic } from 'app/lib/app-static';
 function renderListItem(props, isActive) {
     return (
         <Link key={props.url} className="w-full" href={props.url}>
-            <Row className={`w-full p-2 gap-x-3 items-center ${isActive ? 'bg-bgritemprimary dark:bg-bgritemprimary-d' : ''}`}>
+            <Row className={`w-full p-2 gap-x-3 items-center ${isActive ? 'bg-bgritemprimary dark:bg-bgritemprimary-d rounded-xl' : ''}`}>
                 <View className={`items-center w-10 h-10  justify-center bg-bgritem border border-bdr dark:bg-bgritem-d ${isActive ? 'border-primary/50 dark:border-primary-d/50' : ''} dark:border-bdr-dark rounded-[10px]`}>
                     <Profile {...props} displayType="unit_wo_info" displaySize="base" />
                 </View>
@@ -24,7 +24,7 @@ function renderListItem(props, isActive) {
 function renderLogoListItem(isActive) {
     return (
         <Link key="global-context" className="w-full" href="/">
-            <Row className={`w-full p-2 gap-x-3 items-center ${isActive ? 'bg-bgritemprimary dark:bg-bgritemprimary-d' : ''}`}>
+            <Row className={`w-full p-2 gap-x-3 items-center ${isActive ? 'bg-bgritemprimary dark:bg-bgritemprimary-d  rounded-xl' : ''}`}>
                 <View className={`items-center w-10 h-10 p-1 justify-center bg-bgritem border border-bdr dark:bg-bgritem-d ${isActive ? 'border-primary/50 dark:border-primary-d/50' : ''} dark:border-bdr-dark rounded-[10px]`}>{appStatic('logo_mark')}</View>
                 <Text className="text-lg font-semibold text-neutral-700 dark:text-neutral-300">Discover</Text>
             </Row>

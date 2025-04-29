@@ -136,7 +136,7 @@ export default function (props) {
                         props.layoutName == 'post'
                             ? 'hidden lg:flex'
                             : '') +
-                        ' fixed w-full h-16 items-center w-full shadow-[0_0_3px_rgba(0,0,0,0.03)] border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d '
+                        ' fixed w-full h-16 items-center w-full shadow-[0_1px_0_rgba(0,0,0,0.08)] dark:shadow-[0_1px_0_rgba(0,0,0,1)] bg-bgrnavbar dark:bg-bgrnavbar-d '
                     }
                 >
                     <View
