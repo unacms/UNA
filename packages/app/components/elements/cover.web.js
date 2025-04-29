@@ -222,7 +222,7 @@ export default function (props) {
     };
 
     return (
-        <View className=' bg-bgrtabbar dark:bg-bgrtabbar-d ' >
+        <View className=' bg-bgrtabbar dark:bg-bgrtabbar-d border-b border-bdrtabbar dark:border-bdrtabbar-d ' >
             <View
                 className={
                     appSetting('layout', 'max_width') +

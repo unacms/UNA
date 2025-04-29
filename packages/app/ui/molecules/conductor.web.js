@@ -218,7 +218,7 @@ const LeftSideBarContainer = ({ menu, routes, currentUser, index, setIndex, left
                 }
                 return (
                     <Link href={a.key} key={`lmenu-${a.index}`} alt={a.title}>
-                        <Pressable className={a.ident ? 'pl-[44px]' : ''} onPress={(event) => {
+                        <Pressable className={a.ident ? 'pl-[48px]' : ''} onPress={(event) => {
                             setIndex(a.index);
                             window.history.pushState({}, '', a.key);
                             event.preventDefault()

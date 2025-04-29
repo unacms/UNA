@@ -54,9 +54,9 @@ function MenuTopItem({ link, title, index, icon, isTitle, isActive }) {
                     
                     {isTitle && <Text>{title}</Text>}
                 </Row>
-                {isActive && (
+                {/* {isActive && (
                     <View className="-bottom-1.5 w-full bg-primary dark:bg-primary-d rounded-xl h-0.5 animate-appear" />
-                )}
+                )} */}
             </View>
             </Tooltip>
         </Link>

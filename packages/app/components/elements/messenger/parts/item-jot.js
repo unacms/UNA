@@ -112,7 +112,7 @@ export default function JotItem({ item, index, handleReply }) {
             </View>
         </Row>
         <View className="flex-row justify-between items-center ml-2 mt-0.5">
-            <View className="pl-[44px]">
+            <View className="pl-[48px]">
                 <Button align="start" title={t("Reply")} size="xs" startDecorator="Reply" variant="link" onPress={() => handleReplyInner(item)} rounded />
             </View>
             <Row className='mr-1'>

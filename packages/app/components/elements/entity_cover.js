@@ -9,7 +9,7 @@ export default function (props) {
     const { t } = useTranslation();
     const data = props.data;
     return (
-        <View className="flex-col p-[16px] w-full mx-auto shadow-[0_1px_2px_0_rgba(0,0,0,0.05)] bg-bgrcard h-min dark:bg-bgrcard-d border border-bdrcard dark:border-bdrcard-d overflow-hidden rounded-xl">
+        <View className="flex-col p-[16px] w-full mx-auto  bg-bgrcard h-min dark:bg-bgrcard-d border border-bdrcard dark:border-bdrcard-d overflow-hidden rounded-xl">
             <View className="w-28 h-28 overflow-hidden bg-neutral-100 dark:bg-neutral-700  rounded-full  ">
                 {!!data.image ? <Image alt={data.fullname} className="rounded-full" view="cover" src={data.image.src} /> : <View><View className="w-[50%] z-20 aspect-square bg-neutral-200  dark:bg-neutral-600 border-4 border-neutral-100 dark:border-neutral-700  mx-auto rounded-full mt-[15%] "></View>
                     <View className="w-[80%] -translate-y-[5%] aspect-square  bg-neutral-200  dark:bg-neutral-600  mx-auto rounded-t-full  "></View></View>}
