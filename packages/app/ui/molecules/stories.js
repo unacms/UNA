@@ -63,14 +63,14 @@ export function Story(props) {
                 <View className='h-4 w-full  flex-row gap-x-2'>
                     {images.map((image, index) => (
                         <View  key={'slideindex' + index} className='h-3 w-1/4 bg-green-500'>
-                            <Animated.View style={[{height:12, position:'absolute', backgroundColor:'orange'}, animatedStyles2[index]]} className='h-96 w-80' >
+                            <Animated.View style={[{height:12, position:'absolute', backgroundColor:'orange'}, animatedStyles2[index]]} className='h-96 w-96' >
                             </Animated.View>
                         </View>
                     ))}
                 </View>
-                <View className='h-96 w-80' >
+                <View className='h-96 w-96' >
                     {images.map((image, index) => (
-                        <Animated.View key={'slide' + index} style={[{width:500, height:500, position:'absolute'}, animatedStyles[index]]} className='h-96 w-80' >
+                        <Animated.View key={'slide' + index} style={[{width:500, height:500, position:'absolute'}, animatedStyles[index]]} className='h-96 w-96' >
                             <Image
                                 src={image}
                                 alt="Show image" 

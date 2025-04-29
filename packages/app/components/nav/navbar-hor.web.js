@@ -42,7 +42,7 @@ const HeaderLine = memo(
             ).length > 0
 
         return (
-            <View className="flex-row w-full max-w-80 2xl:max-w-96 px-[16px] gap-x-2 items-center ">
+            <View className="flex-row w-96 px-[16px] gap-x-2 items-center ">
                 
                 {headerSettings.menu && isDrawer && (
                     <View className="lg:hidden ">
@@ -136,7 +136,7 @@ export default function (props) {
                         props.layoutName == 'post'
                             ? 'hidden lg:flex'
                             : '') +
-                        ' fixed w-full h-16 items-center w-full shadow-[0_1px_0_rgba(0,0,0,0.08)] dark:shadow-[0_1px_0_rgba(0,0,0,1)] bg-bgrnavbar dark:bg-bgrnavbar-d '
+                        ' fixed w-full h-16 items-center w-full shadow-[0_2px_4px_0_rgba(0,0,0,0.05),0_0px_2px_0_rgba(0,0,0,0.1)] dark:shadow-[0_1px_0_rgba(0,0,0,1)] bg-bgrnavbar dark:bg-bgrnavbar-d '
                     }
                 >
                     <View
@@ -157,9 +157,9 @@ export default function (props) {
                             context={props.context}
                         />
                         <MenuTop url={props.url} uri={props.uri}/>
-                        <Row className=" w-full max-w-80 2xl:max-w-96 px-[16px] gap-x-2 items-center justify-end ">
+                        <Row className=" w-96 px-[16px] gap-x-2 items-center justify-end ">
                             {!!currentUser && (
-                                <Row className="justify-end gap-x-2 ">
+                                <Row className="justify-end ">
                                     
                                         <View className=" ">
                                             {bSearch && <Search />}
@@ -188,6 +188,8 @@ export default function (props) {
                                                         rounded
                                                         startDecorator="MessageSquare"
                                                         id="m2"
+                                                        size="sm"
+                                                        ring="p-1"
                                                         addon={{
                                                             variant: 'primary',
                                                             text: currentUser
@@ -207,7 +209,7 @@ export default function (props) {
                                 </Row>
                             )}
                             {!currentUser && (
-                                <Row className="flex-row flex-auto sm:flex-none justify-end my-auto gap-x-2 ">
+                                <Row className="flex-row flex-auto sm:flex-none justify-end my-auto ">
                                     <MenuLauncher />
 
                                     {bSearch && (
@@ -221,6 +223,8 @@ export default function (props) {
                                             variant="secondary"
                                             tooltip="Account"
                                             rounded
+                                            size="sm"
+                                            ring="p-1"
                                             aria-label="Account"
                                             alt={t('Account')}
                                             startDecorator="UserRound"

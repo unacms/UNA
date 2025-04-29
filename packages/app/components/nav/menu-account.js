@@ -51,6 +51,8 @@ export default function MenuAccount({ buttonProps, children }) {
         padding: '0px',
         rounded: true,
         startDecorator: profile,
+        size: "sm",
+        ring: "p-1",
     };
 
     if ((menu_account_items.length == 0 && menuData) || !profile)
@@ -133,6 +135,8 @@ export default function MenuAccount({ buttonProps, children }) {
                                         fullWidth
                                         align="start"
                                         solid
+                                        size="sm"
+                                        ring="p-1"
                                         startDecorator="CircleUserRound"
                                         title={t("See all profiles")}/>
                                 </ProfileSwitcher>

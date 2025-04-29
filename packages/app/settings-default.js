@@ -28,7 +28,7 @@ export  const settingsDefault = {
     layout: {
         avaliable_layouts: ['hor', 'ver', 'mixed'], // OLD appSetting('layout', 'format_list')
         default_layout: 'hor', //hor, ver, mixed// OLD appSetting('layout', 'format')
-        max_width: ' w-full ', // consider for hor = max-w-screen-2xl, for ver = max-w-screen-xl
+        max_width: ' max-w-screen-2xl ', // consider for hor = max-w-screen-2xl, for ver = max-w-screen-xl
         max_width_block: '  ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
         search: false,
         sidebar_search: true,
@@ -40,7 +40,7 @@ export  const settingsDefault = {
         hide_header_for_all: false,
         card_animation_duration: 0,
         user_remote_config: true,
-        
+        max_width_header_content: 'max-w-screen-2xl',
         background_image_color: '', //OLD appSetting('layout', 'background_cover_color')
         background_image: '', //`url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239C92AC' fill-opacity='0.08' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E")`,
         background_image_dark: '', //`url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239C92AC' fill-opacity='0.08' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E")`,
@@ -589,7 +589,7 @@ export  const settingsDefault = {
         },
         light: {
             primary: 'rgba(37,99,235,1)',
-            headerBackground: 'rgba(255,255,255,0.9)',
+            headerBackground: 'rgba(255,255,255,1)',
             barsBackground: 'rgba(255,255,255,1)', //header and tabbar background in native light mode
             bottomSheetBackground: 'rgba(255,255,255,1)',
             barsColor: '#4B5563',
@@ -610,7 +610,7 @@ export  const settingsDefault = {
         },
         dark: {
             default: 'rgba(209,213,219,1)', //fix for icons color in iOS
-            headerBackground: 'rgba(17,24,39,0.9)',
+            headerBackground: 'rgba(17,24,39,1)',
             primary: 'rgba(37,99,235,1)',
             barsBackground: 'rgba(17,24,39,1)', //header background in native
             bottomSheetBackground: 'rgba(17,24,39,1)',
@@ -703,7 +703,7 @@ export  const settingsDefault = {
         },
         card: {
             default: ' bg-bgrcard dark:bg-bgrcard-d',
-            border: ' border-bdrcard dark:border-bdrcard-d shadow-[0_1px_2px_0_rgba(0,0,0,0.05)] ',
+            border: ' border-bdrcard dark:border-bdrcard-d shadow-[0_2px_4px_0_rgba(0,0,0,0.05),0_0px_2px_0_rgba(0,0,0,0.1)] ',
             rounded: ' rounded-2xl ',
             margin: ''
         },

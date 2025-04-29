@@ -27,7 +27,7 @@ const HeaderLine = memo(({headerSettings, currentUser, uri, title, menuPopup, se
     const isDrawer = menuItemsByName('main_menu', appSetting('menu_items', 'menu_drawer'), currentUser).length > 0;
 
     return (
-        <View className="flex-row xl:w-80 px-3 sm:px-4 my-auto items-center">
+        <View className="flex-row xl:w-96 px-3 sm:px-4 my-auto items-center">
             {(headerSettings.menu && isDrawer) && (
                 <View className="lg:hidden mr-3 sm:mr-4">
                     <Pressable onPress={showMenu}>
@@ -95,8 +95,8 @@ export default function (props) {
         <>
             <View className={appSetting('layout', 'max_width') + " w-full flex-row flex-auto mx-auto"}>
                 <Row className='w-full'>
-                    {(menu_sidebar_items.length > 0 && (props.uri != 'home' || (props.uri == 'home' && currentUser))) && <View className='hidden lg:block w-full lg:w-80 '>
-                        <View className=' pt-16 fixed-process w-80 max-h-screen overflow-scroll	'>
+                    {(menu_sidebar_items.length > 0 && (props.uri != 'home' || (props.uri == 'home' && currentUser))) && <View className='hidden lg:block w-full lg:w-96 '>
+                        <View className=' pt-16 fixed-process w-96 max-h-screen overflow-scroll	'>
                             <View className='px-4 py-3 '>
                                 <ProfileSwitcher hideTitle={true} useDefault={true} />
                                 {menu_sidebar_items.map(
@@ -139,7 +139,7 @@ export default function (props) {
                                 </View>}
                             </Row>
                         </Row>
-                        <Row className="w-full max-w-80 2xl:max-w-96 px-[16px] gap-x-2 justify-end  ">
+                        <Row className="w-full w-96 px-[16px] gap-x-2 justify-end  ">
                             {!!currentUser && (
                                 <Row className="flex-row justify-end ">
                                     <View className=" flex-row my-auto gap-x-2 ">

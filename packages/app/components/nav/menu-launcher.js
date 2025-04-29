@@ -42,6 +42,8 @@ export default function () {
                     rounded
                     alt={t("All Apps")}
                     startDecorator="LayoutGrid"
+                    ring="p-1"
+                    size="sm"
                     
                 />
             </DropdownMenu>
