@@ -381,7 +381,7 @@ export const Button = (props) => {
         rounded = false,
         solid = false,
         padding,
-        ring = 'group',
+        ring = '',
         children,
         ...rest
     } = props;
@@ -520,7 +520,7 @@ export const Button = (props) => {
         role: rest['aria-haspopup'] === 'menu' ? 'menubutton' : 'button',
     } : {};
     const buttonContent = (
-        <View className={`${ring} ${fullWidth ? ' flex-auto ' : ''}`}>
+        <View className={`group ${ring} ${fullWidth ? ' flex-auto ' : ''}`}>
             <Cnt
                 className={`${sClassContainer} ${sizeClasses}`}
                 {...rest}
