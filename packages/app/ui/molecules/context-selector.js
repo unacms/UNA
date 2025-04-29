@@ -36,7 +36,7 @@ export default function ContextSelector({ data }) {
         <View className="max-w-xs">
             <DropdownPopup
                 trigger={renderTrigger(data.current, _currentUser)}
-                popupWidth={256}
+                popupWidth={352}
             >
                 <View>
                     {!!data.current?.id && renderListItem(_currentUser)}
