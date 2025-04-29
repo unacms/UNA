@@ -139,7 +139,7 @@ export default function (props) {
                                 </View>}
                             </Row>
                         </Row>
-                        <Row className="flex-row flex-auto xl:flex-none xl:w-96 px-3 sm:px-4 justify-end  ">
+                        <Row className="w-full max-w-80 2xl:max-w-96 px-[16px] gap-x-2 justify-end  ">
                             {!!currentUser && (
                                 <Row className="flex-row justify-end ">
                                     <View className=" flex-row my-auto gap-x-2 ">

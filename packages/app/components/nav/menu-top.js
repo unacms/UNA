@@ -39,17 +39,19 @@ function MenuTopItem({ link, title, index, icon, isTitle, isActive }) {
             <Tooltip content={title}>
             <View className="flex-auto group h-14 p-1" key={`menu-${index}`}>
                 <Row
-                    className={` group-hover:bg-neutral-500/10 duration-300 items-center justify-center h-12 min-w-12 rounded-xl ${
-                        isActive && ' group-hover:bg-transparent'
+                    className={`items-center justify-center h-12 min-w-12 rounded-[12px] duration-300 group-active:opacity-50 ${
+                        isActive 
+                            ? 'bg-bgritemprimary text-primary dark:text-primary-d dark:bg-bgritemprimary-d group-hover:bg-bgritemprimary-h dark:group-hover:bg-bgritemprimary-dh'
+                            : 'text-neutral-600 dark:text-neutral-400 group-hover:bg-bgritem-h dark:group-hover:bg-bgritem-dh'
                     }`}
                 >
-                    <Text className="text-neutral-600 dark:text-neutral-400">
+                    
                         <Icon
                             icon={icon}
                             size="24"
-                            color={isActive ? colors.primary : colors.default}
+                            color={isActive ? colors.default : colors.default}
                         />
-                    </Text>
+                    
                     {isTitle && <Text>{title}</Text>}
                 </Row>
                 {isActive && (

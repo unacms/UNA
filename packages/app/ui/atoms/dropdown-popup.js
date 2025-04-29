@@ -15,11 +15,11 @@ export default function DropdownPopup({
     open,
     onOpenChange,
     trigger,
-    popupWidth = 384,
+    popupWidth = 352,
     defaultOpen = false,
     showOnTop = false,
     popupHeight = 0,
-    contentClasses = 'rounded-lg backdrop-blur bg-bgrmodal dark:bg-bgrmodal-d p-2 shadow-lg'
+    contentClasses = ' rounded-xl overflow-hidden border border-bdrmodal dark:border-bdrmodal-d bg-bgrmodal dark:bg-bgrmodal-d shadow-[0_10px_10px_rgba(0,0,0,0.05)]  '
 }) {
     const buttonRef = useRef(null);
     const [buttonPos, setButtonPos] = useState({ x: 0, y: 0, width: 0, height: 0 });

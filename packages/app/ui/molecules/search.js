@@ -80,16 +80,16 @@ export function ElementSearchData(oProps) {
     const [popupContent, setPopupContent] = useState('');
     const { t } = useTranslation();
     const sTxtTitle = t("Search");
-    const sTxtViewExtended = t("Extended");
+    const sTxtViewExtended = t("See all results");
     const sType = oProps?.type ? oProps.type : 'default';
 
     const inputRef = useRef();
 
     const getSkeleton = () => {
         return (
-            <View className="w-full mt-1">
+            <View className="w-full px-2">
                 {[...Array(1, 2, 3)].map(i =>
-                    <View key={i} className="flex-col my-2 p-2 bg-neutral-500/5 sm:rounded-lg">
+                    <View key={i} className="flex-col mb-2 p-2 bg-neutral-500/5 rounded-xl">
                         <View className="animate-pulse flex-row items-center gap-y-1">
                             <View className="rounded-full bg-neutral-600/20 h-10 w-10"></View>
                             <View className="flex-1 gap-y-1">
@@ -190,8 +190,8 @@ export function ElementSearchData(oProps) {
     const cnt = !!popupContent && popupContent
 
     const cnt2 = (
-        <View className=" flex-row items-center justify-end">
-            <Button variant="text" size="sm" rounded endDecorator="ChevronsRight" title={sTxtViewExtended} onPress={() => handleRedirect()} />
+        <View className=" flex-row items-center justify-end p-2">
+            <Button variant="link" size="sm" fullWidth endDecorator="ChevronsRight" title={sTxtViewExtended} onPress={() => handleRedirect()} />
         </View>
     );
 
@@ -255,7 +255,7 @@ export function ElementSearchData(oProps) {
             <Redirect ref={redirectdRef} />
             {
                 (!!inputValue && appSetting('layout', 'extended_search')) && (
-                    <View className="hidden flex-row items-center mb-2 justify-end">
+                    <View className="hidden flex-row items-center m-2 justify-end">
                         <Button variant="text" size="sm" rounded endDecorator="ChevronsRight" title={sTxtViewExtended} onPress={() => handleRedirect()} />
                     </View>
                 )

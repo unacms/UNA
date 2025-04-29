@@ -29,7 +29,7 @@ export  const settingsDefault = {
         avaliable_layouts: ['hor', 'ver', 'mixed'], // OLD appSetting('layout', 'format_list')
         default_layout: 'hor', //hor, ver, mixed// OLD appSetting('layout', 'format')
         max_width: ' w-full ', // consider for hor = max-w-screen-2xl, for ver = max-w-screen-xl
-        max_width_block: 'max-w-screen-xl', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
+        max_width_block: '  ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
         search: false,
         sidebar_search: true,
         extended_search: true,
@@ -699,12 +699,12 @@ export  const settingsDefault = {
             container: ' h-full sm:h-auto  shadow-modal dark:shadow-modal-d bg-bgrmodal dark:bg-bgrmodal-d {ls}:rounded-2xl sm:border border-bdrmodal dark:border-bdrmodal-d overflow-hidden',
             content:
                 ' h-auto ',
-            header: ' p-[12px] items-start justify-start border-b border-bdr dark:border-bdr-d',
+            header: ' p-[12px] items-start justify-start border-b border-bdrmodal dark:border-bdrmodal-d',
         },
         card: {
             default: ' bg-bgrcard dark:bg-bgrcard-d',
-            border: ' ',
-            rounded: ' rounded-[24px] ',
+            border: ' border-bdrcard dark:border-bdrcard-d shadow-[0_1px_2px_0_rgba(0,0,0,0.05)] ',
+            rounded: ' rounded-2xl ',
             margin: ''
         },
         inputs: {
@@ -712,7 +712,7 @@ export  const settingsDefault = {
                 ' h-[48px] min-w-[48px] rounded-[12px] flex-auto px-[12px] py-[11px] text-[16px] hover:border-bdrinput-h focus:border-bdrinput-f overflow-hidden border border-bdrinput focus:bg-bgrinput-f dark:focus:bg-bgrinput-df focus:border-bdrinput-f dark:focus:border-bdrinput-df duration-300 placeholder-neutral-500 text-neutral-800 dark:text-neutral-200 ',
             multi: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg flex-auto p-2 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 ',
             rounded:
-                ' border-2 border-white dark:border-neutral-900 bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f focus-visible:outline-offset-0 focus:outline-primary/50 dark:focus:outline-primary/50 duration-100 placeholder-neutral-500 text-neutral-800 hover:bg-bgrinput-h dark:hover:bg-bgrinput-dh outline-2 outline-offset-0 rounded-full flex-auto p-[10px] dark:text-neutral-100 text-base leading-[24px] ',
+                ' h-[48px] min-w-[48px] rounded-[12px] flex-auto px-[12px] py-[11px] text-[16px] hover:border-bdrinput-h focus:border-bdrinput-f overflow-hidden border border-bdrinput focus:bg-bgrinput-f dark:focus:bg-bgrinput-df focus:border-bdrinput-f dark:focus:border-bdrinput-df duration-300 placeholder-neutral-500 text-neutral-800 dark:text-neutral-200 ',
             roundedsmall:
                 ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-full flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[34px] ',
             small: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[36px] ',
@@ -740,25 +740,25 @@ export  const settingsDefault = {
             sm: {
                 rounded: ' rounded-[10px] ',
                 padding: ' h-[40px] px-[10px] overflow-hidden ',
-                icon_container: ' flex items-center justify-center  ',
-                title_container: ' px-[2px] ',
+                icon_container: ' h-[20px] w-[20px] flex items-center justify-center ',
+                title_container: ' px-[4px] ',
                 icon_size: 20,
-                icon_margin: ' mx-[2px] ', //conditional margin for icon container when title is present
-                title_margin: ' ', //cond // margin around text
+                icon_margin: ' mx-[4px] ', //conditional margin for icon container when title is present
+                title_margin: ' ', //conditional margin for text container when icon is presentconditional margin for text container when icon is present
             },
             base: {
                 rounded: ' rounded-[12px] ',
                 padding: ' h-[48px] px-[12px] overflow-hidden ',
-                icon_container: ' flex items-center justify-center  ',
+                icon_container: ' h-[24px] w-[24px] flex items-center justify-center ',
                 title_container: ' px-[4px] ',
                 icon_size: 24,
                 icon_margin: ' mx-[4px] ', //conditional margin for icon container when title is present
-                title_margin: ' ', //conditional margin for text container when icon is present
+                title_margin: ' ', //conditional margin for text container when icon is presentnditional margin for text container when icon is present
             },
             lg: {
                 rounded: ' rounded-[12px] ',
                 padding: ' h-[48px] px-[12px] overflow-hidden ',
-                icon_container: ' flex items-center justify-center  ',
+                icon_container: ' h-[24px] w-[24px] flex items-center justify-center ',
                 title_container: ' px-[4px] ',
                 icon_size: 24,
                 icon_margin: ' mx-[4px] ', //conditional margin for icon container when title is present

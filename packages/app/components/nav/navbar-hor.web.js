@@ -42,7 +42,7 @@ const HeaderLine = memo(
             ).length > 0
 
         return (
-            <View className="flex-row xl:max-w-80 2xl:max-w-96 px-4 flex-auto gap-x-2 lg:flex-none xl:flex-auto items-center ">
+            <View className="flex-row w-full max-w-80 2xl:max-w-96 px-[16px] gap-x-2 items-center ">
                 
                 {headerSettings.menu && isDrawer && (
                     <View className="lg:hidden ">
@@ -61,17 +61,17 @@ const HeaderLine = memo(
                 )}
                 {(uri == 'home' || width >= LAYOUT_BREAKPOINTS.lg) && (
                     <Link
-                        className=" flex flex-row group gap-x-2 focus-visible:outline-2 focus-visible:outline-offset-0 focus:outline-primary/50  "
+                        className=" flex flex-row active:scale-90 active:opacity-50 gap-x-2 text-neutral-700 dark:text-neutral-300 hover:text-neutral-800 dark:hover:text-neutral-200 duration-300  "
                         href="/home"
                         aria-label="Logo"
                     >
-                        <View className=" items-center w-10 h-10 justify-center">
+                        <View className=" items-center w-10 h-10 justify-center ">
                             {appStatic('logo_mark')}
                         </View>
-                        {/*<View className=" items-center justify-center">
+                        <View className=" items-center justify-center">
                             {appStatic('logo_text')}
-                        </View>*/}
-                        {/*{appStatic('logo_text')}*/}
+                        </View>
+                       
                     </Link>
                 )}
                 <ContextSelector data={context}/>
@@ -158,7 +158,7 @@ export default function (props) {
                             context={props.context}
                         />
                         <MenuTop url={props.url} uri={props.uri}/>
-                        <Row className="flex-none xl:w-80 2xl:w-96 flex-none px-[12px] justify-end ">
+                        <Row className=" w-full max-w-80 2xl:max-w-96 px-[16px] gap-x-2 items-center justify-end ">
                             {!!currentUser && (
                                 <Row className="justify-end gap-x-2 ">
                                     

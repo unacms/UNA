@@ -50,8 +50,8 @@ export default function MultiPostForm({ data }) {
        
             <Card
                 rounded=" rounded-none sm:rounded-2xl  "
-                margin=" mx-auto mb-0 sm:mb-2 lg:mb-3 "
-                addClassName=" shadow-sm w-full p-[12px] sm:p-[16px]  "
+                margin=" mx-auto mb-2 "
+                addClassName=" border-y sm:border  w-full p-[12px] sm:p-[16px]  "
             >
                 <View className=" flex-row gap-x-[12px] ">
                     <View className="my-auto">
@@ -70,7 +70,7 @@ export default function MultiPostForm({ data }) {
                     </View>
                 </View>
                 <FormModal key={pageData?.ts} pageData={pageData} setPageData={setPageData} />
-                {menu_add_items.length > 0 && <Row className={` justify-between gap-x-[8px] sm:flex mt-[12px] sm:mt-[12px] sm:pt-[12px] sm:border-t border-bdr dark:border-bdr-d ' : ''}`}>
+                {menu_add_items.length > 0 && <Row className={` w-full gap-x-[8px] sm:flex mt-[12px] sm:pt-[12px] sm:border-t border-bdrcard dark:border-bdrcard-d ' : ''}`}>
                     {menu_add_items.map((item, index) => (
                         <Button key={item.name} size="sm" fullWidth variant="text" onPress={() => handleFormModal(item, null, setPageData, data.params)} startDecorator={item.icon} title={item.title} />
                     ))}

@@ -216,8 +216,8 @@ export default function (props) {
                 }
             >
                 {getLayout(currentUser) == 'hor' && (
-                    <View className="hidden xl:flex w-80 2xl:w-96 ">
-                        <View className="fixed fixed-process  p-2">
+                    <View className="hidden relative xl:flex w-full max-w-80 2xl:max-w-96 border-r border-r-bdr dark:border-r-bdr-d duration-200">
+                        <View className=" fixed-process fixed w-full max-w-80 2xl:max-w-96 p-[16px] gap-x-[8px]  duration-300">
                             {appSetting('layout', 'sidebar_search') && (
                                 <View className="mb-3">
                                     <Search type="input" placeholder="Enter search text" />
@@ -293,8 +293,8 @@ export default function (props) {
                     </View>
                 )}
 
-                <View className="flex-auto w-full lg:w-auto lg:px-4 xl:px-2 ">
-                    <View className=" w-full mx-auto lg:max-w-2xl relative xl:pt-4  ">
+                <View className="flex-auto w-full sm:px-4">
+                    <View className=" w-full mx-auto max-w-2xl relative pt-4  ">
                         <View className={`relative w-full mx-auto max-w-2xl ${feedList.length > 1 ? '' : 'sm:mt-3'} `}>
                             {feedList.map((item, index) => {
                                 if (feedType == item.name) {
@@ -336,8 +336,8 @@ export default function (props) {
 
                 </View>
 
-                <View className="hidden lg:flex w-80 2xl:w-96 ">
-                    <View className="fixed fixed-process w-full max-w-80 2xl:max-w-96 p-2 flex-col space-y-4 ">
+                <View className="hidden lg:flex w-full max-w-80 2xl:max-w-96 border-l border-l-bdr dark:border-l-bdr-d duration-200 ">
+                    <View className="fixed fixed-process w-full max-w-80 2xl:max-w-96 p-[16px] flex-col space-y-4 duration-300">
                         {sideBarBlocks.map((item, index) => {
                             return (
                                 <BlockByName

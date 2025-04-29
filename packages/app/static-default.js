@@ -23,7 +23,7 @@ const LogoNative = () => {
 const LogoText = (
     <Svg
         aria-label="Logo Text"
-        className=" group-active:scale-90 text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-900 dark:group-hover:text-neutral-100 duration-500"
+        className=" "
         width={68}
         height={32}
         viewBox="0 0 68 32"
@@ -50,7 +50,7 @@ const LogoText = (
 const LogoMark = (
     <Svg
         aria-label="Logo Mark"
-        className=" w-auto h-fit   "
+        className=" w-auto h-fit  "
         viewBox="0 0 40 40"
        
         xmlns="http://www.w3.org/2000/svg"

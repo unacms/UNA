@@ -520,7 +520,7 @@ export const Button = (props) => {
         role: rest['aria-haspopup'] === 'menu' ? 'menubutton' : 'button',
     } : {};
     const buttonContent = (
-        <View className={`${ring} ${fullWidth ? 'w-full' : ''}`}>
+        <View className={`${ring} ${fullWidth ? ' flex-auto ' : ''}`}>
             <Cnt
                 className={`${sClassContainer} ${sizeClasses}`}
                 {...rest}

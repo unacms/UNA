@@ -393,7 +393,7 @@ const RenderSceneHeader = ({ route, setFilterValue }) => {
     )
 };
 
-export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, leftSideBarBlocks, leftSideBarWidth = ' w-full min-w-80 max-w-96 ', skeleton = '', onChangeRoute, keyword, cover, layoutName, defaultHeaderHeight=116 }) {
+export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, leftSideBarBlocks, leftSideBarWidth = ' w-full max-w-80 2xl:max-w-96 ', skeleton = '', onChangeRoute, keyword, cover, layoutName, defaultHeaderHeight=116 }) {
     const uniRef = useRef();
     const { currentUser } = useCurrentUser();
     const { setBottomSheetData } = useBottomSheetData();
