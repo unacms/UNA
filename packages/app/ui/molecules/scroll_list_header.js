@@ -84,8 +84,8 @@ export const Header = memo(({
     return (
         <Row className={`justify-between items-center h-[64px]`}>
             <Row className='items-center'>
-                {(isHome) && <Pressable onPress={scrollToTop} className="ml-[12px]">{appStatic('logo_native')}</Pressable>}
-                <ContextSelector data={pageData?.context}/>
+                {(isHome && !pageData?.context) && <Pressable onPress={scrollToTop} className="ml-[12px]">{appStatic('logo_native')}</Pressable>}
+                {(pageData?.context) && <View className="ml-[12px]"><ContextSelector url={pageData?.url} data={pageData?.context}/></View>}
                 <View className="mr-[12px]">{(backButtonPresented && (!isWeb || history.length > 2)) && (
                     <Button variant="secondary"  rounded  onPress={() => {
                         FeedbackHaptics('Medium');

@@ -33,9 +33,10 @@ export default function ElementEntityAuthor(oProps) {
                 !!oProps.data?.entry_context?.id && (
 
                     <>
-                        <Text className=" text-neutral-500 dark:text-neutral-400 font-normal text-sm "> in </Text>
-                        <Text className=" text-neutral-500 dark:text-neutral-400 font-normal text-sm ">
-                            <Link href={oProps.data.entry_context.url}><Text className=" text-neutral-500 dark:text-neutral-400 font-normal text-sm ">{oProps.data.entry_context.display_name}</Text></Link>
+                        <Text className=" text-neutral-600 dark:text-neutral-400 font-medium text-sm "> in </Text>
+                        <Profile {...oProps.data.entry_context} displayType="unit_wo_info" displaySize="xxs" />
+                        <Text className=" text-neutral-600 dark:text-neutral-400 font-medium text-sm ">
+                            <Link href={oProps.data.entry_context.url}><Text className="ml-[2px] text-neutral-600 dark:text-neutral-400 font-medium text-sm ">{oProps.data.entry_context.display_name}</Text></Link>
                         </Text>
                     </>
 

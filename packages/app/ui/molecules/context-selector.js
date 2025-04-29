@@ -62,10 +62,16 @@ function renderTrigger() {
     );
 }
 
-export default function ContextSelector({ data }) {
+export default function ContextSelector({ data, url }) {
     const { currentUser } = useCurrentUser();
     if (!data) return null;
+    
     const contextRoot = getContextRoot(data, currentUser);
+    
+    console.log("uri", url, data.list.filter(item => item.url == '/' + url).length > 0)
+    if (url && (url != 'home' && data.list.filter(item => item.url == '/' + url).length == 0))
+        return null;
+
     return (
         <View className="flex-row items-center gap-x-2 w-full">
             <Link href={contextRoot.url} className=" items-center gap-x-2 group w-full flex-auto">

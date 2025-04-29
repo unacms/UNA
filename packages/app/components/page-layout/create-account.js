@@ -74,6 +74,7 @@ export default function PageLayout(props) {
                             variant="link"
                             fullWidth
                             size="sm"
+                            ring=" py-4 "
                         />
                     </Link>
                     <View className="flex items-center justify-center pt-4 border-t border-bdr dark:border-bdr-d  ">
