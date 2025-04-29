@@ -96,14 +96,14 @@ const AddMenu = (menu, filter) => {
 
         let btn = undefined;
         if (button.section)
-            btn = <Search section={button.section} params={{ trigger: { size: 'base' } }} />
+            btn = <Search section={button.section} params={{ trigger: { size: 'sm' } }} />
         else {
-            btn = <Button title={t(button.title)} startDecorator={button.icon} variant="secondary" rounded size="base" onPress={() => (handleFormModal(button, event, setPageData))} />;
+            btn = <Button title={t(button.title)} startDecorator={button.icon} variant="secondary" ring="p-1" rounded size="sm" onPress={() => (handleFormModal(button, event, setPageData))} />;
             btn = (button.link && button.name != "Add") ? <Link href={button.link} >{btn}</Link> : btn
         }
 
         return (
-            <View className="ml-2 " key={`add-${button.icon}`} >
+            <View className=" " key={`add-${button.icon}`} >
                 {btn}
                 <FormModal pageData={pageData} setPageData={setPageData} />
             </View>

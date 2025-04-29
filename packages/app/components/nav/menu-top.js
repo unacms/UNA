@@ -20,7 +20,7 @@ export default function MenuTop({ url, uri }) {
 
     return (
         <Row className="hidden lg:flex flex-auto ">
-            <Row className="w-full mx-auto gap-x-0.5 max-w-2xl justify-between">
+            <Row className="w-full mx-auto max-w-2xl justify-between">
                 {menu_navbar_items.map((item, index) => {
                     const isActive = item.link === '/' + url || (item.link === '/' && uri === 'home');
                     return <MenuTopItem key={`bmi-${index}`} link={item.link} icon={item.icon} isTitle={item.showTitle} title={t(item.title)} isActive={isActive} />
