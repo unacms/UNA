@@ -6,47 +6,89 @@ import { Button } from 'app/design/controls'
 import { Icon } from 'app/ui/atoms/icon';
 import Profile from 'app/ui/molecules/profile'
 import { useCurrentUser } from 'app/context/user';
+import { appStatic } from 'app/lib/app-static';
 
-function renderListItem(props) {
+function renderListItem(props, isActive) {
     return (
         <Link key={props.url} className="w-full" href={props.url}>
-            <Row className="w-full p-2 gap-x-2 items-center">
-                <Profile {...props} displayType="unit_wo_info" displaySize="sm" />
-                <Text className="text-lg">{props.display_name}</Text>
+            <Row className={`w-full p-2 gap-x-3 items-center ${isActive ? 'bg-bgritemprimary dark:bg-bgritemprimary-d' : ''}`}>
+                <View className={`items-center w-10 h-10  justify-center bg-bgritem border border-bdr dark:bg-bgritem-d ${isActive ? 'border-primary/50 dark:border-primary-d/50' : ''} dark:border-bdr-dark rounded-[10px]`}>
+                    <Profile {...props} displayType="unit_wo_info" displaySize="base" />
+                </View>
+                <Text className="text-lg font-semibold text-neutral-700 dark:text-neutral-300">{props.display_name}</Text>
             </Row>
         </Link>
     );
 }
 
-function renderTrigger(current, currentUser) {
-    const isSelected = !!current?.display_name;
+function renderLogoListItem(isActive) {
     return (
-        <Button startDecorator={isSelected ? <Profile {...current} displayType="unit_wo_info" displaySize="sm" /> : <Profile {...currentUser} url_avatar={currentUser.avatar} displayType="unit_wo_info" displaySize="sm" />} variant="text" ize="lg" title={isSelected ? current.display_name : 'Discover'} endDecorator="ChevronsUpDown" />
+        <Link key="global-context" className="w-full" href="/">
+            <Row className={`w-full p-2 gap-x-3 items-center ${isActive ? 'bg-bgritemprimary dark:bg-bgritemprimary-d' : ''}`}>
+                <View className={`items-center w-10 h-10 p-1 justify-center bg-bgritem border border-bdr dark:bg-bgritem-d ${isActive ? 'border-primary/50 dark:border-primary-d/50' : ''} dark:border-bdr-dark rounded-[10px]`}>{appStatic('logo_mark')}</View>
+                <Text className="text-lg font-semibold text-neutral-700 dark:text-neutral-300">Discover</Text>
+            </Row>
+        </Link>
+    );
+}
 
+function getContextRoot(data, currentUser) {
+    if (!data.current?.id) {
+        // Global context
+        return {
+            url: '/',
+            image: appStatic('logo_mark'),
+            name: 'Discover',
+        };
+    } else {
+        // Space context
+        return {
+            url: data.current.url,
+            image: <Profile {...data.current} displayType="unit_wo_info" displaySize="base" />,
+            name: data.current.display_name,
+        };
+    }
+}
+
+function renderTrigger() {
+    return (
+        <Button
+            variant="text"
+            size="lg"
+            startDecorator={null}
+            title={null}
+            endDecorator={<Icon icon="ChevronsUpDown" />}
+        />
     );
 }
 
 export default function ContextSelector({ data }) {
-    const { currentUser, setCurrentUser } = useCurrentUser();
-
+    const { currentUser } = useCurrentUser();
     if (!data) return null;
-
-    const _currentUser = { ...currentUser, url: '/', url_avatar: currentUser.avatar }
+    const contextRoot = getContextRoot(data, currentUser);
     return (
-        <View className="max-w-xs">
+        <View className="flex-row items-center gap-x-2 w-full">
+            <Link href={contextRoot.url} className=" items-center gap-x-2 group w-full flex-auto">
+                <View className='flex-row items-center gap-x-2'>
+                <View className="items-center w-10 h-10 justify-center ">
+                    {contextRoot.image}
+                </View>
+                
+                <Text className="text-lg whitespace-nowrap leading-[20px] font-semibold text-neutral-700 dark:text-neutral-300 group-hover:underline">{contextRoot.name}</Text></View>
+            </Link>
             <DropdownPopup
-                trigger={renderTrigger(data.current, _currentUser)}
+                trigger={renderTrigger()}
                 popupWidth={352}
             >
                 <View>
-                    {!!data.current?.id && renderListItem(_currentUser)}
-                    {data.list.filter(item => item.id != data.current.id).map(renderListItem)}
+                    {renderLogoListItem(!data.current?.id)}
+                    {data.list.map(item => renderListItem(item, item.id === data.current?.id))}
                     <Link className="w-full" href={data.create.url}>
-                        <Row className="w-full p-2">
-                            <View className="h-8 aspect-square mr-2">
+                        <Row className="w-full p-2 gap-x-3 items-center">
+                            <View className="items-center w-10 h-10 p-1 justify-center bg-bgritem border border-bdr dark:bg-bgritem-d dark:border-bdr-dark rounded-[10px]">
                                 <Icon icon="Plus" />
                             </View>
-                            <Text className="text-lg">{data.create.title}</Text>
+                            <Text className="text-lg font-semibold text-neutral-700 dark:text-neutral-300">{data.create.title}</Text>
                         </Row>
                     </Link>
                 </View>

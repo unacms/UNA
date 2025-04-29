@@ -59,7 +59,7 @@ const HeaderLine = memo(
                         </Pressable>
                     </View>
                 )}
-                {(uri == 'home' || width >= LAYOUT_BREAKPOINTS.lg) && (
+                {!context && (uri == 'home' || width >= LAYOUT_BREAKPOINTS.lg) && (
                     <Link
                         className=" flex flex-row active:scale-90 active:opacity-50 gap-x-2 text-neutral-700 dark:text-neutral-300 hover:text-neutral-800 dark:hover:text-neutral-200 duration-300  "
                         href="/home"
@@ -71,10 +71,9 @@ const HeaderLine = memo(
                         <View className=" items-center justify-center">
                             {appStatic('logo_text')}
                         </View>
-                       
                     </Link>
                 )}
-                <ContextSelector data={context}/>
+                {context && <ContextSelector data={context}/>}
                 {headerSettings.backButton && getBackButtonWeb()}
                 {headerSettings.title && (
                         <Text
