@@ -9,7 +9,6 @@ import { useWindowDimensions } from 'react-native'
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view'
 import { appStatic } from 'app/lib/app-static'
 import { BlockByServiceName } from 'app/components/block'
-import Link from 'app/ui/atoms/link'
 
 export default function Splash(props) {
     const isWeb = Platform.OS == 'web'
@@ -52,13 +51,13 @@ export default function Splash(props) {
     const isIos = Platform.OS === 'ios'
 
     const accountForm = BlockDataByName(props.data, 'system:create_account_form');
-    console.log("accountForm", accountForm.content[0].type == 'form')
+    console.log("accountForm",accountForm.content[0].type == 'form')
     const isInvite = accountForm.content[0].type !== 'form';
 
     const forms = {
-        signup: isInvite ? { name: 'bx_invites:get_block_form_request', title: 'Request invitation', button: 'Login', icon: 'LogIn', action: 'login', link: '/login' } : { name: 'system:create_account_form', title: 'Create new account', button: 'Login', icon: 'LogIn', action: 'login', link: '/login' },
+        signup: isInvite ? { name: 'bx_invites:get_block_form_request', title: 'Request invitation', button: 'Login', icon: 'LogIn', action: 'login' } : { name: 'system:create_account_form', title: 'Create new account', button: 'Login', icon: 'LogIn', action: 'login' },
         fp: { name: 'system:forgot_password', title: 'Restore password' },
-        login: { name: 'system:login_form', title: 'Log in', button: 'Create new account', icon: 'UserPlus', link: '/create-account', action: 'signup' }
+        login: { name: 'system:login_form', title: 'Log in', button: 'Create new account', icon: 'UserPlus', action: 'signup' }
     };
 
     const defaultFormData = forms[defaultForm];
@@ -95,28 +94,31 @@ export default function Splash(props) {
                 rounded=" rounded-[24px] "
                 addClassName=" animate-slidein flex-col p-4 w-full max-w-xl mx-auto "
             >
-
+            
                 <BlockByServiceName name={defaultFormData.name} data={props.data} formProps={{ auto_focus: false, hide_errors: true, button_full_width: true }} />
-                <Link
-                    className=" w-full my-4 "
-                    href="/forgot-password"
-                >
-                    <Button
-                        title="Forgot password?"
-                        variant="link"
-                        fullWidth
-                        size="sm"
-                        addClassName="w-full"
-                    />
-                </Link>
+                <View
+                                    className=" w-full my-4 "
+                                    href="/forgot-password"
+                                >
+                                    <Button
+                                        title="Forgot password?"
+                                        variant="link"
+                                        fullWidth
+                                        size="sm"
+                                        addClassName="w-full"
+                                    />
+                                </View>
                 <View className="border-t border-bdr dark:border-bdr-d pt-4  ">
-                    <Link href={defaultFormData.link}><Button
+                    <Button
                         title={defaultFormData.button}
                         startDecorator={defaultFormData.icon}
                         size="base"
                         fullWidth
-
-                    /></Link>
+                        onPress={() => {
+                            setDefaultForm(defaultForm == 'login' ? 'signup' : 'login')
+                            //setModalForm(defaultFormData.action)
+                        }}
+                    />
                 </View>
             </Card>
         </>
@@ -128,7 +130,7 @@ export default function Splash(props) {
                 <KbAvoidingView className="flex-1">
                     <ScrollView>
                         <View className=" w-full flex-auto max-w-lg mx-auto p-4">
-                            {cnt}
+                        {cnt}
                         </View>
                     </ScrollView>
                 </KbAvoidingView>
@@ -140,7 +142,7 @@ export default function Splash(props) {
 
         <View className={' flex-col justify-center ' + appSetting('layout', 'max_width')}>
             <View className=" w-full max-w-7xl mx-auto lg:flex-row my-6 ">
-                <View className=" w-full items-center lg:items-start my-auto p-4 flex-col gap-y-8 flex-auto">
+                <View className=" w-full items-center lg:items-start my-auto p-12 flex-col gap-y-8 flex-auto">
                     {appStatic('splash_image')}
                     {appStatic('splash_text')}
                 </View>

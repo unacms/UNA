@@ -50,8 +50,9 @@ const LogoText = (
 const LogoMark = (
     <Svg
         aria-label="Logo Mark"
-        className=" w-auto h-fit  "
+        className=" "
         viewBox="0 0 40 40"
+        
        
         xmlns="http://www.w3.org/2000/svg"
     >
@@ -157,11 +158,11 @@ const LogoNativeDark = (
 )
 
 const SplashImage = (
-    <View className="flex-row gap-x-6">
-        <View className="w-16 h-16">
+    <View className=" items-center flex flex-row active:scale-90 active:opacity-50 gap-x-6 text-neutral-700 dark:text-neutral-300 hover:text-neutral-800 dark:hover:text-neutral-200 duration-300 ">
+    <View className="w-20 h-20">
     <Svg
         aria-label="Logo Mark"
-        className=" w-auto h-fit text-neutral-800 dark:text-neutral-200 hover:text-neutral-950 dark:hover:text-neutral-50  "
+        className="  "
         viewBox="0 0 40 40"
        
         xmlns="http://www.w3.org/2000/svg"
@@ -192,10 +193,10 @@ const SplashImage = (
         />
     </Svg>
     </View>
-    <View className="h-16 w-32 items-start my-auto">
+    <View className="h-16 w-32 ">
      <Svg
      aria-label="Logo Text"
-     className=" group-active:scale-90 duration-500"
+     className="   "
      viewBox="0 0 68 32"
      fill="none"
      xmlns="http://www.w3.org/2000/svg"
@@ -214,13 +215,14 @@ const SplashImage = (
          d="M65.5 22.6146V24.75C65.5 25.4404 66.0596 26 66.75 26C67.4404 26 68 25.4404 68 24.75V16C68 10.4772 63.5228 6 58 6C52.4772 6 48 10.4772 48 16C48 21.5228 52.4772 26 58 26C60.9867 26 63.6676 24.6906 65.5 22.6146ZM65.5 16C65.5 20.1421 62.1421 23.5 58 23.5C53.8579 23.5 50.5 20.1421 50.5 16C50.5 11.8579 53.8579 8.5 58 8.5C62.1421 8.5 65.5 11.8579 65.5 16Z"
          fill="currentColor"
      />
-    </Svg></View>
-</View>
+    </Svg>
+    </View>
+    </View>
 )
 
 const SplashText = (
     <>
-    <Text className=" text-xl md:text-2xl font-medium text-center md:text-start text-neutral-800 dark:text-neutral-200 ">
+    <Text className=" text-xl md:text-2xl max-w-lg font-medium text-center lg:text-start text-neutral-800 dark:text-neutral-200 ">
         Connect and engage with people who share your interests.
     </Text>
      

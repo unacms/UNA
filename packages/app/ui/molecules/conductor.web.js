@@ -737,7 +737,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
         return (
             <Row style={{ paddingTop: header ? 0 : 0 }} className={(headerSettings.columns == "reverse" ? 'flex-row-reverse' : '') + conductorTheme.content_max_width + '  mx-auto w-full '}>
-                <View className={(isRightCol ? 'flex-auto sm:border-r border-bdr dark:border-bdr-d lg:px-4 flex-auto ' : ' w-full mx-auto px-2 py-4 ') /*sm:p-2*/+ (layoutName == 'navigator' ? '' : ' lg:pt-4')}/*lg:pt-4*/>
+                <View className={(isRightCol ? 'flex-auto sm:border-r border-bdr dark:border-bdr-d lg:px-4 flex-auto ' : ' w-full mx-auto') /*sm:p-2*/+ (layoutName == 'navigator' ? '' : ' lg:pt-4')}/*lg:pt-4*/>
                     {TabFlashListM}
                     {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 && callFn("noContentByUrl", [route?.endpoint])))}
 
