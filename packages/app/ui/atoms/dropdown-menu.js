@@ -15,9 +15,7 @@ const menuSettings = appSetting('theme', 'dropdown_menu');
 
 const getIcon = (oItem, iconSize = 20) => {
     if (!oItem?.icon) return null;
-
     const className = oItem?.class_item_icon;
-
     if (isEmoji(oItem.icon)) {
         return <Text className={className}>{oItem.icon}</Text>;
     } else {

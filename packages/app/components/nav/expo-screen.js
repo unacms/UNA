@@ -65,7 +65,6 @@ const Content = ({ pagePath, currentUser, isRoot }) => {
         const fetchPageData = async () => {
             if (pageData?.data?.user?.id && pageData?.data?.user?.id === currentUser?.id && pageData?.data?.user?.confirmed === currentUser?.confirmed)
                 return;
-            console.log('12323')
             const { path: pathWithoutQuery, queryString } = parseUrl(pagePath);
             const params = queryString ? JSON.stringify(parseQueryString(queryString)) : null;
             const data = await getData(pathWithoutQuery, null, null, null, null, params);
@@ -95,7 +94,6 @@ const Content = ({ pagePath, currentUser, isRoot }) => {
 
         prepareApp();
     }, [pageData?.data]);
-    console.log("pageData?.data", pageData?.data)
     return pageData?.data ? (
 
         <Root path={pagePath} data={pageData.data} uri={pageData.data.uri} />

@@ -5,9 +5,11 @@ import { storageGet, storageSet, findIconFromRemote, appSetting } from 'app/lib/
 import SvgIcons from  'app/icons-svg';
 
 export const Icon = memo(function Icon(props) {
-    let { icon, className, width, height, color, size, strokeWidth, ...rest } = props;
-    icon = findIconFromRemote(icon);
-    strokeWidth = strokeWidth || appSetting('layout', 'default_icon_stroke_width');
+    const { icon: origIcon, className, width, height, color, size, strokeWidth, ...rest } = props;
+    const isXmlSvg = origIcon.startsWith('<svg');
+    const icon = findIconFromRemote(origIcon);
+    const _strokeWidth = strokeWidth || appSetting('layout', 'default_icon_stroke_width');
+
     
     // Мемоизируем ключ, чтобы он не пересчитывался при каждом рендере
     const key = useMemo(() => `${icon}-${width || ''}-${height || ''}-${size || ''}`, [icon, width, height, size, strokeWidth]);
@@ -23,7 +25,7 @@ export const Icon = memo(function Icon(props) {
             if (width) url += `&width=${width}`;
             if (height) url += `&height=${height}`;
             if (size) url += `&size=${size}`;
-            if (strokeWidth) url += `&strokeWidth=${strokeWidth}`;
+            if (_strokeWidth) url += `&strokeWidth=${_strokeWidth}`;
             try {
                 const response = await fetch(url);
                 const data = await response.json();
@@ -53,8 +55,17 @@ export const Icon = memo(function Icon(props) {
         if (InlineIcon){
             return <InlineIcon width={width || size} height={height || size} />;
         }
-        console.log("Icon not found:", icon)
-        return null; // Возвращаем null, если иконка не загружена
+        if (isXmlSvg){
+            const result = origIcon
+                .replace(/\swidth="[^"]*"/i, '')
+                .replace(/\sheight="[^"]*"/i, '')
+                .replace(
+                /<svg(\s[^>]*)?>/i,
+                `<svg$1 width="${width || size}" height="${height || size}">`
+            );
+            return <div style={{color:color}} className={className} {...rest} dangerouslySetInnerHTML={{ __html: result }} />;
+        }
+        return icon; // Возвращаем null, если иконка не загружена
         
     }
 
