@@ -24,7 +24,6 @@ export default function () {
 
     const notifCount = currentUser ? currentUser.notifications : 0;
     const iFrCounter = callFn("getFriendsCounter", [currentUser]);
-    console.log("iFrCounter", iFrCounter)
     let pathname = usePathname()
 
     let profile = null
@@ -76,8 +75,6 @@ function MenuBottomItem({ link, title, index, icon, isActive, profile, iFrCounte
         }
     ].find(item => item.condition)?.value || null;
 
-    console.log("badge", link, badge)
-
     return (
         <View
             
@@ -93,7 +90,7 @@ function MenuBottomItem({ link, title, index, icon, isActive, profile, iFrCounte
                 )}
                 <View className={` items-center ${isActive && ''}`}>
                     <Text className={`${isActive ? 'text-primary' : 'text-neutral-700 dark:text-neutral-300'}`}>
-                        {link === appSetting('dashboard', 'url') ? profile : <Icon icon={icon} color={isActive ? colors.primary : colors.default} />}
+                        {link === appSetting('dashboard', 'url') ? profile : <Icon size={24} icon={icon} color={isActive ? colors.primary : colors.default} />}
                     </Text>
                     {<Text className={`group-hover:text-primary dark:group-hover:text-primary text-[12px] tracking-tight  leading-[16px] whitespace-nowrap ${isActive ? 'text-primary' : 'text-neutral-700 dark:text-neutral-300'}`}>{title}</Text>}
                     {badge && <View className={`absolute  bg-contrast dark:bg-contrast-d border-2 border-white dark:border-neutral-900 rounded-full  px-1.5 items-center justify-center -right-1 -top-2`}><Text className="text-white text-xs ">{badge.text}</Text></View>}
@@ -103,34 +100,3 @@ function MenuBottomItem({ link, title, index, icon, isActive, profile, iFrCounte
         </View>
     );
 }
-/*<Button
-                        variant="tab"
-                        
-                        size="sm"
-                        fullWidth={true}
-                        pressed={isActive}
-                        indicator={isActive}
-                        indicatorPosition="top"
-                        indicatorClassName="animate-appear h-[3px] w-full bg-primary dark:bg-primary-d -translate-y-[5px] rounded-full"
-                        startDecorator={link === appSetting('dashboard', 'url') && profile ? null : icon}
-                        direction="flex-col bg-transparent "
-                        addon={link === appSetting('notifications', 'url') && notifCount > 0 ? 
-                            {variant: 'primary', text: notifCount} : 
-                            link === appSetting('messenger', 'url') && currentUser?.counters?.bx_messenger_new_messages > 0 ? 
-                            {variant: 'primary', text: currentUser.counters.bx_messenger_new_messages} :
-                            link === '/friends-all' && iFrCounter > 0 ?
-                            {variant: 'primary', text: iFrCounter} : 
-                          null}
-                    >
-                        {link === appSetting('dashboard', 'url') && profile ? (
-                            profile
-                        ) : null}
-                            {!!title && (
-                            <Text
-                                className={`group-hover:text-primary dark:group-hover:text-primary text-[12px] tracking-tight leading-[14px] whitespace-nowrap ${textColor}`}
-                            >
-                                {title}
-                            </Text>
-                        )}
-                    
-                    </Button>*/

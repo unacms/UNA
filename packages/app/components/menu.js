@@ -12,7 +12,7 @@ import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal';
 const ButtonEx = memo(({ visibleItemsCount, params }) => {
     return (
         <View key="btn" className="ml-2 w-12">
-            <Button size={params.button_size}  variant="secondary" startDecorator="Ellipsis" />
+            <Button size={params.button_size} variant="secondary" startDecorator="Ellipsis" />
         </View>
     );
 });
@@ -51,7 +51,7 @@ export default function ElementMenu(oProps) {
     //--- show only items which match with menu's display_type
     const bShowMatched = oProps?.showMatched === true;
 
-    const bAutoSize = oProps?.autoSize ||  false;
+    const bAutoSize = oProps?.autoSize || false;
 
     //--- show only items with selected display_type and doesn't take in account the menu's display_type
     const sShowSelected = oProps?.showSelected || false;
@@ -68,7 +68,7 @@ export default function ElementMenu(oProps) {
     sClassName += bShowVertical ? ' flex-col items-center gap-y-2 w-full ' : ' flex-row ';
     const oParams = oProps?.params || {};
 
-  
+
 
 
     //--- horizontal menu items alignment
@@ -85,14 +85,15 @@ export default function ElementMenu(oProps) {
     if (!oProps?.items?.length)
         return [];
 
-    // sort by primary
-    oProps.items.sort((a, b) => {
-        const primaryA = a.primary === true || a.primary === 1;
-        const primaryB = b.primary === true || b.primary === 1;
-        return primaryB - primaryA;
-    })
+    const sortedItems = [...oProps.items].sort((a, b) => {
+        // приводим primary к 0/1
+        const pa = (a.primary === true || a.primary === 1) ? 1 : 0;
+        const pb = (b.primary === true || b.primary === 1) ? 1 : 0;
+        return pb - pa;
+    });
+
     const filteredItems = useMemo(() => {
-        return (bAutoFilter ? menuItemsByName(oProps.object, oProps.items, currentUser) : oProps.items).filter((aItem) => {
+        return (bAutoFilter ? menuItemsByName(oProps.object, sortedItems, currentUser) : sortedItems).filter((aItem) => {
             // Check if item should be shown based on `bShowMatched` and `sDisplayType`
             if (bShowMatched && aItem.display_type !== sDisplayType) {
                 return false;
@@ -122,12 +123,12 @@ export default function ElementMenu(oProps) {
             // If all checks pass, the item should be included in the filtered list
             return true;
         });
-    }, [bAutoFilter, oProps.object, oProps.items, currentUser, bShowMatched, sDisplayType, sShowSelected, aExcept, aExceptTitle, componentsMap]);
+    }, [bAutoFilter, oProps.object, sortedItems, currentUser, bShowMatched, sDisplayType, sShowSelected, aExcept, aExceptTitle, componentsMap]);
 
     let isUseStaticWidth = bShowContent || !bAutoSize || !isWeb;
 
     if (oProps.persistent > 0 && !bShowVertical) {
-       // isUseStaticWidth = false;
+        // isUseStaticWidth = false;
     }
     if (!isWeb) {
         isUseStaticWidth = true;
@@ -137,23 +138,22 @@ export default function ElementMenu(oProps) {
         const sItems = filteredItems.map((item, index) => {
             const ItemType = componentsMap[item.display_type || sDisplayType];
             const Wrapper = item.noAction ? Pressable : View;
-            const a = <ItemType  key={item.id ? item.id : item.name} {...item} params={oProps.params} />
-            if (a == null ) return null;
+            const a = <ItemType key={item.id ? item.id : item.name} {...item} params={oProps.params} />
+            if (a == null) return null;
             const cntProps = {}
             if (item.noAction) {
                 cntProps.onPress = (event) => {
-                      handleFormModal(item, event, setPageData)
+                    handleFormModal(item, event, setPageData)
                 }
             }
             return (
-                
-                <View {...cntProps} key={`menu${index}`} className={` ${
-                    bShowVertical
-                      ? 'w-full  '
-                      : oProps?.params?.button_full_width === true
-                      ? ' flex-1 '
-                      : ' '
-                  } ${sAlignItems === 'stretch' ? 'flex-auto' : ''}  `}>
+
+                <View {...cntProps} key={`menu${index}`} className={` ${bShowVertical
+                        ? 'w-full  '
+                        : oProps?.params?.button_full_width === true
+                            ? ' flex-1 '
+                            : ' '
+                    } ${sAlignItems === 'stretch' ? 'flex-auto' : ''}  `}>
                     <Wrapper {...cntProps}>{a}</Wrapper>
                 </View>
             )
@@ -188,7 +188,7 @@ export default function ElementMenu(oProps) {
         }}
         isFixedCount={oProps?.params?.isFixedCount}
         persistent={oProps.persistent}
-        containerClasses= {oProps.containerClasses || "w-full md:justify-end"}
+        containerClasses={oProps.containerClasses || "w-full md:justify-end"}
         items={filteredItems}
         menuClasses={sClassName}
         isButtonOutside={false}

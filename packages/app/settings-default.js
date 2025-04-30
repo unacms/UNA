@@ -475,7 +475,6 @@ export  const settingsDefault = {
             'image': 'Image',
             'farx': 'MessagesSquare',
             'comments': 'MessagesSquare',
-            'comments': 'MessagesSquare',
             'calendar': 'Calendar',
             'fa-book': 'LibraryBig',
             'ad': 'File',
