@@ -464,8 +464,8 @@ const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, 
             {srch}
         </Row>}
         <Row className='my-auto'>
-            <View className='lg:hidden mr-2 lg:mr-0 '>
-                <Button startDecorator="Search" variant="secondary" rounded onPress={() => handleSearch2()} />
+            <View className='lg:hidden mr-1 lg:mr-0 '>
+                <Button size="sm" ring="p-1" startDecorator="Search" variant="secondary" rounded onPress={() => handleSearch2()} />
             </View>
             {addButtons}
         </Row>

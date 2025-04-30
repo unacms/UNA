@@ -42,7 +42,7 @@ const HeaderLine = memo(
             ).length > 0
 
         return (
-            <View className="flex-row w-96 px-[16px] gap-x-2 items-center ">
+            <View className="flex-row w-96 px-3 gap-x-2 items-center ">
                 
                 {headerSettings.menu && isDrawer && (
                     <View className="lg:hidden ">
@@ -118,16 +118,11 @@ export default function (props) {
 
     return (
         <>
-            <View
-                className={
-                    appSetting('layout', 'max_width') +
-                    ' w-full flex-row flex-auto mx-auto'
-                }
-            >
-                <Row className="w-full">
+            
+                <Row className="w-full flex-auto mx-auto">
                     <View className="flex-auto">{props.children}</View>
                 </Row>
-            </View>
+            
             {!bIsHideHeader && (
                 <View
                     className={
@@ -157,7 +152,7 @@ export default function (props) {
                             context={props.context}
                         />
                         <MenuTop url={props.url} uri={props.uri}/>
-                        <Row className=" w-96 px-[16px] gap-x-2 items-center justify-end ">
+                        <Row className=" w-96 px-3 gap-x-2 items-center justify-end ">
                             {!!currentUser && (
                                 <Row className="justify-end ">
                                     

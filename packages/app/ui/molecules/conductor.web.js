@@ -171,10 +171,10 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
 
         return (
             <Pressable
-                className={' px-3 py-2.5 ' + menu_settings?.class ?? ''}
+                className={' p-3 ' + menu_settings?.class ?? ''}
                 onPress={handlePress}
             >
-                <Row className="justify-between items-center min-w-[200px]">
+                <Row className="h-6 justify-between items-center min-w-48">
                     {translatedTitle}
                     {addonContent}
                 </Row>
@@ -183,12 +183,12 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
     });
 
     const ButtonEx = memo(({ visibleItemsCount }) => {
-        return <View key="btn" className='ml-1 pb-2 '><Button title={'More...'} variant={visibleItemsCount <= index ? 'secondary' : "text"} rounded pressed={visibleItemsCount <= index ? true : false} size="sm" /></View>;
+        return <Button startDecorator="ChevronDown" variant={visibleItemsCount <= index ? 'secondary' : "secondary"} rounded ring="p-1" pressed={visibleItemsCount <= index ? true : false} size="sm" />;
     });
 
     return <DynamicMenu
         name={name}
-        offsetWidth={120}
+        offsetWidth={80}
         ButtonEx={ButtonEx}
         MenuItemEx={MenuItemEx}
         MenuItem={MenuItem}

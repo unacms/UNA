@@ -29,10 +29,12 @@ const HeaderLine = memo(({headerSettings, currentUser, uri, title, menuPopup, se
     return (
         <View className="flex-row xl:w-96 px-3 sm:px-4 my-auto items-center">
             {(headerSettings.menu && isDrawer) && (
-                <View className="lg:hidden mr-3 sm:mr-4">
+                <View className="lg:hidden mr-1 sm:mr-4">
                     <Pressable onPress={showMenu}>
                         <Button
                             variant="secondary"
+                            size="sm"
+                            ring="p-1"
                             startDecorator="List"
                             rounded
                             align="start"
@@ -139,7 +141,7 @@ export default function (props) {
                                 </View>}
                             </Row>
                         </Row>
-                        <Row className="w-full w-96 px-[16px] gap-x-2 justify-end  ">
+                        <Row className="w-full w-96 px-3 gap-x-2 justify-end  ">
                             {!!currentUser && (
                                 <Row className="flex-row justify-end ">
                                     <View className=" flex-row my-auto gap-x-2 ">

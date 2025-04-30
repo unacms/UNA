@@ -633,7 +633,7 @@ export  const settingsDefault = {
             menu_max_width: ' max-w-7xl ',
             content_max_width: ' max-w-7xl ',
             menu_is_dynamic: true,
-            menu_cnt: ' ml-4 gap-x-1 flex-row ',
+            menu_cnt: ' ml-3 gap-x-1 flex-row flex-none ',
             right_column_cnt: 'fixed-process p-4 max-w-md',
             topmenu_cnt: 'w-full px-8 pt-6 items-stretch justify-stretch sticky z-50 t-8 gap-x-8 hidden lg:flex p',
             topmenu_button_variant: 'secondary',
@@ -685,13 +685,13 @@ export  const settingsDefault = {
         dropdown_menu: {
             content_shadow: ' shadow-xl  ',
             content_ver: '',
-            content_hor: 'flex-row ',
-            item_ver: 'flex flex-row focus:outline-none items-center p-[4px] text-sm rounded-lg font-medium hover:bg-bgritem dark:hover:bg-bgritem-d text-neutral-700 dark:text-neutral-300 dark:hover:text-white hover:cursor-pointer',
-            item_hor: 'flex block p-[4px] hover:-translate-y-1 active:-translate-y-1 dark:hover:text-white rounded-full hover:cursor-pointer text-neutral-700  hover:scale-125 active:scale-95 duration-200 dark:text-neutral-300 outline-none ',
+            content_hor: 'flex-row   ',
+            item_ver: ' group flex flex-row items-center p-[6px] text-sm rounded-[12px] font-medium hover:bg-bgritem dark:hover:bg-bgritem-d text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 hover:cursor-pointer',
+            item_hor: 'flex block p-[6px] hover:-translate-y-1  dark:hover:text-white rounded-full hover:cursor-pointer text-neutral-700  hover:scale-125 active:scale-95 duration-200 dark:text-neutral-300 outline-none ',
             item_np: 'flex flex-row focus:outline-none items-center justify-between px-1 py-0.5 rounded-lg font-medium hover:bg-bgritem dark:hover:bg-bgritem-d text-sm text-neutral-700 dark:text-neutral-300 dark:hover:text-white hover:cursor-pointer',
             item_cnt: 'items-center w-full',
-            item_text: 'text-sm leading-[32px] px-[6px] font-medium text-neutral-800 dark:text-neutral-200',
-            item_icon: 'flex items-center w-[32px] h-[32px] bg-bgritem mx-[2px] dark:bg-bgritem-d rounded-full justify-center',
+            item_text: 'text-sm leading-[32px] px-[12px] font-medium text-neutral-800 dark:text-neutral-200',
+            item_icon: 'flex items-center w-[36px] h-[36px] bg-bgritem dark:bg-bgritem-d group-hover:bg-bgritem-h dark:group-hover:bg-bgritem-dh rounded-full justify-center',
             icon_size: 20, // Default icon size for dropdown menu icons
         },
         modal: {
