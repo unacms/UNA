@@ -361,7 +361,7 @@ export const VisibilityInfo = memo(({ data }) => {
         <Row className="text-neutral-600 dark:text-neutral-400 items-center">
             <Text className="text-neutral-400 dark:text-neutral-600 text-[12px] leading-[16px] px-[4px]">·</Text>
             {isUser ? <Profile {...data.author_data} displayType="unit_wo_info" displaySize="xxs" /> : (icon ? <Icon icon={icon} width={18} height={18} /> : null)}
-            <Text className="text-neutral-600 dark:text-neutral-400 text-[14px] font-medium leading-[20px] text-center tracking-tight  ml-[2px]">{isUser ? data.author_data.display_name : text}</Text>
+            <Text className="text-neutral-600 dark:text-neutral-400 text-[14px] font-medium leading-[20px] text-center tracking-tight ml-[2px]">{isUser ? data.author_data.display_name : text}</Text>
         </Row>
     );
 });
