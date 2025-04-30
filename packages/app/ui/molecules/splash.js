@@ -9,6 +9,7 @@ import { useWindowDimensions } from 'react-native'
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view'
 import { appStatic } from 'app/lib/app-static'
 import { BlockByServiceName } from 'app/components/block'
+import { KeyboardAvoidingView } from 'react-native'
 
 export default function Splash(props) {
     const isWeb = Platform.OS == 'web'
@@ -91,8 +92,8 @@ export default function Splash(props) {
                 </View>
             </Modal>
             <Card
-                rounded=" rounded-[24px] "
-                addClassName=" animate-slidein flex-col p-4 w-full max-w-xl mx-auto "
+                rounded=" rounded-[28px] "
+                addClassName=" animate-slidein flex-col p-6 w-full max-w-xl mx-auto "
             >
             
                 <BlockByServiceName name={defaultFormData.name} data={props.data} formProps={{ auto_focus: false, hide_errors: true, button_full_width: true }} />
@@ -126,11 +127,11 @@ export default function Splash(props) {
 
     if (!isWeb) {
         return (
-            <View className="justify-around flex-1">
-                <KbAvoidingView className="flex-1">
-                    <ScrollView>
-                        <View className=" w-full flex-auto max-w-lg mx-auto p-4">
-                        {cnt}
+            <View className="flex-1 bg-bgr dark:bg-bgr-d">
+                <KbAvoidingView className="flex-1" behavior="padding" keyboardVerticalOffset={0}>
+                    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+                        <View className="w-full flex-auto max-w-lg mx-auto p-4">
+                            {cnt}
                         </View>
                     </ScrollView>
                 </KbAvoidingView>

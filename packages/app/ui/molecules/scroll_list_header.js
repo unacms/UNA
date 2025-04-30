@@ -82,7 +82,7 @@ export const Header = memo(({
         return headerContent;
 
     return (
-        <Row className={`justify-between items-center h-[64px] shadow-[0_2px_4px_0_rgba(0,0,0,0.05),0_0px_2px_0_rgba(0,0,0,0.1)] dark:shadow-[0_1px_0_rgba(0,0,0,1)] bg-bgrnavbar dark:bg-bgrnavbar-d`}>
+        <Row className={`justify-between items-center h-[64px] shadow-[0_1px_3px_0_rgba(0,0,0,0.05)] dark:shadow-[0_1px_0_rgba(0,0,0,1)] border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d`}>
             <Row className='items-center '>
                 {(isHome && !pageData?.context) && <Pressable onPress={scrollToTop} className="ml-[12px] "><View className="flex items-center flex-row active:scale-90 active:opacity-50 p-1 gap-x-3 text-neutral-700 dark:text-neutral-300 web:hover:text-neutral-800 web:dark:hover:text-neutral-200 duration-300"><View className=" items-center w-10 h-10 justify-center ">
                             {appStatic('logo_mark')}

@@ -21,9 +21,9 @@ export  const settingsDefault = {
             google_maps: 'AIzaSyAhrci201-9xXIRAy0kLOHFGppeTk8AHmo',
             open_ai: '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',
             onesignal: 'a36d17c1-693e-40e1-98e9-41a62a9b5e7d',
-            mapbox:'pk.eyJ1Ijoicm9tYW5sZXMiLCJhIjoiY204Zm9kY3ByMGE4bzJrc2R6Zzg4NW0zMCJ9.Jme_Zudsug5mmqcbjII9cQ'
+            mapbox: 'pk.eyJ1Ijoicm9tYW5sZXMiLCJhIjoiY204Zm9kY3ByMGE4bzJrc2R6Zzg4NW0zMCJ9.Jme_Zudsug5mmqcbjII9cQ',
         },
-        show_ui: false
+        show_ui: false,
     },
     layout: {
         avaliable_layouts: ['hor', 'ver', 'mixed'], // OLD appSetting('layout', 'format_list')
@@ -44,7 +44,7 @@ export  const settingsDefault = {
         background_image_color: '', //OLD appSetting('layout', 'background_cover_color')
         background_image: '', //`url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239C92AC' fill-opacity='0.08' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E")`,
         background_image_dark: '', //`url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239C92AC' fill-opacity='0.08' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E")`,
-        
+
         splash_block: 'login', //OLD appSetting('layout', 'block')
         show_login_modal: 5000,
         redirect_on_forbidden: '/home',
@@ -52,13 +52,13 @@ export  const settingsDefault = {
         allow_create_new_profile: true,
 
         button_style_for_actions: 'secondary',
-       
+
         share_text: '',
         default_icon_stroke_width: 2,
-        use_context_selector: true
+        use_context_selector: true,
     },
 
-    native:{
+    native: {
         default_theme: 'auto',
         enable_screens: true, //OLD appSetting('layout', 'native_enable_screens')
         lazy_tabs: false, // OLD appSetting('layout', 'native_lazy_tabs')
@@ -76,42 +76,53 @@ export  const settingsDefault = {
         list: ['CounterChecker'], //['EventChecker'],//NotifChecker OLD appSetting('layout', 'async_workers')
         interval: 10, //OLD appSetting('layout', 'async_workers_interval')
     },
-    cover:{
+    cover: {
         use_background: false, //appSetting('layout', 'use_background')
         aspect_ratio: 'aspect-3/1', //appSetting('layout', 'cover_aspect')
         allow_edit: true, //appSetting('layout', 'allow_edit_covers')
         fixed: false, //appSetting('layout', 'fixed_cover')
-        scroll: false, 
+        scroll: false,
         split_action_menu: false, //OLD appSetting('layout', 'split_action_menu')
-        back_button_url_for_profile: '/friends',  //OLD appSetting('layout', 'back_for_profile') 
-        view_by_module: { //appSetting('layout', 'cover_mode'
+        back_button_url_for_profile: '/friends', //OLD appSetting('layout', 'back_for_profile')
+        view_by_module: {
+            //appSetting('layout', 'cover_mode'
             bx_courses: 'min',
             bx_spaces: 'none',
             bx_jobs: 'max',
         },
     },
-    comments:{
+    comments: {
         hide_sort: false, //OLD appSetting('layout', 'hide_comments_sort')
         show_modal_in_feed: true, //OLD appSetting('layout', 'comments_in_modal')
         count_in_feed: 3, //OLD appSetting('layout', 'comments_count_in_feed')
         mentions: true, //OLD appSetting('layout', 'comments_mentions')
         in_reply: true, //OLD appSetting('layout', 'show_in_reply_comments')
     },
-    dashboard:{
-        url: '/dashboard',  //OLD appSetting('layout', 'dashboard')
+    dashboard: {
+        url: '/dashboard', //OLD appSetting('layout', 'dashboard')
         langs: ['ru', 'en'], //OLD appSetting('layout', 'switch_lang')
         switch_theme: true, //OLD appSetting('layout', 'switch_theme')
-        modules_list: ['friends', 'followers', 'bx_ads', 'bx_forum', 'bx_posts', 'bx_events', 'bx_groups', 'bx_organizations', 'bx_spaces']
+        modules_list: [
+            'friends',
+            'followers',
+            'bx_ads',
+            'bx_forum',
+            'bx_posts',
+            'bx_events',
+            'bx_groups',
+            'bx_organizations',
+            'bx_spaces',
+        ],
     },
-    notifications:{
-        url: '/notifications-view', //OLD appSetting('layout', 'notifications') 
+    notifications: {
+        url: '/notifications-view', //OLD appSetting('layout', 'notifications')
         count_in_title: true, //OLD appSetting('layout', 'add_notifications_count_in_title')
     },
-    carousel:{
+    carousel: {
         image_width: '', //appSetting('layout', 'carousel_image_width')
-        image_aspect_ratio: ' aspect-square ',//appSetting('layout', 'carousel_image_aspect')
+        image_aspect_ratio: ' aspect-square ', //appSetting('layout', 'carousel_image_aspect')
     },
-    conductor:{
+    conductor: {
         show_nav_counters: 'primary', // OLD appSetting('layout', 'show_nav_counters')
         show_nav_titles: false, // OLD appSetting('layout', 'show_nav_titles')
         hide_browse_filter: true, // OLD appSetting('layout', 'hide_browse_filter')
@@ -129,30 +140,32 @@ export  const settingsDefault = {
     },
     forms: {
         single_editor: true,
-        optional_text: '',// OLD appSetting('layout', 'form_fields_optional_text')
-        mandatory_icon: 'Asterisk',// OLD appSetting('layout', 'form_fields_mandatory_icon')
-        auto_ghosts_in_files: true, 
-        caption_classes: 'font-semibold text-sm sm:text-base text-neutral-700 dark:text-neutral-300',
-        without_captions: [ // OLD appSetting('forms', 'form_without_captions')
+        optional_text: '', // OLD appSetting('layout', 'form_fields_optional_text')
+        mandatory_icon: 'Asterisk', // OLD appSetting('layout', 'form_fields_mandatory_icon')
+        auto_ghosts_in_files: true,
+        caption_classes:
+            'font-semibold text-sm sm:text-base text-neutral-700 dark:text-neutral-300',
+        without_captions: [
+            // OLD appSetting('forms', 'form_without_captions')
             'sys_login',
             'sys_account_create',
             'sys_forgot_password',
             'bx_invites_request_send',
         ],
-        visibility_control_names: [ // appSetting('layout', 'form_' + name + '_control_names')
+        visibility_control_names: [
+            // appSetting('layout', 'form_' + name + '_control_names')
             '*_allow_view_to',
             '*_object_privacy_view',
         ],
         selector_control_names: ['*_cat'],
 
-       /* sys_login: { hide_errors: true, button_full_width: true },*/
-        
+        /* sys_login: { hide_errors: true, button_full_width: true },*/
+
         sys_forgot_password: {
             hide_errors: true,
             button_full_width: true,
-
         },
-      /* bx_invites_request_send: {
+        /* bx_invites_request_send: {
             hide_errors: true,
             button_full_width: true,
 
@@ -162,7 +175,6 @@ export  const settingsDefault = {
             button_full_width: true,
 
         },*/
-        
     },
     jitsi: {
         prefix: 'prefix_',
@@ -191,7 +203,7 @@ export  const settingsDefault = {
                 title: 'For you',
                 showTitle: true,
             },
-               {
+            {
                 name: 'account',
                 icon: 'Binoculars',
                 title: 'Following',
@@ -201,7 +213,7 @@ export  const settingsDefault = {
             { name: 'public', icon: 'Egg', title: 'Public', showTitle: true },
             { name: 'channels', icon: 'Hash', title: 'News', showTitle: true },
         ],
-        units:{
+        units: {
             bx_market: 'MarketView',
             bx_ads: 'AdView',
             bx_groups: 'GroupView',
@@ -219,8 +231,10 @@ export  const settingsDefault = {
             button_size: 'sm',
             button_variant: 'text',
             pressed_classes: {
-                pressed_container: ' sm:hover:bg-primary/20 sm:dark:hover:bg-primary-d/20 ',
-                pressed_text: ' text-primary dark:text-primary-d group-hover:text-primary-700 dark:group-hover:text-primary-500 ',
+                pressed_container:
+                    ' sm:hover:bg-primary/20 sm:dark:hover:bg-primary-d/20 ',
+                pressed_text:
+                    ' text-primary dark:text-primary-d group-hover:text-primary-700 dark:group-hover:text-primary-500 ',
             },
             button_rounded: false,
             align_items: 'between',
@@ -245,7 +259,7 @@ export  const settingsDefault = {
 
         */
     },
-   
+
     suggestion: {
         list: [
             /*  {
@@ -291,12 +305,14 @@ export  const settingsDefault = {
         ],
         unit_by_source: {
             'system/browse_friends': 'person_friends',
-            'system/browse_recommendations_friends': 'person_friends_recommendations',
+            'system/browse_recommendations_friends':
+                'person_friends_recommendations',
             'system/browse_friend_requested': 'person_friend_requested',
             'system/browse_friend_requests': 'browse_friend_requests',
-            'system/browse_recommendations_subscriptions': 'person_following_recommendations',
+            'system/browse_recommendations_subscriptions':
+                'person_following_recommendations',
             'system/browse_subscribed_me': 'person_followers',
-            'browse_subscriptions': 'person_following',
+            browse_subscriptions: 'person_following',
             'r=bx_events': 'event',
             'r=bx_groups': 'group',
             'r=bx_timeline': 'feed',
@@ -304,18 +320,18 @@ export  const settingsDefault = {
         unit_by_mode_default: {
             context: 'Base',
             search: 'Search',
-            default: 'Base'
+            default: 'Base',
         },
         unit_by_mode_bx_posts: {
             small: 'Small',
             context: 'Small',
             search: 'Search',
-            default: 'Base'
+            default: 'Base',
         },
         unit_by_mode_bx_forum: {
             small: 'Small',
             context: 'Small',
-            default: 'Base'
+            default: 'Base',
         },
     },
     social_actions: {
@@ -372,8 +388,8 @@ export  const settingsDefault = {
                     surprise: { svg: '', emoji: '😮' },
                     sadness: { svg: '', emoji: '😔' },
                     anger: { svg: '', emoji: '😠' },
-                }
-            }
+                },
+            },
         },
         score: {
             show_action: true,
@@ -442,10 +458,11 @@ export  const settingsDefault = {
         },
     },
     menu_items: {
-        transpile_urls: [// URLS for tabs in native app index = tab index
-            {"index": 1, "url": "/friend-suggestions"},
-            {"index": 1, "url": "/friend-requests"},
-            {"index": 1, "url": "/sent-friend-requests"},
+        transpile_urls: [
+            // URLS for tabs in native app index = tab index
+            { index: 1, url: '/friend-suggestions' },
+            { index: 1, url: '/friend-requests' },
+            { index: 1, url: '/sent-friend-requests' },
         ],
         objects: {
             account: 'sys_account_notifications',
@@ -458,67 +475,129 @@ export  const settingsDefault = {
             'edit-event-sessions': 'Calendar',
             'item-comment': 'MessageCircleMore',
             'item-share': 'Share2',
-            'edit': 'Pencil',
-            'delete': 'Trash',
-            'messenger': 'MessageCircleMore',
+            edit: 'Pencil',
+            delete: 'Trash',
+            messenger: 'MessageCircleMore',
             'profile-confirm': 'Check',
             'profile-set-acl-level': 'Award',
             'profile-set-badges': 'BadgeCheck',
             'job-questionnaire': 'List',
             'invite-to-job': 'UserPlus',
-            'users': 'UsersRound',
+            users: 'UsersRound',
             'camera-retro': 'Video',
             'file-alt': 'File',
             'info-circle': 'Info',
-            'user': 'UserRound',
-            'building': 'Building2',
-            'image': 'Image',
-            'farx': 'MessagesSquare',
-            'comments': 'MessagesSquare',
-            'comments': 'MessagesSquare',
-            'calendar': 'Calendar',
+            user: 'UserRound',
+            building: 'Building2',
+            image: 'Image',
+            farx: 'MessagesSquare',
+            comments: 'MessagesSquare',
+            comments: 'MessagesSquare',
+            calendar: 'Calendar',
             'fa-book': 'LibraryBig',
-            'ad': 'File',
-            'object-group':'SquareStack',
-            'film':'Video',
-            'hashtag': 'Hash',
+            ad: 'File',
+            'object-group': 'SquareStack',
+            film: 'Video',
+            hashtag: 'Hash',
             'shopping-cart': 'Store',
             'book-reader': 'LibraryBig',
-            'briefcase': 'Calendar',
-            'tasks': 'ListChecks',
+            briefcase: 'Calendar',
+            tasks: 'ListChecks',
             'tachometer-alt': 'LayoutDashboard',
-            'wrench': 'Wand',
+            wrench: 'Wand',
             'cart-plus': 'Wallet',
-            'cog': 'Cog',
+            cog: 'Cog',
             'sign-out-alt': 'LogOut',
-            'clock': 'Clock',
+            clock: 'Clock',
             'item-share': 'Share2',
             'item-copy': 'Clipboard',
             'item-repost': 'RotateCw',
         },
         menu_navbar: [
             { name: 'home', title: 'Home', link: '/', icon: 'House' },
-            { name: 'friends', title: 'Friends', link: '/friends', icon: 'UsersRound', nonlogged: false },
-            { name: 'explore', title: 'Explore', link: '/explore', icon: 'Compass', logged: false },
-            { name: 'videos-home', title: 'Video', link: '/videos-home', icon: 'TvMinimalPlay' },
-            { name: 'products-home', title: 'Market', link: '/products-home', icon: 'Store' },
-            { name: 'groups-home', title: 'Groups', link: '/groups-home', icon: 'Shapes' },
-            { name: 'events-home', title: 'Events', link: '/events-home', icon: 'Calendar' }
+            {
+                name: 'friends',
+                title: 'Friends',
+                link: '/friends',
+                icon: 'UsersRound',
+                nonlogged: false,
+            },
+            {
+                name: 'explore',
+                title: 'Explore',
+                link: '/explore',
+                icon: 'Compass',
+                logged: false,
+            },
+            {
+                name: 'videos-home',
+                title: 'Video',
+                link: '/videos-home',
+                icon: 'TvMinimalPlay',
+            },
+            {
+                name: 'products-home',
+                title: 'Market',
+                link: '/products-home',
+                icon: 'Store',
+            },
+            {
+                name: 'groups-home',
+                title: 'Groups',
+                link: '/groups-home',
+                icon: 'Shapes',
+            },
+            {
+                name: 'events-home',
+                title: 'Events',
+                link: '/events-home',
+                icon: 'Calendar',
+            },
         ],
         menu_tabbar_logged: [
             { key: '/tab0', title: 'Home', url: '/home', icon: 'House' },
-            { key: '/tab1', title: 'Friends', url: '/friends', icon: 'UsersRound' },
-            { key: '/tab2', title: 'Messages', url: '/messenger', icon: 'MessageCircleMore' },
-            { key: '/tab3', title: 'Notifications', url: '/notifications-view', icon: 'Bell' },
-            { key: '/tab4', title: 'Dashboard', url: '/dashboard', icon: 'Award' }
+            {
+                key: '/tab1',
+                title: 'Friends',
+                url: '/friends',
+                icon: 'UsersRound',
+            },
+            {
+                key: '/tab2',
+                title: 'Messages',
+                url: '/messenger',
+                icon: 'MessageCircleMore',
+            },
+            {
+                key: '/tab3',
+                title: 'Notifications',
+                url: '/notifications-view',
+                icon: 'Bell',
+            },
+            {
+                key: '/tab4',
+                title: 'Dashboard',
+                url: '/dashboard',
+                icon: 'Award',
+            },
         ],
-        
+
         menu_tabbar_non_logged: [
             { key: '/tab0', title: 'Home', url: '/home', icon: 'House' },
-            { key: '/tab1', title: 'Explore', url: '/explore', icon: 'Compass' },
+            {
+                key: '/tab1',
+                title: 'Explore',
+                url: '/explore',
+                icon: 'Compass',
+            },
             { key: '/tab2', title: 'About', url: '/about', icon: 'Info' },
-            { key: '/tab3', title: 'Contact', url: '/contact', icon: 'Contact' },
-            { key: '/tab4', title: 'Terms', url: '/terms', icon: 'Info' }
+            {
+                key: '/tab3',
+                title: 'Contact',
+                url: '/contact',
+                icon: 'Contact',
+            },
+            { key: '/tab4', title: 'Terms', url: '/terms', icon: 'Info' },
         ],
         /* for vertical layout*/
         menu_sidebar: [
@@ -550,7 +629,11 @@ export  const settingsDefault = {
             { title: 'Spaces', link: '/spaces-home', icon: 'SquareStack' },
             { title: 'Events', link: '/events-home', icon: 'CalendarCheck' },
             { title: 'Posts', link: '/posts-home', icon: 'MessageSquareText' },
-            { title: 'Discussions', link: '/discussions-home', icon: 'MessageSquare' },
+            {
+                title: 'Discussions',
+                link: '/discussions-home',
+                icon: 'MessageSquare',
+            },
             { title: 'Courses', link: '/courses-home', icon: 'LibraryBig' },
             { title: 'People', link: '/persons-home', icon: 'Users' },
             { title: 'Jobs', link: '/jobs-home', icon: 'BriefcaseBusiness' },
@@ -561,7 +644,8 @@ export  const settingsDefault = {
     },
     layouts: {},
     theme: {
-        profile_colors: [//OLD appSetting('layout', 'profile_colors')
+        profile_colors: [
+            //OLD appSetting('layout', 'profile_colors')
             'orange',
             'yellow',
             'green',
@@ -573,8 +657,8 @@ export  const settingsDefault = {
             'rose',
             'red',
         ],
-        native_tabs:{
-            tabBarItemStyle:{
+        native_tabs: {
+            tabBarItemStyle: {
                 marginBottom: 0,
                 height: 50,
                 marginTop: 4,
@@ -606,7 +690,7 @@ export  const settingsDefault = {
             checkbox: '#2563eb',
             safeAreaBackground: 'rgba(255,255,255,1)', // Add this new property
             primaryBg: 'rgba(37,99,235,0.1)',
-            fgTertiary: 'rgba(75,85,99,1)'
+            fgTertiary: 'rgba(75,85,99,1)',
         },
         dark: {
             default: 'rgba(209,213,219,1)', //fix for icons color in iOS
@@ -615,7 +699,7 @@ export  const settingsDefault = {
             barsBackground: 'rgba(17,24,39,1)', //header background in native
             bottomSheetBackground: 'rgba(17,24,39,1)',
             barsColor: 'rgba(209,213,219,1)', //tabbar icons color in native
-            selectBorder: 'rgba(55, 65, 81, 0.3)', 
+            selectBorder: 'rgba(55, 65, 81, 0.3)',
             fieldBackground: '#030712',
             blockBorder: '#030712',
             tabText: 'rgba(156,163,175,1)',
@@ -626,7 +710,7 @@ export  const settingsDefault = {
             checkbox: '#0ea5e9',
             safeAreaBackground: 'rgba(17,24,39,1)', // Add this new property
             primaryBg: 'rgba(37,99,235,0.1)',
-            fgTertiary: 'rgba(156,163,175,1)'
+            fgTertiary: 'rgba(156,163,175,1)',
         },
         conductor: {
             menu: ' w-full items-left justify-center bg-bgrtabbar dark:bg-bgrtabbar-d border-b border-bdrtabbar dark:border-bdrtabbar-d ',
@@ -635,112 +719,131 @@ export  const settingsDefault = {
             menu_is_dynamic: true,
             menu_cnt: ' ml-3 gap-x-1 flex-row flex-none ',
             right_column_cnt: 'fixed-process p-4 max-w-md',
-            topmenu_cnt: 'w-full px-8 pt-6 items-stretch justify-stretch sticky z-50 t-8 gap-x-8 hidden lg:flex p',
+            topmenu_cnt:
+                'w-full px-8 pt-6 items-stretch justify-stretch sticky z-50 t-8 gap-x-8 hidden lg:flex p',
             topmenu_button_variant: 'secondary',
             topmenu_button_variant_active: 'secondary',
             topmenu_button_align: 'start',
             topmenu_button_fullWidth: false,
             topmenu_button_size: 'base',
             topmenu_button_pressed: true,
-            left_menu_cnt: '  '
+            left_menu_cnt: '  ',
         },
-        checkbox : {
-            container: ' h-[20px] w-[20px] m-[4px] rounded-[4px] border-[2px] border-neutral-500 bg-transparent justify-center items-center   ',
-            container_selected: ' m-[4px] h-[20px] w-[20px] rounded-[4px] border-[2px] border-neutral-500 bg-transparent justify-center items-center ',
-            selected: ' h-[10px] w-[10px] rounded-[2px] bg-primary m-[4px]',  
+        checkbox: {
+            container:
+                ' h-[20px] w-[20px] m-[4px] rounded-[4px] border-[2px] border-neutral-500 bg-transparent justify-center items-center   ',
+            container_selected:
+                ' m-[4px] h-[20px] w-[20px] rounded-[4px] border-[2px] border-neutral-500 bg-transparent justify-center items-center ',
+            selected: ' h-[10px] w-[10px] rounded-[2px] bg-primary m-[4px]',
             text: '  text-neutral-800 dark:text-neutral-200 text-[16px] leading-[20px] font-medium ',
             selected_icon: false,
-        },  
-        checkbox_set : {
-            container:  '  gap-x-2 items-center',
+        },
+        checkbox_set: {
+            container: '  gap-x-2 items-center',
         },
         switcher: {
-            container:  'gap-x-2 items-center',
-            text:  'text-neutral-800 dark:text-neutral-200 text-sm',
+            container: 'gap-x-2 items-center',
+            text: 'text-neutral-800 dark:text-neutral-200 text-sm',
             track: '#cccccc',
             active_track: '#0ea5e9',
             thumb: '#ffffff',
-            active_thumb: '#ffffff'
+            active_thumb: '#ffffff',
         },
         doublerange: {
-            container:  'w-full items-center justify-between mt-2',
-            value_container:  'w-36 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput py-2 px-4 text-center rounded-lg justify-between',
+            container: 'w-full items-center justify-between mt-2',
+            value_container:
+                'w-36 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput py-2 px-4 text-center rounded-lg justify-between',
             text_value: 'text-neutral-700 dark:text-neutral-300',
             text_info: '',
             track_height: 4,
             thumb_size: 15,
-            outbound_color:{
+            outbound_color: {
                 light: 'rgb(242, 242, 242)',
                 dark: 'rgb(242, 242, 242)',
             },
-            inbound_color:{
+            inbound_color: {
                 light: 'rgb(242, 242, 242)',
                 dark: 'rgb(242, 242, 242)',
-            }, 
-            thumb_tint_color:{
+            },
+            thumb_tint_color: {
                 light: '#2563eb',
                 dark: '#2563eb',
-            } 
+            },
         },
         dropdown_menu: {
             content_shadow: ' shadow-xl  ',
             content_ver: '',
             content_hor: 'flex-row   ',
-            item_ver: ' group flex flex-row items-center p-[6px] text-sm rounded-[12px] font-medium hover:bg-bgritem dark:hover:bg-bgritem-d text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 hover:cursor-pointer',
-            item_hor: 'flex block p-[6px] hover:-translate-y-1  dark:hover:text-white rounded-full hover:cursor-pointer text-neutral-700  hover:scale-125 active:scale-95 duration-200 dark:text-neutral-300 outline-none ',
-            item_np: 'flex flex-row focus:outline-none items-center justify-between px-1 py-0.5 rounded-lg font-medium hover:bg-bgritem dark:hover:bg-bgritem-d text-sm text-neutral-700 dark:text-neutral-300 dark:hover:text-white hover:cursor-pointer',
+            item_ver:
+                ' group flex flex-row items-center p-[6px] text-sm rounded-[12px] font-medium hover:bg-bgritem dark:hover:bg-bgritem-d text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 hover:cursor-pointer',
+            item_hor:
+                'flex block p-[6px] hover:-translate-y-1  dark:hover:text-white rounded-full hover:cursor-pointer text-neutral-700  hover:scale-125 active:scale-95 duration-200 dark:text-neutral-300 outline-none ',
+            item_np:
+                'flex flex-row focus:outline-none items-center justify-between px-1 py-0.5 rounded-lg font-medium hover:bg-bgritem dark:hover:bg-bgritem-d text-sm text-neutral-700 dark:text-neutral-300 dark:hover:text-white hover:cursor-pointer',
             item_cnt: 'items-center w-full',
-            item_text: 'text-sm leading-[32px] px-[12px] font-medium text-neutral-800 dark:text-neutral-200',
-            item_icon: 'flex items-center w-[36px] h-[36px] bg-bgritem dark:bg-bgritem-d group-hover:bg-bgritem-h dark:group-hover:bg-bgritem-dh rounded-full justify-center',
+            item_text:
+                'text-sm leading-[32px] px-[12px] font-medium text-neutral-800 dark:text-neutral-200',
+            item_icon:
+                'flex items-center w-[36px] h-[36px] bg-bgritem dark:bg-bgritem-d group-hover:bg-bgritem-h dark:group-hover:bg-bgritem-dh rounded-full justify-center',
             icon_size: 20, // Default icon size for dropdown menu icons
         },
         modal: {
             fog: 'bg-white/50 dark:bg-black/80 backdrop-blur ',
-            container: ' h-full sm:h-auto  shadow-modal dark:shadow-modal-d bg-bgrmodal dark:bg-bgrmodal-d {ls}:rounded-2xl sm:border border-bdrmodal dark:border-bdrmodal-d overflow-hidden',
-            content:
-                ' h-auto ',
+            container:
+                ' h-full sm:h-auto  shadow-modal dark:shadow-modal-d bg-bgrmodal dark:bg-bgrmodal-d {ls}:rounded-2xl sm:border border-bdrmodal dark:border-bdrmodal-d overflow-hidden',
+            content: ' h-auto ',
             header: ' p-[12px] items-start justify-start border-b border-bdrmodal dark:border-bdrmodal-d',
         },
         card: {
             default: ' bg-bgrcard dark:bg-bgrcard-d',
-            border: ' border-bdrcard dark:border-bdrcard-d shadow-[0_2px_4px_0_rgba(0,0,0,0.05),0_0px_2px_0_rgba(0,0,0,0.1)] ',
+            border: ' border border-bdrcard dark:border-bdrcard-d shadow-[0_1px_3px_0_rgba(0,0,0,0.05)] ',
             rounded: ' rounded-2xl ',
-            margin: ''
+            margin: '',
         },
         inputs: {
             default:
-                ' h-[48px] min-w-[48px] rounded-[12px] flex-auto px-[12px] py-[11px] text-[16px] hover:border-bdrinput-h focus:border-bdrinput-f overflow-hidden border border-bdrinput focus:bg-bgrinput-f dark:focus:bg-bgrinput-df focus:border-bdrinput-f dark:focus:border-bdrinput-df duration-300 placeholder-neutral-500 text-neutral-800 dark:text-neutral-200 ',
+                ' h-[48px] min-w-[48px] rounded-[12px] flex-auto ' +
+                ' px-[12px] py-[11px] text-[16px] ' +
+                ' bg-neutral-50 border border-neutral-200 ' +
+                ' hover:border-neutral-300 focus:border-primary ' +
+                ' dark:bg-neutral-900 overflow-hidden ' +
+                ' dark:border-neutral-800 dark:hover:border-neutral-700 ' +
+                ' dark:focus:border-primary-d ' +
+                ' focus:bg-bgrinput-f dark:focus:bg-neutral-950 ' +
+                ' duration-300 ' +
+                ' placeholder-neutral-500 ' +
+                ' text-neutral-800 dark:text-neutral-200 ',
             multi: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg flex-auto p-2 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 ',
             rounded:
-                ' h-[48px] min-w-[48px] rounded-[12px] flex-auto px-[12px] py-[11px] text-[16px] hover:border-bdrinput-h focus:border-bdrinput-f overflow-hidden border border-bdrinput focus:bg-bgrinput-f dark:focus:bg-bgrinput-df focus:border-bdrinput-f dark:focus:border-bdrinput-df duration-300 placeholder-neutral-500 text-neutral-800 dark:text-neutral-200 ',
+                ' h-[48px] min-w-[48px] rounded-full flex-auto px-[12px] py-[11px] text-[16px] bg-bgrinput dark:bg-bgrinput-d hover:border-bdrinput-h focus:border-bdrinput-f overflow-hidden border border-bdrinput focus:bg-bgrinput-f dark:focus:bg-bgrinput-df focus:border-bdrinput-f dark:focus:border-bdrinput-df duration-300 placeholder-neutral-500 text-neutral-800 dark:text-neutral-200 ',
             roundedsmall:
                 ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-full flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[34px] ',
             small: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[36px] ',
-        
-            select: 'bg-bgrinput  border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg  flex-auto px-3 py-2 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus dark:text-neutral-100 text-base'
+
+            select: 'bg-bgrinput  border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg  flex-auto px-3 py-2 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus dark:text-neutral-100 text-base',
         },
 
         button_sizes: {
             default_size: 'base',
             default_variant: 'default',
-            pressed_container:
-                ' bg-primary-100 dark:bg-primary-950',
+            pressed_container: ' bg-primary-100 dark:bg-primary-950',
             pressed_text:
                 ' text-primary-700 dark:text-primary-300 group-hover:text-primary-800 dark:group-hover:text-primary-200 ',
             xs: {
                 rounded: ' rounded-[6px] overflow-hidden ',
                 padding: ' h-[28px] min-w-[28px] p-[4px] ',
-                icon_container:
-                ' h-[20px] w-[20px] ', //icon container size
+                icon_container: ' h-[20px] w-[20px] ', //icon container size
                 icon_size: ' 20px ', //icon size
                 icon_margin: ' mx-[0px] ', //conditional margin for icon container when title is present
                 title_container: ' ',
-                title_margin: ' px-[4px] leading-[20px] native:text-[14px] web:text-sm ',
+                title_margin:
+                    ' px-[4px] leading-[20px] native:text-[14px] web:text-sm ',
             },
             sm: {
                 rounded: ' rounded-[10px] ',
                 padding: ' h-[40px] px-[10px] overflow-hidden ',
-                icon_container: ' h-[20px] w-[20px] flex items-center justify-center ',
+                icon_container:
+                    ' h-[20px] w-[20px] flex items-center justify-center ',
                 title_container: ' px-[4px] ',
                 icon_size: 20,
                 icon_margin: ' mx-[4px] ', //conditional margin for icon container when title is present
@@ -749,7 +852,8 @@ export  const settingsDefault = {
             base: {
                 rounded: ' rounded-[12px] ',
                 padding: ' h-[48px] px-[12px] overflow-hidden ',
-                icon_container: ' h-[24px] w-[24px] flex items-center justify-center ',
+                icon_container:
+                    ' h-[24px] w-[24px] flex items-center justify-center ',
                 title_container: ' px-[4px] ',
                 icon_size: 24,
                 icon_margin: ' mx-[4px] ', //conditional margin for icon container when title is present
@@ -758,7 +862,8 @@ export  const settingsDefault = {
             lg: {
                 rounded: ' rounded-[12px] ',
                 padding: ' h-[48px] px-[12px] overflow-hidden ',
-                icon_container: ' h-[24px] w-[24px] flex items-center justify-center ',
+                icon_container:
+                    ' h-[24px] w-[24px] flex items-center justify-center ',
                 title_container: ' px-[4px] ',
                 icon_size: 24,
                 icon_margin: ' mx-[4px] ', //conditional margin for icon container when title is present
@@ -775,7 +880,7 @@ export  const settingsDefault = {
             'u-btn-default-color-icon-dark': 'rgb(243, 244, 246)',*/
 
             'u-btn-primary-cnt':
-            ' group bg-primary-500 dark:bg-primary-600 border border-transparent sm:hover:border-transparent dark:border-primary-500 sm:hover:bg-primary-600 dark:sm:hover:bg-primary-700 sm:dark:hover:border-primary-600 ',
+                ' group bg-primary-500 dark:bg-primary-600 border border-transparent sm:hover:border-transparent dark:border-primary-500 sm:hover:bg-primary-600 dark:sm:hover:bg-primary-700 sm:dark:hover:border-primary-600 ',
             'u-btn-primary-text': '  font-medium text-white ',
             'u-btn-primary-trans': ' web:duration-200 ',
             'u-btn-primary-color-icon-light': 'rgb(243, 244, 246)',
@@ -820,50 +925,47 @@ export  const settingsDefault = {
             /*'u-btn-outline-color-icon-light': 'rgb(243, 244, 246)',
             'u-btn-outline-color-icon-dark': 'rgb(243, 244, 246)',*/
 
-
-
             'u-btn-group-item-cnt':
                 ' hover:bg-bgritem-h dark:hover:bg-bgritem-dh active:opacity-50  ',
             'u-btn-group-item-text':
                 ' font-medium text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-neutral-50 ',
-            'u-btn-group-item-icon': ' text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
+            'u-btn-group-item-icon':
+                ' text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
 
             'u-btn-group-item-default-cnt':
                 ' hover:bg-bgritem-h dark:hover:bg-bgritem-dh active:opacity-50  ',
             'u-btn-group-item-default-text':
                 ' font-medium text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-neutral-50 ',
-            'u-btn-group-item-default-icon': 
+            'u-btn-group-item-default-icon':
                 ' text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
 
             'u-btn-group-item-primary-cnt':
                 ' hover:bg-bgritem-h dark:hover:bg-bgritem-dh active:opacity-50  ',
             'u-btn-group-item-primary-text':
                 ' font-medium text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-neutral-50 ',
-            'u-btn-group-item-primary-icon': 
+            'u-btn-group-item-primary-icon':
                 ' text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
 
             'u-btn-group-item-secondary-cnt':
                 ' hover:bg-bgritem-h dark:hover:bg-bgritem-dh active:opacity-50  ',
             'u-btn-group-item-secondary-text':
                 ' font-medium text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-neutral-50 ',
-            'u-btn-group-item-secondary-icon': 
+            'u-btn-group-item-secondary-icon':
                 ' text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
 
             'u-btn-group-item-text-cnt':
                 ' hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50 ',
             'u-btn-group-item-text-text':
                 ' font-medium text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-neutral-50 ',
-            'u-btn-group-item-text-icon': 
+            'u-btn-group-item-text-icon':
                 ' text-neutral-600 group-hover:text-neutral-950 dark:text-neutral-400 dark:group-hover:text-neutral-50 ',
 
-            'u-btn-group-item-link-cnt':
-                ' ',
+            'u-btn-group-item-link-cnt': ' ',
             'u-btn-group-item-link-text':
                 ' font-medium text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-neutral-50 ',
-            'u-btn-group-item-link-icon': 
+            'u-btn-group-item-link-icon':
                 ' text-primary-600 group-hover:text-primary-700 dark:text-primary-500 dark:group-hover:text-primary-400 ',
-            'u-btn-group-item-link-pressed-cnt':
-                ' bg-transparent ',
+            'u-btn-group-item-link-pressed-cnt': ' bg-transparent ',
             'u-btn-group-item-link-pressed-text':
                 'text-primary-700 dark:text-neutral-600 group-hover:text-primary-800 dark:group-hover:text-primary-500 ',
             'u-btn-group-item-link-pressed-icon':
@@ -873,7 +975,7 @@ export  const settingsDefault = {
                 ' hover:bg-bgritem-h dark:hover:bg-bgritem-dh active:opacity-50  ',
             'u-btn-group-item-outline-text':
                 ' font-medium text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-neutral-50 ',
-            'u-btn-group-item-outline-icon': 
+            'u-btn-group-item-outline-icon':
                 ' text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
         },
         buttons_group_styles: {

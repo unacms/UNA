@@ -61,8 +61,8 @@ export default function (props) {
 
     if (!currentUser) {
         if (!isWeb)
-            return <><View className="lg:hidden" style={{ height: 64 }} ></View><Splash {...props} /></>
-        else{
+            return <Splash {...props} />
+        else {
             const content = (
                 <Animated.ScrollView ref={refer} className={getPageWidth(props.uri, props.data.config) + '  mx-auto w-full '} keyboardShouldPersistTaps="always" keyboardDismissMode="on-drag">
                    <Splash {...props} />
@@ -73,7 +73,7 @@ export default function (props) {
                 refer={refer}
                 content = {content}
                 pageData = {props.data}
-                headerHeight = {64}
+                headerHeight = {0}
                 contentType="ScrollList"
             />)
         }
