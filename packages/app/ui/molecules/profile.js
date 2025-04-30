@@ -148,7 +148,7 @@ function AtomProfile_(oProps) {
             sSize: 'w-[64px] h-[64px]',
             iSizeWidth: 64,
             iSizeHeight: 64,
-            sSizeFont: 'text-lg',
+            sSizeFont: 'text-xl',
             sSizeFontLetter: 'text-4xl opacity-50 font-semibold',
         },
         '1.5xl': {
@@ -156,14 +156,14 @@ function AtomProfile_(oProps) {
             iSizeWidth: 72,
             iSizeHeight: 72,
             sSizeFont: 'text-xl',
-            sSizeFontLetter: 'text-2xl',
+            sSizeFontLetter: 'text-5xl',
         },
         '2xl': {
             sSize: 'w-[96px] h-[96px]',
             iSizeWidth: 96,
             iSizeHeight: 96,
             sSizeFont: 'text-xl',
-            sSizeFontLetter: 'text-2xl',
+            sSizeFontLetter: 'text-6xl',
         },
         '3xl': {
             sSize: 'w-[128px] h-[128px]',

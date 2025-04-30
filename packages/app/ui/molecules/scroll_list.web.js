@@ -135,7 +135,7 @@ export default function ScrollList({
             {enhanced}
             {isSmallScreen && <Animated.View style={[headerStyle]}>
                 
-                    <View className="w-full backdrop-blur " style={{ backgroundColor: colors.headerBackground }} >
+                    <View className="w-full " style={{ backgroundColor: colors.headerBackground }} >
                         <Header
                             backButtonPresented={isBackButton}
                             headerComponent={headerComponent}

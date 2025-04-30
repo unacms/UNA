@@ -48,20 +48,26 @@ export function CoverSmall(props) {
                     appSetting('layout', 'max_width') + ' w-full mx-auto'
                 }
             >
-                <View className={`px-3 sm:px-4 py-2  ${conductorTheme.content_max_width} mx-auto w-full flex-row gap-2`}>
-                    <Row className=" items-center flex-auto">
-                        {getBackButtonWeb()}
+                <View className={`px-3 py-2  ${conductorTheme.content_max_width} mx-auto w-full flex-row gap-2`}>
+                    <Row className=" gap-x-2 items-center justify-between flex-auto">
+                        <View className="flex-auto flex-row gap-x-2 items-center p-1">
+                            {getBackButtonWeb()}
+                        
                         {bPerson && (
                             <Profile
                                 {...data.profile}
                                 displayType="unit_wo_info"
                                 displaySize="base"
+
                             />
                         )}
-                        <View className=" flex-auto pl-2">
-                            <Text className="text-lg xl:text-xl font-bold tracking-tight text-neutral-900 dark:text-neutral-50 whitespace-nowrap text-ellipsis overflow-hidden">
-                                {data.profile.display_name}
-                            </Text>
+                        
+                            <Profile
+                                {...data.profile}
+                                displayType="unit_wo_image"
+                                displaySize="xl"
+
+                            />
                         </View>
                         <View className=" w-auto my-auto ">
                             <CoverMenuSmall {...data.actions_menu} />
@@ -222,11 +228,11 @@ export default function (props) {
     };
 
     return (
-        <View className=' bg-bgrtabbar dark:bg-bgrtabbar-d ' >
+        <View className=' bg-bgrtabbar dark:bg-bgrtabbar-d border-b border-bdrtabbar dark:border-bdrtabbar-d ' >
             <View
                 className={
                     appSetting('layout', 'max_width') +
-                    ' mx-auto w-full max-w-7xl  '
+                    '  w-full mx-auto  '
                 }
             >
                 {mode != 'min' ? (

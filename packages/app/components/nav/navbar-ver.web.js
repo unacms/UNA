@@ -30,7 +30,7 @@ const HeaderLine = memo(({ headerSettings, currentUser, uri, bSearch, menuPopup,
     const menu_sidebar_items = menuItemsByName('main_menu', appSetting('menu_items', 'menu_sidebar'), currentUser);
 
     return (
-        <View className=' flex-row lg:flex-col lg:w-80'>
+        <View className=' flex-row lg:flex-col lg:w-96'>
             {(headerSettings.menu && isDrawer) && (
                 <View className="lg:hidden ml-4">
                     <Pressable onPress={showMenu}>
@@ -127,7 +127,7 @@ export default function (props) {
                 contentContainerStyle={{
                     width: '100%',
                 }}
-                className={"dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur border-b border-bdrnavbar lg:bg-transparent lg:border-none lg:shadow-none" + "  fixed w-full lg:w-80 top-0 items-start lg:h-screen" + (!headerSettings.header ? ' hidden lg:flex' : '')}>
+                className={"dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d border-b border-bdrnavbar lg:bg-transparent lg:border-none lg:shadow-none" + "  fixed w-full lg:w-96 top-0 items-start lg:h-screen" + (!headerSettings.header ? ' hidden lg:flex' : '')}>
                 <View className=' flex-row lg:flex-col  h-16 lg:h-auto items-center lg:items-start' >
                     <View className=' justify-between  lg:h-screen flex-auto '>
                         <HeaderLine headerSettings={headerSettings} currentUser={currentUser} uri={props.uri} bSearch={bSearch} showMenu={showMenu} menuPopup={menuPopup} setMenuPopup={setMenuPopup} />

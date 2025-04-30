@@ -42,15 +42,17 @@ export default function MenuAccount({ buttonProps, children }) {
         let dUser = Object.assign({}, currentUser)
         dUser.url_avatar = dUser.avatar
         dUser.url = ''
-    profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="lg" />
+    profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="base" />
     }
 
     buttonProps = buttonProps || {
         tooltip: t("Dashboard"),
         variant: "secondary",
-        padding: '0px',
         rounded: true,
+        padding: '0px',
         startDecorator: profile,
+        size: "sm",
+        ring: "p-1",
     };
 
     if ((menu_account_items.length == 0 && menuData) || !profile)
@@ -133,6 +135,8 @@ export default function MenuAccount({ buttonProps, children }) {
                                         fullWidth
                                         align="start"
                                         solid
+                                        size="sm"
+                                        ring="p-1"
                                         startDecorator="CircleUserRound"
                                         title={t("See all profiles")}/>
                                 </ProfileSwitcher>

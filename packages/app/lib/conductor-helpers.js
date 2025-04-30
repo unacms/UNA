@@ -19,8 +19,8 @@ export function getBackButtonWeb() {
     if (!isWeb) return <></>;
     if (history.length > 2) {
         return (
-            <View className="lg:hidden mr-2"  >
-               <Button rounded={true} variant="secondary" startDecorator="ArrowLeft" onPress={() => history.back()}/>
+            <View className="lg:hidden mr-1"  >
+               <Button rounded={true} variant="secondary" size="sm" ring="p-1" startDecorator="ArrowLeft" onPress={() => history.back()}/>
             </View>
         )
     }

@@ -34,7 +34,7 @@ export default function ElementSearch(oProps) {
     ) : (
         <Row>
             <View key="ddp-trigger" className="flex-row">
-                <ButtonRef title={oProps.title === undefined ? "" : oProps.title} variant="secondary" startDecorator={oParams?.trigger?.icon ? oParams?.trigger.icon : "Search"} rounded tooltip={oProps.tooltip === undefined ? "Search" : oProps.tooltip} onPress={() => handleOpenPopupDefault()} {...oParams?.trigger} />
+                <ButtonRef title={oProps.title === undefined ? "" : oProps.title} variant="secondary" startDecorator={oParams?.trigger?.icon ? oParams?.trigger.icon : "Search"} rounded size="sm" ring="p-1" tooltip={oProps.tooltip === undefined ? "Search" : oProps.tooltip} onPress={() => handleOpenPopupDefault()} {...oParams?.trigger} />
             </View>
         </Row>
     );
@@ -62,7 +62,7 @@ export function SearchPanel(props) {
                             setInputValue(value)
                         }}
                     />
-                    <Link href={'/search-keyword?keyword=' + inputValue + '&section=' + props.section}><Button variant="outline" size="base" endDecorator="Search" /></Link>
+                    <Link href={'/search-keyword?keyword=' + inputValue + '&section=' + props.section}><Button variant="outline" ring="p-1" size="sm" endDecorator="Search" /></Link>
                 </Row>
             </View>
         </View>

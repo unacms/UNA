@@ -415,7 +415,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
 
     return (
         <View className='flex-1 w-full h-full flex-row bg-bgrcard dark:bg-bgrcard-d'>
-            {panelsVisible.convos && <View className='w-full md:w-80 2xl:w-96 border-bdrtabbar dark:border-bdrtabbar-d border-r'>
+            {panelsVisible.convos && <View className='w-full md:w-96 border-bdrtabbar dark:border-bdrtabbar-d border-r'>
                 {convosComponent}
             </View>}
             <View className='flex-1 '>
@@ -464,8 +464,8 @@ const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, 
             {srch}
         </Row>}
         <Row className='my-auto'>
-            <View className='lg:hidden mr-2 lg:mr-0 '>
-                <Button startDecorator="Search" variant="secondary" rounded onPress={() => handleSearch2()} />
+            <View className='lg:hidden mr-1 lg:mr-0 '>
+                <Button size="sm" ring="p-1" startDecorator="Search" variant="secondary" rounded onPress={() => handleSearch2()} />
             </View>
             {addButtons}
         </Row>

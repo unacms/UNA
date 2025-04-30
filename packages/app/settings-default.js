@@ -28,7 +28,7 @@ export  const settingsDefault = {
     layout: {
         avaliable_layouts: ['hor', 'ver', 'mixed'], // OLD appSetting('layout', 'format_list')
         default_layout: 'hor', //hor, ver, mixed// OLD appSetting('layout', 'format')
-        max_width: ' w-full ', // consider for hor = max-w-screen-2xl, for ver = max-w-screen-xl
+        max_width: ' max-w-screen-2xl ', // consider for hor = max-w-screen-2xl, for ver = max-w-screen-xl
         max_width_block: '  ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
         search: false,
         sidebar_search: true,
@@ -40,7 +40,7 @@ export  const settingsDefault = {
         hide_header_for_all: false,
         card_animation_duration: 0,
         user_remote_config: true,
-        
+        max_width_header_content: 'max-w-screen-2xl',
         background_image_color: '', //OLD appSetting('layout', 'background_cover_color')
         background_image: '', //`url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239C92AC' fill-opacity='0.08' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E")`,
         background_image_dark: '', //`url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239C92AC' fill-opacity='0.08' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E")`,
@@ -589,7 +589,7 @@ export  const settingsDefault = {
         },
         light: {
             primary: 'rgba(37,99,235,1)',
-            headerBackground: 'rgba(255,255,255,0.9)',
+            headerBackground: 'rgba(255,255,255,1)',
             barsBackground: 'rgba(255,255,255,1)', //header and tabbar background in native light mode
             bottomSheetBackground: 'rgba(255,255,255,1)',
             barsColor: '#4B5563',
@@ -610,7 +610,7 @@ export  const settingsDefault = {
         },
         dark: {
             default: 'rgba(209,213,219,1)', //fix for icons color in iOS
-            headerBackground: 'rgba(17,24,39,0.9)',
+            headerBackground: 'rgba(17,24,39,1)',
             primary: 'rgba(37,99,235,1)',
             barsBackground: 'rgba(17,24,39,1)', //header background in native
             bottomSheetBackground: 'rgba(17,24,39,1)',
@@ -629,11 +629,11 @@ export  const settingsDefault = {
             fgTertiary: 'rgba(156,163,175,1)'
         },
         conductor: {
-            menu: ' w-full items-left justify-center  bg-bgrtabbar dark:bg-bgrtabbar-d  ',
+            menu: ' w-full items-left justify-center bg-bgrtabbar dark:bg-bgrtabbar-d border-b border-bdrtabbar dark:border-bdrtabbar-d ',
             menu_max_width: ' max-w-7xl ',
             content_max_width: ' max-w-7xl ',
             menu_is_dynamic: true,
-            menu_cnt: ' ml-4 gap-x-1 flex-row ',
+            menu_cnt: ' ml-3 gap-x-1 flex-row flex-none ',
             right_column_cnt: 'fixed-process p-4 max-w-md',
             topmenu_cnt: 'w-full px-8 pt-6 items-stretch justify-stretch sticky z-50 t-8 gap-x-8 hidden lg:flex p',
             topmenu_button_variant: 'secondary',
@@ -685,13 +685,13 @@ export  const settingsDefault = {
         dropdown_menu: {
             content_shadow: ' shadow-xl  ',
             content_ver: '',
-            content_hor: 'flex-row ',
-            item_ver: 'flex flex-row focus:outline-none items-center p-[4px] text-sm rounded-lg font-medium hover:bg-bgritem dark:hover:bg-bgritem-d text-neutral-700 dark:text-neutral-300 dark:hover:text-white hover:cursor-pointer',
-            item_hor: 'flex block p-[4px] hover:-translate-y-1 active:-translate-y-1 dark:hover:text-white rounded-full hover:cursor-pointer text-neutral-700  hover:scale-125 active:scale-95 duration-200 dark:text-neutral-300 outline-none ',
+            content_hor: 'flex-row   ',
+            item_ver: ' group flex flex-row items-center p-[6px] text-sm rounded-[12px] font-medium hover:bg-bgritem dark:hover:bg-bgritem-d text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 hover:cursor-pointer',
+            item_hor: 'flex block p-[6px] hover:-translate-y-1  dark:hover:text-white rounded-full hover:cursor-pointer text-neutral-700  hover:scale-125 active:scale-95 duration-200 dark:text-neutral-300 outline-none ',
             item_np: 'flex flex-row focus:outline-none items-center justify-between px-1 py-0.5 rounded-lg font-medium hover:bg-bgritem dark:hover:bg-bgritem-d text-sm text-neutral-700 dark:text-neutral-300 dark:hover:text-white hover:cursor-pointer',
             item_cnt: 'items-center w-full',
-            item_text: 'text-sm leading-[32px] px-[6px] font-medium text-neutral-800 dark:text-neutral-200',
-            item_icon: 'flex items-center w-[32px] h-[32px] bg-bgritem mx-[2px] dark:bg-bgritem-d rounded-full justify-center',
+            item_text: 'text-sm leading-[32px] px-[12px] font-medium text-neutral-800 dark:text-neutral-200',
+            item_icon: 'flex items-center w-[36px] h-[36px] bg-bgritem dark:bg-bgritem-d group-hover:bg-bgritem-h dark:group-hover:bg-bgritem-dh rounded-full justify-center',
             icon_size: 20, // Default icon size for dropdown menu icons
         },
         modal: {
@@ -703,7 +703,7 @@ export  const settingsDefault = {
         },
         card: {
             default: ' bg-bgrcard dark:bg-bgrcard-d',
-            border: ' border-bdrcard dark:border-bdrcard-d shadow-[0_1px_2px_0_rgba(0,0,0,0.05)] ',
+            border: ' border-bdrcard dark:border-bdrcard-d shadow-[0_2px_4px_0_rgba(0,0,0,0.05),0_0px_2px_0_rgba(0,0,0,0.1)] ',
             rounded: ' rounded-2xl ',
             margin: ''
         },

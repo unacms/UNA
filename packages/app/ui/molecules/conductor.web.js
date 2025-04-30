@@ -96,14 +96,14 @@ const AddMenu = (menu, filter) => {
 
         let btn = undefined;
         if (button.section)
-            btn = <Search section={button.section} params={{ trigger: { size: 'base' } }} />
+            btn = <Search section={button.section} params={{ trigger: { size: 'sm' } }} />
         else {
-            btn = <Button title={t(button.title)} startDecorator={button.icon} variant="secondary" rounded size="base" onPress={() => (handleFormModal(button, event, setPageData))} />;
+            btn = <Button title={t(button.title)} startDecorator={button.icon} variant="secondary" ring="p-1" rounded size="sm" onPress={() => (handleFormModal(button, event, setPageData))} />;
             btn = (button.link && button.name != "Add") ? <Link href={button.link} >{btn}</Link> : btn
         }
 
         return (
-            <View className="ml-2 " key={`add-${button.icon}`} >
+            <View className=" " key={`add-${button.icon}`} >
                 {btn}
                 <FormModal pageData={pageData} setPageData={setPageData} />
             </View>
@@ -171,10 +171,10 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
 
         return (
             <Pressable
-                className={' px-3 py-2.5 ' + menu_settings?.class ?? ''}
+                className={' p-3 ' + menu_settings?.class ?? ''}
                 onPress={handlePress}
             >
-                <Row className="justify-between items-center min-w-[200px]">
+                <Row className="h-6 justify-between items-center min-w-48">
                     {translatedTitle}
                     {addonContent}
                 </Row>
@@ -183,12 +183,12 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
     });
 
     const ButtonEx = memo(({ visibleItemsCount }) => {
-        return <View key="btn" className='ml-1 pb-2 '><Button title={'More...'} variant={visibleItemsCount <= index ? 'secondary' : "text"} rounded pressed={visibleItemsCount <= index ? true : false} size="sm" /></View>;
+        return <Button startDecorator="ChevronDown" variant={visibleItemsCount <= index ? 'secondary' : "secondary"} rounded ring="p-1" pressed={visibleItemsCount <= index ? true : false} size="sm" />;
     });
 
     return <DynamicMenu
         name={name}
-        offsetWidth={120}
+        offsetWidth={80}
         ButtonEx={ButtonEx}
         MenuItemEx={MenuItemEx}
         MenuItem={MenuItem}
@@ -218,7 +218,7 @@ const LeftSideBarContainer = ({ menu, routes, currentUser, index, setIndex, left
                 }
                 return (
                     <Link href={a.key} key={`lmenu-${a.index}`} alt={a.title}>
-                        <Pressable className={a.ident ? 'pl-[44px]' : ''} onPress={(event) => {
+                        <Pressable className={a.ident ? 'pl-[48px]' : ''} onPress={(event) => {
                             setIndex(a.index);
                             window.history.pushState({}, '', a.key);
                             event.preventDefault()
@@ -393,7 +393,7 @@ const RenderSceneHeader = ({ route, setFilterValue }) => {
     )
 };
 
-export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, leftSideBarBlocks, leftSideBarWidth = ' w-full max-w-80 2xl:max-w-96 ', skeleton = '', onChangeRoute, keyword, cover, layoutName, defaultHeaderHeight=116 }) {
+export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, leftSideBarBlocks, leftSideBarWidth = ' w-96 ', skeleton = '', onChangeRoute, keyword, cover, layoutName, defaultHeaderHeight=116 }) {
     const uniRef = useRef();
     const { currentUser } = useCurrentUser();
     const { setBottomSheetData } = useBottomSheetData();
@@ -737,7 +737,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
         return (
             <Row style={{ paddingTop: header ? 0 : 0 }} className={(headerSettings.columns == "reverse" ? 'flex-row-reverse' : '') + conductorTheme.content_max_width + '  mx-auto w-full '}>
-                <View className={(isRightCol ? 'flex-auto sm:border-r border-bdr dark:border-bdr-d lg:px-4 flex-auto ' : ' w-full mx-auto  ') /*sm:p-2*/+ (layoutName == 'navigator' ? '' : ' lg:pt-4')}/*lg:pt-4*/>
+                <View className={(isRightCol ? 'flex-auto sm:border-r border-bdr dark:border-bdr-d lg:px-4 flex-auto ' : ' w-full mx-auto px-2 py-4 ') /*sm:p-2*/+ (layoutName == 'navigator' ? '' : ' lg:pt-4')}/*lg:pt-4*/>
                     {TabFlashListM}
                     {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 && callFn("noContentByUrl", [route?.endpoint])))}
 
