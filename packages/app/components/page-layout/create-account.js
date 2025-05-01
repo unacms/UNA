@@ -10,6 +10,9 @@ import { appStatic } from 'app/lib/app-static'
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
 import { useState, useEffect } from "react";
 import { useTranslation } from 'react-i18next';
+import AuthPanel from 'app/ui/molecules/auth';
+import { appSetting } from 'app/lib/util'
+
 export default function PageLayout(props) {
     const { t } = useTranslation();
     const [isKeyboardVisible, setKeyboardVisible] = useState(false);
@@ -85,7 +88,9 @@ export default function PageLayout(props) {
                                 size="base"
                                 fullWidth
                             />
-                        </Link></View>
+                        </Link>
+                    </View>
+                    <AuthPanel className="mt-3"/>
                 </Card>
             </View>
         </KbAvoidingView >

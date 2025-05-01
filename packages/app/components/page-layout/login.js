@@ -9,6 +9,7 @@ import { appStatic } from 'app/lib/app-static'
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
 import AuthPanel from 'app/ui/molecules/auth';
 import { appSetting } from 'app/lib/util'
+
 export default function PageLayout(props) {
     return (
         <KbAvoidingView style={{ flex: 1 }}>
@@ -45,7 +46,7 @@ export default function PageLayout(props) {
                             />
                         </Link>
                     </View>
-                    {appSetting('auth', 'enabled') && <View className="mt-3"><AuthPanel/></View>}
+                    <AuthPanel className="mt-3"/>
                 </Card>
             </View>
         </KbAvoidingView>

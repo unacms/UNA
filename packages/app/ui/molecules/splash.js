@@ -10,6 +10,8 @@ import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view'
 import { appStatic } from 'app/lib/app-static'
 import { BlockByServiceName } from 'app/components/block'
 import { KeyboardAvoidingView } from 'react-native'
+import AuthPanel from 'app/ui/molecules/auth';
+import Link from 'app/ui/atoms/link'
 
 export default function Splash(props) {
     const isWeb = Platform.OS == 'web'
@@ -56,9 +58,9 @@ export default function Splash(props) {
     const isInvite = accountForm.content[0].type !== 'form';
 
     const forms = {
-        signup: isInvite ? { name: 'bx_invites:get_block_form_request', title: 'Request invitation', button: 'Login', icon: 'LogIn', action: 'login' } : { name: 'system:create_account_form', title: 'Create new account', button: 'Login', icon: 'LogIn', action: 'login' },
+        signup: isInvite ? { name: 'bx_invites:get_block_form_request', title: 'Request invitation', button: 'Login', icon: 'LogIn', action: 'login', link: '/login' } : { name: 'system:create_account_form', title: 'Create new account', button: 'Login', icon: 'LogIn', action: 'login', link: '/login' },
         fp: { name: 'system:forgot_password', title: 'Restore password' },
-        login: { name: 'system:login_form', title: 'Log in', button: 'Create new account', icon: 'UserPlus', action: 'signup' }
+        login: { name: 'system:login_form', title: 'Log in', button: 'Create new account', icon: 'UserPlus', action: 'signup', link: '/create-account', }
     };
 
     const defaultFormData = forms[defaultForm];
@@ -77,7 +79,7 @@ export default function Splash(props) {
                 transparent={true}
                 headerBorder={true}
             >
-                <View className=" w-full h-full pt-2 sm:pt-0 ">
+                <View className=" w-full h-full pt-2 sm:pt-0 mx-auto">
 
                     <KbAvoidingView
                         offset={isIos ? 56 : 72}
@@ -95,33 +97,35 @@ export default function Splash(props) {
                 rounded=" rounded-[28px] "
                 addClassName=" animate-slidein flex-col p-6 w-full max-w-xl mx-auto "
             >
-            
+
                 <BlockByServiceName name={defaultFormData.name} data={props.data} formProps={{ auto_focus: false, hide_errors: true, button_full_width: true }} />
-                <View
-                                    className=" w-full my-4 "
-                                    href="/forgot-password"
-                                >
-                                    <Button
-                                        title="Forgot password?"
-                                        variant="link"
-                                        fullWidth
-                                        size="sm"
-                                        addClassName="w-full"
-                                    />
-                                </View>
-                <View className="border-t border-bdr dark:border-bdr-d pt-4  ">
+                <Link
+                    className=" w-full my-4 "
+                    href="/forgot-password"
+                >
                     <Button
+                        title="Forgot password?"
+                        variant="link"
+                        fullWidth
+                        size="sm"
+                        addClassName="w-full"
+                    />
+                </Link>
+                <View className="border-t border-bdr dark:border-bdr-d pt-4  ">
+                    <Link href={defaultFormData.link}><Button
                         title={defaultFormData.button}
                         startDecorator={defaultFormData.icon}
                         size="base"
                         fullWidth
-                        onPress={() => {
-                            setDefaultForm(defaultForm == 'login' ? 'signup' : 'login')
-                            //setModalForm(defaultFormData.action)
-                        }}
-                    />
+                    /* onPress={() => {
+                         setDefaultForm(defaultForm == 'login' ? 'signup' : 'login')
+
+                     }}*/
+                    /></Link>
                 </View>
+                <AuthPanel className="mt-3" />
             </Card>
+
         </>
     )
 
@@ -141,7 +145,7 @@ export default function Splash(props) {
 
     return (
 
-        <View className={' flex-col justify-center ' + appSetting('layout', 'max_width')}>
+        <View className={' flex-col justify-center mx-auto ' + appSetting('layout', 'max_width')}>
             <View className=" w-full max-w-7xl mx-auto lg:flex-row my-6 ">
                 <View className=" w-full items-center lg:items-start my-auto p-12 flex-col gap-y-8 flex-auto">
                     {appStatic('splash_image')}

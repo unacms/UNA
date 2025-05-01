@@ -9,10 +9,11 @@ import { appSetting } from 'app/lib/util'
 import { useTranslation } from 'react-i18next'
 import { fetcher } from 'app/lib/fetcher';
 import Redirect from 'app/ui/atoms/redirect'
+import { Pressable } from 'app/design/view';
 
 WebBrowser.maybeCompleteAuthSession();
 
-export default function AuthGoogle(props) {
+export default function AuthGoogle({button}) {
     const { t } = useTranslation()
     const googleSettings = appSetting('auth', 'google')
     const redirectRef = useRef();
@@ -74,10 +75,10 @@ export default function AuthGoogle(props) {
 
     return (
         <><Redirect ref={redirectRef} />
-        <Button
+        {button ? <Pressable onPress={() => promptAsync({ useProxy: true })}>{button}</Pressable> : <Button
             disabled={!request}
             title={t("Login with Google")}
             onPress={() => promptAsync({ useProxy: true })}
-        /></>
+        />}</>
     );
 }
