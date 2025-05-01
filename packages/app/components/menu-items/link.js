@@ -25,6 +25,7 @@ const DisplayText = (oProps) => {
 }
 
 export default function MenuItemLink(oProps) {
+    
     if(!oProps.title && !oProps.icon)
         return;
 

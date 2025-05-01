@@ -375,7 +375,7 @@ export default function ElementReactions(oProps) {
                     tooltip: oParams.t ? oParams.t[oItem.name] : '', //TODO: oParams.t[oItem.name] for Roman use provided Tooltips in popup menus
                 };
             });
-            if (bWeb) {
+            if (false) {
                 sActionButton = oItems.length > 1 ? (
                     <Pressable key="action" onPress={(event) => { event.preventDefault() }}>
                         <DropdownMenu variant="horizontal" items={aItems} onSelect={(oItem, event) => { _handleDo(oItem.name, event) }}>
@@ -485,6 +485,7 @@ const ReactionPopover = ({
     disabled,
     children,
 }) => {
+    const bWeb = Platform.OS === 'web';
     const SCREEN_WIDTH = Dimensions.get('window').width;
     const POPOVER_WIDTH = 300;
     const sTheme = useColorScheme();
@@ -501,7 +502,7 @@ const ReactionPopover = ({
                 setButtonPos({ x:  Math.min(
                     pageX,
                     SCREEN_WIDTH - POPOVER_WIDTH - 8
-                  ), y: pageY -20, width, height });
+                  ), y: bWeb? pageY : pageY - 20, width, height });
                 setModalVisible(true);
             }
         );
@@ -531,7 +532,7 @@ const ReactionPopover = ({
                                     left: buttonPos.x,
                                     elevation: 5,
                                 }}
-                                className=" absolute flex-row bg-white p-2 dark:bg-neutral-800 rounded-full"
+                                className=" absolute flex-row p-2 rounded-full border border-bdrmodal p-2 dark:border-bdrmodal-d bg-bgrmodal dark:bg-bgrmodal-d shadow-[0_10px_10px_rgba(0,0,0,0.05)]"
                             >
                                 {items.map((item) => (
                                     <TouchableOpacity

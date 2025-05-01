@@ -11,9 +11,9 @@ import RbList from 'app/ui/molecules/radio_list';
 import ChkList from 'app/ui/molecules/checkbox_list';
 import { storageClear, getAlert } from 'app/lib/util';
 import { useLayoutData } from 'app/context/layout';
+import DropdownMenuItem from 'app/components/menu-items/dropdown-menu-item'
 
 const handleClick = async (event, oProps, setBottomSheetData, setLayoutData, redirectdRef, buttonProps, setButtonProps) => {
-
 
     const setMembership = async (val) => {
         oProps.data.value = val;
@@ -119,17 +119,28 @@ export default function MenuItemButton(oProps) {
                     sButtonIcon = oIconset[oProps.name];
             }
 
-            sContent = (
-                <View className="flex-auto">
-                    <Redirect ref={redirectdRef} />
-                    <ButtonAction onPress={(event) => handleClick(event, oProps, setBottomSheetData, setLayoutData, redirectdRef, buttonProps, setButtonProps)} title={buttonProps.title} startDecorator={sButtonIcon} {...oButtonProps} />
-                </View>
-            );
+            if (oProps.mode == 'dropdown-menu') {
+                sContent = <><Redirect ref={redirectdRef} /><DropdownMenuItem 
+                    item={{title: buttonProps.title, icon: sButtonIcon}} 
+                    handleSelect = {(event) => handleClick(event, oProps, setBottomSheetData, setLayoutData, redirectdRef, buttonProps, setButtonProps)}
+                /></>
+            }
+            else{
+                sContent = (
+                    <View className="flex-auto">
+                        
+                        <ButtonAction onPress={(event) => handleClick(event, oProps, setBottomSheetData, setLayoutData, redirectdRef, buttonProps, setButtonProps)} title={buttonProps.title} startDecorator={sButtonIcon} {...oButtonProps} />
+                    </View>
+                );
+            }
     }
 
     if (!buttonProps.isVisible)
         return <></>
 
+    if (oProps.mode == 'dropdown-menu') {
+        return sContent;
+    }
     return (
         <View className={'menu-item flex-auto ' + (bShowVertical ? ' w-full' : ' flex-row items-center justify-center')}>{sContent}</View>
     );

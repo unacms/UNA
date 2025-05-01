@@ -295,7 +295,7 @@ const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen }) => {
             if (!!aItem.display_type && aItem.display_type == 'element') {
                 const Element = componentsMap[aItem.data.type];
                 if (!!Element) {
-                    sTitle = <Element mode="text" key={aItem.id ? aItem.id : aItem.name}   {...aItem.data} />
+                    sTitle = <Element mode="dropdown-menu" key={aItem.id ? aItem.id : aItem.name}   {...aItem.data} />
                 }
             }
 

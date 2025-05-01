@@ -52,6 +52,7 @@ export default function DropdownPopup({
     }, [isRealOpen, popupWidth, windowWidth]);
 
     const handleToggle = (bOpen) => {
+        console.log("sdff")
         isControlledOutside ? onOpenChange(bOpen) : setIsOpen(bOpen);
     }
 
@@ -69,24 +70,26 @@ export default function DropdownPopup({
         </View>
     ), [buttonPos, popupWidth, contentClasses, children]);
 
+    console.log("isRealOpen", isRealOpen)
     return (
         <>
             <TouchableOpacity className='w-full' collapsable={false} ref={buttonRef} onPress={() => handleToggle(true)} >
                 {trigger}
             </TouchableOpacity>
-            {isRealOpen && (
+
                 <ModalBase
                     transparent={true}
-                    visible={isRealOpen}
+                    visible={isRealOpen === true ? true : false} 
                     presentationStyle={'pageSheet'}
                     animationType={animation}
                     onRequestClose={() => handleToggle(false)}
                 >
-                    <Pressable className="flex-1" onPress={() => handleToggle(false)} >
+                    <Pressable className="flex-1" onPress={(event) => {console.log("event", event), handleToggle(false)}} >
                         {isWeb ? <RemoveScroll>{Content}</RemoveScroll> : Content}
                     </Pressable>
                 </ModalBase>
-            )}
+          
+
         </>
     );
 }

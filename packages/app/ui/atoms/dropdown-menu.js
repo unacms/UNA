@@ -10,24 +10,9 @@ import Redirect from 'app/ui/atoms/redirect';
 import { isEmoji, appSetting } from 'app/lib/util';
 import { SafeMenuTrigger } from 'app/ui/atoms/safe-menu-trigger';
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
+import DropdownMenuItem from 'app/components/menu-items/dropdown-menu-item'
 
 const menuSettings = appSetting('theme', 'dropdown_menu');
-
-const getIcon = (oItem, iconSize = 20) => {
-    if (!oItem?.icon) return null;
-    const className = oItem?.class_item_icon;
-    if (isEmoji(oItem.icon)) {
-        return <Text className={className}>{oItem.icon}</Text>;
-    } else {
-        return (
-            <Icon
-                className={className}
-                icon={oItem.icon}
-                size={oItem?.icon_size || iconSize}
-            />
-        );
-    }
-};
 
 function DropdownMenuPopup({ items, onSelect, children, defaultOpen, variant, showOnTop, popupHeight }) {
     const redirectdRef = useRef();
@@ -41,57 +26,32 @@ function DropdownMenuPopup({ items, onSelect, children, defaultOpen, variant, sh
 
     const classes = variantClassMap[variant] ?? variantClassMap.vertical;
 
-    const handleSelect = useCallback((oItem) => {
+    const handleSelect = useCallback((event, item) => {
         setIsOpen(false);
-        onSelect ? onSelect(oItem) : redirectdRef.current.redirect('' + oItem.link)
+        onSelect ? onSelect(item) : redirectdRef.current.redirect('' + item.link)
     }, [onSelect]);
-
-    const iconSize = menuSettings.icon_size || 16;
-
-    const renderItem = useCallback(
-        (item, index) => {
-            const key = item.id ?? index;
-
-            if (item.type === 'separator') {
-                return <View key={key}>{item.title}</View>;
-            }
-
-            const icon = getIcon(item, iconSize);
-
-            return (
-                <Pressable
-                    className={menuSettings[classes.item]}
-                    key={key}
-                    onPress={() => handleSelect(item)}
-                >
-                    <Row className={menuSettings.item_cnt}>
-                        {!!icon && <View className={menuSettings.item_icon}>{icon}</View>}
-                        {!!item?.title &&
-                            (typeof item.title === 'string' ? (
-                                <Text className={menuSettings.item_text}>{item.title}</Text>
-                            ) : (
-                                item.title
-                            ))}
-                    </Row>
-                </Pressable>
-            );
-        },
-        [handleSelect, classes, iconSize]
-    );
 
     return (
         <>
             <Redirect ref={redirectdRef} />
             <DropdownPopup
-                showOnTop = {showOnTop}
-                popupHeight = {popupHeight}
+                showOnTop={showOnTop}
+                popupHeight={popupHeight}
                 popupWidth={200}
                 open={isOpen}
                 onOpenChange={setIsOpen}
                 trigger={<SafeMenuTrigger>{children}</SafeMenuTrigger>}
             >
                 <View className={menuSettings[classes.container]}>
-                    {items.map(renderItem)}
+                    {items.map((item, index) => (
+                        <DropdownMenuItem
+                            key={item.id ?? index}
+                            index={index}
+                            item={item}
+                            handleSelect={handleSelect}
+                            classes={classes}
+                        />
+                    ))}
                 </View>
             </DropdownPopup>
         </>
@@ -134,8 +94,8 @@ export default function DropdownMenu({ items, onSelect, children, defaultOpen, m
 
     if (isWeb || mode == "popup") {
         return <DropdownMenuPopup
-            showOnTop = {showOnTop}
-            popupHeight = {popupHeight}
+            showOnTop={showOnTop}
+            popupHeight={popupHeight}
             items={items}
             onSelect={onSelect}
             children={children}

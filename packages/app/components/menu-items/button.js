@@ -7,9 +7,8 @@ import SubmenuShare from './submenu-share'
 import ProfilesList from "app/ui/molecules/profile_list";
 import { Text } from 'app/design/typography'
 import { getIconByNameFromIconset } from 'app/lib/util';
-import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal';
-import { useState } from 'react'
-import { Platform } from 'react-native';
+
+import DropdownMenuItem from 'app/components/menu-items/dropdown-menu-item'
 
 export default function MenuItemButton(oProps) {
 
@@ -17,7 +16,6 @@ export default function MenuItemButton(oProps) {
     const bShowVertical = oProps?.params && oProps.params.showVertical != undefined && oProps.params.showVertical === true;
     const bTitleOnly = oProps?.params && oProps.params?.showTitleOnly === true;
     const oIconset = oProps?.params && !!oProps.params?.iconset ? oProps.params.iconset : {};
-    const [pageData, setPageData] = useState(false);
     const isTextMode = oProps.mode === 'text';
 
     let sContent = undefined;
@@ -77,29 +75,45 @@ export default function MenuItemButton(oProps) {
                 buttonAction = <Text className="hover:text-linkhover px-[8px] text-neutral-800 dark:text-neutral-200 font-semibold hover:underline">{oProps.title}</Text>
             }
 
-            sContent = (
-                <Row className={bShowVertical ? "flex-col flex-auto items-stretch" : "flex-auto items-center"}>
-                    
-                    {(oProps.list && oProps.list.length > 0) && <ProfilesList data={oProps.list} showEmpty={false} maxCount={3} displaySize="sm" />}
-                    {oProps?.link ? 
-                        (!oProps.noAction ?
-                            <Link emulate={true} href={oProps.link[0] === '/' ? oProps.link : (oProps.link.includes("://") ? oProps.link : '/' + oProps.link)}>
-                                {buttonAction}
-                            </Link>
-                            : (!oProps.onPress ? buttonAction : React.cloneElement(buttonAction, { onPress: oProps.onPress }))
-                        )
-                        :
-                        React.cloneElement(buttonAction, { onPress: handleClick })
-                    }
+            if (oProps.mode == 'dropdown-menu') {
+                const formattedLink = oProps.link && !oProps.noAction
+                    ? (oProps.link[0] === '/' || oProps.link.includes('://')
+                        ? oProps.link
+                        : '/' + oProps.link)
+                    : null;
+                sContent = <DropdownMenuItem
+                    item={{ title: oProps.title, icon: sButtonIcon }}
+                    handleSelect={oProps.onPress}
+                    {...(formattedLink ? { link: formattedLink } : {})}
+                />
+            }
+            else {
+                sContent = (
+                    <Row className={bShowVertical ? "flex-col flex-auto items-stretch" : "flex-auto items-center"}>
 
-                </Row>
-            );
+                        {(oProps.list && oProps.list.length > 0) && <ProfilesList data={oProps.list} showEmpty={false} maxCount={3} displaySize="sm" />}
+                        {oProps?.link ?
+                            (!oProps.noAction ?
+                                <Link emulate={true} href={oProps.link[0] === '/' ? oProps.link : (oProps.link.includes("://") ? oProps.link : '/' + oProps.link)}>
+                                    {buttonAction}
+                                </Link>
+                                : (!oProps.onPress ? buttonAction : React.cloneElement(buttonAction, { onPress: oProps.onPress }))
+                            )
+                            :
+                            React.cloneElement(buttonAction, { onPress: handleClick })
+                        }
+
+                    </Row>
+                );
+            }
     }
 
+    if (oProps.mode == 'dropdown-menu') {
+        return sContent;
+    }
 
     return (
         <View className={'menu-item flex-auto  ' + (bShowVertical ? ' w-full ' : ' flex-row ')}>
-            <FormModal pageData={pageData} setPageData={setPageData} />
             {sContent}
         </View>
     );

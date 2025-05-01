@@ -16,6 +16,8 @@ export default function MenuItemElement(oProps) {
 
     const sClassName = `menu-item ${(oProps?.params?.classNameItem || 'flex')} ${bShowVertical ? 'flex-col w-full' : 'flex-auto flex-row'}`;
 
+    return <Element mode={oProps.mode} key={oProps.id || oProps.name} {...oProps.data} />
+
     return (
         <View className={sClassName}>
             <Element mode={oProps.mode} key={oProps.id || oProps.name} {...oProps.data} />

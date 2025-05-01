@@ -2,42 +2,43 @@ import { useState, useCallback } from 'react';
 import { appSetting, FeedbackHaptics } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { ButtonMenuActionDefault, ButtonMenuActionText } from 'app/design/controls';
+import DropdownMenuItem from 'app/components/menu-items/dropdown-menu-item'
 
 const performAction = async (sSystem, iObjectId, sAction, aParams, onLoad) => {
-    const aParamsDefault = {s: sSystem, o: iObjectId};
+    const aParamsDefault = { s: sSystem, o: iObjectId };
 
-    aParams = aParams ? {...aParamsDefault, ...aParams} : aParamsDefault;
+    aParams = aParams ? { ...aParamsDefault, ...aParams } : aParamsDefault;
     const sRequest = '/api.php?r=system/' + sAction + '/TemplFeatureServices&params[]=' + JSON.stringify(aParams);
 
     const sResponse = await fetcher(sRequest);
-    if(typeof onLoad === 'function')
+    if (typeof onLoad === 'function')
         onLoad(sResponse?.data);
-};      
+};
 
 const handleDo = (performAction, objectData, setObjectData, sHapticsType, fOnDo, fOnDone, oEvent) => {
-    if(!!oEvent)
+    if (!!oEvent)
         oEvent.preventDefault();
 
     FeedbackHaptics(sHapticsType);
 
-    if(fOnDo && typeof fOnDo === 'function')
+    if (fOnDo && typeof fOnDo === 'function')
         fOnDo();
 
     performAction('perform', {}, (oData) => {
-        setObjectData(!objectData ? oData : { ...objectData, ...oData})
+        setObjectData(!objectData ? oData : { ...objectData, ...oData })
 
-        if(fOnDone && typeof fOnDone === 'function')
+        if (fOnDone && typeof fOnDone === 'function')
             fOnDone(oData);
     });
 };
 
 export default function ElementFeatures(oProps) {
     const oSettings = appSetting('social_actions', 'feature');
-    const oParams = {...oSettings, ...oProps.params};
+    const oParams = { ...oSettings, ...oProps.params };
     const oAction = oProps.action;
 
     const oIcons = oProps?.o && oSettings[oProps.o]?.icons != undefined ? oSettings[oProps.o].icons : {
-        do: 'Star', 
+        do: 'Star',
         undo: 'Star'
     };
 
@@ -49,7 +50,7 @@ export default function ElementFeatures(oProps) {
         showTitleFromSize: oProps.params?.button_show_title_from_size
     };
 
-    const [ objectData, setObjectData ] = useState(oAction);
+    const [objectData, setObjectData] = useState(oAction);
 
     const _performAction = useCallback((sAction, aParams, onLoad) => performAction(oProps.system, oProps.object_id, sAction, aParams, onLoad), [oProps.system, oProps.object_id]);
     const _handleDo = useCallback((event) => handleDo(_performAction, objectData, setObjectData, oParams.haptics_type, (oProps.params?.on_do ? oProps.params.on_do : false), (oProps.params?.on_done ? oProps.params.on_done : false), event), [_performAction, objectData, setObjectData, oParams.haptics_type, oProps.params.on_do, oProps.params.on_done]);
@@ -64,10 +65,17 @@ export default function ElementFeatures(oProps) {
     const sTitle = objectData?.['title'] != undefined ? objectData['title'] : '';
 
     const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
-    if(oIcons)
+    if (oIcons)
         oButtonProps.startDecorator = oIcons[(bShowActionFeatured ? 'un' : '') + 'do'];
 
+    if (oProps.mode == 'dropdown-menu') {
+        return <DropdownMenuItem
+            item={{ title: bShowActionLabel ? sTitle : false, icon: oIcons[(bShowActionFeatured ? 'un' : '') + 'do'] }}
+            handleSelect={(event) => { !bShowActionDisabled ? _handleDo(event) : () => { } }}
+        />;
+    }
+
     return (
-        <ButtonAction key="action" title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? _handleDo : () => {}} pressed={bShowActionUndo && bShowActionFeatured} disabled={bShowActionDisabled} {...oButtonProps} />
+        <ButtonAction key="action" title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? _handleDo : () => { }} pressed={bShowActionUndo && bShowActionFeatured} disabled={bShowActionDisabled} {...oButtonProps} />
     );
 }

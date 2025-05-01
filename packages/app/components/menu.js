@@ -20,7 +20,7 @@ const ButtonEx = memo(({ visibleItemsCount, params }) => {
 const MenuItemEx = memo(({ item, index, sDisplayType, params }) => {
     const ItemType = componentsMap[item.display_type ? item.display_type : sDisplayType];
     return (
-        <ItemType key={item.id ? item.id : item.name} {...item} params={{ ...params, button_variant: 'none', button_size: 'sm' }} />
+        <ItemType mode="dropdown-menu" key={item.id ? item.id : item.name} {...item} params={{ ...params, button_variant: 'none', button_size: 'sm' }} />
     )
 });
 

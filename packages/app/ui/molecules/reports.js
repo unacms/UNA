@@ -13,6 +13,7 @@ import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing, withSeq
 import Dropdown from 'app/ui/atoms/dropdown'
 import { InputMulti } from 'app/design/controls'
 import { Platform } from 'react-native';
+import DropdownMenuItem from 'app/components/menu-items/dropdown-menu-item'
 
 const getName = (sType, sSystem, sObjectId, sName) => {
     let aName = [sType, sSystem.replace(/_/g, '-'), sObjectId];
@@ -257,7 +258,7 @@ const ElementReports = forwardRef((oProps, ref) => {
         );
 
         sActionPopup = (
-            <Modal title={t('Report')} onVisible={popupVisibleDo} onClose={() => {setPopupVisibleDo(false)}}>
+            <Modal title={t('Report')} outerClickClose={false} onVisible={popupVisibleDo} onClose={() => {setPopupVisibleDo(false)}}>
                 <View className="p-2 gap-y-4 overflow-y-auto text-neutral-700 dark:text-neutral-200">
                     <View>
                         <Text>Report Type:</Text>
@@ -335,7 +336,7 @@ const ElementReports = forwardRef((oProps, ref) => {
         );
 
         sCounterPopup = (
-            <Modal title={t('Reports')} onVisible={popupVisiblePerformed} onClose={() => {setPopupVisiblePerformed(false)}}>
+            <Modal title={t('Reports')} outerClickClose={false} onVisible={popupVisiblePerformed} onClose={() => {setPopupVisiblePerformed(false)}}>
                 <View className="p-2 gap-y-4 overflow-y-auto text-neutral-700 dark:text-neutral-200">{sUsers}</View>
             </Modal>
         );
@@ -345,7 +346,7 @@ const ElementReports = forwardRef((oProps, ref) => {
      * Save current state in 'ref' to use in Imperative functions.
      */
     elementRef.current = oAction;
-
+    console.log("oPropsoProps", oProps)
     if(bShowCombined) {
         let aButtonsGroup = [sActionButton];
         if(!!sCounterButton)
@@ -360,14 +361,26 @@ const ElementReports = forwardRef((oProps, ref) => {
         );
     }
     else
-        return (
-            <View className={'flex-auto flex-row items-center' + (bShowActionUndo && bShowActionReported ? ' undo' : ' do')}>
-                {bShowAction && !!sActionButton && <View key={sObject + '-action-button'} className={'flex-auto' + (bShowFull ? (isTextMode?  ' mr-4' : ' mr-1') : '')}>{sActionButton}</View>}
-                {bShowAction && !!sActionPopup && <View key={sObject + '-action-popup'}>{sActionPopup}</View>}
-                {(bShowCounter &&  !!sCounterButton && !isTextMode) && <View key={sObject + '-counter-button'}>{sCounterButton}</View>}
-                {bShowCounter && !!sCounterPopup && <View key={sObject + '-counter-popup'}>{sCounterPopup}</View>}
-            </View>
-        );
+        if (oProps.mode == 'dropdown-menu') {
+            return <>
+            <DropdownMenuItem
+                    disabled={bShowActionDisabled}
+                    counter ={iCount}
+                    handleCounter={_handleGetPerformedBy}
+                    item={{ title: sTitle}}/*, icon: sIcon*/
+                    handleSelect={(event) => { bShowActionUndo && bShowActionReported ? _handleUndo(event) : (!bShowActionDisabled ? _handleGetDo(event) : () => {})}}
+                />{sActionPopup}{sCounterPopup}</>;
+        }
+        else{
+            return (
+                <View className={'flex-auto flex-row items-center' + (bShowActionUndo && bShowActionReported ? ' undo' : ' do')}>
+                    {bShowAction && !!sActionButton && <View key={sObject + '-action-button'} className={'flex-auto' + (bShowFull ? (isTextMode?  ' mr-4' : ' mr-1') : '')}>{sActionButton}</View>}
+                    {bShowAction && !!sActionPopup && <View key={sObject + '-action-popup'}>{sActionPopup}</View>}
+                    {(bShowCounter &&  !!sCounterButton && !isTextMode) && <View key={sObject + '-counter-button'}>{sCounterButton}</View>}
+                    {bShowCounter && !!sCounterPopup && <View key={sObject + '-counter-popup'}>{sCounterPopup}</View>}
+                </View>
+            );
+        }
  });
 
 export default ElementReports;
