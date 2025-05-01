@@ -63,7 +63,7 @@ export default function AuthGoogle({ button }) {
             const result = await fetcher('/api.php?r=bx_googlecon/handle/&params[]=' + JSON.stringify(user));
             console.log("result", result?.data[0]?.data)
             if (result?.data[0]?.data?.uri)
-                setTimeout(() => redirectTo(router, result.data[0].data.uri), 1000);
+                redirectTo(router, result.data[0].data.uri);
 
             if (result?.data[0]?.type == 'msg')
                 setError(result.data[0].data);
