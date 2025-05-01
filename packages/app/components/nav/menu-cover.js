@@ -35,7 +35,7 @@ export function CoverMenuSmall(props) {
 
                     button_full_width: false,
                 }}
-            />,
+            />
 
         </DropdownPopup>
     )

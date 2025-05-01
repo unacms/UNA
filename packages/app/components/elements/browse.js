@@ -297,9 +297,9 @@ export default function (props) {
         PreloadComponent = Preload
     }
     else{
-        if (dataItems.data.length == 0 && isShowEmptyMessage){
-            PreloadComponent = callFn("noContentByUrl", [data.request_url])
-        }
+      //  if (dataItems.data.length == 0 && isShowEmptyMessage){
+        //    PreloadComponent = callFn("noContentByUrl", [data.request_url])
+       // }
     }
 
     const memoizedUniListProps = useMemo(() => ({
@@ -326,7 +326,7 @@ export default function (props) {
             <Item item={item} index={index} numColumns={numColumns} data={data} unitMode={unitMode} props={props} />,
         onEndReached: handleEndReached,
         ListHeaderComponent: (props.exProps?.headerBlocks) ? props.exProps?.headerBlocks : '',
-        ListFooterComponent: ((hasNextPage && isFetchingNextPage)) ? Preload : null
+        ListFooterComponent: ((hasNextPage && isFetchingNextPage)) ? Preload : (dataItems.data.length == 0 && isShowEmptyMessage) ? callFn("noContentByUrl", [data.request_url]) : null,
     }), [
         props?.exProps?.scrollProps,
         PreloadComponent,
