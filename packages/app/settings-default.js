@@ -57,7 +57,14 @@ export  const settingsDefault = {
         default_icon_stroke_width: 2,
         use_context_selector: true,
     },
-
+    auth:{
+        enabled: true,
+        google:{
+            web_client_id: '398453829790-egj0o9mm2mq9rua8umq6jcvedtl9cgfu.apps.googleusercontent.com',
+            ios_client_id: '',
+            android_client_id: '',
+        },
+    },
     native: {
         default_theme: 'auto',
         enable_screens: true, //OLD appSetting('layout', 'native_enable_screens')

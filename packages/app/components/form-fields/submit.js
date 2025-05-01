@@ -69,7 +69,7 @@ export default function FormFieldSubmit(props) {
         disabled: formState.isSubmitting || disabled,
         fullWidth: fb,
     };
-    console.log("fbfb", value, buttonProps)
+
     const buttonHandlers = Platform.select({
         web: { onPress: handlePress },
         default: { onTouchStart: handlePress },

@@ -70,7 +70,6 @@ export default function DropdownPopup({
         </View>
     ), [buttonPos, popupWidth, contentClasses, children]);
 
-    console.log("isRealOpen", isRealOpen)
     return (
         <>
             <TouchableOpacity className='w-full' collapsable={false} ref={buttonRef} onPress={() => handleToggle(true)} >

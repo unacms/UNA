@@ -52,7 +52,7 @@ export default function Splash(props) {
     const isIos = Platform.OS === 'ios'
 
     const accountForm = BlockDataByName(props.data, 'system:create_account_form');
-    console.log("accountForm",accountForm.content[0].type == 'form')
+
     const isInvite = accountForm.content[0].type !== 'form';
 
     const forms = {
