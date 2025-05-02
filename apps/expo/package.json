@@ -20,7 +20,7 @@
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
     "date-fns": "^2.30.0",
     "expo": "^52.0.33",
-    "expo-auth-session": "^6.1.5",
+    "expo-auth-session": "~6.0.3",
     "expo-blur": "~14.0.1",
     "expo-build-properties": "~0.13.1",
     "expo-camera": "~16.0.10",
