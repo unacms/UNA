@@ -14,7 +14,7 @@ export default function PageLayout(props) {
     const [formData, setFormData] = useState({});
     const [addData, setAddData] = useState({});
     const [replyId, setReplyId] = useState(false);
-
+    const [scrollToEnd, setScrollToEnd] = useState(false);
     const [formHeight, setFormHeight] = useState(0)
 
     const localUrl = useLocalSearchParams();
@@ -25,10 +25,16 @@ export default function PageLayout(props) {
     useEffect(() => {
         if (localUrl?.url) {
             const hash = localUrl.url.split('#')[1];
+            
             if (hash) {
-                //TODO CHECK FOR WEB
-                setReplyId(hash);
+                if (hash.includes('cmt_id=')) {
+                    setReplyId(hash);
+                }
+                else{
+                    setScrollToEnd(true);
+                }
             }
+
         }
     }, [localUrl]);
 
@@ -78,6 +84,7 @@ export default function PageLayout(props) {
                                 isBackButton: true,
                             }
                         }
+                        scrollToIndex={scrollToEnd}
                         addItems={aItems}
                         handleReply={data => setFormData({ ts: Date.now(), text: stripTags(data.cmt_text), parent_id: data.cmt_id, author: data.author_data, cmt_id: data.cmt_id, cmt_object_id: data.cmt_object_id })}
                         browse={commentsData.content[0].browse}
