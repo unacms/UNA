@@ -306,7 +306,7 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
                 onFocus()
         }
         if (isPlainText) {
-            field.onChange(stripTagsWithLinks(htmlContent, ['a', 'p', 'br', 'span', 'img']))
+            field.onChange(stripTagsWithLinks(htmlContent, ['a', 'p', 'br', 'span']))
         }
         else {
             field.onChange(htmlContent)
@@ -559,7 +559,7 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
 
                     document.addEventListener('paste', (event) => {
                         const activeElement = document.activeElement;
-                       
+                        
                         if (event.clipboardData.items.length > 0) {
                             for (let item of event.clipboardData.items) {
                                 if (item.kind === 'file') {
