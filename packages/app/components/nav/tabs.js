@@ -26,6 +26,8 @@ import { Platform } from 'react-native'
 import { Appearance } from 'react-native';
 import VersionCheck from 'react-native-version-check';
 import { Alert } from 'react-native';
+import { useLayoutData } from 'app/context/layout';
+import { getAlert } from 'app/lib/util';
 
 enableScreens(appSetting('native', 'enable_screens'));
 
@@ -70,7 +72,7 @@ function processUrl(url, router, currentUser, TabList) {
 
 export default function () {
     const { currentUser, setCurrentUser } = useCurrentUser();
-
+    const { setLayoutData } = useLayoutData()
     const isUseCustomFont = appSetting('native', 'use_custom_font');
     const fontsToLoad = isUseCustomFont ? fonts : {};
 
@@ -267,9 +269,10 @@ export default function () {
                                            
                                           
                                             if (pathname == `/tab${index}`) {
-                                                router.setParams({ 
+                                               /* router.setParams({ 
                                                     refresh: Date.now() 
-                                                });
+                                                });*/
+                                                setLayoutData(getAlert('list:move_to_top', true));
                                             }
                                             if (e.type == 'tabPress') {
                                                 let a = e.target.split('-');

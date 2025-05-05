@@ -6,7 +6,7 @@ import Animated, {
     withTiming,
 } from 'react-native-reanimated';
 import { BlurView } from 'expo-blur';
-import React, { useMemo, memo, isValidElement } from 'react';
+import React, { useMemo, useEffect, memo, isValidElement } from 'react';
 import { getPageSettings } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon';
@@ -23,6 +23,7 @@ import { Button } from 'app/design/controls';
 import Link from 'app/ui/atoms/link'
 import { useRouter } from 'app/lib/hooks/router'
 import ContextSelector from 'app/ui/molecules/context-selector'
+import { useLayoutData } from 'app/context/layout';
 
 export const Header = memo(({
     backButtonPresented,
@@ -34,6 +35,7 @@ export const Header = memo(({
     isNoContainer = false,
 }) => {
     const { currentUser } = useCurrentUser();
+    const { layoutData, setLayoutData } = useLayoutData()
     const pagePath = pageData?.uri;
     const settings = getPageSettings(pageData?.config, pagePath);
 
@@ -77,6 +79,15 @@ export const Header = memo(({
 
     const isWeb = Platform.OS === 'web';
 
+    useEffect(() => {
+        console.log("layoutData", layoutData)
+        if (layoutData && layoutData?.type == 'list:move_to_top' ) {
+            
+            setLayoutData(null);
+            scrollToTop();
+        }
+    }
+    ,[layoutData]);
 
     if (isNoContainer)
         return headerContent;
