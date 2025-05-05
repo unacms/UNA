@@ -130,6 +130,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
         if (selectedConvo) {
             subscribe('bx_messenger', 'convo_' + selectedConvo.id, onNewMessage);
             subscribe('bx_messenger', 'profile_' + currentUser.id, onCheckConvos);
+            setJots(false)
             fetchItems(selectedConvo.id, false);
             updateState();
         }
@@ -226,11 +227,13 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     }, [jotUpdated]);
 
     useEffect(() => {
-        if (jots?.index == 0) {
-            console.log("aaaa")
+      /*  if (jots?.index == 0) {
+            console.log("aaaa", jots?.index, refListJots?.current)
             scrolTo();
-        }
-    }, [refListJots?.current]);//selectedConvo refListJots?.current, jots?.index
+        }*/
+    }, [refListJots?.current]);//selectedConvo refListJots?.current, jots?.index*/
+
+
 
     const changeConvo = useCallback((convo) => {
         setConvoId(convo.id);
@@ -374,6 +377,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
                         editConvo={editConvo}
                         handleReply={handleReply}
                         startReached={handleStartReached}
+                      
                     />
                     {listError && (
                         <View className="mx-4">
@@ -403,7 +407,8 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
         onFormSubmit,
         handleCancelReply,
         layoutHeightRight,
-        layoutHeightLeft
+        layoutHeightLeft,
+        
 
     ]);
 
@@ -501,10 +506,6 @@ const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, 
 /*bg-neutral-500/10 border-b border-neutral-500/10*/
 const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots, showConvo, deleteConvo, leaveConvo, getConvo, editConvo, handleReply, startReached }) => {
     const isWeb = Platform.OS == 'web'
-    
-
-   
-
 
     const menuItems = [
         { 'id': 'edit', 'title': 'Edit participants list', 'icon': 'Users' },
@@ -556,6 +557,7 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
     return (<>
         {(isWeb && !isSmallScreen) && header}
         {<View className="flex-1"><UniList
+
             refer={refListJots}
             {...(Platform.OS !== 'web' ? { inverted: true } : {})}
             overscan={900}
