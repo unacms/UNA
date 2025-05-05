@@ -31,7 +31,13 @@ export default function PageLayout(props) {
                     setReplyId(hash);
                 }
                 else{
-                    setScrollToEnd(true);
+                    if (hash.includes('cid=')){
+                        setScrollToEnd(hash.replace('cid=', ''));
+                    }
+                    else{
+                        setScrollToEnd(true);
+                    }
+                    
                 }
             }
 
