@@ -24,23 +24,23 @@ import Link from 'app/ui/atoms/link'
 import { useRouter } from 'app/lib/hooks/router'
 import ContextSelector from 'app/ui/molecules/context-selector'
 
-export const Header = memo(({ 
-    backButtonPresented, 
-    headerComponent, 
-    pageData, 
-    scrollToTop, 
-    rightHeaderComponent, 
+export const Header = memo(({
+    backButtonPresented,
+    headerComponent,
+    pageData,
+    scrollToTop,
+    rightHeaderComponent,
     isMenuNameAsTitle,
     isNoContainer = false,
- }) => {
+}) => {
     const { currentUser } = useCurrentUser();
     const pagePath = pageData?.uri;
     const settings = getPageSettings(pageData?.config, pagePath);
-   
+
     const router = useRouter();
 
     let textName = pageData?.name;
-    
+
     if (isMenuNameAsTitle) {
         //console.log("pageData3", pageData?.menu?.object, pageData?.menu?.config)
         const menuSettings = getMenuSettings(pageData?.menu?.object, pageData?.menu?.config);
@@ -77,24 +77,24 @@ export const Header = memo(({
 
     const isWeb = Platform.OS === 'web';
 
-   
+
     if (isNoContainer)
         return headerContent;
 
     return (
         <Row className={`justify-between items-center h-[64px] shadow-[0_1px_3px_0_rgba(0,0,0,0.05)] dark:shadow-[0_1px_0_rgba(0,0,0,1)] border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d`}>
             <Row className='items-center '>
-                {(isHome && !pageData?.context) && <Pressable onPress={scrollToTop} className="ml-[12px] "><View className="flex items-center flex-row active:scale-90 active:opacity-50 p-1 gap-x-3 text-neutral-700 dark:text-neutral-300 web:hover:text-neutral-800 web:dark:hover:text-neutral-200 duration-300"><View className=" items-center w-10 h-10 justify-center ">
-                            {appStatic('logo_mark')}
-                        </View>
-                        <View className=" items-center w-16 h-8  justify-center">
-                            {appStatic('logo_text')}
-                        </View></View></Pressable>}
-                {(pageData?.context) && <View className="ml-[12px]"><ContextSelector url={pageData?.url} data={pageData?.context}/></View>}
+                {(isHome && !pageData?.context) && <Pressable onPress={scrollToTop} className="ml-[12px] "><View className="flex items-center flex-row active:scale-90 active:opacity-50 p-1 gap-x-3 text-neutral-700 dark:text-neutral-300 web:hover:text-neutral-800 web:dark:hover:text-neutral-200 duration-300"><View className=" items-center  h-10 justify-center ">
+                    {appStatic('logo_mark')}
+                </View>
+                    <View className=" items-center w-16 h-8  justify-center">
+                        {appStatic('logo_text')}
+                    </View></View></Pressable>}
+                {(pageData?.context) && <View className="ml-[12px]"><ContextSelector url={pageData?.url} data={pageData?.context} /></View>}
                 <View className="mr-[12px]">{(backButtonPresented && (!isWeb || history.length > 2)) && (
-                    <Button variant="secondary"  rounded  onPress={() => {
+                    <Button variant="secondary" rounded onPress={() => {
                         FeedbackHaptics('Medium');
-                        router? router?.back() : history.back();
+                        router ? router?.back() : history.back();
                     }} startDecorator="ChevronLeft" />
                 )}</View>
                 {!!text && (
@@ -129,12 +129,12 @@ function getRightHeader(items, currentUser, pagePath) {
             if (button.section || button.link == 'search')
                 btn = <Search section={button.section} params={{ trigger: { title: button.title, icon: button.icon ? button.icon : 'Search', size: 'base', variant: 'secondary' } }} />
             else {
-                btn = <Button 
-                    rounded title={button.title} 
-                    variant='secondary' 
-                    startDecorator={button.icon} 
-                    size="base" 
-                    addon={button.link == appSetting('messenger', 'url') ? {variant:'primary', text: currentUser?.counters?.bx_messenger_new_messages, hideZero: true} : undefined}
+                btn = <Button
+                    rounded title={button.title}
+                    variant='secondary'
+                    startDecorator={button.icon}
+                    size="base"
+                    addon={button.link == appSetting('messenger', 'url') ? { variant: 'primary', text: currentUser?.counters?.bx_messenger_new_messages, hideZero: true } : undefined}
                 />;
                 btn = button.link ? <Link href={button.link} >{btn}</Link> : btn
             }
