@@ -145,8 +145,8 @@ export const PickerStyled = ({ className, ...props }) => (
     <PickerDef className={PickerStyles} {...props} />
 );
 
-export const PickerStyledRef = forwardRef(({ className, ...props }, ref) => (
-    <PickerDef ref={ref} className={PickerStyles} {...props} />
+export const PickerStyledRef = forwardRef(({ classes, className, ...props }, ref) => (
+    <PickerDef ref={ref} className={classes? classes : PickerStyles} {...props} />
   ));
 
 export const PickerStyledIos = ({ className, ...props }) => (
