@@ -214,7 +214,7 @@ export function ElementSearchData(oProps) {
                         value={inputValue}
                         ref={inputRef}
                         onChangeText={(value) => handleSearch(value)}
-                        startDecorator="Search"
+                        startDecorator={oProps.triggerIcon ? oProps.triggerIcon : "Search"}
                     />}
                 >
                     <View key="search-data">
