@@ -16,6 +16,7 @@ import OneSignal from 'react-onesignal';
 import { ThemeName } from 'app/design/theme';
 
 const Navbar = lazy(() => import('app/components/nav/navbar'));
+const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from');
 
 const NavbarMemo = React.memo(function NavbarMemo(props) {
     return (
@@ -35,7 +36,7 @@ async function runOneSignal() {
 
 const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutName, layoutName, data, children, uri, blocks, width }) => {
     const [isModal, setIsModal] = useState(false);
-
+    
     useEffect(() => {
         if (currentUser === false && !storageGet('layout:modal', '', true) && appSetting('layout', 'show_login_modal') > 0 && !['create-account', 'home', 'login', 'forgot-password', 'confirm-email'].includes(uri)) {
             setTimeout(() => {
@@ -68,7 +69,7 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutNam
         </>
     }
     
-    if (width < LAYOUT_BREAKPOINTS.lg) {
+    if (width < LAYOUT_BREAKPOINTS[TABLET_MODE_FROM]) {
         return (
             <>
                 <Suggestions />
@@ -277,10 +278,11 @@ export default function Layout(props) {
 
     const [headerSettings, setHeaderSettings] = useState(getHeaderSettings(uri, width, layoutName, data.config));
     const pageLayoutName = getLayout(currentUser, layoutName);
+    console.log("LAYOUT_BREAKPOINTS[TABLET_MODE_FROM]", LAYOUT_BREAKPOINTS[TABLET_MODE_FROM], TABLET_MODE_FROM)
     useEffect(() => {
         let a = getHeaderSettings(uri, width, layoutName, data.config);
         if (pageLayoutName == 'ver') {
-            if (width > LAYOUT_BREAKPOINTS.lg)
+            if (width > LAYOUT_BREAKPOINTS[TABLET_MODE_FROM])
                 a.offset = false;
         }
         if (!deepEqual(headerSettings, a)) {

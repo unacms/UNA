@@ -80,7 +80,7 @@ export default function UniList(props) {
 
     const commonVirtuosoProps = {
         data,
-        useWindowScroll: !height ,
+        useWindowScroll: !height,
         style,
         ref: refer ? refer : uniRef,
         endReached: onEndReached,
@@ -93,35 +93,35 @@ export default function UniList(props) {
             },
         } : {
             Footer: () => ListFooterComponent,
-            Header: () => useCustomScrollHandler ? <View style={{paddingTop:scrollProps.headerHeight}}></View> :null,
+            Header: () => useCustomScrollHandler ? <View style={{ paddingTop: scrollProps.headerHeight }}></View> : null,
         },
         isScrolling,
         ...rest,
     };
 
-    
+
 
 
     let contentComponent = null
 
-    if (preloadComponent){
+    if (preloadComponent) {
         contentComponent = preloadComponent;
     }
-    else{
+    else {
         if (numColumns > 1) {
-            contentComponent =  (
-                <VirtuosoGrid
+            contentComponent = (
+                <>{ListHeaderComponent}<VirtuosoGrid
                     {...commonVirtuosoProps}
                     itemContent={itemContent}
                     stateChanged={stateChanged}
                     {...(scrollToLastItem ? { initialTopMostItemIndex: data.length } : {})}
                     atBottomStateChange={onEndReached}
-                />
+                /></>
             )
         }
         else {
             if (sortable) {
-                contentComponent =  (
+                contentComponent = (
                     <DragDropContext onDragEnd={onSort}>
                         <Droppable
                             droppableId="droppable"
@@ -151,8 +151,8 @@ export default function UniList(props) {
                     </DragDropContext>
                 )
             }
-            else{
-                contentComponent =  (
+            else {
+                contentComponent = (
                     <>{ListHeaderComponent}<Virtuoso
                         itemContent={itemContent}
                         {...commonVirtuosoProps}
@@ -165,16 +165,17 @@ export default function UniList(props) {
     }
 
     if (!scrollProps)
-            return contentComponent;
-        return (
-            <ScrollList
-                useCustomScrollHandler={useCustomScrollHandler}
-                content={contentComponent}
-                contentType="FlatList"
-                refer={refer ? refer : uniRef}
-                {...scrollProps}
-            />
+        return contentComponent;
 
-        )
+    return (
+        <ScrollList
+            useCustomScrollHandler={useCustomScrollHandler}
+            content={contentComponent}
+            contentType="FlatList"
+            refer={refer ? refer : uniRef}
+            {...scrollProps}
+        />
+
+    )
 
 }

@@ -56,6 +56,7 @@ export  const settingsDefault = {
         share_text: '',
         default_icon_stroke_width: 2,
         use_context_selector: true,
+        tablet_mode_from: 'lg' 
     },
     auth:{
         enabled: true,

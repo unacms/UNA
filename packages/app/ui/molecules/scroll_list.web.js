@@ -29,7 +29,8 @@ export default function ScrollList({
     isNoContainer = false,
 }) {
     const { width } = useWindowDimensions();
-    const isSmallScreen = width < LAYOUT_BREAKPOINTS.lg
+    const tabletModeFrom = appSetting('layout', 'tablet_mode_from');
+    const isSmallScreen = width < LAYOUT_BREAKPOINTS[tabletModeFrom]
     const isCollapsibleHeader = appSetting('native', 'collapsible_header') && isSmallScreen;
     const isShowScrollToTopButton = appSetting('native', 'scroll_to_top_button') && isSmallScreen;
     const transparencyOffset = 200;
