@@ -81,7 +81,7 @@ export default function FormMessenger(props) {
                 {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['cf'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['payload'], props.handleSubmit, 'custom')}
-                {getFormFieldByData(props.data.inputs['message'], props.handleSubmit, 'custom', {  form_name:props.name, container_class: 'comments', classes: "flex-1",  focus: true, bg: 'transparent', submitOnEnter: true, noMargin:true, placeholder: 'Message ...', onHeight: checkEditorHeight, onFocus: setIsFocus, onBlur: setIsBlur })}
+                {getFormFieldByData(props.data.inputs['message'], props.handleSubmit, 'custom', {  kb_stay_open:true, form_name:props.name, container_class: 'comments', classes: "flex-1",  focus: true, bg: 'transparent', submitOnEnter: true, noMargin:true, placeholder: 'Message ...', onHeight: checkEditorHeight, onFocus: setIsFocus, onBlur: setIsBlur })}
                 {getFormFieldByData(props.data.inputs['id'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['message_id'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['send'], props.handleSubmit, 'custom')}

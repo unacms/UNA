@@ -278,7 +278,6 @@ export default function Layout(props) {
 
     const [headerSettings, setHeaderSettings] = useState(getHeaderSettings(uri, width, layoutName, data.config));
     const pageLayoutName = getLayout(currentUser, layoutName);
-    console.log("LAYOUT_BREAKPOINTS[TABLET_MODE_FROM]", LAYOUT_BREAKPOINTS[TABLET_MODE_FROM], TABLET_MODE_FROM)
     useEffect(() => {
         let a = getHeaderSettings(uri, width, layoutName, data.config);
         if (pageLayoutName == 'ver') {

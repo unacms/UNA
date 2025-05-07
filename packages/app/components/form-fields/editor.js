@@ -13,6 +13,7 @@ import { KeyboardAvoidingView, Platform } from 'react-native'
 import { fetcher } from 'app/lib/fetcher';
 import { appSetting } from 'app/lib/util'
 import { ThemeName } from 'app/design/theme';
+import { TextInput } from 'react-native';
 
 export default function FormFieldText(props) {
     const formContext = useFormContext();
@@ -122,6 +123,7 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
     const object_privacy_view = formContext.watch('object_privacy_view') || formContext.watch('cmt_privacy_view');
     const object_id = formContext.watch('id');
     const m = name == "cmt_text" ? "sys_cmts" : "bx_timeline";
+    const hiddenInputRef = useRef(null);
 
     let url1 = '/searchExtended.php?action=get_mention';
     if (m)
@@ -288,10 +290,12 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
         editor.setPlaceholder(props.placeholder)
     }, [props.placeholder]);
 
+    //kb_stay_open
+    console.log("props", props)
+
     useEffect(() => {
-        if (formContext.formState.isSubmitted) {
+        if (formContext.formState.isSubmitted && props.kb_stay_open != true) {
             setTimeout(() => {
-                console.log("blur")
                 editor.blur();
             }, 800);
 
@@ -387,6 +391,14 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
                 if (onFocus)
                     onFocus()
             }
+
+            if (message?.type == "blur") {
+                console.log('blur')
+                hiddenInputRef.current?.focus();
+    setTimeout(() => {
+      hiddenInputRef.current?.blur();
+    }, 50);
+             }
 
             if (message?.type == "enter") {
                 setIsEnter(true);
@@ -613,11 +625,17 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
                     </ScrollView>
                 </View>
             )}
+            <TextInput
+        ref={hiddenInputRef}
+        style={{ position: 'absolute', height: 0, width: 0, opacity: 0 }}
+        editable={true}
+      />
             <RichText
                 exclusivelyUseCustomOnMessage={false}
                 style={{ backgroundColor: 'transparent' }}
                 editor={editor}
                 onMessage={onMessage} />
+                
 
             {isToolBar && <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
