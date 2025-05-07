@@ -88,7 +88,7 @@ const MenuBottomSheet = memo(({ items, onSelect, setBottomSheetData }) => {
     );
 });
 
-export default function DropdownMenu({ items, onSelect, children, defaultOpen, mode, title, variant, showOnTop, popupHeight }) {
+export default function DropdownMenu({ items, onSelect, children, defaultOpen, mode, title, variant, showOnTop, popupHeight, cancelable = true }) {
     const { setBottomSheetData } = useBottomSheetData();
     const isWeb = Platform.OS === 'web';
 
@@ -116,15 +116,17 @@ export default function DropdownMenu({ items, onSelect, children, defaultOpen, m
                     onSelect(item);
                 }
             }));
-            alertOptions.push({
-                text: "Cancel",
-                style: "cancel"
-            });
+            if (cancelable){
+                alertOptions.push({
+                    text: "Cancel",
+                    style: "cancel"
+                });
+            }
             Alert.alert(
                 title,
                 null,
                 alertOptions,
-                { cancelable: true }
+                { cancelable: cancelable }
             );
         }
     }, [setBottomSheetData, items, onSelect]);
@@ -138,5 +140,3 @@ export default function DropdownMenu({ items, onSelect, children, defaultOpen, m
         <Pressable onPress={handlePress}>{children}</Pressable>
     );
 }
-
-

@@ -3,7 +3,7 @@ import { Alert } from 'react-native';
 import { useState } from 'react';
 
 
-export default function ElementConfirm({handleOk, handleCancel, onVisible, title, text, titleOk = "Ok", titleCancel = "Cancel"}) {
+export default function ElementConfirm({handleOk, handleCancel, onVisible, title, text, titleOk = "OK", titleCancel = "Cancel"}) {
     const _handleCancel = async () => {
         handleCancel();
     }
