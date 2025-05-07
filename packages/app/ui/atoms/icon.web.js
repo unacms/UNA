@@ -6,7 +6,7 @@ import SvgIcons from  'app/icons-svg';
 
 export const Icon = memo(function Icon(props) {
     const { icon: origIcon, className, width, height, color, size, strokeWidth, ...rest } = props;
-    const isXmlSvg = origIcon.startsWith('<svg');
+    const isXmlSvg = origIcon?.startsWith('<svg');
     const icon = findIconFromRemote(origIcon);
     const _strokeWidth = strokeWidth || appSetting('layout', 'default_icon_stroke_width');
 
