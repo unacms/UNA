@@ -24,9 +24,10 @@ export default function DropdownPopup({
     const buttonRef = useRef(null);
     const [buttonPos, setButtonPos] = useState({ x: 0, y: 0, width: 0, height: 0 });
     const windowWidth = useWindowDimensions().width;
+    const windowHeight = useWindowDimensions().height;
     const isWeb = useMemo(() => Platform.OS === 'web', []);
     const animation = useMemo(
-        () => (windowWidth > LAYOUT_BREAKPOINTS.md ? 'fade' : 'fade'),
+        () => (windowWidth > LAYOUT_BREAKPOINTS.md ? 'fade' : 'slide'),
         [windowWidth]
     );
     const [isOpen, setIsOpen] = useState(defaultOpen);
@@ -38,9 +39,26 @@ export default function DropdownPopup({
         if (!buttonRef.current?.measureInWindow) return;
 
         buttonRef.current.measureInWindow((x, y, width, height) => {
+            // Calculate horizontal position
+            let left = x;
+            if (x + popupWidth > windowWidth - 16) {
+                left = windowWidth - popupWidth - 16;
+            }
+            if (left < 16) left = 16;
+
+            // Calculate vertical position
+            let top = y + height + 8;
+            let effectivePopupHeight = popupHeight > 0 ? popupHeight : 300;
+            
+            if (showOnTop) {
+                top = y - effectivePopupHeight - 8;
+            } else if (top + effectivePopupHeight > windowHeight - 16) {
+                top = y - effectivePopupHeight - 8;
+            }
+
             setButtonPos({
-                x: Math.min(x, windowWidth - popupWidth - 8),/*- popupWidth/2 +width/2*/
-                y: showOnTop ? y - popupHeight - height : y,
+                x: left,
+                y: top,
                 width,
                 height,
             });
@@ -48,47 +66,71 @@ export default function DropdownPopup({
     };
 
     useEffect(() => {
-        if (isRealOpen) updateButtonPosition();
-    }, [isRealOpen, popupWidth, windowWidth]);
+        if (isRealOpen) {
+            updateButtonPosition();
+            // Add window resize listener for web
+            if (isWeb) {
+                window.addEventListener('resize', updateButtonPosition);
+                return () => window.removeEventListener('resize', updateButtonPosition);
+            }
+        }
+    }, [isRealOpen, popupWidth, windowWidth, showOnTop]);
 
     const handleToggle = (bOpen) => {
-        console.log("sdff")
-        isControlledOutside ? onOpenChange(bOpen) : setIsOpen(bOpen);
-    }
+        if (isControlledOutside) {
+            onOpenChange(bOpen);
+        } else {
+            setIsOpen(bOpen);
+        }
+    };
+
+    const handleBackdropPress = (event) => {
+        // Prevent event bubbling
+        event.stopPropagation();
+        handleToggle(false);
+    };
 
     const Content = useMemo(() => (
         <View
             style={{
-                top: buttonPos.y + buttonPos.height + 5,
-                left: Math.min(buttonPos.x, windowWidth - popupWidth - 16),
+                position: 'absolute',
+                top: buttonPos.y,
+                left: buttonPos.x,
                 elevation: 5,
                 minWidth: popupWidth,
+                maxWidth: windowWidth - 32,
+                zIndex: 1000,
             }}
-            className={`absolute ${contentClasses}`}
+            className={`${contentClasses}`}
         >
             {children}
         </View>
-    ), [buttonPos, popupWidth, contentClasses, children]);
+    ), [buttonPos, popupWidth, contentClasses, children, windowWidth]);
 
     return (
         <>
-            <TouchableOpacity className='w-full' collapsable={false} ref={buttonRef} onPress={() => handleToggle(true)} >
+            <TouchableOpacity 
+                className='w-full' 
+                collapsable={false} 
+                ref={buttonRef} 
+                onPress={() => handleToggle(true)}
+            >
                 {trigger}
             </TouchableOpacity>
 
-                <ModalBase
-                    transparent={true}
-                    visible={isRealOpen === true ? true : false} 
-                    presentationStyle={'pageSheet'}
-                    animationType={animation}
-                    onRequestClose={() => handleToggle(false)}
-                >
-                    <Pressable className="flex-1" onPress={(event) => {console.log("event", event), handleToggle(false)}} >
+            <ModalBase
+                transparent={true}
+                visible={isRealOpen}
+                presentationStyle="overFullScreen"
+                animationType={animation}
+                onRequestClose={() => handleToggle(false)}
+            >
+                <TouchableWithoutFeedback onPress={handleBackdropPress}>
+                    <View className="flex-1 bg-black/30">
                         {isWeb ? <RemoveScroll>{Content}</RemoveScroll> : Content}
-                    </Pressable>
-                </ModalBase>
-          
-
+                    </View>
+                </TouchableWithoutFeedback>
+            </ModalBase>
         </>
     );
 }

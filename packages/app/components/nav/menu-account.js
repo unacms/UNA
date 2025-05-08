@@ -100,7 +100,7 @@ export default function MenuAccount({ buttonProps, children }) {
                         let sTitle = t(item.title);
                         let sType ="";
                         if (item.link == '{switch_profile}') {
-                            sTitle = <Pressable className="w-full" onPress={() => handleSwitch(item.id)}><Row key={index} className="items-center justify-between gap-x-3 w-full">
+                            sTitle = <Pressable className="w-full" onPress={() => handleSwitch(item.id)}><Row key={index} className="items-center justify-between gap-x-3 w-full my-1">
                                 <Row className="items-center flex-auto">
                                 <View className="px-[2px]">
                                     <Profile
@@ -110,7 +110,7 @@ export default function MenuAccount({ buttonProps, children }) {
                                         displaySize="sm"
                                     />
                                 </View>
-                                <Text className="text-sm leading-[32px] px-[6px] font-medium text-neutral-700 dark:text-neutral-200">
+                                <Text className="text-sm leading-[32px] px-[6px] font-medium text-neutral-700 dark:text-neutral-200 whitespace-nowrap">
                                     {item.display_name}
                                 </Text>
                                 </Row>
