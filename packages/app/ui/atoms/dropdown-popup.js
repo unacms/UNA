@@ -6,7 +6,7 @@ import {
     useWindowDimensions,
     Platform
 } from 'react-native';
-import { Pressable, View } from 'app/design/view'
+import { Pressable, View, ViewRef } from 'app/design/view'
 import { LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { RemoveScroll } from 'react-remove-scroll';
 
@@ -18,10 +18,10 @@ export default function DropdownPopup({
     popupWidth = 352,
     defaultOpen = false,
     showOnTop = false,
-    popupHeight = 0,
     contentClasses = ' rounded-2xl overflow-hidden border border-bdrmodal p-2 dark:border-bdrmodal-d bg-bgrmodal dark:bg-bgrmodal-d shadow-[0_10px_10px_rgba(0,0,0,0.05)]  '
 }) {
     const buttonRef = useRef(null);
+    const contentRef = useRef(null);
     const [buttonPos, setButtonPos] = useState({ x: 0, y: 0, width: 0, height: 0 });
     const { width: windowWidth, height: windowHeight } = useWindowDimensions();
     const isWeb = useMemo(() => Platform.OS === 'web', []);
@@ -38,30 +38,35 @@ export default function DropdownPopup({
         if (!buttonRef.current?.measureInWindow) return;
 
         buttonRef.current.measureInWindow((x, y, width, height) => {
-            // Calculate horizontal position
-            let left = x;
-            if (x + popupWidth > windowWidth - 16) {
-                left = windowWidth - popupWidth - 16;
-            }
-            if (left < 16) left = 16;
+            if (contentRef.current?.measureInWindow) {
+                contentRef.current.measureInWindow((_, __, ___, effectivePopupHeight) => {
+                    // Calculate horizontal position
+                    let left = x;
+                    if (x + popupWidth > windowWidth - 16) {
+                        left = windowWidth - popupWidth - 16;
+                    }
+                    if (left < 16) left = 16;
 
-            // Calculate vertical position
-            let top = y + height + 8;
-            let effectivePopupHeight = popupHeight > 0 ? popupHeight : 300;
-            
-            if (showOnTop) {
-                top = y - effectivePopupHeight - 8;
-            } else if (top + effectivePopupHeight > windowHeight - 16) {
-                top = y - effectivePopupHeight - 8;
-            }
+                    // Calculate vertical position
+                    let top = y + height + 8;
 
-            setButtonPos({
-                x: left,
-                y: top,
-                width,
-                height,
-            });
+
+                    if (showOnTop) {
+                        top = y - effectivePopupHeight - 8;
+                    } else if (top + effectivePopupHeight > windowHeight - 16) {
+                        top = y - effectivePopupHeight - 8;
+                    }
+
+                    setButtonPos({
+                        x: left,
+                        y: top,
+                        width,
+                        height,
+                    });
+                });
+            }
         });
+
     };
 
     useEffect(() => {
@@ -89,7 +94,8 @@ export default function DropdownPopup({
     };
 
     const Content = useMemo(() => (
-        <View
+        <ViewRef
+            ref={contentRef}
             style={{
                 position: 'absolute',
                 top: buttonPos.y,
@@ -102,15 +108,15 @@ export default function DropdownPopup({
             className={`${contentClasses}`}
         >
             {children}
-        </View>
+        </ViewRef>
     ), [buttonPos, popupWidth, contentClasses, children, windowWidth]);
 
     return (
         <>
-            <TouchableOpacity 
-                className='w-full' 
-                collapsable={false} 
-                ref={buttonRef} 
+            <TouchableOpacity
+                className='w-full'
+                collapsable={false}
+                ref={buttonRef}
                 onPress={() => handleToggle(true)}
             >
                 {trigger}
@@ -118,13 +124,13 @@ export default function DropdownPopup({
 
             <ModalBase
                 transparent={true}
-                visible={ isRealOpen === true ? true : false }
+                visible={isRealOpen === true ? true : false}
                 presentationStyle="overFullScreen"
                 animationType={animation}
                 onRequestClose={() => handleToggle(false)}
             >
-                 <Pressable className="flex-1 bg-black/30" onPress={(event) => handleBackdropPress(event)}>
-                        {isWeb ? <RemoveScroll>{Content}</RemoveScroll> : Content}
+                <Pressable className="flex-1 bg-black/30" onPress={(event) => handleBackdropPress(event)}>
+                    {isWeb ? <RemoveScroll>{Content}</RemoveScroll> : Content}
                 </Pressable>
             </ModalBase>
         </>

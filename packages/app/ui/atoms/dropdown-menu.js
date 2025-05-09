@@ -14,7 +14,7 @@ import DropdownMenuItem from 'app/components/menu-items/dropdown-menu-item'
 
 const menuSettings = appSetting('theme', 'dropdown_menu');
 
-function DropdownMenuPopup({ items, onSelect, children, defaultOpen, variant, showOnTop, popupHeight }) {
+function DropdownMenuPopup({ items, onSelect, children, defaultOpen, variant, showOnTop }) {
     const redirectdRef = useRef();
     const [isOpen, setIsOpen] = useState(defaultOpen);
 
@@ -36,7 +36,6 @@ function DropdownMenuPopup({ items, onSelect, children, defaultOpen, variant, sh
             <Redirect ref={redirectdRef} />
             <DropdownPopup
                 showOnTop={showOnTop}
-                popupHeight={popupHeight}
                 popupWidth={200}
                 open={isOpen}
                 onOpenChange={setIsOpen}
@@ -88,14 +87,13 @@ const MenuBottomSheet = memo(({ items, onSelect, setBottomSheetData }) => {
     );
 });
 
-export default function DropdownMenu({ items, onSelect, children, defaultOpen, mode, title, variant, showOnTop, popupHeight, cancelable = true }) {
+export default function DropdownMenu({ items, onSelect, children, defaultOpen, mode, title, variant, showOnTop, cancelable = true }) {
     const { setBottomSheetData } = useBottomSheetData();
     const isWeb = Platform.OS === 'web';
 
     if (isWeb || mode == "popup") {
         return <DropdownMenuPopup
             showOnTop={showOnTop}
-            popupHeight={popupHeight}
             items={items}
             onSelect={onSelect}
             children={children}
