@@ -23,8 +23,7 @@ export default function DropdownPopup({
 }) {
     const buttonRef = useRef(null);
     const [buttonPos, setButtonPos] = useState({ x: 0, y: 0, width: 0, height: 0 });
-    const windowWidth = useWindowDimensions().width;
-    const windowHeight = useWindowDimensions().height;
+    const { width: windowWidth, height: windowHeight } = useWindowDimensions();
     const isWeb = useMemo(() => Platform.OS === 'web', []);
     const animation = useMemo(
         () => (windowWidth > LAYOUT_BREAKPOINTS.md ? 'fade' : 'slide'),
@@ -85,7 +84,6 @@ export default function DropdownPopup({
     };
 
     const handleBackdropPress = (event) => {
-        // Prevent event bubbling
         event.stopPropagation();
         handleToggle(false);
     };
@@ -120,7 +118,7 @@ export default function DropdownPopup({
 
             <ModalBase
                 transparent={true}
-                visible={isRealOpen}
+                visible={ isRealOpen === true ? true : false }
                 presentationStyle="overFullScreen"
                 animationType={animation}
                 onRequestClose={() => handleToggle(false)}
