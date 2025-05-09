@@ -92,7 +92,6 @@ export default function DropdownPopup({
         event.stopPropagation();
         handleToggle(false);
     };
-    console.log("buttonPos", buttonPos)
     const Content = useMemo(() => (
         <ViewRef
             ref={contentRef}

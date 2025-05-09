@@ -23,7 +23,7 @@ const getIcon = (oItem, iconSize = 20) => {
     }
 };
 
-export default function DropdownMenuItem({ item, index, link, handleSelect, classes, counter, handleCounter }) {
+export default function DropdownMenuItem({ item, index, link, handleSelect, classes, counter, handleCounter, mode }) {
     const key = item.id ?? index;
     const iconSize = menuSettings.icon_size || 16;
 
@@ -49,7 +49,7 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
                 {!!icon && <View className={menuSettings.item_icon}>{icon}</View>}
                 {!!item?.title &&
                     (typeof item.title === 'string' ? (
-                        <Text className={menuSettings.item_text}>{item.title}</Text>
+                        <Text className={menuSettings[`item_text`]}>{item.title}</Text>
                     ) : (
                         item.title
                     ))

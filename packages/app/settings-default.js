@@ -789,7 +789,7 @@ export  const settingsDefault = {
                 'flex flex-row focus:outline-none items-center justify-between px-1 py-0.5 rounded-lg font-medium hover:bg-bgritem dark:hover:bg-bgritem-d text-sm text-neutral-700 dark:text-neutral-300 dark:hover:text-white hover:cursor-pointer',
             item_cnt: 'items-center w-full',
             item_text:
-                'text-sm leading-[32px] px-[12px] font-medium text-neutral-800 dark:text-neutral-200',
+                'text-base web:text-sm leading-[32px] px-[12px] font-medium text-neutral-800 dark:text-neutral-200',
             item_icon:
                 'flex items-center w-[36px] h-[36px] bg-bgritem dark:bg-bgritem-d group-hover:bg-bgritem-h dark:group-hover:bg-bgritem-dh rounded-full justify-center',
             icon_size: 20, // Default icon size for dropdown menu icons

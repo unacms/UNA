@@ -14,15 +14,16 @@ import DropdownMenuItem from 'app/components/menu-items/dropdown-menu-item'
 
 const menuSettings = appSetting('theme', 'dropdown_menu');
 
-function DropdownMenuPopup({ items, onSelect, children, defaultOpen, variant, showOnTop }) {
+const variantClassMap = {
+    vertical: { item: 'item_ver', container: 'content_ver' },
+    horizontal: { item: 'item_hor', container: 'content_hor' },
+    nopad: { item: 'item_np', container: 'content_ver' },
+};
+
+
+function DropdownMenuPopup({ items, onSelect, children, defaultOpen, variant, showOnTop, mode='' }) {
     const redirectdRef = useRef();
     const [isOpen, setIsOpen] = useState(defaultOpen);
-
-    const variantClassMap = {
-        vertical: { item: 'item_ver', container: 'content_ver' },
-        horizontal: { item: 'item_hor', container: 'content_hor' },
-        nopad: { item: 'item_np', container: 'content_ver' },
-    };
 
     const classes = variantClassMap[variant] ?? variantClassMap.vertical;
 
@@ -68,23 +69,23 @@ const MenuBottomSheet = memo(({ items, onSelect, setBottomSheetData }) => {
         [onSelect, setBottomSheetData]
     );
 
+    const classes = variantClassMap.vertical;
+
     return (
         <View className='w-full mt-0 mb-2'>
-            {items.map(
-                (item, index) =>
-                    <View key={item.id} className={' ' + (index != items.length - 1 ? 'mb-1 border-b border-bdr dark:border-bdr-d ' : '')}>
-                        <Button
-                            variant="text"
-                            size="base"
-                            fullWidth
-                            onPress={handlePressMenu(item)}
-                            align="start"
-                            title={item.title}
-                        />
-                    </View>
-            )}
+            {items.map((item, index) => (
+                <View key={item.id} className={' ' + (index != items.length - 1 ? 'py-2 border-b border-bdr dark:border-bdr-d ' : 'py-2 ')}><DropdownMenuItem
+                    mode="bottomsheet"
+                    key={item.id ?? index}
+                    index={index}
+                    item={item}
+                    handleSelect={handlePressMenu(item)}
+                    classes={classes}
+                /></View>
+            ))}
         </View>
     );
+
 });
 
 export default function DropdownMenu({ items, onSelect, children, defaultOpen, mode, title, variant, showOnTop, cancelable = true }) {

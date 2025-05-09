@@ -365,7 +365,7 @@ const ElementReports = forwardRef((oProps, ref) => {
             return <>
             <DropdownMenuItem
                     disabled={bShowActionDisabled}
-                    counter ={iCount}
+                    counter ={iCount >0 ? iCount : ''}
                     handleCounter={_handleGetPerformedBy}
                     item={{ title: sTitle}}/*, icon: sIcon*/
                     handleSelect={(event) => { bShowActionUndo && bShowActionReported ? _handleUndo(event) : (!bShowActionDisabled ? _handleGetDo(event) : () => {})}}

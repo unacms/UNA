@@ -182,7 +182,6 @@ export function Modal({
     const isIOS = Platform.OS === 'ios';
 
     const isOuterClose = (onClose !== 'undefined' && outerClickClose !== false);
-    const Wrapper = isOuterClose ? Pressable : View;
     const positionClasses = {
         'top': 'items-start py-8 px-4',
         'bottom': 'items-end py-8 px-4',
@@ -231,9 +230,14 @@ export function Modal({
 
     return (
         <ModalDef visible={onVisible} animationType={animation} transparent={isWeb}>
-            <Wrapper className={`pointerEvents cursor-default flex justify-end w-full h-full ${modalSettings.fog}`} {...(isOuterClose && { onPress: onClose })}>
+            <Pressable className={`pointerEvents cursor-default flex justify-end w-full h-full 
+                ${modalSettings.fog}`} 
+                onPress={(event) => {   isOuterClose ? onClose : undefined; event.stopPropagation();}}
+
+
+            >
                {isWeb ? <RemoveScroll className='flex-1'>{Content}</RemoveScroll> : Content}
-            </Wrapper>
+            </Pressable>
         </ModalDef>
     );
 }
