@@ -91,7 +91,7 @@ function PlainText(props) {
         display: none;
     }*/
 function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus, onBlur, html, ...props }) {
-    
+
     const unicFormName = `${props.form_name}`; // for catch images in editor
 
     let b = [...DEFAULT_TOOLBAR_ITEMS];
@@ -290,16 +290,12 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
         editor.setPlaceholder(props.placeholder)
     }, [props.placeholder]);
 
-    //kb_stay_open
-    console.log("props", props)
-
     useEffect(() => {
         if (formContext.formState.isSubmitted && props.kb_stay_open != true) {
-            setTimeout(() => {
+            /*setTimeout(() => {
                 editor.blur();
             }, 800);
-
-
+            */
         }
     }, [formContext.formState.isSubmitted]);
 
@@ -330,7 +326,7 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
         });
 
         if (images.length > 0) {
-            setFilesData(getAlert('images:pasted', {images:images, form_name:formName}));
+            setFilesData(getAlert('images:pasted', { images: images, form_name: formName }));
         }
     }
 
@@ -339,7 +335,6 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
         const mentionLink = `<a class="bx-mention-link ${user.classname}" href="${user.url}">${user.label}</a> &shy; `;
         const updatedContent = html.replace(query, mentionLink);
         editor.setContent(updatedContent);
-        editor.focus('end');
         setSuggestions([])
     }
 
@@ -395,10 +390,10 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
             if (message?.type == "blur") {
                 console.log('blur')
                 hiddenInputRef.current?.focus();
-    setTimeout(() => {
-      hiddenInputRef.current?.blur();
-    }, 50);
-             }
+                setTimeout(() => {
+                    hiddenInputRef.current?.blur();
+                }, 50);
+            }
 
             if (message?.type == "enter") {
                 setIsEnter(true);
@@ -626,16 +621,16 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
                 </View>
             )}
             <TextInput
-        ref={hiddenInputRef}
-        style={{ position: 'absolute', height: 0, width: 0, opacity: 0 }}
-        editable={true}
-      />
+                ref={hiddenInputRef}
+                style={{ position: 'absolute', height: 0, width: 0, opacity: 0 }}
+                editable={true}
+            />
             <RichText
                 exclusivelyUseCustomOnMessage={false}
                 style={{ backgroundColor: 'transparent' }}
                 editor={editor}
                 onMessage={onMessage} />
-                
+
 
             {isToolBar && <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
