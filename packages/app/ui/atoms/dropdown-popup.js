@@ -123,11 +123,9 @@ export default function DropdownPopup({
                 animationType={animation}
                 onRequestClose={() => handleToggle(false)}
             >
-                <TouchableWithoutFeedback onPress={handleBackdropPress}>
-                    <View className="flex-1 bg-black/30">
+                 <Pressable className="flex-1 bg-black/30" onPress={(event) => handleBackdropPress(event)}>
                         {isWeb ? <RemoveScroll>{Content}</RemoveScroll> : Content}
-                    </View>
-                </TouchableWithoutFeedback>
+                </Pressable>
             </ModalBase>
         </>
     );
