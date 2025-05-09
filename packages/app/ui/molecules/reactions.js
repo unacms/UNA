@@ -16,7 +16,6 @@ import {
     Platform, 
     Dimensions,
     StyleSheet, 
-    useColorScheme, 
     TouchableOpacity
 } from 'react-native';
 import { Text } from 'app/design/typography'
@@ -268,7 +267,6 @@ const getCounterCompound = (getIconAlias, handleGetPerformedByCpd, actionsDataSt
 export default function ElementReactions(oProps) {
     const { t } = useTranslation();
     const bWeb = Platform.OS === 'web';
-    const sTheme = useColorScheme();
     const oSettings = appSetting('social_actions', 'reaction');
 
     const oParams = { ...oSettings, ...oProps.params };
@@ -389,10 +387,10 @@ export default function ElementReactions(oProps) {
             else {
                 const oReactionStyles = StyleSheet.create({
                     cardStyle: {
-                        backgroundColor: appSetting('theme', sTheme == 'dark' ? 'dark' : 'light', 'bgrmodal'),
+                        
                         shadowOpacity: 0.1,
                         shadowRadius: 4,
-                        bdr: appSetting('theme', sTheme == 'dark' ? 'dark' : 'light', 'bdrModal'),
+                       
                         borderWidth: 0,
                     },
                 });
@@ -488,7 +486,6 @@ const ReactionPopover = ({
     const bWeb = Platform.OS === 'web';
     const SCREEN_WIDTH = Dimensions.get('window').width;
     const POPOVER_WIDTH = 300;
-    const sTheme = useColorScheme();
     const [modalVisible, setModalVisible] = useState(false);
     const [buttonPos, setButtonPos] = useState({ x: 0, y: 0, width: 0, height: 0 });
     const buttonRef = useRef(null);
@@ -514,7 +511,7 @@ const ReactionPopover = ({
     };
 
     return (
-        <View style={{ backgroundColor: appSetting('theme', sTheme == 'dark' ? 'dark' : 'light', 'bgrmodal') }}>
+        <View>
             <TouchableOpacity ref={buttonRef} onPress={openModal} disabled={disabled}>
                 {children}
             </TouchableOpacity>

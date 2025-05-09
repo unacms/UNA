@@ -15,7 +15,7 @@ export default function DropdownPopup({
     open,
     onOpenChange,
     trigger,
-    popupWidth = 352,
+    minPopupWidth = 200,
     defaultOpen = false,
     showOnTop = false,
     contentClasses = ' rounded-2xl overflow-hidden border border-bdrmodal p-2 dark:border-bdrmodal-d bg-bgrmodal dark:bg-bgrmodal-d shadow-[0_10px_10px_rgba(0,0,0,0.05)]  '
@@ -39,7 +39,7 @@ export default function DropdownPopup({
 
         buttonRef.current.measureInWindow((x, y, width, height) => {
             if (contentRef.current?.measureInWindow) {
-                contentRef.current.measureInWindow((_, __, ___, effectivePopupHeight) => {
+                contentRef.current.measureInWindow((_, __, popupWidth, effectivePopupHeight) => {
                     // Calculate horizontal position
                     let left = x;
                     if (x + popupWidth > windowWidth - 16) {
@@ -53,7 +53,7 @@ export default function DropdownPopup({
 
                     if (showOnTop) {
                         top = y - effectivePopupHeight - 8;
-                    } else if (top + effectivePopupHeight > windowHeight - 16) {
+                    } else if (top + effectivePopupHeight > windowHeight - 16 && y - effectivePopupHeight - 8 > 16) {
                         top = y - effectivePopupHeight - 8;
                     }
 
@@ -78,7 +78,7 @@ export default function DropdownPopup({
                 return () => window.removeEventListener('resize', updateButtonPosition);
             }
         }
-    }, [isRealOpen, popupWidth, windowWidth, showOnTop]);
+    }, [isRealOpen, windowWidth, showOnTop]);
 
     const handleToggle = (bOpen) => {
         if (isControlledOutside) {
@@ -92,7 +92,7 @@ export default function DropdownPopup({
         event.stopPropagation();
         handleToggle(false);
     };
-
+    console.log("buttonPos", buttonPos)
     const Content = useMemo(() => (
         <ViewRef
             ref={contentRef}
@@ -101,7 +101,7 @@ export default function DropdownPopup({
                 top: buttonPos.y,
                 left: buttonPos.x,
                 elevation: 5,
-                minWidth: popupWidth,
+                minWidth: minPopupWidth,
                 maxWidth: windowWidth - 32,
                 zIndex: 1000,
             }}
@@ -109,7 +109,7 @@ export default function DropdownPopup({
         >
             {children}
         </ViewRef>
-    ), [buttonPos, popupWidth, contentClasses, children, windowWidth]);
+    ), [buttonPos, contentClasses, children, windowWidth]);
 
     return (
         <>

@@ -84,7 +84,7 @@ export default function ContextSelector({ data, url }) {
             <View>
                 <DropdownPopup
                     trigger={renderTrigger()}
-                    popupWidth={352}
+                    minPopupWidth={352}
                 >
                     <View>
                         {renderLogoListItem(!data.current?.id)}

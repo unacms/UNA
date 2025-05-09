@@ -114,7 +114,7 @@ export const GroupView = memo(({ data, styles, url, isCompact }) => {
                 </Text>
             </Link>
             <View>
-                <View className="flex-col relative">
+                <View>
                     <Text
                         className="text-neutral-800 dark:text-neutral-200 text-base "
                         numberOfLines={3}
@@ -164,7 +164,7 @@ export const AdView = memo(({ data, styles, url, isCompact }) => {
                 <LinkContent url={url} data={data} />
             )}
             <View>
-                <View className="flex-col relative">
+                <View>
                     <Text
                         className="text-neutral-800 dark:text-neutral-200 pb-4 text-base "
                         numberOfLines={3}
@@ -210,7 +210,7 @@ export const MarketView = memo(({ data, styles, url, isCompact }) => {
                 </Text>
             </Link>
             <View>
-                <View className="flex-col relative">
+                <View>
                     <Text
                         className="text-neutral-800 dark:text-neutral-200 pb-4 text-base "
                         numberOfLines={3}
@@ -257,7 +257,7 @@ export const DefaultView = memo(({ data, styles, bIsTitle, bIsTimelineContent, c
                     </Link>
                 )}
                 <View>
-                    <View className="flex-col relative ">
+                    <View>
                         {bIsTimelineContent && (
                             <View className={' ' + ((data.content.text && content_attach.length > 0) ? ' pb-2 ' : '')}>
                                 {fulltext ? <Html data={data.content.text ? data.content.text : ''} /> : <ContentMore id={'feed-' + data.id} showLink={data?.content?.images_attach?.length == 0} content={data.content.text ? data.content.text : ''} numberOfLines={3} openSmall={false} textClassName=" text-neutral-800 dark:text-neutral-200 text-base " />}
@@ -320,7 +320,7 @@ export const PollView = memo(({ data, styles, bIsTitle, bIsTimelineContent, cont
                     </Link>
                 )}
                 <View>
-                    <View className="flex-col relative ">
+                    <View>
                         <PollItem data={data.content} />
                     </View>
                 </View>

@@ -15,7 +15,7 @@ export function CoverMenuSmall(props) {
             onOpenChange={(bOpen) => {
                 setNtfsOpen(bOpen)
             }}
-            popupWidth={256}
+            minPopupWidth={256}
             trigger={<Button
                 key="btn"
                 variant="text"

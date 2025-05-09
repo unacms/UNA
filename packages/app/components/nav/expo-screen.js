@@ -68,7 +68,6 @@ const Content = ({ pagePath, currentUser, isRoot }) => {
             const { path: pathWithoutQuery, queryString } = parseUrl(pagePath);
             const params = queryString ? JSON.stringify(parseQueryString(queryString)) : null;
             const data = await getData(pathWithoutQuery, null, null, null, null, params);
-            console.log('123234', data)
             if (data?.props) {
                 const pageData1 = data.props;
                 const settings = getPageSettings(pageData1.data.config, pageData1.data.uri);
