@@ -95,9 +95,12 @@ export  const settingsDefault = {
         view_by_module: {
             //appSetting('layout', 'cover_mode'
             bx_courses: 'min',
-            bx_spaces: 'none',
+            //bx_spaces: 'min',
             bx_jobs: 'max',
         },
+        show_pic_by_module:{
+            bx_spaces:true,
+        }
     },
     comments: {
         hide_sort: false, //OLD appSetting('layout', 'hide_comments_sort')

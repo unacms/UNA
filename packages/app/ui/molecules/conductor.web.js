@@ -234,7 +234,8 @@ const LeftSideBarContainer = ({ menu, routes, currentUser, index, setIndex, left
 }
 
 const HeaderContainer = ({ tabBarObj, tabBarObjSmall, currentUser, smallHeader, header, windowWidth, cntWidth, cover }) => {
-    let offset = header ? (windowWidth < LAYOUT_BREAKPOINTS.lg ? 400 : 400) : 50;
+    let offset = header ? (windowWidth < LAYOUT_BREAKPOINTS.lg ? 350 : 350) : 50;
+
     if (cover == 'min' && header > 50) {
         offset = windowWidth < LAYOUT_BREAKPOINTS.lg ? 80 : 200
     }

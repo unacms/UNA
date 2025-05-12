@@ -51,7 +51,6 @@ export default function PageLayoutProfile({layoutName, data, uri, blocks}) {
 
     const headerSettings = useMemo(() => getHeaderSettings(uri, windowWidth, 'profile', pageData.config), [uri, windowWidth]);
     const coverMode = appSetting('cover', 'view_by_module', pageData.cover_block.profile?.module)
-
     const isCoverDisabled = ((windowWidth > LAYOUT_BREAKPOINTS.lg || true) && isAltView) || coverMode == 'none';
 
     const header = useMemo(() => {

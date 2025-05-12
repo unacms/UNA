@@ -17,7 +17,7 @@ import DropdownMenuItem from 'app/components/menu-items/dropdown-menu-item'
 
 const getName = (sType, sSystem, sObjectId, sName) => {
     let aName = [sType, sSystem.replace(/_/g, '-'), sObjectId];
-    if(sName)
+    if (sName)
         aName.push(sName);
 
     return [].concat(aName).join('-');
@@ -35,38 +35,38 @@ const setContextVars = (actionsData, setActionsData, actionsDataState, setAction
     let oValue = {};
     oValue[sContextKey] = mValue;
 
-    if(bShowFull) {
-        if(!actionsDataState)
+    if (bShowFull) {
+        if (!actionsDataState)
             setActionsDataState(oValue);
         else
-            setActionsDataState({...actionsDataState, ...oValue});
+            setActionsDataState({ ...actionsDataState, ...oValue });
     }
     else {
-        if(!actionsData)
+        if (!actionsData)
             setActionsData(oValue);
         else
-            setActionsData({...actionsData, ...oValue});
+            setActionsData({ ...actionsData, ...oValue });
     }
 };
 
 const performAction = async (sSystem, iObjectId, sAction, aParams, onLoad) => {
-    const aParamsDefault = {s: sSystem, o: iObjectId};
+    const aParamsDefault = { s: sSystem, o: iObjectId };
 
-    aParams = aParams ? {...aParamsDefault, ...aParams} : aParamsDefault;
+    aParams = aParams ? { ...aParamsDefault, ...aParams } : aParamsDefault;
     const sRequest = '/api.php?r=system/' + sAction + '/TemplReportServices&params[]=' + JSON.stringify(aParams);
 
     const sResponse = await fetcher(sRequest);
-    if(typeof onLoad === 'function')
+    if (typeof onLoad === 'function')
         onLoad(sResponse?.data);
 };
 
 const handleGetDo = (setPopupVisibleDo, oEvent) => {
     //if(!!oEvent)
-     //   oEvent.preventDefault();
+    //   oEvent.preventDefault();
 
-    if(Platform.OS == 'web') {
+    if (Platform.OS == 'web') {
         const popperDiv = document.querySelector('div[data-radix-popper-content-wrapper]');
-        if(popperDiv){
+        if (popperDiv) {
             popperDiv.classList.add('radix-hide');
             document.body.style.pointerEvents = 'auto';
         }
@@ -76,7 +76,7 @@ const handleGetDo = (setPopupVisibleDo, oEvent) => {
 };
 
 const handleDo = (performAction, setContextVars, setPopupVisibleDo, valuesType, setValueType, setValueText, sHapticsType, fOnChangeTitle, oDataSubmit, oEvent) => {
-    if(!!oEvent)
+    if (!!oEvent)
         oEvent.preventDefault();
 
     FeedbackHaptics(sHapticsType);
@@ -85,7 +85,7 @@ const handleDo = (performAction, setContextVars, setPopupVisibleDo, valuesType, 
         setContextVars(oData);
         setPopupVisibleDo(false);
 
-        if(fOnChangeTitle && typeof fOnChangeTitle === 'function')
+        if (fOnChangeTitle && typeof fOnChangeTitle === 'function')
             fOnChangeTitle(oData['title']);
     });
 
@@ -94,13 +94,13 @@ const handleDo = (performAction, setContextVars, setPopupVisibleDo, valuesType, 
 };
 
 const handleUndo = (performAction, setContextVars, fOnChangeTitle, oEvent) => {
-    if(!!oEvent)
+    if (!!oEvent)
         oEvent.preventDefault();
 
     performAction('do', {}, (oData) => {
         setContextVars(oData);
 
-        if(fOnChangeTitle && typeof fOnChangeTitle === 'function')
+        if (fOnChangeTitle && typeof fOnChangeTitle === 'function')
             fOnChangeTitle(oData['title']);
     });
 };
@@ -108,13 +108,13 @@ const handleUndo = (performAction, setContextVars, fOnChangeTitle, oEvent) => {
 const handleGetPerformedBy = (performAction, setPerformedBy, setPopupVisiblePerformed, bAllowViewReported, sHapticsType, oEvent) => {
     oEvent.preventDefault();
 
-    if(!bAllowViewReported)
+    if (!bAllowViewReported)
         return;
 
     FeedbackHaptics(sHapticsType);
 
     performAction('get_performed_by', {}, (oData) => {
-        if(!oData?.performed_by)
+        if (!oData?.performed_by)
             return;
 
         setPerformedBy(oData.performed_by);
@@ -125,17 +125,17 @@ const handleGetPerformedBy = (performAction, setPerformedBy, setPopupVisiblePerf
 const getSkeleton = () => {
     return (
         <View className="gap-y-2">
-        {[...Array(1, 2, 3)].map( i => 
-            <View key={i} className="flex-col p-2 bg-neutral-500/5 sm:rounded-lg">
-                <View className="animate-pulse flex-row items-center gap-3">
-                    <View className="rounded-full bg-neutral-600/20 h-10 w-10"></View>
-                    <View className="flex-1 gap-y-1">
-                        <View className="h-4 w-1/2 bg-neutral-600/20 rounded-full"></View>    
-                        <View className="h-3 w-1/3 bg-neutral-600/20 rounded-full"></View>
+            {[...Array(1, 2, 3)].map(i =>
+                <View key={i} className="flex-col p-2 bg-neutral-500/5 sm:rounded-lg">
+                    <View className="animate-pulse flex-row items-center gap-3">
+                        <View className="rounded-full bg-neutral-600/20 h-10 w-10"></View>
+                        <View className="flex-1 gap-y-1">
+                            <View className="h-4 w-1/2 bg-neutral-600/20 rounded-full"></View>
+                            <View className="h-3 w-1/3 bg-neutral-600/20 rounded-full"></View>
+                        </View>
                     </View>
                 </View>
-            </View>
-        )}
+            )}
         </View>
     );
 };
@@ -143,13 +143,13 @@ const getSkeleton = () => {
 const ElementReports = forwardRef((oProps, ref) => {
     const { t } = useTranslation();
     const elementRef = useRef(null);
-    const [ popupVisibleDo, setPopupVisibleDo ] = useState(false);
+    const [popupVisibleDo, setPopupVisibleDo] = useState(false);
 
     const isTextMode = oProps.mode === 'text';
 
     const oSettings = appSetting('social_actions', 'report');
 
-    const oParams = {...oSettings, ...oProps.params};
+    const oParams = { ...oSettings, ...oProps.params };
     const sIcon = isTextMode ? '' : oSettings[oProps['system']]?.icon != undefined ? oSettings[oProps['system']].icon : "AlertCircle"
     const oAction = oProps.action;
     const oCounter = oProps.counter;
@@ -162,22 +162,22 @@ const ElementReports = forwardRef((oProps, ref) => {
     const bShowAction = (oParams?.show_action == undefined || oParams.show_action === true) && (sDisplayType == 'action' || sDisplayType == 'both');
     const bShowCounter = oParams?.show_counter != undefined && oParams.show_counter === true && (sDisplayType == 'counter' || sDisplayType == 'both');
     const bShowFull = bShowAction && bShowCounter;
-    const bShowCombined = bShowFull && oParams?.show_combined != undefined && oParams.show_combined === true   
+    const bShowCombined = bShowFull && oParams?.show_combined != undefined && oParams.show_combined === true
 
     const { actionsData, setActionsData } = useActionsData();
-    const [ actionsDataState, setActionsDataState ] = useState({});
+    const [actionsDataState, setActionsDataState] = useState({});
 
 
-    const [ popupVisiblePerformed, setPopupVisiblePerformed ] = useState(false);
-    const [ performedBy, setPerformedBy ] = useState();
+    const [popupVisiblePerformed, setPopupVisiblePerformed] = useState(false);
+    const [performedBy, setPerformedBy] = useState();
 
     let valuesType = oParams.types.map(function (item) {
-        return item.name ? {label: item.title, value: item.name} : null
-    }); 
+        return item.name ? { label: item.title, value: item.name } : null
+    });
     valuesType = valuesType.filter(Boolean);
 
-    const [ valueType, setValueType ] = useState(valuesType[0].value);
-    const [ valueText, setValueText ] = useState('');
+    const [valueType, setValueType] = useState(valuesType[0].value);
+    const [valueText, setValueText] = useState('');
 
     const bAllowViewReported = oSettings[oProps['system']]?.allow_view_reported != undefined ? oSettings[oProps['system']].allow_view_reported : true;
 
@@ -195,21 +195,21 @@ const ElementReports = forwardRef((oProps, ref) => {
         subscribe(oProps.system + '_' + oProps.type + '_' + oProps.object_id, 'reported', cb);
     }, [])
 
-   /* useImperativeHandle(ref, () => {
-        return {
-            report(e) {
-                if(!elementRef.current.is_reported)
-                    handleGetDo(setPopupVisibleDo, e);
-                else
-                    handleUndo(_performAction, _setContextVars, (oProps?.onChangeTitle ? oProps.onChangeTitle : false), e);
-            }
-        };
-    }, []);*/
+    /* useImperativeHandle(ref, () => {
+         return {
+             report(e) {
+                 if(!elementRef.current.is_reported)
+                     handleGetDo(setPopupVisibleDo, e);
+                 else
+                     handleUndo(_performAction, _setContextVars, (oProps?.onChangeTitle ? oProps.onChangeTitle : false), e);
+             }
+         };
+     }, []);*/
 
     const cb = (data) => {
         let aData = JSON.parse(data);
-        if(!!aData?.api)
-            _setContextVars(aData.api.performer_id == currentUser.id ? aData.api : {counter: aData.api.counter});
+        if (!!aData?.api)
+            _setContextVars(aData.api.performer_id == currentUser.id ? aData.api : { counter: aData.api.counter });
     }
 
     //--- show action
@@ -218,27 +218,27 @@ const ElementReports = forwardRef((oProps, ref) => {
 
     const bShowActionUndo = oAction?.is_undo === true;
 
-    if(_isContextVar('is_reported'))
+    if (_isContextVar('is_reported'))
         oAction.is_reported = _getContextVar('is_reported') === true;
     let bShowActionReported = oAction?.is_reported === true;
 
-    if(_isContextVar('is_disabled'))
+    if (_isContextVar('is_disabled'))
         oAction.is_disabled = _getContextVar('is_disabled') === true;
     let bShowActionDisabled = oAction?.is_disabled === true;
 
-    if(_isContextVar('title'))
+    if (_isContextVar('title'))
         oAction.title = _getContextVar('title');
     let sTitle = oAction?.title || '';
 
 
     const oButtonProps = {
-        variant: oProps?.primary ? 'primary' :  (isTextMode ? 'custom' :oProps.params?.button_variant),
-        size: isTextMode? (Platform.OS == 'web' ? 'sm' : 'base') : oProps.params?.button_size,
+        variant: oProps?.primary ? 'primary' : (isTextMode ? 'custom' : oProps.params?.button_variant),
+        size: isTextMode ? (Platform.OS == 'web' ? 'sm' : 'base') : oProps.params?.button_size,
         classTextName: Platform.OS == 'web' ? '' : " font-medium text-neutral-700  dark:text-neutral-300 ",
         rounded: oProps.params?.button_rounded,
         fullWidth: oProps.params?.button_full_width,
         showTitleFromSize: oProps.params?.button_show_title_from_size
-       
+
     };
 
 
@@ -247,23 +247,23 @@ const ElementReports = forwardRef((oProps, ref) => {
 
     let sActionButton = undefined;
     let sActionPopup = undefined;
-    if(bShowActionUndo && bShowActionReported) {
+    if (bShowActionUndo && bShowActionReported) {
         sActionButton = (
             <ButtonAction key="action" startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} onPress={_handleUndo} {...oButtonProps} />
         );
     }
     else {
         sActionButton = (
-            <ButtonAction key="action" startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? _handleGetDo : () => {}} disabled={bShowActionDisabled} {...oButtonProps} />
+            <ButtonAction key="action" startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? _handleGetDo : () => { }} disabled={bShowActionDisabled} {...oButtonProps} />
         );
 
         sActionPopup = (
-            <Modal title={t('Report')} outerClickClose={false} onVisible={popupVisibleDo} onClose={() => {setPopupVisibleDo(false)}}>
+            <Modal title={t('Report')} outerClickClose={false} onVisible={popupVisibleDo} onClose={() => { setPopupVisibleDo(false) }}>
                 <View className="p-2 gap-y-4 overflow-y-auto text-neutral-700 dark:text-neutral-200">
                     <View>
                         <Text>Report Type:</Text>
                     </View>
-                    <Dropdown 
+                    <Dropdown
                         labelField="label"
                         valueField="value"
                         onChange={setValueType}
@@ -279,7 +279,7 @@ const ElementReports = forwardRef((oProps, ref) => {
                         onChangeText={setValueText}
                         value={valueText}
                     />
-                    <Button  title={t('Send report')} onPress={(event) => {_handleDo({type: valueType, text: valueText}, event)}} />
+                    <Button title={t('Send report')} onPress={(event) => { _handleDo({ type: valueType, text: valueText }, event) }} />
                 </View>
             </Modal>
         );
@@ -293,11 +293,11 @@ const ElementReports = forwardRef((oProps, ref) => {
     let iCount = '';
     if (oCounter?.count != undefined)
         iCount = oCounter.count;
-    if(_isContextVar('counter')) {
+    if (_isContextVar('counter')) {
         const oCounterGlobal = _getContextVar('counter');
-        if(oCounterGlobal?.count != undefined)
+        if (oCounterGlobal?.count != undefined)
             iCount = oCounterGlobal.count;
-    }    
+    }
 
     const sharedValue = useSharedValue(1);
 
@@ -316,9 +316,9 @@ const ElementReports = forwardRef((oProps, ref) => {
 
     let sCounterButton = undefined;
     let sCounterPopup = undefined;
-    if(bShowCounter && iCount > 0) {
+    if (bShowCounter && iCount > 0) {
         let sUsers = undefined;
-        if(performedBy) {
+        if (performedBy) {
             sUsers = performedBy.map(aUser => {
                 return (
                     <View key={aUser.id}><Profile {...aUser} /></View>
@@ -326,17 +326,17 @@ const ElementReports = forwardRef((oProps, ref) => {
             });
         }
 
-        if(!sUsers || sUsers.length == 0)
+        if (!sUsers || sUsers.length == 0)
             sUsers = getSkeleton();
 
         sCounterButton = (
             <Animated.View key="counter" style={indicatorStyle}>
-                <ButtonCounter  startDecorator={!bShowCombined ? sIcon : false} title={iCount+''} onPress={_handleGetPerformedBy} {...oButtonProps} />
+                <ButtonCounter startDecorator={!bShowCombined ? sIcon : false} title={iCount + ''} onPress={_handleGetPerformedBy} {...oButtonProps} />
             </Animated.View>
         );
 
         sCounterPopup = (
-            <Modal title={t('Reports')} outerClickClose={false} onVisible={popupVisiblePerformed} onClose={() => {setPopupVisiblePerformed(false)}}>
+            <Modal title={t('Reports')} outerClickClose={false} onVisible={popupVisiblePerformed} onClose={() => { setPopupVisiblePerformed(false) }}>
                 <View className="p-2 gap-y-4 overflow-y-auto text-neutral-700 dark:text-neutral-200">{sUsers}</View>
             </Modal>
         );
@@ -346,41 +346,46 @@ const ElementReports = forwardRef((oProps, ref) => {
      * Save current state in 'ref' to use in Imperative functions.
      */
     elementRef.current = oAction;
-    console.log("oPropsoProps", oProps)
-    if(bShowCombined) {
-        let aButtonsGroup = [sActionButton];
-        if(!!sCounterButton)
-            aButtonsGroup.push(sCounterButton);
 
-        return (
-            <View className={(bShowActionUndo && bShowActionReported ? ' undo' : ' do')}>
-                <ButtonsGroupMenu  {...oButtonProps}>{aButtonsGroup}</ButtonsGroupMenu>
+    if (oProps.mode == 'dropdown-menu') {
+        return <>
+            <DropdownMenuItem
+                disabled={bShowActionDisabled}
+                counter={iCount > 0 ? iCount : ''}
+                handleCounter={_handleGetPerformedBy}
+                item={{ 
+                    title: sTitle, 
+                    icon: bShowCombined ? 'AlertCircle' : ''
+                }}
+                icon='AlertCircle'
+                handleSelect={(event) => { bShowActionUndo && bShowActionReported ? _handleUndo(event) : (!bShowActionDisabled ? _handleGetDo(event) : () => { }) }}
+            />{sActionPopup}{sCounterPopup}</>;
+    }
+    else {
+        if (bShowCombined) {
+            let aButtonsGroup = [sActionButton];
+            if (!!sCounterButton)
+                aButtonsGroup.push(sCounterButton);
+
+            return (
+                <View className={(bShowActionUndo && bShowActionReported ? ' undo' : ' do')}>
+                    <ButtonsGroupMenu  {...oButtonProps}>{aButtonsGroup}</ButtonsGroupMenu>
                     {sActionPopup}
                     {sCounterPopup}
-            </View>
-        );
-    }
-    else
-        if (oProps.mode == 'dropdown-menu') {
-            return <>
-            <DropdownMenuItem
-                    disabled={bShowActionDisabled}
-                    counter ={iCount >0 ? iCount : ''}
-                    handleCounter={_handleGetPerformedBy}
-                    item={{ title: sTitle}}/*, icon: sIcon*/
-                    handleSelect={(event) => { bShowActionUndo && bShowActionReported ? _handleUndo(event) : (!bShowActionDisabled ? _handleGetDo(event) : () => {})}}
-                />{sActionPopup}{sCounterPopup}</>;
+                </View>
+            );
         }
-        else{
+        else {
             return (
                 <View className={'flex-auto flex-row items-center' + (bShowActionUndo && bShowActionReported ? ' undo' : ' do')}>
-                    {bShowAction && !!sActionButton && <View key={sObject + '-action-button'} className={'flex-auto' + (bShowFull ? (isTextMode?  ' mr-4' : ' mr-1') : '')}>{sActionButton}</View>}
+                    {bShowAction && !!sActionButton && <View key={sObject + '-action-button'} className={'flex-auto' + (bShowFull ? (isTextMode ? ' mr-4' : ' mr-1') : '')}>{sActionButton}</View>}
                     {bShowAction && !!sActionPopup && <View key={sObject + '-action-popup'}>{sActionPopup}</View>}
-                    {(bShowCounter &&  !!sCounterButton && !isTextMode) && <View key={sObject + '-counter-button'}>{sCounterButton}</View>}
+                    {(bShowCounter && !!sCounterButton && !isTextMode) && <View key={sObject + '-counter-button'}>{sCounterButton}</View>}
                     {bShowCounter && !!sCounterPopup && <View key={sObject + '-counter-popup'}>{sCounterPopup}</View>}
                 </View>
             );
         }
- });
+    }
+});
 
 export default ElementReports;

@@ -44,8 +44,8 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
             key={key}
             onPress={(event) => handleSelect(event, item)}
         >
-            <Row className={'justify-between ' + menuSettings.item_cnt}>
-                <Row className="">
+            <Row className={'justify-between  ' + menuSettings.item_cnt}>
+                <Row className="items-center">
                 {!!icon && <View className={menuSettings.item_icon}>{icon}</View>}
                 {!!item?.title &&
                     (typeof item.title === 'string' ? (

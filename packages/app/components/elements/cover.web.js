@@ -26,7 +26,7 @@ export function CoverSmall(props) {
     const isUseBg = appSetting('cover', 'use_background')
     const windowDimen = useWindowDimensions()
     const windowWidth = windowDimen.width
-    let bPerson = props.data.profile.module == 'bx_persons' ? true : false
+    const bPerson = props.data.profile.module == 'bx_persons' || appSetting('cover', 'show_pic_by_module', props.data?.profile?.module) ? true : false
 
     let styles = {}
     if (windowWidth > LAYOUT_BREAKPOINTS.lg && getLayout(currentUser) != 'hor') {
@@ -52,16 +52,16 @@ export function CoverSmall(props) {
                     <Row className=" gap-x-2 items-center justify-between flex-auto">
                         <View className="flex-auto flex-row gap-x-2 items-center p-1">
                             {getBackButtonWeb()}
-                        
-                        {bPerson && (
-                            <Profile
-                                {...data.profile}
-                                displayType="unit_wo_info"
-                                displaySize="base"
 
-                            />
-                        )}
-                        
+                            {bPerson && (
+                                <Profile
+                                    {...data.profile}
+                                    displayType="unit_wo_info"
+                                    displaySize="base"
+
+                                />
+                            )}
+
                             <Profile
                                 {...data.profile}
                                 displayType="unit_wo_image"
@@ -85,7 +85,7 @@ export default function (props) {
     const data = props.data
 
     const mode = appSetting('cover', 'view_by_module', props.data?.profile?.module) || props.mode
-    let bPerson = props.data.profile.module == 'bx_persons' ? true : false
+    const bPerson = props.data.profile.module == 'bx_persons' || appSetting('cover', 'show_pic_by_module', props.data?.profile?.module) ? true : false
     const [coverUrl, setCoverUrl] = useState(data.cover.src)
     const [pictureUrl, setPictureUrl] = useState(data.profile.url_avatar)
 
@@ -147,7 +147,6 @@ export default function (props) {
                                         },
                                     },
                                 ])
-                                //console.log("resizedPhotoresizedPhoto", resizedPhoto, manipulatedWidth,manipulatedHeight)
                             uri = resizedPhoto.uri
                         }
                     }
@@ -205,7 +204,7 @@ export default function (props) {
         const sResponse = await fetcher(sRequest)
         if (uploadInfo.extraVar.mode == 'cover')
             setCoverUrl(sResponse.data)
-        else 
+        else
             setPictureUrl(sResponse.data)
     }
 
@@ -227,23 +226,15 @@ export default function (props) {
         location.reload();
     };
 
+    const isCover = data?.cover?.src;
+
     return (
         <View className=' bg-bgrtabbar dark:bg-bgrtabbar-d border-b border-bdrtabbar dark:border-bdrtabbar-d ' >
-            <View
-                className={
-                    appSetting('layout', 'max_width') +
-                    '  w-full mx-auto  '
-                }
-            >
+            <View className={`w-full mx-auto ${appSetting('layout', 'max_width')}`}>
                 {mode != 'min' ? (
                     <View
-                        className={
-                            ' duration-300 bg-primary-200 dark:bg-primary-950 aspect-video sm:' +
-                            appSetting('cover', 'aspect_ratio') +
-                            ' w-auto xl:rounded-b-xl overflow-hidden'
-                        }
-                    >
-                        {!!data.cover && (
+                        className={`duration-300 bg-primary-200 dark:bg-primary-950 w-auto xl:rounded-b-xl overflow-hidden ${isCover ? `aspect-video sm:${appSetting('cover', 'aspect_ratio')}` : ''}`}>
+                        {isCover && (
                             <Image
                                 alt={data.group_name}
                                 view="cover"
@@ -252,7 +243,6 @@ export default function (props) {
                                 src={coverUrl}
                             />
                         )}
-
                         <Row className="p-4 justify-end gap-x-4">
                             {isAllowSwitch && <Button
                                 rounded
@@ -269,8 +259,6 @@ export default function (props) {
                                 onPress={() => handleUpload('cover')}
                             />)}
                         </Row>
-
-
                         <View className="absolute lg:hidden top-4 left-4 z-50">
                             {getBackButtonWeb()}
                         </View>
@@ -280,16 +268,15 @@ export default function (props) {
                 )}
                 <View className="px-4" >
                     <View className={` py-2 flex-col ${mode === 'min' ? 'lg' : 'md'}:flex-row gap-x-4 ${conductorTheme.content_max_width} mx-auto w-full items-start lg:items-stretch`}>
-                    {bPerson && (
-                        <View className="w-full h-24 sm:w-48 relative   ">
-                            
-                            <View className=" flex-auto absolute w-min  z50 rounded-full w-min p-2 z-50 bottom-0 flex-none bg-bgrcard dark:bg-bgrcard-d ">
-                                <Profile
-                                    {...data.profile}
-                                    displayType="unit_wo_info"
-                                    displaySize="4xl"
-                                />
-                                {bAllowEdit && (
+                        {bPerson && (
+                            <View className="w-full h-24 sm:w-48 relative   ">
+                                <View className=" flex-auto absolute w-min  z50 rounded-full w-min p-2 z-50 bottom-0 flex-none bg-bgrcard dark:bg-bgrcard-d ">
+                                    <Profile
+                                        {...data.profile}
+                                        displayType="unit_wo_info"
+                                        displaySize="4xl"
+                                    />
+                                    {bAllowEdit && (
                                         <View className=" p-1 bg-bgrcard dark:bg-bgrcard-d rounded-full absolute bottom-3 right-1">
                                             <Button
                                                 rounded
@@ -301,37 +288,31 @@ export default function (props) {
                                             />
                                         </View>
                                     )}
+                                </View>
                             </View>
-                            
-                        </View>
-                    )}
+                        )}
+                        <View className=" flex-auto flex-col pb-2 ">
+                            <Row className=" flex-row flex-auto items-center py-2 gap-x-2">
+                                <Text
+                                    className="tracking-tight text-xl sm:text-2xl font-bold text-neutral-900 dark:text-neutral-50"
+                                    numberOfLines={2}
+                                >
+                                    {data.profile.display_name}
+                                </Text>
+                                <Badges badges={data.badges} />
 
-
-                    <View className=" flex-auto flex-col pb-2 ">
-
-                        <Row className=" flex-row flex-auto items-center py-2 gap-x-2">
-                            <Text
-                                className="tracking-tight text-xl sm:text-2xl font-bold text-neutral-900 dark:text-neutral-50"
-                                numberOfLines={2}
-                            >
-                                {data.profile.display_name}
-                            </Text>
-                            <Badges badges={data.badges} />
-                            
-                        </Row>
-                        {!!data.profile.info?.date_start && (
+                            </Row>
+                            {!!data.profile.info?.date_start && (
                                 <Text className="  text-neutral-600 dark:text-neutral-400 text-xs uppercase font-semibold tracking-tight overflow-hidden  rounded-md flex-none items-center">
                                     {formatDateInterval(data.profile.info?.date_start, data.profile.info?.date_end, t)}
                                 </Text>
-
                             )}
-
-                        <CoverMenuMeta {...data.meta_menu} />
-                    </View>
-                    <View className={` flex-auto w-full max-w-[400px] ${mode !== 'min' && ' lg:items-end '}`}>
-                        <CoverMenu {...data.actions_menu} uri={props?.uri} />
-                        {/*containerClasses={`${mode === 'min' && 'w-full lg:justify-end'}`}*/}
-                    </View>
+                            <CoverMenuMeta {...data.meta_menu} />
+                        </View>
+                        <View className={` flex-auto w-full max-w-[400px] ${mode !== 'min' && ' lg:items-end '}`}>
+                            <CoverMenu {...data.actions_menu} uri={props?.uri} />
+                            {/*containerClasses={`${mode === 'min' && 'w-full lg:justify-end'}`}*/}
+                        </View>
                     </View>
                 </View>
             </View>
