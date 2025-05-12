@@ -233,7 +233,7 @@ export default function (props) {
             <View className={`w-full mx-auto ${appSetting('layout', 'max_width')}`}>
                 {mode != 'min' ? (
                     <View
-                        className={`duration-300 bg-primary-200 dark:bg-primary-950 w-auto xl:rounded-b-xl overflow-hidden ${isCover ? `aspect-video sm:${appSetting('cover', 'aspect_ratio')}` : ''}`}>
+                        className={`duration-300 bg-primary-200 dark:bg-primary-950 w-auto xl:rounded-b-xl overflow-hidden ${isCover ? `aspect-video sm:${appSetting('cover', 'aspect_ratio')}` : 'pt-16'}`}>
                         {isCover && (
                             <Image
                                 alt={data.group_name}
