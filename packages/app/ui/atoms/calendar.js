@@ -8,9 +8,13 @@ import { Icon } from 'app/ui/atoms/icon';
 import { Theme } from 'app/design/theme';
 
 const formatValueDate = (v) => {
-    const date = new Date(v.dt);
-    const localDate = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
-    return localDate.toLocaleDateString();
+    if (v.dt){
+        const date = new Date(v.dt);
+
+        const localDate = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+        return localDate.toLocaleDateString();
+    }
+    return ''
 }
 
 const formatValue = (v, bIsTime) => {
@@ -35,15 +39,17 @@ const loadCalendar = async (setDynamicCalendar) => {
     setDynamicCalendar(() => Calendars.Calendar);
 };
 
-const CalendarHeader = (dValue, addMonth) => (
+const CalendarHeader = (dValue, addMonth) => {
+    console.log("dValue", dValue)
+    return (
     <Row className='w-full justify-between mb-4 items-center mt-2'>
         <Button size="sm" rounded startDecorator="ChevronsLeft" onPress={() => addMonth('y', -1)} />
         <Button size="sm" rounded startDecorator="ChevronLeft" onPress={() => addMonth('m', -1)} />
-        <Text className=" font-medium text-neutral-700 text-lg">{formatValueDate(dValue)}</Text>
+        <Text className=" font-medium text-neutral-700 text-lg">{dValue.dt ? formatValueDate(dValue) : 'Select date'}</Text>
         <Button size="sm" rounded startDecorator="ChevronRight" onPress={() => addMonth('m', 1)} />
         <Button size="sm" rounded startDecorator="ChevronsRight" onPress={() => addMonth('y', 1)} />
     </Row>
-);
+)};
 
 const generateValues = range => Array.from({ length: range }, (_, i) => ({ label: i.toString().padStart(2, '0'), value: i.toString().padStart(2, '0') }));
 
