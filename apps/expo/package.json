@@ -38,6 +38,7 @@
     "expo-status-bar": "~2.0.0",
     "expo-video": "^2.0.3",
     "expo-web-browser": "~14.0.1",
+    "fbemitter": "^3.0.0",
     "flatted": "^3.3.1",
     "html-entities": "^2.4.0",
     "i18next": "^23.5.1",

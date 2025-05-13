@@ -16,6 +16,7 @@ import { linkedText } from 'app/lib/text-helpers';
 import { Platform } from 'react-native'
 import Carousel from 'app/ui/molecules/carousel'
 import { Modal } from 'app/design/controls'
+import emitter from 'app/context/emitter';
 
 export default function JotItem({ item, index, handleReply }) {
     const isWeb = Platform.OS == 'web'
@@ -58,6 +59,7 @@ export default function JotItem({ item, index, handleReply }) {
 
     const handleReplyInner = useCallback(async (item) => {
         FeedbackHaptics('Medium');
+        emitter.emit('editor', { action: 'focus' })
         handleReply(item);
     }, [handleReply]);
 

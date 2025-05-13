@@ -14,6 +14,7 @@ import { fetcher } from 'app/lib/fetcher';
 import { appSetting } from 'app/lib/util'
 import { ThemeName } from 'app/design/theme';
 import { TextInput } from 'react-native';
+import emitter from 'app/context/emitter';
 
 export default function FormFieldText(props) {
     const formContext = useFormContext();
@@ -123,7 +124,6 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
     const object_privacy_view = formContext.watch('object_privacy_view') || formContext.watch('cmt_privacy_view');
     const object_id = formContext.watch('id');
     const m = name == "cmt_text" ? "sys_cmts" : "bx_timeline";
-    const hiddenInputRef = useRef(null);
 
     let url1 = '/searchExtended.php?action=get_mention';
     if (m)
@@ -149,6 +149,8 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
 
         fetchData();
     }, [keywordval]);
+
+
 
 
     let customCodeBlockCSS = `
@@ -232,18 +234,22 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
         `
     }
 
+    
+
     useEffect(() => {
 
         if (editor && field.value == '' && editor.getHTML() != field.value) {
+            console.log("editor.focus1", field.value, editor.getHTML())
             editor.setContent(field.value);
-            editor.focus('end');
+          //  editor.focus('end');
         }
     }, [field.value]);
 
     useEffect(() => {
         if (editor && editor.getHTML() != value) {
+             console.log("editor.focus2", value, editor.getHTML())
             editor.setContent(value);
-            editor.focus('end');
+           // editor.focus('end');
         }
     }, [value]);
 
@@ -267,6 +273,7 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
         CodeBridge.configureCSS(customCodeBlockCSS), // Custom codeblock css
     ];
 
+
     const editor = useEditorBridge({
 
         autofocus: props.autofocus,
@@ -276,11 +283,7 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
         ...(ThemeName() === 'dark' && { theme: darkEditorTheme }),
         initialContent: field.value,
         bridgeExtensions: [
-            ...(isPlainText
-                ? [
-                    CoreBridge,
-                ]
-                : TenTapStartKit),
+            ...TenTapStartKit,
             ...baseExtensions
         ],
 
@@ -289,6 +292,44 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
     useEffect(() => {
         editor.setPlaceholder(props.placeholder)
     }, [props.placeholder]);
+
+    useEffect(() => {
+
+        const subscription = emitter.addListener('editor', (data) => {
+
+            if (data.action == 'blur') {
+                if (data.timeout) {
+                    setTimeout(() => {
+                        console.log("editor-blur", data, editor)
+                        editor.blur();
+                    }, data.timeout);
+                }
+                else {
+                    console.log("editor-blur", data, editor)
+                    editor.blur();
+                }
+            }
+            if (data.action == 'focus') {
+                if (data.timeout) {
+                    setTimeout(() => {
+                        console.log("editor-focus", data, editor)
+                        editor.focus('end');
+
+                    }, 800);
+                }
+                else {
+                    console.log("editor-focus", data, editor)
+                    editor.focus('end');
+                }
+            }
+        });
+
+        // Отписываемся при размонтировании
+        return () => {
+            subscription.remove();
+        };
+    }, [])
+
 
     useEffect(() => {
         if (formContext.formState.isSubmitted && props.kb_stay_open != true) {
@@ -388,11 +429,8 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
             }
 
             if (message?.type == "blur") {
-                console.log('blur')
-                hiddenInputRef.current?.focus();
-                setTimeout(() => {
-                    hiddenInputRef.current?.blur();
-                }, 50);
+                //  console.log('blur')
+
             }
 
             if (message?.type == "enter") {
@@ -620,11 +658,6 @@ function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus
                     </ScrollView>
                 </View>
             )}
-            <TextInput
-                ref={hiddenInputRef}
-                style={{ position: 'absolute', height: 0, width: 0, opacity: 0 }}
-                editable={true}
-            />
             <RichText
                 exclusivelyUseCustomOnMessage={false}
                 style={{ backgroundColor: 'transparent' }}

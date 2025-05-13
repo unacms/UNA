@@ -24,6 +24,9 @@ import ElementMsg from 'app/components/elements/msg';
 import { getBackButtonWeb } from 'app/lib/common-helpers'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import BackButton from 'app/components/nav/back';
+import emitter from 'app/context/emitter';
+import { TouchableWithoutFeedback } from 'react-native';
+
 
 export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, fetchConvos, data, onSave, addButtons }) {
     const isWeb = Platform.OS == 'web'
@@ -236,12 +239,14 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
 
 
     const changeConvo = useCallback((convo) => {
+        emitter.emit('editor', { action: 'focus'});
         setConvoId(convo.id);
         if (isSmallScreen)
             setPanelsVisible({ convos: false, jots: true })
     }, [isSmallScreen, setConvoId, setPanelsVisible]);
 
     const showConvo = useCallback(() => {
+        emitter.emit('editor', { action: 'blur'});
         setPanelsVisible({ convos: true, jots: false })
         if (!isWeb)
             return;
@@ -556,7 +561,9 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
 
     return (<>
         {(isWeb && !isSmallScreen) && header}
-        {<View className="flex-1"><UniList
+        { <TouchableWithoutFeedback onPress={() => {console.log('a');emitter.emit('editor', { action: 'blur' })}}><View className="flex-1">
+           
+                <UniList
 
             refer={refListJots}
             {...(Platform.OS !== 'web' ? { inverted: true } : {})}
@@ -571,7 +578,7 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
             useCustomScrollHandler={isSmallScreen ? true : false}
             renderItem={({ item, index }) => <ItemJot handleReply={handleReply} item={item} index={index} />}
             scrollProps={{ pageData: null, headerComponent: header, inverted: true, headerHeight: 64, isNoContainer: true, }}
-        /></View>}
+        /></View></TouchableWithoutFeedback>}
     </>);
 });
 
