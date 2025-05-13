@@ -65,7 +65,7 @@ export const Icon = memo(function Icon(props) {
             );
             return <div style={{color:color}} className={className} {...rest} dangerouslySetInnerHTML={{ __html: result }} />;
         }
-        return icon; // Возвращаем null, если иконка не загружена
+        return null; // Возвращаем null, если иконка не загружена
         
     }
 

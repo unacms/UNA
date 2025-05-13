@@ -45,6 +45,7 @@ export default function ({ buttonProps, children, tooltip, fullWidth }) {
 
     const dropdown = <DropdownPopup
         open={ntfsOpen}
+        minPopupWidth={330}
         onOpenChange={handleNotificationsToggle}
         trigger={children || <View key="ddp-trigger3">
             <Button
