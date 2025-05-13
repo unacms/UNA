@@ -269,12 +269,12 @@ export default function (props) {
                 <View className="px-4" >
                     <View className={` py-2 flex-col ${mode === 'min' ? 'lg' : 'md'}:flex-row gap-x-4 ${conductorTheme.content_max_width} mx-auto w-full items-start lg:items-stretch`}>
                         {bPerson && (
-                            <View className="w-full h-24 sm:w-48 relative   ">
+                            <View className="w-full h-24 sm:w-36 relative   ">
                                 <View className=" flex-auto absolute w-min  z50 rounded-full w-min p-2 z-50 bottom-0 flex-none bg-bgrcard dark:bg-bgrcard-d ">
                                     <Profile
                                         {...data.profile}
                                         displayType="unit_wo_info"
-                                        displaySize="4xl"
+                                        displaySize={'3xl'}
                                     />
                                     {bAllowEdit && (
                                         <View className=" p-1 bg-bgrcard dark:bg-bgrcard-d rounded-full absolute bottom-3 right-1">
@@ -307,7 +307,11 @@ export default function (props) {
                                     {formatDateInterval(data.profile.info?.date_start, data.profile.info?.date_end, t)}
                                 </Text>
                             )}
-                            <CoverMenuMeta {...data.meta_menu} />
+                            <Row className="w-full max-w-sm">
+                                <ScrollView horizontal={true}>
+                                    <CoverMenuMeta {...data.meta_menu} />
+                                </ScrollView>
+                            </Row>
                         </View>
                         <View className={` flex-auto w-full max-w-[400px] ${mode !== 'min' && ' lg:items-end '}`}>
                             <CoverMenu {...data.actions_menu} uri={props?.uri} />
