@@ -31,7 +31,7 @@ export default function FormFieldText(props) {
 
     return (
         <Field {...props}>
-            <View className='flex-auto'>
+            <View className='flex-auto px-2'>
                     <RangeSlider
                         onSlidingComplete={setValueF}
                         trackHeight={themeSettings.track_height}                   // The track's height in pixel
