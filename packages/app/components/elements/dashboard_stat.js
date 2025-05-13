@@ -206,11 +206,6 @@ export default function PageLayout(props) {
                         </View>
                     </Card>
                 </View>
-                {/* appSetting('native', 'bluetooth') && Platform.OS != 'web' && <View className=" w-full  p-2">
-                    <Card rounded=" rounded-2xl " addClassName="w-full p-4 flex-row ">
-                        <Bluetooth/>
-                    </Card>
-                </View> */}
                 <View className=" w-full ">
 
                     <ElementDashboardStat {...props} />
@@ -235,7 +230,7 @@ export default function PageLayout(props) {
                                             title={t('lang_' + i18n.language)}
                                             startDecorator="Languages"
                                             fullWidth
-
+                                            size="sm"
                                             align="left"
                                         />
                                     </DropdownMenu>
@@ -259,7 +254,7 @@ export default function PageLayout(props) {
                                             title={t('theme_' + currentTheme)}
                                             startDecorator="Moon"
                                             fullWidth
-
+                                            size="sm"
                                             align="left"
                                         />
 
@@ -285,7 +280,7 @@ export default function PageLayout(props) {
                                                 title={t('format_' + currentFormat)}
                                                 startDecorator="Layout"
                                                 fullWidth
-
+                                                size="sm"
                                                 align="left"
                                             />
                                         </Pressable>
@@ -296,7 +291,7 @@ export default function PageLayout(props) {
                             title={t("Sign out")}
                             startDecorator="LogOut"
                             fullWidth
-
+                            size="sm"
                             align="left"
                         /></Link>
                     </Card>
@@ -395,18 +390,7 @@ function ElementDashboardStat(props) {
                     {data.manage.items.map((item2, index) => {
                         return <View className="  w-1/2 lg:w-1/3 xl:w-1/4 p-1 " key={index}>
                             <Link href={item2.link}>
-
-
-                                <Row className="w-full bg-bgritem dark:bg-bgritem-d hover:bg-bgritem-h dark:hover:bg-bgritem-dh p-2 rounded-lg my-auto  items-center  text-neutral-600 hover:text-neutral-950 dark:text-neutral-400 hover:dark:text-white">
-                                    <View className="flex-none px-1 font-semibold ">
-                                        <Icon icon={item2.icon} width={24} height={24} color={colors.default} />
-                                    </View>
-                                    <Text className="ml-3 sm:text-base flex-auto text-neutral-600 hover:text-neutral-950 dark:text-neutral-400 hover:dark:text-white  font-medium ">
-                                        {t(item2.title)}
-                                    </Text>
-
-                                </Row>
-
+                                <Button variant="secondary" align="left" size="sm" fullWidth title={t(item2.title)} startDecorator={item2.icon}/>
                             </Link>
                         </View>;
                     })}
