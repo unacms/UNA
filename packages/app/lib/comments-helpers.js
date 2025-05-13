@@ -523,7 +523,6 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
 
     const onFormSubmit = (formData, d) => {
         setCommentForm(formData);
-        Keyboard.dismiss();
     }
 
     const padding = 12;

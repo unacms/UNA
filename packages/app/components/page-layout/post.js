@@ -7,6 +7,8 @@ import { CommentsBrowse, CommentsForm } from 'app/lib/comments-helpers'
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
 import { useWindowDimensions, Platform } from 'react-native'
 import { useLocalSearchParams } from 'app/lib/hooks/router'
+import { TouchableWithoutFeedback } from 'react-native';
+import emitter from 'app/context/emitter';
 
 export default function PageLayout(props) {
     const isWeb = Platform.OS == 'web';
@@ -25,24 +27,28 @@ export default function PageLayout(props) {
     useEffect(() => {
         if (localUrl?.url) {
             const hash = localUrl.url.split('#')[1];
-            
             if (hash) {
+                // click on reply
                 if (hash.includes('cmt_id=')) {
                     setReplyId(hash);
+                    emitter.emit('editor', { action: 'focus', note:"setReplyId", timeout:800});
                 }
                 else{
                     if (hash.includes('cid=')){
+                        //click from notifs
                         setScrollToEnd(hash.replace('cid=', ''));
                     }
                     else{
+                        // click on comments
                         setScrollToEnd(true);
+                        emitter.emit('editor', { action: 'focus', note:"a", timeout:800});
                     }
                     
                 }
             }
 
         }
-    }, [localUrl]);
+    }, [localUrl?.url]);
 
     const aItems = useMemo(() => Object.entries(props.blocks)
         .filter(([key, value]) => value.forList && ((windowWidth < LAYOUT_BREAKPOINTS.lg && value.forHeader == null) || windowWidth >= LAYOUT_BREAKPOINTS.lg))
@@ -80,6 +86,7 @@ export default function PageLayout(props) {
     return (
         <View {...viewProps} className={`flex-1 w-full h-full max-w-5xl mx-auto`}>
             <View className="w-full flex-1 bg-bgrcard dark:bg-bgrcard-d lg:rounded-t-2xl lg:mt-4 px-3 sm:p-4">
+                <TouchableWithoutFeedback onPress={() => {emitter.emit('editor', { action: 'blur' })}}>
                 <View className='w-full flex-1' style={{ marginBottom: formHeight  }}>
                     <CommentsBrowse
                         scrollProps={
@@ -100,6 +107,7 @@ export default function PageLayout(props) {
                         replyId={replyId}
                     />
                 </View>
+                </TouchableWithoutFeedback>
             </View>
             <KbAvoidingView>
                 <View onLayout={handleLayout} className=' border-bdrcard dark:border-bdrcard-d border-t border-bdr dark:border-bdr-d px-3 web:fixed web:bottom-0 w-full max-w-5xl' style={{ backgroundColor: colors.barsBackground }}>
