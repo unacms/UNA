@@ -18,10 +18,12 @@ import { Camera } from "expo-camera";
 import { useFilesData } from 'app/context/files';
 import { Image as ImageRN } from 'react-native';
 import Video from 'app/ui/atoms/video';
+import Msg from 'app/ui/molecules/msg';
 
 export default function (props) {
     const name = props.name;
     const [uploadFinished, setUploadFinished] = useState(null);
+    const [message, setMessage] = useState(false);
     const [uploadFinishedArr, setUploadFinishedArr] = useState([]);
     const [imageSource, setImageSource] = useState({ images: props?.values_src });
     const formContext = useFormContext();
@@ -329,8 +331,15 @@ export default function (props) {
                     allowsMultipleSelection: bMultiple,
                 });
             }
+
             if (!result.cancelled) {
-                let k = await uploadImages(result.assets);
+                const goodAssets = result.assets.filter(
+                    asset => !asset.uri.startsWith('data:application/octet-stream')
+                );
+                if (goodAssets.length !== result.assets.length){
+                    setMessage('Some files are not supported.');
+                }
+                let k = await uploadImages(goodAssets);
                 setImageSource({ images: k });
             }
         }
@@ -372,6 +381,7 @@ export default function (props) {
     }
     return (
         <Field {...props} error2={formContext.formState.errors[name]}>
+            <Msg onVisible={message} title={message} handleOk={() => { setMessage(false) }} />
             <View className={bMultiple ? "" : ""} >
                 <ActionButton uploadImages={uploadImages} imagesList={imageSource.images} props={props} bMultiple={bMultiple} selectImage={selectImage} handleDelete={handleDelete} />
             </View>
