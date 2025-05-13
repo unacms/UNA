@@ -185,7 +185,7 @@ const Cell = React.memo(({ cell, indexRow, id, toggleSwitch, setSelection, selec
             return <Text className="text-neutral-800 dark:text-neutral-200">{stripTags(cell.value)}</Text>
         case 'order':
             return <Text className="text-neutral-800 dark:text-neutral-200 text-lg">
-                <Icon icon='ArrowsVertical' />
+                <Icon icon='MoveVertical' />
             </Text>
         case 'switcher':
             return <>
