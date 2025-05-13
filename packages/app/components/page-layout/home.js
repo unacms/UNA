@@ -294,7 +294,7 @@ export default function (props) {
                 )}
 
                 <View className="flex-auto w-full sm:px-4">
-                    <View className=" w-full mx-auto max-w-2xl relative pt-4  ">
+                    <View className=" w-full mx-auto max-w-2xl ">
                         <View className={`relative w-full mx-auto max-w-2xl ${feedList.length > 1 ? '' : 'sm:mt-3'} `}>
                             {feedList.map((item, index) => {
                                 if (feedType == item.name) {
@@ -318,7 +318,7 @@ export default function (props) {
                                                 unitMode={unitMode}
                                                 exProps={{
                                                     headerBlocks: headerBlocks,
-                                                    scrollProps: { pageData: props.data, headerHeight: isFeedMenuPresent ? 116 : 0, subHeaderComponent: subHeader },
+                                                    scrollProps: { pageData: props.data, headerHeight: isFeedMenuPresent ? 129 : 0, subHeaderComponent: subHeader },
                                                 }}
                                             />
                                         </View>
@@ -337,7 +337,7 @@ export default function (props) {
                 </View>
 
                 <View className="hidden lg:flex w-96 ">
-                    <View className="fixed fixed-process w-96 p-[16px] flex-col space-y-4 duration-300">
+                    <View className="fixed fixed-process w-96 px-[16px] flex-col gap-y-4 duration-300">
                         {sideBarBlocks.map((item, index) => {
                             return (
                                 <BlockByName

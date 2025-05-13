@@ -43,7 +43,7 @@ export default function Unit(props) {
 
     return (
         <>
-            <Card margin="mb-2 mx-2" rounded="rounded-2xl">
+            <Card margin="mb-[1px] sm:mx-2 sm:mb-4" rounded="rounded-2xl">
                 <View className="flex-col gap-y-4">
                     <View className="flex-col w-full">
                         <Link href={data.url}>

@@ -74,7 +74,6 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutNam
             <>
                 <Suggestions />
                 <AsyncWorker />
-                
                     <Content width={width} layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} url={data?.url} />
                     {(headerSettings?.footer !== false || !currentUser) && <Footer />}
                 <BottomSheet />
@@ -102,7 +101,6 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutNam
 
         return (
             <>
-
                 <Suggestions />
                 <AsyncWorker />
                 <NavbarMemo pageLayoutName={pageLayoutName} headerSettings={headerSettings} layoutName={layoutName} title={data?.name} menu={data?.menu} menu_add={data?.menu_add || false} uri={uri} url={data?.url} >
@@ -110,9 +108,7 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutNam
                 </NavbarMemo>
                 <BottomSheet />
                 <ModalPopup />
-
             </>
-
         );
     }
 
@@ -340,7 +336,7 @@ const Content = React.memo(({ children, headerSettings, stylesBgImage, currentUs
 
     return (
         <>
-            <View className="w-full items-stretch cnt-root" key={url}>
+            <View className="w-full items-stretch   sm:pt-4 cnt-root" key={url}>
                 <View className=" w-full mx-auto flex-row " >
                     <View className={((layoutName != 'messenger' && layoutName != 'post' && !isHideHeader) ? 'pb-16 lg:pb-0' : '') + '  w-full  relative overflow-hidden    mx-auto'}>{/*mb-16* TODO lg:pb-0*/}
                         <View className='w-full mx-auto'>
