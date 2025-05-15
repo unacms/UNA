@@ -88,8 +88,8 @@ function MenuBottomItem({ link, title, index, icon, isActive, profile, iFrCounte
                  {isActive && (
                     <View className="-top-3 w-full bg-primary dark:bg-primary-d rounded-xl h-0.5 animate-appear" />
                 )}
-                <View className={` items-center ${isActive && ''}`}>
-                    <Text className={`min-h-8 ${isActive ? 'text-primary' : 'text-neutral-700 dark:text-neutral-300'}`}>
+                <View className={`min-h-12 justify-between items-center ${isActive && ''}`}>
+                    <Text className={`${isActive ? 'text-primary' : 'text-neutral-700 dark:text-neutral-300'}`}>
                         {link === appSetting('dashboard', 'url') ? profile : <Icon size={24} icon={icon} color={isActive ? colors.primary : colors.default} />}
                     </Text>
                     {<Text className={`group-hover:text-primary dark:group-hover:text-primary text-[12px] tracking-tight  leading-[16px] whitespace-nowrap ${isActive ? 'text-primary' : 'text-neutral-700 dark:text-neutral-300'}`}>{title}</Text>}

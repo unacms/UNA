@@ -1,17 +1,17 @@
 import { Conductor } from 'app/ui/molecules/conductor';
 import { useState, useEffect, useMemo } from 'react';
 import Cover, { CoverSmall } from 'app/components/elements/cover';
-import { getHeaderSettings, getBlocksFromData, cloneObject, getPageData, LAYOUT_BREAKPOINTS  } from 'app/lib/util';
+import { appSetting, getHeaderSettings, getBlocksFromData, cloneObject, getPageData, LAYOUT_BREAKPOINTS  } from 'app/lib/util';
 import { useWindowDimensions } from 'react-native';
 import { useLayoutData } from 'app/context/layout';
 import { processBlocks } from 'app/lib/conductor-helpers';
-import { appSetting } from 'app/lib/util'
 
 export default function PageLayoutProfile({layoutName, data, uri, blocks}) {
     const { width: windowWidth } = useWindowDimensions();
     const { layoutData } = useLayoutData();
     const [ pageData, setPageData ] = useState(data);
-    const isAltView = layoutName === 'profile-alt';
+    const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from');
+    const isAltView = layoutName === 'profile-alt' && windowWidth > LAYOUT_BREAKPOINTS[TABLET_MODE_FROM];
 
     useEffect(() => {
         if (layoutData && layoutData?.type == 'сonnections:action' && layoutData?.data?.reload) {
