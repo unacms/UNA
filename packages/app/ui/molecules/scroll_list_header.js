@@ -93,27 +93,29 @@ export const Header = memo(({
         return headerContent;
 
     return (
-        <Row className={`justify-between items-center h-[64px] shadow-[0_1px_3px_0_rgba(0,0,0,0.05)] dark:shadow-[0_1px_0_rgba(0,0,0,1)] border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d`}>
+        <Row className={`justify-between px-2 gap-x-2 items-center h-[64px] shadow-[0_1px_3px_0_rgba(0,0,0,0.05)] dark:shadow-[0_1px_0_rgba(0,0,0,1)] border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d`}>
             <Row className='items-center '>
-                {(isHome && !pageData?.context) && <Pressable onPress={scrollToTop} className="ml-[12px] "><View className="flex items-center flex-row active:scale-90 active:opacity-50 p-1 gap-x-3 text-neutral-700 dark:text-neutral-300 web:hover:text-neutral-800 web:dark:hover:text-neutral-200 duration-300"><View className=" items-center  h-10 justify-center ">
+                {(isHome && !pageData?.context) && <Pressable onPress={scrollToTop} className=" ">
+                    <View className=" flex-row active:scale-95 active:opacity-50 active:bg-bgrbutton dark:active:bg-bgrbutton-d rounded-xl p-1 gap-x-3 text-neutral-700 dark:text-neutral-300 web:hover:text-neutral-800 web:dark:hover:text-neutral-200 duration-300">
+                <View className="  w-10 h-10  ">
                     {appStatic('logo_mark')}
                 </View>
-                    <View className=" items-center w-16 h-8  justify-center">
+                    <View className="w-20 h-10">
                         {appStatic('logo_text')}
                     </View></View></Pressable>}
-                {(pageData?.context) && <View className="ml-[12px]"><ContextSelector url={pageData?.url} data={pageData?.context} /></View>}
-                <View className="mr-[12px]">{(backButtonPresented && (!isWeb || history.length > 2)) && (
+                {(pageData?.context) && <View className=""><ContextSelector url={pageData?.url} data={pageData?.context} /></View>}
+                <View className="">{(backButtonPresented && (!isWeb || history.length > 2)) && (
                     <Button variant="secondary" rounded onPress={() => {
                         FeedbackHaptics('Medium');
                         router ? router?.back() : history.back();
                     }} startDecorator="ChevronLeft" />
                 )}</View>
                 {!!text && (
-                    <View>
-                        <Text className="font-bold text-neutral-800 dark:text-neutral-200 text-3xl tracking-tighter">
+                    
+                        <Text className="px-1 font-bold text-neutral-800 dark:text-neutral-200 text-3xl tracking-tight">
                             {text}
                         </Text>
-                    </View>
+                    
                 )}
             </Row>
             {type !== 'string' && <View className="flex-auto">{headerContent}</View>}

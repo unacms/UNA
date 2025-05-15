@@ -99,19 +99,8 @@ export default function Splash(props) {
             >
 
                 <BlockByServiceName name={defaultFormData.name} data={props.data} formProps={{ auto_focus: false, hide_errors: true, button_full_width: true }} />
-                <Link
-                    className=" w-full my-4 "
-                    href="/forgot-password"
-                >
-                    <Button
-                        title="Forgot password?"
-                        variant="link"
-                        fullWidth
-                        size="sm"
-                        addClassName="w-full"
-                    />
-                </Link>
-                <View className="border-t border-bdr dark:border-bdr-d pt-4  ">
+                
+                <View className="border-t border-bdr dark:border-bdr-d pt-4 mt-4  ">
                     <Link href={defaultFormData.link}><Button
                         title={defaultFormData.button}
                         startDecorator={defaultFormData.icon}
@@ -145,8 +134,8 @@ export default function Splash(props) {
 
     return (
 
-        <View className={' flex-col justify-center mx-auto ' + appSetting('layout', 'max_width')}>
-            <View className=" w-full max-w-7xl mx-auto lg:flex-row my-6 ">
+        <View className={' flex-col justify-center  ' + appSetting('layout', 'max_width')}>
+            <View className=" w-full lg:flex-row max-w-7xl mx-auto py-16 ">
                 <View className=" w-full items-center lg:items-start my-auto p-12 flex-col gap-y-8 flex-auto">
                     {appStatic('splash_image')}
                     {appStatic('splash_text')}

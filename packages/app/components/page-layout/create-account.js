@@ -57,7 +57,7 @@ export default function PageLayout(props) {
                 </View>
                 <Card
                     rounded="  rounded-[24px] "
-                    addClassName=" animate-slidein p-4 w-full max-w-md mx-auto flex-auto "
+                    addClassName=" animate-slidein p-6 w-full max-w-md mx-auto flex-auto "
 
                 >
                     <View className="flex-col lg:hidden items-center mb-4">
@@ -68,23 +68,12 @@ export default function PageLayout(props) {
                     </View>
                     {!isAllowJoin && <BlockByName name={props.blocks.form_invitation} data={props.data} formProps={{ auto_focus: true, hide_errors: true, button_full_width: true }} />}
                     {isAllowJoin && <BlockByName name={props.blocks.form_join} data={props.data} formProps={{ auto_focus: true, hide_errors: true, button_full_width: true }} />}
-                    <Link
-                        className=" w-full my-4 "
-                        href="/forgot-password"
-                    >
-                        <Button
-                            title="Forgot password?"
-                            variant="link"
-                            fullWidth
-                            size="sm"
-                            ring=" py-4 "
-                        />
-                    </Link>
-                    <View className="flex items-center justify-center pt-4 border-t border-bdr dark:border-bdr-d  ">
+                    
+                    <View className="flex items-center justify-center pt-4 mt-4 border-t border-bdr dark:border-bdr-d  ">
                         <Link className=" w-full " href="/login">
                             <Button
-                                title="Log in with email"
-                                startDecorator="UserPlus"
+                                title="Sign in with email"
+                             
                                 size="base"
                                 fullWidth
                             />

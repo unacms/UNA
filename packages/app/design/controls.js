@@ -133,10 +133,10 @@ export const Hidden = ({ className, ...props }) => (
     <TextInputDef className={'hidden'} {...props} />
 );
 
-export const Switch = (props) => Platform.OS == 'web' ? <View className="w-16 h-8 pl-2 pt-1.5"><SwitchDef {...props} style={{
-    ...(props.size != 'sm' ? { transform: [{ scaleX: 1.4 }, { scaleY: 1.4 }] } : {}),
+export const Switch = (props) => Platform.OS == 'web' ? <SwitchDef {...props} style={{
+    ...(props.size != 'sm' ? { transform: [{ scaleX: 1 }, { scaleY: 1 }] } : {}),
     ...props.style
-  }} /></View> : <SwitchDef {...props} style={props.style} />;
+  }} />: <SwitchDef {...props} style={props.style} />;
 
 
 const PickerStyles = inputSettings.select;

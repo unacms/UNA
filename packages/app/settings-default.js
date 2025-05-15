@@ -752,8 +752,8 @@ export  const settingsDefault = {
             container: '  gap-x-2 items-center',
         },
         switcher: {
-            container: 'gap-x-2 items-center',
-            text: 'text-neutral-800 dark:text-neutral-200 text-sm',
+            container: 'items-center flex flex-row-reverse justify-between gap-x-2 items-center h-[48px] min-w-[48px] rounded-[12px] flex-auto  px-[12px] py-[11px]  bg-neutral-50 border border-neutral-200  hover:border-neutral-300 focus:border-primary  dark:bg-neutral-900 overflow-hidden  dark:border-neutral-800 dark:hover:border-neutral-700  dark:focus:border-primary-d  focus:bg-bgrinput-f dark:focus:bg-neutral-950  duration-300  placeholder-neutral-500   ',
+            text: ' text-neutral-800 dark:text-neutral-200  text-[16px] ',
             track: '#cccccc',
             active_track: '#0ea5e9',
             thumb: '#ffffff',

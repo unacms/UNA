@@ -84,12 +84,14 @@ export default function AuthGoogle({ button }) {
 
     return (
 
-        <View>
+        <View className='w-full'>
             <Redirect ref={redirectRef} />
             {button ? <Pressable onPress={() => promptAsync({ useProxy: true })}>{button}</Pressable> : <Button
                 disabled={!request}
-                title={t("Login with Google")}
+                title={t("Continue with Google")}
                 onPress={() => promptAsync({ useProxy: true })}
+                fullWidth
+               
             />}
             {error && <FormError errorText={error} />}
         </View>

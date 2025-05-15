@@ -17,7 +17,7 @@ export default function PageLayout(props) {
                 <View className="flex-col gap-y-4 hidden lg:flex flex-auto">
                     {appStatic('components_logincontent')}
                 </View>
-                <Card rounded="  rounded-[24px] " addClassName=" animate-slidein p-4 w-full max-w-md mx-auto flex-auto ">
+                <Card rounded="  rounded-[24px] " addClassName=" animate-slidein p-6 w-full max-w-md mx-auto flex-auto ">
                     <View className="flex-col lg:hidden items-center mb-4">
                         <View className="w-12 m-4 items-center mx-auto text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-900 dark:group-hover:text-neutral-100">
                             {appStatic('logo_mark')}
@@ -26,7 +26,7 @@ export default function PageLayout(props) {
                     </View>
                     <BlockByName name={props.blocks.form} data={props.data} formProps={{ auto_focus: true, hide_errors: true, button_full_width: true }} />
                     <Link
-                        className=" w-full my-4 "
+                        className=" w-full my-2 "
                         href="/forgot-password"
                     >
                         <Button
@@ -40,7 +40,7 @@ export default function PageLayout(props) {
                         <Link className=" w-full " href="/create-account">
                             <Button
                                 title="Create new account"
-                                startDecorator="UserPlus"
+                                
                                 size="base"
                                 fullWidth
                             />

@@ -42,7 +42,7 @@ const HeaderLine = memo(
             ).length > 0
 
         return (
-            <View className="flex-row w-96 px-3 gap-x-2 items-center ">
+            <View className="flex-row w-80 gap-x-4 items-center ">
                 
                 {headerSettings.menu && isDrawer && (
                     <View className="lg:hidden ">
@@ -61,14 +61,14 @@ const HeaderLine = memo(
                 )}
                 {!context && (uri == 'home' || width >= LAYOUT_BREAKPOINTS.lg) && (
                     <Link
-                        className=" flex items-center flex-row active:scale-90 active:opacity-50 p-1 gap-x-3 text-neutral-700 dark:text-neutral-300 hover:text-neutral-800 dark:hover:text-neutral-200 duration-300  "
+                        className=" flex items-center flex-row active:scale-95 active:opacity-50 px-2 py-1 gap-x-3 rounded-xl text-neutral-700 hover:bg-bgrbutton dark:hover:bg-bgrbutton-d dark:text-neutral-300 hover:text-neutral-800 dark:hover:text-neutral-200 duration-300  "
                         href="/home"
                         aria-label="Logo"
                     >
                         <View className=" items-center w-10 h-10 justify-center ">
                             {appStatic('logo_mark')}
                         </View>
-                        <View className=" items-center w-16 h-8  justify-center">
+                        <View className=" items-center w-20 h-10  justify-center">
                             {appStatic('logo_text')}
                         </View>
                     </Link>
@@ -131,7 +131,7 @@ export default function (props) {
                         props.layoutName == 'post'
                             ? 'hidden lg:flex'
                             : '') +
-                        ' fixed w-full h-16 items-center w-full border-b border-bdrnavbar dark:border-bdrnavbar-d shadow-[0_1px_3px_0_rgba(0,0,0,0.05)] dark:shadow-[0_1px_0_rgba(0,0,0,1)] bg-bgrnavbar dark:bg-bgrnavbar-d '
+                        ' fixed w-full px-2 gap-x-2 h-16 items-center w-full border-b border-bdrnavbar dark:border-bdrnavbar-d shadow-[0_1px_3px_0_rgba(0,0,0,0.05)] dark:shadow-[0_1px_0_rgba(0,0,0,1)] bg-bgrnavbar dark:bg-bgrnavbar-d '
                     }
                 >
                     <View
@@ -152,7 +152,7 @@ export default function (props) {
                             context={props.context}
                         />
                         <MenuTop url={props.url} uri={props.uri}/>
-                        <Row className=" w-96 px-3 gap-x-2 items-center justify-end ">
+                        <Row className=" w-80 px-2 gap-x-2 items-center justify-end ">
                             {!!currentUser && (
                                 <Row className="justify-end ">
                                     

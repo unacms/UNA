@@ -6,7 +6,7 @@ export default function AuthPanel ({ googleButton, className }) {
     if (appSetting('auth', 'enabled') !== true) return null;
     
     return (
-        <Row className={`gap-x-3 ${className}`}>
+        <Row className={`gap-x-3 w-full ${className}`}>
             {appSetting('auth', 'google') && <AuthGoogle button={googleButton}/>}
         </Row>
     );
