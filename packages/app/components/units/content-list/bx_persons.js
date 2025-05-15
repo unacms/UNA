@@ -75,6 +75,7 @@ export default function Unit(props) {
                                 <Text numberOfLines={1} className=" pb-2 text-lg leading-tight tracking-tight font-medium text-neutral-800 dark:text-neutral-200 group-hover:text-primary group-hover:dark:text-primary-d">
                                    {data.title}
                                 </Text>
+                                
                                 <Row className="items-center h-6 ">
                                     <View className="mr-2">
                                         <ProfilesListCnt data={isFollowers ? data.followers_list : (data.mutual_friends_count > 0 ? data.mutual_friends_list : data.friends_list)} />
