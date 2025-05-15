@@ -1,4 +1,4 @@
-import { View, Row, Pressable } from 'app/design/view';
+import { View, Row, Pressable, ScrollView } from 'app/design/view';
 import DropdownPopup from 'app/ui/atoms/dropdown-popup';
 import { Text } from 'app/design/typography';
 import Link from 'app/ui/atoms/link';
@@ -7,6 +7,7 @@ import { Icon } from 'app/ui/atoms/icon';
 import Profile from 'app/ui/molecules/profile'
 import { useCurrentUser } from 'app/context/user';
 import { appStatic } from 'app/lib/app-static';
+import { useWindowDimensions } from 'react-native';
 
 function renderListItem(props, isActive) {
     return (
@@ -67,8 +68,8 @@ export default function ContextSelector({ data, url }) {
     if (!data) return null;
 
     const contextRoot = getContextRoot(data, currentUser);
+    const { height: windowHeight } = useWindowDimensions();
 
-    console.log("uri", url, data.list.filter(item => item.url == '/' + url).length > 0)
     if (url && (url != 'home' && data.list.filter(item => item.url == '/' + url).length == 0))
         return null;
 
@@ -86,17 +87,19 @@ export default function ContextSelector({ data, url }) {
                     trigger={renderTrigger()}
                     minPopupWidth={352}
                 >
-                    <View>
-                        {renderLogoListItem(!data.current?.id)}
-                        {data.list.map(item => renderListItem(item, item.id === data.current?.id))}
-                        <Link className="w-full" href={data.create.url}>
-                            <Row className="w-full p-2 gap-x-3 items-center">
-                                <View className="items-center w-10 h-10 p-1 justify-center bg-bgritem border border-bdr dark:bg-bgritem-d dark:border-bdr-dark rounded-[10px]">
-                                    <Icon icon="Plus" />
-                                </View>
-                                <Text className="text-lg font-semibold text-neutral-700 dark:text-neutral-300">{data.create.title}</Text>
-                            </Row>
-                        </Link>
+                    <View style={{ maxHeight: windowHeight - 128 }} >
+                        <ScrollView>
+                            {renderLogoListItem(!data.current?.id)}
+                            {data.list.map(item => renderListItem(item, item.id === data.current?.id))}
+                            <Link className="w-full" href={data.create.url}>
+                                <Row className="w-full p-2 gap-x-3 items-center">
+                                    <View className="items-center w-10 h-10 p-1 justify-center bg-bgritem border border-bdr dark:bg-bgritem-d dark:border-bdr-dark rounded-[10px]">
+                                        <Icon icon="Plus" />
+                                    </View>
+                                    <Text className="text-lg font-semibold text-neutral-700 dark:text-neutral-300">{data.create.title}</Text>
+                                </Row>
+                            </Link>
+                        </ScrollView>
                     </View>
                 </DropdownPopup>
             </View>
