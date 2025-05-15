@@ -23,8 +23,9 @@ const ProfilesListCnt = memo(({ data }) => (
 ));
 
 function ImageSection({ data, imageSizes }) {
+    const isWeb = Platform.OS == 'web'
     return (
-        <View className=" aspect-square  sm:w-full rounded-full sm:rounded-xl overflow-hidden items-center bg-neutral-500/20 justify-center">
+        <View className={` ${isWeb && 'h-32 sm:h-auto'} aspect-square  sm:w-full rounded-full sm:rounded-xl overflow-hidden items-center bg-neutral-500/20 justify-center`}>
             <Image
                 src={data?.image?.src}
                 alt={data.title}
@@ -43,7 +44,7 @@ export default function Unit(props) {
     const imageSizes = getImageSizes();
     const redirectdRef = useRef();
     const { cardData } = useCardData();
-    const isWeb = Platform.OS == 'web'
+    
     const friendsLabel = data.mutual_friends_count > 0
         ? tp("mutual_friends", data?.mutual_friends_count, false)
         : tp("friends", data?.friends_count, false);
@@ -67,10 +68,10 @@ export default function Unit(props) {
             <Redirect ref={redirectdRef} />
             <Card margin=" mb-[1px] sm:mx-2 sm:mb-4 " border=" border-bdrcard dark:border-bdrcard-d shadow-[0_1px_3px_0_rgba(0,0,0,0.05)] "  rounded=" sm:rounded-2xl ">
                 <Link className="group " href={data.url}>
-                    <View className={`flex-row  sm:flex-col p-3 sm:p-1 ${isWeb && 'h-32'} sm:h-full`}>
+                    <View className={`flex-row  sm:flex-col p-3 sm:p-1  sm:h-full`}>
                         <ImageSection data={data} imageSizes={imageSizes} />
                         
-                        <View className="flex-col pl-3 my-auto sm:p-2 flex-auto">
+                        <View className="flex-col pl-3 sm:p-2 flex-auto justify-between">
                             <View className=''>
                                 <Text numberOfLines={1} className=" pb-2 text-lg leading-tight tracking-tight font-medium text-neutral-800 dark:text-neutral-200 group-hover:text-primary group-hover:dark:text-primary-d">
                                    {data.title}
