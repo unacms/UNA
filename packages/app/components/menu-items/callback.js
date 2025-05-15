@@ -128,7 +128,7 @@ export default function MenuItemButton(oProps) {
             else{
                 sContent = (
                     <View className="flex-auto">
-                        
+                        <Redirect ref={redirectdRef} />
                         <ButtonAction onPress={(event) => handleClick(event, oProps, setBottomSheetData, setLayoutData, redirectdRef, buttonProps, setButtonProps)} title={buttonProps.title} startDecorator={sButtonIcon} {...oButtonProps} />
                     </View>
                 );
