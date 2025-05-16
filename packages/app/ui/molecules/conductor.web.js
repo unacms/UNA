@@ -123,7 +123,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
         const { currentUser } = useCurrentUser();
         const btn = callFn('getButtonForConductorSmall', [a, index, currentUser])
         return (
-            <Pressable ref={el => (itemRefs?.current ? (itemRefs.current[index2] = el) : (el = null))} className={" py-2 items-center " + a?.menu_settings?.class + (index2 > visibleItemsCount - 1 ? ' item-overlap ' : '')}
+            <Pressable className={" py-2 items-center " + a?.menu_settings?.class }
                 key={`tab-${index2}`}
                 onPress={() => {
                     setIndex(a.index);
@@ -742,8 +742,6 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                 <View className={(isRightCol ? 'flex-auto sm:border-r border-bdr dark:border-bdr-d lg:px-4 flex-auto ' : ' w-full mx-auto') /*sm:p-2*/+ (layoutName == 'navigator' ? '' : ' lg:pt-4')}/*lg:pt-4*/>
                     {TabFlashListM}
                     {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 && callFn("noContentByUrl", [route?.endpoint])))}
-
-
                 </View>
                 {isRightCol && <View className="hidden xl:flex flex-auto max-w-md ">
                     <View className={`${conductorTheme.right_column_cnt}`}>

@@ -1,4 +1,4 @@
-import { View, ScrollView } from 'app/design/view'
+import { View, ScrollView, ViewRef } from 'app/design/view'
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Platform } from 'react-native'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
@@ -11,16 +11,16 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
     const isWeb = Platform.OS == 'web'
     const itemRefs = useRef([]);
     const itemRefsMore = useRef();
-    const [visibleItemsCount, setVisibleItemsCount] = useState(isFixedCount ? persistent : 0);
+    const [visibleItemsCount, setVisibleItemsCount] = useState(isFixedCount ? persistent : items.length);
     const [width, setWidth] = useState(0);
     const [pageData, setPageData] = useState(false);
     const { width: windowWidth } = useWindowDimensions();
-    const isDynamicMenu = windowWidth > LAYOUT_BREAKPOINTS.sm;
+    const isDynamicMenu = true;//windowWidth > LAYOUT_BREAKPOINTS.sm;
 
-
+    console.log("itemRefs", itemRefs, visibleItemsCount)
 
     useEffect(() => {
-        if (!isFixedCount) {
+        if (!isFixedCount && itemRefs.current.length> 0) {
             const menuWidth = width;
             let visibleWidth = offsetWidth + (itemRefsMore?.current ? itemRefsMore?.current?.offsetWidth : 0);
             let visibleCount = 0;
@@ -37,22 +37,24 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
             }
             if (visibleCount > persistent && persistent > 0)
                 visibleCount = persistent;
-            if (visibleCount != visibleItemsCount) {
+            console.log("visibleCount", visibleCount)
+            if (visibleCount != visibleItemsCount && visibleCount>0) {
                 setVisibleItemsCount(visibleCount);
             }
 
 
         }
-    }, [width]);
+    }, [width, itemRefs]);
 
     const handleLayout = useCallback((event) => {
         if (isFixedCount)
             return
       
-        if (isDynamicMenu)
-        
-            if (width != event.nativeEvent.layout.width)
-                setWidth(event.nativeEvent.layout.width)
+        if (isDynamicMenu){
+            console.log("event.nativeEvent.layout.width")
+           setWidth(event.nativeEvent.layout.width)
+        }
+                
         else
             setVisibleItemsCount(itemRefs.current.length)
 
@@ -86,7 +88,7 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
                 <View className={menuClasses} >
                     {
                         items.map((aItem, iKey) => {
-                            return <MenuItem key={name + 'menu' + iKey} item={{ ...aItem, onPress: (event) => handleFormModal(aItem, event, setPageData) }} itemRefs={itemRefs} index={iKey} visibleItemsCount={visibleItemsCount} />
+                            return <ViewRef className={(iKey > visibleItemsCount - 1 ? ' item-overlap ' : '')} ref={el => (itemRefs?.current ? (itemRefs.current[iKey] = el) : (el = null))} ><MenuItem key={name + 'menu' + iKey} item={{ ...aItem, onPress: (event) => handleFormModal(aItem, event, setPageData) }}  visibleItemsCount={visibleItemsCount} /></ViewRef>
                         })
                     }
                 </View>

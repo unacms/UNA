@@ -1105,7 +1105,6 @@ export function menuItemsByName(name, items, currentUser, url = '', config = nul
 }
 
 export function menuItemsFilter(items, currentUser) {
-    console.log("item?.link", items)
     if (!items)
         return items;
     if (!currentUser) {
@@ -1129,7 +1128,6 @@ export function menuItemsFilter(items, currentUser) {
         if (item.link === '{profile}') {
             return { ...item, link: currentUser?.url };
         }
-         console.log("item?.link", item)
         if (item?.link && item?.link?.includes("{profile_url_postfix}") ) { // SHOULD BE IMPROVED by url_postfix
            
             return { ...item, link: item.link.replace("{profile_url_postfix}", currentUser?.url.replace('/view-persons-profile/', '')) };
