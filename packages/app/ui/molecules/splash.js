@@ -136,8 +136,8 @@ export default function Splash(props) {
 
         <View className={' flex-col justify-center  ' + appSetting('layout', 'max_width')}>
             <View className=" w-full lg:flex-row max-w-7xl mx-auto py-16 ">
-                <View className=" w-full items-center lg:items-start my-auto p-12 flex-col gap-y-8 flex-auto">
-                    {appStatic('splash_image')}
+                <View className=" w-full items-center  lg:items-start my-auto p-12 flex-col gap-y-8 flex-auto text-primary dark:text-primary-d">
+                    {/*{appStatic('splash_image')}*/}
                     {appStatic('splash_text')}
                 </View>
                 <View className=" max-w-lg w-full flex-auto mx-auto p-4">

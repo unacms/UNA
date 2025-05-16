@@ -1004,7 +1004,7 @@ export  const settingsDefault = {
 
             'u-btn-link-cnt': ' flex flex-row active:opacity-50 items-center ',
             'u-btn-link-text':
-                ' font-medium group-hover:underline text-neutral-700 dark:text-neutral-300  hover:text-neutral-950 dark:hover:text-neutral-50 active:opacity-50 ',
+                ' font-medium group-hover:underline text-neutral-800 dark:text-neutral-200  hover:text-neutral-950 dark:hover:text-neutral-50 active:opacity-50 ',
             'u-btn-link-trans': ' duration-200 ',
         },
     },

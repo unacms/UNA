@@ -96,7 +96,7 @@ export const Header = memo(({
         <Row className={`justify-between px-2 gap-x-2 items-center h-[64px] shadow-[0_1px_3px_0_rgba(0,0,0,0.05)] dark:shadow-[0_1px_0_rgba(0,0,0,1)] border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d`}>
             <Row className='items-center '>
                 {(isHome && !pageData?.context) && <Pressable onPress={scrollToTop} className=" ">
-                    <View className=" flex-row active:scale-95 active:opacity-50 active:bg-bgrbutton dark:active:bg-bgrbutton-d rounded-xl p-1 gap-x-3 text-neutral-700 dark:text-neutral-300 web:hover:text-neutral-800 web:dark:hover:text-neutral-200 duration-300">
+                    <View className=" flex-row active:scale-95 active:opacity-50 active:bg-bgrbutton dark:active:bg-bgrbutton-d rounded-xl py-1 px-2 gap-x-3 text-neutral-700 dark:text-neutral-300 web:hover:text-neutral-800 web:dark:hover:text-neutral-200 duration-300">
                 <View className="  w-10 h-10  ">
                     {appStatic('logo_mark')}
                 </View>

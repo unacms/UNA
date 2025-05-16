@@ -167,7 +167,7 @@ export function Modal({
     fullWidth = true,
     maxWidth = 'max-w-2xl',
     children,
-    padding = " p-[12px] ",
+    padding = " p-4 ",
     scrollable = false
 }) {
     const { width, height } = useWindowDimensions();
