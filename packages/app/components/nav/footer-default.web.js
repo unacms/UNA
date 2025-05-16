@@ -86,7 +86,7 @@ function MenuBottomItem({ link, title, index, icon, isActive, profile, iFrCounte
                 className="w-full"
             >
                  {isActive && (
-                    <View className="-top-3 w-full bg-primary dark:bg-primary-d rounded-xl h-0.5 animate-appear" />
+                    <View className="-top-2 w-full bg-primary dark:bg-primary-d rounded-xl h-0.5 animate-appear" />
                 )}
                 <View className={`min-h-12 justify-between items-center ${isActive && ''}`}>
                     <Text className={`${isActive ? 'text-primary' : 'text-neutral-700 dark:text-neutral-300'}`}>

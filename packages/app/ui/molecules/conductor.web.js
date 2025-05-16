@@ -26,6 +26,7 @@ import { callFn } from 'app/lib/functions/call';
 import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal';
 
 const conductorTheme = appSetting('theme', 'conductor');
+const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from');
 
 const getUnitType = (currentRoute) => {
     const blocksroutes = currentRoute?.blocks;
@@ -691,13 +692,13 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
         const dataItems = route?.data
 
-        if (dataItems.length == 1 && !route.endpoint) {
+       /* if (dataItems.length == 1 && !route.endpoint) {
             const a = dataItems.map((item, index) => {
                 return <View className={`lg:mt-0 mx-auto mt-2 w-full ${appSetting('layout', 'max_width_block')}`} key={`tab-${index}`}><ItemRendererMemo route={route} key={'item' + index} numColumns={1} item={item} /></View>
             });
             return a;
         }
-
+*/
        
         const isRightCol = route?.sidebar?.content?.length > 0 || route?.blocks?.browse_sidebar;
 
@@ -737,7 +738,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         const sidebarUnitType = route.blocks?.browse_sidebar?.unitType || 'default';
 
         return (
-            <Row style={{ paddingTop: header ? 0 : 0 }} className={(headerSettings.columns == "reverse" ? 'flex-row-reverse' : '') + conductorTheme.content_max_width + '  mx-auto w-full mt-4'}>
+            <Row style={{ paddingTop: header ? 0 : 0 }} className={(headerSettings.columns == "reverse" ? 'flex-row-reverse' : '') + conductorTheme.content_max_width + '  mx-auto w-full '+TABLET_MODE_FROM+':mt-4'}>
                 <View className={(isRightCol ? 'flex-auto sm:border-r border-bdr dark:border-bdr-d lg:px-4 flex-auto ' : ' w-full mx-auto') /*sm:p-2*/+ (layoutName == 'navigator' ? '' : ' lg:pt-4')}/*lg:pt-4*/>
                     {TabFlashListM}
                     {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 && callFn("noContentByUrl", [route?.endpoint])))}

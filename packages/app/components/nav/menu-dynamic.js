@@ -48,7 +48,14 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
     const handleLayout = useCallback((event) => {
         if (isFixedCount)
             return
-        isDynamicMenu ? setWidth(event.nativeEvent.layout.width) : setVisibleItemsCount(itemRefs.current.length)
+      
+        if (isDynamicMenu)
+        
+            if (width != event.nativeEvent.layout.width)
+                setWidth(event.nativeEvent.layout.width)
+        else
+            setVisibleItemsCount(itemRefs.current.length)
+
     }, [isDynamicMenu]);
 
     let ExMenu = (visibleItemsCount < items.length && isWeb) && (

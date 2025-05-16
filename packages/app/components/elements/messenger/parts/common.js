@@ -428,7 +428,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
             {panelsVisible.convos && <View className='w-full md:w-96 border-bdrtabbar dark:border-bdrtabbar-d border-r'>
                 {convosComponent}
             </View>}
-            <View className='flex-1 '>
+            {panelsVisible.jots && <View className='flex-1 '>
                 <Msg onVisible={showMsg} title={showMsg} handleOk={() => { setShowMsg(false) }} />
                 <View className={`w-full border-bdrtabbar dark:border-bdrtabbar-d border-r ${!isWeb ? 'flex-1' : '' }`}  style={{ height: layoutHeightRight }}>
                 {jotsComponent}
@@ -443,7 +443,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
                         />
                     </View>
                 </KbAvoidingView>
-            </View>
+            </View>}
         </View>
     )
 }
