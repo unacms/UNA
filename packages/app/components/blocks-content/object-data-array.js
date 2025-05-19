@@ -2,7 +2,7 @@ import { useState } from 'react';
 import useFetchForm from 'app/lib/hooks/fetch'
 import Element from 'app/components/element';
 import { View } from 'app/design/view'
-import { Text} from 'app/design/typography'
+import { Text } from 'app/design/typography'
 
 export default function BlockContentObjectDataArray(props) {
     const [postData, setPostData] = useState(null);
@@ -63,11 +63,20 @@ export default function BlockContentObjectDataArray(props) {
             props.onFormEmpty();
         }
     }
+    console.log("realData", realData)
 
-    // display each block element from static data or from dynamic data
-    return (
-        <View className="relative ">
-            {realData?.map(a => <Element key={a.id+a.type} type={a.type} {...props} onSubmittig={postData && !dynamicData} saveOnChanges={props.saveOnChanges} onFormSubmit={props.onFormSubmit ? props.onFormSubmit : onFormSubmit} {...a} />)}
-        </View>
-    );
+    if (realData && Array.isArray(realData)){
+        return (
+            <View className="relative ">
+                {realData?.map(a => <Element key={a.id+a.type} type={a.type} {...props} onSubmittig={postData && !dynamicData} saveOnChanges={props.saveOnChanges} onFormSubmit={props.onFormSubmit ? props.onFormSubmit : onFormSubmit} {...a} />)}
+            </View>
+        );
+    }
+    if (realData){
+        return (
+            <View className="relative ">
+                <Element key={realData.id+realData.type} type={realData.type} {...props} onSubmittig={postData && !dynamicData} saveOnChanges={props.saveOnChanges} onFormSubmit={props.onFormSubmit ? props.onFormSubmit : onFormSubmit} {...realData} />
+            </View>
+        );
+    }
 }
