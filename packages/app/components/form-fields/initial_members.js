@@ -5,11 +5,9 @@ import { useState, useRef, useEffect, useCallback, useContext, useReducer } from
 import { useController, useFormContext } from 'react-hook-form';
 import { fetcher } from 'app/lib/fetcher';
 import Profile from 'app/ui/molecules/profile'
-import { Button, InputRounded } from 'app/design/controls'
+import { Button, InputRounded, Modal } from 'app/design/controls'
 import Loading from 'app/ui/atoms/loading'
-import { useBottomSheetData } from 'app/context/bottomsheet';
 import { Icon } from 'app/ui/atoms/icon'
-import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
 
 const User = ({ data, onSelect, type }) => {
     return (
@@ -107,8 +105,8 @@ export default function (props) {
     const formContext = useFormContext();
     const name = props.name ? props.name : '';
     const { field } = useController({ name, rules, defaultValue });
-    const { setBottomSheetData } = useBottomSheetData();
     const [selected, setSelected] = useState(props.value_data ? props.value_data : []);
+    const [isModal, setIsModal] = useState(false);
     const isSingle = props?.custom?.only_once;
     const onSave = (data, isAdd = false) => {
         if (isAdd) {
@@ -118,11 +116,13 @@ export default function (props) {
         const value = data.map(item => item.id);
         setSelected(data)
         field.onChange(value);
-        setBottomSheetData(false);
+        //setBottomSheetData(false);
+        setIsModal(false);
     }
 
     const showSelect = (val) => {
-        setBottomSheetData({ title: 'Choose users', showClose: true, content: <SelectUsers isSingle={isSingle} onSave={onSave} requestUrl={'/api.php?r=' + props.ajax_get_suggestions + "&params="} initedData={[]} /> });
+        setIsModal(true);
+       
     }
 
     const onRemove = useCallback((valueToRemove) => {
@@ -133,6 +133,9 @@ export default function (props) {
 
     return (
         <Field {...props} error2={formContext.formState.errors[name]}>
+            <Modal id='file-preview2' title="Choose users" onVisible={!!isModal} onClose={() => {setIsModal(false)}}>
+                <SelectUsers isSingle={isSingle} onSave={onSave} requestUrl={'/api.php?r=' + props.ajax_get_suggestions + "&params="} initedData={[]} />
+            </Modal>
             <View className='w-full '>
                 <Row className='gap-x-2  justify-start items-start flex-row flex-wrap'>
                     {selected && selected.map((oItem) => <User type={isSingle ? '' : "remove"} key={oItem.id} data={oItem} onSelect={onRemove} />)}

@@ -102,7 +102,7 @@ export default function ({ name, value = '', type, onChange }) {
         <>
             <Modal onVisible={!!showModal} onClose={() => { setShowModal(false) }} transparent={false}>
                 <View className='  max-w-sm w-full mx-auto'>
-                    <View className='  max-w-sm w-full mx-auto aspect-square '>
+                    <View className='  max-w-sm w-full mx-auto aspect-square mb-4'>
                         {DynamicCalendar && <DynamicCalendar
                             className=' bg-bgrcard dark:bg-bgrcard-d'
                             theme={{
@@ -121,9 +121,7 @@ export default function ({ name, value = '', type, onChange }) {
                                 [dValue.dt]: { selected: true, selectedColor: colors.primary }
                             }}
                         />}
-                    </View>
-
-                    {
+                        {
                         bIsTime && (<View className='w-full justify-center items-center gap-y-4'><Row className='justify-center items-center w-64 mt-2'>
                             <Text className="text-base justify-center items-center text-neutral-900 dark:text-neutral-50"> Time </Text>
                             <View>
@@ -146,10 +144,13 @@ export default function ({ name, value = '', type, onChange }) {
                                 />
                             </View>
                         </Row>
-                            <Button title="Apply" onPress={() => { setFieldValue(dValue) }} />
+                            <Button title="Apply" variant="secondary" onPress={() => { setFieldValue(dValue) }} />
                         </View>
                         )
                     }
+                    </View>
+
+                    
                 </View>
             </Modal>
             <Row>

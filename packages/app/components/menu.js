@@ -28,7 +28,7 @@ const MenuItemEx = memo(({ item, index, sDisplayType, params }) => {
 const MenuItem = memo(({ item, itemRefs, index, visibleItemsCount, params, bShowVertical, sAlignItems, isUseStaticWidth, isWeb, sDisplayType }) => {
     const ItemType = componentsMap[item.display_type ? item.display_type : sDisplayType];
     return (
-        <ViewRef ref={el => itemRefs.current[index] = el} key={'menu' + index} className={(!isWeb ? ' ml-2' : ' ') + (bShowVertical ? 'w-full  ' : ' ') + (sAlignItems == 'stretch' ? 'flex-auto' : '') + (((index > visibleItemsCount - 1) && !isUseStaticWidth) ? ' item-overlap ' : '')}>
+        <ViewRef className={(!isWeb ? ' ml-2' : ' ') + (bShowVertical ? 'w-full  ' : ' ') + (sAlignItems == 'stretch' ? 'flex-auto' : '') }>
             <ItemType key={item.id ? item.id : item.name} {...item} params={params} />
         </ViewRef>
     )
