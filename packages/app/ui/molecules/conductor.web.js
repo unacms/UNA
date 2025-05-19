@@ -772,8 +772,8 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             AddBlocksCnt={AddBlocksCnt} />
     ), [index, setIndex, menu, routes, currentUser, leftSideBarWidth, headerSettings, AddBlocksCnt]);
 
-    const headerComponent = useMemo(() => (
-        <HeaderContainer
+   const headerComponent = useMemo(() => (
+        <><HeaderContainer
             cover={cover}
             cntWidth={cntWidth}
             tabBarObj={tabBarObj}
@@ -783,6 +783,10 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             header={leftSideBar && layoutName != 'navigator'  ? <View className="bg-bgrcard dark:bg-bgrcard-d lg:hidden pt-20 px-3">{leftSideBarComponent}</View> : header}
             windowWidth={windowWidth}
         />
+          {(windowWidth < LAYOUT_BREAKPOINTS.lg && layoutName == 'navigator' && leftSideBarBlocks.length > 0) && <View className={`items-start ml-4 mt-2 mb-2`}>
+                                <Button title="Filters" variant="default" size="sm" rounded onPress={showFilters} />
+                            </View>}
+        </>
     ), [cover, cntWidth, tabBarObj, currentUser, smallHeader, header, windowWidth]);
 
     const topSideBarComponent = useMemo(() => (
