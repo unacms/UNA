@@ -692,7 +692,7 @@ export function clearLinks(text) {
 }
 
 export function linkify(text, attrs = '', htmlSpecialChars = false) {
-    return clearLinks(text);
+    return clearLinks(text.replace(/<span contenteditable="false">(.*?)<\/span>/g, '$1'));
     // todo improve
     const urlRegex = /\b((https?:\/\/)|(www\.))((([0-9a-zA-Z_!~*'().&=+$%-]+:)?[0-9a-zA-Z_!~*'().&=+$%-]+@)?(([0-9]{1,3}\.){3}[0-9]{1,3}|([0-9a-zA-Z_!~*'()-]+\.)*([0-9a-zA-Z][0-9a-zA-Z-]{0,61})?[0-9a-zA-Z]\.[a-zA-Z]{2,16})(:[0-9]{1,4})?((\/[0-9a-zA-Z_!~*'().;?:@&=+$,%#-]*)*))/g;
 
