@@ -17,6 +17,7 @@ import { Platform } from 'react-native'
 import Carousel from 'app/ui/molecules/carousel'
 import { Modal } from 'app/design/controls'
 import emitter from 'app/context/emitter';
+import { TouchableWithoutFeedback } from 'react-native';
 
 export default function JotItem({ item, index, handleReply }) {
     const isWeb = Platform.OS == 'web'
@@ -68,7 +69,7 @@ export default function JotItem({ item, index, handleReply }) {
         params: { ...item.reactions.params, button_size: "xs", button_variant: "link" }
     };
 
-    const Jot = <View className='w-full py-3 px-3'>
+    const Jot = <TouchableWithoutFeedback  onPress={() => {emitter.emit('editor', { action: 'blur' })}}><View className='w-full py-3 px-3'>
         <Row className="gap-x-2 ">
             <View className="w-10 flex-0 ">
                 <Profile {...item.author_data} displayType="unit_wo_info" displaySize="base" showInfo="false" />
@@ -135,7 +136,7 @@ export default function JotItem({ item, index, handleReply }) {
                 }
             </Row>
         </View>
-    </View>
+    </View></TouchableWithoutFeedback>
 
     return Jot
 }

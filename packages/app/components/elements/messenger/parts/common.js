@@ -428,7 +428,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
             {panelsVisible.convos && <View className='w-full md:w-96 border-bdrtabbar dark:border-bdrtabbar-d border-r'>
                 {convosComponent}
             </View>}
-            {panelsVisible.jots && <View className='flex-1 '>
+            <View className='flex-1 '>
                 <Msg onVisible={showMsg} title={showMsg} handleOk={() => { setShowMsg(false) }} />
                 <View className={`w-full border-bdrtabbar dark:border-bdrtabbar-d border-r ${!isWeb ? 'flex-1' : '' }`}  style={{ height: layoutHeightRight }}>
                 {jotsComponent}
@@ -443,7 +443,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
                         />
                     </View>
                 </KbAvoidingView>
-            </View>}
+            </View>
         </View>
     )
 }
@@ -561,7 +561,7 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
 
     return (<>
         {(isWeb && !isSmallScreen) && header}
-        { <TouchableWithoutFeedback onPress={() => {console.log('a');emitter.emit('editor', { action: 'blur' })}}><View className="flex-1">
+        { <View className="flex-1">
            
                 <UniList
 
@@ -578,7 +578,7 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
             useCustomScrollHandler={isSmallScreen ? true : false}
             renderItem={({ item, index }) => <ItemJot handleReply={handleReply} item={item} index={index} />}
             scrollProps={{ pageData: null, headerComponent: header, inverted: true, headerHeight: 64, isNoContainer: true, }}
-        /></View></TouchableWithoutFeedback>}
+        /></View>}
     </>);
 });
 
