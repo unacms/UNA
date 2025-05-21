@@ -24,14 +24,13 @@ export default function Unit(props) {
             </View>
         )
     return (
-        <View className="">
+        <View className="px-2">
             <Link href={data.url} emulate={true}>
-                <View
-                    className=" px-2 py-1.5 flex-row  
-                group duration-200 rounded-lg  
-                active:translate-y-1 
-                hover:bg-bgrbutton dark:hover:bg-bgrbutton-d hover:shadow-sm
-                max-w-5xl  hover:ring-1 hover:ring-inset hover:ring-neutral-500/10 self-center w-full  "
+                <View className=" px-2 py-1.5 flex-row  
+                group duration-200 rounded-xl  
+                active:opacity-80 
+                hover:bg-bgrbutton dark:hover:bg-bgrbutton-d 
+                max-w-5xl self-center w-full  "
                 >
                     <View className=" mr-2 rounded-full flex-none ">
                         <Profile

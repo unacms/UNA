@@ -86,7 +86,7 @@ export default function PageLayoutProfile({layoutName, data, uri, blocks}) {
             blocks={renderedBlocks.mainBlocks}
             cover={headerSettings.cover}
             leftSideBar={isAltView}
-            leftSideBarWidth={isAltView  ? ' lg:w-96' : ''}
+            leftSideBarWidth={isAltView  ? ' lg:w-[360px]' : ''}
             leftSideBarBlocks={isAltView? renderedBlocks.leftBlocks: null}
 
         />

@@ -51,7 +51,14 @@ export default function ElementLink(props) {
     const prefetch = rest?.noprefetch || href == '/logout' || href == 'logout' ? false : true;
 
     return (
-        <Link className=' focus-visible:outline outline-2 outline-offset-0 rounded-[4px] leading-none focus:outline-primary dark:focus:outline-primary-d  ' target={target} href={href} {...rest} prefetch={prefetch} onClick={(e) => handleLinkClick(e, href, target)} > 
+        <Link 
+            className='focus-visible:outline-2 focus-visible:outline focus-visible:outline-primary dark:focus-visible:outline-primary-d focus-visible:outline-offset-2 focus-visible:rounded-sm' 
+            target={target} 
+            href={href} 
+            {...rest} 
+            prefetch={prefetch} 
+            onClick={(e) => handleLinkClick(e, href, target)}
+        > 
             {props.children}
         </Link>
     );
