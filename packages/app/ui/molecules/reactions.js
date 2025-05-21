@@ -19,6 +19,7 @@ import {
     TouchableOpacity
 } from 'react-native';
 import { Text } from 'app/design/typography'
+import Tooltip from 'app/ui/atoms/tooltip';
 
 const getName = (sType, sSystem, sObjectId, sName) => {
     let aName = [sType, sSystem.replace(/_/g, '-'), sObjectId];
@@ -536,8 +537,8 @@ const ReactionPopover = ({
                                         key={item.id}
                                         onPress={() => handleSelect(item)}
 
-                                    ><Text className="text-3xl px-2">{item.emoji}</Text>
-
+                                    >
+                                        <Tooltip content={item.title}><Text className="text-3xl px-2">{item.emoji}</Text></Tooltip>
                                     </TouchableOpacity>
                                 ))}
                             </View>
