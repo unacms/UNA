@@ -3,6 +3,7 @@ import Link from 'app/ui/atoms/link'
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
 import { getPart } from 'app/lib/parts/part';
+import { isEmoji, appSetting } from 'app/lib/util';
 
 export function MenuItemSidebarWithWrapper({ link, title, index, icon, userUrl, isActive, onPress, addon }) {
 
@@ -22,7 +23,9 @@ export function MenuItemSidebarWithWrapper({ link, title, index, icon, userUrl, 
 export function MenuItemSidebar({ title, icon, isActive, addon }) {
     return (
         <Row className={`h-12 px-2 items-center gap-x-3 hover:bg-bgritem-h dark:hover:bg-bgritem-d group rounded-xl ${isActive && 'bg-primary/10'}`}>
-            <Text className={`h-9 w-9 p-2 rounded-full ${isActive ? 'bg-primary text-white' : 'bg-neutral-200 dark:bg-neutral-800 group-hover:bg-neutral-300 dark:group-hover:bg-neutral-700 text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900 dark:group-hover:text-neutral-100'}`}><Icon icon={icon} size="20" /></Text>
+            <Text className={`h-9 w-9 p-2 rounded-full ${isActive ? 'bg-primary text-white' : 'bg-neutral-200 dark:bg-neutral-800 group-hover:bg-neutral-300 dark:group-hover:bg-neutral-700 text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900 dark:group-hover:text-neutral-100'}`}>
+                {isEmoji(icon) ? icon : <Icon icon={icon} size="20" />}
+            </Text>
             <Text className="text-base font-medium text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900 dark:group-hover:text-neutral-100">{title}</Text>
             {getPart("CounterIndicator", [addon, true])}
         </Row>

@@ -124,11 +124,8 @@ export function ElementSearchData(oProps) {
     };
 
     const handleClose = (url) => {
-        console.log("urlurlurl", url)
         oProps.onClose && oProps.onClose();
-        redirectdRef.current.redirect(url);
-        // setBottomSheetData(false);
-        // 
+        redirectdRef.current.redirect(url); 
     }
 
 
@@ -136,8 +133,6 @@ export function ElementSearchData(oProps) {
     const handleSetPopupContent = (sContent) => {
         setPopupContent(sContent);
         if (sType == 'default') {
-            //  setPopupOpen(!!sContent);
-
             if (!!sContent) {
                 setPopupOpenHandle(false);
 
@@ -145,15 +140,14 @@ export function ElementSearchData(oProps) {
             }
         }
     }
-
+   
     const handleSearch = async (sValue) => {
+    
+
         setInputValue(sValue);
 
-        if (!sValue || sValue.length < 3)
+        if (oProps.noPopup || !sValue || sValue.length < 3)
             return;
-
-        // if (sValue.length == 3)
-        //    handleSetPopupContent(getSkeleton());
 
         const aParams = {
             params: {
