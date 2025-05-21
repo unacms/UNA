@@ -124,7 +124,7 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutNam
                             <Suggestions />
                             <AsyncWorker />
                         </View>
-                        {menuItems.length > 0 && <View className='w-full lg:w-96'>
+                        {menuItems.length > 0 && <View className='w-full lg:w-[360px]'>
                             <NavbarMemo pageLayoutName={pageLayoutName} headerSettings={headerSettings} layoutName={layoutName} title={data.name} menu={data.menu} menu_add={data.menu_add || false} uri={uri} url={data?.url} />
                         </View>}
                     </Row>

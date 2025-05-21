@@ -72,7 +72,14 @@ const nextConfig = {
     'lucide-react-native'
   ],
   webpack: (config, { isServer }) => {
-    // Добавляем алиасы
+    // Add optimization
+    config.optimization = {
+      ...config.optimization,
+      concatenateModules: true,
+      minimize: true,
+    };
+    
+    // Existing webpack config
     config.resolve.alias = {
       ...config.resolve.alias,
       'react-native': 'react-native-web',
@@ -120,6 +127,8 @@ const nextConfig = {
     ],
     disableStaticImages: false
   },
+  compress: true,
+  swcMinify: true,
 }
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',

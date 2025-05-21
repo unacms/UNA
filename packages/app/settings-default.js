@@ -243,7 +243,7 @@ export  const settingsDefault = {
             button_variant: 'text',
             pressed_classes: {
                 pressed_container:
-                    ' sm:hover:bg-primary/20 sm:dark:hover:bg-primary-d/20 ',
+                    ' sm:hover:bg-primary/10 sm:dark:hover:bg-primary-d/10 ',
                 pressed_text:
                     ' text-primary dark:text-primary-d group-hover:text-primary-700 dark:group-hover:text-primary-500 ',
             },
@@ -255,7 +255,7 @@ export  const settingsDefault = {
             show_action: false,
             show_counter: true,
             show_combined: true,
-            button_variant: 'link',
+            button_variant: 'text',
             button_size: 'xs',
             align_items: 'between',
             no_gap_between_buttons: false,
@@ -841,7 +841,7 @@ export  const settingsDefault = {
                 ' text-primary-700 dark:text-primary-300 group-hover:text-primary-800 dark:group-hover:text-primary-200 ',
             xs: {
                 rounded: ' rounded-[6px] overflow-hidden ',
-                padding: ' h-[28px] min-w-[28px] p-[4px] ',
+                padding: '  p-2 ',
                 icon_container: ' h-[20px] w-[20px] ', //icon container size
                 icon_size: ' 20px ', //icon size
                 icon_margin: ' mx-[0px] ', //conditional margin for icon container when title is present
@@ -920,7 +920,7 @@ export  const settingsDefault = {
             /*'u-btn-text-color-icon-light': 'rgb(243, 244, 246)',
             'u-btn-text-color-icon-dark': 'rgb(243, 244, 246)',*/
 
-            'u-btn-link-cnt': ' hover:bg-primary/10 px-0 ',
+            'u-btn-link-cnt': ' hover:bg-primary/10  ',
             'u-btn-link-text':
                 ' font-semibold group-hover:underline text-primary dark:text-primary-d ',
             'u-btn-link-trans': ' web:duration-300 ',

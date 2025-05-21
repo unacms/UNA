@@ -425,7 +425,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
 
     return (
         <View className='flex-1 w-full h-full flex-row bg-bgrcard dark:bg-bgrcard-d'>
-            {panelsVisible.convos && <View className='w-full md:w-96 border-bdrtabbar dark:border-bdrtabbar-d border-r'>
+            {panelsVisible.convos && <View className='w-full md:w-[360px] border-bdrtabbar dark:border-bdrtabbar-d border-r'>
                 {convosComponent}
             </View>}
             <View className='flex-1 '>
