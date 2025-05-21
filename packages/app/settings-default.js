@@ -86,7 +86,7 @@ export  const settingsDefault = {
     },
     cover: {
         use_background: false, //appSetting('layout', 'use_background')
-        aspect_ratio: 'aspect-3/1', //appSetting('layout', 'cover_aspect')
+        aspect_ratio: 'aspect-4/1', //appSetting('layout', 'cover_aspect')
         allow_edit: true, //appSetting('layout', 'allow_edit_covers')
         fixed: false, //appSetting('layout', 'fixed_cover')
         scroll: false,
@@ -840,14 +840,14 @@ export  const settingsDefault = {
             pressed_text:
                 ' text-primary-700 dark:text-primary-300 group-hover:text-primary-800 dark:group-hover:text-primary-200 ',
             xs: {
-                rounded: ' rounded-[6px] overflow-hidden ',
-                padding: '  p-2 ',
-                icon_container: ' h-[20px] w-[20px] ', //icon container size
-                icon_size: ' 20px ', //icon size
-                icon_margin: ' mx-[0px] ', //conditional margin for icon container when title is present
-                title_container: ' ',
-                title_margin:
-                    ' px-[4px] leading-[20px] native:text-[14px] web:text-sm ',
+                rounded: ' rounded-[8px] ',
+                padding: ' h-[36px] px-[8px] overflow-hidden ',
+                icon_container:
+                    ' h-[16px] w-[16px] flex items-center justify-center ',
+                title_container: 'px-[4px] ',
+                icon_size: 16,
+                icon_margin: ' mx-[4px] ', //conditional margin for icon container when title is present
+                title_margin: ' ',
             },
             sm: {
                 rounded: ' rounded-[10px] ',

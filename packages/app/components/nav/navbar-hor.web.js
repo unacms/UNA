@@ -152,7 +152,7 @@ export default function (props) {
                             context={props.context}
                         />
                         <MenuTop url={props.url} uri={props.uri}/>
-                        <Row className=" w-80 px-2 gap-x-2 items-center justify-end ">
+                        <Row className=" w-[360px] px-4 gap-x-2 items-center justify-end ">
                             {!!currentUser && (
                                 <Row className="justify-end ">
                                     

@@ -19,14 +19,14 @@ export default function MenuTop({ url, uri }) {
     )
 
     return (
-        <Row className="hidden lg:flex flex-auto ">
-            <Row className="w-full mx-auto max-w-2xl justify-between">
+        <Row className="hidden lg:flex flex-auto w-full mx-auto max-w-2xl gap-x-1 justify-between items-center align-middle ">
+            
                 {menu_navbar_items.map((item, index) => {
                     const isActive = item.link === '/' + url || (item.link === '/' && uri === 'home');
                     return <MenuTopItem key={`bmi-${index}`} link={item.link} icon={item.icon} isTitle={item.showTitle} title={t(item.title)} isActive={isActive} />
 
                 })}
-            </Row>
+            
         </Row>
 
     )
@@ -37,12 +37,12 @@ function MenuTopItem({ link, title, index, icon, isTitle, isActive }) {
     return (
         <Link className="flex-auto" href={link} alt={title}>
             <Tooltip content={title}>
-            <View className="flex-auto group h-14 p-1" key={`menu-${index}`}>
+            <View className="flex-auto group" key={`menu-${index}`}>
                 <Row
                     className={`items-center justify-center h-12 min-w-12 rounded-[12px] duration-300 group-active:opacity-50 ${
                         isActive 
                             ? 'bg-bgritemprimary text-primary dark:text-primary-d dark:bg-bgritemprimary-d group-hover:bg-bgritemprimary-h dark:group-hover:bg-bgritemprimary-dh'
-                            : 'text-neutral-600 dark:text-neutral-400 group-hover:bg-bgritem-h dark:group-hover:bg-bgritem-dh'
+                            : 'text-neutral-600 dark:text-neutral-400 group-hover:bg-bgritem dark:group-hover:bg-bgritem-d'
                     }`}
                 >
                     

@@ -188,7 +188,7 @@ export default function ElementMenu(oProps) {
         }}
         isFixedCount={oProps?.params?.isFixedCount}
         persistent={oProps.persistent}
-        containerClasses={oProps.containerClasses || "w-full md:justify-end"}
+        containerClasses={oProps.containerClasses || "w-full sm:justify-center lg:justify-end"}
         items={filteredItems}
         menuClasses={sClassName}
         isButtonOutside={false}
