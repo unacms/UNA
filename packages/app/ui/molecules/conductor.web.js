@@ -688,7 +688,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
     const Preload = useMemo(() => getSkeletonForList(sSkeleton, numColumns), [sSkeleton, numColumns]);
 
-    const RenderScene = useCallback(({ route, header, prevRoute, headerHeight }) => {
+    const RenderScene = useCallback(({ cover, route, header, prevRoute, headerHeight }) => {
 
         const dataItems = route?.data
 
@@ -738,7 +738,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         const sidebarUnitType = route.blocks?.browse_sidebar?.unitType || 'default';
 
         return (
-            <Row style={{ paddingTop: header ? 0 : 0 }} className={(headerSettings.columns == "reverse" ? 'flex-row-reverse' : '') + conductorTheme.content_max_width + '  mx-auto w-full '+TABLET_MODE_FROM+':mt-4'}>
+            <Row style={{ paddingTop: header ? 0 : 0 }} className={(headerSettings.columns == "reverse" ? 'flex-row-reverse' : '') + conductorTheme.content_max_width + '  mx-auto w-full ' + ( !cover ? TABLET_MODE_FROM +':mt-4': '' )}>
                 <View className={(isRightCol ? 'flex-auto sm:border-r border-bdr dark:border-bdr-d lg:px-4 flex-auto ' : ' w-full mx-auto') /*sm:p-2*/+ (layoutName == 'navigator' ? '' : ' pt-4')}/*lg:pt-4*/>
                     {TabFlashListM}
                     {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 && callFn("noContentByUrl", [route?.endpoint])))}
@@ -829,7 +829,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                                 <Button title="Filters" variant="default" size="sm" rounded onPress={showFilters} />
                             </View>}
                             {sceneHeaderComponent}
-                            <RenderScene prevRoute={prevRoute} headerHeight={isShowFilters? 150: defaultHeaderHeight} header={isUseCurrentHeader ? null : headerComponent} route={currentRoute} />
+                            <RenderScene cover={header} prevRoute={prevRoute} headerHeight={isShowFilters? 150: defaultHeaderHeight} header={isUseCurrentHeader ? null : headerComponent} route={currentRoute} />
                         </View>
                     </Row>
                 </View>
@@ -844,7 +844,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             <Toaster ref={toasterRef} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" />
             <View className={`${conductorTheme.content_max_width} mx-auto w-full min-h-screen ${tmplLayout == 'mixed' ? 'mt-12' : ''}`}>
                 {sceneHeaderComponent}
-                <RenderScene prevRoute={prevRoute} headerHeight={isShowFilters? 150: defaultHeaderHeight} header={isUseCurrentHeader ? null : headerComponent} route={currentRoute} />
+                <RenderScene cover={header} prevRoute={prevRoute} headerHeight={isShowFilters? 150: defaultHeaderHeight} header={isUseCurrentHeader ? null : headerComponent} route={currentRoute} />
             </View>
             <Footer />
         </View>

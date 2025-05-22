@@ -63,7 +63,6 @@ export default function BlockContentObjectDataArray(props) {
             props.onFormEmpty();
         }
     }
-    console.log("realData", realData)
 
     if (realData && Array.isArray(realData)){
         return (

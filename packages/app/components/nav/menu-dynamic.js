@@ -17,8 +17,6 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
     const { width: windowWidth } = useWindowDimensions();
     const isDynamicMenu = true;//windowWidth > LAYOUT_BREAKPOINTS.sm;
 
-    console.log("itemRefs", itemRefs, visibleItemsCount)
-
     useEffect(() => {
         if (!isFixedCount && itemRefs.current.length> 0) {
             const menuWidth = width;
@@ -37,7 +35,7 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
             }
             if (visibleCount > persistent && persistent > 0)
                 visibleCount = persistent;
-            console.log("visibleCount", visibleCount)
+
             if (visibleCount != visibleItemsCount && visibleCount>0) {
                 setVisibleItemsCount(visibleCount);
             }
@@ -51,7 +49,6 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
             return
       
         if (isDynamicMenu){
-            console.log("event.nativeEvent.layout.width")
            setWidth(event.nativeEvent.layout.width)
         }
                 
