@@ -19,24 +19,21 @@ export default function Unit(props) {
     let sMeta = <></>
     if (data?.meta.items[0]?.data)
         sMeta = (
-            <View className="text-center flex-col  h-auto justify-end">
-                <Recommendation {...{...data?.meta.items[0]?.data, primary: false} } params={{button_full_width:true, button_variant:'outline', size:'xs'}}/>
-            </View>
+           
+                <Recommendation {...{...data?.meta.items[0]?.data, primary: false} } params={{button_full_width:true, button_variant:'secondary', button_size:'xs'}}/>
+           
         )
     return (
         <View className="px-2">
             <Link href={data.url} emulate={true}>
-                <View className=" px-2 py-1.5 flex-row  
-                group duration-200 rounded-xl  
-                active:opacity-80 
-                hover:bg-bgrbutton dark:hover:bg-bgrbutton-d 
-                max-w-5xl self-center w-full  "
+                <View className=" px-2 h-12 flex-row group duration-200 rounded-xl active:opacity-50 hover:bg-bgrbutton dark:hover:bg-bgrbutton-d 
+                max-w-5xl self-center w-full items-center gap-x-2 "
                 >
-                    <View className=" mr-2 rounded-full flex-none ">
+                    <View className=" rounded-full flex-none ">
                         <Profile
                             url_avatar={data?.image?.src}
                             displayType="unit_wo_info"
-                            displaySize="base"
+                            displaySize="sm"
                             display_name={data.title}
                         />
                     </View>

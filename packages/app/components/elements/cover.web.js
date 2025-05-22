@@ -233,7 +233,7 @@ export default function (props) {
             <View className={`w-full mx-auto ${appSetting('layout', 'max_width')}`}>
                 {mode != 'min' ? (
                     <View
-                        className={`duration-300 bg-primary-200 dark:bg-primary-950 w-auto xl:rounded-b-xl overflow-hidden ${isCover ? `aspect-video sm:${appSetting('cover', 'aspect_ratio')}` : 'pt-16'}`}>
+                        className={`duration-300 bg-primary-200 dark:bg-primary-950 w-full max-w-[1440px] mx-auto xl:rounded-b-xl overflow-hidden ${isCover ? `aspect-video sm:${appSetting('cover', 'aspect_ratio')}` : 'pt-16'}`}>
                         {isCover && (
                             <Image
                                 alt={data.group_name}
@@ -266,15 +266,15 @@ export default function (props) {
                 ) : (
                     <></>
                 )}
-                <View className="px-4" >
-                    <View className={` py-2 flex-col ${mode === 'min' ? 'lg' : 'md'}:flex-row gap-x-4 ${conductorTheme.content_max_width} mx-auto w-full items-start lg:items-stretch`}>
+                <View className="p-4" >
+                    <View className={` flex-col lg:flex-row gap-y-4 sm:items-center gap-x-4 ${conductorTheme.content_max_width} mx-auto w-full items-start lg:items-stretch`}>
                         {bPerson && (
-                            <View className="w-full h-24 sm:w-36 relative   ">
-                                <View className=" flex-auto absolute w-min  z50 rounded-full w-min p-2 z-50 bottom-0 flex-none bg-bgrcard dark:bg-bgrcard-d ">
+                            <View className="w-full h-24 sm:w-48 relative   ">
+                                <View className=" flex-auto absolute w-min rounded-full w-min p-2 z-50 -bottom-2 flex-none bg-bgrcard dark:bg-bgrcard-d ">
                                     <Profile
                                         {...data.profile}
                                         displayType="unit_wo_info"
-                                        displaySize={'3xl'}
+                                        displaySize={'4xl'}
                                     />
                                     {bAllowEdit && (
                                         <View className=" p-1 bg-bgrcard dark:bg-bgrcard-d rounded-full absolute bottom-3 right-1">
@@ -291,10 +291,10 @@ export default function (props) {
                                 </View>
                             </View>
                         )}
-                        <View className=" flex-auto flex-col pb-2 ">
-                            <Row className=" flex-row flex-auto items-center py-2 gap-x-2">
+                        <View className=" flex-auto flex-col gap-y-4 ">
+                            <Row className=" flex-auto items-center sm:justify-center lg:justify-start gap-x-2">
                                 <Text
-                                    className="tracking-tight text-xl sm:text-2xl font-bold text-neutral-900 dark:text-neutral-50"
+                                    className="tracking-tight text-3xl sm:text-4xl font-bold text-neutral-900 dark:text-neutral-50"
                                     numberOfLines={2}
                                 >
                                     {data.profile.display_name}
@@ -303,17 +303,17 @@ export default function (props) {
 
                             </Row>
                             {!!data.profile.info?.date_start && (
-                                <Text className="  text-neutral-600 dark:text-neutral-400 text-xs uppercase font-semibold tracking-tight overflow-hidden  rounded-md flex-none items-center">
+                                <Text className="  text-neutral-600 dark:text-neutral-400 text-xs uppercase font-semibold tracking-tight overflow-hidden rounded-md flex-none items-center">
                                     {formatDateInterval(data.profile.info?.date_start, data.profile.info?.date_end, t)}
                                 </Text>
                             )}
-                            <Row className="w-full max-w-sm">
+                            
                                 <ScrollView horizontal={true}>
                                     <CoverMenuMeta {...data.meta_menu} />
                                 </ScrollView>
-                            </Row>
+                            
                         </View>
-                        <View className={` flex-auto w-full max-w-[400px] ${mode !== 'min' && ' lg:items-end '}`}>
+                        <View className={` flex-auto w-full max-w-[400px] ${mode !== 'min' && ' xl:items-end '}`}>
                             <CoverMenu {...data.actions_menu} uri={props?.uri} />
                             {/*containerClasses={`${mode === 'min' && 'w-full lg:justify-end'}`}*/}
                         </View>

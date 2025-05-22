@@ -108,7 +108,7 @@ export const Header = memo(({
                     <Button variant="secondary" rounded onPress={() => {
                         FeedbackHaptics('Medium');
                         router ? router?.back() : history.back();
-                    }} startDecorator="ChevronLeft" />
+                    }} startDecorator="ChevronLeft" size="sm" />
                 )}</View>
                 {!!text && (
                     
@@ -119,7 +119,7 @@ export const Header = memo(({
                 )}
             </Row>
             {type !== 'string' && <View className="flex-auto">{headerContent}</View>}
-            {(memoizedRightComponents || rightHeaderComponent) && <Row className="mr-[12px]">{rightHeaderComponent ? rightHeaderComponent : memoizedRightComponents}</Row>}
+            {(memoizedRightComponents || rightHeaderComponent) && <Row className="">{rightHeaderComponent ? rightHeaderComponent : memoizedRightComponents}</Row>}
         </Row>
     );
 });
@@ -130,7 +130,7 @@ function getRightHeader(items, currentUser, pagePath) {
     if (pagePath == '/home' && currentUser) {
         const menu_add_items = menuItemsByName('', appSetting('menu_items', 'menu_add'), currentUser);
         if (menu_add_items.length) {
-            addMenu = <MenuAdd key='menu-add' buttonProps={{ variant: "secondary", rounded: 'rounded', startDecorator: "Plus", id: "m3" }} />;
+            addMenu = <MenuAdd key='menu-add' buttonProps={{ variant: "secondary", rounded: 'rounded', startDecorator: "Plus", id: "m3", size: 'sm' }} />;
         }
     }
     if (items?.length == 0 && !addMenu)
@@ -140,13 +140,13 @@ function getRightHeader(items, currentUser, pagePath) {
         items?.map((button) => {
             let btn = undefined;
             if (button.section || button.link == 'search')
-                btn = <Search section={button.section} params={{ trigger: { title: button.title, icon: button.icon ? button.icon : 'Search', size: 'base', variant: 'secondary' } }} />
+                btn = <Search section={button.section} params={{ trigger: { title: button.title, icon: button.icon ? button.icon : 'Search', size: 'sm', variant: 'secondary' } }} />
             else {
                 btn = <Button
                     rounded title={button.title}
                     variant='secondary'
                     startDecorator={button.icon}
-                    size="base"
+                    size="sm"
                     addon={button.link == appSetting('messenger', 'url') ? { variant: 'primary', text: currentUser?.counters?.bx_messenger_new_messages, hideZero: true } : undefined}
                 />;
                 btn = button.link ? <Link href={button.link} >{btn}</Link> : btn

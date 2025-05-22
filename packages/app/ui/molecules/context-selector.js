@@ -76,11 +76,11 @@ export default function ContextSelector({ data, url }) {
     return (
         <View className="flex-row items-center ">
             <Link href={contextRoot.url} >
-                <View className='flex-row items-center gap-x-1 items-center px-1.5 py-1 gap-x-2 web:group w-full flex-auto hover:bg-bgritem-h dark:hover:bg-bgritem-h rounded-xl'>
-                    <View className="items-center w-10 h-10 justify-center ">
+                <View className='flex-row items-center gap-x-1 items-center px-1.5 py-1 gap-x-2 web:group w-full flex-auto hover:bg-bgritem dark:hover:bg-bgritem-d rounded-xl'>
+                    <View className="items-center w-10 h-10 justify-center text-neutral-800 dark:text-neutral-200">
                         {contextRoot.image}
                     </View>
-                    <Text className="text-lg px-2 whitespace-nowrap leading-[20px] font-semibold text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-800 dark:group-hover:text-neutral-200">{contextRoot.name}</Text></View>
+                    <Text className="text-lg px-2 whitespace-nowrap leading-[20px] font-semibold text-neutral-800 dark:text-neutral-200">{contextRoot.name}</Text></View>
             </Link>
             <View>
                 <DropdownPopup

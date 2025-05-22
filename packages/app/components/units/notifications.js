@@ -17,7 +17,7 @@ function Unit({ data }) {
     return (
         <AnimatedBlock>
             <Link href={url}>
-                <Card margin=" mt-[1px] sm:mb-2 sm:mx-2 p-3 sm:p-4 " border="border-none" rounded=" sm:rounded-2xl " >
+                <Card margin="mb-2 p-4  shadow-[0_1px_3px_0_rgba(0,0,0,0.05)] " border=" border border-bdrcard dark:border-bdrcard-d  " rounded=" sm:rounded-2xl " >
                     <View className="flex-row items-center">
                         <View className="mr-2 rounded-full flex-none " >
                             <Profile {...data.author_data} displayType="unit_wo_info" displaySize="base" />
