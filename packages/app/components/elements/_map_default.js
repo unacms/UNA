@@ -34,9 +34,13 @@ import ModuleStructure from './module_structure';
 import EditCourseContent from './edit_course_content';
 import Messenger from './messenger';
 import ProfileList from './profiles_list';
+import ReputationSummary from './reputation_summary';
+import ReputationLeaderboard from './reputation_leaderboard';
 
 export const componentsMapDefault = {
     messenger_main_page: Messenger,
+    reputation_summary: ReputationSummary,
+    reputation_leaderboard: ReputationLeaderboard,
     chart: Chart,
     comment_content:CommentContent,
     browse: Browse,
@@ -76,5 +80,3 @@ export const componentsMapDefault = {
     get_create_post_form: MultiPostForm,
     simple_list: SimpleList
 };
-
-
