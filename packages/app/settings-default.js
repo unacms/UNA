@@ -890,7 +890,7 @@ export  const settingsDefault = {
             'u-btn-default-color-icon-dark': 'rgb(243, 244, 246)',*/
 
             'u-btn-primary-cnt':
-                ' group bg-primary-500 dark:bg-primary-600 border border-transparent sm:hover:border-transparent dark:border-primary-500 sm:hover:bg-primary-600 dark:sm:hover:bg-primary-700 sm:dark:hover:border-primary-600 ',
+                ' group bg-primary-500 dark:bg-primary-600 sm:hover:bg-primary-600 dark:sm:hover:bg-primary-700 ',
             'u-btn-primary-text': '  font-medium text-white ',
             'u-btn-primary-trans': ' web:duration-200 ',
             'u-btn-primary-color-icon-light': 'rgb(243, 244, 246)',

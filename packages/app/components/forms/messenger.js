@@ -7,7 +7,7 @@ import { useFormContext } from 'react-hook-form';
 
 export default function FormMessenger(props) {
     const isWeb = Platform.OS == 'web';
-    const initialHeight = 44;
+    const initialHeight = 48;
      const formContext = useFormContext();
     const [isExImage, setIsExImage] = useState(false);
     const [isFocused, setIsFocused] = useState(false);
@@ -71,7 +71,7 @@ export default function FormMessenger(props) {
     props.data.inputs['files'].rounded = 'true';
     props.data.inputs['files'].variant = 'default';
 
-    const sPad = 'px-3 py-2';
+    const sPad = 'px-3 py-2.5';
     return <View className='w-full px-2' >
         <Row className='w-full items-end  '>
             <View className={'mr-2 ' + (isWeb ? '' : ' w-12 ')}>{/* className={'mr-2 ' + (isWeb ? '' : ' w-11 ')}*/}
