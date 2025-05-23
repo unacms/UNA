@@ -161,6 +161,7 @@ export default function FormFeed(props) {
                 rounded
                 size="sm"
                 startDecorator="X"
+                hitSlop={4}
             />
         </Row>
     )

@@ -138,6 +138,8 @@ export default function RftText({ name, value = '', numLines = 4, minHeight, max
     .ProseMirror.tiptap{
         height:auto !important;
         overflow:visible !important;
+        /* Experimental CSS transition for height changes within WebView */
+        transition: height 0.15s ease-out, min-height 0.15s ease-out;
     }
     `;
     if (isPlainText) {

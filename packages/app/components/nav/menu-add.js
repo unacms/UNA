@@ -32,7 +32,7 @@ export default function MenuAdd({ buttonProps, children }) {
         startDecorator: "Plus",
         tooltip: "Create",
         size: "sm",
-        ring: "p-1",
+        hitSlop: 4,
     };
 
     return (
@@ -53,7 +53,6 @@ export default function MenuAdd({ buttonProps, children }) {
                     }
                 )}
             >
-
                 {!!children ? children : <Button
                     {...buttonProps}
                 />}

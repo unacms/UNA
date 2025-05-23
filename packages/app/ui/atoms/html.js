@@ -156,8 +156,8 @@ const parseHtmlToReact = (html, textStyles, parentKey = "0") => {
 export default function ElementHtml({ customClassName, data }) {
 
     const textStyles = (customClassName?.includes('u-vanilla-html-small')  && Platform.OS ==='web') // MAY BE NEED TO IMPROVE
-        ? 'text-sm leading-[18px] text-neutral-800 dark:text-neutral-200' 
-        : 'text-base leading-[20px] text-neutral-800 dark:text-neutral-200';
+        ? 'text-[14px] leading-[18px] text-neutral-800 dark:text-neutral-200' 
+        : 'text-[16px] leading-[20px] text-neutral-800 dark:text-neutral-200';
     if (!data)
         return null;
     let html = data.replace(/\n|\r/g, '').replace(/&nbsp;/g, ' ');

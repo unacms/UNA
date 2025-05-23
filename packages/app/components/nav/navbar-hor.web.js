@@ -42,7 +42,7 @@ const HeaderLine = memo(
             ).length > 0
 
         return (
-            <View className="flex-row w-[360px] gap-x-4 px-4 items-center ">
+            <View className="flex-row w-[360px] gap-x-[12px] px-[12px] items-center ">
                 
                 {headerSettings.menu && isDrawer && (
                     <View className="lg:hidden ">
@@ -184,7 +184,7 @@ export default function (props) {
                                                         startDecorator="MessageSquare"
                                                         id="m2"
                                                         size="sm"
-                                                        ring="p-1"
+                                                        hitSlop={4}
                                                         addon={{
                                                             variant: 'primary',
                                                             text: currentUser
@@ -219,7 +219,7 @@ export default function (props) {
                                             tooltip="Account"
                                             rounded
                                             size="sm"
-                                            ring="p-1"
+                                            hitSlop={4}
                                             aria-label="Account"
                                             alt={t('Account')}
                                             startDecorator="UserRound"

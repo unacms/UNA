@@ -99,7 +99,7 @@ export default function ContextSelector({ data, url }) {
                                     <Text className="text-lg font-semibold text-neutral-700 dark:text-neutral-300">{data.create.title}</Text>
                                 </Row>
                             </Link>}
-                             {data.links.map(item => 
+                             {data.links && Array.isArray(data.links) && data.links.map(item => 
                                 <Link className="w-full" href={item.url}>
                                     <Row className="w-full p-2 gap-x-3 items-center">
                                         <View className="items-center w-10 h-10 p-1 justify-center bg-bgritem border border-bdr dark:bg-bgritem-d dark:border-bdr-dark rounded-[10px]">

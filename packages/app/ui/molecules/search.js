@@ -34,7 +34,7 @@ export default function ElementSearch(oProps) {
     ) : (
         <Row>
             <View key="ddp-trigger" className="flex-row">
-                <ButtonRef title={oProps.title === undefined ? "" : oProps.title} variant="secondary" startDecorator={oParams?.trigger?.icon ? oParams?.trigger.icon : "Search"} rounded size="sm" ring="p-1" tooltip={oProps.tooltip === undefined ? "Search" : oProps.tooltip} onPress={() => handleOpenPopupDefault()} {...oParams?.trigger} />
+                <ButtonRef title={oProps.title === undefined ? "" : oProps.title} variant="secondary" startDecorator={oParams?.trigger?.icon ? oParams?.trigger.icon : "Search"} rounded size="sm" hitSlop={4} tooltip={oProps.tooltip === undefined ? "Search" : oProps.tooltip} onPress={() => handleOpenPopupDefault()} {...oParams?.trigger} />
             </View>
         </Row>
     );
@@ -62,7 +62,7 @@ export function SearchPanel(props) {
                             setInputValue(value)
                         }}
                     />
-                    <Link href={'/search-keyword?keyword=' + inputValue + '&section=' + props.section}><Button variant="outline" ring="p-1" size="sm" endDecorator="Search" /></Link>
+                    <Link href={'/search-keyword?keyword=' + inputValue + '&section=' + props.section}><Button variant="outline" hitSlop={4} size="sm" endDecorator="Search" /></Link>
                 </Row>
             </View>
         </View>
@@ -185,7 +185,7 @@ export function ElementSearchData(oProps) {
 
     const cnt2 = (
         
-            <Button variant="link" size="sm" fullWidth endDecorator="ChevronsRight" title={sTxtViewExtended} onPress={() => handleRedirect()} />
+            <Button variant="link" size="sm" hitSlop={4} fullWidth endDecorator="ChevronsRight" title={sTxtViewExtended} onPress={() => handleRedirect()} />
         
     );
 
@@ -231,12 +231,12 @@ export function ElementSearchData(oProps) {
             </View>
                 <BottomSheetScrollView keyboardShouldPersistTaps="always" keyboardDismissMode="none">
                     {cnt}
-                    <View className="h-20 w-full bg-red-500"></View>
+                    
                     <Redirect ref={redirectdRef} />
                     {
                         (!!inputValue && appSetting('layout', 'extended_search')) && (
                             <View className="hidden flex-row items-center mb-2 justify-end">
-                                <Button variant="text" size="sm" rounded endDecorator="ChevronsRight" title={sTxtViewExtended} onPress={() => handleRedirect()} />
+                                <Button variant="text" size="sm" hitSlop={4} rounded endDecorator="ChevronsRight" title={sTxtViewExtended} onPress={() => handleRedirect()} />
                             </View>
                         )
                     }

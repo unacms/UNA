@@ -118,10 +118,10 @@ const colors = {
         d: 'rgba(0,0,0,1)',
     },
     bgritem: {
-        DEFAULT: 'rgba(243,244,246,1)',
-        h: 'rgba(229,231,235,1)',
-        d: 'rgba(31,41,55,1)',
-        dh: 'rgba(55,65,81,1)',
+        DEFAULT: 'rgba(110,115,130,0.15)',
+        h: 'rgba(110,115,130,0.25)',
+        d: 'rgba(110,115,130,0.15)',
+        dh: 'rgba(110,115,130,0.25)',
 
     },
     bgritemprimary: {

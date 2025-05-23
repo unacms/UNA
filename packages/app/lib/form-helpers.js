@@ -29,11 +29,15 @@ export function inputByKey(array, value) {
     return array.find(obj => obj['key'] === value);
 }
 
-export function getEditorHeight(height, initialHeight, paddings = 16, maxHeight = 160) {
-    if (height < initialHeight-paddings) {
-        return initialHeight;
-    }
+export function getEditorHeight(reportedContentHeight, minVisualHeight, totalChromeHeight, growthStep, maxHeight) {
+    const contentSpaceInMinVisualHeight = minVisualHeight - totalChromeHeight;
 
-    const h = Math.max(height + paddings, initialHeight+paddings);
-    return Math.min(h > initialHeight ? h : initialHeight, maxHeight);
+    if (reportedContentHeight <= contentSpaceInMinVisualHeight) {
+        return minVisualHeight;
+    } else {
+        const overflowHeight = reportedContentHeight - contentSpaceInMinVisualHeight;
+        const stepsNeeded = Math.ceil(overflowHeight / growthStep);
+        let newHeight = minVisualHeight + (stepsNeeded * growthStep);
+        return Math.min(newHeight, maxHeight);
+    }
 }

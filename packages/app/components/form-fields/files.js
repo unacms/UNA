@@ -445,7 +445,7 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
             }
         }
     };
-    let button = <Button startDecorator={props.icon ? props.icon : sIcon} title={props.title ? props.title : sTitle} size={props.size ? props.size : "base"} variant={props.variant ? props.variant : "text"} rounded={props.rounded ? props.rounded : false} onPress={selectImage} />
+    let button = <Button startDecorator={props.icon ? props.icon : sIcon} title={props.title ? props.title : sTitle} size={props.size ? props.size : "base"} variant={props.variant ? props.variant : "text"} rounded={props.rounded ? props.rounded : false} onPress={selectImage} {...(props.hitSlop && { hitSlop: props.hitSlop })} />
 
     if (!bMultiple) {
         let img = imagesList && imagesList.length > 0 ? imagesList[0] : null;
@@ -515,7 +515,7 @@ function GhostsList(imagesList, bMultiple, handleDelete, props) {
                     isVideo ? (
                         <Video src={img.uri || img.file_url} />
                     ) : (
-                        <View className="h-16 w-16 text-neutral-700 dark:text-neutral-300 items-center justify-center"><Icon icon="File" className="w-8 h-8" size={32} /></View>
+                        <View className="h-16 w-16 text-neutral-700 dark:text-neutral-300 items-center justify-center"><Icon icon="File" className="w-[36px] h-[36px]" size={36} /></View>
                     )
 
                 )}
