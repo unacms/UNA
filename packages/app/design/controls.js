@@ -261,7 +261,7 @@ export function ButtonsGroup({
     ...rest
 }) {
     let sClassContainer = 'group';
-    sClassContainer += fullWidth ? ' flex-auto' : ' w-fit m-0 truncate';
+    sClassContainer += fullWidth ? ' w-full flex-auto' : '  m-0 truncate';
 
     
     sClassContainer += ThemeCssClassesButtonGroups['u-btn-' + variant + '-cnt'] ? ThemeCssClassesButtonGroups['u-btn-' + variant + '-cnt'] + ' ' : ' ';
@@ -400,34 +400,30 @@ export const Button = (props) => {
 
     const nativeHitSlopOpt = useMemo(() => {
         if (Platform.OS === 'web') return undefined;
-        if (typeof hitSlop === 'number' && hitSlop > 0) {
+        if (typeof hitSlop === 'number') {
             return { top: hitSlop, bottom: hitSlop, left: hitSlop, right: hitSlop };
         } else if (typeof hitSlop === 'object' && hitSlop !== null) {
-            const filteredSlop = {};
-            if (hitSlop.top > 0) filteredSlop.top = hitSlop.top;
-            if (hitSlop.bottom > 0) filteredSlop.bottom = hitSlop.bottom;
-            if (hitSlop.left > 0) filteredSlop.left = hitSlop.left;
-            if (hitSlop.right > 0) filteredSlop.right = hitSlop.right;
-            return Object.keys(filteredSlop).length > 0 ? filteredSlop : undefined;
+            return hitSlop;
         }
         return undefined;
     }, [hitSlop]);
 
-    const webHitSlopInlineStyle = useMemo(() => {
-        if (Platform.OS !== 'web') return {};
-        const style = {};
+    const webHitSlopPaddingClasses = useMemo(() => {
+        if (Platform.OS !== 'web') return '';
+        let top, bottom, left, right;
         if (typeof hitSlop === 'number' && hitSlop > 0) {
-            style.paddingTop = hitSlop;
-            style.paddingBottom = hitSlop;
-            style.paddingLeft = hitSlop;
-            style.paddingRight = hitSlop;
+            top = bottom = left = right = hitSlop;
         } else if (typeof hitSlop === 'object' && hitSlop !== null) {
-            if (hitSlop.top > 0) style.paddingTop = hitSlop.top;
-            if (hitSlop.bottom > 0) style.paddingBottom = hitSlop.bottom;
-            if (hitSlop.left > 0) style.paddingLeft = hitSlop.left;
-            if (hitSlop.right > 0) style.paddingRight = hitSlop.right;
+            ({ top, bottom, left, right } = hitSlop);
+        } else {
+            return '';
         }
-        return style;
+        let classes = [];
+        if (top !== undefined && top > 0) classes.push(`pt-[${top}px]`);
+        if (bottom !== undefined && bottom > 0) classes.push(`pb-[${bottom}px]`);
+        if (left !== undefined && left > 0) classes.push(`pl-[${left}px]`);
+        if (right !== undefined && right > 0) classes.push(`pr-[${right}px]`);
+        return classes.join(' ');
     }, [hitSlop]);
 
     const { sIconContainer, iIconSize, sTitleContainer, sizeSpecificClasses } = useMemo(() => {
@@ -456,7 +452,7 @@ export const Button = (props) => {
 
     const sClassVisualButtonCore = useMemo(() => {
         let coreClasses = ' flex-row items-center ';
-        coreClasses += ' w-fit ';
+        coreClasses += fullWidth ? ' flex-auto w-full ' : ' w-fit ';
         if (disabled && variant !== 'custom') {
              coreClasses += 'opacity-50 ';
         } else if (disabled && variant === 'custom' && !className.includes('opacity-')){
@@ -466,8 +462,7 @@ export const Button = (props) => {
         if (variant !== 'custom') {
             coreClasses += (solid ? '' : (ThemeCssClassesButton[`u-btn-${variant}-trans`] || '')) + (ThemeCssClassesButton[`u-btn-${variant}-cnt`] || '') + ' ';
         } else {
-            // If variant is custom, props.className was for the wrapper. We need a different prop for custom Pressable classes.
-            // For now, custom variant Pressable won't get props.className here.
+            coreClasses += className;
         }
         if (bgColor) {
             coreClasses = coreClasses.replaceAll(/bg-\S+/g, '').replaceAll(/ring-\S+/g, '') + ` ${bgColor} `;
@@ -482,9 +477,9 @@ export const Button = (props) => {
             coreClasses += ` ${pressedClasses?.pressed_container || ThemeCssClassesButton[`u-btn-${variant}-pressed-cnt`] || ThemeButtonSizes.pressed_container || ''} `;
         }
         return coreClasses.trim();
-    }, [disabled, variant, solid, align, pressed, bgColor, pressedClasses]);
+    }, [fullWidth, disabled, variant, solid, className, align, pressed, bgColor, pressedClasses]);
 
-    const finalPressableClasses = `${sClassVisualButtonCore} ${sizeSpecificClasses}`.trim();
+    const finalVisualButtonClasses = `${sClassVisualButtonCore} ${sizeSpecificClasses}`.trim();
 
     const sClassText = useMemo(() => {
         let textClasses = ' whitespace-nowrap text-ellipsis overflow-hidden tracking-tight';
@@ -522,102 +517,50 @@ export const Button = (props) => {
         </>
     );
 
-    const hasOnPressProp = typeof onPress === 'function';
+    const commonPressableProps = {
+        ...rest,
+        role: rest['aria-haspopup'] === 'menu' ? 'menubutton' : 'button',
+        ...(rest.alt && { 'aria-label': rest.alt, alt: rest.alt }),
+        onPress: onPress && !disabled ? onPress : undefined,
+        disabled: disabled,
+        ...(forwardedRef && { ref: forwardedRef }),
+    };
 
-    // Define the core pressable element
-    const pressableElement = (
-        <Pressable
-            className={finalPressableClasses}
-            role={rest['aria-haspopup'] === 'menu' ? 'menubutton' : 'button'}
-            {...(rest.alt && { 'aria-label': rest.alt, alt: rest.alt })}
-            disabled={disabled}
-            {...(forwardedRef && { ref: forwardedRef })}
-            {...(hasOnPressProp && { onPress: !disabled ? onPress : undefined })}
-            {...(Platform.OS !== 'web' && nativeHitSlopOpt && { hitSlop: nativeHitSlopOpt })}
-            {...rest}
-        >
-            {buttonInnards}
-        </Pressable>
+    let pressableElementItself;
+
+    if (Platform.OS === 'web' && webHitSlopPaddingClasses) {
+        const outerPressableDisabledClass = (disabled && variant !== 'custom') ? 'opacity-50' : '';
+
+        pressableElementItself = (
+            <Pressable
+                className={`flex items-center justify-center ${webHitSlopPaddingClasses} ${outerPressableDisabledClass}`.trim()}
+                {...commonPressableProps}
+            >
+                <View className={finalVisualButtonClasses}> 
+                    {buttonInnards}
+                </View>
+            </Pressable>
+        );
+    } else {
+        pressableElementItself = (
+            <Pressable
+                className={finalVisualButtonClasses}
+                {...commonPressableProps}
+                {...(nativeHitSlopOpt && { hitSlop: nativeHitSlopOpt })}
+            >
+                {buttonInnards}
+            </Pressable>
+        );
+    }
+
+    const buttonContentWrapper = (
+        <View className={`web:group relative ${fullWidth ? 'flex-auto' : 'w-fit'}`}> 
+            {pressableElementItself}
+            {!isTitle && oButtonAddon} 
+        </View>
     );
 
-    // Determine root element and its classes/styles
-    if (hasOnPressProp) {
-        const hasWebHitSlop = Platform.OS === 'web' && Object.keys(webHitSlopInlineStyle).length > 0;
-        if (hasWebHitSlop) {
-            // Web with hitSlop: Outer Pressable for hit area, then a simple View for visual content
-            // This outer Pressable now takes the props.className for its own layout control.
-            const outerPressableDisabledClass = (disabled && variant !== 'custom') ? 'opacity-50' : '';
-            const webHitSlopPressable = (
-                <Pressable
-                    className={`flex items-center justify-center ${outerPressableDisabledClass} ${className}`.trim()}
-                    style={webHitSlopInlineStyle}
-                    role={rest['aria-haspopup'] === 'menu' ? 'menubutton' : 'button'}
-                    {...(rest.alt && { 'aria-label': rest.alt, alt: rest.alt })}
-                    disabled={disabled}
-                    {...(forwardedRef && { ref: forwardedRef })}
-                    onPress={!disabled ? onPress : undefined}
-                    {...rest}
-                >
-                    <View className={finalPressableClasses}>
-                        {buttonInnards}
-                    </View>
-                </Pressable>
-            );
-            return showTooltip ? <Tooltip content={tooltip}>{webHitSlopPressable}</Tooltip> : webHitSlopPressable;
-        } else {
-            // Native, or Web without active webHitSlop. className applies to the wrapper View.
-            // The pressableElement itself is already defined.
-            const wrapperClasses = [
-                'web:group',
-                'relative',
-                'flex',
-                'items-center',
-                'justify-center',
-                fullWidth ? 'flex-auto w-full' : 'w-fit',
-                className,
-            ].filter(Boolean).join(' ');
-
-            const buttonContentWrapper = (
-                <View className={wrapperClasses}>
-                    {pressableElement}
-                    {!isTitle && oButtonAddon}
-                </View>
-            );
-            return showTooltip ? <Tooltip content={tooltip}>{buttonContentWrapper}</Tooltip> : buttonContentWrapper;
-        }
-    } else {
-        // NO onPress passed to <Button /> (passive trigger case)
-        // className applies to the root wrapper. WebHitSlop also applies to this wrapper.
-        const visualButtonOnly = (
-            <View className={finalPressableClasses} {...(forwardedRef && {ref: forwardedRef})} > 
-                {buttonInnards}
-            </View>
-        );
-        const wrapperStyle = (Platform.OS === 'web' && Object.keys(webHitSlopInlineStyle).length > 0) 
-            ? webHitSlopInlineStyle 
-            : {};
-        const nonPressableWrapperClasses = [
-            'web:group',
-            'relative',
-            'flex',
-            'items-center',
-            'justify-center',
-            fullWidth ? 'flex-auto w-full' : 'w-fit',
-            className,
-        ].filter(Boolean).join(' ');
-
-        const buttonContentWrapperWhenNotPressable = (
-            <View 
-                className={nonPressableWrapperClasses}
-                style={wrapperStyle} 
-                {...rest}
-            > 
-                {visualButtonOnly}
-                {!isTitle && oButtonAddon}
-            </View>
-        );
-        return showTooltip ? <Tooltip content={tooltip}>{buttonContentWrapperWhenNotPressable}</Tooltip> : buttonContentWrapperWhenNotPressable;
-    }
+    return showTooltip ? <Tooltip content={tooltip}>{buttonContentWrapper}</Tooltip> : buttonContentWrapper;
 };
 
 export const ButtonRef = React.forwardRef((props, forwardedRef) => {

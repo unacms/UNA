@@ -88,7 +88,7 @@ export default function FormFieldSubmit(props) {
         'gap-x-2',
         'justify-center',
         'items-center',
-        'h-full'
+        
     ]
         .filter(Boolean)
         .join(' ');

@@ -37,7 +37,7 @@ export default function FormPost(props) {
         props.data.inputs['allow_comments'].caption = '';
 
     return (
-        <View className="w-full max-w-5xl flex-col px-3 overflow-visible mx-2">
+        <View className="w-full max-w-5xl flex-col overflow-visible mx-2">
             <View className="  overflow-hidden flex-col  overflow-visible">
                 <View className=" flex-row flex-wrap gap-x-2  flex-auto justify-between overflow-visible">
                     <View className=" flex-auto mb-4 text-base font-bold text-neutral-800 my-auto overflow-visible">
