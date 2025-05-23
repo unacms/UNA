@@ -120,8 +120,8 @@ export function CoverMenuMeta(props) {
             displayType="mixed"
             params={{
                 button_variant: 'text',
-                button_size: 'xs',
-                className: ' lg:flex-wrap',//lg:w-full lg:gap-y-2
+                button_size: 'sm',
+                className: ' lg:flex-wrap items-center',//lg:w-full lg:gap-y-2
             }}
         />
     )

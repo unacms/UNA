@@ -26,7 +26,7 @@ function renderLogoListItem(isActive) {
     return (
         <Link key="global-context" className="w-full" href="/">
             <Row className={`w-full p-2 gap-x-3 hover:bg-bgritem dark:hover:bg-bgritem rounded-xl items-center ${isActive ? 'bg-bgritemprimary dark:bg-bgritemprimary-d  rounded-xl' : ''}`}>
-                <View className={`items-center w-10 h-10 justify-center ${isActive ? 'border-primary/50 dark:border-primary-d/50' : ''} rounded-full`}>{appStatic('logo_mark')}</View>
+                <View className={`items-center justify-center ${isActive ? 'border-primary/50 dark:border-primary-d/50' : ''} rounded-full`}>{appStatic('logo_mark')}</View>
                 <Text className="text-lg font-semibold text-neutral-700 dark:text-neutral-300">{appStatic('logo_text')}</Text>
             </Row>
         </Link>
@@ -76,11 +76,11 @@ export default function ContextSelector({ data, url }) {
     return (
         <View className="flex-row items-center ">
             <Link href={contextRoot.url} >
-                <View className='flex-row items-center gap-x-1 items-center px-1.5 py-1 gap-x-2 web:group w-full flex-auto hover:bg-bgritem dark:hover:bg-bgritem-d rounded-xl'>
-                    <View className="items-center w-10 h-10 justify-center text-neutral-800 dark:text-neutral-200">
+                <View className='w-[200px] flex-row items-center gap-x-1 items-center px-1.5 py-1 gap-x-2 web:group w-full flex-auto hover:bg-bgritem dark:hover:bg-bgritem-d rounded-xl'>
+                    <View className="items-center justify-center text-neutral-800 dark:text-neutral-200">
                         {contextRoot.image}
                     </View>
-                    <Text className="text-lg px-2 whitespace-nowrap leading-[20px] font-semibold text-neutral-800 dark:text-neutral-200">{contextRoot.name}</Text></View>
+                    <Text className="text-lg px-2 whitespace-nowrap leading-[20px] font-semibold text-neutral-800 dark:text-neutral-200 overflow-hidden truncate">{contextRoot.name}</Text></View>
             </Link>
             <View>
                 <DropdownPopup
@@ -91,14 +91,24 @@ export default function ContextSelector({ data, url }) {
                         <ScrollView>
                             {renderLogoListItem(!data.current?.id)}
                             {data.list.map(item => renderListItem(item, item.id === data.current?.id))}
-                            <Link className="w-full" href={data.create.url}>
+                            {!!data.create && <Link className="w-full" href={data.create.url}>
                                 <Row className="w-full p-2 gap-x-3 items-center">
                                     <View className="items-center w-10 h-10 p-1 justify-center bg-bgritem border border-bdr dark:bg-bgritem-d dark:border-bdr-dark rounded-[10px]">
                                         <Icon icon="Plus" />
                                     </View>
                                     <Text className="text-lg font-semibold text-neutral-700 dark:text-neutral-300">{data.create.title}</Text>
                                 </Row>
-                            </Link>
+                            </Link>}
+                             {data.links.map(item => 
+                                <Link className="w-full" href={item.url}>
+                                    <Row className="w-full p-2 gap-x-3 items-center">
+                                        <View className="items-center w-10 h-10 p-1 justify-center bg-bgritem border border-bdr dark:bg-bgritem-d dark:border-bdr-dark rounded-[10px]">
+                                            <Icon icon="Plus" />
+                                        </View>
+                                        <Text className="text-lg font-semibold text-neutral-700 dark:text-neutral-300">{item.title}</Text>
+                                    </Row>
+                                </Link>
+                            )}
                         </ScrollView>
                     </View>
                 </DropdownPopup>
