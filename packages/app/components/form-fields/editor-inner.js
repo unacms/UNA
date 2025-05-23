@@ -86,7 +86,6 @@ export default function RftText({ name, value = '', numLines = 4, minHeight, max
         color:  ${colors.text};
         margin:0;
         white-space: pre;
-        
         overflow: hidden;
     }
     img{
@@ -95,10 +94,9 @@ export default function RftText({ name, value = '', numLines = 4, minHeight, max
     body P {
         margin-bottom: 4px;
         margin-top: 4px;
-        
     }
     body P:first-child {
-        margin-top: ${Platform.OS == 'web' ? '4' : '6'}px;
+        margin-top: 4px;
     }
     .is-editor-empty:first-child::before{
         float:none !important;

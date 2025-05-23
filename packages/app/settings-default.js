@@ -861,7 +861,7 @@ export  const settingsDefault = {
             },
             base: {
                 rounded: ' rounded-[12px] ',
-                padding: ' h-[48px] px-[12px] overflow-hidden ',
+                padding: ' h-[48px] min-w-[48px] px-[12px] overflow-hidden ',
                 icon_container:
                     ' h-[24px] w-[24px] flex items-center justify-center ',
                 title_container: ' px-[4px] ',
