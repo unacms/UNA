@@ -87,7 +87,7 @@ export default function PageLayout(props) {
 
     return (
         <View {...viewProps} className={`flex-1 w-full h-full max-w-5xl mx-auto`}>
-            <View className="w-full flex-1 bg-bgrcard dark:bg-bgrcard-d lg:rounded-t-2xl lg:mt-4 px-3 sm:p-4">
+            <View className="w-full flex-1 bg-bgrcard dark:bg-bgrcard-d lg:rounded-t-2xl lg:mt-4 ">
                 <View pointerEvents="box-none" className='w-full flex-1' style={{ marginBottom: formHeight  }}>
                     <CommentsBrowse
                         scrollProps={
@@ -96,6 +96,7 @@ export default function PageLayout(props) {
                                 pageData: props.data,
                                 headerComponent: headerItems[0].data,
                                 isBackButton: true,
+                                padding: 16,
                             }
                         }
                         scrollToIndex={scrollToEnd}
@@ -110,7 +111,7 @@ export default function PageLayout(props) {
                 </View>
             </View>
             <KbAvoidingView>
-                <View onLayout={handleLayout} className=' border-bdrcard dark:border-bdrcard-d border-t border-bdr dark:border-bdr-d px-[8px] sm:px-3 web:fixed web:bottom-0 w-full max-w-5xl' style={{ backgroundColor: colors.barsBackground }}>
+                <View onLayout={handleLayout} className=' border-bdrcard dark:border-bdrcard-d px-[8px] sm:px-3 web:fixed web:bottom-0 w-full max-w-5xl' style={{ backgroundColor: colors.barsBackground }}>
                     <CommentsForm handleForm={setAddData} browse={commentsData.content[0].browse} module={commentsData?.content[0].browse?.data?.module || commentsData?.module} form={commentsData.content[0].form} formData={formData} requestUrl={commentsData.content[0].url} />
                 </View>
             </KbAvoidingView>

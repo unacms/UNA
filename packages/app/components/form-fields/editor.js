@@ -58,7 +58,6 @@ function PlainText(props) {
         input = <TextInputClear
             multiline
             editable
-            style={{ height: height }}
             placeholder={props.placeholder}
             onContentSizeChange={e => setHeight(e.nativeEvent.contentSize.height > 70 ? e.nativeEvent.contentSize.height : e.nativeEvent.contentSize.height < 32 ? 32 : e.nativeEvent.contentSize.height)}
             name={props.name}

@@ -1,4 +1,3 @@
-
 import { View, ViewRef, Pressable } from 'app/design/view'
 import { appSetting, menuItemsByName } from 'app/lib/util';
 import { componentsMap } from './menu-items/_map';
@@ -19,8 +18,9 @@ const ButtonEx = memo(({ visibleItemsCount, params }) => {
 
 const MenuItemEx = memo(({ item, index, sDisplayType, params }) => {
     const ItemType = componentsMap[item.display_type ? item.display_type : sDisplayType];
+    const newButtonVariant = params?.button_variant === 'none' ? '' : params?.button_variant;
     return (
-        <ItemType mode="dropdown-menu" key={item.id ? item.id : item.name} {...item} params={{ ...params, button_variant: 'none', button_size: 'sm' }} />
+        <ItemType mode="dropdown-menu" key={item.id ? item.id : item.name} {...item} params={{ ...params, button_variant: newButtonVariant, button_size: 'sm' }} />
     )
 });
 

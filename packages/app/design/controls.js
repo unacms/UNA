@@ -390,32 +390,17 @@ export const Button = (props) => {
         ...rest
     } = props;
 
-    const isIcon = !!startDecorator || !!endDecorator;
-
     const { colors } = Theme();
     const themeName = ThemeName();
     const { width } = useWindowDimensions();
     const showTooltip = useMemo(() => width >= LAYOUT_BREAKPOINTS.lg && tooltip, [width, tooltip]);
-
-    const colorIcon = useMemo(() => {
-        let a = ThemeCssClassesButton[`u-btn-${variant}-color-icon-${themeName}`];
-        /*if (!a){
-            if (variant === 'link') 
-                a = colors.primary;
-            if (variant === 'primary') 
-                a='rgb(243, 244, 246)';
-        }*/
-        return a;
-    }, [variant, ThemeName, colors]);
-
-  
 
     const sClassContainer = useMemo(() => {
         let classes = '  flex-row items-center ';
         classes += fullWidth ? ' flex-auto w-full ' : ' w-fit ';
         if (disabled) classes += 'opacity-50 ';
         if (variant !== 'custom') {
-            classes += (solid ? '' : ThemeCssClassesButton[`u-btn-${variant}-trans`]) +ThemeCssClassesButton[`u-btn-${variant}-cnt`]+ '  ';
+            classes += (solid ? '' : ThemeCssClassesButton[`u-btn-${variant}-trans`]) + ThemeCssClassesButton[`u-btn-${variant}-cnt`] + '  ';
         } else {
             classes += className;
         }
@@ -450,10 +435,15 @@ export const Button = (props) => {
         }
         classes += ' text-' + size + ' ';
         return classes;
-    }, [variant, ThemeCssClassesButton, classTextName, pressed, size, pressedClasses]);
+    }, [variant, ThemeCssClassesButton, classTextName, pressed, size, pressedClasses, textColor]);
+
+    const colorIcon = useMemo(() => {
+        let a = ThemeCssClassesButton[`u-btn-${variant}-color-icon-${themeName}`];
+        return a;
+    }, [variant, ThemeName, colors, ThemeCssClassesButton]);
 
     const { sIconContainer, iIconSize, sTitleContainer, sizeClasses } = useMemo(() => {
-        const titleVisible = !isIcon || !isNaN(title) || showTitleFromSize == '';
+        const titleVisible = !startDecorator && !endDecorator || !isNaN(title) || showTitleFromSize == '';
         let iconSize = 24;
         let iconContainerClass = '';
         let titleContainerClass = titleVisible ? '' : ' hidden ' + (showTitleFromSize ? showTitleFromSize : 'sm') + ':block ';
@@ -475,7 +465,7 @@ export const Button = (props) => {
             sTitleContainer: titleContainerClass,
             sizeClasses,
         };
-    }, [size, rounded, padding, variant, title, isIcon, showTitleFromSize]);
+    }, [size, rounded, padding, variant, title, startDecorator, endDecorator, showTitleFromSize]);
 
     const sButtonIconStart = useMemo(
         () =>

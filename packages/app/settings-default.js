@@ -471,7 +471,7 @@ export  const settingsDefault = {
     menu_items: {
         transpile_urls: [
             // URLS for tabs in native app index = tab index
-            { index: 1, url: '/friend-suggestions' },
+            // { index: 1, url: '/friend-suggestions' },
             { index: 1, url: '/friend-requests' },
             { index: 1, url: '/sent-friend-requests' },
         ],
@@ -854,7 +854,7 @@ export  const settingsDefault = {
                 padding: ' h-[40px] px-[10px] overflow-hidden ',
                 icon_container:
                     ' h-[20px] w-[20px] flex items-center justify-center ',
-                title_container: ' px-[4px] ',
+                title_container: ' px-[4px] native:text-[14px] ',
                 icon_size: 20,
                 icon_margin: ' mx-[4px] ', //conditional margin for icon container when title is present
                 title_margin: ' ', //conditional margin for text container when icon is presentconditional margin for text container when icon is present
@@ -889,9 +889,8 @@ export  const settingsDefault = {
             /*'u-btn-default-color-icon-light': 'rgb(243, 244, 246)',
             'u-btn-default-color-icon-dark': 'rgb(243, 244, 246)',*/
 
-            'u-btn-primary-cnt':
-                ' group bg-primary-500 dark:bg-primary-600 sm:hover:bg-primary-600 dark:sm:hover:bg-primary-700 ',
-            'u-btn-primary-text': '  font-medium text-white ',
+            'u-btn-primary-cnt': ' bg-blue-600 ',
+            'u-btn-primary-text': ' text-white font-medium ',
             'u-btn-primary-trans': ' web:duration-200 ',
             'u-btn-primary-color-icon-light': 'rgb(243, 244, 246)',
             'u-btn-primary-color-icon-dark': 'rgb(243, 244, 246)',
@@ -912,10 +911,8 @@ export  const settingsDefault = {
             /*'u-btn-danger-color-icon-light': 'rgb(243, 244, 246)',
             'u-btn-danger-color-icon-dark': 'rgb(243, 244, 246)',*/
 
-            'u-btn-text-cnt':
-                '  hover:bg-bgrbutton dark:hover:bg-bgrbutton-d bg-transparent active:bg-bgrbutton-h dark:active:bg-bgrbutton-dh text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
-            'u-btn-text-text':
-                ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50',
+            'u-btn-text-cnt': '  active:opacity-50 active:bg-bgrbutton-h dark:active:bg-bgrbutton-dh bg-transparent hover:bg-bgrbutton dark:hover:bg-bgrbutton-d ',
+            'u-btn-text-text': ' font-medium text-neutral-800 dark:text-neutral-200  ',
             'u-btn-text-trans': ' web:duration-200 ',
             /*'u-btn-text-color-icon-light': 'rgb(243, 244, 246)',
             'u-btn-text-color-icon-dark': 'rgb(243, 244, 246)',*/
@@ -957,9 +954,9 @@ export  const settingsDefault = {
                 ' text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
 
             'u-btn-group-item-secondary-cnt':
-                ' hover:bg-bgritem-h dark:hover:bg-bgritem-dh active:opacity-50  ',
+                ' bg-bgritem dark:bg-bgritem-d active:opacity-50 overflow-hidden flex flex-row',
             'u-btn-group-item-secondary-text':
-                ' font-medium text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-neutral-50 ',
+                ' font-medium text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-white ',
             'u-btn-group-item-secondary-icon':
                 ' text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
 
@@ -997,7 +994,7 @@ export  const settingsDefault = {
             'u-btn-text-cnt': 'flex flex-row active:opacity-50 items-center ',
 
             'u-btn-secondary-cnt':
-                ' bg-bgritem dark:bg-bgritem-d hover:bg-none dark:hover:bg-none active:opacity-50 overflow-hidden flex flex-row',
+                ' bg-bgritem dark:bg-bgritem-d active:opacity-50 overflow-hidden flex flex-row',
             'u-btn-secondary-text':
                 ' font-medium text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-white ',
             'u-btn-secondary-trans': ' duration-200 ',

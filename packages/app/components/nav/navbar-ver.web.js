@@ -43,7 +43,7 @@ const HeaderLine = memo(({ headerSettings, currentUser, uri, bSearch, menuPopup,
                     </Pressable>
                 </View>
             )}
-            <View className='justify-center px-4  my-3 gap-y-3 '>
+            <View className='justify-center px-4 my-3 gap-y-3 '>
 
                     <Link className=" flex flex-row group gap-x-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus:outline-primary/50 rounded-lg " href="/home" aria-label="Logo">
                             

@@ -373,7 +373,7 @@ export function CommentsBrowse({ scrollProps, browse, requestUrl, module, handle
 
     let header = commentData.total_count > 0 ? (
 
-        <Row className={'flex-row ' + (classesBrowse ? classesBrowse : 'items-center mb-3 pt-1 border-t border-bdr dark:border-bdr-d')}>
+        <Row className={'flex-row ' + (classesBrowse ? classesBrowse : 'items-center p-[16px] border-t border-bdr dark:border-bdr-d')}>
 
             <Text className='flex-auto text-base font-bold text-neutral-900 dark:text-neutral-50'>{title} ({commentData.total_count})</Text>
             {!appSetting('comments', 'hide_sort') && <View className="ml-4">

@@ -66,27 +66,27 @@ export default function Unit(props) {
     return (
         <>
             <Redirect ref={redirectdRef} />
-            <Card margin=" mb-[1px] sm:mx-2 sm:mb-4 " border=" border-bdrcard dark:border-bdrcard-d shadow-[0_1px_3px_0_rgba(0,0,0,0.05)] "  rounded=" sm:rounded-2xl ">
+            <Card margin=" mb-[1px] m-1  "  rounded=" sm:rounded-2xl ">
                 <Link className="group " href={data.url}>
                     <View className={`flex-row  sm:flex-col p-3 sm:p-1  sm:h-full`}>
                         <ImageSection data={data} imageSizes={imageSizes} />
                         <View className="flex-col pl-3 sm:p-2 flex-auto justify-between">
-                            <View className=''>
-                                <Text numberOfLines={1} className=" pb-2 text-lg leading-tight tracking-tight font-medium text-neutral-800 dark:text-neutral-200 group-hover:text-primary group-hover:dark:text-primary-d">
+                            <View className='gap-y-2'>
+                                <Text numberOfLines={1} className=" text-[16px] tracking-tight tracking-tight font-semibold text-neutral-800 dark:text-neutral-200">
                                    {data.title}
                                 </Text>
                                 
-                                <Row className="items-center h-6 ">
-                                    <View className="mr-2">
+                                <Row className="items-center gap-x-1 ">
+                                    
                                         <ProfilesListCnt data={isFollowers ? data.followers_list : (data.mutual_friends_count > 0 ? data.mutual_friends_list : data.friends_list)} />
-                                    </View>
-                                    <Text className="truncate text-sm leading-tight flex-auto text-neutral-600 dark:text-neutral-400">
+                                    
+                                    <Text className="truncate text-[14px] tracking-tight flex-auto text-neutral-600 dark:text-neutral-400">
                                         {isFollowers ? data?.followers_count + " followers" : friendsLabel}
                                     </Text>
                                 </Row>
                             </View>
                             <View className="flex-row sm:flex-col pt-3">
-                                <View className='w-1/2 sm:w-auto pr-2'>
+                                <View className='w-1/2 sm:w-full pr-2 sm:pr-0'>
                                     {oMenuItemPrimary}
                                 </View>
                                 {!!oMenuItemSecondary && <View className={`w-1/2 sm:w-auto ${!!oMenuItemPrimary && 'sm:mt-2'}`}>{oMenuItemSecondary}</View>}

@@ -9,7 +9,7 @@ export default function (props) {
 
   return (
     <View className={
-        props.addClassName + ' bg-bgrcard dark:bg-bgrcard-d border border-bdrcard dark:border-bdrcard-d shadow-[0_1px_3px_0_rgba(0,0,0,0.05)] ' + margin + ' ' + rounded + ' '
+        props.addClassName + ' ' + appSetting('card', 'default') + ' ' + margin + ' ' + rounded + ' '
       }
     >
       {props.children}

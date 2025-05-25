@@ -133,8 +133,8 @@ export default function UnitComments(props) {
 
 
     return (
-        <View className='w-full'>
-            <View className="flex-row gap-x-2">
+        <View className='w-full px-[16px] '>
+            <View className="flex-row gap-x-[8px]">
                 {cells}
                 <View className="w-[36px] z-50 flex-0 relative">
                     <Profile {...data.author_data} displayType="unit_wo_info" displaySize="sm" showInfo="false" />

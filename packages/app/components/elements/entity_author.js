@@ -35,8 +35,8 @@ export default function ElementEntityAuthor(oProps) {
                     <>
                         <Text className=" text-neutral-600 dark:text-neutral-400 font-medium text-sm "> in </Text>
                         <Profile {...oProps.data.entry_context} displayType="unit_wo_info" displaySize="xxs" />
-                        <Text className=" text-neutral-600 dark:text-neutral-400 font-medium text-sm ">
-                            <Link href={oProps.data.entry_context.url}><Text className="ml-[2px] text-neutral-600 dark:text-neutral-400 font-medium text-sm ">{oProps.data.entry_context.display_name}</Text></Link>
+                        <Text className=" text-neutral-600 dark:text-neutral-400 leading-[24px] font-medium text-[14px] ">
+                            <Link href={oProps.data.entry_context.url}><Text className="ml-[2px] text-neutral-600 dark:text-neutral-400 font-medium text-[12px] ">{oProps.data.entry_context.display_name}</Text></Link>
                         </Text>
                     </>
 
@@ -114,7 +114,7 @@ export default function ElementEntityAuthor(oProps) {
     const menuOptions = handleMenuManageSelect ? { onSelect: (oItem, event) => handleMenuManageSelect(oItem, event, setPageData) } : {};
 
     return (
-        <View className={false ? "mx-auto w-full max-w-5xl flex-row justify-between pt-4 px-4 sm:rounded-t-lg bg-bgrcard dark:bg-bgrcard-d sm:border-t  sm:m-0 border-bdr dark:border-bdr-d sm:border-x" : " w-full items-center flex-row justify-between  "}>
+        <View className={false ? "mx-auto w-full max-w-5xl flex-row justify-between pt-4 px-4 sm:rounded-t-lg bg-bgrcard dark:bg-bgrcard-d sm:border-t  sm:m-0 border-bdr dark:border-bdr-d sm:border-x" : " lg:p-4 w-full items-center flex-row justify-between  "}>
             <FormModal pageData={pageData} setPageData={setPageData} />
             <Redirect ref={redirectdRef} />
             {viewState.view == 'edited' && (<Modal
@@ -134,8 +134,11 @@ export default function ElementEntityAuthor(oProps) {
             </Modal>)
             }
 
-            <View className={oProps.data.text ? '' : 'flex-auto'}>
-                <Profile {...oProps.data.author_data} displayType="unit" displaySize="base" showInfo={sInfo} />
+            <View className={oProps.data.text ? '' : 'flex-auto hidden lg:flex'}>
+                <Profile {...oProps.data.author_data} displayType="unit" displaySize="lg" className='hidden lg:flex' showInfo={sInfo} />
+            </View>
+            <View className={oProps.data.text ? '' : 'flex-auto lg:hidden'}>
+                <Profile {...oProps.data.author_data} displayType="unit" displaySize="base" className='hidden lg:flex' showInfo={sInfo} />
             </View>
             {(oProps.data.text && false) && (
                 <View className='flex-auto overflow-hidden text-ellipsis w-1/2 lg:w-auto px-4'>

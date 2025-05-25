@@ -153,7 +153,7 @@ export default function FormComments(props) {
     
     let currentAttachmentButtonWidthClass;
     if (isWeb) {
-        currentAttachmentButtonWidthClass = 'w-[48px]';
+        currentAttachmentButtonWidthClass = 'p-1';
     } else {
         currentAttachmentButtonWidthClass = 'w-fit';
     }

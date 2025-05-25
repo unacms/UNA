@@ -77,8 +77,11 @@ export function handleFeedLayoutData(layoutData, data) {
 }
 
 export function fillTabs(menu, data, blocks, currentUser, useSectionAsMenu, leftSideBarBlocks) {
-    const m = menuItemsByName(menu.object, menu.items, currentUser, data.url, menu.config);
-    return m.map((item, index) => {
+    let menuItems = menuItemsByName(menu.object, menu.items, currentUser, data.url, menu.config);
+    // Forcefully filter out 'friend-suggestions'
+    menuItems = menuItems.filter(item => item.link !== 'friend-suggestions' && item.key !== 'friend-suggestions' && item.name !== 'friend-suggestions');
+    
+    return menuItems.map((item, index) => {
 
         item.link = item.link.replace('page/', '')
         //TOFIX
@@ -103,7 +106,7 @@ export function fillTabs(menu, data, blocks, currentUser, useSectionAsMenu, left
             i.ident = item.ident;
             i.addon = item.addon;
             if (i.link == 'friend-requests') {
-                i.addon = { text: item.addon, variant: 'primary' };
+                i.addon = { text: item.addon || '', variant: 'primary' };
             }
             i.menu_settings = item.settings;
             i.icon = item.icon;
@@ -137,7 +140,7 @@ export function fillTabs(menu, data, blocks, currentUser, useSectionAsMenu, left
             i.ident = item.ident;
             i.addon = item.addon;
             if (i.link == 'friend-requests') {
-                i.addon = { text: item.addon, variant: 'primary' };
+                i.addon = { text: item.addon || '', variant: 'primary' };
             }
             i.menu_settings = item.settings;
             i.icon = item.icon;
