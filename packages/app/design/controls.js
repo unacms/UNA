@@ -261,7 +261,7 @@ export function ButtonsGroup({
     ...rest
 }) {
     let sClassContainer = 'group';
-    sClassContainer += fullWidth ? ' w-full flex-auto' : '  m-0 truncate';
+    sClassContainer += fullWidth ? ' flex-auto' : ' w-fit m-0 truncate';
 
     
     sClassContainer += ThemeCssClassesButtonGroups['u-btn-' + variant + '-cnt'] ? ThemeCssClassesButtonGroups['u-btn-' + variant + '-cnt'] + ' ' : ' ';
@@ -385,182 +385,168 @@ export const Button = (props) => {
         rounded = false,
         solid = false,
         padding,
-        hitSlop = 0,
+        ring = '',
         children,
         ...rest
     } = props;
 
     const isIcon = !!startDecorator || !!endDecorator;
+
     const { colors } = Theme();
     const themeName = ThemeName();
     const { width } = useWindowDimensions();
     const showTooltip = useMemo(() => width >= LAYOUT_BREAKPOINTS.lg && tooltip, [width, tooltip]);
 
-    const colorIcon = useMemo(() => ThemeCssClassesButton[`u-btn-${variant}-color-icon-${themeName}`], [variant, themeName]);
+    const colorIcon = useMemo(() => {
+        let a = ThemeCssClassesButton[`u-btn-${variant}-color-icon-${themeName}`];
+        /*if (!a){
+            if (variant === 'link') 
+                a = colors.primary;
+            if (variant === 'primary') 
+                a='rgb(243, 244, 246)';
+        }*/
+        return a;
+    }, [variant, ThemeName, colors]);
 
-    const nativeHitSlopOpt = useMemo(() => {
-        if (Platform.OS === 'web') return undefined;
-        if (typeof hitSlop === 'number') {
-            return { top: hitSlop, bottom: hitSlop, left: hitSlop, right: hitSlop };
-        } else if (typeof hitSlop === 'object' && hitSlop !== null) {
-            return hitSlop;
-        }
-        return undefined;
-    }, [hitSlop]);
+  
 
-    const webHitSlopPaddingClasses = useMemo(() => {
-        if (Platform.OS !== 'web') return '';
-        let top, bottom, left, right;
-        if (typeof hitSlop === 'number' && hitSlop > 0) {
-            top = bottom = left = right = hitSlop;
-        } else if (typeof hitSlop === 'object' && hitSlop !== null) {
-            ({ top, bottom, left, right } = hitSlop);
+    const sClassContainer = useMemo(() => {
+        let classes = '  flex-row items-center ';
+        classes += fullWidth ? ' flex-auto w-full ' : ' w-fit ';
+        if (disabled) classes += 'opacity-50 ';
+        if (variant !== 'custom') {
+            classes += (solid ? '' : ThemeCssClassesButton[`u-btn-${variant}-trans`]) +ThemeCssClassesButton[`u-btn-${variant}-cnt`]+ '  ';
         } else {
-            return '';
+            classes += className;
         }
-        let classes = [];
-        if (top !== undefined && top > 0) classes.push(`pt-[${top}px]`);
-        if (bottom !== undefined && bottom > 0) classes.push(`pb-[${bottom}px]`);
-        if (left !== undefined && left > 0) classes.push(`pl-[${left}px]`);
-        if (right !== undefined && right > 0) classes.push(`pr-[${right}px]`);
-        return classes.join(' ');
-    }, [hitSlop]);
+        if (bgColor){
+            classes = classes.replaceAll(/bg-\S+/g, '').replaceAll(/ring-\S+/g, '') + ` ${bgColor} `;
+        }
+        if (variant === 'group-item-none') {
+            classes += 'justify-start ';
+        } else {
+            classes += `justify-${align} `;
+        }
+        if (pressed) {
+            classes= classes.replace(/\b(bg-[^\s]*)\b|\b(dark:bg-[^\s]*)\b/g, "").replace(/\s+/g, " ").trim();
+            classes += ` ${pressedClasses?.pressed_container || ThemeCssClassesButton[`u-btn-${variant}-pressed-cnt`] || ThemeButtonSizes.pressed_container} `;
+        }
+        return classes;
+    }, [fullWidth, disabled, variant, solid, ThemeCssClassesButton, className, align, pressed, bgColor, pressedClasses]);
 
-    const { sIconContainer, iIconSize, sTitleContainer, sizeSpecificClasses } = useMemo(() => {
+    const sClassText = useMemo(() => {
+        let classes = ' whitespace-nowrap text-ellipsis overflow-hidden tracking-tight';
+        if (variant !== 'custom') {
+            classes += ThemeCssClassesButton[`u-btn-${variant}-text`];
+        } else {
+            classes += ` ${classTextName}`;
+        }
+        if (textColor){
+            classes = classes.replaceAll(/text-\S+/g, '') + ` ${textColor} `;
+        }
+        if (pressed) {
+            classes += ` ${pressedClasses?.pressed_text || ThemeCssClassesButton[`u-btn-${variant}-pressed-text`] || ThemeButtonSizes.pressed_text} `;
+            
+        }
+        classes += ' text-' + size + ' ';
+        return classes;
+    }, [variant, ThemeCssClassesButton, classTextName, pressed, size, pressedClasses]);
+
+    const { sIconContainer, iIconSize, sTitleContainer, sizeClasses } = useMemo(() => {
         const titleVisible = !isIcon || !isNaN(title) || showTitleFromSize == '';
         let iconSize = 24;
         let iconContainerClass = '';
         let titleContainerClass = titleVisible ? '' : ' hidden ' + (showTitleFromSize ? showTitleFromSize : 'sm') + ':block ';
-        let currentSizeClasses = '';
+        let sizeClasses = '';
+
         const sClassDefaultRounding = !variant.startsWith('group-item') ? ThemeButtonSizes[size]?.rounded : '';
         const sClassFullRounding = !variant.startsWith('group-item') ? 'rounded-full' : '';
         const roundingClass = rounded ? sClassFullRounding : sClassDefaultRounding;
 
         if (variant != 'custom') {
-            currentSizeClasses = `${roundingClass} ${padding || ThemeButtonSizes[size]?.padding || ''} `;
-            iconContainerClass = `${ThemeButtonSizes[size]?.icon_container || ''} ${title ? (ThemeButtonSizes[size]?.icon_margin || '') : ''}`;
-            iconSize = ThemeButtonSizes[size]?.icon_size || 24;
-            titleContainerClass += title ? (ThemeButtonSizes[size]?.title_container || '') + (startDecorator || endDecorator ? (ThemeButtonSizes[size]?.title_margin || '') : '') : '';
+            sizeClasses = `${roundingClass} ${padding || ThemeButtonSizes[size]?.padding} `;
+            iconContainerClass = `${ThemeButtonSizes[size]?.icon_container} ${title ? ThemeButtonSizes[size]?.icon_margin : ''}`;
+            iconSize = ThemeButtonSizes[size]?.icon_size;
+            titleContainerClass += title ? ThemeButtonSizes[size]?.title_container + (startDecorator || endDecorator ? ThemeButtonSizes[size]?.title_margin : '') : '';
         }
         return {
-            sIconContainer: iconContainerClass.trim(),
+            sIconContainer: iconContainerClass,
             iIconSize: iconSize,
-            sTitleContainer: titleContainerClass.trim(),
-            sizeSpecificClasses: currentSizeClasses.trim(),
+            sTitleContainer: titleContainerClass,
+            sizeClasses,
         };
-    }, [size, rounded, padding, variant, title, isIcon, showTitleFromSize, startDecorator, endDecorator]);
+    }, [size, rounded, padding, variant, title, isIcon, showTitleFromSize]);
 
-    const sClassVisualButtonCore = useMemo(() => {
-        let coreClasses = ' flex-row items-center ';
-        coreClasses += fullWidth ? ' flex-auto w-full ' : ' w-fit ';
-        if (disabled && variant !== 'custom') {
-             coreClasses += 'opacity-50 ';
-        } else if (disabled && variant === 'custom' && !className.includes('opacity-')){
-             coreClasses += 'opacity-50 ';
-        }
+    const sButtonIconStart = useMemo(
+        () =>
+            startDecorator
+                ? getIcon2(
+                    startDecorator,
+                    classIconName,
+                    sClassText,
+                    sIconContainer,
+                    iIconSize,
+                    colorIcon,
+                    startDecorator
+                )
+                : null,
+        [startDecorator, classIconName, sClassText, sIconContainer, iIconSize, colorIcon]
+    );
 
-        if (variant !== 'custom') {
-            coreClasses += (solid ? '' : (ThemeCssClassesButton[`u-btn-${variant}-trans`] || '')) + (ThemeCssClassesButton[`u-btn-${variant}-cnt`] || '') + ' ';
-        } else {
-            coreClasses += className;
-        }
-        if (bgColor) {
-            coreClasses = coreClasses.replaceAll(/bg-\S+/g, '').replaceAll(/ring-\S+/g, '') + ` ${bgColor} `;
-        }
-        if (variant === 'group-item-none') {
-            coreClasses += 'justify-start ';
-        } else {
-            coreClasses += `justify-${align} `;
-        }
-        if (pressed) {
-            coreClasses = coreClasses.replace(/\b(bg-[^\s]*)\b|\b(dark:bg-[^\s]*)\b/g, "").replace(/\s+/g, " ").trim();
-            coreClasses += ` ${pressedClasses?.pressed_container || ThemeCssClassesButton[`u-btn-${variant}-pressed-cnt`] || ThemeButtonSizes.pressed_container || ''} `;
-        }
-        return coreClasses.trim();
-    }, [fullWidth, disabled, variant, solid, className, align, pressed, bgColor, pressedClasses]);
-
-    const finalVisualButtonClasses = `${sClassVisualButtonCore} ${sizeSpecificClasses}`.trim();
-
-    const sClassText = useMemo(() => {
-        let textClasses = ' whitespace-nowrap text-ellipsis overflow-hidden tracking-tight';
-        if (variant !== 'custom') {
-            textClasses += (ThemeCssClassesButton[`u-btn-${variant}-text`] || '');
-        } else {
-            textClasses += ` ${classTextName}`;
-        }
-        if (textColor){
-            textClasses = textClasses.replaceAll(/text-\S+/g, '') + ` ${textColor} `;
-        }
-        if (pressed) {
-            textClasses += ` ${pressedClasses?.pressed_text || ThemeCssClassesButton[`u-btn-${variant}-pressed-text`] || ThemeButtonSizes.pressed_text || ''} `;
-        }
-        textClasses += ' text-' + size + ' ';
-        return textClasses.trim();
-    }, [variant, classTextName, pressed, size, textColor, pressedClasses]);
-
-    const sButtonIconStart = useMemo(() => startDecorator ? getIcon2(startDecorator, classIconName, sClassText, sIconContainer, iIconSize, colorIcon, startDecorator) : null, [startDecorator, classIconName, sClassText, sIconContainer, iIconSize, colorIcon]);
-    const sButtonIconEnd = useMemo(() => endDecorator ? getIcon2(endDecorator, classIconName, sClassText, sIconContainer, iIconSize, colorIcon, endDecorator) : null, [endDecorator, classIconName, sClassText, sIconContainer, iIconSize, colorIcon]);
+    const sButtonIconEnd = useMemo(
+        () =>
+            endDecorator
+                ? getIcon2(
+                    endDecorator,
+                    classIconName,
+                    sClassText,
+                    sIconContainer,
+                    iIconSize,
+                    colorIcon,
+                    endDecorator
+                )
+                : null,
+        [endDecorator, classIconName, sClassText, sIconContainer, iIconSize, colorIcon]
+    );
     const isTitle = !!title;
     const oButtonAddon = getAddon(addon, isTitle);
 
-    const buttonInnards = (
-        <>
-            {sButtonIconStart}
-            {isTitle && (
-                <Text className={`${sClassText} ${sTitleContainer}`} numberOfLines={1}>
-                    {title}
-                </Text>
-            )}
-            {sButtonIconEnd}
-            {isTitle && oButtonAddon}
-            {children}
-        </>
-    );
+    const Cnt = onPress && !disabled ? Pressable : View;
+    const refProps = forwardedRef ? { ref: forwardedRef } : {};
 
-    const commonPressableProps = {
-        ...rest,
+  
+
+    const buttonAttributes = onPress && !disabled  ?{
+        ...(rest.alt ? { 
+            'aria-label': rest.alt,
+            alt: rest.alt 
+        } : {}),
         role: rest['aria-haspopup'] === 'menu' ? 'menubutton' : 'button',
-        ...(rest.alt && { 'aria-label': rest.alt, alt: rest.alt }),
-        onPress: onPress && !disabled ? onPress : undefined,
-        disabled: disabled,
-        ...(forwardedRef && { ref: forwardedRef }),
-    };
-
-    let pressableElementItself;
-
-    if (Platform.OS === 'web' && webHitSlopPaddingClasses) {
-        const outerPressableDisabledClass = (disabled && variant !== 'custom') ? 'opacity-50' : '';
-
-        pressableElementItself = (
-            <Pressable
-                className={`flex items-center justify-center ${webHitSlopPaddingClasses} ${outerPressableDisabledClass}`.trim()}
-                {...commonPressableProps}
+    } : {};
+    const buttonContent = (
+        <View className={`web:group ${ring} ${fullWidth ? 'flex-auto ' : ''}`}>
+            <Cnt
+                className={`${sClassContainer} ${sizeClasses}`}
+                {...rest}
+                {...buttonAttributes}
+                onPress={onPress && !disabled ? onPress : undefined}
+                {...refProps}
             >
-                <View className={finalVisualButtonClasses}> 
-                    {buttonInnards}
-                </View>
-            </Pressable>
-        );
-    } else {
-        pressableElementItself = (
-            <Pressable
-                className={finalVisualButtonClasses}
-                {...commonPressableProps}
-                {...(nativeHitSlopOpt && { hitSlop: nativeHitSlopOpt })}
-            >
-                {buttonInnards}
-            </Pressable>
-        );
-    }
-
-    const buttonContentWrapper = (
-        <View className={`web:group relative ${fullWidth ? 'flex-auto' : 'w-fit'}`}> 
-            {pressableElementItself}
-            {!isTitle && oButtonAddon} 
+                {sButtonIconStart}
+                {isTitle && (
+                    <Text className={`${sClassText} ${sTitleContainer}`} numberOfLines={1}>
+                        {title}
+                    </Text>
+                )}
+                {sButtonIconEnd}
+                {isTitle && oButtonAddon}
+                {children}
+            </Cnt>
+            {!isTitle && oButtonAddon}
         </View>
     );
 
-    return showTooltip ? <Tooltip content={tooltip}>{buttonContentWrapper}</Tooltip> : buttonContentWrapper;
+    return showTooltip ? <Tooltip content={tooltip}>{buttonContent}</Tooltip> : buttonContent;
 };
 
 export const ButtonRef = React.forwardRef((props, forwardedRef) => {
