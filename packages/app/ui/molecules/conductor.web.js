@@ -24,6 +24,8 @@ import { fetcher } from 'app/lib/fetcher';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { callFn } from 'app/lib/functions/call';
 import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal';
+import emitter from 'app/context/emitter';
+
 
 const conductorTheme = appSetting('theme', 'conductor');
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from');
@@ -158,6 +160,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
         let addonContent = callFn("getAddonForConductor", [item, index, currentUser])
 
         const handlePress = () => {
+            emitter.emit('dynamic_menu', { action: 'hide'});
             setIndex(index);
             getNumCols(windowWidth, routes[index], leftSideBar);
             window.history.pushState({}, '', '/' + key);

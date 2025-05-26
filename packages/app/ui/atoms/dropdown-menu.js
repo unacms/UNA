@@ -11,6 +11,7 @@ import { isEmoji, appSetting } from 'app/lib/util';
 import { SafeMenuTrigger } from 'app/ui/atoms/safe-menu-trigger';
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import DropdownMenuItem from 'app/components/menu-items/dropdown-menu-item'
+import emitter from 'app/context/emitter';
 
 const menuSettings = appSetting('theme', 'dropdown_menu');
 
@@ -31,6 +32,20 @@ function DropdownMenuPopup({ items, onSelect, children, defaultOpen, variant, sh
         setIsOpen(false);
         onSelect ? onSelect(item) : redirectdRef.current.redirect('' + item.link)
     }, [onSelect]);
+
+    useEffect(() => {
+        const subscription = emitter.addListener('dynamic_menu', (data) => {
+            if (data.action == 'hide') {
+                console.log("aaaaaaaaaaaa", 123)
+                setIsOpen(false);
+            }
+           
+        })
+
+        return () => {
+            subscription.remove()
+        }
+    }, [])
 
     return (
         <>
