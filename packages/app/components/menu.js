@@ -60,15 +60,13 @@ export default function ElementMenu(oProps) {
     const aExcept = oProps?.except || [''];
     const aExceptTitle = oProps?.except_title || ['BxTemplView', 'BxTemplFavorite', 'BxTemplFeature', 'BxTemplReport', 'BxTimelineModule'];
 
-    let sClassName = oProps?.params?.className || 'bx-menu ';
+    let sClassName = oProps?.params?.className || 'bx-menu gap-x-[8px]';
 
     //--- show vertical
     const bShowVertical = oProps?.params?.showVertical === true;
 
     sClassName += bShowVertical ? ' flex-col items-center gap-y-2 w-full ' : ' flex-row ';
     const oParams = oProps?.params || {};
-
-
 
 
     //--- horizontal menu items alignment

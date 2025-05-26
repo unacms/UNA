@@ -111,6 +111,49 @@ export default function FormComments(props) {
         }
     }, [formContext.formState.isSubmitted, formContext]);
 
+    const handleKeyPress = (e) => {
+        // rawEditorText is watched by formContext, hasText updates accordingly.
+        // We need to get the most current hasText state.
+        const currentText = formContext.getValues('cmt_text');
+        const currentHasText = stripTags(currentText || '').trim().length > 0;
+
+        if (Platform.OS === 'web') {
+            if (e.key === 'Enter') {
+                if (e.altKey) {
+                    // Alt+Enter on web: allow default (newline)
+                    return;
+                }
+                // Enter alone on web: prevent default and submit if hasText
+                e.preventDefault();
+                if (currentHasText) {
+                    props.handleSubmit();
+                }
+            }
+        } else { // Native (iOS/Android)
+            // For React Native, e is { nativeEvent: { key: 'Enter' } }
+            // Standard TextInput onKeyPress doesn't easily expose modifier keys (altKey).
+            // This means "Option+Enter for newline" is hard to distinguish from "Enter" alone.
+            // The current requirement is "Enter to submit".
+            // If cmt_text is multiline, this will make Enter submit, not add a newline by default.
+            if (e.nativeEvent.key === 'Enter') {
+                if (currentHasText) {
+                    props.handleSubmit();
+                    // Note: If the underlying component is a standard multiline TextInput,
+                    // this submits. To also allow newlines on native via Enter key differently,
+                    // the component would need more advanced capabilities or a different event.
+                }
+            }
+        }
+    };
+
+    const handleEditorEnterSubmit = () => {
+        const currentText = formContext.getValues('cmt_text');
+        const currentHasText = stripTags(currentText || '').trim().length > 0;
+        if (currentHasText) {
+            props.handleSubmit();
+        }
+    };
+
     let prevList = Object.values(imageSource).flat()
 
     props.data.inputs['cmt_submit'].hide_errors = true
@@ -132,7 +175,7 @@ export default function FormComments(props) {
         'rounded-[12px]',
         'px-[12px]',
         'py-[10px]',
-        'overflow-hidden'
+        
     ];
 
     const minVisualHeightWhenTyping = 92;
@@ -153,7 +196,7 @@ export default function FormComments(props) {
     
     let currentAttachmentButtonWidthClass;
     if (isWeb) {
-        currentAttachmentButtonWidthClass = 'p-1';
+        currentAttachmentButtonWidthClass = 'p-[4px]';
     } else {
         currentAttachmentButtonWidthClass = 'w-fit';
     }
@@ -211,7 +254,8 @@ export default function FormComments(props) {
                                 placeholder: 'Leave a comment...',
                                 noMargin: true,
                                 onHeight: checkEditorHeight,
-                                onFocus: setIsFocus
+                                onFocus: setIsFocus,
+                                onEnterSubmit: handleEditorEnterSubmit
                             }
                         )}
                         {getFormFieldByData(
@@ -237,7 +281,7 @@ export default function FormComments(props) {
                                     noMargin: true,
                                     size: 'sm',
                                     hitSlop: 4,
-                                    variant: 'secondary',
+                                    variant: 'text',
                                     asDefaultStorage: true,
                                     source: 'library',
                                 }
@@ -288,7 +332,7 @@ export default function FormComments(props) {
                         )}
                     </View>
                     {hasText && (
-                        <View className="absolute right-0 bottom-0 w-[48px] h-[48px] z-10">
+                        <View className="absolute right-0 bottom-0 w-[48px] h-[48px] p-[4px] z-10">
                             {getFormFieldByData(
                                 props.data.inputs['cmt_submit'],
                                 props.handleSubmit,
@@ -299,7 +343,7 @@ export default function FormComments(props) {
                                     notFullWidth: true,
                                     noMargin: true,
                                     icon_only: true,
-                                    icon: 'SendHorizontal',
+                                    icon: 'ArrowUp',
                                     size: 'sm',
                                     variant: 'primary',
                                     rounded: true,

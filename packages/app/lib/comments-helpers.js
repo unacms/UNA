@@ -373,7 +373,7 @@ export function CommentsBrowse({ scrollProps, browse, requestUrl, module, handle
 
     let header = commentData.total_count > 0 ? (
 
-        <Row className={'flex-row ' + (classesBrowse ? classesBrowse : 'items-center p-[16px] border-t border-bdr dark:border-bdr-d')}>
+        <Row className={'flex-row ' + (classesBrowse ? classesBrowse : 'items-center px-[16px] py-[12px] border-t border-bdr dark:border-bdr-d')}>
 
             <Text className='flex-auto text-base font-bold text-neutral-900 dark:text-neutral-50'>{title} ({commentData.total_count})</Text>
             {!appSetting('comments', 'hide_sort') && <View className="ml-4">
@@ -471,7 +471,7 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
                         const sResponse = await fetcher(`/api.php?r=${sUrl}&params[]=${formData.cmt_id}&params[]=${formData.cmt_object_id}`);
 
                         if (sResponse.data) {
-                            form.data.inputs.cmt_text.value = `<a class="bx-mention-link ${sResponse.data.add_classes}" ts="${formData.ts}" data-id="[object Object]" href="/mention${sResponse.data.id}" title="${sResponse.data.name}" dchar="@" data-profile-id="-1" contenteditable="false">${sResponse.data.name}</a> &shy; `;
+                            form.data.inputs.cmt_text.value = `<a class="bx-mention-link ${sResponse.data.add_classes}" ts="${formData.ts}" data-id="[object Object]" href="/mention${sResponse.data.id}" title="${sResponse.data.name.trim()}" dchar="@" data-profile-id="-1" contenteditable="false">${sResponse.data.name.trim()}</a>&shy;&nbsp;`;
                         }
                         else {
                             form.data.inputs.cmt_text.value = '';
@@ -479,10 +479,10 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
                     }
                     else {
                         if (formData.author.url == "/javascript:") {
-                            form.data.inputs.cmt_text.value = `<a class="bx-mention-link" ts="${formData.ts}" data-id="[object Object]" href="#" title="${formData.author.display_name}" dchar="@" data-profile-id="-1" contenteditable="false">${formData.author.display_name}</a> &shy; `;
+                            form.data.inputs.cmt_text.value = `<a class="bx-mention-link" ts="${formData.ts}" data-id="[object Object]" href="#" title="${formData.author.display_name.trim()}" dchar="@" data-profile-id="-1" contenteditable="false">${formData.author.display_name.trim()}</a>&shy;&nbsp;`;
                         }
                         else {
-                            form.data.inputs.cmt_text.value = '<a class="bx-mention-link" ts='+formData.ts+' href="' + formData.author.url + '">' + formData.author.display_name + '</a> ';
+                            form.data.inputs.cmt_text.value = '<a class="bx-mention-link" ts='+formData.ts+' href="' + formData.author.url + '">' + formData.author.display_name.trim() + '</a>&shy;&nbsp;';
                         }
 
                     }

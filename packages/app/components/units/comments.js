@@ -170,7 +170,7 @@ export default function UnitComments(props) {
                         </View>
                         {(viewState.view != 'edited' && imageList.length > 0) && <View className='max-w-xs w-full'><Carousel data={imageList} /></View>}
                     </View>
-                    {viewState.view != 'edited' && <View className=' flex-row w-full mt-1 mb-2 items-center'>
+                    {viewState.view != 'edited' && <View className=' flex-row w-full mb-[8px] mt-[2px] items-center'>
                         {(!!currentUser && !!props.handleReply && !props.module.includes('_reviews')) ? <View className='mr-2'>
                             <Button align="start" title={t("Reply")} size="xs" startDecorator="Reply" variant="text" onPress={() => handleReply(data)} rounded />
                         </View> : <View></View>

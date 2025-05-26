@@ -120,7 +120,7 @@ const parseHtmlToReact = (html, textStyles, parentKey = "0") => {
                 elements.push(
                     <Link key={getKey("link")} href={hrefMatch[1]} mode="text">
                         <View>
-                           <Text className={" text-primary " + ((srcClass && srcClass[1]) ? getPart("ParseHtmlClasses", [srcClass[1], 'link']) : '')}>{content} </Text>
+                           <Text className={" text-primary " + ((srcClass && srcClass[1]) ? getPart("ParseHtmlClasses", [srcClass[1], 'link']) : '')}>{content}</Text>
                         </View>
                     </Link>
                 );

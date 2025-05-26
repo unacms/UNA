@@ -114,7 +114,7 @@ export default function ElementEntityAuthor(oProps) {
     const menuOptions = handleMenuManageSelect ? { onSelect: (oItem, event) => handleMenuManageSelect(oItem, event, setPageData) } : {};
 
     return (
-        <View className={false ? "mx-auto w-full max-w-5xl flex-row justify-between pt-4 px-4 sm:rounded-t-lg bg-bgrcard dark:bg-bgrcard-d sm:border-t  sm:m-0 border-bdr dark:border-bdr-d sm:border-x" : " lg:p-4 w-full items-center flex-row justify-between  "}>
+        <View className={" lg:p-4 w-full items-center flex-row justify-between  "}>
             <FormModal pageData={pageData} setPageData={setPageData} />
             <Redirect ref={redirectdRef} />
             {viewState.view == 'edited' && (<Modal

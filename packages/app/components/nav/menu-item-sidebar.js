@@ -22,7 +22,7 @@ export function MenuItemSidebarWithWrapper({ link, title, index, icon, userUrl, 
 
 export function MenuItemSidebar({ title, icon, isActive, addon }) {
     return (
-        <Row className={`h-12 px-2 items-center gap-x-3 hover:bg-bgrbutton dark:hover:bg-bgrbutton-d group rounded-xl ${isActive && 'bg-primary/20 hover:bg-primary/20'}`}>
+        <Row className={`h-12 px-2 items-center gap-x-3 hover:bg-bgrbutton dark:hover:bg-bgrbutton-d group rounded-xl ${isActive && 'bg-bgritemprimary dark:bg-bgritemprimary-d hover:bg-bgritemprimary-h dark:hover:bg-bgritemprimary-dh'}`}>
             <Text className={`h-9 w-9 p-2 rounded-full ${isActive ? ' bg-primary text-white ' : 'bg-neutral-200 dark:bg-neutral-800 group-hover:bg-neutral-300 dark:group-hover:bg-neutral-700 text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900 dark:group-hover:text-neutral-100'}`}>
                 {isEmoji(icon) ? icon : <Icon icon={icon} size="20" />}
             </Text>

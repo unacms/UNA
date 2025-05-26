@@ -1,82 +1,120 @@
-import Field, { getValidationRules } from './_field';
-import { useController, useFormContext } from 'react-hook-form';
+import Field, { getValidationRules } from './_field'
+import { useController, useFormContext } from 'react-hook-form'
 import { InputMulti, Input, TextInputClear, Button } from 'app/design/controls'
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react'
 import { View, ScrollView } from 'app/design/view'
-import { DEFAULT_TOOLBAR_ITEMS, useEditorBridge, RichText, Toolbar, darkEditorTheme, TenTapStartKit, LinkBridge, CoreBridge, CodeBridge, useEditorContent, ImageBridge, DropCursorBridge, PlaceholderBridge } from '@10play/tentap-editor';
-import { useFilesData } from 'app/context/files';
-import { Keyboard } from 'react-native';
-import { Theme } from 'app/design/theme';
-import { getAlert, stripTags, stripTagsWithLinks } from 'app/lib/util';
+import {
+    DEFAULT_TOOLBAR_ITEMS,
+    useEditorBridge,
+    RichText,
+    Toolbar,
+    darkEditorTheme,
+    TenTapStartKit,
+    LinkBridge,
+    CoreBridge,
+    CodeBridge,
+    useEditorContent,
+    ImageBridge,
+    DropCursorBridge,
+    PlaceholderBridge,
+} from '@10play/tentap-editor'
+import { useFilesData } from 'app/context/files'
+import { Keyboard } from 'react-native'
+import { Theme } from 'app/design/theme'
+import { getAlert, stripTags, stripTagsWithLinks } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { KeyboardAvoidingView, Platform } from 'react-native'
-import { fetcher } from 'app/lib/fetcher';
+import { fetcher } from 'app/lib/fetcher'
 import { appSetting } from 'app/lib/util'
-import { ThemeName } from 'app/design/theme';
-import { TextInput } from 'react-native';
-import emitter from 'app/context/emitter';
+import { ThemeName } from 'app/design/theme'
+import { TextInput } from 'react-native'
+import emitter from 'app/context/emitter'
 
-export default function RftText({ name, value = '', numLines = 4, minHeight, maxHeight, onFocus, onBlur, html, ...props }) {
+export default function RftText({
+    name,
+    value = '',
+    numLines = 4,
+    minHeight,
+    maxHeight,
+    onFocus,
+    onBlur,
+    html,
+    ...props
+}) {
+    const unicFormName = `${props.form_name}` // for catch images in editor
 
-    const unicFormName = `${props.form_name}`; // for catch images in editor
-
-    let b = [...DEFAULT_TOOLBAR_ITEMS];
+    let b = [...DEFAULT_TOOLBAR_ITEMS]
     if (Platform.OS == 'web') {
         const images = [
-            "bold.png", "italic.png", "link.png", "checklist.png", "Aa.png",
-            "code.png", "underline.png", "strikethrough.png", "quote.png",
-            "ul.png", "ol.png", "indent.png", "unindent.png", "undo.png", "redo.png"
-        ];
+            'bold.png',
+            'italic.png',
+            'link.png',
+            'checklist.png',
+            'Aa.png',
+            'code.png',
+            'underline.png',
+            'strikethrough.png',
+            'quote.png',
+            'ul.png',
+            'ol.png',
+            'indent.png',
+            'unindent.png',
+            'undo.png',
+            'redo.png',
+        ]
 
         images.forEach((img, index) => {
-            b[index].image = () => `/editor/${img}`;
-        });
+            b[index].image = () => `/editor/${img}`
+        })
 
-        b.splice(4, 1);
+        b.splice(4, 1)
     }
-    const isToolBar = (html == 2 || html == 1)
-    const isPlainText = (html == 3);
-    const suggestionsHeight = 130;
-    const { filesData, setFilesData } = useFilesData();
-    const { field } = useController({ name, rules: {}, defaultValue: value });
-    const { colors } = Theme();
-    const formContext = useFormContext();
-    const [suggestions, setSuggestions] = useState([]);
-    const [keywordval, setKeyword] = useState(['', '']);
-    const [editorHeight, setEditorHeight] = useState(0);
-    const [isEnter, setIsEnter] = useState(false);
-    const [suggestionsSize, setSuggestionsSize] = useState([0, 0]);
-    const object_privacy_view = formContext.watch('object_privacy_view') || formContext.watch('cmt_privacy_view');
-    const object_id = formContext.watch('id');
-    const m = name == "cmt_text" ? "sys_cmts" : "bx_timeline";
+    const isToolBar = html == 2 || html == 1
+    const isPlainText = html == 3
+    const suggestionsHeight = 130
+    const { filesData, setFilesData } = useFilesData()
+    const { field } = useController({ name, rules: {}, defaultValue: value })
+    const { colors } = Theme()
+    const formContext = useFormContext()
+    const [suggestions, setSuggestions] = useState([])
+    const [keywordval, setKeyword] = useState(['', ''])
+    const [editorHeight, setEditorHeight] = useState(0)
+    const [isEnter, setIsEnter] = useState(false)
+    const [suggestionsSize, setSuggestionsSize] = useState([0, 0])
+    const object_privacy_view =
+        formContext.watch('object_privacy_view') ||
+        formContext.watch('cmt_privacy_view')
+    const object_id = formContext.watch('id')
+    const m = name == 'cmt_text' ? 'sys_cmts' : 'bx_timeline'
 
-    let url1 = '/searchExtended.php?action=get_mention';
-    if (m)
-        url1 += '&m=' + m;
+    let url1 = '/searchExtended.php?action=get_mention'
+    if (m) url1 += '&m=' + m
     if (object_privacy_view)
-        url1 += '&object_privacy_view=' + object_privacy_view;
-    if (object_id)
-        url1 += '&cid=' + object_id;
+        url1 += '&object_privacy_view=' + object_privacy_view
+    if (object_id) url1 += '&cid=' + object_id
 
     useEffect(() => {
-        if (keywordval[1] === '') return;
+        if (keywordval[1] === '') return
 
         const fetchData = async () => {
-            const url = url1 + `&symbol=${keywordval[1] === '#' ? '%23' : '%40'}&term=${keywordval[0]}`;
-            const result = await fetcher(url);
-            const p = result.map((k, index) => ({
-                ...k,
-                index,
-                ...(index === 0 && { selected: true })
-            })).slice(0, 4);
-            setSuggestions(p);
-        };
+            const url =
+                url1 +
+                `&symbol=${keywordval[1] === '#' ? '%23' : '%40'}&term=${
+                    keywordval[0]
+                }`
+            const result = await fetcher(url)
+            const p = result
+                .map((k, index) => ({
+                    ...k,
+                    index,
+                    ...(index === 0 && { selected: true }),
+                }))
+                .slice(0, 4)
+            setSuggestions(p)
+        }
 
-        fetchData();
-    }, [keywordval]);
-
-
-
+        fetchData()
+    }, [keywordval])
 
     let customCodeBlockCSS = `
     body{
@@ -141,7 +179,7 @@ export default function RftText({ name, value = '', numLines = 4, minHeight, max
         /* Experimental CSS transition for height changes within WebView */
         transition: height 0.15s ease-out, min-height 0.15s ease-out;
     }
-    `;
+    `
     if (isPlainText) {
         customCodeBlockCSS += `
         b, strong, font, u, s, i, em, span, code, h1, h2, h3, h4, h5, h6{
@@ -159,30 +197,26 @@ export default function RftText({ name, value = '', numLines = 4, minHeight, max
         `
     }
 
-    
-
     useEffect(() => {
-
         if (editor && field.value == '' && editor.getHTML() != field.value) {
-            console.log("editor.focus1", field.value, editor.getHTML())
-            editor.setContent(field.value);
-          //  editor.focus('end');
+            console.log('editor.focus1', field.value, editor.getHTML())
+            editor.setContent(field.value)
+            //  editor.focus('end');
         }
-    }, [field.value]);
+    }, [field.value])
 
     useEffect(() => {
         if (editor && editor.getHTML() != value) {
-             console.log("editor.focus2", value, editor.getHTML())
-            editor.setContent(value);
-           // editor.focus('end');
+            console.log('editor.focus2', value, editor.getHTML())
+            editor.setContent(value)
+            // editor.focus('end');
         }
-    }, [value]);
+    }, [value])
 
     const baseExtensions = [
         ImageBridge.configureExtension({
             inline: false,
             allowBase64: false,
-
         }),
         DropCursorBridge,
         LinkBridge.configureExtension({
@@ -193,68 +227,55 @@ export default function RftText({ name, value = '', numLines = 4, minHeight, max
         PlaceholderBridge.configureExtension({
             placeholder: props.placeholder,
             showOnlyWhenEditable: true,
-
         }),
         CodeBridge.configureCSS(customCodeBlockCSS), // Custom codeblock css
-    ];
-
+    ]
 
     const editor = useEditorBridge({
-
         autofocus: props.autofocus,
         avoidIosKeyboard: false,
         dynamicHeight: false,
         placeholder: props.placeholder,
         ...(ThemeName() === 'dark' && { theme: darkEditorTheme }),
         initialContent: field.value,
-        bridgeExtensions: [
-            ...TenTapStartKit,
-            ...baseExtensions
-        ],
-
-    });
+        bridgeExtensions: [...TenTapStartKit, ...baseExtensions],
+    })
 
     useEffect(() => {
         editor.setPlaceholder(props.placeholder)
-    }, [props.placeholder]);
+    }, [props.placeholder])
 
     useEffect(() => {
-
         const subscription = emitter.addListener('editor', (data) => {
-
             if (data.action == 'blur') {
                 if (data.timeout) {
                     setTimeout(() => {
-                        console.log("editor-blur", data, editor)
-                        editor.blur();
-                    }, data.timeout);
-                }
-                else {
-                    console.log("editor-blur", data, editor)
-                    editor.blur();
+                        console.log('editor-blur', data, editor)
+                        editor.blur()
+                    }, data.timeout)
+                } else {
+                    console.log('editor-blur', data, editor)
+                    editor.blur()
                 }
             }
             if (data.action == 'focus') {
                 if (data.timeout) {
                     setTimeout(() => {
-                        console.log("editor-focus", data, editor)
-                        editor.focus('end');
-
-                    }, 800);
-                }
-                else {
-                    console.log("editor-focus", data, editor)
-                    editor.focus('end');
+                        console.log('editor-focus', data, editor)
+                        editor.focus('end')
+                    }, 800)
+                } else {
+                    console.log('editor-focus', data, editor)
+                    editor.focus('end')
                 }
             }
-        });
+        })
 
         // Отписываемся при размонтировании
         return () => {
-            subscription.remove();
-        };
+            subscription.remove()
+        }
     }, [])
-
 
     useEffect(() => {
         if (formContext.formState.isSubmitted && props.kb_stay_open != true) {
@@ -263,118 +284,138 @@ export default function RftText({ name, value = '', numLines = 4, minHeight, max
             }, 800);
             */
         }
-    }, [formContext.formState.isSubmitted]);
+    }, [formContext.formState.isSubmitted])
 
-    const htmlContent = useEditorContent(editor, { type: 'html' });
+    const htmlContent = useEditorContent(editor, { type: 'html' })
     useEffect(() => {
         if (stripTags(htmlContent)) {
-            if (onFocus)
-                onFocus()
+            if (onFocus) onFocus()
         }
         if (isPlainText) {
-            field.onChange(stripTagsWithLinks(htmlContent, ['a', 'p', 'br', 'span']))
-        }
-        else {
+            field.onChange(
+                stripTagsWithLinks(htmlContent, ['a', 'p', 'br', 'span'])
+            )
+        } else {
             field.onChange(htmlContent)
         }
-    }, [htmlContent]);
+    }, [htmlContent])
 
     const processImages = (src, formName) => {
-        let images = [];
-        const fileName = src.split('/').pop() + '.png';
-        const fileTypeMatch = src.match(/\.([a-z0-9]+)$/i);
-        const fileType = fileTypeMatch ? `image/${fileTypeMatch[1]}` : 'image/png';
+        let images = []
+        const fileName = src.split('/').pop() + '.png'
+        const fileTypeMatch = src.match(/\.([a-z0-9]+)$/i)
+        const fileType = fileTypeMatch
+            ? `image/${fileTypeMatch[1]}`
+            : 'image/png'
 
         images.push({
             uri: src,
             fileName: fileName,
             mimeType: fileType,
-        });
+        })
 
         if (images.length > 0) {
-            setFilesData(getAlert('images:pasted', { images: images, form_name: formName }));
+            setFilesData(
+                getAlert('images:pasted', {
+                    images: images,
+                    form_name: formName,
+                })
+            )
         }
     }
 
     const insertMention = async (user, query) => {
-        const html = await editor.getHTML();
-        const mentionLink = `<a class="bx-mention-link ${user.classname}" href="${user.url}">${user.label}</a> &shy; `;
-        const updatedContent = html.replace(query, mentionLink);
-        editor.setContent(updatedContent);
+        const html = await editor.getHTML()
+        const mentionLink = `<a class="bx-mention-link ${user.classname}" href="${user.url}">${user.label.trim()}</a>&shy;`
+        const replacementStringWithNbsp = mentionLink + '&nbsp;'
+        const updatedContent = html.replace(query, replacementStringWithNbsp)
+        editor.setContent(updatedContent)
         setSuggestions([])
     }
 
     const moveSelected = (direction) => {
         setSuggestions((prevItems) => {
-            const index = prevItems.findIndex(item => item.selected);
-            if (index === -1) return prevItems;
-            const length = prevItems.length;
+            const index = prevItems.findIndex((item) => item.selected)
+            if (index === -1) return prevItems
+            const length = prevItems.length
             const newIndex =
-                direction === "up"
+                direction === 'up'
                     ? (index - 1 + length) % length
-                    : (index + 1) % length;
+                    : (index + 1) % length
 
             const newItems = prevItems.map((item, i) => ({
                 ...item,
                 selected: i === newIndex,
                 index: i,
-            }));
+            }))
 
-            return newItems;
-        });
-    };
+            return newItems
+        })
+    }
 
     useEffect(() => {
         if (isEnter && suggestions.length > 0) {
-            const index = suggestions.findIndex(item => item.selected);
+            const index = suggestions.findIndex((item) => item.selected)
             insertMention(suggestions[index], keywordval[1] + keywordval[0])
-
         }
-        setIsEnter(false);
-    }, [isEnter]);
+        setIsEnter(false)
+    }, [isEnter])
 
     const onMessage = async (event) => {
         try {
-            const message = JSON.parse(event.nativeEvent.data);
+            const message = JSON.parse(event.nativeEvent.data)
 
-            if (message?.type == "paste") {
-                processImages(message.payload, message.form_name);
+            if (message?.type == 'paste') {
+                processImages(message.payload, message.form_name)
             }
 
-            if (message?.type == "height") {
-                setEditorHeight(message.payload);
+            if (message?.type == 'height') {
+                setEditorHeight(message.payload)
                 if (props.onHeight) {
-                    props.onHeight(message.payload);
+                    props.onHeight(message.payload)
                 }
             }
 
-            if (message?.type == "focus") {
-                if (onFocus)
-                    onFocus()
+            if (message?.type == 'focus') {
+                if (onFocus) onFocus()
             }
 
-            if (message?.type == "blur") {
+            if (message?.type == 'blur') {
                 //  console.log('blur')
-
             }
 
-            if (message?.type == "enter") {
-                setIsEnter(true);
+            if (message?.type == 'enter') {
+                setIsEnter(true)
             }
 
-            if (message?.type == "arrow") {
-                moveSelected(['ArrowDown', 'ArrowRight'].includes(message.payload) ? 'down' : 'up');
+            if (message?.type === 'requestSubmit') {
+                if (props.onEnterSubmit) {
+                    props.onEnterSubmit()
+                }
             }
 
-            if (message?.type == "mention") {
-                setKeyword([message.payload, message.sym, message.left, message.bottom])
+            if (message?.type == 'arrow') {
+                moveSelected(
+                    ['ArrowDown', 'ArrowRight'].includes(message.payload)
+                        ? 'down'
+                        : 'up'
+                )
             }
 
-            if (message?.type == "mention_hide") {
+            if (message?.type == 'mention') {
+                setKeyword([
+                    message.payload,
+                    message.sym,
+                    message.left,
+                    message.bottom,
+                ])
+            }
+
+            if (message?.type == 'mention_hide') {
                 setSuggestions([])
             }
 
-            if (message?.type == "editor-ready") {
+            if (message?.type == 'editor-ready') {
                 editor.injectJS(`
                     let formName = "${unicFormName}";
                     let lastSelectionRange = null;
@@ -382,11 +423,28 @@ export default function RftText({ name, value = '', numLines = 4, minHeight, max
                     const editor = document.getElementsByClassName("tiptap")[0];
 
                     document.addEventListener('keydown', function(event) {
-                        if ((event.key === 'Enter' || event.code === 'Enter') && mentionVisible) {
+                        if ((event.key === 'Enter' || event.code === 'Enter')) {
+                            if (mentionVisible) {
+                                event.preventDefault();
+                                event.stopPropagation();
+                                window.ReactNativeWebView.postMessage(JSON.stringify({
+                                    type: 'enter',
+                                }));
+                                return false;
+                            } else if (!event.altKey) {
+                                event.preventDefault();
+                                event.stopPropagation();
+                                window.ReactNativeWebView.postMessage(JSON.stringify({
+                                    type: 'requestSubmit',
+                                }));
+                                return false;
+                            }
+                        } else if (event.key === 'Tab' && mentionVisible) {
                             event.preventDefault();
                             event.stopPropagation();
                             window.ReactNativeWebView.postMessage(JSON.stringify({
-                                type: 'enter',
+                                type: 'arrow',
+                                payload: event.shiftKey ? 'ArrowUp' : 'ArrowDown'
                             }));
                             return false;
                         }
@@ -459,7 +517,7 @@ export default function RftText({ name, value = '', numLines = 4, minHeight, max
                                 selection.addRange(newRange);
                             }
                         }
-                        if (event.key === "ArrowUp" || event.key === "ArrowDown" || event.key === "ArrowLeft" || event.key === "ArrowRight") {
+                        if ((event.key === "ArrowUp" || event.key === "ArrowDown" || event.key === "ArrowLeft" || event.key === "ArrowRight") && mentionVisible) {
                             window.ReactNativeWebView.postMessage(JSON.stringify({
                                 type: 'arrow',
                                 payload: event.key,
@@ -547,38 +605,55 @@ export default function RftText({ name, value = '', numLines = 4, minHeight, max
                         } else {
                             console.warn("Clipboard items are empty!");
                         }
-                    })`
-                )
+                    })`)
             }
-        }
-        catch (error) {
-        }
+        } catch (error) {}
     }
 
     const style = { left: 0 }
 
     const handleLayout = (event) => {
-        const { width, height, x, y } = event.nativeEvent.layout;
-        setSuggestionsSize([width, height, x, y]);
-    };
-
-    if (keywordval[3] - 24 < suggestionsHeight && suggestionsSize[1] > suggestionsHeight) {
-        style.top = suggestionsSize[3] + 24
+        const { width, height, x, y } = event.nativeEvent.layout
+        setSuggestionsSize([width, height, x, y])
     }
-    else {
-        style.bottom = suggestionsSize[1] - (keywordval[3] > 0 ? keywordval[3] - 24 : 0)
+
+    if (
+        keywordval[3] - 24 < suggestionsHeight &&
+        suggestionsSize[1] > suggestionsHeight
+    ) {
+        style.top = suggestionsSize[3] + 24
+    } else {
+        style.bottom =
+            suggestionsSize[1] - (keywordval[3] > 0 ? keywordval[3] - 24 : 0)
     }
 
     return (
-        <View onLayout={handleLayout} className={`flex-1 relative ${isToolBar ? 'h-48' : ''}`} >
-            {(suggestions && suggestions.length > 0) && (
+        <View
+            onLayout={handleLayout}
+            className={`flex-1 relative ${isToolBar ? 'h-48' : ''}`}
+        >
+            {suggestions && suggestions.length > 0 && (
                 <View
-                    className={`absolute max-h-[130px] w-full max-w-md bottom-0 p-1 z-50 rounded border-bdr dark:border-bdr-d border bg-bgrbody dark:bg-bgrbody-d p-2`}
-                    style={style}>
+                    className={`absolute max-h-[130px] w-full max-w-md bottom-0 p-1 z-50 rounded-xl border-bdr dark:border-bdr-d border bg-bgrcard dark:bg-bgrcard-d backdrop-blur-xl p-[4px]`}
+                    style={style}
+                >
                     <ScrollView>
                         {suggestions.map((user) => (
-                            <Button key={user.url} variant="link" pressed={user.selected} fullWidth align="left" size="xs" title={user.label} onPress={() => { insertMention(user, keywordval[1] + keywordval[0]) }} />
-
+                            <Button
+                                key={user.url}
+                                variant="text"
+                                pressed={user.selected}
+                                fullWidth
+                                align="left"
+                                size="xs"
+                                title={user.label}
+                                onPress={() => {
+                                    insertMention(
+                                        user,
+                                        keywordval[1] + keywordval[0]
+                                    )
+                                }}
+                            />
                         ))}
                     </ScrollView>
                 </View>
@@ -587,22 +662,23 @@ export default function RftText({ name, value = '', numLines = 4, minHeight, max
                 exclusivelyUseCustomOnMessage={false}
                 style={{ backgroundColor: 'transparent' }}
                 editor={editor}
-                onMessage={onMessage} />
+                onMessage={onMessage}
+            />
 
-
-            {isToolBar && <KeyboardAvoidingView
-                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                style={{
-                    position: 'absolute',
-                    width: '100%',
-                    bottom: 0,
-                }}
-            >
-                <View className="h-18">
-                    <Toolbar hidden={false} editor={editor} items={b} />
-                </View>
-            </KeyboardAvoidingView>
-            }
+            {isToolBar && (
+                <KeyboardAvoidingView
+                    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                    style={{
+                        position: 'absolute',
+                        width: '100%',
+                        bottom: 0,
+                    }}
+                >
+                    <View className="h-18">
+                        <Toolbar hidden={false} editor={editor} items={b} />
+                    </View>
+                </KeyboardAvoidingView>
+            )}
         </View>
     )
 }

@@ -42,7 +42,7 @@ export const CommentsModal = memo(({ commentsData, initFormData, itemContent, cl
 
     return (
         <View className='w-full h-full'>
-            <View className='w-full px-4 pt-4' style={{ height: height }}>
+            <View className='w-full ' style={{ height: height }}>
                 {CommentsPartsData[0]}
 
             </View>
@@ -359,7 +359,7 @@ export const VisibilityInfo = memo(({ data }) => {
 
     return (
         <Row className="text-neutral-600 dark:text-neutral-400 items-center">
-            <Text className="text-neutral-400 dark:text-neutral-600 text-[12px] leading-[16px] px-[4px]">·</Text>
+            <Text className="text-neutral-400 dark:text-neutral-600 text-[14px] leading-[24px] mx-[4px]">·</Text>
             {isUser ? <Profile {...data.author_data} displayType="unit_wo_info" displaySize="xxs" /> : (icon ? <Icon icon={icon} width={18} height={18} /> : null)}
             <Text className="text-neutral-600 dark:text-neutral-400 text-[14px] font-medium leading-[24px] text-center tracking-tight ml-[4px]">{isUser ? data.author_data.display_name : text}</Text>
         </Row>
