@@ -727,8 +727,8 @@ export  const settingsDefault = {
             menu_max_width: ' max-w-7xl ',
             content_max_width: ' max-w-7xl ',
             menu_is_dynamic: true,
-            menu_cnt: ' ml-3 gap-x-1 flex-row flex-none ',
-            right_column_cnt: 'fixed-process p-4 max-w-md',
+            menu_cnt: ' flex-row flex-none ',
+            right_column_cnt: 'fixed-process pr-4 py-4',
             topmenu_cnt:
                 'w-full px-8 pt-6 items-stretch justify-stretch sticky z-50 t-8 gap-x-8 hidden lg:flex p',
             topmenu_button_variant: 'secondary',
@@ -851,7 +851,7 @@ export  const settingsDefault = {
             },
             sm: {
                 rounded: ' rounded-[10px] ',
-                padding: ' h-[40px] min-w-[48px] px-[10px] overflow-hidden ',
+                padding: ' h-[40px] min-w-[40px] px-[10px] overflow-hidden ',
                 icon_container:
                     ' h-[20px] w-[20px] flex items-center justify-center ',
                 title_container: ' px-[4px] native:text-[14px] ',

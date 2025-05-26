@@ -18,7 +18,8 @@ export function CoverMenuSmall(props) {
             minPopupWidth={256}
             trigger={<Button
                 key="btn"
-                variant="text"
+                variant="secondary"
+                size="sm"
                 rounded
                 startDecorator="Ellipsis"
             />}
@@ -32,7 +33,6 @@ export function CoverMenuSmall(props) {
                     showVertical: true,
                     button_variant: 'text',
                     button_rounded: false,
-
                     button_full_width: false,
                 }}
             />

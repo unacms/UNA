@@ -76,7 +76,7 @@ export default function ContextSelector({ data, url }) {
     return (
         <View className="flex-row items-center ">
             <Link href={contextRoot.url} >
-                <View className='w-[200px] flex-row items-center gap-x-3 items-center px-[6px] py-[4px] web:group w-full flex-auto hover:bg-bgritem dark:hover:bg-bgritem-d rounded-xl'>
+                <View className='w-[200px] flex-row items-center gap-x-3 items-center px-[4px] py-[4px] web:group w-full flex-auto hover:bg-bgritem dark:hover:bg-bgritem-d rounded-xl'>
                     <View className="items-center justify-center text-neutral-800 dark:text-neutral-200">
                         {contextRoot.image}
                     </View>
