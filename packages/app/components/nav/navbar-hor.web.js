@@ -42,7 +42,7 @@ const HeaderLine = memo(
             ).length > 0
 
         return (
-            <View className="flex-row w-[360px] gap-x-4 px-4 items-center ">
+            <View className="flex-row w-[360px] gap-x-[12px] px-[12px] items-center ">
                 
                 {headerSettings.menu && isDrawer && (
                     <View className="lg:hidden ">
@@ -61,14 +61,14 @@ const HeaderLine = memo(
                 )}
                 {!context && (uri == 'home' || width >= LAYOUT_BREAKPOINTS.lg) && (
                     <Link
-                        className=" flex items-center flex-row active:scale-95 active:opacity-50 px-2 py-1 gap-x-3 rounded-xl text-neutral-700 hover:bg-bgrbutton dark:hover:bg-bgrbutton-d dark:text-neutral-300 hover:text-neutral-800 dark:hover:text-neutral-200 duration-300  "
+                        className=" flex items-center flex-row active:scale-95 active:opacity-50 px-[8px] py-[4px] gap-x-3 rounded-xl text-neutral-700 hover:bg-bgrbutton dark:hover:bg-bgrbutton-d dark:text-neutral-300 hover:text-neutral-800 dark:hover:text-neutral-200 duration-300  "
                         href="/home"
                         aria-label="Logo"
                     >
-                        <View className=" items-center w-10 h-10 justify-center ">
+                        <View className=" items-center w-10 h-10 justify-center text-neutral-900 dark:text-neutral-100">
                             {appStatic('logo_mark')}
                         </View>
-                        <View className=" items-center w-20 h-10  justify-center">
+                        <View className=" flex-row  items-center w-20 h-10 my-auto align-middle justify-center text-neutral-700 dark:text-neutral-300">
                             {appStatic('logo_text')}
                         </View>
                     </Link>
@@ -154,7 +154,7 @@ export default function (props) {
                         <MenuTop url={props.url} uri={props.uri}/>
                         <Row className=" w-[360px] px-4 gap-x-2 items-center justify-end ">
                             {!!currentUser && (
-                                <Row className="justify-end ">
+                                <Row className="justify-end gap-x-2">
                                     
                                         <View className=" ">
                                             {bSearch && <Search />}
@@ -184,7 +184,7 @@ export default function (props) {
                                                         startDecorator="MessageSquare"
                                                         id="m2"
                                                         size="sm"
-                                                        ring="p-1"
+                                                        hitSlop={4}
                                                         addon={{
                                                             variant: 'primary',
                                                             text: currentUser
@@ -219,7 +219,7 @@ export default function (props) {
                                             tooltip="Account"
                                             rounded
                                             size="sm"
-                                            ring="p-1"
+                                            hitSlop={4}
                                             aria-label="Account"
                                             alt={t('Account')}
                                             startDecorator="UserRound"

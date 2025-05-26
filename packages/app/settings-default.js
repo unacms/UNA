@@ -471,7 +471,7 @@ export  const settingsDefault = {
     menu_items: {
         transpile_urls: [
             // URLS for tabs in native app index = tab index
-            { index: 1, url: '/friend-suggestions' },
+            // { index: 1, url: '/friend-suggestions' },
             { index: 1, url: '/friend-requests' },
             { index: 1, url: '/sent-friend-requests' },
         ],
@@ -696,7 +696,7 @@ export  const settingsDefault = {
             activeTabText: 'rgba(3,7,18,1)',
             screenBackground: 'rgba(229,231,235,1)',
             bgrmodal: 'rgba(255,255,255,1)',
-            bdrModal: 'rgba(107,114,128,0.15)',
+            bdrModal: 'rgba(110,115,130,0.15)',
             checkbox: '#2563eb',
             safeAreaBackground: 'rgba(255,255,255,1)', // Add this new property
             primaryBg: 'rgba(37,99,235,0.1)',
@@ -716,7 +716,7 @@ export  const settingsDefault = {
             activeTabText: 'rgba(249,250,251,1)',
             screenBackground: 'rgba(17,24,39,1)',
             bgrmodal: 'rgba(31,41,55,1)',
-            bdrModal: 'rgba(107,114,128,0.15)',
+            bdrModal: 'rgba(110,115,130,0.15)',
             checkbox: '#0ea5e9',
             safeAreaBackground: 'rgba(17,24,39,1)', // Add this new property
             primaryBg: 'rgba(37,99,235,0.1)',
@@ -727,8 +727,8 @@ export  const settingsDefault = {
             menu_max_width: ' max-w-7xl ',
             content_max_width: ' max-w-7xl ',
             menu_is_dynamic: true,
-            menu_cnt: ' ml-3 gap-x-1 flex-row flex-none ',
-            right_column_cnt: 'fixed-process p-4 max-w-md',
+            menu_cnt: ' flex-row flex-none ',
+            right_column_cnt: 'fixed-process pr-4 py-4',
             topmenu_cnt:
                 'w-full px-8 pt-6 items-stretch justify-stretch sticky z-50 t-8 gap-x-8 hidden lg:flex p',
             topmenu_button_variant: 'secondary',
@@ -841,20 +841,20 @@ export  const settingsDefault = {
                 ' text-primary-700 dark:text-primary-300 group-hover:text-primary-800 dark:group-hover:text-primary-200 ',
             xs: {
                 rounded: ' rounded-[8px] ',
-                padding: ' h-[36px] px-[8px] overflow-hidden ',
+                padding: ' h-[36px] min-w-[36px] px-[8px] overflow-hidden ',
                 icon_container:
                     ' h-[16px] w-[16px] flex items-center justify-center ',
-                title_container: 'px-[4px] ',
+                title_container: 'px-[4px] sm:text-[14px] native:text-[12px] ',
                 icon_size: 16,
                 icon_margin: ' mx-[4px] ', //conditional margin for icon container when title is present
                 title_margin: ' ',
             },
             sm: {
                 rounded: ' rounded-[10px] ',
-                padding: ' h-[40px] px-[10px] overflow-hidden ',
+                padding: ' h-[40px] min-w-[40px] px-[10px] overflow-hidden ',
                 icon_container:
                     ' h-[20px] w-[20px] flex items-center justify-center ',
-                title_container: ' px-[4px] ',
+                title_container: ' px-[4px] native:text-[14px] ',
                 icon_size: 20,
                 icon_margin: ' mx-[4px] ', //conditional margin for icon container when title is present
                 title_margin: ' ', //conditional margin for text container when icon is presentconditional margin for text container when icon is present
@@ -889,9 +889,8 @@ export  const settingsDefault = {
             /*'u-btn-default-color-icon-light': 'rgb(243, 244, 246)',
             'u-btn-default-color-icon-dark': 'rgb(243, 244, 246)',*/
 
-            'u-btn-primary-cnt':
-                ' group bg-primary-500 dark:bg-primary-600 sm:hover:bg-primary-600 dark:sm:hover:bg-primary-700 ',
-            'u-btn-primary-text': '  font-medium text-white ',
+            'u-btn-primary-cnt': ' bg-blue-600 ',
+            'u-btn-primary-text': ' text-white font-medium ',
             'u-btn-primary-trans': ' web:duration-200 ',
             'u-btn-primary-color-icon-light': 'rgb(243, 244, 246)',
             'u-btn-primary-color-icon-dark': 'rgb(243, 244, 246)',
@@ -912,17 +911,15 @@ export  const settingsDefault = {
             /*'u-btn-danger-color-icon-light': 'rgb(243, 244, 246)',
             'u-btn-danger-color-icon-dark': 'rgb(243, 244, 246)',*/
 
-            'u-btn-text-cnt':
-                '  hover:bg-bgrbutton dark:hover:bg-bgrbutton-d bg-transparent active:bg-bgrbutton-h dark:active:bg-bgrbutton-dh text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
-            'u-btn-text-text':
-                ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50',
+            'u-btn-text-cnt': '  active:opacity-50 active:bg-bgrbutton-h dark:active:bg-bgrbutton-dh bg-transparent hover:bg-bgrbutton dark:hover:bg-bgrbutton-d ',
+            'u-btn-text-text': ' font-medium text-neutral-800 dark:text-neutral-200  ',
             'u-btn-text-trans': ' web:duration-200 ',
             /*'u-btn-text-color-icon-light': 'rgb(243, 244, 246)',
             'u-btn-text-color-icon-dark': 'rgb(243, 244, 246)',*/
 
-            'u-btn-link-cnt': ' hover:bg-primary/10  ',
+            'u-btn-link-cnt': ' hover:bg-bgrprimary dark:hover:bg-bgrprimary-d  ',
             'u-btn-link-text':
-                ' font-semibold group-hover:underline text-primary dark:text-primary-d ',
+                ' font-semibold hover:underline text-primary dark:text-primary-d ',
             'u-btn-link-trans': ' web:duration-300 ',
             'u-btn-link-color-icon-light': 'rgba(37,99,235,1)',
             'u-btn-link-color-icon-dark': 'rgba(37,99,235,1)',
@@ -957,9 +954,9 @@ export  const settingsDefault = {
                 ' text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
 
             'u-btn-group-item-secondary-cnt':
-                ' hover:bg-bgritem-h dark:hover:bg-bgritem-dh active:opacity-50  ',
+                ' bg-bgritem dark:bg-bgritem-d active:opacity-50 overflow-hidden flex flex-row',
             'u-btn-group-item-secondary-text':
-                ' font-medium text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-neutral-50 ',
+                ' font-medium text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-white ',
             'u-btn-group-item-secondary-icon':
                 ' text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
 
@@ -997,7 +994,7 @@ export  const settingsDefault = {
             'u-btn-text-cnt': 'flex flex-row active:opacity-50 items-center ',
 
             'u-btn-secondary-cnt':
-                ' bg-bgritem dark:bg-bgritem-d hover:bg-none dark:hover:bg-none active:opacity-50 overflow-hidden flex flex-row',
+                ' bg-bgritem dark:bg-bgritem-d active:opacity-50 overflow-hidden flex flex-row',
             'u-btn-secondary-text':
                 ' font-medium text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-white ',
             'u-btn-secondary-trans': ' duration-200 ',

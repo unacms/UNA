@@ -113,7 +113,6 @@ export default function DropdownPopup({
     return (
         <>
             <TouchableOpacity
-                className='w-full'
                 collapsable={false}
                 ref={buttonRef}
                 onPress={() => handleToggle(true)}

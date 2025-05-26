@@ -33,7 +33,7 @@ export default function FormPost(props) {
     inputs['title'].type = 'textarea'
     inputs['title'].height = 12
     inputs['title'].viewClasses =
-        ' text-2xl lg:text-3xl font-bold my-2 placeholder-neutral-500 text-neutral-900 dark:text-neutral-50  focus:outline-none'
+        ' text-2xl lg:text-3xl font-bold my-2 placeholder-neutral-500 text-neutral-900 dark:text-neutral-50 focus:outline-none'
     inputs['text'].viewClasses = 'dark:focus:bg-red-500'
 
     if (inputs['allow_comments'])

@@ -42,7 +42,7 @@ export const CommentsModal = memo(({ commentsData, initFormData, itemContent, cl
 
     return (
         <View className='w-full h-full'>
-            <View className='w-full px-4 pt-4' style={{ height: height }}>
+            <View className='w-full ' style={{ height: height }}>
                 {CommentsPartsData[0]}
 
             </View>
@@ -93,13 +93,13 @@ export const FeedEditForm = memo(({ setViewState, viewState, id }) => {
 });
 
 export const CommentsSection = memo(({ isCommentsModal, commentsDataInline, data, isShowMoreComments, showCommentsModal, url, t }) => {
-    const ShowMoreCmts = (<Text className='text-neutral-600 dark:text-neutral-400 hover:text-primary dark:hover:text-primary-d px-2 py-1 mb-2 mr-auto bg-neutral-500/10 hover:bg-primary-500/20 rounded-full text-sm font-medium'>
+    const ShowMoreCmts = (<Text className='mx-auto text-neutral-600 dark:text-neutral-400 hover:text-primary dark:hover:text-primary-d px-3 py-2 mb-2 mr-auto bg-neutral-500/10 hover:bg-primary-500/20 rounded-full text-sm font-medium'>
         {t('View more comments')}
     </Text>);
     return (
-        <View className=' border-t px-2 pt-4 mt-1 border-bdr dark:border-bdr-d  '>
+        <View className=' border-t pt-4 border-bdr dark:border-bdr-d  '>
             {isShowMoreComments && (
-                <View className=''>
+                <View className='px-4 mb-2'>
                     {isCommentsModal ? <Pressable onPress={() => { showCommentsModal() }} >
                         {ShowMoreCmts}
                     </Pressable> : <Link href={url}>{ShowMoreCmts}</Link>}
@@ -359,9 +359,9 @@ export const VisibilityInfo = memo(({ data }) => {
 
     return (
         <Row className="text-neutral-600 dark:text-neutral-400 items-center">
-            <Text className="text-neutral-400 dark:text-neutral-600 text-[12px] leading-[16px] px-[4px]">·</Text>
+            <Text className="text-neutral-400 dark:text-neutral-600 text-[14px] leading-[24px] mx-[4px]">·</Text>
             {isUser ? <Profile {...data.author_data} displayType="unit_wo_info" displaySize="xxs" /> : (icon ? <Icon icon={icon} width={18} height={18} /> : null)}
-            <Text className="text-neutral-600 dark:text-neutral-400 text-[14px] font-medium leading-[20px] text-center tracking-tight ml-[2px]">{isUser ? data.author_data.display_name : text}</Text>
+            <Text className="text-neutral-600 dark:text-neutral-400 text-[14px] font-medium leading-[24px] text-center tracking-tight ml-[4px]">{isUser ? data.author_data.display_name : text}</Text>
         </Row>
     );
 });
@@ -416,7 +416,7 @@ export const SmallUnit = memo(({ data }) => {
                         <Profile
                             {...data.author_data}
                             displayType="unit_wo_info"
-                            displaySize="base"
+                            displaySize="bg"
                         />
                     </View>
                     <View className="flex-auto flex-col my-auto">
@@ -429,7 +429,7 @@ export const SmallUnit = memo(({ data }) => {
                         <Text className="flex-auto text-lg  font-bold text-neutral-800 dark:text-neutral-200 sm:group-hover:text-neutral-950 sm:dark:group-hover:text-neutral-50" numberOfLines={1}>
                             {data.content.title}
                         </Text>
-                        <View className="flex-row w-full items-end content-end">
+                        <View className="flex-row w-full items-end content-end px-[8px]">
                             <Text
                                 className="flex-auto mr-2 text-base text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-950 dark:group-hover:text-neutral-50"
                                 numberOfLines={1}

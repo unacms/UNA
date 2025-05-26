@@ -294,7 +294,7 @@ export default function (props) {
                 )}
 
                 <View className="flex-auto w-full sm:px-4">
-                    <View className=" w-full mx-auto max-w-2xl pt-4">
+                    <View className=" w-full mx-auto max-w-2xl ">
                         <View className={`relative w-full mx-auto max-w-2xl ${feedList.length > 1 ? '' : 'sm:mt-3'} `}>
                             {feedList.map((item, index) => {
                                 if (feedType == item.name) {

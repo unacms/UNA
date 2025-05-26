@@ -3,7 +3,7 @@ import { Button, Modal } from 'app/design/controls'
 import { fetcher } from 'app/lib/fetcher'
 import React from 'react'
 import { appSetting, updateRouteDataForConnection, getPageSettings } from 'app/lib/util'
-import { Platform } from 'react-native'
+import { Platform, Pressable as RNP_Pressable } from 'react-native'
 import { componentsMap } from 'app/ui/molecules/_map'
 import { appStatic } from 'app/lib/app-static';
 import { View, Row } from 'app/design/view'
@@ -123,12 +123,14 @@ export function getAddonForConductor(a, index, currentUser) {
 
 export function getButtonForConductorNative(a, index, currentUser, setIndex, onChangeRoute) {
     const settings = getPageSettings(a.config, a.key);
-   // let settings = appSetting('l-ayouts', a.key)
-    let icon = !a.ident
-        ? settings?.icon
-            ? settings?.icon
-            : a?.icon.replace('*', '')
-        : a.icon.replace('*', '')
+    let iconName = null; 
+    if (a.ident && a.icon) { 
+        iconName = typeof a.icon === 'string' ? a.icon.replace('*', '') : null;
+    } else if (settings?.icon) { 
+        iconName = settings.icon;
+    } else if (a?.icon) { 
+        iconName = typeof a.icon === 'string' ? a.icon.replace('*', '') : null;
+    }
 
     let addon = a.addon ? a.addon : null
     if (!appSetting('conductor', 'show_nav_counters')) addon = null
@@ -144,8 +146,15 @@ export function getButtonForConductorNative(a, index, currentUser, setIndex, onC
             if (onChangeRoute) {
                 onChangeRoute(a);
             }
-        }} addon={addon} fullWidth={false} variant={index === a.index ? 'primary' : "text"} rounded size='sm' title={a.title} />
-    )
+        }} 
+        startDecorator={iconName}
+        addon={addon} 
+        fullWidth={false} 
+        variant={index === a.index ? 'primary' : "text"} 
+        rounded 
+        size='sm' 
+        title={a.title} />
+    );
 }
 
 export function updateRouteDataForConnections(

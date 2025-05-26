@@ -22,8 +22,8 @@ export default function FormFieldSubmit(props) {
         notFullWidth = false,
         saveOnChanges = false,
         hide_errors = true,
-        ring,
-        ...restProps
+        hitSlop,
+        ...restFieldProps
     } = props;
 
     const formContext = useFormContext();
@@ -69,7 +69,7 @@ export default function FormFieldSubmit(props) {
         size,
         disabled: formState.isSubmitting || disabled,
         fullWidth: fb,
-        ring,
+        ...(hitSlop && { hitSlop }),
     };
 
     const buttonHandlers = Platform.select({
@@ -86,12 +86,15 @@ export default function FormFieldSubmit(props) {
     const rowClassName = [
         formProps.button_hide_on_small || props.button_hide_on_small ? 'hidden sm:flex' : '',
         'gap-x-2',
+        'justify-center',
+        'items-center',
+        
     ]
         .filter(Boolean)
         .join(' ');
 
     return (
-        <Field {...restProps}>
+        <Field {...restFieldProps}>
             <Row className={rowClassName}>
                 <Button
                     title={!icon_only ? value : ''}

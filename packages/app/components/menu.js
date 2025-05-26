@@ -1,4 +1,3 @@
-
 import { View, ViewRef, Pressable } from 'app/design/view'
 import { appSetting, menuItemsByName } from 'app/lib/util';
 import { componentsMap } from './menu-items/_map';
@@ -19,8 +18,9 @@ const ButtonEx = memo(({ visibleItemsCount, params }) => {
 
 const MenuItemEx = memo(({ item, index, sDisplayType, params }) => {
     const ItemType = componentsMap[item.display_type ? item.display_type : sDisplayType];
+    const newButtonVariant = params?.button_variant === 'none' ? '' : params?.button_variant;
     return (
-        <ItemType mode="dropdown-menu" key={item.id ? item.id : item.name} {...item} params={{ ...params, button_variant: 'none', button_size: 'sm' }} />
+        <ItemType mode="dropdown-menu" key={item.id ? item.id : item.name} {...item} params={{ ...params, button_variant: newButtonVariant, button_size: 'sm' }} />
     )
 });
 
@@ -60,15 +60,13 @@ export default function ElementMenu(oProps) {
     const aExcept = oProps?.except || [''];
     const aExceptTitle = oProps?.except_title || ['BxTemplView', 'BxTemplFavorite', 'BxTemplFeature', 'BxTemplReport', 'BxTimelineModule'];
 
-    let sClassName = oProps?.params?.className || 'bx-menu ';
+    let sClassName = oProps?.params?.className || 'bx-menu gap-x-[8px]';
 
     //--- show vertical
     const bShowVertical = oProps?.params?.showVertical === true;
 
     sClassName += bShowVertical ? ' flex-col items-center gap-y-2 w-full ' : ' flex-row ';
     const oParams = oProps?.params || {};
-
-
 
 
     //--- horizontal menu items alignment
@@ -188,7 +186,7 @@ export default function ElementMenu(oProps) {
         }}
         isFixedCount={oProps?.params?.isFixedCount}
         persistent={oProps.persistent}
-        containerClasses={oProps.containerClasses || "w-full sm:justify-center lg:justify-end"}
+        containerClasses={oProps.containerClasses || "w-full justify-end"}
         items={filteredItems}
         menuClasses={sClassName}
         isButtonOutside={false}

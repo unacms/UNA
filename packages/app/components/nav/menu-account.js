@@ -52,7 +52,7 @@ export default function MenuAccount({ buttonProps, children }) {
         padding: '0px',
         startDecorator: profile,
         size: "sm",
-        ring: "p-1",
+        hitSlop: 4,
     };
 
     if ((menu_account_items.length == 0 && menuData) || !profile)

@@ -48,9 +48,9 @@ export function CoverSmall(props) {
                     appSetting('layout', 'max_width') + ' w-full mx-auto'
                 }
             >
-                <View className={`px-3 py-2  ${conductorTheme.content_max_width} mx-auto w-full flex-row gap-2`}>
+                <View className={`px-4 py-3  ${conductorTheme.content_max_width} mx-auto w-full flex-row gap-2`}>
                     <Row className=" gap-x-2 items-center justify-between flex-auto">
-                        <View className="flex-auto flex-row gap-x-2 items-center p-1">
+                        <View className="flex-auto flex-row gap-x-2 items-center">
                             {getBackButtonWeb()}
 
                             {bPerson && (
@@ -229,7 +229,7 @@ export default function (props) {
     const isCover = data?.cover?.src;
 
     return (
-        <View className=' bg-bgrtabbar dark:bg-bgrtabbar-d border-b border-bdrtabbar dark:border-bdrtabbar-d ' >
+        <View className=' bg-bgrtabbar dark:bg-bgrtabbar-d border-bdrtabbar dark:border-bdrtabbar-d ' >
             <View className={`w-full mx-auto ${appSetting('layout', 'max_width')}`}>
                 {mode != 'min' ? (
                     <View
@@ -267,9 +267,11 @@ export default function (props) {
                     <></>
                 )}
                 <View className="p-4" >
-                    <View className={` flex-col lg:flex-row gap-y-4 sm:items-center gap-x-4 ${conductorTheme.content_max_width} mx-auto w-full items-start lg:items-stretch`}>
+                        <View className={` flex-col lg:flex-row gap-y-4 gap-x-4 ${conductorTheme.content_max_width} mx-auto w-full items-start items-stretch`}>
+                                        
                         {bPerson && (
-                            <View className="w-full h-24 sm:w-48 relative   ">
+                            <View className="w-full h-24 sm:w-48 relative">
+                                        
                                 <View className=" flex-auto absolute w-min rounded-full w-min p-2 z-50 -bottom-2 flex-none bg-bgrcard dark:bg-bgrcard-d ">
                                     <Profile
                                         {...data.profile}
@@ -289,10 +291,12 @@ export default function (props) {
                                         </View>
                                     )}
                                 </View>
+                                
                             </View>
                         )}
                         <View className=" flex-auto flex-col gap-y-4 ">
-                            <Row className=" flex-auto items-center sm:justify-center lg:justify-start gap-x-2">
+                               
+                            <Row className="items-center gap-x-2">
                                 <Text
                                     className="tracking-tight text-3xl sm:text-4xl font-bold text-neutral-900 dark:text-neutral-50"
                                     numberOfLines={2}
@@ -300,6 +304,7 @@ export default function (props) {
                                     {data.profile.display_name}
                                 </Text>
                                 <Badges badges={data.badges} />
+                                
 
                             </Row>
                             {!!data.profile.info?.date_start && (
@@ -313,10 +318,14 @@ export default function (props) {
                                 </ScrollView>
                             
                         </View>
-                        <View className={` flex-auto w-full max-w-[400px] ${mode !== 'min' && ' xl:items-end '}`}>
+                        <View className={` hidden flex-auto w-full max-w-[400px] ${mode !== 'min' && ' xl:items-end '}`}>
                             <CoverMenu {...data.actions_menu} uri={props?.uri} />
                             {/*containerClasses={`${mode === 'min' && 'w-full lg:justify-end'}`}*/}
                         </View>
+                        <View className={` absolute top-0 right-0 flex-auto w-full max-w-[400px] `}>
+                                            <CoverMenu {...data.actions_menu} uri={props?.uri} />
+                                            {/*containerClasses={`${mode === 'min' && 'w-full lg:justify-end'}`}*/}
+                                        </View>
                     </View>
                 </View>
             </View>

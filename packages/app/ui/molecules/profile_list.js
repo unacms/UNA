@@ -14,7 +14,7 @@ function fillArrayToLength(arr, maxCount, defaultValue) {
     let sSize = ''
     switch (displaySize) {
         case 'xs':
-            sSize = 'w-7 h-7'
+            sSize = 'w-6 h-6'
             break
 
         case 'sm':

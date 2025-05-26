@@ -87,7 +87,7 @@ export default function UnitComments(props) {
         const effectiveLevel = Math.min(level, maxLevel);
         for (let i = 0; i < effectiveLevel; i++) {
             cellsArray.push(
-                <View key={`sp-${level}-${i}`} className="w-8">
+                <View key={`sp-${level}-${i}`} className="w-[36px]">
                     {lvls[i + 1] && (
                         <View className="ml-[15px] w-0.5 flex-auto bg-neutral-100 dark:bg-neutral-800" />
                     )}
@@ -133,15 +133,15 @@ export default function UnitComments(props) {
 
 
     return (
-        <View className='w-full'>
-            <View className="flex-row gap-x-2">
+        <View className='w-full px-[16px] '>
+            <View className="flex-row gap-x-[8px]">
                 {cells}
-                <View className="w-8 z-50 flex-0 relative">
+                <View className="w-[36px] z-50 flex-0 relative">
                     <Profile {...data.author_data} displayType="unit_wo_info" displaySize="sm" showInfo="false" />
                     {(items.length != 0 && view != 'flat') && <View className="w-0.5 ml-[15px] top-0.5 flex-auto bg-neutral-100 dark:bg-neutral-800"></View>}
                 </View>
                 <View className=' flex-col flex-1 '>
-                    <View className=' bg-bgritem dark:bg-bgritem-d rounded-xl px-3 py-1.5' >
+                    <View className=' bg-bgritem dark:bg-bgritem-d rounded-[12px] px-[12px] py-[8px] flex-col gap-y-1' >
                         <View className="flex-row items-center overflow-hidden">
                             <Profile {...data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
                             <View><Text className="text-neutral-400 dark:text-neutral-600 px-[4px]">·</Text></View>
@@ -170,7 +170,7 @@ export default function UnitComments(props) {
                         </View>
                         {(viewState.view != 'edited' && imageList.length > 0) && <View className='max-w-xs w-full'><Carousel data={imageList} /></View>}
                     </View>
-                    {viewState.view != 'edited' && <View className=' flex-row w-full mt-1 mb-2 items-center'>
+                    {viewState.view != 'edited' && <View className=' flex-row w-full mb-[8px] mt-[2px] items-center'>
                         {(!!currentUser && !!props.handleReply && !props.module.includes('_reviews')) ? <View className='mr-2'>
                             <Button align="start" title={t("Reply")} size="xs" startDecorator="Reply" variant="text" onPress={() => handleReply(data)} rounded />
                         </View> : <View></View>
