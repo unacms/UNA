@@ -255,7 +255,8 @@ export default function FormComments(props) {
                                 noMargin: true,
                                 onHeight: checkEditorHeight,
                                 onFocus: setIsFocus,
-                                onEnterSubmit: handleEditorEnterSubmit
+                                onEnterSubmit: handleEditorEnterSubmit,
+                                enableSubmitOnEnter: true
                             }
                         )}
                         {getFormFieldByData(
