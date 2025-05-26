@@ -39,6 +39,7 @@ export default function RftText({
     onFocus,
     onBlur,
     html,
+    enableSubmitOnEnter = false,
     ...props
 }) {
     const unicFormName = `${props.form_name}` // for catch images in editor
@@ -420,6 +421,7 @@ export default function RftText({
                     let formName = "${unicFormName}";
                     let lastSelectionRange = null;
                     let mentionVisible = false; 
+                    var editorConfig = { submitOnEnterEnabled: ${!!enableSubmitOnEnter} };
                     const editor = document.getElementsByClassName("tiptap")[0];
 
                     document.addEventListener('keydown', function(event) {
@@ -431,7 +433,7 @@ export default function RftText({
                                     type: 'enter',
                                 }));
                                 return false;
-                            } else if (!event.altKey) {
+                            } else if (!event.altKey && editorConfig.submitOnEnterEnabled) {
                                 event.preventDefault();
                                 event.stopPropagation();
                                 window.ReactNativeWebView.postMessage(JSON.stringify({
