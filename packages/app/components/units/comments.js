@@ -130,8 +130,6 @@ export default function UnitComments(props) {
                 <Form {...viewState.data} classContainerName="flex-row flex-wrap w-full  items-start justify-between" onFormSubmit={onFormSubmit} />
             </View>
         </Modal>
-
-
     return (
         <View className='w-full px-[16px] '>
             <View className="flex-row gap-x-[8px]">
@@ -146,6 +144,7 @@ export default function UnitComments(props) {
                             <Profile {...data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
                             <View><Text className="text-neutral-400 dark:text-neutral-600 px-[4px]">·</Text></View>
                             <Link href={data.cmt_url} className="flex items-center"><Time ts={data.cmt_time}></Time></Link>
+                             {!!data.cmt_mood && <><View><Text className="text-neutral-400 dark:text-neutral-600 px-[4px]">·</Text></View><StarsView rating={data.cmt_mood} starSize={20} /></>}
                             {(maxLevel < data.cmt_level && appSetting('comments', 'in_reply')) && parent?.data && <Row>
                                 <Text className="text-neutral-400 dark:text-neutral-600 px-[4px] text-sm ">· In reply to</Text>
                                 <Profile {...parent.data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
@@ -166,7 +165,7 @@ export default function UnitComments(props) {
                         <View className='text-neutral-900 dark:text-neutral-50 pb-0.5'>
                             <Html htmlStyles={{ fontSize: 14 }}  customClassName='u-vanilla-html-small' data={linkify(data.cmt_text)} />
                             {!!data.embed && <View><Embed data={data.embed} size="small" /></View>}
-                            {!!data.cmt_mood && <StarsView rating={data.cmt_mood} starSize={20} />}
+                           
                         </View>
                         {(viewState.view != 'edited' && imageList.length > 0) && <View className='max-w-xs w-full'><Carousel data={imageList} /></View>}
                     </View>
@@ -275,7 +274,6 @@ const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen, module, cmt_obj
 
     return aMenuManageItems?.length > 0 && (
         <>
-
             <DropdownMenu defaultOpen={defaultOpen} items={aMenuManageItems.map((aItem) => {
                 return {
                     id: aItem.id ? aItem.id : aItem.name,
@@ -286,7 +284,6 @@ const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen, module, cmt_obj
             })} onSelect={handleManageMenuSelect}>
                 <Button variant="text" size="xs" startDecorator="Ellipsis" rounded />
             </DropdownMenu>
-
             {!!oReport && oReport}
         </>
     );

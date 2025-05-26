@@ -1,12 +1,18 @@
 import StarRating from 'react-native-star-rating-widget';
 import StarRatingDisplay from 'react-native-star-rating-widget';
 import { Theme } from 'app/design/theme';
-import { View } from 'app/design/view'
+import { View, Row } from 'app/design/view'
+import { Text } from 'app/design/typography'
 
 export function StarsView(props) {
     const maxStars = props.maxStars || 1;
     const { colors } = Theme();
-    return <View className="-ml-2"><StarRatingDisplay starStyle={props.starStyle} maxStars={1} {...props} starSize={props.starSize ? props.starSize: 24} color={colors.stars} enableHalfStar={false} /></View>;
+    return (
+        <Row className="-ml-2 items-center">
+            <StarRatingDisplay starStyle={props.starStyle} maxStars={1} {...props} starSize={props.starSize ? props.starSize: 24} color={colors.stars} enableHalfStar={false} />
+            <Text className="font-semibold text-base">{props.rating}</Text>
+        </Row>
+    );
 }
 
 export function StarsAction(props) {

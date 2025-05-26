@@ -673,7 +673,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
      }, [numColumns]);
  */
     const showFilters = useCallback(() => {
-        setBottomSheetData({ title: 'Filters', content: AddBlocksCnt, showClose: true, snapPoints: ['50%', '75%'] });
+        setBottomSheetData({ title: 'Filters', content: AddBlocksCnt, showClose: true, snapPoints: ['50%', '75%'], modal:true });
     }, [currentRoute.leftSideBarBlocks, currentRoute.pageData, onFormSubmit]);
 
     const unitType = useMemo(() => {
@@ -825,9 +825,9 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                         {a}
                         <View className=" flex-auto ">
                             {(headerSettings.showAltTopMenu) && topSideBarComponent}
-                            {(windowWidth < LAYOUT_BREAKPOINTS.lg && layoutName == 'navigator' && leftSideBarBlocks.length > 0) && <View className="items-start ml-4 mt-2 mb-2">
+                            {/*(windowWidth < LAYOUT_BREAKPOINTS.lg && layoutName == 'navigator' && leftSideBarBlocks.length > 0) && <View className="items-start ml-4 mt-2 mb-2">
                                 <Button title="Filters" variant="default" size="sm" rounded onPress={showFilters} />
-                            </View>}
+                            </View>*/}
                             {sceneHeaderComponent}
                             <RenderScene cover={header} prevRoute={prevRoute} headerHeight={isShowFilters? 150: defaultHeaderHeight} header={isUseCurrentHeader ? null : headerComponent} route={currentRoute} />
                         </View>

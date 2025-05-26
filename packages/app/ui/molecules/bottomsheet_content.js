@@ -66,7 +66,7 @@ export default function ElementBottomSheetContent(props) {
 
     if (!bottomSheetData) return null;
 
-    if (windowDimensions.width > LAYOUT_BREAKPOINTS.lg) {
+    if (windowDimensions.width > LAYOUT_BREAKPOINTS.lg || bottomSheetData.modal) {
         return (
             <Modal
                 title={bottomSheetData.title}
