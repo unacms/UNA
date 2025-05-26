@@ -728,6 +728,7 @@ export  const settingsDefault = {
             content_max_width: ' max-w-7xl ',
             menu_is_dynamic: true,
             menu_cnt: ' flex-row flex-none ',
+            menu_categ_ident: 'pl-[48px]',
             right_column_cnt: 'fixed-process pr-4 py-4',
             topmenu_cnt:
                 'w-full px-8 pt-6 items-stretch justify-stretch sticky z-50 t-8 gap-x-8 hidden lg:flex p',
