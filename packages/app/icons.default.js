@@ -3,7 +3,7 @@
 import { 
     List, ArrowLeft, AlertCircle, MessageSquare, ArrowRight, MessageCircleMore, Plus, 
     Search, User, Compass, Bell, Link, CalendarCheck, ListChecks, ArrowDownAZ,
-    StickyNote, Users, Info, CircleHelp, BookUser, Pencil,
+    StickyNote, Users, Info, CircleHelp, BookUser, Pencil, Menu,
     Smile, UserCircle, File, Settings,
     UserCheck, Cog, LogOut, LogIn, Files, 
     Image, Code, ThumbsUp, FilePlus, MonitorPlay, X, House,
@@ -20,7 +20,7 @@ import {
 
 export const IconSet = { 
     List, ArrowLeft, AlertCircle, MessageSquare, ArrowRight, MessageCircleMore, ChevronsUpDown, Plus, MessagesSquare, HelpCircle, Reply,Clock,RefreshCw,
-    Search, User, Compass, Bell, Link, CalendarCheck, ListChecks, ArrowDownAZ,
+    Search, User, Compass, Bell, Link, Menu, CalendarCheck, ListChecks, ArrowDownAZ,
     StickyNote, Users, Info, CircleHelp, BookUser, Pencil, Building2, UsersRound, SquareStack, Workflow, KeyRound, Mail, Trash2,
     Smile, UserCircle, File, ChevronsRight, Contact, Settings, House, 
     UserCheck, Cog, LogOut, LogIn, Files, Ellipsis,UserX, 

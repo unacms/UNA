@@ -58,7 +58,7 @@ function renderTrigger() {
             size="sm"
             ring="p-1"
             rounded
-            endDecorator="ChevronsUpDown"
+            startDecorator="Menu"
         />
     );
 }
@@ -75,14 +75,6 @@ export default function ContextSelector({ data, url }) {
 
     return (
         <View className="flex-row items-center ">
-            <Link href={contextRoot.url} >
-                <View className='w-[200px] flex-row items-center gap-x-3 items-center px-[4px] py-[4px] web:group w-full flex-auto hover:bg-bgritem dark:hover:bg-bgritem-d rounded-xl'>
-                    <View className="items-center justify-center text-neutral-800 dark:text-neutral-200">
-                        {contextRoot.image}
-                    </View>
-                    <Text className="text-lg h-8 whitespace-nowrap align-middle justify-center font-semibold text-neutral-800 dark:text-neutral-200 overflow-hidden truncate">{contextRoot.name}</Text>
-                    </View>
-            </Link>
             <View>
                 <DropdownPopup
                     trigger={renderTrigger()}
@@ -100,7 +92,7 @@ export default function ContextSelector({ data, url }) {
                                     <Text className="text-lg h-8 font-semibold text-neutral-700 dark:text-neutral-300">{data.create.title}</Text>
                                 </Row>
                             </Link>}
-                             {data.links && Array.isArray(data.links) && data.links.map(item => 
+                            {(data.links && Array.isArray(data.links)) && data.links.map(item =>
                                 <Link className="w-full" href={item.url}>
                                     <Row className="w-full p-2 gap-x-3 items-center">
                                         <View className="items-center w-10 h-10 p-1 justify-center bg-bgritem border border-bdr dark:bg-bgritem-d dark:border-bdr-dark rounded-[10px]">
@@ -114,6 +106,14 @@ export default function ContextSelector({ data, url }) {
                     </View>
                 </DropdownPopup>
             </View>
+            <Link href={contextRoot.url} >
+                <View className='w-[200px] flex-row items-center gap-x-3 items-center px-[4px] py-[4px] web:group w-full flex-auto hover:bg-bgritem dark:hover:bg-bgritem-d rounded-xl'>
+                    <View className="items-center justify-center text-neutral-800 dark:text-neutral-200">
+                        {contextRoot.image}
+                    </View>
+                    <Text className="text-lg h-8 whitespace-nowrap align-middle justify-center font-semibold text-neutral-800 dark:text-neutral-200 overflow-hidden truncate">{contextRoot.name}</Text>
+                </View>
+            </Link>
         </View>
     );
 }
