@@ -29,30 +29,24 @@ function PlainText(props) {
     const accessibility = props.caption.length > 0 ? props.caption : 'text';
     const placeholder = props.use_caption_as_placeholder ? props.caption : props.placeholder;
 
-    let input = <InputMulti
-        multiline
-        editable
-        numberOfLines={4}
-        name={props.name}
-        placeholder={placeholder}
-        onChangeText={field.onChange}
-        onBlur={field.onBlur}
-        value={field.value}
-        aria-label={accessibility}
-    />
-    if (props.autoheight)
-        input = <Input
+    let input = (
+        <InputMulti
             multiline
             editable
-            style={{ height: height }}
-            placeholder={placeholder}
-            numberOfLines={props.numLines ? props.numLines : 4}
             name={props.name}
+            placeholder={placeholder}
             onChangeText={field.onChange}
             onBlur={field.onBlur}
             value={field.value}
             aria-label={accessibility}
+            onContentSizeChange={e => {
+                if (props.autoheight) {
+                    setHeight(e.nativeEvent.contentSize.height);
+                }
+            }}
+            style={props.autoheight ? { height } : {}}
         />
+    );
 
     if (props.viewClasses) {
         input = <TextInputClear

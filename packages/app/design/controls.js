@@ -168,7 +168,8 @@ export function Modal({
     maxWidth = 'max-w-2xl',
     children,
     padding = " p-4 ",
-    scrollable = false
+    scrollable = false,
+    autoHeight = false
 }) {
     const { width, height } = useWindowDimensions();
     const offset = (title || onClose  ? (width > LAYOUT_BREAKPOINTS.md ? 100 : 68)  : 0);
@@ -177,7 +178,7 @@ export function Modal({
         animation = width > LAYOUT_BREAKPOINTS.md ? 'fade' : 'slide';
     }
 
-    const styles = { maxHeight: height - offset };
+    const styles = !autoHeight ? { maxHeight: height - offset } : {};
     const isWeb = Platform.OS === 'web';
     const isIOS = Platform.OS === 'ios';
 
@@ -207,7 +208,7 @@ export function Modal({
     const Content = (
         <View  style={{ paddingTop: isIOS? insets?.top : 0 }} className={`flex-row justify-center left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto ${layoutShift}:inset-0 h-full h-modal ${sClassPosition}`}>
     <View className={`w-full ${maxWidth} ${fullWidth ? '' : `${layoutShift}:w-auto`} relative ${modalSettings.container.replaceAll("{ls}", layoutShift)} `}>
-        <View className={`relative h-full ${modalSettings.content.replaceAll("{ls}", layoutShift)}`}>
+        <View className={`relative ${!autoHeight ? 'h-full' : ''} ${modalSettings.content.replaceAll("{ls}", layoutShift)}`}>
             {
                 (title || onClose) && <Row className={`items-center justify-${align} ${headerBorder && modalSettings.header} `}>
                     {(title && type === 'string') && (

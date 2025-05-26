@@ -187,13 +187,13 @@ export default function FormFeed(props) {
         setShowImage(false)
     }, [])
 
-    const form = <KbAvoidingView className='flex-col h-full flex-auto' offset={isIos ? 10 : 74}>
+    const form = <KbAvoidingView className='flex-col flex-auto' offset={isIos ? 10 : 74}>
         {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'default')}
         {getFormFieldByData(props.data.inputs['object_cf'], props.handleSubmit, 'default')}
         {getFormFieldByData(props.data.inputs['owner_id'], props.handleSubmit, 'default')}
         {getFormFieldByData(props.data.inputs['type'], props.handleSubmit, 'default')}
         <View className="justify-between flex-col flex-auto">
-                <View className="w-full h-full  flex-1 justify-start px-[12px] ">
+                <View className="w-full flex-1 justify-start px-[12px] ">
                     <View className="flex-auto  ">
                         {getFormFieldByData(
                             props.data.inputs['text'],
@@ -208,7 +208,8 @@ export default function FormFeed(props) {
                                 placeholder: 'Write here...',
                                 linkify: true,
                                 autofocus: Date.now(),
-                                classes:'flex-1'
+                                classes:'flex-1',
+                                autoheight: true
                             }
                         )}
                     </View>
@@ -386,6 +387,7 @@ export default function FormFeed(props) {
                     {...(!isSmall && { onClose: handleModalClose })}
                     padding=" p-0 "
                     transparent={true}
+                    autoHeight={true}
                     onRequestClose={handleModalClose}
                 >
                     {form}
