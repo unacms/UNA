@@ -50,7 +50,7 @@ const Notif = memo(() => (
 
 const Forum = memo(() => (
    
-    <View className="flex-col p-2 lg:p-4 border-b border-bdr dark:border-bdr-d animate-pulse flex-col w-full mx-auto  max-w-4xl gap-y-1">
+    <View className="flex-col p-2 lg:p-4 border-b border-bdr dark:border-bdr-d animate-pulse flex-col w-full mx-auto max-w-4xl gap-y-1">
         <View className="flex-row gap-x-2 mb-2 sm:hidden items-center">
             <View className="h-8 w-8 flex-none bg-neutral-500/50 rounded-full"></View>
             <View className="h-4 w-1/4 flex-none bg-neutral-500/50 rounded-full"></View>

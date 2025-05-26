@@ -1,7 +1,7 @@
 import Field, { getValidationRules } from './_field'
 import { useController, useFormContext } from 'react-hook-form'
 import { InputMulti, Input, TextInputClear, Button } from 'app/design/controls'
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useMemo } from 'react'
 import { View, ScrollView } from 'app/design/view'
 import {
     DEFAULT_TOOLBAR_ITEMS,
@@ -17,13 +17,13 @@ import {
     ImageBridge,
     DropCursorBridge,
     PlaceholderBridge,
+    Extension,
 } from '@10play/tentap-editor'
 import { useFilesData } from 'app/context/files'
-import { Keyboard } from 'react-native'
+import { Keyboard, Platform, KeyboardAvoidingView } from 'react-native'
 import { Theme } from 'app/design/theme'
 import { getAlert, stripTags, stripTagsWithLinks } from 'app/lib/util'
 import { Text } from 'app/design/typography'
-import { KeyboardAvoidingView, Platform } from 'react-native'
 import { fetcher } from 'app/lib/fetcher'
 import { appSetting } from 'app/lib/util'
 import { ThemeName } from 'app/design/theme'
@@ -232,6 +232,8 @@ export default function RftText({
         CodeBridge.configureCSS(customCodeBlockCSS), // Custom codeblock css
     ]
 
+    const CustomKeyboardShortcuts = []; // Temporarily disable by setting to empty array
+
     const editor = useEditorBridge({
         autofocus: props.autofocus,
         avoidIosKeyboard: false,
@@ -239,7 +241,11 @@ export default function RftText({
         placeholder: props.placeholder,
         ...(ThemeName() === 'dark' && { theme: darkEditorTheme }),
         initialContent: field.value,
-        bridgeExtensions: [...TenTapStartKit, ...baseExtensions],
+        bridgeExtensions: [
+            ...TenTapStartKit,
+            ...baseExtensions,
+            ...CustomKeyboardShortcuts,
+        ],
     })
 
     useEffect(() => {
@@ -395,6 +401,12 @@ export default function RftText({
                 }
             }
 
+            if (message?.type === 'requestNewline') {
+                if (editor && editor.chain) {
+                    editor.chain().focus().setHardBreak().run()
+                }
+            }
+
             if (message?.type == 'arrow') {
                 moveSelected(
                     ['ArrowDown', 'ArrowRight'].includes(message.payload)
@@ -421,27 +433,40 @@ export default function RftText({
                     let formName = "${unicFormName}";
                     let lastSelectionRange = null;
                     let mentionVisible = false; 
-                    var editorConfig = { submitOnEnterEnabled: ${!!enableSubmitOnEnter} };
-                    const editor = document.getElementsByClassName("tiptap")[0];
+                    var editorConfig = { 
+                        submitOnEnterEnabled: ${!!enableSubmitOnEnter},
+                        platformOS: '${Platform.OS}'
+                    };
+                    const editorElement = document.getElementsByClassName("tiptap")[0];
 
                     document.addEventListener('keydown', function(event) {
-                        if ((event.key === 'Enter' || event.code === 'Enter')) {
+                        if (event.key === 'Enter' || event.code === 'Enter') {
                             if (mentionVisible) {
                                 event.preventDefault();
                                 event.stopPropagation();
-                                window.ReactNativeWebView.postMessage(JSON.stringify({
-                                    type: 'enter',
-                                }));
-                                return false;
-                            } else if (!event.altKey && editorConfig.submitOnEnterEnabled) {
-                                event.preventDefault();
-                                event.stopPropagation();
-                                window.ReactNativeWebView.postMessage(JSON.stringify({
-                                    type: 'requestSubmit',
-                                }));
-                                return false;
+                                window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'enter' }));
+                                return false; // Mention selection handled
+                            }
+                            
+                            if (editorConfig.submitOnEnterEnabled) {
+                                if (editorConfig.platformOS === 'web') {
+                                    // Alt-Enter and Mod-Enter are now handled by Tiptap extension.
+                                    // We only care about plain Enter here for submit.
+                                    if (!event.ctrlKey && !event.altKey && !event.metaKey) { // Check no modifiers for plain Enter
+                                        event.preventDefault();
+                                        event.stopPropagation();
+                                        window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'requestSubmit' }));
+                                        return false; // Submit handled
+                                    }
+                                    // If modifiers are pressed, let Tiptap extension handle it (don't return false here)
+                                } else {
+                                    // Mobile: Fall through for Tiptap default (newline)
+                                }
+                            } else {
+                                // Not submitOnEnterEnabled: Fall through for Tiptap default (newline)
                             }
                         } else if (event.key === 'Tab' && mentionVisible) {
+                            // Tab for mentions - existing logic
                             event.preventDefault();
                             event.stopPropagation();
                             window.ReactNativeWebView.postMessage(JSON.stringify({
@@ -453,7 +478,7 @@ export default function RftText({
                     }, true);
 
                     function updateHeight() {
-                        const currentHeight = editor.scrollHeight;
+                        const currentHeight = editorElement.scrollHeight;
                         window.ReactNativeWebView.postMessage(JSON.stringify({
                             type: 'height',
                             payload: currentHeight,
@@ -464,13 +489,13 @@ export default function RftText({
                         updateHeight();
                     });
 
-                    observer.observe(editor, {
+                    observer.observe(editorElement, {
                         childList: true,
                         subtree: true,
                         characterData: true
                     });
 
-                    editor.addEventListener("blur", () => {
+                    editorElement.addEventListener("blur", () => {
                         window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'blur' }));
                         const selection = window.getSelection();
                         if (selection.rangeCount > 0) {
@@ -479,7 +504,7 @@ export default function RftText({
                         updateHeight();
                     });
 
-                    editor.addEventListener("focus", () => {
+                    editorElement.addEventListener("focus", () => {
                         window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'focus' }));
                         if (lastSelectionRange) {
                             const selection = window.getSelection();
@@ -498,7 +523,7 @@ export default function RftText({
                     }
 
 
-                    editor.addEventListener("keydown", function (event) {
+                    editorElement.addEventListener("keydown", function (event) {
                         if (event.key === "Backspace") {
                             const selection = window.getSelection();
                             if (selection.rangeCount === 0) return;
@@ -513,7 +538,7 @@ export default function RftText({
                                 link.remove(); 
 
                                 const newRange = document.createRange();
-                                newRange.setStartBefore(link.nextSibling || editor);
+                                newRange.setStartBefore(link.nextSibling || editorElement);
                                 newRange.collapse(true);
                                 selection.removeAllRanges();
                                 selection.addRange(newRange);
@@ -527,7 +552,7 @@ export default function RftText({
                         }
                     });
 
-                    editor.addEventListener("input", function (event) {
+                    editorElement.addEventListener("input", function (event) {
                         updateHeight();
 
                         const text = getTextBeforeCursor();
@@ -535,7 +560,7 @@ export default function RftText({
 
                         if (symbol === '@' || symbol === '#') {
                             const query = text.substring(1).toLowerCase();
-                            editor.setAttribute('query', symbol + query);
+                            editorElement.setAttribute('query', symbol + query);
                             const selection = window.getSelection();
                             let range;
                             let rect;
@@ -543,8 +568,8 @@ export default function RftText({
                                 range = selection.getRangeAt(0);
                                 rect = range.getBoundingClientRect();
 
-                                editor.setAttribute('queryX', rect.left);
-                                editor.setAttribute('queryY', rect.bottom);
+                                editorElement.setAttribute('queryX', rect.left);
+                                editorElement.setAttribute('queryY', rect.bottom);
                             }
                             if (!mentionVisible) { 
                                 mentionVisible = true;
@@ -559,7 +584,7 @@ export default function RftText({
                             }));
                         } else if (mentionVisible) { 
                             mentionVisible = false;
-                            editor.removeAttribute('query');
+                            editorElement.removeAttribute('query');
 
                             window.ReactNativeWebView.postMessage(JSON.stringify({
                                 type: 'mention_hide'
@@ -577,7 +602,7 @@ export default function RftText({
                     document.addEventListener("click", function (event) {
                         if (!mentionList.contains(event.target)) {
                             mentionList.style.display = "none";
-                            editor.focus();
+                            editorElement.focus();
                         }
                     });
 

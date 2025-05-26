@@ -22,7 +22,7 @@ export default function () {
                 
             </View>
 
-            <View className=" flex-auto w-full   ">
+            <View className=" flex-auto w-full">
                 <BlockByUrl url="/api.php?r=system/login_form/TemplServiceLogin" />
 
                 <Link className=" mx-auto  w-full " href="/forgot-password">
