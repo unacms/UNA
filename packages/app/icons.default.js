@@ -11,7 +11,7 @@ import {
     ChevronDown, ChevronLeft, MessageSquareText, Clipboard, FileAudio, EllipsisVertical, 
     MessageCircle, Calendar, UserPlus, Flame, Rows, Share2, CheckCircle, Cake, Ellipsis,UserX,
     Badge, Heart, ChartBar, Store, Video, ShoppingCart, Check,
-    Folders, Egg, Binoculars, UserCog, Folder, Bookmark, ChevronsRight,
+    Folders, Egg, Binoculars, UserCog, Folder, Bookmark, ChevronsRight, ArrowUp,
     Camera, UserMinus, Loader, Asterisk, CircleUser, UserSquare, ShieldCheck, Workflow, KeyRound, Mail, Trash2,
     ChartLine, Star, Languages, Moon, Contact, Trash, Minus, Hash, Megaphone, Sparkle, LayoutDashboard, Award,
     MapPin, Wallet, Repeat, Eye, EyeOff, Globe, Send, RotateCw, Paperclip, ArrowBigUp, ArrowBigDown, PanelsTopLeft, BadgeCheck,
@@ -20,7 +20,7 @@ import {
 
 export const IconSet = { 
     List, ArrowLeft, AlertCircle, MessageSquare, ArrowRight, MessageCircleMore, ChevronsUpDown, Plus, MessagesSquare, HelpCircle, Reply,Clock,RefreshCw,
-    Search, User, Compass, Bell, Link, Menu, CalendarCheck, ListChecks, ArrowDownAZ,
+    Search, User, Compass, Bell, Link, Menu, CalendarCheck, ListChecks, ArrowDownAZ, ArrowUp,
     StickyNote, Users, Info, CircleHelp, BookUser, Pencil, Building2, UsersRound, SquareStack, Workflow, KeyRound, Mail, Trash2,
     Smile, UserCircle, File, ChevronsRight, Contact, Settings, House, 
     UserCheck, Cog, LogOut, LogIn, Files, Ellipsis,UserX, 

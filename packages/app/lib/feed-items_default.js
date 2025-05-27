@@ -230,7 +230,7 @@ export const DefaultView = memo(({ data, styles, bIsTitle, bIsTimelineContent, c
     return <>
         <View className={isCompact ? "flex-row-reverse" : " flex-col "}>
             {data.mainImage && (
-                <View className={isCompact ? " w-48 mb-auto pr-4" : "w-full mt-3"}>
+                <View className={isCompact ? " w-48 mb-auto pr-4" : "w-full mb-[12px] sm:mb-3"}>
                     <View
                         className="w-full aspect-video    "
                         style={styles.card_image}
@@ -245,12 +245,12 @@ export const DefaultView = memo(({ data, styles, bIsTitle, bIsTimelineContent, c
                     </View>
                 </View>
             )}
-            <View className="flex-auto my-auto flex-col px-4 pb-3 ">
+            <View className="flex-auto my-auto flex-col px-[12px] pb-[8px] sm:px-4 sm:pb-3 ">
                 {bIsTitle && (
                     <Link href={url} className="">
                         <Text
                             numberOfLines={3}
-                            className=" pb-[8px] text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-lg sm:text-xl tracking-tight font-bold"
+                            className=" pb-[8px] text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-xl sm:text-2xl tracking-tight font-bold"
                         >
                             {data.content.title}
                         </Text>

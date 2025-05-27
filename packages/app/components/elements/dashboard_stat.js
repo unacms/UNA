@@ -274,16 +274,14 @@ export default function PageLayout(props) {
                                             title: t('format_' + lang)
                                         }))}
                                         onSelect={(oItem) => { handleFormat(oItem.id) }}>
-                                        <Pressable>
-                                            <Button
-                                                variant="secondary"
-                                                title={t('format_' + currentFormat)}
-                                                startDecorator="Layout"
-                                                fullWidth
-                                                size="sm"
-                                                align="left"
-                                            />
-                                        </Pressable>
+                                        <Button
+                                            variant="secondary"
+                                            title={t('format_' + currentFormat)}
+                                            startDecorator="Layout"
+                                            fullWidth
+                                            size="sm"
+                                            align="left"
+                                        />
                                     </DropdownMenu></View>)
                         }
                         <Link href="/logout"><Button
@@ -382,13 +380,13 @@ function ElementDashboardStat(props) {
                 })}
             </Row>
 
-            {data.manage.items.length > 0 && <Card addClassName='m-2 mb-1 p-2 sm:p-3'>
+            {data.manage.items.length > 0 && <Card addClassName='m-2 mb-1 p-3 sm:p-4'>
 
-                <Text className="text-xl mx-1 mb-1 text-neutral-800 dark:text-neutral-200 font-semibold">Admin Tools</Text>
+                <Text className="text-xl mb-3 text-neutral-800 dark:text-neutral-200 font-semibold">Admin Tools</Text>
 
-                <View className="flex-row flex-wrap ">
+                <View className="grid w-full grid-cols-1 gap-x-2 gap-y-1.5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                     {data.manage.items.map((item2, index) => {
-                        return <View className="  w-1/2 lg:w-1/3 xl:w-1/4 p-1 " key={index}>
+                        return <View className=" w-full min-w-[160px] max-w-[320px] " key={index}>
                             <Link href={item2.link}>
                                 <Button variant="secondary" align="left" size="sm" fullWidth title={t(item2.title)} startDecorator={item2.icon}/>
                             </Link>

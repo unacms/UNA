@@ -54,7 +54,7 @@ function getContextRoot(data, currentUser) {
 function renderTrigger() {
     return (
         <Button
-            variant="text"
+            variant="secondary"
             size="sm"
             ring="p-1"
             rounded

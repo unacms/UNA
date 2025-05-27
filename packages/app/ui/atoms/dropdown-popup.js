@@ -18,7 +18,7 @@ export default function DropdownPopup({
     minPopupWidth = 200,
     defaultOpen = false,
     showOnTop = false,
-    contentClasses = ' rounded-2xl overflow-hidden  p-2 bg-bgrmodal dark:bg-bgrmodal-d shadow-[0_10px_10px_rgba(0,0,0,0.15)]  '
+    contentClasses = ' rounded-2xl overflow-hidden p-2 bg-bgrmodal dark:bg-bgrmodal-d shadow-[0_10px_10px_rgba(0,0,0,0.15)]  '
 }) {
     const buttonRef = useRef(null);
     const contentRef = useRef(null);

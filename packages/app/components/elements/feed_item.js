@@ -71,7 +71,7 @@ export default function ElementFeedItem({ data }) {
 
     return (
         <View className="relative sm:my-0 w-full mx-auto max-w-5xl">
-            <View className=" p-[16px] lg:pt-0">
+            <View className=" p-[12px] sm:p-[16px] lg:pt-0">
                 <Html data={tlContent} customClassName='u-vanilla-html'/>
                 {!!content.embed && <Embed data={content.embed} />}
             </View>

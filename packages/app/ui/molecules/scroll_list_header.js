@@ -93,7 +93,7 @@ export const Header = memo(({
         return headerContent;
 
     return (
-        <Row className={`justify-between px-[12px] sm:px-[16px] gap-x-2 items-center h-[64px] lg:shadow-[0_1px_3px_0_rgba(0,0,0,0.05)] lg:dark:shadow-[0_1px_0_rgba(0,0,0,1)] lg:border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d`}>
+        <Row className={`justify-between px-[8px] sm:px-[12px] gap-x-2 items-center h-[64px] lg:shadow-[0_1px_3px_0_rgba(0,0,0,0.05)] lg:dark:shadow-[0_1px_0_rgba(0,0,0,1)] lg:border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d`}>
             <Row className='items-center '>
                 {(isHome && !pageData?.context) && <Pressable onPress={scrollToTop} className=" ">
                     <View className=" flex-row active:scale-95 active:opacity-50 active:bg-bgrbutton dark:active:bg-bgrbutton-d rounded-xl py-1 px-2 gap-x-3 text-neutral-700 dark:text-neutral-300 web:hover:text-neutral-800 web:dark:hover:text-neutral-200 duration-300">
@@ -108,7 +108,7 @@ export const Header = memo(({
                     <Button variant="secondary" rounded onPress={() => {
                         FeedbackHaptics('Medium');
                         router ? router?.back() : history.back();
-                    }} startDecorator="ArrowLeft" size="sm" />
+                    }} startDecorator="ArrowLeft" size="sm" ring="p-1" />
                 )}</View>
                 {!!text && (
                     
@@ -140,7 +140,7 @@ function getRightHeader(items, currentUser, pagePath) {
         items?.map((button) => {
             let btn = undefined;
             if (button.section || button.link == 'search')
-                btn = <Search section={button.section} params={{ trigger: { title: button.title, icon: button.icon ? button.icon : 'Search', size: 'sm', variant: 'secondary' } }} />
+                btn = <Search section={button.section} params={{ trigger: { title: button.title, icon: button.icon ? button.icon : 'Search', size: 'sm', variant: 'secondary', ring: 'p-1' } }} />
             else {
                 btn = <Button
                     rounded title={button.title}
