@@ -844,9 +844,9 @@ export  const settingsDefault = {
                 rounded: ' rounded-[8px] ',
                 padding: ' h-[36px] min-w-[36px] px-[8px] overflow-hidden ',
                 icon_container:
-                    ' h-[16px] w-[16px] flex items-center justify-center ',
+                    ' h-[20px] w-[20px] flex items-center justify-center ',
                 title_container: 'px-[4px] sm:text-[14px] native:text-[12px] ',
-                icon_size: 16,
+                icon_size: 20,
                 icon_margin: ' mx-[4px] ', //conditional margin for icon container when title is present
                 title_margin: ' ',
             },

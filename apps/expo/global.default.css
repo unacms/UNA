@@ -12,7 +12,7 @@ input:-webkit-autofill:focus {
     /* @apply prose dark:prose-invert; */
     @apply text-neutral-800 dark:text-neutral-200;
     font-size: 16px;
-    line-height: 22px;
+    line-height: 24px;
     max-width: none;
     word-wrap: break-word;
     font-weight: 400;
@@ -22,7 +22,7 @@ input:-webkit-autofill:focus {
     /* @apply prose dark:prose-invert; */
     @apply text-neutral-800 dark:text-neutral-200;
     font-size: 14px;
-    line-height: 18px;
+    line-height: 20px;
     max-width: none;
     word-wrap: break-word;
     font-weight: 400;
@@ -530,11 +530,13 @@ div[data-radix-popper-content-wrapper].radix-hide{
     max-height: 250px;
     overflow-y: scroll;
     scrollbar-width: none;
+    font-size: 16px;
+    line-height: 24px;
 }
 .tiptap-comments{
-    max-height: 100px;
-    overflow-y: scroll;
     scrollbar-width: none;
+    font-size: 14px;
+    line-height: 20px;
 }
 
 .pac-container{ 

@@ -94,6 +94,10 @@ export default function RftText({
         url1 += '&object_privacy_view=' + object_privacy_view
     if (object_id) url1 += '&cid=' + object_id
 
+    const isCommentsEditor = props.container_class === 'comments';
+    const editorFontSize = isCommentsEditor ? '14px' : '16px';
+    const editorLineHeight = isCommentsEditor ? '20px' : '24px';
+
     useEffect(() => {
         if (keywordval[1] === '') return
 
@@ -120,8 +124,8 @@ export default function RftText({
     let customCodeBlockCSS = `
     body{
         font-family: system-ui, -apple-system, BlinkMacSystemFont, ".SFNSText-Regular", sans-serif;
-        font-size: ${props.fontSize || 16}px;
-        line-height:  ${props.lineHeight || 20}px;
+        font-size: ${editorFontSize};
+        line-height:  ${editorLineHeight};
         color:  ${colors.text};
         margin:0;
         white-space: pre;
@@ -131,11 +135,11 @@ export default function RftText({
         display:none;
     }
     body P {
-        margin-bottom: 4px;
-        margin-top: 4px;
+        margin-bottom: 0px;
+        margin-top: 0px;
     }
     body P:first-child {
-        margin-top: 4px;
+        margin-top: 0px;
     }
     .is-editor-empty:first-child::before{
         float:none !important;
@@ -690,6 +694,15 @@ export default function RftText({
                 style={{ backgroundColor: 'transparent' }}
                 editor={editor}
                 onMessage={onMessage}
+                editable={!props.disabled}
+                editorProps={{
+                    attributes: {
+                        class: `prose-mirror ${isCommentsEditor ? 'tiptap-comments' : 'tiptap-default'} ${props.classes || ''}`,
+                    },
+                }}
+                onDebouncedUpdate={(editor) => {
+                    // ... existing code ...
+                }}
             />
 
             {isToolBar && (

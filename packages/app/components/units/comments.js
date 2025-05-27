@@ -89,10 +89,10 @@ export default function UnitComments(props) {
             cellsArray.push(
                 <View key={`sp-${level}-${i}`} className="w-[36px]">
                     {lvls[i + 1] && (
-                        <View className="ml-[15px] w-0.5 flex-auto bg-neutral-100 dark:bg-neutral-800" />
+                        <View className="ml-[19px] w-[2px] flex-auto bg-neutral-100 dark:bg-neutral-800" />
                     )}
                     {i === level - 1 && (
-                        <View className="ml-[15px] h-8 w-[23px] border-neutral-100 dark:border-neutral-800 border-l-2 border-b-2 absolute -top-3.5 rounded-bl-2xl flex-auto" />
+                        <View className="ml-[19px] h-[36px] w-[24px] border-neutral-100 dark:border-neutral-800 border-l-[2px] border-b-[2px] absolute -top-[14px] rounded-bl-[20px] flex-auto" />
                     )}
                 </View>
             );
@@ -134,12 +134,14 @@ export default function UnitComments(props) {
         <View className='w-full px-[16px] '>
             <View className="flex-row gap-x-[8px]">
                 {cells}
-                <View className="w-[36px] z-50 flex-0 relative">
-                    <Profile {...data.author_data} displayType="unit_wo_info" displaySize="sm" showInfo="false" />
-                    {(items.length != 0 && view != 'flat') && <View className="w-0.5 ml-[15px] top-0.5 flex-auto bg-neutral-100 dark:bg-neutral-800"></View>}
+                <View className="w-[40px] z-50 flex-0 relative">
+                    
+                    <Profile {...data.author_data} displayType="unit_wo_info" displaySize="base" showInfo="false" />
+                    
+                    {(items.length != 0 && view != 'flat') && <View className="w-[2px] ml-[19px] top-[2px] flex-auto bg-neutral-100 dark:bg-neutral-800"></View>}
                 </View>
                 <View className=' flex-col flex-1 '>
-                    <View className=' bg-bgritem dark:bg-bgritem-d rounded-[12px] px-[12px] py-[8px] flex-col gap-y-1' >
+                    <View className=' bg-bgritem dark:bg-bgritem-d rounded-[20px] px-[12px] py-[10px] flex-col gap-y-1' >
                         <View className="flex-row items-center overflow-hidden">
                             <Profile {...data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
                             <View><Text className="text-neutral-400 dark:text-neutral-600 px-[4px]">·</Text></View>
@@ -162,7 +164,7 @@ export default function UnitComments(props) {
                                
                             </View>
                         }
-                        <View className='text-neutral-900 dark:text-neutral-50 pb-0.5'>
+                        <View className='text-neutral-900 dark:text-neutral-50 '>
                             <Html htmlStyles={{ fontSize: 14 }}  customClassName='u-vanilla-html-small' data={linkify(data.cmt_text)} />
                             {!!data.embed && <View><Embed data={data.embed} size="small" /></View>}
                            

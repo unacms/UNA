@@ -11,7 +11,7 @@ import Profile from 'app/ui/molecules/profile'
 
 export default function FormComments(props) {
     const { height: screenHeight } = useWindowDimensions()
-    const baseHeight = props.data.inputs['cmt_id']?.value ? 160 : 48
+    const baseHeight = props.data.inputs['cmt_id']?.value ? 160 : 40
     const maxHeight = Platform.OS === 'web' ? screenHeight / 2 : (screenHeight - 300) / 2 // 300 is approximate keyboard height
     const [imageSource, setImageSource] = useState([])
     const formContext = useFormContext()
@@ -59,27 +59,39 @@ export default function FormComments(props) {
 
     function checkEditorHeight(reportedInternalHeight) {
         const actualHasText = stripTags(formContext.getValues('cmt_text') || '').trim().length > 0;
-    
+        const growthStepAmount = 20; // Define early for use in placeholder check
+
+        if (!actualHasText) {
+            // If no text, clamp to baseHeight unless the editor reports something
+            // significantly larger than what baseHeight can contain (which shouldn't happen for a placeholder).
+            // The main goal here is to ensure it stays at baseHeight (40px) for the placeholder.
+            const placeholderChromeEstimate = 20; // Matches totalChromeEstimate for placeholder state
+            const placeholderVisualHeight = reportedInternalHeight + placeholderChromeEstimate; 
+            // If the reported placeholder content + its chrome fits within baseHeight, or slightly over by less than a full step,
+            // force it to baseHeight. This prevents small placeholder overflows from bumping height by a full step.
+            if (placeholderVisualHeight < baseHeight + growthStepAmount) { 
+                 updateAnimatedHeight(baseHeight);
+                 return;
+            }
+            // If placeholder is unusually large, let normal logic handle it, but it will start from baseHeight.
+        }
+
         // When typing, initial visual height should accommodate 1 line + all relevant chrome.
-        // 1 line content ~24px. Wrapper chrome when expanded (pt-10, pb-48) = 58px. Editor internal est. ~10px. Total ~92px.
-        const minVisualHeightWhenTyping = 92;
+        // 1 line content ~20px. Wrapper chrome when expanded (pt-10, pb-48) = 58px. Editor internal est. ~2px. Total ~80px.
+        const minVisualHeightWhenTyping = 80;
         const visualFloorHeight = actualHasText ? minVisualHeightWhenTyping : baseHeight;
         
         let totalChromeHeightEstimate;
         if (actualHasText) {
             // Chrome when editorHeight > baseHeight (triggers pb-[48px]):
             // Wrapper: 10px (top) + 48px (bottom) = 58px
-            // Editor internal (estimate): 10px
-            totalChromeHeightEstimate = 58 + 10; // 68px
+            // Editor internal (estimate): 2px
+            totalChromeHeightEstimate = 58 + 2; // 60px
         } else {
-            // Chrome when editorHeight is baseHeight (e.g. 48px) (pt-10, pb-10):
-            // Wrapper: 10px (top) + 10px (bottom) = 20px
-            // Editor internal (estimate for placeholder line, can be small or same): 10px, or 0 if placeholder is simple
-            // To ensure baseHeight (48px) fits one line (~24px content), chrome should be < 24. So use wrapper's 20px.
-            totalChromeHeightEstimate = 20; 
+            // This path is for initial calculation if the above early return for !actualHasText wasn't met.
+            // Or if somehow called with !actualHasText after initial placeholder setup.
+            totalChromeHeightEstimate = 20; // Wrapper: 10px top/bottom
         }
-
-        const growthStepAmount = 24;
 
         const newCalculatedHeight = getEditorHeight(
             reportedInternalHeight,
@@ -95,7 +107,7 @@ export default function FormComments(props) {
         const strippedText = stripTags(rawEditorText || '').trim();
         const actualHasText = strippedText.length > 0;
 
-        const minVisualHeightWhenTyping = 92; // Synchronized with checkEditorHeight logic
+        const minVisualHeightWhenTyping = 80;
 
         if (actualHasText) {
             updateAnimatedHeight(Math.max(animatedEditorHeight.value, minVisualHeightWhenTyping)); 
@@ -172,31 +184,32 @@ export default function FormComments(props) {
         'items-stretch',
         'bg-bgritem',
         'dark:bg-bgritem-d',
-        'rounded-[12px]',
+        'rounded-[20px]',
         'px-[12px]',
         'py-[10px]',
         
     ];
 
-    const minVisualHeightWhenTyping = 92;
-    const shouldHaveExtraPadding = (hasText && minVisualHeightWhenTyping > baseHeight) || (!hasText && baseHeight > 48);
+    const minVisualHeightWhenTypingForPadding = 80;
+    const shouldHaveExtraPadding = (hasText && minVisualHeightWhenTypingForPadding > baseHeight) || (!hasText && baseHeight > 40);
     if (shouldHaveExtraPadding) {
-        inputWrapperClasses.push('pb-[48px]');
+        inputWrapperClasses.push('pb-[40px]');
     }
 
     const attachmentButtonContainerClasses = [
         'absolute',
         'bottom-0',
         'z-10',
-        'h-[48px]',
+        'h-[40px]',
         'flex',
         'items-center',
-        'justify-center'
+        'justify-center',
+        'p-[2px]'
     ];
     
     let currentAttachmentButtonWidthClass;
     if (isWeb) {
-        currentAttachmentButtonWidthClass = 'p-[4px]';
+        currentAttachmentButtonWidthClass = ' w-[40px] h-[40px]';
     } else {
         currentAttachmentButtonWidthClass = 'w-fit';
     }
@@ -212,14 +225,15 @@ export default function FormComments(props) {
         <View className="w-full ">
             <Row className="w-full gap-x-[8px]">
                 {currentUser && (
-                    <View className="flex-none p-1">
+         
                         <Profile
                             {...currentUser}
                             url_avatar={currentUser.avatar}
                             displayType="unit_wo_info"
                             displaySize="base"
+                            
                         />
-                    </View>
+                   
                 )}
                 <View className="flex-1 relative">
                     <Reanimated.View
@@ -248,7 +262,7 @@ export default function FormComments(props) {
                             {
                                 form_name: props.name,
                                 container_class: 'comments',
-                                classes: 'flex-1 text-[14px] leading-[18px] text-neutral-800 dark:text-neutral-200',
+                                classes: 'flex-1 text-[14px] leading-[18px] text-neutral-800 dark:text-neutral-200 tiptap-comments',
                                 autofocus: isAutoFocus,
                                 bg: 'transparent',
                                 placeholder: 'Leave a comment...',
@@ -280,7 +294,7 @@ export default function FormComments(props) {
                                     form_name: props.name,
                                     previewPlaceHolder: setPlaceHolder,
                                     noMargin: true,
-                                    size: 'sm',
+                                    size: 'xs',
                                     hitSlop: 4,
                                     variant: 'text',
                                     asDefaultStorage: true,
@@ -293,7 +307,7 @@ export default function FormComments(props) {
                                 exiting={SlideOutLeft.duration(300)}
                                 className="h-full w-full"
                             >
-                                <Row className="h-full px-[4px] gap-x-[4px] items-center">
+                                <Row className="h-full px-[2px] gap-x-[4px] items-center">
                                     <View className="h-full flex items-center justify-center">
                                         {getFormFieldByData(
                                             props.data.inputs['cmt_image'],
@@ -304,7 +318,7 @@ export default function FormComments(props) {
                                                 previewPlaceHolder: setPlaceHolder,
                                                 noMargin: true,
                                                 variant: 'secondary',
-                                                size: 'sm',
+                                                size: 'xs',
                                                 hitSlop: 4,
                                                 asDefaultStorage: true,
                                                 source: 'library',
@@ -320,7 +334,7 @@ export default function FormComments(props) {
                                                 form_name: props.name,
                                                 previewPlaceHolder: setPlaceHolder,
                                                 noMargin: true,
-                                                size: 'sm',
+                                                size: 'xs',
                                                 hitSlop: 4,
                                                 variant: 'secondary',
                                                 asDefaultStorage: true,
@@ -333,7 +347,7 @@ export default function FormComments(props) {
                         )}
                     </View>
                     {hasText && (
-                        <View className="absolute right-0 bottom-0 w-[48px] h-[48px] p-[4px] z-10">
+                        <View className="absolute right-0 bottom-0 w-[40px] h-[40px] p-[2px] z-10">
                             {getFormFieldByData(
                                 props.data.inputs['cmt_submit'],
                                 props.handleSubmit,
@@ -345,7 +359,7 @@ export default function FormComments(props) {
                                     noMargin: true,
                                     icon_only: true,
                                     icon: 'ArrowUp',
-                                    size: 'sm',
+                                    size: 'xs',
                                     variant: 'primary',
                                     rounded: true,
                                     hitSlop: 4,

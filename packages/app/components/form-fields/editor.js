@@ -32,7 +32,6 @@ function PlainText(props) {
     let input = (
         <InputMulti
             multiline
-            editable
             name={props.name}
             placeholder={placeholder}
             onChangeText={field.onChange}
@@ -45,13 +44,21 @@ function PlainText(props) {
                 }
             }}
             style={props.autoheight ? { height } : {}}
+            defaultValue={props.value || props.default_value || ''}
+            editorProps={{
+                attributes: {
+                    class: `prose-mirror ${props.classes} ${ (props.form_name === 'feed_edit' || props.form_name === 'feed' || props.container_class !== 'comments') ? 'tiptap-default' : ''} `,
+                },
+            }}
+            onDebouncedUpdate={(editor) => {
+                // ... existing code ...
+            }}
         />
     );
 
     if (props.viewClasses) {
         input = <TextInputClear
             multiline
-            editable
             placeholder={props.placeholder}
             onContentSizeChange={e => setHeight(e.nativeEvent.contentSize.height > 70 ? e.nativeEvent.contentSize.height : e.nativeEvent.contentSize.height < 32 ? 32 : e.nativeEvent.contentSize.height)}
             name={props.name}

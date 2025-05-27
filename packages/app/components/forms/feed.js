@@ -1,6 +1,6 @@
 import { View, Row, ScrollView } from 'app/design/view'
 import { Button, Modal } from 'app/design/controls'
-import { useState, useContext, useRef, useCallback } from 'react'
+import { useState, useContext, useRef, useCallback, useMemo } from 'react'
 import { getFormFieldByData } from 'app/lib/form-helpers'
 import { useLayoutData } from 'app/context/layout'
 import { FeedbackHaptics, getAlert } from 'app/lib/util'
@@ -16,6 +16,8 @@ import { stripTags, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { useWindowDimensions } from 'react-native'
 import { Keyboard } from 'react-native'
 import { useFormContext } from 'react-hook-form'
+import Reanimated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from 'react-native-reanimated';
+import { getEditorHeight } from 'app/lib/form-helpers';
 
 
 function ProfileView({ isImageOnly = false, data, handleSubmit, showImage, setShowImage, author }) {
@@ -86,6 +88,70 @@ export default function FormFeed(props) {
     const isIos = Platform.OS === 'ios'
     const isSmall = windowDimensions.width < LAYOUT_BREAKPOINTS.sm || !isWeb ? true : false
     const scrollViewRef = useRef(null)
+
+    // Auto-growth state and logic
+    const { height: screenHeight } = useWindowDimensions();
+    const baseEditorHeight = 120; // Initial height for the post input
+    const editorMaxHeight = screenHeight / 2; // Max height it can grow to
+    const animatedEditorHeight = useSharedValue(baseEditorHeight);
+    const rawEditorText = formContext.watch('text');
+    const hasText = useMemo(() => stripTags(rawEditorText || '').trim().length > 0, [rawEditorText]);
+
+    const editorWrapperAnimatedStyle = useAnimatedStyle(() => {
+        return {
+            height: animatedEditorHeight.value,
+        };
+    }, [animatedEditorHeight]);
+
+    const updateAnimatedHeight = (newHeight) => {
+        if (Math.round(animatedEditorHeight.value) !== Math.round(newHeight)) {
+            animatedEditorHeight.value = withTiming(newHeight, {
+                duration: 100,
+                easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+            });
+        }
+    };
+
+    function checkEditorHeight(reportedInternalHeight) {
+        const actualHasText = stripTags(formContext.getValues('text') || '').trim().length > 0;
+        
+        // For post editor: 1 line text ~24px. Wrapper padding (px-[12px]) ~24px. Editor internal est. ~2px. Total ~50px.
+        const minVisualHeightWhenTyping = 50; 
+        const visualFloorHeight = actualHasText ? minVisualHeightWhenTyping : baseEditorHeight;
+        
+        let totalChromeHeightEstimate;
+        if (actualHasText) {
+            // Wrapper padding: 12px (top) + 12px (bottom) = 24px. Editor internal (estimate): 2px
+            totalChromeHeightEstimate = 24 + 2; // 26px
+        } else {
+            // For baseHeight, chrome is the same as above if baseHeight is for active input.
+            // If baseHeight is for an empty, non-focused input, it might be less, but we use consistent for simplicity.
+            totalChromeHeightEstimate = 24 + 2; // 26px 
+        }
+
+        const growthStepAmount = 24; // Matches .tiptap-default line-height
+
+        const newCalculatedHeight = getEditorHeight(
+            reportedInternalHeight,
+            visualFloorHeight,
+            totalChromeHeightEstimate,
+            growthStepAmount,
+            editorMaxHeight
+        );
+        updateAnimatedHeight(newCalculatedHeight);
+    }
+
+    useEffect(() => {
+        const strippedText = stripTags(rawEditorText || '').trim();
+        const actualHasText = strippedText.length > 0;
+        const minVisualHeightWhenTyping = 50; // Synchronized with checkEditorHeight logic
+
+        if (actualHasText) {
+            updateAnimatedHeight(Math.max(animatedEditorHeight.value, minVisualHeightWhenTyping)); 
+        } else {
+            updateAnimatedHeight(baseEditorHeight); 
+        }
+    }, [rawEditorText, baseEditorHeight, animatedEditorHeight]);
 
     function onClose() {
         setShowImage(false)
@@ -194,25 +260,25 @@ export default function FormFeed(props) {
         {getFormFieldByData(props.data.inputs['type'], props.handleSubmit, 'default')}
         <View className="justify-between flex-col flex-auto">
                 <View className="w-full flex-1 justify-start px-[12px] ">
-                    <View className="flex-auto  ">
+                    <Reanimated.View style={editorWrapperAnimatedStyle} className="flex-auto">
                         {getFormFieldByData(
                             props.data.inputs['text'],
                             props.handleSubmit,
                             'custom',
                             {
                                 form_name:props.name,
-                                styles: { verticalAlign: 'top' },
+                                styles: { verticalAlign: 'top' }, 
                                 focus: true,
                                 noMargin: true,
                                 bg: 'transparent',
                                 placeholder: 'Write here...',
                                 linkify: true,
                                 autofocus: Date.now(),
-                                classes:'flex-1',
-                                autoheight: true
+                                classes:'flex-1 tiptap-default',
+                                onHeight: checkEditorHeight,
                             }
                         )}
-                    </View>
+                    </Reanimated.View>
                     <View >
                     <ScrollView keyboardDismissMode="on-drag" keyboardShouldPersistTaps="handled" className="w-full " horizontal={true}>
                         {prevList}
