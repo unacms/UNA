@@ -9,6 +9,16 @@ import {
 import { Pressable, View, ViewRef } from 'app/design/view'
 import { LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { RemoveScroll } from 'react-remove-scroll';
+import Animated, {
+    useSharedValue,
+    useAnimatedStyle,
+    withTiming,
+    withSpring,
+    interpolate,
+    runOnJS,
+} from 'react-native-reanimated';
+
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export default function DropdownPopup({
     children,
@@ -26,13 +36,33 @@ export default function DropdownPopup({
     const { width: windowWidth, height: windowHeight } = useWindowDimensions();
     const isWeb = useMemo(() => Platform.OS === 'web', []);
     const animation = useMemo(
-        () => (windowWidth > LAYOUT_BREAKPOINTS.md ? 'fade' : 'slide'),
+        () => (windowWidth > LAYOUT_BREAKPOINTS.md ? 'fade' : 'none'),
         [windowWidth]
     );
     const [isOpen, setIsOpen] = useState(defaultOpen);
+    const [isModalVisible, setIsModalVisible] = useState(false);
 
     const isControlledOutside = typeof onOpenChange === 'function';
     const isRealOpen = isControlledOutside ? open : isOpen;
+
+    // Animation values
+    const animationProgress = useSharedValue(0);
+
+    useEffect(() => {
+        if (isRealOpen) {
+            setIsModalVisible(true);
+            animationProgress.value = withSpring(1, {
+                damping: 20,
+                stiffness: 300,
+            });
+        } else {
+            animationProgress.value = withTiming(0, { duration: 200 }, (finished) => {
+                if (finished) {
+                    runOnJS(setIsModalVisible)(false);
+                }
+            });
+        }
+    }, [isRealOpen]);
 
     const updateButtonPosition = () => {
         if (!buttonRef.current?.measureInWindow) return;
@@ -50,7 +80,6 @@ export default function DropdownPopup({
                     // Calculate vertical position
                     let top = y + height + 8;
 
-
                     if (showOnTop) {
                         top = y - effectivePopupHeight - 8;
                     } else if (top + effectivePopupHeight > windowHeight - 16 && y - effectivePopupHeight - 8 > 16) {
@@ -66,7 +95,6 @@ export default function DropdownPopup({
                 });
             }
         });
-
     };
 
     useEffect(() => {
@@ -92,7 +120,49 @@ export default function DropdownPopup({
         event.stopPropagation();
         handleToggle(false);
     };
-    const Content = useMemo(() => (
+
+    // Animated styles for backdrop
+    const backdropAnimatedStyle = useAnimatedStyle(() => {
+        return {
+            opacity: interpolate(animationProgress.value, [0, 1], [0, 1]),
+        };
+    }, []);
+
+    // Animated styles for content
+    const contentAnimatedStyle = useAnimatedStyle(() => {
+        return {
+            opacity: animationProgress.value,
+            transform: [
+                {
+                    scale: interpolate(animationProgress.value, [0, 1], [0.8, 1]),
+                },
+            ],
+        };
+    }, []);
+
+    const AnimatedContent = useMemo(() => (
+        <Animated.View
+            ref={contentRef}
+            style={[
+                {
+                    position: 'absolute',
+                    top: buttonPos.y,
+                    left: buttonPos.x,
+                    elevation: 5,
+                    minWidth: minPopupWidth,
+                    maxWidth: windowWidth - 32,
+                    maxHeight: windowHeight - buttonPos.y - 32,
+                    zIndex: 1000,
+                },
+                !isWeb && contentAnimatedStyle,
+            ]}
+            className={`${contentClasses}`}
+        >
+            {children}
+        </Animated.View>
+    ), [buttonPos, contentClasses, children, windowWidth, windowHeight, contentAnimatedStyle, isWeb]);
+
+    const Content = isWeb ? (
         <ViewRef
             ref={contentRef}
             style={{
@@ -108,7 +178,7 @@ export default function DropdownPopup({
         >
             {children}
         </ViewRef>
-    ), [buttonPos, contentClasses, children, windowWidth]);
+    ) : AnimatedContent;
 
     return (
         <>
@@ -120,17 +190,35 @@ export default function DropdownPopup({
                 {trigger}
             </TouchableOpacity>
 
-            <ModalBase
-                transparent={true}
-                visible={isRealOpen === true ? true : false}
-                presentationStyle="overFullScreen"
-                animationType={animation}
-                onRequestClose={() => handleToggle(false)}
-            >
-                <Pressable className="flex-1 bg-black/30" onPress={(event) => handleBackdropPress(event)}>
-                    {isWeb ? <RemoveScroll>{Content}</RemoveScroll> : Content}
-                </Pressable>
-            </ModalBase>
+            {isModalVisible && (
+                <ModalBase
+                    transparent={true}
+                    visible={isModalVisible}
+                    presentationStyle="overFullScreen"
+                    animationType={isWeb ? animation : 'none'}
+                    onRequestClose={() => handleToggle(false)}
+                    onDismiss={() => {
+                        // Ensure modal is fully cleaned up on native
+                        if (!isWeb && !isRealOpen) {
+                            setIsModalVisible(false);
+                        }
+                    }}
+                >
+                    {isWeb ? (
+                        <Pressable className="flex-1 bg-black/30" onPress={(event) => handleBackdropPress(event)}>
+                            <RemoveScroll>{Content}</RemoveScroll>
+                        </Pressable>
+                    ) : (
+                        <AnimatedPressable 
+                            className="flex-1" 
+                            style={[{ backgroundColor: 'rgba(0,0,0,0.3)' }, backdropAnimatedStyle]}
+                            onPress={(event) => handleBackdropPress(event)}
+                        >
+                            {Content}
+                        </AnimatedPressable>
+                    )}
+                </ModalBase>
+            )}
         </>
     );
 }

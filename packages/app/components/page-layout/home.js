@@ -122,7 +122,7 @@ export default function (props) {
 
             <ScrollView
                 horizontal={true}
-                className=" w-full border-b border-bdrtabbar dark:border-bdrtabbar-d overflow-y-visible sm:justify-center "
+                className=" w-full border-b border-bdrnavbar dark:border-bdrnavbar-d shadow-[0_1px_3px_0_rgba(0,0,0,0.05)] dark:shadow-[0_1px_0_rgba(0,0,0,1)] bg-bgrnavbar dark:bg-bgrnavbar-d overflow-y-visible sm:justify-center "
             >
                 <Row
                     className={`  rounded-full mx-3 sm:mx-auto ${feedList.length > 1
@@ -217,9 +217,9 @@ export default function (props) {
             >
                 {getLayout(currentUser) == 'hor' && (
                     <View className="hidden relative xl:flex w-[360px] ">
-                        <View className="fixed-process fixed w-[360px] p-[16px] gap-x-[8px] duration-200">
+                        <View className="fixed-process fixed w-[360px] p-[8px] gap-x-[8px] duration-200">
                             {appSetting('layout', 'sidebar_search') && (
-                                <View className="mb-3">
+                                <View className="p-2">
                                     <Search type="input" placeholder="Enter search text" />
                                 </View>
                             )}

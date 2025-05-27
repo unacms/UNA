@@ -25,6 +25,9 @@ export default function ElementSearch(oProps) {
     const [showModal, setShowModal] = useState(false);
 
     const handleOpenPopupDefault = () => {
+        if (oParams?.trigger?.onPress) {
+            oParams.trigger.onPress();
+        }
         setShowModal(true);
         //setBottomSheetData({ title: 'Search', content:<ElementSearchData {...oProps} isBottomSheet={true} />, showClose: true, isListView: true, snapPoints: ['75%', '90%'] });
     }
@@ -34,7 +37,7 @@ export default function ElementSearch(oProps) {
     ) : (
         <Row>
             <View key="ddp-trigger" className="flex-row">
-                <ButtonRef title={oProps.title === undefined ? "" : oProps.title} variant="secondary" startDecorator={oParams?.trigger?.icon ? oParams?.trigger.icon : "Search"} rounded size="sm" hitSlop={4} tooltip={oProps.tooltip === undefined ? "Search" : oProps.tooltip} onPress={() => handleOpenPopupDefault()} {...oParams?.trigger} />
+                <ButtonRef title={oProps.title === undefined ? "" : oProps.title} variant="secondary" startDecorator={oParams?.trigger?.icon ? oParams?.trigger.icon : "Search"} rounded size="sm" hitSlop={4} tooltip={oProps.tooltip === undefined ? "Search" : oProps.tooltip} onPress={handleOpenPopupDefault} {...(oParams?.trigger && (({ onPress, ...rest }) => rest)(oParams.trigger))} />
             </View>
         </Row>
     );
