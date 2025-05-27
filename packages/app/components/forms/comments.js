@@ -307,8 +307,8 @@ export default function FormComments(props) {
                                 exiting={SlideOutLeft.duration(300)}
                                 className="h-full w-full"
                             >
-                                <Row className="h-full px-[2px] gap-x-[4px] items-center">
-                                    <View className="h-full flex items-center justify-center">
+                                <Row className="h-full items-center">
+                                    <View className="h-full p-[2px] flex items-center justify-center">
                                         {getFormFieldByData(
                                             props.data.inputs['cmt_image'],
                                             props.handleSubmit,
@@ -317,7 +317,7 @@ export default function FormComments(props) {
                                                 form_name: props.name,
                                                 previewPlaceHolder: setPlaceHolder,
                                                 noMargin: true,
-                                                variant: 'secondary',
+                                                variant: 'text',
                                                 size: 'xs',
                                                 hitSlop: 4,
                                                 asDefaultStorage: true,
@@ -325,7 +325,7 @@ export default function FormComments(props) {
                                             }
                                         )}
                                     </View>
-                                    <View className="h-full flex items-center justify-center">
+                                    <View className="h-full p-[2px] flex items-center justify-center">
                                         {getFormFieldByData(
                                             props.data.inputs['cmt_image'],
                                             props.handleSubmit,
@@ -336,7 +336,7 @@ export default function FormComments(props) {
                                                 noMargin: true,
                                                 size: 'xs',
                                                 hitSlop: 4,
-                                                variant: 'secondary',
+                                                variant: 'text',
                                                 asDefaultStorage: true,
                                                 source: 'camera',
                                             }
