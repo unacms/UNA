@@ -114,7 +114,7 @@ export default function ElementEntityAuthor(oProps) {
     const menuOptions = handleMenuManageSelect ? { onSelect: (oItem, event) => handleMenuManageSelect(oItem, event, setPageData) } : {};
 
     return (
-        <View className={" lg:p-2 w-full items-center flex-row justify-between  "}>
+        <View className={"  lg:p-4 w-full items-center flex-row justify-between  "}>
             <FormModal pageData={pageData} setPageData={setPageData} />
             <Redirect ref={redirectdRef} />
             {viewState.view == 'edited' && (<Modal
@@ -153,7 +153,7 @@ export default function ElementEntityAuthor(oProps) {
             <View>
                 {aMenuManageItems.length > 0 &&
                     <DropdownMenu items={aMenuManageItems} {...menuOptions}>
-                        <Button variant="text" rounded="true" startDecorator="Ellipsis" size="sm" />
+                        <Button variant="text" rounded="true" startDecorator="Ellipsis" size="base" />
                     </DropdownMenu>
                 }
             </View>

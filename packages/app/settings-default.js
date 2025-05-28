@@ -852,12 +852,12 @@ export  const settingsDefault = {
                 title_margin: ' ',
             },
             sm: {
-                rounded: ' rounded-[11px] ',
-                padding: ' h-[44px] min-w-[44px] px-[10px] overflow-hidden group ',
+                rounded: ' rounded-[8px] ',
+                padding: ' h-[36px] min-w-[36px] px-[8px] overflow-hidden group ',
                 icon_container:
-                    ' h-[24px] w-[24px] flex items-center justify-center ',
+                    ' h-[20px] w-[20px] flex items-center justify-center ',
                 title_container: ' px-[4px] native:text-[14px] ',
-                icon_size: 24,
+                icon_size: 20,
                 icon_margin: ' mx-[4px] ', //conditional margin for icon container when title is present
                 title_margin: ' ', //conditional margin for text container when icon is presentconditional margin for text container when icon is present
             },
@@ -866,7 +866,7 @@ export  const settingsDefault = {
                 padding: ' h-[44px] min-w-[44px] px-[10px] overflow-hidden ',
                 icon_container:
                     ' h-[24px] w-[24px] flex items-center justify-center ',
-                title_container: ' px-[4px] web:text-[14px] native:text-[14px] ',
+                title_container: ' px-[4px] web:text-[16px] native:text-[16px] ',
                 icon_size: 24,
                 icon_margin: ' mx-[4px] ', //conditional margin for icon container when title is present
                 title_margin: ' ', //conditional margin for text container when icon is presentnditional margin for text container when icon is present

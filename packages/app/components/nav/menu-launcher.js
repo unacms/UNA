@@ -43,7 +43,7 @@ export default function () {
                     alt={t("All Apps")}
                     startDecorator="LayoutGrid"
                     hitSlop={4}
-                    size="sm"
+                    size="base"
                     
                 />
             </DropdownMenu>

@@ -26,8 +26,7 @@ export default function ({ buttonProps, children, tooltip, fullWidth }) {
         tooltip: tooltip || "Notifications",
         rounded: true,
         startDecorator: "Bell",
-        size: "sm",
-        hitSlop: 4,
+        size: "base",
     };
 
     buttonProps.addon = { variant: 'primary', text: notifCount, hideZero: true }

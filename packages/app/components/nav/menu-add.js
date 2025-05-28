@@ -31,8 +31,7 @@ export default function MenuAdd({ buttonProps, children }) {
         rounded: 'rounded',
         startDecorator: "Plus",
         tooltip: "Create",
-        size: "sm",
-        hitSlop: 4,
+        size: "base",
     };
 
     return (

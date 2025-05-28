@@ -362,7 +362,7 @@ export const VisibilityInfo = memo(({ data }) => {
     return (
         <Row className="text-neutral-600 dark:text-neutral-400 items-center">
             <Text className="text-neutral-400 dark:text-neutral-600 text-[14px] leading-[24px] mx-[4px]">·</Text>
-            {isUser ? <Profile {...data.author_data} displayType="unit_wo_info" displaySize="xxs" /> : (icon ? <Icon icon={icon} width={18} height={18} /> : null)}
+            {isUser ? <Profile {...data.author_data} displayType="unit_wo_info" displaySize="xxs" /> : (icon ? <Icon icon={icon} width={20} height={20} /> : null)}
             <Text className="text-neutral-600 dark:text-neutral-400 text-[14px] font-medium leading-[24px] text-center tracking-tight ml-[4px]">{isUser ? data.author_data.display_name : text}</Text>
         </Row>
     );
@@ -422,7 +422,7 @@ export const SmallUnit = memo(({ data }) => {
                         />
                     </View>
                     <View className="flex-auto flex-col my-auto">
-                        <View className="flex-row gap-x-[8px] sm:gap-x-[10px] ">
+                        <View className="flex-row gap-x-[8px] sm:gap-x-[12px] ">
                             <Text className=" text-sm flex-auto font-medium text-neutral-800 dark:text-neutral-200">
                                 {data.author_data.display_name}
                             </Text>

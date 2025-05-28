@@ -110,7 +110,7 @@ export const Header = memo(({
                     <View className=""><Button variant="text" rounded onPress={() => {
                         FeedbackHaptics('Medium');
                         router ? router?.back() : history.back();
-                    }} startDecorator="ArrowLeft" size="sm" /></View>
+                    }} startDecorator="ArrowLeft" size="base" /></View>
                 )}
                 {!!text && (
                     

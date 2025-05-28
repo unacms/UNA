@@ -85,7 +85,7 @@ export default function ContextSelector({ data, url }) {
                     trigger={
                         <Button
                             variant="secondary"
-                            size="sm"
+                            size="base"
                             rounded
                             startDecorator="Menu"
                         />

@@ -186,7 +186,7 @@ export default function (props) {
                                                         rounded
                                                         startDecorator="MessageSquare"
                                                         id="m2"
-                                                        size="sm"
+                                                        size="base"
                                                         hitSlop={4}
                                                         addon={{
                                                             variant: 'primary',
@@ -221,7 +221,7 @@ export default function (props) {
                                             variant="secondary"
                                             tooltip="Account"
                                             rounded
-                                            size="sm"
+                                            size="base"
                                             hitSlop={4}
                                             aria-label="Account"
                                             alt={t('Account')}

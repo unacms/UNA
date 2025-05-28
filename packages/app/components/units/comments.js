@@ -87,12 +87,12 @@ export default function UnitComments(props) {
         const effectiveLevel = Math.min(level, maxLevel);
         for (let i = 0; i < effectiveLevel; i++) {
             cellsArray.push(
-                <View key={`sp-${level}-${i}`} className="w-[36px]">
+                <View key={`sp-${level}-${i}`} className="w-[44px]">
                     {lvls[i + 1] && (
                         <View className="ml-[19px] w-[2px] flex-auto bg-neutral-100 dark:bg-neutral-800" />
                     )}
                     {i === level - 1 && (
-                        <View className="ml-[21px] h-[36px] w-[24px] border-neutral-100 dark:border-neutral-800 border-l-[2px] border-b-[2px] absolute -top-[14px] rounded-bl-[22px] flex-auto" />
+                        <View className="ml-[21px] h-[37px] w-[29px] border-neutral-100 dark:border-neutral-800 border-l-[2px] border-b-[2px] absolute -top-[14px] rounded-bl-[22px] flex-auto" />
                     )}
                 </View>
             );

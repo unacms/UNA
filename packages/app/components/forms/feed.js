@@ -138,7 +138,8 @@ export default function FormFeed(props) {
             growthStepAmount,
             editorMaxHeight
         );
-        updateAnimatedHeight(newCalculatedHeight);
+        const finalHeight = Math.max(newCalculatedHeight, baseEditorHeight);
+        updateAnimatedHeight(finalHeight);
     }
 
     useEffect(() => {
@@ -480,7 +481,7 @@ export default function FormFeed(props) {
                 >
                     {
                         props?.exProps?.showForm !== false && (
-                            <View className=" flex-row gap-x-[8px] sm:gap-x-[10px] ">
+                            <View className=" flex-row gap-x-[8px] sm:gap-x-[12px] ">
                                 <View className="my-auto">
                                     <ProfileView isImageOnly={true} />
                                 </View>
