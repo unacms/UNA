@@ -21,7 +21,7 @@ input:-webkit-autofill:focus {
 .u-vanilla-html-small {
     /* @apply prose dark:prose-invert; */
     @apply text-neutral-800 dark:text-neutral-200;
-    font-size: 14px;
+    font-size: 16px;
     line-height: 20px;
     max-width: none;
     word-wrap: break-word;
@@ -535,7 +535,7 @@ div[data-radix-popper-content-wrapper].radix-hide{
 }
 .tiptap-comments{
     scrollbar-width: none;
-    font-size: 14px;
+    font-size: 16px;
     line-height: 20px;
 }
 

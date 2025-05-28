@@ -538,7 +538,7 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
                                 <Text className='text-xs text-neutral-900 dark:text-neutral-50'>Reply to: </Text>
                                 <Text className='font-semibold text-xs text-neutral-900 dark:text-neutral-50'>{getPart("ProfileDisplayName", [commentData.formAuthor])}</Text>
                             </Row>
-                            <Text className='text-sm overflow-hidden text-neutral-900 dark:text-neutral-50' numberOfLines={3}>{form.data.inputs.cmt_parent_id.value == 0 ? '' : '' + commentData.formText}</Text>
+                            <Text className='text-base overflow-hidden text-neutral-900 dark:text-neutral-50' numberOfLines={3}>{form.data.inputs.cmt_parent_id.value == 0 ? '' : '' + commentData.formText}</Text>
                         </View>
                         <View className=" right-0 t-0">
                             <Button align="start" rounded startDecorator="X" size="xs" variant="outline" onPress={() => handleCancel()} />

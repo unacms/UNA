@@ -22,7 +22,7 @@ export default function (props) {
                     </View>
                 </Link>
                
-                <ContentMore numberOfSymbols={200} showLess={true} content={data.text} numberOfLines={3}  openSmall={false} textClassName="  text-sm text-neutral-600 dark:text-neutral-400" />
+                <ContentMore numberOfSymbols={200} showLess={true} content={data.text} numberOfLines={3}  openSmall={false} textClassName="  text-base text-neutral-600 dark:text-neutral-400" />
            
            
         </View>

@@ -184,9 +184,8 @@ export default function FormComments(props) {
         'items-stretch',
         'bg-bgritem',
         'dark:bg-bgritem-d',
-        'rounded-[20px]',
-        'px-[12px]',
-        'py-[10px]',
+        'rounded-[22px]',
+        'p-[12px]',
         
     ];
 
@@ -262,7 +261,7 @@ export default function FormComments(props) {
                             {
                                 form_name: props.name,
                                 container_class: 'comments',
-                                classes: 'flex-1 text-[14px] leading-[18px] text-neutral-800 dark:text-neutral-200 tiptap-comments',
+                                classes: 'flex-1 text-[16px] leading-[20px] text-neutral-800 dark:text-neutral-200 tiptap-comments',
                                 autofocus: isAutoFocus,
                                 bg: 'transparent',
                                 placeholder: 'Leave a comment...',
