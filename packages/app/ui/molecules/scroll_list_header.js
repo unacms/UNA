@@ -24,6 +24,8 @@ import Link from 'app/ui/atoms/link'
 import { useRouter } from 'app/lib/hooks/router'
 import ContextSelector from 'app/ui/molecules/context-selector'
 import { useLayoutData } from 'app/context/layout';
+import { useTranslation } from 'react-i18next';
+import HeaderElement from 'app/ui/molecules/header_element'
 
 export const Header = memo(({
     backButtonPresented,
@@ -38,7 +40,7 @@ export const Header = memo(({
     const { layoutData, setLayoutData } = useLayoutData()
     const pagePath = pageData?.uri;
     const settings = getPageSettings(pageData?.config, pagePath);
-
+    const { t } = useTranslation();
     const router = useRouter();
 
     let textName = pageData?.name;
@@ -81,7 +83,6 @@ export const Header = memo(({
 
     useEffect(() => {
         if (layoutData && layoutData?.type == 'list:move_to_top' ) {
-            
             setLayoutData(null);
             scrollToTop();
         }
@@ -90,6 +91,8 @@ export const Header = memo(({
 
     if (isNoContainer)
         return headerContent;
+
+    const isCustomHeaderElement = appSetting('layout', 'custom_header_element')
 
     return (
         <Row className={`justify-between px-[8px] sm:px-[12px] items-center h-[64px] lg:shadow-[0_1px_3px_0_rgba(0,0,0,0.05)] lg:dark:shadow-[0_1px_0_rgba(0,0,0,1)] lg:border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d`}>
@@ -103,22 +106,25 @@ export const Header = memo(({
                         {appStatic('logo_text')}
                     </View></View></Pressable>}
                 {(pageData?.context) && <View className=""><ContextSelector url={pageData?.url} data={pageData?.context} /></View>}
-                <View className="">{(backButtonPresented && (!isWeb || history.length > 2)) && (
-                    <Button variant="text" rounded onPress={() => {
+                {(backButtonPresented && (!isWeb || history.length > 2)) && (
+                    <View className=""><Button variant="text" rounded onPress={() => {
                         FeedbackHaptics('Medium');
                         router ? router?.back() : history.back();
-                    }} startDecorator="ArrowLeft" size="sm" />
-                )}</View>
+                    }} startDecorator="ArrowLeft" size="sm" /></View>
+                )}
                 {!!text && (
                     
                         <Text className="font-bold text-neutral-800 dark:text-neutral-200 text-3xl tracking-tight">
-                            {text}
+                            {t(text)}
                         </Text>
                     
                 )}
             
             {type !== 'string' && <View className="flex-auto">{headerContent}</View>}
-            {(memoizedRightComponents || rightHeaderComponent) && <Row className="">{rightHeaderComponent ? rightHeaderComponent : memoizedRightComponents}</Row>}
+            {(memoizedRightComponents || rightHeaderComponent || isCustomHeaderElement) && <Row className="">
+                {rightHeaderComponent ? rightHeaderComponent : memoizedRightComponents}
+                {isCustomHeaderElement && <HeaderElement/>}
+            </Row>}
         </Row>
     );
 });
@@ -135,28 +141,31 @@ function getRightHeader(items, currentUser, pagePath) {
     if (items?.length == 0 && !addMenu)
         return null;
 
-    return <Row className='gap-x-[8px] items-center '>{
-        items?.map((button) => {
-            let btn = undefined;
-            if (button.section || button.link == 'search')
-                btn = <Search section={button.section} params={{ trigger: { title: button.title, icon: button.icon ? button.icon : 'Search', size: 'sm', variant: 'secondary', onPress: () => FeedbackHaptics('Medium') } }} />
-            else {
-                btn = <Button
-                    rounded title={button.title}
-                    variant='secondary'
-                    startDecorator={button.icon}
-                    size="sm"
-                    addon={button.link == appSetting('messenger', 'url') ? { variant: 'primary', text: currentUser?.counters?.bx_messenger_new_messages, hideZero: true } : undefined}
-                />;
-                btn = button.link ? <Link href={button.link} >{btn}</Link> : btn
+    return (
+        <Row className='gap-x-[8px] items-center '>
+            {
+                items?.map((button) => {
+                    let btn = undefined;
+                    if (button.section || button.link == 'search')
+                        btn = <Search section={button.section} params={{ trigger: { title: button.title, icon: button.icon ? button.icon : 'Search', size: 'sm', variant: 'secondary', onPress: () => FeedbackHaptics('Medium') } }} />
+                    else {
+                        btn = <Button
+                            rounded title={button.title}
+                            variant='secondary'
+                            startDecorator={button.icon}
+                            size="sm"
+                            addon={button.link == appSetting('messenger', 'url') ? { variant: 'primary', text: currentUser?.counters?.bx_messenger_new_messages, hideZero: true } : undefined}
+                        />;
+                        btn = button.link ? <Link href={button.link} >{btn}</Link> : btn
+                    }
+
+                    return (
+                        <View className="" key={`add-${button.icon}`} >{btn}</View>
+                    )
+                })
+
             }
-
-            return (
-                <View className="" key={`add-${button.icon}`} >{btn}</View>
-            )
-        })
-
-    }
-        {!!addMenu && <View className=' '>{addMenu}</View>}
-    </Row>;
+            {!!addMenu && <View className=' '>{addMenu}</View>}
+        </Row>
+    );
 };
