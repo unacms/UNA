@@ -17,8 +17,32 @@ import { Image as ImageNative } from 'react-native'
 import { useCurrentUser } from 'app/context/user'
 import { CoverMenuMeta, CoverMenu, CoverMenuSmall } from 'app/components/nav/menu-cover'
 import { useTranslation } from 'react-i18next';
+import { Platform } from 'react-native'
+import Link from 'app/ui/atoms/link'
 
 const conductorTheme = appSetting('theme', 'conductor');
+
+// Custom back button for cover images with glassy style
+function getCoverBackButton() {
+    const isWeb = Platform.OS === 'web';
+    if (!isWeb) return <></>;
+    if (history.length > 2) {
+        return (
+            <View className="lg:hidden mr-1"  >
+               <Button rounded={true} size="sm" variant="glassy" startDecorator="ArrowLeft" onPress={() => history.back()}/>
+            </View>
+        )
+    }
+    else{
+        return (
+            <View className="lg:hidden mr-1"  >
+                <Link href='/'>
+                    <Button rounded={true} size="sm" variant="glassy" startDecorator="ArrowLeft" />
+                </Link>
+            </View>
+        )
+    }
+}
 
 export function CoverSmall(props) {
     const data = props.data
@@ -246,7 +270,7 @@ export default function (props) {
                         <Row className="p-4 justify-end gap-x-4">
                             {isAllowSwitch && <Button
                                 rounded
-                                variant="primary"
+                                variant="glassy"
                                 startDecorator="RefreshCw"
                                 tooltip={'Switch to profile'}
                                 onPress={() => handleSwitch(isAllowSwitch)}
@@ -255,12 +279,13 @@ export default function (props) {
                             }
                             {(bAllowEdit) && (<Button
                                 rounded
+                                variant="glassy"
                                 startDecorator="Camera"
                                 onPress={() => handleUpload('cover')}
                             />)}
                         </Row>
-                        <View className="absolute lg:hidden top-4 left-4 z-50">
-                            {getBackButtonWeb()}
+                        <View className="absolute lg:hidden top-[10px] left-[12px] z-50">
+                            {getCoverBackButton()}
                         </View>
                     </View>
                 ) : (
@@ -283,6 +308,7 @@ export default function (props) {
                                             <Button
                                                 rounded
                                                 size="sm"
+                                                variant="glassy"
                                                 startDecorator="Camera"
                                                 onPress={() =>
                                                     handleUpload('picture')

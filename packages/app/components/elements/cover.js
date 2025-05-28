@@ -81,17 +81,32 @@ const BackButton = ({ isPerson }) => {
     const { colors } = Theme()
 
     const ButtonContent = (
-        <View className="mx-4 bg-bgrcard dark:bg-bgrcard-d w-10 h-10 rounded-full justify-center items-center">
-            <Icon icon="ArrowLeft" width={24} height={24} color={colors.barsColor} />
-        </View>
+        <Button 
+            variant="glassy" 
+            size="sm" 
+            rounded={true} 
+            startDecorator="ArrowLeft"
+            onPress={() => {goBack(navigation, router)}}
+        />
     );
 
     return isPerson && navigation.getState().index == 0 ? (
         <Link href={appSetting("cover", "back_button_url_for_profile")}>
-            {ButtonContent}
+            <Button 
+                variant="glassy" 
+                size="sm" 
+                rounded={true} 
+                startDecorator="ArrowLeft"
+            />
         </Link>
     ) : (
-        <Pressable onPress={() => {goBack(navigation, router)}}>{ButtonContent}</Pressable>
+        <Button 
+            variant="glassy" 
+            size="sm" 
+            rounded={true} 
+            startDecorator="ArrowLeft"
+            onPress={() => {goBack(navigation, router)}}
+        />
     );
 };
 

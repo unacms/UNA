@@ -934,6 +934,14 @@ export  const settingsDefault = {
             /*'u-btn-outline-color-icon-light': 'rgb(243, 244, 246)',
             'u-btn-outline-color-icon-dark': 'rgb(243, 244, 246)',*/
 
+            'u-btn-glassy-cnt':
+                ' bg-neutral-800/60 backdrop-blur hover:bg-neutral-800 active:opacity-70 shadow ',
+            'u-btn-glassy-text':
+                ' font-medium text-neutral-50  ',
+            'u-btn-glassy-trans': ' web:duration-200 ',
+            'u-btn-glassy-color-icon-light': 'rgb(255, 255, 255)',
+            'u-btn-glassy-color-icon-dark': 'rgb(255, 255, 255)',
+
             'u-btn-group-item-cnt':
                 ' hover:bg-bgritem-h dark:hover:bg-bgritem-dh active:opacity-50  ',
             'u-btn-group-item-text':

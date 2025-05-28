@@ -79,7 +79,7 @@ export default function ContextSelector({ data, url }) {
     };
 
     return (
-        <View className="flex-row items-center ">
+        <View className="flex-row items-center flex-auto">
             <View>
                 <DropdownPopup
                     trigger={
@@ -119,7 +119,7 @@ export default function ContextSelector({ data, url }) {
                 </DropdownPopup>
             </View>
             <Link href={contextRoot.url} >
-                <View className='w-[200px] flex-row items-center gap-x-3 items-center px-[8px] py-[4px] web:group w-full flex-auto hover:bg-bgritem dark:hover:bg-bgritem-d rounded-xl'>
+                <View className='ml-[8px] flex-row items-center gap-x-3 items-center p-[4px] web:group w-full flex-auto hover:bg-bgritem dark:hover:bg-bgritem-d rounded-xl'>
                     <View className="items-center justify-center text-neutral-800 dark:text-neutral-200">
                         {contextRoot.image}
                     </View>
