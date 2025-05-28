@@ -42,13 +42,13 @@ const HeaderLine = memo(
             ).length > 0
 
         return (
-            <View className=" flex-row w-[360px] gap-x-[12px] px-[8px] items-center ">
+            <View className=" flex-row w-[360px] gap-x-[12px] px-[8px] sm:px-[16px] items-center ">
                 
                 {headerSettings.menu && isDrawer && (
-                    <View className="lg:hidden ">
+                    <View className="lg:hidden pr-[8px] ">
                         <Pressable onPress={showMenu}>
                             <Button
-                                variant="outline"
+                                variant="text"
                                 startDecorator="List"
                                 rounded
                                 align="start"
@@ -152,7 +152,7 @@ export default function (props) {
                             context={props.context}
                         />
                         <MenuTop url={props.url} uri={props.uri}/>
-                        <Row className=" w-[360px] px-4 gap-x-2 items-center justify-end ">
+                        <Row className=" w-[360px] px-[8px] sm:px-[16px] gap-x-2 items-center justify-end ">
                             {!!currentUser && (
                                 <Row className="justify-end gap-x-2">
                                     

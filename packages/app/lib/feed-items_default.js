@@ -116,7 +116,7 @@ export const GroupView = memo(({ data, styles, url, isCompact }) => {
             <View>
                 <View>
                     <Text
-                        className="text-neutral-800 dark:text-neutral-200 text-base "
+                        className="text-neutral-800 dark:text-neutral-200 text-base leading-[24px]"
                         numberOfLines={3}
                     >
                         {stripTags(data.content.text)}
@@ -166,7 +166,7 @@ export const AdView = memo(({ data, styles, url, isCompact }) => {
             <View>
                 <View>
                     <Text
-                        className="text-neutral-800 dark:text-neutral-200 pb-4 text-base "
+                        className="text-neutral-800 dark:text-neutral-200 pb-4 text-base leading-[24px]"
                         numberOfLines={3}
                     >
                         {data.content.text}
@@ -212,7 +212,7 @@ export const MarketView = memo(({ data, styles, url, isCompact }) => {
             <View>
                 <View>
                     <Text
-                        className="text-neutral-800 dark:text-neutral-200 pb-4 text-base "
+                        className="text-neutral-800 dark:text-neutral-200 pb-4 text-base leading-[24px]"
                         numberOfLines={3}
                     >
                         {data.content.text}
@@ -260,13 +260,13 @@ export const DefaultView = memo(({ data, styles, bIsTitle, bIsTimelineContent, c
                     <View>
                         {bIsTimelineContent && (
                             <View className={' ' + ((data.content.text && content_attach.length > 0) ? ' pb-2 ' : '')}>
-                                {fulltext ? <Html data={data.content.text ? data.content.text : ''} /> : <ContentMore id={'feed-' + data.id} showLink={data?.content?.images_attach?.length == 0} content={data.content.text ? data.content.text : ''} numberOfLines={3} openSmall={false} textClassName=" text-neutral-800 dark:text-neutral-200 text-base " />}
+                                {fulltext ? <Html data={data.content.text ? data.content.text : ''} /> : <ContentMore id={'feed-' + data.id} showLink={data?.content?.images_attach?.length == 0} content={data.content.text ? data.content.text : ''} numberOfLines={3} openSmall={false} textClassName=" text-neutral-800 dark:text-neutral-200 text-base leading-[24px] " />}
                                 {!!data.content.embed && <View className=''><Embed data={data.content.embed} /></View>}
                             </View>
                         )}
                         {!bIsTimelineContent && (
                             <Text
-                                className="text-neutral-800 dark:text-neutral-200 text-base"
+                                className="text-neutral-800 dark:text-neutral-200 text-base leading-[24px]"
                                 numberOfLines={3}
                             >
                                 {stripTags(data.content.text)}

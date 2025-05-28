@@ -93,11 +93,11 @@ export const Header = memo(({
         return headerContent;
 
     return (
-        <Row className={`justify-between px-[8px] sm:px-[12px] gap-x-2 items-center h-[64px] lg:shadow-[0_1px_3px_0_rgba(0,0,0,0.05)] lg:dark:shadow-[0_1px_0_rgba(0,0,0,1)] lg:border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d`}>
-            <Row className='items-center flex-auto '>
+        <Row className={`justify-between px-[8px] sm:px-[12px] items-center h-[64px] lg:shadow-[0_1px_3px_0_rgba(0,0,0,0.05)] lg:dark:shadow-[0_1px_0_rgba(0,0,0,1)] lg:border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d`}>
+            
                 {(isHome && !pageData?.context) && <Pressable onPress={scrollToTop} className=" ">
                     <View className=" flex-row active:scale-95 active:opacity-50 active:bg-bgrbutton dark:active:bg-bgrbutton-d rounded-xl py-1 px-2 gap-x-3 text-neutral-700 dark:text-neutral-300 web:hover:text-neutral-800 web:dark:hover:text-neutral-200 duration-300">
-                <View className="  w-10 h-10  ">
+                <View className="w-10 h-10">
                     {appStatic('logo_mark')}
                 </View>
                     <View className="w-20 h-10">
@@ -105,10 +105,10 @@ export const Header = memo(({
                     </View></View></Pressable>}
                 {(pageData?.context) && <View className=""><ContextSelector url={pageData?.url} data={pageData?.context} /></View>}
                 <View className="">{(backButtonPresented && (!isWeb || history.length > 2)) && (
-                    <Button variant="secondary" rounded onPress={() => {
+                    <Button variant="text" rounded onPress={() => {
                         FeedbackHaptics('Medium');
                         router ? router?.back() : history.back();
-                    }} startDecorator="ArrowLeft" size="sm" ring="p-1" />
+                    }} startDecorator="ArrowLeft" size="sm" />
                 )}</View>
                 {!!text && (
                     
@@ -117,7 +117,7 @@ export const Header = memo(({
                         </Text>
                     
                 )}
-            </Row>
+            
             {type !== 'string' && <View className="flex-auto">{headerContent}</View>}
             {(memoizedRightComponents || rightHeaderComponent) && <Row className="">{rightHeaderComponent ? rightHeaderComponent : memoizedRightComponents}</Row>}
         </Row>
@@ -140,7 +140,7 @@ function getRightHeader(items, currentUser, pagePath) {
         items?.map((button) => {
             let btn = undefined;
             if (button.section || button.link == 'search')
-                btn = <Search section={button.section} params={{ trigger: { title: button.title, icon: button.icon ? button.icon : 'Search', size: 'sm', variant: 'secondary', ring: 'p-1', onPress: () => FeedbackHaptics('Medium') } }} />
+                btn = <Search section={button.section} params={{ trigger: { title: button.title, icon: button.icon ? button.icon : 'Search', size: 'sm', variant: 'secondary', onPress: () => FeedbackHaptics('Medium') } }} />
             else {
                 btn = <Button
                     rounded title={button.title}

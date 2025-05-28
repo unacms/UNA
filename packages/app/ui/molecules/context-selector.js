@@ -86,7 +86,6 @@ export default function ContextSelector({ data, url }) {
                         <Button
                             variant="secondary"
                             size="sm"
-                            ring="p-[4px]"
                             rounded
                             startDecorator="Menu"
                         />
