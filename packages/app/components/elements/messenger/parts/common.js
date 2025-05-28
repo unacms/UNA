@@ -428,7 +428,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
             {panelsVisible.convos && <View className='w-full md:w-[360px] border-bdrtabbar dark:border-bdrtabbar-d border-r'>
                 {convosComponent}
             </View>}
-            <View className='flex-1 '>
+             {panelsVisible.jots && <View className='flex-1 '>
                 <Msg onVisible={showMsg} title={showMsg} handleOk={() => { setShowMsg(false) }} />
                 <View className={`w-full border-bdrtabbar dark:border-bdrtabbar-d border-r ${!isWeb ? 'flex-1' : '' }`}  style={{ height: layoutHeightRight }}>
                 {jotsComponent}
@@ -443,7 +443,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
                         />
                     </View>
                 </KbAvoidingView>
-            </View>
+            </View>}
         </View>
     )
 }
@@ -482,7 +482,7 @@ const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, 
     </Row>
 
     return (
-        <>
+        <View>
          {(isWeb && !isSmallScreen) && header}
             {data && data.length > 0 ? <>
                 <UniList
@@ -506,7 +506,7 @@ const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, 
                 </View></View>
 
             }
-        </>)
+        </View>)
 });
 /*bg-neutral-500/10 border-b border-neutral-500/10*/
 const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots, showConvo, deleteConvo, leaveConvo, getConvo, editConvo, handleReply, startReached }) => {
