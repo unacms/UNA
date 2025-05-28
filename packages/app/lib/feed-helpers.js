@@ -28,6 +28,7 @@ import { Icon } from 'app/ui/atoms/icon'
 import { SafeMenuTrigger } from 'app/ui/atoms/safe-menu-trigger';
 import  { useLayoutData } from 'app/context/layout';
 
+
 export const CommentsModal = memo(({ commentsData, initFormData, itemContent, closeOnPost }) => {
     const windowDimensions = useWindowDimensions();
     const offset = windowDimensions.width > LAYOUT_BREAKPOINTS.lg ? 100 : 60;
@@ -348,6 +349,7 @@ export const CounterMenu = memo(({ data }) => {
 });
 
 export const VisibilityInfo = memo(({ data }) => {
+
     if (data.feed_type == 'owner')
         return null;
 

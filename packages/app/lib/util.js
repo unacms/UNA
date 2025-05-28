@@ -918,16 +918,17 @@ export const uploadImage = async (uri, fetchUrl, calback, extraVar) => {
 };
 
 export function visibilityById(visibility) {
+    const { t } = useTranslation();
     const visibilityOptions = {
-        2: { icon: 'Lock', text: 'Me only' },
-        3: { icon: 'Globe', text: 'Public' },
-        5: { icon: 'Users', text: 'Friends ' },
-        'c': { icon: 'EyeClosed', text: 'Closed ' },
-        's': { icon: 'Shield', text: 'Secret ' },
-        6: { icon: 'UserCheck', text: 'Specific Friends... ' },
-        7: { icon: 'Workflow', text: 'Relationships ' },
-        8: { icon: 'Workflow', text: 'Specific Relationships... ' },
-        9: { icon: 'Award', text: 'Specific Memberships... ' },
+        2: { icon: 'Lock', text: t('Me only') },
+        3: { icon: 'Globe', text: t('Public') },
+        5: { icon: 'Users', text: t('Friends') },
+        'c': { icon: 'EyeClosed', text: t('Closed') },
+        's': { icon: 'Shield', text: t('Secret') },
+        6: { icon: 'UserCheck', text: t('Specific Friends...') },
+        7: { icon: 'Workflow', text: t('Relationships') },
+        8: { icon: 'Workflow', text: t('Specific Relationships...') },
+        9: { icon: 'Award', text: t('Specific Memberships...') },
     };
     
     return  visibilityOptions[visibility] || null;

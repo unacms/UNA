@@ -361,7 +361,7 @@ export default function (props) {
                 {props.showTitleInside ? (
                     <Row className='items-center justify-between px-[16px] py-[8px]'>
                         <Text className="text-lg font-semibold tracking-tight text-neutral-600 dark:text-neutral-400 ">{t(props.block.title)}</Text>
-                        {props.addLink ? (<Link href={props.addLink.url}><Button variant='link' size='xs' rounded title={props.addLink.text} /></Link>) : null}
+                        {props.addLink ? (<Link href={props.addLink.url}><Button variant='link' size='xs' rounded title={t(props.addLink.text)} /></Link>) : null}
                     </Row>) : <></>}
                 <UniList {...memoizedUniListProps} />
             </View>

@@ -8,6 +8,7 @@ import { usePathname } from 'next/navigation'
 import { callFn } from 'app/lib/functions/call';
 import { Icon } from 'app/ui/atoms/icon'
 import { Theme } from 'app/design/theme';
+import { useTranslation } from 'react-i18next';
 
 function isInStandaloneMode() {
     if (window.navigator.standalone) {
@@ -21,7 +22,7 @@ function isInStandaloneMode() {
 export default function () {
     const { currentUser } = useCurrentUser();
     const TabList = currentUser ? appSetting('menu_items', 'menu_tabbar_logged') : appSetting('menu_items', 'menu_tabbar_non_logged');
-
+    const { t } = useTranslation();
     const notifCount = currentUser ? currentUser.notifications : 0;
     const iFrCounter = callFn("getFriendsCounter", [currentUser]);
     let pathname = usePathname()
@@ -49,7 +50,7 @@ export default function () {
                 <Row className="flex-auto items-center flex-row w-full px-2 gap-x-2">
                     {TabList.filter(item => !item.hide).map((tab, index) => {
                         const isActive = appSetting('messenger', 'url') === tab.url ? pathname.includes(tab.url) : pathname === tab.url;
-                        return <MenuBottomItem key={`bmi-${index}`} notifCount={notifCount} iFrCounter={iFrCounter} profile={profile} link={tab.url} index={index} icon={tab.icon} title={tab.title} isActive={isActive} />
+                        return <MenuBottomItem key={`bmi-${index}`} notifCount={notifCount} iFrCounter={iFrCounter} profile={profile} link={tab.url} index={index} icon={tab.icon} title={t(tab.title)} isActive={isActive} />
                     })}
                 </Row>
             </View>

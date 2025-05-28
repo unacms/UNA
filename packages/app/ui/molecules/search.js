@@ -19,6 +19,7 @@ import { LAYOUT_BREAKPOINTS } from 'app/lib/util'
 
 
 export default function ElementSearch(oProps) {
+    const { t } = useTranslation();
     const { setBottomSheetData } = useBottomSheetData();
     const sType = oProps?.type ? oProps.type : 'default';
     const oParams = oProps?.params ? oProps.params : {};
@@ -47,7 +48,7 @@ export default function ElementSearch(oProps) {
     }
 
     return <>{sResult}
-        <Modal title="Search" outerClickClose={false} onVisible={!!showModal} onClose={() => { setShowModal(false) }} transparent={false}>
+        <Modal title={t("Search")} outerClickClose={false} onVisible={!!showModal} onClose={() => { setShowModal(false) }} transparent={false}>
             <ElementSearchData onClose={() => { setShowModal(false) }} {...oProps} />
         </Modal>
 
@@ -230,7 +231,7 @@ export function ElementSearchData(oProps) {
     if (oProps.isBottomSheet && windowDimensions.width < LAYOUT_BREAKPOINTS.lg) {
         return (
             <><View className="flex-row mb-2">
-                <InputRef name="search" autoFocus={true} placeholder='Start typing to search...' onKeyPress={(event) => handleKeyPress(event)} value={inputValue} ref={inputRef} onChangeText={(value) => handleSearch(value)} />
+                <InputRef name="search" autoFocus={true} placeholder={t('Start typing to search...')} onKeyPress={(event) => handleKeyPress(event)} value={inputValue} ref={inputRef} onChangeText={(value) => handleSearch(value)} />
             </View>
                 <BottomSheetScrollView keyboardShouldPersistTaps="always" keyboardDismissMode="none">
                     {cnt}
@@ -258,7 +259,7 @@ export function ElementSearchData(oProps) {
                 )
             }
             <View className="flex-row p-1 mb-2">
-                <InputRef name="search" autoFocus={true} placeholder='Start typing to search...' onKeyPress={(event) => handleKeyPress(event)} value={inputValue} ref={inputRef} onChangeText={(value) => handleSearch(value)} />
+                <InputRef name="search" autoFocus={true} placeholder={t('Start typing to search...')} onKeyPress={(event) => handleKeyPress(event)} value={inputValue} ref={inputRef} onChangeText={(value) => handleSearch(value)} />
             </View>
             <KbAvoidingView className="web:flex-1" offset={80}>
                 <ScrollView keyboardShouldPersistTaps="always" keyboardDismissMode="none" >

@@ -53,7 +53,6 @@ export function getButtonForConductor(a, index, currentUser) {
     if (!appSetting('conductor', 'show_nav_counters')) addon = null
     if ( appSetting('conductor', 'show_nav_counters') == 'primary' && a?.addon?.variant != 'primary')
         addon = null
-console.log("aaa",icon)
     return <MenuItemSidebar addon={addon} title={a.title} icon={icon} isActive={a.index == index ? true : false} />
        
 }

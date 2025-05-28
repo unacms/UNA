@@ -18,6 +18,7 @@ import MenuLauncher from 'app/components/nav/menu-launcher'
 import MenuDrawer from 'app/components/nav/menu-drawer'
 import MenuTop from 'app/components/nav/menu-top'
 import ContextSelector from 'app/ui/molecules/context-selector'
+import HeaderElement from 'app/ui/molecules/header_element'
 
 const HeaderLine = memo(
     ({
@@ -42,13 +43,13 @@ const HeaderLine = memo(
             ).length > 0
 
         return (
-            <View className=" flex-row w-[360px] gap-x-[12px] px-[8px] items-center ">
+            <View className=" flex-row w-[360px] gap-x-[12px] px-[8px] sm:px-[16px] items-center ">
                 
                 {headerSettings.menu && isDrawer && (
-                    <View className="lg:hidden ">
+                    <View className="lg:hidden pr-[8px] ">
                         <Pressable onPress={showMenu}>
                             <Button
-                                variant="outline"
+                                variant="text"
                                 startDecorator="List"
                                 rounded
                                 align="start"
@@ -65,10 +66,10 @@ const HeaderLine = memo(
                         href="/home"
                         aria-label="Logo"
                     >
-                        <View className=" items-center w-10 h-10 justify-center text-neutral-900 dark:text-neutral-100">
+                        <View className=" items-center h-10 justify-center text-neutral-900 dark:text-neutral-100">
                             {appStatic('logo_mark')}
                         </View>
-                        <View className=" flex-row  items-center w-20 h-10 my-auto align-middle justify-center text-neutral-700 dark:text-neutral-300">
+                        <View className=" flex-row  items-center  h-10 my-auto align-middle justify-center text-neutral-700 dark:text-neutral-300">
                             {appStatic('logo_text')}
                         </View>
                     </Link>
@@ -116,12 +117,13 @@ export default function (props) {
         setMenuPopup(!menuPopup)
     }
 
+    const isCustomHeaderElement = appSetting('layout', 'custom_header_element')
+    
     return (
         <>
-            
-                <Row className="w-full flex-auto mx-auto">
-                    <View className="flex-auto">{props.children}</View>
-                </Row>
+            <Row className="w-full flex-auto mx-auto">
+                <View className="flex-auto">{props.children}</View>
+            </Row>
             
             {!bIsHideHeader && (
                 <View
@@ -152,13 +154,14 @@ export default function (props) {
                             context={props.context}
                         />
                         <MenuTop url={props.url} uri={props.uri}/>
-                        <Row className=" w-[360px] px-4 gap-x-2 items-center justify-end ">
+                        <Row className=" w-[360px] px-[8px] sm:px-[16px] gap-x-2 items-center justify-end ">
                             {!!currentUser && (
                                 <Row className="justify-end gap-x-2">
                                     
                                         <View className=" ">
                                             {bSearch && <Search />}
                                         </View>
+                                        {isCustomHeaderElement && <View className=" "><HeaderElement/></View>}
                                         <View className="hidden sm:block">
                                             <MenuLauncher />
                                         </View>

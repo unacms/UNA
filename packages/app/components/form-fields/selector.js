@@ -6,6 +6,7 @@ import { Button, Input, Modal } from "app/design/controls";
 import CheckBox from 'app/ui/atoms/checkbox';
 import RadioButton from 'app/ui/atoms/radiobutton';
 import { Text } from 'app/design/typography';
+import { useTranslation } from 'react-i18next';
 
 function ChkList({ values, value2, addValue2, isMultiple }) {
     const [inputValue, setInputValue] = useState('');
@@ -17,12 +18,12 @@ function ChkList({ values, value2, addValue2, isMultiple }) {
     }, [inputValue, values]);
 
     const Cnt = isMultiple ? CheckBox : RadioButton;
-
+    const { t } = useTranslation();
     return (
         <View className='flex-1'>
             {
                 values.length > 10 && (<View className='pb-2'>
-                    <Input name="search" placeholder={'Search...'} defaultValue={inputValue}
+                    <Input name="search" placeholder={t('Search...')} defaultValue={inputValue}
                         onChangeText={(value) => {
                             setInputValue(value)
                         }}

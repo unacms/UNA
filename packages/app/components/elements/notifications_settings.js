@@ -6,12 +6,13 @@ import { Theme } from 'app/design/theme';
 import { fetcher } from 'app/lib/fetcher';
 import { Button } from 'app/design/controls'
 import { firstLetterCap } from 'app/lib/util';
+import { useTranslation } from 'react-i18next';
 
 export default function (props) {
     const { colors } = Theme();
     const [activeIndex, setActiveIndex] = useState(0);
     let aData = [];
-
+    const { t } = useTranslation();
     props.data.data.forEach((item, index) => {
         let aItems = [];
         item.items.forEach((item2, index) => {
@@ -24,7 +25,6 @@ export default function (props) {
         });
         aData.push({ title: item.delivery, items: aItems })
     })
-    console.log(aData);
     const [data, setData] = useState(aData);
 
     const toggleSwitch = (id, value) => {
@@ -45,7 +45,7 @@ export default function (props) {
                     return <View className='mr-2' key={'tab' + index}><Button
                         variant={index == activeIndex ? 'outline' : "text"}
                         pressed={index == activeIndex ? true : false}
-                        title={firstLetterCap(item.title)}
+                        title={t(firstLetterCap(item.title))}
                         rounded
                         size='sm'
                         onPress={() => setActiveIndex(index)}

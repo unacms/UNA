@@ -8,6 +8,7 @@ import Profile from 'app/ui/molecules/profile'
 import { Button, InputRounded, Modal } from 'app/design/controls'
 import Loading from 'app/ui/atoms/loading'
 import { Icon } from 'app/ui/atoms/icon'
+import { useTranslation } from 'react-i18next';
 
 const User = ({ data, onSelect, type }) => {
     return (
@@ -23,6 +24,7 @@ const User = ({ data, onSelect, type }) => {
 
 export function SelectUsers({ onSave, initedData = [], requestUrl, isSingle = false }) {
 
+    const { t } = useTranslation();
     const initialState = {
         suggestedUsers: [],
         selectedUsers: initedData,
@@ -93,7 +95,7 @@ export function SelectUsers({ onSave, initedData = [], requestUrl, isSingle = fa
             <Row className="text-center w-full flex-wrap gap-x-2 ">
                 {state.suggestedUsers && !state.showLoading && state.suggestedUsers.map((item) => <User key={item.id} data={item} onSelect={onSelectUser} />)}
                 {state.showLoading && <View className=' w-full items-center justify-center py-2'><Loading /></View>}
-                {state.suggestedUsers.length == 0 && state.searchText != '' && !state.showLoading && <Text className="text-sm py-2">Nothing found</Text>}
+                {state.suggestedUsers.length == 0 && state.searchText != '' && !state.showLoading && <Text className="text-sm py-2">{t('Nothing found')}</Text>}
             </Row>
         </ScrollView>
     </View>
@@ -101,6 +103,7 @@ export function SelectUsers({ onSave, initedData = [], requestUrl, isSingle = fa
 
 export default function (props) {
     const rules = {};
+    const { t } = useTranslation();
     const defaultValue = props.value ? props.value : '';
     const formContext = useFormContext();
     const name = props.name ? props.name : '';
@@ -141,7 +144,7 @@ export default function (props) {
                     {selected && selected.map((oItem) => <User type={isSingle ? '' : "remove"} key={oItem.id} data={oItem} onSelect={onRemove} />)}
                     <View className=''>
                         <Button
-                            title={'Select ...'}
+                            title={t('Select ...')}
                             startDecorator="Plus"
                             variant="default"
                             rounded

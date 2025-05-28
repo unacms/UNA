@@ -515,7 +515,7 @@ export const Button = (props) => {
         role: rest['aria-haspopup'] === 'menu' ? 'menubutton' : 'button',
     } : {};
     const buttonContent = (
-        <View className={`web:group ${ring} ${fullWidth ? 'flex-auto ' : ''}`}>
+        <View className={` ${ring} ${fullWidth ? 'flex-auto ' : ''}`}>
             <Cnt
                 className={`${sClassContainer} ${sizeClasses}`}
                 {...rest}

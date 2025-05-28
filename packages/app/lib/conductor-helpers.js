@@ -11,6 +11,7 @@ import { getBlocksFromData, getPageSettings, LAYOUT_BREAKPOINTS } from 'app/lib/
 import { memo } from 'react';
 import { Platform } from 'react-native'
 import { callFn } from 'app/lib/functions/call';
+import { useTranslation } from 'react-i18next';
 
 const conductorTheme = appSetting('theme', 'conductor');
 
@@ -425,12 +426,13 @@ export function getNumCols(width, currentRoute, leftSideBar) {
 
 export function LeftSidebar({ title, addButtons, children, width, menu }) {
     const sidebar = appSetting('conductor', 'sidebar_position')
+    const { t } = useTranslation();
     return (
         <View className={`lg:${width}`}>
             <View className={` ${sidebar =='fixed'? 'fixed-process' : ''} lg:${width} p-4 gap-y-1`}>
                 {(!!title || !!addButtons?.length > 0) && <Row className="justify-between items-center px-[4px] pb-2 z-10 ">
                     <Text className=" text-2xl tracking-tight truncate mr-auto font-bold leading-[48px] text-neutral-900 dark:text-neutral-100 hidden lg:flex  ">
-                        {title}
+                        {t(title)}
                     </Text>
                     <Row className=" ">
                         {addButtons}

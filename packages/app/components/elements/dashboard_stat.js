@@ -47,7 +47,6 @@ function getCounter(num, icon = '', add = '', color = '') {
 }
 
 export default function PageLayout(props) {
-
     if (!appSetting('layout', 'user_remote_config'))
         return <DasbordStatOld {...props}/>
     const isWeb = Platform.OS == 'web'

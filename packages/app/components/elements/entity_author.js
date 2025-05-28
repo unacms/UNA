@@ -114,7 +114,7 @@ export default function ElementEntityAuthor(oProps) {
     const menuOptions = handleMenuManageSelect ? { onSelect: (oItem, event) => handleMenuManageSelect(oItem, event, setPageData) } : {};
 
     return (
-        <View className={" lg:p-4 w-full items-center flex-row justify-between  "}>
+        <View className={" lg:p-2 w-full items-center flex-row justify-between  "}>
             <FormModal pageData={pageData} setPageData={setPageData} />
             <Redirect ref={redirectdRef} />
             {viewState.view == 'edited' && (<Modal
@@ -137,7 +137,7 @@ export default function ElementEntityAuthor(oProps) {
             <View className={oProps.data.text ? '' : 'flex-auto hidden lg:flex'}>
                 <Profile {...oProps.data.author_data} displayType="unit" displaySize="lg" className='hidden lg:flex' showInfo={sInfo} />
             </View>
-            <View className={oProps.data.text ? '' : 'flex-auto lg:hidden'}>
+            <View className={oProps.data.text ? '' : 'flex-auto lg:hidden mx-[8px]'}>
                 <Profile {...oProps.data.author_data} displayType="unit" displaySize="base" className='hidden lg:flex' showInfo={sInfo} />
             </View>
             {(oProps.data.text && false) && (
@@ -153,7 +153,7 @@ export default function ElementEntityAuthor(oProps) {
             <View>
                 {aMenuManageItems.length > 0 &&
                     <DropdownMenu items={aMenuManageItems} {...menuOptions}>
-                        <Button variant="text" rounded="true" startDecorator="Ellipsis" />
+                        <Button variant="text" rounded="true" startDecorator="Ellipsis" size="sm" />
                     </DropdownMenu>
                 }
             </View>

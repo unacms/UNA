@@ -89,11 +89,7 @@ export default function Unit(props) {
                                         }
 
                                         <Text className=" bg-primary/10  rounded-md  px-1.5 py-1 text-xs flex-none items-center font-semibold text-neutral-600 dark:text-neutral-400">
-                                            {data.visibility != "3" ? (
-                                                <>Private</>
-                                            ) : (
-                                                <>Public</>
-                                            )}
+                                            {data.visibility != "3" ? t('Private') : t('Public')}
                                         </Text>
                                     </Row>
                                 </View>
