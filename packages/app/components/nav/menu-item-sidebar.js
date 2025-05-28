@@ -5,7 +5,7 @@ import { Icon } from 'app/ui/atoms/icon'
 import { getPart } from 'app/lib/parts/part';
 import { isEmoji, appSetting } from 'app/lib/util';
 
-export function MenuItemSidebarWithWrapper({ link, title, index, icon, userUrl, isActive, onPress, addon }) {
+export function MenuItemSidebarWithWrapper({ link, title, index, icon = 'Circle', userUrl, isActive, onPress, addon }) {
 
     const finalLink = link?.includes('{profile}') ? link.replace('{profile}', userUrl || '') : link;
     const Wrapper = onPress ? Pressable : Link;
