@@ -8,6 +8,7 @@ import { useFormContext } from 'react-hook-form'
 import { stripTags } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import Profile from 'app/ui/molecules/profile'
+import { removeEmptySpans } from '../../../../app/lib/html-sanitize'
 
 export default function FormComments(props) {
     const { height: screenHeight } = useWindowDimensions()
@@ -123,6 +124,16 @@ export default function FormComments(props) {
         }
     }, [formContext.formState.isSubmitted, formContext]);
 
+    const handleSubmitWithSanitization = () => {
+        let sanitizedHtml = formContext.getValues('cmt_text');
+        console.log('Before sanitize:', sanitizedHtml);
+        sanitizedHtml = removeEmptySpans(sanitizedHtml);
+        console.log('After sanitize:', sanitizedHtml);
+
+        formContext.setValue('cmt_text', sanitizedHtml, { shouldValidate: true, shouldDirty: true });
+        props.handleSubmit();
+    };
+
     const handleKeyPress = (e) => {
         // rawEditorText is watched by formContext, hasText updates accordingly.
         // We need to get the most current hasText state.
@@ -138,7 +149,7 @@ export default function FormComments(props) {
                 // Enter alone on web: prevent default and submit if hasText
                 e.preventDefault();
                 if (currentHasText) {
-                    props.handleSubmit();
+                    handleSubmitWithSanitization();
                 }
             }
         } else { // Native (iOS/Android)
@@ -148,8 +159,10 @@ export default function FormComments(props) {
             // The current requirement is "Enter to submit".
             // If cmt_text is multiline, this will make Enter submit, not add a newline by default.
             if (e.nativeEvent.key === 'Enter') {
+                const currentText = formContext.getValues('cmt_text'); // Re-fetch for safety, or rely on closure
+                const currentHasText = stripTags(currentText || '').trim().length > 0;
                 if (currentHasText) {
-                    props.handleSubmit();
+                    handleSubmitWithSanitization();
                     // Note: If the underlying component is a standard multiline TextInput,
                     // this submits. To also allow newlines on native via Enter key differently,
                     // the component would need more advanced capabilities or a different event.
@@ -162,7 +175,7 @@ export default function FormComments(props) {
         const currentText = formContext.getValues('cmt_text');
         const currentHasText = stripTags(currentText || '').trim().length > 0;
         if (currentHasText) {
-            props.handleSubmit();
+            handleSubmitWithSanitization();
         }
     };
 
@@ -199,16 +212,16 @@ export default function FormComments(props) {
         'absolute',
         'bottom-0',
         'z-10',
-        'h-[40px]',
+        'h-[44px]',
         'flex',
         'items-center',
         'justify-center',
-        'p-[2px]'
+        'p-[4px]'
     ];
     
     let currentAttachmentButtonWidthClass;
     if (isWeb) {
-        currentAttachmentButtonWidthClass = ' w-[40px] h-[40px]';
+        currentAttachmentButtonWidthClass = ' w-[44px] h-[44px]';
     } else {
         currentAttachmentButtonWidthClass = 'w-fit';
     }
@@ -293,7 +306,7 @@ export default function FormComments(props) {
                                     form_name: props.name,
                                     previewPlaceHolder: setPlaceHolder,
                                     noMargin: true,
-                                    size: 'xs',
+                                    size: 'sm',
                                     hitSlop: 4,
                                     variant: 'text',
                                     asDefaultStorage: true,
@@ -307,7 +320,7 @@ export default function FormComments(props) {
                                 className="h-full w-full"
                             >
                                 <Row className="h-full items-center">
-                                    <View className="h-full p-[2px] flex items-center justify-center">
+                                    <View className="h-full p-[4px] flex items-center justify-center">
                                         {getFormFieldByData(
                                             props.data.inputs['cmt_image'],
                                             props.handleSubmit,
@@ -317,14 +330,14 @@ export default function FormComments(props) {
                                                 previewPlaceHolder: setPlaceHolder,
                                                 noMargin: true,
                                                 variant: 'text',
-                                                size: 'xs',
+                                                size: 'sm',
                                                 hitSlop: 4,
                                                 asDefaultStorage: true,
                                                 source: 'library',
                                             }
                                         )}
                                     </View>
-                                    <View className="h-full p-[2px] flex items-center justify-center">
+                                    <View className="h-full p-[4px] flex items-center justify-center">
                                         {getFormFieldByData(
                                             props.data.inputs['cmt_image'],
                                             props.handleSubmit,
@@ -333,7 +346,7 @@ export default function FormComments(props) {
                                                 form_name: props.name,
                                                 previewPlaceHolder: setPlaceHolder,
                                                 noMargin: true,
-                                                size: 'xs',
+                                                size: 'sm',
                                                 hitSlop: 4,
                                                 variant: 'text',
                                                 asDefaultStorage: true,
@@ -346,10 +359,10 @@ export default function FormComments(props) {
                         )}
                     </View>
                     {hasText && (
-                        <View className="absolute right-0 bottom-0 w-[40px] h-[40px] p-[2px] z-10">
+                        <View className="absolute right-0 bottom-0  h-[44px] p-[4px] z-10">
                             {getFormFieldByData(
                                 props.data.inputs['cmt_submit'],
-                                props.handleSubmit,
+                                handleSubmitWithSanitization,
                                 'custom',
                                 {
                                     disabled: !hasText,
@@ -358,12 +371,13 @@ export default function FormComments(props) {
                                     noMargin: true,
                                     icon_only: true,
                                     icon: 'ArrowUp',
-                                    size: 'xs',
+                                    title: 'Send',
+                                    size: 'sm',
                                     variant: 'primary',
                                     rounded: true,
                                     hitSlop: 4,
-                                    alt: 'Send',
-                                    tooltip: 'Send',
+                                    alt: 'Post',
+                                    tooltip: 'Post',
                                 }
                             )}
                         </View>

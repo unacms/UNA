@@ -842,7 +842,7 @@ export  const settingsDefault = {
             pressed_text:
                 ' text-primary-700 dark:text-primary-300 group-hover:text-primary-800 dark:group-hover:text-primary-200 ',
             xs: {
-                rounded: ' rounded-[4px] ',
+                rounded: ' rounded-[6px] ',
                 padding: ' h-[32px] min-w-[32px] px-[6px] overflow-hidden group ',
                 icon_container:
                     ' h-[20px] w-[20px] flex items-center justify-center ',
@@ -891,7 +891,7 @@ export  const settingsDefault = {
             /*'u-btn-default-color-icon-light': 'rgb(243, 244, 246)',
             'u-btn-default-color-icon-dark': 'rgb(243, 244, 246)',*/
 
-            'u-btn-primary-cnt': ' bg-blue-600 ',
+            'u-btn-primary-cnt': ' bg-primary dark:bg-primary-d ',
             'u-btn-primary-text': ' text-white font-medium ',
             'u-btn-primary-trans': ' web:duration-200 ',
             'u-btn-primary-color-icon-light': 'rgb(243, 244, 246)',

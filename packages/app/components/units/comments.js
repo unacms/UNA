@@ -131,7 +131,7 @@ export default function UnitComments(props) {
             </View>
         </Modal>
     return (
-        <View className='w-full px-[8px] sm:px-[12px] '>
+        <View className='w-full px-[8px] sm:px-[12px] lg:px-[16px] '>
             <View className="flex-row gap-x-[8px]">
                 {cells}
                 <View className="w-[44px] z-50 flex-0 relative">
