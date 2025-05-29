@@ -4,7 +4,7 @@ import Time from 'app/ui/atoms/time'
 import Profile from 'app/ui/molecules/profile'
 import React, { memo, useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import { useCurrentUser } from 'app/context/user'
-import { appSetting, getDataFromCache, storageSet, isObjectsEqual, menuItemsByName, visibilityById } from 'app/lib/util'
+import { appSetting, getDataFromCache, storageSet, isObjectsEqual, menuItemsByName, visibilityById, getAlert } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import { Platform, useWindowDimensions, StyleSheet } from 'react-native'
@@ -27,7 +27,6 @@ import * as FeedItems from 'app/lib/feed-items'
 import { Icon } from 'app/ui/atoms/icon'
 import { SafeMenuTrigger } from 'app/ui/atoms/safe-menu-trigger';
 import  { useLayoutData } from 'app/context/layout';
-
 
 export const CommentsModal = memo(({ commentsData, initFormData, itemContent, closeOnPost }) => {
     const windowDimensions = useWindowDimensions();
