@@ -83,8 +83,6 @@ export default function PageLayout(props) {
             setFormHeight(event.nativeEvent.layout.height) 
     }, []);
 
-    console.log("scrollToEnd", scrollToEnd)
-
     return (
         <View {...viewProps} className={`flex-1 w-full h-full max-w-5xl mx-auto `}>
             <View className="w-full flex-1 bg-bgrcard dark:bg-bgrcard-d lg:rounded-t-2xl lg:mt-4 lg:border border-bdrcard dark:border-bdrcard-d shadow-[0_1px_3px_0_rgba(0,0,0,0.05)] ">

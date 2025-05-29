@@ -1223,3 +1223,7 @@ export function getYouTubeVideoId(url) {
     const match = url.match(regex);
     return match ? match[1] : null;
 }
+
+export function removeEmptyTags(html) {
+    return html.replace(/<p>(?:\s|&nbsp;)*<\/p>/gi, '');
+}

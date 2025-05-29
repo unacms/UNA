@@ -204,7 +204,6 @@ export default function RftText({
 
     useEffect(() => {
         if (editor && field.value == '' && editor.getHTML() != field.value) {
-            console.log('editor.focus1', field.value, editor.getHTML())
             editor.setContent(field.value)
             //  editor.focus('end');
         }
@@ -212,7 +211,6 @@ export default function RftText({
 
     useEffect(() => {
         if (editor && editor.getHTML() != value) {
-            console.log('editor.focus2', value, editor.getHTML())
             editor.setContent(value)
             // editor.focus('end');
         }

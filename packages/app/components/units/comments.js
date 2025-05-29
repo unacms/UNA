@@ -171,11 +171,11 @@ export default function UnitComments(props) {
         </Modal>
     const isAnimated = props.selectedId == data.cmt_id;
     const Wrapper = isAnimated ? Animated.View : View;
-
+    const styles = isAnimated ? [{ width: '100%' }, { backgroundColor: interpolatedBackground }] :  { width: '100%' };
 
 
     return (
-        <Wrapper style={[{ width: '100%' }, { backgroundColor: interpolatedBackground }]}>
+        <Wrapper style={styles}>
             <View className='w-full px-[8px] sm:px-[12px] lg:px-[16px] '>
                 <View className="flex-row gap-x-[8px]">
                     {cells}

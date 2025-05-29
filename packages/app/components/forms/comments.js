@@ -5,10 +5,10 @@ import { Platform, useWindowDimensions } from 'react-native'
 import { Button } from 'app/design/controls'
 import Reanimated, { useSharedValue, useAnimatedStyle, withTiming, Easing, SlideInLeft, SlideOutLeft } from 'react-native-reanimated'
 import { useFormContext } from 'react-hook-form'
-import { stripTags } from 'app/lib/util'
+import { stripTags, removeEmptyTags } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import Profile from 'app/ui/molecules/profile'
-import { removeEmptySpans } from '../../../../app/lib/html-sanitize'
+
 
 export default function FormComments(props) {
     const { height: screenHeight } = useWindowDimensions()
@@ -127,7 +127,7 @@ export default function FormComments(props) {
     const handleSubmitWithSanitization = () => {
         let sanitizedHtml = formContext.getValues('cmt_text');
         console.log('Before sanitize:', sanitizedHtml);
-        sanitizedHtml = removeEmptySpans(sanitizedHtml);
+        sanitizedHtml = removeEmptyTags(sanitizedHtml);
         console.log('After sanitize:', sanitizedHtml);
 
         formContext.setValue('cmt_text', sanitizedHtml, { shouldValidate: true, shouldDirty: true });

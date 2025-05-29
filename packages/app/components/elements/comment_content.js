@@ -14,14 +14,11 @@ export default function (props) {
     const data = props.data;
 
     return (
-        <View className="w-full lg:px-4">
+        <View className="w-full px-[12px] sm:px-[16px]">
             <ContentMore numberOfSymbols={200} showLess={true} content={data.text} numberOfLines={3} openSmall={false} textClassName="  text-base text-neutral-600 dark:text-neutral-400" />
             <Link href={data.link}>
-                
-                    <Button size="sm" title="View all comments" variant="link" endDecorator="ChevronRight"/>
-             
+                <Button size="sm" title="View all comments" variant="link" endDecorator="ChevronRight"/>
             </Link>
-            
         </View>
     );
 }

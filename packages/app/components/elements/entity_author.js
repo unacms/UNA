@@ -17,6 +17,8 @@ import { useTranslation } from 'react-i18next';
 import Form from 'app/components/elements/form'
 import { useLayoutData } from 'app/context/layout';
 import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal';
+import { LAYOUT_BREAKPOINTS } from 'app/lib/util'
+import { useWindowDimensions } from 'react-native';
 
 export default function ElementEntityAuthor(oProps) {
     let { currentUser, setCurrentUser } = useCurrentUser();
@@ -25,6 +27,7 @@ export default function ElementEntityAuthor(oProps) {
     const { setLayoutData } = useLayoutData()
     const { t } = useTranslation();
     const [pageData, setPageData] = useState(false);
+    const windowWidth = useWindowDimensions().width;
 
     const sInfo = (
         <Row className='items-center '>
@@ -134,12 +137,10 @@ export default function ElementEntityAuthor(oProps) {
             </Modal>)
             }
 
-            <View className={oProps.data.text ? '' : 'flex-auto hidden lg:flex'}>
-                <Profile {...oProps.data.author_data} displayType="unit" displaySize="lg" className='hidden lg:flex' showInfo={sInfo} />
+            <View className={oProps.data.text ? '' : 'flex-auto  mx-[8px]'}>
+                <Profile {...oProps.data.author_data} displayType="unit" displaySize={windowWidth < LAYOUT_BREAKPOINTS.lg ? "base" : "lg"} className='hidden lg:flex' showInfo={sInfo} />
             </View>
-            {/*<View className={oProps.data.text ? '' : 'flex-auto lg:hidden mx-[8px]'}>
-                <Profile {...oProps.data.author_data} displayType="unit" displaySize="base" className='hidden lg:flex' showInfo={sInfo} />
-            </View>*/}
+          
             {(oProps.data.text && false) && (
                 <View className='flex-auto overflow-hidden text-ellipsis w-1/2 lg:w-auto px-4'>
                     <Link href={oProps.data.url}>

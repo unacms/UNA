@@ -843,7 +843,7 @@ export  const settingsDefault = {
                 ' text-primary-700 dark:text-primary-300 group-hover:text-primary-800 dark:group-hover:text-primary-200 ',
             xs: {
                 rounded: ' rounded-[6px] ',
-                padding: ' h-[32px] min-w-[32px] px-[6px] overflow-hidden group ',
+                padding: ' h-[32px] min-w-[32px] px-[6px] overflow-hidden ',
                 icon_container:
                     ' h-[20px] w-[20px] flex items-center justify-center ',
                 title_container: 'px-[4px] web:text-[12px] native:text-[12px] ',
@@ -853,7 +853,7 @@ export  const settingsDefault = {
             },
             sm: {
                 rounded: ' rounded-[8px] ',
-                padding: ' h-[36px] min-w-[36px] px-[8px] overflow-hidden group ',
+                padding: ' h-[36px] min-w-[36px] px-[8px] overflow-hidden ',
                 icon_container:
                     ' h-[20px] w-[20px] flex items-center justify-center ',
                 title_container: ' px-[4px] native:text-[14px] ',
