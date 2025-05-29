@@ -137,9 +137,9 @@ export default function ElementEntityAuthor(oProps) {
             <View className={oProps.data.text ? '' : 'flex-auto hidden lg:flex'}>
                 <Profile {...oProps.data.author_data} displayType="unit" displaySize="lg" className='hidden lg:flex' showInfo={sInfo} />
             </View>
-            <View className={oProps.data.text ? '' : 'flex-auto lg:hidden mx-[8px]'}>
+            {/*<View className={oProps.data.text ? '' : 'flex-auto lg:hidden mx-[8px]'}>
                 <Profile {...oProps.data.author_data} displayType="unit" displaySize="base" className='hidden lg:flex' showInfo={sInfo} />
-            </View>
+            </View>*/}
             {(oProps.data.text && false) && (
                 <View className='flex-auto overflow-hidden text-ellipsis w-1/2 lg:w-auto px-4'>
                     <Link href={oProps.data.url}>

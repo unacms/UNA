@@ -400,6 +400,9 @@ export function CommentsBrowse({ scrollProps, browse, requestUrl, module, handle
     if (!h && addItems)
         dataOut = [...addItems, { id: 'block_header', data: header }, ...dataOut];
 
+    
+    console.log("itemIndex",  scrollToIndex)
+
     return (
         <>
             <Toaster ref={toasterRef} onPress={showNewContent} variant="primary" title="New comment" size="sm" />
@@ -418,7 +421,7 @@ export function CommentsBrowse({ scrollProps, browse, requestUrl, module, handle
                     }
                     return (
                         <View className='' key={index}>
-                            <UnitComments selectedId={selectedId} hideActions={hideActions} replyId={replyId} module={commentData.moduleName} {...item} view={viewMode} max_level={commentData.maxLevel} handleReply={handleReply} handleEdit={handleEdit} handleDelete={handleDelete} />
+                            <UnitComments selectedId={scrollToIndex} hideActions={hideActions} replyId={replyId} module={commentData.moduleName} {...item} view={viewMode} max_level={commentData.maxLevel} handleReply={handleReply} handleEdit={handleEdit} handleDelete={handleDelete} />
                         </View>
                     )
                 }}

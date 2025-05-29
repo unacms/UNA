@@ -7,24 +7,21 @@ import { ContentMore } from 'app/ui/molecules/contentmore';
 import EntityAttachments from './entity_attachments';
 import TextMore from 'app/ui/molecules/textmore';
 import Link from 'app/ui/atoms/link'
+import { Button } from 'app/design/controls';
 
 export default function (props) {
 
     const data = props.data;
 
     return (
-        <View className="w-full">
+        <View className="w-full lg:px-4">
+            <ContentMore numberOfSymbols={200} showLess={true} content={data.text} numberOfLines={3} openSmall={false} textClassName="  text-base text-neutral-600 dark:text-neutral-400" />
+            <Link href={data.link}>
+                
+                    <Button size="sm" title="View all comments" variant="link" endDecorator="ChevronRight"/>
+             
+            </Link>
             
-           
-                <Link href={data.link}>
-                <View className="w-full ">
-                    <H2 numberOfLines={1} className="font-bold tracking-tight  text-neutral-900 dark:text-neutral-50 ">Comment to: {data.title}</H2>
-                    </View>
-                </Link>
-               
-                <ContentMore numberOfSymbols={200} showLess={true} content={data.text} numberOfLines={3}  openSmall={false} textClassName="  text-base text-neutral-600 dark:text-neutral-400" />
-           
-           
         </View>
     );
 }

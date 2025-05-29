@@ -26,9 +26,12 @@ import { componentsMap } from 'app/ui/molecules/_map'
 import { StarsView } from 'app/ui/atoms/stars';
 import { Modal } from 'app/design/controls'
 import Loading from 'app/ui/atoms/loading'
+import { Animated, StyleSheet } from 'react-native';
+import { Theme } from 'app/design/theme';
 
 export default function UnitComments(props) {
     const { t } = useTranslation();
+    const { colors } = Theme();
     let { currentUser } = useCurrentUser();
     const [viewState, setViewState] = useState({ view: '' });
     const [postData, setPostData] = useState(null);
@@ -56,18 +59,54 @@ export default function UnitComments(props) {
         }
     }, [props.replyId])
 
+
+
+
+    const background = useRef(new Animated.Value(0)).current;
+
+    useEffect(() => {
+        const blinkToRed = Animated.timing(background, {
+            toValue: 1,
+            duration: 200,
+            useNativeDriver: false,
+        });
+
+        const blinkToTransparent = Animated.timing(background, {
+            toValue: 0,
+            duration: 200,
+            useNativeDriver: false,
+        });
+
+        Animated.sequence([
+            blinkToRed,
+            blinkToTransparent,
+            blinkToRed,
+            blinkToTransparent,
+            blinkToRed,
+            blinkToTransparent,
+        ]).start();
+    }, [background]);
+
+    const interpolatedBackground = background.interpolate({
+        inputRange: [0, 1],
+        outputRange: ['transparent', colors.primary],
+    });
+
+
+
+
     if (!data)
         return null;
 
-   /* let { data: dynamicData, error } = useSWR(
-        postData ? ['/api.php?r=' + appSetting("urls", "cmts") + '/&params[]={"module":"' + props.module + '","object_id":' + props.data.cmt_object_id + ',"action":"edit","id":' + props.data.cmt_id + '}', '', postData] : null,
-        fetcher,
-        !true ? undefined : {
-            revalidateIfStale: false,
-            revalidateOnFocus: false,
-            revalidateOnReconnect: false
-        }
-    );*/
+    /* let { data: dynamicData, error } = useSWR(
+         postData ? ['/api.php?r=' + appSetting("urls", "cmts") + '/&params[]={"module":"' + props.module + '","object_id":' + props.data.cmt_object_id + ',"action":"edit","id":' + props.data.cmt_id + '}', '', postData] : null,
+         fetcher,
+         !true ? undefined : {
+             revalidateIfStale: false,
+             revalidateOnFocus: false,
+             revalidateOnReconnect: false
+         }
+     );*/
     const { data: dynamicData, error } = useFetchForm('/api.php?r=' + appSetting("urls", "cmts") + '/&params[]={"module":"' + props.module + '","object_id":' + props.data.cmt_object_id + ',"action":"edit","id":' + props.data.cmt_id + '}', postData);
 
 
@@ -130,79 +169,86 @@ export default function UnitComments(props) {
                 <Form {...viewState.data} classContainerName="flex-row flex-wrap w-full  items-start justify-between" onFormSubmit={onFormSubmit} />
             </View>
         </Modal>
+    const isAnimated = props.selectedId == data.cmt_id;
+    const Wrapper = isAnimated ? Animated.View : View;
+
+
+
     return (
-        <View className='w-full px-[8px] sm:px-[12px] lg:px-[16px] '>
-            <View className="flex-row gap-x-[8px]">
-                {cells}
-                <View className="w-[44px] z-50 flex-0 relative">
-                    
-                    <Profile {...data.author_data} displayType="unit_wo_info" displaySize="base" showInfo="false" />
-                    
-                    {(items.length != 0 && view != 'flat') && <View className="w-[2px] ml-[21px] top-[2px] flex-auto bg-neutral-100 dark:bg-neutral-800"></View>}
-                </View>
-                <View className=' flex-col flex-1 '>
-                    <View className=' bg-bgritem dark:bg-bgritem-d rounded-[22px] p-[12px] flex-col gap-y-1' >
-                        <View className="flex-row items-center overflow-hidden">
-                            <Profile {...data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
-                            <View><Text className="text-neutral-400 dark:text-neutral-600 px-[4px]">·</Text></View>
-                            <Link href={data.cmt_url} className="flex items-center"><Time ts={data.cmt_time}></Time></Link>
-                             {!!data.cmt_mood && <><View><Text className="text-neutral-400 dark:text-neutral-600 px-[4px]">·</Text></View><StarsView rating={data.cmt_mood} starSize={20} /></>}
-                            {(maxLevel < data.cmt_level && appSetting('comments', 'in_reply')) && parent?.data && <Row>
-                                <Text className="text-neutral-400 dark:text-neutral-600 px-[4px] text-sm ">· In reply to</Text>
-                                <Profile {...parent.data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
-                                {false && <Text className="text-neutral-500 px-1 text-sm whitespace-nowrap text-ellipsis overflow-hidden"> {stripTags(parent?.data?.cmt_text)}</Text>}
-                            </Row>}
+        <Wrapper style={[{ width: '100%' }, { backgroundColor: interpolatedBackground }]}>
+            <View className='w-full px-[8px] sm:px-[12px] lg:px-[16px] '>
+                <View className="flex-row gap-x-[8px]">
+                    {cells}
+                    <View className="w-[44px] z-50 flex-0 relative">
 
-                        </View>
-                        {
-                            (view == 'flat' && data.cmt_parent_id > 0) && <View className='   border border-bdr dark:border-bdr-d  rounded-md p-2 my-1'>
-                                <View className="flex-row items-baseline" >
-                                    <View><Text className='text-xs text-neutral-800 dark:text-neutral-200'>In Reply to </Text></View>
-                                    <View className=" "></View>
-                                </View>
-                                <ContentMore content={data.cmt_parent.data.cmt_text} numberOfLines={1} openSmall={false} textClassName="text-base text-neutral-600 dark:text-neutral-400" />
-                               
+                        <Profile {...data.author_data} displayType="unit_wo_info" displaySize="base" showInfo="false" />
+
+                        {(items.length != 0 && view != 'flat') && <View className="w-[2px] ml-[21px] top-[2px] flex-auto bg-neutral-100 dark:bg-neutral-800"></View>}
+                    </View>
+                    <View className=' flex-col flex-1 '>
+                        <View className=' bg-bgritem dark:bg-bgritem-d rounded-[22px] p-[12px] flex-col gap-y-1' >
+                            <View className="flex-row items-center overflow-hidden">
+                                <Profile {...data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
+                                <View><Text className="text-neutral-400 dark:text-neutral-600 px-[4px]">·</Text></View>
+                                <Link href={data.cmt_url} className="flex items-center"><Time ts={data.cmt_time}></Time></Link>
+                                {!!data.cmt_mood && <><View><Text className="text-neutral-400 dark:text-neutral-600 px-[4px]">·</Text></View><StarsView rating={data.cmt_mood} starSize={20} /></>}
+                                {(maxLevel < data.cmt_level && appSetting('comments', 'in_reply')) && parent?.data && <Row>
+                                    <Text className="text-neutral-400 dark:text-neutral-600 px-[4px] text-sm ">· In reply to</Text>
+                                    <Profile {...parent.data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
+                                    {false && <Text className="text-neutral-500 px-1 text-sm whitespace-nowrap text-ellipsis overflow-hidden"> {stripTags(parent?.data?.cmt_text)}</Text>}
+                                </Row>}
+
                             </View>
-                        }
-                        <View className='text-neutral-900 dark:text-neutral-50 '>
-                            <Html htmlStyles={{ fontSize: 16 }}  customClassName='u-vanilla-html-small' data={linkify(data.cmt_text)} />
-                            {!!data.embed && <View><Embed data={data.embed} size="small" /></View>}
-                           
-                        </View>
-                        {(viewState.view != 'edited' && imageList.length > 0) && <View className='max-w-xs w-full'><Carousel data={imageList} /></View>}
-                    </View>
-                    {viewState.view != 'edited' && <View className=' flex-row w-full mb-[12px] mt-[2px] items-center'>
-                        {(!!currentUser && !!props.handleReply && !props.module.includes('_reviews')) ? <View className='mr-2'>
-                            <Button align="start" title={t("Reply")} size="xs" startDecorator="MessageCircle" variant="text" onPress={() => handleReply(data)} rounded />
-                        </View> : <View></View>
-                        }
-                        {(!!currentUser && !props.handleReply && !props.module.includes('_reviews')) ? <View className='mr-2'>
-                            <Link href={props.contentUrl + '#cmt_id=' + data.cmt_id}><Button align="start" title={t("Reply")} size="xs" startDecorator="MessageCircle" variant="text" rounded /></Link>
-                        </View> : <View></View>
-                        }
-                        <View className='flex-row flex-auto '>
-                            <Menu {...data.menu_actions} displayType="element" showMatched={true} params={{ show_action: true, show_counter: false, show_combined: false, button_size: 'xs', button_variant: 'text' }} />
+                            {
+                                (view == 'flat' && data.cmt_parent_id > 0) && <View className='   border border-bdr dark:border-bdr-d  rounded-md p-2 my-1'>
+                                    <View className="flex-row items-baseline" >
+                                        <View><Text className='text-xs text-neutral-800 dark:text-neutral-200'>In Reply to </Text></View>
+                                        <View className=" "></View>
+                                    </View>
+                                    <ContentMore content={data.cmt_parent.data.cmt_text} numberOfLines={1} openSmall={false} textClassName="text-base text-neutral-600 dark:text-neutral-400" />
 
-                            <View className="ml-auto flex-row items-center gap-x-2">
-                            <Menu {...data.menu_actions} displayType="element" showMatched={true} params={{ show_action: false, show_counter: true, show_combined: false, button_size: 'xs', button_variant: 'text' }} />
-
-                            <MenuManage id={data.id} menu={data?.menu_manage} setViewState={setViewState} module={props.module} cmt_object_id={props.data.cmt_object_id} cmt_id={props.data.cmt_id} />
                                 </View>
+                            }
+                            <View className='text-neutral-900 dark:text-neutral-50 '>
+                                <Html htmlStyles={{ fontSize: 16 }} customClassName='u-vanilla-html-small' data={linkify(data.cmt_text)} />
+                                {!!data.embed && <View><Embed data={data.embed} size="small" /></View>}
+
+                            </View>
+                            {(viewState.view != 'edited' && imageList.length > 0) && <View className='max-w-xs w-full'><Carousel data={imageList} /></View>}
                         </View>
+                        {viewState.view != 'edited' && <View className=' flex-row w-full mb-[12px] mt-[2px] items-center'>
+                            {(!!currentUser && !!props.handleReply && !props.module.includes('_reviews')) ? <View className='mr-2'>
+                                <Button align="start" title={t("Reply")} size="xs" startDecorator="MessageCircle" variant="text" onPress={() => handleReply(data)} rounded />
+                            </View> : <View></View>
+                            }
+                            {(!!currentUser && !props.handleReply && !props.module.includes('_reviews')) ? <View className='mr-2'>
+                                <Link href={props.contentUrl + '#cmt_id=' + data.cmt_id}><Button align="start" title={t("Reply")} size="xs" startDecorator="MessageCircle" variant="text" rounded /></Link>
+                            </View> : <View></View>
+                            }
+                            <View className='flex-row flex-auto '>
+                                <Menu {...data.menu_actions} displayType="element" showMatched={true} params={{ show_action: true, show_counter: false, show_combined: false, button_size: 'xs', button_variant: 'text' }} />
+
+                                <View className="ml-auto flex-row items-center gap-x-2">
+                                    <Menu {...data.menu_actions} displayType="element" showMatched={true} params={{ show_action: false, show_counter: true, show_combined: false, button_size: 'xs', button_variant: 'text' }} />
+
+                                    <MenuManage id={data.id} menu={data?.menu_manage} setViewState={setViewState} module={props.module} cmt_object_id={props.data.cmt_object_id} cmt_id={props.data.cmt_id} />
+                                </View>
+                            </View>
+                        </View>
+                        }
                     </View>
-                    }
                 </View>
             </View>
-        </View>
+        </Wrapper>
     );
 }
 
 const MenuManage = ({ id, menu, setViewState, module, cmt_object_id, cmt_id }) => {
     const [menuData, setMenuData] = useState(false);
-    
+
     if (!menu.object)
         return null;
-    
+
     if (menu.items)
         return <MenuManage_ id={id} menu={menu} setViewState={setViewState} module={module} cmt_object_id={cmt_object_id} cmt_id={cmt_id} />
 
@@ -215,7 +261,7 @@ const MenuManage = ({ id, menu, setViewState, module, cmt_object_id, cmt_id }) =
                 startDecorator="Ellipsis"
                 onPress={() => {
                     if (Platform.OS === 'web')
-                        setMenuData({...menu, items: [{'name': 'loader'}]});
+                        setMenuData({ ...menu, items: [{ 'name': 'loader' }] });
                     getDataForMenu(menu, setMenuData);
                 }}
             />
@@ -243,9 +289,9 @@ const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen, module, cmt_obj
                 props.handleDelete();
                 break;
 
-           /* case 'item-report':
-                refReport.current.report(event);
-                break;*/
+            /* case 'item-report':
+                 refReport.current.report(event);
+                 break;*/
         }
     }
 
@@ -257,12 +303,12 @@ const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen, module, cmt_obj
             if (!!aItem.display_type && aItem.display_type == 'element') {
                 const Element = componentsMap[aItem.data.type];
                 if (!!Element) {
-                    sTitle= <Element mode="dropdown-menu" key={aItem.id ? aItem.id : aItem.name}   {...aItem.data} />
+                    sTitle = <Element mode="dropdown-menu" key={aItem.id ? aItem.id : aItem.name}   {...aItem.data} />
                 }
             }
 
             if (aItem.name == 'loader') {
-                sTitle= <Loading size="small" />
+                sTitle = <Loading size="small" />
             }
 
             return {
