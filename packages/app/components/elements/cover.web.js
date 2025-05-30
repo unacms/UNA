@@ -335,15 +335,15 @@ export default function (props) {
                 )}
                 <View className="p-[8px] sm:p-[12px] lg:p-[16px]">
                     <View
-                        className={` flex-col lg:flex-row gap-y-4 gap-x-4 ${conductorTheme.content_max_width} mx-auto w-full items-start items-stretch`}
+                        className={` flex-col lg:flex-row gap-y-4  ${conductorTheme.content_max_width} mx-auto w-full items-start items-stretch`}
                     >
                         {bPerson && (
-                            <View className="w-full h-24 sm:w-36 relative">
+                            <View className="w-full h-24 sm:w-52 relative">
                                 <View className=" flex-auto absolute w-min rounded-full w-min p-[8px] z-50 -bottom-2 flex-none bg-bgrcard dark:bg-bgrcard-d ">
                                     <Profile
                                         {...data.profile}
                                         displayType="unit_wo_info"
-                                        displaySize={'3xl'}
+                                        displaySize={'4xl'}
                                     />
                                     {bAllowEdit && (
                                         <View className=" p-1 bg-bgrcard dark:bg-bgrcard-d rounded-full absolute bottom-3 right-1">
@@ -363,8 +363,8 @@ export default function (props) {
                         )}
                         <View className=" flex-auto flex-col gap-y-4 px-[4px]  ">
                             <Row className="items-center gap-x-4 gap-y-4 justify-between flex-wrap w-full">
-                                <Row className="flex-auto flex-wrap gap-y-4 gap-x-4">
-                                    <Row className=" gap-x-2 ">
+                                <Row className="flex-auto flex-wrap gap-y-4 gap-x-0">
+                                    <Row className=" gap-x-2 flex-auto ">
                                         <Text
                                             className="tracking-tight text-3xl sm:text-4xl font-bold text-neutral-900 dark:text-neutral-50"
                                             numberOfLines={2}
