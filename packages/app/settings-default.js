@@ -842,17 +842,17 @@ export  const settingsDefault = {
             pressed_text:
                 ' text-primary-700 dark:text-primary-300 group-hover:text-primary-800 dark:group-hover:text-primary-200 ',
             xs: {
-                rounded: ' rounded-[6px] ',
+                rounded: ' rounded-[8px] ',
                 padding: ' h-[32px] min-w-[32px] px-[6px] overflow-hidden ',
                 icon_container:
                     ' h-[20px] w-[20px] flex items-center justify-center ',
-                title_container: 'px-[4px] web:text-[12px] native:text-[12px] ',
+                title_container: 'px-[4px] web:text-[13px] native:text-[13px] ',
                 icon_size: 20,
                 icon_margin: ' mx-[2px] ', //conditional margin for icon container when title is present
                 title_margin: ' ',
             },
             sm: {
-                rounded: ' rounded-[8px] ',
+                rounded: ' rounded-[9px] ',
                 padding: ' h-[36px] min-w-[36px] px-[8px] overflow-hidden ',
                 icon_container:
                     ' h-[20px] w-[20px] flex items-center justify-center ',

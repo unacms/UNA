@@ -39,28 +39,36 @@ export default function FormPost(props) {
     if (inputs['allow_comments'])
         inputs['allow_comments'].caption = '';
 
+    // Prepare author name for the visibility switcher
+    const authorName = <Text className='font-semibold text-neutral-800 dark:text-neutral-200'>{currentUser.display_name}</Text>;
+
     return (
-        <View className="w-full max-w-5xl flex-col">
+        <View className="w-full max-w-5xl flex-col p-[12px] sm:p-[16px]">
           {getHiddenFields(inputs, handleSubmit)}
         
             <View className="  overflow-hidden flex-col  ">
-                <View className=" flex-row flex-wrap gap-x-2 flex-auto justify-between items-center mr-1">
-                    <View className=" flex-auto mb-4 ">
-                        <Profile {...currentUser} displayType="unit" displaySize="base" />
-                    </View>
-                    <View className=" mb-4  ">
+                <View className="flex-row flex-auto items-center justify-between gap-x-[8px] mb-4">
+                    <View className="gap-x-[8px] mr-[8px] flex-row flex-auto items-center group">
+                        <Profile {...currentUser} displaySize="lg" displayType="unit_wo_info" /> 
+                        
                         {getFormFieldByData(
                             inputs['allow_view_to'],
                             handleSubmit,
-                            'nofield'
+                            'nofield',
+                            {
+                                variant: 'text',
+                                size: 'base',
+                                addElement: authorName
+                            }
                         )}
                     </View>
-                    <View className=" mb-4  ">
+
+                    <View> 
                         {getFormFieldByData(
                             inputs['covers'],
                             handleSubmit,
                             'notitle',
-                            { format: 'custom', view: 'button' }
+                            { format: 'custom', view: 'button', variant: 'text', size: 'sm' }
                         )}
                     </View>
                 </View>
@@ -167,12 +175,14 @@ export default function FormPost(props) {
                 {getFormFieldByData(
                     inputs['do_publish'],
                     handleSubmit,
-                    'default'
+                    'default',
+                    { noMargin: true }
                 )}
                 {getFormFieldByData(
                     inputs['do_submit'],
                     handleSubmit,
-                    'default'
+                    'default',
+                    { noMargin: true }
                 )}
             </View>
         </View>

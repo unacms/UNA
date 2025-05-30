@@ -86,7 +86,7 @@ export default function FormFieldSubmit(props) {
     const rowClassName = [
         formProps.button_hide_on_small || props.button_hide_on_small ? 'hidden sm:flex' : '',
         'gap-x-2',
-        'justify-center',
+        '',
         'items-center',
         
     ]
