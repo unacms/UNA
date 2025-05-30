@@ -55,9 +55,9 @@ function getContextRoot(data, currentUser) {
 
 export default function ContextSelector({ data, url }) {
     const { currentUser } = useCurrentUser();
-    
+
     const [isOpen, setIsOpen] = useState(false);
-    
+
     if (!data) return null;
 
     const contextRoot = getContextRoot(data, currentUser);
@@ -95,8 +95,8 @@ export default function ContextSelector({ data, url }) {
                     open={isOpen}
                     onOpenChange={handleOpenChange}
                 >
-                     <View style={{ maxHeight: windowHeight*0.8 }} >
-                    <ScrollView showsVerticalScrollIndicator={false}>
+                    <View  >
+
                         {renderLogoListItem(!data.current?.id, handleItemClick)}
                         {data.list.map(item => renderListItem(item, item.id === data.current?.id, handleItemClick))}
                         {!!data.create && <Link className="w-full" href={data.create.url} onPress={handleItemClick}>
@@ -117,7 +117,6 @@ export default function ContextSelector({ data, url }) {
                                 </Row>
                             </Link>
                         )}
-                    </ScrollView>
                     </View>
                 </DropdownPopup>
             </View>
