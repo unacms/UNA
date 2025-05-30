@@ -460,7 +460,7 @@ export function TopSidebar({ styles, isWeb, leftSideBar, header, headerSettings,
                         : */''
                 }`}
         >
-            <View className={`${leftSideBar ? '' : ' mx-auto'}  w-full ${conductorTheme.menu_max_width}`}>
+            <View className={`${leftSideBar ? '' : ' mx-auto'} w-full ${conductorTheme.menu_max_width}`}>
                 {/*!header && isWeb && <Row className="lg:hidden flex-row gap-x-1 flex-none items-center justify-between h-16 bg-bgrnavbar dark:bg-bgrnavbar-d ">
                     
                     { layout === 'ver' && (<><Row className="items-center px-3 sm:px-4">
@@ -482,7 +482,7 @@ export function TopSidebar({ styles, isWeb, leftSideBar, header, headerSettings,
 }
                 </Row>
                 */}
-                <Row className=" ml-[4px] sm:ml-[8px] pb-[8px] items-center">
+                <Row className=" ml-[4px] sm:ml-[8px] px-[4px] py-[8px] sm:px-[8px] items-center">
                     {title ? <Text className="text-2xl my-auto mx-5 pb-1 font-medium text-neutral-800 tracking-tight dark:text-neutral-200 hidden lg:flex">{title}</Text> : <Text className=" hidden lg:flex"></Text>}
                     {children}
                     {layout != 'mixed' && <Row className="hidden lg:flex px-4 cond-buttons-add">

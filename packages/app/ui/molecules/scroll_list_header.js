@@ -95,7 +95,7 @@ export const Header = memo(({
     const isCustomHeaderElement = appSetting('layout', 'custom_header_element')
 
     return (
-        <Row className={`  px-[8px] sm:px-[12px] items-center h-[64px] lg:shadow-[0_1px_3px_0_rgba(0,0,0,0.05)] lg:dark:shadow-[0_1px_0_rgba(0,0,0,1)] lg:border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d`}>
+        <Row className={` px-[8px] sm:px-[12px] items-center h-[64px] lg:shadow-[0_1px_3px_0_rgba(0,0,0,0.05)] lg:dark:shadow-[0_1px_0_rgba(0,0,0,1)] lg:border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d`}>
             
                 {(isHome && !pageData?.context) && <Pressable onPress={scrollToTop} className="flex-row active:scale-95 active:opacity-50 active:bg-bgrbutton dark:active:bg-bgrbutton-d rounded-xl p-[4px] gap-x-3 text-neutral-700 dark:text-neutral-300 web:hover:text-neutral-800 web:dark:hover:text-neutral-200 duration-300 ">
                     
@@ -135,7 +135,7 @@ function getRightHeader(items, currentUser, pagePath) {
     if (pagePath == '/home' && currentUser) {
         const menu_add_items = menuItemsByName('', appSetting('menu_items', 'menu_add'), currentUser);
         if (menu_add_items.length) {
-            addMenu = <MenuAdd key='menu-add' buttonProps={{ variant: "secondary", rounded: 'rounded', startDecorator: "Plus", id: "m3", size: 'sm' }} />;
+            addMenu = <MenuAdd key='menu-add' buttonProps={{ variant: "base", rounded: 'rounded', startDecorator: "Plus", id: "m3", size: 'sm' }} />;
         }
     }
     if (items?.length == 0 && !addMenu)
@@ -147,13 +147,13 @@ function getRightHeader(items, currentUser, pagePath) {
                 items?.map((button) => {
                     let btn = undefined;
                     if (button.section || button.link == 'search')
-                        btn = <Search section={button.section} params={{ trigger: { title: button.title, icon: button.icon ? button.icon : 'Search', size: 'sm', variant: 'secondary', onPress: () => FeedbackHaptics('Medium') } }} />
+                        btn = <Search section={button.section} params={{ trigger: { title: button.title, icon: button.icon ? button.icon : 'Search', size: 'base', variant: 'text', onPress: () => FeedbackHaptics('Medium') } }} />
                     else {
                         btn = <Button
                             rounded title={button.title}
                             variant='secondary'
                             startDecorator={button.icon}
-                            size="sm"
+                            size="base"
                             addon={button.link == appSetting('messenger', 'url') ? { variant: 'primary', text: currentUser?.counters?.bx_messenger_new_messages, hideZero: true } : undefined}
                         />;
                         btn = button.link ? <Link href={button.link} >{btn}</Link> : btn

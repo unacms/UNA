@@ -15,29 +15,43 @@ import { fetcher } from 'app/lib/fetcher'
 import { manipulateAsync, FlipType, SaveFormat } from 'expo-image-manipulator'
 import { Image as ImageNative } from 'react-native'
 import { useCurrentUser } from 'app/context/user'
-import { CoverMenuMeta, CoverMenu, CoverMenuSmall } from 'app/components/nav/menu-cover'
-import { useTranslation } from 'react-i18next';
+import {
+    CoverMenuMeta,
+    CoverMenu,
+    CoverMenuSmall,
+} from 'app/components/nav/menu-cover'
+import { useTranslation } from 'react-i18next'
 import { Platform } from 'react-native'
 import Link from 'app/ui/atoms/link'
 
-const conductorTheme = appSetting('theme', 'conductor');
+const conductorTheme = appSetting('theme', 'conductor')
 
 // Custom back button for cover images with glassy style
 function getCoverBackButton() {
-    const isWeb = Platform.OS === 'web';
-    if (!isWeb) return <></>;
+    const isWeb = Platform.OS === 'web'
+    if (!isWeb) return <></>
     if (history.length > 2) {
         return (
-            <View className="lg:hidden mr-1"  >
-               <Button rounded={true} size="sm" variant="glassy" startDecorator="ArrowLeft" onPress={() => history.back()}/>
+            <View className="lg:hidden mr-1">
+                <Button
+                    rounded={true}
+                    size="base"
+                    variant="glassy"
+                    startDecorator="ArrowLeft"
+                    onPress={() => history.back()}
+                />
             </View>
         )
-    }
-    else{
+    } else {
         return (
-            <View className="lg:hidden mr-1"  >
-                <Link href='/'>
-                    <Button rounded={true} size="sm" variant="glassy" startDecorator="ArrowLeft" />
+            <View className="lg:hidden mr-1">
+                <Link href="/">
+                    <Button
+                        rounded={true}
+                        size="base"
+                        variant="glassy"
+                        startDecorator="ArrowLeft"
+                    />
                 </Link>
             </View>
         )
@@ -50,10 +64,17 @@ export function CoverSmall(props) {
     const isUseBg = appSetting('cover', 'use_background')
     const windowDimen = useWindowDimensions()
     const windowWidth = windowDimen.width
-    const bPerson = props.data.profile.module == 'bx_persons' || appSetting('cover', 'show_pic_by_module', props.data?.profile?.module) ? true : false
+    const bPerson =
+        props.data.profile.module == 'bx_persons' ||
+        appSetting('cover', 'show_pic_by_module', props.data?.profile?.module)
+            ? true
+            : false
 
     let styles = {}
-    if (windowWidth > LAYOUT_BREAKPOINTS.lg && getLayout(currentUser) != 'hor') {
+    if (
+        windowWidth > LAYOUT_BREAKPOINTS.lg &&
+        getLayout(currentUser) != 'hor'
+    ) {
         // styles = { width: 1536 - 20 * 16 }
     }
 
@@ -63,8 +84,7 @@ export function CoverSmall(props) {
             className={
                 (isUseBg
                     ? ' border-b border-bdrtabbar dark:border-bdrtabbar-d'
-                    : ' bg-bgrtabbar dark:bg-bgrtabbar-d ') +
-                ' w-full '
+                    : ' bg-bgrtabbar dark:bg-bgrtabbar-d ') + ' w-full '
             }
         >
             <View
@@ -72,7 +92,9 @@ export function CoverSmall(props) {
                     appSetting('layout', 'max_width') + ' w-full mx-auto'
                 }
             >
-                <View className={`px-4 py-3  ${conductorTheme.content_max_width} mx-auto w-full flex-row gap-2`}>
+                <View
+                    className={`px-4 py-3  ${conductorTheme.content_max_width} mx-auto w-full flex-row gap-2`}
+                >
                     <Row className=" gap-x-2 items-center justify-between flex-auto">
                         <View className="flex-auto flex-row gap-x-2 items-center">
                             {getBackButtonWeb()}
@@ -82,7 +104,6 @@ export function CoverSmall(props) {
                                     {...data.profile}
                                     displayType="unit_wo_info"
                                     displaySize="base"
-
                                 />
                             )}
 
@@ -90,7 +111,6 @@ export function CoverSmall(props) {
                                 {...data.profile}
                                 displayType="unit_wo_image"
                                 displaySize="xl"
-
                             />
                         </View>
                         <View className=" w-auto my-auto ">
@@ -104,12 +124,18 @@ export function CoverSmall(props) {
 }
 
 export default function (props) {
-    const { t } = useTranslation();
+    const { t } = useTranslation()
     const { currentUser, setCurrentUser } = useCurrentUser()
     const data = props.data
 
-    const mode = appSetting('cover', 'view_by_module', props.data?.profile?.module) || props.mode
-    const bPerson = props.data.profile.module == 'bx_persons' || appSetting('cover', 'show_pic_by_module', props.data?.profile?.module) ? true : false
+    const mode =
+        appSetting('cover', 'view_by_module', props.data?.profile?.module) ||
+        props.mode
+    const bPerson =
+        props.data.profile.module == 'bx_persons' ||
+        appSetting('cover', 'show_pic_by_module', props.data?.profile?.module)
+            ? true
+            : false
     const [coverUrl, setCoverUrl] = useState(data.cover.src)
     const [pictureUrl, setPictureUrl] = useState(data.profile.url_avatar)
 
@@ -162,15 +188,14 @@ export default function (props) {
                                 )
                             }
 
-                            const resizedPhoto =
-                                await manipulateAsync(uri, [
-                                    {
-                                        resize: {
-                                            width: manipulatedWidth,
-                                            height: manipulatedHeight,
-                                        },
+                            const resizedPhoto = await manipulateAsync(uri, [
+                                {
+                                    resize: {
+                                        width: manipulatedWidth,
+                                        height: manipulatedHeight,
                                     },
-                                ])
+                                },
+                            ])
                             uri = resizedPhoto.uri
                         }
                     }
@@ -199,8 +224,7 @@ export default function (props) {
                         if (s > 500) {
                             acts.push({ resize: { width: 500, height: 500 } })
                         }
-                        const resizedPhoto =
-                            await manipulateAsync(uri, acts)
+                        const resizedPhoto = await manipulateAsync(uri, acts)
                         uri = resizedPhoto.uri
                     }
                     let hash = md5(uri)
@@ -226,38 +250,54 @@ export default function (props) {
             '&params[]=' +
             uploadInfo.result.data.id
         const sResponse = await fetcher(sRequest)
-        if (uploadInfo.extraVar.mode == 'cover')
-            setCoverUrl(sResponse.data)
-        else
-            setPictureUrl(sResponse.data)
+        if (uploadInfo.extraVar.mode == 'cover') setCoverUrl(sResponse.data)
+        else setPictureUrl(sResponse.data)
     }
 
     data.profile.url_avatar = pictureUrl
 
     const isUseBg = appSetting('cover', 'use_background')
 
-    const bAllowEdit = data.allow_edit && appSetting('cover', 'allow_edit');
+    const bAllowEdit = data.allow_edit && appSetting('cover', 'allow_edit')
 
-    const foundItem = currentUser?.informer?.find((item) => { return item.id == 'sys-switch-profile-context' });
-    let isAllowSwitch = foundItem ? foundItem.msg : false;
+    const foundItem = currentUser?.informer?.find((item) => {
+        return item.id == 'sys-switch-profile-context'
+    })
+    let isAllowSwitch = foundItem ? foundItem.msg : false
     if (isAllowSwitch) {
-        let match = isAllowSwitch.match(/switch_to_profile=(\d+)/);
+        let match = isAllowSwitch.match(/switch_to_profile=(\d+)/)
         isAllowSwitch = match ? match[1] : null
     }
 
     const handleSwitch = async (id) => {
-        const result = await fetcher('/api.php?r=system/switch_profile/TemplServiceAccount&params[]=' + id);
-        location.reload();
-    };
+        const result = await fetcher(
+            '/api.php?r=system/switch_profile/TemplServiceAccount&params[]=' +
+                id
+        )
+        location.reload()
+    }
 
-    const isCover = data?.cover?.src;
+    const isCover = data?.cover?.src
 
     return (
-        <View className=' bg-bgrtabbar dark:bg-bgrtabbar-d border-bdrtabbar dark:border-bdrtabbar-d ' >
-            <View className={`w-full mx-auto ${appSetting('layout', 'max_width')}`}>
+        <View className=" bg-bgrtabbar dark:bg-bgrtabbar-d border-bdrtabbar dark:border-bdrtabbar-d ">
+            <View
+                className={`w-full mx-auto ${appSetting(
+                    'layout',
+                    'max_width'
+                )}`}
+            >
                 {mode != 'min' ? (
                     <View
-                        className={`duration-300 bg-primary-200 dark:bg-primary-950 w-full max-w-[1440px] mx-auto xl:rounded-b-xl overflow-hidden ${isCover ? `aspect-video sm:${appSetting('cover', 'aspect_ratio')}` : 'pt-16'}`}>
+                        className={`duration-300 bg-primary-200 dark:bg-primary-950 w-full max-w-[1440px] mx-auto xl:rounded-b-xl overflow-hidden ${
+                            isCover
+                                ? ` h-[30vh] sm:${appSetting(
+                                      'cover',
+                                      'aspect_ratio'
+                                  )}`
+                                : 'pt-16'
+                        }`}
+                    >
                         {isCover && (
                             <Image
                                 alt={data.group_name}
@@ -267,41 +307,43 @@ export default function (props) {
                                 src={coverUrl}
                             />
                         )}
-                        <Row className="p-4 justify-end gap-x-4">
-                            {isAllowSwitch && <Button
-                                rounded
-                                variant="glassy"
-                                startDecorator="RefreshCw"
-                                tooltip={'Switch to profile'}
-                                onPress={() => handleSwitch(isAllowSwitch)}
-                            />
-
-                            }
-                            {(bAllowEdit) && (<Button
-                                rounded
-                                variant="glassy"
-                                startDecorator="Camera"
-                                onPress={() => handleUpload('cover')}
-                            />)}
+                        <Row className="p-[8px] sm:p-[12px] justify-end gap-x-2">
+                            {isAllowSwitch && (
+                                <Button
+                                    rounded
+                                    variant="glassy"
+                                    startDecorator="RefreshCw"
+                                    tooltip={'Switch to profile'}
+                                    onPress={() => handleSwitch(isAllowSwitch)}
+                                />
+                            )}
+                            {bAllowEdit && (
+                                <Button
+                                    rounded
+                                    variant="glassy"
+                                    startDecorator="Camera"
+                                    onPress={() => handleUpload('cover')}
+                                />
+                            )}
                         </Row>
-                        <View className="absolute lg:hidden top-[10px] left-[12px] z-50">
+                        <View className="absolute lg:hidden top-[8px] left-[8px] z-50">
                             {getCoverBackButton()}
                         </View>
                     </View>
                 ) : (
                     <></>
                 )}
-                <View className="p-4" >
-                        <View className={` flex-col lg:flex-row gap-y-4 gap-x-4 ${conductorTheme.content_max_width} mx-auto w-full items-start items-stretch`}>
-                                        
+                <View className="p-[8px] sm:p-[12px] lg:p-[16px]">
+                    <View
+                        className={` flex-col lg:flex-row gap-y-4 gap-x-4 ${conductorTheme.content_max_width} mx-auto w-full items-start items-stretch`}
+                    >
                         {bPerson && (
-                            <View className="w-full h-24 sm:w-48 relative">
-                                        
-                                <View className=" flex-auto absolute w-min rounded-full w-min p-2 z-50 -bottom-2 flex-none bg-bgrcard dark:bg-bgrcard-d ">
+                            <View className="w-full h-24 sm:w-36 relative">
+                                <View className=" flex-auto absolute w-min rounded-full w-min p-[8px] z-50 -bottom-2 flex-none bg-bgrcard dark:bg-bgrcard-d ">
                                     <Profile
                                         {...data.profile}
                                         displayType="unit_wo_info"
-                                        displaySize={'4xl'}
+                                        displaySize={'3xl'}
                                     />
                                     {bAllowEdit && (
                                         <View className=" p-1 bg-bgrcard dark:bg-bgrcard-d rounded-full absolute bottom-3 right-1">
@@ -317,41 +359,39 @@ export default function (props) {
                                         </View>
                                     )}
                                 </View>
-                                
                             </View>
                         )}
-                        <View className=" flex-auto flex-col gap-y-4 ">
-                               
-                            <Row className="items-center gap-x-2">
-                                <Text
-                                    className="tracking-tight text-3xl sm:text-4xl font-bold text-neutral-900 dark:text-neutral-50"
-                                    numberOfLines={2}
-                                >
-                                    {data.profile.display_name}
-                                </Text>
-                                <Badges badges={data.badges} />
+                        <View className=" flex-auto flex-col gap-y-4 px-[4px]  ">
+                            <Row className="items-center gap-x-4 gap-y-4 justify-between flex-wrap w-full">
+                                <Row className="flex-auto flex-wrap gap-y-4 gap-x-4">
+                                    <Row className=" gap-x-2 ">
+                                        <Text
+                                            className="tracking-tight text-3xl sm:text-4xl font-bold text-neutral-900 dark:text-neutral-50"
+                                            numberOfLines={2}
+                                        >
+                                            {data.profile.display_name}
+                                        </Text>
+                                        <Badges badges={data.badges} />
+                                    </Row>
+                                    <CoverMenuMeta {...data.meta_menu} />
+                                </Row>
+                                <CoverMenu
+                                        {...data.actions_menu}
+                                        uri={props?.uri}
+                                    />{' '}
                                 
-
                             </Row>
+
                             {!!data.profile.info?.date_start && (
                                 <Text className="  text-neutral-600 dark:text-neutral-400 text-xs uppercase font-semibold tracking-tight overflow-hidden rounded-md flex-none items-center">
-                                    {formatDateInterval(data.profile.info?.date_start, data.profile.info?.date_end, t)}
+                                    {formatDateInterval(
+                                        data.profile.info?.date_start,
+                                        data.profile.info?.date_end,
+                                        t
+                                    )}
                                 </Text>
                             )}
-                            
-                                <ScrollView horizontal={true}>
-                                    <CoverMenuMeta {...data.meta_menu} />
-                                </ScrollView>
-                            
                         </View>
-                        <View className={` hidden flex-auto w-full max-w-[400px] ${mode !== 'min' && ' xl:items-end '}`}>
-                            <CoverMenu {...data.actions_menu} uri={props?.uri} />
-                            {/*containerClasses={`${mode === 'min' && 'w-full lg:justify-end'}`}*/}
-                        </View>
-                        <View className={` absolute top-0 right-0 flex-auto w-full max-w-[400px] `}>
-                                            <CoverMenu {...data.actions_menu} uri={props?.uri} />
-                                            {/*containerClasses={`${mode === 'min' && 'w-full lg:justify-end'}`}*/}
-                                        </View>
                     </View>
                 </View>
             </View>

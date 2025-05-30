@@ -18,8 +18,8 @@ export function CoverMenuSmall(props) {
             minPopupWidth={256}
             trigger={<Button
                 key="btn"
-                variant="secondary"
-                size="sm"
+                variant="text"
+                size="base"
                 rounded
                 startDecorator="Ellipsis"
             />}
@@ -106,7 +106,7 @@ export function CoverMenu(props) {
                 button_size: size,
                 button_rounded: false,
                 button_full_width: props?.params.button_full_width ?? false,
-                className: ' gap-x-2 ',
+                className: ' gap-x-2 justify-end',
                 isFixedCount: true
             }}
         />
@@ -119,9 +119,9 @@ export function CoverMenuMeta(props) {
             {...props}
             displayType="mixed"
             params={{
-                button_variant: 'text',
+                button_variant: 'secondary',
                 button_size: 'sm',
-                className: ' lg:flex-wrap items-center',//lg:w-full lg:gap-y-2
+                className: ' flex-row flex-wrap gap-y-2  gap-x-2 flex-auto',//lg:w-full lg:gap-y-2
             }}
         />
     )

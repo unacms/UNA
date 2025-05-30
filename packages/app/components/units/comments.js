@@ -36,6 +36,10 @@ export default function UnitComments(props) {
     const [viewState, setViewState] = useState({ view: '' });
     const [postData, setPostData] = useState(null);
 
+    const entryAnim = useRef(new Animated.Value(0)).current; // Base animation value, starts at 0 (hidden/offset)
+    const [didAnimateIn, setDidAnimateIn] = useState(false);
+    const selectionAnimationValue = useRef(new Animated.Value(0)).current;
+
     let level = props.level || 0
     let lvls = props.lvls || []
     let data = props.data;
@@ -59,41 +63,92 @@ export default function UnitComments(props) {
         }
     }, [props.replyId])
 
-
-
-
-    const background = useRef(new Animated.Value(0)).current;
+    useEffect(() => {
+        if (props.selectedId == data.cmt_id) {
+            selectionAnimationValue.setValue(0); // Reset before blinking
+            Animated.sequence([
+                Animated.timing(selectionAnimationValue, {
+                    toValue: 1,
+                    duration: 200,
+                    useNativeDriver: false,
+                }),
+                Animated.timing(selectionAnimationValue, {
+                    toValue: 0,
+                    duration: 200,
+                    useNativeDriver: false,
+                }),
+                Animated.timing(selectionAnimationValue, {
+                    toValue: 1,
+                    duration: 200,
+                    useNativeDriver: false,
+                }),
+                Animated.timing(selectionAnimationValue, {
+                    toValue: 0,
+                    duration: 200,
+                    useNativeDriver: false,
+                }),
+                Animated.timing(selectionAnimationValue, {
+                    toValue: 1,
+                    duration: 200,
+                    useNativeDriver: false,
+                }),
+                Animated.timing(selectionAnimationValue, {
+                    toValue: 0,
+                    duration: 200,
+                    useNativeDriver: false,
+                }),
+            ]).start();
+        }
+    }, [props.selectedId, data.cmt_id, selectionAnimationValue, colors.primary]);
 
     useEffect(() => {
-        const blinkToRed = Animated.timing(background, {
-            toValue: 1,
-            duration: 200,
-            useNativeDriver: false,
-        });
+        if (props.isNewComment && !didAnimateIn) {
+            // New comment, and hasn't animated in yet
+            entryAnim.setValue(0); // Explicitly start from 0
+            Animated.spring(entryAnim, {
+                toValue: 1, // Animate to 1 (visible/final position)
+                tension: 40,
+                friction: 7,
+                useNativeDriver: true,
+            }).start(() => {
+                setDidAnimateIn(true);
+            });
+        } else if (!props.isNewComment && !didAnimateIn) {
+            // Not a new comment, and hasn't "animated in" (e.g., initial mount of an old comment)
+            entryAnim.setValue(1); // Set directly to visible state
+            setDidAnimateIn(true); // Mark as "animated in" because it's in its final state
+        } else if (didAnimateIn) {
+            // Already animated in, ensure it stays at the final state (value 1)
+            // This handles cases where isNewComment might change after initial animation/setup
+            entryAnim.setValue(1);
+        }
+    }, [props.isNewComment, didAnimateIn, entryAnim]);
 
-        const blinkToTransparent = Animated.timing(background, {
-            toValue: 0,
-            duration: 200,
-            useNativeDriver: false,
-        });
-
-        Animated.sequence([
-            blinkToRed,
-            blinkToTransparent,
-            blinkToRed,
-            blinkToTransparent,
-            blinkToRed,
-            blinkToTransparent,
-        ]).start();
-    }, [background]);
-
-    const interpolatedBackground = background.interpolate({
+    const interpolatedSelectionBackground = selectionAnimationValue.interpolate({
         inputRange: [0, 1],
         outputRange: ['transparent', colors.primary],
     });
 
-
-
+    const entryStyle = {
+        opacity: entryAnim.interpolate({
+            inputRange: [0, 1],
+            outputRange: [0, 1],
+        }),
+        transform: [
+            {
+                translateY: entryAnim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [50, 0],
+                }),
+            },
+            {
+                scale: entryAnim.interpolate({
+                    inputRange: [0, 0.5, 1],
+                    outputRange: [0.95, 1.05, 1],
+                }),
+            },
+        ],
+    };
 
     if (!data)
         return null;
@@ -169,13 +224,18 @@ export default function UnitComments(props) {
                 <Form {...viewState.data} classContainerName="flex-row flex-wrap w-full  items-start justify-between" onFormSubmit={onFormSubmit} />
             </View>
         </Modal>
-    const isAnimated = props.selectedId == data.cmt_id;
-    const Wrapper = isAnimated ? Animated.View : View;
-    const styles = isAnimated ? [{ width: '100%' }, { backgroundColor: interpolatedBackground }] :  { width: '100%' };
+    const isSelected = props.selectedId == data.cmt_id;
+    const Wrapper = Animated.View;
+    
+    const combinedStyles = [
+        { width: '100%' },
+        entryStyle, // Apply entry animations (opacity, transform)
+        isSelected ? { backgroundColor: interpolatedSelectionBackground } : {},
+    ];
 
 
     return (
-        <Wrapper style={styles}>
+        <Wrapper style={combinedStyles}>
             <View className='w-full px-[8px] sm:px-[12px] lg:px-[16px] '>
                 <View className="flex-row gap-x-[8px]">
                     {cells}

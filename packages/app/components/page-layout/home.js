@@ -122,13 +122,13 @@ export default function (props) {
 
             <ScrollView
                 horizontal={true}
-                className=" w-full border-b border-bdrnavbar dark:border-bdrnavbar-d shadow-[0_1px_3px_0_rgba(0,0,0,0.05)] dark:shadow-[0_1px_0_rgba(0,0,0,1)] bg-bgrnavbar dark:bg-bgrnavbar-d overflow-y-visible sm:justify-center "
+                className=" w-full shadow-[0_1px_1px_0_rgba(0,0,0,0.1)] dark:shadow-[0_1px_0_rgba(0,0,0,1)] bg-bgrnavbar dark:bg-bgrnavbar-d overflow-y-visible sm:justify-center "
             >
                 <Row
-                    className={`  rounded-full mx-3 sm:mx-auto ${feedList.length > 1
-                        ? 'my-2 lg:my-4'
+                    className={`  rounded-full mx-[8px] sm:mx-[12px] ${feedList.length > 1
+                        ? 'mb-2 lg:my-4'
                         : ''
-                        }  gap-x-1 sm:gap-x-2  `}
+                        }  gap-x-0 sm:gap-x-2  `}
                 >
                     {feedList.length > 1 &&
                         feedList.map((item, index) => {
@@ -152,11 +152,12 @@ export default function (props) {
                                         variant={
                                             feedType ==
                                                 item.name
-                                                ? 'text'
-                                                : 'text'
+                                                ? 'primary'
+                                                : 'secondary'
                                         }
                                         pressed={feedType == item.name}
                                         rounded
+                                        ring='p-[4px]'
                                         size="sm"
                                         onPress={() => {
                                             setFeedTypeEx(

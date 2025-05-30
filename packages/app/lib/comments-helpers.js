@@ -301,6 +301,7 @@ export function CommentsBrowse({ scrollProps, browse, requestUrl, module, handle
     DataForList(commentData?.listData?.data?.data, 0, 0, []);
 
     const toasterRef = useRef();
+    const [processedNewCommentId, setProcessedNewCommentId] = useState(null);
 
     const cb = (data) => {
         let k = JSON.parse(data);
@@ -328,16 +329,21 @@ export function CommentsBrowse({ scrollProps, browse, requestUrl, module, handle
     }
 
     useEffect(() => {
-       
-        if (commentData.lastInserted > 0) {
+        if (commentData.lastInserted > 0 && commentData.lastInserted !== processedNewCommentId) {
             const itemIndex = dataOut.findIndex(obj => obj.id == commentData.lastInserted);
-            // NEED CHECK ON IOS
-            setTimeout(() => {
-                flashListRef.current.scrollToIndex({ animated: true, index: itemIndex });
-            }, 300);
-
+            if (itemIndex !== -1) { // Ensure item is found before scrolling
+                setTimeout(() => {
+                    flashListRef.current?.scrollToIndex({ animated: true, index: itemIndex });
+                    // We will set processedNewCommentId after the animation is likely to have started or completed.
+                    // For now, the logic in UnitComments (isNewComment ? 0 : 1 for animation value)
+                    // and this check (commentData.lastInserted !== processedNewCommentId) in renderItem
+                    // should suffice to trigger animation only for the newest.
+                    // To be absolutely sure it only animates once, UnitComments could have an internal state, 
+                    // or we could setProcessedNewCommentId here after a longer delay if needed.
+                }, 300); // Keep existing scroll logic
+            }
         }
-    }, [commentData.lastInserted]);
+    }, [commentData.lastInserted, dataOut, processedNewCommentId]); // Added dataOut and processedNewCommentId to dependency array
 
 
     useEffect(() => {
@@ -416,9 +422,30 @@ export function CommentsBrowse({ scrollProps, browse, requestUrl, module, handle
                     if (item.id.toString().includes('block')) {
                         return item.data;
                     }
+                    
+                    const isNew = commentData.lastInserted === item.id && commentData.lastInserted !== processedNewCommentId;
+                    if (isNew) {
+                         // Set processedNewCommentId *after* this render cycle where isNew is true,
+                         // so the animation prop is correctly passed for the first render of the new comment.
+                         // Queue it to avoid direct state update during render.
+                        setTimeout(() => setProcessedNewCommentId(item.id), 0);
+                    }
+
                     return (
                         <View className='' key={index}>
-                            <UnitComments selectedId={scrollToIndex} hideActions={hideActions} replyId={replyId} module={commentData.moduleName} {...item} view={viewMode} max_level={commentData.maxLevel} handleReply={handleReply} handleEdit={handleEdit} handleDelete={handleDelete} />
+                            <UnitComments 
+                                selectedId={scrollToIndex} 
+                                hideActions={hideActions} 
+                                replyId={replyId} 
+                                module={commentData.moduleName} 
+                                {...item} 
+                                view={viewMode} 
+                                max_level={commentData.maxLevel} 
+                                handleReply={handleReply} 
+                                handleEdit={handleEdit} 
+                                handleDelete={handleDelete} 
+                                isNewComment={isNew}
+                            />
                         </View>
                     )
                 }}

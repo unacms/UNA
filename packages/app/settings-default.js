@@ -838,7 +838,7 @@ export  const settingsDefault = {
         button_sizes: {
             default_size: 'base',
             default_variant: 'default',
-            pressed_container: ' bg-primary-100 dark:bg-primary-950',
+            pressed_container: ' bg-primary dark:bg-primary-d ',
             pressed_text:
                 ' text-primary-700 dark:text-primary-300 group-hover:text-primary-800 dark:group-hover:text-primary-200 ',
             xs: {
