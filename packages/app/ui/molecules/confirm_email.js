@@ -29,7 +29,7 @@ export default function ElementConfirmEmail(props) {
                 confirmed: true,
             });
             if (isWeb)
-                document.location = props.url;
+                document.location = props.url[0] != '/' ? '/' + props.url : props.url;
         }
         else {
             setInputError(true);

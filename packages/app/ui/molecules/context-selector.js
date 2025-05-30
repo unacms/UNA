@@ -55,8 +55,9 @@ function getContextRoot(data, currentUser) {
 
 export default function ContextSelector({ data, url }) {
     const { currentUser } = useCurrentUser();
+
     const [isOpen, setIsOpen] = useState(false);
-    
+
     if (!data) return null;
 
     const contextRoot = getContextRoot(data, currentUser);
@@ -94,7 +95,8 @@ export default function ContextSelector({ data, url }) {
                     open={isOpen}
                     onOpenChange={handleOpenChange}
                 >
-                    <ScrollView showsVerticalScrollIndicator={false}>
+                    <View  >
+
                         {renderLogoListItem(!data.current?.id, handleItemClick)}
                         {data.list.map(item => renderListItem(item, item.id === data.current?.id, handleItemClick))}
                         {!!data.create && <Link className="w-full" href={data.create.url} onPress={handleItemClick}>
@@ -107,7 +109,7 @@ export default function ContextSelector({ data, url }) {
                         </Link>}
                         {(data.links && Array.isArray(data.links)) && data.links.map(item =>
                             <Link key={item.url} className="w-full" href={item.url} onPress={handleItemClick}>
-                                <Row className="w-full p-2 gap-x-3 items-center">
+                                <Row className="w-full p-2 gap-x-3 items-center hover:bg-bgritem dark:hover:bg-bgritem-d rounded-xl">
                                     <View className="items-center w-10 h-10 p-1 justify-center bg-bgritem border border-bdr dark:bg-bgritem-d dark:border-bdr-dark rounded-[10px]">
                                         <Icon icon={item.icon} />
                                     </View>
@@ -115,7 +117,7 @@ export default function ContextSelector({ data, url }) {
                                 </Row>
                             </Link>
                         )}
-                    </ScrollView>
+                    </View>
                 </DropdownPopup>
             </View>
             <Link href={contextRoot.url} >

@@ -6,7 +6,7 @@ import {
     useWindowDimensions,
     Platform
 } from 'react-native';
-import { Pressable, View, ViewRef } from 'app/design/view'
+import { Pressable, ScrollView, View, ViewRef } from 'app/design/view'
 import { LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { RemoveScroll } from 'react-remove-scroll';
 import Animated, {
@@ -70,6 +70,7 @@ export default function DropdownPopup({
         buttonRef.current.measureInWindow((x, y, width, height) => {
             if (contentRef.current?.measureInWindow) {
                 contentRef.current.measureInWindow((_, __, popupWidth, effectivePopupHeight) => {
+                    console.log("effectivePopupHeight", effectivePopupHeight)
                     // Calculate horizontal position
                     let left = x;
                     if (x + popupWidth > windowWidth - 16) {
@@ -91,6 +92,7 @@ export default function DropdownPopup({
                         y: top,
                         width,
                         height,
+                        maxHeight: windowHeight - top - 16
                     });
                 });
             }
@@ -158,7 +160,9 @@ export default function DropdownPopup({
             ]}
             className={`${contentClasses}`}
         >
+
             {children}
+
         </Animated.View>
     ), [buttonPos, contentClasses, children, windowWidth, windowHeight, contentAnimatedStyle, isWeb]);
 
@@ -172,11 +176,14 @@ export default function DropdownPopup({
                 elevation: 5,
                 minWidth: minPopupWidth,
                 maxWidth: windowWidth - 32,
+                maxHeight: buttonPos.maxHeight,
                 zIndex: 1000,
             }}
             className={`${contentClasses}`}
         >
-            {children}
+            <ScrollView showsVerticalScrollIndicator={false}>
+                {children}
+            </ScrollView>
         </ViewRef>
     ) : AnimatedContent;
 
@@ -209,8 +216,8 @@ export default function DropdownPopup({
                             <RemoveScroll>{Content}</RemoveScroll>
                         </Pressable>
                     ) : (
-                        <AnimatedPressable 
-                            className="flex-1" 
+                        <AnimatedPressable
+                            className="flex-1"
                             style={[{ backgroundColor: 'rgba(0,0,0,0.3)' }, backdropAnimatedStyle]}
                             onPress={(event) => handleBackdropPress(event)}
                         >

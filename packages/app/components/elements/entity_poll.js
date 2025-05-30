@@ -86,7 +86,7 @@ export function PollItem({ data }) {
         dispatch({ type: 'SET_RESULTS', payload: sResponse1.data });
     };
 
-    const totalVotes = state.results.reduce((acc, item) => acc + item.votes.count, 0);
+    const totalVotes = state?.results ? state.results.reduce((acc, item) => acc + item.votes.count, 0) : 0;
 
     return (
         <>
