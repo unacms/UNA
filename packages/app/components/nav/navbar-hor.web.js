@@ -60,7 +60,7 @@ const HeaderLine = memo(
                         </Pressable>
                     </View>
                 )}
-                {!context && (uri == 'home' || width >= LAYOUT_BREAKPOINTS.lg) && (
+                {(!context || (!currentUser.confirmed && appSetting('layout', 'lock_unconfirmed'))) &&  (uri == 'home' || width >= LAYOUT_BREAKPOINTS.lg) && (
                     <Link
                         className=" flex items-center flex-row active:scale-95 active:opacity-50 px-[8px] py-[4px] gap-x-3 rounded-xl text-neutral-700 hover:bg-bgrbutton dark:hover:bg-bgrbutton-d dark:text-neutral-300 hover:text-neutral-800 dark:hover:text-neutral-200 duration-300  "
                         href="/home"
@@ -74,7 +74,7 @@ const HeaderLine = memo(
                         </View>
                     </Link>
                 )}
-                {context && <ContextSelector data={context}/>}
+                {(context && (currentUser.confirmed || !appSetting('layout', 'lock_unconfirmed'))) && <ContextSelector data={context}/>}
                 {headerSettings.backButton && getBackButtonWeb()}
                 {headerSettings.title && (
                         <Text
