@@ -199,7 +199,7 @@ export default function (props) {
     }, {});
 
     return (
-        <View className='w-full p-3 sm:p-4'>
+        <View className='w-full p-[16px]'>
             {(isAutoChange) && <Row className='items-center justify-between mb-3'>
                 {/*<Text className="text-xl font-bold text-neutral-800  dark:text-neutral-200 ">Filters</Text>*/}
                 {!isObjectsEqual(filteredDefaultValues, allFields) &&  <Button

@@ -11,44 +11,75 @@ import AuthPanel from 'app/ui/molecules/auth';
 import { appSetting } from 'app/lib/util'
 
 export default function PageLayout(props) {
+    const isWeb = Platform.OS === 'web';
+    const cardClassName = "animate-slidein p-2 w-full max-w-xl mx-auto shadow-[0_0_2px_rgba(0,0,0,0.08)] dark:shadow-[0_0_0_1px_rgba(0,0,0,1)]";
+
     return (
         <KbAvoidingView style={{ flex: 1 }}>
-            <View style={{ flex: 1 }} className={Platform.OS === 'web' ? 'w-full  px-4 py-12 mx-auto max-w-5xl items-center lg:flex-row gap-x-4 gap-y-4  ' : ' items-center p-4'}>
-                <View className="flex-col gap-y-4 hidden lg:flex flex-auto">
-                    {appStatic('components_logincontent')}
-                </View>
-                <Card rounded="  rounded-[24px] " addClassName=" animate-slidein p-6 w-full max-w-md mx-auto flex-auto ">
-                    <View className="flex-col lg:hidden items-center mb-4">
-                        <View className="w-12 m-4 items-center mx-auto text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-900 dark:group-hover:text-neutral-100">
-                            {appStatic('logo_mark')}
-                        </View>
-                        <Text className="flex items-center h-12 text-center text-xl font-bold text-neutral-800 dark:text-neutral-200 ">Sign in to your account</Text>
+            {isWeb ? (
+                <View className="w-full px-4 py-12 mx-auto max-w-7xl items-center lg:flex-row gap-x-4 gap-y-4">
+                    <View className="hidden lg:flex flex-auto p-12 flex-col gap-y-8">
+                        {appStatic('components_logincontent')}
                     </View>
-                    <BlockByName name={props.blocks.form} data={props.data} formProps={{ auto_focus: true, hide_errors: true, button_full_width: true }} />
-                    <Link
-                        className=" w-full my-2 "
-                        href="/forgot-password"
-                    >
-                        <Button
-                            title="Forgot password?"
-                            variant="link"
-                            fullWidth
-                            size="sm"
-                        />
-                    </Link>
-                    <View className="flex items-center justify-center pt-4 border-t border-bdr dark:border-bdr-d  ">
-                        <Link className=" w-full " href="/create-account">
+                    <Card rounded="rounded-[24px]" addClassName={cardClassName}>
+                        <View className="flex-col lg:hidden p-4">
+                            <Text className="text-2xl font-bold text-neutral-800 dark:text-neutral-200">Sign in to your account</Text>
+                        </View>
+                        <BlockByName name={props.blocks.form} data={props.data} formProps={{ auto_focus: true, hide_errors: true, button_full_width: true }} />
+                        <Link
+                            className="w-full mb-4 px-4"
+                            href="/forgot-password"
+                        >
                             <Button
-                                title="Create new account"
-                                
-                                size="base"
+                                title="Forgot password?"
+                                variant="outline"
                                 fullWidth
+                                size="sm"
                             />
                         </Link>
-                    </View>
-                    <AuthPanel className="mt-3"/>
-                </Card>
-            </View>
+                        <View className="flex items-center justify-center p-4 gap-y-2 border-t border-bdr dark:border-bdr-d">
+                            <Link className="w-full" href="/create-account">
+                                <Button
+                                    title="Create new account"
+                                    size="base"
+                                    fullWidth
+                                />
+                            </Link>
+                            <AuthPanel className="" />
+                        </View>
+                    </Card>
+                </View>
+            ) : (
+                <ScrollView contentContainerStyle={{ flexGrow: 1, alignItems: 'center', padding: 16, width: '100%' }}>
+                    <Card rounded="rounded-[24px]" addClassName={cardClassName}>
+                        <View className="flex-col lg:hidden p-4">
+                            <Text className="text-2xl font-bold text-neutral-800 dark:text-neutral-200">Sign in to your account</Text>
+                        </View>
+                        <BlockByName name={props.blocks.form} data={props.data} formProps={{ auto_focus: true, hide_errors: true, button_full_width: true }} />
+                        <Link
+                            className="w-full mb-4 px-4"
+                            href="/forgot-password"
+                        >
+                            <Button
+                                title="Forgot password?"
+                                variant="outline"
+                                fullWidth
+                                size="sm"
+                            />
+                        </Link>
+                        <View className="flex items-center justify-center p-4 gap-y-2 border-t border-bdr dark:border-bdr-d">
+                            <Link className="w-full" href="/create-account">
+                                <Button
+                                    title="Create new account"
+                                    size="base"
+                                    fullWidth
+                                />
+                            </Link>
+                            <AuthPanel className="" />
+                        </View>
+                    </Card>
+                </ScrollView>
+            )}
         </KbAvoidingView>
-    )
+    );
 }

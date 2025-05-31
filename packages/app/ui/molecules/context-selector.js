@@ -80,12 +80,21 @@ export default function ContextSelector({ data, url }) {
     };
 
     return (
-        <View className="flex-row items-center flex-auto">
-            <View>
+        <View className="flex-row-reverse sm:flex-row justify-end sm:justify-start  flex-auto">
+            
+            <Link href={contextRoot.url} >
+                <View className='ml-[8px] flex-row items-center gap-x-3 items-center p-[4px] web:group w-full flex-auto hover:bg-bgritem dark:hover:bg-bgritem-d rounded-xl'>
+                    <View className="items-center justify-center text-neutral-800 dark:text-neutral-200">
+                        {contextRoot.image}
+                    </View>
+                    <Text className="text-lg h-8 whitespace-nowrap align-middle justify-center font-semibold text-neutral-800 dark:text-neutral-200 overflow-hidden truncate">{contextRoot.name}</Text>
+                </View>
+            </Link>
+            <View className="my-auto sm:ml-2">
                 <DropdownPopup
                     trigger={
                         <Button
-                            variant="secondary"
+                            variant="text"
                             size="base"
                             rounded
                             startDecorator="Menu"
@@ -120,14 +129,6 @@ export default function ContextSelector({ data, url }) {
                     </View>
                 </DropdownPopup>
             </View>
-            <Link href={contextRoot.url} >
-                <View className='ml-[8px] flex-row items-center gap-x-3 items-center p-[4px] web:group w-full flex-auto hover:bg-bgritem dark:hover:bg-bgritem-d rounded-xl'>
-                    <View className="items-center justify-center text-neutral-800 dark:text-neutral-200">
-                        {contextRoot.image}
-                    </View>
-                    <Text className="text-lg h-8 whitespace-nowrap align-middle justify-center font-semibold text-neutral-800 dark:text-neutral-200 overflow-hidden truncate">{contextRoot.name}</Text>
-                </View>
-            </Link>
         </View>
     );
 }

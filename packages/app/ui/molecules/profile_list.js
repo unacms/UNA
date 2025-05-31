@@ -18,7 +18,7 @@ function fillArrayToLength(arr, maxCount, defaultValue) {
             break
 
         case 'sm':
-            sSize = 'w-9 h-9'
+            sSize = 'w-8 h-8'
             break
 
         case 'base':
@@ -44,10 +44,10 @@ function fillArrayToLength(arr, maxCount, defaultValue) {
                        // profile.display_name = profile.display_name || profile.title
                        // profile.url_avatar = profile.url_avatar || profile.image.src;
                         const pr = profile.author_data || profile;
-                        return <View key={index} className={sSize + (index > 0 ? " -ml-2 " : " ") + " shadow-[0_0_0_2px_rgba(255,255,255,1)] dark:shadow-[0_0_0_2px_rgba(0,0,0,1)]  rounded-full "}><Profile {...pr} displayType="unit_wo_info" displaySize={displaySize} /></View>
+                        return <View key={index} className={sSize + (index > 0 ? " -ml-[8px] " : " ") + " shadow-[0_0_0_2px_rgba(255,255,255,1)] dark:shadow-[0_0_0_2px_rgba(0,0,0,1)]  rounded-full "}><Profile {...pr} displayType="unit_wo_info" displaySize={displaySize} /></View>
                     }
                     else{
-                        return <View key={index} className={sSize + (index > 0 ? " -ml-2 " : " ") + " h-10 w-10 rounded-full border border-white dark:border-neutral-900 dark:bg-neutral-700 bg-neutral-300 "}></View>
+                        return <View key={index} className={sSize + (index > 0 ? " -ml-[8px] " : " ") + " h-10 w-10 rounded-full border border-white dark:border-neutral-900 dark:bg-neutral-700 bg-neutral-300 "}></View>
                     }
                 })
             }

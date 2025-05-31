@@ -107,11 +107,12 @@ export function CoverSmall(props) {
                                 />
                             )}
 
+                           <View className="flex-auto p-[4px] hover:bg-bgritem dark:hover:bg-bgritem-d rounded-[11px] h-[44px]">
                             <Profile
                                 {...data.profile}
                                 displayType="unit_wo_image"
                                 displaySize="xl"
-                            />
+                            /></View>
                         </View>
                         <View className=" w-auto my-auto ">
                             <CoverMenuSmall {...data.actions_menu} />
@@ -339,18 +340,18 @@ export default function (props) {
                     >
                         {bPerson && (
                             <View className="w-full h-24 sm:w-52 relative">
-                                <View className=" flex-auto absolute w-min rounded-full w-min p-[8px] z-50 -bottom-2 flex-none bg-bgrcard dark:bg-bgrcard-d ">
+                                <View className=" flex-auto absolute w-min rounded-full w-min p-[8px] z-50 -bottom-4 flex-none bg-bgrcard dark:bg-bgrcard-d ">
                                     <Profile
                                         {...data.profile}
                                         displayType="unit_wo_info"
                                         displaySize={'4xl'}
                                     />
                                     {bAllowEdit && (
-                                        <View className=" p-1 bg-bgrcard dark:bg-bgrcard-d rounded-full absolute bottom-3 right-1">
+                                        <View className=" p-1 bg-bgrcard dark:bg-bgrcard-d rounded-full absolute bottom-2 right-2">
                                             <Button
                                                 rounded
-                                                size="sm"
-                                                variant="glassy"
+                                                size="base"
+                                                variant="default"
                                                 startDecorator="Camera"
                                                 onPress={() =>
                                                     handleUpload('picture')

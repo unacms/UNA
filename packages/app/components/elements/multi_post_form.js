@@ -53,7 +53,7 @@ export default function MultiPostForm({ data }) {
                 margin=" mx-auto mb-2 sm:my-4  "
                 addClassName=" w-full "
             >
-                <View className=" flex-row gap-x-[8px] sm:gap-x-[12px] p-[8px] sm:p-[12px] sm:p-[16px] ">
+                <View className=" flex-row gap-x-[8px] sm:gap-x-[12px] p-[8px] sm:p-[12px] lg:p-[16px] ">
                     <View className="my-auto">
                         <Profile {...profileData} displaySize="lg" displayType="unit_wo_info" />
                     </View>

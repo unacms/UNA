@@ -62,7 +62,7 @@ const HeaderLine = memo(
                 )}
                 {(!context || (!currentUser.confirmed && appSetting('layout', 'lock_unconfirmed'))) &&  (uri == 'home' || width >= LAYOUT_BREAKPOINTS.lg) && (
                     <Link
-                        className=" flex items-center flex-row active:scale-95 active:opacity-50 px-[8px] py-[4px] gap-x-3 rounded-xl text-neutral-700 hover:bg-bgrbutton dark:hover:bg-bgrbutton-d dark:text-neutral-300 hover:text-neutral-800 dark:hover:text-neutral-200 duration-300  "
+                        className=" flex items-center flex-row active:scale-95 active:opacity-50 px-[4px] py-[2px] gap-x-3 rounded-xl text-neutral-700 hover:bg-bgrbutton dark:hover:bg-bgrbutton-d dark:text-neutral-300 hover:text-neutral-800 dark:hover:text-neutral-200 duration-300  "
                         href="/home"
                         aria-label="Logo"
                     >
@@ -133,7 +133,7 @@ export default function (props) {
                         props.layoutName == 'post'
                             ? 'hidden lg:flex'
                             : '') +
-                        ' fixed w-full h-16 items-center w-full border-b border-bdrnavbar dark:border-bdrnavbar-d shadow-[0_1px_3px_0_rgba(0,0,0,0.05)] dark:shadow-[0_1px_0_rgba(0,0,0,1)] bg-bgrnavbar dark:bg-bgrnavbar-d '
+                        ' fixed w-full h-16 items-center w-full shadow-[0_0_2px_rgba(0,0,0,0.08)] dark:shadow-[0_1px_0_rgba(0,0,0,1)] bg-bgrnavbar dark:bg-bgrnavbar-d '
                     }
                 >
                     <View

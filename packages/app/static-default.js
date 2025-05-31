@@ -173,11 +173,13 @@ const SplashImage = (
 )
 
 const SplashText = (
-    <>
+    <>  
+        <View className=" items-center lg:items-start gap-y-4 p-8 sm:px-8">
         <Text className=" text-4xl lg:text-5xl tracking-tight font-bold text-neutral-800 dark:text-neutral-200  text-center lg:text-left ">Welcome to the community</Text>
         <Text className=" text-base lg:text-lg xl:text-xl text-neutral-600 dark:text-neutral-400 text-center lg:text-left">
         Join communities that reflect who you are. Share your voice, support others, and grow together.
         </Text>
+        </View>
     </>
 )
 

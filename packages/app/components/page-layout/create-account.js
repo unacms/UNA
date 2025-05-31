@@ -19,6 +19,8 @@ export default function PageLayout(props) {
     const [isKeyboardVisible, setKeyboardVisible] = useState(false);
     const joinData = DataByName(props.data, props.blocks.form_join);
     const isAllowJoin = joinData.content[0].type == "form";
+    const isWeb = Platform.OS === 'web';
+    const cardClassName = "animate-slidein p-2 w-full max-w-xl mx-auto shadow-[0_0_2px_rgba(0,0,0,0.08)] dark:shadow-[0_0_0_1px_rgba(0,0,0,1)]"; // flex-auto removed
 
     useEffect(() => {
         // Subscribe to keyboard events
@@ -44,79 +46,96 @@ export default function PageLayout(props) {
 
     return (
         <KbAvoidingView style={{ flex: 1 }}>
-            <View style={{ flex: 1 }} className={Platform.OS === 'web' ? 'w-full  px-4 py-12 mx-auto max-w-5xl items-center lg:flex-row gap-x-4 gap-y-4  ' : ' items-center p-4'}>
-                <View className="flex-col gap-y-12 hidden lg:flex flex-auto">
-                    <View className={Platform.OS === 'web' ? "flex-col p-4 lg:p-8 flex-auto w-full  items-center lg:items-start gap-y-2 my-auto " : "w-full mx-auto max-w-5xl flex-col items-center lg:flex-row rounded-3xl lg:bg-bgrnavbar/50 lg:dark:bg-bgrnavbar-d/50 lg:border border-dashed border-bdr dark:border-bdr-d"}>
-                        <Text className="text-4xl lg:text-5xl tracking-tight font-bold text-neutral-800 dark:text-neutral-200 ">
-                            {isAllowJoin ? 'Join now!' : 'Request Invitation'}
-                        </Text>
-
-                        <Text className="text-base lg:text-lg xl:text-xl mb-8 text-neutral-600 dark:text-neutral-400  ">
-                            {isAllowJoin ? t('Create an account to get started') : t('Registration is by invitation only.')}
-                        </Text>
-                        <View className="flex-col gap-y-4">
-            <View className="flex-row gap-x-4 ">
-                <IconSetDefault.UsersRound
-                    className="text-neutral-800 dark:text-neutral-200"
-                    width={24}
-                    height={24}
-                />
-                <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-base font-medium">
-                    Meet new people
-                </Text>
-            </View>
-
-            <View className="flex-row gap-x-4 ">
-                <IconSetDefault.Compass
-                    className="text-neutral-800 dark:text-neutral-200"
-                    width={24}
-                    height={24}
-                />
-                <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-base font-medium">
-                    Discover cool spaces
-                </Text>
-            </View>
-
-            <View className="flex-row gap-x-4 ">
-                <IconSetDefault.Share2
-                    className="text-neutral-800 dark:text-neutral-200"
-                    width={24}
-                    height={24}
-                />
-                <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-base font-medium">
-                    Share your ideas
-                </Text>
-            </View>
-        </View>
-                    </View>
-                </View>
-                <Card
-                    rounded="  rounded-[24px] "
-                    addClassName=" animate-slidein p-6 w-full max-w-md mx-auto flex-auto "
-
-                >
-                    <View className="flex-col lg:hidden items-center mb-4">
-                        <View className="w-12 m-4 items-center mx-auto text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-900 dark:group-hover:text-neutral-100">
-                            {appStatic('logo_mark')}
+            {isWeb ? (
+                <View className="w-full px-4 py-12 mx-auto max-w-7xl items-center lg:flex-row gap-x-4 gap-y-4">
+                    <View className="flex-col gap-y-12 hidden lg:flex flex-auto">
+                        <View className="flex-col p-4 lg:p-8 flex-auto w-full items-center lg:items-start gap-y-2 my-auto">
+                            <Text className="text-4xl lg:text-5xl tracking-tight font-bold text-neutral-800 dark:text-neutral-200">
+                                {isAllowJoin ? 'Join now!' : 'Request Invitation'}
+                            </Text>
+                            <Text className="text-base lg:text-lg xl:text-xl mb-8 text-neutral-600 dark:text-neutral-400">
+                                {isAllowJoin ? t('Create an account to get started') : t('Registration is by invitation only.')}
+                            </Text>
+                            <View className="flex-col gap-y-4">
+                                <View className="flex-row gap-x-4">
+                                    <IconSetDefault.UsersRound
+                                        className="text-neutral-800 dark:text-neutral-200"
+                                        width={24}
+                                        height={24}
+                                    />
+                                    <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-base font-medium">
+                                        Meet new people
+                                    </Text>
+                                </View>
+                                <View className="flex-row gap-x-4">
+                                    <IconSetDefault.Compass
+                                        className="text-neutral-800 dark:text-neutral-200"
+                                        width={24}
+                                        height={24}
+                                    />
+                                    <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-base font-medium">
+                                        Discover cool spaces
+                                    </Text>
+                                </View>
+                                <View className="flex-row gap-x-4">
+                                    <IconSetDefault.Share2
+                                        className="text-neutral-800 dark:text-neutral-200"
+                                        width={24}
+                                        height={24}
+                                    />
+                                    <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-base font-medium">
+                                        Share your ideas
+                                    </Text>
+                                </View>
+                            </View>
                         </View>
-                        <Text className="flex items-center h-12 text-center text-xl font-bold text-neutral-800 dark:text-neutral-200 ">Create an account</Text>
                     </View>
-                    {!isAllowJoin && <BlockByName name={props.blocks.form_invitation} data={props.data} formProps={{ auto_focus: true, hide_errors: true, button_full_width: true }} />}
-                    {isAllowJoin && <BlockByName name={props.blocks.form_join} data={props.data} formProps={{ auto_focus: true, hide_errors: true, button_full_width: true }} />}
-                    
-                    <View className="flex items-center justify-center pt-4 mt-4 border-t border-bdr dark:border-bdr-d  ">
-                        <Link className=" w-full " href="/login">
-                            <Button
-                                title="Sign in with email"
-                             
-                                size="base"
-                                fullWidth
-                            />
-                        </Link>
-                    </View>
-                    <AuthPanel className="mt-3"/>
-                </Card>
-            </View>
-        </KbAvoidingView >
-    )
+                    <Card
+                        rounded="rounded-[24px]"
+                        addClassName={cardClassName}
+                    >
+                        <View className="flex-col lg:hidden p-4">
+                            <Text className="text-2xl font-bold text-neutral-800 dark:text-neutral-200">Create an account</Text>
+                        </View>
+                        {!isAllowJoin && <BlockByName name={props.blocks.form_invitation} data={props.data} formProps={{ auto_focus: true, hide_errors: true, button_full_width: true }} />}
+                        {isAllowJoin && <BlockByName name={props.blocks.form_join} data={props.data} formProps={{ auto_focus: true, hide_errors: true, button_full_width: true }} />}
+                        <View className="flex items-center justify-center p-4 gap-y-2 border-t border-bdr dark:border-bdr-d">
+                            <Link className="w-full" href="/login">
+                                <Button
+                                    title="Sign in with email"
+                                    size="base"
+                                    fullWidth
+                                />
+                            </Link>
+                            <AuthPanel />
+                        </View>
+                    </Card>
+                </View>
+            ) : (
+                <ScrollView contentContainerStyle={{ flexGrow: 1, alignItems: 'center', padding: 16, width: '100%' }}>
+                     {/* On native, the left content (Join now/Request invitation text etc) is not rendered for create account, similar to login screen */}
+                    <Card
+                        rounded="rounded-[24px]"
+                        addClassName={cardClassName}
+                    >
+                        <View className="flex-col lg:hidden p-4">
+                            <Text className="text-2xl font-bold text-neutral-800 dark:text-neutral-200">Create an account</Text>
+                        </View>
+                        {!isAllowJoin && <BlockByName name={props.blocks.form_invitation} data={props.data} formProps={{ auto_focus: true, hide_errors: true, button_full_width: true }} />}
+                        {isAllowJoin && <BlockByName name={props.blocks.form_join} data={props.data} formProps={{ auto_focus: true, hide_errors: true, button_full_width: true }} />}
+                        <View className="flex items-center justify-center p-4 gap-y-2 border-t border-bdr dark:border-bdr-d">
+                            <Link className="w-full" href="/login">
+                                <Button
+                                    title="Sign in with email"
+                                    size="base"
+                                    fullWidth
+                                />
+                            </Link>
+                            <AuthPanel />
+                        </View>
+                    </Card>
+                </ScrollView>
+            )}
+        </KbAvoidingView>
+    );
 }

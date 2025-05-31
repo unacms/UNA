@@ -95,12 +95,12 @@ export default function Splash(props) {
             </Modal>
             <Card
                 rounded=" rounded-[28px] "
-                addClassName=" animate-slidein flex-col p-6 w-full max-w-xl mx-auto "
+                addClassName=" animate-slidein flex-col p-[8px] w-full max-w-xl mx-auto shadow-[0_0_2px_rgba(0,0,0,0.08)] dark:shadow-[0_0_0_1px_rgba(0,0,0,0.5)] "
             >
 
                 <BlockByServiceName name={defaultFormData.name} data={props.data} formProps={{ auto_focus: false, hide_errors: true, button_full_width: true }} />
                 
-                <View className="border-t border-bdr dark:border-bdr-d pt-4 mt-4  ">
+                <View className="border-t border-bdr dark:border-bdr-d p-[16px] gap-y-[8px]">
                     <Link href={defaultFormData.link}><Button
                         title={defaultFormData.button}
                         startDecorator={defaultFormData.icon}
@@ -111,8 +111,9 @@ export default function Splash(props) {
 
                      }}*/
                     /></Link>
+                    <AuthPanel className="" />
                 </View>
-                <AuthPanel className="mt-3" />
+                
             </Card>
 
         </>
@@ -120,10 +121,13 @@ export default function Splash(props) {
 
     if (!isWeb) {
         return (
-            <View className="flex-1 bg-bgr dark:bg-bgr-d">
+            <View className="flex-1 ">
                 <KbAvoidingView className="flex-1" behavior="padding" keyboardVerticalOffset={0}>
-                    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-                        <View className="w-full flex-auto max-w-lg mx-auto p-4">
+                    <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
+                        <View className="w-full flex-auto max-w-lg mx-auto p-4 items-center">
+                            <View className="mb-8 items-center">
+                                {appStatic('splash_text')}
+                            </View>
                             {cnt}
                         </View>
                     </ScrollView>
@@ -136,7 +140,7 @@ export default function Splash(props) {
 
         <View className={' flex-col justify-center mx-auto ' + appSetting('layout', 'max_width')}>
             <View className=" w-full lg:flex-row max-w-7xl mx-auto py-16 ">
-                <View className=" w-full items-center  lg:items-start my-auto p-12 flex-col gap-y-8 flex-auto text-primary dark:text-primary-d">
+                <View className=" w-full items-center  lg:items-start my-auto  flex-col flex-auto text-primary dark:text-primary-d">
                     {/*{appStatic('splash_image')}*/}
                     {appStatic('splash_text')}
                 </View>

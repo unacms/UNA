@@ -808,7 +808,7 @@ export  const settingsDefault = {
         },
         card: {
             default: ' bg-bgrcard dark:bg-bgrcard-d',
-            border: ' border border-bdrcard dark:border-bdrcard-d shadow-[0_1px_3px_0_rgba(0,0,0,0.05)] ',
+            border: ' border sm:border border-bdrcard dark:border-bdrcard-d shadow-[0_1px_3px_0_rgba(0,0,0,0.05)] ',
             rounded: ' rounded-2xl ',
             margin: '',
         },
@@ -927,7 +927,7 @@ export  const settingsDefault = {
             'u-btn-link-color-icon-dark': 'rgba(37,99,235,1)',
 
             'u-btn-outline-cnt':
-                ' shadow-outline bg-bgrcard dark:shadow-outline-d native:border border-bdrbutton dark:border-bdrbutton-d dark:bg-bgrcard-d hover:bg-bgrbutton dark:hover:bg-bgrbutton-dh ',
+                ' shadow-[inset_0_0_0_1px_rgba(0,0,0,0.1)] dark:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.1)] bg-transparent native:border border-bdrbutton dark:border-bdrbutton-d dark:bg-bgrcard-d hover:bg-bgrbutton dark:hover:bg-bgrbutton-dh ',
             'u-btn-outline-text':
                 ' font-medium text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-neutral-50 ',
             'u-btn-outline-trans': ' web:duration-200',

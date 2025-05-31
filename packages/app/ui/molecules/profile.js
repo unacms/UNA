@@ -46,7 +46,7 @@ function UnitWoInfo({ oProps, sSize, sSizeFontLetter, iSizeWidth, bShowLinks, em
                 <Text className={sSizeFontLetter + ' text-white '}>{name}</Text>
             </View>}
             {!!oProps.url_avatar && <Image
-                sizes={LAYOUT_BREAKPOINTS.lg}
+                sizes={iSizeWidth + "px"}
                 className={sSize + " z-50"}
                 view="cover"
                 width={iSizeWidth}
@@ -124,9 +124,9 @@ function AtomProfile_(oProps) {
             sSizeFontLetter: 'text-base font-semibold',
         },
         sm: {
-            sSize: 'w-[36px] h-[36px]',
-            iSizeWidth: 36,
-            iSizeHeight: 36,
+            sSize: 'w-[32px] h-[32px]',
+            iSizeWidth: 32,
+            iSizeHeight: 32,
             sSizeFont: 'native:text-[14px] web:text-sm',
             sSizeFontLetter: 'text-base opacity-50 font-semibold',
         },
