@@ -137,7 +137,7 @@ export function BlockWrapper(props) {
         <View>{props.children}</View></>
     return (
         <View key={block.id} className={" w-full mx-auto " + (!fullWidth && !cssClasses.includes("max-w-") ? (appSetting('layout', 'max_width_block')) : "") + (bIsShowPad ? ' mb-4 ' : '') + cssClasses}>
-            {bIsShowBg ? (<Card rounded=' rounded-none lg:rounded-2xl web:border border-bdrcard dark:border-bdrcard-d shadow-[0_1px_2px_0_rgba(0,0,0,0.05)] ' border=" " addClassName=" p-4 ">{cnt}</Card>) : <View className="  " >{cnt}</View>}
+            {bIsShowBg ? (<Card rounded=' rounded-[16px] border border-bdrcard dark:border-bdrcard-d shadow-[0_1px_4px_rgba(0,0,0,0.05)] dark:shadow-[0_0_0_1px_rgba(0,0,0,0.5)] ' border=" " addClassName=" p-4 ">{cnt}</Card>) : <View className="  " >{cnt}</View>}
         </View>
     );
 }

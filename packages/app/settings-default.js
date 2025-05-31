@@ -754,7 +754,7 @@ export  const settingsDefault = {
             container: '  gap-x-2 items-center',
         },
         switcher: {
-            container: 'items-center flex flex-row-reverse justify-between gap-x-2 items-center h-[48px] min-w-[48px] rounded-[12px] flex-auto  px-[12px] py-[11px]  bg-neutral-50 border border-neutral-200  hover:border-neutral-300 focus:border-primary  dark:bg-neutral-900 overflow-hidden  dark:border-neutral-800 dark:hover:border-neutral-700  dark:focus:border-primary-d  focus:bg-bgrinput-f dark:focus:bg-neutral-950  duration-300  placeholder-neutral-500   ',
+            container: 'items-center flex flex-row-reverse justify-between gap-x-2 items-center h-[48px] min-w-[48px] rounded-[12px] flex-auto  px-[12px] py-[11px]  bg-neutral-50 border border-neutral-200  hover:border-neutral-300 focus:border-primary dark:bg-neutral-900 overflow-hidden  dark:border-neutral-800 dark:hover:border-neutral-700  dark:focus:border-primary-d  focus:bg-bgrinput-f dark:focus:bg-neutral-950  duration-300  placeholder-neutral-500   ',
             text: ' text-neutral-800 dark:text-neutral-200  text-[16px] ',
             track: '#cccccc',
             active_track: '#0ea5e9',
@@ -818,7 +818,7 @@ export  const settingsDefault = {
                 ' px-[12px] py-[11px] text-[16px] ' +
                 ' bg-neutral-50 border border-neutral-200 ' +
                 ' hover:border-neutral-300 focus:border-primary ' +
-                ' dark:bg-neutral-900 overflow-hidden ' +
+                ' dark:bg-neutral-950 overflow-hidden ' +
                 ' dark:border-neutral-800 dark:hover:border-neutral-700 ' +
                 ' dark:focus:border-primary-d ' +
                 ' focus:bg-bgrinput-f dark:focus:bg-neutral-950 ' +
@@ -891,7 +891,7 @@ export  const settingsDefault = {
             /*'u-btn-default-color-icon-light': 'rgb(243, 244, 246)',
             'u-btn-default-color-icon-dark': 'rgb(243, 244, 246)',*/
 
-            'u-btn-primary-cnt': ' bg-primary dark:bg-primary-d ',
+            'u-btn-primary-cnt': ' bg-primary-500 dark:bg-primary-600 shadow-sm  ',
             'u-btn-primary-text': ' text-white font-medium ',
             'u-btn-primary-trans': ' web:duration-200 ',
             'u-btn-primary-color-icon-light': 'rgb(243, 244, 246)',
@@ -919,7 +919,7 @@ export  const settingsDefault = {
             /*'u-btn-text-color-icon-light': 'rgb(243, 244, 246)',
             'u-btn-text-color-icon-dark': 'rgb(243, 244, 246)',*/
 
-            'u-btn-link-cnt': ' hover:bg-bgrprimary dark:hover:bg-bgrprimary-d  ',
+            'u-btn-link-cnt': ' hover:bg-primary-50 dark:hover:bg-primary-950  ',
             'u-btn-link-text':
                 ' font-semibold hover:underline text-primary dark:text-primary-d ',
             'u-btn-link-trans': ' web:duration-300 ',

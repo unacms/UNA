@@ -60,7 +60,7 @@ export default function Splash(props) {
     const forms = {
         signup: isInvite ? { name: 'bx_invites:get_block_form_request', title: 'Request invitation', button: 'Login', icon: 'LogIn', action: 'login', link: '/login' } : { name: 'system:create_account_form', title: 'Create new account', button: 'Login', icon: 'LogIn', action: 'login', link: '/login' },
         fp: { name: 'system:forgot_password', title: 'Restore password' },
-        login: { name: 'system:login_form', title: 'Log in', button: 'Create new account', icon: 'UserPlus', action: 'signup', link: '/create-account', }
+        login: { name: 'system:login_form', title: 'Account', button: 'Create new account', icon: 'UserRoundPlus', action: 'signup', link: '/create-account', }
     };
 
     const defaultFormData = forms[defaultForm];
@@ -94,8 +94,8 @@ export default function Splash(props) {
                 </View>
             </Modal>
             <Card
-                rounded=" rounded-[28px] "
-                addClassName=" animate-slidein flex-col p-[8px] w-full max-w-xl mx-auto shadow-[0_0_2px_rgba(0,0,0,0.08)] dark:shadow-[0_0_0_1px_rgba(0,0,0,0.5)] "
+                rounded=" rounded-[16px] "
+                addClassName=" animate-slidein flex-col p-[16px] w-full max-w-xl mx-auto border border-bdrcard dark:border-bdrcard-d shadow-[0_1px_4px_rgba(0,0,0,0.05)] dark:shadow-[0_0_0_1px_rgba(0,0,0,0.5)] "
             >
 
                 <BlockByServiceName name={defaultFormData.name} data={props.data} formProps={{ auto_focus: false, hide_errors: true, button_full_width: true }} />

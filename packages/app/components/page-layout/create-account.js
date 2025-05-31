@@ -20,7 +20,7 @@ export default function PageLayout(props) {
     const joinData = DataByName(props.data, props.blocks.form_join);
     const isAllowJoin = joinData.content[0].type == "form";
     const isWeb = Platform.OS === 'web';
-    const cardClassName = "animate-slidein p-2 w-full max-w-xl mx-auto shadow-[0_0_2px_rgba(0,0,0,0.08)] dark:shadow-[0_0_0_1px_rgba(0,0,0,1)]"; // flex-auto removed
+    const cardClassName = "animate-slidein p-[16px] w-full max-w-xl mx-auto border border-bdrcard dark:border-bdrcard-d shadow-[0_1px_4px_rgba(0,0,0,0.05)] dark:shadow-[0_0_0_1px_rgba(0,0,0,0.5)]"; // flex-auto removed
 
     useEffect(() => {
         // Subscribe to keyboard events
@@ -91,7 +91,7 @@ export default function PageLayout(props) {
                         </View>
                     </View>
                     <Card
-                        rounded="rounded-[24px]"
+                        rounded="rounded-[16px]"
                         addClassName={cardClassName}
                     >
                         <View className="flex-col lg:hidden p-4">
