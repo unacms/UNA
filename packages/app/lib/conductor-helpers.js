@@ -482,7 +482,7 @@ export function TopSidebar({ styles, isWeb, leftSideBar, header, headerSettings,
 }
                 </Row>
                 */}
-                <Row className=" ml-[4px] sm:ml-[12px] pb-[8px] items-center">
+                <Row className=" ml-[8px] sm:ml-[12px] pb-[8px] items-center duration-300">
                     {title ? <Text className="text-2xl my-auto mx-5 pb-1 font-medium text-neutral-800 tracking-tight dark:text-neutral-200 hidden lg:flex">{title}</Text> : <Text className=" hidden lg:flex"></Text>}
                     {children}
                     {layout != 'mixed' && <Row className="hidden lg:flex px-4 cond-buttons-add">

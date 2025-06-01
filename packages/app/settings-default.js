@@ -724,7 +724,7 @@ export  const settingsDefault = {
             fgTertiary: 'rgba(156,163,175,1)',
         },
         conductor: {
-            menu: ' w-full items-left justify-center bg-bgrtabbar dark:bg-bgrtabbar-d border-b border-bdrtabbar dark:border-bdrtabbar-d ',
+            menu: ' w-full items-left justify-center bg-bgrtabbar dark:bg-bgrtabbar-d border-b border-bdrtabbar dark:border-bdrtabbar-d shadow-[0_1px_2px_rgba(0,0,0,0.05)] dark:shadow-[0_1px_0_rgba(0,0,0,1)] ',
             menu_max_width: ' max-w-7xl ',
             content_max_width: ' max-w-7xl ',
             menu_is_dynamic: true,

@@ -24,7 +24,7 @@ export const H1 = ({ children, className, ...rest }) => {
       typeof children === 'string' ? decodeText(children) : children;
     return (
       <NativeText
-        className={`text-[32px] lg:text-[40px] font-bold leading-[40px] lg:leading-[48px] mb-[12px] lg:mb-[16px] ${className || ''}`}
+        className={` text-4xl lg:text-5xl font-bold tracking-tight mb-[16px] lg:mb-[20px] text-neutral-950 dark:text-neutral-50 ${className || ''}`}
         {...rest}
         allowFontScaling={false}
       >
@@ -38,7 +38,7 @@ export const H1 = ({ children, className, ...rest }) => {
       typeof children === 'string' ? decodeText(children) : children;
     return (
       <NativeText
-        className={`text-2xl lg:text-3xl font-bold ${className || ''}`}
+        className={`text-3xl lg:text-4xl font-bold tracking-tight text-neutral-950 dark:text-neutral-50 mb-[16px] ${className || ''}`}
         {...rest}
         allowFontScaling={false}
       >
@@ -52,7 +52,7 @@ export const H1 = ({ children, className, ...rest }) => {
       typeof children === 'string' ? decodeText(children) : children;
     return (
       <NativeText
-        className={`text-xl font-extrabold mt-2 mb-3 ${className || ''}`}
+        className={`text-2xl font-bold tracking-tight text-neutral-950 dark:text-neutral-50 mb-[12px] mt-[16px] ${className || ''}`}
         {...rest}
         allowFontScaling={false}
       >
@@ -66,7 +66,7 @@ export const H1 = ({ children, className, ...rest }) => {
       typeof children === 'string' ? decodeText(children) : children;
     return (
       <NativeText
-        className={`text-lg font-extrabold mt-2 mb-3 ${className || ''}`}
+        className={`text-xl font-bold tracking-tight text-neutral-950 dark:text-neutral-50 mb-[8px] mt-[12px] ${className || ''}`}
         {...rest}
         allowFontScaling={false}
       >

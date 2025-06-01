@@ -114,7 +114,7 @@ export const Header = memo(({
                 )}
                 {!!text && (
                     
-                        <Text className="font-bold text-neutral-800 dark:text-neutral-200 flex-auto text-3xl tracking-tight">
+                        <Text className="px-[8px] sm:px-[4px] font-bold text-neutral-800 dark:text-neutral-200 flex-auto text-3xl tracking-tight">
                             {t(text)}
                         </Text>
                     
