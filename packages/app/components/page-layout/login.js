@@ -5,14 +5,21 @@ import Card from 'app/components/card'
 import { Button } from 'app/design/controls'
 import Link from 'app/ui/atoms/link'
 import { Platform } from 'react-native'
+import * as Haptics from 'expo-haptics';
 import { appStatic } from 'app/lib/app-static'
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
 import AuthPanel from 'app/ui/molecules/auth';
 import { appSetting } from 'app/lib/util'
 
+const triggerHaptics = () => {
+    if (Platform.OS !== 'web') {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+};
+
 export default function PageLayout(props) {
     const isWeb = Platform.OS === 'web';
-    const cardClassName = "animate-slidein p-[16px]  w-full max-w-xl mx-auto border border-bdrcard dark:border-bdrcard-d shadow-[0_1px_4px_rgba(0,0,0,0.05)] dark:shadow-[0_0_0_1px_rgba(0,0,0,0.5)]";
+    const cardClassName = "animate-slidein w-full max-w-xl mx-auto";
 
     return (
         <KbAvoidingView style={{ flex: 1 }}>
@@ -21,14 +28,15 @@ export default function PageLayout(props) {
                     <View className="hidden lg:flex flex-auto p-12 flex-col gap-y-8">
                         {appStatic('components_logincontent')}
                     </View>
-                    <Card rounded="rounded-[16px]" addClassName={cardClassName}>
-                        <View className="flex-col lg:hidden p-4">
+                    <Card addClassName={cardClassName}>
+                        <View className="flex-col lg:hidden pb-4">
                             <Text className="text-2xl font-bold text-neutral-800 dark:text-neutral-200">Sign in to your account</Text>
                         </View>
                         <BlockByName name={props.blocks.form} data={props.data} formProps={{ auto_focus: true, hide_errors: true, button_full_width: true }} />
-                        <View className="px-[16px] pb-[16px]">
+                        <View className="mt-[8px]">
                             <Link href="/forgot-password">
                                 <Button
+                                    onPress={triggerHaptics}
                                     title="Forgot password?"
                                     variant="link"
                                     fullWidth
@@ -38,9 +46,10 @@ export default function PageLayout(props) {
                         </View>
                         
                         
-                        <View className="flex items-center justify-center p-4 gap-y-2 border-t border-bdr dark:border-bdr-d">
+                        <View className="flex items-center justify-center gap-y-[8px] border-t border-bdr dark:border-bdr-d mt-[16px] pt-[16px]">
                             <Link className="w-full" href="/create-account">
                                 <Button
+                                    onPress={triggerHaptics}
                                     title="Create new account"
                                     size="base"
                                     fullWidth
@@ -54,24 +63,26 @@ export default function PageLayout(props) {
             ) : (
                 <ScrollView contentContainerStyle={{ flexGrow: 1, alignItems: 'center', padding: 16, width: '100%' }}>
                     <Card rounded="rounded-[24px]" addClassName={cardClassName}>
-                        <View className="flex-col lg:hidden p-4">
+                        <View className="flex-col lg:hidden pb-4">
                             <Text className="text-2xl font-bold text-neutral-800 dark:text-neutral-200">Sign in to your account</Text>
                         </View>
                         <BlockByName name={props.blocks.form} data={props.data} formProps={{ auto_focus: true, hide_errors: true, button_full_width: true }} />
                         <Link
-                            className="w-full mb-4 px-4"
+                            className="w-full mt-[8px] "
                             href="/forgot-password"
                         >
                             <Button
+                                onPress={triggerHaptics}
                                 title="Forgot password?"
                                 variant="outline"
                                 fullWidth
                                 size="sm"
                             />
                         </Link>
-                        <View className="flex items-center justify-center p-4 gap-y-2 border-t border-bdr dark:border-bdr-d">
+                        <View className="flex items-center justify-center gap-y-[8px] border-t border-bdr dark:border-bdr-d mt-[8px] pt-[16px]">
                             <Link className="w-full" href="/create-account">
                                 <Button
+                                    onPress={triggerHaptics}
                                     title="Create new account"
                                     size="base"
                                     fullWidth

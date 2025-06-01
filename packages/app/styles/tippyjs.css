@@ -23,7 +23,7 @@ html[theme="dark"] .tippy-box[data-theme~=tooltip]>.tippy-svg-arrow{fill:rgba(31
 .tippy-box[data-theme~=mention]>.tippy-backdrop{background-color:#fff}
 .tippy-box[data-theme~=mention]>.tippy-svg-arrow{fill:#fff}
 
-html[theme="dark"] .tippy-box[data-theme~=mention]{color:rgba(249,250,251,1);box-shadow:0 0 20px 4px rgba(0,0,0,.15),0 4px 80px -8px rgba(0,0,0,.25),0 4px 4px -2px rgba(0,0,0,.15);background-color:rgba(31,41,55,1)}
+html[theme="dark"] .tippy-box[data-theme~=mention]{color:rgba(235,240,245,1);box-shadow:0 0 20px 4px rgba(0,0,0,.15),0 4px 80px -8px rgba(0,0,0,.25),0 4px 4px -2px rgba(0,0,0,.15);background-color:rgba(31,41,55,1)}
 html[theme="dark"] .tippy-box[data-theme~=mention][data-placement^=top]>.tippy-arrow:before{border-top-color:rgba(31,41,55,1)}
 html[theme="dark"] .tippy-box[data-theme~=mention][data-placement^=bottom]>.tippy-arrow:before{border-bottom-color:rgba(31,41,55,1)}
 html[theme="dark"] .tippy-box[data-theme~=mention][data-placement^=left]>.tippy-arrow:before{border-left-color:rgba(31,41,55,1)}

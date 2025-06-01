@@ -13,6 +13,13 @@ import { useTranslation } from 'react-i18next';
 import AuthPanel from 'app/ui/molecules/auth';
 import { Icon, IconSet } from 'app/icons'
 import { IconSet as IconSetDefault } from 'app/icons.default'
+import * as Haptics from 'expo-haptics';
+
+const triggerHaptics = () => {
+    if (Platform.OS !== 'web') {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+};
 
 export default function PageLayout(props) {
     const { t } = useTranslation();
@@ -20,7 +27,7 @@ export default function PageLayout(props) {
     const joinData = DataByName(props.data, props.blocks.form_join);
     const isAllowJoin = joinData.content[0].type == "form";
     const isWeb = Platform.OS === 'web';
-    const cardClassName = "animate-slidein p-[16px] w-full max-w-xl mx-auto border border-bdrcard dark:border-bdrcard-d shadow-[0_1px_4px_rgba(0,0,0,0.05)] dark:shadow-[0_0_0_1px_rgba(0,0,0,0.5)]"; // flex-auto removed
+    const cardClassName = "animate-slidein mx-auto w-full max-w-lg "; // flex-auto removed
 
     useEffect(() => {
         // Subscribe to keyboard events
@@ -94,14 +101,15 @@ export default function PageLayout(props) {
                         rounded="rounded-[16px]"
                         addClassName={cardClassName}
                     >
-                        <View className="flex-col lg:hidden p-4">
+                        <View className="flex-col lg:hidden pb-4">
                             <Text className="text-2xl font-bold text-neutral-800 dark:text-neutral-200">Create an account</Text>
                         </View>
                         {!isAllowJoin && <BlockByName name={props.blocks.form_invitation} data={props.data} formProps={{ auto_focus: true, hide_errors: true, button_full_width: true }} />}
                         {isAllowJoin && <BlockByName name={props.blocks.form_join} data={props.data} formProps={{ auto_focus: true, hide_errors: true, button_full_width: true }} />}
-                        <View className="flex items-center justify-center p-4 gap-y-2 border-t border-bdr dark:border-bdr-d">
+                        <View className="flex items-center justify-center gap-y-2 border-t border-bdr dark:border-bdr-d mt-[16px] pt-[16px]">
                             <Link className="w-full" href="/login">
                                 <Button
+                                    onPress={triggerHaptics}
                                     title="Sign in with email"
                                     size="base"
                                     fullWidth
@@ -118,14 +126,15 @@ export default function PageLayout(props) {
                         rounded="rounded-[24px]"
                         addClassName={cardClassName}
                     >
-                        <View className="flex-col lg:hidden p-4">
+                        <View className="flex-col lg:hidden pb-4">
                             <Text className="text-2xl font-bold text-neutral-800 dark:text-neutral-200">Create an account</Text>
                         </View>
                         {!isAllowJoin && <BlockByName name={props.blocks.form_invitation} data={props.data} formProps={{ auto_focus: true, hide_errors: true, button_full_width: true }} />}
                         {isAllowJoin && <BlockByName name={props.blocks.form_join} data={props.data} formProps={{ auto_focus: true, hide_errors: true, button_full_width: true }} />}
-                        <View className="flex items-center justify-center p-4 gap-y-2 border-t border-bdr dark:border-bdr-d">
+                        <View className="flex items-center justify-center pt-4 mt-4 gap-y-2 border-t border-bdr dark:border-bdr-d">
                             <Link className="w-full" href="/login">
                                 <Button
+                                    onPress={triggerHaptics}
                                     title="Sign in with email"
                                     size="base"
                                     fullWidth

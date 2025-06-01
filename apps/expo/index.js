@@ -49,7 +49,7 @@ export function App() {
 	const expoRootComponent = useMemo(() => <ExpoRoot context={ctx} />, [ctx]);
 	//verifyInstallation();
 	const scheme = useColorScheme();
-	return <GestureHandlerRootView style={{ flex: 1, backgroundColor: scheme === 'dark' ? 'rgba(17,24,39,1)' : 'rgba(255,255,255,1)' }}>
+	return <GestureHandlerRootView style={{ flex: 1, backgroundColor: scheme === 'dark' ? 'rgba(15,25,40,1)' : 'rgba(255,255,255,1)' }}>
 
 		{expoRootComponent}
 		{showSplashScreen && <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}><InitialScreen /></View>}

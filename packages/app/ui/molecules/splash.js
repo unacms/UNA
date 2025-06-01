@@ -12,6 +12,13 @@ import { BlockByServiceName } from 'app/components/block'
 import { KeyboardAvoidingView } from 'react-native'
 import AuthPanel from 'app/ui/molecules/auth';
 import Link from 'app/ui/atoms/link'
+import * as Haptics from 'expo-haptics';
+
+const triggerHaptics = () => {
+    if (Platform.OS !== 'web') {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+};
 
 export default function Splash(props) {
     const isWeb = Platform.OS == 'web'
@@ -94,14 +101,15 @@ export default function Splash(props) {
                 </View>
             </Modal>
             <Card
-                rounded=" rounded-[16px] "
-                addClassName=" animate-slidein flex-col p-[16px] w-full max-w-xl mx-auto border border-bdrcard dark:border-bdrcard-d shadow-[0_1px_4px_rgba(0,0,0,0.05)] dark:shadow-[0_0_0_1px_rgba(0,0,0,0.5)] "
+               
+                addClassName=" animate-slidein flex-col w-full max-w-xl mx-auto  "
             >
 
                 <BlockByServiceName name={defaultFormData.name} data={props.data} formProps={{ auto_focus: false, hide_errors: true, button_full_width: true }} />
                 
-                <View className="border-t border-bdr dark:border-bdr-d p-[16px] gap-y-[8px]">
+                <View className="border-t border-bdr dark:border-bdr-d mt-[16px] pt-[16px] gap-y-[8px]">
                     <Link href={defaultFormData.link}><Button
+                        onPress={triggerHaptics}
                         title={defaultFormData.button}
                         startDecorator={defaultFormData.icon}
                         size="base"
@@ -121,7 +129,7 @@ export default function Splash(props) {
 
     if (!isWeb) {
         return (
-            <View className="flex-1 ">
+            <View className="flex-1 bg-screen-light dark:bg-screen-dark"> 
                 <KbAvoidingView className="flex-1" behavior="padding" keyboardVerticalOffset={0}>
                     <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
                         <View className="w-full flex-auto max-w-lg mx-auto p-4 items-center">

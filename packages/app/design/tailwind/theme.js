@@ -54,7 +54,7 @@ const colors = {
     },
 
     bgrbody: {
-        DEFAULT: 'rgba(249,250,251,1)',
+        DEFAULT: 'rgba(235,240,245,1)',
         d: 'rgba(0,0,0,1)',
 
     },
@@ -69,11 +69,8 @@ const colors = {
         d: 'rgba(15,25,40,1)',
     },
     bdrcard: {
-        DEFAULT: 'rgba(110,115,130,0.15)',
-        h: 'rgba(110,115,130,0.25)',
-        d: 'rgba(110,115,130,0.15)',
-        dh: 'rgba(110,115,130,0.25)',
-
+        DEFAULT: 'rgba(75,85,100,0.10)',
+        d: 'rgba(75,85,100,0.10)',
     },
    
 
@@ -104,11 +101,11 @@ const colors = {
     },
     bgrnavbar: {
         DEFAULT: 'rgba(255,255,255,1)',
-        d: 'rgba(17,24,39,1)',
+        d: 'rgba(15,25,40,1)',
     },
     bdrnavbar: {
-        DEFAULT: 'rgba(110,115,130,0.15)',
-        d: 'rgba(110,115,130,0.15)',
+        DEFAULT: 'rgba(75,85,100,0.10)',
+        d: 'rgba(75,85,100,0.10)',
        
     },
     bgrtabbar: {
@@ -173,16 +170,14 @@ const colors = {
 
 const theme = {
     extend: {
-        
         colors: colors,
+        boxShadow: {
+            'md': '0 2px 8px 0 rgb(0 0 0 / 0.05)',
+            'sm': '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+        },
         fontFamily: {
             default: ['default-font', 'sans-serif']
         },
-
-        boxShadow: {
-            'sm': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-        },
-
         aspectRatio: {
             '3/1': '3 / 1',
             '4/1': '4 / 1',

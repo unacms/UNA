@@ -1,4 +1,3 @@
-
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Tabs from 'app/components/nav/tabs';
 import React, { useMemo } from 'react';

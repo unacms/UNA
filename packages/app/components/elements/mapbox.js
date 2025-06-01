@@ -170,7 +170,7 @@ export default function ElementMapBox({ data }) {
                             id="popup"
                             coordinate={popupInfo.coordinates}
                         >
-                            <View className="bg-white p-2 rounded-lg shadow-md max-w-xs">
+                            <View className="bg-white p-2 rounded-lg shadow-sm max-w-xs">
                                 {popupInfo.object.link ? <Link href={popupInfo.object.link}><Text className=" text-base font-medium mb-2">{popupInfo.object.name}{popupInfo.object.facility_name}{popupInfo.object.order_name}</Text></Link> : <Text className=" text-base font-medium mb-2">{popupInfo.object.name}{popupInfo.object.facility_name}{popupInfo.object.order_name}</Text>}
                                 {Object.entries(popupInfo.object)
                                     .filter(([key]) => Object.keys(infoFields).includes(key)) // Убираем ненужные ключи

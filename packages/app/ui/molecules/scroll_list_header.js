@@ -95,7 +95,7 @@ export const Header = memo(({
     const isCustomHeaderElement = appSetting('layout', 'custom_header_element')
 
     return (
-        <Row className={` px-[8px] sm:px-[12px] items-center h-[64px] lg:shadow-[0_1px_3px_0_rgba(0,0,0,0.05)] lg:dark:shadow-[0_1px_0_rgba(0,0,0,1)] lg:border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d`}>
+        <Row className={` px-[8px] sm:px-[12px] items-center h-[64px] shadow-sm bg-bgrnavbar dark:bg-bgrnavbar-d`}>
             
                 {(isHome && !pageData?.context) && <Pressable onPress={scrollToTop} className="items-center flex-row active:scale-95 active:opacity-50 active:bg-bgrbutton dark:active:bg-bgrbutton-d rounded-xl p-[4px] gap-x-3 text-neutral-700 dark:text-neutral-300 web:hover:text-neutral-800 web:dark:hover:text-neutral-200 duration-300 ">
                     

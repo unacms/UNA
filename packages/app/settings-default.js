@@ -683,19 +683,19 @@ export  const settingsDefault = {
             badgeTextSize: 'text-[12px] leading-[16px] font-semibold', // Customizable text size for badge
         },
         light: {
-            primary: 'rgba(37,99,235,1)',
+            primary: 'rgba(59, 130, 246, 1)',
             headerBackground: 'rgba(255,255,255,1)',
             barsBackground: 'rgba(255,255,255,1)', //header and tabbar background in native light mode
             bottomSheetBackground: 'rgba(255,255,255,1)',
             barsColor: '#4B5563',
             selectBorder: 'rgba(156, 163, 175, 0.3)',
-            fieldBackground: 'rgba(249, 240, 251, 1)',
+            fieldBackground: 'rgba(245,250,255,1)',
             blockBorder: '#E5E7EB',
             tabsBackground: 'rgba(255,0,0,1)',
             activeTabBackground: '#DBEAFE',
             tabText: 'rgba(75,85,99,1)',
             activeTabText: 'rgba(3,7,18,1)',
-            screenBackground: 'rgba(229,231,235,1)',
+            screenBackground: 'rgba(235,240,245,1)',
             bgrmodal: 'rgba(255,255,255,1)',
             bdrModal: 'rgba(110,115,130,0.15)',
             checkbox: '#2563eb',
@@ -706,7 +706,7 @@ export  const settingsDefault = {
         dark: {
             default: 'rgba(209,213,219,1)', //fix for icons color in iOS
             headerBackground: 'rgba(17,24,39,1)',
-            primary: 'rgba(37,99,235,1)',
+            primary: 'rgba(59, 130, 246, 1)',
             barsBackground: 'rgba(17,24,39,1)', //header background in native
             bottomSheetBackground: 'rgba(17,24,39,1)',
             barsColor: 'rgba(209,213,219,1)', //tabbar icons color in native
@@ -715,7 +715,7 @@ export  const settingsDefault = {
             blockBorder: '#030712',
             tabText: 'rgba(156,163,175,1)',
             activeTabText: 'rgba(249,250,251,1)',
-            screenBackground: 'rgba(17,24,39,1)',
+            screenBackground: 'rgba(0,0,0,1)',
             bgrmodal: 'rgba(31,41,55,1)',
             bdrModal: 'rgba(110,115,130,0.15)',
             checkbox: '#0ea5e9',
@@ -816,12 +816,12 @@ export  const settingsDefault = {
             default:
                 ' h-[48px] min-w-[48px] rounded-[12px] flex-auto ' +
                 ' px-[12px] py-[11px] text-[16px] ' +
-                ' bg-neutral-50 border border-neutral-200 ' +
+                ' bg-neutral-50 border-2 border-neutral-300 ' +
                 ' hover:border-neutral-300 focus:border-primary ' +
                 ' dark:bg-neutral-950 overflow-hidden ' +
                 ' dark:border-neutral-800 dark:hover:border-neutral-700 ' +
                 ' dark:focus:border-primary-d ' +
-                ' focus:bg-bgrinput-f dark:focus:bg-neutral-950 ' +
+                ' focus:bg-white dark:focus:bg-neutral-950 ' +
                 ' duration-300 ' +
                 ' placeholder-neutral-500 ' +
                 ' text-neutral-800 dark:text-neutral-200 ',
@@ -873,7 +873,7 @@ export  const settingsDefault = {
             },
             lg: {
                 rounded: ' rounded-[12px] ',
-                padding: ' h-[48px] px-[12px] overflow-hidden ',
+                padding: ' h-[48px] px-[12px]  ',
                 icon_container:
                     ' h-[24px] w-[24px] flex items-center justify-center ',
                 title_container: ' px-[4px] ',
@@ -891,7 +891,7 @@ export  const settingsDefault = {
             /*'u-btn-default-color-icon-light': 'rgb(243, 244, 246)',
             'u-btn-default-color-icon-dark': 'rgb(243, 244, 246)',*/
 
-            'u-btn-primary-cnt': ' bg-primary-500 dark:bg-primary-600 shadow-sm  ',
+            'u-btn-primary-cnt': ' bg-primary-600 dark:bg-primary-500 shadow-sm  overflow-hidden  ',
             'u-btn-primary-text': ' text-white font-medium ',
             'u-btn-primary-trans': ' web:duration-200 ',
             'u-btn-primary-color-icon-light': 'rgb(243, 244, 246)',
