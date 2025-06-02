@@ -15,7 +15,7 @@ import {
     Camera, UserMinus, Loader, Asterisk, CircleUser, UserSquare, ShieldCheck, Workflow, KeyRound, Mail, Trash2,
     ChartLine, Star, Languages, Moon, Contact, Trash, Minus, Hash, Megaphone, Sparkle, LayoutDashboard, Award,
     MapPin, Wallet, Repeat, Eye, EyeOff, Globe, Send, RotateCw, Paperclip, ArrowBigUp, ArrowBigDown, PanelsTopLeft, BadgeCheck,
-    ChevronRight, LibraryBig, Lock, MoreHorizontal, Building2, ChevronsUpDown, SendHorizontal, SquareStack, MessagesSquare, HelpCircle, Reply,Clock, RefreshCw, TvMinimalPlay, UsersRound, Shapes
+    ChevronRight, LibraryBig, Lock, MoreHorizontal, Building2, ChevronsUpDown, SendHorizontal, SquareStack, MessagesSquare, HelpCircle, Reply,Clock, RefreshCw, TvMinimalPlay, UsersRound, Shapes, KeySquare,
 } from "lucide-react-native";
 
 export const IconSet = { 
@@ -33,5 +33,5 @@ export const IconSet = {
     Camera, UserMinus, Loader, Asterisk, CircleUser, UserSquare,
     ChartLine, Star, Languages, Moon, Trash, Minus, Hash, Megaphone, Sparkle, PanelsTopLeft,
     MapPin, Wallet, Repeat, Eye, EyeOff, Globe, Send,SendHorizontal, RotateCw, Paperclip,
-    ChevronRight, LibraryBig, Lock, TvMinimalPlay, Shapes
+    ChevronRight, LibraryBig, Lock, TvMinimalPlay, Shapes, KeySquare
 }

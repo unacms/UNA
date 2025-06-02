@@ -33,7 +33,7 @@ export default function MenuItemButton(oProps) {
 
         default:
             let oButtonProps = {
-                variant: oProps.primary === "1" ? 'primary' : (isTextMode ? 'custom' : oProps.params?.button_variant),
+                variant: oProps.primary === "1" ? 'primary' : (oProps.accent === "1" ? 'accent' : (isTextMode ? 'custom' : oProps.params?.button_variant)),
                 size: isTextMode ? 'base' : oProps.params?.button_size,
                 rounded: oProps.params?.button_rounded,
                 fullWidth: oProps.params?.button_full_width,

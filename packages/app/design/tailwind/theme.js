@@ -32,6 +32,21 @@ const colors = {
         900: 'rgba(30, 58, 138, 1)',
         950: 'rgba(23, 37, 84, 1)',
     },
+    accent: {
+        DEFAULT: 'rgba(249, 115, 22, 1)',
+        d: 'rgba(249, 115, 22, 1)',
+        50: 'rgba(255, 247, 237, 1)',
+        100: 'rgba(255, 237, 213, 1)',
+        200: 'rgba(254, 215, 170, 1)',
+        300: 'rgba(253, 186, 116, 1)',
+        400: 'rgba(251, 146, 60, 1)',
+        500: 'rgba(249, 115, 22, 1)',
+        600: 'rgba(234, 88, 12, 1)',
+        700: 'rgba(194, 65, 12, 1)',
+        800: 'rgba(154, 52, 18, 1)',
+        900: 'rgba(124, 45, 18, 1)',
+        950: 'rgba(67, 20, 7, 1)',
+    },
     contrast: {
         DEFAULT: 'rgba(255, 0, 0, 1)',
         d: 'rgba(255, 0, 0, 1)',
@@ -47,10 +62,6 @@ const colors = {
     linkhoverneutral: {
         DEFAULT: 'rgba(75,85,99,1)',
         d: 'rgba(209,213,219,1)',
-    },
-    accent: {
-        DEFAULT: 'rgba(55,65,81,1)',
-        d: 'rgba(249,115,22,1)',
     },
 
     bgrbody: {
@@ -135,15 +146,15 @@ const colors = {
 
     },
     bgrbutton: {
-        DEFAULT: 'rgba(110,115,130,0.15)',
-        h: 'rgba(110,115,130,0.25)',
-        d: 'rgba(110,115,130,0.15)',
-        dh: 'rgba(110,115,130,0.25)',
+        DEFAULT: 'rgba(255,255,255,1)',
+        h: 'rgba(245,250,255,1)',
+        d: 'rgba(30,40,55,1)',
+        dh: 'rgba(55,65,80,1)',
     },
     bdrbutton: {
-        DEFAULT: 'rgba(110,115,130,0.15)',
+        DEFAULT: 'rgba(110,115,130,0.20)',
         h: 'rgba(110,115,130,0.25)',
-        d: 'rgba(110,115,130,0.15)',
+        d: 'rgba(110,115,130,0.20)',
         dh: 'rgba(110,115,130,0.25)',
     },
     bdr: {
@@ -173,7 +184,7 @@ const theme = {
         colors: colors,
         boxShadow: {
             'md': '0 2px 8px 0 rgb(0 0 0 / 0.05)',
-            'sm': '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+            'sm': '0 1px 3px 0 rgb(0 0 0 / 0.08)',
         },
         fontFamily: {
             default: ['default-font', 'sans-serif']

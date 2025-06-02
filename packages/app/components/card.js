@@ -5,7 +5,7 @@ const themeSettings = appSetting('theme', 'card');
 
 export default function (props) {
    
-    const { margin = ' p-[16px] ', rounded = ' rounded-[24px] border-bdrcard dark:border-bdrcard-d shadow-sm ' } = props || {};
+    const { margin = ' p-[24px] ', rounded = ' rounded-[24px] border-bdrcard dark:border-bdrcard-d shadow-sm ' } = props || {};
 
     return (
         <View className={`${props.addClassName || ''} ${themeSettings.default} ${margin} ${rounded}`.trim()} >

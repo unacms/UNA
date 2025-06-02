@@ -100,19 +100,15 @@ export default function Splash(props) {
                     </KbAvoidingView>
                 </View>
             </Modal>
-            <Card
-               
-                addClassName=" animate-slidein flex-col w-full max-w-xl mx-auto  "
-            >
-
+            <Card addClassName=" animate-slidein flex-col w-full mx-auto ">
+                                
                 <BlockByServiceName name={defaultFormData.name} data={props.data} formProps={{ auto_focus: false, hide_errors: true, button_full_width: true }} />
-                
-                <View className="border-t border-bdr dark:border-bdr-d mt-[16px] pt-[16px] gap-y-[8px]">
+                <View className="border-t border-bdr dark:border-bdr-d mt-[16px] pt-[16px] gap-y-[12px]">
                     <Link href={defaultFormData.link}><Button
                         onPress={triggerHaptics}
                         title={defaultFormData.button}
                         startDecorator={defaultFormData.icon}
-                        size="base"
+                        size="lg"
                         fullWidth
                     /* onPress={() => {
                          setDefaultForm(defaultForm == 'login' ? 'signup' : 'login')
@@ -146,13 +142,19 @@ export default function Splash(props) {
 
     return (
 
-        <View className={' flex-col justify-center mx-auto ' + appSetting('layout', 'max_width')}>
-            <View className=" w-full lg:flex-row max-w-7xl mx-auto py-16 ">
-                <View className=" w-full items-center  lg:items-start my-auto  flex-col flex-auto text-primary dark:text-primary-d">
-                    {/*{appStatic('splash_image')}*/}
+        <View className={' flex-col justify-center mx-auto w-full ' + appSetting('layout', 'max_width')}>
+            <View className=" w-full lg:flex-row max-w-7xl gap-y-[32px] mx-auto py-[64px] lg:pt-0">
+                <View 
+                    className="my-auto flex-col max-w-md sm:max-w-2xl flex-auto px-[16px] sm:px-[32px] lg:pb-[32px] mx-auto"
+                    accessible={true} 
+                >                       
+                    <View className=" w-[200px] h-[200px] sm:w-[300px] sm:h-[300px] mx-auto lg:mx-0 duration-300">
+                        {appStatic('splash_image')}
+                    </View>
                     {appStatic('splash_text')}
+                    
                 </View>
-                <View className=" max-w-lg w-full flex-auto mx-auto p-4">
+                <View className=" max-w-md sm:max-w-lg w-full flex-auto mx-auto p-[16px] sm:p-[32px] my-auto">
                     {cnt}
                 </View>
             </View>

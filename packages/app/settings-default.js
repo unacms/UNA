@@ -25,6 +25,9 @@ export  const settingsDefault = {
         },
         show_ui: false,
     },
+    app: {
+        title: "NEO App",
+    },
     layout: {
         avaliable_layouts: ['hor', 'ver', 'mixed'], // OLD appSetting('layout', 'format_list')
         default_layout: 'hor', //hor, ver, mixed// OLD appSetting('layout', 'format')
@@ -66,6 +69,11 @@ export  const settingsDefault = {
             ios_client_id: '',
             android_client_id: '',
         },
+        github: false,
+        linkedin: false,
+        x: false,
+        passkey: true,
+        saml: true,
     },
     native: {
         default_theme: 'auto',
@@ -816,7 +824,7 @@ export  const settingsDefault = {
             default:
                 ' h-[48px] min-w-[48px] rounded-[12px] flex-auto ' +
                 ' px-[12px] py-[11px] text-[16px] ' +
-                ' bg-neutral-50 border-2 border-neutral-300 ' +
+                ' bg-neutral-50 border  border-neutral-200 ' +
                 ' hover:border-neutral-300 focus:border-primary ' +
                 ' dark:bg-neutral-950 overflow-hidden ' +
                 ' dark:border-neutral-800 dark:hover:border-neutral-700 ' +
@@ -866,7 +874,7 @@ export  const settingsDefault = {
                 padding: ' h-[44px] min-w-[44px] px-[10px] overflow-hidden ',
                 icon_container:
                     ' h-[24px] w-[24px] flex items-center justify-center ',
-                title_container: ' px-[4px] web:text-[16px] native:text-[16px] ',
+                title_container: ' px-[6px] web:text-[16px] native:text-[16px] ',
                 icon_size: 24,
                 icon_margin: ' mx-[4px] ', //conditional margin for icon container when title is present
                 title_margin: ' ', //conditional margin for text container when icon is presentnditional margin for text container when icon is present
@@ -876,7 +884,7 @@ export  const settingsDefault = {
                 padding: ' h-[48px] px-[12px]  ',
                 icon_container:
                     ' h-[24px] w-[24px] flex items-center justify-center ',
-                title_container: ' px-[4px] ',
+                title_container: ' px-[8px] web:text-[16px] native:text-[16px] ',
                 icon_size: 24,
                 icon_margin: ' mx-[4px] ', //conditional margin for icon container when title is present
                 title_margin: ' ', //conditional margin for text container when icon is present
@@ -884,7 +892,7 @@ export  const settingsDefault = {
         },
         button_styles: {
             'u-btn-default-cnt':
-                ' bg-bgrbutton dark:bg-bgrbutton-d border-bdrbutton dark:border-bdrbutton-d hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50 ',
+                ' bg-bgrbutton dark:bg-bgrbutton-d border-bdrbutton dark:border-bdrbutton-d hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50 border border-bdrbutton-d dark:border-bdrbutton-d shadow-sm',
             'u-btn-default-text':
                 ' font-medium text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-neutral-50 ',
             'u-btn-default-trans': 'web:duration-200',
@@ -897,8 +905,14 @@ export  const settingsDefault = {
             'u-btn-primary-color-icon-light': 'rgb(243, 244, 246)',
             'u-btn-primary-color-icon-dark': 'rgb(243, 244, 246)',
 
+            'u-btn-accent-cnt': ' bg-accent-600 dark:bg-accent-500 shadow-sm  overflow-hidden  ',
+            'u-btn-accent-text': ' text-white font-medium ',
+            'u-btn-accent-trans': ' web:duration-200 ',
+            'u-btn-accent-color-icon-light': 'rgb(243, 244, 246)',
+            'u-btn-accent-color-icon-dark': 'rgb(243, 244, 246)',
+
             'u-btn-secondary-cnt':
-                ' bg-bgrbutton dark:bg-bgrbutton-d hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh ',
+                ' bg-bgritem dark:bg-bgritem-d hover:bg-bgritem-h dark:hover:bg-bgritem-dh ',
             'u-btn-secondary-text':
                 ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
             'u-btn-secondary-trans': ' web:duration-200',
@@ -994,10 +1008,19 @@ export  const settingsDefault = {
                 ' font-medium text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-neutral-50 ',
             'u-btn-group-item-outline-icon':
                 ' text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
+
+            'u-btn-group-item-accent-cnt':
+                ' hover:bg-bgritem-h dark:hover:bg-bgritem-dh active:opacity-50  ',
+            'u-btn-group-item-accent-text':
+                ' font-medium text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-neutral-50 ',
+            'u-btn-group-item-accent-icon':
+                ' text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
         },
         buttons_group_styles: {
             'u-btn-default-cnt':
                 ' border border-bdrbutton dark:border-bdrbutton-d bg-bgrbutton dark:bg-bgrbutton-d flex flex-row  overflow-hidden ',
+            'u-btn-accent-cnt':
+                ' border border-emerald-600 dark:border-emerald-500 bg-emerald-100 dark:bg-emerald-900 flex flex-row  overflow-hidden ',
             'u-btn-outline-cnt':
                 ' border border-bdrbutton dark:border-bdrbutton-d overflow-hidden flex flex-row ',
 
