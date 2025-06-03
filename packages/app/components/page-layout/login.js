@@ -9,7 +9,7 @@ import * as Haptics from 'expo-haptics';
 import { appStatic } from 'app/lib/app-static'
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
 import AuthPanel from 'app/ui/molecules/auth';
-import { appSetting } from 'app/lib/util'
+import { appSetting, getPageWidth } from 'app/lib/util'
 
 const triggerHaptics = () => {
     if (Platform.OS !== 'web') {
@@ -24,12 +24,12 @@ export default function PageLayout(props) {
     return (
         <KbAvoidingView style={{ flex: 1 }}>
             {isWeb ? (
-                <View className={' flex-col justify-center mx-auto w-full ' + appSetting('layout', 'max_width')}>
+                <View className={' flex-col justify-center mx-auto w-full ' + getPageWidth(props.uri, props.data?.config)}>
                     <View className=" w-full lg:flex-row max-w-7xl mx-auto py-16 ">
                         <View className="hidden my-auto flex-col flex-auto">
                             {appStatic('components_logincontent')}
                         </View>
-                        <View className=" max-w-md sm:max-w-lg w-full flex-auto mx-auto p-[16px] flex flex-col gap-y-[16px]">
+                        <View className=" max-w-xl w-full flex-auto mx-auto p-[16px] sm:p-[32px] lg:p-[64px] my-auto duration-300  gap-y-[16px]">
                             <Card addClassName={cardClassName}>
                                 <View className="flex-col pb-[24px] gap-y-[8px]">
                                     <Text className="text-2xl leading-none tracking-tight font-bold text-neutral-800 dark:text-neutral-200">Log in to {appSetting('app', 'title')}</Text>
@@ -55,7 +55,7 @@ export default function PageLayout(props) {
                                 
                                
                             </Card>
-                            <Text className="text-base mt-[16px] font-semibold text-neutral-800 dark:text-neutral-200 text-center">Don't have an account?</Text> 
+                            <Text className="text-base text-neutral-600 dark:text-neutral-400 text-center">Don't have an account?</Text> 
                             <Link className="w-full" href="/create-account">
                                 <Button
                                             onPress={triggerHaptics}
@@ -103,7 +103,7 @@ export default function PageLayout(props) {
                                 
                                
                             </Card>
-                            <Text className="text-base mt-[16px] font-semibold text-neutral-800 dark:text-neutral-200 text-center">Don't have an account?</Text> 
+                            <Text className="text-base text-neutral-600 dark:text-neutral-400 text-center">Don't have an account?</Text> 
                             <Link className="w-full" href="/create-account">
                                 <Button
                                             onPress={triggerHaptics}

@@ -43,7 +43,7 @@ const HeaderLine = memo(
             ).length > 0
 
         return (
-            <View className=" flex-row w-[360px] gap-x-[12px] px-[8px] sm:px-[16px] items-center ">
+            <View className=" flex-row w-[360px] gap-x-[12px] px-[12px] sm:px-[16px] items-center ">
                 
                 {headerSettings.menu && isDrawer && (
                     <View className="lg:hidden pr-[8px] ">
@@ -133,7 +133,7 @@ export default function (props) {
                         props.layoutName == 'post'
                             ? 'hidden lg:flex'
                             : '') +
-                        ' fixed w-full h-16 items-center bg-bgrnavbar dark:bg-bgrnavbar-d shadow-sm  border-bdrnavbar dark:border-bdrnavbar-d '
+                        ' fixed w-full h-16 items-center bg-bgrnavbar dark:bg-bgrnavbar-d shadow-sm '
                     }
                 >
                     <View

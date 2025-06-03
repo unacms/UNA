@@ -31,7 +31,7 @@ export  const settingsDefault = {
     layout: {
         avaliable_layouts: ['hor', 'ver', 'mixed'], // OLD appSetting('layout', 'format_list')
         default_layout: 'hor', //hor, ver, mixed// OLD appSetting('layout', 'format')
-        max_width: ' max-w-screen-2xl ', // consider for hor = max-w-screen-2xl, for ver = max-w-screen-xl
+        max_width: ' max-w-[1440px] ', 
         max_width_block: '  ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
         search: false,
         sidebar_search: true,
@@ -43,7 +43,7 @@ export  const settingsDefault = {
         hide_header_for_all: false,
         card_animation_duration: 0,
         user_remote_config: true,
-        max_width_header_content: 'max-w-screen-2xl',
+        max_width_header_content: 'max-w-[1440px]',
         background_image_color: '', //OLD appSetting('layout', 'background_cover_color')
         background_image: '', //`url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239C92AC' fill-opacity='0.08' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E")`,
         background_image_dark: '', //`url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239C92AC' fill-opacity='0.08' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E")`,
@@ -661,7 +661,17 @@ export  const settingsDefault = {
             { title: 'Contact', link: '/contact', icon: 'Mail' },
         ],
     },
-    layouts: {},
+    layouts: {
+        '/': { // For the splash screen (home page when not logged in)
+            max_width: ''
+        },
+        '/login': {
+            max_width: ''
+        },
+        '/create-account': {
+            max_width: ''
+        }
+    },
     theme: {
         profile_colors: [
             //OLD appSetting('layout', 'profile_colors')
@@ -814,25 +824,29 @@ export  const settingsDefault = {
             content: ' h-auto ',
             header: ' p-[12px] items-start justify-start border-b border-bdrmodal dark:border-bdrmodal-d',
         },
+        // Default styling for Card components.
+        // - `default`: Base classes like background and shadow. These are always applied.
+        // - `margin`: Default margin/padding classes. Can be overridden by the Card component's `margin` prop.
+        // - `rounded`: Default corner rounding classes. Can be overridden by the Card component's `rounded` prop.
+        // - `border`: Default border classes. Can be overridden by the Card component's `rounded` prop (as it often handles border too).
         card: {
-            default: ' bg-bgrcard dark:bg-bgrcard-d',
-            border: ' border sm:border border-bdrcard dark:border-bdrcard-d shadow-[0_1px_3px_0_rgba(0,0,0,0.05)] ',
-            rounded: ' rounded-2xl ',
-            margin: '',
+            default: ' bg-bgrcard dark:bg-bgrcard-d ', // Base styles (e.g., background)
+            margin: 'p-[24px]',                               // Default margin/padding
+            rounded: 'rounded-[24px]',                       // Default corner rounding
+            border: 'border-bdrcard dark:border-bdrcard-d shadow-sm',  // Default border and shadow styles
         },
         inputs: {
             default:
-                ' h-[48px] min-w-[48px] rounded-[12px] flex-auto ' +
-                ' px-[12px] py-[11px] text-[16px] ' +
-                ' bg-neutral-50 border  border-neutral-200 ' +
-                ' hover:border-neutral-300 focus:border-primary ' +
-                ' dark:bg-neutral-950 overflow-hidden ' +
-                ' dark:border-neutral-800 dark:hover:border-neutral-700 ' +
-                ' dark:focus:border-primary-d ' +
-                ' focus:bg-white dark:focus:bg-neutral-950 ' +
-                ' duration-300 ' +
-                ' placeholder-neutral-500 ' +
-                ' text-neutral-800 dark:text-neutral-200 ',
+                'h-[48px] min-w-[48px] rounded-[12px] flex-auto ' +
+                'px-[12px] py-[11px] text-[16px] ' +
+                'bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d ' +
+                'hover:border-bdrinput-h dark:hover:border-bdrinput-dh ' +
+                'focus:border-bdrinput-f dark:focus:border-bdrinput-df ' +
+                'focus:bg-bgrinput-f dark:focus:bg-bgrinput-df ' +
+                'overflow-hidden duration-300 ' +
+                'placeholder-neutral-500 ' +
+                'text-neutral-800 dark:text-neutral-200 ' +
+                'focus:text-neutral-900 dark:focus:text-neutral-100',
             multi: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg flex-auto p-2 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 ',
             rounded:
                 ' h-[48px] min-w-[48px] rounded-full flex-auto px-[12px] py-[11px] text-[16px] bg-bgrinput dark:bg-bgrinput-d hover:border-bdrinput-h focus:border-bdrinput-f overflow-hidden border border-bdrinput focus:bg-bgrinput-f dark:focus:bg-bgrinput-df focus:border-bdrinput-f dark:focus:border-bdrinput-df duration-300 placeholder-neutral-500 text-neutral-800 dark:text-neutral-200 ',
@@ -941,10 +955,10 @@ export  const settingsDefault = {
             'u-btn-link-color-icon-dark': 'rgba(37,99,235,1)',
 
             'u-btn-outline-cnt':
-                ' shadow-[inset_0_0_0_1px_rgba(0,0,0,0.1)] dark:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.1)] bg-transparent native:border border-bdrbutton dark:border-bdrbutton-d dark:bg-bgrcard-d hover:bg-bgrbutton dark:hover:bg-bgrbutton-dh ',
+                '  bg-transparent border active:opacity-50 hover:border-2 border-bdrbutton dark:border-bdrbutton-d hover:border-bdrbutton-h dark:hover:border-bdrbutton-dh ',
             'u-btn-outline-text':
-                ' font-medium text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-neutral-50 ',
-            'u-btn-outline-trans': ' web:duration-200',
+                ' font-medium text-neutral-800 dark:text-neutral-200',
+            'u-btn-outline-trans': ' web:duration-200 ',
             /*'u-btn-outline-color-icon-light': 'rgb(243, 244, 246)',
             'u-btn-outline-color-icon-dark': 'rgb(243, 244, 246)',*/
 

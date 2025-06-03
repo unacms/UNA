@@ -7,7 +7,7 @@ import { useRef } from 'react';
 export default function PageLayout(props) {
     const refer = useRef();
     const content = (
-        <Animated.ScrollView ref={refer} className={getPageWidth(props.uri, props.data.config) + '  mx-auto w-full '} keyboardShouldPersistTaps="always" keyboardDismissMode="on-drag">
+        <Animated.ScrollView ref={refer} className={getPageWidth(props.uri, props.data.config) + ' mx-auto w-full '} keyboardShouldPersistTaps="always" keyboardDismissMode="on-drag">
             <View className='p-4 w-full '>
                 {props.children}
             </View>

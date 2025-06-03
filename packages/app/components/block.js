@@ -14,28 +14,60 @@ const componentsMap = {
 };
 
 export function BlockByName(props) {
-    let { data, name, ...rest } = props
+    let { data, name, ...rest } = props;
 
     let b = null;
-    if (name) {
 
-        if (name.name?.includes('static')) {
-            return <StaticBlock  {...name} />;
+    if (name) {
+        const blockNameString = (typeof name === 'string') ? name : name?.name;
+
+        if (blockNameString?.includes('static')) {
+            if (typeof name === 'object') {
+                // If name is an object (e.g., { name: "static:foo", showBg: true, ... }), spread it and rest
+                return <StaticBlock {...name} {...rest} />;
+            } else {
+                // If name is a string (e.g., "static:foo"), pass it as 'name' prop, and spread rest
+                return <StaticBlock name={blockNameString} {...rest} />;
+            }
         }
-        const blockName = name?.name;
-        Object.keys(data?.elements).forEach(key => {
-            Object.keys(data.elements[key]).forEach(key2 => {
-                if (data.elements[key][key2].content) {
-                    Object.keys(data.elements[key][key2].content).forEach(key3 => {
-                        if (data.elements[key][key2].source == blockName.toString())
-                            b = data.elements[key][key2];
-                    });
+
+        if (data?.elements && blockNameString) {
+            for (const key of Object.keys(data.elements)) {
+                if (b) break;
+                for (const key2 of Object.keys(data.elements[key])) {
+                    if (b) break;
+                    if (data.elements[key][key2].content) {
+                        for (const key3 of Object.keys(data.elements[key][key2].content)) {
+                            if (data.elements[key][key2].source === blockNameString) {
+                                b = data.elements[key][key2];
+                                break; 
+                            }
+                        }
+                    }
+                    if (b) break; // Break outer loop if found
                 }
-            });
-        });
+                if (b) break; // Break outermost loop if found
+            }
+        }
     }
-    if (b)
-        return <Block exProps={name.exProps} key={b.id} uri={data.uri} url={data.url} block={b} showTitle={name.showTitle} fullWidth={name.fullWidth} showPad={name.showPad} showBg={name.showBg} unitType={name.unitType} {...rest} />;
+
+    if (b) {
+        return <Block 
+            exProps={name?.exProps} 
+            key={b.id} 
+            uri={data.uri} 
+            url={data.url} 
+            block={b} 
+            showTitle={name?.showTitle} 
+            fullWidth={name?.fullWidth} 
+            showPad={name?.showPad} 
+            showBg={name?.showBg} 
+            unitType={name?.unitType} 
+            {...rest} 
+        />;
+    }
+    
+    return null; 
 }
 
 export function BlockByServiceName(props) {

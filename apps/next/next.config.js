@@ -48,6 +48,7 @@ const nextConfig = {
     'react-native-image-pan-zoom',
     'react-native-swipe-gestures',
     'expo-haptics',
+    'expo-linear-gradient',
     'expo-modules-core',
     'recyclerlistview',
     'expo-crypto',

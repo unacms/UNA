@@ -64,7 +64,7 @@ export default function (props) {
             return <Splash {...props} />
         else {
             const content = (
-                <Animated.ScrollView ref={refer} className={getPageWidth(props.uri, props.data.config) + '  mx-auto w-full '} keyboardShouldPersistTaps="always" keyboardDismissMode="on-drag">
+                <Animated.ScrollView ref={refer} className={'mx-auto w-full'} keyboardShouldPersistTaps="always" keyboardDismissMode="on-drag">
                    <Splash {...props} />
                 </Animated.ScrollView>
             );
@@ -213,7 +213,7 @@ export default function (props) {
             <View
                 className={
                     appSetting('layout', 'max_width') +
-                    ' max-w-[1920px] mx-auto w-full flex-auto relative flex-row lg:pt-0 '
+                    ' mx-auto w-full flex-auto relative flex-row lg:pt-0 '
                 }
             >
                 {getLayout(currentUser) == 'hor' && (
