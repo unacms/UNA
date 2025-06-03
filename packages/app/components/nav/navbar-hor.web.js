@@ -154,7 +154,7 @@ export default function (props) {
                             context={props.context}
                         />
                         <MenuTop url={props.url} uri={props.uri}/>
-                        <Row className=" w-[360px] px-[8px] sm:px-[16px] gap-x-2 items-center justify-end ">
+                        <Row className=" xl:w-[360px] px-[12px] sm:px-[16px] gap-x-2 items-center justify-end ">
                             {!!currentUser && (
                                 <Row className="justify-end gap-x-2">
                                     

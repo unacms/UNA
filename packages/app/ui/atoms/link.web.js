@@ -52,7 +52,7 @@ export default function ElementLink(props) {
 
     return (
         <Link 
-            className=' focus-visible:outline-2 focus-visible:outline-primary dark:focus-visible:outline-primary-d focus-visible:outline-offset-1' 
+            className=' ' 
             target={target} 
             href={href} 
             {...rest} 

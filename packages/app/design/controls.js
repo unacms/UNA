@@ -146,8 +146,13 @@ export const PickerStyled = ({ className, ...props }) => (
 );
 
 export const PickerStyledRef = forwardRef(({ classes, className, ...props }, ref) => (
-    <PickerDef ref={ref} className={classes? classes : PickerStyles} {...props} />
-  ));
+    <View className="relative flex-auto items-center flex-row">
+        <PickerDef ref={ref} className={`${classes ? classes : PickerStyles} w-full`} {...props} />
+        <View className="absolute right-3 pointer-events-none">
+            <Icon icon="ChevronDown" size={20} className="text-neutral-500" />
+        </View>
+    </View>
+));
 
 export const PickerStyledIos = ({ className, ...props }) => (
     <PickerDef className={PickerStyles} {...props} />

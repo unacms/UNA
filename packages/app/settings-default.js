@@ -849,12 +849,12 @@ export  const settingsDefault = {
                 'focus:text-neutral-900 dark:focus:text-neutral-100',
             multi: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg flex-auto p-2 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 ',
             rounded:
-                ' h-[48px] min-w-[48px] rounded-full flex-auto px-[12px] py-[11px] text-[16px] bg-bgrinput dark:bg-bgrinput-d hover:border-bdrinput-h focus:border-bdrinput-f overflow-hidden border border-bdrinput focus:bg-bgrinput-f dark:focus:bg-bgrinput-df focus:border-bdrinput-f dark:focus:border-bdrinput-df duration-300 placeholder-neutral-500 text-neutral-800 dark:text-neutral-200 ',
+                ' h-[48px] rounded-full flex-auto px-[12px] py-[11px] text-[16px] bg-bgrinput dark:bg-bgrinput-d hover:border-bdrinput-h focus:border-bdrinput-f overflow-hidden border border-bdrinput focus:bg-bgrinput-f dark:border-bdrinput-d dark:focus:border-bdrinput-d dark:focus:bg-bgrinput-df focus:border-bdrinput-f dark:focus:border-bdrinput-df duration-300 placeholder-neutral-500 text-neutral-800 dark:text-neutral-200 ',
             roundedsmall:
                 ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-full flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[34px] ',
             small: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[36px] ',
 
-            select: 'bg-bgrinput  border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg  flex-auto px-3 py-2 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus dark:text-neutral-100 text-base',
+            select: 'appearance-none pr-10 bg-bgrinput h-[48px] border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg  flex-auto px-[12px] py-[11px] dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus dark:text-neutral-100 text-base',
         },
 
         button_sizes: {
@@ -865,7 +865,7 @@ export  const settingsDefault = {
                 ' text-primary-700 dark:text-primary-300 group-hover:text-primary-800 dark:group-hover:text-primary-200 ',
             xs: {
                 rounded: ' rounded-[8px] ',
-                padding: ' h-[32px] min-w-[32px] px-[6px] overflow-hidden ',
+                padding: ' h-[32px] min-w-[32px] px-[6px] ',
                 icon_container:
                     ' h-[20px] w-[20px] flex items-center justify-center ',
                 title_container: 'px-[4px] web:text-[13px] native:text-[13px] ',
@@ -875,7 +875,7 @@ export  const settingsDefault = {
             },
             sm: {
                 rounded: ' rounded-[9px] ',
-                padding: ' h-[36px] min-w-[36px] px-[8px] overflow-hidden ',
+                padding: ' h-[36px] px-[7px] ',
                 icon_container:
                     ' h-[20px] w-[20px] flex items-center justify-center ',
                 title_container: ' px-[4px] native:text-[14px] ',
@@ -885,7 +885,7 @@ export  const settingsDefault = {
             },
             base: {
                 rounded: ' rounded-[10px] ',
-                padding: ' h-[44px] min-w-[44px] px-[10px] overflow-hidden ',
+                padding: ' h-[44px] min-w-[44px] px-[10px] ',
                 icon_container:
                     ' h-[24px] w-[24px] flex items-center justify-center ',
                 title_container: ' px-[6px] web:text-[16px] native:text-[16px] ',
@@ -913,20 +913,20 @@ export  const settingsDefault = {
             /*'u-btn-default-color-icon-light': 'rgb(243, 244, 246)',
             'u-btn-default-color-icon-dark': 'rgb(243, 244, 246)',*/
 
-            'u-btn-primary-cnt': ' bg-primary-600 dark:bg-primary-500 shadow-sm  overflow-hidden  ',
+            'u-btn-primary-cnt': ' bg-primary-600 dark:bg-primary-500 shadow-sm  ',
             'u-btn-primary-text': ' text-white font-medium ',
             'u-btn-primary-trans': ' web:duration-200 ',
             'u-btn-primary-color-icon-light': 'rgb(243, 244, 246)',
             'u-btn-primary-color-icon-dark': 'rgb(243, 244, 246)',
 
-            'u-btn-accent-cnt': ' bg-accent-600 dark:bg-accent-500 shadow-sm  overflow-hidden  ',
+            'u-btn-accent-cnt': ' bg-accent-600 dark:bg-accent-500 shadow-sm  ',
             'u-btn-accent-text': ' text-white font-medium ',
             'u-btn-accent-trans': ' web:duration-200 ',
             'u-btn-accent-color-icon-light': 'rgb(243, 244, 246)',
             'u-btn-accent-color-icon-dark': 'rgb(243, 244, 246)',
 
             'u-btn-secondary-cnt':
-                ' bg-bgritem dark:bg-bgritem-d hover:bg-bgritem-h dark:hover:bg-bgritem-dh ',
+                ' boder border-bdritem dark:border-bdritem-d bg-bgritem dark:bg-bgritem-d hover:bg-bgritem-h dark:hover:bg-bgritem-dh ',
             'u-btn-secondary-text':
                 ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
             'u-btn-secondary-trans': ' web:duration-200',
@@ -941,7 +941,7 @@ export  const settingsDefault = {
             /*'u-btn-danger-color-icon-light': 'rgb(243, 244, 246)',
             'u-btn-danger-color-icon-dark': 'rgb(243, 244, 246)',*/
 
-            'u-btn-text-cnt': '  active:opacity-50 active:bg-bgrbutton-h dark:active:bg-bgrbutton-dh bg-transparent web:hover:bg-bgrbutton dark:web:hover:bg-bgrbutton-d active:bg-bgrbutton dark:active:bg-bgrbutton-d ',
+            'u-btn-text-cnt': '  active:opacity-50 bg-transparent web:hover:bg-bgritem dark:web:hover:bg-bgritem-d ',
             'u-btn-text-text': ' font-medium text-neutral-800 dark:text-neutral-200  ',
             'u-btn-text-trans': ' web:duration-200 ',
             /*'u-btn-text-color-icon-light': 'rgb(243, 244, 246)',
@@ -955,7 +955,7 @@ export  const settingsDefault = {
             'u-btn-link-color-icon-dark': 'rgba(37,99,235,1)',
 
             'u-btn-outline-cnt':
-                '  bg-transparent border active:opacity-50 hover:border-2 border-bdrbutton dark:border-bdrbutton-d hover:border-bdrbutton-h dark:hover:border-bdrbutton-dh ',
+                '  bg-transparent border active:opacity-50 border-bdrbutton dark:border-bdrbutton-d hover:border-bdrbutton-h dark:hover:border-bdrbutton-dh ',
             'u-btn-outline-text':
                 ' font-medium text-neutral-800 dark:text-neutral-200',
             'u-btn-outline-trans': ' web:duration-200 ',
@@ -1032,16 +1032,16 @@ export  const settingsDefault = {
         },
         buttons_group_styles: {
             'u-btn-default-cnt':
-                ' border border-bdrbutton dark:border-bdrbutton-d bg-bgrbutton dark:bg-bgrbutton-d flex flex-row  overflow-hidden ',
+                ' border border-bdrbutton dark:border-bdrbutton-d bg-bgrbutton dark:bg-bgrbutton-d flex flex-row  ',
             'u-btn-accent-cnt':
-                ' border border-emerald-600 dark:border-emerald-500 bg-emerald-100 dark:bg-emerald-900 flex flex-row  overflow-hidden ',
+                ' border border-emerald-600 dark:border-emerald-500 bg-emerald-100 dark:bg-emerald-900 flex flex-row  ',
             'u-btn-outline-cnt':
-                ' border border-bdrbutton dark:border-bdrbutton-d overflow-hidden flex flex-row ',
+                ' border border-bdrbutton dark:border-bdrbutton-d flex flex-row ',
 
             'u-btn-text-cnt': 'flex flex-row active:opacity-50 items-center ',
 
             'u-btn-secondary-cnt':
-                ' bg-bgritem dark:bg-bgritem-d active:opacity-50 overflow-hidden flex flex-row',
+                ' bg-bgritem dark:bg-bgritem-d active:opacity-50 flex flex-row',
             'u-btn-secondary-text':
                 ' font-medium text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-white ',
             'u-btn-secondary-trans': ' duration-200 ',

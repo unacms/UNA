@@ -77,11 +77,11 @@ const colors = {
 
     bgrcard: {
         DEFAULT: 'rgba(255,255,255,1)',
-        d: 'rgba(30,40,55,1)',
+        d: 'rgba(15,25,40,1)',
     },
     bdrcard: {
-        DEFAULT: 'rgba(75,85,100,0.10)',
-        d: 'rgba(55,65,80,1)',
+        DEFAULT: 'rgba(225,230,240,1)',
+        d: 'rgba(30,40,55,1)',
     },
    
 
@@ -98,8 +98,8 @@ const colors = {
         DEFAULT: 'rgba(225,230,240,1)',
         h: 'rgba(210,215,220,1)',
         f: 'rgba(37, 99, 235, 1)',
-        d: 'rgba(55,65,80,1)',
-        dh: 'rgba(75,85,100,1)',
+        d: 'rgba(30,40,55,1)',
+        dh: 'rgba(55,65,80,1)',
         df: 'rgba(59, 130, 246, 1)'
     },
     bgrmodal: {

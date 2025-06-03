@@ -93,7 +93,7 @@ export function CoverSmall(props) {
                 }
             >
                 <View
-                    className={`px-4 py-3  ${conductorTheme.content_max_width} mx-auto w-full flex-row gap-2`}
+                    className={`p-[12px] sm:px-[16px] ${conductorTheme.content_max_width} mx-auto w-full flex-row gap-2`}
                 >
                     <Row className=" gap-x-2 items-center justify-between flex-auto">
                         <View className="flex-auto flex-row gap-x-2 items-center">

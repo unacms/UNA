@@ -11,7 +11,7 @@ import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal';
 const ButtonEx = memo(({ visibleItemsCount, params }) => {
     return (
         <View key="btn" className="ml-2 w-12">
-            <Button size={params.button_size} variant="secondary" startDecorator="Ellipsis" />
+            <Button size={params.button_size} variant="default" startDecorator="Ellipsis" />
         </View>
     );
 });
@@ -72,6 +72,10 @@ export default function ElementMenu(oProps) {
     //--- horizontal menu items alignment
     const sAlignItems = oProps.alignItems || oParams.align_items || 'left';
     sClassName += ` justify-${sAlignItems}`;
+
+    if (isWeb) {
+        sClassName += ' overflow-visible';
+    }
 
     //--- show menu's content only
     const bShowContent = oParams.showContent === 'true';

@@ -16,16 +16,16 @@ export default function () {
         >
             <View className="flex-col mx-auto my-auto justify-center sm:justify-start items-center md:items-start flex-auto">
                
-                    <Text className="text-3xl mb-6 text-center md:text-left font-bold text-neutral-800 dark:text-neutral-200 ">
+                    {/* <Text className="text-3xl mb-6 text-center md:text-left font-bold text-neutral-800 dark:text-neutral-200 ">
                         Sign in to see more
-                    </Text>
+                    </Text> */}
                 
             </View>
 
-            <View className=" flex-auto w-full">
+            <View className=" flex-auto w-full gap-y-[16px]">
                 <BlockByUrl url="/api.php?r=system/login_form/TemplServiceLogin" />
 
-                <Link className=" mx-auto  w-full " href="/forgot-password">
+                <Link className=" mx-auto pb-[16px] border-b border-bdr dark:border-bdr-d w-full " href="/forgot-password">
                     <Button
                         title="Forgot password?"
                         variant="link"
@@ -33,12 +33,12 @@ export default function () {
                         size="sm"
                     />
                 </Link>
-
-                <Link className=" w-full " href="/create-account">
+                <Text className="text-base text-neutral-600 dark:text-neutral-400 text-center">Don't have an account?</Text> 
+                <Link className=" w-full  " href="/create-account">
                     <Button
                         title="Create new account"
-                        startDecorator="UserPlus"
-                        size="base"
+                        startDecorator="UserRoundPlus"
+                        size="lg"
                         fullWidth
                     />
                 </Link>

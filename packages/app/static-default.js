@@ -55,8 +55,8 @@ const LogoMark = (
     <Svg
         aria-label="Logo Mark"
         className=" "
-        width={40}
-        height={40}
+        width={44}
+        height={44}
         viewBox="0 0 40 40"
         xmlns="http://www.w3.org/2000/svg"
     >
@@ -88,7 +88,7 @@ const LogoMark = (
 )
 
 const LogoNativeLight = (
-    <View className="w-[40px] h-[40px]">
+    <View className="w-[44px] h-[44px]">
         <Svg
             aria-label="Logo Mark"
             class="  h-[40px] w-[40px] text-neutral-800 dark:text-neutral-200  "
@@ -125,7 +125,7 @@ const LogoNativeLight = (
 )
 
 const LogoNativeDark = (
-    <View className="w-[40px] h-[40px]">
+    <View className="w-[44px] h-[44px]">
         <Svg
             aria-label="Logo Mark"
             className="h-[40px] w-[40px]"

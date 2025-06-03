@@ -80,24 +80,24 @@ export default function ContextSelector({ data, url }) {
     };
 
     return (
-        <View className="flex-row-reverse sm:flex-row justify-end sm:justify-start  flex-auto">
-            
+        <View className="flex-row gap-x-[8px] flex-auto">
+           
             <Link href={contextRoot.url} >
-                <View className='ml-[8px] flex-row items-center gap-x-3 items-center p-[4px] web:group w-full flex-auto hover:bg-bgritem dark:hover:bg-bgritem-d rounded-xl'>
+                <View className='items-center text-center web:group w-full flex-auto flex-row gap-x-[12px]'>
                     <View className="items-center justify-center text-neutral-800 dark:text-neutral-200">
                         {contextRoot.image}
                     </View>
-                    <Text className="text-lg h-8 whitespace-nowrap align-middle justify-center font-semibold text-neutral-800 dark:text-neutral-200 overflow-hidden truncate">{contextRoot.name}</Text>
+                    <Text className="text-lg whitespace-nowrap font-semibold text-neutral-700 dark:text-neutral-300 hover:text-neutral-950 dark:hover:text-neutral-50 truncate">{contextRoot.name}</Text>
                 </View>
             </Link>
-            <View className="my-auto sm:ml-2">
+            <View className="my-auto">
                 <DropdownPopup
                     trigger={
                         <Button
                             variant="text"
                             size="base"
                             rounded
-                            startDecorator="Menu"
+                            startDecorator="ChevronsUpDown"
                         />
                     }
                     minPopupWidth={352}
@@ -129,6 +129,7 @@ export default function ContextSelector({ data, url }) {
                     </View>
                 </DropdownPopup>
             </View>
+            
         </View>
     );
 }

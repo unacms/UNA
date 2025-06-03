@@ -81,7 +81,12 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
     return (
         <>
             <FormModal pageData={pageData} setPageData={setPageData} />
-            <ScrollView contentContainerStyle={{ alignItems: 'center' }} className={isWeb ? containerClasses : ""} horizontal={true} onLayout={handleLayout}>
+            <ScrollView
+                contentContainerStyle={{ alignItems: 'center' }}
+                className={isWeb ? (containerClasses ? containerClasses.trim() + ' overflow-visible' : 'overflow-visible') : ""}
+                horizontal={true}
+                onLayout={handleLayout}
+            >
                 <View className={menuClasses} >
                     {
                         items.map((aItem, iKey) => {

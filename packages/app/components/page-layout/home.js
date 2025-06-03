@@ -218,9 +218,9 @@ export default function (props) {
             >
                 {getLayout(currentUser) == 'hor' && (
                     <View className="hidden relative xl:flex w-[360px] ">
-                        <View className="fixed-process fixed w-[360px] p-[8px] gap-x-[8px] duration-200">
+                        <View className="fixed-process fixed w-[360px] p-4 duration-200">
                             {appSetting('layout', 'sidebar_search') && (
-                                <View className="p-2">
+                                <View className="pb-3 w-full">
                                     <Search type="input" placeholder="Enter search text" />
                                 </View>
                             )}
@@ -294,7 +294,7 @@ export default function (props) {
                     </View>
                 )}
 
-                <View className="flex-auto w-full sm:px-4">
+                <View className="flex-auto w-full sm:px-4 xl:px-0">
                     <View className=" w-full mx-auto max-w-2xl ">
                         <View className={`relative w-full mx-auto max-w-2xl ${feedList.length > 1 ? '' : 'sm:mt-3'} `}>
                             {feedList.map((item, index) => {
@@ -337,8 +337,8 @@ export default function (props) {
 
                 </View>
 
-                <View className="hidden lg:flex w-[360px] ">
-                    <View className=" fixed-process w-[360px] py-[16px] flex-col gap-y-[16px] duration-200">
+                    <View className=" w-[360px] ">
+                    <View className="hidden lg:flex fixed-process p-[16px] flex-col gap-y-[32px] duration-200">
                         {sideBarBlocks.map((item, index) => {
                             return (
                                 <BlockByName
