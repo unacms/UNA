@@ -198,8 +198,9 @@ export default function (props) {
         return result;
     }, {});
 
+
     return (
-        <View className='w-full'>
+        <View className={`w-full ${props?.exProps?.classes}`}>
             {(isAutoChange) && <Row className='items-center justify-between mb-3'>
                 {/*<Text className="text-xl font-bold text-neutral-800  dark:text-neutral-200 ">Filters</Text>*/}
                 {!isObjectsEqual(filteredDefaultValues, allFields) &&  <Button

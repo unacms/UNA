@@ -51,6 +51,7 @@ export default function FormModal({ pageData, setPageData }) {
                                     onClose: () => { setPageData(false); },
                                     resetOnSubmit: true,
                                     formOnly: true,
+                                    classes: 'p-3 sm:p-4'
                                 }}
                             />
                         ))
