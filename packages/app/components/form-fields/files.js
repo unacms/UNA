@@ -465,7 +465,7 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
 
         button = (
             <Pressable onPress={selectImage} >
-                <View className={w + '  items-center justify-center bg-primary/5 ' + (isImage ? '' : 'h-32')}>
+                <View className={w + '  items-center justify-center bg-bgrinput dark:bg-bgrinput-d ' + (isImage ? '' : 'h-32')}>
                     {!img && (<ViewRef ref={drop} className=' text-neutral-500/50 text-lg  flex-auto w-full border-neutral-300 dark:border-neutral-700 rounded-lg  justify-center  flex-col border border-dashed text-center'>
                         <Text className='text-neutral-500/50 text-lg  justify-center  flex-col text-center'>Drag & Drop or browse files...</Text>
                     </ViewRef>)}

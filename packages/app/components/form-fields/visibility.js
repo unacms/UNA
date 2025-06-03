@@ -212,13 +212,16 @@ export default function (props) {
         <>
             {modalElement}
             <Field {...props} error2={formContext.formState.errors[name]}>
+                <View className='flex-row items-center px-[8px] bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d h-[56px] rounded-[12px]'>
                 <Button
                     title={filteredValues.find(item => item.value == field.value)?.label || filteredValues[0].label}
                     startDecorator="Globe"
-                    variant="outline"
+                    variant="default"
                     size="base"
+                    rounded
                     onPress={() => handleShowModal()}
                 />
+                </View>
             </Field>
         </>
     );

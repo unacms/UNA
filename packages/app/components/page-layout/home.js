@@ -337,8 +337,8 @@ export default function (props) {
 
                 </View>
 
-                    <View className=" w-[360px] ">
-                    <View className="hidden lg:flex fixed-process p-[16px] flex-col gap-y-[32px] duration-200">
+                    <View className="hidden lg:flex  w-[360px] ">
+                    <View className="fixed-process p-[16px] flex-col gap-y-[32px] duration-200">
                         {sideBarBlocks.map((item, index) => {
                             return (
                                 <BlockByName

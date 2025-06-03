@@ -20,13 +20,16 @@ export default function (props) {
     return (
         <View className={sClassName}>
             {isShowCaption &&
-                <Text className="label-text block mb-[4px] ml-[1px] ">
+                <View className='relative w-full'>
+                <Text className="absolute top-0 label-text block bg-neutral-100 dark:bg-neutral-800 rounded-xl px-[12px] pt-[8px] pb-[60px] w-full ">
                     <Row className='items-center gap-x-1' >
                         <Text className={appSetting('forms', 'caption_classes')}>{caption}</Text>
                         {((props.checker || props.required) ? <></> : <Text className="text-sm sm:text-base text-neutral-700 dark:text-neutral-300">{isShowOptional}</Text>)}
-                        {((!!mandatoryIcon && (props.checker || props.required)) ? <Text className="text-red-600 h-4 text-xs"><Icon icon={mandatoryIcon} /></Text> : <></>)}
+                        {((!!mandatoryIcon && (props.checker || props.required)) ? <Text className="text-red-600 h-[16px] w-[16px]"><Icon icon={mandatoryIcon} size={16} /></Text> : <></>)}
                     </Row >
                 </Text>
+                    <View className=' w-full h-[36px] ' />
+                </View>
             }
             {(props.name && props.last_changed == props.name) && <View className='absolute right-0 top-0 mb-1'>
                 <Button onPress={props.handleSubmit} startDecorator="ArrowClockwise" variant="primary" size="xs" rounded />

@@ -13,7 +13,7 @@ import { useTranslation } from 'react-i18next';
 const User = ({ data, onSelect, type }) => {
     return (
         <Pressable onPress={() => onSelect(data)}>
-            <Row className=" p-[5px] pr-2 sm:pr-3 rounded-full border border-bdr dark:border-bdr-d mb-2 mr-2 items-center justiy-center">
+            <Row className=" p-[5px] pr-[12px] rounded-full border border-bdrbutton dark:border-bdrbutton-d bg-white dark:bg-neutral-800 shadow-sm items-center justiy-center">
                 {<Profile displaySize="sm" {...data} showLinks={false} />}
                 {type == 'remove' && <Icon icon="X" />}
             </Row>
@@ -139,20 +139,20 @@ export default function (props) {
             <Modal id='file-preview2' title="Choose users" onVisible={!!isModal} onClose={() => {setIsModal(false)}}>
                 <SelectUsers isSingle={isSingle} onSave={onSave} requestUrl={'/api.php?r=' + props.ajax_get_suggestions + "&params="} initedData={[]} />
             </Modal>
-            <View className='w-full '>
-                <Row className='gap-x-2  justify-start items-start flex-row flex-wrap'>
+            <View className='w-full py-[5px] px-[8px] gap-x-2 justify-between items-start flex-row flex-wrap border border-bdrinput dark:border-bdrinput-d rounded-xl bg-bgrinput dark:bg-bgrinput-d'>
+                
                     {selected && selected.map((oItem) => <User type={isSingle ? '' : "remove"} key={oItem.id} data={oItem} onSelect={onRemove} />)}
                     <View className=''>
                         <Button
                             title={t('Select ...')}
                             startDecorator="Plus"
-                            variant="default"
+                            variant="secondary"
                             rounded
                             size="base"
                             onPress={() => showSelect()}
                         />
                     </View>
-                </Row>
+                
             </View>
         </Field>
     );

@@ -127,7 +127,7 @@ function AtomProfile_(oProps) {
             sSize: 'w-[32px] h-[32px]',
             iSizeWidth: 32,
             iSizeHeight: 32,
-            sSizeFont: 'native:text-[14px] web:text-sm',
+            sSizeFont: 'native:text-[16px] web:text-[16px]',
             sSizeFontLetter: 'text-base opacity-50 font-semibold',
         },
         base: {
