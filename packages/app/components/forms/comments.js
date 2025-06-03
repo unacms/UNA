@@ -233,6 +233,9 @@ export default function FormComments(props) {
         attachmentButtonContainerClasses.push('right-0');
     }
 
+
+    const filteredPrevList = prevList.filter(item => item !== null);
+    
     return (
         <View className="w-full ">
             <Row className="w-full gap-x-[8px]">
@@ -358,14 +361,14 @@ export default function FormComments(props) {
                             </Reanimated.View>
                         )}
                     </View>
-                    {hasText && (
+                    {(hasText || filteredPrevList.length > 0) && (
                         <View className="absolute right-0 bottom-0  h-[44px] p-[4px] z-10">
                             {getFormFieldByData(
                                 props.data.inputs['cmt_submit'],
                                 handleSubmitWithSanitization,
                                 'custom',
                                 {
-                                    disabled: !hasText,
+                                    disabled: !hasText && filteredPrevList.length == 0,
                                     className: 'w-full h-full',
                                     notFullWidth: true,
                                     noMargin: true,
