@@ -1,11 +1,18 @@
-import { View } from 'app/design/view'
-import React from 'react'
-import dynamic from 'next/dynamic'
-import { APP_URL } from 'app/config';
+import { SvgXml } from 'react-native-svg';
+import { useEffect, useState } from 'react';
+import { Text } from 'app/design/typography'
+import { appSetting } from 'app/lib/util';
+import { useColorScheme } from 'react-native'
 
-export default function (props) {
-    const WebView = React.memo(
-        dynamic(() => import('react-native-webview'))
-    )
-    return <View className='w-full h-full'><WebView source={{ uri: APP_URL + '/' + props.src }} /></View>
-}
+export default function ({ src_dark, src_default, width, height }) {
+    const [xml, setXml] = useState(null);
+
+    const scheme = useColorScheme();
+    const src = scheme === 'dark' ? src_dark : src_default;
+
+    useEffect(() => {
+        fetch(appSetting('config', 'native_app_images_url') + '/svg/' + src).then(res => res.text()).then(setXml);
+    }, [src]);
+
+    return xml ? <SvgXml xml={xml} width={width} height={height} /> : null;
+};
