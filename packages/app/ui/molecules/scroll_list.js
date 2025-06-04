@@ -4,6 +4,7 @@ import Animated, {
     useAnimatedStyle,
     useAnimatedScrollHandler,
     withTiming,
+    Easing,
 } from 'react-native-reanimated';
 import { BlurView } from 'expo-blur';
 import React from 'react';
@@ -40,6 +41,11 @@ export default function ScrollList({
     const scrollY = useSharedValue(0);
     const scrollDirection = useSharedValue('none');
 
+    const animationConfig = {
+        duration: 250,
+        easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+    };
+
     const headerStyle = useAnimatedStyle(() => {
         const isShow =
             isProfileHeader ?
@@ -49,9 +55,9 @@ export default function ScrollList({
             scrollY.value < transparencyOffset ||
             scrollY.value === 0 ;
         return {
-            opacity: isShow ? withTiming(1) : withTiming(),
+            opacity: isShow ? withTiming(1, animationConfig) : withTiming(0, animationConfig),
             transform: [
-                { translateY: isShow ? withTiming(0) : withTiming(-114) },
+                { translateY: isShow ? withTiming(0, animationConfig) : withTiming(-114, animationConfig) },
             ],
         };
     });

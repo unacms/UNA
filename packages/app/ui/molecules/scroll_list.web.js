@@ -4,6 +4,7 @@ import Animated, {
     useAnimatedStyle,
     useDerivedValue,
     withTiming,
+    Easing,
 } from 'react-native-reanimated';
 import { BlurView } from 'expo-blur';
 import React, { useCallback, useEffect } from 'react';
@@ -63,8 +64,8 @@ export default function ScrollList({
     }, [scrollY, transparencyOffset]);
 
     const headerStyle = useAnimatedStyle(() => {
-        const opacityValue = withTiming(isShow.value ? 1 : 0, { duration: animationDuration });
-        const transformValue = withTiming(isShow.value ? 0 : -114, { duration: animationDuration });
+        const opacityValue = withTiming(isShow.value ? 1 : 0, { duration: animationDuration, easing: Easing.bezier(0.25, 0.1, 0.25, 1) });
+        const transformValue = withTiming(isShow.value ? 0 : -114, { duration: animationDuration, easing: Easing.bezier(0.25, 0.1, 0.25, 1) });
         return {
             position: 'fixed',
             top: 0,

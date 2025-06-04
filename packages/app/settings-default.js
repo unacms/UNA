@@ -764,11 +764,11 @@ export  const settingsDefault = {
             bgrtoolbarbutton: 'rgba(33, 37, 41, 0)',
         },
         conductor: {
-            menu: ' w-full items-left justify-center bg-bgrtabbar dark:bg-bgrtabbar-d border-b border-bdrtabbar dark:border-bdrtabbar-d shadow-sm ',
+            menu: ' w-full items-left justify-center bg-bgrtabbar dark:bg-bgrtabbar-d border-bdrtabbar dark:border-bdrtabbar-d shadow-[0_1px_0_rgba(0,0,0,0.05)]',
             menu_max_width: ' max-w-7xl ',
             content_max_width: ' max-w-7xl ',
             menu_is_dynamic: true,
-            menu_cnt: ' flex-row flex-none ',
+            menu_cnt: ' flex-row flex-none gap-x-[8px] ',
             menu_categ_ident: 'pl-[48px]',
             right_column_cnt: 'fixed-process pr-4 py-4',
             topmenu_cnt:

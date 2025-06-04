@@ -452,11 +452,11 @@ export function TopSidebar({ styles, isWeb, leftSideBar, header, headerSettings,
     const { currentUser } = useCurrentUser();
     return (
         <View style={styles} className={ ` ${conductorTheme.menu} ${leftSideBar ? 'lg:hidden' : ''}`}>
-            <View className={`${leftSideBar ? '' : ' mx-auto'} w-full ${conductorTheme.menu_max_width}`}>
+            <View className={`${leftSideBar ? '' : 'mx-auto'} w-full ${conductorTheme.menu_max_width}`}>
                 
-                <Row className=" pl-[8px] pb-[8px] items-center duration-300">
+                <Row className=" px-[12px] sm:px-[16px] py-[12px] duration-300 items-center justify-between">
                     {currentUser && title ? <Text className="text-2xl my-auto sm:mx-5 pb-1 font-medium text-neutral-800 tracking-tight dark:text-neutral-200 hidden lg:flex">{title}</Text> : null}
-                    {!currentUser && title ? <View className='mr-4'><TextHeader text={title} /></View> : null}
+                    {!currentUser && title ? <View className='pr-[12px] sm:pr-[16px]'><TextHeader text={title} /></View> : null}
                     {children}
                     {layout != 'mixed' && <Row className="hidden lg:flex px-4 cond-buttons-add">
                         {addButtons}

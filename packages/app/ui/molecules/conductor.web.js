@@ -786,7 +786,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             header={leftSideBar && layoutName != 'navigator'  ? <View className="bg-bgrcard dark:bg-bgrcard-d lg:hidden pt-20 px-3">{leftSideBarComponent}</View> : header}
             windowWidth={windowWidth}
         />
-          {(windowWidth < LAYOUT_BREAKPOINTS.lg && layoutName == 'navigator' && leftSideBarBlocks.length > 0) && <View className={`items-start ml-4 mt-2 mb-2`}>
+          {(windowWidth < LAYOUT_BREAKPOINTS.lg && layoutName == 'navigator' && leftSideBarBlocks.length > 0) && <View className={`items-start px-[12px] sm:px-[16px] py-[8px]`}>
                                 <Button title="Filters" variant="default" size="sm" rounded onPress={showFilters} />
                             </View>}
         </>
