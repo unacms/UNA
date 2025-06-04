@@ -1,8 +1,7 @@
 import { View, Pressable } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { Button } from 'app/design/controls';
-import { XIcon } from 'app/icons'; // This import might be used by the Button's internal icon resolution
-// import { XIcon } from 'app/icons'; // Assuming an icon will be created
+
 
 export default function AuthX({ button }) {
     // Placeholder logic

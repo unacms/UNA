@@ -1,7 +1,6 @@
 import { View, Pressable } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { Button } from 'app/design/controls';
-import { LinkedInIcon } from 'app/icons'; // This import might be used by the Button's internal icon resolution
 
 export default function AuthLinkedIn({ button }) {
     const handleLinkedInLogin = () => {

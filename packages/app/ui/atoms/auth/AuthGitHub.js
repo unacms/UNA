@@ -1,7 +1,6 @@
 import { View, Pressable } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { Button } from 'app/design/controls';
-import { GitHubIcon } from 'app/icons'; // This import might be used by the Button's internal icon resolution or can be removed if Button uses a global registry solely by string name.
 
 export default function AuthGitHub({ button }) {
     const handleGitHubLogin = () => {
