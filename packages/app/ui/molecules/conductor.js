@@ -20,13 +20,13 @@ import { callFn } from 'app/lib/functions/call';
 const TabBar = React.memo(({ routes, index, setIndex, onChangeRoute, currentUser }) => {
     if (routes.length > 1) {
         return (
-            <View className="w-full">
-                <ScrollView horizontal={true}  className="  ">
-                    <Row className="px-1.5  justify-center" >
+            
+                <ScrollView horizontal={true}  className=" bg-bgrnavbar dark:bg-bgrnavbar-d  ">
+                    <Row className="pl-[8px] justify-center" >
                         {routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
                             const btn =  callFn("getButtonForConductorNative", [a, index, currentUser, setIndex, onChangeRoute]);
                             return (
-                                <View className="py-2 px-1 items-center justify-center"
+                                <View className="p-[4px] items-center justify-center"
                                     key={`tab-${a.index}`}
                                 >
                                     {btn}
@@ -36,7 +36,7 @@ const TabBar = React.memo(({ routes, index, setIndex, onChangeRoute, currentUser
 
                     </Row>
                 </ScrollView>
-            </View>
+            
         )
     }
 });

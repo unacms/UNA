@@ -90,16 +90,16 @@ const colors = {
         DEFAULT: 'rgba(245,250,255,1)',
         h: 'rgba(245,250,255,1)',
         f: 'rgba(255,255,255,1)',
-        d: 'rgba(15,25,40,1)',
-        dh: 'rgba(15,25,40,1)',
-        df: 'rgba(30,40,55,1)',
+        d: 'rgba(30,40,55,1)',
+        dh: 'rgba(30,40,55,1)',
+        df: 'rgba(15,25,40,1)',
     },
     bdrinput: {
         DEFAULT: 'rgba(225,230,240,1)',
         h: 'rgba(210,215,220,1)',
         f: 'rgba(37, 99, 235, 1)',
-        d: 'rgba(30,40,55,1)',
-        dh: 'rgba(55,65,80,1)',
+        d: 'rgba(55,65,80,1)',
+        dh: 'rgba(75,85,100,1)',
         df: 'rgba(59, 130, 246, 1)'
     },
     bgrmodal: {
@@ -177,6 +177,14 @@ const colors = {
         DEFAULT: 'rgba(37, 99, 235, 1)',
         d: 'rgba(59, 130, 246, 1)',
     },
+    bgreditortoolbar: {
+        DEFAULT: 'rgba(229, 231, 235, 1)',
+        d: 'rgba(55, 65, 82, 1)'
+    },
+    iconeditortoolbar: {
+        DEFAULT: 'rgba(209, 213, 219, 1)',
+        d: 'rgba(75, 85, 99, 1)'
+    }
 }
 
 const theme = {

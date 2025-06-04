@@ -17,24 +17,26 @@ export default function (props) {
     const isShowOptional = optionalText != '' ? '(' + optionalText + ')' : '';
     const isShowCaption = !!props.caption && props.format == 'default' && !props.use_caption_as_placeholder && ['switcher', 'checkbox'].includes(props.type) == false;
 
+    const captionElement = (
+        <View className=' w-full bg-neutral-200/50 dark:bg-neutral-700/20 rounded-[16px] p-[4px]'>
+            <Text className="label-text block px-[12px] pt-[4px] pb-[6px] w-full ">
+                <Row className='items-center gap-x-1' >
+                    <Text className={appSetting('forms', 'caption_classes')}>{caption}</Text>
+                    {((props.checker || props.required) ? <></> : <Text className="text-sm sm:text-base text-neutral-700 dark:text-neutral-300">{isShowOptional}</Text>)}
+                    {((!!mandatoryIcon && (props.checker || props.required)) ? <Text className="text-red-600 h-[16px] w-[16px]"><Icon icon={mandatoryIcon} size={16} /></Text> : <></>)}
+                </Row >
+            </Text>
+            
+            {props.children}
+        </View>
+    );
+
     return (
         <View className={sClassName}>
-            {isShowCaption &&
-                <View className='relative w-full'>
-                <Text className="absolute top-0 label-text block bg-neutral-100 dark:bg-neutral-800 rounded-xl px-[12px] pt-[8px] pb-[60px] w-full ">
-                    <Row className='items-center gap-x-1' >
-                        <Text className={appSetting('forms', 'caption_classes')}>{caption}</Text>
-                        {((props.checker || props.required) ? <></> : <Text className="text-sm sm:text-base text-neutral-700 dark:text-neutral-300">{isShowOptional}</Text>)}
-                        {((!!mandatoryIcon && (props.checker || props.required)) ? <Text className="text-red-600 h-[16px] w-[16px]"><Icon icon={mandatoryIcon} size={16} /></Text> : <></>)}
-                    </Row >
-                </Text>
-                    <View className=' w-full h-[36px] ' />
-                </View>
-            }
             {(props.name && props.last_changed == props.name) && <View className='absolute right-0 top-0 mb-1'>
                 <Button onPress={props.handleSubmit} startDecorator="ArrowClockwise" variant="primary" size="xs" rounded />
             </View>}
-            {props.children}
+            {isShowCaption ? captionElement : props.children}
             {!!props.error && Array.isArray(props.error) && <FormError errorText={props.error[0]} errorLink={props.error[1]} />}
             {!!props.error && !Array.isArray(props.error) && <FormError errorText={props.error} />}
             {(props.error2 && props.checker.error!='') && <FormError errorText={props.checker.error} />}

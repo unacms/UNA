@@ -95,7 +95,7 @@ export const Header = memo(({
     const isCustomHeaderElement = appSetting('layout', 'custom_header_element')
 
     return (
-        <Row className={` px-[12px] items-center h-[64px] shadow-sm bg-bgrnavbar dark:bg-bgrnavbar-d`}>
+        <Row className={` px-[12px] sm:px-[16px] items-center h-[64px] shadow-sm bg-bgrnavbar dark:bg-bgrnavbar-d`}>
             
                 {(isHome && !pageData?.context) && <Pressable onPress={scrollToTop} className="items-center flex-row active:scale-95 active:opacity-50 active:bg-bgrbutton dark:active:bg-bgrbutton-d rounded-xl p-[4px] gap-x-3 text-neutral-700 dark:text-neutral-300 web:hover:text-neutral-800 web:dark:hover:text-neutral-200 duration-300 ">
                     
@@ -121,7 +121,7 @@ export const Header = memo(({
                 )}
             
             {type !== 'string' && <View className="flex-auto">{headerContent}</View>}
-            {(memoizedRightComponents || rightHeaderComponent || isCustomHeaderElement) && <Row className="">
+            {(memoizedRightComponents || rightHeaderComponent || isCustomHeaderElement) && <Row className=" ">
                 {rightHeaderComponent ? rightHeaderComponent : memoizedRightComponents}
                 {isCustomHeaderElement && <HeaderElement/>}
             </Row>}
@@ -142,7 +142,7 @@ function getRightHeader(items, currentUser, pagePath) {
         return null;
 
     return (
-        <Row className='gap-x-[8px] items-center '>
+        <Row className='gap-x-[8px] items-center'>
             {
                 items?.map((button) => {
                     let btn = undefined;

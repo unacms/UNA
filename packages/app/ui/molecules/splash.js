@@ -207,7 +207,7 @@ export default function Splash(props) {
 
     if (!isWeb) {
         const gradientColors = colorScheme === 'dark'
-            ? ['rgba(15, 25, 40, 1)', 'rgba(23, 37, 84, 0.5)'] // primary-900 to primary-950/50
+            ? ['rgba(23, 37, 84, 1)', 'rgba(23, 37, 84, 0.5)'] // primary-900 to primary-950/50
             : ['rgba(239, 246, 255, 1)', 'rgba(191, 219, 254, 1)']; // primary-50 to primary-200
 
         return (
@@ -293,7 +293,7 @@ export default function Splash(props) {
 
     return (
         <View className=" flex-col justify-center w-full ">
-            <View className="w-full flex-auto bg-gradient-to-b from-primary-50 to-primary-200 dark:from-primary-900 dark:to-primary-950/50">
+            <View className="w-full flex-auto bg-gradient-to-b from-primary-50 to-primary-200 dark:from-primary-950 dark:to-primary-950/50">
                 <View className="w-full lg:flex-row gap-y-[32px] mx-auto pt-[64px] lg:pt-0 max-w-[1440px] ">
                     <View
                         className="my-auto flex-col items-center lg:items-start gap-x-[32px] flex-auto px-[16px] sm:px-[32px] xl:px-[64px] lg:pb-[64px] "
@@ -307,7 +307,8 @@ export default function Splash(props) {
                         </Animated.View>
                     </View>
                     <View className=" max-w-xl w-full flex-auto mx-auto px-[16px] pb-[16px] sm:p-[32px] lg:p-[64px] my-auto duration-300 gap-y-[16px]">
-                            <Card addClassName=" animate-slidein flex-col w-full mx-auto ">
+                        <View className="animate-slidein rounded-[25px]  p-[1px] bg-gradient-to-b from-primary-100 to-primary-300 dark:from-neutral-800 dark:to-primary-950 shadow-[0_0_16px_rgba(0,0,0,0.1)] dark:shadow-[0_8px_16px_rgba(0,0,0,0.2)] ">
+                            <Card addClassName="    " >
                                 <View className="flex-col pb-[24px] gap-y-[8px]">
                                     <Text className="text-2xl leading-none tracking-tight font-bold text-neutral-800 dark:text-neutral-200">Log in to {appSetting('app', 'title')}</Text>
                                     <Text className="text-sm text-neutral-600 dark:text-neutral-400">Use your email and password to sign in</Text>
@@ -332,6 +333,7 @@ export default function Splash(props) {
                                 
                                
                             </Card>
+                        </View>
                             <Text className="text-base text-neutral-600 dark:text-neutral-400 text-center">Don't have an account?</Text> 
                             <Button
                                 onPress={() => {

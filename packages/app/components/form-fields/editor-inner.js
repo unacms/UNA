@@ -77,6 +77,10 @@ export default function RftText({
     const { field } = useController({ name, rules: {}, defaultValue: value })
     const { colors } = Theme()
     const formContext = useFormContext()
+
+    console.log('[EditorInner] colors.bgreditortoolbar:', colors.bgreditortoolbar);
+    console.log('[EditorInner] colors.iconeditortoolbar:', colors.iconeditortoolbar);
+
     const [suggestions, setSuggestions] = useState([])
     const [keywordval, setKeyword] = useState(['', ''])
     const [editorHeight, setEditorHeight] = useState(0)
@@ -236,12 +240,37 @@ export default function RftText({
 
     const CustomKeyboardShortcuts = []; // Temporarily disable by setting to empty array
 
+    const customAppTheme = {
+        toolbar: {
+            toolbarBody: {
+                backgroundColor: colors.bgreditortoolbar,
+            },
+            iconWrapper: {
+                backgroundColor: colors.iconeditortoolbar,
+            },
+            // You can also add iconWrapperActive and iconWrapperDisabled here
+            // if you define corresponding colors in your theme.js
+            // iconWrapperActive: {
+            //   backgroundColor: colors.iconeditortoolbarActive, // Example
+            // },
+            // iconWrapperDisabled: {
+            //   backgroundColor: colors.iconeditortoolbarDisabled, // Example
+            // },
+        }
+    };
+
+    const editorTheme = ThemeName() === 'dark' ? 
+        { ...darkEditorTheme, ...customAppTheme } : 
+        customAppTheme;
+
+    console.log('[EditorInner] final editorTheme:', JSON.stringify(editorTheme, null, 2));
+
     const editor = useEditorBridge({
         autofocus: props.autofocus,
         avoidIosKeyboard: false,
         dynamicHeight: false,
         placeholder: props.placeholder,
-        ...(ThemeName() === 'dark' && { theme: darkEditorTheme }),
+        theme: editorTheme, // Apply the combined theme
         initialContent: field.value,
         bridgeExtensions: [
             ...TenTapStartKit,
@@ -659,7 +688,7 @@ export default function RftText({
     return (
         <View
             onLayout={handleLayout}
-            className={`flex-1 relative ${isToolBar ? 'h-48' : ''}`}
+            className={`flex-1 relative border border-bdrinput dark:border-bdrinput-d hover:border-bdrinput-h dark:hover:border-bdrinput-dh focus:border-bdrinput-f dark:focus:border-bdrinput-df focus:bg-bgrinput-f dark:focus:bg-bgrinput-df overflow-hidden rounded-[12px] ${isToolBar ? 'h-48' : ''}`}
         >
             {suggestions && suggestions.length > 0 && (
                 <View
@@ -712,7 +741,7 @@ export default function RftText({
                         bottom: 0,
                     }}
                 >
-                    <View className="h-18">
+                    <View className="h-18 flex-auto bg-bgritem dark:bg-bgritem-d p-[4px]">
                         <Toolbar hidden={false} editor={editor} items={b} />
                     </View>
                 </KeyboardAvoidingView>
