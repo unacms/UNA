@@ -17,14 +17,14 @@ import { menuItemsFilter } from 'app/lib/util';
 import MenuAdd from 'app/components/nav/menu-add'
 import { menuItemsByName, appSetting, getMenuSettings } from 'app/lib/util'
 import Search from 'app/ui/molecules/search';
-import { Button } from 'app/design/controls';
 import Link from 'app/ui/atoms/link'
 import { useRouter } from 'app/lib/hooks/router'
 import ContextSelector from 'app/ui/molecules/context-selector'
 import { useLayoutData } from 'app/context/layout';
 import { useTranslation } from 'react-i18next';
 import HeaderElement from 'app/ui/molecules/header_element'
-import RightNonLogged from 'app/components/nav/right_non_logged'
+import MenuLauncher from 'app/components/nav/menu-launcher'
+import { Button, ButtonRef } from 'app/design/controls'
 
 
 export const TextHeader = memo(({ text }) => {
@@ -33,6 +33,30 @@ export const TextHeader = memo(({ text }) => {
         {t(text)}
     </Text>
 })
+
+function RightNonLogged(props) {
+    const bSearch = appSetting('layout', 'search') == true
+    return (
+        <Row className=' gap-x-2'>
+            {bSearch && <Search
+                params={{ trigger: { icon: 'Search', size: 'base', variant: 'secondary', onPress: () => FeedbackHaptics('Medium') } }} />
+            }
+            <MenuLauncher />
+            <Link href="/login">
+                <ButtonRef
+                    variant="secondary"
+                    tooltip="Account"
+                    rounded
+                    size="base"
+                    hitSlop={4}
+                    aria-label="Account"
+
+                    startDecorator="UserRound"
+                />
+            </Link>
+        </Row>
+    )
+}
 
 export const Header = memo(({
     backButtonPresented,
@@ -96,7 +120,7 @@ export const Header = memo(({
             scrollToTop();
         }
     }
-        , [layoutData]);
+    , [layoutData]);
 
     if (isNoContainer)
         return headerContent;
@@ -105,9 +129,7 @@ export const Header = memo(({
 
     return (
         <Row className={` px-[12px] sm:px-[16px] items-center h-[64px] justify-between shadow-sm bg-bgrnavbar dark:bg-bgrnavbar-d`}>
-
             {(!currentUser && !pageData?.context) && <Pressable onPress={scrollToTop} className="items-center flex-row active:scale-95 active:opacity-50 active:bg-bgrbutton dark:active:bg-bgrbutton-d rounded-xl gap-x-3 text-neutral-700 dark:text-neutral-300 web:hover:text-neutral-800 web:dark:hover:text-neutral-200 duration-300 ">
-
                 <View className="w-10 h-10">
                     {appStatic('logo_mark')}
                 </View>
