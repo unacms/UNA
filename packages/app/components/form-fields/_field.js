@@ -18,7 +18,7 @@ export default function (props) {
     const isShowCaption = !!props.caption && props.format == 'default' && !props.use_caption_as_placeholder && ['switcher', 'checkbox'].includes(props.type) == false;
 
     const captionElement = (
-        <View className=' w-full bg-neutral-200/50 dark:bg-neutral-700/20 rounded-[16px] p-[4px]'>
+        <View className=' w-full bg-neutral-100 dark:bg-neutral-800 rounded-[16px] p-[4px]'>
             <Text className="label-text block px-[12px] pt-[4px] pb-[6px] w-full ">
                 <Row className='items-center gap-x-1' >
                     <Text className={appSetting('forms', 'caption_classes')}>{caption}</Text>

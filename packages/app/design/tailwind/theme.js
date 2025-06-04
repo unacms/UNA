@@ -87,19 +87,19 @@ const colors = {
 
 
     bgrinput: {
-        DEFAULT: 'rgba(245,250,255,1)',
-        h: 'rgba(245,250,255,1)',
+        DEFAULT: 'rgba(255,255,255,1)',
+        h: 'rgba(255,255,255,1)',
         f: 'rgba(255,255,255,1)',
-        d: 'rgba(30,40,55,1)',
-        dh: 'rgba(30,40,55,1)',
+        d: 'rgba(15,25,40,1)',
+        dh: 'rgba(15,25,40,1)',
         df: 'rgba(15,25,40,1)',
     },
     bdrinput: {
-        DEFAULT: 'rgba(225,230,240,1)',
-        h: 'rgba(210,215,220,1)',
+        DEFAULT: 'rgba(210,215,220,1)',
+        h: 'rgba(37, 99, 235, 1)',
         f: 'rgba(37, 99, 235, 1)',
         d: 'rgba(55,65,80,1)',
-        dh: 'rgba(75,85,100,1)',
+        dh: 'rgba(59, 130, 246, 1)',
         df: 'rgba(59, 130, 246, 1)'
     },
     bgrmodal: {
@@ -184,6 +184,10 @@ const colors = {
     iconeditortoolbar: {
         DEFAULT: 'rgba(209, 213, 219, 1)',
         d: 'rgba(75, 85, 99, 1)'
+    },
+    bgrtoolbarbutton: {
+        DEFAULT: 'rgba(248, 249, 250, 1)',
+        d: 'rgba(33, 37, 41, 1)'
     }
 }
 
