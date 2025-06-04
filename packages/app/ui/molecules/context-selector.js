@@ -8,7 +8,7 @@ import Profile from 'app/ui/molecules/profile'
 import { useCurrentUser } from 'app/context/user';
 import { appStatic } from 'app/lib/app-static';
 import { useWindowDimensions } from 'react-native';
-import { FeedbackHaptics } from 'app/lib/util';
+import { FeedbackHaptics, appSetting } from 'app/lib/util';
 import { useState } from 'react';
 
 function renderListItem(props, isActive, onItemClick) {
@@ -74,14 +74,11 @@ export default function ContextSelector({ data, url }) {
     };
 
     const handleItemClick = () => {
-        // Simply close the popup when an item is clicked
-        // Let the Link component handle navigation
         setIsOpen(false);
     };
 
     return (
         <View className="flex-row w-full gap-x-[8px] flex-auto">
-           
             <Link href={contextRoot.url} >
                 <View className='items-center text-center align-middle flex-auto flex-row gap-x-[12px]'>
                     <View className="items-center justify-center text-neutral-800 dark:text-neutral-200">
@@ -90,7 +87,6 @@ export default function ContextSelector({ data, url }) {
                     <View className="text-lg whitespace-nowrap font-semibold text-neutral-800 dark:text-neutral-200 my-auto truncate text-center items-center align-middle justify-center">{contextRoot.name}</View>
                 </View>
             </Link>
-            
                 <DropdownPopup
                     trigger={
                         <Button
@@ -106,7 +102,7 @@ export default function ContextSelector({ data, url }) {
                 >
                     <View  >
 
-                        {renderLogoListItem(!data.current?.id, handleItemClick)}
+                        {appSetting('context_selector', 'show_logo') && renderLogoListItem(!data.current?.id, handleItemClick)}
                         {data.list.map(item => renderListItem(item, item.id === data.current?.id, handleItemClick))}
                         {!!data.create && <Link className="w-full" href={data.create.url} onPress={handleItemClick}>
                             <Row className="w-full px-[8px] py-[6px] gap-x-3 items-center hover:bg-bgritem dark:hover:bg-bgritem-d rounded-xl">
@@ -118,9 +114,9 @@ export default function ContextSelector({ data, url }) {
                         </Link>}
                         {(data.links && Array.isArray(data.links)) && data.links.map(item =>
                             <Link key={item.url} className="w-full" href={item.url} onPress={handleItemClick}>
-                                <Row className="w-full px-[8px] py-[6px] gap-x-3 items-center hover:bg-bgritem dark:hover:bg-bgritem-d rounded-xl">
+                                <Row className={`w-full px-[8px] py-[6px] gap-x-3 items-center hover:bg-bgritem dark:hover:bg-bgritem-d ${!data.current?.id && item.url == appSetting('context_selector', 'default_item') ? 'bg-bgritemprimary dark:bg-bgritemprimary-d  rounded-xl' : ''}`}>
                                     <View className="items-center w-[44px] h-[44px] text-neutral-800 dark:text-neutral-200 justify-center bg-bgritem border border-bdritem dark:bg-bgritem-d dark:border-bdritem-d rounded-full">
-                                        <Icon icon={item.icon} />
+                                        {item.icon && <Icon icon={item.icon} />}
                                     </View>
                                     <Text className="text-lg h-8 my-auto font-semibold text-neutral-800 dark:text-neutral-200">{item.title}</Text>
                                 </Row>

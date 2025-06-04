@@ -58,7 +58,6 @@ export  const settingsDefault = {
 
         share_text: '',
         default_icon_stroke_width: 2,
-        use_context_selector: false,
         tablet_mode_from: 'lg',
         custom_header_element: false
     },
@@ -92,6 +91,10 @@ export  const settingsDefault = {
     async_workers: {
         list: ['CounterChecker'], //['EventChecker'],//NotifChecker OLD appSetting('layout', 'async_workers')
         interval: 10, //OLD appSetting('layout', 'async_workers_interval')
+    },
+    context_selector:{
+        show_logo: false,
+        default_item: ''
     },
     cover: {
         use_background: false, //appSetting('layout', 'use_background')
