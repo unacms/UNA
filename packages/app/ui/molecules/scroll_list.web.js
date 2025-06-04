@@ -11,20 +11,25 @@ import { Theme } from 'app/design/theme';
 import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { Button } from 'app/design/controls';
 import { useWindowDimensions } from 'react-native';
-import { Header } from 'app/ui/molecules/scroll_list_header';
+import { Header, TextHeader } from 'app/ui/molecules/scroll_list_header';
+import { useCurrentUser } from 'app/context/user';
+import { useTranslation } from 'react-i18next';
+import { Text } from 'app/design/typography'
+import { getMenuSettings } from 'app/lib/util'
 
-export default function ScrollList({ 
-    content, 
-    pageData, 
-    headerHeight = 64, 
-    isBackButton = false, 
-    contentType, 
-    refer, 
-    useCustomScrollHandler, 
-    inverted, 
-    headerComponent, 
-    subHeaderComponent, 
-    rightHeaderComponent, 
+
+export default function ScrollList({
+    content,
+    pageData,
+    headerHeight = 64,
+    isBackButton = false,
+    contentType,
+    refer,
+    useCustomScrollHandler,
+    inverted,
+    headerComponent,
+    subHeaderComponent,
+    rightHeaderComponent,
     isMenuNameAsTitle = false,
     isNoContainer = false,
 }) {
@@ -36,6 +41,8 @@ export default function ScrollList({
     const transparencyOffset = 200;
     const animationDuration = 300;
     const { colors } = Theme();
+    const { currentUser } = useCurrentUser();
+    const { t } = useTranslation();
 
     /* ANIMATION */
     const scrollY = useSharedValue(0);
@@ -90,10 +97,10 @@ export default function ScrollList({
     };
 
     const onScroll = (event) => {
-        if(inverted)
+        if (inverted)
             updateScroll(event.target.scrollHeight - event.target.scrollTop - event.target.clientHeight);
         else
-            updateScroll(event.target.scrollTop);            
+            updateScroll(event.target.scrollTop);
     };
 
     const handleScroll = useCallback(() => {
@@ -131,24 +138,38 @@ export default function ScrollList({
 
     const enhanced = React.cloneElement(content, baseProps);
 
+    if (!currentUser && !subHeaderComponent) {
+        let textName = pageData?.name;
+        if (isMenuNameAsTitle) {
+            const menuSettings = getMenuSettings(pageData?.menu?.object, pageData?.menu?.config);
+            textName = menuSettings.name;
+        }
+        headerHeight = 116;
+        subHeaderComponent = (
+            <View className='px-[12px] sm:px-[16px] items-start py-2 justify-center bg-bgrtabbar dark:bg-bgrtabbar-d border-b border-bdrtabbar dark:border-bdrtabbar-d shadow-sm'>
+                <TextHeader text={textName} />
+            </View>
+        );
+    }
+
     return (
         <View className="flex-1" style={{ paddingTop: isSmallScreen && !useCustomScrollHandler ? headerHeight : 0 }}>
             {enhanced}
             {isSmallScreen && <Animated.View style={[headerStyle]}>
-                
-                    <View className="w-full " style={{ backgroundColor: colors.headerBackground }} >
-                        <Header
-                            backButtonPresented={isBackButton}
-                            headerComponent={headerComponent}
-                            rightHeaderComponent={rightHeaderComponent}
-                            pageData={pageData}
-                            scrollToTop={scrollToTop}
-                            router={null}
-                            isMenuNameAsTitle={isMenuNameAsTitle}
-                            isNoContainer={isNoContainer}
-                        />
-                        {subHeaderComponent}
-                    </View>
+
+                <View className="w-full " style={{ backgroundColor: colors.headerBackground }} >
+                    <Header
+                        backButtonPresented={isBackButton}
+                        headerComponent={headerComponent}
+                        rightHeaderComponent={rightHeaderComponent}
+                        pageData={pageData}
+                        scrollToTop={scrollToTop}
+                        router={null}
+                        isMenuNameAsTitle={isMenuNameAsTitle}
+                        isNoContainer={isNoContainer}
+                    />
+                    {subHeaderComponent}
+                </View>
 
             </Animated.View>}
             {isShowScrollToTopButton && <Animated.View style={[buttonStyle]}>

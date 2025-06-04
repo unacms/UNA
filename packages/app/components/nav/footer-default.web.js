@@ -27,6 +27,9 @@ export default function () {
     const iFrCounter = callFn("getFriendsCounter", [currentUser]);
     let pathname = usePathname()
 
+    if (!currentUser && !appSetting('layout', 'show_tabbar_on_mobile_non_logged'))
+        return null
+
     let profile = null
     if (currentUser) {
         let dUser = Object.assign({}, currentUser);
@@ -34,6 +37,7 @@ export default function () {
         dUser.url = appSetting('dashboard', 'url')
         profile = <View className="w-[32px] h-[32px] p-[4px]"><Profile {...dUser} displayType="unit_wo_info" displaySize="xs" /></View>
     }
+    
 
     if (pathname == '/')
         pathname = '/home';
@@ -77,16 +81,13 @@ function MenuBottomItem({ link, title, index, icon, isActive, profile, iFrCounte
     ].find(item => item.condition)?.value || null;
 
     return (
-        <View
-            
-            className=" w-full flex-auto items-center "
-        >
+        <View className="w-full flex-auto items-center">
             <Link
                 href={link}
                 noprefetch={link === appSetting('notifications', 'url') ? "false" : "true"}
                 className="w-full"
             >
-                 {isActive && (
+                {isActive && (
                     <View className="-top-2 w-full bg-primary dark:bg-primary-d rounded-xl h-0.5 animate-appear" />
                 )}
                 <View className={`min-h-12 justify-between items-center ${isActive && ''}`}>
@@ -96,7 +97,6 @@ function MenuBottomItem({ link, title, index, icon, isActive, profile, iFrCounte
                     {<Text className={`group-hover:text-primary dark:group-hover:text-primary text-[12px] tracking-tight  leading-[16px] whitespace-nowrap ${isActive ? 'text-primary' : 'text-neutral-700 dark:text-neutral-300'}`}>{title}</Text>}
                     {badge && <View className={`absolute  bg-contrast dark:bg-contrast-d border-2 border-white dark:border-neutral-900 rounded-full  px-1.5 items-center justify-center -right-1 -top-2`}><Text className="text-white text-xs ">{badge.text}</Text></View>}
                 </View>
-               
             </Link>
         </View>
     );

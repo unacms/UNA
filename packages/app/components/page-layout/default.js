@@ -19,7 +19,7 @@ export default function PageLayout(props) {
             refer={refer}
             content = {content}
             pageData = {props.data}
-            headerHeight = {64}
+
             contentType="ScrollList"
         />
         

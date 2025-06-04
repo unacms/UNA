@@ -85,11 +85,7 @@ const HeaderLine = memo(
                             {title}
                         </Text>
                 )}
-                {bSearch && (
-                    <View className="flex-auto hidden xl:flex pl-[8px]">
-                        <Search type="input" placeholder="Enter search text" />
-                    </View>
-                )}
+                
             </View>
         )
     }
@@ -158,7 +154,7 @@ export default function (props) {
                             {!!currentUser && (
                                 <Row className="justify-end gap-x-2">
                                     
-                                        <View className=" ">
+                                        <View className={`${appSetting('layout', 'tablet_mode_from')}:hidden`}>
                                             {bSearch && <Search />}
                                         </View>
                                         {isCustomHeaderElement && <View className=" "><HeaderElement/></View>}

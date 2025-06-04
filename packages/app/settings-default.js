@@ -33,7 +33,7 @@ export  const settingsDefault = {
         default_layout: 'hor', //hor, ver, mixed// OLD appSetting('layout', 'format')
         max_width: ' max-w-[1440px] ', 
         max_width_block: '  ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
-        search: false,
+        search: true,
         sidebar_search: true,
         extended_search: true,
         apps: true,
@@ -59,7 +59,8 @@ export  const settingsDefault = {
         share_text: '',
         default_icon_stroke_width: 2,
         tablet_mode_from: 'lg',
-        custom_header_element: false
+        custom_header_element: false,
+        show_tabbar_on_mobile_non_logged: false, 
     },
     auth:{
         enabled: true,
@@ -763,7 +764,7 @@ export  const settingsDefault = {
             bgrtoolbarbutton: 'rgba(33, 37, 41, 0)',
         },
         conductor: {
-            menu: ' w-full items-left justify-center bg-bgrtabbar dark:bg-bgrtabbar-d border-b border-bdrtabbar dark:border-bdrtabbar-d shadow-sm] ',
+            menu: ' w-full items-left justify-center bg-bgrtabbar dark:bg-bgrtabbar-d border-b border-bdrtabbar dark:border-bdrtabbar-d shadow-sm ',
             menu_max_width: ' max-w-7xl ',
             content_max_width: ' max-w-7xl ',
             menu_is_dynamic: true,

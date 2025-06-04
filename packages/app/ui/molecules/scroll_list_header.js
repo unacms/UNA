@@ -9,8 +9,6 @@ import { BlurView } from 'expo-blur';
 import React, { useMemo, useEffect, memo, isValidElement } from 'react';
 import { getPageSettings } from 'app/lib/util'
 import { Text } from 'app/design/typography'
-import { Icon } from 'app/ui/atoms/icon';
-import { Theme } from 'app/design/theme';
 import { Platform } from 'react-native'
 import { FeedbackHaptics } from 'app/lib/util';
 import { useCurrentUser } from 'app/context/user';
@@ -26,6 +24,15 @@ import ContextSelector from 'app/ui/molecules/context-selector'
 import { useLayoutData } from 'app/context/layout';
 import { useTranslation } from 'react-i18next';
 import HeaderElement from 'app/ui/molecules/header_element'
+import RightNonLogged from 'app/components/nav/right_non_logged'
+
+
+export const TextHeader = memo(({ text }) => {
+    const { t } = useTranslation();
+    return <Text className=" font-bold text-neutral-800 dark:text-neutral-200 flex-auto text-2xl tracking-tight">
+        {t(text)}
+    </Text>
+})
 
 export const Header = memo(({
     backButtonPresented,
@@ -42,11 +49,11 @@ export const Header = memo(({
     const settings = getPageSettings(pageData?.config, pagePath);
     const { t } = useTranslation();
     const router = useRouter();
+    const isWeb = Platform.OS === 'web';
 
     let textName = pageData?.name;
 
     if (isMenuNameAsTitle) {
-        //console.log("pageData3", pageData?.menu?.object, pageData?.menu?.config)
         const menuSettings = getMenuSettings(pageData?.menu?.object, pageData?.menu?.config);
         textName = menuSettings.name;
     }
@@ -62,6 +69,10 @@ export const Header = memo(({
         }
     }
 
+    if (!currentUser) {
+        rightComponents = <RightNonLogged />;
+    }
+
     const memoizedRightComponents = useMemo(() => {
         if (Array.isArray(rightComponents) && !isValidElement(rightComponents[0])) {
             return getRightHeader(rightComponents, currentUser, pagePath);
@@ -73,21 +84,19 @@ export const Header = memo(({
     let text = type === 'string' ? headerContent : '';
 
     const isHome = pagePath === 'home';
-    if (isHome) {
+    if (isHome || (!currentUser && isWeb)) {
         text = '';
     }
 
     text = text.replace('__notification__', '');
 
-    const isWeb = Platform.OS === 'web';
-
     useEffect(() => {
-        if (layoutData && layoutData?.type == 'list:move_to_top' ) {
+        if (layoutData && layoutData?.type == 'list:move_to_top') {
             setLayoutData(null);
             scrollToTop();
         }
     }
-    ,[layoutData]);
+        , [layoutData]);
 
     if (isNoContainer)
         return headerContent;
@@ -95,35 +104,31 @@ export const Header = memo(({
     const isCustomHeaderElement = appSetting('layout', 'custom_header_element')
 
     return (
-        <Row className={` px-[12px] sm:px-[16px] items-center h-[64px] shadow-sm bg-bgrnavbar dark:bg-bgrnavbar-d`}>
-            
-                {(isHome && !pageData?.context) && <Pressable onPress={scrollToTop} className="items-center flex-row active:scale-95 active:opacity-50 active:bg-bgrbutton dark:active:bg-bgrbutton-d rounded-xl p-[4px] gap-x-3 text-neutral-700 dark:text-neutral-300 web:hover:text-neutral-800 web:dark:hover:text-neutral-200 duration-300 ">
-                    
-                    <View className="w-10 h-10">
-                        {appStatic('logo_mark')}
-                    </View>
-                    <View className="w-20 h-10 flex-row items-center">
-                        {appStatic('logo_text')}
-                    </View></Pressable>}
-                {(pageData?.context) && <ContextSelector url={pageData?.url} data={pageData?.context} />}
-                {(backButtonPresented && (!isWeb || history.length > 2)) && (
-                    <View className=""><Button variant="text" rounded onPress={() => {
-                        FeedbackHaptics('Medium');
-                        router ? router?.back() : history.back();
-                    }} startDecorator="ArrowLeft" size="base" /></View>
-                )}
-                {!!text && (
-                    
-                        <Text className=" font-bold text-neutral-800 dark:text-neutral-200 flex-auto text-3xl tracking-tight">
-                            {t(text)}
-                        </Text>
-                    
-                )}
-            
+        <Row className={` px-[12px] sm:px-[16px] items-center h-[64px] justify-between shadow-sm bg-bgrnavbar dark:bg-bgrnavbar-d`}>
+
+            {(!currentUser && !pageData?.context) && <Pressable onPress={scrollToTop} className="items-center flex-row active:scale-95 active:opacity-50 active:bg-bgrbutton dark:active:bg-bgrbutton-d rounded-xl gap-x-3 text-neutral-700 dark:text-neutral-300 web:hover:text-neutral-800 web:dark:hover:text-neutral-200 duration-300 ">
+
+                <View className="w-10 h-10">
+                    {appStatic('logo_mark')}
+                </View>
+                <View className="w-20 h-10 flex-row items-center">
+                    {appStatic('logo_text')}
+                </View></Pressable>}
+            {(pageData?.context) && <ContextSelector url={pageData?.url} data={pageData?.context} />}
+            {(backButtonPresented && (!isWeb || history.length > 2)) && (
+                <View className=""><Button variant="text" rounded onPress={() => {
+                    FeedbackHaptics('Medium');
+                    router ? router?.back() : history.back();
+                }} startDecorator="ArrowLeft" size="base" /></View>
+            )}
+            {!!text && (
+                <TextHeader text={text}></TextHeader>
+            )}
+
             {type !== 'string' && <View className="flex-auto">{headerContent}</View>}
-            {(memoizedRightComponents || rightHeaderComponent || isCustomHeaderElement) && <Row className=" ">
+            {(memoizedRightComponents || rightHeaderComponent || isCustomHeaderElement) && <Row className=" items-end ">
                 {rightHeaderComponent ? rightHeaderComponent : memoizedRightComponents}
-                {isCustomHeaderElement && <HeaderElement/>}
+                {isCustomHeaderElement && <HeaderElement />}
             </Row>}
         </Row>
     );
