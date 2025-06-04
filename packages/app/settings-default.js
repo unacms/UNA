@@ -199,6 +199,18 @@ export  const settingsDefault = {
 
         },*/
     },
+    editor: {
+        toolbar: {
+            padding: 1, // Padding for toolbar buttons in pixels
+            colors: {
+                background: 'rgba(255, 255, 255, 0)',
+                backgroundDark: 'rgba(0, 0, 0, 0)',
+                icon: 'rgba(210, 215, 220, 1)',
+                iconDark: 'rgba(55, 65, 80, 1)',
+
+            }
+        }
+    },
     jitsi: {
         prefix: 'prefix_',
         domain: 'https://meet.jit.si/',
@@ -723,6 +735,9 @@ export  const settingsDefault = {
             safeAreaBackground: 'rgba(255,255,255,1)', // Add this new property
             primaryBg: 'rgba(37,99,235,0.1)',
             fgTertiary: 'rgba(75,85,99,1)',
+            bgreditortoolbar: 'rgba(255, 255, 255, 1)',
+            iconeditortoolbar: 'rgba(210, 215, 220, 1)',
+            bgrtoolbarbutton: 'rgba(248, 249, 250, 0)',
         },
         dark: {
             default: 'rgba(209,213,219,1)', //fix for icons color in iOS
@@ -743,6 +758,9 @@ export  const settingsDefault = {
             safeAreaBackground: 'rgba(17,24,39,1)', // Add this new property
             primaryBg: 'rgba(37,99,235,0.1)',
             fgTertiary: 'rgba(156,163,175,1)',
+            bgreditortoolbar: 'rgba(55, 65, 82, 1)',
+            iconeditortoolbar: 'rgba(75, 85, 99, 1)',
+            bgrtoolbarbutton: 'rgba(33, 37, 41, 0)',
         },
         conductor: {
             menu: ' w-full items-left justify-center bg-bgrtabbar dark:bg-bgrtabbar-d border-b border-bdrtabbar dark:border-bdrtabbar-d shadow-sm] ',
@@ -840,9 +858,9 @@ export  const settingsDefault = {
         },
         inputs: {
             default:
-                'h-[56px] min-w-[56px] rounded-[12px] flex-auto ' +
+                'h-[56px] min-w-[56px] rounded-[14px] flex-auto ' +
                 'px-[12px] py-[12px] text-[16px] ' +
-                'bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d ' +
+                'bg-bgrinput dark:bg-bgrinput-d border-2 border-bdrinput dark:border-bdrinput-d ' +
                 'hover:border-bdrinput-h dark:hover:border-bdrinput-dh ' +
                 'focus:border-bdrinput-f dark:focus:border-bdrinput-df ' +
                 'focus:bg-bgrinput-f dark:focus:bg-bgrinput-df ' +
@@ -850,7 +868,7 @@ export  const settingsDefault = {
                 'placeholder-neutral-500 ' +
                 'text-neutral-800 dark:text-neutral-200 ' +
                 'focus:text-neutral-900 dark:focus:text-neutral-100',
-            multi: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-[12px] flex-auto px-[12px] py-[12px] dark:focus:bg-bgrinput-df dark:text-neutral-100 text-[16px] leading-[20px] ',
+            multi: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border-2 border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-[14px] flex-auto px-[12px] py-[12px] dark:focus:bg-bgrinput-df dark:text-neutral-100 text-[16px] leading-[20px] ',
             rounded:
                 ' h-[48px] rounded-full flex-auto px-[12px] py-[11px] text-[16px] bg-bgrinput dark:bg-bgrinput-d hover:border-bdrinput-h focus:border-bdrinput-f overflow-hidden border border-bdrinput focus:bg-bgrinput-f dark:border-bdrinput-d dark:focus:border-bdrinput-d dark:focus:bg-bgrinput-df focus:border-bdrinput-f dark:focus:border-bdrinput-df duration-300 placeholder-neutral-500 text-neutral-800 dark:text-neutral-200 ',
             roundedsmall:

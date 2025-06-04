@@ -78,9 +78,6 @@ export default function RftText({
     const { colors } = Theme()
     const formContext = useFormContext()
 
-    console.log('[EditorInner] colors.bgreditortoolbar:', colors.bgreditortoolbar);
-    console.log('[EditorInner] colors.iconeditortoolbar:', colors.iconeditortoolbar);
-
     const [suggestions, setSuggestions] = useState([])
     const [keywordval, setKeyword] = useState(['', ''])
     const [editorHeight, setEditorHeight] = useState(0)
@@ -101,6 +98,9 @@ export default function RftText({
     const isCommentsEditor = props.container_class === 'comments';
     const editorFontSize = isCommentsEditor ? '16px' : '16px';
     const editorLineHeight = isCommentsEditor ? '20px' : '24px';
+
+    // Get the editor settings for toolbar configuration
+    const editorSettings = appSetting('editor', 'toolbar');
 
     useEffect(() => {
         if (keywordval[1] === '') return
@@ -209,14 +209,12 @@ export default function RftText({
     useEffect(() => {
         if (editor && field.value == '' && editor.getHTML() != field.value) {
             editor.setContent(field.value)
-            //  editor.focus('end');
         }
     }, [field.value])
 
     useEffect(() => {
         if (editor && editor.getHTML() != value) {
             editor.setContent(value)
-            // editor.focus('end');
         }
     }, [value])
 
@@ -235,42 +233,105 @@ export default function RftText({
             placeholder: props.placeholder,
             showOnlyWhenEditable: true,
         }),
-        CodeBridge.configureCSS(customCodeBlockCSS), // Custom codeblock css
+        CodeBridge.configureCSS(customCodeBlockCSS),
     ]
 
-    const CustomKeyboardShortcuts = []; // Temporarily disable by setting to empty array
+    const CustomKeyboardShortcuts = [];
 
-    const customAppTheme = {
+    // Extract toolbar styling values from settings
+    const toolbarPadding = editorSettings?.padding || 8;
+    const toolbarColors = editorSettings?.colors || {};
+    
+    // Light mode colors
+    const toolbarBgColor = toolbarColors.background || 'rgba(248, 249, 250, 1)';
+    const toolbarIconColor = toolbarColors.icon || 'rgba(209, 213, 219, 1)';
+    
+    // Dark mode colors
+    const toolbarBgColorDark = toolbarColors.backgroundDark || 'rgba(33, 37, 41, 1)';
+    const toolbarIconColorDark = toolbarColors.iconDark || 'rgba(75, 85, 99, 1)';
+    
+    // Check if background colors are transparent and determine active colors
+    const isLightBgTransparent = toolbarBgColor.includes(', 0)');
+    const isDarkBgTransparent = toolbarBgColorDark.includes(', 0)');
+    
+    const lightActiveColor = isLightBgTransparent ? toolbarIconColor : toolbarBgColor;
+    const darkActiveColor = isDarkBgTransparent ? toolbarIconColorDark : toolbarBgColorDark;
+
+    // Create theme configurations
+    const lightTheme = {
         toolbar: {
-            toolbarBody: {
-                backgroundColor: colors.bgreditortoolbar,
-            },
             iconWrapper: {
-                backgroundColor: colors.iconeditortoolbar,
+                backgroundColor: toolbarIconColor,
+                borderRadius: 4,
+                padding: 4,
+                marginHorizontal: 2,
             },
-            // You can also add iconWrapperActive and iconWrapperDisabled here
-            // if you define corresponding colors in your theme.js
-            // iconWrapperActive: {
-            //   backgroundColor: colors.iconeditortoolbarActive, // Example
-            // },
-            // iconWrapperDisabled: {
-            //   backgroundColor: colors.iconeditortoolbarDisabled, // Example
-            // },
+            toolbarButton: {
+                backgroundColor: toolbarBgColor,
+                paddingHorizontal: toolbarPadding,
+                borderRadius: 4,
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: 4,
+            },
+            iconWrapperActive: {
+                backgroundColor: lightActiveColor,
+                borderRadius: 4,
+                opacity: isLightBgTransparent ? 0.6 : 0.8,
+            },
+            iconWrapperDisabled: {
+                backgroundColor: toolbarIconColor,
+                opacity: 0.5,
+                borderRadius: 4,
+            },
         }
     };
 
-    const editorTheme = ThemeName() === 'dark' ? 
-        { ...darkEditorTheme, ...customAppTheme } : 
-        customAppTheme;
+    const darkThemeCustom = {
+        toolbar: {
+            iconWrapper: {
+                backgroundColor: toolbarIconColorDark,
+                borderRadius: 4,
+                padding: 4,
+                marginHorizontal: 2,
+            },
+            toolbarButton: {
+                backgroundColor: toolbarBgColorDark,
+                paddingHorizontal: toolbarPadding,
+                borderRadius: 4,
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: 4,
+            },
+            iconWrapperActive: {
+                backgroundColor: darkActiveColor,
+                borderRadius: 4,
+                opacity: isDarkBgTransparent ? 0.6 : 0.8,
+            },
+            iconWrapperDisabled: {
+                backgroundColor: toolbarIconColorDark,
+                opacity: 0.5,
+                borderRadius: 4,
+            },
+        }
+    };
 
-    console.log('[EditorInner] final editorTheme:', JSON.stringify(editorTheme, null, 2));
+    const customEditorTheme = ThemeName() === 'dark' ? 
+        { 
+            ...darkEditorTheme, 
+            toolbar: {
+                ...darkEditorTheme.toolbar,
+                ...darkThemeCustom.toolbar
+            }
+        } : 
+        lightTheme;
 
     const editor = useEditorBridge({
         autofocus: props.autofocus,
         avoidIosKeyboard: false,
         dynamicHeight: false,
         placeholder: props.placeholder,
-        theme: editorTheme, // Apply the combined theme
+        theme: customEditorTheme,
         initialContent: field.value,
         bridgeExtensions: [
             ...TenTapStartKit,
@@ -688,7 +749,7 @@ export default function RftText({
     return (
         <View
             onLayout={handleLayout}
-            className={`flex-1 relative border border-bdrinput dark:border-bdrinput-d hover:border-bdrinput-h dark:hover:border-bdrinput-dh focus:border-bdrinput-f dark:focus:border-bdrinput-df focus:bg-bgrinput-f dark:focus:bg-bgrinput-df overflow-hidden rounded-[12px] ${isToolBar ? 'h-48' : ''}`}
+            className={`flex-1 relative  rounded-[14px] ${isToolBar ? 'h-48' : ''}`}
         >
             {suggestions && suggestions.length > 0 && (
                 <View
@@ -741,7 +802,7 @@ export default function RftText({
                         bottom: 0,
                     }}
                 >
-                    <View className="h-18 flex-auto bg-bgritem dark:bg-bgritem-d p-[4px]">
+                    <View className="flex-auto p-[4px]">
                         <Toolbar hidden={false} editor={editor} items={b} />
                     </View>
                 </KeyboardAvoidingView>
