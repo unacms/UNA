@@ -65,6 +65,7 @@ export default function DropdownPopup({
     }, [isRealOpen]);
 
     const updateButtonPosition = () => {
+        console.log("updateButtonPosition", buttonRef, buttonRef.current, buttonRef.current?.measureInWindow)
         if (!buttonRef.current?.measureInWindow) return;
 
         buttonRef.current.measureInWindow((x, y, width, height) => {

@@ -29,7 +29,6 @@ export function Theme() {
 
 export function ThemeName() {
     let scheme = useColorScheme();
-    console.log("scheme", scheme)
     if (Platform.OS == 'web') {
         let theme = storageGet('layout:theme', '', true);
         if (theme === null)
@@ -37,6 +36,5 @@ export function ThemeName() {
         if (theme && theme !== 'auto')
             scheme = theme;
     }
-     console.log("scheme2", scheme)
     return scheme === 'dark' ? 'dark' : 'light';
 }
