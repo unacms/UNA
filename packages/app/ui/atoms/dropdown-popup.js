@@ -92,6 +92,8 @@ export default function DropdownPopup({
                     } else if (top + effectivePopupHeight > windowHeight - 16 && y - effectivePopupHeight - 8 > 16) {
                         top = y - effectivePopupHeight - 8;
                     }
+                    if (top == 0)
+                        top = 1
 
                     setButtonPos({
                         x: left,
@@ -157,6 +159,7 @@ export default function DropdownPopup({
                     position: 'absolute',
                     top: buttonPos.y,
                     left: buttonPos.x,
+                    visibility: buttonPos.y > 0 ? 'visible' : 'hidden',
                     elevation: 5,
                     minWidth: minPopupWidth,
                     maxWidth: windowWidth - 32,
@@ -180,6 +183,7 @@ export default function DropdownPopup({
                 position: 'absolute',
                 top: buttonPos.y,
                 left: buttonPos.x,
+                visibility: buttonPos.y > 0 ? 'visible' : 'hidden',
                 elevation: 5,
                 minWidth: minPopupWidth,
                 maxWidth: windowWidth - 32,
