@@ -4,7 +4,7 @@ import { Text } from 'app/design/typography'
 import Card from 'app/components/card'
 import { Button } from 'app/design/controls'
 import Link from 'app/ui/atoms/link'
-import { Platform, Keyboard } from 'react-native'
+import { Platform, Keyboard, useColorScheme } from 'react-native'
 import { appStatic } from 'app/lib/app-static'
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view'
 import { useState, useEffect, useRef } from 'react'
@@ -14,7 +14,7 @@ import * as Haptics from 'expo-haptics'
 import { appSetting } from 'app/lib/util'
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, withDelay, Easing } from 'react-native-reanimated';
 import ScrollList from 'app/ui/molecules/scroll_list'
-
+import { LinearGradient } from 'expo-linear-gradient';
 const triggerHaptics = () => {
     if (Platform.OS !== 'web') {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
@@ -34,7 +34,7 @@ export default function PageLayout(props) {
     const textBlockTranslateY = useSharedValue(20); // Start slightly lower
     const imageOpacity = useSharedValue(0);
     const imageTranslateY = useSharedValue(-20); // Start slightly higher (slide from top)
-
+    const colorScheme = useColorScheme(); // Added for dark mode detection
     const imageAnimatedStyle = useAnimatedStyle(() => {
         return {
             opacity: imageOpacity.value,
@@ -79,13 +79,12 @@ export default function PageLayout(props) {
     }, [imageOpacity, imageTranslateY, textBlockOpacity, textBlockTranslateY]);
 
     const content = isWeb ? (
-        <View className="flex-col justify-center w-full ">
-            <View className="w-full flex-auto bg-gradient-to-b from-primary-50 to-primary-200 dark:from-primary-950 dark:to-neutral-950 ">
-                <View className="w-full lg:flex-row gap-y-[32px] mx-auto pt-[64px] lg:pt-0 max-w-[1440px] ">
-                    <View className="my-auto flex-col flex-auto">
-                        <View className="my-auto flex-col items-center lg:items-start gap-x-[32px] flex-auto px-[16px] sm:px-[32px] xl:px-[64px] lg:pb-[64px] "
-                            accessible={true}>
-                            <Animated.View style={imageAnimatedStyle} className="w-[80%] max-w-[360px] aspect-square">
+        <View className="flex-col justify-center w-full">
+            <View className="w-full flex-auto bg-gradient-to-b from-primary-50 to-primary-200 dark:from-primary-950 dark:to-primary-950/50">
+                <View className="w-full lg:flex-row gap-y-[16px] mx-auto pt-[64px] pb-[64px] max-w-[1440px]">
+                    
+                    <View className="my-auto flex-col items-center lg:items-start gap-x-[32px] flex-auto px-[16px] sm:px-[32px] xl:px-[64px] lg:pb-[64px]" accessible={true}>
+                            <Animated.View style={imageAnimatedStyle} className="w-[50%] max-w-[360px] aspect-square">
                                 {appStatic('join_image')}
                             </Animated.View>
                             <View className="flex-col items-center lg:items-start gap-y-[16px] sm:gap-y-[24px]">
@@ -118,132 +117,151 @@ export default function PageLayout(props) {
                                 </Animated.View>
                             </View>
 
-                        </View>
-
                     </View>
-                    <View className=" max-w-xl w-full flex-auto mx-auto p-[16px] sm:p-[32px] lg:p-[64px] my-auto duration-300">
-                        <Card addClassName={cardClassName}>
-                            <View className="flex-col pb-[24px] gap-y-[8px]">
-                                <Text className="text-2xl leading-none tracking-tight font-bold text-neutral-800 dark:text-neutral-200">
-                                    Create your account
-                                </Text>
-                                <Text className="text-sm text-neutral-600 dark:text-neutral-400">
-                                    It's quick and easy to join
-                                </Text>
-                            </View>
-                            {!isAllowJoin && (
-                                <BlockByName
-                                    name={props.blocks.form_invitation}
-                                    data={props.data}
-                                    formProps={{
-                                        auto_focus: true,
-                                        hide_errors: true,
-                                        button_full_width: true,
-                                    }}
-                                />
-                            )}
-                            {isAllowJoin && (
-                                <BlockByName
-                                    name={props.blocks.form_join}
-                                    data={props.data}
-                                    formProps={{
-                                        auto_focus: true,
-                                        hide_errors: true,
-                                        button_full_width: true,
-                                    }}
-                                />
-                            )}
-                            <View className="flex items-center justify-center gap-y-2 border-t border-bdr dark:border-bdr-d mt-[16px] pt-[16px]">
+                    <View className=" max-w-xl w-full flex-auto mx-auto px-[16px] pb-[16px] sm:p-[32px] lg:py-[64px] my-auto duration-300 gap-y-[16px]">
 
-                                <AuthPanel />
-                            </View>
-                        </Card>
+                        <Animated.View style={imageAnimatedStyle} className="rounded-[25px]  p-[1px] bg-gradient-to-b from-primary-200 to-primary-300 dark:from-neutral-800 dark:to-primary-950 shadow-[0_0_16px_rgba(0,0,0,0.1)] dark:shadow-[0_8px_16px_rgba(0,0,0,0.2)] ">
 
-                        <Text className="text-base mt-[16px]  text-neutral-600 dark:text-neutral-400 text-center pb-[16px]">Already have an account?</Text>
-                        <Link className="w-full" href="/login">
-                            <Button
-                                onPress={triggerHaptics}
-                                title="Sign in"
-                                startDecorator="LogIn"
-                                variant="outline"
-                                size="lg"
-                                fullWidth
-                            />
-                        </Link>
+                            <Card>
+                                <View className="hidden lg:flex flex-col pb-[24px] gap-y-[8px]">
+                                    <Text className="text-2xl leading-none tracking-tight font-bold text-neutral-800 dark:text-neutral-200">
+                                        Create your account
+                                    </Text>
+                                    <Text className="text-sm text-neutral-600 dark:text-neutral-400">
+                                        It's quick and easy to join
+                                    </Text>
+                                </View>
+                                {!isAllowJoin && (
+                                    <BlockByName
+                                        name={props.blocks.form_invitation}
+                                        data={props.data}
+                                        formProps={{
+                                            auto_focus: true,
+                                            hide_errors: true,
+                                            button_full_width: true,
+                                        }}
+                                    />
+                                )}
+                                {isAllowJoin && (
+                                    <BlockByName
+                                        name={props.blocks.form_join}
+                                        data={props.data}
+                                        formProps={{
+                                            auto_focus: true,
+                                            hide_errors: true,
+                                            button_full_width: true,
+                                        }}
+                                    />
+                                )}
+                                <View className="flex items-center justify-center gap-y-2 border-t border-bdr dark:border-bdr-d mt-[16px] pt-[16px]">
+                                    <AuthPanel />
+                                </View>
+                            </Card>
+                        </Animated.View>
+                        <Animated.View style={textBlockAnimatedStyle} className="flex-col ">                                      
+                            <Text className="text-base mt-[16px]  text-neutral-600 dark:text-neutral-400 text-center pb-[16px]">Already have an account?</Text>
+                            <Link className="w-full" href="/login">
+                                <Button
+                                    onPress={triggerHaptics}
+                                    title="Sign in"
+                                    startDecorator="LogIn"
+                                    variant="default"
+                                    size="lg"
+                                    fullWidth
+                                />
+                            </Link>
+                        </Animated.View>
                     </View>
                 </View>
             </View>
-            <View className=" w-full p-4 border-t border-bdr dark:border-bdr-d">
-                <View className="mx-auto">
+            <View className=" w-full h-[64px]">
+                <View className="mx-auto my-auto">
                     {appStatic('components_footer')}
                 </View>
             </View>
         </View>
     ) : null;
 
+    const gradientColors = colorScheme === 'dark'
+    ? ['rgba(23, 37, 84, 1)', 'rgba(23, 37, 84, 0.5)'] // primary-900 to primary-950/50
+    : ['rgba(239, 246, 255, 1)', 'rgba(191, 219, 254, 1)']; // primary-50 to primary-200
 
     return (
-        <KbAvoidingView style={{ flex: 1 }}>
-            {isWeb ? (
-                <ScrollList
-                    refer={refer}
-                    content={content}
-                    pageData={props.data}
-
-                    contentType="ScrollList"
-                />
-            ) : (
-                <ScrollView
-                    contentContainerStyle={{
-                        flexGrow: 1,
-                        alignItems: 'center',
-                        padding: 16,
-                        width: '100%',
-                    }}
+       
+            <KbAvoidingView style={{ flex: 1 }} offset={isWeb ? undefined : 0}>
+                {isWeb ? (
+                    <ScrollList
+                        refer={refer}
+                        content={content}
+                        pageData={props.data}
+                        headerHeight={0}
+                        contentType="ScrollList"
+                    />
+                ) : (
+                    <LinearGradient
+                    colors={gradientColors}
+                    style={{ flex: 1 }}
                 >
-                    {/* On native, the left content (Join now/Request invitation text etc) is not rendered for create account, similar to login screen */}
-                    <Card rounded="rounded-[24px]" addClassName={cardClassName}>
-                        <View className="flex-col lg:hidden pb-4">
-                            <Text className="text-2xl font-bold text-neutral-800 dark:text-neutral-200">
-                                Create an account
-                            </Text>
+                    <ScrollView
+                        contentContainerStyle={{
+                            flexGrow: 1,
+                            alignItems: 'center',
+                            padding: 16,
+                            width: '100%',
+                        }}
+                    >
+                        
+                        <View className="flex-col justify-center w-full">
+                                <Card>
+                                    <View className="flex-col lg:hidden pb-4">
+                                        <Text className="text-2xl font-bold text-neutral-800 dark:text-neutral-200">
+                                            Create an account
+                                        </Text>
+                                    </View>
+                                    {!isAllowJoin && (
+                                        <BlockByName
+                                            name={props.blocks.form_invitation}
+                                            data={props.data}
+                                            formProps={{
+                                                auto_focus: true,
+                                                hide_errors: true,
+                                                button_full_width: true,
+                                            }}
+                                        />
+                                    )}
+                                    {isAllowJoin && (
+                                        <BlockByName
+                                            name={props.blocks.form_join}
+                                            data={props.data}
+                                            formProps={{
+                                                auto_focus: true,
+                                                hide_errors: true,
+                                                button_full_width: true,
+                                            }}
+                                        />
+                                    )}
+                                    <View className="flex items-center justify-center pt-4 mt-4 gap-y-2 border-t border-bdr dark:border-bdr-d">
+                                        <Link className="w-full" href="/login">
+                                            <Button
+                                                onPress={triggerHaptics}
+                                                title="Continue with email"
+                                                size="base"
+                                                fullWidth
+                                            />
+                                        </Link>
+                                        <AuthPanel />
+                                    </View>
+                                </Card>
+                                <View className=" w-full h-[64px]">
+                                    <View className="mx-auto my-auto">
+                                        {appStatic('components_footer')}
+                                    </View>
+                                </View>
                         </View>
-                        {!isAllowJoin && (
-                            <BlockByName
-                                name={props.blocks.form_invitation}
-                                data={props.data}
-                                formProps={{
-                                    auto_focus: true,
-                                    hide_errors: true,
-                                    button_full_width: true,
-                                }}
-                            />
-                        )}
-                        {isAllowJoin && (
-                            <BlockByName
-                                name={props.blocks.form_join}
-                                data={props.data}
-                                formProps={{
-                                    auto_focus: true,
-                                    hide_errors: true,
-                                    button_full_width: true,
-                                }}
-                            />
-                        )}
-                        <View className="flex items-center justify-center pt-4 mt-4 gap-y-2 border-t border-bdr dark:border-bdr-d">
-                            <Link className="w-full" href="/login">
-                                <Button
-                                    onPress={triggerHaptics}
-                                    title="Continue with email"
-                                    size="base"
-                                    fullWidth
-                                />
-                            </Link>
-                            <AuthPanel />
-                        </View>
-                    </Card>
-                </ScrollView>
-            )}
-        </KbAvoidingView>
+                    </ScrollView>
+                    </LinearGradient>
+                )}
+            </KbAvoidingView>
+        
     )
 }

@@ -861,7 +861,7 @@ export  const settingsDefault = {
             default:
                 'h-[56px] min-w-[56px] rounded-[14px] flex-auto ' +
                 'px-[12px] py-[12px] text-[16px] ' +
-                'bg-bgrinput dark:bg-bgrinput-d border-2 border-bdrinput dark:border-bdrinput-d ' +
+                'bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d ' +
                 'hover:border-bdrinput-h dark:hover:border-bdrinput-dh ' +
                 'focus:border-bdrinput-f dark:focus:border-bdrinput-df ' +
                 'focus:bg-bgrinput-f dark:focus:bg-bgrinput-df ' +
@@ -869,7 +869,7 @@ export  const settingsDefault = {
                 'placeholder-neutral-500 ' +
                 'text-neutral-800 dark:text-neutral-200 ' +
                 'focus:text-neutral-900 dark:focus:text-neutral-100',
-            multi: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border-2 border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-[14px] flex-auto px-[12px] py-[12px] dark:focus:bg-bgrinput-df dark:text-neutral-100 text-[16px] leading-[20px] ',
+            multi: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-[14px] flex-auto px-[12px] py-[12px] dark:focus:bg-bgrinput-df dark:text-neutral-100 text-[16px] leading-[20px] ',
             rounded:
                 ' h-[48px] rounded-full flex-auto px-[12px] py-[11px] text-[16px] bg-bgrinput dark:bg-bgrinput-d hover:border-bdrinput-h focus:border-bdrinput-f overflow-hidden border border-bdrinput focus:bg-bgrinput-f dark:border-bdrinput-d dark:focus:border-bdrinput-d dark:focus:bg-bgrinput-df focus:border-bdrinput-f dark:focus:border-bdrinput-df duration-300 placeholder-neutral-500 text-neutral-800 dark:text-neutral-200 ',
             roundedsmall:
@@ -928,7 +928,7 @@ export  const settingsDefault = {
         },
         button_styles: {
             'u-btn-default-cnt':
-                ' bg-bgrbutton dark:bg-bgrbutton-d border border-bdrbutton dark:border-bdrbutton-d hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50 border border-bdrbutton-d dark:border-bdrbutton-d shadow-sm',
+                ' bg-bgrbutton dark:bg-bgrbutton-d border border-bdrbutton dark:border-bdrbutton-d hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50  shadow-sm',
             'u-btn-default-text':
                 ' font-medium text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-neutral-50 ',
             'u-btn-default-trans': 'web:duration-200',

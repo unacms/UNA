@@ -49,15 +49,20 @@ export default function (props) {
 
     let name = props.data.params?.display?.includes('_delete') ? '' : (props.name ? props.name : props.data.params?.display)
     const defaultValues = {}
-    let isAutofocus = props.formProps === false ? false : true;
+    
+    // 1. Initialize isAutofocus based on a new prop, defaulting to false.
+    let isAutofocusEnabledForForm = props.enableAutoFocus === true; 
+
     if (data.inputs) {
-        Object.keys(data.inputs).forEach(function (key) {
+        const inputKeys = Object.keys(data.inputs); // Get keys to ensure order
+        for (const key of inputKeys) { // Iterate with for...of to respect order and allow early exit logic
             if ((data.inputs[key].type == "switcher" || data.inputs[key].type == "checkbox") && data.inputs[key].checked == false)
                 data.inputs[key].value = 0;
 
-            if((data.inputs[key].type == "text" || data.inputs[key].type == "textarea") && isAutofocus){
+            // 2. If autofocus is enabled for this form, apply to the first field and then disable for subsequent fields.
+            if (isAutofocusEnabledForForm) {
                 data.inputs[key].auto_focus = true;
-                isAutofocus = false
+                isAutofocusEnabledForForm = false; // Ensure only the first field gets autofocus
             }
 
             ['visibility', 'selector'].forEach(type => {
@@ -69,7 +74,7 @@ export default function (props) {
 
             if (data.inputs[key].value || data.inputs[key].value == 0)
                 defaultValues[key] = data.inputs[key].value;
-        });
+        }
     }
 
     const onSubmit = async d => {

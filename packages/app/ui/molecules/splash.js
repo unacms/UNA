@@ -229,7 +229,7 @@ export default function Splash(props) {
                         <View className="w-full flex-col lg:flex-row gap-y-[32px] mx-auto max-w-[1440px] ">
                         <View className="flex-col items-center lg:items-start gap-x-[32px] flex-auto px-[16px] sm:px-[32px] xl:px-[64px] lg:pb-[64px] "
                         accessible={true}>
-                            <Animated.View style={imageAnimatedStyle} className=" w-[80%] max-w-[360px] aspect-square ">
+                            <Animated.View style={imageAnimatedStyle} className=" w-[50%] max-w-[360px] aspect-square ">
                                 {appStatic('splash_image')}
                             </Animated.View>
                             <Animated.View style={[styles.heading, { marginBottom: 8, alignItems: 'center' }]} className=" flex-auto items-center lg:items-start gap-y-[16px] sm:gap-y-[24px] max-w-md sm:max-w-lg lg:max-w-3xl">
@@ -294,24 +294,25 @@ export default function Splash(props) {
     return (
         <View className=" flex-col justify-center w-full ">
             <View className="w-full flex-auto bg-gradient-to-b from-primary-50 to-primary-200 dark:from-primary-950 dark:to-primary-950/50">
-                <View className="w-full lg:flex-row gap-y-[32px] mx-auto pt-[64px] pb-[32px] max-w-[1440px] ">
+                <View className="w-full lg:flex-row gap-y-[16px] mx-auto pt-[64px] pb-[32px] max-w-[1440px] ">
                     <View
                         className="my-auto flex-col items-center lg:items-start gap-x-[32px] flex-auto px-[16px] sm:px-[32px] xl:px-[64px] lg:pb-[64px] "
                         accessible={true}
                     >
-                        <Animated.View style={imageAnimatedStyle} className=" w-[80%] max-w-[360px] aspect-square">
+                        <Animated.View style={imageAnimatedStyle} className=" w-[50%] max-w-[360px] aspect-square">
                             {appStatic('splash_image')}
                         </Animated.View>
                         <Animated.View style={textBlockAnimatedStyle} className=" flex-auto items-center lg:items-start gap-y-[16px] sm:gap-y-[24px] max-w-md sm:max-w-lg lg:max-w-3xl">
                             {appStatic('splash_text')}
                         </Animated.View>
                     </View>
-                    <View className=" max-w-xl w-full flex-auto mx-auto px-[16px] pb-[16px] sm:p-[32px] lg:py-[64px] my-auto duration-300 gap-y-[16px]">
-                        <View className="animate-slidein rounded-[25px]  p-[1px] bg-gradient-to-b from-primary-100 to-primary-300 dark:from-neutral-800 dark:to-primary-950 shadow-[0_0_16px_rgba(0,0,0,0.1)] dark:shadow-[0_8px_16px_rgba(0,0,0,0.2)] ">
-                            <Card addClassName="    " >
+                    <View className="flex-col-reverse lg:flex-col max-w-xl w-full flex-auto mx-auto px-[16px] pb-[16px] sm:p-[32px] lg:py-[64px] my-auto duration-300 gap-y-[16px]">
+                        
+                        <Animated.View style={imageAnimatedStyle} className="rounded-[25px]  p-[1px] bg-gradient-to-b from-primary-200 to-primary-300 dark:from-neutral-800 dark:to-primary-950 shadow-[0_0_16px_rgba(0,0,0,0.1)] dark:shadow-[0_8px_16px_rgba(0,0,0,0.2)] ">
+                            <Card>
                                 <View className="flex-col pb-[24px] gap-y-[8px]">
-                                    <Text className="text-2xl leading-none tracking-tight font-bold text-neutral-800 dark:text-neutral-200">Log in to {appSetting('app', 'title')}</Text>
-                                    <Text className="text-sm text-neutral-600 dark:text-neutral-400">Use your email and password to sign in</Text>
+                                    <Text className="text-center lg:text-start text-2xl leading-none tracking-tight font-bold text-neutral-800 dark:text-neutral-200">Log in to {appSetting('app', 'title')}</Text>
+                                    <Text className="hidden lg:block text-sm text-neutral-600 dark:text-neutral-400">Use your email and password to sign in</Text>
                                 </View>
                                 <BlockByName name={forms.login.name} data={props.data} formProps={{ auto_focus: true, hide_errors: true, button_full_width: true }} />
                                 <View className="mt-[8px]">
@@ -333,9 +334,13 @@ export default function Splash(props) {
                                 
                                
                             </Card>
-                        </View>
-                        <Animated.View style={imageAnimatedStyle} className="flex-col gap-y-[16px]">
-                            <Text className="text-base text-neutral-600 dark:text-neutral-400 text-center">Don't have an account?</Text> 
+                        </Animated.View>
+                        <Animated.View style={textBlockAnimatedStyle} className=" lg:hidden flex-col">
+                            <Text className="text-base text-neutral-600 dark:text-neutral-400 text-center">Already have an account?</Text> 
+                            
+                        </Animated.View>
+                        <Animated.View style={textBlockAnimatedStyle} className="flex-col py-[16px] gap-y-[16px]">
+                            <Text className="hidden lg:block text-base text-neutral-600 dark:text-neutral-400 text-center">Don't have an account?</Text> 
                             <Button
                                 onPress={() => {
                                     triggerHaptics();
