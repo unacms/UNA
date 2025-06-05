@@ -29,7 +29,7 @@ import { Button, ButtonRef } from 'app/design/controls'
 
 export const TextHeader = memo(({ text }) => {
     const { t } = useTranslation();
-    return <Text className="font-bold text-neutral-800 dark:text-neutral-200 flex-auto leading-none text-2xl tracking-tight">
+    return <Text className="font-bold text-neutral-800 dark:text-neutral-200 flex-auto leading-[36px] text-2xl tracking-tight">
         {t(text)}
     </Text>
 })
@@ -128,14 +128,19 @@ export const Header = memo(({
     const isCustomHeaderElement = appSetting('layout', 'custom_header_element')
 
     return (
-        <Row className={` px-[12px] sm:px-[16px] items-center h-[64px] justify-between bg-bgrnavbar dark:bg-bgrnavbar-d`}>
-            {(!currentUser && !pageData?.context) && <Pressable onPress={scrollToTop} className="items-center flex-row active:scale-95 active:opacity-50 active:bg-bgrbutton dark:active:bg-bgrbutton-d rounded-xl gap-x-3 text-neutral-700 dark:text-neutral-300 web:hover:text-neutral-800 web:dark:hover:text-neutral-200 duration-300 ">
-                <View className="w-10 h-10">
-                    {appStatic('logo_mark')}
-                </View>
-                <View className="w-20 h-10 flex-row items-center">
-                    {appStatic('logo_text')}
-                </View></Pressable>}
+        <Row className={` px-[12px] sm:px-[16px] items-center h-[64px] justify-between duration-300`}>
+            {(!currentUser && !pageData?.context) && 
+                <Link href="/home" aria-label="Home">
+                    <Pressable className="items-center flex-row hover:scale-105 rounded-[14px] active:scale-95 active:opacity-50 gap-x-3 text-neutral-800 dark:text-neutral-200 web:hover:text-neutral-800 web:dark:hover:text-neutral-200 duration-300 ">
+                        <View className="w-[44px] h-[44px]">
+                            {appStatic('logo_mark')}
+                        </View>
+                        <View className="w-[72px] h-[36px] flex-row items-center">
+                            {appStatic('logo_text')}
+                        </View>
+                    </Pressable>
+                </Link>
+            }
             {(pageData?.context) && <ContextSelector url={pageData?.url} data={pageData?.context} />}
             {(backButtonPresented && (!isWeb || history.length > 2)) && (
                 <View className=""><Button variant="text" rounded onPress={() => {

@@ -28,8 +28,8 @@ const LogoText = (
     <Svg
         aria-label="Logo Text"
         className=" "
-        width={68}
-        height={32}
+        width={72}
+        height={36}
         viewBox="0 0 68 32"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"

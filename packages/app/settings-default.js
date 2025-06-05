@@ -764,7 +764,7 @@ export  const settingsDefault = {
             bgrtoolbarbutton: 'rgba(33, 37, 41, 0)',
         },
         conductor: {
-            menu: ' w-full items-left justify-center bg-bgrtabbar dark:bg-bgrtabbar-d border-bdrtabbar dark:border-bdrtabbar-d shadow-[0_1px_0_rgba(0,0,0,0.05)]',
+            menu: ' w-full items-left justify-center ',
             menu_max_width: ' max-w-7xl ',
             content_max_width: ' max-w-7xl ',
             menu_is_dynamic: true,

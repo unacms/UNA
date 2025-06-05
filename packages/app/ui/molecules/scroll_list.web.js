@@ -5,9 +5,10 @@ import Animated, {
     useDerivedValue,
     withTiming,
     Easing,
+    runOnJS,
 } from 'react-native-reanimated';
 import { BlurView } from 'expo-blur';
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Theme } from 'app/design/theme';
 import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { Button } from 'app/design/controls';
@@ -40,10 +41,12 @@ export default function ScrollList({
     const isCollapsibleHeader = appSetting('native', 'collapsible_header') && isSmallScreen;
     const isShowScrollToTopButton = appSetting('native', 'scroll_to_top_button') && isSmallScreen;
     const transparencyOffset = 200;
+    const pageScrollThreshold = 10;
     const animationDuration = 300;
     const { colors } = Theme();
     const { currentUser } = useCurrentUser();
     const { t } = useTranslation();
+    const [isPageScrolled, setIsPageScrolled] = useState(false);
 
     /* ANIMATION */
     const scrollY = useSharedValue(0);
@@ -64,22 +67,21 @@ export default function ScrollList({
     }, [scrollY, transparencyOffset]);
 
     const headerStyle = useAnimatedStyle(() => {
-        const opacityValue = withTiming(isShow.value ? 1 : 0, { duration: animationDuration, easing: Easing.bezier(0.25, 0.1, 0.25, 1) });
+        // const opacityValue = withTiming(isShow.value ? 1 : 0, { duration: animationDuration, easing: Easing.bezier(0.25, 0.1, 0.25, 1) }); // Opacity animation removed
         const transformValue = withTiming(isShow.value ? 0 : -114, { duration: animationDuration, easing: Easing.bezier(0.25, 0.1, 0.25, 1) });
         return {
             position: 'fixed',
             top: 0,
             left: 0,
             width: '100%',
-            opacity: opacityValue,
+            // opacity: opacityValue, // Opacity animation removed
             transform: [
                 { translateY: transformValue },
             ],
         };
-    }, [scrollDirection, scrollY, isShow]);
+    }, [isShow]); // Removed scrollDirection and scrollY from dependencies as they only affected opacityValue
 
     const buttonStyle = useAnimatedStyle(() => {
-
         const opacityValue = withTiming(isShowButton.value ? 1 : 0, { duration: animationDuration });
         return {
             position: 'fixed',
@@ -90,11 +92,16 @@ export default function ScrollList({
         };
     }, [isShowButton]);
 
+    const updateIsPageScrolledState = (currentScrollY) => {
+        setIsPageScrolled(currentScrollY > pageScrollThreshold);
+    };
+
     const updateScroll = (value) => {
         const currentY = Math.round(value / 10) * 10;
         if (currentY === scrollY.value) return;
         scrollDirection.value = currentY > scrollY.value ? 'down' : 'up';
         scrollY.value = currentY;
+        runOnJS(updateIsPageScrolledState)(currentY);
     };
 
     const onScroll = (event) => {
@@ -111,13 +118,13 @@ export default function ScrollList({
     }, [scrollDirection, scrollY]);
 
     useEffect(() => {
-        if (isCollapsibleHeader) {
+        if (isSmallScreen) {
             window.addEventListener('scroll', handleScroll);
             return () => {
                 window.removeEventListener('scroll', handleScroll);
             };
         }
-    }, []);
+    }, [isSmallScreen, handleScroll]);
 
     const scrollToTop = () => {
         if (contentType === 'FlatList') {
@@ -144,9 +151,9 @@ export default function ScrollList({
             const menuSettings = getMenuSettings(pageData?.menu?.object, pageData?.menu?.config);
             textName = menuSettings.name;
         }
-        headerHeight = 116;
+        headerHeight = 120;
         subHeaderComponent = (
-            <View className='px-[12px] sm:px-[16px] items-start py-2 justify-center bg-bgrtabbar dark:bg-bgrtabbar-d border-b border-bdrtabbar dark:border-bdrtabbar-d shadow-sm'>
+            <View className='px-[12px] sm:px-[16px] items-start py-[10px] justify-center duration-300'>
                 <TextHeader text={textName} />
             </View>
         );
@@ -157,7 +164,13 @@ export default function ScrollList({
             {enhanced}
             {isSmallScreen && <Animated.View style={[headerStyle]}>
 
-                <View className="w-full " style={{ backgroundColor: colors.headerBackground }} >
+                <View 
+                    className={`w-full transition-all duration-300 ease-in-out will-change-transform ${
+                        isPageScrolled
+                            ? 'bg-bgrnavbar/80 dark:bg-bgrnavbar-d/80 backdrop-blur-lg shadow-[0_1px_0_rgba(0,0,0,0.05)] dark:shadow-[0_1px_0_rgba(255,255,255,0.05)]'
+                            : 'bg-transparent dark:bg-transparent shadow-none'
+                    }`}
+                >
                     <Header
                         backButtonPresented={isBackButton}
                         headerComponent={headerComponent}

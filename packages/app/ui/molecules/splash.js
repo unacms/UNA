@@ -294,7 +294,7 @@ export default function Splash(props) {
     return (
         <View className=" flex-col justify-center w-full ">
             <View className="w-full flex-auto bg-gradient-to-b from-primary-50 to-primary-200 dark:from-primary-950 dark:to-primary-950/50">
-                <View className="w-full lg:flex-row gap-y-[32px] mx-auto pt-[64px] lg:pt-0 max-w-[1440px] ">
+                <View className="w-full lg:flex-row gap-y-[32px] mx-auto pt-[64px] pb-[32px] max-w-[1440px] ">
                     <View
                         className="my-auto flex-col items-center lg:items-start gap-x-[32px] flex-auto px-[16px] sm:px-[32px] xl:px-[64px] lg:pb-[64px] "
                         accessible={true}
@@ -306,7 +306,7 @@ export default function Splash(props) {
                             {appStatic('splash_text')}
                         </Animated.View>
                     </View>
-                    <View className=" max-w-xl w-full flex-auto mx-auto px-[16px] pb-[16px] sm:p-[32px] lg:p-[64px] my-auto duration-300 gap-y-[16px]">
+                    <View className=" max-w-xl w-full flex-auto mx-auto px-[16px] pb-[16px] sm:p-[32px] lg:py-[64px] my-auto duration-300 gap-y-[16px]">
                         <View className="animate-slidein rounded-[25px]  p-[1px] bg-gradient-to-b from-primary-100 to-primary-300 dark:from-neutral-800 dark:to-primary-950 shadow-[0_0_16px_rgba(0,0,0,0.1)] dark:shadow-[0_8px_16px_rgba(0,0,0,0.2)] ">
                             <Card addClassName="    " >
                                 <View className="flex-col pb-[24px] gap-y-[8px]">
@@ -334,6 +334,7 @@ export default function Splash(props) {
                                
                             </Card>
                         </View>
+                        <Animated.View style={imageAnimatedStyle} className="flex-col gap-y-[16px]">
                             <Text className="text-base text-neutral-600 dark:text-neutral-400 text-center">Don't have an account?</Text> 
                             <Button
                                 onPress={() => {
@@ -346,6 +347,7 @@ export default function Splash(props) {
                                 size="lg"
                                 fullWidth
                             />
+                        </Animated.View>
                     </View>
                 </View>
             </View>

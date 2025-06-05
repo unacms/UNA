@@ -62,14 +62,14 @@ const HeaderLine = memo(
                 )}
                 {(!context || (!currentUser.confirmed && appSetting('layout', 'lock_unconfirmed'))) &&  (uri == 'home' || width >= LAYOUT_BREAKPOINTS.lg) && (
                     <Link
-                        className=" flex items-center flex-row active:scale-95 active:opacity-50 text-neutral-800 dark:text-neutral-200 hover:scale-105 hover:text-neutral-950 dark:hover:text-neutral-50 duration-300 gap-x-[12q] "
+                        className=" flex items-center flex-row active:scale-95 active:opacity-50 text-neutral-800 dark:text-neutral-200 hover:scale-105 hover:text-neutral-950 dark:hover:text-neutral-50 duration-300 gap-x-[12px] "
                         href="/home"
                         aria-label="Logo"
                     >
-                        <View className=" items-center h-10 justify-center text-neutral-900 dark:text-neutral-100">
+                        <View className=" items-center h-[44px] justify-center text-neutral-900 dark:text-neutral-100">
                             {appStatic('logo_mark')}
                         </View>
-                        <View className=" flex-row  items-center  h-10 my-auto align-middle justify-center text-neutral-700 dark:text-neutral-300">
+                        <View className=" flex-row  items-center h-[44px] my-auto align-middle justify-center text-neutral-700 dark:text-neutral-300">
                             {appStatic('logo_text')}
                         </View>
                     </Link>
@@ -98,6 +98,7 @@ export default function (props) {
     const bSearch = appSetting('layout', 'search') == true
     const bMessenger = appSetting('messenger', 'url') ? true : false
     const bNotifs = appSetting('notifications', 'url') ? true : false
+    const [isScrolled, setIsScrolled] = useState(false)
 
     const headerSettings = props.headerSettings
 
@@ -115,6 +116,21 @@ export default function (props) {
 
     const isCustomHeaderElement = appSetting('layout', 'custom_header_element')
     
+    useEffect(() => {
+        const handleScroll = () => {
+            const offset = window.scrollY
+            if (offset > 0) {
+                setIsScrolled(true)
+            } else {
+                setIsScrolled(false)
+            }
+        }
+        window.addEventListener('scroll', handleScroll)
+        return () => {
+            window.removeEventListener('scroll', handleScroll)
+        }
+    }, [])
+
     return (
         <>
             <Row className="w-full flex-auto mx-auto">
@@ -129,7 +145,10 @@ export default function (props) {
                         props.layoutName == 'post'
                             ? 'hidden lg:flex'
                             : '') +
-                        ' fixed w-full h-16 items-center bg-bgrnavbar dark:bg-bgrnavbar-d shadow-sm '
+                        ' fixed w-full h-16 items-center transition-all duration-300 ease-in-out will-change-transform ' +
+                        (isScrolled
+                            ? 'bg-bgrnavbar/80 dark:bg-bgrnavbar-d/80 backdrop-blur-lg shadow-[0_1px_0_rgba(0,0,0,0.05)] dark:shadow-[0_1px_0_rgba(255,255,255,0.05)]'
+                            : 'bg-transparent dark:bg-transparent shadow-none')
                     }
                 >
                     <View

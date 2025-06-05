@@ -241,43 +241,40 @@ const HeaderContainer = ({ tabBarObj, tabBarObjSmall, currentUser, smallHeader, 
     let offset = header ? (windowWidth < LAYOUT_BREAKPOINTS.lg ? 350 : 350) : 50;
 
     if (cover == 'min' && header > 50) {
-        offset = windowWidth < LAYOUT_BREAKPOINTS.lg ? 80 : 200
+        offset = windowWidth < LAYOUT_BREAKPOINTS.lg ? 80 : 200;
     }
 
     const scrollValue = useSharedValue(1);
+    const [isPageScrolled, setIsPageScrolled] = useState(false);
+    const pageScrollThreshold = 10;
 
     const handleScroll = useCallback(() => {
         requestAnimationFrame(() => {
-            if (window.scrollY > offset && scrollValue.value !== 0) {
+            const currentScrollY = window.scrollY;
+            if (currentScrollY > offset && scrollValue.value !== 0) {
                 scrollValue.value = 0;
-            } else if (window.scrollY < offset && scrollValue.value !== 1) {
+            } else if (currentScrollY <= offset && scrollValue.value !== 1) {
                 scrollValue.value = 1;
             }
+            setIsPageScrolled(currentScrollY > pageScrollThreshold);
         });
-    }, [offset, scrollValue]);
+    }, [offset, scrollValue, setIsPageScrolled, pageScrollThreshold]);
 
     useEffect(() => {
-        /*const handleScroll = () => {
-            if (window.scrollY > offset && scrollValue.value != 0) {
-                scrollValue.value = 0;
-            }
-            if (window.scrollY < offset && scrollValue.value != 1) {
-                scrollValue.value = 1;
-            }
-        };*/
-
-        // Add the event listener when the component mounts
-        if (!appSetting('cover', 'fixed'))
+        if (!appSetting('cover', 'fixed')) {
             window.addEventListener('scroll', handleScroll);
-        if (appSetting('cover', 'scroll'))
-            scrollToCover(cover, windowWidth, offset)
+            setIsPageScrolled(window.scrollY > pageScrollThreshold);
+        }
+        if (appSetting('cover', 'scroll')) {
+            scrollToCover(cover, windowWidth, offset);
+        }
 
-        // Clean up the event listener when the component unmounts
         return () => {
-            window.removeEventListener('scroll', handleScroll);
+            if (!appSetting('cover', 'fixed')) {
+                window.removeEventListener('scroll', handleScroll);
+            }
         };
-
-    }, []);
+    }, [handleScroll, cover, windowWidth, offset, pageScrollThreshold]);
 
 
     const scrollToCover = (cover, windowWidth, offset) => {
@@ -289,7 +286,7 @@ const HeaderContainer = ({ tabBarObj, tabBarObjSmall, currentUser, smallHeader, 
                 behavior: "smooth",
             });
         }
-    }
+    };
 
     const tmplLayout = getLayout(currentUser);
     const tOffset = tmplLayout == 'ver' ? 0 : 63;
@@ -297,16 +294,15 @@ const HeaderContainer = ({ tabBarObj, tabBarObjSmall, currentUser, smallHeader, 
     const animatedStyle5 = useAnimatedStyle(() => {
         const opacityValue = withTiming(scrollValue.value, { duration: d });
         return {
-            opacity: opacityValue
-
+            opacity: opacityValue,
         };
     }, [scrollValue]);
 
     const animatedStyle6 = useAnimatedStyle(() => {
-        const opacityValue = withTiming(1 - scrollValue.value, { duration: d });
+        // const opacityValue = withTiming(1 - scrollValue.value, { duration: d }); // Opacity animation removed
         return {
-            opacity: opacityValue,
-            zIndex: scrollValue.value ? 40 : 45
+            // opacity: opacityValue, // Opacity animation removed
+            zIndex: scrollValue.value ? 40 : 45, // zIndex is higher when small header is visible (scrollValue is 0)
         };
     }, [scrollValue]);
 
@@ -315,14 +311,19 @@ const HeaderContainer = ({ tabBarObj, tabBarObjSmall, currentUser, smallHeader, 
             <View >
                 {tabBarObj}
             </View>
-        )
+        );
     }
 
     return (
         <>
             <Animated.View style={[{ width: cntWidth + 'px', position: 'fixed', overflow: 'hidden', zIndex: 40, top: windowWidth >= LAYOUT_BREAKPOINTS.lg ? tOffset : 0 }, animatedStyle6]}>
-                {smallHeader}
-                {tabBarObjSmall}
+                <View className={`w-full transition-all duration-300 ease-in-out will-change-transform ${isPageScrolled
+                        ? 'bg-bgrnavbar/80 dark:bg-bgrnavbar-d/80 backdrop-blur-lg shadow-[0_1px_0_rgba(0,0,0,0.05)] dark:shadow-[0_1px_0_rgba(255,255,255,0.05)]'
+                        : 'bg-transparent dark:bg-transparent shadow-none'
+                    }`}>
+                    {smallHeader}
+                    {tabBarObjSmall}
+                </View>
             </Animated.View>
             <Animated.View style={[{ width: cntWidth + 'px', overflow: 'hidden', zIndex: 50 }, animatedStyle5]}  >
                 <View className="w-full" >
@@ -340,7 +341,7 @@ const HeaderContainer = ({ tabBarObj, tabBarObjSmall, currentUser, smallHeader, 
     );
 };
 
-const TabBar = ({ isSmall = false, menu, routes, leftSideBar, header, headerSettings, currentUser, index, setIndex, getNumCols, windowWidth, onChangeRoute }) => {
+const TabBar = ({ isSmall = false, menu, routes, leftSideBar, header, headerSettings, currentUser, index, setIndex, getNumCols, windowWidth, onChangeRoute, omitDefaultBackground = false }) => {
     const isDrawer = menuItemsByName('main_menu', appSetting('menu_items', 'menu_drawer'), currentUser).length > 0;
     const { t } = useTranslation();
     const showMenu = (params) => { }
@@ -349,7 +350,7 @@ const TabBar = ({ isSmall = false, menu, routes, leftSideBar, header, headerSett
     if (routes.length > 1) {
         const addButtons = AddMenu(menu, 'hideInTopBar')
         return (
-            <TopSidebar isDrawer={isDrawer} isWeb={true} leftSideBar={leftSideBar} header={header} headerSettings={headerSettings} addButtons={addButtons} isSmall={isSmall} showMenu={showMenu} layout={getLayout(currentUser)} title={t(menuSettings?.name)} >
+            <TopSidebar omitDefaultBackground={omitDefaultBackground} isDrawer={isDrawer} isWeb={true} leftSideBar={leftSideBar} header={header} headerSettings={headerSettings} addButtons={addButtons} isSmall={isSmall} showMenu={showMenu} layout={getLayout(currentUser)} title={t(menuSettings?.name)} >
                 <ConductorMenu currentUser={currentUser} leftSideBar={leftSideBar} routes={routes} index={index} t={t} setIndex={setIndex} getNumCols={getNumCols} windowWidth={windowWidth} onChangeRoute={onChangeRoute} />
             </TopSidebar>
 
@@ -649,32 +650,30 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             getNumCols={getNumCols}
             windowWidth={windowWidth}
             onChangeRoute={onChangeRoute}
+            omitDefaultBackground={false}
+        />
+    ), [menu, routes, leftSideBar, header, headerSettings, currentUser, index, setIndex, getNumCols, windowWidth, onChangeRoute]);
+
+    const tabBarObjForAnimatedHeader = useMemo(() => (
+        <TabBar
+            isSmall={true}
+            menu={menu}
+            routes={routes}
+            leftSideBar={leftSideBar}
+            header={header}
+            headerSettings={headerSettings}
+            currentUser={currentUser}
+            index={index}
+            setIndex={setIndex}
+            getNumCols={getNumCols}
+            windowWidth={windowWidth}
+            onChangeRoute={onChangeRoute}
+            omitDefaultBackground={true}
         />
     ), [menu, routes, leftSideBar, header, headerSettings, currentUser, index, setIndex, getNumCols, windowWidth, onChangeRoute]);
 
     const AddBlocksCnt = useMemo(() => AddBlocks(currentRoute.leftSideBarBlocks, currentRoute.pageData, onFormChangedValues), [currentRoute.leftSideBarBlocks, currentRoute.pageData, onFormChangedValues]);
 
-    /* console.log("Reload!");
- 
-     useEffect(() => {
-         console.log("Reload- index", index)
-     }, [index]);
-     useEffect(() => {
-         console.log("Reload- cntWidth", cntWidth)
-     }, [cntWidth]);
-     useEffect(() => {
-         console.log("Reload- isRevalidate", isRevalidate)
-     }, [isRevalidate]);
-     useEffect(() => {
-         console.log("Reload- routes", routes)
-     }, [routes]);
-     useEffect(() => {
-         console.log("Reload- headerSettings", headerSettings)
-     }, [headerSettings]);
-     useEffect(() => {
-         console.log("Reload- numColumns", numColumns)
-     }, [numColumns]);
- */
     const showFilters = useCallback(() => {
         setBottomSheetData({ title: 'Filters', content: AddBlocksCnt, showClose: true, snapPoints: ['50%', '75%'], modal:true });
     }, [currentRoute.leftSideBarBlocks, currentRoute.pageData, onFormSubmit]);
@@ -741,7 +740,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         const sidebarUnitType = route.blocks?.browse_sidebar?.unitType || 'default';
 
         return (
-            <Row style={{ paddingTop: header ? 0 : 0 }} className={(headerSettings.columns == "reverse" ? 'flex-row-reverse' : '') + conductorTheme.content_max_width + '  mx-auto w-full ' + ( !cover ? ' sm:px-3 sm:my-3 ': '' )}>
+            <Row style={{ paddingTop: header ? 0 : 0 }} className={(headerSettings.columns == "reverse" ? 'flex-row-reverse' : '') + conductorTheme.content_max_width + '  mx-auto w-full ' + ( !cover ? ' sm:px-[16px] sm:my-3 ': '' )}>
                 <View className={(isRightCol ? 'flex-auto sm:px-4 flex-auto ' : ' w-full mx-auto') /*sm:p-2*/+ (layoutName == 'navigator' ? '' : ' pt-[8px] sm:p-4')}/*lg:pt-4*/>
                     {TabFlashListM}
                     {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 && callFn("noContentByUrl", [route?.endpoint])))}
@@ -780,7 +779,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             cover={cover}
             cntWidth={cntWidth}
             tabBarObj={tabBarObj}
-            tabBarObjSmall={tabBarObj}
+            tabBarObjSmall={tabBarObjForAnimatedHeader}
             currentUser={currentUser}
             smallHeader={smallHeader}
             header={leftSideBar && layoutName != 'navigator'  ? <View className="bg-bgrcard dark:bg-bgrcard-d lg:hidden pt-20 px-3">{leftSideBarComponent}</View> : header}

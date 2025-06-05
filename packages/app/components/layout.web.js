@@ -280,10 +280,23 @@ export default function Layout(props) {
             if (width > LAYOUT_BREAKPOINTS[TABLET_MODE_FROM])
                 a.offset = false;
         }
+
+        // Disable offset for splash/auth screens
+        const splashRoutes = ['login', 'create-account', 'forgot-password', 'confirm-email', 'home']; // 'home' is often a splash when not logged in
+        if (splashRoutes.includes(uri) && !currentUser) { // Check for !currentUser especially for 'home' acting as splash
+            a.offset = false;
+        }
+        // If it's a dedicated auth page (not home), disable offset regardless of currentUser status, 
+        // as these pages typically don't have the main header for which offset is intended.
+        const dedicatedAuthRoutes = ['login', 'create-account', 'forgot-password', 'confirm-email'];
+        if (dedicatedAuthRoutes.includes(uri)) {
+            a.offset = false;
+        }
+
         if (!deepEqual(headerSettings, a)) {
             setHeaderSettings(a);
         }
-    }, [uri, width, layoutName, data.config]);
+    }, [uri, width, layoutName, data.config, currentUser, pageLayoutName, headerSettings]);
 
     useEffect(() => {
         if (data?.title) {
@@ -340,7 +353,7 @@ const Content = React.memo(({ children, headerSettings, stylesBgImage, currentUs
                 <View className=" w-full mx-auto flex-row " >
                     <View className={((layoutName != 'messenger' && layoutName != 'post' && !isHideHeader) ? 'pb-16 lg:pb-0' : '') + ' w-full mx-auto'}>{/*mb-16* TODO lg:pb-0*/}
                         <View className='w-full mx-auto '>
-                            {(headerSettings.offset && !isHideHeader) && <View className='w-full h-16 ' />}
+                            {(headerSettings.offset && !isHideHeader) && <View className='w-full h-16 ' />} {/*use this to offset the header globally*/}
                             <Informer />
                             {children}
                         </View>
