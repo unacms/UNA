@@ -69,8 +69,9 @@ export default function DropdownPopup({
         if (!buttonRef.current?.measureInWindow) return;
         console.log("updateButtonPosition2")
         buttonRef.current.measureInWindow((x, y, width, height) => {
-            console.log("updateButtonPosition3")
+            
             setTimeout(() => {
+                console.log("updateButtonPosition3", contentRef.current?.measureInWindow)
             if (contentRef.current?.measureInWindow) {
                  console.log("updateButtonPosition4")
                 contentRef.current.measureInWindow((_, __, popupWidth, effectivePopupHeight) => {
@@ -101,7 +102,7 @@ export default function DropdownPopup({
                     });
                 });
             }
-            }, 0);
+            }, 100);
         });
     };
 
