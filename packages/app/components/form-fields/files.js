@@ -51,7 +51,7 @@ export default function (props) {
         };
 
         if (filesData?.type == 'images:pasted' && props.asDefaultStorage) {
-            if (filesData.data.form_name == props.form_name){
+            if (filesData.data.form_name == props.form_name) {
                 uploadImagesAsync(filesData.data.images)
                 setFilesData(null);
             }
@@ -336,7 +336,7 @@ export default function (props) {
                 const goodAssets = result.assets.filter(
                     asset => !asset.uri.startsWith('data:application/octet-stream')
                 );
-                if (goodAssets.length !== result.assets.length){
+                if (goodAssets.length !== result.assets.length) {
                     setMessage('Some files are not supported.');
                 }
                 let k = await uploadImages(goodAssets);
@@ -495,6 +495,15 @@ function GhostsList(imagesList, bMultiple, handleDelete, props) {
         return null;
     }
 
+    const isCover = props.preview === "cover";
+
+    const sizes = [
+        isCover ? "w-full h-[30vh] mb-[16px] sm:rounded-xl" : "w-[100px] h-[100px] mb-[12px] rounded-lg",
+        "m-[1px] justify-center items-center overflow-hidden bg-bgritem dark:bg-bgritem-d ",
+    ].join(" ");
+
+    const sizes2 = isCover ? '100%' : 100;
+
     return imagesList.map((img, index) => {
         const isImage = img?.file_type?.includes('image/');
         const isVideo = img?.file_type?.includes('video/');
@@ -502,11 +511,11 @@ function GhostsList(imagesList, bMultiple, handleDelete, props) {
         return (
             <View
                 key={`file-${props.name}-${index}`}
-                className="mb-[12px] w-[100px] h-[100px] m-[1px] justify-center items-center bg-bgritem dark:bg-bgritem-d rounded-lg overflow-hidden"
+                className={`${sizes}`}
             >
                 {isImage ? <ImageRN
                     source={{ uri: img.uri || img.file_url }}
-                    style={{ width: 100, height: 100, opacity: isPreload ? 0.5 : 1 }}
+                    style={{ width: sizes2, height: sizes2, opacity: isPreload ? 0.5 : 1 }}
                     resizeMode="cover"
                     view="cover"
                     alt=""
