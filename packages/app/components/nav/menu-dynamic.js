@@ -90,7 +90,7 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
                 <View className={menuClasses} >
                     {
                         items.map((aItem, iKey) => {
-                            return <ViewRef className={(iKey > visibleItemsCount - 1 ? ' item-overlap ' : '')} ref={el => (itemRefs?.current ? (itemRefs.current[iKey] = el) : (el = null))} ><MenuItem key={name + 'menu' + iKey} item={{ ...aItem, onPress: (event) => handleFormModal(aItem, event, setPageData) }}  visibleItemsCount={visibleItemsCount} /></ViewRef>
+                            return <ViewRef key={name + 'menu' + iKey} className={(iKey > visibleItemsCount - 1 ? ' item-overlap ' : '')} ref={el => (itemRefs?.current ? (itemRefs.current[iKey] = el) : (el = null))} ><MenuItem item={{ ...aItem, onPress: (event) => handleFormModal(aItem, event, setPageData) }}  visibleItemsCount={visibleItemsCount} /></ViewRef>
                         })
                     }
                 </View>

@@ -917,8 +917,8 @@ export const uploadImage = async (uri, fetchUrl, calback, extraVar) => {
     }
 };
 
-export function visibilityById(visibility) {
-    const { t } = useTranslation();
+export function visibilityById(visibility, t) {
+    
     const visibilityOptions = {
         2: { icon: 'Lock', text: t('Me only') },
         3: { icon: 'Globe', text: t('Public') },

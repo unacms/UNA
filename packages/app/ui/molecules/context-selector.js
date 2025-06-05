@@ -84,7 +84,7 @@ export default function ContextSelector({ data, url }) {
                     <View className="items-center justify-center text-neutral-800 dark:text-neutral-200">
                         {contextRoot.image}
                     </View>
-                    <View className="text-lg whitespace-nowrap font-semibold text-neutral-800 dark:text-neutral-200 my-auto truncate text-center items-center align-middle justify-center">{contextRoot.name}</View>
+                    <Text className="text-lg whitespace-nowrap font-semibold text-neutral-800 dark:text-neutral-200 my-auto truncate text-center items-center align-middle justify-center">{contextRoot.name}</Text>
                 </View>
             </Link>
                 <DropdownPopup

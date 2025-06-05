@@ -12,7 +12,7 @@ import { Icon } from 'app/ui/atoms/icon'
 import Profile from 'app/ui/molecules/profile';
 import React from 'react';
 import { Theme } from 'app/design/theme';
-
+import { useTranslation } from 'react-i18next'
 
 export default function (props) {
     const name = props.name;
@@ -21,6 +21,7 @@ export default function (props) {
     const defaultValue = props?.value ? props.value : '';
     const size = props.size || 'xs';
     const maxLength = props.maxLength ?? 20;
+    const { t } = useTranslation();
 
     const { field } = useController({ name, rules, defaultValue });
     const [isModal, setIsModal] = useState(false);
@@ -103,7 +104,7 @@ export default function (props) {
         if (parseInt(item.value, 10) === parseInt(field.value, 10) && [6, 8, 9].includes(parseInt(field.value, 10))) {
             item.info = subLabelDisplay;
         }
-        const visibilityIcon = visibilityById(item.value);
+        const visibilityIcon = visibilityById(item.value, t);
         item.label = visibilityIcon?.text || item.label;
         item.icon = visibilityIcon?.icon ? <View className="h-[24px] w-[24px] overflow-hidden">
             <Icon
@@ -181,7 +182,7 @@ export default function (props) {
 
     if (props.format == 'nofield') {
         
-        const visibilityData = visibilityById(field.value);
+        const visibilityData = visibilityById(field.value, t);
         const icon = visibilityData ? visibilityData.icon : ''
         const text = visibilityData ? visibilityData.text : ''
 

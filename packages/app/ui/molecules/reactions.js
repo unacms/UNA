@@ -386,16 +386,7 @@ export default function ElementReactions(oProps) {
                 );
             }
             else {
-                const oReactionStyles = StyleSheet.create({
-                    cardStyle: {
-                        
-                        shadowOpacity: 0.1,
-                        shadowRadius: 4,
-                       
-                        borderWidth: 0,
-                    },
-                });
-
+               
                 const aReactionItems = oItems.map(oItem => {
                     return {
                         id: oItem.id,
@@ -406,7 +397,7 @@ export default function ElementReactions(oProps) {
                 });
 
                 sActionButton = sActionButton = oItems.length > 1 ? (
-                    <ReactionPopover key="action" type="modal" showPopupType="onPress" items={aReactionItems} onTap={(item) => { _handleDo(item.name) }} disabled={bShowActionDisabled} cardStyle={oReactionStyles.cardStyle}>
+                    <ReactionPopover key="action" type="modal" showPopupType="onPress" items={aReactionItems} onTap={(item) => { _handleDo(item.name) }} disabled={bShowActionDisabled} >
                         <ButtonAction startDecorator={_getIconAlias(sReaction)} disabled={bShowActionDisabled} title={bShowActionLabel ? sTitle : false} {...oButtonProps} />
                     </ReactionPopover>
                 ) : (

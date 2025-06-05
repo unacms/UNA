@@ -193,8 +193,6 @@ export default function FormFeed(props) {
         text = stripTags(text).trim()
     }
 
-    console.log("texttext", text)
-
     function setPlaceHolder(name, previews) {
         if (JSON.stringify(previews) != JSON.stringify(imageSource[name])) {
             setImageSource((prevImageSource) => ({

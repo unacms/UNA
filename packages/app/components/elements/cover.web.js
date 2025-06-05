@@ -66,7 +66,7 @@ export function CoverSmall(props) {
     const windowWidth = windowDimen.width
     const bPerson =
         props.data.profile.module == 'bx_persons' ||
-        appSetting('cover', 'show_pic_by_module', props.data?.profile?.module)
+            appSetting('cover', 'show_pic_by_module', props.data?.profile?.module)
             ? true
             : false
 
@@ -107,12 +107,12 @@ export function CoverSmall(props) {
                                 />
                             )}
 
-                           <View className="flex-auto p-[4px] hover:bg-bgritem dark:hover:bg-bgritem-d rounded-[11px] h-[44px]">
-                            <Profile
-                                {...data.profile}
-                                displayType="unit_wo_image"
-                                displaySize="xl"
-                            /></View>
+                            <View className="flex-auto p-[4px] hover:bg-bgritem dark:hover:bg-bgritem-d rounded-[11px] h-[44px]">
+                                <Profile
+                                    {...data.profile}
+                                    displayType="unit_wo_image"
+                                    displaySize="xl"
+                                /></View>
                         </View>
                         <View className=" w-auto my-auto ">
                             <CoverMenuSmall {...data.actions_menu} />
@@ -134,7 +134,7 @@ export default function (props) {
         props.mode
     const bPerson =
         props.data.profile.module == 'bx_persons' ||
-        appSetting('cover', 'show_pic_by_module', props.data?.profile?.module)
+            appSetting('cover', 'show_pic_by_module', props.data?.profile?.module)
             ? true
             : false
     const [coverUrl, setCoverUrl] = useState(data.cover.src)
@@ -273,7 +273,7 @@ export default function (props) {
     const handleSwitch = async (id) => {
         const result = await fetcher(
             '/api.php?r=system/switch_profile/TemplServiceAccount&params[]=' +
-                id
+            id
         )
         location.reload()
     }
@@ -290,14 +290,13 @@ export default function (props) {
             >
                 {mode != 'min' ? (
                     <View
-                        className={`duration-300 bg-primary-200 dark:bg-primary-950 w-full max-w-[1440px] mx-auto xl:rounded-b-xl overflow-hidden ${
-                            isCover
+                        className={`duration-300 bg-primary-200 dark:bg-primary-950 w-full max-w-[1440px] mx-auto xl:rounded-b-xl overflow-hidden ${isCover
                                 ? ` h-[30vh] sm:${appSetting(
-                                      'cover',
-                                      'aspect_ratio'
-                                  )}`
+                                    'cover',
+                                    'aspect_ratio'
+                                )}`
                                 : 'pt-16'
-                        }`}
+                            }`}
                     >
                         {isCover && (
                             <Image
@@ -377,10 +376,9 @@ export default function (props) {
                                     <CoverMenuMeta {...data.meta_menu} />
                                 </Row>
                                 <CoverMenu
-                                        {...data.actions_menu}
-                                        uri={props?.uri}
-                                    />{' '}
-                                
+                                    {...data.actions_menu}
+                                    uri={props?.uri}
+                                />
                             </Row>
 
                             {!!data.profile.info?.date_start && (
