@@ -65,18 +65,12 @@ export default function DropdownPopup({
     }, [isRealOpen]);
 
     const updateButtonPosition = () => {
-        console.log("updateButtonPosition", buttonRef, buttonRef.current, buttonRef.current?.measureInWindow)
         if (!buttonRef.current?.measureInWindow) return;
-        console.log("updateButtonPosition2")
         buttonRef.current.measureInWindow((x, y, width, height) => {
             
             setTimeout(() => {
-                console.log("updateButtonPosition3", contentRef.current?.measureInWindow)
             if (contentRef.current?.measureInWindow) {
-                 console.log("updateButtonPosition4")
                 contentRef.current.measureInWindow((_, __, popupWidth, effectivePopupHeight) => {
-                     console.log("updateButtonPosition5")
-                    console.log("effectivePopupHeight", effectivePopupHeight)
                     // Calculate horizontal position
                     let left = x;
                     if (x + popupWidth > windowWidth - 16) {
