@@ -60,7 +60,7 @@ export default function (props) {
     const refer = useRef();
 
     if (!currentUser) {
-        if (!isWeb)
+        if (false)
             return <Splash {...props} />
         else {
             const content = (
@@ -73,7 +73,7 @@ export default function (props) {
                 refer={refer}
                 content = {content}
                 pageData = {props.data}
-                headerHeight = {0}
+                headerHeight = {isWeb? 0 : 70}
                 contentType="ScrollList"
             />)
         }

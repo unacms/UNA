@@ -204,7 +204,7 @@ const SplashText = (
         
         <Text 
             accessible={true} 
-            accessibilityRole="heading" 
+            accessibilityRole="header" 
             aria-level={1} 
             className="text-4xl lg:text-5xl xl:text-6xl text-center lg:text-start tracking-tight font-bold text-neutral-800 dark:text-neutral-200 text-pretty duration-300"
         >

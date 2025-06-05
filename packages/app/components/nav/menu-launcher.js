@@ -27,7 +27,7 @@ export default function () {
         return <></>;
 
     return (
-        <View className="relative flex-row">
+        <View >
             <DropdownMenu items={menu_launcher_items.map((item, index) => ({
                 id: 'menu-' + index,
                 link: '/' + item.link,

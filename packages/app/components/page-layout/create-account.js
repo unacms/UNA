@@ -180,28 +180,7 @@ export default function PageLayout(props) {
                 </View>
             </View>
         </View>
-    ) : null;
-
-    const gradientColors = colorScheme === 'dark'
-    ? ['rgba(23, 37, 84, 1)', 'rgba(23, 37, 84, 0.5)'] // primary-900 to primary-950/50
-    : ['rgba(239, 246, 255, 1)', 'rgba(191, 219, 254, 1)']; // primary-50 to primary-200
-
-    return (
-       
-            <KbAvoidingView style={{ flex: 1 }} offset={isWeb ? undefined : 0}>
-                {isWeb ? (
-                    <ScrollList
-                        refer={refer}
-                        content={content}
-                        pageData={props.data}
-                        headerHeight={0}
-                        contentType="ScrollList"
-                    />
-                ) : (
-                    <LinearGradient
-                    colors={gradientColors}
-                    style={{ flex: 1 }}
-                >
+    ) : (
                     <ScrollView
                         contentContainerStyle={{
                             flexGrow: 1,
@@ -258,8 +237,35 @@ export default function PageLayout(props) {
                                     </View>
                                 </View>
                         </View>
-                    </ScrollView>
-                    </LinearGradient>
+                    </ScrollView>)
+                    ;
+
+    const gradientColors = colorScheme === 'dark'
+    ? ['rgba(23, 37, 84, 1)', 'rgba(23, 37, 84, 0.5)'] // primary-900 to primary-950/50
+    : ['rgba(239, 246, 255, 1)', 'rgba(191, 219, 254, 1)']; // primary-50 to primary-200
+
+    return (
+       
+            <KbAvoidingView style={{ flex: 1 }} offset={isWeb ? undefined : 0}>
+                {isWeb ? (
+                    <ScrollList
+                        refer={refer}
+                        content={content}
+                        pageData={props.data}
+                        headerHeight={0}
+                        contentType="ScrollList"
+                    />
+                ) : (
+                    <LinearGradient
+                    colors={gradientColors}
+                    style={{ flex: 1 }}
+                ><ScrollList
+                        refer={refer}
+                        content={content}
+                        pageData={props.data}
+                        headerHeight={0}
+                        contentType="ScrollList"
+                    /></LinearGradient>
                 )}
             </KbAvoidingView>
         
