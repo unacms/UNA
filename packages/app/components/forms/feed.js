@@ -79,6 +79,7 @@ export default function FormFeed(props) {
     const isFormOnly = props.exProps?.formOnly === true || props.name === 'feed_edit';
 
     const [showImage, setShowImage] = useState(isFormOnly ? true : false);
+    const [modalKey, setModalKey] = useState(0);
     const [responseId, setResponseId] = useState(0)
     const [imageSource, setImageSource] = useState([])
     const { setLayoutData } = useLayoutData()
@@ -439,6 +440,7 @@ export default function FormFeed(props) {
         <View className="w-full">
             {showImage && (
                 <Modal
+                    key={modalKey}
                     title={isSmall ? header : (
                         <ProfileView
                             data={props.data}
@@ -469,6 +471,7 @@ export default function FormFeed(props) {
                     onPress={() => {
                         FeedbackHaptics('Medium')
                         setShowImage(true)
+                        setModalKey(k => k + 1)
                     }}
                 />
             ) : (
@@ -494,6 +497,7 @@ export default function FormFeed(props) {
                                         onPress={() => {
                                             FeedbackHaptics('Medium')
                                             setShowImage(true)
+                                            setModalKey(k => k + 1)
                                         }}
                                     />
                                 </View>

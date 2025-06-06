@@ -104,7 +104,7 @@ const colors = {
     },
     bgrmodal: {
         DEFAULT: 'rgba(255,255,255,1)',
-        d: 'rgba(17,24,39,1)',
+        d: 'rgba(15,25,40,1)',
     },
     bdrmodal: {
         DEFAULT: 'rgba(110,115,130,0.2)',
@@ -121,7 +121,7 @@ const colors = {
     },
     bgrtabbar: {
         DEFAULT: 'rgba(255,255,255,1)',
-        d: 'rgba(17,24,39,1)',
+        d: 'rgba(15,25,40,1)',
     },
     bdrtabbar: {
         DEFAULT: 'rgba(229,231,235,1)',
@@ -167,11 +167,11 @@ const colors = {
     },
     bgr: {
         DEFAULT: 'rgba(255,255,255,1)',
-        d: 'rgba(17,24,39,1)',
+        d: 'rgba(15,25,40,1)',
     },
     screen: {
         DEFAULT: 'rgba(243,244,246,1)',
-        d: 'rgba(17,24,39,1)',
+        d: 'rgba(15,25,40,1)',
     },
     indicator: {
         DEFAULT: 'rgba(37, 99, 235, 1)',

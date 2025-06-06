@@ -126,11 +126,16 @@ export default function RftText({
     }, [keywordval])
 
     let customCodeBlockCSS = `
+    :root {
+      --color-text: ${ThemeName() === 'dark' ? 'rgba(225, 230, 240, 1)' : 'rgba(30, 40, 55, 1)'};
+      --color-background: ${ThemeName() === 'dark' ? 'rgba(15, 25, 40, 1)' : 'rgba(255, 255, 255, 1)'};
+    }
     body{
         font-family: system-ui, -apple-system, BlinkMacSystemFont, ".SFNSText-Regular", sans-serif;
         font-size: ${editorFontSize};
         line-height:  ${editorLineHeight};
-        color:  ${colors.text};
+        color: var(--color-text);
+        background-color: var(--color-background);
         margin:0;
         white-space: pre;
         overflow: hidden;
@@ -169,7 +174,7 @@ export default function RftText({
     }
     A.bx-mention-link,
     A.bx-tag{
-        color: ${colors.primary};
+        color: ${ThemeName() === 'dark' ? 'rgba(59, 130, 246, 1)' : 'rgba(37, 99, 235, 1)'};
     }
     ${appSetting('editor', 'css')}
 
@@ -195,7 +200,6 @@ export default function RftText({
             font-weight: normal !important;
             font-style: normal !important;
             text-decoration: none !important;
-            color: initial !important;
         }
         blockquote{
             all: unset;

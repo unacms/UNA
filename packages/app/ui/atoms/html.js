@@ -159,8 +159,8 @@ export default function ElementHtml({ customClassName, data }) {
 
     const isSmall = customClassName?.includes('u-vanilla-html-small');
     const textStyles = isSmall
-        ? 'text-[16px] leading-[20px] text-neutral-600 dark:text-neutral-400' // For .u-vanilla-html-small
-        : 'text-[16px] leading-[24px] text-neutral-600 dark:text-neutral-400'; // For .u-vanilla-html (default)
+        ? 'text-[16px] leading-[20px] text-neutral-800 dark:text-neutral-200' // For .u-vanilla-html-small
+        : 'text-[16px] leading-[24px] text-neutral-800 dark:text-neutral-200'; // For .u-vanilla-html (default)
 
     if (!data)
         return null;
