@@ -144,7 +144,7 @@ const parseHtmlToReact = (html, textStyles, parentKey = "0") => {
 
     const remainingText = html.slice(lastIndex);
     if (remainingText.trim()) {
-        elements.push(<Text key={getKey("end")}>{remainingText.trim()}</Text>);
+        elements.push(<Text key={getKey("end")}> {remainingText.trim()}</Text>);
     }
 
     if (elements.length > 0) {
