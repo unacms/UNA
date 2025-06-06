@@ -934,8 +934,10 @@ export  const settingsDefault = {
             'u-btn-primary-color-icon-light': 'rgb(243, 244, 246)',
             'u-btn-primary-color-icon-dark': 'rgb(243, 244, 246)',
 
-            'u-btn-accent-cnt': 'border border-transparent dark:border-transparent bg-accent-700 dark:bg-accent-700 web:hover:bg-accent-600 dark:web:hover:bg-accent-600 shadow-sm',
-            'u-btn-accent-text': 'font-medium text-white',
+            'u-btn-accent-cnt':
+                'border border-accent-600 dark:border-accent-500 bg-accent-100 dark:bg-accent-900 flex flex-row',
+            'u-btn-accent-text':
+                'font-medium text-neutral-800 web:hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-neutral-50',
             'u-btn-accent-trans': 'web:duration-300',
             'u-btn-accent-color-icon-light': 'rgb(255, 255, 255)',
             'u-btn-accent-color-icon-dark': 'rgb(255, 255, 255)',
