@@ -934,14 +934,14 @@ export  const settingsDefault = {
             'u-btn-primary-color-icon-light': 'rgb(243, 244, 246)',
             'u-btn-primary-color-icon-dark': 'rgb(243, 244, 246)',
 
-            'u-btn-accent-cnt': 'border border-transparent dark:border-transparent bg-accent-600 dark:bg-accent-500 web:hover:bg-accent-700 dark:web:hover:bg-accent-600 shadow-sm',
+            'u-btn-accent-cnt': 'border border-transparent dark:border-transparent bg-accent-700 dark:bg-accent-700 web:hover:bg-accent-600 dark:web:hover:bg-accent-600 shadow-sm',
             'u-btn-accent-text': 'font-medium text-white',
             'u-btn-accent-trans': 'web:duration-300',
             'u-btn-accent-color-icon-light': 'rgb(255, 255, 255)',
             'u-btn-accent-color-icon-dark': 'rgb(255, 255, 255)',
 
             'u-btn-secondary-cnt':
-                'border border-transparent dark:border-transparent bg-bgritem dark:bg-bgritem-d active:opacity-50 flex flex-row',
+                'border border-transparent dark:border-transparent bg-bgritem dark:bg-bgritem-d web:hover:bg-bgritem-h dark:web:hover:bg-bgritem-dh active:opacity-50',
             'u-btn-secondary-text':
                 'font-medium text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-white ',
             'u-btn-secondary-trans': 'duration-300',
