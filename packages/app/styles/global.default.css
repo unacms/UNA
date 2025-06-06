@@ -315,27 +315,6 @@ div::-webkit-scrollbar {
     min-height: 120px !important;
 }
 
-.editor-height-3 .ProseMirror {
-    max-height: auto;
-    overflow-y: scroll;
-}
-
-.editor-height .ProseMirror P {
-    margin-top: 8px;
-    margin-bottom: 8px;
-}
-
-.editor-height .ProseMirror P:first-child {
-    margin-top: 0em;
-}
-
-.editor-height .ProseMirror P:last-child {
-    margin-bottom: 0em;
-}
-
-.form-control-text>div:has(div.ProseMirror-focused) {
-    /*   @apply bg-bgrinput-focus outline-none border-bdrinput-focus dark:border-bdrinput-df dark:bg-bgrinput-dafocus */
-}
 
 .ProseMirror:focus {
     outline: none;
@@ -432,26 +411,13 @@ body {
     z-index: 9999;
 }
 
-.ProseMirror .is-empty:not(.is-editor-empty)::before {
-    content: '' ;
-    float: left;
-    color: var(--novel-stone-400);
-    pointer-events: none;
-    height: 0;
-}
 
 .pointerEvents {
    /* overflow: hidden;*/
    pointer-events: auto;
 }
 
-.ProseMirror .is-editor-empty::before {
-    content: attr(data-placeholder);
-    float: left;
-    color: var(--novel-stone-400);
-    pointer-events: none;
-    height: 0;
-}
+
 .bx-embeded-image{
     display: none;
 }

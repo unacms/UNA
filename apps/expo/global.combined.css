@@ -1,2 +1,2 @@
-@import './global.default.css';
-@import './global.css';
+@import '../../packages/app/styles/global.default.css';
+@import '../../packages/app/styles/global.css';
