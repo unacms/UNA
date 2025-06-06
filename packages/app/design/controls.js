@@ -402,44 +402,43 @@ export const Button = (props) => {
     const showTooltip = useMemo(() => width >= LAYOUT_BREAKPOINTS.lg && tooltip, [width, tooltip]);
 
     const sClassContainer = useMemo(() => {
-        let classes = '  flex-row items-center ';
-        classes += fullWidth ? ' flex-auto w-full ' : ' w-fit ';
-        if (disabled) classes += 'opacity-50 ';
+        let classes = 'flex-row items-center';
+        classes += fullWidth ? ' flex-auto w-full' : ' w-fit';
+        if (disabled) classes += ' opacity-50';
         if (variant !== 'custom') {
-            classes += (solid ? '' : ThemeCssClassesButton[`u-btn-${variant}-trans`]) + ThemeCssClassesButton[`u-btn-${variant}-cnt`] + '  ';
+            classes += (solid ? '' : ' ' + ThemeCssClassesButton[`u-btn-${variant}-trans`]) + ' ' + ThemeCssClassesButton[`u-btn-${variant}-cnt`];
         } else {
-            classes += className;
+            classes += ' ' + className;
         }
         if (bgColor){
-            classes = classes.replaceAll(/bg-\S+/g, '').replaceAll(/ring-\S+/g, '') + ` ${bgColor} `;
+            classes = classes.replaceAll(/bg-\S+/g, '').replaceAll(/ring-\S+/g, '') + ` ${bgColor}`;
         }
         if (variant === 'group-item-none') {
-            classes += 'justify-start ';
+            classes += ' justify-start';
         } else {
-            classes += `justify-${align} `;
+            classes += ` justify-${align}`;
         }
         if (pressed) {
-            classes= classes.replace(/\b(bg-[^\s]*)\b|\b(dark:bg-[^\s]*)\b/g, "").replace(/\s+/g, " ").trim();
-            classes += ` ${pressedClasses?.pressed_container || ThemeCssClassesButton[`u-btn-${variant}-pressed-cnt`] || ThemeButtonSizes.pressed_container} `;
+            classes = classes.replace(/\b(bg-[^\s]*)\b|\b(dark:bg-[^\s]*)\b/g, "").replace(/\s+/g, " ").trim();
+            classes += ` ${pressedClasses?.pressed_container || ThemeCssClassesButton[`u-btn-${variant}-pressed-cnt`] || ThemeButtonSizes.pressed_container}`;
         }
         return classes;
     }, [fullWidth, disabled, variant, solid, ThemeCssClassesButton, className, align, pressed, bgColor, pressedClasses]);
 
     const sClassText = useMemo(() => {
-        let classes = ' whitespace-nowrap text-ellipsis overflow-hidden tracking-tight';
+        let classes = 'whitespace-nowrap text-ellipsis overflow-hidden tracking-tight';
         if (variant !== 'custom') {
-            classes += ThemeCssClassesButton[`u-btn-${variant}-text`];
+            classes += ' ' + ThemeCssClassesButton[`u-btn-${variant}-text`];
         } else {
             classes += ` ${classTextName}`;
         }
         if (textColor){
-            classes = classes.replaceAll(/text-\S+/g, '') + ` ${textColor} `;
+            classes = classes.replaceAll(/text-\S+/g, '') + ` ${textColor}`;
         }
         if (pressed) {
-            classes += ` ${pressedClasses?.pressed_text || ThemeCssClassesButton[`u-btn-${variant}-pressed-text`] || ThemeButtonSizes.pressed_text} `;
-            
+            classes += ` ${pressedClasses?.pressed_text || ThemeCssClassesButton[`u-btn-${variant}-pressed-text`] || ThemeButtonSizes.pressed_text}`;
         }
-        classes += ' text-' + size + ' ';
+        classes += ` text-${size}`;
         return classes;
     }, [variant, ThemeCssClassesButton, classTextName, pressed, size, pressedClasses, textColor]);
 
@@ -452,7 +451,7 @@ export const Button = (props) => {
         const titleVisible = !startDecorator && !endDecorator || !isNaN(title) || showTitleFromSize == '';
         let iconSize = 24;
         let iconContainerClass = '';
-        let titleContainerClass = titleVisible ? '' : ' hidden ' + (showTitleFromSize ? showTitleFromSize : 'sm') + ':block ';
+        let titleContainerClass = titleVisible ? '' : ' hidden ' + (showTitleFromSize ? showTitleFromSize : 'sm') + ':block';
         let sizeClasses = '';
 
         const sClassDefaultRounding = !variant.startsWith('group-item') ? ThemeButtonSizes[size]?.rounded : '';
@@ -460,7 +459,7 @@ export const Button = (props) => {
         const roundingClass = rounded ? sClassFullRounding : sClassDefaultRounding;
 
         if (variant != 'custom') {
-            sizeClasses = `${roundingClass} ${padding || ThemeButtonSizes[size]?.padding} `;
+            sizeClasses = `${roundingClass} ${padding || ThemeButtonSizes[size]?.padding}`;
             iconContainerClass = `${ThemeButtonSizes[size]?.icon_container} ${title ? ThemeButtonSizes[size]?.icon_margin : ''}`;
             iconSize = ThemeButtonSizes[size]?.icon_size;
             titleContainerClass += title ? ThemeButtonSizes[size]?.title_container + (startDecorator || endDecorator ? ThemeButtonSizes[size]?.title_margin : '') : '';
