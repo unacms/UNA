@@ -16,6 +16,7 @@
     "@stripe/react-stripe-js": "^2.4.0",
     "@stripe/stripe-js": "^2.2.2",
     "@vercel/analytics": "^1.0.1",
+    "@vercel/speed-insights": "^1.2.0",
     "ai": "^2.2.7",
     "app": "*",
     "eslint-config-next": "^15.1.2",

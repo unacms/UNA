@@ -1,5 +1,6 @@
 "use client"
 import { Analytics } from '@vercel/analytics/react'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { storageGet } from 'app/lib/util'
 import * as RNLocalize from "react-native-localize";
@@ -51,6 +52,7 @@ export default function RootLayout({ children }) {
             <body className='bg-bgrbody dark:bg-bgrbody-d' style={{ overflowY: 'initial' }}>
                 <QueryClientProvider client={queryClient}>
                         {!!process.env['VERCEL'] ? <Analytics /> : null}
+                        {!!process.env['VERCEL'] ? <SpeedInsights /> : null}
                         {children}
                     <Subscriber/>
                 </QueryClientProvider>
