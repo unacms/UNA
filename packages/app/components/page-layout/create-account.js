@@ -15,6 +15,8 @@ import { appSetting } from 'app/lib/util'
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, withDelay, Easing } from 'react-native-reanimated';
 import ScrollList from 'app/ui/molecules/scroll_list'
 import { LinearGradient } from 'expo-linear-gradient';
+import SvgFile from 'app/ui/molecules/svg-file';
+
 const triggerHaptics = () => {
     if (Platform.OS !== 'web') {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
@@ -85,7 +87,7 @@ export default function PageLayout(props) {
                     
                     <View className="my-auto flex-col items-center lg:items-start gap-x-[32px] flex-auto px-[16px] sm:px-[32px] xl:px-[64px] lg:pb-[64px]" accessible={true}>
                             <Animated.View style={imageAnimatedStyle} className="w-[50%] max-w-[360px] aspect-square">
-                                {appStatic('join_image')}
+                                <SvgFile src_dark="create-account-dark.svg" src_default="create-account-light.svg"/>
                             </Animated.View>
                             <View className="flex-col items-center lg:items-start gap-y-[16px] sm:gap-y-[24px]">
                                 <Animated.View style={textBlockAnimatedStyle} className=" flex-auto items-center lg:items-start gap-y-[16px] sm:gap-y-[24px] max-w-md sm:max-w-lg lg:max-w-3xl">

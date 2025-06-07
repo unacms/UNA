@@ -22,6 +22,7 @@ import Animated, { useSharedValue, useAnimatedStyle, withTiming, withDelay, Easi
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlockByName } from 'app/components/block'
 import { useRouter } from 'app/lib/hooks/router';
+import SvgFile from 'app/ui/molecules/svg-file';
 
 const triggerHaptics = () => {
     if (Platform.OS !== 'web') {
@@ -230,7 +231,7 @@ export default function Splash(props) {
                         <View className="flex-col items-center lg:items-start gap-x-[32px] flex-auto px-[16px] sm:px-[32px] xl:px-[64px] lg:pb-[64px] "
                         accessible={true}>
                             <Animated.View style={imageAnimatedStyle} className=" w-[50%] max-w-[360px] aspect-square ">
-                                {appStatic('splash_image')}
+                                <SvgFile src_dark="splash-dark.svg" src_default="splash-light.svg"/>
                             </Animated.View>
                             <Animated.View style={[styles.heading, { marginBottom: 8, alignItems: 'center' }]} className=" flex-auto items-center lg:items-start gap-y-[16px] sm:gap-y-[24px] max-w-md sm:max-w-lg lg:max-w-3xl">
                                 {appStatic('splash_text')}
@@ -299,9 +300,11 @@ export default function Splash(props) {
                         className="my-auto flex-col items-center lg:items-start gap-x-[32px] flex-auto px-[16px] sm:px-[32px] xl:px-[64px] lg:pb-[64px] "
                         accessible={true}
                     >
-                        <Animated.View style={imageAnimatedStyle} className=" w-[50%] max-w-[360px] aspect-square">
-                            {appStatic('splash_image')}
-                        </Animated.View>
+                       
+                       <Animated.View style={imageAnimatedStyle} className="w-[50%] max-w-[360px] aspect-square">
+                       <SvgFile src_dark="splash-dark.svg" src_default="splash-light.svg"/>
+                       </Animated.View>
+
                         <Animated.View style={textBlockAnimatedStyle} className=" flex-auto items-center lg:items-start gap-y-[16px] sm:gap-y-[24px] max-w-md sm:max-w-lg lg:max-w-3xl">
                             {appStatic('splash_text')}
                         </Animated.View>
