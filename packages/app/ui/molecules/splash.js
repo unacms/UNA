@@ -8,7 +8,6 @@ import {
     BlockDataByName,
     LAYOUT_BREAKPOINTS,
     asyncStorageGet,
-    shouldEnableAnimations,
 } from 'app/lib/util'
 import { Platform, Keyboard, useColorScheme } from 'react-native'
 import { useWindowDimensions } from 'react-native'
@@ -80,21 +79,13 @@ export default function Splash(props) {
     }, [])
 
     useEffect(() => {
-        if (shouldEnableAnimations()) {
-            // Animation for the text block (heading + main text) - Conditionally run effect logic
-            textBlockOpacity.value = withDelay(200, withTiming(1, { duration: 800, easing: Easing.out(Easing.exp) }));
-            textBlockTranslateY.value = withDelay(200, withTiming(0, { duration: 800, easing: Easing.out(Easing.exp) }));
+        // Animation for the text block (heading + main text) - Conditionally run effect logic
+        textBlockOpacity.value = withDelay(200, withTiming(1, { duration: 800, easing: Easing.out(Easing.exp) }));
+        textBlockTranslateY.value = withDelay(200, withTiming(0, { duration: 800, easing: Easing.out(Easing.exp) }));
 
-            // Animation for the image, staggered after the text
-            imageOpacity.value = withDelay(500, withTiming(1, { duration: 800, easing: Easing.out(Easing.exp) }));
-            imageTranslateY.value = withDelay(500, withTiming(0, { duration: 800, easing: Easing.out(Easing.exp) }));
-        } else {
-            // Set final values immediately when animations are disabled
-            textBlockOpacity.value = 1;
-            textBlockTranslateY.value = 0;
-            imageOpacity.value = 1;
-            imageTranslateY.value = 0;
-        }
+        // Animation for the image, staggered after the text
+        imageOpacity.value = withDelay(500, withTiming(1, { duration: 800, easing: Easing.out(Easing.exp) }));
+        imageTranslateY.value = withDelay(500, withTiming(0, { duration: 800, easing: Easing.out(Easing.exp) }));
     }, []); // Changed dependency array to [] for one-time mount animation
 
     const textBlockAnimatedStyle = useAnimatedStyle(() => {

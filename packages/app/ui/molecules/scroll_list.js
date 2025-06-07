@@ -9,7 +9,7 @@ import Animated, {
 import { BlurView } from 'expo-blur';
 import React from 'react';
 import { Theme } from 'app/design/theme';
-import { appSetting, shouldEnableAnimations } from 'app/lib/util'
+import { appSetting } from 'app/lib/util'
 import { Button } from 'app/design/controls';
 import { Header } from 'app/ui/molecules/scroll_list_header';
 import { useEffect } from 'react';
@@ -36,7 +36,6 @@ export default function ScrollList({
     const transparencyOffset = 200
     const showHeaderForProfileOffset = 350
     const { colors } = Theme();
-    const animationsEnabled = shouldEnableAnimations();
 
     /* ANIMATION */
     const scrollY = useSharedValue(0);
@@ -55,16 +54,6 @@ export default function ScrollList({
             scrollDirection.value === 'up' ||
             scrollY.value < transparencyOffset ||
             scrollY.value === 0 ;
-        
-        if (!animationsEnabled) {
-            return {
-                opacity: isShow ? 1 : 0,
-                transform: [
-                    { translateY: isShow ? 0 : -114 },
-                ],
-            };
-        }
-        
         return {
             opacity: isShow ? withTiming(1, animationConfig) : withTiming(0, animationConfig),
             transform: [
@@ -74,11 +63,6 @@ export default function ScrollList({
     });
 
     const buttonStyle = useAnimatedStyle(() => {
-        if (!animationsEnabled) {
-            return {
-                opacity: scrollY.value > transparencyOffset ? 1 : 0,
-            };
-        }
         return {
             opacity: scrollY.value > transparencyOffset ? withTiming(1) : withTiming(0),
         };
