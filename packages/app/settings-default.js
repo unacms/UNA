@@ -28,6 +28,20 @@ const nativeAppImagesUrl = isLocalDevelopment
 
 console.log('- Constructed nativeAppImagesUrl:', nativeAppImagesUrl);
 
+// Debug environment variables to check what's actually being loaded
+console.log('Environment Variables Debug:');
+console.log('- env("UNA_URL"):', env('UNA_URL'));
+console.log('- env("APP_URL"):', env('APP_URL'));
+console.log('- env("UNA_API_KEY"):', env('UNA_API_KEY'));
+console.log('- env("APP_ORIGIN"):', env('APP_ORIGIN'));
+
+// On web, also check process.env directly
+if (typeof window !== 'undefined') {
+    console.log('Direct process.env check:');
+    console.log('- process.env.NEXT_PUBLIC_UNA_URL:', process.env.NEXT_PUBLIC_UNA_URL);
+    console.log('- process.env.NEXT_PUBLIC_APP_URL:', process.env.NEXT_PUBLIC_APP_URL);
+}
+
 export  const settingsDefault = {
     config: {
         una_url: env('UNA_URL'),
