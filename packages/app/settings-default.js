@@ -24,7 +24,7 @@ const nativeAppImagesUrl = isLocalDevelopment
     ? (typeof window !== 'undefined' 
         ? `${window.location.protocol}//${window.location.host}`
         : `${(env('PROTO') || 'http').replace(':', '')}://${env('HOST') || 'localhost'}:${env('PORT') || '3000'}`)
-    : 'https://neo.so';
+    : (env('APP_URL') || 'https://neo.so');
 
 console.log('- Constructed nativeAppImagesUrl:', nativeAppImagesUrl);
 

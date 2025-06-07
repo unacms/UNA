@@ -12,15 +12,11 @@ export default function ({ src_dark, src_default, width, height }) {
     const src = scheme === 'dark' ? src_dark : src_default;
 
     useEffect(() => {
-        // For web, always use the current browser location to ensure correct IP
+        // For web, always use the current browser location to ensure correct domain
         let baseUrl;
         if (Platform.OS === 'web' && typeof window !== 'undefined') {
-            const isDevelopment = window.location.hostname === 'localhost' || 
-                                window.location.hostname === '127.0.0.1' || 
-                                window.location.hostname.includes('192.168.');
-            baseUrl = isDevelopment 
-                ? `${window.location.protocol}//${window.location.host}`
-                : 'https://neo.so';
+            // Always use current domain for web deployments (development, preview, and production)
+            baseUrl = `${window.location.protocol}//${window.location.host}`;
         } else {
             // Fallback to app settings for native
             baseUrl = appSetting('config', 'native_app_images_url');
