@@ -101,9 +101,9 @@ const expoConfig = {
         "UNA_URL": process.env.UNA_URL,
         "API_PROXY_URL": process.env.API_PROXY_URL,
         "APP_ORIGIN": process.env.APP_ORIGIN,
-        "PROTO": process.env.PROTO,
-        "HOST": process.env.HOST,
-        "PORT": process.env.PORT
+        "PROTO": process.env.PROTO || "http",
+        "HOST": process.env.HOST || "192.168.1.250",
+        "PORT": process.env.PORT || "3000"
     },
     plugins: [
         [

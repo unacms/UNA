@@ -17,6 +17,16 @@ export async function fetcher (mixed, useProxy = false) {
         prefix =  APP_URL + "/api";
     }
 
+    // Debug fetcher configuration
+    console.log('Fetcher Debug:');
+    console.log('- Platform.OS:', Platform.OS);
+    console.log('- USE_PROXY_WEB:', USE_PROXY_WEB);
+    console.log('- USE_PROXY_NATIVE:', USE_PROXY_NATIVE);
+    console.log('- UNA_URL:', UNA_URL);
+    console.log('- APP_URL:', APP_URL);
+    console.log('- Final prefix:', prefix);
+    console.log('- Request path:', mixed);
+
     const r = await fetcherRaw(prefix, mixed).then(async (r) => {
        // console.log('*****************************', r.headers);
 
