@@ -23,7 +23,12 @@ export default function ({src_web, src_dark, src_default, ...props}) {
         return null;
     }
 
+    // For web, always use the current domain to support preview deployments
+    const baseUrl = typeof window !== 'undefined' 
+        ? `${window.location.protocol}//${window.location.host}`
+        : appSetting('config', 'native_app_images_url');
+
     return (
-        <img {...props} src={appSetting('config', 'native_app_images_url') + '/svg/' + src}/>
+        <img {...props} src={baseUrl + '/svg/' + src}/>
     );
 } 
