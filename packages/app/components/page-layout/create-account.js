@@ -11,7 +11,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import AuthPanel from 'app/ui/molecules/auth'
 import * as Haptics from 'expo-haptics'
-import { appSetting } from 'app/lib/util'
+import { appSetting, shouldEnableAnimations } from 'app/lib/util'
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, withDelay, Easing } from 'react-native-reanimated';
 import ScrollList from 'app/ui/molecules/scroll_list'
 import { LinearGradient } from 'expo-linear-gradient';
@@ -52,13 +52,21 @@ export default function PageLayout(props) {
     }, [textBlockOpacity, textBlockTranslateY]);
 
     useEffect(() => {
-        // Animate image
-        imageOpacity.value = withDelay(200, withTiming(1, { duration: 800, easing: Easing.out(Easing.exp) }));
-        imageTranslateY.value = withDelay(200, withTiming(0, { duration: 800, easing: Easing.out(Easing.exp) }));
+        if (shouldEnableAnimations()) {
+            // Animate image
+            imageOpacity.value = withDelay(200, withTiming(1, { duration: 800, easing: Easing.out(Easing.exp) }));
+            imageTranslateY.value = withDelay(200, withTiming(0, { duration: 800, easing: Easing.out(Easing.exp) }));
 
-        // Animate text blocks
-        textBlockOpacity.value = withDelay(400, withTiming(1, { duration: 800, easing: Easing.out(Easing.exp) }));
-        textBlockTranslateY.value = withDelay(400, withTiming(0, { duration: 800, easing: Easing.out(Easing.exp) }));
+            // Animate text blocks
+            textBlockOpacity.value = withDelay(400, withTiming(1, { duration: 800, easing: Easing.out(Easing.exp) }));
+            textBlockTranslateY.value = withDelay(400, withTiming(0, { duration: 800, easing: Easing.out(Easing.exp) }));
+        } else {
+            // Set final values immediately when animations are disabled
+            imageOpacity.value = 1;
+            imageTranslateY.value = 0;
+            textBlockOpacity.value = 1;
+            textBlockTranslateY.value = 0;
+        }
 
         const keyboardDidShowListener = Keyboard.addListener(
             'keyboardDidShow',

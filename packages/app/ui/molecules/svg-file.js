@@ -14,7 +14,7 @@ export default function ({ src_dark, src_default, width, height }) {
     useEffect(() => {
         // For web, always use the current browser location to ensure correct domain
         let baseUrl;
-        if (Platform.OS === 'web' && typeof window !== 'undefined') {
+        if (Platform.OS === 'web' && typeof window !== 'undefined' && window.location) {
             // Always use current domain for web deployments (development, preview, and production)
             baseUrl = `${window.location.protocol}//${window.location.host}`;
         } else {
@@ -31,7 +31,7 @@ export default function ({ src_dark, src_default, width, height }) {
         console.log('- Selected src:', src);
         console.log('- Full URL:', url);
         console.log('- Color scheme:', scheme);
-        if (typeof window !== 'undefined') {
+        if (typeof window !== 'undefined' && window.location) {
             console.log('- window.location.host:', window.location.host);
         }
         

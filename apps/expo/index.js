@@ -4,8 +4,8 @@
 
 import 'react-native-get-random-values';
 import 'react-native-url-polyfill/auto';
-import { StatusBar, Platform } from 'react-native';
-//import 'expo-router/entry';
+import { StatusBar, Platform, UIManager } from 'react-native';
+import 'expo-router/entry';
 import * as SplashScreen from 'expo-splash-screen';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { registerRootComponent } from "expo";
@@ -21,6 +21,14 @@ import { useColorScheme } from 'react-native';
 
 if (__DEV__) {
 	import('./ReactotronConfig').then(() => console.log('Reactotron Configured'));
+}
+
+// Disable layout animations globally to prevent freezing
+if (
+	UIManager.setLayoutAnimationEnabledExperimental &&
+	UIManager.setLayoutAnimationEnabledExperimental
+) {
+	UIManager.setLayoutAnimationEnabledExperimental(false);
 }
 
 SplashScreen.preventAutoHideAsync();

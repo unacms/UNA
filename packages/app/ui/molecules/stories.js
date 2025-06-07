@@ -4,14 +4,20 @@ import { useState, useEffect } from 'react';
 import Image from 'app/ui/atoms/image';
 import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "react-native-reanimated";
 import Card from 'app/ui/molecules/card'
+import { shouldEnableAnimations } from 'app/lib/util'
 
 export function Story(props) {
     const [showImage, setShowImage] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const opacity = useSharedValue(0);
+    const animationsEnabled = shouldEnableAnimations();
 
     useEffect(() => {
-        opacity.value = withTiming(1, { duration: 500 });
+        if (animationsEnabled) {
+            opacity.value = withTiming(1, { duration: 500 });
+        } else {
+            opacity.value = 1;
+        }
     }, [currentImageIndex, opacity]);
 
     const images = [
@@ -39,7 +45,7 @@ export function Story(props) {
     const animatedStyles = images.map((_, index) => {
         return useAnimatedStyle(() => {
             const opacityValue = index === currentImageIndex ? 1 : 0;
-            const opacityValue1 = withTiming(opacityValue, { duration: 700 });
+            const opacityValue1 = animationsEnabled ? withTiming(opacityValue, { duration: 700 }) : opacityValue;
             return {
                 opacity: opacityValue1,
                 display: opacityValue1 === 0 ? 'none' : 'flex',
@@ -50,7 +56,7 @@ export function Story(props) {
     const animatedStyles2 = images.map((_, index) => {
         return useAnimatedStyle(() => {
             const opacityValue = index <= currentImageIndex ? '100%' : 0;
-            const opacityValue1 = withTiming(opacityValue, { duration: 3000 });
+            const opacityValue1 = animationsEnabled ? withTiming(opacityValue, { duration: 3000 }) : opacityValue;
             return {
                 width: opacityValue1,
             };

@@ -1227,3 +1227,8 @@ export function getYouTubeVideoId(url) {
 export function removeEmptyTags(html) {
     return html.replace(/<p>(?:\s|&nbsp;)*<\/p>/gi, '');
 }
+
+export function shouldEnableAnimations() {
+    const animationDuration = appSetting('layout', 'card_animation_duration');
+    return animationDuration && animationDuration > 0;
+}

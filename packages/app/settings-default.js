@@ -1,7 +1,7 @@
 import { env } from 'app/lib/env'
 
 // Detect local development environment for SVG file serving
-const isLocalDevelopment = typeof window !== 'undefined' 
+const isLocalDevelopment = typeof window !== 'undefined' && window.location
     ? (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.includes('192.168.'))
     : (process.env.NODE_ENV === 'development');
 
@@ -9,7 +9,7 @@ const isLocalDevelopment = typeof window !== 'undefined'
 console.log('Settings Debug Info:');
 console.log('- isLocalDevelopment:', isLocalDevelopment);
 console.log('- typeof window:', typeof window);
-if (typeof window !== 'undefined') {
+if (typeof window !== 'undefined' && window.location) {
     console.log('- window.location.hostname:', window.location.hostname);
     console.log('- window.location.protocol:', window.location.protocol);
     console.log('- window.location.host:', window.location.host);
@@ -21,7 +21,7 @@ if (typeof window !== 'undefined') {
 console.log('- process.env.NODE_ENV:', process.env.NODE_ENV);
 
 const nativeAppImagesUrl = isLocalDevelopment 
-    ? (typeof window !== 'undefined' 
+    ? (typeof window !== 'undefined' && window.location
         ? `${window.location.protocol}//${window.location.host}`
         : `${(env('PROTO') || 'http').replace(':', '')}://${env('HOST') || 'localhost'}:${env('PORT') || '3000'}`)
     : (env('APP_URL') || 'https://neo.so');
@@ -36,7 +36,7 @@ console.log('- env("UNA_API_KEY"):', env('UNA_API_KEY'));
 console.log('- env("APP_ORIGIN"):', env('APP_ORIGIN'));
 
 // On web, also check process.env directly
-if (typeof window !== 'undefined') {
+if (typeof window !== 'undefined' && window.location) {
     console.log('Direct process.env check:');
     console.log('- process.env.NEXT_PUBLIC_UNA_URL:', process.env.NEXT_PUBLIC_UNA_URL);
     console.log('- process.env.NEXT_PUBLIC_APP_URL:', process.env.NEXT_PUBLIC_APP_URL);
