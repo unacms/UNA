@@ -1,6 +1,7 @@
 {
   "version": "0.0.0",
   "name": "app",
+  "private": true,
   "main": "index.ts",
   "dependencies": {
     "clsx": "^2.0.0",

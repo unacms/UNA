@@ -22,11 +22,7 @@ import { useRef } from 'react';
 import { getPageWidth } from 'app/lib/util'
 import ScrollList from 'app/ui/molecules/scroll_list'
 import Animated from 'react-native-reanimated';
-import dynamic from 'next/dynamic';
-
-const Splash = dynamic(() => import('app/ui/molecules/splash'), {
-    ssr: false,
-});
+import Splash from 'app/ui/molecules/splash'
 
 export default function (props) {
     const isWeb = Platform.OS == 'web'  

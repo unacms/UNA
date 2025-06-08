@@ -2,11 +2,13 @@ const path = require('path'); // Импорт path
 const { withExpo } = require('@expo/next-adapter')
 const merge = require('deepmerge');
 const nextConfigCustom = require('./next.config.custom.js');
+const webpackLib = require('webpack');
 //const MillionCompiler = require('@million/lint');
 
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  assetPrefix: '',
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -94,6 +96,17 @@ const nextConfig = {
       ...config.resolve.fallback,
       'react-native/Libraries/Utilities/codegenNativeComponent':
         '@10play/react-native-web-webview/shim',
+    };
+
+    // Define EXPO_OS to silence expo-modules-core warning
+    config.plugins.push(new webpackLib.DefinePlugin({
+        'process.env.EXPO_OS': JSON.stringify('web'),
+    }));
+
+    // Ignore incorrect re-exports warnings from expo-image-manipulator
+    config.module.parser = {
+        ...config.module.parser,
+        javascript: { exportsPresence: 'warn' },
     };
 
     return config;

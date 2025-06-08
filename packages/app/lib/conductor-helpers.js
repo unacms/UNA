@@ -232,7 +232,8 @@ export async function fetchAndUpdateData(routes, index, setRoutes) {
 
 export function addMoreData(newItems, endpoint, setRoutes, index, blocks, routes, sidebar = false, pageData = null) {
 
-    console.log("initedTabs2", pageData)
+
+
     let hasChanged = false;
 
     const updatedRoutes = routes.map((route) => {

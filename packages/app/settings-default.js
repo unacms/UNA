@@ -5,7 +5,7 @@ const isLocalDevelopment = typeof window !== 'undefined' && window.location
     ? (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.includes('192.168.'))
     : (process.env.NODE_ENV === 'development');
 
-// Debug environment variables
+/* Debug logs disabled to clean console output
 console.log('Settings Debug Info:');
 console.log('- isLocalDevelopment:', isLocalDevelopment);
 console.log('- typeof window:', typeof window);
@@ -19,6 +19,7 @@ if (typeof window !== 'undefined' && window.location) {
     console.log('- env("PROTO"):', env('PROTO'));
 }
 console.log('- process.env.NODE_ENV:', process.env.NODE_ENV);
+*/
 
 const nativeAppImagesUrl = isLocalDevelopment 
     ? (typeof window !== 'undefined' && window.location
@@ -26,21 +27,19 @@ const nativeAppImagesUrl = isLocalDevelopment
         : `${(env('PROTO') || 'http').replace(':', '')}://${env('HOST') || 'localhost'}:${env('PORT') || '3000'}`)
     : (env('APP_URL') || 'https://neo.so');
 
-console.log('- Constructed nativeAppImagesUrl:', nativeAppImagesUrl);
+/*console.log('- Constructed nativeAppImagesUrl:', nativeAppImagesUrl);
 
-// Debug environment variables to check what's actually being loaded
 console.log('Environment Variables Debug:');
 console.log('- env("UNA_URL"):', env('UNA_URL'));
 console.log('- env("APP_URL"):', env('APP_URL'));
 console.log('- env("UNA_API_KEY"):', env('UNA_API_KEY'));
 console.log('- env("APP_ORIGIN"):', env('APP_ORIGIN'));
 
-// On web, also check process.env directly
 if (typeof window !== 'undefined' && window.location) {
     console.log('Direct process.env check:');
     console.log('- process.env.NEXT_PUBLIC_UNA_URL:', process.env.NEXT_PUBLIC_UNA_URL);
     console.log('- process.env.NEXT_PUBLIC_APP_URL:', process.env.NEXT_PUBLIC_APP_URL);
-}
+}*/
 
 export  const settingsDefault = {
     config: {

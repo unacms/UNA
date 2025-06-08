@@ -1,19 +1,13 @@
 import { View, ScrollView, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
-import { Button, Modal } from 'app/design/controls'
+import { Button } from 'app/design/controls'
 import Card from 'app/components/card'
 import { useState, useEffect } from 'react'
-import {
-    appSetting,
-    BlockDataByName,
-    LAYOUT_BREAKPOINTS,
-    asyncStorageGet,
-} from 'app/lib/util'
+import { appSetting } from 'app/lib/util'
 import { Platform, Keyboard, useColorScheme } from 'react-native'
 import { useWindowDimensions } from 'react-native'
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view'
 import { appStatic } from 'app/lib/app-static'
-import { BlockByServiceName } from 'app/components/block'
 import { KeyboardAvoidingView } from 'react-native'
 import AuthPanel from 'app/ui/molecules/auth'
 import Link from 'app/ui/atoms/link'
@@ -33,10 +27,7 @@ const triggerHaptics = () => {
 export default function Splash(props) {
     const router = useRouter();
     const isWeb = Platform.OS == 'web'
-    const [defaultForm, setDefaultForm] = useState(false)
     const [isKeyboardVisible, setKeyboardVisible] = useState(false)
-    const [modalForm, setModalForm] = useState(false)
-    const [isCreateAccountSubmit, setIsCreateAccountSubmit] = useState(false)
 
     // Animation values for web - MOVED TO TOP
     const textBlockOpacity = useSharedValue(0);
@@ -45,16 +36,6 @@ export default function Splash(props) {
     const imageTranslateY = useSharedValue(-20); // Start slightly higher (slide from top)
 
     const colorScheme = useColorScheme(); // Added for dark mode detection
-
-    useEffect(() => {
-        const checkFirstLaunch = async () => {
-            const hasLaunched = await asyncStorageGet('layout:visited')
-            hasLaunched === null
-                ? setDefaultForm('signup')
-                : setDefaultForm('login')
-        }
-        checkFirstLaunch()
-    }, [])
 
     useEffect(() => {
         // Subscribe to keyboard events
@@ -102,34 +83,7 @@ export default function Splash(props) {
         };
     }, [imageOpacity, imageTranslateY]);
 
-    const isIos = Platform.OS === 'ios'
-
-    const accountForm = BlockDataByName(
-        props.data,
-        'system:create_account_form'
-    )
-
-    const isInvite = accountForm.content[0].type !== 'form'
-
     const forms = {
-        signup: isInvite
-            ? {
-                  name: 'bx_invites:get_block_form_request',
-                  title: 'Request invitation',
-                  button: 'Login',
-                  icon: 'LogIn',
-                  action: 'login',
-                  link: '/login',
-              }
-            : {
-                  name: 'system:create_account_form',
-                  title: 'Create new account',
-                  button: 'Login',
-                  icon: 'LogIn',
-                  action: 'login',
-                  link: '/login',
-              },
-        fp: { name: 'system:forgot_password', title: 'Restore password' },
         login: {
             name: 'system:login_form',
             title: 'Account',
@@ -139,72 +93,6 @@ export default function Splash(props) {
             link: '/create-account',
         },
     }
-
-    const defaultFormData = forms[defaultForm]
-    const modalFormData = forms[modalForm]
-
-    if (!defaultForm) return null
-
-    const cnt = (
-        <>
-            <Modal
-                title={modalFormData?.title}
-                onVisible={!!modalForm}
-                outerClickClose={false}
-                {...(true && { onClose: () => setModalForm(false) })}
-                transparent={true}
-                headerBorder={true}
-            >
-                <View className=" w-full h-full pt-2 sm:pt-0 mx-auto">
-                    <KbAvoidingView
-                        offset={isIos ? 56 : 72}
-                        className="flex-1 w-full h-full"
-                    >
-                        <ScrollView className="w-full h-full flex-1 overflow-visible">
-                            <View className="w-full px-4 sm:p-0 ">
-                                <BlockByServiceName
-                                    name={modalFormData?.name}
-                                    formProps={{
-                                        hide_errors: true,
-                                        button_full_width: true,
-                                    }}
-                                    data={props.data}
-                                    isSubmit={isCreateAccountSubmit}
-                                />
-                            </View>
-                        </ScrollView>
-                    </KbAvoidingView>
-                </View>
-            </Modal>
-            <Card addClassName=" animate-slidein flex-col w-full mx-auto ">
-                <BlockByServiceName
-                    name={defaultFormData.name}
-                    data={props.data}
-                    formProps={{
-                        auto_focus: false,
-                        hide_errors: true,
-                        button_full_width: true,
-                    }}
-                />
-                <View className="border-t border-bdr dark:border-bdr-d mt-[16px] pt-[16px] gap-y-[12px]">
-                    <Link href={defaultFormData.link}>
-                        <Button
-                            onPress={triggerHaptics}
-                            title={defaultFormData.button}
-                            startDecorator={defaultFormData.icon}
-                            size="lg"
-                            fullWidth
-                            /* onPress={() => {
-                         setDefaultForm(defaultForm == 'login' ? 'signup' : 'login')
-
-                     }}*/
-                        />
-                    </Link>
-                    <AuthPanel className="" />
-                </View>
-            </Card>
-        </>
-    )
 
     if (!isWeb) {
         const gradientColors = colorScheme === 'dark'

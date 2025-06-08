@@ -6,8 +6,6 @@ const USE_PROXY_WEB = appSetting('config', 'use_proxy_web');
 const USE_PROXY_NATIVE = appSetting('config', 'use_proxy_native'); 
 
 export async function fetcher (mixed, useProxy = false) {
-    const t1 = Date.now();
-   
     let prefix = UNA_URL;
     if ((Platform.OS === 'web'  && USE_PROXY_WEB) || useProxy){
         prefix =  APP_URL + "/api";
@@ -17,39 +15,15 @@ export async function fetcher (mixed, useProxy = false) {
         prefix =  APP_URL + "/api";
     }
 
-    // Debug fetcher configuration
-    console.log('Fetcher Debug:');
-    console.log('- Platform.OS:', Platform.OS);
-    console.log('- USE_PROXY_WEB:', USE_PROXY_WEB);
-    console.log('- USE_PROXY_NATIVE:', USE_PROXY_NATIVE);
-    console.log('- UNA_URL:', UNA_URL);
-    console.log('- APP_URL:', APP_URL);
-    console.log('- Final prefix:', prefix);
-    console.log('- Request path:', mixed);
-
     const r = await fetcherRaw(prefix, mixed).then(async (r) => {
-       // console.log('*****************************', r.headers);
-
-        
         let a;
         try {
             a = await r.json();
         } catch (error) {
-            console.log("ERROR")
-            console.log("----------- Response isn't valid JSON for " + mixed);
-            if ('readable' == r?.body?.state)
-                console.log(await r.text());
-            else
-                console.log("RESPONSE BODY ISN'T READABLE");
-            console.log("----------- END --------------");
             a = {};
         }
         return a;
     });
-
-    const diff = Date.now() - t1;
-    if (appSetting('config', 'debug'))
-        console.log((new Date(t1)).toLocaleTimeString(), "~~~~~~~~~~~~~~~~~~~~~~~~~~~~ load time:", parseFloat(diff/1000), "sec (", prefix + mixed, ")");
 
     return r;
 }
@@ -96,7 +70,7 @@ export async function fetcherRaw (host, mixed) {
         return r;
     })
     .catch((error) => {
-        console.log("Api call error: ",error,host + path + "&lang=" + lang);
+        console.error("Api call error: ",error,host + path + "&lang=" + lang);
         throw error;
     });
 }

@@ -2,6 +2,7 @@
   "main": "index.js",
   "dependencies": {
     "@10play/tentap-editor": "^0.6.1",
+    "@tiptap/core": "^2.13.0",
     "@expo/html-elements": "^0.11.2",
     "@gorhom/bottom-sheet": "^5.1.2",
     "@hello-pangea/dnd": "^17.0.0",
@@ -29,7 +30,7 @@
     "expo-document-picker": "~13.0.1",
     "expo-haptics": "~14.0.0",
     "expo-image": "~2.0.3",
-    "expo-image-manipulator": "~13.0.6",
+    "expo-image-manipulator": "~12.0.5",
     "expo-image-picker": "~16.0.3",
     "expo-linear-gradient": "~13.0.2",
     "expo-linking": "~7.0.3",
