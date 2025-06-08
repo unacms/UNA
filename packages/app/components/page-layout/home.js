@@ -11,7 +11,6 @@ import {
 import { useCurrentUser } from 'app/context/user'
 import { Button } from 'app/design/controls'
 import { useTranslation } from 'react-i18next'
-import Splash from 'app/ui/molecules/splash'
 import Link from 'app/ui/atoms/link'
 import Profile from 'app/ui/molecules/profile'
 import { Text } from 'app/design/typography'
@@ -23,6 +22,11 @@ import { useRef } from 'react';
 import { getPageWidth } from 'app/lib/util'
 import ScrollList from 'app/ui/molecules/scroll_list'
 import Animated from 'react-native-reanimated';
+import dynamic from 'next/dynamic';
+
+const Splash = dynamic(() => import('app/ui/molecules/splash'), {
+    ssr: false,
+});
 
 export default function (props) {
     const isWeb = Platform.OS == 'web'  
@@ -55,28 +59,23 @@ export default function (props) {
     function setFeedTypeEx(mode) {
         storageSet('feed:type', '', mode, true)
         setFeedType(mode)
-        console.log('modemode', mode)
     }
     const refer = useRef();
 
     if (!currentUser) {
-        if (false)
-            return <Splash {...props} />
-        else {
-            const content = (
-                <Animated.ScrollView ref={refer} className={'mx-auto w-full'} keyboardShouldPersistTaps="always" keyboardDismissMode="on-drag">
-                   <Splash {...props} />
-                </Animated.ScrollView>
-            );
-        
-            return (<ScrollList 
-                refer={refer}
-                content = {content}
-                pageData = {props.data}
-                headerHeight = {isWeb? 0 : 70}
-                contentType="ScrollList"
-            />)
-        }
+        const content = (
+            <Animated.ScrollView ref={refer} className={'mx-auto w-full'} keyboardShouldPersistTaps="always" keyboardDismissMode="on-drag">
+                <Splash {...props} />
+            </Animated.ScrollView>
+        );
+
+        return (<ScrollList
+            refer={refer}
+            content = {content}
+            pageData = {props.data}
+            headerHeight = {isWeb? 0 : 70}
+            contentType="ScrollList"
+        />)
     }
 
     const sideBarBlocks = Object.keys(props.blocks)

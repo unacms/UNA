@@ -67,7 +67,6 @@ const getData = cache(async (params, search_params) => {
         l = l + '&params[]=' + sBlocks + '&params[]=' + JSON.stringify(searchParams);
     }
 
-    console.log('^^^^^^^^^^^^^^^^^^^^^^^^^', searchParams, l);
     const res = await fetch(l, opts)
     const resClone = res.clone();
     try {
@@ -100,9 +99,9 @@ export async function generateMetadata(props) {
 
     return {
         description: description,
-        manifest: isClientProject ? '/static/manifest.json' : '/manifest.json',
+        manifest: '/manifest.json',
         icons: {
-            icon: isClientProject ? '/static/favicon.ico' : '/favicon.ico',
+            icon: '/favicon.ico',
         },
         other: {
             'mobile-web-app-capable': 'yes',

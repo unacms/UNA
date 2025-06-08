@@ -87,7 +87,7 @@ export default function PageLayout(props) {
                     
                     <View className="my-auto flex-col items-center lg:items-start gap-x-[32px] flex-auto px-[16px] sm:px-[32px] xl:px-[64px] lg:pb-[64px]" accessible={true}>
                             <Animated.View style={imageAnimatedStyle} className="w-[50%] max-w-[360px] aspect-square">
-                                <SvgFile src_dark="create-account-dark.svg" src_default="create-account-light.svg"/>
+                                <SvgFile src_dark="create-account-dark.svg" src_default="create-account-light.svg" alt="Create account illustration"/>
                             </Animated.View>
                             <View className="flex-col items-center lg:items-start gap-y-[16px] sm:gap-y-[24px]">
                                 <Animated.View style={textBlockAnimatedStyle} className=" flex-auto items-center lg:items-start gap-y-[16px] sm:gap-y-[24px] max-w-md sm:max-w-lg lg:max-w-3xl">
@@ -183,64 +183,54 @@ export default function PageLayout(props) {
             </View>
         </View>
     ) : (
-                    <ScrollView
-                        contentContainerStyle={{
-                            flexGrow: 1,
-                            alignItems: 'center',
-                            padding: 16,
-                            width: '100%',
+        <View className="flex-col justify-center w-full p-4">
+            <Card>
+                <View className="flex-col lg:hidden pb-4">
+                    <Text className="text-2xl font-bold text-neutral-800 dark:text-neutral-200">
+                        Create an account
+                    </Text>
+                </View>
+                {!isAllowJoin && (
+                    <BlockByName
+                        name={props.blocks.form_invitation}
+                        data={props.data}
+                        formProps={{
+                            auto_focus: true,
+                            hide_errors: true,
+                            button_full_width: true,
                         }}
-                    >
-                        
-                        <View className="flex-col justify-center w-full">
-                                <Card>
-                                    <View className="flex-col lg:hidden pb-4">
-                                        <Text className="text-2xl font-bold text-neutral-800 dark:text-neutral-200">
-                                            Create an account
-                                        </Text>
-                                    </View>
-                                    {!isAllowJoin && (
-                                        <BlockByName
-                                            name={props.blocks.form_invitation}
-                                            data={props.data}
-                                            formProps={{
-                                                auto_focus: true,
-                                                hide_errors: true,
-                                                button_full_width: true,
-                                            }}
-                                        />
-                                    )}
-                                    {isAllowJoin && (
-                                        <BlockByName
-                                            name={props.blocks.form_join}
-                                            data={props.data}
-                                            formProps={{
-                                                auto_focus: true,
-                                                hide_errors: true,
-                                                button_full_width: true,
-                                            }}
-                                        />
-                                    )}
-                                    <View className="flex items-center justify-center pt-4 mt-4 gap-y-2 border-t border-bdr dark:border-bdr-d">
-                                        <Link className="w-full" href="/login">
-                                            <Button
-                                                onPress={triggerHaptics}
-                                                title="Continue with email"
-                                                size="base"
-                                                fullWidth
-                                            />
-                                        </Link>
-                                        <AuthPanel />
-                                    </View>
-                                </Card>
-                                <View className=" w-full h-[64px]">
-                                    <View className="mx-auto my-auto">
-                                        {appStatic('components_footer')}
-                                    </View>
-                                </View>
-                        </View>
-                    </ScrollView>)
-                    ;
+                    />
+                )}
+                {isAllowJoin && (
+                    <BlockByName
+                        name={props.blocks.form_join}
+                        data={props.data}
+                        formProps={{
+                            auto_focus: true,
+                            hide_errors: true,
+                            button_full_width: true,
+                        }}
+                    />
+                )}
+                <View className="flex items-center justify-center pt-4 mt-4 gap-y-2 border-t border-bdr dark:border-bdr-d">
+                    <Link className="w-full" href="/login">
+                        <Button
+                            onPress={triggerHaptics}
+                            title="Continue with email"
+                            size="base"
+                            fullWidth
+                        />
+                    </Link>
+                    <AuthPanel />
+                </View>
+            </Card>
+            <View className=" w-full h-[64px]">
+                <View className="mx-auto my-auto">
+                    {appStatic('components_footer')}
+                </View>
+            </View>
+        </View>
+    );
 
     const gradientColors = colorScheme === 'dark'
     ? ['rgba(23, 37, 84, 1)', 'rgba(23, 37, 84, 0.5)'] // primary-900 to primary-950/50

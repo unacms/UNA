@@ -231,9 +231,9 @@ export default function Splash(props) {
                         <View className="flex-col items-center lg:items-start gap-x-[32px] flex-auto px-[16px] sm:px-[32px] xl:px-[64px] lg:pb-[64px] "
                         accessible={true}>
                             <Animated.View style={imageAnimatedStyle} className=" w-[50%] max-w-[360px] aspect-square ">
-                                <SvgFile src_dark="splash-dark.svg" src_default="splash-light.svg"/>
+                                <SvgFile src_dark="splash-dark.svg" src_default="splash-light.svg" alt="Splash screen illustration" />
                             </Animated.View>
-                            <Animated.View style={[styles.heading, { marginBottom: 8, alignItems: 'center' }]} className=" flex-auto items-center lg:items-start gap-y-[16px] sm:gap-y-[24px] max-w-md sm:max-w-lg lg:max-w-3xl">
+                            <Animated.View style={{ marginBottom: 8, alignItems: 'center' }} className=" flex-auto items-center lg:items-start gap-y-[16px] sm:gap-y-[24px] max-w-md sm:max-w-lg lg:max-w-3xl">
                                 {appStatic('splash_text')}
                             </Animated.View>
                             
@@ -302,7 +302,7 @@ export default function Splash(props) {
                     >
                        
                        <Animated.View style={imageAnimatedStyle} className="w-[50%] max-w-[360px] aspect-square">
-                       <SvgFile src_dark="splash-dark.svg" src_default="splash-light.svg"/>
+                       <SvgFile src_dark="splash-dark.svg" src_default="splash-light.svg" alt="Splash screen illustration" />
                        </Animated.View>
 
                         <Animated.View style={textBlockAnimatedStyle} className=" flex-auto items-center lg:items-start gap-y-[16px] sm:gap-y-[24px] max-w-md sm:max-w-lg lg:max-w-3xl">
@@ -367,10 +367,3 @@ export default function Splash(props) {
         </View>
     )
 }
-
-const styles = { // Basic styles, can be expanded in a stylesheet
-    heading: { // Example, assuming splash_text contains a heading and main text
-         // Potentially target specific text elements if splash_text structure allows
-    },
-    // Add other styles as needed
-};
