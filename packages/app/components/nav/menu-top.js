@@ -1,5 +1,4 @@
 import { View, Row } from 'app/design/view'
-import { Button } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user'
 import { menuItemsByName, appSetting } from 'app/lib/util'
 import Link from 'app/ui/atoms/link'
@@ -20,13 +19,11 @@ export default function MenuTop({ url, uri }) {
 
     return (
         <Row className="hidden lg:flex flex-auto w-full mx-auto max-w-2xl gap-x-1 justify-between items-center align-middle ">
-            
-                {menu_navbar_items.map((item, index) => {
-                    const isActive = item.link === '/' + url || (item.link === '/' && uri === 'home');
-                    return <MenuTopItem key={`bmi-${index}`} link={item.link} icon={item.icon} isTitle={item.showTitle} title={t(item.title)} isActive={isActive} />
+            {menu_navbar_items.map((item, index) => {
+                const isActive = item.link === '/' + url || (item.link === '/' && uri === 'home');
+                return <MenuTopItem key={`bmi-${index}`} link={item.link} icon={item.icon} isTitle={item.showTitle} title={t(item.title)} isActive={isActive} />
 
-                })}
-            
+            })}
         </Row>
 
     )
@@ -45,14 +42,12 @@ function MenuTopItem({ link, title, index, icon, isTitle, isActive }) {
                             : 'text-neutral-600 dark:text-neutral-400 group-hover:bg-bgritem dark:group-hover:bg-bgritem-d'
                     }`}
                 >
-                    
-                        <Icon
-                            icon={icon}
-                            size="24"
-                            color={isActive ? colors.default : colors.default}
-                        />
-                    
-                    {isTitle && <Text>{title}</Text>}
+                    <Icon
+                        icon={icon}
+                        size="24"
+                        color={isActive ? colors.default : colors.default}
+                    />
+                    {isTitle && <Text className={`whitespace-nowrap text-ellipsis overflow-hidden tracking-tight font-medium ${isActive ? 'text-primary' : 'text-neutral-800 dark:text-neutral-200'} text-lg px-[12px] web:text-[18px] native:text-[18px] leading-[28px]`}>{title}</Text>}
                 </Row>
                 {/* {isActive && (
                     <View className="-bottom-1.5 w-full bg-primary dark:bg-primary-d rounded-xl h-0.5 animate-appear" />
@@ -62,19 +57,3 @@ function MenuTopItem({ link, title, index, icon, isTitle, isActive }) {
         </Link>
     )
 }
-
-/*<Button
-    pressed={isCurrent}
-    variant="tab"
-    size="lg"
-    tooltip={title}
-    title={isTitle ? title : ''}
-    alt={title}
-    aria-label={title}
-    fullWidth
-    startDecorator={icon}
-    align="center"
-    indicator={isCurrent}
-    indicatorPosition="bottom"
-    indicatorClassName=" animate-appear translate-y-[6px] h-[3px] w-full bg-indicator dark:bg-indicator-d rounded-full"
-/>*/
