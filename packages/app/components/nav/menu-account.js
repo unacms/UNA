@@ -160,14 +160,14 @@ export default function MenuAccount({ buttonProps, children }) {
                         )
                     }
                 )}
-                footer={<MenuFooter 
+                footer={menu_footer_items.length > 0 ? <MenuFooter 
                     cntClasses="w-full flex-row flex-wrap opacity-80 h-[64px] items-center justify-center"
                     btnStyle={{
                         variant: "link",
                         size: "xs",
                     }}
                     menu_items = {menu_footer_items}
-                />}
+                />: null}
             >
                 {trigger}
             </DropdownMenu>
