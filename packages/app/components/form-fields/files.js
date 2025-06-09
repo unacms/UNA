@@ -119,7 +119,6 @@ export default function (props) {
         else {
             field.onChange('');
         }
-        // console.log("imageSourceimageSource", imageSource.images)
     }, [imageSource]);
 
     useEffect(() => {
@@ -440,14 +439,12 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
                 const reader = new FileReader();
                 reader.onload = async (event) => {
                     const k = await uploadImages([{ uri: event.target.result }]);
-                    console.log("imageSource3", k)
                     setImageSource({ images: k });
                 };
                 reader.readAsDataURL(files[0]);
             }
         }
     };
-    console.log("propsprops", props)
     let button = <Button startDecorator={props.icon ? props.icon : sIcon} tooltip={t("Add " + props.name)} title={props.title ? props.title : sTitle} size={props.size ? props.size : "base"} variant={props.variant ? props.variant : "text"} rounded={props.rounded ? props.rounded : false} onPress={selectImage} {...(props.hitSlop && { hitSlop: props.hitSlop })} />
 
     if (!bMultiple) {
