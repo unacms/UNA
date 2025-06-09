@@ -19,6 +19,7 @@ import { useFilesData } from 'app/context/files';
 import { Image as ImageRN } from 'react-native';
 import Video from 'app/ui/atoms/video';
 import Msg from 'app/ui/molecules/msg';
+import { useTranslation } from 'react-i18next'
 
 export default function (props) {
     const name = props.name;
@@ -391,6 +392,7 @@ export default function (props) {
 }
 
 function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple, uploadImages }) {
+    const { t } = useTranslation()
     const drop = useRef(null);
     const iconMap = {
         photo: "Image",
@@ -404,7 +406,7 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
     };
 
     let sIcon = iconMap[props.name] || "Plus";
-    let sTitle = sIcon === "Plus" ? "Select " + props.name : "";
+    let sTitle = sIcon === "Plus" ? t("Select " + props.name) : "";
     if (props.source == 'camera') {
         sIcon = 'Camera';
     }
@@ -445,7 +447,8 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
             }
         }
     };
-    let button = <Button startDecorator={props.icon ? props.icon : sIcon} title={props.title ? props.title : sTitle} size={props.size ? props.size : "base"} variant={props.variant ? props.variant : "text"} rounded={props.rounded ? props.rounded : false} onPress={selectImage} {...(props.hitSlop && { hitSlop: props.hitSlop })} />
+    console.log("propsprops", props)
+    let button = <Button startDecorator={props.icon ? props.icon : sIcon} tooltip={t("Add " + props.name)} title={props.title ? props.title : sTitle} size={props.size ? props.size : "base"} variant={props.variant ? props.variant : "text"} rounded={props.rounded ? props.rounded : false} onPress={selectImage} {...(props.hitSlop && { hitSlop: props.hitSlop })} />
 
     if (!bMultiple) {
         let img = imagesList && imagesList.length > 0 ? imagesList[0] : null;
