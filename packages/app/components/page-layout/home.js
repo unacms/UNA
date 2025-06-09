@@ -212,40 +212,42 @@ export default function (props) {
             >
                 {getLayout(currentUser) == 'hor' && (
                     <View className="hidden relative xl:flex w-[360px] ">
-                        <View className="fixed-process fixed w-[360px] p-4web:duration-200">
-                            {appSetting('layout', 'sidebar_search') && (
+                        <View className="fixed-process fixed w-[360px] p-[12px]  web:duration-200">
+                            {/* {appSetting('layout', 'sidebar_search') && (
                                 <View className="pb-3 w-full">
                                     <Search type="input" placeholder="Enter search text" />
                                 </View>
-                            )}
+                            )} */}
                             {appSetting('layout', 'show_profile_info') && (
+                                <View className="py-[8px] mb-[8px] border-b border-bdr dark:border-bdr-d">
                                 <Link href={currentUser.url} emulate={true}>
                                     <Row
                                         className={
-                                            ' rounded-[12px] group items-center p-[6px] mb-[2px] justify-between hover:bg-bgrbutton dark:hover:bg-bgrbutton-d  active:bg-bgrbutton-h dark:active:bg-bgrbutton-dh  '
+                                            ' rounded-[12px] group items-center px-[8px] gap-x-[12px] h-12 hover:bg-bgritem dark:hover:bg-bgritem-d  active:bg-bgritem-h dark:active:bg-bgritem-dh  '
                                         }
                                     >
-                                        <Row className="flex-row items-center">
-                                            <View className="px-[2px]">
+                                        
+                                           
                                                 <Profile
                                                     {...currentUser}
                                                     url_avatar={currentUser.avatar}
                                                     displayType="unit_wo_info"
                                                     displaySize="sm"
-                                                /></View>
-                                            <View className="flex-col pl-[8px] gap-y-[2px]">
-                                                <Text className=" text-sm leading-[18px] flex-auto my-auto font-semibold truncate text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-whiteweb:duration-200">
+                                                />
+                                                <View className="flex-col">
+                                                <Text className=" text-base leading-[20px]  flex-auto my-auto font-semibold truncate text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-white web:duration-200">
                                                     {currentUser.display_name}
                                                 </Text>
-                                                <Text className=" text-xs leading-[16px] leading-none flex-auto my-auto truncate text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-800 dark:group-hover:text-neutral-200web:duration-200">
+                                                <Text className=" text-xs leading-[16px] flex-auto my-auto truncate text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-800 dark:group-hover:text-neutral-200 web:duration-200">
                                                     {
                                                         currentUser.membership_name
                                                     }
                                                 </Text>
                                             </View>
-                                        </Row>
+                                        
                                     </Row>
                                 </Link>
+                                </View>
                             )}
 
                             <View
@@ -288,9 +290,9 @@ export default function (props) {
                     </View>
                 )}
 
-                <View className="flex-auto w-full sm:px-4 xl:px-0">
-                    <View className=" w-full mx-auto max-w-2xl ">
-                        <View className={`relative w-full mx-auto max-w-2xl ${feedList.length > 1 ? '' : 'sm:mt-3'} `}>
+                
+                    
+                    <View className="relative flex-auto mx-auto sm:p-[12px] max-w-2xl">
                             {feedList.map((item, index) => {
                                 if (feedType == item.name) {
                                     return (
@@ -325,26 +327,26 @@ export default function (props) {
                                     ></React.Fragment>
                                 )
                             })}
+                    </View>
+
+                    
+
+                
+
+                    <View className="hidden lg:flex w-[360px] ">
+                        <View className="fixed-process p-[12px] flex-col gap-y-[24px]  web:duration-300">
+                            {sideBarBlocks.map((item, index) => {
+                                return (
+                                    <BlockByName
+                                        key={'block_' + index}
+                                        name={item.block}
+                                        data={props.data}
+                                        {...item.block.props}
+                                    />
+                                )
+                            })}
                         </View>
-
                     </View>
-
-                </View>
-
-                    <View className="hidden lg:flex  w-[360px] ">
-                    <View className="fixed-process p-[16px] flex-col gap-y-[32px] web:duration-200">
-                        {sideBarBlocks.map((item, index) => {
-                            return (
-                                <BlockByName
-                                    key={'block_' + index}
-                                    name={item.block}
-                                    data={props.data}
-                                    {...item.block.props}
-                                />
-                            )
-                        })}
-                    </View>
-                </View>
             </View>
         )
     }

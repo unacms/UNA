@@ -431,9 +431,9 @@ export function LeftSidebar({ title, addButtons, children, width, menu }) {
     const sidebar = appSetting('conductor', 'sidebar_position')
     const { t } = useTranslation();
     return (
-        <View className={`lg:${width}`}>
-            <View className={` ${sidebar =='fixed'? 'fixed-process' : ''} lg:${width} p-4 gap-y-1`}>
-                {(!!title || !!addButtons?.length > 0) && <Row className="justify-between items-center px-[4px] pb-2 z-10 ">
+       
+            <View className={` ${sidebar =='fixed'? 'fixed-process' : ''} px-[8px] py-[16px] gap-y-[2px]`}>
+                {(!!title || !!addButtons?.length > 0) && <Row className="justify-between items-center px-[8px] z-10 ">
                     <Text className=" text-2xl tracking-tight truncate mr-auto font-bold leading-[48px] text-neutral-900 dark:text-neutral-100 hidden lg:flex  ">
                         {t(title)}
                     </Text>
@@ -445,7 +445,7 @@ export function LeftSidebar({ title, addButtons, children, width, menu }) {
                     {children}
                 
             </View>
-        </View>
+       
     )
 }
 
@@ -455,7 +455,7 @@ export function TopSidebar({ styles, isWeb, leftSideBar, header, headerSettings,
         <View style={styles} className={ ` ${!omitDefaultBackground ? conductorTheme.menu : ''} ${leftSideBar ? 'lg:hidden' : ''}`}>
             <View className={`${leftSideBar ? '' : 'mx-auto'} w-full ${conductorTheme.menu_max_width}`}>
                 
-                <Row className=" px-[12px] sm:px-[16px] py-[10px]  web:duration-300 items-center justify-between">
+                <Row className=" px-[12px] sm:px-[16px] py-[10px]   web:duration-300 items-center justify-between">
                     {currentUser && title ? <Text className="text-2xl my-auto sm:mx-5 pb-1 font-medium text-neutral-800 tracking-tight dark:text-neutral-200 hidden lg:flex">{title}</Text> : null}
                     {!currentUser && title ? <View className='pr-[12px] sm:pr-[16px]'><TextHeader text={title} /></View> : null}
                     {children}

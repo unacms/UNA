@@ -61,10 +61,10 @@ export default function (props) {
                                 displaySize="base"
                             />
                             <View className='flex-col'>
-                            <Text className="text-base pl-3 flex-auto my-auto font-semibold truncate text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-whiteweb:duration-200">
+                            <Text className="text-base pl-3 flex-auto my-auto font-semibold truncate text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-white web:duration-300">
                                 {currentUser.display_name}
                             </Text>
-                            <Text className=" text-xs pl-3 flex-auto my-auto truncate text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-800 dark:group-hover:text-neutral-200web:duration-200">
+                            <Text className=" text-xs pl-3 flex-auto my-auto truncate text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-800 dark:group-hover:text-neutral-200 web:duration-300">
                                 {currentUser.membership_name}
                             </Text></View>
                         </Row>

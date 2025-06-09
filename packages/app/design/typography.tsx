@@ -24,7 +24,7 @@ export const H1 = ({ children, className, ...rest }) => {
       typeof children === 'string' ? decodeText(children) : children;
     return (
       <NativeText
-        className={` text-4xl sm:text-5xl font-bold tracking-tight my-[12px] lg:my-[16px] web:duration-300 text-neutral-950 dark:text-neutral-50 ${className || ''}`}
+        className={` text-4xl sm:text-5xl font-bold tracking-tight my-[12px] lg:my-[16px]  web:duration-300 text-neutral-950 dark:text-neutral-50 ${className || ''}`}
         {...rest}
         allowFontScaling={false}
       >

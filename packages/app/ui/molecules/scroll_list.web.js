@@ -100,7 +100,7 @@ export default function ScrollList({
         }
         headerHeight = 120;
         subHeaderComponent = (
-            <View className='px-[12px] sm:px-[16px] items-start py-[10px] justify-center  web:duration-300'>
+            <View className='px-[12px] sm:px-[16px] items-start py-[10px] justify-center   web:duration-300'>
                 <TextHeader text={textName} />
             </View>
         );
@@ -112,9 +112,9 @@ export default function ScrollList({
             {isSmallScreen && <View style={{ position: 'fixed', top: 0, left: 0, width: '100%' }}>
 
                 <View 
-                    className={`w-full transition-all  web:duration-300 ease-in-out will-change-transform ${
+                    className={`w-full transition-all   web:duration-300 ease-in-out will-change-transform ${
                         isPageScrolled
-                            ? 'bg-bgrnavbar/80 dark:bg-bgrnavbar-d/80 backdrop-blur-lg shadow-[0_1px_0_rgba(0,0,0,0.05)] dark:shadow-[0_1px_0_rgba(255,255,255,0.05)]'
+                            ? 'bg-bgrnavbar/80 dark:bg-bgrnavbar-d/80 backdrop-blur-lg shadow-[0_1px_0_rgba(0,0,0,0.05)] dark:shadow-[0_1px_0_rgba(0,0,0,0.1)]'
                             : 'bg-transparent dark:bg-transparent shadow-none'
                     }`}
                 >

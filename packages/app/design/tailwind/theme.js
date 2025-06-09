@@ -130,8 +130,8 @@ const colors = {
     bgritem: {
         DEFAULT: 'rgba(110,115,130,0.15)',
         h: 'rgba(110,115,130,0.25)',
-        d: 'rgba(110,115,130,0.15)',
-        dh: 'rgba(110,115,130,0.25)',
+        d: 'rgba(30,40,55,0.8)',
+        dh: 'rgba(30,40,55,1)',
 
     },
     bgritemprimary: {

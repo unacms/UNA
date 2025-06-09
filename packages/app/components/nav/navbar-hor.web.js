@@ -43,7 +43,7 @@ const HeaderLine = memo(
             ).length > 0
 
         return (
-            <View className=" flex-row w-[360px] gap-x-[12px] px-[12px] sm:px-[16px] items-center ">
+            <View className=" flex-row xl:w-[360px] gap-x-[12px] px-[12px] items-center ">
                 
                 {headerSettings.menu && isDrawer && (
                     <View className="lg:hidden pr-[8px] ">
@@ -62,7 +62,7 @@ const HeaderLine = memo(
                 )}
                 {(!context || (!currentUser.confirmed && appSetting('layout', 'lock_unconfirmed'))) &&  (uri == 'home' || width >= LAYOUT_BREAKPOINTS.lg) && (
                     <Link
-                        className=" flex items-center flex-row active:scale-95 active:opacity-50 text-neutral-800 dark:text-neutral-200 hover:scale-105 hover:text-neutral-950 dark:hover:text-neutral-50  web:duration-300 gap-x-[12px] "
+                        className=" flex items-center flex-row active:scale-95 active:opacity-50 text-neutral-800 dark:text-neutral-200 hover:scale-105 hover:text-neutral-950 dark:hover:text-neutral-50   web:duration-300 gap-x-[12px] "
                         href="/home"
                         aria-label="Logo"
                     >
@@ -145,9 +145,9 @@ export default function (props) {
                         props.layoutName == 'post'
                             ? 'hidden lg:flex'
                             : '') +
-                        ' fixed w-full h-16 items-center transition-all  web:duration-300 ease-in-out will-change-transform ' +
+                        ' fixed w-full h-16 items-center transition-all   web:duration-300 ease-in-out will-change-transform ' +
                         (isScrolled
-                            ? 'bg-bgrnavbar/80 dark:bg-bgrnavbar-d/80 backdrop-blur-lg shadow-[0_1px_0_rgba(0,0,0,0.05)] dark:shadow-[0_1px_0_rgba(255,255,255,0.05)]'
+                            ? 'bg-bgrnavbar/80 dark:bg-bgrnavbar-d/80 backdrop-blur-lg shadow-[0_1px_0_rgba(0,0,0,0.05)] dark:shadow-[0_1px_0_rgba(0,0,0,1)]'
                             : 'bg-transparent dark:bg-transparent shadow-none')
                     }
                 >
@@ -169,24 +169,23 @@ export default function (props) {
                             context={props.context}
                         />
                         <MenuTop url={props.url} uri={props.uri}/>
-                        <Row className=" xl:w-[360px] px-[12px] sm:px-[16px] gap-x-2 items-center justify-end ">
+                        <Row className=" xl:w-[360px] px-[12px] items-center justify-end ">
                             {!!currentUser && (
-                                <Row className="justify-end gap-x-2">
-                                    
-                                        <View className={`${appSetting('layout', 'tablet_mode_from')}:hidden`}>
+                                <Row className="justify-end">                                  
+                                        <View className="p-[6px]">
                                             {bSearch && <Search />}
                                         </View>
-                                        {isCustomHeaderElement && <View className=" "><HeaderElement/></View>}
-                                        <View className="hidden sm:block">
+                                        {isCustomHeaderElement && <View className="p-[6px]"><HeaderElement/></View>}
+                                        <View className="hidden sm:block p-[6px]">
                                             <MenuLauncher />
                                         </View>
-                                        <View className="">
+                                        <View className="p-[6px]">
                                             <MenuAdd />
                                         </View>
-                                        <View className="hidden sm:block">
+                                        <View className="hidden sm:block p-[6px]">
                                             {bNotifs && <NotificationButton />}
                                         </View>
-                                        <View className="hidden sm:block">
+                                        <View className="hidden sm:block p-[6px]">
                                             {bMessenger && (
                                                 <Link
                                                     href={appSetting(
@@ -215,22 +214,23 @@ export default function (props) {
                                             )}
                                         </View>
 
-                                        <View className="hidden sm:block">
+                                        <View className="hidden sm:block p-[6px]">
                                             <MenuAccount />
-                                        </View>
-                                    
+                                        </View>                                   
                                 </Row>
                             )}
                             {!currentUser && (
-                                <Row className="justify-end gap-x-2 ">
-                                    <MenuLauncher />
-
+                                <Row className="justify-end">
+                                    <View className="p-[6px]">
+                                        <MenuLauncher />
+                                    </View>
                                     {bSearch && (
-                                        <View>
+                                        <View className="p-[6px]">
                                             <Search />
                                         </View>
                                     )}
 
+                                    <View className="p-[6px]">
                                     <Link href="/login">
                                         <ButtonRef
                                             variant="secondary"
@@ -241,8 +241,9 @@ export default function (props) {
                                             aria-label="Account"
                                             alt={t('Account')}
                                             startDecorator="UserRound"
-                                        />
-                                    </Link>
+                                            />
+                                        </Link>
+                                    </View>
                                 </Row>
                             )}
                         </Row>
