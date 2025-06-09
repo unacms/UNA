@@ -16,6 +16,7 @@ import Animated, { useSharedValue, useAnimatedStyle, withTiming, withDelay, Easi
 import ScrollList from 'app/ui/molecules/scroll_list'
 import { LinearGradient } from 'expo-linear-gradient';
 import SvgFile from 'app/ui/molecules/svg-file';
+import MenuFooter from 'app/components/nav/menu-footer';
 
 const triggerHaptics = () => {
     if (Platform.OS !== 'web') {
@@ -150,11 +151,7 @@ export default function PageLayout(props) {
                     </View>
                 </View>
             </View>
-            <View className="w-full h-[64px]">
-                <View className="mx-auto my-auto">
-                    {appStatic('components_footer')}
-                </View>
-            </View>
+            <MenuFooter cntClasses="w-full flex-row flex-wrap opacity-80 h-[64px] items-center justify-center" />
         </View>
     ) : (
         <View className="flex-col justify-center w-full p-4">
@@ -198,11 +195,7 @@ export default function PageLayout(props) {
                     <AuthPanel />
                 </View>
             </Card>
-            <View className="w-full h-[64px]">
-                <View className="mx-auto my-auto">
-                    {appStatic('components_footer')}
-                </View>
-            </View>
+           <MenuFooter cntClasses="w-full flex-row flex-wrap opacity-80 h-[64px] items-center justify-center"/>
         </View>
     );
 

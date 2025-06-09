@@ -12,11 +12,13 @@ import { Text } from 'app/design/typography'
 import { fetcher } from 'app/lib/fetcher';
 import RadioButton from 'app/ui/atoms/radiobutton';
 import Redirect from 'app/ui/atoms/redirect'
+import MenuFooter from 'app/components/nav/menu-footer';
 
 export default function MenuAccount({ buttonProps, children }) {
     const redirectdRef = useRef();
     const { currentUser, setCurrentUser } = useCurrentUser();
     const [menuData, setMenuData] = useState(false);
+    const [menuData1, setMenuData1] = useState(false);
     const [data, setData] = useState(false)
 
     const fetchDataPr = async () => {
@@ -28,6 +30,7 @@ export default function MenuAccount({ buttonProps, children }) {
     useEffect(() => {
         const fetchData = async () => {
             getDataForMenu({ object: appSetting('menu_items', 'objects', 'account'), params: null }, setMenuData);
+            getDataForMenu({ object: appSetting('menu_items', 'objects', 'footer'), params: null }, setMenuData1);
             fetchDataPr();
 
         };
@@ -37,6 +40,9 @@ export default function MenuAccount({ buttonProps, children }) {
     const { t } = useTranslation();
 
     const menu_account_items = appSetting('layout', 'user_remote_config') ? menuItemsByNameNew('menu_post', menuData, currentUser) : menuItemsByName('', appSetting('menu_items', 'menu_account'), currentUser);
+    
+    const menu_footer_items = appSetting('layout', 'user_remote_config') ? menuItemsByNameNew('menu_post', menuData1, currentUser) : menuItemsByName('', appSetting('menu_items', 'menu_footer'), currentUser);
+
     let profile = null
     if (currentUser) {
         let dUser = Object.assign({}, currentUser)
@@ -154,6 +160,14 @@ export default function MenuAccount({ buttonProps, children }) {
                         )
                     }
                 )}
+                footer={<MenuFooter 
+                    cntClasses="w-full flex-row flex-wrap opacity-80 h-[64px] items-center justify-center"
+                    btnStyle={{
+                        variant: "link",
+                        size: "xs",
+                    }}
+                    menu_items = {menu_footer_items}
+                />}
             >
                 {trigger}
             </DropdownMenu>
@@ -161,18 +175,3 @@ export default function MenuAccount({ buttonProps, children }) {
 
     );
 }
-/*if (item.link == '{switch_profile}') {
-                        sTitle = (
-                            <ProfileSwitcher hideTitle={true} >
-                                <Row className='items-center justify-center h-6'>
-                                    <Profile
-                                        {...currentUser}
-                                        url_avatar={currentUser.avatar}
-                                        displayType="unit_wo_info"
-                                        displaySize="xs"
-                                    />
-                                    <Text className="pl-2.5 text-sm font-medium text-neutral-700 dark:text-neutral-200 ">
-                                        {sTitle}
-                                    </Text>
-                                </Row>
-                            </ProfileSwitcher>)*/

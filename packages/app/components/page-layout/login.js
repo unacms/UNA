@@ -14,7 +14,7 @@ import ScrollList from 'app/ui/molecules/scroll_list'
 import { useRef, useEffect } from 'react'
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, withDelay, Easing } from 'react-native-reanimated';
 import SvgFile from 'app/ui/molecules/svg-file';
-
+import MenuFooter from 'app/components/nav/menu-footer';
 const triggerHaptics = () => {
     if (Platform.OS !== 'web') {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -103,11 +103,7 @@ export default function PageLayout(props) {
                 </Animated.View>
             </View>
         </View>
-        <View className="w-full p-4 border-t border-bdr dark:border-bdr-d">
-            <View className="mx-auto">
-                {appStatic('components_footer')}
-            </View>
-        </View>
+        <MenuFooter cntClasses="w-full flex-row flex-wrap opacity-80 h-[64px] items-center justify-center"/>
     </View>) : null;
 
     return (

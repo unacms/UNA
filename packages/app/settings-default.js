@@ -545,6 +545,7 @@ export  const settingsDefault = {
             account: 'sys_account_notifications',
             add: 'sys_add_content',
             launcher: 'sys_homepage',
+            footer: 'sys_footer',
         },
         iconset: {
             'profile-check-in': 'Check',

@@ -15,6 +15,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { BlockByName } from 'app/components/block'
 import { useRouter } from 'app/lib/hooks/router';
 import SvgFile from 'app/ui/molecules/svg-file';
+import MenuFooter from 'app/components/nav/menu-footer';
 
 const triggerHaptics = () => {
     if (Platform.OS !== 'web') {
@@ -182,11 +183,7 @@ export default function Splash(props) {
                     </View>
                 </View>
             </View>
-            <View className="w-full h-[64px]">
-                <View className="mx-auto my-auto">
-                    {appStatic('components_footer')}
-                </View>
-            </View>
+            <MenuFooter cntClasses="w-full flex-row flex-wrap opacity-80 h-[64px] items-center justify-center"/>
         </View>
     )
 }

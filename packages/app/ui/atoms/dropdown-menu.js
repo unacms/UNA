@@ -22,7 +22,7 @@ const variantClassMap = {
 };
 
 
-function DropdownMenuPopup({ items, onSelect, children, defaultOpen, variant, showOnTop, mode='' }) {
+function DropdownMenuPopup({ items, onSelect, children, defaultOpen, variant, showOnTop, footer }) {
     const redirectdRef = useRef();
     const [isOpen, setIsOpen] = useState(defaultOpen);
 
@@ -36,7 +36,6 @@ function DropdownMenuPopup({ items, onSelect, children, defaultOpen, variant, sh
     useEffect(() => {
         const subscription = emitter.addListener('dynamic_menu', (data) => {
             if (data.action == 'hide') {
-                console.log("aaaaaaaaaaaa", 123)
                 setIsOpen(false);
             }
            
@@ -68,6 +67,7 @@ function DropdownMenuPopup({ items, onSelect, children, defaultOpen, variant, sh
                         />
                     ))}
                 </View>
+                {footer}
             </DropdownPopup>
         </>
     );
@@ -103,7 +103,7 @@ const MenuBottomSheet = memo(({ items, onSelect, setBottomSheetData }) => {
 
 });
 
-export default function DropdownMenu({ items, onSelect, children, defaultOpen, mode, title, variant, showOnTop, cancelable = true }) {
+export default function DropdownMenu({ items, onSelect, children, defaultOpen, mode, title, variant, showOnTop, footer, cancelable = true }) {
     const { setBottomSheetData } = useBottomSheetData();
     const isWeb = Platform.OS === 'web';
 
@@ -114,6 +114,7 @@ export default function DropdownMenu({ items, onSelect, children, defaultOpen, m
             onSelect={onSelect}
             children={children}
             defaultOpen={defaultOpen}
+            footer={footer}
             variant={variant} />;
     }
 
