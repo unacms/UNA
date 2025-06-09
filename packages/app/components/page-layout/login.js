@@ -11,8 +11,7 @@ import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
 import AuthPanel from 'app/ui/molecules/auth';
 import { appSetting, getPageWidth } from 'app/lib/util'
 import ScrollList from 'app/ui/molecules/scroll_list'
-import { useRef, useEffect } from 'react'
-import Animated, { useSharedValue, useAnimatedStyle, withTiming, withDelay, Easing } from 'react-native-reanimated';
+import { useRef } from 'react'
 import SvgFile from 'app/ui/molecules/svg-file';
 import MenuFooter from 'app/components/nav/menu-footer';
 const triggerHaptics = () => {
@@ -27,44 +26,22 @@ export default function PageLayout(props) {
     const refer = useRef();
     const colorScheme = useColorScheme();
 
-    // Animation values
-    const textBlockOpacity = useSharedValue(0);
-    const textBlockTranslateY = useSharedValue(20);
-    const imageOpacity = useSharedValue(0);
-    const imageTranslateY = useSharedValue(-20);
-
-    const imageAnimatedStyle = useAnimatedStyle(() => ({
-        opacity: imageOpacity.value,
-        transform: [{ translateY: imageTranslateY.value }],
-    }), [imageOpacity, imageTranslateY]);
-
-    const textBlockAnimatedStyle = useAnimatedStyle(() => ({
-        opacity: textBlockOpacity.value,
-        transform: [{ translateY: textBlockTranslateY.value }],
-    }), [textBlockOpacity, textBlockTranslateY]);
-
-    useEffect(() => {
-        // Animate image
-        imageOpacity.value = withDelay(200, withTiming(1, { duration: 800, easing: Easing.out(Easing.exp) }));
-        imageTranslateY.value = withDelay(200, withTiming(0, { duration: 800, easing: Easing.out(Easing.exp) }));
-
-        // Animate text blocks
-        textBlockOpacity.value = withDelay(400, withTiming(1, { duration: 800, easing: Easing.out(Easing.exp) }));
-        textBlockTranslateY.value = withDelay(400, withTiming(0, { duration: 800, easing: Easing.out(Easing.exp) }));
-    }, []);
-
     const content = isWeb ? (<View className={'flex-col justify-center mx-auto w-full ' + getPageWidth(props.uri, props.data?.config)}>
         <View className="w-full lg:flex-row max-w-7xl mx-auto py-16">
             <View className="hidden my-auto flex-col flex-auto">
-                <Animated.View style={imageAnimatedStyle} className="w-[50%] max-w-[360px] aspect-square">
-                    <SvgFile src_dark="login-dark.svg" src_default="login-light.svg" alt="Login illustration"/>
-                </Animated.View>
-                <Animated.View style={textBlockAnimatedStyle} className="flex-auto items-center lg:items-start gap-y-[16px] sm:gap-y-[24px] max-w-md sm:max-w-lg lg:max-w-3xl">
+                <View className="w-[50%] max-w-[360px] aspect-square">
+                    <SvgFile 
+                        src_dark="login-dark.svg" 
+                        src_default="login-light.svg" 
+                        alt="Login illustration"
+                    />
+                </View>
+                <View className="flex-auto items-center lg:items-start gap-y-[16px] sm:gap-y-[24px] max-w-md sm:max-w-lg lg:max-w-3xl">
                     {appStatic('components_logincontent')}
-                </Animated.View>
+                </View>
             </View>
-            <View className="max-w-xl w-full flex-auto mx-auto p-[16px] sm:p-[32px] lg:p-[64px] my-auto duration-300 gap-y-[16px]">
-                <Animated.View style={imageAnimatedStyle} className="rounded-[25px] p-[1px] bg-gradient-to-b from-primary-200 to-primary-300 dark:from-neutral-800 dark:to-primary-950 shadow-[0_0_16px_rgba(0,0,0,0.1)] dark:shadow-[0_8px_16px_rgba(0,0,0,0.2)]">
+            <View className="max-w-xl w-full flex-auto mx-auto p-[16px] sm:p-[32px] lg:p-[64px] my-auto gap-y-[16px]">
+                <View className="rounded-[25px] p-[1px] bg-gradient-to-b from-primary-200 to-primary-300 dark:from-neutral-800 dark:to-primary-950 shadow-[0_0_16px_rgba(0,0,0,0.1)] dark:shadow-[0_8px_16px_rgba(0,0,0,0.2)]">
                     <Card addClassName={cardClassName}>
                         <View className="flex-col pb-[24px] gap-y-[8px]">
                             <Text className="text-2xl leading-none tracking-tight font-bold text-neutral-800 dark:text-neutral-200">Log in to your {appSetting('app', 'title')} account</Text>
@@ -86,8 +63,8 @@ export default function PageLayout(props) {
                             <AuthPanel className="" />
                         </View>
                     </Card>
-                </Animated.View>
-                <Animated.View style={textBlockAnimatedStyle} className="flex-col">
+                </View>
+                <View className="flex-col">
                     <Text className="text-base text-neutral-600 dark:text-neutral-400 text-center">Don't have an account?</Text>
                     <Link className="w-full" href="/create-account">
                         <Button
@@ -100,7 +77,7 @@ export default function PageLayout(props) {
                             icon="UserRoundPlus"
                         />
                     </Link>
-                </Animated.View>
+                </View>
             </View>
         </View>
         <MenuFooter cntClasses="w-full flex-row flex-wrap opacity-80 h-[64px] items-center justify-center"/>
@@ -118,7 +95,7 @@ export default function PageLayout(props) {
             ) : (
                 <ScrollView contentContainerStyle={{ flexGrow: 1, alignItems: 'center', padding: 16, width: '100%' }}>
                     <View className="max-w-md sm:max-w-lg w-full flex-auto mx-auto p-[16px] flex flex-col gap-y-[16px]">
-                        <Animated.View style={imageAnimatedStyle} className="rounded-[25px] p-[1px] bg-gradient-to-b from-primary-200 to-primary-300 dark:from-neutral-800 dark:to-primary-950 shadow-[0_0_16px_rgba(0,0,0,0.1)] dark:shadow-[0_8px_16px_rgba(0,0,0,0.2)]">
+                        <View className="rounded-[25px] p-[1px] bg-gradient-to-b from-primary-200 to-primary-300 dark:from-neutral-800 dark:to-primary-950 shadow-[0_0_16px_rgba(0,0,0,0.1)] dark:shadow-[0_8px_16px_rgba(0,0,0,0.2)]">
                             <Card addClassName={cardClassName}>
                                 <View className="flex-col pb-[24px] gap-y-[8px]">
                                     <Text className="text-2xl leading-none tracking-tight font-bold text-neutral-800 dark:text-neutral-200">Log in to your {appSetting('app', 'title')} account</Text>
@@ -140,8 +117,8 @@ export default function PageLayout(props) {
                                     <AuthPanel className="" />
                                 </View>
                             </Card>
-                        </Animated.View>
-                        <Animated.View style={textBlockAnimatedStyle} className="flex-col">
+                        </View>
+                        <View className="flex-col">
                             <Text className="text-base text-neutral-600 dark:text-neutral-400 text-center">Don't have an account?</Text>
                             <Link className="w-full" href="/create-account">
                                 <Button
@@ -154,7 +131,7 @@ export default function PageLayout(props) {
                                     icon="UserRoundPlus"
                                 />
                             </Link>
-                        </Animated.View>
+                        </View>
                     </View>
                 </ScrollView>
             )}

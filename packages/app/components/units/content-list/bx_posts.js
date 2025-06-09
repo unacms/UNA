@@ -64,7 +64,7 @@ Units.Search = function Search({ data, imageSizes }) {
 Units.Small = function Small({ data, imageSizes }) {
     return (
         <View className=" mx-auto pt-1 sm:p-2 w-full max-w-2xl">
-            <Card addClassName=" rounded-none sm:rounded-2xl p-1 sm:p-2 flex-auto  mx-auto w-full flex-row-reverse duration-300 ">
+            <Card addClassName=" rounded-none sm:rounded-2xl p-1 sm:p-2 flex-auto  mx-auto w-full flex-row-reverseweb:duration-300 ">
                 {data.image && (
                     <View className="aspect-square md:aspect-video flex-none rounded sm:rounded-lg overflow-hidden h-24 sm:h-36 mb-auto  ">
                         <Image

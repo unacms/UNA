@@ -324,9 +324,9 @@ function ElementDashboardStat(props) {
 
                     if (item) {
                         if (item?.type != 'growth') {
-                            return <View className="  w-1/2 lg:w-1/3 xl:w-1/4 p-1 sm:p-2 duration-300 " key={index}>
+                            return <View className="  w-1/2 lg:w-1/3 xl:w-1/4 p-1 sm:p-2web:duration-300 " key={index}>
                                 <Link href={item.url}>
-                                    <Card rounded=" rounded-2xl " addClassName=" sm:hover:scale-105 duration-300 w-full p-4 " >
+                                    <Card rounded=" rounded-2xl " addClassName=" sm:hover:scale-105web:duration-300 w-full p-4 " >
                                         <Row className='space-x-1 w-full justify-between'>
                                             {
                                                 item.count > 0 ? <Text className=" text-3xl -translate-y-1 font-semibold flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white  ">
@@ -353,7 +353,7 @@ function ElementDashboardStat(props) {
                         return (
                             <View className=" w-1/2 lg:w-1/3  xl:w-1/4 p-1 sm:p-2 " key={index}>
                                 <Link href={item.url} key={index}>
-                                    <Card rounded=" rounded-2xl " addClassName="w-full p-4 duration-300 sm:hover:scale-105 " margin="a">
+                                    <Card rounded=" rounded-2xl " addClassName="w-full p-4web:duration-300 sm:hover:scale-105 " margin="a">
                                         <Row className=''>
                                             <Text className=" text-3xl -translate-y-1 font-semibold flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white  ">
                                                 {item.current}

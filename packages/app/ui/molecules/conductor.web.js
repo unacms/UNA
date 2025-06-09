@@ -317,7 +317,7 @@ const HeaderContainer = ({ tabBarObj, tabBarObjSmall, currentUser, smallHeader, 
     return (
         <>
             <Animated.View style={[{ width: cntWidth + 'px', position: 'fixed', overflow: 'hidden', zIndex: 40, top: windowWidth >= LAYOUT_BREAKPOINTS.lg ? tOffset : 0 }, animatedStyle6]}>
-                <View className={`w-full transition-all duration-300 ease-in-out will-change-transform ${isPageScrolled
+                <View className={`w-full transition-all  web:duration-300 ease-in-out will-change-transform ${isPageScrolled
                         ? 'bg-bgrnavbar/80 dark:bg-bgrnavbar-d/80 backdrop-blur-lg shadow-[0_1px_0_rgba(0,0,0,0.05)] dark:shadow-[0_1px_0_rgba(255,255,255,0.05)]'
                         : 'bg-transparent dark:bg-transparent shadow-none'
                     }`}>

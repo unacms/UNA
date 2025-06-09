@@ -21,7 +21,6 @@ import { Platform } from 'react-native'
 import { useRef } from 'react';
 import { getPageWidth } from 'app/lib/util'
 import ScrollList from 'app/ui/molecules/scroll_list'
-import Animated from 'react-native-reanimated';
 import Splash from 'app/ui/molecules/splash'
 
 export default function (props) {
@@ -60,9 +59,9 @@ export default function (props) {
 
     if (!currentUser) {
         const content = (
-            <Animated.ScrollView ref={refer} className={'mx-auto w-full'} keyboardShouldPersistTaps="always" keyboardDismissMode="on-drag">
+            <ScrollView ref={refer} className={'mx-auto w-full'} keyboardShouldPersistTaps="always" keyboardDismissMode="on-drag">
                 <Splash {...props} />
-            </Animated.ScrollView>
+            </ScrollView>
         );
 
         return (<ScrollList
@@ -213,7 +212,7 @@ export default function (props) {
             >
                 {getLayout(currentUser) == 'hor' && (
                     <View className="hidden relative xl:flex w-[360px] ">
-                        <View className="fixed-process fixed w-[360px] p-4 duration-200">
+                        <View className="fixed-process fixed w-[360px] p-4web:duration-200">
                             {appSetting('layout', 'sidebar_search') && (
                                 <View className="pb-3 w-full">
                                     <Search type="input" placeholder="Enter search text" />
@@ -235,10 +234,10 @@ export default function (props) {
                                                     displaySize="sm"
                                                 /></View>
                                             <View className="flex-col pl-[8px] gap-y-[2px]">
-                                                <Text className=" text-sm leading-[18px] flex-auto my-auto font-semibold truncate text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-white duration-200">
+                                                <Text className=" text-sm leading-[18px] flex-auto my-auto font-semibold truncate text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-whiteweb:duration-200">
                                                     {currentUser.display_name}
                                                 </Text>
-                                                <Text className=" text-xs leading-[16px] leading-none flex-auto my-auto truncate text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-800 dark:group-hover:text-neutral-200 duration-200">
+                                                <Text className=" text-xs leading-[16px] leading-none flex-auto my-auto truncate text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-800 dark:group-hover:text-neutral-200web:duration-200">
                                                     {
                                                         currentUser.membership_name
                                                     }
@@ -333,7 +332,7 @@ export default function (props) {
                 </View>
 
                     <View className="hidden lg:flex  w-[360px] ">
-                    <View className="fixed-process p-[16px] flex-col gap-y-[32px] duration-200">
+                    <View className="fixed-process p-[16px] flex-col gap-y-[32px] web:duration-200">
                         {sideBarBlocks.map((item, index) => {
                             return (
                                 <BlockByName

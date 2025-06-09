@@ -177,7 +177,7 @@ export default function ElementCover(props) {
             </Row>
             <View className="flex-col md:flex-row  px-2  ">
                 {bPerson ? <View className=" w-full  items-center  ">
-                    <View className='rounded-full p-1 z-50 duration-200 bg-bgrcard-h dark:bg-bgrcard-dh '>
+                    <View className='rounded-full p-1 z-50web:duration-200 bg-bgrcard-h dark:bg-bgrcard-dh '>
                         <Profile
                             {...data.profile}
                             displayType="unit_wo_info"

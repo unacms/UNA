@@ -158,7 +158,7 @@ export default function (props) {
                     onBlur={field.onBlur}
                     defaultValue={props.value}
                 />
-                {!!props.owner_info && <Row className=" h-[22px] items-center px-[4px] text-neutral-600 web:group-hover:text-neutral-800 web:dark:group-hover:text-neutral-200 dark:text-neutral-400 web:duration-300">
+                {!!props.owner_info && <Row className=" h-[22px] items-center px-[4px] text-neutral-600 web:group-hover:text-neutral-800 web:dark:group-hover:text-neutral-200 dark:text-neutral-400  web:duration-300">
                     <View className='flex-none mb-auto'>
                         <Profile
                             {...props.owner_info}
@@ -191,7 +191,7 @@ export default function (props) {
             {modalElement}
             <Pressable onPress={() => handleShowModal()}>
                 {props.addElement}
-                <Row className="  flex-none mr-auto gap-x-[2px] px-[4px] py-[4px] rounded-[8px] items-center text-neutral-600 web:group-hover:bg-bgritem dark:web:group-hover:bg-bgritem-d web:dark:group-hover:text-neutral-200 web:group-hover:text-neutral-800 web:dark:group-hover:text-neutral-200 dark:text-neutral-400 h-[24px] web:duration-300">
+                <Row className="  flex-none mr-auto gap-x-[2px] px-[4px] py-[4px] rounded-[8px] items-center text-neutral-600 web:group-hover:bg-bgritem dark:web:group-hover:bg-bgritem-d web:dark:group-hover:text-neutral-200 web:group-hover:text-neutral-800 web:dark:group-hover:text-neutral-200 dark:text-neutral-400 h-[24px]  web:duration-300">
                     <Icon
                         icon={icon}
                         width={16}

@@ -369,7 +369,7 @@ export default function ElementReactions(oProps) {
                     id: oItem.id ? oItem.id : oItem.name,
                     name: oItem.name,
                     icon: _getIconAlias(oItem.name),
-                    class_item: ' transition active:scale-150 duration-300 active:-translate-y-4  ',
+                    class_item: ' transition active:scale-150web:duration-300 active:-translate-y-4  ',
                     class_item_icon: ' text-3xl ',
                     tooltip: oParams.t ? oParams.t[oItem.name] : '', //TODO: oParams.t[oItem.name] for Roman use provided Tooltips in popup menus
                 };

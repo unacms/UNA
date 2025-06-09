@@ -62,7 +62,7 @@ const HeaderLine = memo(
                 )}
                 {(!context || (!currentUser.confirmed && appSetting('layout', 'lock_unconfirmed'))) &&  (uri == 'home' || width >= LAYOUT_BREAKPOINTS.lg) && (
                     <Link
-                        className=" flex items-center flex-row active:scale-95 active:opacity-50 text-neutral-800 dark:text-neutral-200 hover:scale-105 hover:text-neutral-950 dark:hover:text-neutral-50 duration-300 gap-x-[12px] "
+                        className=" flex items-center flex-row active:scale-95 active:opacity-50 text-neutral-800 dark:text-neutral-200 hover:scale-105 hover:text-neutral-950 dark:hover:text-neutral-50  web:duration-300 gap-x-[12px] "
                         href="/home"
                         aria-label="Logo"
                     >
@@ -145,7 +145,7 @@ export default function (props) {
                         props.layoutName == 'post'
                             ? 'hidden lg:flex'
                             : '') +
-                        ' fixed w-full h-16 items-center transition-all duration-300 ease-in-out will-change-transform ' +
+                        ' fixed w-full h-16 items-center transition-all  web:duration-300 ease-in-out will-change-transform ' +
                         (isScrolled
                             ? 'bg-bgrnavbar/80 dark:bg-bgrnavbar-d/80 backdrop-blur-lg shadow-[0_1px_0_rgba(0,0,0,0.05)] dark:shadow-[0_1px_0_rgba(255,255,255,0.05)]'
                             : 'bg-transparent dark:bg-transparent shadow-none')

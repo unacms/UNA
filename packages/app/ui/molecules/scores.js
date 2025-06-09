@@ -171,7 +171,7 @@ export default function ElementScore(oProps) {
 
         const sScore = bWeb ? (
             <Text className={'flex' + (iScore > iScoreOld ? ' items-end' : ' items-start') + ' h-5 overflow'}>
-                <Text className={'flex' + (iScore > iScoreOld ? ' flex-col-reverse' : ' flex-col') + ' transition-all duration-500 ' + counterClass}>
+                <Text className={'flex' + (iScore > iScoreOld ? ' flex-col-reverse' : ' flex-col') + ' transition-allweb:duration-500 ' + counterClass}>
                     <Text className={'sv-old block h-5'}>{iScoreOld.toString()}</Text>
                     <Text className={'sv-new block h-5'}>{iScore.toString()}</Text>
                 </Text>

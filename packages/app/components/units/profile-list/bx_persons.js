@@ -26,7 +26,7 @@ export default function Unit(props) {
     return (
         <View className="px-2">
             <Link href={data.url} emulate={true}>
-                <View className=" px-2 h-12 flex-row group duration-200 rounded-xl active:opacity-50 hover:bg-bgrbutton dark:hover:bg-bgrbutton-d 
+                <View className=" px-2 h-12 flex-row groupweb:duration-200 rounded-xl active:opacity-50 hover:bg-bgrbutton dark:hover:bg-bgrbutton-d 
                 max-w-5xl self-center w-full items-center gap-x-2 "
                 >
                     <View className=" rounded-full flex-none ">
