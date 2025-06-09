@@ -145,9 +145,9 @@ export default function (props) {
                         props.layoutName == 'post'
                             ? 'hidden lg:flex'
                             : '') +
-                        ' fixed w-full h-16 items-center transition-all   web:duration-300 ease-in-out will-change-transform ' +
+                        ' fixed w-full h-[64px] items-center transition-all web:duration-300 ease-in-out will-change-transform ' +
                         (isScrolled
-                            ? 'bg-bgrnavbar/80 dark:bg-bgrnavbar-d/80 backdrop-blur-lg shadow-[0_1px_0_rgba(0,0,0,0.05)] dark:shadow-[0_1px_0_rgba(0,0,0,1)]'
+                            ? 'bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur-xl shadow-sm '
                             : 'bg-transparent dark:bg-transparent shadow-none')
                     }
                 >

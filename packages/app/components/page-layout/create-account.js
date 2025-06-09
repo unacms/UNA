@@ -71,7 +71,6 @@ export default function PageLayout(props) {
                         </View>
                     </View>
                     <View className="max-w-xl w-full flex-auto mx-auto px-[16px] pb-[16px] sm:p-[32px] lg:py-[64px] my-auto gap-y-[16px]">
-                        <View className="rounded-[25px] p-[1px] bg-gradient-to-b from-primary-200 to-primary-300 dark:from-neutral-800 dark:to-primary-950 shadow-[0_0_16px_rgba(0,0,0,0.1)] dark:shadow-[0_8px_16px_rgba(0,0,0,0.2)]">
                             <Card>
                                 <View className="hidden lg:flex flex-col pb-[24px] gap-y-[8px]">
                                     <Text className="text-2xl leading-none tracking-tight font-bold text-neutral-800 dark:text-neutral-200">
@@ -107,9 +106,8 @@ export default function PageLayout(props) {
                                     <AuthPanel />
                                 </View>
                             </Card>
-                        </View>
                         <View className="flex-col">
-                            <Text className="text-base mt-[16px] text-neutral-600 dark:text-neutral-400 text-center pb-[16px]">Already have an account?</Text>
+                            <Text className="text-base  text-neutral-600 dark:text-neutral-400 text-center py-[16px]">Already have an account?</Text>
                             <Link className="w-full" href="/login">
                                 <Button
                                     onPress={triggerHaptics}

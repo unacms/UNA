@@ -894,10 +894,10 @@ export  const settingsDefault = {
         // - `rounded`: Default corner rounding classes. Can be overridden by the Card component's `rounded` prop.
         // - `border`: Default border classes. Can be overridden by the Card component's `rounded` prop (as it often handles border too).
         card: {
-            default: ' bg-bgrcard dark:bg-bgrcard-d ', // Base styles (e.g., background)
+            default: 'bg-bgrcard dark:bg-bgrcard-d backdrop-blur-xl ', // Base styles (e.g., background)
             margin: 'p-[24px]',                               // Default margin/padding
-            rounded: 'rounded-[24px]',                       // Default corner rounding
-            border: 'border-bdrcard dark:border-bdrcard-d shadow-sm',  // Default border and shadow styles
+            rounded: 'rounded-[16px]',                       // Default corner rounding
+            border: ' shadow-sm ',  // Default border and shadow styles
         },
         inputs: {
             default:
@@ -964,12 +964,12 @@ export  const settingsDefault = {
         },
         button_styles: {
             'u-btn-default-cnt':
-                'bg-bgrbutton dark:bg-bgrbutton-d border border-bdrbutton dark:border-bdrbutton-d web:hover:bg-bgrbutton-h dark:web:hover:bg-bgrbutton-dh active:opacity-50 shadow-sm',
+                'bg-bgrbutton dark:bg-bgrbutton-d web:hover:bg-bgrbutton-h dark:web:hover:bg-bgrbutton-dh active:opacity-50 ',
             'u-btn-default-text':
                 'font-medium text-neutral-800 web:hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-neutral-50',
-            'u-btn-default-trans': '  web:duration-300',
+            'u-btn-default-trans': ' web:duration-300',
 
-            'u-btn-primary-cnt': 'border border-transparent dark:border-transparent bg-primary-600 dark:bg-primary-500 web:hover:bg-primary-700 dark:web:hover:bg-primary-600 shadow-sm',
+            'u-btn-primary-cnt': ' bg-primary dark:bg-primary-d web:hover:bg-primary-h dark:web:hover:bg-primary-dh',
             'u-btn-primary-text': 'font-medium text-white',
             'u-btn-primary-trans': '  web:duration-300',
             'u-btn-primary-color-icon-light': 'rgb(243, 244, 246)',

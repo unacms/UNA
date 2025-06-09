@@ -22,7 +22,6 @@ const triggerHaptics = () => {
 
 export default function PageLayout(props) {
     const isWeb = Platform.OS === 'web';
-    const cardClassName = "w-full mx-auto";
     const refer = useRef();
     const colorScheme = useColorScheme();
 
@@ -41,8 +40,7 @@ export default function PageLayout(props) {
                 </View>
             </View>
             <View className="max-w-xl w-full flex-auto mx-auto p-[16px] sm:p-[32px] lg:p-[64px] my-auto gap-y-[16px]">
-                <View className="rounded-[25px] p-[1px] bg-gradient-to-b from-primary-200 to-primary-300 dark:from-neutral-800 dark:to-primary-950 shadow-[0_0_16px_rgba(0,0,0,0.1)] dark:shadow-[0_8px_16px_rgba(0,0,0,0.2)]">
-                    <Card addClassName={cardClassName}>
+                    <Card>
                         <View className="flex-col pb-[24px] gap-y-[8px]">
                             <Text className="text-2xl leading-none tracking-tight font-bold text-neutral-800 dark:text-neutral-200">Log in to your {appSetting('app', 'title')} account</Text>
                             <Text className="text-sm text-neutral-600 dark:text-neutral-400">Use your email and password to sign in</Text>
@@ -63,9 +61,8 @@ export default function PageLayout(props) {
                             <AuthPanel className="" />
                         </View>
                     </Card>
-                </View>
                 <View className="flex-col">
-                    <Text className="text-base text-neutral-600 dark:text-neutral-400 text-center">Don't have an account?</Text>
+                    <Text className="text-base py-[16px] text-neutral-600 dark:text-neutral-400 text-center">Don't have an account?</Text>
                     <Link className="w-full" href="/create-account">
                         <Button
                             onPress={triggerHaptics}
@@ -95,8 +92,7 @@ export default function PageLayout(props) {
             ) : (
                 <ScrollView contentContainerStyle={{ flexGrow: 1, alignItems: 'center', padding: 16, width: '100%' }}>
                     <View className="max-w-md sm:max-w-lg w-full flex-auto mx-auto p-[16px] flex flex-col gap-y-[16px]">
-                        <View className="rounded-[25px] p-[1px] bg-gradient-to-b from-primary-200 to-primary-300 dark:from-neutral-800 dark:to-primary-950 shadow-[0_0_16px_rgba(0,0,0,0.1)] dark:shadow-[0_8px_16px_rgba(0,0,0,0.2)]">
-                            <Card addClassName={cardClassName}>
+                            <Card>
                                 <View className="flex-col pb-[24px] gap-y-[8px]">
                                     <Text className="text-2xl leading-none tracking-tight font-bold text-neutral-800 dark:text-neutral-200">Log in to your {appSetting('app', 'title')} account</Text>
                                     <Text className="text-sm text-neutral-600 dark:text-neutral-400">Use your email and password to sign in</Text>
@@ -117,9 +113,8 @@ export default function PageLayout(props) {
                                     <AuthPanel className="" />
                                 </View>
                             </Card>
-                        </View>
-                        <View className="flex-col">
-                            <Text className="text-base text-neutral-600 dark:text-neutral-400 text-center">Don't have an account?</Text>
+                            <View className="flex-col">
+                            <Text className="text-base text-neutral-600 dark:text-neutral-400 text-center py-[16px]">Already have an account?</Text>
                             <Link className="w-full" href="/create-account">
                                 <Button
                                     onPress={triggerHaptics}

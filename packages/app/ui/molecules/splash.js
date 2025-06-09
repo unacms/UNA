@@ -102,7 +102,7 @@ export default function Splash(props) {
 
     return (
         <View className="flex-col justify-center w-full">
-            <View className="w-full flex-auto bg-gradient-to-b from-primary-50 to-primary-200 dark:from-primary-950 dark:to-primary-950/50">
+            <View className="w-full flex-auto bg-gradient-to-b from-transparent to-primary-100 dark:from-transparent dark:to-primary-950">
                 <View className="w-full lg:flex-row gap-y-[16px] mx-auto pt-[64px] pb-[32px] max-w-[1440px]">
                     <View className="my-auto flex-col items-center lg:items-start gap-x-[32px] flex-auto px-[16px] sm:px-[32px] xl:px-[64px] lg:pb-[64px]" accessible={true}>
                         <View className="w-[50%] max-w-[360px] aspect-square">
@@ -113,7 +113,6 @@ export default function Splash(props) {
                         </View>
                     </View>
                     <View className="flex-col-reverse lg:flex-col max-w-xl w-full flex-auto mx-auto px-[16px] pb-[16px] sm:p-[32px] lg:py-[64px] my-auto gap-y-[16px]">
-                        <View className="rounded-[25px] p-[1px] bg-gradient-to-b from-primary-200 to-primary-300 dark:from-neutral-800 dark:to-primary-950 shadow-[0_0_16px_rgba(0,0,0,0.1)] dark:shadow-[0_8px_16px_rgba(0,0,0,0.2)]">
                             <Card>
                                 <View className="flex-col pb-[24px] gap-y-[8px]">
                                     <Text className="text-center lg:text-start text-2xl leading-none tracking-tight font-bold text-neutral-800 dark:text-neutral-200">Log in to {appSetting('app', 'title')}</Text>
@@ -139,7 +138,7 @@ export default function Splash(props) {
                                     <AuthPanel className="" />
                                 </View>
                             </Card>
-                        </View>
+                        
                         <View className="lg:hidden flex-col">
                             <Text className="text-base text-neutral-600 dark:text-neutral-400 text-center">Already have an account?</Text>
                         </View>
