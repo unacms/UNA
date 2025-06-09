@@ -67,6 +67,7 @@ const getData = cache(async (params, search_params) => {
         l = l + '&params[]=' + sBlocks + '&params[]=' + JSON.stringify(searchParams);
     }
 
+    console.log('^^^^^^^^^^^^^^^^^^^^^^^^^', searchParams, l);
     const res = await fetch(l, opts)
     const resClone = res.clone();
     try {

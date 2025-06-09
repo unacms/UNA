@@ -391,6 +391,9 @@ export function getNumCols(width, currentRoute, leftSideBar) {
     const isWeb = Platform.OS === 'web';
     const blocksroutes = currentRoute?.blocks;
 
+    if (currentRoute?.endpoint == null)
+        return 1;
+
     if (blocksroutes) {
         const blockKeys = Object.keys(blocksroutes);
         for (const key of blockKeys) {

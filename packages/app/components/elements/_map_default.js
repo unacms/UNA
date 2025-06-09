@@ -36,9 +36,11 @@ import Messenger from './messenger';
 import ProfileList from './profiles_list';
 import ReputationSummary from './reputation_summary';
 import ReputationLeaderboard from './reputation_leaderboard';
+import SearchSections from './search_sections';
 
 export const componentsMapDefault = {
     messenger_main_page: Messenger,
+    search_sections: SearchSections,
     reputation_summary: ReputationSummary,
     reputation_leaderboard: ReputationLeaderboard,
     chart: Chart,
