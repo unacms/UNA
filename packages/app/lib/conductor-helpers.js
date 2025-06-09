@@ -366,7 +366,7 @@ function ItemRenderer_({ route, numColumns, item, unit, module, unitMode, unitTy
         );
     } else {
         return (
-            <View key={`${route.index}-${item.id}`}>
+            <View key={`${route?.index}-${item.id}`}>
                 <Unit unitType={unitType} module={module} unit={unit} data={item} mode={unitMode} />
             </View>
         );
