@@ -3,7 +3,7 @@ import Profile from 'app/ui/molecules/profile'
 import { Text, H1C } from 'app/design/typography'
 import Browse from 'app/components/elements/browse'
 import UniList from 'app/ui/atoms/unilist'
-import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer, ItemRendererMemo, LeftSidebar, TopSidebar, getNumCols, processBlocks } from 'app/lib/conductor-helpers';
+import { ItemRenderer, ItemRendererMemo } from 'app/components/item-renderer';
 
 export default function ElementSearchSections(props) {
     console.log("propsprops", props)

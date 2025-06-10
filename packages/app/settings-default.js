@@ -897,7 +897,7 @@ export  const settingsDefault = {
             default: 'bg-bgrcard dark:bg-bgrcard-d backdrop-blur-xl ', // Base styles (e.g., background)
             margin: 'p-[24px]',                               // Default margin/padding
             rounded: 'rounded-[16px]',                       // Default corner rounding
-            border: ' shadow-sm ',  // Default border and shadow styles
+            border: ' border border-bdrcard dark:border-bdrcard-d overflow-hidden ',  // Default border and shadow styles
         },
         inputs: {
             default:
@@ -926,8 +926,10 @@ export  const settingsDefault = {
             pressed_container: 'bg-primary dark:bg-primary-d',
             pressed_text: 'text-primary-700 dark:text-primary-300 group-hover:text-primary-800 dark:group-hover:text-primary-200',
             xs: {
-                rounded: 'rounded-[8px]',
+                rounded: 'rounded-[6px]',
                 padding: 'h-[32px] min-w-[32px] px-[6px]',
+                padding_icon_only: 'h-[32px] w-[32px] px-[6px]',
+                padding_with_title: 'h-[32px] px-[6px]',
                 icon_container: 'h-[20px] w-[20px] flex items-center justify-center',
                 title_container: 'px-[4px] web:text-[13px] native:text-[13px]',
                 icon_size: 20,
@@ -935,8 +937,10 @@ export  const settingsDefault = {
                 title_margin: '',
             },
             sm: {
-                rounded: 'rounded-[9px]',
+                rounded: 'rounded-[8px]',
                 padding: 'h-[36px] min-w-[36px] px-[8px]',
+                padding_icon_only: 'h-[36px] w-[36px] px-[8px]',
+                padding_with_title: 'h-[36px] px-[8px]',
                 icon_container: 'h-[20px] w-[20px] flex items-center justify-center',
                 title_container: 'px-[4px] native:text-[14px]',
                 icon_size: 20,
@@ -944,8 +948,10 @@ export  const settingsDefault = {
                 title_margin: '', // conditional margin for text container when icon is present
             },
             base: {
-                rounded: 'rounded-[11px]',
+                rounded: 'rounded-[12px]',
                 padding: 'h-[44px] min-w-[44px] px-[10px]',
+                padding_icon_only: 'h-[44px] w-[44px] px-[10px]',
+                padding_with_title: 'h-[44px] px-[10px]',
                 icon_container: 'h-[24px] w-[24px] flex items-center justify-center',
                 title_container: 'px-[6px] web:text-[16px] native:text-[16px]',
                 icon_size: 24,
@@ -953,8 +959,10 @@ export  const settingsDefault = {
                 title_margin: '', // conditional margin for text container when icon is present
             },
             lg: {
-                rounded: 'rounded-[14px]',
+                rounded: 'rounded-[16px]',
                 padding: 'h-[56px] min-w-[56px] px-[14px]',
+                padding_icon_only: 'h-[56px] w-[56px] px-[14px]',
+                padding_with_title: 'h-[56px] px-[14px]',
                 icon_container: 'h-[28px] w-[28px] flex items-center justify-center',
                 title_container: 'px-[12px] web:text-[18px] native:text-[18px] leading-[28px]',
                 icon_size: 28,
@@ -964,10 +972,10 @@ export  const settingsDefault = {
         },
         button_styles: {
             'u-btn-default-cnt':
-                'bg-bgrbutton dark:bg-bgrbutton-d web:hover:bg-bgrbutton-h dark:web:hover:bg-bgrbutton-dh active:opacity-50 ',
+                ' border border-bdrbutton hover:border-bdrbutton-h dark:border-bdrbutton-d dark:hover:border-bdrbutton-dh bg-bgrbutton dark:bg-bgrbutton-d web:hover:bg-bgrbutton-h dark:web:hover:bg-bgrbutton-dh overflow-hidden hover:shadow-md active:shadow-none active:opacity-60 ',
             'u-btn-default-text':
                 'font-medium text-neutral-800 web:hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-neutral-50',
-            'u-btn-default-trans': ' web:duration-300',
+            'u-btn-default-trans': ' web:duration-200',
 
             'u-btn-primary-cnt': ' bg-primary dark:bg-primary-d web:hover:bg-primary-h dark:web:hover:bg-primary-dh',
             'u-btn-primary-text': 'font-medium text-white',
@@ -984,7 +992,7 @@ export  const settingsDefault = {
             'u-btn-accent-color-icon-dark': 'rgb(255, 255, 255)',
 
             'u-btn-secondary-cnt':
-                ' bg-bgritem dark:bg-bgritem-d web:hover:bg-bgritem-h dark:web:hover:bg-bgritem-dh active:opacity-50',
+                '  border border-neutral-300 dark:border-neutral-700  bg-bgritem dark:bg-bgritem-d web:hover:bg-bgritem-h dark:web:hover:bg-bgritem-dh active:opacity-50',
             'u-btn-secondary-text':
                 'font-medium text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-white ',
             'u-btn-secondary-trans': '  web:duration-300',

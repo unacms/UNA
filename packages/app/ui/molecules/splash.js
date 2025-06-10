@@ -113,6 +113,7 @@ export default function Splash(props) {
                         </View>
                     </View>
                     <View className="flex-col-reverse lg:flex-col max-w-xl w-full flex-auto mx-auto px-[16px] pb-[16px] sm:p-[32px] lg:py-[64px] my-auto gap-y-[16px]">
+                        <View className="flex-col ">
                             <Card>
                                 <View className="flex-col pb-[24px] gap-y-[8px]">
                                     <Text className="text-center lg:text-start text-2xl leading-none tracking-tight font-bold text-neutral-800 dark:text-neutral-200">Log in to {appSetting('app', 'title')}</Text>
@@ -138,7 +139,7 @@ export default function Splash(props) {
                                     <AuthPanel className="" />
                                 </View>
                             </Card>
-                        
+                        </View>
                         <View className="lg:hidden flex-col">
                             <Text className="text-base text-neutral-600 dark:text-neutral-400 text-center">Already have an account?</Text>
                         </View>

@@ -1,7 +1,6 @@
 import { appSetting, menuItemsByName, getURI, parseUrl, parseQueryString, storageKey, getDataFromCache, storageSet } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { View, Row } from 'app/design/view';
-import { BlockByName2 } from 'app/components/block';
 import Unit from 'app/components/unit';
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon';
@@ -350,38 +349,8 @@ export function processUrl(data, blocks) {
     return contentAndEndpoint;
 }
 
-function ItemRenderer_({ route, numColumns, item, unit, module, unitMode, unitType, sidebar }) {
 
-    // return <View className='bg-red-500 h-12 w-full'></View>
-    //   const b = useMemo(() => {
-    if (item?.type === 'block') {
-        const block = BlockByName2({ b: item.data, name: item.block });
-        if (!block) {
-            return <View className='h-[1px]'><Text>&nbsp;</Text></View>;
-        }
-        return (
-            <View className={`${block?.props?.extraProps?.list && !sidebar ? 'lg:h-[1px] overflow-hidden' : ''}`} key={`${route.index}-${item.id}`}>
-                {block}
-            </View>
-        );
-    } else {
-        return (
-            <View key={`${route?.index}-${item.id}`}>
-                <Unit unitType={unitType} module={module} unit={unit} data={item} mode={unitMode} />
-            </View>
-        );
-    }
-    /* }, [route.index, item, numColumns, unit, module, unitMode, unitType]);
- 
-     return b;*/
-}
 
-// AVOID BLINKING
-export const ItemRenderer = memo(ItemRenderer_);
-export const ItemRendererMemo = memo(ItemRenderer);
-/*export const ItemRenderer = memo(ItemRenderer_, (prevProps, nextProps) => {
-    return prevProps.item.id === nextProps.item.id; 
-});*/
 
 
 export function getNumCols(width, currentRoute, leftSideBar) {

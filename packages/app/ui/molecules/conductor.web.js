@@ -5,7 +5,8 @@ import { View, Row, Pressable } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
 import { useWindowDimensions } from 'react-native';
 import { appSetting, getHeaderSettings, getUnitModeBySource, getURI, getLayout, handleFeedLayoutData, menuItemsByName, getMenuSettings, isObjectsEqual } from 'app/lib/util';
-import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer, ItemRendererMemo, LeftSidebar, TopSidebar, getNumCols, processBlocks } from 'app/lib/conductor-helpers';
+import { fillTabs, parseData, fetchAndUpdateData, LeftSidebar, TopSidebar, getNumCols, processBlocks } from 'app/lib/conductor-helpers';
+import { ItemRenderer, ItemRendererMemo } from 'app/components/item-renderer';
 import { Button } from 'app/design/controls';
 import Link from 'app/ui/atoms/link'
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'

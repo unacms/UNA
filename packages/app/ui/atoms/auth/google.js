@@ -91,6 +91,7 @@ export default function AuthGoogle({ button }) {
                 title={t("Continue with Google")}
                 onPress={() => promptAsync({ useProxy: true })}
                 fullWidth
+                ring="rounded-[18px] bg-neutral-300 dark:bg-neutral-950 shadow-sm hover:shadow-none"
                 size="lg"
                 startDecorator="Google"
             />}

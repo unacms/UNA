@@ -17,7 +17,7 @@ export default function AuthSAML({ button }) {
                     onPress={handleSAMLLogin} 
                     title="Continue with SAML SSO"
                     startDecorator="Lock" // Changed to string
-                   
+                    ring="rounded-[18px] bg-neutral-300 dark:bg-neutral-950 shadow-sm hover:shadow-none"
                     fullWidth
                     size="lg"
                 />

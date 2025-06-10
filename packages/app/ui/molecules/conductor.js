@@ -2,7 +2,8 @@ import React, { useCallback, useState, useEffect, useMemo, useRef } from "react"
 import { View, ScrollView, Row, Pressable } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
 import { deepEqual, getUnitModeBySource, handleFeedLayoutData } from 'app/lib/util';
-import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer, getNumCols } from 'app/lib/conductor-helpers';
+import { fillTabs, parseData, fetchAndUpdateData, getNumCols } from 'app/lib/conductor-helpers';
+import { ItemRenderer } from 'app/components/item-renderer';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers';
 import { useWindowDimensions } from 'react-native';

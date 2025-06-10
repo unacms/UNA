@@ -403,7 +403,24 @@ export const Button = (props) => {
 
     const sClassContainer = useMemo(() => {
         let classes = 'flex-row items-center';
-        classes += fullWidth ? ' flex-auto w-full' : ' w-fit';
+        
+        // Determine if button has title for width calculation
+        const hasTitle = !!title;
+        const hasIcon = !!(startDecorator || endDecorator);
+        const isIconOnly = hasIcon && !hasTitle;
+        
+        // Handle width based on button content type
+        if (isIconOnly) {
+            // Icon-only buttons get explicit width (handled in sizeClasses)
+            classes += ' flex-none';
+        } else if (hasTitle) {
+            // Buttons with title get flexible width
+            classes += fullWidth ? ' flex-auto w-full' : ' flex-none';
+        } else {
+            // Fallback to original behavior
+            classes += fullWidth ? ' flex-auto w-full' : ' w-fit';
+        }
+        
         if (disabled) classes += ' opacity-50';
         if (variant !== 'custom') {
             classes += (solid ? '' : ' ' + ThemeCssClassesButton[`u-btn-${variant}-trans`]) + ' ' + ThemeCssClassesButton[`u-btn-${variant}-cnt`];
@@ -423,7 +440,7 @@ export const Button = (props) => {
             classes += ` ${pressedClasses?.pressed_container || ThemeCssClassesButton[`u-btn-${variant}-pressed-cnt`] || ThemeButtonSizes.pressed_container}`;
         }
         return classes;
-    }, [fullWidth, disabled, variant, solid, ThemeCssClassesButton, className, align, pressed, bgColor, pressedClasses]);
+    }, [fullWidth, disabled, variant, solid, ThemeCssClassesButton, className, align, pressed, bgColor, pressedClasses, title, startDecorator, endDecorator]);
 
     const sClassText = useMemo(() => {
         let classes = 'whitespace-nowrap text-ellipsis overflow-hidden tracking-tight';
@@ -459,7 +476,21 @@ export const Button = (props) => {
         const roundingClass = rounded ? sClassFullRounding : sClassDefaultRounding;
 
         if (variant != 'custom') {
-            sizeClasses = `${roundingClass} ${padding || ThemeButtonSizes[size]?.padding}`;
+            // Determine which padding to use based on button content
+            const hasTitle = !!title;
+            const hasIcon = !!(startDecorator || endDecorator);
+            const isIconOnly = hasIcon && !hasTitle;
+            
+            let paddingClass;
+            if (isIconOnly && ThemeButtonSizes[size]?.padding_icon_only) {
+                paddingClass = ThemeButtonSizes[size].padding_icon_only;
+            } else if (hasTitle && ThemeButtonSizes[size]?.padding_with_title) {
+                paddingClass = ThemeButtonSizes[size].padding_with_title;
+            } else {
+                paddingClass = ThemeButtonSizes[size]?.padding;
+            }
+            
+            sizeClasses = `${roundingClass} ${padding || paddingClass}`;
             iconContainerClass = `${ThemeButtonSizes[size]?.icon_container} ${title ? ThemeButtonSizes[size]?.icon_margin : ''}`;
             iconSize = ThemeButtonSizes[size]?.icon_size;
             titleContainerClass += title ? ThemeButtonSizes[size]?.title_container + (startDecorator || endDecorator ? ThemeButtonSizes[size]?.title_margin : '') : '';
