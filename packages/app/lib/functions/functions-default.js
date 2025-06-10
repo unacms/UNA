@@ -42,7 +42,7 @@ export function getBadgeForTab(currentUser, url) {
 
 export function getButtonForConductor(a, index, currentUser) {
     
-    const settings = getPageSettings(a.config, a.key);
+    const settings = getPageSettings(a?.config, a.key);
     const icon = !a.ident
         ? settings?.icon
             ? settings?.icon
@@ -59,7 +59,7 @@ export function getButtonForConductor(a, index, currentUser) {
 
 export function getButtonForConductorSmall(a, index, currentUser) {
     //let settings = appSetting('l-ayouts', a.key)
-    const settings = getPageSettings(a.config, a.key);
+    const settings = getPageSettings(a?.config, a.key);
     let icon = !a.ident
         ? settings?.icon
             ? settings?.icon
@@ -91,7 +91,7 @@ export function getButtonForConductorSmall(a, index, currentUser) {
 export function getAddonForConductor(a, index, currentUser) {
     let addonContent = null;
     //let settings = appSetting('l-+ayouts', a.key)
-    const settings = getPageSettings(a.config, a.key);
+    const settings = getPageSettings(a?.config, a.key);
     let icon = !a.ident
         ? settings?.icon
             ? settings?.icon
@@ -121,7 +121,7 @@ export function getAddonForConductor(a, index, currentUser) {
 }
 
 export function getButtonForConductorNative(a, index, currentUser, setIndex, onChangeRoute) {
-    const settings = getPageSettings(a.config, a.key);
+    const settings = getPageSettings(a?.config, a.key);
     let iconName = null; 
     if (a.ident && a.icon) { 
         iconName = typeof a.icon === 'string' ? a.icon.replace('*', '') : null;

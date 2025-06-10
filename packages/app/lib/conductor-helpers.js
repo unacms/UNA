@@ -80,7 +80,7 @@ export function handleFeedLayoutData(layoutData, data) {
 }
 
 export function fillTabs(menu, data, blocks, currentUser, useSectionAsMenu, leftSideBarBlocks) {
-    let menuItems = menuItemsByName(menu.object, menu.items, currentUser, data.url, menu.config);
+    let menuItems = menuItemsByName(menu.object, menu.items, currentUser, data.url, menu?.config);
     // Forcefully filter out 'friend-suggestions'
     menuItems = menuItems.filter(item => item.link !== 'friend-suggestions' && item.key !== 'friend-suggestions' && item.name !== 'friend-suggestions');
     
@@ -115,7 +115,7 @@ export function fillTabs(menu, data, blocks, currentUser, useSectionAsMenu, left
             i.icon = item.icon;
             i.endpoint = contentAndEndpoint.endpoint;
             i.sidebar = contentAndEndpoint.sidebar;
-            i.config = data.config
+            i.config = data?.config
             i.storageKeyValue = storageKey(i.link, false)
             i.blocks = blocks;
             i.leftSideBarBlocks = leftSideBarBlocks;
@@ -220,7 +220,7 @@ export async function fetchAndUpdateData(routes, index, setRoutes) {
         const sResponse = await fetcher('/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' + link);
 
       //  let settings = appSetting('l-ayouts', getURI(currentRoute.link));
-        const settings = getPageSettings(sResponse.data.config, getURI(currentRoute.link));
+        const settings = getPageSettings(sResponse.data?.config, getURI(currentRoute.link));
         let blocks = settings?.blocks;
         if (!blocks)
             blocks = getBlocksFromData(sResponse.data);

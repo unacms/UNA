@@ -70,7 +70,7 @@ const Content = ({ pagePath, currentUser, isRoot }) => {
             const data = await getData(pathWithoutQuery, null, null, null, null, params);
             if (data?.props) {
                 const pageData1 = data.props;
-                const settings = getPageSettings(pageData1.data.config, pageData1.data.uri);
+                const settings = getPageSettings(pageData1.data?.config, pageData1.data?.uri);
 
                 data.props.data['timestamp'] = Date.now();
 

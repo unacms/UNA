@@ -136,16 +136,16 @@ export async function generateMetadata(props) {
 export default async function Page(props) {
 
     const data = await getCachedData(props);
-    if (!remote_config.data || data.hash != remote_config.hash) {
+    if (!remote_config.data || data?.hash != remote_config.hash) {
         remote_config = await getRemoteSettings(true);
     }
-    if (data?.data.page_status == 404) {
+    if (data?.data?.page_status == 404) {
         notFound(props)
     }
 
     return (
         <Suspense fallback={<Loading />}>
-            <Root settings={remote_config.data} path={'home'} data={data?.data} uri={data?.data?.uri} url={data?.data?.url} code={data.code}></Root>
+            <Root settings={remote_config.data} path={'home'} data={data?.data} uri={data?.data?.uri} url={data?.data?.url} code={data?.code}></Root>
         </Suspense>
     )
 }

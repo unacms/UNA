@@ -51,11 +51,11 @@ function Wrapper(children) {
 }
 
 function getLayoutName(data, uri, isWeb) {
-    if (data.page_status) {
+    if (data?.page_status) {
         return { layoutName: 'default', layoutBlocks: '', isCustomLayout: false };
     }
 
-    const layoutCustomKey = getPageSettings(data.config, uri);
+    const layoutCustomKey = getPageSettings(data?.config, uri);
     
     let layoutKey = '';
     let layoutBlocks = '';
@@ -95,8 +95,8 @@ function PageLayoutContent(props) {
     const { data, url } = props;
     const { currentUser, setCurrentUser } = useCurrentUser();
     const { layoutName, layoutBlocks, isCustomLayout }  = props.layout;
-    if (data.page_status === 404 || data.page_status === 403) {
-        return <ErrorPage type={data.page_status} />;
+    if (data?.page_status === 404 || data?.page_status === 403) {
+        return <ErrorPage type={data?.page_status} />;
     }
 
     if (currentUser && !currentUser.confirmed && appSetting('layout', 'lock_unconfirmed')) {
@@ -117,7 +117,7 @@ function PageLayoutContent(props) {
     }
 
     const cells = Object.keys(data.elements).map((key) => (
-        <Cell key={key} uri={data.uri} url={url} blocks={data.elements[key]} />
+        <Cell key={key} uri={data?.uri} url={url} blocks={data.elements[key]} />
     ));
 
     return Wrapper(

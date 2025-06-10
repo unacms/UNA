@@ -49,7 +49,7 @@ export default function PageLayoutProfile({layoutName, data, uri, blocks}) {
         return clonedMenu;
     }, [pageData.menu, uri, pageData.url]);
 
-    const headerSettings = useMemo(() => getHeaderSettings(uri, windowWidth, 'profile', pageData.config), [uri, windowWidth]);
+    const headerSettings = useMemo(() => getHeaderSettings(uri, windowWidth, 'profile', pageData?.config), [uri, windowWidth]);
     const coverMode = appSetting('cover', 'view_by_module', pageData.cover_block.profile?.module)
     const isCoverDisabled = ((windowWidth > LAYOUT_BREAKPOINTS.lg || true) && isAltView) || coverMode == 'none';
 

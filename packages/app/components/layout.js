@@ -6,7 +6,7 @@ import { Platform } from 'react-native';
 
 export default function Layout(props) {
     const { currentUser } = useCurrentUser()
-    if (props.data.page_status == 503 || currentUser?.page_status == 503) {
+    if (props.data?.page_status == 503 || currentUser?.page_status == 503) {
         return <>
             {appStatic('maintenance_mode')}
         </>

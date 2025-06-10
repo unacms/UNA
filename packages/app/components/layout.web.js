@@ -63,7 +63,7 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutNam
     }
 
 
-    if (data.page_status == 503 || currentUser?.page_status == 503) {
+    if (data?.page_status == 503 || currentUser?.page_status == 503) {
         return <>
             {appStatic('maintenance_mode')}
         </>
@@ -125,7 +125,7 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutNam
                             <AsyncWorker />
                         </View>
                         {menuItems.length > 0 && <View className='w-full lg:w-[360px]'>
-                            <NavbarMemo pageLayoutName={pageLayoutName} headerSettings={headerSettings} layoutName={layoutName} title={data.name} menu={data.menu} menu_add={data.menu_add || false} uri={uri} url={data?.url} />
+                            <NavbarMemo pageLayoutName={pageLayoutName} headerSettings={headerSettings} layoutName={layoutName} title={data?.name} menu={data?.menu} menu_add={data?.menu_add || false} uri={uri} url={data?.url} />
                         </View>}
                     </Row>
                     <BottomSheet />
@@ -272,10 +272,10 @@ export default function Layout(props) {
         };
     }, []);
 
-    const [headerSettings, setHeaderSettings] = useState(getHeaderSettings(uri, width, layoutName, data.config));
+    const [headerSettings, setHeaderSettings] = useState(getHeaderSettings(uri, width, layoutName, data?.config));
     const pageLayoutName = getLayout(currentUser, layoutName);
     useEffect(() => {
-        let a = getHeaderSettings(uri, width, layoutName, data.config);
+        let a = getHeaderSettings(uri, width, layoutName, data?.config);
         if (pageLayoutName == 'ver') {
             if (width > LAYOUT_BREAKPOINTS[TABLET_MODE_FROM])
                 a.offset = false;
@@ -296,7 +296,7 @@ export default function Layout(props) {
         if (!deepEqual(headerSettings, a)) {
             setHeaderSettings(a);
         }
-    }, [uri, width, layoutName, data.config, currentUser, pageLayoutName, headerSettings]);
+    }, [uri, width, layoutName, data?.config, currentUser, pageLayoutName, headerSettings]);
 
     useEffect(() => {
         if (data?.title) {

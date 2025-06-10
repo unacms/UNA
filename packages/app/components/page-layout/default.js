@@ -7,7 +7,7 @@ import MenuFooter from 'app/components/nav/menu-footer';
 export default function PageLayout(props) {
     const refer = useRef();
     const content = (
-        <ScrollView ref={refer} className={getPageWidth(props.uri, props.data.config) + ' mx-auto w-full '} keyboardShouldPersistTaps="always" keyboardDismissMode="on-drag">
+        <ScrollView ref={refer} className={getPageWidth(props.uri, props.data?.config) + ' mx-auto w-full '} keyboardShouldPersistTaps="always" keyboardDismissMode="on-drag">
             <View className='p-[12px] sm:p-[16px]  web:duration-300 w-full '>
                 {props.children}
             </View>
