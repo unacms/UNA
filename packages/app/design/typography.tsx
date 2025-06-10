@@ -1,76 +1,144 @@
 import { Text as NativeText, Platform } from 'react-native'
-
 import { appSetting, decodeText, normalizeClasses } from 'app/lib/util'
 
 const Text_ = NativeText
-
-export const Text = ({ children, className, fontFamily, style: propStyle, ...rest }) => {
-
+export const Text = ({
+    children,
+    className,
+    fontFamily,
+    style: propStyle,
+    ...rest
+}) => {
     const isWeb = Platform.OS == 'web'
-    const correctedChildren = typeof children === 'string' ? decodeText(children) : children;
-    
-    const isUseCustomFont = appSetting('native', 'use_custom_font');
-    let finalClassName = normalizeClasses(`${className} ${isUseCustomFont ? fontFamily || isUseCustomFont : ''}`);
-    const fontStyle = !isWeb && isUseCustomFont ? { fontFamily: fontFamily || isUseCustomFont } : {};
-    const combinedStyle = [fontStyle, propStyle];
-    return <Text_  {...rest} className={finalClassName} allowFontScaling={false} style={combinedStyle}>{correctedChildren}</Text_>;
-};
+    const correctedChildren =
+        typeof children === 'string' ? decodeText(children) : children
+    const isUseCustomFont = appSetting('native', 'use_custom_font')
+    let finalClassName = normalizeClasses(
+        `${className} ${isUseCustomFont ? fontFamily || isUseCustomFont : ''}`
+    )
+    const fontStyle =
+        !isWeb && isUseCustomFont
+            ? { fontFamily: fontFamily || isUseCustomFont }
+            : {}
+    const combinedStyle = [fontStyle, propStyle]
+    return (
+        <Text_ {...rest} className={finalClassName} style={combinedStyle}>
+            {correctedChildren}
+        </Text_>
+    )
+}
 
 /**
  * Components can have defaultProps and styles
  */
-export const H1 = ({ children, className, ...rest }) => {
+export const H1 = ({ children, className, isfirst, islast, ...rest }) => {
     const correctedChildren =
-      typeof children === 'string' ? decodeText(children) : children;
+        typeof children === 'string' ? decodeText(children) : children
+    const HeadingComponent = Platform.OS === 'web' ? 'h1' : NativeText
+    const finalClassName = normalizeClasses(
+        `text-4xl sm:text-5xl font-bold tracking-tight text-neutral-950 dark:text-neutral-50 web:duration-300 ${
+            isfirst === 'true' ? 'mt-0' : 'mt-8'
+        } ${islast === 'true' ? 'mb-0' : 'mb-4'} ${className || ''}`
+    )
     return (
-      <NativeText
-        className={` text-4xl sm:text-5xl font-bold tracking-tight my-[12px] lg:my-[16px]  web:duration-300 text-neutral-950 dark:text-neutral-50 ${className || ''}`}
-        {...rest}
-        allowFontScaling={false}
-      >
-        {correctedChildren}
-      </NativeText>
-    );
-  };
-  
-  export const H1C = ({ children, className, ...rest }) => {
-    const correctedChildren =
-      typeof children === 'string' ? decodeText(children) : children;
-    return (
-      <NativeText
-        className={`text-3xl lg:text-4xl font-bold tracking-tight text-neutral-950 dark:text-neutral-50 mb-[16px] ${className || ''}`}
-        {...rest}
-        allowFontScaling={false}
-      >
-        {correctedChildren}
-      </NativeText>
-    );
-  };
-  
-  export const H2 = ({ children, className, ...rest }) => {
-    const correctedChildren =
-      typeof children === 'string' ? decodeText(children) : children;
-    return (
-      <NativeText
-        className={`text-2xl font-bold tracking-tight text-neutral-950 dark:text-neutral-50 mb-[12px] mt-[16px] ${className || ''}`}
-        {...rest}
-        allowFontScaling={false}
-      >
-        {correctedChildren}
-      </NativeText>
-    );
-  };
+        <HeadingComponent className={finalClassName} {...rest}>
+            {correctedChildren}
+        </HeadingComponent>
+    )
+}
 
-  export const H3 = ({ children, className, ...rest }) => {
+export const H1C = ({ children, className, isfirst, islast, ...rest }) => {
     const correctedChildren =
-      typeof children === 'string' ? decodeText(children) : children;
+        typeof children === 'string' ? decodeText(children) : children
+    const HeadingComponent = Platform.OS === 'web' ? 'h1' : NativeText
+    const finalClassName = normalizeClasses(
+        `text-3xl lg:text-4xl font-bold tracking-tight text-neutral-950 dark:text-neutral-50 ${
+            isfirst === 'true' ? 'mt-0' : 'mt-6'
+        } ${islast === 'true' ? 'mb-0' : 'mb-3'} ${className || ''}`
+    )
     return (
-      <NativeText
-        className={`text-xl font-bold tracking-tight text-neutral-950 dark:text-neutral-50 mb-[8px] mt-[12px] ${className || ''}`}
-        {...rest}
-        allowFontScaling={false}
-      >
-        {correctedChildren}
-      </NativeText>
-    );
-  };
+        <HeadingComponent className={finalClassName} {...rest}>
+            {correctedChildren}
+        </HeadingComponent>
+    )
+}
+
+export const H2 = ({ children, className, isfirst, islast, ...rest }) => {
+    const correctedChildren =
+        typeof children === 'string' ? decodeText(children) : children
+    const HeadingComponent = Platform.OS === 'web' ? 'h2' : NativeText
+    const finalClassName = normalizeClasses(
+        `text-3xl sm:text-4xl font-bold tracking-tight text-neutral-950 dark:text-neutral-50 ${
+            isfirst === 'true' ? 'mt-0' : 'mt-6'
+        } ${islast === 'true' ? 'mb-0' : 'mb-3'} ${className || ''}`
+    )
+    return (
+        <HeadingComponent className={finalClassName} {...rest}>
+            {correctedChildren}
+        </HeadingComponent>
+    )
+}
+
+export const H3 = ({ children, className, isfirst, islast, ...rest }) => {
+    const correctedChildren =
+        typeof children === 'string' ? decodeText(children) : children
+    const HeadingComponent = Platform.OS === 'web' ? 'h3' : NativeText
+    const finalClassName = normalizeClasses(
+        `text-2xl sm:text-3xl font-bold tracking-tight text-neutral-950 dark:text-neutral-50 ${
+            isfirst === 'true' ? 'mt-0' : 'mt-5'
+        } ${islast === 'true' ? 'mb-0' : 'mb-2'} ${className || ''}`
+    )
+    return (
+        <HeadingComponent className={finalClassName} {...rest}>
+            {correctedChildren}
+        </HeadingComponent>
+    )
+}
+
+export const H4 = ({ children, className, isfirst, islast, ...rest }) => {
+    const correctedChildren =
+        typeof children === 'string' ? decodeText(children) : children
+    const HeadingComponent = Platform.OS === 'web' ? 'h4' : NativeText
+    const finalClassName = normalizeClasses(
+        `text-xl sm:text-2xl font-semibold tracking-tight text-neutral-950 dark:text-neutral-50 ${
+            isfirst === 'true' ? 'mt-0' : 'mt-4'
+        } ${islast === 'true' ? 'mb-0' : 'mb-2'} ${className || ''}`
+    )
+    return (
+        <HeadingComponent className={finalClassName} {...rest}>
+            {correctedChildren}
+        </HeadingComponent>
+    )
+}
+
+export const H5 = ({ children, className, isfirst, islast, ...rest }) => {
+    const correctedChildren =
+        typeof children === 'string' ? decodeText(children) : children
+    const HeadingComponent = Platform.OS === 'web' ? 'h5' : NativeText
+    const finalClassName = normalizeClasses(
+        `text-lg sm:text-xl font-semibold tracking-tight text-neutral-950 dark:text-neutral-50 ${
+            isfirst === 'true' ? 'mt-0' : 'mt-4'
+        } ${islast === 'true' ? 'mb-0' : 'mb-1'} ${className || ''}`
+    )
+    return (
+        <HeadingComponent className={finalClassName} {...rest}>
+            {correctedChildren}
+        </HeadingComponent>
+    )
+}
+
+export const H6 = ({ children, className, isfirst, islast, ...rest }) => {
+    const correctedChildren =
+        typeof children === 'string' ? decodeText(children) : children
+    const HeadingComponent = Platform.OS === 'web' ? 'h6' : NativeText
+    const finalClassName = normalizeClasses(
+        `text-base sm:text-lg font-semibold tracking-tight text-neutral-950 dark:text-neutral-50 ${
+            isfirst === 'true' ? 'mt-0' : 'mt-4'
+        } ${islast === 'true' ? 'mb-0' : 'mb-1'} ${className || ''}`
+    )
+    return (
+        <HeadingComponent className={finalClassName} {...rest}>
+            {correctedChildren}
+        </HeadingComponent>
+    )
+}

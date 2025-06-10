@@ -16,13 +16,6 @@ function ItemRenderer_({ route, numColumns, item, unit, module, unitMode, unitTy
     }
 }
 
-// Set displayName for debugging
-ItemRenderer_.displayName = 'ItemRenderer_';
-
 // AVOID BLINKING
 export const ItemRenderer = memo(ItemRenderer_);
-export const ItemRendererMemo = memo(ItemRenderer);
-
-// Set displayNames for memoized components
-ItemRenderer.displayName = 'ItemRenderer';
-ItemRendererMemo.displayName = 'ItemRendererMemo'; 
+export const ItemRendererMemo = memo(ItemRenderer); 

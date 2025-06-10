@@ -30,7 +30,7 @@ export default function ({ cntClasses, btnStyle, menu_items }) {
     return (
         <View className={cntClasses}>
             {menu_launcher_items.map((item, index) => (
-                <Link href={`/${item.link}`}>
+                <Link href={`/${item.link}`} key={item.link || index}>
                     <Button
                         {...btnStyle1}
                         title={item.title}
