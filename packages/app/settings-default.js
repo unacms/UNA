@@ -1,9 +1,37 @@
 import { env } from 'app/lib/env'
+import Constants from 'expo-constants';
+import { Platform } from 'react-native';
 
-// Detect local development environment for SVG file serving
-const isLocalDevelopment = typeof window !== 'undefined' && window.location
-    ? (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.includes('192.168.'))
-    : (process.env.NODE_ENV === 'development');
+// Function to safely get the manifest
+function getManifest() {
+    // Check for manifest2 first, which is the modern format
+    if (Constants.manifest2) {
+        return Constants.manifest2;
+    }
+    // Fallback to the legacy manifest
+    if (Constants.manifest) {
+        return Constants.manifest;
+    }
+    return null;
+}
+
+// Detect local development environment
+const isLocalDevelopment = process.env.NODE_ENV === 'development';
+
+// Determine the base URL for native app images
+let nativeAppImagesUrl;
+
+if (isLocalDevelopment && Platform.OS !== 'web') {
+    nativeAppImagesUrl = 'http://192.168.1.250:3000';
+} else if (Platform.OS === 'web') {
+    // For web, use the current window location
+    nativeAppImagesUrl = typeof window !== 'undefined' 
+        ? `${window.location.protocol}//${window.location.host}`
+        : (env('APP_URL') || 'https://neo.so');
+} else {
+    // For production native builds, use the configured APP_URL
+    nativeAppImagesUrl = env('APP_URL') || 'https://neo.so';
+}
 
 /* Debug logs disabled to clean console output
 console.log('Settings Debug Info:');
@@ -21,11 +49,13 @@ if (typeof window !== 'undefined' && window.location) {
 console.log('- process.env.NODE_ENV:', process.env.NODE_ENV);
 */
 
+/*
 const nativeAppImagesUrl = isLocalDevelopment 
     ? (typeof window !== 'undefined' && window.location
         ? `${window.location.protocol}//${window.location.host}`
         : `${(env('PROTO') || 'http').replace(':', '')}://${env('HOST') || 'localhost'}:${env('PORT') || '3000'}`)
     : (env('APP_URL') || 'https://neo.so');
+*/
 
 /*console.log('- Constructed nativeAppImagesUrl:', nativeAppImagesUrl);
 
@@ -975,7 +1005,7 @@ export  const settingsDefault = {
                 ' border border-bdrbutton hover:border-bdrbutton-h dark:border-bdrbutton-d dark:hover:border-bdrbutton-dh bg-bgrbutton dark:bg-bgrbutton-d web:hover:bg-bgrbutton-h dark:web:hover:bg-bgrbutton-dh overflow-hidden hover:shadow-md active:shadow-none active:opacity-60 ',
             'u-btn-default-text':
                 'font-medium text-neutral-800 web:hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-neutral-50',
-            'u-btn-default-trans': ' web:duration-200',
+            'u-btn-default-trans': '  web:duration-200',
 
             'u-btn-primary-cnt': ' bg-primary dark:bg-primary-d web:hover:bg-primary-h dark:web:hover:bg-primary-dh',
             'u-btn-primary-text': 'font-medium text-white',
