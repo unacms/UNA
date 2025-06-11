@@ -1,4 +1,11 @@
 import { env } from 'app/lib/env'
+
+const isLocalDevelopment = env('NODE_ENV') === 'development';
+// Detect local development environment for SVG file serving
+/*const isLocalDevelopment = typeof window !== 'undefined' && window.location
+    ? (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.includes('192.168.'))
+    : (process.env.NODE_ENV === 'development');
+/*
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 
@@ -32,7 +39,7 @@ if (isLocalDevelopment && Platform.OS !== 'web') {
     // For production native builds, use the configured APP_URL
     nativeAppImagesUrl = env('APP_URL') || 'https://neo.so';
 }
-
+*/
 /* Debug logs disabled to clean console output
 console.log('Settings Debug Info:');
 console.log('- isLocalDevelopment:', isLocalDevelopment);
