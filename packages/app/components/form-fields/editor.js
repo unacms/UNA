@@ -28,6 +28,7 @@ function PlainText(props) {
     const [height, setHeight] = useState(h);
     const accessibility = props.caption.length > 0 ? props.caption : 'text';
     const placeholder = props.use_caption_as_placeholder ? props.caption : props.placeholder;
+    const isAutoHeight = true;
 
     let input = (
         <InputMulti
@@ -39,11 +40,11 @@ function PlainText(props) {
             value={field.value}
             aria-label={accessibility}
             onContentSizeChange={e => {
-                if (props.autoheight) {
+                if (isAutoHeight) {
                     setHeight(e.nativeEvent.contentSize.height);
                 }
             }}
-            style={props.autoheight ? { height } : {}}
+            style={isAutoHeight ? { height, minHeight:100, maxHeight:200 } : {}}
             defaultValue={props.value || props.default_value || ''}
             editorProps={{
                 attributes: {
