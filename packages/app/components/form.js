@@ -209,10 +209,10 @@ export default function (props) {
             {(isAutoChange) && <Row className='items-center justify-between mb-3'>
                 {/*<Text className="text-xl font-bold text-neutral-800  dark:text-neutral-200 ">Filters</Text>*/}
                 {!isObjectsEqual(filteredDefaultValues, allFields) &&  <Button
-                title='Reset'
+                title='Reset Filters'
                 startDecorator='X'
-                size='xs'
-                variant='text'
+                size='sm'
+                variant='secondary'
                 onPress={() => methods.reset()}
                 />
                 }

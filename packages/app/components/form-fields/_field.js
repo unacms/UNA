@@ -18,16 +18,18 @@ export default function (props) {
     const isShowCaption = !!props.caption && props.format == 'default' && !props.use_caption_as_placeholder && ['switcher', 'checkbox'].includes(props.type) == false;
 
     const captionElement = (
-        <View className=' w-full bg-neutral-100 dark:bg-neutral-800 rounded-[16px] p-[4px]'>
-            <Text className="label-text block px-[12px] pt-[4px] pb-[6px] w-full ">
+        <View className=' '>
+            <Text className="label-text block px-[4px] pt-[4px] pb-[6px] w-full ">
                 <Row className='items-center gap-x-1' >
                     <Text className={appSetting('forms', 'caption_classes')}>{caption}</Text>
                     {((props.checker || props.required) ? <></> : <Text className="text-sm sm:text-base text-neutral-700 dark:text-neutral-300">{isShowOptional}</Text>)}
                     {((!!mandatoryIcon && (props.checker || props.required)) ? <Text className="text-red-600 h-[16px] w-[16px]"><Icon icon={mandatoryIcon} size={16} /></Text> : <></>)}
                 </Row >
             </Text>
+            <View className=' w-full min-h-[56px]'>
+                {props.children}
+            </View>
             
-            {props.children}
         </View>
     );
 
@@ -42,7 +44,7 @@ export default function (props) {
             {(props.error2 && props.checker.error!='') && <FormError errorText={props.checker.error} />}
             {!!props.info &&
                 <View className="label" >
-                    <Text className="mt-1 text-xs sm:text-sm text-neutral-700 dark:text-neutral-300">{stripTags(props.info)}</Text>
+                    <Text className="mt-[4px] px-[4px] text-xs sm:text-sm text-neutral-700 dark:text-neutral-300">{stripTags(props.info)}</Text>
                 </View>
             }
         </View>
@@ -51,7 +53,7 @@ export default function (props) {
 
 export function FormError({ errorText, errorLink }) {
     const errorMessage = (
-        <View className="label">
+        <View className="label px-[4px]">
             <Text className="ml-0.5 mt-0.5 label-text-alt text-sm text-red-600 animate-pulse dark:text-red-400">
                 {linkedText(errorText)}
             </Text>

@@ -758,7 +758,7 @@ export default function RftText({
     return (
         <View
             onLayout={handleLayout}
-            className={`flex-1 relative  rounded-[14px] ${isToolBar ? 'h-48' : ''}`}
+            className={`flex-1 relative rounded-[16px] ${isToolBar ? 'h-48' : ''}`}
         >
             {suggestions && suggestions.length > 0 && (
                 <View

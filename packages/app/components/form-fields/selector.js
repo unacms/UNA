@@ -60,8 +60,8 @@ export default function (props) {
     const { field } = useController({ name, rules, defaultValue });
     const [value2, setValue2] = useState(field.value)
 
-    const variant = props.variant || 'outline';
-    const size = props.size || 'sm';
+    const variant = props.variant || 'default';
+    const size = props.size || 'base';
 
     const addValue2 = useCallback(
         (value) => {
@@ -144,7 +144,7 @@ export default function (props) {
         <>
             {ModalCnt}
             <Field {...props}>
-                <View className='w-full justify-between '>
+                <View className='w-full justify-between bg-bgrinput dark:bg-bgrinput-d rounded-[14px] p-[2px] min-h-[56px] border border-bdrinput dark:border-bdrinput-d'>
                     <View className={styles + ' w-full flex-auto  items-center flex-row flex-wrap'}>
                         {props.align == 'right' && <Button
                             startDecorator="Plus"
@@ -153,7 +153,7 @@ export default function (props) {
                             onPress={showSelect}
                         />}
                         {field.value?.length > 0 && valuesList.filter(item => field.value.includes(item.key)).map((item, index) => (
-                            <View className='mx-1' key={'label' + index}>
+                            <View className='m-[3px]' key={'label' + index}>
                                 <Button
                                     endDecorator="X"
                                     variant={variant}
