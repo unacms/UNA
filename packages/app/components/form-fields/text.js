@@ -31,6 +31,7 @@ export default function FormFieldText(props) {
 
                 autoFocus={props.auto_focus}
                 name={props.name}
+                readOnly={props?.attrs?.readonly == 'readonly'}
                 placeholder={placeholder}
                 placeholderTextColor="#6b7280"
                 onChangeText={field.onChange}
