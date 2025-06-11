@@ -71,7 +71,9 @@ export default function PageLayout(props) {
                         </View>
                     </View>
                     <View className="max-w-xl w-full flex-auto mx-auto px-[16px] pb-[16px] sm:p-[32px] lg:py-[64px] my-auto gap-y-[16px]">
-                            <Card>
+                        <View className="relative">
+                            <View className="absolute top-4 flex shadow rounded-3xl w-full h-full bg-neutral-500 dark:bg-black blur-lg opacity-20 dark:opacity-50"></View>
+                            <Card rounded="rounded-3xl" addClassName="border border-white overflow-hidden dark:border-bdrcard-d">
                                 <View className="hidden lg:flex flex-col pb-[24px] gap-y-[8px]">
                                     <Text className="text-2xl leading-none tracking-tight font-bold text-neutral-800 dark:text-neutral-200">
                                         Create your account
@@ -106,6 +108,7 @@ export default function PageLayout(props) {
                                     <AuthPanel />
                                 </View>
                             </Card>
+                        </View>
                         <View className="flex-col">
                             <Text className="text-base  text-neutral-600 dark:text-neutral-400 text-center py-[16px]">Already have an account?</Text>
                             <Link className="w-full" href="/login">
