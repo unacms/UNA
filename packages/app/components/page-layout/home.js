@@ -166,15 +166,16 @@ export default function (props) {
                         'feed',
                         'show_selector_view'
                     ) && (
-                            <Row className="flex-auto gap-x-1 pb-2 sm:pb-4 flex-auto items-end justify-end">
+                            <Row className="flex-auto gap-x-1  flex-auto items-end justify-end">
                                 <Button
                                     startDecorator="Rows"
                                     tooltip={t('Full')}
                                     rounded
+                                    ring="p-1"
                                     variant={
                                         unitMode == ''
-                                            ? 'link'
-                                            : 'text'
+                                            ? 'secondary'
+                                            : 'primary'
                                     }
                                     size="sm"
                                     onPress={() => {
@@ -223,7 +224,7 @@ export default function (props) {
                                 <Link href={currentUser.url} emulate={true}>
                                     <Row
                                         className={
-                                            ' rounded-[12px] group items-center px-[8px] gap-x-[12px] h-12 hover:bg-bgritem dark:hover:bg-bgritem-d  active:bg-bgritem-h dark:active:bg-bgritem-dh  '
+                                            ' rounded-2xl group items-center px-[8px] gap-x-[12px] h-[56px] hover:bg-bgritem dark:hover:bg-bgritem-d  active:bg-bgritem-h dark:active:bg-bgritem-dh  '
                                         }
                                     >
                                         
@@ -292,7 +293,7 @@ export default function (props) {
 
                 
                     
-                    <View className="relative flex-auto mx-auto sm:p-[12px] max-w-3xl">
+                    <View className="relative flex-auto mx-auto sm:px-[12px] py-[4px]  max-w-3xl">
                             {feedList.map((item, index) => {
                                 if (feedType == item.name) {
                                     return (

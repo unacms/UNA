@@ -121,6 +121,7 @@ export  const settingsDefault = {
         count_in_feed: 3, //OLD appSetting('layout', 'comments_count_in_feed')
         mentions: true, //OLD appSetting('layout', 'comments_mentions')
         in_reply: true, //OLD appSetting('layout', 'show_in_reply_comments')
+        submit_comment_on_enter: false,
     },
     dashboard: {
         url: '/dashboard', //OLD appSetting('layout', 'dashboard')
@@ -228,7 +229,7 @@ export  const settingsDefault = {
         items_lifetime: 30,
     },
     feed: {
-        show_selector_view: false,
+        show_selector_view: true,
         default_view: '',
         show_html: false,
         default_feed: 'foryou',

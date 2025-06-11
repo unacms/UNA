@@ -135,7 +135,7 @@ export default function RftText({
         font-size: ${editorFontSize};
         line-height:  ${editorLineHeight};
         color: var(--color-text);
-        background-color: var(--color-background);
+        background-color: transparent;
         margin:0;
         white-space: pre;
         overflow: hidden;
@@ -240,8 +240,6 @@ export default function RftText({
         CodeBridge.configureCSS(customCodeBlockCSS),
     ]
 
-    const CustomKeyboardShortcuts = [];
-
     // Extract toolbar styling values from settings
     const toolbarPadding = editorSettings?.padding || 8;
     const toolbarColors = editorSettings?.colors || {};
@@ -330,6 +328,12 @@ export default function RftText({
         } : 
         lightTheme;
 
+    const handleSubmit = () => {
+        if (props.onEnterSubmit) {
+            props.onEnterSubmit();
+        }
+    };
+
     const editor = useEditorBridge({
         autofocus: props.autofocus,
         avoidIosKeyboard: false,
@@ -340,7 +344,6 @@ export default function RftText({
         bridgeExtensions: [
             ...TenTapStartKit,
             ...baseExtensions,
-            ...CustomKeyboardShortcuts,
         ],
     })
 
@@ -525,12 +528,13 @@ export default function RftText({
             }
 
             if (message?.type == 'editor-ready') {
+                const submitOnEnter = isCommentsEditor ? appSetting('comments', 'submit_comment_on_enter') : enableSubmitOnEnter;
                 editor.injectJS(`
                     let formName = "${unicFormName}";
                     let lastSelectionRange = null;
                     let mentionVisible = false; 
                     var editorConfig = { 
-                        submitOnEnterEnabled: ${!!enableSubmitOnEnter},
+                        submitOnEnterEnabled: ${!!submitOnEnter},
                         platformOS: '${Platform.OS}'
                     };
                     const editorElement = document.getElementsByClassName("tiptap")[0];
@@ -541,28 +545,29 @@ export default function RftText({
                                 event.preventDefault();
                                 event.stopPropagation();
                                 window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'enter' }));
-                                return false; // Mention selection handled
+                                return false; 
                             }
                             
+                            const isModKeyPressed = event.metaKey || event.ctrlKey;
+
                             if (editorConfig.submitOnEnterEnabled) {
-                                if (editorConfig.platformOS === 'web') {
-                                    // Alt-Enter and Mod-Enter are now handled by Tiptap extension.
-                                    // We only care about plain Enter here for submit.
-                                    if (!event.ctrlKey && !event.altKey && !event.metaKey) { // Check no modifiers for plain Enter
-                                        event.preventDefault();
-                                        event.stopPropagation();
-                                        window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'requestSubmit' }));
-                                        return false; // Submit handled
-                                    }
-                                    // If modifiers are pressed, let Tiptap extension handle it (don't return false here)
+                                if (isModKeyPressed) {
+                                    window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'requestNewline' }));
                                 } else {
-                                    // Mobile: Fall through for Tiptap default (newline)
+                                    event.preventDefault();
+                                    event.stopPropagation();
+                                    window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'requestSubmit' }));
+                                    return false;
                                 }
                             } else {
-                                // Not submitOnEnterEnabled: Fall through for Tiptap default (newline)
+                                if (isModKeyPressed) {
+                                    event.preventDefault();
+                                    event.stopPropagation();
+                                    window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'requestSubmit' }));
+                                    return false;
+                                }
                             }
                         } else if (event.key === 'Tab' && mentionVisible) {
-                            // Tab for mentions - existing logic
                             event.preventDefault();
                             event.stopPropagation();
                             window.ReactNativeWebView.postMessage(JSON.stringify({
