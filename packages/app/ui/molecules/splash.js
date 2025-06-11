@@ -4,7 +4,7 @@ import { Button } from 'app/design/controls'
 import Card from 'app/components/card'
 import { useState, useEffect } from 'react'
 import { appSetting } from 'app/lib/util'
-import { Platform, useColorScheme } from 'react-native'
+import { Platform, useColorScheme, StyleSheet } from 'react-native'
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view'
 import { appStatic } from 'app/lib/app-static'
 import AuthPanel from 'app/ui/molecules/auth'
@@ -15,6 +15,7 @@ import { BlockByName } from 'app/components/block'
 import { useRouter } from 'app/lib/hooks/router';
 import SvgFile from 'app/ui/molecules/svg-file';
 import MenuFooter from 'app/components/nav/menu-footer';
+import { SvgXml } from 'react-native-svg';
 
 const triggerHaptics = () => {
     if (Platform.OS !== 'web') {
@@ -100,9 +101,50 @@ export default function Splash(props) {
         )
     }
 
+    const SvgBackground = () => (
+        <svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%' viewBox='0 0 1200 800'>
+            <rect fill='#E7FFF4' width='1200' height='800'/>
+            <defs>
+                <radialGradient id='a' cx='0' cy='800' r='800' gradientUnits='userSpaceOnUse'>
+                    <stop offset='0' stopColor='#f0ffc8'/>
+                    <stop offset='1' stopColor='#f0ffc8' stopOpacity='0'/>
+                </radialGradient>
+                <radialGradient id='b' cx='1200' cy='800' r='800' gradientUnits='userSpaceOnUse'>
+                    <stop offset='0' stopColor='#d6fff6'/>
+                    <stop offset='1' stopColor='#d6fff6' stopOpacity='0'/>
+                </radialGradient>
+                <radialGradient id='c' cx='600' cy='0' r='600' gradientUnits='userSpaceOnUse'>
+                    <stop offset='0' stopColor='#dbb6ff'/>
+                    <stop offset='1' stopColor='#dbb6ff' stopOpacity='0'/>
+                </radialGradient>
+                <radialGradient id='d' cx='600' cy='800' r='600' gradientUnits='userSpaceOnUse'>
+                    <stop offset='0' stopColor='#E7FFF4'/>
+                    <stop offset='1' stopColor='#E7FFF4' stopOpacity='0'/>
+                </radialGradient>
+                <radialGradient id='e' cx='0' cy='0' r='800' gradientUnits='userSpaceOnUse'>
+                    <stop offset='0' stopColor='#FFA9A9'/>
+                    <stop offset='1' stopColor='#FFA9A9' stopOpacity='0'/>
+                </radialGradient>
+                <radialGradient id='f' cx='1200' cy='0' r='800' gradientUnits='userSpaceOnUse'>
+                    <stop offset='0' stopColor='#C4FEFF'/>
+                    <stop offset='1' stopColor='#C4FEFF' stopOpacity='0'/>
+                </radialGradient>
+            </defs>
+            <rect fill='url(#a)' width='1200' height='800'/>
+            <rect fill='url(#b)' width='1200' height='800'/>
+            <rect fill='url(#c)' width='1200' height='800'/>
+            <rect fill='url(#d)' width='1200' height='800'/>
+            <rect fill='url(#e)' width='1200' height='800'/>
+            <rect fill='url(#f)' width='1200' height='800'/>
+        </svg>
+    );
+
     return (
         <View className="flex-col justify-center w-full">
-            <View className="w-full flex-auto bg-gradient-to-b from-transparent to-primary-100 dark:from-transparent dark:to-primary-950">
+            <View className="w-full flex-auto">
+                <View className="absolute w-full inset-0">
+                    <SvgBackground />
+                </View>
                 <View className="w-full lg:flex-row gap-y-[16px] mx-auto pt-[64px] pb-[32px] max-w-[1440px]">
                     <View className="my-auto flex-col items-center lg:items-start gap-x-[32px] flex-auto px-[16px] sm:px-[32px] xl:px-[64px] lg:pb-[64px]" accessible={true}>
                         <View className="w-[50%] max-w-[360px] aspect-square">
