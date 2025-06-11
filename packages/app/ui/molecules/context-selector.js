@@ -80,7 +80,7 @@ export default function ContextSelector({ data, url }) {
     return (
         <View className="flex-row w-full gap-x-[8px] flex-auto items-center">
             <Link href={contextRoot.url} >
-                <View className='items-center text-center align-middle flex-auto flex-row gap-x-[12px] px-[6px] py-[6px] hover:bg-bgritem dark:hover:bg-bgritem-d rounded-[14px]'>
+                <View className='items-center text-center align-middle flex-auto flex-row gap-x-[12px]  lg:p-[6px] lg:hover:bg-bgritem dark:lg:hover:bg-bgritem-d rounded-2xl'>
                     <View className="items-center justify-center text-neutral-800 dark:text-neutral-200">
                         {contextRoot.image}
                     </View>

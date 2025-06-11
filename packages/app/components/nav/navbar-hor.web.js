@@ -62,7 +62,7 @@ const HeaderLine = memo(
                 )}
                 {(!context || (!currentUser.confirmed && appSetting('layout', 'lock_unconfirmed'))) &&  (uri == 'home' || width >= LAYOUT_BREAKPOINTS.lg) && (
                     <Link
-                        className=" flex items-center flex-row active:scale-95 active:opacity-50 text-neutral-800 dark:text-neutral-200 hover:scale-105 hover:text-neutral-950 dark:hover:text-neutral-50   web:duration-300 gap-x-[12px] "
+                        className=" flex items-center px-[8px] py-[6px] hover:bg-bgritem dark:hover:bg-bgritem-d rounded-2xl flex-row active:scale-95 active:opacity-50 text-neutral-800 dark:text-neutral-200 hover:scale-105 hover:text-neutral-950 dark:hover:text-neutral-50   web:duration-300 gap-x-[12px] "
                         href="/home"
                         aria-label="Logo"
                     >

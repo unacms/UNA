@@ -116,13 +116,13 @@ export default function (props) {
 
             <ScrollView
                 horizontal={true}
-                className=" w-full shadow-[0_1px_1px_0_rgba(0,0,0,0.1)] dark:shadow-[0_1px_0_rgba(0,0,0,1)] bg-bgrnavbar dark:bg-bgrnavbar-d overflow-y-visible sm:justify-center "
+                className=" px-[8px] sm:px-[12px] w-full "
             >
                 <Row
-                    className={`  rounded-full mx-[8px] sm:mx-[12px] ${feedList.length > 1
-                        ? 'mb-2 lg:my-4'
+                    className={`  ${feedList.length > 1
+                        ? 'my-[6px]'
                         : ''
-                        }  gap-x-0 sm:gap-x-2  `}
+                        }    `}
                 >
                     {feedList.length > 1 &&
                         feedList.map((item, index) => {
@@ -292,7 +292,7 @@ export default function (props) {
 
                 
                     
-                    <View className="relative flex-auto mx-auto sm:p-[12px] max-w-2xl">
+                    <View className="relative flex-auto mx-auto sm:p-[12px] max-w-3xl">
                             {feedList.map((item, index) => {
                                 if (feedType == item.name) {
                                     return (
@@ -315,7 +315,7 @@ export default function (props) {
                                                 unitMode={unitMode}
                                                 exProps={{
                                                     headerBlocks: headerBlocks,
-                                                    scrollProps: { pageData: props.data, headerHeight: isFeedMenuPresent ? 129 : 48, subHeaderComponent: subHeader },
+                                                    scrollProps: { pageData: props.data, headerHeight: isFeedMenuPresent ? 120 : 48, subHeaderComponent: subHeader },
                                                 }}
                                             />
                                         </View>

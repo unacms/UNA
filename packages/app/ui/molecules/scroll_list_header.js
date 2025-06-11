@@ -23,7 +23,7 @@ import { Button, ButtonRef } from 'app/design/controls'
 
 export const TextHeader = memo(({ text }) => {
     const { t } = useTranslation();
-    return <Text className="font-bold text-neutral-800 dark:text-neutral-200 flex-auto leading-[36px] text-2xl tracking-tight">
+    return <Text className="font-bold text-neutral-800 dark:text-neutral-200 flex-auto leading-[36px] text-3xl tracking-tight">
         {t(text)}
     </Text>
 })

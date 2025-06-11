@@ -102,7 +102,7 @@ export default function Splash(props) {
     }
 
     const SvgBackground = () => (
-        <svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%' viewBox='0 0 1200 800'>
+        <svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%' viewBox='0 0 1200 800' preserveAspectRatio="xMidYMid slice">
             <rect fill='#E7FFF4' width='1200' height='800'/>
             <defs>
                 <radialGradient id='a' cx='0' cy='800' r='800' gradientUnits='userSpaceOnUse'>
@@ -139,11 +139,49 @@ export default function Splash(props) {
         </svg>
     );
 
+    const SvgBackgroundDark = () => (
+        <svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%' viewBox='0 0 1200 800' preserveAspectRatio="xMidYMid slice">
+            <rect fill='#0D1117' width='1200' height='800'/>
+            <defs>
+                <radialGradient id='a' cx='0' cy='800' r='800' gradientUnits='userSpaceOnUse'>
+                    <stop offset='0' stopColor='#002d2d'/>
+                    <stop offset='1' stopColor='#002d2d' stopOpacity='0'/>
+                </radialGradient>
+                <radialGradient id='b' cx='1200' cy='800' r='800' gradientUnits='userSpaceOnUse'>
+                    <stop offset='0' stopColor='#0c373a'/>
+                    <stop offset='1' stopColor='#0c373a' stopOpacity='0'/>
+                </radialGradient>
+                <radialGradient id='c' cx='600' cy='0' r='600' gradientUnits='userSpaceOnUse'>
+                    <stop offset='0' stopColor='#210f4a'/>
+                    <stop offset='1' stopColor='#210f4a' stopOpacity='0'/>
+                </radialGradient>
+                <radialGradient id='d' cx='600' cy='800' r='600' gradientUnits='userSpaceOnUse'>
+                    <stop offset='0' stopColor='#0D1117'/>
+                    <stop offset='1' stopColor='#0D1117' stopOpacity='0'/>
+                </radialGradient>
+                <radialGradient id='e' cx='0' cy='0' r='800' gradientUnits='userSpaceOnUse'>
+                    <stop offset='0' stopColor='#4a0f0f'/>
+                    <stop offset='1' stopColor='#4a0f0f' stopOpacity='0'/>
+                </radialGradient>
+                <radialGradient id='f' cx='1200' cy='0' r='800' gradientUnits='userSpaceOnUse'>
+                    <stop offset='0' stopColor='#0f3a4a'/>
+                    <stop offset='1' stopColor='#0f3a4a' stopOpacity='0'/>
+                </radialGradient>
+            </defs>
+            <rect fill='url(#a)' width='1200' height='800'/>
+            <rect fill='url(#b)' width='1200' height='800'/>
+            <rect fill='url(#c)' width='1200' height='800'/>
+            <rect fill='url(#d)' width='1200' height='800'/>
+            <rect fill='url(#e)' width='1200' height='800'/>
+            <rect fill='url(#f)' width='1200' height='800'/>
+        </svg>
+    );
+
     return (
         <View className="flex-col justify-center w-full">
             <View className="w-full flex-auto">
                 <View className="absolute w-full inset-0">
-                    <SvgBackground />
+                    {colorScheme === 'dark' ? <SvgBackgroundDark /> : <SvgBackground />}
                 </View>
                 <View className="w-full lg:flex-row gap-y-[16px] mx-auto pt-[64px] pb-[32px] max-w-[1440px]">
                     <View className="my-auto flex-col items-center lg:items-start gap-x-[32px] flex-auto px-[16px] sm:px-[32px] xl:px-[64px] lg:pb-[64px]" accessible={true}>
@@ -155,33 +193,34 @@ export default function Splash(props) {
                         </View>
                     </View>
                     <View className="flex-col-reverse lg:flex-col max-w-xl w-full flex-auto mx-auto px-[16px] pb-[16px] sm:p-[32px] lg:py-[64px] my-auto gap-y-[16px]">
-                        <View className="flex-col ">
-                            <Card>
-                                <View className="flex-col pb-[24px] gap-y-[8px]">
-                                    <Text className="text-center lg:text-start text-2xl leading-none tracking-tight font-bold text-neutral-800 dark:text-neutral-200">Log in to {appSetting('app', 'title')}</Text>
-                                    <Text className="hidden lg:block text-sm text-neutral-600 dark:text-neutral-400">Use your email and password to sign in</Text>
-                                </View>
-                                <BlockByName 
-                                    name="system:login_form" 
-                                    data={props.data} 
-                                    formProps={{ auto_focus: true, hide_errors: true, button_full_width: true }} 
-                                />
-                                <View className="mt-[8px]">
-                                    <Link href="/forgot-password">
-                                        <Button
-                                            onPress={triggerHaptics}
-                                            title="Forgot password?"
-                                            variant="link"
-                                            fullWidth
-                                            size="sm"
-                                        />
-                                    </Link>
-                                </View>
-                                <View className="flex items-center justify-center gap-y-[8px] border-t border-bdr dark:border-bdr-d mt-[8px] pt-[16px]">
-                                    <AuthPanel className="" />
-                                </View>
-                            </Card>
-                        </View>
+                            <View className="relative">
+                                <View className="absolute top-4 flex shadow rounded-3xl w-full h-full bg-neutral-500 dark:bg-black blur-lg opacity-20 dark:opacity-50"></View>
+                                <Card rounded="rounded-3xl" addClassName="border border-white overflow-hidden dark:border-bdrcard-d">
+                                    <View className="flex-col pb-[24px] gap-y-[8px]">
+                                        <Text className="text-center lg:text-start text-2xl leading-none tracking-tight font-bold text-neutral-800 dark:text-neutral-200">Log in to {appSetting('app', 'title')}</Text>
+                                        <Text className="hidden lg:block text-sm text-neutral-600 dark:text-neutral-400">Use your email and password to sign in</Text>
+                                    </View>
+                                    <BlockByName 
+                                        name="system:login_form" 
+                                        data={props.data} 
+                                        formProps={{ auto_focus: true, hide_errors: true, button_full_width: true }} 
+                                    />
+                                    <View className="mt-[8px]">
+                                        <Link href="/forgot-password">
+                                            <Button
+                                                onPress={triggerHaptics}
+                                                title="Forgot password?"
+                                                variant="link"
+                                                fullWidth
+                                                size="sm"
+                                            />
+                                        </Link>
+                                    </View>
+                                    <View className="flex items-center justify-center gap-y-[8px] border-t border-bdr dark:border-bdr-d mt-[8px] pt-[16px]">
+                                        <AuthPanel className="" />
+                                    </View>
+                                </Card>
+                            </View>
                         <View className="lg:hidden flex-col">
                             <Text className="text-base text-neutral-600 dark:text-neutral-400 text-center">Already have an account?</Text>
                         </View>

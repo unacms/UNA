@@ -769,7 +769,7 @@ export  const settingsDefault = {
             menu_max_width: ' max-w-7xl ',
             content_max_width: ' max-w-7xl ',
             menu_is_dynamic: true,
-            menu_cnt: ' flex-row flex-none gap-x-[8px] ',
+            menu_cnt: ' flex-row flex-none  ',
             menu_categ_ident: 'pl-[48px]',
             right_column_cnt: 'fixed-process pr-4 py-4',
             topmenu_cnt:
@@ -936,7 +936,7 @@ export  const settingsDefault = {
                 'font-medium text-neutral-800 web:hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-neutral-50',
             'u-btn-default-trans': '  web:duration-200',
 
-            'u-btn-primary-cnt': ' bg-primary dark:bg-primary-d web:hover:bg-primary-h dark:web:hover:bg-primary-dh',
+            'u-btn-primary-cnt': ' border border-transparent bg-primary dark:bg-primary-d web:hover:bg-primary-h dark:web:hover:bg-primary-dh',
             'u-btn-primary-text': 'font-medium text-white',
             'u-btn-primary-trans': '  web:duration-300',
             'u-btn-primary-color-icon-light': 'rgb(243, 244, 246)',
@@ -951,7 +951,7 @@ export  const settingsDefault = {
             'u-btn-accent-color-icon-dark': 'rgb(255, 255, 255)',
 
             'u-btn-secondary-cnt':
-                '  border border-neutral-300 dark:border-neutral-700  bg-bgritem dark:bg-bgritem-d web:hover:bg-bgritem-h dark:web:hover:bg-bgritem-dh active:opacity-50',
+                '  border border-transparent  bg-bgritem dark:bg-bgritem-d web:hover:bg-bgritem-h dark:web:hover:bg-bgritem-dh active:opacity-50',
             'u-btn-secondary-text':
                 'font-medium text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-white ',
             'u-btn-secondary-trans': '  web:duration-300',

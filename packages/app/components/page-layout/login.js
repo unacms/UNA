@@ -26,7 +26,7 @@ export default function PageLayout(props) {
     const colorScheme = useColorScheme();
 
     const content = isWeb ? (<View className={'flex-col justify-center mx-auto w-full ' + getPageWidth(props.uri, props.data?.config)}>
-        <View className="w-full lg:flex-row max-w-7xl mx-auto py-16">
+        <View className="w-full lg:flex-row max-w-7xl mx-auto lg:py-16">
             <View className="hidden my-auto flex-col flex-auto">
                 <View className="w-[50%] max-w-[360px] aspect-square">
                     <SvgFile 
@@ -40,7 +40,9 @@ export default function PageLayout(props) {
                 </View>
             </View>
             <View className="max-w-xl w-full flex-auto mx-auto p-[16px] sm:p-[32px] lg:p-[64px] my-auto gap-y-[16px]">
-                    <Card>
+                <View className="relative">
+                    <View className="absolute top-4 flex shadow rounded-3xl w-full h-full bg-neutral-500 dark:bg-black blur-lg opacity-20 dark:opacity-50"></View>
+                    <Card rounded="rounded-3xl" addClassName="border border-white overflow-hidden dark:border-bdrcard-d">
                         <View className="flex-col pb-[24px] gap-y-[8px]">
                             <Text className="text-2xl leading-none tracking-tight font-bold text-neutral-800 dark:text-neutral-200">Log in to your {appSetting('app', 'title')} account</Text>
                             <Text className="text-sm text-neutral-600 dark:text-neutral-400">Use your email and password to sign in</Text>
@@ -58,9 +60,10 @@ export default function PageLayout(props) {
                             </Link>
                         </View>
                         <View className="flex items-center justify-center gap-y-[8px] border-t border-bdr dark:border-bdr-d mt-[8px] pt-[16px]">
-                            <AuthPanel className="" />
-                        </View>
-                    </Card>
+                                <AuthPanel className="" />
+                            </View>
+                        </Card>
+                    </View>
                 <View className="flex-col">
                     <Text className="text-base py-[16px] text-neutral-600 dark:text-neutral-400 text-center">Don't have an account?</Text>
                     <Link className="w-full" href="/create-account">
