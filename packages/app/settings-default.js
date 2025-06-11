@@ -1,82 +1,16 @@
 import { env } from 'app/lib/env'
-
-const isLocalDevelopment = env('NODE_ENV') === 'development';
-// Detect local development environment for SVG file serving
-/*const isLocalDevelopment = typeof window !== 'undefined' && window.location
-    ? (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.includes('192.168.'))
-    : (process.env.NODE_ENV === 'development');
-/*
-import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 
-// Function to safely get the manifest
-function getManifest() {
-    // Check for manifest2 first, which is the modern format
-    if (Constants.manifest2) {
-        return Constants.manifest2;
-    }
-    // Fallback to the legacy manifest
-    if (Constants.manifest) {
-        return Constants.manifest;
-    }
-    return null;
+let nativeAppImagesUrl = '';
+if (env('APP_URL')== 'http://localhost:3000'){
+    if (Platform.OS !== 'web')
+        nativeAppImagesUrl = 'http://192.168.1.250:3000'
+    else
+        nativeAppImagesUrl = env('APP_URL')
 }
-
-// Detect local development environment
-const isLocalDevelopment = process.env.NODE_ENV === 'development';
-
-// Determine the base URL for native app images
-let nativeAppImagesUrl;
-
-if (isLocalDevelopment && Platform.OS !== 'web') {
-    nativeAppImagesUrl = 'http://192.168.1.250:3000';
-} else if (Platform.OS === 'web') {
-    // For web, use the current window location
-    nativeAppImagesUrl = typeof window !== 'undefined' 
-        ? `${window.location.protocol}//${window.location.host}`
-        : (env('APP_URL') || 'https://neo.so');
-} else {
-    // For production native builds, use the configured APP_URL
-    nativeAppImagesUrl = env('APP_URL') || 'https://neo.so';
+else{
+    nativeAppImagesUrl = "https://neo.so";
 }
-*/
-/* Debug logs disabled to clean console output
-console.log('Settings Debug Info:');
-console.log('- isLocalDevelopment:', isLocalDevelopment);
-console.log('- typeof window:', typeof window);
-if (typeof window !== 'undefined' && window.location) {
-    console.log('- window.location.hostname:', window.location.hostname);
-    console.log('- window.location.protocol:', window.location.protocol);
-    console.log('- window.location.host:', window.location.host);
-} else {
-    console.log('- env("HOST"):', env('HOST'));
-    console.log('- env("PORT"):', env('PORT'));
-    console.log('- env("PROTO"):', env('PROTO'));
-}
-console.log('- process.env.NODE_ENV:', process.env.NODE_ENV);
-*/
-
-/*
-const nativeAppImagesUrl = isLocalDevelopment 
-    ? (typeof window !== 'undefined' && window.location
-        ? `${window.location.protocol}//${window.location.host}`
-        : `${(env('PROTO') || 'http').replace(':', '')}://${env('HOST') || 'localhost'}:${env('PORT') || '3000'}`)
-    : (env('APP_URL') || 'https://neo.so');
-*/
-
-/*console.log('- Constructed nativeAppImagesUrl:', nativeAppImagesUrl);
-
-console.log('Environment Variables Debug:');
-console.log('- env("UNA_URL"):', env('UNA_URL'));
-console.log('- env("APP_URL"):', env('APP_URL'));
-console.log('- env("UNA_API_KEY"):', env('UNA_API_KEY'));
-console.log('- env("APP_ORIGIN"):', env('APP_ORIGIN'));
-
-if (typeof window !== 'undefined' && window.location) {
-    console.log('Direct process.env check:');
-    console.log('- process.env.NEXT_PUBLIC_UNA_URL:', process.env.NEXT_PUBLIC_UNA_URL);
-    console.log('- process.env.NEXT_PUBLIC_APP_URL:', process.env.NEXT_PUBLIC_APP_URL);
-}*/
 
 export  const settingsDefault = {
     config: {
