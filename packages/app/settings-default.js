@@ -1,10 +1,10 @@
 import { env } from 'app/lib/env'
-import { Platform } from 'react-native';
+//import { Platform } from 'react-native';
 
 let nativeAppImagesUrl = '';
 if (env('APP_URL')== 'http://localhost:3000'){
-    if (Platform.OS !== 'web')
-        nativeAppImagesUrl = 'http://192.168.1.250:3000'
+    if (true)
+        nativeAppImagesUrl = 'http://192.168.1.250:3000'//2.22
     else
         nativeAppImagesUrl = env('APP_URL')
 }
