@@ -1,16 +1,4 @@
 import { env } from 'app/lib/env'
-//import { Platform } from 'react-native';
-
-let nativeAppImagesUrl = '';
-if (env('APP_URL')== 'http://localhost:3000'){
-    if (true)
-        nativeAppImagesUrl = 'http://192.168.1.250:3000'//2.22
-    else
-        nativeAppImagesUrl = env('APP_URL')
-}
-else{
-    nativeAppImagesUrl = "https://neo.so";
-}
 
 export  const settingsDefault = {
     config: {
@@ -19,7 +7,7 @@ export  const settingsDefault = {
         una_api_key: env('UNA_API_KEY'),
         app_origin: env('APP_ORIGIN'),
 
-        native_app_images_url: nativeAppImagesUrl,
+        native_app_images_url: "https://neo.so",
 
         debug: true,
         use_proxy_web: true,
