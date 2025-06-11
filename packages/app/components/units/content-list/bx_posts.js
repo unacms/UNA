@@ -39,7 +39,37 @@ Units.Base = function Base({ data, imageSizes }) {
         </Card>
     )
 }
-
+Units.Search = function Search({ data, imageSizes }) {
+    return (
+        <Card margin="  m-1 sm:m-2 " rounded=" rounded-2xl " addClassName=" p-2  ">
+            <View className="  aspect-video flex-none rounded-lg overflow-hidden mb-auto w-full bg-bgritem dark:bg-bgritem-d  ">
+                {data.image && (
+                    <Image
+                        {...data.image}
+                        alt={data.title}
+                        view="cover"
+                        className="u-cover"
+                        sizes={imageSizes}
+                    />
+                )}
+            </View>
+            <View className="flex-auto sm:h-40 mt-2 flex-col p-2">
+                <Link href={data.url}>
+                    <Text numberOfLines={2} className="text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-d leading-tight text-base  font-semibold">
+                        {data.title}
+                    </Text>
+                </Link>
+                <Text numberOfLines={3} className="text-neutral-600 dark:text-neutral-400 mt-2 mb-auto text-xs ">
+                    {data.summary_plain}
+                </Text>
+                <View className="mt-2 ">
+                    <AuthorData authorData={data.author_data} />
+                </View>
+            </View>
+        </Card>
+    )
+}
+/*
 Units.Search = function Search({ data, imageSizes }) {
     return (
         <Card margin="  m-1 sm:m-2 " rounded=" rounded-2xl " addClassName=" p-2  ">
@@ -60,7 +90,7 @@ Units.Search = function Search({ data, imageSizes }) {
 
     )
 }
-
+*/
 Units.Small = function Small({ data, imageSizes }) {
     return (
         <View className=" mx-auto pt-1 sm:p-2 w-full max-w-2xl">

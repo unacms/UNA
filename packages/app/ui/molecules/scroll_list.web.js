@@ -80,7 +80,7 @@ export default function ScrollList({
     };
 
     // Don't add scroll handlers for simple pages like splash, login, create-account
-    const isSimplePage = ['home', 'login', 'create-account'].includes(pageData.uri);
+    const isSimplePage = ['home', 'login', 'create-account'].includes(pageData?.uri);
     
     let enhanced;
     if (isSimplePage) {
@@ -92,7 +92,7 @@ export default function ScrollList({
         };
         enhanced = React.cloneElement(content, baseProps);
     }
-    if (!currentUser && !subHeaderComponent && !['home', 'login', 'create-account'].includes(pageData.uri)) {
+    if (!currentUser && !subHeaderComponent && !isSimplePage) {
         let textName = pageData?.name;
         if (isMenuNameAsTitle) {
             const menuSettings = getMenuSettings(pageData?.menu?.object, pageData?.menu?.config);

@@ -16,6 +16,11 @@ const componentsMap = {
     string: String,
 };
 
+export function BlockByName2({ b, name }) {
+    let c = Block({ uri: '', block: b, showTitle: name.showTitle, showPad: name.showPad, showBg: name.showBg, extraProps: name, sidebar: name.sidebar })
+    return c;
+}
+
 export function BlockByName(props) {
     let { data, name, ...rest } = props;
 

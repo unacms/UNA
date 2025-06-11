@@ -157,6 +157,7 @@ export function ElementSearchData(oProps) {
             params: {
                 keyword: sValue,
                 section: sSection.trim(),
+                live: true,
             }
         };
 
@@ -263,6 +264,7 @@ export function ElementSearchData(oProps) {
             </View>
             <KbAvoidingView className="web:flex-1" offset={80}>
                 <ScrollView keyboardShouldPersistTaps="always" keyboardDismissMode="none" >
+                    {cnt && <View className='items-end'>{cnt2}</View>}
                     <View >
                         {cnt}
                     </View>
