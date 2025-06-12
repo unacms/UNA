@@ -13,15 +13,15 @@ import { useTranslation } from 'react-i18next'
 import { tp, appSetting, updateRouteDataForConnection } from 'app/lib/util'
 import ProfilesList from 'app/ui/molecules/profile_list'
 import PopupModal from 'app/ui/molecules/popup_modal'
-import { useColorScheme } from 'react-native'
+ import { ThemeName } from 'app/design/theme';
 
 const LogoNative = () => {
-    const scheme = useColorScheme()
-    return scheme === 'dark' ? LogoNativeDark : LogoNativeLight
+    const theme = ThemeName();
+    return theme === 'dark' ? LogoNativeDark : LogoNativeLight
 }
 const JoinImage = () => {
-    const scheme = useColorScheme()
-    return scheme === 'dark' ? JoinImageDark : JoinImageLight
+    const theme = ThemeName();
+    return theme === 'dark' ? JoinImageDark : JoinImageLight
 }
 
 const LogoText = (

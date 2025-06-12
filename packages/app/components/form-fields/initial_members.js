@@ -139,7 +139,7 @@ export default function (props) {
             <Modal id='file-preview2' title="Choose users" onVisible={!!isModal} onClose={() => {setIsModal(false)}}>
                 <SelectUsers isSingle={isSingle} onSave={onSave} requestUrl={'/api.php?r=' + props.ajax_get_suggestions + "&params="} initedData={[]} />
             </Modal>
-            <View className='w-full p-[6px] gap-x-2 justify-between items-start flex-row flex-wrap border border-bdrinput dark:border-bdrinput-d rounded-[14px] bg-bgrinput dark:bg-bgrinput-d'>
+            <View className='w-full p-[6px] gap-x-2 justify-between items-start flex-row flex-wrap border border-bdrinput dark:border-bdrinput-d rounded-[12px] bg-bgrinput dark:bg-bgrinput-d'>
                 
                     {selected && selected.map((oItem) => <User type={isSingle ? '' : "remove"} key={oItem.id} data={oItem} onSelect={onRemove} />)}
                    

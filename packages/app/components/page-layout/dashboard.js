@@ -23,7 +23,7 @@ import { fetcher } from 'app/lib/fetcher';
 export default function PageLayout(props) {
     
     const { t } = useTranslation();
-    let { currentUser, setCurrentUser } = useCurrentUser()
+    const { currentUser, setCurrentUser } = useCurrentUser()
     
     const [showImage2, setShowImage2] = useState(false);
 

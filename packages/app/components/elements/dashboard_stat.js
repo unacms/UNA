@@ -17,10 +17,9 @@ import { Appearance } from 'react-native';
 import { Platform } from 'react-native'
 import { storageSet, storageClear, storageGet } from 'app/lib/util'
 import { fetcher } from 'app/lib/fetcher';
-//import Bluetooth from 'app/ui/molecules/bluetooth'
-import { useBottomSheetData } from 'app/context/bottomsheet';
-import { Theme } from 'app/design/theme';
-import  DasbordStatOld  from 'app/components/elements/dashboard_stat_old';
+import { Theme, useThemeName } from 'app/design/theme';
+import DasbordStatOld from 'app/components/elements/dashboard_stat_old';
+import SvgFile from 'app/ui/molecules/svg-file';
 
 function getCounter(num, icon = '', add = '', color = '') {
 
@@ -48,10 +47,11 @@ function getCounter(num, icon = '', add = '', color = '') {
 
 export default function PageLayout(props) {
     if (!appSetting('layout', 'user_remote_config'))
-        return <DasbordStatOld {...props}/>
+        return <DasbordStatOld {...props} />
     const isWeb = Platform.OS == 'web'
     const { t } = useTranslation();
-    let { currentUser, setCurrentUser } = useCurrentUser()
+    const { currentUser, setCurrentUser } = useCurrentUser()
+    const { themeName, setThemeName } = useThemeName()
 
     const [showImage2, setShowImage2] = useState(false);
 
@@ -89,10 +89,7 @@ export default function PageLayout(props) {
                 root.setAttribute('theme', scheme);
             else
                 root.setAttribute('theme', item);
-
-            storageSet('layout:theme', '', item, true);
-            //location.reload();
-            // setCurrentUser(Object.assign({}, currentUser));
+            setThemeName(item);
         }
         else {
             if (item == 'auto')
@@ -105,22 +102,8 @@ export default function PageLayout(props) {
         window.location.href = window.location.href
     }
 
-
-    let currentTheme = storageGet('layout:theme', '', true);
-    if (!currentTheme)
-        currentTheme = 'auto';
-
-    if (!isWeb){
-        currentTheme = Appearance.getColorScheme();
-        console.log("currentThemecurrentTheme", currentTheme)
-    }
-
-    let currentFormat = storageGet('layout:format', '', true);
-    if (!currentFormat)
-        currentFormat = appSetting('layout', 'default_layout');
-
-    
-
+    const currentTheme = !isWeb ? Appearance.getColorScheme() : storageGet('layout:theme', '', true) || 'auto';
+    const currentFormat = storageGet('layout:format', '', true) || appSetting('layout', 'default_layout');
 
     return (
         <ScrollView className=''>
@@ -154,7 +137,7 @@ export default function PageLayout(props) {
                                 </View>}
                             </View>
                             <View className="flex-row  items-center gap-x-2 my-auto hidden">
-                            {currentUser.profiles_count > 1 && <ProfileSwitcher hideTitle={true} >
+                                {currentUser.profiles_count > 1 && <ProfileSwitcher hideTitle={true} >
                                     <Button variant="outline" startDecorator="RefreshCw" rounded />
                                 </ProfileSwitcher>}
                                 {
@@ -313,21 +296,22 @@ function ElementDashboardStat(props) {
         };
         fetchData();
     }, []);
-    
+
     const list = appSetting('dashboard', 'modules_list');
     const filtredData = data.modules.filter(item => list.includes(item.key));
 
     return (
         <>
-            <Row className="flex-wrap flex-auto mb-auto px-1 sm:px-0">
+
+            <Row className="flex-wrap px-1 sm:px-0 ">
                 {filtredData.map((item, index) => {
 
                     if (item) {
                         if (item?.type != 'growth') {
                             return <View className="  w-1/2 lg:w-1/3 xl:w-1/4 p-1 sm:p-2 web:duration-300 " key={index}>
                                 <Link href={item.url}>
-                                    <Card rounded=" rounded-2xl " addClassName=" sm:hover:scale-105 web:duration-300 w-full p-4 " >
-                                        <Row className='space-x-1 w-full justify-between'>
+                                    <Card rounded=" rounded-2xl " addClassName=" p-[8px] sm:p-[24px] sm:hover:scale-105 web:duration-300 w-full p-4 " >
+                                        <Row className='space-x-1 w-full justify-between min-h-12'>
                                             {
                                                 item.count > 0 ? <Text className=" text-3xl -translate-y-1 font-semibold flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white  ">
                                                     {item.count}
@@ -353,8 +337,8 @@ function ElementDashboardStat(props) {
                         return (
                             <View className=" w-1/2 lg:w-1/3 xl:w-1/4 p-1 sm:p-2 web:duration-300" key={index}>
                                 <Link href={item.url} key={index}>
-                                    <Card rounded=" rounded-2xl " addClassName="w-full p-[24px] web:duration-300 sm:hover:scale-105 " margin="a">
-                                        <Row className=''>
+                                    <Card rounded=" rounded-2xl " addClassName="w-full p-[8px] sm:p-[24px] web:duration-300 sm:hover:scale-105 " margin="a">
+                                        <Row className='space-x-1 w-full justify-between min-h-12'>
                                             <Text className=" text-3xl -translate-y-1 font-semibold flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white  ">
                                                 {item.current}
                                             </Text>
@@ -387,11 +371,12 @@ function ElementDashboardStat(props) {
                     {data.manage.items.map((item2, index) => {
                         return <View className=" w-full min-w-[160px] max-w-[320px] " key={index}>
                             <Link href={item2.link}>
-                                <Button variant="secondary" align="left" size="sm" fullWidth title={t(item2.title)} startDecorator={item2.icon}/>
+                                <Button variant="secondary" align="left" size="sm" fullWidth title={t(item2.title)} startDecorator={item2.icon} />
                             </Link>
                         </View>;
                     })}
                 </View></Card>}
+
         </>
     )
 }

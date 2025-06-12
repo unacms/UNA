@@ -1,22 +1,20 @@
-import { View, ScrollView, Row } from 'app/design/view'
+import { View, ScrollView } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { Button } from 'app/design/controls'
 import Card from 'app/components/card'
-import { useState, useEffect } from 'react'
 import { appSetting } from 'app/lib/util'
-import { Platform, useColorScheme, StyleSheet } from 'react-native'
+import { Platform } from 'react-native'
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view'
 import { appStatic } from 'app/lib/app-static'
 import AuthPanel from 'app/ui/molecules/auth'
 import Link from 'app/ui/atoms/link'
 import * as Haptics from 'expo-haptics'
-// import { LinearGradient } from 'expo-linear-gradient';
 import { BlockByName } from 'app/components/block'
 import { useRouter } from 'app/lib/hooks/router';
 import SvgFile from 'app/ui/molecules/svg-file';
 import MenuFooter from 'app/components/nav/menu-footer';
-import { SvgXml } from 'react-native-svg';
-import AnimatedView from 'app/ui/molecules/animated-view';
+import AnimatedView from 'app/ui/atoms/animated-view';
+ import { ThemeName } from 'app/design/theme';
 
 const triggerHaptics = () => {
     if (Platform.OS !== 'web') {
@@ -27,9 +25,9 @@ const triggerHaptics = () => {
 export default function Splash(props) {
     const router = useRouter();
     const isWeb = Platform.OS == 'web'
-    const colorScheme = useColorScheme();
+    const theme = ThemeName();
 
-    const gradientColors = colorScheme === 'dark'
+    const gradientColors = theme === 'dark'
         ? ['rgba(23, 37, 84, 1)', 'rgba(23, 37, 84, 0.5)']
         : ['rgba(239, 246, 255, 1)', 'rgba(191, 219, 254, 1)'];
 

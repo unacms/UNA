@@ -3,7 +3,7 @@ import { stripTags, addParameterToUrl } from 'app/lib/util';
 import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
 import Time from 'app/ui/atoms/time';
-import AnimatedBlock from 'app/ui/molecules/animated-block'
+import AnimatedBlock from 'app/ui/atoms/animated-block'
 import Link from 'app/ui/atoms/link'
 import Card from 'app/ui/molecules/card'
 import Profile from 'app/ui/molecules/profile';

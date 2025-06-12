@@ -17,7 +17,7 @@ const ElementToster = forwardRef((props, ref) => {
     const indicatorStyle = useAnimatedStyle(() => {
         return {
             transform: [{ translateY: sharedValue.value }],
-            opaopacity: sharedValue.value == 25 ? 1 : 0
+          //  opacity: sharedValue.value == 25 ? 1 : 0
         };
     },[sharedValue]);
 

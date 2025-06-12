@@ -93,6 +93,7 @@ export  const settingsDefault = {
         list: ['CounterChecker'], //['EventChecker'],//NotifChecker OLD appSetting('layout', 'async_workers')
         interval: 10, //OLD appSetting('layout', 'async_workers_interval')
     },
+    
     context_selector:{
         show_logo: false,
         default_item: ''
@@ -861,7 +862,7 @@ export  const settingsDefault = {
         },
         inputs: {
             default:
-                'h-[56px] min-w-[56px] rounded-[14px] flex-auto ' +
+                'h-[56px] min-w-[56px] rounded-[12px] flex-auto ' +
                 'px-[12px] py-[12px] text-[16px] ' +
                 'bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d ' +
                 'hover:border-bdrinput-h dark:hover:border-bdrinput-dh ' +
@@ -871,13 +872,13 @@ export  const settingsDefault = {
                 'placeholder-neutral-500 ' +
                 'text-neutral-800 dark:text-neutral-200 ' +
                 'focus:text-neutral-900 dark:focus:text-neutral-100',
-            multi: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-[14px] flex-auto px-[12px] py-[12px] dark:focus:bg-bgrinput-df dark:text-neutral-100 text-[16px] leading-[20px] ',
+            multi: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-[12px] flex-auto px-[12px] py-[12px] dark:focus:bg-bgrinput-df dark:text-neutral-100 text-[16px] leading-[20px] ',
             rounded:
                 ' h-[48px] rounded-full flex-auto px-[12px] py-[11px] text-[16px] bg-bgrinput dark:bg-bgrinput-d hover:border-bdrinput-h focus:border-bdrinput-f overflow-hidden border border-bdrinput focus:bg-bgrinput-f dark:border-bdrinput-d dark:focus:border-bdrinput-d dark:focus:bg-bgrinput-df focus:border-bdrinput-f dark:focus:border-bdrinput-df   web:duration-300 placeholder-neutral-500 text-neutral-800 dark:text-neutral-200 ',
             roundedsmall:
                 ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-full flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[34px] ',
             small: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-full flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[36px] ',   
-            select: 'appearance-none pr-10 bg-bgrinput h-[56px] border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df  text-neutral-900 rounded-[14px]  flex-auto p-[12px] dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus dark:text-neutral-100 text-base',
+            select: 'appearance-none pr-10 bg-bgrinput h-[56px] border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df  text-neutral-900 rounded-[12px]  flex-auto p-[12px] dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus dark:text-neutral-100 text-base',
         },
 
         button_sizes: {

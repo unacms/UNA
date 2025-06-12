@@ -4,7 +4,7 @@ import { Text } from 'app/design/typography'
 import Card from 'app/components/card'
 import { Button } from 'app/design/controls'
 import Link from 'app/ui/atoms/link'
-import { Platform, useColorScheme } from 'react-native'
+import { Platform } from 'react-native'
 import { appStatic } from 'app/lib/app-static'
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view'
 import { useState, useEffect, useRef } from 'react'
@@ -13,10 +13,9 @@ import AuthPanel from 'app/ui/molecules/auth'
 import * as Haptics from 'expo-haptics'
 import { appSetting } from 'app/lib/util'
 import ScrollList from 'app/ui/molecules/scroll_list'
-// import { LinearGradient } from 'expo-linear-gradient';
 import SvgFile from 'app/ui/molecules/svg-file';
 import MenuFooter from 'app/components/nav/menu-footer';
-import AnimatedView from 'app/ui/molecules/animated-view';
+import AnimatedView from 'app/ui/atoms/animated-view';
 
 const triggerHaptics = () => {
     if (Platform.OS !== 'web') {
@@ -29,13 +28,7 @@ export default function PageLayout(props) {
     const joinData = DataByName(props.data, props.blocks.form_join)
     const isAllowJoin = joinData.content[0].type == 'form'
     const isWeb = Platform.OS === 'web'
-    const cardClassName = 'flex-col w-full mx-auto'
     const refer = useRef();
-    const colorScheme = useColorScheme();
-
-    const gradientColors = colorScheme === 'dark'
-        ? ['rgba(23, 37, 84, 1)', 'rgba(23, 37, 84, 0.5)']
-        : ['rgba(239, 246, 255, 1)', 'rgba(191, 219, 254, 1)'];
 
     const content = isWeb ? (
         <View className="flex-col justify-center w-full">

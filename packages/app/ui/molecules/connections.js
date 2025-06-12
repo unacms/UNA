@@ -8,6 +8,7 @@ import { BlockByData } from 'app/components/blocks-content/object-data-array-int
 import { useTranslation } from 'react-i18next';
 import { useLayoutData } from 'app/context/layout'
 import { storageClear } from 'app/lib/util'
+import DropdownMenuItem from 'app/components/menu-items/dropdown-menu-item'
 
 const getKey = (sO, iIid, iCid) => {
     return sO + '_' + iIid + '_' + iCid;
@@ -22,45 +23,45 @@ const getElementVar = (elementData, sName) => {
 };
 
 const setElementVars = (elementData, setElementData, mValue) => {
-    if(!elementData)
+    if (!elementData)
         setElementData(mValue);
     else
-        setElementData({...elementData, ...mValue});
+        setElementData({ ...elementData, ...mValue });
 };
 
 const performAction = async (setLayoutData, sO, iIid, iCid, sKey, sAction, aParams) => {
-    const aParamsDefault = {o: sO, iid: iIid, cid: iCid};
+    const aParamsDefault = { o: sO, iid: iIid, cid: iCid };
 
-    aParams = aParams ? {...aParamsDefault, ...aParams} : aParamsDefault;
+    aParams = aParams ? { ...aParamsDefault, ...aParams } : aParamsDefault;
     const sRequest = '/api.php?r=system/' + sAction + '/TemplServiceConnections&params[]=' + JSON.stringify(aParams);
 
     const oResponse = await fetcher(sRequest);
     const isReload = oResponse?.data?.a != 'questionnaire';
-    if(isReload)
+    if (isReload)
         storageClear();
 
-    setLayoutData(getAlert('сonnections:action', {object: sO, time:Date.now(), action: aParams, data: oResponse?.data, key: sKey, reload: isReload} ));
+    setLayoutData(getAlert('сonnections:action', { object: sO, time: Date.now(), action: aParams, data: oResponse?.data, key: sKey, reload: isReload }));
 };
 
 const handleDo = (performAction, fOnDo, sAction, oEvent) => {
-    if(!!oEvent)
+    if (!!oEvent)
         oEvent.preventDefault();
 
-    if(fOnDo && typeof fOnDo === 'function')
+    if (fOnDo && typeof fOnDo === 'function')
         fOnDo(sAction);
 
-    performAction('perform', {a:sAction});
+    performAction('perform', { a: sAction });
 };
 
 const handleOnDo = (setElementVars, setModalContent, fOnDone, oData) => {
-    if(oData.a == 'questionnaire') {
-        setModalContent({content: oData.data, designbox_id: 0});
+    if (oData.a == 'questionnaire') {
+        setModalContent({ content: oData.data, designbox_id: 0 });
     }
-    else{
+    else {
         setElementVars(oData);
     }
 
-    if(fOnDone && typeof fOnDone === 'function')
+    if (fOnDone && typeof fOnDone === 'function')
         fOnDone(oData);
 }
 
@@ -76,18 +77,18 @@ const handleFormSubmittedAndValid = (handleDo, handleCloseModal) => {
 }
 
 export default function ElementConnections(oProps) {
-    const [ elementData, setElementData ] = useState(false);
-    const [ modalContent, setModalContent ] = useState(false);
+    const [elementData, setElementData] = useState(false);
+    const [modalContent, setModalContent] = useState(false);
     const { layoutData, setLayoutData } = useLayoutData()
     const { t } = useTranslation();
 
     const oSettings = appSetting('social_actions', 'connection');
-    const oParams = {...oSettings, ...oProps.params};
+    const oParams = { ...oSettings, ...oProps.params };
 
     const sKey = useMemo(() => getKey(oProps.o, oProps.iid, oProps.cid), [oProps.o, oProps.iid, oProps.cid]);
 
     const oIcons = oProps?.o && oSettings[oProps.o]?.icons != undefined ? oSettings[oProps.o].icons : {
-        add: 'UserCheck', 
+        add: 'UserCheck',
         remove: 'UserX'
     };
 
@@ -101,7 +102,7 @@ export default function ElementConnections(oProps) {
         showTitleFromSize: oProps.params?.button_show_title_from_size,
         hide_icon: oProps.params?.hide_icon,
         padding: oProps.params?.padding,
-    };    
+    };
 
     const _isElementVar = useCallback((sName) => isElementVar(elementData, sName), [elementData]);
     const _getElementVar = useCallback((sName) => getElementVar(elementData, sName), [elementData]);
@@ -113,32 +114,48 @@ export default function ElementConnections(oProps) {
     const _handleFormSubmittedAndValid = useCallback(() => handleFormSubmittedAndValid(_handleDo, _handleCloseModal), []);
 
     useEffect(() => {
-       if(layoutData && layoutData?.type == 'сonnections:action' && layoutData?.data.key == sKey) {
+        if (layoutData && layoutData?.type == 'сonnections:action' && layoutData?.data.key == sKey) {
             _handleOnDo(layoutData.data.data)
         }
     }, [layoutData?.data?.time]);
-    
+
     let sAction = oProps?.a || '';
-    if(_isElementVar('a'))
+    if (_isElementVar('a'))
         sAction = _getElementVar('a');
 
     let sTitle = oProps?.title || '';
-    if(_isElementVar('title'))
+    if (_isElementVar('title'))
         sTitle = _getElementVar('title');
 
 
     const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
-    if(oIcons && !!oIcons[sAction] && oButtonProps.hide_icon !== true)
+    if (oIcons && !!oIcons[sAction] && oButtonProps.hide_icon !== true)
         oButtonProps.startDecorator = oIcons[sAction];
 
-    return (
-        <>
-            <ButtonAction title={sTitle} onPress={(event) => _handleDo(sAction, event)} {...oButtonProps} />
-            {modalContent && <Modal title={t("Questionnaire")} onVisible={modalContent} outerClickClose={false} onClose={_handleCloseModal}>
-                <View className='px-4'>
-                    <BlockByData onFormEmpty = {_handleFormSubmittedAndValid} block = {modalContent}  />
-                </View>
-            </Modal>}
-        </>
-    );
+    if (oProps.mode == 'dropdown-menu') {
+        return <>
+            <DropdownMenuItem
+              
+               
+                item={{
+                    title: sTitle,
+                    icon: oIcons[sAction]
+                }}
+                icon={oIcons[sAction]}
+                handleSelect={(event) => {_handleDo(sAction, event) }}
+            /></>;
+    }
+    else {
+
+        return (
+            <>
+                <ButtonAction title={sTitle} onPress={(event) => _handleDo(sAction, event)} {...oButtonProps} />
+                {modalContent && <Modal title={t("Questionnaire")} onVisible={modalContent} outerClickClose={false} onClose={_handleCloseModal}>
+                    <View className='px-4'>
+                        <BlockByData onFormEmpty={_handleFormSubmittedAndValid} block={modalContent} />
+                    </View>
+                </Modal>}
+            </>
+        );
+    }
 }

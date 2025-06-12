@@ -10,7 +10,6 @@ import Tooltip from 'app/ui/atoms/tooltip';
 import { useWindowDimensions } from 'react-native';
 import Loading from 'app/ui/atoms/loading'
 import { RemoveScroll } from 'react-remove-scroll';
-import { getPart } from 'app/lib/parts/part';
 import { useSafeAreaInsets } from 'app/lib/hooks/router'
 /* inputs */
 const inputSettings = appSetting('theme', 'inputs');

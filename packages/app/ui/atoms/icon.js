@@ -12,12 +12,14 @@ export function Icon(props) {
     const { colors } = Theme();
     let isXmlSvg = false;
 
-    // Check if icon is a string before calling startsWith
+    if (!icon)
+        return null;
+    
+
     if (typeof icon === 'string') {
         isXmlSvg = icon.startsWith('<svg');
     } else {
         console.log('Warning: Icon prop is not a string. Received:', icon);
-        // icon is not a string, so isXmlSvg remains false
     }
 
     const _strokeWidth = strokeWidth || appSetting('layout', 'default_icon_stroke_width');

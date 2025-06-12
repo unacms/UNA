@@ -14,7 +14,7 @@ import DropdownMenu from 'app/ui/atoms/dropdown-menu'
 import { fetcher } from 'app/lib/fetcher'
 import { componentsMap } from 'app/ui/molecules/_map'
 import Card from 'app/ui/molecules/card'
-import AnimatedBlock from 'app/ui/molecules/animated-block'
+import AnimatedBlock from 'app/ui/atoms/animated-block'
 import { CommentsBrowse, CommentsParts } from 'app/lib/comments-helpers'
 import { Pressable } from 'app/design/view';
 import { subscribe } from 'app/ui/atoms/socket';

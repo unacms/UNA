@@ -1,13 +1,19 @@
 import { Text } from 'app/design/typography'
 import { Button, Modal } from 'app/design/controls'
 import { fetcher } from 'app/lib/fetcher'
-import React from 'react'
 import { appSetting, updateRouteDataForConnection, getPageSettings } from 'app/lib/util'
-import { Platform, Pressable as RNP_Pressable } from 'react-native'
 import { componentsMap } from 'app/ui/molecules/_map'
 import { appStatic } from 'app/lib/app-static';
 import { View, Row } from 'app/design/view'
 import { MenuItemSidebar } from 'app/components/nav/menu-item-sidebar'
+import { 
+    SvgBackgroundSplash, 
+    SvgBackgroundSplashDark,
+    SvgBackgroundCreateAccount,
+    SvgBackgroundCreateAccountDark,
+    SvgBackgroundLogin,
+    SvgBackgroundLoginDark,
+} from 'app/ui/atoms/backgrounds';
 
 export function getFriendsCounter(currentUser) {
     return currentUser?.counters?.bx_persons_friend_requests
@@ -357,6 +363,42 @@ export function noContentByUrl(endpoint){
 
 export function getNumColsForConductor(width, currentRoute, leftSideBar) {
     return 0;
+}
+
+export function getBackground(pathname, currentUser)
+{
+    if (!currentUser){
+        if(pathname === '/' || pathname === '/home')
+            return 'splash';
+
+        if(pathname === '/login')
+            return 'login';
+
+        if(pathname === '/create-account')
+            return 'create-account';
+    }
+    return 'default';
+}
+
+export function getBackgrounds() {
+     return {
+        splash: {
+            light: <SvgBackgroundSplash />,
+            dark: <SvgBackgroundSplashDark />,
+        },
+        'create-account': {
+            light: <SvgBackgroundCreateAccount />,
+            dark: <SvgBackgroundCreateAccountDark />,
+        },
+        login: {
+            light: <SvgBackgroundLogin />,
+            dark: <SvgBackgroundLoginDark />,
+        },
+        default: {
+            light: <View className="w-full h-full bg-bgrbody dark:bg-bgrbody-d" />,
+            dark: <View className="w-full h-full bg-bgrbody dark:bg-bgrbody-d" />,
+        }
+    }
 }
 
 export function getFiltersForConductor(filters, setFilterValue, filterValues) {

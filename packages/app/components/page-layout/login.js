@@ -4,7 +4,7 @@ import { Text } from 'app/design/typography'
 import Card from 'app/components/card'
 import { Button } from 'app/design/controls'
 import Link from 'app/ui/atoms/link'
-import { Platform, useColorScheme } from 'react-native'
+import { Platform } from 'react-native'
 import * as Haptics from 'expo-haptics';
 import { appStatic } from 'app/lib/app-static'
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
@@ -14,7 +14,7 @@ import ScrollList from 'app/ui/molecules/scroll_list'
 import { useRef } from 'react'
 import SvgFile from 'app/ui/molecules/svg-file';
 import MenuFooter from 'app/components/nav/menu-footer';
-import AnimatedView from 'app/ui/molecules/animated-view';
+import AnimatedView from 'app/ui/atoms/animated-view';
 
 const triggerHaptics = () => {
     if (Platform.OS !== 'web') {
@@ -25,7 +25,7 @@ const triggerHaptics = () => {
 export default function PageLayout(props) {
     const isWeb = Platform.OS === 'web';
     const refer = useRef();
-    const colorScheme = useColorScheme();
+
 
     const content = isWeb ? (<View className={'flex-col justify-center mx-auto w-full ' + getPageWidth(props.uri, props.data?.config)}>
         <View className="w-full lg:flex-row max-w-7xl mx-auto my-auto lg:py-16 min-h-[100vh]">

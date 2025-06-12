@@ -5,7 +5,7 @@ import { Modal } from 'app/design/controls'
 import { fetcher } from 'app/lib/fetcher'
 import { componentsMap } from 'app/ui/molecules/_map'
 import Card from 'app/ui/molecules/card'
-import AnimatedBlock from 'app/ui/molecules/animated-block'
+import AnimatedBlock from 'app/ui/atoms/animated-block'
 import { useTranslation } from 'react-i18next';
 import { CommentsModal, CommentsSection, MenuManage, ActionMenu, CounterMenu, Author, UnitFeed, SmallUnit, prepareData, MainContent, FeedEditForm } from 'app/lib/feed-helpers'
 import { Platform } from 'react-native'

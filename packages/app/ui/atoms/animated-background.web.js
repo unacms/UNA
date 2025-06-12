@@ -1,48 +1,30 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Animated, { useSharedValue, withTiming, useAnimatedStyle } from 'react-native-reanimated';
 import { View } from 'app/design/view';
-import { 
-    SvgBackgroundSplash, 
-    SvgBackgroundSplashDark,
-    SvgBackgroundCreateAccount,
-    SvgBackgroundCreateAccountDark,
-    SvgBackgroundLogin,
-    SvgBackgroundLoginDark,
-} from './backgrounds';
-import { useColorScheme } from 'nativewind';
+import { ThemeName } from 'app/design/theme';
+import { callFn } from 'app/lib/functions/call';
+import { usePathname } from 'app/lib/hooks/router';
+import { useCurrentUser } from 'app/context/user';
 
-const backgrounds = {
-    splash: {
-        light: <SvgBackgroundSplash />,
-        dark: <SvgBackgroundSplashDark />,
-    },
-    'create-account': {
-        light: <SvgBackgroundCreateAccount />,
-        dark: <SvgBackgroundCreateAccountDark />,
-    },
-    login: {
-        light: <SvgBackgroundLogin />,
-        dark: <SvgBackgroundLoginDark />,
-    },
-    default: {
-        light: <View className="w-full h-full bg-white" />,
-        dark: <View className="w-full h-full bg-black" />,
-    }
-};
+const backgrounds = callFn("getBackgrounds", []);   
 
-function AnimatedBackgroundComponent({ background }) {
-    const { colorScheme } = useColorScheme();
+function AnimatedBackgroundComponent({ }) {
+    const theme = ThemeName();
     const opacity = useSharedValue(1);
     const animationDuration = 500;
+    const pathname = usePathname();
+    const { currentUser } = useCurrentUser();
+    const background = callFn("getBackground", [pathname, currentUser]);   
 
-    const [currentBg, setCurrentBg] = useState(backgrounds[background]?.[colorScheme] || backgrounds.default[colorScheme]);
+
+    const [currentBg, setCurrentBg] = useState(backgrounds[background]?.[theme] || backgrounds.default[theme]);
     const [prevBg, setPrevBg] = useState(null);
     
     const bgRef = useRef(currentBg);
     bgRef.current = currentBg;
 
     useEffect(() => {
-        const newBg = backgrounds[background]?.[colorScheme] || backgrounds.default[colorScheme];
+        const newBg = backgrounds[background]?.[theme] || backgrounds.default[theme];
 
         if (bgRef.current && newBg.type === bgRef.current.type && JSON.stringify(newBg.props) === JSON.stringify(bgRef.current.props)) {
             return;
@@ -60,7 +42,7 @@ function AnimatedBackgroundComponent({ background }) {
         
         return () => clearTimeout(timer);
 
-    }, [background, colorScheme]);
+    }, [background, theme]);
 
     const animatedStyle = useAnimatedStyle(() => ({
         opacity: opacity.value,

@@ -1,7 +1,5 @@
-import { createContext, useState, useContext, useMemo } from 'react';
 import { create } from 'zustand';
 import { isObjectsEqual } from 'app/lib/util'
-const CurrentUserContext = createContext(null);
 
 export const useCurrentUserStore = create((set, get) => ({
     currentUser: null, // Initial state

@@ -164,9 +164,11 @@ export function storageSet(pref, key, data, isLocal = false) {
         }
     }
     else {
-        const serializedData = appSetting('cache', 'compress') ? compress(data) : JSON.stringify(data);
-        const storage = isLocal ? localStorage : sessionStorage;
-        storage.setItem(`${pref}-${key}`, serializedData);
+        if (typeof localStorage !== 'undefined'){
+            const serializedData = appSetting('cache', 'compress') ? compress(data) : JSON.stringify(data);
+            const storage = isLocal ? localStorage : sessionStorage;
+            storage.setItem(`${pref}-${key}`, serializedData);
+        }
     }
 }
 
@@ -180,10 +182,12 @@ export function storageGet(pref, key, isLocal = false) {
         // return await AsyncStorage.getItem(`${pref}-${key}`);
     }
     else {
-        const storage = isLocal ? localStorage : sessionStorage;
-        const storedData = storage.getItem(`${pref}-${key}`);
-        if (!storedData) return null;
-        return appSetting('cache', 'compress') ? decompress(storedData) : JSON.parse(storedData);
+        if (typeof localStorage !== 'undefined'){
+            const storage = isLocal ? localStorage : sessionStorage;
+            const storedData = storage.getItem(`${pref}-${key}`);
+            if (!storedData) return null;
+            return appSetting('cache', 'compress') ? decompress(storedData) : JSON.parse(storedData);
+        }
     }
 }
 
