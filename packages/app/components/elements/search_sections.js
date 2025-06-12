@@ -42,14 +42,14 @@ export default function ElementSearchSections(props) {
                     <View key={item.section}>
                         <Row className='items-center justify-between px-[8px] py-[6px] mb-[2px]'>
                             <Text className="text-base font-semibold tracking-tight text-neutral-600 dark:text-neutral-400 ">{t(item.section_name)}</Text>
-                            <Link href={`/search-keyword?keyword=test&section=bx_posts`}>
+                            <Link href={`/search-keyword?keyword=test&section=${item.section}`}>
                                 <Button variant='link' size='sm' title={t('View all')} />
                             </Link>
                         </Row>
 
                         <UniList
                             index={0}
-                            data={item.data.slice(0, numColumns)}
+                            data={item.data.slice(0, numColumns== 1 ? 3: numColumns)}
                             endpoint={''}
                             listState={''}
                             storagekey={''}
