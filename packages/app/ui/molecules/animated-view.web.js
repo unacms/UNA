@@ -1,0 +1,37 @@
+import React, { useEffect } from 'react';
+import Animated, { useSharedValue, useAnimatedStyle, withSpring, withTiming } from 'react-native-reanimated';
+import { appSetting } from 'app/lib/util';
+import { cssInterop } from 'nativewind';
+
+cssInterop(Animated.View, { className: 'style' });
+
+function AnimatedView({ children, direction = 'down', className }) {
+    const opacity = useSharedValue(0);
+    const initialY = direction === 'up' ? 50 : -50;
+    const translateY = useSharedValue(initialY);
+
+    const animationDuration = appSetting('layout', 'card_animation_duration') || 350;
+
+    useEffect(() => {
+        opacity.value = withTiming(1, { duration: animationDuration });
+        translateY.value = withSpring(0, {
+            damping: 9,
+            stiffness: 70,
+        });
+    }, []);
+
+    const animatedStyle = useAnimatedStyle(() => {
+        return {
+            opacity: opacity.value,
+            transform: [{ translateY: translateY.value }],
+        };
+    }, [opacity, translateY]);
+
+    if (animationDuration === 0) {
+        return <Animated.View className={className}>{children}</Animated.View>;
+    }
+
+    return <Animated.View style={animatedStyle} className={className}>{children}</Animated.View>;
+};
+
+export default React.memo(AnimatedView); 

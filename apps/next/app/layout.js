@@ -9,6 +9,8 @@ import { initReactI18next } from 'react-i18next';
 import { useColorScheme } from 'react-native';
 import { resources } from 'app/translation';
 import Subscriber from 'app/ui/molecules/subscriber';
+import AnimatedBackground from 'app/ui/molecules/animated-background';
+import { usePathname } from 'next/navigation'
 
 export default function RootLayout({ children }) {
 
@@ -47,10 +49,20 @@ export default function RootLayout({ children }) {
         const root = window.document.documentElement;
         //root.setAttribute('theme', scheme);
     }
+    const pathname = usePathname();
+    let background = 'default';
+    if(pathname === '/' || pathname === '/splash')
+        background = 'splash';
+    else if(pathname === '/login')
+        background = 'login';
+    else if(pathname === '/create-account')
+        background = 'create-account';
+
     return (
         <html lang="en" >
-            <body className='bg-bgrbody dark:bg-bgrbody-d' style={{ overflowY: 'initial' }}>
+            <body className='bg-transparent' style={{ overflowY: 'initial' }}>
                 <QueryClientProvider client={queryClient}>
+                        <AnimatedBackground background={background} />
                         {!!process.env['VERCEL'] ? <Analytics /> : null}
                         {!!process.env['VERCEL'] ? <SpeedInsights /> : null}
                         {children}
