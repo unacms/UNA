@@ -87,7 +87,7 @@ export  const settingsDefault = {
         onesignal_request_on_load: true,
         check_version: 'optional', // variants: [no, required, optional]
         collapsible_header: true,
-        scroll_to_top_button: true,
+        scroll_to_top_button: false,
     },
     async_workers: {
         list: ['CounterChecker'], //['EventChecker'],//NotifChecker OLD appSetting('layout', 'async_workers')

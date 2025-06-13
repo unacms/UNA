@@ -1,6 +1,12 @@
 import { View } from 'app/design/view';
+import Animated, {
+    useSharedValue,
+    useAnimatedStyle,
+    useDerivedValue,
+    withTiming,
+} from 'react-native-reanimated';
 import { BlurView } from 'expo-blur';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { Theme } from 'app/design/theme';
 import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { Button } from 'app/design/controls';
@@ -33,31 +39,84 @@ export default function ScrollList({
     const isCollapsibleHeader = appSetting('native', 'collapsible_header') && isSmallScreen;
     const isShowScrollToTopButton = appSetting('native', 'scroll_to_top_button') && isSmallScreen;
     const transparencyOffset = 200;
-    const pageScrollThreshold = 10;
     const animationDuration = 300;
     const { colors } = Theme();
     const { currentUser } = useCurrentUser();
     const { t } = useTranslation();
-    const [isPageScrolled, setIsPageScrolled] = useState(false);
 
-    const updateIsPageScrolledState = (currentScrollY) => {
-        setIsPageScrolled(currentScrollY > pageScrollThreshold);
+    /* ANIMATION */
+    const scrollY = useSharedValue(0);
+    const scrollDirection = useSharedValue('none');
+
+    const isShow = useDerivedValue(() => {
+        return (
+            scrollDirection.value === 'up' ||
+            scrollY.value < transparencyOffset ||
+            scrollY.value === 0
+        );
+    }, [scrollY, scrollDirection]);
+
+    const isShowButton = useDerivedValue(() => {
+        return (
+            scrollY.value > transparencyOffset
+        );
+    }, [scrollY, transparencyOffset]);
+
+    const headerStyle = useAnimatedStyle(() => {
+        const opacityValue = withTiming(isShow.value ? 1 : 0, { duration: animationDuration });
+        const transformValue = withTiming(isShow.value ? 0 : -114, { duration: animationDuration });
+        return {
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100%',
+            opacity: opacityValue,
+            transform: [
+                { translateY: transformValue },
+            ],
+        };
+    }, [scrollDirection, scrollY, isShow]);
+
+    const buttonStyle = useAnimatedStyle(() => {
+
+        const opacityValue = withTiming(isShowButton.value ? 1 : 0, { duration: animationDuration });
+        return {
+            position: 'fixed',
+            right: 10,
+            bottom: 140,
+            zIndex: 1000,
+            opacity: opacityValue,
+        };
+    }, [isShowButton]);
+
+    const updateScroll = (value) => {
+        const currentY = Math.round(value / 10) * 10;
+        if (currentY === scrollY.value) return;
+        scrollDirection.value = currentY > scrollY.value ? 'down' : 'up';
+        scrollY.value = currentY;
+    };
+
+    const onScroll = (event) => {
+        if (inverted)
+            updateScroll(event.target.scrollHeight - event.target.scrollTop - event.target.clientHeight);
+        else
+            updateScroll(event.target.scrollTop);
     };
 
     const handleScroll = useCallback(() => {
         requestAnimationFrame(() => {
-            updateIsPageScrolledState(window.scrollY);
+            updateScroll(window.scrollY);
         });
-    }, []);
+    }, [scrollDirection, scrollY]);
 
     useEffect(() => {
-        if (isSmallScreen) {
+        if (isCollapsibleHeader) {
             window.addEventListener('scroll', handleScroll);
             return () => {
                 window.removeEventListener('scroll', handleScroll);
             };
         }
-    }, [isSmallScreen, handleScroll]);
+    }, []);
 
     const scrollToTop = () => {
         if (contentType === 'FlatList') {
@@ -71,36 +130,22 @@ export default function ScrollList({
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     };
+    /* ANIMATION */
 
-    const onScroll = (event) => {
-        if (inverted)
-            updateIsPageScrolledState(event.target.scrollHeight - event.target.scrollTop - event.target.clientHeight);
-        else
-            updateIsPageScrolledState(event.target.scrollTop);
+    const baseProps = {
+        ...((useCustomScrollHandler && isCollapsibleHeader) && { onScroll }),
     };
 
-    // Don't add scroll handlers for simple pages like splash, login, create-account
-    const isSimplePage = ['home', 'login', 'create-account'].includes(pageData?.uri);
-    
-    let enhanced;
-    if (isSimplePage) {
-        // For simple pages, don't add any scroll handling props
-        enhanced = content;
-    } else {
-        const baseProps = {
-            ...((useCustomScrollHandler && isCollapsibleHeader) && { onScroll }),
-        };
-        enhanced = React.cloneElement(content, baseProps);
-    }
-    if (!currentUser && !subHeaderComponent && !isSimplePage) {
+    const enhanced = React.cloneElement(content, baseProps);
+    if (!currentUser && !subHeaderComponent && !['home', 'login', 'create-account'].includes(pageData.uri)) {
         let textName = pageData?.name;
         if (isMenuNameAsTitle) {
             const menuSettings = getMenuSettings(pageData?.menu?.object, pageData?.menu?.config);
             textName = menuSettings.name;
         }
-        headerHeight = 120;
+        headerHeight = 116;
         subHeaderComponent = (
-            <View className='px-[12px] sm:px-[16px] items-start py-[10px] justify-center   web:duration-300'>
+            <View className='px-[12px] sm:px-[16px] items-start py-2 justify-center bg-bgrtabbar dark:bg-bgrtabbar-d border-b border-bdrtabbar dark:border-bdrtabbar-d shadow-sm'>
                 <TextHeader text={textName} />
             </View>
         );
@@ -109,15 +154,9 @@ export default function ScrollList({
     return (
         <View className="flex-1" style={{ paddingTop: isSmallScreen && !useCustomScrollHandler ? headerHeight : 0 }}>
             {enhanced}
-            {isSmallScreen && <View style={{ position: 'fixed', top: 0, left: 0, width: '100%' }}>
+            {isSmallScreen && <Animated.View className="backdrop-blur-lg" style={[headerStyle]}>
 
-                <View 
-                    className={`w-full transition-all   web:duration-300 ease-in-out will-change-transform ${
-                        isPageScrolled
-                            ? 'bg-bgrnavbar/80 dark:bg-bgrnavbar-d/80 backdrop-blur-lg shadow-[0_1px_0_rgba(0,0,0,0.05)] dark:shadow-[0_1px_0_rgba(0,0,0,0.1)]'
-                            : 'bg-transparent dark:bg-transparent shadow-none'
-                    }`}
-                >
+                <View className="w-full bg-bgrnavbar/80 dark:bg-bgrnavbar-d/80 shadow-[0_1px_0_rgba(0,0,0,0.05)] dark:shadow-[0_1px_0_rgba(0,0,0,0.1)]"  >
                     <Header
                         backButtonPresented={isBackButton}
                         headerComponent={headerComponent}
@@ -131,8 +170,8 @@ export default function ScrollList({
                     {subHeaderComponent}
                 </View>
 
-            </View>}
-            {isShowScrollToTopButton && <View style={{ position: 'fixed', right: 10, bottom: 140, zIndex: 1000 }}>
+            </Animated.View>}
+            {isShowScrollToTopButton && <Animated.View style={[buttonStyle]}>
                 <Button
                     onPress={scrollToTop}
                     startDecorator={inverted ? "ChevronDown" : "ChevronUp"}
@@ -140,7 +179,7 @@ export default function ScrollList({
                     variant="primary"
                     rounded
                 ></Button>
-            </View>}
+            </Animated.View>}
         </View>
     )
 }

@@ -274,7 +274,7 @@ export default function Layout(props) {
 
     const [headerSettings, setHeaderSettings] = useState(getHeaderSettings(uri, width, layoutName, data?.config));
     const pageLayoutName = getLayout(currentUser, layoutName);
-    useEffect(() => {
+    /*useEffect(() => {
         let a = getHeaderSettings(uri, width, layoutName, data?.config);
         if (pageLayoutName == 'ver') {
             if (width > LAYOUT_BREAKPOINTS[TABLET_MODE_FROM])
@@ -297,7 +297,7 @@ export default function Layout(props) {
             setHeaderSettings(a);
         }
     }, [uri, width, layoutName, data?.config, currentUser, pageLayoutName, headerSettings]);
-
+*/
     useEffect(() => {
         if (data?.title) {
             if (appSetting('notifications', 'count_in_title')) {
