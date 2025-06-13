@@ -6,6 +6,10 @@
 
 NEO Monorepo is a unified codebase for web and native UI apps for UNA. 
 
+## Routing
+
+The NEO monorepo uses a hybrid routing strategy to optimize for both native and web platforms. Native routing is handled by `expo-router`, while web routing uses the Next.js App Router. For a detailed explanation of the architecture, component abstractions, and implementation for both platforms, please see the [full routing documentation](./docs/routing.md).
+
 ## 🏁 Start the app
 
 - Install dependencies: `yarn`
