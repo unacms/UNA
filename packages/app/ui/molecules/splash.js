@@ -103,8 +103,8 @@ export default function Splash(props) {
     return (
         <View className="flex-col justify-center w-full">
             <View className="w-full flex-auto min-h-[100vh]">
-                <View className="w-full lg:flex-row gap-y-[16px] mx-auto my-auto pt-[64px] pb-[32px] max-w-[1440px]">
-                    <View className="my-auto flex-col items-center lg:items-start gap-x-[32px] flex-auto px-[16px] sm:px-[32px] xl:px-[64px] lg:pb-[64px]" accessible={true}>
+                <View className="w-full lg:flex-row gap-y-[16px] mx-auto my-auto max-w-[1440px]">
+                    <View className="my-auto flex-col items-center lg:items-start gap-x-[32px] flex-auto px-[16px] sm:px-[32px] xl:px-[64px] py-[64px]" accessible={true}>
                         <AnimatedView className="w-[50%] max-w-[360px] aspect-square">
                             <SvgFile src_dark="splash-dark.svg" src_default="splash-light.svg" alt="Splash screen illustration" />
                         </AnimatedView>
@@ -112,7 +112,7 @@ export default function Splash(props) {
                             {appStatic('splash_text')}
                         </AnimatedView>
                     </View>
-                    <View className="flex-col-reverse lg:flex-col max-w-xl w-full flex-auto mx-auto px-[16px] pb-[16px] sm:p-[32px] lg:py-[64px] my-auto gap-y-[16px]">
+                    <View className="flex-col-reverse lg:flex-col max-w-xl w-full flex-auto mx-auto p-[16px] sm:p-[32px] my-auto gap-y-[16px]">
                         <AnimatedView>
                             <View className="relative">
                                 <View className="absolute top-4 flex shadow rounded-3xl w-full h-full bg-neutral-500 dark:bg-black blur-lg opacity-20 dark:opacity-50"></View>
