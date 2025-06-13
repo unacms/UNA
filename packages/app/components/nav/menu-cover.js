@@ -46,24 +46,82 @@ export function CoverMenu(props) {
 
    // if (width < LAYOUT_BREAKPOINTS.sm) size = 'base'
 
-    const isSplitMenu = appSetting('cover', 'split_action_menu')
-
-    let aMenuManageItems = []
+    const isSplitMenu = props.isSplitMenu;
 
     let propsCopy = { ...props } // Create a copy of the array
 
     if (isSplitMenu) {
         propsCopy.items = propsCopy.items.filter((aItem) => {
-            if (aItem?.display_type && aItem.display_type != 'link') {
+            if (aItem.persistent) {
                 return true // Exclude this item from the new array
             } else {
-                aMenuManageItems.push({
-                    id: aItem.id ? aItem.id : aItem.name,
-                    link: '/' + aItem.link,
-                    title: aItem.title,
-                })
-
+                
                 return false // Include this item in the new array
+            }
+        })
+    } else {
+        propsCopy.items = propsCopy.items.filter((aItem) => {
+            if (aItem.name != props.uri) {
+                return true // Exclude this item from the new array
+            } else {
+                return false // Include this item in the new array
+            }
+        })
+    }
+
+    
+    propsCopy.items = propsCopy.items.map((aItem) => {
+        if (
+            aItem.name.includes('delete-') || 
+            aItem.name.includes('edit-') || 
+            aItem.name?.includes('join-') ||
+            aItem.name?.includes('-pricing') ||
+            aItem.name?.includes('-sessions') ||
+            aItem.name?.includes('-questionnaire')
+        ) {
+            return { ...aItem, noAction: true };
+        }
+        return aItem;
+    });
+
+    return (
+        <Menu
+            {...propsCopy}
+            displayType="button"
+            autoSize={isSplitMenu ? false : props.autoSize ?? true}
+            containerClasses={props.containerClasses}
+            params={{
+                showVertical:props?.params?.showVertical ?? false,
+                show_action: true,
+                show_counter: true,
+                show_combined: true,
+                button_variant: 'default',
+                button_size: size,
+                button_rounded: false,
+                button_full_width: props?.params.button_full_width ?? false,
+                className: ' gap-x-2 justify-end',
+                isFixedCount: true
+            }}
+        />
+    )
+}
+
+export function CoverMenuMore(props) {
+    let size = props.size || 'base'
+
+   // if (width < LAYOUT_BREAKPOINTS.sm) size = 'base'
+
+    const isSplitMenu = props.isSplitMenu;
+
+    let propsCopy = { ...props } // Create a copy of the array
+
+    if (isSplitMenu) {
+        propsCopy.items = propsCopy.items.filter((aItem) => {
+            if (aItem.persistent) {
+                return false // Exclude this item from the new array
+            } else {
+                
+                return true // Include this item in the new array
             }
         })
     } else {

@@ -18,6 +18,7 @@ import { useCurrentUser } from 'app/context/user'
 import {
     CoverMenuMeta,
     CoverMenu,
+    CoverMenuMore,
     CoverMenuSmall,
 } from 'app/components/nav/menu-cover'
 import { useTranslation } from 'react-i18next'
@@ -25,7 +26,7 @@ import { Platform } from 'react-native'
 import Link from 'app/ui/atoms/link'
 
 const conductorTheme = appSetting('theme', 'conductor')
-
+const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from');
 // Custom back button for cover images with glassy style
 function getCoverBackButton() {
     const isWeb = Platform.OS === 'web'
@@ -70,17 +71,11 @@ export function CoverSmall(props) {
             ? true
             : false
 
-    let styles = {}
-    if (
-        windowWidth > LAYOUT_BREAKPOINTS.lg &&
-        getLayout(currentUser) != 'hor'
-    ) {
-        // styles = { width: 1536 - 20 * 16 }
-    }
+    const isSplitMenu = appSetting('cover', 'split_action_menu') && data.actions_menu.persistent == 0
 
     return (
         <View
-            style={styles}
+
             className={
                 (isUseBg
                     ? ' border-b border-bdrtabbar dark:border-bdrtabbar-d'
@@ -96,9 +91,9 @@ export function CoverSmall(props) {
                     className={`p-[12px] sm:px-[16px] ${conductorTheme.content_max_width} mx-auto w-full flex-row gap-2`}
                 >
                     <Row className=" gap-x-2 items-center justify-between flex-auto">
-                        <View className="flex-auto flex-row gap-x-2 items-center">
+                        <View className={` flex-auto flex-row gap-x-2 items-center`}>
                             {getBackButtonWeb()}
-
+                            <Row className={`${props.context?.current?.id == data.profile.id ? TABLET_MODE_FROM+':hidden':''}`}>
                             {bPerson && (
                                 <Profile
                                     {...data.profile}
@@ -113,9 +108,25 @@ export function CoverSmall(props) {
                                     displayType="unit_wo_image"
                                     displaySize="xl"
                                 /></View>
+                                </Row>
                         </View>
-                        <View className=" w-auto my-auto ">
-                            <CoverMenuSmall {...data.actions_menu} />
+                        <View className=" items-end">
+                            {isSplitMenu ? <Row className='w-full justify-between'>
+
+                                <View className='w-[44px]'>
+                                    <CoverMenuMore
+                                        {...data.actions_menu}
+                                        uri={props?.uri}
+                                        isSplitMenu={false}
+
+                                    />
+                                </View>
+                            </Row> : <CoverMenu
+                                {...data.actions_menu}
+                                uri={props?.uri}
+
+                            />
+                            }
                         </View>
                     </Row>
                 </View>
@@ -280,6 +291,8 @@ export default function (props) {
 
     const isCover = data?.cover?.src
 
+    const isSplitMenu = appSetting('cover', 'split_action_menu') && data.actions_menu.persistent == 0
+
     return (
         <View className=" bg-bgrtabbar dark:bg-bgrtabbar-d border-bdrtabbar dark:border-bdrtabbar-d ">
             <View
@@ -291,11 +304,11 @@ export default function (props) {
                 {mode != 'min' ? (
                     <View
                         className={`duration-300 bg-primary-200 dark:bg-primary-950 w-full max-w-[1440px] mx-auto xl:rounded-b-xl overflow-hidden ${isCover
-                                ? ` h-[30vh] sm:${appSetting(
-                                    'cover',
-                                    'aspect_ratio'
-                                )}`
-                                : 'pt-16'
+                            ? ` h-[30vh] sm:${appSetting(
+                                'cover',
+                                'aspect_ratio'
+                            )}`
+                            : 'pt-16'
                             }`}
                     >
                         {isCover && (
@@ -366,7 +379,7 @@ export default function (props) {
                                 <Row className="flex-auto flex-wrap gap-y-4 gap-x-0">
                                     <Row className=" gap-x-2 flex-auto ">
                                         <Text
-                                            className="tracking-tight text-3xl sm:text-4xl font-bold text-neutral-900 dark:text-neutral-50"
+                                            className={`${props.context?.current?.id == data.profile.id ? TABLET_MODE_FROM+':hidden':''} tracking-tight text-3xl sm:text-4xl font-bold text-neutral-900 dark:text-neutral-50`}
                                             numberOfLines={2}
                                         >
                                             {data.profile.display_name}
@@ -375,10 +388,27 @@ export default function (props) {
                                     </Row>
                                     <CoverMenuMeta {...data.meta_menu} />
                                 </Row>
-                                <CoverMenu
+                                {isSplitMenu ? <Row className='w-full justify-between'>
+                                    <CoverMenu
+                                        {...data.actions_menu}
+                                        uri={props?.uri}
+                                        isSplitMenu={isSplitMenu}
+
+                                    />
+                                    <View className='w-[44px]'>
+                                        <CoverMenuMore
+                                            {...data.actions_menu}
+                                            uri={props?.uri}
+                                            isSplitMenu={isSplitMenu}
+
+                                        />
+                                    </View>
+                                </Row> : <CoverMenu
                                     {...data.actions_menu}
                                     uri={props?.uri}
+
                                 />
+                                }
                             </Row>
 
                             {!!data.profile.info?.date_start && (

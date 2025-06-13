@@ -57,11 +57,11 @@ export default function PageLayoutProfile({layoutName, data, uri, blocks}) {
         if (isCoverDisabled) {
             return null;
         }
-        return <Cover data={pageData.cover_block} mode={headerSettings.cover} uri={uri} />;
+        return <Cover data={pageData.cover_block} mode={headerSettings.cover} uri={uri} context={pageData.context} />;
     }, [isCoverDisabled, pageData.cover_block, headerSettings.cover, uri]);
 
     const smallHeader = useMemo(() => (
-        isCoverDisabled ? null : <CoverSmall data={pageData.cover_block} />), [isCoverDisabled, pageData.cover_block]);
+        isCoverDisabled ? null : <CoverSmall context={pageData.context}  data={pageData.cover_block} />), [isCoverDisabled, pageData.cover_block]);
 
     const renderedBlocks = useMemo(() => {
         const initialBlocks = blocks || getBlocksFromData(pageData);

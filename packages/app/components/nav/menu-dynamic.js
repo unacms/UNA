@@ -57,7 +57,7 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
 
     }, [isDynamicMenu]);
 
-    let ExMenu = (visibleItemsCount < items.length && isWeb) && (
+    let ExMenu = (visibleItemsCount < items.length) && (
         <DropdownMenu
             onSelect={(oItem, event) => {
                 if (oItem.noAction) {

@@ -13,6 +13,11 @@ import ProfilesList from 'app/ui/molecules/profile_list'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { Button } from 'app/design/controls'
 import Link from 'app/ui/atoms/link'
+import {
+    CoverMenu as CoverMenu2,
+    CoverMenuMore,
+
+} from 'app/components/nav/menu-cover'
 
 function CoverMenu(props) {
 
@@ -158,6 +163,7 @@ export default function ElementCover(props) {
     const data = props.data
 
     const bPerson = props.data.profile.module == 'bx_persons' ? true : false
+    const isSplitMenu = appSetting('cover', 'split_action_menu') && data.actions_menu.persistent == 0
 
     return (
         <View className=" bg-white dark:bg-neutral-900">
@@ -200,9 +206,24 @@ export default function ElementCover(props) {
                     </View>
 
                     <View className="flex-none mt-auto lg:mt-6 max-w-2xl overflow-hidden mb-2">
-                        <ScrollView horizontal={true} className={(data.actions_menu.items.length > (100) ? '' : 'mx-auto md:ml-0') + ''}>
+                        {isSplitMenu? <Row className='w-full justify-between'>
+                                                            <CoverMenu2
+                                                                {...data.actions_menu}
+                                                                uri={props?.uri}
+                                                                isSplitMenu={isSplitMenu}
+                        
+                                                            />
+                                                            <View className=' '>
+                                                                <CoverMenuMore
+                                                                    {...data.actions_menu}
+                                                                    uri={props?.uri}
+                                                                    isSplitMenu={isSplitMenu}
+                        
+                                                                />
+                                                            </View>
+                                                        </Row> : <ScrollView horizontal={true} className={(data.actions_menu.items.length > (100) ? '' : 'mx-auto md:ml-0') + ''}>
                             <CoverMenu {...data.actions_menu} uri={props?.uri} />
-                        </ScrollView>
+                        </ScrollView>}
                     </View>
 
                     {bPerson &&
