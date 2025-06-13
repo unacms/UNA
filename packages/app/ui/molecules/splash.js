@@ -22,6 +22,13 @@ const triggerHaptics = () => {
     }
 }
 
+/**
+ * Renders the login splash screen with adaptive layouts for web and mobile platforms.
+ *
+ * Displays an illustration, splash text, and a login form with options for password recovery and account creation. Layout and styling adjust based on platform and theme. Footer content is included at the bottom of the screen.
+ *
+ * @param {object} props - Component properties, including optional login form data.
+ */
 export default function Splash(props) {
     const router = useRouter();
     const isWeb = Platform.OS == 'web'

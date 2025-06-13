@@ -149,6 +149,13 @@ const metaAdder = (queryProperty, value) => {
     }
 };
 
+/**
+ * Renders the main application layout with responsive design, theme management, and dynamic metadata.
+ *
+ * Applies theme attributes and background styles based on user and system preferences. Registers service workers, manages sticky positioning for certain elements, and updates document metadata such as title and Open Graph tags. Integrates with OneSignal for push notifications and handles storage clearing on page unload. Dynamically determines and renders the appropriate layout structure based on user state, route, and viewport width.
+ *
+ * @returns {JSX.Element} The rendered layout component.
+ */
 export default function Layout(props) {
 
     const { currentUser, setCurrentUser } = useCurrentUser();
