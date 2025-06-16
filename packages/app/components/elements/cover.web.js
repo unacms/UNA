@@ -79,7 +79,7 @@ export function CoverSmall(props) {
             className={
                 (isUseBg
                     ? ' border-b border-bdrtabbar dark:border-bdrtabbar-d'
-                    : ' bg-bgrtabbar dark:bg-bgrtabbar-d ') + ' w-full '
+                    : ' lalala ') + ' w-full '
             }
         >
             <View
@@ -88,12 +88,12 @@ export function CoverSmall(props) {
                 }
             >
                 <View
-                    className={`p-[12px] sm:px-[16px] ${conductorTheme.content_max_width} mx-auto w-full flex-row gap-2`}
+                    className={`p-[12px] lg:px-[16px] ${conductorTheme.content_max_width} mx-auto w-full flex-row gap-2`}
                 >
                     <Row className=" gap-x-2 items-center justify-between flex-auto">
-                        <View className={` flex-auto flex-row gap-x-2 items-center`}>
+                        <View className={` flex-auto flex-row gap-x-[8px] items-center`}>
                             {getBackButtonWeb()}
-                            <Row className={`${props.context?.current?.id == data.profile.id ? TABLET_MODE_FROM+':hidden':''}`}>
+                            <Row className={`${props.context?.current?.id == data.profile.id ? TABLET_MODE_FROM+':flex gap-x-[12px]':''}`}>
                             {bPerson && (
                                 <Profile
                                     {...data.profile}
@@ -102,12 +102,11 @@ export function CoverSmall(props) {
                                 />
                             )}
 
-                            <View className="flex-auto p-[4px] hover:bg-bgritem dark:hover:bg-bgritem-d rounded-[11px] h-[44px]">
                                 <Profile
                                     {...data.profile}
                                     displayType="unit_wo_image"
                                     displaySize="xl"
-                                /></View>
+                                />
                                 </Row>
                         </View>
                         <View className=" items-end">
@@ -294,7 +293,7 @@ export default function (props) {
     const isSplitMenu = appSetting('cover', 'split_action_menu') && data.actions_menu.persistent == 0
 
     return (
-        <View className=" bg-bgrtabbar dark:bg-bgrtabbar-d border-bdrtabbar dark:border-bdrtabbar-d ">
+        <View className=" bg-bgrtabbar dark:bg-bgrtabbar-d backdrop-blur-lg ">
             <View
                 className={`w-full mx-auto ${appSetting(
                     'layout',
@@ -379,7 +378,7 @@ export default function (props) {
                                 <Row className="flex-auto flex-wrap gap-y-4 gap-x-0">
                                     <Row className=" gap-x-2 flex-auto ">
                                         <Text
-                                            className={`${props.context?.current?.id == data.profile.id ? TABLET_MODE_FROM+':hidden':''} tracking-tight text-3xl sm:text-4xl font-bold text-neutral-900 dark:text-neutral-50`}
+                                            className={` tracking-tight text-3xl sm:text-4xl font-bold text-neutral-900 dark:text-neutral-50`}
                                             numberOfLines={2}
                                         >
                                             {data.profile.display_name}

@@ -12,7 +12,7 @@ export function ParseHtmlClasses(className, tag) {
 export function ProfileDisplayNameLink(title, url, href, fontSize, actions) {
     return (
         <Row className='items-center'>
-            <Text className={`text-neutral-800 dark:text-neutral-200 font-bold tracking-tight truncate ${fontSize} ${url ? 'hover:text-linkhover' : ''}>`}>
+            <Text className="text-neutral-800 dark:text-neutral-200 font-semibold  tracking-tight truncate text-lg">
                 {title}
             </Text>
             {actions}

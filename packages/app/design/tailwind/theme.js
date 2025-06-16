@@ -124,12 +124,12 @@ const colors = {
        
     },
     bgrtabbar: {
-        DEFAULT: 'rgba(255,255,255,1)',
-        d: 'rgba(15,25,40,1)',
+        DEFAULT: 'rgba(255,255,255,0.65)',
+        d: 'rgba(31,41,55,0.65)',
     },
     bdrtabbar: {
-        DEFAULT: 'rgba(229,231,235,1)',
-        d: 'rgba(0,0,0,1)',
+        DEFAULT: 'rgba(75,85,100,0.10)',
+        d: 'rgba(75,85,100,0.10)',
     },
     bgritem: {
         DEFAULT: 'rgba(110,115,130,0.15)',

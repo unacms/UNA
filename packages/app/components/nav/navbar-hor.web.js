@@ -43,7 +43,7 @@ const HeaderLine = memo(
             ).length > 0
 
         return (
-            <View className=" flex-row xl:w-[360px] gap-x-[12px] px-[12px] items-center ">
+            <View className=" flex-row xl:w-[360px] gap-x-[8px] px-[8px] items-center ">
                 
                 {headerSettings.menu && isDrawer && (
                     <View className="lg:hidden pr-[8px] ">
