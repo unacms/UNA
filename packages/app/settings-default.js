@@ -99,7 +99,7 @@ export  const settingsDefault = {
         default_item: ''
     },
     cover: {
-        use_background: false, //appSetting('layout', 'use_background')
+        use_background: true, //appSetting('layout', 'use_background')
         aspect_ratio: 'aspect-4/1', //appSetting('layout', 'cover_aspect')
         allow_edit: true, //appSetting('layout', 'allow_edit_covers')
         fixed: false, //appSetting('layout', 'fixed_cover')
@@ -902,7 +902,7 @@ export  const settingsDefault = {
                 padding: 'h-[36px] min-w-[36px] px-[8px]',
                 padding_icon_only: 'h-[36px] w-[36px] px-[8px]',
                 padding_with_title: 'h-[36px] px-[8px]',
-                icon_container: 'h-[20px] w-[20px] flex items-center justify-center',
+                icon_container: ' h-[20px] w-[20px] flex items-center justify-center',
                 title_container: 'px-[4px] native:text-[14px]',
                 icon_size: 20,
                 icon_margin: 'mx-[4px]', // conditional margin for icon container when title is present
@@ -913,7 +913,7 @@ export  const settingsDefault = {
                 padding: 'h-[44px] min-w-[44px] px-[10px]',
                 padding_icon_only: 'h-[44px] w-[44px] px-[10px]',
                 padding_with_title: 'h-[44px] px-[10px]',
-                icon_container: 'h-[24px] w-[24px] flex items-center justify-center',
+                icon_container: ' h-[24px] w-[24px] flex items-center justify-center',
                 title_container: 'px-[6px] web:text-[16px] native:text-[16px]',
                 icon_size: 24,
                 icon_margin: 'mx-[4px]', // conditional margin for icon container when title is present
@@ -924,7 +924,7 @@ export  const settingsDefault = {
                 padding: 'h-[56px] min-w-[56px] px-[14px]',
                 padding_icon_only: 'h-[56px] w-[56px] px-[14px]',
                 padding_with_title: 'h-[56px] px-[14px]',
-                icon_container: 'h-[28px] w-[28px] flex items-center justify-center',
+                icon_container: ' h-[28px] w-[28px] flex items-center justify-center',
                 title_container: 'px-[12px] web:text-[18px] native:text-[18px] leading-[28px]',
                 icon_size: 28,
                 icon_margin: 'mx-[4px]', // conditional margin for icon container when title is present
@@ -982,7 +982,7 @@ export  const settingsDefault = {
             'u-btn-outline-trans': '  web:duration-300',
 
             'u-btn-glassy-cnt':
-                'border border-transparent dark:border-transparent bg-neutral-800/60 backdrop-blur web:hover:bg-neutral-800 active:opacity-70 shadow',
+                'border border-transparent dark:border-transparent bg-neutral-900 backdrop-blur web:hover:bg-neutral-800 active:opacity-70 shadow',
             'u-btn-glassy-text':
                 'font-medium text-neutral-50',
             'u-btn-glassy-trans': '  web:duration-300',

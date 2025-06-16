@@ -175,17 +175,17 @@ export default function (props) {
                                         <View className="p-[6px]">
                                             {bSearch && <Search />}
                                         </View>
-                                        {isCustomHeaderElement && <View className="p-[6px]"><HeaderElement/></View>}
-                                        <View className="hidden sm:block p-[6px]">
+                                        {isCustomHeaderElement && <View className="p-[4px]"><HeaderElement/></View>}
+                                        <View className="hidden sm:block p-[4px]">
                                             <MenuLauncher />
                                         </View>
                                         <View className="p-[6px]">
                                             <MenuAdd />
                                         </View>
-                                        <View className="hidden sm:block p-[6px]">
+                                        <View className="hidden sm:block p-[4px]">
                                             {bNotifs && <NotificationButton />}
                                         </View>
-                                        <View className="hidden sm:block p-[6px]">
+                                        <View className="hidden sm:block p-[4px]">
                                             {bMessenger && (
                                                 <Link
                                                     href={appSetting(
@@ -214,23 +214,23 @@ export default function (props) {
                                             )}
                                         </View>
 
-                                        <View className="hidden sm:block p-[6px]">
+                                        <View className="hidden sm:block p-[4px]">
                                             <MenuAccount />
                                         </View>                                   
                                 </Row>
                             )}
                             {!currentUser && (
                                 <Row className="justify-end">
-                                    <View className="p-[6px]">
+                                    <View className="p-[4px]">
                                         <MenuLauncher />
                                     </View>
                                     {bSearch && (
-                                        <View className="p-[6px]">
+                                        <View className="p-[4px]">
                                             <Search />
                                         </View>
                                     )}
 
-                                    <View className="p-[6px]">
+                                    <View className="p-[4px]">
                                     <Link href="/login">
                                         <ButtonRef
                                             variant="secondary"

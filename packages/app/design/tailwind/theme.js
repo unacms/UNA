@@ -87,8 +87,6 @@ const colors = {
         d: 'rgba(255,255,255,0.05)',
         dh: 'rgba(255,255,255,0.1)',
     },
-   
-
 
     bgrinput: {
         DEFAULT: 'rgba(245,250,255,1)',
@@ -132,10 +130,10 @@ const colors = {
         d: 'rgba(75,85,100,0.10)',
     },
     bgritem: {
-        DEFAULT: 'rgba(110,115,130,0.15)',
-        h: 'rgba(110,115,130,0.25)',
-        d: 'rgba(30,40,55,0.8)',
-        dh: 'rgba(30,40,55,1)',
+        DEFAULT: 'rgba(229,231,235,1)',
+        h: 'rgba(209,213,219,1)',
+        d: 'rgba(31,41,55,1)',
+        dh: 'rgba(55,65,81,1)',
 
     },
     bgritemprimary: {

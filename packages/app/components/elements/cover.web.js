@@ -74,21 +74,14 @@ export function CoverSmall(props) {
     const isSplitMenu = appSetting('cover', 'split_action_menu') && data.actions_menu.persistent == 0
 
     return (
-        <View
-
-            className={
-                (isUseBg
-                    ? ' border-b border-bdrtabbar dark:border-bdrtabbar-d'
-                    : ' lalala ') + ' w-full '
-            }
-        >
+        <View  className="w-full" >
             <View
                 className={
                     appSetting('layout', 'max_width') + ' w-full mx-auto'
                 }
             >
-                <View
-                    className={`p-[12px] lg:px-[16px] ${conductorTheme.content_max_width} mx-auto w-full flex-row gap-2`}
+                <View 
+                    className={`px-[8px] py-[12px] lg:px-[16px] ${conductorTheme.content_max_width} mx-auto w-full flex-row gap-2`}
                 >
                     <Row className=" gap-x-2 items-center justify-between flex-auto">
                         <View className={` flex-auto flex-row gap-x-[8px] items-center`}>
@@ -294,15 +287,9 @@ export default function (props) {
 
     return (
         <View className=" bg-bgrtabbar dark:bg-bgrtabbar-d backdrop-blur-lg ">
-            <View
-                className={`w-full mx-auto ${appSetting(
-                    'layout',
-                    'max_width'
-                )}`}
-            >
+            <View className={`w-full mx-auto ${appSetting('layout','max_width')}`}>
                 {mode != 'min' ? (
-                    <View
-                        className={`duration-300 bg-primary-200 dark:bg-primary-950 w-full max-w-[1440px] mx-auto xl:rounded-b-xl overflow-hidden ${isCover
+                    <View className={`duration-300 bg-primary-200 dark:bg-primary-950 w-full max-w-[1440px] mx-auto xl:rounded-b-xl overflow-hidden ${isCover
                             ? ` h-[30vh] sm:${appSetting(
                                 'cover',
                                 'aspect_ratio'
@@ -319,7 +306,7 @@ export default function (props) {
                                 src={coverUrl}
                             />
                         )}
-                        <Row className="p-[8px] sm:p-[12px] justify-end gap-x-2">
+                        <Row className="p-[8px] sm:px-[16px] justify-end gap-x-[8px]">
                             {isAllowSwitch && (
                                 <Button
                                     rounded
@@ -345,23 +332,22 @@ export default function (props) {
                 ) : (
                     <></>
                 )}
-                <View className="p-[8px] sm:p-[12px] lg:p-[16px]">
                     <View
-                        className={` flex-col lg:flex-row gap-y-4  ${conductorTheme.content_max_width} mx-auto w-full items-start items-stretch`}
+                        className={` flex-col lg:flex-row gap-y-4 lg:pl-[152px]  mx-auto w-full items-start items-stretch max-w-7xl `}
                     >
                         {bPerson && (
-                            <View className="w-full h-24 sm:w-52 relative">
-                                <View className=" flex-auto absolute w-min rounded-full w-min p-[8px] z-50 -bottom-4 flex-none bg-bgrcard dark:bg-bgrcard-d ">
+                            
+                                <View className=" flex-auto absolute left-[8px] -top-[72px] lg:-top-[32px] z-50 w-min rounded-full w-min p-[8px] z-50 flex-none bg-white dark:bg-neutral-900 ">
                                     <Profile
                                         {...data.profile}
                                         displayType="unit_wo_info"
-                                        displaySize={'4xl'}
+                                        displaySize={'3xl'}
                                     />
                                     {bAllowEdit && (
-                                        <View className=" p-1 bg-bgrcard dark:bg-bgrcard-d rounded-full absolute bottom-2 right-2">
+                                        <View className=" p-1 bg-white dark:bg-neutral-900 rounded-full absolute bottom-[8px] right-[4px]">
                                             <Button
                                                 rounded
-                                                size="base"
+                                                size="sm"
                                                 variant="default"
                                                 startDecorator="Camera"
                                                 onPress={() =>
@@ -371,14 +357,14 @@ export default function (props) {
                                         </View>
                                     )}
                                 </View>
-                            </View>
+                            
                         )}
-                        <View className=" flex-auto flex-col gap-y-4 px-[4px]  ">
-                            <Row className="items-center gap-x-4 gap-y-4 justify-between flex-wrap w-full">
-                                <Row className="flex-auto flex-wrap gap-y-4 gap-x-0">
-                                    <Row className=" gap-x-2 flex-auto ">
+                        
+                            <View className="flex-auto lg:flex-row flex-col-reverse gap-x-[12px] gap-y-[12px] py-[12px] px-[16px] ">
+                                <View className="flex-col flex-auto gap-y-[12px] ">
+                                    <Row className=" gap-x-2 flex-auto items-center">
                                         <Text
-                                            className={` tracking-tight text-3xl sm:text-4xl font-bold text-neutral-900 dark:text-neutral-50`}
+                                            className={` tracking-tight text-3xl sm:text-4xl font-bold leading-[44px] text-neutral-900 dark:text-neutral-50`}
                                             numberOfLines={2}
                                         >
                                             {data.profile.display_name}
@@ -386,8 +372,17 @@ export default function (props) {
                                         <Badges badges={data.badges} />
                                     </Row>
                                     <CoverMenuMeta {...data.meta_menu} />
-                                </Row>
-                                {isSplitMenu ? <Row className='w-full justify-between'>
+                                    {!!data.profile.info?.date_start && (
+                                <Text className="  text-neutral-600 dark:text-neutral-400 text-xs uppercase font-semibold tracking-tight overflow-hidden rounded-md flex-none items-center">
+                                    {formatDateInterval(
+                                        data.profile.info?.date_start,
+                                        data.profile.info?.date_end,
+                                        t
+                                    )}
+                                </Text>
+                            )}
+                                </View>
+                                {isSplitMenu ? <View className='ml-auto flex-row flex-wrap justify-end flex-auto gap-x-[8px] gap-y-[8px] items-end'>
                                     <CoverMenu
                                         {...data.actions_menu}
                                         uri={props?.uri}
@@ -402,26 +397,17 @@ export default function (props) {
 
                                         />
                                     </View>
-                                </Row> : <CoverMenu
+                                </View> : <CoverMenu
                                     {...data.actions_menu}
                                     uri={props?.uri}
 
                                 />
                                 }
-                            </Row>
+                            </View>
 
-                            {!!data.profile.info?.date_start && (
-                                <Text className="  text-neutral-600 dark:text-neutral-400 text-xs uppercase font-semibold tracking-tight overflow-hidden rounded-md flex-none items-center">
-                                    {formatDateInterval(
-                                        data.profile.info?.date_start,
-                                        data.profile.info?.date_end,
-                                        t
-                                    )}
-                                </Text>
-                            )}
-                        </View>
+                           
+                        
                     </View>
-                </View>
             </View>
         </View>
     )

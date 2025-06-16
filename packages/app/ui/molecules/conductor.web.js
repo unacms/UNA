@@ -336,11 +336,12 @@ const HeaderContainer = ({ tabBarObj, tabBarObjSmall, currentUser, smallHeader, 
                     <View style={[{ width: '100%', overflow: 'hidden' }]}>
                         <View>
                             {header}
+                            {tabBarObj}
                         </View>
                     </View>
                 </View>
                 <View >
-                    {tabBarObj}
+                   
                 </View>
             </Animated.View>
         </>

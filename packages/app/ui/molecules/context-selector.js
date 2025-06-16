@@ -14,7 +14,7 @@ import { useState } from 'react';
 function renderListItem(props, isActive, onItemClick) {
     return (
         <Link key={props.url} className="w-full" href={props.url} onPress={onItemClick}>
-            <Row className={`w-full px-[8px] py-[6px] gap-x-3 hover:bg-bgritem align-middle dark:hover:bg-bgritem rounded-xl items-center ${isActive ? ' bg-bgritemprimary dark:bg-bgritemprimary-d rounded-xl' : ''}`}>
+            <Row className={`w-full px-[8px] py-[6px] gap-x-[12px] hover:bg-bgritem align-middle dark:hover:bg-bgritem-d rounded-xl items-center ${isActive ? ' bg-bgritemprimary dark:bg-bgritemprimary-d rounded-xl' : ''}`}>
                 <View className={`items-center w-[44px] h-[44px]  justify-center bg-bgritem border border-bdritem dark:bg-bgritem-d ${isActive ? 'border-primary-100 dark:border-primary-950' : ''} dark:border-bdritem-d rounded-full`}>
                     <Profile {...props} displayType="unit_wo_info" displaySize="base" />
                 </View>
@@ -27,7 +27,7 @@ function renderListItem(props, isActive, onItemClick) {
 function renderLogoListItem(isActive, onItemClick) {
     return (
         <Link key="global-context" className="w-full" href="/" onPress={onItemClick}>
-            <Row className={`w-full px-[8px] py-[6px] text-center gap-x-[12px] hover:bg-bgritem align-middle dark:hover:bg-bgritem rounded-xl items-center ${isActive ? 'bg-bgritemprimary dark:bg-bgritemprimary-d  rounded-xl' : ''}`}>
+            <Row className={`w-full px-[8px] py-[6px] text-center gap-x-[12px] hover:bg-bgritem align-middle dark:hover:bg-bgritem-d rounded-xl items-center ${isActive ? 'bg-bgritemprimary dark:bg-bgritemprimary-d  rounded-xl' : ''}`}>
                 <View className={`items-center justify-center rounded-full text-neutral-800 dark:text-neutral-200`}>{appStatic('logo_mark')}</View>
                 <Text className="text-lg my-auto font-semibold text-neutral-800 dark:text-neutral-200">{appStatic('logo_text')}</Text>
             </Row>
@@ -84,7 +84,7 @@ export default function ContextSelector({ data, url }) {
                     <View className="items-center justify-center text-neutral-800 dark:text-neutral-200">
                         {contextRoot.image}
                     </View>
-                    <Text className="text-lg whitespace-nowrap font-semibold text-neutral-800 dark:text-neutral-200 my-auto truncate text-center items-center align-middle justify-center">{contextRoot.name}</Text>
+                    <Text className="text-lg whitespace-nowrap font-semibold tracking-tight text-neutral-800 dark:text-neutral-200 my-auto truncate text-center items-center align-middle justify-center">{contextRoot.name}</Text>
                 </View>
             </Link>
                 <DropdownPopup
@@ -105,7 +105,7 @@ export default function ContextSelector({ data, url }) {
                         {appSetting('context_selector', 'show_logo') && renderLogoListItem(!data.current?.id, handleItemClick)}
                         {data.list.map(item => renderListItem(item, item.id === data.current?.id, handleItemClick))}
                         {!!data.create && <Link className="w-full" href={data.create.url} onPress={handleItemClick}>
-                            <Row className="w-full px-[8px] py-[6px] gap-x-3 items-center hover:bg-bgritem dark:hover:bg-bgritem-d rounded-xl">
+                            <Row className="w-full px-[8px] py-[6px] gap-x-[12px] items-center hover:bg-bgritem dark:hover:bg-bgritem-d rounded-xl">
                                 <View className="items-center w-[44px] h-[44px] text-neutral-800 dark:text-neutral-200 justify-center bg-bgritem border border-bdritem dark:bg-bgritem-d dark:border-bdritem-d rounded-full">
                                     <Icon icon="Plus" />
                                 </View>
@@ -114,7 +114,7 @@ export default function ContextSelector({ data, url }) {
                         </Link>}
                         {(data.links && Array.isArray(data.links)) && data.links.map(item =>
                             <Link key={item.url} className="w-full" href={item.url} onPress={handleItemClick}>
-                                <Row className={`w-full px-[8px] py-[6px] gap-x-3 items-center hover:bg-bgritem dark:hover:bg-bgritem-d ${!data.current?.id && item.url == appSetting('context_selector', 'default_item') ? 'bg-bgritemprimary dark:bg-bgritemprimary-d  rounded-xl' : ''}`}>
+                                <Row className={`w-full px-[8px]  gap-x-[12px] items-center rounded-xl py-[6px] hover:bg-bgritem dark:hover:bg-bgritem-d ${!data.current?.id && item.url == appSetting('context_selector', 'default_item') ? 'bg-bgritemprimary dark:bg-bgritemprimary-d  rounded-xl' : ''}`}>
                                     <View className="items-center w-[44px] h-[44px] text-neutral-800 dark:text-neutral-200 justify-center bg-bgritem border border-bdritem dark:bg-bgritem-d dark:border-bdritem-d rounded-full">
                                         {item.icon && <Icon icon={item.icon} />}
                                     </View>
