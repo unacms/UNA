@@ -87,7 +87,7 @@ export  const settingsDefault = {
         onesignal_request_on_load: true,
         check_version: 'optional', // variants: [no, required, optional]
         collapsible_header: true,
-        scroll_to_top_button: false,
+        scroll_to_top_button: true,
     },
     async_workers: {
         list: ['CounterChecker'], //['EventChecker'],//NotifChecker OLD appSetting('layout', 'async_workers')
@@ -597,7 +597,7 @@ export  const settingsDefault = {
             {
                 key: '/tab1',
                 title: 'Friends',
-                url: '/friends',
+                url: '/posts-home',
                 icon: 'UsersRound',
             },
             {

@@ -61,10 +61,7 @@ function getCoverBackButton() {
 
 export function CoverSmall(props) {
     const data = props.data
-    const { currentUser, setCurrentUser } = useCurrentUser()
     const isUseBg = appSetting('cover', 'use_background')
-    const windowDimen = useWindowDimensions()
-    const windowWidth = windowDimen.width
     const bPerson =
         props.data.profile.module == 'bx_persons' ||
             appSetting('cover', 'show_pic_by_module', props.data?.profile?.module)
@@ -372,6 +369,7 @@ export default function (props) {
                                         <Badges badges={data.badges} />
                                     </Row>
                                     <CoverMenuMeta {...data.meta_menu} />
+
                                     {!!data.profile.info?.date_start && (
                                 <Text className="  text-neutral-600 dark:text-neutral-400 text-xs uppercase font-semibold tracking-tight overflow-hidden rounded-md flex-none items-center">
                                     {formatDateInterval(
@@ -384,12 +382,13 @@ export default function (props) {
                                 </View>
                                 {isSplitMenu ? <View className='ml-auto flex-row flex-wrap justify-end flex-auto gap-x-[8px] gap-y-[8px] items-end'>
                                     <CoverMenu
+
                                         {...data.actions_menu}
                                         uri={props?.uri}
                                         isSplitMenu={isSplitMenu}
 
-                                    />
-                                    <View className='w-[44px]'>
+                                    /></View>
+                                    <View className='w-[44px] items-end '>
                                         <CoverMenuMore
                                             {...data.actions_menu}
                                             uri={props?.uri}

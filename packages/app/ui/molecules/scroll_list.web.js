@@ -132,12 +132,15 @@ export default function ScrollList({
     };
     /* ANIMATION */
 
+     const isSimplePage = ['home', 'login', 'create-account'].includes(pageData?.uri) && !currentUser;
+     console.log("isSimplePage", isSimplePage)
     const baseProps = {
-        ...((useCustomScrollHandler && isCollapsibleHeader) && { onScroll }),
+        ...((useCustomScrollHandler && isCollapsibleHeader && !isSimplePage) && { onScroll }),
     };
 
     const enhanced = React.cloneElement(content, baseProps);
-    if (!currentUser && !subHeaderComponent && !['home', 'login', 'create-account'].includes(pageData.uri)) {
+   
+    if (!subHeaderComponent && !isSimplePage) {
         let textName = pageData?.name;
         if (isMenuNameAsTitle) {
             const menuSettings = getMenuSettings(pageData?.menu?.object, pageData?.menu?.config);

@@ -4,27 +4,20 @@ import { View } from 'app/design/view'
 import Animated from 'react-native-reanimated';
 import ScrollList from 'app/ui/molecules/scroll_list'
 import { useRef } from 'react';
-import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
+
 export default function UniList(props) {
     const uniRef = useRef();
     const { preloadComponent, contentContainerStyle, scrollProps, data, index, mode, renderItem, onEndReached, maxToRenderPerBatch, initialNumToRender, ListFooterComponent, refer, onScrollToIndex, numColumns, keyExtractor, unit, refreshing, onRefresh, height, ...rest } = props
-    const unitSizeMap = {
-        notifications: 40,
-        feed: 200,
-    };
-
-    const estimatedItemSize = unitSizeMap[unit] || 400;
+    
 
     const filteredData = data.filter((v, i, a) => a.findIndex(t => t.id === v.id) === i);
 
-    //if (numColumns > 1)
-    //    mode = '';
 
     if (mode == 'simple') {
         const content = preloadComponent ? <View className="w-full">
             <View className={`w-full `} style={{ height: scrollProps?.headerHeight }}></View>
             {preloadComponent}
-        </View> : <KbAvoidingView offset={1}><Animated.FlatList
+        </View> : <Animated.FlatList
             contentContainerStyle={{
                 ...(scrollProps?.headerHeight && !scrollProps?.inverted ? { paddingTop: scrollProps.headerHeight } : {}),
                 ...(scrollProps?.headerHeight && scrollProps?.inverted ? { paddingBottom: scrollProps.headerHeight } : {}),
@@ -50,7 +43,8 @@ export default function UniList(props) {
                     <RefreshControl progressViewOffset={100} size={'large'} refreshing={refreshing} onRefresh={onRefresh} />
                 ) : null
             }
-        /></KbAvoidingView>
+        />
+
         if (!scrollProps)
             return content;
         return (
@@ -65,25 +59,5 @@ export default function UniList(props) {
         )
     }
 
-    /*return (
-        <FlashList
-            ref={refer}
-            contentContainerStyle={contentContainerStyle}
-            keyExtractor={item => item.id}
-            onEndReachedThreshold={1}
-            numColumns={numColumns}
-            estimatedItemSize={estimatedItemSize}
-            data={filteredData}
-            renderItem={renderItem}
-            onEndReached={onEndReached}
-            ListFooterComponent={ListFooterComponent}
-            {...rest}
-            refreshControl={
-                props.url ? (
-                    <RefreshControl progressViewOffset={100} size={'large'} refreshing={refreshing} onRefresh={onRefresh} />
-                ) : null
-            }
-        />
-    )*/
-    // }
+
 }

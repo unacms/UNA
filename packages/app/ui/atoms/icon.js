@@ -12,8 +12,7 @@ export function Icon(props) {
     const { colors } = Theme();
     let isXmlSvg = false;
 
-    if (!icon)
-        return null;
+    
     
 
     if (typeof icon === 'string') {
@@ -28,6 +27,10 @@ export function Icon(props) {
     const InlineIcon = SvgIcons[icon];
 
     const IconComponent = useMemo(() => IconSet[processedIcon], [processedIcon]);
+
+    if (!icon)
+        return null;
+
     if (InlineIcon)
         return <InlineIcon width={props.width || size} height={props.height || size} color={color} />;
 
