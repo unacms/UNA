@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useEffect, useRef, useMemo, useContext, memo } from "react";
 import { Text } from 'app/design/typography';
-import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "react-native-reanimated";
+import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing, withSpring } from "react-native-reanimated";
 import { View, Row, Pressable } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
 import { useWindowDimensions } from 'react-native';
@@ -300,10 +300,18 @@ const HeaderContainer = ({ tabBarObj, tabBarObjSmall, currentUser, smallHeader, 
     }, [scrollValue]);
 
     const animatedStyle6 = useAnimatedStyle(() => {
-        // const opacityValue = withTiming(1 - scrollValue.value, { duration: d }); // Opacity animation removed
+        const isVisible = 1 - scrollValue.value;
+
+        const translateY = (isVisible ? 0 : -50, {
+            damping: 9,
+            stiffness: 70,
+        });
+
+        
+
         return {
-            // opacity: opacityValue, // Opacity animation removed
-            zIndex: scrollValue.value ? 40 : 45, // zIndex is higher when small header is visible (scrollValue is 0)
+            transform: [{ translateY }],
+            zIndex: scrollValue.value ? 40 : 45,
         };
     }, [scrollValue]);
 
@@ -318,10 +326,7 @@ const HeaderContainer = ({ tabBarObj, tabBarObjSmall, currentUser, smallHeader, 
     return (
         <>
             <Animated.View style={[{ width: cntWidth + 'px', position: 'fixed', overflow: 'hidden', zIndex: 40, top: windowWidth >= LAYOUT_BREAKPOINTS.lg ? tOffset : 0 }, animatedStyle6]}>
-                <View className={`w-full transition-all   web:duration-300 ease-in-out will-change-transform ${isPageScrolled
-                        ? 'bg-bgrnavbar/80 dark:bg-bgrnavbar-d/80 backdrop-blur-lg shadow-[0_1px_0_rgba(0,0,0,0.05)] dark:shadow-[0_1px_0_rgba(0,0,0,0.05)]'
-                        : 'bg-transparent dark:bg-transparent shadow-none'
-                    }`}>
+                <View className="w-full bg-bgrtabbar dark:bg-bgrtabbar-d backdrop-blur-lg ">
                     {smallHeader}
                     {tabBarObjSmall}
                 </View>
@@ -331,11 +336,12 @@ const HeaderContainer = ({ tabBarObj, tabBarObjSmall, currentUser, smallHeader, 
                     <View style={[{ width: '100%', overflow: 'hidden' }]}>
                         <View>
                             {header}
+                            {tabBarObj}
                         </View>
                     </View>
                 </View>
                 <View >
-                    {tabBarObj}
+                   
                 </View>
             </Animated.View>
         </>
