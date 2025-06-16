@@ -13,7 +13,8 @@ import { appSetting } from 'app/lib/util'
 import { Button } from 'app/design/controls';
 import { Header } from 'app/ui/molecules/scroll_list_header';
 import { useEffect } from 'react';
-// TODO OPTIMIZATION
+import { useCurrentUser } from 'app/context/user'
+
 export default function ScrollList({ 
     content, 
     index,
@@ -30,7 +31,7 @@ export default function ScrollList({
     isNoContainer = false,
     isProfileHeader = false,
 }) {
-
+    const { currentUser, setCurrentUser } = useCurrentUser();
     const isCollapsibleHeader = appSetting('native', 'collapsible_header');
     const isShowScrollToTopButton = appSetting('native', 'scroll_to_top_button');
     const transparencyOffset = 200
@@ -74,6 +75,7 @@ export default function ScrollList({
     
 
     const onScroll = useAnimatedScrollHandler((event) => {
+
         const currentY = Math.round(event.contentOffset.y / 10) * 10;
         if (currentY === scrollY.value) return;
         scrollDirection.value = currentY > scrollY.value ? 'down' : 'up';
@@ -87,7 +89,7 @@ export default function ScrollList({
     /* ANIMATION */
 
     // Don't add scroll handlers for simple pages like splash, login, create-account
-    const isSimplePage = ['home', 'login', 'create-account'].includes(pageData?.uri);
+    const isSimplePage = ['home', 'login', 'create-account'].includes(pageData?.uri) && !currentUser;
     
     const baseProps = {
         ...(contentType !== 'FlatList' && { paddingTop: headerHeight }),

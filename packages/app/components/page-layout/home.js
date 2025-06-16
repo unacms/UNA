@@ -68,7 +68,7 @@ export default function (props) {
             refer={refer}
             content = {content}
             pageData = {props.data}
-            headerHeight = {isWeb? 0 : 70}
+            headerHeight = {isWeb ? 0 : 70}
             contentType="ScrollList"
         />)
     }

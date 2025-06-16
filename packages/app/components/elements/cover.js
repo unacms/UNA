@@ -82,35 +82,35 @@ function CoverMenu(props) {
 const BackButton = ({ isPerson }) => {
     const router = useRouter()
     const navigation = useNavigation();
-    
+
     const { colors } = Theme()
 
     const ButtonContent = (
-        <Button 
-            variant="glassy" 
-            size="sm" 
-            rounded={true} 
+        <Button
+            variant="glassy"
+            size="sm"
+            rounded={true}
             startDecorator="ArrowLeft"
-            onPress={() => {goBack(navigation, router)}}
+            onPress={() => { goBack(navigation, router) }}
         />
     );
 
     return isPerson && navigation.getState().index == 0 ? (
         <Link href={appSetting("cover", "back_button_url_for_profile")}>
-            <Button 
-                variant="glassy" 
-                size="sm" 
-                rounded={true} 
+            <Button
+                variant="glassy"
+                size="sm"
+                rounded={true}
                 startDecorator="ArrowLeft"
             />
         </Link>
     ) : (
-        <Button 
-            variant="glassy" 
-            size="sm" 
-            rounded={true} 
+        <Button
+            variant="glassy"
+            size="sm"
+            rounded={true}
             startDecorator="ArrowLeft"
-            onPress={() => {goBack(navigation, router)}}
+            onPress={() => { goBack(navigation, router) }}
         />
     );
 };
@@ -118,9 +118,11 @@ const BackButton = ({ isPerson }) => {
 function CoverMenuMeta(props) {
     return (
         <Menu {...props} displayType="mixed" params={
-            { button_variant: 'text', 
+            {
+                button_variant: 'text',
                 className: ' gap-x-2 h-12 ',
-                button_size: 'sm' }
+                button_size: 'sm'
+            }
         } />
     )
 }
@@ -128,12 +130,11 @@ function CoverMenuMeta(props) {
 export function CoverSmall(props) {
     const data = props.data
     const bPerson = props.data.profile.module == 'bx_persons' ? true : false
+
+    const isSplitMenu = appSetting('cover', 'split_action_menu') && data.actions_menu.persistent == 0
     // 
     return (
-        <Row
-            className=" justify-left items-center pt-0 w-full h-16 bg-primary-200 dark:bg-primary-950"
-        >
-            <View className="absolute h-[64px] w-full">
+        <><View className="absolute h-[64px] w-full">
                 {!!data.cover && (
                     <><Image view="cover"
                         sizes={LAYOUT_BREAKPOINTS.xl}
@@ -143,19 +144,42 @@ export function CoverSmall(props) {
                         </BlurView></>
 
                 )}
-            </View>
-            <BackButton isPerson={bPerson} />
-            <Profile
-                {...data.profile}
-                displayType="unit_wo_info"
-                displaySize="base"
-            />
-            <View className='overflow-hidden text-ellipsis w-3/4 nowrap'>
-                <H1C className="font-bold text-base ml-2 tracking-tight text-white">
+            </View><Row
+            className="px-[12px] items-center justify-between pt-0 w-full h-[64px] gap-x-2"
+        >
+            
+            <View className={` flex-row gap-x-2 items-center`}>
+                <BackButton isPerson={bPerson} />
+                <Profile
+                    {...data.profile}
+                    displayType="unit_wo_info"
+                    displaySize="base"
+                />
+                <View className=' items-center justify-center'>
+                <Text className="font-bold text-lg tracking-tight text-white">
                     {data.profile.display_name}
-                </H1C>
+                </Text>
             </View>
-        </Row>
+            </View>
+            <View className=" ">
+                {isSplitMenu ? <Row className='justify-between'>
+
+                    <View className=' '>
+                        <CoverMenuMore
+                            {...data.actions_menu}
+                            uri={props?.uri}
+                            isSplitMenu={false}
+
+                        />
+                    </View>
+                </Row> : <CoverMenu
+                    {...data.actions_menu}
+                    uri={props?.uri}
+
+                />
+                }
+            </View>
+        </Row></>
     )
 }
 
@@ -199,29 +223,29 @@ export default function ElementCover(props) {
                         </Text>
 
                         <Row className='mb-2'>
-                        <ScrollView horizontal={true} className={(data.actions_menu.items.length > (100) ? '' : 'mx-auto md:ml-0') + ''}>
-                            <CoverMenuMeta {...data.meta_menu} />
+                            <ScrollView horizontal={true} className={(data.actions_menu.items.length > (100) ? '' : 'mx-auto md:ml-0') + ''}>
+                                <CoverMenuMeta {...data.meta_menu} />
                             </ScrollView>
                         </Row>
                     </View>
 
-                    <View className="flex-none mt-auto lg:mt-6 max-w-2xl overflow-hidden mb-2">
-                        {isSplitMenu? <Row className='w-full justify-between'>
-                                                            <CoverMenu2
-                                                                {...data.actions_menu}
-                                                                uri={props?.uri}
-                                                                isSplitMenu={isSplitMenu}
-                        
-                                                            />
-                                                            <View className=' '>
-                                                                <CoverMenuMore
-                                                                    {...data.actions_menu}
-                                                                    uri={props?.uri}
-                                                                    isSplitMenu={isSplitMenu}
-                        
-                                                                />
-                                                            </View>
-                                                        </Row> : <ScrollView horizontal={true} className={(data.actions_menu.items.length > (100) ? '' : 'mx-auto md:ml-0') + ''}>
+                    <View className="flex-none mt-auto lg:mt-6 max-w-2xl overflow-hidden mb-2 ">
+                        {isSplitMenu ? <Row className='w-full justify-between'>
+                            <CoverMenu2
+                                {...data.actions_menu}
+                                uri={props?.uri}
+                                isSplitMenu={isSplitMenu}
+
+                            />
+                            <View className='items-end flex-auto'>
+                                <CoverMenuMore
+                                    {...data.actions_menu}
+                                    uri={props?.uri}
+                                    isSplitMenu={isSplitMenu}
+
+                                />
+                            </View>
+                        </Row> : <ScrollView horizontal={true} className={(data.actions_menu.items.length > (100) ? '' : 'mx-auto md:ml-0') + ''}>
                             <CoverMenu {...data.actions_menu} uri={props?.uri} />
                         </ScrollView>}
                     </View>

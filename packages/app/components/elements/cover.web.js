@@ -61,10 +61,7 @@ function getCoverBackButton() {
 
 export function CoverSmall(props) {
     const data = props.data
-    const { currentUser, setCurrentUser } = useCurrentUser()
     const isUseBg = appSetting('cover', 'use_background')
-    const windowDimen = useWindowDimensions()
-    const windowWidth = windowDimen.width
     const bPerson =
         props.data.profile.module == 'bx_persons' ||
             appSetting('cover', 'show_pic_by_module', props.data?.profile?.module)
@@ -389,13 +386,13 @@ export default function (props) {
                                     <CoverMenuMeta {...data.meta_menu} />
                                 </Row>
                                 {isSplitMenu ? <Row className='w-full justify-between'>
-                                    <CoverMenu
+                                    <View className='flex-auto items-start'><CoverMenu
                                         {...data.actions_menu}
                                         uri={props?.uri}
                                         isSplitMenu={isSplitMenu}
 
-                                    />
-                                    <View className='w-[44px]'>
+                                    /></View>
+                                    <View className='w-[44px] items-end '>
                                         <CoverMenuMore
                                             {...data.actions_menu}
                                             uri={props?.uri}
