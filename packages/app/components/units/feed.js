@@ -55,7 +55,7 @@ function DefaultUnit(data) {
             >
                 {cmtsData.data}
             </Modal>}
-            <Card rounded=' rounded-none sm:rounded-2xl ' margin='my-[2px] sm:my-[8px] p-0 ' addClassName={' w-full tl-' + data.id} >
+            <Card rounded=' rounded-none sm:rounded-2xl ' margin='mb-[4px] sm:mb-[12px] p-0 ' addClassName={' w-full tl-' + data.id} >
                 <View className="flex-auto flex-row gap-x-[8px] p-[12px] sm:p-4 ">
                     <Author data={data} url={url} t={t} />
                     <View className="flex-none flex-row mb-auto">

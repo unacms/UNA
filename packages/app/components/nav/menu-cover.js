@@ -179,7 +179,7 @@ export function CoverMenuMeta(props) {
             params={{
                 button_variant: 'secondary',
                 button_size: 'sm',
-                className: ' flex-row flex-wrap gap-y-2 gap-x-2 flex-none',//lg:w-full lg:gap-y-2
+                className: ' flex-row flex-wrap gap-y-2 gap-x-2 flex-none p-[12px] sm:px-[16px] min-h-[48px] items-center',//lg:w-full lg:gap-y-2
             }}
         />
     )

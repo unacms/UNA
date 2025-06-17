@@ -293,7 +293,7 @@ export default function (props) {
 
                 
                     
-                    <View className="relative flex-auto mx-auto sm:px-[12px] py-[4px]  max-w-3xl">
+                    <View className="relative flex-auto mx-auto sm:px-[12px] py-[12px]  max-w-3xl">
                             {feedList.map((item, index) => {
                                 if (feedType == item.name) {
                                     return (

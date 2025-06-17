@@ -767,11 +767,11 @@ export  const settingsDefault = {
             bgrtoolbarbutton: 'rgba(33, 37, 41, 0)',
         },
         conductor: {
-            menu: ' bg-bgrtabbar dark:bg-bgrtabbar-d  w-full items-left justify-center  ',
+            menu: '   w-full items-left justify-center  ',
             menu_max_width: ' max-w-7xl ',
             content_max_width: ' max-w-7xl ',
             menu_is_dynamic: true,
-            menu_cnt: ' flex-row flex-none  ',
+            menu_cnt: ' flex-row flex-none gap-x-[8px]  ',
             menu_categ_ident: 'pl-[48px]',
             right_column_cnt: 'fixed-process pr-4 py-4',
             topmenu_cnt:

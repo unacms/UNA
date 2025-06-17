@@ -50,7 +50,7 @@ export default function MultiPostForm({ data }) {
        
             <Card
                 rounded=" rounded-none sm:rounded-2xl  "
-                margin=" mx-auto my-[2px] sm:my-[6px] lg:my-[8px] "
+                margin=" mx-auto mb-[4px] sm:mb-[12px]  "
                 addClassName=" w-full "
             >
                 <View className=" flex-row gap-x-[8px] sm:gap-x-[12px] p-[8px] sm:p-[12px] lg:p-[16px] ">
