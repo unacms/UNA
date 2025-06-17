@@ -27,7 +27,10 @@ import { callFn } from 'app/lib/functions/call';
 import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal';
 import emitter from 'app/context/emitter';
 import Cover, { CoverSmall } from 'app/components/elements/cover';
+import {
+    CoverMenuMore
 
+} from 'app/components/nav/menu-cover'
 const conductorTheme = appSetting('theme', 'conductor');
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from');
 
@@ -248,7 +251,7 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, windowWidth }) =
 
     const handleScroll = useCallback(() => {
         requestAnimationFrame(() => {
-            const currentScrollY = window.scrollY;
+            const currentScrollY = window.scrollY + (scrollValue.value == 0 ? hideDefaultHeaderFrom : 0);
 
             if (currentScrollY > hideDefaultHeaderFrom) {
                 scrollValue.value = 0;
@@ -274,8 +277,8 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, windowWidth }) =
     const animatedStyleHeader = useAnimatedStyle(() => {
         return {
             position: scrollValue.value === 1 ? 'relative' : 'fixed',
-            top: scrollValue.value === 1 ? '0px' : windowWidth >= LAYOUT_BREAKPOINTS.lg ? offset : 0,
-            zIndex: 50,
+            top: scrollValue.value === 1 ? '0px' : windowWidth >= LAYOUT_BREAKPOINTS[TABLET_MODE_FROM] ? offset : 0,
+            zIndex: '50',
         };
     }, [scrollValue]);
 
@@ -299,16 +302,17 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, windowWidth }) =
             <View className={`${isCover ? 'bg-bgrtabbar dark:bg-bgrtabbar-d backdrop-blur-lg lalal' : 'lalal2'}`}>
                 {isCover && <Animated.View className="w-full" style={[{ zIndex: '50' }, animatedStyleHeader2]}  >
                     <View className="w-full">
-                        <Cover data={pageData.cover_block} mode={headerSettings.cover} uri={uri} context={pageData.context} />
+                        <Cover data={pageData.cover_block} showMoreMenu={!conductorTheme.action_menu_in_tabs} mode={headerSettings.cover} uri={uri} context={pageData.context} />
                     </View>
                 </Animated.View>}
-                {isCover && <Animated.View className="w-full hidden" style={[{ zIndex: '50', display:'none' }, animatedStyleHeader3]}  >
+                {isCover && <Animated.View className="w-full hidden" style={[{ zIndex: '50', display: 'none' }, animatedStyleHeader3]}  >
                     <View className="w-full">
-                        <CoverSmall context={pageData.context} data={pageData.cover_block} />
+                        <CoverSmall showMoreMenu={!conductorTheme.action_menu_in_tabs} context={pageData.context} data={pageData.cover_block} />
                     </View>
                 </Animated.View>}
                 <View className="w-full ">
                     {tabBarObj}
+
                 </View>
             </View>
         </Animated.View>
@@ -316,7 +320,7 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, windowWidth }) =
     )
 };
 
-const TabBar = ({ menu, routes, leftSideBar, currentUser, index, setIndex, getNumCols, windowWidth, onChangeRoute, omitDefaultBackground = false }) => {
+const TabBar = ({ menu, routes, leftSideBar, pageData, currentUser, index, setIndex, getNumCols, windowWidth, onChangeRoute, omitDefaultBackground = false }) => {
     const { t } = useTranslation();
     const menuSettings = getMenuSettings(menu.object, menu.config, menu);
     if (routes.length > 1) {
@@ -324,6 +328,13 @@ const TabBar = ({ menu, routes, leftSideBar, currentUser, index, setIndex, getNu
         return (
             <TopSidebar omitDefaultBackground={omitDefaultBackground} leftSideBar={leftSideBar} addButtons={addButtons} layout={getLayout(currentUser)} title={t(menuSettings?.name)} >
                 <ConductorMenu currentUser={currentUser} leftSideBar={leftSideBar} routes={routes} index={index} t={t} setIndex={setIndex} getNumCols={getNumCols} windowWidth={windowWidth} onChangeRoute={onChangeRoute} />
+                {conductorTheme.action_menu_in_tabs && <View className="w-[44px] items-end zxdsw ">
+                    <CoverMenuMore
+                        {...pageData.cover_block.actions_menu}
+                        uri={pageData.uri}
+                        isSplitMenu={true}
+                    />
+                </View>}
             </TopSidebar>
 
         )
@@ -725,12 +736,13 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
             windowWidth={windowWidth}
             onChangeRoute={onChangeRoute}
             omitDefaultBackground={false}
+            pageData={data}
         />
     ), [menu, routes, leftSideBar, currentUser, index, setIndex, getNumCols, windowWidth, onChangeRoute]);
 
     const isShowFilters = layoutName == 'navigator' && leftSideBarBlocks.length > 0;
 
-    const tabBarObj1 = windowWidth < LAYOUT_BREAKPOINTS.lg && isShowFilters ?
+    const tabBarObj1 = windowWidth < LAYOUT_BREAKPOINTS[TABLET_MODE_FROM] && isShowFilters ?
         <>
             {tabBarObj}
             <View className={`items-start px-[12px] sm:px-[16px] py-[8px]`}>
@@ -757,7 +769,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
 
     ), [routes, index, setIndex, onChangeRoute]);
 
-   
+
     const isUseCurrentHeader = layoutName !== 'navigator' && !isCoverDisabled
 
     if (leftSideBar) {

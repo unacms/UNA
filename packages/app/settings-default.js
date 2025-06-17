@@ -783,6 +783,7 @@ export  const settingsDefault = {
             topmenu_button_size: 'base',
             topmenu_button_pressed: true,
             left_menu_cnt: '  ',
+            action_menu_in_tabs: true,
         },
         checkbox: {
             container:

@@ -102,14 +102,20 @@ export function CoverSmall(props) {
                         <View className=" items-end">
                             {isSplitMenu ? <Row className='w-full justify-between'>
 
-                                <View className='w-[44px]'>
+                                 {props.showMoreMenu && <View className='w-[44px]'>
                                     <CoverMenuMore
                                         {...data.actions_menu}
                                         uri={props?.uri}
                                         isSplitMenu={false}
 
                                     />
-                                </View>
+                                </View>}
+                                {!props.showMoreMenu && <CoverMenu
+                                        {...data.actions_menu}
+                                        uri={props?.uri}
+                                        isSplitMenu={isSplitMenu}
+                                    />
+                                }
                             </Row> : <CoverMenu
                                 {...data.actions_menu}
                                 uri={props?.uri}
@@ -412,13 +418,13 @@ export default function (props) {
                                         isSplitMenu={isSplitMenu}
                                     />
                                 </View>
-                                <View className="w-[44px] items-end ">
+                                {props.showMoreMenu && <View className="w-[44px] items-end ">
                                     <CoverMenuMore
                                         {...data.actions_menu}
                                         uri={props?.uri}
                                         isSplitMenu={isSplitMenu}
                                     />
-                                </View>
+                                </View>}
                             </View>
 
                         ) : (
