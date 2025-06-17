@@ -326,7 +326,7 @@ const HeaderContainer = ({ tabBarObj, tabBarObjSmall, currentUser, smallHeader, 
     return (
         <>
             <Animated.View style={[{ width: cntWidth + 'px', position: 'fixed', overflow: 'hidden', zIndex: 40, top: windowWidth >= LAYOUT_BREAKPOINTS.lg ? tOffset : 0 }, animatedStyle6]}>
-                <View className="hidden w-full bg-bgrtabbar dark:bg-bgrtabbar-d backdrop-blur-lg ">
+                <View className="w-full bg-bgrtabbar dark:bg-bgrtabbar-d backdrop-blur-lg ">
                     {smallHeader}
                     {tabBarObjSmall}
                 </View>
