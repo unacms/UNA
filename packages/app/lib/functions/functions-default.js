@@ -162,6 +162,12 @@ export function getButtonForConductorNative(a, index, currentUser, setIndex, onC
     );
 }
 
+export function getSkeletonByEndPoint(currentRoute)
+{
+    return null;
+}
+
+
 export function updateRouteDataForConnections(
     currentRoute,
     layoutData,

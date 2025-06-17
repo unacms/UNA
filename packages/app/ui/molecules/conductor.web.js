@@ -620,6 +620,9 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
     }, [currentRoute?.endpoint, currentRoute?.inited, currentRoute?.blocks]);
 
     const sSkeleton = useMemo(() => {
+        const a = callFn("getSkeletonByEndPoint", [currentRoute]);
+        if (a)
+            return a;
         let baseSkeleton = skeleton || currentRoute?.endpoint?.module || currentRoute?.endpoint?.unit;
         return unitType ? [baseSkeleton, unitType] : baseSkeleton;
     }, [skeleton, currentRoute, unitType]);
