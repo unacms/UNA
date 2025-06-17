@@ -421,7 +421,7 @@ export function LeftSidebar({ title, addButtons, children, width, menu }) {
     )
 }
 
-export function TopSidebar({ styles, isWeb, leftSideBar, header, headerSettings, addButtons, children, isSmall, title, layout, showMenu, isDrawer, omitDefaultBackground = false }) {
+export function TopSidebar({ styles, leftSideBar, addButtons, children, title, layout, omitDefaultBackground = false }) {
     const { currentUser } = useCurrentUser();
     return (
         <View style={styles} className={ ` ${!omitDefaultBackground ? conductorTheme.menu : ''} ${leftSideBar ? 'lg:hidden' : ''}`}>

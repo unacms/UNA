@@ -133,7 +133,6 @@ export default function ScrollList({
     /* ANIMATION */
 
      const isSimplePage = ['home', 'login', 'create-account'].includes(pageData?.uri) && !currentUser;
-     console.log("isSimplePage", isSimplePage)
     const baseProps = {
         ...((useCustomScrollHandler && isCollapsibleHeader && !isSimplePage) && { onScroll }),
     };

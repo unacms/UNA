@@ -87,6 +87,7 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutNam
     }
 
     if (pageLayoutName == 'hor') {
+       
         return (
             <>
                 <Suggestions />
@@ -284,6 +285,7 @@ export default function Layout(props) {
 
     const [headerSettings, setHeaderSettings] = useState(getHeaderSettings(uri, width, layoutName, data?.config));
     const pageLayoutName = getLayout(currentUser, layoutName);
+   
     /*useEffect(() => {
         let a = getHeaderSettings(uri, width, layoutName, data?.config);
         if (pageLayoutName == 'ver') {
@@ -303,6 +305,16 @@ export default function Layout(props) {
         }
     }, [uri, width, layoutName, data?.config, currentUser, pageLayoutName, headerSettings]);
 */
+
+useEffect(() => {
+        let a = getHeaderSettings(uri, width, layoutName, data?.config);
+       
+
+        if (!deepEqual(headerSettings, a)) {
+            setHeaderSettings(a);
+        }
+    }, [width]);
+
     useEffect(() => {
         if (data?.title) {
             if (appSetting('notifications', 'count_in_title')) {

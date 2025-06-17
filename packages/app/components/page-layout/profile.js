@@ -29,13 +29,11 @@ export default function PageLayoutProfile({layoutName, data, uri, blocks}) {
     }
 
     const menu = useMemo(() => {
-        //const clonedMenu = cloneObject(pageData.menu || { items: [] });
         let clonedMenu = { items: [] }
         if (pageData.menu && pageData.menu.items.length > 0) {
             clonedMenu = cloneObject(pageData.menu)
         }
         const isNamePresent = clonedMenu.items.some(item => item.link === pageData.url);
-        //const isNamePresent = clonedMenu.items.some(item => item.name === uri);
         if (!isNamePresent) {
             clonedMenu.items.push({
                 id: -1,
@@ -49,20 +47,6 @@ export default function PageLayoutProfile({layoutName, data, uri, blocks}) {
         return clonedMenu;
     }, [pageData.menu, uri, pageData.url]);
 
-    const headerSettings = useMemo(() => getHeaderSettings(uri, windowWidth, 'profile', pageData?.config), [uri, windowWidth]);
-    const coverMode = appSetting('cover', 'view_by_module', pageData.cover_block.profile?.module)
-    const isCoverDisabled = ((windowWidth > LAYOUT_BREAKPOINTS.lg || true) && isAltView) || coverMode == 'none';
-
-    const header = useMemo(() => {
-        if (isCoverDisabled) {
-            return null;
-        }
-        return <Cover data={pageData.cover_block} mode={headerSettings.cover} uri={uri} context={pageData.context} />;
-    }, [isCoverDisabled, pageData.cover_block, headerSettings.cover, uri]);
-
-    const smallHeader = useMemo(() => (
-        isCoverDisabled ? null : <CoverSmall context={pageData.context}  data={pageData.cover_block} />), [isCoverDisabled, pageData.cover_block]);
-
     const renderedBlocks = useMemo(() => {
         const initialBlocks = blocks || getBlocksFromData(pageData);
         return processBlocks(initialBlocks);
@@ -72,19 +56,18 @@ export default function PageLayoutProfile({layoutName, data, uri, blocks}) {
         menu.title= '';
         menu.config = '{add:[]}';
     }
+    const coverMode = appSetting('cover', 'view_by_module', pageData.cover_block.profile?.module)
+    const isCoverDisabled = ((windowWidth > LAYOUT_BREAKPOINTS.lg || true) && isAltView) || coverMode == 'none';
+
     return (
         <Conductor
             layoutName={layoutName}
-            header={header}
-            smallHeader={smallHeader}
-            //minHeaderHeight={60}
-            {...(!isCoverDisabled ? { defaultHeaderHeight: 0 } : {})}
-            //offsetTop={300}
+
             isHideDefaultHeader={true}
+            isCoverDisabled={isCoverDisabled}
             menu={menu}
             data={pageData}
             blocks={renderedBlocks.mainBlocks}
-            cover={headerSettings.cover}
             leftSideBar={isAltView}
             leftSideBarWidth={isAltView  ? ' lg:w-[360px]' : ''}
             leftSideBarBlocks={isAltView? renderedBlocks.leftBlocks: null}

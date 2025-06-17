@@ -30,7 +30,6 @@ function getMenu(props, layout) {
 }
 
 export default function PageLayout(props) {
-    const isWeb = Platform.OS == 'web';
     const { currentUser, setCurrentUser } = useCurrentUser();
     const layout = getLayout(currentUser, 'navigator');
     const leftSideBar = layout != 'hor' ? false : true
@@ -45,7 +44,6 @@ export default function PageLayout(props) {
     return (
         <Conductor 
             layoutName={props.layoutName}
-            //minHeaderHeight={0} 
             isHideDefaultHeader={false} 
             menu={menu} 
             data={pageData} 
@@ -55,35 +53,6 @@ export default function PageLayout(props) {
             leftSideBarBlocks={blocks.leftBlocks}
         />
     )
-    /*
-if (!isWeb){
-    return (
-        <Conductor 
-            layoutName={props.layoutName}
-            minHeaderHeight={0} 
-            isHideDefaultHeader={false} 
-            menu={menu} 
-            data={pageData} 
-            blocks={blocks.mainBlocks}
-            useSectionAsMenu={false}
-            leftSideBar={leftSideBar}
-            leftSideBarBlocks={blocks.leftBlocks}
-        />
-    )
-}
 
-    return (
-        <Conductor 
-            layoutName={props.layoutName}
-            //minHeaderHeight={0} 
-            isHideDefaultHeader={false} 
-            menu={menu} 
-            data={pageData} 
-            blocks={blocks.mainBlocks}
-            useSectionAsMenu={false}
-            leftSideBar={leftSideBar}
-            leftSideBarBlocks={blocks.leftBlocks}
-        />
-    )*/
 }
 

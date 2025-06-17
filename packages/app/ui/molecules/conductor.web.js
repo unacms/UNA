@@ -26,7 +26,7 @@ import { useBottomSheetData } from 'app/context/bottomsheet';
 import { callFn } from 'app/lib/functions/call';
 import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal';
 import emitter from 'app/context/emitter';
-
+import Cover, { CoverSmall } from 'app/components/elements/cover';
 
 const conductorTheme = appSetting('theme', 'conductor');
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from');
@@ -126,7 +126,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
         const { currentUser } = useCurrentUser();
         const btn = callFn('getButtonForConductorSmall', [a, index, currentUser])
         return (
-            <Pressable className={" items-center " + a?.menu_settings?.class }
+            <Pressable className={" items-center " + a?.menu_settings?.class}
                 key={`tab-${index2}`}
                 onPress={() => {
                     setIndex(a.index);
@@ -161,7 +161,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
         let addonContent = callFn("getAddonForConductor", [item, index, currentUser])
 
         const handlePress = () => {
-            emitter.emit('dynamic_menu', { action: 'hide'});
+            emitter.emit('dynamic_menu', { action: 'hide' });
             setIndex(index);
             getNumCols(windowWidth, routes[index], leftSideBar);
             window.history.pushState({}, '', '/' + key);
@@ -238,126 +238,91 @@ const LeftSideBarContainer = ({ menu, routes, currentUser, index, setIndex, left
     )
 }
 
-const HeaderContainer = ({ tabBarObj, tabBarObjSmall, currentUser, smallHeader, header, windowWidth, cntWidth, cover }) => {
-    let offset = header ? (windowWidth < LAYOUT_BREAKPOINTS.lg ? 350 : 350) : 50;
-
-    if (cover == 'min' && header > 50) {
-        offset = windowWidth < LAYOUT_BREAKPOINTS.lg ? 80 : 200;
-    }
-
+const HeaderContainer = ({ tabBarObj, pageData, headerSettings, windowWidth }) => {
     const scrollValue = useSharedValue(1);
-    const [isPageScrolled, setIsPageScrolled] = useState(false);
-    const pageScrollThreshold = 10;
+    const offset = 64;
+    const hideDefaultHeaderFrom = 256;
+
+    const uri = pageData?.uri;
+    const isCover = pageData.cover_block ? true : false
 
     const handleScroll = useCallback(() => {
         requestAnimationFrame(() => {
             const currentScrollY = window.scrollY;
-            if (currentScrollY > offset && scrollValue.value !== 0) {
+
+            if (currentScrollY > hideDefaultHeaderFrom) {
                 scrollValue.value = 0;
-            } else if (currentScrollY <= offset && scrollValue.value !== 1) {
+            } else if (currentScrollY <= hideDefaultHeaderFrom) {
                 scrollValue.value = 1;
             }
-            setIsPageScrolled(currentScrollY > pageScrollThreshold);
+
         });
-    }, [offset, scrollValue, setIsPageScrolled, pageScrollThreshold]);
+    }, [scrollValue]);
 
     useEffect(() => {
-        if (!appSetting('cover', 'fixed')) {
+        if (!appSetting('cover', 'fixed') && isCover) {
             window.addEventListener('scroll', handleScroll);
-            setIsPageScrolled(window.scrollY > pageScrollThreshold);
-        }
-        if (appSetting('cover', 'scroll')) {
-            scrollToCover(cover, windowWidth, offset);
         }
 
         return () => {
-            if (!appSetting('cover', 'fixed')) {
+            if (!appSetting('cover', 'fixed') && isCover) {
                 window.removeEventListener('scroll', handleScroll);
             }
         };
-    }, [handleScroll, cover, windowWidth, offset, pageScrollThreshold]);
+    }, [handleScroll]);
 
-
-    const scrollToCover = (cover, windowWidth, offset) => {
-        const baseScroll = windowWidth < LAYOUT_BREAKPOINTS.lg ? 280 : offset;
-        const adjustment = cover === 'group' ? -100 : -200;
-        if (cover != 'min') {
-            window.scroll({
-                top: baseScroll + adjustment,
-                behavior: "smooth",
-            });
-        }
-    };
-
-    const tmplLayout = getLayout(currentUser);
-    const tOffset = tmplLayout == 'ver' ? 0 : 63;
-    const d = 200;
-    const animatedStyle5 = useAnimatedStyle(() => {
-        const opacityValue = withTiming(scrollValue.value, { duration: d });
+    const animatedStyleHeader = useAnimatedStyle(() => {
         return {
-            opacity: opacityValue,
+            position: scrollValue.value === 1 ? 'relative' : 'fixed',
+            top: scrollValue.value === 1 ? '0px' : windowWidth >= LAYOUT_BREAKPOINTS.lg ? offset : 0,
+            zIndex: 50,
         };
     }, [scrollValue]);
 
-    const animatedStyle6 = useAnimatedStyle(() => {
-        const isVisible = 1 - scrollValue.value;
-
-        const translateY = (isVisible ? 0 : -50, {
-            damping: 9,
-            stiffness: 70,
-        });
-
-        
-
+    const animatedStyleHeader2 = useAnimatedStyle(() => {
         return {
-            transform: [{ translateY }],
-            zIndex: scrollValue.value ? 40 : 45,
+            display: scrollValue.value == 1 ? 'flex' : 'none',
+            height: scrollValue.value == 1 ? 'auto' : '0px',
         };
     }, [scrollValue]);
 
-    if (!header && !smallHeader && windowWidth < LAYOUT_BREAKPOINTS.lg) {
-        return (
-            <View >
-                {tabBarObj}
-            </View>
-        );
-    }
+    const animatedStyleHeader3 = useAnimatedStyle(() => {
+        return {
+            height: scrollValue.value == 1 ? '0px' : 'auto',
+            display: scrollValue.value == 1 ? 'none' : 'flex',
+        };
+    }, [scrollValue]);
 
     return (
-        <>
-            <Animated.View style={[{ width: cntWidth + 'px', position: 'fixed', overflow: 'hidden', zIndex: 40, top: windowWidth >= LAYOUT_BREAKPOINTS.lg ? tOffset : 0 }, animatedStyle6]}>
-                <View className="w-full bg-bgrtabbar dark:bg-bgrtabbar-d backdrop-blur-lg ">
-                    {smallHeader}
-                    {tabBarObjSmall}
-                </View>
-            </Animated.View>
-            <Animated.View style={[{ width: cntWidth + 'px', overflow: 'hidden', zIndex: 50 }, animatedStyle5]}  >
-                <View className="w-full" >
-                    <View style={[{ width: '100%', overflow: 'hidden' }]}>
-                        <View>
-                            {header}
-                            {tabBarObj}
-                        </View>
+
+        <Animated.View className="w-full" style={[{ zIndex: '50' }, animatedStyleHeader]}  >
+            <View className={`${isCover ? 'bg-bgrtabbar dark:bg-bgrtabbar-d backdrop-blur-lg lalal' : 'lalal2'}`}>
+                {isCover && <Animated.View className="w-full" style={[{ zIndex: '50' }, animatedStyleHeader2]}  >
+                    <View className="w-full">
+                        <Cover data={pageData.cover_block} mode={headerSettings.cover} uri={uri} context={pageData.context} />
                     </View>
+                </Animated.View>}
+                {isCover && <Animated.View className="w-full hidden" style={[{ zIndex: '50', display:'none' }, animatedStyleHeader3]}  >
+                    <View className="w-full">
+                        <CoverSmall context={pageData.context} data={pageData.cover_block} />
+                    </View>
+                </Animated.View>}
+                <View className="w-full ">
+                    {tabBarObj}
                 </View>
-                <View >
-                   
-                </View>
-            </Animated.View>
-        </>
-    );
+            </View>
+        </Animated.View>
+
+    )
 };
 
-const TabBar = ({ isSmall = false, menu, routes, leftSideBar, header, headerSettings, currentUser, index, setIndex, getNumCols, windowWidth, onChangeRoute, omitDefaultBackground = false }) => {
-    const isDrawer = menuItemsByName('main_menu', appSetting('menu_items', 'menu_drawer'), currentUser).length > 0;
+const TabBar = ({ menu, routes, leftSideBar, currentUser, index, setIndex, getNumCols, windowWidth, onChangeRoute, omitDefaultBackground = false }) => {
     const { t } = useTranslation();
-    const showMenu = (params) => { }
-
     const menuSettings = getMenuSettings(menu.object, menu.config, menu);
     if (routes.length > 1) {
         const addButtons = AddMenu(menu, 'hideInTopBar')
         return (
-            <TopSidebar omitDefaultBackground={omitDefaultBackground} isDrawer={isDrawer} isWeb={true} leftSideBar={leftSideBar} header={header} headerSettings={headerSettings} addButtons={addButtons} isSmall={isSmall} showMenu={showMenu} layout={getLayout(currentUser)} title={t(menuSettings?.name)} >
+            <TopSidebar omitDefaultBackground={omitDefaultBackground} leftSideBar={leftSideBar} addButtons={addButtons} layout={getLayout(currentUser)} title={t(menuSettings?.name)} >
                 <ConductorMenu currentUser={currentUser} leftSideBar={leftSideBar} routes={routes} index={index} t={t} setIndex={setIndex} getNumCols={getNumCols} windowWidth={windowWidth} onChangeRoute={onChangeRoute} />
             </TopSidebar>
 
@@ -406,7 +371,7 @@ const RenderSceneHeader = ({ route, setFilterValue }) => {
     )
 };
 
-export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, leftSideBarBlocks, leftSideBarWidth = ' w-[360px] ', skeleton = '', onChangeRoute, keyword, cover, layoutName, defaultHeaderHeight=120 }) {
+export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMenu, leftSideBar, leftSideBarBlocks, leftSideBarWidth = ' w-[360px] ', skeleton = '', onChangeRoute, keyword, layoutName, defaultHeaderHeight = 120 }) {
     const uniRef = useRef();
     const { currentUser } = useCurrentUser();
     const { setBottomSheetData } = useBottomSheetData();
@@ -417,9 +382,9 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     const { width: windowWidth, height: windowHeight } = useWindowDimensions();
 
     const initedTabs = fillTabs(menu, data, blocks, currentUser, useSectionAsMenu, leftSideBarBlocks);
-    
+
     const [routes, setRoutes] = useState(initedTabs);
-   
+
     const [cntWidth, setCntWidth] = useState(0);
     const [isRevalidate, setIsRevalidate] = useState(false);
 
@@ -445,7 +410,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     const setIndex = (newIndex) => {
         setPrevIndex(index);
         _setIndex(newIndex);
-      };
+    };
 
     const currentRoute = routes.find((item) => item.index === index);
     const prevRoute = useMemo(() => routes.find((item) => item.index === prevIndex), [routes, prevIndex]);;
@@ -595,28 +560,28 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         setIndex((prevIndex) => {
             setRoutes((prevRoutes) => {
                 const newRoutes = [...prevRoutes]; // Актуальные маршруты
-    
+
                 console.log("newRoutes1", newRoutes);
-    
+
                 values.forEach((value) => {
                     const name = value.name;
                     const val = value.value;
-    
+
                     if (newRoutes[prevIndex].endpoint.params.filters) {
                         newRoutes[prevIndex].endpoint.params.filters[name] = val;
                     } else {
                         newRoutes[prevIndex].endpoint.params.filters = { [name]: val };
                     }
                 });
-    
+
                 newRoutes[prevIndex].endpoint.finished = false;
                 newRoutes[prevIndex].data = [];
                 newRoutes[prevIndex].endpoint.params.start = 0;
-    
+
                 console.log("newRoutes2", newRoutes);
                 return newRoutes; // Обновляем состояние
             });
-    
+
             return prevIndex; // Возвращаем актуальный index (он не изменяется в этой функции)
         });
     };
@@ -643,46 +608,10 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         setCntWidth(event.nativeEvent.layout.width)
     };
 
-    const tabBarObj = useMemo(() => (
-        <TabBar
-            isSmall={false}
-            menu={menu}
-            routes={routes}
-            leftSideBar={leftSideBar}
-            header={header}
-            headerSettings={headerSettings}
-            currentUser={currentUser}
-            index={index}
-            setIndex={setIndex}
-            getNumCols={getNumCols}
-            windowWidth={windowWidth}
-            onChangeRoute={onChangeRoute}
-            omitDefaultBackground={false}
-        />
-    ), [menu, routes, leftSideBar, header, headerSettings, currentUser, index, setIndex, getNumCols, windowWidth, onChangeRoute]);
-
-    const tabBarObjForAnimatedHeader = useMemo(() => (
-        <TabBar
-            isSmall={true}
-            menu={menu}
-            routes={routes}
-            leftSideBar={leftSideBar}
-            header={header}
-            headerSettings={headerSettings}
-            currentUser={currentUser}
-            index={index}
-            setIndex={setIndex}
-            getNumCols={getNumCols}
-            windowWidth={windowWidth}
-            onChangeRoute={onChangeRoute}
-            omitDefaultBackground={true}
-        />
-    ), [menu, routes, leftSideBar, header, headerSettings, currentUser, index, setIndex, getNumCols, windowWidth, onChangeRoute]);
-
     const AddBlocksCnt = useMemo(() => AddBlocks(currentRoute.leftSideBarBlocks, currentRoute.pageData, onFormChangedValues), [currentRoute.leftSideBarBlocks, currentRoute.pageData, onFormChangedValues]);
 
     const showFilters = useCallback(() => {
-        setBottomSheetData({ title: 'Filters', content: AddBlocksCnt, showClose: true, snapPoints: ['50%', '75%'], modal:true });
+        setBottomSheetData({ title: 'Filters', content: AddBlocksCnt, showClose: true, snapPoints: ['50%', '75%'], modal: true });
     }, [currentRoute.leftSideBarBlocks, currentRoute.pageData, onFormSubmit]);
 
     const unitType = useMemo(() => {
@@ -697,27 +626,27 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
     const Preload = useMemo(() => getSkeletonForList(sSkeleton, numColumns), [sSkeleton, numColumns]);
 
-    const RenderScene = useCallback(({ cover, route, header, prevRoute, headerHeight }) => {
+    const RenderScene = useCallback(({ route, header, prevRoute, headerHeight, isCoverDisabled }) => {
 
         const dataItems = route?.data
 
-       /* if (dataItems.length == 1 && !route.endpoint) {
-            const a = dataItems.map((item, index) => {
-                return <View className={`lg:mt-0 mx-auto mt-2 w-full ${appSetting('layout', 'max_width_block')}`} key={`tab-${index}`}><ItemRendererMemo route={route} key={'item' + index} numColumns={1} item={item} /></View>
-            });
-            return a;
-        }
-*/
-       
+        /* if (dataItems.length == 1 && !route.endpoint) {
+             const a = dataItems.map((item, index) => {
+                 return <View className={`lg:mt-0 mx-auto mt-2 w-full ${appSetting('layout', 'max_width_block')}`} key={`tab-${index}`}><ItemRendererMemo route={route} key={'item' + index} numColumns={1} item={item} /></View>
+             });
+             return a;
+         }
+ */
+
         const isRightCol = route?.sidebar?.content?.length > 0 || route?.blocks?.browse_sidebar;
 
         const TabFlashListM = useMemo(() => {
             return <UniList
                 scrollProps={header ?
                     {
-                        pageData: route.inited ? route.pageData : prevRoute.pageData, 
-                        subHeaderComponent: header, 
-                        headerHeight: headerHeight, 
+                        pageData: route.inited ? route.pageData : prevRoute.pageData,
+                        subHeaderComponent: header,
+                        headerHeight: headerHeight,
                         isBackButton: false,
                         isMenuNameAsTitle: true
                     } : null
@@ -747,8 +676,8 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         const sidebarUnitType = route.blocks?.browse_sidebar?.unitType || 'default';
 
         return (
-            <Row style={{ paddingTop: header ? 0 : 0 }} className={(headerSettings.columns == "reverse" ? 'flex-row-reverse' : '') + conductorTheme.content_max_width + '  mx-auto w-full ' + ( !cover ? ' sm:px-[16px] sm:my-3 ': '' )}>
-                <View className={(isRightCol ? 'flex-auto sm:px-4 flex-auto ' : ' w-full mx-auto') /*sm:p-2*/+ (layoutName == 'navigator' ? '' : ' pt-[8px] sm:p-4')}/*lg:pt-4*/>
+            <Row style={{ paddingTop: header ? 0 : 0 }} className={(headerSettings.columns == "reverse" ? 'flex-row-reverse' : '') + conductorTheme.content_max_width + '  mx-auto w-full ' + (isCoverDisabled ? ' sm:px-[16px] sm:my-3 ' : '')}>
+                <View className={(isRightCol ? 'flex-auto sm:px-4 flex-auto ' : ' w-full mx-auto') /*sm:p-2*/ + (layoutName == 'navigator' ? '' : ' pt-[8px] sm:p-4')}/*lg:pt-4*/>
                     {TabFlashListM}
                     {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 && callFn("noContentByUrl", [route?.endpoint])))}
                 </View>
@@ -781,22 +710,40 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             AddBlocksCnt={AddBlocksCnt} />
     ), [index, setIndex, menu, routes, currentUser, leftSideBarWidth, headerSettings, AddBlocksCnt]);
 
-   const headerComponent = useMemo(() => (
-        <><HeaderContainer
-            cover={cover}
-            cntWidth={cntWidth}
-            tabBarObj={tabBarObj}
-            tabBarObjSmall={tabBarObjForAnimatedHeader}
+    const tabBarObj = useMemo(() => (
+        <TabBar
+            menu={menu}
+            routes={routes}
+            leftSideBar={leftSideBar}
             currentUser={currentUser}
-            smallHeader={smallHeader}
-            header={leftSideBar && layoutName != 'navigator'  ? <View className="bg-bgrcard dark:bg-bgrcard-d lg:hidden pt-20 px-3">{leftSideBarComponent}</View> : header}
+            index={index}
+            setIndex={setIndex}
+            getNumCols={getNumCols}
+            windowWidth={windowWidth}
+            onChangeRoute={onChangeRoute}
+            omitDefaultBackground={false}
+        />
+    ), [menu, routes, leftSideBar, currentUser, index, setIndex, getNumCols, windowWidth, onChangeRoute]);
+
+    const isShowFilters = layoutName == 'navigator' && leftSideBarBlocks.length > 0;
+
+    const tabBarObj1 = windowWidth < LAYOUT_BREAKPOINTS.lg && isShowFilters ?
+        <>
+            {tabBarObj}
+            <View className={`items-start px-[12px] sm:px-[16px] py-[8px]`}>
+                <Button title="Filters" variant="default" size="sm" rounded onPress={showFilters} />
+            </View>
+        </> : tabBarObj;
+
+    const headerComponent = useMemo(() => (
+        <HeaderContainer
+            tabBarObj={tabBarObj1}
+            headerSettings={headerSettings}
+            pageData={data}
             windowWidth={windowWidth}
         />
-          {(windowWidth < LAYOUT_BREAKPOINTS.lg && layoutName == 'navigator' && leftSideBarBlocks.length > 0) && <View className={`items-start px-[12px] sm:px-[16px] py-[8px]`}>
-                                <Button title="Filters" variant="default" size="sm" rounded onPress={showFilters} />
-                            </View>}
-        </>
-    ), [cover, cntWidth, tabBarObj, currentUser, smallHeader, header, windowWidth]);
+
+    ), [cntWidth, currentUser, windowWidth, routes, index]);
 
     const topSideBarComponent = useMemo(() => (
         <TopSideBarContainer
@@ -807,8 +754,8 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
     ), [routes, index, setIndex, onChangeRoute]);
 
-    const isShowFilters = false;// todo
-    const isUseCurrentHeader = layoutName !== 'navigator' && header
+   
+    const isUseCurrentHeader = layoutName !== 'navigator' && !isCoverDisabled
 
     if (leftSideBar) {
 
@@ -838,7 +785,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                                 <Button title="Filters" variant="default" size="sm" rounded onPress={showFilters} />
                             </View>*/}
                             {sceneHeaderComponent}
-                            <RenderScene cover={header} prevRoute={prevRoute} headerHeight={isShowFilters? 150: defaultHeaderHeight} header={isUseCurrentHeader ? null : headerComponent} route={currentRoute} />
+                            <RenderScene isCoverDisabled={isCoverDisabled} prevRoute={prevRoute} headerHeight={isShowFilters ? 180 : defaultHeaderHeight} header={isUseCurrentHeader ? null : headerComponent} route={currentRoute} />
                         </View>
                     </Row>
                 </View>
@@ -853,7 +800,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             <Toaster ref={toasterRef} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" />
             <View className={`${conductorTheme.content_max_width} mx-auto w-full min-h-screen ${tmplLayout == 'mixed' ? 'mt-12' : ''}`}>
                 {sceneHeaderComponent}
-                <RenderScene cover={header} prevRoute={prevRoute} headerHeight={isShowFilters? 150: defaultHeaderHeight} header={isUseCurrentHeader ? null : headerComponent} route={currentRoute} />
+                <RenderScene isCoverDisabled={isCoverDisabled} prevRoute={prevRoute} headerHeight={isShowFilters ? 150 : defaultHeaderHeight} header={isUseCurrentHeader ? null : headerComponent} route={currentRoute} />
             </View>
             <Footer />
         </View>
