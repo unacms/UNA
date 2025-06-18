@@ -1,7 +1,12 @@
+import { View } from 'app/design/view';
 import { Button } from 'app/design/controls'
+import DropdownMenu from 'app/ui/atoms/dropdown-menu'
 import Menu from 'app/components/menu'
+import { useWindowDimensions } from 'react-native'
+import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { useState } from 'react'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
+import { Platform } from 'react-native'
 
 export function CoverMenuSmall(props) {
     const [ntfsOpen, setNtfsOpen] = useState(false)
@@ -20,6 +25,7 @@ export function CoverMenuSmall(props) {
                 startDecorator="Ellipsis"
             />}
         >
+
             <Menu
                 key="menu"
                 {...props}
@@ -31,15 +37,20 @@ export function CoverMenuSmall(props) {
                     button_full_width: false,
                 }}
             />
+
         </DropdownPopup>
     )
 }
 
 export function CoverMenu(props) {
-    const size = props.size || 'base'
+    let size = props.size || 'base'
+
+   // if (width < LAYOUT_BREAKPOINTS.sm) size = 'base'
+
     const isSplitMenu = props.isSplitMenu;
+
     let propsCopy = { ...props } // Create a copy of the array
-    
+
     if (isSplitMenu) {
         propsCopy.items = propsCopy.items.filter((aItem) => {
             if (aItem.persistent) {
@@ -78,7 +89,7 @@ export function CoverMenu(props) {
         <Menu
             {...propsCopy}
             displayType="button"
-            autoSize={isSplitMenu ? false : props.autoSize ?? true}
+            autoSize={false}
             containerClasses={props.containerClasses}
             params={{
                 showVertical:props?.params?.showVertical ?? false,
@@ -97,14 +108,16 @@ export function CoverMenu(props) {
 }
 
 export function CoverMenuMore(props) {
-    const size = props.size || 'base'
+    const isWeb = Platform.OS === 'web'
+    
+    let size = props.size || 'base'
+
+   // if (width < LAYOUT_BREAKPOINTS.sm) size = 'base'
 
     const isSplitMenu = props.isSplitMenu;
 
     let propsCopy = { ...props } // Create a copy of the array
-    if (!propsCopy.items){
-        propsCopy.items = []
-    }
+
     if (isSplitMenu) {
         propsCopy.items = propsCopy.items.filter((aItem) => {
             if (aItem.persistent) {
@@ -139,6 +152,7 @@ export function CoverMenuMore(props) {
         return aItem;
     });
 
+   
     return (
         <Menu
             {...propsCopy}
@@ -153,7 +167,7 @@ export function CoverMenuMore(props) {
                 button_variant: 'text',
                 button_size: size,
                 button_rounded: false,
-                button_full_width: props?.params?.button_full_width ?? false,
+                button_full_width: props?.params.button_full_width ?? false,
                 className: ' gap-x-[8px] justify-end',
                 isFixedCount: true
             }}

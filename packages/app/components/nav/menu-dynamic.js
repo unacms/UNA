@@ -57,7 +57,7 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
 
     }, [isDynamicMenu]);
 
-    let ExMenu = (visibleItemsCount < items.length && isWeb) && (
+    let ExMenu = (visibleItemsCount < items.length) && (
         <DropdownMenu
             onSelect={(oItem, event) => {
                 if (oItem.noAction) {
@@ -78,12 +78,14 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
         </DropdownMenu>
     )
 
+    // return <View className='bg-red-500 h-4 w-4'></View>
+
     return (
         <>
             <FormModal pageData={pageData} setPageData={setPageData} />
             <ScrollView
                 contentContainerStyle={{ alignItems: 'center' }}
-                className={isWeb ? (containerClasses ? containerClasses.trim() + ' overflow-visible' : 'overflow-visible') : ""}
+                className={isWeb ? (containerClasses ? containerClasses.trim() + ' overflow-visible' : 'overflow-visible') :  (containerClasses ? containerClasses.trim() + ' overflow-visible' : 'overflow-visible')}
                 horizontal={true}
                 onLayout={handleLayout}
             >

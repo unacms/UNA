@@ -27,10 +27,9 @@ import { callFn } from 'app/lib/functions/call';
 import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal';
 import emitter from 'app/context/emitter';
 import Cover, { CoverSmall } from 'app/components/elements/cover';
-import {
-    CoverMenuMore
+import { CoverMenuMore } from 'app/components/nav/menu-cover'
 
-} from 'app/components/nav/menu-cover'
+
 const conductorTheme = appSetting('theme', 'conductor');
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from');
 
@@ -766,7 +765,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
     ), [routes, index, setIndex, onChangeRoute]);
 
 
-    const isUseCurrentHeader = layoutName !== 'navigator' && !isCoverDisabled
+    const isUseCurrentHeader = layoutName === 'profile' && !isCoverDisabled
 
     if (leftSideBar) {
 

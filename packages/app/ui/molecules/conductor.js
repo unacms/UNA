@@ -1,7 +1,7 @@
 import React, { useCallback, useState, useEffect, useMemo, useRef } from "react";
 import { View, ScrollView, Row, Pressable } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
-import { deepEqual, getUnitModeBySource, handleFeedLayoutData } from 'app/lib/util';
+import { deepEqual, getUnitModeBySource, handleFeedLayoutData, appSetting } from 'app/lib/util';
 import { fillTabs, parseData, fetchAndUpdateData, getNumCols } from 'app/lib/conductor-helpers';
 import { ItemRenderer } from 'app/components/item-renderer';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
@@ -17,6 +17,11 @@ import Toaster from 'app/ui/atoms/toaster';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { BlockByName } from 'app/components/block';
 import { callFn } from 'app/lib/functions/call';
+import Cover, { CoverSmall } from 'app/components/elements/cover';
+import { CoverMenuMore } from 'app/components/nav/menu-cover'
+
+
+const conductorTheme = appSetting('theme', 'conductor');
 
 const TabBar = React.memo(({ routes, index, setIndex, onChangeRoute, currentUser }) => {
     if (routes.length > 1) {
@@ -142,7 +147,7 @@ const TabScene = React.memo(({
     )
 });
 
-export function Conductor({ header, defaultHeaderHeight=120, smallHeader, minHeaderHeight, isHideDefaultHeader, leftSideBarBlocks, menu, layoutName, data, blocks, useSectionAsMenu, unitMode, skeleton, onChangeRoute, keyword }) {
+export function Conductor({ isCoverDisabled, header, defaultHeaderHeight=120, smallHeader, minHeaderHeight, isHideDefaultHeader, leftSideBarBlocks, menu, layoutName, data, blocks, useSectionAsMenu, unitMode, skeleton, onChangeRoute, keyword }) {
 
     minHeaderHeight = minHeaderHeight || 100;
     isHideDefaultHeader = isHideDefaultHeader || false;
@@ -376,7 +381,7 @@ export function Conductor({ header, defaultHeaderHeight=120, smallHeader, minHea
         <Button title='Filters' variant="default" size="sm" rounded onPress={showFilters} />
     </View>)
 
-    const isProfileHeader = layoutName === 'profile' && header;
+    const isProfileHeader = layoutName === 'profile' && !isCoverDisabled;
 
     const tabSceneProps = {
         prevRoute: prevRoute,
@@ -392,9 +397,16 @@ export function Conductor({ header, defaultHeaderHeight=120, smallHeader, minHea
     };
     if (isProfileHeader){
         Object.assign(tabSceneProps, {
-            headerHeight: defaultHeaderHeight,
-            headerComponent: <>{smallHeader}{sceneHeader}</>,
-            ListHeaderComponent: <>{header}{sceneHeader}{filter}</>
+            headerHeight: isProfileHeader ? 0 : defaultHeaderHeight,
+            headerComponent: <>
+                <CoverSmall showMoreMenu={true} context={currentRoute.pageData.context} data={currentRoute.pageData.cover_block} />
+                {sceneHeader}
+            </>,
+            ListHeaderComponent: <>
+                <Cover data={currentRoute.pageData.cover_block} showMoreMenu={true} uri={currentRoute.pageData.uri} context={currentRoute.pageData.context} />
+                {sceneHeader}
+                {filter}
+            </>
         });
     }
     else{
