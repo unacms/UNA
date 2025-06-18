@@ -405,8 +405,8 @@ export function LeftSidebar({ title, addButtons, children, width, menu }) {
     return (
        
             <View className={` ${sidebar =='fixed'? 'fixed-process' : ''}  px-[12px] py-[8px] gap-y-[2px]`}>
-                {(!!title || !!addButtons?.length > 0) && <Row className="justify-between h-[48px] items-center border-b border-bdr dark:border-bdr-d mb-[6px] pl-[8px] pb-[8px] z-10 ">
-                    <Text className=" text-3xl tracking-tight truncate mr-auto font-semibold  text-neutral-900 dark:text-neutral-100 hidden lg:flex  ">
+                {(!!title || !!addButtons?.length > 0) && <Row className="justify-between items-center border-b border-bdr dark:border-bdr-d mb-[6px] pl-[8px] py-[8px] z-10 ">
+                    <Text className=" text-3xl tracking-tight truncate mr-auto font-semibold leading-[48px] text-neutral-900 dark:text-neutral-100 hidden lg:flex  ">
                         {t(title)}
                     </Text>
                     <Row className=" gap-x-[8px] ">

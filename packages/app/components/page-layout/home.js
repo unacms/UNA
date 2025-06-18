@@ -293,7 +293,7 @@ export default function (props) {
 
                 
                     
-                    <View className="relative flex-auto mx-auto sm:px-[12px] py-[12px]  max-w-3xl">
+                    <View className="relative flex-auto mx-auto sm:px-[12px] py-[12px] sm:py-[16px] max-w-3xl">
                             {feedList.map((item, index) => {
                                 if (feedType == item.name) {
                                     return (
@@ -335,7 +335,7 @@ export default function (props) {
                 
 
                     <View className="hidden lg:flex w-[360px] ">
-                        <View className="fixed-process p-[12px] flex-col gap-y-[24px]  web:duration-300">
+                        <View className="fixed-process p-[12px] flex-col sm:py-[16px] gap-y-[24px]  web:duration-300">
                             {sideBarBlocks.map((item, index) => {
                                 return (
                                     <BlockByName

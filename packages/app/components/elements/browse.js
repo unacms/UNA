@@ -359,8 +359,8 @@ export default function (props) {
             <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" />
             <View className='w-full' style={styles} >
                 {props.showTitleInside ? (
-                    <Row className='items-center justify-between px-[8px] py-[6px] mb-[2px]'>
-                        <Text className="text-base font-semibold tracking-tight text-neutral-600 dark:text-neutral-400 ">{t(props.block.title)}</Text>
+                    <Row className='items-center justify-between p-[8px] pt-0'>
+                        <Text className="text-lg font-semibold tracking-tight text-neutral-600 dark:text-neutral-400 ">{t(props.block.title)}</Text>
                         {props.addLink ? (<Link href={props.addLink.url}><Button variant='link' size='sm' title={t(props.addLink.text)} /></Link>) : null}
                     </Row>) : <></>}
                 <UniList {...memoizedUniListProps} />
