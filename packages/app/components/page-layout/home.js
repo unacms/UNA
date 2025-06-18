@@ -213,7 +213,7 @@ export default function (props) {
             >
                 {getLayout(currentUser) == 'hor' && (
                     <View className="hidden relative xl:flex w-[360px] ">
-                        <View className="fixed-process fixed w-[360px] p-[12px]  web:duration-200">
+                        <View className="fixed-process fixed w-[360px] px-[12px] py-[8px]  web:duration-200">
                             {/* {appSetting('layout', 'sidebar_search') && (
                                 <View className="pb-3 w-full">
                                     <Search type="input" placeholder="Enter search text" />
@@ -224,7 +224,7 @@ export default function (props) {
                                 <Link href={currentUser.url} emulate={true}>
                                     <Row
                                         className={
-                                            ' rounded-2xl group items-center px-[8px] gap-x-[12px] h-[56px] hover:bg-bgritem dark:hover:bg-bgritem-d  active:bg-bgritem-h dark:active:bg-bgritem-dh  '
+                                            ' rounded-[12px] group items-center px-[8px] gap-x-[12px] h-[48px] hover:bg-bgritem dark:hover:bg-bgritem-d  active:bg-bgritem-h dark:active:bg-bgritem-dh  '
                                         }
                                     >
                                         

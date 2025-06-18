@@ -86,7 +86,7 @@ export default function Unit(props) {
             >
                 <Link className="group " href={data.url}>
                     <View
-                        className={`flex-row  sm:flex-col p-3 sm:p-1  sm:h-full`}
+                        className={`flex-row sm:flex-col p-3 sm:p-1  sm:h-full`}
                     >
                         <ImageSection data={data} imageSizes={imageSizes} />
                         <View className="flex-col pl-[16px] my-auto sm:pt-[8px] sm:p-[4px] flex-auto ">

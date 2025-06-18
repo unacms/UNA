@@ -63,7 +63,7 @@ function UnitWoInfo({ oProps, sSize, sSizeFontLetter, iSizeWidth, bShowLinks, em
 
 function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont, actions }) {
     return (
-        <View className="flex-col my-auto">
+        <View className="flex-col my-auto truncate flex-auto">
 
             {bShowLinks ? (
                 <Link emulate={emulate} haptics="Select" href={oProps.url}>
@@ -228,7 +228,7 @@ function AtomProfile_(oProps) {
 
         case 'text':
             return (
-                <View className="flex-col my-auto">
+                <View className="flex-col my-auto truncate flex-auto">
                     {bShowLinks ? (
                         <DisplayNameLink
                             title={oProps.display_name}

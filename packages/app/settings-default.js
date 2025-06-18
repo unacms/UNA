@@ -43,7 +43,7 @@ export  const settingsDefault = {
         hide_header_for_all: false,
         card_animation_duration: 0,
         user_remote_config: true,
-        max_width_header_content: 'max-w-[1440px]',
+        max_width_header_content: ' w-full ',
         background_image_color: '', //OLD appSetting('layout', 'background_cover_color')
         background_image: '', //`url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239C92AC' fill-opacity='0.08' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E")`,
         background_image_dark: '', //`url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239C92AC' fill-opacity='0.08' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E")`,

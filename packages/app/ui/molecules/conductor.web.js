@@ -102,9 +102,9 @@ const AddMenu = (menu, filter) => {
 
         let btn = undefined;
         if (button.section)
-            btn = <Search section={button.section} params={{ trigger: { size: 'sm' } }} />
+            btn = <Search section={button.section} params={{ trigger: { size: 'base' } }} />
         else {
-            btn = <Button title={t(button.title)} startDecorator={button.icon} variant="secondary" ring="p-1" rounded size="sm" onPress={() => (handleFormModal(button, event, setPageData))} />;
+            btn = <Button title={t(button.title)} startDecorator={button.icon} variant="secondary" rounded size="base" onPress={() => (handleFormModal(button, event, setPageData))} />;
             btn = (button.link && button.name != "Add") ? <Link href={button.link} >{btn}</Link> : btn
         }
 
@@ -158,7 +158,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
 
     const MenuItemEx = memo(({ item, index }) => {
         const { title, addon, icon, link, menu_settings, key } = item;
-        const translatedTitle = <Text>{t(title)}</Text>;
+        const translatedTitle = <Text className="text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 leading-[24px] font-medium text-[16px]">{t(title)}</Text>;
         const { currentUser } = useCurrentUser();
         let addonContent = callFn("getAddonForConductor", [item, index, currentUser])
 
@@ -178,10 +178,10 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
 
         return (
             <Pressable
-                className={' p-3 ' + menu_settings?.class ?? ''}
+                className={' pupurs' + menu_settings?.class ?? ''}
                 onPress={handlePress}
             >
-                <Row className="h-6 justify-between items-center min-w-48">
+                <Row className="  hover:cursor-pointer justify-between bg-bgritem dark:bg-bgritem-d flex flex-row h-[44px] items-center px-[12px] text-[16px] rounded-[12px] hover:bg-bgritem-h dark:hover:bg-bgritem-dh items-center min-w-48">
                     {translatedTitle}
                     {addonContent}
                 </Row>

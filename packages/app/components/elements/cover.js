@@ -35,7 +35,7 @@ function getCoverBackButton() {
                 <Button
                     rounded={true}
                     size="base"
-                    variant="glassy"
+                    variant="default"
                     startDecorator="ArrowLeft"
                     onPress={() => history.back()}
                 />
@@ -48,7 +48,7 @@ function getCoverBackButton() {
                     <Button
                         rounded={true}
                         size="base"
-                        variant="glassy"
+                        variant="default"
                         startDecorator="ArrowLeft"
                     />
                 </Link>
@@ -69,7 +69,7 @@ export function CoverSmall({data, context, showMoreMenu, uri}) {
                     <Row className=" gap-x-2 items-center justify-between flex-auto">
                         <View className={` flex-auto flex-row gap-x-[8px] items-center `}>
                             {getBackButtonWeb()}
-                            <Row className={`выаыв ${context?.current?.id == data.profile.id ? TABLET_MODE_FROM + ':flex gap-x-[12px]' : 'gap-x-[12px]'}`}>
+                            <Row className={` ${context?.current?.id == data.profile.id ? TABLET_MODE_FROM + ':flex gap-x-[8px]' : 'gap-x-[8px] flex-auto'}`}>
                                 {bPerson && (
                                     <Profile
                                         {...data.profile}
@@ -265,7 +265,7 @@ function CoverImage({ mode, profileData, coverData, allowEdit, allowSwitch, titl
                 {allowSwitch && (
                     <Button
                         rounded
-                        variant="glassy"
+                        variant="default"
                         startDecorator="RefreshCw"
                         tooltip={'Switch to profile'}
                         onPress={() => handleSwitch(allowSwitch)}
@@ -274,7 +274,7 @@ function CoverImage({ mode, profileData, coverData, allowEdit, allowSwitch, titl
                 {allowEdit && (
                     <Button
                         rounded
-                        variant="glassy"
+                        variant="default"
                         startDecorator="Camera"
                         onPress={() => handleUpload(mode)}
                     />
@@ -336,7 +336,7 @@ export default function ({ data, mode, uri, showMoreMenu }) {
        
             <View className={`w-full mx-auto ${appSetting('layout', 'max_width')}`}>
                 {!isMin && (<CoverImage mode='cover' coverData={data?.cover} profileData={data.profile} allowEdit={bAllowEdit} allowSwitch={isAllowSwitch} />)}
-                <View className={`lg:flex-row gap-y-4 gap-x-[8px] mx-auto w-full lg:items-end max-w-7xl p-[8px] sm:px-[12px] `} >
+                <View className={`lg:flex-row gap-y-[12px] gap-x-[12px] mx-auto w-full lg:items-end max-w-7xl p-[8px] sm:px-[12px] `} >
                     {bPerson && (
                         <View className="hidden lg:flex flex-none h-[104px] justify-end w-min ">
                             <View className=" flex-auto z-50 rounded-full p-[4px] flex-none bg-white dark:bg-neutral-900 ">
@@ -345,7 +345,7 @@ export default function ({ data, mode, uri, showMoreMenu }) {
                         </View>
                     )}
                     <View className="flex-auto lg:flex-row flex-col-reverse ">
-                        <View className="flex-col flex-auto p-[4px] gap-y-[8px] "> 
+                        <View className="flex-col flex-auto p-[4px] py-[6px] gap-y-[8px] "> 
                             <Row className=" gap-x-[12px] flex-auto items-center">
                                 <Text
                                     className={` tracking-tight text-[32px] font-bold leading-[44px] text-neutral-900 dark:text-neutral-50`}
