@@ -38,9 +38,6 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutNam
     const [isModal, setIsModal] = useState(false);
     
     useEffect(() => {
-        // This effect triggers a "Sign in to see more" pop-up modal for non-logged-in users.
-        // It is delayed and will not show if a user has already seen and closed it (checked via storageGet).
-        // The array of routes is an exclusion list to prevent the modal from appearing on critical auth or splash pages.
         if (currentUser === false && !storageGet('layout:modal', '', true) && appSetting('layout', 'show_login_modal') > 0 && !['create-account', 'home', 'login', 'forgot-password', 'confirm-email'].includes(uri)) {
             setTimeout(() => {
                 setIsModal(true)
@@ -66,7 +63,7 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutNam
     }
 
 
-    if (data?.page_status == 503 || currentUser?.page_status == 503) {
+    if (data.page_status == 503 || currentUser?.page_status == 503) {
         return <>
             {appStatic('maintenance_mode')}
         </>
@@ -87,7 +84,6 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutNam
     }
 
     if (pageLayoutName == 'hor') {
-       
         return (
             <>
                 <Suggestions />
@@ -129,7 +125,7 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutNam
                             <AsyncWorker />
                         </View>
                         {menuItems.length > 0 && <View className='w-full lg:w-[360px]'>
-                            <NavbarMemo pageLayoutName={pageLayoutName} headerSettings={headerSettings} layoutName={layoutName} title={data?.name} menu={data?.menu} menu_add={data?.menu_add || false} uri={uri} url={data?.url} />
+                            <NavbarMemo pageLayoutName={pageLayoutName} headerSettings={headerSettings} layoutName={layoutName} title={data.name} menu={data.menu} menu_add={data.menu_add || false} uri={uri} url={data?.url} />
                         </View>}
                     </Row>
                     <BottomSheet />
@@ -150,13 +146,6 @@ const metaAdder = (queryProperty, value) => {
     }
 };
 
-/**
- * Renders the main application layout with responsive design, theme management, and dynamic metadata.
- *
- * Applies theme attributes and background styles based on user and system preferences. Registers service workers, manages sticky positioning for certain elements, and updates document metadata such as title and Open Graph tags. Integrates with OneSignal for push notifications and handles storage clearing on page unload. Dynamically determines and renders the appropriate layout structure based on user state, route, and viewport width.
- *
- * @returns {JSX.Element} The rendered layout component.
- */
 export default function Layout(props) {
 
     const { currentUser, setCurrentUser } = useCurrentUser();
@@ -283,19 +272,23 @@ export default function Layout(props) {
         };
     }, []);
 
-    const [headerSettings, setHeaderSettings] = useState(getHeaderSettings(uri, width, layoutName, data?.config));
+    const [headerSettings, setHeaderSettings] = useState(getHeaderSettings(uri, width, layoutName, data.config));
     const pageLayoutName = getLayout(currentUser, layoutName);
-   
-    /*useEffect(() => {
-        let a = getHeaderSettings(uri, width, layoutName, data?.config);
+    useEffect(() => {
+        let a = getHeaderSettings(uri, width, layoutName, data.config);
         if (pageLayoutName == 'ver') {
             if (width > LAYOUT_BREAKPOINTS[TABLET_MODE_FROM])
                 a.offset = false;
         }
 
+        // Disable offset for splash/auth screens
+        const splashRoutes = ['login', 'create-account', 'forgot-password', 'confirm-email', 'home']; // 'home' is often a splash when not logged in
+        if (splashRoutes.includes(uri) && !currentUser) { // Check for !currentUser especially for 'home' acting as splash
+            a.offset = false;
+        }
         // If it's a dedicated auth page (not home), disable offset regardless of currentUser status, 
         // as these pages typically don't have the main header for which offset is intended.
-        const dedicatedAuthRoutes = ['login', 'create-account', 'confirm-email'];
+        const dedicatedAuthRoutes = ['login', 'create-account', 'forgot-password', 'confirm-email'];
         if (dedicatedAuthRoutes.includes(uri)) {
             a.offset = false;
         }
@@ -303,17 +296,7 @@ export default function Layout(props) {
         if (!deepEqual(headerSettings, a)) {
             setHeaderSettings(a);
         }
-    }, [uri, width, layoutName, data?.config, currentUser, pageLayoutName, headerSettings]);
-*/
-
-useEffect(() => {
-        let a = getHeaderSettings(uri, width, layoutName, data?.config);
-       
-
-        if (!deepEqual(headerSettings, a)) {
-            setHeaderSettings(a);
-        }
-    }, [width]);
+    }, [uri, width, layoutName, data.config, currentUser, pageLayoutName, headerSettings]);
 
     useEffect(() => {
         if (data?.title) {
@@ -365,28 +348,16 @@ const Content = React.memo(({ children, headerSettings, stylesBgImage, currentUs
     const isHideHeader = (appSetting('layout', 'hide_header_for_non_logged') && !currentUser) || appSetting('layout', 'hide_header_for_all');
 
     return (
-        <>
-            <View className="w-full items-stretch cnt-root" key={url}>
-                <View className=" w-full mx-auto flex-row " >
-                    {/*
-                      Adds bottom padding (`pb-16`) on mobile views for the bottom navigation bar.
-                      This padding is removed on large screens (`lg:pb-0`) where the bottom navigation is not used.
-                      Specific layouts like 'messenger' and 'post' are excluded as they manage their own bottom spacing.
-                    */}
-                    <View className={((layoutName != 'messenger' && layoutName != 'post' && !isHideHeader) ? 'pb-16 lg:pb-0' : '') + ' w-full mx-auto'}>
-                        <View className='w-full mx-auto '>
-                            {/*
-                              This View serves as a spacer to offset the fixed top header.
-                              The height `h-16` (64px) is intentionally hardcoded to match the fixed height of the navigation bar.
-                            */}
-                            {(headerSettings.offset && !isHideHeader) && <View className='w-full h-16 ' />}
-                            <Informer />
-                            {children}
-                        </View>
-
+        <View className="w-full items-stretch cnt-root" key={url}>
+            <View className=" w-full mx-auto flex-row " >
+                <View className={((layoutName != 'messenger' && layoutName != 'post' && !isHideHeader) ? 'pb-16 lg:pb-0' : '') + ' w-full mx-auto'}>{/*mb-16* TODO lg:pb-0*/}
+                    <View className='w-full mx-auto '>
+                        {(headerSettings.offset && !isHideHeader) && <View className='w-full h-16 ' />}{/*use this to offset the header globally*/}
+                        <Informer />
+                        {children}
                     </View>
                 </View>
             </View>
-        </>
+        </View>
     );
 });

@@ -1,4 +1,10 @@
 import { View, Row, Pressable } from 'app/design/view';
+import Animated, {
+    useSharedValue,
+    useAnimatedStyle,
+    useAnimatedScrollHandler,
+    withTiming,
+} from 'react-native-reanimated';
 import { BlurView } from 'expo-blur';
 import React, { useMemo, useEffect, memo, isValidElement } from 'react';
 import { getPageSettings } from 'app/lib/util'
@@ -23,7 +29,7 @@ import { Button, ButtonRef } from 'app/design/controls'
 
 export const TextHeader = memo(({ text }) => {
     const { t } = useTranslation();
-    return <Text className="font-bold text-neutral-800 dark:text-neutral-200 flex-auto leading-[36px] text-3xl tracking-tight">
+    return <Text className="font-bold text-neutral-800 dark:text-neutral-200 flex-auto leading-[36px] text-2xl tracking-tight">
         {t(text)}
     </Text>
 })
@@ -31,13 +37,11 @@ export const TextHeader = memo(({ text }) => {
 function RightNonLogged(props) {
     const bSearch = appSetting('layout', 'search') == true
     return (
-        <Row className=' gap-x-2  flex-none'>
+        <Row className=' gap-x-2'>
             {bSearch && <Search
                 params={{ trigger: { icon: 'Search', size: 'base', variant: 'secondary', onPress: () => FeedbackHaptics('Medium') } }} />
             }
-            <View className='w-[44px]'>
             <MenuLauncher />
-            </View>
             <Link href="/login">
                 <ButtonRef
                     variant="secondary"
@@ -80,7 +84,7 @@ export const Header = memo(({
     const headerContent = headerComponent ? headerComponent : textName;
 
     let rightComponents = settings?.header
-    if (!rightComponents) {
+    if (!rightComponents || Object.entries(rightComponents).length === 0) {
         const menu_name = pageData?.menu?.object;
         if (menu_name) {
             const menuSettings = getMenuSettings(pageData?.menu?.object, pageData?.menu?.config);
@@ -93,12 +97,15 @@ export const Header = memo(({
         rightComponents = <RightNonLogged />;
     }
 
+
     const memoizedRightComponents = useMemo(() => {
         if (Array.isArray(rightComponents) && !isValidElement(rightComponents[0])) {
             return getRightHeader(rightComponents, currentUser, pagePath);
         }
         return rightComponents;
     }, [rightComponents, currentUser, pagePath]);
+
+    console.log('rightComponents', rightComponents, memoizedRightComponents)
 
     const type = typeof headerContent;
     let text = type === 'string' ? headerContent : '';
@@ -124,10 +131,10 @@ export const Header = memo(({
     const isCustomHeaderElement = appSetting('layout', 'custom_header_element')
 
     return (
-        <Row className={` px-[12px] sm:px-[16px] items-center h-[64px] justify-between   web:duration-300`}>
-            {((!currentUser && !pageData?.context && isWeb) || (isHome && !pageData?.context && !isWeb)) && 
+        <Row className={` px-[12px] sm:px-[16px] items-center h-[64px] justify-between duration-300`}>
+            {(!currentUser && !pageData?.context) && 
                 <Link href="/home" aria-label="Home">
-                    <Pressable className="items-center flex-row hover:scale-105 rounded-[14px] active:scale-95 active:opacity-50 gap-x-3 text-neutral-800 dark:text-neutral-200 web:hover:text-neutral-800 web:dark:hover:text-neutral-200   web:duration-300 ">
+                    <Pressable className="items-center flex-row hover:scale-105 rounded-[14px] active:scale-95 active:opacity-50 gap-x-3 text-neutral-800 dark:text-neutral-200 web:hover:text-neutral-800 web:dark:hover:text-neutral-200 duration-300 ">
                         <View className="w-[44px] h-[44px]">
                             {appStatic('logo_mark')}
                         </View>
