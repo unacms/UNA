@@ -286,10 +286,11 @@ export default function (props) {
 
     const isSplitMenu = appSetting('cover', 'split_action_menu') && data.actions_menu.persistent == 0
 
+    const isMin = mode === 'min';
     return (
         <View className=" bg-blahblah lg:py-[12px]">
             <View className={`w-full mx-auto ${appSetting('layout', 'max_width')}`}>
-                {mode != 'min' ? (
+                {!isMin ? (
                     <View className={`duration-300 bg-primary-200 dark:bg-primary-950 w-full max-w-[1440px] mx-auto xl:rounded-xl overflow-hidden ${isCover
                         ? ` h-[30vh] sm:${appSetting(
                             'cover',
@@ -337,13 +338,13 @@ export default function (props) {
                     className={` flex-col lg:flex-row gap-y-4   mx-auto w-full lg:items-end max-w-7xl `}
                 >
                     {bPerson && (
-                        <View className=" hidden lg:flex flex-none h-[96px] pl-[12px]  justify-end w-min ">
+                        <View className="hidden lg:flex flex-none h-[96px] pl-[12px]  justify-end w-min ">
 
                             <View className=" flex-auto z-50 rounded-full p-[4px] flex-none bg-white dark:bg-neutral-900 ">
                                 <Profile
                                     {...data.profile}
                                     displayType="unit_wo_info"
-                                    displaySize={'4xl'}
+                                    displaySize={isMin ? '2xl': '4xl'}
                                 />
                                 {bAllowEdit && (
                                     <View className=" p-1 bg-white dark:bg-neutral-900 rounded-full absolute bottom-[8px] right-[4px]">

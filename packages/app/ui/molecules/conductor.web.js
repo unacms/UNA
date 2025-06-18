@@ -1,7 +1,7 @@
-import React, { useCallback, useState, useEffect, useRef, useMemo, useContext, memo } from "react";
+import { useCallback, useState, useEffect, useRef, useMemo, useContext, memo } from "react";
 import { Text } from 'app/design/typography';
 import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing, withSpring } from "react-native-reanimated";
-import { View, Row, Pressable } from 'app/design/view';
+import { View, ViewRef, Row, Pressable } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
 import { useWindowDimensions } from 'react-native';
 import { appSetting, getHeaderSettings, getUnitModeBySource, getURI, getLayout, handleFeedLayoutData, menuItemsByName, getMenuSettings, isObjectsEqual } from 'app/lib/util';
@@ -243,19 +243,21 @@ const LeftSideBarContainer = ({ menu, routes, currentUser, index, setIndex, left
 
 const HeaderContainer = ({ tabBarObj, pageData, headerSettings, windowWidth }) => {
     const scrollValue = useSharedValue(1);
-    const offset = 64;
-    const hideDefaultHeaderFrom = 256;
+    const hideDefaultHeaderFrom = useSharedValue(200);
+
+    const cover1Ref = useRef(null);
+
 
     const uri = pageData?.uri;
     const isCover = pageData.cover_block ? true : false
 
     const handleScroll = useCallback(() => {
         requestAnimationFrame(() => {
-            const currentScrollY = window.scrollY + (scrollValue.value == 0 ? hideDefaultHeaderFrom : 0);
+            const currentScrollY = window.scrollY;
 
-            if (currentScrollY > hideDefaultHeaderFrom) {
+            if (currentScrollY > hideDefaultHeaderFrom.value) {
                 scrollValue.value = 0;
-            } else if (currentScrollY <= hideDefaultHeaderFrom) {
+            } else if (currentScrollY <= hideDefaultHeaderFrom.value) {
                 scrollValue.value = 1;
             }
 
@@ -265,6 +267,9 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, windowWidth }) =
     useEffect(() => {
         if (!appSetting('cover', 'fixed') && isCover) {
             window.addEventListener('scroll', handleScroll);
+            cover1Ref.current.measureInWindow((x, y, width, height) => {
+                hideDefaultHeaderFrom.value = height
+            })
         }
 
         return () => {
@@ -274,48 +279,42 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, windowWidth }) =
         };
     }, [handleScroll]);
 
-    const animatedStyleHeader = useAnimatedStyle(() => {
-        return {
-            position: scrollValue.value === 1 ? 'relative' : 'fixed',
-            top: scrollValue.value === 1 ? '0px' : windowWidth >= LAYOUT_BREAKPOINTS[TABLET_MODE_FROM] ? offset : 0,
-            zIndex: '50',
-        };
-    }, [scrollValue]);
-
     const animatedStyleHeader2 = useAnimatedStyle(() => {
         return {
-            display: scrollValue.value == 1 ? 'flex' : 'none',
-            height: scrollValue.value == 1 ? 'auto' : '0px',
+            marginBottom: scrollValue.value == 1 ? '0px' : '130px',
         };
     }, [scrollValue]);
 
     const animatedStyleHeader3 = useAnimatedStyle(() => {
         return {
-            height: scrollValue.value == 1 ? '0px' : 'auto',
             display: scrollValue.value == 1 ? 'none' : 'flex',
         };
     }, [scrollValue]);
 
     return (
-
-        <Animated.View className="w-full" style={[{ zIndex: '50' }, animatedStyleHeader]}  >
-            <View className={`${isCover ? 'bg-bgrtabbar dark:bg-bgrtabbar-d backdrop-blur-lg lalal' : 'lalal2'}`}>
-                {isCover && <Animated.View className="w-full" style={[{ zIndex: '50' }, animatedStyleHeader2]}  >
+        <>
+            {isCover && <Animated.View className="w-full" style={[{ zIndex: '50' }, animatedStyleHeader2]}>
+                <ViewRef ref={cover1Ref} className="w-full bg-bgrtabbar dark:bg-bgrtabbar-d backdrop-blur-lg lalal  "   >
                     <View className="w-full">
                         <Cover data={pageData.cover_block} showMoreMenu={!conductorTheme.action_menu_in_tabs} mode={headerSettings.cover} uri={uri} context={pageData.context} />
                     </View>
-                </Animated.View>}
-                {isCover && <Animated.View className="w-full hidden" style={[{ zIndex: '50', display: 'none' }, animatedStyleHeader3]}  >
+                    <View className="w-full ">
+                        {tabBarObj}
+
+                    </View>
+                </ViewRef></Animated.View>}
+            {isCover && <Animated.View className="fixed w-full z-50 hidden" style={[{ position: 'fixed', zIndex: '50', }, animatedStyleHeader3]} >
+                <View className="w-full  bg-bgrtabbar dark:bg-bgrtabbar-d backdrop-blur-lg ">
                     <View className="w-full">
                         <CoverSmall showMoreMenu={!conductorTheme.action_menu_in_tabs} context={pageData.context} data={pageData.cover_block} />
                     </View>
-                </Animated.View>}
-                <View className="w-full ">
-                    {tabBarObj}
+                    <View className="w-full ">
+                        {tabBarObj}
+                    </View>
 
                 </View>
-            </View>
-        </Animated.View>
+            </Animated.View>}
+        </>
 
     )
 };

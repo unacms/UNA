@@ -109,7 +109,7 @@ export  const settingsDefault = {
         view_by_module: {
             //appSetting('layout', 'cover_mode'
             bx_courses: 'min',
-            //bx_spaces: 'min',
+            bx_spaces: 'min',
             bx_jobs: 'max',
         },
         show_pic_by_module:{

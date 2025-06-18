@@ -97,15 +97,12 @@ export const Header = memo(({
         rightComponents = <RightNonLogged />;
     }
 
-
     const memoizedRightComponents = useMemo(() => {
         if (Array.isArray(rightComponents) && !isValidElement(rightComponents[0])) {
             return getRightHeader(rightComponents, currentUser, pagePath);
         }
         return rightComponents;
     }, [rightComponents, currentUser, pagePath]);
-
-    console.log('rightComponents', rightComponents, memoizedRightComponents)
 
     const type = typeof headerContent;
     let text = type === 'string' ? headerContent : '';
