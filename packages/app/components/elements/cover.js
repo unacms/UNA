@@ -295,10 +295,11 @@ function CoverImage({ mode, profileData, coverData, allowEdit, allowSwitch, titl
                     displaySize={profileDisplaySize}
                 />
                 {allowEdit && (
-                    <View className="p-1 bg-white dark:bg-neutral-900 rounded-full absolute bottom-[8px] right-[4px]">
+                    <View className=" bg-white dark:bg-neutral-900 rounded-full absolute bottom-[6px] right-0">
                         <Button
                             rounded
                             size="sm"
+                            ring="p-[2px]"
                             variant="default"
                             startDecorator="Camera"
                             onPress={() =>
@@ -332,28 +333,29 @@ export default function ({ data, mode, uri, showMoreMenu }) {
     const isMin = coverMode === 'min';
 
     return (
-        <View className=" bg-blahblah lg:py-[12px]">
+       
             <View className={`w-full mx-auto ${appSetting('layout', 'max_width')}`}>
                 {!isMin && (<CoverImage mode='cover' coverData={data?.cover} profileData={data.profile} allowEdit={bAllowEdit} allowSwitch={isAllowSwitch} />)}
-                <View className={`lg:flex-row gap-y-4 mx-auto w-full lg:items-end max-w-7xl `} >
+                <View className={`lg:flex-row gap-y-4 gap-x-[8px] mx-auto w-full lg:items-end max-w-7xl p-[8px] sm:px-[12px] `} >
                     {bPerson && (
-                        <View className="hidden lg:flex flex-none h-[96px] pl-[12px]  justify-end w-min ">
+                        <View className="hidden lg:flex flex-none h-[104px] justify-end w-min ">
                             <View className=" flex-auto z-50 rounded-full p-[4px] flex-none bg-white dark:bg-neutral-900 ">
                                 <CoverImage mode='picture' profileDisplaySize={isMin ? '2xl' : '4xl'} coverData={data?.cover} profileData={data.profile} allowEdit={bAllowEdit} allowSwitch={isAllowSwitch} />
                             </View>
                         </View>
                     )}
-                    <View className="flex-auto lg:flex-row flex-col-reverse">
-                        <View className="flex-col flex-auto ">
-                            <Row className=" gap-x-2 flex-auto items-center px-[12px] sm:px-[16px] pt-[12px]">
+                    <View className="flex-auto lg:flex-row flex-col-reverse ">
+                        <View className="flex-col flex-auto p-[4px] gap-y-[8px] "> 
+                            <Row className=" gap-x-[12px] flex-auto items-center">
                                 <Text
-                                    className={` tracking-tight text-4xl font-bold leading-[48px] text-neutral-900 dark:text-neutral-50`}
+                                    className={` tracking-tight text-[32px] font-bold leading-[44px] text-neutral-900 dark:text-neutral-50`}
                                     numberOfLines={2}
                                 >
                                     {data.profile.display_name}
                                 </Text>
                                 <Badges badges={data.badges} />
                             </Row>
+
                             {isWeb ? <CoverMenuMeta {...data.meta_menu} /> : <ScrollView horizontal={true}><CoverMenuMeta {...data.meta_menu} /></ScrollView>}
                            
                             {!!data.profile.info?.date_start && (
@@ -367,7 +369,7 @@ export default function ({ data, mode, uri, showMoreMenu }) {
                             )}
                         </View>
                         {isSplitMenu ? (
-                            <View className="flex-row flex-wrap items-end justify-between lg:ml-auto flex-auto gap-x-[8px] gap-y-[8px] px-[12px] sm:px-[16px] pt-[12px]">
+                            <View className="flex-row flex-wrap items-end justify-between lg:ml-auto flex-auto gap-x-[8px] gap-y-[8px] p-[4px]">
                                 {bPerson && (
                                     <View className="  lg:hidden flex-none h-[44px] justify-end w-min ">
                                         <View className=" flex-row flex-auto z-50 rounded-full p-[4px] flex-none bg-white dark:bg-neutral-900 ">
@@ -399,6 +401,6 @@ export default function ({ data, mode, uri, showMoreMenu }) {
                     </View>
                 </View>
             </View>
-        </View>
+     
     )
 }
