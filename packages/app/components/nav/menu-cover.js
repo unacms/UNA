@@ -100,7 +100,7 @@ export function CoverMenu(props) {
                 button_size: size,
                 button_rounded: false,
                 button_full_width: props?.params.button_full_width ?? false,
-                className: ' gap-x-[8px] justify-end',
+                className: ' gap-x-[8px] gap-y-[12px] w-full flex-wrap justify-end',
                 isFixedCount: true
             }}
         />
@@ -167,8 +167,8 @@ export function CoverMenuMore(props) {
                 button_variant: 'text',
                 button_size: size,
                 button_rounded: false,
-                button_full_width: props?.params.button_full_width ?? false,
-                className: ' gap-x-[8px] justify-end',
+                button_full_width: props?.params?.button_full_width ?? false,
+                className: ' gap-x-[8px] gap-y-[12px] flex-wrap justify-end',
                 isFixedCount: true
             }}
         />
@@ -183,7 +183,7 @@ export function CoverMenuMeta(props) {
             params={{
                 button_variant: 'secondary',
                 button_size: 'sm',
-                className: ' flex-row flex-wrap gap-y-2 gap-x-2 flex-none p-[12px] sm:px-[16px] min-h-[48px] items-center',//lg:w-full lg:gap-y-2
+                className: ' flex-row flex-wrap gap-y-[12px] gap-x-[12px] flex-none items-center',//lg:w-full lg:gap-y-2
             }}
         />
     )

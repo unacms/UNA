@@ -78,8 +78,8 @@ const colors = {
     },
 
     bgrcard: {
-        DEFAULT: 'rgba(255,255,255,0.65)',
-        d: 'rgba(31,41,55,0.65)',
+        DEFAULT: 'rgba(255,255,255,0.8)',
+        d: 'rgba(31,41,55,0.8)',
     },
     bdrcard: {
         DEFAULT: 'rgba(0,0,0,0.1)',
@@ -113,8 +113,8 @@ const colors = {
         d: 'rgba(110,115,130,0.2)',
     },
     bgrnavbar: {
-        DEFAULT: 'rgba(255,255,255,0.65)',
-        d: 'rgba(31,41,55,0.65)',
+        DEFAULT: 'rgba(255,255,255,0.8)',
+        d: 'rgba(31,41,55,0.8)',
     },
     bdrnavbar: {
         DEFAULT: 'rgba(75,85,100,0.10)',
@@ -122,8 +122,8 @@ const colors = {
        
     },
     bgrtabbar: {
-        DEFAULT: 'rgba(255,255,255,0.65)',
-        d: 'rgba(31,41,55,0.65)',
+        DEFAULT: 'rgba(255,255,255,0.8)',
+        d: 'rgba(31,41,55,0.8)',
     },
     bdrtabbar: {
         DEFAULT: 'rgba(75,85,100,0.10)',

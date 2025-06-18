@@ -176,16 +176,16 @@ export default function (props) {
                                             {bSearch && <Search />}
                                         </View>
                                         {isCustomHeaderElement && <View className="p-[4px]"><HeaderElement/></View>}
-                                        <View className="hidden sm:block p-[4px]">
+                                        <View className="hidden sm:block p-[6px]">
                                             <MenuLauncher />
                                         </View>
                                         <View className="p-[6px]">
                                             <MenuAdd />
                                         </View>
-                                        <View className="hidden sm:block p-[4px]">
+                                        <View className="hidden sm:block p-[6px]">
                                             {bNotifs && <NotificationButton />}
                                         </View>
-                                        <View className="hidden sm:block p-[4px]">
+                                        <View className="hidden sm:block p-[6px]">
                                             {bMessenger && (
                                                 <Link
                                                     href={appSetting(
@@ -214,7 +214,7 @@ export default function (props) {
                                             )}
                                         </View>
 
-                                        <View className="hidden sm:block p-[4px]">
+                                        <View className="hidden sm:block p-[6px]">
                                             <MenuAccount />
                                         </View>                                   
                                 </Row>

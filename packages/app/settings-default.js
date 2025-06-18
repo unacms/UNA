@@ -984,14 +984,6 @@ export  const settingsDefault = {
                 'font-medium text-neutral-800 dark:text-neutral-200',
             'u-btn-outline-trans': '  web:duration-300',
 
-            'u-btn-glassy-cnt':
-                'border border-transparent dark:border-transparent bg-neutral-900 backdrop-blur web:hover:bg-neutral-800 active:opacity-70 shadow',
-            'u-btn-glassy-text':
-                'font-medium text-neutral-50',
-            'u-btn-glassy-trans': '  web:duration-300',
-            'u-btn-glassy-color-icon-light': 'rgb(255, 255, 255)',
-            'u-btn-glassy-color-icon-dark': 'rgb(255, 255, 255)',
-
             'u-btn-group-item-cnt':
                 'border border-transparent dark:border-transparent web:hover:bg-bgritem-h dark:web:hover:bg-bgritem-dh active:opacity-50',
             'u-btn-group-item-text':

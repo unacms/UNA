@@ -190,7 +190,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
     });
 
     const ButtonEx = memo(({ visibleItemsCount }) => {
-        return <Button startDecorator="ChevronDown" variant={visibleItemsCount <= index ? 'secondary' : "secondary"} rounded ring="p-1" pressed={visibleItemsCount <= index ? true : false} size="sm" />;
+        return <Button startDecorator="ChevronDown" variant={visibleItemsCount <= index ? 'secondary' : "secondary"} rounded ring="px-[8px]" pressed={visibleItemsCount <= index ? true : false} size="base" />;
     });
 
     return <DynamicMenu
@@ -293,7 +293,7 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, windowWidth }) =
     return (
         <>
             {isCover && <Animated.View className="w-full" style={[{ zIndex: '50' }, animatedStyleHeader2]}>
-                <ViewRef ref={cover1Ref} className="w-full bg-bgrtabbar dark:bg-bgrtabbar-d backdrop-blur-lg lalal  "   >
+                <ViewRef ref={cover1Ref} className="w-full bg-gradient-to-b from-transparent to-bgrtabbar dark:to-bgrtabbar-d backdrop-blur-xl  "   >
                     <View className="w-full">
                         <Cover data={pageData.cover_block} showMoreMenu={!conductorTheme.action_menu_in_tabs} mode={headerSettings.cover} uri={uri} context={pageData.context} />
                     </View>

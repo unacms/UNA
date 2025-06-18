@@ -427,7 +427,7 @@ export function TopSidebar({ styles, leftSideBar, addButtons, children, title, l
         <View style={styles} className={ ` ${!omitDefaultBackground ? conductorTheme.menu : ''} ${leftSideBar ? 'lg:hidden' : ''}`}>
             <View className={`${leftSideBar ? '' : 'mx-auto'} w-full ${conductorTheme.menu_max_width}`}>
                 
-                <Row className=" px-[12px] sm:px-[16px] py-[6px] items-center justify-between">
+                <Row className=" mx-[12px] sm:mx-[16px] py-[10px] border-t border-bdr dark:border-bdr-d items-center justify-between">
                     {currentUser && title ? <Text className="text-2xl my-auto sm:mx-5 pb-1 font-medium text-neutral-800 tracking-tight dark:text-neutral-200 hidden lg:flex">{title}</Text> : null}
                     {!currentUser && title ? <View className='pr-[16px] sm:pr-[24px]'><TextHeader text={title} /></View> : null}
                     {children}

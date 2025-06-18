@@ -1,6 +1,6 @@
 import React, { useMemo, forwardRef } from 'react';
 import { TextInput as TextInputDef, Modal as ModalDef, Platform } from 'react-native'
-import SwitchDef from 'app/ui/atoms/switcher'
+import SwitchDef from 'app/components/form-fields/switcher'
 import { Pressable, View, ScrollView, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'

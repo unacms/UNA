@@ -230,7 +230,7 @@ export const DefaultView = memo(({ data, styles, bIsTitle, bIsTimelineContent, c
     return <>
         <View className={isCompact ? "flex-row-reverse" : " flex-col "}>
             {data.mainImage && (
-                <View className={isCompact ? " w-48 mb-auto pr-4" : "w-full mb-[12px] px-[4px]"}>
+                <View className={isCompact ? " w-48 mb-auto pr-4" : "w-full mb-[12px] "}>
                     <View
                         className="w-full aspect-video  rounded-lg overflow-hidden  "
                         style={styles.card_image}

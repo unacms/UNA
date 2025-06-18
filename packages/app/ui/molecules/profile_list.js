@@ -18,7 +18,7 @@ function fillArrayToLength(arr, maxCount, defaultValue) {
             break
 
         case 'sm':
-            sSize = 'w-[36px] h-[36px]'
+            sSize = 'w-[32px] h-[32px]'
             break
 
         case 'base':
