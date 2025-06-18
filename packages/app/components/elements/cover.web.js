@@ -24,10 +24,11 @@ import {
 import { useTranslation } from 'react-i18next'
 import { Platform } from 'react-native'
 import Link from 'app/ui/atoms/link'
+import Loading from 'app/ui/atoms/loading'
 
 const conductorTheme = appSetting('theme', 'conductor')
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from');
-// Custom back button for cover images with glassy style
+
 function getCoverBackButton() {
     const isWeb = Platform.OS === 'web'
     if (!isWeb) return <></>
@@ -59,31 +60,19 @@ function getCoverBackButton() {
     }
 }
 
-export function CoverSmall(props) {
-    const data = props.data
-    const isUseBg = appSetting('cover', 'use_background')
-    const bPerson =
-        props.data.profile.module == 'bx_persons' ||
-            appSetting('cover', 'show_pic_by_module', props.data?.profile?.module)
-            ? true
-            : false
+export function CoverSmall({data, context, showMoreMenu, uri}) {
 
+    const bPerson = data.profile.module == 'bx_persons' || appSetting('cover', 'show_pic_by_module', data?.profile?.module) ? true : false
     const isSplitMenu = appSetting('cover', 'split_action_menu') && data.actions_menu.persistent == 0
 
     return (
         <View className="w-full" >
-            <View
-                className={
-                    appSetting('layout', 'max_width') + ' w-full mx-auto'
-                }
-            >
-                <View
-                    className={`px-[8px] py-[12px] lg:px-[16px] ${conductorTheme.content_max_width} mx-auto w-full flex-row gap-2`}
-                >
+            <View className={`${appSetting('layout', 'max_width')} w-full mx-auto`}>
+                <View className={`px-[8px] py-[12px] lg:px-[16px] ${conductorTheme.content_max_width} mx-auto w-full flex-row gap-2`} >
                     <Row className=" gap-x-2 items-center justify-between flex-auto">
                         <View className={` flex-auto flex-row gap-x-[8px] items-center`}>
                             {getBackButtonWeb()}
-                            <Row className={`${props.context?.current?.id == data.profile.id ? TABLET_MODE_FROM + ':flex gap-x-[12px]' : 'gap-x-[12px]'}`}>
+                            <Row className={`${context?.current?.id == data.profile.id ? TABLET_MODE_FROM + ':flex gap-x-[12px]' : 'gap-x-[12px]'}`}>
                                 {bPerson && (
                                     <Profile
                                         {...data.profile}
@@ -91,7 +80,6 @@ export function CoverSmall(props) {
                                         displaySize="base"
                                     />
                                 )}
-
                                 <Profile
                                     {...data.profile}
                                     displayType="unit_wo_image"
@@ -101,24 +89,23 @@ export function CoverSmall(props) {
                         </View>
                         <View className=" items-end">
                             {isSplitMenu ? <Row className='w-full justify-between'>
-
-                                 {props.showMoreMenu && <View className='w-[44px]'>
+                                {showMoreMenu && <View className='w-[44px]'>
                                     <CoverMenuMore
                                         {...data.actions_menu}
-                                        uri={props?.uri}
+                                        uri={uri}
                                         isSplitMenu={false}
 
                                     />
                                 </View>}
-                                {!props.showMoreMenu && <CoverMenu
-                                        {...data.actions_menu}
-                                        uri={props?.uri}
-                                        isSplitMenu={isSplitMenu}
-                                    />
+                                {!showMoreMenu && <CoverMenu
+                                    {...data.actions_menu}
+                                    uri={uri}
+                                    isSplitMenu={isSplitMenu}
+                                />
                                 }
                             </Row> : <CoverMenu
                                 {...data.actions_menu}
-                                uri={props?.uri}
+                                uri={uri}
 
                             />
                             }
@@ -130,26 +117,22 @@ export function CoverSmall(props) {
     )
 }
 
-export default function (props) {
-    const { t } = useTranslation()
-    const { currentUser, setCurrentUser } = useCurrentUser()
-    const data = props.data
+function CoverImage({ mode, profileData, coverData, allowEdit, allowSwitch, title, profileDisplaySize }) {
+    const [imageUrl, setImageUrl] = useState(mode == 'cover' ? coverData.src : profileData.url_avatar)
 
-    const mode =
-        appSetting('cover', 'view_by_module', props.data?.profile?.module) ||
-        props.mode
-    const bPerson =
-        props.data.profile.module == 'bx_persons' ||
-            appSetting('cover', 'show_pic_by_module', props.data?.profile?.module)
-            ? true
-            : false
-    const [coverUrl, setCoverUrl] = useState(data.cover.src)
-    const [pictureUrl, setPictureUrl] = useState(data.profile.url_avatar)
-
-    const uo = props.data.profile.module + '_cover_crop'
-    const so = data.cover.storage
+    const uo = profileData.module + '_cover_crop'
+    const so = coverData.storage
     const img_trans = ''
-    const c = data.profile.info.id
+    const c = profileData.info.id
+
+
+    const handleSwitch = async (id) => {
+        const result = await fetcher(
+            '/api.php?r=system/switch_profile/TemplServiceAccount&params[]=' +
+            id
+        )
+        location.reload()
+    }
 
     const handleUpload = async (mode) => {
         const url =
@@ -165,7 +148,6 @@ export default function (props) {
             c +
             '&p=0'
 
-        //alert(mode);
         let mediaTypes = ImagePicker.MediaTypeOptions.Images
 
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -203,11 +185,13 @@ export default function (props) {
                                     },
                                 },
                             ])
+
                             uri = resizedPhoto.uri
                         }
                     }
                     if (mode == 'picture') {
                         let s = width
+
                         let originX = 0
                         let originY = 0
                         let acts = []
@@ -234,7 +218,8 @@ export default function (props) {
                         const resizedPhoto = await manipulateAsync(uri, acts)
                         uri = resizedPhoto.uri
                     }
-                    let hash = md5(uri)
+                    const hash = md5(uri)
+                    setImageUrl(uri)
                     uploadImage(
                         uri,
                         url + '&a=upload',
@@ -249,7 +234,7 @@ export default function (props) {
     const handleInsertImageFinish = async (uploadInfo) => {
         const sRequest =
             '/api.php?r=' +
-            props.data.profile.module +
+            profileData.module +
             '/update_image/&params[]=' +
             uploadInfo.extraVar.mode +
             '&params[]=' +
@@ -257,14 +242,86 @@ export default function (props) {
             '&params[]=' +
             uploadInfo.result.data.id
         const sResponse = await fetcher(sRequest)
-        if (uploadInfo.extraVar.mode == 'cover') setCoverUrl(sResponse.data)
-        else setPictureUrl(sResponse.data)
+        setImageUrl(sResponse.data)
     }
 
-    data.profile.url_avatar = pictureUrl
+    if (mode == 'cover') {
+        const isCover = !!imageUrl
+        return (<View className={`duration-300 bg-primary-200 dark:bg-primary-950 w-full max-w-[1440px] mx-auto xl:rounded-xl overflow-hidden ${isCover
+            ? ` h-[30vh] sm:${appSetting(
+                'cover',
+                'aspect_ratio'
+            )}`
+            : 'pb-[128px]'
+            }`}
+        >
+            {isCover && (
+                <Image
+                    alt={title}
+                    view="cover"
+                    sizes={LAYOUT_BREAKPOINTS.xl}
+                    className="u-cover opacity-50"
+                    src={imageUrl}
+                />
+            )}
+            {imageUrl?.includes('data:') && <View className='h-full w-full opacity-50 bg-bgrtabbar dark:bg-bgrtabbar-d w-full opacity-50 justify-center'><Loading /></View>}
+            <Row className="p-[8px] sm:px-[16px] justify-end gap-x-[8px] ">
+                {allowSwitch && (
+                    <Button
+                        rounded
+                        variant="glassy"
+                        startDecorator="RefreshCw"
+                        tooltip={'Switch to profile'}
+                        onPress={() => handleSwitch(allowSwitch)}
+                    />
+                )}
+                {allowEdit && (
+                    <Button
+                        rounded
+                        variant="glassy"
+                        startDecorator="Camera"
+                        onPress={() => handleUpload(mode)}
+                    />
+                )}
+            </Row>
+            <View className="absolute lg:hidden top-[8px] left-[8px] z-50">
+                {getCoverBackButton()}
+            </View>
+        </View>)
+    }
+    if (mode == 'picture') {
+        return (
+            <>
+                <Profile
+                    {...profileData}
+                    url_avatar={imageUrl}
+                    displayType="unit_wo_info"
+                    displaySize={profileDisplaySize}
+                />
+                {allowEdit && (
+                    <View className="p-1 bg-white dark:bg-neutral-900 rounded-full absolute bottom-[8px] right-[4px]">
+                        <Button
+                            rounded
+                            size="sm"
+                            variant="default"
+                            startDecorator="Camera"
+                            onPress={() =>
+                                handleUpload(mode)
+                            }
+                        />
+                    </View>
+                )}
+            </>
+        )
+    }
+}
 
+export default function ({ data, mode, uri, showMoreMenu }) {
+    const { t } = useTranslation()
+    const { currentUser } = useCurrentUser()
+    const coverMode = appSetting('cover', 'view_by_module', data?.profile?.module) || mode
+    const bPerson = data.profile.module == 'bx_persons' || appSetting('cover', 'show_pic_by_module', data?.profile?.module) ? true : false
     const bAllowEdit = data.allow_edit && appSetting('cover', 'allow_edit')
-
     const foundItem = currentUser?.informer?.find((item) => {
         return item.id == 'sys-switch-profile-context'
     })
@@ -273,96 +330,22 @@ export default function (props) {
         let match = isAllowSwitch.match(/switch_to_profile=(\d+)/)
         isAllowSwitch = match ? match[1] : null
     }
-
-    const handleSwitch = async (id) => {
-        const result = await fetcher(
-            '/api.php?r=system/switch_profile/TemplServiceAccount&params[]=' +
-            id
-        )
-        location.reload()
-    }
-
-    const isCover = data?.cover?.src
-
     const isSplitMenu = appSetting('cover', 'split_action_menu') && data.actions_menu.persistent == 0
+    const isMin = coverMode === 'min';
 
-    const isMin = mode === 'min';
     return (
         <View className=" bg-blahblah lg:py-[12px]">
             <View className={`w-full mx-auto ${appSetting('layout', 'max_width')}`}>
-                {!isMin ? (
-                    <View className={`duration-300 bg-primary-200 dark:bg-primary-950 w-full max-w-[1440px] mx-auto xl:rounded-xl overflow-hidden ${isCover
-                        ? ` h-[30vh] sm:${appSetting(
-                            'cover',
-                            'aspect_ratio'
-                        )}`
-                        : 'pb-[128px]'
-                        }`}
-                    >
-                        {isCover && (
-                            <Image
-                                alt={data.group_name}
-                                view="cover"
-                                sizes={LAYOUT_BREAKPOINTS.xl}
-                                className="u-cover "
-                                src={coverUrl}
-                            />
-                        )}
-                        <Row className="p-[8px] sm:px-[16px] justify-end gap-x-[8px]">
-                            {isAllowSwitch && (
-                                <Button
-                                    rounded
-                                    variant="glassy"
-                                    startDecorator="RefreshCw"
-                                    tooltip={'Switch to profile'}
-                                    onPress={() => handleSwitch(isAllowSwitch)}
-                                />
-                            )}
-                            {bAllowEdit && (
-                                <Button
-                                    rounded
-                                    variant="glassy"
-                                    startDecorator="Camera"
-                                    onPress={() => handleUpload('cover')}
-                                />
-                            )}
-                        </Row>
-                        <View className="absolute lg:hidden top-[8px] left-[8px] z-50">
-                            {getCoverBackButton()}
-                        </View>
-                    </View>
-                ) : (
-                    <></>
-                )}
-                <View
-                    className={` flex-col lg:flex-row gap-y-4   mx-auto w-full lg:items-end max-w-7xl `}
-                >
+                {!isMin && (<CoverImage mode='cover' coverData={data?.cover} profileData={data.profile} allowEdit={bAllowEdit} allowSwitch={isAllowSwitch} />)}
+                <View className={`lg:flex-row gap-y-4 mx-auto w-full lg:items-end max-w-7xl `} >
                     {bPerson && (
                         <View className="hidden lg:flex flex-none h-[96px] pl-[12px]  justify-end w-min ">
-
                             <View className=" flex-auto z-50 rounded-full p-[4px] flex-none bg-white dark:bg-neutral-900 ">
-                                <Profile
-                                    {...data.profile}
-                                    displayType="unit_wo_info"
-                                    displaySize={isMin ? '2xl': '4xl'}
-                                />
-                                {bAllowEdit && (
-                                    <View className=" p-1 bg-white dark:bg-neutral-900 rounded-full absolute bottom-[8px] right-[4px]">
-                                        <Button
-                                            rounded
-                                            size="sm"
-                                            variant="default"
-                                            startDecorator="Camera"
-                                            onPress={() =>
-                                                handleUpload('picture')
-                                            }
-                                        />
-                                    </View>
-                                )}
+                                <CoverImage mode='picture' profileDisplaySize={isMin ? '2xl' : '4xl'} coverData={data?.cover} profileData={data.profile} allowEdit={bAllowEdit} allowSwitch={isAllowSwitch} />
                             </View>
                         </View>
                     )}
-                    <View className="flex-auto lg:flex-row flex-col-reverse  ">
+                    <View className="flex-auto lg:flex-row flex-col-reverse">
                         <View className="flex-col flex-auto ">
                             <Row className=" gap-x-2 flex-auto items-center px-[12px] sm:px-[16px] pt-[12px]">
                                 <Text
@@ -391,38 +374,21 @@ export default function (props) {
                                     <View className="  lg:hidden flex-none h-[44px] justify-end w-min ">
 
                                         <View className=" flex-row flex-auto z-50 rounded-full p-[4px] flex-none bg-white dark:bg-neutral-900 ">
-                                            <Profile
-                                                {...data.profile}
-                                                displayType="unit_wo_info"
-                                                displaySize={'3xl'}
-                                            />
-                                            {bAllowEdit && (
-                                                <View className=" p-1 bg-white dark:bg-neutral-900 rounded-full absolute bottom-[8px] right-[4px]">
-                                                    <Button
-                                                        rounded
-                                                        size="sm"
-                                                        variant="default"
-                                                        startDecorator="Camera"
-                                                        onPress={() =>
-                                                            handleUpload('picture')
-                                                        }
-                                                    />
-                                                </View>
-                                            )}
+                                            <CoverImage mode='picture' profileDisplaySize={'3xl'} coverData={data?.cover} profileData={data.profile} allowEdit={bAllowEdit} allowSwitch={isAllowSwitch} />
                                         </View>
                                     </View>
                                 )}
                                 <View className=" flex-row flex-wrap justify-end flex-auto gap-x-[8px] gap-y-[8px] items-center">
                                     <CoverMenu
                                         {...data.actions_menu}
-                                        uri={props?.uri}
+                                        uri={uri}
                                         isSplitMenu={isSplitMenu}
                                     />
                                 </View>
-                                {props.showMoreMenu && <View className="w-[44px] items-end ">
+                                {showMoreMenu && <View className="w-[44px] items-end ">
                                     <CoverMenuMore
                                         {...data.actions_menu}
-                                        uri={props?.uri}
+                                        uri={uri}
                                         isSplitMenu={isSplitMenu}
                                     />
                                 </View>}
@@ -431,7 +397,7 @@ export default function (props) {
                         ) : (
                             <CoverMenu
                                 {...data.actions_menu}
-                                uri={props?.uri}
+                                uri={uri}
                             />
                         )}
                     </View>

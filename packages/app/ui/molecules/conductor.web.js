@@ -570,9 +570,6 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
         setIndex((prevIndex) => {
             setRoutes((prevRoutes) => {
                 const newRoutes = [...prevRoutes]; // Актуальные маршруты
-
-                console.log("newRoutes1", newRoutes);
-
                 values.forEach((value) => {
                     const name = value.name;
                     const val = value.value;
