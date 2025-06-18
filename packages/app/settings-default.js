@@ -800,10 +800,12 @@ export  const settingsDefault = {
         switcher: {
             container: 'items-center flex flex-row-reverse justify-between gap-x-2 items-center h-[56px] min-w-[56px] rounded-[12px] flex-auto  p-[12px]  bg-neutral-50 border border-neutral-200  hover:border-neutral-300 focus:border-primary dark:bg-neutral-900 overflow-hidden  dark:border-neutral-800 dark:hover:border-neutral-700  dark:focus:border-primary-d  focus:bg-bgrinput-f dark:focus:bg-neutral-950    web:duration-300  placeholder-neutral-500   ',
             text: ' text-neutral-800 dark:text-neutral-200  text-[16px] ',
-            track: '#cccccc',
-            active_track: '#0ea5e9',
-            thumb: '#ffffff',
-            active_thumb: '#ffffff',
+            track: 'item-center rounded-full ',
+            thumb: ' rounded-full aspect-square bg-white',
+            track_color: 'bg-red-500 dark:bg-red-500 ',
+            active_track_color: 'bg-green-500 dark:bg-green-500',
+            size_base: ['w-[80px] h-[32px] p-1 ', 'h-[24px] w-[24px]'],
+            size_sm: ['w-[40px] h-[16px] p-0.5 ', 'h-[12px] w-[12px]'],
         },
         doublerange: {
             container: 'w-full items-center justify-between mt-2',

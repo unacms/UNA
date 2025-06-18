@@ -7,19 +7,17 @@ import { getBackButtonWeb } from 'app/lib/common-helpers'
 import { Button } from 'app/design/controls'
 import { appSetting, formatDateInterval } from 'app/lib/util'
 import Profile from 'app/ui/molecules/profile'
-import { useWindowDimensions } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
 import { uploadImage, md5, LAYOUT_BREAKPOINTS } from 'app/lib/util'
-import { genRnd, getLayout } from 'app/lib/util'
+import { genRnd } from 'app/lib/util'
 import { fetcher } from 'app/lib/fetcher'
-import { manipulateAsync, FlipType, SaveFormat } from 'expo-image-manipulator'
+import { manipulateAsync} from 'expo-image-manipulator'
 import { Image as ImageNative } from 'react-native'
 import { useCurrentUser } from 'app/context/user'
 import {
     CoverMenuMeta,
     CoverMenu,
     CoverMenuMore,
-    CoverMenuSmall,
 } from 'app/components/nav/menu-cover'
 import { useTranslation } from 'react-i18next'
 import { Platform } from 'react-native'
@@ -70,9 +68,9 @@ export function CoverSmall({data, context, showMoreMenu, uri}) {
             <View className={`${appSetting('layout', 'max_width')} w-full mx-auto`}>
                 <View className={`px-[8px] py-[12px] lg:px-[16px] ${conductorTheme.content_max_width} mx-auto w-full flex-row gap-2`} >
                     <Row className=" gap-x-2 items-center justify-between flex-auto">
-                        <View className={` flex-auto flex-row gap-x-[8px] items-center`}>
+                        <View className={` flex-auto flex-row gap-x-[8px] items-center `}>
                             {getBackButtonWeb()}
-                            <Row className={`${context?.current?.id == data.profile.id ? TABLET_MODE_FROM + ':flex gap-x-[12px]' : 'gap-x-[12px]'}`}>
+                            <Row className={`выаыв ${context?.current?.id == data.profile.id ? TABLET_MODE_FROM + ':flex gap-x-[12px]' : 'gap-x-[12px]'}`}>
                                 {bPerson && (
                                     <Profile
                                         {...data.profile}
@@ -106,7 +104,6 @@ export function CoverSmall({data, context, showMoreMenu, uri}) {
                             </Row> : <CoverMenu
                                 {...data.actions_menu}
                                 uri={uri}
-
                             />
                             }
                         </View>
@@ -357,7 +354,6 @@ export default function ({ data, mode, uri, showMoreMenu }) {
                                 <Badges badges={data.badges} />
                             </Row>
                             <CoverMenuMeta {...data.meta_menu} />
-
                             {!!data.profile.info?.date_start && (
                                 <Text className="  text-neutral-600 dark:text-neutral-400 text-xs uppercase font-semibold tracking-tight overflow-hidden rounded-md flex-none items-center">
                                     {formatDateInterval(
@@ -372,7 +368,6 @@ export default function ({ data, mode, uri, showMoreMenu }) {
                             <View className="flex-row flex-wrap items-end justify-between lg:ml-auto flex-auto gap-x-[8px] gap-y-[8px] px-[12px] sm:px-[16px] pt-[12px]">
                                 {bPerson && (
                                     <View className="  lg:hidden flex-none h-[44px] justify-end w-min ">
-
                                         <View className=" flex-row flex-auto z-50 rounded-full p-[4px] flex-none bg-white dark:bg-neutral-900 ">
                                             <CoverImage mode='picture' profileDisplaySize={'3xl'} coverData={data?.cover} profileData={data.profile} allowEdit={bAllowEdit} allowSwitch={isAllowSwitch} />
                                         </View>
@@ -393,7 +388,6 @@ export default function ({ data, mode, uri, showMoreMenu }) {
                                     />
                                 </View>}
                             </View>
-
                         ) : (
                             <CoverMenu
                                 {...data.actions_menu}

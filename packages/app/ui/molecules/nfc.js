@@ -108,16 +108,6 @@ export default function Nfc(props) {
         )
     }
 
-    /*   <Text>Allow Scan Profile</Text><Switch
-                    trackColor={{false: colors.border, true: colors.primary}}
-                    thumbColor={'#ffffff'}
-                    activeThumbColor={'#ffffff'}
-                    ios_backgroundColor={colors.background}
-                    onValueChange={toggleSwitch}
-                    value={isEnabled}
-                /><Row className='items-center'> </Row>
-       */
-
 
     return (
         <Row className='justify-between w-full '>

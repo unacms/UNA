@@ -289,7 +289,7 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, windowWidth }) =
         return {
             display: scrollValue.value == 1 ? 'none' : 'flex',
         };
-    }, [scrollValue]);
+}, [scrollValue]);
 
     return (
         <>

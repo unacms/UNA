@@ -1,11 +1,10 @@
-import { View, Row } from 'app/design/view'
-import { Text } from 'app/design/typography'
-import { Icon } from 'app/ui/atoms/icon'
+import { Row } from 'app/design/view'
 import { Button } from 'app/design/controls'
 
 export default function ({ badges }) {
     if (!badges)
-        return <></>
+        return null
+    
     return (
         <Row className='items-center gap-x-1'>
             {badges.map((item, index) => (

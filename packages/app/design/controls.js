@@ -1,5 +1,6 @@
 import React, { useMemo, forwardRef } from 'react';
-import { TextInput as TextInputDef, Modal as ModalDef, Platform, Switch as SwitchDef } from 'react-native'
+import { TextInput as TextInputDef, Modal as ModalDef, Platform } from 'react-native'
+import SwitchDef from 'app/ui/atoms/switcher'
 import { Pressable, View, ScrollView, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
@@ -131,12 +132,7 @@ export const InputSmall = ({ className, startDecorator, endDecorator, ...props }
 export const Hidden = ({ className, ...props }) => (
     <TextInputDef className={'hidden'} {...props} />
 );
-
-export const Switch = (props) => Platform.OS == 'web' ? <SwitchDef {...props} style={{
-    ...(props.size != 'sm' ? { transform: [{ scaleX: 1 }, { scaleY: 1 }] } : {}),
-    ...props.style
-  }} />: <SwitchDef {...props} style={props.style} />;
-
+export const Switch = SwitchDef
 
 const PickerStyles = inputSettings.select;
 

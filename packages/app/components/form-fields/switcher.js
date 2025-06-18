@@ -23,13 +23,8 @@ export default function FormFieldSwitcher(props) {
         <Field {...props}>
             <View className={themeSettings.container}>
                 <Switch
-                    trackColor={{ false: themeSettings.track, true: themeSettings.active_track }}
-                    thumbColor={themeSettings.thumb}
-                    activeThumbColor={themeSettings.active_thumb}
-                    ios_backgroundColor={colors.background}
                     onValueChange={toggleSwitch}
                     value={isEnabled}
-                    aria-label={props.caption}
                 />
                 <Text className={themeSettings.text}>{props.caption}</Text>
             </View>

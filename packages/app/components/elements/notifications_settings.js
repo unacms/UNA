@@ -64,12 +64,8 @@ export default function (props) {
                     return (
                         <Row className='px-2 py-1' key={"row" + index}>
                             <Switch
-                                trackColor={{ false: colors.border, true: colors.checkbox }}
-                                thumbColor={'#ffffff'}
                                 onValueChange={() => toggleSwitch(item.id, item.value == 1 ? 0 : 1)}
-                                activeThumbColor={'#ffffff'}
                                 value={item.value == 1 ? true : false}
-                                ios_backgroundColor={colors.background}
                             />
                             <Text className="ml-2 text-neutral-900 dark:text-neutral-100 text-sm">{item.title}</Text>
                         </Row>

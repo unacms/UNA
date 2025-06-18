@@ -190,13 +190,10 @@ const Cell = React.memo(({ cell, indexRow, id, toggleSwitch, setSelection, selec
         case 'switcher':
             return <>
                 <Switch
-                    trackColor={{ false: colors.border, true: colors.checkbox }}
-                    thumbColor={'#ffffff'}
                     size="sm"
                     onValueChange={() => toggleSwitch(id, indexRow)}
-                    activeThumbColor={'#ffffff'}
                     value={cell.data == 'active' ? true : false}
-                    ios_backgroundColor={colors.background}
+
                 /></>
         case 'checkbox':
             return <>
