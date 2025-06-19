@@ -37,7 +37,7 @@ export default function FormFieldMultiField(props) {
         <Field {...props} error2={formContext.formState.errors[name]}>
             {values.map((value, index) => {
                 return (
-                    <Row className="mb-4 gap-x-4">
+                    <Row key={`vls${index}`} className="mb-4 gap-x-4">
                         <Input
                             name={props.name}
                             onChangeText={(text) => {

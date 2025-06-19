@@ -403,6 +403,24 @@ export default function FormFeed(props) {
                                     />
                                 </View>
                             )}
+                            {props.data.inputs['polls'] && (
+                                <View className="">
+                                    {getFormFieldByData(
+                                        props.data.inputs['polls'],
+                                        props.handleSubmit,
+                                        'custom',
+                                        {
+                                            previewPlaceHolder: setPlaceHolder,
+                                            noMargin: true,
+                                            asDefaultStorage: true,
+                                            size: 'base',
+                                            variant: 'secondary',
+                                            rounded: true,
+                                            source: 'camera',
+                                        }
+                                    )}
+                                </View>
+                            )}
                         </Row>
                         <View className=" flex-1 web:flex-none items-end ">
                             <View>

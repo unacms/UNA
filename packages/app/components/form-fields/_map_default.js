@@ -24,8 +24,8 @@ import Visibility from './visibility';
 import Stars from './stars';
 import MultiField from './multi_field';
 import Embed from './embed';
+import Polls from './polls';
 
-import { appSetting } from 'app/lib/util';
 
 export const componentsMapDefault = {
     input_set: InputSet,
@@ -33,6 +33,7 @@ export const componentsMapDefault = {
     multi_field: MultiField,
     embed: Embed,
     editor: Editor,
+    polls: Polls,
     initial_members: InitialMembers,
     captcha: Captcha,
     custom: Custom,
