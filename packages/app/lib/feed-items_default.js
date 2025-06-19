@@ -225,8 +225,8 @@ export const MarketView = memo(({ data, styles, url, isCompact }) => {
 })
 
 export const DefaultView = memo(({ data, styles, bIsTitle, bIsTimelineContent, content_attach, files_attach, url, isCompact, fulltext }) => {
-    let imgs = content_attach;
-
+    const imgs = content_attach;
+    console.log("datadatadata", data.content.polls_attach)
     return <>
         <View className={isCompact ? "flex-row-reverse" : " flex-col "}>
             {data.mainImage && (

@@ -14,18 +14,29 @@ export default function FormFieldText(props) {
     const name = props.name;
     const [isModal, setIsModal] = useState(false);
     const [dataForm, setDataForm] = useState(false);
-    const { data: dynamicData, error } = useFetchForm(props.form_submit, dataForm);
-
-    console.log("dynamicData", dynamicData)
-
-    const defaultValue = props.value ? props.value : '';
+ const defaultValue = props.value ? props.value : '';
     const rules = getValidationRules(props);
+        const { field } = useController({ name, rules, defaultValue });
+
+ 
+    const { data: dynamicData, error } = useFetchForm(props.form_submit, dataForm);
+       useEffect(() => {
+        if (dynamicData?.data?.id){
+            const a = field.value.split(',');
+            a.push(dynamicData.data.id);
+            field.onChange([...new Set(a.filter(Boolean))].join(','));
+            setIsModal(false);
+
+        }
+
+       },[dynamicData]);
+   
+
+   
 
     const formContext = useFormContext();
 
-    const { field } = useController({ name, rules, defaultValue });
 
-    console.log('propsprops', props);
 
     const showSelect = async () => {
         const sResponse = await fetcher(props.form_get);
@@ -40,6 +51,8 @@ export default function FormFieldText(props) {
         setDataForm(formData);
     }, []);
 
+    const frmData = dynamicData?.data[0] || isModal
+    console.log("frmData", frmData)
     return (
         <Field {...props} error2={formContext.formState.errors[name]}>
             <Modal
@@ -50,7 +63,7 @@ export default function FormFieldText(props) {
                 scrollable={true}
                 onClose={() => { setIsModal(false) }}
             >
-                {!!isModal && <Form {...isModal} onFormSubmit={onFormSubmit}  resetOnSubmit={true} />}
+                {!!isModal && <Form {...frmData} onFormSubmit={onFormSubmit}  resetOnSubmit={true} />}
             </Modal>
             <Button
                 startDecorator="Vote"

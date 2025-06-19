@@ -33,6 +33,8 @@ export default function FormFieldMultiField(props) {
         setValues(prev => prev.filter(item => item.id !== id));
     };
 
+    console.log("propsprops11", props)
+
     return (
         <Field {...props} error2={formContext.formState.errors[name]}>
             {values.map((value, index) => {

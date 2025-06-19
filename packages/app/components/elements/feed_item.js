@@ -41,33 +41,7 @@ export default function ElementFeedItem({ data }) {
         content_attach = content_attach.concat(content.videos_attach);
     }
 
-    /*function UnitImages(images) {
-
-        const aImg = useMemo(() => {
-            if (!images?.images || images?.images?.length === 0) return [];
-
-            let photo = images.images.filter(item => item.src).map((obj) => ({
-                src: obj.src_orig ? obj.src_orig : obj.src,
-                width: obj.width,
-                height: obj.height,
-                type: 'image',
-            }));
-
-            let video = images.images.filter(item => item.src_poster).map((obj) => ({
-                src: obj.src_poster ? obj.src_poster : obj.src_poster,
-                type: 'video',
-            }));
-            return [...photo, ...video]
-        }, [images]);
-
-        if (!aImg.length) return null;
-
-        return (
-
-            <View className='mb-4'><Carousel data={aImg} /></View>
-
-        )
-    }*/
+    
 
     return (
         <View className="relative sm:my-0 w-full mx-auto max-w-5xl">

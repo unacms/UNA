@@ -1,4 +1,3 @@
-import React from 'react';
 import { View, Pressable } from 'app/design/view';
 import Animated, {
     interpolate,
