@@ -226,7 +226,7 @@ export const MarketView = memo(({ data, styles, url, isCompact }) => {
 
 export const DefaultView = memo(({ data, styles, bIsTitle, bIsTimelineContent, content_attach, files_attach, url, isCompact, fulltext }) => {
     const imgs = content_attach;
-    console.log("datadatadata", data.content.polls_attach)
+
     return <>
         <View className={isCompact ? "flex-row-reverse" : " flex-col "}>
             {data.mainImage && (
@@ -274,6 +274,9 @@ export const DefaultView = memo(({ data, styles, bIsTitle, bIsTimelineContent, c
                         )}
                     </View>
                 </View>
+                {data.content.polls_attach && data.content.polls_attach.map((item, index) => {
+                    return <View className='mt-4'><PollItem key={"att" + index} data={item} showTitle={true} /></View>
+                })}
             </View>
         </View>
         {bIsTimelineContent && (
@@ -284,6 +287,7 @@ export const DefaultView = memo(({ data, styles, bIsTitle, bIsTimelineContent, c
         {files_attach.map((item, index) => {
             return <Link key={"att" + index} target='_blank' href={item.url}><Row className='gap-x-2 w-full items-center p-3 bg-bgritem dark:bg-bgritem-d rounded-lg mt-1'><Text className="text-sm text-neutral-700 dark:text-neutral-300"><Icon icon="File" className="w-6 h-6" size={24} /></Text><Text className="text-sm text-neutral-700 dark:text-neutral-300">{item.title}</Text></Row></Link>
         })}
+
     </>
 });
 

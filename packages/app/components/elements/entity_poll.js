@@ -49,7 +49,8 @@ function Results({ data }) {
     }
 }
 
-export function PollItem({ data }) {
+export function PollItem({ data, showTitle }) {
+    console.log("datadatadata8",data)
     const initialState = {
         isShowResults: data.is_performed,
         isVoted: data.is_performed,
@@ -89,7 +90,7 @@ export function PollItem({ data }) {
     const totalVotes = state?.results ? state.results.reduce((acc, item) => acc + item.votes.count, 0) : 0;
 
     return (
-        <>
+        <> {showTitle && <Text className="text-neutral-950  dark:text-neutral-50 text-base tracking-tight font-medium">{data.title}</Text>}
             {state.isShowResults && <Results data={state.results} />}
             {!!data.subentries && !state.isShowResults && data.subentries.map((item2, index) => (
                 <Row key={`lbl-${index}`} className={`items-center my-1 border border-bdr dark:border-bdr-d rounded-lg ${state.isVoted ? 'opacity-50' : 'hover:bg-primary/10 active:bg-primary/20 dark:hover:bg-primary-d/10 dark:active:bg-primary-d/20'}`}>

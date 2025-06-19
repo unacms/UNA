@@ -1,8 +1,6 @@
 import { View, Row } from 'app/design/view';
 import Html from 'app/ui/atoms/html';
-import Menu from 'app/components/menu';
 import { useState, useEffect, useMemo } from 'react'
-import Carousel from 'app/ui/molecules/carousel'
 import { useLayoutData } from 'app/context/layout';
 import Embed from 'app/ui/molecules/embed'
 import { storageSet, getDataFromCache } from 'app/lib/util';
@@ -10,6 +8,7 @@ import { Platform } from 'react-native'
 import { appSetting } from 'app/lib/util'
 import { ActionMenu, CounterMenu } from 'app/lib/feed-helpers'
 import { UnitImages } from 'app/lib/feed-items'
+import { PollItem } from 'app/components/elements/entity_poll';
 
 export default function ElementFeedItem({ data }) {
     const { layoutData } = useLayoutData();
@@ -41,20 +40,27 @@ export default function ElementFeedItem({ data }) {
         content_attach = content_attach.concat(content.videos_attach);
     }
 
-    
+
 
     return (
         <View className="relative sm:my-0 w-full mx-auto max-w-5xl">
             <View className=" p-[12px] sm:p-[16px] lg:pt-0">
-                <Html data={tlContent} customClassName='u-vanilla-html'/>
+                <Html data={tlContent} customClassName='u-vanilla-html' />
                 {!!content.embed && <Embed data={content.embed} />}
+
+                <View className='max-w-sm'>
+                    {content.polls_attach && content.polls_attach.map((item, index) => {
+                        return <View className='mt-4'><PollItem key={"att" + index} data={item} showTitle={true} /></View>
+                    })}
+                </View>
             </View>
+
             <UnitImages images={content_attach} />
             {
                 data.event.menu_actions.items.length > 0 && (<View className=" flex-row items-center ">
                     <View className=" flex-auto flex-wrap text-wrap ">
-                        {(!!data.event.menu_counters && appSetting('feed', 'counters_menu')) && <Row className='w-full px-[8px]'><CounterMenu data={data.event.menu_counters}  /></Row>}
-                        <View className=' p-[8px] border-t mt-[4px] border-bdr dark:border-bdr-d w-full'><ActionMenu data={data.event.menu_actions}  /></View>
+                        {(!!data.event.menu_counters && appSetting('feed', 'counters_menu')) && <Row className='w-full px-[8px]'><CounterMenu data={data.event.menu_counters} /></Row>}
+                        <View className=' p-[8px] border-t mt-[4px] border-bdr dark:border-bdr-d w-full'><ActionMenu data={data.event.menu_actions} /></View>
                     </View>
                 </View>)
             }
