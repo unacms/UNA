@@ -292,29 +292,28 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, windowWidth }) =
 
     return (
         <>
-            {isCover && <Animated.View className="w-full" style={[{ zIndex: '50' }, animatedStyleHeader2]}>
+            <Animated.View className="w-full" style={[{ zIndex: '50' }, animatedStyleHeader2]}>
                 <ViewRef ref={cover1Ref} className="w-full bg-gradient-to-b from-transparent to-bgrtabbar dark:to-bgrtabbar-d backdrop-blur-xl  "   >
-                    <View className="w-full">
+                    {isCover && <View className="w-full">
                         <Cover data={pageData.cover_block} showMoreMenu={!conductorTheme.action_menu_in_tabs} mode={headerSettings.cover} uri={uri} context={pageData.context} />
-                    </View>
+                    </View>}
                     <View className="w-full ">
                         {tabBarObj}
 
                     </View>
-                </ViewRef></Animated.View>}
-            {isCover && <Animated.View className="fixed w-full z-50 hidden" style={[{ position: 'fixed', zIndex: '50', }, animatedStyleHeader3]} >
+                </ViewRef></Animated.View>
+            <Animated.View className="fixed w-full z-50 hidden" style={[{ position: 'fixed', zIndex: '50', }, animatedStyleHeader3]} >
                 <View className="w-full  bg-bgrtabbar dark:bg-bgrtabbar-d backdrop-blur-lg ">
-                    <View className="w-full">
+                    {isCover && <View className="w-full">
                         <CoverSmall showMoreMenu={!conductorTheme.action_menu_in_tabs} context={pageData.context} data={pageData.cover_block} />
-                    </View>
+                    </View>}
                     <View className="w-full ">
                         {tabBarObj}
                     </View>
 
                 </View>
-            </Animated.View>}
+            </Animated.View>
         </>
-
     )
 };
 
@@ -326,7 +325,7 @@ const TabBar = ({ menu, routes, leftSideBar, pageData, currentUser, index, setIn
         return (
             <TopSidebar omitDefaultBackground={omitDefaultBackground} leftSideBar={leftSideBar} addButtons={addButtons} layout={getLayout(currentUser)} title={t(menuSettings?.name)} >
                 <ConductorMenu currentUser={currentUser} leftSideBar={leftSideBar} routes={routes} index={index} t={t} setIndex={setIndex} getNumCols={getNumCols} windowWidth={windowWidth} onChangeRoute={onChangeRoute} />
-                {conductorTheme.action_menu_in_tabs && <View className="w-[44px] items-end zxdsw ">
+                {(conductorTheme.action_menu_in_tabs && !!pageData.cover_block?.actions_menu) && <View className="w-[44px] items-end zxdsw ">
                     <CoverMenuMore
                         {...pageData.cover_block.actions_menu}
                         uri={pageData.uri}

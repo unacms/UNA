@@ -18,7 +18,7 @@ function AnimatedCard({ children }) {
 
     const animatedStyle = useAnimatedStyle(() => {
         return {
-            opacity: opacity.value,
+            opacity: `${opacity.value}`,
             transform: [{ translateY: translateY.value }],
         };
     }, [opacity, translateY]);

@@ -22,7 +22,7 @@ const AnimatedContainer = (props) => {
 
     const animatedStyles = useAnimatedStyle(() => {
         return {
-            opacity: opacity.value,
+            opacity: `${opacity.value}`,
             transform: [
                 {
                     translateY: translateY.value

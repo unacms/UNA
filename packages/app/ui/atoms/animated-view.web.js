@@ -22,7 +22,7 @@ function AnimatedView({ children, direction = 'down', className, delay = 0 }) {
 
     const animatedStyle = useAnimatedStyle(() => {
         return {
-            opacity: opacity.value,
+            opacity: `${opacity.value}`,
             transform: [{ translateY: translateY.value }],
         };
     }, [opacity, translateY]);

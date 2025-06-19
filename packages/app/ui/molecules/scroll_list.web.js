@@ -43,6 +43,7 @@ export default function ScrollList({
     const { colors } = Theme();
     const { currentUser } = useCurrentUser();
     const { t } = useTranslation();
+ const opacity = useSharedValue(1);
 
     /* ANIMATION */
     const scrollY = useSharedValue(0);
@@ -63,16 +64,18 @@ export default function ScrollList({
     }, [scrollY, transparencyOffset]);
 
     const headerStyle = useAnimatedStyle(() => {
-        const opacityValue = withTiming(isShow.value ? 1 : 0, { duration: animationDuration });
-        const transformValue = withTiming(isShow.value ? 0 : -114, { duration: animationDuration });
+       
+        opacity.value = withTiming(isShow.value ? 1 : 0, { duration: animationDuration });
+        //const opacityValue = withTiming(isShow.value ? 1 : 0, { duration: animationDuration });
+        //const transformValue = withTiming(isShow.value ? 0 : -114, { duration: animationDuration });
         return {
             position: 'fixed',
-            top: 0,
-            left: 0,
+            top: '0px',
+            left: '0px',
             width: '100%',
-            opacity: opacityValue,
+            opacity: '1',
             transform: [
-                { translateY: transformValue },
+                { translateY: withTiming(isShow.value ? 0 : -114, { duration: animationDuration }) },
             ],
         };
     }, [scrollDirection, scrollY, isShow]);
@@ -85,7 +88,7 @@ export default function ScrollList({
             right: 10,
             bottom: 140,
             zIndex: 1000,
-            opacity: opacityValue,
+           // opacity: opacityValue,
         };
     }, [isShowButton]);
 

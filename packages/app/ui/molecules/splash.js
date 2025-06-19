@@ -16,12 +16,6 @@ import MenuFooter from 'app/components/nav/menu-footer';
 import AnimatedView from 'app/ui/atoms/animated-view';
  import { ThemeName } from 'app/design/theme';
 
-const triggerHaptics = () => {
-    if (Platform.OS !== 'web') {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
-    }
-}
-
 /**
  * Renders the login splash screen with adaptive layouts for web and mobile platforms.
  *
@@ -68,9 +62,8 @@ export default function Splash(props) {
                                         formProps={{ auto_focus: true, hide_errors: true, button_full_width: true }} 
                                     />
                                     <View className="mt-[8px]">
-                                        <Link href="/forgot-password">
+                                        <Link href="/forgot-password" haptics="Medium">
                                             <Button
-                                                onPress={triggerHaptics}
                                                 title="Forgot password?"
                                                 variant="link"
                                                 fullWidth
@@ -83,17 +76,15 @@ export default function Splash(props) {
                                     </View>
                                 </Card>
                                 <Text className="text-base text-neutral-600 dark:text-neutral-400 text-center">Don't have an account?</Text>
-                                <Button
-                                    onPress={() => {
-                                        triggerHaptics();
-                                        router.push('/create-account');
-                                    }}
-                                    title="Create new account"
-                                    startDecorator="UserRoundPlus"
-                                    variant="accent"
-                                    size="lg"
-                                    fullWidth
-                                />
+                                <Link href="/create-account" haptics="Medium">
+                                    <Button
+                                        title="Create new account"
+                                        startDecorator="UserRoundPlus"
+                                        variant="accent"
+                                        size="lg"
+                                        fullWidth
+                                    />
+                                </Link>
                             </View>
                         </View>
                         <View className="w-full h-[64px]">
@@ -119,17 +110,14 @@ export default function Splash(props) {
                             {appStatic('splash_text')}
                         </AnimatedView>
                         <AnimatedView delay={200} className="py-[32px]" direction="up">
-                            <Button
-                                onPress={() => {
-                                    triggerHaptics();
-                                    router.push('/create-account');
-                                }}
+                            <Link href="/create-account"  haptics="Medium"><Button
                                 title="Create new account"
                                 startDecorator="UserRoundPlus"
                                 variant="accent"
                                 size="lg"
                                 fullWidth
                             />
+                            </Link>
                         </AnimatedView>
                     </View>
                     <View className="flex-col-reverse lg:flex-col max-w-xl w-full flex-auto mx-auto p-[16px] sm:p-[32px] my-auto gap-y-[16px]">
@@ -156,9 +144,8 @@ export default function Splash(props) {
                                             <View className="flex-1 h-[1px] w-full bg-neutral-200 dark:bg-neutral-500" /> 
                                         </View>
                                         <AuthPanel className="pb-[8px]" />
-                                        <Link className="w-full" href="/forgot-password">
+                                        <Link className="w-full" href="/forgot-password" haptics="Medium">
                                             <Button
-                                                onPress={triggerHaptics}
                                                 title="Reset password"
                                                 variant="default"
                                                 ring="rounded-[13px] bg-neutral-300 dark:bg-neutral-950 shadow-sm hover:shadow-none"

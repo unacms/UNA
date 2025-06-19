@@ -16,12 +16,6 @@ import SvgFile from 'app/ui/molecules/svg-file';
 import MenuFooter from 'app/components/nav/menu-footer';
 import AnimatedView from 'app/ui/atoms/animated-view';
 
-const triggerHaptics = () => {
-    if (Platform.OS !== 'web') {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    }
-};
-
 export default function PageLayout(props) {
     const isWeb = Platform.OS === 'web';
     const refer = useRef();
@@ -52,9 +46,8 @@ export default function PageLayout(props) {
                             </View>
                             <BlockByName name={props.blocks.form} data={props.data} formProps={{ auto_focus: true, hide_errors: true, button_full_width: true }} />
                             <View className="mt-[8px]">
-                                <Link href="/forgot-password">
+                                <Link href="/forgot-password" haptics="Medium">
                                     <Button
-                                        onPress={triggerHaptics}
                                         title="Forgot password?"
                                         variant="link"
                                         fullWidth
@@ -70,9 +63,8 @@ export default function PageLayout(props) {
                 </AnimatedView>
                 <AnimatedView direction="up" className="flex-col">
                     <Text className="text-base py-[16px] text-neutral-600 dark:text-neutral-400 text-center">Don't have an account?</Text>
-                    <Link className="w-full" href="/create-account">
+                    <Link className="w-full" href="/create-account" haptics="Medium">
                         <Button
-                            onPress={triggerHaptics}
                             title="Create new account"
                             startDecorator="UserRoundPlus"
                             variant="accent"
@@ -106,9 +98,8 @@ export default function PageLayout(props) {
                             </View>
                             <BlockByName name={props.blocks.form} data={props.data} formProps={{ auto_focus: true, hide_errors: true, button_full_width: true }} />
                             <View className="mt-[8px]">
-                                <Link href="/forgot-password">
+                                <Link href="/forgot-password" haptics="Medium">
                                     <Button
-                                        onPress={triggerHaptics}
                                         title="Forgot password?"
                                         variant="link"
                                         fullWidth
@@ -122,9 +113,8 @@ export default function PageLayout(props) {
                         </Card>
                         <AnimatedView direction="up" className="flex-col">
                             <Text className="text-base py-[16px] text-neutral-600 dark:text-neutral-400 text-center">Don't have an account?</Text>
-                            <Link className="w-full" href="/create-account">
+                            <Link className="w-full" href="/create-account" haptics="Medium">
                                 <Button
-                                    onPress={triggerHaptics}
                                     title="Create new account"
                                     startDecorator="UserRoundPlus"
                                     variant="accent"

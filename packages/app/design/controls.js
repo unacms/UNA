@@ -1,6 +1,6 @@
 import React, { useMemo, forwardRef } from 'react';
 import { TextInput as TextInputDef, Modal as ModalDef, Platform } from 'react-native'
-import SwitchDef from 'app/components/form-fields/switcher'
+import SwitchDef from 'app/ui/atoms/switcher'
 import { Pressable, View, ScrollView, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
@@ -154,6 +154,7 @@ export const PickerStyledIos = ({ className, ...props }) => (
 );
 
 const modalSettings = appSetting('theme', 'modal');
+const isWeb = Platform.OS === 'web';
 
 export function Modal({
     animation,
@@ -179,7 +180,7 @@ export function Modal({
     }
 
     const styles = !autoHeight ? { maxHeight: height - offset } : {};
-    const isWeb = Platform.OS === 'web';
+   
     const isIOS = Platform.OS === 'ios';
 
     const isOuterClose = (onClose !== 'undefined' && outerClickClose !== false);
@@ -532,7 +533,7 @@ export const Button = (props) => {
     const isTitle = !!title;
     const oButtonAddon = getAddon(addon, isTitle);
 
-    const Cnt = onPress && !disabled ? Pressable : View;
+    const Cnt = onPress && !disabled && !isWeb ? Pressable : View;
     const refProps = forwardedRef ? { ref: forwardedRef } : {};
 
   

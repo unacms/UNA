@@ -371,9 +371,9 @@ export default function ({ data, mode, uri, showMoreMenu }) {
                         {isSplitMenu ? (
                             <View className="flex-row flex-wrap items-end justify-between lg:ml-auto flex-auto gap-x-[8px] gap-y-[8px] p-[4px]">
                                 {bPerson && (
-                                    <View className="  lg:hidden flex-none h-[44px] justify-end w-min ">
+                                    <View className={`${isMin ? 'h-[96px]': 'h-[44px]'} lg:hidden flex-none justify-end w-min`}>
                                         <View className=" flex-row flex-auto z-50 rounded-full p-[4px] flex-none bg-white dark:bg-neutral-900 ">
-                                            <CoverImage mode='picture' profileDisplaySize={'3xl'} coverData={data?.cover} profileData={data.profile} allowEdit={bAllowEdit} allowSwitch={isAllowSwitch} />
+                                            <CoverImage mode='picture' profileDisplaySize={isMin ? '2xl' : '3xl'} coverData={data?.cover} profileData={data.profile} allowEdit={bAllowEdit} allowSwitch={isAllowSwitch} />
                                         </View>
                                     </View>
                                 )}

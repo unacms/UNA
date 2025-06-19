@@ -71,7 +71,6 @@ export default function ElementLink(props) {
 
     // Обработчик внешних ссылок
     const handleExternalLinkPress = useCallback(async () => {
-        console.log("finalHreffinalHref", finalHrefWithDomain)
         await WebBrowser.openBrowserAsync(finalHrefWithDomain);
     }, [finalHrefWithDomain]);
 

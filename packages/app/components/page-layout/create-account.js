@@ -17,12 +17,6 @@ import SvgFile from 'app/ui/molecules/svg-file';
 import MenuFooter from 'app/components/nav/menu-footer';
 import AnimatedView from 'app/ui/atoms/animated-view';
 
-const triggerHaptics = () => {
-    if (Platform.OS !== 'web') {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
-    }
-}
-
 export default function PageLayout(props) {
     const { t } = useTranslation()
     const joinData = DataByName(props.data, props.blocks.form_join)
@@ -105,9 +99,8 @@ export default function PageLayout(props) {
                         </AnimatedView>
                         <AnimatedView direction="up" className="flex-col">
                             <Text className="text-base  text-neutral-600 dark:text-neutral-400 text-center py-[16px]">Already have an account?</Text>
-                            <Link className="w-full" href="/login">
+                            <Link className="w-full" href="/login" haptics="Medium">
                                 <Button
-                                    onPress={triggerHaptics}
                                     title="Sign in"
                                     startDecorator="LogIn"
                                     variant="default"
@@ -152,9 +145,8 @@ export default function PageLayout(props) {
                     />
                 )}
                 <View className="flex items-center justify-center pt-4 mt-4 gap-y-2 border-t border-bdr dark:border-bdr-d">
-                    <Link className="w-full" href="/login">
+                    <Link className="w-full" href="/login" haptics="Medium">
                         <Button
-                            onPress={triggerHaptics}
                             title="Continue with email"
                             size="base"
                             fullWidth
