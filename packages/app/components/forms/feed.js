@@ -100,7 +100,7 @@ export default function FormFeed(props) {
 
     const editorWrapperAnimatedStyle = useAnimatedStyle(() => {
         return {
-            height: animatedEditorHeight.value,
+            height: `${animatedEditorHeight.value}`,
         };
     }, [animatedEditorHeight]);
 

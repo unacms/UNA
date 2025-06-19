@@ -288,7 +288,6 @@ export const DefaultView = memo(({ data, styles, bIsTitle, bIsTimelineContent, c
 });
 
 export const PollView = memo(({ data, styles, bIsTitle, bIsTimelineContent, content_attach, files_attach, url, isCompact }) => {
-    console.log("datadata", data)
 
     return <>
         <View className={isCompact ? "flex-row-reverse" : " flex-col "}>
@@ -308,7 +307,7 @@ export const PollView = memo(({ data, styles, bIsTitle, bIsTimelineContent, cont
                     </View>
                 </View>
             )}
-            <View className="flex-auto my-auto flex-col pb-[8px] pt-[12px] ">
+            <View className="flex-auto my-auto flex-col px-[12px] pb-[8px] sm:px-4 sm:pb-3 ">
                 {bIsTitle && (
                     <Link href={url} className="">
                         <Text

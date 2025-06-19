@@ -533,7 +533,7 @@ export const Button = (props) => {
     const isTitle = !!title;
     const oButtonAddon = getAddon(addon, isTitle);
 
-    const Cnt = onPress && !disabled && !isWeb ? Pressable : View;
+    const Cnt = onPress && !disabled /*&& !isWeb*/ ? Pressable : View;
     const refProps = forwardedRef ? { ref: forwardedRef } : {};
 
   

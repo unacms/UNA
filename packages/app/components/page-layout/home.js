@@ -183,7 +183,7 @@ export default function (props) {
                                     }}
                                 />
                                 <Button
-                                    startDecorator="ListBullets"
+                                    startDecorator="List"
                                     rounded
                                     tooltip={t('Short')}
                                     variant={
@@ -293,7 +293,7 @@ export default function (props) {
 
                 
                     
-                    <View className="relative flex-auto mx-auto sm:px-[12px] py-[12px] sm:py-[16px] max-w-3xl">
+                    <View className="relative flex-auto mx-auto sm:px-[12px] web:py-[12px] sm:py-[16px] max-w-3xl">
                             {feedList.map((item, index) => {
                                 if (feedType == item.name) {
                                     return (

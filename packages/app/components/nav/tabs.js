@@ -9,7 +9,7 @@ import Profile from 'app/ui/molecules/profile';
 import { useState, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next';
 //import BottomSheetDataContext from 'app/context/bottomsheet';
-import { FeedbackHaptics, isNumeric, subscribeOneSignal } from 'app/lib/util';
+import { FeedbackHaptics, getPageData, subscribeOneSignal } from 'app/lib/util';
 import * as Linking from 'expo-linking';
 import { parseUrl } from 'app/lib/util'
 import { clearNotif } from 'app/lib/util'
@@ -228,11 +228,25 @@ export default function () {
             checkVersion();
     }, []);
 
-    if (!fontsLoaded) {
+    const pathname = usePathname();
+    console.log("RenderTabs", currentUser)
+    useEffect(() => {
+        const fetchPageData = async () => {
+            console.log("RenderTabs11", currentUser)
+             const data = await getPageData('home');
+             setCurrentUser(data.data.user);
+        }
+        if (currentUser === null){
+           fetchPageData();
+        }
+         
+    }, [currentUser]);
+
+    if (!fontsLoaded || currentUser === null) {
         return null;
     }
 
-    const pathname = usePathname();
+
     return (
         <><Suggestions />
             <Subscriber />

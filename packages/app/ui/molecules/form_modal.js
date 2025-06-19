@@ -20,7 +20,6 @@ export default function FormModal({ pageData, setPageData }) {
     Object.keys(pageData?.elements || {}).forEach(key => {
         Object.keys(pageData.elements[key] || {}).forEach(key2 => {
             const value = pageData.elements[key][key2]?.content[0];
-            console.log('Результат:', value);
    
             if (value?.type === 'form' && value?.name === 'feed') {
                 modalWidth = 'max-w-2xl';

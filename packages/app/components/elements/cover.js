@@ -23,12 +23,42 @@ import { useTranslation } from 'react-i18next'
 import Link from 'app/ui/atoms/link'
 import Loading from 'app/ui/atoms/loading'
 import { Platform } from 'react-native'
+import { useRouter, useNavigation } from 'app/lib/hooks/router'
+
 const conductorTheme = appSetting('theme', 'conductor')
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from');
 
-function getCoverBackButton() {
+
+const BackButton = ({ isPerson }) => {
+    const router = useRouter()
+    const navigation = useNavigation();
+
+
+
+    return isPerson && navigation.getState().index == 0 ? (
+        <Link href={appSetting("cover", "back_button_url_for_profile")}>
+            <Button
+                variant="default"
+                size="base"
+                rounded={true}
+                startDecorator="ArrowLeft"
+            />
+        </Link>
+    ) : (
+        <Button
+            variant="default"
+            size="base"
+            rounded={true}
+            startDecorator="ArrowLeft"
+            onPress={() => { goBack(navigation, router) }}
+        />
+    );
+};
+
+
+function getCoverBackButton(is_person) {
     const isWeb = Platform.OS === 'web'
-    if (!isWeb) return <></>
+    if (!isWeb) return <BackButton isPerson={is_person} />
     if (history.length > 2) {
         return (
             <View className="lg:hidden mr-1">
@@ -68,7 +98,7 @@ export function CoverSmall({data, context, showMoreMenu, uri}) {
                 <View className={`px-[8px] py-[12px] lg:px-[16px] ${conductorTheme.content_max_width} mx-auto w-full flex-row gap-2`} >
                     <Row className=" gap-x-2 items-center justify-between flex-auto">
                         <View className={` flex-auto flex-row gap-x-[8px] items-center `}>
-                            {getBackButtonWeb()}
+                            {getCoverBackButton(bPerson)}
                             <Row className={` ${context?.current?.id == data.profile.id ? TABLET_MODE_FROM + ':flex gap-x-[8px]' : 'gap-x-[8px] flex-auto'}`}>
                                 {bPerson && (
                                     <Profile
@@ -113,7 +143,7 @@ export function CoverSmall({data, context, showMoreMenu, uri}) {
     )
 }
 
-function CoverImage({ mode, profileData, coverData, allowEdit, allowSwitch, title, profileDisplaySize }) {
+function CoverImage({ mode, profileData, coverData, allowEdit, allowSwitch, title, profileDisplaySize, is_person }) {
     const [imageUrl, setImageUrl] = useState(mode == 'cover' ? coverData.src : profileData.url_avatar)
 
     const uo = profileData.module + '_cover_crop'
@@ -280,8 +310,8 @@ function CoverImage({ mode, profileData, coverData, allowEdit, allowSwitch, titl
                     />
                 )}
             </Row>
-            <View className="absolute lg:hidden top-[8px] left-[8px] z-50">
-                {getCoverBackButton()}
+            <View className="absolute lg:hidden top-[8px] left-[8px] z-50 ">
+                {getCoverBackButton(is_person)}
             </View>
         </View>)
     }
@@ -340,7 +370,7 @@ export default function ({ data, mode, uri, showMoreMenu }) {
                     {bPerson && (
                         <View className="hidden lg:flex flex-none h-[104px] justify-end w-min ">
                             <View className=" flex-auto z-50 rounded-full p-[4px] flex-none bg-white dark:bg-neutral-900 ">
-                                <CoverImage mode='picture' profileDisplaySize={isMin ? '2xl' : '4xl'} coverData={data?.cover} profileData={data.profile} allowEdit={bAllowEdit} allowSwitch={isAllowSwitch} />
+                                <CoverImage is_person={bPerson} mode='picture' profileDisplaySize={isMin ? '2xl' : '4xl'} coverData={data?.cover} profileData={data.profile} allowEdit={bAllowEdit} allowSwitch={isAllowSwitch} />
                             </View>
                         </View>
                     )}
