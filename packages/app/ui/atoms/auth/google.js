@@ -84,15 +84,15 @@ export default function AuthGoogle({ button }) {
 
     return (
 
-        <View className='w-full'>
+        <View className='flex-1 min-w-[40%]'>
             <Redirect ref={redirectRef} />
             {button ? <Pressable onPress={() => promptAsync({ useProxy: true })}>{button}</Pressable> : <Button
                 disabled={!request}
                 title={t("Continue with Google")}
                 onPress={() => promptAsync({ useProxy: true })}
                 fullWidth
-                ring="rounded-[18px] bg-neutral-300 dark:bg-neutral-950 shadow-sm hover:shadow-none"
-                size="lg"
+                ring="rounded-[13px] bg-neutral-300 dark:bg-neutral-950 shadow-sm hover:shadow-none"
+                size="base"
                 startDecorator="Google"
             />}
             {error && <FormError errorText={error} />}

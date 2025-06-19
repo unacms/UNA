@@ -9,7 +9,7 @@ export default function AuthSAML({ button }) {
     };
 
     return (
-        <View className='w-full'>
+        <View className='flex-1 min-w-[40%]'>
             {button ? (
                 <Pressable onPress={handleSAMLLogin}>{button}</Pressable>
             ) : (
@@ -17,9 +17,9 @@ export default function AuthSAML({ button }) {
                     onPress={handleSAMLLogin} 
                     title="Continue with SAML SSO"
                     startDecorator="Lock" // Changed to string
-                    ring="rounded-[18px] bg-neutral-300 dark:bg-neutral-950 shadow-sm hover:shadow-none"
+                    ring="rounded-[13px] bg-neutral-300 dark:bg-neutral-950 shadow-sm hover:shadow-none"
                     fullWidth
-                    size="lg"
+                    size="base"
                 />
             )}
             {/* {error && <FormError errorText={error} />} */}

@@ -108,50 +108,17 @@ export default function Splash(props) {
     }
 
     return (
-        <View className="flex-col justify-center w-full">
-            <View className="w-full flex-auto min-h-[100vh]">
-                <View className="w-full lg:flex-row gap-y-[16px] mx-auto my-auto max-w-[1440px]">
-                    <View className="my-auto flex-col items-center lg:items-start gap-x-[32px] flex-auto px-[16px] sm:px-[32px] xl:px-[64px] py-[64px]" accessible={true}>
+        <View className="flex-col justify-center pt-[64px] min-h-[100vh] w-full">
+            
+                <View className="w-full lg:flex-row gap-y-[16px] mx-auto my-auto max-w-[1440px] ">
+                    <View className="my-auto flex-col items-center lg:items-start  gap-x-[32px] flex-auto px-[16px] sm:px-[32px] xl:px-[64px] " accessible={true}>
                         <AnimatedView className="w-[50%] max-w-[360px] aspect-square">
                             <SvgFile src_dark="splash-dark.svg" src_default="splash-light.svg" alt="Splash screen illustration" />
                         </AnimatedView>
-                        <AnimatedView direction="up" className="flex-auto items-center lg:items-start gap-y-[16px] sm:gap-y-[24px] max-w-md sm:max-w-lg lg:max-w-3xl">
+                        <AnimatedView delay={100} direction="up" className="flex-auto items-center lg:items-start gap-y-[16px] sm:gap-y-[24px] max-w-md sm:max-w-lg lg:max-w-3xl">
                             {appStatic('splash_text')}
                         </AnimatedView>
-                    </View>
-                    <View className="flex-col-reverse lg:flex-col max-w-xl w-full flex-auto mx-auto p-[16px] sm:p-[32px] my-auto gap-y-[16px]">
-                        <AnimatedView>
-                            <View className="relative">
-                                <View className="absolute top-4 flex shadow rounded-3xl w-full h-full bg-neutral-500 dark:bg-black blur-lg opacity-20 dark:opacity-50"></View>
-                                <Card rounded="rounded-3xl" addClassName="border border-white overflow-hidden dark:border-bdrcard-d">
-                                    <View className="flex-col pb-[24px] gap-y-[8px]">
-                                        <Text className="text-center lg:text-start text-2xl leading-none tracking-tight font-bold text-neutral-800 dark:text-neutral-200">Log in to {appSetting('app', 'title')}</Text>
-                                        <Text className="hidden lg:block text-sm text-neutral-600 dark:text-neutral-400">Use your email and password to sign in</Text>
-                                    </View>
-                                    <BlockByName 
-                                        name="system:login_form" 
-                                        data={props.data} 
-                                        formProps={{ auto_focus: true, hide_errors: true, button_full_width: true }} 
-                                    />
-                                    <View className="mt-[8px]">
-                                        <Link href="/forgot-password">
-                                            <Button
-                                                onPress={triggerHaptics}
-                                                title="Forgot password?"
-                                                variant="link"
-                                                fullWidth
-                                                size="sm"
-                                            />
-                                        </Link>
-                                    </View>
-                                    <View className="flex items-center justify-center gap-y-[8px] border-t border-bdr dark:border-bdr-d mt-[8px] pt-[16px]">
-                                        <AuthPanel className="" />
-                                    </View>
-                                </Card>
-                            </View>
-                        </AnimatedView>
-                        <AnimatedView direction="up" className="flex-col py-[16px] gap-y-[16px]">
-                            <Text className="text-base text-neutral-600 dark:text-neutral-400 text-center">Don't have an account?</Text>
+                        <AnimatedView delay={200} className="py-[32px]" direction="up">
                             <Button
                                 onPress={() => {
                                     triggerHaptics();
@@ -165,8 +132,50 @@ export default function Splash(props) {
                             />
                         </AnimatedView>
                     </View>
+                    <View className="flex-col-reverse lg:flex-col max-w-xl w-full flex-auto mx-auto p-[16px] sm:p-[32px] my-auto gap-y-[16px]">
+                       
+                        <AnimatedView direction="up">
+                            <View className="relative">
+                                <View className="absolute top-4 flex shadow rounded-3xl w-full h-full bg-neutral-500 dark:bg-black blur-lg opacity-20 dark:opacity-50"></View>
+                                <Card rounded="rounded-[24px]" margin="p-[24px]" addClassName="border border-white overflow-hidden dark:border-bdrcard-d">
+                                    <View className="flex-col pb-[24px] gap-y-[12px] ">
+                                        <Text className="text-2xl text-center lg:text-left leading-none tracking-tight font-bold text-neutral-800 dark:text-neutral-200">
+                                        Log in with your {appSetting('app', 'title')} account</Text>
+                                        <Text className="text-center lg:text-left text-base text-neutral-600 dark:text-neutral-400">
+                                        Don't have an account? <Link href="/create-account">Sign up</Link>.</Text>
+                                    </View>
+                                    <BlockByName 
+                                        name="system:login_form" 
+                                        data={props.data} 
+                                        formProps={{ auto_focus: true, hide_errors: true, button_full_width: true }} 
+                                    />
+                                    
+                                        <View className="flex-row items-center justify-center my-[24px] w-full">
+                                            <View className="flex-1 h-[1px] w-full bg-neutral-200 dark:bg-neutral-500" />
+                                            <Text className="mx-[16px] text-xs text-neutral-500 dark:text-neutral-400 font-normal">OR</Text>
+                                            <View className="flex-1 h-[1px] w-full bg-neutral-200 dark:bg-neutral-500" /> 
+                                        </View>
+                                        <AuthPanel className="pb-[8px]" />
+                                        <Link className="w-full" href="/forgot-password">
+                                            <Button
+                                                onPress={triggerHaptics}
+                                                title="Reset password"
+                                                variant="default"
+                                                ring="rounded-[13px] bg-neutral-300 dark:bg-neutral-950 shadow-sm hover:shadow-none"
+                                                fullWidth
+                                                size="base"
+                                                startDecorator="RotateCcw"
+                                            />
+                                        </Link>
+                                    
+                                    
+                                </Card>
+                            </View>
+                        </AnimatedView>
+                        
+                    </View>
                 </View>
-            </View>
+            
             <MenuFooter cntClasses="w-full flex-row flex-wrap opacity-80 h-[64px] items-center justify-center"/>
         </View>
     )

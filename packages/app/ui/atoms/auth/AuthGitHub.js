@@ -9,7 +9,8 @@ export default function AuthGitHub({ button }) {
     };
 
     return (
-        <View className='w-full'>
+        <View className='flex-1 min-w-[40%]'>
+            
             {button ? (
                 <Pressable onPress={handleGitHubLogin}>{button}</Pressable>
             ) : (
@@ -19,11 +20,13 @@ export default function AuthGitHub({ button }) {
                     startDecorator="GitHubIcon" // Changed to string
                 
                     fullWidth
-                    size="lg"
+                    ring="rounded-[13px] bg-neutral-300 dark:bg-neutral-950 shadow-sm hover:shadow-none"
+                    size="base"
                 />
             )}
-            {/* Placeholder for potential error messages, similar to AuthGoogle */}
-            {/* {error && <FormError errorText={error} />} */}
+                {/* Placeholder for potential error messages, similar to AuthGoogle */}
+                {/* {error && <FormError errorText={error} />} */}
+            
         </View>
     );
 } 

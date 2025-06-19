@@ -159,6 +159,18 @@ const colors = {
         d: 'rgba(255,255,255,0.05)',
         dh: 'rgba(255,255,255,0.1)',
     },
+    bgrbuttonprimary: {
+        DEFAULT: 'rgba(37, 99, 235, 0.8)',   
+        h: 'rgba(29, 78, 216, 1)', 
+        d: 'rgba(37, 99, 235, 0.8)',
+        dh: 'rgba(59, 130, 246, 1)',
+    },
+    bdrbuttonprimary: {
+        DEFAULT: 'rgba(37, 99, 235, 1)',
+        h: 'rgba(29, 78, 216, 1)',
+        d: 'rgba(37, 99, 235, 1)',
+        dh: 'rgba(59, 130, 246, 1)',
+    },
     bdr: {
         DEFAULT: 'rgba(110,115,130,0.1)',
         h: 'rgba(110,115,130,0.2)',

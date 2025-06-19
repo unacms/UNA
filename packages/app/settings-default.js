@@ -69,9 +69,9 @@ export  const settingsDefault = {
             ios_client_id: '',
             android_client_id: '',
         },
-        github: false,
-        linkedin: false,
-        x: false,
+        github: true,
+        linkedin: true,
+        x: true,
         passkey: true,
         saml: true,
     },
@@ -859,7 +859,7 @@ export  const settingsDefault = {
         // - `border`: Default border classes. Can be overridden by the Card component's `rounded` prop (as it often handles border too).
         card: {
             default: 'bg-bgrcard dark:bg-bgrcard-d backdrop-blur-xl ', // Base styles (e.g., background)
-            margin: 'p-[24px]',                               // Default margin/padding
+            margin: 'p-[16px] sm:p-[24px]',                               // Default margin/padding
             rounded: 'rounded-[16px]',                       // Default corner rounding
             border: ' border border-bdrcard dark:border-bdrcard-d overflow-hidden ',  // Default border and shadow styles
         },
@@ -917,13 +917,13 @@ export  const settingsDefault = {
                 padding_icon_only: 'h-[44px] w-[44px] px-[10px]',
                 padding_with_title: 'h-[44px] px-[10px]',
                 icon_container: ' h-[24px] w-[24px] flex items-center justify-center',
-                title_container: 'px-[6px] web:text-[16px] native:text-[16px]',
+                title_container: 'px-[6px] web:text-[14px] native:text-[14px]',
                 icon_size: 24,
                 icon_margin: 'mx-[4px]', // conditional margin for icon container when title is present
                 title_margin: '', // conditional margin for text container when icon is present
             },
             lg: {
-                rounded: 'rounded-[16px]',
+                rounded: 'rounded-[12px]',
                 padding: 'h-[56px] min-w-[56px] px-[14px]',
                 padding_icon_only: 'h-[56px] w-[56px] px-[14px]',
                 padding_with_title: 'h-[56px] px-[14px]',
@@ -941,7 +941,7 @@ export  const settingsDefault = {
                 'font-medium text-neutral-800 web:hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-neutral-50',
             'u-btn-default-trans': '  web:duration-200',
 
-            'u-btn-primary-cnt': ' border border-transparent bg-primary dark:bg-primary-d web:hover:bg-primary-h dark:web:hover:bg-primary-dh',
+            'u-btn-primary-cnt': ' border border-transparent bg-bgrbuttonprimary dark:bg-bgrbuttonprimary-d web:hover:bg-bgrbuttonprimary-h dark:web:hover:bg-bgrbuttonprimary-dh',
             'u-btn-primary-text': 'font-medium text-white',
             'u-btn-primary-trans': '  web:duration-300',
             'u-btn-primary-color-icon-light': 'rgb(243, 244, 246)',

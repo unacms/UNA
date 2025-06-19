@@ -93,10 +93,10 @@ Units.Search = function Search({ data, imageSizes }) {
 */
 Units.Small = function Small({ data, imageSizes }) {
     return (
-        <View className=" mx-auto pt-1 sm:p-2 w-full max-w-2xl">
-            <Card addClassName=" rounded-none sm:rounded-2xl p-1 sm:p-2 flex-auto  mx-auto w-full flex-row-reverseweb:duration-300 ">
+       
+            <Card margin="mt-[1px] sm:mt-[12px] p-[12px] sm:p-4" border="sm:border border-bdrcard dark:border-bdrcard-d sm:rounded-2xl"  addClassName=" rounded-none sm:rounded-2xl max-w-2xl flex-auto mx-auto w-full gap-x-[12px] flex-row-reverse web:duration-300 ">
                 {data.image && (
-                    <View className="aspect-square md:aspect-video flex-none rounded sm:rounded-lg overflow-hidden h-24 sm:h-36 mb-auto  ">
+                    <View className="aspect-square md:aspect-video flex-none rounded-[12px]  overflow-hidden h-[120px] sm:h-36 mb-auto  ">
                         <Image
                             {...data.image}
                             alt={data.title}
@@ -107,12 +107,12 @@ Units.Small = function Small({ data, imageSizes }) {
                     </View>
                 )}
 
-                <View className="flex-auto px-2 py-2">
+                <View className="flex-auto">
                     <Link href={data.url}>
                         <Text numberOfLines={2} className="text-neutral-800  mb-1 tracking-tight leading-tight dark:text-neutral-200 sm:hover:text-primary sm:dark:hover:text-primary-d text-lg font-bold">
                             {data.title}
                         </Text>
-                        <Text numberOfLines={2} className="text-neutral-600 mb-2 dark:text-neutral-400 text-xs sm:text-sm">
+                        <Text numberOfLines={2} className="text-neutral-600 mb-2 dark:text-neutral-400 text-sm">
                             {data.summary_plain}
                         </Text>
                     </Link>
@@ -122,7 +122,6 @@ Units.Small = function Small({ data, imageSizes }) {
 
                 </View>
             </Card>
-        </View>
     )
 }
 

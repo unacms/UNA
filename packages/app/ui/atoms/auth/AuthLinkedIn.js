@@ -9,7 +9,7 @@ export default function AuthLinkedIn({ button }) {
     };
 
     return (
-        <View className='w-full'>
+        <View className='flex-1 min-w-[40%]'>
             {button ? (
                 <Pressable onPress={handleLinkedInLogin}>{button}</Pressable>
             ) : (
@@ -19,7 +19,8 @@ export default function AuthLinkedIn({ button }) {
                     startDecorator="LinkedInIcon" // Changed to string
                     
                     fullWidth
-                    size="lg"
+                    ring="rounded-[13px] bg-neutral-300 dark:bg-neutral-950 shadow-sm hover:shadow-none"
+                    size="base"
                 />
             )}
             {/* {error && <FormError errorText={error} />} */}

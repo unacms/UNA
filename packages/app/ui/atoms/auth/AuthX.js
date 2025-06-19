@@ -11,7 +11,7 @@ export default function AuthX({ button }) {
     };
 
     return (
-        <View className='w-full'>
+        <View className='flex-1 min-w-[40%]'>
             {button ? (
                 <Pressable onPress={handleXLogin}>{button}</Pressable>
             ) : (
@@ -21,7 +21,8 @@ export default function AuthX({ button }) {
                     startDecorator="XIcon" // Changed to string
                     
                     fullWidth
-                    size="lg"
+                    ring="rounded-[13px] bg-neutral-300 dark:bg-neutral-950 shadow-sm hover:shadow-none"
+                    size="base"
                 />
             )}
             {/* {error && <FormError errorText={error} />} */}

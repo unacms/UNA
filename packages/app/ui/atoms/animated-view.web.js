@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
-import Animated, { useSharedValue, useAnimatedStyle, withSpring, withTiming } from 'react-native-reanimated';
+import Animated, { useSharedValue, useAnimatedStyle, withSpring, withTiming, withDelay } from 'react-native-reanimated';
 import { appSetting } from 'app/lib/util';
 import { cssInterop } from 'nativewind';
 
 cssInterop(Animated.View, { className: 'style' });
 
-function AnimatedView({ children, direction = 'down', className }) {
+function AnimatedView({ children, direction = 'down', className, delay = 0 }) {
     const opacity = useSharedValue(0);
     const initialY = direction === 'up' ? 50 : -50;
     const translateY = useSharedValue(initialY);
@@ -13,11 +13,11 @@ function AnimatedView({ children, direction = 'down', className }) {
     const animationDuration = appSetting('layout', 'card_animation_duration') || 350;
 
     useEffect(() => {
-        opacity.value = withTiming(1, { duration: animationDuration });
-        translateY.value = withSpring(0, {
+        opacity.value = withDelay(delay, withTiming(1, { duration: animationDuration }));
+        translateY.value = withDelay(delay, withSpring(0, {
             damping: 9,
             stiffness: 70,
-        });
+        }));
     }, []);
 
     const animatedStyle = useAnimatedStyle(() => {

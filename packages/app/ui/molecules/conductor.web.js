@@ -685,7 +685,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
         const sidebarUnitType = route.blocks?.browse_sidebar?.unitType || 'default';
 
         return (
-            <Row style={{ paddingTop: header ? 0 : 0 }} className={(headerSettings.columns == "reverse" ? 'flex-row-reverse' : '') + conductorTheme.content_max_width + '  mx-auto w-full px-[8px] ' + (isCoverDisabled ? ' sm:px-[16px] sm:my-3 ' : '')}>
+            <Row style={{ paddingTop: header ? 0 : 0 }} className={(headerSettings.columns == "reverse" ? 'flex-row-reverse' : '') + conductorTheme.content_max_width + '  mx-auto w-full ' + (isCoverDisabled ? ' sm:px-[16px] sm:my-3 ' : '')}>
                 <View className={(isRightCol ? 'flex-auto sm:px-4 flex-auto ' : ' w-full mx-auto') /*sm:p-2*/ + (layoutName == 'navigator' ? '' : ' pt-[8px] sm:p-4')}/*lg:pt-4*/>
                     {TabFlashListM}
                     {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 && callFn("noContentByUrl", [route?.endpoint])))}
@@ -786,7 +786,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
             <View className={appSetting('layout', 'max_width') + " w-full h-full mx-auto"} scrollEnabled={false} onLayout={handleLayoutTop}>
                 {isUseCurrentHeader && headerComponent}
                 <Toaster ref={toasterRef} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" />
-                <View style={{ minHeight: (windowHeight - offset) }} className={appSetting('layout', 'max_width  ') + ' lala mx-auto w-full  '} >{/*mt-28 lg:mt-0*/}
+                <View style={{ minHeight: (windowHeight - offset) }} className={appSetting('layout', 'max_width  ') + ' lala mx-auto w-full   '} >{/*mt-28 lg:mt-0*/}
                     <Row className={rc}>
                         {a}
                         <View className=" flex-auto ">
