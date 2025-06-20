@@ -127,9 +127,9 @@ export default function Splash(props) {
                                 <View className="absolute top-4 flex shadow rounded-3xl w-full h-full bg-neutral-500 dark:bg-black blur-lg opacity-20 dark:opacity-50"></View>
                                 <Card rounded="rounded-[24px]" margin="p-[24px]" addClassName="border border-white overflow-hidden dark:border-bdrcard-d">
                                     <View className="flex-col pb-[24px] gap-y-[12px] ">
-                                        <Text className="text-2xl text-center lg:text-left leading-none tracking-tight font-bold text-neutral-800 dark:text-neutral-200">
+                                        <Text className="text-2xl text-center  leading-none tracking-tight font-bold text-neutral-800 dark:text-neutral-200">
                                         Log in with your {appSetting('app', 'title')} account</Text>
-                                        <Text className="text-center lg:text-left text-base text-neutral-600 dark:text-neutral-400">
+                                        <Text className="text-center text-base text-neutral-600 dark:text-neutral-400">
                                         Don't have an account? <Link href="/create-account">Sign up</Link>.</Text>
                                     </View>
                                     <BlockByName 

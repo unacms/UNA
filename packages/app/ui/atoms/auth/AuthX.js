@@ -11,13 +11,13 @@ export default function AuthX({ button }) {
     };
 
     return (
-        <View className='flex-1 min-w-[40%]'>
+        <View className='flex-1 min-w-[200px]'>
             {button ? (
                 <Pressable onPress={handleXLogin}>{button}</Pressable>
             ) : (
                 <Button 
                     onPress={handleXLogin} 
-                    title="Continue with X"
+                    title="Sign in with X"
                     startDecorator="XIcon" // Changed to string
                     
                     fullWidth

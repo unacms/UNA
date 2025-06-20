@@ -9,13 +9,13 @@ export default function AuthPasskey({ button }) {
     };
 
     return (
-        <View className='flex-1 min-w-[40%]'>
+        <View className='flex-1 min-w-[200px]'>
             {button ? (
                 <Pressable onPress={handlePasskeyLogin}>{button}</Pressable>
             ) : (
                 <Button 
                     onPress={handlePasskeyLogin} 
-                    title="Continue with Passkey"
+                    title="Sign in with Passkey"
                     startDecorator="KeySquare" // Changed to string
                     fullWidth
                     ring="rounded-[13px] bg-neutral-300 dark:bg-neutral-950 shadow-sm hover:shadow-none"

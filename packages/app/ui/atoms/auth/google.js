@@ -84,11 +84,11 @@ export default function AuthGoogle({ button }) {
 
     return (
 
-        <View className='flex-1 min-w-[40%]'>
+        <View className='flex-1 min-w-[200px]'>
             <Redirect ref={redirectRef} />
             {button ? <Pressable onPress={() => promptAsync({ useProxy: true })}>{button}</Pressable> : <Button
                 disabled={!request}
-                title={t("Continue with Google")}
+                title={t("Sign in with Google")}
                 onPress={() => promptAsync({ useProxy: true })}
                 fullWidth
                 ring="rounded-[13px] bg-neutral-300 dark:bg-neutral-950 shadow-sm hover:shadow-none"

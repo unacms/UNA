@@ -9,13 +9,13 @@ export default function AuthLinkedIn({ button }) {
     };
 
     return (
-        <View className='flex-1 min-w-[40%]'>
+        <View className='flex-1 min-w-[200px]'>
             {button ? (
                 <Pressable onPress={handleLinkedInLogin}>{button}</Pressable>
             ) : (
                 <Button 
                     onPress={handleLinkedInLogin} 
-                    title="Continue with LinkedIn"
+                    title="Sign in with LinkedIn"
                     startDecorator="LinkedInIcon" // Changed to string
                     
                     fullWidth

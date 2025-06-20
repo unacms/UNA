@@ -9,14 +9,14 @@ export default function AuthGitHub({ button }) {
     };
 
     return (
-        <View className='flex-1 min-w-[40%]'>
+        <View className='flex-1 min-w-[200px]'>
             
             {button ? (
                 <Pressable onPress={handleGitHubLogin}>{button}</Pressable>
             ) : (
                 <Button 
                     onPress={handleGitHubLogin} 
-                    title="Continue with GitHub"
+                    title="Sign in with GitHub"
                     startDecorator="GitHubIcon" // Changed to string
                 
                     fullWidth

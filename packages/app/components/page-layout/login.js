@@ -40,10 +40,12 @@ export default function PageLayout(props) {
                     <View className="relative">
                         <View className="absolute top-4 flex shadow rounded-3xl w-full h-full bg-neutral-500 dark:bg-black blur-lg opacity-20 dark:opacity-50"></View>
                         <Card rounded="rounded-3xl" addClassName="border border-white overflow-hidden dark:border-bdrcard-d">
-                            <View className="flex-col pb-[24px] gap-y-[8px]">
-                                <Text className="text-2xl leading-none tracking-tight font-bold text-neutral-800 dark:text-neutral-200">Log in to your {appSetting('app', 'title')} account</Text>
-                                <Text className="text-sm text-neutral-600 dark:text-neutral-400">Use your email and password to sign in</Text>
-                            </View>
+                        <View className="flex-col pb-[24px] gap-y-[12px] ">
+                                        <Text className="text-2xl text-center  leading-none tracking-tight font-bold text-neutral-800 dark:text-neutral-200">
+                                        Log in with your {appSetting('app', 'title')} account</Text>
+                                        <Text className="text-center text-base text-neutral-600 dark:text-neutral-400">
+                                        Don't have an account? <Link href="/create-account">Sign up</Link>.</Text>
+                                    </View>
                             <BlockByName name={props.blocks.form} data={props.data} formProps={{ auto_focus: true, hide_errors: true, button_full_width: true }} />
                             <View className="mt-[8px]">
                                 <Link href="/forgot-password" haptics="Medium">

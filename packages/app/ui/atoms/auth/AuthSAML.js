@@ -9,13 +9,13 @@ export default function AuthSAML({ button }) {
     };
 
     return (
-        <View className='flex-1 min-w-[40%]'>
+        <View className='flex-1 min-w-[200px]'>
             {button ? (
                 <Pressable onPress={handleSAMLLogin}>{button}</Pressable>
             ) : (
                 <Button 
                     onPress={handleSAMLLogin} 
-                    title="Continue with SAML SSO"
+                    title="Sign in with SAML SSO"
                     startDecorator="Lock" // Changed to string
                     ring="rounded-[13px] bg-neutral-300 dark:bg-neutral-950 shadow-sm hover:shadow-none"
                     fullWidth
