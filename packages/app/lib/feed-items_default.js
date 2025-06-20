@@ -275,7 +275,7 @@ export const DefaultView = memo(({ data, styles, bIsTitle, bIsTimelineContent, c
                     </View>
                 </View>
                 {data.content.polls_attach && data.content.polls_attach.map((item, index) => {
-                    return <View className='mt-4'><PollItem key={"att" + index} data={item} showTitle={true} /></View>
+                    return <View className='mt-4' key={"att" + index}><PollItem  data={item} showTitle={true} /></View>
                 })}
             </View>
         </View>

@@ -1,58 +1,72 @@
 import Field, { getValidationRules } from './_field';
 import { useController, useFormContext } from 'react-hook-form';
 import { fetcher } from 'app/lib/fetcher';
-import { appSetting } from 'app/lib/util';
-import { ScrollView, View } from 'app/design/view'
-import Embed from 'app/ui/molecules/embed'
 import { Button, Modal } from "app/design/controls";
 import { useState, useEffect, useCallback, useContext } from 'react';
 import Form from 'app/components/elements/form';
 import useFetchForm from 'app/lib/hooks/fetch'
+import emitter from 'app/context/emitter';
+import { PollItem } from 'app/components/elements/entity_poll';
+import { View } from 'app/design/view'
+
 export default function FormFieldText(props) {
-    const variant = props.variant || 'secondary';
-    const size = props.size || 'base';
     const name = props.name;
     const [isModal, setIsModal] = useState(false);
+    const [pollSource, setPollSource] = useState([]);
     const [dataForm, setDataForm] = useState(false);
- const defaultValue = props.value ? props.value : '';
+    const defaultValue = props.value ? props.value : '';
     const rules = getValidationRules(props);
-        const { field } = useController({ name, rules, defaultValue });
-
- 
+    const { field } = useController({ name, rules, defaultValue });
     const { data: dynamicData, error } = useFetchForm(props.form_submit, dataForm);
-       useEffect(() => {
-        if (dynamicData?.data?.id){
+
+    useEffect(() => {
+        if (dynamicData?.data?.id) {
             const a = field.value.split(',');
             a.push(dynamicData.data.id);
             field.onChange([...new Set(a.filter(Boolean))].join(','));
             setIsModal(false);
 
+            setPollSource((prevPollSource) => ([
+                ...prevPollSource,
+                dynamicData.data.item
+            ]))
         }
 
-       },[dynamicData]);
-   
+    }, [dynamicData]);
 
-   
+    useEffect(() => {
+        const subscription = emitter.addListener(`poll_${name}`, (data) => {
+            if (data.action == 'add') {
+                showSelect()
+            }
+
+        })
+
+        return () => {
+            subscription.remove()
+        }
+    }, [])
 
     const formContext = useFormContext();
-
-
 
     const showSelect = async () => {
         const sResponse = await fetcher(props.form_get);
         setIsModal(sResponse.data[0])
-
-        
     }
 
-
     const onFormSubmit = useCallback((formData, d) => {
-
         setDataForm(formData);
     }, []);
 
+    async function deletePoll(url, poll) {
+        await fetcher(url + '&params[]=' + poll.id);
+        setPollSource((prevPollSource) =>
+            prevPollSource.filter(item => item.id !== poll.id)
+        );
+    }
+
+
     const frmData = dynamicData?.data[0] || isModal
-    console.log("frmData", frmData)
     return (
         <Field {...props} error2={formContext.formState.errors[name]}>
             <Modal
@@ -63,15 +77,11 @@ export default function FormFieldText(props) {
                 scrollable={true}
                 onClose={() => { setIsModal(false) }}
             >
-                {!!isModal && <Form {...frmData} onFormSubmit={onFormSubmit}  resetOnSubmit={true} />}
+                {!!isModal && <Form {...frmData} onFormSubmit={onFormSubmit} resetOnSubmit={true} />}
             </Modal>
-            <Button
-                startDecorator="Vote"
-                variant={variant}
-                size={size}
-                rounded
-                onPress={() => showSelect()}
-            />
+            {pollSource && pollSource.map((item, index) => {
+                return <View className='mt-4'><PollItem onDelete={() => { deletePoll(props.remove, item) }} key={"att" + index} data={item} showTitle={true} /></View>
+            })}
         </Field>
     );
 }

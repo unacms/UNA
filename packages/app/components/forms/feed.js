@@ -19,13 +19,14 @@ import { useFormContext } from 'react-hook-form'
 import Reanimated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from 'react-native-reanimated';
 import { getEditorHeight } from 'app/lib/form-helpers';
 
-
+import { fetcher } from 'app/lib/fetcher';
+import emitter from 'app/context/emitter';
 function ProfileView({ isImageOnly = false, data, handleSubmit, showImage, setShowImage, author }) {
     const { currentUser } = useCurrentUser();
 
     if (!currentUser) return null;
 
-    const profileData = author? author : {
+    const profileData = author ? author : {
         ...currentUser,
         url_avatar: currentUser.avatar,
         url: null,
@@ -38,7 +39,7 @@ function ProfileView({ isImageOnly = false, data, handleSubmit, showImage, setSh
     const isHiddenVisibility = data?.inputs?.['object_privacy_view']?.origtype == 'hidden' || !data?.inputs?.['object_privacy_view']
 
     const authorName = (<Text className="text-neutral-900 dark:text-neutral-100 leading-[24px] px-[4px] font-bold tracking-tight text-[16px] truncate">
-        {author? author.display_name : currentUser.display_name}
+        {author ? author.display_name : currentUser.display_name}
     </Text>
     )
 
@@ -48,7 +49,7 @@ function ProfileView({ isImageOnly = false, data, handleSubmit, showImage, setSh
                 <Profile {...profileData} displaySize="lg" displayType="unit_wo_info" />
 
                 <View className={`flex-col flex-auto ${!isHiddenVisibility ? 'group ' : ''}`}>
-        
+
                     {data?.inputs?.['object_privacy_view'] ? getFormFieldByData(
                         {
                             ...data.inputs['object_privacy_view'],
@@ -62,10 +63,10 @@ function ProfileView({ isImageOnly = false, data, handleSubmit, showImage, setSh
                             size: 'sm',
                             maxLength: 0,
                             variant: 'text',
-                            
+
                             addElement: authorName,
                         }
-                    ): authorName}
+                    ) : authorName}
 
                 </View>
             </View>
@@ -81,7 +82,7 @@ export default function FormFeed(props) {
     const [showImage, setShowImage] = useState(isFormOnly ? true : false);
     const [modalKey, setModalKey] = useState(0);
     const [responseId, setResponseId] = useState(0)
-    const [imageSource, setImageSource] = useState([])
+    const [imageSource, setImageSource] = useState([]);
     const { setLayoutData } = useLayoutData()
     const windowDimensions = useWindowDimensions()
     const [isShowHashtag, setIsShowHashtag] = useState(0)
@@ -115,11 +116,11 @@ export default function FormFeed(props) {
 
     function checkEditorHeight(reportedInternalHeight) {
         const actualHasText = stripTags(formContext.getValues('text') || '').trim().length > 0;
-        
+
         // For post editor: 1 line text ~24px. Wrapper padding (px-[12px]) ~24px. Editor internal est. ~2px. Total ~50px.
-        const minVisualHeightWhenTyping = 50; 
+        const minVisualHeightWhenTyping = 50;
         const visualFloorHeight = actualHasText ? minVisualHeightWhenTyping : baseEditorHeight;
-        
+
         let totalChromeHeightEstimate;
         if (actualHasText) {
             // Wrapper padding: 12px (top) + 12px (bottom) = 24px. Editor internal (estimate): 2px
@@ -149,9 +150,9 @@ export default function FormFeed(props) {
         const minVisualHeightWhenTyping = 50; // Synchronized with checkEditorHeight logic
 
         if (actualHasText) {
-            updateAnimatedHeight(Math.max(animatedEditorHeight.value, minVisualHeightWhenTyping)); 
+            updateAnimatedHeight(Math.max(animatedEditorHeight.value, minVisualHeightWhenTyping));
         } else {
-            updateAnimatedHeight(baseEditorHeight); 
+            updateAnimatedHeight(baseEditorHeight);
         }
     }, [rawEditorText, baseEditorHeight, animatedEditorHeight]);
 
@@ -203,6 +204,7 @@ export default function FormFeed(props) {
         }
     }
 
+
     const prevList = Object.values(imageSource)
         .flat()
         .filter((element) => element !== undefined && element !== null)
@@ -251,7 +253,10 @@ export default function FormFeed(props) {
     const handleModalClose = useCallback(() => {
         Keyboard.dismiss()
         setShowImage(false)
-    }, [])
+    }, []);
+
+
+    const isPoll = !!props.data.inputs['polls'];
 
     const form = <KbAvoidingView className='flex-col flex-auto' offset={isIos ? 10 : 74}>
         {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'default')}
@@ -259,39 +264,49 @@ export default function FormFeed(props) {
         {getFormFieldByData(props.data.inputs['owner_id'], props.handleSubmit, 'default')}
         {getFormFieldByData(props.data.inputs['type'], props.handleSubmit, 'default')}
         <View className="justify-between flex-col flex-auto">
-                <View className="w-full flex-1 justify-start px-[12px] ">
-                    <Reanimated.View style={editorWrapperAnimatedStyle} className="flex-auto">
-                        {getFormFieldByData(
-                            props.data.inputs['text'],
-                            props.handleSubmit,
-                            'custom',
-                            {
-                                form_name:props.name,
-                                styles: { verticalAlign: 'top' }, 
-                                focus: true,
-                                noMargin: true,
-                                bg: 'transparent',
-                                placeholder: 'Write here...',
-                                linkify: true,
-                                autofocus: Date.now(),
-                                classes:'flex-1 tiptap-default',
-                                onHeight: checkEditorHeight,
-                            }
-                        )}
-                    </Reanimated.View>
-                    <View >
+            <View className="w-full flex-1 justify-start px-[12px] ">
+                <Reanimated.View style={editorWrapperAnimatedStyle} className="flex-auto">
+                    {getFormFieldByData(
+                        props.data.inputs['text'],
+                        props.handleSubmit,
+                        'custom',
+                        {
+                            form_name: props.name,
+                            styles: { verticalAlign: 'top' },
+                            focus: true,
+                            noMargin: true,
+                            bg: 'transparent',
+                            placeholder: 'Write here...',
+                            linkify: true,
+                            autofocus: Date.now(),
+                            classes: 'flex-1 tiptap-default',
+                            onHeight: checkEditorHeight,
+                        }
+                    )}
+                </Reanimated.View>
+                <View >
                     <ScrollView keyboardDismissMode="on-drag" keyboardShouldPersistTaps="handled" className="w-full " horizontal={true}>
                         {prevList}
                     </ScrollView>
+                    <View className="">
+                        {props.data.inputs['labels'] && (
+                            <View className="flex-auto">
+                                {labels}
+                            </View>
+                        )}
+                    </View>
+                    {isPoll && (
                         <View className="">
-                            {props.data.inputs['labels'] && (
-                                <View className="flex-auto">
-                                    {labels}
-                                </View>
+                            {getFormFieldByData(
+                                props.data.inputs['polls'],
+                                props.handleSubmit,
+                                'custom',
                             )}
                         </View>
-                    </View>
+                    )}
+
                 </View>
+            </View>
 
             <View className="  ">
 
@@ -344,7 +359,7 @@ export default function FormFeed(props) {
                                         props.handleSubmit,
                                         'custom',
                                         {
-                                            form_name:props.name,
+                                            form_name: props.name,
                                             previewPlaceHolder: setPlaceHolder,
                                             noMargin: true,
                                             asDefaultStorage: true,
@@ -403,22 +418,15 @@ export default function FormFeed(props) {
                                     />
                                 </View>
                             )}
-                            {props.data.inputs['polls'] && (
+                            {isPoll && (
                                 <View className="">
-                                    {getFormFieldByData(
-                                        props.data.inputs['polls'],
-                                        props.handleSubmit,
-                                        'custom',
-                                        {
-                                            previewPlaceHolder: setPlaceHolder,
-                                            noMargin: true,
-                                            asDefaultStorage: true,
-                                            size: 'base',
-                                            variant: 'secondary',
-                                            rounded: true,
-                                            source: 'camera',
-                                        }
-                                    )}
+                                    <Button
+                                        startDecorator="Vote"
+                                        size='base'
+                                        variant='secondary'
+                                        rounded
+                                        onPress={() => emitter.emit(`poll_polls`, { action: 'add' })}
+                                    />
                                 </View>
                             )}
                         </Row>

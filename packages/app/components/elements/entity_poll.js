@@ -24,7 +24,7 @@ function Results({ data }) {
         return (
             <View className="lg:flex-row mx-auto w-full items-center justify-center ">
                 <View className=" w-full lg:w-1/2 lg:pr-8">
-                    <VictoryPieChart labelComponent={null}  colorScale={backgroundColor2} data={transformedData} />
+                    <VictoryPieChart labelComponent={null} colorScale={backgroundColor2} data={transformedData} />
                 </View>
                 <View className=" w-full lg:w-1/2 mt-4 lg:mt-0">
                     {data.map((item2, index) => {
@@ -33,13 +33,13 @@ function Results({ data }) {
                                 <View className="w-12 h-12 rounded-full" style={{ backgroundColor: backgroundColor2[index] }}></View>
                                 <View className='flex-auto ml-4'>
                                     <Text numberOfLines={10} className=" flex-wrap w-full text-neutral-900 dark:text-neutral-50 text-base flex-wrap ">
-                                        {item2.title} 
+                                        {item2.title}
                                     </Text>
-                                     <Text className="font-bold flex-wrap w-full text-neutral-900 dark:text-neutral-50 text-base flex-wrap">
+                                    <Text className="font-bold flex-wrap w-full text-neutral-900 dark:text-neutral-50 text-base flex-wrap">
                                         {item2.width} ({item2.votes.count} votes)
                                     </Text>
                                 </View>
-                            
+
                             </Row>
                         )
                     })}
@@ -49,8 +49,7 @@ function Results({ data }) {
     }
 }
 
-export function PollItem({ data, showTitle }) {
-    console.log("datadatadata8",data)
+export function PollItem({ data, showTitle, onDelete }) {
     const initialState = {
         isShowResults: data.is_performed,
         isVoted: data.is_performed,
@@ -65,7 +64,7 @@ export function PollItem({ data, showTitle }) {
             case 'TOGGLE_RESULTS':
                 return { ...state, isShowResults: !state.isShowResults };
             case 'VOTE':
-                return { ...state, isShowResults: true, isVoted: true, value: action.value  };
+                return { ...state, isShowResults: true, isVoted: true, value: action.value };
             case 'SET_RESULTS':
                 return { ...state, results: action.payload };
             default:
@@ -90,13 +89,16 @@ export function PollItem({ data, showTitle }) {
     const totalVotes = state?.results ? state.results.reduce((acc, item) => acc + item.votes.count, 0) : 0;
 
     return (
-        <> {showTitle && <Text className="text-neutral-950  dark:text-neutral-50 text-base tracking-tight font-medium">{data.title}</Text>}
+        <> <Row className='items-center justify-between w-full'>{showTitle && <Text className="text-neutral-950  dark:text-neutral-50 text-base tracking-tight font-medium">{data.title}</Text>}
+            {onDelete && (<Button onPress={() => {onDelete(data.id)}} startDecorator="X" size="xs"/>)}
+            </Row>
             {state.isShowResults && <Results data={state.results} />}
+            
             {!!data.subentries && !state.isShowResults && data.subentries.map((item2, index) => (
                 <Row key={`lbl-${index}`} className={`items-center my-1 border border-bdr dark:border-bdr-d rounded-lg ${state.isVoted ? 'opacity-50' : 'hover:bg-primary/10 active:bg-primary/20 dark:hover:bg-primary-d/10 dark:active:bg-primary-d/20'}`}>
                     <RadioButton
                         value={item2.entry_id}
-                        status={item2.id == state.value ? 'checked': 'unchecked'}
+                        status={item2.id == state.value ? 'checked' : 'unchecked'}
                         title={item2.title}
                         disabled={state.isVoted}
                         onPress={() => Vote(item2.id)}
@@ -105,11 +107,11 @@ export function PollItem({ data, showTitle }) {
             ))}
             {(!data.is_hidden_results && totalVotes > 0) && (
                 <Row className="justify-end">
-                    <Button 
-                        title={state.isShowResults ? "Show poll" : "Show results"} 
-                        variant="link" 
-                        size="sm" 
-                        onPress={() => dispatch({ type: 'TOGGLE_RESULTS' })} 
+                    <Button
+                        title={state.isShowResults ? "Show poll" : "Show results"}
+                        variant="link"
+                        size="sm"
+                        onPress={() => dispatch({ type: 'TOGGLE_RESULTS' })}
                     />
                 </Row>
             )}
