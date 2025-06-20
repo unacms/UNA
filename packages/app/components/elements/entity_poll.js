@@ -82,14 +82,16 @@ export function PollItem({ data, showTitle, onDelete }) {
 
         const sRequest1 = `/api.php?r=bx_polls/get_block_results/&params[]=${data.id}`;
         const sResponse1 = await fetcher(sRequest1);
-
-        dispatch({ type: 'SET_RESULTS', payload: sResponse1.data });
+        if (sResponse1.data)
+            dispatch({ type: 'SET_RESULTS', payload: sResponse1.data });
     };
 
     const totalVotes = state?.results ? state.results.reduce((acc, item) => acc + item.votes.count, 0) : 0;
 
+    console.log ("state.isShowResultsstate.isShowResults", state, data.subentries)
+
     return (
-        <> <Row className='items-center justify-between w-full'>{showTitle && <Text className="text-neutral-950  dark:text-neutral-50 text-base tracking-tight font-medium">{data.title}</Text>}
+        <><Row className='items-center justify-between w-full'>{showTitle && <Text className="text-neutral-950  dark:text-neutral-50 text-base tracking-tight font-medium">{data.title}</Text>}
             {onDelete && (<Button onPress={() => {onDelete(data.id)}} startDecorator="X" size="xs"/>)}
             </Row>
             {state.isShowResults && <Results data={state.results} />}

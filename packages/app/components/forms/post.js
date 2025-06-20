@@ -1,40 +1,29 @@
-import { View, Row } from 'app/design/view'
+import { View, Row, ScrollView } from 'app/design/view'
 import { useState } from 'react'
 import { getFormFieldByData, getHiddenFields } from 'app/lib/form-helpers'
 import Profile from 'app/ui/molecules/profile';
-import React from 'react'
+
 import { useCurrentUser } from 'app/context/user';
 import { Text } from 'app/design/typography'
+import { FileButton } from 'app/components/form-fields/files';
 
 export default function FormPost(props) {
     const {data, handleSubmit} = props;
     const inputs = data.inputs;
 
-    const [imageSource, setImageSource] = useState([])
-    const [coverSource, setCoverSource] = useState([])
-    let { currentUser, setCurrentUser } = useCurrentUser();
-    
-    function setPlaceHolder(name, previews) {
-        if (JSON.stringify(previews) != JSON.stringify(imageSource[name])) {
-            setImageSource((prevImageSource) => ({
-                ...prevImageSource,
-                [name]: previews,
-            }))
-        }
-    }
 
+    const [coverSource, setCoverSource] = useState([])
+    let { currentUser } = useCurrentUser();
+    
+   
     function setPlaceHolderCover(name, previews) {
-        if (JSON.stringify(previews) != JSON.stringify(imageSource[name])) {
+        if (JSON.stringify(previews) != JSON.stringify(currentUser[name])) {
             setCoverSource((prevImageSource) => ({
                 ...prevImageSource,
                 [name]: previews,
             }))
         }
     }
-
-    const prevList = Object.values(imageSource)
-        .flat()
-        .filter((element) => element !== undefined && element !== null)
 
     const prevListCover = Object.values(coverSource)
         .flat()
@@ -111,45 +100,66 @@ export default function FormPost(props) {
                 <View className='w-full flex-wrap my-1 flex-row border rounded-xl border-bdr dark:border-bdr-d  py-1 px-2 items-center'>
                     <Text className="font-semibold px-3 py-1 justify-center my-auto text-sm flex-auto text-neutral-800 dark:text-neutral-200">Add to post</Text>
                     <Row className=" justify-center items-center flex-row flex-wrap px-2">
-                        <View className="items-center justify-center">
-                            {getFormFieldByData(
-                                inputs['pictures'],
-                                handleSubmit,
-                                'custom',
-                                { previewPlaceHolder: setPlaceHolder, noMargin:true }
-                            )}
-                        </View>
-                        <View className="">
-                            {getFormFieldByData(
-                                inputs['videos'],
-                                handleSubmit,
-                                'custom',
-                                { previewPlaceHolder: setPlaceHolder, noMargin:true }
-                            )}
-                        </View>
-                        <View className="">
-                            {getFormFieldByData(
-                                inputs['files'],
-                                handleSubmit,
-                                'custom',
-                                { previewPlaceHolder: setPlaceHolder, noMargin:true }
-                            )}
-                        </View>
-                        <View className="">
-                            {getFormFieldByData(
-                                inputs['sounds'],
-                                handleSubmit,
-                                'custom',
-                                { previewPlaceHolder: setPlaceHolder, noMargin:true }
-                            )}
-                        </View>
-                    </Row>
+                        {props.data.inputs['pictures'] && (
+                            <View className="ml-2">
+                                <FileButton field_name='pictures' variant='text' icon="Image" rounded={false} />
+                            </View>
+                        )}
+                        {props.data.inputs['videos'] && (
+                            <View className="ml-2">
+                                <FileButton field_name='videos' variant='text' icon="Image" rounded={false} />
+                            </View>
+                        )}
+                        {props.data.inputs['files'] && (
+                            <View className="ml-2">
+                                <FileButton field_name='files' variant='text'  icon="Paperclip" rounded={false} />
+                            </View>
+                        )}
+                        {props.data.inputs['sounds'] && (
+                            <View className="ml-2">
+                                <FileButton field_name='files' variant='text' icon="FileAudio" rounded={false} />
+                            </View>
+                        )}
+                       
+                        </Row>
                     
                 </View>
-                {prevList.length > 0 && prevList[0]?.key && (
-                        <Row className="flex-wrap">{prevList}</Row>
-                    )}
-
+                <ScrollView keyboardDismissMode="on-drag" keyboardShouldPersistTaps="handled" className="w-full " horizontal={true}>
+                                        <Row className='flex-wrap '>
+                                            {
+                                                getFormFieldByData(
+                                                    props.data.inputs['pictures'],
+                                                    props.handleSubmit,
+                                                    'notitle',
+                                                    { hide_button: true, list_only: true }
+                                                )
+                                            }
+                                            {
+                                                getFormFieldByData(
+                                                    props.data.inputs['videos'],
+                                                    props.handleSubmit,
+                                                    'notitle',
+                                                    { hide_button: true, list_only: true }
+                                                )
+                                            }
+                                            {
+                                                getFormFieldByData(
+                                                    props.data.inputs['files'],
+                                                    props.handleSubmit,
+                                                    'notitle',
+                                                    { hide_button: true, list_only: true }
+                                                )
+                                            }
+                                            {
+                                                 getFormFieldByData(
+                                                    props.data.inputs['sounds'],
+                                                    props.handleSubmit,
+                                                    'notitle',
+                                                    { hide_button: true, list_only: true }
+                                                )
+                                            }
+                                        </Row>
+                                    </ScrollView>
 
                 <View className='w-full my-1 flex-row border rounded-xl border-bdr dark:border-bdr-d py-1 px-2'>
                     <Text className="font-semibold px-3 py-1 justify-center my-auto text-sm  text-neutral-800 dark:text-neutral-200">Labels</Text>
@@ -158,7 +168,7 @@ export default function FormPost(props) {
                             inputs['labels'],
                             handleSubmit,
                             'notitle',
-                            { noMargin:true, variant: 'text', align: 'right', size: 'sm' }
+                            { noMargin:true, align: 'right' }
                         )}
                     </Row>
                 </View>

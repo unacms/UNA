@@ -9,10 +9,10 @@ import emitter from 'app/context/emitter';
 import { PollItem } from 'app/components/elements/entity_poll';
 import { View } from 'app/design/view'
 
-export default function FormFieldText(props) {
+export default function FormFieldPolls(props) {
     const name = props.name;
     const [isModal, setIsModal] = useState(false);
-    const [pollSource, setPollSource] = useState([]);
+    const [pollSource, setPollSource] = useState(props.value || []);
     const [dataForm, setDataForm] = useState(false);
     const defaultValue = props.value ? props.value : '';
     const rules = getValidationRules(props);
@@ -35,7 +35,7 @@ export default function FormFieldText(props) {
     }, [dynamicData]);
 
     useEffect(() => {
-        const subscription = emitter.addListener(`poll_${name}`, (data) => {
+        const subscription = emitter.addListener(`fld_polls_${name}`, (data) => {
             if (data.action == 'add') {
                 showSelect()
             }
@@ -65,8 +65,8 @@ export default function FormFieldText(props) {
         );
     }
 
-
-    const frmData = dynamicData?.data[0] || isModal
+    const frmData = dynamicData?.data[0] || isModal;
+    console.log("frmDatafrmData", frmData)
     return (
         <Field {...props} error2={formContext.formState.errors[name]}>
             <Modal
@@ -77,11 +77,25 @@ export default function FormFieldText(props) {
                 scrollable={true}
                 onClose={() => { setIsModal(false) }}
             >
-                {!!isModal && <Form {...frmData} onFormSubmit={onFormSubmit} resetOnSubmit={true} />}
+                {!!isModal && <Form {...frmData} onFormSubmit={onFormSubmit} resetOnSubmit={false} />}
             </Modal>
             {pollSource && pollSource.map((item, index) => {
                 return <View className='mt-4'><PollItem onDelete={() => { deletePoll(props.remove, item) }} key={"att" + index} data={item} showTitle={true} /></View>
             })}
+             {!props.hide_button && <PollButton field_name = {name} />}
         </Field>
     );
 }
+
+export function PollButton({ field_name, size = 'base', variant = 'secondary', icon = "Vote" }) {
+    return (
+        <Button
+            startDecorator={icon}
+            size={size}
+            variant={variant}
+            rounded
+            onPress={() => emitter.emit(`fld_polls_${field_name}`, { action: 'add' })}
+        />
+    );
+}
+

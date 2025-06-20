@@ -1,6 +1,6 @@
 import { View, Row, ScrollView } from 'app/design/view'
 import { Button, Modal } from 'app/design/controls'
-import { useState, useContext, useRef, useCallback, useMemo } from 'react'
+import { useState, useRef, useCallback, useMemo } from 'react'
 import { getFormFieldByData } from 'app/lib/form-helpers'
 import { useLayoutData } from 'app/context/layout'
 import { FeedbackHaptics, getAlert } from 'app/lib/util'
@@ -18,9 +18,11 @@ import { Keyboard } from 'react-native'
 import { useFormContext } from 'react-hook-form'
 import Reanimated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from 'react-native-reanimated';
 import { getEditorHeight } from 'app/lib/form-helpers';
+import { PollButton } from 'app/components/form-fields/polls';
+import { LabelButton } from 'app/components/form-fields/labels';
+import { FileButton } from 'app/components/form-fields/files';
 
-import { fetcher } from 'app/lib/fetcher';
-import emitter from 'app/context/emitter';
+
 function ProfileView({ isImageOnly = false, data, handleSubmit, showImage, setShowImage, author }) {
     const { currentUser } = useCurrentUser();
 
@@ -82,10 +84,10 @@ export default function FormFeed(props) {
     const [showImage, setShowImage] = useState(isFormOnly ? true : false);
     const [modalKey, setModalKey] = useState(0);
     const [responseId, setResponseId] = useState(0)
-    const [imageSource, setImageSource] = useState([]);
+
     const { setLayoutData } = useLayoutData()
     const windowDimensions = useWindowDimensions()
-    const [isShowHashtag, setIsShowHashtag] = useState(0)
+
     const isWeb = Platform.OS === 'web'
     const isIos = Platform.OS === 'ios'
     const isSmall = windowDimensions.width < LAYOUT_BREAKPOINTS.sm || !isWeb ? true : false
@@ -195,21 +197,6 @@ export default function FormFeed(props) {
         text = stripTags(text).trim()
     }
 
-    function setPlaceHolder(name, previews) {
-        if (JSON.stringify(previews) != JSON.stringify(imageSource[name])) {
-            setImageSource((prevImageSource) => ({
-                ...prevImageSource,
-                [name]: previews,
-            }))
-        }
-    }
-
-
-    const prevList = Object.values(imageSource)
-        .flat()
-        .filter((element) => element !== undefined && element !== null)
-
-
     const header = (
         <Row className="w-full items-start">
 
@@ -234,29 +221,15 @@ export default function FormFeed(props) {
         </Row>
     )
 
-    const labels =
-        props.data.inputs['labels'] &&
-        getFormFieldByData(
-            props.data.inputs['labels'],
-            props.handleSubmit,
-            'notitle',
-            {
-                onShowModal: setShowImage,
-                showModal: showImage,
-                listOnly: true,
-                isShow: isShowHashtag,
-                noMargin: true,
-                size: 'sm',
-            }
-        )
-
     const handleModalClose = useCallback(() => {
         Keyboard.dismiss()
         setShowImage(false)
     }, []);
 
 
-    const isPoll = !!props.data.inputs['polls'];
+    const isPollsPresent = !!props.data.inputs['polls'];
+    const isLabelsPresent = !!props.data.inputs['labels'];
+
 
     const form = <KbAvoidingView className='flex-col flex-auto' offset={isIos ? 10 : 74}>
         {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'default')}
@@ -286,21 +259,53 @@ export default function FormFeed(props) {
                 </Reanimated.View>
                 <View >
                     <ScrollView keyboardDismissMode="on-drag" keyboardShouldPersistTaps="handled" className="w-full " horizontal={true}>
-                        {prevList}
+                        <Row className='flex-wrap '>
+                            {
+                                getFormFieldByData(
+                                    props.data.inputs['video'],
+                                    props.handleSubmit,
+                                    'notitle',
+                                    { hide_button: true, list_only: true }
+                                )
+                            }
+                            {
+                                getFormFieldByData(
+                                    props.data.inputs['photo'],
+                                    props.handleSubmit,
+                                    'notitle',
+                                    { hide_button: true, list_only: true }
+                                )
+                            }
+                            {
+                                getFormFieldByData(
+                                    props.data.inputs['file'],
+                                    props.handleSubmit,
+                                    'notitle',
+                                    { hide_button: true, list_only: true }
+                                )
+                            }
+                        </Row>
                     </ScrollView>
-                    <View className="">
-                        {props.data.inputs['labels'] && (
-                            <View className="flex-auto">
-                                {labels}
-                            </View>
-                        )}
-                    </View>
-                    {isPoll && (
+
+                    {isLabelsPresent && (
+                        <View className="flex-auto">
+                            {
+                                getFormFieldByData(
+                                    props.data.inputs['labels'],
+                                    props.handleSubmit,
+                                    'notitle',
+                                    { hide_button: true, noMargin: true }
+                                )
+                            }
+                        </View>
+                    )}
+                    {isPollsPresent && (
                         <View className="">
                             {getFormFieldByData(
                                 props.data.inputs['polls'],
                                 props.handleSubmit,
                                 'custom',
+                                { hide_button: true }
                             )}
                         </View>
                     )}
@@ -335,98 +340,32 @@ export default function FormFeed(props) {
                             )}
                             {props.data.inputs['photo'] && (
                                 <View className="">
-                                    {getFormFieldByData(
-                                        props.data.inputs['photo'],
-                                        props.handleSubmit,
-                                        'custom',
-                                        {
-                                            previewPlaceHolder: setPlaceHolder,
-                                            noMargin: true,
-                                            size: 'base',
-                                            variant: 'secondary',
-                                            rounded: true,
-                                            variant: 'secondary',
-                                            size: 'base',
-
-                                        }
-                                    )}
+                                    <FileButton field_name='photo' icon="Image" />
                                 </View>
                             )}
                             {props.data.inputs['video'] && (
                                 <View className="">
-                                    {getFormFieldByData(
-                                        props.data.inputs['video'],
-                                        props.handleSubmit,
-                                        'custom',
-                                        {
-                                            form_name: props.name,
-                                            previewPlaceHolder: setPlaceHolder,
-                                            noMargin: true,
-                                            asDefaultStorage: true,
-                                            rounded: true,
-                                            size: 'base',
-                                            variant: 'secondary',
-                                            source: 'library',
-                                        }
-                                    )}
+                                    <FileButton field_name='video' icon="Image" />
                                 </View>
                             )}
                             {(props.data.inputs['video'] && !isWeb) && (
                                 <View className="">
-                                    {getFormFieldByData(
-                                        props.data.inputs['video'],
-                                        props.handleSubmit,
-                                        'custom',
-                                        {
-                                            previewPlaceHolder: setPlaceHolder,
-                                            noMargin: true,
-                                            asDefaultStorage: true,
-                                            size: 'base',
-                                            variant: 'secondary',
-                                            rounded: true,
-                                            source: 'camera',
-                                        }
-                                    )}
+                                    <FileButton field_name='video' icon="Image" />
                                 </View>
                             )}
                             {props.data.inputs['file'] && (
                                 <View>
-                                    {getFormFieldByData(
-                                        props.data.inputs['file'],
-                                        props.handleSubmit,
-                                        'custom',
-                                        {
-                                            previewPlaceHolder: setPlaceHolder,
-                                            noMargin: true,
-                                            size: 'base',
-                                            variant: 'secondary',
-                                            rounded: true,
-                                        }
-                                    )}
+                                    <FileButton field_name='file' icon="Paperclip" />
                                 </View>
                             )}
-                            {props.data.inputs['labels'] && (
+                            {isLabelsPresent && (
                                 <View>
-                                    <Button
-                                        startDecorator="Hash"
-                                        size='base'
-                                        variant='secondary'
-                                        rounded
-                                        onPress={() => {
-                                            setIsShowHashtag(isShowHashtag + 1)
-                                        }}
-                                    />
+                                    <LabelButton field_name='labels' />
                                 </View>
                             )}
-                            {isPoll && (
+                            {isPollsPresent && (
                                 <View className="">
-                                    <Button
-                                        startDecorator="Vote"
-                                        size='base'
-                                        variant='secondary'
-                                        rounded
-                                        onPress={() => emitter.emit(`poll_polls`, { action: 'add' })}
-                                    />
+                                    <PollButton field_name='polls' />
                                 </View>
                             )}
                         </Row>
@@ -444,7 +383,9 @@ export default function FormFeed(props) {
                                         icon: "SendHorizontal",
 
                                     }
-                                )}</View></View>
+                                )}
+                            </View>
+                        </View>
                     </Row>
                 </View>
             </View>

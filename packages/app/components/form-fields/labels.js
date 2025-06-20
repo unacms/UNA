@@ -5,6 +5,7 @@ import { useState, useEffect , useCallback, useContext } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
 import { Button, Modal } from "app/design/controls";
 import CheckBox from 'app/ui/atoms/checkbox';
+import emitter from 'app/context/emitter';
 
 function ChkList({ values, value2, addValue2 }) {
     return (
@@ -29,14 +30,26 @@ export default function (props) {
     const rules = {};
     const defaultValue = props.value ? props.value : '';
     const name = props.name ? props.name : '';
-    const variant = props.variant || 'outline';
-    const size = props.size || 'xs';
+    const variant = props.variant || 'text';
+    const size = props.size || 'sm';
     const { field } = useController({ name, rules, defaultValue });
     const [isModal, setIsModal] = useState(!!props.isShow);
     const [value2, setValue2] = useState(field.value)
+
     useEffect(() => {
-        setIsModal(props.isShow > 0)
-    }, [props.isShow]);
+        const subscription = emitter.addListener(`fld_labels_${name}`, (data) => {
+            console.log('fld_polls', data);
+            if (data.action == 'add') {
+                setIsModal(true)
+            }
+
+        })
+
+        return () => {
+            subscription.remove()
+        }
+    }, [])
+
 
     const addValue2 = (value) => {
         const selectedValues = value2.includes(value)
@@ -72,13 +85,6 @@ export default function (props) {
         item.subitems ? [item, ...item.subitems] : item
     );
 
-    const showSelect = useCallback(
-        () => {
-            setIsModal(true);
-        },
-        []
-    );
-
     const styles = props.align === 'right' ? 'justify-end pl-4' : 'justify-start ';
 
     const header = <Row className=' w-full justify-between items-center'>
@@ -108,17 +114,17 @@ export default function (props) {
             </Modal>
             <Field {...props}>
                 <View className='w-full justify-between '>
-                    <View className={styles + ' w-full flex-auto items-center flex-row flex-wrap'}>
-                        {props.align == 'right' && <Button
-                            startDecorator="Plus"
-                            title='Tags'
+                    <View className={styles + ' w-full flex-auto items-center flex-row flex-wrap '}>
+                        {(!props.hide_button && props.align != 'right') && <LabelButton
                             variant={variant}
                             size={size}
-                            onPress={showSelect}
+                            title='Tags'
+                            rounded={false}
+                            icon="Plus"
+                            field_name={name}
                         />}
                         {!!field.value && field.value.map((item, index) => (
-                            <View className='pr-2 pb-1'>
-                            
+                            <View className='pr-2 justify-center items-center' key={`lbl-${index}`}>
                                 <Button
                                     endDecorator="X"
                                     variant={variant}
@@ -129,17 +135,32 @@ export default function (props) {
                             </View>
                         )
                         )}
-                        {props.align != 'right' && !props.listOnly && <Button
-                            startDecorator="Hash"
+                        {(!props.hide_button && props.align == 'right') && <LabelButton
                             variant={variant}
                             size={size}
+                            rounded={false}
+                            icon="Plus"
                             title='Tags'
-                            onPress={() => showSelect()}
+                            field_name={name}
                         />}
                     </View>
                 </View>
             </Field>
         </>
+    );
+}
+
+export function LabelButton({ field_name, size = 'base', variant = 'secondary', icon = "Hash", title, rounded = true }) {
+    return (
+        <Button
+            startDecorator={icon}
+            size={size}
+            title={title}
+
+            variant={variant}
+            rounded={rounded}
+            onPress={() => emitter.emit(`fld_labels_${field_name}`, { action: 'add' })}
+        />
     );
 }
 

@@ -1,7 +1,6 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import Field, { getValidationRules } from './_field';
 import { View, ViewRef, Row, Pressable } from 'app/design/view'
-import Image from 'app/ui/atoms/image';
 import * as ImagePicker from 'expo-image-picker';
 import { manipulateAsync, SaveFormat } from 'expo-image-manipulator'
 import { Button } from 'app/design/controls';
@@ -20,6 +19,7 @@ import { Image as ImageRN } from 'react-native';
 import Video from 'app/ui/atoms/video';
 import Msg from 'app/ui/molecules/msg';
 import { useTranslation } from 'react-i18next'
+import emitter from 'app/context/emitter';
 
 export default function (props) {
     const name = props.name;
@@ -59,47 +59,25 @@ export default function (props) {
         }
     }, [filesData]);
 
+    useEffect(() => {
+        if (hasPermissionLibrary) {
+            const subscription = emitter.addListener(`fld_files_${name}`, (data) => {
+                if (data.action == 'add') {
+                    selectImage()
+                }
+
+            })
+
+            return () => {
+                subscription.remove()
+            }
+        }
+    }, [hasPermissionLibrary])
+
 
     const RestoreGhosts = async (data) => {
         if (isAutoGhosts)
             return;
-        /*
-                let a = [];
-                let av = [];
-        
-                const result = await fetcher(url + "&a=restore_ghosts&_t=" + escape(new Date()));
-                if (result && result?.data[0]) {
-                    Object.keys(result.data[0]).forEach(function (k) {
-                        a.push(result.data[0][k]);
-                        av.push(result.data[0][k].file_id)
-                    });
-                }
-        
-                a.forEach(function (k) {
-                     if (k.file_id) {
-                         const val = av.join(',');
-                         if (name == 'covers') {
-                             formContext.setValue('thumb', val)
-                         }
-                         if (props.useUrl) {
-                             field.onChange(a[0].file_url);
-                         }
-                         else {
-                             field.onChange(val);
-                         }
-                     }
-                 });
-                 if (a.length == 0 && field.value != '')
-                     field.onChange('');
-        
-                let filteredArr = []
-                if (imageSource?.images)
-                    filteredArr = imageSource?.images?.filter(
-                        item => item.preload === true && !uploadFinishedArr.some(finished => finished == item.hash)
-                    );
-              //  console.log("aaa",{ images: [...a, ...filteredArr] })
-               // console.log("aaa1", props.values_src.g)
-                setImageSource({ images: [...a, ...filteredArr] });*/
     };
 
     useEffect(() => {
@@ -126,7 +104,7 @@ export default function (props) {
             RestoreGhosts(0);
         }
         if (!formValue) {
-            //setImageSource({ images: null });  //TOFIX
+            setImageSource({ images: [] });
         }
     }, [formValue]);
 
@@ -151,15 +129,16 @@ export default function (props) {
         if (uploadFinished?.result) {
             if (isAutoGhosts) {
                 if (uploadFinished?.result?.data?.ghost) {
-                    const updatedImages = imageSource?.images?.map(item =>
-                        item.hash === uploadFinished.extraVar.hash ? { ...uploadFinished?.result.data.ghost, uri: item.uri } : item
-                    );
-                    setImageSource({ images: updatedImages });
+                    /* const updatedImages = imageSource?.images?.map(item =>
+                         item.hash === uploadFinished.extraVar.hash ? { ...uploadFinished?.result.data.ghost, uri: item.uri } : item
+                     );*/
+                    setImageSourceN([{ ...uploadFinished?.result.data.ghost, hash: uploadFinished.extraVar.hash }]);
                 }
                 else {
 
-                    const updatedImages = imageSource?.images.filter(item => item.hash != uploadFinished.extraVar.hash);
-                    setImageSource({ images: updatedImages });
+                    /*  const updatedImages = imageSource?.images.filter(item => item.hash != uploadFinished.extraVar.hash);
+                        console.log("setImageSource3")
+                      setImageSource({ images: updatedImages });*/
                 }
 
             }
@@ -174,12 +153,36 @@ export default function (props) {
         RestoreGhosts();
     }, [uploadFinishedArr]);
 
+    const setImageSourceN = (newImages) => {
+
+        setImageSource(prev => {
+            const existingImages = prev?.images || [];
+
+            // Создаём Map из новых изображений по hash
+            const newImagesMap = new Map(newImages.map(img => [img.hash, img]));
+
+            // Заменяем или сохраняем старые изображения
+            const mergedImages = existingImages.map(img =>
+                newImagesMap.has(img.hash) ? newImagesMap.get(img.hash) : img
+            );
+
+            // Добавляем только те newImages, которых ещё нет в existingImages
+            const existingHashes = new Set(existingImages.map(img => img.hash));
+            const newOnlyImages = newImages.filter(img => !existingHashes.has(img.hash));
+
+            return {
+                ...prev,
+                images: [...mergedImages, ...newOnlyImages]
+            };
+        });
+    }
+
+
     const uploadImages = async (asset) => {
         let k = imageSource.images ? imageSource.images : [];
         if (!asset)
             return
         let objectsToAdd = [];
-        setImageSource({ images: k });
 
         for (const i of asset) {
             let uri = i.uri;
@@ -254,9 +257,7 @@ export default function (props) {
     }
 
     const selectImage = useCallback(async () => {
-
         let bIsMedia = props.ext_deny == '' || props.ext_allow == 'mp3,m4a,m4b,wma,wav,3gp' ? true : false;
-
         if (!bIsMedia && props.ext_deny.length && !'jpg,jpeg,jpe,gif,png,svg,webp'.split(',').filter((s) => ~props.ext_deny.split(',').indexOf(s)).length)
             bIsMedia = true;
 
@@ -332,7 +333,8 @@ export default function (props) {
                 });
             }
 
-            if (!result.cancelled) {
+            if (!result.canceled) {
+
                 const goodAssets = result.assets.filter(
                     asset => !asset.uri.startsWith('data:application/octet-stream')
                 );
@@ -340,7 +342,7 @@ export default function (props) {
                     setMessage('Some files are not supported.');
                 }
                 let k = await uploadImages(goodAssets);
-                setImageSource({ images: k });
+                setImageSourceN(k);
             }
         }
         else {
@@ -361,8 +363,11 @@ export default function (props) {
     }, [props.ext_deny, props.ext_allow, imageSource, url, hasPermissionCamera, hasPermissionLibrary]);
 
     const handleDelete = useCallback(async (id) => {
-        const filteredArr = imageSource?.images?.filter(item => item.file_id != id);
-        setImageSource({ images: [...filteredArr] });
+        setImageSource(prev => ({
+            ...prev,
+            images: prev.images.filter(item => item.file_id !== id)
+        }));
+
         await fetcher(url + "&a=delete&id=" + id);
     }, [url, imageSource]);
 
@@ -379,12 +384,15 @@ export default function (props) {
         return imageSource?.images?.length > 0 ? <ActionButton uploadImages={uploadImages} imagesList={imageSource.images} bMultiple={bMultiple} props={props} selectImage={selectImage} handleDelete={handleDelete} />
             : <></>;
     }
+    if (props.list_only){
+        return GhostsList(imageSource.images, bMultiple, handleDelete, props);
+    }
     return (
         <Field {...props} error2={formContext.formState.errors[name]}>
             <Msg onVisible={message} title={message} handleOk={() => { setMessage(false) }} />
-            <View className={bMultiple ? "" : ""} >
+            {!props.hide_button && <View>
                 <ActionButton uploadImages={uploadImages} imagesList={imageSource.images} props={props} bMultiple={bMultiple} selectImage={selectImage} handleDelete={handleDelete} />
-            </View>
+            </View>}
             {!props.previewPlaceHolder && <Row className='flex-wrap '>{GhostsList(imageSource.images, bMultiple, handleDelete, props)}</Row>}
         </Field>
     );
@@ -489,6 +497,19 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
     }
     return button;
 }
+
+export function FileButton({ field_name, size = 'base', variant = 'secondary', icon = "Image", rounded = true }) {
+    return (
+        <Button
+            startDecorator={icon}
+            size={size}
+            variant={variant}
+            rounded ={rounded}
+            onPress={() => emitter.emit(`fld_files_${field_name}`, { action: 'add' })}
+        />
+    );
+}
+
 
 function GhostsList(imagesList, bMultiple, handleDelete, props) {
     if (!imagesList || imagesList.length === 0 || props.name === 'cover' || props.name === 'picture') {

@@ -8,13 +8,12 @@ import { useFormContext } from 'react-hook-form'
 import { stripTags, removeEmptyTags } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import Profile from 'app/ui/molecules/profile'
-
+import { FileButton } from 'app/components/form-fields/files';
 
 export default function FormComments(props) {
     const { height: screenHeight } = useWindowDimensions()
     const baseHeight = props.data.inputs['cmt_id']?.value ? 160 : 40
     const maxHeight = Platform.OS === 'web' ? screenHeight / 2 : (screenHeight - 300) / 2 // 300 is approximate keyboard height
-    const [imageSource, setImageSource] = useState([])
     const formContext = useFormContext()
     
     const animatedEditorHeight = useSharedValue(baseHeight)
@@ -28,11 +27,14 @@ export default function FormComments(props) {
             : false
 
     const rawEditorText = formContext.watch('cmt_text')
+    const imagesValue = formContext.watch('cmt_image')
+
+
     const hasText = useMemo(() => stripTags(rawEditorText || '').trim().length > 0, [rawEditorText]);
 
     const inputWrapperAnimatedStyle = useAnimatedStyle(() => {
         return {
-            height: animatedEditorHeight.value,
+            height: `${animatedEditorHeight.value}`,
         };
     }, [animatedEditorHeight]);
 
@@ -44,15 +46,6 @@ export default function FormComments(props) {
             });
         }
     };
-
-    function setPlaceHolder(name, previews) {
-        if (JSON.stringify(previews) != JSON.stringify(imageSource[name])) {
-            setImageSource((prevImageSource) => ({
-                ...prevImageSource,
-                [name]: previews,
-            }))
-        }
-    }
 
     function setIsFocus() {
         // setIsExImage(false)
@@ -119,17 +112,14 @@ export default function FormComments(props) {
 
     useEffect(() => {
         if (formContext.formState.isSubmitted) {
-            setImageSource([]);
             formContext.setValue('cmt_text', '');
         }
     }, [formContext.formState.isSubmitted, formContext]);
 
     const handleSubmitWithSanitization = () => {
         let sanitizedHtml = formContext.getValues('cmt_text');
-        console.log('Before sanitize:', sanitizedHtml);
         sanitizedHtml = removeEmptyTags(sanitizedHtml);
-        console.log('After sanitize:', sanitizedHtml);
-
+        
         formContext.setValue('cmt_text', sanitizedHtml, { shouldValidate: true, shouldDirty: true });
         props.handleSubmit();
     };
@@ -179,7 +169,6 @@ export default function FormComments(props) {
         }
     };
 
-    let prevList = Object.values(imageSource).flat()
 
     props.data.inputs['cmt_submit'].hide_errors = true
 
@@ -227,14 +216,14 @@ export default function FormComments(props) {
     }
     attachmentButtonContainerClasses.push(currentAttachmentButtonWidthClass);
 
-    if (hasText) {
+    if (hasText || imagesValue) {
         attachmentButtonContainerClasses.push('left-0');
     } else {
         attachmentButtonContainerClasses.push('right-0');
     }
 
 
-    const filteredPrevList = prevList.filter(item => item !== null);
+   
     
     return (
         <View className="w-full ">
@@ -300,22 +289,7 @@ export default function FormComments(props) {
                         )}
                     </Reanimated.View>
                     <View className={attachmentButtonContainerClasses.join(' ')}>
-                        {isWeb &&
-                            getFormFieldByData(
-                                props.data.inputs['cmt_image'],
-                                props.handleSubmit,
-                                'custom',
-                                {
-                                    form_name: props.name,
-                                    previewPlaceHolder: setPlaceHolder,
-                                    noMargin: true,
-                                    size: 'sm',
-                                    hitSlop: 4,
-                                    variant: 'text',
-                                    asDefaultStorage: true,
-                                    source: 'library',
-                                }
-                            )}
+                        {isWeb && <FileButton field_name='cmt_image' icon="Image" source='library' variant = 'text' />}
                         {!isWeb && (
                             <Reanimated.View
                                 entering={SlideInLeft.duration(300)}
@@ -324,51 +298,23 @@ export default function FormComments(props) {
                             >
                                 <Row className="h-full items-center">
                                     <View className="h-full p-[4px] flex items-center justify-center">
-                                        {getFormFieldByData(
-                                            props.data.inputs['cmt_image'],
-                                            props.handleSubmit,
-                                            'custom',
-                                            {
-                                                form_name: props.name,
-                                                previewPlaceHolder: setPlaceHolder,
-                                                noMargin: true,
-                                                variant: 'text',
-                                                size: 'sm',
-                                                hitSlop: 4,
-                                                asDefaultStorage: true,
-                                                source: 'library',
-                                            }
-                                        )}
+                                        <FileButton field_name='cmt_image' icon="Image" source='library' variant = 'text' />
                                     </View>
                                     <View className="h-full p-[4px] flex items-center justify-center">
-                                        {getFormFieldByData(
-                                            props.data.inputs['cmt_image'],
-                                            props.handleSubmit,
-                                            'custom',
-                                            {
-                                                form_name: props.name,
-                                                previewPlaceHolder: setPlaceHolder,
-                                                noMargin: true,
-                                                size: 'sm',
-                                                hitSlop: 4,
-                                                variant: 'text',
-                                                asDefaultStorage: true,
-                                                source: 'camera',
-                                            }
-                                        )}
+                                        <FileButton field_name='cmt_image' icon="Image" source='camera' variant = 'text' />
                                     </View>
                                 </Row>
                             </Reanimated.View>
                         )}
                     </View>
-                    {(hasText || filteredPrevList.length > 0) && (
+                    {(hasText || imagesValue) && (
                         <View className="absolute right-0 bottom-0  h-[44px] p-[4px] z-10">
                             {getFormFieldByData(
                                 props.data.inputs['cmt_submit'],
                                 handleSubmitWithSanitization,
                                 'custom',
                                 {
-                                    disabled: !hasText && filteredPrevList.length == 0,
+                                    disabled: !hasText && !imagesValue,
                                     className: 'w-full h-full',
                                     notFullWidth: true,
                                     noMargin: true,
@@ -387,11 +333,17 @@ export default function FormComments(props) {
                     )}
                 </View>
             </Row>
-            {prevList.length > 0 && prevList[0]?.key && (
+           
                 <ScrollView horizontal={true}>
-                    <Row className="flex-wrap gap-[8px] mt-[12px]">{prevList}</Row>
+                    <Row className="flex-wrap gap-[8px] mt-[12px]">{
+                                getFormFieldByData(
+                                    props.data.inputs['cmt_image'],
+                                    props.handleSubmit,
+                                    'notitle',
+                                    { hide_button: true, list_only: true, hitSlop: 4, }
+                                )
+                            }</Row>
                 </ScrollView>
-            )}
             {getFormFieldByData(
                 props.data.inputs['cmt_mood'],
                 props.handleSubmit,

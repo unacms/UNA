@@ -892,7 +892,6 @@ export const uploadImage = async (uri, fetchUrl, calback, extraVar) => {
                     calback({result:result?.data?.link, extraVar:extraVar});
                 }
                 else {
-                    console.log('666', result)
                     calback({result:result, extraVar:extraVar})
                 }
 
