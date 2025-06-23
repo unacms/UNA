@@ -373,7 +373,7 @@ export function getNumColsForConductor(width, currentRoute, leftSideBar) {
 
 export function getBackground(pathname, currentUser)
 {
-    if (!currentUser){
+    if (currentUser === false){
         if(pathname === '/' || pathname === '/home')
             return 'splash';
 
