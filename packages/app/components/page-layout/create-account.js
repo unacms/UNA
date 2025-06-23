@@ -61,13 +61,11 @@ export default function PageLayout(props) {
                             <View className="relative">
                                 <View className="absolute top-4 flex shadow rounded-3xl w-full h-full bg-neutral-500 dark:bg-black blur-lg opacity-20 dark:opacity-50"></View>
                                 <Card rounded="rounded-3xl" addClassName="border border-white overflow-hidden dark:border-bdrcard-d">
-                                    <View className="hidden lg:flex flex-col pb-[24px] gap-y-[8px]">
-                                        <Text className="text-2xl leading-none tracking-tight font-bold text-neutral-800 dark:text-neutral-200">
-                                            Create your account
-                                        </Text>
-                                        <Text className="text-sm text-neutral-600 dark:text-neutral-400">
-                                            It's quick and easy to join
-                                        </Text>
+                                <View className="flex-col pb-[24px] gap-y-[12px] ">
+                                        <Text className="text-2xl text-center  leading-none tracking-tight font-bold text-neutral-800 dark:text-neutral-200">
+                                        Create your {appSetting('app', 'title')} account</Text>
+                                        <Text className="text-center text-base text-neutral-600 dark:text-neutral-400">
+                                        Already have an account? <Link href="/login">Sign in</Link>.</Text>
                                     </View>
                                     {!isAllowJoin && (
                                         <BlockByName
@@ -97,18 +95,7 @@ export default function PageLayout(props) {
                                 </Card>
                             </View>
                         </AnimatedView>
-                        <AnimatedView direction="up" className="flex-col">
-                            <Text className="text-base  text-neutral-600 dark:text-neutral-400 text-center py-[16px]">Already have an account?</Text>
-                            <Link className="w-full" href="/login" haptics="Medium">
-                                <Button
-                                    title="Sign in"
-                                    startDecorator="LogIn"
-                                    variant="default"
-                                    size="lg"
-                                    fullWidth
-                                />
-                            </Link>
-                        </AnimatedView>
+                        
                     </View>
                 </View>
             </View>

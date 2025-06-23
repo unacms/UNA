@@ -21,8 +21,8 @@ export default function PageLayout(props) {
     const refer = useRef();
 
 
-    const content = isWeb ? (<View className={'flex-col justify-center mx-auto w-full ' + getPageWidth(props.uri, props.data?.config)}>
-        <View className="w-full lg:flex-row max-w-7xl mx-auto my-auto lg:py-16 min-h-[100vh]">
+    const content = isWeb ? (<View className={'flex-col justify-center mx-auto w-full min-h-[100vh]' + getPageWidth(props.uri, props.data?.config)}>
+        <View className="w-full lg:flex-row max-w-7xl mx-auto my-auto lg:py-16 ">
             <View className="hidden my-auto flex-col flex-auto">
                 <AnimatedView className="w-[50%] max-w-[360px] aspect-square">
                     <SvgFile 
@@ -63,19 +63,7 @@ export default function PageLayout(props) {
                         </Card>
                     </View>
                 </AnimatedView>
-                <AnimatedView direction="up" className="flex-col">
-                    <Text className="text-base py-[16px] text-neutral-600 dark:text-neutral-400 text-center">Don't have an account?</Text>
-                    <Link className="w-full" href="/create-account" haptics="Medium">
-                        <Button
-                            title="Create new account"
-                            startDecorator="UserRoundPlus"
-                            variant="accent"
-                            size="lg"
-                            fullWidth
-                            icon="UserRoundPlus"
-                        />
-                    </Link>
-                </AnimatedView>
+               
             </View>
         </View>
         <MenuFooter cntClasses="w-full flex-row flex-wrap opacity-80 h-[64px] items-center justify-center"/>
