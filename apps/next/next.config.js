@@ -60,6 +60,9 @@ const nextConfig = {
     'expo-image-picker',
     'expo-location',
     'expo-camera',
+    'country-codes-flags-phone-codes',
+
+    'react-native-country-flag',
     'expo-document-picker',
     'expo-image-manipulator',
     'expo-constants',
@@ -137,7 +140,13 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'us-east-1.linodeobjects.com',
         pathname: '**',
+      },
+       {
+        protocol: 'https',
+        hostname: 'flagcdn.com',
+        pathname: '**',
       }
+      
     ],
     disableStaticImages: false
   },

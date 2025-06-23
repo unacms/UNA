@@ -1,4 +1,4 @@
-import React, { memo, useState, useEffect, useMemo, useRef } from 'react'
+import { useState, useMemo } from 'react'
 import { appSetting } from 'app/lib/util'
 import { View } from 'app/design/view'
 import { Modal } from 'app/design/controls'

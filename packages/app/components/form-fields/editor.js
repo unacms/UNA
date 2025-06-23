@@ -2,8 +2,8 @@ import Field, { getValidationRules } from './_field';
 import { useController, useFormContext } from 'react-hook-form';
 import { InputMulti, Input, TextInputClear, Button } from 'app/design/controls'
 import { useState, useRef, useEffect } from 'react';
-import { View, ScrollView } from 'app/design/view'
-import { lazy, Suspense } from 'react';
+import { View } from 'app/design/view'
+import { lazy } from 'react';
 const RftText = lazy(() => import('app/components/form-fields/editor-inner'));
 
 export default function FormFieldText(props) {
