@@ -405,7 +405,7 @@ export function LeftSidebar({ title, addButtons, children, width, menu }) {
     return (
        
             <View className={` ${sidebar =='fixed'? 'fixed-process' : ''}  px-[12px] py-[8px] gap-y-[2px]`}>
-                {(!!title || !!addButtons?.length > 0) && <Row className="justify-between items-center border-b border-bdr dark:border-bdr-d mb-[6px] pl-[8px] py-[8px] z-10 ">
+                {(!!title || !!addButtons?.length > 0) && <Row className="justify-between items-center pl-[8px] py-[8px] z-10 ">
                     <Text className=" text-3xl tracking-tight truncate mr-auto font-semibold leading-[48px] text-neutral-900 dark:text-neutral-100 hidden lg:flex  ">
                         {t(title)}
                     </Text>
@@ -426,9 +426,9 @@ export function TopSidebar({ styles, leftSideBar, addButtons, children, title, l
     return (
         <View style={styles} className={ ` ${!omitDefaultBackground ? conductorTheme.menu : ''} ${leftSideBar ? 'lg:hidden' : ''}`}>
             <View className={`${leftSideBar ? '' : 'mx-auto'} w-full ${conductorTheme.menu_max_width}`}>
-                
-                <Row className=" mx-[12px] sm:mx-[16px] py-[10px] border-t border-bdr dark:border-bdr-d items-center justify-between">
-                    {currentUser && title ? <Text className="text-2xl my-auto sm:mx-5 pb-1 font-medium text-neutral-800 tracking-tight dark:text-neutral-200 hidden lg:flex">{title}</Text> : null}
+                {/* TODO: Review this section for potential improvements */}
+                <Row className=" mx-[12px] sm:mx-[16px] pb-[12px] items-center justify-between">
+                    <Text className="text-2xl my-auto sm:mx-5 pb-1 font-medium text-neutral-800 tracking-tight dark:text-neutral-200 hidden ">{title}</Text>
                     {!currentUser && title ? <View className='pr-[16px] sm:pr-[24px]'><TextHeader text={title} /></View> : null}
                     {children}
                     {layout != 'mixed' && <Row className="hidden lg:flex cond-buttons-add">

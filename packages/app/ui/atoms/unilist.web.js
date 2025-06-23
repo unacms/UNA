@@ -72,7 +72,7 @@ export default function UniList(props) {
         return (
             <ReactNativeView
                 ref={ref}
-                className={`${maxWidthBlock} mx-auto flex flex-wrap  flex-row ${className || ''}`}
+                className={`${maxWidthBlock} mx-auto flex flex-wrap flex-row ${className || ''}`}
                 {...props}
             />
         );

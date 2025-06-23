@@ -190,7 +190,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
     });
 
     const ButtonEx = memo(({ visibleItemsCount }) => {
-        return <Button startDecorator="ChevronDown" variant={visibleItemsCount <= index ? 'secondary' : "secondary"} rounded ring="px-[8px]" pressed={visibleItemsCount <= index ? true : false} size="base" />;
+        return <Button startDecorator="ChevronDown" variant={visibleItemsCount <= index ? 'secondary' : "secondary"} rounded pressed={visibleItemsCount <= index ? true : false} size="base" />;
     });
 
     return <DynamicMenu
@@ -325,7 +325,7 @@ const TabBar = ({ menu, routes, leftSideBar, pageData, currentUser, index, setIn
         return (
             <TopSidebar omitDefaultBackground={omitDefaultBackground} leftSideBar={leftSideBar} addButtons={addButtons} layout={getLayout(currentUser)} title={t(menuSettings?.name)} >
                 <ConductorMenu currentUser={currentUser} leftSideBar={leftSideBar} routes={routes} index={index} t={t} setIndex={setIndex} getNumCols={getNumCols} windowWidth={windowWidth} onChangeRoute={onChangeRoute} />
-                {(conductorTheme.action_menu_in_tabs && !!pageData.cover_block?.actions_menu) && <View className="w-[44px] items-end zxdsw ">
+                {(conductorTheme.action_menu_in_tabs && !!pageData.cover_block?.actions_menu) && <View className="w-[44px] items-end review ">
                     <CoverMenuMore
                         {...pageData.cover_block.actions_menu}
                         uri={pageData.uri}
@@ -684,8 +684,8 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
         const sidebarUnitType = route.blocks?.browse_sidebar?.unitType || 'default';
 
         return (
-            <Row style={{ paddingTop: header ? 0 : 0 }} className={(headerSettings.columns == "reverse" ? 'flex-row-reverse' : '') + conductorTheme.content_max_width + '  mx-auto w-full ' + (isCoverDisabled ? ' sm:px-[16px] sm:my-3 ' : '')}>
-                <View className={(isRightCol ? 'flex-auto sm:px-4 flex-auto ' : ' w-full mx-auto') /*sm:p-2*/ + (layoutName == 'navigator' ? '' : ' pt-[8px] sm:p-4')}/*lg:pt-4*/>
+            <Row className={(headerSettings.columns == "reverse" ? 'flex-row-reverse' : '') + conductorTheme.content_max_width + ' mx-auto w-full ' + (isCoverDisabled ? ' sm:px-[16px] sm:my-3 ' : '')}>
+                <View className={(isRightCol ? 'flex-auto sm:px-4 flex-auto ' : ' w-full mx-auto') /*sm:p-2*/ + (layoutName == 'navigator' ? '' : ' pt-[8px] sm:p-4 ') + (header ? ' sm:p-[8px] ' : '')}>
                     {TabFlashListM}
                     {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 && callFn("noContentByUrl", [route?.endpoint])))}
                 </View>
