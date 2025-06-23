@@ -307,7 +307,7 @@ export default function FormComments(props) {
                             </Reanimated.View>
                         )}
                     </View>
-                    {(hasText || imagesValue) && (
+                    {(!!hasText || !!imagesValue) && (
                         <View className="absolute right-0 bottom-0  h-[44px] p-[4px] z-10">
                             {getFormFieldByData(
                                 props.data.inputs['cmt_submit'],

@@ -7,11 +7,11 @@ import { View, Row, Pressable } from 'app/design/view'
 
 export default function FormFieldMultiField(props) {
     const name = props.name;
-
+    const minCount = props.minCount || 2;
     const transformedArray = props.value_ids ? props.value_ids.map((id, index) => ({
         id,
         value: props.value[index]
-    })) : [{ 'id': -Date.now(), value: '' }];
+    })) : makeArray(minCount);
 
     const [values, setValues] = useState(transformedArray);
     const formContext = useFormContext();
@@ -24,6 +24,14 @@ export default function FormFieldMultiField(props) {
 
     }, [props.name, values]);
 
+
+    function makeArray(N) {
+  const t0 = Date.now();
+  return Array.from({ length: N }, (_, i) => ({
+    id: -(t0 + i),  
+    value: ''
+  }));
+}
 
     const AddNew = () => {
         setValues(prev => [...prev, { 'id': -Date.now(), value: '' }]);
@@ -50,11 +58,14 @@ export default function FormFieldMultiField(props) {
                             value={value.value}
 
                         />
-                        <Button variant="secondary" onPress={() => Delete(value.id)} size="base" startDecorator="X" />
+                        <View className='w-12'>
+                        {index >= minCount &&<Button variant="secondary" onPress={() => Delete(value.id)} size="lg" startDecorator="X" />}
+                        {index == minCount-1 &&<Button variant="secondary" onPress={AddNew} size="lg" startDecorator="Plus" />}
+                        </View>
                     </Row>
                 )
             })}
-            <Button variant="secondary" title={`Add new`} onPress={AddNew} size="base" />
+           
         </Field>
     );
 }

@@ -48,9 +48,9 @@ export default function ElementFeedItem({ data }) {
                 <Html data={tlContent} customClassName='u-vanilla-html' />
                 {!!content.embed && <Embed data={content.embed} />}
 
-                <View className='max-w-sm'>
+                <View className='w-full'>
                     {content.polls_attach && content.polls_attach.map((item, index) => {
-                        return <View className='mt-4'><PollItem key={"att" + index} data={item} showTitle={true} /></View>
+                        return <View key={"att" + index} className='mt-4'><PollItem  data={item} showTitle={true} results_url='/api.php?r=bx_timeline/get_block_poll_results' /></View>
                     })}
                 </View>
             </View>

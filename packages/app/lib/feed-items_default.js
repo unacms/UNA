@@ -324,7 +324,7 @@ export const PollView = memo(({ data, styles, bIsTitle, bIsTimelineContent, cont
                 )}
                 <View>
                     <View>
-                        <PollItem data={data.content} />
+                        <PollItem data={data.content} results_url='/api.php?r=bx_timeline/get_block_poll_results' />
                     </View>
                 </View>
             </View>

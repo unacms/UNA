@@ -12,16 +12,20 @@ import { View } from 'app/design/view'
 export default function FormFieldPolls(props) {
     const name = props.name;
     const [isModal, setIsModal] = useState(false);
-    const [pollSource, setPollSource] = useState(props.value || []);
+    const [pollSource, setPollSource] = useState(props.values || []);
     const [dataForm, setDataForm] = useState(false);
     const defaultValue = props.value ? props.value : '';
     const rules = getValidationRules(props);
     const { field } = useController({ name, rules, defaultValue });
-    const { data: dynamicData, error } = useFetchForm(props.form_submit, dataForm);
+    const { data: dynamicData, error } = useFetchForm(props.request_submit, dataForm);
 
+    console.log("props.value", props.value)
+
+    
     useEffect(() => {
         if (dynamicData?.data?.id) {
             const a = field.value.split(',');
+            
             a.push(dynamicData.data.id);
             field.onChange([...new Set(a.filter(Boolean))].join(','));
             setIsModal(false);
@@ -50,7 +54,7 @@ export default function FormFieldPolls(props) {
     const formContext = useFormContext();
 
     const showSelect = async () => {
-        const sResponse = await fetcher(props.form_get);
+        const sResponse = await fetcher(props.request_get);
         setIsModal(sResponse.data[0])
     }
 
@@ -70,7 +74,7 @@ export default function FormFieldPolls(props) {
     return (
         <Field {...props} error2={formContext.formState.errors[name]}>
             <Modal
-                title={'Add poll'}
+                title={'Create a poll'}
                 onVisible={!!isModal}
                 transparent={true}
                 headerBorder={true}
@@ -80,7 +84,7 @@ export default function FormFieldPolls(props) {
                 {!!isModal && <Form {...frmData} onFormSubmit={onFormSubmit} resetOnSubmit={false} />}
             </Modal>
             {pollSource && pollSource.map((item, index) => {
-                return <View className='mt-4'><PollItem onDelete={() => { deletePoll(props.remove, item) }} key={"att" + index} data={item} showTitle={true} /></View>
+                return <View className='mt-4'><PollItem results_url={props.request_results} disabled = {true} onDelete={() => { deletePoll(props.request_remove, item) }} key={"att" + index} data={item} showTitle={true} /></View>
             })}
              {!props.hide_button && <PollButton field_name = {name} />}
         </Field>

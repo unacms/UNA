@@ -11,34 +11,35 @@ import Youtube from 'app/ui/molecules/youtube'
 import { fetcher } from 'app/lib/fetcher';
 import { useReducer } from 'react'
 import RadioButton from 'app/ui/atoms/radiobutton';
-import { VictoryPieChart, getColor } from 'app/components/elements/chart';
+import { VictoryPieChart, VictoryBarChart, getColor } from 'app/components/elements/chart';
 import { Button } from 'app/design/controls'
-
+// <VictoryPieChart labelComponent={null} colorScale={backgroundColor2} data={transformedData} />
 function Results({ data }) {
     if (data) {
         const backgroundColor = appSetting('theme', 'profile_colors');
         const backgroundColor2 = backgroundColor.map(color => getColor(color));
-        const transformedData = data.filter(label => label.votes.count > 0).map((label, index) => {
-            return { x: label.votes.count, y: label.votes.count };
-        });
+
         return (
-            <View className="lg:flex-row mx-auto w-full items-center justify-center ">
-                <View className=" w-full lg:w-1/2 lg:pr-8">
-                    <VictoryPieChart labelComponent={null} colorScale={backgroundColor2} data={transformedData} />
-                </View>
-                <View className=" w-full lg:w-1/2 mt-4 lg:mt-0">
+            <View className="lg:flex-row mx-auto w-full  ">
+                <View className=" w-full max-w-lg  mt-4 lg:mt-0">
                     {data.map((item2, index) => {
                         return (
-                            <Row className="items-start w-full mb-2" key={'chk' + index}>
-                                <View className="w-12 h-12 rounded-full" style={{ backgroundColor: backgroundColor2[index] }}></View>
-                                <View className='flex-auto ml-4'>
-                                    <Text numberOfLines={10} className=" flex-wrap w-full text-neutral-900 dark:text-neutral-50 text-base flex-wrap ">
-                                        {item2.title}
-                                    </Text>
-                                    <Text className="font-bold flex-wrap w-full text-neutral-900 dark:text-neutral-50 text-base flex-wrap">
-                                        {item2.width} ({item2.votes.count} votes)
-                                    </Text>
-                                </View>
+                            <Row className="items-start w-full" key={'chk' + index}>
+                                <Row className="w-full h-[56px]">
+                                    <Row className='absolute w-full h-[56px] '>
+                                        <View className="h-[56px] rounded-full" style={{ width: '2px', backgroundColor: backgroundColor2[index] }}></View>
+                                        <View className="h-[56px] " style={{ width: item2.width, backgroundColor: backgroundColor2[index] }}></View>
+                                    </Row>
+                                    <View className='w-full items-center justify-center ml-2 '>
+                                        <Text numberOfLines={10} className="flex-wrap w-full text-neutral-900 dark:text-neutral-50 text-sm flex-wrap ">
+                                            {item2.title}
+                                        </Text>
+                                        <Text className="font-medium flex-wrap w-full text-neutral-900 dark:text-neutral-50 text-sm flex-wrap">
+                                            {item2.width} ({item2.votes.count} votes)
+                                        </Text>
+                                    </View>
+                                </Row>
+
 
                             </Row>
                         )
@@ -49,7 +50,7 @@ function Results({ data }) {
     }
 }
 
-export function PollItem({ data, showTitle, onDelete }) {
+export function PollItem({ data, showTitle, onDelete, disabled = false, results_url = '/api.php?r=bx_polls/get_block_results' }) {
     const initialState = {
         isShowResults: data.is_performed,
         isVoted: data.is_performed,
@@ -79,8 +80,8 @@ export function PollItem({ data, showTitle, onDelete }) {
 
         const sRequest = `/api.php?r=system/do/TemplVoteServices&params[]={"s":"${data.object}","o":${value},"value":1}`;
         await fetcher(sRequest);
-
-        const sRequest1 = `/api.php?r=bx_polls/get_block_results/&params[]=${data.id}`;
+        console.log("results_url")
+        const sRequest1 = `${results_url}/&params[]=${data.id}`;
         const sResponse1 = await fetcher(sRequest1);
         if (sResponse1.data)
             dispatch({ type: 'SET_RESULTS', payload: sResponse1.data });
@@ -88,27 +89,25 @@ export function PollItem({ data, showTitle, onDelete }) {
 
     const totalVotes = state?.results ? state.results.reduce((acc, item) => acc + item.votes.count, 0) : 0;
 
-    console.log ("state.isShowResultsstate.isShowResults", state, data.subentries)
-
     return (
         <><Row className='items-center justify-between w-full'>{showTitle && <Text className="text-neutral-950  dark:text-neutral-50 text-base tracking-tight font-medium">{data.title}</Text>}
-            {onDelete && (<Button onPress={() => {onDelete(data.id)}} startDecorator="X" size="xs"/>)}
-            </Row>
+            {onDelete && (<Button onPress={() => { onDelete(data.id) }} startDecorator="X" size="xs" />)}
+        </Row>
             {state.isShowResults && <Results data={state.results} />}
-            
+
             {!!data.subentries && !state.isShowResults && data.subentries.map((item2, index) => (
                 <Row key={`lbl-${index}`} className={`items-center my-1 border border-bdr dark:border-bdr-d rounded-lg ${state.isVoted ? 'opacity-50' : 'hover:bg-primary/10 active:bg-primary/20 dark:hover:bg-primary-d/10 dark:active:bg-primary-d/20'}`}>
                     <RadioButton
                         value={item2.entry_id}
                         status={item2.id == state.value ? 'checked' : 'unchecked'}
                         title={item2.title}
-                        disabled={state.isVoted}
+                        disabled={state.isVoted || disabled}
                         onPress={() => Vote(item2.id)}
                     />
                 </Row>
             ))}
             {(!data.is_hidden_results && totalVotes > 0) && (
-                <Row className="justify-end">
+                <Row className="justify-start">
                     <Button
                         title={state.isShowResults ? "Show poll" : "Show results"}
                         variant="link"

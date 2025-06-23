@@ -44,6 +44,7 @@ export const componentsMapDefault = {
     switcher: Switcher,
     checkbox: Switcher,
     text: TextField,
+    phone: TextField,
     price: TextField,
     textarea: Editor,
     select: Select,

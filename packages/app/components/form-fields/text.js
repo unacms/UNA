@@ -19,13 +19,11 @@ export default function FormFieldText(props) {
             formContext.setValue(props.name, props.value)
     }, [props.name, props.value]);
 
- const video_source = formContext.watch('phone');
-    console.log("video_source", 'x'+video_source+'x')
 
 
     return (
         <Field {...props} error2={formContext.formState.errors[name]}>
-            {name.includes("phone") ? <PhoneInput
+            {name.includes("phone") || props.type == "phone" ? <PhoneInput
                 autoFocus={props.auto_focus}
                 name={name}
                 readOnly={props?.attrs?.readonly == 'readonly'}

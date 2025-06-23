@@ -8,7 +8,7 @@ import { Button, Input, Modal } from 'app/design/controls'
 import RbList from 'app/ui/molecules/radio_list';
 
 export default function PhoneInput({ value, placeholderTextColor, autoFocus, field, name, ariaLabel, readOnly }) {
- const { t } = useTranslation();
+    const { t } = useTranslation();
 
     const countryOptions = countries.map(c => ({
         label: c.name,
@@ -101,7 +101,7 @@ export default function PhoneInput({ value, placeholderTextColor, autoFocus, fie
             >
                 {
                     countryOptions.length > 10 && (<View className='pb-2'>
-                        <Input name="search" placeholder={t('Search...')} defaultValue={searchValue}
+                        <Input autoFocus={true} name="search" placeholder={t('Search...')} defaultValue={searchValue}
                             onChangeText={(value) => {
                                 setSearchValue(value)
                             }}
