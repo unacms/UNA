@@ -1,12 +1,11 @@
-import { Tabs, useRouter, useNavigation, usePathname } from 'app/lib/hooks/router';
-import { View, Row } from 'app/design/view';
-import { Text } from 'app/design/typography'
+import { Tabs, useRouter, usePathname } from 'app/lib/hooks/router';
+import { View } from 'app/design/view';
 import { Icon } from 'app/ui/atoms/icon';
 import { useCurrentUser } from 'app/context/user';
 import { appSetting } from 'app/lib/util'
 import { Theme } from 'app/design/theme';
 import Profile from 'app/ui/molecules/profile';
-import { useState, useEffect, useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next';
 //import BottomSheetDataContext from 'app/context/bottomsheet';
 import { FeedbackHaptics, getPageData, subscribeOneSignal } from 'app/lib/util';

@@ -29,7 +29,7 @@ import { Button, ButtonRef } from 'app/design/controls'
 
 export const TextHeader = memo(({ text }) => {
     const { t } = useTranslation();
-    return <Text className="font-bold text-neutral-800 dark:text-neutral-200 flex-auto leading-[36px] text-2xl tracking-tight">
+    return <Text className="font-bold text-neutral-800 dark:text-neutral-200 flex-auto leading-[44px] text-3xl tracking-tight">
         {t(text)}
     </Text>
 })
@@ -167,7 +167,7 @@ function getRightHeader(items, currentUser, pagePath) {
     if (pagePath == '/home' && currentUser) {
         const menu_add_items = menuItemsByName('', appSetting('menu_items', 'menu_add'), currentUser);
         if (menu_add_items.length) {
-            addMenu = <MenuAdd key='menu-add' buttonProps={{ variant: "base", rounded: 'rounded', startDecorator: "Plus", id: "m3", size: 'sm' }} />;
+            addMenu = <MenuAdd key='menu-add' buttonProps={{ variant: "default", rounded: 'rounded', startDecorator: "Plus", id: "m3", size: 'sm' }} />;
         }
     }
     if (items?.length == 0 && !addMenu)

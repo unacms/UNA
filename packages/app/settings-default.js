@@ -771,7 +771,7 @@ export  const settingsDefault = {
             menu_max_width: ' max-w-7xl ',
             content_max_width: ' max-w-7xl ',
             menu_is_dynamic: true,
-            menu_cnt: ' flex-row flex-none gap-x-[8px]  ',
+            menu_cnt: ' flex-row flex-none gap-x-[8px] w-full ',
             menu_categ_ident: 'pl-[48px]',
             right_column_cnt: 'fixed-process pr-4 py-4',
             topmenu_cnt:
@@ -956,7 +956,7 @@ export  const settingsDefault = {
             'u-btn-accent-color-icon-dark': 'rgb(255, 255, 255)',
 
             'u-btn-secondary-cnt':
-                '  border border-transparent  bg-bgritem dark:bg-bgritem-d web:hover:bg-bgritem-h dark:web:hover:bg-bgritem-dh active:opacity-50',
+                '   bg-bgritem dark:bg-bgritem-d web:hover:bg-bgritem-h dark:web:hover:bg-bgritem-dh active:opacity-50',
             'u-btn-secondary-text':
                 'font-medium text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-white ',
             'u-btn-secondary-trans': '  web:duration-300',

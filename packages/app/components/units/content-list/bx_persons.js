@@ -80,7 +80,7 @@ export default function Unit(props) {
         <>
             <Redirect ref={redirectdRef} />
             <Card
-                margin="sm:mx-[6px] sm:mt-[12px]"
+                margin="sm:m-[6px] sm:m-[8px]"
                 border="border-b sm:border border-bdrcard dark:border-bdrcard-d  "
                 rounded=" sm:rounded-2xl "
             >

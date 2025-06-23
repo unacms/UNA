@@ -7,7 +7,7 @@ import {
     Smile, UserCircle, File, Settings, LayoutGrid, UserRound,
     UserCheck, Cog, LogOut, LogIn, Files, RotateCcw,
     Image, Code, ThumbsUp, FilePlus, MonitorPlay, X, House,
-    Rocket, Wand, GraduationCap, Handshake, AtSign,  ChevronUp, 
+    Rocket, Wand, GraduationCap, Handshake, AtSign,  ChevronUp,
     ChevronDown, ChevronLeft, MessageSquareText, Clipboard, FileAudio, EllipsisVertical, 
     MessageCircle, Calendar, UserPlus, Flame, Rows, Share2, CheckCircle, Cake, Ellipsis,UserX,
     Badge, Heart, ChartBar, Store, Video, ShoppingCart, Check, Circle,
@@ -20,7 +20,7 @@ import {
 
 export const IconSet = { 
     List, ArrowLeft, AlertCircle, MessageSquare, ArrowRight, MessageCircleMore, ChevronsUpDown, Plus, MessagesSquare, HelpCircle, Reply,Clock,RefreshCw,
-    Search, User, Compass, Bell, Link, Menu, CalendarCheck, ListChecks, ArrowDownAZ, ArrowUp,
+    Search, User, Compass, Bell, Link, Menu, CalendarCheck, ListChecks, ArrowDownAZ, ArrowUp, 
     StickyNote, Users, Info, CircleHelp, BookUser, Pencil, Building2, UsersRound, SquareStack, Workflow, KeyRound, Mail, Trash2,
     Smile, UserCircle, File, ChevronsRight, Contact, Settings, House, UserRoundPlus,
     UserCheck, Cog, LogOut, LogIn, Files, Ellipsis, UserX, Circle, LayoutGrid, UserRound,
