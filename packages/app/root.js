@@ -27,7 +27,6 @@ if (Platform.OS === 'web') {
 
 export function Root(props) {
     const { currentUser, setCurrentUser } = useCurrentUser();
-    console.log("currentUsercurrentUser", currentUser)
     const data = props?.data;
     // ################## CODE FOR NATIVE VERSION
     /*useEffect(() => {

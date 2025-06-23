@@ -89,7 +89,7 @@ export function CoverMenu(props) {
         <Menu
             {...propsCopy}
             displayType="button"
-            autoSize={false}
+            autoSize={!isSplitMenu}
             containerClasses={props.containerClasses}
             params={{
                 showVertical:props?.params?.showVertical ?? false,

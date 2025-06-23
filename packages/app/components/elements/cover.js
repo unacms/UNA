@@ -11,7 +11,7 @@ import * as ImagePicker from 'expo-image-picker'
 import { uploadImage, md5, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { genRnd } from 'app/lib/util'
 import { fetcher } from 'app/lib/fetcher'
-import { manipulateAsync} from 'expo-image-manipulator'
+import { manipulateAsync } from 'expo-image-manipulator'
 import { Image as ImageNative } from 'react-native'
 import { useCurrentUser } from 'app/context/user'
 import {
@@ -24,6 +24,7 @@ import Link from 'app/ui/atoms/link'
 import Loading from 'app/ui/atoms/loading'
 import { Platform } from 'react-native'
 import { useRouter, useNavigation } from 'app/lib/hooks/router'
+import { useWindowDimensions } from 'react-native';
 
 const conductorTheme = appSetting('theme', 'conductor')
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from');
@@ -87,7 +88,7 @@ function getCoverBackButton(is_person) {
     }
 }
 
-export function CoverSmall({data, context, showMoreMenu, uri}) {
+export function CoverSmall({ data, context, showMoreMenu, uri }) {
 
     const bPerson = data.profile.module == 'bx_persons' || appSetting('cover', 'show_pic_by_module', data?.profile?.module) ? true : false
     const isSplitMenu = appSetting('cover', 'split_action_menu') && data.actions_menu.persistent == 0
@@ -361,52 +362,48 @@ export default function ({ data, mode, uri, showMoreMenu }) {
     }
     const isSplitMenu = appSetting('cover', 'split_action_menu') && data.actions_menu.persistent == 0
     const isMin = coverMode === 'min';
+    const { width: windowWidth } = useWindowDimensions();
 
     return (
-       
-            <View className={`w-full mx-auto ${appSetting('layout', 'max_width')}`}>
-                {!isMin && (<CoverImage mode='cover' coverData={data?.cover} profileData={data.profile} allowEdit={bAllowEdit} allowSwitch={isAllowSwitch} />)}
-                <View className={`lg:flex-row gap-y-[12px] gap-x-[12px] mx-auto w-full lg:items-end max-w-7xl p-[8px] sm:px-[12px] `} >
-                    {bPerson && (
-                        <View className="hidden lg:flex flex-none h-[104px] justify-end w-min ">
-                            <View className=" flex-auto z-50 rounded-full p-[4px] flex-none bg-white dark:bg-neutral-900 ">
-                                <CoverImage is_person={bPerson} mode='picture' profileDisplaySize={isMin ? '2xl' : '4xl'} coverData={data?.cover} profileData={data.profile} allowEdit={bAllowEdit} allowSwitch={isAllowSwitch} />
-                            </View>
-                        </View>
-                    )}
-                    <View className="flex-auto lg:flex-row flex-col-reverse ">
-                        <View className="flex-col flex-auto p-[4px] py-[6px] gap-y-[8px] "> 
-                            <Row className=" gap-x-[12px] flex-auto items-center">
-                                <Text
-                                    className={` tracking-tight text-[32px] font-bold leading-[44px] text-neutral-900 dark:text-neutral-50`}
-                                    numberOfLines={2}
-                                >
-                                    {data.profile.display_name}
-                                </Text>
-                                <Badges badges={data.badges} />
-                            </Row>
 
-                            {isWeb ? <CoverMenuMeta {...data.meta_menu} /> : <ScrollView horizontal={true}><CoverMenuMeta {...data.meta_menu} /></ScrollView>}
-                           
-                            {!!data.profile.info?.date_start && (
-                                <Text className="  text-neutral-600 dark:text-neutral-400 text-xs uppercase font-semibold tracking-tight overflow-hidden rounded-md flex-none items-center">
-                                    {formatDateInterval(
-                                        data.profile.info?.date_start,
-                                        data.profile.info?.date_end,
-                                        t
-                                    )}
-                                </Text>
-                            )}
+        <View className={`w-full mx-auto ${appSetting('layout', 'max_width')}`}>
+            {!isMin && (<CoverImage mode='cover' coverData={data?.cover} profileData={data.profile} allowEdit={bAllowEdit} allowSwitch={isAllowSwitch} />)}
+            <View className={` lg:flex-row gap-y-[12px] gap-x-[12px] mx-auto w-full lg:items-end max-w-7xl p-[8px] sm:px-[12px] `} >
+                {bPerson && (
+                    <View className={`${isMin ? 'h-[96px]' : 'h-[44px]'}  h-[104px] flex-none lg:h-[104px] justify-end w-min`}>
+                        <View className=" flex-auto z-50 rounded-full p-[4px] flex-none bg-white dark:bg-neutral-900 ">
+                            <CoverImage is_person={bPerson} mode='picture' profileDisplaySize={isMin ? '2xl' : (windowWidth < LAYOUT_BREAKPOINTS[TABLET_MODE_FROM] ? '3xl' : '4xl')} coverData={data?.cover} profileData={data.profile} allowEdit={bAllowEdit} allowSwitch={isAllowSwitch} />
                         </View>
-                        {isSplitMenu ? (
-                            <View className="flex-row flex-wrap items-end justify-between lg:ml-auto flex-auto gap-x-[8px] gap-y-[8px] p-[4px]">
-                                {bPerson && (
-                                    <View className={`${isMin ? 'h-[96px]': 'h-[44px]'} lg:hidden flex-none justify-end w-min`}>
-                                        <View className=" flex-row flex-auto z-50 rounded-full p-[4px] flex-none bg-white dark:bg-neutral-900 ">
-                                            <CoverImage mode='picture' profileDisplaySize={isMin ? '2xl' : '3xl'} coverData={data?.cover} profileData={data.profile} allowEdit={bAllowEdit} allowSwitch={isAllowSwitch} />
-                                        </View>
-                                    </View>
+                    </View>
+                )}
+                <View className="flex-auto lg:flex-row flex-col-reverse ">
+                    <View className="flex-col flex-auto p-[4px] py-[6px] gap-y-[8px] ">
+                        <Row className=" gap-x-[12px] flex-auto items-center">
+                            <Text
+                                className={` tracking-tight text-[32px] font-bold leading-[44px] text-neutral-900 dark:text-neutral-50`}
+                                numberOfLines={2}
+                            >
+                                {data.profile.display_name}
+                            </Text>
+                            <Badges badges={data.badges} />
+                        </Row>
+
+                        {isWeb ? <CoverMenuMeta {...data.meta_menu} /> : <ScrollView horizontal={true}><CoverMenuMeta {...data.meta_menu} /></ScrollView>}
+
+                        {!!data.profile.info?.date_start && (
+                            <Text className="  text-neutral-600 dark:text-neutral-400 text-xs uppercase font-semibold tracking-tight overflow-hidden rounded-md flex-none items-center">
+                                {formatDateInterval(
+                                    data.profile.info?.date_start,
+                                    data.profile.info?.date_end,
+                                    t
                                 )}
+                            </Text>
+                        )}
+                    </View>
+                    <View className="flex-row flex-wrap items-end justify-between lg:ml-auto flex-auto gap-x-[8px] gap-y-[8px] p-[4px]">
+                        {isSplitMenu ? (
+                            <>
+
                                 <View className=" flex-row flex-wrap justify-end flex-auto gap-x-[8px] gap-y-[8px] items-center">
                                     <CoverMenu
                                         {...data.actions_menu}
@@ -421,16 +418,18 @@ export default function ({ data, mode, uri, showMoreMenu }) {
                                         isSplitMenu={isSplitMenu}
                                     />
                                 </View>}
-                            </View>
+                            </>
                         ) : (
                             <CoverMenu
                                 {...data.actions_menu}
                                 uri={uri}
+                                persistent={2}
                             />
                         )}
                     </View>
                 </View>
             </View>
-     
+        </View>
+
     )
 }
