@@ -31,8 +31,8 @@ export  const settingsDefault = {
     layout: {
         avaliable_layouts: ['hor', 'ver', 'mixed'], // OLD appSetting('layout', 'format_list')
         default_layout: 'hor', //hor, ver, mixed// OLD appSetting('layout', 'format')
-        max_width: ' max-w-[1440px] ', 
-        max_width_block: '  ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
+        max_width: ' w-full ', 
+        max_width_block: '  w-full ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
         search: true,
         sidebar_search: true,
         extended_search: true,
@@ -320,26 +320,32 @@ export  const settingsDefault = {
     },
     browse: {
         per_line: [
-            { width: 1280, count: 4 },
+           
+            { width: 1280, count: 5 },
+            { width: 1024, count: 4 },
             { width: 768, count: 3 },
             { width: 640, count: 2 },
         ],
         per_line_profile: [
-            { width: 1440, count: 5 },
-            { width: 768, count: 4 },
-            { width: 640, count: 3 },
+           
+            { width: 1280, count: 5 },
+            { width: 1024, count: 4 },
+            { width: 768, count: 3 },
+            { width: 640, count: 2 },
         ],
         per_line_left_side_bar: [
+            
+            { width: 1536, count: 5 },
             { width: 1280, count: 4 },
             { width: 1024, count: 3 },
-            { width: 768, count: 4 },
-            { width: 640, count: 3 },
+            { width: 768, count: 2 },
         ],
         per_line_bx_courses: [
-            { width: 1280, count: 3 },
-            { width: 1024, count: 2 },
-            { width: 768, count: 1 },
-            { width: 640, count: 1 },
+            
+            { width: 1536, count: 5 },
+            { width: 1280, count: 4 },
+            { width: 1024, count: 3 },
+            { width: 768, count: 2 },
         ],
         unit_by_source: {
             'system/browse_friends': 'person_friends',
@@ -768,8 +774,8 @@ export  const settingsDefault = {
         },
         conductor: {
             menu: '   w-full items-left justify-center  ',
-            menu_max_width: ' max-w-7xl ',
-            content_max_width: ' max-w-7xl ',
+            menu_max_width: ' w-full ',
+            content_max_width: ' w-full ',
             menu_is_dynamic: true,
             menu_cnt: ' flex-row flex-none gap-x-[8px] w-full ',
             menu_categ_ident: 'pl-[48px]',

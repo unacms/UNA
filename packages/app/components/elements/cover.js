@@ -94,52 +94,48 @@ export function CoverSmall({ data, context, showMoreMenu, uri }) {
     const isSplitMenu = appSetting('cover', 'split_action_menu') && data.actions_menu.persistent == 0
 
     return (
-        <View className="w-full" >
-            <View className={`${appSetting('layout', 'max_width')} w-full mx-auto`}>
-                <View className={`px-[8px] py-[12px] lg:px-[16px] ${conductorTheme.content_max_width} mx-auto w-full flex-row gap-2`} >
-                    <Row className=" gap-x-2 items-center justify-between flex-auto">
-                        <View className={` flex-auto flex-row gap-x-[8px] items-center `}>
-                            {getCoverBackButton(bPerson)}
-                            <Row className={` ${context?.current?.id == data.profile.id ? TABLET_MODE_FROM + ':flex gap-x-[8px]' : 'gap-x-[8px] flex-auto'}`}>
-                                {bPerson && (
-                                    <Profile
-                                        {...data.profile}
-                                        displayType="unit_wo_info"
-                                        displaySize="base"
-                                    />
-                                )}
-                                <Profile
-                                    {...data.profile}
-                                    displayType="unit_wo_image"
-                                    displaySize="xl"
-                                />
-                            </Row>
-                        </View>
-                        <View className=" items-end">
-                            {isSplitMenu ? <Row className='w-full justify-between'>
-                                {showMoreMenu && <View className='w-[44px]'>
-                                    <CoverMenuMore
-                                        {...data.actions_menu}
-                                        uri={uri}
-                                        isSplitMenu={false}
-
-                                    />
-                                </View>}
-                                {!showMoreMenu && <CoverMenu
-                                    {...data.actions_menu}
-                                    uri={uri}
-                                    isSplitMenu={isSplitMenu}
-                                />
-                                }
-                            </Row> : <CoverMenu
-                                {...data.actions_menu}
-                                uri={uri}
+        <View className={`px-[12px] sm:px-[16px] py-[10px]  ${conductorTheme.content_max_width} mx-auto w-full flex-row gap-2`} >
+            <Row className=" gap-x-2 items-center justify-between flex-auto">
+                <View className={` flex-auto flex-row gap-x-[8px] items-center `}>
+                    {getCoverBackButton(bPerson)}
+                    <Row className={` ${context?.current?.id == data.profile.id ? TABLET_MODE_FROM + ':flex gap-x-[8px]' : 'gap-x-[8px] flex-auto'}`}>
+                        {bPerson && (
+                            <Profile
+                                {...data.profile}
+                                displayType="unit_wo_info"
+                                displaySize="base"
                             />
-                            }
-                        </View>
+                        )}
+                        <Profile
+                            {...data.profile}
+                            displayType="unit_wo_image"
+                            displaySize="xl"
+                        />
                     </Row>
                 </View>
-            </View>
+                <View className=" items-end">
+                    {isSplitMenu ? <Row className='w-full justify-between'>
+                        {showMoreMenu && <View className='w-[44px]'>
+                            <CoverMenuMore
+                                {...data.actions_menu}
+                                uri={uri}
+                                isSplitMenu={false}
+
+                            />
+                        </View>}
+                        {!showMoreMenu && <CoverMenu
+                            {...data.actions_menu}
+                            uri={uri}
+                            isSplitMenu={isSplitMenu}
+                        />
+                        }
+                    </Row> : <CoverMenu
+                        {...data.actions_menu}
+                        uri={uri}
+                    />
+                    }
+                </View>
+            </Row>
         </View>
     )
 }
@@ -274,7 +270,7 @@ function CoverImage({ mode, profileData, coverData, allowEdit, allowSwitch, titl
 
     if (mode == 'cover') {
         const isCover = !!imageUrl
-        return (<View className={`duration-300 bg-primary-200 dark:bg-primary-950 w-full max-w-[1440px] mx-auto xl:rounded-xl overflow-hidden ${isCover
+        return (<View className={`duration-300 bg-primary-200 dark:bg-primary-950 w-full ${appSetting('layout', 'max_width_content')} mx-auto overflow-hidden ${isCover
             ? ` h-[30vh] sm:${appSetting(
                 'cover',
                 'aspect_ratio'
@@ -368,28 +364,26 @@ export default function ({ data, mode, uri, showMoreMenu }) {
 
         <View className={`w-full mx-auto ${appSetting('layout', 'max_width')}`}>
             {!isMin && (<CoverImage mode='cover' coverData={data?.cover} profileData={data.profile} allowEdit={bAllowEdit} allowSwitch={isAllowSwitch} />)}
-            <View className={` lg:flex-row gap-y-[12px] gap-x-[12px] mx-auto w-full lg:items-end max-w-7xl p-[8px] sm:px-[12px] `} >
+            <View className={`lg:flex-row gap-y-[12px] gap-x-[12px] mx-auto w-full lg:items-end ${appSetting('layout', 'max_width_content')} px-[12px] py-[10px] sm:p-[16px] sm:py-[12px] border-b border-bdrtabbar dark:border-bdrtabbar-d `} >
                 {bPerson && (
-                    <View className={`${isMin ? 'h-[96px]' : 'h-[44px]'}  h-[104px] flex-none lg:h-[104px] justify-end w-min`}>
-                        <View className=" flex-auto z-50 rounded-full p-[4px] flex-none bg-white dark:bg-neutral-900 ">
-                            <CoverImage is_person={bPerson} mode='picture' profileDisplaySize={isMin ? '2xl' : (windowWidth < LAYOUT_BREAKPOINTS[TABLET_MODE_FROM] ? '3xl' : '4xl')} coverData={data?.cover} profileData={data.profile} allowEdit={bAllowEdit} allowSwitch={isAllowSwitch} />
+                    <View className="hidden lg:flex flex-none h-[96px] justify-end w-min ">
+                        <View className=" flex-auto z-50 rounded-full p-[4px] flex-none bg-white dark:bg-neutral-900 translate-y-[4px] -translate-x-[4px]">
+                            <CoverImage is_person={bPerson} mode='picture' profileDisplaySize={isMin ? '2xl' : '4xl'} coverData={data?.cover} profileData={data.profile} allowEdit={bAllowEdit} allowSwitch={isAllowSwitch} />
                         </View>
                     </View>
                 )}
-                <View className="flex-auto lg:flex-row flex-col-reverse ">
-                    <View className="flex-col flex-auto p-[4px] py-[6px] gap-y-[8px] ">
-                        <Row className=" gap-x-[12px] flex-auto items-center">
+                <View className="flex-auto lg:flex-row flex-col-reverse gap-y-[8px] sm:gap-y-[12px]">
+                    <View className="flex-col flex-auto gap-y-[8px] ">
+                        <Row className=" gap-x-[12px] flex-auto items-center min-h-[44px]">
                             <Text
-                                className={` tracking-tight text-[32px] font-bold leading-[44px] text-neutral-900 dark:text-neutral-50`}
+                                className={` tracking-tight text-3xl sm:text-4xl font-bold text-neutral-900 dark:text-neutral-50`}
                                 numberOfLines={2}
                             >
                                 {data.profile.display_name}
                             </Text>
                             <Badges badges={data.badges} />
                         </Row>
-
                         {isWeb ? <CoverMenuMeta {...data.meta_menu} /> : <ScrollView horizontal={true}><CoverMenuMeta {...data.meta_menu} /></ScrollView>}
-
                         {!!data.profile.info?.date_start && (
                             <Text className="  text-neutral-600 dark:text-neutral-400 text-xs uppercase font-semibold tracking-tight overflow-hidden rounded-md flex-none items-center">
                                 {formatDateInterval(
@@ -402,9 +396,15 @@ export default function ({ data, mode, uri, showMoreMenu }) {
                     </View>
                     <View className="flex-row flex-wrap items-end justify-between lg:ml-auto flex-auto gap-x-[8px] gap-y-[8px] p-[4px]">
                         {isSplitMenu ? (
-                            <>
-
-                                <View className=" flex-row flex-wrap justify-end flex-auto gap-x-[8px] gap-y-[8px] items-center">
+                            <View className="flex-row flex-wrap gap-x-[12px] sm:gap-x-[16px] gap-y-[8px] sm:gap-y-[12px] ">
+                                {bPerson && (
+                                    <View className={`${isMin ? 'h-[96px]' : 'h-[44px]'} lg:hidden flex-auto justify-end `}>
+                                        <View className=" flex-row flex-auto z-50 rounded-full p-[4px] flex-none bg-white mr-auto dark:bg-neutral-900 translate-y-[4px] -translate-x-[4px] ">
+                                            <CoverImage mode='picture' profileDisplaySize={isMin ? '2xl' : '3xl'} coverData={data?.cover} profileData={data.profile} allowEdit={bAllowEdit} allowSwitch={isAllowSwitch} />
+                                        </View>
+                                    </View>
+                                )}
+                                <View className=" flex-row flex-wrap gap-x-[8px] gap-y-[8px] sm:gap-y-[12px] items-center">
                                     <CoverMenu
                                         {...data.actions_menu}
                                         uri={uri}
@@ -418,7 +418,7 @@ export default function ({ data, mode, uri, showMoreMenu }) {
                                         isSplitMenu={isSplitMenu}
                                     />
                                 </View>}
-                            </>
+                            </View>
                         ) : (
                             <CoverMenu
                                 {...data.actions_menu}

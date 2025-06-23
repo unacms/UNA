@@ -100,7 +100,7 @@ export function CoverMenu(props) {
                 button_size: size,
                 button_rounded: false,
                 button_full_width: props?.params.button_full_width ?? false,
-                className: ' gap-x-[8px] gap-y-[12px] w-full flex-wrap justify-end',
+                className: 'gap-x-[8px] gap-y-[12px] flex-wrap',
                 isFixedCount: true
             }}
         />

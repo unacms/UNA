@@ -292,9 +292,9 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, windowWidth }) =
 
     return (
         <>
-            <Animated.View className="w-full" style={[{ zIndex: '50' }, animatedStyleHeader2]}>
-                <ViewRef ref={cover1Ref} className="w-full bg-gradient-to-b from-transparent to-bgrtabbar dark:to-bgrtabbar-d backdrop-blur-xl  "   >
-                    {isCover && <View className="w-full">
+            <Animated.View className="w-full xl:px-4 xl:pt-4 " style={[{ zIndex: '50' }, animatedStyleHeader2]}>
+                <ViewRef ref={cover1Ref} className="w-full bg-gradient-to-b overflow-hidden  xl:rounded-[16px] xl:border xl:border-bdrcard dark:border-bdrcard-d  from-transparent to-bgrtabbar dark:to-bgrtabbar-d backdrop-blur-xl  "   >
+                    {isCover && <View className="w-full ">
                         <Cover data={pageData.cover_block} showMoreMenu={!conductorTheme.action_menu_in_tabs} mode={headerSettings.cover} uri={uri} context={pageData.context} />
                     </View>}
                     <View className="w-full ">
@@ -379,7 +379,7 @@ const RenderSceneHeader = ({ route, setFilterValue }) => {
     )
 };
 
-export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMenu, leftSideBar, leftSideBarBlocks, leftSideBarWidth = ' w-[360px] ', skeleton = '', onChangeRoute, keyword, layoutName, defaultHeaderHeight = 120 }) {
+export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMenu, leftSideBar, leftSideBarBlocks, leftSideBarWidth = ' w-[360px] ', skeleton = '', onChangeRoute, keyword, layoutName, defaultHeaderHeight = 128 }) {
     const uniRef = useRef();
     const { currentUser } = useCurrentUser();
     const { setBottomSheetData } = useBottomSheetData();

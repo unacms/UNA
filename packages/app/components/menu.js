@@ -70,8 +70,8 @@ export default function ElementMenu(oProps) {
 
 
     //--- horizontal menu items alignment
-    const sAlignItems = oProps.alignItems || oParams.align_items || 'left';
-    sClassName += ` justify-${sAlignItems}`;
+    const sAlignItems = oProps.alignItems || oParams.align_items || 'start';
+    sClassName += `justify-${sAlignItems}`;
 
     if (isWeb) {
         sClassName += ' overflow-visible';
