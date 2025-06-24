@@ -14,7 +14,8 @@ import { useRouter } from 'app/lib/hooks/router';
 import SvgFile from 'app/ui/molecules/svg-file';
 import MenuFooter from 'app/components/nav/menu-footer';
 import AnimatedView from 'app/ui/atoms/animated-view';
- import { ThemeName } from 'app/design/theme';
+import { ThemeName } from 'app/design/theme';
+import { Icon } from 'app/ui/atoms/icon'
 
 /**
  * Renders the login splash screen with adaptive layouts for web and mobile platforms.
@@ -126,17 +127,22 @@ export default function Splash(props) {
                             <View className="relative">
                                 <View className="absolute top-4 flex shadow rounded-3xl w-full h-full bg-neutral-500 dark:bg-black blur-lg opacity-20 dark:opacity-50"></View>
                                 <Card rounded="rounded-[24px]" margin="p-[24px]" addClassName="border border-white overflow-hidden dark:border-bdrcard-d">
-                                    <View className="flex-col pb-[24px] gap-y-[12px] ">
-                                        <Text className="text-2xl text-center  leading-none tracking-tight font-bold text-neutral-800 dark:text-neutral-200">
-                                        Log in with your {appSetting('app', 'title')} account</Text>
-                                        <Text className="text-center text-base text-neutral-600 dark:text-neutral-400">
-                                        Don't have an account? <Link href="/create-account">Sign up</Link>.</Text>
-                                    </View>
-                                    <BlockByName 
+                                                <View className="flex-row">
+                                                <View className="flex-col flex-auto  pb-[24px] sm:pt-[0px] gap-y-[12px] ">
+                                                    <Text className="text-[24px] leading-none  font-semibold text-neutral-800 dark:text-neutral-200">
+                                                    Log in to your account</Text>
+                                                    <Text className="text-[16px]  text-neutral-600 dark:text-neutral-400">
+                                                    Welcome back to {appSetting('app', 'title')}!</Text>
+                                                
+                                                </View>
+                                                <Icon icon="LogIn" size={24} className="text-neutral-400 dark:text-neutral-600" />
+                                                </View>
+                                                <BlockByName 
                                         name="system:login_form" 
                                         data={props.data} 
                                         formProps={{ auto_focus: true, hide_errors: true, button_full_width: true }} 
                                     />
+                             
                                     
                                         <View className="flex-row items-center justify-center my-[24px] w-full">
                                             <View className="flex-1 h-[1px] w-full bg-neutral-200 dark:bg-neutral-500" />
@@ -152,6 +158,21 @@ export default function Splash(props) {
                                                 fullWidth
                                                 size="base"
                                                 startDecorator="RotateCcw"
+                                            />
+                                        </Link>
+                                        <View className="flex-row items-center justify-center my-[24px] w-full">
+                                            <View className="flex-1 h-[1px] w-full bg-neutral-200 dark:bg-neutral-500" />
+                                            <Text className="mx-[16px] text-xs text-neutral-500 dark:text-neutral-400 font-normal">Don't have an account?</Text>
+                                            <View className="flex-1 h-[1px] w-full bg-neutral-200 dark:bg-neutral-500" /> 
+                                        </View>
+                                        <Link className="w-full" href="/create-account" haptics="Medium">
+                                            <Button
+                                                title="Create new account"
+                                                variant="default"
+                                                ring="rounded-[13px] bg-neutral-300 dark:bg-neutral-950 shadow-sm hover:shadow-none"
+                                                fullWidth
+                                                size="base"
+                                                startDecorator="UserRoundPlus"
                                             />
                                         </Link>
                                     

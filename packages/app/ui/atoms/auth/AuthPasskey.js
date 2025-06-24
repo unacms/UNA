@@ -15,7 +15,7 @@ export default function AuthPasskey({ button }) {
             ) : (
                 <Button 
                     onPress={handlePasskeyLogin} 
-                    title="Sign in with Passkey"
+                    title="Use Passkey"
                     startDecorator="KeySquare" // Changed to string
                     fullWidth
                     ring="rounded-[13px] bg-neutral-300 dark:bg-neutral-950 shadow-sm hover:shadow-none"

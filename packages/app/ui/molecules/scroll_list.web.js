@@ -176,7 +176,8 @@ export default function ScrollList({
                 </View>
 
             </Animated.View>}
-            {isShowScrollToTopButton && <Animated.View style={[buttonStyle]}>
+            {/* TODO: Review this */}
+            {/* {isShowScrollToTopButton && <Animated.View style={[buttonStyle]}>
                 <Button
                     onPress={scrollToTop}
                     startDecorator={inverted ? "ChevronDown" : "ChevronUp"}
@@ -184,7 +185,7 @@ export default function ScrollList({
                     variant="primary"
                     rounded
                 ></Button>
-            </Animated.View>}
+            </Animated.View>} */}
         </View>
     )
 }

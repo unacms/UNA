@@ -134,7 +134,7 @@ export default function PageLayout(props) {
                 <View className="flex items-center justify-center pt-4 mt-4 gap-y-2 border-t border-bdr dark:border-bdr-d">
                     <Link className="w-full" href="/login" haptics="Medium">
                         <Button
-                            title="Sign in with email"
+                            title="Login with email"
                             size="base"
                             fullWidth
                         />

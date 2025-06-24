@@ -15,7 +15,7 @@ export default function AuthSAML({ button }) {
             ) : (
                 <Button 
                     onPress={handleSAMLLogin} 
-                    title="Sign in with SAML SSO"
+                    title="Use SAML SSO"
                     startDecorator="Lock" // Changed to string
                     ring="rounded-[13px] bg-neutral-300 dark:bg-neutral-950 shadow-sm hover:shadow-none"
                     fullWidth

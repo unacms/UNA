@@ -121,7 +121,8 @@ export default function ScrollList({
                 </BlurView>
 
             </Animated.View>
-            {isShowScrollToTopButton && <Animated.View className="absolute bottom-[10px] right-[10px]" style={[buttonStyle]}>
+            {/* TODO: Review this */}
+            {isShowScrollToTopButton && <Animated.View className=" hidden absolute bottom-[10px] right-[10px]" style={[buttonStyle]}>
                 <Button
                     onPress={scrollToTop}
                     startDecorator={inverted ? "ChevronDown" : "ChevronUp"}

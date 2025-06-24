@@ -16,7 +16,7 @@ export default function AuthGitHub({ button }) {
             ) : (
                 <Button 
                     onPress={handleGitHubLogin} 
-                    title="Sign in with GitHub"
+                    title="Login with GitHub"
                     startDecorator="GitHubIcon" // Changed to string
                 
                     fullWidth

@@ -17,7 +17,7 @@ export default function AuthX({ button }) {
             ) : (
                 <Button 
                     onPress={handleXLogin} 
-                    title="Sign in with X"
+                    title="Login with X"
                     startDecorator="XIcon" // Changed to string
                     
                     fullWidth

@@ -15,7 +15,7 @@ export default function AuthLinkedIn({ button }) {
             ) : (
                 <Button 
                     onPress={handleLinkedInLogin} 
-                    title="Sign in with LinkedIn"
+                    title="Login with LinkedIn"
                     startDecorator="LinkedInIcon" // Changed to string
                     
                     fullWidth
