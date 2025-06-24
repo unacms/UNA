@@ -28,13 +28,12 @@ const StyledEM = (props) => {
     return <EM {...props} />
 }
 
-const StyledP = ({ children, className, ...props }) => {
-    className += ' text-neutral-800 dark:text-neutral-200 '
+const StyledP = ({ children, ...props }) => {
     if (Platform.OS === 'web') {
         const WebP = 'p'
-        return <WebP {...props} className={className}>{children}</WebP>
+        return <WebP {...props}>{children}</WebP>
     }
-    return <P className={className} {...props}>{children}</P>
+    return <P {...props}>{children}</P>
 }
 
 const StyledLi = ({ children, ...props }) => {
@@ -124,9 +123,7 @@ const parseHtmlToReact = (html, parentKey = '0') => {
             continue
         }
 
-        let srcClass = attributes.match(/class=['"]?([^'"\s>]+)['"]?/)
-
-        
+        const srcClass = attributes.match(/class=['"]?([^'"\s>]+)['"]?/)
 
         if (normalizedTag === 'a') {
             const hrefMatch = attributes.match(/href="([^"]+)"/)

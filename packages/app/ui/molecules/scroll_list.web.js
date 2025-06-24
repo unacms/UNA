@@ -142,7 +142,7 @@ export default function ScrollList({
 
     const enhanced = React.cloneElement(content, baseProps);
    
-    if (!subHeaderComponent && !isSimplePage && !currentUser) {
+    if (!subHeaderComponent && !isSimplePage) {
         let textName = pageData?.name;
         if (isMenuNameAsTitle) {
             const menuSettings = getMenuSettings(pageData?.menu?.object, pageData?.menu?.config);

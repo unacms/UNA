@@ -66,29 +66,6 @@ export const resourcesDefault = {
             "feed_type_bx_courses": "added an Courses",
             "feed_type_bx_spaces": "added an Space",
             "feed_type_bx_polls": "added a Poll",
-
-            "splash_page_title": "Log in to NEO",
-            "splash_page_text": "Use your email and password to sign in",
-            "splash_page_account": "Don't have an account?",
-            "splash_page_fp": "Forgot password?",
-            "splash_page_new_account": 'Create new account',
-            "splash_page_login": 'Log in to your account',
-            "splash_page_login2": 'Enter your email and password to login',
-            "splash_page_login3": 'OR',
-            "splash_page_rp": 'Reset password',
-             
-            "create_account_page_title": "Join NEO Now !",
-            "create_account_page_title_request_invite": "Request Invitation",
-            "create_account_page_text": "Create an account to get started. It\'s quick and easy to join",
-            "create_account_page_text_request_invite": "Registration is by invitation only. Please use invitation code to join.",
-            "create_account_page_caption": "Create your account",
-            "create_account_page_caption2": "It's quick and easy to join",
-            "create_account_page_already_have": "Already have an account?",
-            "create_account_page_with_email": "Continue with email",
-            "create_account_page_sign_in": "Sign in",
-            
-            "login_page_title": "Log in to your NEO account",
-            "login_page_text": "Use your email and password to sign in",
         }
         
     },

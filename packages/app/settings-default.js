@@ -175,7 +175,7 @@ export  const settingsDefault = {
             // OLD appSetting('forms', 'form_without_captions')
             'sys_login',
             'sys_account_create',
-            'sys_forgot_password',
+            
             'bx_invites_request_send',
         ],
         visibility_control_names: [
@@ -777,7 +777,7 @@ export  const settingsDefault = {
             menu_max_width: ' w-full ',
             content_max_width: ' w-full ',
             menu_is_dynamic: true,
-            menu_cnt: ' flex-row flex-none w-full ',
+            menu_cnt: ' flex-row flex-none gap-x-[8px] w-full ',
             menu_categ_ident: 'pl-[48px]',
             right_column_cnt: 'fixed-process pr-4 py-4',
             topmenu_cnt:

@@ -125,14 +125,23 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
     const menuClasses = conductorTheme.menu_cnt
 
     const MenuItem = memo(({ item: a, itemRefs, index: index2, visibleItemsCount }) => {
-        return callFn('getButtonForConductorSmall', [a, index, () => {
+        const { currentUser } = useCurrentUser();
+        const btn = callFn('getButtonForConductorSmall', [a, index, currentUser])
+        return (
+            <Pressable className={" items-center " + a?.menu_settings?.class}
+                key={`tab-${index2}`}
+                onPress={() => {
                     setIndex(a.index);
                     getNumCols(windowWidth, routes[index], leftSideBar)
                     window.history.pushState({}, '', '/' + a.key);
                     if (onChangeRoute) {
                         onChangeRoute(a);
                     }
-                }])
+                }}
+            >
+                {btn}
+            </Pressable>
+        )
     });
 
     if (!conductorTheme.menu_is_dynamic) {
@@ -338,7 +347,7 @@ const TopSideBarContainer = ({ routes, index, setIndex, onChangeRoute }) => {
                 size={conductorTheme.topmenu_button_size}
                 pressed={a.index == index ? conductorTheme.topmenu_button_pressed : false}
 
-                title={(a.title)+'sdfd'}
+                title={(a.title)}
                 align={conductorTheme.topmenu_button_align}
                 fullWidth={conductorTheme.topmenu_button_fullWidth}
                 addon={!appSetting('conductor', 'show_nav_counters') && a.addon ? null : a.addon}

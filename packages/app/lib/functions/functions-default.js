@@ -63,7 +63,14 @@ export function getButtonForConductor(a, index, currentUser) {
        
 }
 
-export function getButtonForConductorSmall(a, index, onPress) {
+export function getButtonForConductorSmall(a, index, currentUser) {
+    //let settings = appSetting('l-ayouts', a.key)
+    const settings = getPageSettings(a?.config, a.key);
+    let icon = !a.ident
+        ? settings?.icon
+            ? settings?.icon
+            : a?.icon.replace('*', '')
+        : a.icon.replace('*', '')
 
     let addon = a.addon ? a.addon : null
     if (!appSetting('conductor', 'show_nav_counters')) addon = null
@@ -73,21 +80,16 @@ export function getButtonForConductorSmall(a, index, onPress) {
     )
         addon = null
 
-    return getButtonForConductorHor(null, a.title, a.index == index, addon, onPress);
-}
-
-export function getButtonForConductorHor(icon, title, pressed, addon, onPress) {
     return (
         <Button
-            startDecorator={icon}
-            title={title}
-            variant={pressed ? 'primary' : 'secondary' }
-            pressed={pressed}
+            variant={a.index == index ? 'primary' : "secondary"}
+            size={"base"}
+            
             rounded
-            ring='p-[4px]'
-            size="sm"
+            fullWidth
+            title={(a.title)}
+            align="start"
             addon={addon}
-            onPress={onPress}
         />
     )
 }
