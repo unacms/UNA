@@ -58,7 +58,7 @@ export default function PageLayout(props) {
                         <AnimatedView>
                             <View className="relative">
                                 <View className="absolute top-4 flex shadow rounded-3xl w-full h-full bg-neutral-500 dark:bg-black blur-lg opacity-20 dark:opacity-50"></View>
-                                <Card rounded="rounded-[24px]" margin="p-[16px] sm:p-[24px]" addClassName="border border-white overflow-hidden dark:border-bdrcard-d gap-y-[16px] sm:gap-y-[24px]">
+                                <Card rounded="rounded-[24px]" margin="p-[16px] sm:p-[24px]" addClassName="border border-white overflow-hidden dark:border-bdrcard-d gap-y-[24px]">
                                     
                                     <View className="flex-col flex-auto gap-y-[8px] justify-center ">
                                                     <Text className="text-[20px] sm:text-[24px] text-center lg:text-left leading-[none] tracking-tight font-semibold text-neutral-800 dark:text-neutral-200">

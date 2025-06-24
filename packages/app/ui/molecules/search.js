@@ -36,11 +36,10 @@ export default function ElementSearch(oProps) {
     let sResult = sType == 'input' ? (
         <ElementSearchData {...oProps} resInPopup={true} setBottomSheetData={setBottomSheetData} />
     ) : (
-        <Row>
-            <View key="ddp-trigger" className="flex-row">
-                <ButtonRef title={oProps.title === undefined ? "" : oProps.title} variant="secondary" startDecorator={oParams?.trigger?.icon ? oParams?.trigger.icon : "Search"} rounded size="base" hitSlop={4} tooltip={oProps.tooltip === undefined ? "Search" : oProps.tooltip} onPress={handleOpenPopupDefault} {...(oParams?.trigger && (({ onPress, ...rest }) => rest)(oParams.trigger))} />
-            </View>
-        </Row>
+        <Pressable key="ddp-trigger" onPress={handleOpenPopupDefault}>
+            
+                <ButtonRef title={oProps.title === undefined ? "" : oProps.title} variant="secondary" startDecorator={oParams?.trigger?.icon ? oParams?.trigger.icon : "Search"} rounded size="base" hitSlop={4} ring="p-1" tooltip={oProps.tooltip === undefined ? "Search" : oProps.tooltip} {...(oParams?.trigger && (({ onPress, ...rest }) => rest)(oParams.trigger))} />
+        </Pressable>
     );
 
     if (oProps.children) {

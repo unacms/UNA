@@ -30,7 +30,7 @@ const HeaderLine = memo(
         setMenuPopup,
         showMenu,
         title,
-        context
+        context,
     }) => {
         const { width } = useWindowDimensions()
         if (width > LAYOUT_BREAKPOINTS.xl && menuPopup) setMenuPopup(false)
@@ -44,7 +44,6 @@ const HeaderLine = memo(
 
         return (
             <View className=" flex-row xl:w-[360px] gap-x-[8px] px-[8px] items-center ">
-                
                 {headerSettings.menu && isDrawer && (
                     <View className="lg:hidden pr-[8px] ">
                         <Pressable onPress={showMenu}>
@@ -60,32 +59,38 @@ const HeaderLine = memo(
                         </Pressable>
                     </View>
                 )}
-                {(!context || (!currentUser.confirmed && appSetting('layout', 'lock_unconfirmed'))) &&  (uri == 'home' || width >= LAYOUT_BREAKPOINTS.lg) && (
-                    <Link
-                        className=" flex items-center px-[8px] py-[6px] hover:bg-bgritem dark:hover:bg-bgritem-d rounded-2xl flex-row active:scale-95 active:opacity-50 text-neutral-800 dark:text-neutral-200 hover:scale-105 hover:text-neutral-950 dark:hover:text-neutral-50   web:duration-300 gap-x-[12px] "
-                        href="/home"
-                        aria-label="Logo"
-                    >
-                        <View className=" items-center h-[44px] justify-center text-neutral-900 dark:text-neutral-100">
-                            {appStatic('logo_mark')}
-                        </View>
-                        <View className=" flex-row  items-center h-[44px] my-auto align-middle justify-center text-neutral-700 dark:text-neutral-300">
-                            {appStatic('logo_text')}
-                        </View>
-                    </Link>
-                )}
-                {(context && (currentUser.confirmed || !appSetting('layout', 'lock_unconfirmed'))) && <ContextSelector data={context}/>}
+                {(!context ||
+                    (!currentUser.confirmed &&
+                        appSetting('layout', 'lock_unconfirmed'))) &&
+                    (uri == 'home' || width >= LAYOUT_BREAKPOINTS.lg) && (
+                        <Link
+                            className=" flex items-center px-[8px] py-[6px] hover:bg-bgritem dark:hover:bg-bgritem-d rounded-2xl flex-row active:scale-95 active:opacity-50 text-neutral-800 dark:text-neutral-200 hover:scale-105 hover:text-neutral-950 dark:hover:text-neutral-50   web:duration-300 gap-x-[12px] "
+                            href="/home"
+                            aria-label="Logo"
+                        >
+                            <View className=" items-center h-[44px] justify-center text-neutral-900 dark:text-neutral-100">
+                                {appStatic('logo_mark')}
+                            </View>
+                            <View className=" flex-row  items-center h-[44px] my-auto align-middle justify-center text-neutral-700 dark:text-neutral-300">
+                                {appStatic('logo_text')}
+                            </View>
+                        </Link>
+                    )}
+                {context &&
+                    (currentUser.confirmed ||
+                        !appSetting('layout', 'lock_unconfirmed')) && (
+                        <ContextSelector data={context} />
+                    )}
                 {headerSettings.backButton && getBackButtonWeb()}
                 {headerSettings.title && (
-                        <Text
-                            numberOfLines={1}
-                            ellipsizeMode="tail"
-                            className="text-3xl leading-[40px] tracking-tight lg:hidden font-bold text-neutral-800 dark:text-neutral-200 "
-                        >
-                            {title}
-                        </Text>
+                    <Text
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
+                        className="text-3xl leading-[40px] tracking-tight lg:hidden font-bold text-neutral-800 dark:text-neutral-200 "
+                    >
+                        {title}
+                    </Text>
                 )}
-                
             </View>
         )
     }
@@ -115,7 +120,7 @@ export default function (props) {
     }
 
     const isCustomHeaderElement = appSetting('layout', 'custom_header_element')
-    
+
     useEffect(() => {
         const handleScroll = () => {
             const offset = window.scrollY
@@ -136,7 +141,7 @@ export default function (props) {
             <Row className="w-full flex-auto mx-auto">
                 <View className="flex-auto">{props.children}</View>
             </Row>
-            
+
             {!bIsHideHeader && (
                 <View
                     className={
@@ -168,69 +173,67 @@ export default function (props) {
                             setMenuPopup={setMenuPopup}
                             context={props.context}
                         />
-                        <MenuTop url={props.url} uri={props.uri}/>
+                        <MenuTop url={props.url} uri={props.uri} />
                         <Row className=" xl:w-[360px] px-[12px] items-center justify-end ">
                             {!!currentUser && (
-                                <Row className="justify-end">                                  
-                                        <View className="p-[6px]">
-                                            {bSearch && <Search />}
+                                <Row className="justify-end items-center">
+                                    <View className="p-[6px]">
+                                        {bSearch && <Search />}
+                                    </View>
+                                    {isCustomHeaderElement && (
+                                        <View className="p-[4px]">
+                                            <HeaderElement />
                                         </View>
-                                        {isCustomHeaderElement && <View className="p-[4px]"><HeaderElement/></View>}
-                                        <View className="hidden sm:block p-[6px]">
-                                            <MenuLauncher />
-                                        </View>
-                                        <View className="p-[6px]">
-                                            <MenuAdd />
-                                        </View>
-                                        <View className="hidden sm:block p-[6px]">
-                                            {bNotifs && <NotificationButton />}
-                                        </View>
-                                        <View className="hidden sm:block p-[6px]">
-                                            {bMessenger && (
-                                                <Link
-                                                    href={appSetting(
-                                                        'messenger',
-                                                        'url'
-                                                    )}
-                                                    alt={t('Messenger')}
-                                                >
-                                                    <Button
-                                                        tooltip={t('Messenger')}
-                                                        variant="secondary"
-                                                        rounded
-                                                        startDecorator="MessageSquare"
-                                                        id="m2"
-                                                        size="base"
-                                                        hitSlop={4}
-                                                        addon={{
-                                                            variant: 'primary',
-                                                            text: currentUser
-                                                                ?.counters
-                                                                ?.bx_messenger_new_messages,
-                                                            hideZero: true,
-                                                        }}
-                                                    />
-                                                </Link>
-                                            )}
-                                        </View>
+                                    )}
+                                    <View className="hidden sm:block p-[6px]">
+                                        <MenuLauncher />
+                                    </View>
+                                    <View className="p-[6px]">
+                                        <MenuAdd />
+                                    </View>
+                                    <View className="hidden sm:block p-[6px]">
+                                        {bNotifs && <NotificationButton />}
+                                    </View>
+                                    <View className="hidden sm:block p-[6px]">
+                                        {bMessenger && (
+                                            <Link
+                                                href={appSetting(
+                                                    'messenger',
+                                                    'url'
+                                                )}
+                                                alt={t('Messenger')}
+                                            >
+                                                <Button
+                                                    tooltip={t('Messenger')}
+                                                    variant="secondary"
+                                                    rounded
+                                                    startDecorator="MessageSquare"
+                                                    id="m2"
+                                                    size="base"
+                                                    hitSlop={4}
+                                                    addon={{
+                                                        variant: 'primary',
+                                                        text: currentUser
+                                                            ?.counters
+                                                            ?.bx_messenger_new_messages,
+                                                        hideZero: true,
+                                                    }}
+                                                />
+                                            </Link>
+                                        )}
+                                    </View>
 
-                                        <View className="hidden sm:block p-[6px]">
-                                            <MenuAccount />
-                                        </View>                                   
+                                    <View className="hidden sm:block p-[6px]">
+                                        <MenuAccount />
+                                    </View>
                                 </Row>
                             )}
                             {!currentUser && (
-                                <Row className="justify-end">
-                                    <View className="p-[4px]">
-                                        <MenuLauncher />
-                                    </View>
-                                    {bSearch && (
-                                        <View className="p-[4px]">
-                                            <Search />
-                                        </View>
-                                    )}
+                                <Row className="justify-end items-center">
+                                    
 
-                                    <View className="p-[4px]">
+                                    {bSearch && <Search />}
+                                    <MenuLauncher />
                                     <Link href="/login">
                                         <ButtonRef
                                             variant="secondary"
@@ -240,10 +243,10 @@ export default function (props) {
                                             hitSlop={4}
                                             aria-label="Account"
                                             alt={t('Account')}
+                                            ring="p-1"
                                             startDecorator="UserRound"
-                                            />
-                                        </Link>
-                                    </View>
+                                        />
+                                    </Link>
                                 </Row>
                             )}
                         </Row>

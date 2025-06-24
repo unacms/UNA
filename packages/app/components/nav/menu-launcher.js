@@ -27,7 +27,7 @@ export default function () {
         return <></>;
 
     return (
-        <View >
+     
             <DropdownMenu items={menu_launcher_items.map((item, index) => ({
                 id: 'menu-' + index,
                 link: '/' + item.link,
@@ -38,15 +38,15 @@ export default function () {
                 <ButtonRef
                     tooltip="All Apps"
                     variant="secondary"
-                    fullWidth
+                    
                     rounded
                     alt={t("All Apps")}
                     startDecorator="LayoutGrid"
                     hitSlop={4}
+                    ring="p-1"
                     size="base"
                     
                 />
             </DropdownMenu>
-        </View>
     );
 }
