@@ -17,12 +17,14 @@ import MenuFooter from 'app/components/nav/menu-footer';
 import AnimatedView from 'app/ui/atoms/animated-view';
 import { useTranslation } from 'react-i18next'
 
+const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from');
+
 export default function PageLayout(props) {
     const isWeb = Platform.OS === 'web';
     const refer = useRef();
     const { t } = useTranslation()
 
-    const content = isWeb ? (<View className={'flex-col justify-center mx-auto w-full min-h-[100vh]' + getPageWidth(props.uri, props.data?.config)}>
+    const content = isWeb ? (<View className={`flex-col justify-center pt-[64px] ${TABLET_MODE_FROM}:pt-0 mx-auto w-full min-h-[100vh] ${getPageWidth(props.uri, props.data?.config)}`}>
         <View className="w-full lg:flex-row max-w-7xl mx-auto my-auto">
             {appStatic('components_logincontent')}
             <View className="max-w-xl w-full flex-auto mx-auto p-[16px] sm:p-[32px] my-auto gap-y-[16px]">

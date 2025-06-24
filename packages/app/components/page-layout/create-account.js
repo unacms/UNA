@@ -17,6 +17,8 @@ import SvgFile from 'app/ui/molecules/svg-file';
 import MenuFooter from 'app/components/nav/menu-footer';
 import AnimatedView from 'app/ui/atoms/animated-view';
 
+const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from');
+
 export default function PageLayout(props) {
     const { t } = useTranslation()
     const joinData = DataByName(props.data, props.blocks.form_join)
@@ -25,7 +27,7 @@ export default function PageLayout(props) {
     const refer = useRef();
 
     const content = isWeb ? (
-        <View className="flex-col justify-center min-h-[100vh] w-full">
+        <View className={`flex-col justify-center min-h-[100vh] w-full pt-[64px] ${TABLET_MODE_FROM}:pt-0`}>
             <View className="w-full lg:flex-row mx-auto my-auto  max-w-[1440px]">
                 <View className="my-auto flex-col items-center lg:items-start flex-auto p-[16px] sm:p-[32px] xl:p-[64px]" accessible={true}>
                     {appStatic('join_text')}
