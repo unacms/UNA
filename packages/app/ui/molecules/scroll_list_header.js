@@ -129,7 +129,7 @@ export const Header = memo(({
 
     return (
         <Row className={` px-[12px] sm:px-[16px] items-center h-[64px] justify-between web:duration-300`}>
-            {(!currentUser && !pageData?.context) && 
+            {(!currentUser && !pageData?.context && !text) && 
                 <Link href="/home" aria-label="Home">
                     <Pressable className="items-center flex-row hover:scale-105 rounded-[14px] active:scale-95 active:opacity-50 gap-x-3 text-neutral-800 dark:text-neutral-200 web:hover:text-neutral-800 web:dark:hover:text-neutral-200 duration-300 ">
                         <View className="w-[44px] h-[44px]">

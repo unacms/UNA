@@ -26,79 +26,75 @@ export default function PageLayout(props) {
 
     const content = isWeb ? (
         <View className="flex-col justify-center pt-[64px] min-h-[100vh] w-full">
-                <View className="w-full lg:flex-row mx-auto my-auto  max-w-[1440px]">
-                    <View className="my-auto flex-col items-center lg:items-start flex-auto p-[16px] sm:p-[32px] xl:p-[64px]" accessible={true}>
-                        <AnimatedView className="w-[200px] h-[200px] lg:w-[320px] lg:h-[320px] web:duration-300">
-                            <SvgFile src_dark="create-account-dark.svg" src_default="create-account-light.svg" alt="Create account illustration"/>
-                        </AnimatedView>
-                        <AnimatedView direction="up" className="flex-auto hidden lg:flex items-center lg:items-start gap-y-[16px] sm:gap-y-[24px] max-w-md sm:max-w-lg lg:max-w-3xl">
-                            <Text
-                                accessible={true}
-                                accessibilityRole="heading"
-                                aria-level={1}
-                                className="text-4xl lg:text-5xl xl:text-6xl text-center lg:text-start tracking-tight font-bold text-neutral-800 dark:text-neutral-200 text-pretty"
-                            >
-                                {isAllowJoin
-                                    ? 'Join ' + appSetting('app', 'title') + ' Now !'
-                                    : 'Request Invitation'}
-                            </Text>
-                            <Text
-                                accessible={true}
-                                accessibilityRole="text"
-                                className="text-base lg:text-lg xl:text-xl text-center lg:text-start text-neutral-600 dark:text-neutral-400 text-pretty"
-                            >
-                                {isAllowJoin
-                                    ? t('Create an account to get started. It\'s quick and easy to join')
-                                    : t('Registration is by invitation only. Please use invitation code to join.')}
-                            </Text>
-                        </AnimatedView>
-                        
-                    </View>
-                    <View className="max-w-xl w-full flex-auto mx-auto p-[16px] sm:p-[32px] my-auto">
-                        <AnimatedView>
-                            <View className="relative">
-                                <View className="absolute top-4 flex shadow rounded-3xl w-full h-full bg-neutral-500 dark:bg-black blur-lg opacity-20 dark:opacity-50"></View>
-                                <Card rounded="rounded-[24px]" margin="p-[16px] sm:p-[24px]" addClassName="border border-white overflow-hidden dark:border-bdrcard-d gap-y-[16px] sm:gap-y-[24px]">
-                                    
-                                    <View className="flex-col flex-auto gap-y-[8px] justify-center ">
-                                                    <Text className="text-[20px] sm:text-[24px] text-center lg:text-left leading-[none] tracking-tight font-semibold text-neutral-800 dark:text-neutral-200">
-                                                    Create your {appSetting('app', 'title')} account</Text>
-
-                                                    <Text className="text-[14px] sm:text-[16px] text-center lg:text-left text-neutral-500">
-                                                    Already have an account? <Link href="/login">Sign in</Link>.</Text>
-                                                
-                                                </View>
-                                    {!isAllowJoin && (
-                                        <BlockByName
-                                            name={props.blocks.form_invitation}
-                                            data={props.data}
-                                            formProps={{
-                                                auto_focus: true,
-                                                hide_errors: true,
-                                                button_full_width: true,
-                                            }}
-                                        />
-                                    )}
-                                    {isAllowJoin && (
-                                        <BlockByName
-                                            name={props.blocks.form_join}
-                                            data={props.data}
-                                            formProps={{
-                                                auto_focus: true,
-                                                hide_errors: true,
-                                                button_full_width: true,
-                                            }}
-                                        />
-                                    )}
-                                    <View className="flex items-center justify-center gap-y-2 border-t border-bdr dark:border-bdr-d mt-[16px] pt-[16px]">
-                                        <AuthPanel />
-                                    </View>
-                                </Card>
-                            </View>
-                        </AnimatedView>
-                        
-                    </View>
+            <View className="w-full lg:flex-row mx-auto my-auto  max-w-[1440px]">
+                <View className="my-auto flex-col items-center lg:items-start flex-auto p-[16px] sm:p-[32px] xl:p-[64px]" accessible={true}>
+                    {appStatic('join_text')}
+                    <AnimatedView direction="up" className="flex-auto hidden lg:flex items-center lg:items-start gap-y-[16px] sm:gap-y-[24px] max-w-md sm:max-w-lg lg:max-w-3xl">
+                        <Text
+                            accessible={true}
+                            accessibilityRole="heading"
+                            aria-level={1}
+                            className="text-4xl lg:text-5xl xl:text-6xl text-center lg:text-start tracking-tight font-bold text-neutral-800 dark:text-neutral-200 text-pretty"
+                        >
+                            {isAllowJoin
+                                ? t('create_account_page_title')
+                                : t('create_account_page_title_request_invite')}
+                        </Text>
+                        <Text
+                            accessible={true}
+                            accessibilityRole="text"
+                            className="text-base lg:text-lg xl:text-xl text-center lg:text-start text-neutral-600 dark:text-neutral-400 text-pretty"
+                        >
+                            {isAllowJoin
+                                ? t('create_account_page_text')
+                                : t('create_account_page_text_request_invite')}
+                        </Text>
+                    </AnimatedView>
                 </View>
+                <View className="max-w-xl w-full flex-auto mx-auto p-[16px] sm:p-[32px] my-auto">
+                    <AnimatedView>
+                        <View className="relative">
+                            <View className="absolute top-4 flex shadow rounded-3xl w-full h-full bg-neutral-500 dark:bg-black blur-lg opacity-20 dark:opacity-50"></View>
+                            <Card rounded="rounded-[24px]" margin="p-[16px] sm:p-[24px]" addClassName="border border-white overflow-hidden dark:border-bdrcard-d gap-y-[16px] sm:gap-y-[24px]">
+                                <View className="flex-col flex-auto gap-y-[8px] justify-center ">
+                                    <Text className="text-[20px] sm:text-[24px] text-center lg:text-left leading-[none] tracking-tight font-semibold text-neutral-800 dark:text-neutral-200">
+                                        {t('create_account_page_caption')}
+                                    </Text>
+                                    <Text className="text-[14px] sm:text-[16px] text-center lg:text-left text-neutral-500">
+                                        {t('create_account_page_already_have')} <Link href="/login">{t('create_account_page_sign_in')}</Link>.
+                                    </Text>
+                                </View>
+                                {!isAllowJoin && (
+                                    <BlockByName
+                                        name={props.blocks.form_invitation}
+                                        data={props.data}
+                                        formProps={{
+                                            auto_focus: true,
+                                            hide_errors: true,
+                                            button_full_width: true,
+                                        }}
+                                    />
+                                )}
+                                {isAllowJoin && (
+                                    <BlockByName
+                                        name={props.blocks.form_join}
+                                        data={props.data}
+                                        formProps={{
+                                            auto_focus: true,
+                                            hide_errors: true,
+                                            button_full_width: true,
+                                        }}
+                                    />
+                                )}
+                                <View className="flex items-center justify-center gap-y-2 border-t border-bdr dark:border-bdr-d mt-[16px] pt-[16px]">
+                                    <AuthPanel />
+                                </View>
+                            </Card>
+                        </View>
+                    </AnimatedView>
+
+                </View>
+            </View>
             <MenuFooter cntClasses="w-full flex-row flex-wrap opacity-80 h-[64px] items-center justify-center" />
         </View>
     ) : (
@@ -142,7 +138,7 @@ export default function PageLayout(props) {
                     <AuthPanel />
                 </View>
             </Card>
-           <MenuFooter cntClasses="w-full flex-row flex-wrap opacity-80 h-[64px] items-center justify-center"/>
+            <MenuFooter cntClasses="w-full flex-row flex-wrap opacity-80 h-[64px] items-center justify-center" />
         </View>
     );
 
