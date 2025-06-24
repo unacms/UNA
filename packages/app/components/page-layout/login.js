@@ -21,7 +21,7 @@ export default function PageLayout(props) {
     const refer = useRef();
 
 
-    const content = isWeb ? (<View className={'flex-col justify-center mx-auto w-full min-h-[100vh]' + getPageWidth(props.uri, props.data?.config)}>
+    const content = isWeb ? (<View className={'flex-col justify-center mx-auto w-full min-h-[calc(100vh-64px)]' + getPageWidth(props.uri, props.data?.config)}>
         <View className="w-full lg:flex-row max-w-7xl mx-auto my-auto lg:py-16 ">
             <View className="hidden my-auto flex-col flex-auto">
                 <AnimatedView className="w-[50%] max-w-[360px] aspect-square">

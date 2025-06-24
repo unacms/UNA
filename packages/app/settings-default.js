@@ -175,7 +175,7 @@ export  const settingsDefault = {
             // OLD appSetting('forms', 'form_without_captions')
             'sys_login',
             'sys_account_create',
-            'sys_forgot_password',
+            
             'bx_invites_request_send',
         ],
         visibility_control_names: [

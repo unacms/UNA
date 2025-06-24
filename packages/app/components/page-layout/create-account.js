@@ -25,7 +25,7 @@ export default function PageLayout(props) {
     const refer = useRef();
 
     const content = isWeb ? (
-        <View className="flex-col justify-center pt-[64px] min-h-[100vh] w-full">
+        <View className="flex-col justify-center min-h-[calc(100vh-64px)] w-full">
                 <View className="w-full lg:flex-row mx-auto my-auto  max-w-[1440px]">
                     <View className="my-auto flex-col items-center lg:items-start flex-auto p-[16px] sm:p-[32px] xl:p-[64px]" accessible={true}>
                         <AnimatedView className="w-[200px] h-[200px] lg:w-[320px] lg:h-[320px] web:duration-300">
@@ -99,7 +99,7 @@ export default function PageLayout(props) {
                         
                     </View>
                 </View>
-            <MenuFooter cntClasses="w-full flex-row flex-wrap opacity-80 h-[64px] items-center justify-center" />
+                <MenuFooter cntClasses="w-full flex-row flex-wrap opacity-80 h-[64px] items-center justify-center" />
         </View>
     ) : (
         <View className="flex-col justify-center w-full p-4">

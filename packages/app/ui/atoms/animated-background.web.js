@@ -11,7 +11,7 @@ const backgrounds = callFn("getBackgrounds", []);
 function AnimatedBackgroundComponent({ }) {
     const theme = ThemeName();
     const opacity = useSharedValue(1);
-    const animationDuration = 500;
+    const animationDuration = 300;
     const pathname = usePathname();
     const { currentUser } = useCurrentUser();
     const background = callFn("getBackground", [pathname, currentUser]);   
