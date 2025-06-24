@@ -22,6 +22,7 @@ import { useRef } from 'react';
 import { getPageWidth } from 'app/lib/util'
 import ScrollList from 'app/ui/molecules/scroll_list'
 import Splash from 'app/ui/molecules/splash'
+import { callFn } from 'app/lib/functions/call';
 
 export default function (props) {
     const isWeb = Platform.OS == 'web'  
@@ -128,37 +129,11 @@ export default function (props) {
                         feedList.map((item, index) => {
                             return (
                                 <View key={'row_' + index}>
-                                    <Button
-                                        key={
-                                            'row_' +
-                                            index +
-                                            (feedType ==
-                                                item.name)
-                                        }
-                                        startDecorator={
-                                            item.icon
-                                        }
-                                        title={
-                                            item.showTitle
-                                                ? t(item.title)
-                                                : ''
-                                        }
-                                        variant={
-                                            feedType ==
-                                                item.name
-                                                ? 'primary'
-                                                : 'secondary'
-                                        }
-                                        pressed={feedType == item.name}
-                                        rounded
-                                        ring='p-[4px]'
-                                        size="sm"
-                                        onPress={() => {
+                                    {callFn('getButtonForConductorHor', [item.icon, item.showTitle ? t(item.title) : '', feedType == item.name, null, () => {
                                             setFeedTypeEx(
                                                 item.name
                                             )
-                                        }}
-                                    />
+                                        }])}
                                 </View>
                             )
                         })}

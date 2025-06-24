@@ -6,6 +6,7 @@ export function ProfileDisplayName(title) {
 }
 
 export function ParseHtmlClasses(className, tag) {
+    console.log()
     return className;
 }
 
