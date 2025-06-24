@@ -25,14 +25,13 @@ export default function PageLayout(props) {
     const refer = useRef();
 
     const content = isWeb ? (
-        <View className="flex-col justify-center w-full">
-            <View className="w-full flex-auto min-h-[100vh]">
-                <View className="w-full lg:flex-row gap-y-[16px] mx-auto my-auto pt-[64px] pb-[64px] max-w-[1440px]">
-                    <View className="my-auto flex-col items-center lg:items-start gap-x-[32px] flex-auto px-[16px] sm:px-[32px] xl:px-[64px] lg:pb-[64px]" accessible={true}>
-                        <AnimatedView className="w-[50%] max-w-[360px] aspect-square">
+        <View className="flex-col justify-center pt-[64px] min-h-[100vh] w-full">
+                <View className="w-full lg:flex-row mx-auto my-auto  max-w-[1440px]">
+                    <View className="my-auto flex-col items-center lg:items-start flex-auto p-[16px] sm:p-[32px] xl:p-[64px]" accessible={true}>
+                        <AnimatedView className="w-[200px] h-[200px] lg:w-[320px] lg:h-[320px] web:duration-300">
                             <SvgFile src_dark="create-account-dark.svg" src_default="create-account-light.svg" alt="Create account illustration"/>
                         </AnimatedView>
-                        <AnimatedView direction="up" className="flex-auto items-center lg:items-start gap-y-[16px] sm:gap-y-[24px] max-w-md sm:max-w-lg lg:max-w-3xl">
+                        <AnimatedView direction="up" className="flex-auto hidden lg:flex items-center lg:items-start gap-y-[16px] sm:gap-y-[24px] max-w-md sm:max-w-lg lg:max-w-3xl">
                             <Text
                                 accessible={true}
                                 accessibilityRole="heading"
@@ -43,8 +42,6 @@ export default function PageLayout(props) {
                                     ? 'Join ' + appSetting('app', 'title') + ' Now !'
                                     : 'Request Invitation'}
                             </Text>
-                        </AnimatedView>
-                        <AnimatedView direction="up" className="flex-auto items-center lg:items-start gap-y-[16px] sm:gap-y-[24px] max-w-md sm:max-w-lg lg:max-w-3xl">
                             <Text
                                 accessible={true}
                                 accessibilityRole="text"
@@ -55,18 +52,22 @@ export default function PageLayout(props) {
                                     : t('Registration is by invitation only. Please use invitation code to join.')}
                             </Text>
                         </AnimatedView>
+                        
                     </View>
-                    <View className="max-w-xl w-full flex-auto mx-auto px-[16px] pb-[16px] sm:p-[32px] lg:py-[64px] my-auto gap-y-[16px]">
+                    <View className="max-w-xl w-full flex-auto mx-auto p-[16px] sm:p-[32px] my-auto">
                         <AnimatedView>
                             <View className="relative">
                                 <View className="absolute top-4 flex shadow rounded-3xl w-full h-full bg-neutral-500 dark:bg-black blur-lg opacity-20 dark:opacity-50"></View>
-                                <Card rounded="rounded-3xl" addClassName="border border-white overflow-hidden dark:border-bdrcard-d">
-                                <View className="flex-col pb-[24px] gap-y-[12px] ">
-                                        <Text className="text-2xl text-center  leading-none tracking-tight font-bold text-neutral-800 dark:text-neutral-200">
-                                        Create your {appSetting('app', 'title')} account</Text>
-                                        <Text className="text-center text-base text-neutral-600 dark:text-neutral-400">
-                                        Already have an account? <Link href="/login">Sign in</Link>.</Text>
-                                    </View>
+                                <Card rounded="rounded-[24px]" margin="p-[16px] sm:p-[24px]" addClassName="border border-white overflow-hidden dark:border-bdrcard-d gap-y-[16px] sm:gap-y-[24px]">
+                                    
+                                    <View className="flex-col flex-auto gap-y-[8px] justify-center ">
+                                                    <Text className="text-[20px] sm:text-[24px] text-center lg:text-left leading-[none] tracking-tight font-semibold text-neutral-800 dark:text-neutral-200">
+                                                    Create your {appSetting('app', 'title')} account</Text>
+
+                                                    <Text className="text-[14px] sm:text-[16px] text-center lg:text-left text-neutral-500">
+                                                    Already have an account? <Link href="/login">Sign in</Link>.</Text>
+                                                
+                                                </View>
                                     {!isAllowJoin && (
                                         <BlockByName
                                             name={props.blocks.form_invitation}
@@ -98,14 +99,13 @@ export default function PageLayout(props) {
                         
                     </View>
                 </View>
-            </View>
             <MenuFooter cntClasses="w-full flex-row flex-wrap opacity-80 h-[64px] items-center justify-center" />
         </View>
     ) : (
         <View className="flex-col justify-center w-full p-4">
             <Card>
                 <View className="flex-col lg:hidden pb-4">
-                    <Text className="text-2xl font-bold text-neutral-800 dark:text-neutral-200">
+                    <Text className="text-[20px] sm:text-[24px] text-center lg:text-left leading-[none] tracking-tight font-semibold text-neutral-800 dark:text-neutral-200">
                         Create an account
                     </Text>
                 </View>

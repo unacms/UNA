@@ -105,16 +105,16 @@ const colors = {
         df: 'rgba(59, 130, 246, 1)'
     },
     bgrmodal: {
-        DEFAULT: 'rgba(255,255,255,0.8)',
-        d: 'rgba(31,41,55,0.8)',
+        DEFAULT: 'rgba(255,255,255,0.7)',
+        d: 'rgba(31,41,55,0.7)',
     },
     bdrmodal: {
         DEFAULT: 'rgba(0,0,0,0.1)',
         d: 'rgba(255,255,255,0.05)',
     },
     bgrnavbar: {
-        DEFAULT: 'rgba(255,255,255,0.8)',
-        d: 'rgba(31,41,55,0.8)',
+        DEFAULT: 'rgba(255,255,255,0.7)',
+        d: 'rgba(31,41,55,0.7)',
     },
     bdrnavbar: {
         DEFAULT: 'rgba(75,85,100,0.10)',
@@ -122,8 +122,8 @@ const colors = {
        
     },
     bgrtabbar: {
-        DEFAULT: 'rgba(255,255,255,0.8)',
-        d: 'rgba(31,41,55,0.8)',
+        DEFAULT: 'rgba(255,255,255,0.7)',
+        d: 'rgba(31,41,55,0.7)',
     },
     bdrtabbar: {
         DEFAULT: 'rgba(75,85,100,0.10)',
@@ -160,9 +160,9 @@ const colors = {
         dh: 'rgba(255,255,255,0.1)',
     },
     bgrbuttonprimary: {
-        DEFAULT: 'rgba(37, 99, 235, 0.8)',   
+        DEFAULT: 'rgba(37, 99, 235, 1)',   
         h: 'rgba(29, 78, 216, 1)', 
-        d: 'rgba(37, 99, 235, 0.8)',
+        d: 'rgba(37, 99, 235, 1)',
         dh: 'rgba(59, 130, 246, 1)',
     },
     bdrbuttonprimary: {

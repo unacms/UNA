@@ -213,9 +213,10 @@ const SplashText = (
         <Text 
             accessible={true} 
             accessibilityRole="text"
-            className="text-base lg:text-lg xl:text-xl text-center lg:text-start text-neutral-600 dark:text-neutral-400 text-pretty   web:duration-300"
+            className=" text-[16px] sm:text-lg xl:text-xl text-center lg:text-start text-neutral-600 dark:text-neutral-400 text-pretty web:duration-300"
         >
-            Join the conversation, share your thoughts, and connect with others. Your voice matters - be part of our growing community!
+            Join the conversation, share your thoughts, and connect with others. 
+            Your voice matters - be part of our growing community!
         </Text>
         
    

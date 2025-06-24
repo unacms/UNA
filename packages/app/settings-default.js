@@ -72,8 +72,8 @@ export  const settingsDefault = {
         github: true,
         linkedin: true,
         x: true,
-        passkey: true,
-        saml: true,
+        passkey: false,
+        saml: false,
     },
     native: {
         default_theme: 'auto',
@@ -947,14 +947,14 @@ export  const settingsDefault = {
                 'font-medium text-neutral-800 web:hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-neutral-50',
             'u-btn-default-trans': '  web:duration-200',
 
-            'u-btn-primary-cnt': ' border border-transparent bg-bgrbuttonprimary dark:bg-bgrbuttonprimary-d web:hover:bg-bgrbuttonprimary-h dark:web:hover:bg-bgrbuttonprimary-dh',
+            'u-btn-primary-cnt': '  bg-bgrbuttonprimary dark:bg-bgrbuttonprimary-d web:hover:bg-bgrbuttonprimary-h dark:web:hover:bg-bgrbuttonprimary-dh active:ring-2 active:ring-primary active:ring-offset-2 active:outline-none ',
             'u-btn-primary-text': 'font-medium text-white',
-            'u-btn-primary-trans': '  web:duration-300',
+            'u-btn-primary-trans': '  web:duration-200',
             'u-btn-primary-color-icon-light': 'rgb(243, 244, 246)',
             'u-btn-primary-color-icon-dark': 'rgb(243, 244, 246)',
 
             'u-btn-accent-cnt':
-                'border border-transparent bg-accent-700 dark:bg-accent-700 web:hover:bg-accent-800 dark:web:hover:bg-accent-700 shadow-sm',
+                ' bg-accent-600 dark:bg-accent-600 web:hover:bg-accent-700 dark:web:hover:bg-accent-700 active:ring-2 active:ring-accent active:ring-offset-2 active:outline-none ',
             'u-btn-accent-text':
                 'font-medium text-white',
             'u-btn-accent-trans': '  web:duration-300',

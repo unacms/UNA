@@ -217,7 +217,7 @@ export default function (props) {
                 />
                 }
             </Row>}
-            {props.onSubmittig && <View className='absolute w-full h-full bg-bgrcard dark:bg-bgrcard-d z-50'></View>}
+            {props.onSubmittig && <View className='absolute w-full h-full  z-50'></View>}
             {methods.formState.isSubmitting}
             <FormProvider {...methods}>
                 {inputs}
