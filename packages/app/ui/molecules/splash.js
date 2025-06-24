@@ -85,7 +85,7 @@ export default function Splash(props) {
     }
 
     return (
-        <View className="flex-col justify-center pt-[64px] min-h-[100vh] w-full">
+        <View className="flex-col justify-center min-h-[100vh] w-full">
             <View className="w-full lg:flex-row mx-auto my-auto max-w-[1440px] ">
                 {appStatic('splash_text')}
                 <View className="flex-col-reverse lg:flex-col max-w-xl w-full flex-auto mx-auto p-[16px] sm:p-[32px] my-auto">

@@ -280,13 +280,7 @@ export default function Layout(props) {
             if (width > LAYOUT_BREAKPOINTS[TABLET_MODE_FROM])
                 a.offset = false;
         }
-
-        // Disable offset for splash/auth screens
-        const splashRoutes = ['login', 'create-account', 'home']; 
-        if (splashRoutes.includes(uri) && !currentUser) { 
-            a.offset = false;
-        }
-
+        
         if (!deepEqual(headerSettings, a)) {
             setHeaderSettings(a);
         }

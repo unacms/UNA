@@ -23,7 +23,7 @@ export default function PageLayout(props) {
     const { t } = useTranslation()
 
     const content = isWeb ? (<View className={'flex-col justify-center mx-auto w-full min-h-[100vh]' + getPageWidth(props.uri, props.data?.config)}>
-        <View className="w-full lg:flex-row max-w-7xl mx-auto my-auto lg:py-16 ">
+        <View className="w-full lg:flex-row max-w-7xl mx-auto my-auto">
             {appStatic('components_logincontent')}
             <View className="max-w-xl w-full flex-auto mx-auto p-[16px] sm:p-[32px] my-auto gap-y-[16px]">
                 <AnimatedView>

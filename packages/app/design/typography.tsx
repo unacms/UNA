@@ -36,8 +36,8 @@ export const H1 = ({ children, className, isfirst, islast, ...rest }) => {
         typeof children === 'string' ? decodeText(children) : children
     const HeadingComponent = Platform.OS === 'web' ? 'h1' : NativeText
     const finalClassName = normalizeClasses(
-        `text-4xl sm:text-5xl font-bold tracking-tight text-neutral-950 dark:text-neutral-50 web:duration-300 ${
-            isfirst === 'true' ? 'mt-0' : 'mt-8'
+        `text-3xl sm:text-4xl font-bold tracking-tight text-neutral-950 dark:text-neutral-50 web:duration-300 ${
+            isfirst === 'true' ? 'mt-0' : 'mt-4'
         } ${islast === 'true' ? 'mb-0' : 'mb-4'} ${className || ''}`
     )
     return (
@@ -68,7 +68,7 @@ export const H2 = ({ children, className, isfirst, islast, ...rest }) => {
         typeof children === 'string' ? decodeText(children) : children
     const HeadingComponent = Platform.OS === 'web' ? 'h2' : NativeText
     const finalClassName = normalizeClasses(
-        `text-3xl sm:text-4xl font-bold tracking-tight text-neutral-950 dark:text-neutral-50 ${
+        `text-2xl sm:text-3xl font-bold tracking-tight text-neutral-950 dark:text-neutral-50 ${
             isfirst === 'true' ? 'mt-0' : 'mt-6'
         } ${islast === 'true' ? 'mb-0' : 'mb-3'} ${className || ''}`
     )
@@ -84,7 +84,7 @@ export const H3 = ({ children, className, isfirst, islast, ...rest }) => {
         typeof children === 'string' ? decodeText(children) : children
     const HeadingComponent = Platform.OS === 'web' ? 'h3' : NativeText
     const finalClassName = normalizeClasses(
-        `text-2xl sm:text-3xl font-bold tracking-tight text-neutral-950 dark:text-neutral-50 ${
+        `text-xl sm:text-2xl font-bold tracking-tight text-neutral-950 dark:text-neutral-50 ${
             isfirst === 'true' ? 'mt-0' : 'mt-5'
         } ${islast === 'true' ? 'mb-0' : 'mb-2'} ${className || ''}`
     )

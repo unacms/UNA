@@ -25,7 +25,7 @@ export default function PageLayout(props) {
     const refer = useRef();
 
     const content = isWeb ? (
-        <View className="flex-col justify-center pt-[64px] min-h-[100vh] w-full">
+        <View className="flex-col justify-center min-h-[100vh] w-full">
             <View className="w-full lg:flex-row mx-auto my-auto  max-w-[1440px]">
                 <View className="my-auto flex-col items-center lg:items-start flex-auto p-[16px] sm:p-[32px] xl:p-[64px]" accessible={true}>
                     {appStatic('join_text')}
