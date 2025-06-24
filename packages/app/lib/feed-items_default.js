@@ -275,7 +275,7 @@ export const DefaultView = memo(({ data, styles, bIsTitle, bIsTimelineContent, c
                     </View>
                 </View>
                 {data.content.polls_attach && data.content.polls_attach.map((item, index) => {
-                    return <View className='mt-4' key={"att" + index}><PollItem  data={item} showTitle={true} /></View>
+                    return <View className='mt-4' key={"att" + index}><PollItem results_url='/api.php?r=bx_timeline/get_block_poll_results' data={item} showTitle={true} /></View>
                 })}
             </View>
         </View>
@@ -324,7 +324,7 @@ export const PollView = memo(({ data, styles, bIsTitle, bIsTimelineContent, cont
                 )}
                 <View>
                     <View>
-                        <PollItem data={data.content} results_url='/api.php?r=bx_timeline/get_block_poll_results' />
+                        <PollItem data={data.content}  />
                     </View>
                 </View>
             </View>

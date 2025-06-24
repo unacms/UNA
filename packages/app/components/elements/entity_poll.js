@@ -75,7 +75,7 @@ export function PollItem({ data, showTitle, onDelete, disabled = false, results_
 
     const [state, dispatch] = useReducer(reducer, initialState);
 
-    const Vote = async (value) => {
+    const Vote = async (value, results_url) => {
         dispatch({ type: 'VOTE', value: value });
 
         const sRequest = `/api.php?r=system/do/TemplVoteServices&params[]={"s":"${data.object}","o":${value},"value":1}`;
@@ -102,7 +102,7 @@ export function PollItem({ data, showTitle, onDelete, disabled = false, results_
                         status={item2.id == state.value ? 'checked' : 'unchecked'}
                         title={item2.title}
                         disabled={state.isVoted || disabled}
-                        onPress={() => Vote(item2.id)}
+                        onPress={() => Vote(item2.id, results_url)}
                     />
                 </Row>
             ))}
