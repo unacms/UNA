@@ -758,7 +758,7 @@ export default function RftText({
     return (
         <View
             onLayout={handleLayout}
-            className={`flex-1 relative rounded-[16px] ${isToolBar ? 'h-48' : ''}`}
+            className={`flex-1 relative rounded-[16px] ${isToolBar ? ' bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d text-neutral-900 rounded-[12px]  px-[12px] py-[12px]  dark:text-neutral-100' : ''}`}
         >
             {suggestions && suggestions.length > 0 && (
                 <View
@@ -803,6 +803,7 @@ export default function RftText({
             />
 
             {isToolBar && (
+                <><View className='h-12'></View>
                 <KeyboardAvoidingView
                     behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                     style={{
@@ -811,10 +812,10 @@ export default function RftText({
                         bottom: 0,
                     }}
                 >
-                    <View className="flex-auto p-[4px]">
+                    <View className="flex-auto ">
                         <Toolbar hidden={false} editor={editor} items={b} />
                     </View>
-                </KeyboardAvoidingView>
+                </KeyboardAvoidingView></>
             )}
         </View>
     )
