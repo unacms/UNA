@@ -12,8 +12,8 @@ export function ParseHtmlClasses(className, tag) {
 
 export function ProfileDisplayNameLink(title, url, href, fontSize, actions) {
     return (
-        <Row className='items-center h-[44px]'>
-            <Text className="text-neutral-800 dark:text-neutral-200 font-semibold tracking-tight truncate text-ellipsis text-xl sm:text-2xl">
+        <Row className='items-center'>
+            <Text className="text-neutral-800 dark:text-neutral-200 font-semibold tracking-tight truncate text-ellipsis text-[16px] leading-[24px]">
                 {title}
             </Text>
             {actions}
