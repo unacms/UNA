@@ -107,25 +107,23 @@ const expoConfig = {
         "APP_URL": process.env.APP_URL,
     },
     plugins: [
-        [
-            "expo-router",
+        ["expo-router", {}],
+        ["@rnmapbox/maps", {"RNMapboxMapsDownloadToken": "sk.eyJ1Ijoicm9tYW5sZXMiLCJhIjoiY204Zm9sMWMzMGJiaTJqcXRvdmpseHBuaiJ9.uajA_y3AmjRkBYgy4i2RdQ"}],
+        ["expo-video", {"supportsBackgroundPlayback": false, "supportsPictureInPicture": false}],
+        ["@stripe/stripe-react-native", {"merchantIdentifier": "merchantIdentifier","enableGooglePay": true}],
+        ["expo-build-properties", 
             {
-
-            }
-        ],
-        [
-            "@rnmapbox/maps",
-            {
-                "RNMapboxMapsDownloadToken": "sk.eyJ1Ijoicm9tYW5sZXMiLCJhIjoiY204Zm9sMWMzMGJiaTJqcXRvdmpseHBuaiJ9.uajA_y3AmjRkBYgy4i2RdQ"
-            }
-        ],
-        [
-            "expo-video",
-            {
-                "supportsBackgroundPlayback": false,
-                "supportsPictureInPicture": false
-            }
-        ],
+                ios: {
+                    deploymentTarget: '15.1',
+                },
+                android: {
+                    minSdkVersion: 29, // Android 10
+                    compileSdkVersion: 35,
+                    targetSdkVersion: 35,
+                    buildToolsVersion: "35.0.0"
+                }
+            },
+        ]
         /*[
           "onesignal-expo-plugin",
           {
@@ -142,20 +140,6 @@ const expoConfig = {
              "bluetoothAlwaysPermission": "Allow $(PRODUCT_NAME) to connect to bluetooth devices"
            }
          ],*/
-        [
-            'expo-build-properties',
-            {
-                ios: {
-                    deploymentTarget: '15.1',
-                },
-                android: {
-                    minSdkVersion: 29, // Android 10
-                    compileSdkVersion: 35,
-                    targetSdkVersion: 35,
-                    buildToolsVersion: "35.0.0"
-                }
-            },
-        ],
     ],
 };
 

@@ -284,13 +284,13 @@ export default function Layout(props) {
         // Disable offset for splash/auth screens
         const splashRoutes = ['login', 'create-account', 'forgot-password', 'confirm-email', 'home']; // 'home' is often a splash when not logged in
         if (splashRoutes.includes(uri) && !currentUser) { // Check for !currentUser especially for 'home' acting as splash
-            a.offset = true;
+            a.offset = false;
         }
         // If it's a dedicated auth page (not home), disable offset regardless of currentUser status, 
         // as these pages typically don't have the main header for which offset is intended.
         const dedicatedAuthRoutes = ['login', 'create-account', 'forgot-password', 'confirm-email'];
         if (dedicatedAuthRoutes.includes(uri)) {
-            a.offset = true;
+            a.offset = false;
         }
 
         if (!deepEqual(headerSettings, a)) {

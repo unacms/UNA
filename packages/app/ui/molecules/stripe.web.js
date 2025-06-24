@@ -9,7 +9,7 @@ import { useState, useEffect } from 'react';
 import { fetcher } from 'app/lib/fetcher';
 import { APP_URL } from 'app/config';
 
-export default function ElementStripe(oProps) {
+export default function ElementStripe({seller_id, items}) {
     const sProvider = 'stripe_v3';
     const [publicKey, setPublicKey] = useState('');
     const [clientSecret, setClientSecret] = useState('');
@@ -28,7 +28,7 @@ export default function ElementStripe(oProps) {
             onLoad(sResponse?.data);
     };
 
-    performAction('get_provider_options', [oProps.seller_id, sProvider], (oData) => {
+    performAction('get_provider_options', [seller_id, sProvider], (oData) => {
         if(!oData?.name || oData.name != sProvider || !oData?.options)
             return;
 
@@ -54,7 +54,7 @@ export default function ElementStripe(oProps) {
         stripePromise = loadStripe(publicKey);
 
     useEffect(() => {
-        performAction('stripe_v3_create_session_api', {type: 'single', seller_id: oProps.seller_id, items: oProps.items.join('&'), return_url: APP_URL}, (oData) => {
+        performAction('stripe_v3_create_session_api', {type: 'single', seller_id: seller_id, items: items.join('&'), return_url: APP_URL}, (oData) => {
             setClientSecret(oData.clientSecret)
         });
       }, [])

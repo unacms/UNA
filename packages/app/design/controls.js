@@ -49,21 +49,21 @@ export const InputRef = forwardRef(({ className, startDecorator, endDecorator, .
     </Row>
 ));
 
-export const InputMulti = ({ className, startDecorator, endDecorator, ...props }) => (
-    <Row className="items-center flex-auto">
+export const InputMulti = forwardRef(({ className, startDecorator, endDecorator, ...props }, ref) => (
+     <Row className=" items-center flex-auto">
         {startDecorator && (
             <View className="absolute left-[14px] h-full items-center justify-center">
                 <Icon icon={startDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
             </View>
         )}
-        <TextInputDef className={`${className} ${inputSettings.multi} ${startDecorator ? 'pl-[48px]' : ''} ${endDecorator ? 'pr-[44px]' : ''}`} {...props} />
+        <TextInputDef className={`${className} ${inputSettings.multi} ${startDecorator ? 'pl-[48px]' : ''} ${endDecorator ? 'pr-[44px]' : ''}`} ref={ref} {...props} />
         {endDecorator && (
             <View className="absolute right-[12px] items-center justify-center">
                 <Icon icon={endDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
             </View>
         )}
     </Row>
-);
+));
 
 export const InputRounded = ({ className, startDecorator, endDecorator, ...props }) => (
     <Row className=" items-center flex-auto">
