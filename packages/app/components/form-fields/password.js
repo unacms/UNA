@@ -18,6 +18,7 @@ export default function FormFieldPassword(props) {
             <View>
             <Input 
                 textContentType="none"
+                placeholderTextColor="#6b7280"
                 placeholder = {placeholder}
                 secureTextEntry={isVisible}
                 name={props.name}

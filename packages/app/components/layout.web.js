@@ -282,14 +282,8 @@ export default function Layout(props) {
         }
 
         // Disable offset for splash/auth screens
-        const splashRoutes = ['login', 'create-account', 'forgot-password', 'confirm-email', 'home']; // 'home' is often a splash when not logged in
-        if (splashRoutes.includes(uri) && !currentUser) { // Check for !currentUser especially for 'home' acting as splash
-            a.offset = false;
-        }
-        // If it's a dedicated auth page (not home), disable offset regardless of currentUser status, 
-        // as these pages typically don't have the main header for which offset is intended.
-        const dedicatedAuthRoutes = ['login', 'create-account', 'forgot-password', 'confirm-email'];
-        if (dedicatedAuthRoutes.includes(uri)) {
+        const splashRoutes = ['login', 'create-account', 'home']; 
+        if (splashRoutes.includes(uri) && !currentUser) { 
             a.offset = false;
         }
 
@@ -346,7 +340,7 @@ export default function Layout(props) {
 
 const Content = React.memo(({ children, headerSettings, stylesBgImage, currentUser, layoutName, url, width }) => {
     const isHideHeader = (appSetting('layout', 'hide_header_for_non_logged') && !currentUser) || appSetting('layout', 'hide_header_for_all');
-
+    console.log("headerSettings.offset", headerSettings.offset)
     return (
         <View className="w-full items-stretch cnt-root" key={url}>
             <View className=" w-full mx-auto flex-row " >
