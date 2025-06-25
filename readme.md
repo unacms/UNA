@@ -496,3 +496,148 @@ componentsMapDefault['bx_groups'] = UnitGroup;
 export const componentsMap = componentsMapDefault
 
 ```
+
+### change backgrounds for lon-logged page
+
+1) create folder "custom" in packages\app\ui\atoms\
+2) add needed file backgrounds.js in packages\app\ui\atoms\custom with backgrounds
+3) add function getBackgrounds() in packages\app\lib\functions\functions.js like below
+
+```
+import { 
+    SvgBackgroundSplash, 
+    SvgBackgroundSplashDark,
+    SvgBackgroundCreateAccount,
+    SvgBackgroundCreateAccountDark,
+    SvgBackgroundLogin,
+    SvgBackgroundLoginDark,
+} from 'app/ui/atoms/custom/backgrounds';
+
+export function getBackgrounds() {
+     return {
+        splash: {
+            light: <SvgBackgroundSplash />,
+            dark: <SvgBackgroundSplashDark />,
+        },
+        'create-account': {
+            light: <SvgBackgroundCreateAccount />,
+            dark: <SvgBackgroundCreateAccountDark />,
+        },
+        login: {
+            light: <SvgBackgroundLogin />,
+            dark: <SvgBackgroundLoginDark />,
+        },
+        default: {
+            light: <View className="w-full h-full bg-bgrbody dark:bg-bgrbody-d" />,
+            dark: <View className="w-full h-full bg-bgrbody dark:bg-bgrbody-d" />,
+        }
+    }
+}
+
+```
+
+### add svg images
+
+All custom SVG images should be placed in apps\next\public\svg\local\
+then inserted like 
+
+```
+<SvgFile src_dark="local/create-account-dark.svg" src_default="local/create-account-light.svg" alt="Create account illustration"/>
+
+```
+
+### change favicon & manifest
+
+Favicon should be placed in \apps\next\public\static\favicon.ico
+Manifest should be placed in \apps\next\public\static\manifest.json
+
+example mainfest:
+```
+{
+  "short_name": "Figuria",
+  "name": "Figuria",
+  "description": "Figuria Social Network",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "logo192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "logo512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "maskable_icon_x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "maskable_icon_x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "maskable_icon_x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any "
+    },
+    {
+      "src": "maskable_icon_x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#13716b",
+  "display": "standalone",
+  "scope": "/",
+  "theme_color": "#13716b"
+}
+
+```
+
+### add custom font
+1) create folder "fonts" in apps\next\public\
+2) Place font file in  apps\next\public\fonts
+3) in settings add settingsDefault.native.use_custom_font = 'font-main';
+4) in file packages\app\styles\global.css add
+
+```
+@font-face {
+    font-family: 'MainFont';
+    src: url('/fonts/OpenSans-VariableFont.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'TitleFont';
+    src: url('/fonts/CenturyGothic.ttf') format('truetype');
+}
+  
+
+.font-main {
+  font-family: 'MainFont';
+}
+.font-title {
+  font-family: 'TitleFont';
+}
+
+
+```
+
+5) to add fonts in native app add files to app/design/fonts/
+6) in file  packages\app\design\fonts\fonts.js add
+
+```
+export default { 
+    'font-main': require('app/design/fonts/OpenSans-VariableFont.ttf'), 
+    'font-title': require('app/design/fonts/CenturyGothic.ttf')
+}; 
+
+```
