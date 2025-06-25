@@ -1,8 +1,8 @@
-import {componentsMap} from './units/_map';
+import { getComponent } from 'app/components/registry';
 import { useMemo, memo } from 'react';
 
 function Unit(props) {
-    const Component = useMemo(() => componentsMap[props.unit] || componentsMap.default, [props.unit]);
+    const Component = useMemo(() =>  getComponent('unit', props.unit) || getComponent('unit', 'default'), [props.unit]);
     return <Component {...props} />;
 }
 

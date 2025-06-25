@@ -5,16 +5,11 @@ import Animated, {
     useDerivedValue,
     withTiming,
 } from 'react-native-reanimated';
-import { BlurView } from 'expo-blur';
 import React, { useCallback, useEffect } from 'react';
-import { Theme } from 'app/design/theme';
-import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
-import { Button } from 'app/design/controls';
+import { appSetting, isShowCover, getPageSettings, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { useWindowDimensions } from 'react-native';
 import { Header, TextHeader } from 'app/ui/molecules/scroll_list_header';
 import { useCurrentUser } from 'app/context/user';
-import { useTranslation } from 'react-i18next';
-import { Text } from 'app/design/typography'
 import { getMenuSettings } from 'app/lib/util'
 
 
@@ -40,10 +35,8 @@ export default function ScrollList({
     const isShowScrollToTopButton = appSetting('native', 'scroll_to_top_button') && isSmallScreen;
     const transparencyOffset = 200;
     const animationDuration = 300;
-    const { colors } = Theme();
     const { currentUser } = useCurrentUser();
-    const { t } = useTranslation();
- const opacity = useSharedValue(1);
+    const opacity = useSharedValue(1);
 
     /* ANIMATION */
     const scrollY = useSharedValue(0);
@@ -135,14 +128,17 @@ export default function ScrollList({
     };
     /* ANIMATION */
 
-     const isSimplePage = ['home', 'login', 'create-account'].includes(pageData?.uri) && !currentUser;
+    const isSimplePage = ['home', 'login', 'create-account'].includes(pageData?.uri) && !currentUser;
     const baseProps = {
         ...((useCustomScrollHandler && isCollapsibleHeader && !isSimplePage) && { onScroll }),
     };
 
+    if (!isShowCover(pageData.cover,currentUser))
+        return content;
+
     const enhanced = React.cloneElement(content, baseProps);
-   
-    if (!subHeaderComponent && !isSimplePage && !currentUser) {
+    const settings = getPageSettings(pageData?.config, pageData?.uri);
+    if (!subHeaderComponent && !isSimplePage && !currentUser && settings.headerSettings.header) {
         let textName = pageData?.name;
         if (isMenuNameAsTitle) {
             const menuSettings = getMenuSettings(pageData?.menu?.object, pageData?.menu?.config);
@@ -161,7 +157,7 @@ export default function ScrollList({
             {enhanced}
             {isSmallScreen && <Animated.View className="backdrop-blur-lg" style={[headerStyle]}>
 
-                <View className="w-full bg-gradient-to-b from-white to-bgrnavbar dark:from-neutral-900 dark:to-bgrnavbar-d backdrop-blur-xl shadow-[0_1px_0_rgba(0,0,0,0.05)] dark:shadow-[0_1px_0_rgba(0,0,0,0.1)]"  >
+                <View className="w-full backdrop-blur-xl bg-bgrnavbar dark:bg-bgrnavbar-d dark:from-neutral-900 dark:to-bgrnavbar-d backdrop-blur-xl shadow-[0_1px_0_rgba(0,0,0,0.05)] dark:shadow-[0_1px_0_rgba(0,0,0,0.1)]"  >
                     <Header
                         backButtonPresented={isBackButton}
                         headerComponent={headerComponent}

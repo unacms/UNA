@@ -104,7 +104,7 @@ const AddMenu = (menu, filter) => {
         if (button.section)
             btn = <Search section={button.section} params={{ trigger: { size: 'base' } }} />
         else {
-            btn = <Button title={t(button.title)} startDecorator={button.icon} variant="secondary" rounded size="base" onPress={() => (handleFormModal(button, event, setPageData))} />;
+            btn = <Button title={t(button.title)} startDecorator={button.icon} ring="p-1" variant="secondary" rounded size="base" onPress={() => (handleFormModal(button, event, setPageData))} />;
             btn = (button.link && button.name != "Add") ? <Link href={button.link} >{btn}</Link> : btn
         }
 

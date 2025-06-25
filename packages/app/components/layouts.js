@@ -1,7 +1,7 @@
 "use client"
 import Layout from 'app/components/layout';
 import { useCurrentUser } from 'app/context/user'
-import { componentsMap } from 'app/components/page-layout/_map';
+ import { getComponent } from 'app/components/registry';
 import { appSetting, getPageSettings } from 'app/lib/util'
 import { Platform } from 'react-native'
 import Cell from 'app/components/cell';
@@ -11,7 +11,13 @@ import Redirect from 'app/ui/atoms/redirect'
 import { useRef, useEffect, useMemo } from 'react';
 import ConfirmEmail from 'app/ui/molecules/confirm_email'
 
+import {registerAll} from 'app/components/registry-init';
+
 export default function Layouts({ path, data, uri, url }) {
+
+
+        registerAll();
+
     const { currentUser, setCurrentUser } = useCurrentUser();
     const layout = useMemo(() => {
         const isWeb = Platform.OS === 'web';
@@ -67,7 +73,9 @@ function getLayoutName(data, uri, isWeb) {
         isCustomLayout = true;
     }
 
-    if (componentsMap[layoutKey]) {
+    const Layout = getComponent('layout', layoutKey)
+
+    if (Layout) {
         return { layoutName: layoutKey, layoutBlocks, isCustomLayout };
     }
 
@@ -83,7 +91,7 @@ function getLayoutName(data, uri, isWeb) {
         layoutKey = data?.layout;
     }
 
-    if (componentsMap[layoutKey]) {
+    if (Layout) {
         return { layoutName: layoutKey, layoutBlocks, isCustomLayout };
     }
 
@@ -104,7 +112,7 @@ function PageLayoutContent(props) {
     }
 
 
-    const Component = componentsMap[layoutName];
+    const Component = getComponent('layout', layoutName);
 
     if (isCustomLayout && layoutBlocks) {
         return Wrapper(

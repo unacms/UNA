@@ -1,16 +1,13 @@
 import CardDataContext from 'app/context/card'
-import { componentsMap } from "app/components/units/profile-list/_map";
-
+import { useMemo } from 'react';
+ import { getComponent } from 'app/components/registry';
+ 
 export default function Unit(props) {
     const data = props.data;
     const module = !!data?.module ? data.module : props.module
-    const Component = componentsMap[module];
-    const DefaultComponent = componentsMap["default"];
-    const Result = Component ? (
-        <Component {...props} />
-    ) : (
-        <DefaultComponent {...props} />
-    );
+
+    const Component = useMemo(() =>  getComponent('profile-list', props.unit) || getComponent('profile-list', 'default'), [module]);
+    const Result = <Component {...props} /> 
 
     /*
      * TODO for Roman: Need to improve this. <CardDataContext> and <Card> cannot be in one object.

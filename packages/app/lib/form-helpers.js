@@ -1,12 +1,14 @@
-import { componentsMap } from 'app/components/form-fields/_map';
+
+import { getComponent } from 'app/components/registry';
 import { Text } from 'app/design/typography'
+import { Button } from "app/design/controls";
+import emitter from 'app/context/emitter';
 
 export function getFormFieldByData(inputData, handleSubmit, format, externalProps) {
 
     if (!inputData)
         return <></>;
-
-    const InputType = componentsMap[String(inputData.type)];
+    const InputType = getComponent('form-field', String(inputData.type));
 
     if (!InputType)
         return <Text>Unsupported field type: {JSON.stringify(inputData)}</Text>
@@ -40,4 +42,16 @@ export function getEditorHeight(reportedContentHeight, minVisualHeight, totalChr
         let newHeight = minVisualHeight + (stepsNeeded * growthStep);
         return Math.min(newHeight, maxHeight);
     }
+}
+
+export function PollButton({ field_name, size = 'base', variant = 'secondary', icon = "Vote" }) {
+    return (
+        <Button
+            startDecorator={icon}
+            size={size}
+            variant={variant}
+            rounded
+            onPress={() => emitter.emit(`fld_polls_${field_name}`, { action: 'add' })}
+        />
+    );
 }

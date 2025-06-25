@@ -2,7 +2,7 @@ import { Text } from 'app/design/typography'
 import { Button, Modal } from 'app/design/controls'
 import { fetcher } from 'app/lib/fetcher'
 import { appSetting, updateRouteDataForConnection, getPageSettings } from 'app/lib/util'
-import { componentsMap } from 'app/ui/molecules/_map'
+import { getComponent } from 'app/components/registry';
 import { appStatic } from 'app/lib/app-static';
 import { View, Row } from 'app/design/view'
 import { MenuItemSidebar } from 'app/components/nav/menu-item-sidebar'
@@ -239,7 +239,7 @@ const createMenuItem = (menuItem, isPrimary) => {
 
     if (!menuItem) return null;
     if (menuItem.data?.type) {
-        const Element = componentsMap[menuItem.data.type];
+        const Element =  getComponent('molecule', String(menuItem.data.type))
         if (Element) {
             const oElementParams = {
                 ...menuItem.data,

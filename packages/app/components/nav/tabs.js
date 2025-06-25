@@ -228,10 +228,8 @@ export default function () {
     }, []);
 
     const pathname = usePathname();
-    console.log("RenderTabs", currentUser)
     useEffect(() => {
         const fetchPageData = async () => {
-            console.log("RenderTabs11", currentUser)
              const data = await getPageData('home');
              setCurrentUser(data.data.user);
         }

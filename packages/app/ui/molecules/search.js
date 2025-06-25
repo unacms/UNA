@@ -30,7 +30,6 @@ export default function ElementSearch(oProps) {
             oParams.trigger.onPress();
         }
         setShowModal(true);
-        //setBottomSheetData({ title: 'Search', content:<ElementSearchData {...oProps} isBottomSheet={true} />, showClose: true, isListView: true, snapPoints: ['75%', '90%'] });
     }
 
     let sResult = sType == 'input' ? (

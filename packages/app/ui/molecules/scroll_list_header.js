@@ -1,16 +1,8 @@
 import { View, Row, Pressable } from 'app/design/view';
-import Animated, {
-    useSharedValue,
-    useAnimatedStyle,
-    useAnimatedScrollHandler,
-    withTiming,
-} from 'react-native-reanimated';
-import { BlurView } from 'expo-blur';
-import React, { useMemo, useEffect, memo, isValidElement } from 'react';
-import { getPageSettings } from 'app/lib/util'
+import { useMemo, useEffect, memo, isValidElement } from 'react';
 import { Text } from 'app/design/typography'
 import { Platform } from 'react-native'
-import { FeedbackHaptics } from 'app/lib/util';
+import { FeedbackHaptics, getPageSettings } from 'app/lib/util';
 import { useCurrentUser } from 'app/context/user';
 import { appStatic } from 'app/lib/app-static';
 import { menuItemsFilter } from 'app/lib/util';
@@ -37,7 +29,7 @@ export const TextHeader = memo(({ text }) => {
 function RightNonLogged(props) {
     const bSearch = appSetting('layout', 'search') == true
     return (
-        <Row className=' gap-x-2'>
+        <Row className=' gap-x-1'>
             {bSearch && <Search
                 params={{ trigger: { icon: 'Search', size: 'base', variant: 'secondary', onPress: () => FeedbackHaptics('Medium') } }} />
             }
@@ -50,7 +42,7 @@ function RightNonLogged(props) {
                     size="base"
                     hitSlop={4}
                     aria-label="Account"
-
+                    ring="p-1"
                     startDecorator="UserRound"
                 />
             </Link>
@@ -71,7 +63,6 @@ export const Header = memo(({
     const { layoutData, setLayoutData } = useLayoutData()
     const pagePath = pageData?.uri;
     const settings = getPageSettings(pageData?.config, pagePath);
-    const { t } = useTranslation();
     const router = useRouter();
     const isWeb = Platform.OS === 'web';
 
@@ -111,7 +102,6 @@ export const Header = memo(({
     if (isHome || (!currentUser && isWeb)) {
         text = '';
     }
-
     text = text.replace('__notification__', '');
 
     useEffect(() => {
@@ -129,7 +119,7 @@ export const Header = memo(({
 
     return (
         <Row className={` px-[12px] sm:px-[16px] items-center h-[64px] justify-between web:duration-300`}>
-            {(!currentUser && !pageData?.context && !text) && 
+            {(!currentUser && !pageData?.context && !text && settings.headerSettings.header) && 
                 <Link href="/home" aria-label="Home">
                     <Pressable className="items-center flex-row hover:scale-105 rounded-[14px] active:scale-95 active:opacity-50 gap-x-3 text-neutral-800 dark:text-neutral-200 web:hover:text-neutral-800 web:dark:hover:text-neutral-200 duration-300 ">
                         <View className="w-[44px] h-[44px]">
@@ -148,7 +138,7 @@ export const Header = memo(({
                     router ? router?.back() : history.back();
                 }} startDecorator="ArrowLeft" size="base" /></View>
             )}
-            {!!text && (
+            {(!!text) && (
                 <TextHeader text={text}></TextHeader>
             )}
 
@@ -174,18 +164,19 @@ function getRightHeader(items, currentUser, pagePath) {
         return null;
 
     return (
-        <Row className='gap-x-[8px] items-center'>
+        <Row className='gap-x-1 items-center'>
             {
                 items?.map((button) => {
                     let btn = undefined;
                     if (button.section || button.link == 'search')
-                        btn = <Search section={button.section} params={{ trigger: { title: button.title, icon: button.icon ? button.icon : 'Search', size: 'base', variant: 'text', onPress: () => FeedbackHaptics('Medium') } }} />
+                        btn = <Search section={button.section} params={{ trigger: { title: button.title, icon: button.icon ? button.icon : 'Search', size: 'base', variant: 'secondary', onPress: () => FeedbackHaptics('Medium') } }} />
                     else {
                         btn = <Button
                             rounded title={button.title}
                             variant='secondary'
                             startDecorator={button.icon}
                             size="base"
+                            ring="p-1"
                             addon={button.link == appSetting('messenger', 'url') ? { variant: 'primary', text: currentUser?.counters?.bx_messenger_new_messages, hideZero: true } : undefined}
                         />;
                         btn = button.link ? <Link href={button.link} >{btn}</Link> : btn

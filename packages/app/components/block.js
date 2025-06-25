@@ -1,9 +1,7 @@
 import String from './blocks-content/string';
 import ObjectDataObject from './blocks-content/object-data-object';
 import ObjectDataArray from './blocks-content/object-data-array';
-import { View } from 'app/design/view'
-import { Text, H2 } from 'app/design/typography'
-import { stripTags, appSetting, BlockDataByName } from 'app/lib/util';
+import { BlockDataByName } from 'app/lib/util';
 import { appStatic } from 'app/lib/app-static';
 import { BlockWrapper } from './block-wrapper'
 

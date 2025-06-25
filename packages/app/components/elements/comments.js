@@ -18,11 +18,11 @@ export default function (props) {
         setAddData(data)
     }
 
-    useEffect(() => {
-        if (props.data[0].form?.data?.params?.object == "sys_review" && addData.data) {
+   /* useEffect(() => {
+        if (props.data[0]?.form?.data?.params?.object == "sys_review" && addData.data) {
             setForm(false)
         }
-    }, [addData.data, props.data[0].form?.data?.params?.object]);
+    }, [addData.data, props.data[0]?.form?.data?.params?.object]);*/
 
     const formContent = <View className=' border-bdrcard dark:border-bdrcard-d border-t border-bdr dark:border-bdr-d mt-12 '>
         <CommentsForm handleForm={handleForm} browse={props.browse} module={props.browse?.data?.module || ''} form={form} formData={formData} requestUrl={props.url} />

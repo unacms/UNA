@@ -603,7 +603,7 @@ export  const settingsDefault = {
             {
                 key: '/tab1',
                 title: 'Friends',
-                url: '/posts-home',
+                url: '/view-event-profile/sdfsd',
                 icon: 'UsersRound',
             },
             {

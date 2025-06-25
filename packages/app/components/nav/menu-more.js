@@ -1,16 +1,10 @@
-import { View, Pressable, ScrollView } from 'app/design/view'
-import Link from 'app/ui/atoms/link'
+import { View } from 'app/design/view'
 import { menuItemsByName } from 'app/lib/util'
-import { appSetting } from 'app/lib/util'
-import { useTranslation } from 'react-i18next';
-import { Dimensions, Platform } from 'react-native'
 import { useCurrentUser } from 'app/context/user'
-import Menu from 'app/components/menu'
-import { useState, useContext, useRef, useMemo, memo } from 'react'
-import { getImageSizes, FeedbackHaptics, tp, t } from 'app/lib/util'
-import { Button, Modal } from 'app/design/controls'
+import { useMemo } from 'react'
+import { Button } from 'app/design/controls'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu'
-import { componentsMap } from 'app/components/menu-items/_map';
+import { getComponent } from 'app/components/registry';
 
 export default function ({ data, oMenuItemsMore, popupVisible, setPopupVisible, defaultButtonProps }) {
     let { currentUser, setCurrentUser } = useCurrentUser()
@@ -32,7 +26,7 @@ export default function ({ data, oMenuItemsMore, popupVisible, setPopupVisible, 
         (aItem) => {
             let sTitle = aItem.title;
             const ItemType = useMemo(() => {
-                return componentsMap[aItem.display_type || sDisplayType];
+                return getComponent('menu-item', aItem.display_type || sDisplayType);
             }, [aItem.display_type, sDisplayType]);
 
         

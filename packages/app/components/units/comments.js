@@ -22,7 +22,7 @@ import { useTranslation } from 'react-i18next';
 import Link from 'app/ui/atoms/link'
 import { stripTags, appSetting, getDataForMenu } from 'app/lib/util';
 import Carousel from 'app/ui/molecules/carousel'
-import { componentsMap } from 'app/ui/molecules/_map'
+import { getComponent } from 'app/components/registry';
 import { StarsView } from 'app/ui/atoms/stars';
 import { Modal } from 'app/design/controls'
 import Loading from 'app/ui/atoms/loading'
@@ -361,7 +361,7 @@ const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen, module, cmt_obj
         (aItem) => {
             let sTitle = aItem.title;
             if (!!aItem.display_type && aItem.display_type == 'element') {
-                const Element = componentsMap[aItem.data.type];
+                const Element = getComponent('molecule', String(aItem.data.type));
                 if (!!Element) {
                     sTitle = <Element mode="dropdown-menu" key={aItem.id ? aItem.id : aItem.name}   {...aItem.data} />
                 }

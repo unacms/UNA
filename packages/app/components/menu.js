@@ -1,6 +1,6 @@
 import { View, ViewRef, Pressable } from 'app/design/view'
 import { appSetting, menuItemsByName } from 'app/lib/util';
-import { componentsMap } from './menu-items/_map';
+import { getComponent } from 'app/components/registry';
 import { useCurrentUser } from 'app/context/user'
 import { useMemo, useState, memo } from "react";
 import { Button } from 'app/design/controls';
@@ -17,7 +17,7 @@ const ButtonEx = memo(({ visibleItemsCount, params }) => {
 });
 
 const MenuItemEx = memo(({ item, index, sDisplayType, params }) => {
-    const ItemType = componentsMap[item.display_type ? item.display_type : sDisplayType];
+    const ItemType =  getComponent('menu-item', String(item.display_type ? item.display_type : sDisplayType));
     const newButtonVariant = params?.button_variant === 'none' ? '' : params?.button_variant;
     return (
         <ItemType mode="dropdown-menu" key={item.id ? item.id : item.name} {...item} params={{ ...params, button_variant: newButtonVariant, button_size: 'sm' }} />
@@ -26,7 +26,7 @@ const MenuItemEx = memo(({ item, index, sDisplayType, params }) => {
 
 
 const MenuItem = memo(({ item, itemRefs, index, visibleItemsCount, params, bShowVertical, sAlignItems, isUseStaticWidth, isWeb, sDisplayType }) => {
-    const ItemType = componentsMap[item.display_type ? item.display_type : sDisplayType];
+    const ItemType = getComponent('menu-item', String(item.display_type ? item.display_type : sDisplayType));
     return (
         <ViewRef className={(!isWeb ? ' ml-2' : ' ') + (bShowVertical ? 'w-full  ' : ' ') + (sAlignItems == 'stretch' ? 'flex-auto' : '') }>
             <ItemType key={item.id ? item.id : item.name} {...item} params={params} />
@@ -115,14 +115,14 @@ export default function ElementMenu(oProps) {
             // Check if the `display_type` of the item is supported by `componentsMap`
             const sDisplayTypeItem = aItem.display_type ? aItem.display_type : sDisplayType;
 
-            if (!componentsMap[sDisplayTypeItem]) {
+            if (!getComponent('menu-item', sDisplayTypeItem)) {
                 return false;
             }
 
             // If all checks pass, the item should be included in the filtered list
             return true;
         });
-    }, [bAutoFilter, oProps.object, sortedItems, currentUser, bShowMatched, sDisplayType, sShowSelected, aExcept, aExceptTitle, componentsMap]);
+    }, [bAutoFilter, oProps.object, sortedItems, currentUser, bShowMatched, sDisplayType, sShowSelected, aExcept, aExceptTitle]);
 
     if (!oProps?.items?.length)
         return [];
@@ -138,7 +138,7 @@ export default function ElementMenu(oProps) {
 
     if (isUseStaticWidth) {
         const sItems = filteredItems.map((item, index) => {
-            const ItemType = componentsMap[item.display_type || sDisplayType];
+            const ItemType = getComponent('menu-item', item.display_type || sDisplayType);
             const Wrapper = item.noAction ? Pressable : View;
             const a = <ItemType key={item.id ? item.id : item.name} {...item} params={oProps.params} />
             if (a == null) return null;

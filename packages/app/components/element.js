@@ -1,4 +1,4 @@
-import { componentsMap } from './elements/_map';
+import { getComponent } from 'app/components/registry';
 import { Text } from 'app/design/typography'
 import { useMemo } from "react";
 
@@ -10,7 +10,7 @@ const FallbackComponent = (props) => (
 
 export default function (a) {
     const ElementType = useMemo(
-        () => componentsMap[a.type] || FallbackComponent,
+        () => getComponent('element', String(a.type)) || FallbackComponent,
         [a.type]
     );
 

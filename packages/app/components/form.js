@@ -2,8 +2,7 @@ import { useEffect, useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { getFormFieldByData } from 'app/lib/form-helpers'
 import { View, Row } from 'app/design/view'
-import { Text } from 'app/design/typography'
-import { componentsMap } from 'app/components/forms/_map';
+import { getComponent } from 'app/components/registry';
 import { FeedbackHaptics } from 'app/lib/util';
 import { Platform } from 'react-native';
 import { appSetting } from 'app/lib/util';
@@ -12,7 +11,7 @@ import { Button } from 'app/design/controls';
 import { isObjectsEqual } from 'app/lib/util'
 
 function getFormType(name) {
-    return componentsMap[name];
+    return  getComponent('form', String(name))
 }
 
 function getFormFieldList(name, inputs, handleSubmit, isInitial = false, lastChangedField, saveOnChanges, formProps) {

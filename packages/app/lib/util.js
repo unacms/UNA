@@ -27,6 +27,7 @@ export function appSetting(section, name, path) {
     return setting(section, name, path, remoteSettings.data);
 }
 
+
 export function isObjectsEqual(obj, obj2) {
     return flatted_stringify(obj) == flatted_stringify(obj2)
 }
@@ -1229,4 +1230,17 @@ export function getYouTubeVideoId(url) {
 
 export function removeEmptyTags(html) {
     return html.replace(/<p>(?:\s|&nbsp;)*<\/p>/gi, '');
+}
+
+export function isShowCover(cover, currentUser) {
+    if (cover === null)
+        cover = 1;
+    if (cover === 1) // for all
+        return true;
+    if (cover === 2 && !currentUser) // for visitors
+        return true;
+    if (cover === 3 && currentUser) // for logged
+        return true;
+
+    return false;
 }

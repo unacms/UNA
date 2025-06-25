@@ -1,12 +1,7 @@
-import { View, ScrollView, Row } from 'app/design/view'
-import { appSetting } from 'app/lib/util'
-import Card from 'app/ui/molecules/card'
-import { Platform } from 'react-native'
-import { Text } from 'app/design/typography';
-import { memo } from 'react'
-import {skeletonsMap} from 'app/components/skeletons/_map'
-const items = Array(5).fill('');
+import { View } from 'app/design/view'
+import { getComponent } from 'app/components/registry';
 
+const items = Array(5).fill('');
 
 export function getSkeletonForList(name, num = 5) {
     if (Array.isArray(name)){
@@ -16,7 +11,7 @@ export function getSkeletonForList(name, num = 5) {
             name = name.join('_');
     }
 
-    const Item = skeletonsMap[name] || skeletonsMap['default'];
+    const Item =  getComponent('skeleton', name) || getComponent('skeleton', 'default');
 
     return (
         <View>

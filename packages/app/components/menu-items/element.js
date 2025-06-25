@@ -1,12 +1,12 @@
 import { View } from 'app/design/view'
-import { componentsMap } from 'app/ui/molecules/_map';
+import { getComponent } from 'app/components/registry';
 import { useMemo } from "react";
 
 export default function MenuItemElement(oProps) {
     if (!oProps?.data?.type) return;
 
     const bShowVertical = oProps?.params?.showVertical === true;
-    const Element = useMemo(() => componentsMap[oProps.data.type], [oProps.data.type]);
+    const Element = useMemo(() => getComponent('molecule', String(oProps.data.type)), [oProps.data.type]);
     if (!Element) return;
 
     oProps.data.params = {

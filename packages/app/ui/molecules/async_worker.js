@@ -1,7 +1,7 @@
 
 import {componentsMap} from 'app/ui/workers/_map';
 import { appSetting } from 'app/lib/util'
-import { useEffect, useState, useMemo } from 'react'
+import { useMemo } from 'react'
 
 export default function ElementAsyncWorker(props) {
     const asyncWorkers = useMemo(() => appSetting('async_workers', 'list'), []);

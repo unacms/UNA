@@ -3,7 +3,7 @@ import { Pressable, View, Row } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
 import { Text } from 'app/design/typography'
 import { useState, useContext, useRef, useEffect } from 'react';
-import { componentsMap } from 'app/components/units/_map_internal';
+ import { getComponent } from 'app/components/registry';;
 import { Button, Modal } from 'app/design/controls'
 //import useSWR from "swr";
 import useFetchForm from 'app/lib/hooks/fetch'
@@ -127,7 +127,7 @@ export function CommentsParts(commentsData, aItems, height = 0, initFormData, is
 }
 
 export function CommentsBrowse({ scrollProps, browse, requestUrl, module, handleReply, handleEdit, addData, addItems, isShort = false, maxCount, height = 0, showCommentsModal, classesBrowse = '', commentsTitle = "Comments", contentUrl, replyId, hideActions = false, selectedId = 0, scrollToIndex = false }) {
-    const UnitComments = componentsMap['comments'];
+    const UnitComments =  getComponent('unit', 'comments');
 
     const { t } = useTranslation();
     const flashListRef = useRef(null);

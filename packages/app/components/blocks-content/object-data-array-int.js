@@ -1,10 +1,8 @@
-import React, { useState, Suspense } from 'react';
-//import use-SWR from "swr";
+import { useState, Suspense } from 'react';
 import useFetchForm from 'app/lib/hooks/fetch'
 import { Text } from 'app/design/typography'
 import { Loading } from 'app/loading'
-import Form from 'app/components/elements/form';
-import { componentsMap } from 'app/components/elements/_map_int';
+import { getComponent } from 'app/components/registry';
 
 export function BlockByData(props) {
     return <BlockContentObjectDataArrayInt data={props.block.content} type={props.block.type} {...props} />
@@ -102,7 +100,7 @@ export default function BlockContentObjectDataArrayInt(props) {
         const type = a?.type;
         if (!type)
             return <></>
-        const Component = componentsMap[type];
+        const Component =  getComponent('element', String(type));
         return (
         <Suspense fallback={<Loading />} key={a.id + a?.type}>
             <Component key={a.id + a?.type} type={a?.type} onSubmittig={postData && !dynamicData} onFormSubmit={onFormSubmit} {...a} exProps={props.exProps}/>

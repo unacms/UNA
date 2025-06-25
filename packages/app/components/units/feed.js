@@ -3,7 +3,6 @@ import { appSetting } from 'app/lib/util'
 import { View } from 'app/design/view'
 import { Modal } from 'app/design/controls'
 import { fetcher } from 'app/lib/fetcher'
-import { componentsMap } from 'app/ui/molecules/_map'
 import Card from 'app/ui/molecules/card'
 import AnimatedBlock from 'app/ui/atoms/animated-block'
 import { useTranslation } from 'react-i18next';

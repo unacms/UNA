@@ -12,7 +12,7 @@ import { Button, Modal } from 'app/design/controls'
 import Menu from 'app/components/menu'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu'
 import { fetcher } from 'app/lib/fetcher'
-import { componentsMap } from 'app/ui/molecules/_map'
+ import { getComponent } from 'app/components/registry';
 import Card from 'app/ui/molecules/card'
 import AnimatedBlock from 'app/ui/atoms/animated-block'
 import { CommentsBrowse, CommentsParts } from 'app/lib/comments-helpers'
@@ -293,7 +293,7 @@ const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen }) => {
         (aItem) => {
             let sTitle = aItem.title;
             if (!!aItem.display_type && aItem.display_type == 'element') {
-                const Element = componentsMap[aItem.data.type];
+                const Element = getComponent('molecule', String(aItem.data.type));
                 if (!!Element) {
                     sTitle = <Element mode="dropdown-menu" key={aItem.id ? aItem.id : aItem.name}   {...aItem.data} />
                 }

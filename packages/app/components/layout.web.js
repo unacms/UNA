@@ -334,7 +334,6 @@ export default function Layout(props) {
 
 const Content = React.memo(({ children, headerSettings, stylesBgImage, currentUser, layoutName, url, width }) => {
     const isHideHeader = (appSetting('layout', 'hide_header_for_non_logged') && !currentUser) || appSetting('layout', 'hide_header_for_all');
-    console.log("headerSettings.offset", headerSettings.offset)
     return (
         <View className="w-full items-stretch cnt-root" key={url}>
             <View className=" w-full mx-auto flex-row " >

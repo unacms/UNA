@@ -8,9 +8,7 @@ import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import Menu from 'app/components/menu'
 import Card from 'app/ui/molecules/card'
-import { Button, Modal } from 'app/design/controls'
 import Redirect from 'app/ui/atoms/redirect'
-import { componentsMap } from 'app/ui/molecules/_map'
 import ProfilesList from 'app/ui/molecules/profile_list'
 import { useTranslation } from 'react-i18next';
 import { callFn } from 'app/lib/functions/call';

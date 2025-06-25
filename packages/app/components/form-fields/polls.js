@@ -19,8 +19,6 @@ export default function FormFieldPolls(props) {
     const { field } = useController({ name, rules, defaultValue });
     const { data: dynamicData, error } = useFetchForm(props.request_submit, dataForm);
 
-    console.log("props.value", props.value)
-
     
     useEffect(() => {
         if (dynamicData?.data?.id) {
@@ -70,7 +68,6 @@ export default function FormFieldPolls(props) {
     }
 
     const frmData = dynamicData?.data[0] || isModal;
-    console.log("frmDatafrmData", frmData)
     return (
         <Field {...props} error2={formContext.formState.errors[name]}>
             <Modal
@@ -91,15 +88,4 @@ export default function FormFieldPolls(props) {
     );
 }
 
-export function PollButton({ field_name, size = 'base', variant = 'secondary', icon = "Vote" }) {
-    return (
-        <Button
-            startDecorator={icon}
-            size={size}
-            variant={variant}
-            rounded
-            onPress={() => emitter.emit(`fld_polls_${field_name}`, { action: 'add' })}
-        />
-    );
-}
 

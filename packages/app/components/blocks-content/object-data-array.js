@@ -66,16 +66,16 @@ export default function BlockContentObjectDataArray(props) {
 
     if (realData && Array.isArray(realData)){
         return (
-            <View className="relative ">
+            <>
                 {realData?.map(a => <Element key={a.id+a.type} type={a.type} {...props} onSubmittig={postData && !dynamicData} saveOnChanges={props.saveOnChanges} onFormSubmit={props.onFormSubmit ? props.onFormSubmit : onFormSubmit} {...a} />)}
-            </View>
+            </>
         );
     }
     if (realData){
         return (
-            <View className="relative ">
+            <>
                 <Element key={realData.id+realData.type} type={realData.type} {...props} onSubmittig={postData && !dynamicData} saveOnChanges={props.saveOnChanges} onFormSubmit={props.onFormSubmit ? props.onFormSubmit : onFormSubmit} {...realData} />
-            </View>
+            </>
         );
     }
 }

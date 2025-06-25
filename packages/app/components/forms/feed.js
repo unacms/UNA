@@ -18,7 +18,8 @@ import { Keyboard } from 'react-native'
 import { useFormContext } from 'react-hook-form'
 import Reanimated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from 'react-native-reanimated';
 import { getEditorHeight } from 'app/lib/form-helpers';
-import { PollButton } from 'app/components/form-fields/polls';
+import { PollButton } from 'app/lib/form-helpers'
+
 import { LabelButton } from 'app/components/form-fields/labels';
 import { FileButton } from 'app/components/form-fields/files';
 
