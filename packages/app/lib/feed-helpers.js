@@ -370,7 +370,7 @@ export const VisibilityInfo = memo(({ data }) => {
 export const Author = memo(({ data, url, t }) => {
 
     const ActionsElements = data.author_actions.map((item, index) => {
-        const Element = componentsMap[item.type];
+        const Element = getComponent('molecule', String(item.type));
         if (!Element) return null; // Explicitly return null for no component
         return (
             <Element
