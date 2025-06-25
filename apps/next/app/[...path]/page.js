@@ -100,13 +100,12 @@ export async function generateMetadata(props) {
 
     return {
         description: description,
-        manifest: '/manifest.json',
+        manifest: isClientProject ? '/static/manifest.json' : '/manifest.json',
         icons: {
-            icon: '/favicon.ico',
+            icon: isClientProject ? '/static/favicon.ico' : '/favicon.ico',
         },
         other: {
             'mobile-web-app-capable': 'yes',
-            // 'og:title': data?.data?.title
         },
         openGraph: {
             title: name,
