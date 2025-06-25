@@ -1233,7 +1233,7 @@ export function removeEmptyTags(html) {
 }
 
 export function isShowCover(cover, currentUser) {
-    if (cover === null)
+    if (cover === null || cover === undefined)
         cover = 1;
     if (cover === 1) // for all
         return true;
