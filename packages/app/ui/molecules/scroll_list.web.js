@@ -138,7 +138,7 @@ export default function ScrollList({
 
     const enhanced = React.cloneElement(content, baseProps);
     const settings = getPageSettings(pageData?.config, pageData?.uri);
-    if (!subHeaderComponent && !isSimplePage && !currentUser && settings.headerSettings.header) {
+    if (!subHeaderComponent && !isSimplePage && !currentUser && (!settings?.headerSettings || settings?.headerSettings?.header)) {
         let textName = pageData?.name;
         if (isMenuNameAsTitle) {
             const menuSettings = getMenuSettings(pageData?.menu?.object, pageData?.menu?.config);
