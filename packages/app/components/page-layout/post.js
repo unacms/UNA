@@ -100,17 +100,17 @@ export default function PageLayout(props) {
                         scrollToIndex={scrollToEnd}
                         addItems={aItems}
                         handleReply={data => setFormData({ ts: Date.now(), text: stripTags(data.cmt_text), parent_id: data.cmt_id, author: data.author_data, cmt_id: data.cmt_id, cmt_object_id: data.cmt_object_id })}
-                        browse={commentsData.content[0].browse}
+                        browse={commentsData?.content[0]?.browse}
                         addData={addData}
                         module={commentsData?.content[0].browse?.data?.module || commentsData?.module}
-                        requestUrl={commentsData.content[0].url}
+                        requestUrl={commentsData?.content[0]?.url}
                         replyId={replyId}
                     />
                 </View>
             </View>
             <KbAvoidingView>
                 <View onLayout={handleLayout} className='border-t border-x border-bdrcard bg-bgrcard dark:bg-bgrcard-d dark:border-bdrcard-d backdrop-blur-[16px] px-[8px] sm:px-[12px] web:fixed web:bottom-0 w-full max-w-5xl'>
-                    <CommentsForm handleForm={setAddData} browse={commentsData.content[0].browse} module={commentsData?.content[0].browse?.data?.module || commentsData?.module} form={commentsData.content[0].form} formData={formData} requestUrl={commentsData.content[0].url} />
+                    <CommentsForm handleForm={setAddData} browse={commentsData?.content[0]?.browse} module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module} form={commentsData?.content[0]?.form} formData={formData} requestUrl={commentsData?.content[0]?.url} />
                 </View>
             </KbAvoidingView>
         </View>

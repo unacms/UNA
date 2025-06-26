@@ -72,11 +72,11 @@ export function getButtonForConductorSmall(a, index, onPress) {
         a?.addon?.variant != 'primary'
     )
         addon = null
-
-    return getButtonForConductorHor(null, a.title, a.index == index, addon, onPress);
+    
+    return getButtonForConductorHor(null, a.title, a.index == index, addon, onPress, a);
 }
 
-export function getButtonForConductorHor(icon, title, pressed, addon, onPress) {
+export function getButtonForConductorHor(icon, title, pressed, addon, onPress, item) {
     return (
         <Button
             startDecorator={icon}
@@ -84,6 +84,7 @@ export function getButtonForConductorHor(icon, title, pressed, addon, onPress) {
             variant={pressed ? 'primary' : 'secondary' }
             pressed={pressed}
             rounded
+            disabled={item?.item?.disabled}
             ring='p-[4px]'
             size="sm"
             addon={addon}

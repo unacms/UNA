@@ -105,6 +105,7 @@ export function fillTabs(menu, data, blocks, currentUser, useSectionAsMenu, left
             i.inited = true;
             i.link = item.link;
             i.hideInTop = item.hideInTop;
+            i.item = item;
             i.ident = item.ident;
             i.addon = item.addon;
             if (i.link == 'friend-requests') {
@@ -139,6 +140,7 @@ export function fillTabs(menu, data, blocks, currentUser, useSectionAsMenu, left
             i.sidebar = contentAndEndpoint.sidebar;
             i.link = item.link;
             i.hideInTop = item.hideInTop;
+            i.item = item;
             i.ident = item.ident;
             i.addon = item.addon;
             if (i.link == 'friend-requests') {
