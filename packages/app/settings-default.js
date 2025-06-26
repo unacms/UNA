@@ -790,6 +790,8 @@ export  const settingsDefault = {
             topmenu_button_pressed: true,
             left_menu_cnt: '  ',
             action_menu_in_tabs: true,
+            cover_cnt: 'w-full xl:px-4 xl:pt-4',
+            cover_cnt2: "w-full md:rounded-[16px]  xl:border xl:border-bdrcard dark:border-bdrcard-d  "
         },
         checkbox: {
             container:

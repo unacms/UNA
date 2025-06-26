@@ -92,7 +92,12 @@ export function CoverSmall({ data, context, showMoreMenu, uri }) {
 
     const bPerson = data.profile.module == 'bx_persons' || appSetting('cover', 'show_pic_by_module', data?.profile?.module) ? true : false
     const isSplitMenu = appSetting('cover', 'split_action_menu') && data.actions_menu.persistent == 0
-
+    const coverMode = appSetting('cover', 'view_by_module', data?.profile?.module) || mode
+    
+    if (coverMode === 'none'){
+        return null
+    }
+    
     return (
         <View className={`px-[12px] sm:px-[16px] py-[10px]  ${conductorTheme.content_max_width} mx-auto w-full flex-row gap-2`} >
             <Row className=" gap-x-2 items-center justify-between flex-auto">
@@ -359,6 +364,10 @@ export default function ({ data, mode, uri, showMoreMenu }) {
     const isSplitMenu = appSetting('cover', 'split_action_menu') && data.actions_menu.persistent == 0
     const isMin = coverMode === 'min';
     const { width: windowWidth } = useWindowDimensions();
+
+    if (coverMode === 'none'){
+        return null
+    }
 
     return (
 

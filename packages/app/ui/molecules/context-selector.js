@@ -87,7 +87,7 @@ export default function ContextSelector({ data, url }) {
                     <Text className="text-lg whitespace-nowrap font-semibold tracking-tight text-neutral-800 dark:text-neutral-200 my-auto truncate text-center items-center align-middle justify-center">{contextRoot.name}</Text>
                 </View>
             </Link>
-                <DropdownPopup
+                {(data?.list?.length > 1 || data?.links?.length >0) && <DropdownPopup
                     trigger={
                         <Button
                             variant="text"
@@ -123,9 +123,7 @@ export default function ContextSelector({ data, url }) {
                             </Link>
                         )}
                     </View>
-                </DropdownPopup>
-            
-            
+                </DropdownPopup>}
         </View>
     );
 }

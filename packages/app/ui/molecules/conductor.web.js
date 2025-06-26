@@ -231,26 +231,29 @@ const LeftSideBarContainer = ({ menu, routes, currentUser, index, setIndex, left
     )
 }
 
-const HeaderContainer = ({ tabBarObj, pageData, headerSettings, windowWidth }) => {
-    const scrollValue = useSharedValue(1);
+const HeaderContainer = ({ tabBarObj, pageData, headerSettings, windowWidth, isCoverDisabled }) => {
+    const scrollValue = useSharedValue(isCoverDisabled ? 0 : 1);
     const hideDefaultHeaderFrom = useSharedValue(200);
-
     const cover1Ref = useRef(null);
+
+    
 
 
     const uri = pageData?.uri;
     const isCover = pageData.cover_block ? true : false
 
+    
+
     const handleScroll = useCallback(() => {
         requestAnimationFrame(() => {
             const currentScrollY = window.scrollY;
-
-            if (currentScrollY > hideDefaultHeaderFrom.value) {
-                scrollValue.value = 0;
-            } else if (currentScrollY <= hideDefaultHeaderFrom.value) {
-                scrollValue.value = 1;
+            if (!isCoverDisabled){
+                if (currentScrollY > hideDefaultHeaderFrom.value) {
+                    scrollValue.value = 0;
+                } else if (currentScrollY <= hideDefaultHeaderFrom.value) {
+                    scrollValue.value = 1;
+                }
             }
-
         });
     }, [scrollValue]);
 
@@ -283,8 +286,8 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, windowWidth }) =
 
     return (
         <>
-            <Animated.View className="w-full xl:px-4 xl:pt-4 " style={[{ zIndex: '50' }, animatedStyleHeader2]}>
-                <ViewRef ref={cover1Ref} className="w-full md:rounded-[16px]  xl:border xl:border-bdrcard dark:border-bdrcard-d  "   >
+            <Animated.View className={`${conductorTheme.cover_cnt} cover-1 `} style={[{ zIndex: '50' }, animatedStyleHeader2]}>
+                <ViewRef ref={cover1Ref} className={conductorTheme.cover_cnt2}   >
                     {isCover && <View className="w-full ">
                         <Cover data={pageData.cover_block} showMoreMenu={!conductorTheme.action_menu_in_tabs} mode={headerSettings.cover} uri={uri} context={pageData.context} />
                     </View>}
@@ -293,7 +296,7 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, windowWidth }) =
 
                     </View>
                 </ViewRef></Animated.View>
-            <Animated.View className="fixed w-full z-50 hidden" style={[{ position: 'fixed', zIndex: '50', }, animatedStyleHeader3]} >
+            <Animated.View className={`fixed w-full z-50 cover-2 ${isCoverDisabled? ` hidden ${TABLET_MODE_FROM}:flex ` : ' hidden'}`} style={[{ position: 'fixed', zIndex: '50', }, animatedStyleHeader3]} >
                 <View className="w-full  bg-bgrtabbar dark:bg-bgrtabbar-d backdrop-blur-lg ">
                     {isCover && <View className="w-full">
                         <CoverSmall showMoreMenu={!conductorTheme.action_menu_in_tabs} context={pageData.context} data={pageData.cover_block} />
@@ -741,6 +744,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
             headerSettings={headerSettings}
             pageData={data}
             windowWidth={windowWidth}
+            isCoverDisabled={isCoverDisabled}
         />
 
     ), [cntWidth, currentUser, windowWidth, routes, index]);
