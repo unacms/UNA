@@ -275,7 +275,7 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, windowWidth, isC
 
     const animatedStyleHeader3 = useAnimatedStyle(() => {
         return {
-            display: scrollValue.value == 1 ? 'none' : 'flex',
+            display: scrollValue.value == 1 || !isCoverDisabled ? 'none' : 'flex',
         };
 }, [scrollValue]);
 
