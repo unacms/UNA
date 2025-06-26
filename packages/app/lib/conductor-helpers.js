@@ -404,12 +404,12 @@ export function LeftSidebar({ title, addButtons, children, width, menu }) {
     const { t } = useTranslation();
     return (
        
-            <View className={` ${sidebar =='fixed'? 'fixed-process' : ''}  px-[12px] py-[8px] gap-y-[2px]`}>
-                {(!!title || !!addButtons?.length > 0) && <Row className="justify-between items-center pl-[8px] py-[8px] z-10 ">
-                    <Text className=" text-3xl tracking-tight truncate mr-auto font-semibold leading-[48px] text-neutral-900 dark:text-neutral-100 hidden lg:flex  ">
+            <View className={` ${sidebar =='fixed'? 'fixed-process' : ''}  p-[12px] gap-y-[2px]`}>
+                {(!!title || !!addButtons?.length > 0) && <Row className="justify-between items-center h-[48px] pl-[8px] mb-[10px] z-10 ">
+                    <Text className=" text-3xl tracking-tight truncate mr-auto font-semibold leading-[44px] text-neutral-900 dark:text-neutral-100 hidden lg:flex  ">
                         {t(title)}
                     </Text>
-                    <Row className=" gap-x-[2px] ">
+                    <Row className="  ">
                         {addButtons}
                     </Row>
                 </Row>}
@@ -427,7 +427,7 @@ export function TopSidebar({ styles, leftSideBar, addButtons, children, title, l
         <View style={styles} className={ ` ${!omitDefaultBackground ? conductorTheme.menu : ''} ${leftSideBar ? 'lg:hidden' : ''}`}>
             <View className={`${leftSideBar ? '' : 'mx-auto'} w-full ${conductorTheme.menu_max_width}`}>
                 {/* TODO: Review this section for potential improvements */}
-                <Row className=" px-[12px] sm:px-[16px] py-[10px] items-center justify-between">
+                <Row className=" px-[8px] sm:px-[12px] py-[10px] items-center justify-between">
                     <Text className="text-2xl my-auto sm:mx-5 pb-1 font-medium text-neutral-800 tracking-tight dark:text-neutral-200 hidden ">{title}</Text>
                     {!currentUser && title ? <View className='pr-[16px] sm:pr-[24px]'><TextHeader text={title} /></View> : null}
                     {children}

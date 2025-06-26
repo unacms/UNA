@@ -80,8 +80,8 @@ export default function Unit(props) {
         <>
             <Redirect ref={redirectdRef} />
             <Card
-                margin="sm:m-[6px] sm:m-[8px]"
-                border="border-b sm:border border-bdrcard dark:border-bdrcard-d  "
+                margin=" sm:mx-[8px] sm:my-[6px] "
+                border="border-b sm:border border-bdrcard dark:border-bdrcard-d"
                 rounded=" sm:rounded-2xl "
             >
                 <Link className="group " href={data.url}>

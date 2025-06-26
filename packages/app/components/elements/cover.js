@@ -394,9 +394,9 @@ export default function ({ data, mode, uri, showMoreMenu }) {
                             </Text>
                         )}
                     </View>
-                    <View className="flex-row flex-wrap items-end justify-between lg:ml-auto flex-auto gap-x-[8px] gap-y-[8px] p-[4px]">
+                    <View className="flex-row flex-wrap items-end justify-between  flex-auto gap-x-[8px] gap-y-[8px] p-[4px]">
                         {isSplitMenu ? (
-                            <View className="flex-row flex-wrap gap-x-[12px] sm:gap-x-[16px] gap-y-[8px] sm:gap-y-[12px] ">
+                            <View className="flex-row sm:items-end  flex-wrap gap-x-[12px] lg:ml-auto sm:gap-x-[16px] gap-y-[8px] sm:gap-y-[12px] ">
                                 {bPerson && (
                                     <View className={`${isMin ? 'h-[96px]' : 'h-[44px]'} lg:hidden flex-auto justify-end `}>
                                         <View className=" flex-row flex-auto z-50 rounded-full p-[4px] flex-none bg-white mr-auto dark:bg-neutral-900 translate-y-[4px] -translate-x-[4px] ">

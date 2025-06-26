@@ -43,7 +43,7 @@ const HeaderLine = memo(
             ).length > 0
 
         return (
-            <View className=" flex-row xl:w-[360px] gap-x-[8px] px-[8px] items-center ">
+            <View className=" flex-row xl:w-[360px] gap-x-[8px] px-[12px] items-center ">
                 {headerSettings.menu && isDrawer && (
                     <View className="lg:hidden pr-[8px] ">
                         <Pressable onPress={showMenu}>
@@ -64,14 +64,14 @@ const HeaderLine = memo(
                         appSetting('layout', 'lock_unconfirmed'))) &&
                     (uri == 'home' || width >= LAYOUT_BREAKPOINTS.lg) && (
                         <Link
-                            className=" flex items-center px-[8px] py-[6px] hover:bg-bgritem dark:hover:bg-bgritem-d rounded-2xl flex-row active:scale-95 active:opacity-50 text-neutral-800 dark:text-neutral-200 hover:scale-105 hover:text-neutral-950 dark:hover:text-neutral-50   web:duration-300 gap-x-[12px] "
+                            className=" flex items-center px-[6px] py-[4px] hover:bg-bgritem dark:hover:bg-bgritem-d rounded-[12px] flex-row active:scale-95 active:opacity-50 text-neutral-800 dark:text-neutral-200 hover:scale-105 hover:text-neutral-950 dark:hover:text-neutral-50   web:duration-300 gap-x-[12px] "
                             href="/home"
                             aria-label="Logo"
                         >
-                            <View className=" items-center h-[44px] justify-center text-neutral-900 dark:text-neutral-100">
+                            <View className=" items-center h-[40px] justify-center text-neutral-900 dark:text-neutral-100">
                                 {appStatic('logo_mark')}
                             </View>
-                            <View className=" flex-row  items-center h-[44px] my-auto align-middle justify-center text-neutral-700 dark:text-neutral-300">
+                            <View className=" flex-row  items-center h-[40px] my-auto align-middle justify-center text-neutral-700 dark:text-neutral-300">
                                 {appStatic('logo_text')}
                             </View>
                         </Link>
@@ -152,8 +152,8 @@ export default function (props) {
                             : '') +
                         ' fixed w-full h-[64px] items-center transition-all web:duration-300 ease-in-out will-change-transform ' +
                         (isScrolled
-                            ? 'bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur-xl shadow-sm '
-                            : 'bg-transparent dark:bg-transparent shadow-none')
+                            ? 'bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur-xl shadow-[0_0_0_1px_rgba(0,0,0,0.05),0_0_4px_1px_rgba(0,0,0,0.05)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.05),0_0_4px_1px_rgba(0,0,0,0.3)] '
+                            : 'bg-transparent dark:bg-transparent shadow-[0_0_0_1px_rgba(0,0,0,0.05)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.08)]')
                     }
                 >
                     <View

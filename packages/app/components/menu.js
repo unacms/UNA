@@ -10,7 +10,7 @@ import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal';
 
 const ButtonEx = memo(({ visibleItemsCount, params }) => {
     return (
-        <View key="btn" className="ml-2">
+        <View key="btn" className="">
             <Button size={params.button_size} variant="default" startDecorator="Ellipsis" />
         </View>
     );
@@ -28,7 +28,7 @@ const MenuItemEx = memo(({ item, index, sDisplayType, params }) => {
 const MenuItem = memo(({ item, itemRefs, index, visibleItemsCount, params, bShowVertical, sAlignItems, isUseStaticWidth, isWeb, sDisplayType }) => {
     const ItemType = getComponent('menu-item', String(item.display_type ? item.display_type : sDisplayType));
     return (
-        <ViewRef className={(!isWeb ? ' ml-2' : ' ') + (bShowVertical ? 'w-full  ' : ' ') + (sAlignItems == 'stretch' ? 'flex-auto' : '') }>
+        <ViewRef className={(!isWeb ? ' ml-2 ' : ' ') + (bShowVertical ? 'w-full  ' : ' ') + (sAlignItems == 'stretch' ? 'flex-auto' : '') }>
             <ItemType key={item.id ? item.id : item.name} {...item} params={params} />
         </ViewRef>
     )

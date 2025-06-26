@@ -52,8 +52,8 @@ const LogoMark = () => {
     const theme = ThemeName();
     return <Svg
         aria-label="Logo Mark"
-        width={44}
-        height={44}
+        width={40}
+        height={40}
         color={ theme === 'dark' ? 'white' : 'black'}
         viewBox="0 0 40 40"
         xmlns="http://www.w3.org/2000/svg"

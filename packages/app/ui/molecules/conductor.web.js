@@ -102,9 +102,9 @@ const AddMenu = (menu, filter) => {
 
         let btn = undefined;
         if (button.section)
-            btn = <Search section={button.section} params={{ trigger: { size: 'base' } }} />
+            btn = <Search section={button.section} params={{ trigger: { size: "sm", ring: "p-[4px]" } }} />
         else {
-            btn = <Button title={t(button.title)} startDecorator={button.icon} ring="p-1" variant="secondary" rounded size="base" onPress={() => (handleFormModal(button, event, setPageData))} />;
+            btn = <Button title={t(button.title)} startDecorator={button.icon} ring="p-[4px]" variant="secondary" rounded size="sm" onPress={() => (handleFormModal(button, event, setPageData))} />;
             btn = (button.link && button.name != "Add") ? <Link href={button.link} >{btn}</Link> : btn
         }
 
@@ -284,7 +284,7 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, windowWidth }) =
     return (
         <>
             <Animated.View className="w-full xl:px-4 xl:pt-4 " style={[{ zIndex: '50' }, animatedStyleHeader2]}>
-                <ViewRef ref={cover1Ref} className="w-full bg-gradient-to-b overflow-hidden  xl:rounded-[16px] xl:border xl:border-bdrcard dark:border-bdrcard-d  from-transparent to-bgrtabbar dark:to-bgrtabbar-d backdrop-blur-xl  "   >
+                <ViewRef ref={cover1Ref} className="w-full md:rounded-[16px]  xl:border xl:border-bdrcard dark:border-bdrcard-d  "   >
                     {isCover && <View className="w-full ">
                         <Cover data={pageData.cover_block} showMoreMenu={!conductorTheme.action_menu_in_tabs} mode={headerSettings.cover} uri={uri} context={pageData.context} />
                     </View>}
@@ -676,7 +676,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
 
         return (
             <Row className={(headerSettings.columns == "reverse" ? 'flex-row-reverse' : '') + conductorTheme.content_max_width + ' mx-auto w-full ' + (isCoverDisabled ? ' sm:px-[16px] sm:my-3 ' : '')}>
-                <View className={(isRightCol ? 'flex-auto sm:px-4 flex-auto ' : ' w-full mx-auto') /*sm:p-2*/ + (layoutName == 'navigator' ? '' : ' pt-[8px] sm:p-4 ') + (header ? ' sm:p-[8px] ' : '')}>
+                <View className={(isRightCol ? 'flex-auto sm:px-4 flex-auto ' : ' w-full mx-auto') /*sm:p-2*/ + (layoutName == 'navigator' ? '' : ' pt-[8px] sm:p-4 ') + (header ? ' sm:p-[12px] ' : '')}>
                     {TabFlashListM}
                     {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 && callFn("noContentByUrl", [route?.endpoint])))}
                 </View>

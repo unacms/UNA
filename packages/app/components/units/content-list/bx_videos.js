@@ -22,7 +22,7 @@ export default function defaultUnit(props) {
     <>
       <Card
         addClassName="  "
-        margin=" m-[8px] "
+        margin="mx-[8px] my-[6px]"
         rounded="rounded-2xl"
       >
         <View className="flex-col h-full">

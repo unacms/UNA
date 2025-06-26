@@ -20,8 +20,8 @@ const colors = {
     primary: {
         DEFAULT: 'rgba(37, 99, 235, 1)',
         h: 'rgba(29, 78, 216, 1)',
-        d: 'rgba(37, 99, 235, 1)',
-        dh: 'rgba(59, 130, 246, 1)',
+        d: 'rgba(59, 130, 246, 1)',
+        dh: 'rgba(37, 99, 235, 1)',
         50: 'rgba(239, 246, 255, 1)',
         100: 'rgba(219, 234, 254, 1)',
         200: 'rgba(191, 219, 254, 1)',
@@ -105,8 +105,8 @@ const colors = {
         df: 'rgba(59, 130, 246, 1)'
     },
     bgrmodal: {
-        DEFAULT: 'rgba(255,255,255,0.7)',
-        d: 'rgba(31,41,55,0.7)',
+        DEFAULT: 'rgba(255,255,255,0.9)',
+        d: 'rgba(31,41,55,0.9)',
     },
     bdrmodal: {
         DEFAULT: 'rgba(0,0,0,0.1)',

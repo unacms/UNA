@@ -726,7 +726,7 @@ export  const settingsDefault = {
             badgeTextSize: 'text-[12px] leading-[16px] font-semibold', // Customizable text size for badge
         },
         light: {
-            primary: 'rgba(59, 130, 246, 1)',
+            primary: 'rgba(37, 99, 235, 1)',
             headerBackground: 'rgba(255,255,255,1)',
             barsBackground: 'rgba(255,255,255,1)', //header and tabbar background in native light mode
             bottomSheetBackground: 'rgba(255,255,255,1)',

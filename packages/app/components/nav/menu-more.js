@@ -45,7 +45,7 @@ export default function ({ data, oMenuItemsMore, popupVisible, setPopupVisible, 
 
     return (
         <DropdownMenu items={aMenuManageItems} defaultOpen={false} onSelect={handleMenuManageSelect}>
-            <View className='ml-2'>
+            <View className=''>
                 <Button
                     {...buttonProps}
                     startDecorator="Ellipsis"
