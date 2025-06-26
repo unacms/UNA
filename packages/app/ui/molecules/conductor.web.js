@@ -236,13 +236,8 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, windowWidth, isC
     const hideDefaultHeaderFrom = useSharedValue(200);
     const cover1Ref = useRef(null);
 
-    
-
-
     const uri = pageData?.uri;
     const isCover = pageData.cover_block ? true : false
-
-    
 
     const handleScroll = useCallback(() => {
         requestAnimationFrame(() => {
@@ -274,7 +269,7 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, windowWidth, isC
 
     const animatedStyleHeader2 = useAnimatedStyle(() => {
         return {
-            marginBottom: scrollValue.value == 1 ? '0px' : '130px',
+            marginBottom: scrollValue.value == 1 || isCoverDisabled ? '0px' : '130px',
         };
     }, [scrollValue]);
 
