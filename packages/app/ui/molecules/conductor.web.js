@@ -279,6 +279,8 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, windowWidth, isC
         };
 }, [scrollValue]);
 
+console.log("isCoverDisabled", isCoverDisabled, scrollValue.value);
+
     return (
         <>
             <Animated.View className={`${conductorTheme.cover_cnt} cover-1 `} style={[{ zIndex: '50' }, animatedStyleHeader2]}>
@@ -291,7 +293,7 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, windowWidth, isC
 
                     </View>
                 </ViewRef></Animated.View>
-            <Animated.View className={`fixed w-full z-50 cover-2 ${isCoverDisabled? ` hidden ${TABLET_MODE_FROM}:flex ` : ' hidden'}`} style={[{ position: isCoverDisabled?'':'fixed', zIndex: '50', }, animatedStyleHeader3]} >
+            <Animated.View className={`fixed w-full z-50 cover-2 cover-22 ${isCoverDisabled? ` hidden ${TABLET_MODE_FROM}:flex ` : ' hidden'}`} style={[{ position: isCoverDisabled?'':'fixed', zIndex: '50', }, animatedStyleHeader3]} >
                 <View className="w-full  bg-bgrtabbar dark:bg-bgrtabbar-d backdrop-blur-lg ">
                     {isCover && <View className="w-full">
                         <CoverSmall showMoreMenu={!conductorTheme.action_menu_in_tabs} context={pageData.context} data={pageData.cover_block} />
