@@ -93,11 +93,11 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
     const bPerson = data.profile.module == 'bx_persons' || appSetting('cover', 'show_pic_by_module', data?.profile?.module) ? true : false
     const isSplitMenu = appSetting('cover', 'split_action_menu') && data.actions_menu.persistent == 0
     const coverMode = appSetting('cover', 'view_by_module', data?.profile?.module) || mode
-    
-    if (coverMode === 'none'){
+
+    if (coverMode === 'none') {
         return null
     }
-    
+
     return (
         <View className={`px-[12px] sm:px-[16px] py-[10px]  ${conductorTheme.content_max_width} mx-auto w-full flex-row gap-2`} >
             <Row className=" gap-x-2 items-center justify-between flex-auto">
@@ -365,7 +365,7 @@ export default function ({ data, mode, uri, showMoreMenu }) {
     const isMin = coverMode === 'min';
     const { width: windowWidth } = useWindowDimensions();
 
-    if (coverMode === 'none'){
+    if (coverMode === 'none') {
         return null
     }
 
@@ -373,7 +373,8 @@ export default function ({ data, mode, uri, showMoreMenu }) {
 
         <View className={`w-full mx-auto ${appSetting('layout', 'max_width')}`}>
             {!isMin && (<CoverImage mode='cover' coverData={data?.cover} profileData={data.profile} allowEdit={bAllowEdit} allowSwitch={isAllowSwitch} />)}
-            <View className={`lg:flex-row gap-y-[12px] gap-x-[12px] mx-auto w-full lg:items-end ${appSetting('layout', 'max_width_content')} px-[12px] py-[10px] sm:p-[16px] sm:py-[12px] border-b border-bdrtabbar dark:border-bdrtabbar-d `} >
+            <View className={` ${appSetting('layout', 'max_width_content')} lg:flex-row gap-y-[12px] gap-x-[12px] mx-auto w-full lg:items-end px-[12px] py-[10px] sm:p-[16px] sm:py-[12px] border-b border-bdrtabbar dark:border-bdrtabbar-d `} >
+
                 {bPerson && (
                     <View className="hidden lg:flex flex-none h-[96px] justify-end w-min ">
                         <View className=" flex-auto z-50 rounded-full p-[4px] flex-none bg-white dark:bg-neutral-900 translate-y-[4px] -translate-x-[4px]">
@@ -413,11 +414,12 @@ export default function ({ data, mode, uri, showMoreMenu }) {
                                         </View>
                                     </View>
                                 )}
-                                <View className=" flex-row flex-wrap gap-x-[8px] gap-y-[8px] sm:gap-y-[12px] items-center">
+                                <View className="ывапв flex-row flex-wrap gap-x-[8px] gap-y-[8px] sm:gap-y-[12px] items-center">
                                     <CoverMenu
                                         {...data.actions_menu}
                                         uri={uri}
                                         isSplitMenu={isSplitMenu}
+                                        containerClasses="gap-x-2"
                                     />
                                 </View>
                                 {showMoreMenu && <View className="w-[44px] items-end ">
@@ -436,6 +438,7 @@ export default function ({ data, mode, uri, showMoreMenu }) {
                             />
                         )}
                     </View>
+
                 </View>
             </View>
         </View>
