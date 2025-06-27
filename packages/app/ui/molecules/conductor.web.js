@@ -124,15 +124,20 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
     const filteredItems = routes.filter((aItem) => aItem.hideInTop != true)
     const menuClasses = conductorTheme.menu_cnt
 
+
+    if (index >= filteredItems.length) {
+        index = 0;
+    }
+
     const MenuItem = memo(({ item: a, itemRefs, index: index2, visibleItemsCount }) => {
         return callFn('getButtonForConductorSmall', [a, index, () => {
-                    setIndex(a.index);
-                    getNumCols(windowWidth, routes[index], leftSideBar)
-                    window.history.pushState({}, '', '/' + a.key);
-                    if (onChangeRoute) {
-                        onChangeRoute(a);
-                    }
-                }])
+            setIndex(a.index);
+            getNumCols(windowWidth, routes[index], leftSideBar)
+            window.history.pushState({}, '', '/' + a.key);
+            if (onChangeRoute) {
+                onChangeRoute(a);
+            }
+        }, routes])
     });
 
     if (!conductorTheme.menu_is_dynamic) {
@@ -181,7 +186,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
     });
 
     const ButtonEx = memo(({ visibleItemsCount }) => {
-        return <Button startDecorator="ChevronDown" variant={visibleItemsCount <= index ? 'secondary' : "secondary"} rounded pressed={visibleItemsCount <= index ? true : false} size="base" />;
+        return <Button startDecorator="ChevronDown" variant='secondary' rounded pressed={visibleItemsCount <= index ? true : false} size="base" />;
     });
 
     return <DynamicMenu
@@ -242,7 +247,7 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, windowWidth, isC
     const handleScroll = useCallback(() => {
         requestAnimationFrame(() => {
             const currentScrollY = window.scrollY;
-            if (!isCoverDisabled){
+            if (!isCoverDisabled) {
                 if (currentScrollY > hideDefaultHeaderFrom.value) {
                     scrollValue.value = 0;
                 } else if (currentScrollY <= hideDefaultHeaderFrom.value) {
@@ -274,12 +279,10 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, windowWidth, isC
     }, [scrollValue]);
 
     const animatedStyleHeader3 = useAnimatedStyle(() => {
-          if (isCoverDisabled)
-            return {}
         return {
             display: scrollValue.value == 1 ? 'none' : 'flex',
         };
-}, [scrollValue]);
+    }, [scrollValue]);
 
     return (
         <>
@@ -293,7 +296,7 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, windowWidth, isC
 
                     </View>
                 </ViewRef></Animated.View>
-            <Animated.View className={`fixed w-full z-50 cover-2 ${isCoverDisabled? ` hidden ${TABLET_MODE_FROM}:flex ` : ' hidden'}`} style={isCoverDisabled? [] : [{ position: 'fixed', zIndex: '50', }, animatedStyleHeader3]} >
+            <Animated.View className={`fixed w-full z-50 cover-2 ${isCoverDisabled ? ` hidden ${TABLET_MODE_FROM}:flex ` : ' hidden'}`} style={[{ position: isCoverDisabled ? '' : 'fixed', zIndex: '50', }, animatedStyleHeader3]} >
                 <View className="w-full  bg-bgrtabbar dark:bg-bgrtabbar-d backdrop-blur-lg ">
                     {isCover && <View className="w-full">
                         <CoverSmall showMoreMenu={!conductorTheme.action_menu_in_tabs} context={pageData.context} data={pageData.cover_block} />
@@ -338,7 +341,7 @@ const TopSideBarContainer = ({ routes, index, setIndex, onChangeRoute }) => {
                 size={conductorTheme.topmenu_button_size}
                 pressed={a.index == index ? conductorTheme.topmenu_button_pressed : false}
 
-                title={(a.title)+'sdfd'}
+                title={(a.title) + 'sdfd'}
                 align={conductorTheme.topmenu_button_align}
                 fullWidth={conductorTheme.topmenu_button_fullWidth}
                 addon={!appSetting('conductor', 'show_nav_counters') && a.addon ? null : a.addon}
