@@ -88,7 +88,7 @@ function getCoverBackButton(is_person) {
     }
 }
 
-export function CoverSmall({ data, context, showMoreMenu, uri }) {
+export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
 
     const bPerson = data.profile.module == 'bx_persons' || appSetting('cover', 'show_pic_by_module', data?.profile?.module) ? true : false
     const isSplitMenu = appSetting('cover', 'split_action_menu') && data.actions_menu.persistent == 0
