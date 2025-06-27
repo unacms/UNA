@@ -772,6 +772,9 @@ export  const settingsDefault = {
             iconeditortoolbar: 'rgba(75, 85, 99, 1)',
             bgrtoolbarbutton: 'rgba(33, 37, 41, 0)',
         },
+        dropdown: {
+            cnt: ' rounded-2xl overflow-hidden p-2 bg-bgrmodal dark:bg-bgrmodal-d shadow-[0_10px_10px_rgba(0,0,0,0.15)] ',
+        },
         conductor: {
             menu: '   w-full items-left justify-center  ',
             menu_max_width: ' w-full ',

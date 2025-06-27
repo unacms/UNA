@@ -2,7 +2,6 @@ import { useState, useRef, useEffect, useMemo } from 'react';
 import {
     Modal as ModalBase,
     TouchableOpacity,
-    TouchableWithoutFeedback,
     useWindowDimensions,
     Platform
 } from 'react-native';
@@ -17,8 +16,11 @@ import Animated, {
     interpolate,
     runOnJS,
 } from 'react-native-reanimated';
+import { appSetting } from 'app/lib/util';
+
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+const dropdownTheme = appSetting('theme', 'dropdown');
 
 export default function DropdownPopup({
     children,
@@ -28,7 +30,7 @@ export default function DropdownPopup({
     minPopupWidth = 200,
     defaultOpen = false,
     showOnTop = false,
-    contentClasses = ' rounded-2xl overflow-hidden p-2 bg-bgrmodal dark:bg-bgrmodal-d shadow-[0_10px_10px_rgba(0,0,0,0.15)]  '
+    contentClasses = dropdownTheme?.cnt 
 }) {
     const buttonRef = useRef(null);
     const contentRef = useRef(null);

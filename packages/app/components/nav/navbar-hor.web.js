@@ -17,8 +17,8 @@ import MenuAccount from 'app/components/nav/menu-account'
 import MenuLauncher from 'app/components/nav/menu-launcher'
 import MenuDrawer from 'app/components/nav/menu-drawer'
 import MenuTop from 'app/components/nav/menu-top'
-import ContextSelector from 'app/ui/molecules/context-selector'
 import HeaderElement from 'app/ui/molecules/header_element'
+import { getComponent } from 'app/components/registry';
 
 const HeaderLine = memo(
     ({
@@ -34,6 +34,8 @@ const HeaderLine = memo(
     }) => {
         const { width } = useWindowDimensions()
         if (width > LAYOUT_BREAKPOINTS.xl && menuPopup) setMenuPopup(false)
+
+        const ContextSelector = getComponent('molecule', 'context_selector')
 
         const isDrawer =
             menuItemsByName(

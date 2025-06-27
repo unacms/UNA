@@ -11,13 +11,13 @@ import { menuItemsByName, appSetting, getMenuSettings } from 'app/lib/util'
 import Search from 'app/ui/molecules/search';
 import Link from 'app/ui/atoms/link'
 import { useRouter } from 'app/lib/hooks/router'
-import ContextSelector from 'app/ui/molecules/context-selector'
+
 import { useLayoutData } from 'app/context/layout';
 import { useTranslation } from 'react-i18next';
 import HeaderElement from 'app/ui/molecules/header_element'
 import MenuLauncher from 'app/components/nav/menu-launcher'
 import { Button, ButtonRef } from 'app/design/controls'
-
+import { getComponent } from 'app/components/registry';
 
 export const TextHeader = memo(({ text }) => {
     const { t } = useTranslation();
@@ -116,7 +116,8 @@ export const Header = memo(({
         return headerContent;
 
     const isCustomHeaderElement = appSetting('layout', 'custom_header_element')
-
+    const ContextSelector = getComponent('molecule', 'context_selector')
+    
     return (
         <Row className={` px-[12px] sm:px-[16px] items-center h-[64px] justify-between web:duration-300`}>
             {(!currentUser && !pageData?.context && !text && (!settings?.headerSettings || settings?.headerSettings?.header)) && 
