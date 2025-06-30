@@ -1,7 +1,6 @@
 import Field, {getValidationRules} from './_field';
-
 import { useController, useFormContext } from 'react-hook-form';
-import Calendar from 'app/ui/atoms/calendar'
+import DatePicker from 'app/ui/atoms/date-picker'
 
 export default function ({ name, value = '', type, ...props }) {
     const formContext = useFormContext();
@@ -29,7 +28,7 @@ export default function ({ name, value = '', type, ...props }) {
 
     return (
         <Field {...props} error2={formContext.formState.errors[name]}>
-            <Calendar value={field.value} type={type} name={name} onChange={(value) => { setParamValue(value)}}/>
+            <DatePicker value={field.value} type={type} name={name} onChange={(value) => { setParamValue(value)}}/>
         </Field>
     );
 }
