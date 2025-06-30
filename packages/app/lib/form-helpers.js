@@ -51,7 +51,35 @@ export function PollButton({ field_name, size = 'base', variant = 'secondary', i
             size={size}
             variant={variant}
             rounded
+            tooltip="Add Polls"
             onPress={() => emitter.emit(`fld_polls_${field_name}`, { action: 'add' })}
+        />
+    );
+}
+
+export function LabelButton({ field_name, size = 'base', variant = 'secondary', icon = "Hash", title, rounded = true }) {
+    return (
+        <Button
+            startDecorator={icon}
+            size={size}
+            title={title}
+            tooltip="Add Labels"
+            variant={variant}
+            rounded={rounded}
+            onPress={() => emitter.emit(`fld_labels_${field_name}`, { action: 'add' })}
+        />
+    );
+}
+
+export function FileButton({ field_name, size = 'base', variant = 'secondary', icon = "Image", rounded = true, tooltip = "Add Files" }) {
+    return (
+        <Button
+            startDecorator={icon}
+            size={size}
+            variant={variant}
+            rounded ={rounded}
+            tooltip={tooltip}
+            onPress={() => emitter.emit(`fld_files_${field_name}`, { action: 'add' })}
         />
     );
 }

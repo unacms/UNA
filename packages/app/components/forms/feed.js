@@ -18,11 +18,7 @@ import { Keyboard } from 'react-native'
 import { useFormContext } from 'react-hook-form'
 import Reanimated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from 'react-native-reanimated';
 import { getEditorHeight } from 'app/lib/form-helpers';
-import { PollButton } from 'app/lib/form-helpers'
-
-import { LabelButton } from 'app/components/form-fields/labels';
-import { FileButton } from 'app/components/form-fields/files';
-
+import { PollButton, LabelButton, FileButton } from 'app/lib/form-helpers'
 
 function ProfileView({ isImageOnly = false, data, handleSubmit, showImage, setShowImage, author }) {
     const { currentUser } = useCurrentUser();
@@ -341,12 +337,12 @@ export default function FormFeed(props) {
                             )}
                             {props.data.inputs['photo'] && (
                                 <View className="">
-                                    <FileButton field_name='photo' icon="Image" />
+                                    <FileButton field_name='photo' icon="Image" tooltip='Add Photos' />
                                 </View>
                             )}
                             {props.data.inputs['video'] && (
                                 <View className="">
-                                    <FileButton field_name='video' icon="Image" />
+                                    <FileButton field_name='video' icon="Image" tooltip='Add Photos or Videos'  />
                                 </View>
                             )}
                             {(props.data.inputs['video'] && !isWeb) && (
@@ -356,7 +352,7 @@ export default function FormFeed(props) {
                             )}
                             {props.data.inputs['file'] && (
                                 <View>
-                                    <FileButton field_name='file' icon="Paperclip" />
+                                    <FileButton field_name='file' icon="Paperclip"  />
                                 </View>
                             )}
                             {isLabelsPresent && (

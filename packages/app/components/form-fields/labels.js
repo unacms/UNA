@@ -150,17 +150,5 @@ export default function (props) {
     );
 }
 
-export function LabelButton({ field_name, size = 'base', variant = 'secondary', icon = "Hash", title, rounded = true }) {
-    return (
-        <Button
-            startDecorator={icon}
-            size={size}
-            title={title}
 
-            variant={variant}
-            rounded={rounded}
-            onPress={() => emitter.emit(`fld_labels_${field_name}`, { action: 'add' })}
-        />
-    );
-}
 

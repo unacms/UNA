@@ -498,19 +498,6 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
     return button;
 }
 
-export function FileButton({ field_name, size = 'base', variant = 'secondary', icon = "Image", rounded = true }) {
-    return (
-        <Button
-            startDecorator={icon}
-            size={size}
-            variant={variant}
-            rounded ={rounded}
-            onPress={() => emitter.emit(`fld_files_${field_name}`, { action: 'add' })}
-        />
-    );
-}
-
-
 function GhostsList(imagesList, bMultiple, handleDelete, props) {
     if (!imagesList || imagesList.length === 0 || props.name === 'cover' || props.name === 'picture') {
         return null;
