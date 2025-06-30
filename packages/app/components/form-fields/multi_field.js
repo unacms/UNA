@@ -43,9 +43,10 @@ export default function FormFieldMultiField(props) {
 
     return (
         <Field {...props} error2={formContext.formState.errors[name]}>
+            <View className='gap-y-2 sm:gap-y-3 w-full'>
             {values.map((value, index) => {
                 return (
-                    <Row key={`vls${index}`} className="mb-4 gap-x-4">
+                    <Row key={`vls${index}`} >
                         <Input
                             name={props.name}
                             onChangeText={(text) => {
@@ -58,13 +59,14 @@ export default function FormFieldMultiField(props) {
                             value={value.value}
 
                         />
-                        <View className='w-12'>
-                        {index >= minCount &&<Button variant="secondary" onPress={() => Delete(value.id)} size="lg" startDecorator="X" />}
-                        {index == minCount-1 &&<Button variant="secondary" onPress={AddNew} size="lg" startDecorator="Plus" />}
-                        </View>
+                        
+                        {index >= minCount &&<View className='pl-2'><Button variant="secondary" onPress={() => Delete(value.id)} size="lg" startDecorator="X" /></View>}
+                        {index == minCount-1 &&<View className='pl-2'><Button variant="secondary" onPress={AddNew} size="lg" startDecorator="Plus" /></View>}
+                        
                     </Row>
                 )
             })}
+            </View>
            
         </Field>
     );

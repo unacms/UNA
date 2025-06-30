@@ -81,9 +81,15 @@ export default function FormFieldPolls(props) {
                 {!!isModal && <Form {...frmData} onFormSubmit={onFormSubmit} resetOnSubmit={false} />}
             </Modal>
             {pollSource && pollSource.map((item, index) => {
-                return <View className='mt-4'><PollItem results_url='/api.php?r=bx_timeline/get_block_poll_results'  disabled = {true} onDelete={() => { deletePoll(props.request_remove, item) }} key={"att" + index} data={item} showTitle={true} /></View>
+                return <PollItem results_url='/api.php?r=bx_timeline/get_block_poll_results'  disabled = {true} onDelete={() => { deletePoll(props.request_remove, item) }} key={"att" + index} data={item} showTitle={true} />
             })}
-             {!props.hide_button && <PollButton field_name = {name} />}
+             {!props.hide_button && <Button
+                className="mt-4"
+                title="Add Poll"
+                onPress={() => {
+                    emitter.emit(`fld_polls_${name}`, { action: 'add' });
+                }}
+            />}
         </Field>
     );
 }
