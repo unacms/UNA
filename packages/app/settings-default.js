@@ -825,7 +825,7 @@ export  const settingsDefault = {
             bgrtoolbarbutton: 'rgba(33, 37, 41, 0)',
         },
         dropdown: {
-            cnt: ' rounded-2xl overflow-hidden p-2 bg-bgrmodal dark:bg-bgrmodal-d shadow-[0_10px_10px_rgba(0,0,0,0.15)] ',
+            cnt: ' rounded-2xl backdrop-blur overflow-hidden p-2 bg-bgrmodal dark:bg-bgrmodal-d shadow-[0_10px_10px_rgba(0,0,0,0.15)] ',
         },
         conductor: {
             menu: '   w-full items-left justify-center  ',
