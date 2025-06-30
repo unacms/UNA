@@ -33,6 +33,7 @@ export  const settingsDefault = {
         default_layout: 'hor', //hor, ver, mixed// OLD appSetting('layout', 'format')
         max_width: 'w-full ', 
         max_width_block: ' w-full max-w-5xl ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
+        max_width_content: 'w-full max-w-7xl ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
         search: true,
         sidebar_search: true,
         extended_search: true,
@@ -829,7 +830,7 @@ export  const settingsDefault = {
         },
         conductor: {
             menu: '   w-full items-left justify-center  ',
-            menu_max_width: ' w-full ',
+            menu_max_width: ' w-full max-w-7xl ',
             content_max_width: ' w-full max-w-7xl ',
             menu_is_dynamic: true,
             menu_cnt: ' flex-row flex-none w-full ',
@@ -845,8 +846,8 @@ export  const settingsDefault = {
             topmenu_button_pressed: true,
             left_menu_cnt: '  ',
             action_menu_in_tabs: true,
-            cover_cnt: 'w-full xl:px-4 xl:pt-4',
-            cover_cnt2: "w-full md:rounded-[16px]  xl:border xl:border-bdrcard dark:border-bdrcard-d  "
+            cover_cnt: 'w-full border-b border-bdrnavbar dark:border-bdrnavbar-d bg-gradient-to-b from-transparent to-white dark:from-transparent dark:to-neutral-900',
+            cover_cnt2: " w-full overflow-hidden   "
         },
         checkbox: {
             container:

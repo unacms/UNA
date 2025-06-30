@@ -275,7 +275,7 @@ function CoverImage({ mode, profileData, coverData, allowEdit, allowSwitch, titl
 
     if (mode == 'cover') {
         const isCover = !!imageUrl
-        return (<View className={`duration-300 bg-primary-200 dark:bg-primary-950 w-full ${appSetting('layout', 'max_width_content')} mx-auto overflow-hidden ${isCover
+        return (<View className={`duration-300 bg-primary-200 lg:rounded-lg lg:mt-3 dark:bg-primary-950 w-full ${appSetting('layout', 'max_width_content')} mx-auto overflow-hidden ${isCover
             ? ` h-[30vh] sm:${appSetting(
                 'cover',
                 'aspect_ratio'
@@ -373,7 +373,7 @@ export default function ({ data, mode, uri, showMoreMenu }) {
 
         <View className={`w-full mx-auto ${appSetting('layout', 'max_width')}`}>
             {!isMin && (<CoverImage mode='cover' coverData={data?.cover} profileData={data.profile} allowEdit={bAllowEdit} allowSwitch={isAllowSwitch} />)}
-            <View className={` ${appSetting('layout', 'max_width_content')} lg:flex-row gap-y-[12px] gap-x-[12px] mx-auto w-full lg:items-end px-[12px] py-[10px] sm:p-[16px] sm:py-[12px] border-b border-bdrtabbar dark:border-bdrtabbar-d `} >
+            <View className={` ${appSetting('layout', 'max_width_content')} lg:flex-row gap-y-3 gap-x-3 mx-auto w-full lg:items-end px-3 pt-2.5 sm:px-4 sm:pt-4`} >
 
                 {bPerson && (
                     <View className="hidden lg:flex flex-none h-[96px] justify-end w-min ">

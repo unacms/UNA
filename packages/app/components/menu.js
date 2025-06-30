@@ -11,7 +11,13 @@ import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal';
 const ButtonEx = memo(({ visibleItemsCount, params }) => {
     return (
         <View key="btn" className="">
-            <Button size={params.button_size} variant="default" startDecorator="Ellipsis" />
+            <Button
+                size={params.button_size}
+                variant={params.button_variant || 'default'}
+                startDecorator="Ellipsis"
+                ring={params.button_ring}
+                rounded={params.button_rounded}
+            />
         </View>
     );
 });

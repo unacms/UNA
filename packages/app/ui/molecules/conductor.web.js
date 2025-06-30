@@ -297,7 +297,7 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, windowWidth, isC
                     </View>
                 </ViewRef></Animated.View>
             <Animated.View className={`fixed w-full z-50 cover-2 ${isCoverDisabled ? ` hidden ${TABLET_MODE_FROM}:flex ` : ' hidden'}`} style={[{ position: isCoverDisabled ? '' : 'fixed', zIndex: '50', }, animatedStyleHeader3]} >
-                <View className="w-full  bg-bgrtabbar dark:bg-bgrtabbar-d backdrop-blur-lg ">
+                <View className="w-full  bg-bgrtabbar dark:bg-bgrtabbar-d backdrop-blur-lg border-b border-bdrtabbar dark:border-bdrtabbar-d shadow-sm">
                     {isCover && <View className="w-full">
                         <CoverSmall showMoreMenu={!conductorTheme.action_menu_in_tabs} context={pageData.context} data={pageData.cover_block} />
                     </View>}
@@ -319,7 +319,7 @@ const TabBar = ({ menu, routes, leftSideBar, pageData, currentUser, index, setIn
         return (
             <TopSidebar omitDefaultBackground={omitDefaultBackground} leftSideBar={leftSideBar} addButtons={addButtons} layout={getLayout(currentUser)} title={t(menuSettings?.name)} >
                 <ConductorMenu currentUser={currentUser} leftSideBar={leftSideBar} routes={routes} index={index} t={t} setIndex={setIndex} getNumCols={getNumCols} windowWidth={windowWidth} onChangeRoute={onChangeRoute} />
-                {(conductorTheme.action_menu_in_tabs && !!pageData.cover_block?.actions_menu) && <View className="w-[44px] items-end review ">
+                {(conductorTheme.action_menu_in_tabs && !!pageData.cover_block?.actions_menu) && <View className=" items-end review ">
                     <CoverMenuMore
                         {...pageData.cover_block.actions_menu}
                         uri={pageData.uri}

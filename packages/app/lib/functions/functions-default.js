@@ -85,7 +85,7 @@ export function getButtonForConductorHor(icon, title, pressed, addon, onPress, i
             pressed={pressed}
             rounded
             disabled={item?.item?.disabled}
-            ring='p-[4px]'
+            ring
             size="sm"
             addon={addon}
             onPress={onPress}
