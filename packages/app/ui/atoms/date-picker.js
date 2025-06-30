@@ -45,7 +45,7 @@ export function MonthCalendar({ date = new Date(), onSelect, selectedDate }) {
             {weeks.map((week, wIdx) => (
                 <View key={wIdx} className="flex-row ">
                     {week.map((day, dIdx) => {
-                        const isToday = (new Date(displayYear, displayMonth - 1, day)).toDateString() == selectedDate.toDateString();
+                        const isToday = selectedDate? (new Date(displayYear, displayMonth - 1, day)).toDateString() == selectedDate.toDateString() : null;
 
                         return (
                             <View
@@ -57,7 +57,7 @@ export function MonthCalendar({ date = new Date(), onSelect, selectedDate }) {
                                         className={`h-8 w-8 items-center justify-center rounded-full ${isToday ? 'bg-primary' : ''
                                             }`}
                                     >
-                                        <Pressable onPress={() => { onSelect(new Date(displayYear, displayMonth - 1, day, selectedDate.getHours(), selectedDate.getMinutes(), selectedDate.getSeconds())) }}>
+                                        <Pressable onPress={() => { onSelect(new Date(displayYear, displayMonth - 1, day, selectedDate? selectedDate.getHours(): 0, selectedDate? selectedDate.getMinutes(): 0, selectedDate? selectedDate.getSeconds(): 0)) }}>
                                             <Text
                                                 className={`text-base ${isToday ? 'text-white' : 'text-neutral-700 dark:text-neutral-300'
                                                     }`}
@@ -148,9 +148,10 @@ export default function ({ name, value = '', type, onChange }) {
     const initValue = formatDateTime(value);
     const [dValue, setdValue] = useState(value ? initValue : null);
     const [cValue, setcValue] = useState(value ? initValue: new Date());
-    const [tValue, settValue] = useState(value ? [String(initValue.getHours()).padStart(2, '0'),String(initValue.getMinutes()).padStart(2, '0')] : [0, 0]);
+    const [tValue, settValue] = useState(value ? [String(initValue.getHours()).padStart(2, '0'),String(initValue.getMinutes()).padStart(2, '0')] : ['00', '00']);
 
 useEffect(() => {
+    if (dValue)
      onChange((dValue.getTime()) / 1000)
 },[dValue]);
 
@@ -217,6 +218,9 @@ useEffect(() => {
     }
 
     function formatDate(date) {
+        if (date instanceof Date === false) {
+            return '';
+        }
         const dd = String(date.getDate()).padStart(2, '0');
         const mm = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
         const yyyy = date.getFullYear();
@@ -238,7 +242,7 @@ useEffect(() => {
                 </View>
             </Modal>
             <Row className='gap-x-4 p-2 items-center bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d text-neutral-900 rounded-[12px]'>
-                <Button title={`${formatDate(dValue)}`} variant="text" endDecorator="Calendar" onPress={() => { setShowModal(true) }} />
+                <Button title={`${dValue ? formatDate(dValue) : 'Select date'}`} variant="text" endDecorator="Calendar" onPress={() => { setShowModal(true) }} />
                 {bIsTime && (<><View className='w-5'><Input
                     onChangeText={text => handleChangeTime(text, 23, 'h')}
                     onBlur={handleChangeTime2}
@@ -246,7 +250,7 @@ useEffect(() => {
                     placeholder="HH:mm"
                     className='tracking-tight font-medium text-neutral-800 dark:text-neutral-200'
                     maxLength={2}
-                         placeholderTextColor="#6b7280"
+                    placeholderTextColor="#6b7280"
                     value={`${tValue[0]}`}
 
                 /></View>
@@ -257,7 +261,7 @@ useEffect(() => {
                         keyboardType="numeric"
                         placeholder="HH:mm"
                         maxLength={2}
-                             placeholderTextColor="#6b7280"
+                        placeholderTextColor="#6b7280"
                         className='tracking-tight font-medium text-neutral-800 dark:text-neutral-200'
                         value={`${tValue[1]}`}
 

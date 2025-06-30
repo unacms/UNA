@@ -21,6 +21,7 @@ import { useRef } from 'react';
 import ScrollList from 'app/ui/molecules/scroll_list'
 import Splash from 'app/ui/molecules/splash'
 import { callFn } from 'app/lib/functions/call';
+import Map from 'app/components/elements/map';
 
 export default function (props) {
     /*return <>
@@ -37,6 +38,7 @@ export default function (props) {
         <Text className="text-base  text-red-500"  >Abcs</Text>
         <Text className="text-[16px]  text-red-500">Abcs</Text>
     </>*/
+   // return <Map height={400} data={{ caption: "sdfsdfsd", location: { lat: 35.6762, lng: 139.6503 } }} />
     const isWeb = Platform.OS == 'web'  
     if (appSetting('config', 'show_ui')) {
         return <UI />

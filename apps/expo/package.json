@@ -65,6 +65,7 @@
     "react-native-get-random-values": "~1.11.0",
     "react-native-ios-context-menu": "^1.15.3",
     "react-native-localize": "^3.2.0",
+    "react-native-maps": "^1.24.3",
     "react-native-onesignal": "^5.2.2",
     "react-native-pager-view": "6.5.1",
     "react-native-reanimated": "^3.16.6",

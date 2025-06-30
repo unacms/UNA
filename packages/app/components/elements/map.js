@@ -1,67 +1,45 @@
-//import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps'; //EXPO 52 UPDATE
-// 
-import { Text } from 'app/design/typography'
-import { StyleSheet } from 'react-native'
+
 import { View, Row } from 'app/design/view'
-import { useState } from 'react';
+import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
+import { appSetting } from 'app/lib/util'
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import { StyleSheet } from 'react-native'
+import { useState, useRef, useEffect } from 'react';
+import { Button } from 'app/design/controls';
 
-export default function ElementMap({data}) {
+export default function ElementMap({ data, height }) {
+    if (!data.location?.lat)
+        return <></>
 
-    return <>TODO</>
-   /* const tokyoRegion = {
-        latitude: 35.6762,
-        longitude: 139.6503,
+
+    const mapRef = useRef(null);
+
+    const defaultRegion = {
+        latitude: data.location.lat,
+        longitude: data.location.lng,
         latitudeDelta: 0.01,
         longitudeDelta: 0.01,
     };
 
-    const [place, setPlace] = useState(tokyoRegion);
-    //TODO
-    if (!data.location?.lat)
-        return <></>
-
-        const styles = StyleSheet.create({
-            container: {
-              ...StyleSheet.absoluteFillObject,
-              height: 400,
-              width: 400,
-              justifyContent: 'flex-end',
-              alignItems: 'center',
-            },
-            map: {
-              ...StyleSheet.absoluteFillObject,
-            },
-           });
-
-    const tokyoRegion1 = {
-        latitude: 35.6762,
-        longitude: 139.6503,
-    };
+    useEffect(() => {
+        if (mapRef.current) {
+            console.log("mapRef.current", mapRef.current)
+            mapRef.current.animateToRegion(defaultRegion, 100);
+        }
+    }, [mapRef.current, defaultRegion])
 
     return (
-        <View className='w-full h-96 ' >
-
+        <View className='w-full aspect-square' style={{ height: height }}>
             <MapView
-                 provider={PROVIDER_GOOGLE} 
-                style={styles.map}
-                initialRegion={place}
-                region={{
-                    latitude: data.location.lat,
-                    longitude: data.location.lng,
-                    latitudeDelta: 0.015,
-                    longitudeDelta: 0.0121,
-                  }}
-                onRegionChange = {(region) => setPlace(region)}
+                ref={mapRef}
+                provider={PROVIDER_GOOGLE}
+                style={{ flex: 1 }}
+                initialRegion={defaultRegion}
+              
             >
-               <Marker 
-                    title={data.caption}
-                    //description={data.caption}
-                    coordinate={{latitude: data.location.lat, longitude: data.location.lng}} 
-               >
-               </Marker>
+                <Marker coordinate={defaultRegion} />
             </MapView>
-
         </View>
-    );*/
+    );
 }
