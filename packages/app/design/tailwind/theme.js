@@ -67,7 +67,7 @@ const colors = {
     },
 
     bgrbody: {
-        DEFAULT: 'rgba(235,240,245,1)',
+        DEFAULT: 'rgba(249,250,251,1)',
         d: 'rgba(0,0,0,1)',
 
     },
@@ -130,10 +130,10 @@ const colors = {
         d: 'rgba(75,85,100,0.10)',
     },
     bgritem: {
-        DEFAULT: 'rgba(229,231,235,1)',
-        h: 'rgba(209,213,219,1)',
-        d: 'rgba(31,41,55,1)',
-        dh: 'rgba(55,65,81,1)',
+        DEFAULT: 'rgba(3,7,18,0.05)',
+        h: 'rgba(3,7,18,0.1)',
+        d: 'rgba(249,250,251,0.05)',
+        dh: 'rgba(249,250,251,0.1)',
 
     },
     bgritemprimary: {

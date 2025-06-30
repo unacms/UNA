@@ -20,21 +20,23 @@ function Results({ data }) {
         const backgroundColor2 = backgroundColor.map(color => getColor(color));
 
         return (
-            <View className="lg:flex-row mx-auto w-full  ">
-                <View className=" w-full max-w-lg  mt-4 lg:mt-0">
+            
+                <View className="w-full ">
                     {data.map((item2, index) => {
                         return (
-                            <Row className="items-start w-full" key={'chk' + index}>
+                            <Row className="items-start w-full mt-2" key={'chk' + index}>
                                 <Row className="w-full h-[56px]">
-                                    <Row className='absolute w-full h-[56px] '>
-                                        <View className="h-[56px] rounded-full" style={{ width: '2px', backgroundColor: backgroundColor2[index] }}></View>
-                                        <View className="h-[56px] " style={{ width: item2.width, backgroundColor: backgroundColor2[index] }}></View>
+                                    <Row className='absolute w-full h-[56px] gap-x-0.5'>
+                                        <View className="h-[56px] rounded-lg overflow-hidden " style={{ width: item2.width, backgroundColor: backgroundColor2[index] }}></View>
                                     </Row>
+                                    <View className="h-[56px] rounded-lg" style={{ width: '12px', backgroundColor: backgroundColor2[index] }}></View>
+
                                     <View className='w-full items-center justify-center ml-2 '>
-                                        <Text numberOfLines={10} className="flex-wrap w-full text-neutral-900 dark:text-neutral-50 text-sm flex-wrap ">
+
+                                        <Text numberOfLines={10} className="flex-wrap w-full text-neutral-900 dark:text-neutral-50 font-semibold text-sm flex-wrap ">
                                             {item2.title}
                                         </Text>
-                                        <Text className="font-medium flex-wrap w-full text-neutral-900 dark:text-neutral-50 text-sm flex-wrap">
+                                        <Text className="font-medium flex-wrap w-full text-neutral-600 dark:text-neutral-400 text-xs flex-wrap">
                                             {item2.width} ({item2.votes.count} votes)
                                         </Text>
                                     </View>
@@ -45,7 +47,7 @@ function Results({ data }) {
                         )
                     })}
                 </View>
-            </View>
+           
         );
     }
 }
@@ -90,13 +92,27 @@ export function PollItem({ data, showTitle, onDelete, disabled = false, results_
     const totalVotes = state?.results ? state.results.reduce((acc, item) => acc + item.votes.count, 0) : 0;
 
     return (
-        <><Row className='items-center justify-between w-full'>{showTitle && <Text className="text-neutral-950  dark:text-neutral-50 text-base tracking-tight font-medium">{data.title}</Text>}
-            {onDelete && (<Button onPress={() => { onDelete(data.id) }} startDecorator="X" size="xs" />)}
+        
+        <View className='w-full p-3 rounded-xl bg-bgritem dark:bg-bgritem-d '>
+        <Row className='items-center justify-between w-full gap-x-2 '>
+            {showTitle && <Text className="text-neutral-950 p-1 hover:bg-bgritem dark:hover:bg-bgritem-d rounded-xl dark:text-neutral-50 text-lg tracking-tight font-semibold">{data.title}</Text>}
+            {(!data.is_hidden_results && totalVotes > 0) && (
+                
+                    <Button
+                        title={state.isShowResults ? "Show poll" : "Show results"}
+                        variant="secondary"
+                        size="sm"
+                        ring
+                        onPress={() => dispatch({ type: 'TOGGLE_RESULTS' })}
+                    />
+                
+            )}
+            {onDelete && (<Button onPress={() => { onDelete(data.id) }} startDecorator="X" rounded ring variant="secondary" size="sm" />)}
         </Row>
             {state.isShowResults && <Results data={state.results} />}
 
             {!!data.subentries && !state.isShowResults && data.subentries.map((item2, index) => (
-                <Row key={`lbl-${index}`} className={`items-center my-1 border border-bdr dark:border-bdr-d rounded-lg ${state.isVoted ? 'opacity-50' : 'hover:bg-primary/10 active:bg-primary/20 dark:hover:bg-primary-d/10 dark:active:bg-primary-d/20'}`}>
+                <Row key={`lbl-${index}`} className={`items-center border bg-bgrbutton dark:bg-bgrbutton-d border-bdrbutton dark:border-bdrbutton-d rounded-lg ${state.isVoted ? 'opacity-50' : 'hover:bg-bgritemprimary active:bg-bgritemprimary-h dark:hover:bg-bgritemprimary-d dark:active:bg-bgritemprimary-dh'}`}>
                     <RadioButton
                         value={item2.entry_id}
                         status={item2.id == state.value ? 'checked' : 'unchecked'}
@@ -106,17 +122,7 @@ export function PollItem({ data, showTitle, onDelete, disabled = false, results_
                     />
                 </Row>
             ))}
-            {(!data.is_hidden_results && totalVotes > 0) && (
-                <Row className="justify-start">
-                    <Button
-                        title={state.isShowResults ? "Show poll" : "Show results"}
-                        variant="link"
-                        size="sm"
-                        onPress={() => dispatch({ type: 'TOGGLE_RESULTS' })}
-                    />
-                </Row>
-            )}
-        </>
+        </View>
     );
 }
 

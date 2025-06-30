@@ -950,7 +950,7 @@ export  const settingsDefault = {
         button_sizes: {
             default_size: 'base',
             default_variant: 'default',
-            default_ring: 'p-1 hover:bg-bgritem-h dark:hover:bg-bgritem-dh',
+            default_ring: 'p-1 ',
             pressed_container: 'bg-primary dark:bg-primary-d',
             pressed_text: 'text-primary-700 dark:text-primary-300 group-hover:text-primary-800 dark:group-hover:text-primary-200',
             xs: {

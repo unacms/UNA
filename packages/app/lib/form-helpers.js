@@ -44,7 +44,7 @@ export function getEditorHeight(reportedContentHeight, minVisualHeight, totalChr
     }
 }
 
-export function PollButton({ field_name, size = 'base', variant = 'secondary', icon = "Vote" }) {
+export function PollButton({ field_name, size = 'base', variant = 'secondary', icon = "ChartBarBig" }) {
     return (
         <Button
             startDecorator={icon}
