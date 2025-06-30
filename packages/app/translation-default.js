@@ -89,6 +89,14 @@ export const resourcesDefault = {
             
             "login_page_title": "Log in to your NEO account",
             "login_page_text": "Use your email and password to sign in",
+
+            "login_modal_title": "Log in",
+            "login_modal_text": "Enter your email and password to login",
+            "login_modal_fp": "Forgot password?",
+            "login_modal_new_account": 'Create new account',
+            "login_modal_heading": 'Login to see more',
+            "login_modal_subheading": 'Enter your email and password to login',
+            "login_modal_rp": 'Reset password',
         }
         
     },

@@ -19,6 +19,77 @@ import BlockByUrl from 'app/ui/molecules/block'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import MenuAccount from 'app/components/nav/menu-account'
 
+const TopToolbar = ({ currentUser, bSearch }) => {
+    const toolbarConfig = appSetting('header_toolbar', 'ver')?.loggedIn?.top;
+    if (!toolbarConfig || !currentUser) return null;
+
+    const components = {
+        search: bSearch ? <Search /> : null,
+        add: <MenuAdd />,
+    };
+
+    return (
+        <Row className="flex-row px-3 sm:px-4 justify-end ">
+            <View className=" flex-row my-auto ">
+                {toolbarConfig.map((item, index) => {
+                    const Component = components[item.component];
+                    if (!Component) return null;
+                    return (
+                        <View key={index} className={item.className}>
+                            {Component}
+                        </View>
+                    );
+                })}
+            </View>
+        </Row>
+    )
+};
+
+const SidebarBottomToolbar = ({ currentUser, menu_add_items, buttonProps }) => {
+    const toolbarConfig = appSetting('header_toolbar', 'ver')?.loggedIn?.sidebar;
+    if (!toolbarConfig || !currentUser) return null;
+
+    const components = {
+        post_button: (
+             <BlockByUrl url="/api.php?r=bx_timeline/get_block_post_account" exProps={{ "mode": "button" }} />
+        ),
+        account: (
+            <MenuAccount>
+                <Row className={"rounded-full items-center justify-between p-1 hover:border-transparent cursor-pointer hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50"}>
+                    <Row className='flex-row gap-x-3 items-center'>
+                        <Profile
+                            {...currentUser}
+                            url_avatar={currentUser.avatar}
+                            displayType="unit_wo_info"
+                            displaySize="sm"
+                        />
+                        <Text className="text-base flex-auto my-auto font-semibold truncate text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900 dark:group-hover:text-neutral-100">
+                            {currentUser.display_name}
+                        </Text>
+                    </Row>
+                </Row>
+            </MenuAccount>
+        ),
+        add: menu_add_items.length > 0 ? <MenuAdd typestyle="button" buttonProps={buttonProps} /> : null,
+    };
+
+    return (
+        <View className='py-4'>
+            <Row className='flex-row px-4 items-center'>
+                 {toolbarConfig.map((item, index) => {
+                    const Component = components[item.component];
+                    if (!Component) return null;
+                    return (
+                        <View key={index} className={item.className}>
+                            {Component}
+                        </View>
+                    );
+                })}
+            </Row>
+        </View>
+    );
+};
+
 const HeaderLine = memo(({ headerSettings, currentUser, uri, bSearch, menuPopup, setMenuPopup, showMenu }) => {
 
     const { width } = useWindowDimensions();
@@ -132,56 +203,14 @@ export default function (props) {
                     <View className=' justify-between  lg:h-screen flex-auto '>
                         <HeaderLine headerSettings={headerSettings} currentUser={currentUser} uri={props.uri} bSearch={bSearch} showMenu={showMenu} menuPopup={menuPopup} setMenuPopup={setMenuPopup} />
                         <View className='hidden lg:flex flex-col flex-auto justify-between h-full'>
-                            {!!currentUser && (
-                                <>
-                                    <Row className='mt-4 justify-center mx-auto w-full px-4 gap-x-4'>
-                                        <View className='flex-auto'>
-                                            <BlockByUrl url="/api.php?r=bx_timeline/get_block_post_account" exProps={{ "mode": "button" }} />
-                                        </View>
-                                    </Row>
-
-                                    <View className='py-4'>
-                                        <Row className='flex-row px-4 '>
-                                            <View className='flex-auto'>
-                                                <MenuAccount>
-                                                    <Row className={"rounded-full items-center justify-between  p-1  hover:border-transparent  cursor-pointer hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50"}>
-                                                        <Row className='flex-row gap-x-3 items-center'>
-                                                            <Profile
-                                                                {...currentUser}
-                                                                url_avatar={currentUser.avatar}
-                                                                displayType="unit_wo_info"
-                                                                displaySize="sm"
-                                                            />
-                                                            <Text className="text-base flex-auto my-auto font-semibold truncate text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
-                                                                {currentUser.display_name}
-                                                            </Text>
-                                                        </Row>
-
-                                                    </Row>
-                                                </MenuAccount>
-                                            </View>
-                                            <View className='ml-2'>
-                                                {menu_add_items.length > 0 && <MenuAdd typestyle="button" buttonProps={buttonProps} />}
-                                            </View>
-                                        </Row>
-                                    </View>
-                                </>
-                            )}
+                           <SidebarBottomToolbar 
+                                currentUser={currentUser}
+                                menu_add_items={menu_add_items}
+                                buttonProps={buttonProps}
+                           />
                         </View>
                     </View>
-                    {!!currentUser && (
-                        <Row className="flex-row px-3 sm:px-4 justify-end ">
-                            <View className=" flex-row my-auto gap-x-2 ">
-                                <View className="lg:hidden ">
-                                    {bSearch && <Search />}
-                                </View>
-
-                                <View className="lg:hidden">
-                                    <MenuAdd />
-                                </View>
-                            </View>
-                        </Row>
-                    )}
+                    <TopToolbar currentUser={currentUser} bSearch={bSearch} />
                 </View>
                 <MenuDrawer showMenu={showMenu} menuPopup={menuPopup} cssClass="" />
             </ScrollView>

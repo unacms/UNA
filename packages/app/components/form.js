@@ -10,6 +10,7 @@ import useDebounce from 'app/lib/hooks/debounce'
 import { Button } from 'app/design/controls';
 import { isObjectsEqual } from 'app/lib/util'
 
+
 function getFormType(name) {
     return  getComponent('form', String(name))
 }
@@ -204,7 +205,7 @@ export default function (props) {
 
 
     return (
-        <View className={`w-full ${props?.exProps?.classes}`}>
+        <View className={`w-full gap-y-${appSetting('forms', 'field_gap') || '4'} ${props?.exProps?.classes}`}>
             {(isAutoChange) && <Row className='items-center justify-between mb-3'>
                 {/*<Text className="text-xl font-bold text-neutral-800  dark:text-neutral-200 ">Filters</Text>*/}
                 {!isObjectsEqual(filteredDefaultValues, allFields) &&  <Button

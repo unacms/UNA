@@ -31,8 +31,8 @@ export  const settingsDefault = {
     layout: {
         avaliable_layouts: ['hor', 'ver', 'mixed'], // OLD appSetting('layout', 'format_list')
         default_layout: 'hor', //hor, ver, mixed// OLD appSetting('layout', 'format')
-        max_width: ' w-full ', 
-        max_width_block: '  w-full ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
+        max_width: 'w-full ', 
+        max_width_block: ' w-full max-w-5xl ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
         search: true,
         sidebar_search: true,
         extended_search: true,
@@ -169,13 +169,14 @@ export  const settingsDefault = {
         optional_text: '', // OLD appSetting('layout', 'form_fields_optional_text')
         mandatory_icon: 'Asterisk', // OLD appSetting('layout', 'form_fields_mandatory_icon')
         auto_ghosts_in_files: true,
+        field_gap: '4',
         caption_classes:
             'font-semibold text-sm sm:text-base text-neutral-700 dark:text-neutral-300',
         without_captions: [
             // OLD appSetting('forms', 'form_without_captions')
             'sys_login',
             'sys_account_create',
-            'sys_forgot_password',
+            
             'bx_invites_request_send',
         ],
         visibility_control_names: [
@@ -686,6 +687,55 @@ export  const settingsDefault = {
             { title: 'Contact', link: '/contact', icon: 'Mail' },
         ],
     },
+    header_toolbar: {
+        hor: {
+            loggedIn: [
+                { component: 'search', className: '' },
+                { component: 'custom_header_element', className: '' },
+                { component: 'launcher', className: 'hidden sm:block' },
+                { component: 'add', className: '' },
+                { component: 'notifications', className: 'hidden sm:block' },
+                { component: 'messenger', className: 'hidden sm:block' },
+                { component: 'account', className: 'hidden sm:block' },
+            ],
+            loggedOut: [
+                { component: 'search', className: 'items-center' },
+                { component: 'launcher', className: 'items-center' },
+                { component: 'login', className: 'items-center' },
+            ],
+        },
+        mixed: {
+            loggedIn: [
+                { component: 'search', className: 'lg:hidden' },
+                { component: 'launcher', className: 'hidden' },
+                { component: 'add', className: '' },
+                { component: 'notifications', className: 'hidden sm:block' },
+                { component: 'messenger', className: 'hidden sm:block' },
+                { component: 'account', className: 'hidden sm:block' },
+            ],
+            loggedOut: [
+                { component: 'search', className: '' },
+                { component: 'launcher', className: '' },
+                { component: 'login', className: '' },
+            ],
+        },
+        ver: {
+            loggedIn: {
+                top: [
+                    { component: 'search', className: 'lg:hidden' },
+                    { component: 'add', className: 'lg:hidden' },
+                ],
+                sidebar: [
+                    { component: 'post_button', className: 'flex-auto' },
+                    { component: 'account', className: 'flex-auto' },
+                    { component: 'add', className: 'ml-2' },
+                ],
+            },
+            loggedOut: {
+                top: [],
+            },
+        },
+    },
     layouts: {
         '/': { // For the splash screen (home page when not logged in)
             max_width: ''
@@ -727,6 +777,7 @@ export  const settingsDefault = {
         },
         light: {
             primary: 'rgba(37, 99, 235, 1)',
+            outline: 'rgba(37, 99, 235, 0.5)',
             headerBackground: 'rgba(255,255,255,1)',
             barsBackground: 'rgba(255,255,255,1)', //header and tabbar background in native light mode
             bottomSheetBackground: 'rgba(255,255,255,1)',
@@ -753,6 +804,7 @@ export  const settingsDefault = {
             default: 'rgba(209,213,219,1)', //fix for icons color in iOS
             headerBackground: 'rgba(17,24,39,1)',
             primary: 'rgba(59, 130, 246, 1)',
+            outline: 'rgba(59, 130, 246, 0.5)',
             barsBackground: 'rgba(17,24,39,1)', //header background in native
             bottomSheetBackground: 'rgba(17,24,39,1)',
             barsColor: 'rgba(209,213,219,1)', //tabbar icons color in native
@@ -778,7 +830,7 @@ export  const settingsDefault = {
         conductor: {
             menu: '   w-full items-left justify-center  ',
             menu_max_width: ' w-full ',
-            content_max_width: ' w-full ',
+            content_max_width: ' w-full max-w-7xl ',
             menu_is_dynamic: true,
             menu_cnt: ' flex-row flex-none w-full ',
             menu_categ_ident: 'pl-[48px]',
@@ -898,6 +950,7 @@ export  const settingsDefault = {
         button_sizes: {
             default_size: 'base',
             default_variant: 'default',
+            default_ring: 'p-1 hover:bg-bgritem-h dark:hover:bg-bgritem-dh',
             pressed_container: 'bg-primary dark:bg-primary-d',
             pressed_text: 'text-primary-700 dark:text-primary-300 group-hover:text-primary-800 dark:group-hover:text-primary-200',
             xs: {

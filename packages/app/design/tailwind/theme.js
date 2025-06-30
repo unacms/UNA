@@ -49,9 +49,9 @@ const colors = {
         900: 'rgba(6, 78, 59, 1)',
         950: 'rgba(2, 44, 34, 1)',
     },
-    contrast: {
-        DEFAULT: 'rgba(255, 0, 0, 1)',
-        d: 'rgba(255, 0, 0, 1)',
+    pop: {
+        DEFAULT: 'rgba(220, 38, 38, 1)',
+        d: 'rgba(239, 68, 68, 1)',
     },
     linkhover: {
         DEFAULT: 'rgba(37, 99, 235, 1)',

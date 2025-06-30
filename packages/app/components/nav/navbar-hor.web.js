@@ -18,7 +18,71 @@ import MenuLauncher from 'app/components/nav/menu-launcher'
 import MenuDrawer from 'app/components/nav/menu-drawer'
 import MenuTop from 'app/components/nav/menu-top'
 import HeaderElement from 'app/ui/molecules/header_element'
-import { getComponent } from 'app/components/registry';
+import { getComponent } from 'app/components/registry'
+
+const ToolbarItems = ({ currentUser, bSearch, isCustomHeaderElement, bNotifs, bMessenger, t }) => {
+    const toolbarConfig = appSetting('header_toolbar', 'hor')
+    const itemsToRender = currentUser
+        ? toolbarConfig?.loggedIn
+        : toolbarConfig?.loggedOut
+
+    const components = {
+        search: bSearch ? <Search /> : null,
+        custom_header_element: isCustomHeaderElement ? <HeaderElement /> : null,
+        launcher: <MenuLauncher />,
+        add: <MenuAdd />,
+        notifications: bNotifs ? <NotificationButton /> : null,
+        messenger: bMessenger ? (
+            <Link href={appSetting('messenger', 'url')} alt={t('Messenger')}>
+                <Button
+                    tooltip={t('Messenger')}
+                    variant="secondary"
+                    rounded
+                    startDecorator="MessageSquare"
+                    id="m2"
+                    size="base"
+                    hitSlop={4}
+                    ring="p-1"
+                    addon={{
+                        variant: 'primary',
+                        text: currentUser?.counters?.bx_messenger_new_messages,
+                        hideZero: true,
+                    }}
+                />
+            </Link>
+        ) : null,
+        account: currentUser ? <MenuAccount /> : null,
+        login: !currentUser ? (
+            <Link href="/login">
+                <ButtonRef
+                    variant="secondary"
+                    tooltip="Account"
+                    rounded
+                    size="base"
+                    hitSlop={4}
+                    aria-label="Account"
+                    alt={t('Account')}
+                    ring="p-1"
+                    startDecorator="UserRound"
+                />
+            </Link>
+        ) : null,
+    }
+
+    return (
+        <Row className="justify-end items-center gap-x-1">
+            {itemsToRender?.map((item, index) => {
+                const Component = components[item.component]
+                if (!Component) return null
+                return (
+                    <View key={index} className={item.className}>
+                        {Component}
+                    </View>
+                )
+            })}
+        </Row>
+    )
+}
 
 const HeaderLine = memo(
     ({
@@ -45,7 +109,7 @@ const HeaderLine = memo(
             ).length > 0
 
         return (
-            <View className=" flex-row xl:w-[360px] gap-x-[8px] px-[12px] items-center ">
+            <View className=" flex-row xl:w-[360px] gap-x-[8px] px-3  items-center ">
                 {headerSettings.menu && isDrawer && (
                     <View className="lg:hidden pr-[8px] ">
                         <Pressable onPress={showMenu}>
@@ -176,81 +240,15 @@ export default function (props) {
                             context={props.context}
                         />
                         <MenuTop url={props.url} uri={props.uri} />
-                        <Row className=" xl:w-[360px] px-[12px] items-center justify-end ">
-                            {!!currentUser && (
-                                <Row className="justify-end items-center">
-                                    <View className="p-[6px]">
-                                        {bSearch && <Search />}
-                                    </View>
-                                    {isCustomHeaderElement && (
-                                        <View className="p-[4px]">
-                                            <HeaderElement />
-                                        </View>
-                                    )}
-                                    <View className="hidden sm:block p-[6px]">
-                                        <MenuLauncher />
-                                    </View>
-                                    <View className="p-[6px]">
-                                        <MenuAdd />
-                                    </View>
-                                    <View className="hidden sm:block p-[6px]">
-                                        {bNotifs && <NotificationButton />}
-                                    </View>
-                                    <View className="hidden sm:block p-[6px]">
-                                        {bMessenger && (
-                                            <Link
-                                                href={appSetting(
-                                                    'messenger',
-                                                    'url'
-                                                )}
-                                                alt={t('Messenger')}
-                                            >
-                                                <Button
-                                                    tooltip={t('Messenger')}
-                                                    variant="secondary"
-                                                    rounded
-                                                    startDecorator="MessageSquare"
-                                                    id="m2"
-                                                    size="base"
-                                                    hitSlop={4}
-                                                    addon={{
-                                                        variant: 'primary',
-                                                        text: currentUser
-                                                            ?.counters
-                                                            ?.bx_messenger_new_messages,
-                                                        hideZero: true,
-                                                    }}
-                                                />
-                                            </Link>
-                                        )}
-                                    </View>
-
-                                    <View className="hidden sm:block p-[6px]">
-                                        <MenuAccount />
-                                    </View>
-                                </Row>
-                            )}
-                            {!currentUser && (
-                                <Row className="justify-end items-center">
-                                    
-
-                                    {bSearch && <Search />}
-                                    <MenuLauncher />
-                                    <Link href="/login">
-                                        <ButtonRef
-                                            variant="secondary"
-                                            tooltip="Account"
-                                            rounded
-                                            size="base"
-                                            hitSlop={4}
-                                            aria-label="Account"
-                                            alt={t('Account')}
-                                            ring="p-1"
-                                            startDecorator="UserRound"
-                                        />
-                                    </Link>
-                                </Row>
-                            )}
+                        <Row className=" xl:w-[360px] px-3.5 items-center justify-end ">
+                           <ToolbarItems 
+                                currentUser={currentUser}
+                                bSearch={bSearch}
+                                isCustomHeaderElement={isCustomHeaderElement}
+                                bNotifs={bNotifs}
+                                bMessenger={bMessenger}
+                                t={t}
+                           />
                         </Row>
                     </View>
 

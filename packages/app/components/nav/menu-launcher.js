@@ -38,7 +38,6 @@ export default function () {
                 <ButtonRef
                     tooltip="All Apps"
                     variant="secondary"
-                    
                     rounded
                     alt={t("All Apps")}
                     startDecorator="LayoutGrid"

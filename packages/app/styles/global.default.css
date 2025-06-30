@@ -8,9 +8,11 @@
 }
 
 *:focus-visible {
-    outline: 4px solid rgba(37, 99, 235, 0.1) !important;
-    outline-offset: 0px !important;
+    outline: 4px solid var(--outline) !important;    
+}
 
+html[theme="dark"] *:focus-visible {
+    outline: 4px solid var(--outline-d) !important;    
 }
 
 .u-vanilla-html {

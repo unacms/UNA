@@ -36,7 +36,7 @@ function MenuTopItem({ link, title, index, icon, isTitle, isActive }) {
             <Tooltip content={title}>
             <View className="flex-auto group" key={`menu-${index}`}>
                 <Row
-                    className={`items-center justify-center h-[48px] min-w-16 rounded-[12px]  web:duration-300 group-active:opacity-50 ${
+                    className={`items-center justify-center h-12 min-w-16 rounded-xl  web:duration-300 group-active:opacity-50 ${
                         isActive 
                             ? 'bg-bgritemprimary text-primary dark:text-primary-d dark:bg-bgritemprimary-d group-hover:bg-bgritemprimary-h dark:group-hover:bg-bgritemprimary-dh'
                             : 'text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-950 dark:group-hover:text-neutral-50 hover:bg-neutral-900/10 dark:hover:bg-neutral-100/10'

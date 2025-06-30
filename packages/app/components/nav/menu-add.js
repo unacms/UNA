@@ -32,6 +32,8 @@ export default function MenuAdd({ buttonProps, children }) {
         startDecorator: "Plus",
         tooltip: "Create",
         size: "base",
+        hitSlop: 4,
+        ring: "p-1",
     };
 
     return (

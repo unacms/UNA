@@ -214,7 +214,7 @@ export function Modal({
                 (title || onClose) && <Row className={`items-center justify-${align} ${headerBorder && modalSettings.header} `}>
                     {(title && type === 'string') && (
                         <View className='flex-auto absolute left-0 right-0'>
-                            <Text className='text-neutral-800 dark:text-neutral-200 text-2xl font-bold tracking-tight text-center '>{title}</Text>
+                            <Text className='text-[20px] sm:text-[24px] text-center leading-[none] tracking-tight font-semibold text-neutral-800 dark:text-neutral-200 '>{title}</Text>
                         </View>
                     )}
                     {(title && type !== 'string') && (title)}
@@ -342,16 +342,16 @@ const getAddon = (addon, isTitle) => {
         if (addon?.hideZero && sButtonAddonText == '0')
             return null;
         if (addon?.variant == 'primary')
-            sButtonAddonBg = ' bg-contrast dark:bg-contrast-d';
+            sButtonAddonBg = ' bg-pop dark:bg-pop-d';
     }
     else {
         sButtonAddonText = addon;
     }
 
-    const position = addon?.position == 'bottom' ? 'bottom-0' : '-top-2';
+    const position = addon?.position == 'bottom' ? 'bottom-0' : 'top-0 end-0';
 
     if (!isTitle && sButtonAddonText)
-        return <View className={`absolute ${sButtonAddonBg} border-2 border-white dark:border-neutral-900 rounded-full  px-1.5 items-center justify-center -right-1 ${position}`}><Text className='text-white text-xs font-semibold'>{sButtonAddonText}</Text></View>
+        return <View className={`absolute ${sButtonAddonBg} shadow-sm rounded-full px-1.5 items-center justify-center ${position}`}><Text className='text-white text-sm font-medium'>{sButtonAddonText}</Text></View>
 
     return sButtonAddonText && sButtonAddonText ? <View className='flex-1 items-end '>
         <View className={sButtonAddonBg + ' rounded-full px-2 py-0.5 mx-1 text-center items-center'}>
@@ -387,7 +387,7 @@ export const Button = (props) => {
         rounded = false,
         solid = false,
         padding,
-        ring = '',
+        ring,
         children,
         ...rest
     } = props;
@@ -395,6 +395,15 @@ export const Button = (props) => {
     const { colors } = Theme();
     const themeName = ThemeName();
     const { width } = useWindowDimensions();
+    const ringClass = useMemo(() => {
+        if (ring === true) {
+            return ThemeButtonSizes.default_ring ?? '';
+        }
+        if (typeof ring === 'string') {
+            return ring;
+        }
+        return '';
+    }, [ring]);
     const showTooltip = useMemo(() => width >= LAYOUT_BREAKPOINTS.lg && tooltip, [width, tooltip]);
 
     const sClassContainer = useMemo(() => {
@@ -546,7 +555,7 @@ export const Button = (props) => {
         role: rest['aria-haspopup'] === 'menu' ? 'menubutton' : 'button',
     } : {};
     const buttonContent = (
-        <View className={` ${ring} ${fullWidth ? 'flex-auto ' : ''}`}>
+        <View className={` ${ringClass} ${fullWidth ? 'flex-auto ' : ''}`}>
             <Cnt
                 className={`${sClassContainer} ${sizeClasses}`}
                 {...rest}

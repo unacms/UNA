@@ -18,6 +18,58 @@ import MenuLauncher from 'app/components/nav/menu-launcher'
 import MenuDrawer from 'app/components/nav/menu-drawer'
 import ProfileSwitcher from 'app/components/elements/profile_switcher';
 
+const ToolbarItems = ({ currentUser, bSearch, bNotifs, bMessenger, t }) => {
+    const toolbarConfig = appSetting('header_toolbar', 'mixed')
+    const itemsToRender = currentUser
+        ? toolbarConfig?.loggedIn
+        : toolbarConfig?.loggedOut
+
+    const components = {
+        search: bSearch ? <Search /> : null,
+        launcher: <MenuLauncher />,
+        add: <MenuAdd />,
+        notifications: bNotifs ? <NotificationButton /> : null,
+        messenger: bMessenger ? (
+            <Link href={appSetting('messenger','url')} alt={t('Messenger')} >
+                <ButtonRef
+                    tooltip={t('Messenger')}
+                    variant="secondary"
+                    rounded
+                    startDecorator="MessageCircleMore"
+                    addon={{variant:'primary', text: currentUser?.counters?.bx_messenger_new_messages, hideZero: true}}
+                />
+            </Link>
+        ) : null,
+        account: currentUser ? <MenuAccount /> : null,
+        login: !currentUser ? (
+            <Link href="/">
+                <ButtonRef
+                    variant="secondary"
+                    tooltip="Account"
+                    rounded
+                    aria-label="Account"
+                    alt={t('Account')}
+                    startDecorator="User"
+                />
+            </Link>
+        ) : null,
+    }
+
+    return (
+        <Row className="flex-row flex-auto sm:flex-none justify-end my-auto ">
+            {itemsToRender?.map((item, index) => {
+                const Component = components[item.component]
+                if (!Component) return null
+                return (
+                    <View key={index} className={item.className}>
+                        {Component}
+                    </View>
+                )
+            })}
+        </Row>
+    )
+}
+
 const HeaderLine = memo(({headerSettings, currentUser, uri, title, menuPopup, setMenuPopup, showMenu}) => {
     
     const { width } = useWindowDimensions();
@@ -141,63 +193,14 @@ export default function (props) {
                                 </View>}
                             </Row>
                         </Row>
-                        <Row className="w-full w-[360px] px-3 gap-x-2 justify-end  ">
-                            {!!currentUser && (
-                                <Row className="flex-row justify-end ">
-                                    <View className=" flex-row my-auto gap-x-2 ">
-                                        <View className="lg:hidden ">
-                                            {bSearch && <Search />}
-                                        </View>
-                                        <View className="hidden">
-                                            <MenuLauncher />
-                                        </View>
-                                        <View className="">
-                                            <MenuAdd />
-                                        </View>
-                                        <View className="hidden sm:block">
-                                            {bNotifs && <NotificationButton />}
-                                        </View>
-                                        <View className="hidden sm:block">
-                                            {bMessenger && (
-                                                <Link href={appSetting('messenger','url')} alt={t('Messenger')} >
-                                                    <ButtonRef
-                                                        tooltip={t('Messenger')}
-                                                        variant="secondary"
-                                                        rounded
-                                                        startDecorator="MessageCircleMore"
-                                                        addon={{variant:'primary', text: currentUser?.counters?.bx_messenger_new_messages, hideZero: true}}
-                                                    />
-                                                </Link>
-                                            )}
-                                        </View>
-
-
-                                        <View className="hidden sm:block">
-                                            <MenuAccount />
-                                        </View>
-                                    </View>
-                                </Row>
-                            )}
-                            {!currentUser && (
-                                <Row className="flex-row flex-auto sm:flex-none justify-end my-auto gap-x-1.5 sm:gap-x-2">
-                                    {bSearch && (
-                                        <View>
-                                            <Search />
-                                        </View>
-                                    )}
-                                    <MenuLauncher />
-                                    <Link href="/">
-                                        <ButtonRef
-                                            variant="secondary"
-                                            tooltip="Account"
-                                            rounded
-                                            aria-label="Account"
-                                            alt={t('Account')}
-                                            startDecorator="User"
-                                        />
-                                    </Link>
-                                </Row>
-                            )}
+                        <Row className="w-full xl:w-[360px] px-3 gap-x-2 justify-end  ">
+                            <ToolbarItems 
+                                currentUser={currentUser}
+                                bSearch={bSearch}
+                                bNotifs={bNotifs}
+                                bMessenger={bMessenger}
+                                t={t}
+                            />
                         </Row>
                     </View>
                 </View>

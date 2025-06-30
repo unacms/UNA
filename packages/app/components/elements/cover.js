@@ -404,7 +404,7 @@ export default function ({ data, mode, uri, showMoreMenu }) {
                             </Text>
                         )}
                     </View>
-                    <View className="flex-row flex-wrap items-end justify-between  flex-auto gap-x-[8px] gap-y-[8px] p-[4px]">
+                    <View className="flex-row flex-wrap items-end justify-between  flex-auto gap-x-[8px] gap-y-[8px]">
                         {isSplitMenu ? (
                             <View className="flex-row sm:items-end  flex-wrap gap-x-[12px] lg:ml-auto sm:gap-x-[16px] gap-y-[8px] sm:gap-y-[12px] ">
                                 {bPerson && (

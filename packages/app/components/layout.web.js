@@ -14,9 +14,12 @@ import { appStatic } from 'app/lib/app-static'
 import { menuItemsByName } from 'app/lib/util'
 import OneSignal from 'react-onesignal';
 import { ThemeName } from 'app/design/theme';
+import { useTranslation } from 'react-i18next'
+
 
 const Navbar = lazy(() => import('app/components/nav/navbar'));
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from');
+
 
 const NavbarMemo = React.memo(function NavbarMemo(props) {
     return (
@@ -36,6 +39,7 @@ async function runOneSignal() {
 
 const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutName, layoutName, data, children, uri, blocks, width }) => {
     const [isModal, setIsModal] = useState(false);
+    const { t } = useTranslation()
     
     useEffect(() => {
         if (currentUser === false && !storageGet('layout:modal', '', true) && appSetting('layout', 'show_login_modal') > 0 && !['create-account', 'home', 'login', 'forgot-password', 'confirm-email'].includes(uri)) {
@@ -52,7 +56,7 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutNam
         }
         if (!isModal)
             return <></>
-        return (<Modal title="Sign in to see more" onVisible={isModal} outerClickClose={false} onClose={() => handleCloseModal()}>
+        return (<Modal title={t('login_modal_title')} onVisible={isModal} outerClickClose={false} onClose={() => handleCloseModal()}>
             {appStatic('components_modal', p)}
         </Modal>);
     };
@@ -338,7 +342,7 @@ const Content = React.memo(({ children, headerSettings, stylesBgImage, currentUs
         <View className="w-full items-stretch cnt-root" key={url}>
             <View className=" w-full mx-auto flex-row " >
                 <View className={((layoutName != 'messenger' && layoutName != 'post' && !isHideHeader) ? 'pb-16 lg:pb-0' : '') + ' w-full mx-auto'}>{/*mb-16* TODO lg:pb-0*/}
-                    <View className='w-full mx-auto '>
+                    <View className='w-full mx-auto'>
                         {(headerSettings.offset && !isHideHeader) && <View className='w-full h-16 ' />}{/*use this to offset the header globally*/}
                         <Informer />
                         {children}
