@@ -216,6 +216,10 @@ const theme = {
         fontFamily: {
             default: ['default-font', 'sans-serif']
         },
+        /*borderRadius: {
+            md: '8px',
+            lg: '16px',
+        },*/
         aspectRatio: {
             '3/1': '3 / 1',
             '4/1': '4 / 1',
