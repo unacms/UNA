@@ -10,7 +10,7 @@ import Editor from './editor';
 import Select from './select';
 import Files from './files';
 import Location from './location';
-import Datetime from './dattime';
+import Datetime from './datetime';
 import Selector from './selector';
 import BlockHeader from './block_header';
 import Suggestion from './suggestion';
