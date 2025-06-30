@@ -25,18 +25,18 @@ function Results({ data }) {
                     {data.map((item2, index) => {
                         return (
                             <Row className="items-start w-full mt-2" key={'chk' + index}>
-                                <Row className="w-full h-[56px]">
-                                    <Row className='absolute w-full h-[56px] gap-x-0.5'>
-                                        <View className="h-[56px] rounded-lg overflow-hidden " style={{ width: item2.width, backgroundColor: backgroundColor2[index] }}></View>
+                                <Row className="w-full min-h-12 border border-transparent rounded-lg overflow-hidden">
+                                    <Row className='absolute w-full min-h-12 gap-x-0.5  '>
+                                        <View className=" rounded-lg overflow-hidden " style={{ width: item2.width, backgroundColor: backgroundColor2[index] }}></View>
                                     </Row>
-                                    <View className="h-[56px] rounded-lg" style={{ width: '12px', backgroundColor: backgroundColor2[index] }}></View>
+                                    <View className="min-h-12 rounded-lg" style={{ width: '12px', backgroundColor: backgroundColor2[index] }}></View>
 
-                                    <View className='w-full items-center justify-center ml-2 '>
+                                    <View className='w-full items-center justify-center py-1.5 px-2 '>
 
-                                        <Text numberOfLines={10} className="flex-wrap w-full text-neutral-900 dark:text-neutral-50 font-semibold text-sm flex-wrap ">
+                                        <Text numberOfLines={10} className="flex-wrap w-full text-neutral-950 dark:text-neutral-50 font-semibold text-sm flex-wrap ">
                                             {item2.title}
                                         </Text>
-                                        <Text className="font-medium flex-wrap w-full text-neutral-600 dark:text-neutral-400 text-xs flex-wrap">
+                                        <Text className="font-medium flex-wrap w-full text-neutral-900 dark:text-neutral-100 text-xs flex-wrap">
                                             {item2.width} ({item2.votes.count} votes)
                                         </Text>
                                     </View>
@@ -112,7 +112,7 @@ export function PollItem({ data, showTitle, onDelete, disabled = false, results_
             {state.isShowResults && <Results data={state.results} />}
 
             {!!data.subentries && !state.isShowResults && data.subentries.map((item2, index) => (
-                <Row key={`lbl-${index}`} className={`items-center border bg-bgrbutton dark:bg-bgrbutton-d border-bdrbutton dark:border-bdrbutton-d rounded-lg ${state.isVoted ? 'opacity-50' : 'hover:bg-bgritemprimary active:bg-bgritemprimary-h dark:hover:bg-bgritemprimary-d dark:active:bg-bgritemprimary-dh'}`}>
+                <Row key={`lbl-${index}`} className={`mt-2 items-center border bg-bgrbutton dark:bg-bgrbutton-d border-bdrbutton dark:border-bdrbutton-d rounded-lg ${state.isVoted ? 'opacity-50' : 'hover:bg-bgritemprimary active:bg-bgritemprimary-h dark:hover:bg-bgritemprimary-d dark:active:bg-bgritemprimary-dh'}`}>
                     <RadioButton
                         value={item2.entry_id}
                         status={item2.id == state.value ? 'checked' : 'unchecked'}
