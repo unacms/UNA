@@ -23,7 +23,7 @@ import Splash from 'app/ui/molecules/splash'
 import { callFn } from 'app/lib/functions/call';
 
 export default function (props) {
-    return <>
+    /*return <>
         <Row className='gap-x-2'>
             <View className='absolute top-4 left-12 w-12 h-12 bg-red-500 rounded-lg'></View>
             <View className='w-[48px] h-[48px] bg-red-500 rounded-[8px]'></View>
@@ -36,7 +36,7 @@ export default function (props) {
         </Row>
         <Text className="text-base  text-red-500"  >Abcs</Text>
         <Text className="text-[16px]  text-red-500">Abcs</Text>
-    </>
+    </>*/
     const isWeb = Platform.OS == 'web'  
     if (appSetting('config', 'show_ui')) {
         return <UI />
