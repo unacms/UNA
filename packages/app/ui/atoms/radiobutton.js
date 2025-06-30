@@ -11,7 +11,7 @@ export default function ({ title, info, onPress, status, value, disabled, icon, 
         {selected ? <View className="h-[10px] w-[10px] rounded-full" style={{ backgroundColor: colors.checkbox }} /> : null}
     </View>
     return (
-        <Pressable disabled={disabled} onPress={onPress} className={`flex-row gap-x-[12px] items-center py-[10px] px-[12px] active:bg-neutral-200 dark:active:bg-neutral-700 rounded-[12px] w-full ${disabled ? '' : ' hover:bg-neutral-100 dark:hover:bg-neutral-800'} `}>
+        <Pressable disabled={disabled} onPress={onPress} className={`flex-row gap-x-3 items-center py-2.5 px-3 active:bg-neutral-200 dark:active:bg-neutral-700 rounded-[12px] w-full ${disabled ? '' : ' hover:bg-neutral-100 dark:hover:bg-neutral-800'} `}>
             { !!icon && <View className=" "><View className="text-neutral-600 dark:text-neutral-400 my-auto h-[24px] w-[24px]">{icon}</View></View>}
             
             <View className='flex-auto '>
