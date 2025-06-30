@@ -109,7 +109,7 @@ export default function Splash(props) {
                                     data={props.data}
                                     formProps={{ auto_focus: true, hide_errors: true, button_full_width: true }}
                                 />
-                                <View className="flex-row items-center justify-center  w-full">
+                                <View className="flex-row items-center justify-center w-full">
                                     <View className="flex-1 h-[1px] w-full bg-neutral-200 dark:bg-neutral-500" />
                                     <Text className="mx-[16px] text-xs text-neutral-500 dark:text-neutral-400 font-normal">{t("splash_page_login3")}</Text>
                                     <View className="flex-1 h-[1px] w-full bg-neutral-200 dark:bg-neutral-500" />
