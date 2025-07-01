@@ -8,21 +8,21 @@ import { useFormContext } from 'react-hook-form'
 import { stripTags, removeEmptyTags } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import Profile from 'app/ui/molecules/profile'
-import { FileButton } from 'app/components/form-fields/files';
+import { FileButton } from 'app/lib/form-helpers'
 
 export default function FormComments(props) {
     const { height: screenHeight } = useWindowDimensions()
     const baseHeight = props.data.inputs['cmt_id']?.value ? 160 : 40
     const maxHeight = Platform.OS === 'web' ? screenHeight / 2 : (screenHeight - 300) / 2 // 300 is approximate keyboard height
     const formContext = useFormContext()
-    
+
     const animatedEditorHeight = useSharedValue(baseHeight)
-    
+
     const isWeb = Platform.OS == 'web'
     const { currentUser } = useCurrentUser()
     const isAutoFocus =
         props.data.inputs['cmt_text']?.value ||
-        props.data.inputs['cmt_text'].autofocus
+            props.data.inputs['cmt_text'].autofocus
             ? true
             : false
 
@@ -60,12 +60,12 @@ export default function FormComments(props) {
             // significantly larger than what baseHeight can contain (which shouldn't happen for a placeholder).
             // The main goal here is to ensure it stays at baseHeight (40px) for the placeholder.
             const placeholderChromeEstimate = 20; // Matches totalChromeEstimate for placeholder state
-            const placeholderVisualHeight = reportedInternalHeight + placeholderChromeEstimate; 
+            const placeholderVisualHeight = reportedInternalHeight + placeholderChromeEstimate;
             // If the reported placeholder content + its chrome fits within baseHeight, or slightly over by less than a full step,
             // force it to baseHeight. This prevents small placeholder overflows from bumping height by a full step.
-            if (placeholderVisualHeight < baseHeight + growthStepAmount) { 
-                 updateAnimatedHeight(baseHeight);
-                 return;
+            if (placeholderVisualHeight < baseHeight + growthStepAmount) {
+                updateAnimatedHeight(baseHeight);
+                return;
             }
             // If placeholder is unusually large, let normal logic handle it, but it will start from baseHeight.
         }
@@ -74,7 +74,7 @@ export default function FormComments(props) {
         // 1 line content ~20px. Wrapper chrome when expanded (pt-10, pb-48) = 58px. Editor internal est. ~2px. Total ~80px.
         const minVisualHeightWhenTyping = 80;
         const visualFloorHeight = actualHasText ? minVisualHeightWhenTyping : baseHeight;
-        
+
         let totalChromeHeightEstimate;
         if (actualHasText) {
             // Chrome when editorHeight > baseHeight (triggers pb-[48px]):
@@ -104,9 +104,9 @@ export default function FormComments(props) {
         const minVisualHeightWhenTyping = 80;
 
         if (actualHasText) {
-            updateAnimatedHeight(Math.max(animatedEditorHeight.value, minVisualHeightWhenTyping)); 
+            updateAnimatedHeight(Math.max(animatedEditorHeight.value, minVisualHeightWhenTyping));
         } else {
-            updateAnimatedHeight(baseHeight); 
+            updateAnimatedHeight(baseHeight);
         }
     }, [rawEditorText, baseHeight, animatedEditorHeight]);
 
@@ -119,7 +119,7 @@ export default function FormComments(props) {
     const handleSubmitWithSanitization = () => {
         let sanitizedHtml = formContext.getValues('cmt_text');
         sanitizedHtml = removeEmptyTags(sanitizedHtml);
-        
+
         formContext.setValue('cmt_text', sanitizedHtml, { shouldValidate: true, shouldDirty: true });
         props.handleSubmit();
     };
@@ -188,7 +188,7 @@ export default function FormComments(props) {
         'dark:bg-bgritem-d',
         'rounded-[22px]',
         'p-[12px]',
-        
+
     ];
 
     const minVisualHeightWhenTypingForPadding = 80;
@@ -207,7 +207,7 @@ export default function FormComments(props) {
         'justify-center',
         'p-[4px]'
     ];
-    
+
     let currentAttachmentButtonWidthClass;
     if (isWeb) {
         currentAttachmentButtonWidthClass = ' w-[44px] h-[44px]';
@@ -223,21 +223,21 @@ export default function FormComments(props) {
     }
 
 
-   
-    
+
+
     return (
         <View className="w-full ">
             <Row className="w-full gap-x-[8px]">
                 {currentUser && (
-         
-                        <Profile
-                            {...currentUser}
-                            url_avatar={currentUser.avatar}
-                            displayType="unit_wo_info"
-                            displaySize="base"
-                            
-                        />
-                   
+
+                    <Profile
+                        {...currentUser}
+                        url_avatar={currentUser.avatar}
+                        displayType="unit_wo_info"
+                        displaySize="base"
+
+                    />
+
                 )}
                 <View className="flex-1 relative">
                     <Reanimated.View
@@ -289,7 +289,7 @@ export default function FormComments(props) {
                         )}
                     </Reanimated.View>
                     <View className={attachmentButtonContainerClasses.join(' ')}>
-                        {isWeb && <FileButton field_name='cmt_image' icon="Image" source='library' variant = 'text' />}
+                        {isWeb && <FileButton field_name='cmt_image' icon="Image" source='library' variant='text' />}
                         {!isWeb && (
                             <Reanimated.View
                                 entering={SlideInLeft.duration(300)}
@@ -298,10 +298,10 @@ export default function FormComments(props) {
                             >
                                 <Row className="h-full items-center">
                                     <View className="h-full p-[4px] flex items-center justify-center">
-                                        <FileButton field_name='cmt_image' icon="Image" source='library' variant = 'text' />
+                                        <FileButton field_name='cmt_image' icon="Image" source='library' variant='text' />
                                     </View>
                                     <View className="h-full p-[4px] flex items-center justify-center">
-                                        <FileButton field_name='cmt_image' icon="Image" source='camera' variant = 'text' />
+                                        <FileButton field_name='cmt_image' icon="Image" source='camera' variant='text' />
                                     </View>
                                 </Row>
                             </Reanimated.View>
@@ -333,17 +333,17 @@ export default function FormComments(props) {
                     )}
                 </View>
             </Row>
-           
-                <ScrollView horizontal={true}>
-                    <Row className="flex-wrap gap-[8px] mt-[12px]">{
-                                getFormFieldByData(
-                                    props.data.inputs['cmt_image'],
-                                    props.handleSubmit,
-                                    'notitle',
-                                    { hide_button: true, list_only: true, hitSlop: 4, }
-                                )
-                            }</Row>
-                </ScrollView>
+
+            <ScrollView horizontal={true}>
+                <Row className="flex-wrap gap-[8px] mt-[12px]">{
+                    getFormFieldByData(
+                        props.data.inputs['cmt_image'],
+                        props.handleSubmit,
+                        'notitle',
+                        { hide_button: true, list_only: true, hitSlop: 4, }
+                    )
+                }</Row>
+            </ScrollView>
             {getFormFieldByData(
                 props.data.inputs['cmt_mood'],
                 props.handleSubmit,
