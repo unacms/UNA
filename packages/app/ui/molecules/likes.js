@@ -105,7 +105,8 @@ export default function ElementLikes(oProps) {
         size: oProps.params?.button_size,
         rounded: oProps.params?.button_rounded,
         fullWidth: oProps.params?.button_full_width,
-        showTitleFromSize: oProps.params?.button_show_title_from_size
+        showTitleFromSize: oProps.params?.button_show_title_from_size,
+        ring: oProps.params?.button_ring
     };
 
     const [ objectData, setObjectData ] = useState({...oAction, ...{counter: oCounter}});

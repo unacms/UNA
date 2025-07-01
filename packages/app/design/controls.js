@@ -555,14 +555,14 @@ export const Button = (props) => {
         role: rest['aria-haspopup'] === 'menu' ? 'menubutton' : 'button',
     } : {};
     const buttonContent = (
-        <View className={` ${ringClass} ${fullWidth ? 'flex-auto ' : ''}`}>
-            <Cnt
-                className={`${sClassContainer} ${sizeClasses}`}
-                {...rest}
-                {...buttonAttributes}
-                onPress={onPress && !disabled ? onPress : undefined}
-                {...refProps}
-            >
+        <Cnt
+            className={`${ringClass} ${fullWidth ? 'flex-auto ' : ''}`}
+            {...rest}
+            {...buttonAttributes}
+            onPress={onPress && !disabled ? onPress : undefined}
+            {...refProps}
+        >
+            <View className={`${sClassContainer} ${sizeClasses}`}>
                 {sButtonIconStart}
                 {isTitle && (
                     <Text className={`${sClassText} ${sTitleContainer}`} numberOfLines={1}>
@@ -572,9 +572,9 @@ export const Button = (props) => {
                 {sButtonIconEnd}
                 {isTitle && oButtonAddon}
                 {children}
-            </Cnt>
+            </View>
             {!isTitle && oButtonAddon}
-        </View>
+        </Cnt>
     );
 
     return showTooltip ? <Tooltip content={tooltip}>{buttonContent}</Tooltip> : buttonContent;
@@ -660,6 +660,7 @@ function _ButtonMenuAction(props) {
         pressed = false,
         disabled = false,
         fullWidth= false,
+        ring,
         ...rest
     } = props;
     const _variant = variant || appSetting('layout', 'button_style_for_actions');
@@ -670,6 +671,7 @@ function _ButtonMenuAction(props) {
         pressed = {pressed}
         disabled = {disabled}
         fullWidth = {fullWidth}
+        ring={ring}
         {...rest}
     />
 }
@@ -682,6 +684,7 @@ function _ButtonMenuCounter(props) {
         pressed = false,
         disabled = false,
         fullWidth= false,
+        ring,
         ...rest
     } = props;
     const _variant = variant || appSetting('layout', 'button_style_for_actions');
@@ -693,6 +696,7 @@ function _ButtonMenuCounter(props) {
         pressed = {pressed}
         disabled = {disabled}
         fullWidth = {fullWidth}
+        ring={ring}
         {...rest}
     />
 }

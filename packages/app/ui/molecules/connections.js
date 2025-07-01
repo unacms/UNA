@@ -102,6 +102,7 @@ export default function ElementConnections(oProps) {
         showTitleFromSize: oProps.params?.button_show_title_from_size,
         hide_icon: oProps.params?.hide_icon,
         padding: oProps.params?.padding,
+        ring: oProps.params?.button_ring
     };
 
     const _isElementVar = useCallback((sName) => isElementVar(elementData, sName), [elementData]);

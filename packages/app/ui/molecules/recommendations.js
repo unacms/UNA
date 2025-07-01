@@ -123,7 +123,8 @@ export default function ElementRecommendations(oProps) {
         rounded: oProps.params?.button_rounded,
         fullWidth: oProps.params?.button_full_width,
         showTitleFromSize: oProps.params?.button_show_title_from_size,
-        onlyIcon: oProps.params?.only_icon
+        onlyIcon: oProps.params?.only_icon,
+        ring: oProps.params?.button_ring
     }; 
 
     const _isElementVar = useCallback((sName, bUseContext, bUseContextWide) => isElementVar(cardData, elementData, sContextKey, sName, bUseContext, bUseContextWide), [cardData, elementData, sContextKey]);

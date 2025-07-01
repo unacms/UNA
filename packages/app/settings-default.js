@@ -270,6 +270,7 @@ export  const settingsDefault = {
             button_full_width: true,
             button_size: 'sm',
             button_variant: 'text',
+            button_ring: 'p-1',
             pressed_classes: {
                 pressed_container:
                     ' bg-primary-100 dark:bg-primary-900 ',

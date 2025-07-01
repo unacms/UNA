@@ -62,10 +62,10 @@ function DefaultUnit(data) {
                     </View>
                 </View>
                 {MainContentComponent}
-                <View className=' px-[8px]'>
+                <View className='px-2'>
                 {(!!data.menu_counters && appSetting('feed', 'counters_menu')) && <CounterMenu data={data.menu_counters} showCommentsModal={showCommentsModal} />}
                 </View>
-                <View className=' border-t mt-[4px] border-bdr dark:border-bdr-d p-[8px] '><ActionMenu data={data.menu_actions} showCommentsModal={showCommentsModal} /></View>
+                <View className=' border-t mt-1 border-bdr dark:border-bdr-d p-1 '><ActionMenu data={data.menu_actions} showCommentsModal={showCommentsModal} /></View>
                 {commentsData && <CommentsSection url={url} t={t} isCommentsModal={isCommentsModal} showCommentsModal={showCommentsModal} commentsDataInline={commentsData} data={data} isShowMoreComments={isShowMoreComments} />}
             </Card>
         </AnimatedBlock>

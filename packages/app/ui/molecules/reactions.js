@@ -294,6 +294,7 @@ export default function ElementReactions(oProps) {
         fullWidth: oProps.params?.button_full_width,
         showTitleFromSize: oProps.params?.button_show_title_from_size,
         pressedClasses: oProps.params?.pressed_classes,
+        ring: oProps.params?.button_ring
     };
 
     const [actionsDataState, setActionsDataState] = useState({});

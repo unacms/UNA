@@ -52,6 +52,7 @@ export default function ElementShares(oProps) {
         size: oProps.params?.button_size,
         rounded: oProps.params?.button_rounded,
         fullWidth: oProps.params?.button_full_width,
+        ring: oProps.params?.button_ring
     };
 
     //--- show action

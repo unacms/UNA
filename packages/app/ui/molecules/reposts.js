@@ -91,6 +91,8 @@ export default function ElementReposts(oProps) {
         oButtonProps.fullWidth = oProps.params.button_full_width;
     if(oProps.params?.button_show_title_from_size != undefined)
         oButtonProps.showTitleFromSize = oProps.params.button_show_title_from_size;
+    if(oProps.params?.button_ring != undefined)
+        oButtonProps.ring = oProps.params.button_ring;
 
     const { actionsData, setActionsData } = useActionsData();
     const [ actionsDataState, setActionsDataState ] = useState({});

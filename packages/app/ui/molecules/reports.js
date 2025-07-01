@@ -237,8 +237,8 @@ const ElementReports = forwardRef((oProps, ref) => {
         classTextName: Platform.OS == 'web' ? '' : " font-medium text-neutral-700  dark:text-neutral-300 ",
         rounded: oProps.params?.button_rounded,
         fullWidth: oProps.params?.button_full_width,
-        showTitleFromSize: oProps.params?.button_show_title_from_size
-
+        showTitleFromSize: oProps.params?.button_show_title_from_size,
+        ring: oProps.params?.button_ring
     };
 
 
