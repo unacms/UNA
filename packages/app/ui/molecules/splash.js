@@ -42,6 +42,17 @@ export default function Splash(props) {
                             <View className="max-w-xl w-full flex-auto mx-auto px-[16px] pb-[16px] sm:p-[32px] lg:p-[64px] my-auto gap-y-[16px]">
                                 <Card addClassName="flex-col w-full mx-auto">
                                     <View className="flex-col pb-[24px] gap-y-[8px]">
+                                        
+
+
+    <View className=' w-12 h-12 bg-red-500 rounded-lg'></View>
+    <View className='w-[48px] h-[48px] bg-red-500 rounded-[8px]'></View>
+ 
+        <Text className="text-base text-red-500" >Abcs</Text>
+        <Text className="text-[16px] text-red-500">Abcs</Text>
+
+
+
                                         <Text className="text-2xl leading-none tracking-tight font-bold text-neutral-800 dark:text-neutral-200">{t("splash_page_title")}</Text>
                                         <Text className="text-sm text-neutral-600 dark:text-neutral-400">{t("splash_page_text")}</Text>
                                     </View>

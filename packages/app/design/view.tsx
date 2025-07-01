@@ -8,7 +8,11 @@ import { normalizeClasses } from 'app/lib/util'
 import * as React from 'react'
 
 export const ScrollView = ReactNativeScrollView
-export const Pressable = ReactNativePressable
+
+export const Pressable = React.forwardRef<ReactNativePressable, any>((props, ref) => (
+    <ReactNativePressable {...props} ref={ref} />
+))
+
 export const ViewRef = ReactNativeView
 
 interface RowProps extends ReactNativeViewProps {

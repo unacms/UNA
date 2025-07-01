@@ -1,14 +1,15 @@
 import { Text as NativeText, Platform } from 'react-native'
 import { appSetting, decodeText, normalizeClasses } from 'app/lib/util'
+import * as React from 'react'
 
 const Text_ = NativeText
-export const Text = ({
+export const Text = React.forwardRef<NativeText, any>(({
     children,
     className,
     fontFamily,
     style: propStyle,
     ...rest
-}) => {
+}, ref) => {
     const isWeb = Platform.OS == 'web'
     const correctedChildren =
         typeof children === 'string' ? decodeText(children) : children
@@ -22,11 +23,11 @@ export const Text = ({
             : {}
     const combinedStyle = [fontStyle, propStyle]
     return (
-        <Text_ {...rest} className={finalClassName} style={combinedStyle}>
+        <Text_ {...rest} className={finalClassName} style={combinedStyle} ref={ref}>
             {correctedChildren}
         </Text_>
     )
-}
+})
 
 /**
  * Components can have defaultProps and styles
