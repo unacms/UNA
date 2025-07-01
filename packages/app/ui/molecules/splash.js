@@ -34,58 +34,56 @@ export default function Splash(props) {
 
     if (!isWeb) {
         return (
-            <View className="flex-1 bg-primary-50 dark:bg-primary-950">
+            <View className="flex-1 bg-neutral-100 dark:bg-bgrbody-d">
                 <KbAvoidingView className="flex-1" behavior="padding" keyboardVerticalOffset={0}>
                     <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
-                        <View className="w-full flex-col lg:flex-row gap-y-[32px] mx-auto max-w-[1440px]">
+                        <View className="w-full flex-col lg:flex-row gap-y-8 mx-auto p-3">
                             {appStatic('splash_text')}
-                            <View className="max-w-xl w-full flex-auto mx-auto px-[16px] pb-[16px] sm:p-[32px] lg:p-[64px] my-auto gap-y-[16px]">
-                                <Card addClassName="flex-col w-full mx-auto">
-                                    <View className="flex-col pb-[24px] gap-y-[8px]">
-                                        
-
-
-    <View className=' w-12 h-12 bg-red-500 rounded-lg'></View>
-    <View className='w-[48px] h-[48px] bg-red-500 rounded-[8px]'></View>
- 
-        <Text className="text-base text-red-500" >Abcs</Text>
-        <Text className="text-[16px] text-red-500">Abcs</Text>
-
-
-
-                                        <Text className="text-2xl leading-none tracking-tight font-bold text-neutral-800 dark:text-neutral-200">{t("splash_page_title")}</Text>
-                                        <Text className="text-sm text-neutral-600 dark:text-neutral-400">{t("splash_page_text")}</Text>
+                             <Card addClassName=" gap-y-4">
+                                <View className="flex-col flex-auto gap-y-1 justify-center ">
+                                    <Text className="text-xl sm:text-2xl text-center lg:text-left tracking-tight font-semibold text-neutral-800 dark:text-neutral-200">
+                                        {t("splash_page_login")}
+                                    </Text>
+                                    <Text className="text-[14px] sm:text-[16px] text-center lg:text-left text-neutral-500">
+                                        {t("splash_page_login2")}
+                                    </Text>
+                                </View>
+                                <BlockByName
+                                    name="system:login_form"
+                                    data={props.data}
+                                    formProps={{ auto_focus: true, hide_errors: true, button_full_width: true }}
+                                />
+                                <View className="flex-row items-center justify-center w-full">
+                                    <View className="flex-1 h-[1px] w-full bg-neutral-200 dark:bg-neutral-500" />
+                                    <Text className="mx-[16px] text-xs text-neutral-500 dark:text-neutral-400 font-normal">{t("splash_page_login3")}</Text>
+                                    <View className="flex-1 h-[1px] w-full bg-neutral-200 dark:bg-neutral-500" />
+                                </View>
+                                <View className="gap-y-[8px] w-full">
+                                    <Link className="flex-1 min-w-[200px]" href="/forgot-password" haptics="Medium">
+                                        <Button
+                                            title={t('Reset password')}
+                                            variant="default"
+                                            startDecorator="RotateCcw"
+                                            fullWidth
+                                            size="base"
+                                            ring="rounded-[13px] bg-neutral-300 dark:bg-neutral-950 shadow-sm hover:shadow-none"
+                                        />
+                                    </Link>
+                                    <Link className="flex-1 min-w-[200px]" href="/create-account" haptics="Medium">
+                                        <Button
+                                            title={t("splash_page_new_account")}
+                                            variant="default"
+                                            fullWidth
+                                            size="base"
+                                            startDecorator="UserRoundPlus"
+                                            ring="rounded-[13px] bg-neutral-300 dark:bg-neutral-950 shadow-sm hover:shadow-none"
+                                        />
+                                    </Link>
+                                    <View className='w-full'>
+                                        <AuthPanel />
                                     </View>
-                                    <BlockByName
-                                        name="system:login_form"
-                                        data={props.data}
-                                        formProps={{ auto_focus: true, hide_errors: true, button_full_width: true }}
-                                    />
-                                    <View className="mt-[8px]">
-                                        <Link href="/forgot-password" haptics="Medium">
-                                            <Button
-                                                title={t("splash_page_fp")}
-                                                variant="link"
-                                                fullWidth
-                                                size="sm"
-                                            />
-                                        </Link>
-                                    </View>
-                                    <View className="flex items-center justify-center gap-y-[8px] border-t border-bdr dark:border-bdr-d mt-[8px] pt-[16px]">
-                                        <AuthPanel className="" />
-                                    </View>
-                                </Card>
-                                <Text className="text-base text-neutral-600 dark:text-neutral-400 text-center">{t("splash_page_account")}</Text>
-                                <Link href="/create-account" haptics="Medium">
-                                    <Button
-                                        title={t("splash_page_new_account")}
-                                        startDecorator="UserRoundPlus"
-                                        variant="accent"
-                                        size="lg"
-                                        fullWidth
-                                    />
-                                </Link>
-                            </View>
+                                </View>
+                            </Card>
                         </View>
                         <View className="w-full h-[64px]">
                             <View className="mx-auto my-auto">
