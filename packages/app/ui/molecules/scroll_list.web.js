@@ -146,7 +146,7 @@ export default function ScrollList({
         }
         headerHeight = 116;
         subHeaderComponent = (
-            <View className='px-[12px] sm:px-[16px] items-start py-2 justify-center bg-bgrtabbar dark:bg-bgrtabbar-d border-b border-bdrtabbar dark:border-bdrtabbar-d shadow-sm'>
+            <View className='px-3 sm:px-4 items-start py-2 justify-center bg-bgrtabbar dark:bg-bgrtabbar-d border-b border-bdrtabbar dark:border-bdrtabbar-d shadow-sm'>
                 <TextHeader text={textName} />
             </View>
         );

@@ -99,7 +99,7 @@ export default function (props) {
                                 <View key={'index' + index} className=" p-2 flex-row  
                                 groupweb:duration-200 rounded-lg  
                                 hover:bg-bgritem dark:hover:bg-bgritem-d
-                                max-w-5xl self-center w-full gap-x-[12px]">
+                                max-w-5xl self-center w-full gap-x-3">
                                     <View className="flex-none ">{profile}</View>
                                     <Text className='text-sm my-auto flex-auto font-semibold truncate text-neutral-900 dark:text-neutral-100'>{item.display_name}</Text>
                                     <View className="text-sm bont-semibold flex-none my-auto">

@@ -9,7 +9,7 @@ export default function ElementProfileMenu(props) {
     const { currentUser, setCurrentUser } = useCurrentUser();
     const menu_items = appSetting('layout', 'user_remote_config') ? menuItemsByNameNew('menu_post', props.data, currentUser) : menuItemsByName('', appSetting('menu_items', 'menu_sidebar'), currentUser);
     return (
-        <View className="profile-menu gap-y-[2px]">
+        <View className="profile-menu gap-y-0.5">
                 {menu_items.map((item, index) => (
                     <MenuItemSidebarWithWrapper key={`menu-${index}`} icon = {item.icon} link={item.link} title={t(item.title)} index={index} userUrl={currentUser.url}/>
                 ))}

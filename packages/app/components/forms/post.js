@@ -5,7 +5,7 @@ import Profile from 'app/ui/molecules/profile';
 
 import { useCurrentUser } from 'app/context/user';
 import { Text } from 'app/design/typography'
-import { FileButton } from 'app/components/form-fields/files';
+import { FileButton } from 'app/lib/form-helpers';
 
 export default function FormPost(props) {
     const {data, handleSubmit} = props;
@@ -47,12 +47,12 @@ export default function FormPost(props) {
     const authorName = <Text className='font-semibold text-neutral-800 dark:text-neutral-200'>{currentUser.display_name}</Text>;
 
     return (
-        <View className="w-full max-w-5xl flex-col p-[12px] sm:p-[16px]">
+        <View className="w-full max-w-5xl flex-col p-3 sm:p-4">
           {getHiddenFields(inputs, handleSubmit)}
         
             <View className="  overflow-hidden flex-col  ">
-                <View className="flex-row flex-auto items-center justify-between gap-x-[8px] mb-4">
-                    <View className="gap-x-[8px] mr-[8px] flex-row flex-auto items-center group">
+                <View className="flex-row flex-auto items-center justify-between gap-x-2 mb-4">
+                    <View className="gap-x-2 mr-2 flex-row flex-auto items-center group">
                         <Profile {...currentUser} displaySize="lg" displayType="unit_wo_info" /> 
                         
                         {getFormFieldByData(

@@ -33,7 +33,7 @@ export default function ({ item, index, changeConvo, selectedIndex }) {
                 </Row>
                 <View className="flex-row w-full items-end content-end">
                    {/* <Text
-                        className="flex-auto mr-2 text-sm text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-neutral-50"
+                        className="flex-auto mr-2  text-sm text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-neutral-50"
                         numberOfLines={1}
                     >
                         {stripTags(item.message)}

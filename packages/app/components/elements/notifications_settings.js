@@ -42,7 +42,7 @@ export default function (props) {
         <Row className='p-2'>
             {
                 data.map((item, index) => {
-                    return <View className='mr-2' key={'tab' + index}><Button
+                    return <View className='mr-2 ' key={'tab' + index}><Button
                         variant={index == activeIndex ? 'outline' : "text"}
                         pressed={index == activeIndex ? true : false}
                         title={t(firstLetterCap(item.title))}

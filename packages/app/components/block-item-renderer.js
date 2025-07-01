@@ -8,7 +8,7 @@ function BlockItemRenderer({ item, route, sidebar }) {
     const blockProps = item.block || {};
     
     if (!block) {
-        return <View className='h-[1px]'><Text>&nbsp;</Text></View>;
+        return <View className='h-px'><Text>&nbsp;</Text></View>;
     }
 
     // Simple rendering without going through the complex block system
@@ -27,7 +27,7 @@ function BlockItemRenderer({ item, route, sidebar }) {
     }
     
     return (
-        <View className={`${blockProps?.list && !sidebar ? 'lg:h-[1px] overflow-hidden' : ''}`} key={`${route.index}-${item.id}`}>
+        <View className={`${blockProps?.list && !sidebar ? 'lg:h-px overflow-hidden' : ''}`} key={`${route.index}-${item.id}`}>
             <View className="w-full">
                 {blockProps?.showTitle && <Text className="pb-4 text-xl font-bold text-neutral-800 dark:text-neutral-200">{block.title}</Text>}
                 {content}

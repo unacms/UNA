@@ -241,7 +241,7 @@ useEffect(() => {
                     </View>
                 </View>
             </Modal>
-            <Row className='gap-x-4 p-2 items-center bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d text-neutral-900 rounded-[12px]'>
+            <Row className='gap-x-4 p-2 items-center bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d text-neutral-900 rounded-xl'>
                 <Button title={`${dValue ? formatDate(dValue) : 'Select date'}`} variant="text" endDecorator="Calendar" onPress={() => { setShowModal(true) }} />
                 {bIsTime && (<><View className='w-5'><Input
                     onChangeText={text => handleChangeTime(text, 23, 'h')}

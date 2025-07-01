@@ -32,7 +32,7 @@ const OneColumn = memo(() => (
 const Notif = memo(() => (
     
     <View className=" w-full">
-        <Card margin=" mt-[1px] sm:mb-2 sm:mx-2 p-3 sm:p-4 " border="border-none" rounded=" sm:rounded-2xl " >
+        <Card margin=" mt-px sm:mb-2 sm:mx-2 p-3 sm:p-4 " border="border-none" rounded=" sm:rounded-2xl " >
         <View className="animate-pulse flex-row items-center gap-2">
             <View className="rounded-full bg-neutral-500/40 h-12 w-12"></View>
             <View className="flex-1 gap-1.5">
@@ -72,7 +72,7 @@ const Posts = memo(() => (
 
     <View className=" shadow flex-auto flex-row-reverse rounded-2xl p-2 overflow-hidden  max-w-4xl bg-bgrcard dark:bg-bgrcard-d ">
         <View className="relative bg-neutral-500/20 aspect-square md:aspect-video rounded-xl w-1/3 "></View>
-        <View className="flex-auto p-2 flex-col md:ml-0.5 md:mr-2">
+        <View className="flex-auto p-2 flex-col md:ml-0.5 md:mr-2 ">
             <View className="w-2/3 h-4 mt-1.5 rounded-full bg-neutral-500/20"></View>
             <View className="w-full h-3 mt-3 rounded-full bg-neutral-500/20"></View>
             <View className="w-full h-3 mt-2 rounded-full bg-neutral-500/20"></View>
@@ -103,7 +103,7 @@ const PostsSmall = memo(() => (
 ));
 
 const FeedSmall = memo(() => (<View className="sm:px-4 sm:pb-2 flex-auto ">
-    <View className="bg-bgrcard dark:bg-bgrcard-d mt-[1px] sm:rounded-lg p-2 flex flex-col gap-4 animate-pulse">
+    <View className="bg-bgrcard dark:bg-bgrcard-d mt-px sm:rounded-lg p-2 flex flex-col gap-4 animate-pulse">
         <View className="flex-row gap-2">
             <View className="relative flex-row">
                 <View className="h-12 w-12 aspect-square overflow-hidden bg-neutral-100 dark:bg-neutral-700 mx-auto rounded-full">

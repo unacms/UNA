@@ -48,17 +48,17 @@ export default function ElementConfirmEmail(props) {
         <><Redirect ref={redirectdRef} />
             <Msg onVisible={showMsg} title={"New verification code emailed"} handleOk={() => { setShowMsg(false) }} />
             <View className={`mx-auto ${getPageWidth()} p-4 w-full `}>
-                <Card rounded="rounded-[24px]" margin="p-[16px] sm:p-[24px]" addClassName="border border-white overflow-hidden dark:border-bdrcard-d gap-y-[24px]">
-                    <View className="flex-col flex-auto gap-y-[8px] justify-center">
-                        <Text className="text-[20px] sm:text-[24px] text-center leading-[none] tracking-tight font-semibold text-neutral-800 dark:text-neutral-200">
+                <Card rounded="rounded-3xl" margin="p-4 sm:p-6" addClassName="border border-white overflow-hidden dark:border-bdrcard-d gap-y-6">
+                    <View className="flex-col flex-auto gap-y-2 justify-center">
+                        <Text className="text-xl sm:text-2xl text-center leading-[none] tracking-tight font-semibold text-neutral-800 dark:text-neutral-200">
                             {t("Unconfirmed email address")}
                         </Text>
-                        <Text className="text-[14px] sm:text-[16px] text-center text-neutral-500">
+                        <Text className="text-sm sm:text-base text-center text-neutral-500">
                             {t("Please check your email")}
                         </Text>
                     </View>
-                    <View className='gap-y-[16px]'>
-                        <Row className='w-full gap-x-[8px] items-start justify-between'>
+                    <View className='gap-y-4'>
+                        <Row className='w-full gap-x-2 items-start justify-between'>
                             <View className='flex-auto'>
                                 <Input placeholder={t("Verification code")} value={inputValue} onChangeText={(value) => { setInputValue(value) }} />
                             </View>
@@ -68,14 +68,14 @@ export default function ElementConfirmEmail(props) {
                             <Text className="ml-0.5 mt-0.5 label-text-alt text-sm text-red-600 animate-pulse dark:text-red-400 font-medium">{t("Code invalid")}</Text>
                         </View>}
                         <View className="flex-row items-center justify-center w-full">
-                            <View className="flex-1 h-[1px] w-full bg-neutral-200 dark:bg-neutral-500" />
-                            <Text className="mx-[16px] text-xs text-neutral-500 dark:text-neutral-400 font-normal">OR</Text>
-                            <View className="flex-1 h-[1px] w-full bg-neutral-200 dark:bg-neutral-500" />
+                            <View className="flex-1 h-px w-full bg-neutral-200 dark:bg-neutral-500" />
+                            <Text className="mx-4 text-xs text-neutral-500 dark:text-neutral-400 font-normal">OR</Text>
+                            <View className="flex-1 h-px w-full bg-neutral-200 dark:bg-neutral-500" />
                         </View>
-                        <View className="gap-y-[8px] w-full">
+                        <View className="gap-y-2 w-full">
                             <Button variant="link" size="sm" title={t("Resend email")} onPress={pressBack} fullWidth />
                             <Link href="/logout" className="w-full">
-                                <Button variant="default" size="base" title={t("Sign out")} fullWidth ring="rounded-[13px] bg-neutral-300 dark:bg-neutral-950 shadow-sm hover:shadow-none" />
+                                <Button variant="default" size="base" title={t("Sign out")} fullWidth ring="rounded-xl bg-neutral-300 dark:bg-neutral-950 shadow-sm hover:shadow-none" />
                             </Link>
                         </View>
                     </View>

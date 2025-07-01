@@ -13,7 +13,7 @@ const Units = {};
 
 Units.Small = function Small({ data, imageSizes }) {
     return (
-        <Card margin="  mb-[1px] sm:mx-2 sm:mb-4 " rounded=" rounded-2xl " addClassName=" p-2  ">
+        <Card margin="  mb-px sm:mx-2 sm:mb-4 " rounded=" rounded-2xl " addClassName=" p-2  ">
             <View className="  aspect-video flex-none rounded-lg overflow-hidden mb-auto w-full bg-bgritem dark:bg-bgritem-d  ">
                 {data.image && (
                     <Image

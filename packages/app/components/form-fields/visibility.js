@@ -106,7 +106,7 @@ export default function (props) {
         }
         const visibilityIcon = visibilityById(item.value, t);
         item.label = visibilityIcon?.text || item.label;
-        item.icon = visibilityIcon?.icon ? <View className="h-[24px] w-[24px] overflow-hidden">
+        item.icon = visibilityIcon?.icon ? <View className="h-6 w-6 overflow-hidden">
             <Icon
                 icon={visibilityIcon?.icon}
                 width={24}
@@ -131,7 +131,7 @@ export default function (props) {
     ) : (
         <>
             <RbList values={filteredValues} setValue={handleValueChange} selectedValue={field.value} />
-            <View className='flex-row justify-end pt-[12px] mt-[12px] border-t border-bdr dark:border-bdr-d'>
+            <View className='flex-row justify-end pt-3 mt-3 border-t border-bdr dark:border-bdr-d'>
             <Button title="Done" size="base" variant="primary" onPress={applyVisibility} /></View>
         </>
     );
@@ -158,7 +158,7 @@ export default function (props) {
                     onBlur={field.onBlur}
                     defaultValue={props.value}
                 />
-                {!!props.owner_info && <Row className=" h-[22px] items-center px-[4px] text-neutral-600 web:group-hover:text-neutral-800 web:dark:group-hover:text-neutral-200 dark:text-neutral-400   web:duration-300">
+                {!!props.owner_info && <Row className=" h-5.5 items-center px-1 text-neutral-600 web:group-hover:text-neutral-800 web:dark:group-hover:text-neutral-200 dark:text-neutral-400   web:duration-300">
                     <View className='flex-none mb-auto'>
                         <Profile
                             {...props.owner_info}
@@ -166,7 +166,7 @@ export default function (props) {
                             displaySize="xxs"
                         />
                     </View>
-                    <View className='px-[4px]  flex-auto'>
+                    <View className='px-1  flex-auto'>
                         <Profile 
                             {...props.owner_info} 
                             displayType="unit_wo_image" 
@@ -191,13 +191,13 @@ export default function (props) {
             {modalElement}
             <Pressable onPress={() => handleShowModal()}>
                 {props.addElement}
-                <Row className="  flex-none mr-auto gap-x-[2px] px-[4px] py-[4px] rounded-[8px] items-center text-neutral-600 web:group-hover:bg-bgritem dark:web:group-hover:bg-bgritem-d web:dark:group-hover:text-neutral-200 web:group-hover:text-neutral-800 web:dark:group-hover:text-neutral-200 dark:text-neutral-400 h-[24px]   web:duration-300">
+                <Row className="  flex-none mr-auto gap-x-0.5 px-1 py-1 rounded-lg items-center text-neutral-600 web:group-hover:bg-bgritem dark:web:group-hover:bg-bgritem-d web:dark:group-hover:text-neutral-200 web:group-hover:text-neutral-800 web:dark:group-hover:text-neutral-200 dark:text-neutral-400 h-6   web:duration-300">
                     <Icon
                         icon={icon}
                         width={16}
                         height={16}
                     />
-                    <Text className=" leading-[22px] ml-[4px] whitespace-nowrap text-ellipsis overflow-hidden tracking-tight text-neutral-600 web:group-hover:text-neutral-800 dark:text-neutral-400 web:dark:group-hover:text-neutral-200 font-medium text-sm native:text-[14px] ">{selectedSubLabels.length> 0 ? selectedSubLabels.slice(0, 3).join(', ') + (selectedSubLabels.length > 3 ? ' + ' + (selectedSubLabels.length - 3) + ' more' : '') : text}</Text>
+                    <Text className=" leading-5.5 ml-1 whitespace-nowrap text-ellipsis overflow-hidden tracking-tight text-neutral-600 web:group-hover:text-neutral-800 dark:text-neutral-400 web:dark:group-hover:text-neutral-200 font-medium text-sm native:text-sm ">{selectedSubLabels.length> 0 ? selectedSubLabels.slice(0, 3).join(', ') + (selectedSubLabels.length > 3 ? ' + ' + (selectedSubLabels.length - 3) + ' more' : '') : text}</Text>
                     <Icon
                         icon="ChevronDown"
                         width={16}
@@ -213,7 +213,7 @@ export default function (props) {
         <>
             {modalElement}
             <Field {...props} error2={formContext.formState.errors[name]}>
-                <View className='flex-row items-center px-[8px] bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d h-[56px] rounded-[12px]'>
+                <View className='flex-row items-center px-2 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d h-14 rounded-xl'>
                 <Button
                     title={filteredValues.find(item => item.value == field.value)?.label || filteredValues[0].label}
                     startDecorator="Globe"

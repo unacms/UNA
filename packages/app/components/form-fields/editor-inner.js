@@ -758,11 +758,11 @@ export default function RftText({
     return (
         <View
             onLayout={handleLayout}
-            className={`flex-1 relative rounded-[16px] ${isToolBar ? ' bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d text-neutral-900 rounded-[12px]  px-[12px] py-[12px]  dark:text-neutral-100' : ''}`}
+            className={`flex-1 relative rounded-2xl ${isToolBar ? ' bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d text-neutral-900 rounded-xl  px-3 py-3 dark:text-neutral-100' : ''}`}
         >
             {suggestions && suggestions.length > 0 && (
                 <View
-                    className={`absolute max-h-[130px] w-full max-w-md bottom-0 p-1 z-50 rounded-xl border-bdr dark:border-bdr-d border bg-bgrcard dark:bg-bgrcard-d backdrop-blur-xl p-[4px]`}
+                    className={`absolute max-h-[130px] w-full max-w-md bottom-0 p-1 z-50 rounded-xl border-bdr dark:border-bdr-d border bg-bgrcard dark:bg-bgrcard-d backdrop-blur-xl p-1`}
                     style={style}
                 >
                     <ScrollView>

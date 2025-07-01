@@ -24,30 +24,30 @@ export default function PageLayout(props) {
     const refer = useRef();
     const { t } = useTranslation()
 
-    const content = isWeb ? (<View className={`flex-col justify-center pt-[64px] ${TABLET_MODE_FROM}:pt-0 mx-auto w-full min-h-[100vh] ${getPageWidth(props.uri, props.data?.config)}`}>
+    const content = isWeb ? (<View className={`flex-col justify-center pt-16 ${TABLET_MODE_FROM}:pt-0 mx-auto w-full min-h-[100vh] ${getPageWidth(props.uri, props.data?.config)}`}>
         <View className="w-full lg:flex-row max-w-7xl mx-auto my-auto">
             {appStatic('components_logincontent')}
-            <View className="max-w-xl w-full flex-auto mx-auto p-[16px] sm:p-[32px] my-auto gap-y-[16px]">
+            <View className="max-w-xl w-full flex-auto mx-auto p-4 sm:p-8 my-auto gap-y-4">
                 <AnimatedView>
                     <View className="relative">
                         <View className="absolute top-4 flex shadow rounded-3xl w-full h-full bg-neutral-500 dark:bg-black blur-lg opacity-20 dark:opacity-50"></View>
-                        <Card rounded="rounded-[24px]" margin="p-[16px] sm:p-[24px]" addClassName="border border-white overflow-hidden dark:border-bdrcard-d gap-y-[24px]">
-                            <View className="flex-col flex-auto gap-y-[8px] justify-center ">
-                                <Text className="text-[20px] sm:text-[24px] text-center lg:text-left leading-[none] tracking-tight font-semibold text-neutral-800 dark:text-neutral-200">
+                        <Card rounded="rounded-3xl" margin="p-4 sm:p-6" addClassName="border border-white overflow-hidden dark:border-bdrcard-d gap-y-6">
+                            <View className="flex-col flex-auto gap-y-2 justify-center ">
+                                <Text className="text-xl sm:text-2xl text-center lg:text-left leading-[none] tracking-tight font-semibold text-neutral-800 dark:text-neutral-200">
                                     {t('splash_page_login')}
                                 </Text>
-                                <Text className="text-[14px] sm:text-[16px] text-center lg:text-left text-neutral-500">
+                                <Text className="text-sm sm:text-base text-center lg:text-left text-neutral-500">
                                     {t('splash_page_login2')}
                                 </Text>
                             </View>
                             <BlockByName name={props.blocks.form} data={props.data} formProps={{ auto_focus: true, hide_errors: true, button_full_width: true }} />
                             <View className="flex-row items-center justify-center  w-full">
-                                <View className="flex-1 h-[1px] w-full bg-neutral-200 dark:bg-neutral-500" />
-                                <Text className="mx-[16px] text-xs text-neutral-500 dark:text-neutral-400 font-normal">OR</Text>
-                                <View className="flex-1 h-[1px] w-full bg-neutral-200 dark:bg-neutral-500" />
+                                <View className="flex-1 h-px w-full bg-neutral-200 dark:bg-neutral-500" />
+                                <Text className="mx-4 text-xs text-neutral-500 dark:text-neutral-400 font-normal">OR</Text>
+                                <View className="flex-1 h-px w-full bg-neutral-200 dark:bg-neutral-500" />
                             </View>
-                            <View className="gap-y-[8px] w-full">
-                                <Row className="flex-row gap-y-[8px] flex-wrap gap-x-[8px] w-full"><AuthPanel /></Row>
+                            <View className="gap-y-2 w-full">
+                                <Row className="flex-row gap-y-2 flex-wrap gap-x-2 w-full"><AuthPanel /></Row>
                                 <Link className="flex-1 min-w-[200px]" href="/forgot-password" haptics="Medium">
                                     <Button
                                         title={t('splash_page_fp')}
@@ -55,7 +55,7 @@ export default function PageLayout(props) {
                                         startDecorator="RotateCcw"
                                         fullWidth
                                         size="base"
-                                        ring="rounded-[13px] bg-neutral-300 dark:bg-neutral-950 shadow-sm hover:shadow-none"
+                                        ring="rounded-xl bg-neutral-300 dark:bg-neutral-950 shadow-sm hover:shadow-none"
 
                                     />
                                 </Link>
@@ -66,7 +66,7 @@ export default function PageLayout(props) {
                                         fullWidth
                                         size="base"
                                         startDecorator="UserRoundPlus"
-                                        ring="rounded-[13px] bg-neutral-300 dark:bg-neutral-950 shadow-sm hover:shadow-none"
+                                        ring="rounded-xl bg-neutral-300 dark:bg-neutral-950 shadow-sm hover:shadow-none"
 
                                     />
                                 </Link>
@@ -77,7 +77,7 @@ export default function PageLayout(props) {
 
             </View>
         </View>
-        <MenuFooter cntClasses="w-full flex-row flex-wrap opacity-80 h-[64px] items-center justify-center" />
+        <MenuFooter cntClasses="w-full flex-row flex-wrap opacity-80 h-16 items-center justify-center" />
     </View>) : null;
 
     return (
@@ -91,14 +91,14 @@ export default function PageLayout(props) {
                 />
             ) : (
                 <ScrollView contentContainerStyle={{ flexGrow: 1, alignItems: 'center', padding: 16, width: '100%' }}>
-                    <View className="max-w-md sm:max-w-lg w-full flex-auto mx-auto p-[16px] flex flex-col gap-y-[16px]">
+                    <View className="max-w-md sm:max-w-lg w-full flex-auto mx-auto p-4 flex flex-col gap-y-4">
                         <Card>
-                            <View className="flex-col pb-[24px] gap-y-[8px]">
+                            <View className="flex-col pb-6 gap-y-2">
                                 <Text className="text-2xl leading-none tracking-tight font-bold text-neutral-800 dark:text-neutral-200">{t('login_page_title')}</Text>
                                 <Text className="text-sm text-neutral-600 dark:text-neutral-400">{t('login_page_text')}</Text>
                             </View>
                             <BlockByName name={props.blocks.form} data={props.data} formProps={{ auto_focus: true, hide_errors: true, button_full_width: true }} />
-                            <View className="mt-[8px]">
+                            <View className="mt-2">
                                 <Link href="/forgot-password" haptics="Medium">
                                     <Button
                                         title={t('splash_page_fp')}
@@ -108,12 +108,12 @@ export default function PageLayout(props) {
                                     />
                                 </Link>
                             </View>
-                            <View className="flex items-center justify-center gap-y-[8px] border-t border-bdr dark:border-bdr-d mt-[8px] pt-[16px]">
+                            <View className="flex items-center justify-center gap-y-2 border-t border-bdr dark:border-bdr-d mt-2 pt-4">
                                 <AuthPanel className="" />
                             </View>
                         </Card>
                         <AnimatedView direction="up" className="flex-col">
-                            <Text className="text-base py-[16px] text-neutral-600 dark:text-neutral-400 text-center">{t('splash_page_account')}</Text>
+                            <Text className="text-base py-4 text-neutral-600 dark:text-neutral-400 text-center">{t('splash_page_account')}</Text>
                             <Link className="w-full" href="/create-account" haptics="Medium">
                                 <Button
                                     title={t('splash_page_new_account')}

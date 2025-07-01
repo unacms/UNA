@@ -69,7 +69,7 @@ export default function PageLayoutProfile({layoutName, data, uri, blocks}) {
             data={pageData}
             blocks={renderedBlocks.mainBlocks}
             leftSideBar={isAltView}
-            leftSideBarWidth={isAltView  ? ' lg:w-[360px]' : ''}
+            leftSideBarWidth={isAltView  ? ' lg:w-90' : ''}
             leftSideBarBlocks={isAltView? renderedBlocks.leftBlocks: null}
 
         />

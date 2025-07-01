@@ -43,7 +43,7 @@ export default function Unit(props) {
     return (
         <>
             <Redirect ref={redirectdRef} />
-            <Card margin="mb-[1px] sm:mx-2 sm:mb-4 " rounded="rounded-2xl">
+            <Card margin="mb-px sm:mx-2 sm:mb-4 " rounded="rounded-2xl">
                 <Link className="group " href={data.url}>
                     <View className="flex-row sm:flex-col p-1">
                         <View className="aspect-square w-1/3 sm:w-full rounded-xl overflow-hidden items-center justify-center">
@@ -70,7 +70,7 @@ export default function Unit(props) {
                                         props.unitType ==
                                         "person_following_recommendations" ? (
                                         <>
-                                            <View className="mr-2">
+                                            <View className="mr-2 ">
                                                 <ProfilesList
                                                     data={data.followers_list}
                                                     showEmpty={false}
@@ -85,7 +85,7 @@ export default function Unit(props) {
                                         </>
                                     ) : (
                                         <>
-                                            <View className="mr-2 h-6">
+                                            <View className="mr-2  h-6">
                                                 {data.mutual_friends_count > 0 ? (
                                                     <ProfilesList
                                                         data={

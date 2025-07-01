@@ -181,12 +181,12 @@ export default function UnitComments(props) {
         const effectiveLevel = Math.min(level, maxLevel);
         for (let i = 0; i < effectiveLevel; i++) {
             cellsArray.push(
-                <View key={`sp-${level}-${i}`} className="w-[44px]">
+                <View key={`sp-${level}-${i}`} className="w-11">
                     {lvls[i + 1] && (
-                        <View className="ml-[19px] w-[2px] flex-auto bg-neutral-100 dark:bg-neutral-800" />
+                        <View className="ml-[19px] w-0.5 flex-auto bg-neutral-100 dark:bg-neutral-800" />
                     )}
                     {i === level - 1 && (
-                        <View className="ml-[21px] h-[37px] w-[29px] border-neutral-100 dark:border-neutral-800 border-l-[2px] border-b-[2px] absolute -top-[14px] rounded-bl-[22px] flex-auto" />
+                        <View className="ml-[21px] h-[37px] w-[29px] border-neutral-100 dark:border-neutral-800 border-l-2 border-b-2 absolute -top-[14px] rounded-bl-[22px] flex-auto" />
                     )}
                 </View>
             );
@@ -236,24 +236,24 @@ export default function UnitComments(props) {
 
     return (
         <Wrapper style={combinedStyles}>
-            <View className='w-full px-[8px] sm:px-[12px] lg:px-[16px] '>
-                <View className="flex-row gap-x-[8px]">
+            <View className='w-full px-2 sm:px-3 lg:px-4 '>
+                <View className="flex-row gap-x-2">
                     {cells}
-                    <View className="w-[44px] z-50 flex-0 relative">
+                    <View className="w-11 z-50 flex-0 relative">
 
                         <Profile {...data.author_data} displayType="unit_wo_info" displaySize="base" showInfo="false" />
 
-                        {(items.length != 0 && view != 'flat') && <View className="w-[2px] ml-[21px] top-[2px] flex-auto bg-neutral-100 dark:bg-neutral-800"></View>}
+                        {(items.length != 0 && view != 'flat') && <View className="w-0.5 ml-[21px] top-0.5 flex-auto bg-neutral-100 dark:bg-neutral-800"></View>}
                     </View>
                     <View className=' flex-col flex-1 '>
-                        <View className=' bg-bgritem dark:bg-bgritem-d rounded-[22px] p-[12px] flex-col gap-y-1' >
+                        <View className=' bg-bgritem dark:bg-bgritem-d rounded-[22px] p-3 flex-col gap-y-1' >
                             <View className="flex-row items-center overflow-hidden">
                                 <Profile {...data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
-                                <View><Text className="text-neutral-400 dark:text-neutral-600 px-[4px]">·</Text></View>
+                                <View><Text className="text-neutral-400 dark:text-neutral-600 px-1">·</Text></View>
                                 <Link href={data.cmt_url} className="flex items-center"><Time ts={data.cmt_time}></Time></Link>
-                                {!!data.cmt_mood && <><View><Text className="text-neutral-400 dark:text-neutral-600 px-[4px]">·</Text></View><StarsView rating={data.cmt_mood} starSize={20} /></>}
+                                {!!data.cmt_mood && <><View><Text className="text-neutral-400 dark:text-neutral-600 px-1">·</Text></View><StarsView rating={data.cmt_mood} starSize={20} /></>}
                                 {(maxLevel < data.cmt_level && appSetting('comments', 'in_reply')) && parent?.data && <Row>
-                                    <Text className="text-neutral-400 dark:text-neutral-600 px-[4px] text-sm ">· In reply to</Text>
+                                    <Text className="text-neutral-400 dark:text-neutral-600 px-1 text-sm ">· In reply to</Text>
                                     <Profile {...parent.data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
                                     {false && <Text className="text-neutral-500 px-1 text-sm whitespace-nowrap text-ellipsis overflow-hidden"> {stripTags(parent?.data?.cmt_text)}</Text>}
                                 </Row>}
@@ -276,12 +276,12 @@ export default function UnitComments(props) {
                             </View>
                             {(viewState.view != 'edited' && imageList.length > 0) && <View className='max-w-xs w-full'><Carousel data={imageList} /></View>}
                         </View>
-                        {viewState.view != 'edited' && <View className=' flex-row w-full mb-[12px] mt-[2px] items-center'>
-                            {(!!currentUser && !!props.handleReply && !props.module.includes('_reviews')) ? <View className='mr-2'>
+                        {viewState.view != 'edited' && <View className=' flex-row w-full mb-3 mt-0.5 items-center'>
+                            {(!!currentUser && !!props.handleReply && !props.module.includes('_reviews')) ? <View className='mr-2 '>
                                 <Button align="start" title={t("Reply")} size="xs" startDecorator="MessageCircle" variant="text" onPress={() => handleReply(data)} rounded />
                             </View> : <View></View>
                             }
-                            {(!!currentUser && !props.handleReply && !props.module.includes('_reviews')) ? <View className='mr-2'>
+                            {(!!currentUser && !props.handleReply && !props.module.includes('_reviews')) ? <View className='mr-2 '>
                                 <Link href={props.contentUrl + '#cmt_id=' + data.cmt_id}><Button align="start" title={t("Reply")} size="xs" startDecorator="MessageCircle" variant="text" rounded /></Link>
                             </View> : <View></View>
                             }

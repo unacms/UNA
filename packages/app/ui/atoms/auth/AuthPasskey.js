@@ -18,7 +18,7 @@ export default function AuthPasskey({ button }) {
                     title="Use Passkey"
                     startDecorator="KeySquare" // Changed to string
                     fullWidth
-                    ring="rounded-[13px] bg-neutral-300 dark:bg-neutral-950 shadow-sm hover:shadow-none"
+                    ring="rounded-xl bg-neutral-300 dark:bg-neutral-950 shadow-sm hover:shadow-none"
                     size="base"
                 />
             )}

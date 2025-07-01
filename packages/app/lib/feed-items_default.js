@@ -116,7 +116,7 @@ export const GroupView = memo(({ data, styles, url, isCompact }) => {
             <View>
                 <View>
                     <Text
-                        className="text-neutral-800 dark:text-neutral-200 text-base leading-[24px]"
+                        className="text-neutral-800 dark:text-neutral-200 text-base leading-6"
                         numberOfLines={3}
                     >
                         {stripTags(data.content.text)}
@@ -166,7 +166,7 @@ export const AdView = memo(({ data, styles, url, isCompact }) => {
             <View>
                 <View>
                     <Text
-                        className="text-neutral-800 dark:text-neutral-200 pb-4 text-base leading-[24px]"
+                        className="text-neutral-800 dark:text-neutral-200 pb-4 text-base leading-6"
                         numberOfLines={3}
                     >
                         {data.content.text}
@@ -212,7 +212,7 @@ export const MarketView = memo(({ data, styles, url, isCompact }) => {
             <View>
                 <View>
                     <Text
-                        className="text-neutral-800 dark:text-neutral-200 pb-4 text-base leading-[24px]"
+                        className="text-neutral-800 dark:text-neutral-200 pb-4 text-base leading-6"
                         numberOfLines={3}
                     >
                         {data.content.text}
@@ -230,7 +230,7 @@ export const DefaultView = memo(({ data, styles, bIsTitle, bIsTimelineContent, c
     return <>
         <View className={isCompact ? "flex-row-reverse" : " flex-col "}>
             {data.mainImage && (
-                <View className={isCompact ? " w-48 mb-auto pr-4" : "w-full mb-[12px] "}>
+                <View className={isCompact ? " w-48 mb-auto pr-4" : "w-full mb-3 "}>
                     <View
                         className="w-full aspect-video  rounded-lg overflow-hidden  "
                         style={styles.card_image}
@@ -245,12 +245,12 @@ export const DefaultView = memo(({ data, styles, bIsTitle, bIsTimelineContent, c
                     </View>
                 </View>
             )}
-            <View className="flex-auto my-auto flex-col px-[12px] pb-[8px] sm:px-4 sm:pb-3 ">
+            <View className="flex-auto my-auto flex-col px-3 pb-2 sm:px-4 sm:pb-3 ">
                 {bIsTitle && (
                     <Link href={url} className="">
                         <Text
                             numberOfLines={3}
-                            className=" pb-[8px] text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-xl sm:text-2xl tracking-tight font-bold"
+                            className=" pb-2 text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-xl sm:text-2xl tracking-tight font-bold"
                         >
                             {data.content.title}
                         </Text>
@@ -260,13 +260,13 @@ export const DefaultView = memo(({ data, styles, bIsTitle, bIsTimelineContent, c
                     <View>
                         {bIsTimelineContent && (
                             <View className={' ' + ((data.content.text && content_attach.length > 0) ? ' pb-2 ' : '')}>
-                                {fulltext ? <Html data={data.content.text ? data.content.text : ''} /> : <ContentMore id={'feed-' + data.id} showLink={data?.content?.images_attach?.length == 0} content={data.content.text ? data.content.text : ''} numberOfLines={3} openSmall={false} textClassName=" text-neutral-800 dark:text-neutral-200 text-base leading-[24px] " />}
+                                {fulltext ? <Html data={data.content.text ? data.content.text : ''} /> : <ContentMore id={'feed-' + data.id} showLink={data?.content?.images_attach?.length == 0} content={data.content.text ? data.content.text : ''} numberOfLines={3} openSmall={false} textClassName=" text-neutral-800 dark:text-neutral-200 text-base leading-6 " />}
                                 {!!data.content.embed && <View className=''><Embed data={data.content.embed} /></View>}
                             </View>
                         )}
                         {!bIsTimelineContent && (
                             <Text
-                                className="text-neutral-800 dark:text-neutral-200 text-base leading-[24px]"
+                                className="text-neutral-800 dark:text-neutral-200 text-base leading-6"
                                 numberOfLines={3}
                             >
                                 {stripTags(data.content.text)}
@@ -311,12 +311,12 @@ export const PollView = memo(({ data, styles, bIsTitle, bIsTimelineContent, cont
                     </View>
                 </View>
             )}
-            <View className="flex-auto my-auto flex-col px-[12px] pb-[8px] sm:px-4 sm:pb-3 ">
+            <View className="flex-auto my-auto flex-col px-3 pb-2 sm:px-4 sm:pb-3 ">
                 {bIsTitle && (
                     <Link href={url} className="">
                         <Text
                             numberOfLines={3}
-                            className=" pb-[8px] text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-lg sm:text-xl tracking-tight font-bold"
+                            className=" pb-2 text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-lg sm:text-xl tracking-tight font-bold"
                         >
                             {data.content.title}
                         </Text>

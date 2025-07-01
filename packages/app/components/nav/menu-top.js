@@ -18,7 +18,7 @@ export default function MenuTop({ url, uri }) {
     )
 
     return (
-        <Row className="hidden lg:flex flex-auto w-full mx-auto max-w-3xl gap-x-[2px] justify-between items-center align-middle ">
+        <Row className="hidden lg:flex flex-auto w-full mx-auto max-w-3xl gap-x-0.5 justify-between items-center align-middle ">
             {menu_navbar_items.map((item, index) => {
                 const isActive = item.link === '/' + url || (item.link === '/' && uri === 'home');
                 return <MenuTopItem key={`bmi-${index}`} link={item.link} icon={item.icon} isTitle={item.showTitle} title={t(item.title)} isActive={isActive} />
@@ -47,7 +47,7 @@ function MenuTopItem({ link, title, index, icon, isTitle, isActive }) {
                         size="28"
                         color={isActive ? colors.primary : colors.barsColor}
                     />
-                    {isTitle && <Text className={`whitespace-nowrap text-ellipsis overflow-hidden tracking-tight font-medium ${isActive ? 'text-primary dark:text-primary-d' : 'text-neutral-800 dark:text-neutral-200'} text-lg px-[12px] web:text-[18px] native:text-[18px] leading-[28px]`}>{title}</Text>}
+                    {isTitle && <Text className={`whitespace-nowrap text-ellipsis overflow-hidden tracking-tight font-medium ${isActive ? 'text-primary dark:text-primary-d' : 'text-neutral-800 dark:text-neutral-200'} text-lg px-3 web:text-lg native:text-lg leading-7`}>{title}</Text>}
                 </Row>
                 {/* {isActive && (
                     <View className="-bottom-1.5 w-full bg-primary dark:bg-primary-d rounded-xl h-0.5 animate-appear" />

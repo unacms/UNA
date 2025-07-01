@@ -94,9 +94,9 @@ Units.Search = function Search({ data, imageSizes }) {
 Units.Small = function Small({ data, imageSizes }) {
     return (
        
-            <Card margin="mt-[1px] sm:mt-[12px] p-[12px] sm:p-4" border="sm:border border-bdrcard dark:border-bdrcard-d sm:rounded-2xl"  addClassName=" rounded-none sm:rounded-2xl max-w-2xl flex-auto mx-auto w-full gap-x-[12px] flex-row-reverse web:duration-300 ">
+            <Card margin="mt-px sm:mt-3 p-3 sm:p-4" border="sm:border border-bdrcard dark:border-bdrcard-d sm:rounded-2xl"  addClassName=" rounded-none sm:rounded-2xl max-w-2xl flex-auto mx-auto w-full gap-x-3 flex-row-reverse web:duration-300 ">
                 {data.image && (
-                    <View className="aspect-square md:aspect-video flex-none rounded-[12px]  overflow-hidden h-[120px] sm:h-36 mb-auto  ">
+                    <View className="aspect-square md:aspect-video flex-none rounded-xl  overflow-hidden h-30 sm:h-36 mb-auto  ">
                         <Image
                             {...data.image}
                             alt={data.title}

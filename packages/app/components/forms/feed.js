@@ -37,14 +37,14 @@ function ProfileView({ isImageOnly = false, data, handleSubmit, showImage, setSh
 
     const isHiddenVisibility = data?.inputs?.['object_privacy_view']?.origtype == 'hidden' || !data?.inputs?.['object_privacy_view']
 
-    const authorName = (<Text className="text-neutral-900 dark:text-neutral-100 leading-[24px] px-[4px] font-bold tracking-tight text-[16px] truncate">
+    const authorName = (<Text className="text-neutral-900 dark:text-neutral-100 leading-6 px-1 font-bold tracking-tight text-base truncate">
         {author ? author.display_name : currentUser.display_name}
     </Text>
     )
 
     return (
-        <View className="flex-row flex-auto items-center justify-between gap-x-[8px] text-neutral-400 dark:text-neutral-600  ">
-            <View className="gap-x-[8px] mr-[8px] flex-row flex-auto ">
+        <View className="flex-row flex-auto items-center justify-between gap-x-2 text-neutral-400 dark:text-neutral-600  ">
+            <View className="gap-x-2 mr-2 flex-row flex-auto ">
                 <Profile {...profileData} displaySize="lg" displayType="unit_wo_info" />
 
                 <View className={`flex-col flex-auto ${!isHiddenVisibility ? 'group ' : ''}`}>
@@ -116,7 +116,7 @@ export default function FormFeed(props) {
     function checkEditorHeight(reportedInternalHeight) {
         const actualHasText = stripTags(formContext.getValues('text') || '').trim().length > 0;
 
-        // For post editor: 1 line text ~24px. Wrapper padding (px-[12px]) ~24px. Editor internal est. ~2px. Total ~50px.
+        // For post editor: 1 line text ~24px. Wrapper padding (px-3) ~24px. Editor internal est. ~2px. Total ~50px.
         const minVisualHeightWhenTyping = 50;
         const visualFloorHeight = actualHasText ? minVisualHeightWhenTyping : baseEditorHeight;
 
@@ -234,7 +234,7 @@ export default function FormFeed(props) {
         {getFormFieldByData(props.data.inputs['owner_id'], props.handleSubmit, 'default')}
         {getFormFieldByData(props.data.inputs['type'], props.handleSubmit, 'default')}
         <View className="justify-between flex-col flex-auto">
-            <View className="w-full flex-1 justify-start px-[12px] ">
+            <View className="w-full flex-1 justify-start px-3 ">
                 <Reanimated.View style={editorWrapperAnimatedStyle} className="flex-auto">
                     {getFormFieldByData(
                         props.data.inputs['text'],
@@ -313,7 +313,7 @@ export default function FormFeed(props) {
             <View className="  ">
 
                 <View className={
-                    '  items-center flex-auto w-full gap-x-[8px] p-[12px] bg-bgritem dark:bg-bgritem-d  ' +
+                    '  items-center flex-auto w-full gap-x-2 p-3 bg-bgritem dark:bg-bgritem-d  ' +
                     (isWeb ? ' ' : ' ') +
                     (isSmall
                         ? ' ' +
@@ -322,8 +322,8 @@ export default function FormFeed(props) {
                         : ' lalal ')
                 }>
 
-                    <Row className="gap-x-[8px] w-full justify-between ">
-                        <Row className="flex-none gap-x-[8px]">
+                    <Row className="gap-x-2 w-full justify-between ">
+                        <Row className="flex-none gap-x-2">
                             {props.data.inputs['obfuscate_faces'] && (
                                 <View className="">
                                     {getFormFieldByData(
@@ -392,7 +392,7 @@ export default function FormFeed(props) {
     if (isFormOnly) {
         return (
             <View className="w-full flex-1 h-full">
-                <View className="items-start justify-start p-[12px] ">
+                <View className="items-start justify-start p-3 ">
                     {header}
                 </View>
                 {form}
@@ -442,11 +442,11 @@ export default function FormFeed(props) {
                 <Card
                     rounded=" rounded-none sm:rounded-2xl   "
                     margin=" mx-auto mb-1 sm:mb-3 "
-                    addClassName=" w-full px-[12px] pt-[8px] pb-[12px] sm:p-[16px]  "
+                    addClassName=" w-full px-3 pt-2 pb-3 sm:p-4  "
                 >
                     {
                         props?.exProps?.showForm !== false && (
-                            <View className=" flex-row gap-x-[8px] sm:gap-x-[12px] ">
+                            <View className=" flex-row gap-x-2 sm:gap-x-3 ">
                                 <View className="my-auto">
                                     <ProfileView isImageOnly={true} />
                                 </View>

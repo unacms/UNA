@@ -66,7 +66,7 @@ export default function ElementMenu(oProps) {
     const aExcept = oProps?.except || [''];
     const aExceptTitle = oProps?.except_title || ['BxTemplView', 'BxTemplFavorite', 'BxTemplFeature', 'BxTemplReport', 'BxTimelineModule'];
 
-    let sClassName = oProps?.params?.className || 'bx-menu gap-x-[8px]';
+    let sClassName = oProps?.params?.className || 'bx-menu gap-x-2';
 
     //--- show vertical
     const bShowVertical = oProps?.params?.showVertical === true;

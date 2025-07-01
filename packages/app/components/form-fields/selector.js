@@ -144,7 +144,7 @@ export default function (props) {
         <>
             {ModalCnt}
             <Field {...props}>
-                <View className='w-full justify-between bg-bgrinput dark:bg-bgrinput-d rounded-[12px] p-[2px] px-[4px] min-h-[56px] border border-bdrinput dark:border-bdrinput-d'>
+                <View className='w-full justify-between bg-bgrinput dark:bg-bgrinput-d rounded-xl p-0.5 px-1 min-h-14 border border-bdrinput dark:border-bdrinput-d'>
                     <View className={styles + ' w-full flex-auto  items-center flex-row flex-wrap'}>
                         {props.align == 'right' && <Button
                             startDecorator="Plus"

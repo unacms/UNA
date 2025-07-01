@@ -9,10 +9,10 @@ export default function PageLayout(props) {
     const refer = useRef();
     const content = (
         <Animated.ScrollView ref={refer} className={getPageWidth(props.uri, props.data?.config) + ' mx-auto w-full '} keyboardShouldPersistTaps="always" keyboardDismissMode="on-drag">
-            <View className='p-[12px] sm:p-[16px]  web:duration-300 w-full '>
+            <View className='p-3 sm:p-4  web:duration-300 w-full '>
                 {props.children}
             </View>
-            <MenuFooter cntClasses="w-full flex-row flex-wrap opacity-80 h-[64px] items-center justify-center"/>
+            <MenuFooter cntClasses="w-full flex-row flex-wrap opacity-80 h-16 items-center justify-center"/>
         </Animated.ScrollView>
     );
 

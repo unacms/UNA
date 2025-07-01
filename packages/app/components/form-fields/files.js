@@ -506,8 +506,8 @@ function GhostsList(imagesList, bMultiple, handleDelete, props) {
     const isCover = props.preview === "cover";
 
     const sizes = [
-        isCover ? "w-full h-[30vh] mb-[16px] sm:rounded-xl" : "w-[100px] h-[100px] mb-[12px] rounded-lg",
-        "m-[1px] justify-center items-center overflow-hidden bg-bgritem dark:bg-bgritem-d ",
+        isCover ? "w-full h-[30vh] mb-4 sm:rounded-xl" : "w-25 h-25 mb-3 rounded-lg",
+        "m-px justify-center items-center overflow-hidden bg-bgritem dark:bg-bgritem-d ",
     ].join(" ");
 
     const sizes2 = isCover ? '100%' : 100;
@@ -532,7 +532,7 @@ function GhostsList(imagesList, bMultiple, handleDelete, props) {
                     isVideo ? (
                         <Video src={img.uri || img.file_url} />
                     ) : (
-                        <View className="h-16 w-16 text-neutral-700 dark:text-neutral-300 items-center justify-center"><Icon icon="File" className="w-[36px] h-[36px]" size={36} /></View>
+                        <View className="h-16 w-16 text-neutral-700 dark:text-neutral-300 items-center justify-center"><Icon icon="File" className="w-9 h-9" size={36} /></View>
                     )
 
                 )}

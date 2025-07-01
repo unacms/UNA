@@ -21,7 +21,7 @@ import { getComponent } from 'app/components/registry';
 
 export const TextHeader = memo(({ text }) => {
     const { t } = useTranslation();
-    return <Text className="font-bold text-neutral-800 dark:text-neutral-200 flex-auto leading-[44px] text-3xl tracking-tight">
+    return <Text className="font-bold text-neutral-800 dark:text-neutral-200 flex-auto leading-11 text-3xl tracking-tight">
         {t(text)}
     </Text>
 })
@@ -119,14 +119,14 @@ export const Header = memo(({
     const ContextSelector = getComponent('molecule', 'context_selector')
     
     return (
-        <Row className={` px-[12px] sm:px-[16px] items-center h-[64px] justify-between web:duration-300`}>
+        <Row className={` px-3 sm:px-4 items-center h-16 justify-between web:duration-300`}>
             {(!currentUser && !pageData?.context && !text && (!settings?.headerSettings || settings?.headerSettings?.header)) && 
                 <Link href="/home" aria-label="Home">
                     <Pressable className="items-center flex-row hover:scale-105 rounded-[14px] active:scale-95 active:opacity-50 gap-x-3 text-neutral-800 dark:text-neutral-200 web:hover:text-neutral-800 web:dark:hover:text-neutral-200 duration-300 ">
-                        <View className="w-[44px] h-[44px]">
+                        <View className="w-11 h-11">
                             {appStatic('logo_mark')}
                         </View>
-                        <View className="w-[72px] h-[36px] flex-row items-center">
+                        <View className="w-18 h-9 flex-row items-center">
                             {appStatic('logo_text')}
                         </View>
                     </Pressable>

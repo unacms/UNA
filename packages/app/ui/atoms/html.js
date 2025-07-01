@@ -44,7 +44,7 @@ const StyledLi = ({ children, ...props }) => {
     }
     return (
         <Row {...props} className={`mb-1 ml-4 flex-row items-start`}>
-            <Text className="mr-2">•</Text>
+            <Text className="mr-2 ">•</Text>
             <Text className="flex-1">{children}</Text>
         </Row>
     )

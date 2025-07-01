@@ -30,7 +30,7 @@ export default function Unit(props) {
     return (
         <Link href={data.url} emulate={true}>
             <View
-                className=" px-[8px] h-[48px] flex-row  web:duration-200 rounded-xl active:opacity-50 hover:bg-bgritem dark:hover:bg-bgritem-d items-center gap-x-[12px] "
+                className=" px-2 h-12 flex-row  web:duration-200 rounded-xl active:opacity-50 hover:bg-bgritem dark:hover:bg-bgritem-d items-center gap-x-3 "
             >
                 <Profile
                     url_avatar={data?.image?.src}
@@ -40,8 +40,8 @@ export default function Unit(props) {
                 />
 
                 
-                    <View className="flex-row justify-between gap-x-[12px] flex-auto items-center">
-                            <Text numberOfLines={2} className="text-[14px] leading-[18px] font-semibold text-neutral-800 dark:text-neutral-200">
+                    <View className="flex-row justify-between gap-x-3 flex-auto items-center">
+                            <Text numberOfLines={2} className="text-sm leading-4.5 font-semibold text-neutral-800 dark:text-neutral-200">
                                 {data.title}
                             </Text>
                         

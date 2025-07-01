@@ -33,7 +33,7 @@ export default function ({ values, selectedValue, setValue }) {
                     )
                 })
             }
-                        <View className='flex-row justify-end pt-[12px] mt-[12px] border-t border-bdr dark:border-bdr-d'>
+                        <View className='flex-row justify-end pt-3 mt-3 border-t border-bdr dark:border-bdr-d'>
 
             <Button
                 variant="primary"

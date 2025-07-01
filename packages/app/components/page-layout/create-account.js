@@ -27,11 +27,11 @@ export default function PageLayout(props) {
     const refer = useRef();
 
     const content = isWeb ? (
-        <View className={`flex-col justify-center min-h-[100vh] w-full pt-[64px] ${TABLET_MODE_FROM}:pt-0`}>
+        <View className={`flex-col justify-center min-h-[100vh] w-full pt-16 ${TABLET_MODE_FROM}:pt-0`}>
             <View className="w-full lg:flex-row mx-auto my-auto  max-w-[1440px]">
-                <View className="my-auto flex-col items-center lg:items-start flex-auto p-[16px] sm:p-[32px] xl:p-[64px]" accessible={true}>
+                <View className="my-auto flex-col items-center lg:items-start flex-auto p-4 sm:p-8 xl:p-16" accessible={true}>
                     {appStatic('join_text')}
-                    <AnimatedView direction="up" className="flex-auto hidden lg:flex items-center lg:items-start gap-y-[16px] sm:gap-y-[24px] max-w-md sm:max-w-lg lg:max-w-3xl">
+                    <AnimatedView direction="up" className="flex-auto hidden lg:flex items-center lg:items-start gap-y-4 sm:gap-y-6 max-w-md sm:max-w-lg lg:max-w-3xl">
                         <Text
                             accessible={true}
                             accessibilityRole="heading"
@@ -53,16 +53,16 @@ export default function PageLayout(props) {
                         </Text>
                     </AnimatedView>
                 </View>
-                <View className="max-w-xl w-full flex-auto mx-auto p-[16px] sm:p-[32px] my-auto">
+                <View className="max-w-xl w-full flex-auto mx-auto p-4 sm:p-8 my-auto">
                     <AnimatedView>
                         <View className="relative">
                             <View className="absolute top-4 flex shadow rounded-3xl w-full h-full bg-neutral-500 dark:bg-black blur-lg opacity-20 dark:opacity-50"></View>
-                             <Card rounded="rounded-[24px]" margin="p-[16px] sm:p-[24px]" addClassName="border border-white overflow-hidden dark:border-bdrcard-d gap-y-[24px]">
-                                <View className="flex-col flex-auto gap-y-[8px] justify-center ">
-                                    <Text className="text-[20px] sm:text-[24px] text-center lg:text-left leading-[none] tracking-tight font-semibold text-neutral-800 dark:text-neutral-200">
+                             <Card rounded="rounded-3xl" margin="p-4 sm:p-6" addClassName="border border-white overflow-hidden dark:border-bdrcard-d gap-y-6">
+                                <View className="flex-col flex-auto gap-y-2 justify-center ">
+                                    <Text className="text-xl sm:text-2xl text-center lg:text-left leading-[none] tracking-tight font-semibold text-neutral-800 dark:text-neutral-200">
                                         {t('create_account_page_caption')}
                                     </Text>
-                                    <Text className="text-[14px] sm:text-[16px] text-center lg:text-left text-neutral-500">
+                                    <Text className="text-sm sm:text-base text-center lg:text-left text-neutral-500">
                                         {t('create_account_page_already_have')} <Link href="/login">{t('create_account_page_sign_in')}</Link>.
                                     </Text>
                                 </View>
@@ -88,7 +88,7 @@ export default function PageLayout(props) {
                                         }}
                                     />
                                 )}
-                                <View className="flex items-center justify-center gap-y-2 border-t border-bdr dark:border-bdr-d mt-[16px] pt-[16px]">
+                                <View className="flex items-center justify-center gap-y-2 border-t border-bdr dark:border-bdr-d mt-4 pt-4">
                                     <AuthPanel />
                                 </View>
                             </Card>
@@ -97,13 +97,13 @@ export default function PageLayout(props) {
 
                 </View>
             </View>
-            <MenuFooter cntClasses="w-full flex-row flex-wrap opacity-80 h-[64px] items-center justify-center" />
+            <MenuFooter cntClasses="w-full flex-row flex-wrap opacity-80 h-16 items-center justify-center" />
         </View>
     ) : (
         <View className="flex-col justify-center w-full p-4">
             <Card>
                 <View className="flex-col lg:hidden pb-4">
-                    <Text className="text-[20px] sm:text-[24px] text-center lg:text-left leading-[none] tracking-tight font-semibold text-neutral-800 dark:text-neutral-200">
+                    <Text className="text-xl sm:text-2xl text-center lg:text-left leading-[none] tracking-tight font-semibold text-neutral-800 dark:text-neutral-200">
                         Create an account
                     </Text>
                 </View>
@@ -140,7 +140,7 @@ export default function PageLayout(props) {
                     <AuthPanel />
                 </View>
             </Card>
-            <MenuFooter cntClasses="w-full flex-row flex-wrap opacity-80 h-[64px] items-center justify-center" />
+            <MenuFooter cntClasses="w-full flex-row flex-wrap opacity-80 h-16 items-center justify-center" />
         </View>
     );
 

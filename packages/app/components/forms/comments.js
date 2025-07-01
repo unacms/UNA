@@ -77,7 +77,7 @@ export default function FormComments(props) {
 
         let totalChromeHeightEstimate;
         if (actualHasText) {
-            // Chrome when editorHeight > baseHeight (triggers pb-[48px]):
+            // Chrome when editorHeight > baseHeight (triggers pb-12):
             // Wrapper: 10px (top) + 48px (bottom) = 58px
             // Editor internal (estimate): 2px
             totalChromeHeightEstimate = 58 + 2; // 60px
@@ -187,30 +187,30 @@ export default function FormComments(props) {
         'bg-bgritem',
         'dark:bg-bgritem-d',
         'rounded-[22px]',
-        'p-[12px]',
+        'p-3',
 
     ];
 
     const minVisualHeightWhenTypingForPadding = 80;
     const shouldHaveExtraPadding = (hasText && minVisualHeightWhenTypingForPadding > baseHeight) || (!hasText && baseHeight > 40);
     if (shouldHaveExtraPadding) {
-        inputWrapperClasses.push('pb-[40px]');
+        inputWrapperClasses.push('pb-10');
     }
 
     const attachmentButtonContainerClasses = [
         'absolute',
         'bottom-0',
         'z-10',
-        'h-[44px]',
+        'h-11',
         'flex',
         'items-center',
         'justify-center',
-        'p-[4px]'
+        'p-1'
     ];
 
     let currentAttachmentButtonWidthClass;
     if (isWeb) {
-        currentAttachmentButtonWidthClass = ' w-[44px] h-[44px]';
+        currentAttachmentButtonWidthClass = ' w-11 h-11';
     } else {
         currentAttachmentButtonWidthClass = 'w-fit';
     }
@@ -227,7 +227,7 @@ export default function FormComments(props) {
 
     return (
         <View className="w-full ">
-            <Row className="w-full gap-x-[8px]">
+            <Row className="w-full gap-x-2">
                 {currentUser && (
 
                     <Profile
@@ -266,7 +266,7 @@ export default function FormComments(props) {
                             {
                                 form_name: props.name,
                                 container_class: 'comments',
-                                classes: 'flex-1 text-[16px] leading-[20px] text-neutral-800 dark:text-neutral-200 tiptap-comments',
+                                classes: 'flex-1 text-base leading-5 text-neutral-800 dark:text-neutral-200 tiptap-comments',
                                 autofocus: isAutoFocus,
                                 bg: 'transparent',
                                 placeholder: 'Leave a comment...',
@@ -297,10 +297,10 @@ export default function FormComments(props) {
                                 className="h-full w-full"
                             >
                                 <Row className="h-full items-center">
-                                    <View className="h-full p-[4px] flex items-center justify-center">
+                                    <View className="h-full p-1 flex items-center justify-center">
                                         <FileButton field_name='cmt_image' icon="Image" source='library' variant='text' />
                                     </View>
-                                    <View className="h-full p-[4px] flex items-center justify-center">
+                                    <View className="h-full p-1 flex items-center justify-center">
                                         <FileButton field_name='cmt_image' icon="Image" source='camera' variant='text' />
                                     </View>
                                 </Row>
@@ -308,7 +308,7 @@ export default function FormComments(props) {
                         )}
                     </View>
                     {(!!hasText || !!imagesValue) && (
-                        <View className="absolute right-0 bottom-0  h-[44px] p-[4px] z-10">
+                        <View className="absolute right-0 bottom-0  h-11 p-1 z-10">
                             {getFormFieldByData(
                                 props.data.inputs['cmt_submit'],
                                 handleSubmitWithSanitization,
@@ -335,7 +335,7 @@ export default function FormComments(props) {
             </Row>
 
             <ScrollView horizontal={true}>
-                <Row className="flex-wrap gap-[8px] mt-[12px]">{
+                <Row className="flex-wrap gap-2 mt-3">{
                     getFormFieldByData(
                         props.data.inputs['cmt_image'],
                         props.handleSubmit,

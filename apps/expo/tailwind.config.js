@@ -6,7 +6,7 @@ module.exports = {
     '../../packages/**/*.{js,jsx,ts,tsx}'
   ],
   safelist: [
-    'gap-x-[8px]',
+    'gap-x-2',
   ],
   presets: [require("nativewind/preset")],
   theme: {

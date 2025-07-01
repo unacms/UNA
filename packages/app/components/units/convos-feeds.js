@@ -20,7 +20,7 @@ const ListFeed = memo((data)  => {
   return <Pressable onPress={(e) => onPress(e, data)} className={ isActive ? ' bg-neutral-500/10' : '' }>
             <View className="flex-row p-2 sm:px-3 groupweb:duration-200 overflow-hidden m-1 sm:mx-2 rounded-lg hover:bg-neutral-500/10 active:opacity-50 active:translate-y-0.5">
 
-            <View className="w-12 h-12 mr-2 rounded-full flex-none bg-secondary-500/10">
+            <View className="w-12 h-12 mr-2  rounded-full flex-none bg-secondary-500/10">
             <Profile
               { ...author_data }
               displayType="unit_wo_info"
@@ -37,7 +37,7 @@ const ListFeed = memo((data)  => {
           </View>
           <View className="flex-row w-full items-end content-end">
             <Text
-              className="flex-auto mr-2 text-sm text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-neutral-50"
+              className="flex-auto mr-2  text-sm text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-neutral-50"
               numberOfLines={1}
             >
               { message }
@@ -100,13 +100,13 @@ const MsgFeed = memo(({ item, handlerMenuSelect }) => {
     }, [mode]);
 
     return (
-        <View className='w-full pt-3'>
+        <View className='w-full pt-3 '>
             <View className="flex-row-reverse ">
                 <View className='flex-1 flex-col gap-y-4 -translate-x-2 translate-y-1 '>
                     <View className={sCommentClass + ' py-2'} >
                         <View className="flex-row flex-1 items-center pb-0.5">
                             <Profile {...author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
-                            <Text className="text-neutral-400 dark:text-neutral-600 px-[4px]">·</Text>
+                            <Text className="text-neutral-400 dark:text-neutral-600 px-1">·</Text>
                             <Time className="" ts={created}></Time>
                             {
                                 mode === 'edit' && <View className="absolute right-0">
@@ -142,7 +142,7 @@ const MsgFeed = memo(({ item, handlerMenuSelect }) => {
                         { mode !== 'edit' && <ImagesComponent files={files}/>}
                     </View>
                     <View className="flex-row w-full justify-between items-center">
-                        { !!currentUser ? <View className='mr-2'>
+                        { !!currentUser ? <View className='mr-2 '>
                                                 <Reactions {...{
                                                     counter: { items: reactions },
                                                     params: {

@@ -775,7 +775,7 @@ export  const settingsDefault = {
                 overflow: 'hidden',
             },
             badgeBackground: 'rgba(239,68,68,1)', // Red color by default
-            badgeTextSize: 'text-[12px] leading-[16px] font-semibold', // Customizable text size for badge
+            badgeTextSize: 'text-xs leading-4 font-semibold', // Customizable text size for badge
         },
         light: {
             primary: 'rgba(37, 99, 235, 1)',
@@ -835,7 +835,7 @@ export  const settingsDefault = {
             content_max_width: ' w-full max-w-7xl ',
             menu_is_dynamic: true,
             menu_cnt: ' flex-row flex-none w-full ',
-            menu_categ_ident: 'pl-[48px]',
+            menu_categ_ident: 'pl-12',
             right_column_cnt: 'fixed-process pr-4 py-4',
             topmenu_cnt:
                 'w-full px-8 pt-6 items-stretch justify-stretch sticky z-50 t-8 gap-x-8 hidden lg:flex p',
@@ -852,25 +852,25 @@ export  const settingsDefault = {
         },
         checkbox: {
             container:
-                ' h-[20px] w-[20px] m-[4px] rounded-[4px] border-[2px] border-neutral-500 bg-transparent justify-center items-center   ',
+                ' h-5 w-5 m-1 rounded-sm border-2 border-neutral-500 bg-transparent justify-center items-center   ',
             container_selected:
-                ' m-[4px] h-[20px] w-[20px] rounded-[4px] border-[2px] border-neutral-500 bg-transparent justify-center items-center ',
-            selected: ' h-[10px] w-[10px] rounded-[2px] bg-primary m-[4px]',
-            text: '  text-neutral-800 dark:text-neutral-200 text-[16px] leading-[20px] font-medium ',
+                ' m-1 h-5 w-5 rounded-sm border-2 border-neutral-500 bg-transparent justify-center items-center ',
+            selected: ' h-2.5 w-2.5 rounded-xs bg-primary m-1',
+            text: '  text-neutral-800 dark:text-neutral-200 text-base leading-5 font-medium ',
             selected_icon: false,
         },
         checkbox_set: {
             container: '  gap-x-2 items-center',
         },
         switcher: {
-            container: 'items-center flex flex-row-reverse justify-between gap-x-2 items-center h-[56px] min-w-[56px] rounded-[12px] flex-auto  p-[12px]  bg-neutral-50 border border-neutral-200  hover:border-neutral-300 focus:border-primary dark:bg-neutral-900 overflow-hidden  dark:border-neutral-800 dark:hover:border-neutral-700  dark:focus:border-primary-d  focus:bg-bgrinput-f dark:focus:bg-neutral-950    web:duration-300  placeholder-neutral-500   ',
-            text: ' text-neutral-800 dark:text-neutral-200  text-[16px] ',
+            container: 'items-center flex flex-row-reverse justify-between gap-x-2 items-center h-14 min-w-14 rounded-xl flex-auto  p-3  bg-neutral-50 border border-neutral-200  hover:border-neutral-300 focus:border-primary dark:bg-neutral-900 overflow-hidden  dark:border-neutral-800 dark:hover:border-neutral-700  dark:focus:border-primary-d  focus:bg-bgrinput-f dark:focus:bg-neutral-950    web:duration-300  placeholder-neutral-500   ',
+            text: ' text-neutral-800 dark:text-neutral-200  text-base ',
             track: 'item-center rounded-full ',
             thumb: ' rounded-full aspect-square bg-white',
             track_color: 'bg-red-500 dark:bg-red-500 ',
             active_track_color: 'bg-green-500 dark:bg-green-500',
-            size_base: ['w-[80px] h-[32px] p-1 ', 'h-[24px] w-[24px]'],
-            size_sm: ['w-[40px] h-[16px] p-0.5 ', 'h-[12px] w-[12px]'],
+            size_base: ['w-20 h-8 p-1 ', 'h-6 w-6'],
+            size_sm: ['w-10 h-4 p-0.5 ', 'h-3 w-3'],
         },
         doublerange: {
             container: 'w-full items-center justify-between mt-2',
@@ -898,16 +898,16 @@ export  const settingsDefault = {
             content_ver: '',
             content_hor: 'flex-row   ',
             item_ver:
-                ' group flex flex-row h-[48px] items-center p-[6px] text-sm rounded-[12px] font-medium hover:bg-bgritem dark:hover:bg-bgritem-d text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 hover:cursor-pointer',
+                ' group flex flex-row h-12 items-center p-1.5 text-sm rounded-xl font-medium hover:bg-bgritem dark:hover:bg-bgritem-d text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 hover:cursor-pointer',
             item_hor:
-                'flex block p-[6px] hover:-translate-y-1  dark:hover:text-white rounded-full hover:cursor-pointer text-neutral-700  hover:scale-125 active:scale-95   web:duration-200 dark:text-neutral-300 outline-none ',
+                'flex block p-1.5 hover:-translate-y-1  dark:hover:text-white rounded-full hover:cursor-pointer text-neutral-700  hover:scale-125 active:scale-95   web:duration-200 dark:text-neutral-300 outline-none ',
             item_np:
                 'flex flex-row focus:outline-none items-center justify-between px-1 py-0.5 rounded-lg font-medium hover:bg-bgritem dark:hover:bg-bgritem-d text-sm text-neutral-700 dark:text-neutral-300 dark:hover:text-white hover:cursor-pointer',
             item_cnt: 'items-center w-full',
             item_text:
-                'text-base web:text-sm leading-[32px] px-[12px] font-medium text-neutral-800 dark:text-neutral-200',
+                'text-base web:text-sm leading-8 px-3 font-medium text-neutral-800 dark:text-neutral-200',
             item_icon:
-                'flex items-center w-[36px] h-[36px] bg-bgritem dark:bg-bgritem-d group-hover:bg-bgritem-h dark:group-hover:bg-bgritem-dh rounded-full justify-center',
+                'flex items-center w-9 h-9 bg-bgritem dark:bg-bgritem-d group-hover:bg-bgritem-h dark:group-hover:bg-bgritem-dh rounded-full justify-center',
             icon_size: 20, // Default icon size for dropdown menu icons
         },
         modal: {
@@ -915,7 +915,7 @@ export  const settingsDefault = {
             container:
                 ' h-full sm:h-auto shadow-modal dark:shadow-modal-d bg-bgrmodal dark:bg-bgrmodal-d {ls}:rounded-2xl sm:border border-bdrmodal dark:border-bdrmodal-d ',
             content: ' h-auto ',
-            header: ' p-[12px] items-start justify-start border-b border-bdrmodal dark:border-bdrmodal-d',
+            header: ' p-3 items-start justify-start border-b border-bdrmodal dark:border-bdrmodal-d',
         },
         // Default styling for Card components.
         // - `default`: Base classes like background and shadow. These are always applied.
@@ -924,14 +924,14 @@ export  const settingsDefault = {
         // - `border`: Default border classes. Can be overridden by the Card component's `rounded` prop (as it often handles border too).
         card: {
             default: 'bg-bgrcard dark:bg-bgrcard-d backdrop-blur-xl ', // Base styles (e.g., background)
-            margin: 'p-[16px] sm:p-[24px]',                               // Default margin/padding
-            rounded: 'rounded-[16px]',                       // Default corner rounding
+            margin: 'p-4 sm:p-6',                               // Default margin/padding
+            rounded: 'rounded-2xl',                       // Default corner rounding
             border: ' border border-bdrcard dark:border-bdrcard-d overflow-hidden ',  // Default border and shadow styles
         },
         inputs: {
             default:
-                'h-[56px] min-w-[56px] rounded-[12px] flex-auto ' +
-                'px-[12px] py-[12px] text-[16px] ' +
+                'h-14 min-w-14 rounded-xl flex-auto ' +
+                'px-3 py-3text-base ' +
                 'bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d ' +
                 'hover:border-bdrinput-h dark:hover:border-bdrinput-dh ' +
                 'focus:border-bdrinput-f dark:focus:border-bdrinput-df ' +
@@ -940,13 +940,13 @@ export  const settingsDefault = {
                 'placeholder-neutral-500 ' +
                 'text-neutral-800 dark:text-neutral-200 ' +
                 'focus:text-neutral-900 dark:focus:text-neutral-100',
-            multi: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-[12px] flex-auto px-[12px] py-[12px] dark:focus:bg-bgrinput-df dark:text-neutral-100 text-[16px] leading-[20px] ',
+            multi: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-xl flex-auto px-3 py-3dark:focus:bg-bgrinput-df dark:text-neutral-100 text-base leading-5 ',
             rounded:
-                ' h-[48px] rounded-full flex-auto px-[12px] py-[11px] text-[16px] bg-bgrinput dark:bg-bgrinput-d hover:border-bdrinput-h focus:border-bdrinput-f overflow-hidden border border-bdrinput focus:bg-bgrinput-f dark:border-bdrinput-d dark:focus:border-bdrinput-d dark:focus:bg-bgrinput-df focus:border-bdrinput-f dark:focus:border-bdrinput-df   web:duration-300 placeholder-neutral-500 text-neutral-800 dark:text-neutral-200 ',
+                ' h-12 rounded-full flex-auto px-3 py-[11px] text-base bg-bgrinput dark:bg-bgrinput-d hover:border-bdrinput-h focus:border-bdrinput-f overflow-hidden border border-bdrinput focus:bg-bgrinput-f dark:border-bdrinput-d dark:focus:border-bdrinput-d dark:focus:bg-bgrinput-df focus:border-bdrinput-f dark:focus:border-bdrinput-df   web:duration-300 placeholder-neutral-500 text-neutral-800 dark:text-neutral-200 ',
             roundedsmall:
                 ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-full flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[34px] ',
-            small: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-full flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[36px] ',   
-            select: 'appearance-none pr-10 bg-bgrinput h-[56px] border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df  text-neutral-900 rounded-[12px]  flex-auto p-[12px] dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus dark:text-neutral-100 text-base',
+            small: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-full flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-9 ',   
+            select: 'appearance-none pr-10 bg-bgrinput h-14 border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df  text-neutral-900 rounded-xl  flex-auto p-3 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus dark:text-neutral-100 text-base',
         },
 
         button_sizes: {
@@ -956,47 +956,47 @@ export  const settingsDefault = {
             pressed_container: 'bg-primary dark:bg-primary-d',
             pressed_text: 'text-primary-700 dark:text-primary-300 group-hover:text-primary-800 dark:group-hover:text-primary-200',
             xs: {
-                rounded: 'rounded-[6px]',
-                padding: 'h-[32px] min-w-[32px] px-[6px]',
-                padding_icon_only: 'h-[32px] w-[32px] px-[6px]',
-                padding_with_title: 'h-[32px] px-[6px]',
-                icon_container: 'h-[20px] w-[20px] flex items-center justify-center',
-                title_container: 'px-[4px] web:text-[13px] native:text-[13px]',
+                rounded: 'rounded-md',
+                padding: 'h-8 min-w-8 px-1.5',
+                padding_icon_only: 'h-8 w-8 px-1.5',
+                padding_with_title: 'h-8 px-1.5',
+                icon_container: 'h-5 w-5 flex items-center justify-center',
+                title_container: 'px-1 text-xs',
                 icon_size: 20,
-                icon_margin: 'mx-[2px]', // conditional margin for icon container when title is present
+                icon_margin: 'mx-0.5', // conditional margin for icon container when title is present
                 title_margin: '',
             },
             sm: {
-                rounded: 'rounded-[8px]',
-                padding: 'h-[36px] min-w-[36px] px-[8px]',
-                padding_icon_only: 'h-[36px] w-[36px] px-[8px]',
-                padding_with_title: 'h-[36px] px-[8px]',
-                icon_container: ' h-[20px] w-[20px] flex items-center justify-center',
-                title_container: 'px-[4px] native:text-[14px]',
+                rounded: 'rounded-lg',
+                padding: 'h-9 min-w-9 px-2',
+                padding_icon_only: 'h-9 w-9 px-2',
+                padding_with_title: 'h-9 px-2',
+                icon_container: ' h-5 w-5 flex items-center justify-center',
+                title_container: 'px-1 text-sm',
                 icon_size: 20,
-                icon_margin: 'mx-[4px]', // conditional margin for icon container when title is present
+                icon_margin: 'mx-1', // conditional margin for icon container when title is present
                 title_margin: '', // conditional margin for text container when icon is present
             },
             base: {
-                rounded: 'rounded-[12px]',
-                padding: 'h-[44px] min-w-[44px] px-[10px]',
-                padding_icon_only: 'h-[44px] w-[44px] px-[10px]',
-                padding_with_title: 'h-[44px] px-[10px]',
-                icon_container: ' h-[24px] w-[24px] flex items-center justify-center',
-                title_container: 'px-[6px] web:text-[14px] native:text-[14px]',
+                rounded: 'rounded-xl',
+                padding: 'h-11 min-w-[44px] px-2.5',
+                padding_icon_only: 'h-11 w-11 px-2.5',
+                padding_with_title: 'h-11 px-2.5',
+                icon_container: ' h-6 w-6 flex items-center justify-center',
+                title_container: 'px-1.5 text-sm',
                 icon_size: 24,
-                icon_margin: 'mx-[4px]', // conditional margin for icon container when title is present
+                icon_margin: 'mx-1', // conditional margin for icon container when title is present
                 title_margin: '', // conditional margin for text container when icon is present
             },
             lg: {
-                rounded: 'rounded-[12px]',
-                padding: 'h-[56px] min-w-[56px] px-[14px]',
-                padding_icon_only: 'h-[56px] w-[56px] px-[14px]',
-                padding_with_title: 'h-[56px] px-[14px]',
-                icon_container: ' h-[28px] w-[28px] flex items-center justify-center',
-                title_container: 'px-[12px] web:text-[18px] native:text-[18px] leading-[28px]',
+                rounded: 'rounded-xl',
+                padding: 'h-14 min-w-[56px] px-3.5',
+                padding_icon_only: 'h-14 w-14 px-3.5',
+                padding_with_title: 'h-14 px-3.5',
+                icon_container: ' h-7 w-7 flex items-center justify-center',
+                title_container: 'px-3 text-lg leading-7',
                 icon_size: 28,
-                icon_margin: 'mx-[4px]', // conditional margin for icon container when title is present
+                icon_margin: 'mx-1', // conditional margin for icon container when title is present
                 title_margin: '', // conditional margin for text container when icon is present
             },
         },

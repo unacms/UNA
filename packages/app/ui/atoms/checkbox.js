@@ -10,7 +10,7 @@ export default function CheckBox2({title, onPress, status, value , icon, margin=
     const bgStyles =' active:bg-neutral-200 dark:active:bg-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-800 '
     const selected = status == 'checked';
     return (
-        <Pressable onPress={onPress} className={` ${icon ? 'flex-row gap-x-[12px]': 'flex-row-reverse'} ${isBackground ? bgStyles: ''} ${margin} items-center py-[8px] px-[12px] rounded-lg w-full`}>
+        <Pressable onPress={onPress} className={` ${icon ? 'flex-row gap-x-3': 'flex-row-reverse'} ${isBackground ? bgStyles: ''} ${margin} items-center py-2 px-3 rounded-lg w-full`}>
              { !!icon && <View className="w-8">{icon}</View>}
             
             <View className="flex-auto"><Text className={themeSettings.text}>{title}</Text></View>

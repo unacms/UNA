@@ -11,7 +11,7 @@ export default function AuthPanel ({ googleButton, className }) {
     if (appSetting('auth', 'enabled') !== true) return null;
     
     return (
-        <View className={`web:flex-row web:flex-wrap gap-x-[8px] gap-y-[8px] w-full ${className}`}>
+        <View className={`web:flex-row web:flex-wrap gap-x-2 gap-y-2 w-full ${className}`}>
             {appSetting('auth', 'google') && <AuthGoogle />}
             {appSetting('auth', 'github') && <AuthGitHub button={googleButton} />}
             {appSetting('auth', 'linkedin') && <AuthLinkedIn button={googleButton} />}

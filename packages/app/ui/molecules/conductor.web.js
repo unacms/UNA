@@ -102,9 +102,9 @@ const AddMenu = (menu, filter) => {
 
         let btn = undefined;
         if (button.section)
-            btn = <Search section={button.section} params={{ trigger: { size: "sm", ring: "p-[4px]" } }} />
+            btn = <Search section={button.section} params={{ trigger: { size: "sm", ring: "p-1" } }} />
         else {
-            btn = <Button title={t(button.title)} startDecorator={button.icon} ring="p-[4px]" variant="secondary" rounded size="sm" onPress={() => (handleFormModal(button, event, setPageData))} />;
+            btn = <Button title={t(button.title)} startDecorator={button.icon} ring="p-1" variant="secondary" rounded size="sm" onPress={() => (handleFormModal(button, event, setPageData))} />;
             btn = (button.link && button.name != "Add") ? <Link href={button.link} >{btn}</Link> : btn
         }
 
@@ -154,7 +154,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
 
     const MenuItemEx = memo(({ item, index }) => {
         const { title, addon, icon, link, menu_settings, key } = item;
-        const translatedTitle = <Text className="text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 leading-[24px] font-medium text-[16px]">{t(title)}</Text>;
+        const translatedTitle = <Text className="text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 leading-6 font-medium text-base">{t(title)}</Text>;
         const { currentUser } = useCurrentUser();
         let addonContent = callFn("getAddonForConductor", [item, index, currentUser])
 
@@ -177,7 +177,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
                 className={' pupurs' + menu_settings?.class ?? ''}
                 onPress={handlePress}
             >
-                <Row className="  hover:cursor-pointer justify-between bg-bgritem dark:bg-bgritem-d flex flex-row h-[44px] items-center px-[12px] text-[16px] rounded-[12px] hover:bg-bgritem-h dark:hover:bg-bgritem-dh items-center min-w-48">
+                <Row className="  hover:cursor-pointer justify-between bg-bgritem dark:bg-bgritem-d flex flex-row h-11 items-center px-3 text-base rounded-xl hover:bg-bgritem-h dark:hover:bg-bgritem-dh items-center min-w-[192px]">
                     {translatedTitle}
                     {addonContent}
                 </Row>
@@ -368,7 +368,7 @@ const RenderSceneHeader = ({ route, setFilterValue }) => {
         <>
             {callFn("getFiltersForConductor", [filters, setFilterValue, route?.endpoint?.params?.filters])}
             {counter > 0 && <View className="mx-4 mb-0 mt-2"><Text className="text-xl font-bold text-neutral-800  dark:text-neutral-200 ">{route.title} ({counter})</Text></View>}
-            {isTitle && <View className={`${conductorTheme.content_max_width} mx-auto w-full pt-3 px-4`}><Text className="text-3xl tracking-tight leading-[40px] font-bold text-neutral-800  dark:text-neutral-200 ">{route.title}</Text></View>}
+            {isTitle && <View className={`${conductorTheme.content_max_width} mx-auto w-full pt-3  px-4`}><Text className="text-3xl tracking-tight leading-10 font-bold text-neutral-800  dark:text-neutral-200 ">{route.title}</Text></View>}
         </>
     )
 };
@@ -678,8 +678,8 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
         const sidebarUnitType = route.blocks?.browse_sidebar?.unitType || 'default';
 
         return (
-            <Row className={(headerSettings.columns == "reverse" ? 'flex-row-reverse' : '') + conductorTheme.content_max_width + ' mx-auto w-full ' + (isCoverDisabled ? ' sm:px-[16px] sm:my-3 ' : '')}>
-                <View className={(isRightCol ? 'flex-auto sm:px-4 flex-auto ' : ' w-full mx-auto') /*sm:p-2*/ + (layoutName == 'navigator' ? '' : ' pt-1 sm:p-4 ') + (header ? ' sm:p-[12px] ' : '')}>
+            <Row className={(headerSettings.columns == "reverse" ? 'flex-row-reverse' : '') + conductorTheme.content_max_width + ' mx-auto w-full ' + (isCoverDisabled ? ' sm:px-4 sm:my-3 ' : '')}>
+                <View className={(isRightCol ? 'flex-auto sm:px-4 flex-auto ' : ' w-full mx-auto') /*sm:p-2*/ + (layoutName == 'navigator' ? '' : ' pt-1 sm:p-4 ') + (header ? ' sm:p-3 ' : '')}>
                     {TabFlashListM}
                     {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 && callFn("noContentByUrl", [route?.endpoint])))}
                 </View>
@@ -733,7 +733,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
     const tabBarObj1 = windowWidth < LAYOUT_BREAKPOINTS[TABLET_MODE_FROM] && isShowFilters ?
         <>
             {tabBarObj}
-            <View className={`items-start px-[12px] sm:px-[16px] py-[8px]`}>
+            <View className={`items-start px-3 sm:px-4 py-2`}>
                 <Button title="Filters" variant="default" size="sm" rounded onPress={showFilters} />
             </View>
         </> : tabBarObj;

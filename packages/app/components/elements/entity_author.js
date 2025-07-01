@@ -38,8 +38,8 @@ export default function ElementEntityAuthor(oProps) {
                     <>
                         <Text className=" text-neutral-600 dark:text-neutral-400 font-medium text-sm "> in </Text>
                         <Profile {...oProps.data.entry_context} displayType="unit_wo_info" displaySize="xxs" />
-                        <Text className=" text-neutral-600 dark:text-neutral-400 leading-[24px] font-medium text-[14px] ">
-                            <Link href={oProps.data.entry_context.url}><Text className="ml-[2px] text-neutral-600 dark:text-neutral-400 font-medium text-[12px] ">{oProps.data.entry_context.display_name}</Text></Link>
+                        <Text className=" text-neutral-600 dark:text-neutral-400 leading-6 font-medium text-sm ">
+                            <Link href={oProps.data.entry_context.url}><Text className="ml-0.5 text-neutral-600 dark:text-neutral-400 font-medium text-xs ">{oProps.data.entry_context.display_name}</Text></Link>
                         </Text>
                     </>
 
@@ -137,7 +137,7 @@ export default function ElementEntityAuthor(oProps) {
             </Modal>)
             }
 
-            <View className={oProps.data.text ? '' : 'flex-auto  mx-[8px]'}>
+            <View className={oProps.data.text ? '' : 'flex-auto  mx-2'}>
                 <Profile {...oProps.data.author_data} displayType="unit" displaySize={windowWidth < LAYOUT_BREAKPOINTS.lg ? "base" : "lg"} className='hidden lg:flex' showInfo={sInfo} />
             </View>
           

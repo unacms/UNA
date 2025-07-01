@@ -14,8 +14,8 @@ import { useState } from 'react';
 function renderListItem(props, isActive, onItemClick) {
     return (
         <Link key={props.url} className="w-full" href={props.url} onPress={onItemClick}>
-            <Row className={`w-full px-[8px] py-[6px] gap-x-[12px] hover:bg-bgritem align-middle dark:hover:bg-bgritem-d rounded-xl items-center ${isActive ? ' bg-bgritemprimary dark:bg-bgritemprimary-d rounded-xl' : ''}`}>
-                <View className={`items-center w-[44px] h-[44px]  justify-center bg-bgritem border border-bdritem dark:bg-bgritem-d ${isActive ? 'border-primary-100 dark:border-primary-950' : ''} dark:border-bdritem-d rounded-full`}>
+            <Row className={`w-full px-2 py-1.5 gap-x-3 hover:bg-bgritem align-middle dark:hover:bg-bgritem-d rounded-xl items-center ${isActive ? ' bg-bgritemprimary dark:bg-bgritemprimary-d rounded-xl' : ''}`}>
+                <View className={`items-center w-11 h-11  justify-center bg-bgritem border border-bdritem dark:bg-bgritem-d ${isActive ? 'border-primary-100 dark:border-primary-950' : ''} dark:border-bdritem-d rounded-full`}>
                     <Profile {...props} displayType="unit_wo_info" displaySize="base" />
                 </View>
                 <Text className="text-lg font-semibold text-neutral-800 dark:text-neutral-200">{props.display_name}</Text>
@@ -27,7 +27,7 @@ function renderListItem(props, isActive, onItemClick) {
 function renderLogoListItem(isActive, onItemClick) {
     return (
         <Link key="global-context" className="w-full" href="/" onPress={onItemClick}>
-            <Row className={`w-full px-[8px] py-[6px] text-center gap-x-[12px] hover:bg-bgritem align-middle dark:hover:bg-bgritem-d rounded-xl items-center ${isActive ? 'bg-bgritemprimary dark:bg-bgritemprimary-d  rounded-xl' : ''}`}>
+            <Row className={`w-full px-2 py-1.5 text-center gap-x-3 hover:bg-bgritem align-middle dark:hover:bg-bgritem-d rounded-xl items-center ${isActive ? 'bg-bgritemprimary dark:bg-bgritemprimary-d  rounded-xl' : ''}`}>
                 <View className={`items-center justify-center rounded-full text-neutral-800 dark:text-neutral-200`}>{appStatic('logo_mark')}</View>
                 <Text className="text-lg my-auto font-semibold text-neutral-800 dark:text-neutral-200">{appStatic('logo_text')}</Text>
             </Row>
@@ -77,7 +77,7 @@ export default function ContextSelector({ data, url }) {
         setIsOpen(false);
     };
 
-    const CurrentContext = <View className='items-center text-center align-middle flex-auto flex-row gap-x-[12px] px-1.5 py-1 lg:hover:bg-bgritem dark:lg:hover:bg-bgritem-d rounded-xl'>
+    const CurrentContext = <View className='items-center text-center align-middle flex-auto flex-row gap-x-3 px-1.5 py-1 lg:hover:bg-bgritem dark:lg:hover:bg-bgritem-d rounded-xl'>
         <View className="items-center justify-center text-neutral-800 dark:text-neutral-200">
             {contextRoot.image}
         </View>
@@ -87,7 +87,7 @@ export default function ContextSelector({ data, url }) {
         <>
             {(data?.list?.length > 1 || data?.links?.length > 0) ? <DropdownPopup
                 trigger={
-                    <Row className="flex-row w-full gap-x-[8px] flex-auto items-center">
+                    <Row className="flex-row w-full gap-x-2 flex-auto items-center">
                         {CurrentContext}
                         <Button
                             variant="text"
@@ -104,18 +104,18 @@ export default function ContextSelector({ data, url }) {
                     {appSetting('context_selector', 'show_logo') && renderLogoListItem(!data.current?.id, handleItemClick)}
                     {data.list.map(item => renderListItem(item, item.id === data.current?.id, handleItemClick))}
                     {!!data.create && <Link className="w-full" href={data.create.url} onPress={handleItemClick}>
-                        <Row className="w-full px-[8px] py-[6px] gap-x-[12px] items-center hover:bg-bgritem dark:hover:bg-bgritem-d rounded-xl">
-                            <View className="items-center w-[44px] h-[44px] text-neutral-800 dark:text-neutral-200 justify-center bg-bgritem border border-bdritem dark:bg-bgritem-d dark:border-bdritem-d rounded-full">
+                        <Row className="w-full px-2 py-1.5 gap-x-3 items-center hover:bg-bgritem dark:hover:bg-bgritem-d rounded-xl">
+                            <View className="items-center w-11 h-11 text-neutral-800 dark:text-neutral-200 justify-center bg-bgritem border border-bdritem dark:bg-bgritem-d dark:border-bdritem-d rounded-full">
                                 <Icon icon="Plus" />
                             </View>
                             <Text className="text-lg font-semibold text-neutral-800 dark:text-neutral-200">{data.create.title}</Text>
                         </Row>
                     </Link>}
-                    {(data.links && Array.isArray(data.links)) && <View className='border-t border-bdr dark:border-bdr-d mt-[8px] pt-[8px]'>
+                    {(data.links && Array.isArray(data.links)) && <View className='border-t border-bdr dark:border-bdr-d mt-2 pt-2'>
                         {data.links.map(item =>
                             <Link key={item.url} className="w-full" href={item.url} onPress={handleItemClick}>
-                                <Row className={`w-full px-[8px]  gap-x-[12px] items-center rounded-xl py-[6px] hover:bg-bgritem dark:hover:bg-bgritem-d ${!data.current?.id && item.url == appSetting('context_selector', 'default_item') ? 'bg-bgritemprimary dark:bg-bgritemprimary-d  rounded-xl' : ''}`}>
-                                    <View className="items-center w-[44px] h-[44px] text-neutral-800 dark:text-neutral-200 justify-center bg-bgritem border border-bdritem dark:bg-bgritem-d dark:border-bdritem-d rounded-full">
+                                <Row className={`w-full px-2  gap-x-3 items-center rounded-xl py-1.5 hover:bg-bgritem dark:hover:bg-bgritem-d ${!data.current?.id && item.url == appSetting('context_selector', 'default_item') ? 'bg-bgritemprimary dark:bg-bgritemprimary-d  rounded-xl' : ''}`}>
+                                    <View className="items-center w-11 h-11 text-neutral-800 dark:text-neutral-200 justify-center bg-bgritem border border-bdritem dark:bg-bgritem-d dark:border-bdritem-d rounded-full">
                                         {item.icon && <Icon icon={item.icon} />}
                                     </View>
                                     <Text className="text-lg h-8 my-auto font-semibold text-neutral-800 dark:text-neutral-200">{item.title}</Text>

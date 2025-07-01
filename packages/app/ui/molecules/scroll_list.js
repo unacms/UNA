@@ -122,7 +122,7 @@ export default function ScrollList({
 
             </Animated.View>
             {/* TODO: Review this */}
-            {isShowScrollToTopButton && <Animated.View className=" hidden absolute bottom-[10px] right-[10px]" style={[buttonStyle]}>
+            {isShowScrollToTopButton && <Animated.View className=" hidden absolute bottom-2.5 right-2.5" style={[buttonStyle]}>
                 <Button
                     onPress={scrollToTop}
                     startDecorator={inverted ? "ChevronDown" : "ChevronUp"}

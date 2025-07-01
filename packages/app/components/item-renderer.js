@@ -25,10 +25,10 @@ function ItemRenderer_({ route, numColumns, item, unit, module, unitMode, unitTy
 function BlockItemRenderer1({ route, numColumns, item, unit, module, unitMode, unitType, sidebar }) {
     const block = BlockByName2({ b: item.data, name: item.block });
     if (!block) {
-        return <View className='h-[1px]'><Text>&nbsp;</Text></View>;
+        return <View className='h-px'><Text>&nbsp;</Text></View>;
     }
     return (
-        <View className={`${block?.props?.extraProps?.list && !sidebar ? 'lg:h-[1px] overflow-hidden' : ''}`} key={`${route.index}-${item.id}`}>
+        <View className={`${block?.props?.extraProps?.list && !sidebar ? 'lg:h-px overflow-hidden' : ''}`} key={`${route.index}-${item.id}`}>
             {block}
         </View>
     );

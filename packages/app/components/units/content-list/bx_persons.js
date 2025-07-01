@@ -80,7 +80,7 @@ export default function Unit(props) {
         <>
             <Redirect ref={redirectdRef} />
             <Card
-                margin=" sm:mx-[8px] sm:my-[6px] "
+                margin=" sm:mx-2 sm:my-2.5 "
                 border="border-b sm:border border-bdrcard dark:border-bdrcard-d"
                 rounded=" sm:rounded-2xl "
             >
@@ -89,11 +89,11 @@ export default function Unit(props) {
                         className={`flex-row sm:flex-col p-3 sm:p-1  sm:h-full`}
                     >
                         <ImageSection data={data} imageSizes={imageSizes} />
-                        <View className="flex-col pl-[16px] my-auto sm:pt-[8px] sm:p-[4px] flex-auto ">
-                            <View className="gap-y-[12px] h-[56px]">
+                        <View className="flex-col pl-4 my-auto sm:pt-2 sm:p-1 flex-auto ">
+                            <View className="gap-y-3 h-14">
                                 <Text
                                     numberOfLines={1}
-                                    className=" text-[16px] tracking-tight tracking-tight font-semibold text-neutral-800 dark:text-neutral-200"
+                                    className=" text-base tracking-tight tracking-tight font-semibold text-neutral-800 dark:text-neutral-200"
                                 >
                                     {data.title}
                                 </Text>
@@ -109,7 +109,7 @@ export default function Unit(props) {
                                         }
                                     />
 
-                                    <Text className="truncate text-[14px] tracking-tight flex-auto text-neutral-600 dark:text-neutral-400">
+                                    <Text className="truncate text-sm tracking-tight flex-auto text-neutral-600 dark:text-neutral-400">
                                         {isFollowers
                                             ? data?.followers_count +
                                               ' followers'
@@ -117,7 +117,7 @@ export default function Unit(props) {
                                     </Text>
                                 </Row>
                             </View>
-                            <View className="flex-row sm:flex-col pt-3">
+                            <View className="flex-row sm:flex-col pt-3 ">
                                 <View className="w-1/2 sm:w-full pr-2 sm:pr-0">
                                     {oMenuItemPrimary}
                                 </View>

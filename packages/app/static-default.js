@@ -98,7 +98,7 @@ const SplashTextInner = (
         <Text
             accessible={true}
             accessibilityRole="text"
-            className=" text-[16px] sm:text-lg xl:text-xl text-center lg:text-start text-neutral-600 dark:text-neutral-400 text-pretty web:duration-300"
+            className=" text-base sm:text-lg xl:text-xl text-center lg:text-start text-neutral-600 dark:text-neutral-400 text-pretty web:duration-300"
         >
             Join the conversation, share your thoughts, and connect with others.
             Your voice matters - be part of our growing community!
@@ -106,29 +106,29 @@ const SplashTextInner = (
     </>
 )
 
-const SplashText = isWeb ? (<View className="my-auto flex-col items-center lg:items-start flex-auto p-[16px] sm:p-[32px] xl:p-[64px] " accessible={true}>
-    <AnimatedView className="w-[200px] h-[200px] lg:w-[320px] lg:h-[320px] web:duration-300">
+const SplashText = isWeb ? (<View className="my-auto flex-col items-center lg:items-start flex-auto p-4 sm:p-8 xl:p-16 " accessible={true}>
+    <AnimatedView className="w-50 h-50 lg:w-80 lg:h-80 web:duration-300">
         <SvgFile src_dark="splash-dark.svg" src_default="splash-light.svg" alt="Splash screen illustration" />
     </AnimatedView>
-    <AnimatedView delay={100} direction="up" className="flex-auto items-center lg:items-start gap-y-[16px] sm:gap-y-[24px] max-w-md sm:max-w-lg lg:max-w-3xl">
+    <AnimatedView delay={100} direction="up" className="flex-auto items-center lg:items-start gap-y-4 sm:gap-y-6 max-w-md sm:max-w-lg lg:max-w-3xl">
         {SplashTextInner}
     </AnimatedView>
 </View>) : (
-    <View className="flex-col items-center lg:items-start gap-x-[32px] flex-auto px-[16px] sm:px-[32px] xl:px-[64px] lg:pb-[64px]" accessible={true}>
-        <View className="w-[200px] h-[200px] lg:w-[320px] lg:h-[320px] web:duration-300">
+    <View className="flex-col items-center lg:items-start gap-x-8 flex-auto px-4 sm:px-8 xl:px-16 lg:pb-16" accessible={true}>
+        <View className="w-50 h-50 lg:w-80 lg:h-80 web:duration-300">
             <SvgFile
                 src_dark="splash-dark.svg"
                 src_default="splash-light.svg"
                 alt="Splash screen illustration"
             />
         </View>
-        <View className="flex-auto items-center lg:items-start gap-y-[16px] sm:gap-y-[24px] max-w-md sm:max-w-lg lg:max-w-3xl">
+        <View className="flex-auto items-center lg:items-start gap-y-4 sm:gap-y-6 max-w-md sm:max-w-lg lg:max-w-3xl">
             {SplashTextInner}
         </View>
     </View>
 )
 const JoinText = (
-    <AnimatedView className="w-[200px] h-[200px] lg:w-[320px] lg:h-[320px] web:duration-300">
+    <AnimatedView className="w-50 h-50 lg:w-80 lg:h-80 web:duration-300">
         <SvgFile src_dark="create-account-dark.svg" src_default="create-account-light.svg" alt="Create account illustration" />
     </AnimatedView>
 );
@@ -333,7 +333,7 @@ const ComponentsLoginContent = (
                 alt="Login illustration"
             />
         </AnimatedView>
-        <AnimatedView direction="up" className="flex-auto items-center lg:items-start gap-y-[16px] sm:gap-y-[24px] max-w-md sm:max-w-lg lg:max-w-3xl">
+        <AnimatedView direction="up" className="flex-auto items-center lg:items-start gap-y-4 sm:gap-y-6 max-w-md sm:max-w-lg lg:max-w-3xl">
             <View className="flex-col gap-y-8 flex-auto my-4 ">
                 <Text className="text-4xl tracking-tight font-bold text-neutral-800 dark:text-neutral-200 justify-center items-center  ">
                     Sign in to your account
@@ -572,7 +572,7 @@ const ComponentsDummy = (
                 123
             </Text>
         </Row>
-        <Row className=" w-[32px] p-[4px] p-[4px] h-[36px] w-[36px] h-[32px] -bottom-2 font-default bg-orange-500 text-red-400 bg-red-400 bg-gray-300 bg-gray-400 bg-gray-600 bg-yellow-500 bg-green-500 bg-teal-500 bg-sky-500 bg-indigo-500 bg-purple-500 bg-pink-500 bg-rose-500 bg-red-500">
+        <Row className=" w-8 p-1 p-1 h-9 w-9 h-8 -bottom-2 font-default bg-orange-500 text-red-400 bg-red-400 bg-gray-300 bg-gray-400 bg-gray-600 bg-yellow-500 bg-green-500 bg-teal-500 bg-sky-500 bg-indigo-500 bg-purple-500 bg-pink-500 bg-rose-500 bg-red-500">
             <Icon
                 className="text-gray-600 dark:text-gray-400 sm:h-auto"
                 icon="ArrowBigUp"

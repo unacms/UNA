@@ -44,7 +44,7 @@ export default function ElementFeedItem({ data }) {
 
     return (
         <View className="relative sm:my-0 w-full mx-auto max-w-5xl">
-            <View className=" p-[12px] sm:p-[16px] lg:pt-0">
+            <View className=" p-3 sm:p-4 lg:pt-0">
                 <Html data={tlContent} customClassName='u-vanilla-html' />
                 {!!content.embed && <Embed data={content.embed} />}
 
@@ -59,8 +59,8 @@ export default function ElementFeedItem({ data }) {
             {
                 data.event.menu_actions.items.length > 0 && (<View className=" flex-row items-center ">
                     <View className=" flex-auto flex-wrap text-wrap ">
-                        {(!!data.event.menu_counters && appSetting('feed', 'counters_menu')) && <Row className='w-full px-[8px]'><CounterMenu data={data.event.menu_counters} /></Row>}
-                        <View className=' p-[8px] border-t mt-[4px] border-bdr dark:border-bdr-d w-full'><ActionMenu data={data.event.menu_actions} /></View>
+                        {(!!data.event.menu_counters && appSetting('feed', 'counters_menu')) && <Row className='w-full px-2'><CounterMenu data={data.event.menu_counters} /></Row>}
+                        <View className=' p-2 border-t mt-1 border-bdr dark:border-bdr-d w-full'><ActionMenu data={data.event.menu_actions} /></View>
                     </View>
                 </View>)
             }

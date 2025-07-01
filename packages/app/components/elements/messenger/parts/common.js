@@ -462,7 +462,7 @@ const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, 
 
     const srch = <InputRounded name="search" placeholder={("Search") + '...'} value={searchValue} onChangeText={(value) => handleSearch(value)} />;
 
-    const header = <Row className='py-2 px-3 web:border-b border-bdrtabbar dark:border-bdrtabbar-d gap-x-3 h-[64px]'>
+    const header = <Row className='py-2 px-3 web:border-b border-bdrtabbar dark:border-bdrtabbar-d gap-x-3 h-16'>
         <View className='flex-auto hidden lg:flex'>
             {srch}
         </View>
@@ -537,9 +537,9 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
 
     const header = (
         <View className='md:px-0 w-full border-bdrcard dark:border-bdrcard-d border-b'>
-            <Row className='px-2 items-center justify-between w-full h-[64px] '>
+            <Row className='px-2 items-center justify-between w-full h-16 '>
                 <Row className='items-center justify-start overflow-hidden  lg:ml-3 flex-auto'>
-                    {isSmallScreen && <View className='mr-2'><BackButton buttonProps={{ variant: "secondary", startDecorator: 'ArrowLeft', rounded: 'rounded' }} callback={showConvo} /></View>}
+                    {isSmallScreen && <View className='mr-2 '><BackButton buttonProps={{ variant: "secondary", startDecorator: 'ArrowLeft', rounded: 'rounded' }} callback={showConvo} /></View>}
                     <Text numberOfLines={1} className="font-bold text-neutral-800 dark:text-neutral-200 text-3xl tracking-tighter">{title}</Text>
                 </Row>
                 <Row className='items-center gap-x-2'>

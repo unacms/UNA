@@ -4,7 +4,7 @@ import { getFormFieldByData, getEditorHeight } from 'app/lib/form-helpers'
 import { useWindowDimensions } from 'react-native';
 import { Platform } from 'react-native'
 import { useFormContext } from 'react-hook-form';
-import { FileButton } from 'app/components/form-fields/files';
+import { FileButton } from 'app/lib/form-helpers';
 
 export default function FormMessenger(props) {
     const isWeb = Platform.OS == 'web';
@@ -66,7 +66,7 @@ export default function FormMessenger(props) {
     const sPad = 'px-3 py-2.5';
     return <View className='w-full px-2' >
         <Row className='w-full items-end  '>
-            <View className={'mr-2 ' + (isWeb ? '' : ' w-12 ')}>
+            <View className={'mr-2  ' + (isWeb ? '' : ' w-12 ')}>
                 <FileButton field_name='files' icon="Image" asDefaultStorage={true} />
 
             </View>

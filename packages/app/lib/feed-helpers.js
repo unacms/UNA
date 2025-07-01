@@ -186,10 +186,10 @@ export const ItemInfo = memo(({ data, t }) => {
     const OwnersList = () => owners?.length > 0 ? owners?.length == 1 ? <>
         <Text className="text-neutral-400 dark:text-neutral-600 text-sm"> · </Text>
         <Link href={data.owners[0].url} emulate={true}>
-            <Text className=" bg-primary/10 hover:bg-primary/20 px-1.5 py-[3px] rounded-md text-primary dark:text-primary-d hover:text-linkhover text-[12px] ">
+            <Text className=" bg-primary/10 hover:bg-primary/20 px-1.5 py-[3px] rounded-md text-primary dark:text-primary-d hover:text-linkhover text-xs ">
                 {owners[0].title}
             </Text>
-        </Link></> : <><Text className="text-neutral-400 dark:text-neutral-600 px-[4px]">·</Text>
+        </Link></> : <><Text className="text-neutral-400 dark:text-neutral-600 px-1">·</Text>
         <Pressable onPress={() => { setShowContextList(true) }} >
             <Text className=" bg-primary/10 hover:bg-primary/20 px-1.5 py-0.5 rounded-md text-primary dark:text-primary-d hover:text-linkhover text-sm font-medium">
                 {owners[0].title} + {owners.length - 1}
@@ -221,8 +221,8 @@ export const ItemInfo = memo(({ data, t }) => {
         }
         return l && (
             <>
-                <Text className=" text-neutral-400 dark:text-neutral-600 text-[12px] leading-[16px] text-center px-[4px]">·</Text>
-                <Text className=" text-neutral-600 dark:text-neutral-400 text-[14px] leading-[20px] text-center font-medium tracking-tight ">
+                <Text className=" text-neutral-400 dark:text-neutral-600 text-xs leading-4 text-center px-1">·</Text>
+                <Text className=" text-neutral-600 dark:text-neutral-400 text-sm leading-5 text-center font-medium tracking-tight ">
                     {l}
                 </Text>
             </>
@@ -360,9 +360,9 @@ export const VisibilityInfo = memo(({ data }) => {
 
     return (
         <Row className="text-neutral-600 dark:text-neutral-400 items-center">
-            <Text className="text-neutral-400 dark:text-neutral-600 text-[14px] leading-[24px] mx-[4px]">·</Text>
+            <Text className="text-neutral-400 dark:text-neutral-600 text-sm leading-6 mx-1">·</Text>
             {isUser ? <Profile {...data.author_data} displayType="unit_wo_info" displaySize="xxs" /> : (icon ? <Icon icon={icon} width={20} height={20} /> : null)}
-            <Text className="text-neutral-600 dark:text-neutral-400 text-[14px] font-medium leading-[24px] text-center tracking-tight ml-[4px]">{isUser ? data.author_data.display_name : text}</Text>
+            <Text className="text-neutral-600 dark:text-neutral-400 text-sm font-medium leading-6 text-center tracking-tight ml-1">{isUser ? data.author_data.display_name : text}</Text>
         </Row>
     );
 });
@@ -393,7 +393,7 @@ export const Author = memo(({ data, url, t }) => {
                 showInfo={
                     <Row className=" flex-wrap items-center">
                         <Link href={url}>
-                            <Time className='leading-[22px]' ts={data.date}></Time>
+                            <Time className='leading-5.5' ts={data.date}></Time>
                         </Link>
 
                         <VisibilityInfo data={data} />
@@ -412,8 +412,8 @@ export const SmallUnit = memo(({ data }) => {
     return (
         <AnimatedBlock>
             <Link href={url} className="w-full" emulate={true}>
-                <Card addClassName='  group active:opacity-50 active:translate-y-1 flex-row p-4 ' rounded=" shadow-sm rounded-none sm:rounded-2xl " margin=" -mb-[1px] sm:mx-4 sm:mb-2 ">
-                    <View className=" mr-2 xl:mr-3 rounded-full flex-none bg-secondary-500/10">
+                <Card addClassName='  group active:opacity-50 active:translate-y-1 flex-row p-4 ' rounded=" shadow-sm rounded-none sm:rounded-2xl " margin=" -mb-px sm:mx-4 sm:mb-2 ">
+                    <View className=" mr-2  xl:mr-3 rounded-full flex-none bg-secondary-500/10">
                         <Profile
                             {...data.author_data}
                             displayType="unit_wo_info"
@@ -421,7 +421,7 @@ export const SmallUnit = memo(({ data }) => {
                         />
                     </View>
                     <View className="flex-auto flex-col my-auto">
-                        <View className="flex-row gap-x-[8px] sm:gap-x-[12px] ">
+                        <View className="flex-row gap-x-2 sm:gap-x-3 ">
                             <Text className=" text-sm flex-auto font-medium text-neutral-800 dark:text-neutral-200">
                                 {data.author_data.display_name}
                             </Text>
@@ -430,9 +430,9 @@ export const SmallUnit = memo(({ data }) => {
                         <Text className="flex-auto text-lg  font-bold text-neutral-800 dark:text-neutral-200 sm:group-hover:text-neutral-950 sm:dark:group-hover:text-neutral-50" numberOfLines={1}>
                             {data.content.title}
                         </Text>
-                        <View className="flex-row w-full items-end content-end px-[8px]">
+                        <View className="flex-row w-full items-end content-end px-2">
                             <Text
-                                className="flex-auto mr-2 text-base text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-950 dark:group-hover:text-neutral-50"
+                                className="flex-auto mr-2  text-base text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-950 dark:group-hover:text-neutral-50"
                                 numberOfLines={1}
                             >
                                 {data.plainText}{stripTags(data.content.text)}

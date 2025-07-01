@@ -485,7 +485,7 @@ function LessonSteps({ lessonData, startLessonPart, isEditable, reloadData, cour
                     {!isEditable && <View className={`w-24 aspect-square items-center ${index === 0 ? 'justify-end' : ''}`}>
                         <View className={`w-2 ${color2} h-1/2`}></View>
                         {(index != 0 && index != steps.length - 1) && <View className={`w-2 ${color3} ${(index == 0 || index == steps.length - 1 ? 'h-1/2' : 'h-1/2')}`}></View>}
-                        <View className='items-center justify-center h-10 absolute top-[42px]'>
+                        <View className='items-center justify-center h-10 absolute top-11'>
                             <Svg height="100" width="100" viewBox="0 0 100 100">
                                 <Circle cx="50" cy="50" r="50" fill={color} />
                                 <Circle cx="50" cy="50" r="40" fill="white" />

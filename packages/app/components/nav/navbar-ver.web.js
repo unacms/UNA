@@ -101,7 +101,7 @@ const HeaderLine = memo(({ headerSettings, currentUser, uri, bSearch, menuPopup,
     const menu_sidebar_items = menuItemsByName('main_menu', appSetting('menu_items', 'menu_sidebar'), currentUser);
 
     return (
-        <View className=' flex-row lg:flex-col lg:w-[360px]'>
+        <View className=' flex-row lg:flex-col lg:w-90'>
             {(headerSettings.menu && isDrawer) && (
                 <View className="lg:hidden ml-4">
                     <Pressable onPress={showMenu}>

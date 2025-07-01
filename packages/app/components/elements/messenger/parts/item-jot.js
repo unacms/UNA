@@ -78,7 +78,7 @@ export default function JotItem({ item, index, handleReply }) {
                 <View className={'bg-bgritem dark:bg-bgritem-d rounded-xl px-3 u-vanilla-html-small'} >
                     <Row className="items-center mb-0.5 pt-2">
                         <Profile {...item.author_data} displayType="unit_text_link" />
-                        <View><Text className="text-neutral-400 dark:text-neutral-600 px-[4px]">·</Text></View>
+                        <View><Text className="text-neutral-400 dark:text-neutral-600 px-1">·</Text></View>
                         <Time ts={item.created}></Time>
                     </Row>
 
@@ -115,11 +115,11 @@ export default function JotItem({ item, index, handleReply }) {
             </View>
         </Row>
         <View className="flex-row justify-between items-center ml-2 mt-0.5">
-            <View className="pl-[48px]">
+            <View className="pl-12">
                 <Button align="start" title={t("Reply")} size="xs" startDecorator="Reply" variant="link" onPress={() => handleReplyInner(item)} rounded />
             </View>
             <Row className='mr-1'>
-                <View className='mr-2'>
+                <View className='mr-2 '>
                     <Reactions key={'reactions_' + item.id} {...reactionsWithUpdatedParams} />
                 </View>
                 {aManageMenu.length > 0 &&

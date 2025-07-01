@@ -110,77 +110,77 @@ function AtomProfile_(oProps) {
 
     const sizes = {
         xxs: {
-            sSize: 'w-[20px] h-[20px]',
+            sSize: 'w-5 h-5',
             iSizeWidth: 20,
             iSizeHeight: 20,
-            sSizeFont: 'text-[12px]', 
+            sSizeFont: 'text-xs', 
             sSizeFontLetter: 'text-base font-semibold',
         },
         xs: {
-            sSize: 'w-[24px] h-[24px]',
+            sSize: 'w-6 h-6',
             iSizeWidth: 24,
             iSizeHeight: 24,
-            sSizeFont: 'text-[12px]', 
+            sSizeFont: 'text-xs', 
             sSizeFontLetter: 'text-base font-semibold',
         },
         sm: {
-            sSize: 'w-[36px] h-[36px]',
+            sSize: 'w-9 h-9',
             iSizeWidth: 36,
             iSizeHeight: 36,
-            sSizeFont: 'native:text-[16px] web:text-[16px]',
+            sSizeFont: 'native:text-base web:text-base',
             sSizeFontLetter: 'text-base opacity-50 font-semibold',
         },
         base: {
-            sSize: 'w-[44px] h-[44px]',
+            sSize: 'w-11 h-11',
             iSizeWidth: 44,
             iSizeHeight: 44,
-            sSizeFont: ' text-[16px] leading-[24px] tracking-tight font-semibold ',
-            sSizeFontLetter: ' p-[8px] text-center text-[20px] font-semibold',
+            sSizeFont: ' text-base leading-6 tracking-tight font-semibold ',
+            sSizeFontLetter: ' p-2 text-center text-xl font-semibold',
         },
         lg: {
-            sSize: 'w-[48px] h-[48px]',
+            sSize: 'w-12 h-12',
             iSizeWidth: 48,
             iSizeHeight: 48,
-            sSizeFont: 'text-[16px] leading-[24px]',
+            sSizeFont: 'text-base leading-6',
             sSizeFontLetter: 'text-3xl font-semibold',
         },
         xl: {
-            sSize: 'w-[64px] h-[64px]',
+            sSize: 'w-16 h-16',
             iSizeWidth: 64,
             iSizeHeight: 64,
             sSizeFont: 'text-xl',
             sSizeFontLetter: 'text-4xl opacity-50 font-semibold',
         },
         '1.5xl': {
-            sSize: 'w-[72px] h-[72px]',
+            sSize: 'w-18 h-18',
             iSizeWidth: 72,
             iSizeHeight: 72,
             sSizeFont: 'text-xl',
             sSizeFontLetter: 'text-5xl',
         },
         '2xl': {
-            sSize: 'w-[96px] h-[96px]',
+            sSize: 'w-24 h-24',
             iSizeWidth: 96,
             iSizeHeight: 96,
             sSizeFont: 'text-xl',
             sSizeFontLetter: 'text-6xl',
         },
         '3xl': {
-            sSize: 'w-[128px] h-[128px]',
+            sSize: 'w-32 h-32',
             iSizeWidth: 128,
             iSizeHeight: 128,
             sSizeFont: 'text-2xl',
             sSizeFontLetter: 'text-5xl',
         },
         '4xl': {
-            sSize: 'w-[160px] h-[160px]',
+            sSize: 'w-40 h-40',
             iSizeWidth: 160,
             iSizeHeight: 160,
             sSizeFont: 'text-3xl',
             sSizeFontLetter: 'text-7xl',
         },
         full: {
-            sSize: 'w-[256px] h-[256px]',
+            sSize: 'w-64 h-64',
             iSizeWidth: 256,
             iSizeHeight: 256,
             sSizeFont: 'text-4xl',
@@ -203,7 +203,7 @@ function AtomProfile_(oProps) {
     switch (sDisplayType) {
         case 'unit':
             return (
-                <Row className="gap-x-[8px] items-center">
+                <Row className="gap-x-2 items-center">
                     <View className="flex-none mb-auto">
                         <UnitWoInfo oProps={oProps} sSize={sSize} sSizeFontLetter={sSizeFontLetter} emulate={emulate} iSizeWidth={iSizeWidth} bShowLinks={bShowLinks} />
                     </View>

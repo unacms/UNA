@@ -23,10 +23,10 @@ export default function (props) {
                 <Row className='items-center gap-x-1' >
                     <Text className={appSetting('forms', 'caption_classes')}>{caption}</Text>
                     {((props.checker || props.required) ? <></> : <Text className="text-sm sm:text-base text-neutral-700 dark:text-neutral-300">{isShowOptional}</Text>)}
-                    {((!!mandatoryIcon && (props.checker || props.required)) ? <Text className="text-red-600 h-[16px] w-[16px]"><Icon icon={mandatoryIcon} size={16} /></Text> : <></>)}
+                    {((!!mandatoryIcon && (props.checker || props.required)) ? <Text className="text-red-600 h-4 w-4"><Icon icon={mandatoryIcon} size={16} /></Text> : <></>)}
                 </Row >
             </Text>
-            <View className=' w-full min-h-[56px]'>
+            <View className=' w-full min-h-14'>
                 {props.children}
             </View>
             
@@ -44,7 +44,7 @@ export default function (props) {
             {(props.error2 && props.checker.error!='') && <FormError errorText={props.checker.error} />}
             {!!props.info &&
                 <View className="label" >
-                    <Text className="mt-[4px] px-[4px] text-xs sm:text-sm text-neutral-700 dark:text-neutral-300">{stripTags(props.info)}</Text>
+                    <Text className="mt-1 px-1 text-xs sm:text-sm text-neutral-700 dark:text-neutral-300">{stripTags(props.info)}</Text>
                 </View>
             }
         </View>
@@ -53,7 +53,7 @@ export default function (props) {
 
 export function FormError({ errorText, errorLink }) {
     const errorMessage = (
-        <View className="label px-[4px]">
+        <View className="label px-1">
             <Text className="ml-0.5 mt-0.5 label-text-alt text-sm text-red-600 animate-pulse dark:text-red-400">
                 {linkedText(errorText)}
             </Text>

@@ -67,7 +67,7 @@ export default function Unit(props) {
                                     <Row className="items-center h-6 my-3">
 
 
-                                        <View className="mr-2 h-6">
+                                        <View className="mr-2  h-6">
                                             <ProfilesList
                                                 data={
                                                     data.members_list

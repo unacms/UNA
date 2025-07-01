@@ -24,19 +24,27 @@ import { callFn } from 'app/lib/functions/call';
 import Map from 'app/components/elements/map';
 
 export default function (props) {
+
+ /*return <>
+         <Row className='gap-x-2'>
+     
+            <View className='w-24 h-11 bg-red-500 rounded-lg'></View>
+           
+        </Row>
+        </>
     /*return <>
         <Row className='gap-x-2'>
             <View className='absolute top-4 left-12 w-12 h-12 bg-red-500 rounded-lg'></View>
-            <View className='w-[48px] h-[48px] bg-red-500 rounded-[8px]'></View>
-            <View className='w-[48px] h-[48px] bg-red-500 rounded-[8px]'></View>
+            <View className='w-12 h-12 bg-red-500 rounded-lg'></View>
+            <View className='w-12 h-12 bg-red-500 rounded-lg'></View>
         </Row>
-        <Row  className='gap-x-[8px]'>
-        <View className=' absolute top-4 left-12 w-[48px] h-[48px] bg-red-500 rounded-[8px]'></View>
-        <View className='w-[48px] h-[48px] bg-red-500 rounded-[8px]'></View>
-        <View className='w-[48px] h-[48px] bg-red-500 rounded-[8px]'></View>
+        <Row  className='gap-x-2'>
+        <View className=' absolute top-4 left-12 w-12 h-12 bg-red-500 rounded-lg'></View>
+        <View className='w-12 h-12 bg-red-500 rounded-lg'></View>
+        <View className='w-12 h-12 bg-red-500 rounded-lg'></View>
         </Row>
-        <Text className="text-base  text-red-500"  >Abcs</Text>
-        <Text className="text-[16px]  text-red-500">Abcs</Text>
+        <Text className="text-base leading-5.5 text-red-500"  >Abcs</Text>
+        <Text className="text-base  text-red-500">Abcs</Text>
     </>*/
    // return <Map height={400} data={{ caption: "sdfsdfsd", location: { lat: 35.6762, lng: 139.6503 } }} />
     const isWeb = Platform.OS == 'web'  
@@ -131,11 +139,11 @@ export default function (props) {
 
             <ScrollView
                 horizontal={true}
-                className=" px-[8px] sm:px-[12px] w-full "
+                className=" px-2 sm:px-3 w-full "
             >
                 <Row
                     className={`  ${feedList.length > 1
-                        ? 'my-[6px]'
+                        ? 'my-2.5'
                         : ''
                         }    `}
                 >
@@ -202,18 +210,18 @@ export default function (props) {
             >
                 {getLayout(currentUser) == 'hor' && (
                     <View className="hidden relative xl:flex w-[360px] ">
-                        <View className="fixed-process fixed w-[360px] px-[12px] py-[8px]  web:duration-200">
+                        <View className="fixed-process fixed w-[360px] px-3 py-2  web:duration-200">
                             {/* {appSetting('layout', 'sidebar_search') && (
                                 <View className="pb-3 w-full">
                                     <Search type="input" placeholder="Enter search text" />
                                 </View>
                             )} */}
                             {appSetting('layout', 'show_profile_info') && (
-                                <View className="py-[8px] mb-[8px] border-b border-bdr dark:border-bdr-d">
+                                <View className="py-2 mb-2 border-b border-bdr dark:border-bdr-d">
                                 <Link href={currentUser.url} emulate={true}>
                                     <Row
                                         className={
-                                            ' rounded-[12px] group items-center px-[8px] gap-x-[12px] h-[48px] hover:bg-bgritem dark:hover:bg-bgritem-d  active:bg-bgritem-h dark:active:bg-bgritem-dh  '
+                                            ' rounded-xl group items-center px-2 gap-x-3 h-12 hover:bg-bgritem dark:hover:bg-bgritem-d  active:bg-bgritem-h dark:active:bg-bgritem-dh  '
                                         }
                                     >
                                         
@@ -225,10 +233,10 @@ export default function (props) {
                                                     displaySize="sm"
                                                 />
                                                 <View className="flex-col">
-                                                <Text className=" text-base leading-[20px]  flex-auto my-auto font-semibold truncate text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-white web:duration-200">
+                                                <Text className=" text-base leading-5  flex-auto my-auto font-semibold truncate text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-white web:duration-200">
                                                     {currentUser.display_name}
                                                 </Text>
-                                                <Text className=" text-xs leading-[16px] flex-auto my-auto truncate text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-800 dark:group-hover:text-neutral-200 web:duration-200">
+                                                <Text className=" text-xs leading-4 flex-auto my-auto truncate text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-800 dark:group-hover:text-neutral-200 web:duration-200">
                                                     {
                                                         currentUser.membership_name
                                                     }
@@ -241,7 +249,7 @@ export default function (props) {
                             )}
 
                             <View
-                                className=' pb-2 mb-2 border-b border-bdr dark:border-bdr-d gap-y-[2px]'
+                                className=' pb-2 mb-2 border-b border-bdr dark:border-bdr-d gap-y-0.5'
                             >
                                 {feedList.length > 1 &&
                                     feedList.map((item, index) => {
@@ -282,7 +290,7 @@ export default function (props) {
 
                 
                     
-                    <View className="relative flex-auto mx-auto sm:px-[12px] web:py-[12px] sm:py-[16px] max-w-3xl">
+                    <View className="relative flex-auto mx-auto sm:px-3 web:py-3sm:py-4 max-w-3xl">
                             {feedList.map((item, index) => {
                                 if (feedType == item.name) {
                                     return (
@@ -324,7 +332,7 @@ export default function (props) {
                 
 
                     <View className="hidden lg:flex w-[360px] ">
-                        <View className="fixed-process p-[12px] flex-col sm:py-[16px] gap-y-[24px]  web:duration-300">
+                        <View className="fixed-process p-3 flex-col sm:py-4 gap-y-6  web:duration-300">
                             {sideBarBlocks.map((item, index) => {
                                 return (
                                     <BlockByName

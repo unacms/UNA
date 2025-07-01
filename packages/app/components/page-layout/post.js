@@ -109,7 +109,7 @@ export default function PageLayout(props) {
                 </View>
             </View>
             <KbAvoidingView>
-                <View onLayout={handleLayout} className='border-t border-x border-bdrcard bg-bgrcard dark:bg-bgrcard-d dark:border-bdrcard-d backdrop-blur-[16px] px-[8px] sm:px-[12px] web:fixed web:bottom-0 w-full max-w-5xl'>
+                <View onLayout={handleLayout} className='border-t border-x border-bdrcard bg-bgrcard dark:bg-bgrcard-d dark:border-bdrcard-d backdrop-blur-lg px-2 sm:px-3 web:fixed web:bottom-0 w-full max-w-5xl'>
                     <CommentsForm handleForm={setAddData} browse={commentsData?.content[0]?.browse} module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module} form={commentsData?.content[0]?.form} formData={formData} requestUrl={commentsData?.content[0]?.url} />
                 </View>
             </KbAvoidingView>

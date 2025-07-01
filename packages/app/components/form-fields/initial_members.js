@@ -12,8 +12,8 @@ import { useTranslation } from 'react-i18next';
 
 const User = ({ data, onSelect, type }) => {
     return (
-        <Pressable className="p-[2px]" onPress={() => onSelect(data)}>
-            <Row className=" p-[3px] pr-[12px] rounded-full border border-bdrbutton dark:border-bdrbutton-d bg-white dark:bg-neutral-800 shadow-sm items-center justiy-center">
+        <Pressable className="p-0.5" onPress={() => onSelect(data)}>
+            <Row className=" p-[3px] pr-3 rounded-full border border-bdrbutton dark:border-bdrbutton-d bg-white dark:bg-neutral-800 shadow-sm items-center justiy-center">
                 {<Profile displaySize="sm" {...data} showLinks={false} />}
                 {type == 'remove' && <Icon icon="X" />}
             </Row>
@@ -86,7 +86,7 @@ export function SelectUsers({ onSave, initedData = [], requestUrl, isSingle = fa
             <Row className="py-2 gap-x-2 ">
                 <InputRounded
                     placeholder={"Select users..."}
-                    className="px-2 mr-2 w-full"
+                    className="px-2 mr-2  w-full"
                     onChangeText={onChangeText}
                     role="textbox"
                 />
@@ -139,7 +139,7 @@ export default function (props) {
             <Modal id='file-preview2' title="Choose users" onVisible={!!isModal} onClose={() => {setIsModal(false)}}>
                 <SelectUsers isSingle={isSingle} onSave={onSave} requestUrl={'/api.php?r=' + props.ajax_get_suggestions + "&params="} initedData={[]} />
             </Modal>
-            <View className='w-full p-[6px] gap-x-2 justify-between items-start flex-row flex-wrap border border-bdrinput dark:border-bdrinput-d rounded-[12px] bg-bgrinput dark:bg-bgrinput-d'>
+            <View className='w-full p-1.5 gap-x-2 justify-between items-start flex-row flex-wrap border border-bdrinput dark:border-bdrinput-d rounded-xl bg-bgrinput dark:bg-bgrinput-d'>
                 
                     {selected && selected.map((oItem) => <User type={isSingle ? '' : "remove"} key={oItem.id} data={oItem} onSelect={onRemove} />)}
                    
@@ -148,7 +148,7 @@ export default function (props) {
                             startDecorator="Plus"
                             variant="default"
                             rounded
-                            ring="p-[2px]"
+                            ring="p-0.5"
                             
                             onPress={() => showSelect()}
                         />

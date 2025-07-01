@@ -20,13 +20,13 @@ export const TextInputClear = TextInputDef
 export const Input = ({ className, startDecorator, endDecorator, ...props }) => (
     <Row className="items-center flex-auto">
         {startDecorator && (
-            <View className="absolute left-[14px] h-full items-center justify-center">
+            <View className="absolute left-3.5 h-full items-center justify-center">
                 <Icon icon={startDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
             </View>
         )}
-        <TextInputDef className={`${className} ${inputSettings.default} ${startDecorator ? 'pl-[48px]' : ''} ${endDecorator ? 'pr-[44px]' : ''}`} {...props} />
+        <TextInputDef className={`${className} ${inputSettings.default} ${startDecorator ? 'pl-12' : ''} ${endDecorator ? 'pr-11' : ''}`} {...props} />
         {endDecorator && (
-            <View className="absolute right-[12px] h-full items-center justify-center">
+            <View className="absolute right-3 h-full items-center justify-center">
                 <Icon icon={endDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
             </View>
         )}
@@ -36,13 +36,13 @@ export const Input = ({ className, startDecorator, endDecorator, ...props }) => 
 export const InputRef = forwardRef(({ className, startDecorator, endDecorator, ...props }, ref) => (
     <Row className=" items-center flex-auto">
         {startDecorator && (
-            <View className="absolute left-[14px] h-full items-center justify-center">
+            <View className="absolute left-3.5 h-full items-center justify-center">
                 <Icon icon={startDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
             </View>
         )}
-        <TextInputDef className={`${className} ${inputSettings.default} ${startDecorator ? 'pl-[48px]' : ''} ${endDecorator ? 'pr-[44px]' : ''}`} ref={ref} {...props} />
+        <TextInputDef className={`${className} ${inputSettings.default} ${startDecorator ? 'pl-12' : ''} ${endDecorator ? 'pr-11' : ''}`} ref={ref} {...props} />
         {endDecorator && (
-            <View className="absolute right-[12px] items-center justify-center">
+            <View className="absolute right-3 items-center justify-center">
                 <Icon icon={endDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
             </View>
         )}
@@ -52,13 +52,13 @@ export const InputRef = forwardRef(({ className, startDecorator, endDecorator, .
 export const InputMulti = forwardRef(({ className, startDecorator, endDecorator, ...props }, ref) => (
      <Row className=" items-center flex-auto">
         {startDecorator && (
-            <View className="absolute left-[14px] h-full items-center justify-center">
+            <View className="absolute left-3.5 h-full items-center justify-center">
                 <Icon icon={startDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
             </View>
         )}
-        <TextInputDef className={`${className} ${inputSettings.multi} ${startDecorator ? 'pl-[48px]' : ''} ${endDecorator ? 'pr-[44px]' : ''}`} ref={ref} {...props} />
+        <TextInputDef className={`${className} ${inputSettings.multi} ${startDecorator ? 'pl-12' : ''} ${endDecorator ? 'pr-11' : ''}`} ref={ref} {...props} />
         {endDecorator && (
-            <View className="absolute right-[12px] items-center justify-center">
+            <View className="absolute right-3 items-center justify-center">
                 <Icon icon={endDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
             </View>
         )}
@@ -68,13 +68,13 @@ export const InputMulti = forwardRef(({ className, startDecorator, endDecorator,
 export const InputRounded = ({ className, startDecorator, endDecorator, ...props }) => (
     <Row className=" items-center flex-auto">
         {startDecorator && (
-            <View className="absolute left-[14px] h-full items-center justify-center">
+            <View className="absolute left-3.5 h-full items-center justify-center">
                 <Icon icon={startDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
             </View>
         )}
-        <TextInputDef className={`${className} ${inputSettings.rounded} ${startDecorator ? 'pl-[48px]' : ''} ${endDecorator ? 'pr-[44px]' : ''}`} {...props} />
+        <TextInputDef className={`${className} ${inputSettings.rounded} ${startDecorator ? 'pl-12' : ''} ${endDecorator ? 'pr-11' : ''}`} {...props} />
         {endDecorator && (
-            <View className="absolute right-[10px] h-full items-center justify-center">
+            <View className="absolute right-2.5 h-full items-center justify-center">
                 <Icon icon={endDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
             </View>
         )}
@@ -84,13 +84,13 @@ export const InputRounded = ({ className, startDecorator, endDecorator, ...props
 export const InputRoundedRef = forwardRef(({ className, startDecorator, endDecorator, ...props }, ref) => (
     <Row className="items-center flex-auto">
         {startDecorator && (
-            <View className="absolute left-[14px] h-full items-center justify-center">
+            <View className="absolute left-3.5 h-full items-center justify-center">
                 <Icon icon={startDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
             </View>
         )}
-        <TextInputDef className={`${className} ${inputSettings.rounded} ${startDecorator ? 'pl-[48px]' : ''} ${endDecorator ? 'pr-[44px]' : ''}`} ref={ref} {...props} />
+        <TextInputDef className={`${className} ${inputSettings.rounded} ${startDecorator ? 'pl-12' : ''} ${endDecorator ? 'pr-11' : ''}`} ref={ref} {...props} />
         {endDecorator && (
-            <View className="absolute right-[10px] h-full items-center justify-center">
+            <View className="absolute right-2.5 h-full items-center justify-center">
                 <Icon icon={endDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
             </View>
         )}
@@ -100,13 +100,13 @@ export const InputRoundedRef = forwardRef(({ className, startDecorator, endDecor
 export const InputRoundedSmall = ({ className, startDecorator, endDecorator, ...props }) => (
     <Row className="items-center flex-auto">
         {startDecorator && (
-            <View className="absolute left-[14px] h-full items-center justify-center">
+            <View className="absolute left-3.5 h-full items-center justify-center">
                 <Icon icon={startDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
             </View>
         )}
-        <TextInputDef className={`${className} ${inputSettings.roundedsmall} ${startDecorator ? 'pl-[48px]' : ''} ${endDecorator ? 'pr-[44px]' : ''}`} {...props} />
+        <TextInputDef className={`${className} ${inputSettings.roundedsmall} ${startDecorator ? 'pl-12' : ''} ${endDecorator ? 'pr-11' : ''}`} {...props} />
         {endDecorator && (
-            <View className="absolute right-[10px] h-full items-center justify-center">
+            <View className="absolute right-2.5 h-full items-center justify-center">
                 <Icon icon={endDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
             </View>
         )}
@@ -116,13 +116,13 @@ export const InputRoundedSmall = ({ className, startDecorator, endDecorator, ...
 export const InputSmall = ({ className, startDecorator, endDecorator, ...props }) => (
     <Row className="items-center">
         {startDecorator && (
-            <View className="absolute left-[14px] h-full items-center justify-center">
+            <View className="absolute left-3.5 h-full items-center justify-center">
                 <Icon icon={startDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
             </View>
         )}
-        <TextInputDef className={`${className} ${inputSettings.small} ${startDecorator ? 'pl-[48px]' : ''} ${endDecorator ? 'pr-[44px]' : ''}`} {...props} />
+        <TextInputDef className={`${className} ${inputSettings.small} ${startDecorator ? 'pl-12' : ''} ${endDecorator ? 'pr-11' : ''}`} {...props} />
         {endDecorator && (
-            <View className="absolute right-[12px] h-full items-center justify-center">
+            <View className="absolute right-3 h-full items-center justify-center">
                 <Icon icon={endDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
             </View>
         )}
@@ -214,7 +214,7 @@ export function Modal({
                 (title || onClose) && <Row className={`items-center justify-${align} ${headerBorder && modalSettings.header} `}>
                     {(title && type === 'string') && (
                         <View className='flex-auto absolute left-0 right-0'>
-                            <Text className='text-[20px] sm:text-[24px] text-center leading-[none] tracking-tight font-semibold text-neutral-800 dark:text-neutral-200 '>{title}</Text>
+                            <Text className='text-xl sm:text-2xl text-center leading-[none] tracking-tight font-semibold text-neutral-800 dark:text-neutral-200 '>{title}</Text>
                         </View>
                     )}
                     {(title && type !== 'string') && (title)}
@@ -309,10 +309,10 @@ const getIcon = (sIcon, iIndex, classIconName, sClassText, sIconContainer, iIcon
     sClassText = sClassText.replace('overflow-hidden', '');
 
     if (isEmoji(sIcon)) {
-        sClassText = sClassText.replace('text-lg', ' text-3xl text-center leading-[32px]  ');
-        sClassText = sClassText.replace('text-base', ' group-hover:no-underline text-2xl leading-[26px] ');
-        sClassText = sClassText.replace('text-sm', ' group-hover:no-underline text-[20px] leading-[20px] text-center justify-center ');
-        sClassText = sClassText.replace('text-xs', ' group-hover:no-underline text-[20px] native:text-[16px] tracking-normal leading-[20px] text-center justify-center');
+        sClassText = sClassText.replace('text-lg', ' text-3xl text-center leading-8  ');
+        sClassText = sClassText.replace('text-base', ' group-hover:no-underline text-2xl leading-6.5 ');
+        sClassText = sClassText.replace('text-sm', ' group-hover:no-underline text-xl leading-5 text-center justify-center ');
+        sClassText = sClassText.replace('text-xs', ' group-hover:no-underline text-xl native:text-base tracking-normal leading-5 text-center justify-center');
         return (
             <Text key={iIndex} className={classIconName ? classIconName : sClassText + sIconContainer}>{sIcon}</Text>
         );

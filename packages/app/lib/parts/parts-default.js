@@ -13,7 +13,7 @@ export function ParseHtmlClasses(className, tag) {
 export function ProfileDisplayNameLink(title, url, href, fontSize, actions) {
     return (
         <Row className='items-center'>
-            <Text className="text-neutral-800 dark:text-neutral-200 font-semibold tracking-tight truncate text-ellipsis text-[16px] leading-[24px]">
+            <Text className="text-neutral-800 dark:text-neutral-200 font-semibold tracking-tight truncate text-ellipsis text-base leading-6">
                 {title}
             </Text>
             {actions}
@@ -35,7 +35,7 @@ export function CounterIndicator(addon, isTitle) {
         sButtonAddonText = addon;
     }
 
-    const position = addon?.position == 'bottom' ? 'bottom-0 -right-1' : ' top-[50%] -translate-y-[24px] translate-x-[2px] start-[50%] ';
+    const position = addon?.position == 'bottom' ? 'bottom-0 -right-1' : ' top-[50%] -translate-y-6 translate-x-0.5 start-[50%] ';
 
     if (!isTitle && sButtonAddonText)
         return <View className={`absolute ${sButtonAddonBg} z-20 border-2 border-white dark:border-neutral-900 rounded-full px-1 items-center justify-center ${position}`}><Text className='text-white text-xs font-semibold'>{sButtonAddonText}</Text></View>
