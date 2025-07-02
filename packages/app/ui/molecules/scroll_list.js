@@ -88,12 +88,9 @@ export default function ScrollList({
     };
     /* ANIMATION */
 
-    // Don't add scroll handlers for simple pages like splash, login, create-account
-    const isSimplePage = ['home', 'login', 'create-account'].includes(pageData?.uri) && !currentUser;
-    
     const baseProps = {
         ...(contentType !== 'FlatList' && { paddingTop: headerHeight }),
-        ...(isCollapsibleHeader /*&& !isSimplePage*/ && { onScroll }),
+        ...(isCollapsibleHeader && { onScroll }),
         style: { backgroundColor: colors.headerBackground }
     };
 

@@ -130,7 +130,7 @@ export default function ScrollList({
 
     const isSimplePage = ['home', 'login', 'create-account'].includes(pageData?.uri) && !currentUser;
     const baseProps = {
-        ...((useCustomScrollHandler && isCollapsibleHeader && !isSimplePage) && { onScroll }),
+        ...((useCustomScrollHandler && isCollapsibleHeader) && { onScroll }),
     };
 
     if (!isShowCover(pageData.cover,currentUser))
