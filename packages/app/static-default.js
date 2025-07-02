@@ -107,7 +107,7 @@ const SplashTextInner = (
 )
 
 const SplashText = isWeb ? (<View className="my-auto flex-col items-center lg:items-start flex-auto p-4 sm:p-8 xl:p-16 " accessible={true}>
-    <AnimatedView className="w-50 h-50 lg:w-80 lg:h-80 web:duration-300">
+    <AnimatedView className="w-[200px] h-[200px] lg:w-80 lg:h-80 web:duration-300">
         <SvgFile src_dark="splash-dark.svg" src_default="splash-light.svg" alt="Splash screen illustration" />
     </AnimatedView>
     <AnimatedView delay={100} direction="up" className="flex-auto items-center lg:items-start gap-y-4 sm:gap-y-6 max-w-md sm:max-w-lg lg:max-w-3xl">
@@ -115,7 +115,7 @@ const SplashText = isWeb ? (<View className="my-auto flex-col items-center lg:it
     </AnimatedView>
 </View>) : (
     <View className="flex-col items-center lg:items-start gap-x-8 flex-auto px-4 sm:px-8 xl:px-16 lg:pb-16" accessible={true}>
-        <View className="w-50 h-50 lg:w-80 lg:h-80 web:duration-300">
+        <View className="w-[200px] h-[200px] lg:w-80 lg:h-80 web:duration-300">
             <SvgFile
                 src_dark="splash-dark.svg"
                 src_default="splash-light.svg"
@@ -128,7 +128,7 @@ const SplashText = isWeb ? (<View className="my-auto flex-col items-center lg:it
     </View>
 )
 const JoinText = (
-    <AnimatedView className="w-50 h-50 lg:w-80 lg:h-80 web:duration-300">
+    <AnimatedView className="w-[200px] h-[200px] lg:w-80 lg:h-80 web:duration-300">
         <SvgFile src_dark="create-account-dark.svg" src_default="create-account-light.svg" alt="Create account illustration" />
     </AnimatedView>
 );

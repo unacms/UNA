@@ -35,7 +35,7 @@ export default function Splash(props) {
     if (!isWeb) {
         return (
             <View className="flex-1 bg-neutral-100 dark:bg-bgrbody-d">
-                <KbAvoidingView className="flex-1" behavior="padding" keyboardVerticalOffset={0}>
+                <KbAvoidingView className="flex-1" offset={80}>
                     <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
                         <View className="w-full flex-col lg:flex-row gap-y-8 mx-auto p-3">
                             {appStatic('splash_text')}

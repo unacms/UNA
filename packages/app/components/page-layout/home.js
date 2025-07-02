@@ -25,28 +25,6 @@ import Map from 'app/components/elements/map';
 
 export default function (props) {
 
- /*return <>
-         <Row className='gap-x-2'>
-     
-            <View className='h-80 w-80 bg-red-500 rounded-lg'>sdfd</View>
-           
-        </Row>
-        </>
-    /*return <>
-        <Row className='gap-x-2'>
-            <View className='absolute top-4 left-12 w-12 h-12 bg-red-500 rounded-lg'></View>
-            <View className='w-12 h-12 bg-red-500 rounded-lg'></View>
-            <View className='w-12 h-12 bg-red-500 rounded-lg'></View>
-        </Row>
-        <Row  className='gap-x-2'>
-        <View className=' absolute top-4 left-12 w-12 h-12 bg-red-500 rounded-lg'></View>
-        <View className='w-12 h-12 bg-red-500 rounded-lg'></View>
-        <View className='w-12 h-12 bg-red-500 rounded-lg'></View>
-        </Row>
-        <Text className=" text-base leading-5.5 text-red-500"  >Abcs</Text>
-        <Text className=" text-base  text-red-500">Abcs</Text>
-    </>*/
-   // return <Map height={400} data={{ caption: "sdfsdfsd", location: { lat: 35.6762, lng: 139.6503 } }} />
     const isWeb = Platform.OS == 'web'  
     if (appSetting('config', 'show_ui')) {
         return <UI />
@@ -82,9 +60,8 @@ export default function (props) {
 
     if (!currentUser) {
         const content = (
-            <ScrollView ref={refer} className={'mx-auto w-full'} keyboardShouldPersistTaps="always" keyboardDismissMode="on-drag">
+           
                 <Splash {...props} />
-            </ScrollView>
         );
 
         return (<ScrollList
