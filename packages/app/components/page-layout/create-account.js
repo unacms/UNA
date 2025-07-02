@@ -108,7 +108,6 @@ export default function PageLayout(props) {
             <MenuFooter cntClasses="w-full flex-row flex-wrap opacity-80 h-16 items-center justify-center" />
         </View>
     ) : (
-
         <Animated.ScrollView keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag" ref={refer} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
             <View className="w-full flex-col lg:flex-row gap-y-4 mx-auto p-3 pt-16">
                 <View className="my-auto flex-col items-center lg:items-start flex-auto " >
@@ -118,8 +117,6 @@ export default function PageLayout(props) {
                 <MenuFooter cntClasses="w-full flex-row flex-wrap opacity-80 h-16 items-center justify-center" />
             </View>
         </Animated.ScrollView>
-
-
     );
 
     return (

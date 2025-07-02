@@ -97,7 +97,7 @@ export default function ScrollList({
     const enhanced = React.cloneElement(content, baseProps);
 
     return (
-        <KbAvoidingView className="flex-1" offset={80}>
+        <KbAvoidingView className="flex-1">
             {enhanced}
             <Animated.View className="absolute top-0 w-full " style={[headerStyle]}>
                 <BlurView tint="default"
