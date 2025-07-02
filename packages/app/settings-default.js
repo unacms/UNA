@@ -940,7 +940,7 @@ export  const settingsDefault = {
                 'placeholder-neutral-500 ' +
                 'text-neutral-800 dark:text-neutral-200 ' +
                 'focus:text-neutral-900 dark:focus:text-neutral-100',
-            multi: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-xl flex-auto px-3 py-3dark:focus:bg-bgrinput-df dark:text-neutral-100 text-base leading-5 ',
+            multi: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-xl flex-auto px-3 py-3 dark:focus:bg-bgrinput-df dark:text-neutral-100 text-base leading-5 ',
             rounded:
                 ' h-12 rounded-full flex-auto px-3 py-[11px] text-base bg-bgrinput dark:bg-bgrinput-d hover:border-bdrinput-h focus:border-bdrinput-f overflow-hidden border border-bdrinput focus:bg-bgrinput-f dark:border-bdrinput-d dark:focus:border-bdrinput-d dark:focus:bg-bgrinput-df focus:border-bdrinput-f dark:focus:border-bdrinput-df   web:duration-300 placeholder-neutral-500 text-neutral-800 dark:text-neutral-200 ',
             roundedsmall:
