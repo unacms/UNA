@@ -340,8 +340,7 @@ const TopSideBarContainer = ({ routes, index, setIndex, onChangeRoute }) => {
                 variant={a.index == index ? conductorTheme.topmenu_button_variant_active : conductorTheme.topmenu_button_variant}
                 size={conductorTheme.topmenu_button_size}
                 pressed={a.index == index ? conductorTheme.topmenu_button_pressed : false}
-
-                title={(a.title) + 'sdfd'}
+                title={(a.title)}
                 align={conductorTheme.topmenu_button_align}
                 fullWidth={conductorTheme.topmenu_button_fullWidth}
                 addon={!appSetting('conductor', 'show_nav_counters') && a.addon ? null : a.addon}
