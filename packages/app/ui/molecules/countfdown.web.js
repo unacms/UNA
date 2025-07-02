@@ -14,10 +14,10 @@ export default function ElementCountDown(props) {
           // Render a countdown
             return (
                 <Row className='gap-x-4 lg:gap-x-16'>
-                    <View className="text-center">{days}<Text className="text-base font-normal">DAYS</Text></View>
-                    <View className="text-center">{hours}<Text className="text-base font-normal">HOURS</Text></View>
-                    <View className="text-center">{minutes}<Text className="text-base font-normal">MINUTES</Text></View>
-                    <View className="text-center">{seconds}<Text className="text-base font-normal">SECONDS</Text></View>
+                    <View className="text-center">{days}<Text className=" text-base font-normal">DAYS</Text></View>
+                    <View className="text-center">{hours}<Text className=" text-base font-normal">HOURS</Text></View>
+                    <View className="text-center">{minutes}<Text className=" text-base font-normal">MINUTES</Text></View>
+                    <View className="text-center">{seconds}<Text className=" text-base font-normal">SECONDS</Text></View>
                 </Row>
             );
         }

@@ -123,7 +123,7 @@ export default function ({ name, value = '', type, onChange }) {
                         />}
                         {
                         bIsTime && (<View className='w-full justify-center items-center gap-y-4'><Row className='justify-center items-center w-64 mt-2'>
-                            <Text className="text-base justify-center items-center text-neutral-900 dark:text-neutral-50"> Time </Text>
+                            <Text className=" text-base justify-center items-center text-neutral-900 dark:text-neutral-50"> Time </Text>
                             <View>
                                 <Dropdown
                                     labelField="label"
@@ -133,7 +133,7 @@ export default function ({ name, value = '', type, onChange }) {
                                     data={hours}
                                 />
                             </View>
-                            <Text className="text-base justify-center items-center text-neutral-900 dark:text-neutral-50"> : </Text>
+                            <Text className=" text-base justify-center items-center text-neutral-900 dark:text-neutral-50"> : </Text>
                             <View>
                                 <Dropdown
                                     labelField="label"

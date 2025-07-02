@@ -45,7 +45,7 @@ export default function PageLayout(props) {
                         <Text
                             accessible={true}
                             accessibilityRole="text"
-                            className="text-base lg:text-lg xl:text-xl text-center lg:text-start text-neutral-600 dark:text-neutral-400 text-pretty"
+                            className=" text-base lg:text-lg xl:text-xl text-center lg:text-start text-neutral-600 dark:text-neutral-400 text-pretty"
                         >
                             {isAllowJoin
                                 ? t('create_account_page_text')
@@ -62,7 +62,7 @@ export default function PageLayout(props) {
                                     <Text className="text-xl sm:text-2xl text-center lg:text-left leading-[none] tracking-tight font-semibold text-neutral-800 dark:text-neutral-200">
                                         {t('create_account_page_caption')}
                                     </Text>
-                                    <Text className="text-sm sm:text-base text-center lg:text-left text-neutral-500">
+                                    <Text className="text-sm sm: text-base text-center lg:text-left text-neutral-500">
                                         {t('create_account_page_already_have')} <Link href="/login">{t('create_account_page_sign_in')}</Link>.
                                     </Text>
                                 </View>

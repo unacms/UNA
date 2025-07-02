@@ -18,7 +18,7 @@ export default function () {
                 <Text className="text-xl sm:text-2xl text-center lg:text-left leading-[none] tracking-tight font-semibold text-neutral-800 dark:text-neutral-200">
                     {t('login_modal_heading')}
                 </Text>
-                <Text className="text-sm sm:text-base text-center lg:text-left text-neutral-500">
+                <Text className="text-sm sm: text-base text-center lg:text-left text-neutral-500">
                     {t('login_modal_subheading')}
                 </Text>
             </View>

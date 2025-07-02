@@ -293,7 +293,7 @@ export default function Bluetooth(props) {
     if (!isEnabled.bt || !isEnabled.gps) {
         return (
             <>
-                <Text className="text-base font-semibold text-neutral-800 dark:text-neutral-200 ">Activate Bluetooth and Location Services to use proximity friend requests.</Text>
+                <Text className=" text-base font-semibold text-neutral-800 dark:text-neutral-200 ">Activate Bluetooth and Location Services to use proximity friend requests.</Text>
             </>
         )
     }
@@ -309,7 +309,7 @@ export default function Bluetooth(props) {
                     value={advertising ? true : false}
                     ios_backgroundColor={colors.background}
                 />
-                <Text className="text-base font-semibold text-neutral-800 dark:text-neutral-200 ">Share  Profile</Text>
+                <Text className=" text-base font-semibold text-neutral-800 dark:text-neutral-200 ">Share  Profile</Text>
             </Row>
             <Button startDecorator="SquareUser" title="Scan Profile" onPress={() => scan()} />
         </Row>

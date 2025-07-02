@@ -36,7 +36,7 @@ export default function PageLayout(props) {
                                 <Text className="text-xl sm:text-2xl text-center lg:text-left leading-[none] tracking-tight font-semibold text-neutral-800 dark:text-neutral-200">
                                     {t('splash_page_login')}
                                 </Text>
-                                <Text className="text-sm sm:text-base text-center lg:text-left text-neutral-500">
+                                <Text className="text-sm sm: text-base text-center lg:text-left text-neutral-500">
                                     {t('splash_page_login2')}
                                 </Text>
                             </View>
@@ -113,7 +113,7 @@ export default function PageLayout(props) {
                             </View>
                         </Card>
                         <AnimatedView direction="up" className="flex-col">
-                            <Text className="text-base py-4 text-neutral-600 dark:text-neutral-400 text-center">{t('splash_page_account')}</Text>
+                            <Text className=" text-base py-4 text-neutral-600 dark:text-neutral-400 text-center">{t('splash_page_account')}</Text>
                             <Link className="w-full" href="/create-account" haptics="Medium">
                                 <Button
                                     title={t('splash_page_new_account')}

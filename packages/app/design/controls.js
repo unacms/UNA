@@ -310,9 +310,9 @@ const getIcon = (sIcon, iIndex, classIconName, sClassText, sIconContainer, iIcon
 
     if (isEmoji(sIcon)) {
         sClassText = sClassText.replace('text-lg', ' text-3xl text-center leading-8  ');
-        sClassText = sClassText.replace('text-base', ' group-hover:no-underline text-2xl leading-6.5 ');
+        sClassText = sClassText.replace(' text-base', ' group-hover:no-underline text-2xl leading-6.5 ');
         sClassText = sClassText.replace('text-sm', ' group-hover:no-underline text-xl leading-5 text-center justify-center ');
-        sClassText = sClassText.replace('text-xs', ' group-hover:no-underline text-xl native:text-base tracking-normal leading-5 text-center justify-center');
+        sClassText = sClassText.replace('text-xs', ' group-hover:no-underline text-xl native: text-base tracking-normal leading-5 text-center justify-center');
         return (
             <Text key={iIndex} className={classIconName ? classIconName : sClassText + sIconContainer}>{sIcon}</Text>
         );

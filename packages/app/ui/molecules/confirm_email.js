@@ -53,7 +53,7 @@ export default function ElementConfirmEmail(props) {
                         <Text className="text-xl sm:text-2xl text-center leading-[none] tracking-tight font-semibold text-neutral-800 dark:text-neutral-200">
                             {t("Unconfirmed email address")}
                         </Text>
-                        <Text className="text-sm sm:text-base text-center text-neutral-500">
+                        <Text className="text-sm sm: text-base text-center text-neutral-500">
                             {t("Please check your email")}
                         </Text>
                     </View>

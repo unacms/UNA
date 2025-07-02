@@ -28,7 +28,7 @@ export default function UI(props) {
                         {buttonGroups.map(({ label, props: extraProps }) => (
                             <ScrollView horizontal>
                             <View key={`group-${size}-${label}`} className="mr-6">
-                                <Text className="text-base">{label}</Text>
+                                <Text className=" text-base">{label}</Text>
                                 <Row className="gap-x-2 mb-4">
                                     {variants.map(variant => (
                                         <Button

@@ -43,8 +43,8 @@ export default function (props) {
         <View className='w-12 h-12 bg-red-500 rounded-lg'></View>
         <View className='w-12 h-12 bg-red-500 rounded-lg'></View>
         </Row>
-        <Text className="text-base leading-5.5 text-red-500"  >Abcs</Text>
-        <Text className="text-base  text-red-500">Abcs</Text>
+        <Text className=" text-base leading-5.5 text-red-500"  >Abcs</Text>
+        <Text className=" text-base  text-red-500">Abcs</Text>
     </>*/
    // return <Map height={400} data={{ caption: "sdfsdfsd", location: { lat: 35.6762, lng: 139.6503 } }} />
     const isWeb = Platform.OS == 'web'  

@@ -172,7 +172,7 @@ export  const settingsDefault = {
         auto_ghosts_in_files: true,
         field_gap: '4',
         caption_classes:
-            'font-semibold text-sm sm:text-base text-neutral-700 dark:text-neutral-300',
+            'font-semibold text-sm sm: text-base text-neutral-700 dark:text-neutral-300',
         without_captions: [
             // OLD appSetting('forms', 'form_without_captions')
             'sys_login',
@@ -905,7 +905,7 @@ export  const settingsDefault = {
                 'flex flex-row focus:outline-none items-center justify-between px-1 py-0.5 rounded-lg font-medium hover:bg-bgritem dark:hover:bg-bgritem-d text-sm text-neutral-700 dark:text-neutral-300 dark:hover:text-white hover:cursor-pointer',
             item_cnt: 'items-center w-full',
             item_text:
-                'text-base web:text-sm leading-8 px-3 font-medium text-neutral-800 dark:text-neutral-200',
+                ' text-base web:text-sm leading-8 px-3 font-medium text-neutral-800 dark:text-neutral-200',
             item_icon:
                 'flex items-center w-9 h-9 bg-bgritem dark:bg-bgritem-d group-hover:bg-bgritem-h dark:group-hover:bg-bgritem-dh rounded-full justify-center',
             icon_size: 20, // Default icon size for dropdown menu icons
@@ -931,7 +931,7 @@ export  const settingsDefault = {
         inputs: {
             default:
                 'h-14 min-w-14 rounded-xl flex-auto ' +
-                'px-3 py-3text-base ' +
+                'px-3 py-3 text-base ' +
                 'bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d ' +
                 'hover:border-bdrinput-h dark:hover:border-bdrinput-dh ' +
                 'focus:border-bdrinput-f dark:focus:border-bdrinput-df ' +

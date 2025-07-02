@@ -12,7 +12,7 @@ export default function ReputationLeaderboard({ data }) {
                             displayType="unit"
                             displaySize="base"
                         />
-                        <Text className="text-base text-neutral-800 dark:text-neutral-200">{item.sign}{item.points}</Text>
+                        <Text className=" text-base text-neutral-800 dark:text-neutral-200">{item.sign}{item.points}</Text>
                     </Row>
                 ))}
         </View>

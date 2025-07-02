@@ -26,7 +26,7 @@ export function MenuItemSidebar({ title, icon, isActive, addon }) {
             <Text className={`h-9 w-9 p-2 rounded-full ${isActive ? ' bg-primary text-white ' : 'bg-neutral-900/10 dark:bg-neutral-100/10 group-hover:bg-neutral-900/20 dark:group-hover:bg-neutral-100/20 text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900 dark:group-hover:text-neutral-100 web:duration-300'}`}>
                 {isEmoji(icon) ? icon : <Icon icon={icon} size="20" />}
             </Text>
-            <Text className="text-base font-medium text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900 dark:group-hover:text-neutral-100">{title}</Text>
+            <Text className=" text-base font-medium text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900 dark:group-hover:text-neutral-100">{title}</Text>
             {getPart("CounterIndicator", [addon, true])}
         </Row>
     )

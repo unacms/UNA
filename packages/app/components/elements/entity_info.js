@@ -48,7 +48,7 @@ export default function ElementEntityInfo({ data }) {
                     a.value = (new Date(a.value)/1000);
                 }
 
-                return <Time stylesName="text-base text-neutral-800 dark:text-neutral-200" ts={a.value}></Time>
+                return <Time stylesName=" text-base text-neutral-800 dark:text-neutral-200" ts={a.value}></Time>
 
             case 'select':
                 if (a.value !=0 && a.value != ''){
@@ -90,7 +90,7 @@ export default function ElementEntityInfo({ data }) {
                         a.value = (new Date(a.value)/1000);
                     }
 
-                    return <Time stylesName="text-base text-neutral-800 dark:text-neutral-200" ts={a.value}></Time>
+                    return <Time stylesName=" text-base text-neutral-800 dark:text-neutral-200" ts={a.value}></Time>
                 }
                 return (
                     <Text className=" text-neutral-800 text-base dark:text-neutral-200">

@@ -397,7 +397,7 @@ function ElementDashboardStat(props) {
                                         <View className="flex-none px-1 font-semibold ">
                                             <Icon icon={item2.icon} width={24} height={24} color={colors.default}/>
                                         </View>
-                                        <Text className="ml-3 sm:text-base flex-auto text-neutral-600 hover:text-neutral-950 dark:text-neutral-400 hover:dark:text-white  font-medium ">
+                                        <Text className="ml-3 sm: text-base flex-auto text-neutral-600 hover:text-neutral-950 dark:text-neutral-400 hover:dark:text-white  font-medium ">
                                             {t(item2.title)}
                                         </Text>
 

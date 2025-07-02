@@ -265,7 +265,7 @@ export default function UnitComments(props) {
                                         <View><Text className='text-xs text-neutral-800 dark:text-neutral-200'>In Reply to </Text></View>
                                         <View className=" "></View>
                                     </View>
-                                    <ContentMore content={data.cmt_parent.data.cmt_text} numberOfLines={1} openSmall={false} textClassName="text-base text-neutral-600 dark:text-neutral-400" />
+                                    <ContentMore content={data.cmt_parent.data.cmt_text} numberOfLines={1} openSmall={false} textClassName=" text-base text-neutral-600 dark:text-neutral-400" />
 
                                 </View>
                             }

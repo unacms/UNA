@@ -133,7 +133,7 @@ export const H6 = ({ children, className, isfirst, islast, ...rest }) => {
         typeof children === 'string' ? decodeText(children) : children
     const HeadingComponent = Platform.OS === 'web' ? 'h6' : NativeText
     const finalClassName = normalizeClasses(
-        `text-base sm:text-lg font-semibold tracking-tight text-neutral-950 dark:text-neutral-50 ${
+        ` text-base sm:text-lg font-semibold tracking-tight text-neutral-950 dark:text-neutral-50 ${
             isfirst === 'true' ? 'mt-0' : 'mt-4'
         } ${islast === 'true' ? 'mb-0' : 'mb-1'} ${className || ''}`
     )

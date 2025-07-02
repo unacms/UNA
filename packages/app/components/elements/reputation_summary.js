@@ -13,7 +13,7 @@ export default function ReputationSummary({ data }) {
             <Text className="font-bold text-base text-neutral-800 dark:text-neutral-200">{data.author_data.display_name}</Text>
             <View className="items-center mt-4">
                 {data.levels.map((item, index) => (
-                    <Text className="text-base text-neutral-800 dark:text-neutral-200">{item.title}</Text>
+                    <Text className=" text-base text-neutral-800 dark:text-neutral-200">{item.title}</Text>
                 ))}
             </View>
         </View>

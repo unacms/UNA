@@ -22,7 +22,7 @@ export default function (props) {
             <Text className="label-text block px-0.5 w-full ">
                 <Row className='items-center gap-x-1' >
                     <Text className={appSetting('forms', 'caption_classes')}>{caption}</Text>
-                    {((props.checker || props.required) ? <></> : <Text className="text-sm sm:text-base text-neutral-700 dark:text-neutral-300">{isShowOptional}</Text>)}
+                    {((props.checker || props.required) ? <></> : <Text className="text-sm sm: text-base text-neutral-700 dark:text-neutral-300">{isShowOptional}</Text>)}
                     {((!!mandatoryIcon && (props.checker || props.required)) ? <Text className="text-red-600 h-4 w-4"><Icon icon={mandatoryIcon} size={16} /></Text> : <></>)}
                 </Row >
             </Text>

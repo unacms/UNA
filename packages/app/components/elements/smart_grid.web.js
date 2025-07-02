@@ -276,8 +276,8 @@ export default function (props) {
                             <View className="h-8 w-8 rounded-full">
                                 <ImageComponent className="u-cover rounded-full" src={block.content_data.logo} />
                             </View>
-                            <Text className='text-base mt-2 font-semibold tracking-tight' numberOfLines={1}>{block.content_data.title}</Text>
-                            {(block.h > 1 || block.w > 1) && <Text className='text-base my-2' numberOfLines={block.h == 1 && block.w == 2 ? 3 : 4}>{block.content_data.description}</Text>}
+                            <Text className=' text-base mt-2 font-semibold tracking-tight' numberOfLines={1}>{block.content_data.title}</Text>
+                            {(block.h > 1 || block.w > 1) && <Text className=' text-base my-2' numberOfLines={block.h == 1 && block.w == 2 ? 3 : 4}>{block.content_data.description}</Text>}
                             <Text className='text-sm'>{block.content_data.domain}</Text>
                         </View>
                         <View className={`${block.h == 1 && block.w == 2 ? 'w-1/2 items-center justify-center pl-4' : 'w-full aspect-video rounded-2xl'}`}>

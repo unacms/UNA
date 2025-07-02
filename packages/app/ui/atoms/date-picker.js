@@ -59,7 +59,7 @@ export function MonthCalendar({ date = new Date(), onSelect, selectedDate }) {
                                     >
                                         <Pressable onPress={() => { onSelect(new Date(displayYear, displayMonth - 1, day, selectedDate? selectedDate.getHours(): 0, selectedDate? selectedDate.getMinutes(): 0, selectedDate? selectedDate.getSeconds(): 0)) }}>
                                             <Text
-                                                className={`text-base ${isToday ? 'text-white' : 'text-neutral-700 dark:text-neutral-300'
+                                                className={` text-base ${isToday ? 'text-white' : 'text-neutral-700 dark:text-neutral-300'
                                                     }`}
                                             >
                                                 {day}
