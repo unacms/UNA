@@ -29,12 +29,12 @@ export const TextHeader = memo(({ text }) => {
 function RightNonLogged(props) {
     const bSearch = appSetting('layout', 'search') == true
     return (
-        <Row className=' gap-x-1'>
+        <Row className=' '>
             {bSearch && <Search
                 params={{ trigger: { icon: 'Search', size: 'base', variant: 'secondary', onPress: () => FeedbackHaptics('Medium') } }} />
             }
             <MenuLauncher />
-            <Link href="/login">
+            <Link href="/login" onPress={() => FeedbackHaptics('Medium')}>
                 <ButtonRef
                     variant="secondary"
                     tooltip="Account"
@@ -119,14 +119,15 @@ export const Header = memo(({
     const ContextSelector = getComponent('molecule', 'context_selector')
     
     return (
-        <Row className={` px-3 sm:px-4 items-center h-16 justify-between web:duration-300`}>
+
+        <Row className={` px-2 sm:px-2 items-center h-16 justify-between web:duration-300`}>
             {(!currentUser && !pageData?.context && !text && (!settings?.headerSettings || settings?.headerSettings?.header)) && 
                 <Link href="/home" aria-label="Home">
-                    <Pressable className="items-center flex-row hover:scale-105 rounded-[14px] active:scale-95 active:opacity-50 gap-x-3 text-neutral-800 dark:text-neutral-200 web:hover:text-neutral-800 web:dark:hover:text-neutral-200 duration-300 ">
+                    <Pressable className="items-center p-1 flex-row web:hover:scale-105 web:active:scale-95 rounded-xl gap-x-3 text-neutral-800 dark:text-neutral-200 web:hover:text-neutral-800 web:dark:hover:text-neutral-200 duration-300 ">
                         <View className="w-11 h-11">
                             {appStatic('logo_mark')}
                         </View>
-                        <View className="w-18 h-9 flex-row items-center">
+                        <View className="w-20 h-10 flex-row items-center">
                             {appStatic('logo_text')}
                         </View>
                     </Pressable>

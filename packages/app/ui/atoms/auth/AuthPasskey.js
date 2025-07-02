@@ -9,7 +9,7 @@ export default function AuthPasskey({ button }) {
     };
 
     return (
-        <View className='flex-1 min-w-[200px]'>
+        <View className='flex-1 min-w-200'>
             {button ? (
                 <Pressable onPress={handlePasskeyLogin}>{button}</Pressable>
             ) : (

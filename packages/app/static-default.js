@@ -52,8 +52,8 @@ const LogoMark = () => {
     const theme = ThemeName();
     return <Svg
         aria-label="Logo Mark"
-        width={40}
-        height={40}
+        width={44}
+        height={44}
         color={ theme === 'dark' ? 'white' : 'black'}
         viewBox="0 0 40 40"
         xmlns="http://www.w3.org/2000/svg"
@@ -91,14 +91,14 @@ const SplashTextInner = (
             accessible={true}
             accessibilityRole="header"
             aria-level={1}
-            className="text-4xl lg:text-5xl xl:text-6xl text-center lg:text-start tracking-tight font-bold text-neutral-800 dark:text-neutral-200 text-pretty   web:duration-300"
+            className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl text-center lg:text-start tracking-tight font-bold text-neutral-800 dark:text-neutral-200 text-balance web:duration-300"
         >
             Welcome to your community!
         </Text>
         <Text
             accessible={true}
             accessibilityRole="text"
-            className=" text-base sm:text-lg xl:text-xl text-center lg:text-start text-neutral-600 dark:text-neutral-400 text-pretty web:duration-300"
+            className=" text-base sm:text-lg xl:text-xl text-center lg:text-start text-neutral-600 dark:text-neutral-400 text-balance web:duration-300"
         >
             Join the conversation, share your thoughts, and connect with others.
             Your voice matters - be part of our growing community!
@@ -326,7 +326,7 @@ function ComponentModal({ title = 'test' }) {
 
 const ComponentsLoginContent = (
     <View className="hidden my-auto flex-col flex-auto">
-        <AnimatedView className="w-[50%] max-w-[360px] aspect-square">
+        <AnimatedView className="w-[50%] max-w-80 aspect-square">
             <SvgFile
                 src_dark="login-dark.svg"
                 src_default="login-light.svg"

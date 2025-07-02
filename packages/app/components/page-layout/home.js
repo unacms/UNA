@@ -28,7 +28,7 @@ export default function (props) {
  /*return <>
          <Row className='gap-x-2'>
      
-            <View className='w-24 h-11 bg-red-500 rounded-lg'></View>
+            <View className='h-80 w-80 bg-red-500 rounded-lg'>sdfd</View>
            
         </Row>
         </>
@@ -209,8 +209,8 @@ export default function (props) {
                 }
             >
                 {getLayout(currentUser) == 'hor' && (
-                    <View className="hidden relative xl:flex w-[360px] ">
-                        <View className="fixed-process fixed w-[360px] px-3 py-2  web:duration-200">
+                    <View className="hidden relative xl:flex w-80 ">
+                        <View className="fixed-process fixed w-80 px-3 py-2  web:duration-200">
                             {/* {appSetting('layout', 'sidebar_search') && (
                                 <View className="pb-3 w-full">
                                     <Search type="input" placeholder="Enter search text" />
@@ -331,7 +331,7 @@ export default function (props) {
 
                 
 
-                    <View className="hidden lg:flex w-[360px] ">
+                    <View className="hidden lg:flex w-80 ">
                         <View className="fixed-process p-3 flex-col sm:py-4 gap-y-6  web:duration-300">
                             {sideBarBlocks.map((item, index) => {
                                 return (

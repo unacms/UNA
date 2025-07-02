@@ -20,7 +20,7 @@ export function getFriendsCounter(currentUser) {
 }
 
 export function getBadgeForTab(currentUser, url) {
-    const badgeTextSize = appSetting('theme', 'native_tabs', 'badgeTextSize') || 'text-[10px]';
+    const badgeTextSize = appSetting('theme', 'native_tabs', 'badgeTextSize') || 'text-xs';
     
     if (
         url == appSetting('notifications', 'url') &&

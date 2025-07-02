@@ -369,7 +369,7 @@ function ElementDashboardStat(props) {
 
                 <View className="grid w-full grid-cols-1 gap-x-2 gap-y-1.5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                     {data.manage.items.map((item2, index) => {
-                        return <View className=" w-full min-w-[160px] max-w-[320px] " key={index}>
+                        return <View className=" w-full min-w-[160px] max-w-xs " key={index}>
                             <Link href={item2.link}>
                                 <Button variant="secondary" align="left" size="sm" fullWidth title={t(item2.title)} startDecorator={item2.icon} />
                             </Link>

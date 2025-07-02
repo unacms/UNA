@@ -169,7 +169,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
         };
 
         if (icon === '*') {
-            return <Link href={link}><Row className="justify-between items-center min-w-[200px]">{translatedTitle} {addonContent}</Row></Link>;
+            return <Link href={link}><Row className="justify-between items-center min-w-200">{translatedTitle} {addonContent}</Row></Link>;
         }
 
         return (
@@ -373,7 +373,7 @@ const RenderSceneHeader = ({ route, setFilterValue }) => {
     )
 };
 
-export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMenu, leftSideBar, leftSideBarBlocks, leftSideBarWidth = ' w-[360px] ', skeleton = '', onChangeRoute, keyword, layoutName, defaultHeaderHeight = 128 }) {
+export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMenu, leftSideBar, leftSideBarBlocks, leftSideBarWidth = ' w-80 ', skeleton = '', onChangeRoute, keyword, layoutName, defaultHeaderHeight = 128 }) {
     const uniRef = useRef();
     const { currentUser } = useCurrentUser();
     const { setBottomSheetData } = useBottomSheetData();

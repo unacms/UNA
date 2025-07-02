@@ -9,7 +9,7 @@ export default function AuthLinkedIn({ button }) {
     };
 
     return (
-        <View className='flex-1 min-w-[200px]'>
+        <View className='flex-1 min-w-200'>
             {button ? (
                 <Pressable onPress={handleLinkedInLogin}>{button}</Pressable>
             ) : (

@@ -51,7 +51,7 @@ export default function RootLayout({ children }) {
 
     return (
         <html lang="en" >
-            <body className='bg-transparent' style={{ overflowY: 'initial' }}>
+            <body className='bg-bgrbody dark:bg-bgrbody-d'>
                 <QueryClientProvider client={queryClient}>
                         <AnimatedBackground />
                         {!!process.env['VERCEL'] ? <Analytics /> : null}

@@ -48,7 +48,7 @@ export default function PageLayout(props) {
                             </View>
                             <View className="gap-y-2 w-full">
                                 <Row className="flex-row gap-y-2 flex-wrap gap-x-2 w-full"><AuthPanel /></Row>
-                                <Link className="flex-1 min-w-[200px]" href="/forgot-password" haptics="Medium">
+                                <Link className="flex-1 min-w-200" href="/forgot-password" haptics="Medium">
                                     <Button
                                         title={t('splash_page_fp')}
                                         variant="default"
@@ -59,7 +59,7 @@ export default function PageLayout(props) {
 
                                     />
                                 </Link>
-                                <Link className="flex-1 min-w-[200px]" href="/create-account" haptics="Medium">
+                                <Link className="flex-1 min-w-200" href="/create-account" haptics="Medium">
                                     <Button
                                         title={t('splash_page_new_account')}
                                         variant="default"

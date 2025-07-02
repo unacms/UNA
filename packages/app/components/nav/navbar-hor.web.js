@@ -109,7 +109,7 @@ const HeaderLine = memo(
             ).length > 0
 
         return (
-            <View className=" flex-row xl:w-[360px] gap-x-2 px-3  items-center ">
+            <View className=" flex-row xl:w-80 gap-x-2 px-3  items-center ">
                 {headerSettings.menu && isDrawer && (
                     <View className="lg:hidden pr-2 ">
                         <Pressable onPress={showMenu}>
@@ -240,7 +240,7 @@ export default function (props) {
                             context={props.context}
                         />
                         <MenuTop url={props.url} uri={props.uri} />
-                        <Row className=" xl:w-[360px] px-3.5 items-center justify-end ">
+                        <Row className=" xl:w-80 px-3.5 items-center justify-end ">
                            <ToolbarItems 
                                 currentUser={currentUser}
                                 bSearch={bSearch}

@@ -28,7 +28,7 @@ export default function PageLayout(props) {
 
     const content = isWeb ? (
         <View className={`flex-col justify-center min-h-[100vh] w-full pt-16 ${TABLET_MODE_FROM}:pt-0`}>
-            <View className="w-full lg:flex-row mx-auto my-auto  max-w-[1440px]">
+            <View className="w-full lg:flex-row mx-auto my-auto  max-w-8xl">
                 <View className="my-auto flex-col items-center lg:items-start flex-auto p-4 sm:p-8 xl:p-16" accessible={true}>
                     {appStatic('join_text')}
                     <AnimatedView direction="up" className="flex-auto hidden lg:flex items-center lg:items-start gap-y-4 sm:gap-y-6 max-w-md sm:max-w-lg lg:max-w-3xl">

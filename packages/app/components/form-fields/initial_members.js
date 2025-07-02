@@ -13,7 +13,7 @@ import { useTranslation } from 'react-i18next';
 const User = ({ data, onSelect, type }) => {
     return (
         <Pressable className="p-0.5" onPress={() => onSelect(data)}>
-            <Row className=" p-[3px] pr-3 rounded-full border border-bdrbutton dark:border-bdrbutton-d bg-white dark:bg-neutral-800 shadow-sm items-center justiy-center">
+            <Row className="p-0.5 pr-3 rounded-full border border-bdrbutton dark:border-bdrbutton-d bg-white dark:bg-neutral-800 shadow-sm items-center justiy-center">
                 {<Profile displaySize="sm" {...data} showLinks={false} />}
                 {type == 'remove' && <Icon icon="X" />}
             </Row>

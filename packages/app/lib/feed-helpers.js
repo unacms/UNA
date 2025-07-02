@@ -186,7 +186,7 @@ export const ItemInfo = memo(({ data, t }) => {
     const OwnersList = () => owners?.length > 0 ? owners?.length == 1 ? <>
         <Text className="text-neutral-400 dark:text-neutral-600 text-sm"> · </Text>
         <Link href={data.owners[0].url} emulate={true}>
-            <Text className=" bg-primary/10 hover:bg-primary/20 px-1.5 py-[3px] rounded-md text-primary dark:text-primary-d hover:text-linkhover text-xs ">
+            <Text className=" bg-primary/10 hover:bg-primary/20 p-1.5 rounded-md text-primary dark:text-primary-d hover:text-linkhover text-xs ">
                 {owners[0].title}
             </Text>
         </Link></> : <><Text className="text-neutral-400 dark:text-neutral-600 px-1">·</Text>

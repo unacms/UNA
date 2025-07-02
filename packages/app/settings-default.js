@@ -1026,6 +1026,8 @@ export  const settingsDefault = {
             'u-btn-secondary-text':
                 'font-medium text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-white ',
             'u-btn-secondary-trans': '  web:duration-300',
+            'u-btn-secondary-color-icon-light': 'rgba(31,41,55,1)',
+            'u-btn-secondary-color-icon-dark': 'rgba(229,231,235,1)',
 
             'u-btn-danger-cnt':
                 'border border-transparent dark:border-transparent bg-red-600 web:hover:bg-red-500 web:hover:shadow active:opacity-50 active:shadow-none',

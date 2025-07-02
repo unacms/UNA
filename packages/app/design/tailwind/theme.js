@@ -213,6 +213,12 @@ const theme = {
             'md': '0 4px 6px 0 rgb(0 0 0 / 0.1)',
             'sm': '0 1px 2px 0 rgb(0 0 0 / 0.05)',
         },
+        minWidth: {
+            '200': '200px',
+        },
+        maxWidth: {
+            '8xl': '1440px',
+        },
         fontFamily: {
             default: ['default-font', 'sans-serif']
         },

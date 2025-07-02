@@ -153,7 +153,7 @@ export default function (props) {
                             onPress={showSelect}
                         />}
                         {field.value?.length > 0 && valuesList.filter(item => field.value.includes(item.key)).map((item, index) => (
-                            <View className='m-[3px]' key={'label' + index}>
+                            <View className='m-0.5' key={'label' + index}>
                                 <Button
                                     endDecorator="X"
                                     variant={variant}
