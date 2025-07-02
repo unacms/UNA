@@ -8,7 +8,7 @@ export function BlockWrapper(props) {
     block.designbox_id = Number(block.designbox_id);
     const aNoTitle = [0, 10, 13, 3];
     const aNoBg = [0, 10, 14, 4];
-    let bIsShowTitle = false;
+    let bIsShowTitle = true;
     if (aNoTitle.indexOf(block.designbox_id) != -1) {
         bIsShowTitle = false;
     }
@@ -29,10 +29,6 @@ export function BlockWrapper(props) {
     if (typeof showPad !== 'undefined') {
         bIsShowPad = showPad;
     }
-
-    /*if (bIsShowTitle){
-        bIsShowBg = true;
-    }*/
 
     let cssClasses = rest?.extraProps?.cssClasses ? rest?.extraProps?.cssClasses : "";
     let cnt = <>{bIsShowTitle && <View>

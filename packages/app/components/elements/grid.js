@@ -426,10 +426,10 @@ export default function ElementGrid(props) {
 
     const actionsBulk = Object.values(data.actions.bulk);
     const actionsIndependent = Object.values(data.actions.independent);
-
+/*   <Text className="tracking-tight text-lg font-bold text-neutral-900 dark:text-neutral-50 mb-2">{stripTags(props?.block?.title)}</Text>*/
     
-    let a = <View className="w-full xl:px-6">
-        <Text className="tracking-tight text-lg font-bold text-neutral-900 dark:text-neutral-50 mb-2">{stripTags(props?.block?.title)}</Text>
+    let a = <View className="w-full">
+     
         {modalContent && (
             <Modal title={modalContent.content[0]?.title ? modalContent.content[0]?.title : " "} onVisible={!!modalContent} outerClickClose={false} onClose={() => handleCloseModal()}>
                 <View className='px-4'>
