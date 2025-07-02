@@ -50,7 +50,7 @@ export default function ElementConfirmEmail(props) {
             <View className={`mx-auto ${getPageWidth()} p-4 w-full `}>
                 <Card rounded="rounded-3xl" margin="p-4 sm:p-6" addClassName="border border-white overflow-hidden dark:border-bdrcard-d gap-y-6">
                     <View className="flex-col flex-auto gap-y-2 justify-center">
-                        <Text className="text-xl sm:text-2xl text-center leading-[none] tracking-tight font-semibold text-neutral-800 dark:text-neutral-200">
+                        <Text className="text-xl sm:text-2xl text-center leading-none tracking-tight font-semibold text-neutral-800 dark:text-neutral-200">
                             {t("Unconfirmed email address")}
                         </Text>
                         <Text className="text-sm sm: text-base text-center text-neutral-500">

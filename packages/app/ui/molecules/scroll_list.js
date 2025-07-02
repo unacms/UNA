@@ -14,6 +14,7 @@ import { Button } from 'app/design/controls';
 import { Header } from 'app/ui/molecules/scroll_list_header';
 import { useEffect } from 'react';
 import { useCurrentUser } from 'app/context/user'
+import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view'
 
 export default function ScrollList({ 
     content, 
@@ -75,7 +76,7 @@ export default function ScrollList({
     
 
     const onScroll = useAnimatedScrollHandler((event) => {
-
+        console.log("event.contentOffset.y", event.contentOffset.y)
         const currentY = Math.round(event.contentOffset.y / 10) * 10;
         if (currentY === scrollY.value) return;
         scrollDirection.value = currentY > scrollY.value ? 'down' : 'up';
@@ -93,14 +94,14 @@ export default function ScrollList({
     
     const baseProps = {
         ...(contentType !== 'FlatList' && { paddingTop: headerHeight }),
-        ...(isCollapsibleHeader && !isSimplePage && { onScroll }),
+        ...(isCollapsibleHeader /*&& !isSimplePage*/ && { onScroll }),
         style: { backgroundColor: colors.headerBackground }
     };
 
     const enhanced = React.cloneElement(content, baseProps);
 
     return (
-        <View className="flex-1">
+        <KbAvoidingView className="flex-1" offset={80}>
             {enhanced}
             <Animated.View className="absolute top-0 w-full " style={[headerStyle]}>
                 <BlurView tint="default"
@@ -132,6 +133,6 @@ export default function ScrollList({
                 ></Button>
             </Animated.View>
             }
-        </View>
+        </KbAvoidingView>
     )
 }

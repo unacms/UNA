@@ -589,46 +589,7 @@ const ComponentsDummy = (
 )
 
 const ComponentsFooter = () => {
-    const { t } = useTranslation()
-    return (
-        <>
-            <View className=" w-full  flex-row flex-wrap opacity-80 ">
-                <Link href="/about">
-                    <Button
-                        variant="text"
-                        title={t('About')}
-                        className="mt-auto"
-                        size="sm"
-                    />
-                </Link>
-
-                <Link href="/contact">
-                    <Button
-                        variant="text"
-                        title={t('Contact')}
-                        className="mt-auto"
-                        size="sm"
-                    />
-                </Link>
-                <Link href="/privacy">
-                    <Button
-                        variant="text"
-                        title={t('Privacy')}
-                        className="mt-auto"
-                        size="sm"
-                    />
-                </Link>
-                <Link href="/terms">
-                    <Button
-                        variant="text"
-                        title={t('Terms')}
-                        className="mt-auto"
-                        size="sm"
-                    />
-                </Link>
-            </View>
-        </>
-    )
+    return <></>
 }
 
 const ComponentsFullFooter = () => {

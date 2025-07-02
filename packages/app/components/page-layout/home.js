@@ -59,10 +59,7 @@ export default function (props) {
     const refer = useRef();
 
     if (!currentUser) {
-        const content = (
-           
-                <Splash {...props} />
-        );
+       return <Splash {...props} />
 
         return (<ScrollList
             refer={refer}
