@@ -6,6 +6,7 @@ import { useController, useFormContext } from 'react-hook-form';
 import { Button, Modal } from "app/design/controls";
 import CheckBox from 'app/ui/atoms/checkbox';
 import emitter from 'app/context/emitter';
+import { LabelButton } from 'app/lib/form-helpers'
 
 function ChkList({ values, value2, addValue2 }) {
     return (

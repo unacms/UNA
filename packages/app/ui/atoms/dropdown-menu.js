@@ -75,11 +75,13 @@ function DropdownMenuPopup({ items, onSelect, children, defaultOpen, variant, sh
 
 const MenuBottomSheet = memo(({ items, onSelect, setBottomSheetData }) => {
 
+    const redirectdRef = useRef();
     const handlePressMenu = useCallback(
         (item) => (event) => {
             FeedbackHaptics('Medium');
             setBottomSheetData(false);
-            onSelect(item, event);
+            console.log('Menu item selected:', item);
+            onSelect ? onSelect(item, event) : redirectdRef.current.redirect('' + item.link)
         },
         [onSelect, setBottomSheetData]
     );
@@ -88,6 +90,7 @@ const MenuBottomSheet = memo(({ items, onSelect, setBottomSheetData }) => {
 
     return (
         <View className='w-full mt-0 mb-2'>
+             <Redirect ref={redirectdRef} />
             {items.map((item, index) => (
                 <View key={item.id} className={' ' + (index != items.length - 1 ? 'py-2 border-b border-bdr dark:border-bdr-d ' : 'py-2 ')}><DropdownMenuItem
                     mode="bottomsheet"
