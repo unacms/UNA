@@ -3,7 +3,7 @@ const configCustom = require('app/design/tailwind-custom/theme');
 
 const colors = {
     neutral: {
-        DEFAULT: 'rgba(75,85,99,1)',
+        DEFAULT: 'rgba(107,114,128,1)',
         d: 'rgba(156,163,175,1)',
         50: 'rgba(249,250,251,1)',
         100: 'rgba(243,244,246,1)',
@@ -79,7 +79,8 @@ const colors = {
 
     bgrcard: {
         DEFAULT: 'rgba(255,255,255,0.7)',
-        d: 'rgba(31,41,55,0.7)',
+        d: 'rgba(17,24,39,0.7)',
+
     },
     bdrcard: {
         DEFAULT: 'rgba(107,114,128,0.2)',
@@ -132,8 +133,8 @@ const colors = {
     bgritem: {
         DEFAULT: 'rgba(107,114,128,0.1)',
         h: 'rgba(107,114,128,0.2)',
-        d: 'rgba(107,114,128,0.1)',
-        dh: 'rgba(107,114,128,0.2)',
+        d: 'rgba(156,163,175,0.1)',
+        dh: 'rgba(156,163,175,0.2)',
 
     },
     bgritemprimary: {
@@ -145,8 +146,8 @@ const colors = {
     bdritem: {
         DEFAULT: 'rgba(107,114,128,0.1)',
         h: 'rgba(107,114,128,0.2)',
-        d: 'rgba(107,114,128,0.1)',
-        dh: 'rgba(107,114,128,0.2)',
+        d: 'rgba(156,163,175,0.1)',
+        dh: 'rgba(156,163,175,0.2)',
     },
     bgrbutton: {
         DEFAULT: 'rgba(255,255,255,1)',   
