@@ -385,7 +385,7 @@ export function ElementSearchData(oProps) {
                     onChangeText={(value) => handleSearch(value)}
                 />
             </View>
-            <KbAvoidingView className="web:flex-1" offset={80}>
+            <KbAvoidingView className="flex-1" offset={80}>
                 <ScrollView
                     keyboardShouldPersistTaps="always"
                     keyboardDismissMode="none"

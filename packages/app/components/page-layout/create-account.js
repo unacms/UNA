@@ -31,18 +31,18 @@ function PageContent(props) {
                 <Text className="text-xl sm:text-2xl text-center lg:text-left leading-none tracking-tight font-semibold text-neutral-800 dark:text-neutral-200">
                     {t('create_account_page_caption')}
                 </Text>
-                <Text className="text-sm sm:text-base text-center lg:text-left text-neutral-500">
+                {isWeb && <Text className="text-sm sm:text-base text-center lg:text-left text-neutral-500">
                     {t('create_account_page_already_have')}{' '}
-                    {isWeb && <Link href="/login">{t('create_account_page_sign_in')}</Link>}
+                    <Link href="/login">{t('create_account_page_sign_in')}</Link>
                     .
-                </Text>
+                </Text>}
             </View>
             {!isAllowJoin && (
                 <BlockByName
                     name={props.blocks.form_invitation}
                     data={props.data}
                     formProps={{
-                        auto_focus: true,
+                     
                         hide_errors: true,
                         button_full_width: true,
                     }}
@@ -53,7 +53,7 @@ function PageContent(props) {
                     name={props.blocks.form_join}
                     data={props.data}
                     formProps={{
-                        auto_focus: true,
+                      
                         hide_errors: true,
                         button_full_width: true,
                     }}
@@ -109,8 +109,8 @@ export default function PageLayout(props) {
         </View>
     ) : (
 
-        <Animated.ScrollView ref={refer} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
-            <View className="w-full flex-col lg:flex-row gap-y-4 mx-auto p-3">
+        <Animated.ScrollView keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag" ref={refer} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
+            <View className="w-full flex-col lg:flex-row gap-y-4 mx-auto p-3 pt-16">
                 <View className="my-auto flex-col items-center lg:items-start flex-auto " >
                     {appStatic('join_text')}
                 </View>
@@ -127,7 +127,7 @@ export default function PageLayout(props) {
             refer={refer}
             content={content}
             pageData={props.data}
-            headerHeight={isWeb ? 0 : 70}
+            headerHeight={0}
             contentType="ScrollList"
         />
     )

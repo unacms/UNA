@@ -38,7 +38,7 @@ function PageContent(props) {
         <BlockByName
             name="system:login_form"
             data={props.data}
-            formProps={{ auto_focus: true, hide_errors: true, button_full_width: true }}
+            formProps={{ hide_errors: true, button_full_width: true }}
         />
         <AuthPanel loginLink={false} />
     </Card>);
@@ -48,8 +48,8 @@ export default function Splash(props) {
     const isWeb = Platform.OS == 'web'
     const refer = useRef();
     const content = !isWeb ? (
-        <Animated.ScrollView ref={refer} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
-            <View className="w-full flex-col lg:flex-row gap-y-8 mx-auto p-3">
+        <Animated.ScrollView keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag" ref={refer} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
+            <View className="w-full gap-y-8 mx-auto p-3 pt-16">
                 {appStatic('splash_text')}
                 <PageContent {...props} />
             </View>
@@ -73,11 +73,12 @@ export default function Splash(props) {
         </View>
     )
 
+
     return <ScrollList
         refer={refer}
         content={content}
         pageData={props.data}
-        headerHeight={isWeb ? 0 : 70}
+        headerHeight={0}
         contentType="ScrollList"
     />
 }

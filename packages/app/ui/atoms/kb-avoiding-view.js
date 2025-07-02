@@ -4,7 +4,7 @@ import { Platform } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function KbAvoidingView(props) {
-    let { children, offset, ...rest } = props;
+    const { children, offset, ...rest } = props;
     const { top } = useSafeAreaInsets();
     let keyboardVerticalOffsetValue;
 

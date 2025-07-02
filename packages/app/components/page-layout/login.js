@@ -48,20 +48,19 @@ export default function PageLayout(props) {
         </View>
         <MenuFooter cntClasses="w-full flex-row flex-wrap opacity-80 h-16 items-center justify-center" />
     </View>) :
-        <Animated.ScrollView ref={refer} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
-            <View className="w-full flex-col lg:flex-row gap-y-4 mx-auto p-3 pt-8">
+        <Animated.ScrollView ref={refer} keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag" contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
+            <View className="w-full flex-col lg:flex-row gap-y-4 mx-auto p-3 p-3 pt-20 ">
                 <PageContent {...props} />
                 <MenuFooter cntClasses="w-full flex-row flex-wrap opacity-80 h-16 items-center justify-center" />
             </View>
         </Animated.ScrollView>
-        ;
 
     return (
         <ScrollList
             refer={refer}
             content={content}
             pageData={props.data}
-            headerHeight={isWeb ? 0 : 70}
+            headerHeight={0}
             contentType="ScrollList"
         />
     );

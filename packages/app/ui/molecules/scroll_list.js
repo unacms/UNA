@@ -76,7 +76,6 @@ export default function ScrollList({
     
 
     const onScroll = useAnimatedScrollHandler((event) => {
-        console.log("event.contentOffset.y", event.contentOffset.y)
         const currentY = Math.round(event.contentOffset.y / 10) * 10;
         if (currentY === scrollY.value) return;
         scrollDirection.value = currentY > scrollY.value ? 'down' : 'up';
