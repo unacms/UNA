@@ -184,7 +184,7 @@ export default function (props) {
             >
                 {getLayout(currentUser) == 'hor' && (
                     <View className="hidden relative xl:flex w-80 ">
-                        <View className="fixed-process fixed w-80 px-3 py-2  web:duration-200">
+                        <View className="fixed-process fixed w-80 px-3 py-1  web:duration-200">
                             {/* {appSetting('layout', 'sidebar_search') && (
                                 <View className="pb-3 w-full">
                                     <Search type="input" placeholder="Enter search text" />
@@ -195,17 +195,18 @@ export default function (props) {
                                 <Link href={currentUser.url} emulate={true}>
                                     <Row
                                         className={
-                                            ' rounded-xl group items-center px-2 gap-x-3 h-12 hover:bg-bgritem dark:hover:bg-bgritem-d  active:bg-bgritem-h dark:active:bg-bgritem-dh  '
+                                            ' rounded-xl group items-center px-2 gap-x-3 py-1 hover:bg-bgritem dark:hover:bg-bgritem-d  active:bg-bgritem-h dark:active:bg-bgritem-dh  '
                                         }
                                     >
-                                        
+                                        <View className="p-0.5">
                                            
                                                 <Profile
                                                     {...currentUser}
                                                     url_avatar={currentUser.avatar}
                                                     displayType="unit_wo_info"
                                                     displaySize="sm"
-                                                />
+                                                /></View>
+
                                                 <View className="flex-col">
                                                 <Text className=" text-base leading-5  flex-auto my-auto font-semibold truncate text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-white web:duration-200">
                                                     {currentUser.display_name}
@@ -264,7 +265,7 @@ export default function (props) {
 
                 
                     
-                    <View className="relative flex-auto mx-auto sm:px-3 web:py-3 sm:py-4 max-w-3xl">
+                    <View className="relative flex-auto mx-auto sm:px-3 web:py-3 max-w-3xl">
                             {feedList.map((item, index) => {
                                 if (feedType == item.name) {
                                     return (

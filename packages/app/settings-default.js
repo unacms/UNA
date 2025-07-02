@@ -815,7 +815,7 @@ export  const settingsDefault = {
             blockBorder: '#030712',
             tabText: 'rgba(156,163,175,1)',
             activeTabText: 'rgba(249,250,251,1)',
-            screenBackground: 'rgba(0,0,0,1)',
+            screenBackground: 'rgba(3,7,18,1)',
             bgrmodal: 'rgba(31,41,55,1)',
             bdrModal: 'rgba(110,115,130,0.15)',
             checkbox: '#0ea5e9',
@@ -913,7 +913,7 @@ export  const settingsDefault = {
         modal: {
             fog: 'bg-white/50 dark:bg-black/80 backdrop-blur ',
             container:
-                ' h-full sm:h-auto shadow-modal dark:shadow-modal-d bg-bgrmodal dark:bg-bgrmodal-d {ls}:rounded-2xl sm:border border-bdrmodal dark:border-bdrmodal-d ',
+                ' h-full sm:h-auto shadow-modal dark:shadow-modal-d bg-bgrmodal dark:bg-bgrmodal-d sm:rounded-2xl sm:border border-bdrmodal dark:border-bdrmodal-d overflow-hidden ',
             content: ' h-auto ',
             header: ' p-3 items-start justify-start border-b border-bdrmodal dark:border-bdrmodal-d',
         },
@@ -926,7 +926,7 @@ export  const settingsDefault = {
             default: 'bg-bgrcard dark:bg-bgrcard-d backdrop-blur-xl ', // Base styles (e.g., background)
             margin: 'p-4 sm:p-6',                               // Default margin/padding
             rounded: 'rounded-2xl',                       // Default corner rounding
-            border: ' border border-bdrcard dark:border-bdrcard-d overflow-hidden ',  // Default border and shadow styles
+            border: ' border border-bdrcard dark:border-bdrcard-d overflow-hidden shadow-sm ',  // Default border and shadow styles
         },
         inputs: {
             default:
@@ -979,12 +979,12 @@ export  const settingsDefault = {
             },
             base: {
                 rounded: 'rounded-xl',
-                padding: 'h-11 min-w-[44px] px-2.5',
-                padding_icon_only: 'h-11 w-11 px-2.5',
-                padding_with_title: 'h-11 px-2.5',
-                icon_container: ' h-6 w-6 flex items-center justify-center',
+                padding: 'h-10 min-w-10 px-2.5',
+                padding_icon_only: 'h-10 w-10 px-2.5',
+                padding_with_title: 'h-10 px-2.5',
+                icon_container: ' h-5 w-5 flex items-center justify-center',
                 title_container: 'px-1.5 text-sm',
-                icon_size: 24,
+                icon_size: 20,
                 icon_margin: 'mx-1', // conditional margin for icon container when title is present
                 title_margin: '', // conditional margin for text container when icon is present
             },
@@ -1022,10 +1022,10 @@ export  const settingsDefault = {
             'u-btn-accent-color-icon-dark': 'rgb(255, 255, 255)',
 
             'u-btn-secondary-cnt':
-                '   bg-bgritem dark:bg-bgritem-d web:hover:bg-bgritem-h dark:web:hover:bg-bgritem-dh active:opacity-50',
+                ' touch-manipulation bg-bgritem dark:bg-bgritem-d web:hover:bg-bgritem-h dark:web:hover:bg-bgritem-dh ',
             'u-btn-secondary-text':
                 'font-medium text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-white ',
-            'u-btn-secondary-trans': '  web:duration-300',
+            'u-btn-secondary-trans': ' web:duration-100 ',
             'u-btn-secondary-color-icon-light': 'rgba(31,41,55,1)',
             'u-btn-secondary-color-icon-dark': 'rgba(229,231,235,1)',
 

@@ -68,7 +68,7 @@ const colors = {
 
     bgrbody: {
         DEFAULT: 'rgba(249,250,251,1)',
-        d: 'rgba(0,0,0,1)',
+        d: 'rgba(3,7,18,1)',
 
     },
     
@@ -78,14 +78,14 @@ const colors = {
     },
 
     bgrcard: {
-        DEFAULT: 'rgba(255,255,255,0.8)',
-        d: 'rgba(31,41,55,0.8)',
+        DEFAULT: 'rgba(255,255,255,0.7)',
+        d: 'rgba(31,41,55,0.7)',
     },
     bdrcard: {
-        DEFAULT: 'rgba(0,0,0,0.1)',
-        h: 'rgba(0,0,0,0.15)',
-        d: 'rgba(255,255,255,0.05)',
-        dh: 'rgba(255,255,255,0.1)',
+        DEFAULT: 'rgba(107,114,128,0.2)',
+        h: 'rgba(107,114,128,0.2)',
+        d: 'rgba(107,114,128,0.2)',
+        dh: 'rgba(107,114,128,0.2)',
     },
 
     bgrinput: {
@@ -105,8 +105,8 @@ const colors = {
         df: 'rgba(59, 130, 246, 1)'
     },
     bgrmodal: {
-        DEFAULT: 'rgba(255,255,255,0.9)',
-        d: 'rgba(31,41,55,0.9)',
+        DEFAULT: 'rgba(255,255,255,0.7)',
+        d: 'rgba(31,41,55,0.7)',
     },
     bdrmodal: {
         DEFAULT: 'rgba(0,0,0,0.1)',
@@ -114,7 +114,7 @@ const colors = {
     },
     bgrnavbar: {
         DEFAULT: 'rgba(255,255,255,0.7)',
-        d: 'rgba(31,41,55,0.7)',
+        d: 'rgba(17,24,39,0.7)',
     },
     bdrnavbar: {
         DEFAULT: 'rgba(75,85,100,0.10)',
@@ -130,10 +130,10 @@ const colors = {
         d: 'rgba(75,85,100,0.10)',
     },
     bgritem: {
-        DEFAULT: 'rgba(3,7,18,0.05)',
-        h: 'rgba(3,7,18,0.1)',
-        d: 'rgba(249,250,251,0.05)',
-        dh: 'rgba(249,250,251,0.1)',
+        DEFAULT: 'rgba(107,114,128,0.1)',
+        h: 'rgba(107,114,128,0.2)',
+        d: 'rgba(107,114,128,0.1)',
+        dh: 'rgba(107,114,128,0.2)',
 
     },
     bgritemprimary: {
@@ -143,9 +143,10 @@ const colors = {
         dh: 'rgba(59, 130, 246, 0.25)',
     },
     bdritem: {
-        DEFAULT: 'rgba(110,115,130,0.15)',
-        d: 'rgba(110,115,130,0.15)',
-
+        DEFAULT: 'rgba(107,114,128,0.1)',
+        h: 'rgba(107,114,128,0.2)',
+        d: 'rgba(107,114,128,0.1)',
+        dh: 'rgba(107,114,128,0.2)',
     },
     bgrbutton: {
         DEFAULT: 'rgba(255,255,255,1)',   

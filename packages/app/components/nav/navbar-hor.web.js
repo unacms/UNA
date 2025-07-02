@@ -70,7 +70,7 @@ const ToolbarItems = ({ currentUser, bSearch, isCustomHeaderElement, bNotifs, bM
     }
 
     return (
-        <Row className="justify-end items-center gap-x-1">
+        <Row className="justify-end items-center">
             {itemsToRender?.map((item, index) => {
                 const Component = components[item.component]
                 if (!Component) return null
@@ -130,7 +130,7 @@ const HeaderLine = memo(
                         appSetting('layout', 'lock_unconfirmed'))) &&
                     (uri == 'home' || width >= LAYOUT_BREAKPOINTS.lg) && (
                         <Link
-                            className=" flex items-center px-1.5 py-1 hover:bg-bgritem dark:hover:bg-bgritem-d rounded-xl flex-row active:scale-95 active:opacity-50 text-neutral-800 dark:text-neutral-200 hover:scale-105 hover:text-neutral-950 dark:hover:text-neutral-50   web:duration-300 gap-x-3 "
+                            className=" flex items-center px-2 py-1 hover:bg-bgritem dark:hover:bg-bgritem-d rounded-xl flex-row active:scale-95 active:opacity-50 text-neutral-800 dark:text-neutral-200 hover:scale-105 hover:text-neutral-950 dark:hover:text-neutral-50   web:duration-300 gap-x-3 "
                             href="/home"
                             aria-label="Logo"
                         >
@@ -218,8 +218,8 @@ export default function (props) {
                             : '') +
                         ' fixed w-full h-16 items-center transition-all web:duration-300 ease-in-out will-change-transform ' +
                         (isScrolled
-                            ? 'bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur-xl shadow-[0_0_0_1px_rgba(0,0,0,0.05),0_0_4px_1px_rgba(0,0,0,0.05)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.05),0_0_4px_1px_rgba(0,0,0,0.3)] '
-                            : 'bg-transparent dark:bg-transparent shadow-[0_0_0_1px_rgba(0,0,0,0.05)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.08)]')
+                            ? 'bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur-xl shadow-[0_0_0_1px_rgba(0,0,0,0.05),0_0_4px_1px_rgba(0,0,0,0.05)] dark:shadow-[0_0_2px_1px_rgba(0,0,0,0.8)] '
+                            : 'bg-transparent dark:bg-transparent shadow-[0_0_0_1px_rgba(0,0,0,0.05)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.05)]')
                     }
                 >
                     <View
@@ -240,7 +240,7 @@ export default function (props) {
                             context={props.context}
                         />
                         <MenuTop url={props.url} uri={props.uri} />
-                        <Row className=" xl:w-80 px-3.5 items-center justify-end ">
+                        <Row className=" xl:w-80 px-4 items-center justify-end ">
                            <ToolbarItems 
                                 currentUser={currentUser}
                                 bSearch={bSearch}

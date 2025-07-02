@@ -77,7 +77,7 @@ export default function ContextSelector({ data, url }) {
         setIsOpen(false);
     };
 
-    const CurrentContext = <View className='items-center text-center align-middle flex-auto flex-row gap-x-3 px-1.5 py-1 lg:hover:bg-bgritem dark:lg:hover:bg-bgritem-d rounded-xl'>
+    const CurrentContext = <View className='items-center text-center align-middle flex-auto flex-row gap-x-3 px-2 py-1 lg:hover:bg-bgritem dark:lg:hover:bg-bgritem-d rounded-xl'>
         <View className="items-center justify-center text-neutral-800 dark:text-neutral-200">
             {contextRoot.image}
         </View>

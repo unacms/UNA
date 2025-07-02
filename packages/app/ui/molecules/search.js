@@ -58,7 +58,7 @@ export default function ElementSearch(oProps) {
                     rounded
                     size="base"
                     hitSlop={4}
-                    ring="p-1 focus:ring-1 focus:ring-primary rounded-xl"
+                    ring="p-1"
                     tooltip={
                         oProps.tooltip === undefined ? 'Search' : oProps.tooltip
                     }
