@@ -184,7 +184,7 @@ export default function (props) {
             >
                 {getLayout(currentUser) == 'hor' && (
                     <View className="hidden relative xl:flex w-80 ">
-                        <View className="fixed-process fixed w-80 px-3 py-1  web:duration-200">
+                        <View className="fixed-process fixed w-80 px-3 py-1 web:duration-200">
                             {/* {appSetting('layout', 'sidebar_search') && (
                                 <View className="pb-3 w-full">
                                     <Search type="input" placeholder="Enter search text" />
@@ -306,7 +306,7 @@ export default function (props) {
 
                 
 
-                    <View className="hidden lg:flex w-80 ">
+                    <View className="hidden lg:flex w-80 border-e border-bdrnavbar-v h-full dark:border-bdrnavbar-dv ">
                         <View className="fixed-process p-3 flex-col sm:py-4 gap-y-6  web:duration-300">
                             {sideBarBlocks.map((item, index) => {
                                 return (

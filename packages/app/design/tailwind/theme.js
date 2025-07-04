@@ -118,8 +118,10 @@ const colors = {
         d: 'rgba(17,24,39,0.7)',
     },
     bdrnavbar: {
-        DEFAULT: 'rgba(75,85,100,0.10)',
-        d: 'rgba(75,85,100,0.10)',
+        DEFAULT: 'rgba(107,114,128,0.1)',
+        d: 'rgba(156,163,175,0.1)',
+        v: 'rgba(107,114,128,0.1)',
+        dv: 'rgba(156,163,175,0.1)',
        
     },
     bgrtabbar: {
@@ -185,6 +187,10 @@ const colors = {
         DEFAULT: 'rgba(255,255,255,1)',
         d: 'rgba(15,25,40,1)',
     },
+    guide: {
+        DEFAULT: 'rgba(107,114,128,0.05)',
+        d: 'rgba(156,163,175,0.05)',
+    },
     screen: {
         DEFAULT: 'rgba(243,244,246,1)',
         d: 'rgba(15,25,40,1)',
@@ -224,10 +230,7 @@ const theme = {
         fontFamily: {
             default: ['default-font', 'sans-serif']
         },
-        /*borderRadius: {
-            md: '8px',
-            lg: '16px',
-        },*/
+      
         aspectRatio: {
             '3/1': '3 / 1',
             '4/1': '4 / 1',

@@ -18,7 +18,7 @@ export default function MenuTop({ url, uri }) {
     )
 
     return (
-        <Row className="hidden lg:flex flex-auto w-full mx-auto max-w-3xl px-3 gap-x-0.5 justify-between items-center align-middle ">
+        <Row className="hidden lg:flex flex-auto w-full mx-auto max-w-3xl px-1.5 gap-x-2 justify-between items-center align-middle ">
             {menu_navbar_items.map((item, index) => {
                 const isActive = item.link === '/' + url || (item.link === '/' && uri === 'home');
                 return <MenuTopItem key={`bmi-${index}`} link={item.link} icon={item.icon} isTitle={item.showTitle} title={t(item.title)} isActive={isActive} />
@@ -36,7 +36,7 @@ function MenuTopItem({ link, title, index, icon, isTitle, isActive }) {
             <Tooltip content={title}>
             <View className="flex-auto group" key={`menu-${index}`}>
                 <Row
-                    className={`items-center justify-center h-12 min-w-16 rounded-xl  web:duration-300 group-active:opacity-50 ${
+                    className={`items-center justify-center py-3 min-w-16 rounded-xl  web:duration-300 group-active:opacity-50 ${
                         isActive 
                             ? 'bg-bgritemprimary text-primary dark:text-primary-d dark:bg-bgritemprimary-d group-hover:bg-bgritemprimary-h dark:group-hover:bg-bgritemprimary-dh'
                             : 'text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-950 dark:group-hover:text-neutral-50 hover:bg-bgritem dark:hover:bg-bgritem-d'
@@ -44,7 +44,7 @@ function MenuTopItem({ link, title, index, icon, isTitle, isActive }) {
                 >
                     <Icon
                         icon={icon}
-                        size="24"
+                        size="28"
                         color={isActive ? colors.primary : colors.barsColor}
                     />
                     {isTitle && <Text className={`whitespace-nowrap text-ellipsis overflow-hidden tracking-tight font-medium ${isActive ? 'text-primary dark:text-primary-d' : 'text-neutral-800 dark:text-neutral-200'} text-lg px-3 web:text-lg native:text-lg leading-7`}>{title}</Text>}

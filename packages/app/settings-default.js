@@ -29,11 +29,19 @@ export  const settingsDefault = {
         title: "NEO",
     },
     layout: {
+        body: ' bg-bgrbody dark:bg-bgrbody-d ',
         avaliable_layouts: ['hor', 'ver', 'mixed'], // OLD appSetting('layout', 'format_list')
         default_layout: 'hor', //hor, ver, mixed// OLD appSetting('layout', 'format')
-        max_width: 'w-full ', 
+        screen: ' w-full ',
+        background: '  ',
+        max_width: 'w-full max-w-8xl   ', 
         max_width_block: ' w-full max-w-5xl ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
-        max_width_content: 'w-full max-w-7xl ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
+        max_width_content: ' w-full max-w-7xl ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
+       
+        header_style: ' bg-transparent dark:bg-transparent w-full max-w-8xl mx-auto rounded-2xl mt-1 shadow-[0_0_0_1px_rgba(0,0,0,0)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0)]  ',
+        scrolled_header_style: 'w-full max-w-8xl mx-auto rounded-2xl mt-1 bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur-xl shadow-[0_0_0_1px_rgba(0,0,0,0.08),0_2px_4px_0_rgba(0,0,0,0.05)] dark:shadow-[0_0_0_1px_rgba(0,0,0,0.8),0_2px_4px_0_rgba(0,0,0,0.05)] ',
+        header_content_style: ' w-full max-w-8xl  border-guide dark:border-guide-d  ',
+
         search: true,
         sidebar_search: true,
         extended_search: true,
@@ -44,7 +52,6 @@ export  const settingsDefault = {
         hide_header_for_all: false,
         card_animation_duration: 0,
         user_remote_config: true,
-        max_width_header_content: ' w-full ',
         background_image_color: '', //OLD appSetting('layout', 'background_cover_color')
         background_image: '', //`url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239C92AC' fill-opacity='0.08' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E")`,
         background_image_dark: '', //`url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239C92AC' fill-opacity='0.08' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E")`,

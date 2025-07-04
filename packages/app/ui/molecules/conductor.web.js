@@ -779,7 +779,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
             <View className={appSetting('layout', 'max_width') + " w-full h-full mx-auto"} scrollEnabled={false} onLayout={handleLayoutTop}>
                 {isUseCurrentHeader && headerComponent}
                 <Toaster ref={toasterRef} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" />
-                <View style={{ minHeight: (windowHeight - offset) }} className={appSetting('layout', 'max_width  ') + ' lala mx-auto w-full   '} >{/*mt-28 lg:mt-0*/}
+                <View style={{ minHeight: (windowHeight - offset) }} className={appSetting('layout', 'max_width  ') + 'mx-auto w-full  '} >{/*mt-28 lg:mt-0*/}
                     <Row className={rc}>
                         {a}
                         <View className=" flex-auto ">

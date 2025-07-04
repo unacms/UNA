@@ -18,6 +18,7 @@ import { Appearance } from 'react-native';
 import { Platform } from 'react-native'
 import { storageSet, storageClear, storageGet } from 'app/lib/util'
 import { fetcher } from 'app/lib/fetcher';
+import { detectSystemLanguage } from 'app/lib/i18n';
 //import Bluetooth from 'app/ui/molecules/bluetooth'
 
 export default function PageLayout(props) {
@@ -37,6 +38,12 @@ export default function PageLayout(props) {
         return <></>
 
     const handleLang =  async (item) => { 
+        if(item === 'system') {
+            storageClear('layout:lang');
+            const systemLang = detectSystemLanguage();
+            i18n.changeLanguage(systemLang);
+            return;
+        }
         i18n.changeLanguage(item); 
         if(Platform.OS == 'web'){
             storageClear();
@@ -84,7 +91,15 @@ export default function PageLayout(props) {
     if (!currentFormat)
         currentFormat = appSetting('layout', 'default_layout');
 
-
+    const langItems = [
+        { id: 'system', key: 'system', name: 'system', title: t('lang_system') },
+        ...appSetting('dashboard', 'langs').map(lang => ({
+            id: lang,
+            key: lang,
+            name: lang,
+            title: t('lang_' + lang)
+        }))
+    ];
 
     return (
         <ScrollView className=''>
@@ -110,12 +125,7 @@ export default function PageLayout(props) {
                                 {
                                     appSetting('dashboard', 'langs').length > 1 && (
                                         <View><DropdownMenu 
-                                            items={appSetting('dashboard', 'langs').map(lang => ({
-                                                id: lang,
-                                                key: lang,
-                                                name: lang,
-                                                title: t('lang_' + lang)
-                                            }))} 
+                                            items={langItems}
                                             onSelect={(oItem) => {handleLang(oItem.id)}}>
                                                
                                                     <Button
@@ -163,12 +173,8 @@ export default function PageLayout(props) {
                                
                                 {
                                     appSetting('dashboard', 'langs').length > 1 && (
-                                        <DropdownMenu items={appSetting('dashboard', 'langs').map(lang => ({
-                                                id: lang,
-                                                key: lang,
-                                                name: lang,
-                                                title: t('lang_' + lang)
-                                            }))} 
+                                        <DropdownMenu 
+                                            items={langItems}
                                             onSelect={(oItem) => {handleLang(oItem.id)}}>
                                            
                                                 <Button

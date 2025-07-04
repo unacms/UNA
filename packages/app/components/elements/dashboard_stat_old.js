@@ -20,6 +20,7 @@ import { fetcher } from 'app/lib/fetcher';
 //import Bluetooth from 'app/ui/molecules/bluetooth'
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { Theme } from 'app/design/theme';
+import { detectSystemLanguage } from 'app/lib/i18n';
 
 function getCounter(num, icon = '', add = '', color = '') {
     
@@ -63,15 +64,19 @@ export default function PageLayout(props) {
     if (!currentUser) 
         return <></>
 
-    const handleLang =  async (item) => { 
-        i18n.changeLanguage(item); 
+    const handleLang = async (item) => {
+        if(item === 'system') {
+            storageClear('layout:lang');
+            const systemLang = detectSystemLanguage();
+            i18n.changeLanguage(systemLang);
+            return;
+        }
+        i18n.changeLanguage(item);
         if(Platform.OS == 'web'){
             storageClear();
             storageSet('layout:lang', '', item, true);
-            //STRANGE CODE setCurrentUser(Object.assign({}, currentUser));
             window.location.href = window.location.href
         }
-        
         const sResponse = await fetcher('/api.php?r=system/get_page_by_request/TemplServicePages&params[]=home&lang=' + item );
     }
 
@@ -114,7 +119,15 @@ export default function PageLayout(props) {
     if (!currentFormat)
         currentFormat = appSetting('layout', 'default_layout');
 
-
+    const langItems = [
+        { id: 'system', key: 'system', name: 'system', title: t('lang_system') },
+        ...appSetting('dashboard', 'langs').map(lang => ({
+            id: lang,
+            key: lang,
+            name: lang,
+            title: t('lang_' + lang)
+        }))
+    ];
 
     return (
         <ScrollView className=''>
@@ -154,12 +167,7 @@ export default function PageLayout(props) {
                                 {
                                     appSetting('dashboard', 'langs').length > 1 && (
                                         <View><DropdownMenu 
-                                            items={appSetting('dashboard', 'langs').map(lang => ({
-                                                id: lang,
-                                                key: lang,
-                                                name: lang,
-                                                title: t('lang_' + lang)
-                                            }))} 
+                                            items={langItems}
                                             onSelect={(oItem) => {handleLang(oItem.id)}}>
                                                
                                                     <Button
@@ -215,12 +223,8 @@ export default function PageLayout(props) {
                                     
                                     appSetting('dashboard', 'langs').length > 1 && (
                                         <View className="mb-2">
-                                        <DropdownMenu items={appSetting('dashboard', 'langs').map(lang => ({
-                                                id: lang,
-                                                key: lang,
-                                                name: lang,
-                                                title: t('lang_' + lang)
-                                            }))} 
+                                        <DropdownMenu 
+                                            items={langItems}
                                             onSelect={(oItem) => {handleLang(oItem.id)}}>
                                             
                                                 <Button

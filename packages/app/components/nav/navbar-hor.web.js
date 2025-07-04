@@ -109,7 +109,7 @@ const HeaderLine = memo(
             ).length > 0
 
         return (
-            <View className=" flex-row xl:w-80 gap-x-2 px-3  items-center ">
+            <View className=" flex-row xl:w-80 gap-x-2 p-1.5 ">
                 {headerSettings.menu && isDrawer && (
                     <View className="lg:hidden pr-2 ">
                         <Pressable onPress={showMenu}>
@@ -130,14 +130,14 @@ const HeaderLine = memo(
                         appSetting('layout', 'lock_unconfirmed'))) &&
                     (uri == 'home' || width >= LAYOUT_BREAKPOINTS.lg) && (
                         <Link
-                            className=" flex items-center px-2 py-1 hover:bg-bgritem dark:hover:bg-bgritem-d rounded-xl flex-row active:scale-95 active:opacity-50 text-neutral-800 dark:text-neutral-200 hover:scale-105 hover:text-neutral-950 dark:hover:text-neutral-50   web:duration-300 gap-x-3 "
+                            className=" flex items-center px-2.5 py-1.5 my-auto hover:bg-bgritem dark:hover:bg-bgritem-d rounded-xl flex-row active:scale-95 active:opacity-50 text-neutral-800 dark:text-neutral-200 hover:text-neutral-950 dark:hover:text-neutral-50 web:duration-300 gap-x-2.5 "
                             href="/home"
                             aria-label="Logo"
                         >
                             <View className=" items-center h-10 justify-center text-neutral-900 dark:text-neutral-100">
                                 {appStatic('logo_mark')}
                             </View>
-                            <View className=" flex-row  items-center h-10 my-auto align-middle justify-center text-neutral-700 dark:text-neutral-300">
+                            <View className=" flex-row  items-center h-10 align-middle justify-center text-neutral-700 dark:text-neutral-300">
                                 {appStatic('logo_text')}
                             </View>
                         </Link>
@@ -204,9 +204,9 @@ export default function (props) {
 
     return (
         <>
-            <Row className="w-full flex-auto mx-auto">
-                <View className="flex-auto">{props.children}</View>
-            </Row>
+            <View className={appSetting('layout', 'screen')}>
+               {props.children}
+            </View>
 
             {!bIsHideHeader && (
                 <View
@@ -216,16 +216,16 @@ export default function (props) {
                         props.layoutName == 'post'
                             ? 'hidden lg:flex'
                             : '') +
-                        ' fixed w-full h-16 items-center transition-all web:duration-300 ease-in-out will-change-transform ' +
+                        ' fixed w-full h-16 items-center transition-all web:duration-300 ease-in-out will-change-transform left-[50%] translate-x-[-50%] ' +
                         (isScrolled
-                            ? 'bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur-xl shadow-[0_0_0_1px_rgba(0,0,0,0.05),0_0_4px_1px_rgba(0,0,0,0.05)] dark:shadow-[0_0_2px_1px_rgba(0,0,0,0.8)] '
-                            : 'bg-transparent dark:bg-transparent shadow-[0_0_0_1px_rgba(0,0,0,0.05)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.05)]')
+                            ? ' backdrop-blur-xl ' + appSetting('layout', 'scrolled_header_style')
+                            : ' backdrop-none ' + appSetting('layout', 'header_style'))
                     }
                 >
                     <View
                         className={
-                            appSetting('layout', 'max_width_header_content') +
-                            ' w-full flex-row flex-auto items-center '
+                            appSetting('layout', 'header_content_style') +
+                            ' w-full flex-row flex-auto items-center'
                         }
                     >
                         <HeaderLine
@@ -240,7 +240,7 @@ export default function (props) {
                             context={props.context}
                         />
                         <MenuTop url={props.url} uri={props.uri} />
-                        <Row className=" xl:w-80 px-4 items-center justify-end ">
+                        <Row className=" xl:w-80 items-center px-2 justify-end h-full ">
                            <ToolbarItems 
                                 currentUser={currentUser}
                                 bSearch={bSearch}
