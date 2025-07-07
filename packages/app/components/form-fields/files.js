@@ -63,17 +63,14 @@ export default function (props) {
         if (hasPermissionLibrary) {
             const subscription = emitter.addListener(`fld_files_${name}`, (data) => {
                 if (data.action == 'add') {
-                    selectImage()
+                    selectImage(data.source)
                 }
-
             })
-
             return () => {
                 subscription.remove()
             }
         }
     }, [hasPermissionLibrary])
-
 
     const RestoreGhosts = async (data) => {
         if (isAutoGhosts)
@@ -119,11 +116,6 @@ export default function (props) {
             }, 100);
         }
     }, [formContext.formState.isSubmitted, imageSource.images]);
-
-
-    /* const handleInsertImageFinish = useCallback(async (result, extraVar) => {
-         RestoreGhosts({ hash: extraVar.hash, id: result?.data?.id });
-     }, []);*/
 
     useEffect(() => {
         if (uploadFinished?.result) {
@@ -256,7 +248,7 @@ export default function (props) {
         return k;
     }
 
-    const selectImage = useCallback(async () => {
+    const selectImage = useCallback(async (source) => {
         let bIsMedia = props.ext_deny == '' || props.ext_allow == 'mp3,m4a,m4b,wma,wav,3gp' ? true : false;
         if (!bIsMedia && props.ext_deny.length && !'jpg,jpeg,jpe,gif,png,svg,webp'.split(',').filter((s) => ~props.ext_deny.split(',').indexOf(s)).length)
             bIsMedia = true;
@@ -264,7 +256,7 @@ export default function (props) {
         if (Platform.OS !== 'web' && bIsMedia) {
             const { status } = await Camera.requestCameraPermissionsAsync();
             if (status === "granted") {
-                selectImage1(props.source, bIsMedia)
+                selectImage1(source, bIsMedia)
             }
             else {
                 Alert.alert(

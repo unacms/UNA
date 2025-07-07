@@ -18,7 +18,7 @@ import { View } from 'react-native';
 //import { verifyInstallation } from 'nativewind';
 import "./global.combined.css";
 import { useColorScheme } from 'react-native';
-
+import { KeyboardProvider } from "react-native-keyboard-controller";
 if (__DEV__) {
 	import('./ReactotronConfig').then(() => console.log('Reactotron Configured'));
 }
@@ -49,11 +49,11 @@ export function App() {
 	const expoRootComponent = useMemo(() => <ExpoRoot context={ctx} />, [ctx]);
 	//verifyInstallation();
 	const scheme = useColorScheme();
-	return <GestureHandlerRootView style={{ flex: 1, backgroundColor: scheme === 'dark' ? 'rgba(15,25,40,1)' : 'rgba(255,255,255,1)' }}>
+	return <KeyboardProvider><GestureHandlerRootView style={{ flex: 1, backgroundColor: scheme === 'dark' ? 'rgba(15,25,40,1)' : 'rgba(255,255,255,1)' }}>
 
 		{expoRootComponent}
 		{showSplashScreen && <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}><InitialScreen /></View>}
-	</GestureHandlerRootView>;
+	</GestureHandlerRootView></KeyboardProvider>;
 }
 
 registerRootComponent(App);

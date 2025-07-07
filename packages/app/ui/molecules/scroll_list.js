@@ -14,25 +14,24 @@ import { Button } from 'app/design/controls';
 import { Header } from 'app/ui/molecules/scroll_list_header';
 import { useEffect } from 'react';
 import { useCurrentUser } from 'app/context/user'
-import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view'
+import { KbAvoidingViewScroll } from 'app/ui/atoms/kb-avoiding-view'
 
-export default function ScrollList({ 
-    content, 
+export default function ScrollList({
+    content,
     index,
-    pageData, 
-    headerHeight = 64, 
-    isBackButton = false, 
-    contentType, 
-    refer, 
-    inverted, 
-    headerComponent, 
-    subHeaderComponent, 
-    rightHeaderComponent, 
+    pageData,
+    headerHeight = 64,
+    isBackButton = false,
+    contentType,
+    refer,
+    inverted,
+    headerComponent,
+    subHeaderComponent,
+    rightHeaderComponent,
     isMenuNameAsTitle = false,
     isNoContainer = false,
     isProfileHeader = false,
 }) {
-    const { currentUser, setCurrentUser } = useCurrentUser();
     const isCollapsibleHeader = appSetting('native', 'collapsible_header');
     const isShowScrollToTopButton = appSetting('native', 'scroll_to_top_button');
     const transparencyOffset = 200
@@ -52,10 +51,10 @@ export default function ScrollList({
         const isShow =
             isProfileHeader ?
                 scrollY.value > showHeaderForProfileOffset
-            :
-            scrollDirection.value === 'up' ||
-            scrollY.value < transparencyOffset ||
-            scrollY.value === 0 ;
+                :
+                scrollDirection.value === 'up' ||
+                scrollY.value < transparencyOffset ||
+                scrollY.value === 0;
         return {
             opacity: isShow ? withTiming(1, animationConfig) : withTiming(0, animationConfig),
             transform: [
@@ -73,7 +72,7 @@ export default function ScrollList({
     useEffect(() => {
         scrollY.value = 0;
     }, [index]);
-    
+
 
     const onScroll = useAnimatedScrollHandler((event) => {
         const currentY = Math.round(event.contentOffset.y / 10) * 10;
@@ -86,30 +85,44 @@ export default function ScrollList({
         const scrollFn = contentType === 'FlatList' ? 'scrollToOffset' : 'scrollTo';
         refer?.current?.[scrollFn]?.({ y: 0, x: 0, animated: true });
     };
+
     /* ANIMATION */
 
-    const baseProps = {
+    /*const baseProps = {
         ...(contentType !== 'FlatList' && { paddingTop: headerHeight }),
         ...(isCollapsibleHeader && { onScroll }),
         style: { backgroundColor: colors.headerBackground }
-    };
+    };*/
+
+   /* const enhanced = React.cloneElement(content, baseProps);
+*/
+    const isFlatList = contentType === 'FlatList';
+
+    const baseProps = isFlatList
+  ? {
+      renderScrollComponent: (props) => (
+        <KbAvoidingViewScroll {...props} />
+      ),
+      paddingTop: headerHeight,
+      ...(isCollapsibleHeader ? { onScroll } : {}),
+    }
+  : {};
 
     const enhanced = React.cloneElement(content, baseProps);
 
     return (
-        <KbAvoidingView className="flex-1">
-            {enhanced}
-            <Animated.View className="absolute top-0 w-full " style={[headerStyle]}>
+        <View className='flex-1'>
+            <Animated.View className="absolute top-0 w-full z-50" style={[headerStyle]}>
                 <BlurView tint="default"
                     intensity={100}
                     experimentalBlurMethod="none" className={`w-full h-[${headerHeight}px]`} >
                     <View className="w-full" style={{ backgroundColor: colors.headerBackground }} >
                         <Header
-                            backButtonPresented = {isBackButton}
-                            headerComponent = {headerComponent}
-                            rightHeaderComponent = {rightHeaderComponent}
-                            pageData = {pageData}
-                            scrollToTop = {scrollToTop}
+                            backButtonPresented={isBackButton}
+                            headerComponent={headerComponent}
+                            rightHeaderComponent={rightHeaderComponent}
+                            pageData={pageData}
+                            scrollToTop={scrollToTop}
                             isMenuNameAsTitle={isMenuNameAsTitle}
                             isNoContainer={isNoContainer}
                         />
@@ -118,17 +131,11 @@ export default function ScrollList({
                 </BlurView>
 
             </Animated.View>
-            {/* TODO: Review this */}
-            {isShowScrollToTopButton && <Animated.View className=" hidden absolute bottom-2.5 right-2.5" style={[buttonStyle]}>
-                <Button
-                    onPress={scrollToTop}
-                    startDecorator={inverted ? "ChevronDown" : "ChevronUp"}
-                    size="lg"
-                    variant="primary"
-                    rounded
-                ></Button>
-            </Animated.View>
-            }
-        </KbAvoidingView>
+            {isFlatList ? enhanced : <KbAvoidingViewScroll onScroll={onScroll} paddingTop={headerHeight}>
+                {enhanced}
+
+        
+            </KbAvoidingViewScroll>}
+            </View>
     )
 }

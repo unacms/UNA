@@ -1,15 +1,13 @@
-import { View, Row, ScrollView } from 'app/design/view'
+import { View } from 'app/design/view'
 import { BlockByName } from 'app/components/block'
 import { Text } from 'app/design/typography'
 import Card from 'app/components/card'
 import { Platform } from 'react-native'
 import { appStatic } from 'app/lib/app-static'
-import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
 import AuthPanel from 'app/ui/molecules/auth';
 import { appSetting, getPageWidth } from 'app/lib/util'
 import ScrollList from 'app/ui/molecules/scroll_list'
 import { useRef } from 'react'
-import Animated from 'react-native-reanimated';
 import MenuFooter from 'app/components/nav/menu-footer';
 import AnimatedView from 'app/ui/atoms/animated-view';
 import { useTranslation } from 'react-i18next'
@@ -47,20 +45,20 @@ export default function PageLayout(props) {
             </View>
         </View>
         <MenuFooter cntClasses="w-full flex-row flex-wrap opacity-80 h-16 items-center justify-center" />
-    </View>) :
-        <Animated.ScrollView ref={refer} keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag" contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
-            <View className="w-full flex-col lg:flex-row gap-y-4 mx-auto p-3 p-3 pt-20 ">
-                <PageContent {...props} />
-                <MenuFooter cntClasses="w-full flex-row flex-wrap opacity-80 h-16 items-center justify-center" />
-            </View>
-        </Animated.ScrollView>
+    </View>) : (
+
+        <View className="w-full flex-col lg:flex-row gap-y-4 mx-auto p-3 p-3 pt-20 ">
+            <PageContent {...props} />
+            <MenuFooter cntClasses="w-full flex-row flex-wrap opacity-80 h-16 items-center justify-center" />
+        </View>)
+
 
     return (
         <ScrollList
             refer={refer}
             content={content}
             pageData={props.data}
-            headerHeight={0}
+            headerHeight={isWeb ? 0 : 64}
             contentType="ScrollList"
         />
     );

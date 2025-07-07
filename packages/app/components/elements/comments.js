@@ -1,7 +1,5 @@
 import { View, Row } from 'app/design/view';
 import { useState, useRef, useEffect } from 'react';
-import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
-import { Platform } from 'react-native'
 import { CommentsBrowse, CommentsForm } from 'app/lib/comments-helpers'
 
 export default function (props) {
@@ -28,7 +26,8 @@ export default function (props) {
         <CommentsForm handleForm={handleForm} browse={props.browse} module={props.browse?.data?.module || ''} form={form} formData={formData} requestUrl={props.url} />
     </View>
 
-    const wrappedForm = Platform.OS === 'web' ? formContent : <KbAvoidingView>{formContent}</KbAvoidingView>;
+    //const wrappedForm = Platform.OS === 'web' ? formContent : <KbAvoidingView>{formContent}</KbAvoidingView>;
+    const wrappedForm = formContent;
 
     return (
         <>

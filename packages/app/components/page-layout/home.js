@@ -25,7 +25,7 @@ import Map from 'app/components/elements/map';
 
 export default function (props) {
 
-    const isWeb = Platform.OS == 'web'  
+    const isWeb = Platform.OS == 'web'
     if (appSetting('config', 'show_ui')) {
         return <UI />
     }
@@ -35,7 +35,7 @@ export default function (props) {
     const feedMode = storageGet('feed:mode', '', true)
     const feedTypeD = storageGet('feed:type', '', true)
 
-    
+
 
     const [feedType, setFeedType] = useState(
         feedTypeD ? feedTypeD : appSetting('feed', 'default_feed')
@@ -59,13 +59,13 @@ export default function (props) {
     const refer = useRef();
 
     if (!currentUser) {
-       return <Splash {...props} />
+        return <Splash {...props} />
 
         return (<ScrollList
             refer={refer}
-            content = {content}
-            pageData = {props.data}
-            headerHeight = {isWeb ? 0 : 70}
+            content={content}
+            pageData={props.data}
+            headerHeight={isWeb ? 0 : 70}
             contentType="ScrollList"
         />)
     }
@@ -123,10 +123,10 @@ export default function (props) {
                             return (
                                 <View key={'row_' + index}>
                                     {callFn('getButtonForConductorHor', [item.icon, item.showTitle ? t(item.title) : '', feedType == item.name, null, () => {
-                                            setFeedTypeEx(
-                                                item.name
-                                            )
-                                        }])}
+                                        setFeedTypeEx(
+                                            item.name
+                                        )
+                                    }])}
                                 </View>
                             )
                         })}
@@ -189,14 +189,14 @@ export default function (props) {
                             )} */}
                             {appSetting('layout', 'show_profile_info') && (
                                 <View className="pb-1 mb-1 border-b border-bdr dark:border-bdr-d">
-                                <Link href={currentUser.url} emulate={true}>
-                                    <Row
-                                        className={
-                                            ' rounded-xl group items-center px-2 gap-x-3 py-1 hover:bg-bgritem dark:hover:bg-bgritem-d  active:bg-bgritem-h dark:active:bg-bgritem-dh  '
-                                        }
-                                    >
-                                        <View className="p-0.5">
-                                           
+                                    <Link href={currentUser.url} emulate={true}>
+                                        <Row
+                                            className={
+                                                ' rounded-xl group items-center px-2 gap-x-3 py-1 hover:bg-bgritem dark:hover:bg-bgritem-d  active:bg-bgritem-h dark:active:bg-bgritem-dh  '
+                                            }
+                                        >
+                                            <View className="p-0.5">
+
                                                 <Profile
                                                     {...currentUser}
                                                     url_avatar={currentUser.avatar}
@@ -204,7 +204,7 @@ export default function (props) {
                                                     displaySize="sm"
                                                 /></View>
 
-                                                <View className="flex-col">
+                                            <View className="flex-col">
                                                 <Text className=" text-base leading-5  flex-auto my-auto font-semibold truncate text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-white web:duration-200">
                                                     {currentUser.display_name}
                                                 </Text>
@@ -214,9 +214,9 @@ export default function (props) {
                                                     }
                                                 </Text>
                                             </View>
-                                        
-                                    </Row>
-                                </Link>
+
+                                        </Row>
+                                    </Link>
                                 </View>
                             )}
 
@@ -260,63 +260,63 @@ export default function (props) {
                     </View>
                 )}
 
-                
-                    
-                    <View className={`relative ${appSetting('feed', 'feed_container')}`}>
-                            {feedList.map((item, index) => {
-                                if (feedType == item.name) {
-                                    return (
-                                        <View key={'view' + index}>
-                                            <BlockByName
-                                                data={props.data}
-                                                name={
-                                                    props.blocks[
-                                                    item.name + '_feed_form'
-                                                    ]
-                                                }
-                                            />
-                                            <BlockByName
-                                                data={props.data}
-                                                name={
-                                                    props.blocks[
-                                                    item.name + '_feed'
-                                                    ]
-                                                }
-                                                unitMode={unitMode}
-                                                exProps={{
-                                                    headerBlocks: headerBlocks,
-                                                    scrollProps: { pageData: props.data, headerHeight: isFeedMenuPresent ? 120 : 48, subHeaderComponent: subHeader },
-                                                }}
-                                            />
-                                        </View>
-                                    )
-                                }
-                                return (
-                                    <React.Fragment
-                                        key={'empty_' + index}
-                                    ></React.Fragment>
-                                )
-                            })}
-                    </View>
 
-                    
 
-                
-
-                    <View className={appSetting('layout', 'aside_container')}>
-                        <View className="fixed-process p-3 flex-col sm:py-4 gap-y-6  web:duration-300">
-                            {sideBarBlocks.map((item, index) => {
-                                return (
+                <View className={`relative ${appSetting('feed', 'feed_container')}`}>
+                    {feedList.map((item, index) => {
+                        if (feedType == item.name) {
+                            return (
+                                <View key={'view' + index}>
                                     <BlockByName
-                                        key={'block_' + index}
-                                        name={item.block}
                                         data={props.data}
-                                        {...item.block.props}
+                                        name={
+                                            props.blocks[
+                                            item.name + '_feed_form'
+                                            ]
+                                        }
                                     />
-                                )
-                            })}
-                        </View>
+                                    <BlockByName
+                                        data={props.data}
+                                        name={
+                                            props.blocks[
+                                            item.name + '_feed'
+                                            ]
+                                        }
+                                        unitMode={unitMode}
+                                        exProps={{
+                                            headerBlocks: headerBlocks,
+                                            scrollProps: { pageData: props.data, headerHeight: isFeedMenuPresent ? 120 : 48, subHeaderComponent: subHeader },
+                                        }}
+                                    />
+                                </View>
+                            )
+                        }
+                        return (
+                            <React.Fragment
+                                key={'empty_' + index}
+                            ></React.Fragment>
+                        )
+                    })}
+                </View>
+
+
+
+
+
+                <View className={appSetting('layout', 'aside_container')}>
+                    <View className="fixed-process p-3 flex-col sm:py-4 gap-y-6  web:duration-300">
+                        {sideBarBlocks.map((item, index) => {
+                            return (
+                                <BlockByName
+                                    key={'block_' + index}
+                                    name={item.block}
+                                    data={props.data}
+                                    {...item.block.props}
+                                />
+                            )
+                        })}
                     </View>
+                </View>
             </View>
         )
     }

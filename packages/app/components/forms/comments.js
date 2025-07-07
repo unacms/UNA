@@ -301,7 +301,7 @@ export default function FormComments(props) {
                                         <FileButton field_name='cmt_image' icon="Image" source='library' variant='text' />
                                     </View>
                                     <View className="h-full p-1 flex items-center justify-center">
-                                        <FileButton field_name='cmt_image' icon="Image" source='camera' variant='text' />
+                                        <FileButton field_name='cmt_image' icon="Camera" source='camera' variant='text' />
                                     </View>
                                 </Row>
                             </Reanimated.View>

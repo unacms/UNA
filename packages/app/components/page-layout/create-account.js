@@ -1,22 +1,17 @@
-import { View, Row, Pressable, ScrollView } from 'app/design/view'
+import { View } from 'app/design/view'
 import { BlockByName, DataByName } from 'app/components/block'
 import { Text } from 'app/design/typography'
 import Card from 'app/components/card'
-import { Button } from 'app/design/controls'
 import Link from 'app/ui/atoms/link'
 import { Platform } from 'react-native'
 import { appStatic } from 'app/lib/app-static'
-import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view'
-import { useState, useEffect, useRef } from 'react'
+import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import AuthPanel from 'app/ui/molecules/auth'
-import * as Haptics from 'expo-haptics'
 import { appSetting } from 'app/lib/util'
 import ScrollList from 'app/ui/molecules/scroll_list'
-import SvgFile from 'app/ui/molecules/svg-file';
 import MenuFooter from 'app/components/nav/menu-footer';
 import AnimatedView from 'app/ui/atoms/animated-view';
-import Animated from 'react-native-reanimated';
 
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from');
 const isWeb = Platform.OS === 'web'
@@ -42,7 +37,7 @@ function PageContent(props) {
                     name={props.blocks.form_invitation}
                     data={props.data}
                     formProps={{
-                     
+
                         hide_errors: true,
                         button_full_width: true,
                     }}
@@ -53,7 +48,7 @@ function PageContent(props) {
                     name={props.blocks.form_join}
                     data={props.data}
                     formProps={{
-                      
+
                         hide_errors: true,
                         button_full_width: true,
                     }}
@@ -108,15 +103,13 @@ export default function PageLayout(props) {
             <MenuFooter cntClasses="w-full flex-row flex-wrap opacity-80 h-16 items-center justify-center" />
         </View>
     ) : (
-        <Animated.ScrollView keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag" ref={refer} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
-            <View className="w-full flex-col lg:flex-row gap-y-4 mx-auto p-3 pt-16">
-                <View className="my-auto flex-col items-center lg:items-start flex-auto " >
-                    {appStatic('join_text')}
-                </View>
-                <PageContent {...props} isAllowJoin={isAllowJoin} />
-                <MenuFooter cntClasses="w-full flex-row flex-wrap opacity-80 h-16 items-center justify-center" />
+        <View className="w-full flex-col lg:flex-row gap-y-4 mx-auto p-3 pt-16">
+            <View className="my-auto flex-col items-center lg:items-start flex-auto " >
+                {appStatic('join_text')}
             </View>
-        </Animated.ScrollView>
+            <PageContent {...props} isAllowJoin={isAllowJoin} />
+            <MenuFooter cntClasses="w-full flex-row flex-wrap opacity-80 h-16 items-center justify-center" />
+        </View>
     );
 
     return (
@@ -124,7 +117,7 @@ export default function PageLayout(props) {
             refer={refer}
             content={content}
             pageData={props.data}
-            headerHeight={0}
+            headerHeight={isWeb ? 0 : 64}
             contentType="ScrollList"
         />
     )

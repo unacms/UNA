@@ -1,10 +1,8 @@
-import { View, ScrollView } from 'app/design/view'
+import { View } from 'app/design/view'
 import { Text } from 'app/design/typography'
-import { Button } from 'app/design/controls'
 import Card from 'app/components/card'
 import { appSetting } from 'app/lib/util'
 import { Platform } from 'react-native'
-import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view'
 import { appStatic } from 'app/lib/app-static'
 import AuthPanel from 'app/ui/molecules/auth'
 import { useRef } from 'react';
@@ -13,7 +11,7 @@ import MenuFooter from 'app/components/nav/menu-footer';
 import AnimatedView from 'app/ui/atoms/animated-view';
 import { useTranslation } from 'react-i18next'
 import ScrollList from 'app/ui/molecules/scroll_list'
-import Animated from 'react-native-reanimated';
+
 /**
  * Renders the login splash screen with adaptive layouts for web and mobile platforms.
  *
@@ -48,13 +46,12 @@ export default function Splash(props) {
     const isWeb = Platform.OS == 'web'
     const refer = useRef();
     const content = !isWeb ? (
-        <Animated.ScrollView keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag" ref={refer} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
-            <View className="w-full gap-y-8 mx-auto p-3 pt-16">
-                {appStatic('splash_text')}
-                <PageContent {...props} />
-            </View>
+        <><View className="w-full gap-y-8 mx-auto p-3 pt-16">
+            {appStatic('splash_text')}
+            <PageContent {...props} />
+        </View>
             <MenuFooter cntClasses="w-full flex-row flex-wrap opacity-80 h-16 items-center justify-center" />
-        </Animated.ScrollView>
+        </>
 
     ) : (
         <View className={`flex-col justify-center pt-16 ${TABLET_MODE_FROM}:pt-0 min-h-[100vh] w-full`}>
@@ -78,7 +75,7 @@ export default function Splash(props) {
         refer={refer}
         content={content}
         pageData={props.data}
-        headerHeight={0}
+        headerHeight={isWeb ? 0 : 64}
         contentType="ScrollList"
     />
 }

@@ -255,7 +255,7 @@ export  const settingsDefault = {
         items_lifetime: 30,
     },
     feed: {
-        feed_container: 'relative flex-auto mx-auto w-full max-w-4xl p-2',
+        feed_container: 'relative flex-auto mx-auto w-full max-w-4xl web:p-2',
         show_selector_view: true,
         default_view: '',
         show_html: false,
@@ -630,7 +630,7 @@ export  const settingsDefault = {
             {
                 key: '/tab1',
                 title: 'Friends',
-                url: '/view-event-profile/sdfsd',
+                url: '/posts-home',
                 icon: 'UsersRound',
             },
             {
@@ -802,6 +802,7 @@ export  const settingsDefault = {
             badgeTextSize: 'text-xs leading-4 font-semibold', // Customizable text size for badge
         },
         light: {
+            default: 'rgba(3,7,18,1)',
             primary: 'rgba(37, 99, 235, 1)',
             outline: 'rgba(37, 99, 235, 0.5)',
             headerBackground: 'rgba(255,255,255,1)',
