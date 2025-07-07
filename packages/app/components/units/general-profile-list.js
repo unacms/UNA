@@ -6,7 +6,7 @@ export default function Unit(props) {
     const data = props.data;
     const module = !!data?.module ? data.module : props.module
 
-    const Component = useMemo(() =>  getComponent('profile-list', props.unit) || getComponent('profile-list', 'default'), [module]);
+    const Component = useMemo(() =>  getComponent('profile-list', module) || getComponent('profile-list', 'default'), [module]);
     const Result = <Component {...props} /> 
 
     /*
