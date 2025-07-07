@@ -123,11 +123,11 @@ export const Header = memo(({
         <Row className={` px-2 sm:px-2 items-center h-16 justify-between web:duration-300`}>
             {(!currentUser && !pageData?.context && !text && (!settings?.headerSettings || settings?.headerSettings?.header)) && 
                 <Link href="/home" aria-label="Home">
-                    <Pressable className="items-center p-1 flex-row web:hover:scale-105 web:active:scale-95 rounded-xl gap-x-3 text-neutral-800 dark:text-neutral-200 web:hover:text-neutral-800 web:dark:hover:text-neutral-200 duration-300 ">
-                        <View className="w-11 h-11">
+                    <Pressable className="items-center p-1 flex-row web:hover:scale-105 web:active:scale-95 rounded-xl  text-neutral-800 dark:text-neutral-200 web:hover:text-neutral-800 web:dark:hover:text-neutral-200 duration-300 ">
+                        <View className="w-10 h-10">
                             {appStatic('logo_mark')}
                         </View>
-                        <View className="w-20 h-10 flex-row items-center">
+                        <View className="w-20 flex-row items-center">
                             {appStatic('logo_text')}
                         </View>
                     </Pressable>

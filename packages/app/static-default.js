@@ -28,6 +28,7 @@ const LogoText = () => {
         width={72}
         height={36}
         viewBox="0 0 68 32"
+        className="ml-3 hidden sm:block"
         color={ theme === 'dark' ? 'white' : 'black'}
         xmlns="http://www.w3.org/2000/svg"
     >
