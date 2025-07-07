@@ -80,8 +80,8 @@ const Gallery = React.memo(({ data, handleShowImage, windowWidthOr }) => {
         }
         else {
             aspectStyle = w / h;
-            h = "";
-            w = "";
+            h = undefined;
+            w = undefined;
             return (
                 /*bg-neutral-200  dark:bg-neutral-600*/
                 <View className={`${max_image_width}  ${aspect} w-full items-center justify-center bg-bgritem dark:bg-bgritem-d rounded-lg overflow-hidden`}>

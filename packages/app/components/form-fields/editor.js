@@ -24,11 +24,16 @@ function PlainText(props) {
     const defaultValue = props.value ? props.value : '';
     const formContext = useFormContext();
     const { field } = useController({ name, rules, defaultValue });
-    let h = props.height ? props.height : null;
+    // Use smaller initial height for comments forms
+    const isCommentsForm = props.container_class === 'comments';
+    const initialHeight = isCommentsForm ? 24 : null;
+    let h = props.height ? props.height : initialHeight;
     const [height, setHeight] = useState(h);
     const accessibility = props.caption.length > 0 ? props.caption : 'text';
     const placeholder = props.use_caption_as_placeholder ? props.caption : props.placeholder;
     const isAutoHeight = true;
+
+    const minHeightValue = isCommentsForm ? 24 : 100;
 
     let input = (
         <InputMulti
@@ -44,7 +49,7 @@ function PlainText(props) {
                     setHeight(e.nativeEvent.contentSize.height);
                 }
             }}
-            style={isAutoHeight ? { height, minHeight:100, maxHeight:200 } : {}}
+            style={isAutoHeight ? { height, minHeight: minHeightValue, maxHeight:200 } : {}}
             defaultValue={props.value || props.default_value || ''}
             editorProps={{
                 attributes: {

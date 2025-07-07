@@ -17,6 +17,8 @@ import Animated, {
     runOnJS,
 } from 'react-native-reanimated';
 import { appSetting } from 'app/lib/util';
+import { BlurView } from 'expo-blur';
+import { Theme } from 'app/design/theme';
 
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -37,6 +39,7 @@ export default function DropdownPopup({
     const [buttonPos, setButtonPos] = useState({ x: 0, y: 0, width: 0, height: 0 });
     const { width: windowWidth, height: windowHeight } = useWindowDimensions();
     const isWeb = useMemo(() => Platform.OS === 'web', []);
+    const { colors } = Theme();
     const animation = useMemo(
         () => (windowWidth > LAYOUT_BREAKPOINTS.md ? 'fade' : 'none'),
         [windowWidth]
@@ -151,30 +154,49 @@ export default function DropdownPopup({
         };
     }, []);
 
-    const AnimatedContent = useMemo(() => (
-        <Animated.View
-            ref={contentRef}
-            style={[
-                {
-                    position: 'absolute',
-                    top: buttonPos.y,
-                    left: buttonPos.x,
-                    visibility: buttonPos.y > 0 ? 'visible' : 'hidden',
-                    elevation: 5,
-                    minWidth: minPopupWidth,
-                    maxWidth: windowWidth - 32,
-                    maxHeight: windowHeight - buttonPos.y - 32,
-                    zIndex: 1000,
-                },
-                !isWeb && contentAnimatedStyle,
-            ]}
-            className={`${contentClasses}`}
-        >
+    const AnimatedContent = useMemo(() => {
+        const contentStyle = {
+            position: 'absolute',
+            top: buttonPos.y,
+            left: buttonPos.x,
+            visibility: buttonPos.y > 0 ? 'visible' : 'hidden',
+            elevation: 5,
+            minWidth: minPopupWidth,
+            maxWidth: windowWidth - 32,
+            maxHeight: windowHeight - buttonPos.y - 32,
+            zIndex: 1000,
+        };
 
-            {children}
-
-        </Animated.View>
-    ), [buttonPos, contentClasses, children, windowWidth, windowHeight, contentAnimatedStyle, isWeb]);
+        if (isWeb) {
+            // Web version with CSS backdrop-blur
+            return (
+                <Animated.View
+                    ref={contentRef}
+                    style={[contentStyle, !isWeb && contentAnimatedStyle]}
+                    className={`${contentClasses}`}
+                >
+                    {children}
+                </Animated.View>
+            );
+        } else {
+            // Native version with BlurView
+            return (
+                <Animated.View
+                    ref={contentRef}
+                    style={[contentStyle, contentAnimatedStyle]}
+                >
+                    <BlurView
+                        tint="systemMaterial"
+                        intensity={60}
+                        experimentalBlurMethod="none"
+                        className="rounded-2xl overflow-hidden p-2 shadow-[0_10px_10px_rgba(0,0,0,0.15)]"
+                    >
+                        {children}
+                    </BlurView>
+                </Animated.View>
+            );
+        }
+    }, [buttonPos, contentClasses, children, windowWidth, windowHeight, contentAnimatedStyle, isWeb, colors]);
 
     const Content = isWeb ? (
         <ViewRef
@@ -223,7 +245,7 @@ export default function DropdownPopup({
                     }}
                 >
                     {isWeb ? (
-                        <Pressable className="flex-1 bg-black/30" onPress={(event) => handleBackdropPress(event)}>
+                        <Pressable className="flex-1 bg-black/30 z-20" onPress={(event) => handleBackdropPress(event)}>
                             <RemoveScroll>{Content}</RemoveScroll>
                         </Pressable>
                     ) : (

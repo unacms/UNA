@@ -40,6 +40,11 @@ config.resolver.nodeModulesPaths = [
 // 3. Force Metro to resolve (sub)dependencies only from the `nodeModulesPaths`
 config.resolver.disableHierarchicalLookup = true
 
+// Ensure EXPO_OS is defined for expo-modules-core
+if (!process.env.EXPO_OS) {
+  process.env.EXPO_OS = 'native'
+}
+
 module.exports = withNativeWind(config, { input: "./global.combined.css",  inlineRem: 16, });
 
 

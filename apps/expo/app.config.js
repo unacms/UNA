@@ -105,6 +105,7 @@ const expoConfig = {
         "HOST": process.env.HOST,
         "PORT": process.env.PORT,
         "APP_URL": process.env.APP_URL,
+        "EXPO_OS": "native",
     },
     plugins: [
         ["expo-router", {}],
