@@ -3,7 +3,6 @@ import {BlockByName, DataByName} from 'app/components/block';
 import { useState, useRef } from 'react';
 import { stripTags, LAYOUT_BREAKPOINTS } from 'app/lib/util';
 import { Dimensions } from 'react-native';
-import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
 import Card from 'app/ui/molecules/card'
 
 export default function PageLayout(props) {
@@ -88,7 +87,6 @@ export default function PageLayout(props) {
                 </View>
                 </Row>
                 <View ref={viewFormRef} style={{width:sizes.formWidth}} onLayout={handleLayout} className={isStycky? ' fixed bottom-16 lg:bottom-0 w-full' : ' w-full'} > 
-                <KbAvoidingView></KbAvoidingView>
                 </View>
             </Card>
         </View> 

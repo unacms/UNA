@@ -1,10 +1,10 @@
-import { KeyboardAvoidingView } from 'react-native'
 import { useHeaderHeight } from "@react-navigation/elements";
 import { Platform } from 'react-native'
-import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
+import { KeyboardAwareScrollView, KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Animated, { useAnimatedScrollHandler } from "react-native-reanimated";
-export default function KbAvoidingView(props) {
+import Animated from "react-native-reanimated";
+
+/*export default function KbAvoidingView(props) {
     const { children, offset, ...rest } = props;
     const { top } = useSafeAreaInsets();
     let keyboardVerticalOffsetValue;
@@ -27,14 +27,24 @@ export default function KbAvoidingView(props) {
             {children}
         </KeyboardAvoidingView>
     );
+}*/
+
+export default function KbAvoidingView({children}) {
+    return (
+        <KeyboardAvoidingView 
+            className="flex-1"
+            behavior={"padding"}
+            keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 30}
+        >
+            {children}
+        </KeyboardAvoidingView>
+    )
 }
 
 export function KbAvoidingViewScroll({ children, onScroll, paddingTop = 0 }) {
     const { top } = useSafeAreaInsets();
     const headerHeight = useHeaderHeight();
     const keyboardOffset = top + headerHeight + (Platform.OS === "ios" ? 58 : 44);
-
-
     return (
         <KeyboardAwareScrollView
             ScrollViewComponent={Animated.ScrollView}
