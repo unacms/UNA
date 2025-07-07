@@ -228,7 +228,7 @@ export default function FormFeed(props) {
     const isLabelsPresent = !!props.data.inputs['labels'];
 
 
-    const form = <KbAvoidingView>
+    const form = <KbAvoidingView className="flex-1">
         {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'default')}
         {getFormFieldByData(props.data.inputs['object_cf'], props.handleSubmit, 'default')}
         {getFormFieldByData(props.data.inputs['owner_id'], props.handleSubmit, 'default')}

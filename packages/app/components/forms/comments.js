@@ -3,7 +3,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { getFormFieldByData, getEditorHeight } from 'app/lib/form-helpers'
 import { Platform, useWindowDimensions } from 'react-native'
 import { Button } from 'app/design/controls'
-import Reanimated, { useSharedValue, useAnimatedStyle, withTiming, Easing, SlideInLeft, SlideOutLeft } from 'react-native-reanimated'
+import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing, SlideInLeft, SlideOutLeft } from 'react-native-reanimated'
 import { useFormContext } from 'react-hook-form'
 import { stripTags, removeEmptyTags } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
@@ -12,8 +12,8 @@ import { FileButton } from 'app/lib/form-helpers'
 
 export default function FormComments(props) {
     const { height: screenHeight } = useWindowDimensions()
-    const baseHeight = props.data.inputs['cmt_id']?.value ? 160 : 40
-    const maxHeight = Platform.OS === 'web' ? screenHeight / 2 : (screenHeight - 300) / 2 // 300 is approximate keyboard height
+    const baseHeight = props.data.inputs['cmt_id']?.value ? 160 : 22
+    const maxHeight = Platform.OS === 'web' ? /*screenHeight / 2*/ 160 : (screenHeight - 300) / 2 // 300 is approximate keyboard height
     const formContext = useFormContext()
 
     const animatedEditorHeight = useSharedValue(baseHeight)
@@ -34,7 +34,9 @@ export default function FormComments(props) {
 
     const inputWrapperAnimatedStyle = useAnimatedStyle(() => {
         return {
-            height: `${animatedEditorHeight.value}`,
+            alignItems: 'center',
+            paddingBottom: isWeb ? (maxHeight == animatedEditorHeight.value ? '40px' : '0px') : maxHeight == animatedEditorHeight.value ? 40 : 0,
+            height: isWeb ? `${animatedEditorHeight.value}px` : animatedEditorHeight.value,
         };
     }, [animatedEditorHeight]);
 
@@ -179,23 +181,10 @@ export default function FormComments(props) {
     props.data.inputs['cmt_image'].rounded = 'true'
     props.data.inputs['cmt_image'].variant = 'default'
 
-    const inputWrapperClasses = [
-        'flex-auto',
-        'flex',
-        'flex-col',
-        'items-stretch',
-        'bg-bgritem',
-        'dark:bg-bgritem-d',
-        'rounded-[22px]',
-        'p-3',
 
-    ];
-
-    const minVisualHeightWhenTypingForPadding = 80;
-    const shouldHaveExtraPadding = (hasText && minVisualHeightWhenTypingForPadding > baseHeight) || (!hasText && baseHeight > 40);
-    if (shouldHaveExtraPadding) {
-        inputWrapperClasses.push('pb-10');
-    }
+    //const minVisualHeightWhenTypingForPadding = 80;
+   // const shouldHaveExtraPadding = (false) || (!hasText && baseHeight > 40);
+  
 
     const attachmentButtonContainerClasses = [
         'absolute',
@@ -223,7 +212,7 @@ export default function FormComments(props) {
     }
 
 
-
+    console.log("inputWrapperAnimatedStyle", animatedEditorHeight.value)
 
     return (
         <View className="w-full ">
@@ -239,11 +228,12 @@ export default function FormComments(props) {
                     />
 
                 )}
-                <View className="flex-1 relative">
-                    <Reanimated.View
-                        className={inputWrapperClasses.join(' ')}
-                        style={inputWrapperAnimatedStyle}
-                    >
+                <View className="flex-1  bg-red1-500">
+                    <View className={`  items-stretch  bg-bgritem dark:bg-bgritem-d rounded-[22px] p-3`} >
+                    <Animated.View 
+                   
+                     style={inputWrapperAnimatedStyle}
+                   >
                         {getFormFieldByData(
                             props.data.inputs['action'],
                             props.handleSubmit,
@@ -287,11 +277,12 @@ export default function FormComments(props) {
                             props.handleSubmit,
                             'custom'
                         )}
-                    </Reanimated.View>
+                    </Animated.View>
+                    </View>
                     <View className={attachmentButtonContainerClasses.join(' ')}>
                         {isWeb && <FileButton field_name='cmt_image' icon="Image" source='library' variant='text' />}
                         {!isWeb && (
-                            <Reanimated.View
+                            <Animated.View
                                 entering={SlideInLeft.duration(300)}
                                 exiting={SlideOutLeft.duration(300)}
                                 className="h-full w-full"
@@ -304,7 +295,7 @@ export default function FormComments(props) {
                                         <FileButton field_name='cmt_image' icon="Camera" source='camera' variant='text' />
                                     </View>
                                 </Row>
-                            </Reanimated.View>
+                            </Animated.View>
                         )}
                     </View>
                     {(!!hasText || !!imagesValue) && (
@@ -335,7 +326,7 @@ export default function FormComments(props) {
             </Row>
 
             <ScrollView horizontal={true}>
-                <Row className="flex-wrap gap-2 mt-3">{
+                <Row className="flex-wrap">{
                     getFormFieldByData(
                         props.data.inputs['cmt_image'],
                         props.handleSubmit,

@@ -29,10 +29,10 @@ import Animated from "react-native-reanimated";
     );
 }*/
 
-export default function KbAvoidingView({children}) {
+export default function KbAvoidingView({children, className}) {
     return (
         <KeyboardAvoidingView 
-            className="flex-1"
+            className={className}
             behavior={"padding"}
             keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 30}
         >
