@@ -261,34 +261,32 @@ export default function FormFeed(props) {
                     )}
                 </Reanimated.View>
                 <View >
-                    <ScrollView keyboardDismissMode="on-drag" keyboardShouldPersistTaps="handled" className="w-full " horizontal={true}>
-                        <Row className='flex-wrap '>
-                            {
-                                getFormFieldByData(
-                                    props.data.inputs['video'],
-                                    props.handleSubmit,
-                                    'notitle',
-                                    { hide_button: true, list_only: true }
-                                )
-                            }
-                            {
-                                getFormFieldByData(
-                                    props.data.inputs['photo'],
-                                    props.handleSubmit,
-                                    'notitle',
-                                    { hide_button: true, list_only: true }
-                                )
-                            }
-                            {
-                                getFormFieldByData(
-                                    props.data.inputs['file'],
-                                    props.handleSubmit,
-                                    'notitle',
-                                    { hide_button: true, list_only: true }
-                                )
-                            }
-                        </Row>
-                    </ScrollView>
+                    <Row className='flex-wrap w-full'>
+                        {
+                            getFormFieldByData(
+                                props.data.inputs['video'],
+                                props.handleSubmit,
+                                'notitle',
+                                { hide_button: true, list_only: true }
+                            )
+                        }
+                        {
+                            getFormFieldByData(
+                                props.data.inputs['photo'],
+                                props.handleSubmit,
+                                'notitle',
+                                { hide_button: true, list_only: true }
+                            )
+                        }
+                        {
+                            getFormFieldByData(
+                                props.data.inputs['file'],
+                                props.handleSubmit,
+                                'notitle',
+                                { hide_button: true, list_only: true }
+                            )
+                        }
+                    </Row>
 
                     {isLabelsPresent && (
                         <View className="flex-auto">
@@ -447,8 +445,9 @@ export default function FormFeed(props) {
             ) : (
                 <Card
                     rounded=" rounded-none sm:rounded-2xl   "
-                    margin=" mx-auto mb-1 sm:mb-3 "
+                    margin=" mx-auto mb-1 sm:mb-3 border-y border-x-none sm:border-x "
                     addClassName=" w-full px-3 pt-2 pb-3 sm:p-4  "
+                    border="border-y border-x-none sm:border "
                 >
                     {
                         props?.exProps?.showForm !== false && (
