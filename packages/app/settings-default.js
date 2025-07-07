@@ -39,20 +39,21 @@ export  const settingsDefault = {
         header_initial: '  my-auto w-full items-center transition-all web:duration-300 ease-in-out will-change-transform    ',
         header_scrolled: '  backdrop-blur-xl my-auto w-full  mx-auto bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur-xl shadow-[0_0_0_1px_rgba(0,0,0,0.08),0_2px_4px_0_rgba(0,0,0,0.05)] dark:shadow-[0_0_0_1px_rgba(0,0,0,0.8),0_2px_4px_0_rgba(0,0,0,0.05)] ',
         header_content: ' w-full mx-auto p-2 ',
-        header_content_left: ' flex-row xl:w-80 gap-x-2 ',
-        header_content_right: ' xl:w-80 items-center justify-end h-full px-1 ',
-        header_content_center: ' hidden lg:flex flex-auto w-full mx-auto max-w-3xl gap-x-0.5 justify-between items-center align-middle ',
+        header_content_left: ' flex-row w-80 2xl:w-96 gap-x-2 ',
+        header_content_right: ' w-80 2xl:w-96 items-center justify-end h-full px-1 ',
+        header_content_center: ' hidden lg:flex flex-auto w-full mx-auto max-w-4xl gap-x-0.5 justify-between items-center align-middle px-2',
         header_special: {
             profile: 'hidden lg:flex',
             messenger: 'hidden lg:flex',
             post: 'hidden lg:flex',
             default: ' flex '
         },
-        sidebar: ' fixed-process fixed w-80 p-2 web:duration-200 ',
-        sidebar_container: ' hidden relative xl:flex w-80 ',
+        sidebar: ' fixed-process fixed w-80 2xl:w-96 p-2 web:duration-200 ',
+        sidebar_container: ' hidden relative xl:flex w-80 2xl:w-96 ',
       
-        max_width: ' max-w-8xl', 
-        max_width_block: ' w-full max-w-5xl ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
+        aside_container: 'hidden lg:flex w-80 2xl:w-96 h-full', 
+        max_width: ' w-full ', 
+        max_width_block: ' w-full max-w-7xl ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
         max_width_content: ' w-full max-w-7xl ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
        
 
@@ -254,6 +255,7 @@ export  const settingsDefault = {
         items_lifetime: 30,
     },
     feed: {
+        feed_container: 'relative flex-auto mx-auto w-full max-w-4xl p-2',
         show_selector_view: true,
         default_view: '',
         show_html: false,

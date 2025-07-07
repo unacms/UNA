@@ -262,7 +262,7 @@ export default function (props) {
 
                 
                     
-                    <View className="relative flex-auto mx-auto sm:p-2 max-w-3xl">
+                    <View className={`relative ${appSetting('feed', 'feed_container')}`}>
                             {feedList.map((item, index) => {
                                 if (feedType == item.name) {
                                     return (
@@ -303,7 +303,7 @@ export default function (props) {
 
                 
 
-                    <View className="hidden lg:flex w-80 h-full">
+                    <View className={appSetting('layout', 'aside_container')}>
                         <View className="fixed-process p-3 flex-col sm:py-4 gap-y-6  web:duration-300">
                             {sideBarBlocks.map((item, index) => {
                                 return (
