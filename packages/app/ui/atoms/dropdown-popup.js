@@ -51,20 +51,24 @@ export default function DropdownPopup({
     const animationProgress = useSharedValue(0);
 
     useEffect(() => {
+        // Add safety checks for modal state
         if (isRealOpen) {
-            setIsModalVisible(true);
+            // Only set modal visible if it's not already visible
+            if (!isModalVisible) {
+                setIsModalVisible(true);
+            }
             animationProgress.value = withSpring(1, {
                 damping: 20,
                 stiffness: 300,
             });
         } else {
             animationProgress.value = withTiming(0, { duration: 200 }, (finished) => {
-                if (finished) {
+                if (finished && isModalVisible) {
                     runOnJS(setIsModalVisible)(false);
                 }
             });
         }
-    }, [isRealOpen]);
+    }, [isRealOpen, isModalVisible]);
 
     const updateButtonPosition = () => {
         if (!buttonRef.current?.measureInWindow) return;

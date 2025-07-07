@@ -109,7 +109,7 @@ const HeaderLine = memo(
             ).length > 0
 
         return (
-            <View className=" flex-row xl:w-80 gap-x-2 p-1.5 ">
+            <View className={appSetting('layout', 'header_content_left')}>
                 {headerSettings.menu && isDrawer && (
                     <View className="lg:hidden pr-2 ">
                         <Pressable onPress={showMenu}>
@@ -209,22 +209,18 @@ export default function (props) {
             </View>
 
             {!bIsHideHeader && (
-                <View
-                    className={
-                        (props.layoutName == 'profile' ||
-                        props.layoutName == 'messenger' ||
-                        props.layoutName == 'post'
-                            ? 'hidden lg:flex'
-                            : '') +
-                        ' fixed w-full h-16 items-center transition-all web:duration-300 ease-in-out will-change-transform left-[50%] translate-x-[-50%] ' +
-                        (isScrolled
-                            ? ' backdrop-blur-xl ' + appSetting('layout', 'scrolled_header_style')
-                            : ' backdrop-none ' + appSetting('layout', 'header_style'))
-                    }
-                >
+                <View className={appSetting('layout', 'header_container') +
+                        (appSetting('layout', 'header_special')[props.layoutName] || 
+                         appSetting('layout', 'header_special').default)
+                    }  >
+                <View className={
+                      (isScrolled
+                          ? appSetting('layout', 'header_scrolled')
+                          : appSetting('layout', 'header_initial'))
+                 }>
                     <View
                         className={
-                            appSetting('layout', 'header_content_style') +
+                            appSetting('layout', 'header_content') +
                             ' w-full flex-row flex-auto items-center'
                         }
                     >
@@ -240,7 +236,7 @@ export default function (props) {
                             context={props.context}
                         />
                         <MenuTop url={props.url} uri={props.uri} />
-                        <Row className=" xl:w-80 items-center px-2 justify-end h-full ">
+                        <Row className={appSetting('layout', 'header_content_right')}>
                            <ToolbarItems 
                                 currentUser={currentUser}
                                 bSearch={bSearch}
@@ -251,9 +247,10 @@ export default function (props) {
                            />
                         </Row>
                     </View>
-
+                </View>
                     <MenuDrawer showMenu={showMenu} menuPopup={menuPopup} />
                 </View>
+                
             )}
         </>
     )

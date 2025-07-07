@@ -1,4 +1,4 @@
-import React, { useMemo, forwardRef } from 'react';
+import React, { useMemo, forwardRef, useEffect } from 'react';
 import { TextInput as TextInputDef, Modal as ModalDef, Platform } from 'react-native'
 import SwitchDef from 'app/ui/atoms/switcher'
 import { Pressable, View, ScrollView, Row } from 'app/design/view'
@@ -172,6 +172,24 @@ export function Modal({
     scrollable = false,
     autoHeight = false
 }) {
+    // Cleanup guard to prevent removeChild errors
+    useEffect(() => {
+        return () => {
+            // Cleanup function to prevent removeChild errors
+            if (Platform.OS === 'web' && typeof window !== 'undefined' && document.body) {
+                const portals = document.querySelectorAll('[data-react-native-modal]');
+                portals.forEach(portal => {
+                    if (portal.parentNode) {
+                        try {
+                            portal.parentNode.removeChild(portal);
+                        } catch (e) {
+                            // Ignore removeChild errors - they're harmless
+                        }
+                    }
+                });
+            }
+        };
+    }, []);
     const { width, height } = useWindowDimensions();
     const offset = (title || onClose  ? (width > LAYOUT_BREAKPOINTS.md ? 100 : 68)  : 0);
 

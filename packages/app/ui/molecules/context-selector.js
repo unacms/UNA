@@ -77,7 +77,7 @@ export default function ContextSelector({ data, url }) {
         setIsOpen(false);
     };
 
-    const CurrentContext = <View className='items-center text-center align-middle flex-auto flex-row gap-x-3 px-2 py-1 lg:hover:bg-bgritem dark:lg:hover:bg-bgritem-d rounded-xl'>
+    const CurrentContext = <View className='items-center text-center align-middle flex-auto flex-row gap-x-2 px-2 py-1 lg:hover:bg-bgritem dark:lg:hover:bg-bgritem-d rounded-xl'>
         <View className="items-center justify-center text-neutral-800 dark:text-neutral-200">
             {contextRoot.image}
         </View>
@@ -87,12 +87,13 @@ export default function ContextSelector({ data, url }) {
         <>
             {(data?.list?.length > 1 || data?.links?.length > 0) ? <DropdownPopup
                 trigger={
-                    <Row className="flex-row w-full gap-x-2 flex-auto items-center">
+                    <Row className=" w-full flex-auto items-center">
                         {CurrentContext}
                         <Button
                             variant="text"
                             size="base"
                             rounded
+                            ring
                             startDecorator="ChevronDown"
                         /></Row>
                 }

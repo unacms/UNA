@@ -99,7 +99,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
     }
 
     return (
-        <View className={`px-3 sm:px-4 pt-2.5 ${conductorTheme.content_max_width} mx-auto w-full flex-row gap-2`} >
+        <View className={` ${conductorTheme.content_max_width} mx-auto w-full px-3 py-2 flex-row gap-2`} >
             <Row className=" gap-x-2 items-center justify-between flex-auto">
                 <View className={`flex-auto flex-row gap-x-2 items-center `}>
                     {getCoverBackButton(bPerson)}

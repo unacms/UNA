@@ -18,7 +18,7 @@ export default function MenuTop({ url, uri }) {
     )
 
     return (
-        <Row className="hidden lg:flex flex-auto w-full mx-auto max-w-3xl px-1.5 gap-x-2 justify-between items-center align-middle ">
+        <Row className={appSetting('layout', 'header_content_center')}>
             {menu_navbar_items.map((item, index) => {
                 const isActive = item.link === '/' + url || (item.link === '/' && uri === 'home');
                 return <MenuTopItem key={`bmi-${index}`} link={item.link} icon={item.icon} isTitle={item.showTitle} title={t(item.title)} isActive={isActive} />
@@ -44,7 +44,7 @@ function MenuTopItem({ link, title, index, icon, isTitle, isActive }) {
                 >
                     <Icon
                         icon={icon}
-                        size="28"
+                        size="24"
                         color={isActive ? colors.primary : colors.barsColor}
                     />
                     {isTitle && <Text className={`whitespace-nowrap text-ellipsis overflow-hidden tracking-tight font-medium ${isActive ? 'text-primary dark:text-primary-d' : 'text-neutral-800 dark:text-neutral-200'} text-lg px-3 web:text-lg native:text-lg leading-7`}>{title}</Text>}

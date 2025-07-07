@@ -183,15 +183,15 @@ export default function (props) {
                 }
             >
                 {getLayout(currentUser) == 'hor' && (
-                    <View className="hidden relative xl:flex w-80 ">
-                        <View className="fixed-process fixed w-80 px-3 py-1 web:duration-200">
+                    <View className={appSetting('layout', 'sidebar_container')}>
+                        <View className={appSetting('layout', 'sidebar')}>
                             {/* {appSetting('layout', 'sidebar_search') && (
                                 <View className="pb-3 w-full">
                                     <Search type="input" placeholder="Enter search text" />
                                 </View>
                             )} */}
                             {appSetting('layout', 'show_profile_info') && (
-                                <View className="py-2 mb-2 border-b border-bdr dark:border-bdr-d">
+                                <View className="pb-1 mb-1 border-b border-bdr dark:border-bdr-d">
                                 <Link href={currentUser.url} emulate={true}>
                                     <Row
                                         className={
@@ -224,7 +224,7 @@ export default function (props) {
                             )}
 
                             <View
-                                className=' pb-2 mb-2 border-b border-bdr dark:border-bdr-d gap-y-0.5'
+                                className=' pb-1 mb-1 border-b border-bdrnavbar dark:border-bdrnavbar-d gap-y-0.5'
                             >
                                 {feedList.length > 1 &&
                                     feedList.map((item, index) => {
@@ -265,7 +265,7 @@ export default function (props) {
 
                 
                     
-                    <View className="relative flex-auto mx-auto sm:px-3 web:py-3 max-w-3xl">
+                    <View className="relative flex-auto mx-auto sm:px-2 web:py-2 max-w-3xl">
                             {feedList.map((item, index) => {
                                 if (feedType == item.name) {
                                     return (
@@ -306,7 +306,7 @@ export default function (props) {
 
                 
 
-                    <View className="hidden lg:flex w-80 border-e border-bdrnavbar-v h-full dark:border-bdrnavbar-dv ">
+                    <View className="hidden lg:flex w-80 h-full">
                         <View className="fixed-process p-3 flex-col sm:py-4 gap-y-6  web:duration-300">
                             {sideBarBlocks.map((item, index) => {
                                 return (

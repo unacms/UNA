@@ -126,14 +126,18 @@ function BottomSheet2(props) {
     });
 
     useEffect(() => {
-        if (!props.children) {
-
-            bottomSheetModalRef.current?.close();
-        }
-        else {
-            bottomSheetModalRef.current?.present();
-            bottomSheetModalRef.current?.expand();
-        }
+        // Debounce rapid state changes to prevent removeChild errors
+        const timer = setTimeout(() => {
+            if (!props.children) {
+                bottomSheetModalRef.current?.close();
+            }
+            else {
+                bottomSheetModalRef.current?.present();
+                bottomSheetModalRef.current?.expand();
+            }
+        }, 100); // Small delay to prevent rapid changes
+        
+        return () => clearTimeout(timer);
     }, [props.children]);
 
 

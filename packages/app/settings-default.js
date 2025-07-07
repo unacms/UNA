@@ -33,14 +33,28 @@ export  const settingsDefault = {
         avaliable_layouts: ['hor', 'ver', 'mixed'], // OLD appSetting('layout', 'format_list')
         default_layout: 'hor', //hor, ver, mixed// OLD appSetting('layout', 'format')
         screen: ' w-full ',
-        background: '  ',
-        max_width: 'w-full max-w-8xl   ', 
+        background: ' TODO ',
+        header_offset: ' h-16 w-full ',
+        header_container: ' hidden lg:flex fixed w-full mx-auto h-16 left-[50%] translate-x-[-50%]  ',
+        header_initial: '  my-auto w-full items-center transition-all web:duration-300 ease-in-out will-change-transform    ',
+        header_scrolled: '  backdrop-blur-xl my-auto w-full  mx-auto bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur-xl shadow-[0_0_0_1px_rgba(0,0,0,0.08),0_2px_4px_0_rgba(0,0,0,0.05)] dark:shadow-[0_0_0_1px_rgba(0,0,0,0.8),0_2px_4px_0_rgba(0,0,0,0.05)] ',
+        header_content: ' w-full max-w-7xl mx-auto p-2 ',
+        header_content_left: ' flex-row xl:w-80 gap-x-2 ',
+        header_content_right: ' xl:w-80 items-center justify-end h-full px-1 ',
+        header_content_center: ' hidden lg:flex flex-auto w-full mx-auto max-w-3xl gap-x-0.5 justify-between items-center align-middle ',
+        header_special: {
+            profile: 'hidden lg:flex',
+            messenger: 'hidden lg:flex',
+            post: 'hidden lg:flex',
+            default: ' flex '
+        },
+        sidebar: ' fixed-process fixed w-80 p-2 web:duration-200 ',
+        sidebar_container: ' hidden relative xl:flex w-80 ',
+      
+        max_width: 'w-full max-w-7xl   ', 
         max_width_block: ' w-full max-w-5xl ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
         max_width_content: ' w-full max-w-7xl ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
        
-        header_style: ' bg-transparent dark:bg-transparent w-full max-w-8xl mx-auto rounded-2xl mt-1 shadow-[0_0_0_1px_rgba(0,0,0,0)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0)]  ',
-        scrolled_header_style: 'w-full max-w-8xl mx-auto rounded-2xl mt-1 bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur-xl shadow-[0_0_0_1px_rgba(0,0,0,0.08),0_2px_4px_0_rgba(0,0,0,0.05)] dark:shadow-[0_0_0_1px_rgba(0,0,0,0.8),0_2px_4px_0_rgba(0,0,0,0.05)] ',
-        header_content_style: ' w-full max-w-8xl  border-guide dark:border-guide-d  ',
 
         search: true,
         sidebar_search: true,
@@ -134,7 +148,7 @@ export  const settingsDefault = {
     },
     dashboard: {
         url: '/dashboard', //OLD appSetting('layout', 'dashboard')
-        langs: ['ru', 'en'], //OLD appSetting('layout', 'switch_lang')
+        langs: ['en', 'ru'], //OLD appSetting('layout', 'switch_lang')
         switch_theme: true, //OLD appSetting('layout', 'switch_theme')
         modules_list: [
             'friends',
@@ -160,8 +174,9 @@ export  const settingsDefault = {
         show_nav_counters: 'primary', // OLD appSetting('layout', 'show_nav_counters')
         show_nav_titles: false, // OLD appSetting('layout', 'show_nav_titles')
         hide_browse_filter: true, // OLD appSetting('layout', 'hide_browse_filter')
-        sidebar: '',
-        sidebar_position: 'fixed',
+        sidebar_container: ' relative p-2 ',
+        sidebar_width: ' w-80 hidden lg:block',
+        sidebar_position: ' z-50 fixed fixed-process ',
         bgrDecorator: true, // Enable/disable decorator background globally for conductor buttons
     },
     entry: {

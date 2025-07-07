@@ -402,11 +402,11 @@ export function getNumCols(width, currentRoute, leftSideBar) {
 };
 
 export function LeftSidebar({ title, addButtons, children, width, menu }) {
-    const sidebar = appSetting('conductor', 'sidebar_position')
+ 
     const { t } = useTranslation();
     return (
        
-            <View className={` ${sidebar =='fixed'? 'fixed-process' : ''}  p-3 gap-y-0.5`}>
+            <View className={` ${appSetting('conductor', 'sidebar_container')}`}>
                 {(!!title || !!addButtons?.length > 0) && <Row className="justify-between items-center h-12 pl-2 mb-2.5 z-10 ">
                     <Text className=" text-3xl tracking-tight truncate mr-auto font-semibold leading-11 text-neutral-900 dark:text-neutral-100 hidden lg:flex  ">
                         {t(title)}
@@ -429,7 +429,7 @@ export function TopSidebar({ styles, leftSideBar, addButtons, children, title, l
         <View style={styles} className={ ` ${!omitDefaultBackground ? conductorTheme.menu : ''} ${leftSideBar ? 'lg:hidden' : ''}`}>
             <View className={`${leftSideBar ? '' : 'mx-auto'} w-full ${conductorTheme.menu_max_width}`}>
                 {/* TODO: Review this section for potential improvements */}
-                <Row className=" px-2 sm:px-3 py-2.5 items-center justify-between">
+                <Row className=" p-2 items-center justify-between">
                     <Text className="text-2xl my-auto sm:mx-5 pb-1 font-medium text-neutral-800 tracking-tight dark:text-neutral-200 hidden ">{title}</Text>
                     {!currentUser && title ? <View className='pr-4 sm:pr-6'><TextHeader text={title} /></View> : null}
                     {children}
