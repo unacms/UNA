@@ -17,13 +17,13 @@ import Html from 'app/ui/atoms/html';
 export const LinkContent = memo(({ url, data }) => (
     <Link href={url}>
         <Text className="mr-auto  bg-primary-100 dark:bg-primary-900 rounded-lg font-semibold px-2 py-1 flex-none flex-auto text-neutral-800 dark:text-neutral-200">
-            {data.content.price ? data.content.price.replace("&#36;", "$") : 'Free'}
+            {data.content?.price ? data.content.price.replace("&#36;", "$") : 'Free'}
         </Text>
         <Text
             numberOfLines={2}
             className=" text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-lg sm:text-xl tracking-tight font-bold"
         >
-            {data.content.title}
+            {data.content?.title || ''}
         </Text>
     </Link>
 ));
@@ -87,19 +87,19 @@ export const GroupView = memo(({ data, styles, url, isCompact }) => {
                 >
 
 
-                    {data.content.date_start && (
+                    {data.content?.date_start && (
                         <>
 
                             <Time
                                 stylesName="text-xs flex-none"
-                                ts={data.content.date_start}
+                                ts={data.content?.date_start}
                             ></Time>
-                            {data.content.date_end && (
+                            {data.content?.date_end && (
                                 <>
                                     {' - '}
                                     <Time
                                         stylesName="text-xs flex-none"
-                                        ts={data.content.date_end}
+                                        ts={data.content?.date_end}
                                     ></Time>
                                 </>
                             )}
@@ -110,7 +110,7 @@ export const GroupView = memo(({ data, styles, url, isCompact }) => {
                     numberOfLines={2}
                     className=" text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-lg sm:text-xl tracking-tight font-bold"
                 >
-                    {data.content.title}
+                    {data.content?.title || ''}
                 </Text>
             </Link>
             <View>
@@ -119,7 +119,7 @@ export const GroupView = memo(({ data, styles, url, isCompact }) => {
                         className="text-neutral-800 dark:text-neutral-200 text-base leading-6"
                         numberOfLines={3}
                     >
-                        {stripTags(data.content.text)}
+                        {stripTags(data.content?.text || '')}
                     </Text>
                 </View>
             </View>
@@ -157,7 +157,11 @@ export const AdView = memo(({ data, styles, url, isCompact }) => {
         )}
         <View className="flex-auto p-2 my-auto flex-col">
             {data?.content?.register_click ? (
-                <Pressable onPress={async () => { await fetcher('/api.php?r=' + data.content.register_click) }}>
+                <Pressable onPress={async () => { 
+                    if (data.content?.register_click) {
+                        await fetcher('/api.php?r=' + data.content.register_click);
+                    }
+                }}>
                     <LinkContent url={url} data={data} />
                 </Pressable>
             ) : (
@@ -169,7 +173,7 @@ export const AdView = memo(({ data, styles, url, isCompact }) => {
                         className="text-neutral-800 dark:text-neutral-200 pb-4 text-base leading-6"
                         numberOfLines={3}
                     >
-                        {data.content.text}
+                        {data.content?.text || ''}
                     </Text>
                 </View>
 
@@ -199,14 +203,14 @@ export const MarketView = memo(({ data, styles, url, isCompact }) => {
         <View className="flex-auto p-2 my-auto flex-col    ">
             <Link href={url} className="">
                 <Text className="mr-auto  bg-primary-100 dark:bg-primary-900 rounded-lg font-semibold px-2 py-1 flex-none flex-auto text-white">
-                    {data.content.price_recurring > 0 ? data.content.price_recurring + '$/' + data.content.duration_recurring : (data.content.price_single > 0 ? data.content.price_single + '$' : 'Free')}
+                    {(data.content?.price_recurring || 0) > 0 ? (data.content?.price_recurring || 0) + '$/' + (data.content?.duration_recurring || '') : ((data.content?.price_single || 0) > 0 ? (data.content?.price_single || 0) + '$' : 'Free')}
                 </Text>
 
                 <Text
                     numberOfLines={2}
                     className=" text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-lg sm:text-xl tracking-tight font-bold"
                 >
-                    {data.content.title}
+                    {data.content?.title || ''}
                 </Text>
             </Link>
             <View>
@@ -215,7 +219,7 @@ export const MarketView = memo(({ data, styles, url, isCompact }) => {
                         className="text-neutral-800 dark:text-neutral-200 pb-4 text-base leading-6"
                         numberOfLines={3}
                     >
-                        {data.content.text}
+                        {data.content?.text || ''}
                     </Text>
                 </View>
 
@@ -252,16 +256,16 @@ export const DefaultView = memo(({ data, styles, bIsTitle, bIsTimelineContent, c
                             numberOfLines={3}
                             className=" pb-2 text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-xl sm:text-2xl tracking-tight font-bold"
                         >
-                            {data.content.title}
+                            {data.content?.title || ''}
                         </Text>
                     </Link>
                 )}
                 <View>
                     <View>
                         {bIsTimelineContent && (
-                            <View className={' ' + ((data.content.text && content_attach.length > 0) ? ' pb-2 ' : '')}>
-                                {fulltext ? <Html data={data.content.text ? data.content.text : ''} /> : <ContentMore id={'feed-' + data.id} showLink={data?.content?.images_attach?.length == 0} content={data.content.text ? data.content.text : ''} numberOfLines={3} openSmall={false} textClassName=" text-neutral-800 dark:text-neutral-200 text-base leading-6 " />}
-                                {!!data.content.embed && <View className=''><Embed data={data.content.embed} /></View>}
+                            <View className={' ' + ((data.content?.text && content_attach.length > 0) ? ' pb-2 ' : '')}>
+                                {fulltext ? <Html data={data.content?.text ? data.content.text : ''} /> : <ContentMore id={'feed-' + data.id} showLink={data?.content?.images_attach?.length == 0} content={data.content?.text ? data.content.text : ''} numberOfLines={3} openSmall={false} textClassName=" text-neutral-800 dark:text-neutral-200 text-base leading-6 " />}
+                                {!!data.content?.embed && <View className=''><Embed data={data.content.embed} /></View>}
                             </View>
                         )}
                         {!bIsTimelineContent && (
@@ -269,12 +273,12 @@ export const DefaultView = memo(({ data, styles, bIsTitle, bIsTimelineContent, c
                                 className="text-neutral-800 dark:text-neutral-200 text-base leading-6"
                                 numberOfLines={3}
                             >
-                                {stripTags(data.content.text)}
+                                {stripTags(data.content?.text || '')}
                             </Text>
                         )}
                     </View>
                 </View>
-                {data.content.polls_attach && data.content.polls_attach.map((item, index) => {
+                {data.content?.polls_attach && data.content.polls_attach.map((item, index) => {
                     return <View className='mt-4' key={"att" + index}><PollItem results_url='/api.php?r=bx_timeline/get_block_poll_results' data={item} showTitle={true} /></View>
                 })}
             </View>
@@ -318,7 +322,7 @@ export const PollView = memo(({ data, styles, bIsTitle, bIsTimelineContent, cont
                             numberOfLines={3}
                             className=" pb-2 text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-lg sm:text-xl tracking-tight font-bold"
                         >
-                            {data.content.title}
+                            {data.content?.title || ''}
                         </Text>
                     </Link>
                 )}

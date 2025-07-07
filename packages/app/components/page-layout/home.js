@@ -111,13 +111,10 @@ export default function (props) {
 
         const subHeader = (
 
-            <ScrollView
-                horizontal={true}
-                className=" px-2 sm:px-3 w-full "
-            >
+            <ScrollView horizontal={true} className=" px-2 sm:px-3 w-full ">
                 <Row
                     className={`  ${feedList.length > 1
-                        ? 'my-2.5'
+                        ? 'my-1'
                         : ''
                         }    `}
                 >
@@ -265,7 +262,7 @@ export default function (props) {
 
                 
                     
-                    <View className="relative flex-auto mx-auto sm:px-2 web:py-2 max-w-3xl">
+                    <View className="relative flex-auto mx-auto sm:p-2 max-w-3xl">
                             {feedList.map((item, index) => {
                                 if (feedType == item.name) {
                                     return (
