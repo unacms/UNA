@@ -4,8 +4,7 @@ import { useState, useRef, useCallback, useMemo } from 'react'
 import { getFormFieldByData } from 'app/lib/form-helpers'
 import { useLayoutData } from 'app/context/layout'
 import { FeedbackHaptics, getAlert } from 'app/lib/util'
-//import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view'
-import { KeyboardAvoidingView as KbAvoidingView } from "react-native-keyboard-controller";
+import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view'
 import { Platform } from 'react-native'
 import { Text } from 'app/design/typography'
 import { useCurrentUser } from 'app/context/user'
@@ -229,12 +228,7 @@ export default function FormFeed(props) {
     const isLabelsPresent = !!props.data.inputs['labels'];
 
 
-    const form = <KbAvoidingView  behavior={"padding"}
-      keyboardVerticalOffset={30}
-      style={{
-    flex: 1,
-    maxHeight: 800,
-  }} >
+    const form = <KbAvoidingView>
         {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'default')}
         {getFormFieldByData(props.data.inputs['object_cf'], props.handleSubmit, 'default')}
         {getFormFieldByData(props.data.inputs['owner_id'], props.handleSubmit, 'default')}

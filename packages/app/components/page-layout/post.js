@@ -4,7 +4,7 @@ import { useState, useCallback, useMemo, useEffect } from 'react';
 import { stripTags, LAYOUT_BREAKPOINTS } from 'app/lib/util';
 import { Theme } from 'app/design/theme';
 import { CommentsBrowse, CommentsForm } from 'app/lib/comments-helpers'
-import KbAvoidingView, {KbAvoidingViewScroll} from 'app/ui/atoms/kb-avoiding-view';
+import { KbAvoidingViewScroll } from 'app/ui/atoms/kb-avoiding-view';
 import { useWindowDimensions, Platform } from 'react-native'
 import { useLocalSearchParams } from 'app/lib/hooks/router'
 

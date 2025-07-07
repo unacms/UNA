@@ -26,7 +26,7 @@ export default function (props) {
         <CommentsForm handleForm={handleForm} browse={props.browse} module={props.browse?.data?.module || ''} form={form} formData={formData} requestUrl={props.url} />
     </View>
 
-    //const wrappedForm = Platform.OS === 'web' ? formContent : <KbAvoidingView>{formContent}</KbAvoidingView>;
+    //const wrappedForm = Platform.OS === 'web' ? formContent : <Kb1AvoidingView>{formContent}</Kb1AvoidingView>;
     const wrappedForm = formContent;
 
     return (
