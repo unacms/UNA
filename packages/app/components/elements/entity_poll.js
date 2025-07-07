@@ -29,7 +29,7 @@ function Results({ data }) {
                                     <Row className='absolute w-full min-h-12 gap-x-0.5  '>
                                         <View className=" rounded-lg overflow-hidden " style={{ width: item2.width, backgroundColor: backgroundColor2[index] }}></View>
                                     </Row>
-                                    <View className="min-h-12 rounded-lg" style={{ width: '12px', backgroundColor: backgroundColor2[index] }}></View>
+                                    <View className="min-h-12 rounded-lg" style={{ width: 12, backgroundColor: backgroundColor2[index] }}></View>
 
                                     <View className='w-full items-center justify-center py-1.5 px-2 '>
 

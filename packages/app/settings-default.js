@@ -255,7 +255,7 @@ export  const settingsDefault = {
         items_lifetime: 30,
     },
     feed: {
-        feed_container: 'relative flex-auto mx-auto w-full max-w-4xl web:p-2',
+        feed_container: 'relative flex-auto mx-auto w-full max-w-4xl sm:p-2',
         show_selector_view: true,
         default_view: '',
         show_html: false,
@@ -852,7 +852,7 @@ export  const settingsDefault = {
             bgrtoolbarbutton: 'rgba(33, 37, 41, 0)',
         },
         dropdown: {
-            cnt: ' rounded-2xl backdrop-blur overflow-hidden p-2 bg-bgrmodal dark:bg-bgrmodal-d shadow-[0_10px_10px_rgba(0,0,0,0.15)] ',
+            cnt: ' rounded-2xl web:backdrop-blur overflow-hidden p-2 bg-bgrmodal dark:bg-bgrmodal-d z-50 shadow-[0_10px_10px_rgba(0,0,0,0.15)] ',
         },
         conductor: {
             menu: '   w-full items-left justify-center  ',
