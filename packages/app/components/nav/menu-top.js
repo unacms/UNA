@@ -18,7 +18,7 @@ export default function MenuTop({ url, uri }) {
     )
 
     return (
-        <Row className={appSetting('layout', 'header_content_center')}>
+        <Row className={appSetting('layout', 'header', 'content_center')}>
             {menu_navbar_items.map((item, index) => {
                 const isActive = item.link === '/' + url || (item.link === '/' && uri === 'home');
                 return <MenuTopItem key={`bmi-${index}`} link={item.link} icon={item.icon} isTitle={item.showTitle} title={t(item.title)} isActive={isActive} />

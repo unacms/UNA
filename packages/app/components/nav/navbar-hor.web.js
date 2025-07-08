@@ -20,6 +20,8 @@ import MenuTop from 'app/components/nav/menu-top'
 import HeaderElement from 'app/ui/molecules/header_element'
 import { getComponent } from 'app/components/registry'
 
+const headerTheme = appSetting('layout', 'header');
+
 const ToolbarItems = ({ currentUser, bSearch, isCustomHeaderElement, bNotifs, bMessenger, t }) => {
     const toolbarConfig = appSetting('header_toolbar', 'hor')
     const itemsToRender = currentUser
@@ -109,7 +111,7 @@ const HeaderLine = memo(
             ).length > 0
 
         return (
-            <View className={appSetting('layout', 'header_content_left')}>
+            <View className={headerTheme.content_left}>
                 {headerSettings.menu && isDrawer && (
                     <View className="lg:hidden pr-2 ">
                         <Pressable onPress={showMenu}>
@@ -209,21 +211,10 @@ export default function (props) {
             </View>
 
             {!bIsHideHeader && (
-                <View className={appSetting('layout', 'header_container') +
-                        (appSetting('layout', 'header_special')[props.layoutName] || 
-                         appSetting('layout', 'header_special').default)
+                <View className={headerTheme.container + (headerTheme.special[props.layoutName] || headerTheme.special.default)
                     }  >
-                <View className={
-                      (isScrolled
-                          ? appSetting('layout', 'header_scrolled')
-                          : appSetting('layout', 'header_initial'))
-                 }>
-                    <View
-                        className={
-                            appSetting('layout', 'header_content') +
-                            ' w-full flex-row flex-auto items-center'
-                        }
-                    >
+                <View className={(isScrolled ? headerTheme.scrolled : headerTheme.initial)}>
+                    <View className={`w-full flex-row flex-auto items-center ${headerTheme.content}`}>
                         <HeaderLine
                             headerSettings={headerSettings}
                             title={sTitle}
@@ -236,7 +227,7 @@ export default function (props) {
                             context={props.context}
                         />
                         <MenuTop url={props.url} uri={props.uri} />
-                        <Row className={appSetting('layout', 'header_content_right')}>
+                        <Row className={headerTheme.content_right}>
                            <ToolbarItems 
                                 currentUser={currentUser}
                                 bSearch={bSearch}

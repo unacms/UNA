@@ -34,20 +34,7 @@ export  const settingsDefault = {
         default_layout: 'hor', //hor, ver, mixed// OLD appSetting('layout', 'format')
         screen: ' w-full ',
         background: ' TODO ',
-        header_offset: ' h-16 w-full ',
-        header_container: ' hidden lg:flex fixed w-full mx-auto h-16 left-[50%] translate-x-[-50%]  ',
-        header_initial: '  my-auto w-full items-center transition-all web:duration-300 ease-in-out will-change-transform    ',
-        header_scrolled: '  backdrop-blur-xl my-auto w-full  mx-auto bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur-xl shadow-[0_0_0_1px_rgba(0,0,0,0.08),0_2px_4px_0_rgba(0,0,0,0.05)] dark:shadow-[0_0_0_1px_rgba(0,0,0,0.8),0_2px_4px_0_rgba(0,0,0,0.05)] ',
-        header_content: ' w-full mx-auto p-2 ',
-        header_content_left: ' flex-row w-80 2xl:w-96 gap-x-2 ',
-        header_content_right: ' w-80 2xl:w-96 items-center justify-end h-full px-1 ',
-        header_content_center: ' hidden lg:flex flex-auto w-full mx-auto max-w-4xl gap-x-0.5 justify-between items-center align-middle px-2',
-        header_special: {
-            profile: 'hidden lg:flex',
-            messenger: 'hidden lg:flex',
-            post: 'hidden lg:flex',
-            default: ' flex '
-        },
+
         sidebar: ' fixed-process fixed w-80 2xl:w-96 p-2 web:duration-200 ',
         sidebar_container: ' hidden relative xl:flex w-80 2xl:w-96 ',
       
@@ -84,6 +71,23 @@ export  const settingsDefault = {
         tablet_mode_from: 'lg',
         custom_header_element: false,
         show_tabbar_on_mobile_non_logged: false, 
+        
+        header:{
+            offset: ' h-16 w-full ',
+            container: ' hidden lg:flex fixed w-full mx-auto h-16 left-[50%] translate-x-[-50%]  ',
+            initial: '  my-auto w-full items-center transition-all web:duration-300 ease-in-out will-change-transform    ',
+            scrolled: '  backdrop-blur-xl my-auto w-full  mx-auto bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur-xl shadow-[0_0_0_1px_rgba(0,0,0,0.08),0_2px_4px_0_rgba(0,0,0,0.05)] dark:shadow-[0_0_0_1px_rgba(0,0,0,0.8),0_2px_4px_0_rgba(0,0,0,0.05)] ',
+            content: ' w-full mx-auto p-2 ',
+            content_left: ' flex-row w-80 2xl:w-96 gap-x-2 ',
+            content_right: ' w-80 2xl:w-96 items-center justify-end h-full px-1 ',
+            content_center: ' hidden lg:flex flex-auto w-full mx-auto max-w-4xl gap-x-0.5 justify-between items-center align-middle px-2',
+            special: {
+                profile: 'hidden lg:flex',
+                messenger: 'hidden lg:flex',
+                post: 'hidden lg:flex',
+                default: ' flex '
+            },
+        },
     },
     auth:{
         enabled: true,
@@ -118,7 +122,6 @@ export  const settingsDefault = {
     },
     
     context_selector:{
-        show_logo: false,
         default_item: ''
     },
     cover: {
