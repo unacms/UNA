@@ -3,29 +3,44 @@ import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { storageGet } from 'app/lib/util'
-import i18n from 'app/lib/i18n';
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
+import { resources } from 'app/translation';
+
 import Subscriber from 'app/ui/molecules/subscriber';
 import AnimatedBackground from 'app/ui/atoms/animated-background';
-import { appSetting } from 'app/lib/util';
-import React, { useContext } from 'react';
-import { LanguageProvider, LanguageContext } from 'app/context/LanguageProvider';
+import { appSetting, detectLang } from 'app/lib/util';
 
 export default function RootLayout({ children }) {
-    const queryClient = React.useMemo(() => new QueryClient(), []);
-    const lang = useContext(LanguageContext) || 'en';
+
+    const langs = detectLang();
+
+    i18n
+        .use(initReactI18next)
+        .init({
+            compatibilityJSON: 'v3',
+            resources: resources,
+            lng: langs[0], // default language
+            fallbackLng: 'en',
+            interpolation: {
+                escapeValue: false
+            }
+        });
+
+    const queryClient = new QueryClient()
+
+
 
     return (
-        <html lang={lang}>
+        <html lang={langs[0]}>
             <body className={appSetting('layout', 'body')}>
-                <LanguageProvider>
-                    <QueryClientProvider client={queryClient}>
-                        <AnimatedBackground />
-                        {typeof window !== 'undefined' && window.location.hostname.endsWith('vercel.app') ? <Analytics /> : null}
-                        {!!process.env['VERCEL'] ? <SpeedInsights /> : null}
-                        {children}
-                        <Subscriber/>
-                    </QueryClientProvider>
-                </LanguageProvider>
+                <QueryClientProvider client={queryClient}>
+                    <AnimatedBackground />
+                    {typeof window !== 'undefined' && window.location.hostname.endsWith('vercel.app') ? <Analytics /> : null}
+                    {!!process.env['VERCEL'] ? <SpeedInsights /> : null}
+                    {children}
+                    <Subscriber />
+                </QueryClientProvider>
             </body>
         </html>
     )

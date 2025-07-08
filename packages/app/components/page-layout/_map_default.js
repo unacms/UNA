@@ -4,7 +4,7 @@ import PageCustomPost from './post';
 //import PageCustomDiscussion from './discussion';
 import PageCustomPostWithoutComments from './post-without-comments';
 import PageCustomMessenger from './messenger';
-import PageCustomDashboard from './dashboard';
+
 import PageCustomNavigator from './navigator';
 import PageCustomNavigatorSearch from './navigator_search';
 import PageCustomProfile from './profile';
@@ -25,7 +25,6 @@ export const componentsMapDefault = {
     'navigator': PageCustomNavigator,
     'navigator_search': PageCustomNavigatorSearch,
     'messenger': PageCustomMessenger,
-    'dashboard': PageCustomDashboard,
     'profile': PageCustomProfile,
     'profile-alt': PageCustomProfile,
     'home': PageCustomHome,

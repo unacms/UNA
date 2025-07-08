@@ -11,16 +11,13 @@ import {
 } from '@tanstack/react-query'
 
 import RNScreenshotPrevent, { addListener } from 'react-native-screenshot-prevent';
-import * as RNLocalize from "react-native-localize";
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import { appSetting } from 'app/lib/util'
+import { appSetting,detectLang } from 'app/lib/util'
 import { resources } from 'app/translation';
 import { remoteSettings } from 'app/settings-remote';
 import { getRemoteSettings } from 'app/config';
 import { StatusBar } from 'react-native';
-//import * as NavigationBar from "expo-navigation-bar";
-import { Platform } from 'react-native'
 import { LogLevel, OneSignal } from 'react-native-onesignal';
 
 
@@ -56,25 +53,14 @@ const AppLayout = React.memo(() => {
         });*/
     }, []);
 
-
-    const languageDetector = {
-        type: 'languageDetector',
-        async: true,
-        detect: async (callback) => {
-            const locale = await RNLocalize.getLocales();
-            callback(locale[0].languageCode);
-        },
-        init: () => { },
-        cacheUserLanguage: () => { },
-    };
+    const langs = detectLang();
 
     i18n
         .use(initReactI18next)
-        .use(languageDetector)
         .init({
             compatibilityJSON: 'v3',
             resources: resources,
-            lng: 'en', // default language
+            lng: langs[0], 
             fallbackLng: 'en',
             interpolation: {
                 escapeValue: false
@@ -95,9 +81,6 @@ const AppLayout = React.memo(() => {
     const scheme = useColorScheme();
     const queryClient = new QueryClient()
 
-    /*if (Platform.OS != 'ios'){
-        NavigationBar.setBackgroundColorAsync(colors.barsBackground);
-    }*/
     return (
         <ThemeProvider value={Theme(scheme)} >
             <StatusBar backgroundColor={colors.barsBackground}

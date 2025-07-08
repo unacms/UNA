@@ -152,7 +152,7 @@ export  const settingsDefault = {
     },
     dashboard: {
         url: '/dashboard', //OLD appSetting('layout', 'dashboard')
-        langs: ['en', 'ru'], //OLD appSetting('layout', 'switch_lang')
+        langs: ['system', 'en', 'ru'], //OLD appSetting('layout', 'switch_lang')
         switch_theme: true, //OLD appSetting('layout', 'switch_theme')
         modules_list: [
             'friends',

@@ -20,7 +20,6 @@ import { fetcher } from 'app/lib/fetcher';
 //import Bluetooth from 'app/ui/molecules/bluetooth'
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { Theme } from 'app/design/theme';
-import { detectSystemLanguage } from 'app/lib/i18n';
 
 function getCounter(num, icon = '', add = '', color = '') {
     

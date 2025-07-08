@@ -10,7 +10,7 @@ import { useCurrentUser } from 'app/context/user'
 import Profile from 'app/ui/molecules/profile'
 import ProfileSwitcher from 'app/components/elements/profile_switcher';
 import { Modal } from 'app/design/controls'
-import { appSetting } from 'app/lib/util'
+import { appSetting, detectLang } from 'app/lib/util'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import i18n from 'i18next';
 import { Appearance } from 'react-native';
@@ -19,8 +19,6 @@ import { storageSet, storageClear, storageGet } from 'app/lib/util'
 import { fetcher } from 'app/lib/fetcher';
 import { Theme, useThemeName } from 'app/design/theme';
 import DasbordStatOld from 'app/components/elements/dashboard_stat_old';
-import SvgFile from 'app/ui/molecules/svg-file';
-import { detectSystemLanguage } from 'app/lib/i18n';
 
 function getCounter(num, icon = '', add = '', color = '') {
 
@@ -51,10 +49,11 @@ export default function PageLayout(props) {
         return <DasbordStatOld {...props} />
     const isWeb = Platform.OS == 'web'
     const { t } = useTranslation();
-    const { currentUser, setCurrentUser } = useCurrentUser()
+    const { currentUser } = useCurrentUser()
     const { themeName, setThemeName } = useThemeName()
 
     const [showImage2, setShowImage2] = useState(false);
+
 
 
     let profile = null
@@ -66,13 +65,10 @@ export default function PageLayout(props) {
     if (!currentUser)
         return <></>
 
+    const langs = detectLang();
+
     const handleLang = async (item) => {
-        if(item === 'system') {
-            storageClear('layout:lang');
-            const systemLang = detectSystemLanguage();
-            i18n.changeLanguage(systemLang);
-            return;
-        }
+
         i18n.changeLanguage(item);
         if (isWeb) {
             storageClear();
@@ -83,8 +79,6 @@ export default function PageLayout(props) {
     }
 
     const scheme = '';//useColorScheme();
-
-
 
     const handleTheme = async (item) => {
         if (isWeb) {
@@ -111,24 +105,9 @@ export default function PageLayout(props) {
     const currentTheme = !isWeb ? Appearance.getColorScheme() : storageGet('layout:theme', '', true) || 'auto';
     const currentFormat = storageGet('layout:format', '', true) || appSetting('layout', 'default_layout');
 
-    const langItems = [
-        { id: 'system', key: 'system', name: 'system', title: t('lang_system') },
-        ...appSetting('dashboard', 'langs').map(lang => ({
-            id: lang,
-            key: lang,
-            name: lang,
-            title: t('lang_' + lang)
-        }))
-    ];
-
     return (
         <ScrollView className=''>
-            { /*<Button title="Test bottomsheet"
-             onPress={() => {setBottomSheetData({ title: 'Choose labels', showClose: true, content: <View className='h-24 w-full'><Text>TextTextTextText</Text></View> })}}
-             
-            ></Button>*/}
             <Modal id='file-preview2' title="VideoChat" onVisible={!!showImage2} onClose={() => { setShowImage2(null) }}>
-
             </Modal>
             <View className={appSetting('layout', 'max_width') + " w-full  mx-auto flex-col"}>
                 <View className={appSetting('layout', 'max_width_block') + " w-full px-2 pb-1 pt-2 sm:p-2  mx-auto flex-col"}>
@@ -159,7 +138,12 @@ export default function PageLayout(props) {
                                 {
                                     appSetting('dashboard', 'langs').length > 1 && (
                                         <View><DropdownMenu
-                                            items={langItems}
+                                            items={appSetting('dashboard', 'langs').map(lang => ({
+                                                id: lang,
+                                                key: lang,
+                                                name: lang,
+                                                title: t('lang_' + lang)
+                                            }))}
                                             onSelect={(oItem) => { handleLang(oItem.id) }}>
 
                                             <Button
@@ -167,6 +151,7 @@ export default function PageLayout(props) {
                                                 startDecorator="Languages"
                                                 rounded
                                                 align="left"
+                                                title={t('lang_' + langs[1])}
                                             />
 
                                         </DropdownMenu></View>)
@@ -200,23 +185,24 @@ export default function PageLayout(props) {
                     </Card>
                 </View>
                 <View className=" w-full ">
-
                     <ElementDashboardStat {...props} />
                     <Card addClassName=" shadow flex-col m-2 p-3 sm:p-4">
-
-
-
                         {
 
                             appSetting('dashboard', 'langs').length > 1 && (
                                 <View className="mb-2">
                                     <DropdownMenu
-                                        items={langItems}
+                                        items={appSetting('dashboard', 'langs').map(lang => ({
+                                            id: lang,
+                                            key: lang,
+                                            name: lang,
+                                            title: t('lang_' + lang)
+                                        }))}
                                         onSelect={(oItem) => { handleLang(oItem.id) }}>
 
                                         <Button
                                             variant="secondary"
-                                            title={t('lang_' + i18n.language)}
+                                            title={t('lang_' + langs[1])}
                                             startDecorator="Languages"
                                             fullWidth
                                             size="sm"
@@ -309,10 +295,8 @@ function ElementDashboardStat(props) {
 
     return (
         <>
-
             <Row className="flex-wrap px-1 sm:px-0 ">
                 {filtredData.map((item, index) => {
-
                     if (item) {
                         if (item?.type != 'growth') {
                             return <View className="  w-1/2 lg:w-1/3 xl:w-1/4 p-1 sm:p-2 web:duration-300 " key={index}>
@@ -329,13 +313,10 @@ function ElementDashboardStat(props) {
                                             </View>
                                         </Row>
                                         <Row className="w-full my-auto gap-x-2 ">
-
                                             <Text className=" text-lg flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold ">
                                                 {t(item.title)}
                                             </Text>
                                             <View className='my-auto' ><Text>{getCounter(item[item.action], item.action_icon, '', colors.default)}</Text></View>
-
-
                                         </Row>
                                     </Card>
                                 </Link>
@@ -355,12 +336,10 @@ function ElementDashboardStat(props) {
 
                                         </Row>
                                         <Row className="w-full gap-x-2">
-
                                             <Text className=" text-lg flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold  ">
                                                 {t(item.title)}
                                             </Text>
                                             <View className='my-auto' ><Text>{getCounter(item[item.action], item.action_icon, '', colors.default)}</Text></View>
-
                                         </Row>
                                     </Card>
                                 </Link>
@@ -369,21 +348,17 @@ function ElementDashboardStat(props) {
                     }
                 })}
             </Row>
-
             {data.manage.items.length > 0 && <Card addClassName='m-2 mb-1 p-3 sm:p-4'>
-
                 <Text className="text-xl mb-3 text-neutral-800 dark:text-neutral-200 font-semibold">Admin Tools</Text>
-
-                <View className="grid w-full grid-cols-1 gap-x-2 gap-y-1.5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                <View className="grid w-full grid-cols-1 gap-x-2 gap-y-1.5 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
                     {data.manage.items.map((item2, index) => {
-                        return <View className=" w-full min-w-[160px] max-w-xs " key={index}>
+                        return <View className=" w-full min-w-[160px]  " key={index}>
                             <Link href={item2.link}>
                                 <Button variant="secondary" align="left" size="sm" fullWidth title={t(item2.title)} startDecorator={item2.icon} />
                             </Link>
                         </View>;
                     })}
                 </View></Card>}
-
         </>
     )
 }

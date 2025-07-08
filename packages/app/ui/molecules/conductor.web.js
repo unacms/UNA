@@ -717,7 +717,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
             AddBlocksCnt={AddBlocksCnt} />
     ), [index, setIndex, menu, routes, currentUser, leftSideBarWidth, headerSettings, AddBlocksCnt]);
 
-    const isHideCover = data.cover_block.profile.id === data.context.current?.id && windowWidth >= LAYOUT_BREAKPOINTS[TABLET_MODE_FROM];
+    const isHideCover = data?.cover_block?.profile && data?.cover_block?.profile?.id === data?.context?.current?.id && windowWidth >= LAYOUT_BREAKPOINTS[TABLET_MODE_FROM];
 
     const tabBarObj = useMemo(() => (
         <TabBar

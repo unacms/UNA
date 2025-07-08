@@ -12,6 +12,7 @@ import { remoteSettings } from 'app/settings-remote';
 import { parse as flatted_parse, stringify as flatted_stringify } from 'flatted';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LogLevel, OneSignal } from 'react-native-onesignal';
+import * as RNLocalize from "react-native-localize";
 
 const nativeCache = [];
 const isWeb = Platform.OS === 'web'
@@ -51,7 +52,19 @@ export async function subscribeOneSignal(currentUser, askPermission = false) {
     }
 }
 
+export function detectLang() {
+    const selectedLang = storageGet('layout:lang', '', true) || 'system'
+    let currentSystemLang = 'en';
+    const locales = RNLocalize.getLocales();
+    let langs = appSetting('dashboard', 'langs');
+    if (locales && locales.length > 0) {
+        if (langs.includes(locales[0].languageCode)) {
+            currentSystemLang = locales[0].languageCode;
+        }
+    }
 
+    return [selectedLang && selectedLang != 'system' ? selectedLang : currentSystemLang, selectedLang];
+}
 
 export function normalizeClasses(a) {
     if (!a) return a
