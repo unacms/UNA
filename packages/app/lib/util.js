@@ -53,6 +53,7 @@ export async function subscribeOneSignal(currentUser, askPermission = false) {
 }
 
 export function detectLang() {
+    
     const selectedLang = storageGet('layout:lang', '', true) || 'system'
     let currentSystemLang = 'en';
     const locales = RNLocalize.getLocales();

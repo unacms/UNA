@@ -13,7 +13,7 @@ import { appSetting, detectLang } from 'app/lib/util';
 
 export default function RootLayout({ children }) {
 
-    const langs = detectLang();
+    const langs = typeof window !== 'undefined' ? detectLang() : ['en', 'en'];
 
     i18n
         .use(initReactI18next)
