@@ -422,6 +422,7 @@ export const Button = (props) => {
         }
         return '';
     }, [ring]);
+    
     const showTooltip = useMemo(() => width >= LAYOUT_BREAKPOINTS.lg && tooltip, [width, tooltip]);
 
     const sClassContainer = useMemo(() => {
