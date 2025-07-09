@@ -47,7 +47,7 @@ export default function NotificationBanner({ data }) {
         });
 
         const banner = connectInstance.create(data.embed);
-
+        containerRef.current.innerHTML = '';
         containerRef.current.appendChild(banner);
 
         return () => {
