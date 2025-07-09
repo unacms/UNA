@@ -768,7 +768,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
     ), [routes, index, setIndex, onChangeRoute]);
 
 
-    const isUseCurrentHeader = layoutName === 'profile' && !isCoverDisabled
+    const isUseCurrentHeader = (layoutName === 'profile' || layoutName === 'profile-alt') && !isCoverDisabled
 
     if (leftSideBar) {
 
