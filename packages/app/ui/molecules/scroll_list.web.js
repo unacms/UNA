@@ -133,7 +133,7 @@ export default function ScrollList({
         ...((useCustomScrollHandler && isCollapsibleHeader) && { onScroll }),
     };
 
-    if (!isShowCover(pageData.cover,currentUser))
+    if (!isShowCover(pageData?.cover,currentUser))
         return content;
 
     const enhanced = React.cloneElement(content, baseProps);

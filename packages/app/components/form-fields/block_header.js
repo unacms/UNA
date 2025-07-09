@@ -6,7 +6,7 @@ export default function FormFieldBlockHeader(props) {
         <View className=' w-full  p-1'>
             <Text className="label-text block  pt-1 pb-1.5 w-full ">
                 <Row className='items-center gap-x-1' >
-                    <Text className='font-semibold text-sm sm: text-base text-neutral-700 dark:text-neutral-300'>{props.caption}</Text>
+                    <Text className='font-semibold text-sm sm:text-base text-neutral-700 dark:text-neutral-300'>{props.caption}</Text>
                 </Row >
             </Text>
         </View>
