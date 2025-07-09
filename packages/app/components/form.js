@@ -12,7 +12,7 @@ import { isObjectsEqual } from 'app/lib/util'
 
 
 function getFormType(name) {
-    return  getComponent('form', String(name))
+    return getComponent('form', String(name))
 }
 
 function getFormFieldList(name, inputs, handleSubmit, isInitial = false, lastChangedField, saveOnChanges, formProps) {
@@ -49,9 +49,9 @@ export default function (props) {
 
     let name = props.data.params?.display?.includes('_delete') ? '' : (props.name ? props.name : props.data.params?.display)
     const defaultValues = {}
-    
+
     // 1. Initialize isAutofocus based on a new prop, defaulting to false.
-    let isAutofocusEnabledForForm = props.enableAutoFocus === true; 
+    let isAutofocusEnabledForForm = props.enableAutoFocus === true;
 
     if (data.inputs) {
         const inputKeys = Object.keys(data.inputs); // Get keys to ensure order
@@ -160,15 +160,6 @@ export default function (props) {
         }
 
     }
-    /*useEffect(() => {
-        if (props.saveOnChanges) {
-            const subscription = watch((value, { name, type }) =>
-                setLastChangedField(name)
-            )
-
-            return () => subscription.unsubscribe()
-        }
-    }, [watch])*/
 
     let inputs = getFormFieldList(name, data.inputs, _handleSubmit, true, lastChangedField, props.saveOnChanges, props.formProps);
 
@@ -196,9 +187,20 @@ export default function (props) {
         )
     }
 
-    const filteredDefaultValues = Object.keys(allFields).reduce((result, key) => {
-        if (defaultValues.hasOwnProperty(key)) {
+    const defaultFormValues = Object.keys(allFields).reduce((result, key) => {
+        if (defaultValues.hasOwnProperty(key) && data.inputs[key].type !== 'location') {
             result[key] = defaultValues[key];
+        }
+        return result;
+    }, {});
+
+    const currentFormValues = Object.keys(data.inputs).reduce((result, key) => {
+        if (data.inputs[key].type !== 'location') {
+            result[key] = allFields[key];
+        }
+        else {
+            if (allFields[key + '_country'])
+                result[key] = allFields[key + '_country'];
         }
         return result;
     }, {});
@@ -208,12 +210,12 @@ export default function (props) {
         <View className={`w-full gap-y-${appSetting('forms', 'field_gap') || '4'} ${props?.exProps?.classes}`}>
             {(isAutoChange) && <Row className='items-center justify-between mb-3'>
                 {/*<Text className="text-xl font-bold text-neutral-800  dark:text-neutral-200 ">Filters</Text>*/}
-                {!isObjectsEqual(filteredDefaultValues, allFields) &&  <Button
-                title='Reset Filters'
-                startDecorator='X'
-                size='sm'
-                variant='secondary'
-                onPress={() => methods.reset()}
+                {!isObjectsEqual(defaultFormValues, currentFormValues) && <Button
+                    title='Reset Filters'
+                    startDecorator='X'
+                    size='sm'
+                    variant='secondary'
+                    onPress={() => methods.reset()}
                 />
                 }
             </Row>}

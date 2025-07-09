@@ -1,5 +1,5 @@
 import Field from './_field';
-import {Text} from 'app/design/typography'
+import { Text } from 'app/design/typography'
 import { usePlacesWidget } from "react-google-autocomplete";
 import { InputRef } from 'app/design/controls'
 import { use, useState, } from 'react';
@@ -12,10 +12,12 @@ export default function FormFieldLocation(props) {
     let name = props.name;
     let rules = {};
     let defaultValue = props.value ? props.value : '';
-    const [place, setPlace] = useState(defaultValue);
-    
+
+    const { field } = useController({ name, rules, defaultValue });
+
+
     useEffect(() => {
-        if (formContext){
+        if (formContext) {
             formContext.setValue(name + '_country', props.value.country);
             formContext.setValue(name + '_state', props.value.state);
             formContext.setValue(name + '_city', props.value.city);
@@ -25,25 +27,29 @@ export default function FormFieldLocation(props) {
             formContext.setValue(name + '_street', props.value.street);
             formContext.setValue(name + '_street_number', props.value.street_number);
         }
-    },[props.value]);
+    }, [props.value]);
 
     const { ref } = usePlacesWidget({
         options: {
             types: ["geocode", "establishment"],
-            language:'en',
-           
+            language: 'en',
+
         },
         apiKey: appSetting('config', 'api_keys', 'google_maps'),
-        language:'en',
+        language: 'en',
         onPlaceSelected: (place) => {
             parseAdd(place)
         }
     })
 
 
+    useEffect(() => {
+        if (ref.current) {
+            ref.current.value = ""
+        }
+    }, [field.value]);
 
-    const parseAdd = (place) =>
-    {
+    const parseAdd = (place) => {
         let country = '';
         let state = '';
         let zipCode = '';
@@ -72,8 +78,8 @@ export default function FormFieldLocation(props) {
         });
         lat = place.geometry.location.lat()
         lng = place.geometry.location.lng()
-        
-        if (formContext){
+
+        if (formContext) {
             formContext.setValue(name + '_country', country);
             formContext.setValue(name + '_state', state);
             formContext.setValue(name + '_city', city);
@@ -86,25 +92,14 @@ export default function FormFieldLocation(props) {
         if (props.onChange) {
             props.onChange({ location_string: place.formatted_address, lat: lat, lng: lng, street: street, street_number: street_number, city: city, state: state, country: country, zipCode: zipCode })
         }
-        
-        setPlace({
-            country: country, 
-            state: state,
-            city: city,
-            zipCode: zipCode, 
-            lat: lat,
-            lng: lng,
-            street: street, 
-            street_number: street_number,
-        })
     }
 
     return (
-        <Field {...props}>   
-            <InputRef 
-                ref={ref} 
-                defaultValue={defaultValue.location_string}   
-                placeholder='Start typing your address'     
+        <Field {...props}>
+            <InputRef
+                ref={ref}
+                defaultValue={defaultValue.location_string}
+                placeholder='Start typing your address'
             />
         </Field>
     );
