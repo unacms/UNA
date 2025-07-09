@@ -3,7 +3,7 @@ import { loadConnectAndInitialize } from '@stripe/connect-js/pure';
 import { fetcher } from 'app/lib/fetcher';
 import { useCurrentUser } from 'app/context/user';
 import { View } from 'app/design/view'
-
+import { Loading } from 'app/loading'
 
 const handleNotificationsChange = ({ total, actionRequired }) => {
     console.log('Всего уведомлений:', total, 'Требуют действия:', actionRequired);
@@ -54,6 +54,6 @@ export default function NotificationBanner({ data }) {
             if (banner.remove) banner.remove();
         };
     }, [currentUser.id]);
-    console.log("data.embed", data.embed)
-    return <View ref={containerRef} className={`w-full ${heights[data.embed]}`} />;
+
+    return <View ref={containerRef} className={`w-full ${heights[data.embed]}`} ><Loading/></View>;
 }
