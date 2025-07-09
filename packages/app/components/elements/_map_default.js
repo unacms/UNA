@@ -37,6 +37,7 @@ import ProfileList from './profiles_list';
 import ReputationSummary from './reputation_summary';
 import ReputationLeaderboard from './reputation_leaderboard';
 import SearchSections from './search_sections';
+import StripeConnect from './stripe_connect';
 
 export const componentsMapDefault = {
     messenger_main_page: Messenger,
@@ -80,5 +81,6 @@ export const componentsMapDefault = {
     custom: Lang,
     get_block_contacts_messenger: ProfileContacts,
     get_create_post_form: MultiPostForm,
-    simple_list: SimpleList
+    simple_list: SimpleList,
+    stripe_connect: StripeConnect
 };
