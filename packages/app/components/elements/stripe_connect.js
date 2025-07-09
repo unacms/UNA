@@ -55,5 +55,5 @@ export default function NotificationBanner({ data }) {
         };
     }, [currentUser.id]);
 
-    return <View ref={containerRef} className={`w-full ${heights[data.embed]}`} ><Loading/></View>;
+    return <View ref={containerRef} className={`w-full overflow-hidden ${heights[data.embed]}`} ><Loading/></View>;
 }
