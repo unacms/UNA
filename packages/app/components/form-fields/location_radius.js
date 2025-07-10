@@ -25,7 +25,7 @@ export default function FormFieldLocation({ name, value, onChange, ...props }) {
         setTerm,
         clearSearch,
     } = useGoogleAutocomplete(
-        appSetting('config', 'api_keys', 'google_maps'),
+        '',
         {
             language: 'en',
             debounce: 300,
