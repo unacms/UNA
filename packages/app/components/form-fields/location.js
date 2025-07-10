@@ -41,16 +41,15 @@ export default function FormFieldLocation({ name, value, onChange, ...props }) {
     }, [value.location_string]);
 
     useEffect(() => {
-
         // clear field in filter
         if (!value.location_string && !field.value) {
             setTerm("");
         }
 
-
     }, [field.value]);
 
     const setValue = (value) => {
+        formContext?.setValue(name, value.location_string);
         formContext?.setValue(name + '_country', value.country);
         formContext?.setValue(name + '_state', value.state);
         formContext?.setValue(name + '_city', value.city);
@@ -59,8 +58,9 @@ export default function FormFieldLocation({ name, value, onChange, ...props }) {
         formContext?.setValue(name + '_lng', value.lng);
         formContext?.setValue(name + '_street', value.street);
         formContext?.setValue(name + '_street_number', value.street_number);
+
         onChange?.({
-            location_string: value.formattedAddress,
+            location_string: value.location_string,
             lat: value.lat,
             lng: value.lng,
             street: value.street,
@@ -112,7 +112,6 @@ export default function FormFieldLocation({ name, value, onChange, ...props }) {
                     ))}
 
                 </View>
-
             )}
         </Field>
     );
