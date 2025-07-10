@@ -25,10 +25,11 @@ import Stars from './stars';
 import MultiField from './multi_field';
 import Embed from './embed';
 import Polls from './polls';
-
+import StripeConnect from './stripe_connect';
 
 export const componentsMapDefault = {
     input_set: InputSet,
+    stripe_connect: StripeConnect,
     visibility: Visibility,
     multi_field: MultiField,
     embed: Embed,
@@ -45,6 +46,7 @@ export const componentsMapDefault = {
     checkbox: Switcher,
     text: TextField,
     phone: TextField,
+    value: TextField,
     price: TextField,
     textarea: Editor,
     select: Select,

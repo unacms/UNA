@@ -19,8 +19,6 @@ export default function FormFieldText(props) {
             formContext.setValue(props.name, props.value)
     }, [props.name, props.value]);
 
-
-
     return (
         <Field {...props} error2={formContext.formState.errors[name]}>
             {name.includes("phone") || props.type == "phone" ? <PhoneInput
@@ -35,6 +33,7 @@ export default function FormFieldText(props) {
                 textContentType="none"
 
                 /* experiment */
+                
                 autoComplete="off"
                 autoCorrect={false}
                 spellCheck={false}
@@ -44,7 +43,7 @@ export default function FormFieldText(props) {
 
                 autoFocus={props.auto_focus}
                 name={name}
-                readOnly={props?.attrs?.readonly == 'readonly'}
+                readOnly={props?.attrs?.readonly == 'readonly' || props.type == "value"}
                 placeholder={placeholder}
                 placeholderTextColor="#6b7280"
                 onChangeText={field.onChange}
