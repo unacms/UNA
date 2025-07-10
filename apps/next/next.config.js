@@ -61,7 +61,7 @@ const nextConfig = {
     'expo-location',
     'expo-camera',
     'country-codes-flags-phone-codes',
-
+    '@appandflow/react-native-google-autocomplete',
     'react-native-country-flag',
     'expo-document-picker',
     'expo-image-manipulator',

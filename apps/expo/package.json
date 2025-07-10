@@ -2,6 +2,7 @@
   "main": "index.js",
   "dependencies": {
     "@10play/tentap-editor": "^0.6.1",
+    "@appandflow/react-native-google-autocomplete": "^2.1.0",
     "@expo/html-elements": "^0.11.2",
     "@gorhom/bottom-sheet": "^5.1.2",
     "@hello-pangea/dnd": "^17.0.0",

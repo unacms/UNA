@@ -45,7 +45,7 @@ export function MonthCalendar({ date = new Date(), onSelect, selectedDate }) {
             {weeks.map((week, wIdx) => (
                 <View key={wIdx} className="flex-row ">
                     {week.map((day, dIdx) => {
-                        const isToday = selectedDate? (new Date(displayYear, displayMonth - 1, day)).toDateString() == selectedDate.toDateString() : null;
+                        const isToday = selectedDate ? (new Date(displayYear, displayMonth - 1, day)).toDateString() == selectedDate.toDateString() : null;
 
                         return (
                             <View
@@ -57,7 +57,7 @@ export function MonthCalendar({ date = new Date(), onSelect, selectedDate }) {
                                         className={`h-8 w-8 items-center justify-center rounded-full ${isToday ? 'bg-primary' : ''
                                             }`}
                                     >
-                                        <Pressable onPress={() => { onSelect(new Date(displayYear, displayMonth - 1, day, selectedDate? selectedDate.getHours(): 0, selectedDate? selectedDate.getMinutes(): 0, selectedDate? selectedDate.getSeconds(): 0)) }}>
+                                        <Pressable onPress={() => { onSelect(new Date(displayYear, displayMonth - 1, day, selectedDate ? selectedDate.getHours() : 0, selectedDate ? selectedDate.getMinutes() : 0, selectedDate ? selectedDate.getSeconds() : 0)) }}>
                                             <Text
                                                 className={` text-base ${isToday ? 'text-white' : 'text-neutral-700 dark:text-neutral-300'
                                                     }`}
@@ -89,7 +89,7 @@ const CalendarHeader = ({ value, addMonth, setDatePart }) => {
         <Row className='items-center gap-x-2 justify-center'>
 
             <Button rounded startDecorator="ChevronLeft" onPress={() => addMonth('m', -1)} />
-            
+
 
             <View className='w-28'>
                 <Dropdown labelField="label"
@@ -144,16 +144,15 @@ export default function ({ name, value = '', type, onChange }) {
 
     const bIsTime = type === 'datetime';
     const [showModal, setShowModal] = useState(false);
-    console.log("value", value)
     const initValue = formatDateTime(value);
     const [dValue, setdValue] = useState(value ? initValue : null);
-    const [cValue, setcValue] = useState(value ? initValue: new Date());
-    const [tValue, settValue] = useState(value ? [String(initValue.getHours()).padStart(2, '0'),String(initValue.getMinutes()).padStart(2, '0')] : ['00', '00']);
+    const [cValue, setcValue] = useState(value ? initValue : new Date());
+    const [tValue, settValue] = useState(value ? [String(initValue.getHours()).padStart(2, '0'), String(initValue.getMinutes()).padStart(2, '0')] : ['00', '00']);
 
-useEffect(() => {
-    if (dValue)
-     onChange((dValue.getTime()) / 1000)
-},[dValue]);
+    useEffect(() => {
+        if (dValue)
+            onChange((dValue.getTime()) / 1000)
+    }, [dValue]);
 
 
 
@@ -183,33 +182,35 @@ useEffect(() => {
                 : String(num);
         }
 
-         settValue(prev => {
+        settValue(prev => {
             const j = [...prev];
-            if (type === 'm') j[1]=filtered;
-            if (type === 'h') j[0]=filtered;
+            if (type === 'm') j[1] = filtered;
+            if (type === 'h') j[0] = filtered;
 
             return j;
         });
 
-   
+
 
     };
 
     const handleChangeTime2 = () => {
-        setdValue(prev => {
-            const d = new Date(prev.getTime());
-            d.setMinutes(tValue[1]);
-            d.setHours(tValue[0]);
-            return d;
-        });
+        if (dValue){
+            setdValue(prev => {
+                const d = new Date(prev.getTime());
+                d.setMinutes(tValue[1]);
+                d.setHours(tValue[0]);
+                return d;
+            });
 
-        settValue(prev => {
-            const j = [...prev];
-            j[1]= String(prev[1]).padStart(2, '0');
-            j[0]=String(prev[0]).padStart(2, '0');;
+            settValue(prev => {
+                const j = [...prev];
+                j[1] = String(prev[1]).padStart(2, '0');
+                j[0] = String(prev[0]).padStart(2, '0');;
 
-            return j;
-        });
+                return j;
+            });
+        }
     };
 
     const onSelectDate = (value) => {
