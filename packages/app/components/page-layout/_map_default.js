@@ -1,7 +1,7 @@
 import PageLayoutDefault from './default';
 
 import PageCustomPost from './post';
-//import PageCustomDiscussion from './discussion';
+
 import PageCustomPostWithoutComments from './post-without-comments';
 import PageCustomMessenger from './messenger';
 
@@ -15,7 +15,7 @@ import PageCustomLogin from './login';
 import PageLayout1 from './layout_top_area_bar_right';
 import PageLayout2 from './layout_topbottom_area_bar_left';
 import PageLayout3 from './layout_topbottom_area_bar_right';
-
+import PageUniversal from './universal';
 
 export const componentsMapDefault = {
     'default': PageLayoutDefault,
@@ -32,7 +32,8 @@ export const componentsMapDefault = {
     'create-account': PageCustomCreateAccount,
     'login': PageCustomLogin,
 
-    'layout_top_area_bar_right': PageLayout1,
-    'layout_topbottom_area_bar_left': PageLayout2,
-    'layout_topbottom_area_bar_right': PageLayout3
+    'layout_top_area_bar_right': PageUniversal,
+    'layout_topbottom_area_bar_left': PageUniversal,
+    'layout_topbottom_area_bar_right': PageUniversal,
+    'layout_topbottom_area_col2_col5_col3': PageUniversal
 };
