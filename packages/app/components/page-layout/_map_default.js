@@ -12,9 +12,6 @@ import PageCustomHome from './home';
 import PageCustomNotif from './notif';
 import PageCustomCreateAccount from './create-account';
 import PageCustomLogin from './login';
-import PageLayout1 from './layout_top_area_bar_right';
-import PageLayout2 from './layout_topbottom_area_bar_left';
-import PageLayout3 from './layout_topbottom_area_bar_right';
 import PageUniversal from './universal';
 
 export const componentsMapDefault = {
