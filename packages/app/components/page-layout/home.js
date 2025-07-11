@@ -60,14 +60,6 @@ export default function (props) {
     if (!currentUser) {
         const Splash = getComponent('molecule', 'splash')
         return <Splash {...props} />
-
-        return (<ScrollList
-            refer={refer}
-            content={content}
-            pageData={props.data}
-            headerHeight={isWeb ? 0 : 70}
-            contentType="ScrollList"
-        />)
     }
 
     const sideBarBlocks = Object.keys(props.blocks)
@@ -285,7 +277,7 @@ export default function (props) {
                                         unitMode={unitMode}
                                         exProps={{
                                             headerBlocks: headerBlocks,
-                                            scrollProps: { pageData: props.data, headerHeight: isFeedMenuPresent ? 120 : 48, subHeaderComponent: subHeader },
+                                            scrollProps: { pageData: props.data, headerHeight: isFeedMenuPresent ? 120 : 68, subHeaderComponent: subHeader },
                                         }}
                                     />
                                 </View>

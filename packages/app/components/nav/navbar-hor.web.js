@@ -132,7 +132,7 @@ const HeaderLine = memo(
                         appSetting('layout', 'lock_unconfirmed'))) &&
                     (uri == 'home' || width >= LAYOUT_BREAKPOINTS.lg) && (
                         <Link
-                            className=" flex items-center px-2.5 py-1.5 my-auto hover:bg-bgritem dark:hover:bg-bgritem-d rounded-xl flex-row active:scale-95 active:opacity-50 text-neutral-800 dark:text-neutral-200 hover:text-neutral-950 dark:hover:text-neutral-50 web:duration-300 "
+                            className=" flex items-center  hover:bg-bgritem dark:hover:bg-bgritem-d rounded-xl flex-row active:scale-95 active:opacity-50 text-neutral-800 dark:text-neutral-200 hover:text-neutral-950 dark:hover:text-neutral-50 web:duration-300 "
                             href="/home"
                         >
                             {appStatic('logo')}
@@ -201,41 +201,41 @@ export default function (props) {
     return (
         <>
             <View className={appSetting('layout', 'screen')}>
-               {props.children}
+                {props.children}
             </View>
 
             {!bIsHideHeader && (
                 <View className={headerTheme.container + (headerTheme.special[props.layoutName] || headerTheme.special.default)
-                    }  >
-                <View className={(isScrolled ? headerTheme.scrolled : headerTheme.initial)}>
-                    <View className={`w-full flex-row flex-auto items-center ${headerTheme.content}`}>
-                        <HeaderLine
-                            headerSettings={headerSettings}
-                            title={sTitle}
-                            currentUser={currentUser}
-                            uri={props.uri}
-                            bSearch={bSearch}
-                            showMenu={showMenu}
-                            menuPopup={menuPopup}
-                            setMenuPopup={setMenuPopup}
-                            context={props.context}
-                        />
-                        <MenuTop url={props.url} uri={props.uri} />
-                        <Row className={headerTheme.content_right}>
-                           <ToolbarItems 
+                }  >
+                    <View className={(isScrolled ? headerTheme.scrolled : headerTheme.initial)}>
+                        <View className={`w-full flex-row flex-auto items-center ${headerTheme.content}`}>
+                            <HeaderLine
+                                headerSettings={headerSettings}
+                                title={sTitle}
                                 currentUser={currentUser}
+                                uri={props.uri}
                                 bSearch={bSearch}
-                                isCustomHeaderElement={isCustomHeaderElement}
-                                bNotifs={bNotifs}
-                                bMessenger={bMessenger}
-                                t={t}
-                           />
-                        </Row>
+                                showMenu={showMenu}
+                                menuPopup={menuPopup}
+                                setMenuPopup={setMenuPopup}
+                                context={props.context}
+                            />
+                            <MenuTop url={props.url} uri={props.uri} />
+                            <Row className={headerTheme.content_right}>
+                                <ToolbarItems
+                                    currentUser={currentUser}
+                                    bSearch={bSearch}
+                                    isCustomHeaderElement={isCustomHeaderElement}
+                                    bNotifs={bNotifs}
+                                    bMessenger={bMessenger}
+                                    t={t}
+                                />
+                            </Row>
+                        </View>
                     </View>
-                </View>
                     <MenuDrawer showMenu={showMenu} menuPopup={menuPopup} />
                 </View>
-                
+
             )}
         </>
     )

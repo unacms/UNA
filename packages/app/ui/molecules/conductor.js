@@ -26,23 +26,23 @@ const conductorTheme = appSetting('theme', 'conductor');
 const TabBar = React.memo(({ routes, index, setIndex, onChangeRoute, currentUser }) => {
     if (routes.length > 1) {
         return (
-            
-                <ScrollView horizontal={true}  className=" bg-bgrnavbar dark:bg-bgrnavbar-d  ">
-                    <Row className="pl-2 justify-center" >
-                        {routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
-                            const btn =  callFn("getButtonForConductorNative", [a, index, currentUser, setIndex, onChangeRoute]);
-                            return (
-                                <View className="p-1 items-center justify-center"
-                                    key={`tab-${a.index}`}
-                                >
-                                    {btn}
-                                </View>
-                            )
-                        })}
 
-                    </Row>
-                </ScrollView>
-            
+            <ScrollView horizontal={true} className=" bg-bgrnavbar dark:bg-bgrnavbar-d  ">
+                <Row className="pl-2 justify-center" >
+                    {routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
+                        const btn = callFn("getButtonForConductorNative", [a, index, currentUser, setIndex, onChangeRoute]);
+                        return (
+                            <View className="p-1 items-center justify-center"
+                                key={`tab-${a.index}`}
+                            >
+                                {btn}
+                            </View>
+                        )
+                    })}
+
+                </Row>
+            </ScrollView>
+
         )
     }
 });
@@ -117,9 +117,9 @@ const TabScene = React.memo(({
             scrollProps={
                 {
                     pageData: route.inited ? route.pageData : prevRoute.pageData,
-                    headerComponent: headerComponent, 
-                    subHeaderComponent: subHeaderComponent, 
-                    headerHeight: headerHeight, 
+                    headerComponent: headerComponent,
+                    subHeaderComponent: subHeaderComponent,
+                    headerHeight: headerHeight,
                     isBackButton: false,
                     isMenuNameAsTitle: true,
                     isProfileHeader: isProfileHeader,
@@ -132,7 +132,7 @@ const TabScene = React.memo(({
             unit={route.endpoint?.unit}
             renderItem={renderItem}
             ListFooterComponent={
-                (route?.endpoint?.request_url ? (route?.endpoint?.finished ? (route.data.length == 0 ?  callFn("noContentByUrl", [route?.endpoint]) : <></>) : Preload) : <></>)
+                (route?.endpoint?.request_url ? (route?.endpoint?.finished ? (route.data.length == 0 ? callFn("noContentByUrl", [route?.endpoint]) : <></>) : Preload) : <></>)
             }
             maxToRenderPerBatch={5}
             initialNumToRender={5}
@@ -147,7 +147,7 @@ const TabScene = React.memo(({
     )
 });
 
-export function Conductor({ isCoverDisabled, header, defaultHeaderHeight=120, smallHeader, minHeaderHeight, isHideDefaultHeader, leftSideBarBlocks, menu, layoutName, data, blocks, useSectionAsMenu, unitMode, skeleton, onChangeRoute, keyword }) {
+export function Conductor({ isCoverDisabled, header, defaultHeaderHeight = 120, smallHeader, minHeaderHeight, isHideDefaultHeader, leftSideBarBlocks, menu, layoutName, data, blocks, useSectionAsMenu, unitMode, skeleton, onChangeRoute, keyword }) {
 
     minHeaderHeight = minHeaderHeight || 100;
     isHideDefaultHeader = isHideDefaultHeader || false;
@@ -166,7 +166,7 @@ export function Conductor({ isCoverDisabled, header, defaultHeaderHeight=120, sm
     const toasterRef2 = useRef();
     const windowDimen = useWindowDimensions();
     const windowWidth = windowDimen.width;
-   
+
 
     useEffect(() => {
         if (!deepEqual(menu, menuState)) {
@@ -197,12 +197,12 @@ export function Conductor({ isCoverDisabled, header, defaultHeaderHeight=120, sm
 
     const [index, _setIndex] = useState(initialIndex);
     const [prevIndex, setPrevIndex] = useState(initialIndex);
-    
+
     const setIndex = (newIndex) => {
         setPrevIndex(index);
         _setIndex(newIndex);
-      };
-      
+    };
+
 
     const currentRoute = useMemo(() => routes.find((item) => item.index === index), [routes, index]);
     const prevRoute = useMemo(() => routes.find((item) => item.index === prevIndex), [routes, prevIndex]);;
@@ -376,8 +376,8 @@ export function Conductor({ isCoverDisabled, header, defaultHeaderHeight=120, sm
     });
 
     const isShowFilters = layoutName == 'navigator' && leftSideBarBlocks && leftSideBarBlocks?.length > 0;
-    const sceneHeader =  <TabBar routes={routes} index={index} setIndex={setIndex} onChangeRoute={onChangeRoute} currentUser={currentUser} />
-    const filter =  (isShowFilters) && (<View className="items-start ml-3 mt-2 mb-1">
+    const sceneHeader = <TabBar routes={routes} index={index} setIndex={setIndex} onChangeRoute={onChangeRoute} currentUser={currentUser} />
+    const filter = (isShowFilters) && (<View className="items-start ml-3 mt-2 mb-1">
         <Button title='Filters' variant="default" size="sm" rounded onPress={showFilters} />
     </View>)
 
@@ -395,7 +395,7 @@ export function Conductor({ isCoverDisabled, header, defaultHeaderHeight=120, sm
         fetchNextPage: fetchNextPage,
         isProfileHeader: isProfileHeader
     };
-    if (isProfileHeader){
+    if (isProfileHeader) {
         Object.assign(tabSceneProps, {
             headerHeight: isProfileHeader ? 0 : defaultHeaderHeight,
             headerComponent: <>
@@ -409,9 +409,9 @@ export function Conductor({ isCoverDisabled, header, defaultHeaderHeight=120, sm
             </>
         });
     }
-    else{
+    else {
         Object.assign(tabSceneProps, {
-            headerHeight : isShowFilters? 150: defaultHeaderHeight,
+            headerHeight: isShowFilters && routes.length > 1 ? defaultHeaderHeight + 52 : defaultHeaderHeight,
             subHeaderComponent: <>{header}{sceneHeader}{filter}</>
         });
     }
@@ -420,7 +420,7 @@ export function Conductor({ isCoverDisabled, header, defaultHeaderHeight=120, sm
         <View className="w-full flex-1">
             <View className="w-full flex-1 ">
                 <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" />
-                <TabScene {...tabSceneProps}  />
+                <TabScene {...tabSceneProps} />
             </View>
         </View>
     );

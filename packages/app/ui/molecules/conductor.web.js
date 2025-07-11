@@ -378,7 +378,7 @@ const RenderSceneHeader = ({ route, setFilterValue }) => {
     )
 };
 
-export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMenu, leftSideBar, leftSideBarBlocks, leftSideBarWidth = appSetting('conductor', 'sidebar_width'), skeleton = '', onChangeRoute, keyword, layoutName, defaultHeaderHeight = 128 }) {
+export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMenu, leftSideBar, leftSideBarBlocks, leftSideBarWidth = appSetting('conductor', 'sidebar_width'), skeleton = '', onChangeRoute, keyword, layoutName, defaultHeaderHeight = 120 }) {
     const uniRef = useRef();
     const { currentUser } = useCurrentUser();
     const { setBottomSheetData } = useBottomSheetData();
@@ -683,7 +683,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
         const sidebarUnitType = route.blocks?.browse_sidebar?.unitType || 'default';
 
         return (
-            <Row className={(headerSettings.columns == "reverse" ? 'flex-row-reverse' : '') + conductorTheme.content_max_width + ' mx-auto w-full ' + (isCoverDisabled ? ' sm:px-4 sm:my-3 ' : '')}>
+            <Row className={(headerSettings.columns == "reverse" ? 'flex-row-reverse' : '') + conductorTheme.content_max_width + ' mx-auto w-full ' + (isCoverDisabled ? ' ??sm:px-4 sm:my-3 ' : '')}>
                 <View className={(isRightCol ? 'flex-auto sm:px-4 flex-auto ' : ' w-full mx-auto') /*sm:p-2*/ + (layoutName == 'navigator' ? '' : ' pt-1 sm:p-4 ') + (header ? ' sm:p-3 ' : '')}>
                     {TabFlashListM}
                     {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 && callFn("noContentByUrl", [route?.endpoint])))}
@@ -779,7 +779,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
         const sidebar = appSetting('conductor', 'sidebar')
         let rc = ""
         if (sidebar == 'rounded') {
-            rc = "items-start justify-start"
+            rc = "items-start justify-start mt-4"
             a = <View className={`${leftSideBarWidth} mr-4 hidden lg:block sm:rounded-2xl bg-bgrnavbar dark:bg-bgrnavbar-d`}>
                 {leftSideBarComponent}
             </View>
@@ -798,7 +798,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
                                 <Button title="Filters" variant="default" size="sm" rounded onPress={showFilters} />
                             </View>*/}
                             {sceneHeaderComponent}
-                            <RenderScene isCoverDisabled={isCoverDisabled} prevRoute={prevRoute} headerHeight={isShowFilters ? 180 : defaultHeaderHeight} header={isUseCurrentHeader ? null : headerComponent} route={currentRoute} />
+                            <RenderScene isCoverDisabled={isCoverDisabled} prevRoute={prevRoute} headerHeight={isShowFilters && routes.length>1 ? defaultHeaderHeight+52 : defaultHeaderHeight} header={isUseCurrentHeader ? null : headerComponent} route={currentRoute} />
                         </View>
                     </Row>
                 </View>
@@ -813,7 +813,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
             <Toaster ref={toasterRef} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" />
             <View className={`${conductorTheme.content_max_width} mx-auto w-full min-h-screen ${tmplLayout == 'mixed' ? 'mt-12' : ''}`}>
                 {sceneHeaderComponent}
-                <RenderScene isCoverDisabled={isCoverDisabled} prevRoute={prevRoute} headerHeight={isShowFilters ? 150 : defaultHeaderHeight} header={isUseCurrentHeader ? null : headerComponent} route={currentRoute} />
+                <RenderScene isCoverDisabled={isCoverDisabled} prevRoute={prevRoute} headerHeight={isShowFilters && routes.length>1 ? defaultHeaderHeight+52 : defaultHeaderHeight} header={isUseCurrentHeader ? null : headerComponent} route={currentRoute} />
             </View>
             <Footer />
         </View>
