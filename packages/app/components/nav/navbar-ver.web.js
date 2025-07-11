@@ -51,7 +51,7 @@ const SidebarBottomToolbar = ({ currentUser, menu_add_items, buttonProps }) => {
 
     const components = {
         post_button: (
-             <BlockByUrl url="/api.php?r=bx_timeline/get_block_post_account" exProps={{ "mode": "button" }} />
+            <BlockByUrl url="/api.php?r=bx_timeline/get_block_post_account" exProps={{ "mode": "button" }} />
         ),
         account: (
             <MenuAccount>
@@ -76,7 +76,7 @@ const SidebarBottomToolbar = ({ currentUser, menu_add_items, buttonProps }) => {
     return (
         <View className='py-4'>
             <Row className='flex-row px-4 items-center'>
-                 {toolbarConfig.map((item, index) => {
+                {toolbarConfig.map((item, index) => {
                     const Component = components[item.component];
                     if (!Component) return null;
                     return (
@@ -116,18 +116,12 @@ const HeaderLine = memo(({ headerSettings, currentUser, uri, bSearch, menuPopup,
             )}
             <View className='justify-center px-4 my-3 gap-y-3 '>
 
-                    <Link className=" flex flex-row group gap-x-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus:outline-primary/50 rounded-lg " href="/home" aria-label="Logo">
-                            
-                           
-                            <View className=" items-center justify-center">
-                            {appStatic('logo_mark')}
-                            </View>
-                            <View className=" items-center justify-center">
-                            {appStatic('logo_text')}
-                            </View>
-                            {/*{appStatic('logo_text')}*/}
-                        
-                    </Link>
+                <Link className=" flex flex-row group gap-x-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus:outline-primary/50 rounded-lg " href="/home" aria-label="Logo">
+
+
+                    {appStatic('logo')}
+
+                </Link>
                 <View className='hidden lg:block'>
                     {menu_sidebar_items.map(
                         (item, index) =>
@@ -203,11 +197,11 @@ export default function (props) {
                     <View className=' justify-between  lg:h-screen flex-auto '>
                         <HeaderLine headerSettings={headerSettings} currentUser={currentUser} uri={props.uri} bSearch={bSearch} showMenu={showMenu} menuPopup={menuPopup} setMenuPopup={setMenuPopup} />
                         <View className='hidden lg:flex flex-col flex-auto justify-between h-full'>
-                           <SidebarBottomToolbar 
+                            <SidebarBottomToolbar
                                 currentUser={currentUser}
                                 menu_add_items={menu_add_items}
                                 buttonProps={buttonProps}
-                           />
+                            />
                         </View>
                     </View>
                     <TopToolbar currentUser={currentUser} bSearch={bSearch} />

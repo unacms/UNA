@@ -30,13 +30,13 @@ const ToolbarItems = ({ currentUser, bSearch, bNotifs, bMessenger, t }) => {
         add: <MenuAdd />,
         notifications: bNotifs ? <NotificationButton /> : null,
         messenger: bMessenger ? (
-            <Link href={appSetting('messenger','url')} alt={t('Messenger')} >
+            <Link href={appSetting('messenger', 'url')} alt={t('Messenger')} >
                 <ButtonRef
                     tooltip={t('Messenger')}
                     variant="secondary"
                     rounded
                     startDecorator="MessageCircleMore"
-                    addon={{variant:'primary', text: currentUser?.counters?.bx_messenger_new_messages, hideZero: true}}
+                    addon={{ variant: 'primary', text: currentUser?.counters?.bx_messenger_new_messages, hideZero: true }}
                 />
             </Link>
         ) : null,
@@ -70,8 +70,8 @@ const ToolbarItems = ({ currentUser, bSearch, bNotifs, bMessenger, t }) => {
     )
 }
 
-const HeaderLine = memo(({headerSettings, currentUser, uri, title, menuPopup, setMenuPopup, showMenu}) => {
-    
+const HeaderLine = memo(({ headerSettings, currentUser, uri, title, menuPopup, setMenuPopup, showMenu }) => {
+
     const { width } = useWindowDimensions();
     if (width > LAYOUT_BREAKPOINTS.xl && menuPopup)
         setMenuPopup(false)
@@ -94,22 +94,16 @@ const HeaderLine = memo(({headerSettings, currentUser, uri, title, menuPopup, se
                             alt="Menu"
                         />
                     </Pressable>
-                    
+
                 </View>
             )}
             {(uri === 'home' || width >= LAYOUT_BREAKPOINTS.lg) && (
-                 <Link className=" flex flex-row group gap-x-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus:outline-primary/50 rounded-lg " href="/home" aria-label="Logo">
-                            
-                           
-                 <View className=" items-center justify-center">
-                 {appStatic('logo_mark')}
-                 </View>
-                 <View className=" items-center justify-center">
-                 {appStatic('logo_text')}
-                 </View>
-                 {/*{appStatic('logo_text')}*/}
-             
-         </Link>
+                <Link className=" flex flex-row group gap-x-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus:outline-primary/50 rounded-lg " href="/home" aria-label="Logo">
+
+
+                    {appStatic('logo')}
+
+                </Link>
             )}
             {headerSettings.backButton && getBackButtonWeb()}
             {headerSettings.title && <View className='flex-auto overflow-hidden'>
@@ -117,7 +111,7 @@ const HeaderLine = memo(({headerSettings, currentUser, uri, title, menuPopup, se
                     {title}
                 </Text>
             </View>}
-                       
+
         </View>
     )
 });
@@ -139,7 +133,7 @@ export default function (props) {
     if (menuSettings && menuSettings.name)
         sTitle = t(menuSettings.name);
 
-    const bIsHideHeader = currentUser ? false: appSetting('layout', 'hide_header_for_nonlogged'); //windowWidth < 1024 && (!headerSettings.header); // MAY BE NEEDED
+    const bIsHideHeader = currentUser ? false : appSetting('layout', 'hide_header_for_nonlogged'); //windowWidth < 1024 && (!headerSettings.header); // MAY BE NEEDED
 
     const showMenu = () => {
         setMenuPopup(!menuPopup)
@@ -194,7 +188,7 @@ export default function (props) {
                             </Row>
                         </Row>
                         <Row className="w-full xl:w-80 px-3 gap-x-2 justify-end  ">
-                            <ToolbarItems 
+                            <ToolbarItems
                                 currentUser={currentUser}
                                 bSearch={bSearch}
                                 bNotifs={bNotifs}

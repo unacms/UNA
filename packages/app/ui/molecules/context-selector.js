@@ -30,8 +30,8 @@ function getContextRoot(data) {
     if (!data.current?.id) {
         return {
             url: '/',
-            image: appStatic('logo_mark'),
-            name: appStatic('logo_text'),
+            image: appStatic('logo'),
+            name: false,
         };
     } else {
         return {
@@ -70,7 +70,7 @@ export default function ContextSelector({ data, url }) {
                 <View className="items-center justify-center text-neutral-800 dark:text-neutral-200">
                     {contextRoot.image}
                 </View>
-                <Text className="text-lg whitespace-nowrap font-semibold tracking-tight text-neutral-800 dark:text-neutral-200 my-auto truncate text-center items-center align-middle justify-center">{contextRoot.name}</Text>
+                {!!contextRoot.name && <Text className="text-lg whitespace-nowrap font-semibold tracking-tight text-neutral-800 dark:text-neutral-200 my-auto truncate text-center items-center align-middle justify-center">{contextRoot.name}</Text>}
             </View>
         </Link>
     )
@@ -81,7 +81,7 @@ export default function ContextSelector({ data, url }) {
                 {data.current?.id && <>
                     <Link href="/"><View className=' flex-row gap-x-3 lg:px-2 p-1 lg:hover:bg-bgritem dark:lg:hover:bg-bgritem-d rounded-xl'>
                         <View className="items-center justify-center text-neutral-800 dark:text-neutral-200">
-                            {appStatic('logo_mark')}
+                            {appStatic('logo', { mode:'mark' })}
                         </View>
 
                     </View></Link>

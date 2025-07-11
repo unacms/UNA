@@ -134,14 +134,8 @@ const HeaderLine = memo(
                         <Link
                             className=" flex items-center px-2.5 py-1.5 my-auto hover:bg-bgritem dark:hover:bg-bgritem-d rounded-xl flex-row active:scale-95 active:opacity-50 text-neutral-800 dark:text-neutral-200 hover:text-neutral-950 dark:hover:text-neutral-50 web:duration-300 "
                             href="/home"
-                            aria-label="Logo"
                         >
-                            <View className=" items-center h-10 justify-center text-neutral-900 dark:text-neutral-100">
-                                {appStatic('logo_mark')}
-                            </View>
-                            <View className=" flex-row  items-center h-10 align-middle justify-center text-neutral-700 dark:text-neutral-300">
-                                {appStatic('logo_text')}
-                            </View>
+                            {appStatic('logo')}
                         </Link>
                     )}
                 {context &&
