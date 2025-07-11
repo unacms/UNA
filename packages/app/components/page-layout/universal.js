@@ -1,7 +1,12 @@
 import { View } from 'app/design/view';
 import { appSetting } from 'app/lib/util'
+import { getPageWidth } from 'app/lib/util'
+import ScrollList from 'app/ui/molecules/scroll_list'
+import { useRef } from 'react';
+import MenuFooter from 'app/components/nav/menu-footer';
+import Animated from 'react-native-reanimated';
 
-export default function PageLayout({ children, data, layoutName }) {
+function PageContentUniversal({ children, data, layoutName }) {
 
     const gap = 3;
     const maxWidth = appSetting('layout', 'max_width_block');
@@ -17,10 +22,7 @@ export default function PageLayout({ children, data, layoutName }) {
         cell_bottom = {data:data.elements['cell_4'], index:3}
     }
 
-
-
     const cellsInRow = cell_mid_1?.data?.length + (cell_mid_2?.data?.length || 0) + (cell_mid_3?.data?.length|| 0) ;
-
 
     let cells_settings = [
         `w-full md:w-1/${cellsInRow - 1} pr-${gap} lg:w-1/${cellsInRow}`,
@@ -78,5 +80,24 @@ export default function PageLayout({ children, data, layoutName }) {
                 {children[cell_bottom.index]}
             </View>}
         </View>
+    )
+}
+
+export default function PageLayoutUniversal(props) {
+    const refer = useRef();
+    const content = (
+        <Animated.ScrollView ref={refer} className={getPageWidth(props.uri, props.data?.config) + ' mx-auto w-full '} keyboardShouldPersistTaps="always" keyboardDismissMode="on-drag">
+            <PageContentUniversal {...props}/>
+            <MenuFooter cntClasses="w-full flex-row flex-wrap opacity-80 h-16 items-center justify-center"/>
+        </Animated.ScrollView>
+    );
+
+    return (
+        <ScrollList 
+            refer={refer}
+            content = {content}
+            pageData = {props.data}
+            contentType="ScrollView"
+        />
     )
 }

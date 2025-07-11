@@ -13,6 +13,7 @@ import Connections from './connections';
 import ConnectionsMenu from './connections_menu';
 import Recommendation from './recommendations'; 
 import ContextSelector from './context-selector';  
+import Splash from './splash';  
 
 export const componentsMapDefault = {
     likes: memo(Likes),
@@ -22,6 +23,7 @@ export const componentsMapDefault = {
     comments: (Comments),
     features:memo(Features),
     favorites:memo(Favorites),
+    
     reports: memo(Reports),
     reposts: memo(Reposts),
     shares: memo(Shares),
@@ -29,5 +31,6 @@ export const componentsMapDefault = {
     connections_menu: memo(ConnectionsMenu),
     recommendation: memo(Recommendation),
     context_selector: ContextSelector,
+    splash: Splash,
 };
 

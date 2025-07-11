@@ -19,9 +19,8 @@ import { MenuItemSidebarWithWrapper } from 'app/components/nav/menu-item-sidebar
 import { Platform } from 'react-native'
 import { useRef } from 'react';
 import ScrollList from 'app/ui/molecules/scroll_list'
-import Splash from 'app/ui/molecules/splash'
 import { callFn } from 'app/lib/functions/call';
-import Map from 'app/components/elements/map';
+import { getComponent } from 'app/components/registry'
 
 export default function (props) {
 
@@ -59,6 +58,7 @@ export default function (props) {
     const refer = useRef();
 
     if (!currentUser) {
+        const Splash = getComponent('molecule', 'splash')
         return <Splash {...props} />
 
         return (<ScrollList
@@ -220,11 +220,12 @@ export default function (props) {
                                 </View>
                             )}
 
-                            <View
+                           
+                                {feedList.length > 1 &&  <View
                                 className=' pb-1 mb-1 border-b border-bdrnavbar dark:border-bdrnavbar-d gap-y-0.5'
                             >
-                                {feedList.length > 1 &&
-                                    feedList.map((item, index) => {
+                                
+                                    {feedList.map((item, index) => {
                                         return (
                                             <MenuItemSidebarWithWrapper
                                                 key={`menu-${index}`}
@@ -239,8 +240,10 @@ export default function (props) {
                                             />
                                         )
                                     })}
+                                    </View>
+                                    }
 
-                            </View>
+                            
 
                             {navBarBlocks.map((item, index) => {
                                 return (
@@ -259,9 +262,6 @@ export default function (props) {
                         </View>
                     </View>
                 )}
-
-
-
                 <View className={`relative ${appSetting('feed', 'feed_container')}`}>
                     {feedList.map((item, index) => {
                         if (feedType == item.name) {
@@ -298,11 +298,6 @@ export default function (props) {
                         )
                     })}
                 </View>
-
-
-
-
-
                 <View className={appSetting('layout', 'aside_container')}>
                     <View className="fixed-process p-3 flex-col sm:py-4 gap-y-6  web:duration-300">
                         {sideBarBlocks.map((item, index) => {

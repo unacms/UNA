@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react'
 import React from 'react'
 import { Animated } from 'react-native'
 import { useTranslation } from 'react-i18next'
-import { tp, appSetting, updateRouteDataForConnection } from 'app/lib/util'
+import { tp } from 'app/lib/util'
 import ProfilesList from 'app/ui/molecules/profile_list'
 import PopupModal from 'app/ui/molecules/popup_modal'
 import { ThemeName } from 'app/design/theme';
