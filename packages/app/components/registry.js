@@ -11,9 +11,12 @@ export function registerComponent(type, name, component) {
 export function getComponent(type, name) {
     const a = registry[type][name];
     if (!a){
-       // console.log(`Component not found: type=${type}, name=${name}`);
     }
     return a;
+}
+
+export function isComponent(type, name) {
+    return !!registry[type][name];
 }
 
 export function getRegisteredComponents() {

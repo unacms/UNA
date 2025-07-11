@@ -1,7 +1,7 @@
 "use client"
 import Layout from 'app/components/layout';
 import { useCurrentUser } from 'app/context/user'
-import { getComponent } from 'app/components/registry';
+import { getComponent, isComponent } from 'app/components/registry';
 import { appSetting, getPageSettings } from 'app/lib/util'
 import { Platform } from 'react-native'
 import Cell from 'app/components/cell';
@@ -15,10 +15,9 @@ import { registerAll } from 'app/components/registry-init';
 
 export default function Layouts({ path, data, uri, url }) {
 
-
     registerAll();
 
-    const { currentUser, setCurrentUser } = useCurrentUser();
+    const { currentUser } = useCurrentUser();
     const layout = useMemo(() => {
         const isWeb = Platform.OS === 'web';
         return getLayoutName(data, data?.uri?.toString(), isWeb);
@@ -61,41 +60,38 @@ function getLayoutName(data, uri, isWeb) {
         return { layoutName: 'default', layoutBlocks: '', isCustomLayout: false };
     }
 
-    const layoutCustomKey = getPageSettings(data?.config, uri);
+    const { layout: customLayout = '', blocks: customBlocks = '' } = getPageSettings(data?.config, uri) || {};
+    const isCustom = Boolean(customLayout);
 
-    let layoutKey = '';
-    let layoutBlocks = '';
-    let isCustomLayout = false;
+    const checks = [
+        {
+            cond: isCustom,
+            name: customLayout,
+            blocks: customBlocks,
+            custom: true,
+        },
+        {
+            cond: Boolean(data?.cover_block?.profile),
+            name: 'profile',
+        },
+        {
+            cond: data?.menu?.items?.length > 0 && !uri.includes('create-'),
+            name: 'navigator',
+        },
+        {
+            cond: isWeb && data?.layout && isComponent('layout', data.layout),
+            name: data.layout,
+            blocks: customBlocks,
+        },
+    ];
 
-    if (layoutCustomKey) {
-        layoutKey = layoutCustomKey.layout;
-        layoutBlocks = layoutCustomKey.blocks;
-        isCustomLayout = true;
+    for (const { cond, name, blocks = customBlocks, custom = isCustom } of checks) {
+        if (cond) {
+            return { layoutName: name, layoutBlocks: blocks, isCustomLayout: custom };
+        }
     }
 
-    const Layout = getComponent('layout', data?.layout)
-
-    if (Layout) {
-        return { layoutName: data?.layout, layoutBlocks, isCustomLayout };//??????????????layoutKey
-    }
-
-    if (data?.cover_block?.profile) {
-        return { layoutName: 'profile', layoutBlocks, isCustomLayout };
-    }
-
-    if (data?.menu?.items?.length > 0 && !uri.includes('create-')) {
-        return { layoutName: 'navigator', layoutBlocks, isCustomLayout };
-    }
-
-    if (isWeb) {
-        layoutKey = data?.layout;
-    }
-
-    if (Layout) {
-        return { layoutName: layoutKey, layoutBlocks, isCustomLayout };
-    }
-
-    return { layoutName: 'default', layoutBlocks, isCustomLayout };
+    return { layoutName: 'default', layoutBlocks: customBlocks, isCustomLayout: isCustom };
 }
 
 function PageLayoutContent(props) {
