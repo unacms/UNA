@@ -14,7 +14,6 @@ import { useRouter } from 'app/lib/hooks/router'
 
 import { useLayoutData } from 'app/context/layout';
 import { useTranslation } from 'react-i18next';
-import HeaderElement from 'app/ui/molecules/header_element'
 import MenuLauncher from 'app/components/nav/menu-launcher'
 import { Button, ButtonRef } from 'app/design/controls'
 import { getComponent } from 'app/components/registry';
@@ -117,7 +116,8 @@ export const Header = memo(({
 
     const isCustomHeaderElement = appSetting('layout', 'custom_header_element')
     const ContextSelector = getComponent('molecule', 'context_selector')
-    
+    const HeaderElement = getComponent('molecule', 'header_element')
+
     return (
 
         <Row className={` px-2 sm:px-2 items-center h-16 justify-between web:duration-300`}>

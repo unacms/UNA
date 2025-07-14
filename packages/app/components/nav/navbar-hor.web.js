@@ -17,7 +17,6 @@ import MenuAccount from 'app/components/nav/menu-account'
 import MenuLauncher from 'app/components/nav/menu-launcher'
 import MenuDrawer from 'app/components/nav/menu-drawer'
 import MenuTop from 'app/components/nav/menu-top'
-import HeaderElement from 'app/ui/molecules/header_element'
 import { getComponent } from 'app/components/registry'
 
 const headerTheme = appSetting('layout', 'header');
@@ -27,6 +26,8 @@ const ToolbarItems = ({ currentUser, bSearch, isCustomHeaderElement, bNotifs, bM
     const itemsToRender = currentUser
         ? toolbarConfig?.loggedIn
         : toolbarConfig?.loggedOut
+
+    const HeaderElement = getComponent('molecule', 'header_element')    
 
     const components = {
         search: bSearch ? <Search /> : null,
