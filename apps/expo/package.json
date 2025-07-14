@@ -16,6 +16,7 @@
     "@react-native-picker/picker": "2.9.0",
     "@react-navigation/native": "^7.0.0",
     "@rnmapbox/maps": "^10.1.37",
+    "@stripe/connect-js": "^3.3.25",
     "@stripe/stripe-react-native": "0.38.6",
     "@tanstack/react-query": "^4.32.0",
     "app": "*",
