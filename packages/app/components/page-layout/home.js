@@ -132,9 +132,9 @@ export default function (props) {
                                     rounded
                                     ring="p-1"
                                     variant={
-                                        unitMode == ''
-                                            ? 'secondary'
-                                            : 'primary'
+                                        unitMode !== 'small'
+                                            ? 'primary'
+                                            : 'secondary'
                                     }
                                     size="sm"
                                     onPress={() => {
@@ -144,11 +144,12 @@ export default function (props) {
                                 <Button
                                     startDecorator="List"
                                     rounded
+                                    ring="p-1"
                                     tooltip={t('Short')}
                                     variant={
                                         unitMode == 'small'
-                                            ? 'link'
-                                            : 'text'
+                                            ? 'primary'
+                                            : 'secondary'
                                     }
                                     size="sm"
                                     onPress={() => {

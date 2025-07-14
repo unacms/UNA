@@ -27,6 +27,7 @@ import * as FeedItems from 'app/lib/feed-items'
 import { Icon } from 'app/ui/atoms/icon'
 import { SafeMenuTrigger } from 'app/ui/atoms/safe-menu-trigger';
 import  { useLayoutData } from 'app/context/layout';
+import { stripTags } from 'app/lib/util'
 
 export const CommentsModal = memo(({ commentsData, initFormData, itemContent, closeOnPost }) => {
     const windowDimensions = useWindowDimensions();
@@ -407,12 +408,12 @@ export const Author = memo(({ data, url, t }) => {
 });
 
 
-export const SmallUnit = memo(({ data }) => {
+export function SmallUnit({data}) {
     let url = '/' + data.url
     return (
         <AnimatedBlock>
             <Link href={url} className="w-full" emulate={true}>
-                <Card addClassName='  group active:opacity-50 active:translate-y-1 flex-row p-4 ' rounded=" shadow-sm rounded-none sm:rounded-2xl " margin=" -mb-px sm:mx-4 sm:mb-2 ">
+                 <Card rounded=' rounded-none sm:rounded-2xl ' margin=' mb-1 sm:mb-3 p-4 border-y border-x-none sm:border-x flex-row' border='border-y border-x-none sm:border-x border-bdrcard dark:border-bdrcard-d shadow-sm' addClassName={' w-full tl-' + data.id} >
                     <View className=" mr-2  xl:mr-3 rounded-full flex-none bg-secondary-500/10">
                         <Profile
                             {...data.author_data}
@@ -430,7 +431,7 @@ export const SmallUnit = memo(({ data }) => {
                         <Text className="flex-auto text-lg  font-bold text-neutral-800 dark:text-neutral-200 sm:group-hover:text-neutral-950 sm:dark:group-hover:text-neutral-50" numberOfLines={1}>
                             {data.content.title}
                         </Text>
-                        <View className="flex-row w-full items-end content-end px-2">
+                        <View className="flex-row w-full items-end content-end">
                             <Text
                                 className="flex-auto mr-2  text-base text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-950 dark:group-hover:text-neutral-50"
                                 numberOfLines={1}
@@ -450,7 +451,7 @@ export const SmallUnit = memo(({ data }) => {
             </Link>
         </AnimatedBlock>
     )
-});
+};
 
 export const UnitFeed = ({ data, mode, DefaultUnit, SmallUnit, feed_type }) => {
     data.mainImage = null
@@ -485,5 +486,5 @@ export const UnitFeed = ({ data, mode, DefaultUnit, SmallUnit, feed_type }) => {
         subscribe('bx_timeline_0', 'edited', onItemEdited);
     }, []);
 
-    return  mode == 'small' ? SmallUnit(datas) : DefaultUnit(datas)
+    return  mode == 'small' ? <SmallUnit data={datas}/> : <DefaultUnit data={datas}/>
 };

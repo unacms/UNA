@@ -9,9 +9,11 @@ import { useTranslation } from 'react-i18next';
 import { CommentsModal, CommentsSection, MenuManage, ActionMenu, CounterMenu, Author, UnitFeed, SmallUnit, prepareData, MainContent, FeedEditForm } from 'app/lib/feed-helpers'
 import { Platform } from 'react-native'
 
-function DefaultUnit(data) {
+function DefaultUnit({data}) {
+ 
     const isWeb = Platform.OS === 'web';
     const { t } = useTranslation();
+    
     const [viewState, setViewState] = useState({ view: '' })
     const [cmtsData, setCmtsData] = useState(false)
 
@@ -39,6 +41,7 @@ function DefaultUnit(data) {
     if (isCommentsModal && data.menu_actions?.items[0] && data.menu_actions?.items[0].data?.callback)
         data.menu_actions.items.find(x => x.name == "item-comment").data.callback = showCommentsModal
 
+   
     if (viewState.view == 'deleted')
         return <></>
 
