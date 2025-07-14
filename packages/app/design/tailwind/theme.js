@@ -106,8 +106,8 @@ const colors = {
         df: 'rgba(59, 130, 246, 1)'
     },
     bgrmodal: {
-        DEFAULT: 'rgba(255,255,255,0.7)',
-        d: 'rgba(31,41,55,0.7)',
+        DEFAULT: 'rgba(255,255,255,1)',
+        d: 'rgba(31,41,55,1)',
     },
     bdrmodal: {
         DEFAULT: 'rgba(0,0,0,0.1)',
