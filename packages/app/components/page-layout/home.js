@@ -22,6 +22,8 @@ import ScrollList from 'app/ui/molecules/scroll_list'
 import { callFn } from 'app/lib/functions/call';
 import { getComponent } from 'app/components/registry'
 
+const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from');
+
 export default function (props) {
 
     const isWeb = Platform.OS == 'web'
@@ -33,8 +35,6 @@ export default function (props) {
     const { currentUser } = useCurrentUser()
     const feedMode = storageGet('feed:mode', '', true)
     const feedTypeD = storageGet('feed:type', '', true)
-
-
 
     const [feedType, setFeedType] = useState(
         feedTypeD ? feedTypeD : appSetting('feed', 'default_feed')
@@ -102,7 +102,6 @@ export default function (props) {
         )
 
         const subHeader = (
-
             <ScrollView horizontal={true} className=" px-2 sm:px-3 w-full ">
                 <Row
                     className={`  ${feedList.length > 1
@@ -212,30 +211,30 @@ export default function (props) {
                                 </View>
                             )}
 
-                           
-                                {feedList.length > 1 &&  <View
+                       
+                            {feedList.length > 1 && <View
                                 className=' pb-1 mb-1 border-b border-bdrnavbar dark:border-bdrnavbar-d gap-y-0.5'
                             >
-                                
-                                    {feedList.map((item, index) => {
-                                        return (
-                                            <MenuItemSidebarWithWrapper
-                                                key={`menu-${index}`}
-                                                onPress={() => {
-                                                    setFeedTypeEx(item.name)
-                                                }}
-                                                isActive={feedType == item.name}
-                                                icon={item.icon}
-                                                title={t(item.title)}
-                                                index={index}
-                                                userUrl={currentUser.url}
-                                            />
-                                        )
-                                    })}
-                                    </View>
-                                    }
 
-                            
+                                {feedList.map((item, index) => {
+                                    return (
+                                        <MenuItemSidebarWithWrapper
+                                            key={`menu-${index}`}
+                                            onPress={() => {
+                                                setFeedTypeEx(item.name)
+                                            }}
+                                            isActive={feedType == item.name}
+                                            icon={item.icon}
+                                            title={t(item.title)}
+                                            index={index}
+                                            userUrl={currentUser.url}
+                                        />
+                                    )
+                                })}
+                            </View>
+                            }
+
+
 
                             {navBarBlocks.map((item, index) => {
                                 return (
@@ -255,6 +254,7 @@ export default function (props) {
                     </View>
                 )}
                 <View className={`relative ${appSetting('feed', 'feed_container')}`}>
+                    {getLayout(currentUser) == 'ver' && <View className={`hidden ${TABLET_MODE_FROM}:flex`}>{subHeader}</View>}
                     {feedList.map((item, index) => {
                         if (feedType == item.name) {
                             return (

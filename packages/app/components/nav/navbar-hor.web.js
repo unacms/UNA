@@ -198,6 +198,7 @@ export default function (props) {
         }
     }, [])
 
+    
     return (
         <>
             <View className={appSetting('layout', 'screen')}>

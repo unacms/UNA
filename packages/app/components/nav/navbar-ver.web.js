@@ -16,34 +16,9 @@ import Profile from 'app/ui/molecules/profile'
 import { useTranslation } from 'react-i18next';
 import MenuAdd from 'app/components/nav/menu-add'
 import BlockByUrl from 'app/ui/molecules/block'
-import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import MenuAccount from 'app/components/nav/menu-account'
-
-const TopToolbar = ({ currentUser, bSearch }) => {
-    const toolbarConfig = appSetting('header_toolbar', 'ver')?.loggedIn?.top;
-    if (!toolbarConfig || !currentUser) return null;
-
-    const components = {
-        search: bSearch ? <Search /> : null,
-        add: <MenuAdd />,
-    };
-
-    return (
-        <Row className="flex-row px-3 sm:px-4 justify-end ">
-            <View className=" flex-row my-auto ">
-                {toolbarConfig.map((item, index) => {
-                    const Component = components[item.component];
-                    if (!Component) return null;
-                    return (
-                        <View key={index} className={item.className}>
-                            {Component}
-                        </View>
-                    );
-                })}
-            </View>
-        </Row>
-    )
-};
+import { getComponent } from 'app/components/registry'
+import { MenuItemSidebarWithWrapper } from 'app/components/nav/menu-item-sidebar'
 
 const SidebarBottomToolbar = ({ currentUser, menu_add_items, buttonProps }) => {
     const toolbarConfig = appSetting('header_toolbar', 'ver')?.loggedIn?.sidebar;
@@ -90,73 +65,46 @@ const SidebarBottomToolbar = ({ currentUser, menu_add_items, buttonProps }) => {
     );
 };
 
-const HeaderLine = memo(({ headerSettings, currentUser, uri, bSearch, menuPopup, setMenuPopup, showMenu }) => {
-
+const SideBar = memo(({ headerSettings, currentUser, uri, bSearch, menuPopup, setMenuPopup, showMenu, context }) => {
+    const { t } = useTranslation();
     const { width } = useWindowDimensions();
     if (width > LAYOUT_BREAKPOINTS.xl && menuPopup)
         setMenuPopup(false)
 
-    const isDrawer = menuItemsByName('main_menu', appSetting('menu_items', 'menu_drawer'), currentUser).length > 0;
-
+    const ContextSelector = getComponent('molecule', 'context_selector')
     const menu_sidebar_items = menuItemsByName('main_menu', appSetting('menu_items', 'menu_sidebar'), currentUser);
+  const blocks = appSetting('layout', 'vertical', 'blocks')
 
     return (
         <View className=' flex-row lg:flex-col lg:w-90'>
-            {(headerSettings.menu && isDrawer) && (
-                <View className="lg:hidden ml-4">
-                    <Pressable onPress={showMenu}>
-                        <Button
-                            variant="outline"
-                            startDecorator="List"
-                            rounded
-                            align="start"
-                        />
-                    </Pressable>
-                </View>
-            )}
             <View className='justify-center px-4 my-3 gap-y-3 '>
-
-                <Link className=" flex flex-row group gap-x-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus:outline-primary/50 rounded-lg " href="/home" aria-label="Logo">
-
-
-                    {appStatic('logo')}
-
-                </Link>
+                {(!context ||
+                    (!currentUser.confirmed &&
+                        appSetting('layout', 'lock_unconfirmed'))) &&
+                    (uri == 'home' || width >= LAYOUT_BREAKPOINTS.lg) && (
+                        <Link
+                            className=" flex items-center  hover:bg-bgritem dark:hover:bg-bgritem-d rounded-xl flex-row active:scale-95 active:opacity-50 text-neutral-800 dark:text-neutral-200 hover:text-neutral-950 dark:hover:text-neutral-50 web:duration-300 "
+                            href="/home"
+                        >
+                            {appStatic('logo')}
+                        </Link>
+                    )}
+                {context &&
+                    (currentUser.confirmed ||
+                        !appSetting('layout', 'lock_unconfirmed')) && (
+                        <ContextSelector data={context} />
+                    )
+                }
                 <View className='hidden lg:block'>
                     {menu_sidebar_items.map(
                         (item, index) =>
-                            <Link href={item.link} key={`menu-${index}`} alt={item.title}>
-                                <Button
-                                    variant="text"
-                                    size="base"
-                                    fullWidth={true}
-                                    startDecorator={item.icon}
-                                    rounded
-                                    align="start"
-                                    title={item.title}
-                                    addon={item.link == '/notifications-view' && { text: currentUser.notifications, variant: 'primary' }}
-                                />
-
-                            </Link>
+                            <MenuItemSidebarWithWrapper key={`menu-${index}`} icon = {item.icon} link={item.link} title={t(item.title)} index={index} userUrl={currentUser.url}/>  
                     )}
-                    {!!currentUser && (
-                        <>
-
-                            {bSearch && <Search>
-                                <Button
-                                    variant="secondary"
-                                    size="base"
-                                    fullWidth={true}
-                                    startDecorator="Search"
-                                    align="start"
-                                    rounded
-                                    title={"Search"}
-                                />
-                            </Search>
-                            }
-                        </>)}
                 </View>
             </View>
+            {blocks.map((block, index) => {
+                                    return <BlockByUrl url={`/api.php?r=${block.name}`} />
+                                })}
         </View>
     )
 });
@@ -186,28 +134,32 @@ export default function (props) {
     }
 
     return (
-        <>
-            <Redirect ref={redirectdRef} />
-            <ScrollView
-                contentContainerStyle={{
-                    width: '100%',
-                }}
-                className={"dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d border-b border-bdrnavbar lg:bg-transparent lg:border-none lg:shadow-none" + "  fixed w-full lg:w-80 top-0 items-start lg:h-screen" + (!headerSettings.header ? ' hidden lg:flex' : '')}>
-                <View className=' flex-row lg:flex-col  h-16 lg:h-auto items-center lg:items-start' >
-                    <View className=' justify-between  lg:h-screen flex-auto '>
-                        <HeaderLine headerSettings={headerSettings} currentUser={currentUser} uri={props.uri} bSearch={bSearch} showMenu={showMenu} menuPopup={menuPopup} setMenuPopup={setMenuPopup} />
-                        <View className='hidden lg:flex flex-col flex-auto justify-between h-full'>
-                            <SidebarBottomToolbar
-                                currentUser={currentUser}
-                                menu_add_items={menu_add_items}
-                                buttonProps={buttonProps}
-                            />
-                        </View>
-                    </View>
-                    <TopToolbar currentUser={currentUser} bSearch={bSearch} />
+        <View className={appSetting('layout', 'max_width') + ' w-full mx-auto'}>
+            <Row className='w-full flex-col lg:flex-row-reverse  lg:min-h-screen '>
+                <View className='lg:w-[calc(100%-20rem)] border-x border-bdr dark:border-bdr-d  w-full '>
+                    {props.children}
                 </View>
-                <MenuDrawer showMenu={showMenu} menuPopup={menuPopup} cssClass="" />
-            </ScrollView>
-        </>
+                <View className='w-80'>
+                    <Redirect ref={redirectdRef} />
+                    <ScrollView contentContainerStyle={{ width: '100%' }}
+                        className={"dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d border-b border-bdrnavbar lg:bg-transparent lg:border-none lg:shadow-none fixed w-full lg:w-80 top-0 items-start lg:h-screen" + (!headerSettings.header ? ' hidden lg:flex' : '')}>
+                        <View className=' flex-row lg:flex-col  h-16 lg:h-auto items-center lg:items-start' >
+                            <View className=' justify-between  lg:h-screen flex-auto '>
+                                <SideBar headerSettings={headerSettings} context={props.context} currentUser={currentUser} uri={props.uri} bSearch={bSearch} showMenu={showMenu} menuPopup={menuPopup} setMenuPopup={setMenuPopup} />
+                                
+                                <View className='hidden lg:flex flex-col flex-auto justify-between h-full'>
+                                    <SidebarBottomToolbar
+                                        currentUser={currentUser}
+                                        menu_add_items={menu_add_items}
+                                        buttonProps={buttonProps}
+                                    />
+                                </View>
+                            </View>
+                        </View>
+                    </ScrollView>
+                </View>
+            </Row>
+        </View>
+
     )
 }

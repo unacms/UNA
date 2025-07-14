@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, lazy, useMemo, useState } from 'react';
+import React, { useEffect, useCallback, lazy, useState } from 'react';
 import { useWindowDimensions } from 'react-native';
 import Footer from 'app/components/nav/footer';
 import { Modal } from 'app/design/controls'
@@ -15,7 +15,8 @@ import { menuItemsByName } from 'app/lib/util'
 import OneSignal from 'react-onesignal';
 import { ThemeName } from 'app/design/theme';
 import { useTranslation } from 'react-i18next'
-
+import BlockByUrl from 'app/ui/molecules/block'
+import { Text } from 'app/design/typography'
 
 const Navbar = lazy(() => import('app/components/nav/navbar'));
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from');
@@ -87,57 +88,18 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutNam
 
     }
 
-    if (pageLayoutName == 'hor') {
-        return (
-            <>
-                <Suggestions />
-                <AsyncWorker />
-                <NavbarMemo pageLayoutName={pageLayoutName} headerSettings={headerSettings} context={data?.context} layoutName={layoutName} title={data?.name} menu={data?.menu} menu_add={data?.menu_add || false} uri={uri} url={data?.url} >
-                    <Content width={width} layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} url={data?.url} />
-                </NavbarMemo>
-                <BottomSheet />
-                <ModalPopup />
-            </>
-        );
-    }
-
-    if (pageLayoutName == 'mixed') {
-
-        return (
-            <>
-                <Suggestions />
-                <AsyncWorker />
-                <NavbarMemo pageLayoutName={pageLayoutName} headerSettings={headerSettings} layoutName={layoutName} title={data?.name} menu={data?.menu} menu_add={data?.menu_add || false} uri={uri} url={data?.url} >
-                    <Content width={width} layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} url={data?.url} />
-                </NavbarMemo>
-                <BottomSheet />
-                <ModalPopup />
-            </>
-        );
-    }
-
-    if (pageLayoutName == 'ver') {
-
-        const menuItems = menuItemsByName('main_menu', appSetting('menu_items', 'menu_sidebar'), currentUser);
-        return (
-            <>
-                <View className={appSetting('layout', 'max_width') + ' w-full mx-auto'}>
-                    <Row className='w-full flex-col lg:flex-row-reverse  lg:min-h-screen '>
-                        <View className={(menuItems.length > 0 ? 'lg:w-[calc(100%-20rem)] border-x border-bdr dark:border-bdr-d' : '') + ' w-full '}>
-                            <Content width={width} layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} url={data?.url} />
-                            <Suggestions />
-                            <AsyncWorker />
-                        </View>
-                        {menuItems.length > 0 && <View className='w-full lg:w-90'>
-                            <NavbarMemo pageLayoutName={pageLayoutName} headerSettings={headerSettings} layoutName={layoutName} title={data.name} menu={data.menu} menu_add={data.menu_add || false} uri={uri} url={data?.url} />
-                        </View>}
-                    </Row>
-                    <BottomSheet />
-                    <ModalPopup />
-                </View>
-            </>
-        );
-    }
+    return (
+        <>
+            <Suggestions />
+            <AsyncWorker />
+            <NavbarMemo pageLayoutName={pageLayoutName} headerSettings={headerSettings} context={data?.context} layoutName={layoutName} title={data?.name} menu={data?.menu} menu_add={data?.menu_add || false} uri={uri} url={data?.url} >
+                <Content width={width} layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} url={data?.url} />
+            </NavbarMemo>
+            <BottomSheet />
+            <ModalPopup />
+        </>
+    );
+ 
 });
 
 const metaAdder = (queryProperty, value) => {

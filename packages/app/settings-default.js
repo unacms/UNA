@@ -88,6 +88,15 @@ export  const settingsDefault = {
                 default: ' flex '
             },
         },
+        vertical: {
+            blocks:[
+              /*  {
+                    name: 'system/profile_menu/TemplServiceProfiles',
+                    showTitle: false,
+                    showBg: false,
+                },*/
+            ]
+        }
     },
     auth:{
         enabled: true,
