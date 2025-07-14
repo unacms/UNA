@@ -177,7 +177,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
                 className={' pupurs' + menu_settings?.class ?? ''}
                 onPress={handlePress}
             >
-                <Row className="  hover:cursor-pointer justify-between bg-bgritem dark:bg-bgritem-d flex flex-row h-11 items-center px-3 text-base rounded-xl hover:bg-bgritem-h dark:hover:bg-bgritem-dh items-center min-w-[192px]">
+                <Row className="  hover:cursor-pointer justify-between bg-bgritem dark:bg-bgritem-d my-0.5 flex flex-row h-11 items-center px-3 text-base rounded-xl hover:bg-bgritem-h dark:hover:bg-bgritem-dh items-center min-w-[192px]">
                     {translatedTitle}
                     {addonContent}
                 </Row>

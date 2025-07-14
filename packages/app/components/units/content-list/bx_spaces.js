@@ -32,9 +32,11 @@ export default function Unit(props) {
         return callFn("getUnitMenuItems", [props.unitType, data, handleClick, t, props.module]);
     }, [props.unitType, data, handleClick, t]);
 
+    console.log("props.unitType", props.unitType)
+
     switch (props.unitType) {
-        case 'search':
-            return getBase();
+        case 'list':
+            return getList();
         default:
             return getBase();
     }
@@ -104,28 +106,26 @@ export default function Unit(props) {
             </>
         );
     }
-}
-/*
-    function getSearch() {
-        return (
-            <>
-                <Redirect ref={redirectdRef} />
-                <Card margin="m-2" rounded="rounded-2xl">
-                    <Link className="group " href={data.url}>
-                        <View className="flex-row sm:flex-col p-1">
 
-                            <View className="flex-col p-3  flex-auto items-between justify-between ">
+    function getList() {
+        return (
+                <Card margin="mb-px sm:mx-1 sm:mb-1" rounded="rounded-2xl">
+                    <Redirect ref={redirectdRef} />
+                    <Link className="group " href={data.url}>
+                        <Row className=" items-center p-1">
+                           
+                            <View className="flex-col p-1  flex-auto items-between justify-between ">
                                 <View>
                                     <Text
                                         numberOfLines={1}
-                                        className=" text-lg leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-primary group-hover:dark:text-primary-d"
+                                        className=" text-base leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-primary group-hover:dark:text-primary-d"
                                     >
                                         {data.title}
                                     </Text>
-                                    <Row className="items-center h-6 my-3">
+                                    <Row className="items-center my-1">
 
 
-                                        <View className="mr-2  h-6">
+                                        <View className="mr-2">
                                             <ProfilesList
                                                 data={
                                                     data.members_list
@@ -142,24 +142,19 @@ export default function Unit(props) {
                                             </Text>
                                         }
 
-                                        <Text className=" bg-primary/10  rounded-md  px-1.5 py-1 text-xs flex-none items-center font-semibold text-neutral-600 dark:text-neutral-400">
-                                            {data.visibility != "3" ? (
-                                                <>Private</>
-                                            ) : (
-                                                <>Public</>
-                                            )}
-                                        </Text>
+                                        
                                     </Row>
                                 </View>
-                                <View className="flex-row w-full ">
-                                    {oMenuItemPrimary}
-
-                                </View>
+                                
                             </View>
-                        </View>
+                            <View className="flex-row  sm:flex-col flex-none pr-1">
+                                    {oMenuItemPrimary}
+                                    {!!oMenuItemSecondary && <View className={`${!!oMenuItemPrimary && 'sm:mt-2  ml-2 sm:ml-0'}`}>{oMenuItemSecondary}</View>}
+                                </View>
+                        </Row>
                     </Link>
                 </Card>
-            </>
+
         );
     }
-}*/
+}
