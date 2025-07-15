@@ -66,7 +66,7 @@ export default function ContextSelector({ data, url }) {
 
     const CurrentContext = (
         <Link href={contextRoot.url}>
-            <View className=' flex-row gap-x-3 lg:px-2 p-1 lg:hover:bg-bgritem dark:lg:hover:bg-bgritem-d rounded-xl'>
+            <View className=' flex-row gap-x-3 sm:px-2 py-1 px-1.5 lg:hover:bg-bgritem dark:lg:hover:bg-bgritem-d rounded-xl'>
                 <View className="items-center justify-center text-neutral-800 dark:text-neutral-200">
                     {contextRoot.image}
                 </View>

@@ -8,7 +8,9 @@ import Animated from 'react-native-reanimated';
 
 function PageContentUniversal({ children, data, layoutName }) {
 
-    const gap = 3;
+    const gap = 0;
+    const blockPadding = 'p-1.5 sm:p-2';
+    const layoutPadding = 'p-1.5 sm:p-2';
     const maxWidth = appSetting('layout', 'max_width_block');
 
     let cell_top = {data:data.elements['cell_1'], index:0};
@@ -25,9 +27,9 @@ function PageContentUniversal({ children, data, layoutName }) {
     const cellsInRow = cell_mid_1?.data?.length + (cell_mid_2?.data?.length || 0) + (cell_mid_3?.data?.length|| 0) ;
 
     let cells_settings = [
-        `w-full md:w-1/${cellsInRow - 1} pr-${gap} lg:w-1/${cellsInRow}`,
-        `w-full md:w-1/${cellsInRow - 1} lg:pr-${gap} lg:w-1/${cellsInRow}`,
-        `w-full lg:w-1/${cellsInRow}`
+        `w-full mx-auto md:w-1/${cellsInRow - 1} ${blockPadding} lg:w-1/${cellsInRow}`,
+        `w-full mx-auto md:w-1/${cellsInRow - 1} ${blockPadding} lg:w-1/${cellsInRow}`,
+        `w-full mx-auto md:w-1/${cellsInRow - 1} ${blockPadding} lg:w-1/${cellsInRow}`
     ];
 
     if (cellsInRow == 1) {
@@ -36,27 +38,27 @@ function PageContentUniversal({ children, data, layoutName }) {
 
     if (cellsInRow == 2) {
         cells_settings = [
-        `w-full md:w-1/${cellsInRow - 1} lg:pr-${gap} lg:w-1/${cellsInRow}`,
+        `w-full md:w-1/${cellsInRow - 1} ${blockPadding} lg:w-1/${cellsInRow}`,
         `w-full md:w-1/${cellsInRow - 1} lg:w-1/${cellsInRow}`,
         ];
     }
 
     if ('layout_top_area_bar_right' === layoutName || 'layout_topbottom_area_bar_right' === layoutName) {
         cells_settings = [
-            `w-full md:w-1/2 pr-${gap} lg:w-2/3`,
+            `w-full md:w-1/2 ${blockPadding} lg:w-2/3`,
             `w-full md:w-1/2 lg:w-1/3`,
         ];
     }
     if ('layout_topbottom_area_bar_left' === layoutName) {
         cells_settings = [
-            `w-full md:w-1/2 pr-${gap} lg:w-1/3`,
+            `w-full md:w-1/2 ${blockPadding} lg:w-1/3`,
             `w-full md:w-1/2 lg:w-2/3`,
         ];
     }
 
     return (
-        <View className={`mx-auto gap-y-${gap} w-full ${maxWidth}`}>
-            {(cell_top?.data?.length > 0) && <View className="w-full">
+        <View className={`mx-auto gap-y-${gap} w-full ${maxWidth} ${layoutPadding}`}>
+            {(cell_top?.data?.length > 0) && <View className={`w-full ${blockPadding}`}>
                 {children[cell_top.index]}
             </View>}
             <View className={`w-full flex-wrap flex-row  gap-y-${gap}  ${maxWidth}`}>
@@ -76,7 +78,7 @@ function PageContentUniversal({ children, data, layoutName }) {
                     </View>
                 )}
             </View>
-            {(cell_bottom?.data?.length > 0) && <View className="w-full">
+            {(cell_bottom?.data?.length > 0) && <View className={`w-full ${blockPadding}`}>
                 {children[cell_bottom.index]}
             </View>}
         </View>

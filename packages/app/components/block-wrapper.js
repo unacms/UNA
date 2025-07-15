@@ -32,7 +32,7 @@ export function BlockWrapper(props) {
 
     let cssClasses = rest?.extraProps?.cssClasses ? rest?.extraProps?.cssClasses : "";
     let cnt = <>{bIsShowTitle && <View>
-        <Text className="pb-4 text-xl font-bold text-neutral-800 dark:text-neutral-200 ">{stripTags(block.title)}</Text>
+        <Text className="pb-3 sm:pb-4 leading-none sm:leading-none text-base sm:text-lg font-bold text-neutral-800 dark:text-neutral-200 ">{stripTags(block.title)}</Text>
     </View>
     }
         <View>{props.children}</View></>
