@@ -149,7 +149,8 @@ export  const settingsDefault = {
         },
         show_pic_by_module:{
             bx_spaces:true,
-        }
+        },
+        more_menu_in_cnd:false
     },
     comments: {
         hide_sort: false, //OLD appSetting('layout', 'hide_comments_sort')
@@ -871,7 +872,7 @@ export  const settingsDefault = {
             menu_max_width: ' w-full max-w-7xl ',
             content_max_width: ' w-full max-w-7xl ',
             menu_is_dynamic: true,
-            menu_cnt: ' flex-row flex-none w-full ',
+            menu_cnt: ' flex-row flex-none  ',
             menu_categ_ident: 'pl-12',
             right_column_cnt: 'fixed-process pr-4 py-4',
             topmenu_cnt:

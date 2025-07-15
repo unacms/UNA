@@ -1,4 +1,4 @@
-import { View, ScrollView, ViewRef } from 'app/design/view'
+import { View, ScrollView, ViewRef, Row } from 'app/design/view'
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Platform } from 'react-native'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
@@ -80,10 +80,12 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
 
     // return <View className='bg-red-500 h-4 w-4'></View>
 
+    const Contaiter = isWeb ? Row : ScrollView;
+
     return (
         <>
             <FormModal pageData={pageData} setPageData={setPageData} />
-            <ScrollView
+            <Contaiter
                 contentContainerStyle={{ alignItems: 'center' }}
                 className={isWeb ? (containerClasses ? containerClasses.trim() + ' overflow-visible' : 'overflow-visible') :  (containerClasses ? containerClasses.trim() + ' overflow-visible' : 'overflow-visible')}
                 horizontal={true}
@@ -97,7 +99,7 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
                     }
                 </View>
                 {!isButtonOutside && ExMenu}
-            </ScrollView>
+            </Contaiter>
             {isButtonOutside && ExMenu}
         </>
     );

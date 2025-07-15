@@ -5,7 +5,7 @@ import Badges from 'app/ui/atoms/badges'
 import { Text } from 'app/design/typography'
 import { getBackButtonWeb } from 'app/lib/common-helpers'
 import { Button } from 'app/design/controls'
-import { appSetting, formatDateInterval } from 'app/lib/util'
+import { appSetting, formatDateInterval, cloneObject } from 'app/lib/util'
 import Profile from 'app/ui/molecules/profile'
 import * as ImagePicker from 'expo-image-picker'
 import { uploadImage, md5, LAYOUT_BREAKPOINTS } from 'app/lib/util'
@@ -96,16 +96,39 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
     const isSplitMenu = appSetting('cover', 'split_action_menu') && data.actions_menu.persistent == 0
     const coverMode = appSetting('cover', 'view_by_module', data?.profile?.module) || mode
 
+    const { width: windowWidth } = useWindowDimensions();
+
     if (coverMode === 'none') {
         return null
     }
 
+    let menu = cloneObject(data.actions_menu);
+
+    if (!showMoreMenu) {
+        let persistentKept = false;
+
+        menu.items.forEach(item => {
+            if (!persistentKept && item.persistent === 1) {
+                persistentKept = true; // Сохраняем только первый с persistent === 1
+            } else {
+                item.persistent = 0; // Остальным сбрасываем
+            }
+        });
+        
+        /*if (windowWidth < LAYOUT_BREAKPOINTS.sm){
+            menu.items = menu.items.map((item, index) => {
+                if (item.persistent) return { ...item, title: '' };
+                return item;
+            });
+        }*/
+    }
+
     return (
-        <View className={` ${conductorTheme.content_max_width} mx-auto w-full px-2 py-1 flex-row `} >
+        <View className={`${conductorTheme.content_max_width} mx-auto w-full px-2 py-1 flex-row `} >
             <Row className=" gap-x-2 items-center justify-between flex-auto">
                 <View className={`flex-auto flex-row items-center `}>
                     {getCoverBackButton(bPerson)}
-                    <Row className={` ${context?.current?.id == data.profile.id ? TABLET_MODE_FROM + ':flex px-1 ' : ' px-1 flex-auto'}`}>
+                    <Row className={` ${context?.current?.id == data.profile.id ? TABLET_MODE_FROM + ':flex px-1 ' : ' px-1 flex-auto overflow-hidden truncate'}`}>
                         {bPerson && (
                             <View className="p-1">
                             <Profile
@@ -126,20 +149,27 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                     {isSplitMenu ? <Row className='w-full justify-between'>
                         {showMoreMenu && <View className='w-11'>
                             <CoverMenuMore
-                                {...data.actions_menu}
+                                {...menu}
                                 uri={uri}
                                 isSplitMenu={false}
 
                             />
                         </View>}
-                        {!showMoreMenu && <CoverMenu
-                            {...data.actions_menu}
-                            uri={uri}
-                            isSplitMenu={isSplitMenu}
-                        />
+                        {!showMoreMenu && <>
+                            <CoverMenu
+                                {...menu}
+                                uri={uri}
+                                isSplitMenu={isSplitMenu}
+                            />
+                            {!appSetting('cover', 'more_menu_in_cnd') && <CoverMenuMore
+                                {...menu}
+                                uri={uri}
+                                isSplitMenu={true}
+                            />}
+                        </>
                         }
                     </Row> : <CoverMenu
-                        {...data.actions_menu}
+                        {...menu}
                         uri={uri}
                     />
                     }
@@ -367,7 +397,7 @@ export default function ({ data, mode, uri, showMoreMenu }) {
     }
     const isSplitMenu = appSetting('cover', 'split_action_menu') && data.actions_menu.persistent == 0
     const isMin = coverMode === 'min';
-    const { width: windowWidth } = useWindowDimensions();
+    
 
     if (coverMode === 'none') {
         return null
@@ -418,14 +448,21 @@ export default function ({ data, mode, uri, showMoreMenu }) {
                                         </View>
                                     </View>
                                 )}
-                                <View className="ывапв flex-row flex-wrap gap-x-2 gap-y-2 sm:gap-y-3 items-center">
+                                <Row>
+                                <View className=" flex-row flex-wrap gap-x-2 gap-y-2 sm:gap-y-3 items-center">
                                     <CoverMenu
                                         {...data.actions_menu}
                                         uri={uri}
                                         isSplitMenu={isSplitMenu}
                                         containerClasses="gap-x-2"
                                     />
+                            
                                 </View>
+                                <CoverMenuMore
+                                {...data.actions_menu}
+                                uri={uri}
+                                isSplitMenu={true}
+                            /></Row>
                                 {showMoreMenu && <View className="w-11 items-end ">
                                     <CoverMenuMore
                                         {...data.actions_menu}

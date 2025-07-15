@@ -195,7 +195,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
         ButtonEx={ButtonEx}
         MenuItemEx={MenuItemEx}
         MenuItem={MenuItem}
-        containerClasses="w-full"
+        containerClasses="w-full justify-between "
         items={filteredItems}
         isButtonOutside={false}
         menuClasses={menuClasses}
@@ -326,11 +326,11 @@ const TabBar = ({ menu, routes, leftSideBar, pageData, currentUser, index, setIn
                                                             isSplitMenu={true}
                                                             containerClasses="gap-x-2"
                                                         />}
-                    <CoverMenuMore
+                    {appSetting('cover', 'more_menu_in_cnd') && <CoverMenuMore
                         {...pageData.cover_block.actions_menu}
                         uri={pageData.uri}
                         isSplitMenu={true}
-                    />
+                    />}
                 </Row>}
             </TopSidebar>
 

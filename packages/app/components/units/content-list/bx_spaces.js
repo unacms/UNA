@@ -109,51 +109,51 @@ export default function Unit(props) {
 
     function getList() {
         return (
-                <Card margin="mb-px sm:mx-1 sm:mb-1" rounded="rounded-2xl">
-                    <Redirect ref={redirectdRef} />
-                    <Link className="group " href={data.url}>
-                        <Row className=" items-center p-1">
-                           
-                            <View className="flex-col p-1  flex-auto items-between justify-between ">
-                                <View>
-                                    <Text
-                                        numberOfLines={1}
-                                        className=" text-base leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-primary group-hover:dark:text-primary-d"
-                                    >
-                                        {data.title}
-                                    </Text>
-                                    <Row className="items-center my-1">
+            <Card margin="mb-px sm:mx-1 sm:mb-1" rounded="rounded-2xl">
+                <Redirect ref={redirectdRef} />
+                <Link className="group " href={data.url}>
+                    <Row className=" items-center p-1">
+
+                        <View className="flex-col p-1  flex-auto items-between justify-between ">
+                            <View>
+                                <Text
+                                    numberOfLines={1}
+                                    className=" text-base leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-primary group-hover:dark:text-primary-d"
+                                >
+                                    {data.title}
+                                </Text>
+                                <Row className="items-center my-1">
 
 
-                                        <View className="mr-2">
-                                            <ProfilesList
-                                                data={
-                                                    data.members_list
-                                                }
-                                                showEmpty={false}
-                                                maxCount={3}
-                                                displaySize="xs"
-                                            />
+                                    <View className="mr-2">
+                                        <ProfilesList
+                                            data={
+                                                data.members_list
+                                            }
+                                            showEmpty={false}
+                                            maxCount={3}
+                                            displaySize="xs"
+                                        />
 
-                                        </View>
-                                        {
-                                            <Text className="truncate text-xs leading-tight flex-auto text-neutral-600 dark:text-neutral-400">
-                                                {friendsLabel}
-                                            </Text>
-                                        }
+                                    </View>
+                                    {
+                                        <Text className="truncate text-xs leading-tight flex-auto text-neutral-600 dark:text-neutral-400">
+                                            {friendsLabel}
+                                        </Text>
+                                    }
 
-                                        
-                                    </Row>
-                                </View>
-                                
+
+                                </Row>
                             </View>
-                            <View className="flex-row  sm:flex-col flex-none pr-1">
-                                    {oMenuItemPrimary}
-                                    {!!oMenuItemSecondary && <View className={`${!!oMenuItemPrimary && 'sm:mt-2  ml-2 sm:ml-0'}`}>{oMenuItemSecondary}</View>}
-                                </View>
-                        </Row>
-                    </Link>
-                </Card>
+
+                        </View>
+                        <View className="flex-row  sm:flex-col flex-none pr-1">
+                            {oMenuItemPrimary}
+                            {!!oMenuItemSecondary && <View className={`${!!oMenuItemPrimary && 'sm:mt-2  ml-2 sm:ml-0'}`}>{oMenuItemSecondary}</View>}
+                        </View>
+                    </Row>
+                </Link>
+            </Card>
 
         );
     }
