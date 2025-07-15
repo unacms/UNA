@@ -79,7 +79,7 @@
         "unaio/amazon-s3-php-class-hmac-v2": "*",
         "tpyo/amazon-s3-php-class": "dev-master",
         "snipe/banbuilder": "dev-master",
-        "chargebee/chargebee-php": "^3.0",
+        "chargebee/chargebee-php": "^4.6",
         "curl/cacert": "*",
         "ffmpeg/ffmpeg": "*",
         "ezyang/htmlpurifier": "^4.13",

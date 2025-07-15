@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2404a77bf9dfe90fbd0a166b35626c0d",
+    "content-hash": "2d764a1db41313d999dae2533205a0b5",
     "packages": [
         {
             "name": "achingbrain/php5-akismet",
@@ -215,33 +215,33 @@
         },
         {
             "name": "chargebee/chargebee-php",
-            "version": "v3.44.0",
+            "version": "v4.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/chargebee/chargebee-php.git",
-                "reference": "3ba52efe3657ae32aa2287a831225b76d2a7918f"
+                "reference": "139cd0b19ad6c0a85895e2b5c71177f6f15ca1ff"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/chargebee/chargebee-php/zipball/3ba52efe3657ae32aa2287a831225b76d2a7918f",
-                "reference": "3ba52efe3657ae32aa2287a831225b76d2a7918f",
+                "url": "https://api.github.com/repos/chargebee/chargebee-php/zipball/139cd0b19ad6c0a85895e2b5c71177f6f15ca1ff",
+                "reference": "139cd0b19ad6c0a85895e2b5c71177f6f15ca1ff",
                 "shasum": ""
             },
             "require": {
-                "ext-curl": "*",
-                "guzzlehttp/guzzle": ">=6.5",
-                "php": ">=5.6.0"
+                "guzzlehttp/guzzle": ">=7",
+                "php": ">=8.1.0",
+                "psr/http-client": "^1.0"
             },
             "require-dev": {
-                "simpletest/simpletest": "^1.1"
+                "phpstan/phpstan": "^2.1"
             },
             "type": "library",
             "autoload": {
-                "psr-0": {
-                    "ChargeBee": "lib/"
-                },
+                "files": [
+                    "src/ChargebeeClient.php"
+                ],
                 "psr-4": {
-                    "ChargeBee\\": "lib/"
+                    "Chargebee\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -258,9 +258,9 @@
             ],
             "support": {
                 "issues": "https://github.com/chargebee/chargebee-php/issues",
-                "source": "https://github.com/chargebee/chargebee-php/tree/v3.44.0"
+                "source": "https://github.com/chargebee/chargebee-php/tree/v4.6.0"
             },
-            "time": "2025-06-19T11:02:22+00:00"
+            "time": "2025-06-23T08:58:09+00:00"
         },
         {
             "name": "curl/cacert",
