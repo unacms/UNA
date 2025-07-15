@@ -104,14 +104,8 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
     let menu = cloneObject(data.actions_menu);
 
     if (!showMoreMenu) {
-        let persistentKept = false;
-
-        menu.items.forEach(item => {
-            if (!persistentKept && item.persistent === 1) {
-                persistentKept = true; // Сохраняем только первый с persistent === 1
-            } else {
-                item.persistent = 0; // Остальным сбрасываем
-            }
+        menu.items = menu.items.map((item, index) => {
+            return { ...item, persistent: 0 };
         });
 
         /*if (windowWidth < LAYOUT_BREAKPOINTS.sm){
