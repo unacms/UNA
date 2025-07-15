@@ -70,7 +70,7 @@ export default function PageLayoutProfile({ layoutName, data, uri, blocks }) {
             blocks={renderedBlocks.mainBlocks}
             leftSideBar={isAltView}
             leftSideBarWidth={isAltView ? ' lg:w-96' : ''}
-            leftSideBarBlocks={isAltView ? renderedBlocks.leftBlocks : null}
+            leftSideBarBlocks={renderedBlocks.leftBlocks}
 
         />
     )

@@ -60,7 +60,7 @@ const AddBlocks = (leftSideBarBlocks, data, onFormChangedValues) => {
 
     return <>
         {(leftSideBarBlocksObj?.length > 0) &&
-            <View className="my-0 mx-2 ">
+            <View>
                 {leftSideBarBlocksObj.map((block, index) => {
                     return <View key={"lb-" + index}>{block}</View>
                 })}
@@ -646,6 +646,8 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
  */
 
         const isRightCol = route?.sidebar?.content?.length > 0 || route?.blocks?.browse_sidebar;
+        const isLeftCol = route?.leftSideBarBlocks?.length > 0 && layoutName !== 'profile-alt';
+        console.log("layoutName", layoutName)
 
         const TabFlashListM = useMemo(() => {
             return <UniList
@@ -684,11 +686,16 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
 
         return (
             <Row className={(headerSettings.columns == "reverse" ? 'flex-row-reverse' : '') + conductorTheme.content_max_width + ' mx-auto w-full ' + (isCoverDisabled ? ' ??sm:px-4 sm:my-3 ' : '')}>
+                {isLeftCol && <View className={`${conductorTheme.left_column_cnt2}`}>
+                    <View className={`${conductorTheme.left_column_cnt}`}>
+                        {AddBlocksCnt}
+                    </View>
+                </View>}
                 <View className={(isRightCol ? 'flex-auto sm:px-4 flex-auto ' : ' w-full mx-auto') /*sm:p-2*/ + (layoutName == 'navigator' ? '' : ' pt-1 sm:p-4 ') + (header ? ' sm:p-3 ' : '')}>
                     {TabFlashListM}
                     {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 && callFn("noContentByUrl", [route?.endpoint])))}
                 </View>
-                {isRightCol && <View className="hidden xl:flex flex-auto max-w-md ">
+                {isRightCol && <View className={`${conductorTheme.right_column_cnt2}`}>
                     <View className={`${conductorTheme.right_column_cnt}`}>
                         {route?.sidebar?.content.map((item, index) => {
                             return <View className="mb-4" key={'item' + index}><ItemRenderer unitType={sidebarUnitType} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''} /></View>
