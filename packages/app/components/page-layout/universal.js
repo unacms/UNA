@@ -9,6 +9,8 @@ import Animated from 'react-native-reanimated';
 function PageContentUniversal({ children, data, layoutName }) {
 
     const gap = 3;
+    const blockPadding = '';
+    const layoutPadding = 'p-1.5 sm:p-2';
     const maxWidth = appSetting('layout', 'max_width_block');
 
     let cell_top = {data:data.elements['cell_1'], index:0};
@@ -25,7 +27,7 @@ function PageContentUniversal({ children, data, layoutName }) {
     const cellsInRow = cell_mid_1?.data?.length + (cell_mid_2?.data?.length || 0) + (cell_mid_3?.data?.length|| 0) ;
 
     let cells_settings = [
-        `w-full md:w-1/${cellsInRow - 1} pr-${gap} lg:w-1/${cellsInRow}`,
+        `w-full md:w-1/${cellsInRow - 1} md:pr-${gap} lg:w-1/${cellsInRow}`,
         `w-full md:w-1/${cellsInRow - 1} lg:pr-${gap} lg:w-1/${cellsInRow}`,
         `w-full lg:w-1/${cellsInRow}`
     ];
@@ -55,28 +57,28 @@ function PageContentUniversal({ children, data, layoutName }) {
     }
 
     return (
-        <View className={`mx-auto  gap-y-${gap} w-full ${maxWidth}`}>
-            {(cell_top?.data?.length > 0) && <View className="w-full">
+        <View className={`mx-auto gap-y-${gap} w-full ${maxWidth} ${layoutPadding}`}>
+            {(cell_top?.data?.length > 0) && <View className={`w-full ${blockPadding}`}>
                 {children[cell_top.index]}
             </View>}
             <View className={`w-full flex-wrap flex-row  gap-y-${gap}  ${maxWidth}`}>
                 {cell_mid_1?.data?.length > 0 && (
-                    <View className={`mx-auto gap-y-${gap} ${cells_settings[0]}`}>
+                    <View className={`flex-auto gap-y-${gap} ${cells_settings[0]}`}>
                         {children[cell_mid_1.index]}
                     </View>
                 )}
                 {cell_mid_2?.data?.length > 0 && (
-                    <View className={`mx-auto gap-y-${gap} ${cells_settings[1]}`}>
+                    <View className={`flex-auto  gap-y-${gap} ${cells_settings[1]}`}>
                         {children[cell_mid_2.index]}
                     </View>
                 )}
                 {cell_mid_3?.data?.length > 0 && (
-                    <View className={`mx-auto gap-y-${gap} ${cells_settings[2]}`}>
+                    <View className={`gap-y-${gap} ${cells_settings[2]}`}>
                         {children[cell_mid_3.index]}
                     </View>
                 )}
             </View>
-            {(cell_bottom?.data?.length > 0) && <View className="w-full">
+            {(cell_bottom?.data?.length > 0) && <View className={`w-full ${blockPadding}`}>
                 {children[cell_bottom.index]}
             </View>}
         </View>

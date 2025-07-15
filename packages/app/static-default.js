@@ -587,7 +587,7 @@ const ComponentsDummy = (
                 123
             </Text>
         </Row>
-        <Row className=" w-8 p-1 p-1 h-9 w-9 lg:pr-2  lg:pr-3 h-8 -bottom-2 font-default bg-orange-500 text-red-400 bg-red-400 bg-gray-300 bg-gray-400 bg-gray-600 bg-yellow-500 bg-green-500 bg-teal-500 bg-sky-500 bg-indigo-500 bg-purple-500 bg-pink-500 bg-rose-500 bg-red-500">
+        <Row className=" w-8 p-1 p-1 h-9 w-9 lg:pr-2  lg:pr-3 h-8 -bottom-2 font-default md:pr-3 bg-orange-500 text-red-400 bg-red-400 bg-gray-300 bg-gray-400 bg-gray-600 bg-yellow-500 bg-green-500 bg-teal-500 bg-sky-500 bg-indigo-500 bg-purple-500 bg-pink-500 bg-rose-500 bg-red-500">
             <Icon
                 className="text-gray-600 dark:text-gray-400 sm:h-auto"
                 icon="ArrowBigUp"
