@@ -241,7 +241,7 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, windowWidth, isC
     const hideDefaultHeaderFrom = useSharedValue(200);
     const cover1Ref = useRef(null);
 
-    const uri = pageData?.uri;    
+    const uri = pageData?.uri;
     const isCover = pageData.cover_block ? (true) : false
 
     const handleScroll = useCallback(() => {
@@ -321,11 +321,11 @@ const TabBar = ({ menu, routes, leftSideBar, pageData, currentUser, index, setIn
                 <ConductorMenu currentUser={currentUser} leftSideBar={leftSideBar} routes={routes} index={index} t={t} setIndex={setIndex} getNumCols={getNumCols} windowWidth={windowWidth} onChangeRoute={onChangeRoute} />
                 {(conductorTheme.action_menu_in_tabs && !!pageData.cover_block?.actions_menu) && <Row className=" items-center gap-x-2 justify-end  ">
                     {isHideCover && <CoverMenu
-                                                            {...pageData.cover_block.actions_menu}
-                                                            uri={pageData.uri}
-                                                            isSplitMenu={true}
-                                                            containerClasses="gap-x-2"
-                                                        />}
+                        {...pageData.cover_block.actions_menu}
+                        uri={pageData.uri}
+                        isSplitMenu={true}
+                        containerClasses="gap-x-2"
+                    />}
                     {appSetting('cover', 'more_menu_in_cnd') && <CoverMenuMore
                         {...pageData.cover_block.actions_menu}
                         uri={pageData.uri}
@@ -717,7 +717,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
             AddBlocksCnt={AddBlocksCnt} />
     ), [index, setIndex, menu, routes, currentUser, leftSideBarWidth, headerSettings, AddBlocksCnt]);
 
-    const isHideCover = data?.cover_block?.profile && data?.cover_block?.profile?.id === data?.context?.current?.id && windowWidth >= LAYOUT_BREAKPOINTS[TABLET_MODE_FROM];
+    const isHideCover = data?.cover_block?.profile && appSetting('cover', 'hide_cover_for_context') && data?.cover_block?.profile?.id === data?.context?.current?.id && windowWidth >= LAYOUT_BREAKPOINTS[TABLET_MODE_FROM];
 
     const tabBarObj = useMemo(() => (
         <TabBar
@@ -798,7 +798,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
                                 <Button title="Filters" variant="default" size="sm" rounded onPress={showFilters} />
                             </View>*/}
                             {sceneHeaderComponent}
-                            <RenderScene isCoverDisabled={isCoverDisabled} prevRoute={prevRoute} headerHeight={isShowFilters && routes.length>1 ? defaultHeaderHeight+52 : defaultHeaderHeight} header={isUseCurrentHeader ? null : headerComponent} route={currentRoute} />
+                            <RenderScene isCoverDisabled={isCoverDisabled} prevRoute={prevRoute} headerHeight={isShowFilters && routes.length > 1 ? defaultHeaderHeight + 52 : defaultHeaderHeight} header={isUseCurrentHeader ? null : headerComponent} route={currentRoute} />
                         </View>
                     </Row>
                 </View>
@@ -813,7 +813,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
             <Toaster ref={toasterRef} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" />
             <View className={`${conductorTheme.content_max_width} mx-auto w-full min-h-screen ${tmplLayout == 'mixed' ? 'mt-12' : ''}`}>
                 {sceneHeaderComponent}
-                <RenderScene isCoverDisabled={isCoverDisabled} prevRoute={prevRoute} headerHeight={isShowFilters && routes.length>1 ? defaultHeaderHeight+52 : defaultHeaderHeight} header={isUseCurrentHeader ? null : headerComponent} route={currentRoute} />
+                <RenderScene isCoverDisabled={isCoverDisabled} prevRoute={prevRoute} headerHeight={isShowFilters && routes.length > 1 ? defaultHeaderHeight + 52 : defaultHeaderHeight} header={isUseCurrentHeader ? null : headerComponent} route={currentRoute} />
             </View>
             <Footer />
         </View>

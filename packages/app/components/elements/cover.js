@@ -25,6 +25,7 @@ import Loading from 'app/ui/atoms/loading'
 import { Platform } from 'react-native'
 import { useRouter, useNavigation } from 'app/lib/hooks/router'
 import { useWindowDimensions } from 'react-native';
+import { getComponent } from 'app/components/registry';
 
 const conductorTheme = appSetting('theme', 'conductor')
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from');
@@ -33,8 +34,6 @@ const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from');
 const BackButton = ({ isPerson }) => {
     const router = useRouter()
     const navigation = useNavigation();
-
-
 
     return isPerson && navigation.getState().index == 0 ? (
         <Link href={appSetting("cover", "back_button_url_for_profile")}>
@@ -114,7 +113,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                 item.persistent = 0; // Остальным сбрасываем
             }
         });
-        
+
         /*if (windowWidth < LAYOUT_BREAKPOINTS.sm){
             menu.items = menu.items.map((item, index) => {
                 if (item.persistent) return { ...item, title: '' };
@@ -131,18 +130,18 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                     <Row className={` ${context?.current?.id == data.profile.id ? TABLET_MODE_FROM + ':flex px-1 ' : ' px-1 flex-auto overflow-hidden truncate'}`}>
                         {bPerson && (
                             <View className="p-1">
-                            <Profile
-                                {...data.profile}
-                                displayType="unit_wo_info"
-                                displaySize="base"
-                            /></View>
+                                <Profile
+                                    {...data.profile}
+                                    displayType="unit_wo_info"
+                                    displaySize="base"
+                                /></View>
                         )}
                         <View className="px-1 items-center flex-row">
-                        <Profile
-                            {...data.profile}
-                            displayType="unit_wo_image"
-                            displaySize="xl"
-                        /></View>
+                            <Profile
+                                {...data.profile}
+                                displayType="unit_wo_image"
+                                displaySize="xl"
+                            /></View>
                     </Row>
                 </View>
                 <View className=" items-end">
@@ -379,7 +378,7 @@ function CoverImage({ mode, profileData, coverData, allowEdit, allowSwitch, titl
     }
 }
 
-export default function ({ data, mode, uri, showMoreMenu }) {
+export default function ({ data, mode, uri, showMoreMenu, pageData, context }) {
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
     const isWeb = Platform.OS === 'web'
@@ -397,11 +396,14 @@ export default function ({ data, mode, uri, showMoreMenu }) {
     }
     const isSplitMenu = appSetting('cover', 'split_action_menu') && data.actions_menu.persistent == 0
     const isMin = coverMode === 'min';
-    
+
+    const ContextSelector = getComponent('molecule', 'context_selector')
 
     if (coverMode === 'none') {
         return null
     }
+
+    const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from');
 
     return (
 
@@ -426,6 +428,7 @@ export default function ({ data, mode, uri, showMoreMenu }) {
                                 {data.profile.display_name}
                             </Text>
                             <Badges badges={data.badges} />
+                            <View className={`${TABLET_MODE_FROM}:hidden`}><ContextSelector data={context} mode='min' /></View>
                         </Row>
                         {isWeb ? <CoverMenuMeta {...data.meta_menu} /> : <ScrollView horizontal={true}><CoverMenuMeta {...data.meta_menu} /></ScrollView>}
                         {!!data.profile.info?.date_start && (
@@ -449,20 +452,20 @@ export default function ({ data, mode, uri, showMoreMenu }) {
                                     </View>
                                 )}
                                 <Row>
-                                <View className=" flex-row flex-wrap gap-x-2 gap-y-2 sm:gap-y-3 items-center">
-                                    <CoverMenu
+                                    <View className=" flex-row flex-wrap gap-x-2 gap-y-2 sm:gap-y-3 items-center">
+                                        <CoverMenu
+                                            {...data.actions_menu}
+                                            uri={uri}
+                                            isSplitMenu={isSplitMenu}
+                                            containerClasses="gap-x-2"
+                                        />
+
+                                    </View>
+                                    <CoverMenuMore
                                         {...data.actions_menu}
                                         uri={uri}
-                                        isSplitMenu={isSplitMenu}
-                                        containerClasses="gap-x-2"
-                                    />
-                            
-                                </View>
-                                <CoverMenuMore
-                                {...data.actions_menu}
-                                uri={uri}
-                                isSplitMenu={true}
-                            /></Row>
+                                        isSplitMenu={true}
+                                    /></Row>
                                 {showMoreMenu && <View className="w-11 items-end ">
                                     <CoverMenuMore
                                         {...data.actions_menu}

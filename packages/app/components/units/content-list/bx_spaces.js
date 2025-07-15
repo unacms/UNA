@@ -10,6 +10,7 @@ import Redirect from 'app/ui/atoms/redirect'
 import ProfilesList from 'app/ui/molecules/profile_list'
 import { useTranslation } from 'react-i18next';
 import { callFn } from 'app/lib/functions/call';
+import Profile from 'app/ui/molecules/profile'
 
 export default function Unit(props) {
     const { t } = useTranslation();
@@ -109,51 +110,29 @@ export default function Unit(props) {
 
     function getList() {
         return (
-            <Card margin="mb-px sm:mx-1 sm:mb-1" rounded="rounded-2xl">
-                <Redirect ref={redirectdRef} />
-                <Link className="group " href={data.url}>
-                    <Row className=" items-center p-1">
-
-                        <View className="flex-col p-1  flex-auto items-between justify-between ">
-                            <View>
-                                <Text
-                                    numberOfLines={1}
-                                    className=" text-base leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-primary group-hover:dark:text-primary-d"
-                                >
-                                    {data.title}
-                                </Text>
-                                <Row className="items-center my-1">
+            <Link href={data.url} emulate={true}>
+                <View
+                    className=" sm:px-1 flex-row  web:duration-200 rounded-xl active:opacity-50 hover:bg-bgritem dark:hover:bg-bgritem-d items-center "
+                >
+                    <View className="p-1.5">
+                        <Profile
+                            url_avatar={data?.image?.src}
+                            displayType="unit_wo_info"
+                            displaySize="sm"
+                            display_name={data.title}
+                        /></View>
 
 
-                                    <View className="mr-2">
-                                        <ProfilesList
-                                            data={
-                                                data.members_list
-                                            }
-                                            showEmpty={false}
-                                            maxCount={3}
-                                            displaySize="xs"
-                                        />
+                    <View className="flex-row justify-between flex-auto items-center">
+                        <Text numberOfLines={2} className="text-sm  px-1.5 leading-tight font-semibold text-neutral-800 dark:text-neutral-200">
+                            {data.title}
+                        </Text>
 
-                                    </View>
-                                    {
-                                        <Text className="truncate text-xs leading-tight flex-auto text-neutral-600 dark:text-neutral-400">
-                                            {friendsLabel}
-                                        </Text>
-                                    }
+                        
+                    </View>
 
-
-                                </Row>
-                            </View>
-
-                        </View>
-                        <View className="flex-row  sm:flex-col flex-none pr-1">
-                            {oMenuItemPrimary}
-                            {!!oMenuItemSecondary && <View className={`${!!oMenuItemPrimary && 'sm:mt-2  ml-2 sm:ml-0'}`}>{oMenuItemSecondary}</View>}
-                        </View>
-                    </Row>
-                </Link>
-            </Card>
+                </View>
+            </Link>
 
         );
     }

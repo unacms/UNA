@@ -42,7 +42,7 @@ function getContextRoot(data) {
     }
 }
 
-export default function ContextSelector({ data, url }) {
+export default function ContextSelector({ data, url, mode }) {
 
     const [isOpen, setIsOpen] = useState(false);
 
@@ -74,59 +74,65 @@ export default function ContextSelector({ data, url }) {
             </View>
         </Link>
     )
-    
+
+    const DropDown = <DropdownPopup
+        trigger={
+            <Button
+                variant="text"
+                size="base"
+                rounded
+                ring
+                startDecorator="ChevronDown"
+            />
+        }
+        minPopupWidth={352}
+        open={isOpen}
+        onOpenChange={handleOpenChange}
+    >
+        <View className='flex-col gap-y-0.5'>
+            {data.list.map(item => renderListItem(item, item.id === data.current?.id, handleItemClick))}
+            {!!data.create && <Link className="w-full" href={data.create.url} onPress={handleItemClick}>
+                <Row className="w-full px-1 items-center hover:bg-bgritem dark:hover:bg-bgritem-d rounded-xl">
+                    <View className="items-center w-10 h-10 m-1 text-neutral-800 dark:text-neutral-200 justify-center bg-bgritem border border-bdritem dark:bg-bgritem-d dark:border-bdritem-d rounded-full">
+                        <Icon icon="Plus" />
+                    </View>
+                    <Text className="text-base p-2 font-semibold text-neutral-800 dark:text-neutral-200">{data.create.title}</Text>
+                </Row>
+            </Link>}
+            {(data.links && Array.isArray(data.links)) && <View className='border-t border-bdr dark:border-bdr-d mt-1 pt-1'>
+                {data.links.map(item =>
+                    <Link key={item.url} className="w-full" href={item.url} onPress={handleItemClick}>
+                        <Row className={`w-full px-1 items-center rounded-xl hover:bg-bgritem dark:hover:bg-bgritem-d ${!data.current?.id && item.url == appSetting('context_selector', 'default_item') ? 'bg-bgritemprimary dark:bg-bgritemprimary-d  rounded-xl' : ''}`}>
+                            <View className="items-center w-10 h-10 m-1 text-neutral-800 dark:text-neutral-200 justify-center bg-bgritem border border-bdritem dark:bg-bgritem-d dark:border-bdritem-d rounded-full">
+                                {item.icon && <Icon icon={item.icon} />}
+                            </View>
+                            <Text className="text-base p-2 font-semibold text-neutral-800 dark:text-neutral-200">{item.title}</Text>
+                        </Row>
+                    </Link>
+                )}
+            </View>
+            }
+        </View>
+    </DropdownPopup>
+
+    if (mode === 'min') {
+        return DropDown
+    }
+
     return (
         <>
             {(data?.list?.length > 1 || data?.links?.length > 0) ? <Row className=" w-full flex-auto items-center">
                 {data.current?.id && <>
                     <Link href="/"><View className=' flex-row  sm:px-1 lg:hover:bg-bgritem dark:lg:hover:bg-bgritem-d rounded-xl'>
                         <View className="items-center justify-center p-1 text-neutral-800 dark:text-neutral-200">
-                            {appStatic('logo', { mode:'mark' })}
+                            {appStatic('logo', { mode: 'mark' })}
                         </View>
 
                     </View></Link>
 
                     <Icon icon="ChevronRight" className="text-base font-semibold text-neutral-400 dark:text-neutral-600" /></>}
                 {CurrentContext}
-                <DropdownPopup
-                    trigger={
-                        <Button
-                            variant="text"
-                            size="base"
-                            rounded
-                            ring
-                            startDecorator="ChevronDown"
-                        />
-                    }
-                    minPopupWidth={352}
-                    open={isOpen}
-                    onOpenChange={handleOpenChange}
-                >
-                    <View className='flex-col gap-y-0.5'>
-                        {data.list.map(item => renderListItem(item, item.id === data.current?.id, handleItemClick))}
-                        {!!data.create && <Link className="w-full" href={data.create.url} onPress={handleItemClick}>
-                            <Row className="w-full px-1 items-center hover:bg-bgritem dark:hover:bg-bgritem-d rounded-xl">
-                                <View className="items-center w-10 h-10 m-1 text-neutral-800 dark:text-neutral-200 justify-center bg-bgritem border border-bdritem dark:bg-bgritem-d dark:border-bdritem-d rounded-full">
-                                    <Icon icon="Plus" />
-                                </View>
-                                <Text className="text-base p-2 font-semibold text-neutral-800 dark:text-neutral-200">{data.create.title}</Text>
-                            </Row>
-                        </Link>}
-                        {(data.links && Array.isArray(data.links)) && <View className='border-t border-bdr dark:border-bdr-d mt-1 pt-1'>
-                            {data.links.map(item =>
-                                <Link key={item.url} className="w-full" href={item.url} onPress={handleItemClick}>
-                                    <Row className={`w-full px-1 items-center rounded-xl hover:bg-bgritem dark:hover:bg-bgritem-d ${!data.current?.id && item.url == appSetting('context_selector', 'default_item') ? 'bg-bgritemprimary dark:bg-bgritemprimary-d  rounded-xl' : ''}`}>
-                                        <View className="items-center w-10 h-10 m-1 text-neutral-800 dark:text-neutral-200 justify-center bg-bgritem border border-bdritem dark:bg-bgritem-d dark:border-bdritem-d rounded-full">
-                                            {item.icon && <Icon icon={item.icon} />}
-                                        </View>
-                                        <Text className="text-base p-2 font-semibold text-neutral-800 dark:text-neutral-200">{item.title}</Text>
-                                    </Row>
-                                </Link>
-                            )}
-                        </View>
-                        }
-                    </View>
-                </DropdownPopup></Row> : CurrentContext}
+                {DropDown}</Row> : CurrentContext}
         </>
     );
 }
