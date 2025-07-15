@@ -292,7 +292,7 @@ export default function (props) {
                     })}
                 </View>
                 <View className={appSetting('layout', 'aside_container')}>
-                    <View className="fixed-process p-3 flex-col sm:py-4 gap-y-6  web:duration-300">
+                    <View className="fixed-process p-1.5 sm:p-2 flex-col gap-y-3 sm:gap-y-4  web:duration-300">
                         {sideBarBlocks.map((item, index) => {
                             return (
                                 <BlockByName

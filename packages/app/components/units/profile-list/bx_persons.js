@@ -23,29 +23,31 @@ export default function Unit(props) {
                 params={{
                     button_full_width: true,
                     button_variant: 'secondary',
-                    button_size: 'xs',
+                    button_size: 'sm',
+                    button_ring: 'p-1.5',
                 }}
             />
         )
     return (
         <Link href={data.url} emulate={true}>
             <View
-                className=" px-2 h-12 flex-row  web:duration-200 rounded-xl active:opacity-50 hover:bg-bgritem dark:hover:bg-bgritem-d items-center gap-x-3 "
+                className=" sm:px-1 flex-row  web:duration-200 rounded-xl active:opacity-50 hover:bg-bgritem dark:hover:bg-bgritem-d items-center "
             >
+                <View className="p-1.5">
                 <Profile
                     url_avatar={data?.image?.src}
                     displayType="unit_wo_info"
                     displaySize="sm"
                     display_name={data.title}
-                />
+                /></View>
 
                 
-                    <View className="flex-row justify-between gap-x-3 flex-auto items-center">
-                            <Text numberOfLines={2} className="text-sm leading-4.5 font-semibold text-neutral-800 dark:text-neutral-200">
+                    <View className="flex-row justify-between flex-auto items-center">
+                            <Text numberOfLines={2} className="text-sm  px-1.5 leading-tight font-semibold text-neutral-800 dark:text-neutral-200">
                                 {data.title}
                             </Text>
                         
-                        <View className="flex-none">{sMeta}</View>
+                            <View className="flex-none">{sMeta}</View>
                     </View>
                 
             </View>

@@ -79,7 +79,7 @@ export  const settingsDefault = {
             scrolled: '  backdrop-blur-xl my-auto w-full  mx-auto bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur-xl shadow-[0_0_0_1px_rgba(0,0,0,0.08),0_2px_4px_0_rgba(0,0,0,0.05)] dark:shadow-[0_0_0_1px_rgba(0,0,0,0.8),0_2px_4px_0_rgba(0,0,0,0.05)] ',
             content: ' w-full mx-auto p-1.5 sm:p-2 ',
             content_left: ' flex-row w-80 2xl:w-96 gap-x-2 ',
-            content_right: ' w-80 2xl:w-96 items-center justify-end h-full px-1 ',
+            content_right: ' w-80 2xl:w-96 items-center justify-end h-full px-1 sm:px-1.5 ',
             content_center: ' hidden lg:flex flex-auto w-full mx-auto max-w-4xl gap-x-0.5 justify-between items-center align-middle px-2',
             special: {
                 profile: 'hidden lg:flex',
