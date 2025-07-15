@@ -429,7 +429,7 @@ export function TopSidebar({ styles, leftSideBar, addButtons, children, title, l
         <View style={styles} className={ ` ${!omitDefaultBackground ? conductorTheme.menu : ''} ${leftSideBar ? 'lg:hidden' : ''}`}>
             <View className={`${leftSideBar ? '' : 'mx-auto'} w-full ${conductorTheme.menu_max_width}`}>
                 {/* TODO: Review this section for potential improvements */}
-                <Row className=" p-1 items-center justify-between">
+                <Row className=" p-2 sm:px-3 items-center justify-between">
                     <Text className="text-2xl my-auto font-medium text-neutral-800 tracking-tight dark:text-neutral-200 hidden ">{title}</Text>
                     {!currentUser && title ? <View className='pr-4 sm:pr-6'><TextHeader text={title} /></View> : null}
                     {children}

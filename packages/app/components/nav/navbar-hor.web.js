@@ -73,7 +73,7 @@ const ToolbarItems = ({ currentUser, bSearch, isCustomHeaderElement, bNotifs, bM
     }
 
     return (
-        <Row className="justify-end px-1 gap-x-0.5 items-center">
+        <Row className="justify-end gap-x-0.5 items-center">
             {itemsToRender?.map((item, index) => {
                 const Component = components[item.component]
                 if (!Component) return null

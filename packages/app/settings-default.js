@@ -35,7 +35,7 @@ export  const settingsDefault = {
         screen: ' w-full ',
         background: ' TODO ',
 
-        sidebar: ' fixed-process fixed w-80 2xl:w-96 p-2 web:duration-200 ',
+        sidebar: ' fixed-process fixed w-80 2xl:w-96 p-3 web:duration-200 ',
         sidebar_container: ' hidden relative xl:flex w-80 2xl:w-96 ',
       
         aside_container: 'hidden lg:flex w-80 2xl:w-96 h-full', 
@@ -77,10 +77,10 @@ export  const settingsDefault = {
             container: ' hidden lg:flex fixed w-full mx-auto h-16 left-[50%] translate-x-[-50%]  ',
             initial: '  my-auto w-full items-center transition-all web:duration-300 ease-in-out will-change-transform    ',
             scrolled: '  backdrop-blur-xl my-auto w-full  mx-auto bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur-xl shadow-[0_0_0_1px_rgba(0,0,0,0.08),0_2px_4px_0_rgba(0,0,0,0.05)] dark:shadow-[0_0_0_1px_rgba(0,0,0,0.8),0_2px_4px_0_rgba(0,0,0,0.05)] ',
-            content: ' w-full mx-auto  ',
-            content_left: ' flex-row w-80 2xl:w-96 gap-x-2 p-1.5 sm:p-2 ',
-            content_right: ' w-80 2xl:w-96 items-center justify-end h-full px-2 ',
-            content_center: ' hidden lg:flex flex-auto w-full mx-auto max-w-4xl gap-x-0.5 justify-between items-center align-middle px-2',
+            content: ' h-16 mx-auto justify-between ',
+            content_left: ' flex-row w-80 2xl:w-96 px-2 xl:px-3 ',
+            content_right: ' w-80 2xl:w-96 items-center justify-end h-full px-3 ',
+            content_center: ' hidden xl:flex flex-auto w-full mx-auto max-w-4xl gap-x-0.5 justify-between items-center align-middle px-3',
             special: {
                 profile: 'hidden lg:flex',
                 messenger: 'hidden lg:flex',
@@ -267,7 +267,7 @@ export  const settingsDefault = {
         items_lifetime: 30,
     },
     feed: {
-        feed_container: 'relative flex-auto mx-auto w-full max-w-4xl sm:p-2',
+        feed_container: 'relative flex-auto mx-auto w-full max-w-4xl sm:p-3 ',
         show_selector_view: true,
         default_view: '',
         show_html: false,
@@ -864,7 +864,7 @@ export  const settingsDefault = {
             bgrtoolbarbutton: 'rgba(33, 37, 41, 0)',
         },
         dropdown: {
-            cnt: ' rounded-2xl web:backdrop-blur overflow-hidden p-2 bg-bgrmodal dark:bg-bgrmodal-d z-50 shadow-[0_10px_10px_rgba(0,0,0,0.15)] ',
+            cnt: ' rounded-2xl web:backdrop-blur overflow-hidden p-1 bg-bgrmodal dark:bg-bgrmodal-d z-50 shadow-[0_10px_10px_rgba(0,0,0,0.15)] ',
         },
         conductor: {
             menu: '   w-full items-left justify-center  ',

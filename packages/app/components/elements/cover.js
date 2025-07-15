@@ -62,11 +62,12 @@ function getCoverBackButton(is_person) {
     if (!isWeb) return <BackButton isPerson={is_person} />
     if (history.length > 2) {
         return (
-            <View className="lg:hidden mr-1">
+            <View className="lg:hidden">
                 <Button
                     rounded={true}
                     size="base"
-                    variant="default"
+                    ring="p-1"
+                    variant="secondary"
                     startDecorator="ArrowLeft"
                     onPress={() => history.back()}
                 />
@@ -74,13 +75,14 @@ function getCoverBackButton(is_person) {
         )
     } else {
         return (
-            <View className="lg:hidden mr-1">
+            <View className="lg:hidden ">
                 <Link href="/">
                     <Button
                         rounded={true}
                         size="base"
-                        variant="default"
+                        variant="secondary"
                         startDecorator="ArrowLeft"
+                        ring="p-1"
                     />
                 </Link>
             </View>
@@ -99,23 +101,25 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
     }
 
     return (
-        <View className={` ${conductorTheme.content_max_width} mx-auto w-full px-3 py-2 flex-row gap-2`} >
+        <View className={` ${conductorTheme.content_max_width} mx-auto w-full px-2 py-1 flex-row `} >
             <Row className=" gap-x-2 items-center justify-between flex-auto">
-                <View className={`flex-auto flex-row gap-x-2 items-center `}>
+                <View className={`flex-auto flex-row items-center `}>
                     {getCoverBackButton(bPerson)}
-                    <Row className={` ${context?.current?.id == data.profile.id ? TABLET_MODE_FROM + ':flex gap-x-2' : 'gap-x-2 flex-auto'}`}>
+                    <Row className={` ${context?.current?.id == data.profile.id ? TABLET_MODE_FROM + ':flex px-1 ' : ' px-1 flex-auto'}`}>
                         {bPerson && (
+                            <View className="p-1">
                             <Profile
                                 {...data.profile}
                                 displayType="unit_wo_info"
                                 displaySize="base"
-                            />
+                            /></View>
                         )}
+                        <View className="px-1 items-center flex-row">
                         <Profile
                             {...data.profile}
                             displayType="unit_wo_image"
                             displaySize="xl"
-                        />
+                        /></View>
                     </Row>
                 </View>
                 <View className=" items-end">
