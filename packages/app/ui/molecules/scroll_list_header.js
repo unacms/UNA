@@ -20,7 +20,7 @@ import { getComponent } from 'app/components/registry';
 
 export const TextHeader = memo(({ text }) => {
     const { t } = useTranslation();
-    return <Text className="font-bold text-neutral-800 dark:text-neutral-200 flex-auto leading-11 text-3xl tracking-tight">
+    return <Text className="font-bold text-neutral-800 dark:text-neutral-200 flex-auto leading-11 text-2xl sm:text-3xl p-1.5 sm:p-2 tracking-tight">
         {t(text)}
     </Text>
 })
@@ -120,10 +120,10 @@ export const Header = memo(({
 
     return (
 
-        <Row className={` px-2 sm:px-2 items-center h-16 justify-between web:duration-300`}>
+        <Row className={` px-1.5 sm:px-2 items-center h-16 justify-between web:duration-300`}>
             {((!currentUser || !pageData?.context) && !text && (!settings?.headerSettings || settings?.headerSettings?.header)) && 
                 <Link href="/home" aria-label="Home">
-                    <Pressable className="items-center p-1 flex-row web:hover:scale-105 web:active:scale-95 rounded-xl  text-neutral-800 dark:text-neutral-200 web:hover:text-neutral-800 web:dark:hover:text-neutral-200 duration-300 ">
+                    <Pressable className="items-center p-1.5 sm:p-2 flex-row web:hover:scale-105 web:active:scale-95 rounded-xl  text-neutral-800 dark:text-neutral-200 web:hover:text-neutral-800 web:dark:hover:text-neutral-200 duration-300 ">
                         {appStatic('logo')}
                     </Pressable>
                 </Link>

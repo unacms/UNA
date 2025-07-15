@@ -184,10 +184,10 @@ export default function (props) {
                                     <Link href={currentUser.url} emulate={true}>
                                         <Row
                                             className={
-                                                ' rounded-xl group items-center px-2 gap-x-3 py-1 hover:bg-bgritem dark:hover:bg-bgritem-d  active:bg-bgritem-h dark:active:bg-bgritem-dh  '
+                                                ' rounded-xl group items-center px-1  hover:bg-bgritem dark:hover:bg-bgritem-d  active:bg-bgritem-h dark:active:bg-bgritem-dh  '
                                             }
                                         >
-                                            <View className="p-0.5">
+                                            <View className="p-1.5">
 
                                                 <Profile
                                                     {...currentUser}
@@ -196,11 +196,11 @@ export default function (props) {
                                                     displaySize="sm"
                                                 /></View>
 
-                                            <View className="flex-col">
-                                                <Text className=" text-base leading-5  flex-auto my-auto font-semibold truncate text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-white web:duration-200">
+                                            <View className="flex-col px-1.5">
+                                                <Text className=" text-sm leading-tight  flex-auto my-auto font-semibold truncate text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-white web:duration-200">
                                                     {currentUser.display_name}
                                                 </Text>
-                                                <Text className=" text-xs leading-4 flex-auto my-auto truncate text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-800 dark:group-hover:text-neutral-200 web:duration-200">
+                                                <Text className=" text-xs leading-tight flex-auto my-auto truncate text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-800 dark:group-hover:text-neutral-200 web:duration-200">
                                                     {
                                                         currentUser.membership_name
                                                     }
@@ -292,7 +292,7 @@ export default function (props) {
                     })}
                 </View>
                 <View className={appSetting('layout', 'aside_container')}>
-                    <View className="fixed-process p-3 flex-col sm:py-4 gap-y-6  web:duration-300">
+                    <View className="fixed-process p-1.5 sm:p-2 flex-col gap-y-3 sm:gap-y-4  web:duration-300">
                         {sideBarBlocks.map((item, index) => {
                             return (
                                 <BlockByName
