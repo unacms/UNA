@@ -13,6 +13,7 @@ import Location from './location';
 import Datetime from './datetime';
 import Selector from './selector';
 import BlockHeader from './block_header';
+import BlockEnd from './block_end';
 import Suggestion from './suggestion';
 import InitialMembers from './initial_members';
 import Labels from './labels';
@@ -59,6 +60,7 @@ export const componentsMapDefault = {
     datepicker: Datetime,
     suggestion: Suggestion,
     block_header: BlockHeader,
+    block_end: BlockEnd,
     labels: Labels,
     doublerange: DoubleRange,
     checkbox_set: CheckboxSet

@@ -3,10 +3,10 @@ import { Text } from 'app/design/typography'
 
 export default function FormFieldBlockHeader(props) {
     return (
-        <View className=' w-full  p-1'>
+        <View className=' w-full'>
             <Text className="label-text block  pt-1 pb-1.5 w-full ">
                 <Row className='items-center gap-x-1' >
-                    <Text className='font-semibold text-sm sm:text-base text-neutral-700 dark:text-neutral-300'>{props.caption}</Text>
+                    <Text className='font-semibold text-sm sm:text-lg text-neutral-700 dark:text-neutral-300'>{props.caption}</Text>
                 </Row >
             </Text>
         </View>

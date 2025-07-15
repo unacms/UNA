@@ -162,10 +162,10 @@ export default function (props) {
     }
 
     let inputs = getFormFieldList(name, data.inputs, _handleSubmit, true, lastChangedField, props.saveOnChanges, props.formProps);
-
-    if (inputs?.length > 0)
-        inputs = inputs.filter(item => item.key !== null && item.key.toString() !== '')
-
+  
+    //if (inputs?.length > 0)
+     //   inputs = inputs.filter(item => item.key !== null && item.key.toString() !== '')
+ // console.log("inputs", inputs)
     if (inputs) {
         inputs = inputs.map((input, index) => ({
             ...input,
