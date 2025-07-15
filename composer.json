@@ -83,7 +83,7 @@
         "curl/cacert": "*",
         "ffmpeg/ffmpeg": "*",
         "ezyang/htmlpurifier": "^4.13",
-        "intervention/image": "^2.6",
+        "intervention/image": "^3.11",
         "wikimedia/less.php": "*",
         "matthiasmullie/minify": "^1.3",
         "lusitanian/oauth": "^0.8.11",
