@@ -25,30 +25,6 @@ export const TextHeader = memo(({ text }) => {
     </Text>
 })
 
-function RightNonLogged(props) {
-    const bSearch = appSetting('layout', 'search') == true
-    return (
-        <Row className=' '>
-            {bSearch && <Search
-                params={{ trigger: { icon: 'Search', size: 'base', variant: 'secondary', onPress: () => FeedbackHaptics('Medium') } }} />
-            }
-            <MenuLauncher />
-            <Link href="/login" onPress={() => FeedbackHaptics('Medium')}>
-                <ButtonRef
-                    variant="secondary"
-                    tooltip="Account"
-                    rounded
-                    size="base"
-                    hitSlop={4}
-                    aria-label="Account"
-                    ring="p-1"
-                    startDecorator="UserRound"
-                />
-            </Link>
-        </Row>
-    )
-}
-
 export const Header = memo(({
     backButtonPresented,
     headerComponent,
@@ -84,7 +60,7 @@ export const Header = memo(({
     }
 
     if (!currentUser) {
-        rightComponents = <RightNonLogged />;
+        rightComponents = <></>;
     }
 
     const memoizedRightComponents = useMemo(() => {

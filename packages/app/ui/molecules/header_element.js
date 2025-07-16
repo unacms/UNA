@@ -27,9 +27,9 @@ export default function HeaderElement({ mode }) {
         ? toolbarConfig?.loggedIn
         : toolbarConfig?.loggedOut
 
-    if (mode == 'small') {
+    /*if (mode == 'small' && !!currentUser) {
         return null
-    }
+    }*/
 
 
     const components = {
