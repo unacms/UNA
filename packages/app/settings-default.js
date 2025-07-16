@@ -150,7 +150,9 @@ export  const settingsDefault = {
         show_pic_by_module:{
             bx_spaces:true,
         },
-        more_menu_in_cnd:false
+        more_menu_in_navbar:{
+            bx_spaces:true,
+        }
     },
     comments: {
         hide_sort: false, //OLD appSetting('layout', 'hide_comments_sort')
@@ -886,7 +888,6 @@ export  const settingsDefault = {
             topmenu_button_size: 'base',
             topmenu_button_pressed: true,
             left_menu_cnt: '  ',
-            action_menu_in_tabs: true,
             cover_cnt: 'w-full border-b border-bdrnavbar dark:border-bdrnavbar-d bg-gradient-to-b from-transparent to-white dark:from-transparent dark:to-neutral-900',
             cover_cnt2: " w-full overflow-hidden   "
         },

@@ -94,8 +94,13 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
     const bPerson = data.profile.module == 'bx_persons' || appSetting('cover', 'show_pic_by_module', data?.profile?.module) ? true : false
     const isSplitMenu = appSetting('cover', 'split_action_menu') && data.actions_menu.persistent == 0
     const coverMode = appSetting('cover', 'view_by_module', data?.profile?.module) || mode
-
     const { width: windowWidth } = useWindowDimensions();
+    const isAddSelector  = context && context.list[0] && data.profile.module == context.list[0].module
+    const ContextSelector = getComponent('molecule', 'context_selector')
+
+    if(windowWidth > LAYOUT_BREAKPOINTS[TABLET_MODE_FROM] && isAddSelector){
+            return null
+    }
 
     if (coverMode === 'none') {
         return null
@@ -107,13 +112,6 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
         menu.items = menu.items.map((item, index) => {
             return { ...item, persistent: 0 };
         });
-
-        /*if (windowWidth < LAYOUT_BREAKPOINTS.sm){
-            menu.items = menu.items.map((item, index) => {
-                if (item.persistent) return { ...item, title: '' };
-                return item;
-            });
-        }*/
     }
 
     return (
@@ -136,6 +134,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                                 displayType="unit_wo_image"
                                 displaySize="xl"
                             /></View>
+                         {isAddSelector && <View className={`${TABLET_MODE_FROM}:hidden`}><ContextSelector data={context} mode='min' /></View>}
                     </Row>
                 </View>
                 <View className=" items-end">
@@ -154,17 +153,17 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                                 uri={uri}
                                 isSplitMenu={isSplitMenu}
                             />
-                            {!appSetting('cover', 'more_menu_in_cnd') && <CoverMenuMore
+                            {!appSetting('cover', 'more_menu_in_navbar', data?.profile?.module) && <CoverMenuMore
                                 {...menu}
                                 uri={uri}
                                 isSplitMenu={true}
                             />}
                         </>
                         }
-                    </Row> : <CoverMenu
+                    </Row> : <>{!appSetting('cover', 'more_menu_in_navbar', data?.profile?.module) && <CoverMenu
                         {...menu}
                         uri={uri}
-                    />
+                    />}</>
                     }
                 </View>
             </Row>
@@ -391,8 +390,10 @@ export default function ({ data, mode, uri, showMoreMenu, pageData, context }) {
     const isSplitMenu = appSetting('cover', 'split_action_menu') && data.actions_menu.persistent == 0
     const isMin = coverMode === 'min';
 
+    const isAddSelector  = context && context.list[0] && data.profile.module == context.list[0].module
     const ContextSelector = getComponent('molecule', 'context_selector')
 
+   
     if (coverMode === 'none') {
         return null
     }
@@ -422,7 +423,7 @@ export default function ({ data, mode, uri, showMoreMenu, pageData, context }) {
                                 {data.profile.display_name}
                             </Text>
                             <Badges badges={data.badges} />
-                            <View className={`${TABLET_MODE_FROM}:hidden`}><ContextSelector data={context} mode='min' /></View>
+                            {isAddSelector && <View className={`${TABLET_MODE_FROM}:hidden`}><ContextSelector data={context} mode='min' /></View>}
                         </Row>
                         {isWeb ? <CoverMenuMeta {...data.meta_menu} /> : <ScrollView horizontal={true}><CoverMenuMeta {...data.meta_menu} /></ScrollView>}
                         {!!data.profile.info?.date_start && (
@@ -459,7 +460,8 @@ export default function ({ data, mode, uri, showMoreMenu, pageData, context }) {
                                         {...data.actions_menu}
                                         uri={uri}
                                         isSplitMenu={true}
-                                    /></Row>
+                                    />
+                                </Row>
                                 {showMoreMenu && <View className="w-11 items-end ">
                                     <CoverMenuMore
                                         {...data.actions_menu}
@@ -469,11 +471,11 @@ export default function ({ data, mode, uri, showMoreMenu, pageData, context }) {
                                 </View>}
                             </View>
                         ) : (
-                            <CoverMenu
+                            <>{ !appSetting('cover', 'more_menu_in_navbar', data?.profile?.module) && <CoverMenu
                                 {...data.actions_menu}
                                 uri={uri}
                                 persistent={2}
-                            />
+                            />}</>
                         )}
                     </View>
 

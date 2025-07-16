@@ -289,7 +289,7 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, windowWidth, isC
             <Animated.View className={`${conductorTheme.cover_cnt} cover-1 `} style={[{ zIndex: '50' }, animatedStyleHeader2]}>
                 <ViewRef ref={cover1Ref} className={conductorTheme.cover_cnt2}   >
                     {(isCover && !isHideCover) && <View className="w-full ">
-                        <Cover data={pageData.cover_block} showMoreMenu={!conductorTheme.action_menu_in_tabs} mode={headerSettings.cover} uri={uri} context={pageData.context} />
+                        <Cover data={pageData.cover_block}  mode={headerSettings.cover} uri={uri} context={pageData.context} />
                     </View>}
                     <View className="w-full ">
                         {tabBarObj}
@@ -299,7 +299,7 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, windowWidth, isC
             <Animated.View className={`fixed w-full z-50 cover-2 ${isCoverDisabled ? ` hidden ${TABLET_MODE_FROM}:flex ` : ' hidden'}`} style={[{ position: isCoverDisabled ? '' : 'fixed', zIndex: '50', }, animatedStyleHeader3]} >
                 <View className="w-full  bg-bgrtabbar dark:bg-bgrtabbar-d backdrop-blur-lg border-b border-bdrtabbar dark:border-bdrtabbar-d shadow-sm">
                     {(isCover && !isHideCover) && <View className="w-full">
-                        <CoverSmall showMoreMenu={!conductorTheme.action_menu_in_tabs} context={pageData.context} data={pageData.cover_block} />
+                        <CoverSmall context={pageData.context} data={pageData.cover_block} />
                     </View>}
                     <View className="w-full ">
                         {tabBarObj}
@@ -318,18 +318,21 @@ const TabBar = ({ menu, routes, leftSideBar, pageData, currentUser, index, setIn
         const addButtons = AddMenu(menu, 'hideInTopBar')
         return (
             <TopSidebar omitDefaultBackground={omitDefaultBackground} leftSideBar={leftSideBar} addButtons={addButtons} layout={getLayout(currentUser)} title={t(menuSettings?.name)} >
-                <ConductorMenu currentUser={currentUser} leftSideBar={leftSideBar} routes={routes} index={index} t={t} setIndex={setIndex} getNumCols={getNumCols} windowWidth={windowWidth} onChangeRoute={onChangeRoute} />
-                {(conductorTheme.action_menu_in_tabs && !!pageData.cover_block?.actions_menu) && <Row className=" items-center gap-x-2 justify-end  ">
+                <View className="flex-1">
+                    <ConductorMenu currentUser={currentUser} leftSideBar={leftSideBar} routes={routes} index={index} t={t} setIndex={setIndex} getNumCols={getNumCols} windowWidth={windowWidth} onChangeRoute={onChangeRoute} />
+                </View>
+                {( !!pageData.cover_block?.actions_menu) && <Row className=" items-center gap-x-2 justify-end  ">
                     {isHideCover && <CoverMenu
                         {...pageData.cover_block.actions_menu}
                         uri={pageData.uri}
                         isSplitMenu={true}
                         containerClasses="gap-x-2"
                     />}
-                    {appSetting('cover', 'more_menu_in_cnd') && <CoverMenuMore
+                    {appSetting('cover', 'more_menu_in_navbar', pageData?.module) && <CoverMenuMore
                         {...pageData.cover_block.actions_menu}
                         uri={pageData.uri}
                         isSplitMenu={true}
+                        persistent={1}
                     />}
                 </Row>}
             </TopSidebar>
