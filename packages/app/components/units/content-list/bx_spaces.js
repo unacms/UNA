@@ -2,7 +2,7 @@ import { useState, useMemo, useRef } from 'react'
 import { useCardData } from 'app/context/card'
 import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
-import { getImageSizes, tp } from 'app/lib/util'
+import { getImageSizes, tp, appSetting } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import Card from 'app/ui/molecules/card'
@@ -43,6 +43,8 @@ export default function Unit(props) {
     }
 
     function getBase() {
+        const bShowProfilePic = appSetting('cover', 'show_pic_by_module', 'bx_spaces')
+
         return (
             <>
                 <Redirect ref={redirectdRef} />
@@ -61,12 +63,23 @@ export default function Unit(props) {
                             </View>
                             <View className="flex-col p-3  flex-auto items-between justify-between ">
                                 <View>
-                                    <Text
-                                        numberOfLines={1}
-                                        className=" text-lg leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-primary group-hover:dark:text-primary-d"
-                                    >
-                                        {data.title}
-                                    </Text>
+                                    <Row className="items-center gap-x-2">
+                                        {bShowProfilePic && (
+                                            <Profile
+                                                url_avatar={data?.image?.src}
+                                                displayType="unit_wo_info"
+                                                displaySize="base"
+                                                display_name={data.title}
+                                                id={data.id || data.title}
+                                            />
+                                        )}
+                                        <Text
+                                            numberOfLines={1}
+                                            className="flex-auto text-lg leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-primary group-hover:dark:text-primary-d"
+                                        >
+                                            {data.title}
+                                        </Text>
+                                    </Row>
                                     <Row className="items-center h-6 my-3">
 
 

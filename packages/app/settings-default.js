@@ -139,13 +139,13 @@ export  const settingsDefault = {
         allow_edit: true, //appSetting('layout', 'allow_edit_covers')
         fixed: false, //appSetting('layout', 'fixed_cover')
         scroll: false,
-        hide_cover_for_context: true,
+        hide_cover_for_context: false,
         split_action_menu: true, //OLD appSetting('layout', 'split_action_menu')
         back_button_url_for_profile: '/friends', //OLD appSetting('layout', 'back_for_profile')
         view_by_module: {
             //appSetting('layout', 'cover_mode'
             bx_courses: 'min',
-            bx_spaces: 'min',
+            bx_spaces: 'max',
             bx_jobs: 'max',
         },
         show_pic_by_module:{
@@ -376,7 +376,7 @@ export  const settingsDefault = {
         ],
         per_line_left_side_bar: [
             
-            { width: 1536, count: 5 },
+
             { width: 1280, count: 4 },
             { width: 1024, count: 3 },
             { width: 768, count: 2 },
