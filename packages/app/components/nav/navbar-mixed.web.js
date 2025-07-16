@@ -1,74 +1,18 @@
-import { memo, useState, useRef, useEffect } from 'react'
+import { memo, useState } from 'react'
 import { useWindowDimensions } from 'react-native'
 import Link from 'app/ui/atoms/link'
 import { Text } from 'app/design/typography'
 import { View, Row, Pressable } from 'app/design/view'
-import { Button, ButtonRef } from 'app/design/controls'
+import { Button } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user'
 import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { getBackButtonWeb } from 'app/lib/common-helpers';
 import { appStatic } from 'app/lib/app-static'
 import { menuItemsByName } from 'app/lib/util'
 import Search from 'app/ui/molecules/search'
-import NotificationButton from 'app/ui/molecules/notif'
 import { useTranslation } from 'react-i18next';
-import MenuAdd from 'app/components/nav/menu-add'
-import MenuAccount from 'app/components/nav/menu-account'
-import MenuLauncher from 'app/components/nav/menu-launcher'
 import MenuDrawer from 'app/components/nav/menu-drawer'
 import ProfileSwitcher from 'app/components/elements/profile_switcher';
-
-const ToolbarItems = ({ currentUser, bSearch, bNotifs, bMessenger, t }) => {
-    const toolbarConfig = appSetting('header_toolbar', 'mixed')
-    const itemsToRender = currentUser
-        ? toolbarConfig?.loggedIn
-        : toolbarConfig?.loggedOut
-
-    const components = {
-        search: bSearch ? <Search /> : null,
-        launcher: <MenuLauncher />,
-        add: <MenuAdd />,
-        notifications: bNotifs ? <NotificationButton /> : null,
-        messenger: bMessenger ? (
-            <Link href={appSetting('messenger', 'url')} alt={t('Messenger')} >
-                <ButtonRef
-                    tooltip={t('Messenger')}
-                    variant="secondary"
-                    rounded
-                    startDecorator="MessageCircleMore"
-                    addon={{ variant: 'primary', text: currentUser?.counters?.bx_messenger_new_messages, hideZero: true }}
-                />
-            </Link>
-        ) : null,
-        account: currentUser ? <MenuAccount /> : null,
-        login: !currentUser ? (
-            <Link href="/">
-                <ButtonRef
-                    variant="secondary"
-                    tooltip="Account"
-                    rounded
-                    aria-label="Account"
-                    alt={t('Account')}
-                    startDecorator="User"
-                />
-            </Link>
-        ) : null,
-    }
-
-    return (
-        <Row className="flex-row flex-auto sm:flex-none justify-end my-auto ">
-            {itemsToRender?.map((item, index) => {
-                const Component = components[item.component]
-                if (!Component) return null
-                return (
-                    <View key={index} className={item.className}>
-                        {Component}
-                    </View>
-                )
-            })}
-        </Row>
-    )
-}
 
 const HeaderLine = memo(({ headerSettings, currentUser, uri, title, menuPopup, setMenuPopup, showMenu }) => {
 
@@ -121,8 +65,6 @@ export default function (props) {
     const [menuPopup, setMenuPopup] = useState(false)
     const { t } = useTranslation();
     const bSearch = appSetting('layout', 'search') == true;
-    const bMessenger = appSetting('messenger', 'url') ? true : false;
-    const bNotifs = appSetting('notifications', 'url') ? true : false;
 
     const menu_sidebar_items = menuItemsByName('main_menu', appSetting('menu_items', 'menu_sidebar'), currentUser);
 
@@ -138,6 +80,8 @@ export default function (props) {
     const showMenu = () => {
         setMenuPopup(!menuPopup)
     }
+
+    const HeaderElement = getComponent('molecule', 'header_element')  
 
     return (
         <>
@@ -188,13 +132,7 @@ export default function (props) {
                             </Row>
                         </Row>
                         <Row className="w-full xl:w-80 px-3 gap-x-2 justify-end  ">
-                            <ToolbarItems
-                                currentUser={currentUser}
-                                bSearch={bSearch}
-                                bNotifs={bNotifs}
-                                bMessenger={bMessenger}
-                                t={t}
-                            />
+                            <HeaderElement/>
                         </Row>
                     </View>
                 </View>

@@ -21,72 +21,6 @@ import { getComponent } from 'app/components/registry'
 
 const headerTheme = appSetting('layout', 'header');
 
-const ToolbarItems = ({ currentUser, bSearch, isCustomHeaderElement, bNotifs, bMessenger, t }) => {
-    const toolbarConfig = appSetting('header_toolbar', 'hor')
-    const itemsToRender = currentUser
-        ? toolbarConfig?.loggedIn
-        : toolbarConfig?.loggedOut
-
-    const HeaderElement = getComponent('molecule', 'header_element')    
-
-    const components = {
-        search: bSearch ? <Search /> : null,
-        custom_header_element: isCustomHeaderElement ? <HeaderElement /> : null,
-        launcher: <MenuLauncher />,
-        add: <MenuAdd />,
-        notifications: bNotifs ? <NotificationButton /> : null,
-        messenger: bMessenger ? (
-            <Link href={appSetting('messenger', 'url')} alt={t('Messenger')}>
-                <Button
-                    tooltip={t('Messenger')}
-                    variant="secondary"
-                    rounded
-                    startDecorator="MessageSquare"
-                    id="m2"
-                    size="base"
-                    hitSlop={4}
-                    ring="p-1"
-                    addon={{
-                        variant: 'primary',
-                        text: currentUser?.counters?.bx_messenger_new_messages,
-                        hideZero: true,
-                    }}
-                />
-            </Link>
-        ) : null,
-        account: currentUser ? <MenuAccount /> : null,
-        login: !currentUser ? (
-            <Link href="/login">
-                <ButtonRef
-                    variant="secondary"
-                    tooltip="Account"
-                    rounded
-                    size="base"
-                    hitSlop={4}
-                    aria-label="Account"
-                    alt={t('Account')}
-                    ring="p-1"
-                    startDecorator="UserRound"
-                />
-            </Link>
-        ) : null,
-    }
-
-    return (
-        <Row className="justify-end gap-x-0.5 items-center">
-            {itemsToRender?.map((item, index) => {
-                const Component = components[item.component]
-                if (!Component) return null
-                return (
-                    <View key={index} className={item.className}>
-                        {Component}
-                    </View>
-                )
-            })}
-        </Row>
-    )
-}
-
 const HeaderLine = memo(
     ({
         headerSettings,
@@ -182,7 +116,6 @@ export default function (props) {
         setMenuPopup(!menuPopup)
     }
 
-    const isCustomHeaderElement = appSetting('layout', 'custom_header_element')
 
     useEffect(() => {
         const handleScroll = () => {
@@ -199,6 +132,7 @@ export default function (props) {
         }
     }, [])
 
+    const HeaderElement = getComponent('molecule', 'header_element')  
     
     return (
         <>
@@ -224,14 +158,7 @@ export default function (props) {
                             />
                             <MenuTop url={props.url} uri={props.uri} />
                             <Row className={headerTheme.content_right}>
-                                <ToolbarItems
-                                    currentUser={currentUser}
-                                    bSearch={bSearch}
-                                    isCustomHeaderElement={isCustomHeaderElement}
-                                    bNotifs={bNotifs}
-                                    bMessenger={bMessenger}
-                                    t={t}
-                                />
+                                <HeaderElement />
                             </Row>
                         </View>
                     </View>

@@ -114,7 +114,7 @@ export const Header = memo(({
     if (isNoContainer)
         return headerContent;
 
-    const isCustomHeaderElement = appSetting('layout', 'custom_header_element')
+
     const ContextSelector = getComponent('molecule', 'context_selector')
     const HeaderElement = getComponent('molecule', 'header_element')
 
@@ -142,7 +142,7 @@ export const Header = memo(({
             {type !== 'string' && <View className="flex-auto">{headerContent}</View>}
             {(memoizedRightComponents || rightHeaderComponent || isCustomHeaderElement) && <Row className=" items-end ">
                 {rightHeaderComponent ? rightHeaderComponent : memoizedRightComponents}
-                {isCustomHeaderElement && <HeaderElement />}
+                <HeaderElement mode="small"  />
             </Row>}
         </Row>
     );

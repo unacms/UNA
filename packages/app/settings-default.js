@@ -69,7 +69,6 @@ export  const settingsDefault = {
         share_text: '',
         default_icon_stroke_width: 2,
         tablet_mode_from: 'lg',
-        custom_header_element: false,
         show_tabbar_on_mobile_non_logged: false, 
         
         header:{
@@ -731,7 +730,6 @@ export  const settingsDefault = {
         hor: {
             loggedIn: [
                 { component: 'search', className: '' },
-                { component: 'custom_header_element', className: '' },
                 { component: 'launcher', className: 'hidden sm:block' },
                 { component: 'add', className: '' },
                 { component: 'notifications', className: 'hidden sm:block' },
