@@ -446,7 +446,7 @@ export default function ({ data, mode, uri, showMoreMenu, pageData, context }) {
                                         </View>
                                     </View>
                                 )}
-                                <Row>
+                                { !appSetting('cover', 'more_menu_in_navbar', data?.profile?.module) && <Row>
                                     <View className=" flex-row flex-wrap gap-x-2 gap-y-2 sm:gap-y-3 items-center">
                                         <CoverMenu
                                             {...data.actions_menu}
@@ -461,7 +461,7 @@ export default function ({ data, mode, uri, showMoreMenu, pageData, context }) {
                                         uri={uri}
                                         isSplitMenu={true}
                                     />
-                                </Row>
+                                </Row>}
                                 {showMoreMenu && <View className="w-11 items-end ">
                                     <CoverMenuMore
                                         {...data.actions_menu}
