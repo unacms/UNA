@@ -57,7 +57,7 @@
     "npm": "^11.0.0",
     "ovenplayer": "^0.10.37",
     "pdfjs-dist": "^5.3.93",
-    "photoswipe": "github:dimsemenov/PhotoSwipe#v4.1.3",
+    "photoswipe": "github:dimsemenov/PhotoSwipe#v5.4.4",
     "player.js": "^0.1.0",
     "prismjs": "^1.29.0",
     "pusher-js": "^8.4.0-rc2",
