@@ -691,7 +691,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
                         {AddBlocksCnt}
                     </View>
                 </View>}
-                <View className={(isRightCol ? 'flex-auto sm:px-4 flex-auto ' : ' w-full mx-auto') /*sm:p-2*/ + (layoutName == 'navigator' ? '' : ' pt-1 sm:p-4 ') + (header ? ' sm:p-3 ' : '')}>
+                <View className={(isRightCol ? 'flex-auto flex-auto ' : ' w-full mx-auto') /*sm:p-2*/ + (layoutName == 'navigator' ? '' : ' px-1.5 sm:px-2 py-4 ') + (header ? ' sm:p-3 ' : '')}>
                     {TabFlashListM}
                     {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 && callFn("noContentByUrl", [route?.endpoint])))}
                 </View>

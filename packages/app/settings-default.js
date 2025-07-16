@@ -875,9 +875,9 @@ export  const settingsDefault = {
             menu_is_dynamic: true,
             menu_cnt: ' flex-row flex-none  ',
             menu_categ_ident: 'pl-12',
-            right_column_cnt: 'fixed-process pr-4 py-4',
+            right_column_cnt: 'fixed-process px-1.5 sm:px-2 py-4',
             right_column_cnt2: 'hidden xl:flex flex-auto max-w-sm',
-            left_column_cnt: 'fixed-process py-4',
+            left_column_cnt: 'fixed-process px-1.5 sm:px-2 py-4',
             left_column_cnt2: 'hidden xl:flex flex-auto max-w-sm',
             topmenu_cnt:
                 'w-full px-8 pt-6 items-stretch justify-stretch sticky z-50 t-8 gap-x-8 hidden lg:flex p',
