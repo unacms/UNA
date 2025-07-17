@@ -28,6 +28,7 @@ import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal';
 import emitter from 'app/context/emitter';
 import Cover, { CoverSmall } from 'app/components/elements/cover';
 import { CoverMenuMore, CoverMenu } from 'app/components/nav/menu-cover'
+import { Panel, PanelGroup, PanelHandler, isShowColumn } from "app/ui/molecules/resizable-panels";
 
 
 const conductorTheme = appSetting('theme', 'conductor');
@@ -289,7 +290,7 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, windowWidth, isC
             <Animated.View className={`${conductorTheme.cover_cnt} cover-1 `} style={[{ zIndex: '50' }, animatedStyleHeader2]}>
                 <ViewRef ref={cover1Ref} className={conductorTheme.cover_cnt2}   >
                     {(isCover && !isHideCover) && <View className="w-full ">
-                        <Cover data={pageData.cover_block}  mode={headerSettings.cover} uri={uri} context={pageData.context} />
+                        <Cover data={pageData.cover_block} mode={headerSettings.cover} uri={uri} context={pageData.context} />
                     </View>}
                     <View className="w-full ">
                         {tabBarObj}
@@ -321,7 +322,7 @@ const TabBar = ({ menu, routes, leftSideBar, pageData, currentUser, index, setIn
                 <View className="flex-1">
                     <ConductorMenu currentUser={currentUser} leftSideBar={leftSideBar} routes={routes} index={index} t={t} setIndex={setIndex} getNumCols={getNumCols} windowWidth={windowWidth} onChangeRoute={onChangeRoute} />
                 </View>
-                {( !!pageData.cover_block?.actions_menu) && <Row className=" items-center gap-x-2 justify-end  ">
+                {(!!pageData.cover_block?.actions_menu) && <Row className=" items-center gap-x-2 justify-end  ">
                     {isHideCover && <CoverMenu
                         {...pageData.cover_block.actions_menu}
                         uri={pageData.uri}
@@ -647,10 +648,10 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
              return a;
          }
  */
-
+        
+      
         const isRightCol = route?.sidebar?.content?.length > 0 || route?.blocks?.browse_sidebar;
         const isLeftCol = route?.leftSideBarBlocks?.length > 0 && layoutName !== 'profile-alt';
-        console.log("layoutName", layoutName)
 
         const TabFlashListM = useMemo(() => {
             return <UniList
@@ -686,7 +687,40 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
         }, [dataItems, numColumns, dataItems.length]);
 
         const sidebarUnitType = route.blocks?.browse_sidebar?.unitType || 'default';
-
+        const cellsCustomConfig = appSetting('layouts', route.pageData.uri);
+        console.log("route.pageData.uri", route.pageData.uri, cellsCustomConfig)
+        if (cellsCustomConfig?.adjustable) {
+            return (
+                <PanelGroup autoSaveId={`cells-${route.pageData.uri}`} direction="horizontal" className={layoutName == 'navigator' ? '' : ' px-1.5 sm:px-2 '}>
+                    {isShowColumn(isLeftCol, windowWidth, cellsCustomConfig.cells?.left) && <>
+                            <Panel {...cellsCustomConfig.cells?.left}>
+                                <View className={`py-4 ${conductorTheme.left_column_size}`}>
+                                    {AddBlocksCnt}
+                                </View>
+                            </Panel>
+                            <PanelHandler gap={4} sizable={cellsCustomConfig.sizable} />
+                        </>
+                    }
+                    <Panel {...cellsCustomConfig.cells?.center}>
+                        <View className={(isRightCol ? 'flex-auto flex-auto ' : ' w-full mx-auto') + (layoutName == 'navigator' ? '' : ' py-4 ') + (header ? ' sm:p-3 ' : '')}>
+                            {TabFlashListM}
+                            {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 && callFn("noContentByUrl", [route?.endpoint])))}
+                        </View>
+                    </Panel>
+                    {isShowColumn(isRightCol, windowWidth, cellsCustomConfig.cells?.right) && <>
+                            <PanelHandler gap={4} sizable={cellsCustomConfig.sizable}/>
+                            <Panel {...cellsCustomConfig.cells?.right}>
+                                <View className={`py-4 ${conductorTheme.left_column_size}`}>
+                                    {route?.sidebar?.content.map((item, index) => {
+                                        return <View className="mb-4" key={'item' + index}><ItemRenderer unitType={sidebarUnitType} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''} /></View>
+                                    })}
+                                    <BlockByName data={route.pageData ? route.pageData : data} name={route.blocks?.browse_sidebar} sidebar={true} perLine={1} maxItems={1} />
+                                </View>
+                            </Panel>
+                        </>}
+                </PanelGroup>
+            );
+        }
         return (
             <Row className={(headerSettings.columns == "reverse" ? 'flex-row-reverse' : '') + conductorTheme.content_max_width + ' mx-auto w-full ' + (isCoverDisabled ? ' ??sm:px-4 sm:my-3 ' : '')}>
                 {isLeftCol && <View className={`${conductorTheme.left_column_cnt2}`}>
@@ -694,7 +728,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
                         {AddBlocksCnt}
                     </View>
                 </View>}
-                <View className={(isRightCol ? 'flex-auto flex-auto ' : ' w-full mx-auto') /*sm:p-2*/ + (layoutName == 'navigator' ? '' : ' px-1.5 sm:px-2 py-4 ') + (header ? ' sm:p-3 ' : '')}>
+                <View className={(isRightCol ? 'flex-auto flex-auto ' : ' w-full mx-auto') + (layoutName == 'navigator' ? '' : ' px-1.5 sm:px-2 py-4 ') + (header ? ' sm:p-3 ' : '')}>
                     {TabFlashListM}
                     {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 && callFn("noContentByUrl", [route?.endpoint])))}
                 </View>

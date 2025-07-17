@@ -79,7 +79,7 @@ function getLayoutName(data, uri, isWeb) {
             name: 'navigator',
         },
         {
-            cond: isWeb && data?.layout && isComponent('layout', data.layout),
+            cond: data?.layout && isComponent('layout', data.layout),
             name: data.layout,
             blocks: customBlocks,
         },
