@@ -369,7 +369,8 @@ export const VisibilityInfo = memo(({ data }) => {
 });
 
 export const Author = memo(({ data, url, t }) => {
-
+    console.log("datadata", data)
+    const Badges = getComponent('molecule', 'badges')
     const ActionsElements = data.author_actions.map((item, index) => {
         const Element = getComponent('molecule', String(item.type));
         if (!Element) return null; // Explicitly return null for no component
@@ -399,8 +400,10 @@ export const Author = memo(({ data, url, t }) => {
 
                         <VisibilityInfo data={data} />
                         <ItemInfo data={data} t={t} />
+                        
                     </Row>
                 }
+                showInfo2={<Badges badges={data.author_badges} />}
                 showActions={ActionsElements}
             />
         </View>

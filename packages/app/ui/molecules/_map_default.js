@@ -13,6 +13,7 @@ import Connections from './connections';
 import ConnectionsMenu from './connections_menu';
 import Recommendation from './recommendations'; 
 import ContextSelector from './context-selector';  
+import Badges from './badges';  
 import Splash from './splash';  
 import HeaderElement from './header_element'; 
  
@@ -33,6 +34,7 @@ export const componentsMapDefault = {
     recommendation: memo(Recommendation),
     context_selector: ContextSelector,
     splash: Splash,
+    badges: Badges,
     header_element: HeaderElement,
 };
 

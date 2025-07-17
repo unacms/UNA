@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { View, Row, ScrollView } from 'app/design/view'
 import Image from 'app/ui/atoms/image'
-import Badges from 'app/ui/atoms/badges'
 import { Text } from 'app/design/typography'
 import { getBackButtonWeb } from 'app/lib/common-helpers'
 import { Button } from 'app/design/controls'
@@ -392,6 +391,7 @@ export default function ({ data, mode, uri, showMoreMenu, pageData, context }) {
 
     const isAddSelector  = context && context.list[0] && data.profile.module == context.list[0].module
     const ContextSelector = getComponent('molecule', 'context_selector')
+    const Badges = getComponent('molecule', 'badges')
 
    
     if (coverMode === 'none') {

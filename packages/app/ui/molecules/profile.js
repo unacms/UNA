@@ -61,21 +61,21 @@ function UnitWoInfo({ oProps, sSize, sSizeFontLetter, iSizeWidth, bShowLinks, em
 
 }
 
-function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont, actions }) {
+function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont, actions, info2 }) {
     return (
         <View className="flex-col my-auto truncate flex-auto">
 
             {bShowLinks ? (
-                <Link emulate={emulate} haptics="Select" href={oProps.url}>
+                <Row className='gap-x-2 items-center'><Link emulate={emulate} haptics="Select" href={oProps.url}>
                     <DisplayNameLink
                         title={oProps.display_name}
                         url={oProps.url}
                         fontSize={sSizeFont}
                         href={oProps.href}
                         actions={actions}
-                    /></Link>
+                    /></Link>{info2}</Row>
             ) : (
-                <DisplayNameText title={oProps.display_name} fontSize={sSizeFont} />
+                <Row className='gap-x-2 items-center'><DisplayNameText title={oProps.display_name} fontSize={sSizeFont} />{info2}</Row>
             )}
 
             <View>{info}</View>
@@ -200,6 +200,8 @@ function AtomProfile_(oProps) {
         ? oProps.showInfo
         : <DisplayInfo {...oProps} />;
 
+    const sShowInfo2 = oProps.showInfo2
+
     switch (sDisplayType) {
         case 'unit':
             return (
@@ -208,7 +210,7 @@ function AtomProfile_(oProps) {
                         <UnitWoInfo oProps={oProps} sSize={sSize} sSizeFontLetter={sSizeFontLetter} emulate={emulate} iSizeWidth={iSizeWidth} bShowLinks={bShowLinks} />
                     </View>
                     <View className="flex-auto">
-                        <UnitWoImage oProps={oProps} sSizeFont={sSizeFont} bShowLinks={bShowLinks} emulate={emulate} info={sShowInfo} actions={oProps.showActions} />
+                        <UnitWoImage oProps={oProps} sSizeFont={sSizeFont} bShowLinks={bShowLinks} emulate={emulate} info={sShowInfo} info2={sShowInfo2} actions={oProps.showActions} />
                     </View>
                 </Row>
             )
@@ -217,7 +219,7 @@ function AtomProfile_(oProps) {
             return <UnitWoInfo oProps={oProps} sSize={sSize} sSizeFontLetter={sSizeFontLetter} emulate={emulate} iSizeWidth={iSizeWidth} bShowLinks={bShowLinks} />
 
         case 'unit_wo_image':
-            return <UnitWoImage oProps={oProps} sSizeFont={sSizeFont} bShowLinks={bShowLinks} emulate={emulate} info={sShowInfo} actions={oProps.showActions} />
+            return <UnitWoImage oProps={oProps} sSizeFont={sSizeFont} bShowLinks={bShowLinks} emulate={emulate} info={sShowInfo} info2={sShowInfo2} actions={oProps.showActions} />
 
         case 'unit_text':
             return <UnitText oProps={oProps} sSizeFont={sSizeFont}  />
