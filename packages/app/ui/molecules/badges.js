@@ -17,10 +17,7 @@ export default function ({ badges }) {
                             key={`badge-${index}`}
                             rounded
                             startDecorator={<View className="rounded-full w-8 h-8 overflow-hidden"><Image
-
-
                                 view="cover"
-
                                 src={item.badge_url}
                                 alt={item.badge_url.title_attr}
                             /></View>}
