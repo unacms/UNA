@@ -646,7 +646,7 @@ export  const settingsDefault = {
             {
                 key: '/tab1',
                 title: 'Friends',
-                url: '/posts-home',
+                url: '/audit-administration',
                 icon: 'UsersRound',
             },
             {
@@ -786,7 +786,16 @@ export  const settingsDefault = {
         },
         '/create-account': {
             max_width: ''
-        }
+        },
+       /* 'audit-administration':{
+            gap: 4,
+            sizable: true,
+            cells:[
+                { key: 'cell_2', defaultSize: 50, minSize: 50, maxSize:50 },
+                { key: 'cell_3', defaultSize: 25.33, minSize: 10, breakpoint: 'md' },
+                { key: 'cell_4', defaultSize: 25.33, minSize: 10, breakpoint: 'lg' },
+            ]
+        }*/
     },
     theme: {
         profile_colors: [

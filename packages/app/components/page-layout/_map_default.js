@@ -1,4 +1,5 @@
 import PageLayoutDefault from './default';
+import { Platform } from "react-native";
 
 import PageCustomPost from './post';
 
@@ -32,5 +33,10 @@ export const componentsMapDefault = {
     'layout_top_area_bar_right': PageUniversal,
     'layout_topbottom_area_bar_left': PageUniversal,
     'layout_topbottom_area_bar_right': PageUniversal,
-    'layout_topbottom_area_col2_col5_col3': PageUniversal
+    'layout_topbottom_area_col2_col5_col3': PageUniversal,
+    'layout_top_area_bar_left': PageUniversal,
+    'layout_top_area_3_columns': PageUniversal,
+    'layout_top_area_2_columns': PageUniversal,
+    'layout_topbottom_area_2_columns': PageUniversal,
+    
 };

@@ -116,10 +116,10 @@ export const Header = memo(({
             )}
 
             {type !== 'string' && <View className="flex-auto">{headerContent}</View>}
-            {(memoizedRightComponents || rightHeaderComponent || isCustomHeaderElement) && <Row className=" items-end ">
+            <Row className=" items-end ">
                 {rightHeaderComponent ? rightHeaderComponent : memoizedRightComponents}
                 <HeaderElement mode="small"  />
-            </Row>}
+            </Row>
         </Row>
     );
 });

@@ -198,7 +198,7 @@ export default function DropdownPopup({
         }
     }, [buttonPos, contentClasses, children, windowWidth, windowHeight, contentAnimatedStyle, isWeb, colors]);
 
-    const Content = isWeb ? (
+    const Content = true ? (
         <ViewRef
             ref={contentRef}
             style={{
