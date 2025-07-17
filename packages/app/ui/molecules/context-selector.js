@@ -1,13 +1,11 @@
-import { View, Row, Pressable, ScrollView } from 'app/design/view';
+import { View, Row } from 'app/design/view';
 import DropdownPopup from 'app/ui/atoms/dropdown-popup';
 import { Text } from 'app/design/typography';
 import Link from 'app/ui/atoms/link';
 import { Button } from 'app/design/controls'
 import { Icon } from 'app/ui/atoms/icon';
 import Profile from 'app/ui/molecules/profile'
-import { useCurrentUser } from 'app/context/user';
 import { appStatic } from 'app/lib/app-static';
-import { useWindowDimensions } from 'react-native';
 import { FeedbackHaptics, appSetting } from 'app/lib/util';
 import { useState } from 'react';
 
@@ -23,8 +21,6 @@ function renderListItem(props, isActive, onItemClick) {
         </Link>
     );
 }
-
-
 
 function getContextRoot(data) {
     if (!data.current?.id) {
@@ -122,14 +118,13 @@ export default function ContextSelector({ data, url, mode }) {
     return (
         <>
             {(data?.list?.length > 1 || data?.links?.length > 0) ? <Row className=" w-full flex-auto items-center">
-                {data.current?.id && <>
+                {(data.current?.id && appSetting('context_selector', 'logo')) && <>
                     <Link href="/"><View className=' flex-row  sm:px-1 lg:hover:bg-bgritem dark:lg:hover:bg-bgritem-d rounded-xl'>
                         <View className="items-center justify-center p-1 text-neutral-800 dark:text-neutral-200">
                             {appStatic('logo', { mode: 'mark' })}
                         </View>
 
                     </View></Link>
-
                     <Icon icon="ChevronRight" className="text-base font-semibold text-neutral-400 dark:text-neutral-600" /></>}
                 {CurrentContext}
                 {DropDown}</Row> : CurrentContext}

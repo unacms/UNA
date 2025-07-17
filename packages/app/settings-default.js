@@ -130,7 +130,8 @@ export  const settingsDefault = {
     },
     
     context_selector:{
-        default_item: ''
+        default_item: '',
+        logo: true
     },
     cover: {
         use_background: true, //appSetting('layout', 'use_background')
