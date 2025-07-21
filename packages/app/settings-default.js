@@ -36,7 +36,7 @@ export  const settingsDefault = {
         background: ' TODO ',
 
         sidebar: ' fixed-process fixed w-80 2xl:w-96 p-3 web:duration-200 ',
-        sidebar_container: ' hidden relative xl:flex w-80 2xl:w-96 ',
+        sidebar_container: ' hidden xl:flex w-80 2xl:w-96 ',
       
         aside_container: 'hidden lg:flex w-80 2xl:w-96 h-full', 
         max_width: ' w-full ', 
@@ -796,6 +796,23 @@ export  const settingsDefault = {
                 { key: 'cell_4', defaultSize: 25.33, minSize: 10, breakpoint: 'lg' },
             ]
         }*/
+       'home':{
+            adjustable: true,
+            sizable: true,
+            cells:{
+                left: {defaultSize: 20, minSize: 10, breakpoint: 'xl' },
+                center: { defaultSize: 60, minSize: 10 },
+                right: { defaultSize: 20, minSize: 10, breakpoint: 'lg' },
+            }
+        },
+        'navigator':{
+            adjustable: true,
+            sizable: true,
+            cells:{
+                left: {defaultSize: 35, minSize: 10, breakpoint: 'lg' },
+                center: { defaultSize: 60, minSize: 10 },
+            }
+        },
        'view-persons-profile':{
             adjustable: true,
             sizable: true,

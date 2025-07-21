@@ -648,8 +648,8 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
              return a;
          }
  */
-        
-      
+
+
         const isRightCol = route?.sidebar?.content?.length > 0 || route?.blocks?.browse_sidebar;
         const isLeftCol = route?.leftSideBarBlocks?.length > 0 && layoutName !== 'profile-alt';
 
@@ -688,18 +688,17 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
 
         const sidebarUnitType = route.blocks?.browse_sidebar?.unitType || 'default';
         const cellsCustomConfig = appSetting('layouts', route.pageData.uri);
-        console.log("route.pageData.uri", route.pageData.uri, cellsCustomConfig)
         if (cellsCustomConfig?.adjustable) {
             return (
                 <PanelGroup autoSaveId={`cells-${route.pageData.uri}`} direction="horizontal" className={layoutName == 'navigator' ? '' : ' px-1.5 sm:px-2 '}>
                     {isShowColumn(isLeftCol, windowWidth, cellsCustomConfig.cells?.left) && <>
-                            <Panel {...cellsCustomConfig.cells?.left}>
-                                <View className={`py-4 ${conductorTheme.left_column_size}`}>
-                                    {AddBlocksCnt}
-                                </View>
-                            </Panel>
-                            <PanelHandler gap={4} sizable={cellsCustomConfig.sizable} />
-                        </>
+                        <Panel {...cellsCustomConfig.cells?.left}>
+                            <View className={`py-4 ${conductorTheme.left_column_size}`}>
+                                {AddBlocksCnt}
+                            </View>
+                        </Panel>
+                        <PanelHandler gap={4} sizable={cellsCustomConfig.sizable} />
+                    </>
                     }
                     <Panel {...cellsCustomConfig.cells?.center}>
                         <View className={(isRightCol ? 'flex-auto flex-auto ' : ' w-full mx-auto') + (layoutName == 'navigator' ? '' : ' py-4 ') + (header ? ' sm:p-3 ' : '')}>
@@ -708,16 +707,16 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
                         </View>
                     </Panel>
                     {isShowColumn(isRightCol, windowWidth, cellsCustomConfig.cells?.right) && <>
-                            <PanelHandler gap={4} sizable={cellsCustomConfig.sizable}/>
-                            <Panel {...cellsCustomConfig.cells?.right}>
-                                <View className={`py-4 ${conductorTheme.left_column_size}`}>
-                                    {route?.sidebar?.content.map((item, index) => {
-                                        return <View className="mb-4" key={'item' + index}><ItemRenderer unitType={sidebarUnitType} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''} /></View>
-                                    })}
-                                    <BlockByName data={route.pageData ? route.pageData : data} name={route.blocks?.browse_sidebar} sidebar={true} perLine={1} maxItems={1} />
-                                </View>
-                            </Panel>
-                        </>}
+                        <PanelHandler gap={4} sizable={cellsCustomConfig.sizable} />
+                        <Panel {...cellsCustomConfig.cells?.right}>
+                            <View className={`py-4 ${conductorTheme.left_column_size}`}>
+                                {route?.sidebar?.content.map((item, index) => {
+                                    return <View className="mb-4" key={'item' + index}><ItemRenderer unitType={sidebarUnitType} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''} /></View>
+                                })}
+                                <BlockByName data={route.pageData ? route.pageData : data} name={route.blocks?.browse_sidebar} sidebar={true} perLine={1} maxItems={1} />
+                            </View>
+                        </Panel>
+                    </>}
                 </PanelGroup>
             );
         }
@@ -829,14 +828,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
             </View>
         }
 
-        return (
-            <View className={appSetting('layout', 'max_width') + " w-full h-full mx-auto"} scrollEnabled={false} onLayout={handleLayoutTop}>
-                {isUseCurrentHeader && headerComponent}
-                <Toaster ref={toasterRef} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" />
-                <View style={{ minHeight: (windowHeight - offset) }} className={appSetting('layout', 'max_width  ') + 'mx-auto w-full  '} >{/*mt-28 lg:mt-0*/}
-                    <Row className={rc}>
-                        {a}
-                        <View className=" flex-auto ">
+        const MainComponent = <View className=" flex-auto ">
                             {(headerSettings.showAltTopMenu) && topSideBarComponent}
                             {/*(windowWidth < LAYOUT_BREAKPOINTS.lg && layoutName == 'navigator' && leftSideBarBlocks.length > 0) && <View className="items-start ml-4 mt-2 mb-2">
                                 <Button title="Filters" variant="default" size="sm" rounded onPress={showFilters} />
@@ -844,6 +836,38 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
                             {sceneHeaderComponent}
                             <RenderScene isCoverDisabled={isCoverDisabled} prevRoute={prevRoute} headerHeight={isShowFilters && routes.length > 1 ? defaultHeaderHeight + 52 : defaultHeaderHeight} header={isUseCurrentHeader ? null : headerComponent} route={currentRoute} />
                         </View>
+
+        const cellsCustomConfig = appSetting('layouts', 'navigator');
+        if (cellsCustomConfig?.adjustable) {
+            return (
+                <PanelGroup autoSaveId={`cells-navigator`} direction="horizontal" className={
+                    appSetting('layout', 'max_width') +
+                    ' mx-auto w-full flex-auto relative flex-row lg:pt-0 px-1.5 sm:px-2'
+                }>
+                    {isShowColumn(true, windowWidth, cellsCustomConfig.cells?.left) && <>
+                        <Panel {...cellsCustomConfig.cells?.left}>
+                            <View className=''>
+                                {leftSideBarComponent}
+                            </View>
+                        </Panel>
+                        <PanelHandler gap={4} sizable={cellsCustomConfig.sizable} /></>}
+                    <Panel {...cellsCustomConfig.cells?.center}>
+                        <View className='sm:p-3'>
+                            {MainComponent}
+                        </View>
+                    </Panel>
+                </PanelGroup>
+            );
+        }
+
+        return (
+            <View className={appSetting('layout', 'max_width') + " w-full h-full mx-auto"} scrollEnabled={false} onLayout={handleLayoutTop}>
+                {isUseCurrentHeader && headerComponent}
+                <Toaster ref={toasterRef} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" />
+                <View style={{ minHeight: (windowHeight - offset) }} className={appSetting('layout', 'max_width  ') + 'mx-auto w-full  '} >{/*mt-28 lg:mt-0*/}
+                    <Row className={rc}>
+                        {a}
+                        {MainComponent}
                     </Row>
                 </View>
                 <Footer />

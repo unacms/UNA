@@ -18,14 +18,15 @@ import UI from 'app/ui/molecules/ui'
 import { MenuItemSidebarWithWrapper } from 'app/components/nav/menu-item-sidebar'
 import { Platform } from 'react-native'
 import { useRef } from 'react';
-import ScrollList from 'app/ui/molecules/scroll_list'
 import { callFn } from 'app/lib/functions/call';
 import { getComponent } from 'app/components/registry'
+import { Panel, PanelGroup, PanelHandler, isShowColumn } from "app/ui/molecules/resizable-panels";
+import { useWindowDimensions } from 'react-native';
 
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from');
 
 export default function (props) {
-
+    const { width: windowWidth } = useWindowDimensions();
     const isWeb = Platform.OS == 'web'
     if (appSetting('config', 'show_ui')) {
         return <UI />
@@ -164,145 +165,177 @@ export default function (props) {
 
         const isFeedMenuPresent = feedList.length > 1 || appSetting('feed', 'show_selector_view')
 
-        return (
-            <View
-                className={
-                    appSetting('layout', 'max_width') +
-                    ' mx-auto w-full flex-auto relative flex-row lg:pt-0 '
+        const FeedContent = <>{getLayout(currentUser) == 'ver' && <View className={`hidden ${TABLET_MODE_FROM}:flex`}>{subHeader}</View>}
+            {feedList.map((item, index) => {
+                if (feedType == item.name) {
+                    return (
+                        <View key={'view' + index}>
+                            <BlockByName
+                                data={props.data}
+                                name={
+                                    props.blocks[
+                                    item.name + '_feed_form'
+                                    ]
+                                }
+                            />
+                            <BlockByName
+                                data={props.data}
+                                name={
+                                    props.blocks[
+                                    item.name + '_feed'
+                                    ]
+                                }
+                                unitMode={unitMode}
+                                exProps={{
+                                    headerBlocks: headerBlocks,
+                                    scrollProps: { pageData: props.data, headerHeight: isFeedMenuPresent ? 120 : 68, subHeaderComponent: subHeader },
+                                }}
+                            />
+                        </View>
+                    )
                 }
-            >
-                {getLayout(currentUser) == 'hor' && (
-                    <View className={appSetting('layout', 'sidebar_container')}>
-                        <View className={appSetting('layout', 'sidebar')}>
-                            {/* {appSetting('layout', 'sidebar_search') && (
+                return (
+                    <React.Fragment
+                        key={'empty_' + index}
+                    ></React.Fragment>
+                )
+            })}</>
+
+        const AsideContent = <>{sideBarBlocks.map((item, index) => {
+            return (
+                <BlockByName
+                    key={'block_' + index}
+                    name={item.block}
+                    data={props.data}
+                    {...item.block.props}
+                />
+            )
+        })}</>
+
+        const SideBarContent = <> {/* {appSetting('layout', 'sidebar_search') && (
                                 <View className="pb-3 w-full">
                                     <Search type="input" placeholder="Enter search text" />
                                 </View>
                             )} */}
-                            {appSetting('layout', 'show_profile_info') && (
-                                <View className="pb-1 mb-1 border-b border-bdr dark:border-bdr-d">
-                                    <Link href={currentUser.url} emulate={true}>
-                                        <Row
-                                            className={
-                                                ' rounded-xl group items-center px-1  hover:bg-bgritem dark:hover:bg-bgritem-d  active:bg-bgritem-h dark:active:bg-bgritem-dh  '
-                                            }
-                                        >
-                                            <View className="p-1.5">
-
-                                                <Profile
-                                                    {...currentUser}
-                                                    url_avatar={currentUser.avatar}
-                                                    displayType="unit_wo_info"
-                                                    displaySize="sm"
-                                                /></View>
-
-                                            <View className="flex-col px-1.5">
-                                                <Text className=" text-sm leading-tight  flex-auto my-auto font-semibold truncate text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-white web:duration-200">
-                                                    {currentUser.display_name}
-                                                </Text>
-                                                <Text className=" text-xs leading-tight flex-auto my-auto truncate text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-800 dark:group-hover:text-neutral-200 web:duration-200">
-                                                    {
-                                                        currentUser.membership_name
-                                                    }
-                                                </Text>
-                                            </View>
-
-                                        </Row>
-                                    </Link>
-                                </View>
-                            )}
-
-                       
-                            {feedList.length > 1 && <View
-                                className=' pb-1 mb-1 border-b border-bdrnavbar dark:border-bdrnavbar-d gap-y-0.5'
-                            >
-
-                                {feedList.map((item, index) => {
-                                    return (
-                                        <MenuItemSidebarWithWrapper
-                                            key={`menu-${index}`}
-                                            onPress={() => {
-                                                setFeedTypeEx(item.name)
-                                            }}
-                                            isActive={feedType == item.name}
-                                            icon={item.icon}
-                                            title={t(item.title)}
-                                            index={index}
-                                            userUrl={currentUser.url}
-                                        />
-                                    )
-                                })}
-                            </View>
+            {appSetting('layout', 'show_profile_info') && (
+                <View className="pb-1 mb-1 border-b border-bdr dark:border-bdr-d">
+                    <Link href={currentUser.url} emulate={true}>
+                        <Row
+                            className={
+                                ' rounded-xl group items-center px-1  hover:bg-bgritem dark:hover:bg-bgritem-d  active:bg-bgritem-h dark:active:bg-bgritem-dh  '
                             }
+                        >
+                            <View className="p-1.5">
+
+                                <Profile
+                                    {...currentUser}
+                                    url_avatar={currentUser.avatar}
+                                    displayType="unit_wo_info"
+                                    displaySize="sm"
+                                /></View>
+
+                            <View className="flex-col px-1.5">
+                                <Text className=" text-sm leading-tight  flex-auto my-auto font-semibold truncate text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-white web:duration-200">
+                                    {currentUser.display_name}
+                                </Text>
+                                <Text className=" text-xs leading-tight flex-auto my-auto truncate text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-800 dark:group-hover:text-neutral-200 web:duration-200">
+                                    {
+                                        currentUser.membership_name
+                                    }
+                                </Text>
+                            </View>
+
+                        </Row>
+                    </Link>
+                </View>
+            )}
 
 
+            {feedList.length > 1 && <View
+                className=' pb-1 mb-1 border-b border-bdrnavbar dark:border-bdrnavbar-d gap-y-0.5'
+            >
 
-                            {navBarBlocks.map((item, index) => {
-                                return (
-                                    <View
-                                        className="mb-3 "
-                                        key={'block_' + index}
-                                    >
-                                        <BlockByName
-                                            name={item.block}
-                                            data={props.data}
-                                            {...item.block.props}
-                                        />
-                                    </View>
-                                )
-                            })}
+                {feedList.map((item, index) => {
+                    return (
+                        <MenuItemSidebarWithWrapper
+                            key={`menu-${index}`}
+                            onPress={() => {
+                                setFeedTypeEx(item.name)
+                            }}
+                            isActive={feedType == item.name}
+                            icon={item.icon}
+                            title={t(item.title)}
+                            index={index}
+                            userUrl={currentUser.url}
+                        />
+                    )
+                })}
+            </View>
+            }
+
+            {navBarBlocks.map((item, index) => {
+                return (
+                    <View
+                        className="mb-3 "
+                        key={'block_' + index}
+                    >
+                        <BlockByName
+                            name={item.block}
+                            data={props.data}
+                            {...item.block.props}
+                        />
+                    </View>
+                )
+            })}</>
+
+        const cellsCustomConfig = appSetting('layouts', 'home');
+        if (cellsCustomConfig?.adjustable) {
+            return (
+                <PanelGroup direction="horizontal" className={
+                    appSetting('layout', 'max_width') +
+                    ' mx-auto w-full flex-auto relative flex-row lg:pt-0 px-1.5 sm:px-2'
+                }>
+                  
+                         {isShowColumn(getLayout(currentUser) == 'hor', windowWidth, cellsCustomConfig.cells?.left) && <>
+                            <Panel {...cellsCustomConfig.cells?.left}>
+                                <View className=''>
+                                    {SideBarContent}
+                                </View>
+                            </Panel>
+                            <PanelHandler gap={4} sizable={cellsCustomConfig.sizable} />
+                        </>}
+                    <Panel {...cellsCustomConfig.cells?.center}>
+                        <View className='sm:p-3'>
+                        {FeedContent}
+                        </View>
+                    </Panel>
+                     {isShowColumn(true, windowWidth, cellsCustomConfig.cells?.right) && <>
+                        <PanelHandler gap={4} sizable={cellsCustomConfig.sizable} />
+                            <Panel {...cellsCustomConfig.cells?.right}>
+                                <View className='p-1.5 sm:p-2'>
+                                    {AsideContent}
+                                </View>
+                            </Panel>
+                        </>
+                    }
+                </PanelGroup>
+            )
+        }
+        return (
+            <View className={appSetting('layout', 'max_width') + ' mx-auto w-full flex-auto relative flex-row lg:pt-0 '}>
+                {getLayout(currentUser) == 'hor' && (
+                    <View className={appSetting('layout', 'sidebar_container')}>
+                        <View className={appSetting('layout', 'sidebar')}>
+                            {SideBarContent}
                         </View>
                     </View>
                 )}
-                <View className={`relative ${appSetting('feed', 'feed_container')}`}>
-                    {getLayout(currentUser) == 'ver' && <View className={`hidden ${TABLET_MODE_FROM}:flex`}>{subHeader}</View>}
-                    {feedList.map((item, index) => {
-                        if (feedType == item.name) {
-                            return (
-                                <View key={'view' + index}>
-                                    <BlockByName
-                                        data={props.data}
-                                        name={
-                                            props.blocks[
-                                            item.name + '_feed_form'
-                                            ]
-                                        }
-                                    />
-                                    <BlockByName
-                                        data={props.data}
-                                        name={
-                                            props.blocks[
-                                            item.name + '_feed'
-                                            ]
-                                        }
-                                        unitMode={unitMode}
-                                        exProps={{
-                                            headerBlocks: headerBlocks,
-                                            scrollProps: { pageData: props.data, headerHeight: isFeedMenuPresent ? 120 : 68, subHeaderComponent: subHeader },
-                                        }}
-                                    />
-                                </View>
-                            )
-                        }
-                        return (
-                            <React.Fragment
-                                key={'empty_' + index}
-                            ></React.Fragment>
-                        )
-                    })}
+                <View className={`${appSetting('feed', 'feed_container')}`}>
+                    {FeedContent}
                 </View>
                 <View className={appSetting('layout', 'aside_container')}>
                     <View className="fixed-process p-1.5 sm:p-2 flex-col gap-y-3 sm:gap-y-4  web:duration-300">
-                        {sideBarBlocks.map((item, index) => {
-                            return (
-                                <BlockByName
-                                    key={'block_' + index}
-                                    name={item.block}
-                                    data={props.data}
-                                    {...item.block.props}
-                                />
-                            )
-                        })}
+                        {AsideContent}
                     </View>
                 </View>
             </View>
