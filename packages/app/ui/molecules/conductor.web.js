@@ -651,7 +651,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
 
 
         const isRightCol = route?.sidebar?.content?.length > 0 || route?.blocks?.browse_sidebar;
-        const isLeftCol = route?.leftSideBarBlocks?.length > 0 && layoutName !== 'profile-alt';
+        const isLeftCol = route?.leftSideBarBlocks?.length > 0 && (layoutName === 'profile');
 
         const TabFlashListM = useMemo(() => {
             return <UniList

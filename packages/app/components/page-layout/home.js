@@ -291,7 +291,7 @@ export default function (props) {
         const cellsCustomConfig = appSetting('layouts', 'home');
         if (cellsCustomConfig?.adjustable) {
             return (
-                <PanelGroup direction="horizontal" className={
+                <PanelGroup autoSaveId={`cells-home`} direction="horizontal" className={
                     appSetting('layout', 'max_width') +
                     ' mx-auto w-full flex-auto relative flex-row lg:pt-0 px-1.5 sm:px-2'
                 }>
