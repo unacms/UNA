@@ -404,7 +404,7 @@ export function LeftSidebar({ title, addButtons, children, width, menu }) {
        
             <View className={` ${appSetting('conductor', 'sidebar_container')}`}>
                 {(!!title || !!addButtons?.length > 0) && <Row className="justify-between items-center h-12 pl-2 mb-2.5 z-10 ">
-                    <Text className=" text-3xl tracking-tight truncate mr-auto font-semibold leading-11 text-neutral-900 dark:text-neutral-100 hidden lg:flex  ">
+                    <Text className=" text-2xl tracking-tight truncate mr-auto font-semibold leading-11 text-neutral-900 dark:text-neutral-100 hidden lg:flex  ">
                         {t(title)}
                     </Text>
                     <Row className="  ">

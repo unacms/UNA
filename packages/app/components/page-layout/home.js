@@ -217,6 +217,7 @@ export default function (props) {
                                     <Search type="input" placeholder="Enter search text" />
                                 </View>
                             )} */}
+            <View className={appSetting('layout', 'sidebar_container')}>                
             {appSetting('layout', 'show_profile_info') && (
                 <View className="pb-1 mb-1 border-b border-bdr dark:border-bdr-d">
                     <Link href={currentUser.url} emulate={true}>
@@ -286,14 +287,16 @@ export default function (props) {
                         />
                     </View>
                 )
-            })}</>
+            })}
+            </View>
+            </>
 
         const cellsCustomConfig = appSetting('layouts', 'home');
         if (cellsCustomConfig?.adjustable) {
             return (
                 <PanelGroup autoSaveId={`cells-home`} direction="horizontal" className={
                     appSetting('layout', 'max_width') +
-                    ' mx-auto w-full flex-auto relative flex-row lg:pt-0 px-1.5 sm:px-2'
+                    ' mx-auto w-full flex-auto relative flex-row '
                 }>
                   
                          {isShowColumn(getLayout(currentUser) == 'hor', windowWidth, cellsCustomConfig.cells?.left) && <>
@@ -302,7 +305,7 @@ export default function (props) {
                                     {SideBarContent}
                                 </View>
                             </Panel>
-                            <PanelHandler gap={4} sizable={cellsCustomConfig.sizable} />
+                            <PanelHandler gap={2} sizable={cellsCustomConfig.sizable} />
                         </>}
                     <Panel {...cellsCustomConfig.cells?.center}>
                         <View className='sm:p-3'>
@@ -310,7 +313,7 @@ export default function (props) {
                         </View>
                     </Panel>
                      {isShowColumn(true, windowWidth, cellsCustomConfig.cells?.right) && <>
-                        <PanelHandler gap={4} sizable={cellsCustomConfig.sizable} />
+                        <PanelHandler gap={2} sizable={cellsCustomConfig.sizable} />
                             <Panel {...cellsCustomConfig.cells?.right}>
                                 <View className='p-1.5 sm:p-2'>
                                     {AsideContent}

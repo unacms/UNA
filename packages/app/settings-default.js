@@ -36,7 +36,7 @@ export  const settingsDefault = {
         background: ' TODO ',
 
         sidebar: ' fixed-process fixed w-80 2xl:w-96 p-3 web:duration-200 ',
-        sidebar_container: ' hidden xl:flex w-80 2xl:w-96 ',
+        sidebar_container: ' p-3 ',
       
         aside_container: 'hidden lg:flex w-80 2xl:w-96 h-full', 
         max_width: ' w-full ', 
@@ -800,34 +800,34 @@ export  const settingsDefault = {
             adjustable: true,
             sizable: true,
             cells:{
-                left: {defaultSize: 20, minSize: 10, breakpoint: 'xl' },
-                center: { defaultSize: 60, minSize: 10 },
-                right: { defaultSize: 20, minSize: 10, breakpoint: 'lg' },
+                left: {defaultSize: 25, minSize: 20, maxSize:30, breakpoint: 'xl' },
+                center: { defaultSize: 50, minSize: 40, maxSize:60 },
+                right: { defaultSize: 25, minSize: 20, maxSize:30, breakpoint: 'lg' },
             }
         },
         'navigator':{
             adjustable: true,
             sizable: true,
             cells:{
-                left: {defaultSize: 35, minSize: 10, maxSize:75, breakpoint: 'lg' },
-                center: { defaultSize: 60, minSize: 10 },
+                left: {defaultSize: 25, minSize: 20, maxSize:30, breakpoint: 'lg' },
+                center: { defaultSize: 75, minSize: 70, maxSize:80 },
             }
         },
        'view-persons-profile':{
             adjustable: true,
             sizable: true,
             cells:{
-                left: {defaultSize: 25, minSize: 10, breakpoint: 'md' },
-                center: { defaultSize: 50, minSize: 10 },
-                right: { defaultSize: 25, minSize: 10, breakpoint: 'lg' },
+                left: {defaultSize: 25, minSize: 20, maxSize:30, breakpoint: 'md' },
+                center: { defaultSize: 50, minSize: 40, maxSize:60 },
+                right: { defaultSize: 25, minSize: 20, maxSize:30, breakpoint: 'lg' },
             }
         },
         'view-group-profile':{
             adjustable: true,
             sizable: true,
             cells:{
-                center: { defaultSize: 66, minSize: 10 },
-                right: { defaultSize: 33, minSize: 10, breakpoint: 'lg' },
+                center: { defaultSize: 60, minSize: 50, maxSize:70 },
+                right: { defaultSize: 40, minSize: 30, maxSize:50, breakpoint: 'lg' },
             }
         }
     },

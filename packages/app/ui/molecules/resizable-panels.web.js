@@ -5,8 +5,8 @@ import { LAYOUT_BREAKPOINTS } from 'app/lib/util';
 import { View } from 'app/design/view';
 
 export const PanelHandler = memo(({ gap, sizable }) => {
-    return sizable ? <PanelResizeHandle className={`w-${gap} justify-center items-center flex`}>
-        <Icon icon="GripVertical" width={12} height={12} />
+    return sizable ? <PanelResizeHandle className={`w-${gap} hover:bg-neutral-500/20 rounded-full transition-all duration-300 justify-center items-center flex`}>
+        {/*<Icon icon="GripVertical" width={12} height={12} />*/}
     </PanelResizeHandle> : <View className={`w-${gap}`}/>
 });
 
