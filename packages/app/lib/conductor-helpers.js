@@ -293,7 +293,7 @@ export function getContent(data, block) {
         .flatMap(Object.values)
         .find(element => element.content && element.source === blockName);
 
-    return b?.content[0]?.type === 'browse'
+    return b?.content[0]?.type === 'browse' && !block.sidebar
         ? { data: b.content[0].data, type: 'browse' }
         : { data: b, type: 'block', block: block };
 }
@@ -330,12 +330,8 @@ export function processUrl(data, blocks) {
     const contentAndEndpoint = Object.values(blocks).reduce((acc, block) => {
         const b = getContent(data, block);
 
-        if (b.type === 'browse') {
-            if (block.sidebar) {
-                acc.sidebar = processBrowse(acc.sidebar, b);
-            } else {
-                acc = processBrowse(acc, b);
-            }
+        if (b.type === 'browse' && !block.sidebar) {
+            acc = processBrowse(acc, b);
         } else {
             if (block.sidebar ) {
                 acc.sidebar.content = processContent(acc.sidebar, b);
