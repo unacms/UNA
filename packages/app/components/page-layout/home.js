@@ -308,7 +308,7 @@ export default function (props) {
                             <PanelHandler gap={2} sizable={cellsCustomConfig.sizable} />
                         </>}
                     <Panel {...cellsCustomConfig.cells?.center}>
-                        <View className='sm:p-3'>
+                        <View className={appSetting('layout', 'feed_container')}>
                         {FeedContent}
                         </View>
                     </Panel>

@@ -95,7 +95,7 @@ function MenuBottomItem({ link, title, index, icon, isActive, profile, iFrCounte
                         {link === appSetting('dashboard', 'url') ? profile : <Icon size={24} icon={icon} color={isActive ? colors.primary : colors.default} />}
                     </Text>
                     {<Text className={`group-hover:text-primary dark:group-hover:text-primary text-xs tracking-tight  leading-4 whitespace-nowrap ${isActive ? 'text-primary' : 'text-neutral-700 dark:text-neutral-300'}`}>{title}</Text>}
-                    {badge && <View className={`absolute bg-contrast dark:bg-contrast-d border-2 border-white dark:border-neutral-900 rounded-full px-1.5 items-center justify-center right-[10%] top-[10%]`}><Text className="text-white text-xs ">{badge.text}</Text></View>}
+                    {badge && <View className={`absolute bg-primary dark:bg-primary-d shadow-sm dark:border-neutral-900 rounded-full px-1.5 items-center justify-center  -top-1 left-1/2 -translate-x-1/2 ml-6`}><Text className="text-white text-xs ">{badge.text}</Text></View>}
                 </View>
             </Link>
         </View>

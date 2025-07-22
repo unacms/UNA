@@ -17,7 +17,7 @@ export default function ({ badges }) {
                         <Link href={item.badge_link}><Button
                             key={`badge-${index}`}
                             rounded
-                            startDecorator={<View className="rounded-full w-8 h-8 overflow-hidden"><Image
+                            startDecorator={<View className="rounded-full w-6 h-6 overflow-hidden"><Image
 
 
                                 view="cover"
@@ -27,7 +27,7 @@ export default function ({ badges }) {
                             /></View>}
                             title={item.text}
                             size="xs"
-                            variant="primary"
+                            variant="badge"
                         /></Link>
                     );
                 } else {
@@ -38,7 +38,7 @@ export default function ({ badges }) {
                             startDecorator="BadgeCheck"
                             title={item.text}
                             size="xs"
-                            variant="primary"
+                            variant="badge"
                         />
                     );
                 }
