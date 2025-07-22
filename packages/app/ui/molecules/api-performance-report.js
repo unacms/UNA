@@ -67,7 +67,8 @@ const API_TESTS = [
         id: 'friends_browse',
         name: 'Friends Browse',
         endpoint: '/api.php?r=system/browse_friends/&params[]={"params":{"per_page":"10","start":0}}',
-        description: 'Friends list (moderate DB queries)'
+        description: 'Friends list (moderate DB queries)',
+        fallback: '/api.php?r=bx_persons/browse/&params[]={"params":{"per_page":"5","start":0,"type":"online"}}'
     }
 ];
 
@@ -94,7 +95,7 @@ function getStatusText(responseTime) {
     return 'Very Slow';
 }
 
-// Enhanced performance test with detailed timing
+// Enhanced performance test with detailed timing breakdown
 async function enhancedPerformanceTest(test) {
     const USE_PROXY_WEB = appSetting('config', 'use_proxy_web');
     let prefix = UNA_URL;
@@ -106,7 +107,7 @@ async function enhancedPerformanceTest(test) {
     let usedFallback = false;
 
     // For database ping test or baseline test, try the primary endpoint first, then fallback
-    if (test.id === 'db_ping' || (test.id === 'connection_baseline' && test.fallback)) {
+    if (test.fallback && (test.id === 'db_ping' || test.id === 'connection_baseline' || test.id === 'friends_browse')) {
         try {
             const primaryUrl = prefix + test.endpoint + "&lang=en";
             const testResponse = await fetch(primaryUrl, {
@@ -120,7 +121,7 @@ async function enhancedPerformanceTest(test) {
             if (testResponse.ok) {
                 testEndpoint = test.endpoint;
             } else {
-                // Use fallback for both database ping and baseline
+                // Use fallback for any non-200 response
                 testEndpoint = test.fallback;
                 usedFallback = true;
             }
@@ -133,84 +134,143 @@ async function enhancedPerformanceTest(test) {
 
     const fullUrl = prefix + testEndpoint + "&lang=en";
     
-    // Timing measurements
-    const timings = {
-        start: performance.now(),
-        dnsStart: null,
-        connectStart: null,
-        requestStart: null,
-        responseStart: null,
-        responseEnd: null
+    // Performance timing markers
+    const performanceMarkerStart = `api-test-${test.id}-start`;
+    const performanceMarkerEnd = `api-test-${test.id}-end`;
+    
+    let result = {
+        test: test.name,
+        endpoint: testEndpoint,
+        description: test.description,
+        responseTime: 0,
+        status: 'pending',
+        error: null,
+        payloadSize: 0,
+        headers: {},
+        serverProcessingTime: null,
+        usedFallback,
+        timingBreakdown: {},
+        networkDetails: {}
     };
 
-    let payloadSize = 0;
-    let headers = {};
-    let success = false;
-    let error = null;
-
     try {
-        // For more detailed timing, we'll use fetch directly
+        // Clear any existing performance entries for this URL
+        if (typeof performance !== 'undefined' && performance.clearResourceTimings) {
+            performance.clearResourceTimings();
+        }
+
+        // Mark start time
+        if (typeof performance !== 'undefined' && performance.mark) {
+            performance.mark(performanceMarkerStart);
+        }
+        
+        const startTime = Date.now();
+        
         const response = await fetch(fullUrl, {
             method: 'GET',
-            headers: {
+            headers: { 
                 'Cache-Control': 'no-cache',
-                'Pragma': 'no-cache',
-                'Expires': '0'
+                'Pragma': 'no-cache'
             },
             cache: 'no-store',
             credentials: 'include'
         });
 
-        timings.responseStart = performance.now();
+        const endTime = Date.now();
         
-        // Get response headers
-        response.headers.forEach((value, key) => {
-            headers[key.toLowerCase()] = value;
-        });
-
-        // Get response text to measure payload size
-        const responseText = await response.text();
-        payloadSize = new Blob([responseText]).size;
-        
-        timings.responseEnd = performance.now();
-        
-        success = response.ok;
-        if (!success) {
-            error = `HTTP ${response.status}: ${response.statusText}`;
+        // Mark end time
+        if (typeof performance !== 'undefined' && performance.mark) {
+            performance.mark(performanceMarkerEnd);
         }
 
-    } catch (err) {
-        timings.responseEnd = performance.now();
-        error = err.message;
+        // Get detailed timing information
+        let timingDetails = {};
+        let networkBreakdown = {};
+        
+        if (typeof performance !== 'undefined' && Platform.OS === 'web') {
+            try {
+                // Try to get Resource Timing API data
+                const resourceEntries = performance.getEntriesByName(fullUrl, 'resource');
+                if (resourceEntries.length > 0) {
+                    const timing = resourceEntries[resourceEntries.length - 1]; // Get latest entry
+                    
+                    timingDetails = {
+                        dnsLookup: Math.round(timing.domainLookupEnd - timing.domainLookupStart),
+                        tcpConnect: Math.round(timing.connectEnd - timing.connectStart),
+                        sslHandshake: timing.secureConnectionStart > 0 ? Math.round(timing.connectEnd - timing.secureConnectionStart) : 0,
+                        requestSent: Math.round(timing.requestStart - timing.connectEnd),
+                        waitingForResponse: Math.round(timing.responseStart - timing.requestStart),
+                        contentDownload: Math.round(timing.responseEnd - timing.responseStart),
+                        totalResourceTime: Math.round(timing.responseEnd - timing.startTime),
+                        redirectTime: Math.round(timing.redirectEnd - timing.redirectStart)
+                    };
+                    
+                    // Calculate network phases
+                    networkBreakdown = {
+                        connectionEstablishment: timingDetails.dnsLookup + timingDetails.tcpConnect + timingDetails.sslHandshake,
+                        requestProcessing: timingDetails.requestSent + timingDetails.waitingForResponse,
+                        responseTransfer: timingDetails.contentDownload,
+                        serverThinkTime: timingDetails.waitingForResponse // This is closest to server processing
+                    };
+                }
+            } catch (timingError) {
+                console.warn('Could not get detailed timing:', timingError);
+            }
+        }
+
+        const responseTime = endTime - startTime;
+        const data = await response.text();
+        
+        // Extract headers
+        const headers = {};
+        response.headers.forEach((value, key) => {
+            headers[key] = value;
+        });
+
+        // Try to extract server processing time from various headers
+        let serverProcessingTime = null;
+        if (headers['x-runtime']) {
+            serverProcessingTime = parseFloat(headers['x-runtime']) * 1000; // Convert to ms
+        } else if (headers['x-response-time']) {
+            serverProcessingTime = parseFloat(headers['x-response-time']);
+        } else if (headers['server-timing']) {
+            // Parse Server-Timing header if available
+            const serverTiming = headers['server-timing'];
+            const match = serverTiming.match(/total;dur=([0-9.]+)/);
+            if (match) {
+                serverProcessingTime = parseFloat(match[1]);
+            }
+        }
+
+        // Calculate payload size
+        const payloadSize = new Blob([data]).size;
+
+        result = {
+            ...result,
+            responseTime,
+            status: response.ok ? 'success' : 'error',
+            error: response.ok ? null : `HTTP ${response.status}: ${response.statusText}`,
+            payloadSize,
+            headers,
+            serverProcessingTime,
+            timingBreakdown: timingDetails,
+            networkDetails: networkBreakdown,
+            httpStatus: response.status,
+            contentType: headers['content-type'] || 'unknown'
+        };
+
+    } catch (error) {
+        const endTime = Date.now();
+        result = {
+            ...result,
+            responseTime: endTime - Date.now(),
+            status: 'error',
+            error: error.message,
+            payloadSize: 0
+        };
     }
 
-    const totalTime = timings.responseEnd - timings.start;
-    const serverProcessing = headers['x-runtime'] ? parseFloat(headers['x-runtime']) * 1000 : null;
-    
-    return {
-        success,
-        responseTime: Math.round(totalTime),
-        error,
-        usedFallback,
-        testEndpoint: usedFallback ? testEndpoint : test.endpoint,
-        breakdown: {
-            totalTime: Math.round(totalTime),
-            serverProcessing: serverProcessing ? Math.round(serverProcessing) : null,
-            networkOverhead: serverProcessing ? Math.round(totalTime - serverProcessing) : null
-        },
-        payload: {
-            size: payloadSize,
-            sizeFormatted: formatBytes(payloadSize)
-        },
-        headers: {
-            server: headers.server || 'Unknown',
-            cacheControl: headers['cache-control'] || 'None',
-            contentType: headers['content-type'] || 'Unknown',
-            runtime: headers['x-runtime'] || null
-        },
-        timestamp: new Date().toISOString(),
-        isBaseline: test.isBaseline || false
-    };
+    return result;
 }
 
 // Concurrent test runner
@@ -253,6 +313,8 @@ export default function ApiPerformanceReport() {
     const [testHistory, setTestHistory] = useState([]);
     const [showHistory, setShowHistory] = useState(false);
     const [concurrentMode, setConcurrentMode] = useState(false);
+    const [concurrencyCount, setConcurrencyCount] = useState(3);
+    const [currentTest, setCurrentTest] = useState('');
 
     // Only show for admin users
     if (!currentUser?.id) {
@@ -267,40 +329,139 @@ export default function ApiPerformanceReport() {
         }
     }, []);
 
-    const runPerformanceTest = async (test) => {
-        if (concurrentMode) {
-            return await runConcurrentTest(test, 3);
-        } else {
-            return await enhancedPerformanceTest(test);
-        }
+    // Helper functions
+    const getStatusEmoji = (responseTime, isError) => {
+        if (isError) return '❌';
+        if (responseTime < 200) return '🟢';
+        if (responseTime < 500) return '🟡';
+        if (responseTime < 1000) return '🟠';
+        return '🔴';
     };
 
-    const runAllTests = async () => {
+    const getStatusText = (responseTime) => {
+        if (responseTime < 200) return 'Excellent';
+        if (responseTime < 500) return 'Good';
+        if (responseTime < 1000) return 'Slow';
+        return 'Very Slow';
+    };
+
+    const formatBytes = (bytes) => {
+        if (bytes === 0) return '0 B';
+        const k = 1024;
+        const sizes = ['B', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+    };
+
+    const runTests = async () => {
         setIsRunning(true);
+        setTestResults({});
+        
         const results = {};
         
-        for (const test of API_TESTS) {
-            const result = await runPerformanceTest(test);
-            results[test.id] = result;
+        try {
+            if (concurrentMode) {
+                // Run concurrent tests for each endpoint individually
+                for (const test of API_TESTS) {
+                    setCurrentTest(`${test.name} (${concurrencyCount}x concurrent)`);
+                    
+                    // Create array of promises for concurrent requests
+                    const concurrentPromises = Array(concurrencyCount).fill().map(() => 
+                        enhancedPerformanceTest(test)
+                    );
+                    
+                    // Run all requests simultaneously
+                    const concurrentResults = await Promise.all(concurrentPromises);
+                    
+                    // Calculate statistics from concurrent results
+                    const responseTimes = concurrentResults.map(r => r.responseTime);
+                    const successfulResults = concurrentResults.filter(r => r.status === 'success');
+                    
+                    if (successfulResults.length > 0) {
+                        const avgTime = responseTimes.reduce((a, b) => a + b, 0) / responseTimes.length;
+                        const minTime = Math.min(...responseTimes);
+                        const maxTime = Math.max(...responseTimes);
+                        const variance = responseTimes.reduce((acc, time) => acc + Math.pow(time - avgTime, 2), 0) / responseTimes.length;
+                        const standardDeviation = Math.sqrt(variance);
+                        
+                        // Use the result with median response time as the primary result structure
+                        responseTimes.sort((a, b) => a - b);
+                        const medianIndex = Math.floor(responseTimes.length / 2);
+                        const primaryResult = concurrentResults.find(r => r.responseTime === responseTimes[medianIndex]) || concurrentResults[0];
+                        
+                        // Calculate success rate
+                        const successRate = (successfulResults.length / concurrentResults.length) * 100;
+                        
+                        results[test.id] = {
+                            ...primaryResult,
+                            responseTime: Math.round(avgTime),
+                            concurrentStats: {
+                                count: concurrencyCount,
+                                average: Math.round(avgTime),
+                                median: responseTimes[medianIndex],
+                                min: minTime,
+                                max: maxTime,
+                                variance: Math.round(variance),
+                                standardDeviation: Math.round(standardDeviation),
+                                successRate: Math.round(successRate),
+                                failedRequests: concurrentResults.length - successfulResults.length,
+                                throughput: (successfulResults.length / (maxTime / 1000)).toFixed(2) // requests per second
+                            }
+                        };
+                    } else {
+                        // All requests failed
+                        results[test.id] = {
+                            ...concurrentResults[0],
+                            concurrentStats: {
+                                count: concurrencyCount,
+                                successRate: 0,
+                                failedRequests: concurrentResults.length
+                            }
+                        };
+                    }
+                    
+                    setTestResults(prev => ({ ...prev, [test.id]: results[test.id] }));
+                    await new Promise(resolve => setTimeout(resolve, 200)); // Brief pause between different endpoints
+                }
+            } else {
+                // Sequential testing
+                for (const test of API_TESTS) {
+                    setCurrentTest(test.name);
+                    const result = await enhancedPerformanceTest(test);
+                    results[test.id] = result;
+                    setTestResults(prev => ({ ...prev, [test.id]: result }));
+                    await new Promise(resolve => setTimeout(resolve, 100)); // Small delay between tests
+                }
+            }
+            
+            setTestResults(results);
+            setLastRun(new Date());
+            
+            // Save to localStorage for historical tracking
+            const historicalData = {
+                timestamp: new Date().toISOString(),
+                mode: concurrentMode ? 'concurrent' : 'sequential',
+                averageTime: Math.round(Object.values(results).reduce((sum, result) => sum + result.responseTime, 0) / Object.values(results).length),
+                results: Object.keys(results).reduce((acc, key) => {
+                    acc[key] = {
+                        responseTime: results[key].responseTime,
+                        status: results[key].status,
+                        error: results[key].error
+                    };
+                    return acc;
+                }, {})
+            };
+            
+            const history = storageGet('api_performance_history', '') || [];
+            history.unshift(historicalData);
+            storageSet('api_performance_history', '', history.slice(0, 10)); // Keep last 10 runs
+            
+        } catch (error) {
+            console.error('Test run failed:', error);
+        } finally {
+            setIsRunning(false);
+            setCurrentTest('');
         }
-        
-        setTestResults(results);
-        const runTime = new Date();
-        setLastRun(runTime);
-        
-        // Save to history
-        const newHistoryEntry = {
-            timestamp: runTime.toISOString(),
-            results,
-            averageTime: Math.round(Object.values(results).reduce((sum, result) => sum + result.responseTime, 0) / Object.values(results).length),
-            concurrentMode
-        };
-        
-        const updatedHistory = [newHistoryEntry, ...testHistory].slice(0, 10); // Keep last 10 runs
-        setTestHistory(updatedHistory);
-        storageSet(STORAGE_KEY, '', updatedHistory, true);
-        
-        setIsRunning(false);
     };
 
     const clearHistory = () => {
@@ -318,126 +479,175 @@ export default function ApiPerformanceReport() {
         const baselineResult = testResults['connection_baseline'];
         const baselineTime = baselineResult ? baselineResult.responseTime : null;
         
-        let report = `# Enhanced API Performance Report\n\n`;
-        report += `**Generated:** ${timestamp}\n`;
-        report += `**Test Mode:** ${concurrentMode ? 'Concurrent (3x)' : 'Sequential'}\n`;
-        report += `**Average Response Time:** ${averageTime}ms\n`;
+        let report = `# Enhanced API Performance Report\\n\\n`;
+        report += `**Generated:** ${timestamp}\\n`;
+        report += `**Test Mode:** ${concurrentMode ? `Concurrent (${concurrencyCount}x simultaneous)` : 'Sequential'}\\n`;
+        report += `**Average Response Time:** ${averageTime}ms\\n`;
         if (baselineTime) {
-            report += `**Connection Baseline:** ${baselineTime}ms\n`;
+            report += `**Connection Baseline:** ${baselineTime}ms\\n`;
         }
-        report += `\n`;
-        
-        // Baseline Analysis Section
+        report += `\\n`;
+
+        // Add baseline analysis section
         if (baselineTime) {
-            report += `## 🎯 Baseline Analysis\n\n`;
-            report += `The **Connection Baseline** (${baselineTime}ms) represents the minimum time for:\n`;
-            report += `- Network latency (client ↔ server)\n`;
-            report += `- Basic API framework overhead\n`;
-            report += `- Minimal processing (no database queries)\n\n`;
+            report += `## 🎯 Baseline Analysis\\n\\n`;
+            report += `The **Connection Baseline** (${baselineTime}ms) represents the minimum time for:\\n`;
+            report += `- Network latency (client ↔ server)\\n`;
+            report += `- Basic API framework overhead\\n`;
+            report += `- Minimal processing (no database queries)\\n\\n`;
             
-            report += `**Performance Attribution:**\n`;
-            API_TESTS.filter(test => !test.isBaseline && testResults[test.id]?.success).forEach(test => {
-                const result = testResults[test.id];
-                const overhead = result.responseTime - baselineTime;
-                const overheadPercent = Math.round((overhead / result.responseTime) * 100);
-                
-                report += `- **${test.name}:** ${overhead}ms overhead (${overheadPercent}% of total time)\n`;
-            });
-            report += `\n`;
-        }
-        
-        report += `## Detailed Performance Analysis\n\n`;
-        
-        API_TESTS.forEach(test => {
-            const result = testResults[test.id];
-            if (result) {
-                const status = result.success ? getStatusText(result.responseTime) : 'ERROR';
-                const statusEmoji = result.success 
-                    ? (result.responseTime < 200 ? '🟢' : result.responseTime < 500 ? '🟡' : result.responseTime < 1000 ? '🟠' : '🔴')
-                    : '❌';
-                
-                // Special baseline indicator
-                const baselineIndicator = result.isBaseline ? ' 📍 **BASELINE**' : '';
-                
-                report += `### ${test.name} ${statusEmoji}${baselineIndicator}\n`;
-                report += `- **Endpoint:** \`${result.testEndpoint}\`\n`;
-                report += `- **Description:** ${test.description}\n`;
-                report += `- **Total Response Time:** ${result.responseTime}ms\n`;
-                report += `- **Status:** ${status}\n`;
-                
-                // Baseline comparison
-                if (baselineTime && !result.isBaseline && result.success) {
+            report += `**Performance Attribution:**\\n`;
+            Object.entries(testResults).forEach(([testId, result]) => {
+                if (testId !== 'connection_baseline' && result.status === 'success') {
                     const overhead = result.responseTime - baselineTime;
-                    const multiplier = (result.responseTime / baselineTime).toFixed(1);
-                    report += `- **vs Baseline:** +${overhead}ms (${multiplier}x slower than baseline)\n`;
+                    const percentOverhead = Math.round((overhead / result.responseTime) * 100);
+                    const sign = overhead >= 0 ? '+' : '';
+                    report += `- **${result.test}:** ${sign}${overhead}ms overhead (${percentOverhead}% of total time)\\n`;
                 }
-                
-                // Database ping specific info
-                if (test.id === 'db_ping' && result.usedFallback) {
-                    report += `- **⚠️ Note:** Used fallback endpoint (ping_db not available)\n`;
+            });
+            report += `\\n`;
+        }
+
+        // Add network timing breakdown section
+        const hasDetailedTimings = Object.values(testResults).some(result => 
+            result.timingBreakdown && Object.keys(result.timingBreakdown).length > 0
+        );
+        
+        if (hasDetailedTimings) {
+            report += `## 🌐 Network Timing Analysis\\n\\n`;
+            report += `**Detailed Network Breakdown (where available):**\\n\\n`;
+            
+            Object.entries(testResults).forEach(([testId, result]) => {
+                if (result.timingBreakdown && Object.keys(result.timingBreakdown).length > 0) {
+                    const timing = result.timingBreakdown;
+                    const network = result.networkDetails;
+                    
+                    report += `### ${result.test}\\n`;
+                    report += `- **DNS Lookup:** ${timing.dnsLookup}ms\\n`;
+                    report += `- **TCP Connection:** ${timing.tcpConnect}ms\\n`;
+                    if (timing.sslHandshake > 0) {
+                        report += `- **SSL Handshake:** ${timing.sslHandshake}ms\\n`;
+                    }
+                    report += `- **Request Sent:** ${timing.requestSent}ms\\n`;
+                    report += `- **Server Processing:** ${timing.waitingForResponse}ms\\n`;
+                    report += `- **Content Download:** ${timing.contentDownload}ms\\n`;
+                    
+                    if (network && Object.keys(network).length > 0) {
+                        report += `\\n**Network Phases:**\\n`;
+                        report += `- **Connection Setup:** ${network.connectionEstablishment}ms\\n`;
+                        report += `- **Request Processing:** ${network.requestProcessing}ms\\n`;
+                        report += `- **Data Transfer:** ${network.responseTransfer}ms\\n`;
+                    }
+                    report += `\\n`;
                 }
-                
-                // Enhanced timing breakdown
-                if (result.breakdown.serverProcessing) {
-                    report += `- **Server Processing:** ${result.breakdown.serverProcessing}ms\n`;
-                    report += `- **Network Overhead:** ${result.breakdown.networkOverhead}ms\n`;
-                }
-                
-                // Payload information
-                report += `- **Payload Size:** ${result.payload.sizeFormatted}\n`;
-                
-                // Concurrent test results
-                if (result.concurrent) {
-                    report += `- **Concurrent Results (${result.concurrent.concurrency}x):**\n`;
-                    report += `  - Average: ${result.concurrent.average}ms\n`;
-                    report += `  - Min: ${result.concurrent.min}ms\n`;
-                    report += `  - Max: ${result.concurrent.max}ms\n`;
-                    report += `  - Variance: ${result.concurrent.variance}ms\n`;
-                }
-                
-                // Server info
-                report += `- **Server:** ${result.headers.server}\n`;
-                if (result.headers.runtime) {
-                    report += `- **Runtime Header:** ${result.headers.runtime}s\n`;
-                }
-                
-                if (!result.success) {
-                    report += `- **Error:** ${result.error}\n`;
-                }
-                report += `\n`;
-            }
+            });
+        }
+
+        report += `## Detailed Performance Analysis\\n\\n`;
+
+        // Sort results for consistent output
+        const sortedResults = Object.entries(testResults).sort(([,a], [,b]) => {
+            if (a.test.includes('Baseline')) return -1;
+            if (b.test.includes('Baseline')) return 1;
+            return b.responseTime - a.responseTime;
         });
 
-        // Historical comparison
-        if (testHistory.length > 1) {
-            report += `## Historical Comparison\n\n`;
-            report += `**Previous ${Math.min(5, testHistory.length - 1)} runs:**\n`;
-            testHistory.slice(1, 6).forEach((run, index) => {
-                const date = new Date(run.timestamp).toLocaleString();
-                const change = averageTime - run.averageTime;
-                const changeIcon = change > 0 ? '📈' : change < 0 ? '📉' : '➡️';
-                report += `${index + 1}. ${date}: ${run.averageTime}ms ${changeIcon} (${change > 0 ? '+' : ''}${change}ms)\n`;
-            });
-            report += `\n`;
+        sortedResults.forEach(([testId, result]) => {
+            const emoji = getStatusEmoji(result.responseTime, result.status === 'error');
+            const status = result.status === 'error' ? 'ERROR' : getStatusText(result.responseTime);
+            const isBaseline = testId === 'connection_baseline';
+            
+            report += `### ${result.test} ${emoji}${isBaseline ? ' 📍 **BASELINE**' : ''}\\n`;
+            report += `- **Endpoint:** \`${result.endpoint}\`\\n`;
+            report += `- **Description:** ${result.description}\\n`;
+            report += `- **Total Response Time:** ${result.responseTime}ms\\n`;
+            report += `- **Status:** ${status}\\n`;
+            
+            if (result.status === 'success') {
+                if (baselineTime && !isBaseline) {
+                    const overhead = result.responseTime - baselineTime;
+                    const multiplier = (result.responseTime / baselineTime).toFixed(1);
+                    const sign = overhead >= 0 ? '+' : '';
+                    report += `- **vs Baseline:** ${sign}${overhead}ms (${multiplier}x slower than baseline)\\n`;
+                }
+                
+                if (result.concurrentStats) {
+                    report += `- **Concurrent Stats:** Min: ${result.concurrentStats.min}ms, Max: ${result.concurrentStats.max}ms, StdDev: ${result.concurrentStats.standardDeviation}ms\\n`;
+                    report += `- **Load Testing:** Success Rate: ${result.concurrentStats.successRate}%, Throughput: ${result.concurrentStats.throughput} req/s\\n`;
+                    if (result.concurrentStats.failedRequests > 0) {
+                        report += `- **Failed Requests:** ${result.concurrentStats.failedRequests}/${result.concurrentStats.count}\\n`;
+                    }
+                }
+                
+                if (result.usedFallback) {
+                    report += `- **⚠️ Note:** Used fallback endpoint (${testId === 'db_ping' ? 'ping_db' : 'primary endpoint'} not available)\\n`;
+                }
+                
+                report += `- **Payload Size:** ${formatBytes(result.payloadSize)}\\n`;
+                
+                if (result.serverProcessingTime) {
+                    const networkOverhead = result.responseTime - result.serverProcessingTime;
+                    report += `- **Server Processing:** ${Math.round(result.serverProcessingTime)}ms\\n`;
+                    report += `- **Network Overhead:** ${Math.round(networkOverhead)}ms\\n`;
+                }
+                
+                if (result.headers.server) {
+                    report += `- **Server:** ${result.headers.server}\\n`;
+                }
+                
+                // Add detailed network timing if available
+                if (result.timingBreakdown && Object.keys(result.timingBreakdown).length > 0) {
+                    const timing = result.timingBreakdown;
+                    report += `- **Network Timing:** DNS: ${timing.dnsLookup}ms, Connect: ${timing.tcpConnect}ms, Server Wait: ${timing.waitingForResponse}ms, Download: ${timing.contentDownload}ms\\n`;
+                }
+            }
+            
+            if (result.error) {
+                report += `- **Error:** ${result.error}\\n`;
+            }
+            
+            report += `\\n`;
+        });
+
+        // Add historical comparison
+        const history = storageGet('api_performance_history', '') || [];
+        if (history.length > 1) {
+            report += `## Historical Comparison\\n\\n`;
+            report += `**Previous ${Math.min(history.length - 1, 5)} runs:**\\n`;
+            for (let i = 1; i < Math.min(history.length, 6); i++) {
+                const entry = history[i];
+                const diff = averageTime - entry.averageTime;
+                const trend = diff > 0 ? '📈' : '📉';
+                const sign = diff > 0 ? '+' : '';
+                report += `${i}. ${new Date(entry.timestamp).toLocaleString()}: ${entry.averageTime}ms ${trend} (${sign}${diff}ms)\\n`;
+            }
+            report += `\\n`;
         }
 
-        report += `## Performance Guidelines\n\n`;
-        report += `- 🟢 **Excellent:** < 200ms\n`;
-        report += `- 🟡 **Good:** 200-500ms\n`;
-        report += `- 🟠 **Slow:** 500ms-1s\n`;
-        report += `- 🔴 **Very Slow:** > 1s\n`;
-        report += `- ❌ **Error:** Request failed\n`;
-        report += `- 📍 **Baseline:** Connection + framework overhead only\n\n`;
+        // Performance guidelines
+        report += `## Performance Guidelines\\n\\n`;
+        report += `- 🟢 **Excellent:** < 200ms\\n`;
+        report += `- 🟡 **Good:** 200-500ms\\n`;
+        report += `- 🟠 **Slow:** 500ms-1s\\n`;
+        report += `- 🔴 **Very Slow:** > 1s\\n`;
+        report += `- ❌ **Error:** Request failed\\n`;
+        report += `- 📍 **Baseline:** Connection + framework overhead only\\n\\n`;
 
-        report += `## Enhanced Analysis Points\n\n`;
-        report += `Please analyze this enhanced API performance data focusing on:\n`;
-        report += `1. **Connection vs Database vs Query bottlenecks** (compare baseline vs DB ping vs complex queries)\n`;
-        report += `2. **Network latency impact** (baseline time indicates pure connection speed)\n`;
-        report += `3. **Database query optimization opportunities** (high overhead vs baseline)\n`;
-        report += `4. **Server processing efficiency** (compare server processing vs total time)\n`;
-        report += `5. **Payload size impact** on response times\n`;
-        report += `6. **Concurrent load performance** and scalability issues\n`;
-        report += `7. **Historical trends** and performance regression\n`;
+        // Enhanced analysis section
+        report += `## Enhanced Analysis Points\\n\\n`;
+        report += `Please analyze this enhanced API performance data focusing on:\\n`;
+        report += `1. **Connection vs Database vs Query bottlenecks** (compare baseline vs DB ping vs complex queries)\\n`;
+        report += `2. **Network latency impact** (baseline time indicates pure connection speed)\\n`;
+        report += `3. **Database query optimization opportunities** (high overhead vs baseline)\\n`;
+        report += `4. **Server processing efficiency** (compare server processing vs total time)\\n`;
+        report += `5. **Payload size impact** on response times\\n`;
+        report += `6. **Concurrent load performance** and scalability issues\\n`;
+        report += `7. **Historical trends** and performance regression\\n`;
+        
+        if (hasDetailedTimings) {
+            report += `8. **Network timing bottlenecks** (DNS, TCP, SSL, server processing, transfer)\\n`;
+            report += `9. **Connection reuse efficiency** (subsequent requests should have 0ms DNS/TCP times)\\n`;
+        }
 
         return report;
     };
@@ -495,7 +705,7 @@ export default function ApiPerformanceReport() {
                         size="sm"
                         startDecorator={isRunning ? "RotateCw" : "Play"}
                         title={isRunning ? "Running Tests..." : "Run Tests"}
-                        onPress={runAllTests}
+                        onPress={runTests}
                         disabled={isRunning}
                     />
                 </Row>
@@ -516,9 +726,38 @@ export default function ApiPerformanceReport() {
                         <Button
                             variant={concurrentMode ? "primary" : "outline"}
                             size="sm"
-                            title={concurrentMode ? "Concurrent (3x)" : "Sequential"}
+                            title={concurrentMode ? `Concurrent (${concurrencyCount}x)` : "Sequential"}
                             onPress={() => setConcurrentMode(!concurrentMode)}
                         />
+                        {concurrentMode && (
+                            <Row className="items-center gap-x-2">
+                                <Text className="text-sm text-neutral-600 dark:text-neutral-400">
+                                    Concurrency:
+                                </Text>
+                                <Row className="border border-neutral-300 dark:border-neutral-600 rounded">
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        title=""
+                                        startDecorator="Minus"
+                                        onPress={() => setConcurrencyCount(Math.max(1, concurrencyCount - 1))}
+                                        disabled={isRunning || concurrencyCount <= 1}
+                                    />
+                                    <Text className="px-3 py-1 text-sm font-semibold min-w-[40px] text-center">
+                                        {concurrencyCount}
+                                    </Text>
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        title=""
+                                        startDecorator="Plus"
+                                        onPress={() => setConcurrencyCount(Math.min(10, concurrencyCount + 1))}
+                                        disabled={isRunning || concurrencyCount >= 10}
+                                    />
+                                </Row>
+                            </Row>
+                        )}
+                        
                         {testHistory.length > 0 && (
                             <Button
                                 variant="outline"
@@ -581,85 +820,144 @@ export default function ApiPerformanceReport() {
             )}
 
             <View className="grid gap-3">
-                {API_TESTS.map((test) => {
-                    const result = testResults[test.id];
-                    
-                    return (
-                        <Card key={test.id} addClassName="p-3">
-                            <Row className="justify-between items-center mb-2">
-                                <View className="flex-1">
-                                    <Text className="font-semibold text-neutral-800 dark:text-neutral-200">
-                                        {test.name}
-                                    </Text>
-                                    <Text className="text-sm text-neutral-600 dark:text-neutral-400">
-                                        {test.description}
-                                    </Text>
-                                </View>
-                                
-                                {result && (
-                                    <Row className="items-center gap-x-3">
-                                        {result.success ? (
-                                            <>
-                                                <Row className="items-center gap-x-2">
-                                                    <Icon 
-                                                        icon={getStatusIcon(result.responseTime)}
-                                                        size={16}
-                                                        className={getStatusColor(result.responseTime)}
-                                                    />
-                                                    <Text className={`text-sm font-semibold ${getStatusColor(result.responseTime)}`}>
-                                                        {result.responseTime}ms
-                                                    </Text>
-                                                </Row>
-                                                <Text className={`text-xs ${getStatusColor(result.responseTime)}`}>
-                                                    {getStatusText(result.responseTime)}
+                {Object.entries(testResults).map(([testId, result]) => {
+                            const emoji = getStatusEmoji(result.responseTime, result.status === 'error');
+                            const statusText = result.status === 'error' ? 'ERROR' : getStatusText(result.responseTime);
+                            const isBaseline = testId === 'connection_baseline';
+                            
+                            return (
+                                <Card key={testId} addClassName="p-3 mb-2">
+                                    <Row className="justify-between items-start">
+                                        <View className="flex-1">
+                                            <Row className="items-center mb-1">
+                                                <Text className="text-lg font-semibold flex-1">
+                                                    {emoji} {result.test}
+                                                    {isBaseline && <Text className="text-sm text-blue-600 dark:text-blue-400 ml-2">📍 BASELINE</Text>}
                                                 </Text>
-                                            </>
-                                        ) : (
-                                            <Row className="items-center gap-x-2">
-                                                <Icon 
-                                                    icon="XCircle"
-                                                    size={16}
-                                                    className="text-red-600 dark:text-red-400"
-                                                />
-                                                <Text className="text-sm font-semibold text-red-600 dark:text-red-400">
-                                                    Error
+                                                <Text className={`text-sm px-2 py-1 rounded ${
+                                                    result.status === 'error' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' :
+                                                    result.responseTime < 200 ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
+                                                    result.responseTime < 500 ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' :
+                                                    result.responseTime < 1000 ? 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200' :
+                                                    'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+                                                }`}>
+                                                    {statusText}
                                                 </Text>
                                             </Row>
-                                        )}
+                                            
+                                            <Text className="text-sm text-neutral-600 dark:text-neutral-400 mb-2">
+                                                {result.description}
+                                            </Text>
+                                            
+                                            <Row className="justify-between items-center">
+                                                <Text className="text-2xl font-bold">
+                                                    {result.responseTime}ms
+                                                </Text>
+                                                
+                                                {!isBaseline && testResults['connection_baseline'] && result.status === 'success' && (
+                                                    <Text className="text-sm text-neutral-600 dark:text-neutral-400">
+                                                        vs baseline: {result.responseTime - testResults['connection_baseline'].responseTime > 0 ? '+' : ''}
+                                                        {result.responseTime - testResults['connection_baseline'].responseTime}ms
+                                                    </Text>
+                                                )}
+                                            </Row>
+                                            
+                                            {result.error && (
+                                                <Text className="text-sm text-red-600 dark:text-red-400 mt-1">
+                                                    Error: {result.error}
+                                                </Text>
+                                            )}
+                                            
+                                            {result.usedFallback && (
+                                                <Text className="text-sm text-yellow-600 dark:text-yellow-400 mt-1">
+                                                    ⚠️ Used fallback endpoint
+                                                </Text>
+                                            )}
+                                            
+                                            {/* Concurrent Load Testing Stats */}
+                                            {result.concurrentStats && (
+                                                <View className="mt-3 p-2 bg-blue-50 dark:bg-blue-900/20 rounded">
+                                                    <Text className="text-sm font-semibold mb-2 text-blue-700 dark:text-blue-300">
+                                                        ⚡ Load Testing Results ({result.concurrentStats.count}x concurrent):
+                                                    </Text>
+                                                    <View className="grid grid-cols-2 gap-1 text-xs">
+                                                        <Text className="text-blue-600 dark:text-blue-400">
+                                                            Average: {result.concurrentStats.average}ms
+                                                        </Text>
+                                                        <Text className="text-blue-600 dark:text-blue-400">
+                                                            Median: {result.concurrentStats.median}ms
+                                                        </Text>
+                                                        <Text className="text-blue-600 dark:text-blue-400">
+                                                            Min: {result.concurrentStats.min}ms
+                                                        </Text>
+                                                        <Text className="text-blue-600 dark:text-blue-400">
+                                                            Max: {result.concurrentStats.max}ms
+                                                        </Text>
+                                                        <Text className="text-blue-600 dark:text-blue-400">
+                                                            Success Rate: {result.concurrentStats.successRate}%
+                                                        </Text>
+                                                        <Text className="text-blue-600 dark:text-blue-400">
+                                                            Throughput: {result.concurrentStats.throughput} req/s
+                                                        </Text>
+                                                        {result.concurrentStats.failedRequests > 0 && (
+                                                            <Text className="text-red-600 dark:text-red-400 col-span-2">
+                                                                Failed: {result.concurrentStats.failedRequests} requests
+                                                            </Text>
+                                                        )}
+                                                        <Text className="text-blue-600 dark:text-blue-400">
+                                                            Std Dev: {result.concurrentStats.standardDeviation}ms
+                                                        </Text>
+                                                        <Text className="text-blue-600 dark:text-blue-400">
+                                                            Variance: {result.concurrentStats.variance}ms²
+                                                        </Text>
+                                                    </View>
+                                                </View>
+                                            )}
+                                            
+                                            {/* Detailed Network Timing */}
+                                            {result.timingBreakdown && Object.keys(result.timingBreakdown).length > 0 && (
+                                                <View className="mt-3 p-2 bg-neutral-50 dark:bg-neutral-800 rounded">
+                                                    <Text className="text-sm font-semibold mb-2 text-neutral-700 dark:text-neutral-300">
+                                                        🌐 Network Timing Breakdown:
+                                                    </Text>
+                                                    <View className="grid grid-cols-2 gap-1 text-xs">
+                                                        <Text className="text-neutral-600 dark:text-neutral-400">
+                                                            DNS: {result.timingBreakdown.dnsLookup}ms
+                                                        </Text>
+                                                        <Text className="text-neutral-600 dark:text-neutral-400">
+                                                            TCP: {result.timingBreakdown.tcpConnect}ms
+                                                        </Text>
+                                                        {result.timingBreakdown.sslHandshake > 0 && (
+                                                            <Text className="text-neutral-600 dark:text-neutral-400">
+                                                                SSL: {result.timingBreakdown.sslHandshake}ms
+                                                            </Text>
+                                                        )}
+                                                        <Text className="text-neutral-600 dark:text-neutral-400">
+                                                            Server: {result.timingBreakdown.waitingForResponse}ms
+                                                        </Text>
+                                                        <Text className="text-neutral-600 dark:text-neutral-400">
+                                                            Download: {result.timingBreakdown.contentDownload}ms
+                                                        </Text>
+                                                    </View>
+                                                </View>
+                                            )}
+                                            
+                                            <View className="mt-2 pt-2 border-t border-neutral-200 dark:border-neutral-700">
+                                                <Row className="justify-between text-xs text-neutral-600 dark:text-neutral-400">
+                                                    <Text>Payload: {formatBytes(result.payloadSize)}</Text>
+                                                    {result.serverProcessingTime && (
+                                                        <Text>Server: {Math.round(result.serverProcessingTime)}ms</Text>
+                                                    )}
+                                                    {result.concurrentStats && (
+                                                        <Text>Variance: {result.concurrentStats.variance}ms</Text>
+                                                    )}
+                                                </Row>
+                                            </View>
+                                        </View>
                                     </Row>
-                                )}
-                                
-                                {isRunning && !result && (
-                                    <Row className="items-center gap-x-2">
-                                        <Icon 
-                                            icon="RotateCw"
-                                            size={16}
-                                            className="text-blue-600 dark:text-blue-400 animate-spin"
-                                        />
-                                        <Text className="text-sm text-blue-600 dark:text-blue-400">
-                                            Testing...
-                                        </Text>
-                                    </Row>
-                                )}
-                            </Row>
-
-                            {/* Enhanced details */}
-                            {result && result.success && (
-                                <View className="mt-2 pt-2 border-t border-neutral-200 dark:border-neutral-700">
-                                    <Row className="justify-between text-xs text-neutral-600 dark:text-neutral-400">
-                                        <Text>Payload: {result.payload.sizeFormatted}</Text>
-                                        {result.breakdown.serverProcessing && (
-                                            <Text>Server: {result.breakdown.serverProcessing}ms</Text>
-                                        )}
-                                        {result.concurrent && (
-                                            <Text>Variance: {result.concurrent.variance}ms</Text>
-                                        )}
-                                    </Row>
-                                </View>
-                            )}
-                        </Card>
-                    );
-                })}
+                                </Card>
+                            );
+                        })}
             </View>
 
             {Object.keys(testResults).length > 0 && (
