@@ -697,7 +697,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
                                 {AddBlocksCnt}
                             </View>
                         </Panel>
-                        <PanelHandler gap={4} sizable={cellsCustomConfig.sizable} />
+                        <PanelHandler gap={2} sizable={cellsCustomConfig.sizable} />
                     </>
                     }
                     <Panel {...cellsCustomConfig.cells?.center}>
@@ -707,7 +707,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
                         </View>
                     </Panel>
                     {isShowColumn(isRightCol, windowWidth, cellsCustomConfig.cells?.right) && <>
-                        <PanelHandler gap={4} sizable={cellsCustomConfig.sizable} />
+                        <PanelHandler gap={2} sizable={cellsCustomConfig.sizable} />
                         <Panel {...cellsCustomConfig.cells?.right}>
                             <View className={`py-4 ${conductorTheme.left_column_size}`}>
                                 {route?.sidebar?.content.map((item, index) => {
@@ -850,7 +850,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
                                 {leftSideBarComponent}
                             </View>
                         </Panel>
-                        <PanelHandler gap={4} sizable={cellsCustomConfig.sizable} /></>}
+                        <PanelHandler gap={2} sizable={cellsCustomConfig.sizable} /></>}
                     <Panel {...cellsCustomConfig.cells?.center}>
                         <View className='sm:p-3'>
                             {MainComponent}
