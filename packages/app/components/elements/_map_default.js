@@ -34,12 +34,7 @@ import ModuleStructure from './module_structure';
 import EditCourseContent from './edit_course_content';
 import Messenger from './messenger';
 import ProfileList from './profiles_list';
-import ReputationSummary from './reputation_summary';
-import ReputationLeaderboard from './reputation_leaderboard';
-import ReputationLevels from './reputation_levels';
-import ReputationHistory from './reputation_history';
-
-
+import { ReputationSummary, ReputationLeaderboard, ReputationLevels, ReputationHistory, ReputationActions } from './reputation';
 import SearchSections from './search_sections';
 import StripeConnect from './stripe_connect';
 import ApiPerformance from './api_performance';
@@ -51,6 +46,7 @@ export const componentsMapDefault = {
     reputation_leaderboard: ReputationLeaderboard,
     reputation_levels: ReputationLevels,
     reputation_history: ReputationHistory,
+    reputation_actions: ReputationActions,
     chart: Chart,
     comment_content:CommentContent,
     browse: Browse,
