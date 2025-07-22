@@ -180,7 +180,7 @@ const Cell = React.memo(({ cell, indexRow, id, toggleSwitch, setSelection, selec
         case 'datetime':
             return <Time ts={cell.data} format='datetime' stylesName={'text-xs text-neutral-800 dark:text-neutral-200'}></Time>
         case 'link':
-            return <Link href={cell.data.url}><Text>{cell.data.text}</Text></Link>
+            return <Link href={cell.data.url}><Text className="text-primary dark:text-primary-d">{cell.data.text}</Text></Link>
         case 'text':
             return <Text className="text-neutral-800 dark:text-neutral-200">{stripTags(cell.value)}</Text>
         case 'order':
