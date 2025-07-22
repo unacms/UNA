@@ -7,8 +7,10 @@ import { CommentsBrowse, CommentsForm } from 'app/lib/comments-helpers'
 import KbAvoidingView, { KbAvoidingViewScroll } from 'app/ui/atoms/kb-avoiding-view';
 import { useWindowDimensions, Platform } from 'react-native'
 import { useLocalSearchParams } from 'app/lib/hooks/router'
-
+import { appSetting } from 'app/lib/util';
 import emitter from 'app/context/emitter';
+
+const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from');
 
 export default function PageLayout(props) {
     const isWeb = Platform.OS == 'web';
@@ -51,20 +53,11 @@ export default function PageLayout(props) {
     }, [localUrl?.url]);
 
     const aItems = useMemo(() => Object.entries(props.blocks)
-        .filter(([key, value]) => value.forList && ((windowWidth < LAYOUT_BREAKPOINTS.lg && value.forHeader == null) || windowWidth >= LAYOUT_BREAKPOINTS.lg))
+        .filter(([key, value]) => value.forList && ((windowWidth < LAYOUT_BREAKPOINTS[TABLET_MODE_FROM] && value.forHeader == null) || windowWidth >= LAYOUT_BREAKPOINTS[TABLET_MODE_FROM]))
         .map(([key, value]) => ({
             id: `block_${key}`,
             data: <BlockByName data={props.data} name={value} />
         })), [props.blocks, props.data, windowWidth]);
-
-    /*useEffect(() => {
-        const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', e => setKeyboardVisible(e.endCoordinates.height));
-        const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => setKeyboardVisible(0));
-        return () => {
-            keyboardDidShowListener.remove();
-            keyboardDidHideListener.remove();
-        };
-    }, []);*/
 
     const headerItems = useMemo(() => {
         return Object.entries(props.blocks)
@@ -75,7 +68,7 @@ export default function PageLayout(props) {
     }, [props.blocks, props.data]);
 
     const viewProps = isWeb ? {
-        style: { minHeight: windowWidth < LAYOUT_BREAKPOINTS.lg ? windowWHeight : windowWHeight - 64 },
+        style: { minHeight: windowWidth < LAYOUT_BREAKPOINTS[TABLET_MODE_FROM] ? windowWHeight : windowWHeight - 64 },
     } : {};
 
     const handleLayout = useCallback((event) => {

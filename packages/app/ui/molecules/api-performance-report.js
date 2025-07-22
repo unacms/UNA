@@ -68,7 +68,7 @@ const API_TESTS = [
         name: 'Friends Browse',
         endpoint: '/api.php?r=system/browse_friends/&params[]={"params":{"per_page":"10","start":0}}',
         description: 'Friends list (moderate DB queries)',
-        fallback: '/api.php?r=bx_persons/browse/&params[]={"params":{"per_page":"5","start":0,"type":"online"}}'
+        fallback: '/api.php?r=bx_persons/browse/&params[]={"params":{"per_page":"5","start":0}}'
     }
 ];
 

@@ -295,6 +295,7 @@ function ElementDashboardStat(props) {
     const list = appSetting('dashboard', 'modules_list');
     const filtredData = data.modules.filter(item => list.includes(item.key));
 
+
     return (
         <>
             <Modal 
@@ -364,7 +365,7 @@ function ElementDashboardStat(props) {
                     }
                 })}
             </Row>
-            {(data.manage.items.length > 0 || currentUser?.id) && <Card addClassName='m-2 mb-1 p-3 sm:p-4'>
+            {(data.manage.items.length > 0) && <Card addClassName='m-2 mb-1 p-3 sm:p-4'>
                 <Text className="text-xl mb-3 text-neutral-800 dark:text-neutral-200 font-semibold">Admin Tools</Text>
                 <View className="grid w-full grid-cols-1 gap-x-2 gap-y-1.5 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
                     {currentUser?.id && (

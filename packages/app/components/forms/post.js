@@ -34,11 +34,12 @@ export default function FormPost(props) {
             'p-4 border-dashed border-bdrcard dark:border-bdrcard-d'
         inputs['covers'].caption = 'Add cover image'
     }
-    inputs['title'].type = 'textarea'
-    inputs['title'].height = 12
-    inputs['title'].viewClasses =
+   
+   // inputs['title'].type = 'textarea'
+   // inputs['title'].height = 12
+   // inputs['title'].viewClasses =
         ' text-2xl lg:text-3xl font-bold my-2 placeholder-neutral-500 text-neutral-900 dark:text-neutral-50 focus:outline-none'
-    inputs['text'].viewClasses = 'dark:focus:bg-red-500'
+   // inputs['text'].viewClasses = 'dark:focus:bg-red-500'
 
     if (inputs['allow_comments'])
         inputs['allow_comments'].caption = '';
@@ -47,7 +48,7 @@ export default function FormPost(props) {
     const authorName = <Text className='font-semibold text-neutral-800 dark:text-neutral-200'>{currentUser.display_name}</Text>;
 
     return (
-        <View className="w-full max-w-5xl flex-col p-3 sm:p-4">
+        <View className="w-full max-w-5xl flex-col p-3 sm:p-4 mx-auto">
           {getHiddenFields(inputs, handleSubmit)}
         
             <View className="  overflow-hidden flex-col  ">
@@ -81,13 +82,15 @@ export default function FormPost(props) {
                         <Row className="flex-wrap">{prevListCover}</Row>
                     )}
                     
-                <View className="  ">
+                <View className="py-1">
                     {getFormFieldByData(
                         inputs['title'],
                         handleSubmit,
                         'notitle',
                         { placeholder: 'Title...', format: 'custom' }
                     )}
+                </View>
+                <View className="py-1">
                     {getFormFieldByData(
                         inputs['text'],
                         handleSubmit,

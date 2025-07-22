@@ -687,7 +687,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
         }, [dataItems, numColumns, dataItems.length]);
 
         const sidebarUnitType = route.blocks?.browse_sidebar?.unitType || 'default';
-        const cellsCustomConfig = appSetting('layouts', route.pageData.uri);
+        const cellsCustomConfig = appSetting('layouts', route?.pageData?.uri);
         if (cellsCustomConfig?.adjustable) {
             return (
                 <PanelGroup autoSaveId={`cells-${route.pageData.uri}`} direction="horizontal" className={layoutName == 'navigator' ? '' : ' px-1.5 sm:px-2 '}>

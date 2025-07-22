@@ -809,7 +809,7 @@ export  const settingsDefault = {
             adjustable: true,
             sizable: true,
             cells:{
-                left: {defaultSize: 35, minSize: 10, breakpoint: 'lg' },
+                left: {defaultSize: 35, minSize: 10, maxSize:75, breakpoint: 'lg' },
                 center: { defaultSize: 60, minSize: 10 },
             }
         },

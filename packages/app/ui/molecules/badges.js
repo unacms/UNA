@@ -13,7 +13,7 @@ export default function ({ badges }) {
             {badges.map((item, index) => {
                 if (item.badge_url) {
                     return (
-                        <Link href={item.badge_link}><Button
+                        <Link key={`badge-${item.badge_link}`} href={item.badge_link}><Button
                             key={`badge-${index}`}
                             rounded
                             startDecorator={<View className="rounded-full w-8 h-8 overflow-hidden"><Image

@@ -137,7 +137,7 @@ export default function ElementEntityAuthor(oProps) {
             </Modal>)
             }
 
-            <View className={oProps.data.text ? '' : 'flex-auto  mx-2'}>
+            <View className={oProps.data.text ? '' : 'flex-auto'}>
                 <Profile {...oProps.data.author_data} displayType="unit" displaySize={windowWidth < LAYOUT_BREAKPOINTS.lg ? "base" : "lg"} className='hidden lg:flex' showInfo={sInfo} />
             </View>
           
