@@ -4,6 +4,7 @@ import { Platform } from 'react-native'
 import { StyleSheet, PixelRatio } from 'react-native';
 import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util';
 import { useMemo } from 'react';
+import { UNA_URL } from 'app/config';
 
 export const SolitoImageStyled = SolitoImage
 
@@ -46,7 +47,9 @@ function normalizeWidth(width) {
 
 export default function ElementImage(props) {
     let {width, height,  alt = "", src = '/spacer.png', style, source, nobg, sizes, ...rest} = props; // remove width & height
-
+if (src && !src.startsWith('http') && !src.startsWith('https')) {
+   src = UNA_URL + src;
+}
     if (sizes === LAYOUT_BREAKPOINTS.lg)
         sizes = "(max-width:1024px) 100vw, 1024px";
     if (sizes === LAYOUT_BREAKPOINTS.xl)
