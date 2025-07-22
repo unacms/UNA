@@ -488,6 +488,51 @@ export default function ApiPerformanceReport() {
         }
         report += `\\n`;
 
+        // Add concurrent load testing summary if applicable
+        const hasConcurrentData = Object.values(testResults).some(result => result.concurrentStats);
+        if (hasConcurrentData) {
+            report += `## ⚡ Load Testing Summary\\n\\n`;
+            report += `**Concurrent Requests:** ${concurrencyCount} simultaneous per endpoint\\n`;
+            
+            const overallStats = Object.values(testResults)
+                .filter(result => result.concurrentStats && result.status === 'success')
+                .reduce((acc, result) => {
+                    acc.totalRequests += result.concurrentStats.count;
+                    acc.successfulRequests += Math.round((result.concurrentStats.successRate / 100) * result.concurrentStats.count);
+                    acc.failedRequests += result.concurrentStats.failedRequests || 0;
+                    acc.totalThroughput += parseFloat(result.concurrentStats.throughput || 0);
+                    return acc;
+                }, { totalRequests: 0, successfulRequests: 0, failedRequests: 0, totalThroughput: 0 });
+            
+            const overallSuccessRate = overallStats.totalRequests > 0 ? 
+                (overallStats.successfulRequests / overallStats.totalRequests * 100).toFixed(1) : 0;
+            
+            report += `**Overall Success Rate:** ${overallSuccessRate}%\\n`;
+            report += `**Total Requests:** ${overallStats.totalRequests} (${overallStats.successfulRequests} successful, ${overallStats.failedRequests} failed)\\n`;
+            report += `**Combined Throughput:** ${overallStats.totalThroughput.toFixed(2)} req/s\\n\\n`;
+            
+            // Add performance under load analysis
+            report += `**Load Testing Insights:**\\n`;
+            Object.entries(testResults).forEach(([testId, result]) => {
+                if (result.concurrentStats && result.status === 'success') {
+                    const perfDegradation = result.concurrentStats.max - result.concurrentStats.min;
+                    const consistencyScore = 100 - (result.concurrentStats.standardDeviation / result.concurrentStats.average * 100);
+                    report += `- **${result.test}:** `;
+                    if (result.concurrentStats.successRate < 100) {
+                        report += `⚠️ ${100 - result.concurrentStats.successRate}% failure rate under load`;
+                    } else if (perfDegradation > result.concurrentStats.average * 0.5) {
+                        report += `⚠️ High variance (${perfDegradation}ms spread)`;
+                    } else if (consistencyScore > 90) {
+                        report += `✅ Excellent consistency (${consistencyScore.toFixed(1)}% stable)`;
+                    } else {
+                        report += `✅ Good performance under load`;
+                    }
+                    report += `\\n`;
+                }
+            });
+            report += `\\n`;
+        }
+
         // Add baseline analysis section
         if (baselineTime) {
             report += `## 🎯 Baseline Analysis\\n\\n`;
@@ -571,34 +616,95 @@ export default function ApiPerformanceReport() {
                     report += `- **vs Baseline:** ${sign}${overhead}ms (${multiplier}x slower than baseline)\\n`;
                 }
                 
+                // Concurrent Load Testing Statistics
                 if (result.concurrentStats) {
-                    report += `- **Concurrent Stats:** Min: ${result.concurrentStats.min}ms, Max: ${result.concurrentStats.max}ms, StdDev: ${result.concurrentStats.standardDeviation}ms\\n`;
-                    report += `- **Load Testing:** Success Rate: ${result.concurrentStats.successRate}%, Throughput: ${result.concurrentStats.throughput} req/s\\n`;
+                    report += `- **Load Testing (${result.concurrentStats.count}x concurrent):**\\n`;
+                    report += `  - **Average Response:** ${result.concurrentStats.average}ms\\n`;
+                    report += `  - **Median Response:** ${result.concurrentStats.median}ms\\n`;
+                    report += `  - **Response Range:** ${result.concurrentStats.min}ms - ${result.concurrentStats.max}ms (${result.concurrentStats.max - result.concurrentStats.min}ms spread)\\n`;
+                    report += `  - **Standard Deviation:** ${result.concurrentStats.standardDeviation}ms (${(result.concurrentStats.standardDeviation / result.concurrentStats.average * 100).toFixed(1)}% of avg)\\n`;
+                    report += `  - **Success Rate:** ${result.concurrentStats.successRate}% (${Math.round((result.concurrentStats.successRate / 100) * result.concurrentStats.count)}/${result.concurrentStats.count} requests)\\n`;
+                    report += `  - **Throughput:** ${result.concurrentStats.throughput} requests/second\\n`;
+                    report += `  - **Variance:** ${result.concurrentStats.variance}ms²\\n`;
+                    
                     if (result.concurrentStats.failedRequests > 0) {
-                        report += `- **Failed Requests:** ${result.concurrentStats.failedRequests}/${result.concurrentStats.count}\\n`;
+                        report += `  - **⚠️ Failed Requests:** ${result.concurrentStats.failedRequests}/${result.concurrentStats.count} (${(100 - result.concurrentStats.successRate).toFixed(1)}% failure rate)\\n`;
+                    }
+                    
+                    // Performance consistency analysis
+                    const consistencyScore = 100 - (result.concurrentStats.standardDeviation / result.concurrentStats.average * 100);
+                    if (consistencyScore > 95) {
+                        report += `  - **✅ Performance:** Excellent consistency (${consistencyScore.toFixed(1)}% stable)\\n`;
+                    } else if (consistencyScore > 85) {
+                        report += `  - **✅ Performance:** Good consistency (${consistencyScore.toFixed(1)}% stable)\\n`;
+                    } else if (consistencyScore > 70) {
+                        report += `  - **⚠️ Performance:** Moderate variance (${consistencyScore.toFixed(1)}% stable)\\n`;
+                    } else {
+                        report += `  - **🔴 Performance:** High variance (${consistencyScore.toFixed(1)}% stable - investigate bottlenecks)\\n`;
                     }
                 }
                 
                 if (result.usedFallback) {
-                    report += `- **⚠️ Note:** Used fallback endpoint (${testId === 'db_ping' ? 'ping_db' : 'primary endpoint'} not available)\\n`;
+                    report += `- **⚠️ Note:** Used fallback endpoint (${testId === 'db_ping' ? 'ping_db' : testId === 'friends_browse' ? 'browse_friends' : 'primary endpoint'} not available)\\n`;
                 }
                 
                 report += `- **Payload Size:** ${formatBytes(result.payloadSize)}\\n`;
                 
                 if (result.serverProcessingTime) {
                     const networkOverhead = result.responseTime - result.serverProcessingTime;
-                    report += `- **Server Processing:** ${Math.round(result.serverProcessingTime)}ms\\n`;
-                    report += `- **Network Overhead:** ${Math.round(networkOverhead)}ms\\n`;
+                    const serverPercentage = (result.serverProcessingTime / result.responseTime * 100).toFixed(1);
+                    const networkPercentage = (networkOverhead / result.responseTime * 100).toFixed(1);
+                    report += `- **Server Processing:** ${Math.round(result.serverProcessingTime)}ms (${serverPercentage}% of total)\\n`;
+                    report += `- **Network Overhead:** ${Math.round(networkOverhead)}ms (${networkPercentage}% of total)\\n`;
                 }
                 
                 if (result.headers.server) {
                     report += `- **Server:** ${result.headers.server}\\n`;
                 }
                 
-                // Add detailed network timing if available
+                if (result.contentType) {
+                    report += `- **Content Type:** ${result.contentType}\\n`;
+                }
+                
+                // Detailed network timing breakdown
                 if (result.timingBreakdown && Object.keys(result.timingBreakdown).length > 0) {
                     const timing = result.timingBreakdown;
-                    report += `- **Network Timing:** DNS: ${timing.dnsLookup}ms, Connect: ${timing.tcpConnect}ms, Server Wait: ${timing.waitingForResponse}ms, Download: ${timing.contentDownload}ms\\n`;
+                    report += `- **Detailed Network Timing:**\\n`;
+                    report += `  - **DNS Lookup:** ${timing.dnsLookup}ms\\n`;
+                    report += `  - **TCP Connection:** ${timing.tcpConnect}ms\\n`;
+                    if (timing.sslHandshake > 0) {
+                        report += `  - **SSL Handshake:** ${timing.sslHandshake}ms\\n`;
+                    }
+                    report += `  - **Request Sent:** ${timing.requestSent}ms\\n`;
+                    report += `  - **Server Wait Time:** ${timing.waitingForResponse}ms\\n`;
+                    report += `  - **Content Download:** ${timing.contentDownload}ms\\n`;
+                    report += `  - **Total Resource Time:** ${timing.totalResourceTime}ms\\n`;
+                    if (timing.redirectTime > 0) {
+                        report += `  - **Redirect Time:** ${timing.redirectTime}ms\\n`;
+                    }
+                    
+                    // Network phase analysis
+                    if (result.networkDetails && Object.keys(result.networkDetails).length > 0) {
+                        const network = result.networkDetails;
+                        report += `- **Network Phase Breakdown:**\\n`;
+                        report += `  - **Connection Establishment:** ${network.connectionEstablishment}ms (DNS + TCP + SSL)\\n`;
+                        report += `  - **Request Processing:** ${network.requestProcessing}ms (Send + Server Think)\\n`;
+                        report += `  - **Data Transfer:** ${network.responseTransfer}ms (Download)\\n`;
+                        
+                        // Performance insights based on network timing
+                        if (network.connectionEstablishment > 200) {
+                            report += `  - **⚠️ Connection Analysis:** High setup time (${network.connectionEstablishment}ms) - check DNS/network latency\\n`;
+                        }
+                        if (timing.dnsLookup > 50) {
+                            report += `  - **⚠️ DNS Analysis:** Slow DNS resolution (${timing.dnsLookup}ms) - consider DNS optimization\\n`;
+                        }
+                        if (timing.tcpConnect > 100) {
+                            report += `  - **⚠️ TCP Analysis:** High connection time (${timing.tcpConnect}ms) - geographic/network issue\\n`;
+                        }
+                        if (timing.waitingForResponse > result.responseTime * 0.8) {
+                            report += `  - **⚠️ Server Analysis:** Server processing dominates (${timing.waitingForResponse}ms) - backend bottleneck\\n`;
+                        }
+                    }
                 }
             }
             
@@ -641,12 +747,84 @@ export default function ApiPerformanceReport() {
         report += `3. **Database query optimization opportunities** (high overhead vs baseline)\\n`;
         report += `4. **Server processing efficiency** (compare server processing vs total time)\\n`;
         report += `5. **Payload size impact** on response times\\n`;
-        report += `6. **Concurrent load performance** and scalability issues\\n`;
-        report += `7. **Historical trends** and performance regression\\n`;
+        if (hasConcurrentData) {
+            report += `6. **Load testing results** (concurrent performance, failure rates, throughput limits)\\n`;
+            report += `7. **Scalability bottlenecks** (performance degradation under concurrent load)\\n`;
+            report += `8. **Consistency analysis** (variance and standard deviation patterns)\\n`;
+        }
+        report += `${hasConcurrentData ? '9' : '6'}. **Historical trends** and performance regression\\n`;
         
         if (hasDetailedTimings) {
-            report += `8. **Network timing bottlenecks** (DNS, TCP, SSL, server processing, transfer)\\n`;
-            report += `9. **Connection reuse efficiency** (subsequent requests should have 0ms DNS/TCP times)\\n`;
+            report += `${hasConcurrentData ? '10' : '7'}. **Network timing bottlenecks** (DNS, TCP, SSL, server processing, transfer)\\n`;
+            report += `${hasConcurrentData ? '11' : '8'}. **Connection reuse efficiency** (subsequent requests should have 0ms DNS/TCP times)\\n`;
+            report += `${hasConcurrentData ? '12' : '9'}. **Geographic optimization** (DNS and TCP times indicate distance/routing issues)\\n`;
+        }
+
+        // Add performance recommendations based on data
+        report += `\\n## 🎯 Performance Optimization Recommendations\\n\\n`;
+        
+        // Analyze baseline performance
+        if (baselineTime) {
+            if (baselineTime > 500) {
+                report += `**🔴 Critical: High Baseline (${baselineTime}ms)**\\n`;
+                report += `- This indicates fundamental infrastructure issues\\n`;
+                report += `- Consider: Server location, CDN, network routing, hosting provider\\n\\n`;
+            } else if (baselineTime > 200) {
+                report += `**⚠️ Warning: Elevated Baseline (${baselineTime}ms)**\\n`;
+                report += `- Network/infrastructure optimization needed\\n`;
+                report += `- Consider: Geographic distribution, DNS optimization\\n\\n`;
+            }
+        }
+        
+        // Analyze concurrent performance if available
+        if (hasConcurrentData) {
+            const failingEndpoints = Object.values(testResults).filter(r => 
+                r.concurrentStats && r.concurrentStats.successRate < 100
+            );
+            
+            if (failingEndpoints.length > 0) {
+                report += `**🔴 Critical: Load Testing Failures**\\n`;
+                failingEndpoints.forEach(result => {
+                    report += `- ${result.test}: ${100 - result.concurrentStats.successRate}% failure rate under ${result.concurrentStats.count}x load\\n`;
+                });
+                report += `- Immediate action required before production scaling\\n\\n`;
+            }
+            
+            const highVarianceEndpoints = Object.values(testResults).filter(r => 
+                r.concurrentStats && (r.concurrentStats.standardDeviation / r.concurrentStats.average) > 0.3
+            );
+            
+            if (highVarianceEndpoints.length > 0) {
+                report += `**⚠️ Warning: High Performance Variance**\\n`;
+                highVarianceEndpoints.forEach(result => {
+                    const variancePercent = (result.concurrentStats.standardDeviation / result.concurrentStats.average * 100).toFixed(1);
+                    report += `- ${result.test}: ${variancePercent}% variance (${result.concurrentStats.standardDeviation}ms std dev)\\n`;
+                });
+                report += `- Investigate: Database connection pooling, resource contention, memory issues\\n\\n`;
+            }
+        }
+        
+        // Analyze network timing issues
+        if (hasDetailedTimings) {
+            const dnsIssues = Object.values(testResults).filter(r => 
+                r.timingBreakdown && r.timingBreakdown.dnsLookup > 50
+            );
+            
+            if (dnsIssues.length > 0) {
+                report += `**⚠️ DNS Optimization Needed**\\n`;
+                report += `- Slow DNS resolution detected (>50ms)\\n`;
+                report += `- Consider: DNS prefetching, faster DNS provider, DNS caching\\n\\n`;
+            }
+            
+            const tcpIssues = Object.values(testResults).filter(r => 
+                r.timingBreakdown && r.timingBreakdown.tcpConnect > 100
+            );
+            
+            if (tcpIssues.length > 0) {
+                report += `**⚠️ Network Latency Issues**\\n`;
+                report += `- High TCP connection times (>100ms)\\n`;
+                report += `- Consider: CDN, geographic server distribution, connection pooling\\n\\n`;
+            }
         }
 
         return report;
