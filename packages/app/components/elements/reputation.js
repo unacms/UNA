@@ -4,6 +4,8 @@ import Time from 'app/ui/atoms/time';
 import Profile from 'app/ui/molecules/profile'
 import { Icon } from 'app/ui/atoms/icon'
 import { Svg, Path } from 'react-native-svg'
+import { Button, Modal } from 'app/design/controls';
+import { useState } from "react";
 
 export function ReputationActions({ data }) {
     return (
@@ -25,8 +27,31 @@ export function ReputationActions({ data }) {
 }
 
 export function ReputationSummary({ data }) {
+    console.log("datadata", data)
+    if (data.mode === 'simple') {
+        return <ReputationSummarySimple data={data} />
+    }
+    return (
+        <Row className='w-full  items-center gap-x-8 justify-center'>
+            <View>
+            <ReputationSummarySimple data={data} />
+            </View>
+            <View>
+            <ReputationLevels data={data.levels_list} />
+            </View>
+        </Row>
+    )
+}
+
+function ReputationSummarySimple({ data }) {
+    const [isModal, setIsModal] = useState(false);
     return (
         <View className="items-center gap-y-2">
+            <Modal scrollable={true} title="Score rules" onVisible={isModal}  outerClickClose={true} onClose={() => setIsModal(false)}>
+                <View className='lg:min-w-md w-full'>
+                    <ReputationActions data={data.actions_list} />
+                </View>
+            </Modal>
             <Profile
                 {...data.author_data}
                 displayType="unit_wo_info"
@@ -38,6 +63,7 @@ export function ReputationSummary({ data }) {
                 <Row className='gap-x-2 items-center justify-center' key={index}>
                     <Icon icon={item.icon} size={24}  />
                     <Text className=" text-base text-neutral-800 dark:text-neutral-200">{item.title}</Text>
+                    <Button startDecorator="Info" onPress={() => setIsModal(true)} />
                 </Row>
             ))}
         </View>
@@ -120,7 +146,7 @@ export function ReputationLevels({ data }) {
     return (
         <View className='w-full gap-y-1'>
             {data.map((item, index) => (
-                <Row className='gap-x-2 items-center ' key={index}>
+                <Row className=' items-center  gap-x-4 ' key={index}>
                     <Row className='w-4/5 gap-x-2 items-center'>
                         <Icon icon={item.icon} size={24} />
                         <Text className=" text-base text-neutral-800 dark:text-neutral-200">{item.title}</Text></Row>

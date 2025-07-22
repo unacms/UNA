@@ -693,7 +693,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
                 <PanelGroup autoSaveId={`cells-${route.pageData.uri}`} direction="horizontal" className={layoutName == 'navigator' ? '' : ' px-1.5 sm:px-2 '}>
                     {isShowColumn(isLeftCol, windowWidth, cellsCustomConfig.cells?.left) && <>
                         <Panel {...cellsCustomConfig.cells?.left}>
-                            <View className={`py-4  ${conductorTheme.left_column_size}`}>
+                            <View className={`${conductorTheme.left_column_size}`}>
                                 {AddBlocksCnt}
                             </View>
                         </Panel>
