@@ -4,12 +4,11 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, Row, Pressable, ScrollView } from 'app/design/view'
 import { Text } from 'app/design/typography'
-import { Button } from 'app/design/controls'
+import { Button, Modal } from 'app/design/controls'
 import Link from 'app/ui/atoms/link'
 import { useCurrentUser } from 'app/context/user'
 import Profile from 'app/ui/molecules/profile'
 import ProfileSwitcher from 'app/components/elements/profile_switcher';
-import { Modal } from 'app/design/controls'
 import { appSetting, detectLang } from 'app/lib/util'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import i18n from 'i18next';
@@ -19,6 +18,7 @@ import { storageSet, storageClear, storageGet } from 'app/lib/util'
 import { fetcher } from 'app/lib/fetcher';
 import { Theme, useThemeName } from 'app/design/theme';
 import DasbordStatOld from 'app/components/elements/dashboard_stat_old';
+import ApiPerformanceReport from 'app/ui/molecules/api-performance-report';
 
 function getCounter(num, icon = '', add = '', color = '') {
 
@@ -282,6 +282,8 @@ function ElementDashboardStat(props) {
     const { t } = useTranslation();
     const [data, setData] = useState(props.data);
     const { currentUser, setCurrentUser } = useCurrentUser()
+    const [showApiPerformance, setShowApiPerformance] = useState(false);
+    
     useEffect(() => {
         const fetchData = async () => {
             const sResponse = await fetcher('/api.php?r=system/get_stat_block/TemplDashboardServices');
@@ -295,6 +297,20 @@ function ElementDashboardStat(props) {
 
     return (
         <>
+            <Modal 
+                id="api-performance-modal" 
+                title="API Performance Report"
+                onVisible={!!showApiPerformance} 
+                onClose={() => setShowApiPerformance(false)}
+                maxWidth="max-w-4xl"
+                maxHeight="max-h-[90vh]"
+                scrollable={true}
+            >
+                <ScrollView className="max-h-[70vh] p-4">
+                    <ApiPerformanceReport />
+                </ScrollView>
+            </Modal>
+            
             <Row className="flex-wrap px-1 sm:px-0 ">
                 {filtredData.map((item, index) => {
                     if (item) {
@@ -348,9 +364,22 @@ function ElementDashboardStat(props) {
                     }
                 })}
             </Row>
-            {data.manage.items.length > 0 && <Card addClassName='m-2 mb-1 p-3 sm:p-4'>
+            {(data.manage.items.length > 0 || currentUser?.id) && <Card addClassName='m-2 mb-1 p-3 sm:p-4'>
                 <Text className="text-xl mb-3 text-neutral-800 dark:text-neutral-200 font-semibold">Admin Tools</Text>
                 <View className="grid w-full grid-cols-1 gap-x-2 gap-y-1.5 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+                    {currentUser?.id && (
+                        <View className=" w-full min-w-[160px]  ">
+                            <Button 
+                                variant="secondary" 
+                                align="left" 
+                                size="sm" 
+                                fullWidth 
+                                title={t("API Performance")} 
+                                startDecorator="Activity"
+                                onPress={() => setShowApiPerformance(true)}
+                            />
+                        </View>
+                    )}
                     {data.manage.items.map((item2, index) => {
                         return <View className=" w-full min-w-[160px]  " key={index}>
                             <Link href={item2.link}>
