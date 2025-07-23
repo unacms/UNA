@@ -702,7 +702,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
                 >
                     {isLeftCol && <>
                         <Panel className={`hidden ${cellsCustomConfig.cells?.left?.breakpoint}:block`} {...cellsCustomConfig.cells?.left}>
-                            <View className={`fixed-process `}>
+                            <View className={`py-4 fixed-process `}>
                                 {AddBlocksCnt}
                             </View>
                         </Panel>
