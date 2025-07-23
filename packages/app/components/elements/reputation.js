@@ -45,25 +45,23 @@ export function ReputationSummary({ data }) {
 }
 
 export function ReputationWidget({ data }) {
-    const [tabsData, setTabsData] = useState([]);
-    const tabs = [
-        { url: '/api.php?r=bx_reputation/get_block_summary', title: 'Summary', type: ReputationSummary },
-        { url: '/api.php?r=bx_reputation/get_block_leaderboard&params[]=0', title: 'Leaderboard', type: ReputationLeaderboard },
-        { url: '/api.php?r=bx_reputation/get_block_leaderboard&params[]=7', title: 'Leaderboard', type: ReputationLeaderboard },
-        { url: '/api.php?r=bx_reputation/get_block_leaderboard&params[]=30', title: 'Leaderboard', type: ReputationLeaderboard },
-    ];
+
+    const [tabsData, setTabsData] = useState(data.tabs);
+   
 
     useEffect(() => {
         const fetchAllTabs = async () => {
             try {
                 const results = await Promise.all(
-                    tabs.map(async ({ url, title, type }, index) => {
-                        const res = await fetcher(url);
+                    data.tabs.map(async ({ url, title, data }, index) => {
+
+                        const res = data ? data : await fetcher(url);
                         return {
                             title,
-                            type,
-                            data: res?.data?.[0]?.data,
+                            //  type: url.includes('leaderboard') ? ReputationLeaderboard : ReputationSummary,
+                            data: data ? data : res?.data?.[0]?.data,
                             index: index,
+                            url: url,
                             selected: index === 0
                         };
                     })
@@ -77,31 +75,36 @@ export function ReputationWidget({ data }) {
         fetchAllTabs();
     }, []);
 
-    if (tabsData) {
+    console.log("tabsData55", tabsData.filter(tab => 'data' in tab))
+
         return (<View className={`w-full `}>
             <Row className='gap-x-2 mb-3'>
-                {tabsData.map((item, index) => (<Button 
-                    size="sm" 
+                {tabsData.map((item, index) => (<Button
+                    size="sm"
                     rounded
                     variant={item.selected ? 'primary' : 'secondary'}
                     pressed={item.selected} title={item.title} key={index} onPress={() => {
                         setTabsData((prev) =>
                             prev.map((tab, i) => ({
                                 ...tab,
-                                selected: i === index, 
+                                selected: i === index,
                             }))
                         );
                     }} />
                 ))}
             </Row>
-            {tabsData.map((item, index) => (
-                <View key={index} className={`w-full ${item.selected ? ' ' : 'hidden'} `}>
-                    <item.type data={item.data} />
-                </View>))}
+            {tabsData.filter(tab => 'data' in tab).map((item, index) => {
+                const Cont = item.url.includes('leaderboard') ? ReputationLeaderboard : ReputationSummary
+
+                return (
+                    <View key={index} className={`w-full ${item.selected ? ' ' : 'hidden'} `}>
+                        <Cont data={item.data} />
+                    </View>)
+            })}
         </View>
 
         )
-    }
+
 }
 
 function ReputationSummarySimple({ data }) {
