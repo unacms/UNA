@@ -1040,7 +1040,7 @@ export  const settingsDefault = {
             default_variant: 'default',
             default_ring: 'p-1 ',
             pressed_container: 'bg-primary-100 dark:bg-primary-d',
-            pressed_text: 'text-primary-700 dark:text-primary-300 group-hover:text-primary-800 dark:group-hover:text-primary-200',
+            pressed_text: 'text-primary-700 dark:text-primary-300 font-medium group-hover:text-primary-800 dark:group-hover:text-primary-200',
             xs: {
                 rounded: 'rounded-md',
                 padding: 'h-6 min-w-6 px-1',
@@ -1092,6 +1092,7 @@ export  const settingsDefault = {
             'u-btn-default-text':
                 'font-medium text-neutral-800 web:hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-neutral-50',
             'u-btn-default-trans': '  web:duration-200',
+            
 
             'u-btn-primary-cnt': '  bg-bgrbuttonprimary dark:bg-bgrbuttonprimary-d web:hover:bg-bgrbuttonprimary-h dark:web:hover:bg-bgrbuttonprimary-dh active:ring-2 active:ring-primary active:ring-offset-2 active:outline-none ',
             'u-btn-primary-text': 'font-medium text-white',

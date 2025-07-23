@@ -5,7 +5,9 @@ import Profile from 'app/ui/molecules/profile'
 import { Icon } from 'app/ui/atoms/icon'
 import { Svg, Path } from 'react-native-svg'
 import { Button, Modal } from 'app/design/controls';
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { fetcher } from 'app/lib/fetcher';
+
 
 export function ReputationActions({ data }) {
     return (
@@ -27,27 +29,86 @@ export function ReputationActions({ data }) {
 }
 
 export function ReputationSummary({ data }) {
-    console.log("datadata", data)
     if (data.mode === 'simple') {
         return <ReputationSummarySimple data={data} />
     }
     return (
         <Row className='w-full  items-center gap-x-8 justify-center'>
             <View>
-            <ReputationSummarySimple data={data} />
+                <ReputationSummarySimple data={data} />
             </View>
             <View>
-            <ReputationLevels data={data.levels_list} />
+                <ReputationLevels data={data.levels_list} />
             </View>
         </Row>
     )
+}
+
+export function ReputationWidget({ data }) {
+    const [tabsData, setTabsData] = useState([]);
+    const tabs = [
+        { url: '/api.php?r=bx_reputation/get_block_summary', title: 'Summary', type: ReputationSummary },
+        { url: '/api.php?r=bx_reputation/get_block_leaderboard&params[]=0', title: 'Leaderboard', type: ReputationLeaderboard },
+        { url: '/api.php?r=bx_reputation/get_block_leaderboard&params[]=7', title: 'Leaderboard', type: ReputationLeaderboard },
+        { url: '/api.php?r=bx_reputation/get_block_leaderboard&params[]=30', title: 'Leaderboard', type: ReputationLeaderboard },
+    ];
+
+    useEffect(() => {
+        const fetchAllTabs = async () => {
+            try {
+                const results = await Promise.all(
+                    tabs.map(async ({ url, title, type }, index) => {
+                        const res = await fetcher(url);
+                        return {
+                            title,
+                            type,
+                            data: res?.data?.[0]?.data,
+                            index: index,
+                            selected: index === 0
+                        };
+                    })
+                );
+                setTabsData(results);
+            } catch (error) {
+                console.error('Ошибка при загрузке данных:', error);
+            }
+        };
+
+        fetchAllTabs();
+    }, []);
+
+    if (tabsData) {
+        return (<View className={`w-full `}>
+            <Row className='gap-x-2 mb-3'>
+                {tabsData.map((item, index) => (<Button 
+                    size="sm" 
+                    rounded
+                    variant={item.selected ? 'primary' : 'secondary'}
+                    pressed={item.selected} title={item.title} key={index} onPress={() => {
+                        setTabsData((prev) =>
+                            prev.map((tab, i) => ({
+                                ...tab,
+                                selected: i === index, 
+                            }))
+                        );
+                    }} />
+                ))}
+            </Row>
+            {tabsData.map((item, index) => (
+                <View key={index} className={`w-full ${item.selected ? ' ' : 'hidden'} `}>
+                    <item.type data={item.data} />
+                </View>))}
+        </View>
+
+        )
+    }
 }
 
 function ReputationSummarySimple({ data }) {
     const [isModal, setIsModal] = useState(false);
     return (
         <View className="items-center gap-y-2">
-            <Modal scrollable={true} title="Score rules" onVisible={isModal}  outerClickClose={true} onClose={() => setIsModal(false)}>
+            <Modal scrollable={true} title="Score rules" onVisible={isModal} outerClickClose={true} onClose={() => setIsModal(false)}>
                 <View className='lg:min-w-md w-full'>
                     <ReputationActions data={data.actions_list} />
                 </View>
@@ -61,7 +122,7 @@ function ReputationSummarySimple({ data }) {
             <Text className="font-bold text-base text-neutral-800 dark:text-neutral-200 py-2">{data.points || 0} points</Text>
             {data.levels.map((item, index) => (
                 <Row className='gap-x-2 items-center justify-center' key={index}>
-                    <Icon icon={item.icon} size={24}  />
+                    <Icon icon={item.icon} size={24} />
                     <Text className=" text-base text-neutral-800 dark:text-neutral-200">{item.title}</Text>
                     <Button startDecorator="Info" onPress={() => setIsModal(true)} />
                 </Row>
@@ -101,30 +162,30 @@ export function ReputationLeaderboard({ data }) {
 
     return (
         <View className="items-center w-full">
-                {data.profiles.map((item, index) => (
-                    <Row className={`w-full justify-between items-center ${index != 0 && 'mt-3'}`} key={index}>
-                        <Row className="items-center">
-                            <View className="w-7 h-7 items-center justify-center mr-3 relative">
-                                {index < 3 ? (
-                                    <>
-                                        <StarIcon color={getStarColor(index)} size={28} />
-                                        <Text className={`${getTextColor(index)} text-xs font-bold absolute`}>{index + 1}</Text>
-                                    </>
-                                ) : (
-                                    <View className={`w-6 h-6 rounded-full ${getPositionColors(index)} items-center justify-center`}>
-                                        <Text className={`${getTextColor(index)} text-xs font-bold`}>{index + 1}</Text>
-                                    </View>
-                                )}
-                            </View>
-                            <Profile
-                                {...item.unit}
-                                displayType="unit"
-                                displaySize="base"
-                            />
-                        </Row>
-                        <Text className=" text-base text-neutral-800 dark:text-neutral-200">{item.sign}{item.points}</Text>
+            {data.profiles.map((item, index) => (
+                <Row className={`w-full justify-between items-center ${index != 0 && 'mt-3'}`} key={index}>
+                    <Row className="items-center">
+                        <View className="w-7 h-7 items-center justify-center mr-3 relative">
+                            {index < 3 ? (
+                                <>
+                                    <StarIcon color={getStarColor(index)} size={28} />
+                                    <Text className={`${getTextColor(index)} text-xs font-bold absolute`}>{index + 1}</Text>
+                                </>
+                            ) : (
+                                <View className={`w-6 h-6 rounded-full ${getPositionColors(index)} items-center justify-center`}>
+                                    <Text className={`${getTextColor(index)} text-xs font-bold`}>{index + 1}</Text>
+                                </View>
+                            )}
+                        </View>
+                        <Profile
+                            {...item.unit}
+                            displayType="unit"
+                            displaySize="base"
+                        />
                     </Row>
-                ))}
+                    <Text className=" text-base text-neutral-800 dark:text-neutral-200">{item.sign}{item.points}</Text>
+                </Row>
+            ))}
         </View>
     )
 }
@@ -134,7 +195,7 @@ export function ReputationHistory({ data }) {
         <View className='w-full gap-y-1'>
             {data.map((item, index) => (
                 <Row className='gap-x-2 items-center justify-center ' key={index}>
-                    <View className='w-1/5 '><Time stylesName= "text-base text-neutral-800 dark:text-neutral-200" ts={item.date} format="datetime"></Time></View>
+                    <View className='w-1/5 '><Time stylesName="text-base text-neutral-800 dark:text-neutral-200" ts={item.date} format="datetime"></Time></View>
                     <View className='w-3/5'><Text className=" text-base text-neutral-800 dark:text-neutral-200">{item.unit} {item.action}</Text></View>
                     <View className='w-1/5 items-end'><Text className=" text-base text-neutral-800 font-medium dark:text-neutral-200">{item.points}</Text></View>
                 </Row>

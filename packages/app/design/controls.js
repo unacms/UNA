@@ -468,7 +468,7 @@ export const Button = (props) => {
 
     const sClassText = useMemo(() => {
         let classes = 'whitespace-nowrap text-ellipsis overflow-hidden tracking-tight';
-        if (variant !== 'custom') {
+        if (variant !== 'custom' && !pressed) {
             classes += ' ' + ThemeCssClassesButton[`u-btn-${variant}-text`];
         } else {
             classes += ` ${classTextName}`;
