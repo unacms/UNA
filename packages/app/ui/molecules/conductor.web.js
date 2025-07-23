@@ -329,7 +329,7 @@ const TabBar = ({ menu, routes, leftSideBar, pageData, currentUser, index, setIn
                         isSplitMenu={true}
                         containerClasses="gap-x-2"
                     />}
-                    {appSetting('cover', 'more_menu_in_navbar', pageData?.module) && <CoverMenuMore
+                    {!!appSetting('cover', 'more_menu_in_navbar', pageData?.module) && <CoverMenuMore
                         {...pageData.cover_block.actions_menu}
                         uri={pageData.uri}
                         isSplitMenu={true}
@@ -635,6 +635,10 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
         return unitType ? [baseSkeleton, unitType] : baseSkeleton;
     }, [skeleton, currentRoute, unitType]);
 
+    useEffect(() => {
+        setTimeout(() =>   window.dispatchEvent(new Event('resize_panel')), 100);
+    }, [windowWidth]);
+
     const Preload = useMemo(() => getSkeletonForList(sSkeleton, numColumns), [sSkeleton, numColumns]);
 
     const RenderScene = useCallback(({ route, header, prevRoute, headerHeight, isCoverDisabled }) => {
@@ -688,28 +692,33 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
 
         const sidebarUnitType = route.blocks?.browse_sidebar?.unitType || 'default';
         const cellsCustomConfig = appSetting('layouts', route?.pageData?.uri);
-        if (cellsCustomConfig?.adjustable) {
+        //if (cellsCustomConfig?.adjustable) {
             return (
-                <PanelGroup autoSaveId={`cells-${route.pageData.uri}`} direction="horizontal" className={layoutName == 'navigator' ? '' : ' px-1.5 sm:px-2 '}>
-                    {isShowColumn(isLeftCol, windowWidth, cellsCustomConfig.cells?.left) && <>
-                        <Panel {...cellsCustomConfig.cells?.left}>
-                            <View className={`${conductorTheme.left_column_size}`}>
+                <PanelGroup 
+                    autoSaveId={`cells-${route.pageData.uri}`} 
+                    direction="horizontal" 
+                    className={layoutName == 'navigator' ? '' : ' px-1.5 sm:px-2  '}
+                    onLayout={() => {window.dispatchEvent(new Event('resize_panel'));}}
+                >
+                    {isLeftCol && <>
+                        <Panel className={`hidden ${cellsCustomConfig.cells?.left?.breakpoint}:block`} {...cellsCustomConfig.cells?.left}>
+                            <View className={`fixed-process `}>
                                 {AddBlocksCnt}
                             </View>
                         </Panel>
                         <PanelHandler gap={2} sizable={cellsCustomConfig.sizable} />
                     </>
                     }
-                    <Panel {...cellsCustomConfig.cells?.center}>
+                    <Panel  {...cellsCustomConfig.cells?.center}>
                         <View className={(isRightCol ? 'flex-auto flex-auto ' : ' w-full mx-auto') + (layoutName == 'navigator' ? '' : ' py-4 ') + (header ? ' sm:p-3 ' : '')}>
                             {TabFlashListM}
                             {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 && callFn("noContentByUrl", [route?.endpoint])))}
                         </View>
                     </Panel>
-                    {isShowColumn(isRightCol, windowWidth, cellsCustomConfig.cells?.right) && <>
+                    {isRightCol && <>
                         <PanelHandler gap={2} sizable={cellsCustomConfig.sizable} />
-                        <Panel {...cellsCustomConfig.cells?.right}>
-                            <View className={`py-4 ${conductorTheme.left_column_size}`}>
+                        <Panel className={`hidden ${cellsCustomConfig.cells?.right?.breakpoint}:block`} {...cellsCustomConfig.cells?.right}>
+                            <View className={`py-4 fixed-process  `}>
                                 {route?.sidebar?.content.map((item, index) => {
                                     return <View className="mb-4" key={'item' + index}><ItemRenderer unitType={sidebarUnitType} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''} /></View>
                                 })}
@@ -719,8 +728,8 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
                     </>}
                 </PanelGroup>
             );
-        }
-        return (
+        //}
+        /*return (
             <Row className={(headerSettings.columns == "reverse" ? 'flex-row-reverse' : '') + conductorTheme.content_max_width + ' mx-auto w-full ' + (isCoverDisabled ? ' ??sm:px-4 sm:my-3 ' : '')}>
                 {isLeftCol && <View className={`${conductorTheme.left_column_cnt2}`}>
                     <View className={`${conductorTheme.left_column_cnt}`}>
@@ -740,7 +749,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
                     </View>
                 </View>}
             </Row>
-        )
+        )*/
 
     }, [numColumns, windowWidth, index]);
 

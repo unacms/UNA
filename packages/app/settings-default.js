@@ -35,10 +35,10 @@ export  const settingsDefault = {
         screen: ' w-full ',
         background: ' TODO ',
 
-        sidebar: ' fixed-process fixed w-80 2xl:w-96 p-3 web:duration-200 ',
+        /*sidebar: ' fixed-process fixed w-80 2xl:w-96 p-3 web:duration-200 ',
         sidebar_container: ' p-3 ',
       
-        aside_container: 'hidden lg:flex w-80 2xl:w-96 h-full', 
+        aside_container: 'hidden lg:flex w-80 2xl:w-96 h-full', */
         max_width: ' w-full ', 
         max_width_block: '  max-w-7xl ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
         max_width_content: ' w-full max-w-7xl ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
@@ -312,8 +312,7 @@ export  const settingsDefault = {
             button_variant: 'text',
             button_ring: 'p-1',
             pressed_classes: {
-                pressed_container:
-                    ' bg-primary-100 dark:bg-primary-900 ',
+                pressed_container:'bg-primary-100 dark:bg-primary-d',
                 pressed_text:
                     ' text-primary-600 dark:text-primary-500 group-hover:text-primary-700 dark:group-hover:text-primary-400 ',
             },
@@ -1040,7 +1039,7 @@ export  const settingsDefault = {
             default_size: 'base',
             default_variant: 'default',
             default_ring: 'p-1 ',
-            pressed_container: 'bg-primary dark:bg-primary-d',
+            pressed_container: 'bg-primary-100 dark:bg-primary-d',
             pressed_text: 'text-primary-700 dark:text-primary-300 group-hover:text-primary-800 dark:group-hover:text-primary-200',
             xs: {
                 rounded: 'rounded-md',

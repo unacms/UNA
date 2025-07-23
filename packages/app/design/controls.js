@@ -281,11 +281,11 @@ export function ButtonsGroup({
     ...rest
 }) {
     let sClassContainer = 'group';
-    sClassContainer += fullWidth ? ' flex-auto' : ' w-fit m-0 truncate';
+    sClassContainer += fullWidth ? ' flex-auto' : ' w-fit m-0 truncate ';
 
     
     sClassContainer += ThemeCssClassesButtonGroups['u-btn-' + variant + '-cnt'] ? ThemeCssClassesButtonGroups['u-btn-' + variant + '-cnt'] + ' ' : ' ';
-    sClassContainer += rounded ? 'rounded-full ' : 'rounded-lg ';
+    sClassContainer += rounded ? ' rounded-full ' : ' rounded-lg ';
     sClassContainer += className;
 
     const bTextContainer = !!variant && variant == 'text';

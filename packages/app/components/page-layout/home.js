@@ -81,6 +81,12 @@ export default function (props) {
             return { name: key, block: props.blocks[key] }
         })
 
+    useEffect(() => {
+        if (isWeb) {
+            window.dispatchEvent(new Event('resize_panel'));
+        }
+    }, [windowWidth]);
+
     if (currentUser) {
         asyncStorageSet('layout:visited', 'true')
         let dUser = Object.assign({}, currentUser)
@@ -217,114 +223,119 @@ export default function (props) {
                                     <Search type="input" placeholder="Enter search text" />
                                 </View>
                             )} */}
-            <View className={appSetting('layout', 'sidebar_container')}>                
-            {appSetting('layout', 'show_profile_info') && (
-                <View className="pb-1 mb-1 border-b border-bdr dark:border-bdr-d">
-                    <Link href={currentUser.url} emulate={true}>
-                        <Row
-                            className={
-                                ' rounded-xl group items-center px-1  hover:bg-bgritem dark:hover:bg-bgritem-d  active:bg-bgritem-h dark:active:bg-bgritem-dh  '
-                            }
-                        >
-                            <View className="p-1.5">
+            <View className={appSetting('layout', 'sidebar_container')}>
+                {appSetting('layout', 'show_profile_info') && (
+                    <View className="pb-1 mb-1 border-b border-bdr dark:border-bdr-d">
+                        <Link href={currentUser.url} emulate={true}>
+                            <Row
+                                className={
+                                    ' rounded-xl group items-center px-1  hover:bg-bgritem dark:hover:bg-bgritem-d  active:bg-bgritem-h dark:active:bg-bgritem-dh  '
+                                }
+                            >
+                                <View className="p-1.5">
 
-                                <Profile
-                                    {...currentUser}
-                                    url_avatar={currentUser.avatar}
-                                    displayType="unit_wo_info"
-                                    displaySize="sm"
-                                /></View>
+                                    <Profile
+                                        {...currentUser}
+                                        url_avatar={currentUser.avatar}
+                                        displayType="unit_wo_info"
+                                        displaySize="sm"
+                                    /></View>
 
-                            <View className="flex-col px-1.5">
-                                <Text className=" text-sm leading-tight  flex-auto my-auto font-semibold truncate text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-white web:duration-200">
-                                    {currentUser.display_name}
-                                </Text>
-                                <Text className=" text-xs leading-tight flex-auto my-auto truncate text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-800 dark:group-hover:text-neutral-200 web:duration-200">
-                                    {
-                                        currentUser.membership_name
-                                    }
-                                </Text>
-                            </View>
+                                <View className="flex-col px-1.5">
+                                    <Text className=" text-sm leading-tight  flex-auto my-auto font-semibold truncate text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-white web:duration-200">
+                                        {currentUser.display_name}
+                                    </Text>
+                                    <Text className=" text-xs leading-tight flex-auto my-auto truncate text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-800 dark:group-hover:text-neutral-200 web:duration-200">
+                                        {
+                                            currentUser.membership_name
+                                        }
+                                    </Text>
+                                </View>
 
-                        </Row>
-                    </Link>
+                            </Row>
+                        </Link>
+                    </View>
+                )}
+
+
+                {feedList.length > 1 && <View
+                    className=' pb-1 mb-1 border-b border-bdrnavbar dark:border-bdrnavbar-d gap-y-0.5'
+                >
+
+                    {feedList.map((item, index) => {
+                        return (
+                            <MenuItemSidebarWithWrapper
+                                key={`menu-${index}`}
+                                onPress={() => {
+                                    setFeedTypeEx(item.name)
+                                }}
+                                isActive={feedType == item.name}
+                                icon={item.icon}
+                                title={t(item.title)}
+                                index={index}
+                                userUrl={currentUser.url}
+                            />
+                        )
+                    })}
                 </View>
-            )}
+                }
 
-
-            {feedList.length > 1 && <View
-                className=' pb-1 mb-1 border-b border-bdrnavbar dark:border-bdrnavbar-d gap-y-0.5'
-            >
-
-                {feedList.map((item, index) => {
+                {navBarBlocks.map((item, index) => {
                     return (
-                        <MenuItemSidebarWithWrapper
-                            key={`menu-${index}`}
-                            onPress={() => {
-                                setFeedTypeEx(item.name)
-                            }}
-                            isActive={feedType == item.name}
-                            icon={item.icon}
-                            title={t(item.title)}
-                            index={index}
-                            userUrl={currentUser.url}
-                        />
+                        <View
+                            className="mb-3 "
+                            key={'block_' + index}
+                        >
+                            <BlockByName
+                                name={item.block}
+                                data={props.data}
+                                {...item.block.props}
+                            />
+                        </View>
                     )
                 })}
             </View>
-            }
+        </>
 
-            {navBarBlocks.map((item, index) => {
-                return (
-                    <View
-                        className="mb-3 "
-                        key={'block_' + index}
-                    >
-                        <BlockByName
-                            name={item.block}
-                            data={props.data}
-                            {...item.block.props}
-                        />
-                    </View>
-                )
-            })}
-            </View>
-            </>
+
 
         const cellsCustomConfig = appSetting('layouts', 'home');
-        if (cellsCustomConfig?.adjustable) {
-            return (
-                <PanelGroup autoSaveId={`cells-home`} direction="horizontal" className={
-                    appSetting('layout', 'max_width') +
-                    ' mx-auto w-full flex-auto relative flex-row '
-                }>
-                  
-                         {isShowColumn(getLayout(currentUser) == 'hor', windowWidth, cellsCustomConfig.cells?.left) && <>
-                            <Panel {...cellsCustomConfig.cells?.left}>
-                                <View className=''>
-                                    {SideBarContent}
-                                </View>
-                            </Panel>
-                            <PanelHandler gap={2} sizable={cellsCustomConfig.sizable} />
-                        </>}
-                    <Panel {...cellsCustomConfig.cells?.center}>
-                        <View className='sm:p-3'>
-                        {FeedContent}
+        //if (cellsCustomConfig?.adjustable) {
+        return (
+            <PanelGroup
+                autoSaveId={`cells-home`}
+                direction="horizontal"
+                className={`${appSetting('layout', 'max_width')} mx-auto w-full flex-auto relative flex-row`}
+                onLayout={(e) => {
+                    if (isWeb) {
+                        window.dispatchEvent(new Event('resize_panel'));
+                    }
+                }}
+            >
+                {getLayout(currentUser) == 'hor' && <>
+                    <Panel className={`hidden ${cellsCustomConfig.cells?.left?.breakpoint}:block`} {...cellsCustomConfig.cells?.left} >
+                        <View className='fixed-process p-3'>
+                            {SideBarContent}
                         </View>
                     </Panel>
-                     {isShowColumn(true, windowWidth, cellsCustomConfig.cells?.right) && <>
-                        <PanelHandler gap={2} sizable={cellsCustomConfig.sizable} />
-                            <Panel {...cellsCustomConfig.cells?.right}>
-                                <View className='p-1.5 sm:p-2'>
-                                    {AsideContent}
-                                </View>
-                            </Panel>
-                        </>
-                    }
-                </PanelGroup>
-            )
-        }
-        return (
+                    <PanelHandler gap={2} sizable={cellsCustomConfig.sizable} />
+                </>}
+                <Panel {...cellsCustomConfig.cells?.center}>
+                    <View className='sm:p-3'>
+                        {FeedContent}
+                    </View>
+                </Panel>
+
+                <PanelHandler gap={2} sizable={cellsCustomConfig.sizable} />
+                <Panel className={`hidden ${cellsCustomConfig.cells?.right?.breakpoint}:block`} {...cellsCustomConfig.cells?.right}>
+                    <View className='fixed-process p-1.5 sm:p-2'>
+                        {AsideContent}
+                    </View>
+                </Panel>
+            </PanelGroup>
+        )
+        // }
+        /*return (
             <View className={appSetting('layout', 'max_width') + ' mx-auto w-full flex-auto relative flex-row lg:pt-0 '}>
                 {getLayout(currentUser) == 'hor' && (
                     <View className={appSetting('layout', 'sidebar_container')}>
@@ -342,6 +353,6 @@ export default function (props) {
                     </View>
                 </View>
             </View>
-        )
+        )*/
     }
 }

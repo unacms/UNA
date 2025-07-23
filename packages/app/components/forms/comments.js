@@ -211,9 +211,6 @@ export default function FormComments(props) {
         attachmentButtonContainerClasses.push('right-0');
     }
 
-
-    console.log("inputWrapperAnimatedStyle", animatedEditorHeight.value)
-
     return (
         <View className="w-full ">
             <Row className="w-full gap-x-2">

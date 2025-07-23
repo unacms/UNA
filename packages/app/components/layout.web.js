@@ -194,6 +194,7 @@ export default function Layout(props) {
     // Sticky columns
     useEffect(() => {
         const handleScroll = () => {
+            console.log("handleScrollhandleScroll")
             const elements = Array.from(document.getElementsByClassName("fixed-process"));
             const scrollY = window.scrollY;
             const innerHeight = window.innerHeight;
@@ -209,7 +210,9 @@ export default function Layout(props) {
                 const elementHeight = element.offsetHeight;
                 const elementHeightParent = element.parentNode.parentNode.offsetHeight;
                 element.style.width = `${element.parentNode.offsetWidth}px`;
-
+                
+                //console.log("element.style.width", element.parentNode, element.parentNode.offsetWidth, element.parentNode.clientWidth, getComputedStyle(element.parentNode).width)
+                
                 if (elementHeightParent > elementHeight) {
                     element.classList.add('fixed');
                     const height = elementHeight + marginTop + marginBottom - innerHeight + offset1;
@@ -229,13 +232,16 @@ export default function Layout(props) {
             });
         };
 
-
+       // document.addEventListener('DOMContentLoaded', handleScroll);
         window.addEventListener('scroll', handleScroll);
-        //handleScroll(); disabled, reason: on profile page on load right block is on top
+        window.addEventListener('resize_panel', handleScroll);
 
         return () => {
             window.removeEventListener('scroll', handleScroll);
+            window.removeEventListener('resize_panel', handleScroll);
+          
         };
+        
     }, []);
 
     const [headerSettings, setHeaderSettings] = useState(getHeaderSettings(uri, width, layoutName, data.config));
