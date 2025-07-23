@@ -181,12 +181,12 @@ export default function UnitComments(props) {
         const effectiveLevel = Math.min(level, maxLevel);
         for (let i = 0; i < effectiveLevel; i++) {
             cellsArray.push(
-                <View key={`sp-${level}-${i}`} className="w-11">
+                <View key={`sp-${level}-${i}`} className="w-10">
                     {lvls[i + 1] && (
                         <View className="ml-[19px] w-0.5 flex-auto bg-neutral-100 dark:bg-neutral-800" />
                     )}
                     {i === level - 1 && (
-                        <View className="ml-[21px] h-[37px] w-[29px] border-neutral-100 dark:border-neutral-800 border-l-2 border-b-2 absolute -top-[14px] rounded-bl-[22px] flex-auto" />
+                        <View className="ml-[19px] h-[37px] w-[29px] border-neutral-100 dark:border-neutral-800 border-l-2 border-b-2 absolute -top-[14px] rounded-bl-[22px] flex-auto" />
                     )}
                 </View>
             );
@@ -239,15 +239,15 @@ export default function UnitComments(props) {
             <View className='w-full px-2 sm:px-3 lg:px-4 '>
                 <View className="flex-row gap-x-2">
                     {cells}
-                    <View className="w-11 z-50 flex-0 relative">
+                    <View className="w-10 z-50 flex-0 relative">
 
                         <Profile {...data.author_data} displayType="unit_wo_info" displaySize="base" showInfo="false" />
 
-                        {(items.length != 0 && view != 'flat') && <View className="w-0.5 ml-[21px] top-0.5 flex-auto bg-neutral-100 dark:bg-neutral-800"></View>}
+                        {(items.length != 0 && view != 'flat') && <View className="w-0.5 ml-[19px] top-0.5 flex-auto bg-neutral-100 dark:bg-neutral-800"></View>}
                     </View>
-                    <View className=' flex-col flex-1 '>
-                        <View className=' bg-bgritem dark:bg-bgritem-d rounded-[22px] p-3 flex-col gap-y-1' >
-                            <View className="flex-row items-center overflow-hidden">
+                    
+                        <View className=' bg-bgritem dark:bg-bgritem-d flex-1 rounded-2xl px-1 py-1 mb-3 sm:mb-4 flex-col gap-y-1' >
+                            <View className="flex-row items-center overflow-hidden px-2 py-1">
                                 <Profile {...data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
                                 <View><Text className="text-neutral-400 dark:text-neutral-600 px-1">·</Text></View>
                                 <Link href={data.cmt_url} className="flex items-center"><Time ts={data.cmt_time}></Time></Link>
@@ -269,34 +269,36 @@ export default function UnitComments(props) {
 
                                 </View>
                             }
-                            <View className='text-neutral-900 dark:text-neutral-50 '>
+                            <View className='text-neutral-900 dark:text-neutral-50 px-2'>
                                 <Html htmlStyles={{ fontSize: 16 }} customClassName='u-vanilla-html-small' data={linkify(data.cmt_text)} />
                                 {!!data.embed && <View><Embed data={data.embed} size="small" /></View>}
 
                             </View>
                             {(viewState.view != 'edited' && imageList.length > 0) && <View className='max-w-xs w-full'><Carousel data={imageList} /></View>}
-                        </View>
-                        {viewState.view != 'edited' && <View className=' flex-row w-full mb-3 mt-0.5 items-center'>
-                            {(!!currentUser && !!props.handleReply && !props.module.includes('_reviews')) ? <View className='mr-2 '>
-                                <Button align="start" title={t("Reply")} size="xs" startDecorator="MessageCircle" variant="text" onPress={() => handleReply(data)} rounded />
+                        {viewState.view != 'edited' && <View className=' flex-row w-full  items-center'>
+                            {(!!currentUser && !!props.handleReply && !props.module.includes('_reviews')) ? <View className=' '>
+                                <Button align="start" ring='p-1' title={t("Reply")} size="sm" startDecorator="MessageCircle" variant="text" onPress={() => handleReply(data)} rounded />
                             </View> : <View></View>
                             }
-                            {(!!currentUser && !props.handleReply && !props.module.includes('_reviews')) ? <View className='mr-2 '>
-                                <Link href={props.contentUrl + '#cmt_id=' + data.cmt_id}><Button align="start" title={t("Reply")} size="xs" startDecorator="MessageCircle" variant="text" rounded /></Link>
+                            {(!!currentUser && !props.handleReply && !props.module.includes('_reviews')) ? <View className=' '>
+                                <Link href={props.contentUrl + '#cmt_id=' + data.cmt_id}><Button align="start" ring='p-1' title={t("Reply")} size="sm" startDecorator="MessageCircle" variant="text" rounded /></Link>
                             </View> : <View></View>
                             }
                             <View className='flex-row flex-auto '>
-                                <Menu {...data.menu_actions} displayType="element" showMatched={true} params={{ show_action: true, show_counter: false, show_combined: false, button_size: 'xs', button_variant: 'text' }} />
+                                <Menu {...data.menu_actions} displayType="element" showMatched={true} params={{ show_action: true, show_counter: false, show_combined: false, button_size: 'sm', button_variant: 'text', button_ring: 'p-1' }} />
 
-                                <View className="ml-auto flex-row items-center gap-x-2">
-                                    <Menu {...data.menu_actions} displayType="element" showMatched={true} params={{ show_action: false, show_counter: true, show_combined: false, button_size: 'xs', button_variant: 'text' }} />
+                                <View className="ml-auto flex-row items-center ">
+                                    <Menu {...data.menu_actions} displayType="element" showMatched={true} params={{ show_action: false, show_counter: true, show_combined: false, button_size: 'sm', button_variant: 'text', button_ring: 'p-1' }} />
 
                                     <MenuManage id={data.id} menu={data?.menu_manage} setViewState={setViewState} module={props.module} cmt_object_id={props.data.cmt_object_id} cmt_id={props.data.cmt_id} />
                                 </View>
                             </View>
                         </View>
                         }
-                    </View>
+                        
+                        </View>
+                        
+                    
                 </View>
             </View>
         </Wrapper>
@@ -316,8 +318,9 @@ const MenuManage = ({ id, menu, setViewState, module, cmt_object_id, cmt_id }) =
         return (
             <Button
                 variant="text"
-                size="xs"
+                size="sm"
                 rounded
+                ring='p-1'
                 startDecorator="Ellipsis"
                 onPress={() => {
                     if (Platform.OS === 'web')
@@ -390,7 +393,7 @@ const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen, module, cmt_obj
                     title: aItem.title
                 };
             })} onSelect={handleManageMenuSelect}>
-                <Button variant="text" size="xs" startDecorator="Ellipsis" rounded />
+                <Button variant="text" size="sm" ring='p-1' startDecorator="Ellipsis" rounded />
             </DropdownMenu>
             {!!oReport && oReport}
         </>

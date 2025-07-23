@@ -42,7 +42,7 @@ export  const settingsDefault = {
         max_width: ' w-full ', 
         max_width_block: '  max-w-7xl ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
         max_width_content: ' w-full max-w-7xl ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
-       
+        feed_container: ' sm:p-3 mx-auto w-full max-w-4xl ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
 
         search: true,
         sidebar_search: true,
@@ -1043,12 +1043,12 @@ export  const settingsDefault = {
             pressed_text: 'text-primary-700 dark:text-primary-300 group-hover:text-primary-800 dark:group-hover:text-primary-200',
             xs: {
                 rounded: 'rounded-md',
-                padding: 'h-8 min-w-8 px-1.5',
-                padding_icon_only: 'h-8 w-8 px-1.5',
-                padding_with_title: 'h-8 px-1.5',
-                icon_container: 'h-5 w-5 flex items-center justify-center',
+                padding: 'h-6 min-w-6 px-1',
+                padding_icon_only: 'h-6 w-6 px-1',
+                padding_with_title: 'h-6 px-1',
+                icon_container: 'h-4 w-4 flex items-center justify-center',
                 title_container: 'px-1 text-xs',
-                icon_size: 20,
+                icon_size: 16,
                 icon_margin: 'mx-0.5', // conditional margin for icon container when title is present
                 title_margin: '',
             },
@@ -1197,6 +1197,22 @@ export  const settingsDefault = {
                 'font-medium text-neutral-800 dark:text-neutral-200 dark:group-hover:text-neutral-50',
             'u-btn-group-item-accent-icon':
                 'text-neutral-700 dark:text-neutral-300 dark:group-hover:text-neutral-50',
+
+            'u-btn-badge-cnt':
+                ' bg-primary-100 dark:bg-primary-900 ',
+            'u-btn-badge-text':
+                'font-medium text-primary-700 dark:text-primary-300',
+            'u-btn-badge-trans': '  web:duration-200',
+            'u-btn-badge-color-icon-light': ' ',
+            'u-btn-badge-color-icon-dark': ' ',
+
+            'u-btn-label-cnt':
+                'border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900 web:hover:bg-neutral-100 dark:web:hover:bg-neutral-800 active:opacity-70',
+            'u-btn-label-text':
+                'font-normal text-sm text-neutral-600 dark:text-neutral-400 web:hover:text-neutral-800 dark:web:hover:text-neutral-200',
+            'u-btn-label-trans': '  web:duration-200',
+            'u-btn-label-color-icon-light': 'rgba(75,85,99,1)',
+            'u-btn-label-color-icon-dark': 'rgba(156,163,175,1)',
         },
         buttons_group_styles: {
             'u-btn-default-cnt':
@@ -1218,6 +1234,16 @@ export  const settingsDefault = {
             'u-btn-link-text':
                 ' font-medium group-hover:underline text-neutral-800 dark:text-neutral-200  hover:text-neutral-950 dark:hover:text-neutral-50 active:opacity-50 ',
             'u-btn-link-trans': '   web:duration-300 ',
+
+            'u-btn-badge-cnt': 'border border-transparent dark:border-transparent bg-neutral-100 dark:bg-neutral-800 flex flex-row active:opacity-60',
+            'u-btn-badge-text':
+                ' font-medium text-xs text-neutral-700 dark:text-neutral-300 ',
+            'u-btn-badge-trans': '   web:duration-200 ',
+
+            'u-btn-label-cnt': 'border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900 flex flex-row active:opacity-70',
+            'u-btn-label-text':
+                ' font-normal text-sm text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 ',
+            'u-btn-label-trans': '   web:duration-200 ',
         },
     },
 }

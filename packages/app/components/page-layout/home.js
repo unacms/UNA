@@ -300,6 +300,7 @@ export default function (props) {
 
 
         const cellsCustomConfig = appSetting('layouts', 'home');
+
         //if (cellsCustomConfig?.adjustable) {
         return (
             <PanelGroup
