@@ -71,7 +71,7 @@ export default function ThemeCompatibilityTest({ data }) {
             <View className="flex-row space-x-2">
                 <Pressable
                     onPress={() => handleTheme('light')}
-                    className="bg-primary px-4 py-2 rounded-lg"
+                    className="bg-primary hover:bg-primary/50 px-4 py-2 rounded-lg"
                 >
                     <Text className="text-primary-foreground font-medium">Light</Text>
                 </Pressable>

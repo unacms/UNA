@@ -56,7 +56,7 @@ export default function Unit(props) {
                                             data.image ? "  " : " "
                                         } gap-y-2 sm:p-2`}
                                     >
-                                        <Text className="mr-auto bg-primary-100 dark:bg-primary-900 rounded-lg font-semibold px-2 py-1 flex-none flex-auto text-neutral-800 dark:text-neutral-200">
+                                        <Text className="mr-auto bg-primary/20 dark:bg-primary-900 rounded-lg font-semibold px-2 py-1 flex-none flex-auto text-neutral-800 dark:text-neutral-200">
                                             {data.price > 0
                                                 ? data.price + "$"
                                                 : "Free"}

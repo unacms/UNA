@@ -312,7 +312,7 @@ export  const settingsDefault = {
             button_variant: 'text',
             button_ring: 'p-1',
             pressed_classes: {
-                pressed_container:'bg-primary-100 dark:bg-primary-d',
+                pressed_container:'bg-primary/20 ',
                 pressed_text:
                     ' text-primary-600 dark:text-primary-500 group-hover:text-primary-700 dark:group-hover:text-primary-400 ',
             },
@@ -1039,7 +1039,7 @@ export  const settingsDefault = {
             default_size: 'base',
             default_variant: 'default',
             default_ring: 'p-1 ',
-            pressed_container: 'bg-primary-100 dark:bg-primary-d',
+            pressed_container: 'bg-primary/20',
             pressed_text: 'text-primary-700 dark:text-primary-300 font-medium group-hover:text-primary-800 dark:group-hover:text-primary-200',
             xs: {
                 rounded: 'rounded-md',
@@ -1200,7 +1200,7 @@ export  const settingsDefault = {
                 'text-neutral-700 dark:text-neutral-300 dark:group-hover:text-neutral-50',
 
             'u-btn-badge-cnt':
-                ' bg-primary-100 dark:bg-primary-900 ',
+                ' bg-primary/20 ',
             'u-btn-badge-text':
                 'font-medium text-primary-700 dark:text-primary-300',
             'u-btn-badge-trans': '  web:duration-200',

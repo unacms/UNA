@@ -16,7 +16,7 @@ import Html from 'app/ui/atoms/html';
 
 export const LinkContent = memo(({ url, data }) => (
     <Link href={url}>
-        <Text className="mr-auto  bg-primary-100 dark:bg-primary-900 rounded-lg font-semibold px-2 py-1 flex-none flex-auto text-neutral-800 dark:text-neutral-200">
+        <Text className="mr-auto  bg-primary/20 dark:bg-primary-900 rounded-lg font-semibold px-2 py-1 flex-none flex-auto text-neutral-800 dark:text-neutral-200">
             {data.content?.price ? data.content.price.replace("&#36;", "$") : 'Free'}
         </Text>
         <Text
@@ -202,7 +202,7 @@ export const MarketView = memo(({ data, styles, url, isCompact }) => {
         )}
         <View className="flex-auto p-2 my-auto flex-col    ">
             <Link href={url} className="">
-                <Text className="mr-auto  bg-primary-100 dark:bg-primary-900 rounded-lg font-semibold px-2 py-1 flex-none flex-auto text-white">
+                <Text className="mr-auto  bg-primary/20 dark:bg-primary-900 rounded-lg font-semibold px-2 py-1 flex-none flex-auto text-white">
                     {(data.content?.price_recurring || 0) > 0 ? (data.content?.price_recurring || 0) + '$/' + (data.content?.duration_recurring || '') : ((data.content?.price_single || 0) > 0 ? (data.content?.price_single || 0) + '$' : 'Free')}
                 </Text>
 
