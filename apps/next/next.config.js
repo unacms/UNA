@@ -74,8 +74,7 @@ const nextConfig = {
     'react-native-localize',
     'victory-native',
     'react-native-star-rating-widget',
-    '@openspacelabs/react-native-zoomable-view',
-    'lucide-react-native'
+    '@openspacelabs/react-native-zoomable-view'
   ],
   webpack: (config, { isServer }) => {
     // Add optimization

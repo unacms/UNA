@@ -1,26 +1,57 @@
-import { NextResponse } from 'next/server';
+"use server";
 
+import { renderToString } from "react-dom/server.browser";
+//import * as Icons from 'lucide-react-native'
+import * as Icons from "lucide-react";
 export async function GET(request) {
-    const { searchParams } = new URL(request.url);
-    const iconName = searchParams.get('icon');
+    try {
+        const { searchParams } = new URL(request.url);
+        const iconName = searchParams.get("icon");
+        
+        if (!iconName || !Icons[iconName]) {
+            return new Response(
+                JSON.stringify({ icon: '' }),
+                {
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                }
     
-    if (iconName) {
-        const width = searchParams.get('width') || '24';
-        const height = searchParams.get('height') || '24';
-        const size = searchParams.get('size') || '24';
-        const strokeWidth = searchParams.get('strokeWidth') || '2';
-        
-        // Return the icon configuration for client-side rendering
-        const iconData = {
-            iconName,
-            width: width || size,
-            height: height || size,
-            strokeWidth,
-            color: 'currentColor'
+            );
+        }
+
+        const IconComponent = Icons[searchParams.get('icon')];
+
+        // Extract size and dimensions from query parameters
+        const width = searchParams.get("width");
+        const height = searchParams.get("height");
+        const size = searchParams.get("size");
+         const strokeWidth = searchParams.get('strokeWidth');
+
+        // Dynamically set icon properties
+        const iconProps = {
+            color: "currentColor",
+            ...(width && { width }),
+            ...(height && { height }),
+            ...(size && { size }),
+            ...(strokeWidth && { strokeWidth }),
         };
-        
-        return NextResponse.json({ iconData }, { status: 200 });
-    } else {
-        return NextResponse.json({ iconData: null }, { status: 400 });
+
+        // Render the SVG component to a string
+        const iconString = renderToString(<IconComponent {...iconProps} />);
+
+        // Return the raw SVG with appropriate headers
+        return new Response(
+            JSON.stringify({ icon: iconString }),
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+
+        );
+    } catch (error) {
+        console.error("Error rendering icon:", error);
+        return new Response("Internal Server Error", { status: 500 });
     }
 }
