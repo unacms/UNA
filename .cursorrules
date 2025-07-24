@@ -1,0 +1,256 @@
+# NEO Project Cursor Rules
+
+This file contains context and rules for AI assistants working on the NEO project to ensure consistency and quality.
+
+## Project Overview
+
+NEO is a React Native/Next.js cross-platform application with:
+- **Native app**: React Native with Expo 52 (`apps/expo/`)
+- **Web app**: Next.js 15.4.3 (`apps/next/`)  
+- **Shared package**: Common components and logic (`packages/app/`)
+
+**Tech Stack:**
+- ⚛️ Expo 52 + Next.js 15 + NativeWind 4
+- React 18.3.1 with React Native 0.76.9
+- TypeScript support with flexible configuration
+- Yarn package manager (lockfile: yarn.lock)
+
+## Critical Rules
+
+### 1. Maintain Platform Consistency
+- **Web** and **Native** implementations should follow the same patterns
+- When fixing issues on one platform, check if the same issue exists on the other
+- Icon handling, theming, and component behavior should be consistent across platforms
+
+### 2. Design System & Theming
+**HYBRID THEME SYSTEM**: The project uses both custom design tokens AND NativewindUI semantic tokens:
+
+**Custom Theme Colors** (in `packages/app/design/tailwind/theme.js`):
+- Legacy system with custom tokens like `bgrbody`, `bgrcard`, `bgrbutton`, etc.
+- State variants: `DEFAULT`, `h` (hover), `d` (dark), `dh` (dark hover)
+- Used extensively throughout existing components
+
+**NativewindUI Semantic Tokens** (in `packages/app/styles/global.default.css`):
+- Modern semantic tokens: `background`, `foreground`, `primary`, `card`, etc.
+- CSS variables with iOS/Android variants
+- Automatic dark mode with `@media (prefers-color-scheme: dark)`
+- Manual override with `[data-theme="dark"]`
+
+**Theme Usage Guidelines:**
+```javascript
+// ✅ Preferred - use semantic tokens for new components
+<View className="bg-background text-foreground border border-border" />
+
+// ✅ Acceptable - legacy custom tokens for existing components
+<View className="bg-bgrcard dark:bg-bgrcard-d" />
+
+// ❌ Avoid - hardcoded colors
+<View className="bg-white dark:bg-gray-900" />
+```
+
+### 3. Routing Architecture
+- **Native**: Expo Router with file-based routing (`apps/expo/app/`)
+- **Web**: Next.js 15 App Router (`apps/next/app/`)
+- **Abstraction Layer**: Use `packages/app/lib/hooks/router.js` for consistent imports
+- **Tab Navigation**: Custom tab system with dynamic generation based on user state
+
+### 4. UNA CMS API Integration
+- **Backend**: API endpoints provided by UNA CMS
+- **Integration patterns**:
+  - Use the `fetcher` function from `app/lib/fetcher` for all UNA API calls
+  - Follow UNA's endpoint structure: `/api.php?r=module/action/Template&params[]=JSON`
+  - Handle proxy routing automatically (web vs native configurations)
+  - Use Bearer token authentication for server-side calls
+  - Real-time updates via Pusher WebSocket subscriptions
+
+**UNA API Examples:**
+```javascript
+import { fetcher } from 'app/lib/fetcher';
+
+// Page requests
+const data = await fetcher('/api.php?r=system/get_page_by_request/TemplServicePages&params[]=home');
+
+// Browse/list requests  
+const params = JSON.stringify({params: {per_page: 10, start: 0, type: 'active'}});
+const result = await fetcher(`/api.php?r=bx_persons/browse/&params[]=${params}`);
+
+// Real-time updates via Pusher WebSocket
+import { subscribe } from 'app/ui/atoms/socket';
+useEffect(() => {
+    subscribe('bx_timeline_0', 'added', (data) => {
+        // Handle new content
+    });
+}, [userId]);
+```
+
+### 5. Authentication Patterns
+- Use existing `currentUser` patterns for authentication checks
+- Menu filtering should follow established patterns in `packages/app/lib/util.js`
+- Check both logged/nonlogged state handling for consistency
+
+### 6. Icon System Standards
+- **Web icons**: Must check both `SvgIcons` AND `IconSet` before server fetch
+- **Native icons**: Should follow same resolution order
+- **Standard resolution order**: `SvgIcons` → `IconSet` → XML fallback → Server fetch
+- **Never** add server fetch for standard Lucide icons
+
+## Code Quality Guidelines
+
+### File Organization
+- **Components**: `packages/app/components/` (kebab-case preferred)
+- **UI atoms/molecules**: `packages/app/ui/` (snake_case legacy, but be consistent within directories)
+- **Business logic**: `packages/app/lib/`
+- **Design system**: `packages/app/design/`
+
+### Naming Conventions
+- **Components**: PascalCase for React components
+- **Files**: Follow existing patterns in each directory
+- **Props**: camelCase
+- **CSS classes**: Use Tailwind utility classes, prefer theme variables
+
+### Next.js 15 Specific Patterns
+- **React 19 Ready**: Uses React 18.3.1 but prepared for React 19 features
+- **App Router**: All routes use Next.js App Router pattern
+- **Experimental Features**: 
+  - `staleTimes` configured for caching
+  - `optimizeCss: false` to reduce preload warnings
+- **Performance**: Bundle analysis enabled with `@next/bundle-analyzer`
+
+### React Native Patterns
+- **Reanimated**: Always include dependency arrays for web compatibility
+- **Platform Detection**: Use `Platform.OS === 'web'` for platform-specific code
+- **Native Navigation**: Leverage Expo Router's file-based system
+
+## Common Patterns to Follow
+
+### Theme Usage
+```javascript
+// ✅ Modern semantic tokens (preferred for new components)
+import { useThemeName } from 'app/design/theme';
+const { themeName } = useThemeName();
+
+// Component styling
+<View className="bg-card text-card-foreground border border-border">
+  <Text className="text-foreground">Content</Text>
+</View>
+
+// ✅ Legacy theme system (for existing components)
+import { Theme } from 'app/design/theme';
+const { colors } = Theme();
+<Icon color={colors.primary} />
+```
+
+### Icon Implementation
+```javascript
+// ✅ Correct pattern (both platforms)
+const InlineIcon = SvgIcons[icon];
+const IconComponent = IconSet[processedIcon];
+
+if (InlineIcon) return <InlineIcon .../>;
+if (IconComponent) return <IconComponent .../>;
+// Only then try other fallbacks
+```
+
+### Responsive Design
+```javascript
+// ✅ Use Tailwind responsive classes
+<View className="p-3 sm:p-4 lg:p-6">
+  <Text className="text-base sm:text-lg lg:text-xl">
+    Responsive content
+  </Text>
+</View>
+```
+
+### Form Handling
+```javascript
+// ✅ Use react-hook-form for consistency
+import { useForm } from 'react-hook-form';
+
+const methods = useForm({
+    defaultValues: initialValues
+});
+```
+
+## Investigation Checklist
+
+When debugging or implementing features, always check:
+
+- [ ] Does this work consistently on both web and native?
+- [ ] Are we following existing patterns in the codebase?
+- [ ] Are we using the appropriate theme system (semantic vs custom tokens)?
+- [ ] Is the design system being used correctly?
+- [ ] Is authentication handling consistent?
+- [ ] Are icons being resolved properly on both platforms?
+- [ ] Are UNA API calls using the `fetcher` function correctly?
+- [ ] Do API calls follow UNA's endpoint structure (`/api.php?r=module/action/Template`)?
+- [ ] Are real-time updates using Pusher WebSocket subscriptions properly?
+- [ ] Is responsive design working across all screen sizes?
+
+## Red Flags - Always Investigate
+
+- Different implementations between web and native for the same feature
+- Missing icons on one platform but working on another
+- Hardcoded colors instead of theme tokens
+- Complex authentication logic that could be simplified
+- Direct fetch() calls bypassing the `fetcher` function
+- Incorrect UNA endpoint patterns (not following `/api.php?r=module/action/Template`)
+- Missing Pusher WebSocket subscriptions for real-time features
+- Hardcoded UNA_URL instead of using proxy configurations
+- Direct Tailwind usage where design system components exist
+- Missing responsive breakpoints for mobile/desktop differences
+
+## Architecture Patterns
+
+### Monorepo Structure
+```
+neo/
+├── apps/
+│   ├── expo/          # React Native app (Expo 52)
+│   └── next/          # Next.js 15 app
+├── packages/
+│   └── app/           # Shared components and logic
+└── docs/              # Documentation
+```
+
+### Component Architecture
+- **Atoms**: Basic UI components (`packages/app/ui/atoms/`)
+- **Molecules**: Composite components (`packages/app/ui/molecules/`)
+- **Elements**: Business logic components (`packages/app/components/elements/`)
+- **Layouts**: Page layouts (`packages/app/components/page-layout/`)
+
+### State Management
+- **User State**: Zustand store (`packages/app/context/user.js`)
+- **Theme State**: Zustand store with localStorage persistence
+- **Query State**: TanStack Query for API state management
+- **Form State**: React Hook Form for form management
+
+## Performance Guidelines
+
+### Bundle Optimization
+- Use `dynamic` imports for heavy components on web
+- Leverage React.memo for expensive renders
+- Use proper key props for list items
+- Optimize images with Next.js Image component
+
+### Memory Management
+- Clean up subscriptions in useEffect cleanup
+- Use useMemo and useCallback appropriately
+- Avoid memory leaks in WebSocket connections
+
+## Before Making Changes
+
+1. **Search existing code** for similar patterns
+2. **Test on both platforms** if making shared changes
+3. **Follow existing conventions** in the same directory/module
+4. **Use appropriate theme system** (semantic tokens for new, custom for existing)
+5. **Verify responsive behavior** across screen sizes
+6. **Check authentication flow** if user-dependent features
+
+## Success Criteria
+
+- Cross-platform consistency maintained
+- Modern design system tokens utilized appropriately
+- Performance optimized for both web and native
+- Code quality improved incrementally
+- Patterns established and followed consistently
+- Responsive design working seamlessly 
