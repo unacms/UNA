@@ -22,10 +22,12 @@ import { callFn } from 'app/lib/functions/call';
 import { getComponent } from 'app/components/registry'
 import { Panel, PanelGroup, PanelHandler, isShowColumn } from "app/ui/molecules/resizable-panels";
 import { useWindowDimensions } from 'react-native';
+import ThemeCompatibilityTest from 'app/ui/molecules/nativewindui';
 
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from');
 
 export default function (props) {
+    //return <ThemeCompatibilityTest/>
     const { width: windowWidth } = useWindowDimensions();
     const isWeb = Platform.OS == 'web'
     if (appSetting('config', 'show_ui')) {
@@ -218,7 +220,7 @@ export default function (props) {
             )
         })}</>
 
-        const SideBarContent = <> {/* {appSetting('layout', 'sidebar_search') && (
+        const SideBarContent = <>{/* {appSetting('layout', 'sidebar_search') && (
                                 <View className="pb-3 w-full">
                                     <Search type="input" placeholder="Enter search text" />
                                 </View>

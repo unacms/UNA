@@ -1,5 +1,6 @@
 const merge = require('deepmerge');
 const configCustom = require('app/design/tailwind-custom/theme');
+const { nativewindUIColors } = require('app/design/tailwind/nativewindui-theme');
 
 const colors = {
     neutral: {
@@ -215,7 +216,10 @@ const colors = {
 
 const theme = {
     extend: {
-        colors: colors,
+        colors: {
+            ...colors,
+            ...nativewindUIColors,
+        },
         boxShadow: {
             DEFAULT: '0 1px 3px 0 rgb(0 0 0 / 0.1)',
             'md': '0 4px 6px 0 rgb(0 0 0 / 0.1)',

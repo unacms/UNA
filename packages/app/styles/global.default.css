@@ -2,17 +2,186 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+    :root {
+        /* NativewindUI Design Tokens - Light Mode */
+        --background: 242 242 247;
+        --foreground: 0 0 0;
+        --card: 255 255 255;
+        --card-foreground: 8 28 30;
+        --popover: 230 230 235;
+        --popover-foreground: 0 0 0;
+        --primary: 0 123 254;
+        --primary-foreground: 255 255 255;
+        --secondary: 45 175 231;
+        --secondary-foreground: 255 255 255;
+        --muted: 175 176 180;
+        --muted-foreground: 142 142 147;
+        --accent: 255 40 84;
+        --accent-foreground: 255 255 255;
+        --destructive: 255 56 43;
+        --destructive-foreground: 255 255 255;
+        --border: 230 230 235;
+        --input: 210 210 215;
+        --ring: 230 230 235;
+
+        /* Android-specific variants */
+        --android-background: 249 249 255;
+        --android-foreground: 0 0 0;
+        --android-card: 255 255 255;
+        --android-card-foreground: 24 28 35;
+        --android-popover: 215 217 228;
+        --android-popover-foreground: 0 0 0;
+        --android-primary: 0 112 233;
+        --android-primary-foreground: 255 255 255;
+        --android-secondary: 176 201 255;
+        --android-secondary-foreground: 20 55 108;
+        --android-muted: 193 198 215;
+        --android-muted-foreground: 65 71 84;
+        --android-accent: 169 73 204;
+        --android-accent-foreground: 255 255 255;
+        --android-destructive: 186 26 26;
+        --android-destructive-foreground: 255 255 255;
+        --android-border: 215 217 228;
+        --android-input: 210 210 215;
+        --android-ring: 215 217 228;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        :root {
+            /* NativewindUI Design Tokens - Dark Mode */
+            --background: 0 0 0;
+            --foreground: 255 255 255;
+            --card: 21 21 24;
+            --card-foreground: 255 255 255;
+            --popover: 40 40 42;
+            --popover-foreground: 255 255 255;
+            --primary: 3 133 255;
+            --primary-foreground: 255 255 255;
+            --secondary: 100 211 254;
+            --secondary-foreground: 255 255 255;
+            --muted: 70 70 73;
+            --muted-foreground: 142 142 147;
+            --accent: 255 52 95;
+            --accent-foreground: 255 255 255;
+            --destructive: 254 67 54;
+            --destructive-foreground: 255 255 255;
+            --border: 40 40 42;
+            --input: 55 55 57;
+            --ring: 40 40 42;
+
+            /* Android-specific variants for dark mode */
+            --android-background: 0 0 0;
+            --android-foreground: 255 255 255;
+            --android-card: 16 19 27;
+            --android-card-foreground: 224 226 237;
+            --android-popover: 39 42 50;
+            --android-popover-foreground: 224 226 237;
+            --android-primary: 3 133 255;
+            --android-primary-foreground: 255 255 255;
+            --android-secondary: 28 60 114;
+            --android-secondary-foreground: 189 209 255;
+            --android-muted: 216 226 255;
+            --android-muted-foreground: 139 144 160;
+            --android-accent: 83 0 111;
+            --android-accent-foreground: 238 177 255;
+            --android-destructive: 147 0 10;
+            --android-destructive-foreground: 255 255 255;
+            --android-border: 39 42 50;
+            --android-input: 55 55 57;
+            --android-ring: 39 42 50;
+        }
+    }
+
+    /* Manual dark mode override (for controlled dark mode) */
+    [data-theme="dark"] {
+        --background: 0 0 0;
+        --foreground: 255 255 255;
+        --card: 21 21 24;
+        --card-foreground: 255 255 255;
+        --popover: 40 40 42;
+        --popover-foreground: 255 255 255;
+        --primary: 3 133 255;
+        --primary-foreground: 255 255 255;
+        --secondary: 100 211 254;
+        --secondary-foreground: 255 255 255;
+        --muted: 70 70 73;
+        --muted-foreground: 142 142 147;
+        --accent: 255 52 95;
+        --accent-foreground: 255 255 255;
+        --destructive: 254 67 54;
+        --destructive-foreground: 255 255 255;
+        --border: 40 40 42;
+        --input: 55 55 57;
+        --ring: 40 40 42;
+
+        --android-background: 0 0 0;
+        --android-foreground: 255 255 255;
+        --android-card: 16 19 27;
+        --android-card-foreground: 224 226 237;
+        --android-popover: 39 42 50;
+        --android-popover-foreground: 224 226 237;
+        --android-primary: 3 133 255;
+        --android-primary-foreground: 255 255 255;
+        --android-secondary: 28 60 114;
+        --android-secondary-foreground: 189 209 255;
+        --android-muted: 216 226 255;
+        --android-muted-foreground: 139 144 160;
+        --android-accent: 83 0 111;
+        --android-accent-foreground: 238 177 255;
+        --android-destructive: 147 0 10;
+        --android-destructive-foreground: 255 255 255;
+        --android-border: 39 42 50;
+        --android-input: 55 55 57;
+        --android-ring: 39 42 50;
+    }
+}
+
+@layer components {
+    .u-text {
+        @apply text-foreground;
+    }
+    .u-card {
+        @apply bg-card text-card-foreground border border-border;
+    }
+    .u-input{
+        @apply bg-input text-foreground border border-border focus:ring-2 focus:ring-ring focus:border-primary;
+    }
+}
+
+/* CUSTOM STYLES */
+html {
+    /* Prevent text size change on orientation change https://gist.github.com/tfausak/2222823#file-ios-8-web-app-html-L138 */
+    -webkit-text-size-adjust: 100%;
+    height: 100%;
+    overflow-y: scroll;
+    min-height: calc(100% + env(safe-area-inset-top));
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+body {
+    display: flex;
+    /* Allows you to scroll below the viewport; default value is visible */
+    overflow-y: auto;
+    overscroll-behavior-y: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: neutralscale;
+    -ms-overflow-style: scrollbar;
+    -webkit-overflow-scrolling: touch;
+}
+
 /* Chrome-specific focus outline fix */
 *:focus {
     outline: none !important;
 }
 
 *:focus-visible {
-    outline: 4px solid var(--outline) !important;    
+    outline: 4px solid var(--outline) !important;
 }
 
 html[theme="dark"] *:focus-visible {
-    outline: 4px solid var(--outline-d) !important;    
+    outline: 4px solid var(--outline-d) !important;
 }
 
 .u-vanilla-html {
@@ -25,6 +194,7 @@ html[theme="dark"] *:focus-visible {
     font-weight: 400;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, ".SFNSText-Regular", sans-serif;
 }
+
 .u-vanilla-html-small {
     /* @apply prose dark:prose-invert; */
     @apply text-neutral-800 dark:text-neutral-200;
@@ -33,14 +203,16 @@ html[theme="dark"] *:focus-visible {
     max-width: none;
     word-wrap: break-word;
     font-weight: 400;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, ".SFNSText-Regular", sans-serif;;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, ".SFNSText-Regular", sans-serif;
+    ;
 }
 
-.u-vanilla-html :where(p):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+.u-vanilla-html :where(p):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
     margin-top: 12px !important;
     margin-bottom: 12px !important;
 }
-.u-vanilla-html-small :where(p):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+
+.u-vanilla-html-small :where(p):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
     margin-top: 8px !important;
     margin-bottom: 8px !important;
 }
@@ -48,6 +220,7 @@ html[theme="dark"] *:focus-visible {
 .u-vanilla-html ul {
     @apply list-disc pl-5 mb-3;
 }
+
 .u-vanilla-html li {
     @apply mb-1;
 }
@@ -61,6 +234,7 @@ html[theme="dark"] *:focus-visible {
 .u-vanilla-html> :where(:last-child):not(:where([class~="not-prose"] *)) {
     margin-bottom: 0 !important;
 }
+
 .u-vanilla-html-small div> :where(:first-child):not(:where([class~="not-prose"] *)),
 .u-vanilla-html-small> :where(:first-child):not(:where([class~="not-prose"] *)) {
     margin-top: 0 !important;
@@ -71,16 +245,7 @@ html[theme="dark"] *:focus-visible {
     margin-bottom: 0 !important;
 }
 
-.u-vanilla-html
-H1,
-H2,
-H3,
-H4,
-H5 {
-    @apply text-neutral-900 dark:text-neutral-100;
-}
-.u-vanilla-html-small
-H1,
+.u-vanilla-html H1,
 H2,
 H3,
 H4,
@@ -88,20 +253,33 @@ H5 {
     @apply text-neutral-900 dark:text-neutral-100;
 }
 
-.u-vanilla-html A, .u-vanilla-html .link{
-    color: #2563eb;
-    text-decoration: none;
+.u-vanilla-html-small H1,
+H2,
+H3,
+H4,
+H5 {
+    @apply text-neutral-900 dark:text-neutral-100;
 }
-.u-vanilla-html-small A, .u-vanilla-html-small .link{
+
+.u-vanilla-html A,
+.u-vanilla-html .link {
     color: #2563eb;
     text-decoration: none;
 }
 
-.u-vanilla-html.u-vanilla-html-small A:hover, .u-vanilla-html.u-vanilla-html-small .link {
+.u-vanilla-html-small A,
+.u-vanilla-html-small .link {
+    color: #2563eb;
+    text-decoration: none;
+}
+
+.u-vanilla-html.u-vanilla-html-small A:hover,
+.u-vanilla-html.u-vanilla-html-small .link {
     text-decoration: underline;
 }
+
 .bx-mention-link,
-.bx-tag{
+.bx-tag {
     color: rgba(29, 78, 216, 1);
 }
 
@@ -131,239 +309,11 @@ body,
     flex: 1;
 }
 
-html {
-    /* Prevent text size change on orientation change https://gist.github.com/tfausak/2222823#file-ios-8-web-app-html-L138 */
-    -webkit-text-size-adjust: 100%;
-    height: 100%;
-}
-
-body {
-    display: flex;
-    /* Allows you to scroll below the viewport; default value is visible */
-    overflow-y: auto;
-    overscroll-behavior-y: none;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: neutralscale;
-    -ms-overflow-style: scrollbar;
-}
-
-.u-card-list {
-    width: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: row !important;
-    flex-shrink: 1 !important;
-    --margin: 0.5rem;
-    --margin2: 0.5rem;
-    --col2w: 1000px;
-    --col1w: 700px;
-
-}
-
-.u-card-list>* {
-    /* */
-    flex-grow: 0;
-    flex-basis: calc((var(--col2w) - 100%) * 2000) !important;
-    flex-shrink: 1;
-    flex-direction: row !important;
-
-}
-
-.u-card {
-    min-width: calc(33.33% - 11px) !important;
-    width: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    align-content: flex-start;
-    flex-shrink: 1 !important;
-    flex-direction: row !important;
-}
-
-.u-card-45 {
-    background: blue;
-}
-
-.u-card-list4 {
-    gap: 0.5rem;
-}
-
-.u-card-4 {
-    min-width: 250px;
-    max-width: 400px;
-    flex: 1 1 0%;
-}
-
-.u-feed-card {
-    display: flex;
-    flex-wrap: wrap;
-    align-content: flex-start;
-    flex-shrink: 1 !important;
-}
-
-.u-card-content {
-    min-width: calc(100% - 33%);
-    flex-grow: 1;
-    flex-basis: calc((var(--col1w) - 100%) * 2000) !important;
-    max-width: 100%;
-    margin-bottom: 2.5rem;
-}
-
-.u-card-media {
-    min-width: 33%;
-    max-width: 100%;
-    flex-grow: 1;
-    flex-basis: calc((var(--col1w) - 100%) * 2000) !important;
-}
-
-.u-card-fix {
-    max-width: 100%;
-    flex-grow: 1;
-    flex-basis: -100px;
-    ;
-}
-
-.u-card-bar {
-    position: absolute;
-    bottom: 0px;
-    width: 100%;
-}
-
 .u-cover {
     object-fit: cover !important;
 }
 
-.u-navbar {
-    width: calc(100% - 350px);
-    overflow-y: hidden;
-    overflow-x: auto;
-}
 
-.u-navbar::-webkit-scrollbar {
-    display: none;
-}
-
-.u-image {
-    object-fit: cover !important;
-}
-
-.u-sidebar::-webkit-scrollbar {
-    display: none;
-}
-
-.u-content3 {
-    width: 100%;
-    overflow: hidden;
-}
-
-.u-content3-bg {
-    height: 49px;
-    ;
-}
-
-.u-content4 {
-    width: 100%;
-    overflow: hidden;
-}
-
-.dsf {
-    width: calc(100%)
-}
-
-html {
-    overflow-y: scroll;
-}
-
-@media (min-width: 1536px) {
-    .u-content3 {
-        width: 1536px
-    }
-}
-
-/*@media (min-width: 1280px){
-    .u-content4{
-        width: calc(100% - 304px);
-    }
-}*/
-.u-hidden {
-    @apply hidden;
-}
-
-.form-comment {
-    flex-direction: row;
-    align-items: flex-end;
-    flex-wrap: wrap;
-}
-
-.form-control-cmt_text {
-    width: calc(100%) !important;
-    margin-bottom: 0px !important;
-}
-
-.form-control-cmt_image,
-.form-control-cmt_submit {
-    margin-bottom: 0px !important;
-    margin-top: 0px;
-}
-
-.form-control-cmt_image>div {
-    margin-bottom: 0px !important;
-}
-
-.profile-menu::-webkit-scrollbar {
-    display: none;
-}
-
-div::-webkit-scrollbar {
-    display: none;
-}
-
-
-.editor-height {
-    min-height: 120px !important;
-}
-
-
-.ProseMirror:focus {
-    outline: none;
-}
-
-html {
-    min-height: calc(100% + env(safe-area-inset-top));
-    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-
-}
-
-body {
-    -webkit-overflow-scrolling: touch;
-}
-
-.tabbar {
-    padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom, 20px) env(safe-area-inset-left);
-}
-
-.loader {
-    display: block;
-    width: 100%;
-    height: 2px;
-    border-radius: 30px;
-    background-color: rgba(0, 0, 0, 0.2);
-    position: absolute;
-
-}
-
-.loader::before {
-    content: "";
-    position: absolute;
-    background: #0071e2;
-    top: 0;
-    left: 0;
-    width: 0%;
-    height: 100%;
-    border-radius: 30px;
-    animation: moving 1s ease-in-out infinite;
-    ;
-}
 
 @keyframes moving {
     50% {
@@ -376,7 +326,6 @@ body {
         left: unset;
     }
 }
-
 
 .page-fade-out {
     animation: fadeOut 0.2s forwards;
@@ -412,117 +361,128 @@ body {
     top: -10000px;
     left: -10000px;
 }
+
 .block {
     min-height: 1px !important;
 }
-[data-rsbs-overlay]{
+
+[data-rsbs-overlay] {
     z-index: 9999;
 }
 
 
 .pointerEvents {
-   /* overflow: hidden;*/
-   pointer-events: auto;
+    pointer-events: auto;
 }
 
 
-.bx-embeded-image{
+.bx-embeded-image {
     display: none;
 }
-.bx-embeded{
+
+.bx-embeded {
     border: 1px solid rgba(107, 114, 128, 0.2) !important
 }
-.bx-embeded-link{
-    color:inherit !important;
+
+.bx-embeded-link {
+    color: inherit !important;
 }
-div{
+
+div {
     scrollbar-width: none;
 }
+
 html[theme="dark"]:root {
-    --rsbs-bg: rgba(17,24,39,1);
+    --rsbs-bg: rgba(17, 24, 39, 1);
 }
 
-
-.tippy-box[data-theme="mention mention_user"] .tippy-content .items:not(:has(div))::after{
-    content:'Mention a user';
+.tippy-box[data-theme="mention mention_user"] .tippy-content .items:not(:has(div))::after {
+    content: 'Mention a user';
     display: block;
 }
 
-.tippy-box[data-theme="mention mention_channel"] .tippy-content .items:not(:has(div))::after{
-    content:'Select channel';
+.tippy-box[data-theme="mention mention_channel"] .tippy-content .items:not(:has(div))::after {
+    content: 'Select channel';
     display: block;
-  
+
 }
 
-.tippy-box[data-theme~=mention]{
-    max-height: 90vh; 
+.tippy-box[data-theme~=mention] {
+    max-height: 90vh;
     overflow-y: auto;
 }
 
-div[data-radix-popper-content-wrapper]:not(.radix-hide){
-    z-index: 1000000 !important;
-}
-div[data-radix-popper-content-wrapper].radix-hide{
-    display: none;
-}
-
-.tiptap-default{
+.tiptap-default {
     scrollbar-width: none;
     font-size: 16px;
     line-height: 24px;
 }
-.tiptap-comments{
+
+.tiptap-comments {
     scrollbar-width: none;
     font-size: 16px;
     line-height: 20px;
 }
 
-.pac-container{ 
+.pac-container {
     z-index: 1000000 !important;
 }
 
-.react-grid-item > .react-resizable-handle{
+.react-grid-item>.react-resizable-handle {
     display: none;
 }
-.react-grid-item:hover > .react-resizable-handle{
+
+.react-grid-item:hover>.react-resizable-handle {
     display: block;
     background-size: cover;
 }
-.react-grid-item:hover > .react-resizable-handle:after{
+
+.react-grid-item:hover>.react-resizable-handle:after {
     display: none;
 }
-.react-grid-item > .react-resizable-handle.react-resizable-handle-ne {
+
+.react-grid-item>.react-resizable-handle.react-resizable-handle-ne {
     top: 5px !important;
     right: 5px !important;
 }
-.react-grid-item > .react-resizable-handle.react-resizable-handle-e {
+
+.react-grid-item>.react-resizable-handle.react-resizable-handle-e {
     right: 5px !important;
 }
-.react-grid-item > .react-resizable-handle.react-resizable-handle-se {
+
+.react-grid-item>.react-resizable-handle.react-resizable-handle-se {
     bottom: 5px !important;
     right: 5px !important;
 }
-.react-grid-item > .react-resizable-handle.react-resizable-handle-s {
+
+.react-grid-item>.react-resizable-handle.react-resizable-handle-s {
     bottom: 5px !important;
 }
-.react-grid-item > .react-resizable-handle.react-resizable-handle-n {
+
+.react-grid-item>.react-resizable-handle.react-resizable-handle-n {
     top: 5px !important;
 }
-.react-grid-item > .react-resizable-handle.react-resizable-handle-nw {
+
+.react-grid-item>.react-resizable-handle.react-resizable-handle-nw {
     top: 5px !important;
     left: 5px !important;
 }
-.react-grid-item > .react-resizable-handle.react-resizable-handle-w {
+
+.react-grid-item>.react-resizable-handle.react-resizable-handle-w {
     left: 5px !important;
 }
-.react-grid-item > .react-resizable-handle.react-resizable-handle-sw {
+
+.react-grid-item>.react-resizable-handle.react-resizable-handle-sw {
     bottom: 5px !important;
     left: 5px !important;
 }
-.grid-readonly .react-grid-item .react-resizable-handle{
+
+.grid-readonly .react-grid-item .react-resizable-handle {
     display: none;
 }
-.background-video{position: absolute;
+
+.background-video {
+    position: absolute;
     top: 50%;
     left: 50%;
     width: 100%;

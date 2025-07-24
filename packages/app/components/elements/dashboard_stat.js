@@ -19,6 +19,7 @@ import { fetcher } from 'app/lib/fetcher';
 import { Theme, useThemeName } from 'app/design/theme';
 import DasbordStatOld from 'app/components/elements/dashboard_stat_old';
 import ApiPerformanceReport from 'app/ui/molecules/api-performance-report';
+import ThemeCompatibilityTest from 'app/ui/molecules/nativewindui';
 
 function getCounter(num, icon = '', add = '', color = '') {
 
@@ -283,7 +284,7 @@ function ElementDashboardStat(props) {
     const [data, setData] = useState(props.data);
     const { currentUser, setCurrentUser } = useCurrentUser()
     const [showApiPerformance, setShowApiPerformance] = useState(false);
-    
+    const [showThemeTest, setShowThemeTest] = useState(false);
     useEffect(() => {
         const fetchData = async () => {
             const sResponse = await fetcher('/api.php?r=system/get_stat_block/TemplDashboardServices');
@@ -309,6 +310,20 @@ function ElementDashboardStat(props) {
             >
                 <ScrollView className="max-h-[70vh] p-4">
                     <ApiPerformanceReport />
+                </ScrollView>
+            </Modal>
+
+            <Modal 
+                id="theme-test-modal" 
+                title="Theme Compatibility Test"
+                onVisible={!!showThemeTest} 
+                onClose={() => setShowThemeTest(false)}
+                maxWidth="max-w-4xl"
+                maxHeight="max-h-[90vh]"
+                scrollable={true}
+            >
+                <ScrollView className="max-h-[70vh]">
+                     <ThemeCompatibilityTest />
                 </ScrollView>
             </Modal>
             
@@ -369,7 +384,7 @@ function ElementDashboardStat(props) {
                 <Text className="text-xl mb-3 text-neutral-800 dark:text-neutral-200 font-semibold">Admin Tools</Text>
                 <View className="grid w-full grid-cols-1 gap-x-2 gap-y-1.5 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
                     {currentUser?.id && (
-                        <View className=" w-full min-w-[160px]  ">
+                        <><View className=" w-full min-w-[160px]  ">
                             <Button 
                                 variant="secondary" 
                                 align="left" 
@@ -380,6 +395,17 @@ function ElementDashboardStat(props) {
                                 onPress={() => setShowApiPerformance(true)}
                             />
                         </View>
+                        <View className=" w-full min-w-[160px]  ">
+                                <Button 
+                                    variant="secondary" 
+                                    align="left" 
+                                    size="sm" 
+                                    fullWidth 
+                                    title="Theme Test" 
+                                    startDecorator="Palette"
+                                    onPress={() => setShowThemeTest(true)}
+                                />
+                            </View></>
                     )}
                     {data.manage.items.map((item2, index) => {
                         return <View className=" w-full min-w-[160px]  " key={index}>
