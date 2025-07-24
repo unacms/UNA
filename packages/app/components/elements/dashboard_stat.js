@@ -87,9 +87,9 @@ export default function PageLayout(props) {
             if (item == 'auto')
                 item = '';
             if (item == '')
-                root.setAttribute('theme', scheme);
+                root.setAttribute('data-theme', scheme);
             else
-                root.setAttribute('theme', item);
+                root.setAttribute('data-theme', item);
             setThemeName(item);
         }
         else {

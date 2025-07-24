@@ -13,11 +13,11 @@ export default function ThemeCompatibilityTest({ data }) {
             const root = window.document.documentElement;
             if (item === 'auto') {
                 // Remove theme attribute to let media query take over
-                root.removeAttribute('theme');
+                root.removeAttribute('data-theme');
                 setThemeName('');
             } else {
                 // Set explicit theme (light or dark)
-                root.setAttribute('theme', item);
+                root.setAttribute('data-theme', item);
                 setThemeName(item);
             }
         } else {
@@ -45,7 +45,29 @@ export default function ThemeCompatibilityTest({ data }) {
             {/* Theme Controls */}
             <View className='u-card'><Text className='u-text'>u-text inside u-card</Text></View>
             <TextInputDef className='u-input' placeholder='u-input inside u-card' />
-             <TextInputDef className='u-input' placeholder='u-input inside u-card' />
+            <TextInputDef className='u-input' placeholder='u-input inside u-card' />
+
+            <Text className="text-lg font-semibold text-foreground"> Color Pallete</Text>
+
+            <View className='w-full py-2 bg-background border items-center'><Text className="text-foregraund">background</Text></View>
+            <View className='w-full py-2 bg-foreground border items-center'><Text className="text-background">foreground</Text></View>
+            <View className='w-full py-2 bg-card border items-center'><Text className="foregraund">card</Text></View>
+            <View className='w-full py-2 bg-card-foreground border items-center'><Text className="foregraund">card-foreground</Text></View>
+            <View className='w-full py-2 bg-popover border items-center'><Text className="foregraund">popover</Text></View>
+            <View className='w-full py-2 bg-popover-foreground border items-center'><Text className="popover-foreground">popover-foreground</Text></View>
+            <View className='w-full py-2 bg-primary border items-center'><Text className="foregraund">primary</Text></View>
+            <View className='w-full py-2 bg-primary-foreground border items-center'><Text className="foregraund">primary-foreground</Text></View>
+            <View className='w-full py-2 bg-secondary border items-center'><Text className="foregraund">secondary</Text></View>
+            <View className='w-full py-2 bg-secondary-foreground border items-center'><Text className="foregraund">secondary-foreground</Text></View>
+            <View className='w-full py-2 bg-muted border items-center'><Text className="foregraund">muted</Text></View>
+            <View className='w-full py-2 bg-muted-foreground border items-center'><Text className="foregraund">muted-foreground</Text></View>
+            <View className='w-full py-2 bg-accent border items-center'><Text className="foregraund">accent</Text></View>
+            <View className='w-full py-2 bg-accent-foreground border items-center'><Text className="foregraund">accent-foreground</Text></View>
+            <View className='w-full py-2 bg-destructive border items-center'><Text className="foregraund">destructive</Text></View>
+            <View className='w-full py-2 bg-destructive-foreground border items-center'><Text className="foregraund">destructive-foreground</Text></View>
+            <View className='w-full py-2 bg-border border items-center'><Text className="foregraund">border</Text></View>
+            <View className='w-full py-2 bg-input border items-center'><Text className="foregraund">input</Text></View>
+            <View className='w-full py-2 bg-ring border items-center'><Text className="foregraund">ring</Text></View>
             <View className="flex-row space-x-2">
                 <Pressable
                     onPress={() => handleTheme('light')}

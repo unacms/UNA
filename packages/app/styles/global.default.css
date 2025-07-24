@@ -47,54 +47,8 @@
         --android-ring: 215 217 228;
     }
 
-    @media (prefers-color-scheme: dark) {
-        :root {
-            /* NativewindUI Design Tokens - Dark Mode */
-            --background: 0 0 0;
-            --foreground: 255 255 255;
-            --card: 21 21 24;
-            --card-foreground: 255 255 255;
-            --popover: 40 40 42;
-            --popover-foreground: 255 255 255;
-            --primary: 3 133 255;
-            --primary-foreground: 255 255 255;
-            --secondary: 100 211 254;
-            --secondary-foreground: 255 255 255;
-            --muted: 70 70 73;
-            --muted-foreground: 142 142 147;
-            --accent: 255 52 95;
-            --accent-foreground: 255 255 255;
-            --destructive: 254 67 54;
-            --destructive-foreground: 255 255 255;
-            --border: 40 40 42;
-            --input: 55 55 57;
-            --ring: 40 40 42;
-
-            /* Android-specific variants for dark mode */
-            --android-background: 0 0 0;
-            --android-foreground: 255 255 255;
-            --android-card: 16 19 27;
-            --android-card-foreground: 224 226 237;
-            --android-popover: 39 42 50;
-            --android-popover-foreground: 224 226 237;
-            --android-primary: 3 133 255;
-            --android-primary-foreground: 255 255 255;
-            --android-secondary: 28 60 114;
-            --android-secondary-foreground: 189 209 255;
-            --android-muted: 216 226 255;
-            --android-muted-foreground: 139 144 160;
-            --android-accent: 83 0 111;
-            --android-accent-foreground: 238 177 255;
-            --android-destructive: 147 0 10;
-            --android-destructive-foreground: 255 255 255;
-            --android-border: 39 42 50;
-            --android-input: 55 55 57;
-            --android-ring: 39 42 50;
-        }
-    }
-
-    /* Manual dark mode override (for controlled dark mode) */
-    [data-theme="dark"] {
+    .dark-theme-vars {
+        /* NativewindUI Design Tokens - Dark Mode */
         --background: 0 0 0;
         --foreground: 255 255 255;
         --card: 21 21 24;
@@ -115,6 +69,7 @@
         --input: 55 55 57;
         --ring: 40 40 42;
 
+        /* Android-specific variants for dark mode */
         --android-background: 0 0 0;
         --android-foreground: 255 255 255;
         --android-card: 16 19 27;
@@ -135,16 +90,29 @@
         --android-input: 55 55 57;
         --android-ring: 39 42 50;
     }
+
+    @media (prefers-color-scheme: dark) {
+        :root {
+            @apply dark-theme-vars;
+        }
+    }
+
+    /* Manual dark mode override (for controlled dark mode) */
+    [data-theme="dark"] {
+        @apply dark-theme-vars;
+    }
 }
 
 @layer components {
     .u-text {
         @apply text-foreground;
     }
+
     .u-card {
         @apply bg-card text-card-foreground border border-border;
     }
-    .u-input{
+
+    .u-input {
         @apply bg-input text-foreground border border-border focus:ring-2 focus:ring-ring focus:border-primary;
     }
 }
