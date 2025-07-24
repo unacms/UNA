@@ -315,7 +315,7 @@ export default function (props) {
                     }
                 }}
             >
-                {getLayout(currentUser) == 'hor' && <>
+                {(getLayout(currentUser) == 'hor' && isWeb) && <>
                     <Panel className={`hidden ${cellsCustomConfig.cells?.left?.breakpoint}:block`} {...cellsCustomConfig.cells?.left} >
                         <View className='fixed-process p-3'>
                             {SideBarContent}
@@ -323,18 +323,18 @@ export default function (props) {
                     </Panel>
                     <PanelHandler gap={2} sizable={cellsCustomConfig.sizable} />
                 </>}
-                <Panel {...cellsCustomConfig.cells?.center}>
+                <Panel className="mx-auto w-full" {...cellsCustomConfig.cells?.center}>
                     <View className='sm:p-3'>
                         {FeedContent}
                     </View>
                 </Panel>
 
-                <PanelHandler gap={2} sizable={cellsCustomConfig.sizable} />
+                {isWeb && <><PanelHandler gap={2} sizable={cellsCustomConfig.sizable} />
                 <Panel className={`hidden ${cellsCustomConfig.cells?.right?.breakpoint}:block`} {...cellsCustomConfig.cells?.right}>
                     <View className='fixed-process p-1.5 sm:p-2'>
                         {AsideContent}
                     </View>
-                </Panel>
+                </Panel></>}
             </PanelGroup>
         )
         // }
