@@ -122,43 +122,51 @@ const SplashTextInner = (
     </>
 )
 
-const SplashText = isWeb ? (<View className="my-auto flex-col items-center lg:items-start flex-auto p-4 sm:p-8 xl:p-16 " accessible={true}>
-    <AnimatedView className="w-[200px] h-[200px] lg:w-80 lg:h-80 web:duration-300">
-        <SvgFile src_dark="splash-dark.svg" src_default="splash-light.svg" alt="Splash screen illustration" />
-    </AnimatedView>
-    <AnimatedView delay={100} direction="up" className="flex-auto items-center lg:items-start gap-y-4 sm:gap-y-6 max-w-md sm:max-w-lg lg:max-w-3xl">
-        {SplashTextInner}
-    </AnimatedView>
-</View>) : (
-    <View className="flex-col items-center lg:items-start gap-x-8 flex-auto px-4 sm:px-8 xl:px-16 lg:pb-16" accessible={true}>
-        <View className="w-[200px] h-[200px] lg:w-80 lg:h-80 web:duration-300">
-            <SvgFile
-                src_dark="splash-dark.svg"
-                src_default="splash-light.svg"
-                alt="Splash screen illustration"
-            />
+const SplashTextComponent = (props) => {
+    return isWeb ? (
+        <View className="my-auto flex-col items-center lg:items-start flex-auto p-4 sm:p-8 xl:p-16 " accessible={true}>
+            <AnimatedView className="w-[200px] h-[200px] lg:w-80 lg:h-80 web:duration-300">
+                <SvgFile src_dark="splash-dark.svg" src_default="splash-light.svg" alt="Splash screen illustration" />
+            </AnimatedView>
+            <AnimatedView delay={100} direction="up" className="flex-auto items-center lg:items-start gap-y-4 sm:gap-y-6 max-w-md sm:max-w-lg lg:max-w-3xl">
+                {SplashTextInner}
+            </AnimatedView>
         </View>
-        <View className="flex-auto items-center lg:items-start gap-y-4 sm:gap-y-6 max-w-md sm:max-w-lg lg:max-w-3xl">
-            {SplashTextInner}
+    ) : (
+        <View className="flex-col items-center lg:items-start gap-x-8 flex-auto px-4 sm:px-8 xl:px-16 lg:pb-16" accessible={true}>
+            <View className="w-[200px] h-[200px] lg:w-80 lg:h-80 web:duration-300">
+                <SvgFile
+                    src_dark="splash-dark.svg"
+                    src_default="splash-light.svg"
+                    alt="Splash screen illustration"
+                />
+            </View>
+            <View className="flex-auto items-center lg:items-start gap-y-4 sm:gap-y-6 max-w-md sm:max-w-lg lg:max-w-3xl">
+                {SplashTextInner}
+            </View>
         </View>
-    </View>
-)
-const JoinText = (
-    <AnimatedView className="w-[200px] h-[200px] lg:w-80 lg:h-80 web:duration-300">
-        <SvgFile src_dark="create-account-dark.svg" src_default="create-account-light.svg" alt="Create account illustration" />
-    </AnimatedView>
-);
+    )
+}
+const JoinTextComponent = (props) => {
+    return (
+        <AnimatedView className="w-[200px] h-[200px] lg:w-80 lg:h-80 web:duration-300">
+            <SvgFile src_dark="create-account-dark.svg" src_default="create-account-light.svg" alt="Create account illustration" />
+        </AnimatedView>
+    )
+}
 
-const ComponentsAbout = (
-    <>
-        <Text className="text-3xl lg:text-4xl xl:text-5xl font-bold text-neutral-800 dark:text-neutral-200">
-            About
-        </Text>
-        <Text className="text-lg lg:text-xl xl:text-2xl  text-neutral-600 dark:text-neutral-400">
-            The place to connect, share and grow with the community.
-        </Text>
-    </>
-)
+const ComponentsAboutComponent = (props) => {
+    return (
+        <>
+            <Text className="text-3xl lg:text-4xl xl:text-5xl font-bold text-neutral-800 dark:text-neutral-200">
+                About
+            </Text>
+            <Text className="text-lg lg:text-xl xl:text-2xl  text-neutral-600 dark:text-neutral-400">
+                The place to connect, share and grow with the community.
+            </Text>
+        </>
+    )
+}
 const ComponentsCommentsEmpty = () => {
     const { t } = useTranslation()
     return (
@@ -340,269 +348,273 @@ function ComponentModal({ title = 'test' }) {
     return <PopupModal />
 }
 
-const ComponentsLoginContent = (
-    <View className="hidden my-auto flex-col flex-auto">
-        <AnimatedView className="w-[50%] max-w-80 aspect-square">
-            <SvgFile
-                src_dark="login-dark.svg"
-                src_default="login-light.svg"
-                alt="Login illustration"
-            />
-        </AnimatedView>
-        <AnimatedView direction="up" className="flex-auto items-center lg:items-start gap-y-4 sm:gap-y-6 max-w-md sm:max-w-lg lg:max-w-3xl">
-            <View className="flex-col gap-y-8 flex-auto my-4 ">
-                <Text className="text-4xl tracking-tight font-bold text-neutral-800 dark:text-neutral-200 justify-center items-center  ">
-                    Sign in to your account
-                </Text>
-                <View className="flex-col gap-y-4">
-                    <View className="flex-row gap-x-4 ">
-                        <Icon
-                            className="text-neutral-800 dark:text-neutral-200"
-                            icon="UsersRound"
-                            width={24}
-                            height={24}
-                        />
-                        <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-base font-medium">
-                            Meet new people
-                        </Text>
-                    </View>
+const ComponentsLoginContentComponent = (props) => {
+    return (
+        <View className="hidden my-auto flex-col flex-auto">
+            <AnimatedView className="w-[50%] max-w-80 aspect-square">
+                <SvgFile
+                    src_dark="login-dark.svg"
+                    src_default="login-light.svg"
+                    alt="Login illustration"
+                />
+            </AnimatedView>
+            <AnimatedView direction="up" className="flex-auto items-center lg:items-start gap-y-4 sm:gap-y-6 max-w-md sm:max-w-lg lg:max-w-3xl">
+                <View className="flex-col gap-y-8 flex-auto my-4 ">
+                    <Text className="text-4xl tracking-tight font-bold text-neutral-800 dark:text-neutral-200 justify-center items-center  ">
+                        Sign in to your account
+                    </Text>
+                    <View className="flex-col gap-y-4">
+                        <View className="flex-row gap-x-4 ">
+                            <Icon
+                                className="text-neutral-800 dark:text-neutral-200"
+                                icon="UsersRound"
+                                width={24}
+                                height={24}
+                            />
+                            <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-base font-medium">
+                                Meet new people
+                            </Text>
+                        </View>
 
-                    <View className="flex-row gap-x-4 ">
-                        <Icon
-                            className="text-neutral-800 dark:text-neutral-200"
-                            icon="Compass"
-                            width={24}
-                            height={24}
-                        />
-                        <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-base font-medium">
-                            Discover cool spaces
-                        </Text>
-                    </View>
+                        <View className="flex-row gap-x-4 ">
+                            <Icon
+                                className="text-neutral-800 dark:text-neutral-200"
+                                icon="Compass"
+                                width={24}
+                                height={24}
+                            />
+                            <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-base font-medium">
+                                Discover cool spaces
+                            </Text>
+                        </View>
 
-                    <View className="flex-row gap-x-4 ">
-                        <Icon
-                            className="text-neutral-800 dark:text-neutral-200"
-                            icon="Share"
-                            width={24}
-                            height={24}
-                        />
-                        <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-base font-medium">
-                            Share your ideas
-                        </Text>
+                        <View className="flex-row gap-x-4 ">
+                            <Icon
+                                className="text-neutral-800 dark:text-neutral-200"
+                                icon="Share"
+                                width={24}
+                                height={24}
+                            />
+                            <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-base font-medium">
+                                Share your ideas
+                            </Text>
+                        </View>
                     </View>
                 </View>
-            </View>
-        </AnimatedView>
-    </View>
-)
+            </AnimatedView>
+        </View>
+    )
+}
 
-const ComponentsDummy = (
-    <>
-        <Row className="gap-x-2 items-start mb-4">
-            <Button size="xs" variant="primary" title="text"></Button>
-            <Button
-                size="xs"
-                variant="primary"
-                title="text"
-                startDecorator="Plus"
-            ></Button>
-            <Button size="xs" variant="text" title="text"></Button>
-            <Button
-                size="xs"
-                variant="text"
-                title="text"
-                startDecorator="Plus"
-            ></Button>
-            <Button size="xs" variant="default" title="text"></Button>
-            <Button
-                size="xs"
-                variant="default"
-                title="text"
-                startDecorator="Plus"
-            ></Button>
-            <Button size="xs" variant="secondary" title="text"></Button>
-            <Button
-                size="xs"
-                variant="secondary"
-                title="text"
-                startDecorator="Plus"
-            ></Button>
-            <Button size="xs" variant="outline" title="text"></Button>
-            <Button
-                size="xs"
-                variant="outline"
-                title="text"
-                startDecorator="Plus"
-            ></Button>
-        </Row>
-        <Row className="gap-x-2 items-start mb-4">
-            <Button size="sm" variant="primary" title="text"></Button>
-            <Button
-                size="sm"
-                variant="primary"
-                title="text"
-                startDecorator="Plus"
-            ></Button>
-            <Button size="sm" variant="text" title="text"></Button>
-            <Button
-                size="sm"
-                variant="text"
-                title="text"
-                startDecorator="Plus"
-            ></Button>
-            <Button size="sm" variant="default" title="text"></Button>
-            <Button
-                size="sm"
-                variant="default"
-                title="text"
-                startDecorator="Plus"
-            ></Button>
-            <Button size="sm" variant="secondary" title="text"></Button>
-            <Button
-                size="sm"
-                variant="secondary"
-                title="text"
-                startDecorator="Plus"
-            ></Button>
-            <Button size="sm" variant="outline" title="text"></Button>
-            <Button
-                size="sm"
-                variant="outline"
-                title="text"
-                startDecorator="Plus"
-            ></Button>
-        </Row>
-        <Row className="gap-x-2 items-start mb-4">
-            <Button size="base" variant="primary" title="text"></Button>
-            <Button
-                size="base"
-                variant="primary"
-                title="text"
-                startDecorator="Plus"
-            ></Button>
-            <Button size="base" variant="text" title="text"></Button>
-            <Button
-                size="base"
-                variant="text"
-                title="text"
-                startDecorator="Plus"
-            ></Button>
-            <Button size="base" variant="default" title="text"></Button>
-            <Button
-                size="base"
-                variant="default"
-                title="text"
-                startDecorator="Plus"
-            ></Button>
-            <Button size="base" variant="secondary" title="text"></Button>
-            <Button
-                size="base"
-                variant="secondary"
-                title="text"
-                startDecorator="Plus"
-            ></Button>
-            <Button size="base" variant="outline" title="text"></Button>
-            <Button
-                size="base"
-                variant="outline"
-                title="text"
-                startDecorator="Plus"
-            ></Button>
-        </Row>
-        <Row className="gap-x-2 items-start mb-4">
-            <Button size="lg" variant="primary" title="text"></Button>
-            <Button
-                size="lg"
-                variant="primary"
-                title="text"
-                startDecorator="Plus"
-            ></Button>
-            <Button size="lg" variant="text" title="text"></Button>
-            <Button
-                size="lg"
-                variant="text"
-                title="text"
-                startDecorator="Plus"
-            ></Button>
-            <Button size="lg" variant="default" title="text"></Button>
-            <Button
-                size="lg"
-                variant="default"
-                title="text"
-                startDecorator="Plus"
-            ></Button>
-            <Button size="lg" variant="secondary" title="text"></Button>
-            <Button
-                size="lg"
-                variant="secondary"
-                title="text"
-                startDecorator="Plus"
-            ></Button>
-            <Button size="lg" variant="outline" title="text"></Button>
-            <Button
-                size="lg"
-                variant="outline"
-                title="text"
-                startDecorator="Plus"
-            ></Button>
-        </Row>
+const ComponentsDummyComponent = (props) => {
+    return (
+        <>
+            <Row className="gap-x-2 items-start mb-4">
+                <Button size="xs" variant="primary" title="text"></Button>
+                <Button
+                    size="xs"
+                    variant="primary"
+                    title="text"
+                    startDecorator="Plus"
+                ></Button>
+                <Button size="xs" variant="text" title="text"></Button>
+                <Button
+                    size="xs"
+                    variant="text"
+                    title="text"
+                    startDecorator="Plus"
+                ></Button>
+                <Button size="xs" variant="default" title="text"></Button>
+                <Button
+                    size="xs"
+                    variant="default"
+                    title="text"
+                    startDecorator="Plus"
+                ></Button>
+                <Button size="xs" variant="secondary" title="text"></Button>
+                <Button
+                    size="xs"
+                    variant="secondary"
+                    title="text"
+                    startDecorator="Plus"
+                ></Button>
+                <Button size="xs" variant="outline" title="text"></Button>
+                <Button
+                    size="xs"
+                    variant="outline"
+                    title="text"
+                    startDecorator="Plus"
+                ></Button>
+            </Row>
+            <Row className="gap-x-2 items-start mb-4">
+                <Button size="sm" variant="primary" title="text"></Button>
+                <Button
+                    size="sm"
+                    variant="primary"
+                    title="text"
+                    startDecorator="Plus"
+                ></Button>
+                <Button size="sm" variant="text" title="text"></Button>
+                <Button
+                    size="sm"
+                    variant="text"
+                    title="text"
+                    startDecorator="Plus"
+                ></Button>
+                <Button size="sm" variant="default" title="text"></Button>
+                <Button
+                    size="sm"
+                    variant="default"
+                    title="text"
+                    startDecorator="Plus"
+                ></Button>
+                <Button size="sm" variant="secondary" title="text"></Button>
+                <Button
+                    size="sm"
+                    variant="secondary"
+                    title="text"
+                    startDecorator="Plus"
+                ></Button>
+                <Button size="sm" variant="outline" title="text"></Button>
+                <Button
+                    size="sm"
+                    variant="outline"
+                    title="text"
+                    startDecorator="Plus"
+                ></Button>
+            </Row>
+            <Row className="gap-x-2 items-start mb-4">
+                <Button size="base" variant="primary" title="text"></Button>
+                <Button
+                    size="base"
+                    variant="primary"
+                    title="text"
+                    startDecorator="Plus"
+                ></Button>
+                <Button size="base" variant="text" title="text"></Button>
+                <Button
+                    size="base"
+                    variant="text"
+                    title="text"
+                    startDecorator="Plus"
+                ></Button>
+                <Button size="base" variant="default" title="text"></Button>
+                <Button
+                    size="base"
+                    variant="default"
+                    title="text"
+                    startDecorator="Plus"
+                ></Button>
+                <Button size="base" variant="secondary" title="text"></Button>
+                <Button
+                    size="base"
+                    variant="secondary"
+                    title="text"
+                    startDecorator="Plus"
+                ></Button>
+                <Button size="base" variant="outline" title="text"></Button>
+                <Button
+                    size="base"
+                    variant="outline"
+                    title="text"
+                    startDecorator="Plus"
+                ></Button>
+            </Row>
+            <Row className="gap-x-2 items-start mb-4">
+                <Button size="lg" variant="primary" title="text"></Button>
+                <Button
+                    size="lg"
+                    variant="primary"
+                    title="text"
+                    startDecorator="Plus"
+                ></Button>
+                <Button size="lg" variant="text" title="text"></Button>
+                <Button
+                    size="lg"
+                    variant="text"
+                    title="text"
+                    startDecorator="Plus"
+                ></Button>
+                <Button size="lg" variant="default" title="text"></Button>
+                <Button
+                    size="lg"
+                    variant="default"
+                    title="text"
+                    startDecorator="Plus"
+                ></Button>
+                <Button size="lg" variant="secondary" title="text"></Button>
+                <Button
+                    size="lg"
+                    variant="secondary"
+                    title="text"
+                    startDecorator="Plus"
+                ></Button>
+                <Button size="lg" variant="outline" title="text"></Button>
+                <Button
+                    size="lg"
+                    variant="outline"
+                    title="text"
+                    startDecorator="Plus"
+                ></Button>
+            </Row>
 
-        <Row className="mb-auto  text-green-800 bg-green-200 dark:bg-green-950 gap-x-1 py-1 px-2 rounded-full dark:text-green-200 sm:aspect-5/1 aspect-5/1 aspect-[5/1] sm:aspect-4/1 aspect-4/1 aspect-[4/1] sm:aspect-3/1 aspect-3/1 aspect-[3/1]">
-            <Icon
-                className="text-green-600 dark:text-green-400"
-                icon="ArrowBigUp"
-                width={16}
-                height={16}
-            />
-            <Text className="flex-none text-green-800 dark:text-green-200 text-xs">
-                123
-            </Text>
-        </Row>
+            <Row className="mb-auto  text-green-800 bg-green-200 dark:bg-green-950 gap-x-1 py-1 px-2 rounded-full dark:text-green-200 sm:aspect-5/1 aspect-5/1 aspect-[5/1] sm:aspect-4/1 aspect-4/1 aspect-[4/1] sm:aspect-3/1 aspect-3/1 aspect-[3/1]">
+                <Icon
+                    className="text-green-600 dark:text-green-400"
+                    icon="ArrowBigUp"
+                    width={16}
+                    height={16}
+                />
+                <Text className="flex-none text-green-800 dark:text-green-200 text-xs">
+                    123
+                </Text>
+            </Row>
 
-        <Row className="mb-auto  text-red-800 bg-red-200 dark:bg-red-950 gap-x-1 py-1 px-2 rounded-full dark:text-red-200 ">
-            <Icon
-                className="text-red-600 dark:text-red-400"
-                icon="ArrowBigUp"
-                width={16}
-                height={16}
-            />
-            <Text
-                className={'flex-none text-red-800 dark:text-red-200 text-xs'}
-            >
-                456
-            </Text>
-        </Row>
+            <Row className="mb-auto  text-red-800 bg-red-200 dark:bg-red-950 gap-x-1 py-1 px-2 rounded-full dark:text-red-200 ">
+                <Icon
+                    className="text-red-600 dark:text-red-400"
+                    icon="ArrowBigUp"
+                    width={16}
+                    height={16}
+                />
+                <Text
+                    className={'flex-none text-red-800 dark:text-red-200 text-xs'}
+                >
+                    456
+                </Text>
+            </Row>
 
-        <Row className="w-1/5 mb-auto bg-sky-400 bg-indigo-400 text-gray-800 bg-gray-200 dark:bg-gray-950 gap-x-1 py-1 px-2 rounded-full dark:text-gray-200 ">
-            <Icon
-                className="text-gray-600 dark:text-gray-400"
-                icon="ArrowBigUp"
-                width={16}
-                height={16}
-            />
-            <Text
-                className={
-                    'flex-none text-gray-800 dark:text-gray-200 text-xs dark:bg-bgrmodal-d h-full md:h-auto  sm:border sm:border-bdrmodal sm:dark:border-bdrmodal-d sm:rounded-2xl bg-bgrmodal dark:bg-bgrmodal-d h-full md:h-auto  md:border md:border-bdrmodal md:dark:border-bdrmodal-d md:rounded-2xl'
-                }
-            >
-                123
-            </Text>
-        </Row>
-        <Row className="lg:block md:block xl:block w-8 p-1 p-1 h-9 w-9 lg:pr-2  lg:pr-3 h-8 -bottom-2 font-default md:pr-3 lg:px-0 bg-orange-500 text-red-400 bg-red-400 bg-gray-300 bg-gray-400 bg-gray-600 bg-yellow-500 bg-green-500 bg-teal-500 bg-sky-500 bg-indigo-500 bg-purple-500 bg-pink-500 bg-rose-500 bg-red-500">
-            <Icon
-                className="text-gray-600 dark:text-gray-400 sm:h-auto"
-                icon="ArrowBigUp"
-                width={16}
-                height={16}
-            />
-            <Text
-                className={'flex-none text-gray-800 dark:text-gray-200 text-xs'}
-            >
-                123
-            </Text>
-        </Row>
-    </>
-)
+            <Row className="w-1/5 mb-auto bg-sky-400 bg-indigo-400 text-gray-800 bg-gray-200 dark:bg-gray-950 gap-x-1 py-1 px-2 rounded-full dark:text-gray-200 ">
+                <Icon
+                    className="text-gray-600 dark:text-gray-400"
+                    icon="ArrowBigUp"
+                    width={16}
+                    height={16}
+                />
+                <Text
+                    className={
+                        'flex-none text-gray-800 dark:text-gray-200 text-xs dark:bg-bgrmodal-d h-full md:h-auto  sm:border sm:border-bdrmodal sm:dark:border-bdrmodal-d sm:rounded-2xl bg-bgrmodal dark:bg-bgrmodal-d h-full md:h-auto  md:border md:border-bdrmodal md:dark:border-bdrmodal-d md:rounded-2xl'
+                    }
+                >
+                    123
+                </Text>
+            </Row>
+            <Row className="lg:block md:block xl:block w-8 p-1 p-1 h-9 w-9 lg:pr-2  lg:pr-3 h-8 -bottom-2 font-default md:pr-3 lg:px-0 bg-orange-500 text-red-400 bg-red-400 bg-gray-300 bg-gray-400 bg-gray-600 bg-yellow-500 bg-green-500 bg-teal-500 bg-sky-500 bg-indigo-500 bg-purple-500 bg-pink-500 bg-rose-500 bg-red-500">
+                <Icon
+                    className="text-gray-600 dark:text-gray-400 sm:h-auto"
+                    icon="ArrowBigUp"
+                    width={16}
+                    height={16}
+                />
+                <Text
+                    className={'flex-none text-gray-800 dark:text-gray-200 text-xs'}
+                >
+                    123
+                </Text>
+            </Row>
+        </>
+    )
+}
 
 const ComponentsFooter = () => {
     return <></>
@@ -663,7 +675,7 @@ const ComponentsFullFooter = () => {
 
 export const staticDefault = {
     logo: Logo,
-    components_about: ComponentsAbout,
+    components_about: ComponentsAboutComponent,
     page_not_found: PageNotFound,
     page_not_allowed: PageNotAllowed,
     components_comments_empty: ComponentsCommentsEmpty,
@@ -671,11 +683,11 @@ export const staticDefault = {
     components_content_login: ComponentsCommentsLogin,
     components_intro: ComponentsIntro,
     components_modal: ComponentModal,
-    components_dummy: ComponentsDummy,
+    components_dummy: ComponentsDummyComponent,
     components_footer: ComponentsFooter,
     components_fullfooter: ComponentsFullFooter,
-    components_logincontent: ComponentsLoginContent,
-    splash_text: SplashText,
-    join_text: JoinText
+    components_logincontent: ComponentsLoginContentComponent,
+    splash_text: SplashTextComponent,
+    join_text: JoinTextComponent
 
 }
