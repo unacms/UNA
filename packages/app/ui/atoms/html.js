@@ -31,8 +31,8 @@ const StyledEM = (props) => {
 const StyledP = ({ children, className, ...props }) => {
     className += ' text-neutral-800 dark:text-neutral-200 '
     if (Platform.OS === 'web') {
-        const WebP = 'p'
-        return <WebP {...props} className={className}>{children}</WebP>
+        const WebDiv = 'div'
+        return <WebDiv {...props} className={className} style={{ display: 'block', marginTop: '1em', marginBottom: '1em' }}>{children}</WebDiv>
     }
     return <P className={className} {...props}>{children}</P>
 }

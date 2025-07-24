@@ -20,6 +20,7 @@ const nextConfig = {
         dynamic: 0,/* default 30, set to 0 to disable serverside case */
         static: 180,
       },
+      optimizeCss: false, // Reduce CSS preload warnings without disabling splitting
     },
   // reanimated (and thus, Moti) doesn't work with strict mode currently...
   // https://github.com/nandorojo/moti/issues/224
@@ -150,7 +151,6 @@ const nextConfig = {
     disableStaticImages: false
   },
   compress: true,
-  swcMinify: true,
 }
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',

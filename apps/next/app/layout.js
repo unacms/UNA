@@ -6,7 +6,7 @@ import { storageGet } from 'app/lib/util'
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { resources } from 'app/translation';
-
+import { useEffect, useMemo } from 'react'
 import Subscriber from 'app/ui/molecules/subscriber';
 import AnimatedBackground from 'app/ui/atoms/animated-background';
 import { appSetting, detectLang } from 'app/lib/util';
@@ -15,24 +15,28 @@ export default function RootLayout({ children }) {
 
     const langs = typeof window !== 'undefined' ? detectLang() : ['en', 'en'];
 
-    i18n
-        .use(initReactI18next)
-        .init({
-            compatibilityJSON: 'v3',
-            resources: resources,
-            lng: langs[0], // default language
-            fallbackLng: 'en',
-            interpolation: {
-                escapeValue: false
-            }
-        });
+     // Initialize i18n in useEffect to avoid setState during render
+    useEffect(() => {
+        if (!i18n.isInitialized) {
+            i18n
+                .use(initReactI18next)
+                .init({
+                    compatibilityJSON: 'v3',
+                    resources: resources,
+                    lng: langs[0], // default language
+                    fallbackLng: 'en',
+                    interpolation: {
+                        escapeValue: false
+                    }
+                });
+        }
+    }, [langs[0]]);
 
-    const queryClient = new QueryClient()
-
-
+    // Memoize QueryClient to prevent unnecessary recreations
+    const queryClient = useMemo(() => new QueryClient(), []);
 
     return (
-        <html lang={langs[0]}>
+        <html >
             <body className={appSetting('layout', 'body')}>
                 <QueryClientProvider client={queryClient}>
                     <AnimatedBackground />
