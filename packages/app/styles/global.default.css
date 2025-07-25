@@ -108,15 +108,15 @@
     
     /* Card Variants */
     .u-card-base-compact {
-        @apply bg-card border border-border shadow-sm rounded-lg text-card-foreground gap-y-2.5 lg:gap-y-3.5;
+        @apply bg-card border border-border shadow-sm rounded-lg text-card-foreground;
     }
     
     .u-card-base-default {
-        @apply bg-card border border-border shadow-sm rounded-xl text-card-foreground gap-y-3.5 lg:gap-y-5;
+        @apply bg-card border border-border shadow-sm rounded-xl text-card-foreground;
     }
     
     .u-card-base-relaxed {
-        @apply bg-card border border-border shadow-sm rounded-2xl text-card-foreground gap-y-5 lg:gap-y-6;
+        @apply bg-card border border-border shadow-sm rounded-2xl text-card-foreground;
     }
     
     /* Card Header Styles */
@@ -176,15 +176,15 @@
     }
     
     .u-card-content-compact {
-    @apply u-card-content px-3 lg:px-4 gap-y-2; 
+    @apply u-card-content p-3 lg:p-4 gap-y-2; 
     }
     
     .u-card-content-default {
-        @apply u-card-content px-4 lg:px-6 gap-y-3; 
+        @apply u-card-content p-4 lg:p-6 gap-y-3; 
     }
     
     .u-card-content-relaxed {
-        @apply u-card-content px-6 lg:px-8 gap-y-4;
+        @apply u-card-content p-6 lg:p-8 gap-y-4;
     }
     
     /* Card Footer Styles */

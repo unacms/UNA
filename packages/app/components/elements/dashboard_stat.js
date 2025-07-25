@@ -376,8 +376,9 @@ function ElementDashboardStat(props) {
                                     <Link href={item.url}>
                                         <Card>
                                             <CardHeader>
-                                                <CardTitle className="flex-row flex-auto justify-between gap-x-2">
-                                                    <View className="flex-auto">
+                                                <CardTitle>
+                                                    <View className="flex-row w-full justify-between">
+                                                   
                                                 {item.count > 0 ? (
                                                     
                                                             <Text className="flex-auto">
@@ -401,8 +402,8 @@ function ElementDashboardStat(props) {
                                                             </Link>
                                                         </View>
                                                     )}
-                                                    </View>
-                                                    <View className="flex-none">
+                                                   
+                                                    
                                                     <Icon
                                                             icon={item.icon}
                                                             width={20}
@@ -479,11 +480,14 @@ function ElementDashboardStat(props) {
                 })}
             </Row>
             {data.manage.items.length > 0 && (
-                <Card className="m-2 mb-1">
-                    <CardContent>
-                        <Text className="text-xl mb-3 text-neutral-800 dark:text-neutral-200 font-semibold">
+                <Card>
+                    <CardHeader>
+                        <CardTitle>
                             Admin Tools
-                        </Text>
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                       
                         <View className="grid w-full grid-cols-1 gap-x-2 gap-y-1.5 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
                             {currentUser?.id && (
                                 <>
