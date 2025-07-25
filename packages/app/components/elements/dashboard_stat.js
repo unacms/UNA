@@ -146,8 +146,8 @@ export default function PageLayout(props) {
         <ScrollView>
             <Card className={appSetting('layout', 'max_width_block')}>
                 <CardHeader>
-                    <CardTitle className="flex-row px-sm">Dashboard</CardTitle>
-                    <CardDescription className="px-sm">
+                    <CardTitle className="flex-row">Dashboard</CardTitle>
+                    <CardDescription className="">
                         Your account control panel
                     </CardDescription>
                 </CardHeader>
