@@ -161,24 +161,27 @@ function MyComplexComponent() {
 ```
 
 #### **Tailwind Safelist Requirements**
-Add all density classes to Tailwind safelist in both `apps/next/tailwind.config.js` and `apps/expo/tailwind.config.js`:
 
+**⚠️ CRITICAL**: Only add classes to safelist that are **dynamically constructed** - Tailwind automatically includes static classes found in code.
+
+**Add to safelist ONLY when:**
+- Using template literals: `className={cn(\`u-component-${variant}\`)}`
+- Programmatically generating classes: `const classes = density === 'compact' ? 'u-card-compact' : 'u-card-default'`
+
+**DO NOT add to safelist:**
+- Static classes: `className="w-px bg-border hover:bg-neutral-500/20"` ❌
+- Direct usage: `<View className="p-4 text-base" />` ❌
+
+**Example of classes that NEED safelist:**
 ```javascript
 safelist: [
-  // ... existing classes
-  // MyComponent density classes
+  // Density classes (dynamically constructed with template literals)
   'u-mycomponent-base-compact',
   'u-mycomponent-base-default',
   'u-mycomponent-base-relaxed',
   'u-mycomponent-header-compact',
   'u-mycomponent-header-default',
   'u-mycomponent-header-relaxed',
-  'u-mycomponent-title-compact',
-  'u-mycomponent-title-default',
-  'u-mycomponent-title-relaxed',
-  'u-mycomponent-content-compact',
-  'u-mycomponent-content-default',
-  'u-mycomponent-content-relaxed',
 ],
 ```
 
@@ -394,6 +397,7 @@ When debugging or implementing features, always check:
 - Hardcoded colors instead of theme tokens
 - Components that don't respond to density changes automatically
 - Density classes generated with template literals but missing from Tailwind safelist
+- Static classes unnecessarily added to Tailwind safelist (only dynamic classes need safelist)
 - useCallback/useMemo missing `density` in dependency arrays when using density
 - Hardcoded spacing values instead of density-aware classes
 - Complex authentication logic that could be simplified

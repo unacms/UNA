@@ -121,36 +121,36 @@
     
     /* Card Header Styles */
     .u-card-header {
-        @apply flex flex-col gap-y-1.5;
+        @apply flex flex-col ;
     }
     
     .u-card-header-compact {
-        @apply u-card-header px-3 pt-3;
+        @apply u-card-header px-3 pt-3 gap-y-1;
     }
     
     .u-card-header-default {
-        @apply u-card-header px-4 pt-4;
+        @apply u-card-header px-4 pt-4 gap-y-1.5;
     }
     
     .u-card-header-relaxed {
-        @apply u-card-header px-6 pt-6;
+        @apply u-card-header px-6 pt-6 gap-y-2;
     }
     
     /* Card Title Styles */
     .u-card-title {
-        @apply font-semibold leading-none tracking-tight text-card-foreground;
+        @apply text-card-foreground;
     }
     
     .u-card-title-compact {
-        @apply u-card-title text-base sm:text-lg;
+        @apply u-card-title text-base sm:text-lg font-semibold leading-none sm:leading-none tracking-tight ;
     }
     
     .u-card-title-default {
-        @apply u-card-title text-xl sm:text-2xl;
+        @apply u-card-title text-xl sm:text-2xl font-semibold leading-none sm:leading-none tracking-tight ;
     }
     
     .u-card-title-relaxed {
-        @apply u-card-title text-2xl sm:text-3xl;
+        @apply u-card-title text-2xl sm:text-3xl font-semibold leading-none sm:leading-none tracking-tight;
     }
     
     /* Card Description Styles */
@@ -159,15 +159,15 @@
     }
     
     .u-card-description-compact {
-        @apply u-card-description text-xs;
+        @apply u-card-description text-xs leading-tight ;
     }
     
     .u-card-description-default {
-        @apply u-card-description text-sm;
+        @apply u-card-description text-sm leading-tight ;
     }
     
     .u-card-description-relaxed {
-        @apply u-card-description text-base;
+        @apply u-card-description text-base leading-tight;
     }
     
     /* Card Content Styles */

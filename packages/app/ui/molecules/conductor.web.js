@@ -289,8 +289,8 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, windowWidth, isC
 
     return (
         <>
-            <Animated.View className={`${conductorTheme.cover_cnt} cover-1 `} style={[{ zIndex: '50' }, animatedStyleHeader2]}>
-                <ViewRef ref={cover1Ref} className={conductorTheme.cover_cnt2}   >
+            <Animated.View className={`${conductorTheme.cover_base} cover-1 `} style={[{ zIndex: '50' }, animatedStyleHeader2]}>
+                <ViewRef ref={cover1Ref} className={conductorTheme.cover_content}   >
                     {(isCover && !isHideCover) && <View className="w-full ">
                         <Cover data={pageData.cover_block} mode={headerSettings.cover} uri={uri} context={pageData.context} />
                     </View>}
@@ -696,10 +696,11 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
 
         const sidebarUnitType = route.blocks?.browse_sidebar?.unitType || 'default';
         const cellsCustomConfig = appSetting('layouts', route?.pageData?.uri);
+        const pageData = route.inited ? route.pageData : prevRoute.pageData;
         //if (cellsCustomConfig?.adjustable) {
             return (
                 <PanelGroup 
-                    autoSaveId={`cells-${route.pageData.uri}`} 
+                    autoSaveId={`cells-${pageData?.uri || 'default'}`} 
                     direction="horizontal" 
                     className={layoutName == 'navigator' ? '' : ' px-1.5 sm:px-2  '}
                     onLayout={() => {window.dispatchEvent(new Event('resize_panel'));}}
