@@ -152,7 +152,7 @@ export default function PageLayout(props) {
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <View className="flex-row">
+                    <View className="flex-row gap-x-2">
                         <Button
                             as={Link}
                             href={currentUser.url}
@@ -160,7 +160,7 @@ export default function PageLayout(props) {
                             className="flex-row items-center w-full px-2 py-1"
                             fullWidth
                             size="lg"
-                            ring="p-sm"
+                            
                             align="left"
                         >
                             <Profile
@@ -185,7 +185,7 @@ export default function PageLayout(props) {
                                     variant="secondary"
                                     startDecorator="RefreshCw"
                                     size="lg"
-                                    ring="p-sm"
+                                    
                                 />
                             </ProfileSwitcher>
                         )}
