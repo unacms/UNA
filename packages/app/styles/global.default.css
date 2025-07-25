@@ -125,15 +125,15 @@
     }
     
     .u-card-header-compact {
-        @apply u-card-header px-3 pt-3 gap-y-1;
+        @apply u-card-header px-2 pt-2 gap-y-1;
     }
     
     .u-card-header-default {
-        @apply u-card-header px-4 pt-4 gap-y-1.5;
+        @apply u-card-header px-3 pt-3 gap-y-2;
     }
     
     .u-card-header-relaxed {
-        @apply u-card-header px-6 pt-6 gap-y-2;
+        @apply u-card-header px-4 pt-4 gap-y-3;
     }
     
     /* Card Title Styles */
@@ -142,15 +142,15 @@
     }
     
     .u-card-title-compact {
-        @apply u-card-title text-base sm:text-lg font-semibold leading-none sm:leading-none tracking-tight ;
+        @apply u-card-title p-sm text-base sm:text-lg font-semibold leading-none sm:leading-none tracking-tight ;
     }
     
     .u-card-title-default {
-        @apply u-card-title text-xl sm:text-2xl font-semibold leading-none sm:leading-none tracking-tight ;
+        @apply u-card-title p-sm text-xl sm:text-2xl font-semibold leading-none sm:leading-none tracking-tight ;
     }
     
     .u-card-title-relaxed {
-        @apply u-card-title text-2xl sm:text-3xl font-semibold leading-none sm:leading-none tracking-tight;
+        @apply u-card-title p-sm text-2xl sm:text-3xl font-semibold tracking-tight;
     }
     
     /* Card Description Styles */
@@ -159,15 +159,15 @@
     }
     
     .u-card-description-compact {
-        @apply u-card-description text-xs leading-tight ;
+        @apply u-card-description px-1 text-xs leading-tight ;
     }
     
     .u-card-description-default {
-        @apply u-card-description text-sm leading-tight ;
+        @apply u-card-description px-1 text-sm leading-tight ;
     }
     
     .u-card-description-relaxed {
-        @apply u-card-description text-base leading-tight;
+        @apply u-card-description px-2 text-base leading-tight;
     }
     
     /* Card Content Styles */
@@ -176,15 +176,15 @@
     }
     
     .u-card-content-compact {
-        @apply u-card-content p-3;
+        @apply u-card-content p-2.5 gap-y-2.5;
     }
     
     .u-card-content-default {
-        @apply u-card-content p-4;
+        @apply u-card-content p-3 gap-y-3;
     }
     
     .u-card-content-relaxed {
-        @apply u-card-content p-6;
+        @apply u-card-content p-4 gap-y-4;
     }
     
     /* Card Footer Styles */
@@ -193,28 +193,233 @@
     }
     
     .u-card-footer-compact {
-        @apply u-card-footer p-3 pt-0;
+        @apply u-card-footer px-2.5 pb-2.5 pt-0;
     }
     
     .u-card-footer-default {
-        @apply u-card-footer p-4 pt-0;
+        @apply u-card-footer px-3 pb-3 pt-0;
     }
     
     .u-card-footer-relaxed {
-        @apply u-card-footer p-6 pt-0;
+        @apply u-card-footer px-4 pb-4 pt-0;
     }
     
     /* Content Padding Styles */
     .u-content-padding-compact {
-        @apply sm:p-3;
+        @apply sm:p-2.5;
     }
     
     .u-content-padding-default {
-        @apply sm:p-4;
+        @apply sm:p-3;
     }
     
     .u-content-padding-relaxed {
-        @apply sm:p-6;
+        @apply sm:p-4;
+    }
+
+    /* Density-Aware Padding Utilities */
+    
+    /* Small Padding (p-sm) - defaults to 'default' density */
+    .p-sm {
+        @apply p-1;
+    }
+    
+    [data-density="compact"] .p-sm {
+        @apply p-0.5;
+    }
+    
+    [data-density="relaxed"] .p-sm {
+        @apply p-2;
+    }
+    
+    /* Medium Padding (p-md) - defaults to 'default' density */
+    .p-md {
+        @apply p-2;
+    }
+    
+    [data-density="compact"] .p-md {
+        @apply p-1;
+    }
+    
+    [data-density="relaxed"] .p-md {
+        @apply p-4;
+    }
+    
+    /* Large Padding (p-lg) - defaults to 'default' density */
+    .p-lg {
+        @apply p-4;
+    }
+    
+    [data-density="compact"] .p-lg {
+        @apply p-2;
+    }
+    
+    [data-density="relaxed"] .p-lg {
+        @apply p-6;
+    }
+
+    /* Horizontal Padding Utilities */
+    
+    /* Small Horizontal Padding (px-sm) - defaults to 'default' density */
+    .px-sm {
+        @apply px-1;
+    }
+    
+    [data-density="compact"] .px-sm {
+        @apply px-0.5;
+    }
+    
+    [data-density="relaxed"] .px-sm {
+        @apply px-2;
+    }
+    
+    /* Medium Horizontal Padding (px-md) - defaults to 'default' density */
+    .px-md {
+        @apply px-2;
+    }
+    
+    [data-density="compact"] .px-md {
+        @apply px-1;
+    }
+    
+    [data-density="relaxed"] .px-md {
+        @apply px-4;
+    }
+    
+    /* Large Horizontal Padding (px-lg) - defaults to 'default' density */
+    .px-lg {
+        @apply px-4;
+    }
+    
+    [data-density="compact"] .px-lg {
+        @apply px-2;
+    }
+    
+    [data-density="relaxed"] .px-lg {
+        @apply px-6;
+    }
+
+    /* Vertical Padding Utilities */
+    
+    /* Small Vertical Padding (py-sm) - defaults to 'default' density */
+    .py-sm {
+        @apply py-1;
+    }
+    
+    [data-density="compact"] .py-sm {
+        @apply py-0.5;
+    }
+    
+    [data-density="relaxed"] .py-sm {
+        @apply py-2;
+    }
+    
+    /* Medium Vertical Padding (py-md) - defaults to 'default' density */
+    .py-md {
+        @apply py-2;
+    }
+    
+    [data-density="compact"] .py-md {
+        @apply py-1;
+    }
+    
+    [data-density="relaxed"] .py-md {
+        @apply py-4;
+    }
+    
+    /* Large Vertical Padding (py-lg) - defaults to 'default' density */
+    .py-lg {
+        @apply py-4;
+    }
+    
+    [data-density="compact"] .py-lg {
+        @apply py-2;
+    }
+    
+    [data-density="relaxed"] .py-lg {
+        @apply py-6;
+    }
+
+    /* Top Padding Utilities */
+    
+    /* Small Top Padding (pt-sm) - defaults to 'default' density */
+    .pt-sm {
+        @apply pt-1;
+    }
+    
+    [data-density="compact"] .pt-sm {
+        @apply pt-0.5;
+    }
+    
+    [data-density="relaxed"] .pt-sm {
+        @apply pt-2;
+    }
+    
+    /* Medium Top Padding (pt-md) - defaults to 'default' density */
+    .pt-md {
+        @apply pt-2;
+    }
+    
+    [data-density="compact"] .pt-md {
+        @apply pt-1;
+    }
+    
+    [data-density="relaxed"] .pt-md {
+        @apply pt-4;
+    }
+    
+    /* Large Top Padding (pt-lg) - defaults to 'default' density */
+    .pt-lg {
+        @apply pt-4;
+    }
+    
+    [data-density="compact"] .pt-lg {
+        @apply pt-2;
+    }
+    
+    [data-density="relaxed"] .pt-lg {
+        @apply pt-6;
+    }
+
+    /* Bottom Padding Utilities */
+    
+    /* Small Bottom Padding (pb-sm) - defaults to 'default' density */
+    .pb-sm {
+        @apply pb-1;
+    }
+    
+    [data-density="compact"] .pb-sm {
+        @apply pb-0.5;
+    }
+    
+    [data-density="relaxed"] .pb-sm {
+        @apply pb-2;
+    }
+    
+    /* Medium Bottom Padding (pb-md) - defaults to 'default' density */
+    .pb-md {
+        @apply pb-2;
+    }
+    
+    [data-density="compact"] .pb-md {
+        @apply pb-1;
+    }
+    
+    [data-density="relaxed"] .pb-md {
+        @apply pb-4;
+    }
+    
+    /* Large Bottom Padding (pb-lg) - defaults to 'default' density */
+    .pb-lg {
+        @apply pb-4;
+    }
+    
+    [data-density="compact"] .pb-lg {
+        @apply pb-2;
+    }
+    
+    [data-density="relaxed"] .pb-lg {
+        @apply pb-6;
     }
 }
 

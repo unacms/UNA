@@ -41,6 +41,8 @@ NEO is a React Native/Next.js cross-platform application with:
 - User-configurable via DensitySwitcher component
 - Persisted to storage across sessions
 - Components auto-update when density changes
+- **Automatic Density-Responsive Utilities**: Simple padding classes that adapt automatically (`p-sm`, `px-md`, `py-lg`, etc.)
+- **Data Attribute System**: Density applied as `data-density` attribute on document root for CSS selectors
 
 **Theme Usage Guidelines:**
 ```javascript
@@ -56,7 +58,34 @@ NEO is a React Native/Next.js cross-platform application with:
 
 **Density Implementation Patterns:**
 
-#### **For Standalone Components (Recommended)**
+#### **Automatic Density-Responsive Utilities (Preferred)**
+Use simple utility classes that automatically adapt to the current density setting:
+
+```javascript
+// ✅ Simple, automatic density-responsive classes
+<View className="p-sm px-md py-lg">
+  <Text className="pt-sm pb-md">Content</Text>
+</View>
+
+// No JavaScript required - classes automatically adapt via CSS:
+// p-sm: 2px (compact) → 4px (default) → 8px (relaxed)
+// px-md: 4px (compact) → 8px (default) → 16px (relaxed) 
+// py-lg: 8px (compact) → 16px (default) → 24px (relaxed)
+```
+
+**Available Automatic Utilities:**
+- **General padding**: `p-sm`, `p-md`, `p-lg`
+- **Horizontal padding**: `px-sm`, `px-md`, `px-lg`
+- **Vertical padding**: `py-sm`, `py-md`, `py-lg`
+- **Top padding**: `pt-sm`, `pt-md`, `pt-lg`
+- **Bottom padding**: `pb-sm`, `pb-md`, `pb-lg`
+
+**Density Progression:**
+- **Small (-sm)**: 2px → 4px → 8px
+- **Medium (-md)**: 4px → 8px → 16px
+- **Large (-lg)**: 8px → 16px → 24px
+
+#### **For Standalone Components (Custom Density Classes)**
 Use this pattern for components that can accept density as a prop:
 
 ```javascript
@@ -171,6 +200,7 @@ function MyComplexComponent() {
 **DO NOT add to safelist:**
 - Static classes: `className="w-px bg-border hover:bg-neutral-500/20"` ❌
 - Direct usage: `<View className="p-4 text-base" />` ❌
+- Automatic density utilities: `className="p-sm px-md py-lg"` ❌ (these are static classes)
 
 **Example of classes that NEED safelist:**
 ```javascript
@@ -344,10 +374,21 @@ const methods = useForm({
 
 ### Density-Aware Components
 ```javascript
-// ✅ Standalone component pattern (preferred)
+// ✅ Automatic density utilities (preferred - no JavaScript needed)
+function MyComponent({ className, ...props }) {
+  return (
+    <View className={cn("p-md border border-border rounded-xl", className)}>
+      <Text className="px-sm py-md text-foreground">
+        Content automatically adapts to density
+      </Text>
+    </View>
+  );
+}
+
+// ✅ Custom density classes pattern (for complex components)
 import { useDensityOrDefault } from 'app/context/density';
 
-function MyComponent({ density, className, ...props }) {
+function ComplexComponent({ density, className, ...props }) {
   const effectiveDensity = useDensityOrDefault(density);
   return (
     <View className={cn(`u-mycomponent-base-${effectiveDensity}`, className)}>
@@ -361,7 +402,7 @@ function MyComponent({ density, className, ...props }) {
 // ✅ Callback/memoized pattern (when needed)
 import { useDensity } from 'app/context/density';
 
-function ComplexComponent() {
+function CallbackComponent() {
   const { density } = useDensity();
   
   const renderItem = useCallback((item) => {
@@ -382,7 +423,8 @@ When debugging or implementing features, always check:
 - [ ] Are we using the appropriate theme system (semantic vs custom tokens)?
 - [ ] Is the design system being used correctly?
 - [ ] Are density classes properly implemented and updating automatically?
-- [ ] Are new density classes added to Tailwind safelist in both configs?
+- [ ] Are automatic density utilities (`p-sm`, `px-md`, etc.) used instead of hardcoded spacing where appropriate?
+- [ ] Are new custom density classes added to Tailwind safelist in both configs (automatic utilities don't need safelist)?
 - [ ] Is authentication handling consistent?
 - [ ] Are icons being resolved properly on both platforms?
 - [ ] Are UNA API calls using the `fetcher` function correctly?
@@ -399,7 +441,7 @@ When debugging or implementing features, always check:
 - Density classes generated with template literals but missing from Tailwind safelist
 - Static classes unnecessarily added to Tailwind safelist (only dynamic classes need safelist)
 - useCallback/useMemo missing `density` in dependency arrays when using density
-- Hardcoded spacing values instead of density-aware classes
+- Hardcoded spacing values instead of automatic density utilities (`p-1`, `px-4` instead of `p-sm`, `px-md`)
 - Complex authentication logic that could be simplified
 - Direct fetch() calls bypassing the `fetcher` function
 - Incorrect UNA endpoint patterns (not following `/api.php?r=module/action/Template`)

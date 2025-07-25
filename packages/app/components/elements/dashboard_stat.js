@@ -1,47 +1,81 @@
 import { Icon } from 'app/ui/atoms/icon'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from 'app/ui/molecules/card'
-import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle,
+    CardDescription,
+    CardFooter,
+} from 'app/ui/molecules/card'
+import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { View, Row, Pressable, ScrollView } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { Button, Modal } from 'app/design/controls'
 import Link from 'app/ui/atoms/link'
 import { useCurrentUser } from 'app/context/user'
 import Profile from 'app/ui/molecules/profile'
-import ProfileSwitcher from 'app/components/elements/profile_switcher';
+import ProfileSwitcher from 'app/components/elements/profile_switcher'
 import { appSetting, detectLang } from 'app/lib/util'
-import DropdownMenu from 'app/ui/atoms/dropdown-menu';
-import i18n from 'i18next';
-import { Appearance } from 'react-native';
+import DropdownMenu from 'app/ui/atoms/dropdown-menu'
+import i18n from 'i18next'
+import { Appearance } from 'react-native'
 import { Platform } from 'react-native'
 import { storageSet, storageClear, storageGet } from 'app/lib/util'
-import { fetcher } from 'app/lib/fetcher';
-import { Theme, useThemeName } from 'app/design/theme';
-import DasbordStatOld from 'app/components/elements/dashboard_stat_old';
-import ApiPerformanceReport from 'app/ui/molecules/api-performance-report';
-import ThemeCompatibilityTest from 'app/ui/molecules/nativewindui';
-import DensitySwitcher from 'app/ui/atoms/density-switcher';
+import { fetcher } from 'app/lib/fetcher'
+import { Theme, useThemeName } from 'app/design/theme'
+import DasbordStatOld from 'app/components/elements/dashboard_stat_old'
+import ApiPerformanceReport from 'app/ui/molecules/api-performance-report'
+import ThemeCompatibilityTest from 'app/ui/molecules/nativewindui'
+import { useDensitySwitcher } from 'app/ui/atoms/density-switcher'
 
 function getCounter(num, icon = '', add = '', color = '') {
-
-    if (!num) num = 0;
+    if (!num) num = 0
     let sColor = 'gray'
 
     if (num > 0) {
         sColor = 'green'
-        if (icon == '')
-            icon = 'ArrowBigUp';
+        if (icon == '') icon = 'ArrowBigUp'
     }
     if (num < 0) {
         sColor = 'red'
-        if (icon == '')
-            icon = 'ArrowBigDown';
+        if (icon == '') icon = 'ArrowBigDown'
     }
 
     return (
-        <Row className={'mb-auto    text-' + sColor + '-800 bg-' + sColor + '-200 dark:bg-' + sColor + '-950 gap-x-1 py-1 px-2 rounded-full  mb-auto dark:text-' + sColor + '-200 '}>
-            <Icon color={color} className={"text-" + sColor + "-600 dark:text-" + sColor + "-400"} icon={icon} size={16} />
-            <Text className={"flex-none text-" + sColor + "-800 dark:text-" + sColor + "-200 text-xs"}>{num}{add}</Text>
+        <Row
+            className={
+                'mb-auto    text-' +
+                sColor +
+                '-800 bg-' +
+                sColor +
+                '-200 dark:bg-' +
+                sColor +
+                '-950 gap-x-1 py-1 px-2 rounded-full  mb-auto dark:text-' +
+                sColor +
+                '-200 '
+            }
+        >
+            <Icon
+                color={color}
+                className={
+                    'text-' + sColor + '-600 dark:text-' + sColor + '-400'
+                }
+                icon={icon}
+                size={16}
+            />
+            <Text
+                className={
+                    'flex-none text-' +
+                    sColor +
+                    '-800 dark:text-' +
+                    sColor +
+                    '-200 text-xs'
+                }
+            >
+                {num}
+                {add}
+            </Text>
         </Row>
     )
 }
@@ -50,13 +84,12 @@ export default function PageLayout(props) {
     if (!appSetting('layout', 'user_remote_config'))
         return <DasbordStatOld {...props} />
     const isWeb = Platform.OS == 'web'
-    const { t } = useTranslation();
+    const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
     const { themeName, setThemeName } = useThemeName()
+    const { currentOption, icon, densityOptions, handleDensityChange } = useDensitySwitcher()
 
-    const [showImage2, setShowImage2] = useState(false);
-
-
+    const [showImage2, setShowImage2] = useState(false)
 
     let profile = null
     if (currentUser) {
@@ -64,268 +97,254 @@ export default function PageLayout(props) {
         dUser.url_avatar = dUser.avatar
         profile = <Profile {...dUser} displayType="unit_wo_info" size="lg" />
     }
-    if (!currentUser)
-        return <></>
+    if (!currentUser) return <></>
 
-    const langs = detectLang();
+    const langs = detectLang()
 
     const handleLang = async (item) => {
-
-        i18n.changeLanguage(item);
+        i18n.changeLanguage(item)
         if (isWeb) {
-            storageClear();
-            storageSet('layout:lang', '', item, true);
+            storageClear()
+            storageSet('layout:lang', '', item, true)
             window.location.href = window.location.href
         }
-        await fetcher('/api.php?r=system/get_page_by_request/TemplServicePages&params[]=home&lang=' + item);
+        await fetcher(
+            '/api.php?r=system/get_page_by_request/TemplServicePages&params[]=home&lang=' +
+                item
+        )
     }
 
-    const scheme = '';//useColorScheme();
+    const scheme = '' //useColorScheme();
 
     const handleTheme = async (item) => {
         if (isWeb) {
-            const root = window.document.documentElement;
-            if (item == 'auto')
-                item = '';
-            if (item == '')
-                root.setAttribute('data-theme', scheme);
-            else
-                root.setAttribute('data-theme', item);
-            setThemeName(item);
-        }
-        else {
-            if (item == 'auto')
-                item = null;
-            Appearance.setColorScheme(item);
+            const root = window.document.documentElement
+            if (item == 'auto') item = ''
+            if (item == '') root.setAttribute('data-theme', scheme)
+            else root.setAttribute('data-theme', item)
+            setThemeName(item)
+        } else {
+            if (item == 'auto') item = null
+            Appearance.setColorScheme(item)
         }
     }
     const handleFormat = async (item) => {
-        storageSet('layout:format', '', item, true);
+        storageSet('layout:format', '', item, true)
         window.location.href = window.location.href
     }
 
-    const currentTheme = !isWeb ? Appearance.getColorScheme() : storageGet('layout:theme', '', true) || 'auto';
-    const currentFormat = storageGet('layout:format', '', true) || appSetting('layout', 'default_layout');
+    const currentTheme = !isWeb
+        ? Appearance.getColorScheme()
+        : storageGet('layout:theme', '', true) || 'auto'
+    const currentFormat =
+        storageGet('layout:format', '', true) ||
+        appSetting('layout', 'default_layout')
 
     return (
         <ScrollView>
-            <Card>
+            <Card className={appSetting('layout', 'max_width_block')}>
                 <CardHeader>
-                    <CardTitle>
-                        Dashboard
-                    </CardTitle>
-                    <CardDescription>
-                        Your Account Control Panel
+                    <CardTitle className="flex-row px-sm">Dashboard</CardTitle>
+                    <CardDescription className="px-sm">
+                        Your account control panel
                     </CardDescription>
                 </CardHeader>
-            <CardContent>
-            <View className={appSetting('layout', 'max_width') + " w-full  mx-auto flex-col"}>
-                <View className={appSetting('layout', 'max_width_block') + " w-full px-2 pb-1 pt-2 sm:p-2  mx-auto flex-col"}>
-                    <Card className="w-full flex-row">
-                        <CardContent>
-                        <View className="justify-center sm:justify-between flex-auto my-auto w-full items-center">
-                            <View className="flex-row  w-full  items-center ">
-                                <View className="flex-auto  ">
-
-                                    <Link href={currentUser.url}>
-                                        <View className="flex-row items-center ">
-                                            {profile}
-                                            <Text className="my-auto ml-3 text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 hover:dark:text-neutral-50 text-lg font-semibold ">
-                                                {currentUser.display_name}
-                                            </Text>
-                                        </View>
-                                    </Link>
-                                </View>
-                                {currentUser.profiles_count > 1 && <View className="flex-none">
-                                    <ProfileSwitcher hideTitle={true} >
-                                        <Button variant="outline" startDecorator="RefreshCw" rounded />
-                                    </ProfileSwitcher>
-                                </View>}
+                <CardContent>
+                    <View className="flex-row">
+                        <Button
+                            as={Link}
+                            href={currentUser.url}
+                            variant="secondary"
+                            className="flex-row items-center w-full px-2 py-1"
+                            fullWidth
+                            size="lg"
+                            ring="p-sm"
+                            align="left"
+                        >
+                            <Profile
+                                {...currentUser}
+                                url_avatar={currentUser.avatar}
+                                displayType="unit_wo_info"
+                                displaySize="base"
+                            />
+                            <View className="flex-col flex-1 ml-3">
+                                <Text className="text-base font-semibold truncate text-foreground">
+                                    {currentUser.display_name}
+                                </Text>
+                                <Text className="text-xs truncate text-muted-foreground">
+                                    {currentUser.membership_name}
+                                </Text>
                             </View>
-                            <View className="flex-row  items-center gap-x-2 my-auto hidden">
-                                {currentUser.profiles_count > 1 && <ProfileSwitcher hideTitle={true} >
-                                    <Button variant="outline" startDecorator="RefreshCw" rounded />
-                                </ProfileSwitcher>}
-                                {
-                                    appSetting('dashboard', 'langs').length > 1 && (
-                                        <View><DropdownMenu
-                                            items={appSetting('dashboard', 'langs').map(lang => ({
+                        </Button>
+
+                        {currentUser.profiles_count > 1 && (
+                            <ProfileSwitcher hideTitle={true}>
+                                <Button
+                                    variant="secondary"
+                                    startDecorator="RefreshCw"
+                                    size="lg"
+                                    ring="p-sm"
+                                />
+                            </ProfileSwitcher>
+                        )}
+                    </View>          
+                    <ElementDashboardStat {...props} />
+                    <View className="flex-row flex-wrap">
+                                {appSetting('dashboard', 'langs').length >
+                                    1 && (
+                                    <View className="w-1/2 sm:w-1/3 lg:w-1/4 pr-0">
+                                        <DropdownMenu
+                                            items={appSetting(
+                                                'dashboard',
+                                                'langs'
+                                            ).map((lang) => ({
                                                 id: lang,
                                                 key: lang,
                                                 name: lang,
-                                                title: t('lang_' + lang)
+                                                title: t('lang_' + lang),
                                             }))}
-                                            onSelect={(oItem) => { handleLang(oItem.id) }}>
-
+                                            onSelect={(oItem) => {
+                                                handleLang(oItem.id)
+                                            }}
+                                        >
                                             <Button
-                                                variant="outline"
-                                                startDecorator="Languages"
-                                                rounded
-                                                align="left"
+                                                variant="secondary"
                                                 title={t('lang_' + langs[1])}
-                                            />
-
-                                        </DropdownMenu></View>)
-                                }
-
-                                {
-                                    appSetting('dashboard', 'switch_theme') && (
-                                        <View><DropdownMenu items={['dark', 'light', 'auto'].map(theme => ({
-                                            key: theme,
-                                            id: theme,
-                                            name: theme,
-                                            title: t('theme_' + theme)
-                                        }))}
-                                            onSelect={(oItem) => { handleTheme(oItem.id) }}>
-
-                                            <Button
-                                                variant="outline"
-                                                startDecorator="Moon"
-                                                rounded
+                                                startDecorator="Languages"
+                                                fullWidth
                                                 align="left"
+                                                ring="p-sm"
                                             />
+                                        </DropdownMenu>
+                                    </View>
+                                )}
+                                {appSetting('dashboard', 'switch_theme') && (
+                                    <View className="w-1/2 sm:w-1/3 lg:w-1/4 pr-0">
+                                        <DropdownMenu
+                                            items={[
+                                                'dark',
+                                                'light',
+                                                'auto',
+                                            ].map((theme) => ({
+                                                key: theme,
+                                                id: theme,
+                                                name: theme,
+                                                title: t('theme_' + theme),
+                                            }))}
+                                            onSelect={(oItem) => {
+                                                handleTheme(oItem.id)
+                                            }}
+                                        >
+                                            <Button
+                                                variant="secondary"
+                                                title={t(
+                                                    'theme_' + currentTheme
+                                                )}
+                                                startDecorator="Moon"
+                                                fullWidth
+                                                align="left"
+                                                ring="p-sm"
+                                            />
+                                        </DropdownMenu>
+                                    </View>
+                                )}
 
-                                        </DropdownMenu></View>)
-                                }
+                                {/* UI Density Switcher */}
+                                {appSetting('layout', 'ui_density_switcher') && (
+                                    <View className="w-1/2 sm:w-1/3 lg:w-1/4 pr-0">
+                                        <DropdownMenu
+                                            items={densityOptions}
+                                            onSelect={handleDensityChange}
+                                        >
+                                            <Button
+                                                variant="secondary"
+                                                title={currentOption.title}
+                                                startDecorator={icon}
+                                                fullWidth
+                                                align="left"
+                                                ring="p-sm"
+                                            />
+                                        </DropdownMenu>
+                                    </View>
+                                )}
 
-
-                                <Link href="/logout"><Button variant="outline" startDecorator="LogOut" rounded /></Link>
-                            </View>
-
-                        </View>
-                        </CardContent>
-                    </Card>
-                </View>
-                <View className=" w-full ">
-                    <ElementDashboardStat {...props} />
-                    <Card className="shadow flex-col m-2">
-                        <CardContent>
-                        {
-
-                            appSetting('dashboard', 'langs').length > 1 && (
-                                <View className="mb-2">
-                                    <DropdownMenu
-                                        items={appSetting('dashboard', 'langs').map(lang => ({
-                                            id: lang,
-                                            key: lang,
-                                            name: lang,
-                                            title: t('lang_' + lang)
-                                        }))}
-                                        onSelect={(oItem) => { handleLang(oItem.id) }}>
-
-                                        <Button
-                                            variant="secondary"
-                                            title={t('lang_' + langs[1])}
-                                            startDecorator="Languages"
-                                            fullWidth
-                                            size="sm"
-                                            align="left"
-                                        />
-                                    </DropdownMenu>
-                                </View>
-                            )
-                        }
-                        {
-                            appSetting('dashboard', 'switch_theme') && (
-                                <View className="mb-2">
-
-                                    <DropdownMenu items={['dark', 'light', 'auto'].map(theme => ({
-                                        key: theme,
-                                        id: theme,
-                                        name: theme,
-                                        title: t('theme_' + theme)
-                                    }))}
-                                        onSelect={(oItem) => { handleTheme(oItem.id) }}>
-
-                                        <Button
-                                            variant="secondary"
-                                            title={t('theme_' + currentTheme)}
-                                            startDecorator="Moon"
-                                            fullWidth
-                                            size="sm"
-                                            align="left"
-                                        />
-
-                                    </DropdownMenu>
-                                </View>)
-                        }
-
-                        {/* UI Density Switcher */}
-                        <DensitySwitcher />
-
-                        {
-                            appSetting('layout', 'avaliable_layouts').length > 1 && (
-
-                                <View className='hidden sm:flex mb-2'>
-                                    <DropdownMenu
-                                        items={appSetting('layout', 'avaliable_layouts').map(lang => ({
-                                            id: lang,
-                                            key: lang,
-                                            name: lang,
-                                            title: t('format_' + lang)
-                                        }))}
-                                        onSelect={(oItem) => { handleFormat(oItem.id) }}>
-                                        <Button
-                                            variant="secondary"
-                                            title={t('format_' + currentFormat)}
-                                            startDecorator="Layout"
-                                            fullWidth
-                                            size="sm"
-                                            align="left"
-                                        />
-                                    </DropdownMenu></View>)
-                        }
-                        <Link href="/logout"><Button
-                            variant="secondary"
-                            title={t("Sign out")}
-                            startDecorator="LogOut"
-                            fullWidth
-                            size="sm"
-                            align="left"
-                        /></Link>
-                        </CardContent>
-                    </Card>
-                </View>
-
-            </View>
-            </CardContent>
-            <CardFooter>
-                <Text>
-                    Footer
-                </Text>
-            </CardFooter>
+                                {appSetting('layout', 'avaliable_layouts')
+                                    .length > 1 && (
+                                    <View className="w-1/2 sm:w-1/3 lg:w-1/4 pr-0">
+                                        <DropdownMenu
+                                            items={appSetting(
+                                                'layout',
+                                                'avaliable_layouts'
+                                            ).map((lang) => ({
+                                                id: lang,
+                                                key: lang,
+                                                name: lang,
+                                                title: t('format_' + lang),
+                                            }))}
+                                            onSelect={(oItem) => {
+                                                handleFormat(oItem.id)
+                                            }}
+                                        >
+                                            <Button
+                                                variant="secondary"
+                                                title={t(
+                                                    'format_' + currentFormat
+                                                )}
+                                                startDecorator="Layout"
+                                                fullWidth
+                                                align="left"
+                                                ring="p-sm"
+                                            />
+                                        </DropdownMenu>
+                                    </View>
+                                )}
+                    </View>             
+                </CardContent>
+                <CardFooter>
+                   
+                                    <Button
+                                        variant="outline"
+                                        title={t('Sign out')}
+                                        startDecorator="LogOut"
+                                        fullWidth
+                                        size="base"
+                                        ring="p-sm"
+                                        as={Link}
+                                        href="/logout"
+                                    />
+                              
+                </CardFooter>
             </Card>
         </ScrollView>
     )
 }
 
-
 function ElementDashboardStat(props) {
-
-    const { colors } = Theme();
-    const { t } = useTranslation();
-    const [data, setData] = useState(props.data);
+    const { colors } = Theme()
+    const { t } = useTranslation()
+    const [data, setData] = useState(props.data)
     const { currentUser, setCurrentUser } = useCurrentUser()
-    const [showApiPerformance, setShowApiPerformance] = useState(false);
-    const [showThemeTest, setShowThemeTest] = useState(false);
+    const [showApiPerformance, setShowApiPerformance] = useState(false)
+    const [showThemeTest, setShowThemeTest] = useState(false)
     useEffect(() => {
         const fetchData = async () => {
-            const sResponse = await fetcher('/api.php?r=system/get_stat_block/TemplDashboardServices');
-            setData(sResponse.data[0].data);
-        };
-        fetchData();
-    }, []);
+            const sResponse = await fetcher(
+                '/api.php?r=system/get_stat_block/TemplDashboardServices'
+            )
+            setData(sResponse.data[0].data)
+        }
+        fetchData()
+    }, [])
 
-    const list = appSetting('dashboard', 'modules_list');
-    const filtredData = data.modules.filter(item => list.includes(item.key));
-
+    const list = appSetting('dashboard', 'modules_list')
+    const filtredData = data.modules.filter((item) => list.includes(item.key))
 
     return (
         <>
-            <Modal 
-                id="api-performance-modal" 
+            <Modal
+                id="api-performance-modal"
                 title="API Performance Report"
-                onVisible={!!showApiPerformance} 
+                onVisible={!!showApiPerformance}
                 onClose={() => setShowApiPerformance(false)}
                 maxWidth="max-w-4xl"
                 maxHeight="max-h-[90vh]"
@@ -336,69 +355,124 @@ function ElementDashboardStat(props) {
                 </ScrollView>
             </Modal>
 
-            <Modal 
-                id="theme-test-modal" 
+            <Modal
+                id="theme-test-modal"
                 title="Theme Compatibility Test"
-                onVisible={!!showThemeTest} 
+                onVisible={!!showThemeTest}
                 onClose={() => setShowThemeTest(false)}
                 maxWidth="max-w-4xl"
                 maxHeight="max-h-[90vh]"
                 scrollable={true}
             >
                 <ScrollView className="max-h-[70vh]">
-                     <ThemeCompatibilityTest />
+                    <ThemeCompatibilityTest />
                 </ScrollView>
             </Modal>
-            
+
             <Row className="flex-wrap px-1 sm:px-0 ">
                 {filtredData.map((item, index) => {
                     if (item) {
                         if (item?.type != 'growth') {
-                            return <View className="  w-1/2 lg:w-1/3 xl:w-1/4 p-1 sm:p-2 web:duration-300 " key={index}>
-                                <Link href={item.url}>
-                                    <Card className="p-2 sm:p-6 sm:hover:scale-105 web:duration-300 w-full p-4">
-                                        <CardContent className="p-0">
-                                        <Row className='space-x-1 w-full justify-between min-h-12'>
-                                            {
-                                                item.count > 0 ? <Text className=" text-3xl -translate-y-1 font-semibold flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white  ">
-                                                    {item.count}
-                                                </Text> : <View><Link href={item.add_url} emulate={true}><Button variant="outline" startDecorator="Plus" size="sm" rounded /></Link></View>
-                                            }
-                                            <View className="flex-none  text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold ">
-                                                <Icon icon={item.icon} width={24} height={24} color={colors.default} />
-                                            </View>
-                                        </Row>
-                                        <Row className="w-full my-auto gap-x-2 ">
-                                            <Text className=" text-lg flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold ">
-                                                {t(item.title)}
-                                            </Text>
-                                            <View className='my-auto' ><Text>{getCounter(item[item.action], item.action_icon, '', colors.default)}</Text></View>
-                                        </Row>
-                                        </CardContent>
-                                    </Card>
-                                </Link>
-                            </View>;
+                            return (
+                                <View
+                                    className="  w-1/2 lg:w-1/3 xl:w-1/4 p-1 sm:p-2 web:duration-300 "
+                                    key={index}
+                                >
+                                    <Link href={item.url}>
+                                        <Card className="p-2 sm:p-6 sm:hover:scale-105 web:duration-300 w-full p-4">
+                                            <CardContent className="p-0">
+                                                <Row className="space-x-1 w-full justify-between min-h-12">
+                                                    {item.count > 0 ? (
+                                                        <Text className=" text-3xl -translate-y-1 font-semibold flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white  ">
+                                                            {item.count}
+                                                        </Text>
+                                                    ) : (
+                                                        <View>
+                                                            <Link
+                                                                href={
+                                                                    item.add_url
+                                                                }
+                                                                emulate={true}
+                                                            >
+                                                                <Button
+                                                                    variant="outline"
+                                                                    startDecorator="Plus"
+                                                                    size="sm"
+                                                                    rounded
+                                                                />
+                                                            </Link>
+                                                        </View>
+                                                    )}
+                                                    <View className="flex-none  text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold ">
+                                                        <Icon
+                                                            icon={item.icon}
+                                                            width={24}
+                                                            height={24}
+                                                            color={
+                                                                colors.default
+                                                            }
+                                                        />
+                                                    </View>
+                                                </Row>
+                                                <Row className="w-full my-auto gap-x-2 ">
+                                                    <Text className=" text-lg flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold ">
+                                                        {t(item.title)}
+                                                    </Text>
+                                                    <View className="my-auto">
+                                                        <Text>
+                                                            {getCounter(
+                                                                item[
+                                                                    item.action
+                                                                ],
+                                                                item.action_icon,
+                                                                '',
+                                                                colors.default
+                                                            )}
+                                                        </Text>
+                                                    </View>
+                                                </Row>
+                                            </CardContent>
+                                        </Card>
+                                    </Link>
+                                </View>
+                            )
                         }
                         return (
-                            <View className=" w-1/2 lg:w-1/3 xl:w-1/4 p-1 sm:p-2 web:duration-300" key={index}>
+                            <View
+                                className=" w-1/2 lg:w-1/3 xl:w-1/4 p-1 sm:p-2 web:duration-300"
+                                key={index}
+                            >
                                 <Link href={item.url} key={index}>
                                     <Card className="w-full p-2 sm:p-6 web:duration-300 sm:hover:scale-105">
                                         <CardContent className="p-0">
-                                        <Row className='space-x-1 w-full justify-between min-h-12'>
-                                            <Text className=" text-3xl -translate-y-1 font-semibold flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white  ">
-                                                {item.current}
-                                            </Text>
-                                            <View className="flex-none  text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold ">
-                                                <Icon icon={item.icon} width={24} height={24} color={colors.default} />
-                                            </View>
-
-                                        </Row>
-                                        <Row className="w-full gap-x-2">
-                                            <Text className=" text-lg flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold  ">
-                                                {t(item.title)}
-                                            </Text>
-                                            <View className='my-auto' ><Text>{getCounter(item[item.action], item.action_icon, '', colors.default)}</Text></View>
-                                        </Row>
+                                            <Row className="space-x-1 w-full justify-between min-h-12">
+                                                <Text className=" text-3xl -translate-y-1 font-semibold flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white  ">
+                                                    {item.current}
+                                                </Text>
+                                                <View className="flex-none  text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold ">
+                                                    <Icon
+                                                        icon={item.icon}
+                                                        width={24}
+                                                        height={24}
+                                                        color={colors.default}
+                                                    />
+                                                </View>
+                                            </Row>
+                                            <Row className="w-full gap-x-2">
+                                                <Text className=" text-lg flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold  ">
+                                                    {t(item.title)}
+                                                </Text>
+                                                <View className="my-auto">
+                                                    <Text>
+                                                        {getCounter(
+                                                            item[item.action],
+                                                            item.action_icon,
+                                                            '',
+                                                            colors.default
+                                                        )}
+                                                    </Text>
+                                                </View>
+                                            </Row>
                                         </CardContent>
                                     </Card>
                                 </Link>
@@ -407,44 +481,66 @@ function ElementDashboardStat(props) {
                     }
                 })}
             </Row>
-            {(data.manage.items.length > 0) && <Card className="m-2 mb-1">
-                <CardContent>
-                <Text className="text-xl mb-3 text-neutral-800 dark:text-neutral-200 font-semibold">Admin Tools</Text>
-                <View className="grid w-full grid-cols-1 gap-x-2 gap-y-1.5 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
-                    {currentUser?.id && (
-                        <><View className=" w-full min-w-[160px]  ">
-                            <Button 
-                                variant="secondary" 
-                                align="left" 
-                                size="sm" 
-                                fullWidth 
-                                title={t("API Performance")} 
-                                startDecorator="Activity"
-                                onPress={() => setShowApiPerformance(true)}
-                            />
+            {data.manage.items.length > 0 && (
+                <Card className="m-2 mb-1">
+                    <CardContent>
+                        <Text className="text-xl mb-3 text-neutral-800 dark:text-neutral-200 font-semibold">
+                            Admin Tools
+                        </Text>
+                        <View className="grid w-full grid-cols-1 gap-x-2 gap-y-1.5 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+                            {currentUser?.id && (
+                                <>
+                                    <View className=" w-full min-w-[160px]  ">
+                                        <Button
+                                            variant="secondary"
+                                            align="left"
+                                            size="sm"
+                                            fullWidth
+                                            title={t('API Performance')}
+                                            startDecorator="Activity"
+                                            onPress={() =>
+                                                setShowApiPerformance(true)
+                                            }
+                                        />
+                                    </View>
+                                    <View className=" w-full min-w-[160px]  ">
+                                        <Button
+                                            variant="secondary"
+                                            align="left"
+                                            size="sm"
+                                            fullWidth
+                                            title="Theme Test"
+                                            startDecorator="Palette"
+                                            onPress={() =>
+                                                setShowThemeTest(true)
+                                            }
+                                        />
+                                    </View>
+                                </>
+                            )}
+                            {data.manage.items.map((item2, index) => {
+                                return (
+                                    <View
+                                        className=" w-full min-w-[160px]  "
+                                        key={index}
+                                    >
+                                        <Link href={item2.link}>
+                                            <Button
+                                                variant="secondary"
+                                                align="left"
+                                                size="sm"
+                                                fullWidth
+                                                title={t(item2.title)}
+                                                startDecorator={item2.icon}
+                                            />
+                                        </Link>
+                                    </View>
+                                )
+                            })}
                         </View>
-                        <View className=" w-full min-w-[160px]  ">
-                                <Button 
-                                    variant="secondary" 
-                                    align="left" 
-                                    size="sm" 
-                                    fullWidth 
-                                    title="Theme Test" 
-                                    startDecorator="Palette"
-                                    onPress={() => setShowThemeTest(true)}
-                                />
-                            </View></>
-                    )}
-                    {data.manage.items.map((item2, index) => {
-                        return <View className=" w-full min-w-[160px]  " key={index}>
-                            <Link href={item2.link}>
-                                <Button variant="secondary" align="left" size="sm" fullWidth title={t(item2.title)} startDecorator={item2.icon} />
-                            </Link>
-                        </View>;
-                    })}
-                </View>
-                </CardContent>
-                </Card>}
+                    </CardContent>
+                </Card>
+            )}
         </>
     )
 }

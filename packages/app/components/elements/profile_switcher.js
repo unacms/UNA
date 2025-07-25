@@ -48,7 +48,7 @@ export default function (props) {
     return (
         <>
             {!props.useDefault ?
-                <Pressable className="w-full" onPress={() => handleClick()}>
+                <Pressable className="" onPress={() => handleClick()}>
                     {props.children}
                 </Pressable> :
                 <Link href={currentUser.url} emulate={true} >

@@ -33,7 +33,8 @@ export  const settingsDefault = {
         avaliable_layouts: ['hor', 'ver', 'mixed'], // OLD appSetting('layout', 'format_list')
         default_layout: 'hor', //hor, ver, mixed// OLD appSetting('layout', 'format')
         screen: ' w-full ',
-        background: ' TODO ',
+        ui_density_switcher: true,
+   
 
         /*sidebar: ' fixed-process fixed w-80 2xl:w-96 p-3 web:duration-200 ',
         sidebar_container: ' p-3 ',
@@ -1066,7 +1067,7 @@ export  const settingsDefault = {
             },
             lg: {
                 rounded: 'rounded-xl',
-                padding: 'h-14 min-w-[56px] px-3.5',
+                padding: 'h-14 min-w-[56px] px-3',
                 padding_icon_only: 'h-14 w-14 px-3.5',
                 padding_with_title: 'h-14 px-3.5',
                 icon_container: ' h-7 w-7 flex items-center justify-center',

@@ -1,16 +1,27 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { storageGet, storageSet } from 'app/lib/util';
+import { Platform } from 'react-native';
 
 const DensityContext = createContext();
 
 export function DensityProvider({ children }) {
     const [density, setDensityState] = useState('default');
 
+    // Apply density to document for CSS selectors
+    const applyDensityToDocument = (densityValue) => {
+        if (Platform.OS === 'web' && typeof document !== 'undefined') {
+            document.documentElement.setAttribute('data-density', densityValue);
+        }
+    };
+
     // Load density from storage on mount
     useEffect(() => {
         const savedDensity = storageGet('ui:density', '', true);
         if (savedDensity && ['compact', 'default', 'relaxed'].includes(savedDensity)) {
             setDensityState(savedDensity);
+            applyDensityToDocument(savedDensity);
+        } else {
+            applyDensityToDocument('default');
         }
     }, []);
 
@@ -19,6 +30,7 @@ export function DensityProvider({ children }) {
         if (['compact', 'default', 'relaxed'].includes(newDensity)) {
             setDensityState(newDensity);
             storageSet('ui:density', '', newDensity, true);
+            applyDensityToDocument(newDensity);
         }
     };
 
