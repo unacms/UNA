@@ -949,7 +949,7 @@ export  const settingsDefault = {
         checkbox_set: {
             container: '  gap-x-2 items-center',
         },
-        switcher: {
+        /*switcher: {
             container: 'items-center flex flex-row-reverse justify-between gap-x-2 items-center h-14 min-w-14 rounded-xl flex-auto  p-3  bg-neutral-50 border border-neutral-200  hover:border-neutral-300 focus:border-primary dark:bg-neutral-900 overflow-hidden  dark:border-neutral-800 dark:hover:border-neutral-700  dark:focus:border-primary-d  focus:bg-bgrinput-f dark:focus:bg-neutral-950    web:duration-300  placeholder-neutral-500   ',
             text: ' text-neutral-800 dark:text-neutral-200  text-base ',
             track: 'item-center rounded-full ',
@@ -958,7 +958,7 @@ export  const settingsDefault = {
             active_track_color: 'bg-primary',
             size_base: ['w-20 h-8 p-1 ', 'h-6 w-6'],
             size_sm: ['w-10 h-4 p-0.5 ', 'h-3 w-3'],
-        },
+        },*/
         doublerange: {
             container: 'w-full items-center justify-between mt-2',
             value_container:

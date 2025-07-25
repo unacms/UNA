@@ -46,6 +46,13 @@ module.exports = {
     'pb-sm',
     'pb-md',
     'pb-lg',
+    // Controls
+    'u-cn-sw-trk-base',
+    'u-cn-sw-trk-sm',
+    'u-cn-sw-tmb-base',
+    'u-cn-sw-tmb-sm',
+    'u-cn-sw-tmb-act-base',
+    'u-cn-sw-tmb-act-sm',
   ],
   theme: {
     ...theme,

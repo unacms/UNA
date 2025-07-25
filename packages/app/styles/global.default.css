@@ -217,6 +217,45 @@
         @apply sm:p-4;
     }
 
+    /* Controls */
+    /* Switcher */
+    .u-cn-sw-cnt {
+        @apply items-center flex-row-reverse justify-between gap-x-2 items-center h-14 min-w-14 rounded-xl flex-auto p-3 bg-input border border-border ;
+    }
+    .u-cn-sw-txt {
+        @apply text-neutral-800 dark:text-neutral-200 text-base;
+    }
+    .u-cn-sw-trk {
+        @apply rounded-full;
+    }
+    .u-cn-sw-trk-base {
+        @apply w-20 h-8 p-1;
+    }
+    .u-cn-sw-trk-sm {
+        @apply w-10 h-4 p-0.5;
+    }
+    .u-cn-sw-tmb {
+        @apply rounded-full aspect-square bg-white transition-transform duration-200;
+    }
+    .u-cn-sw-tmb-base {
+        @apply h-6 w-6;
+    }
+    .u-cn-sw-tmb-sm {
+        @apply h-3 w-3;
+    }
+    .u-cn-sw-tmb-act-base {
+        @apply translate-x-12;
+    }
+    .u-cn-sw-tmb-act-sm {
+        @apply translate-x-6;
+    }
+    .u-cn-sw-trk-col {
+        @apply bg-neutral-400 dark:bg-neutral-600;
+    }
+    .u-cn-sw-trk-col-act {
+        @apply bg-primary;
+    }
+
     /* Density-Aware Padding Utilities */
     
     /* Small Padding (p-sm) - defaults to 'default' density */
