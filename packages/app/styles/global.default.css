@@ -104,8 +104,117 @@
 }
 
 @layer components {
-    .u-card {
-        @apply bg-card text-card-foreground border border-border;
+
+    
+    /* Card Variants */
+    .u-card-base-compact {
+        @apply bg-card border border-border shadow-sm rounded-lg text-card-foreground;
+    }
+    
+    .u-card-base-default {
+        @apply bg-card border border-border shadow-sm rounded-xl text-card-foreground;
+    }
+    
+    .u-card-base-relaxed {
+        @apply bg-card border border-border shadow-sm rounded-2xl text-card-foreground;
+    }
+    
+    /* Card Header Styles */
+    .u-card-header {
+        @apply flex flex-col gap-y-1.5;
+    }
+    
+    .u-card-header-compact {
+        @apply u-card-header px-3 pt-3;
+    }
+    
+    .u-card-header-default {
+        @apply u-card-header px-4 pt-4;
+    }
+    
+    .u-card-header-relaxed {
+        @apply u-card-header px-6 pt-6;
+    }
+    
+    /* Card Title Styles */
+    .u-card-title {
+        @apply font-semibold leading-none tracking-tight text-card-foreground;
+    }
+    
+    .u-card-title-compact {
+        @apply u-card-title text-base sm:text-lg;
+    }
+    
+    .u-card-title-default {
+        @apply u-card-title text-xl sm:text-2xl;
+    }
+    
+    .u-card-title-relaxed {
+        @apply u-card-title text-2xl sm:text-3xl;
+    }
+    
+    /* Card Description Styles */
+    .u-card-description {
+        @apply text-muted-foreground;
+    }
+    
+    .u-card-description-compact {
+        @apply u-card-description text-xs;
+    }
+    
+    .u-card-description-default {
+        @apply u-card-description text-sm;
+    }
+    
+    .u-card-description-relaxed {
+        @apply u-card-description text-base;
+    }
+    
+    /* Card Content Styles */
+    .u-card-content {
+        @apply text-card-foreground;
+    }
+    
+    .u-card-content-compact {
+        @apply u-card-content p-3;
+    }
+    
+    .u-card-content-default {
+        @apply u-card-content p-4;
+    }
+    
+    .u-card-content-relaxed {
+        @apply u-card-content p-6;
+    }
+    
+    /* Card Footer Styles */
+    .u-card-footer {
+        @apply flex flex-row items-center gap-x-2;
+    }
+    
+    .u-card-footer-compact {
+        @apply u-card-footer p-3 pt-0;
+    }
+    
+    .u-card-footer-default {
+        @apply u-card-footer p-4 pt-0;
+    }
+    
+    .u-card-footer-relaxed {
+        @apply u-card-footer p-6 pt-0;
+    }
+    
+    /* Content Padding Styles */
+    .u-content-padding-compact {
+        @apply sm:p-3;
+    }
+    
+    .u-content-padding-default {
+        @apply sm:p-4;
+    }
+    
+    .u-content-padding-relaxed {
+        @apply sm:p-6;
     }
 }
 

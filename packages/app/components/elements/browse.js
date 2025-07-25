@@ -162,7 +162,7 @@ export default function (props) {
             return;
         if (props.only_one_page == true)
             return;
-        if (props.extraProps.limit == true)
+        if (props.extraProps?.limit == true)
             return;
         if (isFetchingNextPage)
             return;
@@ -289,7 +289,7 @@ export default function (props) {
 
     if (props.sidebar) {
         const uniqueItems = dataItems.data.filter((v, i, a) => a.findIndex(t => t.id === v.id) === i);
-        const limitedItems = props.extraProps.limit ? uniqueItems.slice(0, props.extraProps.limit) : uniqueItems;
+        const limitedItems = props.extraProps?.limit ? uniqueItems.slice(0, props.extraProps?.limit) : uniqueItems;
         return limitedItems.map((item, index) => (
             <View key={'item' + index} className={numColumns > 1 ? 'w-full pb-2 ' : '  ' + (data.unit != 'feed' ? '   w-full' : '  ') + '  '}>
                 <Unit unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} sidebar={props.sidebar} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={item} /></View>

@@ -1,5 +1,5 @@
 import { Icon } from 'app/ui/atoms/icon'
-import Card from 'app/ui/molecules/card'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from 'app/ui/molecules/card'
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, Row, Pressable, ScrollView } from 'app/design/view'
@@ -20,6 +20,7 @@ import { Theme, useThemeName } from 'app/design/theme';
 import DasbordStatOld from 'app/components/elements/dashboard_stat_old';
 import ApiPerformanceReport from 'app/ui/molecules/api-performance-report';
 import ThemeCompatibilityTest from 'app/ui/molecules/nativewindui';
+import DensitySwitcher from 'app/ui/atoms/density-switcher';
 
 function getCounter(num, icon = '', add = '', color = '') {
 
@@ -107,12 +108,21 @@ export default function PageLayout(props) {
     const currentFormat = storageGet('layout:format', '', true) || appSetting('layout', 'default_layout');
 
     return (
-        <ScrollView className=''>
-            <Modal id='file-preview2' title="VideoChat" onVisible={!!showImage2} onClose={() => { setShowImage2(null) }}>
-            </Modal>
+        <ScrollView>
+            <Card>
+                <CardHeader>
+                    <CardTitle>
+                        Dashboard
+                    </CardTitle>
+                    <CardDescription>
+                        Your Account Control Panel
+                    </CardDescription>
+                </CardHeader>
+            <CardContent>
             <View className={appSetting('layout', 'max_width') + " w-full  mx-auto flex-col"}>
                 <View className={appSetting('layout', 'max_width_block') + " w-full px-2 pb-1 pt-2 sm:p-2  mx-auto flex-col"}>
-                    <Card rounded=" rounded-2xl " addClassName="  w-full p-4 flex-row ">
+                    <Card className="w-full flex-row">
+                        <CardContent>
                         <View className="justify-center sm:justify-between flex-auto my-auto w-full items-center">
                             <View className="flex-row  w-full  items-center ">
                                 <View className="flex-auto  ">
@@ -183,11 +193,13 @@ export default function PageLayout(props) {
                             </View>
 
                         </View>
+                        </CardContent>
                     </Card>
                 </View>
                 <View className=" w-full ">
                     <ElementDashboardStat {...props} />
-                    <Card addClassName=" shadow flex-col m-2 p-3 sm:p-4">
+                    <Card className="shadow flex-col m-2">
+                        <CardContent>
                         {
 
                             appSetting('dashboard', 'langs').length > 1 && (
@@ -238,6 +250,9 @@ export default function PageLayout(props) {
                                 </View>)
                         }
 
+                        {/* UI Density Switcher */}
+                        <DensitySwitcher />
+
                         {
                             appSetting('layout', 'avaliable_layouts').length > 1 && (
 
@@ -268,10 +283,18 @@ export default function PageLayout(props) {
                             size="sm"
                             align="left"
                         /></Link>
+                        </CardContent>
                     </Card>
                 </View>
 
             </View>
+            </CardContent>
+            <CardFooter>
+                <Text>
+                    Footer
+                </Text>
+            </CardFooter>
+            </Card>
         </ScrollView>
     )
 }
@@ -333,7 +356,8 @@ function ElementDashboardStat(props) {
                         if (item?.type != 'growth') {
                             return <View className="  w-1/2 lg:w-1/3 xl:w-1/4 p-1 sm:p-2 web:duration-300 " key={index}>
                                 <Link href={item.url}>
-                                    <Card rounded=" rounded-2xl " addClassName=" p-2 sm:p-6 sm:hover:scale-105 web:duration-300 w-full p-4 " >
+                                    <Card className="p-2 sm:p-6 sm:hover:scale-105 web:duration-300 w-full p-4">
+                                        <CardContent className="p-0">
                                         <Row className='space-x-1 w-full justify-between min-h-12'>
                                             {
                                                 item.count > 0 ? <Text className=" text-3xl -translate-y-1 font-semibold flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white  ">
@@ -350,6 +374,7 @@ function ElementDashboardStat(props) {
                                             </Text>
                                             <View className='my-auto' ><Text>{getCounter(item[item.action], item.action_icon, '', colors.default)}</Text></View>
                                         </Row>
+                                        </CardContent>
                                     </Card>
                                 </Link>
                             </View>;
@@ -357,7 +382,8 @@ function ElementDashboardStat(props) {
                         return (
                             <View className=" w-1/2 lg:w-1/3 xl:w-1/4 p-1 sm:p-2 web:duration-300" key={index}>
                                 <Link href={item.url} key={index}>
-                                    <Card rounded=" rounded-2xl " addClassName="w-full p-2 sm:p-6 web:duration-300 sm:hover:scale-105 " margin="a">
+                                    <Card className="w-full p-2 sm:p-6 web:duration-300 sm:hover:scale-105">
+                                        <CardContent className="p-0">
                                         <Row className='space-x-1 w-full justify-between min-h-12'>
                                             <Text className=" text-3xl -translate-y-1 font-semibold flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white  ">
                                                 {item.current}
@@ -373,6 +399,7 @@ function ElementDashboardStat(props) {
                                             </Text>
                                             <View className='my-auto' ><Text>{getCounter(item[item.action], item.action_icon, '', colors.default)}</Text></View>
                                         </Row>
+                                        </CardContent>
                                     </Card>
                                 </Link>
                             </View>
@@ -380,7 +407,8 @@ function ElementDashboardStat(props) {
                     }
                 })}
             </Row>
-            {(data.manage.items.length > 0) && <Card addClassName='m-2 mb-1 p-3 sm:p-4'>
+            {(data.manage.items.length > 0) && <Card className="m-2 mb-1">
+                <CardContent>
                 <Text className="text-xl mb-3 text-neutral-800 dark:text-neutral-200 font-semibold">Admin Tools</Text>
                 <View className="grid w-full grid-cols-1 gap-x-2 gap-y-1.5 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
                     {currentUser?.id && (
@@ -414,7 +442,9 @@ function ElementDashboardStat(props) {
                             </Link>
                         </View>;
                     })}
-                </View></Card>}
+                </View>
+                </CardContent>
+                </Card>}
         </>
     )
 }

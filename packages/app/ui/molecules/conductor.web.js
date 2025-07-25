@@ -29,6 +29,8 @@ import emitter from 'app/context/emitter';
 import Cover, { CoverSmall } from 'app/components/elements/cover';
 import { CoverMenuMore, CoverMenu } from 'app/components/nav/menu-cover'
 import { Panel, PanelGroup, PanelHandler, isShowColumn } from "app/ui/molecules/resizable-panels";
+import { useDensity } from 'app/context/density';
+import { cn } from 'app/lib/util';
 
 
 const conductorTheme = appSetting('theme', 'conductor');
@@ -387,6 +389,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
     const { currentUser } = useCurrentUser();
     const { setBottomSheetData } = useBottomSheetData();
     const { layoutData, setLayoutData } = useLayoutData();
+    const { density } = useDensity();
     const tmplLayout = getLayout(currentUser);
     const toasterRef = useRef(); // ref for toaster
 
@@ -620,7 +623,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
 
     const showFilters = useCallback(() => {
         setBottomSheetData({ title: 'Filters', content: AddBlocksCnt, showClose: true, snapPoints: ['50%', '75%'], modal: true });
-    }, [currentRoute.leftSideBarBlocks, currentRoute.pageData, onFormSubmit]);
+    }, [AddBlocksCnt]);
 
     const unitType = useMemo(() => {
         const type = getUnitModeBySource(currentRoute?.endpoint);
@@ -644,6 +647,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
     const RenderScene = useCallback(({ route, header, prevRoute, headerHeight, isCoverDisabled }) => {
 
         const dataItems = route?.data
+        const contentPaddingClass = header ? `u-content-padding-${density}` : '';
 
         /* if (dataItems.length == 1 && !route.endpoint) {
              const a = dataItems.map((item, index) => {
@@ -706,17 +710,29 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
                                 {AddBlocksCnt}
                             </View>
                         </Panel>
-                        <PanelHandler gap={2} sizable={cellsCustomConfig.sizable} />
+                        <PanelHandler 
+                            gap={1} 
+                            sizable={cellsCustomConfig.sizable}
+                            className="w-px bg-border hover:bg-neutral-500/20 transition-all duration-300"
+                        />
                     </>
                     }
                     <Panel  {...cellsCustomConfig.cells?.center}>
-                        <View className={(isRightCol ? 'flex-auto flex-auto ' : ' w-full mx-auto') + (layoutName == 'navigator' ? '' : ' py-4 ') + (header ? ' sm:p-3 ' : '')}>
+                        <View className={cn(
+                            isRightCol ? 'flex-auto' : 'w-full mx-auto',
+                            layoutName !== 'navigator' && 'py-4',
+                            contentPaddingClass
+                        )}>
                             {TabFlashListM}
                             {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 && callFn("noContentByUrl", [route?.endpoint])))}
                         </View>
                     </Panel>
                     {isRightCol && <>
-                        <PanelHandler gap={2} sizable={cellsCustomConfig.sizable} />
+                        <PanelHandler 
+                            gap={1} 
+                            sizable={cellsCustomConfig.sizable}
+                            className="w-px bg-border hover:bg-neutral-500/20 transition-all duration-300"
+                        />
                         <Panel className={`hidden ${cellsCustomConfig.cells?.right?.breakpoint}:block`} {...cellsCustomConfig.cells?.right}>
                             <View className={`py-4 fixed-process  `}>
                                 {route?.sidebar?.content.map((item, index) => {
@@ -751,7 +767,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
             </Row>
         )*/
 
-    }, [numColumns, windowWidth, index]);
+    }, [numColumns, windowWidth, index, density]);
 
     const sceneHeaderComponent = useMemo(() => (
         <RenderSceneHeader route={currentRoute} setFilterValue={setFilterValue} />
@@ -851,7 +867,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
             return (
                 <PanelGroup autoSaveId={`cells-navigator`} direction="horizontal" className={
                     appSetting('layout', 'max_width') +
-                    ' mx-auto w-full flex-auto relative flex-row lg:pt-0 px-1.5 sm:px-2'
+                    ' mx-auto w-full flex-auto relative flex-row '
                 }>
                     {isShowColumn(true, windowWidth, cellsCustomConfig.cells?.left) && <>
                         <Panel {...cellsCustomConfig.cells?.left}>
@@ -859,11 +875,15 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
                                 {leftSideBarComponent}
                             </View>
                         </Panel>
-                        <PanelHandler gap={2} sizable={cellsCustomConfig.sizable} /></>}
+                        <PanelHandler 
+                            gap={1} 
+                            sizable={cellsCustomConfig.sizable}
+                            className="w-px bg-border hover:bg-neutral-500/20 transition-all duration-300"
+                        /></>}
                     <Panel {...cellsCustomConfig.cells?.center}>
-                        <View className='sm:p-3'>
+                        
                             {MainComponent}
-                        </View>
+                        
                     </Panel>
                 </PanelGroup>
             );

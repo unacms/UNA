@@ -36,6 +36,12 @@ NEO is a React Native/Next.js cross-platform application with:
 - Automatic dark mode with `@media (prefers-color-scheme: dark)`
 - Manual override with `[data-theme="dark"]`
 
+**Density System** (in `packages/app/context/density.js` and `packages/app/styles/global.default.css`):
+- Three density modes: `compact`, `default`, `relaxed`
+- User-configurable via DensitySwitcher component
+- Persisted to storage across sessions
+- Components auto-update when density changes
+
 **Theme Usage Guidelines:**
 ```javascript
 // ✅ Preferred - use semantic tokens for new components
@@ -46,6 +52,168 @@ NEO is a React Native/Next.js cross-platform application with:
 
 // ❌ Avoid - hardcoded colors
 <View className="bg-white dark:bg-gray-900" />
+```
+
+**Density Implementation Patterns:**
+
+#### **For Standalone Components (Recommended)**
+Use this pattern for components that can accept density as a prop:
+
+```javascript
+// Component implementation
+import { useDensityOrDefault } from 'app/context/density';
+import { cn } from 'app/lib/util';
+
+function MyComponent({ density, className, ...props }) {
+  const effectiveDensity = useDensityOrDefault(density);
+  
+  return (
+    <View className={cn(`u-mycomponent-base-${effectiveDensity}`, className)} {...props}>
+      <View className={cn(`u-mycomponent-header-${effectiveDensity}`)}>
+        <Text className={cn(`u-mycomponent-title-${effectiveDensity}`)}>Title</Text>
+      </View>
+      <View className={cn(`u-mycomponent-content-${effectiveDensity}`)}>
+        Content
+      </View>
+    </View>
+  );
+}
+```
+
+```css
+/* CSS in packages/app/styles/global.default.css */
+@layer components {
+  /* Base Component Styles */
+  .u-mycomponent-base-compact {
+    @apply bg-card border border-border rounded-lg shadow-sm;
+  }
+  
+  .u-mycomponent-base-default {
+    @apply bg-card border border-border rounded-xl shadow-sm;
+  }
+  
+  .u-mycomponent-base-relaxed {
+    @apply bg-card border border-border rounded-2xl shadow-sm;
+  }
+  
+  /* Header Styles */
+  .u-mycomponent-header-compact {
+    @apply p-3;
+  }
+  
+  .u-mycomponent-header-default {
+    @apply p-4 sm:p-6;
+  }
+  
+  .u-mycomponent-header-relaxed {
+    @apply p-6 sm:p-8;
+  }
+  
+  /* Title Styles */
+  .u-mycomponent-title-compact {
+    @apply text-lg font-semibold;
+  }
+  
+  .u-mycomponent-title-default {
+    @apply text-xl sm:text-2xl font-semibold;
+  }
+  
+  .u-mycomponent-title-relaxed {
+    @apply text-2xl sm:text-3xl font-semibold;
+  }
+  
+  /* Content Styles */
+  .u-mycomponent-content-compact {
+    @apply p-3 pt-0;
+  }
+  
+  .u-mycomponent-content-default {
+    @apply p-4 sm:p-6 pt-0;
+  }
+  
+  .u-mycomponent-content-relaxed {
+    @apply p-6 sm:p-8 pt-0;
+  }
+}
+```
+
+#### **For Callback/Memoized Components**
+Use this pattern when density is used inside useCallback/useMemo:
+
+```javascript
+import { useDensity } from 'app/context/density';
+
+function MyComplexComponent() {
+  const { density } = useDensity();
+  
+  const renderContent = useCallback(({ header }) => {
+    const paddingClass = header ? `u-content-padding-${density}` : '';
+    
+    return (
+      <View className={cn('base-classes', paddingClass)}>
+        Content
+      </View>
+    );
+  }, [density]); // ⚠️ CRITICAL: Include density in dependencies
+  
+  return renderContent({ header: true });
+}
+```
+
+#### **Tailwind Safelist Requirements**
+Add all density classes to Tailwind safelist in both `apps/next/tailwind.config.js` and `apps/expo/tailwind.config.js`:
+
+```javascript
+safelist: [
+  // ... existing classes
+  // MyComponent density classes
+  'u-mycomponent-base-compact',
+  'u-mycomponent-base-default',
+  'u-mycomponent-base-relaxed',
+  'u-mycomponent-header-compact',
+  'u-mycomponent-header-default',
+  'u-mycomponent-header-relaxed',
+  'u-mycomponent-title-compact',
+  'u-mycomponent-title-default',
+  'u-mycomponent-title-relaxed',
+  'u-mycomponent-content-compact',
+  'u-mycomponent-content-default',
+  'u-mycomponent-content-relaxed',
+],
+```
+
+#### **Naming Convention**
+- **Format**: `u-{component}-{part}-{density}`
+- **Component**: kebab-case component name (e.g., `card`, `mycomponent`)
+- **Part**: component section (e.g., `base`, `header`, `title`, `content`, `footer`)
+- **Density**: `compact`, `default`, `relaxed`
+
+#### **Density Guidelines**
+- **Compact**: Minimal spacing, smaller text, tighter layouts
+- **Default**: Balanced spacing, standard text sizes
+- **Relaxed**: Generous spacing, larger text, comfortable layouts
+
+#### **Common Patterns**
+```javascript
+// ✅ Padding progression
+compact:  p-3
+default:  p-4 sm:p-6  
+relaxed:  p-6 sm:p-8
+
+// ✅ Text size progression  
+compact:  text-sm
+default:  text-base sm:text-lg
+relaxed:  text-lg sm:text-xl
+
+// ✅ Border radius progression
+compact:  rounded-lg
+default:  rounded-xl
+relaxed:  rounded-2xl
+
+// ✅ Gap progression
+compact:  gap-2
+default:  gap-3 sm:gap-4
+relaxed:  gap-4 sm:gap-6
 ```
 
 ### 3. Routing Architecture
@@ -171,6 +339,37 @@ const methods = useForm({
 });
 ```
 
+### Density-Aware Components
+```javascript
+// ✅ Standalone component pattern (preferred)
+import { useDensityOrDefault } from 'app/context/density';
+
+function MyComponent({ density, className, ...props }) {
+  const effectiveDensity = useDensityOrDefault(density);
+  return (
+    <View className={cn(`u-mycomponent-base-${effectiveDensity}`, className)}>
+      <Text className={cn(`u-mycomponent-title-${effectiveDensity}`)}>
+        Content
+      </Text>
+    </View>
+  );
+}
+
+// ✅ Callback/memoized pattern (when needed)
+import { useDensity } from 'app/context/density';
+
+function ComplexComponent() {
+  const { density } = useDensity();
+  
+  const renderItem = useCallback((item) => {
+    const itemClass = `u-item-base-${density}`;
+    return <View className={cn(itemClass)} />;
+  }, [density]); // ⚠️ Include density in dependencies
+  
+  return <>{items.map(renderItem)}</>;
+}
+```
+
 ## Investigation Checklist
 
 When debugging or implementing features, always check:
@@ -179,6 +378,8 @@ When debugging or implementing features, always check:
 - [ ] Are we following existing patterns in the codebase?
 - [ ] Are we using the appropriate theme system (semantic vs custom tokens)?
 - [ ] Is the design system being used correctly?
+- [ ] Are density classes properly implemented and updating automatically?
+- [ ] Are new density classes added to Tailwind safelist in both configs?
 - [ ] Is authentication handling consistent?
 - [ ] Are icons being resolved properly on both platforms?
 - [ ] Are UNA API calls using the `fetcher` function correctly?
@@ -191,6 +392,10 @@ When debugging or implementing features, always check:
 - Different implementations between web and native for the same feature
 - Missing icons on one platform but working on another
 - Hardcoded colors instead of theme tokens
+- Components that don't respond to density changes automatically
+- Density classes generated with template literals but missing from Tailwind safelist
+- useCallback/useMemo missing `density` in dependency arrays when using density
+- Hardcoded spacing values instead of density-aware classes
 - Complex authentication logic that could be simplified
 - Direct fetch() calls bypassing the `fetcher` function
 - Incorrect UNA endpoint patterns (not following `/api.php?r=module/action/Template`)
@@ -243,14 +448,20 @@ neo/
 2. **Test on both platforms** if making shared changes
 3. **Follow existing conventions** in the same directory/module
 4. **Use appropriate theme system** (semantic tokens for new, custom for existing)
-5. **Verify responsive behavior** across screen sizes
-6. **Check authentication flow** if user-dependent features
+5. **Implement density support** for new UI components using established patterns
+6. **Add density classes to Tailwind safelist** if using template literal class generation
+7. **Verify responsive behavior** across screen sizes
+8. **Test density switching** to ensure components update automatically
+9. **Check authentication flow** if user-dependent features
 
 ## Success Criteria
 
 - Cross-platform consistency maintained
 - Modern design system tokens utilized appropriately
+- Density system properly implemented with automatic updates
+- All density classes included in Tailwind safelist
 - Performance optimized for both web and native
 - Code quality improved incrementally
 - Patterns established and followed consistently
-- Responsive design working seamlessly 
+- Responsive design working seamlessly
+- Components adapt gracefully to all three density modes 

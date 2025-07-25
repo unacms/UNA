@@ -74,7 +74,7 @@ export  const settingsDefault = {
         header:{
             offset: ' h-16 w-full ',
             container: ' hidden lg:flex fixed w-full mx-auto h-16 left-[50%] translate-x-[-50%]  ',
-            initial: '  my-auto w-full items-center transition-all web:duration-300 ease-in-out will-change-transform    ',
+            initial: '  my-auto w-full items-center transition-all web:duration-300 ease-in-out will-change-transform shadow-[0_0_0_1px_rgba(0,0,0,0.08),0_2px_4px_0_rgba(0,0,0,0.05)] dark:shadow-[0_0_0_1px_rgba(0,0,0,0.8),0_2px_4px_0_rgba(0,0,0,0.05)]    ',
             scrolled: '  backdrop-blur-xl my-auto w-full  mx-auto bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur-xl shadow-[0_0_0_1px_rgba(0,0,0,0.08),0_2px_4px_0_rgba(0,0,0,0.05)] dark:shadow-[0_0_0_1px_rgba(0,0,0,0.8),0_2px_4px_0_rgba(0,0,0,0.05)] ',
             content: ' h-16 mx-auto justify-between ',
             content_left: ' flex-row w-80 2xl:w-96 px-2 xl:px-3 ',
@@ -1003,17 +1003,7 @@ export  const settingsDefault = {
             content: ' h-auto ',
             header: ' p-3 items-start justify-start border-b border-bdrmodal dark:border-bdrmodal-d',
         },
-        // Default styling for Card components.
-        // - `default`: Base classes like background and shadow. These are always applied.
-        // - `margin`: Default margin/padding classes. Can be overridden by the Card component's `margin` prop.
-        // - `rounded`: Default corner rounding classes. Can be overridden by the Card component's `rounded` prop.
-        // - `border`: Default border classes. Can be overridden by the Card component's `rounded` prop (as it often handles border too).
-        card: {
-            default: 'bg-bgrcard dark:bg-bgrcard-d backdrop-blur-xl ', // Base styles (e.g., background)
-            margin: 'p-3 sm:p-4',                               // Default margin/padding
-            rounded: 'rounded-2xl',                       // Default corner rounding
-            border: ' border border-bdrcard dark:border-bdrcard-d overflow-hidden shadow-sm ',  // Default border and shadow styles
-        },
+
         inputs: {
             default:
                 'h-14 min-w-14 rounded-xl flex-auto ' +

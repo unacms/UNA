@@ -72,6 +72,19 @@ export function normalizeClasses(a) {
     return isWeb ? a : a.replace(/\b\S*(hover|focus|active|group|duration|group-hover):\S*\b/g, "") .replace(/\s{2,}/g, " ").trim();
 }
 
+/**
+ * Utility function to merge and normalize class names
+ * Combines class names and applies platform-specific normalization
+ */
+export function cn(...classes) {
+    const merged = classes
+        .filter(Boolean)
+        .join(' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    return normalizeClasses(merged);
+}
+
 export function decodeText(str) {
     return decode(str);
 }

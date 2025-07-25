@@ -4,10 +4,18 @@ import { memo } from "react";
 import { LAYOUT_BREAKPOINTS } from 'app/lib/util';
 import { View } from 'app/design/view';
 
-export const PanelHandler = memo(({ gap, sizable }) => {
-    return sizable ? <PanelResizeHandle className={`w-${gap} hover:bg-neutral-500/20 rounded-full transition-all duration-300 justify-center items-center flex`}>
-        {/*<Icon icon="GripVertical" width={12} height={12} />*/}
-    </PanelResizeHandle> : <View className={`w-${gap}`}/>
+export const PanelHandler = memo(({ gap, sizable, className, style }) => {
+    const defaultClasses = `w-${gap} hover:bg-neutral-500/20 rounded-full transition-all duration-300 justify-center items-center flex`;
+    const finalClasses = className || defaultClasses;
+    
+    return sizable ? (
+        <PanelResizeHandle 
+            className={finalClasses}
+            style={style}
+        >
+            {/*<Icon icon="GripVertical" width={12} height={12} />*/}
+        </PanelResizeHandle>
+    ) : <View className={`w-${gap}`}/>
 });
 
 export const PanelGroup = (props) => {

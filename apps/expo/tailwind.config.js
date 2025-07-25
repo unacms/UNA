@@ -6,7 +6,29 @@ module.exports = {
     '../../packages/**/*.{js,jsx,ts,tsx}'
   ],
   safelist: [
-    'gap-x-2',
+    // Card component density classes
+    'u-card-base-compact',
+    'u-card-base-default', 
+    'u-card-base-relaxed',
+    'u-card-header-compact',
+    'u-card-header-default',
+    'u-card-header-relaxed',
+    'u-card-title-compact',
+    'u-card-title-default',
+    'u-card-title-relaxed',
+    'u-card-description-compact',
+    'u-card-description-default',
+    'u-card-description-relaxed',
+    'u-card-content-compact',
+    'u-card-content-default',
+    'u-card-content-relaxed',
+    'u-card-footer-compact',
+    'u-card-footer-default',
+    'u-card-footer-relaxed',
+    // Content padding density classes
+    'u-content-padding-compact',
+    'u-content-padding-default',
+    'u-content-padding-relaxed',
   ],
   presets: [require("nativewind/preset")],
   theme: {
