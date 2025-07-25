@@ -7,7 +7,7 @@ import { Svg, Path } from 'react-native-svg'
 import { Button, Modal } from 'app/design/controls';
 import { useState, useEffect } from "react";
 import { fetcher } from 'app/lib/fetcher';
-
+import Tabs from 'app/ui/molecules/tabs'
 
 export function ReputationActions({ data }) {
     return (
@@ -45,24 +45,18 @@ export function ReputationSummary({ data }) {
 }
 
 export function ReputationWidget({ data }) {
-
     const [tabsData, setTabsData] = useState(data.tabs);
-   
-
     useEffect(() => {
         const fetchAllTabs = async () => {
             try {
                 const results = await Promise.all(
                     data.tabs.map(async ({ url, title, data }, index) => {
-
-                        const res = data ? data : await fetcher(url);
+                        const loadedData = data ?? (await fetcher(url))?.data?.[0]?.data ?? [];
                         return {
                             title,
-                            //  type: url.includes('leaderboard') ? ReputationLeaderboard : ReputationSummary,
-                            data: data ? data : res?.data?.[0]?.data,
-                            index: index,
-                            url: url,
-                            selected: index === 0
+                            data: loadedData,
+                            index,
+                            url,
                         };
                     })
                 );
@@ -75,37 +69,17 @@ export function ReputationWidget({ data }) {
         fetchAllTabs();
     }, []);
 
-    console.log("tabsData55", tabsData.filter(tab => 'data' in tab))
+    const preparedTabs = tabsData.map((item) => ({
+        ...item,
+        key: item.url,
+        content: item.url.includes('leaderboard') ? <ReputationLeaderboard data={item.data} /> : <ReputationSummary data={item.data} />
+    }));
 
-        return (<View className={`w-full `}>
-            <Row className='gap-x-2 mb-3'>
-                {tabsData.map((item, index) => (<Button
-                    size="sm"
-                    rounded
-                    variant={item.selected ? 'primary' : 'secondary'}
-                    pressed={item.selected} title={item.title} key={index} onPress={() => {
-                        setTabsData((prev) =>
-                            prev.map((tab, i) => ({
-                                ...tab,
-                                selected: i === index,
-                            }))
-                        );
-                    }} />
-                ))}
-            </Row>
-            {tabsData.filter(tab => 'data' in tab).map((item, index) => {
-                const Cont = item.url.includes('leaderboard') ? ReputationLeaderboard : ReputationSummary
-
-                return (
-                    <View key={index} className={`w-full ${item.selected ? ' ' : 'hidden'} `}>
-                        <Cont data={item.data} />
-                    </View>)
-            })}
-        </View>
-
-        )
+    return <Tabs tabs={preparedTabs} activeTab={tabsData[0].url} />;
 
 }
+
+
 
 function ReputationSummarySimple({ data }) {
     const [isModal, setIsModal] = useState(false);

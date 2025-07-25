@@ -23,11 +23,64 @@ import { getComponent } from 'app/components/registry'
 import { Panel, PanelGroup, PanelHandler, isShowColumn } from "app/ui/molecules/resizable-panels";
 import { useWindowDimensions } from 'react-native';
 import ThemeCompatibilityTest from 'app/ui/molecules/nativewindui';
+import * as SwitchPrimitive from '@rn-primitives/switch';
+import * as TabsPrimitive from '@rn-primitives/tabs';
+import { Switch } from 'app/design/controls'
+
+
+function Example() {
+  const [value, setValue] = React.useState('account');
+   const [isActive, setIsActive] = useState(false);
+   const [checked, setChecked] = React.useState(false);
+  return (
+    <>
+    <Switch
+    size=""
+                    onValueChange={setChecked}
+                    value={checked}
+                />
+   
+    <TabsPrimitive.Root
+      value={value}
+      onValueChange={setValue}
+      className='w-full max-w-[400px] mx-auto flex-col gap-1.5'
+    >
+      <TabsPrimitive.List  className='flex-row w-full'>
+        <TabsPrimitive.Trigger value='account' 
+        className="
+    px-4 py-2 text-gray-500
+    aria-selected:text-blue-600
+    aria-selected:border-b-2
+    aria-selected:border-blue-600
+  "
+        >
+          <Text>Account</Text>
+        </TabsPrimitive.Trigger>
+        <TabsPrimitive.Trigger value='password' 
+             className="
+    px-4 py-2 text-gray-500
+    aria-selected:text-blue-600
+    aria-selected:border-b-2
+    aria-selected:border-blue-600
+  "
+        >
+          <Text>Password</Text>
+        </TabsPrimitive.Trigger>
+      </TabsPrimitive.List>
+      <TabsPrimitive.Content value='account'>
+        <Text>Account content</Text>
+      </TabsPrimitive.Content>
+      <TabsPrimitive.Content value='password'>
+        <Text>Password content</Text>
+      </TabsPrimitive.Content>
+    </TabsPrimitive.Root></>
+  );
+}
 
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from');
 
 export default function (props) {
-    //return <ThemeCompatibilityTest/>
+   // return <Example/>
     const { width: windowWidth } = useWindowDimensions();
     const isWeb = Platform.OS == 'web'
     if (appSetting('config', 'show_ui')) {

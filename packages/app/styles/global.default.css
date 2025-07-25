@@ -255,7 +255,28 @@
     .u-cn-sw-trk-col-act {
         @apply bg-primary;
     }
-
+    /* Tabs */
+    .u-cn-tb-cnt{
+        @apply w-full flex-col gap-x-2 mb-3;
+    }
+    .u-cn-tb-hdr {
+         @apply flex-row w-full ;
+    }
+    .u-cn-tb-hdr-itm {
+         @apply px-2 py-2  border-b border-transparent ;
+    }
+    .u-cn-tb-hdr-itm-act {
+         @apply px-2 py-2 text-primary border-b border-primary ;
+    }
+    .u-cn-tb-hdr-itm-txt {
+         @apply text-foreground font-medium ;
+    }
+    .u-cn-tb-hdr-itm-txt-act {
+         @apply text-primary font-medium ;
+    }
+    .u-cn-tb-tab-cnt {
+        @apply  p-2 mt-2 ;
+    }
     /* Density-Aware Padding Utilities */
     
     /* Small Padding (p-sm) - defaults to 'default' density */
