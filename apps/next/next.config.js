@@ -75,8 +75,10 @@ const nextConfig = {
     'victory-native',
     'react-native-star-rating-widget',
     '@openspacelabs/react-native-zoomable-view',
-    "@rn-primitives/tabs",
-    "@rn-primitives/switch",
+    '@rn-primitives/tabs',
+    '@rn-primitives/switch',
+    '@rn-primitives/checkbox',
+    '@rn-primitives/radio-group',
   ],
   webpack: (config, { isServer }) => {
     // Add optimization
