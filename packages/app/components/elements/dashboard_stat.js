@@ -6,6 +6,7 @@ import {
     CardTitle,
     CardDescription,
     CardFooter,
+    
 } from 'app/ui/molecules/card'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -87,7 +88,8 @@ export default function PageLayout(props) {
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
     const { themeName, setThemeName } = useThemeName()
-    const { currentOption, icon, densityOptions, handleDensityChange } = useDensitySwitcher()
+    const { currentOption, icon, densityOptions, handleDensityChange } =
+        useDensitySwitcher()
 
     const [showImage2, setShowImage2] = useState(false)
 
@@ -187,132 +189,125 @@ export default function PageLayout(props) {
                                 />
                             </ProfileSwitcher>
                         )}
-                    </View>          
+                    </View>
+
+                   
+
                     <ElementDashboardStat {...props} />
                     <View className="flex-row flex-wrap">
-                                {appSetting('dashboard', 'langs').length >
-                                    1 && (
-                                    <View className="w-1/2 sm:w-1/3 lg:w-1/4 pr-0">
-                                        <DropdownMenu
-                                            items={appSetting(
-                                                'dashboard',
-                                                'langs'
-                                            ).map((lang) => ({
-                                                id: lang,
-                                                key: lang,
-                                                name: lang,
-                                                title: t('lang_' + lang),
-                                            }))}
-                                            onSelect={(oItem) => {
-                                                handleLang(oItem.id)
-                                            }}
-                                        >
-                                            <Button
-                                                variant="secondary"
-                                                title={t('lang_' + langs[1])}
-                                                startDecorator="Languages"
-                                                fullWidth
-                                                align="left"
-                                                ring="p-sm"
-                                            />
-                                        </DropdownMenu>
-                                    </View>
-                                )}
-                                {appSetting('dashboard', 'switch_theme') && (
-                                    <View className="w-1/2 sm:w-1/3 lg:w-1/4 pr-0">
-                                        <DropdownMenu
-                                            items={[
-                                                'dark',
-                                                'light',
-                                                'auto',
-                                            ].map((theme) => ({
-                                                key: theme,
-                                                id: theme,
-                                                name: theme,
-                                                title: t('theme_' + theme),
-                                            }))}
-                                            onSelect={(oItem) => {
-                                                handleTheme(oItem.id)
-                                            }}
-                                        >
-                                            <Button
-                                                variant="secondary"
-                                                title={t(
-                                                    'theme_' + currentTheme
-                                                )}
-                                                startDecorator="Moon"
-                                                fullWidth
-                                                align="left"
-                                                ring="p-sm"
-                                            />
-                                        </DropdownMenu>
-                                    </View>
-                                )}
+                        {appSetting('dashboard', 'langs').length > 1 && (
+                            <View className="w-1/2 sm:w-1/3 lg:w-1/4 pr-0">
+                                <DropdownMenu
+                                    items={appSetting('dashboard', 'langs').map(
+                                        (lang) => ({
+                                            id: lang,
+                                            key: lang,
+                                            name: lang,
+                                            title: t('lang_' + lang),
+                                        })
+                                    )}
+                                    onSelect={(oItem) => {
+                                        handleLang(oItem.id)
+                                    }}
+                                >
+                                    <Button
+                                        variant="secondary"
+                                        title={t('lang_' + langs[1])}
+                                        startDecorator="Languages"
+                                        fullWidth
+                                        align="left"
+                                        ring="p-sm"
+                                    />
+                                </DropdownMenu>
+                            </View>
+                        )}
+                        {appSetting('dashboard', 'switch_theme') && (
+                            <View className="w-1/2 sm:w-1/3 lg:w-1/4 pr-0">
+                                <DropdownMenu
+                                    items={['dark', 'light', 'auto'].map(
+                                        (theme) => ({
+                                            key: theme,
+                                            id: theme,
+                                            name: theme,
+                                            title: t('theme_' + theme),
+                                        })
+                                    )}
+                                    onSelect={(oItem) => {
+                                        handleTheme(oItem.id)
+                                    }}
+                                >
+                                    <Button
+                                        variant="secondary"
+                                        title={t('theme_' + currentTheme)}
+                                        startDecorator="Moon"
+                                        fullWidth
+                                        align="left"
+                                        ring="p-sm"
+                                    />
+                                </DropdownMenu>
+                            </View>
+                        )}
 
-                                {/* UI Density Switcher */}
-                                {appSetting('layout', 'ui_density_switcher') && (
-                                    <View className="w-1/2 sm:w-1/3 lg:w-1/4 pr-0">
-                                        <DropdownMenu
-                                            items={densityOptions}
-                                            onSelect={handleDensityChange}
-                                        >
-                                            <Button
-                                                variant="secondary"
-                                                title={currentOption.title}
-                                                startDecorator={icon}
-                                                fullWidth
-                                                align="left"
-                                                ring="p-sm"
-                                            />
-                                        </DropdownMenu>
-                                    </View>
-                                )}
+                        {/* UI Density Switcher */}
+                        {appSetting('layout', 'ui_density_switcher') && (
+                            <View className="w-1/2 sm:w-1/3 lg:w-1/4 pr-0">
+                                <DropdownMenu
+                                    items={densityOptions}
+                                    onSelect={handleDensityChange}
+                                >
+                                    <Button
+                                        variant="secondary"
+                                        title={currentOption.title}
+                                        startDecorator={icon}
+                                        fullWidth
+                                        align="left"
+                                        ring="p-sm"
+                                    />
+                                </DropdownMenu>
+                            </View>
+                        )}
 
-                                {appSetting('layout', 'avaliable_layouts')
-                                    .length > 1 && (
-                                    <View className="w-1/2 sm:w-1/3 lg:w-1/4 pr-0">
-                                        <DropdownMenu
-                                            items={appSetting(
-                                                'layout',
-                                                'avaliable_layouts'
-                                            ).map((lang) => ({
-                                                id: lang,
-                                                key: lang,
-                                                name: lang,
-                                                title: t('format_' + lang),
-                                            }))}
-                                            onSelect={(oItem) => {
-                                                handleFormat(oItem.id)
-                                            }}
-                                        >
-                                            <Button
-                                                variant="secondary"
-                                                title={t(
-                                                    'format_' + currentFormat
-                                                )}
-                                                startDecorator="Layout"
-                                                fullWidth
-                                                align="left"
-                                                ring="p-sm"
-                                            />
-                                        </DropdownMenu>
-                                    </View>
-                                )}
-                    </View>             
+                        {appSetting('layout', 'avaliable_layouts').length >
+                            1 && (
+                            <View className="w-1/2 sm:w-1/3 lg:w-1/4 pr-0">
+                                <DropdownMenu
+                                    items={appSetting(
+                                        'layout',
+                                        'avaliable_layouts'
+                                    ).map((lang) => ({
+                                        id: lang,
+                                        key: lang,
+                                        name: lang,
+                                        title: t('format_' + lang),
+                                    }))}
+                                    onSelect={(oItem) => {
+                                        handleFormat(oItem.id)
+                                    }}
+                                >
+                                    <Button
+                                        variant="secondary"
+                                        title={t('format_' + currentFormat)}
+                                        startDecorator="Layout"
+                                        fullWidth
+                                        align="left"
+                                        ring="p-sm"
+                                    />
+                                </DropdownMenu>
+                            </View>
+                        )}
+                    </View>
                 </CardContent>
                 <CardFooter>
-                   
-                                    <Button
-                                        variant="outline"
-                                        title={t('Sign out')}
-                                        startDecorator="LogOut"
-                                        fullWidth
-                                        size="base"
-                                        ring="p-sm"
-                                        as={Link}
-                                        href="/logout"
-                                    />
-                              
+                    <Button
+                        variant="outline"
+                        title={t('Sign out')}
+                        startDecorator="LogOut"
+                        fullWidth
+                        size="base"
+                        ring="p-sm"
+                        as={Link}
+                        href="/logout"
+                    />
                 </CardFooter>
             </Card>
         </ScrollView>
@@ -375,17 +370,20 @@ function ElementDashboardStat(props) {
                         if (item?.type != 'growth') {
                             return (
                                 <View
-                                    className="  w-1/2 lg:w-1/3 xl:w-1/4 p-1 sm:p-2 web:duration-300 "
+                                    className="  w-1/2 lg:w-1/3 xl:w-1/4 p-1  "
                                     key={index}
                                 >
                                     <Link href={item.url}>
-                                        <Card className="p-2 sm:p-6 sm:hover:scale-105 web:duration-300 w-full p-4">
-                                            <CardContent className="p-0">
-                                                <Row className="space-x-1 w-full justify-between min-h-12">
-                                                    {item.count > 0 ? (
-                                                        <Text className=" text-3xl -translate-y-1 font-semibold flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white  ">
+                                        <Card>
+                                            <CardHeader>
+                                                <CardTitle className="flex-row flex-auto justify-between gap-x-2">
+                                                    <View className="flex-auto">
+                                                {item.count > 0 ? (
+                                                    
+                                                            <Text className="flex-auto">
                                                             {item.count}
                                                         </Text>
+                                                        
                                                     ) : (
                                                         <View>
                                                             <Link
@@ -397,29 +395,32 @@ function ElementDashboardStat(props) {
                                                                 <Button
                                                                     variant="outline"
                                                                     startDecorator="Plus"
-                                                                    size="sm"
+                                                                    size="xs"
                                                                     rounded
                                                                 />
                                                             </Link>
                                                         </View>
                                                     )}
-                                                    <View className="flex-none  text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold ">
-                                                        <Icon
+                                                    </View>
+                                                    <View className="flex-none">
+                                                    <Icon
                                                             icon={item.icon}
-                                                            width={24}
-                                                            height={24}
+                                                            width={20}
+                                                            height={20}
                                                             color={
                                                                 colors.default
                                                             }
                                                         />
                                                     </View>
-                                                </Row>
-                                                <Row className="w-full my-auto gap-x-2 ">
-                                                    <Text className=" text-lg flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold ">
-                                                        {t(item.title)}
-                                                    </Text>
-                                                    <View className="my-auto">
-                                                        <Text>
+                                                </CardTitle>
+                                                <CardDescription>
+                                                    {item.title}
+                                                   
+                                                </CardDescription>
+                                            </CardHeader>
+                                            <CardContent>
+                                             
+                                                <Text>
                                                             {getCounter(
                                                                 item[
                                                                     item.action
@@ -429,8 +430,7 @@ function ElementDashboardStat(props) {
                                                                 colors.default
                                                             )}
                                                         </Text>
-                                                    </View>
-                                                </Row>
+                                                 
                                             </CardContent>
                                         </Card>
                                     </Link>
@@ -439,30 +439,28 @@ function ElementDashboardStat(props) {
                         }
                         return (
                             <View
-                                className=" w-1/2 lg:w-1/3 xl:w-1/4 p-1 sm:p-2 web:duration-300"
+                                className=" w-1/2 lg:w-1/3 xl:w-1/4 p-1"
                                 key={index}
                             >
                                 <Link href={item.url} key={index}>
-                                    <Card className="w-full p-2 sm:p-6 web:duration-300 sm:hover:scale-105">
-                                        <CardContent className="p-0">
-                                            <Row className="space-x-1 w-full justify-between min-h-12">
-                                                <Text className=" text-3xl -translate-y-1 font-semibold flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white  ">
-                                                    {item.current}
-                                                </Text>
-                                                <View className="flex-none  text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold ">
-                                                    <Icon
-                                                        icon={item.icon}
-                                                        width={24}
-                                                        height={24}
-                                                        color={colors.default}
-                                                    />
-                                                </View>
-                                            </Row>
-                                            <Row className="w-full gap-x-2">
-                                                <Text className=" text-lg flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold  ">
-                                                    {t(item.title)}
-                                                </Text>
-                                                <View className="my-auto">
+                                    <Card>
+                                        <CardHeader>
+                                            <Icon
+                                                icon={item.icon}
+                                                width={24}
+                                                height={24}
+                                                color={colors.default}
+                                            />
+                                            <CardTitle>
+                                                {item.current}
+                                            </CardTitle>
+                                            <CardDescription>
+                                                {item.title}
+                                            </CardDescription>
+                                        </CardHeader>
+                                        <CardContent>
+                                           
+                                                
                                                     <Text>
                                                         {getCounter(
                                                             item[item.action],
@@ -471,8 +469,7 @@ function ElementDashboardStat(props) {
                                                             colors.default
                                                         )}
                                                     </Text>
-                                                </View>
-                                            </Row>
+                                            
                                         </CardContent>
                                     </Card>
                                 </Link>
