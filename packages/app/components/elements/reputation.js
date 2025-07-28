@@ -33,11 +33,11 @@ export function ReputationSummary({ data }) {
         return <ReputationSummarySimple data={data} />
     }
     return (
-        <Row className='w-full  items-center gap-x-8 justify-center'>
-            <View>
+        <Row className='w-full max-w-xl mx-auto items-center justify-center'>
+            <View className='flex-auto'>
                 <ReputationSummarySimple data={data} />
             </View>
-            <View>
+            <View className='flex-auto'>
                 <ReputationLevels data={data.levels_list} />
             </View>
         </Row>
@@ -84,9 +84,15 @@ export function ReputationWidget({ data }) {
 function ReputationSummarySimple({ data }) {
     const [isModal, setIsModal] = useState(false);
     return (
-        <View className="items-center gap-y-2">
-            <Modal scrollable={true} title="Score rules" onVisible={isModal} outerClickClose={true} onClose={() => setIsModal(false)}>
-                <View className='lg:min-w-md w-full'>
+        <View className="w-full gap-y-2 p-md rounded-2xl shadow-sm border border-border min-w-40 max-w-sm items-center">
+            <Modal
+                scrollable
+                title="Score rules"
+                onVisible={isModal}
+                outerClickClose
+                onClose={() => setIsModal(false)}
+            >
+                <View className="w-full lg:min-w-md">
                     <ReputationActions data={data.actions_list} />
                 </View>
             </Modal>
@@ -96,12 +102,14 @@ function ReputationSummarySimple({ data }) {
                 displaySize="2xl"
             />
             <Text className="font-bold text-lg text-neutral-800 dark:text-neutral-200">{data.author_data.display_name}</Text>
-            <Text className="font-bold text-base text-neutral-800 dark:text-neutral-200 py-2">{data.points || 0} points</Text>
+            <Text className="text-sm text-muted-foreground ">{data.points || 0} points</Text>
+            <View className='flex-auto absolute right-1 top-1'><Button variant='link' rounded size='sm' startDecorator="Info" onPress={() => setIsModal(true)} /></View>
+
             {data.levels.map((item, index) => (
                 <Row className='gap-x-2 items-center justify-center' key={index}>
-                    <Icon icon={item.icon} size={24} />
-                    <Text className=" text-base text-neutral-800 dark:text-neutral-200">{item.title}</Text>
-                    <Button startDecorator="Info" onPress={() => setIsModal(true)} />
+                        <Icon icon={item.icon} size={20} />
+                        <Text className=" text-sm text-foreground">{item.title}</Text>
+                    
                 </Row>
             ))}
         </View>
@@ -138,11 +146,11 @@ export function ReputationLeaderboard({ data }) {
     );
 
     return (
-        <View className="items-center w-full">
+        <View className="items-center w-full flex-col gap-sm px-sm max-w-xl mx-auto">
             {data.profiles.map((item, index) => (
-                <Row className={`w-full justify-between items-center ${index != 0 && 'mt-3'}`} key={index}>
-                    <Row className="items-center">
-                        <View className="w-7 h-7 items-center justify-center mr-3 relative">
+                <Row className={`w-full flex-wrap justify-between items-center ${index != 0 && 'mt-3'}`} key={index}>
+                    <Row className="items-center gap-sm">
+                        <View className="w-7 h-7 items-center justify-center relative">
                             {index < 3 ? (
                                 <>
                                     <StarIcon color={getStarColor(index)} size={28} />
@@ -150,7 +158,7 @@ export function ReputationLeaderboard({ data }) {
                                 </>
                             ) : (
                                 <View className={`w-6 h-6 rounded-full ${getPositionColors(index)} items-center justify-center`}>
-                                    <Text className={`${getTextColor(index)} text-xs font-bold`}>{index + 1}</Text>
+                                    <Text className={`${getTextColor(index)} text-sm font-bold`}>{index + 1}</Text>
                                 </View>
                             )}
                         </View>
@@ -160,7 +168,7 @@ export function ReputationLeaderboard({ data }) {
                             displaySize="base"
                         />
                     </Row>
-                    <Text className=" text-base text-neutral-800 dark:text-neutral-200">{item.sign}{item.points}</Text>
+                    <Text className=" text-base font-bold text-muted-foreground">{item.sign}{item.points}</Text>
                 </Row>
             ))}
         </View>
@@ -182,14 +190,15 @@ export function ReputationHistory({ data }) {
 
 export function ReputationLevels({ data }) {
     return (
-        <View className='w-full gap-y-1'>
+        <View className='w-full gap-lg p-lg rounded-r-lg bg-muted items-center h-full  flex-auto'>
             {data.map((item, index) => (
-                <Row className=' items-center  gap-x-4 ' key={index}>
-                    <Row className='w-4/5 gap-x-2 items-center'>
+                <Row className=' justify-between gap-md w-full' key={index}>
+                    <Row className=' gap-x-2 flex-auto'>
                         <Icon icon={item.icon} size={24} />
-                        <Text className=" text-base text-neutral-800 dark:text-neutral-200">{item.title}</Text></Row>
+                        <Text className=" text-sm leading-6 text-neutral-800 dark:text-neutral-200">{item.title}</Text>
+                        </Row>
 
-                    <View className='w-1/5 items-end'><Text className=" text-base text-neutral-800 font-medium dark:text-neutral-200">{item.points_in}</Text></View>
+                    <Text className=" text-base text-muted-foreground font-bold">{item.points_in}</Text>
                 </Row>
             ))}
         </View>
