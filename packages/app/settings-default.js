@@ -940,11 +940,8 @@ export  const settingsDefault = {
         checkbox: {
             container:
                 ' h-5 w-5 m-1 rounded-sm border-2 border-neutral-500 bg-transparent justify-center items-center   ',
-            container_selected:
-                ' m-1 h-5 w-5 rounded-sm border-2 border-neutral-500 bg-transparent justify-center items-center ',
-            selected: ' h-2.5 w-2.5 rounded-xs bg-primary m-1',
-            text: '  text-neutral-800 dark:text-neutral-200 text-base leading-5 font-medium ',
-            selected_icon: false,
+            selected: ' h-2.5 w-2.5 rounded-xs bg-primary m-1 items-center justify-center',
+            text: '  text-neutral-800 dark:text-neutral-200 text-base leading-5 font-medium pl-2 ',
         },
         checkbox_set: {
             container: '  gap-x-2 items-center',

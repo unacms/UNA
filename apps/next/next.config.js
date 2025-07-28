@@ -148,8 +148,12 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'flagcdn.com',
         pathname: '**',
+      },
+       {
+        protocol: 'https',
+        hostname: 'linguria.una.io',
+        pathname: '**',
       }
-      
     ],
     disableStaticImages: false
   },

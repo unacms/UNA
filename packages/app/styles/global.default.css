@@ -255,6 +255,22 @@
     .u-cn-sw-trk-col-act {
         @apply bg-primary;
     }
+    /* Checkbox */
+    .u-cn-chk-cnt {
+        @apply items-center py-2 px-3 rounded-lg w-full;
+    }
+    .u-cn-chk-cnt-bg {
+        @apply web:active:bg-neutral-200 web:dark:active:bg-neutral-700 web:hover:bg-neutral-100 web:dark:hover:bg-neutral-800;
+    }
+    .u-cn-chk-cnt-txt {
+        @apply text-neutral-800 dark:text-neutral-200 text-base leading-5 font-medium pl-2;
+    }
+    .u-cn-chk-cnt-ind {
+        @apply h-5 w-5 m-1 rounded-sm border-2 border-neutral-500 bg-transparent justify-center items-center mr-2;
+    }
+    .u-cn-chk-cnt-ind-act {
+        @apply h-2.5 w-2.5 bg-primary m-1 items-center justify-center;
+    }
     /* Tabs */
     .u-cn-tb-cnt{
         @apply w-full flex-col gap-x-2 mb-3;
