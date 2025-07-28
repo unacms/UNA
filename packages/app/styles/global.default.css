@@ -268,8 +268,14 @@
     .u-cn-chk-cnt-ind {
         @apply h-5 w-5 m-1 rounded-sm border-2 border-neutral-500 bg-transparent justify-center items-center mr-2;
     }
+    .u-cn-rd-cnt-ind {
+        @apply h-5 w-5 m-1 rounded-full border-2 border-neutral-500 bg-transparent justify-center items-center mr-2;
+    }
     .u-cn-chk-cnt-ind-act {
         @apply h-2.5 w-2.5 bg-primary m-1 items-center justify-center;
+    }
+    .u-cn-rd-cnt-ind-act {
+        @apply h-2.5 w-2.5 rounded-full  bg-primary m-1 items-center justify-center;
     }
     /* Tabs */
     .u-cn-tb-cnt{
