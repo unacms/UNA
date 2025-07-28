@@ -1052,13 +1052,13 @@ const getNameFromSetting = (setting) => {
     return null;
 };
 
-export function getLayout(currentUser, layoutName = '') {
+/*export function getLayout(currentUser, layoutName = '') {
     let a = storageGet('layout:format', '', true);
     if (!a)
         return appSetting('layout', 'default_layout');
 
     return a;
-}
+}*/
 
 export async function getDataForMenu(menu, callback) {
     const data = await fetcher(

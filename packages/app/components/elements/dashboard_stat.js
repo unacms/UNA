@@ -30,6 +30,7 @@ import DasbordStatOld from 'app/components/elements/dashboard_stat_old'
 import ApiPerformanceReport from 'app/ui/molecules/api-performance-report'
 import ThemeCompatibilityTest from 'app/ui/molecules/nativewindui'
 import { useDensitySwitcher } from 'app/ui/atoms/density-switcher'
+import { useLayoutSettings } from 'app/context/layout-settings';
 
 function getCounter(num, icon = '', add = '', color = '') {
     if (!num) num = 0
@@ -85,14 +86,13 @@ function getCounter(num, icon = '', add = '', color = '') {
 export default function PageLayout(props) {
     if (!appSetting('layout', 'user_remote_config'))
         return <DasbordStatOld {...props} />
+    const { layoutSettings, updateLayoutSettings } = useLayoutSettings();
+
     const isWeb = Platform.OS == 'web'
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
     const { themeName, setThemeName } = useThemeName()
-    const { currentOption, icon, densityOptions, handleDensityChange } =
-        useDensitySwitcher()
-
-    const [showImage2, setShowImage2] = useState(false)
+    const { currentDensity, densityOptions } = useDensitySwitcher()
 
     let profile = null
     if (currentUser) {
@@ -132,16 +132,13 @@ export default function PageLayout(props) {
         }
     }
     const handleFormat = async (item) => {
-        storageSet('layout:format', '', item, true)
-        window.location.href = window.location.href
+        updateLayoutSettings({ name: item })
     }
 
     const currentTheme = !isWeb
         ? Appearance.getColorScheme()
         : storageGet('layout:theme', '', true) || 'auto'
-    const currentFormat =
-        storageGet('layout:format', '', true) ||
-        appSetting('layout', 'default_layout')
+    const currentFormat = layoutSettings.name
 
     return (
         <ScrollView>
@@ -247,12 +244,12 @@ export default function PageLayout(props) {
                             <View className="w-full max-w-sm flex-1 min-w-[160px]">
                                 <DropdownMenu
                                     items={densityOptions}
-                                    onSelect={handleDensityChange}
+                                    onSelect={(option) => updateLayoutSettings({ density: option.id })}
                                 >
                                     <Button
                                         variant="secondary"
-                                        title={currentOption.title}
-                                        startDecorator={icon}
+                                         title={currentDensity?.title}
+                                        startDecorator={currentDensity?.icon}
                                         fullWidth
                                         align="left"
                                         

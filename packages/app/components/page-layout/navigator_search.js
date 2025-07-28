@@ -3,8 +3,8 @@ import { useState, useRef } from 'react';
 import { BlockByName, DataByName } from 'app/components/block';
 import { SearchPanel } from 'app/ui/molecules/search';
 import { parseUrl, parseQueryString} from 'app/lib/util';
-import { getLayout } from 'app/lib/util';
 import { useCurrentUser } from 'app/context/user'
+import { useLayoutSettings } from 'app/context/layout-settings';
 
 export default function PageLayout(props) {
     const { currentUser, setCurrentUser } = useCurrentUser();
@@ -40,7 +40,10 @@ export default function PageLayout(props) {
         object:'search',
         items:menuItems
     }
-    const layout = getLayout(currentUser, 'navigator');
+     const { layoutSettings } = useLayoutSettings();
+
+
+    const { layoutName: layout } = useLayoutSettings();
     const leftSideBar = layout != 'hor' ? false : true
 
     return (<Conductor 

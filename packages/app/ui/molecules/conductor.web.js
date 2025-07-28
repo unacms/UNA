@@ -18,7 +18,7 @@ import { useLayoutData } from 'app/context/layout';
 import { useCurrentUser } from 'app/context/user'
 import Search from 'app/ui/molecules/search';
 import DynamicMenu from 'app/components/nav/menu-dynamic';
-import { storageClear, menuItemsFilter, LAYOUT_BREAKPOINTS } from 'app/lib/util';
+import { storageClear, menuItemsFilter, LAYOUT_BREAKPOINTS, cn } from 'app/lib/util';
 import Footer from 'app/components/nav/footer';
 import { subscribe } from 'app/ui/atoms/socket';
 import { fetcher } from 'app/lib/fetcher';
@@ -29,8 +29,7 @@ import emitter from 'app/context/emitter';
 import Cover, { CoverSmall } from 'app/components/elements/cover';
 import { CoverMenuMore, CoverMenu } from 'app/components/nav/menu-cover'
 import { Panel, PanelGroup, PanelHandler, isShowColumn } from "app/ui/molecules/resizable-panels";
-import { useDensity } from 'app/context/density';
-import { cn } from 'app/lib/util';
+import { useLayoutSettings } from 'app/context/layout-settings';
 
 
 const conductorTheme = appSetting('theme', 'conductor');
@@ -316,11 +315,12 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, windowWidth, isC
 
 const TabBar = ({ menu, routes, leftSideBar, pageData, currentUser, index, setIndex, getNumCols, windowWidth, onChangeRoute, isHideCover, omitDefaultBackground = false }) => {
     const { t } = useTranslation();
+    const { layoutName: layout } = useLayoutSettings();
     const menuSettings = getMenuSettings(menu.object, menu.config, menu);
     if (routes.length > 1) {
         const addButtons = AddMenu(menu, 'hideInTopBar')
         return (
-            <TopSidebar omitDefaultBackground={omitDefaultBackground} leftSideBar={leftSideBar} addButtons={addButtons} layout={getLayout(currentUser)} title={t(menuSettings?.name)} >
+            <TopSidebar omitDefaultBackground={omitDefaultBackground} leftSideBar={leftSideBar} addButtons={addButtons} layout={layout} title={t(menuSettings?.name)} >
                 <View className="flex-1">
                     <ConductorMenu currentUser={currentUser} leftSideBar={leftSideBar} routes={routes} index={index} t={t} setIndex={setIndex} getNumCols={getNumCols} windowWidth={windowWidth} onChangeRoute={onChangeRoute} />
                 </View>
@@ -389,8 +389,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
     const { currentUser } = useCurrentUser();
     const { setBottomSheetData } = useBottomSheetData();
     const { layoutData, setLayoutData } = useLayoutData();
-    const { density } = useDensity();
-    const tmplLayout = getLayout(currentUser);
+    const { layoutName: tmplLayout, density } = useLayoutSettings();
     const toasterRef = useRef(); // ref for toaster
 
     const { width: windowWidth, height: windowHeight } = useWindowDimensions();
@@ -649,14 +648,6 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
         const dataItems = route?.data
         const contentPaddingClass = header ? `u-content-padding-${density}` : '';
 
-        /* if (dataItems.length == 1 && !route.endpoint) {
-             const a = dataItems.map((item, index) => {
-                 return <View className={`lg:mt-0 mx-auto mt-2 w-full ${appSetting('layout', 'max_width_block')}`} key={`tab-${index}`}><ItemRendererMemo route={route} key={'item' + index} numColumns={1} item={item} /></View>
-             });
-             return a;
-         }
- */
-
 
         const isRightCol = route?.sidebar?.content?.length > 0 || route?.blocks?.browse_sidebar;
         const isLeftCol = route?.leftSideBarBlocks?.length > 0 && (layoutName === 'profile');
@@ -719,11 +710,11 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
                     </>
                     }
                     <Panel  {...cellsCustomConfig.cells?.center}>
-                        <View className={cn(
-                            isRightCol ? 'flex-auto' : 'w-full mx-auto',
+                        <View className={
+                            cn(isRightCol ? 'flex-auto' : 'w-full mx-auto',
                             layoutName !== 'navigator' && 'py-4',
-                            contentPaddingClass
-                        )}>
+                            contentPaddingClass)
+                        }>
                             {TabFlashListM}
                             {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 && callFn("noContentByUrl", [route?.endpoint])))}
                         </View>
@@ -745,28 +736,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
                     </>}
                 </PanelGroup>
             );
-        //}
-        /*return (
-            <Row className={(headerSettings.columns == "reverse" ? 'flex-row-reverse' : '') + conductorTheme.content_max_width + ' mx-auto w-full ' + (isCoverDisabled ? ' ??sm:px-4 sm:my-3 ' : '')}>
-                {isLeftCol && <View className={`${conductorTheme.left_column_cnt2}`}>
-                    <View className={`${conductorTheme.left_column_cnt}`}>
-                        {AddBlocksCnt}
-                    </View>
-                </View>}
-                <View className={(isRightCol ? 'flex-auto flex-auto ' : ' w-full mx-auto') + (layoutName == 'navigator' ? '' : ' px-1.5 sm:px-2 py-4 ') + (header ? ' sm:p-3 ' : '')}>
-                    {TabFlashListM}
-                    {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 && callFn("noContentByUrl", [route?.endpoint])))}
-                </View>
-                {isRightCol && <View className={`${conductorTheme.right_column_cnt2}`}>
-                    <View className={`${conductorTheme.right_column_cnt}`}>
-                        {route?.sidebar?.content.map((item, index) => {
-                            return <View className="mb-4" key={'item' + index}><ItemRenderer unitType={sidebarUnitType} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''} /></View>
-                        })}
-                        <BlockByName data={route.pageData ? route.pageData : data} name={route.blocks?.browse_sidebar} sidebar={true} perLine={1} maxItems={1} />
-                    </View>
-                </View>}
-            </Row>
-        )*/
+       
 
     }, [numColumns, windowWidth, index, density]);
 

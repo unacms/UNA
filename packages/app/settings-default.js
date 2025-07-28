@@ -30,8 +30,12 @@ export  const settingsDefault = {
     },
     layout: {
         body: ' bg-bgrbody dark:bg-bgrbody-d ',
+         defaults:{
+            name: 'hor',
+            density: 'default',
+        },
         avaliable_layouts: ['hor', 'ver', 'mixed'], // OLD appSetting('layout', 'format_list')
-        default_layout: 'hor', //hor, ver, mixed// OLD appSetting('layout', 'format')
+        default_layout: 'hor', // TODO REMOVE
         screen: ' w-full ',
         ui_density_switcher: true,
    

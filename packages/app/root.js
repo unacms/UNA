@@ -1,7 +1,6 @@
 "use client"
 import React, { useEffect } from 'react';
 import { useCurrentUser } from 'app/context/user';
-import { DensityProvider } from 'app/context/density';
 import { storageClear } from 'app/lib/util';
 import { remoteSettings } from 'app/settings-remote';
 import { Platform } from 'react-native';
@@ -60,8 +59,6 @@ export function Root(props) {
         data.page_status = 404
     }
     return (
-        <DensityProvider>
-            <Layouts path={props?.path} data={data} uri={data?.uri} url={data?.url} />
-        </DensityProvider>
+        <Layouts path={props?.path} data={data} uri={data?.uri} url={data?.url} />
     );
 }

@@ -26,7 +26,7 @@ import ThemeCompatibilityTest from 'app/ui/molecules/nativewindui';
 import * as SwitchPrimitive from '@rn-primitives/switch';
 import * as TabsPrimitive from '@rn-primitives/tabs';
 import { Switch } from 'app/design/controls'
-
+import { useLayoutSettings } from 'app/context/layout-settings';
 
 function Example() {
   const [value, setValue] = React.useState('account');
@@ -87,6 +87,8 @@ export default function (props) {
         return <UI />
     }
 
+    const { layoutSettings } = useLayoutSettings();
+    const { layoutName } = useLayoutSettings();
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
     const feedMode = storageGet('feed:mode', '', true)
@@ -226,7 +228,7 @@ export default function (props) {
 
         const isFeedMenuPresent = feedList.length > 1 || appSetting('feed', 'show_selector_view')
 
-        const FeedContent = <>{getLayout(currentUser) == 'ver' && <View className={`hidden ${TABLET_MODE_FROM}:flex`}>{subHeader}</View>}
+        const FeedContent = <>{layoutName == 'ver' && <View className={`hidden ${TABLET_MODE_FROM}:flex`}>{subHeader}</View>}
             {feedList.map((item, index) => {
                 if (feedType == item.name) {
                     return (
@@ -368,7 +370,7 @@ export default function (props) {
                     }
                 }}
             >
-                {(getLayout(currentUser) == 'hor' && isWeb) && <>
+                {(layoutName == 'hor' && isWeb) && <>
                     <Panel className={`hidden ${cellsCustomConfig.cells?.left?.breakpoint}:block`} {...cellsCustomConfig.cells?.left} >
                         <View className='fixed-process p-3'>
                             {SideBarContent}
@@ -390,25 +392,6 @@ export default function (props) {
                 </Panel></>}
             </PanelGroup>
         )
-        // }
-        /*return (
-            <View className={appSetting('layout', 'max_width') + ' mx-auto w-full flex-auto relative flex-row lg:pt-0 '}>
-                {getLayout(currentUser) == 'hor' && (
-                    <View className={appSetting('layout', 'sidebar_container')}>
-                        <View className={appSetting('layout', 'sidebar')}>
-                            {SideBarContent}
-                        </View>
-                    </View>
-                )}
-                <View className={`${appSetting('feed', 'feed_container')}`}>
-                    {FeedContent}
-                </View>
-                <View className={appSetting('layout', 'aside_container')}>
-                    <View className="fixed-process p-1.5 sm:p-2 flex-col gap-y-3 sm:gap-y-4  web:duration-300">
-                        {AsideContent}
-                    </View>
-                </View>
-            </View>
-        )*/
+       
     }
 }

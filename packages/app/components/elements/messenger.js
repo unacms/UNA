@@ -8,7 +8,7 @@ import Messenger from 'app/components/elements/messenger/parts/common'
 import { CreateConvoButton } from 'app/components/elements/messenger/parts/new-convo';
 import { fetcher } from 'app/lib/fetcher';
 import { Platform } from 'react-native'
- 
+import { useLayoutSettings } from 'app/context/layout-settings';
 
 export default function MessengerEl(props) {
     const url=props.url;
@@ -23,9 +23,8 @@ export default function MessengerEl(props) {
     if (aUrl.length > 2)
         defaultConvoId = aUrl[2];
 
-    const { currentUser } = useCurrentUser();
-
-    const layout = getLayout(currentUser, 'navigator');
+    const { layoutSettings } = useLayoutSettings();
+    const layout =  layoutSettings.name;
     const isLeftMenu = layout != 'hor' ? false : false;
     
     const menuDefaultList = useMemo(() => {

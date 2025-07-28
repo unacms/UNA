@@ -5,6 +5,7 @@ import { useMemo} from 'react';
 import { useCurrentUser } from 'app/context/user'
 import { processBlocks } from 'app/lib/conductor-helpers';
 import { Platform } from 'react-native'
+import { useLayoutSettings } from 'app/context/layout-settings';
 
 function getMenu(props, layout) {
     let menu = Object.assign({}, props.data.menu);;
@@ -30,8 +31,8 @@ function getMenu(props, layout) {
 }
 
 export default function PageLayout(props) {
-    const { currentUser, setCurrentUser } = useCurrentUser();
-    const layout = getLayout(currentUser, 'navigator');
+
+    const { layoutName: layout } = useLayoutSettings();
     const leftSideBar = layout != 'hor' ? false : true
     const menu = useMemo(() => getMenu(props, layout), [leftSideBar]);
     const isNamePresent = menu.items.some(item => item.name === props.uri);

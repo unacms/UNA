@@ -11,12 +11,10 @@ import BottomSheet from 'app/ui/molecules/bottomsheet_content';
 import { getHeaderSettings, getLayout, deepEqual } from 'app/lib/util';
 import { appSetting, storageSet, storageClear, storageGet, decodeText, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { appStatic } from 'app/lib/app-static'
-import { menuItemsByName } from 'app/lib/util'
 import OneSignal from 'react-onesignal';
 import { ThemeName } from 'app/design/theme';
 import { useTranslation } from 'react-i18next'
-import BlockByUrl from 'app/ui/molecules/block'
-import { Text } from 'app/design/typography'
+import { useLayoutSettings } from 'app/context/layout-settings';
 
 const Navbar = lazy(() => import('app/components/nav/navbar'));
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from');
@@ -243,9 +241,10 @@ export default function Layout(props) {
         };
         
     }, []);
-
+    const { layoutSettings } = useLayoutSettings();
     const [headerSettings, setHeaderSettings] = useState(getHeaderSettings(uri, width, layoutName, data.config));
-    const pageLayoutName = getLayout(currentUser, layoutName);
+    const pageLayoutName = layoutSettings.name;
+    
     useEffect(() => {
         let a = getHeaderSettings(uri, width, layoutName, data.config);
         if (pageLayoutName == 'ver') {

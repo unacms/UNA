@@ -2,98 +2,96 @@ import * as React from 'react';
 import { View } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { cn } from 'app/lib/util';
-import { useDensityOrDefault } from 'app/context/density';
+import { useLayoutSettings } from 'app/context/layout-settings';
 
-function Block({ 
-  className, 
-  density, // Can override global density
-  ...props 
+function Block({
+    className,
+    density, // Can override global density
+    ...props
 }) {
-  const effectiveDensity = useDensityOrDefault(density);
-  
-  return (
-    <View
-      className={cn(`u-block-base-${effectiveDensity}`, className)}
-      {...props}
-    />
-  );
+    const { density: effectiveDensity } = useLayoutSettings();
+    return (
+        <View
+            className={cn(`u-block-base-${effectiveDensity}`, className)}
+            {...props}
+        />
+    );
 }
 
-function BlockHeader({ 
-  className, 
-  density,
-  ...props 
+function BlockHeader({
+    className,
+    density,
+    ...props
 }) {
-  const effectiveDensity = useDensityOrDefault(density);
-  
-  return (
-    <View 
-      className={cn(`u-block-header-${effectiveDensity}`, className)} 
-      {...props} 
-    />
-  );
+    const { density: effectiveDensity } = useLayoutSettings();
+
+    return (
+        <View
+            className={cn(`u-block-header-${effectiveDensity}`, className)}
+            {...props}
+        />
+    );
 }
 
-function BlockTitle({ 
-  className, 
-  density,
-  ...props 
+function BlockTitle({
+    className,
+    density,
+    ...props
 }) {
-  const effectiveDensity = useDensityOrDefault(density);
-  
-  return (
-    <Text
-      role="heading"
-      aria-level={3}
-      className={cn(`u-block-title-${effectiveDensity}`, className)}
-      {...props}
-    />
-  );
+    const { density: effectiveDensity } = useLayoutSettings();
+
+    return (
+        <Text
+            role="heading"
+            aria-level={3}
+            className={cn(`u-block-title-${effectiveDensity}`, className)}
+            {...props}
+        />
+    );
 }
 
-function BlockDescription({ 
-  className, 
-  density,
-  ...props 
+function BlockDescription({
+    className,
+    density,
+    ...props
 }) {
-  const effectiveDensity = useDensityOrDefault(density);
-  
-  return (
-    <Text
-      className={cn(`u-block-description-${effectiveDensity}`, className)}
-      {...props}
-    />
-  );
+    const { density: effectiveDensity } = useLayoutSettings();
+    return (
+        <Text
+            className={cn(`u-block-description-${effectiveDensity}`, className)}
+            {...props}
+        />
+    );
 }
 
-function BlockContent({ 
-  className, 
-  density,
-  ...props 
+function BlockContent({
+    className,
+    density,
+    ...props
 }) {
-  const effectiveDensity = useDensityOrDefault(density);
-  
-  return (
-    <View
-      className={cn(`u-block-content-${effectiveDensity}`, className)}
-      {...props}
-    />
-  );
+    const { density: effectiveDensity } = useLayoutSettings();
+
+    return (
+        <View
+            className={cn(`u-block-content-${effectiveDensity}`, className)}
+            {...props}
+        />
+    );
 }
 
-function BlockFooter({ 
-  className, 
-  density,
-  ...props 
+function BlockFooter({
+    className,
+    density,
+    ...props
 }) {
-  const effectiveDensity = useDensityOrDefault(density);
-  
-  return (
-    <View
-      className={cn(`u-block-footer-${effectiveDensity}`, className)}
-      {...props}
-    />
-  );
+    const { density: effectiveDensity } = useLayoutSettings();
+
+    return (
+        <View
+            className={cn(`u-block-footer-${effectiveDensity}`, className)}
+            {...props}
+        />
+    );
 }
 
 // Export default block

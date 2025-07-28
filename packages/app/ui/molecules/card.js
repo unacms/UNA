@@ -1,99 +1,92 @@
-import * as React from 'react';
 import { View } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { cn } from 'app/lib/util';
-import { useDensityOrDefault } from 'app/context/density';
+import { useLayoutSettings } from 'app/context/layout-settings';
 
-function Card({ 
-  className, 
-  density, // Can override global density
-  ...props 
+function Card({
+    className,
+    density, // Can override global density
+    ...props
 }) {
-  const effectiveDensity = useDensityOrDefault(density);
-  
-  return (
-    <View
-      className={cn(`u-card-base-${effectiveDensity}`, className)}
-      {...props}
-    />
-  );
+    const { density: effectiveDensity } = useLayoutSettings();
+    return (
+        <View
+            className={`u-card-base-${effectiveDensity} ${className}` }
+            {...props}
+        />
+    );
 }
 
-function CardHeader({ 
-  className, 
-  density,
-  ...props 
+function CardHeader({
+    className,
+    density,
+    ...props
 }) {
-  const effectiveDensity = useDensityOrDefault(density);
-  
-  return (
-    <View 
-      className={cn(`u-card-header-${effectiveDensity}`, className)} 
-      {...props} 
-    />
-  );
+    const { density: effectiveDensity } = useLayoutSettings();
+    return (
+        <View
+            className={cn(`u-card-header-${effectiveDensity}`, className)}
+            {...props}
+        />
+    );
 }
 
-function CardTitle({ 
-  className, 
-  density,
-  ...props 
+function CardTitle({
+    className,
+    density,
+    ...props
 }) {
-  const effectiveDensity = useDensityOrDefault(density);
-  
-  return (
-    <Text
-      role="heading"
-      aria-level={3}
-      className={cn(`u-card-title-${effectiveDensity}`, className)}
-      {...props}
-    />
-  );
+    const { density: effectiveDensity } = useLayoutSettings();
+    return (
+        <Text
+            role="heading"
+            aria-level={3}
+            className={cn(`u-card-title-${effectiveDensity}`, className)}
+            {...props}
+        />
+    );
 }
 
-function CardDescription({ 
-  className, 
-  density,
-  ...props 
+function CardDescription({
+    className,
+    density,
+    ...props
 }) {
-  const effectiveDensity = useDensityOrDefault(density);
-  
-  return (
-    <Text
-      className={cn(`u-card-description-${effectiveDensity}`, className)}
-      {...props}
-    />
-  );
+    const { density: effectiveDensity } = useLayoutSettings();
+    return (
+        <Text
+            className={cn(`u-card-description-${effectiveDensity}`, className)}
+            {...props}
+        />
+    );
 }
 
-function CardContent({ 
-  className, 
-  density,
-  ...props 
+function CardContent({
+    className,
+    density,
+    ...props
 }) {
-  const effectiveDensity = useDensityOrDefault(density);
-  
-  return (
-    <View
-      className={cn(`u-card-content-${effectiveDensity}`, className)}
-      {...props}
-    />
-  );
+    const { density: effectiveDensity } = useLayoutSettings();
+    return (
+        <View
+            className={cn(`u-card-content-${effectiveDensity}`, className)}
+            {...props}
+        />
+    );
 }
 
-function CardFooter({ 
-  className, 
-  density,
-  ...props 
+function CardFooter({
+    className,
+    density,
+    ...props
 }) {
-  const effectiveDensity = useDensityOrDefault(density);
-  
-  return (
-    <View
-      className={cn(`u-card-footer-${effectiveDensity}`, className)}
-      {...props}
-    />
-  );
+    const { density: effectiveDensity } = useLayoutSettings();
+    return (
+        <View
+            className={cn(`u-card-footer-${effectiveDensity}`, className)}
+            {...props}
+        />
+    );
 }
 
 // Export default card
