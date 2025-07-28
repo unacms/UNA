@@ -241,9 +241,9 @@ export default function Layout(props) {
         };
         
     }, []);
-    const { layoutSettings } = useLayoutSettings();
+    const { layoutName: pageLayoutName } = useLayoutSettings();
     const [headerSettings, setHeaderSettings] = useState(getHeaderSettings(uri, width, layoutName, data.config));
-    const pageLayoutName = layoutSettings.name;
+
     
     useEffect(() => {
         let a = getHeaderSettings(uri, width, layoutName, data.config);

@@ -23,8 +23,7 @@ export default function MessengerEl(props) {
     if (aUrl.length > 2)
         defaultConvoId = aUrl[2];
 
-    const { layoutSettings } = useLayoutSettings();
-    const layout =  layoutSettings.name;
+    const { layoutName: layout } = useLayoutSettings();
     const isLeftMenu = layout != 'hor' ? false : false;
     
     const menuDefaultList = useMemo(() => {

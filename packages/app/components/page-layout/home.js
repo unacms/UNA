@@ -87,7 +87,6 @@ export default function (props) {
         return <UI />
     }
 
-    const { layoutSettings } = useLayoutSettings();
     const { layoutName } = useLayoutSettings();
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
