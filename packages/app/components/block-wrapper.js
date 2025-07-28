@@ -32,7 +32,7 @@ export function BlockWrapper(props) {
     }
         <View>{props.children}</View></>
     return (
-        <View key={block.id} className={" w-full mx-auto " + (!fullWidth && !cssClasses.includes("max-w-") ? (appSetting('layout', 'max_width_block')) : "") + cssClasses}>
+        <View key={block.id} className={"w-full mx-auto" + (!fullWidth && !cssClasses.includes("max-w-") ? (appSetting('layout', 'max_width_block')) : "") + cssClasses}>
             {bIsShowBg ? (<Card rounded=' rounded-2xl border border-bdrcard dark:border-bdrcard-d shadow-[0_1px_4px_rgba(0,0,0,0.05)] dark:shadow-[0_0_0_1px_rgba(0,0,0,0.5)] ' border=" " addClassName=" p-4 ">{cnt}</Card>) : <View className="  " >{cnt}</View>}
         </View>
     );

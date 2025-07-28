@@ -41,7 +41,7 @@ export  const settingsDefault = {
       
         aside_container: 'hidden lg:flex w-80 2xl:w-96 h-full', */
         max_width: ' w-full ', 
-        max_width_block: '  max-w-7xl ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
+        max_width_block: ' max-w-7xl ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
         max_width_content: ' w-full max-w-7xl ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
         feed_container: ' sm:p-3 mx-auto w-full max-w-4xl ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
 

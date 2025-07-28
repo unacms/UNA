@@ -17,7 +17,11 @@ export default function UniList(props) {
     data = data.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i);
 
     const itemContent = useCallback((index, data) => {
-        return renderItem({ item: data, index });
+        return (
+            <View className="mb-sm">
+                {renderItem({ item: data, index })}
+            </View>
+        );
     }, [renderItem]);
 
     const itemContentSorted = useCallback((index, data, provided, isDragging) => {
@@ -64,7 +68,7 @@ export default function UniList(props) {
     }
 
     const ItemComponent = ({ className, ...props }) => (
-        <ReactNativeView className={`w-1/${numColumns} ${className || ''}`} {...props} />
+        <ReactNativeView className={`w-1/${numColumns} p-1 ${className || ''}`} {...props} />
     );
 
     const ListComponent = forwardRef(({ className, ...props }, ref) => {
@@ -72,7 +76,7 @@ export default function UniList(props) {
         return (
             <ReactNativeView
                 ref={ref}
-                className={`${maxWidthBlock} w-full mx-auto flex flex-wrap flex-row ${className || ''}`}
+                className={`${maxWidthBlock} w-full mx-auto flex flex-wrap flex-row gap-sm ${className || ''}`}
                 {...props}
             />
         );

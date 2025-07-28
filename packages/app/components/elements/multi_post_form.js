@@ -1,82 +1,111 @@
 import { View, Row, ScrollView, Pressable } from 'app/design/view'
 import { Button, Modal } from 'app/design/controls'
 import { useState, useContext, useEffect, useCallback, useMemo } from 'react'
-import { FeedbackHaptics, getAlert, menuItemsByNameNew, cloneObject } from 'app/lib/util'
+import {
+    FeedbackHaptics,
+    getAlert,
+    menuItemsByNameNew,
+    cloneObject,
+} from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import Profile from 'app/ui/molecules/profile'
-import Card from 'app/ui/molecules/card'
+import { Card, CardHeader, CardFooter } from 'app/ui/molecules/card'
 import { useTranslation } from 'react-i18next'
-import FormModal, { handleFormModal, getFormModal } from 'app/ui/molecules/form_modal';
+import FormModal, {
+    handleFormModal,
+    getFormModal,
+} from 'app/ui/molecules/form_modal'
 import { Text, H2 } from 'app/design/typography'
 
 export default function MultiPostForm({ data }) {
-    const { currentUser } = useCurrentUser();
+    const { currentUser } = useCurrentUser()
     const { t } = useTranslation()
-    const [pageData, setPageData] = useState(false);
-    const [pageDataDef, setPageDataDef] = useState(false);
-    const menu_add_items = menuItemsByNameNew('', data.menu, currentUser).filter(item => item.name != 'more-auto');
-  
-    const firstForm = menu_add_items.shift();
+    const [pageData, setPageData] = useState(false)
+    const [pageDataDef, setPageDataDef] = useState(false)
+    const menu_add_items = menuItemsByNameNew(
+        '',
+        data.menu,
+        currentUser
+    ).filter((item) => item.name != 'more-auto')
+
+    const firstForm = menu_add_items.shift()
 
     const profileData = useMemo(() => ({
         ...currentUser,
         url_avatar: currentUser.avatar,
         url: null,
-      }));
+    }))
 
     useEffect(() => {
         const fetchData = async () => {
-            const sResponse = await getFormModal(firstForm, data.params);
-            setPageDataDef(sResponse.data);
-        };
-        fetchData();
-    }, []);
-
-   
-    const getFirstForm = async () => {
-        if (pageDataDef){
-            setPageData({...cloneObject(pageDataDef), ts: Date.now()});
+            const sResponse = await getFormModal(firstForm, data.params)
+            setPageDataDef(sResponse.data)
         }
-        else{
-            const a = await getFormModal(firstForm, data.params);
-            setPageData({...a.data, ts: Date.now()});
+        fetchData()
+    }, [])
+
+    const getFirstForm = async () => {
+        if (pageDataDef) {
+            setPageData({ ...cloneObject(pageDataDef), ts: Date.now() })
+        } else {
+            const a = await getFormModal(firstForm, data.params)
+            setPageData({ ...a.data, ts: Date.now() })
         }
     }
 
-    if (menu_add_items.length == 0 && !firstForm)
-       return;
-    
+    if (menu_add_items.length == 0 && !firstForm) return
+
     return (
-       
-            <Card
-                rounded=" rounded-none sm:rounded-2xl  "
-                margin=" mx-auto mb-1 sm:mb-3  "
-                border=" border-y sm:border border-bdrcard dark:border-bdrcard-d "
-                addClassName=" w-full "
-            >
-                <View className=" flex-row gap-x-2 sm:gap-x-3 p-2 sm:p-3 lg:p-4 ">
-                    <View className="my-auto">
-                        <Profile {...profileData} displaySize="lg" displayType="unit_wo_info" />
-                    </View>
-                    <View className="flex-auto">
-                        <Button
-                            size="base"
-                            variant="secondary"
-                            fullWidth
-                            rounded
-                            title={t('Create new ') + firstForm.title.toLowerCase()}
-                            align="start"
-                            onPress={getFirstForm}
-                        />
-                    </View>
+        <Card className="mb-sm">
+            <CardHeader className="flex-row gap-x-2 sm:gap-x-3">
+                <View className="my-auto">
+                    <Profile
+                        {...profileData}
+                        displaySize="lg"
+                        displayType="unit_wo_info"
+                    />
                 </View>
-                <FormModal key={pageData?.ts} pageData={pageData} setPageData={setPageData} />
-                {menu_add_items.length > 0 && <Row className={` w-full gap-x-2 p-2 border-t border-bdr dark:border-bdr-d ' : ''}`}>
-                    {menu_add_items.map((item, index) => (
-                        <Button key={item.name} size="base" fullWidth variant="text" onPress={() => handleFormModal(item, null, setPageData, data.params)} startDecorator={item.icon} title={item.title} />
-                    ))}
-                </Row>}
-            </Card>
-        
+                <View className="flex-auto">
+                    <Button
+                        size="base"
+                        variant="secondary"
+                        fullWidth
+                        rounded
+                        title={t('Create new ') + firstForm.title.toLowerCase()}
+                        align="start"
+                        onPress={getFirstForm}
+                    />
+                </View>
+            </CardHeader>
+            <CardFooter>
+                <FormModal
+                    key={pageData?.ts}
+                    pageData={pageData}
+                    setPageData={setPageData}
+                />
+                {menu_add_items.length > 0 && (
+                    <Row className={` w-full ' : ''}`}>
+                        {menu_add_items.map((item, index) => (
+                            <Button
+                                key={item.name}
+                                size="base"
+                                fullWidth
+                                variant="text"
+                                onPress={() =>
+                                    handleFormModal(
+                                        item,
+                                        null,
+                                        setPageData,
+                                        data.params
+                                    )
+                                }
+                                startDecorator={item.icon}
+                                title={item.title}
+                            />
+                        ))}
+                    </Row>
+                )}
+            </CardFooter>
+        </Card>
     )
 }

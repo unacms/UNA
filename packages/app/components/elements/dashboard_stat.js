@@ -8,6 +8,7 @@ import {
     CardFooter,
     
 } from 'app/ui/molecules/card'
+import { Block, BlockHeader, BlockContent, BlockFooter, BlockTitle, BlockDescription } from 'app/ui/molecules/ui-block'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, Row, Pressable, ScrollView } from 'app/design/view'
@@ -144,32 +145,23 @@ export default function PageLayout(props) {
 
     return (
         <ScrollView>
-            <Card className={appSetting('layout', 'max_width_block')}>
-                <CardHeader>
-                    <CardTitle className="flex-row">Dashboard</CardTitle>
-                    <CardDescription className="">
-                        Your account control panel
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <View className="flex-row gap-x-2">
-                        <Button
-                            as={Link}
+            <Block className={appSetting('layout', 'max_width_block')}>
+                
+                <BlockContent>
+                    <Card className="p-1">
+                        <CardContent className="flex-row p-1">
+                        <Link
                             href={currentUser.url}
-                            variant="secondary"
-                            className="flex-row items-center w-full px-2 py-1"
-                            fullWidth
-                            size="lg"
-                            
-                            align="left"
+                            className=" w-full rounded-full transition-colors duration-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/60 focus-visible:ring-offset-2 web:hover:bg-muted"
                         >
+                            <View className="flex-row items-center w-full gap-sm p-1">
                             <Profile
                                 {...currentUser}
                                 url_avatar={currentUser.avatar}
                                 displayType="unit_wo_info"
-                                displaySize="base"
+                                displaySize="lg"
                             />
-                            <View className="flex-col flex-1 ml-3">
+                            <View className="flex-col flex-1">
                                 <Text className="text-base font-semibold truncate text-foreground">
                                     {currentUser.display_name}
                                 </Text>
@@ -177,26 +169,28 @@ export default function PageLayout(props) {
                                     {currentUser.membership_name}
                                 </Text>
                             </View>
-                        </Button>
+                            </View>
+                        </Link>
 
                         {currentUser.profiles_count > 1 && (
                             <ProfileSwitcher hideTitle={true}>
                                 <Button
-                                    variant="secondary"
+                                    variant="text"
                                     startDecorator="RefreshCw"
                                     size="lg"
-                                    
+                                    rounded
                                 />
                             </ProfileSwitcher>
                         )}
-                    </View>
+                        </CardContent>
+                    </Card>
 
                    
 
                     <ElementDashboardStat {...props} />
-                    <View className="flex-row flex-wrap">
+                    <View className="flex-row flex-wrap gap-sm">
                         {appSetting('dashboard', 'langs').length > 1 && (
-                            <View className="w-1/2 sm:w-1/3 lg:w-1/4 pr-0">
+                            <View className="w-full max-w-sm flex-1 min-w-[160px]">
                                 <DropdownMenu
                                     items={appSetting('dashboard', 'langs').map(
                                         (lang) => ({
@@ -216,13 +210,13 @@ export default function PageLayout(props) {
                                         startDecorator="Languages"
                                         fullWidth
                                         align="left"
-                                        ring="p-sm"
+                                        
                                     />
                                 </DropdownMenu>
                             </View>
                         )}
                         {appSetting('dashboard', 'switch_theme') && (
-                            <View className="w-1/2 sm:w-1/3 lg:w-1/4 pr-0">
+                            <View className="w-full max-w-sm flex-1 min-w-[160px]">
                                 <DropdownMenu
                                     items={['dark', 'light', 'auto'].map(
                                         (theme) => ({
@@ -242,7 +236,7 @@ export default function PageLayout(props) {
                                         startDecorator="Moon"
                                         fullWidth
                                         align="left"
-                                        ring="p-sm"
+                                        
                                     />
                                 </DropdownMenu>
                             </View>
@@ -250,7 +244,7 @@ export default function PageLayout(props) {
 
                         {/* UI Density Switcher */}
                         {appSetting('layout', 'ui_density_switcher') && (
-                            <View className="w-1/2 sm:w-1/3 lg:w-1/4 pr-0">
+                            <View className="w-full max-w-sm flex-1 min-w-[160px]">
                                 <DropdownMenu
                                     items={densityOptions}
                                     onSelect={handleDensityChange}
@@ -261,7 +255,7 @@ export default function PageLayout(props) {
                                         startDecorator={icon}
                                         fullWidth
                                         align="left"
-                                        ring="p-sm"
+                                        
                                     />
                                 </DropdownMenu>
                             </View>
@@ -269,7 +263,7 @@ export default function PageLayout(props) {
 
                         {appSetting('layout', 'avaliable_layouts').length >
                             1 && (
-                            <View className="w-1/2 sm:w-1/3 lg:w-1/4 pr-0">
+                            <View className="w-full max-w-sm flex-1 min-w-[160px]">
                                 <DropdownMenu
                                     items={appSetting(
                                         'layout',
@@ -290,26 +284,26 @@ export default function PageLayout(props) {
                                         startDecorator="Layout"
                                         fullWidth
                                         align="left"
-                                        ring="p-sm"
+                                        
                                     />
                                 </DropdownMenu>
                             </View>
                         )}
                     </View>
-                </CardContent>
-                <CardFooter>
+                </BlockContent>
+                <BlockFooter>
                     <Button
                         variant="outline"
                         title={t('Sign out')}
                         startDecorator="LogOut"
                         fullWidth
                         size="base"
-                        ring="p-sm"
+                        
                         as={Link}
                         href="/logout"
                     />
-                </CardFooter>
-            </Card>
+                </BlockFooter>
+            </Block>
         </ScrollView>
     )
 }
@@ -364,13 +358,13 @@ function ElementDashboardStat(props) {
                 </ScrollView>
             </Modal>
 
-            <Row className="flex-wrap px-1 sm:px-0 ">
+            <Row className="flex-wrap gap-md">
                 {filtredData.map((item, index) => {
                     if (item) {
                         if (item?.type != 'growth') {
                             return (
                                 <View
-                                    className="  w-1/2 lg:w-1/3 xl:w-1/4 p-1  "
+                                    className="  w-full  flex-1 min-w-[160px]"
                                     key={index}
                                 >
                                     <Link href={item.url}>
@@ -440,7 +434,7 @@ function ElementDashboardStat(props) {
                         }
                         return (
                             <View
-                                className=" w-1/2 lg:w-1/3 xl:w-1/4 p-1"
+                                className=" w-full  flex-1 min-w-[160px]"
                                 key={index}
                             >
                                 <Link href={item.url} key={index}>

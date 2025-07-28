@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react'
 import { useCurrentUser } from 'app/context/user'
 import { fetcher } from 'app/lib/fetcher';
@@ -23,4 +22,4 @@ export default function BlockByUrl({url, exProps}) {
 
     let cnt = {content: data, designbox_id: 0}
     return <BlockByData block = {cnt}  exProps={exProps}/>
-}
+} 
