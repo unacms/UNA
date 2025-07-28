@@ -7,18 +7,18 @@ export default function CheckBox2({ title, onPress, status, value, icon, margin 
     const selected = status == 'checked';
     return (
 
-        <View className={`${icon ? 'flex-row gap-x-3' : 'flex-row-reverse'} ${isBackground ? 'u-cn-chk-cnt-bg' : ''} ${margin} u-cn-chk-cnt`}>
+        <View className={`${icon ? 'flex-row gap-x-3' : 'flex-row-reverse'} ${isBackground ? 'u-controls-checkbox-container-bg' : ''} ${margin} u-controls-checkbox-container`}>
             {!!icon && <View className="w-8">{icon}</View>}
             <View className="flex-auto">
-                <Text className='u-cn-chk-cnt-txt'>{title}</Text>
+                <Text className='u-controls-checkbox-text'>{title}</Text>
             </View>
             <CheckboxPrimitive.Root
                 checked={selected}
                 onCheckedChange={onPress}
-                className='u-cn-chk-cnt-ind'
+                className='u-controls-checkbox-indicator'
             >
                 <CheckboxPrimitive.Indicator>
-                    <View className={`u-cn-chk-cnt-ind-act`} />
+                    <View className={`u-controls-checkbox-indicator-active`} />
                 </CheckboxPrimitive.Indicator>
             </CheckboxPrimitive.Root>
         </View>

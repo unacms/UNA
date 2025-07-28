@@ -16,12 +16,12 @@ export default function FormFieldSwitcher(props) {
 
     return (
         <Field {...props}>
-            <View className='u-cn-sw-cnt'>
+            <View className='u-controls-switcher-container'>
                 <Switch
                     onValueChange={toggleSwitch}
                     value={isEnabled}
                 />
-                <Text className='u-cn-sw-txt'>{props.caption}</Text>
+                <Text className='u-controls-switcher-text'>{props.caption}</Text>
             </View>
         </Field>
     );

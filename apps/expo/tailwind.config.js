@@ -46,12 +46,12 @@ module.exports = {
     'pb-md',
     'pb-lg',
     // Controls
-    'u-cn-sw-trk-base',
-    'u-cn-sw-trk-sm',
-    'u-cn-sw-tmb-base',
-    'u-cn-sw-tmb-sm',
-    'u-cn-sw-tmb-act-base',
-    'u-cn-sw-tmb-act-sm',
+    'u-controls-switcher-track-base',
+    'u-controls-switcher-track-sm',
+    'u-controls-switcher-thumb-base',
+    'u-controls-switcher-thumb-sm',
+    'u-controls-switcher-thumb-active-base',
+    'u-controls-switcher-thumb-active-sm',
   ],
   presets: [require("nativewind/preset")],
   theme: {

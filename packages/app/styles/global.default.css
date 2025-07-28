@@ -219,84 +219,90 @@
 
     /* Controls */
     /* Switcher */
-    .u-cn-sw-cnt {
+    .u-controls-switcher-container {
         @apply items-center flex-row-reverse justify-between gap-x-2 items-center h-14 min-w-14 rounded-xl flex-auto p-3 bg-input border border-border ;
     }
-    .u-cn-sw-txt {
+    .u-controls-switcher-text {
         @apply text-neutral-800 dark:text-neutral-200 text-base;
     }
-    .u-cn-sw-trk {
+    .u-controls-switcher-track {
         @apply rounded-full;
     }
-    .u-cn-sw-trk-base {
+    .u-controls-switcher-track-base {
         @apply w-20 h-8 p-1;
     }
-    .u-cn-sw-trk-sm {
+    .u-controls-switcher-track-sm {
         @apply w-10 h-4 p-0.5;
     }
-    .u-cn-sw-tmb {
+    .u-controls-switcher-thumb {
         @apply rounded-full aspect-square bg-white transition-transform duration-200;
     }
-    .u-cn-sw-tmb-base {
+    .u-controls-switcher-thumb-base {
         @apply h-6 w-6;
     }
-    .u-cn-sw-tmb-sm {
+    .u-controls-switcher-thumb-sm {
         @apply h-3 w-3;
     }
-    .u-cn-sw-tmb-act-base {
+    .u-controls-switcher-thumb-active-base {
         @apply translate-x-12;
     }
-    .u-cn-sw-tmb-act-sm {
+    .u-controls-switcher-thumb-active-sm {
         @apply translate-x-6;
     }
-    .u-cn-sw-trk-col {
+    .u-controls-switcher-track-col {
         @apply bg-neutral-400 dark:bg-neutral-600;
     }
-    .u-cn-sw-trk-col-act {
+    .u-controls-switcher-track-active-col {
         @apply bg-primary;
     }
     /* Checkbox */
-    .u-cn-chk-cnt {
+    .u-controls-checkbox-container {
         @apply items-center py-2 px-3 rounded-lg w-full;
     }
-    .u-cn-chk-cnt-bg {
+    .u-controls-checkbox-container-bg {
         @apply web:active:bg-neutral-200 web:dark:active:bg-neutral-700 web:hover:bg-neutral-100 web:dark:hover:bg-neutral-800;
     }
-    .u-cn-chk-cnt-txt {
+    .u-controls-checkbox-text {
         @apply text-neutral-800 dark:text-neutral-200 text-base leading-5 font-medium pl-2;
     }
-    .u-cn-chk-cnt-ind {
+    .u-controls-checkbox-text2 {
+        @apply text-neutral-600 dark:text-neutral-400 text-sm leading-5;
+    }
+    .u-controls-checkbox-icon {
+        @apply text-neutral-600 dark:text-neutral-400 my-auto h-6 w-6;
+    }
+    .u-controls-checkbox-indicator {
         @apply h-5 w-5 m-1 rounded-sm border-2 border-neutral-500 bg-transparent justify-center items-center mr-2;
     }
-    .u-cn-rd-cnt-ind {
+    .u-controls-radiobutton-indicator {
         @apply h-5 w-5 m-1 rounded-full border-2 border-neutral-500 bg-transparent justify-center items-center mr-2;
     }
-    .u-cn-chk-cnt-ind-act {
+    .u-controls-checkbox-indicator {
         @apply h-2.5 w-2.5 bg-primary m-1 items-center justify-center;
     }
-    .u-cn-rd-cnt-ind-act {
+    .u-controls-radiobutton-indicator-active {
         @apply h-2.5 w-2.5 rounded-full  bg-primary m-1 items-center justify-center;
     }
     /* Tabs */
-    .u-cn-tb-cnt{
+    .u-controls-tabs-container{
         @apply w-full flex-col gap-x-2 mb-3;
     }
-    .u-cn-tb-hdr {
+    .u-controls-tabs-header {
          @apply flex-row w-full ;
     }
-    .u-cn-tb-hdr-itm {
+    .u-controls-tabs-header-item {
          @apply px-2 py-2  border-b border-transparent ;
     }
-    .u-cn-tb-hdr-itm-act {
+    .u-controls-tabs-header-item-active {
          @apply px-2 py-2 text-primary border-b border-primary ;
     }
-    .u-cn-tb-hdr-itm-txt {
+    .u-controls-tabs-header-item-text {
          @apply text-foreground font-medium ;
     }
-    .u-cn-tb-hdr-itm-txt-act {
+    .u-controls-tabs-header-item-text-active {
          @apply text-primary font-medium ;
     }
-    .u-cn-tb-tab-cnt {
+    .u-controls-tabs-tab-content {
         @apply  p-2 mt-2 ;
     }
     /* Density-Aware Padding Utilities */

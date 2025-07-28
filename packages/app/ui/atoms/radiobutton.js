@@ -13,19 +13,19 @@ export default function ({ title, info, onPress, status, value, disabled, icon, 
             {selected ? <View className="h-2.5 w-2.5 rounded-full bg-primary" /> : null}
         </View>
     return (
-        <Pressable disabled={disabled} onPress={onPress} className={`flex-row gap-x-3 u-cn-chk-cnt u-cn-chk-cnt-bg ${disabled ? '' : ' hover:bg-neutral-100 dark:hover:bg-neutral-800'} `}>
-            {!!icon && <View className="u-cn-chk-cnt-icon">{icon}</View>}
+        <Pressable disabled={disabled} onPress={onPress} className={`flex-row gap-x-3 u-controls-checkbox-container u-controls-checkbox-container-bg ${disabled ? '' : ' hover:bg-neutral-100 dark:hover:bg-neutral-800'} `}>
+            {!!icon && <View className="u-controls-checkbox-icon">{icon}</View>}
             <View className='flex-auto '>
-                <Text className="u-cn-chk-cnt-txt">{title}</Text>
-                {info && <Text className="u-cn-chk-cnt-txt2">{info}</Text>}
+                <Text className="u-controls-checkbox-text">{title}</Text>
+                {info && <Text className="u-controls-checkbox-text2">{info}</Text>}
             </View>
             <CheckboxPrimitive.Root
                 checked={selected}
                 onCheckedChange={onPress}
-                className='u-cn-rd-cnt-ind'
+                className='u-controls-radiobutton-indicator'
             >
                 <CheckboxPrimitive.Indicator>
-                    <View className={`u-cn-rd-cnt-ind-act`} />
+                    <View className={`u-controls-radiobutton-indicator-active`} />
                 </CheckboxPrimitive.Indicator>
             </CheckboxPrimitive.Root>
         </Pressable>

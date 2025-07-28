@@ -5,10 +5,10 @@ export default function Switch({ value, onValueChange, size = 'base' }) {
         <SwitchPrimitive.Root
             checked={value}
             onCheckedChange={onValueChange}
-            className={`u-cn-sw-trk u-cn-sw-trk-${size} ${value ? 'u-cn-sw-trk-col-act' : 'u-cn-sw-trk-col'}`}
+            className={`u-controls-switcher-track u-controls-switcher-track-${size} ${value ? 'u-controls-switcher-track-active-col' : 'u-controls-switcher-track-col'}`}
         >
             <SwitchPrimitive.Thumb
-                className={`u-cn-sw-tmb u-cn-sw-tmb-${size} ${value ? `u-cn-sw-tmb-act-${size}` : 'translate-x-0'}`}
+                className={`u-controls-switcher-thumb u-controls-switcher-thumb-${size} ${value ? `u-controls-switcher-thumb-act-${size}` : 'translate-x-0'}`}
             />
         </SwitchPrimitive.Root>
 

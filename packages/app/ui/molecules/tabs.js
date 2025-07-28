@@ -8,21 +8,21 @@ export default function Tabs({ tabs, activeTab }) {
         <TabsPrimitive.Root
             value={currentTab}
             onValueChange={setCurrentTab}
-            className="u-cn-tb-cnt"
+            className="u-controls-tabs-container"
         >
-            <TabsPrimitive.List className="u-cn-tb-hdr">
+            <TabsPrimitive.List className="u-controls-tabs-header">
                 {tabs.map((tab) => (
                     <TabsPrimitive.Trigger
                         key={tab.key}
                         value={tab.key}
-                        className={`${tab.key === currentTab ? 'u-cn-tb-hdr-itm-act' : 'u-cn-tb-hdr-itm'}`}>
-                        <Text className={`${tab.key === currentTab ? 'u-cn-tb-hdr-itm-txt-act' : 'u-cn-tb-hdr-itm-txt'}`}>{tab.title}</Text>
+                        className={`${tab.key === currentTab ? 'u-controls-tabs-header-item-active' : 'u-controls-tabs-header-item'}`}>
+                        <Text className={`${tab.key === currentTab ? 'u-controls-tabs-header-item-text-active' : 'u-controls-tabs-header-item-text'}`}>{tab.title}</Text>
                     </TabsPrimitive.Trigger>
                 ))}
             </TabsPrimitive.List>
 
             {tabs.map((tab) => (
-                <TabsPrimitive.Content className='u-cn-tb-tab-cnt' key={tab.key} value={tab.key}>
+                <TabsPrimitive.Content className='u-controls-tabs-tab-content' key={tab.key} value={tab.key}>
                     {tab.content}
                 </TabsPrimitive.Content>
             ))}
