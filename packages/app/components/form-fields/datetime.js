@@ -4,7 +4,7 @@ import DatePicker from 'app/ui/atoms/date-picker'
 
 export default function ({ name, value = '', type, ...props }) {
     const formContext = useFormContext();
-    const rules = getValidationRules(props);
+    const rules = getValidationRules({ type: type, ...props });
     const bIsTime = type === 'datetime';
     if ((value == '0000-00-00 00:00:00Z' || value == '') && props.required == true) {
         let date = new Date();

@@ -29,7 +29,7 @@ export default function FormFieldText(props) {
                 value={String(field.value)}
                 ariaLabel={props.caption}
                 field={field}
-            /> : <Input
+            /> : (props.type == "value" && !field.value ? null : <Input
                 textContentType="none"
 
                 /* experiment */
@@ -50,7 +50,7 @@ export default function FormFieldText(props) {
                 onBlur={field.onBlur}
                 value={String(field.value)}
                 aria-label={props.caption}
-            />
+            />)
             }
         </Field>
     );

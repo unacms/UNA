@@ -26,12 +26,14 @@ export default function (props) {
                     {((!!mandatoryIcon && (props.checker || props.required)) ? <Text className="text-red-600 h-4 w-4"><Icon icon={mandatoryIcon} size={16} /></Text> : <></>)}
                 </Row >
             </Text>
-            <View className=' w-full min-h-14'>
+            <View className='w-full'>
                 {props.children}
             </View>
             
         </View>
     );
+
+    console.log("propsprops", props)
 
     return (
         <View className={sClassName}>
@@ -41,7 +43,7 @@ export default function (props) {
             {isShowCaption ? captionElement : props.children}
             {!!props.error && Array.isArray(props.error) && <FormError errorText={props.error[0]} errorLink={props.error[1]} />}
             {!!props.error && !Array.isArray(props.error) && <FormError errorText={props.error} />}
-            {(props.error2 && props.checker.error!='') && <FormError errorText={props.checker.error} />}
+            {/*(props.error2 && props.checker.error!='') && <FormError errorText={props.checker.error} />*/}
             {!!props.info &&
                 <View className="label" >
                     <Text className="mt-1 px-1 text-xs sm:text-sm text-neutral-700 dark:text-neutral-300">{stripTags(props.info)}</Text>
@@ -63,10 +65,11 @@ export function FormError({ errorText, errorLink }) {
     return errorLink ? <Link href={errorLink}>{errorMessage}</Link> : errorMessage;
 }
 
-export function getValidationRules({ checker, caption }) {
+export function getValidationRules({ checker, caption, type }) {
+ return {}
     const funct = checker?.func.toLowerCase();
     if (funct) {
-        if (funct == 'avail' || funct == 'date_time') {
+        if ((funct == 'avail' || funct == 'date_time') /*&& (type!= 'files' && type != 'datepicker')*/) {
             return {
                 required: {
                     value: true,
@@ -75,7 +78,7 @@ export function getValidationRules({ checker, caption }) {
             }
         }
 
-        if (funct == 'date_range') {
+        if (funct == 'date_range'/* && (type != 'datepicker')*/) {
             return {
                 validate: value => {
                     const age = Math.abs(new Date(Date.now() - new Date(value).getTime()).getUTCFullYear() - 1970);

@@ -34,7 +34,7 @@ export default function RootLayout({ children }) {
 
     // Memoize QueryClient to prevent unnecessary recreations
     const queryClient = useMemo(() => new QueryClient(), []);
-   
+
 
     useEffect(() => {
         const themeName = getInitialTheme();
