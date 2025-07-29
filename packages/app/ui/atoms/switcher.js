@@ -8,7 +8,7 @@ export default function Switch({ value, onValueChange, size = 'base' }) {
             className={`u-controls-switcher-track u-controls-switcher-track-${size} ${value ? 'u-controls-switcher-track-active-col' : 'u-controls-switcher-track-col'}`}
         >
             <SwitchPrimitive.Thumb
-                className={`u-controls-switcher-thumb u-controls-switcher-thumb-${size} ${value ? `u-controls-switcher-thumb-act-${size}` : 'translate-x-0'}`}
+                className={`u-controls-switcher-thumb u-controls-switcher-thumb-${size} ${value ? `u-controls-switcher-thumb-active-${size}` : 'translate-x-0'}`}
             />
         </SwitchPrimitive.Root>
 
