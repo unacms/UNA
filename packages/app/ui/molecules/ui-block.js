@@ -33,6 +33,36 @@ function BlockHeader({
     );
 }
 
+function BlockIcon({
+    className,
+    density,
+    ...props
+}) {
+    const { density: effectiveDensity } = useLayoutSettings();
+
+    return (
+        <View
+            className={cn(`u-block-icon-${effectiveDensity}`, className)}
+            {...props}
+        />
+    );
+}
+
+function BlockName({
+    className,
+    density,
+    ...props
+}) {
+    const { density: effectiveDensity } = useLayoutSettings();
+
+    return (
+        <View
+            className={cn(`u-block-name-${effectiveDensity}`, className)}
+            {...props}
+        />
+    );
+}
+
 function BlockTitle({
     className,
     density,
@@ -59,6 +89,21 @@ function BlockDescription({
     return (
         <Text
             className={cn(`u-block-description-${effectiveDensity}`, className)}
+            {...props}
+        />
+    );
+}
+
+function BlockActions({
+    className,
+    density,
+    ...props
+}) {
+    const { density: effectiveDensity } = useLayoutSettings();
+
+    return (
+        <View
+            className={cn(`u-block-actions-${effectiveDensity}`, className)}
             {...props}
         />
     );
@@ -98,4 +143,4 @@ function BlockFooter({
 export default Block;
 
 // Export all block components
-export { Block, BlockContent, BlockDescription, BlockFooter, BlockHeader, BlockTitle }; 
+export { Block, BlockContent, BlockDescription, BlockFooter, BlockHeader, BlockTitle, BlockIcon, BlockName, BlockActions }; 

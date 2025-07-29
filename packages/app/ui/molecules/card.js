@@ -31,6 +31,20 @@ function CardHeader({
     );
 }
 
+function CardIcon({
+    className,
+    density,
+    ...props
+}) {
+    const { density: effectiveDensity } = useLayoutSettings();
+    return (
+        <View
+            className={cn(`u-card-icon-${effectiveDensity}`, className)}
+            {...props}
+        />
+    );
+}
+
 function CardTitle({
     className,
     density,
@@ -93,4 +107,4 @@ function CardFooter({
 export default Card;
 
 // Export all card components
-export { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle };
+export { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, CardIcon };

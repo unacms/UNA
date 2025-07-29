@@ -6,22 +6,22 @@
     :root {
         /* NativewindUI Design Tokens - Light Mode */
         --background: 242 242 247;
-        --foreground: 0 0 0;
+        --foreground: 3 7 18;
         --card: 255 255 255;
-        --card-foreground: 8 28 30;
+        --card-foreground: 3 7 18;
         --popover: 230 230 235;
-        --popover-foreground: 0 0 0;
-        --primary: 0 123 254;
+        --popover-foreground: 3 7 18;
+        --primary: 37 99 235;
         --primary-foreground: 255 255 255;
-        --secondary: 45 175 231;
-        --secondary-foreground: 255 255 255;
+        --secondary: 229 231 235;  
+        --secondary-foreground: 31 41 55;
         --muted: 243 244 246;
         --muted-foreground: 107 114 128;
         --accent: 219 234 254;
         --accent-foreground: 255 255 255;
         --destructive: 255 56 43;
         --destructive-foreground: 255 255 255;
-        --border: 230 230 235;
+        --border: 229 231 235;
         --input: 210 210 215;
         --ring: 230 230 235;
 
@@ -50,22 +50,22 @@
     .dark-theme-vars {
         /* NativewindUI Design Tokens - Dark Mode */
         --background: 0 0 0;
-        --foreground: 255 255 255;
-        --card: 21 21 24;
-        --card-foreground: 255 255 255;
+        --foreground: 249 250 251;
+        --card: 17 24 39;
+        --card-foreground: 249 250 251;
         --popover: 40 40 42;
-        --popover-foreground: 255 255 255;
-        --primary: 3 133 255;
+        --popover-foreground: 249 250 251;
+        --primary: 59 130 246;
         --primary-foreground: 255 255 255;
-        --secondary: 100 211 254;
-        --secondary-foreground: 255 255 255;
+        --secondary: 31 41 55;
+        --secondary-foreground: 229 231 235;
         --muted: 70 70 73;
         --muted-foreground: 142 142 147;
         --accent: 255 52 95;
         --accent-foreground: 255 255 255;
         --destructive: 254 67 54;
         --destructive-foreground: 255 255 255;
-        --border: 40 40 42;
+        --border: 31 41 55;
         --input: 55 55 57;
         --ring: 40 40 42;
 
@@ -134,6 +134,23 @@
     
     .u-card-header-relaxed {
         @apply u-card-header px-6 gap-y-3 gap-x-4;
+    }
+    
+    /* Card Icon Styles */
+    .u-card-icon {
+        @apply text-card-foreground;
+    }
+    
+    .u-card-icon-compact {
+        @apply u-card-icon px-3 gap-y-1 gap-x-2;
+    }
+
+    .u-card-icon-default {
+        @apply u-card-icon px-4 gap-y-2 gap-x-3;
+    }
+    
+    .u-card-icon-relaxed {
+        @apply u-card-icon px-6 gap-y-3 gap-x-4;
     }
     
     /* Card Title Styles */
@@ -206,35 +223,69 @@
     
     /* Block Variants */
     .u-block-base-compact {
-        @apply bg-card sm:border border-border shadow-sm text-card-foreground py-2 sm:py-3 gap-y-2 sm:gap-y-3 gap-x-2 sm:gap-x-3 sm:rounded-xl;
+        @apply bg-card sm:border border-border shadow-sm text-card-foreground py-2 sm:py-3 lg:py-4 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4 sm:rounded-xl;
     }
     
     .u-block-base-default {
-        @apply bg-card sm:border border-border shadow-sm text-card-foreground py-3 sm:py-4 gap-y-3 sm:gap-y-4 gap-x-3 sm:gap-x-4 sm:rounded-2xl;
+        @apply bg-card sm:border border-border shadow-sm text-card-foreground py-3 sm:py-4 lg:py-6 gap-y-3 sm:gap-y-4 lg:gap-y-6 gap-x-3 sm:gap-x-4 lg:gap-x-6 sm:rounded-2xl;
     }
     
     .u-block-base-relaxed {
-        @apply bg-card sm:border border-border shadow-sm text-card-foreground py-5 sm:py-6 gap-y-5 sm:gap-y-6 gap-x-5 sm:gap-x-6 sm:rounded-3xl;
+        @apply bg-card sm:border border-border shadow-sm text-card-foreground py-5 sm:py-6 lg:py-8 gap-y-5 sm:gap-y-6 lg:gap-y-8 gap-x-5 sm:gap-x-6 lg:gap-x-8 sm:rounded-3xl;
     }
     
     /* Block Header Styles */
     .u-block-header {
-        @apply flex flex-col ;
+        @apply flex flex-row items-center ;
     }
     
     .u-block-header-compact {
-        @apply u-block-header px-2 sm:px-3 gap-y-1 sm:gap-y-2 gap-x-1 sm:gap-x-2;
+        @apply u-block-header px-2 sm:px-3 lg:px-4 gap-y-1 sm:gap-y-2 lg:gap-y-3 gap-x-1 sm:gap-x-2 lg:gap-x-3;
     }
     
     .u-block-header-default {
-        @apply u-block-header px-3 sm:px-4 gap-y-2 sm:gap-y-3 gap-x-2 sm:gap-x-3;
+        @apply u-block-header px-3 sm:px-4 lg:px-6 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4;
     }
     
     .u-block-header-relaxed {
-        @apply u-block-header px-4 sm:px-6 gap-y-3 sm:gap-y-4 gap-x-3 sm:gap-x-4;
+        @apply u-block-header px-4 sm:px-6 lg:px-8 gap-y-3 sm:gap-y-4 lg:gap-y-6 gap-x-3 sm:gap-x-4 lg:gap-x-6;
+    }
+
+    /* Block Icon Styles */
+    .u-block-icon {
+        @apply text-card-foreground;
     }
     
-    /* Block Title Styles */
+    .u-block-icon-compact {
+        @apply u-block-icon ;
+    }
+    
+    .u-block-icon-default {
+        @apply u-block-icon ;
+    }
+    
+    .u-block-icon-relaxed {
+        @apply u-block-icon ;
+    }
+    
+    /* Block Name Styles */
+    .u-block-name {
+        @apply flex flex-col flex-auto ;
+    }
+    
+    .u-block-name-compact {
+        @apply u-block-name gap-y-1 gap-x-3;
+    }
+    
+    .u-block-name-default {
+        @apply u-block-name gap-y-2 gap-x-4 ;
+    }
+
+    .u-block-name-relaxed {
+        @apply u-block-name gap-y-3 gap-x-6;
+    }
+    
+        /* Block Title Styles */
     .u-block-title {
         @apply text-card-foreground;
     }
@@ -257,15 +308,15 @@
     }
     
     .u-block-description-compact {
-        @apply u-block-description text-xs lg:text-sm leading-none ;
+        @apply u-block-description text-xs lg:text-sm  ;
     }
     
     .u-block-description-default {
-        @apply u-block-description text-sm lg:text-base leading-none ;
+        @apply u-block-description text-sm lg:text-base ;
     }
     
     .u-block-description-relaxed {
-        @apply u-block-description text-base lg:text-lg leading-none;
+        @apply u-block-description text-base lg:text-lg ;
     }
     
     /* Block Content Styles */
@@ -274,15 +325,15 @@
     }
     
     .u-block-content-compact {
-    @apply u-block-content px-2 sm:px-3 gap-y-2 sm:gap-y-3 gap-x-1 sm:gap-x-2; 
+    @apply u-block-content px-2 sm:px-3 lg:px-4 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-1 sm:gap-x-2 lg:gap-x-3; 
     }
     
     .u-block-content-default {
-        @apply u-block-content px-3 sm:px-4 gap-y-2 sm:gap-y-3 gap-x-2 sm:gap-x-3; 
+        @apply u-block-content px-3 sm:px-4 lg:px-6 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4; 
     }
     
     .u-block-content-relaxed {
-        @apply u-block-content px-4 sm:px-6 gap-y-3 sm:gap-y-4 gap-x-3 sm:gap-x-4;
+        @apply u-block-content px-4 sm:px-6 lg:px-8 gap-y-3 sm:gap-y-4 lg:gap-y-6 gap-x-3 sm:gap-x-4 lg:gap-x-6;
     }
     
     /* Block Footer Styles */
@@ -291,15 +342,32 @@
     }
     
     .u-block-footer-compact {
-        @apply u-block-footer px-2 sm:px-3 gap-y-1 sm:gap-y-2 gap-x-1 sm:gap-x-2;
+        @apply u-block-footer px-2 sm:px-3 lg:px-4 gap-y-1 sm:gap-y-2 lg:gap-y-3 gap-x-1 sm:gap-x-2 lg:gap-x-3;
     }
     
     .u-block-footer-default {
-        @apply u-block-footer px-3 sm:px-4 gap-y-2 sm:gap-y-3 gap-x-2 sm:gap-x-3;
+        @apply u-block-footer px-3 sm:px-4 lg:px-6 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4;
     }
     
     .u-block-footer-relaxed {
-        @apply u-block-footer px-4 sm:px-6 gap-y-3 sm:gap-y-4 gap-x-3 sm:gap-x-4;
+        @apply u-block-footer px-4 sm:px-6 lg:px-8 gap-y-3 sm:gap-y-4 lg:gap-y-6 gap-x-3 sm:gap-x-4 lg:gap-x-6;
+    }
+    
+    /* Block Actions Styles */
+    .u-block-actions {
+        @apply flex flex-row text-card-foreground mb-auto;
+    }
+
+    .u-block-actions-compact {
+        @apply u-block-actions gap-x-1 sm:gap-x-2 lg:gap-x-3;
+    }
+    
+    .u-block-actions-default {
+        @apply u-block-actions gap-x-2 sm:gap-x-3 lg:gap-x-4;
+    }
+    
+    .u-block-actions-relaxed {
+        @apply u-block-actions gap-x-3 sm:gap-x-4 lg:gap-x-6;
     }
     
     /* Content Padding Styles */
@@ -313,6 +381,133 @@
     
     .u-content-padding-relaxed {
         @apply sm:p-4;
+    }
+
+    /* Badge Variants */
+    .u-badge-base-compact {
+        @apply inline-flex items-center rounded-md border px-2 py-0.5 transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
+    }
+    
+    .u-badge-base-default {
+        @apply inline-flex items-center rounded-md border px-2.5 py-0.5 transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
+    }
+    
+    .u-badge-base-relaxed {
+        @apply inline-flex items-center rounded-md border px-3 py-1 transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
+    }
+    
+    /* Badge Default Variant */
+    .u-badge-default-compact {
+        @apply border-transparent bg-primary text-primary-foreground shadow hover:bg-primary/80;
+    }
+    
+    .u-badge-default-default {
+        @apply border-transparent bg-primary text-primary-foreground shadow hover:bg-primary/80;
+    }
+    
+    .u-badge-default-relaxed {
+        @apply border-transparent bg-primary text-primary-foreground shadow hover:bg-primary/80;
+    }
+    
+    /* Badge Secondary Variant */
+    .u-badge-secondary-compact {
+        @apply border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80;
+    }
+    
+    .u-badge-secondary-default {
+        @apply border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80;
+    }
+    
+    .u-badge-secondary-relaxed {
+        @apply border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80;
+    }
+    
+    /* Badge Destructive Variant */
+    .u-badge-destructive-compact {
+        @apply border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80;
+    }
+    
+    .u-badge-destructive-default {
+        @apply border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80;
+    }
+    
+    .u-badge-destructive-relaxed {
+        @apply border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80;
+    }
+    
+    /* Badge Outline Variant */
+    .u-badge-outline-compact {
+        @apply text-foreground;
+    }
+    
+    .u-badge-outline-default {
+        @apply text-foreground;
+    }
+    
+    .u-badge-outline-relaxed {
+        @apply text-foreground;
+    }
+    
+    /* Badge Text Styles */
+    .u-badge-text-compact {
+        @apply text-xs font-semibold;
+    }
+    
+    .u-badge-text-default {
+        @apply text-sm font-semibold;
+    }
+    
+    .u-badge-text-relaxed {
+        @apply text-base font-semibold;
+    }
+    
+    /* Badge Text Variants */
+    .u-badge-text-default-compact {
+        @apply text-primary-foreground;
+    }
+    
+    .u-badge-text-default-default {
+        @apply text-primary-foreground;
+    }
+    
+    .u-badge-text-default-relaxed {
+        @apply text-primary-foreground;
+    }
+    
+    .u-badge-text-secondary-compact {
+        @apply text-secondary-foreground;
+    }
+    
+    .u-badge-text-secondary-default {
+        @apply text-secondary-foreground;
+    }
+    
+    .u-badge-text-secondary-relaxed {
+        @apply text-secondary-foreground;
+    }
+    
+    .u-badge-text-destructive-compact {
+        @apply text-destructive-foreground;
+    }
+    
+    .u-badge-text-destructive-default {
+        @apply text-destructive-foreground;
+    }
+    
+    .u-badge-text-destructive-relaxed {
+        @apply text-destructive-foreground;
+    }
+    
+    .u-badge-text-outline-compact {
+        @apply text-foreground;
+    }
+    
+    .u-badge-text-outline-default {
+        @apply text-foreground;
+    }
+    
+    .u-badge-text-outline-relaxed {
+        @apply text-foreground;
     }
 
     /* Density-Aware Padding Utilities */

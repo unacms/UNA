@@ -8,7 +8,8 @@ import {
     CardFooter,
     
 } from 'app/ui/molecules/card'
-import { Block, BlockHeader, BlockContent, BlockFooter, BlockTitle, BlockDescription } from 'app/ui/molecules/ui-block'
+import Badge from 'app/ui/molecules/badge';
+import { Block, BlockHeader, BlockContent, BlockFooter, BlockTitle, BlockDescription, BlockIcon, BlockName, BlockActions } from 'app/ui/molecules/ui-block'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, Row, Pressable, ScrollView } from 'app/design/view'
@@ -143,44 +144,42 @@ export default function PageLayout(props) {
     return (
         <ScrollView>
             <Block className={appSetting('layout', 'max_width_block')}>
-                
-                <BlockContent>
-                    <Card className="p-1">
-                        <CardContent className="flex-row p-1">
-                        <Link
-                            href={currentUser.url}
-                            className=" w-full rounded-full transition-colors duration-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/60 focus-visible:ring-offset-2 web:hover:bg-muted"
-                        >
-                            <View className="flex-row items-center w-full gap-sm p-1">
-                            <Profile
+                <BlockHeader>
+                    <BlockIcon>
+                        <Profile
                                 {...currentUser}
                                 url_avatar={currentUser.avatar}
                                 displayType="unit_wo_info"
-                                displaySize="lg"
+                                displaySize="xl"
                             />
-                            <View className="flex-col flex-1">
-                                <Text className="text-base font-semibold truncate text-foreground">
-                                    {currentUser.display_name}
-                                </Text>
-                                <Text className="text-xs truncate text-muted-foreground">
-                                    {currentUser.membership_name}
-                                </Text>
-                            </View>
-                            </View>
-                        </Link>
-
+                    </BlockIcon>
+                    <BlockName>
+                            <BlockTitle>
+                                        <Text>
+                                            {currentUser.display_name}
+                                        </Text>
+                            </BlockTitle>
+                            <BlockDescription >
+                                <Badge variant="secondary">
+                                {currentUser.membership_name}
+                                </Badge>
+                            </BlockDescription>
+                    </BlockName>
+                    <BlockActions>
                         {currentUser.profiles_count > 1 && (
                             <ProfileSwitcher hideTitle={true}>
                                 <Button
-                                    variant="text"
+                                    variant="secondary"
                                     startDecorator="RefreshCw"
-                                    size="lg"
+                                    
                                     rounded
                                 />
                             </ProfileSwitcher>
                         )}
-                        </CardContent>
-                    </Card>
+                    </BlockActions>
+                </BlockHeader>
+                <BlockContent>
+                
 
                    
 
