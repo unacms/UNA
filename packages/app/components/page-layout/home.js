@@ -371,21 +371,21 @@ export default function (props) {
             >
                 {(layoutName == 'hor' && isWeb) && <>
                     <Panel className={`hidden ${cellsCustomConfig.cells?.left?.breakpoint}:block`} {...cellsCustomConfig.cells?.left} >
-                        <View className='fixed-process p-3'>
+                        <View className='fixed-process py-lg '>
                             {SideBarContent}
                         </View>
                     </Panel>
-                    <PanelHandler gap="w-md" sizable={cellsCustomConfig.sizable} />
+                    <PanelHandler gap="hidden xl:block w-lg" sizable={cellsCustomConfig.sizable} />
                 </>}
-                <Panel className="mx-auto w-full sm:p-md" {...cellsCustomConfig.cells?.center}>
+                <Panel className="mx-auto w-full sm:py-lg" {...cellsCustomConfig.cells?.center}>
                     
                         {FeedContent}
                     
                 </Panel>
 
-                {isWeb && <><PanelHandler gap="w-md" sizable={cellsCustomConfig.sizable} />
+                {isWeb && <><PanelHandler gap="w-lg hidden lg:block" sizable={cellsCustomConfig.sizable} />
                 <Panel className={`hidden ${cellsCustomConfig.cells?.right?.breakpoint}:block`} {...cellsCustomConfig.cells?.right}>
-                        <View className='fixed-process py-lg p '>
+                        <View className='fixed-process py-lg'>
                         {AsideContent}
                         </View>
                     
