@@ -13,9 +13,9 @@ import {
     UIManager,
     findNodeHandle,
     TouchableWithoutFeedback,
-    Platform, 
+    Platform,
     Dimensions,
-    StyleSheet, 
+    StyleSheet,
     TouchableOpacity
 } from 'react-native';
 import { Text } from 'app/design/typography'
@@ -387,7 +387,7 @@ export default function ElementReactions(oProps) {
                 );
             }
             else {
-               
+
                 const aReactionItems = oItems.map(oItem => {
                     return {
                         id: oItem.id,
@@ -485,17 +485,35 @@ const ReactionPopover = ({
 
     const openModal = () => {
         if (!buttonRef.current) return;
+        if (bWeb) { // FIX AFTER NEXT 15, NEED TO FIND THE WAY FOR SINGLE CODE
+            if (buttonRef.current) {
+  const rect = buttonRef.current.getBoundingClientRect();
+  const x = Math.min(rect.left, window.innerWidth - POPOVER_WIDTH - 8);
+  const y = bWeb ? rect.top : rect.top - 20;
 
-        UIManager.measure(
-            findNodeHandle(buttonRef.current),
-            (x, y, width, height, pageX, pageY) => {
-                setButtonPos({ x:  Math.min(
-                    pageX,
-                    SCREEN_WIDTH - POPOVER_WIDTH - 8
-                  ), y: bWeb? pageY : pageY - 20, width, height });
-                setModalVisible(true);
-            }
-        );
+  setButtonPos({
+    x,
+    y,
+    width: rect.width,
+    height: rect.height
+  });
+  setModalVisible(true);
+}
+        }
+        else {
+            UIManager.measure(
+                findNodeHandle(buttonRef.current),
+                (x, y, width, height, pageX, pageY) => {
+                    setButtonPos({
+                        x: Math.min(
+                            pageX,
+                            SCREEN_WIDTH - POPOVER_WIDTH - 8
+                        ), y: bWeb ? pageY : pageY - 20, width, height
+                    });
+                    setModalVisible(true);
+                }
+            );
+        }
     };
 
     const handleSelect = (item) => {
