@@ -702,9 +702,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
                             </View>
                         </Panel>
                         <PanelHandler 
-                            gap={1} 
-                            sizable={cellsCustomConfig.sizable}
-                            className="w-px bg-border hover:bg-neutral-500/20 transition-all duration-300"
+                           gap="hidden xl:block w-lg" sizable={cellsCustomConfig.sizable} 
                         />
                     </>
                     }
@@ -720,9 +718,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
                     </Panel>
                     {isRightCol && <>
                         <PanelHandler 
-                            gap={1} 
-                            sizable={cellsCustomConfig.sizable}
-                            className="w-px bg-border hover:bg-neutral-500/20 transition-all duration-300"
+                           gap="hidden xl:block w-lg" sizable={cellsCustomConfig.sizable} 
                         />
                         <Panel className={`hidden ${cellsCustomConfig.cells?.right?.breakpoint}:block`} {...cellsCustomConfig.cells?.right}>
                             <View className={`py-4 fixed-process  `}>
@@ -846,9 +842,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
                             </View>
                         </Panel>
                         <PanelHandler 
-                            gap={1} 
-                            sizable={cellsCustomConfig.sizable}
-                            className="w-px bg-border hover:bg-neutral-500/20 transition-all duration-300"
+                            gap="hidden xl:block w-lg" sizable={cellsCustomConfig.sizable} 
                         /></>}
                     <Panel {...cellsCustomConfig.cells?.center}>
                         
