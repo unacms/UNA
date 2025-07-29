@@ -5,7 +5,7 @@ import { LAYOUT_BREAKPOINTS } from 'app/lib/util';
 import { View } from 'app/design/view';
 
 export const PanelHandler = memo(({ gap, sizable, className, style }) => {
-    const defaultClasses = `w-${gap} hover:bg-neutral-500/20 rounded-full transition-all duration-300 justify-center items-center flex`;
+    const defaultClasses = `${gap} bg-muted hover:bg-border transition-all duration-300 justify-center items-center flex`;
     const finalClasses = className || defaultClasses;
     
     return sizable ? (

@@ -30,14 +30,25 @@ export function BlockWrapper(props) {
     }
 
     let cssClasses = rest?.extraProps?.cssClasses ? rest?.extraProps?.cssClasses : "";
-    let cnt = <>{bIsShowTitle && <BlockHeader>
-        <BlockTitle>{stripTags(block.title)}</BlockTitle>
-    </BlockHeader>
-    }
-        <BlockContent className={bIsShowPadding ? " " : " p-0 "}>{props.children}</BlockContent></>
+    // Streamlined logic: avoid unnecessary fragment, ensure BlockContent is not wrapping elements twice
     return (
-        <Block key={block.id} className={"w-full mx-auto" + (bIsShowBg ? " " : " bg-transparent p-0 border-none shadow-none") + (!fullWidth && !cssClasses.includes("max-w-") ? (appSetting('layout', 'max_width_block')) : "") + cssClasses}>
-            {cnt}
+        <Block
+            key={block.id}
+            className={
+                "w-full mx-auto" +
+                (bIsShowBg ? "  " : " bg-transparent p-0 border-none shadow-none") +
+                (!fullWidth && !cssClasses.includes("max-w-") ? appSetting('layout', 'max_width_block') : "") +
+                cssClasses
+            }
+        >
+            {bIsShowTitle && (
+                <BlockHeader>
+                    <BlockTitle>{stripTags(block.title)}</BlockTitle>
+                </BlockHeader>
+            )}
+            
+                {props.children}
+            
         </Block>
     );
 } 

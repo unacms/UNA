@@ -362,7 +362,7 @@ export default function (props) {
             <PanelGroup
                 autoSaveId={`cells-home`}
                 direction="horizontal"
-                className={`${appSetting('layout', 'max_width')} mx-auto w-full flex-auto relative flex-row`}
+                className={`${appSetting('layout', 'max_width')} mx-auto w-full flex-auto relative sm:px-lg flex-row`}
                 onLayout={(e) => {
                     if (isWeb) {
                         window.dispatchEvent(new Event('resize_panel'));
@@ -375,19 +375,20 @@ export default function (props) {
                             {SideBarContent}
                         </View>
                     </Panel>
-                    <PanelHandler gap={2} sizable={cellsCustomConfig.sizable} />
+                    <PanelHandler gap="w-md" sizable={cellsCustomConfig.sizable} />
                 </>}
-                <Panel className="mx-auto w-full" {...cellsCustomConfig.cells?.center}>
-                    <View className='sm:p-3'>
+                <Panel className="mx-auto w-full sm:p-md" {...cellsCustomConfig.cells?.center}>
+                    
                         {FeedContent}
-                    </View>
+                    
                 </Panel>
 
-                {isWeb && <><PanelHandler gap={2} sizable={cellsCustomConfig.sizable} />
+                {isWeb && <><PanelHandler gap="w-md" sizable={cellsCustomConfig.sizable} />
                 <Panel className={`hidden ${cellsCustomConfig.cells?.right?.breakpoint}:block`} {...cellsCustomConfig.cells?.right}>
-                    <View className='fixed-process p-1.5 sm:p-2'>
+                        <View className='fixed-process py-lg p '>
                         {AsideContent}
-                    </View>
+                        </View>
+                    
                 </Panel></>}
             </PanelGroup>
         )

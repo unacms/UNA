@@ -3,7 +3,16 @@ import { appSetting } from 'app/lib/util'
 import { View } from 'app/design/view'
 import { Modal } from 'app/design/controls'
 import { fetcher } from 'app/lib/fetcher'
-import Card from 'app/ui/molecules/card'
+import {
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle,
+    CardDescription,
+    CardFooter,
+    
+} from 'app/ui/molecules/card';
+import {Block, BlockHeader, BlockContent, BlockFooter, BlockTitle, BlockDescription, BlockIcon, BlockName, BlockActions} from 'app/ui/molecules/ui-block';
 import AnimatedBlock from 'app/ui/atoms/animated-block'
 import { useTranslation } from 'react-i18next';
 import { CommentsModal, CommentsSection, MenuManage, ActionMenu, CounterMenu, Author, UnitFeed, SmallUnit, prepareData, MainContent, FeedEditForm } from 'app/lib/feed-helpers'
@@ -46,7 +55,7 @@ function DefaultUnit({data}) {
         return <></>
 
     return (
-        <AnimatedBlock>
+        <Block className={'tl-' + data.id} >
             {viewState.view == 'edited' && <FeedEditForm setViewState={setViewState} id={data.id} viewState={viewState} />}
             {isCommentsModal && <Modal
                 outerClickClose={false}
@@ -57,21 +66,25 @@ function DefaultUnit({data}) {
             >
                 {cmtsData.data}
             </Modal>}
-            <Card rounded=' rounded-none sm:rounded-2xl ' margin=' mb-1 sm:mb-3 p-0 border-y border-x-none sm:border-x ' border='border-y border-x-none sm:border-x border-bdrcard dark:border-bdrcard-d shadow-sm' addClassName={' w-full tl-' + data.id} >
-                <View className="flex-auto flex-row gap-x-2 p-3 sm:p-4 ">
-                    <Author data={data} url={url} t={t} />
-                    <View className="flex-none flex-row mb-auto">
+            
+                <BlockHeader>
+                    <BlockName><Author data={data} url={url} t={t} /></BlockName>
+                    <BlockActions>
                         <MenuManage id={data.id} menu={data?.menu_manage} setViewState={setViewState} />
-                    </View>
-                </View>
+                    </BlockActions>
+                </BlockHeader>
+                <BlockContent>
                 {MainContentComponent}
-                <View className='px-2'>
                 {(!!data.menu_counters && appSetting('feed', 'counters_menu')) && <CounterMenu data={data.menu_counters} showCommentsModal={showCommentsModal} />}
-                </View>
-                <View className=' border-t mt-1 border-bdr dark:border-bdr-d p-1 '><ActionMenu data={data.menu_actions} showCommentsModal={showCommentsModal} /></View>
+               
+                </BlockContent>
+                <BlockFooter>
+                
+               
+                <ActionMenu data={data.menu_actions} showCommentsModal={showCommentsModal} />
                 {commentsData && <CommentsSection url={url} t={t} isCommentsModal={isCommentsModal} showCommentsModal={showCommentsModal} commentsDataInline={commentsData} data={data} isShowMoreComments={isShowMoreComments} />}
-            </Card>
-        </AnimatedBlock>
+                </BlockFooter>
+        </Block>
     )
 }
 
