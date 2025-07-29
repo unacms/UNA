@@ -863,7 +863,7 @@
     .u-controls-radiobutton-indicator {
         @apply h-5 w-5 m-1 rounded-full border-2 border-neutral-500 bg-transparent justify-center items-center mr-2;
     }
-    .u-controls-checkbox-indicator {
+    .u-controls-checkbox-indicator-active {
         @apply h-2.5 w-2.5 bg-primary m-1 items-center justify-center;
     }
     .u-controls-radiobutton-indicator-active {

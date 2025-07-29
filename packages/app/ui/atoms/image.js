@@ -47,13 +47,11 @@ function normalizeWidth(width) {
 
 export default function ElementImage(props) {
     let { width, height, alt = "", src = '', style, source, nobg, sizes, ...rest } = props; // remove width & height
-    console.log("src", src)
     if (!src)
         return;
     if (!src.startsWith('http') && !src.startsWith('https') && !src.startsWith('data:image')) {
         src = UNA_URL + src;
     }
-     console.log("src1", src)
     if (sizes === LAYOUT_BREAKPOINTS.lg)
         sizes = "(max-width:1024px) 100vw, 1024px";
     if (sizes === LAYOUT_BREAKPOINTS.xl)
@@ -63,7 +61,6 @@ export default function ElementImage(props) {
     if (!sizes) {
         sizes = "(max-width:768px) 100vw, 500px";
     }
-
 
     //if (null === src)
     //    src = '/spacer.png';

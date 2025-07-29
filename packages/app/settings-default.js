@@ -228,7 +228,7 @@ export  const settingsDefault = {
             '*_allow_view_to',
             '*_object_privacy_view',
         ],
-        selector_control_names: ['*_cat'],
+        selector_control_names: ['*_cat', '*_space_cat'],
 
         /* sys_login: { hide_errors: true, button_full_width: true },*/
 

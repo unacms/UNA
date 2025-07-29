@@ -51,6 +51,7 @@ export const componentsMapDefault = {
     price: TextField,
     textarea: Editor,
     select: Select,
+    select_multiple: Selector,
     radio_set: Select,
     files: Files,
     location: Location,
