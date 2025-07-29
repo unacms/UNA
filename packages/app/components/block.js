@@ -21,7 +21,7 @@ export function BlockByName2({ b, name }) {
 }
 
 export function BlockByName(props) {
-    let { data, name, ...rest } = props;
+    let { data, name, contentOnly, ...rest } = props;
 
     let b = null;
 
@@ -67,6 +67,7 @@ export function BlockByName(props) {
             block={b} 
             showTitle={name?.showTitle} 
             fullWidth={name?.fullWidth} 
+            contentOnly={contentOnly}
             showPad={name?.showPad} 
             showBg={name?.showBg} 
             unitType={name?.unitType} 
@@ -120,7 +121,7 @@ export function StaticBlock(props) {
 }
 
 export function BlockWrapper(props) {
-    let { block, showTitle, showBg, fullWidth, ...rest } = props
+    let { block, showTitle, showBg, fullWidth, contentOnly, ...rest } = props
     block.designbox_id = Number(block.designbox_id);
     const aNoTitle = [0, 10, 13, 3];
     const aNoBg = [0, 10, 14, 4];
@@ -162,8 +163,9 @@ export function BlockWrapper(props) {
                     <BlockTitle>{stripTags(block.title)}</BlockTitle>
                 </BlockHeader>
             )}
-            
+            {contentOnly ? props.children : <BlockContent>
                 {props.children}
+            </BlockContent>}
             
         </PageBlock>
     );
@@ -178,7 +180,7 @@ export default function Block(props) {
         return null;
 
     return (
-        <BlockWrapper block={block} showBg={props.showBg} showPad={props.showPad} showTitle={props.showTitle} fullWidth={props.fullWidth} extraProps={props.extraProps}>
+        <BlockWrapper block={block} contentOnly={props.contentOnly} showBg={props.showBg} showPad={props.showPad} showTitle={props.showTitle} fullWidth={props.fullWidth} extraProps={props.extraProps}>
             <BlockType data={block.content} type={block.type} {...props} />
         </BlockWrapper>
     );

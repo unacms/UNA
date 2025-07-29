@@ -35,6 +35,7 @@ function PageContent(props) {
         </View>
         <BlockByName
             name="system:login_form"
+            contentOnly={true}
             data={props.data}
             formProps={{ hide_errors: true, button_full_width: true }}
         />

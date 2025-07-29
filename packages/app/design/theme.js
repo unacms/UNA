@@ -30,7 +30,7 @@ export function Theme() {
 }
 
 
-function getInitialTheme() {
+export function getInitialTheme() {
     if (Platform.OS === 'web') {
         const saved = storageGet('layout:theme', null, true);
         const defaultTheme = appSetting('native', 'default_theme');

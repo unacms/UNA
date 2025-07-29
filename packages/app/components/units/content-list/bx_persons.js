@@ -21,9 +21,8 @@ function ImageSection({ data, imageSizes }) {
     const isWeb = Platform.OS == 'web'
     return (
         <View
-            className={` ${
-                isWeb && 'h-32 sm:h-auto'
-            } aspect-square sm:w-full rounded-xl overflow-hidden items-center bg-bgritem dark:bg-bgritem-d justify-center`}
+            className={` ${isWeb && 'h-32 sm:h-auto'
+                } aspect-square sm:w-full rounded-xl overflow-hidden items-center bg-bgritem dark:bg-bgritem-d justify-center`}
         >
             <Image
                 src={data?.image?.src}
@@ -68,8 +67,8 @@ export default function Unit(props) {
 
     const isFollowers =
         props.unitType == 'person_followers' ||
-        props.unitType == 'person_following' ||
-        props.unitType == 'person_following_recommendations'
+            props.unitType == 'person_following' ||
+            props.unitType == 'person_following_recommendations'
             ? true
             : false
 
@@ -77,64 +76,57 @@ export default function Unit(props) {
         return
 
     return (
-        <>
+        <Card className="p-0">
             <Redirect ref={redirectdRef} />
-            <Card
-                margin=" sm:mx-2 sm:my-2.5 "
-                border="border-b sm:border border-bdrcard dark:border-bdrcard-d"
-                rounded=" sm:rounded-2xl "
-            >
-                <Link className="group " href={data.url}>
-                    <View
-                        className={`flex-row sm:flex-col p-3 sm:p-1  sm:h-full`}
-                    >
-                        <ImageSection data={data} imageSizes={imageSizes} />
-                        <View className="flex-col pl-4 my-auto sm:pt-2 sm:p-1 flex-auto ">
-                            <View className="gap-y-3 h-14">
-                                <Text
-                                    numberOfLines={1}
-                                    className=" text-base tracking-tight tracking-tight font-semibold text-neutral-800 dark:text-neutral-200"
-                                >
-                                    {data.title}
-                                </Text>
+            <Link className="group " href={data.url}>
+                <View
+                    className={`flex-row sm:flex-col p-3 sm:p-1  sm:h-full`}
+                >
+                    <ImageSection data={data} imageSizes={imageSizes} />
+                    <View className="flex-col pl-4 my-auto sm:pt-2 sm:p-1 flex-auto ">
+                        <View className="gap-y-3 h-14">
+                            <Text
+                                numberOfLines={1}
+                                className=" text-base tracking-tight tracking-tight font-semibold text-neutral-800 dark:text-neutral-200"
+                            >
+                                {data.title}
+                            </Text>
 
-                                <Row className="items-center gap-x-1 ">
-                                    <ProfilesListCnt
-                                        data={
-                                            isFollowers
-                                                ? data.followers_list
-                                                : data.mutual_friends_count > 0
+                            <Row className="items-center gap-x-1 ">
+                                <ProfilesListCnt
+                                    data={
+                                        isFollowers
+                                            ? data.followers_list
+                                            : data.mutual_friends_count > 0
                                                 ? data.mutual_friends_list
                                                 : data.friends_list
-                                        }
-                                    />
+                                    }
+                                />
 
-                                    <Text className="truncate text-sm tracking-tight flex-auto text-neutral-600 dark:text-neutral-400">
-                                        {isFollowers
-                                            ? data?.followers_count +
-                                              ' followers'
-                                            : friendsLabel}
-                                    </Text>
-                                </Row>
+                                <Text className="truncate text-sm tracking-tight flex-auto text-neutral-600 dark:text-neutral-400">
+                                    {isFollowers
+                                        ? data?.followers_count +
+                                        ' followers'
+                                        : friendsLabel}
+                                </Text>
+                            </Row>
+                        </View>
+                        <View className="flex-row sm:flex-col pt-3 ">
+                            <View className="w-1/2 sm:w-full pr-2 sm:pr-0">
+                                {oMenuItemPrimary}
                             </View>
-                            <View className="flex-row sm:flex-col pt-3 ">
-                                <View className="w-1/2 sm:w-full pr-2 sm:pr-0">
-                                    {oMenuItemPrimary}
-                                </View>
-                                {!!oMenuItemSecondary && (
-                                    <View
-                                        className={`w-1/2 sm:w-auto ${
-                                            !!oMenuItemPrimary && 'sm:mt-2'
+                            {!!oMenuItemSecondary && (
+                                <View
+                                    className={`w-1/2 sm:w-auto ${!!oMenuItemPrimary && 'sm:mt-2'
                                         }`}
-                                    >
-                                        {oMenuItemSecondary}
-                                    </View>
-                                )}
-                            </View>
+                                >
+                                    {oMenuItemSecondary}
+                                </View>
+                            )}
                         </View>
                     </View>
-                </Link>
-            </Card>
-        </>
+                </View>
+            </Link>
+        </Card>
     )
 }

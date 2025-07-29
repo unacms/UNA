@@ -35,6 +35,7 @@ function PageContent(props) {
             {!isAllowJoin && (
                 <BlockByName
                     name={props.blocks.form_invitation}
+                     contentOnly={true}
                     data={props.data}
                     formProps={{
 
@@ -46,6 +47,7 @@ function PageContent(props) {
             {isAllowJoin && (
                 <BlockByName
                     name={props.blocks.form_join}
+                     contentOnly={true}
                     data={props.data}
                     formProps={{
 
