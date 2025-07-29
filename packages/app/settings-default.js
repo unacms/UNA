@@ -937,8 +937,8 @@ export  const settingsDefault = {
             topmenu_button_size: 'base',
             topmenu_button_pressed: true,
             left_menu_cnt: '  ',
-            cover_base: 'w-full h-14 shadow-sm bg-card',
-            cover_content: "items-center h-full w-full overflow-hidden flex-row justify-between"
+            cover_base: 'w-full shadow-sm bg-card',
+            cover_content: "items-center h-full w-full overflow-hidden justify-between"
         },
         checkbox: {
             container:

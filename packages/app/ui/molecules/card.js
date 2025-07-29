@@ -42,6 +42,8 @@ const CardContent = createCardComponent({ baseClass: 'u-card-content' });
 
 const CardFooter = createCardComponent({ baseClass: 'u-card-footer' });
 
+export default Card;
+
 export {
     Card,
     CardHeader,
