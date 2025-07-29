@@ -104,7 +104,10 @@
 }
 
 @layer components {
-
+    /* Common settings */
+    .u-max-width-block{
+        @apply max-w-7xl;
+    }
     
     /* Card Variants */
     .u-card-base-compact {

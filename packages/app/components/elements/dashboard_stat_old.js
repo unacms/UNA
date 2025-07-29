@@ -138,7 +138,7 @@ export default function PageLayout(props) {
                 
             </Modal>
             <View className={appSetting('layout', 'max_width') +" w-full  mx-auto flex-col"}>
-                <View className={appSetting('layout', 'max_width_block') +" w-full px-2 pb-1 pt-2 sm:p-2  mx-auto flex-col"}>
+                <View className={"u-max-width-block w-full px-2 pb-1 pt-2 sm:p-2  mx-auto flex-col"}>
                     <Card rounded=" rounded-2xl " addClassName="  w-full p-4 flex-row ">
                         <View className="justify-center sm:justify-between flex-auto my-auto w-full items-center">
                             <View className="flex-row  w-full  items-center ">

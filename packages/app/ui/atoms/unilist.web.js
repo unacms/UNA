@@ -72,11 +72,10 @@ export default function UniList(props) {
     );
 
     const ListComponent = forwardRef(({ className, ...props }, ref) => {
-        const maxWidthBlock = appSetting('layout', 'max_width_block');
         return (
             <ReactNativeView
                 ref={ref}
-                className={`${maxWidthBlock} w-full mx-auto flex flex-wrap flex-row gap-sm ${className || ''}`}
+                className={`u-max-width-block w-full mx-auto flex flex-wrap flex-row gap-sm ${className || ''}`}
                 {...props}
             />
         );

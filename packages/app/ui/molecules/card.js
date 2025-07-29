@@ -3,108 +3,51 @@ import { Text } from 'app/design/typography';
 import { cn } from 'app/lib/util';
 import { useLayoutSettings } from 'app/context/layout-settings';
 
-function Card({
-    className,
-    density, // Can override global density
-    ...props
-}) {
-    const { density: effectiveDensity } = useLayoutSettings();
-    return (
-        <View
-            className={`u-card-base-${effectiveDensity} ${className}` }
-            {...props}
-        />
-    );
+function createCardComponent({ baseClass, Component = View, role, ariaLevel }) {
+    return function CardSubComponent({ className, density, ...props }) {
+        const { density: globalDensity } = useLayoutSettings();
+        const finalDensity = density ?? globalDensity;
+
+        return (
+            <Component
+                className={cn(`${baseClass}-${finalDensity}`, className)}
+                role={role}
+                aria-level={ariaLevel}
+                {...props}
+            />
+        );
+    };
 }
 
-function CardHeader({
-    className,
-    density,
-    ...props
-}) {
-    const { density: effectiveDensity } = useLayoutSettings();
-    return (
-        <View
-            className={cn(`u-card-header-${effectiveDensity}`, className)}
-            {...props}
-        />
-    );
-}
 
-function CardIcon({
-    className,
-    density,
-    ...props
-}) {
-    const { density: effectiveDensity } = useLayoutSettings();
-    return (
-        <View
-            className={cn(`u-card-icon-${effectiveDensity}`, className)}
-            {...props}
-        />
-    );
-}
+const Card = createCardComponent({ baseClass: 'u-card-base' });
 
-function CardTitle({
-    className,
-    density,
-    ...props
-}) {
-    const { density: effectiveDensity } = useLayoutSettings();
-    return (
-        <Text
-            role="heading"
-            aria-level={3}
-            className={cn(`u-card-title-${effectiveDensity}`, className)}
-            {...props}
-        />
-    );
-}
+const CardHeader = createCardComponent({ baseClass: 'u-card-header' });
 
-function CardDescription({
-    className,
-    density,
-    ...props
-}) {
-    const { density: effectiveDensity } = useLayoutSettings();
-    return (
-        <Text
-            className={cn(`u-card-description-${effectiveDensity}`, className)}
-            {...props}
-        />
-    );
-}
+const CardIcon = createCardComponent({ baseClass: 'u-card-icon' });
 
-function CardContent({
-    className,
-    density,
-    ...props
-}) {
-    const { density: effectiveDensity } = useLayoutSettings();
-    return (
-        <View
-            className={cn(`u-card-content-${effectiveDensity}`, className)}
-            {...props}
-        />
-    );
-}
+const CardTitle = createCardComponent({
+    baseClass: 'u-card-title',
+    Component: Text,
+    role: 'heading',
+    ariaLevel: 3,
+});
 
-function CardFooter({
-    className,
-    density,
-    ...props
-}) {
-    const { density: effectiveDensity } = useLayoutSettings();
-    return (
-        <View
-            className={cn(`u-card-footer-${effectiveDensity}`, className)}
-            {...props}
-        />
-    );
-}
+const CardDescription = createCardComponent({
+    baseClass: 'u-card-description',
+    Component: Text,
+});
 
-// Export default card
-export default Card;
+const CardContent = createCardComponent({ baseClass: 'u-card-content' });
 
-// Export all card components
-export { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, CardIcon };
+const CardFooter = createCardComponent({ baseClass: 'u-card-footer' });
+
+export {
+    Card,
+    CardHeader,
+    CardIcon,
+    CardTitle,
+    CardDescription,
+    CardContent,
+    CardFooter,
+};

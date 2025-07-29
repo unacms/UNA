@@ -12,7 +12,7 @@ import {
     CardFooter,
     
 } from 'app/ui/molecules/card';
-import {Block, BlockHeader, BlockContent, BlockFooter, BlockTitle, BlockDescription, BlockIcon, BlockName, BlockActions} from 'app/ui/molecules/ui-block';
+import {Block, BlockHeader, BlockContent, BlockFooter, BlockTitle, BlockDescription, BlockIcon, BlockName, BlockActions} from 'app/ui/molecules/page-block';
 import AnimatedBlock from 'app/ui/atoms/animated-block'
 import { useTranslation } from 'react-i18next';
 import { CommentsModal, CommentsSection, MenuManage, ActionMenu, CounterMenu, Author, UnitFeed, SmallUnit, prepareData, MainContent, FeedEditForm } from 'app/lib/feed-helpers'

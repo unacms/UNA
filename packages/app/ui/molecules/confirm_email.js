@@ -11,7 +11,7 @@ import Redirect from 'app/ui/atoms/redirect';
 import { storageClear } from 'app/lib/util';
 import { Platform } from 'react-native';
 import Link from 'app/ui/atoms/link';
-import { appSetting, getPageWidth } from 'app/lib/util';
+import { Block, BlockHeader, BlockContent, BlockFooter, BlockTitle, BlockDescription, BlockIcon, BlockName, BlockActions } from 'app/ui/molecules/page-block'
 
 
 export default function ElementConfirmEmail(props) {
@@ -47,22 +47,26 @@ export default function ElementConfirmEmail(props) {
     return (
         <><Redirect ref={redirectdRef} />
             <Msg onVisible={showMsg} title={"New verification code emailed"} handleOk={() => { setShowMsg(false) }} />
-            <View className={`mx-auto ${getPageWidth()} p-4 w-full `}>
-                <Card rounded="rounded-3xl" margin="p-4 sm:p-6" addClassName="border border-white overflow-hidden dark:border-bdrcard-d gap-y-6">
-                    <View className="flex-col flex-auto gap-y-2 justify-center">
-                        <Text className="text-xl sm:text-2xl text-center leading-none tracking-tight font-semibold text-neutral-800 dark:text-neutral-200">
-                            {t("Unconfirmed email address")}
-                        </Text>
-                        <Text className="text-sm sm: text-base text-center text-neutral-500">
+            <Block className='u-max-width-block mx-auto w-full mt-4'>
+                <BlockHeader>
+                    <BlockName>
+                        <BlockTitle>
+                            <Text>
+                                {t("Unconfirmed email address")}
+                            </Text>
+                        </BlockTitle>
+                        <BlockDescription >
                             {t("Please check your email")}
-                        </Text>
-                    </View>
+                        </BlockDescription>
+                    </BlockName>
+                </BlockHeader>
+                <BlockContent>
                     <View className='gap-y-4'>
                         <Row className='w-full gap-x-2 items-start justify-between'>
                             <View className='flex-auto'>
                                 <Input placeholder={t("Verification code")} value={inputValue} onChangeText={(value) => { setInputValue(value) }} />
                             </View>
-                            <Button variant="primary" title={t("Confirm")} onPress={() => handleConfirm()} />
+                            <Button variant="default" size="lg" title={t("Confirm")} onPress={() => handleConfirm()} />
                         </Row>
                         {inputError && <View className="label">
                             <Text className="ml-0.5 mt-0.5 label-text-alt text-sm text-red-600 animate-pulse dark:text-red-400 font-medium">{t("Code invalid")}</Text>
@@ -79,8 +83,9 @@ export default function ElementConfirmEmail(props) {
                             </Link>
                         </View>
                     </View>
-                </Card>
-            </View>
+                </BlockContent>
+            </Block>
+
         </>
     );
 }

@@ -9,7 +9,7 @@ import {
     
 } from 'app/ui/molecules/card'
 import Badge from 'app/ui/molecules/badge';
-import { Block, BlockHeader, BlockContent, BlockFooter, BlockTitle, BlockDescription, BlockIcon, BlockName, BlockActions } from 'app/ui/molecules/ui-block'
+import { Block, BlockHeader, BlockContent, BlockFooter, BlockTitle, BlockDescription, BlockIcon, BlockName, BlockActions } from 'app/ui/molecules/page-block'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, Row, Pressable, ScrollView } from 'app/design/view'
@@ -143,7 +143,7 @@ export default function PageLayout(props) {
 
     return (
         <ScrollView>
-            <Block className={appSetting('layout', 'max_width_block')}>
+            <Block className='u-max-width-block'>
                 <BlockHeader>
                     <BlockIcon>
                         <Profile
@@ -178,11 +178,7 @@ export default function PageLayout(props) {
                         )}
                     </BlockActions>
                 </BlockHeader>
-                <BlockContent>
-                
-
-                   
-
+                <BlockContent>                   
                     <ElementDashboardStat {...props} />
                     <View className="flex-row flex-wrap gap-sm">
                         {appSetting('dashboard', 'langs').length > 1 && (
@@ -406,7 +402,6 @@ function ElementDashboardStat(props) {
                                                 </CardTitle>
                                                 <CardDescription>
                                                     {item.title}
-                                                   
                                                 </CardDescription>
                                             </CardHeader>
                                             <CardContent>

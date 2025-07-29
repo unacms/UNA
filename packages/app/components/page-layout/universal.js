@@ -20,7 +20,6 @@ function PageContentUniversal({ children, data, layoutName }) {
     const gap = cellsCustomConfig.gap || 4;
     const sizable = cellsCustomConfig.sizable === undefined ? true : cellsCustomConfig.sizable;
 
-    const maxWidth = appSetting('layout', 'max_width_block');
     const { width: windowWidth } = useWindowDimensions();
 
     const layoutConfigs = {
@@ -84,7 +83,7 @@ function PageContentUniversal({ children, data, layoutName }) {
     const midCells = cells.filter((c) => c.area === 'mid');
 
     return (
-        <View className={`mx-auto  w-full ${maxWidth} gap-y-${gap} p-3 sm:p-4`}>
+        <View className={`mx-auto w-full u-max-width-block gap-y-${gap} p-3 sm:p-4`}>
             <PanelRow gap={gap} cell={topCell} windowWidth={windowWidth} />
             <PanelGroup autoSaveId={`cells-${uri}-${layoutName}`} direction="horizontal">
                 {midCells.map((cell, i) => {
