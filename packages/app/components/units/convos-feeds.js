@@ -42,7 +42,7 @@ const ListFeed = memo((data)  => {
             >
               { message }
             </Text>
-            <View className="flex-none bg-primary dark:bg-primary-d rounded-full my-auto h-min px-1.5">
+            <View className="flex-none bg-primary rounded-full my-auto h-min px-1.5">
               { count > 0 && (
                 <Text className="text-xs text-white dark:text-black font-medium">
                   { count }

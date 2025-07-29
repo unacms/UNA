@@ -16,14 +16,14 @@ import Html from 'app/ui/atoms/html'
 
 export const LinkContent = memo(({ url, data }) => (
     <Link href={url}>
-        <Text className="mr-auto  bg-primary/20 dark:bg-primary-900 rounded-lg font-semibold px-2 py-1 flex-none flex-auto text-neutral-800 dark:text-neutral-200">
+        <Text className="mr-auto bg-primary/20 rounded-lg font-semibold px-2 py-1 flex-none flex-auto text-neutral-800 dark:text-neutral-200">
             {data.content?.price
                 ? data.content.price.replace('&#36;', '$')
                 : 'Free'}
         </Text>
         <Text
             numberOfLines={2}
-            className=" text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-lg sm:text-xl tracking-tight font-bold"
+            className=" text-neutral-950 hover:text-primary dark:text-neutral-50 text-lg sm:text-xl tracking-tight font-bold"
         >
             {data.content?.title || ''}
         </Text>
@@ -114,7 +114,7 @@ export const GroupView = memo(({ data, styles, url, isCompact }) => {
                     </Text>
                     <Text
                         numberOfLines={2}
-                        className=" text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-lg sm:text-xl tracking-tight font-bold"
+                        className=" text-neutral-950 hover:text-primary dark:text-neutral-50 text-lg sm:text-xl tracking-tight font-bold"
                     >
                         {data.content?.title || ''}
                     </Text>
@@ -213,7 +213,7 @@ export const MarketView = memo(({ data, styles, url, isCompact }) => {
             )}
             <View className="flex-auto p-2 my-auto flex-col    ">
                 <Link href={url} className="">
-                    <Text className="mr-auto  bg-primary/20 dark:bg-primary-900 rounded-lg font-semibold px-2 py-1 flex-none flex-auto text-white">
+                    <Text className="mr-auto bg-primary/20 rounded-lg font-semibold px-2 py-1 flex-none flex-auto text-white">
                         {(data.content?.price_recurring || 0) > 0
                             ? (data.content?.price_recurring || 0) +
                               '$/' +
@@ -225,7 +225,7 @@ export const MarketView = memo(({ data, styles, url, isCompact }) => {
 
                     <Text
                         numberOfLines={2}
-                        className=" text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-lg sm:text-xl tracking-tight font-bold"
+                        className=" text-neutral-950 hover:text-primary dark:text-neutral-50 text-lg sm:text-xl tracking-tight font-bold"
                     >
                         {data.content?.title || ''}
                     </Text>
@@ -289,7 +289,7 @@ export const DefaultView = memo(
                         <Link href={url} className="">
                             <Text
                                 numberOfLines={3}
-                                className=" pb-2 text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-xl sm:text-2xl tracking-tight font-bold"
+                                className=" pb-2 text-neutral-950 hover:text-primary dark:text-neutral-50 text-xl sm:text-2xl tracking-tight font-bold"
                             >
                                 {data.content?.title || ''}
                             </Text>
@@ -428,7 +428,7 @@ export const PollView = memo(
                         <Link href={url} className="">
                             <Text
                                 numberOfLines={3}
-                                className=" pb-2 text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-lg sm:text-xl tracking-tight font-bold"
+                                className=" pb-2 text-neutral-950 hover:text-primary dark:text-neutral-50 text-lg sm:text-xl tracking-tight font-bold"
                             >
                                 {data.content?.title || ''}
                             </Text>

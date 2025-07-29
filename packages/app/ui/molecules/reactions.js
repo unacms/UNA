@@ -212,7 +212,7 @@ const getCounterCompound = (getIconAlias, handleGetPerformedByCpd, actionsDataSt
 
         let sClass = 'flex-0 flex mx-1  flex-row w-min top-px';
         if (aItem.name == sSelected)
-            sClass += ' border-b-2 border-primary dark:border-primary-d ';
+            sClass += ' border-b-2 border-primary ';
 
         return (
             <View key={aItem.name} className={sClass}>

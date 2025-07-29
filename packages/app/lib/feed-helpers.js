@@ -94,7 +94,7 @@ export const FeedEditForm = memo(({ setViewState, viewState, id }) => {
 });
 
 export const CommentsSection = memo(({ isCommentsModal, commentsDataInline, data, isShowMoreComments, showCommentsModal, url, t }) => {
-    const ShowMoreCmts = (<Text className='mx-auto text-neutral-600 dark:text-neutral-400 hover:text-primary dark:hover:text-primary-d px-3 py-2 mb-2 mr-auto bg-neutral-500/10 hover:bg-primary-500/20 rounded-full text-sm font-medium'>
+    const ShowMoreCmts = (<Text className='mx-auto text-neutral-600 dark:text-neutral-400 hover:text-primary px-3 py-2 mb-2 mr-auto bg-neutral-500/10 rounded-full text-sm font-medium'>
         {t('View more comments')}
     </Text>);
     return (
@@ -187,12 +187,12 @@ export const ItemInfo = memo(({ data, t }) => {
     const OwnersList = () => owners?.length > 0 ? owners?.length == 1 ? <>
         <Text className="text-neutral-400 dark:text-neutral-600 text-sm"> · </Text>
         <Link href={data.owners[0].url} emulate={true}>
-            <Text className=" bg-primary/10 hover:bg-primary/20 p-1.5 rounded-md text-primary dark:text-primary-d hover:text-linkhover text-xs ">
+            <Text className=" bg-primary/10 hover:bg-primary/20 p-1.5 rounded-md text-primary hover:text-linkhover text-xs ">
                 {owners[0].title}
             </Text>
         </Link></> : <><Text className="text-neutral-400 dark:text-neutral-600 px-1">·</Text>
         <Pressable onPress={() => { setShowContextList(true) }} >
-            <Text className=" bg-primary/10 hover:bg-primary/20 px-1.5 py-0.5 rounded-md text-primary dark:text-primary-d hover:text-linkhover text-sm font-medium">
+            <Text className=" bg-primary/10 hover:bg-primary/20 px-1.5 py-0.5 rounded-md text-primary hover:text-linkhover text-sm font-medium">
                 {owners[0].title} + {owners.length - 1}
             </Text>
         </Pressable>
@@ -207,7 +207,7 @@ export const ItemInfo = memo(({ data, t }) => {
         >
             <View className='gap-x-2 mb-2'>{
                 owners.map((item, index) => (
-                    <Row className='items-center py-1 pl-2 my-1 border border-bdr dark:border-bdr-d rounded-lg hover:bg-primary/10 active:bg-primary/20 dark:hover:bg-primary-d/10 dark:active:bg-primary-d/20' key={'chk' + index}>
+                    <Row className='items-center py-1 pl-2 my-1 border border-bdr dark:border-bdr-d rounded-lg hover:bg-primary/10 active:bg-primary/20 ' key={'chk' + index}>
                         <Link key={`link-{$index}`} href={item.url} emulate={true}>
                             <Text className="text-neutral-700 dark:text-neutral-200 text-sm"> {item.title}</Text>
                         </Link>
@@ -440,7 +440,7 @@ export function SmallUnit({data}) {
                             >
                                 {data.plainText}{stripTags(data.content.text)}
                             </Text>
-                            <View className="flex-none bg-primary dark:bg-primary-d rounded-full    my-auto h-min px-1.5">
+                            <View className="flex-none bg-primary rounded-full my-auto h-min px-1.5">
                                 {data.cmts.count > 0 && (
                                     <Text className="text-xs text-white dark:text-black font-medium">
                                         {data.cmts.count}

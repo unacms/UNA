@@ -300,7 +300,7 @@ function CoverImage({ mode, profileData, coverData, allowEdit, allowSwitch, titl
 
     if (mode == 'cover') {
         const isCover = !!imageUrl
-        return (<View className={`duration-300 bg-primary-200 lg:rounded-lg lg:mt-3 dark:bg-primary-950 w-full ${appSetting('layout', 'max_width_content')} mx-auto overflow-hidden ${isCover
+        return (<View className={`duration-300 bg-primary lg:rounded-lg lg:mt-3 w-full ${appSetting('layout', 'max_width_content')} mx-auto overflow-hidden ${isCover
             ? ` h-[30vh] sm:${appSetting(
                 'cover',
                 'aspect_ratio'

@@ -27,7 +27,7 @@ Units.Small = function Small({ data, imageSizes }) {
             </View>
             <View className="flex-auto sm:h-40 mt-2 flex-col p-2">
                 <Link href={data.url}>
-                    <Text numberOfLines={2} className="text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-d leading-tight text-base  font-semibold">
+                    <Text numberOfLines={2} className="text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary leading-tight text-base  font-semibold">
                         {data.title}
                     </Text>
                 </Link>
@@ -62,7 +62,7 @@ Units.Small = function Small({ data, imageSizes }) {
                         >
                             <Text
                                 numberOfLines={2}
-                                className="text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary leading-tight sm:dark:hover:text-primary-d  text-sm font-bold"
+                                className="text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary leading-tight text-sm font-bold"
                             >
                                 {data.title}
                             </Text>
@@ -109,7 +109,7 @@ Units.Base = function Base({ data, imageSizes }) {
                             <Text className="text-4xl">
                                 {data.category?.icon}
                             </Text>
-                            <Text className="text-primary-600 dark:text-primary-400 tracking-tighter text-xs">
+                            <Text className="text-primary dark:text-primary tracking-tighter text-xs">
                                 {data.category?.name}
                             </Text>
                         </View>
@@ -134,7 +134,7 @@ Units.Base = function Base({ data, imageSizes }) {
                                     >
                                         <Text
                                             numberOfLines={3}
-                                            className="text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-d text-base sm:text-lg font-bold"
+                                            className="text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary text-base sm:text-lg font-bold"
                                         >
                                             {data.title}
                                         </Text>
@@ -180,10 +180,10 @@ Units.Base = function Base({ data, imageSizes }) {
                                 }}
                             />
                             <View className="sm:hidden flex-row gap-x-1 my-auto  ml-auto bg-primary/10 border border-primary/10 px-2.5 py-1 my-auto  rounded-full ">
-                                <Text className=" text-base rounded-full text-primary-600 dark:text-primary-400 tracking-tighter  my-auto">
+                                <Text className=" text-base rounded-full text-primary tracking-tighter  my-auto">
                                     {data.category?.icon}
                                 </Text>
-                                <Text className="text-sm rounded-full text-primary-600 dark:text-primary-400 tracking-tighter my-auto">
+                                <Text className="text-sm rounded-full text-primary tracking-tighter my-auto">
                                     {data.category?.name}
                                 </Text>
                             </View>

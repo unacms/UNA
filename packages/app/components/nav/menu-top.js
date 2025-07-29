@@ -37,7 +37,7 @@ function MenuTopItem({ link, title, index, icon, isTitle, isActive }) {
                 <View className="flex-auto group" key={`menu-${index}`}>
                     <Row
                         className={`items-center justify-center py-3 min-w-16 rounded-xl  web:duration-300 group-active:opacity-50 ${isActive
-                                ? 'bg-bgritemprimary text-primary dark:text-primary-d dark:bg-bgritemprimary-d group-hover:bg-bgritemprimary-h dark:group-hover:bg-bgritemprimary-dh'
+                                ? 'bg-bgritemprimary text-primary dark:bg-bgritemprimary-d group-hover:bg-bgritemprimary-h dark:group-hover:bg-bgritemprimary-dh'
                                 : 'text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-950 dark:group-hover:text-neutral-50 hover:bg-bgritem dark:hover:bg-bgritem-d'
                             }`}
                     >
@@ -46,7 +46,7 @@ function MenuTopItem({ link, title, index, icon, isTitle, isActive }) {
                             size="24"
                             color={isActive ? colors.primary : colors.barsColor}
                         />
-                        {isTitle && <Text className={`whitespace-nowrap text-ellipsis overflow-hidden tracking-tight font-medium ${isActive ? 'text-primary dark:text-primary-d' : 'text-neutral-800 dark:text-neutral-200'} text-base px-3 leading-6`}>{title}</Text>}
+                        {isTitle && <Text className={`whitespace-nowrap text-ellipsis overflow-hidden tracking-tight font-medium ${isActive ? 'text-primary' : 'text-neutral-800 dark:text-neutral-200'} text-base px-3 leading-6`}>{title}</Text>}
                     </Row>
                 </View>
             </Tooltip>

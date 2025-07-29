@@ -318,7 +318,7 @@ export  const settingsDefault = {
             pressed_classes: {
                 pressed_container:'bg-primary/20 ',
                 pressed_text:
-                    ' text-primary-600 dark:text-primary-500 group-hover:text-primary-700 dark:group-hover:text-primary-400 ',
+                    ' text-primary group-hover:text-primary ',
             },
             button_rounded: false,
             align_items: 'between',
@@ -950,7 +950,7 @@ export  const settingsDefault = {
             container: '  gap-x-2 items-center',
         },
         /*switcher: {
-            container: 'items-center flex flex-row-reverse justify-between gap-x-2 items-center h-14 min-w-14 rounded-xl flex-auto  p-3  bg-neutral-50 border border-neutral-200  hover:border-neutral-300 focus:border-primary dark:bg-neutral-900 overflow-hidden  dark:border-neutral-800 dark:hover:border-neutral-700  dark:focus:border-primary-d  focus:bg-bgrinput-f dark:focus:bg-neutral-950    web:duration-300  placeholder-neutral-500   ',
+            container: 'items-center flex flex-row-reverse justify-between gap-x-2 items-center h-14 min-w-14 rounded-xl flex-auto  p-3  bg-neutral-50 border border-neutral-200  hover:border-neutral-300 focus:border-primary dark:bg-neutral-900 overflow-hidden  dark:border-neutral-800 dark:hover:border-neutral-700  focus:bg-bgrinput-f dark:focus:bg-neutral-950    web:duration-300  placeholder-neutral-500   ',
             text: ' text-neutral-800 dark:text-neutral-200  text-base ',
             track: 'item-center rounded-full ',
             thumb: ' rounded-full aspect-square bg-white',
@@ -1031,7 +1031,7 @@ export  const settingsDefault = {
             default_variant: 'default',
             default_ring: 'p-1 ',
             pressed_container: 'bg-primary/20',
-            pressed_text: 'text-primary-700 dark:text-primary-300 font-medium group-hover:text-primary-800 dark:group-hover:text-primary-200',
+            pressed_text: 'text-primary dark:text-primary font-medium group-hover:text-primary dark:group-hover:text-primary',
             xs: {
                 rounded: 'rounded-md',
                 padding: 'h-6 min-w-6 px-1',
@@ -1119,7 +1119,7 @@ export  const settingsDefault = {
 
             'u-btn-link-cnt': 'web:hover:bg-bgritemprimary dark:web:hover:bg-bgritemprimary active:opacity-50',
             'u-btn-link-text':
-                'font-semibold text-primary dark:text-primary-d',
+                'font-semibold text-primary',
             'u-btn-link-trans': '  web:duration-300',
             'u-btn-link-color-icon-light': 'rgba(37,99,235,1)',
             'u-btn-link-color-icon-dark': 'rgba(37,99,235,1)',
@@ -1169,12 +1169,12 @@ export  const settingsDefault = {
             'u-btn-group-item-link-text':
                 'font-medium text-neutral-800 dark:text-neutral-200 dark:group-hover:text-neutral-50',
             'u-btn-group-item-link-icon':
-                'text-primary-600 dark:text-primary-500 dark:group-hover:text-primary-400',
+                'text-primary dark:text-primary dark:group-hover:text-primary',
             'u-btn-group-item-link-pressed-cnt': 'bg-transparent',
             'u-btn-group-item-link-pressed-text':
-                'text-primary-700 dark:text-neutral-600 dark:group-hover:text-primary-500',
+                'text-primary dark:text-neutral-600 dark:group-hover:text-primary',
             'u-btn-group-item-link-pressed-icon':
-                'text-primary-700 dark:text-primary-600 dark:group-hover:text-primary-500',
+                'text-primary dark:text-primary dark:group-hover:text-primary',
 
             'u-btn-group-item-outline-cnt':
                 'border border-bdritem dark:border-bdritem-d web:hover:bg-bgritem-h dark:web:hover:bg-bgritem-dh active:opacity-50',
@@ -1193,7 +1193,7 @@ export  const settingsDefault = {
             'u-btn-badge-cnt':
                 ' bg-primary/20 ',
             'u-btn-badge-text':
-                'font-medium text-primary-700 dark:text-primary-300',
+                'font-medium text-primary dark:text-primary',
             'u-btn-badge-trans': '  web:duration-200',
             'u-btn-badge-color-icon-light': ' ',
             'u-btn-badge-color-icon-dark': ' ',

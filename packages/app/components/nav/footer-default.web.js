@@ -88,14 +88,14 @@ function MenuBottomItem({ link, title, index, icon, isActive, profile, iFrCounte
                 className="w-full"
             >
                 {isActive && (
-                    <View className="-top-2 w-full bg-primary dark:bg-primary-d rounded-xl h-0.5 animate-appear" />
+                    <View className="-top-2 w-full bg-primary rounded-xl h-0.5 animate-appear" />
                 )}
                 <View className={`min-h-12 justify-between items-center ${isActive && ''}`}>
                     <Text className={`${isActive ? 'text-primary' : 'text-neutral-700 dark:text-neutral-300'}`}>
                         {link === appSetting('dashboard', 'url') ? profile : <Icon size={24} icon={icon} color={isActive ? colors.primary : colors.default} />}
                     </Text>
                     {<Text className={`group-hover:text-primary dark:group-hover:text-primary text-xs tracking-tight  leading-4 whitespace-nowrap ${isActive ? 'text-primary' : 'text-neutral-700 dark:text-neutral-300'}`}>{title}</Text>}
-                    {badge && <View className={`absolute bg-primary dark:bg-primary-d shadow-sm dark:border-neutral-900 rounded-full px-1.5 items-center justify-center  -top-1 left-1/2 -translate-x-1/2 ml-6`}><Text className="text-white text-xs ">{badge.text}</Text></View>}
+                    {badge && <View className={`absolute bg-primary shadow-sm dark:border-neutral-900 rounded-full px-1.5 items-center justify-center  -top-1 left-1/2 -translate-x-1/2 ml-6`}><Text className="text-white text-xs ">{badge.text}</Text></View>}
                 </View>
             </Link>
         </View>

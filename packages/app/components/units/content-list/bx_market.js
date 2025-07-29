@@ -69,7 +69,7 @@ export default function Unit(props) {
                                 <View className="flex-auto flex-col px-2 py-3 gap-y-2 h-32 ">
                                     <Row className="justify-between">
                                         <View className="flex-col gap-y-3">
-                                            <Text className="mr-auto bg-primary/20 dark:bg-primary-900 rounded-lg font-semibold px-2 py-1 flex-none flex-auto text-neutral-800 dark:text-neutral-200">
+                                            <Text className="mr-auto bg-primary/20 rounded-lg font-semibold px-2 py-1 flex-none flex-auto text-neutral-800 dark:text-neutral-200">
                                                 {data.price_recurring > 0
                                                     ? data.price_recurring +
                                                       "$/" +
@@ -80,7 +80,7 @@ export default function Unit(props) {
                                             </Text>
                                             <Text
                                                 numberOfLines={2}
-                                                className="text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-d leading-5 text-base font-bold"
+                                                className="text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary leading-5 text-base font-bold"
                                             >
                                                 {data.title}
                                             </Text>
