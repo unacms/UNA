@@ -684,6 +684,19 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
             />
         }, [dataItems, numColumns, dataItems.length]);
 
+        if (layoutName == 'navigator'){
+            return (
+                <View className={
+                        cn(isRightCol ? 'flex-auto' : 'w-full mx-auto',
+                            layoutName !== 'navigator' && 'p-md',
+                            contentPaddingClass)
+                    }>
+                        {TabFlashListM}
+                        {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 && callFn("noContentByUrl", [route?.endpoint])))}
+                    </View>
+            )
+        }
+
         const sidebarUnitType = route.blocks?.browse_sidebar?.unitType || 'default';
         const cellsCustomConfig = appSetting('layouts', route?.pageData?.uri);
         const pageData = route.inited ? route.pageData : prevRoute.pageData;
@@ -699,6 +712,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
                         window.dispatchEvent(new Event('resize_panel'));
                     });
                 }}
+
             >
                 {isLeftCol && <>
                     <Panel className={`hidden ${cellsCustomConfig.cells?.left?.breakpoint}:block`} {...cellsCustomConfig.cells?.left}>
