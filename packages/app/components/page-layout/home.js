@@ -29,58 +29,58 @@ import { Switch } from 'app/design/controls'
 import { useLayoutSettings } from 'app/context/layout-settings';
 
 function Example() {
-  const [value, setValue] = React.useState('account');
-   const [isActive, setIsActive] = useState(false);
-   const [checked, setChecked] = React.useState(false);
-  return (
-    <>
-    <Switch
-    size=""
-                    onValueChange={setChecked}
-                    value={checked}
-                />
-   
-    <TabsPrimitive.Root
-      value={value}
-      onValueChange={setValue}
-      className='w-full max-w-[400px] mx-auto flex-col gap-1.5'
-    >
-      <TabsPrimitive.List  className='flex-row w-full'>
-        <TabsPrimitive.Trigger value='account' 
-        className="
+    const [value, setValue] = React.useState('account');
+    const [isActive, setIsActive] = useState(false);
+    const [checked, setChecked] = React.useState(false);
+    return (
+        <>
+            <Switch
+                size=""
+                onValueChange={setChecked}
+                value={checked}
+            />
+
+            <TabsPrimitive.Root
+                value={value}
+                onValueChange={setValue}
+                className='w-full max-w-[400px] mx-auto flex-col gap-1.5'
+            >
+                <TabsPrimitive.List className='flex-row w-full'>
+                    <TabsPrimitive.Trigger value='account'
+                        className="
     px-4 py-2 text-gray-500
     aria-selected:text-blue-600
     aria-selected:border-b-2
     aria-selected:border-blue-600
   "
-        >
-          <Text>Account</Text>
-        </TabsPrimitive.Trigger>
-        <TabsPrimitive.Trigger value='password' 
-             className="
+                    >
+                        <Text>Account</Text>
+                    </TabsPrimitive.Trigger>
+                    <TabsPrimitive.Trigger value='password'
+                        className="
     px-4 py-2 text-gray-500
     aria-selected:text-blue-600
     aria-selected:border-b-2
     aria-selected:border-blue-600
   "
-        >
-          <Text>Password</Text>
-        </TabsPrimitive.Trigger>
-      </TabsPrimitive.List>
-      <TabsPrimitive.Content value='account'>
-        <Text>Account content</Text>
-      </TabsPrimitive.Content>
-      <TabsPrimitive.Content value='password'>
-        <Text>Password content</Text>
-      </TabsPrimitive.Content>
-    </TabsPrimitive.Root></>
-  );
+                    >
+                        <Text>Password</Text>
+                    </TabsPrimitive.Trigger>
+                </TabsPrimitive.List>
+                <TabsPrimitive.Content value='account'>
+                    <Text>Account content</Text>
+                </TabsPrimitive.Content>
+                <TabsPrimitive.Content value='password'>
+                    <Text>Password content</Text>
+                </TabsPrimitive.Content>
+            </TabsPrimitive.Root></>
+    );
 }
 
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from');
 
 export default function (props) {
-   // return <Example/>
+    // return <Example/>
     const { width: windowWidth } = useWindowDimensions();
     const isWeb = Platform.OS == 'web'
     if (appSetting('config', 'show_ui')) {
@@ -277,11 +277,7 @@ export default function (props) {
             )
         })}</>
 
-        const SideBarContent = <>{/* {appSetting('layout', 'sidebar_search') && (
-                                <View className="pb-3 w-full">
-                                    <Search type="input" placeholder="Enter search text" />
-                                </View>
-                            )} */}
+        const SideBarContent = <>
             <View className={appSetting('layout', 'sidebar_container')}>
                 {appSetting('layout', 'show_profile_info') && (
                     <View className="pb-1 mb-1 border-b border-bdr dark:border-bdr-d">
@@ -346,6 +342,7 @@ export default function (props) {
                             key={'block_' + index}
                         >
                             <BlockByName
+                                contentOnly={true}
                                 name={item.block}
                                 data={props.data}
                                 {...item.block.props}
@@ -374,27 +371,27 @@ export default function (props) {
             >
                 {(layoutName == 'hor' && isWeb) && <>
                     <Panel className={`hidden ${cellsCustomConfig.cells?.left?.breakpoint}:block`} {...cellsCustomConfig.cells?.left} >
-                        <View className='fixed-process py-lg '>
+                        <View className='fixed-process py-lg'>
                             {SideBarContent}
                         </View>
                     </Panel>
                     <PanelHandler gap="hidden xl:block w-lg" sizable={cellsCustomConfig.sizable} />
                 </>}
-                <Panel className="mx-auto w-full" {...cellsCustomConfig.cells?.center}>
-                    
-                        {FeedContent}
-                    
+                <Panel className="mx-auto w-full py-lg" {...cellsCustomConfig.cells?.center}>
+
+                    {FeedContent}
+
                 </Panel>
 
                 {isWeb && <><PanelHandler gap="w-lg hidden lg:block" sizable={cellsCustomConfig.sizable} />
-                <Panel className={`hidden ${cellsCustomConfig.cells?.right?.breakpoint}:block`} {...cellsCustomConfig.cells?.right}>
+                    <Panel className={`hidden ${cellsCustomConfig.cells?.right?.breakpoint}:block`} {...cellsCustomConfig.cells?.right}>
                         <View className='fixed-process py-lg'>
-                        {AsideContent}
+                            {AsideContent}
                         </View>
-                    
-                </Panel></>}
+
+                    </Panel></>}
             </PanelGroup>
         )
-       
+
     }
 }
