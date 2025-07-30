@@ -29,7 +29,7 @@ export  const settingsDefault = {
         title: "NEO",
     },
     layout: {
-        body: ' bg-bgrbody dark:bg-bgrbody-d ',
+        body: ' bg-background ',
         defaults:{
             name: 'hor',
             density: 'default',
@@ -80,7 +80,7 @@ export  const settingsDefault = {
             offset: ' h-16 w-full ',
             container: ' hidden lg:flex fixed w-full mx-auto h-16 left-[50%] translate-x-[-50%]  ',
             initial: '  my-auto w-full items-center transition-all web:duration-300 ease-in-out will-change-transform shadow-[0_0_0_1px_rgba(0,0,0,0.08),0_2px_4px_0_rgba(0,0,0,0.05)] dark:shadow-[0_0_0_1px_rgba(31,41,55,0.5),0_2px_4px_0_rgba(0,0,0,0.05)]    ',
-            scrolled: '  backdrop-blur-xl my-auto w-full  mx-auto bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur-xl shadow-[0_0_0_1px_rgba(0,0,0,0.08),0_2px_4px_0_rgba(0,0,0,0.05)] dark:shadow-[0_0_0_1px_rgba(31,41,55,1),0_0_0_2px_rgba(0,0,0,0.8)] ',
+           scrolled: ' backdrop-blur-xl my-auto w-full mx-auto bg-card/90 backdrop-blur-xl shadow-[0_0_0_1px_rgba(0,0,0,0.08),0_2px_4px_0_rgba(0,0,0,0.05)] dark:shadow-[0_0_0_1px_rgba(31,41,55,1),0_0_0_2px_rgba(0,0,0,0.8)] ',
             content: ' h-16 mx-auto justify-between ',
             content_left: ' flex-row w-80 2xl:w-96 px-2 xl:px-3 ',
             content_right: ' w-80 2xl:w-96 items-center justify-end h-full px-3 ',
@@ -936,7 +936,7 @@ export  const settingsDefault = {
             topmenu_button_size: 'base',
             topmenu_button_pressed: true,
             left_menu_cnt: '  ',
-            cover_base: 'w-full shadow-sm bg-card',
+            cover_base: 'w-full shadow-sm bg-gradient-to-b from-background to-card',
             cover_content: "items-center h-full w-full overflow-hidden justify-between"
         },
         checkbox: {

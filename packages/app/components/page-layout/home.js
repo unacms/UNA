@@ -314,7 +314,7 @@ export default function (props) {
 
 
                 {feedList.length > 1 && <View
-                    className=' pb-1 mb-1 border-b border-bdrnavbar dark:border-bdrnavbar-d gap-y-0.5'
+                    className=' pb-1 mb-1 border-b border-border/20 gap-y-0.5'
                 >
 
                     {feedList.map((item, index) => {
@@ -372,22 +372,22 @@ export default function (props) {
             >
                 {(layoutName == 'hor' && isWeb) && <>
                     <Panel className={`hidden ${cellsCustomConfig.cells?.left?.breakpoint}:block`} {...cellsCustomConfig.cells?.left} >
-                        <View className='fixed-process'>
+                        <View className='p-md fixed-process'>
                             {SideBarContent}
                         </View>
                     </Panel>
                     <PanelHandler gap="hidden xl:block" sizable={cellsCustomConfig.sizable} />
                 </>}
-                <Panel {...cellsCustomConfig.cells?.center}>
-
-                    {FeedContent}
-
+                <Panel {...cellsCustomConfig.cells?.center}> 
+                    <View className='sm:p-md'>
+                        {FeedContent}
+                    </View>
                 </Panel>
 
                 {isWeb && <>
                     <PanelHandler gap=" hidden lg:block" sizable={cellsCustomConfig.sizable} />
                     <Panel className={`hidden ${cellsCustomConfig.cells?.right?.breakpoint}:block`} {...cellsCustomConfig.cells?.right}>
-                        <View className='fixed-process'>
+                        <View className='fixed-process p-md'>
                             {AsideContent}
                         </View>
                     </Panel>

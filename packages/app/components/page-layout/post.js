@@ -56,14 +56,14 @@ export default function PageLayout(props) {
         .filter(([key, value]) => value.forList && ((windowWidth < LAYOUT_BREAKPOINTS[TABLET_MODE_FROM] && value.forHeader == null) || windowWidth >= LAYOUT_BREAKPOINTS[TABLET_MODE_FROM]))
         .map(([key, value]) => ({
             id: `block_${key}`,
-            data: <BlockByName data={props.data} name={value} />
+            data: <BlockByName data={props.data} name={value} contentOnly={true} />
         })), [props.blocks, props.data, windowWidth]);
 
     const headerItems = useMemo(() => {
         return Object.entries(props.blocks)
             .filter(([key, value]) => value.forHeader)
             .map(([key, value]) => ({
-                data: <BlockByName data={props.data} name={value} />
+                data: <BlockByName data={props.data} name={value} contentOnly={true} />
             }));
     }, [props.blocks, props.data]);
 

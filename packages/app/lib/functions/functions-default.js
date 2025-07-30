@@ -400,8 +400,8 @@ export function getBackgrounds() {
             dark: <SvgBackgroundLoginDark />,
         },
         default: {
-            light: <View className="w-full h-full bg-bgrbody dark:bg-bgrbody-d" />,
-            dark: <View className="w-full h-full bg-bgrbody dark:bg-bgrbody-d" />,
+            light: <View className="w-full h-full bg-background" />,
+            dark: <View className="w-full h-full bg-background" />,
         }
     }
 }
