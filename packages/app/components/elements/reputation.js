@@ -37,9 +37,6 @@ export function ReputationSummary({ data }) {
             <View className='flex-auto'>
                 <ReputationSummarySimple data={data} />
             </View>
-            <View className='flex-auto'>
-                <ReputationLevels data={data.levels_list} />
-            </View>
         </Row>
     )
 }
@@ -83,6 +80,7 @@ export function ReputationWidget({ data }) {
 
 function ReputationSummarySimple({ data }) {
     const [isModal, setIsModal] = useState(false);
+    const [isModal2, setIsModal2] = useState(false);
     return (
         <View className="w-full gap-y-2 p-md rounded-2xl shadow-sm border border-border min-w-40 max-w-sm items-center">
             <Modal
@@ -96,6 +94,17 @@ function ReputationSummarySimple({ data }) {
                     <ReputationActions data={data.actions_list} />
                 </View>
             </Modal>
+             <Modal
+                scrollable
+                title="Levels"
+                onVisible={isModal2}
+                outerClickClose
+                onClose={() => setIsModal2(false)}
+            >
+                <View className="w-full lg:min-w-md">
+                   <ReputationLevels data={data.levels_list} />
+                </View>
+            </Modal>
             <Profile
                 {...data.author_data}
                 displayType="unit_wo_info"
@@ -103,13 +112,17 @@ function ReputationSummarySimple({ data }) {
             />
             <Text className="font-bold text-lg text-neutral-800 dark:text-neutral-200">{data.author_data.display_name}</Text>
             <Text className="text-sm text-muted-foreground ">{data.points || 0} points</Text>
-            <View className='flex-auto absolute right-1 top-1'><Button variant='link' rounded size='sm' startDecorator="Info" onPress={() => setIsModal(true)} /></View>
+            <View className='flex-auto absolute right-1 top-1'>
+                <Button variant='link' rounded size='sm' startDecorator="Info" onPress={() => setIsModal(true)} />
+            </View>
+            <View className='flex-auto absolute left-1 top-1'>
+                <Button variant='link' rounded size='sm' startDecorator="Plus" onPress={() => setIsModal2(true)} />
+            </View>
 
             {data.levels.map((item, index) => (
                 <Row className='gap-x-2 items-center justify-center' key={index}>
                         <Icon icon={item.icon} size={20} />
                         <Text className=" text-sm text-foreground">{item.title}</Text>
-                    
                 </Row>
             ))}
         </View>
