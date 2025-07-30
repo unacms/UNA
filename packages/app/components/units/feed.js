@@ -3,26 +3,16 @@ import { appSetting } from 'app/lib/util'
 import { View } from 'app/design/view'
 import { Modal } from 'app/design/controls'
 import { fetcher } from 'app/lib/fetcher'
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-    CardDescription,
-    CardFooter,
-    
-} from 'app/ui/molecules/card';
-import {Block, BlockHeader, BlockContent, BlockFooter, BlockTitle, BlockDescription, BlockIcon, BlockName, BlockActions} from 'app/ui/molecules/page-block';
-import AnimatedBlock from 'app/ui/atoms/animated-block'
+import { Block, BlockHeader, BlockContent, BlockFooter, BlockName, BlockActions } from 'app/ui/molecules/page-block';
 import { useTranslation } from 'react-i18next';
 import { CommentsModal, CommentsSection, MenuManage, ActionMenu, CounterMenu, Author, UnitFeed, SmallUnit, prepareData, MainContent, FeedEditForm } from 'app/lib/feed-helpers'
 import { Platform } from 'react-native'
 
-function DefaultUnit({data}) {
- 
+function DefaultUnit({ data }) {
+
     const isWeb = Platform.OS === 'web';
     const { t } = useTranslation();
-    
+
     const [viewState, setViewState] = useState({ view: '' })
     const [cmtsData, setCmtsData] = useState(false)
 
@@ -42,15 +32,18 @@ function DefaultUnit({data}) {
         setCmtsData({
             title: data.author_data.display_name + "'s post", data: <CommentsModal initFormData={initFormData}
                 itemContent={{
-                    id: "block-comments", data: <><View className='sm:px-4 sm:pb-3 mt-4'><Author data={data} url={url} t={t} /></View>{MainContentComponent}</>
+                    id: "block-comments", data: <><View className='sm:px-4 sm:pb-3 mt-4'><Author data={data} url={url} t={t} />{MainContentComponent}</View></>
                 }}
                 commentsData={res.data} />
         })
     }
-    if (isCommentsModal && data.menu_actions?.items[0] && data.menu_actions?.items[0].data?.callback)
-        data.menu_actions.items.find(x => x.name == "item-comment").data.callback = showCommentsModal
+    if (isCommentsModal) {
+        const commentItem = data.menu_actions.items.find(x => x.name === "item-comment");
+        if (commentItem?.data) {
+            commentItem.data.callback = showCommentsModal;
+        }
+    }
 
-   
     if (viewState.view == 'deleted')
         return <></>
 
@@ -62,28 +55,24 @@ function DefaultUnit({data}) {
                 onClose={() => setCmtsData(false)}
                 onVisible={!!cmtsData}
                 title={cmtsData.title}
-                padding= ''
+                padding=''
             >
                 {cmtsData.data}
             </Modal>}
-            
-                <BlockHeader>
-                    <BlockName><Author data={data} url={url} t={t} /></BlockName>
-                    <BlockActions>
-                        <MenuManage id={data.id} menu={data?.menu_manage} setViewState={setViewState} />
-                    </BlockActions>
-                </BlockHeader>
-                <BlockContent>
+            <BlockHeader>
+                <BlockName><Author data={data} url={url} t={t} /></BlockName>
+                <BlockActions>
+                    <MenuManage id={data.id} menu={data?.menu_manage} setViewState={setViewState} />
+                </BlockActions>
+            </BlockHeader>
+            <BlockContent>
                 {MainContentComponent}
                 {(!!data.menu_counters && appSetting('feed', 'counters_menu')) && <CounterMenu data={data.menu_counters} showCommentsModal={showCommentsModal} />}
-               
-                </BlockContent>
-                <BlockFooter>
-                
-               
+            </BlockContent>
+            <BlockFooter>
                 <ActionMenu data={data.menu_actions} showCommentsModal={showCommentsModal} />
                 {commentsData && <CommentsSection url={url} t={t} isCommentsModal={isCommentsModal} showCommentsModal={showCommentsModal} commentsDataInline={commentsData} data={data} isShowMoreComments={isShowMoreComments} />}
-                </BlockFooter>
+            </BlockFooter>
         </Block>
     )
 }
