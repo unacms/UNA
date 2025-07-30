@@ -4,93 +4,93 @@
 
 @layer base {
     :root {
-        /* NativewindUI Design Tokens - Light Mode */
-        --background: 242 242 247;
-        --foreground: 3 7 18;
-        --card: 255 255 255;
-        --card-foreground: 3 7 18;
-        --popover: 230 230 235;
-        --popover-foreground: 3 7 18;
-        --primary: 37 99 235;
-        --primary-foreground: 255 255 255;
-        --secondary: 229 231 235;
-        --secondary-foreground: 31 41 55;
-        --muted: 243 244 246;
-        --muted-foreground: 107 114 128;
-        --accent: 219 234 254;
-        --accent-foreground: 255 255 255;
-        --destructive: 255 56 43;
-        --destructive-foreground: 255 255 255;
-        --border: 229 231 235;
-        --input: 210 210 215;
-        --ring: 230 230 235;
+
+        --background: 244 244 245; /*zinc-100*/
+        --foreground: 24 24 27; /*zinc-900*/
+        --card: 255 255 255; /*white*/
+        --card-foreground: 24 24 27; /*zinc-900*/
+        --popover: 255 255 255; /*white*/
+        --popover-foreground: 24 24 27; /*zinc-900*/
+        --primary: 24 24 27; /*zinc-900*/
+        --primary-foreground: 255 255 255; /*white*/
+        --secondary: 212 212 216;  /*zinc-300*/
+        --secondary-foreground: 39 39 42; /*zinc-800*/
+        --muted: 228 228 231; /*zinc-200*/
+        --muted-foreground: 63 63 70; /*zinc-700*/
+        --accent: 186 230 253; /*sky-200*/
+        --accent-foreground: 7 89 133; /*sky-800*/
+        --destructive: 225 29 72; /*rose-600*/
+        --destructive-foreground: 255 255 255; /*white*/
+        --border: 228 228 231; /*zinc-200*/
+        --input: 228 228 231; /*zinc-200*/
+        --ring: 228 228 231; /*zinc-200*/
 
         /* Android-specific variants */
-        --android-background: 249 249 255;
-        --android-foreground: 0 0 0;
-        --android-card: 255 255 255;
-        --android-card-foreground: 24 28 35;
-        --android-popover: 215 217 228;
-        --android-popover-foreground: 0 0 0;
-        --android-primary: 0 112 233;
-        --android-primary-foreground: 255 255 255;
-        --android-secondary: 176 201 255;
-        --android-secondary-foreground: 20 55 108;
-        --android-muted: 193 198 215;
-        --android-muted-foreground: 65 71 84;
-        --android-accent: 169 73 204;
-        --android-accent-foreground: 255 255 255;
-        --android-destructive: 186 26 26;
-        --android-destructive-foreground: 255 255 255;
-        --android-border: 215 217 228;
-        --android-input: 210 210 215;
-        --android-ring: 215 217 228;
+        --android-background: 250 250 250; /*zinc-50*/
+        --android-foreground: 24 24 27; /*zinc-900*/
+        --android-card: 255 255 255; /*white*/
+        --android-card-foreground: 24 24 27; /*zinc-900*/
+        --android-popover: 255 255 255; /*white*/
+        --android-popover-foreground: 24 24 27; /*zinc-900*/
+        --android-primary: 24 24 27; /*zinc-900*/
+        --android-primary-foreground: 255 255 255; /*white*/
+        --android-secondary: 212 212 216; /*zinc-300*/
+        --android-secondary-foreground: 24 24 27; /*zinc-900*/
+        --android-muted: 228 228 231; /*zinc-200*/
+        --android-muted-foreground: 63 63 70; /*zinc-700*/
+        --android-accent: 186 230 253; /*sky-200*/
+        --android-accent-foreground: 7 89 133; /*sky-800*/
+        --android-destructive: 225 29 72; /*rose-600*/
+        --android-destructive-foreground: 255 255 255; /*white*/
+        --android-border: 228 228 231; /*zinc-200*/
+        --android-input: 228 228 231; /*zinc-200*/
+        --android-ring: 228 228 231; /*zinc-200*/
     }
 
     .dark-theme-vars {
         /* NativewindUI Design Tokens - Dark Mode */
-        --background: 0 0 0;
-        --foreground: 249 250 251;
-        --card: 17 24 39;
-        --card-foreground: 249 250 251;
-        --popover: 40 40 42;
-        --popover-foreground: 249 250 251;
-        --primary: 59 130 246;
-        --primary-foreground: 255 255 255;
-        --secondary: 31 41 55;
-        --secondary-foreground: 229 231 235;
-        --muted: 70 70 73;
-        --muted-foreground: 142 142 147;
-        --accent: 255 52 95;
-        --accent-foreground: 255 255 255;
-        --destructive: 254 67 54;
-        --destructive-foreground: 255 255 255;
-        --border: 31 41 55;
-        --input: 55 55 57;
-        --ring: 40 40 42;
+        --background: 9 9 11; /*zinc-950*/
+        --foreground: 244 244 245; /*zinc-100*/
+        --card: 24 24 27; /*zinc-900*/
+        --card-foreground: 244 244 245; /*zinc-100*/
+        --popover: 24 24 27; /*zinc-900*/
+        --popover-foreground: 244 244 245; /*zinc-100*/
+        --primary: 244 244 245; /*zinc-100*/
+        --primary-foreground: 9 9 11; /*zinc-950*/
+        --secondary: 63 63 70; /*zinc-700*/
+        --secondary-foreground: 228 228 231; /*zinc-200*/
+        --muted: 39 39 42; /*zinc-800*/
+        --muted-foreground: 212 212 216; /*zinc-300*/
+        --accent: 7 89 133; /*sky-800*/
+        --accent-foreground: 186 230 253; /*sky-200*/
+        --destructive: 225 29 72; /*rose-600*/
+        --destructive-foreground: 255 255 255; /*white*/
+        --border: 39 39 42; /*zinc-800*/
+        --input: 39 39 42; /*zinc-800*/
+        --ring: 39 39 42; /*zinc-800*/
 
         /* Android-specific variants for dark mode */
-        --android-background: 0 0 0;
-        --android-foreground: 255 255 255;
-        --android-card: 16 19 27;
-        --android-card-foreground: 224 226 237;
-        --android-popover: 39 42 50;
-        --android-popover-foreground: 224 226 237;
-        --android-primary: 3 133 255;
-        --android-primary-foreground: 255 255 255;
-        --android-secondary: 28 60 114;
-        --android-secondary-foreground: 189 209 255;
-        --android-muted: 216 226 255;
-        --android-muted-foreground: 139 144 160;
-        --android-accent: 83 0 111;
-        --android-accent-foreground: 238 177 255;
-        --android-destructive: 147 0 10;
-        --android-destructive-foreground: 255 255 255;
-        --android-border: 39 42 50;
-        --android-input: 55 55 57;
-        --android-ring: 39 42 50;
+        --android-background: 9 9 11; /*zinc-950*/
+        --android-foreground: 244 244 245; /*zinc-100*/
+        --android-card: 24 24 27; /*zinc-900*/
+        --android-card-foreground: 244 244 245; /*zinc-100*/
+        --android-popover: 24 24 27; /*zinc-900*/
+        --android-popover-foreground: 244 244 245; /*zinc-100*/
+        --android-primary: 244 244 245; /*zinc-100*/
+        --android-primary-foreground: 9 9 11; /*zinc-950*/
+        --android-secondary: 63 63 70; /*zinc-700*/
+        --android-secondary-foreground: 228 228 231; /*zinc-200*/
+        --android-muted: 39 39 42; /*zinc-800*/
+        --android-muted-foreground: 212 212 216; /*zinc-300*/
+        --android-accent: 7 89 133; /*sky-800*/
+        --android-accent-foreground: 186 230 253; /*sky-200*/
+        --android-destructive: 225 29 72; /*rose-600*/
+        --android-destructive-foreground: 255 255 255; /*white*/
+        --android-border: 39 39 42; /*zinc-800*/
+        --android-input: 39 39 42; /*zinc-800*/
+        --android-ring: 39 39 42; /*zinc-800*/
     }
-
+    
     @media (prefers-color-scheme: dark) {
         :root {
             @apply dark-theme-vars;
@@ -112,15 +112,15 @@
 
     /* Card Variants */
     .u-card-base-compact {
-        @apply bg-card border border-border shadow-sm text-card-foreground py-2 sm:py-3 lg:py-4 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4 rounded-xl;
+        @apply bg-card shadow-sm text-card-foreground py-2 sm:py-3 lg:py-4 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4 rounded-xl;
     }
 
     .u-card-base-default {
-        @apply bg-card border border-border shadow-sm text-card-foreground py-3 sm:py-4 lg:py-6 gap-y-3 sm:gap-y-4 lg:gap-y-6 gap-x-3 sm:gap-x-4 lg:gap-x-6 rounded-2xl;
+        @apply bg-card shadow-sm text-card-foreground py-3 sm:py-4 lg:py-6 gap-y-3 sm:gap-y-4 lg:gap-y-6 gap-x-3 sm:gap-x-4 lg:gap-x-6 rounded-2xl;
     }
 
     .u-card-base-relaxed {
-        @apply bg-card border border-border shadow-sm text-card-foreground py-5 sm:py-6 lg:py-8 gap-y-5 sm:gap-y-6 lg:gap-y-8 gap-x-5 sm:gap-x-6 lg:gap-x-8 rounded-3xl;
+        @apply bg-card shadow-sm text-card-foreground py-5 sm:py-6 lg:py-8 gap-y-5 sm:gap-y-6 lg:gap-y-8 gap-x-5 sm:gap-x-6 lg:gap-x-8 rounded-3xl;
     }
 
     /* Card Header Styles */
@@ -246,53 +246,53 @@
 
 
     .u-panel-handler {
-        @apply w-lg h-full py-lg;
+       @apply w-1 h-full ;
     }
 
     .u-panel-handler-compact {
-        @apply u-panel-handler w-lg !important;
+        @apply u-panel-handler !important;
     }
 
     .u-panel-handler-default {
-        @apply u-panel-handler w-lg !important;
+        @apply u-panel-handler !important;
     }
 
     .u-panel-handler-relaxed {
-        @apply u-panel-handler w-lg !important;
+        @apply u-panel-handler !important;
     }
 
     .u-panel-line {
-        @apply w-1 h-full rounded-full active:bg-border bg-transparent group-hover:bg-border delay-300 mx-auto transition-all duration-300 rounded-full;
+       @apply w-1 group-active:w-1 group-hover:w-1 group-active:w-sm h-full transition-all duration-300 ease-in-out group-hover:bg-muted group-active:bg-muted mx-auto;
     }
 
     /* Panel Group Variants */
     .u-panel-group {
-        @apply flex;
+        @apply flex  ;
     }
 
     .u-panel-group-compact {
-        @apply u-panel-group px-2 sm:px-3 gap-0 !important;
+        @apply u-panel-group  !important;
     }
 
     .u-panel-group-default {
-        @apply u-panel-group px-3 sm:px-4 gap-0 !important;
+        @apply u-panel-group !important;
     }
 
     .u-panel-group-relaxed {
-        @apply u-panel-group px-4 sm:px-6 gap-0 !important;
+        @apply u-panel-group  !important;
     }
 
     /* Block Variants */
     .u-block-base-compact {
-        @apply bg-card u-max-width-block sm:border border-border shadow-sm text-card-foreground py-2 sm:py-3 lg:py-4 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4 sm:rounded-xl;
+        @apply bg-card u-max-width-block  border-border shadow-sm text-card-foreground py-2 sm:py-3 lg:py-4 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4 rounded-xl;
     }
 
     .u-block-base-default {
-        @apply bg-card u-max-width-block sm:border border-border shadow-sm text-card-foreground py-3 sm:py-4 lg:py-6 gap-y-3 sm:gap-y-4 lg:gap-y-6 gap-x-3 sm:gap-x-4 lg:gap-x-6 sm:rounded-2xl;
+        @apply bg-card u-max-width-block  border-border shadow-sm text-card-foreground py-3 sm:py-4 lg:py-6 gap-y-3 sm:gap-y-4 lg:gap-y-6 gap-x-3 sm:gap-x-4 lg:gap-x-6 rounded-2xl;
     }
 
     .u-block-base-relaxed {
-        @apply bg-card u-max-width-block sm:border border-border shadow-sm text-card-foreground py-5 sm:py-6 lg:py-8 gap-y-5 sm:gap-y-6 lg:gap-y-8 gap-x-5 sm:gap-x-6 lg:gap-x-8 sm:rounded-3xl;
+        @apply bg-card u-max-width-block  border-border shadow-sm text-card-foreground py-5 sm:py-6 lg:py-8 gap-y-5 sm:gap-y-6 lg:gap-y-8 gap-x-5 sm:gap-x-6 lg:gap-x-8 rounded-3xl;
     }
 
     /* Block Header Styles */
@@ -575,39 +575,31 @@
 
     /* Width Padding Utilities */
     .w-sm {
-        @apply w-2;
+        @apply w-2 lg:w-3 xl:w-4;
     }
-
     [data-density="compact"] .w-sm {
-        @apply w-1;
+        @apply w-1 lg:w-2 xl:w-3;
     }
-
     [data-density="relaxed"] .w-sm {
-        @apply w-3;
+        @apply w-3 lg:w-4 xl:w-6;
     }
-
     .w-md {
-        @apply w-4;
+        @apply w-3 lg:w-4 xl:w-6;
     }
-
     [data-density="compact"] .w-md {
-        @apply w-2;
+        @apply w-2 lg:w-3 xl:w-4;
     }
-
     [data-density="relaxed"] .w-md {
-        @apply w-6;
+        @apply w-4 lg:w-6 xl:w-8;
     }
-
     .w-lg {
-        @apply w-6;
+        @apply w-4 lg:w-6 xl:w-8;
     }
-
     [data-density="compact"] .w-lg {
-        @apply w-4;
+        @apply w-3 lg:w-4 xl:w-6;
     }
-
     [data-density="relaxed"] .w-lg {
-        @apply w-8;
+        @apply w-6 lg:w-8 xl:w-10;
     }
 
     /* Small Padding (p-sm) - defaults to 'default' density */
@@ -647,6 +639,17 @@
 
     [data-density="relaxed"] .p-lg {
         @apply p-6 lg:p-8;
+    }
+
+    .m-lg {
+        @apply m-3 sm:m-4 lg:m-6;
+    } 
+
+    [data-density="compact"] .m-lg {
+        @apply m-2 sm:m-3 lg:m-4;
+    }
+    [data-density="relaxed"] .m-lg {
+        @apply m-4 sm:m-6 lg:m-8;
     }
 
     /* Horizontal Padding Utilities */
@@ -1212,7 +1215,7 @@ body,
 /* Fixed Process Improvements */
 .fixed-process {
     position: relative;
-    transition: width 0.2s ease-out;
+    transition: width 0.1s ease-in-out;
 }
 
 .fixed-process.fixed {

@@ -12,7 +12,7 @@ export default function Layout(props) {
         </>
     }
 
-    const nativeBackground = Platform.OS !== 'web' ? 'bg-screen-light dark:bg-screen-dark' : 'bg-bgrbody dark:bg-bgrbody-d';
+    const nativeBackground = Platform.OS !== 'web' ? 'bg-screen-light dark:bg-screen-dark' : 'bg-background';
 
     return (
         <View className={`text-neutral-900 dark:text-neutral-50 w-full h-full flex-1 ${nativeBackground}`}>

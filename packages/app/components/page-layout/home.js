@@ -280,7 +280,7 @@ export default function (props) {
         const SideBarContent = <>
             <View>
                 {appSetting('layout', 'show_profile_info') && (
-                    <View className="pb-1 mb-1 border-b border-bdr dark:border-bdr-d">
+                   <View className="pb-1 mb-1 border-b border-border ">
                         <Link href={currentUser.url} emulate={true}>
                             <Row
                                 className={
@@ -362,7 +362,7 @@ export default function (props) {
             <PanelGroup
                 autoSaveId={`cells-home`}
                 direction="horizontal"
-                className={`${appSetting('layout', 'max_width')} mx-auto w-full flex-auto relative sm:px-lg flex-row`}
+                className={`${appSetting('layout', 'max_width')} mx-auto w-full flex-auto relative flex-row`}
                 onLayout={(e) => {
                     requestAnimationFrame(() => {
                         document.body.offsetHeight;
@@ -376,16 +376,16 @@ export default function (props) {
                             {SideBarContent}
                         </View>
                     </Panel>
-                    <PanelHandler gap="hidden xl:block w-lg" sizable={cellsCustomConfig.sizable} />
+                    <PanelHandler gap="hidden xl:block" sizable={cellsCustomConfig.sizable} />
                 </>}
-                <Panel className="mx-auto w-full py-lg" {...cellsCustomConfig.cells?.center}>
+                <Panel {...cellsCustomConfig.cells?.center}>
 
                     {FeedContent}
 
                 </Panel>
 
                 {isWeb && <>
-                    <PanelHandler gap="w-lg hidden lg:block" sizable={cellsCustomConfig.sizable} />
+                    <PanelHandler gap=" hidden lg:block" sizable={cellsCustomConfig.sizable} />
                     <Panel className={`hidden ${cellsCustomConfig.cells?.right?.breakpoint}:block`} {...cellsCustomConfig.cells?.right}>
                         <View className='fixed-process'>
                             {AsideContent}

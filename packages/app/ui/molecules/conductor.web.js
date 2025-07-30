@@ -298,7 +298,7 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, windowWidth, isC
                     </View>
                 </ViewRef></Animated.View>
             <Animated.View className={`fixed w-full z-50 cover-2 ${isCoverDisabled ? ` hidden ${TABLET_MODE_FROM}:flex ` : ' hidden'}`} style={[{ position: isCoverDisabled ? '' : 'fixed', zIndex: '50', }, animatedStyleHeader3]} >
-                <View className="w-full  bg-bgrtabbar dark:bg-bgrtabbar-d backdrop-blur-lg border-b border-bdrtabbar dark:border-bdrtabbar-d shadow-sm">
+                <View className="w-full bg-card/90 backdrop-blur-xl shadow-sm">
                     {(isCover && !isHideCover) && <View className="w-full">
                         <CoverSmall context={pageData.context} data={pageData.cover_block} />
                     </View>}
@@ -692,7 +692,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
             <PanelGroup
                 autoSaveId={`cells-${pageData?.uri || 'default'}`}
                 direction="horizontal"
-                className={layoutName == 'navigator' ? '' : ' px-1.5 sm:px-2  '}
+                className={layoutName == 'navigator' ? '' : ''}
                 onLayout={() => {
                     requestAnimationFrame(() => {
                         document.body.offsetHeight;
@@ -702,19 +702,19 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
             >
                 {isLeftCol && <>
                     <Panel className={`hidden ${cellsCustomConfig.cells?.left?.breakpoint}:block`} {...cellsCustomConfig.cells?.left}>
-                        <View className="fixed-process">
+                        <View className="fixed-process p-md">
                             {AddBlocksCnt}
                         </View>
                     </Panel>
                     <PanelHandler
-                        gap="hidden xl:block w-lg" sizable={cellsCustomConfig.sizable}
+                        gap="hidden xl:block" sizable={cellsCustomConfig.sizable}
                     />
                 </>
                 }
                 <Panel  {...cellsCustomConfig.cells?.center}>
                     <View className={
                         cn(isRightCol ? 'flex-auto' : 'w-full mx-auto',
-                            layoutName !== 'navigator' && 'py-4',
+                            layoutName !== 'navigator' && 'p-md',
                             contentPaddingClass)
                     }>
                         {TabFlashListM}
@@ -723,10 +723,10 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
                 </Panel>
                 {isRightCol && <>
                     <PanelHandler
-                        gap="hidden xl:block w-lg" sizable={cellsCustomConfig.sizable}
+                        gap="hidden lg:block" sizable={cellsCustomConfig.sizable}
                     />
                     <Panel className={`hidden ${cellsCustomConfig.cells?.right?.breakpoint}:block`} {...cellsCustomConfig.cells?.right}>
-                        <View className={`py-4 fixed-process  `}>
+                        <View className={`p-md fixed-process `}>
                             {route?.sidebar?.content.map((item, index) => {
                                 return <View className="mb-4" key={'item' + index}><ItemRenderer unitType={sidebarUnitType} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''} /></View>
                             })}
@@ -836,23 +836,20 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
         const cellsCustomConfig = appSetting('layouts', 'navigator');
         if (cellsCustomConfig?.adjustable) {
             return (
-                <PanelGroup autoSaveId={`cells-navigator`} direction="horizontal" className={
-                    appSetting('layout', 'max_width') +
-                    ' mx-auto w-full flex-auto relative flex-row '
-                }>
+                <PanelGroup autoSaveId={`cells-navigator`} direction="horizontal" className={appSetting('layout', 'max_width')}>
                     {isShowColumn(true, windowWidth, cellsCustomConfig.cells?.left) && <>
                         <Panel {...cellsCustomConfig.cells?.left}>
-                            <View className=''>
+                            <View className='p-md'>
                                 {leftSideBarComponent}
                             </View>
                         </Panel>
                         <PanelHandler
-                            gap="hidden xl:block w-lg" sizable={cellsCustomConfig.sizable}
+                            gap="hidden lg:block" sizable={cellsCustomConfig.sizable}
                         /></>}
                     <Panel {...cellsCustomConfig.cells?.center}>
-
-                        {MainComponent}
-
+                        <View className='p-md'>
+                            {MainComponent}
+                        </View>
                     </Panel>
                 </PanelGroup>
             );

@@ -626,7 +626,7 @@ const ComponentsFullFooter = () => {
         <>
             {' '}
             <View className="w-full h-16"></View>
-            <View className=" w-full p-3 flex-row justify-center bg-bgrbody dark:bg-bgrbody-d border-t border-bdr dark:border-bdr-d fixed bottom-0 ">
+            <View className=" w-full p-3 flex-row justify-center bg-background border-t border-border fixed bottom-0 ">
                 <Link href="/">
                     <Button
                         variant="text"
