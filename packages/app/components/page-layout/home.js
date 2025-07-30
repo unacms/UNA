@@ -154,6 +154,7 @@ export default function (props) {
                 {topBlocks?.map((item, index) => {
                     return (
                         <BlockByName
+                            contentOnly={true}
                             key={'block_' + index}
                             name={item.block}
                             data={props.data}
@@ -234,6 +235,7 @@ export default function (props) {
                         <View key={'view' + index}>
                             <BlockByName
                                 data={props.data}
+                                contentOnly={true}
                                 name={
                                     props.blocks[
                                     item.name + '_feed_form'
@@ -247,6 +249,7 @@ export default function (props) {
                                     item.name + '_feed'
                                     ]
                                 }
+                                contentOnly={true}
                                 unitMode={unitMode}
                                 exProps={{
                                     headerBlocks: headerBlocks,
@@ -377,7 +380,7 @@ export default function (props) {
                     </Panel>
                     <PanelHandler gap="hidden xl:block w-lg" sizable={cellsCustomConfig.sizable} />
                 </>}
-                <Panel className="mx-auto w-full sm:py-lg" {...cellsCustomConfig.cells?.center}>
+                <Panel className="mx-auto w-full" {...cellsCustomConfig.cells?.center}>
                     
                         {FeedContent}
                     
