@@ -7,72 +7,56 @@ import { View } from 'app/design/view'
 import Card from 'app/ui/molecules/card'
 
 export default function defaultUnit(props) {
-  const data = props.data;
-  const imageSizes = getImageSizes()
-  let sMeta = (
-    <Profile
-      {...data.author_data}
-      displayType="unit"
-      displaySize="sm"
-      showInfo="false"
-    />
-  )
+    const data = props.data
+    const imageSizes = getImageSizes()
+   
 
-  return (
-    <>
-      <Card
-        addClassName="  "
-        margin="mx-2 my-2.5"
-        rounded="rounded-2xl"
-      >
-        <View className="flex-col h-full">
-          <View className="flex-col  h-full w-full">
-            <Link href={data.url}>
-              <View
-                className={
-                  data.image
-                    ? 'flex-row-reverse sm:flex-col w-full p-3 sm:p-1 gap-x-2'
-                    : 'flex-col w-full p-3  sm:p-1 '
-                }
-              >
-                <View
-                  className={
-                    (!data.image ? 'hidden sm:block ' : '') +
-                    ' aspect-square h-full sm:aspect-video rounded-lg sm:rounded-xl overflow-hidden w-1/4  sm:w-full'
-                  }
-                >
-                  <Image
-                    {...data.image}
-                    alt={data.title}
-                    view="cover"
-                    className="u-cover"
-                    sizes={imageSizes}
-                  />
-                </View>
-                <View className="flex-auto flex-col sm:h-16 mb-auto">
-                  <View
-                    className={`flex-auto flex-col ${data.image ? '  ' : ' '
-                      } gap-y-2 sm:p-3`}
-                  >
-                    {true && (
-                      <Text
-                        numberOfLines={2}
-                        className="text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary leading-tight text-base font-bold"
-                      >
-                        {data.title}
-                      </Text>
-                    )}
-                    
-                  </View>
-                </View>
-              </View>
-            </Link>
-            <View className=" mt-auto sm:px-4 sm:pb-3 ">
-              {sMeta}
-            </View>
-          </View>
+    return (
+        <>
+            <Card className="p-sm">
+                
+                    <View className="flex-col gap-sm">
+                    <Link href={data.url}>
+                        <View className="aspect-video rounded-xl overflow-hidden w-full">
+                            <Image
+                                {...data.image}
+                                alt={data.title}
+                                view="cover"
+                                className="u-cover"
+                                sizes={imageSizes}
+                            />
+                        </View></Link>
+                        
+                        <View className="flex-auto flex-row px-sm gap-2 ">
+                        <View className="flex-none  ">
+                        <Profile
+                            {...data.author_data}
+                            displayType="unit_wo_info"
+                            displaySize="base"
+                            showInfo={false}
+                        /></View>
+                        <View className="flex-auto flex-col  ">
+                         <Link href={data.url}>
+                         <Text
+                            numberOfLines={2}
+                            className="text-card-foreground hover:bg-muted sm:hover:text-primary rounded-md p-1 leading-tight text-lg font-bold"
+                        >
+                            {data.title}
+                        </Text>
+                        </Link>
+                        <View className="flex-auto p-sm mb-1 ">
+                        <Profile
+            {...data.author_data}
+            displayType="unit_wo_image"
+            displaySize="xs"
+            showInfo="false"
+        /></View>
+        
         </View>
-      </Card>
-    </>
-  )
+                        </View>
+                    </View>
+             
+            </Card>
+        </>
+    )
 }

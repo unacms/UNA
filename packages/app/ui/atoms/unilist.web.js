@@ -18,7 +18,7 @@ export default function UniList(props) {
 
     const itemContent = useCallback((index, data) => {
         return (
-            <View className="mb-md">
+            <View className="">
                 {renderItem({ item: data, index })}
             </View>
         );
@@ -68,14 +68,14 @@ export default function UniList(props) {
     }
 
     const ItemComponent = ({ className, ...props }) => (
-        <ReactNativeView className={`w-1/${numColumns} p-1 ${className || ''}`} {...props} />
+        <ReactNativeView className={`w-1/${numColumns} p-sm ${className || ' mb-md '}`} {...props} />
     );
 
     const ListComponent = forwardRef(({ className, ...props }, ref) => {
         return (
             <ReactNativeView
                 ref={ref}
-                className={`u-max-width-block w-full mx-auto flex flex-wrap flex-row gap-sm ${className || ''}`}
+                className={`u-max-width-block w-full mx-auto flex flex-wrap flex-row ${className || ''}`}
                 {...props}
             />
         );
