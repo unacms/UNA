@@ -26,10 +26,10 @@ function AnimatedBackgroundComponent({ }) {
     useEffect(() => {
         const newBg = backgrounds[background]?.[theme] || backgrounds.default[theme];
 
-        if (bgRef.current && newBg.type === bgRef.current.type && JSON.stringify(newBg.props) === JSON.stringify(bgRef.current.props)) {
+        /*if (bgRef.current && newBg.type === bgRef.current.type && JSON.stringify(newBg.props) === JSON.stringify(bgRef.current.props)) {
             return;
         }
-
+*/
         setPrevBg(bgRef.current);
         setCurrentBg(newBg);
         

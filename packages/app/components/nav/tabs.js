@@ -27,6 +27,7 @@ import VersionCheck from 'react-native-version-check';
 import { Alert } from 'react-native';
 import { useLayoutData } from 'app/context/layout';
 import { getAlert } from 'app/lib/util';
+import { useLayoutSettings } from 'app/context/layout-settings';
 
 enableScreens(appSetting('native', 'enable_screens'));
 
@@ -74,7 +75,8 @@ export default function () {
     const { setLayoutData } = useLayoutData()
     const isUseCustomFont = appSetting('native', 'use_custom_font');
     const fontsToLoad = isUseCustomFont ? fonts : {};
-
+    const { themeName } = useLayoutSettings();
+    
     const [fontsLoaded] = useFonts(fontsToLoad);
     const { t } = useTranslation();
 
@@ -95,12 +97,11 @@ export default function () {
         return null;
     }, [currentUser?.id, currentUser?.avatar]);
 
-    const theme = appSetting('native', 'default_theme')
     useEffect(() => {
-        if (theme != 'auto') {
-            Appearance.setColorScheme(theme);
+        if (themeName != 'auto') {
+            Appearance.setColorScheme(themeName);
         }
-    }, [theme]);
+    }, [themeName]);
 
     const tabsHeight = Platform.OS == 'ios' ? 52 : 56;
 

@@ -19,13 +19,13 @@ import Link from 'app/ui/atoms/link'
 import { useCurrentUser } from 'app/context/user'
 import Profile from 'app/ui/molecules/profile'
 import ProfileSwitcher from 'app/components/elements/profile_switcher'
-import { appSetting, detectLang } from 'app/lib/util'
+import { appSetting } from 'app/lib/util'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu'
 import i18n from 'i18next'
 import { Appearance, Platform } from 'react-native'
 import { storageSet, storageClear, storageGet } from 'app/lib/util'
 import { fetcher } from 'app/lib/fetcher'
-import { Theme, useThemeName } from 'app/design/theme'
+import { Theme } from 'app/design/theme'
 import DasbordStatOld from 'app/components/elements/dashboard_stat_old'
 import ApiPerformanceReport from 'app/ui/molecules/api-performance-report'
 import ThemeCompatibilityTest from 'app/ui/molecules/nativewindui'
@@ -86,14 +86,13 @@ function getCounter(num, icon = '', add = '', color = '') {
 export default function PageLayout(props) {
     if (!appSetting('layout', 'user_remote_config'))
         return <DasbordStatOld {...props} />
-    const { layoutSettings, updateLayoutSettings } = useLayoutSettings();
-
+    const { layoutSettings, themeName, setThemeName, setLayoutName, layoutName, lang, setLang, langCode, setDensity } = useLayoutSettings();
+    console.log("layoutSettings", lang, langCode)
     const isWeb = Platform.OS == 'web'
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
-    const { themeName, setThemeName } = useThemeName()
     const { currentDensity, densityOptions } = useDensitySwitcher()
-
+    const langs = appSetting('dashboard', 'langs');
     let profile = null
     if (currentUser) {
         let dUser = Object.assign({}, currentUser)
@@ -102,43 +101,6 @@ export default function PageLayout(props) {
     }
     if (!currentUser) return <></>
 
-    const langs = detectLang()
-
-    const handleLang = async (item) => {
-        i18n.changeLanguage(item)
-        if (isWeb) {
-            storageClear()
-            storageSet('layout:lang', '', item, true)
-            window.location.href = window.location.href
-        }
-        await fetcher(
-            '/api.php?r=system/get_page_by_request/TemplServicePages&params[]=home&lang=' +
-                item
-        )
-    }
-
-    const scheme = '' //useColorScheme();
-
-    const handleTheme = async (item) => {
-        if (isWeb) {
-            const root = window.document.documentElement
-            if (item == 'auto') item = ''
-            if (item == '') root.setAttribute('data-theme', scheme)
-            else root.setAttribute('data-theme', item)
-            setThemeName(item)
-        } else {
-            if (item == 'auto') item = null
-            Appearance.setColorScheme(item)
-        }
-    }
-    const handleFormat = async (item) => {
-        updateLayoutSettings({ name: item })
-    }
-
-    const currentTheme = !isWeb
-        ? Appearance.getColorScheme()
-        : storageGet('layout:theme', '', true) || 'auto'
-    const currentFormat = layoutSettings.name
 
     return (
         <ScrollView>
@@ -180,10 +142,10 @@ export default function PageLayout(props) {
                 <BlockContent>                   
                     <ElementDashboardStat {...props} />
                     <View className="flex-row flex-wrap gap-sm">
-                        {appSetting('dashboard', 'langs').length > 1 && (
+                        {langs.length > 1 && (
                             <View className="w-full max-w-sm flex-1 min-w-[160px]">
                                 <DropdownMenu
-                                    items={appSetting('dashboard', 'langs').map(
+                                    items={langs.map(
                                         (lang) => ({
                                             id: lang,
                                             key: lang,
@@ -192,12 +154,12 @@ export default function PageLayout(props) {
                                         })
                                     )}
                                     onSelect={(oItem) => {
-                                        handleLang(oItem.id)
+                                        setLang(oItem.id)
                                     }}
                                 >
                                     <Button
                                         variant="secondary"
-                                        title={t('lang_' + langs[1])}
+                                        title={t('lang_' + lang)}
                                         startDecorator="Languages"
                                         fullWidth
                                         align="left"
@@ -218,12 +180,12 @@ export default function PageLayout(props) {
                                         })
                                     )}
                                     onSelect={(oItem) => {
-                                        handleTheme(oItem.id)
+                                        setThemeName(oItem.id)
                                     }}
                                 >
                                     <Button
                                         variant="secondary"
-                                        title={t('theme_' + currentTheme)}
+                                        title={t('theme_' + themeName)}
                                         startDecorator="Moon"
                                         fullWidth
                                         align="left"
@@ -238,7 +200,7 @@ export default function PageLayout(props) {
                             <View className="w-full max-w-sm flex-1 min-w-[160px]">
                                 <DropdownMenu
                                     items={densityOptions}
-                                    onSelect={(option) => updateLayoutSettings({ density: option.id })}
+                                    onSelect={(option) => setDensity(option.id)}
                                 >
                                     <Button
                                         variant="secondary"
@@ -266,12 +228,12 @@ export default function PageLayout(props) {
                                         title: t('format_' + lang),
                                     }))}
                                     onSelect={(oItem) => {
-                                        handleFormat(oItem.id)
+                                        setLayoutName(oItem.id)
                                     }}
                                 >
                                     <Button
                                         variant="secondary"
-                                        title={t('format_' + currentFormat)}
+                                        title={t('format_' + layoutName)}
                                         startDecorator="Layout"
                                         fullWidth
                                         align="left"

@@ -8,12 +8,11 @@ import { resources } from 'app/translation';
 import { useEffect, useMemo } from 'react'
 import Subscriber from 'app/ui/molecules/subscriber';
 import AnimatedBackground from 'app/ui/atoms/animated-background';
-import { appSetting, detectLang } from 'app/lib/util';
-import { getInitialTheme } from 'app/design/theme';
+import { appSetting } from 'app/lib/util';
+import { useLayoutSettings } from 'app/context/layout-settings';
 
 export default function RootLayout({ children }) {
-
-    const langs = typeof window !== 'undefined' ? detectLang() : ['en', 'en'];
+    const { langCode } = useLayoutSettings();
 
     // Initialize i18n in useEffect to avoid setState during render
     useEffect(() => {
@@ -23,24 +22,17 @@ export default function RootLayout({ children }) {
                 .init({
                     compatibilityJSON: 'v3',
                     resources: resources,
-                    lng: langs[0], // default language
+                    lng: langCode, // default language
                     fallbackLng: 'en',
                     interpolation: {
                         escapeValue: false
                     }
                 });
         }
-    }, [langs[0]]);
+    }, [langCode]);
 
     // Memoize QueryClient to prevent unnecessary recreations
     const queryClient = useMemo(() => new QueryClient(), []);
-
-
-    useEffect(() => {
-        const themeName = getInitialTheme();
-
-        document.documentElement.setAttribute('data-theme', themeName);
-    }, [])
 
     return (
         <html>

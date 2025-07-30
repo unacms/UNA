@@ -52,21 +52,6 @@ export async function subscribeOneSignal(currentUser, askPermission = false) {
     }
 }
 
-export function detectLang() {
-    
-    const selectedLang = storageGet('layout:lang', '', true) || 'system'
-    let currentSystemLang = 'en';
-    const locales = RNLocalize.getLocales();
-    let langs = appSetting('dashboard', 'langs');
-    if (locales && locales.length > 0) {
-        if (langs.includes(locales[0].languageCode)) {
-            currentSystemLang = locales[0].languageCode;
-        }
-    }
-
-    return [selectedLang && selectedLang != 'system' ? selectedLang : currentSystemLang, selectedLang];
-}
-
 export function normalizeClasses(a) {
     if (!a) return a
     return isWeb ? a : a.replace(/\b\S*(hover|focus|active|group|duration|group-hover):\S*\b/g, "") .replace(/\s{2,}/g, " ").trim();
@@ -1051,14 +1036,6 @@ const getNameFromSetting = (setting) => {
     }
     return null;
 };
-
-/*export function getLayout(currentUser, layoutName = '') {
-    let a = storageGet('layout:format', '', true);
-    if (!a)
-        return appSetting('layout', 'default_layout');
-
-    return a;
-}*/
 
 export async function getDataForMenu(menu, callback) {
     const data = await fetcher(

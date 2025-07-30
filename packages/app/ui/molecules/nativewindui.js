@@ -1,31 +1,13 @@
 import { Platform, Appearance } from 'react-native';
 import { Text } from 'app/design/typography'
 import { View, Row, Pressable, ScrollView } from 'app/design/view'
-import { useThemeName } from 'app/design/theme';
+
 import { TextInput as TextInputDef } from 'react-native'
+import { useLayoutSettings } from 'app/context/layout-settings';
 
 export default function ThemeCompatibilityTest({ data }) {
-    const { themeName, setThemeName } = useThemeName();
-
-    // Handle theme switching (updated to work with CSS selectors)
-    const handleTheme = async (item) => {
-        if (Platform.OS === 'web') {
-            const root = window.document.documentElement;
-            if (item === 'auto') {
-                // Remove theme attribute to let media query take over
-                root.removeAttribute('data-theme');
-                setThemeName('');
-            } else {
-                // Set explicit theme (light or dark)
-                root.setAttribute('data-theme', item);
-                setThemeName(item);
-            }
-        } else {
-            if (item === 'auto') item = null;
-            Appearance.setColorScheme(item);
-            setThemeName(item);
-        }
-    };
+    const { themeName, setThemeName } = useLayoutSettings();
+    
 
     return (
         <View className="gap-y-4">
@@ -70,21 +52,21 @@ export default function ThemeCompatibilityTest({ data }) {
             <View className='w-full py-2 bg-ring border items-center'><Text className="foregraund">ring</Text></View>
             <View className="flex-row space-x-2">
                 <Pressable
-                    onPress={() => handleTheme('light')}
+                    onPress={() => setThemeName('light')}
                     className="bg-primary hover:bg-primary/50 px-4 py-2 rounded-lg"
                 >
                     <Text className="text-primary-foreground font-medium">Light</Text>
                 </Pressable>
 
                 <Pressable
-                    onPress={() => handleTheme('dark')}
+                    onPress={() => setThemeName('dark')}
                     className="bg-secondary px-4 py-2 rounded-lg"
                 >
                     <Text className="text-secondary-foreground font-medium">Dark</Text>
                 </Pressable>
 
                 <Pressable
-                    onPress={() => handleTheme('auto')}
+                    onPress={() => setThemeName('auto')}
                     className="bg-accent px-4 py-2 rounded-lg"
                 >
                     <Text className="text-accent-foreground font-medium">Auto</Text>

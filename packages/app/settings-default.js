@@ -30,12 +30,13 @@ export  const settingsDefault = {
     },
     layout: {
         body: ' bg-bgrbody dark:bg-bgrbody-d ',
-         defaults:{
+        defaults:{
             name: 'hor',
             density: 'default',
+            theme: 'auto',
+            lang: 'en'
         },
         avaliable_layouts: ['hor', 'ver', 'mixed'], // OLD appSetting('layout', 'format_list')
-        default_layout: 'hor', // TODO REMOVE
         screen: ' w-full ',
         ui_density_switcher: true,
    
@@ -115,7 +116,6 @@ export  const settingsDefault = {
         saml: false,
     },
     native: {
-        default_theme: 'auto',
         enable_screens: true, //OLD appSetting('layout', 'native_enable_screens')
         lazy_tabs: false, // OLD appSetting('layout', 'native_lazy_tabs')
         disable_screenshots: false, // OLD appSetting('layout', 'disable_screenshots')
@@ -169,7 +169,7 @@ export  const settingsDefault = {
     },
     dashboard: {
         url: '/dashboard', //OLD appSetting('layout', 'dashboard')
-        langs: ['system', 'en', 'ru'], //OLD appSetting('layout', 'switch_lang')
+        langs: ['auto', 'en', 'ru'], //OLD appSetting('layout', 'switch_lang')
         switch_theme: true, //OLD appSetting('layout', 'switch_theme')
         modules_list: [
             'friends',

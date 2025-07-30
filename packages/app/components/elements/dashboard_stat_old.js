@@ -119,7 +119,7 @@ export default function PageLayout(props) {
         currentFormat = appSetting('layout', 'default_layout');
 
     const langItems = [
-        { id: 'system', key: 'system', name: 'system', title: t('lang_system') },
+        { id: 'auto', key: 'auto', name: 'auto', title: t('lang_auto') },
         ...appSetting('dashboard', 'langs').map(lang => ({
             id: lang,
             key: lang,

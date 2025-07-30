@@ -13,13 +13,13 @@ import {
 import RNScreenshotPrevent, { addListener } from 'react-native-screenshot-prevent';
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import { appSetting,detectLang } from 'app/lib/util'
+import { appSetting } from 'app/lib/util'
 import { resources } from 'app/translation';
 import { remoteSettings } from 'app/settings-remote';
 import { getRemoteSettings } from 'app/config';
 import { StatusBar } from 'react-native';
 import { LogLevel, OneSignal } from 'react-native-onesignal';
-
+import { useLayoutSettings } from 'app/context/layout-settings';
 
 
 const AppLayout = React.memo(() => {
@@ -52,15 +52,15 @@ const AppLayout = React.memo(() => {
             //console.log('OneSignal: notification clicked:', event);
         });*/
     }, []);
+    const { langCode } = useLayoutSettings();
 
-    const langs = detectLang();
 
     i18n
         .use(initReactI18next)
         .init({
             compatibilityJSON: 'v3',
             resources: resources,
-            lng: langs[0], 
+            lng: langCode, 
             fallbackLng: 'en',
             interpolation: {
                 escapeValue: false

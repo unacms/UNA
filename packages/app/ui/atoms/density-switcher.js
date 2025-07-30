@@ -8,7 +8,7 @@ export const useDensitySwitcher = () => {
         { id: 'relaxed', title: 'Relaxed', icon: 'Plus' }
     ];
 
-    const { layoutSettings, updateLayoutSettings, hydrated } = useLayoutSettings();
+    const { layoutSettings } = useLayoutSettings();
     const currentDensity = densityOptions.find(d => d.id === layoutSettings?.density);
 
 

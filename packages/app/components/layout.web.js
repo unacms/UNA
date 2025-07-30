@@ -112,23 +112,24 @@ const metaAdder = (queryProperty, value) => {
 
 export default function Layout(props) {
 
-    const { currentUser, setCurrentUser } = useCurrentUser();
-    const { layoutName } = props.layout;
-    let data = props.data;
-    let blocks = props.blocks;
-    let uri = props.uri
-    let children = props.children
+    const { currentUser } = useCurrentUser();
+    const { layout, data, blocks, uri, children } = props;
+    const { layoutName } = layout;
     const { width } = useWindowDimensions();
 
-    let theme = ThemeName();
+    const theme = ThemeName();
     const root = window.document.documentElement;
-    root.setAttribute('theme', theme);
+        console.log("theme5", theme)
+    root.setAttribute('theme', theme)
+    root.setAttribute('data-theme', theme);
+    
 
     const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
 
     darkModeMediaQuery.addListener((e) => {
         const newColorScheme = e.matches ? "dark" : "light";
-        root.setAttribute('theme', newColorScheme);
+        root.setAttribute('theme', newColorScheme)
+        root.setAttribute('data-theme', newColorScheme);
     });
 
     const handlePageShow = useCallback((event) => {
