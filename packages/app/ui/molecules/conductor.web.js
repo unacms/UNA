@@ -289,7 +289,7 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, windowWidth, isC
     return (
         <>
             <Animated.View className={`${conductorTheme.cover_base} cover-1 `} style={[{ zIndex: '50' }, animatedStyleHeader2]}>
-                <ViewRef ref={cover1Ref} className={conductorTheme.cover_content+ ' aaaa'}   >
+                <ViewRef ref={cover1Ref} className={conductorTheme.cover_content + ' aaaa'}   >
                     {(isCover && !isHideCover) && <View className="w-full dfsdf">
                         <Cover data={pageData.cover_block} mode={headerSettings.cover} uri={uri} context={pageData.context} />
                     </View>}
@@ -637,7 +637,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
     }, [skeleton, currentRoute, unitType]);
 
     useEffect(() => {
-        setTimeout(() =>   window.dispatchEvent(new Event('resize_panel')), 100);
+        setTimeout(() => window.dispatchEvent(new Event('resize_panel')), 100);
     }, [windowWidth]);
 
     const Preload = useMemo(() => getSkeletonForList(sSkeleton, numColumns), [sSkeleton, numColumns]);
@@ -645,7 +645,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
     const RenderScene = useCallback(({ route, header, prevRoute, headerHeight, isCoverDisabled }) => {
 
         const dataItems = route?.data
-        const contentPaddingClass = header ? `u-content-padding-${density}` : '';
+        const contentPaddingClass = header ? '' : '';
 
 
         const isRightCol = route?.sidebar?.content?.length > 0 || route?.blocks?.browse_sidebar;
@@ -688,50 +688,55 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
         const cellsCustomConfig = appSetting('layouts', route?.pageData?.uri);
         const pageData = route.inited ? route.pageData : prevRoute.pageData;
         //if (cellsCustomConfig?.adjustable) {
-            return (
-                <PanelGroup 
-                    autoSaveId={`cells-${pageData?.uri || 'default'}`} 
-                    direction="horizontal" 
-                    className={layoutName == 'navigator' ? '' : ' px-1.5 sm:px-2  '}
-                    onLayout={() => {window.dispatchEvent(new Event('resize_panel'));}}
-                >
-                    {isLeftCol && <>
-                        <Panel className={`hidden ${cellsCustomConfig.cells?.left?.breakpoint}:block`} {...cellsCustomConfig.cells?.left}>
-                            <View className={`py-4 fixed-process `}>
-                                {AddBlocksCnt}
-                            </View>
-                        </Panel>
-                        <PanelHandler 
-                           gap="hidden xl:block w-lg" sizable={cellsCustomConfig.sizable} 
-                        />
-                    </>
-                    }
-                    <Panel  {...cellsCustomConfig.cells?.center}>
-                        <View className={
-                            cn(isRightCol ? 'flex-auto' : 'w-full mx-auto',
-                            layoutName !== 'navigator' && 'py-4',
-                            contentPaddingClass)
-                        }>
-                            {TabFlashListM}
-                            {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 && callFn("noContentByUrl", [route?.endpoint])))}
+        return (
+            <PanelGroup
+                autoSaveId={`cells-${pageData?.uri || 'default'}`}
+                direction="horizontal"
+                className={layoutName == 'navigator' ? '' : ' px-1.5 sm:px-2  '}
+                onLayout={() => {
+                    requestAnimationFrame(() => {
+                        document.body.offsetHeight;
+                        window.dispatchEvent(new Event('resize_panel'));
+                    });
+                }}
+            >
+                {isLeftCol && <>
+                    <Panel className={`hidden ${cellsCustomConfig.cells?.left?.breakpoint}:block`} {...cellsCustomConfig.cells?.left}>
+                        <View className="fixed-process">
+                            {AddBlocksCnt}
                         </View>
                     </Panel>
-                    {isRightCol && <>
-                        <PanelHandler 
-                           gap="hidden xl:block w-lg" sizable={cellsCustomConfig.sizable} 
-                        />
-                        <Panel className={`hidden ${cellsCustomConfig.cells?.right?.breakpoint}:block`} {...cellsCustomConfig.cells?.right}>
-                            <View className={`py-4 fixed-process  `}>
-                                {route?.sidebar?.content.map((item, index) => {
-                                    return <View className="mb-4" key={'item' + index}><ItemRenderer unitType={sidebarUnitType} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''} /></View>
-                                })}
-                                <BlockByName data={route.pageData ? route.pageData : data} name={route.blocks?.browse_sidebar} sidebar={true} perLine={1} maxItems={1} />
-                            </View>
-                        </Panel>
-                    </>}
-                </PanelGroup>
-            );
-       
+                    <PanelHandler
+                        gap="hidden xl:block w-lg" sizable={cellsCustomConfig.sizable}
+                    />
+                </>
+                }
+                <Panel  {...cellsCustomConfig.cells?.center}>
+                    <View className={
+                        cn(isRightCol ? 'flex-auto' : 'w-full mx-auto',
+                            layoutName !== 'navigator' && 'py-4',
+                            contentPaddingClass)
+                    }>
+                        {TabFlashListM}
+                        {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 && callFn("noContentByUrl", [route?.endpoint])))}
+                    </View>
+                </Panel>
+                {isRightCol && <>
+                    <PanelHandler
+                        gap="hidden xl:block w-lg" sizable={cellsCustomConfig.sizable}
+                    />
+                    <Panel className={`hidden ${cellsCustomConfig.cells?.right?.breakpoint}:block`} {...cellsCustomConfig.cells?.right}>
+                        <View className={`py-4 fixed-process  `}>
+                            {route?.sidebar?.content.map((item, index) => {
+                                return <View className="mb-4" key={'item' + index}><ItemRenderer unitType={sidebarUnitType} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''} /></View>
+                            })}
+                            <BlockByName data={route.pageData ? route.pageData : data} name={route.blocks?.browse_sidebar} sidebar={true} perLine={1} maxItems={1} />
+                        </View>
+                    </Panel>
+                </>}
+            </PanelGroup>
+        );
+
 
     }, [numColumns, windowWidth, index, density]);
 
@@ -820,13 +825,13 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
         }
 
         const MainComponent = <View className=" flex-auto ">
-                            {(headerSettings.showAltTopMenu) && topSideBarComponent}
-                            {/*(windowWidth < LAYOUT_BREAKPOINTS.lg && layoutName == 'navigator' && leftSideBarBlocks.length > 0) && <View className="items-start ml-4 mt-2 mb-2">
+            {(headerSettings.showAltTopMenu) && topSideBarComponent}
+            {/*(windowWidth < LAYOUT_BREAKPOINTS.lg && layoutName == 'navigator' && leftSideBarBlocks.length > 0) && <View className="items-start ml-4 mt-2 mb-2">
                                 <Button title="Filters" variant="default" size="sm" rounded onPress={showFilters} />
                             </View>*/}
-                            {sceneHeaderComponent}
-                            <RenderScene isCoverDisabled={isCoverDisabled} prevRoute={prevRoute} headerHeight={isShowFilters && routes.length > 1 ? defaultHeaderHeight + 52 : defaultHeaderHeight} header={isUseCurrentHeader ? null : headerComponent} route={currentRoute} />
-                        </View>
+            {sceneHeaderComponent}
+            <RenderScene isCoverDisabled={isCoverDisabled} prevRoute={prevRoute} headerHeight={isShowFilters && routes.length > 1 ? defaultHeaderHeight + 52 : defaultHeaderHeight} header={isUseCurrentHeader ? null : headerComponent} route={currentRoute} />
+        </View>
 
         const cellsCustomConfig = appSetting('layouts', 'navigator');
         if (cellsCustomConfig?.adjustable) {
@@ -841,13 +846,13 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
                                 {leftSideBarComponent}
                             </View>
                         </Panel>
-                        <PanelHandler 
-                            gap="hidden xl:block w-lg" sizable={cellsCustomConfig.sizable} 
+                        <PanelHandler
+                            gap="hidden xl:block w-lg" sizable={cellsCustomConfig.sizable}
                         /></>}
                     <Panel {...cellsCustomConfig.cells?.center}>
-                        
-                            {MainComponent}
-                        
+
+                        {MainComponent}
+
                     </Panel>
                 </PanelGroup>
             );

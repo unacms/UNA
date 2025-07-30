@@ -18,7 +18,7 @@ export default function UniList(props) {
 
     const itemContent = useCallback((index, data) => {
         return (
-            <View className="mb-sm">
+            <View className="mb-md">
                 {renderItem({ item: data, index })}
             </View>
         );

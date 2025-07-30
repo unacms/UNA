@@ -13,7 +13,7 @@
         --popover-foreground: 3 7 18;
         --primary: 37 99 235;
         --primary-foreground: 255 255 255;
-        --secondary: 229 231 235;  
+        --secondary: 229 231 235;
         --secondary-foreground: 31 41 55;
         --muted: 243 244 246;
         --muted-foreground: 107 114 128;
@@ -104,46 +104,47 @@
 }
 
 @layer components {
+
     /* Common settings */
-    .u-max-width-block{
+    .u-max-width-block {
         @apply max-w-7xl;
     }
-    
+
     /* Card Variants */
     .u-card-base-compact {
         @apply bg-card border border-border shadow-sm text-card-foreground py-2 sm:py-3 lg:py-4 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4 rounded-xl;
     }
-    
+
     .u-card-base-default {
         @apply bg-card border border-border shadow-sm text-card-foreground py-3 sm:py-4 lg:py-6 gap-y-3 sm:gap-y-4 lg:gap-y-6 gap-x-3 sm:gap-x-4 lg:gap-x-6 rounded-2xl;
     }
-    
+
     .u-card-base-relaxed {
         @apply bg-card border border-border shadow-sm text-card-foreground py-5 sm:py-6 lg:py-8 gap-y-5 sm:gap-y-6 lg:gap-y-8 gap-x-5 sm:gap-x-6 lg:gap-x-8 rounded-3xl;
     }
-    
+
     /* Card Header Styles */
     .u-card-header {
-        @apply flex flex-col ;
+        @apply flex flex-col;
     }
-    
+
     .u-card-header-compact {
         @apply u-card-header px-2 sm:px-3 lg:px-4 gap-y-1 sm:gap-y-2 lg:gap-y-3 gap-x-1 sm:gap-x-2 lg:gap-x-3;
     }
-    
+
     .u-card-header-default {
         @apply u-card-header px-3 sm:px-4 lg:px-6 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4;
     }
-    
+
     .u-card-header-relaxed {
         @apply u-card-header px-4 sm:px-6 lg:px-8 gap-y-3 sm:gap-y-4 lg:gap-y-6 gap-x-3 sm:gap-x-4 lg:gap-x-6;
     }
-    
+
     /* Card Icon Styles */
     .u-card-icon {
         @apply text-card-foreground;
     }
-    
+
     .u-card-icon-compact {
         @apply u-card-icon px-3 gap-y-1 gap-x-2;
     }
@@ -151,105 +152,162 @@
     .u-card-icon-default {
         @apply u-card-icon px-4 gap-y-2 gap-x-3;
     }
-    
+
     .u-card-icon-relaxed {
         @apply u-card-icon px-6 gap-y-3 gap-x-4;
     }
-    
+
     /* Card Title Styles */
     .u-card-title {
         @apply text-card-foreground;
     }
-    
+
     .u-card-title-compact {
-        @apply u-card-title text-lg lg:text-xl font-bold leading-none lg:leading-none tracking-tight ;
+        @apply u-card-title text-lg lg:text-xl font-bold leading-none lg:leading-none tracking-tight;
     }
-    
+
     .u-card-title-default {
-        @apply u-card-title text-xl lg:text-2xl font-bold leading-none lg:leading-none tracking-tight ;
+        @apply u-card-title text-xl lg:text-2xl font-bold leading-none lg:leading-none tracking-tight;
     }
-    
+
     .u-card-title-relaxed {
-        @apply u-card-title  text-2xl lg:text-3xl font-bold leading-none lg:leading-none tracking-tight;
+        @apply u-card-title text-2xl lg:text-3xl font-bold leading-none lg:leading-none tracking-tight;
     }
-    
+
     /* Card Description Styles */
     .u-card-description {
         @apply text-muted-foreground;
     }
-    
+
     .u-card-description-compact {
-        @apply u-card-description text-xs lg:text-sm leading-none ;
+        @apply u-card-description text-xs lg:text-sm leading-none;
     }
-    
+
     .u-card-description-default {
-        @apply u-card-description text-sm lg:text-base leading-none ;
+        @apply u-card-description text-sm lg:text-base leading-none;
     }
-    
+
     .u-card-description-relaxed {
         @apply u-card-description text-base lg:text-lg leading-none;
     }
-    
+
     /* Card Content Styles */
     .u-card-content {
         @apply text-card-foreground;
     }
-    
+
     .u-card-content-compact {
-    @apply u-card-content px-3 gap-y-2; 
+        @apply u-card-content px-3 gap-y-2;
     }
-    
+
     .u-card-content-default {
-        @apply u-card-content px-4 gap-y-3; 
+        @apply u-card-content px-4 gap-y-3;
     }
-    
+
     .u-card-content-relaxed {
         @apply u-card-content px-6 gap-y-4;
     }
-    
+
     /* Card Footer Styles */
     .u-card-footer {
         @apply flex text-card-foreground;
     }
-    
+
     .u-card-footer-compact {
         @apply u-card-footer px-3 gap-y-1.5 gap-x-2;
     }
-    
+
     .u-card-footer-default {
         @apply u-card-footer px-4 gap-y-2 gap-x-3;
     }
-    
+
     .u-card-footer-relaxed {
         @apply u-card-footer px-6 gap-y-3 gap-x-4;
     }
-    
+
+    /* Panel Variants */
+    .u-panel-base {
+        @apply mx-0;
+    }
+
+    .u-panel-base-compact {
+        @apply u-panel-base my-2 sm:my-3;
+    }
+
+    .u-panel-base-default {
+        @apply u-panel-base my-3 sm:my-4;
+    }
+
+    .u-panel-base-relaxed {
+        @apply u-panel-base my-4 sm:my-6;
+    }
+
+    /* Panel Handler Variants */
+
+
+    .u-panel-handler {
+        @apply w-lg h-full py-lg;
+    }
+
+    .u-panel-handler-compact {
+        @apply u-panel-handler w-lg !important;
+    }
+
+    .u-panel-handler-default {
+        @apply u-panel-handler w-lg !important;
+    }
+
+    .u-panel-handler-relaxed {
+        @apply u-panel-handler w-lg !important;
+    }
+
+    .u-panel-line {
+        @apply w-1 h-full rounded-full active:bg-border bg-transparent group-hover:bg-border delay-300 mx-auto transition-all duration-300 rounded-full;
+    }
+
+    /* Panel Group Variants */
+    .u-panel-group {
+        @apply flex;
+    }
+
+    .u-panel-group-compact {
+        @apply u-panel-group px-2 sm:px-3 gap-0 !important;
+    }
+
+    .u-panel-group-default {
+        @apply u-panel-group px-3 sm:px-4 gap-0 !important;
+    }
+
+    .u-panel-group-relaxed {
+        @apply u-panel-group px-4 sm:px-6 gap-0 !important;
+    }
+
     /* Block Variants */
     .u-block-base-compact {
         @apply bg-card u-max-width-block sm:border border-border shadow-sm text-card-foreground py-2 sm:py-3 lg:py-4 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4 sm:rounded-xl;
     }
-    
+
     .u-block-base-default {
         @apply bg-card u-max-width-block sm:border border-border shadow-sm text-card-foreground py-3 sm:py-4 lg:py-6 gap-y-3 sm:gap-y-4 lg:gap-y-6 gap-x-3 sm:gap-x-4 lg:gap-x-6 sm:rounded-2xl;
     }
-    
+
     .u-block-base-relaxed {
         @apply bg-card u-max-width-block sm:border border-border shadow-sm text-card-foreground py-5 sm:py-6 lg:py-8 gap-y-5 sm:gap-y-6 lg:gap-y-8 gap-x-5 sm:gap-x-6 lg:gap-x-8 sm:rounded-3xl;
     }
-    
+
     /* Block Header Styles */
     .u-block-header {
-        @apply flex flex-row items-center ;
+        @apply flex flex-row items-center;
     }
-    
+
     .u-block-header-compact {
         @apply u-block-header px-2 sm:px-3 lg:px-4 gap-y-1 sm:gap-y-2 lg:gap-y-3 gap-x-1 sm:gap-x-2 lg:gap-x-3;
     }
-    
+
     .u-block-header-default {
         @apply u-block-header px-3 sm:px-4 lg:px-6 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4;
     }
-    
+
     .u-block-header-relaxed {
         @apply u-block-header px-4 sm:px-6 lg:px-8 gap-y-3 sm:gap-y-4 lg:gap-y-6 gap-x-3 sm:gap-x-4 lg:gap-x-6;
     }
@@ -258,104 +316,104 @@
     .u-block-icon {
         @apply text-card-foreground;
     }
-    
+
     .u-block-icon-compact {
-        @apply u-block-icon ;
+        @apply u-block-icon;
     }
-    
+
     .u-block-icon-default {
-        @apply u-block-icon ;
+        @apply u-block-icon;
     }
-    
+
     .u-block-icon-relaxed {
-        @apply u-block-icon ;
+        @apply u-block-icon;
     }
-    
+
     /* Block Name Styles */
     .u-block-name {
-        @apply flex flex-col flex-auto ;
+        @apply flex flex-col flex-auto;
     }
-    
+
     .u-block-name-compact {
         @apply u-block-name gap-y-1 gap-x-3;
     }
-    
+
     .u-block-name-default {
-        @apply u-block-name gap-y-2 gap-x-4 ;
+        @apply u-block-name gap-y-2 gap-x-4;
     }
 
     .u-block-name-relaxed {
         @apply u-block-name gap-y-3 gap-x-6;
     }
-    
-        /* Block Title Styles */
+
+    /* Block Title Styles */
     .u-block-title {
         @apply text-card-foreground;
     }
-    
+
     .u-block-title-compact {
-        @apply u-block-title text-lg lg:text-xl font-bold leading-none lg:leading-none tracking-tight ;
+        @apply u-block-title text-lg lg:text-xl font-bold leading-none lg:leading-none tracking-tight;
     }
-    
+
     .u-block-title-default {
-        @apply u-block-title text-xl lg:text-2xl font-bold leading-none lg:leading-none tracking-tight ;
+        @apply u-block-title text-xl lg:text-2xl font-bold leading-none lg:leading-none tracking-tight;
     }
-    
+
     .u-block-title-relaxed {
-        @apply u-block-title  text-2xl lg:text-3xl font-bold leading-none lg:leading-none tracking-tight;
+        @apply u-block-title text-2xl lg:text-3xl font-bold leading-none lg:leading-none tracking-tight;
     }
-    
+
     /* Block Description Styles */
     .u-block-description {
         @apply text-muted-foreground;
     }
-    
+
     .u-block-description-compact {
-        @apply u-block-description text-xs lg:text-sm  ;
+        @apply u-block-description text-xs lg:text-sm;
     }
-    
+
     .u-block-description-default {
-        @apply u-block-description text-sm lg:text-base ;
+        @apply u-block-description text-sm lg:text-base;
     }
-    
+
     .u-block-description-relaxed {
-        @apply u-block-description text-base lg:text-lg ;
+        @apply u-block-description text-base lg:text-lg;
     }
-    
+
     /* Block Content Styles */
     .u-block-content {
         @apply text-card-foreground;
     }
-    
+
     .u-block-content-compact {
-    @apply u-block-content px-2 sm:px-3 lg:px-4 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-1 sm:gap-x-2 lg:gap-x-3; 
+        @apply u-block-content px-2 sm:px-3 lg:px-4 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-1 sm:gap-x-2 lg:gap-x-3;
     }
-    
+
     .u-block-content-default {
-        @apply u-block-content px-3 sm:px-4 lg:px-6 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4; 
+        @apply u-block-content px-3 sm:px-4 lg:px-6 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4;
     }
-    
+
     .u-block-content-relaxed {
         @apply u-block-content px-4 sm:px-6 lg:px-8 gap-y-3 sm:gap-y-4 lg:gap-y-6 gap-x-3 sm:gap-x-4 lg:gap-x-6;
     }
-    
+
     /* Block Footer Styles */
     .u-block-footer {
         @apply flex text-card-foreground;
     }
-    
+
     .u-block-footer-compact {
         @apply u-block-footer px-2 sm:px-3 lg:px-4 gap-y-1 sm:gap-y-2 lg:gap-y-3 gap-x-1 sm:gap-x-2 lg:gap-x-3;
     }
-    
+
     .u-block-footer-default {
         @apply u-block-footer px-3 sm:px-4 lg:px-6 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4;
     }
-    
+
     .u-block-footer-relaxed {
         @apply u-block-footer px-4 sm:px-6 lg:px-8 gap-y-3 sm:gap-y-4 lg:gap-y-6 gap-x-3 sm:gap-x-4 lg:gap-x-6;
     }
-    
+
     /* Block Actions Styles */
     .u-block-actions {
         @apply flex flex-row text-card-foreground mb-auto;
@@ -364,24 +422,24 @@
     .u-block-actions-compact {
         @apply u-block-actions gap-x-1 sm:gap-x-2 lg:gap-x-3;
     }
-    
+
     .u-block-actions-default {
         @apply u-block-actions gap-x-2 sm:gap-x-3 lg:gap-x-4;
     }
-    
+
     .u-block-actions-relaxed {
         @apply u-block-actions gap-x-3 sm:gap-x-4 lg:gap-x-6;
     }
-    
+
     /* Content Padding Styles */
     .u-content-padding-compact {
         @apply sm:p-2.5;
     }
-    
+
     .u-content-padding-default {
         @apply sm:p-3;
     }
-    
+
     .u-content-padding-relaxed {
         @apply sm:p-4;
     }
@@ -390,489 +448,544 @@
     .u-badge-base-compact {
         @apply inline-flex items-center rounded-md border px-2 py-0.5 transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
     }
-    
+
     .u-badge-base-default {
         @apply inline-flex items-center rounded-md border px-2.5 py-0.5 transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
     }
-    
+
     .u-badge-base-relaxed {
         @apply inline-flex items-center rounded-md border px-3 py-1 transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
     }
-    
+
     /* Badge Default Variant */
     .u-badge-default-compact {
         @apply border-transparent bg-primary text-primary-foreground shadow hover:bg-primary/80;
     }
-    
+
     .u-badge-default-default {
         @apply border-transparent bg-primary text-primary-foreground shadow hover:bg-primary/80;
     }
-    
+
     .u-badge-default-relaxed {
         @apply border-transparent bg-primary text-primary-foreground shadow hover:bg-primary/80;
     }
-    
+
     /* Badge Secondary Variant */
     .u-badge-secondary-compact {
         @apply border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80;
     }
-    
+
     .u-badge-secondary-default {
         @apply border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80;
     }
-    
+
     .u-badge-secondary-relaxed {
         @apply border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80;
     }
-    
+
     /* Badge Destructive Variant */
     .u-badge-destructive-compact {
         @apply border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80;
     }
-    
+
     .u-badge-destructive-default {
         @apply border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80;
     }
-    
+
     .u-badge-destructive-relaxed {
         @apply border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80;
     }
-    
+
     /* Badge Outline Variant */
     .u-badge-outline-compact {
         @apply text-foreground;
     }
-    
+
     .u-badge-outline-default {
         @apply text-foreground;
     }
-    
+
     .u-badge-outline-relaxed {
         @apply text-foreground;
     }
-    
+
     /* Badge Text Styles */
     .u-badge-text-compact {
         @apply text-xs font-semibold;
     }
-    
+
     .u-badge-text-default {
         @apply text-sm font-semibold;
     }
-    
+
     .u-badge-text-relaxed {
         @apply text-base font-semibold;
     }
-    
+
     /* Badge Text Variants */
     .u-badge-text-default-compact {
         @apply text-primary-foreground;
     }
-    
+
     .u-badge-text-default-default {
         @apply text-primary-foreground;
     }
-    
+
     .u-badge-text-default-relaxed {
         @apply text-primary-foreground;
     }
-    
+
     .u-badge-text-secondary-compact {
         @apply text-secondary-foreground;
     }
-    
+
     .u-badge-text-secondary-default {
         @apply text-secondary-foreground;
     }
-    
+
     .u-badge-text-secondary-relaxed {
         @apply text-secondary-foreground;
     }
-    
+
     .u-badge-text-destructive-compact {
         @apply text-destructive-foreground;
     }
-    
+
     .u-badge-text-destructive-default {
         @apply text-destructive-foreground;
     }
-    
+
     .u-badge-text-destructive-relaxed {
         @apply text-destructive-foreground;
     }
-    
+
     .u-badge-text-outline-compact {
         @apply text-foreground;
     }
-    
+
     .u-badge-text-outline-default {
         @apply text-foreground;
     }
-    
+
     .u-badge-text-outline-relaxed {
         @apply text-foreground;
     }
 
     /* Density-Aware Padding Utilities */
-    
+
     /* Width Padding Utilities */
     .w-sm {
         @apply w-2;
     }
+
     [data-density="compact"] .w-sm {
         @apply w-1;
     }
+
     [data-density="relaxed"] .w-sm {
         @apply w-3;
     }
+
     .w-md {
         @apply w-4;
     }
+
     [data-density="compact"] .w-md {
         @apply w-2;
     }
+
     [data-density="relaxed"] .w-md {
         @apply w-6;
     }
+
     .w-lg {
         @apply w-6;
     }
+
     [data-density="compact"] .w-lg {
-        @apply w-3;
+        @apply w-4;
     }
+
     [data-density="relaxed"] .w-lg {
         @apply w-8;
     }
-    
+
     /* Small Padding (p-sm) - defaults to 'default' density */
     .p-sm {
         @apply p-1;
     }
-    
+
     [data-density="compact"] .p-sm {
         @apply p-0.5;
     }
-    
+
     [data-density="relaxed"] .p-sm {
         @apply p-1.5;
     }
-    
+
     /* Medium Padding (p-md) - defaults to 'default' density */
     .p-md {
         @apply p-3 lg:p-4;
     }
-    
+
     [data-density="compact"] .p-md {
         @apply p-2 lg:p-3;
     }
-    
+
     [data-density="relaxed"] .p-md {
         @apply p-4 lg:p-6;
     }
-    
+
     /* Large Padding (p-lg) - defaults to 'default' density */
     .p-lg {
         @apply p-4 lg:p-6;
     }
-    
+
     [data-density="compact"] .p-lg {
         @apply p-3 lg:p-4;
     }
-    
+
     [data-density="relaxed"] .p-lg {
         @apply p-6 lg:p-8;
     }
 
     /* Horizontal Padding Utilities */
-    
+
     /* Small Horizontal Padding (px-sm) - defaults to 'default' density */
     .px-sm {
         @apply px-2;
     }
-    
+
     [data-density="compact"] .px-sm {
         @apply px-1;
     }
-    
+
     [data-density="relaxed"] .px-sm {
         @apply px-3;
     }
-    
+
     /* Medium Horizontal Padding (px-md) - defaults to 'default' density */
     .px-md {
         @apply px-3;
     }
-    
+
     [data-density="compact"] .px-md {
         @apply px-2;
     }
-    
+
     [data-density="relaxed"] .px-md {
         @apply px-4;
     }
-    
+
     /* Large Horizontal Padding (px-lg) - defaults to 'default' density */
     .px-lg {
         @apply px-4;
     }
-    
+
     [data-density="compact"] .px-lg {
         @apply px-2;
     }
-    
+
     [data-density="relaxed"] .px-lg {
         @apply px-6;
     }
 
     /* Vertical Padding Utilities */
-    
+
     /* Small Vertical Padding (py-sm) - defaults to 'default' density */
     .py-sm {
         @apply py-2;
     }
-    
+
     [data-density="compact"] .py-sm {
         @apply py-1;
     }
-    
+
     [data-density="relaxed"] .py-sm {
         @apply py-3;
     }
-    
+
     /* Medium Vertical Padding (py-md) - defaults to 'default' density */
     .py-md {
         @apply py-3;
     }
-    
+
     [data-density="compact"] .py-md {
         @apply py-2;
     }
-    
+
     [data-density="relaxed"] .py-md {
         @apply py-4;
     }
-    
+
     /* Large Vertical Padding (py-lg) - defaults to 'default' density */
     .py-lg {
         @apply py-4;
     }
-    
+
     [data-density="compact"] .py-lg {
         @apply py-2;
     }
-    
+
     [data-density="relaxed"] .py-lg {
         @apply py-6;
     }
 
     /* Top Padding Utilities */
-    
+
     /* Small Top Padding (pt-sm) - defaults to 'default' density */
     .pt-sm {
         @apply pt-2;
     }
-    
+
     [data-density="compact"] .pt-sm {
         @apply pt-1;
     }
-    
+
     [data-density="relaxed"] .pt-sm {
         @apply pt-3;
     }
-    
+
     /* Medium Top Padding (pt-md) - defaults to 'default' density */
     .pt-md {
         @apply pt-3;
     }
-    
+
     [data-density="compact"] .pt-md {
         @apply pt-2;
     }
-    
+
     [data-density="relaxed"] .pt-md {
         @apply pt-4;
     }
-    
+
     /* Large Top Padding (pt-lg) - defaults to 'default' density */
     .pt-lg {
         @apply pt-4;
     }
-    
+
     [data-density="compact"] .pt-lg {
         @apply pt-2;
     }
-    
+
     [data-density="relaxed"] .pt-lg {
         @apply pt-6;
     }
 
     /* Bottom Padding Utilities */
-    
+
     /* Small Bottom Padding (pb-sm) - defaults to 'default' density */
     .pb-sm {
         @apply pb-2;
     }
-    
+
     [data-density="compact"] .pb-sm {
         @apply pb-1;
     }
-    
+
     [data-density="relaxed"] .pb-sm {
         @apply pb-3;
     }
-    
+
     /* Medium Bottom Padding (pb-md) - defaults to 'default' density */
     .pb-md {
         @apply pb-3;
     }
-    
+
     [data-density="compact"] .pb-md {
         @apply pb-2;
     }
-    
+
     [data-density="relaxed"] .pb-md {
         @apply pb-4;
     }
-    
+
     /* Large Bottom Padding (pb-lg) - defaults to 'default' density */
     .pb-lg {
         @apply pb-4;
     }
-    
+
     [data-density="compact"] .pb-lg {
         @apply pb-2;
     }
-    
+
     [data-density="relaxed"] .pb-lg {
         @apply pb-6;
     }
 
     /* Margin Utilities */
-    
+    /* Medium Margin Bottom (mb-md) - defaults to 'default' density */
+    .mb-md {
+        @apply mb-3 sm:mb-4;
+    }
+
+    [data-density="compact"] .mb-md {
+        @apply mb-2 sm:mb-3;
+    }
+
+    [data-density="relaxed"] .mb-md {
+        @apply mb-4 sm:mb-6;
+    }
+
     /* Small Margin Bottom (mb-sm) - defaults to 'default' density */
     .mb-sm {
-        @apply mb-2;
+        @apply mb-2 sm:mb-3;
     }
-    
+
     [data-density="compact"] .mb-sm {
-        @apply mb-1;
+        @apply mb-1 sm:mb-2;
     }
-    
+
     [data-density="relaxed"] .mb-sm {
-        @apply mb-3;
+        @apply mb-3 sm:mb-4;
+    }
+
+    /* Large Margin Bottom (mb-lg) - defaults to 'default' density */
+    .mb-lg {
+        @apply mb-6 sm:mb-8;
+    }
+
+    [data-density="compact"] .mb-lg {
+        @apply mb-3 sm:mb-4;
+    }
+
+    [data-density="relaxed"] .mb-lg {
+        @apply mb-6 sm:mb-8;
     }
 
     /* Density-Aware Gap Utilities */
-    
+
     /* Small Gap (gap-sm) - defaults to 'default' density */
     .gap-sm {
-        @apply gap-2;
+        @apply gap-2 sm:gap-3;
     }
-    
+
     [data-density="compact"] .gap-sm {
-        @apply gap-1;
+        @apply gap-1 sm:gap-2;
     }
-    
+
     [data-density="relaxed"] .gap-sm {
-        @apply gap-3;
+        @apply gap-3 sm:gap-4;
     }
-    
+
     /* Medium Gap (gap-md) - defaults to 'default' density */
     .gap-md {
-        @apply gap-3;
+        @apply gap-3 sm:gap-4;
     }
-    
+
     [data-density="compact"] .gap-md {
-        @apply gap-2;
+        @apply gap-2 sm:gap-3;
     }
-    
+
     [data-density="relaxed"] .gap-md {
-        @apply gap-4;
+        @apply gap-4 sm:gap-6;
     }
-    
+
     /* Large Gap (gap-lg) - defaults to 'default' density */
     .gap-lg {
-        @apply gap-4;
+        @apply gap-4 sm:gap-6;
     }
-    
+
     [data-density="compact"] .gap-lg {
-        @apply gap-3;
+        @apply gap-3 sm:gap-4;
     }
-    
+
     [data-density="relaxed"] .gap-lg {
-        @apply gap-6;
+        @apply gap-6 sm:gap-8;
     }
 
     /* Controls */
     /* Switcher */
     .u-controls-switcher-container {
-        @apply items-center flex-row-reverse justify-between gap-x-2 items-center h-14 min-w-14 rounded-xl flex-auto p-3 bg-input border border-border ;
+        @apply items-center flex-row-reverse justify-between gap-x-2 items-center h-14 min-w-14 rounded-xl flex-auto p-3 bg-input border border-border;
     }
+
     .u-controls-switcher-text {
         @apply text-neutral-800 dark:text-neutral-200 text-base;
     }
+
     .u-controls-switcher-track {
         @apply rounded-full;
     }
+
     .u-controls-switcher-track-base {
         @apply w-20 h-8 p-1;
     }
+
     .u-controls-switcher-track-sm {
         @apply w-10 h-4 p-0.5;
     }
+
     .u-controls-switcher-thumb {
         @apply rounded-full aspect-square bg-white transition-transform duration-200;
     }
+
     .u-controls-switcher-thumb-base {
         @apply h-6 w-6;
     }
+
     .u-controls-switcher-thumb-sm {
         @apply h-3 w-3;
     }
+
     .u-controls-switcher-thumb-active-base {
         @apply translate-x-12;
     }
+
     .u-controls-switcher-thumb-active-sm {
         @apply translate-x-6;
     }
+
     .u-controls-switcher-track-col {
         @apply bg-neutral-400 dark:bg-neutral-600;
     }
+
     .u-controls-switcher-track-active-col {
         @apply bg-primary;
     }
+
     /* Checkbox */
     .u-controls-checkbox-container {
         @apply items-center py-2 px-3 rounded-lg w-full;
     }
+
     .u-controls-checkbox-container-bg {
         @apply web:active:bg-neutral-200 web:dark:active:bg-neutral-700 web:hover:bg-neutral-100 web:dark:hover:bg-neutral-800;
     }
+
     .u-controls-checkbox-text {
         @apply text-neutral-800 dark:text-neutral-200 text-base leading-5 font-medium pl-2;
     }
+
     .u-controls-checkbox-text2 {
         @apply text-neutral-600 dark:text-neutral-400 text-sm leading-5;
     }
+
     .u-controls-checkbox-icon {
         @apply text-neutral-600 dark:text-neutral-400 my-auto h-6 w-6;
     }
+
     .u-controls-checkbox-indicator {
         @apply h-5 w-5 m-1 rounded-sm border-2 border-neutral-500 bg-transparent justify-center items-center mr-2;
     }
+
     .u-controls-radiobutton-indicator {
         @apply h-5 w-5 m-1 rounded-full border-2 border-neutral-500 bg-transparent justify-center items-center mr-2;
     }
+
     .u-controls-checkbox-indicator-active {
         @apply h-2.5 w-2.5 bg-primary m-1 items-center justify-center;
     }
+
     .u-controls-radiobutton-indicator-active {
-        @apply h-2.5 w-2.5 rounded-full  bg-primary m-1 items-center justify-center;
+        @apply h-2.5 w-2.5 rounded-full bg-primary m-1 items-center justify-center;
     }
+
     /* Tabs */
-    .u-controls-tabs-container{
+    .u-controls-tabs-container {
         @apply w-full flex-col;
     }
+
     .u-controls-tabs-header {
         @apply flex-row w-full bg-muted rounded-lg p-0.5;
         display: flex;
@@ -884,44 +997,51 @@
         scrollbar-width: none;
         -ms-overflow-style: none;
     }
+
     .u-controls-tabs-header::-webkit-scrollbar {
         display: none;
     }
+
     .u-controls-tabs-header-item {
         @apply rounded-md px-4 py-2.5 text-sm inline-flex items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
         flex: 1;
-       
+
         flex-shrink: 0;
     }
+
     .u-controls-tabs-header-item-active {
         @apply u-controls-tabs-header-item bg-card text-card-foreground shadow-sm;
     }
+
     .u-controls-tabs-header-item-text {
         @apply text-muted-foreground font-medium whitespace-nowrap;
     }
+
     .u-controls-tabs-header-item-text-active {
         @apply text-card-foreground font-medium whitespace-nowrap;
     }
+
     .u-controls-tabs-tab-content {
         @apply pt-4;
     }
-    
+
     /* Tab content animation */
     .u-controls-tabs-tab-content-animated {
         animation: tabContentFadeIn 0.2s ease-out;
     }
-    
+
     @keyframes tabContentFadeIn {
         from {
             opacity: 0;
             transform: translateY(4px);
         }
+
         to {
             opacity: 1;
             transform: translateY(0);
         }
     }
-    
+
 
 }
 
@@ -1087,6 +1207,23 @@ body,
 
 .u-cover {
     object-fit: cover !important;
+}
+
+/* Fixed Process Improvements */
+.fixed-process {
+    position: relative;
+    transition: width 0.2s ease-out;
+}
+
+.fixed-process.fixed {
+    position: fixed;
+    z-index: 10;
+}
+
+/* Ensure fixed-process elements don't overflow their containers */
+.fixed-process.fixed {
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 

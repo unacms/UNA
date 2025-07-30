@@ -86,14 +86,11 @@ function getCounter(num, icon = '', add = '', color = '') {
 export default function PageLayout(props) {
     if (!appSetting('layout', 'user_remote_config'))
         return <DasbordStatOld {...props} />
-    const { layoutSettings, themeName, setThemeName, setLayoutName, layoutName, lang, setLang, langCode, setDensity } = useLayoutSettings();
-
-    const isWeb = Platform.OS == 'web'
+    const { themeName, setThemeName, setLayoutName, layoutName, lang, setLang, langCode, setDensity } = useLayoutSettings();
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
     const { currentDensity, densityOptions } = useDensitySwitcher()
     const langs = appSetting('layout', 'avaliable_langs');
-        console.log("layoutSettings", langs)
     let profile = null
     if (currentUser) {
         let dUser = Object.assign({}, currentUser)

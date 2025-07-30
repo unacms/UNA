@@ -57,7 +57,7 @@ export default function ScrollList({
     }, [scrollY, transparencyOffset]);
 
     const headerStyle = useAnimatedStyle(() => {
-       
+
         opacity.value = withTiming(isShow.value ? 1 : 0, { duration: animationDuration });
         //const opacityValue = withTiming(isShow.value ? 1 : 0, { duration: animationDuration });
         //const transformValue = withTiming(isShow.value ? 0 : -114, { duration: animationDuration });
@@ -81,7 +81,7 @@ export default function ScrollList({
             right: 10,
             bottom: 140,
             zIndex: 1000,
-           // opacity: opacityValue,
+            // opacity: opacityValue,
         };
     }, [isShowButton]);
 
@@ -133,7 +133,7 @@ export default function ScrollList({
         ...((useCustomScrollHandler && isCollapsibleHeader) && { onScroll }),
     };
 
-    if (!isShowCover(pageData?.cover,currentUser))
+    if (!isShowCover(pageData?.cover, currentUser))
         return content;
 
     const enhanced = React.cloneElement(content, baseProps);
@@ -153,7 +153,7 @@ export default function ScrollList({
     }
 
     return (
-        <View className="flex-1" style={{ paddingTop: isSmallScreen && !useCustomScrollHandler ? headerHeight : 0 }}>
+        <View className="flex-1 gap-md" style={{ paddingTop: isSmallScreen && !useCustomScrollHandler ? headerHeight : 0 }}>
             {enhanced}
             {isSmallScreen && <Animated.View className="backdrop-blur-lg" style={[headerStyle]}>
 

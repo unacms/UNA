@@ -15,7 +15,6 @@ import FormModal, {
     handleFormModal,
     getFormModal,
 } from 'app/ui/molecules/form_modal'
-import { Text, H2 } from 'app/design/typography'
 
 export default function MultiPostForm({ data }) {
     const { currentUser } = useCurrentUser()
@@ -56,7 +55,7 @@ export default function MultiPostForm({ data }) {
     if (menu_add_items.length == 0 && !firstForm) return
 
     return (
-        <Card className="mb-sm">
+        <Card>
             <CardHeader className="flex-row gap-x-2 sm:gap-x-3">
                 <View className="my-auto">
                     <Profile

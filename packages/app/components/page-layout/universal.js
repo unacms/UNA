@@ -87,7 +87,7 @@ function PageContentUniversal({ children, data, layoutName }) {
             <PanelRow gap={gap} cell={topCell} windowWidth={windowWidth} />
             <PanelGroup autoSaveId={`cells-${uri}-${layoutName}`} direction="horizontal">
                 {midCells.map((cell, i) => {
-                    return <PanelCell key={cell.key} sizable={sizable} gap={gap} windowWidth={windowWidth} cell={cell} index={i} />
+                    return <PanelCell key={cell.key} sizable={sizable} windowWidth={windowWidth} cell={cell} index={i} />
                 })}
             </PanelGroup>
             {midCells.map((cell, i) => {
@@ -106,7 +106,7 @@ const PanelRow = memo(({ cell, windowWidth, gap }) => {
     );
 })
 
-const PanelCell = memo(({ cell, windowWidth, gap, index, sizable }) => {
+const PanelCell = memo(({ cell, windowWidth, index, sizable }) => {
     const panelProps = {
         ...(cell.defaultSize !== undefined && { defaultSize: cell.defaultSize }),
         ...(cell.minSize !== undefined && { minSize: cell.minSize }),
@@ -114,9 +114,9 @@ const PanelCell = memo(({ cell, windowWidth, gap, index, sizable }) => {
     };
     return (hasData(cell?.data) && !isRowLayout(cell, windowWidth)) && (
         <>
-            {(index > 0) && (sizable ? <PanelHandler gap={gap} sizable={sizable} /> : <View className={`w-${gap}`}/>)}
+            {(index > 0) && (sizable ? <PanelHandler sizable={sizable} /> : <View className="w-lg"/>)}
             <Panel {...panelProps} >
-                <View className={`w-full gap-y-${gap}`}>
+                <View className="w-full gap-y-4">
                     {cell.chd}
                 </View>
             </Panel>

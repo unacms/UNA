@@ -364,14 +364,15 @@ export default function (props) {
                 direction="horizontal"
                 className={`${appSetting('layout', 'max_width')} mx-auto w-full flex-auto relative sm:px-lg flex-row`}
                 onLayout={(e) => {
-                    if (isWeb) {
+                    requestAnimationFrame(() => {
+                        document.body.offsetHeight;
                         window.dispatchEvent(new Event('resize_panel'));
-                    }
+                    });
                 }}
             >
                 {(layoutName == 'hor' && isWeb) && <>
                     <Panel className={`hidden ${cellsCustomConfig.cells?.left?.breakpoint}:block`} {...cellsCustomConfig.cells?.left} >
-                        <View className='fixed-process py-lg'>
+                        <View className='fixed-process'>
                             {SideBarContent}
                         </View>
                     </Panel>
@@ -383,13 +384,14 @@ export default function (props) {
 
                 </Panel>
 
-                {isWeb && <><PanelHandler gap="w-lg hidden lg:block" sizable={cellsCustomConfig.sizable} />
+                {isWeb && <>
+                    <PanelHandler gap="w-lg hidden lg:block" sizable={cellsCustomConfig.sizable} />
                     <Panel className={`hidden ${cellsCustomConfig.cells?.right?.breakpoint}:block`} {...cellsCustomConfig.cells?.right}>
-                        <View className='fixed-process py-lg'>
+                        <View className='fixed-process'>
                             {AsideContent}
                         </View>
-
-                    </Panel></>}
+                    </Panel>
+                </>}
             </PanelGroup>
         )
 

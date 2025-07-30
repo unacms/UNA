@@ -57,6 +57,16 @@ module.exports = {
     'u-block-actions-compact',
     'u-block-actions-default',
     'u-block-actions-relaxed',
+    // Panel component density classes
+    'u-panel-base-compact',
+    'u-panel-base-default',
+    'u-panel-base-relaxed',
+    'u-panel-handler-compact',
+    'u-panel-handler-default',
+    'u-panel-handler-relaxed',
+    'u-panel-group-compact',
+    'u-panel-group-default',
+    'u-panel-group-relaxed',
     // Content padding density classes
     'u-content-padding-compact',
     'u-content-padding-default',
