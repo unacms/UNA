@@ -36,15 +36,15 @@ export  const settingsDefault = {
             theme: 'auto',
             lang: 'en'
         },
-        avaliable_layouts: ['hor', 'ver', 'mixed'], // OLD appSetting('layout', 'format_list')
+        avaliable_layouts: ['hor', 'ver', 'mixed'], 
+        avaliable_density:[
+            { id: 'compact', title: 'Compact', icon: 'Minus' },
+            { id: 'default', title: 'Default', icon: 'Circle' },
+            { id: 'relaxed', title: 'Relaxed', icon: 'Plus' }
+        ],
+        avaliable_langs: ['auto', 'en', 'ru'],
         screen: ' w-full ',
         ui_density_switcher: true,
-   
-
-        /*sidebar: ' fixed-process fixed w-80 2xl:w-96 p-3 web:duration-200 ',
-        sidebar_container: ' p-3 ',
-      
-        aside_container: 'hidden lg:flex w-80 2xl:w-96 h-full', */
         max_width: ' w-full ', 
         max_width_content: ' w-full max-w-7xl ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
         feed_container: ' sm:p-3 mx-auto w-full max-w-4xl ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
@@ -169,7 +169,6 @@ export  const settingsDefault = {
     },
     dashboard: {
         url: '/dashboard', //OLD appSetting('layout', 'dashboard')
-        langs: ['auto', 'en', 'ru'], //OLD appSetting('layout', 'switch_lang')
         switch_theme: true, //OLD appSetting('layout', 'switch_theme')
         modules_list: [
             'friends',
@@ -195,7 +194,7 @@ export  const settingsDefault = {
         show_nav_counters: 'primary', // OLD appSetting('layout', 'show_nav_counters')
         show_nav_titles: false, // OLD appSetting('layout', 'show_nav_titles')
         hide_browse_filter: true, // OLD appSetting('layout', 'hide_browse_filter')
-        sidebar_container: ' relative p-2 ',
+        sidebar_container: '',
         sidebar_width: ' w-80 hidden lg:block',
         sidebar_position: ' z-50 fixed fixed-process ',
         bgrDecorator: true, // Enable/disable decorator background globally for conductor buttons

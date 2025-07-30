@@ -278,7 +278,7 @@ export default function (props) {
         })}</>
 
         const SideBarContent = <>
-            <View className={appSetting('layout', 'sidebar_container')}>
+            <View>
                 {appSetting('layout', 'show_profile_info') && (
                     <View className="pb-1 mb-1 border-b border-bdr dark:border-bdr-d">
                         <Link href={currentUser.url} emulate={true}>

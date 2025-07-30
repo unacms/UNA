@@ -87,12 +87,13 @@ export default function PageLayout(props) {
     if (!appSetting('layout', 'user_remote_config'))
         return <DasbordStatOld {...props} />
     const { layoutSettings, themeName, setThemeName, setLayoutName, layoutName, lang, setLang, langCode, setDensity } = useLayoutSettings();
-    console.log("layoutSettings", lang, langCode)
+
     const isWeb = Platform.OS == 'web'
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
     const { currentDensity, densityOptions } = useDensitySwitcher()
-    const langs = appSetting('dashboard', 'langs');
+    const langs = appSetting('layout', 'avaliable_langs');
+        console.log("layoutSettings", langs)
     let profile = null
     if (currentUser) {
         let dUser = Object.assign({}, currentUser)
@@ -194,9 +195,7 @@ export default function PageLayout(props) {
                                 </DropdownMenu>
                             </View>
                         )}
-
-                        {/* UI Density Switcher */}
-                        {appSetting('layout', 'ui_density_switcher') && (
+                        {densityOptions.length > 1 && (
                             <View className="w-full max-w-sm flex-1 min-w-[160px]">
                                 <DropdownMenu
                                     items={densityOptions}

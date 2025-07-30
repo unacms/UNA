@@ -80,7 +80,7 @@ export const useLayoutSettings = () => {
     );
 
     const getDefaultLangCode = () => {
-        const langs = appSetting('dashboard', 'langs');
+        const langs = appSetting('layout', 'avaliable_langs');
         try {
             const locales = typeof navigator !== 'undefined' ? RNLocalize.getLocales() : [];
             const langCode = locales?.[0]?.languageCode;

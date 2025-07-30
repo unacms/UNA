@@ -120,7 +120,7 @@ export default function PageLayout(props) {
 
     const langItems = [
         { id: 'auto', key: 'auto', name: 'auto', title: t('lang_auto') },
-        ...appSetting('dashboard', 'langs').map(lang => ({
+        ...appSetting('layout', 'avaliable_langs').map(lang => ({
             id: lang,
             key: lang,
             name: lang,
@@ -164,7 +164,7 @@ export default function PageLayout(props) {
                                     <Button variant="outline" startDecorator="RefreshCw"  rounded  />
                                 </ProfileSwitcher>
                                 {
-                                    appSetting('dashboard', 'langs').length > 1 && (
+                                    appSetting('layout', 'avaliable_langs').length > 1 && (
                                         <View><DropdownMenu 
                                             items={langItems}
                                             onSelect={(oItem) => {handleLang(oItem.id)}}>
@@ -220,7 +220,7 @@ export default function PageLayout(props) {
                                
                                 {
                                     
-                                    appSetting('dashboard', 'langs').length > 1 && (
+                                    appSetting('layout', 'avaliable_langs').length > 1 && (
                                         <View className="mb-2">
                                         <DropdownMenu 
                                             items={langItems}
