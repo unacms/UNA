@@ -42,7 +42,7 @@ export default function Unit(props) {
     return (
         <>
             <Redirect ref={redirectdRef} />
-            <Card margin="mb-px sm:mx-2 sm:mb-4" rounded="rounded-2xl">
+            <Card className="p-sm">
                 <Link className="group " href={data.url}>
                     <View className="flex-row sm:flex-col p-1">
                         <View className="aspect-square sm:aspect-video w-1/3 sm:w-full rounded-xl overflow-hidden items-center justify-center bg-neutral-500/20">

@@ -1,12 +1,9 @@
 import { useState, useMemo, useRef } from 'react'
-import { useCardData } from 'app/context/card'
 import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
-import Profile from 'app/ui/molecules/profile'
 import { getImageSizes, FeedbackHaptics, tp, t } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
-import Menu from 'app/components/menu'
 import Card from 'app/ui/molecules/card'
 import Redirect from 'app/ui/atoms/redirect'
 import ProfilesList from 'app/ui/molecules/profile_list'
@@ -18,13 +15,9 @@ export default function Unit(props) {
     const data = props.data;
     const imageSizes = getImageSizes();
     const redirectdRef = useRef();
-    const [popupVisible, setPopupVisible] = useState(false);
-
-    const { cardData } = useCardData();
 
     const handleClick = (event, sUrl) => {
         event.preventDefault();
-
         redirectdRef.current.redirect(sUrl);
     };
 
@@ -45,7 +38,7 @@ export default function Unit(props) {
         return (
             <>
                 <Redirect ref={redirectdRef} />
-                <Card margin="mb-px sm:mx-2 sm:mb-4" rounded="rounded-2xl">
+                <Card className="p-sm">
                     <Link className="group " href={data.url}>
                         <View className="flex-row sm:flex-col p-1">
                             <View className="aspect-square sm:aspect-video w-1/3 sm:w-full rounded-xl overflow-hidden items-center justify-center bg-neutral-500/20">
@@ -103,61 +96,3 @@ export default function Unit(props) {
         );
     }
 }
-/*
-    function getSearch() {
-        return (
-            <>
-                <Redirect ref={redirectdRef} />
-                <Card margin="m-2" rounded="rounded-2xl">
-                    <Link className="group " href={data.url}>
-                        <View className="flex-row sm:flex-col p-1">
-
-                            <View className="flex-col p-3  flex-auto items-between justify-between ">
-                                <View>
-                                    <Text
-                                        numberOfLines={1}
-                                        className=" text-lg leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-primary "
-                                    >
-                                        {data.title}
-                                    </Text>
-                                    <Row className="items-center h-6 my-3">
-
-
-                                        <View className="mr-2  h-6">
-                                            <ProfilesList
-                                                data={
-                                                    data.members_list
-                                                }
-                                                showEmpty={false}
-                                                maxCount={3}
-                                                displaySize="xs"
-                                            />
-
-                                        </View>
-                                        {
-                                            <Text className="truncate text-xs leading-tight flex-auto text-neutral-600 dark:text-neutral-400">
-                                                {friendsLabel}
-                                            </Text>
-                                        }
-
-                                        <Text className=" bg-primary/10  rounded-md  px-1.5 py-1 text-xs flex-none items-center font-semibold text-neutral-600 dark:text-neutral-400">
-                                            {data.visibility != "3" ? (
-                                                <>Private</>
-                                            ) : (
-                                                <>Public</>
-                                            )}
-                                        </Text>
-                                    </Row>
-                                </View>
-                                <View className="flex-row w-full ">
-                                    {oMenuItemPrimary}
-
-                                </View>
-                            </View>
-                        </View>
-                    </Link>
-                </Card>
-            </>
-        );
-    }
-}*/

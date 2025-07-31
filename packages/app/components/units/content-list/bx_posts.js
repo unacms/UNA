@@ -11,7 +11,7 @@ const Units = {};
 
 Units.Base = function Base({ data, imageSizes }) {
     return (
-        <Card margin="  m-1 sm:m-2 " rounded=" rounded-2xl " addClassName=" p-2  ">
+        <Card className="p-sm">
             <View className="  aspect-video flex-none rounded-lg overflow-hidden mb-auto w-full bg-bgritem dark:bg-bgritem-d  ">
                 {data.image && (
                     <Image
@@ -41,7 +41,7 @@ Units.Base = function Base({ data, imageSizes }) {
 }
 Units.Search = function Search({ data, imageSizes }) {
     return (
-        <Card margin="  m-1 sm:m-2 " rounded=" rounded-2xl " addClassName=" p-2  ">
+        <Card className="p-sm">
             <View className="  aspect-video flex-none rounded-lg overflow-hidden mb-auto w-full bg-bgritem dark:bg-bgritem-d  ">
                 {data.image && (
                     <Image
@@ -72,39 +72,39 @@ Units.Search = function Search({ data, imageSizes }) {
 
 Units.Small = function Small({ data, imageSizes }) {
     return (
-       
-            <Card margin="mt-px sm:mt-3 p-3 sm:p-4" border="sm:border border-bdrcard dark:border-bdrcard-d sm:rounded-2xl"  addClassName=" rounded-none sm:rounded-2xl max-w-2xl flex-auto mx-auto w-full gap-x-3 flex-row-reverse web:duration-300 ">
-                {data.image && (
-                    <View className="aspect-square md:aspect-video flex-none rounded-xl  overflow-hidden h-30 sm:h-36 mb-auto  ">
-                        <Image
-                            {...data.image}
-                            alt={data.title}
-                            view="cover"
-                            className="u-cover"
-                            sizes={imageSizes}
-                        />
-                    </View>
-                )}
 
-                <View className="flex-auto">
-                    <Link href={data.url}>
-                        <Text numberOfLines={2} className="text-neutral-800  mb-1 tracking-tight leading-tight dark:text-neutral-200 sm:hover:text-primary text-lg font-bold">
-                            {data.title}
-                        </Text>
-                        <Text numberOfLines={2} className="text-neutral-600 mb-2 dark:text-neutral-400 text-sm">
-                            {data.summary_plain}
-                        </Text>
-                    </Link>
-                    <View className="mt-auto">
-                        <AuthorData authorData={data.author_data} />
-                    </View>
-
+        <Card className="p-sm">
+            {data.image && (
+                <View className="aspect-square md:aspect-video flex-none rounded-xl  overflow-hidden h-30 sm:h-36 mb-auto  ">
+                    <Image
+                        {...data.image}
+                        alt={data.title}
+                        view="cover"
+                        className="u-cover"
+                        sizes={imageSizes}
+                    />
                 </View>
-            </Card>
+            )}
+
+            <View className="flex-auto">
+                <Link href={data.url}>
+                    <Text numberOfLines={2} className="text-neutral-800  mb-1 tracking-tight leading-tight dark:text-neutral-200 sm:hover:text-primary text-lg font-bold">
+                        {data.title}
+                    </Text>
+                    <Text numberOfLines={2} className="text-neutral-600 mb-2 dark:text-neutral-400 text-sm">
+                        {data.summary_plain}
+                    </Text>
+                </Link>
+                <View className="mt-auto">
+                    <AuthorData authorData={data.author_data} />
+                </View>
+
+            </View>
+        </Card>
     )
 }
 
-export default function BxPosts (props) {
+export default function BxPosts(props) {
     const imageSizes = useMemo(() => getImageSizes(), []);
     const unitTypes = appSetting('browse', 'unit_by_mode_' + props.module) || appSetting('browse', 'unit_by_mode_default');
     const Component = Units[unitTypes[props.unitType] || 'Base'];

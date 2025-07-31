@@ -23,7 +23,7 @@ export default function Unit(props) {
 
         redirectdRef.current.redirect(sUrl);
     };
-    
+
     const friendsLabel =
         data.mutual_friends_count > 0
             ? tp("mutual_friends", data?.mutual_friends_count, false)
@@ -35,15 +35,15 @@ export default function Unit(props) {
     )
         return;
 
-        const { oMenuItemPrimary, oMenuItemSecondary } = useMemo(() => {
-            return callFn("getUnitMenuItems", [props.unitType, data, handleClick, t, props.module]);
-        }, [props.unitType, data, handleClick, t]);
-        
+    const { oMenuItemPrimary, oMenuItemSecondary } = useMemo(() => {
+        return callFn("getUnitMenuItems", [props.unitType, data, handleClick, t, props.module]);
+    }, [props.unitType, data, handleClick, t]);
+
 
     return (
         <>
             <Redirect ref={redirectdRef} />
-            <Card margin="mb-px sm:mx-2 sm:mb-4 " rounded="rounded-2xl">
+            <Card className="p-sm">
                 <Link className="group " href={data.url}>
                     <View className="flex-row sm:flex-col p-1">
                         <View className="aspect-square w-1/3 sm:w-full rounded-xl overflow-hidden items-center justify-center">
@@ -54,7 +54,7 @@ export default function Unit(props) {
                                 className="absolute u-cover rounded-xl"
                                 sizes={imageSizes}
                             />
-                            {!data?.cover?.src && <Letter title={data.title}/>}
+                            {!data?.cover?.src && <Letter title={data.title} />}
                         </View>
                         <View className="flex-col p-3  flex-auto items-between justify-between ">
                             <View>
@@ -115,9 +115,9 @@ export default function Unit(props) {
                                 </Row>
                             </View>
                             <View className="flex-row gap-x-2 sm:flex-col  w-full  justify-end">
-                                    {oMenuItemPrimary}
-                                    {!!oMenuItemSecondary && <View className={`${!!oMenuItemPrimary && 'sm:mt-2'}`}>{oMenuItemSecondary}</View>}
-                                </View>
+                                {oMenuItemPrimary}
+                                {!!oMenuItemSecondary && <View className={`${!!oMenuItemPrimary && 'sm:mt-2'}`}>{oMenuItemSecondary}</View>}
+                            </View>
                         </View>
                     </View>
                 </Link>

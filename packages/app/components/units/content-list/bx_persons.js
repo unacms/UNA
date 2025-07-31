@@ -76,7 +76,7 @@ export default function Unit(props) {
         return
 
     return (
-        <Card className="p-0">
+        <Card className="p-sm">
             <Redirect ref={redirectdRef} />
             <Link className="group " href={data.url}>
                 <View

@@ -20,7 +20,7 @@ export default function Unit(props) {
             showInfo="false"
         />
     );
-    
+
     let cover_raw = data.cover_raw.replace(
         /\\u([\d\w]{4})/gi,
         function (match, grp) {
@@ -29,12 +29,12 @@ export default function Unit(props) {
     );
 
     let sRate = undefined;
-    if(data.meta?.items)
+    if (data.meta?.items)
         data.meta.items.forEach((aItem) => {
-            if(aItem.name != 'votes' || aItem.data.type != 'stars')
+            if (aItem.name != 'votes' || aItem.data.type != 'stars')
                 return;
 
-            aItem.data.params = {...aItem.data.params, show_counter: false};
+            aItem.data.params = { ...aItem.data.params, show_counter: false };
 
             sRate = (
                 <Stars {...aItem.data} />
@@ -72,11 +72,11 @@ export default function Unit(props) {
                                             <Text className="mr-auto bg-primary/20 rounded-lg font-semibold px-2 py-1 flex-none flex-auto text-neutral-800 dark:text-neutral-200">
                                                 {data.price_recurring > 0
                                                     ? data.price_recurring +
-                                                      "$/" +
-                                                      data.duration_recurring
+                                                    "$/" +
+                                                    data.duration_recurring
                                                     : data.price_single > 0
-                                                      ? data.price_single + "$"
-                                                      : "Free"}
+                                                        ? data.price_single + "$"
+                                                        : "Free"}
                                             </Text>
                                             <Text
                                                 numberOfLines={2}
@@ -107,11 +107,11 @@ export default function Unit(props) {
                                 </View>
                             </View>
                         </Link>
-                        
+
                         <View className=" mb-auto px-4 pb-3 sm:pt-0">
                             {sMeta}
                         </View>
-                       
+
                     </View>
                 </View>
             </Card>

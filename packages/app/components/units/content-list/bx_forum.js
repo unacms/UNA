@@ -13,7 +13,7 @@ const Units = {};
 
 Units.Small = function Small({ data, imageSizes }) {
     return (
-        <Card margin="  mb-px sm:mx-2 sm:mb-4 " rounded=" rounded-2xl " addClassName=" p-2  ">
+        <Card className="p-sm">
             <View className="  aspect-video flex-none rounded-lg overflow-hidden mb-auto w-full bg-bgritem dark:bg-bgritem-d  ">
                 {data.image && (
                     <Image
@@ -41,63 +41,6 @@ Units.Small = function Small({ data, imageSizes }) {
         </Card>
     )
 }
-/*Units.Small = function Small({ data, imageSizes }) {
-    const sMeta = (
-        <Profile
-            {...data.author_data}
-            displayType="unit"
-            displaySize="xs"
-            showInfo="false"
-        />
-    );
-
-    return (
-        <View className="  pb-3 sm:pb-4">
-            <Card margin="mr-4" rounded="rounded-2xl">
-                <View className="flex-row p-1  gap-x-1.5 ">
-                    <View className="flex-auto flex-col px-2 pt-1.5 pb-1 gap-y-2">
-                        <Link
-                            className=" my-auto  flex-auto"
-                            href={data.url}
-                        >
-                            <Text
-                                numberOfLines={2}
-                                className="text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary leading-tight text-sm font-bold"
-                            >
-                                {data.title}
-                            </Text>
-                        </Link>
-                        <View className="flex-row flex-auto justify-between gap-x-4">
-                            {sMeta}
-
-                            <Text className="bg-primary/10 border border-primary/10 px-2 py-0.5 my-auto text-xs rounded-full text-primary">
-                                {data.category.name}
-                            </Text>
-                        </View>
-                    </View>
-
-                    {data.image && (
-                        <View
-                            className={
-                                (!data.image ? " hidden  " : "") +
-                                " relative flex-none h-20 w-20 bg-bgritem dark:bg-bgritem-d rounded-xl overflow-hidden "
-                            }
-                        >
-                            <Image
-                                {...data.image}
-                                alt={data.title}
-                                view="cover"
-                                className="u-cover"
-                                sizes={imageSizes}
-                            />
-                        </View>
-                    )}
-                </View>
-            </Card>
-        </View>
-
-    );
-}*/
 
 Units.Base = function Base({ data, imageSizes }) {
     return (
