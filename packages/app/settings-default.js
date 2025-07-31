@@ -1082,7 +1082,7 @@ export  const settingsDefault = {
             'u-card-base-compact':
                 'py-2 sm:py-3 lg:py-4 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4 rounded-xl',
             'u-card-base-default':
-                'py-lg gap-y-3 sm:gap-y-4 lg:gap-y-6 gap-x-3 sm:gap-x-4 lg:gap-x-6 rounded-2xl',
+                'py-3 sm:py-4 lg:py-6 gap-y-3 sm:gap-y-4 lg:gap-y-6 gap-x-3 sm:gap-x-4 lg:gap-x-6 rounded-2xl',
             'u-card-base-relaxed':
                 'py-5 sm:py-6 lg:py-8 gap-y-5 sm:gap-y-6 lg:gap-y-8 gap-x-5 sm:gap-x-6 lg:gap-x-8 rounded-3xl',
 
