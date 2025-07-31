@@ -243,7 +243,7 @@ export function Modal({
                     )}
                 </Row>
             }
-            <Cnt style={styles} className={`${padding}  flex-auto h-full `}>{children}</Cnt>{/*overflow-y-auto*/}
+            <Cnt style={styles} className={`${padding} flex-auto h-full`}>{children}</Cnt>{/*overflow-y-auto*/}
         </View>
     </View>
 </View>)

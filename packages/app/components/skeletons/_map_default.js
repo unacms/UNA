@@ -70,7 +70,7 @@ const Forum = memo(() => (
 const Posts = memo(() => (
     <View className="p-2 animate-pulse w-full mx-auto max-w-4xl">
 
-    <View className=" shadow flex-auto flex-row-reverse rounded-2xl p-2 overflow-hidden  max-w-4xl bg-bgrcard dark:bg-bgrcard-d ">
+    <View className=" shadow flex-auto flex-row-reverse rounded-2xl p-2 overflow-hidden  max-w-4xl bg-card ">
         <View className="relative bg-neutral-500/20 aspect-square md:aspect-video rounded-xl w-1/3 "></View>
         <View className="flex-auto p-2 flex-col md:ml-0.5 md:mr-2 ">
             <View className="w-2/3 h-4 mt-1.5 rounded-full bg-neutral-500/20"></View>
@@ -86,7 +86,7 @@ const Posts = memo(() => (
 ));
 
 const PostsSmall = memo(() => (
-    <View className="m-2 flex-auto shadow rounded-2xl p-2 overflow-hidden bg-bgrcard dark:bg-bgrcard-d">
+    <View className="m-2 flex-auto shadow rounded-2xl p-2 overflow-hidden bg-card">
         <View className="relative bg-neutral-500/20 aspect-video rounded-lg w-full "></View>
         <View className="flex-auto p-2 flex-col">
             <View className="w-full h-4 mt-2 rounded-full bg-neutral-500/20"></View>
@@ -103,7 +103,7 @@ const PostsSmall = memo(() => (
 ));
 
 const FeedSmall = memo(() => (<View className="sm:px-4 sm:pb-2 flex-auto ">
-    <View className="bg-bgrcard dark:bg-bgrcard-d mt-px sm:rounded-lg p-2 flex flex-col gap-4 animate-pulse">
+    <View className="bg-card mt-px sm:rounded-lg p-2 flex flex-col gap-4 animate-pulse">
         <View className="flex-row gap-2">
             <View className="relative flex-row">
                 <View className="h-12 w-12 aspect-square overflow-hidden bg-neutral-100 dark:bg-neutral-700 mx-auto rounded-full">

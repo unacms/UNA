@@ -50,7 +50,7 @@ NEO is a React Native/Next.js cross-platform application with:
 <View className="bg-background text-foreground border border-border" />
 
 // ✅ Acceptable - legacy custom tokens for existing components
-<View className="bg-bgrcard dark:bg-bgrcard-d" />
+<View className="bg-card" />
 
 // ❌ Avoid - hardcoded colors
 <View className="bg-white dark:bg-gray-900" />
