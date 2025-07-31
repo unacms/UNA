@@ -23,7 +23,7 @@ function ItemRenderer_({ route, numColumns, item, unit, module, unitMode, unitTy
 
 
 function BlockItemRenderer1({ route, numColumns, item, unit, module, unitMode, unitType, sidebar }) {
-    const block = BlockByName2({ b: item.data, name: item.block, contentOnly:!sidebar });
+    const block = BlockByName2({ b: item.data, name: item.block, contentOnly:item.data.source == "system:get_create_post_form" });
     if (!block) {
         return <View className='h-px'><Text>&nbsp;</Text></View>;
     }
