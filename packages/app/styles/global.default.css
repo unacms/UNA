@@ -113,7 +113,7 @@
     /* Card Variants */
 
     .u-card-base {
-        @apply bg-card shadow-sm text-card-foreground;
+        @apply bg-card border border-border shadow-sm text-card-foreground;
     }
 
     .u-card-base-compact {
