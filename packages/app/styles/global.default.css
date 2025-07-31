@@ -1072,28 +1072,28 @@
 
     /* Small Gap (gap-sm) - defaults to 'default' density */
     .gap-sm {
-        @apply gap-1.5 sm:gap-2;
+        @apply gap-1.5 sm:gap-2 lg:gap-3;
     }
 
     [data-density="compact"] .gap-sm {
-        @apply gap-1 sm:gap-1.5;
+        @apply gap-1 sm:gap-1.5 lg:gap-2;
     }
 
     [data-density="relaxed"] .gap-sm {
-        @apply gap-2 sm:gap-3;
+        @apply gap-2 sm:gap-3 lg:gap-4;
     }
 
     /* Medium Gap (gap-md) - defaults to 'default' density */
     .gap-md {
-        @apply gap-3 sm:gap-4 lg:gap-6;
-    }
-
-    [data-density="compact"] .gap-md {
         @apply gap-2 sm:gap-3 lg:gap-4;
     }
 
+    [data-density="compact"] .gap-md {
+        @apply gap-1 sm:gap-2 lg:gap-3;
+    }
+
     [data-density="relaxed"] .gap-md {
-        @apply gap-4 sm:gap-6 lg:gap-8;
+        @apply gap-3 sm:gap-4 lg:gap-6;
     }
 
     /* Large Gap (gap-lg) - defaults to 'default' density */
