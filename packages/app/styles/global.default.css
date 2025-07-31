@@ -60,7 +60,7 @@
         --secondary: 63 63 70; /*zinc-700*/
         --secondary-foreground: 228 228 231; /*zinc-200*/
         --muted: 39 39 42; /*zinc-800*/
-        --muted-foreground: 212 212 216; /*zinc-400*/
+        --muted-foreground: 161 161 170; /*zinc-400*/
         --accent: 96 165 250; /*blue-400*/
         --accent-foreground: 0 0 0; /*black*/
         --destructive: 225 29 72; /*rose-600*/
@@ -81,7 +81,7 @@
         --android-secondary: 63 63 70; /*zinc-700*/
         --android-secondary-foreground: 228 228 231; /*zinc-200*/
         --android-muted: 39 39 42; /*zinc-800*/
-        --android-muted-foreground: 212 212 216; /*zinc-300*/
+        --android-muted-foreground: 161 161 170; /*zinc-400*/
         --android-accent: 96 165 250; /*blue-400*/
         --android-accent-foreground: 0 0 0; /*black*/
         --android-destructive: 225 29 72; /*rose-600*/
@@ -185,11 +185,11 @@
     }
 
     .u-card-description-compact {
-        @apply u-card-description text-xs lg:text-sm leading-none;
+        @apply u-card-description text-xs lg:text-sm ;
     }
 
     .u-card-description-default {
-        @apply u-card-description text-sm lg:text-base leading-none;
+        @apply u-card-description text-sm lg:text-base ;
     }
 
     .u-card-description-relaxed {
@@ -198,19 +198,19 @@
 
     /* Card Content Styles */
     .u-card-content {
-        @apply text-card-foreground;
+        @apply text-card-foreground px-lg;
     }
 
     .u-card-content-compact {
-        @apply u-card-content px-3 gap-y-2;
+        @apply u-card-content px-lg;
     }
 
     .u-card-content-default {
-        @apply u-card-content px-4 gap-y-3;
+        @apply u-card-content px-lg gap-y-3;
     }
 
     .u-card-content-relaxed {
-        @apply u-card-content px-6 gap-y-4;
+        @apply u-card-content px-lg gap-y-4;
     }
 
     /* Card Footer Styles */
@@ -882,15 +882,15 @@
 
     /* Large Horizontal Padding (px-lg) - defaults to 'default' density */
     .px-lg {
-        @apply px-4;
+        @apply px-3 sm:px-4 lg:px-6;
     }
 
     [data-density="compact"] .px-lg {
-        @apply px-2;
+        @apply px-2 sm:px-3 lg:px-4;
     }
 
     [data-density="relaxed"] .px-lg {
-        @apply px-6;
+        @apply px-4 sm:px-6 lg:px-8;
     }
 
     /* Vertical Padding Utilities */
