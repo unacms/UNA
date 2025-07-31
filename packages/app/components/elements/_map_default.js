@@ -23,6 +23,7 @@ import Invite from './invite';
 import Map from './map';
 import Calendar from './calendar';
 import Grid from './grid';
+import Pricing from './pricing';
 import Chart from './chart';
 import MapBox from './mapbox';
 import MultiPostForm from './multi_post_form';
@@ -52,6 +53,7 @@ export const componentsMapDefault = {
     comment_content:CommentContent,
     browse: Browse,
     grid: Grid,
+    pricing: Pricing,
     invite: Invite,
     map: Map,
     calendar: Calendar,

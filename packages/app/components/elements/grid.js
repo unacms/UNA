@@ -22,6 +22,7 @@ import { useBottomSheetData } from 'app/context/bottomsheet';
 import { Icon } from 'app/ui/atoms/icon'
 import Redirect from 'app/ui/atoms/redirect';
 import Stripe from 'app/ui/molecules/stripe';
+
 const getWidth1 = (width) => {
     if (!width)
         return undefined;
