@@ -236,15 +236,15 @@
     }
 
     .u-panel-base-compact {
-        @apply u-panel-base my-2 sm:my-3;
+        @apply u-panel-base my-0 lg:my-3;
     }
 
     .u-panel-base-default {
-        @apply u-panel-base my-3 sm:my-4;
+        @apply u-panel-base my-0 lg:my-4;
     }
 
     .u-panel-base-relaxed {
-        @apply u-panel-base my-4 sm:my-6;
+        @apply u-panel-base my-0 lg:my-6;
     }
 
     /* Panel Handler Variants */

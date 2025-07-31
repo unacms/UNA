@@ -861,7 +861,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
                             gap="hidden lg:block" sizable={cellsCustomConfig.sizable}
                         /></>}
                     <Panel {...cellsCustomConfig.cells?.center}>
-                        <View className='p-md'>
+                        <View className='px-md lg:p-md '>
                             {MainComponent}
                         </View>
                     </Panel>
