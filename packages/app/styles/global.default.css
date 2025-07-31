@@ -17,13 +17,13 @@
         --secondary-foreground: 39 39 42; /*zinc-800*/
         --muted: 228 228 231; /*zinc-200*/
         --muted-foreground: 63 63 70; /*zinc-700*/
-        --accent: 186 230 253; /*sky-200*/
-        --accent-foreground: 7 89 133; /*sky-800*/
+        --accent: 37 99 235; /*blue-600*/
+        --accent-foreground: 255 255 255; /*white*/
         --destructive: 225 29 72; /*rose-600*/
         --destructive-foreground: 255 255 255; /*white*/
         --border: 228 228 231; /*zinc-200*/
         --input: 228 228 231; /*zinc-200*/
-        --ring: 228 228 231; /*zinc-200*/
+        --ring: 96 165 250; /*blue-400*/
 
         /* Android-specific variants */
         --android-background: 250 250 250; /*zinc-50*/
@@ -38,13 +38,13 @@
         --android-secondary-foreground: 24 24 27; /*zinc-900*/
         --android-muted: 228 228 231; /*zinc-200*/
         --android-muted-foreground: 63 63 70; /*zinc-700*/
-        --android-accent: 186 230 253; /*sky-200*/
-        --android-accent-foreground: 7 89 133; /*sky-800*/
+        --android-accent: 37 99 235; /*blue-600*/
+        --android-accent-foreground: 255 255 255; /*white*/
         --android-destructive: 225 29 72; /*rose-600*/
         --android-destructive-foreground: 255 255 255; /*white*/
         --android-border: 228 228 231; /*zinc-200*/
         --android-input: 228 228 231; /*zinc-200*/
-        --android-ring: 228 228 231; /*zinc-200*/
+        --android-ring: 96 165 250 /*blue-400*/
     }
 
     .dark-theme-vars {
@@ -60,14 +60,14 @@
         --secondary: 63 63 70; /*zinc-700*/
         --secondary-foreground: 228 228 231; /*zinc-200*/
         --muted: 39 39 42; /*zinc-800*/
-        --muted-foreground: 212 212 216; /*zinc-300*/
-        --accent: 7 89 133; /*sky-800*/
-        --accent-foreground: 186 230 253; /*sky-200*/
+        --muted-foreground: 212 212 216; /*zinc-400*/
+        --accent: 96 165 250; /*blue-400*/
+        --accent-foreground: 0 0 0; /*black*/
         --destructive: 225 29 72; /*rose-600*/
         --destructive-foreground: 255 255 255; /*white*/
         --border: 39 39 42; /*zinc-800*/
         --input: 39 39 42; /*zinc-800*/
-        --ring: 39 39 42; /*zinc-800*/
+        --ring: 37 99 235; /*blue-600*/
 
         /* Android-specific variants for dark mode */
         --android-background: 9 9 11; /*zinc-950*/
@@ -82,13 +82,13 @@
         --android-secondary-foreground: 228 228 231; /*zinc-200*/
         --android-muted: 39 39 42; /*zinc-800*/
         --android-muted-foreground: 212 212 216; /*zinc-300*/
-        --android-accent: 7 89 133; /*sky-800*/
-        --android-accent-foreground: 186 230 253; /*sky-200*/
+        --android-accent: 96 165 250; /*blue-400*/
+        --android-accent-foreground: 0 0 0; /*black*/
         --android-destructive: 225 29 72; /*rose-600*/
         --android-destructive-foreground: 255 255 255; /*white*/
         --android-border: 39 39 42; /*zinc-800*/
         --android-input: 39 39 42; /*zinc-800*/
-        --android-ring: 39 39 42; /*zinc-800*/
+        --android-ring: 37 99 235; /*blue-600*/
     }
     
     @media (prefers-color-scheme: dark) {
@@ -111,16 +111,21 @@
     }
 
     /* Card Variants */
+
+    .u-card-base {
+        @apply bg-card shadow-sm text-card-foreground;
+    }
+
     .u-card-base-compact {
-        @apply bg-card shadow-sm text-card-foreground py-2 sm:py-3 lg:py-4 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4 rounded-xl;
+        @apply u-card-base py-2 sm:py-3 lg:py-4 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4 rounded-xl;
     }
 
     .u-card-base-default {
-        @apply bg-card shadow-sm text-card-foreground py-3 sm:py-4 lg:py-6 gap-y-3 sm:gap-y-4 lg:gap-y-6 gap-x-3 sm:gap-x-4 lg:gap-x-6 rounded-2xl;
+        @apply u-card-base py-lg gap-y-3 sm:gap-y-4 lg:gap-y-6 gap-x-3 sm:gap-x-4 lg:gap-x-6 rounded-2xl;
     }
 
     .u-card-base-relaxed {
-        @apply bg-card shadow-sm text-card-foreground py-5 sm:py-6 lg:py-8 gap-y-5 sm:gap-y-6 lg:gap-y-8 gap-x-5 sm:gap-x-6 lg:gap-x-8 rounded-3xl;
+        @apply u-card-base py-5 sm:py-6 lg:py-8 gap-y-5 sm:gap-y-6 lg:gap-y-8 gap-x-5 sm:gap-x-6 lg:gap-x-8 rounded-3xl;
     }
 
     /* Card Header Styles */
@@ -288,7 +293,7 @@
     }
 
     .u-block-base-default {
-        @apply bg-card u-max-width-block  border-border shadow-sm text-card-foreground py-3 sm:py-4 lg:py-6 gap-y-3 sm:gap-y-4 lg:gap-y-6 gap-x-3 sm:gap-x-4 lg:gap-x-6 rounded-2xl;
+        @apply bg-card u-max-width-block border-border shadow-sm text-card-foreground py-lg gap-md rounded-2xl;
     }
 
     .u-block-base-relaxed {
@@ -445,16 +450,20 @@
     }
 
     /* Badge Variants */
+    .u-badge-base {
+        @apply flex items-center border transition-colors focus:outline-none focus:ring-ring;
+    }
+
     .u-badge-base-compact {
-        @apply inline-flex items-center rounded-md border px-2 py-0.5 transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
+        @apply u-badge-base px-1 py-0.5 rounded-md;
     }
 
     .u-badge-base-default {
-        @apply inline-flex items-center rounded-md border px-2.5 py-0.5 transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
+        @apply u-badge-base px-2 py-1 rounded-lg;
     }
 
     .u-badge-base-relaxed {
-        @apply inline-flex items-center rounded-md border px-3 py-1 transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
+        @apply u-badge-base px-3 py-1.5 rounded-xl;
     }
 
     /* Badge Default Variant */
@@ -496,30 +505,43 @@
         @apply border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80;
     }
 
+    /* Badge Accent Variant */
+    .u-badge-accent-compact {
+        @apply border-transparent bg-accent text-accent-foreground shadow hover:bg-accent/80;
+    }
+
+    .u-badge-accent-default {
+        @apply border-transparent bg-accent text-accent-foreground shadow hover:bg-accent/80;
+    }
+
+    .u-badge-accent-relaxed {
+        @apply border-transparent bg-accent text-accent-foreground shadow hover:bg-accent/80;
+    }
+
     /* Badge Outline Variant */
     .u-badge-outline-compact {
-        @apply text-foreground;
+        @apply  border-border;
     }
 
     .u-badge-outline-default {
-        @apply text-foreground;
+        @apply  border-border;
     }
 
     .u-badge-outline-relaxed {
-        @apply text-foreground;
+        @apply border-border;
     }
 
     /* Badge Text Styles */
     .u-badge-text-compact {
-        @apply text-xs font-semibold;
+        @apply text-xs inline-flex gap-sm font-semibold;
     }
 
     .u-badge-text-default {
-        @apply text-sm font-semibold;
+        @apply text-sm inline-flex gap-sm font-semibold;
     }
 
     .u-badge-text-relaxed {
-        @apply text-base font-semibold;
+        @apply text-base inline-flex gap-sm font-semibold;
     }
 
     /* Badge Text Variants */
@@ -559,16 +581,182 @@
         @apply text-destructive-foreground;
     }
 
+    .u-badge-text-accent-compact {
+        @apply text-accent-foreground;
+    }
+
+    .u-badge-text-accent-default {
+        @apply text-accent-foreground;
+    }
+
+    .u-badge-text-accent-relaxed {
+        @apply text-accent-foreground;
+    }
+
     .u-badge-text-outline-compact {
-        @apply text-foreground;
+        @apply text-muted-foreground;
     }
 
     .u-badge-text-outline-default {
-        @apply text-foreground;
+        @apply text-muted-foreground;
     }
 
     .u-badge-text-outline-relaxed {
+        @apply text-muted-foreground;
+    }
+
+    /* Table Variants */
+
+    .u-table-base {
+        @apply w-full border border-border bg-transparent border-collapse overflow-hidden;
+    }
+
+    .u-table-base-compact {
+        @apply u-table-base rounded-md;
+    }
+
+    .u-table-base-default {
+        @apply u-table-base rounded-lg;
+    }
+
+    .u-table-base-relaxed {
+        @apply u-table-base rounded-xl;
+    }
+
+    /* Table Header Styles */
+    .u-table-header {
+        @apply border-border;
+    }
+
+    .u-table-header-compact {
+        @apply u-table-header;
+    }
+
+    .u-table-header-default {
+        @apply u-table-header;
+    }
+
+    .u-table-header-relaxed {
+        @apply u-table-header;
+    }
+
+    /* Table Body Styles */
+    .u-table-body {
+        @apply border-border;
+    }
+
+    .u-table-body-compact {
+        @apply u-table-body;
+    }
+
+    .u-table-body-default {
+        @apply u-table-body;
+    }
+
+    .u-table-body-relaxed {
+        @apply u-table-body;
+    }
+
+    /* Table Footer Styles */
+    .u-table-footer {
+        @apply bg-muted/50 font-medium;
+    }
+
+    .u-table-footer-compact {
+        @apply u-table-footer;
+    }
+
+    .u-table-footer-default {
+        @apply u-table-footer;
+    }
+
+    .u-table-footer-relaxed {
+        @apply u-table-footer;
+    }
+
+    /* Table Row Styles */
+    .u-table-row {
+        @apply flex overflow-hidden flex-row border-border border-b web:transition-colors web:hover:bg-muted/50 web:data-[state=selected]:bg-muted;
+    }
+
+    .u-table-row-compact {
+        @apply u-table-row;
+    }
+
+    .u-table-row-default {
+        @apply u-table-row;
+    }
+
+    .u-table-row-relaxed {
+        @apply u-table-row;
+    }
+
+    /* Table Head Styles */
+    .u-table-head {
+        @apply text-muted-foreground text-left justify-center font-medium flex-1;
+    }
+
+    .u-table-head-compact {
+        @apply u-table-head h-8 px-2 text-xs;
+    }
+
+    .u-table-head-default {
+        @apply u-table-head h-12 px-4 text-sm;
+    }
+
+    .u-table-head-relaxed {
+        @apply u-table-head h-16 px-6 text-base;
+    }
+
+    /* Table Cell Styles */
+    .u-table-cell {
+        @apply flex-auto flex-row gap-sm items-center text-foreground px-md py-sm;
+    }
+
+    .u-table-cell-compact {
+        @apply u-table-cell text-xs;
+    }
+
+    .u-table-cell-default {
+        @apply u-table-cell text-sm;
+    }
+
+    .u-table-cell-relaxed {
+        @apply u-table-cell text-base;
+    }
+
+    /* Table Header Text Styles */
+    .u-table-head-text {
+        @apply text-muted-foreground font-semibold tracking-tight leading-tight;
+    }
+
+    .u-table-head-text-compact {
+        @apply u-table-head-text text-xs;
+    }
+
+    .u-table-head-text-default {
+        @apply u-table-head-text text-sm;
+    }
+
+    .u-table-head-text-relaxed {
+        @apply u-table-head-text text-base;
+    }
+
+    /* Table Cell Text Styles */
+    .u-table-cell-text {
         @apply text-foreground;
+    }
+
+    .u-table-cell-text-compact {
+        @apply u-table-cell-text text-sm;
+    }
+
+    .u-table-cell-text-default {
+        @apply u-table-cell-text text-sm;
+    }
+
+    .u-table-cell-text-relaxed {
+        @apply u-table-cell-text text-base;
     }
 
     /* Density-Aware Padding Utilities */
@@ -603,7 +791,7 @@
     }
 
     /* Small Padding (p-sm) - defaults to 'default' density */
-    .p-sm {
+    .p-xs {
         @apply p-1;
     }
 
@@ -613,6 +801,18 @@
 
     [data-density="relaxed"] .p-sm {
         @apply p-1.5;
+    }
+
+    .p-sm {
+        @apply p-2;
+    }
+
+    [data-density="compact"] .p-sm {
+        @apply p-1;
+    }
+
+    [data-density="relaxed"] .p-sm {
+        @apply p-3;
     }
 
     /* Medium Padding (p-md) - defaults to 'default' density */
@@ -723,15 +923,15 @@
 
     /* Large Vertical Padding (py-lg) - defaults to 'default' density */
     .py-lg {
-        @apply py-4;
+        @apply py-3 sm:py-4 lg:py-6;
     }
 
     [data-density="compact"] .py-lg {
-        @apply py-2;
+        @apply py-2 sm:py-3 lg:py-4;
     }
 
     [data-density="relaxed"] .py-lg {
-        @apply py-6;
+        @apply py-4 sm:py-6 lg:py-8;
     }
 
     /* Top Padding Utilities */
@@ -858,30 +1058,42 @@
 
     /* Density-Aware Gap Utilities */
 
+    .gap-xs {
+        @apply gap-1 sm:gap-1.5;
+    }
+
+    [data-density="compact"] .gap-xs {
+        @apply gap-0.5 sm:gap-1;
+    }
+
+    [data-density="relaxed"] .gap-xs {
+        @apply gap-1.5 sm:gap-2;
+    }
+
     /* Small Gap (gap-sm) - defaults to 'default' density */
     .gap-sm {
-        @apply gap-2 sm:gap-3;
+        @apply gap-1.5 sm:gap-2 lg:gap-3;
     }
 
     [data-density="compact"] .gap-sm {
-        @apply gap-1 sm:gap-2;
+        @apply gap-1 sm:gap-1.5 lg:gap-2;
     }
 
     [data-density="relaxed"] .gap-sm {
-        @apply gap-3 sm:gap-4;
+        @apply gap-2 sm:gap-3 lg:gap-4;
     }
 
     /* Medium Gap (gap-md) - defaults to 'default' density */
     .gap-md {
-        @apply gap-3 sm:gap-4;
+        @apply gap-2 sm:gap-3 lg:gap-4;
     }
 
     [data-density="compact"] .gap-md {
-        @apply gap-2 sm:gap-3;
+        @apply gap-1 sm:gap-2 lg:gap-3;
     }
 
     [data-density="relaxed"] .gap-md {
-        @apply gap-4 sm:gap-6;
+        @apply gap-3 sm:gap-4 lg:gap-6;
     }
 
     /* Large Gap (gap-lg) - defaults to 'default' density */
@@ -986,11 +1198,11 @@
 
     /* Tabs */
     .u-controls-tabs-container {
-        @apply w-full flex-col;
+        @apply w-full flex-col ;
     }
 
     .u-controls-tabs-header {
-        @apply flex-row w-full bg-muted rounded-lg p-0.5;
+        @apply flex-row w-full bg-muted rounded-full p-xs mb-md;
         display: flex;
         justify-content: space-between;
         overflow-x: auto;
@@ -1001,12 +1213,13 @@
         -ms-overflow-style: none;
     }
 
+
     .u-controls-tabs-header::-webkit-scrollbar {
         display: none;
     }
 
     .u-controls-tabs-header-item {
-        @apply rounded-md px-4 py-2.5 text-sm inline-flex items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
+        @apply rounded-full px-md py-sm text-sm inline-flex items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
         flex: 1;
 
         flex-shrink: 0;
@@ -1025,7 +1238,7 @@
     }
 
     .u-controls-tabs-tab-content {
-        @apply pt-4;
+        @apply w-full;
     }
 
     /* Tab content animation */

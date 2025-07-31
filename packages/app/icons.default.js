@@ -6,7 +6,7 @@ import {
     StickyNote, Users, Info, CircleHelp, BookUser, Pencil, Menu,
     Smile, UserCircle, File, Settings, LayoutGrid, UserRound,
     UserCheck, Cog, LogOut, LogIn, Files, RotateCcw, Vote,
-    Image, Code, ThumbsUp, FilePlus, MonitorPlay, X, House, ChartBarBig,
+    Image, Code, ThumbsUp, FilePlus, MonitorPlay, X, House, ChartBarBig, UserStar,
     Rocket, Wand, GraduationCap, Handshake, AtSign,  ChevronUp,
     ChevronDown, ChevronLeft, MessageSquareText, Clipboard, FileAudio, EllipsisVertical, 
     MessageCircle, Calendar, UserPlus, Flame, Rows, Share2, CheckCircle, Cake, Ellipsis,UserX,
@@ -33,5 +33,5 @@ export const IconSet = {
     Camera, UserMinus, Loader, Asterisk, CircleUser, UserSquare,
     ChartLine, Star, Languages, Moon, Trash, Minus, Hash, Megaphone, Sparkle, PanelsTopLeft,
     MapPin, Wallet, Repeat, Eye, EyeOff, Globe, Send,SendHorizontal, RotateCw, Paperclip,
-    ChevronRight, LibraryBig, Lock, TvMinimalPlay, Shapes, KeySquare
+    ChevronRight, LibraryBig, Lock, TvMinimalPlay, Shapes, KeySquare, UserStar
 }

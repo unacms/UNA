@@ -296,7 +296,7 @@ export default function (props) {
         }
 
         return (
-            <View key={block.i} className=" shadow groupweb:duration-200 overflow-hidden sm:rounded-2xl bg-bgrcard dark:bg-bgrcard-d">
+            <View key={block.i} className=" shadow groupweb:duration-200 overflow-hidden sm:rounded-2xl bg-card">
                 {blockContent}
                 {bAllowEdit && <View className="absolute left-1/4 w-1/2 flex-row justify-center gap-x-4  items-center bottom-5 z-50">
                     <Pressable onMouseDown={(event) => onRemove(event, block.i)} onTouchStart={(event) => onRemove(event, block.i)}>
@@ -312,7 +312,7 @@ export default function (props) {
     }
 
     return (
-        <View className="px-3 sm:px-4 pt-3  pb-0.5 sm:pt-4 mb-3 w-full   rounded-none sm:rounded-2xl   border-bdrcard dark:border-bdrcard-d  shadow-sm overflow-hidden bg-bgrcard dark:bg-bgrcard-d">
+        <View className="px-3 sm:px-4 pt-3  pb-0.5 sm:pt-4 mb-3 w-full   rounded-none sm:rounded-2xl   border-bdrcard dark:border-bdrcard-d  shadow-sm overflow-hidden bg-card">
             <View className="w-full overflow-hidden">
                 {addType && <Modal
                     outerClickClose={false}

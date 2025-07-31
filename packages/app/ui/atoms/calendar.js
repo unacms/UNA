@@ -104,7 +104,7 @@ export default function ({ name, value = '', type, onChange }) {
                 <View className='  max-w-sm w-full mx-auto'>
                     <View className='  max-w-sm w-full mx-auto aspect-square mb-4'>
                         {DynamicCalendar && <DynamicCalendar
-                            className=' bg-bgrcard dark:bg-bgrcard-d'
+                            className=' bg-card'
                             theme={{
                                 calendarBackground: colors.background2,
                                 dayTextColor: colors.text,

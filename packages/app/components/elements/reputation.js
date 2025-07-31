@@ -1,30 +1,63 @@
-import { View, Row } from 'app/design/view';
+import { View, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
-import Time from 'app/ui/atoms/time';
+import Time from 'app/ui/atoms/time'
 import Profile from 'app/ui/molecules/profile'
 import { Icon } from 'app/ui/atoms/icon'
 import { Svg, Path } from 'react-native-svg'
-import { Button, Modal } from 'app/design/controls';
-import { useState, useEffect } from "react";
-import { fetcher } from 'app/lib/fetcher';
+import { Button, Modal } from 'app/design/controls'
+import { useState, useEffect } from 'react'
+import { fetcher } from 'app/lib/fetcher'
 import Tabs from 'app/ui/molecules/tabs'
+import {
+    Table,
+    TableHeader,
+    TableBody,
+    TableRow,
+    TableHead,
+    TableCell,
+    TableHeaderText,
+    TableCellText,
+} from 'app/ui/molecules/table'
+import Badge from 'app/ui/molecules/badge'
 
 export function ReputationActions({ data }) {
     return (
-        <View className='w-full gap-y-1'>
-            <Row className=' items-center justify-center '>
-                <View className='w-3/5 '><Text className=" text-base text-neutral-800 font-medium dark:text-neutral-200">Action</Text></View>
-                <View className='w-1/5  items-center'><Text className=" text-base text-neutral-800 font-medium dark:text-neutral-200">
-                    Points (active)</Text></View>
-                <View className='w-1/5  items-center'><Text className=" text-base text-neutral-800 font-medium dark:text-neutral-200">Points (passive)</Text></View>
-            </Row>
-            {data.map((item, index) => (
-                <Row className=' items-center justify-center ' key={index}>
-                    <View className='w-3/5 '><Text className=" text-base text-neutral-800 dark:text-neutral-200">{item.unit} {item.action}</Text></View>
-                    <View className='w-1/5 items-center'><Text className=" text-base text-neutral-800 font-medium dark:text-neutral-200">{item.points_active}</Text></View>
-                    <View className='w-1/5 items-center'><Text className=" text-base text-neutral-800 font-medium dark:text-neutral-200">{item.points_passive}</Text></View>
-                </Row>
-            ))}</View>
+        <Table className="w-full">
+            <TableHeader>
+                <TableRow>
+                    <TableHead className="flex-[3]">
+                        <TableHeaderText>Action</TableHeaderText>
+                    </TableHead>
+                    <TableHead className="flex-1 justify-center">
+                        <TableHeaderText>Points (active)</TableHeaderText>
+                    </TableHead>
+                    <TableHead className="flex-1 justify-center">
+                        <TableHeaderText>Points (passive)</TableHeaderText>
+                    </TableHead>
+                </TableRow>
+            </TableHeader>
+            <TableBody>
+                {data.map((item, index) => (
+                    <TableRow key={index}>
+                        <TableCell className="flex-[3]">
+                            <TableCellText>
+                                {item.unit} {item.action}
+                            </TableCellText>
+                        </TableCell>
+                        <TableCell className="flex-1 justify-center">
+                            <TableCellText className="font-medium">
+                                {item.points_active}
+                            </TableCellText>
+                        </TableCell>
+                        <TableCell className="flex-1 justify-center">
+                            <TableCellText className="font-medium">
+                                {item.points_passive}
+                            </TableCellText>
+                        </TableCell>
+                    </TableRow>
+                ))}
+            </TableBody>
+        </Table>
     )
 }
 
@@ -33,56 +66,56 @@ export function ReputationSummary({ data }) {
         return <ReputationSummarySimple data={data} />
     }
     return (
-        <Row className='w-full max-w-xl mx-auto items-center justify-center'>
-            <View className='flex-auto'>
-                <ReputationSummarySimple data={data} />
-            </View>
-        </Row>
+        <View className="flex-auto">
+            <ReputationSummarySimple data={data} />
+        </View>
     )
 }
 
 export function ReputationWidget({ data }) {
-    const [tabsData, setTabsData] = useState(data.tabs);
+    const [tabsData, setTabsData] = useState(data.tabs)
     useEffect(() => {
         const fetchAllTabs = async () => {
             try {
                 const results = await Promise.all(
                     data.tabs.map(async ({ url, title, data }, index) => {
-                        const loadedData = data ?? (await fetcher(url))?.data?.[0]?.data ?? [];
+                        const loadedData =
+                            data ?? (await fetcher(url))?.data?.[0]?.data ?? []
                         return {
                             title,
                             data: loadedData,
                             index,
                             url,
-                        };
+                        }
                     })
-                );
-                setTabsData(results);
+                )
+                setTabsData(results)
             } catch (error) {
-                console.error('Ошибка при загрузке данных:', error);
+                console.error('Ошибка при загрузке данных:', error)
             }
-        };
+        }
 
-        fetchAllTabs();
-    }, []);
+        fetchAllTabs()
+    }, [])
 
     const preparedTabs = tabsData.map((item) => ({
         ...item,
         key: item.url,
-        content: item.url.includes('leaderboard') ? <ReputationLeaderboard data={item.data} /> : <ReputationSummary data={item.data} />
-    }));
+        content: item.url.includes('leaderboard') ? (
+            <ReputationLeaderboard data={item.data} />
+        ) : (
+            <ReputationSummary data={item.data} />
+        ),
+    }))
 
-    return <Tabs tabs={preparedTabs} activeTab={tabsData[0].url} />;
-
+    return <Tabs tabs={preparedTabs} activeTab={tabsData[0].url} />
 }
 
-
-
 function ReputationSummarySimple({ data }) {
-    const [isModal, setIsModal] = useState(false);
-    const [isModal2, setIsModal2] = useState(false);
+    const [isModal, setIsModal] = useState(false)
+    const [isModal2, setIsModal2] = useState(false)
     return (
-        <View className="w-full gap-y-2 p-md rounded-2xl shadow-sm border border-border min-w-40 max-w-sm items-center">
+        <View className="w-full gap-md">
             <Modal
                 scrollable
                 title="Score rules"
@@ -94,7 +127,7 @@ function ReputationSummarySimple({ data }) {
                     <ReputationActions data={data.actions_list} />
                 </View>
             </Modal>
-             <Modal
+            <Modal
                 scrollable
                 title="Levels"
                 onVisible={isModal2}
@@ -102,29 +135,72 @@ function ReputationSummarySimple({ data }) {
                 onClose={() => setIsModal2(false)}
             >
                 <View className="w-full lg:min-w-md">
-                   <ReputationLevels data={data.levels_list} />
+                    <ReputationLevels data={data.levels_list} />
                 </View>
             </Modal>
-            <Profile
-                {...data.author_data}
-                displayType="unit_wo_info"
-                displaySize="2xl"
-            />
-            <Text className="font-bold text-lg text-neutral-800 dark:text-neutral-200">{data.author_data.display_name}</Text>
-            <Text className="text-sm text-muted-foreground ">{data.points || 0} points</Text>
-            <View className='flex-auto absolute right-1 top-1'>
-                <Button variant='link' rounded size='sm' startDecorator="Info" onPress={() => setIsModal(true)} />
+            <View className="flex-auto flex-row gap-md w-full items-center">
+                <View className="relative p-xs border-4 border-border rounded-full">
+                    <Profile
+                        {...data.author_data}
+                        displayType="unit_wo_info"
+                        displaySize="2xl"
+                    />
+                    <View className="absolute -bottom-2 -end-2">
+                        <Badge className="rounded-full p-sm border-4 border-card font-mono tabular-nums" variant="secondary">
+                          {/* Show user level icon if available */}
+                        {data.levels && data.levels.length > 0 && data.levels[0].icon && (
+                            <Icon icon={data.levels[0].icon} size={24}  />
+                        )}
+                        </Badge>
+                    </View>
+                </View>
+                <View className="flex-auto flex-col gap-xs justify-center">
+                    <Text className="font-bold text-2xl text-foreground">
+                        {data.author_data.display_name}
+                    </Text>
+                    {data.levels.map((item, index) => (
+                            <View key={index} className="flex-row gap-sm flex-auto items-center">
+                                
+                                <Badge variant="outline">
+                                    <Icon icon={item.icon} size={20} />
+                                    <Text>{item.title}</Text>
+                                </Badge>
+                               
+                                <View className="flex-auto justify-end flex-row">
+                                    <Button
+                                        variant="text"
+                                        rounded
+                                        size="sm"
+                                        startDecorator="ListPlus"
+                                        onPress={() => setIsModal2(true)}
+                                    />
+                                      
+                                </View>
+                            </View>
+                            
+                        ))}
+                    <View className="flex-row gap-sm flex-auto justify-between items-center">
+                      
+                        <View className="flex-row items-end gap-sm">
+                            <Text className="text-3xl font-bold text-foreground">
+                                {data.points || 0}
+                            </Text>
+                            <Text className="text-lg text-muted-foreground">
+                                points
+                            </Text>
+                        </View>
+                        <Button
+                                            variant="text"
+                                            rounded
+                                            size="sm"
+                                            startDecorator="Info"
+                                            onPress={() => setIsModal(true)}
+                                        />
+                    </View>
+                   
+                </View>
             </View>
-            <View className='flex-auto absolute left-1 top-1'>
-                <Button variant='link' rounded size='sm' startDecorator="Plus" onPress={() => setIsModal2(true)} />
-            </View>
-
-            {data.levels.map((item, index) => (
-                <Row className='gap-x-2 items-center justify-center' key={index}>
-                        <Icon icon={item.icon} size={20} />
-                        <Text className=" text-sm text-foreground">{item.title}</Text>
-                </Row>
-            ))}
+          
         </View>
     )
 }
@@ -132,46 +208,84 @@ function ReputationSummarySimple({ data }) {
 export function ReputationLeaderboard({ data }) {
     const getPositionColors = (index) => {
         switch (index) {
-            case 0: return 'bg-yellow-500'; // Gold for 1st place
-            case 1: return 'bg-gray-400 dark:bg-gray-600'; // Silver for 2nd place
-            case 2: return 'bg-amber-600'; // Bronze for 3rd place
-            default: return 'bg-transparent border border-gray-300 dark:border-gray-600';
+            case 0:
+                return 'bg-yellow-500' // Gold for 1st place
+            case 1:
+                return 'bg-gray-400 dark:bg-gray-600' // Silver for 2nd place
+            case 2:
+                return 'bg-amber-600' // Bronze for 3rd place
+            default:
+                return 'bg-transparent border border-gray-300 dark:border-gray-600'
         }
-    };
+    }
 
     const getStarColor = (index) => {
         switch (index) {
-            case 0: return '#EAB308'; // Gold
-            case 1: return '#9CA3AF'; // Silver
-            case 2: return '#D97706'; // Bronze
-            default: return 'transparent';
+            case 0:
+                return '#EAB308' // Gold
+            case 1:
+                return '#9CA3AF' // Silver
+            case 2:
+                return '#D97706' // Bronze
+            default:
+                return 'transparent'
         }
-    };
+    }
 
     const getTextColor = (index) => {
-        return index < 3 ? 'text-white' : 'text-gray-600 dark:text-gray-400';
-    };
+        return index < 3 ? 'text-white' : 'text-gray-600 dark:text-gray-400'
+    }
 
     const StarIcon = ({ color, size = 28 }) => (
-        <Svg width={size} height={size} viewBox="0 0 24 24" fill={color} stroke={color}>
+        <Svg
+            width={size}
+            height={size}
+            viewBox="0 0 24 24"
+            fill={color}
+            stroke={color}
+        >
             <Path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z" />
         </Svg>
-    );
+    )
 
     return (
         <View className="items-center w-full flex-col gap-sm px-sm max-w-xl mx-auto">
             {data.profiles.map((item, index) => (
-                <Row className={`w-full flex-wrap justify-between items-center ${index != 0 && 'mt-3'}`} key={index}>
+                <Row
+                    className={`w-full flex-wrap justify-between items-center ${
+                        index != 0 && 'mt-3'
+                    }`}
+                    key={index}
+                >
                     <Row className="items-center gap-sm">
                         <View className="w-7 h-7 items-center justify-center relative">
                             {index < 3 ? (
                                 <>
-                                    <StarIcon color={getStarColor(index)} size={28} />
-                                    <Text className={`${getTextColor(index)} text-xs font-bold absolute`}>{index + 1}</Text>
+                                    <StarIcon
+                                        color={getStarColor(index)}
+                                        size={28}
+                                    />
+                                    <Text
+                                        className={`${getTextColor(
+                                            index
+                                        )} text-xs font-bold absolute`}
+                                    >
+                                        {index + 1}
+                                    </Text>
                                 </>
                             ) : (
-                                <View className={`w-6 h-6 rounded-full ${getPositionColors(index)} items-center justify-center`}>
-                                    <Text className={`${getTextColor(index)} text-sm font-bold`}>{index + 1}</Text>
+                                <View
+                                    className={`w-6 h-6 rounded-full ${getPositionColors(
+                                        index
+                                    )} items-center justify-center`}
+                                >
+                                    <Text
+                                        className={`${getTextColor(
+                                            index
+                                        )} text-sm font-bold`}
+                                    >
+                                        {index + 1}
+                                    </Text>
                                 </View>
                             )}
                         </View>
@@ -181,7 +295,10 @@ export function ReputationLeaderboard({ data }) {
                             displaySize="base"
                         />
                     </Row>
-                    <Text className=" text-base font-bold text-muted-foreground">{item.sign}{item.points}</Text>
+                    <Text className=" text-base font-bold text-muted-foreground">
+                        {item.sign}
+                        {item.points}
+                    </Text>
                 </Row>
             ))}
         </View>
@@ -190,30 +307,67 @@ export function ReputationLeaderboard({ data }) {
 
 export function ReputationHistory({ data }) {
     return (
-        <View className='w-full gap-y-1'>
-            {data.map((item, index) => (
-                <Row className='gap-x-2 items-center justify-center ' key={index}>
-                    <View className='w-1/5 '><Time stylesName="text-base text-neutral-800 dark:text-neutral-200" ts={item.date} format="datetime"></Time></View>
-                    <View className='w-3/5'><Text className=" text-base text-neutral-800 dark:text-neutral-200">{item.unit} {item.action}</Text></View>
-                    <View className='w-1/5 items-end'><Text className=" text-base text-neutral-800 font-medium dark:text-neutral-200">{item.points}</Text></View>
-                </Row>
-            ))}</View>
+        <Table className="w-full">
+            <TableHeader>
+                <TableRow>
+                    <TableHead className="flex-1">
+                        <TableHeaderText>Date</TableHeaderText>
+                    </TableHead>
+                    <TableHead className="flex-[3]">
+                        <TableHeaderText>Action</TableHeaderText>
+                    </TableHead>
+                    <TableHead className="flex-1 ">
+                        <TableHeaderText>Points</TableHeaderText>
+                    </TableHead>
+                </TableRow>
+            </TableHeader>
+            <TableBody>
+                {data.map((item, index) => (
+                    <TableRow key={index}>
+                        <TableCell className="flex-1 ">
+                            <Time
+                                stylesName=""
+                                ts={item.date}
+                                format="datetime"
+                            />
+                        </TableCell>
+                        <TableCell className="flex-[3]">
+                            <TableCellText>
+                                {item.unit} {item.action}
+                            </TableCellText>
+                        </TableCell>
+                        <TableCell className="flex-1 ">
+                            <TableCellText className="font-medium">
+                                {item.points}
+                            </TableCellText>
+                        </TableCell>
+                    </TableRow>
+                ))}
+            </TableBody>
+        </Table>
     )
 }
 
 export function ReputationLevels({ data }) {
     return (
-        <View className='w-full gap-lg p-lg rounded-r-lg bg-muted items-center h-full  flex-auto'>
-            {data.map((item, index) => (
-                <Row className=' justify-between gap-md w-full' key={index}>
-                    <Row className=' gap-x-2 flex-auto'>
-                        <Icon icon={item.icon} size={24} />
-                        <Text className=" text-sm leading-6 text-neutral-800 dark:text-neutral-200">{item.title}</Text>
-                        </Row>
-
-                    <Text className=" text-base text-muted-foreground font-bold">{item.points_in}</Text>
-                </Row>
-            ))}
-        </View>
+        <Table className="w-full">
+            <TableBody>
+                {data.map((item, index) => (
+                    <TableRow key={index} className="border-b-0">
+                        <TableCell className="flex-auto">
+                            <Row className="gap-x-2 items-center">
+                                <Icon icon={item.icon} size={24} />
+                                <TableCellText>{item.title}</TableCellText>
+                            </Row>
+                        </TableCell>
+                        <TableCell className="flex-none">
+                            <TableCellText className="text-muted-foreground font-bold">
+                                {item.points_in}
+                            </TableCellText>
+                        </TableCell>
+                    </TableRow>
+                ))}
+            </TableBody>
+        </Table>
     )
 }

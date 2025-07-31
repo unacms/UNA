@@ -424,7 +424,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
 
 
     return (
-        <View className='flex-1 w-full h-full flex-row bg-bgrcard dark:bg-bgrcard-d'>
+        <View className='flex-1 w-full h-full flex-row bg-card'>
             {panelsVisible.convos && <View className='w-full md:w-80 border-bdrtabbar dark:border-bdrtabbar-d border-r'>
                 {convosComponent}
             </View>}
@@ -590,7 +590,7 @@ const FormContainer = memo(({ form, replyItem, onFormSubmit, handleCancelReply, 
         <View className={`  border-t bg-bgrtabbar dark:bg-bgrtabbar-d border-bdr dark:border-bdr-d ${isWeb ? '' : 'min-h-20'}`} onLayout={handleLayout} style={{ paddingTop: 12, paddingBottom: 12 }}>
             <View className=' ' >
                 {
-                    replyItem && (<View className='bg-bgrcard dark:bg-bgrcard-d rounded-sm border-l-2 border-primary/50 py-1 pl-2 mt-2 mx-2'>
+                    replyItem && (<View className='bg-card rounded-sm border-l-2 border-primary/50 py-1 pl-2 mt-2 mx-2'>
                         <Row className='items-start justify-between max-w-full relative'>
                             <View className=' flex-auto pr-4'>
                                 <Row className='max-w-full '>

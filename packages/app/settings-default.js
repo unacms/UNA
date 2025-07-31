@@ -912,7 +912,7 @@ export  const settingsDefault = {
             bgrtoolbarbutton: 'rgba(33, 37, 41, 0)',
         },
         dropdown: {
-            cnt: ' rounded-2xl web:backdrop-blur overflow-hidden p-1 bg-bgrmodal dark:bg-bgrmodal-d z-50 shadow-[0_10px_10px_rgba(0,0,0,0.15)] ',
+            cnt: ' rounded-2xl overflow-hidden p-1 bg-card z-50 border border-border ',
         },
         conductor: {
             menu: '   w-full items-left justify-center  ',
@@ -997,11 +997,11 @@ export  const settingsDefault = {
             icon_size: 20, // Default icon size for dropdown menu icons
         },
         modal: {
-            fog: 'bg-white/50 dark:bg-black/80 backdrop-blur ',
+            fog: 'bg-background/50 backdrop-blur-xl ',
             container:
-                ' h-full sm:h-auto shadow-modal dark:shadow-modal-d bg-bgrmodal dark:bg-bgrmodal-d sm:rounded-2xl sm:border border-bdrmodal dark:border-bdrmodal-d overflow-hidden ',
+                ' h-full sm:h-auto shadow-xl bg-card sm:rounded-2xl sm:border border-border overflow-hidden ',
             content: ' h-auto ',
-            header: ' p-3 items-start justify-start border-b border-bdrmodal dark:border-bdrmodal-d',
+            header: ' p-3 items-start justify-start border-b border-border',
         },
 
         inputs: {
@@ -1033,12 +1033,12 @@ export  const settingsDefault = {
             pressed_text: 'text-primary dark:text-primary font-medium group-hover:text-primary dark:group-hover:text-primary',
             xs: {
                 rounded: 'rounded-md',
-                padding: 'h-6 min-w-6 px-1',
-                padding_icon_only: 'h-6 w-6 px-1',
-                padding_with_title: 'h-6 px-1',
-                icon_container: 'h-4 w-4 flex items-center justify-center',
+                padding: 'h-8 min-w-8 px-2',
+                padding_icon_only: 'h-8 w-8 px-2',
+                padding_with_title: 'h-8 px-2',
+                icon_container: 'h-5 w-5 flex items-center justify-center',
                 title_container: 'px-1 text-xs',
-                icon_size: 16,
+                icon_size: 20,
                 icon_margin: 'mx-0.5', // conditional margin for icon container when title is present
                 title_margin: '',
             },

@@ -48,7 +48,7 @@ function DefaultUnit({ data }) {
         return <></>
 
     return (
-        <Block className={'tl-' + data.id} >
+        <Block className={"mb-md tl-" + data.id}>
             {viewState.view == 'edited' && <FeedEditForm setViewState={setViewState} id={data.id} viewState={viewState} />}
             {isCommentsModal && <Modal
                 outerClickClose={false}
