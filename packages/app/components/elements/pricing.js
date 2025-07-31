@@ -48,7 +48,7 @@ function ElementPricingPeriod({ data, name }) {
                     (action) => action && Object.keys(action).length > 0
                 );
                 return (
-                    <Card key={item.key}>
+                    <Card key={index}>
                         <CardHeader>
                             <CardTitle>{item.level_name.value}</CardTitle>
                             <CardDescription>{item.period.value}</CardDescription>
