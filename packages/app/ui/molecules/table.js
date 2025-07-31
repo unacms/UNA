@@ -2,6 +2,9 @@ import { View } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { cn } from 'app/lib/util';
 import { useLayoutSettings } from 'app/context/layout-settings';
+import { appSetting} from 'app/lib/util';
+
+const tableTheme = appSetting('theme', 'tables');
 
 function createTableComponent({ baseClass, Component = View, role, ariaLevel }) {
     return function TableSubComponent({ className, density, ...props }) {
@@ -10,7 +13,7 @@ function createTableComponent({ baseClass, Component = View, role, ariaLevel }) 
 
         return (
             <Component
-                className={cn(`${baseClass}-${finalDensity}`, className)}
+                className={`${tableTheme[baseClass]} ${tableTheme[baseClass+'-'+finalDensity]} ${className}`}
                 role={role}
                 aria-level={ariaLevel}
                 {...props}

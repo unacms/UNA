@@ -1,6 +1,9 @@
 import { Text } from 'app/design/typography'
 import { useState, useRef, useEffect } from 'react'
 import * as TabsPrimitive from '@radix-ui/react-tabs';
+import { appSetting } from 'app/lib/util';
+
+const tabsTheme = appSetting('theme', 'tabs');
 
 export default function Tabs({ tabs, activeTab }) {
     const [currentTab, setCurrentTab] = useState(activeTab);
@@ -53,24 +56,24 @@ export default function Tabs({ tabs, activeTab }) {
         <TabsPrimitive.Root
             value={currentTab}
             onValueChange={setCurrentTab}
-            className="u-controls-tabs-container"
+            className={tabsTheme["u-controls-tabs-container"]}
         >
-            <TabsPrimitive.List ref={tabsListRef} className="u-controls-tabs-header">
+            <TabsPrimitive.List ref={tabsListRef} className={tabsTheme["u-controls-tabs-header"]}>
                 {tabs.map((tab) => (
                     <TabsPrimitive.Trigger
                         key={tab.key}
                         value={tab.key}
                         onMouseEnter={handleTabInteraction}
                         onFocus={handleTabInteraction}
-                        className={`${tab.key === currentTab ? 'u-controls-tabs-header-item-active' : 'u-controls-tabs-header-item'}`}>
-                        <Text className={`${tab.key === currentTab ? 'u-controls-tabs-header-item-text-active' : 'u-controls-tabs-header-item-text'}`}>{tab.title}</Text>
+                        className={`nkkfsdkfd ${tab.key === currentTab ? `${tabsTheme['u-controls-tabs-header-item']} ${tabsTheme['u-controls-tabs-header-item-active']}` : tabsTheme['u-controls-tabs-header-item']}`}>
+                        <Text className={`${tab.key === currentTab ? tabsTheme['u-controls-tabs-header-item-text-active'] : tabsTheme['u-controls-tabs-header-item-text']}`}>{tab.title}</Text>
                     </TabsPrimitive.Trigger>
                 ))}
             </TabsPrimitive.List>
 
             {tabs.map((tab) => (
                 <TabsPrimitive.Content 
-                    className='u-controls-tabs-tab-content u-controls-tabs-tab-content-animated' 
+                    className={`${tabsTheme['u-controls-tabs-tab-content']} ${tabsTheme['u-controls-tabs-tab-content-animated']}`}
                     key={tab.key} 
                     value={tab.key}
                 >

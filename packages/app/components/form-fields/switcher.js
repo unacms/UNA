@@ -4,6 +4,8 @@ import { Switch } from 'app/design/controls'
 import { useFormContext } from 'react-hook-form';
 import { View } from 'app/design/view'
 import { Text } from 'app/design/typography'
+import { appSetting } from 'app/lib/util'
+const switcherTheme = appSetting('theme', 'switcher');
 
 export default function FormFieldSwitcher(props) {
     const [isEnabled, setIsEnabled] = useState(props.checked ? true : false);
@@ -16,12 +18,12 @@ export default function FormFieldSwitcher(props) {
 
     return (
         <Field {...props}>
-            <View className='u-controls-switcher-container'>
+            <View className={switcherTheme['u-controls-switcher-container']}>
                 <Switch
                     onValueChange={toggleSwitch}
                     value={isEnabled}
                 />
-                <Text className='u-controls-switcher-text'>{props.caption}</Text>
+                <Text className={switcherTheme['u-controls-switcher-text']}>{props.caption}</Text>
             </View>
         </Field>
     );

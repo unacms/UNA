@@ -835,7 +835,6 @@ export  const settingsDefault = {
     },
     theme: {
         profile_colors: [
-            //OLD appSetting('layout', 'profile_colors')
             'orange',
             'yellow',
             'green',
@@ -1076,6 +1075,326 @@ export  const settingsDefault = {
                 title_margin: '', // conditional margin for text container when icon is present
             },
         },
+        cards: {
+            'u-card-base': 'bg-card shadow-sm text-card-foreground',
+
+            // Base Variants
+            'u-card-base-compact':
+                'py-2 sm:py-3 lg:py-4 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4 rounded-xl',
+            'u-card-base-default':
+                'py-lg gap-y-3 sm:gap-y-4 lg:gap-y-6 gap-x-3 sm:gap-x-4 lg:gap-x-6 rounded-2xl',
+            'u-card-base-relaxed':
+                'py-5 sm:py-6 lg:py-8 gap-y-5 sm:gap-y-6 lg:gap-y-8 gap-x-5 sm:gap-x-6 lg:gap-x-8 rounded-3xl',
+
+            // Header
+            'u-card-header': 'flex flex-row',
+            'u-card-header-compact':
+                'px-2 sm:px-3 lg:px-4 gap-y-1 sm:gap-y-2 lg:gap-y-3 gap-x-1 sm:gap-x-2 lg:gap-x-3',
+            'u-card-header-default':
+                'px-3 sm:px-4 lg:px-6 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4',
+            'u-card-header-relaxed':
+                'px-4 sm:px-6 lg:px-8 gap-y-3 sm:gap-y-4 lg:gap-y-6 gap-x-3 sm:gap-x-4 lg:gap-x-6',
+
+            // Icon
+            'u-card-icon': 'text-card-foreground',
+            'u-card-icon-compact': 'px-3 gap-y-1 gap-x-2',
+            'u-card-icon-default': 'px-4 gap-y-2 gap-x-3',
+            'u-card-icon-relaxed': 'px-6 gap-y-3 gap-x-4',
+
+            // Title
+            'u-card-title': 'text-card-foreground',
+            'u-card-title-compact':
+                'text-lg lg:text-xl font-bold leading-none lg:leading-none tracking-tight',
+            'u-card-title-default':
+                'text-xl lg:text-2xl font-bold leading-none lg:leading-none tracking-tight',
+            'u-card-title-relaxed':
+                'text-2xl lg:text-3xl font-bold leading-none lg:leading-none tracking-tight',
+
+            // Description
+            'u-card-description': 'text-muted-foreground',
+            'u-card-description-compact': 'text-xs lg:text-sm leading-none',
+            'u-card-description-default': 'text-sm lg:text-base leading-none',
+            'u-card-description-relaxed': 'text-base lg:text-lg leading-none',
+
+            // Content
+            'u-card-content': 'text-card-foreground',
+            'u-card-content-compact': 'px-3 gap-y-2',
+            'u-card-content-default': 'px-4 gap-y-3',
+            'u-card-content-relaxed': 'px-6 gap-y-4',
+
+            // Footer
+            'u-card-footer': 'flex text-card-foreground',
+            'u-card-footer-compact': 'px-3 gap-y-1.5 gap-x-2',
+            'u-card-footer-default': 'px-4 gap-y-2 gap-x-3',
+            'u-card-footer-relaxed': 'px-6 gap-y-3 gap-x-4'
+        },
+        panels: {
+            // Panel Base
+            'u-panel-base': 'mx-0',
+            'u-panel-base-compact': 'my-0 lg:my-3',
+            'u-panel-base-default': 'my-0 lg:my-4',
+            'u-panel-base-relaxed': 'my-0 lg:my-6',
+
+            // Panel Handler
+            'u-panel-handler': 'w-1 h-full',
+
+            // Handler Variants (same as base)
+            'u-panel-handler-compact': '',
+            'u-panel-handler-default': '',
+            'u-panel-handler-relaxed': '',
+
+            // Panel Line
+            'u-panel-line':
+                'w-1 group-active:w-1 group-hover:w-1 group-active:w-sm h-full transition-all duration-300 ease-in-out group-hover:bg-muted group-active:bg-muted mx-auto',
+
+            // Panel Group
+            'u-panel-group': 'flex',
+
+            // Group Variants (same as base)
+            'u-panel-group-compact': '',
+            'u-panel-group-default': '',
+            'u-panel-group-relaxed': ''
+        },
+        blocks: {
+
+            // Block Base
+            'u-block-base-compact':
+                'bg-card u-max-width-block border-border shadow-sm text-card-foreground py-2 sm:py-3 lg:py-4 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4 rounded-xl',
+            'u-block-base-default':
+                'bg-card u-max-width-block border-border shadow-sm text-card-foreground py-lg gap-md rounded-2xl',
+            'u-block-base-relaxed':
+                'bg-card u-max-width-block border-border shadow-sm text-card-foreground py-5 sm:py-6 lg:py-8 gap-y-5 sm:gap-y-6 lg:gap-y-8 gap-x-5 sm:gap-x-6 lg:gap-x-8 rounded-3xl',
+
+            // Block Header
+            'u-block-header': 'flex flex-row items-center',
+            'u-block-header-compact':
+                'px-2 sm:px-3 lg:px-4 gap-y-1 sm:gap-y-2 lg:gap-y-3 gap-x-1 sm:gap-x-2 lg:gap-x-3',
+            'u-block-header-default':
+                'px-3 sm:px-4 lg:px-6 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4',
+            'u-block-header-relaxed':
+                'px-4 sm:px-6 lg:px-8 gap-y-3 sm:gap-y-4 lg:gap-y-6 gap-x-3 sm:gap-x-4 lg:gap-x-6',
+
+            // Block Icon
+            'u-block-icon': 'text-card-foreground',
+            'u-block-icon-compact': '',
+            'u-block-icon-default': '',
+            'u-block-icon-relaxed': '',
+
+            // Block Name
+            'u-block-name': 'flex flex-col flex-auto',
+            'u-block-name-compact': 'gap-y-1 gap-x-3',
+            'u-block-name-default': 'gap-y-2 gap-x-4',
+            'u-block-name-relaxed': 'gap-y-3 gap-x-6',
+
+            // Block Title
+            'u-block-title': 'text-card-foreground',
+            'u-block-title-compact':
+                'text-lg lg:text-xl font-bold leading-none lg:leading-none tracking-tight',
+            'u-block-title-default':
+                'text-xl lg:text-2xl font-bold leading-none lg:leading-none tracking-tight',
+            'u-block-title-relaxed':
+                'text-2xl lg:text-3xl font-bold leading-none lg:leading-none tracking-tight',
+
+            // Block Description
+            'u-block-description': 'text-muted-foreground',
+            'u-block-description-compact': 'text-xs lg:text-sm',
+            'u-block-description-default': 'text-sm lg:text-base',
+            'u-block-description-relaxed': 'text-base lg:text-lg',
+
+            // Block Content
+            'u-block-content': 'text-card-foreground',
+            'u-block-content-compact':
+                'px-2 sm:px-3 lg:px-4 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-1 sm:gap-x-2 lg:gap-x-3',
+            'u-block-content-default':
+                'px-3 sm:px-4 lg:px-6 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4',
+            'u-block-content-relaxed':
+                'px-4 sm:px-6 lg:px-8 gap-y-3 sm:gap-y-4 lg:gap-y-6 gap-x-3 sm:gap-x-4 lg:gap-x-6',
+
+            // Block Footer
+            'u-block-footer': 'flex text-card-foreground',
+            'u-block-footer-compact':
+                'px-2 sm:px-3 lg:px-4 gap-y-1 sm:gap-y-2 lg:gap-y-3 gap-x-1 sm:gap-x-2 lg:gap-x-3',
+            'u-block-footer-default':
+                'px-3 sm:px-4 lg:px-6 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4',
+            'u-block-footer-relaxed':
+                'px-4 sm:px-6 lg:px-8 gap-y-3 sm:gap-y-4 lg:gap-y-6 gap-x-3 sm:gap-x-4 lg:gap-x-6',
+
+            // Block Actions
+            'u-block-actions': 'flex flex-row text-card-foreground mb-auto',
+            'u-block-actions-compact': 'gap-x-1 sm:gap-x-2 lg:gap-x-3',
+            'u-block-actions-default': 'gap-x-2 sm:gap-x-3 lg:gap-x-4',
+            'u-block-actions-relaxed': 'gap-x-3 sm:gap-x-4 lg:gap-x-6'
+
+        },
+        badges: {
+            // Base
+            'u-badge-base': 'flex items-center border transition-colors focus:outline-none web:focus:ring-ring',
+
+            // Base Size Variants
+            'u-badge-base-compact': 'px-1 py-0.5 rounded-md',
+            'u-badge-base-default': 'px-2 py-1 rounded-lg',
+            'u-badge-base-relaxed': 'px-3 py-1.5 rounded-xl',
+
+            // Fill Variants (same for all sizes)
+            'u-badge-default': 'border-transparent bg-primary text-primary-foreground shadow hover:bg-primary/80',
+            'u-badge-secondary': 'border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80',
+            'u-badge-destructive': 'border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80',
+            'u-badge-accent': 'border-transparent bg-accent text-accent-foreground shadow hover:bg-accent/80',
+            'u-badge-outline': 'border-border',
+
+            // Text Size Variants
+            'u-badge-text-compact': 'text-xs inline-flex gap-sm font-semibold',
+            'u-badge-text-default': 'text-sm inline-flex gap-sm font-semibold',
+            'u-badge-text-relaxed': 'text-base inline-flex gap-sm font-semibold',
+
+            // Text Color Variants
+            'u-badge-text-default': 'text-primary-foreground',
+            'u-badge-text-secondary': 'text-secondary-foreground',
+            'u-badge-text-destructive': 'text-destructive-foreground',
+            'u-badge-text-accent': 'text-accent-foreground',
+            'u-badge-text-outline': 'text-muted-foreground'
+        },
+        tables: {
+            // Base
+            'u-table-base': 'w-full border border-border bg-transparent border-collapse overflow-hidden',
+            'u-table-base-compact': 'rounded-md',
+            'u-table-base-default': 'rounded-lg',
+            'u-table-base-relaxed': 'rounded-xl',
+
+            // Header
+            'u-table-header': 'border-border',
+            'u-table-header-compact': '',
+            'u-table-header-default': '',
+            'u-table-header-relaxed': '',
+
+            // Body
+            'u-table-body': 'border-border',
+            'u-table-body-compact': '',
+            'u-table-body-default': '',
+            'u-table-body-relaxed': '',
+
+            // Footer
+            'u-table-footer': 'bg-muted/50 font-medium',
+            'u-table-footer-compact': '',
+            'u-table-footer-default': '',
+            'u-table-footer-relaxed': '',
+
+            // Row
+            'u-table-row':
+                'flex overflow-hidden flex-row border-border border-b web:transition-colors web:hover:bg-muted/50 web:data-[state=selected]:bg-muted',
+            'u-table-row-compact': '',
+            'u-table-row-default': '',
+            'u-table-row-relaxed': '',
+
+            // Head
+            'u-table-head':
+                'text-muted-foreground text-left justify-center font-medium flex-1',
+            'u-table-head-compact': 'h-8 px-2 text-xs',
+            'u-table-head-default': 'h-12 px-4 text-sm',
+            'u-table-head-relaxed': 'h-16 px-6 text-base',
+
+            // Cell
+            'u-table-cell':
+                'flex-auto flex-row gap-sm items-center text-foreground px-md py-sm',
+            'u-table-cell-compact': 'text-xs',
+            'u-table-cell-default': 'text-sm',
+            'u-table-cell-relaxed': 'text-base',
+
+            // Head Text
+            'u-table-head-text': 'text-muted-foreground font-semibold tracking-tight leading-tight',
+            'u-table-head-text-compact': 'text-xs',
+            'u-table-head-text-default': 'text-sm',
+            'u-table-head-text-relaxed': 'text-base',
+
+            // Cell Text
+            'u-table-cell-text': 'text-foreground',
+            'u-table-cell-text-compact': 'text-sm',
+            'u-table-cell-text-default': 'text-sm',
+            'u-table-cell-text-relaxed': 'text-base'
+        },
+        tabs: {
+            // Container
+            'u-controls-tabs-container': 'w-full flex-col',
+
+            // Header (использовать с inline-стилями или Tailwind plugin'ом для scroll)
+            'u-controls-tabs-header': 'flex-row w-full bg-muted rounded-full p-xs mb-md',
+
+            // Header item
+            'u-controls-tabs-header-item':
+                ' flex-1 shrink-0 rounded-full px-md py-sm text-sm inline-flex items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 flex-1 flex-shrink-0',
+
+            'u-controls-tabs-header-item-active':
+                'bg-card text-card-foreground shadow-sm',
+
+            // Header item text
+            'u-controls-tabs-header-item-text': 'text-muted-foreground font-medium whitespace-nowrap',
+            'u-controls-tabs-header-item-text-active': 'text-card-foreground font-medium whitespace-nowrap',
+
+            // Tab content
+            'u-controls-tabs-tab-content': 'w-full',
+            'u-controls-tabs-tab-content-animated': 'animate-[tabContentFadeIn_0.2s_ease-out]'
+        },
+        switcher: {
+            // Container
+            'u-controls-switcher-container':
+                'items-center flex-row-reverse justify-between gap-x-2 h-14 min-w-14 rounded-xl flex-auto p-3 bg-input border border-border flex',
+
+            // Text
+            'u-controls-switcher-text': 'text-neutral-800 dark:text-neutral-200 text-base',
+
+            // Track
+            'u-controls-switcher-track': 'rounded-full',
+            'u-controls-switcher-track-base': 'w-20 h-8 p-1',
+            'u-controls-switcher-track-sm': 'w-10 h-4 p-0.5',
+
+            // Thumb
+            'u-controls-switcher-thumb': 'rounded-full aspect-square bg-white transition-transform duration-200',
+            'u-controls-switcher-thumb-base': 'h-6 w-6',
+            'u-controls-switcher-thumb-sm': 'h-3 w-3',
+
+            // Active Thumb Position
+            'u-controls-switcher-thumb-active-base': 'translate-x-12',
+            'u-controls-switcher-thumb-active-sm': 'translate-x-6',
+
+            // Track Colors
+            'u-controls-switcher-track-col': 'bg-neutral-400 dark:bg-neutral-600',
+            'u-controls-switcher-track-active-col': 'bg-primary'
+        },
+        checkbox: {
+            // Container
+            'u-controls-checkbox-container': 'items-center py-2 px-3 rounded-lg w-full',
+
+            // Hover & Active backgrounds (optional — Web-only)
+            'u-controls-checkbox-container-bg':
+                'web:active:bg-neutral-200 web:dark:active:bg-neutral-700 web:hover:bg-neutral-100 web:dark:hover:bg-neutral-800',
+
+            // Text labels
+            'u-controls-checkbox-text':
+                'text-neutral-800 dark:text-neutral-200 text-base leading-5 font-medium pl-2',
+            'u-controls-checkbox-text2':
+                'text-neutral-600 dark:text-neutral-400 text-sm leading-5',
+
+            // Icon (e.g. if checkbox is custom-rendered)
+            'u-controls-checkbox-icon':
+                'text-neutral-600 dark:text-neutral-400 my-auto h-6 w-6',
+
+            // Checkbox square indicator
+            'u-controls-checkbox-indicator':
+                'h-5 w-5 m-1 rounded-sm border-2 border-neutral-500 bg-transparent justify-center items-center mr-2',
+
+            // Radiobutton circular indicator
+            'u-controls-radiobutton-indicator':
+                'h-5 w-5 m-1 rounded-full border-2 border-neutral-500 bg-transparent justify-center items-center mr-2',
+
+            // Active mark inside checkbox (filled square)
+            'u-controls-checkbox-indicator-active':
+                'h-2.5 w-2.5 bg-primary m-1 items-center justify-center',
+
+            // Active mark inside radiobutton (filled circle)
+            'u-controls-radiobutton-indicator-active':
+                'h-2.5 w-2.5 rounded-full bg-primary m-1 items-center justify-center'
+        },
+
         button_styles: {
             'u-btn-default-cnt':
                 ' border border-bdrbutton hover:border-bdrbutton-h dark:border-bdrbutton-d dark:hover:border-bdrbutton-dh bg-bgrbutton dark:bg-bgrbutton-d web:hover:bg-bgrbutton-h dark:web:hover:bg-bgrbutton-dh overflow-hidden hover:shadow-md active:shadow-none active:opacity-60 ',
