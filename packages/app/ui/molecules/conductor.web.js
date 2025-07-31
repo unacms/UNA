@@ -850,7 +850,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
         const cellsCustomConfig = appSetting('layouts', 'navigator');
         if (cellsCustomConfig?.adjustable) {
             return (
-                <PanelGroup autoSaveId={`cells-navigator`} direction="horizontal" className={appSetting('layout', 'max_width')}>
+                <><PanelGroup autoSaveId={`cells-navigator`} direction="horizontal" className={appSetting('layout', 'max_width')}>
                     {isShowColumn(true, windowWidth, cellsCustomConfig.cells?.left) && <>
                         <Panel {...cellsCustomConfig.cells?.left}>
                             <View className='p-md'>
@@ -866,6 +866,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
                         </View>
                     </Panel>
                 </PanelGroup>
+                <Footer /></>
             );
         }
 

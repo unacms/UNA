@@ -20,6 +20,7 @@ function isInStandaloneMode() {
 }
 
 export default function () {
+     console.log("footer");
     const { currentUser } = useCurrentUser();
     const TabList = currentUser ? appSetting('menu_items', 'menu_tabbar_logged') : appSetting('menu_items', 'menu_tabbar_non_logged');
     const { t } = useTranslation();
@@ -41,6 +42,8 @@ export default function () {
 
     if (pathname == '/')
         pathname = '/home';
+
+   
 
     return (
         <View
