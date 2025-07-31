@@ -23,12 +23,12 @@ function ItemRenderer_({ route, numColumns, item, unit, module, unitMode, unitTy
 
 
 function BlockItemRenderer1({ route, numColumns, item, unit, module, unitMode, unitType, sidebar }) {
-    const block = BlockByName2({ b: item.data, name: item.block, contentOnly:true });
+    const block = BlockByName2({ b: item.data, name: item.block, contentOnly:!sidebar });
     if (!block) {
         return <View className='h-px'><Text>&nbsp;</Text></View>;
     }
     return (
-        <View className={`${block?.props?.extraProps?.list && !sidebar ? 'lg:h-px overflow-hidden' : ''} mb-md fsdfsd`} key={`${route.index}-${item.id}`}>
+        <View className={`${block?.props?.extraProps?.list && !sidebar ? 'lg:h-px overflow-hidden ' : ''}  ${!sidebar ? 'mb-md' : ''}`} key={`${route.index}-${item.id}`}>
             {block}
         </View>
     );

@@ -744,7 +744,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
                             {route?.sidebar?.content.map((item, index) => {
                                 return <View className="mb-4" key={'item' + index}><ItemRenderer unitType={sidebarUnitType} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''} /></View>
                             })}
-                            <BlockByName data={route.pageData ? route.pageData : data} name={route.blocks?.browse_sidebar} sidebar={true} perLine={1} maxItems={1} />
+                            <View><BlockByName data={route.pageData ? route.pageData : data} name={route.blocks?.browse_sidebar} sidebar={true} perLine={1} maxItems={1} /></View>
                         </View>
                     </Panel>
                 </>}
