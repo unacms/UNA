@@ -39,7 +39,7 @@ async function runOneSignal() {
 const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutName, layoutName, data, children, uri, blocks, width }) => {
     const [isModal, setIsModal] = useState(false);
     const { t } = useTranslation()
-
+    
     useEffect(() => {
         if (currentUser === false && !storageGet('layout:modal', '', true) && appSetting('layout', 'show_login_modal') > 0 && !['create-account', 'home', 'login', 'forgot-password', 'confirm-email'].includes(uri)) {
             setTimeout(() => {
@@ -71,14 +71,14 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutNam
             {appStatic('maintenance_mode')}
         </>
     }
-
+    
     if (width < LAYOUT_BREAKPOINTS[TABLET_MODE_FROM]) {
         return (
             <>
                 <Suggestions />
                 <AsyncWorker />
-                <Content width={width} layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} url={data?.url} />
-                {(headerSettings?.footer !== false || !currentUser) && <Footer />}
+                    <Content width={width} layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} url={data?.url} />
+                    {(headerSettings?.footer !== false || !currentUser) && <Footer />}
                 <BottomSheet />
                 <ModalPopup />
             </>
@@ -97,7 +97,7 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutNam
             <ModalPopup />
         </>
     );
-
+ 
 });
 
 const metaAdder = (queryProperty, value) => {
@@ -119,9 +119,10 @@ export default function Layout(props) {
 
     const theme = ThemeName();
     const root = window.document.documentElement;
+        console.log("theme5", theme)
     root.setAttribute('theme', theme)
     root.setAttribute('data-theme', theme);
-
+    
 
     const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
 
@@ -191,8 +192,6 @@ export default function Layout(props) {
 
     // Sticky columns
     useEffect(() => {
-        let resizeTimeout;
-        let scrollTimeout;
         const handleScroll = () => {
             console.log("handleScrollhandleScroll")
             const elements = Array.from(document.getElementsByClassName("fixed-process"));
@@ -209,11 +208,10 @@ export default function Layout(props) {
                 const marginBottom = parseInt(style.marginBottom, 10);
                 const elementHeight = element.offsetHeight;
                 const elementHeightParent = element.parentNode.parentNode.offsetHeight;
-                const parentWidth = element.parentNode.offsetWidth || element.parentNode.clientWidth;
-                element.style.width = `${parentWidth}px`;
-
+                element.style.width = `${element.parentNode.offsetWidth}px`;
+                
                 //console.log("element.style.width", element.parentNode, element.parentNode.offsetWidth, element.parentNode.clientWidth, getComputedStyle(element.parentNode).width)
-
+                
                 if (elementHeightParent > elementHeight) {
                     element.classList.add('fixed');
                     const height = elementHeight + marginTop + marginBottom - innerHeight + offset1;
@@ -229,71 +227,33 @@ export default function Layout(props) {
                     }
                 } else {
                     element.classList.remove('fixed');
+                    element.style.top = `0px`;
                 }
             });
-            
         };
 
-        const handleResizePanel = () => {
-            // Clear any existing timeout
-            if (resizeTimeout) {
-                clearTimeout(resizeTimeout);
-            }
-
-            // Debounce the resize handling to ensure DOM has updated
-            resizeTimeout = setTimeout(() => {
-                // Force a reflow to ensure DOM measurements are accurate
-                document.body.offsetHeight;
-
-                // Recalculate all fixed-process elements
-                const elements = Array.from(document.getElementsByClassName("fixed-process"));
-                elements.forEach(element => {
-                    const parentWidth = element.parentNode.offsetWidth || element.parentNode.clientWidth;
-                    element.style.width = `${parentWidth}px`;
-                });
-
-                // Then handle scroll positioning
-                handleScroll();
-            }, 50); // 50ms delay to ensure DOM has updated
-        };
-
-        const debouncedScroll = () => {
-            if (scrollTimeout) {
-                clearTimeout(scrollTimeout);
-            }
-            scrollTimeout = setTimeout(handleScroll, 16); // ~60fps
-        };
-
-        window.addEventListener('scroll', debouncedScroll);
-        window.addEventListener('resize_panel', handleResizePanel);
-        window.addEventListener('resize', handleResizePanel);
+       // document.addEventListener('DOMContentLoaded', handleScroll);
+        window.addEventListener('scroll', handleScroll);
+        window.addEventListener('resize_panel', handleScroll);
 
         return () => {
-            window.removeEventListener('scroll', debouncedScroll);
-            window.removeEventListener('resize_panel', handleResizePanel);
-            window.removeEventListener('resize', handleResizePanel);
-
-            if (resizeTimeout) {
-                clearTimeout(resizeTimeout);
-            }
-            if (scrollTimeout) {
-                clearTimeout(scrollTimeout);
-            }
-
+            window.removeEventListener('scroll', handleScroll);
+            window.removeEventListener('resize_panel', handleScroll);
+          
         };
-
+        
     }, []);
     const { layoutName: pageLayoutName } = useLayoutSettings();
     const [headerSettings, setHeaderSettings] = useState(getHeaderSettings(uri, width, layoutName, data.config));
 
-
+    
     useEffect(() => {
         let a = getHeaderSettings(uri, width, layoutName, data.config);
         if (pageLayoutName == 'ver') {
             if (width > LAYOUT_BREAKPOINTS[TABLET_MODE_FROM])
                 a.offset = false;
         }
-
+        
         if (!deepEqual(headerSettings, a)) {
             setHeaderSettings(a);
         }
