@@ -33,8 +33,6 @@ export default function (props) {
         </View>
     );
 
-    console.log("propsprops", props)
-
     return (
         <View className={sClassName}>
             {(props.name && props.last_changed == props.name) && <View className='absolute right-0 top-0 mb-1'>
