@@ -1111,13 +1111,13 @@ export  const settingsDefault = {
                 'text-2xl lg:text-3xl font-bold leading-none lg:leading-none tracking-tight',
 
             // Description
-            'u-card-description': 'text-muted-foreground',
-            'u-card-description-compact': 'text-xs lg:text-sm leading-none',
-            'u-card-description-default': 'text-sm lg:text-base leading-none',
+            'u-card-description': 'text-muted-foreground ',
+            'u-card-description-compact': 'text-xs lg:text-sm ',
+            'u-card-description-default': 'text-sm lg:text-base ',
             'u-card-description-relaxed': 'text-base lg:text-lg leading-none',
 
             // Content
-            'u-card-content': 'text-card-foreground',
+            'u-card-content': 'text-card-foreground ',
             'u-card-content-compact': 'px-3 gap-y-2',
             'u-card-content-default': 'px-4 gap-y-3',
             'u-card-content-relaxed': 'px-6 gap-y-4',
@@ -1161,7 +1161,7 @@ export  const settingsDefault = {
             'u-block-base-compact':
                 'bg-card u-max-width-block border-border shadow-sm text-card-foreground py-2 sm:py-3 lg:py-4 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4 rounded-xl',
             'u-block-base-default':
-                'bg-card u-max-width-block border-border shadow-sm text-card-foreground py-lg gap-md rounded-2xl',
+                'bg-card u-max-width-block border-border shadow-sm text-card-foreground py-3 sm:py-4 lg:py-6 gap-md rounded-2xl',
             'u-block-base-relaxed':
                 'bg-card u-max-width-block border-border shadow-sm text-card-foreground py-5 sm:py-6 lg:py-8 gap-y-5 sm:gap-y-6 lg:gap-y-8 gap-x-5 sm:gap-x-6 lg:gap-x-8 rounded-3xl',
 
@@ -1295,10 +1295,10 @@ export  const settingsDefault = {
 
             // Cell
             'u-table-cell':
-                'flex-auto flex-row gap-sm items-center text-foreground px-md py-sm',
-            'u-table-cell-compact': 'text-xs',
-            'u-table-cell-default': 'text-sm',
-            'u-table-cell-relaxed': 'text-base',
+                'flex-auto flex-row gap-sm items-center text-foreground px-md',
+            'u-table-cell-compact': 'text-xs py-sm',
+            'u-table-cell-default': 'text-sm py-2',
+            'u-table-cell-relaxed': 'text-base py-sm',
 
             // Head Text
             'u-table-head-text': 'text-muted-foreground font-semibold tracking-tight leading-tight',

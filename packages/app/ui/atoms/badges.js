@@ -5,7 +5,6 @@ import Link from 'app/ui/atoms/link'
 import { View } from 'app/design/view'
 
 export default function ({ badges }) {
-    console.log("badges", badges)
     if (!badges)
         return null
 

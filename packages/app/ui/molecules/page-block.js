@@ -1,16 +1,14 @@
 import { View } from 'app/design/view';
+import { cn } from 'app/lib/util';
 import { useLayoutSettings } from 'app/context/layout-settings';
 import { Text } from 'app/design/typography'
-import { appSetting} from 'app/lib/util';
-
-const blockTheme = appSetting('theme', 'blocks');
 
 function createBlockComponent({ baseClass, Component = View, role, ariaLevel }) {
-    return function BlockSubComponent({ className = '', density, ...props }) {
+    return function BlockSubComponent({ className, density, ...props }) {
         const { density: effectiveDensity } = useLayoutSettings();
         return (
             <Component
-                className={`${blockTheme[baseClass]} ${blockTheme[baseClass+'-'+effectiveDensity]} ${className}`}
+                className={cn(`${baseClass}-${effectiveDensity}`, className)}
                 role={role}
                 aria-level={ariaLevel}
                 {...props}
