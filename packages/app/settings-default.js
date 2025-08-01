@@ -1219,9 +1219,9 @@ export const settingsDefault = {
         panels: {
             // Panel Base
             'u-panel-base': 'mx-0',
-            'u-panel-base-compact': 'my-0 ',
-            'u-panel-base-default': 'my-0 ',
-            'u-panel-base-relaxed': 'my-0 ',
+            'u-panel-base-compact': 'm-0 gap-y-3',
+            'u-panel-base-default': 'm-0 gap-y-4',
+            'u-panel-base-relaxed': 'm-0 lg:m-6 gap-y-6',
 
             // Panel Handler
             'u-panel-handler': 'w-1 h-full',
@@ -1233,7 +1233,7 @@ export const settingsDefault = {
 
             // Panel Line
             'u-panel-line':
-                'w-1 mx-1.5 pxgroup-active:w-1 group-hover:w-1 group-active:w-sm h-full transition-all duration-300 ease-in-out group-hover:bg-muted group-active:bg-muted ',
+                'w-1 mx-1.5 group-active:w-1 group-hover:w-1 group-active:w-sm h-full transition-all duration-300 ease-in-out group-hover:bg-muted group-active:bg-muted ',
 
             // Panel Group
             'u-panel-group': 'flex',
