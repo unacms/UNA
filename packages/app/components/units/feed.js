@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { appSetting } from 'app/lib/util'
+import { appSetting, cd } from 'app/lib/util'
 import { View } from 'app/design/view'
 import { Modal } from 'app/design/controls'
 import { fetcher } from 'app/lib/fetcher'
@@ -48,7 +48,7 @@ function DefaultUnit({ data }) {
         return <></>
 
     return (
-        <Block className={"mb-md tl-" + data.id}>
+        <Block className={`${cd('mb-md')} tl-${data.id}`}>
             {viewState.view == 'edited' && <FeedEditForm setViewState={setViewState} id={data.id} viewState={viewState} />}
             {isCommentsModal && <Modal
                 outerClickClose={false}

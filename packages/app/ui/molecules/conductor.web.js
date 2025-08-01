@@ -30,7 +30,7 @@ import Cover, { CoverSmall } from 'app/components/elements/cover';
 import { CoverMenuMore, CoverMenu } from 'app/components/nav/menu-cover'
 import { Panel, PanelGroup, PanelHandler, isShowColumn } from "app/ui/molecules/resizable-panels";
 import { useLayoutSettings } from 'app/context/layout-settings';
-
+import { cd } from 'app/lib/util'
 
 const conductorTheme = appSetting('theme', 'conductor');
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from');
@@ -688,7 +688,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
             return (
                 <View className={
                         cn(isRightCol ? 'flex-auto' : 'w-full mx-auto',
-                            layoutName !== 'navigator' && 'p-md',
+                            layoutName !== 'navigator' && cd('p-md'),
                             contentPaddingClass)
                     }>
                         {TabFlashListM}
@@ -716,7 +716,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
             >
                 {isLeftCol && <>
                     <Panel className={`hidden ${cellsCustomConfig.cells?.left?.breakpoint}:block`} {...cellsCustomConfig.cells?.left}>
-                        <View className="fixed-process p-md">
+                        <View className={`fixed-process ${cd('py-md')}`}>
                             {AddBlocksCnt}
                         </View>
                     </Panel>
@@ -728,7 +728,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
                 <Panel  {...cellsCustomConfig.cells?.center}>
                     <View className={
                         cn(isRightCol ? 'flex-auto' : 'w-full mx-auto',
-                            layoutName !== 'navigator' && 'p-md',
+                            layoutName !== 'navigator' && cd('py-md'),
                             contentPaddingClass)
                     }>
                         {TabFlashListM}
@@ -740,7 +740,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
                         gap="hidden lg:block" sizable={cellsCustomConfig.sizable}
                     />
                     <Panel className={`hidden ${cellsCustomConfig.cells?.right?.breakpoint}:block`} {...cellsCustomConfig.cells?.right}>
-                        <View className={`p-md fixed-process `}>
+                        <View className={`${cd('py-md')} fixed-process `}>
                             {route?.sidebar?.content.map((item, index) => {
                                 return <View className="mb-4" key={'item' + index}><ItemRenderer unitType={sidebarUnitType} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''} /></View>
                             })}
@@ -853,7 +853,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
                 <><PanelGroup autoSaveId={`cells-navigator`} direction="horizontal" className={appSetting('layout', 'max_width')}>
                     {isShowColumn(true, windowWidth, cellsCustomConfig.cells?.left) && <>
                         <Panel {...cellsCustomConfig.cells?.left}>
-                            <View className='p-md'>
+                            <View className={`${cd('p-md')}`}>
                                 {leftSideBarComponent}
                             </View>
                         </Panel>
@@ -861,7 +861,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
                             gap="hidden lg:block" sizable={cellsCustomConfig.sizable}
                         /></>}
                     <Panel {...cellsCustomConfig.cells?.center}>
-                        <View className='px-md lg:p-md '>
+                        <View className={`px-3 lg:${cd('p-md')}`}>
                             {MainComponent}
                         </View>
                     </Panel>

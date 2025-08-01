@@ -1,7 +1,7 @@
 import { View } from 'app/design/view'
 import { BlockByName, DataByName } from 'app/components/block'
 import { Text } from 'app/design/typography'
-import Card from 'app/components/card'
+import Card from 'app/ui/molecules/card'
 import Link from 'app/ui/atoms/link'
 import { Platform } from 'react-native'
 import { appStatic } from 'app/lib/app-static'
@@ -21,7 +21,7 @@ function PageContent(props) {
     const isAllowJoin = props.isAllowJoin
     const { t } = useTranslation()
     return (
-        <Card rounded="rounded-3xl" margin="p-4 sm:p-6" addClassName="border border-white overflow-hidden dark:border-bdrcard-d gap-y-6">
+        <Card padding="p-4 sm:p-6">
             <View className="flex-col flex-auto gap-y-2 justify-center ">
                 <Text className="text-xl sm:text-2xl text-center lg:text-left leading-none tracking-tight font-semibold text-neutral-800 dark:text-neutral-200">
                     {t('create_account_page_caption')}

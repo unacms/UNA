@@ -5,14 +5,15 @@ import { getImageSizes } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
 import Card from 'app/ui/molecules/card'
+import { cd } from 'app/lib/util'
 
 export default function defaultUnit(props) {
     const data = props.data
     const imageSizes = getImageSizes()
 
     return (
-        <Card className="p-sm">
-            <View className="flex-col gap-sm">
+        <Card padding={cd('p-sm')} className='mb-2 md:mb-0'>
+            <View className={`flex-col ${cd('gap-sm')}`}>
                 <Link href={data.url}>
                     <View className="aspect-video rounded-xl overflow-hidden w-full">
                         <Image
@@ -24,7 +25,7 @@ export default function defaultUnit(props) {
                         />
                     </View></Link>
 
-                <View className="flex-auto flex-row px-sm gap-2 ">
+                <View className={`flex-auto flex-row ${cd('px-sm')} gap-2 `}>
                     <View className="flex-none  ">
                         <Profile
                             {...data.author_data}
@@ -41,7 +42,7 @@ export default function defaultUnit(props) {
                                 {data.title}
                             </Text>
                         </Link>
-                        <View className="flex-auto p-sm mb-1 ">
+                        <View className={`flex-auto ${cd('p-sm')} mb-1`}>
                             <Profile
                                 {...data.author_data}
                                 displayType="unit_wo_image"

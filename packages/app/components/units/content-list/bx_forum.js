@@ -8,12 +8,13 @@ import Time from "app/ui/atoms/time";
 import { useMemo } from 'react';
 import { AuthorData } from 'app/lib/common-helpers'
 import { getImageSizes, appSetting } from 'app/lib/util'
+import { cd } from 'app/lib/util'
 
 const Units = {};
 
 Units.Small = function Small({ data, imageSizes }) {
     return (
-        <Card className="p-sm">
+        <Card padding={cd('p-sm')} className='mb-2 md:mb-0'>
             <View className="  aspect-video flex-none rounded-lg overflow-hidden mb-auto w-full bg-bgritem dark:bg-bgritem-d  ">
                 {data.image && (
                     <Image

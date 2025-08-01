@@ -957,7 +957,7 @@ export default function ApiPerformanceReport() {
                     </Text>
                     <View className="grid gap-2">
                         {testHistory.slice(0, 5).map((run, index) => (
-                            <Card key={index} addClassName="p-2">
+                            <Card key={index} padding="p-2">
                                 <Row className="justify-between items-center">
                                     <View>
                                         <Text className="text-sm font-semibold text-neutral-800 dark:text-neutral-200">
@@ -1004,7 +1004,7 @@ export default function ApiPerformanceReport() {
                             const isBaseline = testId === 'connection_baseline';
                             
                             return (
-                                <Card key={testId} addClassName="p-3 mb-2">
+                                <Card key={testId} padding="p-3 mb-2">
                                     <Row className="justify-between items-start">
                                         <View className="flex-1">
                                             <Row className="items-center mb-1">

@@ -1,5 +1,5 @@
 import { View, ScrollView, Row } from 'app/design/view'
-import { appSetting } from 'app/lib/util'
+import { appSetting, cd } from 'app/lib/util'
 import Card from 'app/ui/molecules/card'
 import { Platform } from 'react-native'
 import { Text } from 'app/design/typography';
@@ -8,7 +8,7 @@ const items = Array(5).fill('');
 
 
 const Default = memo(() => (
-    <Card className="flex-auto m-2 p-1">
+    <Card className='flex-auto m-2' padding={cd('p-sm')}>
         <View className="relative bg-neutral-500/20  aspect-video rounded-xl  w-full "></View>
         <View className=" h-32 py-4 p-3">
             <View className="h-5  w-1/2 bg-neutral-500/20 rounded-full"></View>

@@ -11,6 +11,7 @@ import ProfilesList from 'app/ui/molecules/profile_list'
 import { useTranslation } from 'react-i18next';
 import Letter from 'app/ui/atoms/letter'
 import { callFn } from 'app/lib/functions/call';
+import { cd } from 'app/lib/util'
 
 export default function Unit(props) {
     const { t } = useTranslation();
@@ -43,7 +44,7 @@ export default function Unit(props) {
     return (
         <>
             <Redirect ref={redirectdRef} />
-            <Card className="p-sm">
+            <Card padding={cd('p-sm')} className='mb-2 md:mb-0'>
                 <Link className="group " href={data.url}>
                     <View className="flex-row sm:flex-col p-1">
                         <View className="aspect-square w-1/3 sm:w-full rounded-xl overflow-hidden items-center justify-center">

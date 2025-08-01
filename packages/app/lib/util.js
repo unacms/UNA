@@ -52,6 +52,11 @@ export async function subscribeOneSignal(currentUser, askPermission = false) {
     }
 }
 
+export function cd(className, density = 'default', section = 'offsets') {
+    const t = appSetting('theme', section);
+    return t[`${className}-${density}`]
+}
+
 export function normalizeClasses(a) {
     if (!a) return a
     return isWeb ? a : a.replace(/\b\S*(hover|focus|active|group|duration|group-hover):\S*\b/g, "") .replace(/\s{2,}/g, " ").trim();

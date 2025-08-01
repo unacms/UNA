@@ -147,6 +147,7 @@ const SplashTextComponent = (props) => {
         </View>
     )
 }
+
 const JoinTextComponent = (props) => {
     return (
         <AnimatedView className="w-[200px] h-[200px] lg:w-80 lg:h-80 web:duration-300">
@@ -167,6 +168,7 @@ const ComponentsAboutComponent = (props) => {
         </>
     )
 }
+
 const ComponentsCommentsEmpty = () => {
     const { t } = useTranslation()
     return (

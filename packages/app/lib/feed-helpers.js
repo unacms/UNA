@@ -415,7 +415,7 @@ export function SmallUnit({data}) {
     return (
         <AnimatedBlock>
             <Link href={url} className="w-full" emulate={true}>
-                 <Card rounded=' rounded-none sm:rounded-2xl ' margin=' mb-1 sm:mb-3 p-4 border-y border-x-none sm:border-x flex-row' border='border-y border-x-none sm:border-x border-bdrcard dark:border-bdrcard-d shadow-sm' addClassName={' w-full tl-' + data.id} >
+                 <Card className={' w-full tl-' + data.id} >
                     <View className=" mr-2  xl:mr-3 rounded-full flex-none bg-secondary-500/10">
                         <Profile
                             {...data.author_data}

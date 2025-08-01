@@ -31,6 +31,7 @@ import ApiPerformanceReport from 'app/ui/molecules/api-performance-report'
 import ThemeCompatibilityTest from 'app/ui/molecules/nativewindui'
 import { useDensitySwitcher } from 'app/ui/atoms/density-switcher'
 import { useLayoutSettings } from 'app/context/layout-settings';
+import { cd } from 'app/lib/util'
 
 function getCounter(num, icon = '', add = '', color = '') {
     if (!num) num = 0
@@ -99,7 +100,6 @@ export default function PageLayout(props) {
     }
     if (!currentUser) return <></>
 
-
     return (
         <ScrollView>
             <Block className='u-max-width-block'>
@@ -119,9 +119,11 @@ export default function PageLayout(props) {
                                         </Text>
                             </BlockTitle>
                             <BlockDescription >
-                                <Badge variant="secondary">
-                                {currentUser.membership_name}
-                                </Badge>
+                                <View>
+                                    <Badge variant="secondary">
+                                    {currentUser.membership_name}
+                                    </Badge>
+                                </View>
                             </BlockDescription>
                     </BlockName>
                     <BlockActions>
@@ -139,7 +141,7 @@ export default function PageLayout(props) {
                 </BlockHeader>
                 <BlockContent>                   
                     <ElementDashboardStat {...props} />
-                    <View className="flex-row flex-wrap gap-sm">
+                    <View className={`flex-row flex-wrap ${cd('gap-sm')}`}>
                         {langs.length > 1 && (
                             <View className="w-full max-w-sm flex-1 min-w-[160px]">
                                 <DropdownMenu
@@ -307,7 +309,7 @@ function ElementDashboardStat(props) {
                 </ScrollView>
             </Modal>
 
-            <Row className="flex-wrap gap-md">
+            <Row className={`flex-wrap ${cd('gap-md')}`}>
                 {filtredData.map((item, index) => {
                     if (item) {
                         if (item?.type != 'growth') {

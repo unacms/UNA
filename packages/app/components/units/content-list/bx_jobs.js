@@ -7,6 +7,7 @@ import Card from "app/ui/molecules/card";
 import Profile from 'app/ui/molecules/profile';
 import Stars from 'app/ui/molecules/stars';
 import { useState } from 'react';
+import { cd } from 'app/lib/util'
 
 export default function Unit(props) {
     const data = props.data;
@@ -37,7 +38,7 @@ export default function Unit(props) {
     //  console.log("datadata", data)
     return (
         <View className=" p-4 mx-auto w-full ">
-            <Card className="p-sm">
+            <Card padding={cd('p-sm')} className='mb-2 md:mb-0'>
                 <View className="flex-auto">
                     <Link href={data.url}>
                         <Text numberOfLines={2} className="text-neutral-800 mb-1 dark:text-neutral-200 sm:hover:text-primary text:lg sm:text-xl font-semibold ">

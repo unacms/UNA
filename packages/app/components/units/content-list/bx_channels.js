@@ -10,13 +10,13 @@ import ProfilesList from 'app/ui/molecules/profile_list'
 import { useTranslation } from 'react-i18next';
 import { callFn } from 'app/lib/functions/call';
 import { View, Row } from 'app/design/view'
+import { cd } from 'app/lib/util'
 
 export default function Unit(props) {
     const { t } = useTranslation();
     const data = props.data;
     const imageSizes = getImageSizes();
     const redirectdRef = useRef();
-    const [popupVisible, setPopupVisible] = useState(false);
 
     const { cardData, setCardData } = useCardData();
 
@@ -41,7 +41,7 @@ export default function Unit(props) {
     return (
         <>
             <Redirect ref={redirectdRef} />
-            <Card className="p-sm">
+            <Card padding={cd('p-sm')} className='mb-2 md:mb-0'>
                 <Link className="group " href={data.url}>
                     <View className="flex-row sm:flex-col p-1">
                         <View className="aspect-square sm:aspect-video w-1/3 sm:w-full rounded-xl overflow-hidden items-center justify-center bg-neutral-500/20">

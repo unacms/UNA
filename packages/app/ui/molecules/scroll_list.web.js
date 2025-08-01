@@ -11,7 +11,7 @@ import { useWindowDimensions } from 'react-native';
 import { Header, TextHeader } from 'app/ui/molecules/scroll_list_header';
 import { useCurrentUser } from 'app/context/user';
 import { getMenuSettings } from 'app/lib/util'
-
+import { cd } from 'app/lib/util'
 
 export default function ScrollList({
     content,
@@ -153,7 +153,7 @@ export default function ScrollList({
     }
 
     return (
-        <View className="flex-1 gap-md" style={{ paddingTop: isSmallScreen && !useCustomScrollHandler ? headerHeight : 0, paddingBottom: isSmallScreen ? 64 : 0 }}>
+        <View className={`flex-1 ${cd('gap-md')}`} style={{ paddingTop: isSmallScreen && !useCustomScrollHandler ? headerHeight : 0, paddingBottom: isSmallScreen ? 64 : 0 }}>
             {enhanced}
             {isSmallScreen && <Animated.View className="backdrop-blur-lg" style={[headerStyle]}>
 

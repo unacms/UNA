@@ -5,6 +5,7 @@ import { Text } from "app/design/typography";
 import { View } from "app/design/view";
 import Profile from "app/ui/molecules/profile";
 import Card from "app/ui/molecules/card";
+import { cd } from 'app/lib/util'
 
 export default function Unit(props) {
     const data = props.data;
@@ -19,7 +20,7 @@ export default function Unit(props) {
     );
     return (
 
-        <Card className="p-sm">
+        <Card padding={cd('p-sm')} className='mb-2 md:mb-0'>
             <View className="flex-col h-full">
                 <View className="flex-col  h-full w-full">
                     <Link href={data.url}>

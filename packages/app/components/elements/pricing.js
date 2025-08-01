@@ -14,6 +14,7 @@ import {
     CardFooter,
 
 } from 'app/ui/molecules/card'
+import { cd } from 'app/lib/util'
 
 // Mock inclusions data - replace with API data when available
 function getMockInclusions(tierName) {
@@ -81,13 +82,13 @@ function ElementPricingPeriod({ data, name }) {
     const filtered = data.filter(item => item?.period?.value === name);
     const [showModal, setShowModal] = useState(false);
     return (
-        <Row className="flex-wrap gap-md">
+        <Row className={`flex-wrap ${cd('gap-md')}`}>
             {filtered.map((item, index) => {
                 const firstNonEmpty = item.actions.data.find(
                     (action) => action && Object.keys(action).length > 0
                 );
                 return (
-                    <Card className="relative w-full text-left max-w-sm" key={index}>
+                    <Card className=" w-full text-left max-w-sm " key={index} >
                         <CardHeader>
                             <CardTitle>{item.level_name.value}</CardTitle>
                             <CardDescription>The perfect plan for anyone looking to get the most out of our product.</CardDescription>

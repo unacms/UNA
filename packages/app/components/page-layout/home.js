@@ -2,10 +2,10 @@ import { View, Row, Pressable, ScrollView } from 'app/design/view'
 import { BlockByName } from 'app/components/block'
 import React, { useState, useEffect } from 'react'
 import {
+    cd,
     appSetting,
     storageSet,
     storageGet,
-    getLayout,
     asyncStorageSet,
 } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
@@ -280,7 +280,7 @@ export default function (props) {
         const SideBarContent = <>
             <View>
                 {appSetting('layout', 'show_profile_info') && (
-                   <View className="pb-1 mb-1 border-b border-border ">
+                    <View className="pb-1 mb-1 border-b border-border ">
                         <Link href={currentUser.url} emulate={true}>
                             <Row
                                 className={
@@ -353,8 +353,6 @@ export default function (props) {
             </View>
         </>
 
-
-
         const cellsCustomConfig = appSetting('layouts', 'home');
 
         //if (cellsCustomConfig?.adjustable) {
@@ -364,36 +362,37 @@ export default function (props) {
                 direction="horizontal"
                 className={`${appSetting('layout', 'max_width')} mx-auto w-full flex-auto relative flex-row`}
                 onLayout={(e) => {
-                    requestAnimationFrame(() => {
-                        document.body.offsetHeight;
-                        window.dispatchEvent(new Event('resize_panel'));
-                    });
+                    if (isWeb) {
+                        requestAnimationFrame(() => {
+                            document.body.offsetHeight;
+                            window.dispatchEvent(new Event('resize_panel'));
+                        });
+                    }
                 }}
             >
                 {(layoutName == 'hor' && isWeb) && <>
                     <Panel className={`hidden ${cellsCustomConfig.cells?.left?.breakpoint}:block`} {...cellsCustomConfig.cells?.left} >
-                        <View className='p-md fixed-process'>
+                        <View className={`${cd('py-md')} fixed-process`}>
                             {SideBarContent}
                         </View>
                     </Panel>
                     <PanelHandler gap="hidden xl:block" sizable={cellsCustomConfig.sizable} />
                 </>}
-                <Panel {...cellsCustomConfig.cells?.center}> 
-                    <View className='sm:p-md'>
+                <Panel {...cellsCustomConfig.cells?.center}>
+                    <View className={`sm:${cd('py-md')}`}>
                         {FeedContent}
                     </View>
                 </Panel>
 
                 {isWeb && <>
-                    <PanelHandler gap=" hidden lg:block" sizable={cellsCustomConfig.sizable} />
+                    <PanelHandler gap="hidden lg:block" sizable={cellsCustomConfig.sizable} />
                     <Panel className={`hidden ${cellsCustomConfig.cells?.right?.breakpoint}:block`} {...cellsCustomConfig.cells?.right}>
-                        <View className='fixed-process p-md'>
+                        <View className={`${cd('py-md')} fixed-process`}>
                             {AsideContent}
                         </View>
                     </Panel>
                 </>}
             </PanelGroup>
         )
-
     }
 }

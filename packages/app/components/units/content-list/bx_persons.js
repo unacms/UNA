@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next'
 import Letter from 'app/ui/atoms/letter'
 import { callFn } from 'app/lib/functions/call'
 import { Platform } from 'react-native'
+import { cd } from 'app/lib/util'
 
 const ProfilesListCnt = memo(({ data }) => (
     <ProfilesList data={data} showEmpty={false} maxCount={3} displaySize="xs" />
@@ -76,11 +77,11 @@ export default function Unit(props) {
         return
 
     return (
-        <Card className="p-sm">
+        <Card padding={cd('p-sm')} className='mb-2 md:mb-0'>
             <Redirect ref={redirectdRef} />
             <Link className="group " href={data.url}>
                 <View
-                    className={`flex-row sm:flex-col p-3 sm:p-1  sm:h-full`}
+                    className={`flex-row sm:flex-col p-3  sm:p-0  sm:h-full`}
                 >
                     <ImageSection data={data} imageSizes={imageSizes} />
                     <View className="flex-col pl-4 my-auto sm:pt-2 sm:p-1 flex-auto ">

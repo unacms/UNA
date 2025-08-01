@@ -4,14 +4,15 @@ import { getImageSizes, appSetting } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
 import Card from 'app/ui/molecules/card'
-import { memo, useMemo } from 'react';
+import { useMemo } from 'react';
 import { AuthorData } from 'app/lib/common-helpers'
+import { cd } from 'app/lib/util'
 
 const Units = {};
 
 Units.Base = function Base({ data, imageSizes }) {
     return (
-        <Card className="p-sm">
+        <Card padding={cd('p-sm')} className='mb-2 md:mb-0'>
             <View className="  aspect-video flex-none rounded-lg overflow-hidden mb-auto w-full bg-bgritem dark:bg-bgritem-d  ">
                 {data.image && (
                     <Image
@@ -41,7 +42,7 @@ Units.Base = function Base({ data, imageSizes }) {
 }
 Units.Search = function Search({ data, imageSizes }) {
     return (
-        <Card className="p-sm">
+        <Card padding={cd('p-sm')} className='mb-2 md:mb-0'>
             <View className="  aspect-video flex-none rounded-lg overflow-hidden mb-auto w-full bg-bgritem dark:bg-bgritem-d  ">
                 {data.image && (
                     <Image
@@ -73,7 +74,7 @@ Units.Search = function Search({ data, imageSizes }) {
 Units.Small = function Small({ data, imageSizes }) {
     return (
 
-        <Card className="p-sm">
+        <Card padding={cd('p-sm')} className='mb-2 md:mb-0'>
             {data.image && (
                 <View className="aspect-square md:aspect-video flex-none rounded-xl  overflow-hidden h-30 sm:h-36 mb-auto  ">
                     <Image

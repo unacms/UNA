@@ -1,5 +1,5 @@
 import { View } from 'app/design/view';
-import { appSetting, getPageWidth } from 'app/lib/util'
+import { appSetting, getPageWidth, cd } from 'app/lib/util'
 import ScrollList from 'app/ui/molecules/scroll_list'
 import { useRef, memo, useMemo } from 'react';
 import MenuFooter from 'app/components/nav/menu-footer';
@@ -7,7 +7,7 @@ import Animated from 'react-native-reanimated';
 import { LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { useWindowDimensions } from 'react-native';
 import { Panel, PanelGroup, PanelHandler } from "app/ui/molecules/resizable-panels";
-
+import { useLayoutSettings } from 'app/context/layout-settings';
 
 const isRowLayout = (cell, windowWidth) => !cell.defaultSize || (cell.breakpoint && windowWidth <= LAYOUT_BREAKPOINTS[cell.breakpoint]);
 const hasData = (cellData) => Array.isArray(cellData) && cellData.length > 0;
@@ -107,6 +107,7 @@ const PanelRow = memo(({ cell, windowWidth, gap }) => {
 })
 
 const PanelCell = memo(({ cell, windowWidth, index, sizable }) => {
+    const { density } = useLayoutSettings();
     const panelProps = {
         ...(cell.defaultSize !== undefined && { defaultSize: cell.defaultSize }),
         ...(cell.minSize !== undefined && { minSize: cell.minSize }),
@@ -114,7 +115,7 @@ const PanelCell = memo(({ cell, windowWidth, index, sizable }) => {
     };
     return (hasData(cell?.data) && !isRowLayout(cell, windowWidth)) && (
         <>
-            {(index > 0) && (sizable ? <PanelHandler sizable={sizable} /> : <View className="w-lg"/>)}
+            {(index > 0) && (sizable ? <PanelHandler sizable={sizable} /> : <View className={cd('w-lg', density)} />)}
             <Panel {...panelProps} >
                 <View className="w-full gap-y-4">
                     {cell.chd}
@@ -125,7 +126,7 @@ const PanelCell = memo(({ cell, windowWidth, index, sizable }) => {
 });
 
 export default function PageLayoutUniversal(props) {
-     
+
     const refer = useRef();
     const content = (
         <Animated.ScrollView ref={refer} className={getPageWidth(props.uri, props.data?.config) + ' mx-auto w-full '} keyboardShouldPersistTaps="always" keyboardDismissMode="on-drag">

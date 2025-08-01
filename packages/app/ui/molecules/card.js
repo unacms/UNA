@@ -1,16 +1,18 @@
 import { View } from 'app/design/view';
 import { Text } from 'app/design/typography';
-import { cn } from 'app/lib/util';
 import { useLayoutSettings } from 'app/context/layout-settings';
+import { appSetting} from 'app/lib/util';
+
+const cardTheme = appSetting('theme', 'cards');
 
 function createCardComponent({ baseClass, Component = View, role, ariaLevel }) {
-    return function CardSubComponent({ className, density, ...props }) {
-        const { density: globalDensity } = useLayoutSettings();
-        const finalDensity = density ?? globalDensity;
+    return function CardSubComponent({ className = '', padding = '', ...props }) {
+        const { density } = useLayoutSettings();
+        const paddingClasses = padding ? padding : (baseClass == 'u-card-base' ? cardTheme['u-card-padding-'+density] : '');
 
         return (
             <Component
-                className={cn(`${baseClass}-${finalDensity}`, className)}
+                className={`${cardTheme[baseClass]} ${cardTheme[baseClass+'-'+density]} ${className} ${paddingClasses}`}
                 role={role}
                 aria-level={ariaLevel}
                 {...props}
@@ -18,7 +20,6 @@ function createCardComponent({ baseClass, Component = View, role, ariaLevel }) {
         );
     };
 }
-
 
 const Card = createCardComponent({ baseClass: 'u-card-base' });
 

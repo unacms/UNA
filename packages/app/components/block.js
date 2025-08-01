@@ -148,6 +148,10 @@ export function BlockWrapper(props) {
 
     let cssClasses = rest?.extraProps?.cssClasses ? rest?.extraProps?.cssClasses : "";
     // Streamlined logic: avoid unnecessary fragment, ensure BlockContent is not wrapping elements twice
+
+    if (contentOnly)
+        return props.children
+
     return (
         <PageBlock
             key={block.id}
@@ -163,9 +167,9 @@ export function BlockWrapper(props) {
                     <BlockTitle>{stripTags(block.title)}</BlockTitle>
                 </BlockHeader>
             )}
-            {contentOnly ? props.children : <BlockContent>
+            <BlockContent>
                 {props.children}
-            </BlockContent>}
+            </BlockContent>
             
         </PageBlock>
     );

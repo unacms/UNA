@@ -1,12 +1,9 @@
-/*import { BlockByName2 } from 'app/components/block';
-import { View } from 'app/design/view';
-import { memo } from 'react';*/
 import { View } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { memo } from 'react';
 import Unit from 'app/components/unit';
-import BlockItemRenderer from 'app/components/block-item-renderer';
 import { BlockByName2 } from 'app/components/block'
+import { cd } from 'app/lib/util'
 
 function ItemRenderer_({ route, numColumns, item, unit, module, unitMode, unitType, sidebar }) {
     if (item?.type === 'block') {
@@ -28,7 +25,7 @@ function BlockItemRenderer1({ route, numColumns, item, unit, module, unitMode, u
         return <View className='h-px'><Text>&nbsp;</Text></View>;
     }
     return (
-        <View className={`${block?.props?.extraProps?.list && !sidebar ? 'lg:h-px overflow-hidden ' : ''}  ${!sidebar ? 'mb-md' : ''}`} key={`${route.index}-${item.id}`}>
+        <View className={`${block?.props?.extraProps?.list && !sidebar ? 'lg:h-px overflow-hidden ' : ''}  ${!sidebar ? cd('mb-md') : ''}`} key={`${route.index}-${item.id}`}>
             {block}
         </View>
     );

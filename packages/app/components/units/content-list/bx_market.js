@@ -1,6 +1,6 @@
 import Image from "app/ui/atoms/image";
 import Link from "app/ui/atoms/link";
-import { getImageSizes } from "app/lib/util";
+import { getImageSizes, cd } from "app/lib/util";
 import { Text } from "app/design/typography";
 import { View, Row } from "app/design/view";
 import Card from "app/ui/molecules/card";
@@ -43,7 +43,7 @@ export default function Unit(props) {
 
     return (
         <>
-            <Card margin="mb-px sm:mx-2 sm:mb-4" rounded="rounded-2xl">
+            <Card padding={cd('p-sm')} className='mb-2 md:mb-0'>
                 <View className="flex-col gap-y-4">
                     <View className="flex-col w-full">
                         <Link href={data.url}>

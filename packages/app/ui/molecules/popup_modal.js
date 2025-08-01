@@ -4,7 +4,7 @@ import { Button } from 'app/design/controls'
 import Link from 'app/ui/atoms/link'
 import React from 'react'
 import BlockByUrl from 'app/ui/molecules/block'
-import Card from 'app/components/card'
+import Card from 'app/ui/molecules/card'
 import AuthPanel from 'app/ui/molecules/auth'
 import { useTranslation } from 'react-i18next'
 

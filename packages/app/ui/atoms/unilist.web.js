@@ -3,7 +3,7 @@ import { VirtuosoGrid, Virtuoso } from 'react-virtuoso'
 import { View } from 'app/design/view'
 import { View as ReactNativeView } from 'react-native'
 import { useRef } from 'react';
-import { storageSet, appSetting } from 'app/lib/util'
+import { storageSet, cd } from 'app/lib/util'
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { useCallback, forwardRef } from 'react';
 import ScrollList from 'app/ui/molecules/scroll_list'
@@ -68,7 +68,7 @@ export default function UniList(props) {
     }
 
     const ItemComponent = ({ className, ...props }) => (
-        <ReactNativeView className={`w-1/${numColumns} p-sm ${className || ' mb-md '}`} {...props} />
+        <ReactNativeView className={`w-1/${numColumns} ${cd('p-sm')} ${className || cd('mb-md')}`} {...props} />
     );
 
     const ListComponent = forwardRef(({ className, ...props }, ref) => {

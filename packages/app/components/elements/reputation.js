@@ -19,6 +19,8 @@ import {
     TableCellText,
 } from 'app/ui/molecules/table'
 import Badge from 'app/ui/molecules/badge'
+import { useLayoutSettings } from 'app/context/layout-settings';
+import { cd } from 'app/lib/util'
 
 export function ReputationActions({ data }) {
     return (
@@ -112,10 +114,11 @@ export function ReputationWidget({ data }) {
 }
 
 function ReputationSummarySimple({ data }) {
+    const { density } = useLayoutSettings();
     const [isModal, setIsModal] = useState(false)
     const [isModal2, setIsModal2] = useState(false)
     return (
-        <View className="w-full gap-md">
+        <View className={`w-full ${cd('gap-md')}`}>
             <Modal
                 scrollable
                 title="Score rules"
@@ -138,15 +141,15 @@ function ReputationSummarySimple({ data }) {
                     <ReputationLevels data={data.levels_list} />
                 </View>
             </Modal>
-            <View className="flex-auto flex-row gap-md w-full items-center">
-                <View className="relative p-xs border-4 border-border rounded-full">
+            <View className={`flex-auto flex-row ${cd('gap-md')} w-full items-center`}>
+                <View className={` ${dc('p-xs', density)} border-4 border-border rounded-full`}>
                     <Profile
                         {...data.author_data}
                         displayType="unit_wo_info"
                         displaySize="2xl"
                     />
                     <View className="absolute -bottom-2 -end-2">
-                        <Badge className="rounded-full p-sm border-4 border-card font-mono tabular-nums" variant="secondary">
+                        <Badge className={`rounded-full ${cd('p-sm')} border-4 border-card font-mono tabular-nums`} variant="secondary">
                           {/* Show user level icon if available */}
                         {data.levels && data.levels.length > 0 && data.levels[0].icon && (
                             <Icon icon={data.levels[0].icon} size={24}  />
@@ -154,12 +157,12 @@ function ReputationSummarySimple({ data }) {
                         </Badge>
                     </View>
                 </View>
-                <View className="flex-auto flex-col gap-xs justify-center">
+                <View className={`flex-auto ${cd('gap-xs')} justify-center`}>
                     <Text className="font-bold text-2xl text-foreground">
                         {data.author_data.display_name}
                     </Text>
                     {data.levels.map((item, index) => (
-                            <View key={index} className="flex-row gap-sm flex-auto items-center">
+                            <View key={index} className={`flex-row ${cd('gap-sm')} flex-auto items-center`}>
                                 
                                 <Badge variant="outline">
                                     <Icon icon={item.icon} size={20} />
@@ -179,9 +182,9 @@ function ReputationSummarySimple({ data }) {
                             </View>
                             
                         ))}
-                    <View className="flex-row gap-sm flex-auto justify-between items-center">
+                    <View className={`flex-row ${cd('gap-sm')} flex-auto justify-between items-center`}>
                       
-                        <View className="flex-row items-end gap-sm">
+                        <View className={`flex-row items-end ${cd('gap-sm')}`}>
                             <Text className="text-3xl font-bold text-foreground">
                                 {data.points || 0}
                             </Text>
@@ -249,7 +252,7 @@ export function ReputationLeaderboard({ data }) {
     )
 
     return (
-        <View className="items-center w-full flex-col gap-sm px-sm max-w-xl mx-auto">
+        <View className={`items-center w-full flex-col ${cd('gap-sm')} ${cd('px-sm')} max-w-xl mx-auto`}>
             {data.profiles.map((item, index) => (
                 <Row
                     className={`w-full flex-wrap justify-between items-center ${
@@ -257,7 +260,7 @@ export function ReputationLeaderboard({ data }) {
                     }`}
                     key={index}
                 >
-                    <Row className="items-center gap-sm">
+                    <Row className={`items-center ${cd('gap-sm')}`}>
                         <View className="w-7 h-7 items-center justify-center relative">
                             {index < 3 ? (
                                 <>

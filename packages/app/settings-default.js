@@ -1,13 +1,13 @@
 import { env } from 'app/lib/env'
 
-export  const settingsDefault = {
+export const settingsDefault = {
     config: {
         una_url: env('UNA_URL'),
         app_url: env('APP_URL'),
         una_api_key: env('UNA_API_KEY'),
         app_origin: env('APP_ORIGIN'),
 
-        native_app_images_url: env('APP_URL')== 'http://localhost:3000' ? 'https://neo.so' : "https://neo.so",
+        native_app_images_url: env('APP_URL') == 'http://localhost:3000' ? 'https://neo.so' : "https://neo.so",
 
         debug: true,
         use_proxy_web: true,
@@ -30,14 +30,14 @@ export  const settingsDefault = {
     },
     layout: {
         body: ' bg-background ',
-        defaults:{
+        defaults: {
             name: 'hor',
             density: 'default',
             theme: 'auto',
             lang: 'en'
         },
-        avaliable_layouts: ['hor', 'ver', 'mixed'], 
-        avaliable_density:[
+        avaliable_layouts: ['hor', 'ver', 'mixed'],
+        avaliable_density: [
             { id: 'compact', title: 'Compact', icon: 'Minus' },
             { id: 'default', title: 'Default', icon: 'Circle' },
             { id: 'relaxed', title: 'Relaxed', icon: 'Plus' }
@@ -45,7 +45,7 @@ export  const settingsDefault = {
         avaliable_langs: ['auto', 'en', 'ru'],
         screen: ' w-full ',
         ui_density_switcher: true,
-        max_width: ' w-full ', 
+        max_width: ' w-full ',
         max_width_content: ' w-full max-w-7xl ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
         feed_container: ' sm:p-3 mx-auto w-full max-w-4xl ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
 
@@ -63,8 +63,7 @@ export  const settingsDefault = {
         background_image: '', //`url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239C92AC' fill-opacity='0.08' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E")`,
         background_image_dark: '', //`url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239C92AC' fill-opacity='0.08' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E")`,
 
-        splash_block: 'login', //OLD appSetting('layout', 'block')
-        show_login_modal: 5000,
+        show_login_modal: 0,
         redirect_on_forbidden: '/home',
         lock_unconfirmed: true,
         allow_create_new_profile: true,
@@ -74,13 +73,13 @@ export  const settingsDefault = {
         share_text: '',
         default_icon_stroke_width: 2,
         tablet_mode_from: 'lg',
-        show_tabbar_on_mobile_non_logged: false, 
-        
-        header:{
+        show_tabbar_on_mobile_non_logged: false,
+
+        header: {
             offset: ' h-16 w-full ',
             container: ' hidden lg:flex fixed w-full mx-auto h-16 left-[50%] translate-x-[-50%]  ',
             initial: '  my-auto w-full items-center transition-all web:duration-300 ease-in-out will-change-transform shadow-[0_0_0_1px_rgba(0,0,0,0.08),0_2px_4px_0_rgba(0,0,0,0.05)] dark:shadow-[0_0_0_1px_rgba(31,41,55,0.5),0_2px_4px_0_rgba(0,0,0,0.05)]    ',
-           scrolled: ' backdrop-blur-xl my-auto w-full mx-auto bg-card/90 backdrop-blur-xl shadow-[0_0_0_1px_rgba(0,0,0,0.08),0_2px_4px_0_rgba(0,0,0,0.05)] dark:shadow-[0_0_0_1px_rgba(31,41,55,1),0_0_0_2px_rgba(0,0,0,0.8)] ',
+            scrolled: ' backdrop-blur-xl my-auto w-full mx-auto bg-card/90 backdrop-blur-xl shadow-[0_0_0_1px_rgba(0,0,0,0.08),0_2px_4px_0_rgba(0,0,0,0.05)] dark:shadow-[0_0_0_1px_rgba(31,41,55,1),0_0_0_2px_rgba(0,0,0,0.8)] ',
             content: ' h-16 mx-auto justify-between ',
             content_left: ' flex-row w-80 2xl:w-96 px-2 xl:px-3 ',
             content_right: ' w-80 2xl:w-96 items-center justify-end h-full px-3 ',
@@ -93,18 +92,18 @@ export  const settingsDefault = {
             },
         },
         vertical: {
-            blocks:[
-              /*  {
-                    name: 'system/profile_menu/TemplServiceProfiles',
-                    showTitle: false,
-                    showBg: false,
-                },*/
+            blocks: [
+                /*  {
+                      name: 'system/profile_menu/TemplServiceProfiles',
+                      showTitle: false,
+                      showBg: false,
+                  },*/
             ]
         }
     },
-    auth:{
+    auth: {
         enabled: true,
-        google:{
+        google: {
             web_client_id: '398453829790-egj0o9mm2mq9rua8umq6jcvedtl9cgfu.apps.googleusercontent.com',
             ios_client_id: '',
             android_client_id: '',
@@ -132,8 +131,8 @@ export  const settingsDefault = {
         list: ['CounterChecker'], //['EventChecker'],//NotifChecker OLD appSetting('layout', 'async_workers')
         interval: 10, //OLD appSetting('layout', 'async_workers_interval')
     },
-    
-    context_selector:{
+
+    context_selector: {
         default_item: '',
         logo: true
     },
@@ -152,11 +151,11 @@ export  const settingsDefault = {
             bx_spaces: 'max',
             bx_jobs: 'max',
         },
-        show_pic_by_module:{
-            bx_spaces:true,
+        show_pic_by_module: {
+            bx_spaces: true,
         },
-        more_menu_in_navbar:{
-            bx_spaces:true,
+        more_menu_in_navbar: {
+            bx_spaces: true,
         }
     },
     comments: {
@@ -219,7 +218,7 @@ export  const settingsDefault = {
             // OLD appSetting('forms', 'form_without_captions')
             'sys_login',
             'sys_account_create',
-            
+
             'bx_invites_request_send',
         ],
         visibility_control_names: [
@@ -315,7 +314,7 @@ export  const settingsDefault = {
             button_variant: 'text',
             button_ring: 'p-1',
             pressed_classes: {
-                pressed_container:'bg-primary/20 ',
+                pressed_container: 'bg-primary/20 ',
                 pressed_text:
                     ' text-primary group-hover:text-primary ',
             },
@@ -365,28 +364,28 @@ export  const settingsDefault = {
     },
     browse: {
         per_line: [
-           
+
             { width: 1280, count: 5 },
             { width: 1024, count: 4 },
             { width: 768, count: 3 },
             { width: 640, count: 2 },
         ],
         per_line_profile: [
-           
+
             { width: 1280, count: 5 },
             { width: 1024, count: 4 },
             { width: 768, count: 3 },
             { width: 640, count: 2 },
         ],
         per_line_left_side_bar: [
-            
+
 
             { width: 1280, count: 4 },
             { width: 1024, count: 3 },
             { width: 768, count: 2 },
         ],
         per_line_bx_courses: [
-            
+
             { width: 1536, count: 5 },
             { width: 1280, count: 4 },
             { width: 1024, count: 3 },
@@ -648,7 +647,7 @@ export  const settingsDefault = {
             {
                 key: '/tab1',
                 title: 'Friends',
-                url: '/audit-administration',
+                url: '/friends',
                 icon: 'UsersRound',
             },
             {
@@ -789,47 +788,47 @@ export  const settingsDefault = {
         '/create-account': {
             max_width: ''
         },
-       /* 'audit-administration':{
-            gap: 4,
-            sizable: true,
-            cells:[
-                { key: 'cell_2', defaultSize: 50, minSize: 50, maxSize:50 },
-                { key: 'cell_3', defaultSize: 25.33, minSize: 10, breakpoint: 'md' },
-                { key: 'cell_4', defaultSize: 25.33, minSize: 10, breakpoint: 'lg' },
-            ]
-        }*/
-       'home':{
+        /* 'audit-administration':{
+             gap: 4,
+             sizable: true,
+             cells:[
+                 { key: 'cell_2', defaultSize: 50, minSize: 50, maxSize:50 },
+                 { key: 'cell_3', defaultSize: 25.33, minSize: 10, breakpoint: 'md' },
+                 { key: 'cell_4', defaultSize: 25.33, minSize: 10, breakpoint: 'lg' },
+             ]
+         }*/
+        'home': {
             adjustable: true,
             sizable: true,
-            cells:{
-                left: {defaultSize: 25, minSize: 20, maxSize:30, breakpoint: 'xl' },
-                center: { defaultSize: 50, minSize: 40, maxSize:60 },
-                right: { defaultSize: 25, minSize: 20, maxSize:30, breakpoint: 'lg' },
+            cells: {
+                left: { defaultSize: 25, minSize: 20, maxSize: 30, breakpoint: 'xl' },
+                center: { defaultSize: 50, minSize: 40, maxSize: 60 },
+                right: { defaultSize: 25, minSize: 20, maxSize: 30, breakpoint: 'lg' },
             }
         },
-        'navigator':{
+        'navigator': {
             adjustable: true,
             sizable: true,
-            cells:{
-                left: {defaultSize: 25, minSize: 20, maxSize:30, breakpoint: 'lg' },
-                center: { defaultSize: 75, minSize: 70, maxSize:80 },
+            cells: {
+                left: { defaultSize: 25, minSize: 20, maxSize: 30, breakpoint: 'lg' },
+                center: { defaultSize: 75, minSize: 70, maxSize: 80 },
             }
         },
-       'view-persons-profile':{
+        'view-persons-profile': {
             adjustable: true,
             sizable: true,
-            cells:{
-                left: {defaultSize: 25, minSize: 20, maxSize:30, breakpoint: 'md' },
-                center: { defaultSize: 50, minSize: 40, maxSize:60 },
-                right: { defaultSize: 25, minSize: 20, maxSize:30, breakpoint: 'lg' },
+            cells: {
+                left: { defaultSize: 25, minSize: 20, maxSize: 30, breakpoint: 'md' },
+                center: { defaultSize: 50, minSize: 40, maxSize: 60 },
+                right: { defaultSize: 25, minSize: 20, maxSize: 30, breakpoint: 'lg' },
             }
         },
-        'view-group-profile':{
+        'view-group-profile': {
             adjustable: true,
             sizable: true,
-            cells:{
-                center: { defaultSize: 60, minSize: 50, maxSize:70 },
-                right: { defaultSize: 40, minSize: 30, maxSize:50, breakpoint: 'lg' },
+            cells: {
+                center: { defaultSize: 60, minSize: 50, maxSize: 70 },
+                right: { defaultSize: 40, minSize: 30, maxSize: 50, breakpoint: 'lg' },
             }
         }
     },
@@ -1020,7 +1019,7 @@ export  const settingsDefault = {
                 ' h-12 rounded-full flex-auto px-3 py-[11px] text-base bg-bgrinput dark:bg-bgrinput-d hover:border-bdrinput-h focus:border-bdrinput-f overflow-hidden border border-bdrinput focus:bg-bgrinput-f dark:border-bdrinput-d dark:focus:border-bdrinput-d dark:focus:bg-bgrinput-df focus:border-bdrinput-f dark:focus:border-bdrinput-df   web:duration-300 placeholder-neutral-500 text-neutral-800 dark:text-neutral-200 ',
             roundedsmall:
                 ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-full flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[34px] ',
-            small: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-full flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-9 ',   
+            small: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-full flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-9 ',
             select: 'appearance-none pr-10 bg-bgrinput h-14 border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df  text-neutral-900 rounded-xl  flex-auto p-3 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus dark:text-neutral-100 text-base',
         },
 
@@ -1075,19 +1074,108 @@ export  const settingsDefault = {
                 title_margin: '', // conditional margin for text container when icon is present
             },
         },
+        offsets: {
+            'gap-lg-compact': 'gap-3 sm:gap-4',
+            'gap-lg-default': 'gap-4 sm:gap-6',
+            'gap-lg-relaxed': 'gap-6 sm:gap-8',
+            'gap-md-compact': 'gap-1 sm:gap-2 lg:gap-3',
+            'gap-md-default': 'gap-2 sm:gap-3 lg:gap-4',
+            'gap-md-relaxed': 'gap-3 sm:gap-4 lg:gap-6',
+            'gap-sm-compact': 'gap-1 sm:gap-1.5 lg:gap-2',
+            'gap-sm-default': 'gap-1.5 sm:gap-2 lg:gap-3',
+            'gap-sm-relaxed': 'gap-2 sm:gap-3 lg:gap-4',
+            'gap-xs-compact': 'gap-0.5 sm:gap-1',
+            'gap-xs-default': 'gap-1 sm:gap-1.5',
+            'gap-xs-relaxed': 'gap-1.5 sm:gap-2',
+            'm-lg-compact': 'm-2 sm:m-3 lg:m-4',
+            'm-lg-default': 'm-3 sm:m-4 lg:m-6',
+            'm-lg-relaxed': 'm-4 sm:m-6 lg:m-8',
+            'mb-lg-compact': 'mb-3 sm:mb-4',
+            'mb-lg-default': 'mb-6 sm:mb-8',
+            'mb-lg-relaxed': 'mb-6 sm:mb-8',
+            'mb-md-compact': 'mb-2 sm:mb-3',
+            'mb-md-default': 'mb-3 sm:mb-4',
+            'mb-md-relaxed': 'mb-4 sm:mb-6',
+            'mb-sm-compact': 'mb-1 sm:mb-2',
+            'mb-sm-default': 'mb-2 sm:mb-3',
+            'mb-sm-relaxed': 'mb-3 sm:mb-4',
+            'p-lg-compact': 'p-3 lg:p-4',
+            'p-lg-default': 'p-4 lg:p-6',
+            'p-lg-relaxed': 'p-6 lg:p-8',
+            'p-md-compact': 'p-2 lg:p-3',
+            'p-md-default': 'p-3 lg:p-4',
+            'p-md-relaxed': 'p-4 lg:p-6',
+            'p-sm-compact': 'p-1',
+            'p-sm-default': 'p-2',
+            'p-sm-relaxed': 'p-3',
+            'p-xs-default': 'p-1',
+            'pb-lg-compact': 'pb-2',
+            'pb-lg-default': 'pb-4',
+            'pb-lg-relaxed': 'pb-6',
+            'pb-md-compact': 'pb-2',
+            'pb-md-default': 'pb-3',
+            'pb-md-relaxed': 'pb-4',
+            'pb-sm-compact': 'pb-1',
+            'pb-sm-default': 'pb-2',
+            'pb-sm-relaxed': 'pb-3',
+            'pt-lg-compact': 'pt-2',
+            'pt-lg-default': 'pt-4',
+            'pt-lg-relaxed': 'pt-6',
+            'pt-md-compact': 'pt-2',
+            'pt-md-default': 'pt-3',
+            'pt-md-relaxed': 'pt-4',
+            'pt-sm-compact': 'pt-1',
+            'pt-sm-default': 'pt-2',
+            'pt-sm-relaxed': 'pt-3',
+            'px-lg-compact': 'px-2',
+            'px-lg-default': 'px-4',
+            'px-lg-relaxed': 'px-6',
+            'px-md-compact': 'px-2',
+            'px-md-default': 'px-3',
+            'px-md-relaxed': 'px-4',
+            'px-sm-compact': 'px-1',
+            'px-sm-default': 'px-2',
+            'px-sm-relaxed': 'px-3',
+            'py-lg-compact': 'py-2 sm:py-3 lg:py-4',
+            'py-lg-default': 'py-3 sm:py-4 lg:py-6',
+            'py-lg-relaxed': 'py-4 sm:py-6 lg:py-8',
+            'py-md-compact': 'py-2',
+            'py-md-default': 'py-3',
+            'py-md-relaxed': 'py-4',
+            'py-sm-compact': 'py-1',
+            'py-sm-default': 'py-2',
+            'py-sm-relaxed': 'py-3',
+            'w-lg-compact': 'w-3 lg:w-4 xl:w-6',
+            'w-lg-default': 'w-4 lg:w-6 xl:w-8',
+            'w-lg-relaxed': 'w-6 lg:w-8 xl:w-10',
+            'w-md-compact': 'w-2 lg:w-3 xl:w-4',
+            'w-md-default': 'w-3 lg:w-4 xl:w-6',
+            'w-md-relaxed': 'w-4 lg:w-6 xl:w-8',
+            'w-sm-compact': 'w-1 lg:w-2 xl:w-3',
+            'w-sm-default': 'w-2 lg:w-3 xl:w-4',
+            'w-sm-relaxed': 'w-3 lg:w-4 xl:w-6'
+        },
         cards: {
-            'u-card-base': 'bg-card shadow-sm text-card-foreground',
+            'u-card-base': 'bg-card shadow-sm text-card-foreground border border-border shadow-sm ',
 
             // Base Variants
             'u-card-base-compact':
-                'py-2 sm:py-3 lg:py-4 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4 rounded-xl',
+                'gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4 rounded-xl',
             'u-card-base-default':
-                'py-3 sm:py-4 lg:py-6 gap-y-3 sm:gap-y-4 lg:gap-y-6 gap-x-3 sm:gap-x-4 lg:gap-x-6 rounded-2xl',
+                'gap-y-3 sm:gap-y-4 lg:gap-y-6 gap-x-3 sm:gap-x-4 lg:gap-x-6 rounded-2xl',
             'u-card-base-relaxed':
-                'py-5 sm:py-6 lg:py-8 gap-y-5 sm:gap-y-6 lg:gap-y-8 gap-x-5 sm:gap-x-6 lg:gap-x-8 rounded-3xl',
+                'gap-y-5 sm:gap-y-6 lg:gap-y-8 gap-x-5 sm:gap-x-6 lg:gap-x-8 rounded-3xl',
+
+            // Paddings Variants
+            'u-card-padding-compact':
+                'py-2 sm:py-3 lg:py-4 ',
+            'u-card-padding-default':
+                'py-3 sm:py-4 lg:py-6 ',
+            'u-card-padding-relaxed':
+                'py-5 sm:py-6 lg:py-8 ',
 
             // Header
-            'u-card-header': 'flex flex-row',
+            'u-card-header': 'flex',
             'u-card-header-compact':
                 'px-2 sm:px-3 lg:px-4 gap-y-1 sm:gap-y-2 lg:gap-y-3 gap-x-1 sm:gap-x-2 lg:gap-x-3',
             'u-card-header-default':
@@ -1131,9 +1219,9 @@ export  const settingsDefault = {
         panels: {
             // Panel Base
             'u-panel-base': 'mx-0',
-            'u-panel-base-compact': 'my-0 lg:my-3',
-            'u-panel-base-default': 'my-0 lg:my-4',
-            'u-panel-base-relaxed': 'my-0 lg:my-6',
+            'u-panel-base-compact': 'my-0 ',
+            'u-panel-base-default': 'my-0 ',
+            'u-panel-base-relaxed': 'my-0 ',
 
             // Panel Handler
             'u-panel-handler': 'w-1 h-full',
@@ -1145,7 +1233,7 @@ export  const settingsDefault = {
 
             // Panel Line
             'u-panel-line':
-                'w-1 group-active:w-1 group-hover:w-1 group-active:w-sm h-full transition-all duration-300 ease-in-out group-hover:bg-muted group-active:bg-muted mx-auto',
+                'w-1 mx-1.5 pxgroup-active:w-1 group-hover:w-1 group-active:w-sm h-full transition-all duration-300 ease-in-out group-hover:bg-muted group-active:bg-muted ',
 
             // Panel Group
             'u-panel-group': 'flex',
@@ -1156,103 +1244,99 @@ export  const settingsDefault = {
             'u-panel-group-relaxed': ''
         },
         blocks: {
+            'u-block-base-compact': 'bg-card u-max-width-block  text-card-foreground py-2 sm:py-3 lg:py-4 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4 rounded-xl',
+            'u-block-base-default': 'bg-card u-max-width-block  text-card-foreground py-3 sm:py-4 lg:py-6 gap-2 sm:gap-3 lg:gap-4 rounded-2xl',
+            'u-block-base-relaxed': 'bg-card u-max-width-block  text-card-foreground py-5 sm:py-6 lg:py-8 gap-y-5 sm:gap-y-6 lg:gap-y-8 gap-x-5 sm:gap-x-6 lg:gap-x-8 rounded-3xl',
 
-            // Block Base
-            'u-block-base-compact':
-                'bg-card u-max-width-block border-border shadow-sm text-card-foreground py-2 sm:py-3 lg:py-4 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4 rounded-xl',
-            'u-block-base-default':
-                'bg-card u-max-width-block border-border shadow-sm text-card-foreground py-3 sm:py-4 lg:py-6 gap-md rounded-2xl',
-            'u-block-base-relaxed':
-                'bg-card u-max-width-block border-border shadow-sm text-card-foreground py-5 sm:py-6 lg:py-8 gap-y-5 sm:gap-y-6 lg:gap-y-8 gap-x-5 sm:gap-x-6 lg:gap-x-8 rounded-3xl',
-
-            // Block Header
             'u-block-header': 'flex flex-row items-center',
-            'u-block-header-compact':
-                'px-2 sm:px-3 lg:px-4 gap-y-1 sm:gap-y-2 lg:gap-y-3 gap-x-1 sm:gap-x-2 lg:gap-x-3',
-            'u-block-header-default':
-                'px-3 sm:px-4 lg:px-6 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4',
-            'u-block-header-relaxed':
-                'px-4 sm:px-6 lg:px-8 gap-y-3 sm:gap-y-4 lg:gap-y-6 gap-x-3 sm:gap-x-4 lg:gap-x-6',
+            'u-block-header-compact': 'flex flex-row items-center px-2 sm:px-3 lg:px-4 gap-y-1 sm:gap-y-2 lg:gap-y-3 gap-x-1 sm:gap-x-2 lg:gap-x-3',
+            'u-block-header-default': 'flex flex-row items-center px-3 sm:px-4 lg:px-6 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4',
+            'u-block-header-relaxed': 'flex flex-row items-center px-4 sm:px-6 lg:px-8 gap-y-3 sm:gap-y-4 lg:gap-y-6 gap-x-3 sm:gap-x-4 lg:gap-x-6',
 
-            // Block Icon
             'u-block-icon': 'text-card-foreground',
-            'u-block-icon-compact': '',
-            'u-block-icon-default': '',
-            'u-block-icon-relaxed': '',
+            'u-block-icon-compact': 'text-card-foreground',
+            'u-block-icon-default': 'text-card-foreground',
+            'u-block-icon-relaxed': 'text-card-foreground',
 
-            // Block Name
             'u-block-name': 'flex flex-col flex-auto',
-            'u-block-name-compact': 'gap-y-1 gap-x-3',
-            'u-block-name-default': 'gap-y-2 gap-x-4',
-            'u-block-name-relaxed': 'gap-y-3 gap-x-6',
+            'u-block-name-compact': 'flex flex-col flex-auto gap-y-1 gap-x-3',
+            'u-block-name-default': 'flex flex-col flex-auto gap-y-2 gap-x-4',
+            'u-block-name-relaxed': 'flex flex-col flex-auto gap-y-3 gap-x-6',
 
-            // Block Title
             'u-block-title': 'text-card-foreground',
-            'u-block-title-compact':
-                'text-lg lg:text-xl font-bold leading-none lg:leading-none tracking-tight',
-            'u-block-title-default':
-                'text-xl lg:text-2xl font-bold leading-none lg:leading-none tracking-tight',
-            'u-block-title-relaxed':
-                'text-2xl lg:text-3xl font-bold leading-none lg:leading-none tracking-tight',
+            'u-block-title-compact': 'text-card-foreground text-lg lg:text-xl font-bold leading-none lg:leading-none tracking-tight',
+            'u-block-title-default': 'text-card-foreground text-xl lg:text-2xl font-bold leading-none lg:leading-none tracking-tight',
+            'u-block-title-relaxed': 'text-card-foreground text-2xl lg:text-3xl font-bold leading-none lg:leading-none tracking-tight',
 
-            // Block Description
             'u-block-description': 'text-muted-foreground',
-            'u-block-description-compact': 'text-xs lg:text-sm',
-            'u-block-description-default': 'text-sm lg:text-base',
-            'u-block-description-relaxed': 'text-base lg:text-lg',
+            'u-block-description-compact': 'text-muted-foreground text-xs lg:text-sm',
+            'u-block-description-default': 'text-muted-foreground text-sm lg:text-base',
+            'u-block-description-relaxed': 'text-muted-foreground text-base lg:text-lg',
 
-            // Block Content
             'u-block-content': 'text-card-foreground',
-            'u-block-content-compact':
-                'px-2 sm:px-3 lg:px-4 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-1 sm:gap-x-2 lg:gap-x-3',
-            'u-block-content-default':
-                'px-3 sm:px-4 lg:px-6 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4',
-            'u-block-content-relaxed':
-                'px-4 sm:px-6 lg:px-8 gap-y-3 sm:gap-y-4 lg:gap-y-6 gap-x-3 sm:gap-x-4 lg:gap-x-6',
+            'u-block-content-compact': 'text-card-foreground px-2 sm:px-3 lg:px-4 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-1 sm:gap-x-2 lg:gap-x-3',
+            'u-block-content-default': 'text-card-foreground px-3 sm:px-4 lg:px-6 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4',
+            'u-block-content-relaxed': 'text-card-foreground px-4 sm:px-6 lg:px-8 gap-y-3 sm:gap-y-4 lg:gap-y-6 gap-x-3 sm:gap-x-4 lg:gap-x-6',
 
-            // Block Footer
             'u-block-footer': 'flex text-card-foreground',
-            'u-block-footer-compact':
-                'px-2 sm:px-3 lg:px-4 gap-y-1 sm:gap-y-2 lg:gap-y-3 gap-x-1 sm:gap-x-2 lg:gap-x-3',
-            'u-block-footer-default':
-                'px-3 sm:px-4 lg:px-6 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4',
-            'u-block-footer-relaxed':
-                'px-4 sm:px-6 lg:px-8 gap-y-3 sm:gap-y-4 lg:gap-y-6 gap-x-3 sm:gap-x-4 lg:gap-x-6',
+            'u-block-footer-compact': 'flex text-card-foreground px-2 sm:px-3 lg:px-4 gap-y-1 sm:gap-y-2 lg:gap-y-3 gap-x-1 sm:gap-x-2 lg:gap-x-3',
+            'u-block-footer-default': 'flex text-card-foreground px-3 sm:px-4 lg:px-6 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4',
+            'u-block-footer-relaxed': 'flex text-card-foreground px-4 sm:px-6 lg:px-8 gap-y-3 sm:gap-y-4 lg:gap-y-6 gap-x-3 sm:gap-x-4 lg:gap-x-6',
 
-            // Block Actions
             'u-block-actions': 'flex flex-row text-card-foreground mb-auto',
-            'u-block-actions-compact': 'gap-x-1 sm:gap-x-2 lg:gap-x-3',
-            'u-block-actions-default': 'gap-x-2 sm:gap-x-3 lg:gap-x-4',
-            'u-block-actions-relaxed': 'gap-x-3 sm:gap-x-4 lg:gap-x-6'
-
+            'u-block-actions-compact': 'flex flex-row text-card-foreground mb-auto gap-x-1 sm:gap-x-2 lg:gap-x-3',
+            'u-block-actions-default': 'flex flex-row text-card-foreground mb-auto gap-x-2 sm:gap-x-3 lg:gap-x-4',
+            'u-block-actions-relaxed': 'flex flex-row text-card-foreground mb-auto gap-x-3 sm:gap-x-4 lg:gap-x-6'
         },
         badges: {
-            // Base
-            'u-badge-base': 'flex items-center border transition-colors focus:outline-none web:focus:ring-ring',
+            'u-badge-accent-compact': 'border-transparent bg-accent text-accent-foreground shadow hover:bg-accent/80',
+            'u-badge-accent-default': 'border-transparent bg-accent text-accent-foreground shadow hover:bg-accent/80',
+            'u-badge-accent-relaxed': 'border-transparent bg-accent text-accent-foreground shadow hover:bg-accent/80',
 
-            // Base Size Variants
+            'u-badge-base': 'flex items-center border transition-colors focus:outline-none focus:ring-ring',
             'u-badge-base-compact': 'px-1 py-0.5 rounded-md',
             'u-badge-base-default': 'px-2 py-1 rounded-lg',
             'u-badge-base-relaxed': 'px-3 py-1.5 rounded-xl',
 
-            // Fill Variants (same for all sizes)
-            'u-badge-default': 'border-transparent bg-primary text-primary-foreground shadow hover:bg-primary/80',
-            'u-badge-secondary': 'border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80',
-            'u-badge-destructive': 'border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80',
-            'u-badge-accent': 'border-transparent bg-accent text-accent-foreground shadow hover:bg-accent/80',
-            'u-badge-outline': 'border-border',
+            'u-badge-default-compact': 'border-transparent bg-primary text-primary-foreground shadow hover:bg-primary/80',
+            'u-badge-default-default': 'border-transparent bg-primary text-primary-foreground shadow hover:bg-primary/80',
+            'u-badge-default-relaxed': 'border-transparent bg-primary text-primary-foreground shadow hover:bg-primary/80',
 
-            // Text Size Variants
-            'u-badge-text-compact': 'text-xs inline-flex gap-sm font-semibold',
-            'u-badge-text-default': 'text-sm inline-flex gap-sm font-semibold',
-            'u-badge-text-relaxed': 'text-base inline-flex gap-sm font-semibold',
+            'u-badge-destructive-compact': 'border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80',
+            'u-badge-destructive-default': 'border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80',
+            'u-badge-destructive-relaxed': 'border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80',
 
-            // Text Color Variants
-            'u-badge-text-default': 'text-primary-foreground',
-            'u-badge-text-secondary': 'text-secondary-foreground',
-            'u-badge-text-destructive': 'text-destructive-foreground',
-            'u-badge-text-accent': 'text-accent-foreground',
-            'u-badge-text-outline': 'text-muted-foreground'
+            'u-badge-outline-compact': 'border-border',
+            'u-badge-outline-default': 'border-border',
+            'u-badge-outline-relaxed': 'border-border',
+
+            'u-badge-secondary-compact': 'border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80',
+            'u-badge-secondary-default': 'border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80',
+            'u-badge-secondary-relaxed': 'border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80',
+
+            'u-badge-text-accent-compact': 'text-accent-foreground',
+            'u-badge-text-accent-default': 'text-accent-foreground',
+            'u-badge-text-accent-relaxed': 'text-accent-foreground',
+
+            'u-badge-text-compact': 'text-xs inline-flex gap-1 sm:gap-1.5 lg:gap-2 font-semibold',
+            'u-badge-text-default': 'text-sm inline-flex gap-1.5 sm:gap-2 lg:gap-3 font-semibold',
+            'u-badge-text-relaxed': 'text-base inline-flex gap-2 sm:gap-3 lg:gap-4 font-semibold',
+
+            'u-badge-text-default-compact': 'text-primary-foreground',
+            'u-badge-text-default-default': 'text-primary-foreground',
+            'u-badge-text-default-relaxed': 'text-primary-foreground',
+
+            'u-badge-text-destructive-compact': 'text-destructive-foreground',
+            'u-badge-text-destructive-default': 'text-destructive-foreground',
+            'u-badge-text-destructive-relaxed': 'text-destructive-foreground',
+
+            'u-badge-text-outline-compact': 'text-muted-foreground',
+            'u-badge-text-outline-default': 'text-muted-foreground',
+            'u-badge-text-outline-relaxed': 'text-muted-foreground',
+
+            'u-badge-text-secondary-compact': 'text-secondary-foreground',
+            'u-badge-text-secondary-default': 'text-secondary-foreground',
+            'u-badge-text-secondary-relaxed': 'text-secondary-foreground'
         },
         tables: {
             // Base
@@ -1295,10 +1379,10 @@ export  const settingsDefault = {
 
             // Cell
             'u-table-cell':
-                'flex-auto flex-row gap-sm items-center text-foreground px-md',
-            'u-table-cell-compact': 'text-xs py-sm',
+                'flex-auto flex-row items-center text-foreground px-3',
+            'u-table-cell-compact': 'text-xs py-1',
             'u-table-cell-default': 'text-sm py-2',
-            'u-table-cell-relaxed': 'text-base py-sm',
+            'u-table-cell-relaxed': 'text-base py-3',
 
             // Head Text
             'u-table-head-text': 'text-muted-foreground font-semibold tracking-tight leading-tight',
@@ -1317,11 +1401,11 @@ export  const settingsDefault = {
             'u-controls-tabs-container': 'w-full flex-col',
 
             // Header (использовать с inline-стилями или Tailwind plugin'ом для scroll)
-            'u-controls-tabs-header': 'flex-row w-full bg-muted rounded-full p-xs mb-md',
+            'u-controls-tabs-header': 'flex-row w-full bg-muted rounded-full p-xs mb-3 sm:mb-4',
 
             // Header item
             'u-controls-tabs-header-item':
-                ' flex-1 shrink-0 rounded-full px-md py-sm text-sm inline-flex items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 flex-1 flex-shrink-0',
+                ' flex-1 shrink-0 rounded-full px-3 py-2 text-sm inline-flex items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 flex-1 flex-shrink-0',
 
             'u-controls-tabs-header-item-active':
                 'bg-card text-card-foreground shadow-sm',
@@ -1401,7 +1485,7 @@ export  const settingsDefault = {
             'u-btn-default-text':
                 'font-medium text-neutral-800 web:hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-neutral-50',
             'u-btn-default-trans': '  web:duration-200',
-            
+
 
             'u-btn-primary-cnt': '  bg-bgrbuttonprimary dark:bg-bgrbuttonprimary-d web:hover:bg-bgrbuttonprimary-h dark:web:hover:bg-bgrbuttonprimary-dh active:ring-2 active:ring-primary active:ring-offset-2 active:outline-none ',
             'u-btn-primary-text': 'font-medium text-white',
