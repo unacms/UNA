@@ -28,6 +28,7 @@ export function Theme() {
 
 export function ThemeName() {
     const { themeName } = useLayoutSettings();
-    return themeName != 'auto' ? themeName : useColorScheme();
+    const def = useColorScheme();
+    return themeName != 'auto' ? themeName : def;
 }
 
