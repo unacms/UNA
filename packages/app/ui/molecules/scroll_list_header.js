@@ -142,7 +142,7 @@ function getRightHeader(items, currentUser, pagePath) {
                 items?.map((button) => {
                     let btn = undefined;
                     if (button.section || button.link == 'search')
-                        btn = <Search section={button.section} params={{ trigger: { title: button.title, icon: button.icon ? button.icon : 'Search', size: 'base', variant: 'secondary', onPress: () => FeedbackHaptics('Medium') } }} />
+                        btn=<></>//btn = <Search section={button.section} params={{ trigger: { title: button.title, icon: button.icon ? button.icon : 'Search', size: 'base', variant: 'secondary', onPress: () => FeedbackHaptics('Medium') } }} />
                     else {
                         btn = <Button
                             rounded title={button.title}

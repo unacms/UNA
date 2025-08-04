@@ -247,7 +247,7 @@ export default function (props) {
                 {feedList.map((item, index) => {
                     if (feedType == item.name) {
                         return (
-                            <View key={'view' + index}>
+                            <View className='' key={'view' + index}>
                                 <BlockByName
                                     data={props.data}
                                     contentOnly={true}
@@ -402,7 +402,7 @@ export default function (props) {
                     </>
                 )}
                 <Panel {...cellsCustomConfig.cells?.center}>
-                    <View className={`${cd('p-md')}`}>{FeedContent}</View>
+                    <View className={`lg:p-4`}>{FeedContent}</View>
                 </Panel>
 
                 {isWeb && (

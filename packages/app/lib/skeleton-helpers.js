@@ -1,7 +1,7 @@
 import { View } from 'app/design/view'
 import { getComponent } from 'app/components/registry';
 
-const items = Array(5).fill('');
+const items = Array(10).fill('');
 
 export function getSkeletonForList(name, num = 5) {
     if (Array.isArray(name)){

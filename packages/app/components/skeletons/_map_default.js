@@ -1,6 +1,6 @@
 import { View, ScrollView, Row } from 'app/design/view'
 import { appSetting, cd } from 'app/lib/util'
-import Card from 'app/ui/molecules/card'
+import Card, {CardList} from 'app/ui/molecules/card'
 import { Platform } from 'react-native'
 import { Text } from 'app/design/typography';
 import { memo } from 'react'
@@ -32,7 +32,7 @@ const OneColumn = memo(() => (
 const Notif = memo(() => (
     
     <View className=" w-full">
-        <Card className=" mt-px sm:mb-2 sm:mx-2 p-3 sm:p-4 border-none sm:rounded-2xl " >
+        <CardList className=" mt-px lg:mb-2 lg:mx-2 p-3 lg:p-4 border-none lg:rounded-2xl " >
         <View className="animate-pulse flex-row items-center gap-2">
             <View className="rounded-full bg-neutral-500/40 h-12 w-12"></View>
             <View className="flex-1 gap-1.5">
@@ -43,7 +43,7 @@ const Notif = memo(() => (
                 <View className="h-3 w-full bg-neutral-500/50 rounded-full"></View>
             </View>
         </View>
-        </Card>
+        </CardList>
     </View>
    
 ));

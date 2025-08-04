@@ -22,7 +22,7 @@ export function BlockByName2({ b, name, contentOnly }) {
 
 export function BlockByName(props) {
     let { data, name, contentOnly, ...rest } = props;
-    console.log("name", name)
+
     let b = null;
 
     if (name) {
@@ -149,6 +149,8 @@ export function BlockWrapper(props) {
     let cssClasses = rest?.extraProps?.cssClasses ? rest?.extraProps?.cssClasses : "";
     // Streamlined logic: avoid unnecessary fragment, ensure BlockContent is not wrapping elements twice
 
+    if (props?.block?.content && props?.block?.content[0]?.type == 'browse')
+        contentOnly = true;
     if (contentOnly)
         return props.children
 

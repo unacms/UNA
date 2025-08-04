@@ -383,7 +383,7 @@ const RenderSceneHeader = ({ route, setFilterValue }) => {
     )
 };
 
-export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMenu, leftSideBar, leftSideBarBlocks, leftSideBarWidth = appSetting('conductor', 'sidebar_width'), skeleton = '', onChangeRoute, keyword, layoutName, defaultHeaderHeight = 120 }) {
+export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMenu, leftSideBar, leftSideBarBlocks, leftSideBarWidth = appSetting('conductor', 'sidebar_width'), skeleton = '', onChangeRoute, keyword, layoutName, defaultHeaderHeight = 112 }) {
     const uniRef = useRef();
     const { currentUser } = useCurrentUser();
     const { setBottomSheetData } = useBottomSheetData();
@@ -861,7 +861,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
                             gap="hidden lg:block" sizable={cellsCustomConfig.sizable}
                         /></>}
                     <Panel {...cellsCustomConfig.cells?.center}>
-                        <View className={`px-3 lg:${cd('p-md')}`}>
+                        <View className={`lg:${cd('p-md')}`}>
                             {MainComponent}
                         </View>
                     </Panel>

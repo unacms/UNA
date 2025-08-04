@@ -5,7 +5,7 @@ import Link from 'app/ui/atoms/link'
 import { getImageSizes, tp } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
-import Card from 'app/ui/molecules/card'
+import {CardList} from 'app/ui/molecules/card'
 import Redirect from 'app/ui/atoms/redirect'
 import ProfilesList from 'app/ui/molecules/profile_list'
 import { useTranslation } from 'react-i18next'
@@ -77,7 +77,7 @@ export default function Unit(props) {
         return
 
     return (
-        <Card padding={cd('p-sm')} className='mb-2 md:mb-0'>
+        <CardList padding={cd('p-sm')} >
             <Redirect ref={redirectdRef} />
             <Link className="group " href={data.url}>
                 <View
@@ -128,6 +128,6 @@ export default function Unit(props) {
                     </View>
                 </View>
             </Link>
-        </Card>
+        </CardList>
     )
 }

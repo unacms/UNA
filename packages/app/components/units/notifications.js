@@ -3,9 +3,8 @@ import { stripTags, addParameterToUrl } from 'app/lib/util';
 import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
 import Time from 'app/ui/atoms/time';
-import AnimatedBlock from 'app/ui/atoms/animated-block'
 import Link from 'app/ui/atoms/link'
-import Card from 'app/ui/molecules/card'
+import { CardList } from 'app/ui/molecules/card'
 import Profile from 'app/ui/molecules/profile';
 
 function Unit({ data }) {
@@ -15,9 +14,9 @@ function Unit({ data }) {
     content_parsed = content_parsed.replace('&#8230;', '...');
 
     return (
-        <AnimatedBlock>
+
             <Link href={url}>
-                <Card margin="mb-2 p-4  shadow-[0_1px_3px_0_rgba(0,0,0,0.05)] " border=" border border-bdrcard dark:border-bdrcard-d  " rounded=" sm:rounded-2xl " >
+                <CardList>
                     <View className="flex-row items-center">
                         <View className="mr-2  rounded-full flex-none " >
                             <Profile {...data.author_data} displayType="unit_wo_info" displaySize="base" />
@@ -32,9 +31,8 @@ function Unit({ data }) {
                             </View>
                         </View>
                     </View>
-                </Card>
+                </CardList>
             </Link>
-        </AnimatedBlock>
     );
 }
 

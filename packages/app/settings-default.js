@@ -378,11 +378,14 @@ export const settingsDefault = {
             { width: 640, count: 2 },
         ],
         per_line_left_side_bar: [
-
-
+            { width: 1536, count: 5 },
             { width: 1280, count: 4 },
+            { width: 768, count: 3 },
+            { width: 640, count: 2 },
+
+            /*{ width: 1280, count: 4 },
             { width: 1024, count: 3 },
-            { width: 768, count: 2 },
+            { width: 768, count: 2 },*/
         ],
         per_line_bx_courses: [
 
@@ -1156,65 +1159,16 @@ export const settingsDefault = {
             'w-sm-relaxed': 'w-3 lg:w-4 xl:w-6'
         },
         cards: {
-            'u-card-base': 'bg-card shadow-sm text-card-foreground border border-input shadow-sm ',
-
-            // Base Variants
-            'u-card-base-compact':
-                'gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4 rounded-xl',
-            'u-card-base-default':
-                'gap-y-3 sm:gap-y-4 lg:gap-y-6 gap-x-3 sm:gap-x-4 lg:gap-x-6 rounded-2xl',
-            'u-card-base-relaxed':
-                'gap-y-5 sm:gap-y-6 lg:gap-y-8 gap-x-5 sm:gap-x-6 lg:gap-x-8 rounded-3xl',
-
-            // Paddings Variants
-            'u-card-padding-compact':
-                'py-2 sm:py-3 lg:py-4 ',
-            'u-card-padding-default':
-                'py-3 sm:py-4 lg:py-6 ',
-            'u-card-padding-relaxed':
-                'py-5 sm:py-6 lg:py-8 ',
-
-            // Header
-            'u-card-header': 'flex',
-            'u-card-header-compact':
-                'px-2 sm:px-3 lg:px-4 gap-y-1 sm:gap-y-2 lg:gap-y-3 gap-x-1 sm:gap-x-2 lg:gap-x-3',
-            'u-card-header-default':
-                'px-3 sm:px-4 lg:px-6 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4',
-            'u-card-header-relaxed':
-                'px-4 sm:px-6 lg:px-8 gap-y-3 sm:gap-y-4 lg:gap-y-6 gap-x-3 sm:gap-x-4 lg:gap-x-6',
-
-            // Icon
-            'u-card-icon': 'text-card-foreground',
-            'u-card-icon-compact': 'px-3 gap-y-1 gap-x-2',
-            'u-card-icon-default': 'px-4 gap-y-2 gap-x-3',
-            'u-card-icon-relaxed': 'px-6 gap-y-3 gap-x-4',
-
-            // Title
-            'u-card-title': 'text-card-foreground',
-            'u-card-title-compact':
-                'text-lg lg:text-xl font-bold leading-none lg:leading-none tracking-tight',
-            'u-card-title-default':
-                'text-xl lg:text-2xl font-bold leading-none lg:leading-none tracking-tight',
-            'u-card-title-relaxed':
-                'text-2xl lg:text-3xl font-bold leading-none lg:leading-none tracking-tight',
-
-            // Description
-            'u-card-description': 'text-muted-foreground ',
-            'u-card-description-compact': 'text-xs lg:text-sm ',
-            'u-card-description-default': 'text-sm lg:text-base ',
-            'u-card-description-relaxed': 'text-base lg:text-lg leading-none',
-
-            // Content
-            'u-card-content': 'text-card-foreground ',
-            'u-card-content-compact': 'px-3 gap-y-2',
-            'u-card-content-default': 'px-4 gap-y-3',
-            'u-card-content-relaxed': 'px-6 gap-y-4',
-
-            // Footer
-            'u-card-footer': 'flex text-card-foreground',
-            'u-card-footer-compact': 'px-3 gap-y-1.5 gap-x-2',
-            'u-card-footer-default': 'px-4 gap-y-2 gap-x-3',
-            'u-card-footer-relaxed': 'px-6 gap-y-3 gap-x-4'
+            'u-card-list': 'u-card-list bg-card shadow-sm text-card-foreground sm:border border-input sm:shadow-sm sm:rounded-2xl mb-[1px] sm:mb-2  ',
+            'u-card-list-padding': 'p-3 lg:p-4',
+            'u-card-base': ' u-card-base bg-card shadow-sm text-card-foreground border border-input shadow-sm gap-y-3 sm:gap-y-4 lg:gap-y-6 gap-x-3 sm:gap-x-4 lg:gap-x-6 rounded-2xl',            
+            'u-card-padding': 'py-3 sm:py-4 lg:py-6 ',
+            'u-card-header': 'flex px-3 sm:px-4 lg:px-6 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4',
+            'u-card-icon': 'text-card-foreground px-4 gap-y-2 gap-x-3',
+            'u-card-title': 'text-card-foreground text-xl lg:text-2xl font-bold leading-none lg:leading-none tracking-tight',
+            'u-card-description': 'text-muted-foreground text-sm lg:text-base',
+            'u-card-content': 'text-card-foreground px-4 gap-y-3',
+            'u-card-footer': 'flex text-card-foreground px-4 gap-y-2 gap-x-3',
         },
         panels: {
             // Panel Base
