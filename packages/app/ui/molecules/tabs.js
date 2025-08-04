@@ -5,7 +5,7 @@ import { appSetting } from 'app/lib/util';
 
 const tabsTheme = appSetting('theme', 'tabs');
 
-export default function Tabs({ tabs, activeTab }) {
+export default function Tabs({ tabs, activeTab, fullWidth = false }) {
     const [currentTab, setCurrentTab] = useState(activeTab);
     const tabsListRef = useRef(null);
 
@@ -58,14 +58,14 @@ export default function Tabs({ tabs, activeTab }) {
             onValueChange={setCurrentTab}
             className={tabsTheme["u-controls-tabs-container"]}
         >
-            <TabsPrimitive.List ref={tabsListRef} className={tabsTheme["u-controls-tabs-header"]}>
+            <TabsPrimitive.List ref={tabsListRef} className={fullWidth ? tabsTheme["u-controls-tabs-header-full-width"] : tabsTheme["u-controls-tabs-header"]}>
                 {tabs.map((tab) => (
                     <TabsPrimitive.Trigger
                         key={tab.key}
                         value={tab.key}
                         onMouseEnter={handleTabInteraction}
                         onFocus={handleTabInteraction}
-                        className={`${tab.key === currentTab ? `${tabsTheme['u-controls-tabs-header-item']} ${tabsTheme['u-controls-tabs-header-item-active']}` : tabsTheme['u-controls-tabs-header-item']}`}>
+                        className={`${tabsTheme['u-controls-tabs-header-item']} ${tab.key === currentTab ? tabsTheme['u-controls-tabs-header-item-active'] : tabsTheme['u-controls-tabs-header-item-inactive']}`}>
                         <Text className={`${tab.key === currentTab ? tabsTheme['u-controls-tabs-header-item-text-active'] : tabsTheme['u-controls-tabs-header-item-text']}`}>{tab.title}</Text>
                     </TabsPrimitive.Trigger>
                 ))}
