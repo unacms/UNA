@@ -274,7 +274,7 @@ export const settingsDefault = {
     },
     feed: {
         feed_container: 'relative flex-auto mx-auto w-full max-w-4xl sm:p-3 ',
-        show_selector_view: true,
+        show_selector_view: false,
         default_view: '',
         show_html: false,
         default_feed: 'foryou',
@@ -314,9 +314,9 @@ export const settingsDefault = {
             button_variant: 'text',
             button_ring: 'p-1',
             pressed_classes: {
-                pressed_container: 'bg-primary/20 ',
+                pressed_container: 'bg-secondary ',
                 pressed_text:
-                    ' text-primary group-hover:text-primary ',
+                    ' text-secondary-foreground group-hover:text-secondary-foreground ',
             },
             button_rounded: false,
             align_items: 'between',
@@ -1027,8 +1027,8 @@ export const settingsDefault = {
             default_size: 'base',
             default_variant: 'default',
             default_ring: 'p-1 ',
-            pressed_container: 'bg-primary/20',
-            pressed_text: 'text-primary dark:text-primary font-medium group-hover:text-primary dark:group-hover:text-primary',
+            pressed_container: 'bg-primary/10 border-primary/20',
+            pressed_text: 'text-primary font-medium',
             xs: {
                 rounded: 'rounded-md',
                 padding: 'h-8 min-w-8 px-2',
@@ -1044,9 +1044,9 @@ export const settingsDefault = {
                 rounded: 'rounded-lg',
                 padding: 'h-9 min-w-9 px-2',
                 padding_icon_only: 'h-9 w-9 px-2',
-                padding_with_title: 'h-9 px-2',
+                padding_with_title: 'h-9 px-3',
                 icon_container: ' h-5 w-5 flex items-center justify-center',
-                title_container: 'px-1 text-sm',
+                title_container: 'px-1.5 text-sm',
                 icon_size: 20,
                 icon_margin: 'mx-1', // conditional margin for icon container when title is present
                 title_margin: '', // conditional margin for text container when icon is present
@@ -1156,7 +1156,7 @@ export const settingsDefault = {
             'w-sm-relaxed': 'w-3 lg:w-4 xl:w-6'
         },
         cards: {
-            'u-card-base': 'bg-card shadow-sm text-card-foreground border border-border shadow-sm ',
+            'u-card-base': 'bg-card shadow-sm text-card-foreground border border-input shadow-sm ',
 
             // Base Variants
             'u-card-base-compact':
@@ -1244,9 +1244,9 @@ export const settingsDefault = {
             'u-panel-group-relaxed': ''
         },
         blocks: {
-            'u-block-base-compact': 'bg-card u-max-width-block  text-card-foreground py-2 sm:py-3 lg:py-4 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4 rounded-xl',
-            'u-block-base-default': 'bg-card u-max-width-block  text-card-foreground py-3 sm:py-4 lg:py-6 gap-2 sm:gap-3 lg:gap-4 rounded-2xl',
-            'u-block-base-relaxed': 'bg-card u-max-width-block  text-card-foreground py-5 sm:py-6 lg:py-8 gap-y-5 sm:gap-y-6 lg:gap-y-8 gap-x-5 sm:gap-x-6 lg:gap-x-8 rounded-3xl',
+            'u-block-base-compact': 'bg-card u-max-width-block border border-input text-card-foreground py-2 sm:py-3 lg:py-4 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4 rounded-xl',
+            'u-block-base-default': 'bg-card u-max-width-block border border-input text-card-foreground py-3 sm:py-4 lg:py-6 gap-2 sm:gap-3 lg:gap-4 rounded-2xl',
+            'u-block-base-relaxed': 'bg-card u-max-width-block border border-input text-card-foreground py-5 sm:py-6 lg:py-8 gap-y-5 sm:gap-y-6 lg:gap-y-8 gap-x-5 sm:gap-x-6 lg:gap-x-8 rounded-3xl',
 
             'u-block-header': 'flex flex-row items-center',
             'u-block-header-compact': 'flex flex-row items-center px-2 sm:px-3 lg:px-4 gap-y-1 sm:gap-y-2 lg:gap-y-3 gap-x-1 sm:gap-x-2 lg:gap-x-3',
@@ -1489,7 +1489,7 @@ export const settingsDefault = {
 
         button_styles: {
             'u-btn-default-cnt':
-                ' border border-bdrbutton hover:border-bdrbutton-h dark:border-bdrbutton-d dark:hover:border-bdrbutton-dh bg-bgrbutton dark:bg-bgrbutton-d web:hover:bg-bgrbutton-h dark:web:hover:bg-bgrbutton-dh overflow-hidden hover:shadow-md active:shadow-none active:opacity-60 ',
+                ' border border-input bg-card web:hover:bg-accent shadow-sm active:shadow-none active:opacity-60 ',
             'u-btn-default-text':
                 'font-medium text-neutral-800 web:hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-neutral-50',
             'u-btn-default-trans': '  web:duration-200',
@@ -1510,7 +1510,7 @@ export const settingsDefault = {
             'u-btn-accent-color-icon-dark': 'rgb(255, 255, 255)',
 
             'u-btn-secondary-cnt':
-                ' touch-manipulation bg-bgritem dark:bg-bgritem-d web:hover:bg-bgritem-h dark:web:hover:bg-bgritem-dh ',
+                ' border border-transparent bg-muted web:hover:bg-secondary active:bg-secondary  ',
             'u-btn-secondary-text':
                 'font-medium text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-white ',
             'u-btn-secondary-trans': ' web:duration-100 ',
@@ -1577,14 +1577,14 @@ export const settingsDefault = {
 
             'u-btn-group-item-link-cnt': '',
             'u-btn-group-item-link-text':
-                'font-medium text-neutral-800 dark:text-neutral-200 dark:group-hover:text-neutral-50',
+                'font-medium text-muted-foreground web:hover:text-foreground active:text-foreground  ',
             'u-btn-group-item-link-icon':
                 'text-primary dark:text-primary dark:group-hover:text-primary',
-            'u-btn-group-item-link-pressed-cnt': 'bg-transparent',
+            'u-btn-group-item-link-pressed-cnt': 'bg-primary/10 ',
             'u-btn-group-item-link-pressed-text':
-                'text-primary dark:text-neutral-600 dark:group-hover:text-primary',
+                'text-primary',
             'u-btn-group-item-link-pressed-icon':
-                'text-primary dark:text-primary dark:group-hover:text-primary',
+                'text-primary',
 
             'u-btn-group-item-outline-cnt':
                 'border border-bdritem dark:border-bdritem-d web:hover:bg-bgritem-h dark:web:hover:bg-bgritem-dh active:opacity-50',

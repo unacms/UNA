@@ -120,7 +120,7 @@ export default function (props) {
                 </Row>
             </View>
             {!bIsHideHeader && <View className={(props.layoutName == 'profile' || props.layoutName == 'messenger' || props.layoutName == 'post' ? 'hidden lg:flex ' : '') + " fixed w-full"}>
-                <View className=" h-16  items-center w-full border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d  ">
+                <View className=" h-16  items-center w-full border-b border-border bg-card  ">
                     <View className={appSetting('layout', 'max_width') + "  w-full flex-row flex-auto  items-center "}>
                         <HeaderLine headerSettings={headerSettings} currentUser={currentUser} uri={props.uri} title={sTitle} showMenu={showMenu} menuPopup={menuPopup} setMenuPopup={setMenuPopup} />
 

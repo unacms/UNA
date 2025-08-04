@@ -10,17 +10,17 @@
         --card-foreground: 24 24 27; /*zinc-900*/
         --popover: 255 255 255; /*white*/
         --popover-foreground: 24 24 27; /*zinc-900*/
-        --primary: 24 24 27; /*zinc-900*/
+        --primary: 29 78 216; /*blue-700*/
         --primary-foreground: 255 255 255; /*white*/
-        --secondary: 212 212 216;  /*zinc-300*/
-        --secondary-foreground: 39 39 42; /*zinc-800*/
+        --secondary: 244 244 245;  /*zinc-100*/
+        --secondary-foreground: 24 24 27; /*zinc-900*/
         --muted: 228 228 231; /*zinc-200*/
         --muted-foreground: 63 63 70; /*zinc-700*/
-        --accent: 37 99 235; /*blue-600*/
-        --accent-foreground: 255 255 255; /*white*/
+        --accent: 244 244 245; /*zinc-100*/
+        --accent-foreground: 24 24 27; /*zinc-900*/
         --destructive: 225 29 72; /*rose-600*/
         --destructive-foreground: 255 255 255; /*white*/
-        --border: 228 228 231; /*zinc-200*/
+        --border: 212 212 216; /*zinc-300*/
         --input: 228 228 231; /*zinc-200*/
         --ring: 96 165 250; /*blue-400*/
 
@@ -31,13 +31,13 @@
         --android-card-foreground: 24 24 27; /*zinc-900*/
         --android-popover: 255 255 255; /*white*/
         --android-popover-foreground: 24 24 27; /*zinc-900*/
-        --android-primary: 24 24 27; /*zinc-900*/
+        --android-primary: 2 132 199; /*sky-600*/
         --android-primary-foreground: 255 255 255; /*white*/
         --android-secondary: 212 212 216; /*zinc-300*/
         --android-secondary-foreground: 24 24 27; /*zinc-900*/
         --android-muted: 228 228 231; /*zinc-200*/
         --android-muted-foreground: 63 63 70; /*zinc-700*/
-        --android-accent: 37 99 235; /*blue-600*/
+        --android-accent: 234 88 12; /*orange-600*/
         --android-accent-foreground: 255 255 255; /*white*/
         --android-destructive: 225 29 72; /*rose-600*/
         --android-destructive-foreground: 255 255 255; /*white*/
@@ -54,17 +54,17 @@
         --card-foreground: 244 244 245; /*zinc-100*/
         --popover: 24 24 27; /*zinc-900*/
         --popover-foreground: 244 244 245; /*zinc-100*/
-        --primary: 244 244 245; /*zinc-100*/
+        --primary: 37 99 235; /*blue-600*/
         --primary-foreground: 9 9 11; /*zinc-950*/
-        --secondary: 63 63 70; /*zinc-700*/
-        --secondary-foreground: 228 228 231; /*zinc-200*/
+        --secondary: 24 24 27; /*zinc-900*/
+        --secondary-foreground: 244 244 245; /*zinc-100*/
         --muted: 39 39 42; /*zinc-800*/
         --muted-foreground: 161 161 170; /*zinc-400*/
-        --accent: 96 165 250; /*blue-400*/
-        --accent-foreground: 0 0 0; /*black*/
+        --accent: 24 24 27; /*zinc-900*/
+        --accent-foreground: 244 244 245; /*zinc-100*/
         --destructive: 225 29 72; /*rose-600*/
         --destructive-foreground: 255 255 255; /*white*/
-        --border: 39 39 42; /*zinc-800*/
+        --border: 63 63 70; /*zinc-700*/
         --input: 39 39 42; /*zinc-800*/
         --ring: 37 99 235; /*blue-600*/
 
@@ -75,14 +75,14 @@
         --android-card-foreground: 244 244 245; /*zinc-100*/
         --android-popover: 24 24 27; /*zinc-900*/
         --android-popover-foreground: 244 244 245; /*zinc-100*/
-        --android-primary: 244 244 245; /*zinc-100*/
+        --android-primary: 2 132 199; /*sky-600*/
         --android-primary-foreground: 9 9 11; /*zinc-950*/
         --android-secondary: 63 63 70; /*zinc-700*/
         --android-secondary-foreground: 228 228 231; /*zinc-200*/
         --android-muted: 39 39 42; /*zinc-800*/
         --android-muted-foreground: 161 161 170; /*zinc-400*/
-        --android-accent: 96 165 250; /*blue-400*/
-        --android-accent-foreground: 0 0 0; /*black*/
+        --android-accent: 234 88 12; /*orange-600*/
+        --android-accent-foreground: 255 255 255; /*white*/
         --android-destructive: 225 29 72; /*rose-600*/
         --android-destructive-foreground: 255 255 255; /*white*/
         --android-border: 39 39 42; /*zinc-800*/
