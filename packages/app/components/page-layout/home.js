@@ -372,14 +372,14 @@ export default function (props) {
             >
                 {(layoutName == 'hor' && isWeb) && <>
                     <Panel className={`hidden ${cellsCustomConfig.cells?.left?.breakpoint}:block`} {...cellsCustomConfig.cells?.left} >
-                        <View className={`${cd('py-md')} fixed-process`}>
+                        <View className={`${cd('p-md')} fixed-process`}>
                             {SideBarContent}
                         </View>
                     </Panel>
                     <PanelHandler gap="hidden xl:block" sizable={cellsCustomConfig.sizable} />
                 </>}
                 <Panel {...cellsCustomConfig.cells?.center}>
-                    <View className={`sm:${cd('py-md')}`}>
+                    <View className={`sm:${cd('p-md')}`}>
                         {FeedContent}
                     </View>
                 </Panel>
@@ -387,7 +387,7 @@ export default function (props) {
                 {isWeb && <>
                     <PanelHandler gap="hidden lg:block" sizable={cellsCustomConfig.sizable} />
                     <Panel className={`hidden ${cellsCustomConfig.cells?.right?.breakpoint}:block`} {...cellsCustomConfig.cells?.right}>
-                        <View className={`${cd('py-md')} fixed-process`}>
+                        <View className={`${cd('p-md')} fixed-process`}>
                             {AsideContent}
                         </View>
                     </Panel>

@@ -93,7 +93,7 @@ export function ReputationWidget({ data }) {
                 )
                 setTabsData(results)
             } catch (error) {
-                console.error('Ошибка при загрузке данных:', error)
+                console.error('Error loading data:', error)
             }
         }
 
@@ -142,7 +142,7 @@ function ReputationSummarySimple({ data }) {
                 </View>
             </Modal>
             <View className={`flex-auto flex-row ${cd('gap-md')} w-full items-center`}>
-                <View className={` ${dc('p-xs', density)} border-4 border-border rounded-full`}>
+                <View className={` ${cd('p-xs', density)} border-4 border-border rounded-full`}>
                     <Profile
                         {...data.author_data}
                         displayType="unit_wo_info"

@@ -1139,12 +1139,12 @@ export const settingsDefault = {
             'py-lg-compact': 'py-2 sm:py-3 lg:py-4',
             'py-lg-default': 'py-3 sm:py-4 lg:py-6',
             'py-lg-relaxed': 'py-4 sm:py-6 lg:py-8',
-            'py-md-compact': 'py-2',
-            'py-md-default': 'py-3',
-            'py-md-relaxed': 'py-4',
-            'py-sm-compact': 'py-1',
-            'py-sm-default': 'py-2',
-            'py-sm-relaxed': 'py-3',
+            'py-md-compact': 'py-2 sm:py-3',
+            'py-md-default': 'py-3 sm:py-4',
+            'py-md-relaxed': 'py-4 sm:py-6',
+            'py-sm-compact': 'py-1 sm:py-2',
+            'py-sm-default': 'py-2 sm:py-3',
+            'py-sm-relaxed': 'py-3 sm:py-4',
             'w-lg-compact': 'w-3 lg:w-4 xl:w-6',
             'w-lg-default': 'w-4 lg:w-6 xl:w-8',
             'w-lg-relaxed': 'w-6 lg:w-8 xl:w-10',
@@ -1400,12 +1400,12 @@ export const settingsDefault = {
             // Container
             'u-controls-tabs-container': 'w-full flex-col',
 
-            // Header (использовать с inline-стилями или Tailwind plugin'ом для scroll)
-            'u-controls-tabs-header': 'flex-row w-full bg-muted rounded-full p-xs mb-3 sm:mb-4',
+            // Header (use with inline styles or Tailwind plugin for scroll)
+            'u-controls-tabs-header': 'flex flex-row flex-nowrap overflow-x-auto overflow-y-hidden gap-0.5 sm:gap-1 mb-3 sm:mb-4 lg:mb-6 bg-muted p-0.5 rounded-full web:scrollbar-none web:[-webkit-overflow-scrolling:touch] web:[-ms-overflow-style:none] web:[scrollbar-width:none] ',
 
             // Header item
             'u-controls-tabs-header-item':
-                ' flex-1 shrink-0 rounded-full px-3 py-2 text-sm inline-flex items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 flex-1 flex-shrink-0',
+                ' flex-shrink-0 flex-grow-0 min-w-fit  web:hover:bg-secondary rounded-full px-3 py-2 text-sm inline-flex items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ',
 
             'u-controls-tabs-header-item-active':
                 'bg-card text-card-foreground shadow-sm',

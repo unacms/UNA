@@ -65,7 +65,7 @@ export default function Tabs({ tabs, activeTab }) {
                         value={tab.key}
                         onMouseEnter={handleTabInteraction}
                         onFocus={handleTabInteraction}
-                        className={`nkkfsdkfd ${tab.key === currentTab ? `${tabsTheme['u-controls-tabs-header-item']} ${tabsTheme['u-controls-tabs-header-item-active']}` : tabsTheme['u-controls-tabs-header-item']}`}>
+                        className={`${tab.key === currentTab ? `${tabsTheme['u-controls-tabs-header-item']} ${tabsTheme['u-controls-tabs-header-item-active']}` : tabsTheme['u-controls-tabs-header-item']}`}>
                         <Text className={`${tab.key === currentTab ? tabsTheme['u-controls-tabs-header-item-text-active'] : tabsTheme['u-controls-tabs-header-item-text']}`}>{tab.title}</Text>
                     </TabsPrimitive.Trigger>
                 ))}

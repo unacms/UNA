@@ -479,3 +479,13 @@ html[theme="dark"]:root {
     transform: translate(-50%, -50%);
     z-index: -1;
 }
+
+/* Enhanced scrollbar hiding for tabs and other components */
+.u-controls-tabs-header {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+}
+
+.u-controls-tabs-header::-webkit-scrollbar {
+    display: none; /* Safari and Chrome */
+}
