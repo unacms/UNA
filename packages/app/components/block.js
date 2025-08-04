@@ -27,14 +27,14 @@ export function BlockByName(props) {
 
     if (name) {
         const blockNameString = (typeof name === 'string') ? name : name?.name;
-
+        console.log("namename", name)
         if (blockNameString?.includes('static')) {
             if (typeof name === 'object') {
                 // If name is an object (e.g., { name: "static:foo", showBg: true, ... }), spread it and rest
-                return <StaticBlock {...name} {...rest} />;
+                return <>sdfsdf<StaticBlock {...name} {...rest} /></>;
             } else {
                 // If name is a string (e.g., "static:foo"), pass it as 'name' prop, and spread rest
-                return <StaticBlock name={blockNameString} {...rest} />;
+                return <>dfssdfs fsd f<StaticBlock name={blockNameString} {...rest} /></>;
             }
         }
 

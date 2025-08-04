@@ -622,6 +622,11 @@ const ComponentsFooter = () => {
     return <></>
 }
 
+const ComponentsPricing = () => {
+    return <>TODO Pricing</>
+}
+
+
 const ComponentsFullFooter = () => {
     const { t } = useTranslation()
     return (
@@ -684,6 +689,7 @@ export const staticDefault = {
     components_content_empty: ComponentsContentEmpty,
     components_content_login: ComponentsCommentsLogin,
     components_intro: ComponentsIntro,
+    components_pricing: ComponentsPricing,
     components_modal: ComponentModal,
     components_dummy: ComponentsDummyComponent,
     components_footer: ComponentsFooter,
