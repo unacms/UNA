@@ -1295,7 +1295,7 @@ export const settingsDefault = {
 
             'u-badge-base': 'flex items-center border transition-colors focus:outline-none focus:ring-ring',
             'u-badge-base-compact': 'px-1 py-0.5 rounded-md',
-            'u-badge-base-default': 'px-2 py-1 rounded-lg',
+            'u-badge-base-default': 'px-2 py-1 rounded-full',
             'u-badge-base-relaxed': 'px-3 py-1.5 rounded-xl',
 
             'u-badge-default-compact': 'border-transparent bg-primary text-primary-foreground shadow hover:bg-primary/80',
