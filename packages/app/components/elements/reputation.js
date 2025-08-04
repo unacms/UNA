@@ -21,6 +21,7 @@ import {
 import Badge from 'app/ui/molecules/badge'
 import { useLayoutSettings } from 'app/context/layout-settings';
 import { cd } from 'app/lib/util'
+import { Loading } from 'app/loading'
 
 export function ReputationActions({ data }) {
     return (
@@ -84,7 +85,7 @@ export function ReputationWidget({ data }) {
                         const loadedData =
                             data ?? (await fetcher(url))?.data?.[0]?.data ?? []
                         return {
-                            title,
+                            title: title,
                             data: loadedData,
                             index,
                             url,
@@ -104,9 +105,9 @@ export function ReputationWidget({ data }) {
         ...item,
         key: item.url,
         content: item.url.includes('leaderboard') ? (
-            <ReputationLeaderboard data={item.data} />
+            item.data ? <ReputationLeaderboard data={item.data} /> : <View className='h-12'><Loading /></View>
         ) : (
-            <ReputationSummary data={item.data} />
+            item.data ? <ReputationSummary data={item.data} /> : <View className='h-12'><Loading /></View>
         ),
     }))
 

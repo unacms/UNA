@@ -22,7 +22,7 @@ export function BlockByName2({ b, name, contentOnly }) {
 
 export function BlockByName(props) {
     let { data, name, contentOnly, ...rest } = props;
-
+    console.log("name", name)
     let b = null;
 
     if (name) {
@@ -67,7 +67,7 @@ export function BlockByName(props) {
             block={b} 
             showTitle={name?.showTitle} 
             fullWidth={name?.fullWidth} 
-            contentOnly={contentOnly}
+            contentOnly={contentOnly || name?.contentOnly}
             showPad={name?.showPad} 
             showBg={name?.showBg} 
             unitType={name?.unitType} 

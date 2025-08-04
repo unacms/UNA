@@ -15,7 +15,7 @@ function Badge({
 
     return (
         <View
-            className={` ${badgeTheme['u-badge-base']} ${badgeTheme['u-badge-base-' + effectiveDensity]} ${badgeTheme['u-badge-' + variant + '-' + effectiveDensity]} ${className}`}
+            className={`u-badge-base  ${badgeTheme['u-badge-base']} ${badgeTheme['u-badge-base-' + effectiveDensity]} ${badgeTheme['u-badge-' + variant + '-' + effectiveDensity]} ${className}`}
             {...props}
         >
             <Text

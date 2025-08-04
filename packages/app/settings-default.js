@@ -1398,17 +1398,17 @@ export const settingsDefault = {
         },
         tabs: {
             // Container
-            'u-controls-tabs-container': 'w-full flex-col',
+            'u-controls-tabs-container': 'w-full flex-col overflow-scroll',
 
             // Header (use with inline styles or Tailwind plugin for scroll)
-            'u-controls-tabs-header': 'inline-flex flex-row flex-nowrap overflow-x-auto overflow-y-hidden gap-0.5 sm:gap-1 mb-3 sm:mb-4 lg:mb-6 bg-muted p-0.5 rounded-full web:scrollbar-none web:[-webkit-overflow-scrolling:touch] web:[-ms-overflow-style:none] web:[scrollbar-width:none] ',
+            'u-controls-tabs-header': 'flex flex-1 flex-row flex-nowrap overflow-x-auto overflow-y-hidden gap-0.5 sm:gap-1 mb-3 sm:mb-4 lg:mb-6 bg-muted p-0.5 rounded-full web:scrollbar-none web:[-webkit-overflow-scrolling:touch] web:[-ms-overflow-style:none] web:[scrollbar-width:none] ',
             
             // Full-width variant for specific cases like leaderboards
             'u-controls-tabs-header-full-width': 'flex flex-row flex-nowrap overflow-x-auto overflow-y-hidden gap-0.5 sm:gap-1 mb-3 sm:mb-4 lg:mb-6 bg-muted p-0.5 rounded-full web:scrollbar-none web:[-webkit-overflow-scrolling:touch] web:[-ms-overflow-style:none] web:[scrollbar-width:none] ',
 
             // Header item base (shared styles without hover)
             'u-controls-tabs-header-item':
-                ' flex-shrink-0 flex-grow-0 min-w-fit rounded-full px-3 py-2 text-sm inline-flex items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ',
+                'flex rounded-full px-3 py-2 text-sm flex-1 justify-center max-w-[100px]  items-center whitespace-nowrap font-medium ring-offset-background  truncate focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ',
 
             // Inactive tab (with hover effect)
             'u-controls-tabs-header-item-inactive':
@@ -1419,8 +1419,8 @@ export const settingsDefault = {
                 'bg-card text-card-foreground shadow-sm',
 
             // Header item text
-            'u-controls-tabs-header-item-text': 'text-muted-foreground font-medium whitespace-nowrap',
-            'u-controls-tabs-header-item-text-active': 'text-card-foreground font-medium whitespace-nowrap',
+            'u-controls-tabs-header-item-text': 'text-muted-foreground font-medium whitespace-nowrap truncate',
+            'u-controls-tabs-header-item-text-active': 'text-card-foreground font-medium whitespace-nowrap truncate',
 
             // Tab content
             'u-controls-tabs-tab-content': 'w-full',
