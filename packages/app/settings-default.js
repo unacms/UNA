@@ -1401,7 +1401,7 @@ export const settingsDefault = {
             'u-controls-tabs-container': 'w-full flex-col',
 
             // Header (use with inline styles or Tailwind plugin for scroll)
-            'u-controls-tabs-header': 'flex flex-row flex-nowrap overflow-x-auto overflow-y-hidden gap-0.5 sm:gap-1 mb-3 sm:mb-4 lg:mb-6 bg-muted p-0.5 rounded-full web:scrollbar-none web:[-webkit-overflow-scrolling:touch] web:[-ms-overflow-style:none] web:[scrollbar-width:none] ',
+            'u-controls-tabs-header': 'inline-flex flex-row flex-nowrap overflow-x-auto overflow-y-hidden gap-0.5 sm:gap-1 mb-3 sm:mb-4 lg:mb-6 bg-muted p-0.5 rounded-full web:scrollbar-none web:[-webkit-overflow-scrolling:touch] web:[-ms-overflow-style:none] web:[scrollbar-width:none] ',
 
             // Header item
             'u-controls-tabs-header-item':
