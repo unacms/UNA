@@ -198,7 +198,7 @@ export default function (props) {
               
             </ScrollView>
               {appSetting('feed', 'show_selector_view') && (
-                <Row className="flex-auto m-2 flex-none items-end justify-end">
+                <Row className="flex-auto mb-2 px-2 gap-0.5 flex-none items-end justify-end">
                     <Button
                         startDecorator="Rows"
                         tooltip={t('Full')}

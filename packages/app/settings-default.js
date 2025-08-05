@@ -1000,7 +1000,7 @@ export const settingsDefault = {
         modal: {
             fog: 'bg-background/50 backdrop-blur-xl ',
             container:
-                ' h-full sm:h-auto shadow-xl bg-card sm:rounded-2xl sm:border border-border overflow-hidden ',
+                ' h-full sm:h-auto shadow-lg bg-card sm:rounded-2xl sm:border border-border overflow-hidden ',
             content: ' h-auto ',
             header: ' p-3 items-start justify-start border-b border-border',
         },
