@@ -1199,7 +1199,7 @@ export const settingsDefault = {
         },
         blocks: {
             'u-block-base-compact': 'bg-card u-max-width-block border border-input text-card-foreground py-2 sm:py-3 lg:py-4 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4 rounded-xl',
-            'u-block-base-default': 'bg-card u-max-width-block border border-input text-card-foreground py-3 sm:py-4 lg:py-6 gap-2 sm:gap-3 lg:gap-4 rounded-2xl',
+            'u-block-base-default': 'bg-card u-max-width-block border border-input text-card-foreground py-3 sm:py-4 lg:py-6 gap-3 lg:gap-4  rounded-2xl',
             'u-block-base-relaxed': 'bg-card u-max-width-block border border-input text-card-foreground py-5 sm:py-6 lg:py-8 gap-y-5 sm:gap-y-6 lg:gap-y-8 gap-x-5 sm:gap-x-6 lg:gap-x-8 rounded-3xl',
 
             'u-block-header': 'flex flex-row items-center',

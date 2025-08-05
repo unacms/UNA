@@ -6,10 +6,19 @@ import {
     CardTitle,
     CardDescription,
     CardFooter,
-    
 } from 'app/ui/molecules/card'
-import Badge from 'app/ui/molecules/badge';
-import { Block, BlockHeader, BlockContent, BlockFooter, BlockTitle, BlockDescription, BlockIcon, BlockName, BlockActions } from 'app/ui/molecules/page-block'
+import Badge from 'app/ui/molecules/badge'
+import {
+    Block,
+    BlockHeader,
+    BlockContent,
+    BlockFooter,
+    BlockTitle,
+    BlockDescription,
+    BlockIcon,
+    BlockName,
+    BlockActions,
+} from 'app/ui/molecules/page-block'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, Row, Pressable, ScrollView } from 'app/design/view'
@@ -30,7 +39,7 @@ import DasbordStatOld from 'app/components/elements/dashboard_stat_old'
 import ApiPerformanceReport from 'app/ui/molecules/api-performance-report'
 import ThemeCompatibilityTest from 'app/ui/molecules/nativewindui'
 import { useDensitySwitcher } from 'app/ui/atoms/density-switcher'
-import { useLayoutSettings } from 'app/context/layout-settings';
+import { useLayoutSettings } from 'app/context/layout-settings'
 import { cd } from 'app/lib/util'
 
 function getCounter(num, icon = '', add = '', color = '') {
@@ -87,11 +96,20 @@ function getCounter(num, icon = '', add = '', color = '') {
 export default function PageLayout(props) {
     if (!appSetting('layout', 'user_remote_config'))
         return <DasbordStatOld {...props} />
-    const { themeName, setThemeName, setLayoutName, layoutName, lang, setLang, langCode, setDensity } = useLayoutSettings();
+    const {
+        themeName,
+        setThemeName,
+        setLayoutName,
+        layoutName,
+        lang,
+        setLang,
+        langCode,
+        setDensity,
+    } = useLayoutSettings()
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
     const { currentDensity, densityOptions } = useDensitySwitcher()
-    const langs = appSetting('layout', 'avaliable_langs');
+    const langs = appSetting('layout', 'avaliable_langs')
     let profile = null
     if (currentUser) {
         let dUser = Object.assign({}, currentUser)
@@ -102,29 +120,27 @@ export default function PageLayout(props) {
 
     return (
         <ScrollView>
-            <Block className='u-max-width-block'>
+            <Block className="u-max-width-block">
                 <BlockHeader>
                     <BlockIcon>
                         <Profile
-                                {...currentUser}
-                                url_avatar={currentUser.avatar}
-                                displayType="unit_wo_info"
-                                displaySize="xl"
-                            />
+                            {...currentUser}
+                            url_avatar={currentUser.avatar}
+                            displayType="unit_wo_info"
+                            displaySize="xl"
+                        />
                     </BlockIcon>
                     <BlockName>
-                            <BlockTitle>
-                                        <Text>
-                                            {currentUser.display_name}
-                                        </Text>
-                            </BlockTitle>
-                            <BlockDescription >
-                                <View>
-                                    <Badge variant="secondary">
+                        <BlockTitle>
+                            <Text>{currentUser.display_name}</Text>
+                        </BlockTitle>
+                        <BlockDescription>
+                            <View>
+                                <Badge variant="secondary">
                                     {currentUser.membership_name}
-                                    </Badge>
-                                </View>
-                            </BlockDescription>
+                                </Badge>
+                            </View>
+                        </BlockDescription>
                     </BlockName>
                     <BlockActions>
                         {currentUser.profiles_count > 1 && (
@@ -132,27 +148,24 @@ export default function PageLayout(props) {
                                 <Button
                                     variant="secondary"
                                     startDecorator="RefreshCw"
-                                    
                                     rounded
                                 />
                             </ProfileSwitcher>
                         )}
                     </BlockActions>
                 </BlockHeader>
-                <BlockContent>                   
+                <BlockContent>
                     <ElementDashboardStat {...props} />
                     <View className={`flex-row flex-wrap ${cd('gap-sm')}`}>
                         {langs.length > 1 && (
                             <View className="w-full max-w-sm flex-1 min-w-[160px]">
                                 <DropdownMenu
-                                    items={langs.map(
-                                        (lang) => ({
-                                            id: lang,
-                                            key: lang,
-                                            name: lang,
-                                            title: t('lang_' + lang),
-                                        })
-                                    )}
+                                    items={langs.map((lang) => ({
+                                        id: lang,
+                                        key: lang,
+                                        name: lang,
+                                        title: t('lang_' + lang),
+                                    }))}
                                     onSelect={(oItem) => {
                                         setLang(oItem.id)
                                     }}
@@ -163,7 +176,6 @@ export default function PageLayout(props) {
                                         startDecorator="Languages"
                                         fullWidth
                                         align="left"
-                                        
                                     />
                                 </DropdownMenu>
                             </View>
@@ -189,7 +201,6 @@ export default function PageLayout(props) {
                                         startDecorator="Moon"
                                         fullWidth
                                         align="left"
-                                        
                                     />
                                 </DropdownMenu>
                             </View>
@@ -202,11 +213,10 @@ export default function PageLayout(props) {
                                 >
                                     <Button
                                         variant="secondary"
-                                         title={currentDensity?.title}
+                                        title={currentDensity?.title}
                                         startDecorator={currentDensity?.icon}
                                         fullWidth
                                         align="left"
-                                        
                                     />
                                 </DropdownMenu>
                             </View>
@@ -235,7 +245,6 @@ export default function PageLayout(props) {
                                         startDecorator="Layout"
                                         fullWidth
                                         align="left"
-                                        
                                     />
                                 </DropdownMenu>
                             </View>
@@ -249,7 +258,6 @@ export default function PageLayout(props) {
                         startDecorator="LogOut"
                         fullWidth
                         size="base"
-                        
                         as={Link}
                         href="/logout"
                     />
@@ -314,111 +322,88 @@ function ElementDashboardStat(props) {
                     if (item) {
                         if (item?.type != 'growth') {
                             return (
-                                <View
-                                    className="  w-full  flex-1 min-w-[160px]"
-                                    key={index}
-                                >
-                                    <Link href={item.url}>
-                                        <Card>
-                                            <CardHeader>
-                                                <CardTitle>
-                                                    <View className="flex-row w-full justify-between">
-                                                   
-                                                {item.count > 0 ? (
-                                                    
-                                                            <Text className="flex-auto">
-                                                            {item.count}
-                                                        </Text>
-                                                        
-                                                    ) : (
-                                                        <View>
-                                                            <Link
-                                                                href={
-                                                                    item.add_url
-                                                                }
-                                                                emulate={true}
-                                                            >
-                                                                <Button
-                                                                    variant="outline"
-                                                                    startDecorator="Plus"
-                                                                    size="xs"
-                                                                    rounded
-                                                                />
-                                                            </Link>
-                                                        </View>
-                                                    )}
-                                                   
-                                                    
-                                                    <Icon
-                                                            icon={item.icon}
-                                                            width={20}
-                                                            height={20}
-                                                            color={
-                                                                colors.default
-                                                            }
+                               
+                                    <View
+                                        className=" p-3 lg:p-4 bg-muted rounded-2xl w-full gap-3 flex-1  min-w-48 lg:min-w-64"
+                                        key={index}
+                                    > <Link href={item.url}>
+                                        <View className="flex-row w-full h-10 justify-between items-center">
+                                            <Icon
+                                                icon={item.icon}
+                                                width={32}
+                                                height={32}
+                                                color={colors.default}
+                                            />
+
+                                            {item.count > 0 ? (
+                                                <Text className="flex-none  text-3xl font-semibold text-muted-foreground leading-none">
+                                                    {item.count}
+                                                </Text>
+                                            ) : (
+                                                <View>
+                                                    <Link
+                                                        href={item.add_url}
+                                                        emulate={true}
+                                                    >
+                                                        <Button
+                                                            variant="outline"
+                                                            startDecorator="Plus"
+                                                            size="sm"
+                                                            rounded
                                                         />
-                                                    </View>
-                                                </CardTitle>
-                                                <CardDescription>
-                                                    {item.title}
-                                                </CardDescription>
-                                            </CardHeader>
-                                            <CardContent>
-                                             
-                                                <Text>
-                                                            {getCounter(
-                                                                item[
-                                                                    item.action
-                                                                ],
-                                                                item.action_icon,
-                                                                '',
-                                                                colors.default
-                                                            )}
-                                                        </Text>
-                                                 
-                                            </CardContent>
-                                        </Card>
-                                    </Link>
-                                </View>
+                                                    </Link>
+                                                </View>
+                                            )}
+                                        </View>
+                                        <View className="flex-row w-full justify-between items-center mt-3">
+                                            <Text className="flex-auto text-lg font-semibold text-card-foreground leading-none">
+                                                {item.title}
+                                            </Text>
+
+                                            <Text>
+                                                {getCounter(
+                                                    item[item.action],
+                                                    item.action_icon,
+                                                    '',
+                                                    colors.default
+                                                )}
+                                            </Text>
+                                        </View></Link>
+                                    </View>
+                                
                             )
                         }
                         return (
-                            <View
-                                className=" w-full  flex-1 min-w-[160px]"
-                                key={index}
-                            >
-                                <Link href={item.url} key={index}>
-                                    <Card>
-                                        <CardHeader>
-                                            <Icon
-                                                icon={item.icon}
-                                                width={24}
-                                                height={24}
-                                                color={colors.default}
-                                            />
-                                            <CardTitle>
-                                                {item.current}
-                                            </CardTitle>
-                                            <CardDescription>
-                                                {item.title}
-                                            </CardDescription>
-                                        </CardHeader>
-                                        <CardContent>
-                                           
-                                                
-                                                    <Text>
-                                                        {getCounter(
-                                                            item[item.action],
-                                                            item.action_icon,
-                                                            '',
-                                                            colors.default
-                                                        )}
-                                                    </Text>
-                                            
-                                        </CardContent>
-                                    </Card>
-                                </Link>
-                            </View>
+                           
+                                <View
+                                    className="p-3 lg:p-4 bg-muted rounded-2xl w-full flex-1 min-w-48 lg:min-w-64"
+                                > <Link href={item.url} key={index}>
+                                    <View className="flex-row w-full h-10 justify-between items-center">
+                                        <Icon
+                                            icon={item.icon}
+                                            width={32}
+                                            height={32}
+                                            color={colors.default}
+                                        />
+                                        <Text className="flex-none text-3xl font-semibold text-muted-foreground leading-none">
+                                            {item.current}
+                                        </Text>
+                                    </View>
+                                    <View className="flex-row w-full justify-between items-center mt-3">
+                                        <Text className="flex-auto text-lg font-semibold text-card-foreground leading-none">
+                                            {item.title}
+                                        </Text>
+                                        <Text>
+                                            {getCounter(
+                                                item[item.action],
+                                                item.action_icon,
+                                                '',
+                                                colors.default
+                                            )}
+                                        </Text>
+                                    </View></Link>
+                                </View>
+                            
                         )
                     }
                 })}
@@ -426,12 +411,9 @@ function ElementDashboardStat(props) {
             {data.manage.items.length > 0 && (
                 <Card>
                     <CardHeader>
-                        <CardTitle>
-                            Admin Tools
-                        </CardTitle>
+                        <CardTitle>Admin Tools</CardTitle>
                     </CardHeader>
                     <CardContent>
-                       
                         <View className="grid w-full grid-cols-1 gap-x-2 gap-y-1.5 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
                             {currentUser?.id && (
                                 <>
