@@ -188,16 +188,16 @@ export default function FormPost(props) {
                     </Row>
                 </View>
 
-                <View className='w-full flex-wrap my-1   flex-row border rounded-xl border-bdr dark:border-bdr-d py-1 px-2 mb-2'>
+                <View className='w-full flex-row my-1  border rounded-xl border-bdr dark:border-bdr-d py-1 px-2 mb-2'>
                     <Text className="font-semibold px-3 py-1  my-auto text-sm flex-auto text-neutral-800 dark:text-neutral-200">Allow Comments</Text>
-                    <Row className=" gap-x-2 px-2 py-0.5 justify-start items-center flex-row flex-wrap ">
+                    <View className=" gap-x-2 px-2 py-0.5 justify-start items-center  ">
                         {getFormFieldByData(
                             inputs['allow_comments'],
                             handleSubmit,
                             'default',
                             { noMargin:true }
                         )}
-                    </Row>
+                    </View>
                 </View>
                 {getFormFieldByData(
                     inputs['do_publish'],

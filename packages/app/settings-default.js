@@ -1162,7 +1162,7 @@ export const settingsDefault = {
         },
         switcher: {
             // Container
-            'u-controls-switcher-container': '',
+            'u-controls-switcher-container': 'items-center flex-row-reverse justify-between gap-x-2 web:h-14 min-w-14 rounded-xl flex-auto p-3 bg-input border border-border ',
 
             // Text
             'u-controls-switcher-text': 'text-neutral-800 dark:text-neutral-200 text-base',
