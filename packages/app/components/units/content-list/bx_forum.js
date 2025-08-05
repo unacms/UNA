@@ -3,7 +3,7 @@ import Link from "app/ui/atoms/link";
 import { Text } from "app/design/typography";
 import { View, Row } from "app/design/view";
 import Menu from "app/components/menu";
-import Card from "app/ui/molecules/card";
+import { CardList } from 'app/ui/molecules/card'
 import Time from "app/ui/atoms/time";
 import { useMemo } from 'react';
 import { AuthorData } from 'app/lib/common-helpers'
@@ -14,7 +14,7 @@ const Units = {};
 
 Units.Small = function Small({ data, imageSizes }) {
     return (
-        <Card padding={cd('p-sm')} className='mb-2 md:mb-0'>
+        <CardList padding={cd('p-sm')} >
             <View className="  aspect-video flex-none rounded-lg overflow-hidden mb-auto w-full bg-bgritem dark:bg-bgritem-d  ">
                 {data.image && (
                     <Image
@@ -39,7 +39,7 @@ Units.Small = function Small({ data, imageSizes }) {
                     <AuthorData authorData={data.author_data} />
                 </View>
             </View>
-        </Card>
+        </CardList>
     )
 }
 

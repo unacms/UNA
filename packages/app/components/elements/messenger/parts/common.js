@@ -427,7 +427,6 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     }, []);
 
     const cellsCustomConfig = appSetting('layouts', 'messenger')
-    console.log("panelsVisible.jots")
 
     if (!isWeb){
         return (

@@ -12,8 +12,8 @@ import { useState } from 'react';
 function renderListItem(props, isActive, onItemClick) {
     return (
         <Link key={props.url} className="w-full" href={props.url} onPress={onItemClick}>
-            <Row className={`w-full px-1  web:active:bg-bgritem web:dark:active:bg-bgritem-d web:hover:bg-bgritem align-middle web:dark:hover:bg-bgritem-d rounded-xl items-center ${isActive ? ' bg-bgritemprimary dark:bg-bgritemprimary-d rounded-xl' : ''}`}>
-                <View className={`items-center w-12 h-12 justify-center  ${isActive ? 'border-primary/20 ' : ''} dark:border-bdritem-d rounded-full`}>
+            <Row className={`w-full px-1 web:active:bg-bgritem web:dark:active:bg-bgritem-d web:hover:bg-bgritem align-middle web:dark:hover:bg-bgritem-d rounded-xl items-center ${isActive ? ' bg-bgritemprimary dark:bg-bgritemprimary-d rounded-xl' : ''}`}>
+                <View className={`items-center w-12 h-12 justify-center ${isActive ? 'border-primary/20 ' : ''} dark:border-bdritem-d rounded-full`}>
                     <Profile {...props} displayType="unit_wo_info" displaySize="base" />
                 </View>
                 <Text className="text-base px-1.5 font-semibold text-neutral-800 dark:text-neutral-200">{props.display_name}</Text>

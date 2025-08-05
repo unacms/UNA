@@ -4,7 +4,7 @@ import Profile from 'app/ui/molecules/profile'
 import { getImageSizes } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
-import Card from 'app/ui/molecules/card'
+import { CardList } from 'app/ui/molecules/card'
 import { cd } from 'app/lib/util'
 
 export default function defaultUnit(props) {
@@ -20,7 +20,7 @@ export default function defaultUnit(props) {
     )
 
     return (
-        <Card padding={cd('p-sm')} className='mb-2 md:mb-0'>
+        <CardList padding={cd('p-sm')} className='mb-2 md:mb-0'>
             <View className="flex-col h-full">
                 <View className="flex-col  h-full w-full">
                     <Link href={data.url}>
@@ -73,6 +73,6 @@ export default function defaultUnit(props) {
                     </View>
                 </View>
             </View>
-        </Card>
+        </CardList>
     )
 }

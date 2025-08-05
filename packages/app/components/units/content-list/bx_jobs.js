@@ -3,7 +3,7 @@ import Link from "app/ui/atoms/link";
 import { getImageSizes } from "app/lib/util";
 import { Text } from "app/design/typography";
 import { View, Row } from "app/design/view";
-import Card from "app/ui/molecules/card";
+import { CardList } from 'app/ui/molecules/card'
 import Profile from 'app/ui/molecules/profile';
 import Stars from 'app/ui/molecules/stars';
 import { useState } from 'react';
@@ -38,7 +38,7 @@ export default function Unit(props) {
     //  console.log("datadata", data)
     return (
         <View className=" p-4 mx-auto w-full ">
-            <Card padding={cd('p-sm')} className='mb-2 md:mb-0'>
+            <CardList padding={cd('p-sm')} className='mb-2 md:mb-0'>
                 <View className="flex-auto">
                     <Link href={data.url}>
                         <Text numberOfLines={2} className="text-neutral-800 mb-1 dark:text-neutral-200 sm:hover:text-primary text:lg sm:text-xl font-semibold ">
@@ -75,7 +75,7 @@ export default function Unit(props) {
 
                 </View>
 
-            </Card>
+            </CardList>
         </View>
     );
 }

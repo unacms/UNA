@@ -3,7 +3,7 @@ import Link from 'app/ui/atoms/link'
 import { getImageSizes, appSetting } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
-import Card from 'app/ui/molecules/card'
+import { CardList } from 'app/ui/molecules/card'
 import { useMemo } from 'react';
 import { AuthorData } from 'app/lib/common-helpers'
 import { cd } from 'app/lib/util'
@@ -12,7 +12,7 @@ const Units = {};
 
 Units.Base = function Base({ data, imageSizes }) {
     return (
-        <Card padding={cd('p-sm')} className='mb-2 md:mb-0'>
+        <CardList padding={cd('p-sm')}>
             <View className="  aspect-video flex-none rounded-lg overflow-hidden mb-auto w-full bg-bgritem dark:bg-bgritem-d  ">
                 {data.image && (
                     <Image
@@ -37,12 +37,12 @@ Units.Base = function Base({ data, imageSizes }) {
                     <AuthorData authorData={data.author_data} />
                 </View>
             </View>
-        </Card>
+        </CardList>
     )
 }
 Units.Search = function Search({ data, imageSizes }) {
     return (
-        <Card padding={cd('p-sm')} className='mb-2 md:mb-0'>
+        <CardList padding={cd('p-sm')} >
             <View className="  aspect-video flex-none rounded-lg overflow-hidden mb-auto w-full bg-bgritem dark:bg-bgritem-d  ">
                 {data.image && (
                     <Image
@@ -67,13 +67,13 @@ Units.Search = function Search({ data, imageSizes }) {
                     <AuthorData authorData={data.author_data} />
                 </View>
             </View>
-        </Card>
+        </CardList>
     )
 }
 
 Units.Small = function Small({ data, imageSizes }) {
     return (
-        <Card padding={cd('p-sm')} className='mb-2 md:mb-0'>
+        <CardList padding={cd('p-sm')} c>
             {data.image && (
                 <View className="aspect-square md:aspect-video flex-none rounded-xl  overflow-hidden h-30 sm:h-36 mb-auto  ">
                     <Image
@@ -100,7 +100,7 @@ Units.Small = function Small({ data, imageSizes }) {
                 </View>
 
             </View>
-        </Card>
+        </CardList>
     )
 }
 
