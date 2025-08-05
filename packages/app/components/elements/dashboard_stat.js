@@ -224,31 +224,31 @@ export default function PageLayout(props) {
 
                         {appSetting('layout', 'avaliable_layouts').length >
                             1 && (
-                            <View className="w-full max-w-sm flex-1 min-w-[160px]">
-                                <DropdownMenu
-                                    items={appSetting(
-                                        'layout',
-                                        'avaliable_layouts'
-                                    ).map((lang) => ({
-                                        id: lang,
-                                        key: lang,
-                                        name: lang,
-                                        title: t('format_' + lang),
-                                    }))}
-                                    onSelect={(oItem) => {
-                                        setLayoutName(oItem.id)
-                                    }}
-                                >
-                                    <Button
-                                        variant="secondary"
-                                        title={t('format_' + layoutName)}
-                                        startDecorator="Layout"
-                                        fullWidth
-                                        align="left"
-                                    />
-                                </DropdownMenu>
-                            </View>
-                        )}
+                                <View className="w-full max-w-sm flex-1 min-w-[160px]">
+                                    <DropdownMenu
+                                        items={appSetting(
+                                            'layout',
+                                            'avaliable_layouts'
+                                        ).map((lang) => ({
+                                            id: lang,
+                                            key: lang,
+                                            name: lang,
+                                            title: t('format_' + lang),
+                                        }))}
+                                        onSelect={(oItem) => {
+                                            setLayoutName(oItem.id)
+                                        }}
+                                    >
+                                        <Button
+                                            variant="secondary"
+                                            title={t('format_' + layoutName)}
+                                            startDecorator="Layout"
+                                            fullWidth
+                                            align="left"
+                                        />
+                                    </DropdownMenu>
+                                </View>
+                            )}
                     </View>
                 </BlockContent>
                 <BlockFooter>
@@ -322,11 +322,11 @@ function ElementDashboardStat(props) {
                     if (item) {
                         if (item?.type != 'growth') {
                             return (
-                               
-                                    <View
-                                        className=" p-3 lg:p-4 bg-muted rounded-2xl w-full gap-3 flex-1  min-w-48 lg:min-w-64"
-                                        key={index}
-                                    > <Link href={item.url}>
+
+                                <View
+                                    className=" p-3 lg:p-4 bg-muted rounded-2xl w-full gap-3 flex-1  min-w-48 lg:min-w-64"
+                                    key={index}
+                                ><Link href={item.url}>
                                         <View className="flex-row w-full h-10 justify-between items-center">
                                             <Icon
                                                 icon={item.icon}
@@ -369,15 +369,16 @@ function ElementDashboardStat(props) {
                                                 )}
                                             </Text>
                                         </View></Link>
-                                    </View>
-                                
+                                </View>
+
                             )
                         }
                         return (
-                           
-                                <View
-                                    className="p-3 lg:p-4 bg-muted rounded-2xl w-full flex-1 min-w-48 lg:min-w-64"
-                                > <Link href={item.url} key={index}>
+
+                            <View
+                                className="p-3 lg:p-4 bg-muted rounded-2xl w-full flex-1 min-w-48 lg:min-w-64"
+                                key={index}
+                            ><Link href={item.url} >
                                     <View className="flex-row w-full h-10 justify-between items-center">
                                         <Icon
                                             icon={item.icon}
@@ -402,8 +403,8 @@ function ElementDashboardStat(props) {
                                             )}
                                         </Text>
                                     </View></Link>
-                                </View>
-                            
+                            </View>
+
                         )
                     }
                 })}

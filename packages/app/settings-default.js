@@ -656,7 +656,7 @@ export const settingsDefault = {
             {
                 key: '/tab2',
                 title: 'Messages',
-                url: '/messenger',
+                url: '/posts-home',
                 icon: 'MessageCircleMore',
             },
             {
@@ -1357,7 +1357,6 @@ export const settingsDefault = {
             // Header (use with inline styles or Tailwind plugin for scroll)
             'u-controls-tabs-header': 'flex flex-1 flex-row flex-nowrap overflow-x-auto overflow-y-hidden gap-1 bg-muted p-0.5 mb-3 sm:mb-4 lg:mb-6 rounded-full web:scrollbar-none ',
             
-          
             // Header item base (shared styles without hover)
             'u-controls-tabs-header-item':
                 'flex rounded-full px-3 py-2 text-sm flex-1 justify-center max-w-[100px]  items-center whitespace-nowrap font-medium ring-offset-muted  truncate focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring  disabled:pointer-events-none disabled:opacity-50 ',

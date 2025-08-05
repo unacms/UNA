@@ -193,7 +193,6 @@ export default function Layout(props) {
     // Sticky columns
     useEffect(() => {
         const handleScroll = () => {
-            console.log("handleScrollhandleScroll")
             const elements = Array.from(document.getElementsByClassName("fixed-process"));
             const scrollY = window.scrollY;
             const innerHeight = window.innerHeight;
