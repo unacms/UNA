@@ -1355,22 +1355,20 @@ export const settingsDefault = {
             'u-controls-tabs-container': 'w-full flex-col overflow-scroll',
 
             // Header (use with inline styles or Tailwind plugin for scroll)
-            'u-controls-tabs-header': 'flex flex-1 flex-row flex-nowrap overflow-x-auto overflow-y-hidden gap-0.5 sm:gap-1 mb-3 sm:mb-4 lg:mb-6 bg-muted p-0.5 rounded-full web:scrollbar-none web:[-webkit-overflow-scrolling:touch] web:[-ms-overflow-style:none] web:[scrollbar-width:none] ',
+            'u-controls-tabs-header': 'flex flex-1 flex-row flex-nowrap overflow-x-auto overflow-y-hidden gap-1 bg-muted p-0.5 mb-3 sm:mb-4 lg:mb-6 rounded-full web:scrollbar-none ',
             
-            // Full-width variant for specific cases like leaderboards
-            'u-controls-tabs-header-full-width': 'flex flex-row flex-nowrap overflow-x-auto overflow-y-hidden gap-0.5 sm:gap-1 mb-3 sm:mb-4 lg:mb-6 bg-muted p-0.5 rounded-full web:scrollbar-none web:[-webkit-overflow-scrolling:touch] web:[-ms-overflow-style:none] web:[scrollbar-width:none] ',
-
+          
             // Header item base (shared styles without hover)
             'u-controls-tabs-header-item':
-                'flex rounded-full px-3 py-2 text-sm flex-1 justify-center max-w-[100px]  items-center whitespace-nowrap font-medium ring-offset-background  truncate focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ',
+                'flex rounded-full px-3 py-2 text-sm flex-1 justify-center max-w-[100px]  items-center whitespace-nowrap font-medium ring-offset-muted  truncate focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring  disabled:pointer-events-none disabled:opacity-50 ',
 
             // Inactive tab (with hover effect)
             'u-controls-tabs-header-item-inactive':
-                'web:hover:bg-secondary',
+                ' web:hover:bg-muted',
 
             // Active tab (no hover effect)
             'u-controls-tabs-header-item-active':
-                'bg-card text-card-foreground shadow-sm',
+                'bg-card shadow-sm text-accent-foreground ',
 
             // Header item text
             'u-controls-tabs-header-item-text': 'text-muted-foreground font-medium whitespace-nowrap truncate',
@@ -1464,9 +1462,9 @@ export const settingsDefault = {
             'u-btn-accent-color-icon-dark': 'rgb(255, 255, 255)',
 
             'u-btn-secondary-cnt':
-                ' border border-transparent bg-muted web:hover:bg-secondary active:bg-secondary  ',
+                ' border border-transparent bg-secondary web:hover:bg-accent active:bg-muted  ',
             'u-btn-secondary-text':
-                'font-medium text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-white ',
+                'font-medium text-muted-foreground hover:text-foreground  ',
             'u-btn-secondary-trans': ' web:duration-100 ',
             'u-btn-secondary-color-icon-light': 'rgba(31,41,55,1)',
             'u-btn-secondary-color-icon-dark': 'rgba(229,231,235,1)',
