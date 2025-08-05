@@ -1333,7 +1333,7 @@ export const settingsDefault = {
 
             // Cell
             'u-table-cell':
-                'flex-auto flex-row items-center text-foreground px-3',
+                ' flex-row items-center text-foreground px-3',
             'u-table-cell-compact': 'text-xs py-1',
             'u-table-cell-default': 'text-sm py-2',
             'u-table-cell-relaxed': 'text-base py-3',
