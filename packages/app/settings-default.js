@@ -656,7 +656,7 @@ export const settingsDefault = {
             {
                 key: '/tab2',
                 title: 'Messages',
-                url: '/create-post',
+                url: '/messenger',
                 icon: 'MessageCircleMore',
             },
             {
@@ -807,6 +807,14 @@ export const settingsDefault = {
                 left: { defaultSize: 25, minSize: 20, maxSize: 30, breakpoint: 'xl' },
                 center: { defaultSize: 50, minSize: 40, maxSize: 60 },
                 right: { defaultSize: 25, minSize: 20, maxSize: 30, breakpoint: 'lg' },
+            }
+        },
+        'messenger': {
+            adjustable: true,
+            sizable: true,
+            cells: {
+                left: { defaultSize: 30, minSize: 20, maxSize: 40, breakpoint: 'lg' },
+                center: { defaultSize: 70, minSize: 40, maxSize: 80 },
             }
         },
         'navigator': {

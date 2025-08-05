@@ -1,11 +1,7 @@
 import { Text } from 'app/design/typography'
 import { View, Row, Pressable } from 'app/design/view'
-import { stripTags } from 'app/lib/util'
-import Card from 'app/ui/molecules/card'
 import Profile from 'app/ui/molecules/profile'
 import Time from 'app/ui/atoms/time'
-import { Platform } from 'react-native'
-import { memo, useContext } from 'react';
 import { useCurrentUser } from 'app/context/user';
 
 
@@ -15,7 +11,7 @@ export default function ({ item, index, changeConvo, selectedIndex }) {
     const names = participants.map(p => p.display_name).join(', ');
     //memo(
     const Item = ({item, index, changeConvo, selectedIndex }) => (<Pressable onPress={() => changeConvo(item)}>
-        <Card border=" " addClassName={(selectedIndex == index ? ' bg-neutral-500/10 ' : '') + '   flex-row p-3 sm:px-4 '} rounded="rounded-none" margin=" ">
+        <Row className={(selectedIndex == index ? ' bg-neutral-500/10 ' : '') + ' border-bdrtabbar dark:border-bdrtabbar-d border-b  flex-row p-3 sm:px-4 '} >
             <View className=" mr-3 rounded-full flex-none bg-secondary-500/10">
                 <Profile
                     {...participants[0]}
@@ -49,7 +45,7 @@ export default function ({ item, index, changeConvo, selectedIndex }) {
                     </Text>
                     </View>
                 )}
-        </Card>
+        </Row>
     </Pressable>);
     
     //if (!isWeb) {

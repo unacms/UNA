@@ -25,7 +25,11 @@ import { getBackButtonWeb } from 'app/lib/common-helpers'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import BackButton from 'app/components/nav/back';
 import emitter from 'app/context/emitter';
-import { TouchableWithoutFeedback } from 'react-native';
+import {
+    Panel,
+    PanelGroup,
+    PanelHandler,
+} from 'app/ui/molecules/resizable-panels'
 
 
 export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, fetchConvos, data, onSave, addButtons }) {
@@ -230,28 +234,28 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     }, [jotUpdated]);
 
     useEffect(() => {
-      /*  if (jots?.index == 0) {
-            console.log("aaaa", jots?.index, refListJots?.current)
-            scrolTo();
-        }*/
+        /*  if (jots?.index == 0) {
+              console.log("aaaa", jots?.index, refListJots?.current)
+              scrolTo();
+          }*/
     }, [refListJots?.current]);//selectedConvo refListJots?.current, jots?.index*/
 
 
 
     const changeConvo = useCallback((convo) => {
-        emitter.emit('editor', { action: 'focus'});
+        emitter.emit('editor', { action: 'focus' });
         setConvoId(convo.id);
         if (isSmallScreen)
             setPanelsVisible({ convos: false, jots: true })
     }, [isSmallScreen, setConvoId, setPanelsVisible]);
 
     const showConvo = useCallback(() => {
-        emitter.emit('editor', { action: 'blur'});
+        emitter.emit('editor', { action: 'blur' });
         setPanelsVisible({ convos: true, jots: false })
         if (!isWeb)
             return;
-       
-        window.history.pushState(null, null, appSetting('messenger', 'url') );
+
+        window.history.pushState(null, null, appSetting('messenger', 'url'));
     }, []);
 
     const deleteConvo = useCallback(async () => {
@@ -382,7 +386,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
                         editConvo={editConvo}
                         handleReply={handleReply}
                         startReached={handleStartReached}
-                      
+
                     />
                     {listError && (
                         <View className="mx-4">
@@ -413,19 +417,22 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
         handleCancelReply,
         layoutHeightRight,
         layoutHeightLeft,
-        
+
 
     ]);
 
     const handleLayout = useCallback((event) => {
-        if (isWeb )
+        if (isWeb)
             setFormHeight(event.nativeEvent.layout.height)
     }, []);
 
+    const cellsCustomConfig = appSetting('layouts', 'messenger')
+    console.log("panelsVisible.jots")
 
-    return (
+    if (!isWeb){
+        return (
         <View className='flex-1 w-full h-full flex-row bg-card'>
-            {panelsVisible.convos && <View className='w-full md:w-80 border-bdrtabbar dark:border-bdrtabbar-d border-r'>
+            {panelsVisible.convos && <View className=' w-full'>
                 {convosComponent}
             </View>}
              {panelsVisible.jots && <View className='flex-1 '>
@@ -444,7 +451,48 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
                     </View>
                 </KbAvoidingView>
             </View>}
-        </View>
+        </View>)
+    }
+
+    return (
+
+        <PanelGroup
+            autoSaveId={`cells-messenger`}
+            direction="horizontal"
+            className={`${appSetting('layout', 'max_width')} mx-auto w-full flex-auto relative flex-row`}
+
+        >
+            <Panel
+                className={`hidden ${cellsCustomConfig.cells?.left?.breakpoint}:block`}
+                {...cellsCustomConfig.cells?.left}
+            >
+                {panelsVisible.convos && <View className='w-full'>
+                    {convosComponent}
+                </View>}
+            </Panel>
+            <PanelHandler
+                gap="hidden xl:block"
+                sizable={cellsCustomConfig.sizable}
+            />
+            <Panel className=" w-full" {...cellsCustomConfig.cells?.center}>
+                {panelsVisible.jots && <View className='flex-1  '>
+                    <Msg onVisible={showMsg} title={showMsg} handleOk={() => { setShowMsg(false) }} />
+                    <View className={`w-full border-bdrtabbar dark:border-bdrtabbar-d border-r ${!isWeb ? 'flex-1' : ''}`} style={{ height: layoutHeightRight }}>
+                        {jotsComponent}
+                    </View>
+                    <KbAvoidingView>
+                        <View onLayout={handleLayout} className='  w-full ' >
+                            <FormContainer
+                                form={data.form}
+                                replyItem={replyItem}
+                                onFormSubmit={onFormSubmit}
+                                handleCancelReply={handleCancelReply}
+                            />
+                        </View>
+                    </KbAvoidingView>
+                </View>}
+            </Panel>
+        </PanelGroup>
     )
 }
 
@@ -459,6 +507,8 @@ const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, 
     function onSave2() {
         handleSearch('')
     }
+
+  
 
     const srch = <InputRounded name="search" placeholder={("Search") + '...'} value={searchValue} onChangeText={(value) => handleSearch(value)} />;
 
@@ -481,19 +531,20 @@ const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, 
         </Row>
     </Row>
 
+
     return (
-        <View>
-         {(isWeb && !isSmallScreen) && header}
-            {data && data.length > 0 ? <>
+        <View className=' flex-1'>
+            {(isWeb && !isSmallScreen) && header}
+            {data && data.length > 0 ? <View className=' w-full flex-1'>
                 <UniList
-                    height={layoutHeightLeft - (!isWeb ||isSmallScreen ? 0 : 64)}
+                    height={layoutHeightLeft - (!isWeb || isSmallScreen ? 0 : 64)}
                     data={data}
                     mode="simple"
                     useCustomScrollHandler={isSmallScreen ? true : false}
 
                     scrollProps={{ pageData: null, headerHeight: 64, headerComponent: header, isNoContainer: true, }}
                     renderItem={({ item, index }) => <ItemConvo selectedIndex={selectedConvoIndex} item={item} index={index} changeConvo={changeConvo} />}
-                /></>
+                /></View>
                 : <View className='items-center justify-center w-full h-full'><View className="pt-8">
                     <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto  py-4 px-8  items-center rounded-2xl  bg-neutral-500/10 ">
                         <View className="flex-col mx-auto  text-neutral-800 dark:text-neutral-200 ">
@@ -561,24 +612,24 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
 
     return (<>
         {(isWeb && !isSmallScreen) && header}
-        { <View className="flex-1">
-           
-                <UniList
+        {<View className="flex-1">
 
-            refer={refListJots}
-            {...(Platform.OS !== 'web' ? { inverted: true } : {})}
-            overscan={900}
-            startReached={isWeb ? startReached : null}
-            onEndReached={!isWeb ? startReached : null}
-            scrollToLastItem={true}
-            data={isWeb ? data : data.slice().reverse()}
-            height={layoutHeightRight- (!isWeb ||isSmallScreen ? 0 : 64)}
-            mode="simple"
-            useWindowScroll
-            useCustomScrollHandler={isSmallScreen ? true : false}
-            renderItem={({ item, index }) => <ItemJot handleReply={handleReply} item={item} index={index} />}
-            scrollProps={{ pageData: null, headerComponent: header, inverted: true, headerHeight: 64, isNoContainer: true, }}
-        /></View>}
+            <UniList
+
+                refer={refListJots}
+                {...(Platform.OS !== 'web' ? { inverted: true } : {})}
+                overscan={900}
+                startReached={isWeb ? startReached : null}
+                onEndReached={!isWeb ? startReached : null}
+                scrollToLastItem={true}
+                data={isWeb ? data : data.slice().reverse()}
+                height={layoutHeightRight - (!isWeb || isSmallScreen ? 0 : 64)}
+                mode="simple"
+                useWindowScroll
+                useCustomScrollHandler={isSmallScreen ? true : false}
+                renderItem={({ item, index }) => <ItemJot handleReply={handleReply} item={item} index={index} />}
+                scrollProps={{ pageData: null, headerComponent: header, inverted: true, headerHeight: 64, isNoContainer: true, }}
+            /></View>}
     </>);
 });
 

@@ -112,7 +112,7 @@ export function PollItem({ data, showTitle, onDelete, disabled = false, results_
             {state.isShowResults && <Results data={state.results} />}
 
             {!!data.subentries && !state.isShowResults && data.subentries.map((item2, index) => (
-                <Row key={`lbl-${index}`} className={`mt-2 items-center border bg-bgrbutton dark:bg-bgrbutton-d border-bdrbutton dark:border-bdrbutton-d rounded-lg ${state.isVoted ? 'opacity-50' : 'hover:bg-bgritemprimary active:bg-bgritemprimary-h dark:hover:bg-bgritemprimary-d dark:active:bg-bgritemprimary-dh'}`}>
+                <Row key={`lbl-${index}`} className={`mt-2 items-center border bg-bgrbutton dark:bg-bgrbutton-d border-bdrbutton dark:border-bdrbutton-d rounded-lg ${state.isVoted ? 'opacity-50' : 'web:hover:bg-bgritemprimary web:active:bg-bgritemprimary-h web:dark:hover:bg-bgritemprimary-d web:dark:active:bg-bgritemprimary-dh'}`}>
                     <RadioButton
                         value={item2.entry_id}
                         status={item2.id == state.value ? 'checked' : 'unchecked'}

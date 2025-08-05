@@ -27,9 +27,8 @@ import {
 } from 'app/ui/molecules/resizable-panels'
 import { useWindowDimensions } from 'react-native'
 import { useLayoutSettings } from 'app/context/layout-settings'
-import { Icon } from 'app/ui/atoms/icon'
-const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from')
 
+const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from')
 
 export default function (props) {
    // return <><Text className="text-red-500 text-3xl" >zcxzxc zx</Text><Text fontFamily="font-title" className="text-red-500 text-3xl" >zcxzxc zx</Text></>
@@ -327,10 +326,7 @@ export default function (props) {
             <PanelGroup
                 autoSaveId={`cells-home`}
                 direction="horizontal"
-                className={`${appSetting(
-                    'layout',
-                    'max_width'
-                )} mx-auto w-full flex-auto relative flex-row`}
+                className={`${appSetting('layout','max_width')} mx-auto w-full flex-auto relative flex-row`}
                 onLayout={(e) => {
                     if (isWeb) {
                         requestAnimationFrame(() => {
