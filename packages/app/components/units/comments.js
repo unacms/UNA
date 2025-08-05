@@ -236,7 +236,7 @@ export default function UnitComments(props) {
 
     return (
         <Wrapper style={combinedStyles}>
-            <View className='w-full px-2 sm:px-3 lg:px-4 '>
+            
                 <View className="flex-row gap-x-2">
                     {cells}
                     <View className="w-10 z-50 flex-0 relative">
@@ -300,7 +300,7 @@ export default function UnitComments(props) {
                         
                     
                 </View>
-            </View>
+            
         </Wrapper>
     );
 }

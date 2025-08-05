@@ -47,7 +47,7 @@ export const CommentsModal = memo(({ commentsData, initFormData, itemContent, cl
                 {CommentsPartsData[0]}
 
             </View>
-            <View onLayout={handleLayout} className=' w-full px-4 border-t border-bdr dark:border-bdr-d' >
+            <View onLayout={handleLayout} className=' w-full px-3 lg:px-4 border-t border-border' >
                 {CommentsPartsData[1]}
             </View>
         </View>
@@ -222,8 +222,8 @@ export const ItemInfo = memo(({ data, t }) => {
         }
         return l && (
             <>
-                <Text className=" text-neutral-400 dark:text-neutral-600 text-xs leading-4 text-center px-1">·</Text>
-                <Text className=" text-neutral-600 dark:text-neutral-400 text-sm leading-5 text-center font-medium tracking-tight ">
+                <Text className=" text-muted-foreground text-sm leading-6 px-1">·</Text>
+                <Text className=" text-muted-foreground text-sm leading-6 tracking-tight ">
                     {l}
                 </Text>
             </>
@@ -361,7 +361,7 @@ export const VisibilityInfo = memo(({ data }) => {
 
     return (
         <Row className="text-neutral-600 dark:text-neutral-400 items-center">
-            <Text className="text-neutral-400 dark:text-neutral-600 text-sm leading-6 mx-1">·</Text>
+            <Text className="text-muted-foreground text-sm leading-6 px-1">·</Text>
             {isUser ? <Profile {...data.author_data} displayType="unit_wo_info" displaySize="xxs" /> : (icon ? <Icon icon={icon} width={16} height={16} /> : null)}
             <Text className="text-neutral-600 dark:text-neutral-400 text-sm font-medium leading-6 text-center tracking-tight ml-1">{isUser ? data.author_data.display_name : text}</Text>
         </Row>

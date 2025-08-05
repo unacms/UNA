@@ -274,7 +274,7 @@ export const settingsDefault = {
     },
     feed: {
         feed_container: 'relative flex-auto mx-auto w-full max-w-4xl sm:p-3 ',
-        show_selector_view: false,
+        show_selector_view: true,
         default_view: '',
         show_html: false,
         default_feed: 'foryou',
@@ -947,7 +947,7 @@ export const settingsDefault = {
             text: '  text-neutral-800 dark:text-neutral-200 text-base leading-5 font-medium pl-2 ',
         },
         checkbox_set: {
-            container: '  gap-x-2 items-center',
+            container: ' gap-x-2 items-center',
         },
         /*switcher: {
             container: 'items-center flex flex-row-reverse justify-between gap-x-2 items-center h-14 min-w-14 rounded-xl flex-auto  p-3  bg-neutral-50 border border-neutral-200  hover:border-neutral-300 focus:border-primary dark:bg-neutral-900 overflow-hidden  dark:border-neutral-800 dark:hover:border-neutral-700  focus:bg-bgrinput-f dark:focus:bg-neutral-950    web:duration-300  placeholder-neutral-500   ',
@@ -1034,13 +1034,13 @@ export const settingsDefault = {
             pressed_text: 'text-primary font-medium',
             xs: {
                 rounded: 'rounded-md',
-                padding: 'h-8 min-w-8 px-2',
-                padding_icon_only: 'h-8 w-8 px-2',
-                padding_with_title: 'h-8 px-2',
-                icon_container: 'h-5 w-5 flex items-center justify-center',
-                title_container: 'px-1 text-xs',
-                icon_size: 20,
-                icon_margin: 'mx-0.5', // conditional margin for icon container when title is present
+                padding: 'h-6 min-w-6 px-2',
+                padding_icon_only: 'h-6 w-6 px-1',
+                padding_with_title: 'h-6 px-1.5',
+                icon_container: ' h-5 w-5 flex items-center justify-center',
+                title_container: 'px-1 text-xs ',
+                icon_size: 16,
+                icon_margin: 'mx-0', // conditional margin for icon container when title is present
                 title_margin: '',
             },
             sm: {
@@ -1159,7 +1159,7 @@ export const settingsDefault = {
             'w-sm-relaxed': 'w-3 lg:w-4 xl:w-6'
         },
         cards: {
-            'u-card-list': 'u-card-list bg-card shadow-sm text-card-foreground sm:border border-input sm:shadow-sm sm:rounded-2xl mb-[1px] sm:mb-2  ',
+            'u-card-list': 'u-card-list bg-card shadow-sm text-card-foreground sm:border border-input sm:shadow-sm sm:rounded-2xl mb-[1px] sm:mb-3 ',
             'u-card-list-padding': 'p-3 lg:p-4',
             'u-card-base': ' u-card-base bg-card shadow-sm text-card-foreground border border-input shadow-sm gap-y-3 sm:gap-y-4 lg:gap-y-6 gap-x-3 sm:gap-x-4 lg:gap-x-6 rounded-2xl',            
             'u-card-padding': 'py-3 sm:py-4 lg:py-6 ',

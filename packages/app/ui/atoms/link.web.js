@@ -52,7 +52,7 @@ export default function ElementLink(props) {
 
     return (
         <Link 
-            className=' text-primary  web:duration-300 ' 
+            className='text-primary' 
             target={target} 
             href={href} 
             {...rest} 

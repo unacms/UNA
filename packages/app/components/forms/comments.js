@@ -226,7 +226,7 @@ export default function FormComments(props) {
 
                 )}
                 <View className="flex-1  bg-red1-500">
-                    <View className={`  items-stretch  bg-bgritem dark:bg-bgritem-d rounded-[22px] p-3`} >
+                    <View className={`  items-stretch bg-input rounded-2xl p-2.5 `} >
                     <Animated.View 
                    
                      style={inputWrapperAnimatedStyle}

@@ -34,7 +34,7 @@ function DefaultUnit({ data }) {
         setCmtsData({
             title: data.author_data.display_name + "'s post", data: <CommentsModal initFormData={initFormData}
                 itemContent={{
-                    id: "block-comments", data: <><View className='sm:px-4 sm:pb-3 mt-4'><Author data={data} url={url} t={t} />{MainContentComponent}</View></>
+                    id: "block-comments", data: <><View className=' p-3 lg:p-4 gap-3 lg:gap-4 '><Author data={data} url={url} t={t} />{MainContentComponent}</View></>
                 }}
                 commentsData={res.data} />
         })
@@ -62,14 +62,14 @@ function DefaultUnit({ data }) {
                 {cmtsData.data}
             </Modal>}
             <CardList>
-                <View className="flex-auto flex-row gap-x-2 p-3 sm:p-4 ">
+                <View className="flex-auto flex-row mb-3 lg:mb-4">
                     <Author data={data} url={url} t={t} />
-                    <View className="flex-none flex-row mb-auto">
+                    <View className="flex-none mb-auto">
                         <MenuManage id={data.id} menu={data?.menu_manage} setViewState={setViewState} />
                     </View>
                 </View>
                 {MainContentComponent}
-                <View className='px-2'>
+                <View className='mt-3 lg:mt-4'>
                 {(!!data.menu_counters && appSetting('feed', 'counters_menu')) && <CounterMenu data={data.menu_counters} showCommentsModal={showCommentsModal} />}
                 </View>
                 <View className=' border-t mt-1 border-bdr dark:border-bdr-d p-1 '><ActionMenu data={data.menu_actions} showCommentsModal={showCommentsModal} /></View>
@@ -77,7 +77,7 @@ function DefaultUnit({ data }) {
             </CardList>
         </AnimatedBlock>
     )
-}
+} 
 
 export default function UnitFeed_({ data, mode }) {
     return <UnitFeed data={data} mode={mode} SmallUnit={SmallUnit} DefaultUnit={DefaultUnit} />
