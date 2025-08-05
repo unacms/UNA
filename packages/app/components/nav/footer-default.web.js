@@ -7,7 +7,6 @@ import Profile from 'app/ui/molecules/profile';
 import { usePathname } from 'app/lib/hooks/router';
 import { callFn } from 'app/lib/functions/call';
 import { Icon } from 'app/ui/atoms/icon'
-import { Theme } from 'app/design/theme';
 import { useTranslation } from 'react-i18next';
 
 function isInStandaloneMode() {
@@ -37,12 +36,12 @@ export default function () {
         dUser.url = appSetting('dashboard', 'url')
         profile = <View className="w-8 h-8 p-1"><Profile {...dUser} displayType="unit_wo_info" displaySize="xs" /></View>
     }
-    
+
 
     if (pathname == '/')
         pathname = '/home';
 
-   
+
 
     return (
         <View
@@ -66,7 +65,6 @@ export default function () {
 
 function MenuBottomItem({ link, title, index, icon, isActive, profile, iFrCounter, notifCount }) {
     const { currentUser } = useCurrentUser();
-    const { colors } = Theme();
     const badge = [
         {
             condition: link === appSetting('notifications', 'url') && notifCount > 0,
@@ -94,7 +92,7 @@ function MenuBottomItem({ link, title, index, icon, isActive, profile, iFrCounte
                 )}
                 <View className={`min-h-12 justify-between items-center ${isActive && ''}`}>
                     <Text className={`${isActive ? 'text-primary' : 'text-neutral-700 dark:text-neutral-300'}`}>
-                        {link === appSetting('dashboard', 'url') ? profile : <Icon size={24} icon={icon} color={isActive ? colors.primary : colors.default} />}
+                        {link === appSetting('dashboard', 'url') ? profile : <Icon icon={icon} />}
                     </Text>
                     {<Text className={`group-hover:text-primary dark:group-hover:text-primary text-xs tracking-tight  leading-4 whitespace-nowrap ${isActive ? 'text-primary' : 'text-neutral-700 dark:text-neutral-300'}`}>{title}</Text>}
                     {badge && <View className={`absolute bg-primary shadow-sm dark:border-neutral-900 rounded-full px-1.5 items-center justify-center  -top-1 left-1/2 -translate-x-1/2 ml-6`}><Text className="text-white text-xs ">{badge.text}</Text></View>}

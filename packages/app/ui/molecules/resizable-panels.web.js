@@ -10,11 +10,10 @@ const panelTheme = appSetting('theme', 'panels');
 
 function createPanelComponent({ baseClass, Component = PanelDef, role, ariaLevel }) {
     return function PanelSubComponent({ className = '', density, ...props }) {
-        const { density: effectiveDensity } = useLayoutSettings();
 
         return (
             <Component
-                className={`rpsp1 ${panelTheme[baseClass]} ${panelTheme[baseClass+'-'+effectiveDensity]} ${className}`}
+                className={`rpsp1 ${panelTheme[baseClass]} $ ${className}`}
                 role={role}
                 aria-level={ariaLevel}
                 {...props}

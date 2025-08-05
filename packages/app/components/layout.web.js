@@ -119,7 +119,6 @@ export default function Layout(props) {
 
     const theme = ThemeName();
     const root = window.document.documentElement;
-        console.log("theme5", theme)
     root.setAttribute('theme', theme)
     root.setAttribute('data-theme', theme);
     

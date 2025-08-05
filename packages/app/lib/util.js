@@ -54,25 +54,12 @@ export async function subscribeOneSignal(currentUser, askPermission = false) {
 
 export function cd(className, density = 'default', section = 'offsets') {
     const t = appSetting('theme', section);
-    return t[`${className}-${density}`]
+    return t[`${className}`]
 }
 
 export function normalizeClasses(a) {
     if (!a) return a
     return isWeb ? a : a.replace(/\b\S*(hover|focus|active|group|duration|group-hover):\S*\b/g, "") .replace(/\s{2,}/g, " ").trim();
-}
-
-/**
- * Utility function to merge and normalize class names
- * Combines class names and applies platform-specific normalization
- */
-export function cn(...classes) {
-    const merged = classes
-        .filter(Boolean)
-        .join(' ')
-        .replace(/\s+/g, ' ')
-        .trim();
-    return normalizeClasses(merged);
 }
 
 export function decodeText(str) {

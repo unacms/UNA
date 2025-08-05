@@ -5,7 +5,6 @@ import Link from 'app/ui/atoms/link'
 import { useTranslation } from 'react-i18next'
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
-import { Theme } from 'app/design/theme';
 import Tooltip from 'app/ui/atoms/tooltip';
 
 export default function MenuTop({ url, uri }) {
@@ -30,21 +29,20 @@ export default function MenuTop({ url, uri }) {
 }
 
 function MenuTopItem({ link, title, index, icon, isTitle, isActive }) {
-    const { colors } = Theme()
     return (
         <Link className="flex-auto" href={link} alt={title}>
             <Tooltip content={title}>
                 <View className="flex-auto group" key={`menu-${index}`}>
                     <Row
-                        className={`items-center justify-center py-3 min-w-16 rounded-xl  web:duration-300 group-active:opacity-50 ${isActive
-                                ? 'bg-bgritemprimary text-primary dark:bg-bgritemprimary-d group-hover:bg-bgritemprimary-h dark:group-hover:bg-bgritemprimary-dh'
-                                : 'text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-950 dark:group-hover:text-neutral-50 hover:bg-bgritem dark:hover:bg-bgritem-d'
+                        className={`items-center justify-center py-3 min-w-16 rounded-xl  web:duration-300 web:group-active:opacity-50 ${isActive
+                            ? 'bg-bgritemprimary text-primary dark:bg-bgritemprimary-d web:group-hover:bg-bgritemprimary-h web:dark:group-hover:bg-bgritemprimary-dh'
+                            : 'text-neutral-600 dark:text-neutral-400 web:group-hover:text-neutral-950 web:dark:group-hover:text-neutral-50 web:hover:bg-bgritem web:dark:hover:bg-bgritem-d'
                             }`}
                     >
                         <Icon
                             icon={icon}
-                            size="24"
-                            color={isActive ? colors.primary : colors.barsColor}
+
+                            className={`${isActive ? "text-primary " : "text-neutral-600 dark:text-neutral-400"}`}
                         />
                         {isTitle && <Text className={`whitespace-nowrap text-ellipsis overflow-hidden tracking-tight font-medium ${isActive ? 'text-primary' : 'text-neutral-800 dark:text-neutral-200'} text-base px-3 leading-6`}>{title}</Text>}
                     </Row>

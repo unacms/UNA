@@ -78,7 +78,7 @@ export const settingsDefault = {
         header: {
             offset: ' h-16 w-full ',
             container: ' hidden lg:flex fixed w-full mx-auto h-16 left-[50%] translate-x-[-50%]  ',
-            initial: '  my-auto w-full items-center transition-all web:duration-300 ease-in-out will-change-transform shadow-[0_0_0_1px_rgba(0,0,0,0.08),0_2px_4px_0_rgba(0,0,0,0.05)] dark:shadow-[0_0_0_1px_rgba(31,41,55,0.5),0_2px_4px_0_rgba(0,0,0,0.05)]    ',
+            initial: '  my-auto w-full items-center transition-all web:duration-300 web:ease-in-out web:will-change-transform shadow-[0_0_0_1px_rgba(0,0,0,0.08),0_2px_4px_0_rgba(0,0,0,0.05)] dark:shadow-[0_0_0_1px_rgba(31,41,55,0.5),0_2px_4px_0_rgba(0,0,0,0.05)]    ',
             scrolled: ' backdrop-blur-xl my-auto w-full mx-auto bg-card/90 backdrop-blur-xl shadow-[0_0_0_1px_rgba(0,0,0,0.08),0_2px_4px_0_rgba(0,0,0,0.05)] dark:shadow-[0_0_0_1px_rgba(31,41,55,1),0_0_0_2px_rgba(0,0,0,0.8)] ',
             content: ' h-16 mx-auto justify-between ',
             content_left: ' flex-row w-80 2xl:w-96 px-2 xl:px-3 ',
@@ -316,7 +316,7 @@ export const settingsDefault = {
             pressed_classes: {
                 pressed_container: 'bg-secondary ',
                 pressed_text:
-                    ' text-secondary-foreground group-hover:text-secondary-foreground ',
+                    ' text-secondary-foreground web:group-hover:text-secondary-foreground ',
             },
             button_rounded: false,
             align_items: 'between',
@@ -870,47 +870,21 @@ export const settingsDefault = {
             barsBackground: 'rgba(255,255,255,1)', //header and tabbar background in native light mode
             bottomSheetBackground: 'rgba(255,255,255,1)',
             barsColor: '#4B5563',
-            selectBorder: 'rgba(156, 163, 175, 0.3)',
-            fieldBackground: 'rgba(245,250,255,1)',
-            blockBorder: '#E5E7EB',
-            tabsBackground: 'rgba(255,0,0,1)',
-            activeTabBackground: '#DBEAFE',
-            tabText: 'rgba(75,85,99,1)',
-            activeTabText: 'rgba(3,7,18,1)',
-            screenBackground: 'rgba(235,240,245,1)',
-            bgrmodal: 'rgba(255,255,255,1)',
-            bdrModal: 'rgba(110,115,130,0.15)',
-            checkbox: '#2563eb',
             safeAreaBackground: 'rgba(255,255,255,1)', // Add this new property
             primaryBg: 'rgba(37,99,235,0.1)',
-            fgTertiary: 'rgba(75,85,99,1)',
-            bgreditortoolbar: 'rgba(255, 255, 255, 1)',
-            iconeditortoolbar: 'rgba(210, 215, 220, 1)',
-            bgrtoolbarbutton: 'rgba(248, 249, 250, 0)',
+           
         },
         dark: {
             default: 'rgba(209,213,219,1)', //fix for icons color in iOS
-            headerBackground: 'rgba(17,24,39,1)',
             primary: 'rgba(59, 130, 246, 1)',
             outline: 'rgba(59, 130, 246, 0.5)',
+            headerBackground: 'rgba(17,24,39,1)',
             barsBackground: 'rgba(17,24,39,1)', //header background in native
             bottomSheetBackground: 'rgba(17,24,39,1)',
             barsColor: 'rgba(209,213,219,1)', //tabbar icons color in native
-            selectBorder: 'rgba(55, 65, 81, 0.3)',
-            fieldBackground: '#030712',
-            blockBorder: '#030712',
-            tabText: 'rgba(156,163,175,1)',
-            activeTabText: 'rgba(249,250,251,1)',
-            screenBackground: 'rgba(3,7,18,1)',
-            bgrmodal: 'rgba(31,41,55,1)',
-            bdrModal: 'rgba(110,115,130,0.15)',
-            checkbox: '#0ea5e9',
             safeAreaBackground: 'rgba(17,24,39,1)', // Add this new property
             primaryBg: 'rgba(37,99,235,0.1)',
-            fgTertiary: 'rgba(156,163,175,1)',
-            bgreditortoolbar: 'rgba(55, 65, 82, 1)',
-            iconeditortoolbar: 'rgba(75, 85, 99, 1)',
-            bgrtoolbarbutton: 'rgba(33, 37, 41, 0)',
+            
         },
         dropdown: {
             cnt: ' rounded-2xl overflow-hidden p-1 bg-card z-50 border border-border ',
@@ -940,12 +914,12 @@ export const settingsDefault = {
             cover_base: 'w-full shadow-sm bg-gradient-to-b from-background to-card',
             cover_content: "items-center h-full w-full overflow-hidden justify-between"
         },
-        checkbox: {
+       /* checkbox: {
             container:
                 ' h-5 w-5 m-1 rounded-sm border-2 border-neutral-500 bg-transparent justify-center items-center   ',
             selected: ' h-2.5 w-2.5 rounded-xs bg-primary m-1 items-center justify-center',
             text: '  text-neutral-800 dark:text-neutral-200 text-base leading-5 font-medium pl-2 ',
-        },
+        },*/
         checkbox_set: {
             container: ' gap-x-2 items-center',
         },
@@ -985,16 +959,16 @@ export const settingsDefault = {
             content_ver: '',
             content_hor: 'flex-row   ',
             item_ver:
-                ' group flex flex-row h-12 items-center p-1.5 text-sm rounded-xl font-medium hover:bg-bgritem dark:hover:bg-bgritem-d text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 hover:cursor-pointer',
+                ' web:group flex flex-row h-12 items-center p-1.5 text-sm rounded-xl font-medium web:hover:bg-bgritem web:dark:hover:bg-bgritem-d text-neutral-600 dark:text-neutral-400 web:hover:text-neutral-800 web:dark:hover:text-neutral-200 web:hover:cursor-pointer',
             item_hor:
-                'flex block p-1.5 hover:-translate-y-1  dark:hover:text-white rounded-full hover:cursor-pointer text-neutral-700  hover:scale-125 active:scale-95   web:duration-200 dark:text-neutral-300 outline-none ',
+                'flex block p-1.5 web:hover:-translate-y-1  web:dark:hover:text-white rounded-full web:hover:cursor-pointer text-neutral-700  web:hover:scale-125 active:scale-95   web:duration-200 dark:text-neutral-300 outline-none ',
             item_np:
-                'flex flex-row focus:outline-none items-center justify-between px-1 py-0.5 rounded-lg font-medium hover:bg-bgritem dark:hover:bg-bgritem-d text-sm text-neutral-700 dark:text-neutral-300 dark:hover:text-white hover:cursor-pointer',
+                'flex flex-row web:focus:outline-none items-center justify-between px-1 py-0.5 rounded-lg font-medium web:hover:bg-bgritem web:dark:hover:bg-bgritem-d text-sm text-neutral-700 dark:text-neutral-300 web:dark:hover:text-white web:hover:cursor-pointer',
             item_cnt: 'items-center w-full',
             item_text:
                 ' text-base web:text-sm leading-8 px-3 font-medium text-neutral-800 dark:text-neutral-200',
             item_icon:
-                'flex items-center w-9 h-9 bg-bgritem dark:bg-bgritem-d group-hover:bg-bgritem-h dark:group-hover:bg-bgritem-dh rounded-full justify-center',
+                'flex items-center w-9 h-9 bg-bgritem dark:bg-bgritem-d web:group-hover:bg-bgritem-h web:dark:group-hover:bg-bgritem-dh rounded-full justify-center',
             icon_size: 20, // Default icon size for dropdown menu icons
         },
         modal: {
@@ -1010,16 +984,16 @@ export const settingsDefault = {
                 'h-14 min-w-14 rounded-xl flex-auto ' +
                 'px-3 py-3 text-base ' +
                 'bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d ' +
-                'hover:border-bdrinput-h dark:hover:border-bdrinput-dh ' +
-                'focus:border-bdrinput-f dark:focus:border-bdrinput-df ' +
-                'focus:bg-bgrinput-f dark:focus:bg-bgrinput-df ' +
+                'web:hover:border-bdrinput-h web:dark:hover:border-bdrinput-dh ' +
+                'web:focus:border-bdrinput-f web:dark:focus:border-bdrinput-df ' +
+                'web:focus:bg-bgrinput-f web:dark:focus:bg-bgrinput-df ' +
                 'overflow-hidden   web:duration-300 ' +
                 'placeholder-neutral-500 ' +
                 'text-neutral-800 dark:text-neutral-200 ' +
-                'focus:text-neutral-900 dark:focus:text-neutral-100',
-            multi: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-xl flex-auto px-3 py-3 dark:focus:bg-bgrinput-df dark:text-neutral-100 text-base leading-5 ',
+                'web:focus:text-neutral-900 web:dark:focus:text-neutral-100',
+            multi: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d web:focus:bg-bgrinput-f web:focus:outline-none  web:focus:border-bdrinput-f web:dark:focus:border-bdrinput-df  text-neutral-900 rounded-xl flex-auto px-3 py-3 web:dark:focus:bg-bgrinput-df dark:text-neutral-100 text-base leading-5 ',
             rounded:
-                ' h-12 rounded-full flex-auto px-3 py-[11px] text-base bg-bgrinput dark:bg-bgrinput-d hover:border-bdrinput-h focus:border-bdrinput-f overflow-hidden border border-bdrinput focus:bg-bgrinput-f dark:border-bdrinput-d dark:focus:border-bdrinput-d dark:focus:bg-bgrinput-df focus:border-bdrinput-f dark:focus:border-bdrinput-df   web:duration-300 placeholder-neutral-500 text-neutral-800 dark:text-neutral-200 ',
+                ' h-12 rounded-full flex-auto px-3 py-[11px] text-base bg-bgrinput dark:bg-bgrinput-d hover:border-bdrinput-h focus:border-bdrinput-f overflow-hidden border border-bdrinput web:focus:bg-bgrinput-f dark:border-bdrinput-d web:dark:focus:border-bdrinput-d web:dark:focus:bg-bgrinput-df web:focus:border-bdrinput-f web:dark:focus:border-bdrinput-df   web:duration-300 placeholder-neutral-500 text-neutral-800 dark:text-neutral-200 ',
             roundedsmall:
                 ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-full flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[34px] ',
             small: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-full flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-9 ',
@@ -1078,85 +1052,33 @@ export const settingsDefault = {
             },
         },
         offsets: {
-            'gap-lg-compact': 'gap-3 sm:gap-4',
-            'gap-lg-default': 'gap-4 sm:gap-6',
-            'gap-lg-relaxed': 'gap-6 sm:gap-8',
-            'gap-md-compact': 'gap-1 sm:gap-2 lg:gap-3',
-            'gap-md-default': 'gap-2 sm:gap-3 lg:gap-4',
-            'gap-md-relaxed': 'gap-3 sm:gap-4 lg:gap-6',
-            'gap-sm-compact': 'gap-1 sm:gap-1.5 lg:gap-2',
-            'gap-sm-default': 'gap-1.5 sm:gap-2 lg:gap-3',
-            'gap-sm-relaxed': 'gap-2 sm:gap-3 lg:gap-4',
-            'gap-xs-compact': 'gap-0.5 sm:gap-1',
-            'gap-xs-default': 'gap-1 sm:gap-1.5',
-            'gap-xs-relaxed': 'gap-1.5 sm:gap-2',
-            'm-lg-compact': 'm-2 sm:m-3 lg:m-4',
-            'm-lg-default': 'm-3 sm:m-4 lg:m-6',
-            'm-lg-relaxed': 'm-4 sm:m-6 lg:m-8',
-            'mb-lg-compact': 'mb-3 sm:mb-4',
-            'mb-lg-default': 'mb-6 sm:mb-8',
-            'mb-lg-relaxed': 'mb-6 sm:mb-8',
-            'mb-md-compact': 'mb-2 sm:mb-3',
-            'mb-md-default': 'mb-3 sm:mb-4',
-            'mb-md-relaxed': 'mb-4 sm:mb-6',
-            'mb-sm-compact': 'mb-1 sm:mb-2',
-            'mb-sm-default': 'mb-2 sm:mb-3',
-            'mb-sm-relaxed': 'mb-3 sm:mb-4',
-            'p-lg-compact': 'p-3 lg:p-4',
-            'p-lg-default': 'p-4 lg:p-6',
-            'p-lg-relaxed': 'p-6 lg:p-8',
-            'p-md-compact': 'p-2 lg:p-3',
-            'p-md-default': 'p-3 lg:p-4',
-            'p-md-relaxed': 'p-4 lg:p-6',
-            'p-sm-compact': 'p-1',
-            'p-sm-default': 'p-2',
-            'p-sm-relaxed': 'p-3',
-            'p-xs-default': 'p-1',
-            'pb-lg-compact': 'pb-2',
-            'pb-lg-default': 'pb-4',
-            'pb-lg-relaxed': 'pb-6',
-            'pb-md-compact': 'pb-2',
-            'pb-md-default': 'pb-3',
-            'pb-md-relaxed': 'pb-4',
-            'pb-sm-compact': 'pb-1',
-            'pb-sm-default': 'pb-2',
-            'pb-sm-relaxed': 'pb-3',
-            'pt-lg-compact': 'pt-2',
-            'pt-lg-default': 'pt-4',
-            'pt-lg-relaxed': 'pt-6',
-            'pt-md-compact': 'pt-2',
-            'pt-md-default': 'pt-3',
-            'pt-md-relaxed': 'pt-4',
-            'pt-sm-compact': 'pt-1',
-            'pt-sm-default': 'pt-2',
-            'pt-sm-relaxed': 'pt-3',
-            'px-lg-compact': 'px-2',
-            'px-lg-default': 'px-4',
-            'px-lg-relaxed': 'px-6',
-            'px-md-compact': 'px-2',
-            'px-md-default': 'px-3',
-            'px-md-relaxed': 'px-4',
-            'px-sm-compact': 'px-1',
-            'px-sm-default': 'px-2',
-            'px-sm-relaxed': 'px-3',
-            'py-lg-compact': 'py-2 sm:py-3 lg:py-4',
-            'py-lg-default': 'py-3 sm:py-4 lg:py-6',
-            'py-lg-relaxed': 'py-4 sm:py-6 lg:py-8',
-            'py-md-compact': 'py-2 sm:py-3',
-            'py-md-default': 'py-3 sm:py-4',
-            'py-md-relaxed': 'py-4 sm:py-6',
-            'py-sm-compact': 'py-1 sm:py-2',
-            'py-sm-default': 'py-2 sm:py-3',
-            'py-sm-relaxed': 'py-3 sm:py-4',
-            'w-lg-compact': 'w-3 lg:w-4 xl:w-6',
-            'w-lg-default': 'w-4 lg:w-6 xl:w-8',
-            'w-lg-relaxed': 'w-6 lg:w-8 xl:w-10',
-            'w-md-compact': 'w-2 lg:w-3 xl:w-4',
-            'w-md-default': 'w-3 lg:w-4 xl:w-6',
-            'w-md-relaxed': 'w-4 lg:w-6 xl:w-8',
-            'w-sm-compact': 'w-1 lg:w-2 xl:w-3',
-            'w-sm-default': 'w-2 lg:w-3 xl:w-4',
-            'w-sm-relaxed': 'w-3 lg:w-4 xl:w-6'
+            'gap-lg': 'gap-4 sm:gap-6',
+            'gap-md': 'gap-2 sm:gap-3 lg:gap-4',
+            'gap-sm': 'gap-1.5 sm:gap-2 lg:gap-3',
+            'gap-xs': 'gap-1 sm:gap-1.5',
+            'm-lg': 'm-3 sm:m-4 lg:m-6',
+            'mb-lg': 'mb-6 sm:mb-8',
+            'mb-md': 'mb-3 sm:mb-4',
+            'mb-sm': 'mb-2 sm:mb-3',
+            'p-lg': 'p-4 lg:p-6',
+            'p-md': 'p-3 lg:p-4',
+            'p-sm': 'p-2',
+            'p-xs': 'p-1',
+            'pb-lg': 'pb-4',
+            'pb-md': 'pb-3',
+            'pb-sm': 'pb-2',
+            'pt-lg': 'pt-4',
+            'pt-md': 'pt-3',
+            'pt-sm': 'pt-2',
+            'px-lg': 'px-4',
+            'px-md': 'px-3',
+            'px-sm': 'px-2',
+            'py-lg': 'py-3 sm:py-4 lg:py-6',
+            'py-md': 'py-3 sm:py-4',
+            'py-sm': 'py-2 sm:py-3',
+            'w-lg': 'w-4 lg:w-6 xl:w-8',
+            'w-md': 'w-3 lg:w-4 xl:w-6',
+            'w-sm': 'w-2 lg:w-3 xl:w-4',
         },
         cards: {
             'u-card-list': 'u-card-list bg-card shadow-sm text-card-foreground sm:border border-input sm:shadow-sm sm:rounded-2xl mb-[1px] sm:mb-3 ',
@@ -1171,184 +1093,48 @@ export const settingsDefault = {
             'u-card-footer': 'flex text-card-foreground px-4 gap-y-2 gap-x-3',
         },
         panels: {
-            // Panel Base
-            'u-panel-base': 'mx-0',
-            'u-panel-base-compact': 'm-0 gap-y-3',
-            'u-panel-base-default': 'm-0 gap-y-4',
-            'u-panel-base-relaxed': 'm-0 lg:m-6 gap-y-6',
-
-            // Panel Handler
-            'u-panel-handler': 'w-1 h-full',
-
-            // Handler Variants (same as base)
-            'u-panel-handler-compact': '',
-            'u-panel-handler-default': '',
-            'u-panel-handler-relaxed': '',
-
-            // Panel Line
-            'u-panel-line':
-                'w-1 mx-1.5 group-active:w-1 group-hover:w-1 group-active:w-sm h-full transition-all duration-300 ease-in-out group-hover:bg-muted group-active:bg-muted ',
-
-            // Panel Group
+            'u-panel-base': 'm-0 gap-y-4',
+            'u-panel-handler': '',
+            'u-panel-line': 'w-1 mx-1.5 group-active:w-1 web:group-hover:w-1 web:group-active:w-sm h-full web:transition-all web:duration-300 web:ease-in-out web:group-hover:bg-muted web:group-active:bg-muted ',
             'u-panel-group': 'flex',
-
-            // Group Variants (same as base)
-            'u-panel-group-compact': '',
-            'u-panel-group-default': '',
-            'u-panel-group-relaxed': ''
         },
         blocks: {
-            'u-block-base-compact': 'bg-card u-max-width-block border border-input text-card-foreground py-2 sm:py-3 lg:py-4 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4 rounded-xl',
-            'u-block-base-default': 'bg-card u-max-width-block border border-input text-card-foreground py-3 sm:py-4 lg:py-6 gap-3 lg:gap-4  rounded-2xl',
-            'u-block-base-relaxed': 'bg-card u-max-width-block border border-input text-card-foreground py-5 sm:py-6 lg:py-8 gap-y-5 sm:gap-y-6 lg:gap-y-8 gap-x-5 sm:gap-x-6 lg:gap-x-8 rounded-3xl',
-
-            'u-block-header': 'flex flex-row items-center',
-            'u-block-header-compact': 'flex flex-row items-center px-2 sm:px-3 lg:px-4 gap-y-1 sm:gap-y-2 lg:gap-y-3 gap-x-1 sm:gap-x-2 lg:gap-x-3',
-            'u-block-header-default': 'flex flex-row items-center px-3 sm:px-4 lg:px-6 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4',
-            'u-block-header-relaxed': 'flex flex-row items-center px-4 sm:px-6 lg:px-8 gap-y-3 sm:gap-y-4 lg:gap-y-6 gap-x-3 sm:gap-x-4 lg:gap-x-6',
-
+            'u-block-base': 'bg-card u-max-width-block border border-input text-card-foreground py-3 sm:py-4 lg:py-6 gap-3 lg:gap-4  rounded-2xl',
+            'u-block-header': 'flex flex-row items-center px-3 sm:px-4 lg:px-6 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4',
             'u-block-icon': 'text-card-foreground',
-            'u-block-icon-compact': 'text-card-foreground',
-            'u-block-icon-default': 'text-card-foreground',
-            'u-block-icon-relaxed': 'text-card-foreground',
-
-            'u-block-name': 'flex flex-col flex-auto',
-            'u-block-name-compact': 'flex flex-col flex-auto gap-y-1 gap-x-3',
-            'u-block-name-default': 'flex flex-col flex-auto gap-y-2 gap-x-4',
-            'u-block-name-relaxed': 'flex flex-col flex-auto gap-y-3 gap-x-6',
-
-            'u-block-title': 'text-card-foreground',
-            'u-block-title-compact': 'text-card-foreground text-lg lg:text-xl font-bold leading-none lg:leading-none tracking-tight',
-            'u-block-title-default': 'text-card-foreground text-xl lg:text-2xl font-bold leading-none lg:leading-none tracking-tight',
-            'u-block-title-relaxed': 'text-card-foreground text-2xl lg:text-3xl font-bold leading-none lg:leading-none tracking-tight',
-
-            'u-block-description': 'text-muted-foreground',
-            'u-block-description-compact': 'text-muted-foreground text-xs lg:text-sm',
-            'u-block-description-default': 'text-muted-foreground text-sm lg:text-base',
-            'u-block-description-relaxed': 'text-muted-foreground text-base lg:text-lg',
-
-            'u-block-content': 'text-card-foreground',
-            'u-block-content-compact': 'text-card-foreground px-2 sm:px-3 lg:px-4 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-1 sm:gap-x-2 lg:gap-x-3',
-            'u-block-content-default': 'text-card-foreground px-3 sm:px-4 lg:px-6 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4',
-            'u-block-content-relaxed': 'text-card-foreground px-4 sm:px-6 lg:px-8 gap-y-3 sm:gap-y-4 lg:gap-y-6 gap-x-3 sm:gap-x-4 lg:gap-x-6',
-
-            'u-block-footer': 'flex text-card-foreground',
-            'u-block-footer-compact': 'flex text-card-foreground px-2 sm:px-3 lg:px-4 gap-y-1 sm:gap-y-2 lg:gap-y-3 gap-x-1 sm:gap-x-2 lg:gap-x-3',
-            'u-block-footer-default': 'flex text-card-foreground px-3 sm:px-4 lg:px-6 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4',
-            'u-block-footer-relaxed': 'flex text-card-foreground px-4 sm:px-6 lg:px-8 gap-y-3 sm:gap-y-4 lg:gap-y-6 gap-x-3 sm:gap-x-4 lg:gap-x-6',
-
-            'u-block-actions': 'flex flex-row text-card-foreground mb-auto',
-            'u-block-actions-compact': 'flex flex-row text-card-foreground mb-auto gap-x-1 sm:gap-x-2 lg:gap-x-3',
-            'u-block-actions-default': 'flex flex-row text-card-foreground mb-auto gap-x-2 sm:gap-x-3 lg:gap-x-4',
-            'u-block-actions-relaxed': 'flex flex-row text-card-foreground mb-auto gap-x-3 sm:gap-x-4 lg:gap-x-6'
+            'u-block-name': 'flex flex-col flex-auto gap-y-2 gap-x-4',
+            'u-block-title': 'text-card-foreground text-xl lg:text-2xl font-bold leading-none lg:leading-none tracking-tight',
+            'u-block-description': 'text-muted-foreground text-sm lg:text-base',
+            'u-block-content': 'text-card-foreground px-3 sm:px-4 lg:px-6 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4',
+            'u-block-footer': 'flex text-card-foreground px-3 sm:px-4 lg:px-6 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4',
+            'u-block-actions': 'flex flex-row text-card-foreground mb-auto gap-x-2 sm:gap-x-3 lg:gap-x-4',
         },
         badges: {
-            'u-badge-accent-compact': 'border-transparent bg-accent text-accent-foreground shadow hover:bg-accent/80',
-            'u-badge-accent-default': 'border-transparent bg-accent text-accent-foreground shadow hover:bg-accent/80',
-            'u-badge-accent-relaxed': 'border-transparent bg-accent text-accent-foreground shadow hover:bg-accent/80',
-
-            'u-badge-base': 'flex items-center border transition-colors focus:outline-none focus:ring-ring',
-            'u-badge-base-compact': 'px-1 py-0.5 rounded-md',
-            'u-badge-base-default': 'px-2 py-1 rounded-full',
-            'u-badge-base-relaxed': 'px-3 py-1.5 rounded-xl',
-
-            'u-badge-default-compact': 'border-transparent bg-primary text-primary-foreground shadow hover:bg-primary/80',
-            'u-badge-default-default': 'border-transparent bg-primary text-primary-foreground shadow hover:bg-primary/80',
-            'u-badge-default-relaxed': 'border-transparent bg-primary text-primary-foreground shadow hover:bg-primary/80',
-
-            'u-badge-destructive-compact': 'border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80',
-            'u-badge-destructive-default': 'border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80',
-            'u-badge-destructive-relaxed': 'border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80',
-
-            'u-badge-outline-compact': 'border-border',
-            'u-badge-outline-default': 'border-border',
-            'u-badge-outline-relaxed': 'border-border',
-
-            'u-badge-secondary-compact': 'border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80',
-            'u-badge-secondary-default': 'border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80',
-            'u-badge-secondary-relaxed': 'border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80',
-
-            'u-badge-text-accent-compact': 'text-accent-foreground',
-            'u-badge-text-accent-default': 'text-accent-foreground',
-            'u-badge-text-accent-relaxed': 'text-accent-foreground',
-
-            'u-badge-text-compact': 'text-xs inline-flex gap-1 sm:gap-1.5 lg:gap-2 font-semibold',
-            'u-badge-text-default': 'text-sm inline-flex gap-1.5 sm:gap-2 lg:gap-3 font-semibold',
-            'u-badge-text-relaxed': 'text-base inline-flex gap-2 sm:gap-3 lg:gap-4 font-semibold',
-
-            'u-badge-text-default-compact': 'text-primary-foreground',
-            'u-badge-text-default-default': 'text-primary-foreground',
-            'u-badge-text-default-relaxed': 'text-primary-foreground',
-
-            'u-badge-text-destructive-compact': 'text-destructive-foreground',
-            'u-badge-text-destructive-default': 'text-destructive-foreground',
-            'u-badge-text-destructive-relaxed': 'text-destructive-foreground',
-
-            'u-badge-text-outline-compact': 'text-muted-foreground',
-            'u-badge-text-outline-default': 'text-muted-foreground',
-            'u-badge-text-outline-relaxed': 'text-muted-foreground',
-
-            'u-badge-text-secondary-compact': 'text-secondary-foreground',
-            'u-badge-text-secondary-default': 'text-secondary-foreground',
-            'u-badge-text-secondary-relaxed': 'text-secondary-foreground'
+            
+            'u-badge-base': 'flex items-center border transition-colors web:focus:outline-none web:focus:ring-ring px-2 py-1 rounded-full',
+            'u-badge-default': 'border-transparent bg-primary text-primary-foreground shadow web:hover:bg-primary/80',
+            'u-badge-destructive': 'border-transparent bg-destructive text-destructive-foreground shadow web:hover:bg-destructive/80',
+            'u-badge-outline': 'border-border',
+            'u-badge-accent': 'border-transparent bg-accent text-accent-foreground shadow web:hover:bg-accent/80',
+            'u-badge-secondary': 'border-transparent bg-secondary text-secondary-foreground web:hover:bg-secondary/80',
+            'u-badge-text': 'text-sm inline-flex gap-1.5 sm:gap-2 lg:gap-3 font-semibold',
+            'u-badge-text-default': 'text-primary-foreground',
+            'u-badge-text-accent': 'text-accent-foreground',
+            'u-badge-text-destructive': 'text-destructive-foreground',
+            'u-badge-text-outline': 'text-muted-foreground',
+            'u-badge-text-secondary': 'text-secondary-foreground',
         },
         tables: {
             // Base
-            'u-table-base': 'w-full border border-border bg-transparent border-collapse overflow-hidden',
-            'u-table-base-compact': 'rounded-md',
-            'u-table-base-default': 'rounded-lg',
-            'u-table-base-relaxed': 'rounded-xl',
-
-            // Header
+            'u-table-base': 'w-full border border-border bg-transparent border-collapse overflow-hidden rounded-lg',
             'u-table-header': 'border-border',
-            'u-table-header-compact': '',
-            'u-table-header-default': '',
-            'u-table-header-relaxed': '',
-
-            // Body
             'u-table-body': 'border-border',
-            'u-table-body-compact': '',
-            'u-table-body-default': '',
-            'u-table-body-relaxed': '',
-
-            // Footer
             'u-table-footer': 'bg-muted/50 font-medium',
-            'u-table-footer-compact': '',
-            'u-table-footer-default': '',
-            'u-table-footer-relaxed': '',
-
-            // Row
-            'u-table-row':
-                'flex overflow-hidden flex-row border-border border-b web:transition-colors web:hover:bg-muted/50 web:data-[state=selected]:bg-muted',
-            'u-table-row-compact': '',
-            'u-table-row-default': '',
-            'u-table-row-relaxed': '',
-
-            // Head
-            'u-table-head':
-                'text-muted-foreground text-left justify-center font-medium flex-1',
-            'u-table-head-compact': 'h-8 px-2 text-xs',
-            'u-table-head-default': 'h-12 px-4 text-sm',
-            'u-table-head-relaxed': 'h-16 px-6 text-base',
-
-            // Cell
-            'u-table-cell':
-                ' flex-row items-center text-foreground px-3',
-            'u-table-cell-compact': 'text-xs py-1',
-            'u-table-cell-default': 'text-sm py-2',
-            'u-table-cell-relaxed': 'text-base py-3',
-
-            // Head Text
-            'u-table-head-text': 'text-muted-foreground font-semibold tracking-tight leading-tight',
-            'u-table-head-text-compact': 'text-xs',
-            'u-table-head-text-default': 'text-sm',
-            'u-table-head-text-relaxed': 'text-base',
-
-            // Cell Text
-            'u-table-cell-text': 'text-foreground',
-            'u-table-cell-text-compact': 'text-sm',
-            'u-table-cell-text-default': 'text-sm',
-            'u-table-cell-text-relaxed': 'text-base'
+            'u-table-row': 'flex overflow-hidden flex-row border-border border-b web:transition-colors web:hover:bg-muted/50 web:data-[state=selected]:bg-muted',
+            'u-table-head': 'text-muted-foreground text-left justify-center font-medium flex-1 h-12 px-4 text-sm',
+            'u-table-cell': ' flex-row items-center text-foreground px-3 text-sm py-2',
+            'u-table-head-text': 'text-muted-foreground font-semibold tracking-tight leading-tight text-sm',
+            'u-table-cell-text': 'text-foreground text-sm',
         },
         tabs: {
             // Container
@@ -1358,16 +1144,13 @@ export const settingsDefault = {
             'u-controls-tabs-header': 'flex flex-1 flex-row flex-nowrap overflow-x-auto overflow-y-hidden gap-1 bg-muted p-0.5 mb-3 sm:mb-4 lg:mb-6 rounded-full web:scrollbar-none ',
             
             // Header item base (shared styles without hover)
-            'u-controls-tabs-header-item':
-                'flex rounded-full px-3 py-2 text-sm flex-1 justify-center max-w-[100px]  items-center whitespace-nowrap font-medium ring-offset-muted  truncate focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring  disabled:pointer-events-none disabled:opacity-50 ',
+            'u-controls-tabs-header-item': 'flex rounded-full px-3 py-2 text-sm flex-1 justify-center max-w-[100px]  items-center whitespace-nowrap font-medium ring-offset-muted  truncate focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring  disabled:pointer-events-none disabled:opacity-50 ',
 
             // Inactive tab (with hover effect)
-            'u-controls-tabs-header-item-inactive':
-                ' web:hover:bg-muted',
+            'u-controls-tabs-header-item-inactive': ' web:hover:bg-muted',
 
             // Active tab (no hover effect)
-            'u-controls-tabs-header-item-active':
-                'bg-card shadow-sm text-accent-foreground ',
+            'u-controls-tabs-header-item-active': 'bg-card shadow-sm text-accent-foreground ',
 
             // Header item text
             'u-controls-tabs-header-item-text': 'text-muted-foreground font-medium whitespace-nowrap truncate',
@@ -1375,12 +1158,11 @@ export const settingsDefault = {
 
             // Tab content
             'u-controls-tabs-tab-content': 'w-full',
-            'u-controls-tabs-tab-content-animated': 'animate-[tabContentFadeIn_0.2s_ease-out]'
+            'u-controls-tabs-tab-content-animated': 'web:animate-[tabContentFadeIn_0.2s_ease-out]'
         },
         switcher: {
             // Container
-            'u-controls-switcher-container':
-                'items-center flex-row-reverse justify-between gap-x-2 h-14 min-w-14 rounded-xl flex-auto p-3 bg-input border border-border flex',
+            'u-controls-switcher-container': 'items-center flex-row-reverse justify-between gap-x-2 h-14 min-w-14 rounded-xl flex-auto p-3 bg-input border border-border flex',
 
             // Text
             'u-controls-switcher-text': 'text-neutral-800 dark:text-neutral-200 text-base',
@@ -1391,7 +1173,7 @@ export const settingsDefault = {
             'u-controls-switcher-track-sm': 'w-10 h-4 p-0.5',
 
             // Thumb
-            'u-controls-switcher-thumb': 'rounded-full aspect-square bg-white transition-transform duration-200',
+            'u-controls-switcher-thumb': 'rounded-full aspect-square bg-white web:transition-transform web:duration-200',
             'u-controls-switcher-thumb-base': 'h-6 w-6',
             'u-controls-switcher-thumb-sm': 'h-3 w-3',
 
@@ -1408,129 +1190,109 @@ export const settingsDefault = {
             'u-controls-checkbox-container': 'items-center py-2 px-3 rounded-lg w-full',
 
             // Hover & Active backgrounds (optional — Web-only)
-            'u-controls-checkbox-container-bg':
-                'web:active:bg-neutral-200 web:dark:active:bg-neutral-700 web:hover:bg-neutral-100 web:dark:hover:bg-neutral-800',
+            'u-controls-checkbox-container-bg': 'web:active:bg-neutral-200 web:dark:active:bg-neutral-700 web:hover:bg-neutral-100 web:dark:hover:bg-neutral-800',
 
             // Text labels
-            'u-controls-checkbox-text':
-                'text-neutral-800 dark:text-neutral-200 text-base leading-5 font-medium pl-2',
-            'u-controls-checkbox-text2':
-                'text-neutral-600 dark:text-neutral-400 text-sm leading-5',
+            'u-controls-checkbox-text': 'text-neutral-800 dark:text-neutral-200 text-base leading-5 font-medium pl-2',
+            'u-controls-checkbox-text2': 'text-neutral-600 dark:text-neutral-400 text-sm leading-5',
 
             // Icon (e.g. if checkbox is custom-rendered)
-            'u-controls-checkbox-icon':
-                'text-neutral-600 dark:text-neutral-400 my-auto h-6 w-6',
+            'u-controls-checkbox-icon': 'text-neutral-600 dark:text-neutral-400 my-auto h-6 w-6',
 
             // Checkbox square indicator
-            'u-controls-checkbox-indicator':
-                'h-5 w-5 m-1 rounded-sm border-2 border-neutral-500 bg-transparent justify-center items-center mr-2',
+            'u-controls-checkbox-indicator': 'h-5 w-5 m-1 rounded-sm border-2 border-neutral-500 bg-transparent justify-center items-center mr-2',
 
             // Radiobutton circular indicator
-            'u-controls-radiobutton-indicator':
-                'h-5 w-5 m-1 rounded-full border-2 border-neutral-500 bg-transparent justify-center items-center mr-2',
+            'u-controls-radiobutton-indicator': 'h-5 w-5 m-1 rounded-full border-2 border-neutral-500 bg-transparent justify-center items-center mr-2',
 
             // Active mark inside checkbox (filled square)
-            'u-controls-checkbox-indicator-active':
-                'h-2.5 w-2.5 bg-primary m-1 items-center justify-center',
+            'u-controls-checkbox-indicator-active': 'h-2.5 w-2.5 bg-primary m-1 items-center justify-center',
 
             // Active mark inside radiobutton (filled circle)
-            'u-controls-radiobutton-indicator-active':
-                'h-2.5 w-2.5 rounded-full bg-primary m-1 items-center justify-center'
+            'u-controls-radiobutton-indicator-active': 'h-2.5 w-2.5 rounded-full bg-primary m-1 items-center justify-center'
         },
 
         button_styles: {
             'u-btn-default-cnt':
-                ' border border-input bg-card web:hover:bg-accent shadow-sm active:shadow-none active:opacity-60 ',
+                ' border border-input bg-card web:hover:bg-accent shadow-sm web:active:shadow-none web:active:opacity-60 ',
             'u-btn-default-text':
-                'font-medium text-neutral-800 web:hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-neutral-50',
+                'font-medium text-neutral-800 web:hover:text-neutral-950 dark:text-neutral-200 web:dark:group-hover:text-neutral-50',
             'u-btn-default-trans': '  web:duration-200',
 
 
-            'u-btn-primary-cnt': '  bg-bgrbuttonprimary dark:bg-bgrbuttonprimary-d web:hover:bg-bgrbuttonprimary-h dark:web:hover:bg-bgrbuttonprimary-dh active:ring-2 active:ring-primary active:ring-offset-2 active:outline-none ',
+            'u-btn-primary-cnt': '  bg-bgrbuttonprimary dark:bg-bgrbuttonprimary-d web:hover:bg-bgrbuttonprimary-h dark:web:hover:bg-bgrbuttonprimary-dh web:active:ring-2 web:active:ring-primary web:active:ring-offset-2 web:active:outline-none ',
             'u-btn-primary-text': 'font-medium text-white',
             'u-btn-primary-trans': '  web:duration-200',
-            'u-btn-primary-color-icon-light': 'rgb(243, 244, 246)',
-            'u-btn-primary-color-icon-dark': 'rgb(243, 244, 246)',
 
             'u-btn-accent-cnt':
-                ' bg-accent-600 dark:bg-accent-600 web:hover:bg-accent-700 dark:web:hover:bg-accent-700 active:ring-2 active:ring-accent active:ring-offset-2 active:outline-none ',
+                ' bg-accent-600 dark:bg-accent-600 web:hover:bg-accent-700 dark:web:hover:bg-accent-700 web:active:ring-2 web:active:ring-accent web:active:ring-offset-2 web:active:outline-none ',
             'u-btn-accent-text':
                 'font-medium text-white',
             'u-btn-accent-trans': '  web:duration-300',
-            'u-btn-accent-color-icon-light': 'rgb(255, 255, 255)',
-            'u-btn-accent-color-icon-dark': 'rgb(255, 255, 255)',
 
             'u-btn-secondary-cnt':
-                ' border border-transparent bg-secondary web:hover:bg-accent active:bg-muted  ',
+                ' border border-transparent bg-secondary web:hover:bg-accent web:active:bg-muted  ',
             'u-btn-secondary-text':
-                'font-medium text-muted-foreground hover:text-foreground  ',
+                'font-medium text-muted-foreground web:hover:text-foreground  ',
             'u-btn-secondary-trans': ' web:duration-100 ',
-            'u-btn-secondary-color-icon-light': 'rgba(31,41,55,1)',
-            'u-btn-secondary-color-icon-dark': 'rgba(229,231,235,1)',
-
+            
             'u-btn-danger-cnt':
-                'border border-transparent dark:border-transparent bg-red-600 web:hover:bg-red-500 web:hover:shadow active:opacity-50 active:shadow-none',
+                'border border-transparent dark:border-transparent bg-red-600 web:hover:bg-red-500 web:hover:shadow web:active:opacity-50 web:active:shadow-none',
             'u-btn-danger-text':
                 'font-medium text-neutral-100 group-hover:text-white',
             'u-btn-danger-trans': '  web:duration-300',
 
-            'u-btn-text-cnt': 'border border-transparent dark:border-transparent bg-transparent active:opacity-50 active:bg-bgritem dark:active:bg-bgritem-d web:hover:bg-bgritem dark:web:hover:bg-bgritem-d',
+            'u-btn-text-cnt': ' border border-transparent dark:border-transparent bg-transparent web:active:opacity-50 web:active:bg-bgritem web:dark:active:bg-bgritem-d web:hover:bg-bgritem dark:web:hover:bg-bgritem-d',
             'u-btn-text-text': 'font-medium text-neutral-800 dark:text-neutral-200',
             'u-btn-text-trans': '  web:duration-300',
 
-            'u-btn-link-cnt': 'web:hover:bg-bgritemprimary dark:web:hover:bg-bgritemprimary active:opacity-50',
-            'u-btn-link-text':
-                'font-semibold text-primary',
-            'u-btn-link-trans': '  web:duration-300',
-            'u-btn-link-color-icon-light': 'rgba(37,99,235,1)',
-            'u-btn-link-color-icon-dark': 'rgba(37,99,235,1)',
 
-            'u-btn-outline-cnt':
-                'bg-transparent border border-bdrbutton dark:border-bdrbutton-d web:hover:border-bdrbutton-h dark:web:hover:border-bdrbutton-dh active:opacity-50',
-            'u-btn-outline-text':
-                'font-medium text-neutral-800 dark:text-neutral-200',
+            'u-btn-link-cnt': 'web:hover:bg-bgritemprimary dark:web:hover:bg-bgritemprimary web:active:opacity-50',
+            'u-btn-link-text': 'font-semibold text-primary',
+            'u-btn-link-trans': '  web:duration-300',
+
+            'u-btn-outline-cnt': 'bg-transparent border border-bdrbutton dark:border-bdrbutton-d web:hover:border-bdrbutton-h dark:web:hover:border-bdrbutton-dh web:active:opacity-50',
+            'u-btn-outline-text':'font-medium text-neutral-800 dark:text-neutral-200',
             'u-btn-outline-trans': '  web:duration-300',
 
             'u-btn-group-item-cnt':
-                'border border-transparent dark:border-transparent web:hover:bg-bgritem-h dark:web:hover:bg-bgritem-dh active:opacity-50',
+                'border border-transparent dark:border-transparent web:hover:bg-bgritem-h dark:web:hover:bg-bgritem-dh web:active:opacity-50',
             'u-btn-group-item-text':
-                'font-medium text-neutral-800 dark:text-neutral-200 dark:group-hover:text-neutral-50',
+                'font-medium text-neutral-800 dark:text-neutral-200 web:dark:group-hover:text-neutral-50',
             'u-btn-group-item-icon':
-                'text-neutral-700 dark:text-neutral-300 dark:group-hover:text-neutral-50',
+                'text-neutral-700 dark:text-neutral-300 web:dark:group-hover:text-neutral-50',
 
             'u-btn-group-item-default-cnt':
-                'border border-transparent dark:border-transparent web:hover:bg-bgritem-h dark:web:hover:bg-bgritem-dh active:opacity-50',
-            'u-btn-group-item-default-text':
-                'font-medium text-neutral-800 dark:text-neutral-200 dark:group-hover:text-neutral-50',
-            'u-btn-group-item-default-icon':
-                'text-neutral-700 dark:text-neutral-300 dark:group-hover:text-neutral-50',
+                'border border-transparent dark:border-transparent web:hover:bg-bgritem-h dark:web:hover:bg-bgritem-dh web:active:opacity-50',
+            'u-btn-group-item-default-text': 'font-medium text-neutral-800 dark:text-neutral-200 web:dark:group-hover:text-neutral-50',
+            'u-btn-group-item-default-icon': 'text-neutral-700 dark:text-neutral-300 web:dark:group-hover:text-neutral-50',
 
             'u-btn-group-item-primary-cnt':
-                'border border-transparent dark:border-transparent web:hover:bg-bgritem-h dark:web:hover:bg-bgritem-dh active:opacity-50',
+                'border border-transparent dark:border-transparent web:hover:bg-bgritem-h dark:web:hover:bg-bgritem-dh web:active:opacity-50',
             'u-btn-group-item-primary-text':
-                'font-medium text-neutral-800 dark:text-neutral-200 dark:group-hover:text-neutral-50',
+                'font-medium text-neutral-800 dark:text-neutral-200 web:dark:group-hover:text-neutral-50',
             'u-btn-group-item-primary-icon':
-                'text-neutral-700 dark:text-neutral-300 dark:group-hover:text-neutral-50',
+                'text-neutral-700 dark:text-neutral-300 web:dark:group-hover:text-neutral-50',
 
             'u-btn-group-item-secondary-cnt':
-                'border border-transparent dark:border-transparent bg-bgritem dark:bg-bgritem-d active:opacity-50 flex flex-row overflow-hidden',
+                'border border-transparent dark:border-transparent bg-bgritem dark:bg-bgritem-d web:ctive:opacity-50 flex flex-row overflow-hidden',
             'u-btn-group-item-secondary-text':
-                'font-medium text-neutral-800 web:hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-white',
+                'font-medium text-neutral-800 web:hover:text-neutral-950 dark:text-neutral-200 web:dark:group-hover:text-white',
             'u-btn-group-item-secondary-icon':
-                'text-neutral-700 dark:text-neutral-300 dark:group-hover:text-neutral-50',
+                'text-neutral-700 dark:text-neutral-300 web:dark:group-hover:text-neutral-50',
 
             'u-btn-group-item-text-cnt':
-                'border border-transparent dark:border-transparent web:hover:bg-bgrbutton-h dark:web:hover:bg-bgrbutton-dh active:opacity-50',
+                'border border-transparent dark:border-transparent web:hover:bg-bgrbutton-h dark:web:hover:bg-bgrbutton-dh web:active:opacity-50',
             'u-btn-group-item-text-text':
-                'font-medium text-neutral-800 dark:text-neutral-200 dark:group-hover:text-neutral-50',
+                'font-medium text-neutral-800 dark:text-neutral-200 web:dark:group-hover:text-neutral-50',
             'u-btn-group-item-text-icon':
-                'text-neutral-600 dark:text-neutral-400 dark:group-hover:text-neutral-50',
+                'text-neutral-600 dark:text-neutral-400 web:dark:group-hover:text-neutral-50',
 
             'u-btn-group-item-link-cnt': '',
             'u-btn-group-item-link-text':
-                'font-medium text-muted-foreground web:hover:text-foreground active:text-foreground  ',
+                'font-medium text-muted-foreground web:hover:text-foreground web:active:text-foreground  ',
             'u-btn-group-item-link-icon':
-                'text-primary dark:text-primary dark:group-hover:text-primary',
+                'text-primary dark:text-primary web:dark:group-hover:text-primary',
             'u-btn-group-item-link-pressed-cnt': 'bg-primary/10 ',
             'u-btn-group-item-link-pressed-text':
                 'text-primary',
@@ -1538,14 +1300,14 @@ export const settingsDefault = {
                 'text-primary',
 
             'u-btn-group-item-outline-cnt':
-                'border border-bdritem dark:border-bdritem-d web:hover:bg-bgritem-h dark:web:hover:bg-bgritem-dh active:opacity-50',
+                'border border-bdritem dark:border-bdritem-d web:hover:bg-bgritem-h dark:web:hover:bg-bgritem-dh web:active:opacity-50',
             'u-btn-group-item-outline-text':
-                'font-medium text-neutral-800 dark:text-neutral-200 dark:group-hover:text-neutral-50',
+                'font-medium text-neutral-800 dark:text-neutral-200 web:dark:group-hover:text-neutral-50',
             'u-btn-group-item-outline-icon':
-                'text-neutral-700 dark:text-neutral-300 dark:group-hover:text-neutral-50',
+                'text-neutral-700 dark:text-neutral-300 web:dark:group-hover:text-neutral-50',
 
             'u-btn-group-item-accent-cnt':
-                'border border-transparent dark:border-transparent web:hover:bg-bgritem-h dark:web:hover:bg-bgritem-dh active:opacity-50',
+                'border border-transparent dark:border-transparent web:hover:bg-bgritem-h dark:web:hover:bg-bgritem-dh web:active:opacity-50',
             'u-btn-group-item-accent-text':
                 'font-medium text-neutral-800 dark:text-neutral-200 dark:group-hover:text-neutral-50',
             'u-btn-group-item-accent-icon':
@@ -1556,16 +1318,12 @@ export const settingsDefault = {
             'u-btn-badge-text':
                 'font-medium text-primary dark:text-primary',
             'u-btn-badge-trans': '  web:duration-200',
-            'u-btn-badge-color-icon-light': ' ',
-            'u-btn-badge-color-icon-dark': ' ',
 
             'u-btn-label-cnt':
-                'border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900 web:hover:bg-neutral-100 dark:web:hover:bg-neutral-800 active:opacity-70',
+                'border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900 web:hover:bg-neutral-100 dark:web:hover:bg-neutral-800 web:active:opacity-70',
             'u-btn-label-text':
                 'font-normal text-sm text-neutral-600 dark:text-neutral-400 web:hover:text-neutral-800 dark:web:hover:text-neutral-200',
             'u-btn-label-trans': '  web:duration-200',
-            'u-btn-label-color-icon-light': 'rgba(75,85,99,1)',
-            'u-btn-label-color-icon-dark': 'rgba(156,163,175,1)',
         },
         buttons_group_styles: {
             'u-btn-default-cnt':
@@ -1575,27 +1333,27 @@ export const settingsDefault = {
             'u-btn-outline-cnt':
                 'border border-bdrbutton dark:border-bdrbutton-d flex flex-row',
 
-            'u-btn-text-cnt': 'flex flex-row items-center active:opacity-50',
+            'u-btn-text-cnt': 'flex flex-row items-center web:active:opacity-50',
 
             'u-btn-secondary-cnt':
-                'border border-transparent dark:border-transparent bg-bgritem dark:bg-bgritem-d active:opacity-50 flex flex-row',
+                'border border-transparent dark:border-transparent bg-bgritem dark:bg-bgritem-d web:active:opacity-50 flex flex-row',
             'u-btn-secondary-text':
-                ' font-medium text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 dark:group-hover:text-white ',
+                ' font-medium text-neutral-800 web:hover:text-neutral-950 dark:text-neutral-200 web:dark:group-hover:text-white ',
             'u-btn-secondary-trans': '   web:duration-300 ',
 
             'u-btn-link-cnt': ' border border-transparent dark:border-transparent flex flex-row active:opacity-50 items-center ',
             'u-btn-link-text':
-                ' font-medium group-hover:underline text-neutral-800 dark:text-neutral-200  hover:text-neutral-950 dark:hover:text-neutral-50 active:opacity-50 ',
+                ' font-medium web:group-hover:underline text-neutral-800 dark:text-neutral-200  web:hover:text-neutral-950 web:dark:hover:text-neutral-50 web:active:opacity-50 ',
             'u-btn-link-trans': '   web:duration-300 ',
 
-            'u-btn-badge-cnt': 'border border-transparent dark:border-transparent bg-neutral-100 dark:bg-neutral-800 flex flex-row active:opacity-60',
+            'u-btn-badge-cnt': 'border border-transparent dark:border-transparent bg-neutral-100 dark:bg-neutral-800 flex flex-row web:active:opacity-60',
             'u-btn-badge-text':
                 ' font-medium text-xs text-neutral-700 dark:text-neutral-300 ',
             'u-btn-badge-trans': '   web:duration-200 ',
 
-            'u-btn-label-cnt': 'border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900 flex flex-row active:opacity-70',
+            'u-btn-label-cnt': 'border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900 flex flex-row web:active:opacity-70',
             'u-btn-label-text':
-                ' font-normal text-sm text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 ',
+                ' font-normal text-sm text-neutral-600 dark:text-neutral-400 web:hover:text-neutral-800 web:dark:hover:text-neutral-200 ',
             'u-btn-label-trans': '   web:duration-200 ',
         },
     },

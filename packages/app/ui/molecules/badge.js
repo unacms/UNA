@@ -11,16 +11,14 @@ function Badge({
     children,
     ...props
 }) {
-    const { density: effectiveDensity } = useLayoutSettings();
+
 
     return (
         <View
-            className={`u-badge-base  ${badgeTheme['u-badge-base']} ${badgeTheme['u-badge-base-' + effectiveDensity]} ${badgeTheme['u-badge-' + variant + '-' + effectiveDensity]} ${className}`}
+            className={`u-badge-base ${badgeTheme['u-badge-base']} ${badgeTheme['u-badge-' + variant]} ${className}`}
             {...props}
         >
-            <Text
-                className={`${badgeTheme['u-badge-text-' + effectiveDensity]} ${badgeTheme['u-badge-text-' + variant + '-' + effectiveDensity]}`}
-            >
+            <Text className={`${badgeTheme['u-badge-text']} ${badgeTheme['u-badge-text-' + variant]}`} >
                 {children}
             </Text>
         </View>

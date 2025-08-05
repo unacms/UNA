@@ -100,10 +100,10 @@ export default function ScrollList({
 
     const baseProps = isFlatList
   ? {
-      renderScrollComponent: (props) => (
+     /* renderScrollComponent: (props) => (
         <KbAvoidingViewScroll {...props} />
-      ),
-      paddingTop: headerHeight,
+      ),*/
+     /* paddingTop: headerHeight,*/
       ...(isCollapsibleHeader ? { onScroll } : {}),
     }
   : {};
@@ -133,8 +133,6 @@ export default function ScrollList({
             </Animated.View>
             {isFlatList ? enhanced : <KbAvoidingViewScroll onScroll={onScroll} paddingTop={headerHeight}>
                 {enhanced}
-
-        
             </KbAvoidingViewScroll>}
             </View>
     )

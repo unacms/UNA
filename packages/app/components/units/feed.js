@@ -57,7 +57,7 @@ function DefaultUnit({ data }) {
                 onClose={() => setCmtsData(false)}
                 onVisible={!!cmtsData}
                 title={cmtsData.title}
-                padding= ''
+                padding=''
             >
                 {cmtsData.data}
             </Modal>}
@@ -70,14 +70,16 @@ function DefaultUnit({ data }) {
                 </View>
                 {MainContentComponent}
                 <View className='mt-3 lg:mt-4'>
-                {(!!data.menu_counters && appSetting('feed', 'counters_menu')) && <CounterMenu data={data.menu_counters} showCommentsModal={showCommentsModal} />}
+                    {(!!data.menu_counters && appSetting('feed', 'counters_menu')) && <CounterMenu data={data.menu_counters} showCommentsModal={showCommentsModal} />}
                 </View>
-                <View className=' border-t mt-1 border-bdr dark:border-bdr-d p-1 '><ActionMenu data={data.menu_actions} showCommentsModal={showCommentsModal} /></View>
+                <View className=' border-t mt-1 border-bdr dark:border-bdr-d p-1 '>
+                    <ActionMenu data={data.menu_actions} showCommentsModal={showCommentsModal} />
+                </View>
                 {commentsData && <CommentsSection url={url} t={t} isCommentsModal={isCommentsModal} showCommentsModal={showCommentsModal} commentsDataInline={commentsData} data={data} isShowMoreComments={isShowMoreComments} />}
             </CardList>
         </AnimatedBlock>
     )
-} 
+}
 
 export default function UnitFeed_({ data, mode }) {
     return <UnitFeed data={data} mode={mode} SmallUnit={SmallUnit} DefaultUnit={DefaultUnit} />

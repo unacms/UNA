@@ -200,18 +200,6 @@ const colors = {
         DEFAULT: 'rgba(37, 99, 235, 1)',
         d: 'rgba(59, 130, 246, 1)',
     },
-    bgreditortoolbar: {
-        DEFAULT: 'rgba(229, 231, 235, 1)',
-        d: 'rgba(55, 65, 82, 1)'
-    },
-    iconeditortoolbar: {
-        DEFAULT: 'rgba(209, 213, 219, 1)',
-        d: 'rgba(75, 85, 99, 1)'
-    },
-    bgrtoolbarbutton: {
-        DEFAULT: 'rgba(248, 249, 250, 1)',
-        d: 'rgba(33, 37, 41, 1)'
-    }
 }
 
 const theme = {

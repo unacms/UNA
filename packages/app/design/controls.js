@@ -280,7 +280,7 @@ export function ButtonsGroup({
     children = [],
     ...rest
 }) {
-    let sClassContainer = 'group';
+    let sClassContainer = 'web:group';
     sClassContainer += fullWidth ? ' flex-auto' : ' w-fit m-0 truncate ';
 
     
@@ -335,9 +335,8 @@ const getIcon = (sIcon, iIndex, classIconName, sClassText, sIconContainer, iIcon
             <Text key={iIndex} className={classIconName ? classIconName : sClassText + sIconContainer}>{sIcon}</Text>
         );
     }
-
     return (
-        <Icon key={iIndex+sIcon} className={classIconName ? classIconName : sClassText + sIconContainer} size={iIconSize} color={colorIcon} icon={sIcon}></Icon>
+        <Icon key={iIndex+sIcon} className={classIconName ? classIconName : sClassText + sIconContainer} icon={sIcon}></Icon>
     );
 };
 
@@ -439,10 +438,10 @@ export const Button = (props) => {
             classes += ' flex-none';
         } else if (hasTitle) {
             // Buttons with title get flexible width
-            classes += fullWidth ? ' flex-auto w-full' : ' flex-none';
+            classes += fullWidth ? ' flex-auto web:w-full' : ' flex-none';
         } else {
             // Fallback to original behavior
-            classes += fullWidth ? ' flex-auto w-full' : ' w-fit';
+            classes += fullWidth ? ' flex-auto web:w-full' : ' w-fit';
         }
         
         if (disabled) classes += ' opacity-50';

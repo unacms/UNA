@@ -6,14 +6,12 @@ import { Theme } from 'app/design/theme';
 import { useMemo } from 'react';
 import SvgIcons from  'app/icons-svg';
 import { SvgXml } from 'react-native-svg';
+import { cssInterop } from 'nativewind';
 
 export function Icon(props) {
     const { icon, className, color, size, strokeWidth, ...rest } = props
     const { colors } = Theme();
     let isXmlSvg = false;
-
-    
-    
 
     if (typeof icon === 'string') {
         isXmlSvg = icon.startsWith('<svg');
@@ -26,7 +24,27 @@ export function Icon(props) {
 
     const InlineIcon = SvgIcons[icon];
 
-    const IconComponent = useMemo(() => IconSet[processedIcon], [processedIcon]);
+    //const IconComponent = useMemo(() => IconSet[processedIcon], [processedIcon]);
+
+
+ 
+
+  const IconComponent = useMemo(() => {
+    const IconComponent2 = IconSet[processedIcon];
+    IconComponent2.displayName = processedIcon;
+
+    return cssInterop(IconComponent2, {
+      className: {
+        target: 'style',
+        nativeStyleToProp: {
+          color: true,
+          width: true,
+          height: true,
+        },
+      },
+    });
+  }, [processedIcon]);
+
 
     if (!icon)
         return null;

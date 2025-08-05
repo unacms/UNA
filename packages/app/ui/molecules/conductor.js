@@ -92,6 +92,7 @@ const TabScene = React.memo(({
 }) => {
 
     const handleEndReached = useCallback(() => {
+        console.log("handleEndReached-----------------");
         if (!route?.endpoint || route?.endpoint?.params?.start === 0 || refreshing || route?.endpoint?.finished)
             return;
         fetchNextPage();

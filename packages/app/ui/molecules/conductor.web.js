@@ -686,11 +686,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
 
         if (layoutName == 'navigator'){
             return (
-                <View className={
-                        cn(isRightCol ? 'flex-auto' : 'w-full mx-auto',
-                            layoutName !== 'navigator' && cd('p-md'),
-                            contentPaddingClass)
-                    }>
+                <View className={`${isRightCol ? 'flex-auto' : 'w-full mx-auto'} ${layoutName !== 'navigator' && cd('p-md')} ${contentPaddingClass}`}>
                         {TabFlashListM}
                         {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 && callFn("noContentByUrl", [route?.endpoint])))}
                     </View>
@@ -726,11 +722,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
                 </>
                 }
                 <Panel  {...cellsCustomConfig.cells?.center}>
-                    <View className={
-                        cn(isRightCol ? 'flex-auto' : 'w-full mx-auto',
-                            layoutName !== 'navigator' && cd('py-md'),
-                            contentPaddingClass)
-                    }>
+                    <View className={`${isRightCol ? 'flex-auto' : 'w-full mx-auto'} ${layoutName !== 'navigator' && cd('py-md')} ${contentPaddingClass}`}>
                         {TabFlashListM}
                         {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 && callFn("noContentByUrl", [route?.endpoint])))}
                     </View>

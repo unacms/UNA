@@ -25,19 +25,14 @@ export default function ({ item, index, changeConvo, selectedIndex }) {
             </View>
             <View className="flex-auto flex-col my-auto ">
                 
-                <Text className="flex-auto text-base  font-bold text-neutral-800 dark:text-neutral-200 sm:group-hover:text-neutral-950 sm:dark:group-hover:text-neutral-50" numberOfLines={1}>
+                <Text className="flex-auto text-base  font-bold text-neutral-800 dark:text-neutral-200 sm:group-hover:text-neutral-950 web:sm:dark:group-hover:text-neutral-50" numberOfLines={1}>
                     {names}
                 </Text>
                 <Row>
                     <Time className="text-xs flex-none" ts={item.date}></Time>
                 </Row>
                 <View className="flex-row w-full items-end content-end">
-                   {/* <Text
-                        className="flex-auto mr-2  text-sm text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-neutral-50"
-                        numberOfLines={1}
-                    >
-                        {stripTags(item.message)}
-</Text>*/}
+                   
                     <View className="flex-none bg-primary rounded-full    my-auto h-min px-1.5">
                         {(item.unread > 0 && selectedIndex != index) && (
                             <Text className="text-xs text-white dark:text-black font-medium">

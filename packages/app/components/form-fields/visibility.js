@@ -196,13 +196,14 @@ export default function (props) {
                         icon={icon}
                         width={16}
                         height={16}
+                        className={"text-neutral-600"}  
                     />
                     <Text className=" leading-5.5 ml-1 whitespace-nowrap text-ellipsis overflow-hidden tracking-tight text-neutral-600 web:group-hover:text-neutral-800 dark:text-neutral-400 web:dark:group-hover:text-neutral-200 font-medium text-sm native:text-sm ">{selectedSubLabels.length> 0 ? selectedSubLabels.slice(0, 3).join(', ') + (selectedSubLabels.length > 3 ? ' + ' + (selectedSubLabels.length - 3) + ' more' : '') : text}</Text>
-                    <Icon
+                     <Icon
                         icon="ChevronDown"
                         width={16}
                         height={16}
-                        color={ colors.fgTertiary}
+                        className={"text-neutral-600"}
                     />
                 </Row>
             </Pressable>
