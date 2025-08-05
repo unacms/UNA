@@ -92,7 +92,6 @@ const TabScene = React.memo(({
 }) => {
 
     const handleEndReached = useCallback(() => {
-        console.log("handleEndReached-----------------");
         if (!route?.endpoint || route?.endpoint?.params?.start === 0 || refreshing || route?.endpoint?.finished)
             return;
         fetchNextPage();
@@ -397,18 +396,35 @@ export function Conductor({ isCoverDisabled, header, defaultHeaderHeight = 109, 
         isProfileHeader: isProfileHeader
     };
     if (isProfileHeader) {
-        Object.assign(tabSceneProps, {
-            headerHeight: isProfileHeader ? 0 : defaultHeaderHeight,
-            headerComponent: <>
-                <CoverSmall showMoreMenu={true} context={currentRoute.pageData.context} data={currentRoute.pageData.cover_block} />
-                {sceneHeader}
-            </>,
-            ListHeaderComponent: <>
-                <Cover data={currentRoute.pageData.cover_block} showMoreMenu={true} uri={currentRoute.pageData.uri} context={currentRoute.pageData.context} />
-                {sceneHeader}
-                {filter}
-            </>
-        });
+        if (currentRoute?.pageData) {// may be need to fix
+            Object.assign(tabSceneProps, {
+                headerHeight: isProfileHeader ? 0 : defaultHeaderHeight,
+                headerComponent: <>
+                    <CoverSmall showMoreMenu={true} context={currentRoute?.pageData?.context} data={currentRoute.pageData?.cover_block} />
+                    {sceneHeader}
+                </>,
+                ListHeaderComponent: <>
+                    <Cover data={currentRoute.pageData?.cover_block} showMoreMenu={false} uri={currentRoute.pageData?.uri} context={currentRoute?.pageData?.context} />
+                    {sceneHeader}
+                    {filter}
+                </>
+            });
+        }else{
+            if (prevRoute){
+            Object.assign(tabSceneProps, {
+                headerHeight: isProfileHeader ? 0 : defaultHeaderHeight,
+                headerComponent: <>
+                    <CoverSmall showMoreMenu={true} context={prevRoute?.pageData?.context} data={prevRoute.pageData?.cover_block} />
+                    {sceneHeader}
+                </>,
+                ListHeaderComponent: <>
+                    <Cover data={prevRoute.pageData?.cover_block} showMoreMenu={false} uri={prevRoute.pageData?.uri} context={prevRoute?.pageData?.context} />
+                    {sceneHeader}
+                    {filter}
+                </>
+            });
+            }
+        }
     }
     else {
         Object.assign(tabSceneProps, {

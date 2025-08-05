@@ -336,7 +336,7 @@ const getIcon = (sIcon, iIndex, classIconName, sClassText, sIconContainer, iIcon
         );
     }
     return (
-        <Icon key={iIndex+sIcon} className={classIconName ? classIconName : sClassText + sIconContainer} icon={sIcon}></Icon>
+        <Icon key={iIndex+sIcon} className={classIconName ? classIconName : sClassText + sIconContainer} size={iIconSize} icon={sIcon}></Icon>
     );
 };
 

@@ -4,7 +4,7 @@ import { IconSet } from 'app/icons';
 import { findIconFromRemote, appSetting } from 'app/lib/util'
 import { Theme } from 'app/design/theme';
 import { useMemo } from 'react';
-import SvgIcons from  'app/icons-svg';
+import SvgIcons from 'app/icons-svg';
 import { SvgXml } from 'react-native-svg';
 import { cssInterop } from 'nativewind';
 
@@ -26,24 +26,23 @@ export function Icon(props) {
 
     //const IconComponent = useMemo(() => IconSet[processedIcon], [processedIcon]);
 
-
- 
-
-  const IconComponent = useMemo(() => {
-    const IconComponent2 = IconSet[processedIcon];
-    IconComponent2.displayName = processedIcon;
-
-    return cssInterop(IconComponent2, {
-      className: {
-        target: 'style',
-        nativeStyleToProp: {
-          color: true,
-          width: true,
-          height: true,
-        },
-      },
-    });
-  }, [processedIcon]);
+    const IconComponent = useMemo(() => {
+        const IconComponent2 = IconSet[processedIcon];
+        
+        if (IconComponent2){
+            IconComponent2.displayName = processedIcon;
+            return cssInterop(IconComponent2, {
+                className: {
+                    target: 'style',
+                    nativeStyleToProp: {
+                        color: true,
+                        width: true,
+                        height: true,
+                    },
+                },
+            });
+        }
+    }, [processedIcon]);
 
 
     if (!icon)
@@ -52,21 +51,21 @@ export function Icon(props) {
     if (InlineIcon)
         return <InlineIcon width={props.width || size} height={props.height || size} color={color} />;
 
-    if (isXmlSvg) 
+    if (isXmlSvg)
         return <SvgXml xml={icon} width={props.width || size} height={props.height || size} />
 
     if (!IconComponent) {
         console.log('Icon not found:', processedIcon);
-        return null; 
+        return null;
     }
 
     return (
-        <IconComponent 
-            color={color || colors.default} 
-            size={size} 
+        <IconComponent
+            color={color || colors.default}
+            size={size}
             strokeWidth={_strokeWidth}
-            className={className} 
-            {...rest} 
+            className={className}
+            {...rest}
         />
     );
 }

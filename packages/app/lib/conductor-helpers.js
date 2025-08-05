@@ -256,13 +256,9 @@ export function addMoreData(newItems, endpoint, setRoutes, index, blocks, routes
         }
 
         if (pageData && !route.pageData) {
-           
             updatedRoute.pageData = pageData;
-
             const blocks2 = processBlocks(updatedRoute.blocks);
-
             updatedRoute.leftSideBarBlocks = blocks2.leftBlocks;
-            console.log("initedTabs3", updatedRoute.pageData)
         }
 
         if (pageData?.config && !route.config) {

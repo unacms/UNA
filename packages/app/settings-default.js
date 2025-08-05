@@ -656,7 +656,7 @@ export const settingsDefault = {
             {
                 key: '/tab2',
                 title: 'Messages',
-                url: '/posts-home',
+                url: '/create-post',
                 icon: 'MessageCircleMore',
             },
             {
@@ -1162,7 +1162,7 @@ export const settingsDefault = {
         },
         switcher: {
             // Container
-            'u-controls-switcher-container': 'items-center flex-row-reverse justify-between gap-x-2 h-14 min-w-14 rounded-xl flex-auto p-3 bg-input border border-border flex',
+            'u-controls-switcher-container': '',
 
             // Text
             'u-controls-switcher-text': 'text-neutral-800 dark:text-neutral-200 text-base',
@@ -1173,7 +1173,7 @@ export const settingsDefault = {
             'u-controls-switcher-track-sm': 'w-10 h-4 p-0.5',
 
             // Thumb
-            'u-controls-switcher-thumb': 'rounded-full aspect-square bg-white web:transition-transform web:duration-200',
+            'u-controls-switcher-thumb': 'rounded-full  bg-white web:transition-transform web:duration-200',
             'u-controls-switcher-thumb-base': 'h-6 w-6',
             'u-controls-switcher-thumb-sm': 'h-3 w-3',
 

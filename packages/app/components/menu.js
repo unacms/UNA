@@ -156,7 +156,7 @@ export default function ElementMenu(oProps) {
             }
             return (
 
-                <View {...cntProps} key={`menu${index}`} className={` ${bShowVertical
+                <View key={`menu${index}`} className={` ${bShowVertical
                         ? 'w-full  '
                         : oProps?.params?.button_full_width === true
                             ? ' flex-1 '

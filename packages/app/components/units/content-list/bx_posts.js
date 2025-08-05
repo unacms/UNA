@@ -26,7 +26,7 @@ Units.Base = function Base({ data, imageSizes }) {
             </View>
             <View className="flex-auto sm:h-40 mt-2 flex-col p-2">
                 <Link href={data.url}>
-                    <Text numberOfLines={2} className="text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary leading-tight text-base  font-semibold">
+                    <Text numberOfLines={2} className="text-neutral-950 tracking-tight dark:text-neutral-50 web:sm:hover:text-primary leading-tight text-base  font-semibold">
                         {data.title}
                     </Text>
                 </Link>
@@ -56,7 +56,7 @@ Units.Search = function Search({ data, imageSizes }) {
             </View>
             <View className="flex-auto sm:h-40 mt-2 flex-col p-2">
                 <Link href={data.url}>
-                    <Text numberOfLines={2} className="text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary leading-tight text-base  font-semibold">
+                    <Text numberOfLines={2} className="text-neutral-950 tracking-tight dark:text-neutral-50 web:sm:hover:text-primary leading-tight text-base  font-semibold">
                         {data.title}
                     </Text>
                 </Link>
@@ -73,7 +73,6 @@ Units.Search = function Search({ data, imageSizes }) {
 
 Units.Small = function Small({ data, imageSizes }) {
     return (
-
         <Card padding={cd('p-sm')} className='mb-2 md:mb-0'>
             {data.image && (
                 <View className="aspect-square md:aspect-video flex-none rounded-xl  overflow-hidden h-30 sm:h-36 mb-auto  ">
@@ -89,7 +88,7 @@ Units.Small = function Small({ data, imageSizes }) {
 
             <View className="flex-auto">
                 <Link href={data.url}>
-                    <Text numberOfLines={2} className="text-neutral-800  mb-1 tracking-tight leading-tight dark:text-neutral-200 sm:hover:text-primary text-lg font-bold">
+                    <Text numberOfLines={2} className="text-neutral-800  mb-1 tracking-tight leading-tight dark:text-neutral-200 web:sm:hover:text-primary text-lg font-bold">
                         {data.title}
                     </Text>
                     <Text numberOfLines={2} className="text-neutral-600 mb-2 dark:text-neutral-400 text-sm">

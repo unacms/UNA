@@ -153,7 +153,7 @@ export default function ScrollList({
     }
 
     return (
-        <View className={`flex-1 ${cd('gap-md')}`} style={{ paddingTop: isSmallScreen && !useCustomScrollHandler ? headerHeight : 0, paddingBottom: isSmallScreen ? 64 : 0 }}>
+        <View className={`flex-1`} style={{ paddingTop: isSmallScreen && !useCustomScrollHandler ? headerHeight : 0, paddingBottom: isSmallScreen ? 64 : 0 }}>
             {enhanced}
             {isSmallScreen && <Animated.View className="backdrop-blur-lg" style={[headerStyle]}>
 

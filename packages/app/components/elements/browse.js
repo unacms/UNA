@@ -296,7 +296,7 @@ export default function (props) {
         ));
     }
 
-    const isShowPreloads = dataItems.data.length == 0 && ((dataItems?.params?.start === 0 && (!props.only_one_page && data.unit != 'notifications')) || status === 'loading');
+    const isShowPreloads = dataItems.data.length == 0 && ((dataItems?.params?.start === 0 && (!props.only_one_page /*&& data.unit != 'notifications'*/)) || status === 'loading');
     let PreloadComponent = null;
     if (isShowPreloads){
         PreloadComponent = Preload
