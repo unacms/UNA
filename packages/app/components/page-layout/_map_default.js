@@ -10,7 +10,6 @@ import PageCustomNotif from './notif';
 import PageCustomCreateAccount from './create-account';
 import PageCustomLogin from './login';
 import PageUniversal from './universal';
-import PagePricing from './pricing';
 
 export const componentsMapDefault = {
     'default': PageLayoutDefault,
@@ -26,7 +25,6 @@ export const componentsMapDefault = {
     'notif': PageCustomNotif,
     'create-account': PageCustomCreateAccount,
     'login': PageCustomLogin,
-    'pricing': PagePricing,
     'layout_top_area_bar_right': PageUniversal,
     'layout_topbottom_area_bar_left': PageUniversal,
     'layout_topbottom_area_bar_right': PageUniversal,

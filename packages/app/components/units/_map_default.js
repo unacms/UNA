@@ -4,6 +4,7 @@ import GeneralProfileList from './general-profile-list';
 import Comments from './comments';
 import Notifications from './notifications';
 import Feed from './feed';
+import Price from './price';
 import SearchResults from './search-results';
 
 const GeneralContentList_ = memo(GeneralContentList)
@@ -18,6 +19,7 @@ export const componentsMapDefault = {
     comments: memo(Comments),
     notifications: memo(Notifications),
     feed: memo(Feed),
+    price: memo(Price),
     'search-results': memo(SearchResults)
 };
 

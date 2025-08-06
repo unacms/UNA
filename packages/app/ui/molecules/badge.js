@@ -1,6 +1,5 @@
 import { View } from 'app/design/view';
 import { Text } from 'app/design/typography';
-import { useLayoutSettings } from 'app/context/layout-settings';
 import { appSetting } from 'app/lib/util';
 const badgeTheme = appSetting('theme', 'badges');
 

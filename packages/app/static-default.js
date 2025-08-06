@@ -622,8 +622,12 @@ const ComponentsFooter = () => {
     return <></>
 }
 
-const ComponentsPricing = () => {
-    return <>TODO Pricing</>
+const ComponentsPricingHeader = () => {
+    return <>TODO ComponentsPricingHeader</>
+}
+
+const ComponentsPricingFooter = () => {
+    return <>TODO ComponentsPricingFooter</>
 }
 
 
@@ -631,7 +635,6 @@ const ComponentsFullFooter = () => {
     const { t } = useTranslation()
     return (
         <>
-            {' '}
             <View className="w-full h-16"></View>
             <View className=" w-full p-3 flex-row justify-center bg-background border-t border-border fixed bottom-0 ">
                 <Link href="/">
@@ -689,7 +692,8 @@ export const staticDefault = {
     components_content_empty: ComponentsContentEmpty,
     components_content_login: ComponentsCommentsLogin,
     components_intro: ComponentsIntro,
-    components_pricing: ComponentsPricing,
+    components_pricing_header: ComponentsPricingHeader,
+    components_pricing_footer: ComponentsPricingFooter,
     components_modal: ComponentModal,
     components_dummy: ComponentsDummyComponent,
     components_footer: ComponentsFooter,
