@@ -23,7 +23,7 @@ export default function () {
 
     const menu_launcher_items = appSetting('layout', 'user_remote_config') ? menuItemsByNameNew('menu_post', menuData, currentUser) : menuItemsByName('', appSetting('menu_items', 'menu_launcher'), currentUser);
 
-    if ((menu_launcher_items.length == 0 && menuData) || !bApps)
+    if ((menu_launcher_items.length == 0) || !bApps)
         return <></>;
 
     return (

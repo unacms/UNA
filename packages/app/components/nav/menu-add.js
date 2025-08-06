@@ -23,7 +23,7 @@ export default function MenuAdd({ buttonProps, children }) {
 
     const menu_add_items = appSetting('layout', 'user_remote_config') ? menuItemsByNameNew('menu_post', menuData, currentUser) : menuItemsByName('', appSetting('menu_items', 'menu_add'), currentUser);
 
-    if (menu_add_items.length == 0 && menuData)
+    if (menu_add_items.length == 0)
         return <></>;
 
     buttonProps = buttonProps || {
