@@ -66,9 +66,9 @@ export default function MultiPostForm({ data }) {
                 </View>
             </View>
             <FormModal key={pageData?.ts} pageData={pageData} setPageData={setPageData} />
-            {menu_add_items.length > 0 && <Row className={` w-full gap-2 lg:gap-3 pt-3 lg:pt-4 ' : ''}`}>
+            {menu_add_items.length > 0 && <Row className={` w-full gap-2 pt-2 lg:pt-3 border-t border-muted mt-3 lg:mt-4 xl:mt-6 ' : ''}`}>
                 {menu_add_items.map((item, index) => (
-                    <Button key={item.name} size="base" fullWidth variant="default" onPress={() => handleFormModal(item, null, setPageData, data.params)} startDecorator={item.icon} title={item.title} />
+                    <Button key={item.name} size="base" fullWidth variant="text" onPress={() => handleFormModal(item, null, setPageData, data.params)} startDecorator={item.icon} title={item.title} />
                 ))}
             </Row>}
         </CardList>

@@ -77,7 +77,7 @@ export default function Unit(props) {
         return
 
     return (
-        <CardList padding={cd('p-sm')} >
+        <CardList padding={cd('p-xs')} >
             <Redirect ref={redirectdRef} />
             <Link className="web:group " href={data.url}>
                 <View

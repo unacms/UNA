@@ -35,8 +35,8 @@ function MenuTopItem({ link, title, index, icon, isTitle, isActive }) {
                 <View className="flex-auto group" key={`menu-${index}`}>
                     <Row
                         className={`items-center justify-center py-3 min-w-16 rounded-xl  web:duration-300 web:group-active:opacity-50 ${isActive
-                            ? 'bg-bgritemprimary text-primary dark:bg-bgritemprimary-d web:group-hover:bg-bgritemprimary-h web:dark:group-hover:bg-bgritemprimary-dh'
-                            : 'text-neutral-600 dark:text-neutral-400 web:group-hover:text-neutral-950 web:dark:group-hover:text-neutral-50 web:hover:bg-bgritem web:dark:hover:bg-bgritem-d'
+                            ? 'bg-primary/10 text-primary web:group-hover:bg-primary/20'
+                            : 'text-muted-foreground web:group-hover:text-foreground web:hover:bg-accent/10'
                             }`}
                     >
                         <Icon

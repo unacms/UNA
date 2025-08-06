@@ -1,27 +1,49 @@
-import Unit from 'app/components/unit';
-import { useState, useCallback, useEffect, useRef, useContext, memo, useMemo } from 'react';
+import Unit from 'app/components/unit'
+import {
+    useState,
+    useCallback,
+    useEffect,
+    useRef,
+    useContext,
+    memo,
+    useMemo,
+} from 'react'
 import { View, Row } from 'app/design/view'
-import { useWindowDimensions } from 'react-native';
+import { useWindowDimensions } from 'react-native'
 import { Platform } from 'react-native'
 import UniList from 'app/ui/atoms/unilist'
-import { fetcher } from 'app/lib/fetcher';
-import { appSetting, storageKey, getDataFromCache, storageSet, handleFeedLayoutData, cloneObject, LAYOUT_BREAKPOINTS } from 'app/lib/util'
+import { fetcher } from 'app/lib/fetcher'
+import {
+    appSetting,
+    storageKey,
+    getDataFromCache,
+    storageSet,
+    handleFeedLayoutData,
+    cloneObject,
+    LAYOUT_BREAKPOINTS,
+} from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
-import { getSkeletonForList } from 'app/lib/skeleton-helpers';
-import { useTranslation } from 'react-i18next';
-import Toaster from 'app/ui/atoms/toaster';
-import { storageClear } from 'app/lib/util';
-import { useLayoutData } from 'app/context/layout';
-import { subscribe } from 'app/ui/atoms/socket';
+import { getSkeletonForList } from 'app/lib/skeleton-helpers'
+import { useTranslation } from 'react-i18next'
+import Toaster from 'app/ui/atoms/toaster'
+import { storageClear } from 'app/lib/util'
+import { useLayoutData } from 'app/context/layout'
+import { subscribe } from 'app/ui/atoms/socket'
 import { useCurrentUser } from 'app/context/user'
-import { callFn } from 'app/lib/functions/call';
+import { callFn } from 'app/lib/functions/call'
 import Link from 'app/ui/atoms/link'
-import { Button } from 'app/design/controls';
-import { cd } from 'app/lib/util';
+import { Button } from 'app/design/controls'
+import { cd } from 'app/lib/util'
 
 const Item = memo(({ item, index, numColumns, data, unitMode, props }) => (
-    <View className={numColumns > 1 ? 'w-full pb-2 ' : '  ' + (data.unit != 'feed' ? '   w-full' : '  ') + '  '}>
+    <View
+        className={
+            numColumns > 1
+                ? 'w-full pb-2 '
+                : '  ' + (data.unit != 'feed' ? '   w-full' : '  ') + '  '
+        }
+    >
         <Unit
             unit={data.unit ? data.unit : ''}
             mode={unitMode}
@@ -33,98 +55,126 @@ const Item = memo(({ item, index, numColumns, data, unitMode, props }) => (
             data={item}
         />
     </View>
-));
+))
 
 const getNumCols = (width, props, data) => {
-    if (props.perLine)
-        return props.perLine;
+    if (props.perLine) return props.perLine
 
     if (data.unit.startsWith('general-') || data.unit.startsWith('search-')) {
         return width > 600 ? 4 : 1
     }
     return 1
-};
+}
 
-const MemoizedUniList = memo(UniList);
+const MemoizedUniList = memo(UniList)
 
 export default function (props) {
-    const isWeb = Platform.OS === 'web';
-    const isValidateActive = props.validate ?? true;
-    const isShowEmptyMessage = props.empty_message ?? true;
-    const { layoutData, setLayoutData } = useLayoutData();
-    const toasterRef2 = useRef();
-    const { t } = useTranslation();
-    const [isRefreshing, setIsRefreshing] = useState(false);
-    const [isRevalidate, setIsRevalidate] = useState(false);
-    const { currentUser } = useCurrentUser();
-    const data = props.data;
-    const storageKeyValue = storageKey((props.uri ? props.uri : '') + (data.request_url ? ':' + data.request_url : '') + (data.params?.type ? ':' + data.params?.type : '') + (data.params?.category ? ':' + data.params?.category : '') + (props.cachePrefix ? ':' + props.cachePrefix : ''))
+    const isWeb = Platform.OS === 'web'
+    const isValidateActive = props.validate ?? true
+    const isShowEmptyMessage = props.empty_message ?? true
+    const { layoutData, setLayoutData } = useLayoutData()
+    const toasterRef2 = useRef()
+    const { t } = useTranslation()
+    const [isRefreshing, setIsRefreshing] = useState(false)
+    const [isRevalidate, setIsRevalidate] = useState(false)
+    const { currentUser } = useCurrentUser()
+    const data = props.data
+    const storageKeyValue = storageKey(
+        (props.uri ? props.uri : '') +
+            (data.request_url ? ':' + data.request_url : '') +
+            (data.params?.type ? ':' + data.params?.type : '') +
+            (data.params?.category ? ':' + data.params?.category : '') +
+            (props.cachePrefix ? ':' + props.cachePrefix : '')
+    )
     //const [cachedData, setCachedData] = useState(props.cachePrefix ? false : { state: getDataFromCache('ul:state', storageKeyValue), data: getDataFromCache('ul:data', storageKeyValue) });
-    const cachedData = { state: getDataFromCache('ul:state', storageKeyValue), data: getDataFromCache('ul:data', storageKeyValue) };
-
+    const cachedData = {
+        state: getDataFromCache('ul:state', storageKeyValue),
+        data: getDataFromCache('ul:data', storageKeyValue),
+    }
 
     useEffect(() => {
         if (cachedData && isValidateActive) {
-            revalidateData();
+            revalidateData()
             //TODO revaliadate
         }
         if (props.data.unit == 'feed') {
-            subscribe('bx_timeline_0', 'added', setIsRevalidate);
-            subscribe('bx_timeline_0', 'deleted', setIsRevalidate);
+            subscribe('bx_timeline_0', 'added', setIsRevalidate)
+            subscribe('bx_timeline_0', 'deleted', setIsRevalidate)
         }
-    }, []);
+    }, [])
 
     useEffect(() => {
-        if (isValidateActive)
-            revalidateData();
-    }, [isRevalidate]);
+        if (isValidateActive) revalidateData()
+    }, [isRevalidate])
 
     if (data.unit == 'mixed') {
-        data.unit = 'general-profile-list';
+        data.unit = 'general-profile-list'
     }
 
-    let defParams = data.params;
+    let defParams = data.params
 
-    if (props?.params)
-        defParams = { ...defParams, ...props.params };
+    if (props?.params) defParams = { ...defParams, ...props.params }
 
-    if (defParams)
-        defParams.moduleName = data.module ? data.module : '';
-    const browseParams = defParams;
-
+    if (defParams) defParams.moduleName = data.module ? data.module : ''
+    const browseParams = defParams
 
     const getDefaultParams = () => {
-        return { data: (appSetting('cache', 'list') && cachedData?.data ? cachedData.data : []), params: browseParams };
+        return {
+            data:
+                appSetting('cache', 'list') && cachedData?.data
+                    ? cachedData.data
+                    : [],
+            params: browseParams,
+        }
     }
 
-    const [dataItems, setDataItems] = useState(getDefaultParams());
+    const [dataItems, setDataItems] = useState(getDefaultParams())
 
     /* unit mode & change unit mode */
-    const unitMode = props.unitMode ? props.unitMode : appSetting('feed', 'default_view');
+    const unitMode = props.unitMode
+        ? props.unitMode
+        : appSetting('feed', 'default_view')
 
-    const windowWidth = useWindowDimensions().width;
-    const windowHeight = useWindowDimensions().height;
-    const [numColumns, setNumColumns] = useState(getNumCols(windowWidth, props, data));
+    const windowWidth = useWindowDimensions().width
+    const windowHeight = useWindowDimensions().height
+    const [numColumns, setNumColumns] = useState(
+        getNumCols(windowWidth, props, data)
+    )
 
     const handleLayout = (event) => {
-        const containerWidth = event.nativeEvent.layout.width;
-        const numColumnsNew = getNumCols(containerWidth, props, data);
+        const containerWidth = event.nativeEvent.layout.width
+        const numColumnsNew = getNumCols(containerWidth, props, data)
         if (numColumnsNew != numColumns) {
-            setNumColumns(numColumnsNew);
+            setNumColumns(numColumnsNew)
         }
-    };
+    }
 
     //const hOffset = isWeb ? (windowWidth < LAYOUT_BREAKPOINTS.lg ? 126 : 64) : 106;
-    const hOffset = isWeb ? 0 : 56;
-    const styles = isWeb ? {} : { height: (defParams?.height ? defParams.height : windowHeight - hOffset) }
+    const hOffset = isWeb ? 0 : 56
+    const styles = isWeb
+        ? {}
+        : {
+              height: defParams?.height
+                  ? defParams.height
+                  : windowHeight - hOffset,
+          }
 
-    const fetchData = useCallback(async ({ }) => {
-        const sUrl = data.request_url + JSON.stringify({ 'params': dataItems.params });
-        return (await fetcher(sUrl)).data[0].data;
-    }, [dataItems.params]);
+    const fetchData = useCallback(
+        async ({}) => {
+            const sUrl =
+                data.request_url + JSON.stringify({ params: dataItems.params })
+            return (await fetcher(sUrl)).data[0].data
+        },
+        [dataItems.params]
+    )
 
-    const qKey = [data.request_url + browseParams?.type + defParams?.category + props?.cachePrefix];
-    const queryClient = useQueryClient();
+    const qKey = [
+        data.request_url +
+            browseParams?.type +
+            defParams?.category +
+            props?.cachePrefix,
+    ]
+    const queryClient = useQueryClient()
     const {
         status,
         data: newData,
@@ -133,66 +183,61 @@ export default function (props) {
         isFetchingNextPage,
         refetch,
     } = useInfiniteQuery(qKey, fetchData, {
-        getNextPageParam: lastPage => {
-            if (lastPage.data.length == 0)
-                return;
+        getNextPageParam: (lastPage) => {
+            if (lastPage.data.length == 0) return
             if (props?.maxItems && lastPage.data.length >= props?.maxItems)
-                return;
+                return
 
-            return lastPage.params;
+            return lastPage.params
         },
         enabled: isWeb ? false : false, // on native no cashed data
-    });
+    })
 
     const onStartRefresh = () => {
-        setDataItems(getDefaultParams());
-        setIsRefreshing(true);
-    };
+        setDataItems(getDefaultParams())
+        setIsRefreshing(true)
+    }
 
     useEffect(() => {
         if (isRefreshing) {
-            queryClient.removeQueries(qKey);
-            setIsRefreshing(false);
-            console.log('refetch');
-            refetch();
+            queryClient.removeQueries(qKey)
+            setIsRefreshing(false)
+            console.log('refetch')
+            refetch()
         }
-    }, [isRefreshing]);
+    }, [isRefreshing])
 
-    const handleEndReached = useCallback((lastItemIndex) => {
-        if (!hasNextPage)
-            return;
-        if (props.only_one_page == true)
-            return;
-        if (props.extraProps?.limit == true)
-            return;
-        if (isFetchingNextPage)
-            return;
-        if (lastItemIndex == false)
-            return;
-        fetchNextPage();
-    }, [hasNextPage, props.only_one_page, isFetchingNextPage]);
+    const handleEndReached = useCallback(
+        (lastItemIndex) => {
+            if (!hasNextPage) return
+            if (props.only_one_page == true) return
+            if (props.extraProps?.limit == true) return
+            if (isFetchingNextPage) return
+            if (lastItemIndex == false) return
+            fetchNextPage()
+        },
+        [hasNextPage, props.only_one_page, isFetchingNextPage]
+    )
 
     const getCurrentParams = (isUseDefault = false) => {
         if (newData?.pages.length > 0) {
-            let ld = newData.pages[newData.pages.length - 1].params;
+            let ld = newData.pages[newData.pages.length - 1].params
             let params = Object.assign({}, browseParams, ld)
             if (data.unit != 'notifications')
-                params.start = parseInt(ld.start) + parseInt(ld.per_page);
+                params.start = parseInt(ld.start) + parseInt(ld.per_page)
             if (isUseDefault) {
-                params.start = 0;
+                params.start = 0
             }
 
-            return params;
+            return params
         }
-        return browseParams;
+        return browseParams
     }
 
     let sSkeleton = data.module ? data.module : data.unit
-    if (props?.skeleton)
-        sSkeleton = props?.skeleton;
+    if (props?.skeleton) sSkeleton = props?.skeleton
 
-    if (props.unitType)
-        sSkeleton = [sSkeleton, props.unitType];
+    if (props.unitType) sSkeleton = [sSkeleton, props.unitType]
     const Preload = getSkeletonForList(sSkeleton, numColumns)
 
     useEffect(() => {
@@ -200,178 +245,284 @@ export default function (props) {
             setDataItems({
                 data: [
                     ...dataItems.data,
-                    ...(newData?.pages ? newData.pages.map(page => page.data).flat() : [])
-                ], params: getCurrentParams()
+                    ...(newData?.pages
+                        ? newData.pages.map((page) => page.data).flat()
+                        : []),
+                ],
+                params: getCurrentParams(),
             })
         }
-    }, [newData?.pages]);
+    }, [newData?.pages])
 
     /* UPDATE CONTENT PART */
 
     const setToaster2Visible = (val) => {
-        const current = toasterRef2.current;
+        const current = toasterRef2.current
         if (current) {
-            current.setVisible(val);
+            current.setVisible(val)
         }
     }
 
     const revalidateData = async () => {
-        let endpointUpdateContent = '';
-        let bUpdateContent = false;
-        const revalidatedData = JSON.parse(isRevalidate);
-        if (revalidatedData.author_id != currentUser?.id && dataItems.data.length > 0 && props.sidebar !== true && props.no_scroll !== true) {
-            const a = [...new Set(dataItems.data
-                .filter(item => item.type !== 'block')
-                .map(item => item.id)
-            )].slice(0, 10).join(',');
+        let endpointUpdateContent = ''
+        let bUpdateContent = false
+        const revalidatedData = JSON.parse(isRevalidate)
+        if (
+            revalidatedData.author_id != currentUser?.id &&
+            dataItems.data.length > 0 &&
+            props.sidebar !== true &&
+            props.no_scroll !== true
+        ) {
+            const a = [
+                ...new Set(
+                    dataItems.data
+                        .filter((item) => item.type !== 'block')
+                        .map((item) => item.id)
+                ),
+            ]
+                .slice(0, 10)
+                .join(',')
             if (a) {
-                endpointUpdateContent = data.request_url + JSON.stringify({
-                    'params': { ...getCurrentParams(), validate: a }
-                });
-                bUpdateContent = true;
+                endpointUpdateContent =
+                    data.request_url +
+                    JSON.stringify({
+                        params: { ...getCurrentParams(), validate: a },
+                    })
+                bUpdateContent = true
             }
         }
         if (bUpdateContent) {
-
-            const validatedData = (await fetcher(endpointUpdateContent)).data?.[0]?.data?.data;
-            if (validatedData && (validatedData == 'valid' || validatedData == 'invalid')) {
-                setToaster2Visible(validatedData !== 'valid');
+            const validatedData = (await fetcher(endpointUpdateContent))
+                .data?.[0]?.data?.data
+            if (
+                validatedData &&
+                (validatedData == 'valid' || validatedData == 'invalid')
+            ) {
+                setToaster2Visible(validatedData !== 'valid')
             }
         }
     }
 
     const showNewContent2 = async () => {
         storageClear('ul:data', storageKeyValue)
-        storageClear('ul:state', storageKeyValue);
-        setDataItems({ data: [], params: browseParams });
+        storageClear('ul:state', storageKeyValue)
+        setDataItems({ data: [], params: browseParams })
         // HECH HERE !!!
         // setToaster2Visible(false);
     }
     /* UPDATE CONTENT PART */
 
     /* NEW POST TO FEED */
-    const handleLayoutDataChange = useCallback((newLayoutData) => {
-        if (data.unit === 'feed' && newLayoutData && newLayoutData.data && (newLayoutData?.type == 'feed:new_content' || newLayoutData?.type == 'feed:remove_content')) {
-            let clonedData = cloneObject(dataItems.data);
-            const data2 = handleFeedLayoutData(newLayoutData, clonedData)
-            setDataItems({ data: data2, params: dataItems.params });
-            setLayoutData(null)
-        }
-    }, [data.unit, dataItems.data, dataItems.params, setLayoutData]);
+    const handleLayoutDataChange = useCallback(
+        (newLayoutData) => {
+            if (
+                data.unit === 'feed' &&
+                newLayoutData &&
+                newLayoutData.data &&
+                (newLayoutData?.type == 'feed:new_content' ||
+                    newLayoutData?.type == 'feed:remove_content')
+            ) {
+                let clonedData = cloneObject(dataItems.data)
+                const data2 = handleFeedLayoutData(newLayoutData, clonedData)
+                setDataItems({ data: data2, params: dataItems.params })
+                setLayoutData(null)
+            }
+        },
+        [data.unit, dataItems.data, dataItems.params, setLayoutData]
+    )
 
     useEffect(() => {
-        handleLayoutDataChange(layoutData);
-    }, [layoutData, handleLayoutDataChange]);
+        handleLayoutDataChange(layoutData)
+    }, [layoutData, handleLayoutDataChange])
     /* NEW POST TO FEED */
 
     useEffect(() => {
-
         if (dataItems.data.length > 0) {
-            storageSet('ul:data', storageKeyValue, dataItems.data);
+            storageSet('ul:data', storageKeyValue, dataItems.data)
         }
-    }, [dataItems.data]);
+    }, [dataItems.data])
 
     useEffect(() => {
         if (dataItems.data.length == 0 && dataItems.params == browseParams) {
             //console.log('refetch2');
-            refetch();
+            refetch()
         }
-    }, [storageKeyValue, dataItems.params, props.cachePrefix]);
+    }, [storageKeyValue, dataItems.params, props.cachePrefix])
 
-    if (dataItems.data.length == 0 && status === 'success' && data.unit == 'notifications' && dataItems?.params?.start > 0) {
-        return <View className="p-8">
-            <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto mb-auto py-4 px-8 h-full items-center rounded-2xl  bg-neutral-500/10 ">
-                <Text className="text-center text-base text-neutral-600 dark:text-neutral-400 ">
-                    No notifications
-                </Text>
+    if (
+        dataItems.data.length == 0 &&
+        status === 'success' &&
+        data.unit == 'notifications' &&
+        dataItems?.params?.start > 0
+    ) {
+        return (
+            <View className="p-8">
+                <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto mb-auto py-4 px-8 h-full items-center rounded-2xl  bg-neutral-500/10 ">
+                    <Text className="text-center text-base text-neutral-600 dark:text-neutral-400 ">
+                        No notifications
+                    </Text>
+                </View>
             </View>
-        </View>
+        )
     }
 
     if (props.sidebar) {
-        const uniqueItems = dataItems.data.filter((v, i, a) => a.findIndex(t => t.id === v.id) === i);
-        const limitedItems = props.extraProps?.limit ? uniqueItems.slice(0, props.extraProps?.limit) : uniqueItems;
+        const uniqueItems = dataItems.data.filter(
+            (v, i, a) => a.findIndex((t) => t.id === v.id) === i
+        )
+        const limitedItems = props.extraProps?.limit
+            ? uniqueItems.slice(0, props.extraProps?.limit)
+            : uniqueItems
         return limitedItems.map((item, index) => (
-            <View key={'item' + index} className={numColumns > 1 ? 'w-full pb-2 ' : '  ' + (data.unit != 'feed' ? '   w-full' : '  ') + '  '}>
-                <Unit unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} sidebar={props.sidebar} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={item} /></View>
-        ));
+            <View
+                key={'item' + index}
+                className={
+                    numColumns > 1
+                        ? 'w-full pb-2 '
+                        : '  ' +
+                          (data.unit != 'feed' ? '   w-full' : '  ') +
+                          '  '
+                }
+            >
+                <Unit
+                    unit={data.unit ? data.unit : ''}
+                    mode={unitMode}
+                    module={data.module ? data.module : ''}
+                    sidebar={props.sidebar}
+                    object_id={data.object_id ? data.object_id : ''}
+                    view={data.view ? data.view : ''}
+                    {...props}
+                    data={item}
+                />
+            </View>
+        ))
     }
 
-    const isShowPreloads = dataItems.data.length == 0 && ((dataItems?.params?.start === 0 && (!props.only_one_page /*&& data.unit != 'notifications'*/)) || status === 'loading');
-    let PreloadComponent = null;
-    if (isShowPreloads){
+    const isShowPreloads =
+        dataItems.data.length == 0 &&
+        ((dataItems?.params?.start === 0 &&
+            !props.only_one_page /*&& data.unit != 'notifications'*/) ||
+            status === 'loading')
+    let PreloadComponent = null
+    if (isShowPreloads) {
         PreloadComponent = Preload
-    }
-    else{
-      //  if (dataItems.data.length == 0 && isShowEmptyMessage){
+    } else {
+        //  if (dataItems.data.length == 0 && isShowEmptyMessage){
         //    PreloadComponent = callFn("noContentByUrl", [data.request_url])
-       // }
+        // }
     }
 
-    const memoizedUniListProps = useMemo(() => ({
-        scrollProps: props?.exProps?.scrollProps,
-        preloadComponent: PreloadComponent,
-        numColumns,
-        mode: 'simple',
-        data: dataItems.data,
-        viewParams: getCurrentParams(),
-        listState: cachedData?.state?.state,
-        unit: data.unit,
-        storagekey: storageKeyValue,
-        useWindowScroll: true,
-        height: props?.height,
-        url: props?.url,
-        contentContainerStyle: props?.contentContainerStyle,
-        maxToRenderPerBatch: 10,
-        initialNumToRender: 10,
-        no_scroll: props.no_scroll,
-        onRefresh: onStartRefresh,
-        refreshing: isRefreshing,
-        renderItem: ({ item, index }) => isWeb ? 
-            <Item key={'item' + item.id} item={item} index={index} numColumns={numColumns} data={data} unitMode={unitMode} props={props} /> : 
-            <Item item={item} index={index} numColumns={numColumns} data={data} unitMode={unitMode} props={props} />,
-        onEndReached: handleEndReached,
-        ListHeaderComponent: (props.exProps?.headerBlocks) ? props.exProps?.headerBlocks : '',
-        ListFooterComponent: ((hasNextPage && isFetchingNextPage)) ? Preload : (dataItems.data.length == 0 && isShowEmptyMessage) ? callFn("noContentByUrl", [data.request_url]) : null,
-    }), [
-        props?.exProps?.scrollProps,
-        PreloadComponent,
-        numColumns,
-        dataItems.data,
-        getCurrentParams,
-        cachedData?.state?.state,
-        data.unit,
-        storageKeyValue,
-        props?.height,
-        props?.url,
-        props?.contentContainerStyle,
-        props.no_scroll,
-        onStartRefresh,
-        isRefreshing,
-        isWeb,
-        data,
-        unitMode,
-        props,
-        handleEndReached,
-        props.exProps?.headerBlocks,
-        hasNextPage,
-        isFetchingNextPage,
-        Preload
-    ]);
+    const memoizedUniListProps = useMemo(
+        () => ({
+            scrollProps: props?.exProps?.scrollProps,
+            preloadComponent: PreloadComponent,
+            numColumns,
+            mode: 'simple',
+            data: dataItems.data,
+            viewParams: getCurrentParams(),
+            listState: cachedData?.state?.state,
+            unit: data.unit,
+            storagekey: storageKeyValue,
+            useWindowScroll: true,
+            height: props?.height,
+            url: props?.url,
+            contentContainerStyle: props?.contentContainerStyle,
+            maxToRenderPerBatch: 10,
+            initialNumToRender: 10,
+            no_scroll: props.no_scroll,
+            onRefresh: onStartRefresh,
+            refreshing: isRefreshing,
+            renderItem: ({ item, index }) =>
+                isWeb ? (
+                    <Item
+                        key={'item' + item.id}
+                        item={item}
+                        index={index}
+                        numColumns={numColumns}
+                        data={data}
+                        unitMode={unitMode}
+                        props={props}
+                    />
+                ) : (
+                    <Item
+                        item={item}
+                        index={index}
+                        numColumns={numColumns}
+                        data={data}
+                        unitMode={unitMode}
+                        props={props}
+                    />
+                ),
+            onEndReached: handleEndReached,
+            ListHeaderComponent: props.exProps?.headerBlocks
+                ? props.exProps?.headerBlocks
+                : '',
+            ListFooterComponent:
+                hasNextPage && isFetchingNextPage
+                    ? Preload
+                    : dataItems.data.length == 0 && isShowEmptyMessage
+                    ? callFn('noContentByUrl', [data.request_url])
+                    : null,
+        }),
+        [
+            props?.exProps?.scrollProps,
+            PreloadComponent,
+            numColumns,
+            dataItems.data,
+            getCurrentParams,
+            cachedData?.state?.state,
+            data.unit,
+            storageKeyValue,
+            props?.height,
+            props?.url,
+            props?.contentContainerStyle,
+            props.no_scroll,
+            onStartRefresh,
+            isRefreshing,
+            isWeb,
+            data,
+            unitMode,
+            props,
+            handleEndReached,
+            props.exProps?.headerBlocks,
+            hasNextPage,
+            isFetchingNextPage,
+            Preload,
+        ]
+    )
 
     return (
-        <View className='w-full h-full'>
-            <View className='w-full' onLayout={handleLayout}></View>
-            <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" />
-            <View className='w-full  ' style={styles} >
+        <View className="w-full h-full">
+            <View className="w-full" onLayout={handleLayout}></View>
+            <Toaster
+                ref={toasterRef2}
+                onPress={showNewContent2}
+                variant="primary"
+                title="Show New Posts"
+                size="sm"
+            />
+            <View className="w-full  " style={styles}>
                 {props.showTitleInside ? (
-                    <Row className='items-center justify-between px-2 py-1 mb-3'>
-                        <Text className=" text-card-foreground text-xl lg:text-2xl font-bold leading-none lg:leading-none tracking-tight ">{t(props.block.title)}</Text>
-                        {props.addLink ? (<Link href={props.addLink.url}><Button variant='link' size='sm' rounded title={t(props.addLink.text)} /></Link>) : null}
-                    </Row>) : <></>}
+                    <Row className="items-center justify-between px-2 my-3">
+                        <Text className=" text-card-foreground text-xl font-bold leading-none lg:leading-none tracking-tight ">
+                            {t(props.block.title)}
+                        </Text>
+                        {props.addLink ? (
+                            <Link href={props.addLink.url}>
+                                <Button
+                                    variant="link"
+                                    size="sm"
+                                    rounded
+                                    title={t(props.addLink.text)}
+                                />
+                            </Link>
+                        ) : null}
+                    </Row>
+                ) : (
+                    <></>
+                )}
                 <UniList {...memoizedUniListProps} />
             </View>
         </View>
-    );
+    )
 }
-
