@@ -32,7 +32,8 @@ function DefaultUnit({ data }) {
         let res = await fetcher('/api.php?r=' + appSetting("urls", "cmts") + '/&params[]={"module":"' + data?.cmts?.module + '","object_id":' + data?.cmts?.object_id + '}');
         res?.data?.form?.data?.inputs?.cmt_text && (res.data.form.data.inputs.cmt_text.autofocus = true);
         setCmtsData({
-            title: data.author_data.display_name + "'s post", data: <CommentsModal initFormData={initFormData}
+            title: data.author_data.display_name + "'s post", 
+            data: <CommentsModal initFormData={initFormData}
                 itemContent={{
                     id: "block-comments", data: <><View className=' p-3 lg:p-4 gap-3 lg:gap-4 '><Author data={data} url={url} t={t} />{MainContentComponent}</View></>
                 }}
