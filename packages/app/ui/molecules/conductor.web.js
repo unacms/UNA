@@ -104,9 +104,9 @@ const AddMenu = (menu, filter) => {
 
         let btn = undefined;
         if (button.section)
-            btn = <Search section={button.section} params={{ trigger: { size: "sm", ring: "p-1" } }} />
+            btn = <Search section={button.section} params={{ trigger: { size: "sm" } }} />
         else {
-            btn = <Button title={t(button.title)} startDecorator={button.icon} ring="p-1" variant="secondary" rounded size="sm" onPress={() => (handleFormModal(button, event, setPageData))} />;
+            btn = <Button title={t(button.title)} startDecorator={button.icon}  variant="secondary" rounded size="sm" onPress={() => (handleFormModal(button, event, setPageData))} />;
             btn = (button.link && button.name != "Add") ? <Link href={button.link} >{btn}</Link> : btn
         }
 
@@ -179,7 +179,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
                 className={' pupurs' + menu_settings?.class ?? ''}
                 onPress={handlePress}
             >
-                <Row className="  hover:cursor-pointer justify-between bg-bgritem dark:bg-bgritem-d my-0.5 flex flex-row h-11 items-center px-3 text-base rounded-xl hover:bg-bgritem-h dark:hover:bg-bgritem-dh items-center min-w-[192px]">
+                <Row className="  hover:cursor-pointer justify-between  flex flex-row h-11 items-center px-3 text-base rounded-xl web:hover:bg-muted items-center ">
                     {translatedTitle}
                     {addonContent}
                 </Row>
@@ -290,7 +290,7 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, windowWidth, isC
         <>
             <Animated.View className={`${conductorTheme.cover_base} cover-1 `} style={[{ zIndex: '50' }, animatedStyleHeader2]}>
                 <ViewRef ref={cover1Ref} className={conductorTheme.cover_content + ' aaaa'}   >
-                    {(isCover && !isHideCover) && <View className="w-full dfsdf">
+                    {(isCover && !isHideCover) && <View className="w-full pb-4 border-b border-muted mb-1">
                         <Cover data={pageData.cover_block} mode={headerSettings.cover} uri={uri} context={pageData.context} />
                     </View>}
                     <View className="w-full ">
@@ -383,7 +383,7 @@ const RenderSceneHeader = ({ route, setFilterValue }) => {
     )
 };
 
-export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMenu, leftSideBar, leftSideBarBlocks, leftSideBarWidth = appSetting('conductor', 'sidebar_width'), skeleton = '', onChangeRoute, keyword, layoutName, defaultHeaderHeight = 112 }) {
+export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMenu, leftSideBar, leftSideBarBlocks, leftSideBarWidth = appSetting('conductor', 'sidebar_width'), skeleton = '', onChangeRoute, keyword, layoutName, defaultHeaderHeight = 120 }) {
     const uniRef = useRef();
     const { currentUser } = useCurrentUser();
     const { setBottomSheetData } = useBottomSheetData();

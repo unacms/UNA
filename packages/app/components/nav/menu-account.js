@@ -204,7 +204,7 @@ export default function MenuAccount({ buttonProps, children }) {
                                         align="start"
                                         solid
                                         size="sm"
-                                        ring="p-1"
+                                        
                                         startDecorator="CircleUserRound"
                                         title={t('See all profiles')}
                                     />

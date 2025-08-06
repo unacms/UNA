@@ -51,7 +51,7 @@ export default function MultiPostForm({ data }) {
         <CardList>
             <View className=" flex-row gap-2 lg:gap-3 ">
                 <View className="my-auto">
-                    <Profile {...profileData} displaySize="lg" displayType="unit_wo_info" />
+                    <Profile {...profileData} displaySize="base" displayType="unit_wo_info" />
                 </View>
                 <View className="flex-auto">
                     <Button
@@ -68,7 +68,7 @@ export default function MultiPostForm({ data }) {
             <FormModal key={pageData?.ts} pageData={pageData} setPageData={setPageData} />
             {menu_add_items.length > 0 && <Row className={` w-full gap-2 lg:gap-3 pt-3 lg:pt-4 ' : ''}`}>
                 {menu_add_items.map((item, index) => (
-                    <Button key={item.name} size="base" fullWidth variant="text" onPress={() => handleFormModal(item, null, setPageData, data.params)} startDecorator={item.icon} title={item.title} />
+                    <Button key={item.name} size="base" fullWidth variant="default" onPress={() => handleFormModal(item, null, setPageData, data.params)} startDecorator={item.icon} title={item.title} />
                 ))}
             </Row>}
         </CardList>
