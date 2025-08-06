@@ -68,12 +68,16 @@ function DefaultUnit({ data }) {
                         <MenuManage id={data.id} menu={data?.menu_manage} setViewState={setViewState} />
                     </View>
                 </View>
+                <View className='mb-3 lg:mb-4'>
                 {MainContentComponent}
-                <View className='mt-3 lg:mt-4'>
-                    {(!!data.menu_counters && appSetting('feed', 'counters_menu')) && <CounterMenu data={data.menu_counters} showCommentsModal={showCommentsModal} />}
                 </View>
-                <View className=' border-t mt-1 border-bdr dark:border-bdr-d p-1 '>
-                    <ActionMenu data={data.menu_actions} showCommentsModal={showCommentsModal} />
+                <View className='flex-row flex-wrap'>
+                    <View className='mb-1 w-full'>
+                        {(!!data.menu_counters && appSetting('feed', 'counters_menu')) && <CounterMenu data={data.menu_counters} showCommentsModal={showCommentsModal} />}
+                    </View>
+                    <View className='w-full border-t border-bdr dark:border-bdr-d  '>
+                        <ActionMenu data={data.menu_actions} showCommentsModal={showCommentsModal} />
+                    </View>
                 </View>
                 {commentsData && <CommentsSection url={url} t={t} isCommentsModal={isCommentsModal} showCommentsModal={showCommentsModal} commentsDataInline={commentsData} data={data} isShowMoreComments={isShowMoreComments} />}
             </CardList>

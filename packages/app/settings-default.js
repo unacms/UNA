@@ -327,7 +327,7 @@ export const settingsDefault = {
             show_counter: true,
             show_combined: true,
             button_variant: 'text',
-            button_size: 'xs',
+            button_size: 'sm',
             align_items: 'between',
             no_gap_between_buttons: false,
         },
@@ -1095,7 +1095,7 @@ export const settingsDefault = {
             'u-card-padding': ' py-3 lg:py-4 xl:py-6 ',
             'u-card-header': 'flex px-3 sm:px-4 lg:px-6 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4',
             'u-card-icon': 'text-card-foreground px-4 gap-y-2 gap-x-3',
-            'u-card-title': 'text-card-foreground text-xl lg:text-2xl font-bold leading-8 lg:leading-8 tracking-tight',
+            'u-card-title': 'text-card-foreground text-xl font-bold leading-none tracking-tight',
             'u-card-description': 'text-muted-foreground text-sm lg:text-base',
             'u-card-content': 'text-card-foreground px-3 lg:px-4 xl:px-6 gap-y-3 lg:gap-y-4 gap-3 lg:gap-4',
             'u-card-footer': 'flex text-card-foreground px-4 gap-y-2 gap-x-3',
@@ -1111,7 +1111,7 @@ export const settingsDefault = {
             'u-block-header': 'flex flex-row items-center px-3 lg:px-4 xl:px-6 gap-3 lg:gap-4',
             'u-block-icon': 'text-card-foreground',
             'u-block-name': 'flex flex-col flex-auto gap-y-2 gap-x-4',
-            'u-block-title': 'text-card-foreground text-xl lg:text-2xl font-bold leading-none lg:leading-none tracking-tight',
+            'u-block-title': 'text-card-foreground text-xl font-bold leading-none lg:leading-none tracking-tight',
             'u-block-description': 'text-muted-foreground text-sm lg:text-base',
             'u-block-content': 'text-card-foreground px-3 lg:px-4 xl:px-6 gap-y-3 lg:gap-y-4 gap-3 lg:gap-4',
             'u-block-footer': 'flex text-card-foreground px-3 lg:px-4 xl:px-6 gap-y-3 lg:gap-4 ',
@@ -1239,7 +1239,7 @@ export const settingsDefault = {
             'u-btn-accent-trans': '  web:duration-300',
 
             'u-btn-secondary-cnt':
-                ' border border-transparent bg-secondary web:hover:bg-accent web:active:bg-muted  ',
+                ' border border-transparent bg-secondary web:hover:bg-accent/30 web:active:bg-accent/50  ',
             'u-btn-secondary-text':
                 'font-medium text-muted-foreground web:hover:text-foreground  ',
             'u-btn-secondary-trans': ' web:duration-100 ',
