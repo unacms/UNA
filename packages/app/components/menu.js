@@ -15,7 +15,6 @@ const ButtonEx = memo(({ visibleItemsCount, params }) => {
                 size={params.button_size}
                 variant={params.button_variant || 'default'}
                 startDecorator="Ellipsis"
-                ring={params.button_ring}
                 rounded={params.button_rounded}
             />
         </View>

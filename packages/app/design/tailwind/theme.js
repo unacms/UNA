@@ -214,7 +214,7 @@ const theme = {
             'sm': '0 1px 2px 0 rgb(0 0 0 / 0.05)',
         },
         minWidth: {
-            '200': '200px',
+            '240': '240px',
         },
         maxWidth: {
             '8xl': '1440px',

@@ -44,6 +44,7 @@ export function CoverMenuSmall(props) {
 
 export function CoverMenu(props) {
     let size = props.size || 'sm'
+    const { width } = useWindowDimensions()
 
    // if (width < LAYOUT_BREAKPOINTS.sm) size = 'base'
 
@@ -96,13 +97,12 @@ export function CoverMenu(props) {
                 show_action: true,
                 show_counter: true,
                 show_combined: true,
-                button_variant: 'default',
+                button_variant: 'secondary',
                 button_size: size,
                 button_rounded: false,
                 button_full_width: props?.params.button_full_width ?? false,
                 className: 'flex-wrap',
                 isFixedCount: true,
-                button_ring: 'p-1'
             }}
         />
     )
@@ -110,6 +110,7 @@ export function CoverMenu(props) {
 
 export function CoverMenuMore(props) {
     const isWeb = Platform.OS === 'web'
+    const { width } = useWindowDimensions()
     
     let size = props.size || 'sm'
 
@@ -167,11 +168,10 @@ export function CoverMenuMore(props) {
                 show_combined: true,
                 button_variant: 'secondary',
                 button_size: size,
-                button_rounded: false,
                 button_full_width: props?.params?.button_full_width ?? false,
                 className: 'flex-wrap justify-end',
                 isFixedCount: true,
-                button_ring: 'p-1'
+                button_rounded: width < LAYOUT_BREAKPOINTS.lg,
             }}
         />
     )
@@ -185,7 +185,7 @@ export function CoverMenuMeta(props) {
             params={{
                 button_variant: 'secondary',
                 button_size: 'sm',
-                className: ' min-h-11 flex-row flex-wrap gap-y-3 gap-x-3 flex-none items-center',//lg:w-full lg:gap-y-2
+                className: ' min-h-10 flex-row flex-wrap gap-3 flex-none items-center',//lg:w-full lg:gap-y-2
             }}
         />
     )

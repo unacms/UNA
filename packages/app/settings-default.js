@@ -895,7 +895,7 @@ export const settingsDefault = {
             
         },
         dropdown: {
-            cnt: ' rounded-2xl overflow-hidden p-1 bg-card z-50 border border-border ',
+            cnt: ' rounded-2xl overflow-hidden p-1 bg-card z-50  ',
         },
         conductor: {
             menu: '   w-full items-left justify-center  ',
@@ -1037,7 +1037,7 @@ export const settingsDefault = {
                 title_margin: '', // conditional margin for text container when icon is present
             },
             base: {
-                rounded: 'rounded-xl',
+                rounded: 'rounded-lg',
                 padding: 'h-10 min-w-10 px-2.5',
                 padding_icon_only: 'h-10 w-10 px-2.5',
                 padding_with_title: 'h-10 px-2.5',
@@ -1089,33 +1089,33 @@ export const settingsDefault = {
             'w-sm': 'w-2 lg:w-3 xl:w-4',
         },
         cards: {
-            'u-card-list': 'u-card-list bg-card shadow-sm text-card-foreground border-y sm:border border-input sm:shadow-sm sm:rounded-2xl mt-0.5 sm:mt-3 ',
-            'u-card-list-padding': 'p-3 lg:p-4',
+            'u-card-list': 'u-card-list bg-card shadow-sm text-card-foreground border-y sm:border border-input sm:shadow-sm sm:rounded-2xl mb-0.5 sm:mb-3 lg:mb-4 ',
+            'u-card-list-padding': 'p-3 lg:p-4 xl:p-6',
             'u-card-base': ' u-card-base bg-card shadow-sm text-card-foreground border border-input shadow-sm gap-y-3 sm:gap-y-4 lg:gap-y-6 gap-x-3 sm:gap-x-4 lg:gap-x-6 rounded-2xl',            
-            'u-card-padding': 'py-3 sm:py-4 lg:py-6 ',
+            'u-card-padding': ' py-3 lg:py-4 xl:py-6 ',
             'u-card-header': 'flex px-3 sm:px-4 lg:px-6 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4',
             'u-card-icon': 'text-card-foreground px-4 gap-y-2 gap-x-3',
-            'u-card-title': 'text-card-foreground text-xl lg:text-2xl font-bold leading-none lg:leading-none tracking-tight',
+            'u-card-title': 'text-card-foreground text-xl lg:text-2xl font-bold leading-8 lg:leading-8 tracking-tight',
             'u-card-description': 'text-muted-foreground text-sm lg:text-base',
-            'u-card-content': 'text-card-foreground px-4 gap-y-3',
+            'u-card-content': 'text-card-foreground px-3 lg:px-4 xl:px-6 gap-y-3 lg:gap-y-4 gap-3 lg:gap-4',
             'u-card-footer': 'flex text-card-foreground px-4 gap-y-2 gap-x-3',
         },
         panels: {
-            'u-panel-base': 'm-0 gap-y-4',
+            'u-panel-base': 'm-0 gap-y-md',
             'u-panel-handler': '',
-            'u-panel-line': 'w-1 mx-1.5 group-active:w-1 web:group-hover:w-1 web:group-active:w-sm h-full web:transition-all web:duration-300 web:ease-in-out web:group-hover:bg-muted web:group-active:bg-muted ',
+            'u-panel-line': 'w-0.5 h-full web:group-hover:bg-muted web:group-active:bg-muted ',
             'u-panel-group': 'flex',
         },
         blocks: {
-            'u-block-base': 'bg-card u-max-width-block border border-input text-card-foreground py-3 sm:py-4 lg:py-6 gap-3 lg:gap-4  rounded-2xl',
-            'u-block-header': 'flex flex-row items-center px-3 sm:px-4 lg:px-6 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4',
+            'u-block-base': 'bg-card u-max-width-block border border-input text-card-foreground py-3 lg:py-4 xl:py-6 gap-3 lg:gap-4 rounded-2xl',
+            'u-block-header': 'flex flex-row items-center px-3 lg:px-4 xl:px-6 gap-3 lg:gap-4',
             'u-block-icon': 'text-card-foreground',
             'u-block-name': 'flex flex-col flex-auto gap-y-2 gap-x-4',
             'u-block-title': 'text-card-foreground text-xl lg:text-2xl font-bold leading-none lg:leading-none tracking-tight',
             'u-block-description': 'text-muted-foreground text-sm lg:text-base',
-            'u-block-content': 'text-card-foreground px-3 sm:px-4 lg:px-6 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4',
-            'u-block-footer': 'flex text-card-foreground px-3 sm:px-4 lg:px-6 gap-y-2 sm:gap-y-3 lg:gap-y-4 gap-x-2 sm:gap-x-3 lg:gap-x-4',
-            'u-block-actions': 'flex flex-row text-card-foreground mb-auto gap-x-2 sm:gap-x-3 lg:gap-x-4',
+            'u-block-content': 'text-card-foreground px-3 lg:px-4 xl:px-6 gap-y-3 lg:gap-y-4 gap-3 lg:gap-4',
+            'u-block-footer': 'flex text-card-foreground px-3 lg:px-4 xl:px-6 gap-y-3 lg:gap-4 ',
+            'u-block-actions': 'flex flex-row text-card-foreground mb-auto gap-2 lg:gap-3',
         },
         badges: {
             
@@ -1149,7 +1149,7 @@ export const settingsDefault = {
             'u-controls-tabs-container': 'w-full flex-col overflow-scroll',
 
             // Header (use with inline styles or Tailwind plugin for scroll)
-            'u-controls-tabs-header': 'flex flex-1 flex-row flex-nowrap overflow-x-auto overflow-y-hidden gap-1 bg-muted p-0.5 mb-3 sm:mb-4 lg:mb-6 rounded-full web:scrollbar-none ',
+            'u-controls-tabs-header': 'flex flex-1 flex-row flex-nowrap overflow-x-auto overflow-y-hidden gap-1 bg-muted p-0.5 mb-3 lg:mb-4 rounded-full web:scrollbar-none ',
             
             // Header item base (shared styles without hover)
             'u-controls-tabs-header-item': 'flex rounded-full px-3 py-2 text-sm flex-1 justify-center max-w-[100px]  items-center whitespace-nowrap font-medium ring-offset-muted  truncate focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring  disabled:pointer-events-none disabled:opacity-50 ',

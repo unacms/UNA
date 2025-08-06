@@ -254,7 +254,7 @@ export default function (props) {
             <>
                 <View>
                     {appSetting('layout', 'show_profile_info') && (
-                        <View className="pb-1 mb-1 border-b border-border ">
+                        <View className="pb-1 mb-1 border-b border-input ">
                             <Link href={currentUser.url} emulate={true}>
                                 <Row
                                     className={
@@ -284,7 +284,7 @@ export default function (props) {
                     )}
 
                     {feedList.length > 1 && (
-                        <View className=" pb-1 mb-1 border-b border-border/20 gap-y-0.5">
+                        <View className=" pb-1 mb-1 border-b border-input gap-y-0.5">
                             {feedList.map((item, index) => {
                                 return (
                                     <MenuItemSidebarWithWrapper
@@ -353,7 +353,7 @@ export default function (props) {
                     </>
                 )}
                 <Panel {...cellsCustomConfig.cells?.center}>
-                    <View className={`lg:p-4`}>{FeedContent}</View>
+                    <View className={`sm:${cd('p-md')}`}>{FeedContent}</View>
                 </Panel>
 
                 {isWeb && (
@@ -366,7 +366,7 @@ export default function (props) {
                             className={`hidden ${cellsCustomConfig.cells?.right?.breakpoint}:block`}
                             {...cellsCustomConfig.cells?.right}
                         >
-                            <View className={`${cd('p-md')} fixed-process`}>
+                            <View className={`${cd('p-md')} ${cd('gap-lg')} fixed-process`}>
                                 {AsideContent}
                             </View>
                         </Panel>

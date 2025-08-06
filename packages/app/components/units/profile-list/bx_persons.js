@@ -31,7 +31,7 @@ export default function Unit(props) {
     return (
         <Link href={data.url} emulate={true}>
             <View
-                className=" sm:px-1 flex-row  web:duration-200 rounded-xl web:active:opacity-50 web:hover:bg-bgritem web:dark:hover:bg-bgritem-d items-center "
+                className=" flex-row  web:duration-200 rounded-xl web:active:opacity-50 web:hover:bg-bgritem web:dark:hover:bg-bgritem-d items-center "
             >
                 <View className="p-1.5">
                 <Profile

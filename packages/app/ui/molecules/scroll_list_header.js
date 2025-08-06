@@ -149,7 +149,7 @@ function getRightHeader(items, currentUser, pagePath) {
                             variant='secondary'
                             startDecorator={button.icon}
                             size="base"
-                            ring="p-1"
+                            
                             addon={button.link == appSetting('messenger', 'url') ? { variant: 'primary', text: currentUser?.counters?.bx_messenger_new_messages, hideZero: true } : undefined}
                         />;
                         btn = button.link ? <Link href={button.link} >{btn}</Link> : btn

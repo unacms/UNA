@@ -64,7 +64,7 @@ function getCoverBackButton(is_person) {
                 <Button
                     rounded={true}
                     size="base"
-                    ring="p-1"
+                    
                     variant="secondary"
                     startDecorator="ArrowLeft"
                     onPress={() => history.back()}
@@ -80,7 +80,7 @@ function getCoverBackButton(is_person) {
                         size="base"
                         variant="secondary"
                         startDecorator="ArrowLeft"
-                        ring="p-1"
+                        
                     />
                 </Link>
             </View>
@@ -114,18 +114,18 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
     }
 
     return (
-        <View className={`${conductorTheme.content_max_width} mx-auto w-full px-2 py-1 flex-row `} >
-            <Row className=" gap-x-2 items-center justify-between flex-auto">
-                <View className={`flex-auto flex-row items-center `}>
+        <View className={`${conductorTheme.content_max_width} mx-auto w-full px-3 py-2 flex-row `} >
+            <Row className="items-center justify-between flex-auto">
+                <View className={`flex-auto gap-3 lg:gap-3 flex-row items-center `}>
                     {getCoverBackButton(bPerson)}
-                    <Row className={` ${context?.current?.id == data.profile.id ? TABLET_MODE_FROM + ':flex px-1 ' : ' px-1 flex-auto overflow-hidden truncate'}`}>
+                    <Row className={` ${context?.current?.id == data.profile.id ? TABLET_MODE_FROM + ':flex px-1 ' : ' flex-auto overflow-hidden truncate'}`}>
                         {bPerson && (
-                            <View className="p-1">
+                            
                                 <Profile
                                     {...data.profile}
                                     displayType="unit_wo_info"
                                     displaySize="base"
-                                /></View>
+                                />
                         )}
                         <View className="px-1 items-center flex-row">
                             <Profile
@@ -138,14 +138,14 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                 </View>
                 <View className=" items-end">
                     {isSplitMenu ? <Row className='w-full justify-between'>
-                        {showMoreMenu && <View className='w-11'>
+                        {showMoreMenu && 
                             <CoverMenuMore
                                 {...menu}
                                 uri={uri}
                                 isSplitMenu={false}
 
                             />
-                        </View>}
+                        }
                         {!showMoreMenu && <>
                             <CoverMenu
                                 {...menu}
@@ -352,11 +352,11 @@ function CoverImage({ mode, profileData, coverData, allowEdit, allowSwitch, titl
                     displaySize={profileDisplaySize}
                 />
                 {allowEdit && (
-                    <View className=" bg-white dark:bg-neutral-900 rounded-full absolute bottom-2.5 right-0">
+                    <View className=" bg-card rounded-full absolute bottom-2.5 right-0">
                         <Button
                             rounded
                             size="sm"
-                            ring="p-0.5"
+                         
                             variant="default"
                             startDecorator="Camera"
                             onPress={() =>
@@ -438,24 +438,22 @@ export default function ({ data, mode, uri, showMoreMenu, pageData, context }) {
                     </View>
                     <View className="flex-row flex-wrap items-end justify-between  flex-auto gap-x-2 gap-y-2">
                         {isSplitMenu ? (
-                            <View className="flex-row sm:items-end  flex-wrap gap-x-3 lg:ml-auto sm:gap-x-4 gap-y-2 sm:gap-y-3 ">
+                            <View className="flex-row sm:items-end flex-wrap gap-3 lg:gap-4 lg:ml-auto">
                                 {bPerson && (
-                                    <View className={`${isMin ? 'h-24' : 'h-11'} lg:hidden flex-auto justify-end `}>
+                                    <View className={`${isMin ? 'h-24' : 'h-10'} lg:hidden flex-auto justify-end `}>
                                         <View className=" flex-row flex-auto z-50 rounded-full p-1 flex-none bg-white mr-auto dark:bg-neutral-900 translate-y-1 -translate-x-1 ">
                                             <CoverImage mode='picture' profileDisplaySize={isMin ? '2xl' : '3xl'} coverData={data?.cover} profileData={data.profile} allowEdit={bAllowEdit} allowSwitch={isAllowSwitch} />
                                         </View>
                                     </View>
                                 )}
-                                { !appSetting('cover', 'more_menu_in_navbar', data?.profile?.module) && <Row>
-                                    <View className=" flex-row flex-wrap gap-x-2 gap-y-2 sm:gap-y-3 items-center">
+                                { !appSetting('cover', 'more_menu_in_navbar', data?.profile?.module) && <Row className='gap-2'>
                                         <CoverMenu
                                             {...data.actions_menu}
                                             uri={uri}
                                             isSplitMenu={isSplitMenu}
-                                            containerClasses="gap-x-2"
+                                            containerClasses="gap-2 lg:gap-3"
                                         />
 
-                                    </View>
                                     <CoverMenuMore
                                         {...data.actions_menu}
                                         uri={uri}

@@ -33,7 +33,7 @@ export const PanelHandler = memo(({ gap, sizable, className = '', style }) => {
 
     return sizable ? (
         <PanelResizeHandle 
-            className={'rpsp2 ' +finalClasses}
+            className={' ' +finalClasses}
             style={style}
         >
             <View className={panelTheme['u-panel-line']} />
