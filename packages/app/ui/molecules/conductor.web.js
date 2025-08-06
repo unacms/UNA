@@ -188,7 +188,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
     });
 
     const ButtonEx = memo(({ visibleItemsCount }) => {
-        return <Button startDecorator="ChevronDown" variant='secondary' rounded pressed={visibleItemsCount <= index ? true : false} size="base" />;
+        return <Button startDecorator="ChevronDown" variant='default' rounded pressed={visibleItemsCount <= index ? true : false} size="sm" />;
     });
 
     return <DynamicMenu

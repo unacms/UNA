@@ -17,14 +17,14 @@ function Unit({ data }) {
 
             <Link href={url}>
                 <CardList>
-                    <View className="flex-row items-center">
-                        <View className="mr-2  rounded-full flex-none " >
-                            <Profile {...data.author_data} displayType="unit_wo_info" displaySize="base" />
+                    <View className="flex-row items-center gap-3">
+                        <View className="rounded-full flex-none " >
+                            <Profile {...data.author_data} displayType="unit_wo_info" displaySize="lg" />
                         </View>
                         <View className="flex-auto my-auto ">
-                            <View className='flex-row '>
-                                <Text className='text-sm flex-auto mr-2  font-semibold text-neutral-900 dark:text-neutral-100'>{data.author_data.display_name}</Text>
-                                <Text className='text-sm flex-none text-neutral-500'><Time ts={data.date}></Time></Text>
+                            <View className='flex-row items-center '>
+                                <Text className='text-base flex-auto mr-2 font-semibold text-card-foreground'>{data.author_data.display_name}</Text>
+                                <Text className='text-sm flex-none text-muted-foreground'><Time ts={data.date}></Time></Text>
                             </View>
                             <View className='flex-row  w-full items-end content-end'>
                                 <Text className='flex-auto mr-2  text-sm text-neutral-900 dark:text-neutral-100' numberOfLines={1}>{stripTags(content_parsed)}</Text>

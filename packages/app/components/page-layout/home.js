@@ -125,10 +125,10 @@ export default function (props) {
 
         const subHeader = (
             <Row>
-            <ScrollView horizontal={true} className=" px-2 w-full  ">
+            <ScrollView horizontal={true} className=" px-3 w-full  ">
                 <Row
                     className={`  ${
-                        feedList.length > 1 ? ' mb-2 ' : ''
+                        feedList.length > 1 ? ' mb-3 mt-2 gap-2 ' : ''
                     }    `}
                 >
                     {feedList.length > 1 &&

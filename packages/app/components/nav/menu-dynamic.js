@@ -80,12 +80,12 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
 
     // return <View className='bg-red-500 h-4 w-4'></View>
 
-    const Contaiter = isWeb ? Row : ScrollView;
+    const Container = isWeb ? Row : ScrollView;
 
     return (
         <>
             <FormModal pageData={pageData} setPageData={setPageData} />
-            <Contaiter
+            <Container
                 contentContainerStyle={{ alignItems: 'center' }}
                 className={isWeb ? (containerClasses ? containerClasses.trim() + ' overflow-visible' : 'overflow-visible') :  (containerClasses ? containerClasses.trim() + ' overflow-visible' : 'overflow-visible')}
                 horizontal={true}
@@ -99,7 +99,7 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
                     }
                 </View>
                 {!isButtonOutside && ExMenu}
-            </Contaiter>
+            </Container>
             {isButtonOutside && ExMenu}
         </>
     );

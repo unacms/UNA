@@ -149,8 +149,8 @@ function ReputationSummarySimple({ data }) {
                         displayType="unit_wo_info"
                         displaySize="2xl"
                     />
-                    <View className="absolute -bottom-2 -end-2">
-                        <Badge className={`rounded-full ${cd('p-xs')} border-4 border-card font-mono tabular-nums`} variant="secondary">
+                    <View className="absolute -bottom-1 -end-1">
+                        <Badge className={`rounded-full ${cd('p-xs')} h-9 w-9 items-center justify-center border-card font-mono tabular-nums`} variant="secondary">
                           {/* Show user level icon if available */}
                         {data.levels && data.levels.length > 0 && data.levels[0].icon && (
                             <Icon icon={data.levels[0].icon} size={24}  />

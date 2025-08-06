@@ -274,7 +274,7 @@ export const settingsDefault = {
     },
     feed: {
         feed_container: 'relative flex-auto mx-auto w-full max-w-4xl sm:p-3 ',
-        show_selector_view: true,
+        show_selector_view: false,
         default_view: '',
         show_html: false,
         default_feed: 'foryou',
@@ -902,7 +902,7 @@ export const settingsDefault = {
             menu_max_width: ' w-full max-w-7xl ',
             content_max_width: ' w-full max-w-7xl ',
             menu_is_dynamic: true,
-            menu_cnt: ' flex-row flex-none  ',
+            menu_cnt: ' flex-row flex-none gap-2 ',
             menu_categ_ident: 'pl-12',
             right_column_cnt: 'fixed-process px-1.5 sm:px-2 py-4',
             right_column_cnt2: 'hidden xl:flex flex-auto max-w-sm',
@@ -919,7 +919,7 @@ export const settingsDefault = {
             topmenu_button_size: 'base',
             topmenu_button_pressed: true,
             left_menu_cnt: '  ',
-            cover_base: 'w-full shadow-sm bg-gradient-to-b from-background to-card',
+            cover_base: 'w-full shadow-sm bg-card',
             cover_content: "items-center h-full w-full overflow-hidden justify-between"
         },
        /* checkbox: {
@@ -1029,7 +1029,7 @@ export const settingsDefault = {
                 rounded: 'rounded-lg',
                 padding: 'h-9 min-w-9 px-2',
                 padding_icon_only: 'h-9 w-9 px-2',
-                padding_with_title: 'h-9 px-3',
+                padding_with_title: 'h-9 px-2',
                 icon_container: ' h-5 w-5 flex items-center justify-center',
                 title_container: 'px-1.5 text-sm',
                 icon_size: 20,
@@ -1089,7 +1089,7 @@ export const settingsDefault = {
             'w-sm': 'w-2 lg:w-3 xl:w-4',
         },
         cards: {
-            'u-card-list': 'u-card-list bg-card shadow-sm text-card-foreground sm:border border-input sm:shadow-sm sm:rounded-2xl mb-[1px] sm:mb-3 ',
+            'u-card-list': 'u-card-list bg-card shadow-sm text-card-foreground border-y sm:border border-input sm:shadow-sm sm:rounded-2xl mt-0.5 sm:mt-3 ',
             'u-card-list-padding': 'p-3 lg:p-4',
             'u-card-base': ' u-card-base bg-card shadow-sm text-card-foreground border border-input shadow-sm gap-y-3 sm:gap-y-4 lg:gap-y-6 gap-x-3 sm:gap-x-4 lg:gap-x-6 rounded-2xl',            
             'u-card-padding': 'py-3 sm:py-4 lg:py-6 ',
@@ -1119,13 +1119,13 @@ export const settingsDefault = {
         },
         badges: {
             
-            'u-badge-base': 'flex items-center border transition-colors web:focus:outline-none web:focus:ring-ring px-2 py-1 rounded-full',
+            'u-badge-base': 'flex items-center border transition-colors web:focus:outline-none web:focus:ring-ring px-1.5 items-center justify-center py-1 rounded-full',
             'u-badge-default': 'border-transparent bg-primary text-primary-foreground shadow web:hover:bg-primary/80',
             'u-badge-destructive': 'border-transparent bg-destructive text-destructive-foreground shadow web:hover:bg-destructive/80',
             'u-badge-outline': 'border-border',
             'u-badge-accent': 'border-transparent bg-accent text-accent-foreground shadow web:hover:bg-accent/80',
             'u-badge-secondary': 'border-transparent bg-secondary text-secondary-foreground web:hover:bg-secondary/80',
-            'u-badge-text': 'text-sm inline-flex gap-1.5 sm:gap-2 lg:gap-3 font-semibold',
+            'u-badge-text': 'text-xs inline-flex gap-1 my-auto items-center justify-center font-semibold',
             'u-badge-text-default': 'text-primary-foreground',
             'u-badge-text-accent': 'text-accent-foreground',
             'u-badge-text-destructive': 'text-destructive-foreground',
@@ -1222,7 +1222,7 @@ export const settingsDefault = {
 
         button_styles: {
             'u-btn-default-cnt':
-                ' border border-input bg-card web:hover:bg-accent shadow-sm web:active:shadow-none web:active:opacity-60 ',
+                ' border border-input bg-card web:hover:bg-muted shadow-sm web:active:shadow-none web:active:opacity-60 ',
             'u-btn-default-text':
                 'font-medium text-neutral-800 web:hover:text-neutral-950 dark:text-neutral-200 web:dark:group-hover:text-neutral-50',
             'u-btn-default-trans': '  web:duration-200',
