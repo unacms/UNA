@@ -30,7 +30,7 @@ const HeaderLine = memo(({ headerSettings, currentUser, uri, title, menuPopup, s
                         <Button
                             variant="secondary"
                             size="sm"
-                            ring="p-1"
+                            
                             startDecorator="List"
                             rounded
                             align="start"

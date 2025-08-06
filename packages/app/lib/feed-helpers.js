@@ -94,13 +94,17 @@ export const FeedEditForm = memo(({ setViewState, viewState, id }) => {
 });
 
 export const CommentsSection = memo(({ isCommentsModal, commentsDataInline, data, isShowMoreComments, showCommentsModal, url, t }) => {
-    const ShowMoreCmts = (<Text className='mx-auto text-neutral-600 dark:text-neutral-400 hover:text-primary px-3 py-2 mb-2 mr-auto bg-neutral-500/10 rounded-full text-sm font-medium'>
-        {t('View more comments')}
-    </Text>);
+    const ShowMoreCmts = (
+        <Button
+            variant="link"
+            size="sm"
+            title={t('View more comments')}
+        />
+    );
     return (
-        <View className=' border-t pt-4 border-bdr dark:border-bdr-d  '>
+        <View className=' pt-1 '>
             {isShowMoreComments && (
-                <View className='px-4 mb-2'>
+                <View className='pt-2'>
                     {isCommentsModal ? <Pressable onPress={() => { showCommentsModal() }} >
                         {ShowMoreCmts}
                     </Pressable> : <Link href={url}>{ShowMoreCmts}</Link>}

@@ -124,11 +124,11 @@ export default function (props) {
         )
 
         const subHeader = (
-            <Row>
-            <ScrollView horizontal={true} className=" px-3 w-full  ">
+            <Row className=' items-center'>
+            <ScrollView horizontal={true} className=" flex pb-3 pt-1 px-3 w-full scrollbar-hide">
                 <Row
                     className={`  ${
-                        feedList.length > 1 ? ' mb-3 mt-2 gap-2 ' : ''
+                        feedList.length > 1 ? '  gap-2 ' : ''
                     }    `}
                 >
                     {feedList.length > 1 &&
@@ -156,7 +156,7 @@ export default function (props) {
                     <Button
                         startDecorator="Rows"
                         tooltip={t('Full')}
-                        ring="p-1"
+                        
                         rounded
                         variant={
                             unitMode !== 'small'
@@ -171,7 +171,7 @@ export default function (props) {
                     <Button
                         startDecorator="List"
                         
-                        ring="p-1"
+                       
                         tooltip={t('Short')}
                         rounded
                         variant={
@@ -219,8 +219,8 @@ export default function (props) {
                                         scrollProps: {
                                             pageData: props.data,
                                             headerHeight: isFeedMenuPresent
-                                                ? 120
-                                                : 68,
+                                                ? 118
+                                                : 66,
                                             subHeaderComponent: subHeader,
                                         },
                                     }}

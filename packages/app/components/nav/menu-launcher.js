@@ -42,7 +42,7 @@ export default function () {
                     alt={t("All Apps")}
                     startDecorator="LayoutGrid"
                     hitSlop={4}
-                    ring="p-1"
+                    
                     size="base"
                     
                 />

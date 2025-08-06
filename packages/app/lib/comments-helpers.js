@@ -84,6 +84,16 @@ export function CommentsParts(commentsData, aItems, height = 0, initFormData, is
     const [formData, setFormData] = useState({});
     const [addData, setAddData] = useState({});
 
+    // Early return if commentsData is null/undefined
+    if (!commentsData) {
+        return [
+            <View className="p-4 text-center">
+                <Text className="text-muted-foreground">Loading comments...</Text>
+            </View>,
+            null
+        ];
+    }
+
     const handleReply = async (data) => {
         setFormData({ ts:Date.now(), text: stripTags(data.cmt_text), parent_id: data.cmt_id, author: data.author_data, cmt_id: data.cmt_id, cmt_object_id: data.cmt_object_id })
     }
@@ -103,6 +113,13 @@ export function CommentsParts(commentsData, aItems, height = 0, initFormData, is
 
     const scrollToIndex = isModal ? (initFormData?.cmt_id ? initFormData.cmt_id : true) : false;
 
+    // Handle both commentsData structures:
+    // 1. From prepareData: { data: browseData, ... }
+    // 2. From API response: { browse: browseData, form, url, module, ... }
+    const browseData = commentsData.browse || commentsData.data;
+    const moduleData = commentsData.module || browseData?.data?.module;
+    const requestUrl = commentsData.url || '';
+
     return [
         <CommentsBrowse 
             scrollProps={
@@ -116,12 +133,12 @@ export function CommentsParts(commentsData, aItems, height = 0, initFormData, is
             scrollToIndex = {scrollToIndex}
             height={height > 0 ? height : undefined} 
             addItems={aItems} handleReply={handleReply} 
-            browse={commentsData.browse} addData={addData} 
-            module={commentsData.browse?.data?.module ? commentsData.browse.data.module : commentsData?.module} 
-            requestUrl={commentsData.url} 
+            browse={browseData} addData={addData} 
+            module={moduleData} 
+            requestUrl={requestUrl} 
         />,
         <KbAvoidingView>
-            <CommentsForm isModal={isModal} handleForm={handleForm} browse={commentsData.browse} module={commentsData.browse?.data?.module ? commentsData.browse.data.module : commentsData?.module} form={commentsData.form} formData={formData} requestUrl={commentsData.url} />
+            <CommentsForm isModal={isModal} handleForm={handleForm} browse={browseData} module={moduleData} form={commentsData.form} formData={formData} requestUrl={requestUrl} />
         </KbAvoidingView>
     ]
 }

@@ -95,7 +95,6 @@ export default function MenuAccount({ buttonProps, children }) {
         startDecorator: profile,
         size: 'sm',
         hitSlop: 4,
-        ring: 'p-1',
     }
 
     if ((menu_account_items.length == 0 && menuData) || !profile) return <></>

@@ -81,11 +81,12 @@ export function getButtonForConductorHor(icon, title, pressed, addon, onPress, i
         <Button
             startDecorator={icon}
             title={title}
-            variant={pressed ? 'default' : 'text' }
+            variant={pressed ? 'text' : 'text' }
             rounded
             pressed={pressed}
             disabled={item?.item?.disabled}
             size="sm"
+            haptics="Medium"
             addon={addon}
             onPress={onPress}
         />

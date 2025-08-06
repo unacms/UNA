@@ -103,7 +103,7 @@ export function SearchPanel(props) {
     const { t } = useTranslation()
     const [inputValue, setInputValue] = useState(props.value)
     return (
-        <View className=" backdrop-blur bg-bgrnavbar dark:bg-bgrnavbar-d ">
+        <View className=" backdrop-blur bg-card ">
             <View
                 className={
                     appSetting('layout', 'max_width') +

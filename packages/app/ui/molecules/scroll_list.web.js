@@ -157,7 +157,7 @@ export default function ScrollList({
             {enhanced}
             {isSmallScreen && <Animated.View className="backdrop-blur-lg" style={[headerStyle]}>
 
-                <View className="w-full backdrop-blur-xl bg-card backdrop-blur-xl shadow-[0_1px_0_rgba(0,0,0,0.05)] dark:shadow-[0_1px_0_rgba(0,0,0,0.1)]"  >
+                <View className="w-full bg-card"  >
                     <Header
                         backButtonPresented={isBackButton}
                         headerComponent={headerComponent}

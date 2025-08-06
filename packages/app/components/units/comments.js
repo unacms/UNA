@@ -186,7 +186,7 @@ export default function UnitComments(props) {
                         <View className="ml-[19px] w-0.5 flex-auto bg-neutral-100 dark:bg-neutral-800" />
                     )}
                     {i === level - 1 && (
-                        <View className="ml-[19px] h-[37px] w-[29px] border-neutral-100 dark:border-neutral-800 border-l-2 border-b-2 absolute -top-[14px] rounded-bl-[22px] flex-auto" />
+                        <View className="mt-3 lg:mt-4  ml-[19px] h-[37px] w-[29px] border-neutral-100 dark:border-neutral-800 border-l-2 border-b-2 absolute -top-[14px] rounded-bl-[22px] flex-auto" />
                     )}
                 </View>
             );
@@ -239,14 +239,14 @@ export default function UnitComments(props) {
             
                 <View className="flex-row gap-x-2">
                     {cells}
-                    <View className="w-10 z-50 flex-0 relative">
+                    <View className="w-10 z-50 flex-0 relative mt-2 sm:mt-3">
 
                         <Profile {...data.author_data} displayType="unit_wo_info" displaySize="base" showInfo="false" />
 
                         {(items.length != 0 && view != 'flat') && <View className="w-0.5 ml-[19px] top-0.5 flex-auto bg-neutral-100 dark:bg-neutral-800"></View>}
                     </View>
                     
-                        <View className=' bg-bgritem dark:bg-bgritem-d flex-1 rounded-2xl px-1 py-1 mb-3 sm:mb-4 flex-col gap-y-1' >
+                        <View className=' bg-bgritem dark:bg-bgritem-d flex-1 rounded-2xl px-1 py-1 mt-2 sm:mt-3 flex-col gap-y-1' >
                             <View className="flex-row items-center overflow-hidden px-2 py-1">
                                 <Profile {...data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
                                 <View><Text className="text-neutral-400 dark:text-neutral-600 px-1">·</Text></View>

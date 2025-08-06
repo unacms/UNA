@@ -47,7 +47,6 @@ export default function HeaderElement({ mode }) {
                     id="m2"
                     size="base"
                     hitSlop={4}
-                    ring="p-1"
                     addon={{
                         variant: 'primary',
                         text: currentUser?.counters?.bx_messenger_new_messages,
@@ -67,7 +66,7 @@ export default function HeaderElement({ mode }) {
                     hitSlop={4}
                     aria-label="Account"
                     alt={t('Account')}
-                    ring="p-1"
+                    
                     startDecorator="UserRound"
                 />
             </Link>
@@ -76,7 +75,7 @@ export default function HeaderElement({ mode }) {
 
 
     return (
-        <Row className="justify-end gap-x-0.5 items-center">
+        <Row className="justify-end gap-2 items-center">
             {itemsToRender?.map((item, index) => {
                 const Component = components[item.component]
                 if (!Component) return null

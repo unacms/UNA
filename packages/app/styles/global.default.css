@@ -16,7 +16,7 @@
         --secondary: 228 228 231;  /*zinc-200*/
         --secondary-foreground: 24 24 27; /*zinc-900*/
         --muted: 244 244 245; /*zinc-100*/
-        --muted-foreground: 63 63 70; /*zinc-700*/
+        --muted-foreground: 82 82 91; /*zinc-600*/
         --accent: 113 113 122; /*zinc-500*/
         --accent-foreground: 24 24 27; /*zinc-900*/
         --destructive: 225 29 72; /*rose-600*/
@@ -60,7 +60,7 @@
         --secondary: 39 39 42; /*zinc-800*/
         --secondary-foreground: 244 244 245; /*zinc-100*/
         --muted: 39 39 42; /*zinc-800*/
-        --muted-foreground: 161 161 170; /*zinc-400*/
+        --muted-foreground: 113 113 122; /*zinc-400*/
         --accent: 113 113 122; /*zinc-500*/
         --accent-foreground: 244 244 245; /*zinc-100*/
         --destructive: 225 29 72; /*rose-600*/

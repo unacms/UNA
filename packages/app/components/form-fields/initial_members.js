@@ -148,7 +148,7 @@ export default function (props) {
                             startDecorator="Plus"
                             variant="default"
                             rounded
-                            ring="p-0.5"
+                            
                             
                             onPress={() => showSelect()}
                         />

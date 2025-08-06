@@ -96,7 +96,7 @@ export const Header = memo(({
 
     return (
 
-        <Row className={` px-2 items-center h-16 justify-between web:duration-300`}>
+        <Row className={` px-3 items-center h-16 justify-between `}>
             {((!currentUser || !pageData?.context) && !text && (!settings?.headerSettings || settings?.headerSettings?.header)) && 
                 <Link href="/home" aria-label="Home">
                     <Pressable className="items-center p-1.5 sm:p-2 flex-row web:hover:scale-105 web:active:scale-95 rounded-xl  text-neutral-800 dark:text-neutral-200 web:hover:text-neutral-800 web:dark:hover:text-neutral-200 duration-300 ">
@@ -106,7 +106,7 @@ export const Header = memo(({
             }
             {(pageData?.context) && <ContextSelector url={pageData?.url} data={pageData?.context} />}
             {(backButtonPresented && (!isWeb || history.length > 2)) && (
-                <View className=""><Button variant="text" rounded onPress={() => {
+                <View className=""><Button variant="secondary" rounded onPress={() => {
                     FeedbackHaptics('Medium');
                     router ? router?.back() : history.back();
                 }} startDecorator="ArrowLeft" size="base" /></View>
@@ -130,7 +130,7 @@ function getRightHeader(items, currentUser, pagePath) {
     if (pagePath == '/home' && currentUser) {
         const menu_add_items = menuItemsByName('', appSetting('menu_items', 'menu_add'), currentUser);
         if (menu_add_items.length) {
-            addMenu = <MenuAdd key='menu-add' buttonProps={{ variant: "default", rounded: 'rounded', startDecorator: "Plus", id: "m3", size: 'sm' }} />;
+            addMenu = <MenuAdd key='menu-add' buttonProps={{ variant: "default", ring: 'p-0', rounded: 'rounded', startDecorator: "Plus", id: "m3", size: 'sm' }} />;
         }
     }
     if (items?.length == 0 && !addMenu)

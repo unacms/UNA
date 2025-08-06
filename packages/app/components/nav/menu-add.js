@@ -33,7 +33,6 @@ export default function MenuAdd({ buttonProps, children }) {
         tooltip: "Create",
         size: "base",
         hitSlop: 4,
-        ring: "p-1",
     };
 
     return (

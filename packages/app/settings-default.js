@@ -309,17 +309,17 @@ export const settingsDefault = {
             show_counter: false, // show counter part or not
             show_combined: true, // leave true
             button_show_title_from_size: '',
-            button_full_width: true,
+            button_full_width: false,
             button_size: 'sm',
-            button_variant: 'text',
-            button_ring: 'p-1',
+            button_variant: 'secondary',
+            button_ring: 'p-0',
             pressed_classes: {
-                pressed_container: 'bg-secondary ',
+                pressed_container: 'bg-primary/10 ',
                 pressed_text:
                     ' text-secondary-foreground web:group-hover:text-secondary-foreground ',
             },
-            button_rounded: false,
-            align_items: 'between',
+            button_rounded: true,
+            align_items: 'start',
             no_gap_between_buttons: false, // is false no gap between buttons + right margin, is true  gap between buttons + no margin
         },
         counters_menu: {
@@ -327,8 +327,8 @@ export const settingsDefault = {
             show_counter: true,
             show_combined: true,
             button_variant: 'text',
-            button_size: 'sm',
-            align_items: 'between',
+            button_size: 'xs',
+            align_items: 'start',
             no_gap_between_buttons: false,
         },
         /*
@@ -886,11 +886,11 @@ export const settingsDefault = {
             default: 'rgba(209,213,219,1)', //fix for icons color in iOS
             primary: 'rgba(59, 130, 246, 1)',
             outline: 'rgba(59, 130, 246, 0.5)',
-            headerBackground: 'rgba(17,24,39,1)',
-            barsBackground: 'rgba(17,24,39,1)', //header background in native
-            bottomSheetBackground: 'rgba(17,24,39,1)',
+            headerBackground: 'rgba(24,24,27,1)',
+            barsBackground: 'rgba(24,24,27,1)', //header background in native
+            bottomSheetBackground: 'rgba(24,24,27,1)',
             barsColor: 'rgba(209,213,219,1)', //tabbar icons color in native
-            safeAreaBackground: 'rgba(17,24,39,1)', // Add this new property
+            safeAreaBackground: 'rgba(24,24,27,1)', // Add this new property
             primaryBg: 'rgba(37,99,235,0.1)',
             
         },
@@ -1012,16 +1012,16 @@ export const settingsDefault = {
             default_size: 'base',
             default_variant: 'default',
             default_ring: 'p-1 ',
-            pressed_container: 'bg-primary/10 border-primary/20',
-            pressed_text: 'text-primary font-medium',
+            pressed_container: 'bg-primary/10 border-transparent',
+            pressed_text: 'text-primary font-semibold',
             xs: {
                 rounded: 'rounded-md',
-                padding: 'h-6 min-w-6 px-2',
-                padding_icon_only: 'h-6 w-6 px-1',
-                padding_with_title: 'h-6 px-1.5',
-                icon_container: ' h-5 w-5 flex items-center justify-center',
-                title_container: 'px-1 text-xs ',
-                icon_size: 16,
+                padding: 'h-8 min-w-8 px-1.5',
+                padding_icon_only: 'h-8 w-8 px-1.5',
+                padding_with_title: 'h-8 px-1.5',
+                icon_container: ' native:text-[16px] web:text-[18px] flex items-center justify-center',
+                title_container: 'px-1 native:text-sm web:text-sm ',
+                icon_size: 18,
                 icon_margin: 'mx-0', // conditional margin for icon container when title is present
                 title_margin: '',
             },
@@ -1030,8 +1030,8 @@ export const settingsDefault = {
                 padding: 'h-9 min-w-9 px-2',
                 padding_icon_only: 'h-9 w-9 px-2',
                 padding_with_title: 'h-9 px-2',
-                icon_container: ' h-5 w-5 flex items-center justify-center',
-                title_container: 'px-1.5 text-sm',
+                icon_container: ' native:text-[18px] web:text-[20px] flex items-center justify-center',
+                title_container: 'px-1 text-sm',
                 icon_size: 20,
                 icon_margin: 'mx-1', // conditional margin for icon container when title is present
                 title_margin: '', // conditional margin for text container when icon is present
@@ -1089,7 +1089,7 @@ export const settingsDefault = {
             'w-sm': 'w-2 lg:w-3 xl:w-4',
         },
         cards: {
-            'u-card-list': 'u-card-list bg-card shadow-sm text-card-foreground border-y sm:border border-input sm:shadow-sm sm:rounded-2xl mb-0.5 sm:mb-3 lg:mb-4 ',
+            'u-card-list': 'u-card-list bg-card shadow-sm text-card-foreground  sm:border border-input sm:shadow-sm sm:rounded-2xl mb-0.5 sm:mb-3 lg:mb-4 ',
             'u-card-list-padding': 'p-3 lg:p-4 xl:p-6',
             'u-card-base': ' u-card-base bg-card shadow-sm text-card-foreground border border-input shadow-sm gap-y-3 sm:gap-y-4 lg:gap-y-6 gap-x-3 sm:gap-x-4 lg:gap-x-6 rounded-2xl',            
             'u-card-padding': ' py-3 lg:py-4 xl:py-6 ',
@@ -1239,7 +1239,7 @@ export const settingsDefault = {
             'u-btn-accent-trans': '  web:duration-300',
 
             'u-btn-secondary-cnt':
-                ' border border-transparent bg-secondary web:hover:bg-accent/30 web:active:bg-accent/50  ',
+                ' border border-transparent bg-secondary/60 web:hover:bg-secondary/80 web:active:bg-secondary  ',
             'u-btn-secondary-text':
                 'font-medium text-muted-foreground web:hover:text-foreground  ',
             'u-btn-secondary-trans': ' web:duration-100 ',
@@ -1250,14 +1250,14 @@ export const settingsDefault = {
                 'font-medium text-neutral-100 group-hover:text-white',
             'u-btn-danger-trans': '  web:duration-300',
 
-            'u-btn-text-cnt': ' border border-transparent dark:border-transparent bg-transparent web:active:opacity-50 web:active:bg-bgritem web:dark:active:bg-bgritem-d web:hover:bg-bgritem dark:web:hover:bg-bgritem-d',
-            'u-btn-text-text': 'font-medium text-neutral-800 dark:text-neutral-200',
+            'u-btn-text-cnt': ' border border-transparent bg-transparent web:active:bg-secondary web:hover:bg-secondary/80',
+            'u-btn-text-text': 'font-semibold text-muted-foreground',
             'u-btn-text-trans': '  web:duration-300',
 
 
             'u-btn-link-cnt': 'web:hover:bg-bgritemprimary dark:web:hover:bg-bgritemprimary web:active:opacity-50',
             'u-btn-link-text': 'font-semibold text-primary',
-            'u-btn-link-trans': '  web:duration-300',
+            'u-btn-link-trans': 'web:duration-300',
 
             'u-btn-outline-cnt': 'bg-transparent border border-bdrbutton dark:border-bdrbutton-d web:hover:border-bdrbutton-h dark:web:hover:border-bdrbutton-dh web:active:opacity-50',
             'u-btn-outline-text':'font-medium text-neutral-800 dark:text-neutral-200',

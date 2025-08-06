@@ -142,7 +142,7 @@ export default function (props) {
                 <View className='w-80'>
                     <Redirect ref={redirectdRef} />
                     <ScrollView contentContainerStyle={{ width: '100%' }}
-                        className={"dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d border-b border-bdrnavbar lg:bg-transparent lg:border-none lg:shadow-none fixed w-full lg:w-80 top-0 items-start lg:h-screen" + (!headerSettings.header ? ' hidden lg:flex' : '')}>
+                        className={"dark:border-bdrnavbar-d bg-card border-b border-bdrnavbar lg:bg-transparent lg:border-none lg:shadow-none fixed w-full lg:w-80 top-0 items-start lg:h-screen" + (!headerSettings.header ? ' hidden lg:flex' : '')}>
                         <View className=' flex-row lg:flex-col  h-16 lg:h-auto items-center lg:items-start' >
                             <View className=' justify-between  lg:h-screen flex-auto '>
                                 <SideBar headerSettings={headerSettings} context={props.context} currentUser={currentUser} uri={props.uri} bSearch={bSearch} showMenu={showMenu} menuPopup={menuPopup} setMenuPopup={setMenuPopup} />

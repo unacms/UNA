@@ -40,7 +40,7 @@ export default function ({ buttonProps, children, tooltip, fullWidth }) {
         startDecorator: 'Bell',
         size: 'base',
         hitSlop: 4,
-        ring: 'p-1',
+        
     }
 
     buttonProps.addon = { variant: 'primary', text: notifCount, hideZero: true }

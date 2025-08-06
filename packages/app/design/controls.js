@@ -1,4 +1,4 @@
-import React, { useMemo, forwardRef, useEffect } from 'react';
+import React, { useMemo, forwardRef, useEffect, useCallback } from 'react';
 import { TextInput as TextInputDef, Modal as ModalDef, Platform } from 'react-native'
 import SwitchDef from 'app/ui/atoms/switcher'
 import { Pressable, View, ScrollView, Row } from 'app/design/view'
@@ -387,6 +387,7 @@ export const Button = (props) => {
         bgColor = '',
         textColor = '',
         onPress,
+        haptics,
         forwardedRef,
         variant = ThemeButtonSizes.default_variant,
         size = ThemeButtonSizes.default_size,
@@ -560,6 +561,19 @@ export const Button = (props) => {
     const isTitle = !!title;
     const oButtonAddon = getAddon(addon, isTitle);
 
+    // Performance-optimized haptics handler - only created when haptics prop is provided
+    const handlePress = useMemo(() => {
+        if (!haptics || !onPress) return onPress;
+        
+        return (event) => {
+            // Lazy import FeedbackHaptics only when actually needed
+            import('app/lib/util').then(({ FeedbackHaptics }) => {
+                FeedbackHaptics(haptics);
+            });
+            onPress(event);
+        };
+    }, [haptics, onPress]);
+
     const Cnt = onPress && !disabled /*&& !isWeb*/ ? Pressable : View;
     const refProps = forwardedRef ? { ref: forwardedRef } : {};
 
@@ -577,7 +591,7 @@ export const Button = (props) => {
             className={`${ringClass} ${fullWidth ? 'flex-auto ' : ''}`}
             {...rest}
             {...buttonAttributes}
-            onPress={onPress && !disabled ? onPress : undefined}
+            onPress={onPress && !disabled ? handlePress : undefined}
             {...refProps}
         >
             <View className={`${sClassContainer} ${sizeClasses}`}>
