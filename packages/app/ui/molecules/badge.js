@@ -1,27 +1,34 @@
 import { View } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { appSetting } from 'app/lib/util';
+import { Icon } from 'app/ui/atoms/icon'
+import Image from 'app/ui/atoms/image';
+import Link from 'app/ui/atoms/link'
+
 const badgeTheme = appSetting('theme', 'badges');
 
-function Badge({
-    className = '',
-    variant = "default",
-    density, 
-    children,
-    ...props
-}) {
+export default function Badge({ data, variant = "default" }) {
+
+    if (data.badge_url) {
+        return (
+            <Link href={data.badge_link}><View className="rounded-full w-6 h-6 overflow-hidden"><Image
+                view="cover"
+                src={data.badge_url}
+                alt={data.badge_url.title_attr}
+            /></View></Link>
+        );
+    } else {
+        // if (!data.icon)
+        data.icon = 'BadgeCheck';
+        return (
+            <View className={`u-badge-base ${badgeTheme['u-badge-base']} ${badgeTheme['u-badge-' + variant]} `}>
+                {data.icon && <Icon icon={data.icon} size={16} className={`${badgeTheme['u-badge-text-' + variant]}`} />}
+                <Text className={`${badgeTheme['u-badge-text']} ${badgeTheme['u-badge-text-' + variant]}`} >
+                    {data.text}
+                </Text>
+            </View>
+        );
+    }
 
 
-    return (
-        <View
-            className={`u-badge-base ${badgeTheme['u-badge-base']} ${badgeTheme['u-badge-' + variant]} ${className}`}
-            {...props}
-        >
-            <Text className={`${badgeTheme['u-badge-text']} ${badgeTheme['u-badge-text-' + variant]}`} >
-                {children}
-            </Text>
-        </View>
-    );
 }
-
-export default Badge; 

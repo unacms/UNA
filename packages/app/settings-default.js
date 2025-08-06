@@ -1119,18 +1119,18 @@ export const settingsDefault = {
         },
         badges: {
             
-            'u-badge-base': 'flex items-center border transition-colors web:focus:outline-none web:focus:ring-ring px-1.5 items-center justify-center py-1 rounded-full',
-            'u-badge-default': 'border-transparent bg-primary text-primary-foreground shadow web:hover:bg-primary/80',
-            'u-badge-destructive': 'border-transparent bg-destructive text-destructive-foreground shadow web:hover:bg-destructive/80',
-            'u-badge-outline': 'border-border',
-            'u-badge-accent': 'border-transparent bg-accent text-accent-foreground shadow web:hover:bg-accent/80',
-            'u-badge-secondary': 'border-transparent bg-secondary text-secondary-foreground web:hover:bg-secondary/80',
-            'u-badge-text': 'text-xs inline-flex gap-1 my-auto items-center justify-center font-semibold',
-            'u-badge-text-default': 'text-primary-foreground',
-            'u-badge-text-accent': 'text-accent-foreground',
-            'u-badge-text-destructive': 'text-destructive-foreground',
-            'u-badge-text-outline': 'text-muted-foreground',
-            'u-badge-text-secondary': 'text-secondary-foreground',
+            'u-badge-base': ' items-center py-1 rounded-full flex-row h-6 px-1.5',
+            'u-badge-default': 'bg-primary/20',
+            'u-badge-destructive': '',
+            'u-badge-outline': '',
+            'u-badge-accent': '',
+            'u-badge-secondary': '',
+            'u-badge-text': 'whitespace-nowrap text-ellipsis overflow-hidden tracking-tight font-medium text-primary dark:text-primary text-xs px-1 text-xs ',
+            'u-badge-text-default': 'text-primary',
+            'u-badge-text-accent': '',
+            'u-badge-text-destructive': '',
+            'u-badge-text-outline': '',
+            'u-badge-text-secondary': '',
         },
         tables: {
             // Base
@@ -1321,11 +1321,7 @@ export const settingsDefault = {
             'u-btn-group-item-accent-icon':
                 'text-neutral-700 dark:text-neutral-300 dark:group-hover:text-neutral-50',
 
-            'u-btn-badge-cnt':
-                ' bg-primary/20 ',
-            'u-btn-badge-text':
-                'font-medium text-primary dark:text-primary',
-            'u-btn-badge-trans': '  web:duration-200',
+            
 
             'u-btn-label-cnt':
                 'border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900 web:hover:bg-neutral-100 dark:web:hover:bg-neutral-800 web:active:opacity-70',
@@ -1354,10 +1350,7 @@ export const settingsDefault = {
                 ' font-medium web:group-hover:underline text-neutral-800 dark:text-neutral-200  web:hover:text-neutral-950 web:dark:hover:text-neutral-50 web:active:opacity-50 ',
             'u-btn-link-trans': '   web:duration-300 ',
 
-            'u-btn-badge-cnt': 'border border-transparent dark:border-transparent bg-neutral-100 dark:bg-neutral-800 flex flex-row web:active:opacity-60',
-            'u-btn-badge-text':
-                ' font-medium text-xs text-neutral-700 dark:text-neutral-300 ',
-            'u-btn-badge-trans': '   web:duration-200 ',
+            
 
             'u-btn-label-cnt': 'border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900 flex flex-row web:active:opacity-70',
             'u-btn-label-text':
