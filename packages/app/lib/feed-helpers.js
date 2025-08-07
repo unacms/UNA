@@ -102,7 +102,7 @@ export const CommentsSection = memo(({ isCommentsModal, commentsDataInline, data
         />
     );
     return (
-        <View className=' pt-1 '>
+        <View className=' pt-2 '>
             {isShowMoreComments && (
                 <View className='pt-2'>
                     {isCommentsModal ? <Pressable onPress={() => { showCommentsModal() }} >
@@ -365,9 +365,9 @@ export const VisibilityInfo = memo(({ data }) => {
 
     return (
         <Row className="text-neutral-600 dark:text-neutral-400 items-center">
-            <Text className="text-muted-foreground text-sm leading-6 px-1">·</Text>
-            {isUser ? <Profile {...data.author_data} displayType="unit_wo_info" displaySize="xxs" /> : (icon ? <Icon icon={icon} width={16} height={16} /> : null)}
-            <Text className="text-neutral-600 dark:text-neutral-400 text-sm font-medium leading-6 text-center tracking-tight ml-1">{isUser ? data.author_data.display_name : text}</Text>
+            <Text className="text-muted-foreground text-xs leading-5 px-1">·</Text>
+            {isUser ? <Profile {...data.author_data} displayType="unit_wo_info" displaySize="xxs" /> : (icon ? <Icon icon={icon} width={14} height={14} /> : null)}
+            <Text className="text-muted-foreground text-xs font-medium leading-5 text-center tracking-tight ml-1">{isUser ? data.author_data.display_name : text}</Text>
         </Row>
     );
 });
@@ -379,7 +379,7 @@ export const Author = memo(({ data, url, t }) => {
         if (!Element) return null; // Explicitly return null for no component
         return (
             <Element
-                params={{ button_variant: 'link', button_size: 'sm', hide_icon: true, padding: ' ' }}
+                params={{ button_variant: 'secondary', button_size: 'xs', hide_icon: true }}
                 key={`action-${index}`}
                 {...item}
             />
@@ -394,15 +394,15 @@ export const Author = memo(({ data, url, t }) => {
                 {...dataIcon}
 
                 displayType="unit"
-                displaySize="lg"
+                displaySize="base"
                 showInfo={
                     <Row className=" flex-wrap items-center">
                         <Link href={url}>
-                            <Time className='leading-5.5' ts={data.date}></Time>
+                            <Time className='leading-5' ts={data.date}></Time>
                         </Link>
-
-                        <VisibilityInfo data={data} />
                         <ItemInfo data={data} t={t} />
+                        <VisibilityInfo data={data} />
+                        
                         
                     </Row>
                 }

@@ -48,7 +48,7 @@ export default function ElementTime(props) {
     const { stylesName, stylesNameAdd } = props;
 
     return (
-        <Text className={stylesName || `text-muted-foreground web:hover:text-foreground text-sm leading-6 tracking-tight whitespace-nowrap web:hover:underline ${stylesNameAdd}`}>
+        <Text className={stylesName || `text-muted-foreground web:hover:text-foreground text-xs leading-5 tracking-tight whitespace-nowrap web:hover:underline ${stylesNameAdd}`}>
         {formattedTime}
         </Text>
     );
