@@ -13,6 +13,7 @@ import { callFn } from 'app/lib/functions/call';
 import { useTranslation } from 'react-i18next';
 import { useCurrentUser } from 'app/context/user';
 import { TextHeader } from 'app/ui/molecules/scroll_list_header';
+import { cd } from 'app/lib/util';
 
 const conductorTheme = appSetting('theme', 'conductor');
 
@@ -420,7 +421,7 @@ export function TopSidebar({ styles, leftSideBar, addButtons, children, title, l
     return (
         <View style={styles} className={ ` ${!omitDefaultBackground ? conductorTheme.menu : ''} ${leftSideBar ? 'lg:hidden' : ''}`}>
             <View className={`${leftSideBar ? '' : 'mx-auto'} w-full ${conductorTheme.menu_max_width}`}>
-                <Row className=" px-3 lg:px-4 items-center justify-between mt-2 mb-3">
+                <Row className={`${cd('px-lg')} items-center justify-between `}>
                     <Text className="text-2xl my-auto font-medium text-neutral-800 tracking-tight dark:text-neutral-200 hidden ">{title}</Text>
                     {!currentUser && title ? <View className='pr-4 sm:pr-6'><TextHeader text={title} /></View> : null}
                     {children}

@@ -5,10 +5,10 @@
 
 @layer base {
     .light-theme-vars {
-         --background: 250 250 250; /*zinc-50*/
+        --background: 244 244 245; /*zinc-100*/
         --foreground: 24 24 27; /*zinc-900*/
         --card: 255 255 255; /*white*/
-        --card-foreground: 24 24 27; /*zinc-900*/
+        --card-foreground: 31 41 55; /*zinc-800*/
         --popover: 255 255 255; /*white*/
         --popover-foreground: 24 24 27; /*zinc-900*/
         --primary: 37 99 235; /*blue-600*/
@@ -31,7 +31,7 @@
         --background: 9 9 11; /*zinc-950*/
         --foreground: 244 244 245; /*zinc-100*/
         --card: 24 24 27; /*zinc-900*/
-        --card-foreground: 244 244 245; /*zinc-100*/
+        --card-foreground: 228 228 231; /*zinc-200*/
         --popover: 24 24 27; /*zinc-900*/
         --popover-foreground: 244 244 245; /*zinc-100*/
         --primary: 59 130 246; /*blue-500*/

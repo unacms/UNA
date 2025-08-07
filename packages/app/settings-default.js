@@ -80,8 +80,8 @@ export const settingsDefault = {
         header: {
             offset: ' h-16 w-full ',
             container: ' hidden lg:flex fixed w-full mx-auto h-16 left-[50%] translate-x-[-50%]  ',
-            initial: '  my-auto w-full items-center transition-all web:duration-300 web:ease-in-out web:will-change-transform shadow-[0_0_0_1px_rgba(0,0,0,0.08),0_2px_4px_0_rgba(0,0,0,0.05)] dark:shadow-[0_0_0_1px_rgba(31,41,55,0.5),0_2px_4px_0_rgba(0,0,0,0.05)]    ',
-            scrolled: ' backdrop-blur-xl my-auto w-full mx-auto bg-card/90 backdrop-blur-xl shadow-[0_0_0_1px_rgba(0,0,0,0.08),0_2px_4px_0_rgba(0,0,0,0.05)] dark:shadow-[0_0_0_1px_rgba(31,41,55,1),0_0_0_2px_rgba(0,0,0,0.8)] ',
+            initial: '  my-auto w-full items-center transition-all web:duration-500 border-b border-border/50    ',
+            scrolled: ' backdrop-blur-xl my-auto w-full mx-auto bg-card/90 border-b border-border/60 shadow-sm ',
             content: ' h-16 mx-auto justify-between ',
             content_left: ' flex-row w-80 2xl:w-96 px-2 xl:px-3 ',
             content_right: ' w-80 2xl:w-96 items-center justify-end h-full px-3 ',
@@ -231,7 +231,7 @@ export const settingsDefault = {
         selector_control_names: ['*_cat', '*_space_cat'],
 
         password_eye_button: {
-            size: 'base',
+            size: 'sm',
             variant: 'text',
             startDecorator: {
                 visible: 'Eye',
@@ -327,7 +327,7 @@ export const settingsDefault = {
                 pressed_container: ' ',
                 pressed_text:
                     ' text-primary web:group-hover:text-primary ',
-                pressed_ring: 'bg-primary/20',
+                pressed_ring: ' bg-primary/20 ',
             },
             button_rounded: true,
             align_items: 'start',
@@ -1001,7 +1001,7 @@ export const settingsDefault = {
         inputs: {
             default:
                 'flex-auto bg-input m-[1px] rounded-[11px]  ' +
-                'px-3 py-3 text-base leading-6 ' +
+                'px-3 min-h-[46px] text-base leading-6 ' +
                 'bg-input ' +
                 'web:focus:bg-card ' +
                 'overflow-hidden web:duration-300 ' +
@@ -1015,16 +1015,16 @@ export const settingsDefault = {
                 ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-full flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[34px] ',
             small: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-full flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-9 ',
             select: 'appearance-none pr-10 bg-bgrinput h-14 border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df  text-neutral-900 rounded-xl  flex-auto p-3 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus dark:text-neutral-100 text-base',
-            ring: 'rounded-xl bg-border overflow-hidden web:focus-within:ring-offset-2 web:focus-within:ring-offset-card  web:focus-within:ring-2 web:focus-within:ring-ring web:transition-all web:duration-200',
+            ring: 'rounded-[12px] bg-border overflow-hidden web:focus-within:ring-offset-2 web:focus-within:ring-offset-card  web:focus-within:ring-2 web:focus-within:ring-ring web:transition-all web:duration-200',
         },
 
         button_sizes: {
             default_size: 'base',
             default_variant: 'default',
             default_ring: ' p-[1px] bg-border ',
-            pressed_container: 'bg-primary/10 border-transparent',
-            pressed_text: 'text-primary font-semibold',
-            pressed_ring: 'bg-primary/10',
+            pressed_container: '  ',
+            pressed_text: ' text-primary font-medium ',
+            pressed_ring: ' bg-primary/10 ',
             xs: {
                 rounded: ' rounded-[5px] ',
                 ring: ' rounded-[6px] p-[1px]  ', // Ring wrapper border radius
@@ -1057,7 +1057,7 @@ export const settingsDefault = {
                 padding_with_title: ' px-3 gap-3 ',
                 icon_container: ' h-[38px]  flex items-center justify-center',
                 title_container: ' leading-[38px] text-base ',
-                icon_size: 24,
+                icon_size: 20,
                 icon_margin: ' ', // conditional margin for icon container when title is present
                 title_margin: '', // conditional margin for text container when icon is present
             },
@@ -1069,7 +1069,7 @@ export const settingsDefault = {
                 padding_with_title: ' px-4 ',
                 icon_container: ' h-[46px]  flex items-center justify-center',
                 title_container: ' leading-[46px] text-lg',
-                icon_size: 28,
+                icon_size: 24,
                 icon_margin: 'mx-1', // conditional margin for icon container when title is present
                 title_margin: '', // conditional margin for text container when icon is present
             },
@@ -1104,7 +1104,7 @@ export const settingsDefault = {
             'w-sm': 'w-2 lg:w-3 xl:w-4',
         },
         cards: {
-            'u-card-list': 'u-card-list bg-card shadow-sm text-card-foreground  sm:border border-input sm:shadow-sm sm:rounded-2xl mb-0.5 sm:mb-3 lg:mb-4 ',
+            'u-card-list': 'u-card-list bg-card shadow-sm text-card-foreground sm:rounded-2xl mb-0.5 sm:mb-3 lg:mb-4 ',
             'u-card-list-padding': 'p-3 lg:p-4 xl:p-6',
             'u-card-base': ' u-card-base bg-card shadow-sm text-card-foreground shadow-sm gap-5 overflow-hidden rounded-2xl',            
             'u-card-padding': ' p-0 ',
@@ -1122,7 +1122,7 @@ export const settingsDefault = {
             'u-panel-group': 'flex',
         },
         blocks: {
-            'u-block-base': 'bg-card u-max-width-block border border-input text-card-foreground py-3 lg:py-4 xl:py-6 gap-3 lg:gap-4 rounded-2xl',
+            'u-block-base': 'bg-card u-max-width-block shadow-sm text-card-foreground py-3 lg:py-4 xl:py-6 gap-3 lg:gap-4 rounded-2xl',
             'u-block-header': 'flex flex-row items-center px-3 lg:px-4 xl:px-6 gap-3 lg:gap-4',
             'u-block-icon': 'text-card-foreground',
             'u-block-name': 'flex flex-col flex-auto gap-y-2 gap-x-4',
@@ -1237,62 +1237,62 @@ export const settingsDefault = {
 
         button_styles: {
             'u-btn-default-cnt':
-                '  bg-card web:hover:bg-muted ',
+                '  bg-muted web:hover:bg-muted/50 ',
             'u-btn-default-text':
-                ' font-semibold text-card-foreground ',
+                ' font-medium text-card-foreground web:group-hover:text-foreground ',
             'u-btn-default-trans': '  web:duration-200',
-            'u-btn-default-ring': ' bg-border/60 shadow-sm web:active:shadow-none web:active:bg-border ',
+            'u-btn-default-ring': ' web:group bg-border/60 web:duration-200 shadow-sm web:active:shadow-none web:active:bg-border ',
 
 
             'u-btn-primary-cnt': ' ',
-            'u-btn-primary-text': ' font-semibold text-primary-foreground ',
+            'u-btn-primary-text': ' font-medium text-primary-foreground ',
             'u-btn-primary-trans': ' web:duration-200',
-            'u-btn-primary-ring': ' bg-primary shadow-sm web:active:shadow-none web:active:opacity-50  ',
+            'u-btn-primary-ring': ' bg-primary web:hover:bg-primary/90 web:duration-200 shadow-sm web:active:shadow-none web:active:opacity-50  ',
 
             'u-btn-accent-cnt':
                 ' bg-accent bg-accent web:active:ring-2 web:active:ring-accent web:active:ring-offset-2 web:active:outline-none ',
             'u-btn-accent-text':
-                'font-medium text-white',
-            'u-btn-accent-trans': '  web:duration-300',
+                ' font-medium text-white ',
+            'u-btn-accent-trans': '  web:duration-200',
             'u-btn-accent-ring': ' bg-accent ',
 
             'u-btn-secondary-cnt':
                 '   ',
             'u-btn-secondary-text':
-                'font-medium text-muted-foreground web:hover:text-foreground  ',
-            'u-btn-secondary-trans': ' web:duration-100 ',
-            'u-btn-secondary-ring': ' bg-secondary/60 web:hover:bg-secondary/80 web:active:bg-secondary ',
+                ' font-medium text-card-foreground web:group-hover:text-foreground  ',
+            'u-btn-secondary-trans': ' web:duration-200 ',
+            'u-btn-secondary-ring': ' web:group web:duration-200 bg-secondary/60 web:hover:bg-secondary web:active:opacity-50 ',
             
             'u-btn-danger-cnt':
-                'border border-transparent dark:border-transparent bg-red-600 web:hover:bg-red-500 web:hover:shadow web:active:opacity-50 web:active:shadow-none',
+                '  dark:border-transparent bg-red-600 web:hover:bg-red-500 web:hover:shadow web:active:opacity-50 web:active:shadow-none',
             'u-btn-danger-text':
                 'font-medium text-danger-foreground',
-            'u-btn-danger-trans': '  web:duration-300',
-            'u-btn-danger-ring': ' bg-danger ',
+            'u-btn-danger-trans': '  web:duration-200',
+            'u-btn-danger-ring': ' web:group web:duration-200 bg-danger ',
 
             'u-btn-text-cnt': '  ',
-            'u-btn-text-text': 'font-semibold text-muted-foreground',
-            'u-btn-text-trans': '  web:duration-300',
-            'u-btn-text-ring': ' bg-transparent web:hover:bg-secondary/80 web:active:bg-secondary ',
+            'u-btn-text-text': ' font-medium text-card-foreground web:group-hover:text-foreground',
+            'u-btn-text-trans': '  web:duration-200',
+            'u-btn-text-ring': ' web:group web:duration-200 bg-transparent web:hover:bg-secondary/60 web:active:opacity-50 ',
 
 
-            'u-btn-link-cnt': 'web:hover:bg-bgritemprimary dark:web:hover:bg-bgritemprimary web:active:opacity-50',
-            'u-btn-link-text': 'font-semibold text-primary',
-            'u-btn-link-trans': 'web:duration-300',
-            'u-btn-link-ring': ' bg-transparent ',
+            'u-btn-link-cnt': '  ',
+            'u-btn-link-text': ' font-medium text-primary web:group-hover:text-primary/90 ',
+            'u-btn-link-trans': ' web:duration-200 ',
+            'u-btn-link-ring': ' web:group web:duration-200 bg-transparent ',
 
             'u-btn-outline-cnt': ' bg-card ',
-            'u-btn-outline-text':'font-medium text-card-foreground',
-            'u-btn-outline-trans': '  web:duration-300',
-            'u-btn-outline-ring': ' bg-secondary/60 web:hover:bg-secondary/80 web:active:bg-secondary ',
+            'u-btn-outline-text':' font-medium text-card-foreground web:group-hover:text-foreground ',
+            'u-btn-outline-trans': '  web:duration-200',
+            'u-btn-outline-ring': ' web:group web:duration-200 bg-border/60 web:hover:bg-border web:active:opacity-50 ',
 
             'u-btn-group-item-cnt':
-                'border border-transparent dark:border-transparent web:hover:bg-bgritem-h dark:web:hover:bg-bgritem-dh web:active:opacity-50',
+                '  bg-muted web:hover:bg-muted/50 ',
             'u-btn-group-item-text':
-                'font-medium text-neutral-800 dark:text-neutral-200 web:dark:group-hover:text-neutral-50',
+                ' font-medium text-card-foreground web:group-hover:text-foreground ',
             'u-btn-group-item-icon':
-                'text-neutral-700 dark:text-neutral-300 web:dark:group-hover:text-neutral-50',
-            'u-btn-group-item-ring': ' bg-secondary ',
+                ' text-card-foreground web:group-hover:text-foreground ',
+            'u-btn-group-item-ring': ' web:group bg-border/60 web:duration-200 shadow-sm web:active:shadow-none web:active:bg-border ',
 
             'u-btn-group-item-default-cnt':
                 'border border-transparent dark:border-transparent web:hover:bg-bgritem-h dark:web:hover:bg-bgritem-dh web:active:opacity-50',
