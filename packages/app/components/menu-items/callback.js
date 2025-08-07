@@ -12,6 +12,7 @@ import ChkList from 'app/ui/molecules/checkbox_list';
 import { storageClear, getAlert } from 'app/lib/util';
 import { useLayoutData } from 'app/context/layout';
 import DropdownMenuItem from 'app/components/menu-items/dropdown-menu-item'
+import Badge from 'app/ui/molecules/badge'
 
 const handleClick = async (event, oProps, setBottomSheetData, setLayoutData, redirectdRef, buttonProps, setButtonProps) => {
 
@@ -47,7 +48,15 @@ const handleClick = async (event, oProps, setBottomSheetData, setLayoutData, red
                 popperDiv.classList.add('radix-hide');
             }
         }
-        setBottomSheetData({ title: 'Choose badges', showClose: true, snapPoints: ['70%', '70%'], content: <ChkList values={oProps.data.values} setValue={setBadges} selectedValue={oProps.data.value} /> });
+
+        const badges = oProps.data.values.map((badge, index) => ({
+            ...badge,
+            icon:null,
+            label: <Badge data={{...badge, text: badge.label}} />
+            }
+        ));
+        Badge
+        setBottomSheetData({ title: 'Choose badges', showClose: true, snapPoints: ['70%', '70%'], content: <ChkList values={badges} setValue={setBadges} selectedValue={oProps.data.value} /> });
         return;
     }
 

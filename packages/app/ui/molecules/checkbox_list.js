@@ -3,7 +3,6 @@ import { Row, View, ScrollView } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { useState } from 'react';
 import { Button, Modal } from "app/design/controls";
-import React from 'react';
 
 export default function ({ values, selectedValue, setValue }) {
     const [value2, setValue2] = useState(selectedValue);

@@ -34,14 +34,13 @@ export default function Badge({ data, variant = "default", children }) {
             /></View></Link>
         );
     } else {
-        // if (!data.icon)
         data.icon = data.icon || 'BadgeCheck';
         return (
-            <View className={`u-badge-base ${badgeTheme['u-badge-base']} ${badgeTheme['u-badge-' + variant]} `}>
-                {data.icon && <Icon icon={data.icon} size={16} className={`${badgeTheme['u-badge-text-' + variant]}`} />}
-                <Text className={`${badgeTheme['u-badge-text']} ${badgeTheme['u-badge-text-' + variant]}`} >
+            <View className={`u-badge-base ${badgeTheme['u-badge-base']} ${data.color ? 'bg-'+data.color : badgeTheme['u-badge-' + variant]}`}>
+                {data.icon && <Icon icon={data.icon} size={16} className={`${data.color ? 'text-white' : badgeTheme['u-badge-text-' + variant]}`} />}
+                {!data.is_icon_only && <Text className={`${badgeTheme['u-badge-text']} ${data.color ? 'text-white' : badgeTheme['u-badge-text-' + variant]}`} >
                     {data.text}
-                </Text>
+                </Text>}
             </View>
         );
     }

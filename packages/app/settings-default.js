@@ -1134,7 +1134,7 @@ export const settingsDefault = {
         },
         badges: {
             
-            'u-badge-base': ' items-center py-1 rounded-full flex-row h-6 px-1.5',
+            'u-badge-base': ' items-center py-1 rounded-full flex-row h-6 px-1',
             'u-badge-default': 'bg-primary/20',
             'u-badge-destructive': '',
             'u-badge-outline': '',
