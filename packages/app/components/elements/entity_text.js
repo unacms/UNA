@@ -74,7 +74,7 @@ function Default({ data, showPad, sidebar, block }) {
             </View>}
             {(!!data.image && !data.video) && <View className="w-full h-[30vh] mb-4 sm:rounded-xl overflow-hidden"><Image {...data.image} alt={data.title} sizes={LAYOUT_BREAKPOINTS.lg} className=" u-cover" view="cover" /></View>}
             <View className={`mx-auto w-full px-4 ${TABLET_MODE_FROM}:px-0 ${(showPad == false || sidebar ? '' : ' ')}`}>
-                {isSmall ? <TextMore tagName='h1' text={data.entry_title} numberOfLines={2} className="font-bold tracking-tight  text-neutral-900 dark:text-neutral-50 "></TextMore> :  <H1 className="font-bold tracking-tight  text-neutral-900 dark:text-neutral-50 ">{data.entry_title}</H1>}
+                {isSmall ? <TextMore tagName='h1' text={data.entry_title} numberOfLines={2} className="font-bold tracking-tight  text-neutral-900 dark:text-neutral-50 "></TextMore> :  <H1>{data.entry_title}</H1>}
                 {isSmall ? <ContentMore numberOfSymbols={200} showLess={true} content={text} numberOfLines={3}  openSmall={false} textClassName="  text-base text-neutral-600 dark:text-neutral-400" /> :  <Html data={text} />}
                 
             </View>

@@ -1,12 +1,4 @@
 import { Icon } from 'app/ui/atoms/icon'
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-    CardDescription,
-    CardFooter,
-} from 'app/ui/molecules/card'
 import Badge from 'app/ui/molecules/badge'
 import {
     Block,
@@ -139,7 +131,6 @@ export default function PageLayout(props) {
                         <BlockDescription>
                             <View>
                                 <Badge variant="default" data={{text:currentUser.membership_name}}/>
-                                 
                             </View>
                         </BlockDescription>
                     </BlockName>

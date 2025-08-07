@@ -24,94 +24,68 @@ export const Text =({
 /**
  * Components can have defaultProps and styles
  */
-export const H1 = ({ children, className, isfirst, islast, ...rest }) => {
+export const H1 = ({ children, className, ...rest }) => {
     const HeadingComponent = Platform.OS === 'web' ? 'h1' : NativeText
-    const finalClassName = 
-        `text-3xl sm:text-4xl font-bold tracking-tight text-neutral-950 dark:text-neutral-50 web:duration-300 ${
-            isfirst === 'true' ? 'mt-0' : 'mt-4'
-        } ${islast === 'true' ? 'mb-0' : 'mb-4'} ${className || ''}`
+       
     return (
-        <HeadingComponent className={finalClassName} {...rest}>
+        <HeadingComponent className={ `text-3xl sm:text-4xl font-bold tracking-tight text-foreground web:duration-300 ${className || ''}`} {...rest}>
             {children}
         </HeadingComponent>
     )
 }
 
-export const H1C = ({ children, className, isfirst, islast, ...rest }) => {
+export const H1C = ({ children, className, ...rest }) => {
     const HeadingComponent = Platform.OS === 'web' ? 'h1' : NativeText
-    const finalClassName = 
-        `text-3xl lg:text-4xl font-bold tracking-tight text-neutral-950 dark:text-neutral-50 ${
-            isfirst === 'true' ? 'mt-0' : 'mt-6'
-        } ${islast === 'true' ? 'mb-0' : 'mb-3'} ${className || ''}`
     return (
-        <HeadingComponent className={finalClassName} {...rest}>
+        <HeadingComponent className={`text-3xl lg:text-4xl font-bold tracking-tight text-foreground ${className || ''}`} {...rest}>
             {children}
         </HeadingComponent>
     )
 }
 
-export const H2 = ({ children, className, isfirst, islast, ...rest }) => {
+export const H2 = ({ children, className, ...rest }) => {
     const HeadingComponent = Platform.OS === 'web' ? 'h2' : NativeText
-    const finalClassName = 
-        `text-2xl sm:text-3xl font-bold tracking-tight text-neutral-950 dark:text-neutral-50 ${
-            isfirst === 'true' ? 'mt-0' : 'mt-6'
-        } ${islast === 'true' ? 'mb-0' : 'mb-3'} ${className || ''}`
+
     return (
-        <HeadingComponent className={finalClassName} {...rest}>
+        <HeadingComponent className={`text-2xl sm:text-3xl font-bold tracking-tight text-foreground ${className || ''}`} {...rest}>
             {children}
         </HeadingComponent>
     )
 }
 
-export const H3 = ({ children, className, isfirst, islast, ...rest }) => {
+export const H3 = ({ children, className, ...rest }) => {
     const HeadingComponent = Platform.OS === 'web' ? 'h3' : NativeText
-    const finalClassName = 
-        `text-xl sm:text-2xl font-bold tracking-tight text-neutral-950 dark:text-neutral-50 ${
-            isfirst === 'true' ? 'mt-0' : 'mt-5'
-        } ${islast === 'true' ? 'mb-0' : 'mb-2'} ${className || ''}`
+    
     return (
-        <HeadingComponent className={finalClassName} {...rest}>
+        <HeadingComponent className={`text-xl sm:text-2xl font-bold tracking-tight text-foreground ${className || ''}`} {...rest}>
             {children}
         </HeadingComponent>
     )
 }
 
-export const H4 = ({ children, className, isfirst, islast, ...rest }) => {
+export const H4 = ({ children, className, ...rest }) => {
     const HeadingComponent = Platform.OS === 'web' ? 'h4' : NativeText
-    const finalClassName = 
-        `text-xl sm:text-2xl font-semibold tracking-tight text-neutral-950 dark:text-neutral-50 ${
-            isfirst === 'true' ? 'mt-0' : 'mt-4'
-        } ${islast === 'true' ? 'mb-0' : 'mb-2'} ${className || ''}`
-    
+         
     return (
-        <HeadingComponent className={finalClassName} {...rest}>
+        <HeadingComponent className={`text-xl sm:text-2xl font-semibold tracking-tight text-foreground`} {...rest}>
             {children}
         </HeadingComponent>
     )
 }
 
-export const H5 = ({ children, className, isfirst, islast, ...rest }) => {
+export const H5 = ({ children, className, ...rest }) => {
     const HeadingComponent = Platform.OS === 'web' ? 'h5' : NativeText
-    const finalClassName = 
-        `text-lg sm:text-xl font-semibold tracking-tight text-neutral-950 dark:text-neutral-50 ${
-            isfirst === 'true' ? 'mt-0' : 'mt-4'
-        } ${islast === 'true' ? 'mb-0' : 'mb-1'} ${className || ''}`
-    
     return (
-        <HeadingComponent className={finalClassName} {...rest}>
+        <HeadingComponent className={`text-lg sm:text-xl font-semibold tracking-tight text-foreground ${className || ''}`} {...rest}>
             {children}
         </HeadingComponent>
     )
 }
 
-export const H6 = ({ children, className, isfirst, islast, ...rest }) => {
+export const H6 = ({ children, className,  ...rest }) => {
     const HeadingComponent = Platform.OS === 'web' ? 'h6' : NativeText
-    const finalClassName = ` text-base sm:text-lg font-semibold tracking-tight text-neutral-950 dark:text-neutral-50 ${
-            isfirst === 'true' ? 'mt-0' : 'mt-4'
-        } ${islast === 'true' ? 'mb-0' : 'mb-1'} ${className || ''}`
-
     return (
-        <HeadingComponent className={finalClassName} {...rest}>
+        <HeadingComponent className={` text-base sm:text-lg font-semibold tracking-tight text-foreground ${className || ''}`} {...rest}>
             {children}
         </HeadingComponent>
     )
