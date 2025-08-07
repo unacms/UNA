@@ -985,7 +985,7 @@ export const settingsDefault = {
                 'flex flex-row web:focus:outline-none items-center justify-between px-1 py-0.5 rounded-lg font-medium web:hover:bg-bgritem web:dark:hover:bg-bgritem-d text-sm text-neutral-700 dark:text-neutral-300 web:dark:hover:text-white web:hover:cursor-pointer',
             item_cnt: 'items-center w-full',
             item_text:
-                ' text-base web:text-sm leading-8 px-3 font-medium text-neutral-800 dark:text-neutral-200',
+                ' text-base web:text-sm leading-8 px-3 font-medium text-card-foreground',
             item_icon:
                 'flex items-center w-9 h-9 bg-bgritem dark:bg-bgritem-d web:group-hover:bg-bgritem-h web:dark:group-hover:bg-bgritem-dh rounded-full justify-center',
             icon_size: 20, // Default icon size for dropdown menu icons
@@ -1010,7 +1010,7 @@ export const settingsDefault = {
                 'web:focus:text-card-foreground',
             multi: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d web:focus:bg-bgrinput-f web:focus:outline-none  web:focus:border-bdrinput-f web:dark:focus:border-bdrinput-df  text-neutral-900 rounded-xl flex-auto px-3 py-3 web:dark:focus:bg-bgrinput-df dark:text-neutral-100 text-base leading-5 ',
             rounded:
-                ' h-12 rounded-full flex-auto px-3 py-[11px] text-base bg-bgrinput dark:bg-bgrinput-d hover:border-bdrinput-h focus:border-bdrinput-f overflow-hidden border border-bdrinput web:focus:bg-bgrinput-f dark:border-bdrinput-d web:dark:focus:border-bdrinput-d web:dark:focus:bg-bgrinput-df web:focus:border-bdrinput-f web:dark:focus:border-bdrinput-df   web:duration-300 placeholder-neutral-500 text-neutral-800 dark:text-neutral-200 ',
+                ' h-12 rounded-full flex-auto px-3 py-[11px] text-base bg-bgrinput dark:bg-bgrinput-d hover:border-bdrinput-h focus:border-bdrinput-f overflow-hidden border border-bdrinput web:focus:bg-bgrinput-f dark:border-bdrinput-d web:dark:focus:border-bdrinput-d web:dark:focus:bg-bgrinput-df web:focus:border-bdrinput-f web:dark:focus:border-bdrinput-df   web:duration-300 placeholder-neutral-500 text-foreground ',
             roundedsmall:
                 ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-full flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[34px] ',
             small: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-full flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-9 ',
@@ -1026,23 +1026,23 @@ export const settingsDefault = {
             pressed_text: 'text-primary font-semibold',
             pressed_ring: 'bg-primary/10',
             xs: {
-                rounded: 'rounded-md',
-                ring: 'rounded-lg', // Ring wrapper border radius
-                padding: 'h-8 min-w-8 px-1.5',
-                padding_icon_only: 'h-8 w-8 px-1.5',
-                padding_with_title: 'h-8 px-1.5',
-                icon_container: ' native:text-[16px] web:text-[18px] flex items-center justify-center',
-                title_container: 'px-1 native:text-sm web:text-sm ',
-                icon_size: 18,
-                icon_margin: 'mx-0', // conditional margin for icon container when title is present
-                title_margin: '',
+                rounded: ' rounded-[5px] ',
+                ring: ' rounded-[6px] p-[1px]  ', // Ring wrapper border radius
+                padding: ' px-1.5 ',
+                padding_icon_only: ' w-[30px] ',
+                padding_with_title: ' px-1.5 gap-1.5 ',
+                icon_container: ' h-[30px]  flex items-center justify-center',
+                title_container: ' leading-[34px] text-xs',
+                icon_size: 16,
+                icon_margin: ' ', // conditional margin for icon container when title is present
+                title_margin: '  ', //
             },
             sm: {
-                rounded: ' rounded-[9px] ',
+                rounded: ' rounded-[7px] ',
                 ring: ' rounded-[8px] p-[1px]  ', // Ring wrapper border radius
-                padding: ' px-2',
+                padding: ' px-2 ',
                 padding_icon_only: ' w-[34px] ',
-                padding_with_title: ' px-2.5 gap-2 ',
+                padding_with_title: ' px-2 gap-2 ',
                 icon_container: ' h-[34px]  flex items-center justify-center',
                 title_container: ' leading-[34px] text-sm',
                 icon_size: 20,
@@ -1052,11 +1052,11 @@ export const settingsDefault = {
             base: {
                 rounded: ' rounded-[9px] ',
                 ring: ' rounded-[10px] p-[1px]  ', // Ring wrapper border radius
-                padding: ' px-2.5',
+                padding: ' px-3',
                 padding_icon_only: ' w-[38px] ',
-                padding_with_title: ' px-2.5',
+                padding_with_title: ' px-3 gap-3 ',
                 icon_container: ' h-[38px]  flex items-center justify-center',
-                title_container: ' leading-[38px] text-sm',
+                title_container: ' leading-[38px] text-base ',
                 icon_size: 24,
                 icon_margin: ' ', // conditional margin for icon container when title is present
                 title_margin: '', // conditional margin for text container when icon is present
@@ -1064,12 +1064,12 @@ export const settingsDefault = {
             lg: {
                 rounded: ' rounded-[11px] ',
                 ring: 'rounded-[12px] p-[1px]', // Ring wrapper border radius
-                padding: 'h-12 min-w-12 px-3',
-                padding_icon_only: 'h-12 w-12 px-3.5',
-                padding_with_title: 'h-12 px-3.5',
-                icon_container: ' h-7 w-7 flex items-center justify-center',
-                title_container: 'px-3 leading-6',
-                icon_size: 24,
+                padding: ' px-4 ',
+                padding_icon_only: ' w-[46px] ',
+                padding_with_title: ' px-4 ',
+                icon_container: ' h-[46px]  flex items-center justify-center',
+                title_container: ' leading-[46px] text-lg',
+                icon_size: 28,
                 icon_margin: 'mx-1', // conditional margin for icon container when title is present
                 title_margin: '', // conditional margin for text container when icon is present
             },
@@ -1188,7 +1188,7 @@ export const settingsDefault = {
             'u-controls-switcher-container': 'items-center flex-row-reverse justify-between gap-x-2 web:h-14 min-w-14 rounded-xl flex-auto p-3 bg-input border border-border ',
 
             // Text
-            'u-controls-switcher-text': 'text-neutral-800 dark:text-neutral-200 text-base',
+            'u-controls-switcher-text': 'text-card-foreground text-base',
 
             // Track
             'u-controls-switcher-track': 'rounded-full',
@@ -1239,15 +1239,15 @@ export const settingsDefault = {
             'u-btn-default-cnt':
                 '  bg-card web:hover:bg-muted ',
             'u-btn-default-text':
-                'font-medium text-neutral-800 web:hover:text-neutral-950 dark:text-neutral-200 web:dark:group-hover:text-neutral-50',
+                ' font-semibold text-card-foreground ',
             'u-btn-default-trans': '  web:duration-200',
-            'u-btn-default-ring': ' bg-border/50 shadow-sm web:active:shadow-none web:active:opacity-60 ',
+            'u-btn-default-ring': ' bg-border/60 shadow-sm web:active:shadow-none web:active:bg-border ',
 
 
-            'u-btn-primary-cnt': ' bg-primary  web:active:ring-2 web:active:ring-primary web:active:ring-offset-2 web:active:outline-none ',
-            'u-btn-primary-text': 'font-medium text-white',
+            'u-btn-primary-cnt': ' ',
+            'u-btn-primary-text': ' font-semibold text-primary-foreground ',
             'u-btn-primary-trans': ' web:duration-200',
-            'u-btn-primary-ring': ' bg-ring ',
+            'u-btn-primary-ring': ' bg-primary shadow-sm web:active:shadow-none web:active:opacity-50  ',
 
             'u-btn-accent-cnt':
                 ' bg-accent bg-accent web:active:ring-2 web:active:ring-accent web:active:ring-offset-2 web:active:outline-none ',
@@ -1266,7 +1266,7 @@ export const settingsDefault = {
             'u-btn-danger-cnt':
                 'border border-transparent dark:border-transparent bg-red-600 web:hover:bg-red-500 web:hover:shadow web:active:opacity-50 web:active:shadow-none',
             'u-btn-danger-text':
-                'font-medium text-neutral-100 group-hover:text-white',
+                'font-medium text-danger-foreground',
             'u-btn-danger-trans': '  web:duration-300',
             'u-btn-danger-ring': ' bg-danger ',
 
@@ -1281,10 +1281,10 @@ export const settingsDefault = {
             'u-btn-link-trans': 'web:duration-300',
             'u-btn-link-ring': ' bg-transparent ',
 
-            'u-btn-outline-cnt': 'bg-transparent border border-bdrbutton dark:border-bdrbutton-d web:hover:border-bdrbutton-h dark:web:hover:border-bdrbutton-dh web:active:opacity-50',
-            'u-btn-outline-text':'font-medium text-neutral-800 dark:text-neutral-200',
+            'u-btn-outline-cnt': ' bg-card ',
+            'u-btn-outline-text':'font-medium text-card-foreground',
             'u-btn-outline-trans': '  web:duration-300',
-            'u-btn-outline-ring': ' bg-border ',
+            'u-btn-outline-ring': ' bg-secondary/60 web:hover:bg-secondary/80 web:active:bg-secondary ',
 
             'u-btn-group-item-cnt':
                 'border border-transparent dark:border-transparent web:hover:bg-bgritem-h dark:web:hover:bg-bgritem-dh web:active:opacity-50',
@@ -1385,7 +1385,7 @@ export const settingsDefault = {
 
             'u-btn-link-cnt': ' border border-transparent dark:border-transparent flex flex-row active:opacity-50 items-center ',
             'u-btn-link-text':
-                ' font-medium web:group-hover:underline text-neutral-800 dark:text-neutral-200  web:hover:text-neutral-950 web:dark:hover:text-neutral-50 web:active:opacity-50 ',
+                ' font-medium web:group-hover:underline text-card-foreground  web:hover:text-neutral-950 web:dark:hover:text-neutral-50 web:active:opacity-50 ',
             'u-btn-link-trans': '   web:duration-300 ',
             'u-btn-link-ring': ' p-[1px] bg-transparent ',
 
