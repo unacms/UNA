@@ -287,7 +287,6 @@ function ElementDashboardStat(props) {
     const menu = appSetting('dashboard', 'menu')
     const list = appSetting('dashboard', 'modules_list')
     const filtredData = menu || data.modules.filter((item) => list.includes(item.key))
-    console.log("filtredData", filtredData)
     return (
         <>
             <Modal

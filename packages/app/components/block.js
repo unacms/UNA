@@ -148,8 +148,9 @@ export function BlockWrapper(props) {
     let cssClasses = rest?.extraProps?.cssClasses ? rest?.extraProps?.cssClasses : "";
     // Streamlined logic: avoid unnecessary fragment, ensure BlockContent is not wrapping elements twice
 
-    if (props?.block?.content && props?.block?.content[0]?.type == 'browse')
+    if ((props?.block?.content && props?.block?.content[0]?.type == 'browse') || block.designbox_id == 0)
         contentOnly = true;
+
     if (contentOnly)
         return props.children
 

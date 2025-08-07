@@ -4,8 +4,8 @@
 
 
 @layer base {
-    :root {
-        --background: 250 250 250; /*zinc-50*/
+    .light-theme-vars {
+         --background: 250 250 250; /*zinc-50*/
         --foreground: 24 24 27; /*zinc-900*/
         --card: 255 255 255; /*white*/
         --card-foreground: 24 24 27; /*zinc-900*/
@@ -24,8 +24,6 @@
         --border: 212 212 216; /*zinc-300*/
         --input: 250 250 250; /*zinc-50*/
         --ring: 59 130 246; /*blue-500*/
-
-       
     }
 
     .dark-theme-vars {
@@ -49,8 +47,10 @@
         --border: 63 63 70; /*zinc-700*/
         --input: 39 39 42; /*zinc-800*/
         --ring: 37 99 235; /*blue-600*/
+    }
 
-      
+    :root {
+        @apply light-theme-vars;
     }
     
     @media (prefers-color-scheme: dark) {
@@ -62,6 +62,9 @@
     /* Manual dark mode override (for controlled dark mode) */
     [data-theme="dark"] {
         @apply dark-theme-vars;
+    }
+    [data-theme="light"] {
+        @apply light-theme-vars;
     }
 }
 

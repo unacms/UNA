@@ -112,7 +112,6 @@ export default function (props) {
                 {topBlocks?.map((item, index) => {
                     return (
                         <BlockByName
-                            contentOnly={true}
                             key={'block_' + index}
                             name={item.block}
                             data={props.data}
@@ -204,7 +203,7 @@ export default function (props) {
                             <View className='' key={'view' + index}>
                                 <BlockByName
                                     data={props.data}
-                                    contentOnly={true}
+
                                     name={
                                         props.blocks[item.name + '_feed_form']
                                     }
@@ -212,7 +211,6 @@ export default function (props) {
                                 <BlockByName
                                     data={props.data}
                                     name={props.blocks[item.name + '_feed']}
-                                    contentOnly={true}
                                     unitMode={unitMode}
                                     exProps={{
                                         headerBlocks: headerBlocks,
