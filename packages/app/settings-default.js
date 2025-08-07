@@ -1040,9 +1040,9 @@ export const settingsDefault = {
             sm: {
                 rounded: ' rounded-[7px] ',
                 ring: ' rounded-[8px] p-[1px]  ', // Ring wrapper border radius
-                padding: ' px-2 ',
+                padding: ' px-3 ',
                 padding_icon_only: ' w-[34px] ',
-                padding_with_title: ' px-2 gap-2 ',
+                padding_with_title: ' px-3 gap-2 ',
                 icon_container: ' h-[34px]  flex items-center justify-center',
                 title_container: ' leading-[34px] text-sm',
                 icon_size: 20,
@@ -1105,7 +1105,7 @@ export const settingsDefault = {
         },
         cards: {
             'u-card-list': 'u-card-list bg-card shadow-sm text-card-foreground sm:rounded-2xl mb-0.5 sm:mb-3 lg:mb-4 ',
-            'u-card-list-padding': 'p-3 lg:p-4 xl:p-6',
+            'u-card-list-padding': 'p-4 lg:p-6',
             'u-card-base': ' u-card-base bg-card shadow-sm text-card-foreground shadow-sm gap-5 overflow-hidden rounded-2xl',            
             'u-card-padding': ' p-0 ',
             'u-card-header': 'flex px-6 pt-5 gap-1',

@@ -188,7 +188,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
     });
 
     const ButtonEx = memo(({ visibleItemsCount }) => {
-        return <Button startDecorator="ChevronDown" variant='default' rounded pressed={visibleItemsCount <= index ? true : false} size="sm" />;
+        return <Button startDecorator="ChevronDown" variant='text' rounded pressed={visibleItemsCount <= index ? true : false} size="sm" />;
     });
 
     return <DynamicMenu
@@ -288,8 +288,8 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, windowWidth, isC
 
     return (
         <>
-            <Animated.View className={`${conductorTheme.cover_base} cover-1 `} style={[{ zIndex: '50' }, animatedStyleHeader2]}>
-                <ViewRef ref={cover1Ref} className={conductorTheme.cover_content + ' aaaa'}   >
+            <Animated.View className={`${conductorTheme.cover_base} cover-1 `} style={[{ zIndex: 'z-50' }, animatedStyleHeader2]}>
+                <ViewRef ref={cover1Ref} className={conductorTheme.cover_content + ' aaaaa'}   >
                     {(isCover && !isHideCover) && <View className="w-full pb-4 border-b border-muted mb-1">
                         <Cover data={pageData.cover_block} mode={headerSettings.cover} uri={uri} context={pageData.context} />
                     </View>}

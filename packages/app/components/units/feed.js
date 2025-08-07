@@ -63,7 +63,7 @@ function DefaultUnit({ data }) {
                 {cmtsData.data}
             </Modal>}
             <CardList>
-                <View className="flex-auto flex-row mb-3 lg:mb-4">
+                <View className="flex-auto flex-row gap-3">
                     <Author data={data} url={url} t={t} />
                     <View className="flex-none mb-auto">
                         <MenuManage id={data.id} menu={data?.menu_manage} setViewState={setViewState} />

@@ -393,7 +393,7 @@ const getAddon = (addon, isTitle) => {
         return <View className={`absolute ${sButtonAddonBg} shadow-sm rounded-full px-1.5 items-center justify-center ${position}`}><Text className='text-white text-sm font-medium'>{sButtonAddonText}</Text></View>
 
     return sButtonAddonText && sButtonAddonText ? <View className='flex-1 items-end '>
-        <View className={sButtonAddonBg + ' rounded-full px-2 py-0.5 mx-1 text-center items-center'}>
+        <View className={sButtonAddonBg + ' rounded-full px-2 py-0.5 text-center items-center'}>
             <Text className="text-white text-xs font-semibold">{sButtonAddonText}</Text></View></View> : null;
 }
 
