@@ -1004,7 +1004,7 @@ export const settingsDefault = {
                 'px-3 py-3 text-base leading-6 ' +
                 'bg-input ' +
                 'web:focus:bg-card ' +
-                'overflow-hidden   web:duration-300 ' +
+                'overflow-hidden web:duration-300 ' +
                 'placeholder-muted-foreground ' +
                 'text-foreground ' +
                 'web:focus:text-card-foreground',
@@ -1250,7 +1250,7 @@ export const settingsDefault = {
             'u-btn-primary-ring': ' bg-ring ',
 
             'u-btn-accent-cnt':
-                ' bg-accent-600 dark:bg-accent-600 web:hover:bg-accent-700 dark:web:hover:bg-accent-700 web:active:ring-2 web:active:ring-accent web:active:ring-offset-2 web:active:outline-none ',
+                ' bg-accent bg-accent web:active:ring-2 web:active:ring-accent web:active:ring-offset-2 web:active:outline-none ',
             'u-btn-accent-text':
                 'font-medium text-white',
             'u-btn-accent-trans': '  web:duration-300',

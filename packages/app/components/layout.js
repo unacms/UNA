@@ -2,7 +2,6 @@ import { View } from 'app/design/view'
 import BottomSheet from 'app/ui/molecules/bottomsheet_content';
 import { appStatic } from 'app/lib/app-static'
 import { useCurrentUser } from 'app/context/user'
-import { Platform } from 'react-native';
 
 export default function Layout(props) {
     const { currentUser } = useCurrentUser()
@@ -12,10 +11,10 @@ export default function Layout(props) {
         </>
     }
 
-    const nativeBackground = Platform.OS !== 'web' ? 'bg-screen-light dark:bg-screen-dark' : 'bg-background';
+    //const nativeBackground = Platform.OS !== 'web' ? 'bg-screen-light dark:bg-screen-dark' : 'bg-background';
 
     return (
-        <View className={`text-neutral-900 dark:text-neutral-50 w-full h-full flex-1 ${nativeBackground}`}>
+        <View className={`text-neutral-900 dark:text-neutral-50 w-full h-full flex-1 bg-background`}>
             {props.children}
             <BottomSheet />
         </View>

@@ -595,7 +595,7 @@ const ComponentsDummyComponent = (props) => {
                 />
                 <Text
                     className={
-                        'flex-none text-gray-800 dark:text-gray-200 text-xs dark:bg-bgrmodal-d h-full md:h-auto  sm:border sm:border-bdrmodal sm:dark:border-bdrmodal-d sm:rounded-2xl bg-bgrmodal dark:bg-bgrmodal-d h-full md:h-auto  md:border md:border-bdrmodal md:dark:border-bdrmodal-d md:rounded-2xl'
+                        'flex-none text-gray-800 dark:text-gray-200 text-xs  h-full md:h-auto  sm:border  sm:rounded-2xl h-full md:h-auto  md:border  md:rounded-2xl'
                     }
                 >
                     123

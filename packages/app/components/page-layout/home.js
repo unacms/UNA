@@ -31,6 +31,7 @@ import { useLayoutSettings } from 'app/context/layout-settings'
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from')
 
 export default function (props) {
+  //  return <Button variant="accent" title="dfsdfsd" startDecorator="Plus"></Button>
    // return <><Text className="text-red-500 text-3xl" >zcxzxc zx</Text><Text fontFamily="font-title" className="text-red-500 text-3xl" >zcxzxc zx</Text></>
    // return <Loading/>
     /*return (

@@ -339,8 +339,8 @@ function ElementDashboardStat(props) {
                                                 <Text className="flex-none  text-3xl font-semibold text-muted-foreground leading-none">
                                                     {item.count}
                                                 </Text>
-                                            ) : ( <>
-                                                { item.add_url && <View>
+                                            ) : (<>
+                                                {item.add_url && <View>
                                                     <Link
                                                         href={item.add_url}
                                                         emulate={true}

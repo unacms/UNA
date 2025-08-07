@@ -540,7 +540,7 @@ const ReactionPopover = ({
                                     left: buttonPos.x,
                                     elevation: 5,
                                 }}
-                                className=" absolute flex-row p-2 rounded-full border border-bdrmodal p-2 dark:border-bdrmodal-d bg-bgrmodal dark:bg-bgrmodal-d shadow-[0_10px_10px_rgba(0,0,0,0.05)]"
+                                className=" absolute flex-row p-2 rounded-full border border-border p-2 bg-popover"
                             >
                                 {items.map((item) => (
                                     <TouchableOpacity
