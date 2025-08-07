@@ -338,7 +338,7 @@ export const settingsDefault = {
             show_counter: true,
             show_combined: true,
             button_variant: 'text',
-            button_size: 'xs',
+            button_size: 'sm',
             align_items: 'start',
             no_gap_between_buttons: false,
         },

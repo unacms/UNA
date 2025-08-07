@@ -63,13 +63,13 @@ function DefaultUnit({ data }) {
                 {cmtsData.data}
             </Modal>}
             <CardList>
-                <View className="flex-auto flex-row gap-3">
+                <View className="flex-auto flex-row gap-3 mb-4">
                     <Author data={data} url={url} t={t} />
                     <View className="flex-none mb-auto">
                         <MenuManage id={data.id} menu={data?.menu_manage} setViewState={setViewState} />
                     </View>
                 </View>
-                <View className='mb-3 lg:mb-4'>
+                <View className='mb-4'>
                 {MainContentComponent}
                 </View>
                 <View className=' w-full justify-between flex-row flex-wrap-reverse gap-2'>
