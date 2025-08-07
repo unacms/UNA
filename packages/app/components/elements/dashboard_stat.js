@@ -438,11 +438,7 @@ function ElementDashboardStat(props) {
                 })}
             </Row>
             {data.manage.items.length > 0 && (
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Admin Tools</CardTitle>
-                    </CardHeader>
-                    <CardContent>
+                
                         <View className="grid w-full grid-cols-1 gap-x-2 gap-y-1.5 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
                             {currentUser?.id && (
                                 <>
@@ -494,8 +490,7 @@ function ElementDashboardStat(props) {
                                 )
                             })}
                         </View>
-                    </CardContent>
-                </Card>
+                   
             )}
         </>
     )
