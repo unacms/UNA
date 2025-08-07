@@ -279,14 +279,15 @@ function ElementDashboardStat(props) {
             const sResponse = await fetcher(
                 '/api.php?r=system/get_stat_block/TemplDashboardServices'
             )
-            setData(sResponse.data[0].data)
+            setData(sResponse?.data[0]?.data)
         }
         fetchData()
     }, [])
 
+    const menu = appSetting('dashboard', 'menu')
     const list = appSetting('dashboard', 'modules_list')
-    const filtredData = data.modules.filter((item) => list.includes(item.key))
-
+    const filtredData = menu || data.modules.filter((item) => list.includes(item.key))
+    console.log("filtredData", filtredData)
     return (
         <>
             <Modal
@@ -326,7 +327,7 @@ function ElementDashboardStat(props) {
                                 <View
                                     className=" p-3 lg:p-4 bg-muted rounded-2xl w-full gap-3 flex-1  min-w-48 lg:min-w-64"
                                     key={index}
-                                ><Link href={item.url}>
+                                ><Link href={item.url.replace("{profile_url_postfix}", currentUser?.url.replace('/view-persons-profile/', ''))}>
                                         <View className="flex-row w-full h-10 justify-between items-center">
                                             <Icon
                                                 icon={item.icon}
@@ -339,8 +340,8 @@ function ElementDashboardStat(props) {
                                                 <Text className="flex-none  text-3xl font-semibold text-muted-foreground leading-none">
                                                     {item.count}
                                                 </Text>
-                                            ) : (
-                                                <View>
+                                            ) : ( <>
+                                                { item.add_url && <View>
                                                     <Link
                                                         href={item.add_url}
                                                         emulate={true}
@@ -352,7 +353,7 @@ function ElementDashboardStat(props) {
                                                             rounded
                                                         />
                                                     </Link>
-                                                </View>
+                                                </View>}</>
                                             )}
                                         </View>
                                         <View className="flex-row w-full justify-between items-center mt-3">
@@ -360,14 +361,14 @@ function ElementDashboardStat(props) {
                                                 {item.title}
                                             </Text>
 
-                                            <Text>
+                                            {item.count > 0 && <Text>
                                                 {getCounter(
                                                     item[item.action],
                                                     item.action_icon,
                                                     '',
                                                     colors.default
                                                 )}
-                                            </Text>
+                                            </Text>}
                                         </View></Link>
                                 </View>
 
