@@ -148,7 +148,7 @@ const FeedDefault = memo(() => (<View className=" pb-1 sm:pb-2 flex-auto">
     </View>
 </View>));
 
-const Feed = memo(() => (appSetting('feed', 'default_view') == 'small' ? <FeedSmall /> : <FeedDefault />));
+//const Feed = memo(() => (appSetting('feed', 'default_view') == 'small' ? <FeedSmall /> : <FeedDefault />));
 
 export const skeletonsMapDefault = {
     default: Default,
@@ -156,6 +156,6 @@ export const skeletonsMapDefault = {
     bx_forum: Forum,
     bx_posts: Posts,
     bx_posts_small: PostsSmall,
-    feed: Feed,
+    feed: FeedDefault,
     one_column_browse: OneColumn
 };

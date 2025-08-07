@@ -97,6 +97,8 @@ export default function PageLayout(props) {
     if (!appSetting('layout', 'user_remote_config'))
         return <DasbordStatOld {...props} />
     const {
+        layoutSettings,
+        updateLayoutSettings,
         themeName,
         setThemeName,
         setLayoutName,
@@ -243,6 +245,32 @@ export default function PageLayout(props) {
                                             variant="secondary"
                                             title={t('format_' + layoutName)}
                                             startDecorator="Layout"
+                                            fullWidth
+                                            align="left"
+                                        />
+                                    </DropdownMenu>
+                                </View>
+                            )}
+
+                            {appSetting('layout', 'avaliable_feed_units').length > 1 && (
+                                <View className="w-full max-w-sm flex-1 min-w-[160px]">
+                                    <DropdownMenu
+                                        items={appSetting(
+                                            'layout',
+                                            'avaliable_feed_units'
+                                        ).map((feed_unit) => ({
+                                            id: feed_unit,
+                                            key: feed_unit,
+                                            name: feed_unit,
+                                            title: t(feed_unit),
+                                        }))}
+                                        onSelect={(oItem) => {
+                                            updateLayoutSettings({ feed_unit: oItem.id })
+                                        }}
+                                    >
+                                        <Button
+                                            variant="secondary"
+                                            title={t(layoutSettings.feed_unit)}
                                             fullWidth
                                             align="left"
                                         />

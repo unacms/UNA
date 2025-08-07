@@ -34,9 +34,11 @@ export const settingsDefault = {
             name: 'hor',
             density: 'default',
             theme: 'auto',
-            lang: 'en'
+            lang: 'en',
+            feed_unit: 'default'
         },
         avaliable_layouts: ['hor', 'ver', 'mixed'],
+        avaliable_feed_units: ['default', 'small'],
         avaliable_density: [
             { id: 'compact', title: 'Compact', icon: 'Minus' },
             { id: 'default', title: 'Default', icon: 'Circle' },
@@ -284,8 +286,6 @@ export const settingsDefault = {
     },
     feed: {
         feed_container: 'relative flex-auto mx-auto w-full max-w-4xl sm:p-3 ',
-        show_selector_view: false,
-        default_view: '',
         show_html: false,
         default_feed: 'foryou',
         list: [

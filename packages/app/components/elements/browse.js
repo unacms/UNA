@@ -132,8 +132,6 @@ export default function (props) {
 
     /* unit mode & change unit mode */
     const unitMode = props.unitMode
-        ? props.unitMode
-        : appSetting('feed', 'default_view')
 
     const windowWidth = useWindowDimensions().width
     const windowHeight = useWindowDimensions().height

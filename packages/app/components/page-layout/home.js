@@ -31,9 +31,9 @@ import { useLayoutSettings } from 'app/context/layout-settings'
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from')
 
 export default function (props) {
-  //  return <Button variant="accent" title="dfsdfsd" startDecorator="Plus"></Button>
-   // return <><Text className="text-red-500 text-3xl" >zcxzxc zx</Text><Text fontFamily="font-title" className="text-red-500 text-3xl" >zcxzxc zx</Text></>
-   // return <Loading/>
+    //  return <Button variant="accent" title="dfsdfsd" startDecorator="Plus"></Button>
+    // return <><Text className="text-red-500 text-3xl" >zcxzxc zx</Text><Text fontFamily="font-title" className="text-red-500 text-3xl" >zcxzxc zx</Text></>
+    // return <Loading/>
     /*return (
     <Text className="text-red-500">zcxzxc zxc<Icon className="text-red-500 " icon="Plus"></Icon></Text>
     <Button startDecorator="Plus" title="fdfdsf" variant="badge"></Button>
@@ -46,10 +46,10 @@ export default function (props) {
         return <UI />
     }
 
-    const { layoutName } = useLayoutSettings()
+    const { layoutName, layoutSettings } = useLayoutSettings()
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
-    const feedMode = storageGet('feed:mode', '', true)
+
     const feedTypeD = storageGet('feed:type', '', true)
 
     const [feedType, setFeedType] = useState(
@@ -58,20 +58,11 @@ export default function (props) {
 
     const feedList = appSetting('feed', 'list')
 
-    const [unitMode, setUnitMode] = useState(
-        feedMode ? feedMode : appSetting('feed', 'default_view')
-    )
-
-    function setUnitModeEx(mode) {
-        storageSet('feed:mode', '', mode, true)
-        setUnitMode(mode)
-    }
-
     function setFeedTypeEx(mode) {
         storageSet('feed:type', '', mode, true)
         setFeedType(mode)
     }
-    const refer = useRef()
+
 
     if (!currentUser) {
         const Splash = getComponent('molecule', 'splash')
@@ -125,67 +116,32 @@ export default function (props) {
 
         const subHeader = (
             <Row className=' items-center'>
-            <ScrollView horizontal={true} className=" flex pb-3 pt-1 px-3 w-full scrollbar-hide">
-                <Row
-                    className={`  ${
-                        feedList.length > 1 ? '  gap-2 ' : ''
-                    }    `}
-                >
-                    {feedList.length > 1 &&
-                        feedList.map((item, index) => {
-                            return (
-                                <View key={'row_' + index}>
-                                    {callFn('getButtonForConductorHor', [
-                                        item.icon,
-                                        item.showTitle ? t(item.title) : '',
-                                        feedType == item.name,
-                                        null,
-                                        () => {
-                                            setFeedTypeEx(item.name)
-                                        },
-                                    ])}
-                                </View>
-                            )
-                        })}
-                    
-                </Row>
-              
-            </ScrollView>
-              {appSetting('feed', 'show_selector_view') && (
-                <Row className="flex-auto mb-2 px-2 gap-0.5 flex-none items-end justify-end">
-                    <Button
-                        startDecorator="Rows"
-                        tooltip={t('Full')}
-                        
-                        rounded
-                        variant={
-                            unitMode !== 'small'
-                                ? 'default'
-                                : 'secondary'
-                        }
-                        size="base"
-                        onPress={() => {
-                            setUnitModeEx('')
-                        }}
-                    />
-                    <Button
-                        startDecorator="List"
-                        
-                       
-                        tooltip={t('Short')}
-                        rounded
-                        variant={
-                            unitMode == 'small'
-                                ? 'default'
-                                : 'secondary'
-                        }
-                        size="base"
-                        onPress={() => {
-                            setUnitModeEx('small')
-                        }}
-                    />
-                </Row>
-            )}</Row>
+                <ScrollView horizontal={true} className=" flex pb-3 pt-1 px-3 w-full scrollbar-hide">
+                    <Row
+                        className={`  ${feedList.length > 1 ? '  gap-2 ' : ''
+                            }    `}
+                    >
+                        {feedList.length > 1 &&
+                            feedList.map((item, index) => {
+                                return (
+                                    <View key={'row_' + index}>
+                                        {callFn('getButtonForConductorHor', [
+                                            item.icon,
+                                            item.showTitle ? t(item.title) : '',
+                                            feedType == item.name,
+                                            null,
+                                            () => {
+                                                setFeedTypeEx(item.name)
+                                            },
+                                        ])}
+                                    </View>
+                                )
+                            })}
+
+                    </Row>
+
+                </ScrollView>
+            </Row>
         )
 
         const isFeedMenuPresent =
@@ -212,7 +168,7 @@ export default function (props) {
                                 <BlockByName
                                     data={props.data}
                                     name={props.blocks[item.name + '_feed']}
-                                    unitMode={unitMode}
+                                    unitMode={layoutSettings.feed_unit}
                                     exProps={{
                                         headerBlocks: headerBlocks,
                                         scrollProps: {
@@ -324,7 +280,7 @@ export default function (props) {
             <PanelGroup
                 autoSaveId={`cells-home`}
                 direction="horizontal"
-                className={`${appSetting('layout','max_width')} mx-auto w-full flex-auto relative flex-row`}
+                className={`${appSetting('layout', 'max_width')} mx-auto w-full flex-auto relative flex-row`}
                 onLayout={(e) => {
                     if (isWeb) {
                         requestAnimationFrame(() => {
