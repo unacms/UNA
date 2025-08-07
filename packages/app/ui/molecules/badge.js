@@ -7,7 +7,23 @@ import Link from 'app/ui/atoms/link'
 
 const badgeTheme = appSetting('theme', 'badges');
 
-export default function Badge({ data, variant = "default" }) {
+export default function Badge({ data, variant = "default", children }) {
+    // Handle case where children are passed instead of data object
+    if (children && !data) {
+        return (
+            <View className={`u-badge-base ${badgeTheme['u-badge-base']} ${badgeTheme['u-badge-' + variant]} `}>
+                <Icon icon="BadgeCheck" size={16} className={`${badgeTheme['u-badge-text-' + variant]}`} />
+                <Text className={`${badgeTheme['u-badge-text']} ${badgeTheme['u-badge-text-' + variant]}`} >
+                    {children}
+                </Text>
+            </View>
+        );
+    }
+
+    // Ensure data exists to prevent undefined errors
+    if (!data) {
+        return null;
+    }
 
     if (data.badge_url) {
         return (
@@ -19,7 +35,7 @@ export default function Badge({ data, variant = "default" }) {
         );
     } else {
         // if (!data.icon)
-        data.icon = 'BadgeCheck';
+        data.icon = data.icon || 'BadgeCheck';
         return (
             <View className={`u-badge-base ${badgeTheme['u-badge-base']} ${badgeTheme['u-badge-' + variant]} `}>
                 {data.icon && <Icon icon={data.icon} size={16} className={`${badgeTheme['u-badge-text-' + variant]}`} />}

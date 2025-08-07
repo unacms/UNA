@@ -37,8 +37,7 @@ export default function () {
                                         startDecorator="RotateCcw"
                                         fullWidth
                                         size="base"
-                                        ring="rounded-xl bg-neutral-300 dark:bg-neutral-950 shadow-sm hover:shadow-none"
-
+                                         
                                     />
                                 </Link>
                                 <Link className="flex-1 min-w-200" href="/create-account" haptics="Medium">
@@ -48,8 +47,7 @@ export default function () {
                                         fullWidth
                                         size="base"
                                         startDecorator="UserRoundPlus"
-                                        ring="rounded-xl bg-neutral-300 dark:bg-neutral-950 shadow-sm hover:shadow-none"
-
+                                         
                                     />
                                 </Link>
             </View>

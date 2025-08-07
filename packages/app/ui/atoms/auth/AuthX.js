@@ -21,8 +21,7 @@ export default function AuthX({ button }) {
                     startDecorator="XIcon" // Changed to string
                     
                     fullWidth
-                    ring="rounded-xl bg-neutral-300 dark:bg-neutral-950 shadow-sm hover:shadow-none"
-                    size="base"
+                                         size="base"
                 />
             )}
             {/* {error && <FormError errorText={error} />} */}

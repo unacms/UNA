@@ -246,7 +246,7 @@ export default function UnitComments(props) {
                         {(items.length != 0 && view != 'flat') && <View className="w-0.5 ml-[19px] top-0.5 flex-auto bg-neutral-100 dark:bg-neutral-800"></View>}
                     </View>
                     
-                        <View className=' bg-bgritem dark:bg-bgritem-d flex-1 rounded-2xl px-1 py-1 mt-2 sm:mt-3 flex-col gap-y-1' >
+                        <View className=' bg-muted flex-1 rounded-2xl p-1 mt-2 sm:mt-3 flex-col gap-y-1' >
                             <View className="flex-row items-center overflow-hidden px-2 py-1">
                                 <Profile {...data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
                                 <View><Text className="text-neutral-400 dark:text-neutral-600 px-1">·</Text></View>
@@ -277,18 +277,18 @@ export default function UnitComments(props) {
                             {(viewState.view != 'edited' && imageList.length > 0) && <View className='max-w-xs w-full'><Carousel data={imageList} /></View>}
                         {viewState.view != 'edited' && <View className=' flex-row w-full  items-center'>
                             {(!!currentUser && !!props.handleReply && !props.module.includes('_reviews')) ? <View className=' '>
-                                <Button align="start" ring='p-1' title={t("Reply")} size="sm" startDecorator="MessageCircle" variant="text" onPress={() => handleReply(data)} rounded />
+                                <Button align="start" title={t("Reply")} size="sm" startDecorator="MessageCircle" variant="text" onPress={() => handleReply(data)} rounded />
                             </View> : <View></View>
                             }
                             {(!!currentUser && !props.handleReply && !props.module.includes('_reviews')) ? <View className=' '>
-                                <Link href={props.contentUrl + '#cmt_id=' + data.cmt_id}><Button align="start" ring='p-1' title={t("Reply")} size="sm" startDecorator="MessageCircle" variant="text" rounded /></Link>
+                                <Link href={props.contentUrl + '#cmt_id=' + data.cmt_id}><Button align="start" title={t("Reply")} size="sm" startDecorator="MessageCircle" variant="text" rounded /></Link>
                             </View> : <View></View>
                             }
                             <View className='flex-row flex-auto '>
-                                <Menu {...data.menu_actions} displayType="element" showMatched={true} params={{ show_action: true, show_counter: false, show_combined: false, button_size: 'sm', button_variant: 'text', button_ring: 'p-1' }} />
+                                <Menu {...data.menu_actions} displayType="element" showMatched={true} params={{ show_action: true, show_counter: false, show_combined: false, button_size: 'sm', button_variant: 'text' }} />
 
                                 <View className="ml-auto flex-row items-center ">
-                                    <Menu {...data.menu_actions} displayType="element" showMatched={true} params={{ show_action: false, show_counter: true, show_combined: false, button_size: 'sm', button_variant: 'text', button_ring: 'p-1' }} />
+                                    <Menu {...data.menu_actions} displayType="element" showMatched={true} params={{ show_action: false, show_counter: true, show_combined: false, button_size: 'sm', button_variant: 'text' }} />
 
                                     <MenuManage id={data.id} menu={data?.menu_manage} setViewState={setViewState} module={props.module} cmt_object_id={props.data.cmt_object_id} cmt_id={props.data.cmt_id} />
                                 </View>

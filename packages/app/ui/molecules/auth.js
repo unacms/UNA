@@ -29,7 +29,6 @@ export default function AuthPanel({ googleButton, className, showSeparator = tru
                         fullWidth
                         size="base"
                         startDecorator="UserRoundPlus"
-                        ring="rounded-xl bg-neutral-300 dark:bg-neutral-950 shadow-sm hover:shadow-none"
                     />
                 </Link>}
                 {forgotPasswordLink && <Link className="flex-1 min-w-200" href="/forgot-password" haptics="Medium">
@@ -39,7 +38,6 @@ export default function AuthPanel({ googleButton, className, showSeparator = tru
                         startDecorator="RotateCcw"
                         fullWidth
                         size="base"
-                        ring="rounded-xl bg-neutral-300 dark:bg-neutral-950 shadow-sm hover:shadow-none"
                     />
                 </Link>}
                 {createAccountLink && <Link className="flex-1 min-w-200" href="/create-account" haptics="Medium">
@@ -47,9 +45,9 @@ export default function AuthPanel({ googleButton, className, showSeparator = tru
                         title={t("splash_page_new_account")}
                         variant="default"
                         fullWidth
+                        rounded 
                         size="base"
                         startDecorator="UserRoundPlus"
-                        ring="rounded-xl bg-neutral-300 dark:bg-neutral-950 shadow-sm hover:shadow-none"
                     />
                 </Link>}
                 <View className='web:flex-row web:flex-wrap gap-x-2 gap-y-2 w-full'>

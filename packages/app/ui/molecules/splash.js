@@ -1,6 +1,6 @@
 import { View } from 'app/design/view'
 import { Text } from 'app/design/typography'
-import Card from 'app/ui/molecules/card'
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from 'app/ui/molecules/card' 
 import { appSetting } from 'app/lib/util'
 import { Platform } from 'react-native'
 import { appStatic } from 'app/lib/app-static'
@@ -24,22 +24,22 @@ const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from');
 
 function PageContent(props) {
     const { t } = useTranslation()
-    return (<Card padding='"p-4 sm:p-6'>
-        <View className="flex-col flex-auto gap-y-2 justify-center ">
-            <Text className="text-xl sm:text-2xl text-center lg:text-left leading-none tracking-tight font-semibold text-neutral-800 dark:text-neutral-200">
-                {t("splash_page_login")}
-            </Text>
-            <Text className="text-sm sm: text-base text-center lg:text-left text-neutral-500">
-                {t("splash_page_login2")}
-            </Text>
-        </View>
+    return (<Card>
+        <CardHeader>
+            <CardTitle>{t("splash_page_login")}</CardTitle>
+            <CardDescription>{t("splash_page_login2")}</CardDescription>
+        </CardHeader>
+        <CardContent>
         <BlockByName
             name="system:login_form"
             contentOnly={true}
             data={props.data}
             formProps={{ hide_errors: true, button_full_width: true }}
         />
+        </CardContent>
+        <CardFooter>
         <AuthPanel loginLink={false} />
+        </CardFooter>
     </Card>);
 }
 

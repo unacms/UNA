@@ -18,7 +18,7 @@ const inputSettings = appSetting('theme', 'inputs');
 export const TextInputClear = TextInputDef
 
 export const Input = ({ className, startDecorator, endDecorator, ...props }) => (
-    <Row className="items-center flex-auto">
+    <Row className={`items-center flex-auto ${inputSettings.ring || ''}`}>
         {startDecorator && (
             <View className="absolute left-3.5 h-full items-center justify-center">
                 <Icon icon={startDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
@@ -34,7 +34,7 @@ export const Input = ({ className, startDecorator, endDecorator, ...props }) => 
 );
 
 export const InputRef = forwardRef(({ className, startDecorator, endDecorator, ...props }, ref) => (
-    <Row className=" items-center flex-auto">
+    <Row className={`items-center flex-auto ${inputSettings.ring || ''}`}>
         {startDecorator && (
             <View className="absolute left-3.5 h-full items-center justify-center">
                 <Icon icon={startDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
@@ -50,7 +50,7 @@ export const InputRef = forwardRef(({ className, startDecorator, endDecorator, .
 ));
 
 export const InputMulti = forwardRef(({ className, startDecorator, endDecorator, ...props }, ref) => (
-     <Row className=" items-center flex-auto">
+     <Row className={`items-center flex-auto ${inputSettings.ring || ''}`}>
         {startDecorator && (
             <View className="absolute left-3.5 h-full items-center justify-center">
                 <Icon icon={startDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
@@ -66,7 +66,7 @@ export const InputMulti = forwardRef(({ className, startDecorator, endDecorator,
 ));
 
 export const InputRounded = ({ className, startDecorator, endDecorator, ...props }) => (
-    <Row className=" items-center flex-auto">
+    <Row className={`items-center flex-auto ${inputSettings.ring || ''}`}>
         {startDecorator && (
             <View className="absolute left-3.5 h-full items-center justify-center">
                 <Icon icon={startDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
@@ -82,7 +82,7 @@ export const InputRounded = ({ className, startDecorator, endDecorator, ...props
 );
 
 export const InputRoundedRef = forwardRef(({ className, startDecorator, endDecorator, ...props }, ref) => (
-    <Row className="items-center flex-auto">
+    <Row className={`items-center flex-auto ${inputSettings.ring || ''}`}>
         {startDecorator && (
             <View className="absolute left-3.5 h-full items-center justify-center">
                 <Icon icon={startDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
@@ -98,7 +98,7 @@ export const InputRoundedRef = forwardRef(({ className, startDecorator, endDecor
 ));
 
 export const InputRoundedSmall = ({ className, startDecorator, endDecorator, ...props }) => (
-    <Row className="items-center flex-auto">
+    <Row className={`items-center flex-auto ${inputSettings.ring || ''}`}>
         {startDecorator && (
             <View className="absolute left-3.5 h-full items-center justify-center">
                 <Icon icon={startDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
@@ -114,7 +114,7 @@ export const InputRoundedSmall = ({ className, startDecorator, endDecorator, ...
 );
 
 export const InputSmall = ({ className, startDecorator, endDecorator, ...props }) => (
-    <Row className="items-center">
+    <Row className={`items-center ${inputSettings.ring || ''}`}>
         {startDecorator && (
             <View className="absolute left-3.5 h-full items-center justify-center">
                 <Icon icon={startDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
@@ -141,7 +141,7 @@ export const PickerStyled = ({ className, ...props }) => (
 );
 
 export const PickerStyledRef = forwardRef(({ classes, className, ...props }, ref) => (
-    <View className="relative flex-auto items-center flex-row">
+    <View className={`relative flex-auto items-center flex-row ${inputSettings.ring || ''}`}>
         <PickerDef ref={ref} className={`${classes ? classes : PickerStyles} w-full`} {...props} />
         <View className="absolute right-3 pointer-events-none">
             <Icon icon="ChevronDown" size={20} className="text-neutral-500" />
@@ -277,12 +277,29 @@ export function ButtonsGroup({
     fullWidth = false,
     showTitleFromSize = '',
     rounded = false,
+    ring,
     children = [],
     ...rest
 }) {
+    // Get ring class similar to Button component
+    const ringClass = useMemo(() => {
+        // If ring prop is provided as a string, use it to override default
+        if (typeof ring === 'string') {
+            return ring;
+        }
+        
+        // Use the variant-specific ring style from buttons_group_styles
+        const variantRingClass = ThemeCssClassesButtonGroups[`u-btn-${variant}-ring`];
+        if (variantRingClass) {
+            return variantRingClass + (rounded ? ' rounded-full' : ' rounded-lg');
+        }
+        
+        // Fallback to default ring
+        return ' p-[1px] bg-border ' + (rounded ? ' rounded-full' : ' rounded-lg');
+    }, [ring, variant, rounded, ThemeCssClassesButtonGroups]);
+
     let sClassContainer = 'web:group';
     sClassContainer += fullWidth ? ' flex-auto' : ' w-fit m-0 truncate ';
-
     
     sClassContainer += ThemeCssClassesButtonGroups['u-btn-' + variant + '-cnt'] ? ThemeCssClassesButtonGroups['u-btn-' + variant + '-cnt'] + ' ' : ' ';
     sClassContainer += rounded ? ' rounded-full ' : ' rounded-lg ';
@@ -309,7 +326,12 @@ export function ButtonsGroup({
         );
     });
 
-    return <View className={sClassContainer} {...rest}>{aChildren}</View>;
+    // Wrap in ring container
+    return (
+        <View className={`${ringClass} ${fullWidth ? 'flex-auto' : 'w-fit'}`} {...rest}>
+            <View className={sClassContainer}>{aChildren}</View>
+        </View>
+    );
 }
 
 /* buttons */
@@ -414,14 +436,49 @@ export const Button = (props) => {
     const themeName = ThemeName();
     const { width } = useWindowDimensions();
     const ringClass = useMemo(() => {
-        if (ring === true) {
-            return ThemeButtonSizes.default_ring ?? '';
-        }
+        // If ring prop is provided as a string, use it to override default
         if (typeof ring === 'string') {
             return ring;
         }
-        return '';
-    }, [ring]);
+        
+        // Combine variant-specific ring style (for color/padding) and size-specific ring style (for border radius)
+        let classes = '';
+        
+        // Check if button is pressed and apply pressed ring styles
+        if (pressed) {
+            // Get pressed ring styles
+            const pressedRingClass = pressedClasses?.pressed_ring || 
+                                   ThemeCssClassesButton[`u-btn-${variant}-pressed-ring`] || 
+                                   ThemeButtonSizes.pressed_ring;
+            if (pressedRingClass) {
+                // Remove background classes from the base ring and apply pressed ring
+                classes = pressedRingClass;
+            }
+        } else {
+            // Get variant-specific ring class (background color, padding)
+            const variantRingClass = ThemeCssClassesButton[`u-btn-${variant}-ring`];
+            if (variantRingClass) {
+                classes += variantRingClass;
+            } else {
+                // Fallback to default ring if variant doesn't have a specific one
+                classes += ThemeButtonSizes.default_ring ?? ' p-[1px] bg-border ';
+            }
+        }
+        
+        // Add size-specific ring class (border radius)
+        const sizeRingClass = ThemeButtonSizes[size]?.ring;
+        if (sizeRingClass) {
+            classes += ' ' + sizeRingClass;
+        }
+        
+        // Handle rounded prop for the ring wrapper
+        if (rounded && !variant.startsWith('group-item')) {
+            // Override with full rounding if rounded is true
+            classes = classes.replace(/rounded-\S+/g, 'rounded-full');
+        }
+        
+        return classes;
+    }, [ring, variant, size, rounded, pressed, pressedClasses, ThemeCssClassesButton, ThemeButtonSizes]);
     
     const showTooltip = useMemo(() => width >= LAYOUT_BREAKPOINTS.lg && tooltip, [width, tooltip]);
 

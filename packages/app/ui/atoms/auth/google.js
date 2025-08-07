@@ -91,8 +91,7 @@ export default function AuthGoogle({ button }) {
                 title={t("Login with Google")}
                 onPress={() => promptAsync({ useProxy: true })}
                 fullWidth
-                ring="rounded-xl bg-neutral-300 dark:bg-neutral-950 shadow-sm hover:shadow-none"
-                size="base"
+                                 size="base"
                 startDecorator="Google"
             />}
             {error && <FormError errorText={error} />}
