@@ -27,7 +27,7 @@ export default function Badge({ data, variant = "default", children }) {
 
     if (data.badge_url) {
         return (
-            <Link href={data.badge_link}><View className="rounded-full w-6 h-6 overflow-hidden"><Image
+            <Link href={data.badge_link}><View className="rounded-full w-5 h-5 overflow-hidden"><Image
                 view="cover"
                 src={data.badge_url}
                 alt={data.badge_url.title_attr}
@@ -42,7 +42,7 @@ export default function Badge({ data, variant = "default", children }) {
         const hasBoth = hasIcon && hasText;
         
         // Build base classes with theme settings
-        const baseClasses = `items-center rounded-full flex-row h-6 px-1.5`;
+        const baseClasses = `items-center rounded-md flex-row h-5 px-1`;
         
         // Add gap-1 only when both elements are present
         const containerClasses = hasBoth ? `${baseClasses} gap-1` : baseClasses;
@@ -68,7 +68,7 @@ export default function Badge({ data, variant = "default", children }) {
         
         return (
             <View className={`${containerClasses} ${backgroundClass}`}>
-                {hasIcon && <Icon icon={data.icon} size={16} className={textColorClass} />}
+                {hasIcon && <Icon icon={data.icon} size={14} className={textColorClass} />}
                 {hasText && <Text className={`${badgeTheme['u-badge-text']} ${textColorClass}`} >
                     {data.text}
                 </Text>}

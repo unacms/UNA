@@ -45,10 +45,13 @@ export default function ElementTime(props) {
         return s;
     }, [props.ts, date, t, props.format]);
 
-    const { stylesName, stylesNameAdd } = props;
+    const { stylesName, stylesNameAdd, ...otherProps } = props;
 
     return (
-        <Text className={stylesName || `text-muted-foreground web:hover:text-foreground text-xs leading-5 tracking-tight whitespace-nowrap web:hover:underline ${stylesNameAdd}`}>
+        <Text 
+            className={stylesName || `text-muted-foreground web:hover:text-foreground text-xs leading-5 tracking-tight whitespace-nowrap web:hover:underline ${stylesNameAdd}`}
+            {...otherProps}
+        >
         {formattedTime}
         </Text>
     );

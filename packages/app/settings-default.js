@@ -1026,13 +1026,13 @@ export const settingsDefault = {
             pressed_text: ' text-primary font-medium ',
             pressed_ring: ' bg-primary/10 ',
             xs: {
-                rounded: ' rounded-[3px] ',
-                ring: ' rounded-[4px] p-[1px]  ', // Ring wrapper border radius
-                padding: ' px-2 ',
-                padding_icon_only: ' w-[22px] ',
-                padding_with_title: ' px-2 gap-1.5 ',
-                icon_container: ' h-[22px]  flex items-center justify-center',
-                title_container: ' leading-[22px] text-xs',
+                rounded: ' rounded-[5px] ',
+                ring: ' rounded-[6px] p-[1px]  ', // Ring wrapper border radius
+                padding: ' px-1 ',
+                padding_icon_only: ' w-[18px] ',
+                padding_with_title: ' px-1 gap-1 ',
+                icon_container: ' h-[18px]  flex items-center justify-center',
+                title_container: ' leading-[18px] text-xs',
                 icon_size: 16,
                 icon_margin: ' ', // conditional margin for icon container when title is present
                 title_margin: '  ', //
@@ -1134,7 +1134,7 @@ export const settingsDefault = {
         },
         badges: {
             
-            'u-badge-base': ' items-center rounded-full flex-row h-6',
+            'u-badge-base': ' items-center rounded-full flex-row ',
             'u-badge-default': ' bg-primary ',
             'u-badge-destructive': '',
             'u-badge-outline': '',
@@ -1329,7 +1329,7 @@ export const settingsDefault = {
             'u-btn-link-cnt': '  ',
             'u-btn-link-text': ' font-medium text-primary web:group-hover:text-primary/90 ',
             'u-btn-link-trans': ' web:duration-200 ',
-            'u-btn-link-ring': ' web:group web:duration-200 bg-transparent ',
+            'u-btn-link-ring': ' web:group web:duration-200 bg-transparent web:hover:bg-primary/10 ',
 
             'u-btn-outline-cnt': ' bg-card ',
             'u-btn-outline-text':' font-medium text-card-foreground web:group-hover:text-foreground ',
