@@ -27,6 +27,7 @@ import {
 } from 'app/ui/molecules/resizable-panels'
 import { useWindowDimensions } from 'react-native'
 import { useLayoutSettings } from 'app/context/layout-settings'
+import Badge from 'app/ui/molecules/badge'
 
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from')
 
@@ -230,7 +231,7 @@ export default function (props) {
                                             {currentUser.display_name}
                                         </Text>
                                         <Text className=" text-xs leading-tight flex-auto my-auto truncate text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-800 dark:group-hover:text-neutral-200 web:duration-200">
-                                            {currentUser.membership_name}
+                                            <Badge variant="default" data={{text:currentUser.membership_name}}/>
                                         </Text>
                                     </View>
                                 </Row>

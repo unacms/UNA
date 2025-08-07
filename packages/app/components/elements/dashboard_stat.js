@@ -138,9 +138,8 @@ export default function PageLayout(props) {
                         </BlockTitle>
                         <BlockDescription>
                             <View>
-                                <Badge variant="secondary">
-                                    {currentUser.membership_name}
-                                </Badge>
+                                <Badge variant="default" data={{text:currentUser.membership_name}}/>
+                                 
                             </View>
                         </BlockDescription>
                     </BlockName>
