@@ -307,7 +307,6 @@ export default function (props) {
                         return (
                             <View className="mb-3 " key={'block_' + index}>
                                 <BlockByName
-                                    contentOnly={true}
                                     name={item.block}
                                     data={props.data}
                                     {...item.block.props}
