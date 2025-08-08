@@ -33,8 +33,8 @@ import { subscribe } from 'app/ui/atoms/socket'
 import { useCurrentUser } from 'app/context/user'
 import { callFn } from 'app/lib/functions/call'
 import Link from 'app/ui/atoms/link'
+import Galery from 'app/ui/molecules/galery'
 import { Button } from 'app/design/controls'
-import { cd } from 'app/lib/util'
 
 const Item = memo(({ item, index, numColumns, data, unitMode, props }) => (
     <View
@@ -66,8 +66,6 @@ const getNumCols = (width, props, data) => {
     return 1
 }
 
-const MemoizedUniList = memo(UniList)
-
 export default function (props) {
     const isWeb = Platform.OS === 'web'
     const isValidateActive = props.validate ?? true
@@ -81,12 +79,11 @@ export default function (props) {
     const data = props.data
     const storageKeyValue = storageKey(
         (props.uri ? props.uri : '') +
-            (data.request_url ? ':' + data.request_url : '') +
-            (data.params?.type ? ':' + data.params?.type : '') +
-            (data.params?.category ? ':' + data.params?.category : '') +
-            (props.cachePrefix ? ':' + props.cachePrefix : '')
+        (data.request_url ? ':' + data.request_url : '') +
+        (data.params?.type ? ':' + data.params?.type : '') +
+        (data.params?.category ? ':' + data.params?.category : '') +
+        (props.cachePrefix ? ':' + props.cachePrefix : '')
     )
-    //const [cachedData, setCachedData] = useState(props.cachePrefix ? false : { state: getDataFromCache('ul:state', storageKeyValue), data: getDataFromCache('ul:data', storageKeyValue) });
     const cachedData = {
         state: getDataFromCache('ul:state', storageKeyValue),
         data: getDataFromCache('ul:data', storageKeyValue),
@@ -152,13 +149,13 @@ export default function (props) {
     const styles = isWeb
         ? {}
         : {
-              height: defParams?.height
-                  ? defParams.height
-                  : windowHeight - hOffset,
-          }
+            height: defParams?.height
+                ? defParams.height
+                : windowHeight - hOffset,
+        }
 
     const fetchData = useCallback(
-        async ({}) => {
+        async ({ }) => {
             const sUrl =
                 data.request_url + JSON.stringify({ params: dataItems.params })
             return (await fetcher(sUrl)).data[0].data
@@ -168,9 +165,9 @@ export default function (props) {
 
     const qKey = [
         data.request_url +
-            browseParams?.type +
-            defParams?.category +
-            props?.cachePrefix,
+        browseParams?.type +
+        defParams?.category +
+        props?.cachePrefix,
     ]
     const queryClient = useQueryClient()
     const {
@@ -364,6 +361,30 @@ export default function (props) {
         )
     }
 
+ if (props.galery) {
+        const uniqueItems = dataItems.data.filter(
+            (v, i, a) => a.findIndex((t) => t.id === v.id) === i
+        )
+        const limitedItems = props.extraProps?.limit
+            ? uniqueItems.slice(0, props.extraProps?.limit)
+            : uniqueItems
+
+        const items = limitedItems.map((item, index) => (
+                <Unit
+                    unit={data.unit ? data.unit : ''}
+                    mode={unitMode}
+                    module={data.module ? data.module : ''}
+                    sidebar={props.sidebar}
+                    object_id={data.object_id ? data.object_id : ''}
+                    view={data.view ? data.view : ''}
+                    {...props}
+                    data={item}
+                />
+        ));
+        return <Galery items={items}/>
+
+    }
+
     if (props.sidebar) {
         const uniqueItems = dataItems.data.filter(
             (v, i, a) => a.findIndex((t) => t.id === v.id) === i
@@ -372,16 +393,7 @@ export default function (props) {
             ? uniqueItems.slice(0, props.extraProps?.limit)
             : uniqueItems
         return limitedItems.map((item, index) => (
-            <View
-                key={'item' + index}
-                className={
-                    numColumns > 1
-                        ? 'w-full pb-2 '
-                        : '  ' +
-                          (data.unit != 'feed' ? '   w-full' : '  ') +
-                          '  '
-                }
-            >
+            <View key={`item${index}`} className={`${numColumns > 1 ? 'pb-2' : ''} ${data.unit !== 'feed' ? 'w-full' : ''}`}>
                 <Unit
                     unit={data.unit ? data.unit : ''}
                     mode={unitMode}
@@ -459,8 +471,8 @@ export default function (props) {
                 hasNextPage && isFetchingNextPage
                     ? Preload
                     : dataItems.data.length == 0 && isShowEmptyMessage
-                    ? callFn('noContentByUrl', [data.request_url])
-                    : null,
+                        ? callFn('noContentByUrl', [data.request_url])
+                        : null,
         }),
         [
             props?.exProps?.scrollProps,

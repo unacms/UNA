@@ -33,7 +33,7 @@ export function UnitSearchResultsSmall({ data, onPress }) {
 
     const profile = data.author_data;
 
-    if (data.image){
+    if (data.image) {
         profile.url_avatar = data.image.src;
         profile.url = data.url;
     }
