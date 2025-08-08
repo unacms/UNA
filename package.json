@@ -38,7 +38,6 @@
     "dom-serializer": "^2.0.0",
     "dotenv-cli": "^7.0.0",
     "expo-blur": "^14.1.4",
-    "htmlparser2": "^10.0.0"
   },
   "packageManager": "yarn@1.22.22"
 }
