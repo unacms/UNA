@@ -361,7 +361,7 @@ export default function (props) {
         )
     }
 
- if (props.galery) {
+    if (props.galery) {
         const uniqueItems = dataItems.data.filter(
             (v, i, a) => a.findIndex((t) => t.id === v.id) === i
         )
@@ -370,18 +370,18 @@ export default function (props) {
             : uniqueItems
 
         const items = limitedItems.map((item, index) => (
-                <Unit
-                    unit={data.unit ? data.unit : ''}
-                    mode={unitMode}
-                    module={data.module ? data.module : ''}
-                    sidebar={props.sidebar}
-                    object_id={data.object_id ? data.object_id : ''}
-                    view={data.view ? data.view : ''}
-                    {...props}
-                    data={item}
-                />
+            <Unit
+                unit={data.unit ? data.unit : ''}
+                mode={unitMode}
+                module={data.module ? data.module : ''}
+                sidebar={props.sidebar}
+                object_id={data.object_id ? data.object_id : ''}
+                view={data.view ? data.view : ''}
+                {...props}
+                data={item}
+            />
         ));
-        return <Galery items={items}/>
+        return <Galery items={items} />
 
     }
 
