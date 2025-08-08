@@ -338,7 +338,9 @@ export const settingsDefault = {
             show_counter: true,
             show_combined: true,
             button_variant: 'text',
-            button_size: 'sm',
+            rounded: false,
+            button_size: 'xs',
+            button_rounded: false,
             align_items: 'start',
             no_gap_between_buttons: false,
         },
@@ -1026,13 +1028,13 @@ export const settingsDefault = {
             pressed_text: ' text-primary font-medium ',
             pressed_ring: ' bg-primary/10 ',
             xs: {
-                rounded: ' rounded-[5px] ',
-                ring: ' rounded-[6px] p-[1px]  ', // Ring wrapper border radius
-                padding: ' px-1 ',
-                padding_icon_only: ' w-[18px] ',
-                padding_with_title: ' px-1 gap-1 ',
-                icon_container: ' h-[18px]  flex items-center justify-center',
-                title_container: ' leading-[18px] text-xs',
+                rounded: ' rounded-[7px] ',
+                ring: ' rounded-[8px] p-[1px]  ', // Ring wrapper border radius
+                padding: ' px-1.5 ',
+                padding_icon_only: ' w-[26px] ',
+                padding_with_title: ' px-1.5 gap-1 ',
+                icon_container: ' h-[26px]  flex items-center justify-center',
+                title_container: ' leading-[26px] text-xs',
                 icon_size: 16,
                 icon_margin: ' ', // conditional margin for icon container when title is present
                 title_margin: '  ', //
@@ -1073,6 +1075,85 @@ export const settingsDefault = {
                 icon_margin: 'mx-1', // conditional margin for icon container when title is present
                 title_margin: '', // conditional margin for text container when icon is present
             },
+        },
+        badge_sizes: {
+            default_size: '',
+            xs: {
+                padding: ' px-[3px] ',
+                wide_padding: ' px-1.5 ',
+                container: ' min-w-5 h-5 gap-0.5 ',
+                icon_size: 14,
+                text: ' text-xs ',
+                rounded: ' rounded-[5px] '
+            },
+            sm: {
+                padding: ' px-1 ',
+                wide_padding: ' px-2 ',
+                container: ' min-w-7 h-7 gap-1 ',
+                icon_size: 20,
+                text: ' text-sm leading-[20px] ',
+                rounded: ' rounded-[7px] '
+            },
+            md: {
+                padding: ' px-1.5 ',
+                wide_padding: ' px-2.5 ',
+                container: ' min-w-8 h-8 gap-1 ',
+                icon_size: 20,
+                text: ' text-base leading-[20px] ',
+                rounded: ' rounded-[8px] '
+            },
+            lg: {
+                padding: ' px-2 ',
+                wide_padding: ' px-3 ',
+                container: ' min-w-10 h-10 gap-1.5 ',
+                icon_size: 24,
+                text: ' text-lg leading-[24x] ',
+                rounded: ' rounded-[10px] '
+            }
+        },
+        // Link styling (variants and sizes) to allow restyling without component changes
+        link_sizes: {
+            default_size: '',
+            default_variant: 'default',
+            xs: {
+                padding: ' px-1 py-0.5 rounded-md text-xs'
+            },
+            sm: {
+                padding: ' px-1.5 py-1 rounded-lg text-sm'
+            },
+            md: {
+                padding: ' px-3 py-2 rounded-xl text-base'
+            },
+            lg: {
+                padding: ' px-4 py-3 rounded-2xl text-lg'
+            }
+        },
+        
+        link_styles: {
+            // Default
+            'u-link-default-cnt': ' ',
+            'u-link-default-text': ' ',
+            'u-link-default-trans': ' web:duration-200',
+
+            // Ghost: transparent by default; muted on hover/active
+            'u-link-ghost-cnt': ' bg-transparent web:hover:bg-secondary web:active:bg-secondary ',
+            'u-link-ghost-text': ' text-muted-foreground web:hover:text-foreground ',
+            'u-link-ghost-trans': ' web:duration-200 ',
+
+            // Secondary: muted by default; secondary on hover/active
+            'u-link-secondary-cnt': ' bg-muted web:hover:bg-secondary web:active:bg-secondary ',
+            'u-link-secondary-text': ' text-muted-foreground web:hover:text-foreground ',
+            'u-link-secondary-trans': ' web:duration-200 ',
+
+            // Accent: accent background and foreground
+            'u-link-accent-cnt': ' bg-accent web:hover:bg-accent web:active:bg-accent ',
+            'u-link-accent-text': ' text-accent-foreground ',
+            'u-link-accent-trans': ' web:duration-200 ',
+
+            // Primary: link-style text
+            'u-link-primary-cnt': ' ',
+            'u-link-primary-text': ' text-primary web:hover:underline ',
+            'u-link-primary-trans': ' web:duration-200 ',
         },
         offsets: {
             'gap-lg': 'gap-4 sm:gap-6',
@@ -1142,7 +1223,7 @@ export const settingsDefault = {
             'u-badge-outline': '',
             'u-badge-accent': '',
             'u-badge-secondary': '',
-            'u-badge-text': ' whitespace-nowrap text-ellipsis overflow-hidden tracking-tight font-medium text-primary-foreground text-xs ',
+            'u-badge-text': ' whitespace-nowrap text-ellipsis overflow-hidden tracking-tight font-medium text-primary-foreground ',
             'u-badge-text-default': ' text-primary-foreground ',
             'u-badge-text-accent': '',
             'u-badge-text-destructive': '',

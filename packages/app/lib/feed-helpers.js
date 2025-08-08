@@ -403,7 +403,7 @@ export const Author = memo(({ data, url, t }) => {
                         
                     </Row>
                 }
-                showInfo2={<Badges badges={data.author_badges} />}
+                showInfo2={<Badges badges={data.author_badges} size="xs" />}
                 showActions={ActionsElements}
             />
         </View>

@@ -422,7 +422,7 @@ export default function ({ data, mode, uri, showMoreMenu, pageData, context }) {
                             >
                                 {data.profile.display_name}
                             </Text>
-                            <Badges badges={data.badges} />
+                            <Badges badges={data.badges} size="sm" />
                             {isAddSelector && <View className={`${TABLET_MODE_FROM}:hidden`}><ContextSelector data={context} mode='min' /></View>}
                         </Row>
                         {isWeb ? <CoverMenuMeta {...data.meta_menu} /> : <ScrollView horizontal={true}><CoverMenuMeta {...data.meta_menu} /></ScrollView>}

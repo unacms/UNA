@@ -2,13 +2,13 @@ import { Pressable } from 'app/design/view';
 import { useGlobalSearchParams, Link } from 'app/lib/hooks/router'
 import { FeedbackHaptics } from 'app/lib/util';
 import { useCurrentUser } from 'app/context/user';
-import { appSetting, getDomainFromUrl } from 'app/lib/util';
+import { appSetting, getDomainFromUrl, cd } from 'app/lib/util';
 import * as WebBrowser from 'expo-web-browser';
 import React, { useMemo, useCallback } from 'react';
 import { Text } from 'app/design/typography'
 
 export default function ElementLink(props) {
-    const { href = '', target, haptics, children, asExternal, mode,  ...rest } = props;
+    const { href = '', target, haptics, children, asExternal, mode, variant, size, className = '', hitSlop,  ...rest } = props;
     const glob = useGlobalSearchParams();
     const { currentUser } = useCurrentUser();
 
@@ -67,8 +67,6 @@ export default function ElementLink(props) {
     }, [target, finalHref, index, glob.name]);
 
     // Получение домена и корневого URL
-    
-
     // Обработчик внешних ссылок
     const handleExternalLinkPress = useCallback(async () => {
         await WebBrowser.openBrowserAsync(finalHrefWithDomain);
@@ -93,6 +91,37 @@ export default function ElementLink(props) {
         );
     }
 
+    // Variants and sizes from theme
+    const ThemeLinkSizes = appSetting('theme', 'link_sizes');
+    const ThemeLinkStyles = appSetting('theme', 'link_styles');
+
+    const mapVariantToTheme = (v) => {
+        switch (v) {
+            case 'ghost': return 'ghost';
+            case 'secondary': return 'secondary';
+            case 'accent': return 'accent';
+            case 'primary': return 'primary';
+            default: return 'default';
+        }
+    };
+
+    const selectedVariant = mapVariantToTheme(variant);
+    const variantClass = [
+        ThemeLinkStyles[`u-link-${selectedVariant}-cnt`] || '',
+        ThemeLinkStyles[`u-link-${selectedVariant}-text`] || '',
+        ThemeLinkStyles[`u-link-${selectedVariant}-trans`] || ''
+    ].join(' ').trim();
+
+    const sizeClass = (() => {
+        if (!size) return '';
+        const token = ThemeLinkSizes[size]?.padding;
+        if (!token) return '';
+        // token is a space-delimited string of Tailwind classes; keep as-is (buttons use direct classes here)
+        return token;
+    })();
+
+    const composedClassName = [variantClass, sizeClass, className].filter(Boolean).join(' ').trim();
+
 
 if (mode == 'text'){
     return (
@@ -104,7 +133,7 @@ if (mode == 'text'){
 
     return (
         <Link push href={p} asChild {...rest}>
-            <Pressable onPress={haptics ? handleHapticsPress : undefined}>
+            <Pressable hitSlop={hitSlop} onPress={haptics ? handleHapticsPress : undefined} className={composedClassName}>
                 {children}
             </Pressable>
         </Link>

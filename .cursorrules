@@ -205,6 +205,7 @@ const { themeName } = useThemeName();
 
 ### Links & Interactive Text (Web + Native)
 - Use the shared Link component `packages/app/ui/atoms/link.js` for navigation consistency across platforms.
+- Prefer Links for navigation (page transitions, opening detail routes). Prefer Buttons for in-place actions (modals, toggles, API calls). Do not use Links for non-navigation actions.
 - For small tappable text (e.g., timestamps), ensure adequate hit area:
   - Web: add `u-time-hitarea` class to the clickable element to expand clickable bounds via a pseudo-element.
   - Native: add `hitSlop={{ top: 4, right: 4, bottom: 4, left: 4 }}` to `Pressable`-based taps.

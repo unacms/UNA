@@ -6,14 +6,18 @@ import Image from 'app/ui/atoms/image';
 import Link from 'app/ui/atoms/link'
 
 const badgeTheme = appSetting('theme', 'badges');
+const badgeSizes = appSetting('theme', 'badge_sizes');
 
-export default function Badge({ data, variant = "default", children }) {
+export default function Badge({ data, variant = "default", size = '', rounded = false, children }) {
     // Handle case where children are passed instead of data object
     if (children && !data) {
+        const containerClasses = size && badgeSizes[size]?.container || '';
+        const pad = size && (children ? badgeSizes[size]?.wide_padding : badgeSizes[size]?.padding) || '';
+        const defaultPadNoSize = !size ? 'px-1' : '';
         return (
-            <View className={`u-badge-base ${badgeTheme['u-badge-base']} gap-1 ${badgeTheme['u-badge-' + variant]} `}>
-                <Icon icon="BadgeCheck" size={16} className={`${badgeTheme['u-badge-text-' + variant]}`} />
-                <Text className={`${badgeTheme['u-badge-text']} ${badgeTheme['u-badge-text-' + variant]}`} >
+            <View className={`u-badge-base ${badgeTheme['u-badge-base']} ${badgeTheme['u-badge-' + variant]} ${containerClasses} ${pad} ${defaultPadNoSize} ${rounded ? (typeof rounded === 'string' ? rounded : 'rounded-full') : (size && badgeSizes[size]?.rounded || 'rounded-md')} `}>
+                <Icon icon="BadgeCheck" size={size && badgeSizes[size]?.icon_size || 16} className={`${badgeTheme['u-badge-text-' + variant]}`} />
+                <Text className={`${badgeTheme['u-badge-text']} ${size && badgeSizes[size]?.text || ''} ${badgeTheme['u-badge-text-' + variant]}`} >
                     {children}
                 </Text>
             </View>
@@ -41,11 +45,14 @@ export default function Badge({ data, variant = "default", children }) {
         const hasText = data.text && !data.is_icon_only; // Only show text if not icon-only mode
         const hasBoth = hasIcon && hasText;
         
-        // Build base classes with theme settings
-        const baseClasses = `items-center rounded-md flex-row h-5 px-1`;
+        // Build base classes; default padding/rounding only if size not provided
+        const baseClasses = `items-center flex-row`;
         
-        // Add gap-1 only when both elements are present
-        const containerClasses = hasBoth ? `${baseClasses} gap-1` : baseClasses;
+        // Container sizing and padding from size map
+        const containerSize = size && badgeSizes[size]?.container || '';
+        const pad = size && ((hasText || hasBoth) ? badgeSizes[size]?.wide_padding : badgeSizes[size]?.padding) || '';
+        const containerClasses = `${baseClasses} ${containerSize} ${pad}`.trim();
+        const defaultPadNoSize = !size ? 'px-1' : '';
         
         // Apply theme or data.color for background using color mapping
         const colorMapping = badgeTheme.color_mapping || {};
@@ -67,9 +74,9 @@ export default function Badge({ data, variant = "default", children }) {
         }
         
         return (
-            <View className={`${containerClasses} ${backgroundClass}`}>
-                {hasIcon && <Icon icon={data.icon} size={14} className={textColorClass} />}
-                {hasText && <Text className={`${badgeTheme['u-badge-text']} ${textColorClass}`} >
+            <View className={`${containerClasses} ${backgroundClass} ${defaultPadNoSize} ${rounded ? (typeof rounded === 'string' ? rounded : 'rounded-full') : ((size && badgeSizes[size]?.rounded) || 'rounded-md')}`}>
+                {hasIcon && <Icon icon={data.icon} size={size && badgeSizes[size]?.icon_size || 14} className={textColorClass} />} 
+                {hasText && <Text className={`${badgeTheme['u-badge-text']} ${size && badgeSizes[size]?.text || ''} ${textColorClass}`} >
                     {data.text}
                 </Text>}
             </View>
