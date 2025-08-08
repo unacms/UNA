@@ -1223,12 +1223,12 @@ export const settingsDefault = {
             'u-badge-outline': '',
             'u-badge-accent': '',
             'u-badge-secondary': '',
-            'u-badge-text': ' whitespace-nowrap text-ellipsis overflow-hidden tracking-tight font-medium text-primary-foreground ',
-            'u-badge-text-default': ' text-primary-foreground ',
+            'u-badge-text': ' whitespace-nowrap text-ellipsis overflow-hidden tracking-tight font-medium  text-xs ',
+            'u-badge-text-default': ' text-primary ',
             'u-badge-text-accent': '',
             'u-badge-text-destructive': '',
             'u-badge-text-outline': '',
-            'u-badge-text-secondary': '',
+            'u-badge-text-secondary': 'text-foreground',
             
             // Badge color mapping for data.color values
             color_mapping: {

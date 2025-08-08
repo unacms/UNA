@@ -151,7 +151,6 @@ function ReputationSummarySimple({ data }) {
                     />
                     <View className="absolute -bottom-1 -end-1">
                         <Badge className={`rounded-full ${cd('p-xs')} h-9 w-9 items-center justify-center border-card font-mono tabular-nums`} variant="secondary">
-                          {/* Show user level icon if available */}
                         {data.levels && data.levels.length > 0 && data.levels[0].icon && (
                             <Icon icon={data.levels[0].icon} size={24}  />
                         )}
@@ -165,10 +164,7 @@ function ReputationSummarySimple({ data }) {
                     {data.levels.map((item, index) => (
                             <View key={index} className={`flex-row ${cd('gap-sm')} flex-auto items-center`}>
                                 
-                                <Badge variant="outline">
-                                    <Icon icon={item.icon} size={20} />
-                                    <Text>{item.title}</Text>
-                                </Badge>
+                                <Badge variant="secondary" data={{text:item.title, icon:item.icon}} />
                                
                                 <View className="flex-auto justify-end flex-row">
                                     <Button
