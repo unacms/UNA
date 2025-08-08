@@ -1224,7 +1224,7 @@ export const settingsDefault = {
             'u-badge-accent': '',
             'u-badge-secondary': '',
             'u-badge-text': ' whitespace-nowrap text-ellipsis overflow-hidden tracking-tight font-medium  text-xs ',
-            'u-badge-text-default': ' text-primary ',
+            'u-badge-text-default': ' text-primary-foreground ',
             'u-badge-text-accent': '',
             'u-badge-text-destructive': '',
             'u-badge-text-outline': '',
