@@ -17,8 +17,8 @@
         --secondary-foreground: 24 24 27; /*zinc-900*/
         --muted: 244 244 245; /*zinc-100*/
         --muted-foreground: 82 82 91; /*zinc-600*/
-        --accent: 113 113 122; /*zinc-500*/
-        --accent-foreground: 24 24 27; /*zinc-900*/
+        --accent: 219 234 254; /*blue-100*/
+        --accent-foreground: 37 99 235; /*blue-600*/
         --destructive: 225 29 72; /*rose-600*/
         --destructive-foreground: 255 255 255; /*white*/
         --border: 212 212 216; /*zinc-300*/
@@ -87,6 +87,13 @@
     }*/
 
 
+    /* Larger hit area for web timestamp link without layout shift */
+    .u-time-hitarea::before {
+        content: "";
+        position: absolute;
+        inset: -4px;
+        border-radius: 0.375rem; /* rounded-md */
+    }
 }
 
 /* CUSTOM STYLES */

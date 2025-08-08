@@ -4,7 +4,6 @@ import Time from 'app/ui/atoms/time'
 import Profile from 'app/ui/molecules/profile'
 import React, { memo, useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import { useCurrentUser } from 'app/context/user'
-import { useRouter } from 'app/lib/hooks/router'
 import { appSetting, getDataFromCache, storageSet, isObjectsEqual, menuItemsByName, visibilityById, getAlert } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
@@ -366,7 +365,6 @@ export const VisibilityInfo = memo(({ data }) => {
 
     return (
         <Row className="text-neutral-600 dark:text-neutral-400 items-center">
-            <Text className="text-muted-foreground text-xs leading-5 px-1">·</Text>
             {isUser ? <Profile {...data.author_data} displayType="unit_wo_info" displaySize="xxs" /> : (icon ? <Icon icon={icon} width={14} height={14} /> : null)}
             <Text className="text-muted-foreground text-xs font-medium leading-5 text-center tracking-tight ml-1">{isUser ? data.author_data.display_name : text}</Text>
         </Row>
@@ -374,7 +372,6 @@ export const VisibilityInfo = memo(({ data }) => {
 });
 
 export const Author = memo(({ data, url, t }) => {
-    const router = useRouter()
     const Badges = getComponent('molecule', 'badges')
     const ActionsElements = data.author_actions.map((item, index) => {
         const Element = getComponent('molecule', String(item.type));
@@ -399,11 +396,7 @@ export const Author = memo(({ data, url, t }) => {
                 displaySize="base"
                 showInfo={
                     <Row className=" flex-wrap items-center">
-                        <Time 
-                            stylesName='inline-flex text-muted-foreground web:hover:text-foreground text-xs leading-5 tracking-tight whitespace-nowrap web:hover:underline cursor-pointer' 
-                            ts={data.date}
-                            onPress={() => router.push(url)}
-                        ></Time>
+                        
                         <ItemInfo data={data} t={t} />
                         <VisibilityInfo data={data} />
                         

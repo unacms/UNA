@@ -1,58 +1,100 @@
 import { useState, useEffect, useMemo } from 'react';
-import { formatDistance } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { Text } from 'app/design/typography';
 import { formatDate } from 'app/lib/util'
+import { Platform } from 'react-native'
+
+// Shared minute ticker to avoid creating multiple intervals per Time instance
+let tickerIntervalId = null;
+let tickerSubscribers = new Set();
+let tickerNow = Date.now();
+
+function startMinuteTicker() {
+    if (tickerIntervalId) return;
+    tickerIntervalId = setInterval(() => {
+        tickerNow = Date.now();
+        tickerSubscribers.forEach((notify) => {
+            try { notify(tickerNow); } catch (_) {}
+        });
+    }, 60000);
+}
+
+function subscribeToMinuteTicker(callback) {
+    tickerSubscribers.add(callback);
+    startMinuteTicker();
+    return () => {
+        tickerSubscribers.delete(callback);
+        if (tickerSubscribers.size === 0 && tickerIntervalId) {
+            clearInterval(tickerIntervalId);
+            tickerIntervalId = null;
+        }
+    };
+}
+
+function normalizeToDate(timestamp) {
+    if (timestamp instanceof Date) return timestamp;
+    if (typeof timestamp === 'number') {
+        const ms = timestamp > 1e12 ? timestamp : timestamp * 1000;
+        return new Date(ms);
+    }
+    if (typeof timestamp === 'string') {
+        const parsed = Date.parse(timestamp);
+        if (!Number.isNaN(parsed)) return new Date(parsed);
+    }
+    return null;
+}
+
+function formatRelativeShort(dateObj, nowMs, t, absoluteFormatter, explicitFormat) {
+    if (!dateObj) return '';
+    if (explicitFormat === 'datetime') {
+        return dateObj.toLocaleDateString() + ' ' + dateObj.toLocaleTimeString();
+    }
+
+    const diffSeconds = Math.max(0, Math.floor((nowMs - dateObj.getTime()) / 1000));
+
+    if (diffSeconds < 60) {
+        return t('Now');
+    }
+    if (diffSeconds < 3600) {
+        const mins = Math.floor(diffSeconds / 60);
+        return `${mins}${t('m')}`;
+    }
+    if (diffSeconds < 86400) {
+        const hours = Math.floor(diffSeconds / 3600);
+        return `${hours}${t('h')}`;
+    }
+    return absoluteFormatter(dateObj, t).trim();
+}
 
 export default function ElementTime(props) {
     const { t } = useTranslation();
-    const [date, setDate] = useState(new Date());
+    const [nowMs, setNowMs] = useState(tickerNow);
 
-    // Update current time every minute
     useEffect(() => {
-        const interval = setInterval(() => {
-            setDate(new Date());
-        }, 60000);
-        return () => clearInterval(interval);
+        return subscribeToMinuteTicker(setNowMs);
     }, []);
 
+    const dateObj = useMemo(() => normalizeToDate(props.ts), [props.ts]);
+    const fullDateTime = useMemo(() => (dateObj ? dateObj.toLocaleString() : ''), [dateObj]);
+
     const formattedTime = useMemo(() => {
-        let s = props.ts;
-        
-        if (!isNaN(props.ts)) {
-            const d = new Date(props.ts * 1000);
-            const now = new Date();
-            const diffDays = Math.abs(now - d) / (1000 * 60 * 60 * 24);
+        return formatRelativeShort(dateObj, nowMs, t, formatDate, props.format);
+    }, [dateObj, nowMs, t, props.format]);
 
-            if (diffDays < 1) {
-                s = formatDistance(d, date, { addSuffix: false })
-                    .replace(/\s+/g, '')
-                    .replace('about', '')
-                    .replace('lessthanaminute', t('Now'))
-                    .replace('hours', t('h'))
-                    .replace('hour', t('h'))
-                    .replace('minutes', t('m'))
-                    .replace('minute', t('m'))
-                    .trim();
-            } else {
-                s = formatDate(d, t).trim();
-            }
+    const { stylesName, stylesNameAdd, title, accessibilityLabel, ...otherProps } = props;
 
-            if (props.format === 'datetime') {
-                s = d.toLocaleDateString() + ' ' + d.toLocaleTimeString();
-            }
-        }
-        return s;
-    }, [props.ts, date, t, props.format]);
-
-    const { stylesName, stylesNameAdd, ...otherProps } = props;
+    const mergedProps = {
+        ...(Platform.OS === 'web' ? { title: title || fullDateTime } : {}),
+        accessibilityLabel: accessibilityLabel || fullDateTime,
+    };
 
     return (
-        <Text 
+        <Text
             className={stylesName || `text-muted-foreground web:hover:text-foreground text-xs leading-5 tracking-tight whitespace-nowrap web:hover:underline ${stylesNameAdd}`}
+            {...mergedProps}
             {...otherProps}
         >
-        {formattedTime}
+            {formattedTime}
         </Text>
     );
 }
