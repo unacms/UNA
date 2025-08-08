@@ -34,8 +34,6 @@ export default function Unit(props) {
         return callFn("getUnitMenuItems", [props.unitType, data, handleClick, t, props.module]);
     }, [props.unitType, data, handleClick, t]);
 
-    console.log("props.unitType", props.unitType)
-
     switch (props.unitType) {
         case 'list':
             return getList();
