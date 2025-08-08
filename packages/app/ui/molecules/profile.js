@@ -64,7 +64,7 @@ function UnitWoInfo({ oProps, sSize, sSizeFontLetter, iSizeWidth, bShowLinks, em
 function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont, actions, info2 }) {
     return (
        
-       <View className="flex-col my-auto truncate flex-auto">
+       <View className="flex-col my-auto flex-auto">
 
             {bShowLinks ? (
                 <Row className='gap-x-2 items-center'>
@@ -214,7 +214,7 @@ function AtomProfile_(oProps) {
     switch (sDisplayType) {
         case 'unit':
             return (
-                <Row className="gap-x-2 items-center">
+                <Row className="gap-x-3 items-center">
                     <View className="flex-none mb-auto">
                         <UnitWoInfo oProps={oProps} sSize={sSize} sSizeFontLetter={sSizeFontLetter} emulate={emulate} iSizeWidth={iSizeWidth} bShowLinks={bShowLinks} />
                     </View>
@@ -239,7 +239,7 @@ function AtomProfile_(oProps) {
 
         case 'text':
             return (
-                <View className="flex-col my-auto truncate flex-auto">
+                <View className="flex-col my-auto flex-auto">
                     {bShowLinks ? (
                         <DisplayNameLink
                             title={oProps.display_name}

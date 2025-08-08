@@ -74,27 +74,27 @@ function DefaultUnit({ data }) {
                         <MenuManage id={data.id} menu={data?.menu_manage} setViewState={setViewState} />
                     </View>
                 </View>
-                <View className='mb-4'>
+                
                 {MainContentComponent}
-                </View>
+                
                
                     
                     
                     
                         {(!!data.menu_counters && appSetting('feed', 'counters_menu')) && (
-                            <View className="flex-row items-center justify-between">
+                            <View className={`${cd('pt-md')} flex-row items-center justify-between`}>
                                 {isWeb ? (
                                     <Link href={url} emulate={false} variant="secondary" size="sm" className="u-time-hitarea relative ">
                                         <View className="flex-row flex-nowrap items-center gap-1 flex-none">
-                                            <Icon icon="Clock" width={16} height={16} className="" />
-                                            <Time numberOfLines={1} stylesName='inline text-sm leading-5 tracking-tight whitespace-nowrap' ts={data.date} />
+                                            <Icon icon="Clock" width={16} height={16} />
+                                            <Time numberOfLines={1} stylesName='inline text-sm leading-5 tracking-tight text-muted-foreground web:group-hover:text-foreground whitespace-nowrap' ts={data.date} />
                                         </View>
                                     </Link>
                                 ) : (
                                     <Link href={url} mode="text" variant="secondary" size="sm" hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-                                        <View className="flex-row flex-nowrap items-center gap-1 flex-none">
-                                            <Icon icon="Clock" width={16} height={16} className="mr-1" />
-                                            <Time numberOfLines={1} stylesName='inline text-sm leading-5 tracking-tight whitespace-nowrap' ts={data.date} />
+                                        <View className="flex-row flex-nowrap items-center flex-none">
+                                            <Icon icon="Clock" width={16} height={16} />
+                                            <Time numberOfLines={1} stylesName='inline text-sm leading-5 tracking-tight text-muted-foreground web:group-hover:text-foreground whitespace-nowrap' ts={data.date} />
                                         </View>
                                     </Link>
                                 )}
@@ -102,7 +102,7 @@ function DefaultUnit({ data }) {
                             </View>
                         )}
                         
-                        <View className={`${cd('pt-sm')}`}>
+                        <View className={`${cd('pt-md')}`}>
                             <ActionMenu data={data.menu_actions} showCommentsModal={showCommentsModal} />
                         </View>
 

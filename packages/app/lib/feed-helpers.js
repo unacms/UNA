@@ -226,8 +226,8 @@ export const ItemInfo = memo(({ data, t }) => {
         }
         return l && (
             <>
-                <Text className=" text-muted-foreground text-sm leading-6 px-1">·</Text>
-                <Text className=" text-muted-foreground text-sm leading-6 tracking-tight ">
+                <Text className=" text-muted-foreground text-sm leading-5 px-1">·</Text>
+                <Text className=" text-muted-foreground text-sm leading-5 tracking-tight ">
                     {l}
                 </Text>
             </>
@@ -364,9 +364,9 @@ export const VisibilityInfo = memo(({ data }) => {
     const isUser = data.object_privacy_view < 0;
 
     return (
-        <Row className="text-neutral-600 dark:text-neutral-400 items-center">
-            {isUser ? <Profile {...data.author_data} displayType="unit_wo_info" displaySize="xxs" /> : (icon ? <Icon icon={icon} width={14} height={14} /> : null)}
-            <Text className="text-muted-foreground text-xs font-medium leading-5 text-center tracking-tight ml-1">{isUser ? data.author_data.display_name : text}</Text>
+        <Row className="text-muted-foreground web:hover:text-foreground items-center  ">
+            <View className="flex-none rounded-full h-[22px] w-[22px] -m-[2px] bg-secondary absolute -left-6 border-2 border-card items-center justify-center">{isUser ? <Profile {...data.author_data} displayType="unit_wo_info" displaySize="xxs" /> : (icon ? <Icon icon={icon} width={14} height={14} /> : null)}</View>
+            <Text className="text-muted-foreground text-sm font-medium leading-5 text-center tracking-tight flex-auto">{isUser ? data.author_data.display_name : text}</Text>
         </Row>
     );
 });
@@ -378,7 +378,7 @@ export const Author = memo(({ data, url, t }) => {
         if (!Element) return null; // Explicitly return null for no component
         return (
             <Element
-                params={{ button_variant: 'link', button_size: 'xs', hide_icon: true , button_rounded: false }}
+                params={{ button_variant: 'link', button_size: 'xxs', hide_icon: true , button_rounded: false }}
                 key={`action-${index}`}
                 {...item}
             />
@@ -396,9 +396,9 @@ export const Author = memo(({ data, url, t }) => {
                 displaySize="base"
                 showInfo={
                     <Row className=" flex-wrap items-center">
-                        
-                        <ItemInfo data={data} t={t} />
                         <VisibilityInfo data={data} />
+                        <ItemInfo data={data} t={t} />
+                        
                         
                         
                     </Row>

@@ -40,8 +40,8 @@
         --secondary-foreground: 244 244 245; /*zinc-100*/
         --muted: 39 39 42; /*zinc-800*/
         --muted-foreground: 113 113 122; /*zinc-400*/
-        --accent: 113 113 122; /*zinc-500*/
-        --accent-foreground: 244 244 245; /*zinc-100*/
+        --accent: 30 58 138; /*zinc-500*/
+        --accent-foreground: 59 130 246; /*zinc-100*/
         --destructive: 225 29 72; /*rose-600*/
         --destructive-foreground: 255 255 255; /*white*/
         --border: 63 63 70; /*zinc-700*/

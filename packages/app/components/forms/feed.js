@@ -37,7 +37,7 @@ function ProfileView({ isImageOnly = false, data, handleSubmit, showImage, setSh
 
     const isHiddenVisibility = data?.inputs?.['object_privacy_view']?.origtype == 'hidden' || !data?.inputs?.['object_privacy_view']
 
-    const authorName = (<Text className="text-neutral-900 dark:text-neutral-100 leading-6 px-1 font-bold tracking-tight text-base truncate">
+    const authorName = (<Text className="text-neutral-900 dark:text-neutral-100 leading-5 font-bold tracking-tight text-sm truncate">
         {author ? author.display_name : currentUser.display_name}
     </Text>
     )

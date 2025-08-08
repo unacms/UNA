@@ -214,7 +214,7 @@ export default function (props) {
                             <Link href={currentUser.url} emulate={true}>
                                 <Row
                                     className={
-                                        ' rounded-xl group items-center px-1  hover:bg-bgritem dark:hover:bg-bgritem-d  active:bg-bgritem-h dark:active:bg-bgritem-dh  '
+                                        ' rounded-xl group items-center px-1 gap-x-1 hover:bg-bgritem dark:hover:bg-bgritem-d  active:bg-bgritem-h dark:active:bg-bgritem-dh  '
                                     }
                                 >
                                     <View className="p-1.5">
@@ -226,12 +226,12 @@ export default function (props) {
                                         />
                                     </View>
 
-                                    <View className="flex-col px-1.5">
+                                    <View className="flex-col ">
                                         <Text className=" text-sm leading-tight  flex-auto my-auto font-semibold truncate text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-white web:duration-200">
                                             {currentUser.display_name}
                                         </Text>
                                         <Text className=" text-xs leading-tight flex-auto my-auto truncate text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-800 dark:group-hover:text-neutral-200 web:duration-200">
-                                            <Badge variant="default" data={{text:currentUser.membership_name}}/>
+                                            <Badge size="xs" variant="outline" data={{text:currentUser.membership_name}}/>
                                         </Text>
                                     </View>
                                 </Row>
