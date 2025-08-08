@@ -29,14 +29,17 @@ export function UnitSearchResultsSmall({ data, onPress }) {
 
 
     //TODO: rework url
-    let url = data?.url ? data.url.replace('{bx_url_root}', '') : '';
-
-
-
     const sText = data?.title ? data.title : stripTags(data.text);
 
+    const profile = data.author_data;
+
+    if (data.image){
+        profile.url_avatar = data.image.src;
+        profile.url = data.url;
+    }
+
     return (
-        <Pressable onPress={() => onPress(url)}>
+        <Pressable onPress={() => onPress(data.url)}>
             <View className=" mb-1 ">
                 <View className="bg-bgritem dark:bg-bgritem-d hover:bg-bgritem-h dark:hover:bg-bgritem-dh flex-row p-2 rounded-xl ">
                     {data?.author_data &&
