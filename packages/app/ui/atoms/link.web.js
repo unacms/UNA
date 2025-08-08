@@ -2,10 +2,11 @@ import Link from 'next/link'
 import { Pressable } from 'app/design/view'
 import { useRouter } from 'app/lib/hooks/router'
 import { useCallback } from 'react';
+import { appSetting, cd } from 'app/lib/util'
 
 export default function ElementLink(props) {  
 
-    let { href, emulate, target,  ...rest } = props;
+    let { href, emulate, target, variant, size, className = '',  ...rest } = props;
     const router = useRouter();
 
     const handlePress = (event, href) => {
@@ -41,9 +42,39 @@ export default function ElementLink(props) {
         href ='/'
     }
 
+    // Variants and sizes from theme
+    const ThemeLinkSizes = appSetting('theme', 'link_sizes');
+    const ThemeLinkStyles = appSetting('theme', 'link_styles');
+
+    const mapVariantToTheme = (v) => {
+        switch (v) {
+            case 'ghost': return 'ghost';
+            case 'secondary': return 'secondary';
+            case 'accent': return 'accent';
+            case 'primary': return 'primary';
+            default: return 'default';
+        }
+    };
+
+    const selectedVariant = mapVariantToTheme(variant);
+    const variantClass = [
+        ThemeLinkStyles[`u-link-${selectedVariant}-cnt`] || '',
+        ThemeLinkStyles[`u-link-${selectedVariant}-text`] || '',
+        ThemeLinkStyles[`u-link-${selectedVariant}-trans`] || ''
+    ].join(' ').trim();
+
+    const sizeClass = (() => {
+        if (!size) return '';
+        const token = ThemeLinkSizes[size]?.padding;
+        if (!token) return '';
+        return token;
+    })();
+
+    const composedClassName = [variantClass, sizeClass, className].filter(Boolean).join(' ').trim();
+
     if (emulate === true)
         return (
-            <Pressable {...rest} onPress={() => handlePress(event, href)} >
+            <Pressable {...rest} className={composedClassName} onPress={() => handlePress(event, href)} >
                 {props.children}
             </Pressable>
         );
@@ -56,6 +87,7 @@ export default function ElementLink(props) {
             target={target} 
             href={href} 
             {...rest} 
+            className={composedClassName}
             prefetch={prefetch} 
             onClick={(e) => handleLinkClick(e, href, target)}
         > 

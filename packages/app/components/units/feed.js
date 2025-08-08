@@ -84,18 +84,18 @@ function DefaultUnit({ data }) {
                         {(!!data.menu_counters && appSetting('feed', 'counters_menu')) && (
                             <View className="flex-row items-center justify-between">
                                 {isWeb ? (
-                                    <Link href={url} emulate={false}>
-                                        <View className={`${cd('px-sm')} ${cd('py-xs')} u-time-hitarea relative flex-row items-center gap-x-1 rounded-md bg-muted text-muted-foreground web:hover:bg-accent web:hover:text-foreground cursor-pointer whitespace-nowrap`}>
+                                    <Link href={url} emulate={false} variant="secondary" size="sm" className="u-time-hitarea relative ">
+                                        <View className="flex-row flex-nowrap items-center gap-1 flex-none">
                                             <Icon icon="Clock" width={16} height={16} className="" />
                                             <Time numberOfLines={1} stylesName='inline text-sm leading-5 tracking-tight whitespace-nowrap' ts={data.date} />
                                         </View>
                                     </Link>
                                 ) : (
-                                    <Link href={url} mode="text">
-                                        <Pressable hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }} className={`${cd('px-sm')} ${cd('py-xs')} flex-row flex-nowrap items-center flex-none rounded-md bg-muted text-muted-foreground`}>
+                                    <Link href={url} mode="text" variant="secondary" size="sm" hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+                                        <View className="flex-row flex-nowrap items-center gap-1 flex-none">
                                             <Icon icon="Clock" width={16} height={16} className="mr-1" />
                                             <Time numberOfLines={1} stylesName='inline text-sm leading-5 tracking-tight whitespace-nowrap' ts={data.date} />
-                                        </Pressable>
+                                        </View>
                                     </Link>
                                 )}
                                 <CounterMenu data={data.menu_counters} showCommentsModal={showCommentsModal} />
