@@ -39,7 +39,7 @@ function getContextRoot(data) {
 }
 
 export default function ContextSelector({ data, url, mode }) {
-
+    console.log("data, url, mode", data, url, mode)
     const [isOpen, setIsOpen] = useState(false);
 
     if (!data) return null;
@@ -117,7 +117,7 @@ export default function ContextSelector({ data, url, mode }) {
 
     return (
         <>
-            {(data?.list?.length > 1 || data?.links?.length > 0) ? <Row className=" w-full flex-auto items-center">
+            {(data?.list?.length > 0 || data?.links?.length > 0) ? <Row className=" w-full flex-auto items-center">
                 {(data.current?.id && appSetting('context_selector', 'logo')) && <>
                     <Link href="/"><View className=' flex-row  sm:px-1 lg:hover:bg-bgritem dark:lg:hover:bg-bgritem-d rounded-xl'>
                         <View className="items-center justify-center p-1 text-neutral-800 dark:text-neutral-200">
