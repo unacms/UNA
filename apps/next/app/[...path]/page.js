@@ -68,13 +68,27 @@ const getData = cache(async (params, search_params) => {
     }
 
     console.log('^^^^^^^^^^^^^^^^^^^^^^^^^', searchParams, l);
-    const res = await fetch(l, opts)
+    let res;
+    try {
+        res = await fetch(l, opts)
+    } catch (error) {
+        console.error('Server fetch failed (network/connection):', error);
+        return { data: { title: SITE_TITLE, description: SITE_TITLE }, code: 503 };
+    }
+
+    if (!res.ok) {
+        const body = await res.text().catch(() => '');
+        console.error('Server fetch failed (http):', res.status, body);
+        return { data: { title: SITE_TITLE, description: SITE_TITLE }, code: res.status };
+    }
+
     const resClone = res.clone();
     try {
         return await res.json();
     } catch (error) {
         const text = await resClone.text();
         console.error("!-------------------------! JSON error:", text);
+        return { data: { title: SITE_TITLE, description: SITE_TITLE }, code: 500 };
     }
 });
 
@@ -136,7 +150,11 @@ export default async function Page(props) {
 
     const data = await getCachedData(props);
     if (!remote_config.data || data?.hash != remote_config.hash) {
-        remote_config = await getRemoteSettings(true);
+        try {
+            remote_config = await getRemoteSettings(true);
+        } catch (e) {
+            console.error('Remote settings fetch failed:', e);
+        }
     }
     if (data?.data?.page_status == 404) {
         notFound(props)

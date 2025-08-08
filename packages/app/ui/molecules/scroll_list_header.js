@@ -11,7 +11,7 @@ import { menuItemsByName, appSetting, getMenuSettings } from 'app/lib/util'
 import Search from 'app/ui/molecules/search';
 import Link from 'app/ui/atoms/link'
 import { useRouter } from 'app/lib/hooks/router'
-
+import { cd } from 'app/lib/util'
 import { useLayoutData } from 'app/context/layout';
 import { useTranslation } from 'react-i18next';
 import MenuLauncher from 'app/components/nav/menu-launcher'
@@ -20,7 +20,7 @@ import { getComponent } from 'app/components/registry';
 
 export const TextHeader = memo(({ text }) => {
     const { t } = useTranslation();
-    return <Text className="font-bold text-neutral-800 dark:text-neutral-200 flex-auto leading-11 text-2xl sm:text-3xl p-1.5 sm:p-2 tracking-tight">
+    return <Text className="font-bold text-card-foreground flex-auto text-2xl tracking-tight">
         {t(text)}
     </Text>
 })
@@ -96,7 +96,7 @@ export const Header = memo(({
 
     return (
 
-        <Row className={` px-3 items-center h-16 justify-between `}>
+            <Row className={`items-center h-16 justify-between ${cd('px-lg')}`} >
             {((!currentUser || !pageData?.context) && !text && (!settings?.headerSettings || settings?.headerSettings?.header)) && 
                 <Link href="/home" aria-label="Home">
                     <Pressable className="items-center p-1.5 sm:p-2 flex-row web:hover:scale-105 web:active:scale-95 rounded-xl  text-neutral-800 dark:text-neutral-200 web:hover:text-neutral-800 web:dark:hover:text-neutral-200 duration-300 ">

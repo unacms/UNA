@@ -23,231 +23,94 @@ NEO is a React Native/Next.js cross-platform application with:
 - Icon handling, theming, and component behavior should be consistent across platforms
 
 ### 2. Design System & Theming
-**HYBRID THEME SYSTEM**: The project uses both custom design tokens AND NativewindUI semantic tokens:
-
-**Custom Theme Colors** (in `packages/app/design/tailwind/theme.js`):
-- Legacy system with custom tokens like `bgrbody`, `bgrcard`, `bgrbutton`, etc.
-- State variants: `DEFAULT`, `h` (hover), `d` (dark), `dh` (dark hover)
-- Used extensively throughout existing components
-
-**NativewindUI Semantic Tokens** (in `packages/app/styles/global.default.css`):
+**Semantic Tokens ONLY** (NativewindUI) (in `packages/app/styles/global.default.css`):
 - Modern semantic tokens: `background`, `foreground`, `primary`, `card`, etc.
 - CSS variables with iOS/Android variants
 - Automatic dark mode with `@media (prefers-color-scheme: dark)`
 - Manual override with `[data-theme="dark"]`
 
-**Density System** (in `packages/app/context/density.js` and `packages/app/styles/global.default.css`):
+Notes:
+- The legacy theme system (custom tokens like `bgrbody`, `bgrcard`, `bgrbutton`, etc.) is deprecated and must not be used.
+- When touching files that still use legacy tokens, migrate styles to semantic tokens as part of the change.
+
+**Density System (cd — control-density)**:
 - Three density modes: `compact`, `default`, `relaxed`
-- User-configurable via DensitySwitcher component
-- Persisted to storage across sessions
-- Components auto-update when density changes
-- **Automatic Density-Responsive Utilities**: Simple padding classes that adapt automatically (`p-sm`, `px-md`, `py-lg`, etc.)
-- **Data Attribute System**: Density applied as `data-density` attribute on document root for CSS selectors
+- Density is stored in layout settings and persisted across sessions
+- Switch density with `setDensity` from `useLayoutSettings()` or via `useDensitySwitcher()`
+- Use the `cd` function to produce density-aware class strings from theme mappings
+  - Import: `import { cd } from 'app/lib/util'`
+  - Usage: `cd('p-md')`, `cd('gap-sm')`, `cd('px-lg')`, etc.
+  - Mappings live in `packages/app/settings-default.js` under `theme.offsets`
+  - `cd(key, density?, section='offsets')` returns a Tailwind class string for the current density
+- Do NOT use legacy density utilities like `p-sm`, `px-md`, `py-lg`, or any `data-density` attribute logic
+- No Tailwind safelist is required for `cd()`-generated classes (they resolve to static Tailwind utilities)
 
 **Theme Usage Guidelines:**
 ```javascript
 // ✅ Preferred - use semantic tokens for new components
 <View className="bg-background text-foreground border border-border" />
 
-// ✅ Acceptable - legacy custom tokens for existing components
+// ✅ Acceptable - semantic tokens for all components (new and existing)
 <View className="bg-card" />
 
 // ❌ Avoid - hardcoded colors
 <View className="bg-white dark:bg-gray-900" />
 ```
 
-**Density Implementation Patterns:**
+**Migration Tips (Legacy → Semantic):**
+- Replace any `Theme().colors.*` usage with Tailwind classes using semantic tokens (e.g., `text-foreground`, `bg-card`, `text-primary`).
+- Replace legacy background tokens like `bg-bgrcard` with `bg-card` and border tokens with `border-border`.
+- Replace button/background hover/dark variants with semantic counterparts (e.g., `hover:bg-muted/50`, `dark:text-muted-foreground`).
 
-#### **Automatic Density-Responsive Utilities (Preferred)**
-Use simple utility classes that automatically adapt to the current density setting:
+**Density Implementation (with cd):**
+
+- Use `cd()` wherever spacing should adapt to density. Examples:
 
 ```javascript
-// ✅ Simple, automatic density-responsive classes
-<View className="p-sm px-md py-lg">
-  <Text className="pt-sm pb-md">Content</Text>
+import { cd } from 'app/lib/util';
+
+// Container with density-aware padding
+<View className={`${cd('p-md')} border border-border rounded-xl`}>
+  <Text className={`${cd('px-sm')} ${cd('py-md')} text-foreground`}>
+    Content adapts to density
+  </Text>
 </View>
-
-// No JavaScript required - classes automatically adapt via CSS:
-// p-sm: 2px (compact) → 4px (default) → 8px (relaxed)
-// px-md: 4px (compact) → 8px (default) → 16px (relaxed) 
-// py-lg: 8px (compact) → 16px (default) → 24px (relaxed)
 ```
 
-**Available Automatic Utilities:**
-- **General padding**: `p-sm`, `p-md`, `p-lg`
-- **Horizontal padding**: `px-sm`, `px-md`, `px-lg`
-- **Vertical padding**: `py-sm`, `py-md`, `py-lg`
-- **Top padding**: `pt-sm`, `pt-md`, `pt-lg`
-- **Bottom padding**: `pb-sm`, `pb-md`, `pb-lg`
+- Real usage example (web conductor list layout):
 
-**Density Progression:**
-- **Small (-sm)**: 2px → 4px → 8px
-- **Medium (-md)**: 4px → 8px → 16px
-- **Large (-lg)**: 8px → 16px → 24px
-
-#### **For Standalone Components (Custom Density Classes)**
-Use this pattern for components that can accept density as a prop:
-
-```javascript
-// Component implementation
-import { useDensityOrDefault } from 'app/context/density';
-import { cn } from 'app/lib/util';
-
-function MyComponent({ density, className, ...props }) {
-  const effectiveDensity = useDensityOrDefault(density);
-  
-  return (
-    <View className={cn(`u-mycomponent-base-${effectiveDensity}`, className)} {...props}>
-      <View className={cn(`u-mycomponent-header-${effectiveDensity}`)}>
-        <Text className={cn(`u-mycomponent-title-${effectiveDensity}`)}>Title</Text>
-      </View>
-      <View className={cn(`u-mycomponent-content-${effectiveDensity}`)}>
-        Content
-      </View>
-    </View>
-  );
-}
+```startLine:724:endLine:736:packages/app/ui/molecules/conductor.web.js
+<Panel  {...cellsCustomConfig.cells?.center}>
+  <View className={`${isRightCol ? 'flex-auto' : 'w-full mx-auto'} ${layoutName !== 'navigator' && cd('p-md')} ${contentPaddingClass}`}>
+    {TabFlashListM}
+    {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 && callFn("noContentByUrl", [route?.endpoint])))}
+  </View>
+</Panel>
 ```
 
-```css
-/* CSS in packages/app/styles/global.default.css */
-@layer components {
-  /* Base Component Styles */
-  .u-mycomponent-base-compact {
-    @apply bg-card border border-border rounded-lg shadow-sm;
-  }
-  
-  .u-mycomponent-base-default {
-    @apply bg-card border border-border rounded-xl shadow-sm;
-  }
-  
-  .u-mycomponent-base-relaxed {
-    @apply bg-card border border-border rounded-2xl shadow-sm;
-  }
-  
-  /* Header Styles */
-  .u-mycomponent-header-compact {
-    @apply p-3;
-  }
-  
-  .u-mycomponent-header-default {
-    @apply p-4 sm:p-6;
-  }
-  
-  .u-mycomponent-header-relaxed {
-    @apply p-6 sm:p-8;
-  }
-  
-  /* Title Styles */
-  .u-mycomponent-title-compact {
-    @apply text-lg font-semibold;
-  }
-  
-  .u-mycomponent-title-default {
-    @apply text-xl sm:text-2xl font-semibold;
-  }
-  
-  .u-mycomponent-title-relaxed {
-    @apply text-2xl sm:text-3xl font-semibold;
-  }
-  
-  /* Content Styles */
-  .u-mycomponent-content-compact {
-    @apply p-3 pt-0;
-  }
-  
-  .u-mycomponent-content-default {
-    @apply p-4 sm:p-6 pt-0;
-  }
-  
-  .u-mycomponent-content-relaxed {
-    @apply p-6 sm:p-8 pt-0;
-  }
-}
+- Common offset keys are defined in `theme.offsets`: `p-md`, `p-lg`, `px-md`, `py-sm`, `gap-sm`, etc. Review and extend there as needed.
+
+**Density Switcher:**
+- Retrieve and set density via layout settings store:
+  - Hook: `const { density, setDensity } = useLayoutSettings()`
+  - Convenience hook: `const { currentDensity, densityOptions } = useDensitySwitcher()`
+- Example UI (dashboard settings):
+
+```startLine:200:endLine:214:packages/app/components/elements/dashboard_stat.js
+{densityOptions.length > 1 && (
+  <View className="w-full max-w-sm flex-1 min-w-[160px]">
+    <DropdownMenu items={densityOptions} onSelect={(option) => setDensity(option.id)}>
+      <Button variant="secondary" title={currentDensity?.title} startDecorator={currentDensity?.icon} fullWidth align="left" />
+    </DropdownMenu>
+  </View>
+)}
 ```
 
-#### **For Callback/Memoized Components**
-Use this pattern when density is used inside useCallback/useMemo:
-
-```javascript
-import { useDensity } from 'app/context/density';
-
-function MyComplexComponent() {
-  const { density } = useDensity();
-  
-  const renderContent = useCallback(({ header }) => {
-    const paddingClass = header ? `u-content-padding-${density}` : '';
-    
-    return (
-      <View className={cn('base-classes', paddingClass)}>
-        Content
-      </View>
-    );
-  }, [density]); // ⚠️ CRITICAL: Include density in dependencies
-  
-  return renderContent({ header: true });
-}
-```
-
-#### **Tailwind Safelist Requirements**
-
-**⚠️ CRITICAL**: Only add classes to safelist that are **dynamically constructed** - Tailwind automatically includes static classes found in code.
-
-**Add to safelist ONLY when:**
-- Using template literals: `className={cn(\`u-component-${variant}\`)}`
-- Programmatically generating classes: `const classes = density === 'compact' ? 'u-card-compact' : 'u-card-default'`
-
-**DO NOT add to safelist:**
-- Static classes: `className="w-px bg-border hover:bg-neutral-500/20"` ❌
-- Direct usage: `<View className="p-4 text-base" />` ❌
-- Automatic density utilities: `className="p-sm px-md py-lg"` ❌ (these are static classes)
-
-**Example of classes that NEED safelist:**
-```javascript
-safelist: [
-  // Density classes (dynamically constructed with template literals)
-  'u-mycomponent-base-compact',
-  'u-mycomponent-base-default',
-  'u-mycomponent-base-relaxed',
-  'u-mycomponent-header-compact',
-  'u-mycomponent-header-default',
-  'u-mycomponent-header-relaxed',
-],
-```
-
-#### **Naming Convention**
-- **Format**: `u-{component}-{part}-{density}`
-- **Component**: kebab-case component name (e.g., `card`, `mycomponent`)
-- **Part**: component section (e.g., `base`, `header`, `title`, `content`, `footer`)
-- **Density**: `compact`, `default`, `relaxed`
-
-#### **Density Guidelines**
-- **Compact**: Minimal spacing, smaller text, tighter layouts
-- **Default**: Balanced spacing, standard text sizes
-- **Relaxed**: Generous spacing, larger text, comfortable layouts
-
-#### **Common Patterns**
-```javascript
-// ✅ Padding progression
-compact:  p-3
-default:  p-4 sm:p-6  
-relaxed:  p-6 sm:p-8
-
-// ✅ Text size progression  
-compact:  text-sm
-default:  text-base sm:text-lg
-relaxed:  text-lg sm:text-xl
-
-// ✅ Border radius progression
-compact:  rounded-lg
-default:  rounded-xl
-relaxed:  rounded-2xl
-
-// ✅ Gap progression
-compact:  gap-2
-default:  gap-3 sm:gap-4
-relaxed:  gap-4 sm:gap-6
-```
+Notes:
+- `cd` returns plain Tailwind utility strings for the active density; it does not generate dynamic class names.
+- No `data-density` attributes or CSS overrides are used.
+- Keep spacing tokens centralized in `theme.offsets`; avoid hardcoded pixel values.
+- Pass only one key to `cd()` at a time. For multiple spacings, call `cd()` separately and concatenate. For example, use `${cd('px-sm')} ${cd('py-xs')}` and not `cd('px-sm py-xs')`.
 
 ### 3. Routing Architecture
 - **Native**: Expo Router with file-based routing (`apps/expo/app/`)
@@ -335,11 +198,46 @@ const { themeName } = useThemeName();
   <Text className="text-foreground">Content</Text>
 </View>
 
-// ✅ Legacy theme system (for existing components)
-import { Theme } from 'app/design/theme';
-const { colors } = Theme();
-<Icon color={colors.primary} />
+// ❌ Legacy theme usage is deprecated; migrate to semantic tokens
+// Replace Theme().colors primary color with semantic classes
+// <Icon className="text-primary" />
 ```
+
+### Links & Interactive Text (Web + Native)
+- Use the shared Link component `packages/app/ui/atoms/link.js` for navigation consistency across platforms.
+- For small tappable text (e.g., timestamps), ensure adequate hit area:
+  - Web: add `u-time-hitarea` class to the clickable element to expand clickable bounds via a pseudo-element.
+  - Native: add `hitSlop={{ top: 4, right: 4, bottom: 4, left: 4 }}` to `Pressable`-based taps.
+- Prefer semantic token colors for link states (e.g., `text-muted-foreground web:hover:text-foreground`).
+
+Web hit area utility (already defined):
+```startLine:90:endLine:97:packages/app/styles/global.default.css
+/* Larger hit area for web timestamp link without layout shift */
+.u-time-hitarea::before {
+    content: "";
+    position: absolute;
+    inset: -4px;
+    border-radius: 0.375rem; /* rounded-md */
+}
+```
+
+Example usage (text link with hover and hit area):
+```javascript
+// Web
+<Text className="relative u-time-hitarea text-muted-foreground web:hover:text-foreground web:hover:underline" />
+
+// Native (using shared Link wrapper)
+<Link href="/somewhere" asChild>
+  <Pressable hitSlop={{ top: 4, right: 4, bottom: 4, left: 4 }}>
+    <Text className="text-muted-foreground">Open</Text>
+  </Pressable>
+  </Link>
+```
+
+Performance guidance:
+- Avoid creating per-instance timers; use shared tickers (see `packages/app/ui/atoms/time.js`).
+- Memoize handlers with `useCallback` where links are rendered in lists.
+- Avoid unnecessary re-renders by keeping link children simple and static where possible.
 
 ### Icon Implementation
 ```javascript
@@ -374,43 +272,17 @@ const methods = useForm({
 
 ### Density-Aware Components
 ```javascript
-// ✅ Automatic density utilities (preferred - no JavaScript needed)
+// ✅ Use cd() for all density-aware spacing
+import { cd } from 'app/lib/util';
+
 function MyComponent({ className, ...props }) {
   return (
-    <View className={cn("p-md border border-border rounded-xl", className)}>
-      <Text className="px-sm py-md text-foreground">
-        Content automatically adapts to density
+    <View className={cn(`${cd('p-md')} border border-border rounded-xl`, className)}>
+      <Text className={`${cd('px-sm')} ${cd('py-md')} text-foreground`}>
+        Content adapts to density
       </Text>
     </View>
   );
-}
-
-// ✅ Custom density classes pattern (for complex components)
-import { useDensityOrDefault } from 'app/context/density';
-
-function ComplexComponent({ density, className, ...props }) {
-  const effectiveDensity = useDensityOrDefault(density);
-  return (
-    <View className={cn(`u-mycomponent-base-${effectiveDensity}`, className)}>
-      <Text className={cn(`u-mycomponent-title-${effectiveDensity}`)}>
-        Content
-      </Text>
-    </View>
-  );
-}
-
-// ✅ Callback/memoized pattern (when needed)
-import { useDensity } from 'app/context/density';
-
-function CallbackComponent() {
-  const { density } = useDensity();
-  
-  const renderItem = useCallback((item) => {
-    const itemClass = `u-item-base-${density}`;
-    return <View className={cn(itemClass)} />;
-  }, [density]); // ⚠️ Include density in dependencies
-  
-  return <>{items.map(renderItem)}</>;
 }
 ```
 
@@ -422,9 +294,8 @@ When debugging or implementing features, always check:
 - [ ] Are we following existing patterns in the codebase?
 - [ ] Are we using the appropriate theme system (semantic vs custom tokens)?
 - [ ] Is the design system being used correctly?
-- [ ] Are density classes properly implemented and updating automatically?
-- [ ] Are automatic density utilities (`p-sm`, `px-md`, etc.) used instead of hardcoded spacing where appropriate?
-- [ ] Are new custom density classes added to Tailwind safelist in both configs (automatic utilities don't need safelist)?
+- [ ] Are density-aware spacings applied via `cd('...')` tokens (no hardcoded spacing)?
+- [ ] Are `cd` imports present where used (`import { cd } from 'app/lib/util'`)?
 - [ ] Is authentication handling consistent?
 - [ ] Are icons being resolved properly on both platforms?
 - [ ] Are UNA API calls using the `fetcher` function correctly?
@@ -437,11 +308,12 @@ When debugging or implementing features, always check:
 - Different implementations between web and native for the same feature
 - Missing icons on one platform but working on another
 - Hardcoded colors instead of theme tokens
-- Components that don't respond to density changes automatically
-- Density classes generated with template literals but missing from Tailwind safelist
+- Components that don't respond to density changes via `cd()`
+- Using dynamic density class name strings instead of `cd()` mappings
+- Passing multiple tokens to a single `cd()` call (e.g., `cd('px-sm py-xs')`) instead of calling `cd()` per token
 - Static classes unnecessarily added to Tailwind safelist (only dynamic classes need safelist)
-- useCallback/useMemo missing `density` in dependency arrays when using density
-- Hardcoded spacing values instead of automatic density utilities (`p-1`, `px-4` instead of `p-sm`, `px-md`)
+- useCallback/useMemo missing `density` in dependency arrays when density value itself is used in logic
+- Hardcoded spacing values instead of `cd('...')` tokens
 - Complex authentication logic that could be simplified
 - Direct fetch() calls bypassing the `fetcher` function
 - Incorrect UNA endpoint patterns (not following `/api.php?r=module/action/Template`)
@@ -494,8 +366,8 @@ neo/
 2. **Test on both platforms** if making shared changes
 3. **Follow existing conventions** in the same directory/module
 4. **Use appropriate theme system** (semantic tokens for new, custom for existing)
-5. **Implement density support** for new UI components using established patterns
-6. **Add density classes to Tailwind safelist** if using template literal class generation
+5. **Implement density support** using `cd('...')` tokens from `theme.offsets`; import `cd` where needed
+6. No safelist changes are needed for `cd()` (it returns static Tailwind utilities)
 7. **Verify responsive behavior** across screen sizes
 8. **Test density switching** to ensure components update automatically
 9. **Check authentication flow** if user-dependent features
@@ -504,8 +376,8 @@ neo/
 
 - Cross-platform consistency maintained
 - Modern design system tokens utilized appropriately
-- Density system properly implemented with automatic updates
-- All density classes included in Tailwind safelist
+- Density system properly implemented via `cd()` tokens
+- All density-aware spacing comes from `theme.offsets` via `cd()` (no hardcoded spacing)
 - Performance optimized for both web and native
 - Code quality improved incrementally
 - Patterns established and followed consistently

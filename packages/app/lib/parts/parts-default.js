@@ -11,12 +11,9 @@ export function ParseHtmlClasses(className, tag) {
 
 export function ProfileDisplayNameLink(title, url, href, fontSize, actions) {
     return (
-        <Row className='items-center'>
-            <Text className="text-neutral-800 dark:text-neutral-200 font-semibold tracking-tight truncate text-ellipsis text-base leading-5">
-                {title}
-            </Text>
-            {actions}
-        </Row>
+        <Text className="text-card-foreground web:hover:text-primary font-semibold tracking-tight truncate text-ellipsis text-base leading-5">
+            {title}
+        </Text>
     )
 }
 
@@ -40,6 +37,6 @@ export function CounterIndicator(addon, isTitle) {
         return <View className={`absolute ${sButtonAddonBg} z-20 border-2 border-white dark:border-neutral-900 rounded-full px-1 items-center justify-center ${position}`}><Text className='text-white text-xs font-semibold'>{sButtonAddonText}</Text></View>
 
     return sButtonAddonText ? <View className='flex-1 items-end '>
-        <View className={sButtonAddonBg + ' rounded-full px-2 py-0.5 mx-1 text-center items-center'}>
+        <View className={sButtonAddonBg + ' rounded-full px-2 py-0.5 text-center items-center'}>
             <Text className=" text-white text-xs font-semibold">{sButtonAddonText}</Text></View></View> : null;
 }

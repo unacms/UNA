@@ -188,7 +188,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
     });
 
     const ButtonEx = memo(({ visibleItemsCount }) => {
-        return <Button startDecorator="ChevronDown" variant='default' rounded pressed={visibleItemsCount <= index ? true : false} size="sm" />;
+        return <Button startDecorator="ChevronDown" variant='text' rounded pressed={visibleItemsCount <= index ? true : false} size="sm" />;
     });
 
     return <DynamicMenu
@@ -288,8 +288,8 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, windowWidth, isC
 
     return (
         <>
-            <Animated.View className={`${conductorTheme.cover_base} cover-1 `} style={[{ zIndex: '50' }, animatedStyleHeader2]}>
-                <ViewRef ref={cover1Ref} className={conductorTheme.cover_content + ' aaaa'}   >
+            <Animated.View className={`${conductorTheme.cover_base} cover-1 `} style={[{ zIndex: 'z-50' }, animatedStyleHeader2]}>
+                <ViewRef ref={cover1Ref} className={conductorTheme.cover_content + ' aaaaa'}   >
                     {(isCover && !isHideCover) && <View className="w-full pb-4 border-b border-muted mb-1">
                         <Cover data={pageData.cover_block} mode={headerSettings.cover} uri={uri} context={pageData.context} />
                     </View>}
@@ -712,7 +712,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
             >
                 {isLeftCol && <>
                     <Panel className={`hidden ${cellsCustomConfig.cells?.left?.breakpoint}:block`} {...cellsCustomConfig.cells?.left}>
-                        <View className={`fixed-process ${cd('py-md')}`}>
+                        <View className={`fixed-process ${cd('p-md')}`}>
                             {AddBlocksCnt}
                         </View>
                     </Panel>
@@ -722,7 +722,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
                 </>
                 }
                 <Panel  {...cellsCustomConfig.cells?.center}>
-                    <View className={`${isRightCol ? 'flex-auto' : 'w-full mx-auto'} ${layoutName !== 'navigator' && cd('py-md')} ${contentPaddingClass}`}>
+                    <View className={`${isRightCol ? 'flex-auto' : 'w-full mx-auto'} ${layoutName !== 'navigator' && cd('p-md')} ${contentPaddingClass}`}>
                         {TabFlashListM}
                         {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 && callFn("noContentByUrl", [route?.endpoint])))}
                     </View>
@@ -732,7 +732,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
                         gap="hidden lg:block" sizable={cellsCustomConfig.sizable}
                     />
                     <Panel className={`hidden ${cellsCustomConfig.cells?.right?.breakpoint}:block`} {...cellsCustomConfig.cells?.right}>
-                        <View className={`${cd('py-md')} fixed-process `}>
+                        <View className={`${cd('p-md')} fixed-process `}>
                             {route?.sidebar?.content.map((item, index) => {
                                 return <View className="mb-4" key={'item' + index}><ItemRenderer unitType={sidebarUnitType} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''} /></View>
                             })}

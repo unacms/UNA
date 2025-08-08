@@ -116,8 +116,8 @@ export default function (props) {
         )
 
         const subHeader = (
-            <Row className=' items-center'>
-                <ScrollView horizontal={true} className=" flex pb-3 pt-1 px-3 w-full scrollbar-hide">
+            <Row className=' items-center h-14 '>
+                <ScrollView horizontal={true} className={`${cd('px-lg')} flex w-full scrollbar-hide`} >
                     <Row
                         className={`  ${feedList.length > 1 ? '  gap-2 ' : ''
                             }    `}
@@ -175,7 +175,7 @@ export default function (props) {
                                         scrollProps: {
                                             pageData: props.data,
                                             headerHeight: isFeedMenuPresent
-                                                ? 118
+                                                ? 122
                                                 : 66,
                                             subHeaderComponent: subHeader,
                                         },

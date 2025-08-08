@@ -116,7 +116,7 @@ export function getAddonForConductor(a, index, currentUser) {
         const addonText = addon.variant === 'primary' ? addon.text : addon;
         if (addonText) {
             addonContent = (
-                <Text className={`${addonClasses} rounded-full px-2 py-0.5 mx-1 text-center items-center text-white text-xs font-semibold`}>
+                <Text className={`${addonClasses} rounded-full px-2 py-0.5  text-center items-center text-white text-xs font-semibold`}>
                     {addonText}
                 </Text>
             );

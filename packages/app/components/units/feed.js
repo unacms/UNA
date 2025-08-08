@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import { appSetting, cd } from 'app/lib/util'
-import { View } from 'app/design/view'
+import { View, Pressable } from 'app/design/view'
 import { Modal } from 'app/design/controls'
 import { fetcher } from 'app/lib/fetcher'
 import { Block, BlockHeader, BlockContent, BlockFooter, BlockName, BlockActions } from 'app/ui/molecules/page-block';
@@ -9,11 +9,16 @@ import { CommentsModal, CommentsSection, MenuManage, ActionMenu, CounterMenu, Au
 import { Platform } from 'react-native'
 import { CardList } from 'app/ui/molecules/card'
 import AnimatedBlock from 'app/ui/atoms/animated-block'
+import Time from 'app/ui/atoms/time'
+import { useRouter } from 'app/lib/hooks/router'
+import Link from 'app/ui/atoms/link'
+import { Icon } from 'app/ui/atoms/icon'
 
 function DefaultUnit({ data }) {
 
     const isWeb = Platform.OS === 'web';
     const { t } = useTranslation();
+    const router = useRouter()
 
     const [viewState, setViewState] = useState({ view: '' })
     const [cmtsData, setCmtsData] = useState(false)
@@ -63,24 +68,45 @@ function DefaultUnit({ data }) {
                 {cmtsData.data}
             </Modal>}
             <CardList>
-                <View className="flex-auto flex-row mb-3 lg:mb-4">
+                <View className="flex-auto flex-row gap-3 mb-4">
                     <Author data={data} url={url} t={t} />
                     <View className="flex-none mb-auto">
                         <MenuManage id={data.id} menu={data?.menu_manage} setViewState={setViewState} />
                     </View>
                 </View>
-                <View className='mb-3 lg:mb-4'>
+                <View className='mb-4'>
                 {MainContentComponent}
                 </View>
-                <View className=' w-full justify-between flex-row flex-wrap-reverse gap-2'>
+               
                     
-                    <View className='flex-none '>
-                        <ActionMenu data={data.menu_actions} showCommentsModal={showCommentsModal} />
-                    </View>
-                    <View className='flex-none flex justify-center'>
-                        {(!!data.menu_counters && appSetting('feed', 'counters_menu')) && <CounterMenu data={data.menu_counters} showCommentsModal={showCommentsModal} />}
-                    </View>
-                </View>
+                    
+                    
+                        {(!!data.menu_counters && appSetting('feed', 'counters_menu')) && (
+                            <View className="flex-row items-center justify-between">
+                                {isWeb ? (
+                                    <Link href={url} emulate={false}>
+                                        <View className={`${cd('px-sm')} ${cd('py-xs')} u-time-hitarea relative flex-row items-center gap-x-1 rounded-md bg-muted text-muted-foreground web:hover:bg-accent web:hover:text-foreground cursor-pointer whitespace-nowrap`}>
+                                            <Icon icon="Clock" width={16} height={16} className="" />
+                                            <Time numberOfLines={1} stylesName='inline text-sm leading-5 tracking-tight whitespace-nowrap' ts={data.date} />
+                                        </View>
+                                    </Link>
+                                ) : (
+                                    <Link href={url} mode="text">
+                                        <Pressable hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }} className={`${cd('px-sm')} ${cd('py-xs')} flex-row flex-nowrap items-center flex-none rounded-md bg-muted text-muted-foreground`}>
+                                            <Icon icon="Clock" width={16} height={16} className="mr-1" />
+                                            <Time numberOfLines={1} stylesName='inline text-sm leading-5 tracking-tight whitespace-nowrap' ts={data.date} />
+                                        </Pressable>
+                                    </Link>
+                                )}
+                                <CounterMenu data={data.menu_counters} showCommentsModal={showCommentsModal} />
+                            </View>
+                        )}
+                        
+                        <View className={`${cd('pt-sm')}`}>
+                            <ActionMenu data={data.menu_actions} showCommentsModal={showCommentsModal} />
+                        </View>
+
+                
                 {commentsData && <CommentsSection url={url} t={t} isCommentsModal={isCommentsModal} showCommentsModal={showCommentsModal} commentsDataInline={commentsData} data={data} isShowMoreComments={isShowMoreComments} />}
             </CardList>
         </AnimatedBlock>

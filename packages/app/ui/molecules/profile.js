@@ -27,7 +27,7 @@ export function DisplayNameLink({title, url, href, fontSize, actions}) {
 
 function DisplayNameText({ title, fontSize }) {
     return (
-        <Text className={'text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 dark:hover:text-white ' + fontSize + '  font-semibold tracking-tight truncate '}>
+        <Text className={' text-card-foreground web:hover:text-primary ' + fontSize + '  font-semibold tracking-tight truncate '}>
             {title}
         </Text>
     )
@@ -63,24 +63,33 @@ function UnitWoInfo({ oProps, sSize, sSizeFontLetter, iSizeWidth, bShowLinks, em
 
 function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont, actions, info2 }) {
     return (
-        <View className="flex-col my-auto truncate flex-auto">
+       
+       <View className="flex-col my-auto truncate flex-auto">
 
             {bShowLinks ? (
-                <Row className='gap-x-2 items-center'><Link emulate={emulate} haptics="Select" href={oProps.url}>
-                    <DisplayNameLink
-                        title={oProps.display_name}
-                        url={oProps.url}
-                        fontSize={sSizeFont}
-                        href={oProps.href}
-                        actions={actions}
-                    /></Link>{info2}</Row>
+                <Row className='gap-x-2 items-center'>
+                    <Link emulate={emulate} haptics="Select" href={oProps.url}>
+                        <DisplayNameLink
+                            title={oProps.display_name}
+                            url={oProps.url}
+                            fontSize={sSizeFont}
+                            href={oProps.href}
+                        />
+                    </Link>
+                    {info2}
+                    {actions}
+                </Row>
             ) : (
-                <Row className='gap-x-2 items-center'><DisplayNameText title={oProps.display_name} fontSize={sSizeFont} />{info2}</Row>
+                <Row className='gap-x-2 items-center'>
+                    <DisplayNameText title={oProps.display_name} fontSize={sSizeFont} />
+                    {info2}
+                    {actions}
+                </Row>
             )}
 
             <View>{info}</View>
         </View>
-
+      
     )
 }
 
