@@ -311,7 +311,7 @@ export default function FormFeed(props) {
             <View className="  ">
 
                 <View className={
-                    '  items-center flex-auto w-full gap-x-2 p-3 bg-bgritem dark:bg-bgritem-d  ' +
+                    '  items-center flex-auto w-full gap-x-2 p-3   ' +
                     (isWeb ? ' ' : ' ') +
                     (isSmall
                         ? ' ' +

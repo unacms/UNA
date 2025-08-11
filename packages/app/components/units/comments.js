@@ -320,7 +320,7 @@ const MenuManage = ({ id, menu, setViewState, module, cmt_object_id, cmt_id }) =
                 variant="text"
                 size="xs"
                 rounded
-                ring='p-1'
+                
                 startDecorator="Ellipsis"
                 onPress={() => {
                     if (Platform.OS === 'web')
@@ -393,7 +393,7 @@ const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen, module, cmt_obj
                     title: aItem.title
                 };
             })} onSelect={handleManageMenuSelect}>
-                <Button variant="text" size="sm" ring='p-1' startDecorator="Ellipsis" rounded />
+                <Button variant="text" size="xs"  startDecorator="Ellipsis" rounded />
             </DropdownMenu>
             {!!oReport && oReport}
         </>
