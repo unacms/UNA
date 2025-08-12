@@ -81,7 +81,7 @@ export default function ElementMenu(oProps) {
     //--- show vertical
     const bShowVertical = oProps?.params?.showVertical === true;
 
-    sClassName += bShowVertical ? ' flex-col items-center gap-y-2 w-full ' : ' flex-row  ';
+    sClassName += bShowVertical ? ' flex-col items-center gap-y-2 w-full ' : ' flex-row justify-between ';
     const oParams = oProps?.params || {};
 
 
