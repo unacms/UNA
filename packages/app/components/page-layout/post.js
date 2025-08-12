@@ -8,6 +8,8 @@ import KbAvoidingView, { KbAvoidingViewScroll } from 'app/ui/atoms/kb-avoiding-v
 import { useWindowDimensions, Platform } from 'react-native'
 import { useLocalSearchParams } from 'app/lib/hooks/router'
 import { appSetting } from 'app/lib/util';
+import Card from 'app/ui/molecules/card';
+import { cd } from 'app/lib/util';
 import emitter from 'app/context/emitter';
 
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from');
@@ -77,9 +79,17 @@ export default function PageLayout(props) {
     }, []);
 
     return (
-        <View {...viewProps} className={`flex-1 w-full h-full max-w-5xl mx-auto `}>
-            <View className="w-full flex-1 bg-card lg:rounded-t-2xl lg:mt-4 lg:border border-bdrcard dark:border-bdrcard-d shadow-[0_1px_3px_0_rgba(0,0,0,0.05)] ">
-                <View pointerEvents="box-none" className='w-full flex-1' style={{ marginBottom: windowWidth < LAYOUT_BREAKPOINTS[TABLET_MODE_FROM] ? 0 : formHeight  }}>
+        <View {...viewProps} className={`sm:${cd('p-lg')} ${appSetting('layout', 'feed_container')}`}>
+            <Card>
+                <View
+                    pointerEvents="box-none"
+                    className='w-full flex-1'
+                    style={{
+                        marginBottom: (isWeb && windowWidth < LAYOUT_BREAKPOINTS[TABLET_MODE_FROM])
+                            ? Math.max(8, formHeight)
+                            : 0
+                    }}
+                >
                     <CommentsBrowse
                         scrollProps={
                             {
@@ -87,7 +97,8 @@ export default function PageLayout(props) {
                                 pageData: props.data,
                                 headerComponent: headerItems[0].data,
                                 isBackButton: true,
-                                padding: 16,
+                                 padding: 16,
+                                 bottomPadding: 0,
                             }
                         }
                         scrollToIndex={scrollToEnd}
@@ -100,12 +111,13 @@ export default function PageLayout(props) {
                         replyId={replyId}
                     />
                 </View>
-            </View>
+            
             <KbAvoidingView>
-                <View onLayout={handleLayout} className='border-t border-x border-bdrcard bg-card dark:border-bdrcard-d backdrop-blur-lg px-2 sm:px-3 web:fixed web:bottom-0 w-full max-w-5xl'>
+                <View onLayout={handleLayout} className={`${cd('p-lg')} web:fixed web:sm:relative web:bottom-0 bg-card w-full`}>
                     <CommentsForm handleForm={setAddData} browse={commentsData?.content[0]?.browse} module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module} form={commentsData?.content[0]?.form} formData={formData} requestUrl={commentsData?.content[0]?.url} />
                 </View>
             </KbAvoidingView>
+            </Card>
         </View>
     );
 }

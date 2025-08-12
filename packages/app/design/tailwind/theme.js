@@ -118,9 +118,12 @@ const theme = {
             ...nativewindUIColors,
         },
         boxShadow: {
-            DEFAULT: '0 1px 3px 0 rgb(0 0 0 / 0.1)',
-            'md': '0 4px 6px 0 rgb(0 0 0 / 0.1)',
+            DEFAULT: '0 1px 3px 0 rgb(0 0 0 / 0.05)',
+            'md': '0 4px 6px 0 rgb(0 0 0 / 0.05)',
             'sm': '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+            'lg': '0 10px 15px 0 rgb(0 0 0 / 0.05)',
+            'xl': '0 20px 25px -5px rgb(0 0 0 / 0.05)',
+            '2xl': '0 25px 50px -10px rgb(0 0 0 / 0.05)',
         },
         minWidth: {
             '240': '240px',

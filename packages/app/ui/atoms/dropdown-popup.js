@@ -245,7 +245,7 @@ export default function DropdownPopup({
                     }}
                 >
                     {isWeb ? (
-                        <Pressable className="flex-1 bg-black/30 z-20" onPress={(event) => handleBackdropPress(event)}>
+                        <Pressable className="flex-1  z-20" onPress={(event) => handleBackdropPress(event)}>
                             <RemoveScroll>{Content}</RemoveScroll>
                         </Pressable>
                     ) : (

@@ -17,6 +17,7 @@ export default function ScrollList({
     content,
     pageData,
     headerHeight = 64,
+    bottomPadding = 64,
     isBackButton = false,
     contentType,
     refer,
@@ -153,7 +154,7 @@ export default function ScrollList({
     }
 
     return (
-        <View className={`flex-1`} style={{ paddingTop: isSmallScreen && !useCustomScrollHandler ? headerHeight : 0, paddingBottom: isSmallScreen ? 64 : 0 }}>
+        <View className={`flex-1`} style={{ paddingTop: isSmallScreen && !useCustomScrollHandler ? headerHeight : 0, paddingBottom: isSmallScreen ? bottomPadding : 0 }}>
             {enhanced}
             {isSmallScreen && <Animated.View className="backdrop-blur-lg" style={[headerStyle]}>
 

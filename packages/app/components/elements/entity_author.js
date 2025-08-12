@@ -19,6 +19,7 @@ import { useLayoutData } from 'app/context/layout';
 import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal';
 import { LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { useWindowDimensions } from 'react-native';
+import { cd } from 'app/lib/util'
 
 export default function ElementEntityAuthor(oProps) {
     let { currentUser, setCurrentUser } = useCurrentUser();
@@ -37,7 +38,7 @@ export default function ElementEntityAuthor(oProps) {
 
                     <>
                         <Text className=" text-neutral-600 dark:text-neutral-400 font-medium text-sm "> in </Text>
-                        <Profile {...oProps.data.entry_context} displayType="unit_wo_info" displaySize="xxs" />
+                        <Profile {...oProps.data.entry_context} displayType="unit_wo_info" displaySize="xs" />
                         <Text className=" text-neutral-600 dark:text-neutral-400 leading-6 font-medium text-sm ">
                             <Link href={oProps.data.entry_context.url}><Text className="ml-0.5 text-neutral-600 dark:text-neutral-400 font-medium text-xs ">{oProps.data.entry_context.display_name}</Text></Link>
                         </Text>
@@ -117,7 +118,7 @@ export default function ElementEntityAuthor(oProps) {
     const menuOptions = handleMenuManageSelect ? { onSelect: (oItem, event) => handleMenuManageSelect(oItem, event, setPageData) } : {};
 
     return (
-        <View className={"  lg:p-4 w-full items-center flex-row justify-between  "}>
+        <Row className={`justify-between ${cd('gap-md')} ${cd('px-lg')} ${cd('pt-lg')} ${cd('pb-md')}  `}>
             <FormModal pageData={pageData} setPageData={setPageData} />
             <Redirect ref={redirectdRef} />
             {viewState.view == 'edited' && (<Modal
@@ -158,6 +159,6 @@ export default function ElementEntityAuthor(oProps) {
                     </DropdownMenu>
                 }
             </View>
-        </View>
+        </Row>
     );
 }

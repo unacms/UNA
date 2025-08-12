@@ -5,6 +5,7 @@ import Link from 'app/ui/atoms/link'
 import { getRandomColor, LAYOUT_BREAKPOINTS } from 'app/lib/util';
 import { memo } from 'react';
 import { getPart } from 'app/lib/parts/part';
+import { cd } from 'app/lib/util';
 /**
  * displayType: 
  *    1. unit, 
@@ -64,10 +65,10 @@ function UnitWoInfo({ oProps, sSize, sSizeFontLetter, iSizeWidth, bShowLinks, em
 function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont, actions, info2 }) {
     return (
        
-       <View className="flex-col my-auto flex-auto">
+       <View className={`my-auto ${cd('gap-xs')}`}>
 
             {bShowLinks ? (
-                <Row className='gap-x-2 items-center'>
+                <Row className='gap-x-2 items-center h-5'>
                     <Link emulate={emulate} haptics="Select" href={oProps.url}>
                         <DisplayNameLink
                             title={oProps.display_name}
@@ -80,14 +81,14 @@ function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont, actions, in
                     {actions}
                 </Row>
             ) : (
-                <Row className='gap-x-2 items-center'>
+                <Row className='gap-x-2 h-6 items-center'>
                     <DisplayNameText title={oProps.display_name} fontSize={sSizeFont} />
                     {info2}
                     {actions}
                 </Row>
             )}
 
-            <View>{info}</View>
+            {info}
         </View>
       
     )
@@ -118,17 +119,11 @@ function AtomProfile_(oProps) {
     const sDisplaySize = oProps.displaySize ? oProps.displaySize : 'base'
 
     const sizes = {
-        xxs: {
+       
+        xs: {
             sSize: 'w-5 h-5',
             iSizeWidth: 20,
             iSizeHeight: 20,
-            sSizeFont: 'text-xs', 
-            sSizeFontLetter: ' text-base font-semibold',
-        },
-        xs: {
-            sSize: 'w-6 h-6',
-            iSizeWidth: 24,
-            iSizeHeight: 24,
             sSizeFont: 'text-xs', 
             sSizeFontLetter: ' text-base font-semibold',
         },
@@ -214,7 +209,7 @@ function AtomProfile_(oProps) {
     switch (sDisplayType) {
         case 'unit':
             return (
-                <Row className="gap-x-3 items-center">
+                <Row className="gap-x-2 sm:gap-x-3 items-center">
                     <View className="flex-none mb-auto">
                         <UnitWoInfo oProps={oProps} sSize={sSize} sSizeFontLetter={sSizeFontLetter} emulate={emulate} iSizeWidth={iSizeWidth} bShowLinks={bShowLinks} />
                     </View>

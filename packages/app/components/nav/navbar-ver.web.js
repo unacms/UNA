@@ -31,7 +31,7 @@ const SidebarBottomToolbar = ({ currentUser, menu_add_items, buttonProps }) => {
         account: (
             <MenuAccount>
                 <Row className={"rounded-full items-center justify-between p-1 hover:border-transparent cursor-pointer hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50"}>
-                    <Row className='flex-row gap-x-3 items-center'>
+                    <Row className='gap-2 lg:gap-3 items-center'>
                         <Profile
                             {...currentUser}
                             url_avatar={currentUser.avatar}
