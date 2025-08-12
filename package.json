@@ -34,7 +34,7 @@
     "**/expo-router/**"
   ],
   "dependencies": {
-    "dotenv-cli": "^7.0.0",
+    "dotenv-cli": "^7.0.0"
   },
   "packageManager": "yarn@1.22.22"
 }
