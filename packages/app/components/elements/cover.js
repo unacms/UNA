@@ -415,7 +415,7 @@ export default function ({ data, mode, uri, showMoreMenu, pageData, context }) {
                 )}
                 <View className="flex-auto lg:flex-row flex-col-reverse gap-y-2 sm:gap-y-3">
                     <View className="flex-col flex-auto gap-y-2 ">
-                        <Row className=" gap-x-3 flex-auto items-center min-h-11">
+                        <Row className=" gap-x-3 flex-auto items-center min-h-10">
                             <Text
                                 className={` tracking-tight text-3xl sm:text-4xl font-bold text-neutral-900 dark:text-neutral-50`}
                                 numberOfLines={2}

@@ -28,6 +28,7 @@ import { Modal } from 'app/design/controls'
 import Loading from 'app/ui/atoms/loading'
 import { Animated, StyleSheet } from 'react-native';
 import { Theme } from 'app/design/theme';
+import { cd } from 'app/lib/util';
 
 export default function UnitComments(props) {
     const { t } = useTranslation();
@@ -186,7 +187,7 @@ export default function UnitComments(props) {
                         <View className="ml-[19px] w-0.5 flex-auto bg-neutral-100 dark:bg-neutral-800" />
                     )}
                     {i === level - 1 && (
-                        <View className="mt-3 lg:mt-4  ml-[19px] h-[37px] w-[29px] border-neutral-100 dark:border-neutral-800 border-l-2 border-b-2 absolute -top-[14px] rounded-bl-[22px] flex-auto" />
+                        <View className="mt-2  ml-[19px] h-[35px] w-[29px] border-neutral-100 dark:border-neutral-800 border-l-2 border-b-2 absolute -top-[14px] rounded-bl-[28px] flex-auto" />
                     )}
                 </View>
             );
@@ -246,8 +247,8 @@ export default function UnitComments(props) {
                         {(items.length != 0 && view != 'flat') && <View className="w-0.5 ml-[19px] top-0.5 flex-auto bg-neutral-100 dark:bg-neutral-800"></View>}
                     </View>
                     
-                        <View className=' bg-muted flex-1 rounded-xl p-1 mt-2 flex-col gap-y-1' >
-                            <View className="flex-row items-center overflow-hidden px-2 py-1">
+                        <View className={`bg-muted flex-1 rounded-xl ${cd('p-sm')} mt-2  ${cd('gap-xs')}`} >
+                            <View className="flex-row items-center overflow-hidden ">
                                 <Profile {...data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
                                 <View><Text className="text-muted-foreground px-1">·</Text></View>
                                 <Link href={data.cmt_url} className="flex items-center"><Time ts={data.cmt_time}></Time></Link>
@@ -269,26 +270,26 @@ export default function UnitComments(props) {
 
                                 </View>
                             }
-                            <View className='text-foreground px-2'>
+                            <View className='text-foreground '>
                                 <Html htmlStyles={{ fontSize: 16 }} customClassName='u-vanilla-html-small' data={linkify(data.cmt_text)} />
                                 {!!data.embed && <View><Embed data={data.embed} size="small" /></View>}
 
                             </View>
                             {(viewState.view != 'edited' && imageList.length > 0) && <View className='max-w-xs w-full'><Carousel data={imageList} /></View>}
-                        {viewState.view != 'edited' && <View className=' flex-row w-full  items-center'>
+                        {viewState.view != 'edited' && <View className=' flex-row w-full gap-1 items-center'>
                             {(!!currentUser && !!props.handleReply && !props.module.includes('_reviews')) ? <View className=' '>
-                                <Button align="start" title={t("Reply")} size="xs" startDecorator="MessageCircle" variant="text" onPress={() => handleReply(data)} rounded />
+                                <Button align="start" title={t("Reply")} size="xs" startDecorator="MessageCircle" variant="outline" onPress={() => handleReply(data)}  />
                             </View> : <View></View>
                             }
                             {(!!currentUser && !props.handleReply && !props.module.includes('_reviews')) ? <View className=' '>
-                                <Link href={props.contentUrl + '#cmt_id=' + data.cmt_id}><Button align="start" title={t("Reply")} size="xs" startDecorator="MessageCircle" variant="text" rounded /></Link>
+                                <Link href={props.contentUrl + '#cmt_id=' + data.cmt_id}><Button align="start" title={t("Reply")} size="xs" startDecorator="MessageCircle" variant="outline"  /></Link>
                             </View> : <View></View>
                             }
-                            <View className='flex-row flex-auto '>
-                                <Menu {...data.menu_actions} displayType="element" showMatched={true} params={{ show_action: true, show_counter: false, show_combined: false, button_size: 'xs', button_variant: 'text' }} />
+                            <View className='flex-row flex-auto gap-1 '>
+                                <Menu {...data.menu_actions} displayType="element" showMatched={true} params={{ show_action: true, show_counter: false, show_combined: false, button_size: 'xs', button_variant: 'outline', button_rounded: false }} />
 
                                 <View className="ml-auto flex-row items-center ">
-                                    <Menu {...data.menu_actions} displayType="element" showMatched={true} params={{ show_action: false, show_counter: true, show_combined: false, button_size: 'xs', button_variant: 'text' }} />
+                                    <Menu {...data.menu_actions} displayType="element" showMatched={true} params={{ show_action: false, show_counter: true, show_combined: false, button_size: 'xs', button_variant: 'outline', button_rounded: false }} />
 
                                     <MenuManage id={data.id} menu={data?.menu_manage} setViewState={setViewState} module={props.module} cmt_object_id={props.data.cmt_object_id} cmt_id={props.data.cmt_id} />
                                 </View>
@@ -320,7 +321,7 @@ const MenuManage = ({ id, menu, setViewState, module, cmt_object_id, cmt_id }) =
                 variant="text"
                 size="xs"
                 rounded
-                ring='p-1'
+                
                 startDecorator="Ellipsis"
                 onPress={() => {
                     if (Platform.OS === 'web')
@@ -393,7 +394,7 @@ const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen, module, cmt_obj
                     title: aItem.title
                 };
             })} onSelect={handleManageMenuSelect}>
-                <Button variant="text" size="sm" ring='p-1' startDecorator="Ellipsis" rounded />
+                <Button variant="text" size="xs"  startDecorator="Ellipsis" rounded />
             </DropdownMenu>
             {!!oReport && oReport}
         </>

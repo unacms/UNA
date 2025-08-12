@@ -27,7 +27,7 @@ import * as FeedItems from 'app/lib/feed-items'
 import { Icon } from 'app/ui/atoms/icon'
 import { SafeMenuTrigger } from 'app/ui/atoms/safe-menu-trigger';
 import  { useLayoutData } from 'app/context/layout';
-import { stripTags } from 'app/lib/util'
+import { stripTags, cd, isWeb } from 'app/lib/util'
 
 export const CommentsModal = memo(({ commentsData, initFormData, itemContent, closeOnPost }) => {
     const windowDimensions = useWindowDimensions();
@@ -47,7 +47,7 @@ export const CommentsModal = memo(({ commentsData, initFormData, itemContent, cl
                 {CommentsPartsData[0]}
 
             </View>
-            <View onLayout={handleLayout} className=' w-full px-3 lg:px-4 border-t border-border' >
+            <View onLayout={handleLayout} className={`${cd('px-lg')} ${cd('py-sm')} border-t border-border`}>
                 {CommentsPartsData[1]}
             </View>
         </View>
@@ -227,7 +227,7 @@ export const ItemInfo = memo(({ data, t }) => {
         return l && (
             <>
                 <Text className=" text-muted-foreground text-sm leading-6 px-1">·</Text>
-                <Text className=" text-muted-foreground text-sm leading-6 tracking-tight ">
+                <Text className=" text-muted-foreground text-sm leading-6 ">
                     {l}
                 </Text>
             </>
@@ -364,9 +364,9 @@ export const VisibilityInfo = memo(({ data }) => {
     const isUser = data.object_privacy_view < 0;
 
     return (
-        <Row className="text-neutral-600 dark:text-neutral-400 items-center">
-            {isUser ? <Profile {...data.author_data} displayType="unit_wo_info" displaySize="xxs" /> : (icon ? <Icon icon={icon} width={14} height={14} /> : null)}
-            <Text className="text-muted-foreground text-xs font-medium leading-5 text-center tracking-tight ml-1">{isUser ? data.author_data.display_name : text}</Text>
+        <Row className="text-muted-foreground web:hover:text-foreground items-center gap-1 ">
+            <View className="flex-none rounded-full items-center justify-center">{isUser ? <Profile {...data.author_data} displayType="unit_wo_info" displaySize="xs" /> : (icon ? <Icon icon={icon} width={16} height={16} />: null)}</View>
+            <Text className="text-muted-foreground text-xs leading-5 text-center font-semibold flex-auto">{isUser ? data.author_data.display_name : text}</Text>
         </Row>
     );
 });
@@ -393,13 +393,25 @@ export const Author = memo(({ data, url, t }) => {
                 {...dataIcon}
 
                 displayType="unit"
-                displaySize="base"
+                displaySize="lg"
                 showInfo={
-                    <Row className=" flex-wrap items-center">
+                    <Row className={`${cd('gap-xs')} items-center flex-wrap`}>
                         
-                        <ItemInfo data={data} t={t} />
+                        {isWeb ? (
+                                    <Link href={url} emulate={false} variant="secondary" size="xs" className="u-time-hitarea relative ">
+                                       
+                                            <Time stylesName='text-muted-foreground web:group-hover:text-primary text-xs leading-4'  ts={data.date} />
+                                       
+                                    </Link>
+                                ) : (
+                                    <Link href={url} mode="text" variant="secondary" size="xs" hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+                                        
+                                            <Time stylesName='text-muted-foreground text-xs leading-4' ts={data.date} />
+                                       
+                                    </Link>
+                                )}
                         <VisibilityInfo data={data} />
-                        
+                        <ItemInfo data={data} t={t} />
                         
                     </Row>
                 }

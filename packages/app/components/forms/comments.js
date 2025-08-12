@@ -9,6 +9,7 @@ import { stripTags, removeEmptyTags } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import Profile from 'app/ui/molecules/profile'
 import { FileButton } from 'app/lib/form-helpers'
+import { cd } from 'app/lib/util'
 
 export default function FormComments(props) {
     const { height: screenHeight } = useWindowDimensions()
@@ -190,7 +191,7 @@ export default function FormComments(props) {
         'absolute',
         'bottom-0',
         'z-10',
-        'h-11',
+        'h-10',
         'flex',
         'items-center',
         'justify-center',
@@ -199,7 +200,7 @@ export default function FormComments(props) {
 
     let currentAttachmentButtonWidthClass;
     if (isWeb) {
-        currentAttachmentButtonWidthClass = ' w-11 h-11';
+        currentAttachmentButtonWidthClass = ' w-10 h-10';
     } else {
         currentAttachmentButtonWidthClass = 'w-fit';
     }
@@ -225,8 +226,8 @@ export default function FormComments(props) {
                     />
 
                 )}
-                <View className="flex-1  bg-red1-500">
-                    <View className={`  items-stretch bg-input rounded-2xl p-2.5 `} >
+                <View className="flex-1">
+                    <View className={`  items-stretch bg-input rounded-xl border border-border ${cd('px-sm')} py-2 `} >
                     <Animated.View 
                    
                      style={inputWrapperAnimatedStyle}
@@ -277,7 +278,7 @@ export default function FormComments(props) {
                     </Animated.View>
                     </View>
                     <View className={attachmentButtonContainerClasses.join(' ')}>
-                        {isWeb && <FileButton field_name='cmt_image' icon="Image" source='library' variant='text' />}
+                        {isWeb && <FileButton field_name='cmt_image' size='sm' icon="Image" source='library' variant='text' />}
                         {!isWeb && (
                             <Animated.View
                                 entering={SlideInLeft.duration(300)}
@@ -296,7 +297,7 @@ export default function FormComments(props) {
                         )}
                     </View>
                     {(!!hasText || !!imagesValue) && (
-                        <View className="absolute right-0 bottom-0  h-11 p-1 z-10">
+                        <View className="absolute right-0 bottom-0  p-1">
                             {getFormFieldByData(
                                 props.data.inputs['cmt_submit'],
                                 handleSubmitWithSanitization,

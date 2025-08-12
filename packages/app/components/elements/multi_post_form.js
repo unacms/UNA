@@ -8,6 +8,7 @@ import { CardList } from 'app/ui/molecules/card'
 import { useTranslation } from 'react-i18next'
 import FormModal, { handleFormModal, getFormModal } from 'app/ui/molecules/form_modal';
 import { Text, H2 } from 'app/design/typography'
+import { cd } from 'app/lib/util'
 
 export default function MultiPostForm({ data }) {
     const { currentUser } = useCurrentUser();
@@ -49,24 +50,24 @@ export default function MultiPostForm({ data }) {
     return (
 
         <CardList>
-            <View className=" flex-row gap-2 lg:gap-3 ">
+            <Row className={` ${cd('gap-md')}`}>
                 <View className="my-auto">
-                    <Profile {...profileData} displaySize="base" displayType="unit_wo_info" />
+                    <Profile {...profileData} displaySize="lg" displayType="unit_wo_info" />
                 </View>
                 <View className="flex-auto">
                     <Button
-                        size="base"
+                        size="lg"
                         variant="secondary"
                         fullWidth
-                        rounded
+                        
                         title={t('Create new ') + firstForm.title.toLowerCase()}
                         align="start"
                         onPress={getFirstForm}
                     />
                 </View>
-            </View>
+            </Row>
             <FormModal key={pageData?.ts} pageData={pageData} setPageData={setPageData} />
-            {menu_add_items.length > 0 && <Row className={` w-full gap-2 pt-2 lg:pt-3 border-t border-muted mt-3 lg:mt-4 xl:mt-6 ' : ''}`}>
+            {menu_add_items.length > 0 && <Row className={` hidden lg:flex w-full gap-2 pt-2 lg:pt-3 xl:pt-4 border-t border-muted lg:mt-3 xl:mt-4 ' : ''}`}>
                 {menu_add_items.map((item, index) => (
                     <Button key={item.name} size="base" fullWidth variant="text" onPress={() => handleFormModal(item, null, setPageData, data.params)} startDecorator={item.icon} title={item.title} />
                 ))}

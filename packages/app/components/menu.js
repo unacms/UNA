@@ -32,8 +32,19 @@ const MenuItemEx = memo(({ item, index, sDisplayType, params }) => {
 
 const MenuItem = memo(({ item, itemRefs, index, visibleItemsCount, params, bShowVertical, sAlignItems, isUseStaticWidth, isWeb, sDisplayType }) => {
     const ItemType = getComponent('menu-item', String(item.display_type ? item.display_type : sDisplayType));
+
+    const isLastVisible = typeof visibleItemsCount === 'number' ? index >= (visibleItemsCount - 1) : false;
+    let spacingClass = '';
+    if (bShowVertical) {
+        spacingClass = 'w-full  ';
+    } else if (params?.button_full_width === true) {
+        spacingClass = ' flex-1 ';
+    } else {
+        spacingClass = isLastVisible ? ' ' : ' me-2 ';
+    }
+
     return (
-        <ViewRef className={(!isWeb ? ' ml-2 ' : ' ') + (bShowVertical ? 'w-full  ' : ' ') + (sAlignItems == 'stretch' ? 'flex-auto' : '') }>
+        <ViewRef className={` ${spacingClass} ${sAlignItems == 'stretch' ? 'flex-auto' : ''} `}>
             <ItemType key={item.id ? item.id : item.name} {...item} params={params} />
         </ViewRef>
     )
@@ -65,12 +76,12 @@ export default function ElementMenu(oProps) {
     const aExcept = oProps?.except || [''];
     const aExceptTitle = oProps?.except_title || ['BxTemplView', 'BxTemplFavorite', 'BxTemplFeature', 'BxTemplReport', 'BxTimelineModule'];
 
-    let sClassName = oProps?.params?.className || 'bx-menu gap-x-2';
+    let sClassName = oProps?.params?.className || 'bx-menu ';
 
     //--- show vertical
     const bShowVertical = oProps?.params?.showVertical === true;
 
-    sClassName += bShowVertical ? ' flex-col items-center gap-y-2 w-full ' : ' flex-row gap-x-2 ';
+    sClassName += bShowVertical ? ' flex-col items-center gap-y-2 w-full ' : ' flex-row justify-between ';
     const oParams = oProps?.params || {};
 
 
@@ -142,28 +153,39 @@ export default function ElementMenu(oProps) {
     }
 
     if (isUseStaticWidth) {
-        const sItems = filteredItems.map((item, index) => {
-            const ItemType = getComponent('menu-item', item.display_type || sDisplayType);
+        // Prepare only actually rendered items to correctly identify the last visible one
+        const preparedItems = filteredItems
+            .map((item, originalIndex) => {
+                const ItemType = getComponent('menu-item', item.display_type || sDisplayType);
+                const element = <ItemType key={item.id ? item.id : item.name} {...item} params={oProps.params} />
+                return { item, element, originalIndex };
+            })
+            .filter(({ element }) => element != null);
+
+        const sItems = preparedItems.map(({ item, element, originalIndex }, i) => {
             const Wrapper = item.noAction ? Pressable : View;
-            const a = <ItemType key={item.id ? item.id : item.name} {...item} params={oProps.params} />
-            if (a == null) return null;
-            const cntProps = {}
+            const cntProps = {};
             if (item.noAction) {
                 cntProps.onPress = (event) => {
-                    handleFormModal(item, event, setPageData)
-                }
+                    handleFormModal(item, event, setPageData);
+                };
             }
-            return (
 
-                <View key={`menu${index}`} className={` ${bShowVertical
-                        ? 'w-full  '
-                        : oProps?.params?.button_full_width === true
-                            ? ' flex-1 '
-                            : ' '
-                    } ${sAlignItems === 'stretch' ? 'flex-auto' : ''}  `}>
-                    <Wrapper {...cntProps}>{a}</Wrapper>
+            const isLast = i === preparedItems.length - 1;
+            let spacingClass = '';
+            if (bShowVertical) {
+                spacingClass = 'w-full  ';
+            } else if (oProps?.params?.button_full_width === true) {
+                spacingClass = ' flex-1 ';
+            } else {
+                spacingClass = isLast ? ' ' : ' me-2 ';
+            }
+
+            return (
+                <View key={`menu${originalIndex}`} className={` ${spacingClass} ${sAlignItems === 'stretch' ? 'flex-auto' : ''}  `}>
+                    <Wrapper {...cntProps}>{element}</Wrapper>
                 </View>
-            )
+            );
         });
 
         if (bShowContent)

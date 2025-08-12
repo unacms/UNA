@@ -536,7 +536,6 @@ export const Button = (props) => {
         if (pressed) {
             classes += ` ${pressedClasses?.pressed_text || ThemeCssClassesButton[`u-btn-${variant}-pressed-text`] || ThemeButtonSizes.pressed_text}`;
         }
-        classes += ` text-${size}`;
         return classes;
     }, [variant, ThemeCssClassesButton, classTextName, pressed, size, pressedClasses, textColor]);
 

@@ -15,7 +15,7 @@ import { LogLevel, OneSignal } from 'react-native-onesignal';
 import * as RNLocalize from "react-native-localize";
 
 const nativeCache = [];
-const isWeb = Platform.OS === 'web'
+export const isWeb = Platform.OS === 'web'
 
 export const LAYOUT_BREAKPOINTS = {
     xl: 1280,
@@ -217,7 +217,7 @@ export function storageClear(pref, key) {
 }
 
 export const formatDate = (date, t)  => {
-    const day = String(date.getDate()).padStart(2, '0');
+    const day = String(date.getDate());
     const monthNames = [
         'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
         'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'

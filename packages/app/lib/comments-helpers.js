@@ -19,6 +19,7 @@ import { useTranslation } from 'react-i18next';
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
 import { stripTags } from 'app/lib/util';
 import { getPart } from 'app/lib/parts/part';
+import { cd } from 'app/lib/util'
 
 export function findParent(data, c, o, insert) {
     if (Array.isArray(data)) {
@@ -396,7 +397,7 @@ export function CommentsBrowse({ scrollProps, browse, requestUrl, module, handle
 
     let header = commentData.total_count > 0 ? (
 
-        <Row className={'flex-row ' + (classesBrowse ? classesBrowse : 'items-center p-3 lg:p-4 border-t border-bdr dark:border-bdr-d')}>
+        <Row className={'flex-row ' + (classesBrowse ? classesBrowse : `${cd('px-lg')} ${cd('pt-lg')} justify-between`)}>
 
             <Text className='flex-auto text-base font-bold text-neutral-900 dark:text-neutral-50'>{title} ({commentData.total_count})</Text>
             {!appSetting('comments', 'hide_sort') && <View className="ml-4">
@@ -449,7 +450,7 @@ export function CommentsBrowse({ scrollProps, browse, requestUrl, module, handle
                     }
 
                     return (
-                        <View className='px-3 lg:px-4' key={index}>
+                        <View className={`${cd('px-lg')}`} key={index}>
                             <UnitComments 
                                 selectedId={scrollToIndex} 
                                 hideActions={hideActions} 
@@ -569,11 +570,11 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
         setCommentForm(formData);
     }
 
-    const padding = 12;
+   
     const className = "w-full";
 
     return (
-        <View className={className} style={{ paddingTop: padding, paddingBottom: padding }}>
+        <View className={className} >
             {
                 form?.data?.inputs?.cmt_parent_id?.value > 0 && (<View className=' rounded-sm border-l-2 border-bgritemprimary dark:border-bgritemprimary-d  py-1 pl-2 mb-2'>
                     <Row className='items-start justify-between max-w-full relative'>

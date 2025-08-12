@@ -163,7 +163,7 @@ export default function (props) {
                         <Profile
                             {...props.owner_info}
                             displayType="unit_wo_info"
-                            displaySize="xxs"
+                            displaySize="xs"
                         />
                     </View>
                     <View className='px-1  flex-auto'>

@@ -326,8 +326,8 @@ export const settingsDefault = {
             pressed_classes: {
                 pressed_container: ' ',
                 pressed_text:
-                    ' text-primary web:group-hover:text-primary ',
-                pressed_ring: ' bg-primary/20 ',
+                    ' text-primary font-medium ',
+                pressed_ring: ' bg-primary/10 outline outline-primary/50 outline-offset-1 ',
             },
             button_rounded: true,
             align_items: 'start',
@@ -337,7 +337,7 @@ export const settingsDefault = {
             show_action: false,
             show_counter: true,
             show_combined: true,
-            button_variant: 'text',
+            button_variant: 'secondary',
             rounded: false,
             button_size: 'xs',
             button_rounded: false,
@@ -908,7 +908,7 @@ export const settingsDefault = {
             
         },
         dropdown: {
-            cnt: ' rounded-2xl overflow-hidden p-1 bg-card z-50  ',
+            cnt: ' rounded-2xl overflow-hidden shadow-lg p-2 border border-border/60 bg-card/60 backdrop-blur-xl z-50  ',
         },
         conductor: {
             menu: '   w-full items-left justify-center  ',
@@ -976,26 +976,26 @@ export const settingsDefault = {
             },
         },
         dropdown_menu: {
-            content_shadow: ' shadow-xl  ',
+            content_shadow: ' shadow-lg ',
             content_ver: '',
-            content_hor: 'flex-row   ',
+            content_hor: 'flex-row  ',
             item_ver:
-                ' web:group flex flex-row h-12 items-center p-1.5 text-sm rounded-xl font-medium web:hover:bg-bgritem web:dark:hover:bg-bgritem-d text-neutral-600 dark:text-neutral-400 web:hover:text-neutral-800 web:dark:hover:text-neutral-200 web:hover:cursor-pointer',
+                ' px-2 web:group flex flex-row h-10 items-center rounded-lg font-medium web:hover:bg-secondary/60 text-card-foreground web:hover:text-foreground web:hover:cursor-pointer',
             item_hor:
-                'flex block p-1.5 web:hover:-translate-y-1  web:dark:hover:text-white rounded-full web:hover:cursor-pointer text-neutral-700  web:hover:scale-125 active:scale-95   web:duration-200 dark:text-neutral-300 outline-none ',
+                'flex block web:dark:hover:text-white rounded-full web:hover:cursor-pointer text-neutral-700  web:hover:scale-125 active:scale-95   web:duration-200 dark:text-neutral-300 outline-none ',
             item_np:
                 'flex flex-row web:focus:outline-none items-center justify-between px-1 py-0.5 rounded-lg font-medium web:hover:bg-bgritem web:dark:hover:bg-bgritem-d text-sm text-neutral-700 dark:text-neutral-300 web:dark:hover:text-white web:hover:cursor-pointer',
-            item_cnt: 'items-center w-full',
+            item_cnt: 'items-center w-full flex-row',
             item_text:
-                ' text-base web:text-sm leading-8 px-3 font-medium text-card-foreground',
+                ' text-sm font-medium text-card-foreground px-2',
             item_icon:
-                'flex items-center w-9 h-9 bg-bgritem dark:bg-bgritem-d web:group-hover:bg-bgritem-h web:dark:group-hover:bg-bgritem-dh rounded-full justify-center',
+                'flex items-center w-8 h-8 bg-bgritem dark:bg-bgritem-d web:group-hover:bg-bgritem-h web:dark:group-hover:bg-bgritem-dh rounded-full justify-center',
             icon_size: 20, // Default icon size for dropdown menu icons
         },
         modal: {
             fog: 'bg-background/50 backdrop-blur-xl ',
             container:
-                ' h-full sm:h-auto shadow-lg bg-card sm:rounded-2xl sm:border border-border overflow-hidden ',
+                ' h-full sm:h-auto shadow bg-card sm:rounded-2xl  overflow-hidden ',
             content: ' h-auto ',
             header: ' p-3 items-start justify-start border-b border-border',
         },
@@ -1027,13 +1027,25 @@ export const settingsDefault = {
             pressed_container: '  ',
             pressed_text: ' text-primary font-medium ',
             pressed_ring: ' bg-primary/10 ',
+            xxs: {
+                rounded: ' rounded-[5px] ',
+                ring: ' rounded-[6px] p-[1px]  ', // Ring wrapper border radius
+                padding: ' px-1 ',
+                padding_icon_only: ' w-[18px] ',
+                padding_with_title: ' px-1 gap-1 ',
+                icon_container: ' h-[18px]  flex items-center justify-center',
+                title_container: ' leading-[18px] text-xs',
+                icon_size: 16,
+                icon_margin: ' ', // conditional margin for icon container when title is present
+                title_margin: '  ', //
+            },
             xs: {
                 rounded: ' rounded-[7px] ',
                 ring: ' rounded-[8px] p-[1px]  ', // Ring wrapper border radius
                 padding: ' px-1.5 ',
                 padding_icon_only: ' w-[26px] ',
                 padding_with_title: ' px-1.5 gap-1 ',
-                icon_container: ' h-[26px]  flex items-center justify-center',
+                icon_container: ' h-[26px] text-lg flex items-center justify-center',
                 title_container: ' leading-[26px] text-xs',
                 icon_size: 16,
                 icon_margin: ' ', // conditional margin for icon container when title is present
@@ -1045,7 +1057,7 @@ export const settingsDefault = {
                 padding: ' px-3 ',
                 padding_icon_only: ' w-[34px] ',
                 padding_with_title: ' px-3 gap-2 ',
-                icon_container: ' h-[34px]  flex items-center justify-center',
+                icon_container: ' text-lg h-[34px]  flex items-center justify-center',
                 title_container: ' leading-[34px] text-sm',
                 icon_size: 20,
                 icon_margin: ' ', // conditional margin for icon container when title is present
@@ -1070,7 +1082,7 @@ export const settingsDefault = {
                 padding_icon_only: ' w-[46px] ',
                 padding_with_title: ' px-4 ',
                 icon_container: ' h-[46px]  flex items-center justify-center',
-                title_container: ' leading-[46px] text-lg',
+                title_container: ' leading-[46px] text-base ',
                 icon_size: 24,
                 icon_margin: 'mx-1', // conditional margin for icon container when title is present
                 title_margin: '', // conditional margin for text container when icon is present
@@ -1079,12 +1091,12 @@ export const settingsDefault = {
         badge_sizes: {
             default_size: '',
             xs: {
-                padding: ' px-[3px] ',
-                wide_padding: ' px-1.5 ',
-                container: ' min-w-5 h-5 gap-0.5 ',
+                padding: ' px-0.5',
+                wide_padding: ' px-1 ',
+                container: ' min-w-5 h-5 gap-1 items-center justify-center ',
                 icon_size: 14,
                 text: ' text-xs ',
-                rounded: ' rounded-[5px] '
+                rounded: ' rounded-md '
             },
             sm: {
                 padding: ' px-1 ',
@@ -1116,10 +1128,10 @@ export const settingsDefault = {
             default_size: '',
             default_variant: 'default',
             xs: {
-                padding: ' px-1 py-0.5 rounded-md text-xs'
+                padding: ' px-1 py-0.5 rounded-md text-xs leading-4'
             },
             sm: {
-                padding: ' px-1.5 py-1 rounded-lg text-sm'
+                padding: ' px-1.5 py-0.5 rounded-lg text-sm'
             },
             md: {
                 padding: ' px-3 py-2 rounded-xl text-base'
@@ -1131,8 +1143,8 @@ export const settingsDefault = {
         
         link_styles: {
             // Default
-            'u-link-default-cnt': ' ',
-            'u-link-default-text': ' ',
+            'u-link-default-cnt': ' web:group ',
+            'u-link-default-text': ' text-card-foreground web:group-hover:text-primary ',
             'u-link-default-trans': ' web:duration-200',
 
             // Ghost: transparent by default; muted on hover/active
@@ -1141,8 +1153,8 @@ export const settingsDefault = {
             'u-link-ghost-trans': ' web:duration-200 ',
 
             // Secondary: muted by default; secondary on hover/active
-            'u-link-secondary-cnt': ' bg-muted web:hover:bg-secondary web:active:bg-secondary ',
-            'u-link-secondary-text': ' text-muted-foreground web:hover:text-foreground ',
+            'u-link-secondary-cnt': ' group bg-muted web:hover:bg-accent active:opacity-60 ',
+            'u-link-secondary-text': ' text-muted-foreground web:hover:text-primary  ',
             'u-link-secondary-trans': ' web:duration-200 ',
 
             // Accent: accent background and foreground
@@ -1156,40 +1168,42 @@ export const settingsDefault = {
             'u-link-primary-trans': ' web:duration-200 ',
         },
         offsets: {
-            'gap-lg': 'gap-4 sm:gap-6',
-            'gap-md': 'gap-2 sm:gap-3 lg:gap-4',
-            'gap-sm': 'gap-1.5 sm:gap-2 lg:gap-3',
-            'gap-xs': 'gap-1 sm:gap-1.5',
-            'm-lg': 'm-3 sm:m-4 lg:m-6',
-            'mb-lg': 'mb-6 sm:mb-8',
-            'mb-md': 'mb-3 sm:mb-4',
-            'mb-sm': 'mb-2 sm:mb-3',
+            'gap-lg': 'gap-4 lg:gap-6',
+            'gap-md': 'gap-3 lg:gap-4',
+            'gap-sm': 'ap-2 lg:gap-3',
+            'gap-xs': 'gap-1',
+            'm-lg': 'm-4 lg:m-6',
+            'mb-lg': 'mb-4 lg:mb-6',
+            'mb-md': 'mb-3 lg:mb-4',
+            'mb-sm': 'mb-2 lg:mb-3',
+            'mb-xs': 'mb-1',
             'p-lg': 'p-4 lg:p-6',
             'p-md': 'p-3 lg:p-4',
-            'p-sm': 'p-2',
+            'p-sm': 'p-2 lg:p-3',
             'p-xs': 'p-1',
-            'pb-lg': 'pb-4',
-            'pb-md': 'pb-3',
-            'pb-sm': 'pb-2',
-            'pt-lg': 'pt-4',
-            'pt-md': 'pt-3',
-            'pt-sm': 'pt-2',
-            'px-lg': 'px-4',
-            'px-md': 'px-3',
-            'px-sm': 'px-2',
+            'pb-lg': 'pb-4 lg:pb-6',
+            'pb-md': 'pb-3 lg:pb-4',
+            'pb-sm': 'pb-2 lg:pb-3',
+            'pt-lg': 'pt-4 lg:pt-6',
+            'pt-md': 'pt-3 lg:pt-4',
+            'pt-sm': 'pt-2 lg:pt-3',
+            'pt-xs': 'pt-1',
+            'px-lg': 'px-4 lg:px-6',
+            'px-md': 'px-3 lg:px-4',
+            'px-sm': 'px-2 lg:px-3',
             'px-xs': 'px-1',
-            'py-lg': 'py-3 sm:py-4 lg:py-6',
-            'py-md': 'py-3 sm:py-4',
-            'py-sm': 'py-2 sm:py-3',
+            'py-lg': 'py-4 lg:py-6',
+            'py-md': 'py-3 lg:py-4',
+            'py-sm': 'py-2 lg:py-3',
             'py-xs': 'py-1',
-            'w-lg': 'w-4 lg:w-6 xl:w-8',
-            'w-md': 'w-3 lg:w-4 xl:w-6',
-            'w-sm': 'w-2 lg:w-3 xl:w-4',
+            'w-lg': 'w-4 lg:w-6',
+            'w-md': 'w-3 lg:w-4',
+            'w-sm': 'w-2 lg:w-3',
         },
         cards: {
             'u-card-list': 'u-card-list bg-card shadow-sm text-card-foreground sm:rounded-2xl mb-0.5 sm:mb-3 lg:mb-4 ',
-            'u-card-list-padding': 'p-4 lg:p-6',
-            'u-card-base': ' u-card-base bg-card shadow-sm text-card-foreground shadow-sm gap-5 overflow-hidden rounded-2xl',            
+            'u-card-list-padding': ' p-3 sm:p-4 lg:p-6',
+            'u-card-base': ' u-card-base bg-card shadow-sm text-card-foreground shadow-sm  overflow-hidden rounded-2xl',            
             'u-card-padding': ' p-0 ',
             'u-card-header': 'flex px-6 pt-5 gap-1',
             'u-card-icon': 'text-card-foreground px-4 gap-y-2 gap-x-3',
@@ -1218,66 +1232,66 @@ export const settingsDefault = {
         badges: {
             
             'u-badge-base': ' items-center rounded-full flex-row ',
-            'u-badge-default': ' bg-primary ',
-            'u-badge-destructive': '',
-            'u-badge-outline': '',
-            'u-badge-accent': '',
-            'u-badge-secondary': '',
-            'u-badge-text': ' whitespace-nowrap text-ellipsis overflow-hidden tracking-tight font-medium  text-xs ',
-            'u-badge-text-default': ' text-primary-foreground ',
-            'u-badge-text-accent': '',
-            'u-badge-text-destructive': '',
-            'u-badge-text-outline': '',
-            'u-badge-text-secondary': 'text-foreground',
+            'u-badge-default': ' bg-primary/20 text-primary ',
+            'u-badge-destructive': ' bg-destructive text-destructive-foreground ',
+            'u-badge-outline': ' bg-transparent border border-border text-card-foreground ',
+            'u-badge-accent': ' bg-accent text-accent-foreground ',
+            'u-badge-secondary': ' bg-secondary text-secondary-foreground ',
+            'u-badge-text': ' whitespace-nowrap text-ellipsis overflow-hidden tracking-tight font-medium ',
+            'u-badge-text-default': ' text-primary ',
+            'u-badge-text-accent': ' text-accent-foreground ',
+            'u-badge-text-destructive': ' text-destructive-foreground ',
+            'u-badge-text-outline': ' text-card-foreground ',
+            'u-badge-text-secondary': ' text-secondary-foreground ',
             
             // Badge color mapping for data.color values
             color_mapping: {
                 // Exact color names to Tailwind classes
-                'emerald': 'bg-emerald-500 text-white',
-                'emerald-600': 'bg-emerald-600 text-white',
-                'purple': 'bg-purple-500 text-white',
-                'purple-600': 'bg-purple-600 text-white',
-                'Purple': 'bg-purple-500 text-white', // Handle capitalization
-                'red': 'bg-red-500 text-white',
-                'red-600': 'bg-red-600 text-white',
-                'blue': 'bg-blue-500 text-white',
-                'blue-600': 'bg-blue-600 text-white',
-                'green': 'bg-green-500 text-white',
-                'green-600': 'bg-green-600 text-white',
-                'yellow': 'bg-yellow-500 text-black',
-                'yellow-600': 'bg-yellow-600 text-black',
-                'orange': 'bg-orange-500 text-white',
-                'orange-600': 'bg-orange-600 text-white',
-                'teal': 'bg-teal-500 text-white',
-                'teal-600': 'bg-teal-600 text-white',
-                'sky': 'bg-sky-500 text-white',
-                'sky-600': 'bg-sky-600 text-white',
-                'indigo': 'bg-indigo-500 text-white',
-                'indigo-600': 'bg-indigo-600 text-white',
-                'pink': 'bg-pink-500 text-white',
-                'pink-600': 'bg-pink-600 text-white',
-                'rose': 'bg-rose-500 text-white',
-                'rose-600': 'bg-rose-600 text-white',
-                'gray': 'bg-gray-500 text-white',
-                'gray-600': 'bg-gray-600 text-white',
-                'slate': 'bg-slate-500 text-white',
-                'slate-600': 'bg-slate-600 text-white',
-                'zinc': 'bg-zinc-500 text-white',
-                'zinc-600': 'bg-zinc-600 text-white',
-                'neutral': 'bg-neutral-500 text-white',
-                'neutral-600': 'bg-neutral-600 text-white',
-                'stone': 'bg-stone-500 text-white',
-                'stone-600': 'bg-stone-600 text-white',
-                'amber': 'bg-amber-500 text-black',
-                'amber-600': 'bg-amber-600 text-black',
-                'lime': 'bg-lime-500 text-black',
-                'lime-600': 'bg-lime-600 text-black',
-                'cyan': 'bg-cyan-500 text-white',
-                'cyan-600': 'bg-cyan-600 text-white',
-                'violet': 'bg-violet-500 text-white',
-                'violet-600': 'bg-violet-600 text-white',
-                'fuchsia': 'bg-fuchsia-500 text-white',
-                'fuchsia-600': 'bg-fuchsia-600 text-white',
+                'emerald': 'bg-emerald-600/20 text-emerald-600',
+                'emerald-600': 'bg-emerald-600/20 text-emerald-600',
+                'purple': 'bg-purple-600/20 text-purple-600',
+                'purple-600': 'bg-purple-600/20 text-purple-600',
+                'Purple': 'bg-purple-600/20 text-purple-600', // Handle capitalization
+                'red': 'bg-red-600/20 text-red-600',
+                'red-600': 'bg-red-600/20 text-red-600',
+                'blue': 'bg-blue-600/20 text-blue-600',
+                'blue-600': 'bg-blue-600/20 text-blue-600',
+                'green': 'bg-green-600/20 text-green-600',
+                'green-600': 'bg-green-600/20 text-green-600',
+                'yellow': 'bg-yellow-600/20 text-yellow-600',
+                'yellow-600': 'bg-yellow-600/20 text-yellow-600',
+                'orange': 'bg-orange-600/20 text-orange-600',
+                'orange-600': 'bg-orange-600/20 text-orange-600',
+                'teal': 'bg-teal-600/20 text-teal-600',
+                'teal-600': 'bg-teal-600/20 text-teal-600',
+                'sky': 'bg-sky-600/20 text-sky-600',
+                'sky-600': 'bg-sky-600/20 text-sky-600',
+                'indigo': 'bg-indigo-600/20 text-indigo-600',
+                'indigo-600': 'bg-indigo-600/20 text-indigo-600',
+                'pink': 'bg-pink-600/20 text-pink-600',
+                'pink-600': 'bg-pink-600/20 text-pink-600',
+                'rose': 'bg-rose-600/20 text-rose-600',
+                'rose-600': 'bg-rose-600/20 text-rose-600',
+                'gray': 'bg-gray-600/20 text-gray-600',
+                'gray-600': 'bg-gray-600/20 text-gray-600',
+                'slate': 'bg-slate-600/20 text-slate-600',
+                'slate-600': 'bg-slate-600/20 text-slate-600',
+                'zinc': 'bg-zinc-600/20 text-zinc-600',
+                'zinc-600': 'bg-zinc-600/20 text-zinc-600',
+                'neutral': 'bg-neutral-600/20 text-neutral-600',
+                'neutral-600': 'bg-neutral-600/20 text-neutral-600',
+                'stone': 'bg-stone-600/20 text-stone-600',
+                'stone-600': 'bg-stone-600/20 text-stone-600',
+                'amber': 'bg-amber-600/20 text-amber-600',
+                'amber-600': 'bg-amber-600/20 text-amber-600',
+                'lime': 'bg-lime-600/20 text-lime-600',
+                'lime-600': 'bg-lime-600/20 text-lime-600',
+                'cyan': 'bg-cyan-600/20 text-cyan-600',
+                'cyan-600': 'bg-cyan-600/20 text-cyan-600',
+                'violet': 'bg-violet-600/20 text-violet-600',
+                'violet-600': 'bg-violet-600/20 text-violet-600',
+                'fuchsia': 'bg-fuchsia-600/20 text-fuchsia-600',
+                'fuchsia-600': 'bg-fuchsia-600/20 text-fuchsia-600',
             }
         },
         tables: {
@@ -1370,11 +1384,11 @@ export const settingsDefault = {
 
         button_styles: {
             'u-btn-default-cnt':
-                '  bg-muted web:hover:bg-muted/50 ',
+                '  bg-card web:hover:bg-secondary/60 ',
             'u-btn-default-text':
                 ' font-medium text-card-foreground web:group-hover:text-foreground ',
             'u-btn-default-trans': '  web:duration-200',
-            'u-btn-default-ring': ' web:group bg-border/60 web:duration-200 shadow-sm web:active:shadow-none web:active:bg-border ',
+            'u-btn-default-ring': ' web:group bg-border/60 web:duration-200  web:active:shadow-none web:active:bg-border ',
 
 
             'u-btn-primary-cnt': ' ',
@@ -1414,10 +1428,10 @@ export const settingsDefault = {
             'u-btn-link-trans': ' web:duration-200 ',
             'u-btn-link-ring': ' web:group web:duration-200 bg-transparent web:hover:bg-primary/10 ',
 
-            'u-btn-outline-cnt': ' bg-card ',
+            'u-btn-outline-cnt': ' bg-transparent outline outline-border outline-1 ',
             'u-btn-outline-text':' font-medium text-card-foreground web:group-hover:text-foreground ',
             'u-btn-outline-trans': '  web:duration-200',
-            'u-btn-outline-ring': ' web:group web:duration-200 bg-border/60 web:hover:bg-border web:active:opacity-50 ',
+            'u-btn-outline-ring': ' web:group web:duration-200 bg-transparent web:hover:bg-secondary/60 web:active:opacity-50 ',
 
             'u-btn-group-item-cnt':
                 '  bg-muted web:hover:bg-muted/50 ',

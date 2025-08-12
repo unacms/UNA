@@ -96,7 +96,7 @@ export const Header = memo(({
 
     return (
 
-            <Row className={`items-center h-16 justify-between ${cd('px-lg')}`} >
+            <Row className={`items-center h-16 justify-between ${cd('px-lg')} ${cd('gap-md')}`} >
             {((!currentUser || !pageData?.context) && !text && (!settings?.headerSettings || settings?.headerSettings?.header)) && 
                 <Link href="/home" aria-label="Home">
                     <Pressable className="items-center p-1.5 sm:p-2 flex-row web:hover:scale-105 web:active:scale-95 rounded-xl  text-neutral-800 dark:text-neutral-200 web:hover:text-neutral-800 web:dark:hover:text-neutral-200 duration-300 ">
