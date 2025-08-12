@@ -1125,10 +1125,14 @@ export const settingsDefault = {
         },
         // Link styling (variants and sizes) to allow restyling without component changes
         link_sizes: {
-            default_size: '',
+            default_size: 'base',
             default_variant: 'default',
+
+            xxs: {
+                padding: ' px-0 py-0 rounded-md text-xs '
+            },
             xs: {
-                padding: ' px-1 py-0.5 rounded-md text-xs leading-4'
+                padding: ' px-1 rounded-md text-xs font-medium leading-4 h-5 '
             },
             sm: {
                 padding: ' px-1.5 py-0.5 rounded-lg text-sm'
@@ -1148,13 +1152,13 @@ export const settingsDefault = {
             'u-link-default-trans': ' web:duration-200',
 
             // Ghost: transparent by default; muted on hover/active
-            'u-link-ghost-cnt': ' bg-transparent web:hover:bg-secondary web:active:bg-secondary ',
+            'u-link-ghost-cnt': ' bg-transparent web:hover:bg-muted/60 web:active:bg-secondary ',
             'u-link-ghost-text': ' text-muted-foreground web:hover:text-foreground ',
             'u-link-ghost-trans': ' web:duration-200 ',
 
             // Secondary: muted by default; secondary on hover/active
-            'u-link-secondary-cnt': ' group bg-muted web:hover:bg-accent active:opacity-60 ',
-            'u-link-secondary-text': ' text-muted-foreground web:hover:text-primary  ',
+            'u-link-secondary-cnt': ' group bg-secondary/60 web:hover:bg-secondary active:opacity-60 ',
+            'u-link-secondary-text': ' text-muted-foreground web:hover:text-secondary-foreground  ',
             'u-link-secondary-trans': ' web:duration-200 ',
 
             // Accent: accent background and foreground
@@ -1170,13 +1174,20 @@ export const settingsDefault = {
         offsets: {
             'gap-lg': 'gap-4 lg:gap-6',
             'gap-md': 'gap-3 lg:gap-4',
-            'gap-sm': 'ap-2 lg:gap-3',
+            'gap-sm': 'gap-2 lg:gap-3',
             'gap-xs': 'gap-1',
             'm-lg': 'm-4 lg:m-6',
+            'm-md': 'm-3 lg:m-4',
+            'm-sm': 'm-2 lg:m-3',
+            'm-xs': 'm-1',
             'mb-lg': 'mb-4 lg:mb-6',
             'mb-md': 'mb-3 lg:mb-4',
             'mb-sm': 'mb-2 lg:mb-3',
             'mb-xs': 'mb-1',
+            'mt-lg': 'mt-4 lg:mt-6',
+            'mt-md': 'mt-3 lg:mt-4',
+            'mt-sm': 'mt-2 lg:mt-3',
+            'mt-xs': 'mt-1',
             'p-lg': 'p-4 lg:p-6',
             'p-md': 'p-3 lg:p-4',
             'p-sm': 'p-2 lg:p-3',
@@ -1428,7 +1439,7 @@ export const settingsDefault = {
             'u-btn-link-trans': ' web:duration-200 ',
             'u-btn-link-ring': ' web:group web:duration-200 bg-transparent web:hover:bg-primary/10 ',
 
-            'u-btn-outline-cnt': ' bg-transparent outline outline-border outline-1 ',
+            'u-btn-outline-cnt': ' bg-transparent outline outline-border/60 outline-1 ',
             'u-btn-outline-text':' font-medium text-card-foreground web:group-hover:text-foreground ',
             'u-btn-outline-trans': '  web:duration-200',
             'u-btn-outline-ring': ' web:group web:duration-200 bg-transparent web:hover:bg-secondary/60 web:active:opacity-50 ',

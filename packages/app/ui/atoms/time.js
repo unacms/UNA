@@ -90,7 +90,7 @@ export default function ElementTime(props) {
 
     return (
         <Text
-            className={stylesName || ` ${stylesNameAdd}`}
+            className={stylesName || ` text-xs leading-5 font-medium text-muted-foreground web:group-hover:text-primary ${stylesNameAdd}`}
             {...mergedProps}
             {...otherProps}
         >

@@ -238,19 +238,19 @@ export default function UnitComments(props) {
     return (
         <Wrapper style={combinedStyles}>
             
-                <View className="flex-row gap-x-2">
+                <Row className={`${cd('gap-sm')}`}>
                     {cells}
-                    <View className="w-10 z-50 flex-0 relative mt-2">
+                    <View className={`w-10 z-50 flex-0 relative ${cd('mt-sm')}`}>
 
                         <Profile {...data.author_data} displayType="unit_wo_info" displaySize="base" showInfo="false" />
 
                         {(items.length != 0 && view != 'flat') && <View className="w-0.5 ml-[19px] top-0.5 flex-auto bg-neutral-100 dark:bg-neutral-800"></View>}
                     </View>
                     
-                        <View className={`bg-muted flex-1 rounded-xl ${cd('p-sm')} mt-2  ${cd('gap-xs')}`} >
-                            <View className="flex-row items-center overflow-hidden ">
+                        <View className={`bg-muted/60 flex-1 rounded-xl ${cd('p-sm')} ${cd('mt-sm')} ${cd('gap-xs')}`} >
+                            <View className="flex-row items-center overflow-hidden justify-between gap-2 ">
                                 <Profile {...data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
-                                <View><Text className="text-muted-foreground px-1">·</Text></View>
+                                
                                 <Link href={data.cmt_url} className="flex items-center"><Time ts={data.cmt_time}></Time></Link>
                                 {!!data.cmt_mood && <><View><Text className="text-muted-foreground px-1">·</Text></View><StarsView rating={data.cmt_mood} starSize={20} /></>}
                                 {(maxLevel < data.cmt_level && appSetting('comments', 'in_reply')) && parent?.data && <Row>
@@ -300,7 +300,7 @@ export default function UnitComments(props) {
                         </View>
                         
                     
-                </View>
+                </Row>
             
         </Wrapper>
     );

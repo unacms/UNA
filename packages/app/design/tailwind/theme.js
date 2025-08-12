@@ -117,6 +117,10 @@ const theme = {
             ...colors,
             ...nativewindUIColors,
         },
+        fontSize: {
+            'xs': '13px',
+            base: '16px',
+        },
         boxShadow: {
             DEFAULT: '0 1px 3px 0 rgb(0 0 0 / 0.05)',
             'md': '0 4px 6px 0 rgb(0 0 0 / 0.05)',
@@ -140,9 +144,7 @@ const theme = {
             '4/1': '4 / 1',
             '5/1': '5 / 1',
         },
-        fontSize: {
-            base: '16px',
-        },
+        // NOTE: Do not redefine fontSize again below. Keep all font sizes in the single block above.
         keyframes: {
             appear: {
               "0%": {

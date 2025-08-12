@@ -64,11 +64,11 @@ function UnitWoInfo({ oProps, sSize, sSizeFontLetter, iSizeWidth, bShowLinks, em
 
 function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont, actions, info2 }) {
     return (
-       
-       <View className={`my-auto ${cd('gap-xs')}`}>
+       <Row className={`${cd('gap-xs')} justify-between`}>
+       <View className="my-auto gap-1">
 
             {bShowLinks ? (
-                <Row className='gap-x-2 items-center h-5'>
+                <Row className={`${cd('gap-xs')} items-center`}>
                     <Link emulate={emulate} haptics="Select" href={oProps.url}>
                         <DisplayNameLink
                             title={oProps.display_name}
@@ -78,18 +78,22 @@ function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont, actions, in
                         />
                     </Link>
                     {info2}
-                    {actions}
+                   
                 </Row>
             ) : (
-                <Row className='gap-x-2 h-6 items-center'>
+                <Row className={`${cd('gap-xs')} items-center`}>
                     <DisplayNameText title={oProps.display_name} fontSize={sSizeFont} />
                     {info2}
-                    {actions}
+                   
                 </Row>
             )}
 
             {info}
         </View>
+            <Row className="flex-none mb-auto">
+                {actions}
+            </Row>
+        </Row>
       
     )
 }

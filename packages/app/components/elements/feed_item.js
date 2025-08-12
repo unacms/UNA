@@ -59,10 +59,11 @@ export default function ElementFeedItem({ data }) {
             <UnitImages images={content_attach} />
             {
                 data.event.menu_actions.items.length > 0 && (<View className=" flex-row items-center ">
-                    <View className=" flex-auto flex-wrap text-wrap ">
-                        {(!!data.event.menu_counters && appSetting('feed', 'counters_menu')) && <Row className={`${cd('px-lg')} ${cd('pt-md')}`}><CounterMenu data={data.event.menu_counters} /></Row>}
-                        <View className={`${cd('px-lg')} ${cd('pt-md')} `}><ActionMenu data={data.event.menu_actions} /></View>
-                    </View>
+                    <Row className={`flex-auto items-center flex-wrap-reverse justify-between ${cd('gap-md')} ${cd('pt-md')} ${cd('px-lg')}`}>
+                        <ActionMenu data={data.event.menu_actions} />
+                        {(!!data.event.menu_counters && appSetting('feed', 'counters_menu')) && <CounterMenu data={data.event.menu_counters} />}
+
+                    </Row>
                 </View>)
             }
         </View>

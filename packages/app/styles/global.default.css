@@ -15,13 +15,13 @@
         --primary-foreground: 255 255 255; /*white*/
         --secondary: 228 228 231;  /*zinc-200*/
         --secondary-foreground: 24 24 27; /*zinc-900*/
-        --muted: 244 244 245; /*zinc-100*/
-        --muted-foreground: 113 113 122; /*zinc-500*/
+        --muted: 228 228 231; /*zinc-200*/
+        --muted-foreground: 82 82 91; /*zinc-600*/
         --accent: 219 234 254; /*blue-100*/
         --accent-foreground: 37 99 235; /*blue-600*/
         --destructive: 225 29 72; /*rose-600*/
         --destructive-foreground: 255 255 255; /*white*/
-        --border: 228 228 231; /*zinc-200*/
+        --border: 209 213 219; /*zinc-300*/
         --input: 244 244 245; /*zinc-100*/
         --ring: 59 130 246; /*blue-500*/
 
@@ -60,12 +60,12 @@
         --secondary: 39 39 42; /*zinc-800*/
         --secondary-foreground: 244 244 245; /*zinc-100*/
         --muted: 39 39 42; /*zinc-800*/
-        --muted-foreground: 113 113 122; /*zinc-400*/
+        --muted-foreground: 161 161 170; /*zinc-400*/
         --accent: 30 58 138; /*zinc-500*/
         --accent-foreground: 59 130 246; /*zinc-100*/
         --destructive: 225 29 72; /*rose-600*/
         --destructive-foreground: 255 255 255; /*white*/
-        --border: 39 39 42; /*zinc-800*/
+        --border: 63 63 70; /*zinc-700*/
         --input: 39 39 42; /*zinc-800*/
         --ring: 37 99 235; /*blue-600*/
 
