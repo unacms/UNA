@@ -21,10 +21,31 @@
         --accent-foreground: 37 99 235; /*blue-600*/
         --destructive: 225 29 72; /*rose-600*/
         --destructive-foreground: 255 255 255; /*white*/
-        --border: 212 212 216; /*zinc-300*/
-        --input: 250 250 250; /*zinc-50*/
+        --border: 228 228 231; /*zinc-200*/
+        --input: 244 244 245; /*zinc-100*/
         --ring: 59 130 246; /*blue-500*/
+
+        --android-background: var(--background);
+        --android-foreground: var(--foreground);
+        --android-card: var(--card);
+        --android-card-foreground: var(--card-foreground);
+        --android-popover: var(--popover);
+        --android-popover-foreground: var(--popover-foreground);
+        --android-primary: var(--primary);
+        --android-primary-foreground: var(--primary-foreground);
+        --android-secondary: var(--secondary);
+        --android-secondary-foreground: var(--secondary-foreground);
+        --android-muted: var(--muted);
+        --android-muted-foreground: var(--muted-foreground);
+        --android-accent: var(--accent);
+        --android-accent-foreground: var(--accent-foreground);
+        --android-destructive: var(--destructive);
+        --android-destructive-foreground: var(--destructive-foreground);
+        --android-border: var(--border);
+        --android-input: var(--input);
+        --android-ring: var(--ring);
     }
+    
 
     .dark-theme-vars {
         /* NativewindUI Design Tokens - Dark Mode */
@@ -40,14 +61,36 @@
         --secondary-foreground: 244 244 245; /*zinc-100*/
         --muted: 39 39 42; /*zinc-800*/
         --muted-foreground: 113 113 122; /*zinc-400*/
-        --accent: 113 113 122; /*zinc-500*/
-        --accent-foreground: 244 244 245; /*zinc-100*/
+        --accent: 30 58 138; /*zinc-500*/
+        --accent-foreground: 59 130 246; /*zinc-100*/
         --destructive: 225 29 72; /*rose-600*/
         --destructive-foreground: 255 255 255; /*white*/
-        --border: 63 63 70; /*zinc-700*/
+        --border: 39 39 42; /*zinc-800*/
         --input: 39 39 42; /*zinc-800*/
         --ring: 37 99 235; /*blue-600*/
-    }
+
+
+        --android-background: var(--background);
+        --android-foreground: var(--foreground);
+        --android-card: var(--card);
+        --android-card-foreground: var(--card-foreground);
+        --android-popover: var(--popover);
+        --android-popover-foreground: var(--popover-foreground);
+        --android-primary: var(--primary);
+        --android-primary-foreground: var(--primary-foreground);
+        --android-secondary: var(--secondary);
+        --android-secondary-foreground: var(--secondary-foreground);
+        --android-muted: var(--muted);
+        --android-muted-foreground: var(--muted-foreground);
+        --android-accent: var(--accent);
+        --android-accent-foreground: var(--accent-foreground);
+        --android-destructive: var(--destructive);
+        --android-destructive-foreground: var(--destructive-foreground);
+        --android-border: var(--border);
+        --android-input: var(--input);
+        --android-ring: var(--ring);
+        
+        }
 
     :root {
         @apply light-theme-vars;

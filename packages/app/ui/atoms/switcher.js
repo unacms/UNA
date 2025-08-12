@@ -7,7 +7,7 @@ export default function Switch({ value, onValueChange, size = 'base' }) {
         <SwitchPrimitive.Root
             checked={value}
             onCheckedChange={onValueChange}
-            className={` ${switcherTheme['u-controls-switcher-track']} ${switcherTheme['u-controls-switcher-track-'+size]} ${switcherTheme['u-controls-switcher-track-col']} ${value ? switcherTheme['u-controls-switcher-track-active-col'] : ''  }`}
+            className={` ${switcherTheme['u-controls-switcher-track']} ${switcherTheme['u-controls-switcher-track-'+size]} ${value ? switcherTheme['u-controls-switcher-track-active-col'] : switcherTheme['u-controls-switcher-track-col']  }`}
         >
             <SwitchPrimitive.Thumb
                 className={`${switcherTheme['u-controls-switcher-thumb']} ${switcherTheme['u-controls-switcher-thumb-'+size]} ${value ? switcherTheme['u-controls-switcher-thumb-active-'+size] : 'translate-x-0'}

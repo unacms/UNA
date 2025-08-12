@@ -34,10 +34,7 @@
     "**/expo-router/**"
   ],
   "dependencies": {
-    "cheerio": "^1.0.0",
-    "dom-serializer": "^2.0.0",
     "dotenv-cli": "^7.0.0",
-    "expo-blur": "^14.1.4"
   },
   "packageManager": "yarn@1.22.22"
 }
