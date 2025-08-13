@@ -25,7 +25,9 @@ function PageContent(props) {
                 {t('splash_page_login2')}
             </Text>
         </View>
-        <BlockByName contentOnly={true} name={props.blocks.form} data={props.data} formProps={{ auto_focus: true, hide_errors: true, button_full_width: true }} />
+        <View className='my-6'>
+            <BlockByName contentOnly={true} name={props.blocks.form} data={props.data} formProps={{ auto_focus: true, hide_errors: true, button_full_width: true }} />
+        </View>
         <AuthPanel loginLink={false} />
     </Card>)
 }

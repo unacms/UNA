@@ -32,6 +32,7 @@ function PageContent(props) {
                     .
                 </Text>}
             </View>
+             <View className='my-6'>
             {!isAllowJoin && (
                 <BlockByName
                     name={props.blocks.form_invitation}
@@ -56,6 +57,7 @@ function PageContent(props) {
                     }}
                 />
             )}
+            </View>
             <AuthPanel createAccountLink={false} loginLink={!isWeb} />
         </Card>
     );
