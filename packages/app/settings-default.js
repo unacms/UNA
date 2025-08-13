@@ -414,12 +414,11 @@ export const settingsDefault = {
         ],
         unit_by_source: {
             'system/browse_friends': 'person_friends',
-            'system/browse_recommendations_friends':
-                'person_friends_recommendations',
+            'system/browse_recommendations_friends': 'person_friends_recommendations',
+            'system/browse_invitations': 'invitations_in_context',
             'system/browse_friend_requested': 'person_friend_requested',
             'system/browse_friend_requests': 'browse_friend_requests',
-            'system/browse_recommendations_subscriptions':
-                'person_following_recommendations',
+            'system/browse_recommendations_subscriptions': 'person_following_recommendations',
             'system/browse_subscribed_me': 'person_followers',
             browse_subscriptions: 'person_following',
             'r=bx_events': 'event',
