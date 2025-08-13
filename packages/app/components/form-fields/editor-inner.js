@@ -95,12 +95,12 @@ export default function RftText({
         url1 += '&object_privacy_view=' + object_privacy_view
     if (object_id) url1 += '&cid=' + object_id
 
-    const isCommentsEditor = props.container_class === 'comments';
-    const editorFontSize = isCommentsEditor ? '16px' : '16px';
-    const editorLineHeight = isCommentsEditor ? '20px' : '24px';
+    const isCommentsEditor = props.container_class === 'comments'
+    const editorFontSize = isCommentsEditor ? '16px' : '16px'
+    const editorLineHeight = isCommentsEditor ? '20px' : '24px'
 
     // Get the editor settings for toolbar configuration
-    const editorSettings = appSetting('editor', 'toolbar');
+    const editorSettings = appSetting('editor', 'toolbar')
 
     useEffect(() => {
         if (keywordval[1] === '') return
@@ -127,8 +127,16 @@ export default function RftText({
 
     let customCodeBlockCSS = `
     :root {
-      --color-text: ${ThemeName() === 'dark' ? 'rgba(225, 230, 240, 1)' : 'rgba(30, 40, 55, 1)'};
-      --color-background: ${ThemeName() === 'dark' ? 'rgba(15, 25, 40, 1)' : 'rgba(255, 255, 255, 1)'};
+      --color-text: ${
+          ThemeName() === 'dark'
+              ? 'rgba(225, 230, 240, 1)'
+              : 'rgba(30, 40, 55, 1)'
+      };
+      --color-background: ${
+          ThemeName() === 'dark'
+              ? 'rgba(15, 25, 40, 1)'
+              : 'rgba(255, 255, 255, 1)'
+      };
     }
     body{
         font-family: system-ui, -apple-system, BlinkMacSystemFont, ".SFNSText-Regular", sans-serif;
@@ -174,7 +182,11 @@ export default function RftText({
     }
     A.bx-mention-link,
     A.bx-tag{
-        color: ${ThemeName() === 'dark' ? 'rgba(59, 130, 246, 1)' : 'rgba(37, 99, 235, 1)'};
+        color: ${
+            ThemeName() === 'dark'
+                ? 'rgba(59, 130, 246, 1)'
+                : 'rgba(37, 99, 235, 1)'
+        };
     }
     ${appSetting('editor', 'css')}
 
@@ -241,23 +253,28 @@ export default function RftText({
     ]
 
     // Extract toolbar styling values from settings
-    const toolbarPadding = editorSettings?.padding || 8;
-    const toolbarColors = editorSettings?.colors || {};
-    
+    const toolbarPadding = editorSettings?.padding || 8
+    const toolbarColors = editorSettings?.colors || {}
+
     // Light mode colors
-    const toolbarBgColor = toolbarColors.background || 'rgba(248, 249, 250, 1)';
-    const toolbarIconColor = toolbarColors.icon || 'rgba(209, 213, 219, 1)';
-    
+    const toolbarBgColor = toolbarColors.background || 'rgba(248, 249, 250, 1)'
+    const toolbarIconColor = toolbarColors.icon || 'rgba(209, 213, 219, 1)'
+
     // Dark mode colors
-    const toolbarBgColorDark = toolbarColors.backgroundDark || 'rgba(33, 37, 41, 1)';
-    const toolbarIconColorDark = toolbarColors.iconDark || 'rgba(75, 85, 99, 1)';
-    
+    const toolbarBgColorDark =
+        toolbarColors.backgroundDark || 'rgba(33, 37, 41, 1)'
+    const toolbarIconColorDark = toolbarColors.iconDark || 'rgba(75, 85, 99, 1)'
+
     // Check if background colors are transparent and determine active colors
-    const isLightBgTransparent = toolbarBgColor.includes(', 0)');
-    const isDarkBgTransparent = toolbarBgColorDark.includes(', 0)');
-    
-    const lightActiveColor = isLightBgTransparent ? toolbarIconColor : toolbarBgColor;
-    const darkActiveColor = isDarkBgTransparent ? toolbarIconColorDark : toolbarBgColorDark;
+    const isLightBgTransparent = toolbarBgColor.includes(', 0)')
+    const isDarkBgTransparent = toolbarBgColorDark.includes(', 0)')
+
+    const lightActiveColor = isLightBgTransparent
+        ? toolbarIconColor
+        : toolbarBgColor
+    const darkActiveColor = isDarkBgTransparent
+        ? toolbarIconColorDark
+        : toolbarBgColorDark
 
     // Create theme configurations
     const lightTheme = {
@@ -286,8 +303,8 @@ export default function RftText({
                 opacity: 0.5,
                 borderRadius: 4,
             },
-        }
-    };
+        },
+    }
 
     const darkThemeCustom = {
         toolbar: {
@@ -315,24 +332,25 @@ export default function RftText({
                 opacity: 0.5,
                 borderRadius: 4,
             },
-        }
-    };
+        },
+    }
 
-    const customEditorTheme = ThemeName() === 'dark' ? 
-        { 
-            ...darkEditorTheme, 
-            toolbar: {
-                ...darkEditorTheme.toolbar,
-                ...darkThemeCustom.toolbar
-            }
-        } : 
-        lightTheme;
+    const customEditorTheme =
+        ThemeName() === 'dark'
+            ? {
+                  ...darkEditorTheme,
+                  toolbar: {
+                      ...darkEditorTheme.toolbar,
+                      ...darkThemeCustom.toolbar,
+                  },
+              }
+            : lightTheme
 
     const handleSubmit = () => {
         if (props.onEnterSubmit) {
-            props.onEnterSubmit();
+            props.onEnterSubmit()
         }
-    };
+    }
 
     const editor = useEditorBridge({
         autofocus: props.autofocus,
@@ -341,10 +359,7 @@ export default function RftText({
         placeholder: props.placeholder,
         theme: customEditorTheme,
         initialContent: field.value,
-        bridgeExtensions: [
-            ...TenTapStartKit,
-            ...baseExtensions,
-        ],
+        bridgeExtensions: [...TenTapStartKit, ...baseExtensions],
     })
 
     useEffect(() => {
@@ -432,7 +447,9 @@ export default function RftText({
 
     const insertMention = async (user, query) => {
         const html = await editor.getHTML()
-        const mentionLink = `<a class="bx-mention-link ${user.classname}" href="${user.url}">${user.label.trim()}</a>&shy;`
+        const mentionLink = `<a class="bx-mention-link ${
+            user.classname
+        }" href="${user.url}">${user.label.trim()}</a>&shy;`
         const replacementStringWithNbsp = mentionLink + '&nbsp;'
         const updatedContent = html.replace(query, replacementStringWithNbsp)
         editor.setContent(updatedContent)
@@ -528,7 +545,9 @@ export default function RftText({
             }
 
             if (message?.type == 'editor-ready') {
-                const submitOnEnter = isCommentsEditor ? appSetting('comments', 'submit_comment_on_enter') : enableSubmitOnEnter;
+                const submitOnEnter = isCommentsEditor
+                    ? appSetting('comments', 'submit_comment_on_enter')
+                    : enableSubmitOnEnter
                 editor.injectJS(`
                     let formName = "${unicFormName}";
                     let lastSelectionRange = null;
@@ -758,7 +777,11 @@ export default function RftText({
     return (
         <View
             onLayout={handleLayout}
-            className={`flex-1 relative rounded-2xl ${isToolBar ? ' bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d text-neutral-900 rounded-xl  px-3 py-3 dark:text-neutral-100' : ''}`}
+            className={`flex-1 relative rounded-lg m-[1px] ${
+                isToolBar
+                    ? ' bg-input card-foreground rounded-lg px-3 py-3 '
+                    : ''
+            }`}
         >
             {suggestions && suggestions.length > 0 && (
                 <View
@@ -794,7 +817,11 @@ export default function RftText({
                 editable={!props.disabled}
                 editorProps={{
                     attributes: {
-                        class: `prose-mirror ${isCommentsEditor ? 'tiptap-comments' : 'tiptap-default'} ${props.classes || ''}`,
+                        class: `prose-mirror ${
+                            isCommentsEditor
+                                ? 'tiptap-comments'
+                                : 'tiptap-default'
+                        } ${props.classes || ''}`,
                     },
                 }}
                 onDebouncedUpdate={(editor) => {
@@ -803,19 +830,21 @@ export default function RftText({
             />
 
             {isToolBar && (
-                <><View className='h-12'></View>
-                <KeyboardAvoidingView
-                    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                    style={{
-                        position: 'absolute',
-                        width: '100%',
-                        bottom: 0,
-                    }}
-                >
-                    <View className="flex-auto ">
-                        <Toolbar hidden={false} editor={editor} items={b} />
-                    </View>
-                </KeyboardAvoidingView></>
+                <>
+                    <View className="h-12"></View>
+                    <KeyboardAvoidingView
+                        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                        style={{
+                            position: 'absolute',
+                            width: '100%',
+                            bottom: 0,
+                        }}
+                    >
+                        <View className="flex-auto ">
+                            <Toolbar hidden={false} editor={editor} items={b} />
+                        </View>
+                    </KeyboardAvoidingView>
+                </>
             )}
         </View>
     )

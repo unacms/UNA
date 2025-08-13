@@ -111,7 +111,7 @@ export function ReputationWidget({ data }) {
         ),
     }))
 
-    return <Tabs tabs={preparedTabs} activeTab={tabsData[0].url} />
+    return <Tabs tabs={preparedTabs} size="sm" activeTab={tabsData[0].url} />
 }
 
 function ReputationSummarySimple({ data }) {

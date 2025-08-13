@@ -40,6 +40,7 @@ const BlockDescription = createBlockComponent({
 const BlockActions = createBlockComponent({ baseClass: 'u-block-actions' });
 
 const BlockContent = createBlockComponent({ baseClass: 'u-block-content' });
+const BlockList = createBlockComponent({ baseClass: 'u-block-list' });
 
 const BlockFooter = createBlockComponent({ baseClass: 'u-block-footer' });
 
@@ -52,5 +53,6 @@ export {
     BlockDescription,
     BlockActions,
     BlockContent,
+    BlockList,
     BlockFooter,
 };

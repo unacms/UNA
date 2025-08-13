@@ -5,8 +5,7 @@ import { appSetting} from 'app/lib/util';
 const tableTheme = appSetting('theme', 'tables');
 
 function createTableComponent({ baseClass, Component = View, role, ariaLevel }) {
-    return function TableSubComponent({ className, density, ...props }) {
-        const finalDensity = density ?? globalDensity;
+    return function TableSubComponent({ className, ...props }) {
 
         return (
             <Component

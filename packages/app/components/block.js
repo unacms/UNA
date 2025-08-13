@@ -6,7 +6,7 @@ import { appStatic } from 'app/lib/app-static';
 import { View } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { stripTags, appSetting } from 'app/lib/util';
-import { Block as PageBlock, BlockContent, BlockHeader, BlockTitle } from 'app/ui/molecules/page-block'
+import { Block as PageBlock, BlockContent, BlockList, BlockHeader, BlockTitle } from 'app/ui/molecules/page-block'
 
 
 const componentsMap = {
@@ -16,17 +16,18 @@ const componentsMap = {
 };
 
 export function BlockByName2({ b, name, contentOnly }) {
-    let c = Block({ uri: '', block: b, contentOnly: contentOnly, showTitle: name.showTitle, showPad: name.showPad, showBg: name.showBg, extraProps: name, sidebar: name.sidebar })
+    const blockNameString = (typeof name === 'string') ? name : name?.name;
+    let c = Block({ uri: '', block: b, contentOnly: contentOnly, showTitle: name.showTitle, showPad: name.showPad, showBg: name.showBg, extraProps: { ...name, source: blockNameString }, sidebar: name.sidebar })
     return c;
 }
 
 export function BlockByName(props) {
     let { data, name, contentOnly, ...rest } = props;
 
+    const blockNameString = (typeof name === 'string') ? name : name?.name;
     let b = null;
 
     if (name) {
-        const blockNameString = (typeof name === 'string') ? name : name?.name;
         if (blockNameString?.includes('static')) {
             if (typeof name === 'object') {
                 // If name is an object (e.g., { name: "static:foo", showBg: true, ... }), spread it and rest
@@ -59,7 +60,8 @@ export function BlockByName(props) {
 
     if (b) {
         return <Block 
-            exProps={name?.exProps} 
+            exProps={name?.exProps}
+            extraProps={{ ...(name?.exProps || {}), source: blockNameString }} 
             key={b.id} 
             uri={data.uri} 
             url={data.url} 
@@ -68,6 +70,7 @@ export function BlockByName(props) {
             fullWidth={name?.fullWidth} 
             contentOnly={contentOnly || name?.contentOnly}
             showPad={name?.showPad} 
+            showPadding={name?.showPadding}
             showBg={name?.showBg} 
             unitType={name?.unitType} 
             {...rest} 
@@ -93,7 +96,7 @@ export function BlockByServiceName(props) {
         });
     }
     if (b)
-        return <Block exProps={name.exProps} key={b.id} uri={data.uri} url={data.url} block={b} showTitle={name.showTitle} fullWidth={name.fullWidth} showPad={name.showPad} showBg={name.showBg} unitType={name.unitType} {...rest} />;
+        return <Block exProps={name.exProps} extraProps={{ ...(name.exProps || {}), source: name }} key={b.id} uri={data.uri} url={data.url} block={b} showTitle={name.showTitle} fullWidth={name.fullWidth} showPad={name.showPad} showPadding={name.showPadding} showBg={name.showBg} unitType={name.unitType} {...rest} />;
 }
 
 export function DataByName(data, name) {
@@ -120,7 +123,7 @@ export function StaticBlock(props) {
 }
 
 export function BlockWrapper(props) {
-    let { block, showTitle, showBg, fullWidth, contentOnly, ...rest } = props
+    let { block, showTitle, showBg, fullWidth, contentOnly, list, showPadding, ...rest } = props
     block.designbox_id = Number(block.designbox_id);
     const aNoTitle = [0, 10, 13, 3];
     const aNoBg = [0, 10, 14, 4];
@@ -154,6 +157,12 @@ export function BlockWrapper(props) {
     if (contentOnly)
         return props.children
 
+    // Determine if this block should render as list based on prop, exProps, or showPadding flag
+    const noPaddingRequested = bIsShowPadding === false; // JSON flag
+    const useList = typeof list !== 'undefined'
+        ? list
+        : (rest?.extraProps?.list ? true : noPaddingRequested);
+
     return (
         <PageBlock
             key={block.id}
@@ -169,9 +178,15 @@ export function BlockWrapper(props) {
                     <BlockTitle>{stripTags(block.title)}</BlockTitle>
                 </BlockHeader>
             )}
-            <BlockContent>
-                {props.children}
-            </BlockContent>
+            {useList ? (
+                <BlockList>
+                    {props.children}
+                </BlockList>
+            ) : (
+                <BlockContent>
+                    {props.children}
+                </BlockContent>
+            )}
             
         </PageBlock>
     );
@@ -186,7 +201,7 @@ export default function Block(props) {
         return null;
 
     return (
-        <BlockWrapper block={block} contentOnly={props.contentOnly} showBg={props.showBg} showPad={props.showPad} showTitle={props.showTitle} fullWidth={props.fullWidth} extraProps={props.extraProps}>
+        <BlockWrapper block={block} contentOnly={props.contentOnly} showBg={props.showBg} showPad={props.showPad} showTitle={props.showTitle} fullWidth={props.fullWidth} extraProps={props.extraProps} list={props.list} showPadding={props.showPadding}>
             <BlockType data={block.content} type={block.type} {...props} />
         </BlockWrapper>
     );
