@@ -290,7 +290,7 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, windowWidth, isC
         <>
             <Animated.View className={`${conductorTheme.cover_base} cover-1 `} style={[{ zIndex: 'z-50' }, animatedStyleHeader2]}>
                 <ViewRef ref={cover1Ref} className={conductorTheme.cover_content + ' aaaaa'}   >
-                    {(isCover && !isHideCover) && <View className="w-full pb-4 border-b border-muted mb-1">
+                    {(isCover && !isHideCover) && <View className="w-full xpb-4 border-b border-muted xmb-1">
                         <Cover data={pageData.cover_block} mode={headerSettings.cover} uri={uri} context={pageData.context} />
                     </View>}
                     <View className="w-full ">
@@ -298,7 +298,7 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, windowWidth, isC
                     </View>
                 </ViewRef></Animated.View>
             <Animated.View className={`fixed w-full z-50 cover-2 ${isCoverDisabled ? ` hidden ${TABLET_MODE_FROM}:flex ` : ' hidden'}`} style={[{ position: isCoverDisabled ? '' : 'fixed', zIndex: '50', }, animatedStyleHeader3]} >
-                <View className="w-full bg-card/90 backdrop-blur-xl shadow-sm">
+                <View className={conductorTheme.cover_small} >
                     {(isCover && !isHideCover) && <View className="w-full">
                         <CoverSmall context={pageData.context} data={pageData.cover_block} />
                     </View>}

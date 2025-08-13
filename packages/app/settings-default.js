@@ -975,6 +975,7 @@ export const settingsDefault = {
             cover_base: 'w-full shadow-sm bg-card',
             cover_content:
                 'items-center h-full w-full overflow-hidden justify-between',
+            cover_small: 'w-full bg-card/90 backdrop-blur-xl shadow-sm'
         },
         /* checkbox: {
             container:
