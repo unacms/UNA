@@ -12,10 +12,13 @@ import { useTranslation } from 'react-i18next';
 
 const User = ({ data, onSelect, type }) => {
     return (
-        <Pressable className="p-0.5" onPress={() => onSelect(data)}>
-            <Row className="p-0.5 pr-3 rounded-full border border-bdrbutton dark:border-bdrbutton-d bg-white dark:bg-neutral-800 shadow-sm items-center justiy-center">
-                {<Profile displaySize="sm" {...data} showLinks={false} />}
-                {type == 'remove' && <Icon icon="X" />}
+        <Pressable className="p-0.5 " onPress={() => onSelect(data)}>
+            <Row className="p-0.5 gap-x-2 pr-3 w-36 overflow-hidden truncate rounded-full border border-bdrbutton dark:border-bdrbutton-d bg-white dark:bg-neutral-800 shadow-sm items-center justiy-center">
+                {<Profile displaySize="sm" displayType="unit_wo_info" {...data} showLinks={false} />}
+                <Text className="text-card-foreground web:hover:text-primary native: text-base web: text-base  font-semibold tracking-tight truncate">
+                    {data.display_name}
+                </Text>
+                {type == 'remove' && <Text className="text-card-foreground"><Icon icon="X" /></Text>}
             </Row>
         </Pressable>
     );
@@ -80,7 +83,7 @@ export function SelectUsers({ onSave, initedData = [], requestUrl, isSingle = fa
 
     return <View className="px-1">
         <ScrollView keyboardDismissMode="none" keyboardShouldPersistTaps="handled" className="w-full " >
-        <Row className="text-center w-full  flex-wrap gap-x-2 ">
+            <Row className="text-center w-full  flex-wrap gap-x-2 ">
                 {state.selectedUsers && state.selectedUsers.map((item) => <User key={item.id} data={item} onSelect={onRemove} />)}
             </Row>
             <Row className="py-2 gap-x-2 ">
@@ -90,7 +93,7 @@ export function SelectUsers({ onSave, initedData = [], requestUrl, isSingle = fa
                     onChangeText={onChangeText}
                     role="textbox"
                 />
-                <Button variant="outline" disabled={state.selectedUsers.length == 0} startDecorator="Check" rounded  onPress={() => onSaveInt()} />
+                <Button variant="outline" disabled={state.selectedUsers.length == 0} startDecorator="Check" rounded onPress={() => onSaveInt()} />
             </Row>
             <Row className="text-center w-full flex-wrap gap-x-2 ">
                 {state.suggestedUsers && !state.showLoading && state.suggestedUsers.map((item) => <User key={item.id} data={item} onSelect={onSelectUser} />)}
@@ -125,7 +128,7 @@ export default function (props) {
 
     const showSelect = (val) => {
         setIsModal(true);
-       
+
     }
 
     const onRemove = useCallback((valueToRemove) => {
@@ -136,24 +139,22 @@ export default function (props) {
 
     return (
         <Field {...props} error2={formContext.formState.errors[name]}>
-            <Modal id='file-preview2' title="Choose users" onVisible={!!isModal} onClose={() => {setIsModal(false)}}>
+            <Modal id='file-preview2' title="Choose users" onVisible={!!isModal} onClose={() => { setIsModal(false) }}>
                 <SelectUsers isSingle={isSingle} onSave={onSave} requestUrl={'/api.php?r=' + props.ajax_get_suggestions + "&params="} initedData={[]} />
             </Modal>
-            <View className='w-full p-1.5 gap-x-2 justify-between items-start flex-row flex-wrap border border-bdrinput dark:border-bdrinput-d rounded-xl bg-bgrinput dark:bg-bgrinput-d'>
-                
-                    {selected && selected.map((oItem) => <User type={isSingle ? '' : "remove"} key={oItem.id} data={oItem} onSelect={onRemove} />)}
-                   
-                        <Button
-                            title={t('Select ...')}
-                            startDecorator="Plus"
-                            variant="default"
-                            rounded
-                            
-                            
-                            onPress={() => showSelect()}
-                        />
-                    
-                
+            <View className='w-full p-1.5 justify-between items-center flex-row flex-wrap border border-bdrinput dark:border-bdrinput-d rounded-xl bg-bgrinput dark:bg-bgrinput-d'>
+                <Row className='gap-x-2 items-start  flex-wrap flex-1'>
+                {selected && selected.map((oItem) => <User type={isSingle ? '' : "remove"} key={oItem.id} data={oItem} onSelect={onRemove} />)}
+                </Row>
+                <Button
+                    title={t('Select ...')}
+                    startDecorator="Plus"
+                    variant="default"
+                    rounded
+
+
+                    onPress={() => showSelect()}
+                />
             </View>
         </Field>
     );

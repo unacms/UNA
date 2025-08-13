@@ -49,7 +49,7 @@ export default function ElementImage(props) {
     let { width, height, alt = "", src = '', style, source, nobg, sizes, ...rest } = props; // remove width & height
     if (!src)
         return;
-    if (!src.startsWith('http') && !src.startsWith('https') && !src.startsWith('data:image')) {
+    if (!src.startsWith('http') && !src.startsWith('https') && !src.startsWith('blob:') && !src.startsWith('data:image')) {
         src = UNA_URL + src;
     }
     if (sizes === LAYOUT_BREAKPOINTS.lg)
