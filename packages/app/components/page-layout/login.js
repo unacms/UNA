@@ -34,7 +34,7 @@ export default function PageLayout(props) {
     const isWeb = Platform.OS === 'web';
     const refer = useRef();
 
-    const content = isWeb ? (<View className={`flex-col justify-center pt-16 ${TABLET_MODE_FROM}:pt-0 mx-auto w-full min-h-[100vh] ${getPageWidth(props.uri, props.data?.config)}`}>
+    const content = isWeb ? (<View className={`flex-col justify-center pt-16 ${TABLET_MODE_FROM}:pt-0 mx-auto w-full web:min-h-[calc(100vh-16rem)] ${getPageWidth(props.uri, props.data?.config)}`}>
         <View className="w-full lg:flex-row max-w-7xl mx-auto my-auto">
             {appStatic('components_logincontent')}
             <View className="max-w-xl w-full flex-auto mx-auto p-4 sm:p-8 my-auto gap-y-4">

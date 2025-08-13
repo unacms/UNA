@@ -261,7 +261,7 @@ export const DefaultView = memo(
 
         return (
             <>
-                <View className={isCompact ? 'flex-row-reverse' : ' flex-col '}>
+                <View className={isCompact ? 'flex-row-reverse' : ' w-full'}>
                     {data.mainImage && (
                         <View
                             className={
@@ -295,8 +295,8 @@ export const DefaultView = memo(
                             </Text>
                         </Link>
                     )}
-                    <View>
-                        <View>
+                    <View className='w-full'>
+                        <View className='w-full'>
                             {bIsTimelineContent && (
                                 <View
                                     className={

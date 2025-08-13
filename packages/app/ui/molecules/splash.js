@@ -55,7 +55,7 @@ export default function Splash(props) {
         </>
 
     ) : (
-        <View className={`flex-col justify-center pt-16 ${TABLET_MODE_FROM}:pt-0 min-h-[100vh] w-full`}>
+        <View className={`flex-col justify-center pt-16 ${TABLET_MODE_FROM}:pt-0 web:min-h-[calc(100vh-16rem)] w-full absolute`}>
             <View className="w-full lg:flex-row mx-auto my-auto max-w-7xl ">
                 {appStatic('splash_text')}
                 <View className="flex-col-reverse lg:flex-col max-w-xl w-full flex-auto mx-auto p-4 sm:p-8 my-auto">
