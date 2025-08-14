@@ -436,7 +436,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
             </View>}
              {panelsVisible.jots && <View className='flex-1 '>
                 <Msg onVisible={showMsg} title={showMsg} handleOk={() => { setShowMsg(false) }} />
-                <View className={`w-full border-bdrtabbar dark:border-bdrtabbar-d border-r ${!isWeb ? 'flex-1' : '' }`}  style={{ height: layoutHeightRight }}>
+                <View className={`w-full border-border border-r ${!isWeb ? 'flex-1' : '' }`}  style={{ height: layoutHeightRight }}>
                 {jotsComponent}
                 </View>
                 <KbAvoidingView>
@@ -474,9 +474,9 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
                 sizable={cellsCustomConfig.sizable}
             />
             <Panel className=" w-full" {...cellsCustomConfig.cells?.center}>
-                {panelsVisible.jots && <View className='flex-1  '>
+                {panelsVisible.jots && <View className='flex-1  border-border/50 lg:border-l'>
                     <Msg onVisible={showMsg} title={showMsg} handleOk={() => { setShowMsg(false) }} />
-                    <View className={`w-full border-bdrtabbar dark:border-bdrtabbar-d border-r ${!isWeb ? 'flex-1' : ''}`} style={{ height: layoutHeightRight }}>
+                    <View className={`w-full  border-border border-r ${!isWeb ? 'flex-1' : ''}`} style={{ height: layoutHeightRight }}>
                         {jotsComponent}
                     </View>
                     <KbAvoidingView>
@@ -511,7 +511,7 @@ const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, 
 
     const srch = <InputRounded name="search" placeholder={("Search") + '...'} value={searchValue} onChangeText={(value) => handleSearch(value)} />;
 
-    const header = <Row className='py-2 px-3 web:border-b border-bdrtabbar dark:border-bdrtabbar-d gap-x-3 h-16'>
+    const header = <Row className='py-2 px-3 web:border-b border-border/50 gap-x-3 h-16'>
         <View className='flex-auto hidden lg:flex'>
             {srch}
         </View>
@@ -586,8 +586,8 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
 
 
     const header = (
-        <View className='md:px-0 w-full border-bdrcard dark:border-bdrcard-d border-b'>
-            <Row className='px-2 items-center justify-between w-full h-16 '>
+        <View className='md:px-0 w-full border-border/50 border-b  h-16 justify-center'>
+            <Row className='px-2 items-center justify-between w-full '>
                 <Row className='items-center justify-start overflow-hidden  lg:ml-3 flex-auto'>
                     {isSmallScreen && <View className='mr-2 '><BackButton buttonProps={{ variant: "secondary", startDecorator: 'ArrowLeft', rounded: 'rounded' }} callback={showConvo} /></View>}
                     <Text numberOfLines={1} className="font-bold text-neutral-800 dark:text-neutral-200 text-3xl tracking-tighter">{title}</Text>
@@ -637,7 +637,7 @@ const FormContainer = memo(({ form, replyItem, onFormSubmit, handleCancelReply, 
 
     return (
 
-        <View className={`  border-t bg-bgrtabbar dark:bg-bgrtabbar-d border-bdr dark:border-bdr-d ${isWeb ? '' : 'min-h-20'}`} onLayout={handleLayout} style={{ paddingTop: 12, paddingBottom: 12 }}>
+        <View className={` ${isWeb ? '' : 'min-h-20'}`} onLayout={handleLayout} style={{ paddingTop: 12, paddingBottom: 12 }}>
             <View className=' ' >
                 {
                     replyItem && (<View className='bg-card rounded-sm border-l-2 border-primary/50 py-1 pl-2 mt-2 mx-2'>

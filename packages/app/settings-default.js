@@ -1041,15 +1041,15 @@ export const settingsDefault = {
         },
 
         inputs: {
-            default: 'py-2.5 flex-auto bg-input/60 m-[1px] rounded-lg px-3 min-h-[46px] text-base leading-6 overflow-hidden placeholder-muted-foreground text-card-foreground web:focus:bg-input web:duration-300',
-            multi: 'py-2.5 flex-auto bg-input/60 m-[1px] rounded-lg px-3 min-h-[46px] text-base leading-6 overflow-hidden placeholder-muted-foreground text-card-foreground web:focus:bg-input web:duration-300',
+            default: 'py-2.5 flex-auto  m-[1px] rounded-lg px-3 min-h-[46px] text-base leading-6 overflow-hidden placeholder-muted-foreground text-card-foreground web:focus:bg-input web:duration-300',
+            multi: 'py-2.5 flex-auto  m-[1px] rounded-lg px-3 min-h-[46px] text-base leading-6 overflow-hidden placeholder-muted-foreground text-card-foreground web:focus:bg-input web:duration-300',
             rounded:
                 ' h-12 rounded-full flex-auto px-3 py-[11px] text-base bg-bgrinput dark:bg-bgrinput-d hover:border-bdrinput-h focus:border-bdrinput-f overflow-hidden border border-bdrinput web:focus:bg-bgrinput-f dark:border-bdrinput-d web:dark:focus:border-bdrinput-d web:dark:focus:bg-bgrinput-df web:focus:border-bdrinput-f web:dark:focus:border-bdrinput-df   web:duration-300 placeholder-neutral-500 text-foreground ',
             roundedsmall:
                 ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-full flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[34px] ',
             small: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-full flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-9 ',
             select: ' pr-10 h-14 focus:bg-card focus:outline outline-offset-2 outline-primary rounded-xl flex-auto p-3 bg-input text-card-foreground',
-            ring: 'rounded-[9px] bg-border/60 focus-within:bg-border overflow-hidden web:focus-within:ring-offset-2 web:focus-within:ring-offset-card  web:focus-within:ring-2 web:focus-within:ring-ring web:transition-all web:duration-200',
+            ring: 'rounded-[9px] bg-border/60 web:focus-within:bg-border overflow-hidden web:focus-within:ring-offset-2 web:focus-within:ring-offset-card  web:focus-within:ring-2 web:focus-within:ring-ring web:transition-all web:duration-200',
         },
 
         button_sizes: {

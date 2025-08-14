@@ -1,12 +1,15 @@
 import Field from './_field';
 import { View, Row, Pressable, ScrollView } from 'app/design/view'
 import { useState, useMemo, useCallback, useContext } from 'react';
-import { useController, useFormContext } from 'react-hook-form';
+import { useController } from 'react-hook-form';
 import { Button, Input, Modal } from "app/design/controls";
 import CheckBox from 'app/ui/atoms/checkbox';
 import RadioButton from 'app/ui/atoms/radiobutton';
 import { Text } from 'app/design/typography';
 import { useTranslation } from 'react-i18next';
+import { appSetting } from 'app/lib/util'
+
+const inputSettings = appSetting('theme', 'inputs');
 
 function ChkList({ values, value2, addValue2, isMultiple }) {
     const [inputValue, setInputValue] = useState('');
@@ -112,8 +115,6 @@ export default function (props) {
             }));
     }, [props.values]);
 
-    const styles = props.align === 'right' ? 'justify-end pl-4' : 'justify-start pr-4';
-
     const header = <Row className=' w-full justify-between items-center'>
         <View><Button onPress={() => { setIsModal(null) }} variant='outline' rounded startDecorator="X" /></View>
         <View className='w-full flex-auto items-center justify-center'><Text className="text-neutral-700 dark:text-neutral-200 text-xl font-bold">{'Choose ' + props.caption}</Text></View>
@@ -144,8 +145,8 @@ export default function (props) {
         <>
             {ModalCnt}
             <Field {...props}>
-                <View className='w-full justify-between bg-bgrinput dark:bg-bgrinput-d rounded-xl p-1.5 min-h-14 border border-bdrinput dark:border-bdrinput-d'>
-                    <View className={styles + ' w-full flex-auto  items-center flex-row flex-wrap'}>
+                <View className={`w-full justify-between h-12 px-3 ${inputSettings.ring}`}>
+                    <View className={`${props.align === 'right' ? 'justify-end pl-4' : 'justify-start pr-4'} w-full flex-auto items-center flex-row flex-wrap`}>
                         {props.align == 'right' && <Button
                             startDecorator="Plus"
                             variant={variant}

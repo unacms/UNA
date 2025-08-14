@@ -18,7 +18,7 @@ const inputSettings = appSetting('theme', 'inputs');
 export const TextInputClear = TextInputDef
 
 export const Input = ({ className, startDecorator, endDecorator, ...props }) => (
-    <Row className={`items-center flex-auto ${inputSettings.ring || ''}`}>
+    <Row className={`items-center flex-auto ${inputSettings.ring}`}>
         {startDecorator && (
             <View className="absolute left-3.5 h-full items-center justify-center">
                 <Icon icon={startDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
@@ -72,9 +72,9 @@ export const InputRounded = ({ className, startDecorator, endDecorator, ...props
                 <Icon icon={startDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
             </View>
         )}
-        <TextInputDef className={`${className} ${inputSettings.rounded} ${startDecorator ? 'pl-12' : ''} ${endDecorator ? 'pr-11' : ''}`} {...props} />
+        <TextInputDef className={`${className} ${inputSettings.default} ${startDecorator ? 'pl-12' : ''} ${endDecorator ? 'pr-11' : ''}`} {...props} />
         {endDecorator && (
-            <View className="absolute right-2.5 h-full items-center justify-center">
+            <View className="absolute right-3 h-full items-center justify-center">
                 <Icon icon={endDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
             </View>
         )}
