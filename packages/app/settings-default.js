@@ -332,10 +332,10 @@ export const settingsDefault = {
             button_variant: 'secondary',
 
             pressed_classes: {
-                pressed_container: ' ',
-                pressed_text: ' text-primary font-medium ',
+                pressed_container: ' bg-accent ',
+                pressed_text: ' text-accent-foreground font-medium ',
                 pressed_ring:
-                    ' bg-accent outline outline-ring outline-offset-1 ',
+                    ' bg-ring/60  ',
             },
             button_rounded: true,
             align_items: 'start',
@@ -1021,7 +1021,7 @@ export const settingsDefault = {
             content_ver: '',
             content_hor: 'flex-row  ',
             item_ver:
-                ' px-2 web:group flex flex-row h-10 items-center rounded-lg font-medium web:hover:bg-secondary/60 text-card-foreground web:hover:text-foreground web:hover:cursor-pointer',
+                ' px-2 web:group flex flex-row h-10 items-center rounded-lg font-medium web:hover:bg-muted/60 text-card-foreground web:hover:text-foreground web:hover:cursor-pointer',
             item_hor:
                 'flex block web:dark:hover:text-white rounded-full web:hover:cursor-pointer text-neutral-700  web:hover:scale-125 active:scale-95   web:duration-200 dark:text-neutral-300 outline-none ',
             item_np:
@@ -1072,15 +1072,15 @@ export const settingsDefault = {
                 title_margin: '  ', //
             },
             xs: {
-                rounded: ' rounded-[7px] ',
-                ring: ' rounded-[8px] p-[1px]  ', // Ring wrapper border radius
+                rounded: ' rounded-[5px] ',
+                ring: ' rounded-[6px] p-[1px]  ', // Ring wrapper border radius
                 padding: ' px-1.5 ',
-                padding_icon_only: ' w-[26px] ',
+                padding_icon_only: ' w-[22px] ',
                 padding_with_title: ' px-1.5 gap-1 ',
                 icon_container:
-                    ' h-[26px] text-lg flex items-center justify-center',
-                title_container: ' leading-[26px] text-xs',
-                icon_size: 16,
+                    ' h-[22px] text-sm flex items-center justify-center',
+                title_container: ' leading-[22px] text-xs',
+                icon_size: 14,
                 icon_margin: ' ', // conditional margin for icon container when title is present
                 title_margin: '  ', //
             },
@@ -1089,11 +1089,11 @@ export const settingsDefault = {
                 ring: ' rounded-[8px] p-[1px]  ', // Ring wrapper border radius
                 padding: ' px-2 ',
                 padding_icon_only: ' w-[30px] ',
-                padding_with_title: ' px-2 gap-1.5 ',
+                padding_with_title: ' px-3 gap-1.5 ',
                 icon_container:
-                    ' text-lg h-[30px]  flex items-center justify-center',
+                    ' text-base h-[30px]  flex items-center justify-center',
                 title_container: ' leading-[30px] text-sm',
-                icon_size: 20,
+                icon_size: 16,
                 icon_margin: ' ', // conditional margin for icon container when title is present
                 title_margin: '  ', // conditional margin for text container when icon is present
             },
@@ -1395,13 +1395,13 @@ export const settingsDefault = {
 
             // Active tab (no hover effect)
             'u-controls-tabs-header-item-active':
-                ' bg-primary/10 ',
+                ' bg-accent',
 
             // Header item text
             'u-controls-tabs-header-item-text':
                 'text-muted-foreground web:group-hover:text-card-foreground font-medium ',
             'u-controls-tabs-header-item-text-active':
-                'text-primary font-medium ',
+                'text-accent-foreground font-medium ',
 
             // Tab content
             'u-controls-tabs-tab-content': 'w-full pt-4 ',
@@ -1410,14 +1410,14 @@ export const settingsDefault = {
 
             // Active indicator (absolute element matching active header item width)
             'u-controls-tabs-header-item-active-indicator':
-                'absolute bg-primary rounded-full pointer-events-none web:transition-[left,width] web:duration-200 web:ease-out ',
+                'absolute bg-ring rounded-full pointer-events-none web:transition-[left,width] web:duration-200 web:ease-out ',
         },
         // Tab sizes mapping (similar to button_sizes/link_sizes)
         tabs_sizes: {
             default_size: 'md',
             sm: {
                 header: ' p-2  gap-2 ',
-                item: ' h-7 px-2.5 text-sm rounded-md focus-visible:ring-offset-2 focus-visible:ring-2 focus-visible:ring-ring  ',
+                item: ' h-7 px-2.5 text-sm rounded-md focus-visible:ring-offset-2 ring-offset-background focus-visible:ring-2 focus-visible:ring-ring  ',
                 indicator: ' h-0.5 bottom-0 ',
                 text: ' text-sm whitespace-nowrap  ',
                 text_active: ' text-sm whitespace-nowrap  ',
