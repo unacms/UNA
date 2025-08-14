@@ -1,6 +1,6 @@
 import { View } from 'app/design/view'
 import { Text } from 'app/design/typography'
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from 'app/ui/molecules/card' 
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from 'app/ui/molecules/card'
 import { appSetting } from 'app/lib/util'
 import { Platform } from 'react-native'
 import { appStatic } from 'app/lib/app-static'
@@ -30,15 +30,17 @@ function PageContent(props) {
             <CardDescription>{t("splash_page_login2")}</CardDescription>
         </CardHeader>
         <CardContent>
-        <BlockByName
-            name="system:login_form"
-            contentOnly={true}
-            data={props.data}
-            formProps={{ hide_errors: true, button_full_width: true }}
-        />
+            <View className='my-6'>
+                <BlockByName
+                    name="system:login_form"
+                    contentOnly={true}
+                    data={props.data}
+                    formProps={{ hide_errors: true, button_full_width: true }}
+                />
+            </View>
         </CardContent>
         <CardFooter>
-        <AuthPanel loginLink={false} />
+            <AuthPanel loginLink={false} />
         </CardFooter>
     </Card>);
 }

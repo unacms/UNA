@@ -64,18 +64,18 @@ export default function MenuAccount({ buttonProps, children }) {
     const menu_account_items = appSetting('layout', 'user_remote_config')
         ? menuItemsByNameNew('menu_post', menuData, currentUser)
         : menuItemsByName(
-              '',
-              appSetting('menu_items', 'menu_account'),
-              currentUser
-          )
+            '',
+            appSetting('menu_items', 'menu_account'),
+            currentUser
+        )
 
     const menu_footer_items = appSetting('layout', 'user_remote_config')
         ? menuItemsByNameNew('menu_post', menuData1, currentUser)
         : menuItemsByName(
-              '',
-              appSetting('menu_items', 'menu_footer'),
-              currentUser
-          )
+            '',
+            appSetting('menu_items', 'menu_footer'),
+            currentUser
+        )
 
     let profile = null
     if (currentUser) {
@@ -121,11 +121,11 @@ export default function MenuAccount({ buttonProps, children }) {
         item.link === '{switch_profile}'
             ? profileList
                 ? [
-                      { ...currentUser, link: '{switch_profile}' },
-                      { link: '{separator}' },
-                      ...profileList,
-                      { link: '{separator}' },
-                  ]
+                    { ...currentUser, link: '{switch_profile}' },
+                    { link: '{separator}' },
+                    ...profileList,
+                    { link: '{separator}' },
+                ]
                 : []
             : item
     )
@@ -134,7 +134,7 @@ export default function MenuAccount({ buttonProps, children }) {
         if (id != currentUser.id) {
             const result = await fetcher(
                 '/api.php?r=system/switch_profile/TemplServiceAccount&params[]=' +
-                    id
+                id
             )
             setCurrentUser(result.data)
             redirectdRef.current.redirect('/')
@@ -142,6 +142,8 @@ export default function MenuAccount({ buttonProps, children }) {
             redirectdRef.current.redirect(currentUser.url)
         }
     }
+
+
 
     return (
         <>
@@ -198,12 +200,12 @@ export default function MenuAccount({ buttonProps, children }) {
                             <Row className="w-full items-center flex-auto my-1">
                                 <ProfileSwitcher hideTitle={true}>
                                     <Button
-                                        variant="secondary"
+                                        variant="text"
                                         fullWidth
                                         align="start"
                                         solid
                                         size="sm"
-                                        
+
                                         startDecorator="CircleUserRound"
                                         title={t('See all profiles')}
                                     />
@@ -216,7 +218,9 @@ export default function MenuAccount({ buttonProps, children }) {
                         id: 'menu-' + index,
                         link: item.link.includes('://')
                             ? item.link
-                            : '/' + item.link,
+                            : item.link.startsWith('/')
+                                ? item.link
+                                : '/' + item.link,
                         title: sTitle,
                         type: sType,
                         icon: item.icon,

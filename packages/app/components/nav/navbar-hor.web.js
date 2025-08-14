@@ -26,6 +26,7 @@ const HeaderLine = memo(
         headerSettings,
         currentUser,
         uri,
+        url,
         bSearch,
         menuPopup,
         setMenuPopup,
@@ -76,7 +77,7 @@ const HeaderLine = memo(
                 {context &&
                     (currentUser.confirmed ||
                         !appSetting('layout', 'lock_unconfirmed')) && (
-                        <ContextSelector data={context} />
+                        <ContextSelector data={context} url={url} uri={uri} />
                     )}
                 {headerSettings.backButton && getBackButtonWeb()}
                 {headerSettings.title && (
@@ -150,6 +151,7 @@ export default function (props) {
                                 title={sTitle}
                                 currentUser={currentUser}
                                 uri={props.uri}
+                                url={props.url}
                                 bSearch={bSearch}
                                 showMenu={showMenu}
                                 menuPopup={menuPopup}

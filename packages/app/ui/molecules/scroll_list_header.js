@@ -104,7 +104,7 @@ export const Header = memo(({
                     </Pressable>
                 </Link>
             }
-            {(pageData?.context) && <ContextSelector url={pageData?.url} data={pageData?.context} />}
+            {(pageData?.context) && <ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} />}
             {(backButtonPresented && (!isWeb || history.length > 2)) && (
                 <View className=""><Button variant="secondary" rounded onPress={() => {
                     FeedbackHaptics('Medium');

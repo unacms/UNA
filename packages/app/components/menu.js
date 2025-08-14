@@ -81,12 +81,12 @@ export default function ElementMenu(oProps) {
     //--- show vertical
     const bShowVertical = oProps?.params?.showVertical === true;
 
-    sClassName += bShowVertical ? ' flex-col items-center gap-y-2 w-full ' : ' flex-row justify-between ';
+    sClassName += bShowVertical ? ' flex-col items-center gap-y-2 w-full ' : ' flex-row  ';
     const oParams = oProps?.params || {};
 
 
     //--- horizontal menu items alignment
-    const sAlignItems = oProps.alignItems || oParams.align_items || 'start';
+    const sAlignItems = oProps.alignItems || oParams.align_items || 'between';
     sClassName += `justify-${sAlignItems}`;
 
     if (isWeb) {
