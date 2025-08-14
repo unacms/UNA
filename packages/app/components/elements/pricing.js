@@ -6,24 +6,28 @@ import { useState } from 'react';
 import { cd } from 'app/lib/util'
 import { getComponent } from 'app/components/registry';
 import { appStatic } from 'app/lib/app-static'
+import { useTranslation } from 'react-i18next'
 
 export default function ElementPricing({ data }) {
-
+    const { t } = useTranslation()
     const preparedTabs = [];
-    const periodSet = new Set();
+
+    const periodMap = new Map();
     data.data.forEach(item => {
         const periodValue = item?.period?.value;
         if (periodValue) {
-            periodSet.add(periodValue);
+            const key = `${periodValue.period}-${periodValue.unit}`;
+            periodMap.set(key, periodValue);
         }
     });
+    const periodSet = [...periodMap.values()];
 
     periodSet.forEach(item => {
         preparedTabs.push({
-            key: `tab_${item}`,
-            title: item,
+            key: `tab_${item.unit}_${item.period}`,
+            title: t('price-period-' + item.unit + '-' + item.period),
 
-            content: <ElementPricingPeriod data={data.data} name={item} />
+            content: <ElementPricingPeriod data={data.data} period={item} />
         });
     });
 
@@ -36,15 +40,15 @@ export default function ElementPricing({ data }) {
     )
 }
 
-function ElementPricingPeriod({ data, name }) {
-    const filtered = data.filter(item => item?.period?.value === name);
+function ElementPricingPeriod({ data, period }) {
+    const filtered = data.filter(item => item?.period?.value.period === period.period && item?.period?.value.unit === period.unit);
     const [showModal, setShowModal] = useState(false);
     return (
         <Row className={`flex-wrap ${cd('gap-md')}`}>
             {filtered.map((item, index) => {
                 const Price = getComponent('unit', 'price');
                 return (
-                    <Price data={item} key={index} onBuy={setShowModal}/>
+                    <Price data={item} key={index} onBuy={setShowModal} />
                 )
             })}
             {showModal && <Modal onVisible={!!showModal} onClose={() => { setShowModal(false) }} transparent={false}>

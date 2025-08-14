@@ -12,8 +12,10 @@ import {
 } from 'app/ui/molecules/card'
 import { useCurrentUser } from 'app/context/user';
 import Link from 'app/ui/atoms/link'
+import { useTranslation } from 'react-i18next'
 
 export default function UniPrice({ data, onBuy }) {
+    const { t } = useTranslation()
     const { currentUser, setCurrentUser } = useCurrentUser();
     const firstNonEmpty = data.actions.data.find(
         (action) => action && Object.keys(action).length > 0
@@ -42,45 +44,41 @@ export default function UniPrice({ data, onBuy }) {
     }
 
     const LevelName = data.level_name.value;
+    
+    const price = data.price.value.value/data.period.value.period/ (data.period.value.unit == 'year' ? 12 : 1)
 
     return (
-        <Card className=" w-full text-left max-w-sm "  >
+        <Card className=" w-full text-left max-w-sm justify-between"  >
             <CardHeader>
                 <CardTitle>{LevelName}</CardTitle>
                 <CardDescription>{LevelDescriptions[LevelName]}</CardDescription>
-
-                <View className=" flex-row items-end gap-4">
-                    <Text className="text-5xl font-semibold text-foreground">{data.price.value.replace("&#36;", "$ ")}</Text>
-                    <Text className="text-base text-foreground pb-1">
-
-                        {data.period.value}
-                    </Text>
-                    <Text className="text-base text-foreground pb-1">
-
-                        {data.trial.value != 'none' ? 'Trial:' + data.trial.value : ''}
-                    </Text>
+                <View>
+                    <View className=" flex-row items-end gap-4">
+                        <Text className="text-5xl font-semibold text-foreground">{t(data.price.value.currency)} {price}</Text>
+                        <Text className="text-base text-foreground pb-1">/ month</Text>
+                        <Text className="text-base text-foreground pb-1">
+                            {data.trial.value != 'none' ? 'Trial:' + data.trial.value : ''}
+                        </Text>
+                    </View>
+                    <View className="flex-col flex gap-4 border-t border-border py-4 mt-4">
+                        {LevelFeatures[LevelName]?.map((inclusion, idx) => (
+                            <View key={idx} className="flex-row  items-center gap-3">
+                                <Icon
+                                    icon={inclusion.icon}
+                                    size={24}
+                                    className="text-primary mt-0.5"
+                                />
+                                <Text className="text-base text-muted-foreground flex-1">
+                                    {inclusion.text}
+                                </Text>
+                            </View>
+                        ))}
+                    </View>
                 </View>
             </CardHeader>
-            <CardContent>
-                <View className="flex-col flex gap-4 border-t border-border pt-4">
-                    {LevelFeatures[LevelName].map((inclusion, idx) => (
-                        <View key={idx} className="flex-row  items-center gap-3">
-                            <Icon
-                                icon={inclusion.icon}
-                                size={24}
-                                className="text-primary mt-0.5"
-                            />
-                            <Text className="text-base text-muted-foreground flex-1">
-                                {inclusion.text}
-                            </Text>
-                        </View>
-                    ))}
-                </View>
-                <Text className=" text-sm text-foreground"></Text>
-                {currentUser ? <Button variant="primary" title={firstNonEmpty.title} onPress={() => { onBuy(firstNonEmpty) }} /> : 
-                <Link href="/create-account"><Button variant="primary" title='Create  account'  /></Link>}
-
-            </CardContent>
+            <CardFooter>  {currentUser ? <Button variant="primary" title={firstNonEmpty.title} onPress={() => { onBuy(firstNonEmpty) }} /> :
+                <Link href="/create-account"><Button variant="primary" title='Create  account' /></Link>}
+            </CardFooter>
         </Card>
     )
 }

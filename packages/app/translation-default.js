@@ -2,10 +2,15 @@ export const resourcesDefault = {
     en: {
         translation: 
         {
+            "USD": "$",
+            "price-period-month-1": "Monthly",
+            "price-period-year-1": "Yearly",
+
             "members_0": " ",
             "members_1": "{{count}} member",
             "members_2": "{{count}} members",
             "members_plural": "{{count}} members",
+            
         
             "intrested_0": " ",
             "intrested_1": "{{count}} intrested",
