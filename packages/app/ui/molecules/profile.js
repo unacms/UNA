@@ -213,8 +213,8 @@ function AtomProfile_(oProps) {
     switch (sDisplayType) {
         case 'unit':
             return (
-                <Row className="gap-x-2 sm:gap-x-3 items-center">
-                    <View className="flex-none mb-auto">
+                <Row className={`${cd('gap-sm')} items-center`}>
+                    <View className="flex-none">
                         <UnitWoInfo oProps={oProps} sSize={sSize} sSizeFontLetter={sSizeFontLetter} emulate={emulate} iSizeWidth={iSizeWidth} bShowLinks={bShowLinks} />
                     </View>
                     <View className="flex-auto">

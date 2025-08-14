@@ -50,7 +50,7 @@ export default function MultiPostForm({ data }) {
     return (
 
         <CardList>
-            <Row className={` ${cd('gap-md')}`}>
+            <Row className={` ${cd('gap-sm')}`}>
                 <View className="my-auto">
                     <Profile {...profileData} displaySize="lg" displayType="unit_wo_info" />
                 </View>
@@ -65,13 +65,14 @@ export default function MultiPostForm({ data }) {
                         onPress={getFirstForm}
                     />
                 </View>
-            </Row>
+            
             <FormModal key={pageData?.ts} pageData={pageData} setPageData={setPageData} />
-            {menu_add_items.length > 0 && <Row className={` hidden lg:flex w-full gap-2 pt-2 lg:pt-3 xl:pt-4 border-t border-muted lg:mt-3 xl:mt-4 ' : ''}`}>
+            {menu_add_items.length > 0 && <Row className={` gap-2  ' : ''}`}>
                 {menu_add_items.map((item, index) => (
-                    <Button key={item.name} size="base" fullWidth variant="text" onPress={() => handleFormModal(item, null, setPageData, data.params)} startDecorator={item.icon} title={item.title} />
+                    <Button key={item.name} size="base" fullWidth variant="default" iconOnly onPress={() => handleFormModal(item, null, setPageData, data.params)} startDecorator={item.icon}  />
                 ))}
             </Row>}
+            </Row>
         </CardList>
 
     )

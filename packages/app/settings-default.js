@@ -335,7 +335,7 @@ export const settingsDefault = {
                 pressed_container: ' ',
                 pressed_text: ' text-primary font-medium ',
                 pressed_ring:
-                    ' bg-primary/10 outline outline-primary/50 outline-offset-1 ',
+                    ' bg-accent outline outline-ring outline-offset-1 ',
             },
             button_rounded: true,
             align_items: 'start',
@@ -1099,11 +1099,11 @@ export const settingsDefault = {
             },
             base: {
                 rounded: ' rounded-[9px] ',
-                ring: ' rounded-[10px] p-[1px]  ', // Ring wrapper border radius
+                ring: ' rounded-[10px]  p-[1px] h-10 min-w-10 ', // Ring wrapper border radius
                 padding: ' px-3',
-                padding_icon_only: ' w-[38px] ',
+                padding_icon_only: ' h-full ',
                 padding_with_title: ' px-3 gap-3 ',
-                icon_container: ' h-[38px]  flex items-center justify-center',
+                icon_container: '   flex items-center justify-center',
                 title_container: ' leading-[38px] text-base ',
                 icon_size: 20,
                 icon_margin: ' ', // conditional margin for icon container when title is present
@@ -1256,7 +1256,7 @@ export const settingsDefault = {
                 'u-card-list bg-card shadow-sm text-card-foreground sm:rounded-2xl mb-0.5 sm:mb-3 lg:mb-4 ',
             'u-card-list-padding': ' p-3 sm:p-4 lg:p-6',
             'u-card-base':
-                ' u-card-base bg-card shadow-sm text-card-foreground shadow-sm  overflow-hidden rounded-2xl',
+                ' u-card-base bg-card shadow-sm text-card-foreground shadow-sm overflow-hidden rounded-2xl',
             'u-card-padding': ' p-0 ',
             'u-card-header': 'flex px-6 pt-5 gap-1',
             'u-card-icon': 'text-card-foreground px-4 gap-y-2 gap-x-3',
@@ -1299,7 +1299,7 @@ export const settingsDefault = {
                 ' bg-destructive text-destructive-foreground ',
             'u-badge-outline':
                 ' bg-transparent border border-border text-card-foreground ',
-            'u-badge-accent': ' bg-accent text-accent-foreground ',
+            'u-badge-accent': ' bg-accent/50 text-accent-foreground ',
             'u-badge-secondary': ' bg-secondary text-secondary-foreground ',
             'u-badge-text':
                 ' whitespace-nowrap text-ellipsis overflow-hidden tracking-tight font-medium ',
@@ -1416,8 +1416,8 @@ export const settingsDefault = {
         tabs_sizes: {
             default_size: 'md',
             sm: {
-                header: '  p-1 gap-2 ',
-                item: ' h-7 px-2.5 text-sm rounded-md focus-visible:ring-offset-1 focus-visible:ring-1 focus-visible:ring-ring  ',
+                header: ' p-2  gap-2 ',
+                item: ' h-7 px-2.5 text-sm rounded-md focus-visible:ring-offset-2 focus-visible:ring-2 focus-visible:ring-ring  ',
                 indicator: ' h-0.5 bottom-0 ',
                 text: ' text-sm whitespace-nowrap  ',
                 text_active: ' text-sm whitespace-nowrap  ',
@@ -1502,12 +1502,12 @@ export const settingsDefault = {
         },
 
         button_styles: {
-            'u-btn-default-cnt': '  bg-card web:hover:bg-secondary/60 ',
+            'u-btn-default-cnt': '  bg-card web:group-hover:bg-muted ',
             'u-btn-default-text':
                 ' font-medium text-card-foreground web:group-hover:text-foreground ',
             'u-btn-default-trans': '  web:duration-200',
             'u-btn-default-ring':
-                ' web:group bg-border/60 web:duration-200  web:active:shadow-none web:active:bg-border ',
+                ' group bg-border/50 web:hover:bg-border/60 duration-200 shadow-sm web:hover:shadow web:hover:scale-105 active:scale-100 active:shadow-none active:bg-border  ',
 
             'u-btn-primary-cnt': ' ',
             'u-btn-primary-text': ' font-medium text-primary-foreground ',

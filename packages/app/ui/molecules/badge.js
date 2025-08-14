@@ -8,14 +8,14 @@ import Link from 'app/ui/atoms/link'
 const badgeTheme = appSetting('theme', 'badges');
 const badgeSizes = appSetting('theme', 'badge_sizes');
 
-export default function Badge({ data, variant = "default", size = '', rounded = false, children }) {
+export default function Badge({ data, variant = "default", size = '', rounded = false, children, className = '' }) {
     // Handle case where children are passed instead of data object
     if (children && !data) {
         const containerClasses = size && badgeSizes[size]?.container || '';
         const pad = size && (children ? badgeSizes[size]?.wide_padding : badgeSizes[size]?.padding) || '';
         const defaultPadNoSize = !size ? 'px-1' : '';
         return (
-            <View className={`u-badge-base ${badgeTheme['u-badge-base']} ${badgeTheme['u-badge-' + variant]} ${containerClasses} ${pad} ${defaultPadNoSize} ${rounded ? (typeof rounded === 'string' ? rounded : 'rounded-full') : (size && badgeSizes[size]?.rounded || 'rounded-md')} `}>
+            <View className={`u-badge-base ${badgeTheme['u-badge-base']} ${badgeTheme['u-badge-' + variant]} ${containerClasses} ${pad} ${defaultPadNoSize} ${rounded ? (typeof rounded === 'string' ? rounded : 'rounded-full') : (size && badgeSizes[size]?.rounded || 'rounded-md')} ${className}`}>
                 <Icon icon="BadgeCheck" size={size && badgeSizes[size]?.icon_size || 16} className={`${badgeTheme['u-badge-text-' + variant]}`} />
                 <Text className={`${badgeTheme['u-badge-text']} ${size && badgeSizes[size]?.text || ''} ${badgeTheme['u-badge-text-' + variant]}`} >
                     {children}
@@ -31,7 +31,7 @@ export default function Badge({ data, variant = "default", size = '', rounded = 
 
     if (data.badge_url) {
         return (
-            <Link href={data.badge_link}><View className="rounded-full w-5 h-5 overflow-hidden"><Image
+            <Link href={data.badge_link}><View className={`rounded-full w-5 h-5 overflow-hidden ${className}`}><Image
                 view="cover"
                 src={data.badge_url}
                 alt={data.badge_url.title_attr}
@@ -74,7 +74,7 @@ export default function Badge({ data, variant = "default", size = '', rounded = 
         }
         
         return (
-            <View className={`${containerClasses} ${backgroundClass} ${defaultPadNoSize} ${rounded ? (typeof rounded === 'string' ? rounded : 'rounded-full') : ((size && badgeSizes[size]?.rounded) || 'rounded-md')}`}>
+            <View className={`${containerClasses} ${backgroundClass} ${defaultPadNoSize} ${rounded ? (typeof rounded === 'string' ? rounded : 'rounded-full') : ((size && badgeSizes[size]?.rounded) || 'rounded-md')} ${className}`}>
                 {hasIcon && <Icon icon={data.icon} size={size && badgeSizes[size]?.icon_size || 14} className={textColorClass} />} 
                 {hasText && <Text className={`${badgeTheme['u-badge-text']} ${size && badgeSizes[size]?.text || ''} ${textColorClass}`} >
                     {data.text}

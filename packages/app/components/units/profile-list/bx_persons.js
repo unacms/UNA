@@ -16,10 +16,10 @@ export default function Unit(props) {
     if (!!cardData?.hidden) return
 
     let sMeta = <></>
-    if (data?.meta.items[0]?.data)
+    if (data?.meta?.items?.[0]?.data)
         sMeta = (
             <Recommendation
-                {...{ ...data?.meta.items[0]?.data, primary: false }}
+                {...{ ...data?.meta?.items?.[0]?.data, primary: false }}
                 params={{
                     button_full_width: true,
                     button_variant: 'secondary',

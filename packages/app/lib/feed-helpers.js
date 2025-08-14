@@ -602,7 +602,7 @@ export function SmallUnit({ data }) {
                         />
                     </View>
                     <View className="flex-auto flex-col my-auto">
-                        <View className="flex-row gap-x-2 sm:gap-x-3 ">
+                        <Row className={`flex-row ${cd('gap-sm')}`}>
                             <Text className=" text-sm flex-auto font-medium text-neutral-800 dark:text-neutral-200">
                                 {data.author_data.display_name}
                             </Text>
@@ -610,7 +610,7 @@ export function SmallUnit({ data }) {
                                 className=" text-sm flex-none "
                                 ts={data.date}
                             ></Time>
-                        </View>
+                        </Row>
                         <Text
                             className="flex-auto text-lg  font-bold text-neutral-800 dark:text-neutral-200 sm:group-hover:text-neutral-950 sm:dark:group-hover:text-neutral-50"
                             numberOfLines={1}

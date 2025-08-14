@@ -143,18 +143,20 @@ function ReputationSummarySimple({ data }) {
                 </View>
             </Modal>
             <View className={`flex-auto flex-row ${cd('gap-md')} w-full items-center`}>
-                <View className={` ${cd('p-xs', density)} border-4 border-border rounded-full`}>
+                <View className={` ${cd('p-xs', density)} border-4 border-accent rounded-full`}>
                     <Profile
                         {...data.author_data}
                         displayType="unit_wo_info"
-                        displaySize="2xl"
+                        displaySize="xl"
                     />
-                    <View className="absolute -bottom-1 -end-1">
-                        <Badge className={`rounded-full ${cd('p-xs')} h-9 w-9 items-center justify-center border-card font-mono tabular-nums`} variant="secondary">
-                        {data.levels && data.levels.length > 0 && data.levels[0].icon && (
-                            <Icon icon={data.levels[0].icon} size={24}  />
-                        )}
-                        </Badge>
+                    <View className="absolute -bottom-1 -end-1 rounded-full bg-background p-0.5">
+                        <Badge
+                            className={` `}
+                            variant="accent"
+                            size="sm"
+                            rounded
+                            data={{ icon: data?.levels?.[0]?.icon, is_icon_only: true }}
+                        />
                     </View>
                 </View>
                 <View className={`flex-auto ${cd('gap-xs')} justify-center`}>

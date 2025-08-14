@@ -445,7 +445,7 @@ export default function FormFeed(props) {
                 >
                     {
                         props?.exProps?.showForm !== false && (
-                            <View className=" flex-row gap-x-2 sm:gap-x-3 ">
+                            <Row className={`${cd('gap-sm')}`}>
                                 <View className="my-auto">
                                     <ProfileView isImageOnly={true} />
                                 </View>
@@ -464,7 +464,7 @@ export default function FormFeed(props) {
                                         }}
                                     />
                                 </View>
-                            </View>)
+                            </Row>)
                     }
                 </Card>
             )}
