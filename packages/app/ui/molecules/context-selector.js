@@ -29,29 +29,29 @@ function renderListItem_(url, text, icon, isActive) {
 }
 
 function getContextRoot(data, url, uri) {
-    if (!data.current?.id) {
-        const link = data.links?.find(item => item.url?.includes('/' + url));
-        if (link) {
-            return {
-                url: link.url,
-                image: <Icon icon={link.icon} />,
-                name: link.title,
-            };
-        }
-        else {
-            return {
-                url: '/',
-                image: appStatic('logo'),
-                name: false,
-            };
-        }
-    } else {
+    const link = data.links?.find(item => item.url?.includes('/' + url));
+    if (link) {
         return {
-            url: data.current.url,
-            image: <Profile {...data.current} displayType="unit_wo_info" displaySize="base" />,
-            name: data.current.display_name,
+            url: link.url,
+            image: <Icon icon={link.icon} />,
+            name: link.title,
         };
     }
+    
+    if (!data.current?.id) {
+        return {
+            url: '/',
+            image: appStatic('logo'),
+            name: false,
+        };
+    }
+
+    return {
+        url: data.current.url,
+        image: <Profile {...data.current} displayType="unit_wo_info" displaySize="base" />,
+        name: data.current.display_name,
+    };
+    
 }
 
 export default function ContextSelector({ data, url, uri, mode }) {
