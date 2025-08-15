@@ -201,7 +201,7 @@ export default function UnitComments(props) {
                         <View className="ml-[19px] w-0.5 flex-auto bg-neutral-100 dark:bg-neutral-800" />
                     )}
                     {i === level - 1 && (
-                        <View className="mt-2  ml-[19px] h-[35px] w-[29px] border-neutral-100 dark:border-neutral-800 border-l-2 border-b-2 absolute -top-[14px] rounded-bl-[28px] flex-auto" />
+                        <View className="mt-2  ml-[19px] h-[35px] w-[29px] border-border/50 border-l-2 border-b-2 absolute -top-[14px] rounded-bl-[28px] flex-auto" />
                     )}
                 </View>
             )
@@ -270,7 +270,7 @@ export default function UnitComments(props) {
                 </View>
 
                 <View
-                    className={`bg-muted border-[0.5px] shadow-sm border-border/50 flex-1 rounded-xl ${cd(
+                    className={`bg-muted border-[0.5px] shadow-sm border-border/40 flex-1 rounded-xl ${cd(
                         'py-sm'
                     )} ${cd('px-md')} ${cd('mt-sm')} ${cd('gap-xs')}`}
                 >

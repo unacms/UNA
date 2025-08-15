@@ -86,7 +86,7 @@ export const settingsDefault = {
             container:
                 ' hidden lg:flex fixed w-full mx-auto h-16 left-[50%] translate-x-[-50%]  ',
             initial:
-                '  my-auto w-full items-center transition-all web:duration-500 border-b border-border/50    ',
+                '  my-auto w-full items-center transition-all web:duration-500 border-b border-border/60    ',
             scrolled:
                 ' backdrop-blur-xl my-auto w-full mx-auto bg-card/90 border-b border-border/60 shadow-sm ',
             content: ' h-16 mx-auto justify-between ',
@@ -1257,7 +1257,7 @@ export const settingsDefault = {
                 ' u-card-list bg-card shadow-sm text-card-foreground border-y-[0.5px] border-border/50 sm:border-[0.5px] border-border/50 sm:rounded-2xl sm:mb-4 ',
             'u-card-list-padding': ' p-4 ',
             'u-card-base':
-                ' u-card-base bg-card border-[0.5px] border-border/50 shadow-sm text-card-foreground overflow-hidden rounded-2xl',
+                ' u-card-base bg-card border-[0.5px] border-border/40 shadow-sm text-card-foreground overflow-hidden rounded-2xl',
             'u-card-padding': ' p-4 ',
             'u-card-header': 'flex px-6 pt-5 gap-1',
             'u-card-icon': 'text-card-foreground px-4 gap-y-2 gap-x-3',
@@ -1506,12 +1506,12 @@ export const settingsDefault = {
         },
 
         button_styles: {
-            'u-btn-default-cnt': '  bg-card web:group-hover:bg-background ',
+            'u-btn-default-cnt': '  bg-card dark:bg-secondary web:group-hover:bg-border/60 dark:web:group-hover:bg-border/80',
             'u-btn-default-text':
                 ' font-medium text-card-foreground web:group-hover:text-foreground ',
             'u-btn-default-trans': '  web:duration-200',
             'u-btn-default-ring':
-                ' group bg-border/60 web:hover:bg-border/80 active:bg-border web:duration-200 shadow-xs active:shadow-none  ',
+                ' group bg-border/80 web:hover:bg-border/80 active:bg-border web:duration-200 shadow-xs active:shadow-none  ',
 
             'u-btn-primary-cnt': ' ',
             'u-btn-primary-text': ' font-medium text-primary-foreground ',
@@ -1530,7 +1530,7 @@ export const settingsDefault = {
                 ' text-card-foreground web:group-hover:text-foreground  ',
             'u-btn-secondary-trans': '  ',
             'u-btn-secondary-ring':
-                ' group web:duration-100 bg-secondary/60 web:hover:bg-secondary/80 active:bg-secondary ',
+                ' group web:duration-100 bg-secondary/80 web:hover:bg-secondary active:opacity-50',
 
             'u-btn-danger-cnt':
                 '  dark:border-transparent bg-red-600 web:hover:bg-red-500 web:hover:shadow web:active:opacity-50 web:active:shadow-none',
