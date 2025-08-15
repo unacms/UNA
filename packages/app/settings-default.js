@@ -1507,7 +1507,7 @@ export const settingsDefault = {
                 ' font-medium text-card-foreground web:group-hover:text-foreground ',
             'u-btn-default-trans': '  web:duration-200',
             'u-btn-default-ring':
-                ' group bg-card web:hover:bg-border/80 active:bg-border web:duration-200 shadow-xs web:hover:scale-105 active:scale-100 active:shadow-none  ',
+                ' group bg-border/60 web:hover:bg-border/80 active:bg-border web:duration-200 shadow-xs web:hover:scale-105 active:scale-100 active:shadow-none  ',
 
             'u-btn-primary-cnt': ' ',
             'u-btn-primary-text': ' font-medium text-primary-foreground ',
