@@ -1275,20 +1275,23 @@ export const settingsDefault = {
         },
         blocks: {
             'u-block-base':
-                'bg-card u-max-width-block border-[0.5px] border-border/50 shadow-sm text-card-foreground py-4 rounded-xl lg:rounded-2xl',
+                'u-max-width-block py-4 rounded-xl lg:rounded-2xl',
+            'u-block-bg':
+                'bg-card shadow-sm text-card-foreground border-[0.5px] border-border/50',
+             'u-block-pad':
+                'px-4',
             'u-block-header':
-                'flex flex-row items-center px-4 gap-4',
+                'flex flex-row items-center  gap-4',
             'u-block-icon': 'text-card-foreground',
             'u-block-name': 'flex flex-col flex-auto gap-y-2 gap-x-4',
             'u-block-title':
                 'text-card-foreground text-xl font-bold leading-6 tracking-tight',
             'u-block-description': 'text-muted-foreground text-sm ',
             'u-block-content':
-                'text-card-foreground px-4 ',
-            'u-block-list':
-                'text-card-foreground gap-0 px-0 py-0  ',
+                'text-card-foreground ',
+          
             'u-block-footer':
-                'flex text-card-foreground px-4 gap-4 ',
+                'flex text-card-foreground gap-4 ',
             'u-block-actions':
                 'flex flex-row text-card-foreground mb-auto gap-2 ',
         },

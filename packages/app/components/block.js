@@ -127,6 +127,7 @@ export function BlockWrapper(props) {
     block.designbox_id = Number(block.designbox_id);
     const aNoTitle = [0, 10, 13, 3];
     const aNoBg = [0, 10, 14, 4];
+    const aNoPad = [0, 4, 1, 5, 3];
     let bIsShowTitle = true;
     if (aNoTitle.indexOf(block.designbox_id) != -1) {
         bIsShowTitle = false;
@@ -137,13 +138,18 @@ export function BlockWrapper(props) {
         bIsShowBg = false;
     }
 
+    let bIsShowPadding = true;
+    if (aNoPad.indexOf(block.designbox_id) != -1) {
+        bIsShowPadding = false;
+    }
+
     if (typeof showBg !== 'undefined') {
         bIsShowBg = showBg;
     }
     if (typeof showTitle !== 'undefined') {
         bIsShowTitle = showTitle;
     }
-    let bIsShowPadding = true;
+   
     if (typeof showPadding !== 'undefined') {
         bIsShowPadding = showPadding;
     }
@@ -166,9 +172,11 @@ export function BlockWrapper(props) {
     return (
         <PageBlock
             key={block.id}
+            isBg={bIsShowBg}
+            isPad={bIsShowPadding}
             className={
                 "w-full mx-auto" +
-                (bIsShowBg ? "  " : " bg-transparent p-0 border-none shadow-none") +
+               
                 (!fullWidth && !cssClasses.includes("max-w-") ? appSetting('layout', 'max_width_block') : "") +
                 cssClasses
             }
@@ -178,15 +186,9 @@ export function BlockWrapper(props) {
                     <BlockTitle>{stripTags(block.title)}</BlockTitle>
                 </BlockHeader>
             )}
-            {useList ? (
-                <BlockList>
-                    {props.children}
-                </BlockList>
-            ) : (
-                <BlockContent>
-                    {props.children}
-                </BlockContent>
-            )}
+            <BlockContent>
+                {props.children}
+            </BlockContent>
             
         </PageBlock>
     );

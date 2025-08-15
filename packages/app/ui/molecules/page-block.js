@@ -4,11 +4,16 @@ import { appSetting} from 'app/lib/util';
 
 const blockTheme = appSetting('theme', 'blocks');
 
-function createBlockComponent({ baseClass, Component = View, role, ariaLevel }) {
-    return function BlockSubComponent({ className = '', density, ...props }) {
+function createBlockComponent({ baseClass, Component = View, role, isBg, isPad, ariaLevel }) {
+    return function BlockSubComponent({ className = '', density, isBg, isPad,  ...props }) {
         return (
             <Component
-                className={`${baseClass} ${blockTheme[baseClass]} ${className}`}
+                className={`
+                    ${baseClass} 
+                    ${(isBg && baseClass == 'u-block-base') ? blockTheme['u-block-bg'] : ''} 
+                    ${(isPad) ? blockTheme['u-block-pad'] : ''} 
+                    ${blockTheme[baseClass]} ${className}`
+                }
                 role={role}
                 aria-level={ariaLevel}
                 {...props}
@@ -17,7 +22,7 @@ function createBlockComponent({ baseClass, Component = View, role, ariaLevel }) 
     };
 }
 
-const Block = createBlockComponent({ baseClass: 'u-block-base' });
+const Block = createBlockComponent({ baseClass: 'u-block-base', isBg: true, isPad: true });
 
 const BlockHeader = createBlockComponent({ baseClass: 'u-block-header' });
 
