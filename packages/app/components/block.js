@@ -61,7 +61,7 @@ export function BlockByName(props) {
     if (b) {
         return <Block 
             exProps={name?.exProps}
-            extraProps={{ ...(name?.exProps || {}), source: blockNameString }} 
+            extraProps={{ ...(name?.exProps || name), source: blockNameString }} 
             key={b.id} 
             uri={data.uri} 
             url={data.url} 
@@ -208,5 +208,3 @@ export default function Block(props) {
         </BlockWrapper>
     );
 }
-
-

@@ -196,6 +196,7 @@ export default function (props) {
                 {sideBarBlocks.map((item, index) => {
                     return (
                         <BlockByName
+                            exProps={item.block}
                             key={'block_' + index}
                             name={item.block}
                             data={props.data}
