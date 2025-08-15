@@ -10,8 +10,8 @@ import { appStatic } from 'app/lib/app-static'
 import Redirect from 'app/ui/atoms/redirect'
 import { useRef, useEffect, useMemo } from 'react';
 import ConfirmEmail from 'app/ui/molecules/confirm_email'
-
 import { registerAll } from 'app/components/registry-init';
+import  RedirectElement from 'app/components/elements/redirect'
 
 export default function Layouts({ path, data, uri, url }) {
 
@@ -105,6 +105,19 @@ function PageLayoutContent(props) {
 
     if (currentUser && !currentUser.confirmed && appSetting('layout', 'lock_unconfirmed')) {
         return <ConfirmEmail url={url} />;
+    }
+
+    console.log("currentUser",currentUser)
+
+    if (currentUser?.informer?.some(item => item.id == 'sys-account-profile-system')){
+        if (currentUser.menu.items > 1){
+            // TODO menu
+             return <RedirectElement data={{uri:currentUser.menu.items[0].link}} />
+        }
+        else{
+           return <RedirectElement data={{uri:currentUser.menu.items[0].link}} />
+        }
+      
     }
 
     const Component = getComponent('layout', layoutName);
