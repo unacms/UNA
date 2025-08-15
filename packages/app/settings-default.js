@@ -336,7 +336,7 @@ export const settingsDefault = {
                 pressed_container: ' bg-accent ',
                 pressed_text: ' text-accent-foreground font-medium ',
                 pressed_ring:
-                    ' bg-ring/60  ',
+                    ' bg-ring  ',
             },
             button_rounded: true,
             align_items: 'start',
@@ -1024,7 +1024,7 @@ export const settingsDefault = {
             item_ver:
                 ' px-2 web:group flex flex-row h-10 items-center rounded-lg font-medium web:hover:bg-muted/60 text-card-foreground web:hover:text-foreground web:hover:cursor-pointer',
             item_hor:
-                'flex block web:dark:hover:text-white rounded-full web:hover:cursor-pointer text-neutral-700  web:hover:scale-125 active:scale-95   web:duration-200 dark:text-neutral-300 outline-none ',
+                'flex block web:dark:hover:text-white rounded-full web:hover:cursor-pointer text-neutral-700    web:duration-200 dark:text-neutral-300 outline-none ',
             item_np:
                 'flex flex-row web:focus:outline-none items-center justify-between px-1 py-0.5 rounded-lg font-medium web:hover:bg-bgritem web:dark:hover:bg-bgritem-d text-sm text-neutral-700 dark:text-neutral-300 web:dark:hover:text-white web:hover:cursor-pointer',
             item_cnt: 'items-center w-full flex-row',
@@ -1057,9 +1057,9 @@ export const settingsDefault = {
             default_size: 'base',
             default_variant: 'default',
             default_ring: ' p-[1px] bg-border ',
-            pressed_container: '  ',
+            pressed_container: ' bg-accent ',
             pressed_text: ' text-primary font-medium ',
-            pressed_ring: ' bg-primary/10 ',
+            pressed_ring: ' bg-ring ',
             xxs: {
                 rounded: ' rounded-[5px] ',
                 ring: ' rounded-[6px] p-[1px]  ', // Ring wrapper border radius
@@ -1074,7 +1074,7 @@ export const settingsDefault = {
             },
             xs: {
                 rounded: ' rounded-[7px] ',
-                ring: ' rounded-[8px] p-[1px]  ', // Ring wrapper border radius
+                ring: ' rounded-[8px] p-[0.5px]  ', // Ring wrapper border radius
                 padding: ' px-1.5 ',
                 padding_icon_only: ' w-[26px] ',
                 padding_with_title: ' px-2 gap-1 ',
@@ -1511,7 +1511,7 @@ export const settingsDefault = {
                 ' font-medium text-card-foreground web:group-hover:text-foreground ',
             'u-btn-default-trans': '  web:duration-200',
             'u-btn-default-ring':
-                ' group bg-border/60 web:hover:bg-border/80 active:bg-border web:duration-200 shadow-xs web:hover:scale-105 active:scale-100 active:shadow-none  ',
+                ' group bg-border/60 web:hover:bg-border/80 active:bg-border web:duration-200 shadow-xs active:shadow-none  ',
 
             'u-btn-primary-cnt': ' ',
             'u-btn-primary-text': ' font-medium text-primary-foreground ',

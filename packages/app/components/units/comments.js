@@ -356,7 +356,7 @@ export default function UnitComments(props) {
                         </View>
                     )}
                     {viewState.view != 'edited' && (
-                        <Row className={`${cd('py-xs')} ${cd('gap-xs')}`}>
+                        <Row className={`${cd('pt-xs')} ${cd('gap-xs')}`}>
                             {!!currentUser &&
                             !!props.handleReply &&
                             !props.module.includes('_reviews') ? (
