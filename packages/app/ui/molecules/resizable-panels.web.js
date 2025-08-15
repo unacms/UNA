@@ -13,7 +13,7 @@ function createPanelComponent({ baseClass, Component = PanelDef, role, ariaLevel
 
         return (
             <Component
-                className={`rpsp1 ${panelTheme[baseClass]} $ ${className}`}
+                className={` ${panelTheme[baseClass]} $ ${className}`}
                 role={role}
                 aria-level={ariaLevel}
                 {...props}

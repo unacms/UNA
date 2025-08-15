@@ -297,7 +297,7 @@ export default function (props) {
                             className={`hidden ${cellsCustomConfig.cells?.left?.breakpoint}:block`}
                             {...cellsCustomConfig.cells?.left}
                         >
-                            <View className={`${cd('p-md')} fixed-process`}>
+                            <View className={`${cd('p-md')} fixed-process `}>
                                 {SideBarContent}
                             </View>
                         </Panel>

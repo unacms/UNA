@@ -1067,19 +1067,19 @@ export const settingsDefault = {
                 padding_with_title: ' px-1 gap-1 ',
                 icon_container: ' h-[18px]  flex items-center justify-center',
                 title_container: ' leading-[18px] text-xs',
-                icon_size: 16,
+                icon_size: 12,
                 icon_margin: ' ', // conditional margin for icon container when title is present
                 title_margin: '  ', //
             },
             xs: {
-                rounded: ' rounded-[5px] ',
-                ring: ' rounded-[6px] p-[1px]  ', // Ring wrapper border radius
+                rounded: ' rounded-[7px] ',
+                ring: ' rounded-[8px] p-[1px]  ', // Ring wrapper border radius
                 padding: ' px-1.5 ',
-                padding_icon_only: ' w-[22px] ',
-                padding_with_title: ' px-1.5 gap-1 ',
+                padding_icon_only: ' w-[26px] ',
+                padding_with_title: ' px-2 gap-1 ',
                 icon_container:
-                    ' h-[22px] text-sm flex items-center justify-center',
-                title_container: ' leading-[22px] text-xs',
+                    ' h-[26px] text-sm flex items-center justify-center',
+                title_container: ' leading-[26px] text-xs',
                 icon_size: 14,
                 icon_margin: ' ', // conditional margin for icon container when title is present
                 title_margin: '  ', //
@@ -1104,7 +1104,7 @@ export const settingsDefault = {
                 padding_icon_only: ' h-full ',
                 padding_with_title: ' px-3 gap-3 ',
                 icon_container: '   flex items-center justify-center',
-                title_container: ' leading-[38px] text-base ',
+                title_container: ' leading-[38px] text-sm font-semibold ',
                 icon_size: 20,
                 icon_margin: ' ', // conditional margin for icon container when title is present
                 title_margin: '', // conditional margin for text container when icon is present
@@ -1212,52 +1212,52 @@ export const settingsDefault = {
             'u-link-primary-trans': ' web:duration-200 ',
         },
         offsets: {
-            'gap-lg': 'gap-4 lg:gap-6',
-            'gap-md': 'gap-3 lg:gap-4',
-            'gap-sm': 'gap-2 lg:gap-3',
+            'gap-lg': 'gap-4',
+            'gap-md': 'gap-3',
+            'gap-sm': 'gap-2',
             'gap-xs': 'gap-1',
-            'm-lg': 'm-4 lg:m-6',
-            'm-md': 'm-3 lg:m-4',
-            'm-sm': 'm-2 lg:m-3',
+            'm-lg': 'm-4',
+            'm-md': 'm-3',
+            'm-sm': 'm-2',
             'm-xs': 'm-1',
-            'mb-lg': 'mb-4 lg:mb-6',
-            'mb-md': 'mb-3 lg:mb-4',
-            'mb-sm': 'mb-2 lg:mb-3',
+            'mb-lg': 'mb-4',
+            'mb-md': 'mb-3',
+            'mb-sm': 'mb-2',
             'mb-xs': 'mb-1',
-            'mt-lg': 'mt-4 lg:mt-6',
-            'mt-md': 'mt-3 lg:mt-4',
-            'mt-sm': 'mt-2 lg:mt-3',
+            'mt-lg': 'mt-4 ',
+            'mt-md': 'mt-3 ',
+            'mt-sm': 'mt-2 ',
             'mt-xs': 'mt-1',
-            'p-lg': 'p-4 lg:p-6',
-            'p-md': 'p-3 lg:p-4',
-            'p-sm': 'p-2 lg:p-3',
+            'p-lg': 'p-4',
+            'p-md': 'p-3',
+            'p-sm': 'p-2',
             'p-xs': 'p-1',
-            'pb-lg': 'pb-4 lg:pb-6',
-            'pb-md': 'pb-3 lg:pb-4',
-            'pb-sm': 'pb-2 lg:pb-3',
-            'pt-lg': 'pt-4 lg:pt-6',
-            'pt-md': 'pt-3 lg:pt-4',
-            'pt-sm': 'pt-2 lg:pt-3',
+            'pb-lg': 'pb-4',
+            'pb-md': 'pb-3',
+            'pb-sm': 'pb-2',
+            'pt-lg': 'pt-4',
+            'pt-md': 'pt-3',
+            'pt-sm': 'pt-2',
             'pt-xs': 'pt-1',
-            'px-lg': 'px-4 lg:px-6',
-            'px-md': 'px-3 lg:px-4',
-            'px-sm': 'px-2 lg:px-3',
+            'px-lg': 'px-4',
+            'px-md': 'px-3',
+            'px-sm': 'px-2',
             'px-xs': 'px-1',
-            'py-lg': 'py-4 lg:py-6',
-            'py-md': 'py-3 lg:py-4',
-            'py-sm': 'py-2 lg:py-3',
+            'py-lg': 'py-4',
+            'py-md': 'py-3',
+            'py-sm': 'py-2',
             'py-xs': 'py-1',
-            'w-lg': 'w-4 lg:w-6',
-            'w-md': 'w-3 lg:w-4',
-            'w-sm': 'w-2 lg:w-3',
+            'w-lg': 'w-4',
+            'w-md': 'w-3',
+            'w-sm': 'w-2',
         },
         cards: {
             'u-card-list':
-                'u-card-list bg-card shadow-sm text-card-foreground sm:rounded-2xl mb-0.5 sm:mb-3 lg:mb-4 ',
-            'u-card-list-padding': ' p-3 sm:p-4 lg:p-6',
+                ' u-card-list bg-card shadow-sm text-card-foreground border-y-[0.5px] border-border/50 sm:border-[0.5px] border-border/50 sm:rounded-2xl sm:mb-4 ',
+            'u-card-list-padding': ' p-4 ',
             'u-card-base':
-                ' u-card-base bg-card shadow-sm text-card-foreground shadow-sm overflow-hidden rounded-2xl',
-            'u-card-padding': ' p-0 ',
+                ' u-card-base bg-card border-[0.5px] border-border/50 shadow-sm text-card-foreground overflow-hidden rounded-2xl',
+            'u-card-padding': ' p-4 ',
             'u-card-header': 'flex px-6 pt-5 gap-1',
             'u-card-icon': 'text-card-foreground px-4 gap-y-2 gap-x-3',
             'u-card-title':
@@ -1271,24 +1271,24 @@ export const settingsDefault = {
             'u-panel-handler': '',
             'u-panel-line':
                 'w-0.5 h-full web:group-hover:bg-muted web:group-active:bg-muted ',
-            'u-panel-group': 'flex',
+            'u-panel-group': ' gap-2 flex',
         },
         blocks: {
             'u-block-base':
-                'bg-card u-max-width-block shadow-sm text-card-foreground py-2 lg:py-3 rounded-xl lg:rounded-2xl',
+                'bg-card u-max-width-block border-[0.5px] border-border/50 shadow-sm text-card-foreground py-4 rounded-xl lg:rounded-2xl',
             'u-block-header':
-                'flex flex-row items-center px-4 lg:px-6 min-h-10  gap-4',
+                'flex flex-row items-center px-4 gap-4',
             'u-block-icon': 'text-card-foreground',
             'u-block-name': 'flex flex-col flex-auto gap-y-2 gap-x-4',
             'u-block-title':
-                'text-card-foreground text-xl lg:text-2xl font-bold leading-6 lg:leading-8 tracking-tight',
+                'text-card-foreground text-xl font-bold leading-6 tracking-tight',
             'u-block-description': 'text-muted-foreground text-sm ',
             'u-block-content':
-                'text-card-foreground gap-2 lg:gap-3 px-4 lg:px-6 py-4 lg:py-3 ',
+                'text-card-foreground px-4 ',
             'u-block-list':
                 'text-card-foreground gap-0 px-0 py-0  ',
             'u-block-footer':
-                'flex text-card-foreground px-4 lg:px-6 gap-4 ',
+                'flex text-card-foreground px-4 gap-4 ',
             'u-block-actions':
                 'flex flex-row text-card-foreground mb-auto gap-2 ',
         },
@@ -1502,12 +1502,12 @@ export const settingsDefault = {
         },
 
         button_styles: {
-            'u-btn-default-cnt': '  bg-card web:group-hover:bg-muted ',
+            'u-btn-default-cnt': '  bg-card web:group-hover:bg-background ',
             'u-btn-default-text':
                 ' font-medium text-card-foreground web:group-hover:text-foreground ',
             'u-btn-default-trans': '  web:duration-200',
             'u-btn-default-ring':
-                ' group bg-border/50 web:hover:bg-border/60 duration-200 shadow-sm web:hover:shadow web:hover:scale-105 active:scale-100 active:shadow-none active:bg-border  ',
+                ' group bg-card web:hover:bg-border/80 active:bg-border web:duration-200 shadow-xs web:hover:scale-105 active:scale-100 active:shadow-none  ',
 
             'u-btn-primary-cnt': ' ',
             'u-btn-primary-text': ' font-medium text-primary-foreground ',
@@ -1523,10 +1523,10 @@ export const settingsDefault = {
 
             'u-btn-secondary-cnt': '   ',
             'u-btn-secondary-text':
-                ' font-medium text-card-foreground web:group-hover:text-foreground  ',
-            'u-btn-secondary-trans': ' web:duration-200 ',
+                ' text-card-foreground web:group-hover:text-foreground  ',
+            'u-btn-secondary-trans': '  ',
             'u-btn-secondary-ring':
-                ' web:group web:duration-200 bg-secondary/60 web:hover:bg-secondary web:active:opacity-50 ',
+                ' group web:duration-100 bg-secondary/60 web:hover:bg-secondary/80 active:bg-secondary ',
 
             'u-btn-danger-cnt':
                 '  dark:border-transparent bg-red-600 web:hover:bg-red-500 web:hover:shadow web:active:opacity-50 web:active:shadow-none',

@@ -51,15 +51,15 @@ export default function MultiPostForm({ data }) {
 
         <CardList>
             <Row className={` ${cd('gap-sm')}`}>
-                <View className="my-auto">
-                    <Profile {...profileData} displaySize="lg" displayType="unit_wo_info" />
-                </View>
+                
+                <Profile {...profileData} displaySize="base" displayType="unit_wo_info" />
+                
                 <View className="flex-auto">
                     <Button
-                        size="lg"
+                        size="base"
                         variant="secondary"
                         fullWidth
-                        
+                        rounded
                         title={t('Create new ') + firstForm.title.toLowerCase()}
                         align="start"
                         onPress={getFirstForm}
