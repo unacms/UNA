@@ -256,7 +256,7 @@ export default function UnitComments(props) {
         <Wrapper style={combinedStyles}>
             <Row className={`${cd('gap-sm')}`}>
                 {cells}
-                <View className={`w-9 z-50 flex-0 relative ${cd('mt-sm')}`}>
+                <View className={`w-9 z-50 flex-0 relative ${cd('mt-md')}`}>
                     <Profile
                         {...data.author_data}
                         displayType="unit_wo_info"
@@ -272,7 +272,7 @@ export default function UnitComments(props) {
                 <View
                     className={`bg-muted/60 flex-1 rounded-xl ${cd(
                         'py-sm'
-                    )} ${cd('px-md')} ${cd('mt-sm')} ${cd('gap-xs')}`}
+                    )} ${cd('px-md')} ${cd('mt-md')} ${cd('gap-xs')}`}
                 >
                     <View className="flex-row items-center overflow-hidden justify-between gap-2 ">
                         <Profile
@@ -355,8 +355,8 @@ export default function UnitComments(props) {
                             <Carousel data={imageList} />
                         </View>
                     )}
-                    {viewState.view != 'edited' && (
-                        <Row className={`${cd('pt-xs')} ${cd('gap-xs')}`}>
+                       {viewState.view != 'edited' && (
+                        <Row className={`${cd('pt-xs')} ${cd('gap-xs')}  `}>
                             {!!currentUser &&
                             !!props.handleReply &&
                             !props.module.includes('_reviews') ? (
@@ -440,8 +440,11 @@ export default function UnitComments(props) {
                             </View>
                         </Row>
                     )}
+                   
                 </View>
+               
             </Row>
+         
         </Wrapper>
     )
 }
