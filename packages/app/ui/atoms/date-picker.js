@@ -242,7 +242,7 @@ export default function ({ name, value = '', type, onChange }) {
                     </View>
                 </View>
             </Modal>
-            <Row className='gap-x-4 p-2 items-center bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d text-neutral-900 rounded-xl'>
+            <Row className='gap-3 p-1 items-center bg-input border border-border/60 web:border-0 web:ring-1 web:ring-inset web:ring-border/60 text-neutral-900 rounded-xl'>
                 <Button title={`${dValue ? formatDate(dValue) : 'Select date'}`} variant="text" endDecorator="Calendar" onPress={() => { setShowModal(true) }} />
                 {bIsTime && (<><View className='w-5'><Input
                     onChangeText={text => handleChangeTime(text, 23, 'h')}

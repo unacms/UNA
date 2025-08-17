@@ -123,8 +123,8 @@ const theme = {
             base: '17px',
         },
         boxShadow: {
-            DEFAULT: '0 2px 4px 0 rgb(0 0 0 / 0.1)',
-            'xs': '0 1px 1px 0 rgb(0 0 0 / 0.08)',
+            DEFAULT: '0 1px 2px 0 rgb(0 0 0 / 0.08)',
+            'xs': '0 1px 2px 0 rgb(0 0 0 / 0.08)',
             'sm': '0 1px 3px 0 rgb(0 0 0 / 0.08)',
             'md': '0 4px 6px 0 rgb(0 0 0 / 0.1)',
             'lg': '0 10px 15px 0 rgb(0 0 0 / 0.1)',

@@ -1048,8 +1048,8 @@ export const settingsDefault = {
                 ' border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 rounded-full bg-input web:focus:bg-card px-4 py-3.5 flex-auto  text-base leading-6 overflow-hidden placeholder-muted-foreground text-card-foreground web:duration-300 ',
             roundedsmall:
                 ' border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 rounded-xl bg-input web:focus:bg-card px-3 py-2 flex-auto  text-base leading-6 overflow-hidden placeholder-muted-foreground text-card-foreground web:duration-300 ',
-            small: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-full flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-9 ',
-            select: ' pr-10 h-14 focus:bg-card focus:outline outline-offset-2 outline-primary rounded-xl flex-auto p-3 bg-input text-card-foreground',
+            small: ' border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 rounded-xl bg-input web:focus:bg-card px-3 py-2 flex-auto  text-base leading-6 overflow-hidden placeholder-muted-foreground text-card-foreground web:duration-300 ',
+            select: ' pr-10 border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 rounded-xl bg-input web:focus:bg-card px-4 py-3.5 flex-auto  text-base leading-6 overflow-hidden placeholder-muted-foreground text-card-foreground web:duration-300',
             
         },
 
@@ -1073,14 +1073,14 @@ export const settingsDefault = {
                 title_margin: '  ', //
             },
             xs: {
-                rounded: ' rounded-[7px] ',
+                rounded: ' rounded-md ',
                 ring: '', // Ring wrapper removed
-                padding: ' px-1.5 ',
-                padding_icon_only: ' w-[26px] ',
+                padding: ' ',
+                padding_icon_only: ' h-7 w-7 ',
                 padding_with_title: ' px-2 gap-1 ',
                 icon_container:
-                    ' h-[26px] text-sm flex items-center justify-center',
-                title_container: ' leading-[26px] text-xs',
+                    ' h-7 text-sm flex items-center justify-center',
+                title_container: ' text-xs leading-7 text-xs',
                 icon_size: 14,
                 icon_margin: ' ', // conditional margin for icon container when title is present
                 title_margin: '  ', //
@@ -1089,11 +1089,11 @@ export const settingsDefault = {
                 rounded: ' rounded-lg ',
                 ring: '', // Ring wrapper removed
                 padding: '  ',
-                padding_icon_only: '  ',
+                padding_icon_only: ' h-9 w-9 ',
                 padding_with_title: ' px-3 gap-1.5 ',
                 icon_container:
                     ' text-base h-9 flex items-center justify-center',
-                title_container: ' text-sm min-h-9  inline-flex items-center  ',
+                title_container: ' text-sm leading-9 inline-flex items-center  ',
                 icon_size: 20,
                 icon_margin: ' ', // conditional margin for icon container when title is present
                 title_margin: '  ', // conditional margin for text container when icon is present
@@ -1506,7 +1506,7 @@ export const settingsDefault = {
         },
 
         button_styles: {
-            'u-btn-default-cnt': ' bg-popover/80 web:hover:bg-popover shadow-xs border border-border/60 web:border-0 web:ring-1 web:ring-inset web:ring-border/60 web:hover:ring-border active:opacity-50 ',
+            'u-btn-default-cnt': ' bg-popover/80 web:hover:bg-popover shadow-xs border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 web:hover:ring-border active:opacity-50 ',
             'u-btn-default-text':
                 ' font-medium text-popover-foreground  ',
             'u-btn-default-trans': '  web:duration-200',
