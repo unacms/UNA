@@ -215,7 +215,7 @@ export default function (props) {
                             <Link href={currentUser.url} emulate={true}>
                                 <Row
                                     className={
-                                        ' rounded-xl group items-center px-1 gap-x-1 hover:bg-bgritem dark:hover:bg-bgritem-d  active:bg-bgritem-h dark:active:bg-bgritem-dh  '
+                                        ' rounded-xl group items-center px-1 gap-x-1 hover:bg-muted active:opacity-50  '
                                     }
                                 >
                                     <View className="p-1.5">
@@ -298,7 +298,7 @@ export default function (props) {
                             className={`hidden ${cellsCustomConfig.cells?.left?.breakpoint}:block`}
                             {...cellsCustomConfig.cells?.left}
                         >
-                            <View className={`${cd('p-md')} fixed-process `}>
+                            <View className={`${cd('p-md')} fixed-process border-r border-border/40`}>
                                 {SideBarContent}
                             </View>
                         </Panel>
@@ -309,7 +309,7 @@ export default function (props) {
                     </>
                 )}
                 <Panel {...cellsCustomConfig.cells?.center}>
-                    <View className={`sm:${cd('p-md')}`}>{FeedContent}</View>
+                    <View className={`sm:${cd('p-md')} max-w-3xl mx-auto`}>{FeedContent}</View>
                 </Panel>
 
                 {isWeb && (

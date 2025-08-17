@@ -24,20 +24,20 @@ const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from');
 
 function PageContent(props) {
     const { t } = useTranslation()
-    return (<Card>
+    return (<Card padding="p-6">
         <CardHeader>
             <CardTitle>{t("splash_page_login")}</CardTitle>
             <CardDescription>{t("splash_page_login2")}</CardDescription>
         </CardHeader>
         <CardContent>
-            <View className='my-6'>
+            
                 <BlockByName
                     name="system:login_form"
                     contentOnly={true}
                     data={props.data}
                     formProps={{ hide_errors: true, button_full_width: true }}
                 />
-            </View>
+            
         </CardContent>
         <CardFooter>
             <AuthPanel loginLink={false} />
@@ -62,10 +62,7 @@ export default function Splash(props) {
                 {appStatic('splash_text')}
                 <View className="flex-col-reverse lg:flex-col max-w-xl w-full flex-auto mx-auto p-4 sm:p-8 my-auto">
                     <AnimatedView direction="up">
-                        <View>
-                            <View className="absolute top-4 flex shadow rounded-3xl w-full h-full bg-neutral-500 dark:bg-black blur-lg opacity-20 dark:opacity-50"></View>
                             <PageContent {...props} />
-                        </View>
                     </AnimatedView>
                 </View>
             </View>

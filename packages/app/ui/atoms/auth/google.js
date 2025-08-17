@@ -84,7 +84,7 @@ export default function AuthGoogle({ button }) {
 
     return (
 
-        <View className='flex-1 min-w-[200px]'>
+        <View>
             <Redirect ref={redirectRef} />
             {button ? <Pressable onPress={() => promptAsync({ useProxy: true })}>{button}</Pressable> : <Button
                 disabled={!request}

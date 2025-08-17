@@ -18,7 +18,7 @@ const inputSettings = appSetting('theme', 'inputs');
 export const TextInputClear = TextInputDef
 
 export const Input = ({ className, startDecorator, endDecorator, ...props }) => (
-    <Row className={`items-center flex-auto ${inputSettings.ring}`}>
+    <Row className={`items-center flex-auto`}>
         {startDecorator && (
             <View className="absolute left-3.5 h-full items-center justify-center">
                 <Icon icon={startDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
@@ -34,7 +34,7 @@ export const Input = ({ className, startDecorator, endDecorator, ...props }) => 
 );
 
 export const InputRef = forwardRef(({ className, startDecorator, endDecorator, ...props }, ref) => (
-    <Row className={`items-center flex-auto ${inputSettings.ring || ''}`}>
+    <Row className={`items-center flex-auto`}>
         {startDecorator && (
             <View className="absolute left-3.5 h-full items-center justify-center">
                 <Icon icon={startDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
@@ -50,7 +50,7 @@ export const InputRef = forwardRef(({ className, startDecorator, endDecorator, .
 ));
 
 export const InputMulti = forwardRef(({ className, startDecorator, endDecorator, ...props }, ref) => (
-     <Row className={`items-center flex-auto ${inputSettings.ring || ''}`}>
+     <Row className={`items-center flex-auto`}>
         {startDecorator && (
             <View className="absolute left-3.5 h-full items-center justify-center">
                 <Icon icon={startDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
@@ -66,7 +66,7 @@ export const InputMulti = forwardRef(({ className, startDecorator, endDecorator,
 ));
 
 export const InputRounded = ({ className, startDecorator, endDecorator, ...props }) => (
-    <Row className={`items-center flex-auto ${inputSettings.ring || ''}`}>
+    <Row className={`items-center flex-auto`}>
         {startDecorator && (
             <View className="absolute left-3.5 h-full items-center justify-center">
                 <Icon icon={startDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
@@ -82,7 +82,7 @@ export const InputRounded = ({ className, startDecorator, endDecorator, ...props
 );
 
 export const InputRoundedRef = forwardRef(({ className, startDecorator, endDecorator, ...props }, ref) => (
-    <Row className={`items-center flex-auto ${inputSettings.ring || ''}`}>
+    <Row className={`items-center flex-auto`}>
         {startDecorator && (
             <View className="absolute left-3.5 h-full items-center justify-center">
                 <Icon icon={startDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
@@ -98,7 +98,7 @@ export const InputRoundedRef = forwardRef(({ className, startDecorator, endDecor
 ));
 
 export const InputRoundedSmall = ({ className, startDecorator, endDecorator, ...props }) => (
-    <Row className={`items-center flex-auto ${inputSettings.ring || ''}`}>
+    <Row className={`items-center flex-auto`}>
         {startDecorator && (
             <View className="absolute left-3.5 h-full items-center justify-center">
                 <Icon icon={startDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
@@ -114,7 +114,7 @@ export const InputRoundedSmall = ({ className, startDecorator, endDecorator, ...
 );
 
 export const InputSmall = ({ className, startDecorator, endDecorator, ...props }) => (
-    <Row className={`items-center ${inputSettings.ring || ''}`}>
+    <Row className={`items-center`}>
         {startDecorator && (
             <View className="absolute left-3.5 h-full items-center justify-center">
                 <Icon icon={startDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
@@ -141,7 +141,7 @@ export const PickerStyled = ({ className, ...props }) => (
 );
 
 export const PickerStyledRef = forwardRef(({ classes, className, ...props }, ref) => (
-    <View className={`relative flex-auto items-center flex-row ${inputSettings.ring || ''}`}>
+    <View className={`relative flex-auto items-center flex-row`}>
         <PickerDef ref={ref} className={`${classes ? classes : PickerStyles} w-full`} {...props} />
         <View className="absolute right-3 pointer-events-none">
             <Icon icon="ChevronDown" size={20} className="text-neutral-500" />
@@ -435,50 +435,6 @@ export const Button = (props) => {
     const { colors } = Theme();
     const themeName = ThemeName();
     const { width } = useWindowDimensions();
-    const ringClass = useMemo(() => {
-        // If ring prop is provided as a string, use it to override default
-        if (typeof ring === 'string') {
-            return ring;
-        }
-        
-        // Combine variant-specific ring style (for color/padding) and size-specific ring style (for border radius)
-        let classes = '';
-        
-        // Check if button is pressed and apply pressed ring styles
-        if (pressed) {
-            // Get pressed ring styles
-            const pressedRingClass = pressedClasses?.pressed_ring || 
-                                   ThemeCssClassesButton[`u-btn-${variant}-pressed-ring`] || 
-                                   ThemeButtonSizes.pressed_ring;
-            if (pressedRingClass) {
-                // Remove background classes from the base ring and apply pressed ring
-                classes = pressedRingClass;
-            }
-        } else {
-            // Get variant-specific ring class (background color, padding)
-            const variantRingClass = ThemeCssClassesButton[`u-btn-${variant}-ring`];
-            if (variantRingClass) {
-                classes += variantRingClass;
-            } else {
-                // Fallback to default ring if variant doesn't have a specific one
-                classes += ThemeButtonSizes.default_ring ?? ' p-[1px] bg-border ';
-            }
-        }
-        
-        // Add size-specific ring class (border radius)
-        const sizeRingClass = ThemeButtonSizes[size]?.ring;
-        if (sizeRingClass) {
-            classes += ' ' + sizeRingClass;
-        }
-        
-        // Handle rounded prop for the ring wrapper
-        if (rounded && !variant.startsWith('group-item')) {
-            // Override with full rounding if rounded is true
-            classes = classes.replace(/rounded-\S+/g, 'rounded-full');
-        }
-        
-        return classes;
-    }, [ring, variant, size, rounded, pressed, pressedClasses, ThemeCssClassesButton, ThemeButtonSizes]);
     
     const showTooltip = useMemo(() => width >= LAYOUT_BREAKPOINTS.lg && tooltip, [width, tooltip]);
 
@@ -644,7 +600,7 @@ export const Button = (props) => {
     } : {};
     const buttonContent = (
         <Cnt
-            className={`${ringClass} ${fullWidth ? 'flex-auto ' : ''}`}
+            className={`${fullWidth ? 'flex-auto ' : ''}`}
             {...rest}
             {...buttonAttributes}
             onPress={onPress && !disabled ? handlePress : undefined}

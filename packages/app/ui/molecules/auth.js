@@ -15,14 +15,14 @@ export default function AuthPanel({ googleButton, className, showSeparator = tru
     if (appSetting('auth', 'enabled') !== true) return null;
     const { t } = useTranslation()
     return (
-        <View className='w-full gap-y-6'>
+        <View className='w-full gap-4'>
             {showSeparator && <View className="flex-row items-center justify-center w-full">
-                <View className="flex-1 h-px w-full bg-neutral-200 dark:bg-neutral-500" />
-                <Text className="mx-4 text-xs text-neutral-500 dark:text-neutral-400 font-normal">{t("splash_page_login3")}</Text>
-                <View className="flex-1 h-px w-full bg-neutral-200 dark:bg-neutral-500" />
+                <View className="flex-1 h-px w-full bg-border/40" />
+                <Text className="mx-4 text-xs text-muted-foreground">{t("splash_page_login3")}</Text>
+                <View className="flex-1 h-px w-full bg-border/40" />
             </View>}
-            <View className="gap-y-2 w-full">
-                {loginLink && <Link className="flex-1 min-w-200" href="/login" haptics="Medium">
+            <View className="gap-2 w-full">
+                {loginLink && <Link href="/login" haptics="Medium">
                     <Button
                         title={t("Login with email")}
                         variant="default"
@@ -32,12 +32,11 @@ export default function AuthPanel({ googleButton, className, showSeparator = tru
                     />
                 </Link>}
                 
-                {createAccountLink && <Link className="flex-1 min-w-200" href="/create-account" haptics="Medium">
+                {createAccountLink && <Link href="/create-account" haptics="Medium">
                     <Button
                         title={t("splash_page_new_account")}
                         variant="default"
                         fullWidth
-                         
                         size="base"
                         startDecorator="UserRoundPlus"
                     />

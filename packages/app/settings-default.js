@@ -86,15 +86,15 @@ export const settingsDefault = {
             container:
                 ' hidden lg:flex fixed w-full mx-auto h-16 left-[50%] translate-x-[-50%]  ',
             initial:
-                '  my-auto w-full items-center transition-all web:duration-500 border-b border-border/60    ',
+                '  my-auto w-full items-cente bg-card/90 transition-all web:duration-500 shadow-xs    ',
             scrolled:
-                ' backdrop-blur-xl my-auto w-full mx-auto bg-card/90 border-b border-border/60 shadow-sm ',
+                ' backdrop-blur-xl my-auto w-full mx-auto bg-card/90 shadow-sm ',
             content: ' h-16 mx-auto justify-between ',
             content_left: ' flex-row w-80 2xl:w-96 px-2 xl:px-3 ',
             content_right:
                 ' w-80 2xl:w-96 items-center justify-end h-full px-3 ',
             content_center:
-                ' hidden xl:flex flex-auto w-full mx-auto max-w-4xl gap-x-0.5 justify-between items-center align-middle px-3',
+                ' hidden xl:flex flex-auto w-full mx-auto max-w-3xl gap-x-0.5 justify-between items-center align-middle px-3',
             special: {
                 profile: 'hidden lg:flex',
                 messenger: 'hidden lg:flex',
@@ -1042,31 +1042,31 @@ export const settingsDefault = {
         },
 
         inputs: {
-            default: 'py-2.5 flex-auto  m-[1px] rounded-lg px-3 min-h-[46px] text-base leading-6 overflow-hidden placeholder-muted-foreground text-card-foreground web:focus:bg-input web:duration-300',
-            multi: 'py-2.5 flex-auto  m-[1px] rounded-lg px-3 min-h-[46px] text-base leading-6 overflow-hidden placeholder-muted-foreground text-card-foreground web:focus:bg-input web:duration-300',
+            default: ' border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 rounded-xl bg-input web:focus:bg-card px-4 py-3.5 flex-auto  text-base leading-6 overflow-hidden placeholder-muted-foreground text-card-foreground web:duration-300',
+            multi: 'border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 rounded-xl bg-input web:focus:bg-card px-4 py-3.5 flex-auto  text-base leading-6 overflow-hidden placeholder-muted-foreground text-card-foreground web:duration-300',
             rounded:
-                ' h-12 rounded-full flex-auto px-3 py-[11px] text-base bg-bgrinput dark:bg-bgrinput-d hover:border-bdrinput-h focus:border-bdrinput-f overflow-hidden border border-bdrinput web:focus:bg-bgrinput-f dark:border-bdrinput-d web:dark:focus:border-bdrinput-d web:dark:focus:bg-bgrinput-df web:focus:border-bdrinput-f web:dark:focus:border-bdrinput-df   web:duration-300 placeholder-neutral-500 text-foreground ',
+                ' border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 rounded-full bg-input web:focus:bg-card px-4 py-3.5 flex-auto  text-base leading-6 overflow-hidden placeholder-muted-foreground text-card-foreground web:duration-300 ',
             roundedsmall:
-                ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-full flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-[34px] ',
+                ' border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 rounded-xl bg-input web:focus:bg-card px-3 py-2 flex-auto  text-base leading-6 overflow-hidden placeholder-muted-foreground text-card-foreground web:duration-300 ',
             small: ' placeholder-neutral-500 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-full flex-auto px-3 dark:focus:bg-bgrinput-df   dark:text-neutral-100 text-base leading-5 h-9 ',
             select: ' pr-10 h-14 focus:bg-card focus:outline outline-offset-2 outline-primary rounded-xl flex-auto p-3 bg-input text-card-foreground',
-            ring: 'rounded-[9px] bg-border/60 web:focus-within:bg-border overflow-hidden web:focus-within:ring-offset-2 web:focus-within:ring-offset-card  web:focus-within:ring-2 web:focus-within:ring-ring web:transition-all web:duration-200',
+            
         },
 
         button_sizes: {
             default_size: 'base',
             default_variant: 'default',
-            default_ring: ' p-[1px] bg-border ',
+            default_ring: '',
             pressed_container: ' bg-accent ',
             pressed_text: ' text-primary font-medium ',
             pressed_ring: ' bg-ring ',
             xxs: {
                 rounded: ' rounded-[5px] ',
-                ring: ' rounded-[6px] p-[1px]  ', // Ring wrapper border radius
+                ring: '', // Ring wrapper removed
                 padding: ' px-1 ',
                 padding_icon_only: ' w-[18px] ',
                 padding_with_title: ' px-1 gap-1 ',
-                icon_container: ' h-[18px]  flex items-center justify-center',
+                icon_container: ' h-[18px] items-center justify-center',
                 title_container: ' leading-[18px] text-xs',
                 icon_size: 12,
                 icon_margin: ' ', // conditional margin for icon container when title is present
@@ -1074,7 +1074,7 @@ export const settingsDefault = {
             },
             xs: {
                 rounded: ' rounded-[7px] ',
-                ring: ' rounded-[8px] p-[0.5px]  ', // Ring wrapper border radius
+                ring: '', // Ring wrapper removed
                 padding: ' px-1.5 ',
                 padding_icon_only: ' w-[26px] ',
                 padding_with_title: ' px-2 gap-1 ',
@@ -1086,40 +1086,40 @@ export const settingsDefault = {
                 title_margin: '  ', //
             },
             sm: {
-                rounded: ' rounded-[7px] ',
-                ring: ' rounded-[8px] p-[1px]  ', // Ring wrapper border radius
-                padding: ' px-2 ',
-                padding_icon_only: ' w-[30px] ',
+                rounded: ' rounded-lg ',
+                ring: '', // Ring wrapper removed
+                padding: '  ',
+                padding_icon_only: '  ',
                 padding_with_title: ' px-3 gap-1.5 ',
                 icon_container:
-                    ' text-base h-[30px]  flex items-center justify-center',
-                title_container: ' leading-[30px] text-sm',
-                icon_size: 16,
+                    ' text-base h-9 flex items-center justify-center',
+                title_container: ' text-sm min-h-9  inline-flex items-center  ',
+                icon_size: 20,
                 icon_margin: ' ', // conditional margin for icon container when title is present
                 title_margin: '  ', // conditional margin for text container when icon is present
             },
             base: {
-                rounded: ' rounded-[9px] ',
-                ring: ' rounded-[10px]  p-[1px] h-10 min-w-10 ', // Ring wrapper border radius
-                padding: ' px-3',
-                padding_icon_only: ' h-full ',
-                padding_with_title: ' px-3 gap-3 ',
-                icon_container: '   flex items-center justify-center',
-                title_container: ' leading-[38px] text-sm font-semibold ',
-                icon_size: 20,
+                rounded: ' rounded-[10px] ',
+                ring: '', // Ring wrapper removed
+                padding: '  ',
+                padding_icon_only: ' h-11 w-11 ',
+                padding_with_title: ' px-4 gap-2 h-11 items-center ',
+                icon_container: ' text-base flex items-center ',
+                title_container: ' leading-5 text-sm items-center flex  ',
+                icon_size: 24,
                 icon_margin: ' ', // conditional margin for icon container when title is present
-                title_margin: '', // conditional margin for text container when icon is present
+                title_margin: ' ', // conditional margin for text container when icon is present
             },
             lg: {
-                rounded: ' rounded-[11px] ',
-                ring: 'rounded-[12px] p-[1px]', // Ring wrapper border radius
-                padding: ' px-4 ',
-                padding_icon_only: ' w-[46px] ',
-                padding_with_title: ' px-4 ',
-                icon_container: ' h-[46px]  flex items-center justify-center',
-                title_container: ' leading-[46px] text-base ',
+                rounded: 'rounded-xl ',
+                ring: '', // Ring wrapper removed
+                padding: '  ',
+                padding_icon_only: ' h-[52px] w-[52px] ',
+                padding_with_title: 'gap-3 px-6 h-[52px] items-center ',
+                icon_container: '  text-lg flex items-center ',
+                title_container: ' leading-6 text-base items-center flex',
                 icon_size: 24,
-                icon_margin: 'mx-1', // conditional margin for icon container when title is present
+                icon_margin: '', // conditional margin for icon container when title is present
                 title_margin: '', // conditional margin for text container when icon is present
             },
         },
@@ -1254,18 +1254,18 @@ export const settingsDefault = {
         },
         cards: {
             'u-card-list':
-                ' u-card-list bg-card shadow-sm text-card-foreground border-y-[0.5px] border-border/50 sm:border-[0.5px] border-border/50 sm:rounded-2xl sm:mb-4 ',
+                ' u-card-list bg-card/80 web:hover:bg-card shadow-sm text-card-foreground sm:rounded-2xl sm:mb-4 ',
             'u-card-list-padding': ' p-4 ',
             'u-card-base':
-                ' u-card-base bg-card border-[0.5px] border-border/40 shadow-sm text-card-foreground overflow-hidden rounded-2xl',
+                ' u-card-base bg-card/80 web:hover:bg-card shadow-sm text-card-foreground overflow-hidden rounded-2xl gap-4',
             'u-card-padding': ' p-4 ',
-            'u-card-header': 'flex px-6 pt-5 gap-1',
+            'u-card-header': 'flex gap-2',
             'u-card-icon': 'text-card-foreground px-4 gap-y-2 gap-x-3',
             'u-card-title':
-                'text-card-foreground text-2xl font-bold leading-8 tracking-tight',
-            'u-card-description': 'text-muted-foreground text-base leading-6',
-            'u-card-content': 'text-card-foreground px-6 gap-4',
-            'u-card-footer': 'flex text-card-foreground px-6 pb-5 gap-2',
+                'text-card-foreground text-2xl font-bold leading-none tracking-tight',
+            'u-card-description': 'text-muted-foreground text-sm leading-tight ',
+            'u-card-content': 'text-card-foreground ',
+            'u-card-footer': 'flex text-card-foreground gap-2',
         },
         panels: {
             'u-panel-base': 'm-0 gap-y-md',
@@ -1276,13 +1276,13 @@ export const settingsDefault = {
         },
         blocks: {
             'u-block-base':
-                'u-max-width-block py-4 rounded-xl lg:rounded-2xl',
+                'u-max-width-block rounded-xl lg:rounded-2xl gap-4',
             'u-block-bg':
                 'bg-card shadow-sm text-card-foreground border-[0.5px] border-border/50',
-             'u-block-pad':
-                'px-4',
+            'u-block-pad':
+                'p-4',
             'u-block-header':
-                'flex flex-row items-center  gap-4',
+                ' flex-row items-center gap-4',
             'u-block-icon': 'text-card-foreground',
             'u-block-name': 'flex flex-col flex-auto gap-y-2 gap-x-4',
             'u-block-title':
@@ -1506,18 +1506,16 @@ export const settingsDefault = {
         },
 
         button_styles: {
-            'u-btn-default-cnt': '  bg-card dark:bg-secondary web:group-hover:bg-border/60 dark:web:group-hover:bg-border/80',
+            'u-btn-default-cnt': ' bg-popover/80 web:hover:bg-popover shadow-xs border border-border/60 web:border-0 web:ring-1 web:ring-inset web:ring-border/60 web:hover:ring-border active:opacity-50 ',
             'u-btn-default-text':
-                ' font-medium text-card-foreground web:group-hover:text-foreground ',
+                ' font-medium text-popover-foreground  ',
             'u-btn-default-trans': '  web:duration-200',
-            'u-btn-default-ring':
-                ' group bg-border/80 web:hover:bg-border/80 active:bg-border web:duration-200 shadow-xs active:shadow-none  ',
+            'u-btn-default-ring': '',
 
-            'u-btn-primary-cnt': ' ',
+            'u-btn-primary-cnt': ' focus:outline-2 focus:outline-primary bg-primary web:hover:bg-primary/90 shadow-sm active:opacity-50 ',
             'u-btn-primary-text': ' font-medium text-primary-foreground ',
             'u-btn-primary-trans': ' web:duration-200',
-            'u-btn-primary-ring':
-                ' bg-primary web:hover:bg-primary/90 web:duration-200 shadow-sm web:active:shadow-none web:active:opacity-50  ',
+            'u-btn-primary-ring': '',
 
             'u-btn-accent-cnt':
                 ' bg-accent bg-accent web:active:ring-2 web:active:ring-accent web:active:ring-offset-2 web:active:outline-none ',
@@ -1525,40 +1523,36 @@ export const settingsDefault = {
             'u-btn-accent-trans': '  web:duration-200',
             'u-btn-accent-ring': ' bg-accent ',
 
-            'u-btn-secondary-cnt': '   ',
+            'u-btn-secondary-cnt': ' bg-secondary/60 web:hover:bg-secondary   ',
             'u-btn-secondary-text':
-                ' text-card-foreground web:group-hover:text-foreground  ',
+                ' font-medium text-card-foreground  ',
             'u-btn-secondary-trans': '  ',
-            'u-btn-secondary-ring':
-                ' group web:duration-100 bg-secondary/80 web:hover:bg-secondary active:opacity-50',
+            'u-btn-secondary-ring': '',
 
             'u-btn-danger-cnt':
                 '  dark:border-transparent bg-red-600 web:hover:bg-red-500 web:hover:shadow web:active:opacity-50 web:active:shadow-none',
             'u-btn-danger-text': 'font-medium text-danger-foreground',
             'u-btn-danger-trans': '  web:duration-200',
-            'u-btn-danger-ring': ' web:group web:duration-200 bg-danger ',
+            'u-btn-danger-ring': '',
 
             'u-btn-text-cnt': '  ',
             'u-btn-text-text':
                 ' font-medium text-card-foreground web:group-hover:text-foreground',
             'u-btn-text-trans': '  web:duration-200',
-            'u-btn-text-ring':
-                ' web:group web:duration-200 bg-transparent web:hover:bg-secondary/60 web:active:opacity-50 ',
+            'u-btn-text-ring': '',
 
             'u-btn-link-cnt': '  ',
             'u-btn-link-text':
                 ' font-medium text-primary web:group-hover:text-primary/90 ',
             'u-btn-link-trans': ' web:duration-200 ',
-            'u-btn-link-ring':
-                ' web:group web:duration-200 bg-transparent web:hover:bg-primary/10 ',
+            'u-btn-link-ring': '',
 
             'u-btn-outline-cnt':
-                ' bg-transparent outline outline-border/60 outline-1 ',
+                ' bg-transparent border border-border/60 web:border-0 web:ring-1 web:ring-inset web:ring-border/60 ',
             'u-btn-outline-text':
                 ' font-medium text-card-foreground web:group-hover:text-foreground ',
             'u-btn-outline-trans': '  web:duration-200',
-            'u-btn-outline-ring':
-                ' web:group web:duration-200 bg-transparent web:hover:bg-secondary/60 web:active:opacity-50 ',
+            'u-btn-outline-ring': '',
 
             'u-btn-group-item-cnt': '  bg-muted web:hover:bg-muted/50 ',
             'u-btn-group-item-text':
@@ -1566,7 +1560,7 @@ export const settingsDefault = {
             'u-btn-group-item-icon':
                 ' text-card-foreground web:group-hover:text-foreground ',
             'u-btn-group-item-ring':
-                ' web:group bg-border/60 web:duration-200 shadow-sm web:active:shadow-none web:active:bg-border ',
+                ' ',
 
             'u-btn-group-item-default-cnt':
                 'border border-transparent dark:border-transparent web:hover:bg-bgritem-h dark:web:hover:bg-bgritem-dh web:active:opacity-50',
@@ -1574,7 +1568,7 @@ export const settingsDefault = {
                 'font-medium text-neutral-800 dark:text-neutral-200 web:dark:group-hover:text-neutral-50',
             'u-btn-group-item-default-icon':
                 'text-neutral-700 dark:text-neutral-300 web:dark:group-hover:text-neutral-50',
-            'u-btn-group-item-default-ring': ' bg-border ',
+            'u-btn-group-item-default-ring': '',
 
             'u-btn-group-item-primary-cnt':
                 'border border-transparent dark:border-transparent web:hover:bg-bgritem-h dark:web:hover:bg-bgritem-dh web:active:opacity-50',
@@ -1582,7 +1576,7 @@ export const settingsDefault = {
                 'font-medium text-neutral-800 dark:text-neutral-200 web:dark:group-hover:text-neutral-50',
             'u-btn-group-item-primary-icon':
                 'text-neutral-700 dark:text-neutral-300 web:dark:group-hover:text-neutral-50',
-            'u-btn-group-item-primary-ring': ' bg-primary ',
+            'u-btn-group-item-primary-ring': '',
 
             'u-btn-group-item-secondary-cnt':
                 'border border-transparent dark:border-transparent bg-bgritem dark:bg-bgritem-d web:ctive:opacity-50 flex flex-row overflow-hidden',
@@ -1590,7 +1584,7 @@ export const settingsDefault = {
                 'font-medium text-neutral-800 web:hover:text-neutral-950 dark:text-neutral-200 web:dark:group-hover:text-white',
             'u-btn-group-item-secondary-icon':
                 'text-neutral-700 dark:text-neutral-300 web:dark:group-hover:text-neutral-50',
-            'u-btn-group-item-secondary-ring': ' bg-secondary ',
+            'u-btn-group-item-secondary-ring': '',
 
             'u-btn-group-item-text-cnt':
                 'border border-transparent dark:border-transparent web:hover:bg-bgrbutton-h dark:web:hover:bg-bgrbutton-dh web:active:opacity-50',
@@ -1598,18 +1592,18 @@ export const settingsDefault = {
                 'font-medium text-neutral-800 dark:text-neutral-200 web:dark:group-hover:text-neutral-50',
             'u-btn-group-item-text-icon':
                 'text-neutral-600 dark:text-neutral-400 web:dark:group-hover:text-neutral-50',
-            'u-btn-group-item-text-ring': ' bg-transparent ',
+            'u-btn-group-item-text-ring': '',
 
             'u-btn-group-item-link-cnt': '',
             'u-btn-group-item-link-text':
                 'font-medium text-muted-foreground web:hover:text-foreground web:active:text-foreground  ',
             'u-btn-group-item-link-icon':
                 'text-primary dark:text-primary web:dark:group-hover:text-primary',
-            'u-btn-group-item-link-ring': ' bg-transparent ',
+            'u-btn-group-item-link-ring': '',
             'u-btn-group-item-link-pressed-cnt': 'bg-primary/10 ',
             'u-btn-group-item-link-pressed-text': 'text-primary',
             'u-btn-group-item-link-pressed-icon': 'text-primary',
-            'u-btn-group-item-link-pressed-ring': 'bg-primary/10',
+            'u-btn-group-item-link-pressed-ring': '',
 
             'u-btn-group-item-outline-cnt':
                 'border border-bdritem dark:border-bdritem-d web:hover:bg-bgritem-h dark:web:hover:bg-bgritem-dh web:active:opacity-50',
@@ -1617,7 +1611,7 @@ export const settingsDefault = {
                 'font-medium text-neutral-800 dark:text-neutral-200 web:dark:group-hover:text-neutral-50',
             'u-btn-group-item-outline-icon':
                 'text-neutral-700 dark:text-neutral-300 web:dark:group-hover:text-neutral-50',
-            'u-btn-group-item-outline-ring': ' bg-transparent ',
+            'u-btn-group-item-outline-ring': '',
 
             'u-btn-group-item-accent-cnt':
                 'border border-transparent dark:border-transparent web:hover:bg-bgritem-h dark:web:hover:bg-bgritem-dh web:active:opacity-50',
@@ -1625,14 +1619,14 @@ export const settingsDefault = {
                 'font-medium text-neutral-800 dark:text-neutral-200 dark:group-hover:text-neutral-50',
             'u-btn-group-item-accent-icon':
                 'text-neutral-700 dark:text-neutral-300 dark:group-hover:text-neutral-50',
-            'u-btn-group-item-accent-ring': ' bg-accent ',
+            'u-btn-group-item-accent-ring': '',
 
             'u-btn-label-cnt':
                 'border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900 web:hover:bg-neutral-100 dark:web:hover:bg-neutral-800 web:active:opacity-70',
             'u-btn-label-text':
                 'font-normal text-sm text-neutral-600 dark:text-neutral-400 web:hover:text-neutral-800 dark:web:hover:text-neutral-200',
             'u-btn-label-trans': '  web:duration-200',
-            'u-btn-label-ring': ' bg-transparent ',
+            'u-btn-label-ring': '',
         },
         buttons_group_styles: {
             'u-btn-default-cnt':

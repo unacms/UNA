@@ -198,10 +198,10 @@ export default function UnitComments(props) {
             cellsArray.push(
                 <View key={`sp-${level}-${i}`} className="w-10">
                     {lvls[i + 1] && (
-                        <View className="ml-[19px] w-0.5 flex-auto bg-neutral-100 dark:bg-neutral-800" />
+                        <View className="ml-4 w-0.5 flex-auto bg-muted" />
                     )}
                     {i === level - 1 && (
-                        <View className="mt-2  ml-[19px] h-[35px] w-[29px] border-border/50 border-l-2 border-b-2 absolute -top-[14px] rounded-bl-[28px] flex-auto" />
+                        <View className=" ml-4 h-8 w-8 border-muted border-l-2 border-b-2 absolute  rounded-bl-3xl flex-auto" />
                     )}
                 </View>
             )
@@ -256,21 +256,21 @@ export default function UnitComments(props) {
         <Wrapper style={combinedStyles}>
             <Row className={`${cd('gap-sm')}`}>
                 {cells}
-                <View className={`w-10 z-50 flex-0 relative ${cd('mt-sm')}`}>
+                <View className={`w-9 z-50 flex-0 relative ${cd('mt-sm')}`}>
                     <Profile
                         {...data.author_data}
                         displayType="unit_wo_info"
-                        displaySize="base"
+                        displaySize="sm"
                         showInfo="false"
                     />
 
                     {items.length != 0 && view != 'flat' && (
-                        <View className="w-0.5 ml-[19px] top-0.5 flex-auto bg-neutral-100 dark:bg-neutral-800"></View>
+                        <View className="w-0.5 ml-4 top-0.5 flex-auto bg-muted"></View>
                     )}
                 </View>
 
                 <View
-                    className={`bg-muted border-[0.5px] shadow-sm border-border/40 flex-1 rounded-xl ${cd(
+                    className={`bg-muted/60 flex-1 rounded-xl ${cd(
                         'py-sm'
                     )} ${cd('px-md')} ${cd('mt-sm')} ${cd('gap-xs')}`}
                 >

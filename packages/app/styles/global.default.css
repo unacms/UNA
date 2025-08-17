@@ -5,7 +5,7 @@
 
 @layer base {
     .light-theme-vars {
-        --background: 250 250 250; /*zinc-50*/
+        --background: 244 244 245; /*zinc-100*/
         --foreground: 9 9 11; /*zinc-950*/
         --card: 255 255 255; /*white*/
         --card-foreground: 31 41 55; /*zinc-800*/
@@ -13,16 +13,16 @@
         --popover-foreground: 31 41 55; /*zinc-800*/
         --primary: 37 99 235; /*blue-600*/
         --primary-foreground: 250 250 250; /*zinc-50*/
-        --secondary: 228 228 231;  /*zinc-300*/
+        --secondary: 212 212 216;  /*zinc-300*/
         --secondary-foreground: 63 63 70; /*zinc-700*/
-        --muted: 244 244 245; /*zinc-100*/
-        --muted-foreground: 82 82 91; /*zinc-600*/
+        --muted: 228 228 231; /*zinc-200*/
+        --muted-foreground: 113 113 122; /*zinc-500*/
         --accent: 219 234 254; /*blue-100*/
         --accent-foreground: 37 99 235; /*blue-600*/
         --destructive: 225 29 72; /*rose-600*/
         --destructive-foreground: 255 241 242; /*rose-50*/
         --border: 212 212 216; /*zinc-300*/
-        --input: 244 244 245; /*zinc-100*/
+        --input: 250 250 250; /*zinc-50*/
         --ring: 96 165 250; /*blue-400*/
 
         --android-background: var(--background);
@@ -51,22 +51,22 @@
         /* NativewindUI Design Tokens - Dark Mode */
         --background: 9 9 11; /*zinc-950*/
         --foreground: 250 250 250; /*zinc-50*/
-        --card: 18 18 21; /*zinc-925*/
+        --card: 24 24 27; /*zinc-900*/
         --card-foreground: 228 228 231; /*zinc-200*/
-        --popover: 24 24 27; /*zinc-900*/
+        --popover: 39 39 42; /*zinc-800*/
         --popover-foreground: 228 228 231; /*zinc-200*/
-        --primary: 59 130 246; /*blue-500*/
+        --primary: 37 99 235; /*blue-600*/
         --primary-foreground: 250 250 250; /*zinc-50*/
-        --secondary: 39 39 42; /*zinc-800*/
+        --secondary: 63 63 70; /*zinc-700*/
         --secondary-foreground: 212 212 216; /*zinc-300*/
-        --muted: 24 24 27; /*zinc-900*/
-        --muted-foreground: 161 161 170; /*zinc-400*/
+        --muted: 39 39 42; /*zinc-800*/
+        --muted-foreground: 113 113 122; /*zinc-500*/
         --accent: 23 37 84; /*blue-950*/
         --accent-foreground: 59 130 246; /*blue-500*/
         --destructive: 225 29 72; /*rose-600*/
         --destructive-foreground: 76 5 25; /*rose-950*/
         --border: 63 63 70; /*zinc-700*/
-        --input: 24 24 27; /*zinc-900*/
+        --input: 9 9 11; /*zinc-900*/
         --ring: 37 99 235; /*blue-600*/
 
 

@@ -1,7 +1,7 @@
 import { View } from 'app/design/view'
 import { BlockByName, DataByName } from 'app/components/block'
 import { Text } from 'app/design/typography'
-import Card from 'app/ui/molecules/card'
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from 'app/ui/molecules/card'
 import Link from 'app/ui/atoms/link'
 import { Platform } from 'react-native'
 import { appStatic } from 'app/lib/app-static'
@@ -22,17 +22,17 @@ function PageContent(props) {
     const { t } = useTranslation()
     return (
         <Card padding="p-4 sm:p-6">
-            <View className="flex-col flex-auto gap-y-2 justify-center ">
-                <Text className="text-xl sm:text-2xl text-center lg:text-left leading-none tracking-tight font-semibold text-neutral-800 dark:text-neutral-200">
+            <CardHeader>
+                <CardTitle>
                     {t('create_account_page_caption')}
-                </Text>
-                {isWeb && <Text className="text-sm sm:text-base text-center lg:text-left text-neutral-500">
+                </CardTitle>
+                {isWeb && <CardDescription>
                     {t('create_account_page_already_have')}{' '}
                     <Link href="/login">{t('create_account_page_sign_in')}</Link>
                     .
-                </Text>}
-            </View>
-             <View className='my-6'>
+                </CardDescription>}
+            </CardHeader>
+             <CardContent>
             {!isAllowJoin && (
                 <BlockByName
                     name={props.blocks.form_invitation}
@@ -57,8 +57,10 @@ function PageContent(props) {
                     }}
                 />
             )}
-            </View>
+            </CardContent>
+            <CardFooter>
             <AuthPanel createAccountLink={false} loginLink={!isWeb} />
+            </CardFooter>
         </Card>
     );
 }
