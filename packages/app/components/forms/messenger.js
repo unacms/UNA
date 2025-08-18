@@ -37,14 +37,6 @@ export default function FormMessenger(props) {
         setIsFocused(false)
     }
 
-    useEffect(() => {
-        if (formContext.formState.isSubmitted) {
-            setImageSource([]);
-
-
-        }
-    }, [formContext.formState.isSubmitted]);
-
     function checkEditorHeight(height) {
         setEditorHeight(getEditorHeight(height, initialHeight))
     }

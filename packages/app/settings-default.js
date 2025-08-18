@@ -58,6 +58,7 @@ export const settingsDefault = {
         sidebar_search: true,
         extended_search: true,
         apps: true,
+        add_menu: true,
         show_profile_info: true,
         tooltips: true,
         hide_header_for_non_logged: false,

@@ -536,7 +536,7 @@ function GhostsList(imagesList, bMultiple, handleDelete, props) {
                         onPress={() => handleDelete(img.file_id)}
                         variant="default"
                         startDecorator="X"
-                        align="start"
+                        align="center"
                         title=""
                         rounded
                         size="xs"

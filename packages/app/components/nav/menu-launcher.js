@@ -8,7 +8,6 @@ import { useTranslation } from 'react-i18next';
 import { useState, useEffect, useMemo } from 'react';
 
 export default function () {
-
     const bApps = appSetting('layout', 'apps') == true;
     const cached = storageGet('menu:launcher', '');
 
@@ -30,8 +29,10 @@ export default function () {
     }
 
     const menu_launcher_items = appSetting('layout', 'user_remote_config') ? menuItemsByNameNew('menu_post', menuData, currentUser) : menuItemsByName('', appSetting('menu_items', 'menu_launcher'), currentUser);
-
-    if ((menu_launcher_items.length == 0) || !bApps)
+    
+    if (!bApps)
+         return <></>;
+    if ((menu_launcher_items.length == 0) && menuData)
         return <></>;
 
     return (

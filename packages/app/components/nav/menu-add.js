@@ -10,6 +10,7 @@ import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal';
 
 
 export default function MenuAdd({ buttonProps, children }) {
+    const bMenu = appSetting('layout', 'add_menu') == true;
     const { currentUser } = useCurrentUser();
     const [pageData, setPageData] = useState(false);
     const cached = storageGet('menu:add', '');
@@ -30,9 +31,12 @@ export default function MenuAdd({ buttonProps, children }) {
 
     const menu_add_items = appSetting('layout', 'user_remote_config') ? menuItemsByNameNew('menu_post', menuData, currentUser) : menuItemsByName('', appSetting('menu_items', 'menu_add'), currentUser);
 
-    if (menu_add_items.length == 0)
-        return <></>;
+    if (!bMenu)
+         return <></>;
 
+    if ((menu_add_items.length == 0) && menuData)
+        return <></>;
+    
     buttonProps = buttonProps || {
         variant: "secondary",
         rounded: 'rounded',
