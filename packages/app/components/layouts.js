@@ -107,8 +107,6 @@ function PageLayoutContent(props) {
         return <ConfirmEmail url={url} />;
     }
 
-    console.log("currentUser",currentUser)
-
     if (currentUser?.informer?.some(item => item.id == 'sys-account-profile-system')){
         if (currentUser.menu.items > 1){
             // TODO menu
