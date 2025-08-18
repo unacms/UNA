@@ -329,10 +329,10 @@ export const ItemInfo = memo(({ data, t }) => {
         return (
             l && (
                 <>
-                    <Text className=" text-muted-foreground text-sm leading-5">
+                    <Text className=" text-muted-foreground text-xs leading-5">
                         ·
                     </Text>
-                    <Text className=" text-muted-foreground text-sm leading-5 ">
+                    <Text className="px-1 text-muted-foreground font-semibold text-xs leading-5 ">
                         {l}
                     </Text>
                 </>
@@ -488,8 +488,9 @@ export const VisibilityInfo = memo(({ data }) => {
     const isUser = data.object_privacy_view < 0
 
     return (
-        <Row className={`${cd('gap-xs')} items-center`}>
-            <View className="flex-none rounded-full items-center justify-center">
+        <Row className={`items-center`}>
+            <Text className=" text-muted-foreground text-xs leading-5">·</Text>
+            <View className="flex-none px-1 flex-row gap-1 items-center justify-center">
                 {isUser ? (
                     <Profile
                         {...data.author_data}
@@ -497,14 +498,14 @@ export const VisibilityInfo = memo(({ data }) => {
                         displaySize="xs"
                     />
                 ) : icon ? (
-                    <View className="h-5 w-5 bg-muted/60 rounded-md flex items-center justify-center text-muted-foreground hover:text-muted-foreground">
+                    <View className="text-muted-foreground ">
                         <Icon icon={icon} width={14} height={14} />
                     </View>
                 ) : null}
-            </View>
-            <Text className="text-muted-foreground text-xs leading-5 text-center flex-auto font-medium">
-                {isUser ? data.author_data.display_name : text}
-            </Text>
+                    <Text className="text-muted-foreground text-xs leading-5 text-center flex-auto font-semibold">
+                        {isUser ? data.author_data.display_name : text}
+                    </Text>
+                </View>
         </Row>
     )
 })
@@ -540,13 +541,13 @@ export const Author = memo(({ data, url, t }) => {
                 displayType="unit"
                 displaySize="base"
                 showInfo={
-                    <Row className={`${cd('gap-xs')} items-center flex-wrap`}>
+                    <Row className={` items-center flex-wrap`}>
                          {isWeb ? (
                             <Link
                                 href={url}
                                 emulate={false}
                                 size="xs"
-                                variant="secondary"
+                                variant="ghost"
                                 className="u-time-hitarea relative "
                             >
                                 <Time
@@ -567,16 +568,13 @@ export const Author = memo(({ data, url, t }) => {
                                 }}
                             >
                                 <Time
-                                    stylesName="text-muted-foreground text-xs leading-5"
                                     ts={data.date}
                                 />
                             </Link>
                         )}
-                        <Text className=" text-muted text-sm leading-5">
-                            ·
-                        </Text>
+                        
                         <VisibilityInfo data={data} />
-
+                       
                         <ItemInfo data={data} t={t} />
                        
                     </Row>
@@ -594,11 +592,11 @@ export function SmallUnit({ data }) {
         <AnimatedBlock>
             <Link href={url} className="w-full" emulate={true}>
                 <Card className={' w-full tl-' + data.id}>
-                    <View className=" mr-2  xl:mr-3 rounded-full flex-none bg-secondary-500/10">
+                    <View className=" mr-2 xl:mr-3 rounded-full flex-none bg-secondary-500/10">
                         <Profile
                             {...data.author_data}
                             displayType="unit_wo_info"
-                            displaySize="bg"
+                            displaySize="base"
                         />
                     </View>
                     <View className="flex-auto flex-col my-auto">

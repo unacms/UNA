@@ -31,7 +31,7 @@ export default function Badge({ data, variant = "default", size = '', rounded = 
 
     if (data.badge_url) {
         return (
-            <Link href={data.badge_link}><View className={`rounded-full w-5 h-5 overflow-hidden ${className}`}><Image
+            <Link href={data.badge_link}><View className={`rounded-md w-5 h-5 overflow-hidden ${className}`}><Image
                 view="cover"
                 src={data.badge_url}
                 alt={data.badge_url.title_attr}
@@ -63,10 +63,12 @@ export default function Badge({ data, variant = "default", size = '', rounded = 
         let backgroundClass, textColorClass;
         
         if (mappedColor) {
-            // Use mapped color classes (includes both bg and text)
-            const parts = mappedColor.split(' ');
-            backgroundClass = parts.find(part => part.startsWith('bg-')) || '';
-            textColorClass = parts.find(part => part.startsWith('text-')) || 'text-white';
+            // Use mapped color classes (may include bg-, text-, and dark: variants)
+            const parts = mappedColor.split(/\s+/).filter(Boolean);
+            const bgParts = parts.filter(part => part.startsWith('bg-') || part.startsWith('dark:bg-'));
+            const textParts = parts.filter(part => part.startsWith('text-') || part.startsWith('dark:text-'));
+            backgroundClass = bgParts.join(' ');
+            textColorClass = textParts.join(' ') || 'text-white';
         } else {
             // Fallback to theme settings
             backgroundClass = badgeTheme['u-badge-' + variant];

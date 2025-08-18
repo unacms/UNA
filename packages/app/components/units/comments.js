@@ -272,7 +272,7 @@ export default function UnitComments(props) {
                 <View
                     className={`bg-muted/60 flex-1 rounded-xl ${cd(
                         'py-sm'
-                    )} ${cd('px-md')} ${cd('mt-md')} ${cd('gap-xs')}`}
+                    )} ${cd('px-sm')} ${cd('mt-md')} ${cd('gap-xs')}`}
                 >
                     <View className="flex-row items-center overflow-hidden justify-between gap-2 ">
                         <Profile
@@ -282,7 +282,7 @@ export default function UnitComments(props) {
                             showInfo="false"
                         />
 
-                        <Link href={data.cmt_url} className="flex items-center">
+                        <Link href={data.cmt_url} size="xs" variant="ghost" emulate={true}>
                             <Time ts={data.cmt_time}></Time>
                         </Link>
                         {!!data.cmt_mood && (
@@ -338,7 +338,7 @@ export default function UnitComments(props) {
                             />
                         </View>
                     )}
-                    <View className="text-foreground ">
+                    <View className="text-foreground px-1">
                         <Html
                             htmlStyles={{ fontSize: 16 }}
                             customClassName="u-vanilla-html-small"
@@ -356,7 +356,7 @@ export default function UnitComments(props) {
                         </View>
                     )}
                        {viewState.view != 'edited' && (
-                        <Row className={`${cd('pt-xs')} ${cd('gap-xs')}  `}>
+                        <Row className={`${cd('pt-xs')} ${cd('gap-xs')} `}>
                             {!!currentUser &&
                             !!props.handleReply &&
                             !props.module.includes('_reviews') ? (
@@ -367,7 +367,7 @@ export default function UnitComments(props) {
                                         size="xs"
                                         rounded
                                         startDecorator="MessageCircle"
-                                        variant="default"
+                                        variant="text"
                                         onPress={() => handleReply(data)}
                                     />
                                 </View>
@@ -391,7 +391,7 @@ export default function UnitComments(props) {
                                             size="xs"
                                             rounded
                                             startDecorator="MessageCircle"
-                                            variant="default"
+                                            variant="text"
                                         />
                                     </Link>
                                 </View>
@@ -408,7 +408,7 @@ export default function UnitComments(props) {
                                         show_counter: false,
                                         show_combined: false,
                                         button_size: 'xs',
-                                        button_variant: 'default',
+                                        button_variant: 'text',
                                         button_rounded: true,
                                     }}
                                 />
@@ -423,7 +423,7 @@ export default function UnitComments(props) {
                                             show_counter: true,
                                             show_combined: false,
                                             button_size: 'xs',
-                                            button_variant: 'default',
+                                            button_variant: 'text',
                                             button_rounded: true,
                                         }}
                                     />

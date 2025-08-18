@@ -81,16 +81,21 @@ export default function ElementTime(props) {
         return formatRelativeShort(dateObj, nowMs, t, formatDate, props.format);
     }, [dateObj, nowMs, t, props.format]);
 
-    const { stylesName, stylesNameAdd, title, accessibilityLabel, ...otherProps } = props;
+    const { stylesName, stylesNameAdd, title, accessibilityLabel, variant = 'default', ...otherProps } = props;
 
     const mergedProps = {
         ...(Platform.OS === 'web' ? { title: title || fullDateTime } : {}),
         accessibilityLabel: accessibilityLabel || fullDateTime,
     };
 
+    const defaultClasses =
+        variant === 'link'
+            ? ' text-xs leading-5 font-semibold relative u-time-hitarea '
+            : ' text-xs leading-5 font-semibold text-muted-foreground web:group-hover:text-accent-foreground ';
+
     return (
         <Text
-            className={stylesName || ` text-xs leading-5 font-medium text-muted-foreground web:group-hover:text-primary ${stylesNameAdd}`}
+            className={stylesName || `${defaultClasses}${stylesNameAdd || ''}`}
             {...mergedProps}
             {...otherProps}
         >

@@ -298,7 +298,7 @@ export default function (props) {
                             className={`hidden ${cellsCustomConfig.cells?.left?.breakpoint}:block`}
                             {...cellsCustomConfig.cells?.left}
                         >
-                            <View className={`${cd('p-md')} fixed-process border-r border-border/40`}>
+                            <View className={`${cd('p-md')} fixed-process ring-1 ring-border/40`}>
                                 {SideBarContent}
                             </View>
                         </Panel>

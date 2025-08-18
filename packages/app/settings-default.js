@@ -1082,7 +1082,7 @@ export const settingsDefault = {
                 icon_container:
                     ' h-7 text-sm flex items-center justify-center',
                 title_container: ' text-xs leading-7 text-xs',
-                icon_size: 14,
+                icon_size: 16,
                 icon_margin: ' ', // conditional margin for icon container when title is present
                 title_margin: '  ', //
             },
@@ -1168,10 +1168,10 @@ export const settingsDefault = {
                 padding: ' px-0 py-0 rounded-md text-xs ',
             },
             xs: {
-                padding: ' px-1 rounded-md text-xs font-medium leading-4 h-5 ',
+                padding: ' px-1 rounded-md text-xs  leading-5 h-5 ',
             },
             sm: {
-                padding: ' px-1.5 py-0.5 rounded-lg text-sm',
+                padding: ' px-1 rounded-lg text-sm  leading-6 ',
             },
             md: {
                 padding: ' px-3 py-2 rounded-xl text-base',
@@ -1190,9 +1190,9 @@ export const settingsDefault = {
 
             // Ghost: transparent by default; muted on hover/active
             'u-link-ghost-cnt':
-                ' bg-transparent web:hover:bg-muted/60 web:active:bg-secondary ',
+                 ' group bg-transparent web:hover:bg-accent/60 web:active:opacity-50 border-[0.5px] border-accent-foreground/10 web:border-0 web:hover:ring-[0.5px] web:hover:ring-inset web:hover:ring-accent-foreground/10 rounded-full ',
             'u-link-ghost-text':
-                ' text-muted-foreground web:hover:text-foreground ',
+                ' text-muted-foreground web:hover:text-accent-foreground ',
             'u-link-ghost-trans': ' web:duration-200 ',
 
             // Secondary: muted by default; secondary on hover/active
@@ -1317,51 +1317,51 @@ export const settingsDefault = {
             // Badge color mapping for data.color values
             color_mapping: {
                 // Exact color names to Tailwind classes
-                emerald: 'bg-emerald-600/20 text-emerald-600',
-                'emerald-600': 'bg-emerald-600/20 text-emerald-600',
-                purple: 'bg-purple-600/20 text-purple-600',
-                'purple-600': 'bg-purple-600/20 text-purple-600',
-                Purple: 'bg-purple-600/20 text-purple-600', // Handle capitalization
-                red: 'bg-red-600/20 text-red-600',
-                'red-600': 'bg-red-600/20 text-red-600',
-                blue: 'bg-blue-600/20 text-blue-600',
-                'blue-600': 'bg-blue-600/20 text-blue-600',
-                green: 'bg-green-600/20 text-green-600',
-                'green-600': 'bg-green-600/20 text-green-600',
-                yellow: 'bg-yellow-600/20 text-yellow-600',
-                'yellow-600': 'bg-yellow-600/20 text-yellow-600',
-                orange: 'bg-orange-600/20 text-orange-600',
-                'orange-600': 'bg-orange-600/20 text-orange-600',
-                teal: 'bg-teal-600/20 text-teal-600',
-                'teal-600': 'bg-teal-600/20 text-teal-600',
-                sky: 'bg-sky-600/20 text-sky-600',
-                'sky-600': 'bg-sky-600/20 text-sky-600',
-                indigo: 'bg-indigo-600/20 text-indigo-600',
-                'indigo-600': 'bg-indigo-600/20 text-indigo-600',
-                pink: 'bg-pink-600/20 text-pink-600',
-                'pink-600': 'bg-pink-600/20 text-pink-600',
-                rose: 'bg-rose-600/20 text-rose-600',
-                'rose-600': 'bg-rose-600/20 text-rose-600',
-                gray: 'bg-gray-600/20 text-gray-600',
-                'gray-600': 'bg-gray-600/20 text-gray-600',
-                slate: 'bg-slate-600/20 text-slate-600',
-                'slate-600': 'bg-slate-600/20 text-slate-600',
-                zinc: 'bg-zinc-600/20 text-zinc-600',
-                'zinc-600': 'bg-zinc-600/20 text-zinc-600',
-                neutral: 'bg-neutral-600/20 text-neutral-600',
-                'neutral-600': 'bg-neutral-600/20 text-neutral-600',
-                stone: 'bg-stone-600/20 text-stone-600',
-                'stone-600': 'bg-stone-600/20 text-stone-600',
-                amber: 'bg-amber-600/20 text-amber-600',
-                'amber-600': 'bg-amber-600/20 text-amber-600',
-                lime: 'bg-lime-600/20 text-lime-600',
-                'lime-600': 'bg-lime-600/20 text-lime-600',
-                cyan: 'bg-cyan-600/20 text-cyan-600',
-                'cyan-600': 'bg-cyan-600/20 text-cyan-600',
-                violet: 'bg-violet-600/20 text-violet-600',
-                'violet-600': 'bg-violet-600/20 text-violet-600',
-                fuchsia: 'bg-fuchsia-600/20 text-fuchsia-600',
-                'fuchsia-600': 'bg-fuchsia-600/20 text-fuchsia-600',
+                emerald: 'bg-emerald-600/20 text-emerald-600 dark:text-emerald-400',
+                'emerald-600': 'bg-emerald-600/20 text-emerald-600 dark:text-emerald-400',
+                purple: 'bg-purple-600/20 text-purple-600 dark:text-purple-400',
+                'purple-600': 'bg-purple-600/20 text-purple-600 dark:text-purple-400',
+                Purple: 'bg-purple-600/20 text-purple-600 dark:text-purple-400', // Handle capitalization
+                red: 'bg-red-600/20 text-red-600 dark:text-red-400',
+                'red-600': 'bg-red-600/20 text-red-600 dark:text-red-400',
+                blue: 'bg-blue-600/20 text-blue-600 dark:text-blue-400',
+                'blue-600': 'bg-blue-600/20 text-blue-600 dark:text-blue-400',
+                green: 'bg-green-600/20 text-green-600 dark:text-green-400',
+                'green-600': 'bg-green-600/20 text-green-600 dark:text-green-400',
+                yellow: 'bg-yellow-600/20 text-yellow-600 dark:text-yellow-400',
+                'yellow-600': 'bg-yellow-600/20 text-yellow-600 dark:text-yellow-400',
+                orange: 'bg-orange-600/20 text-orange-600 dark:text-orange-400',
+                'orange-600': 'bg-orange-600/20 text-orange-600 dark:text-orange-400',
+                teal: 'bg-teal-600/20 text-teal-600 dark:text-teal-400',
+                'teal-600': 'bg-teal-600/20 text-teal-600 dark:text-teal-400',
+                sky: 'bg-sky-600/20 text-sky-600 dark:text-sky-400',
+                'sky-600': 'bg-sky-600/20 text-sky-600 dark:text-sky-400',
+                indigo: 'bg-indigo-600/20 text-indigo-600 dark:text-indigo-400',
+                'indigo-600': 'bg-indigo-600/20 text-indigo-600 dark:text-indigo-400',
+                pink: 'bg-pink-600/20 text-pink-600 dark:text-pink-400',
+                'pink-600': 'bg-pink-600/20 text-pink-600 dark:text-pink-400',
+                rose: 'bg-rose-600/20 text-rose-600 dark:text-rose-400',
+                'rose-600': 'bg-rose-600/20 text-rose-600 dark:text-rose-400',
+                gray: 'bg-gray-600/20 text-gray-600 dark:text-gray-400',
+                'gray-600': 'bg-gray-600/20 text-gray-600 dark:text-gray-400',
+                slate: 'bg-slate-600/20 text-slate-600 dark:text-slate-400',
+                'slate-600': 'bg-slate-600/20 text-slate-600 dark:text-slate-400',
+                zinc: 'bg-zinc-600/20 text-zinc-600 dark:text-zinc-400',
+                'zinc-600': 'bg-zinc-600/20 text-zinc-600 dark:text-zinc-400',
+                neutral: 'bg-neutral-600/20 text-neutral-600 dark:text-neutral-400',
+                'neutral-600': 'bg-neutral-600/20 text-neutral-600 dark:text-neutral-400',
+                stone: 'bg-stone-600/20 text-stone-600 dark:text-stone-400',
+                'stone-600': 'bg-stone-600/20 text-stone-600 dark:text-stone-400',
+                amber: 'bg-amber-600/20 text-amber-600 dark:text-amber-400',
+                'amber-600': 'bg-amber-600/20 text-amber-600 dark:text-amber-400',
+                lime: 'bg-lime-600/20 text-lime-600 dark:text-lime-400',
+                'lime-600': 'bg-lime-600/20 text-lime-600 dark:text-lime-400',
+                cyan: 'bg-cyan-600/20 text-cyan-600 dark:text-cyan-400',
+                'cyan-600': 'bg-cyan-600/20 text-cyan-600 dark:text-cyan-400',
+                violet: 'bg-violet-600/20 text-violet-600 dark:text-violet-400',
+                'violet-600': 'bg-violet-600/20 text-violet-600 dark:text-violet-400',
+                fuchsia: 'bg-fuchsia-600/20 text-fuchsia-600 dark:text-fuchsia-400',
+                'fuchsia-600': 'bg-fuchsia-600/20 text-fuchsia-600 dark:text-fuchsia-400',
             },
         },
         tables: {
@@ -1507,7 +1507,7 @@ export const settingsDefault = {
         },
 
         button_styles: {
-            'u-btn-default-cnt': ' bg-popover/80 web:hover:bg-popover shadow-xs border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 web:hover:ring-border active:opacity-50 ',
+            'u-btn-default-cnt': ' bg-popover/80 web:hover:bg-popover shadow-xs border-[0.5px] border-border/80 web:border-0 web:ring-[0.5px] web:ring-inset web:ring-border/80 web:hover:ring-border active:opacity-50 ',
             'u-btn-default-text':
                 ' font-medium text-popover-foreground  ',
             'u-btn-default-trans': '  web:duration-200',
@@ -1519,28 +1519,28 @@ export const settingsDefault = {
             'u-btn-primary-ring': '',
 
             'u-btn-accent-cnt':
-                ' bg-accent bg-accent web:active:ring-2 web:active:ring-accent web:active:ring-offset-2 web:active:outline-none ',
+                ' bg-accent  web:active:ring-2 web:active:ring-accent web:active:ring-offset-2 web:active:outline-none ',
             'u-btn-accent-text': ' font-medium text-white ',
             'u-btn-accent-trans': '  web:duration-200',
-            'u-btn-accent-ring': ' bg-accent ',
+            
 
             'u-btn-secondary-cnt': ' bg-secondary/60 web:hover:bg-secondary   ',
             'u-btn-secondary-text':
                 ' font-medium text-card-foreground  ',
             'u-btn-secondary-trans': '  ',
-            'u-btn-secondary-ring': '',
+            
 
             'u-btn-danger-cnt':
                 '  dark:border-transparent bg-red-600 web:hover:bg-red-500 web:hover:shadow web:active:opacity-50 web:active:shadow-none',
             'u-btn-danger-text': 'font-medium text-danger-foreground',
             'u-btn-danger-trans': '  web:duration-200',
-            'u-btn-danger-ring': '',
+            
 
-            'u-btn-text-cnt': '  ',
+            'u-btn-text-cnt': ' group web:hover:bg-muted active:opacity-50   ',
             'u-btn-text-text':
                 ' font-medium text-card-foreground web:group-hover:text-foreground',
             'u-btn-text-trans': '  web:duration-200',
-            'u-btn-text-ring': '',
+            
 
             'u-btn-link-cnt': '  ',
             'u-btn-link-text':
