@@ -22,7 +22,14 @@ export default function ElementPricing({ data }) {
     });
     const periodSet = [...periodMap.values()];
 
-    periodSet.forEach(item => {
+    const order = ["year", "month"];
+
+    const sorted = periodSet.sort((a, b) => {
+        return order.indexOf(a.unit) - order.indexOf(b.unit);
+    });
+
+
+    sorted.forEach(item => {
         preparedTabs.push({
             key: `tab_${item.unit}_${item.period}`,
             title: t('price-period-' + item.unit + '-' + item.period),

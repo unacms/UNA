@@ -69,11 +69,11 @@ const SliderControls = ({ items }) => {
             <Animated.View className='w-full' style={{ transform: [{ translateX: position }], opacity }}>
                 {items[currentIndex]}
             </Animated.View>
-            <View className='absolute top-1/4 left-2'>
-                <Button variant="outline" rounded size="base" onPress={goLeft} startDecorator="ArrowLeft" />
+            <View className='absolute top-[calc(50%)] left-3'>
+                <Button variant="primary" rounded size="base" onPress={goLeft} startDecorator="ArrowLeft" />
             </View>
-            <View className='absolute top-1/4 right-2'>
-                <Button variant="outline" rounded size="base" onPress={goRight} startDecorator="ArrowRight" />
+            <View className='absolute top-[calc(50%)] right-3'>
+                <Button variant="primary" rounded size="base" onPress={goRight} startDecorator="ArrowRight" />
             </View>
         </View>
     );
