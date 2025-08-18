@@ -89,8 +89,9 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
 
     useEffect(() => {
         fetchConvos(searchValue);
-        if (convos && convos.data.length > 0)
+        if (convos && convos?.data && convos?.data?.length > 0){
             setConvoId(convos.data[0].id);
+        }
     }, [searchValue]);
 
     const fetchItems = async (convoId, isAddJots) => {
@@ -151,7 +152,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
 
 
     useEffect(() => {
-        if (convoId == '' && convos) {
+        if (convoId == '' && convos?.data?.length > 0) {
             setConvoId(convos?.data[0]?.id);
         }
     }, [convos]);
@@ -361,7 +362,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     }, [
         panelsVisible.convos,
         layoutHeightLeft,
-        convos?.data.length,
+        convos?.data?.length,
         selectedConvoIndex,
         changeConvo,
         handleSearch,
@@ -551,7 +552,7 @@ const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, 
                                 No conversations found
                             </Text>
                         </View>
-                        <CreateConvoButton variant='full' onSave={onSave} onShow={onSave2} />
+                        <CreateConvoButton variant='secondary' onSave={onSave} onShow={onSave2} />
                     </View>
                 </View></View>
 

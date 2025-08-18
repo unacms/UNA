@@ -58,7 +58,7 @@ export default function MenuItemButton(oProps) {
 
             const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
 
-            let sButtonIcon = '';
+            let sButtonIcon = oProps.icon;
             if (oProps.list && oProps.list.length == 0)
                 sButtonIcon = "Users"
 

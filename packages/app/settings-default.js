@@ -1666,3 +1666,5 @@ export const settingsDefault = {
         },
     },
 }
+
+settingsDefault.layouts['persons-profile-info'] = settingsDefault.layouts['view-persons-profile'];
