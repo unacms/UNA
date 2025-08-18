@@ -1171,7 +1171,7 @@ export const settingsDefault = {
                 padding: ' px-1 rounded-md text-xs  leading-5 h-5 ',
             },
             sm: {
-                padding: ' px-1 rounded-lg text-sm  leading-6 ',
+                padding: ' px-1 rounded-lg text-sm  leading-6 h-6 text-center ',
             },
             md: {
                 padding: ' px-3 py-2 rounded-xl text-base',

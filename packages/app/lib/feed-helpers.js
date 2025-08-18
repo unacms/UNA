@@ -332,7 +332,7 @@ export const ItemInfo = memo(({ data, t }) => {
                     <Text className=" text-muted-foreground text-xs leading-5">
                         ·
                     </Text>
-                    <Text className="px-1 text-muted-foreground font-semibold text-xs leading-5 ">
+                    <Text className="px-1 text-muted-foreground tracking-tight text-xs leading-5 ">
                         {l}
                     </Text>
                 </>

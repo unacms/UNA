@@ -65,15 +65,15 @@ function UnitWoInfo({ oProps, sSize, sSizeFontLetter, iSizeWidth, bShowLinks, em
 function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont, actions, info2 }) {
     return (
        <Row className={`${cd('gap-xs')} justify-between`}>
-       <View className="my-auto">
+       <View className="my-auto gap-0.5">
 
             {bShowLinks ? (
                 <Row className={`${cd('gap-xs')} items-center`}>
-                    <Link variant="ghost" size="sm" emulate={emulate} haptics="Select" href={oProps.url}>
+                    <Link variant="ghost" size="xs" emulate={emulate} haptics="Select" href={oProps.url}>
                         <DisplayNameLink
                             title={oProps.display_name}
                             url={oProps.url}
-                            fontSize={sSizeFont}
+                            fontSize={ 'text-sm leading-5' }
                             href={oProps.href}
                         />
                     </Link>
@@ -128,14 +128,14 @@ function AtomProfile_(oProps) {
             sSize: 'w-5 h-5',
             iSizeWidth: 20,
             iSizeHeight: 20,
-            sSizeFont: 'text-xs', 
+            sSizeFont: 'text-xs leading-5', 
             sSizeFontLetter: ' text-base font-semibold',
         },
         sm: {
             sSize: 'w-9 h-9',
             iSizeWidth: 36,
             iSizeHeight: 36,
-            sSizeFont: 'native: text-base web: text-base',
+            sSizeFont: 'text-sm leading-6',
             sSizeFontLetter: ' text-base opacity-50 font-semibold',
         },
         base: {
