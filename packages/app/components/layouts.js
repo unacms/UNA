@@ -112,19 +112,20 @@ function PageLayoutContent(props) {
 
     if (currentUser?.informer?.some(item => item.id == 'sys-account-profile-system')) {
         if (currentUser?.menu?.items?.length > 1) {
-            return (<Card className='mx-auto my-4'>
-                <Text className='text-card-foreground text-base font-semibold text-center'>Create a profile...</Text>
-                <Row className='gap-x-3'>
-                    {currentUser.menu.items.map(item => {
-                        return (<Link href={item.link} key={item.name}><Button title={item.title} startDecorator={item.icon} /></Link>);
-                    })}
-                </Row>
-            </Card>)
+            return (
+                <Card className='mx-auto my-4'>
+                    <Text className='text-card-foreground text-base font-semibold text-center'>Create a profile...</Text>
+                    <Row className='gap-x-3'>
+                        {currentUser.menu.items.map(item => {
+                            return (<Link href={item.link} key={item.name}><Button title={item.title} startDecorator={item.icon} /></Link>);
+                        })}
+                    </Row>
+                </Card>
+            )
         }
         else {
             return <RedirectElement data={{ uri: currentUser.menu.items[0].link }} />
         }
-
     }
 
     const Component = getComponent('layout', layoutName);
