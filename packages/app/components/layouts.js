@@ -102,6 +102,17 @@ function PageLayoutContent(props) {
     const { data, url } = props;
     const { currentUser } = useCurrentUser();
     const { layoutName, layoutBlocks, isCustomLayout } = props.layout;
+
+
+    const informerKey = currentUser?.informer?.map(i => i.id).join(",");
+    console.log("informerKeyinformerKey", informerKey)
+
+    const hasProfileInformer = useMemo(() => {
+        return currentUser?.informer?.some(
+            item => item.id === "sys-account-profile-system"
+        );
+    }, [currentUser.id]);
+
     if (data?.page_status === 404 || data?.page_status === 403) {
         return <ErrorPage type={data?.page_status} />;
     }
@@ -110,7 +121,7 @@ function PageLayoutContent(props) {
         return <ConfirmEmail url={url} />;
     }
 
-    if (currentUser?.informer?.some(item => item.id == 'sys-account-profile-system')) {
+    if (hasProfileInformer) {
         if (currentUser?.menu?.items?.length > 1) {
             return (
                 <Card className='mx-auto my-4'>

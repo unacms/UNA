@@ -382,18 +382,19 @@ export default function (props) {
                 data={item}
             />
         ));
-        contentElement =  <Galery items={items} />
+        contentElement = <Galery items={items} />
 
     }
 
-    if (props.sidebar) {
+
+    if (props.sidebar && !props.extraProps?.galery) {
         const uniqueItems = dataItems.data.filter(
             (v, i, a) => a.findIndex((t) => t.id === v.id) === i
         )
         const limitedItems = props.extraProps?.limit
             ? uniqueItems.slice(0, props.extraProps?.limit)
             : uniqueItems
-        contentElement =limitedItems.map((item, index) => (
+        contentElement = limitedItems.map((item, index) => (
             <View key={`item${index}`} className={`${numColumns > 1 ? 'pb-2' : ''} ${data.unit !== 'feed' ? 'w-full' : ''}`}>
                 <Unit
                     unit={data.unit ? data.unit : ''}
@@ -502,9 +503,10 @@ export default function (props) {
         ]
     )
 
-    if (!contentElement){
-    contentElement = <UniList {...memoizedUniListProps} />
+    if (!contentElement) {
+        contentElement = <UniList {...memoizedUniListProps} />
     }
+
 
     return (
         <View className="w-full h-full">
@@ -536,7 +538,7 @@ export default function (props) {
                 ) : (
                     <></>
                 )}
-                {contentElement}
+               {contentElement}
             </View>
         </View>
     )
