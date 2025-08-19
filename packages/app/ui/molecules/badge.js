@@ -14,10 +14,11 @@ export default function Badge({ data, variant = "default", size = '', rounded = 
         const containerClasses = size && badgeSizes[size]?.container || '';
         const pad = size && (children ? badgeSizes[size]?.wide_padding : badgeSizes[size]?.padding) || '';
         const defaultPadNoSize = !size ? 'px-1' : '';
+        const variantTextClass = badgeTheme['u-badge-' + variant + '-text'] || badgeTheme['u-badge-text-' + variant] || '';
         return (
-            <View className={`u-badge-base ${badgeTheme['u-badge-base']} ${badgeTheme['u-badge-' + variant]} ${containerClasses} ${pad} ${defaultPadNoSize} ${rounded ? (typeof rounded === 'string' ? rounded : 'rounded-full') : (size && badgeSizes[size]?.rounded || 'rounded-md')} ${className}`}>
-                <Icon icon="BadgeCheck" size={size && badgeSizes[size]?.icon_size || 16} className={`${badgeTheme['u-badge-text-' + variant]}`} />
-                <Text className={`${badgeTheme['u-badge-text']} ${size && badgeSizes[size]?.text || ''} ${badgeTheme['u-badge-text-' + variant]}`} >
+            <View className={` self-start web:inline-flex items-center flex-row ${badgeTheme['u-badge-' + variant]} ${containerClasses} ${pad} ${defaultPadNoSize} ${rounded ? (typeof rounded === 'string' ? rounded : 'rounded-full') : (size && badgeSizes[size]?.rounded || 'rounded-md')} ${className}`}>
+                <Icon icon="BadgeCheck" size={size && badgeSizes[size]?.icon_size || 16} className={`${variantTextClass}`} />
+                <Text className={`${badgeTheme['u-badge-text']} ${size && badgeSizes[size]?.text || ''} ${variantTextClass}`} >
                     {children}
                 </Text>
             </View>
@@ -46,7 +47,7 @@ export default function Badge({ data, variant = "default", size = '', rounded = 
         const hasBoth = hasIcon && hasText;
         
         // Build base classes; default padding/rounding only if size not provided
-        const baseClasses = `items-center flex-row`;
+        const baseClasses = `items-center flex-row self-start web:inline-flex`;
         
         // Container sizing and padding from size map
         const containerSize = size && badgeSizes[size]?.container || '';
@@ -72,7 +73,8 @@ export default function Badge({ data, variant = "default", size = '', rounded = 
         } else {
             // Fallback to theme settings
             backgroundClass = badgeTheme['u-badge-' + variant];
-            textColorClass = badgeTheme['u-badge-text-' + variant];
+            const variantTextClass = badgeTheme['u-badge-' + variant + '-text'] || badgeTheme['u-badge-text-' + variant] || '';
+            textColorClass = variantTextClass;
         }
         
         return (

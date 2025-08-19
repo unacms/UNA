@@ -215,10 +215,10 @@ export default function (props) {
                             <Link href={currentUser.url} emulate={true}>
                                 <Row
                                     className={
-                                        ' rounded-xl group items-center px-1 gap-x-1 hover:bg-muted active:opacity-50  '
+                                        ' rounded-xl sm:px-0.5 group items-center hover:bg-muted/80 active:opacity-50  '
                                     }
                                 >
-                                    <View className="p-1.5">
+                                    <View className='p-1.5'>
                                         <Profile
                                             {...currentUser}
                                             url_avatar={currentUser.avatar}
@@ -227,13 +227,11 @@ export default function (props) {
                                         />
                                     </View>
 
-                                    <View className="flex-col ">
-                                        <Text className=" text-sm leading-tight  flex-auto my-auto font-semibold truncate text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-white web:duration-200">
+                                    <View className="gap-0.5 px-0.5">
+                                        <Text className=" text-sm leading-tight font-semibold truncate text-card-foreground web:group-hover:text-foreground ">
                                             {currentUser.display_name}
                                         </Text>
-                                        <Text className=" text-xs leading-tight flex-auto my-auto truncate text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-800 dark:group-hover:text-neutral-200 web:duration-200">
-                                            <Badge size="xs" variant="outline" data={{text:currentUser.membership_name}}/>
-                                        </Text>
+                                        <Badge size="xs" variant="default" data={{text:currentUser.membership_name}}/>
                                     </View>
                                 </Row>
                             </Link>
@@ -298,7 +296,7 @@ export default function (props) {
                             className={`hidden ${cellsCustomConfig.cells?.left?.breakpoint}:block`}
                             {...cellsCustomConfig.cells?.left}
                         >
-                            <View className={`${cd('p-md')} fixed-process ring-1 ring-border/40`}>
+                            <View className={`${cd('p-sm')} fixed-process `}>
                                 {SideBarContent}
                             </View>
                         </Panel>

@@ -26,22 +26,22 @@ const Logo = ({ mode = 'adaptive' }) => {
     const theme = ThemeName();
 
     const textStyles = {
-        adaptive: 'hidden sm:block ml-3',
-        mark: 'hidden',
-        full: 'ml-3',
+        adaptive: 'hidden sm:block ',
+        mark: 'hidden ',
+        full: ' ',
     };
 
     const markStyles = {
-        text: 'hidden',
+        text: 'hidden sm:block px-0.5',
     };
 
     return (
-        <Row className='items-center'>
+        <Row className='items-center gap-2'>
             <View className={`${markStyles[mode]}`}>
                 <Svg
                     aria-label="Logo Mark"
-                    width={40}
-                    height={40}
+                    width={36}
+                    height={36}
                     color={theme === 'dark' ? 'white' : 'black'}
                     viewBox="0 0 40 40"
                     xmlns="http://www.w3.org/2000/svg"

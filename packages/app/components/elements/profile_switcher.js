@@ -52,8 +52,8 @@ export default function (props) {
                     {props.children}
                 </Pressable> :
                 <Link href={currentUser.url} emulate={true} >
-                    <Row className={rounded + " w-full group items-center px-2 py-1 justify-between cursor-pointer hover:bg-bgrbutton dark:hover:bg-bgrbutton-d"}>
-                        <Row className='flex-row items-center'>
+                    <Row className={rounded + " w-full group items-center px-0.5 justify-between cursor-pointer hover:bg-bgrbutton dark:hover:bg-bgrbutton-d"}>
+                        <Row className='flex-row items-center p-1.5'>
                             <Profile
                                 {...currentUser}
                                 url_avatar={currentUser.avatar}
@@ -61,14 +61,14 @@ export default function (props) {
                                 displaySize="base"
                             />
                             <View className='flex-col'>
-                            <Text className=" text-base pl-3 flex-auto my-auto font-semibold truncate text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-white web:duration-300">
+                            <Text className=" text-base p-1.5 flex-auto my-auto font-semibold truncate text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-white web:duration-300">
                                 {currentUser.display_name}
                             </Text>
-                            <Text className=" text-xs pl-3 flex-auto my-auto truncate text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-800 dark:group-hover:text-neutral-200 web:duration-300">
+                            <Text className=" text-xs p-1.5 flex-auto my-auto truncate text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-800 dark:group-hover:text-neutral-200 web:duration-300">
                                 {currentUser.membership_name}
                             </Text></View>
                         </Row>
-                        <View className='flex-none'>
+                        <View className='flex-none p-1.5'>
                             {currentUser.profiles_count > 1 && <Button
                                 variant="text"
                                 size="sm"

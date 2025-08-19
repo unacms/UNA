@@ -91,7 +91,7 @@ export const settingsDefault = {
             scrolled:
                 ' backdrop-blur-xl my-auto w-full mx-auto bg-card/90 shadow-sm ',
             content: ' h-16 mx-auto justify-between ',
-            content_left: ' flex-row w-80 2xl:w-96 px-2 xl:px-3 ',
+            content_left: ' flex-row px-2 ',
             content_right:
                 ' w-80 2xl:w-96 items-center justify-end h-full px-3 ',
             content_center:
@@ -949,7 +949,7 @@ export const settingsDefault = {
             primaryBg: 'rgba(37,99,235,0.1)',
         },
         dropdown: {
-            cnt: ' rounded-2xl overflow-hidden shadow-lg p-2 border border-border/60 bg-card/60 backdrop-blur-xl z-50  ',
+            cnt: ' rounded-2xl overflow-hidden shadow-lg p-1.5 border border-border/20 bg-popover/60 backdrop-blur-xl z-50  ',
         },
         conductor: {
             menu: '   w-full items-left justify-center  ',
@@ -1129,7 +1129,7 @@ export const settingsDefault = {
             xs: {
                 padding: ' px-0.5',
                 wide_padding: ' px-1 ',
-                container: ' min-w-5 h-5 gap-1 items-center justify-center ',
+                container: ' min-w-5 h-5 gap-1 justify-center items-center ',
                 icon_size: 14,
                 text: ' text-xs ',
                 rounded: ' rounded-md ',
@@ -1298,8 +1298,8 @@ export const settingsDefault = {
                 'flex flex-row text-card-foreground mb-auto gap-2 ',
         },
         badges: {
-            'u-badge-base': ' items-center rounded-full flex-row ',
-            'u-badge-default': ' bg-primary/20 text-primary ',
+            'u-badge-default': ' bg-popover/80 text-secondary-foreground border-[0.5px] border-border/80 web:border-0 web:ring-[0.5px] web:ring-inset web:ring-border/80 rounded-full ',
+            'u-badge-default-text': ' text-muted-foreground ',
             'u-badge-destructive':
                 ' bg-destructive text-destructive-foreground ',
             'u-badge-outline':
@@ -1307,12 +1307,8 @@ export const settingsDefault = {
             'u-badge-accent': ' bg-accent/50 text-accent-foreground ',
             'u-badge-secondary': ' bg-secondary text-secondary-foreground ',
             'u-badge-text':
-                ' whitespace-nowrap text-ellipsis overflow-hidden tracking-tight font-medium ',
-            'u-badge-text-default': ' text-primary ',
-            'u-badge-text-accent': ' text-accent-foreground ',
-            'u-badge-text-destructive': ' text-destructive-foreground ',
-            'u-badge-text-outline': ' text-card-foreground ',
-            'u-badge-text-secondary': ' text-secondary-foreground ',
+                ' whitespace-nowrap tracking-tight font-medium ',
+           
 
             // Badge color mapping for data.color values
             color_mapping: {
