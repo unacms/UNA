@@ -50,10 +50,7 @@ export default function () {
                     rounded
                     alt={t("All Apps")}
                     startDecorator="LayoutGrid"
-                    hitSlop={4}
-                    
                     size="base"
-                    
                 />
             </DropdownMenu>
     );

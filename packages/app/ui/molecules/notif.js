@@ -39,7 +39,6 @@ export default function ({ buttonProps, children, tooltip, fullWidth }) {
         rounded: true,
         startDecorator: 'Bell',
         size: 'base',
-        hitSlop: 4,
         
     }
 

@@ -445,7 +445,7 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
             }
         }
     };
-    let button = <Button startDecorator={props.icon ? props.icon : sIcon} tooltip={t("Add " + props.name)} title={props.title ? props.title : sTitle} size={props.size ? props.size : "base"} variant={props.variant ? props.variant : "text"} rounded={props.rounded ? props.rounded : false} onPress={selectImage} {...(props.hitSlop && { hitSlop: props.hitSlop })} />
+    let button = <Button startDecorator={props.icon ? props.icon : sIcon} tooltip={t("Add " + props.name)} title={props.title ? props.title : sTitle} size={props.size ? props.size : "base"} variant={props.variant ? props.variant : "text"} rounded={props.rounded ? props.rounded : false} onPress={selectImage} />
 
     if (!bMultiple) {
         let img = imagesList && imagesList.length > 0 ? imagesList[0] : null;

@@ -313,7 +313,6 @@ export default function FormComments(props) {
                                     size: 'sm',
                                     variant: 'primary',
                                     rounded: true,
-                                    hitSlop: 4,
                                     alt: 'Post',
                                     tooltip: 'Post',
                                 }
@@ -329,7 +328,7 @@ export default function FormComments(props) {
                         props.data.inputs['cmt_image'],
                         props.handleSubmit,
                         'notitle',
-                        { hide_button: true, list_only: true, hitSlop: 4, }
+                        { hide_button: true, list_only: true}
                     )
                 }</Row>
             </ScrollView>

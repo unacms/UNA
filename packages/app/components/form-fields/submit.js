@@ -22,7 +22,6 @@ export default function FormFieldSubmit(props) {
         notFullWidth = false,
         saveOnChanges = false,
         hide_errors = true,
-        hitSlop,
         ...restFieldProps
     } = props;
 
@@ -68,8 +67,7 @@ export default function FormFieldSubmit(props) {
         rounded,
         size,
         disabled: formState.isSubmitting || disabled,
-        fullWidth: fb,
-        ...(hitSlop && { hitSlop }),
+        fullWidth: fb
     };
 
     const buttonHandlers = Platform.select({

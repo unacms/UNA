@@ -57,8 +57,6 @@ export default function ElementSearch(oProps) {
                     }
                     rounded
                     size="base"
-                    hitSlop={4}
-                    
                     tooltip={
                         oProps.tooltip === undefined ? 'Search' : oProps.tooltip
                     }
@@ -131,7 +129,6 @@ export function SearchPanel(props) {
                     >
                         <Button
                             variant="outline"
-                            hitSlop={4}
                             size="sm"
                             endDecorator="Search"
                         />
@@ -271,7 +268,6 @@ export function ElementSearchData(oProps) {
         <Button
             variant="link"
             size="sm"
-            hitSlop={4}
             fullWidth
             endDecorator="ChevronsRight"
             title={sTxtViewExtended}
@@ -346,7 +342,6 @@ export function ElementSearchData(oProps) {
                                 <Button
                                     variant="text"
                                     size="sm"
-                                    hitSlop={4}
                                     rounded
                                     endDecorator="ChevronsRight"
                                     title={sTxtViewExtended}
