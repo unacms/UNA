@@ -29,7 +29,6 @@ const handleDo = (redirectdRef, link, callback, event, setLayoutData) => {
 export default function ElementComments(oProps) {
     const { setLayoutData } = useLayoutData();
     const redirectdRef = useRef();
-
     const oParams = useMemo(() => ({ ...appSetting('social_actions', 'comment'), ...oProps.params }), [oProps.params]);
  
     const oAction = oProps.action;
@@ -43,7 +42,7 @@ export default function ElementComments(oProps) {
         size: isTextMode? 'base' : oProps.params?.button_size,
         rounded: oProps.params?.button_rounded,
         fullWidth: oProps.params?.button_full_width,
-        showTitleFromSize: oProps.params?.button_show_title_from_size,
+        showTitleFromSize: oProps.paramsi?.button_show_title_from_size || oProps.params?.button_show_title_from_size,
         ring: oProps.params?.button_ring
     };
 

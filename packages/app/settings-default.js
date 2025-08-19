@@ -759,13 +759,13 @@ export const settingsDefault = {
                 { component: 'launcher', className: 'hidden sm:block' },
                 { component: 'add', className: '' },
                 { component: 'notifications', className: 'hidden sm:block' },
-                { component: 'messenger', className: 'hidden sm:block' },
+                { component: 'link', href: "{messenger}", className: 'hidden sm:block', props: { variant: "secondary", rounded: true, size: "base", startDecorator: "MessageSquare" } },
                 { component: 'account', className: 'hidden sm:block' },
             ],
             loggedOut: [
                 { component: 'search', className: 'items-center' },
                 { component: 'launcher', className: 'items-center' },
-                { component: 'login', className: 'items-center' },
+                { component: 'link', className: 'items-center', href: "/login", props: { variant: "secondary", rounded: true, size: "base", startDecorator: "UserRound" } },
             ],
         },
         mixed: {
@@ -774,13 +774,13 @@ export const settingsDefault = {
                 { component: 'launcher', className: 'hidden' },
                 { component: 'add', className: '' },
                 { component: 'notifications', className: 'hidden sm:block' },
-                { component: 'messenger', className: 'hidden sm:block' },
+                { component: 'link', href: "{messenger}", className: 'hidden sm:block', props: { variant: "secondary", rounded: true, size: "base", startDecorator: "MessageSquare" } },
                 { component: 'account', className: 'hidden sm:block' },
             ],
             loggedOut: [
                 { component: 'search', className: '' },
                 { component: 'launcher', className: '' },
-                { component: 'login', className: '' },
+                { component: 'link', className: '', href: "/login", props: { variant: "secondary", rounded: true, size: "base", startDecorator: "UserRound" } },
             ],
         },
         ver: {
@@ -1258,7 +1258,7 @@ export const settingsDefault = {
                 ' u-card-list bg-card/80 web:hover:bg-card shadow-sm text-card-foreground sm:rounded-2xl sm:mb-4 ',
             'u-card-list-padding': ' p-4 ',
             'u-card-base':
-                ' u-card-base bg-card/80 web:hover:bg-card shadow-sm text-card-foreground overflow-hidden rounded-2xl gap-4',
+                ' u-card-base bg-card/80 web:hover:bg-card shadow-sm text-card-foreground overflow-hidden sm:rounded-2xl gap-4',
             'u-card-padding': ' p-4 ',
             'u-card-header': 'flex gap-2',
             'u-card-icon': 'text-card-foreground px-4 gap-y-2 gap-x-3',

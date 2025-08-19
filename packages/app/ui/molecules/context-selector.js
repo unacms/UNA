@@ -18,10 +18,10 @@ function renderListItem_(url, text, icon, isActive) {
         <Link key={url} className="w-full" href={url}>
             <Row className={`w-full px-0.5 active:bg-secondary web:hover:bg-muted/80 rounded-xl justify-between items-center ${isActive ? ' bg-accent text-accent-foreground rounded-xl' : ''}`}>
                 <Row className='items-center p-1.5'>
-                <View className={`items-center w-9 h-9  justify-center ${isActive ? ' bg-primary text-primary-foreground  ' : ' bg-secondary/80'} rounded-full`}>
-                    {icon}
-                </View>
-                <Text className="text-base p-1.5 font-semibold text-popover-foreground">{text}</Text>
+                    <View className={`items-center w-9 h-9  justify-center ${isActive ? ' bg-primary text-primary-foreground  ' : ' bg-secondary/80'} rounded-full`}>
+                        {icon}
+                    </View>
+                    <Text className="text-base p-1.5 font-semibold text-popover-foreground">{text}</Text>
                 </Row>
                 {isActive && <View className='rounded-full bg-primary text-primary-foreground h-2 w-2 mr-4'></View>}
             </Row>
@@ -38,7 +38,7 @@ function getContextRoot(data, url, uri) {
             name: link.title,
         };
     }
-    
+
     if (!data.current?.id) {
         return {
             url: '/',
@@ -52,7 +52,7 @@ function getContextRoot(data, url, uri) {
         image: <Profile {...data.current} displayType="unit_wo_info" displaySize="sm" />,
         name: data.current.display_name,
     };
-    
+
 }
 
 export default function ContextSelector({ data, url, uri, mode }) {
@@ -61,9 +61,6 @@ export default function ContextSelector({ data, url, uri, mode }) {
     if (!data) return null;
 
     const contextRoot = getContextRoot(data, url, uri);
-
-    // if (url && (url != 'home' && data.list.filter(item => item.url == '/' + url).length == 0))
-    //    return null;
 
     const handleOpenChange = (open) => {
         if (open && !isOpen) {
@@ -78,15 +75,14 @@ export default function ContextSelector({ data, url, uri, mode }) {
 
     const CurrentContext = (
         <Link href={contextRoot.url}>
-            <View className=' flex-row sm:px-0.5 h-12 web:hover:bg-muted/80 rounded-xl   '>
+            <View className=' flex-row sm:px-0.5 h-12 web:hover:bg-muted/80 rounded-xl overflow-hidden max-w-56 sm:max-w-none'>
                 <View className=' p-1.5 flex-row rounded-full items-center justify-center'>
-                   <View className='  rounded-full items-center justify-center'>{contextRoot.image}</View>
+                    <View className='  rounded-full items-center justify-center'>{contextRoot.image}</View>
                 </View>
                 {!!contextRoot.name && <Text className="text-base font-semibold tracking-tight text-secondary-foreground my-auto truncate p-1.5">{contextRoot.name}</Text>}
             </View>
         </Link>
     )
-
 
     const DropDown = <DropdownPopup
         trigger={
@@ -120,15 +116,14 @@ export default function ContextSelector({ data, url, uri, mode }) {
         return DropDown
     }
 
-
     return (
         <>
             {(data?.list?.length > 0 || data?.links?.length > 0) ? <Row className=" w-full flex-auto items-center">
                 {(!!contextRoot.name && appSetting('context_selector', 'logo')) && <>
                     <Link href="/"><Row className=' web:hover:bg-muted/80 rounded-xl sm:px-0.5 '>
-                    <View className='p-1.5 flex-row rounded-full items-center justify-center'>
-                        {appStatic('logo', { mode: 'mark' })}
-                    </View>
+                        <View className='p-1.5 flex-row rounded-full items-center justify-center'>
+                            {appStatic('logo', { mode: 'mark' })}
+                        </View>
                     </Row></Link>
                     <Icon icon="ChevronRight" size={20} className="w-5 h-5 text-muted" /></>}
                 {CurrentContext}

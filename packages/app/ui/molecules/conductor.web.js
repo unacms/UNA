@@ -244,7 +244,8 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, windowWidth, isC
     const cover1Ref = useRef(null);
 
     const uri = pageData?.uri;
-    const isCover = pageData.cover_block ? (true) : false
+    const coverMode = appSetting('cover', 'view_by_module', pageData.cover_block?.profile?.module)
+    const isCover = pageData.cover_block && coverMode != 'none' ? (true) : false
 
     const handleScroll = useCallback(() => {
         requestAnimationFrame(() => {
@@ -722,7 +723,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
                 </>
                 }
                 <Panel  {...cellsCustomConfig.cells?.center}>
-                    <View className={`${isRightCol ? 'flex-auto' : 'w-full mx-auto'} ${layoutName !== 'navigator' && cd('p-md')} ${contentPaddingClass}`}>
+                    <View className={`${isRightCol ? 'flex-auto' : 'w-full mx-auto'} ${layoutName !== 'navigator' && 'sm:' + cd('p-md')} ${contentPaddingClass}`}>
                         {TabFlashListM}
                         {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 && callFn("noContentByUrl", [route?.endpoint])))}
                     </View>

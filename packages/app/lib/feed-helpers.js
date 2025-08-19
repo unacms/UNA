@@ -468,8 +468,15 @@ const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen }) => {
 })
 
 export const ActionMenu = memo(({ data }) => {
-    const settings = appSetting('feed', 'actions_menu')
-    return settings && <Menu {...data} displayType="button" params={settings} />
+    const settings = appSetting('feed', 'actions_menu');
+    if (data.items.length > 2){
+        for (let i = 2; i < data.items.length; i++)
+            if (data.items[i].data)
+                data.items[i].data.paramsi ={'button_show_title_from_size':'sm'}
+            else
+                 data.items[i].paramsi ={'button_show_title_from_size':'sm'} 
+    }
+    return settings && <Menu {...data } displayType="button" params={settings} />
 })
 
 export const CounterMenu = memo(({ data }) => {

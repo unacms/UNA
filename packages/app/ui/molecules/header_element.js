@@ -1,14 +1,10 @@
-import { memo, useState, useRef, useEffect } from 'react'
-import { useWindowDimensions } from 'react-native'
 import Link from 'app/ui/atoms/link'
-import { Text } from 'app/design/typography'
-import { View, Row, Pressable } from 'app/design/view'
-import { Button, ButtonRef } from 'app/design/controls'
+import { View, Row } from 'app/design/view'
+import { Button } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user'
-import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
+import { appSetting } from 'app/lib/util'
 import Search from 'app/ui/molecules/search'
 import NotificationButton from 'app/ui/molecules/notif'
-import { useTranslation } from 'react-i18next'
 import MenuAdd from 'app/components/nav/menu-add'
 import MenuAccount from 'app/components/nav/menu-account'
 import MenuLauncher from 'app/components/nav/menu-launcher'
@@ -17,7 +13,6 @@ import MenuLauncher from 'app/components/nav/menu-launcher'
 export default function HeaderElement({ mode }) {
 
     const { currentUser } = useCurrentUser();
-    const { t } = useTranslation();
     const bSearch = appSetting('layout', 'search') == true;
     const bMessenger = appSetting('messenger', 'url') ? true : false;
     const bNotifs = appSetting('notifications', 'url') ? true : false;
@@ -27,64 +22,44 @@ export default function HeaderElement({ mode }) {
         ? toolbarConfig?.loggedIn
         : toolbarConfig?.loggedOut
 
-    /*if (mode == 'small' && !!currentUser) {
-        return null
-    }*/
-
-
-    const components = {
-        search: bSearch ? <Search /> : null,
-        launcher: <MenuLauncher />,
-        add: <MenuAdd />,
-        notifications: bNotifs ? <NotificationButton /> : null,
-        messenger: bMessenger ? (
-            <Link href={appSetting('messenger', 'url')} alt={t('Messenger')}>
-                <Button
-                    tooltip={t('Messenger')}
-                    variant="secondary"
-                    rounded
-                    startDecorator="MessageSquare"
-                    id="m2"
-                    size="base"
-                    hitSlop={4}
-                    addon={{
-                        variant: 'primary',
-                        text: currentUser?.counters?.bx_messenger_new_messages,
-                        hideZero: true,
-                    }}
-                />
-            </Link>
-        ) : null,
-        account: currentUser ? <MenuAccount /> : null,
-        login: !currentUser ? (
-            <Link href="/login">
-                <ButtonRef
-                    variant="secondary"
-                    tooltip="Account"
-                    rounded
-                    size="base"
-                    hitSlop={4}
-                    aria-label="Account"
-                    alt={t('Account')}
-                    
-                    startDecorator="UserRound"
-                />
-            </Link>
-        ) : null,
-    }
-
-
     return (
         <Row className="justify-end gap-2 items-center">
-            {itemsToRender?.map((item, index) => {
-                const Component = components[item.component]
-                if (!Component) return null
-                return (
-                    <View key={index} className={item.className}>
-                        {Component}
-                    </View>
-                )
-            })}
+            {itemsToRender?.map((item, index) => (
+                <View key={index} className={item.className}>
+                    {(() => {
+                        switch (item.component) {
+                            case "search":
+                                return bSearch ? <Search /> : null
+                            case "launcher":
+                                return <MenuLauncher />
+                            case "add":
+                                return <MenuAdd />
+                            case "notifications":
+                                return bNotifs ? <NotificationButton /> : null
+                            case "account":
+                                return <MenuAccount />
+                            case "link":
+                                return (
+                                    <Link href={item.href == '{messenger}' ? bMessenger : item.href}>
+                                        <Button {...(item.props || {})}
+                                            {...(item.href === '{messenger}'
+                                                ? {
+                                                    addon: {
+                                                        variant: "primary",
+                                                        text: currentUser?.counters?.bx_messenger_new_messages,
+                                                        hideZero: true,
+                                                    },
+                                                }
+                                                : {})}
+                                        />
+                                    </Link>
+                                )
+                            default:
+                                return null
+                        }
+                    })()}
+                </View>
+            ))}
         </Row>
     )
 }
