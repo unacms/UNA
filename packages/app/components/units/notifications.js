@@ -4,7 +4,7 @@ import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
 import Time from 'app/ui/atoms/time';
 import Link from 'app/ui/atoms/link'
-import { CardList } from 'app/ui/molecules/card'
+import { Card } from 'app/ui/molecules/card'
 import Profile from 'app/ui/molecules/profile';
 
 function Unit({ data }) {
@@ -14,10 +14,9 @@ function Unit({ data }) {
     content_parsed = content_parsed.replace('&#8230;', '...');
 
     return (
-
-            <Link href={url}>
-                <CardList>
-                    <View className="flex-row items-center gap-3">
+            <Link  href={url}>
+                <Card className='max-w-4xl mx-auto w-full my-2'>
+                    <View className="flex-row items-center gap-3 ">
                         <View className="rounded-full flex-none " >
                             <Profile {...data.author_data} displayType="unit_wo_info" displaySize="lg" />
                         </View>
@@ -31,7 +30,7 @@ function Unit({ data }) {
                             </View>
                         </View>
                     </View>
-                </CardList>
+                </Card>
             </Link>
     );
 }

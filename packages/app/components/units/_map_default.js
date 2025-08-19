@@ -6,6 +6,8 @@ import Notifications from './notifications';
 import Feed from './feed';
 import Price from './price';
 import SearchResults from './search-results';
+import Invitations from './invitations';
+
 
 const GeneralContentList_ = memo(GeneralContentList)
 
@@ -18,6 +20,7 @@ export const componentsMapDefault = {
     'mixed': GeneralContentList_,
     comments: memo(Comments),
     notifications: memo(Notifications),
+    invitations: memo(Invitations),
     feed: memo(Feed),
     price: memo(Price),
     'search-results': memo(SearchResults)
