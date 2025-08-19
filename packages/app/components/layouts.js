@@ -5,14 +5,17 @@ import { getComponent, isComponent } from 'app/components/registry';
 import { appSetting, getPageSettings } from 'app/lib/util'
 import { Platform } from 'react-native'
 import Cell from 'app/components/cell';
-import { View } from 'app/design/view'
+import { View, Row } from 'app/design/view'
 import { appStatic } from 'app/lib/app-static'
 import Redirect from 'app/ui/atoms/redirect'
 import { useRef, useEffect, useMemo } from 'react';
 import ConfirmEmail from 'app/ui/molecules/confirm_email'
 import { registerAll } from 'app/components/registry-init';
-import  RedirectElement from 'app/components/elements/redirect'
-
+import RedirectElement from 'app/components/elements/redirect'
+import Link from 'app/ui/atoms/link'
+import { Text } from 'app/design/typography'
+import Card from 'app/ui/molecules/card'
+import { Button } from 'app/design/controls'
 export default function Layouts({ path, data, uri, url }) {
 
     registerAll();
@@ -107,15 +110,21 @@ function PageLayoutContent(props) {
         return <ConfirmEmail url={url} />;
     }
 
-    if (currentUser?.informer?.some(item => item.id == 'sys-account-profile-system')){
-        if (currentUser.menu.items > 1){
-            // TODO menu
-             return <RedirectElement data={{uri:currentUser.menu.items[0].link}} />
+    if (currentUser?.informer?.some(item => item.id == 'sys-account-profile-system')) {
+        if (currentUser?.menu?.items?.length > 1) {
+            return (<Card className='mx-auto my-4'>
+                <Text className='text-card-foreground text-base font-semibold text-center'>Create a profile...</Text>
+                <Row className='gap-x-3'>
+                    {currentUser.menu.items.map(item => {
+                        return (<Link href={item.link} key={item.name}><Button title={item.title} startDecorator={item.icon} /></Link>);
+                    })}
+                </Row>
+            </Card>)
         }
-        else{
-           return <RedirectElement data={{uri:currentUser.menu.items[0].link}} />
+        else {
+            return <RedirectElement data={{ uri: currentUser.menu.items[0].link }} />
         }
-      
+
     }
 
     const Component = getComponent('layout', layoutName);
