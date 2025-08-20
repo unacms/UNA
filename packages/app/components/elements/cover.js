@@ -136,7 +136,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                          {isAddSelector && <View className={`${TABLET_MODE_FROM}:hidden`}><ContextSelector data={context} mode='min' /></View>}
                     </Row>
                 </View>
-                <View className=" items-end">
+                <View className=" items-end ">
                     {isSplitMenu ? <Row className='w-full justify-between'>
                         {showMoreMenu && 
                             <CoverMenuMore
@@ -152,11 +152,11 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                                 uri={uri}
                                 isSplitMenu={isSplitMenu}
                             />
-                            {!appSetting('cover', 'more_menu_in_navbar', data?.profile?.module) && <CoverMenuMore
+                            <CoverMenuMore
                                 {...menu}
                                 uri={uri}
                                 isSplitMenu={true}
-                            />}
+                            />
                         </>
                         }
                     </Row> : <>{!appSetting('cover', 'more_menu_in_navbar', data?.profile?.module) && <CoverMenu
@@ -446,7 +446,7 @@ export default function ({ data, mode, uri, showMoreMenu, pageData, context }) {
                                         </View>
                                     </View>
                                 )}
-                                { !appSetting('cover', 'more_menu_in_navbar', data?.profile?.module) && <Row className='gap-2'>
+                                { <Row className='gap-2 lg:hidden'>
                                         <CoverMenu
                                             {...data.actions_menu}
                                             uri={uri}

@@ -429,7 +429,7 @@ function ElementDashboardStat(props) {
             </Row>
             {data.manage.items.length > 0 && (
                 
-                        <View className="grid w-full grid-cols-1 gap-x-2 gap-y-1.5 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+                        <View className="my-6 grid w-full grid-cols-1 gap-x-2 gap-y-1.5 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
                             {currentUser?.id && (
                                 <>
                                     <View className=" w-full min-w-[160px]  ">

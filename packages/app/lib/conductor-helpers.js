@@ -488,7 +488,7 @@ export function LeftSidebar({ title, addButtons, children, width, menu }) {
                     <Text className=" text-2xl tracking-tight truncate mr-auto font-semibold leading-11 text-neutral-900 dark:text-neutral-100 hidden lg:flex  ">
                         {t(title)}
                     </Text>
-                    <Row className="  ">{addButtons}</Row>
+                    <Row>{addButtons}</Row>
                 </Row>
             )}
 
