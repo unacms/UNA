@@ -211,14 +211,14 @@ export default function (props) {
             <>
                 <View>
                     {appSetting('layout', 'show_profile_info') && (
-                        <View className="pb-1 mb-1 border-b border-input ">
+                        
                             <Link href={currentUser.url} emulate={true}>
                                 <Row
                                     className={
-                                        ' rounded-xl sm:px-0.5 group items-center hover:bg-muted/80 active:opacity-50  '
+                                        ' rounded-xl group items-center gap-3 px-2 py-1.5 mb-0.5 hover:bg-muted/60 active:opacity-50  '
                                     }
                                 >
-                                    <View className='p-1.5'>
+                                    <View className=''>
                                         <Profile
                                             {...currentUser}
                                             url_avatar={currentUser.avatar}
@@ -227,15 +227,15 @@ export default function (props) {
                                         />
                                     </View>
 
-                                    <View className="gap-0.5 px-0.5">
+                                    <View className="flex-row gap-1 flex-auto justify-between ">
                                         <Text className=" text-sm leading-tight font-semibold truncate text-card-foreground web:group-hover:text-foreground ">
                                             {currentUser.display_name}
                                         </Text>
-                                        <Badge size="xs" variant="default" data={{text:currentUser.membership_name}}/>
+                                        <Badge size="xs" variant="default" iconOnly data={{text:currentUser.membership_name}}/>
                                     </View>
                                 </Row>
                             </Link>
-                        </View>
+                       
                     )}
 
                     {feedList.length > 1 && (
@@ -260,7 +260,7 @@ export default function (props) {
 
                     {navBarBlocks.map((item, index) => {
                         return (
-                            <View className="mb-3 " key={'block_' + index}>
+                            <View className="mt-3 " key={'block_' + index}>
                                 <BlockByName
                                     name={item.block}
                                     data={props.data}
@@ -296,7 +296,7 @@ export default function (props) {
                             className={`hidden ${cellsCustomConfig.cells?.left?.breakpoint}:block`}
                             {...cellsCustomConfig.cells?.left}
                         >
-                            <View className={`${cd('p-sm')} fixed-process `}>
+                            <View className={`${cd('p-md')} ${cd('gap-lg')} fixed-process bg-card `}>
                                 {SideBarContent}
                             </View>
                         </Panel>
