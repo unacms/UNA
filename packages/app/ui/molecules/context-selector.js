@@ -16,7 +16,7 @@ function renderListItem(props, isActive, onItemClick) {
 function renderListItem_(url, text, icon, isActive) {
     return (
         <Link key={url} className="w-full" href={url}>
-            <Row className={`w-full px-0.5 active:bg-secondary web:hover:bg-muted/80 rounded-xl justify-between items-center ${isActive ? ' bg-accent text-accent-foreground rounded-xl' : ''}`}>
+            <Row className={`w-full px-0.5 active:bg-secondary web:hover:bg-muted/60 rounded-xl justify-between items-center ${isActive ? ' bg-accent text-accent-foreground rounded-xl' : ''}`}>
                 <Row className='items-center p-1.5'>
                     <View className={`items-center w-9 h-9  justify-center ${isActive ? ' bg-primary text-primary-foreground  ' : ' bg-secondary/80'} rounded-full`}>
                         {icon}
@@ -75,8 +75,8 @@ export default function ContextSelector({ data, url, uri, mode }) {
 
     const CurrentContext = (
         <Link href={contextRoot.url}>
-            <View className=' flex-row sm:px-0.5 h-12 web:hover:bg-muted/80 rounded-xl overflow-hidden max-w-56 sm:max-w-none'>
-                <View className=' p-1.5 flex-row rounded-full items-center justify-center'>
+            <View className=' flex-row web:hover:bg-muted/60 rounded-xl overflow-hidden max-w-56 sm:max-w-none'>
+                <View className=' px-2 py-1.5 flex-row rounded-full items-center justify-center'>
                     <View className='  rounded-full items-center justify-center'>{contextRoot.image}</View>
                 </View>
                 {!!contextRoot.name && <Text className="text-base font-semibold tracking-tight text-secondary-foreground my-auto truncate p-1.5">{contextRoot.name}</Text>}
@@ -120,12 +120,12 @@ export default function ContextSelector({ data, url, uri, mode }) {
         <>
             {(data?.list?.length > 0 || data?.links?.length > 0) ? <Row className=" w-full flex-auto items-center">
                 {(!!contextRoot.name && appSetting('context_selector', 'logo')) && <>
-                    <Link href="/"><Row className=' web:hover:bg-muted/80 rounded-xl sm:px-0.5 '>
+                    <Link href="/"><Row className=' web:hover:bg-muted/60 rounded-xl '>
                         <View className='p-1.5 flex-row rounded-full items-center justify-center'>
                             {appStatic('logo', { mode: 'mark' })}
                         </View>
                     </Row></Link>
-                    <Icon icon="ChevronRight" size={20} className="w-5 h-5 text-muted" /></>}
+                    <Icon icon="ChevronRight" size={20} className="w-5 h-5 text-muted-foreground" /></>}
                 {CurrentContext}
                 {DropDown}
             </Row> : CurrentContext}

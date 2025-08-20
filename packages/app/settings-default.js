@@ -87,15 +87,15 @@ export const settingsDefault = {
             container:
                 ' hidden lg:flex fixed w-full mx-auto h-16 left-[50%] translate-x-[-50%]  ',
             initial:
-                '  my-auto w-full items-cente bg-card/90 transition-all web:duration-500 shadow-xs    ',
+                '  my-auto w-full items-cente bg-card ring-1 ring-border/40 transition-all web:duration-500    ',
             scrolled:
-                ' backdrop-blur-xl my-auto w-full mx-auto bg-card/90 shadow-sm ',
+                ' backdrop-blur-xl my-auto w-full mx-auto ring-1 ring-border/60 bg-card/90 shadow-sm ',
             content: ' h-16 mx-auto justify-between ',
-            content_left: ' flex-row px-2 ',
+            content_left: ' flex-row px-3 ',
             content_right:
-                ' w-80 2xl:w-96 items-center justify-end h-full px-3 ',
+                ' items-center justify-end h-full px-3 ',
             content_center:
-                ' hidden xl:flex flex-auto w-full mx-auto max-w-3xl gap-x-0.5 justify-between items-center align-middle px-3',
+                '  bg-muted/0 rounded-2xl p-1 hidden xl:flex flex-auto w-full mx-auto max-w-3xl gap-x-0.5 justify-between items-center align-middle ',
             special: {
                 profile: 'hidden lg:flex',
                 messenger: 'hidden lg:flex',
@@ -949,7 +949,7 @@ export const settingsDefault = {
             primaryBg: 'rgba(37,99,235,0.1)',
         },
         dropdown: {
-            cnt: ' rounded-2xl overflow-hidden shadow-lg p-1.5 border border-border/20 bg-popover/60 backdrop-blur-xl z-50  ',
+            cnt: ' rounded-2xl overflow-hidden shadow-lg p-1.5 border border-border/40 web:border-0 web:ring-1  web:ring-border/40 bg-popover/80 backdrop-blur-xl z-50  ',
         },
         conductor: {
             menu: '   w-full items-left justify-center  ',
@@ -1273,7 +1273,7 @@ export const settingsDefault = {
             'u-panel-handler': '',
             'u-panel-line':
                 'w-0.5 h-full web:group-hover:bg-muted web:group-active:bg-muted ',
-            'u-panel-group': ' gap-2 flex',
+            'u-panel-group': '  flex',
         },
         blocks: {
             'u-block-base':
@@ -1532,7 +1532,7 @@ export const settingsDefault = {
             'u-btn-danger-trans': '  web:duration-200',
             
 
-            'u-btn-text-cnt': ' group web:hover:bg-muted active:opacity-50   ',
+            'u-btn-text-cnt': ' group web:hover:bg-muted/60 active:opacity-50   ',
             'u-btn-text-text':
                 ' font-medium text-card-foreground web:group-hover:text-foreground',
             'u-btn-text-trans': '  web:duration-200',

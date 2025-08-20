@@ -23,7 +23,7 @@
         --destructive-foreground: 255 241 242; /*rose-50*/
         --border: 212 212 216; /*zinc-300*/
         --input: 244 244 245; /*zinc-50*/
-        --ring: 96 165 250; /*blue-400*/
+        --ring: 147 197 253; /*blue-300*/
 
         --android-background: var(--background);
         --android-foreground: var(--foreground);
@@ -67,7 +67,7 @@
         --destructive-foreground: 76 5 25; /*rose-950*/
         --border: 63 63 70; /*zinc-700*/
         --input: 39 39 42; /*zinc-800*/
-        --ring: 37 99 235; /*blue-600*/
+        --ring: 29 78 216; /*blue-700*/
 
 
         --android-background: var(--background);

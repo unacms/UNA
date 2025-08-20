@@ -26,8 +26,8 @@ const Logo = ({ mode = 'adaptive' }) => {
     const theme = ThemeName();
 
     const textStyles = {
-        adaptive: 'hidden sm:block ',
-        mark: 'hidden ',
+        adaptive: ' hidden sm:block  ',
+        mark: ' hidden px-1 ',
         full: ' ',
     };
 
