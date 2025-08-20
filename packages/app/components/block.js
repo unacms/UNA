@@ -111,15 +111,25 @@ export function DataByName(data, name) {
 
 
 
-export function StaticBlock(props) {
-    let block = { designbox_id: 0, id: props.name };
+function StaticBlock_(name, rest) {
+    const blockNameString = (typeof name === 'string') ? name : name?.name;
 
+    if (blockNameString?.includes('static')) {
+        if (typeof name === 'object') {
+            return <StaticBlock {...name} {...rest} />;
+        } else {
+            return <StaticBlock name={blockNameString} {...rest} />;
+        }
+    }
+}
+
+export function StaticBlock({name, showBg, showTitle, showPadding, title}) {
+    const block = { designbox_id: 0, id: name, title:title };
     return (
-        <BlockWrapper block={block} showBg={props.showBg} showTitle={props.showTitle}>
-            {appStatic('components_' + props.name.replace('static:', ''))}
+        <BlockWrapper block={block} showBg={showBg} showTitle={showTitle} showPadding={showPadding}>
+            {appStatic('components_' + name.replace('static:', ''))}
         </BlockWrapper>
     );
-
 }
 
 export function BlockWrapper(props) {
@@ -157,7 +167,7 @@ export function BlockWrapper(props) {
     let cssClasses = rest?.extraProps?.cssClasses ? rest?.extraProps?.cssClasses : "";
     // Streamlined logic: avoid unnecessary fragment, ensure BlockContent is not wrapping elements twice
 
-    if ((props?.block?.content && props?.block?.content[0]?.type == 'browse') || block.designbox_id == 0)
+    if ((props?.block?.content && props?.block?.content[0]?.type == 'browse'))//|| block.designbox_id == 0
         contentOnly = true;
 
     if (contentOnly)
@@ -195,7 +205,14 @@ export function BlockWrapper(props) {
 } 
 
 export default function Block(props) {
-    let block = props.block;
+    const block = props.block;
+
+   
+    const { name: extraPropsName, key,  ... extraPropsRest } = props.extraProps;
+    const staticBlock = StaticBlock_(extraPropsName, extraPropsRest)
+    if (staticBlock){
+        return staticBlock
+    }
 
     const type = block.content && Array.isArray(block.content) ? 'array' : typeof block.content;
     const BlockType = componentsMap[type];

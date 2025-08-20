@@ -373,10 +373,10 @@ function processEndpoint(acc, b) {
 }
 
 function processContent(acc, b) {
-    if (b?.data?.id) {
+    if (b?.data?.id || b.block?.id) {
         return [
             ...acc.content,
-            { ...b, id: `block-${b.data.id}`, type: 'block' },
+            { ...b, id: `block-${b.data?.id || b.block?.id}`, type: 'block' },
         ]
     }
     return acc.content
