@@ -17,6 +17,11 @@ import { useTranslation } from 'react-i18next';
 import MenuLauncher from 'app/components/nav/menu-launcher'
 import { Button, ButtonRef } from 'app/design/controls'
 import { getComponent } from 'app/components/registry';
+import {
+    CoverMenuMeta,
+    CoverMenu,
+    CoverMenuMore,
+} from 'app/components/nav/menu-cover'
 
 export const TextHeader = memo(({ text }) => {
     const { t } = useTranslation();
@@ -93,7 +98,7 @@ export const Header = memo(({
 
     const ContextSelector = getComponent('molecule', 'context_selector')
     const HeaderElement = getComponent('molecule', 'header_element')
-
+    console.log("pageData", pageData)
     return (
 
             <Row className={`items-center h-16 justify-between ${cd('px-lg')} ${cd('gap-md')}`} >
@@ -111,7 +116,7 @@ export const Header = memo(({
                     router ? router?.back() : history.back();
                 }} startDecorator="ArrowLeft" size="base" /></View>
             )}
-            {(!!text) && (
+            {(!!text && !pageData?.context) && (
                 <TextHeader text={text}></TextHeader>
             )}
 
@@ -119,6 +124,11 @@ export const Header = memo(({
             <Row className=" items-end ">
                 {rightHeaderComponent ? rightHeaderComponent : memoizedRightComponents}
                 <HeaderElement mode="small"  />
+                {(pageData?.context && pageData?.cover_block?.actions_menu) && <CoverMenu
+                                                {...pageData.cover_block.actions_menu}
+                                                uri={pageData.uri}
+                                                isSplitMenu={false}
+                                            />}
             </Row>
         </Row>
     );
