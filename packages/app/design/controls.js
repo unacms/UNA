@@ -291,32 +291,72 @@ export function ButtonsGroup({
         // Use the variant-specific ring style from buttons_group_styles
         const variantRingClass = ThemeCssClassesButtonGroups[`u-btn-${variant}-ring`];
         if (variantRingClass) {
-            return variantRingClass + (rounded ? ' rounded-full' : ' rounded-lg');
+            // Do not append rounding here; rounding is applied on the outer wrapper
+            return variantRingClass;
         }
         
         // Fallback to default ring
-        return ' p-[1px] bg-border ' + (rounded ? ' rounded-full' : ' rounded-lg');
-    }, [ring, variant, rounded, ThemeCssClassesButtonGroups]);
+        return ' p-[1px] bg-border ';
+    }, [ring, variant, ThemeCssClassesButtonGroups]);
 
     let sClassContainer = 'web:group';
     sClassContainer += fullWidth ? ' flex-auto' : ' w-fit m-0 truncate ';
     
     sClassContainer += ThemeCssClassesButtonGroups['u-btn-' + variant + '-cnt'] ? ThemeCssClassesButtonGroups['u-btn-' + variant + '-cnt'] + ' ' : ' ';
-    sClassContainer += rounded ? ' rounded-full ' : ' rounded-lg ';
     sClassContainer += className;
 
     const bTextContainer = !!variant && variant == 'text';
+    const ThemeButtonsGroupSizes = appSetting('theme', 'buttons_group_sizes');
+    const ThemeButtonItemStyles = appSetting('theme', 'button_styles');
+    const groupSizeCfg = ThemeButtonsGroupSizes?.[size] || {};
 
     const aChildren = children.map((child, iIndex) => {
-        const { variant, size, fullWidth, ...restChild } = child.props;
+        const childProps = child?.props || {};
+        const { variant: childVariant, size: childSize, fullWidth: childFullWidth, ...restChild } = childProps;
         const isLastChild = iIndex < children.length - 1;
-        const childClass = 'flex-auto ' + (isLastChild && !bTextContainer ? ' border-r border-bdr dark:border-bdr-d' : '');
+        const childClass = 'flex-auto items-center justify-center ' + (isLastChild && !bTextContainer ? ' border-r border-border/60' : '');
 
         let childItem;
         if (child.type === Button) {
-            childItem = <Button  showTitleFromSize={showTitleFromSize} variant={'group-item' + (!!variant ? '-' + variant : '')} size={size} fullWidth={fullWidth} {...restChild} />;
+            // Use group size to ensure consistent sizing across group items
+            const hasTitle = !!restChild.title;
+            const paddingOverride = hasTitle ? (groupSizeCfg.item_padding || '') : (groupSizeCfg.item_padding_icon_only || groupSizeCfg.item_padding || '');
+            childItem = (
+                <Button
+                    showTitleFromSize={showTitleFromSize}
+                    variant={'group-item' + (!!childVariant ? '-' + childVariant : '')}
+                    size={childSize}
+                    fullWidth={childFullWidth}
+                    padding={paddingOverride}
+                    {...restChild}
+                />
+            );
         } else {
-            childItem = child;
+            // If child is a wrapper (e.g., Link) around a Button, enforce group size on the inner Button
+            const inner = childProps.children;
+            if (React.isValidElement(inner) && inner.type === Button) {
+                const innerProps = inner.props || {};
+                const innerVariant = innerProps.variant;
+                const { fullWidth: innerFullWidth, ...restInner } = innerProps;
+                const hasTitle = !!restInner.title;
+                const paddingOverride = hasTitle ? (groupSizeCfg.item_padding || '') : (groupSizeCfg.item_padding_icon_only || groupSizeCfg.item_padding || '');
+                const sizedInner = (
+                    <Button
+                        showTitleFromSize={showTitleFromSize}
+                        variant={'group-item' + (!!innerVariant ? '-' + innerVariant : '')}
+                        size={innerProps.size}
+                        fullWidth={innerFullWidth}
+                        padding={paddingOverride}
+                        {...restInner}
+                    />
+                );
+                childItem = React.cloneElement(child, { children: sizedInner });
+            } else {
+                // Fallback: wrap arbitrary child with group item container styles and padding
+                const paddingOverride = groupSizeCfg.item_padding || '';
+                const itemCntClass = ThemeButtonItemStyles[`u-btn-group-item-${variant}-cnt`] || '';
+                childItem = <View className={`${itemCntClass} ${paddingOverride} items-center justify-center`}>{child}</View>;
+            }
         }
 
         return (
@@ -326,10 +366,12 @@ export function ButtonsGroup({
         );
     });
 
-    // Wrap in ring container
+    // Wrap in ring container and apply group size height to wrapper for visual consistency
+    const groupHeightClass = groupSizeCfg?.height || '';
+    const groupRoundedClass = rounded ? ' rounded-full ' : (groupSizeCfg.rounded || '');
     return (
-        <View className={`${ringClass} ${fullWidth ? 'flex-auto' : 'w-fit'}`} {...rest}>
-            <View className={sClassContainer}>{aChildren}</View>
+        <View className={`${ringClass} ${fullWidth ? 'flex-auto' : 'w-fit'} ${groupRoundedClass} overflow-hidden`} {...rest}>
+            <View className={`${sClassContainer} ${groupHeightClass}`}>{aChildren}</View>
         </View>
     );
 }

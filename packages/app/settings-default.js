@@ -91,11 +91,11 @@ export const settingsDefault = {
             scrolled:
                 ' backdrop-blur-xl my-auto w-full mx-auto ring-1 ring-border/60 bg-card/90 shadow-sm ',
             content: ' h-16 mx-auto justify-between ',
-            content_left: ' flex-row px-3 ',
+            content_left: ' flex-row px-3 items-center justify-center ',
             content_right:
                 ' items-center justify-end h-full px-3 ',
             content_center:
-                '  bg-muted/0 rounded-2xl p-1 hidden xl:flex flex-auto w-full mx-auto max-w-3xl gap-x-0.5 justify-between items-center align-middle ',
+                ' absolute left-[50%] translate-x-[-50%] bg-muted/0 rounded-2xl p-1 hidden flex-auto xl:flex gap-2 ',
             special: {
                 profile: 'hidden lg:flex',
                 messenger: 'hidden lg:flex',
@@ -1100,10 +1100,10 @@ export const settingsDefault = {
                 title_margin: '  ', // conditional margin for text container when icon is present
             },
             base: {
-                rounded: ' rounded-[10px] ',
+                rounded: ' rounded-lg ',
                 ring: '', // Ring wrapper removed
                 padding: '  ',
-                padding_icon_only: ' h-11 w-11 ',
+                padding_icon_only: ' h-11 px-2.5 ',
                 padding_with_title: ' px-4 gap-2 h-11 items-center ',
                 icon_container: ' text-base flex items-center ',
                 title_container: ' leading-5 text-sm items-center flex  ',
@@ -1112,16 +1112,45 @@ export const settingsDefault = {
                 title_margin: ' ', // conditional margin for text container when icon is present
             },
             lg: {
-                rounded: 'rounded-xl ',
+                rounded: ' rounded-xl ',
                 ring: '', // Ring wrapper removed
                 padding: '  ',
-                padding_icon_only: ' h-[52px] w-[52px] ',
-                padding_with_title: 'gap-3 px-6 h-[52px] items-center ',
+                padding_icon_only: ' h-12 px-3 ',
+                padding_with_title: 'gap-3 px-6 h-12 items-center ',
                 icon_container: '  text-lg flex items-center ',
                 title_container: ' leading-6 text-base items-center flex',
                 icon_size: 24,
                 icon_margin: '', // conditional margin for icon container when title is present
                 title_margin: '', // conditional margin for text container when icon is present
+            },
+        },
+        // Button group sizes (separate from individual button sizes)
+        buttons_group_sizes: {
+            default_size: 'base',
+            xxs: {
+                rounded: ' rounded-[5px] ',
+                height: ' h-5 ',
+                container: '',
+            },
+            xs: {
+                rounded: ' rounded-md ',
+                height: ' h-7 ',
+                container: '',
+            },
+            sm: {
+                rounded: ' rounded-lg ',
+                height: ' h-9 ',
+                container: '',
+            },
+            base: {
+                rounded: ' rounded-[10px] ',
+                height: ' h-11 ',
+                container: '',
+            },
+            lg: {
+                rounded: ' rounded-xl ',
+                height: ' h-[48px] ',
+                container: '',
             },
         },
         badge_sizes: {
@@ -1185,7 +1214,7 @@ export const settingsDefault = {
             // Default
             'u-link-default-cnt': ' web:group ',
             'u-link-default-text':
-                ' text-card-foreground web:group-hover:text-primary ',
+                ' text-card-foreground web:group-hover:text-accent-foreground web:group-hover:underline ',
             'u-link-default-trans': ' web:duration-200',
 
             // Ghost: transparent by default; muted on hover/active
@@ -1316,9 +1345,9 @@ export const settingsDefault = {
                 'w-full border border-border bg-transparent border-collapse overflow-hidden rounded-lg',
             'u-table-header': 'border-border',
             'u-table-body': 'border-border',
-            'u-table-footer': 'bg-muted/50 font-medium',
+            'u-table-footer': 'bg-muted/60 font-medium',
             'u-table-row':
-                'flex overflow-hidden flex-row border-border border-b web:transition-colors web:hover:bg-muted/50 web:data-[state=selected]:bg-muted',
+                'flex overflow-hidden flex-row border-border border-b web:transition-colors web:hover:bg-muted/60 web:data-[state=selected]:bg-muted',
             'u-table-head':
                 'text-muted-foreground text-left justify-center font-medium flex-1 h-12 px-4 text-sm',
             'u-table-cell':
@@ -1501,7 +1530,7 @@ export const settingsDefault = {
             'u-btn-outline-trans': '  web:duration-200',
             'u-btn-outline-ring': '',
 
-            'u-btn-group-item-cnt': '  bg-muted web:hover:bg-muted/50 ',
+            'u-btn-group-item-cnt': '  bg-muted web:hover:bg-muted/60 ',
             'u-btn-group-item-text':
                 ' font-medium text-card-foreground web:group-hover:text-foreground ',
             'u-btn-group-item-icon':
@@ -1510,7 +1539,7 @@ export const settingsDefault = {
                 ' ',
 
             'u-btn-group-item-default-cnt':
-                'border border-transparent dark:border-transparent web:hover:bg-bgritem-h dark:web:hover:bg-bgritem-dh web:active:opacity-50',
+                'border-4 border-red-500 dark:border-transparent web:hover:bg-bgritem-h dark:web:hover:bg-bgritem-dh web:active:opacity-50',
             'u-btn-group-item-default-text':
                 'font-medium text-neutral-800 dark:text-neutral-200 web:dark:group-hover:text-neutral-50',
             'u-btn-group-item-default-icon':
@@ -1526,15 +1555,15 @@ export const settingsDefault = {
             'u-btn-group-item-primary-ring': '',
 
             'u-btn-group-item-secondary-cnt':
-                'border border-transparent dark:border-transparent bg-bgritem dark:bg-bgritem-d web:ctive:opacity-50 flex flex-row overflow-hidden',
+                ' hover:bg-secondary h-full w-full overflow-hidden',
             'u-btn-group-item-secondary-text':
                 'font-medium text-neutral-800 web:hover:text-neutral-950 dark:text-neutral-200 web:dark:group-hover:text-white',
             'u-btn-group-item-secondary-icon':
-                'text-neutral-700 dark:text-neutral-300 web:dark:group-hover:text-neutral-50',
+                'text-red-500 dark:text-neutral-300 web:dark:group-hover:text-neutral-50',
             'u-btn-group-item-secondary-ring': '',
 
             'u-btn-group-item-text-cnt':
-                'border border-transparent dark:border-transparent web:hover:bg-bgrbutton-h dark:web:hover:bg-bgrbutton-dh web:active:opacity-50',
+                ' ',
             'u-btn-group-item-text-text':
                 'font-medium text-neutral-800 dark:text-neutral-200 web:dark:group-hover:text-neutral-50',
             'u-btn-group-item-text-icon':
@@ -1577,8 +1606,8 @@ export const settingsDefault = {
         },
         buttons_group_styles: {
             'u-btn-default-cnt':
-                'border border-bdrbutton dark:border-bdrbutton-d bg-bgrbutton dark:bg-bgrbutton-d flex flex-row',
-            'u-btn-default-ring': ' p-[1px] bg-border ',
+                ' flex-row bg-popover/80 web:hover:bg-popover shadow-xs border-[0.5px] border-border/80 web:border-0 web:ring-[0.5px] web:ring-inset web:ring-border/80 web:hover:ring-border active:opacity-50 ',
+            'u-btn-default-ring': '  ',
             'u-btn-accent-cnt':
                 'border border-emerald-600 dark:border-emerald-500 bg-emerald-100 dark:bg-emerald-900 flex flex-row',
             'u-btn-accent-ring': ' p-[1px] bg-accent ',
@@ -1587,15 +1616,15 @@ export const settingsDefault = {
             'u-btn-outline-ring': ' p-[1px] bg-border ',
 
             'u-btn-text-cnt':
-                'flex flex-row items-center web:active:opacity-50',
-            'u-btn-text-ring': ' p-[1px] bg-transparent ',
+                ' flex-row items-center web:hover:bg-muted/60 ',
+            'u-btn-text-ring': ' ',
 
             'u-btn-secondary-cnt':
-                'border border-transparent dark:border-transparent bg-bgritem dark:bg-bgritem-d web:active:opacity-50 flex flex-row',
+                '  flex-row bg-secondary/60  ',
             'u-btn-secondary-text':
                 ' font-medium text-neutral-800 web:hover:text-neutral-950 dark:text-neutral-200 web:dark:group-hover:text-white ',
             'u-btn-secondary-trans': '   web:duration-300 ',
-            'u-btn-secondary-ring': ' p-[1px] bg-secondary ',
+            'u-btn-secondary-ring': '  ',
 
             'u-btn-link-cnt':
                 ' border border-transparent dark:border-transparent flex flex-row active:opacity-50 items-center ',
