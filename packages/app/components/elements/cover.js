@@ -64,7 +64,7 @@ function getCoverBackButton(is_person) {
                 <Button
                     rounded={true}
                     size="base"
-                    
+
                     variant="secondary"
                     startDecorator="ArrowLeft"
                     onPress={() => history.back()}
@@ -80,7 +80,7 @@ function getCoverBackButton(is_person) {
                         size="base"
                         variant="secondary"
                         startDecorator="ArrowLeft"
-                        
+
                     />
                 </Link>
             </View>
@@ -91,14 +91,13 @@ function getCoverBackButton(is_person) {
 export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
 
     const bPerson = data.profile.module == 'bx_persons' || appSetting('cover', 'show_pic_by_module', data?.profile?.module) ? true : false
-    const isSplitMenu = appSetting('cover', 'split_action_menu') && data.actions_menu.persistent == 0
     const coverMode = appSetting('cover', 'view_by_module', data?.profile?.module) || mode
     const { width: windowWidth } = useWindowDimensions();
-    const isAddSelector  = context && context.list[0] && data.profile.module == context.list[0].module
+    const isAddSelector = context && context.list[0] && data.profile.module == context.list[0].module
     const ContextSelector = getComponent('molecule', 'context_selector')
 
-    if(windowWidth > LAYOUT_BREAKPOINTS[TABLET_MODE_FROM] && isAddSelector){
-            return null
+    if (windowWidth > LAYOUT_BREAKPOINTS[TABLET_MODE_FROM] && isAddSelector) {
+        return null
     }
 
     if (coverMode === 'none') {
@@ -120,12 +119,12 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                     {getCoverBackButton(bPerson)}
                     <Row className={` ${context?.current?.id == data.profile.id ? TABLET_MODE_FROM + ':flex px-1 ' : ' flex-auto overflow-hidden truncate'}`}>
                         {bPerson && (
-                            
-                                <Profile
-                                    {...data.profile}
-                                    displayType="unit_wo_info"
-                                    displaySize="base"
-                                />
+
+                            <Profile
+                                {...data.profile}
+                                displayType="unit_wo_info"
+                                displaySize="base"
+                            />
                         )}
                         <View className="px-1 items-center flex-row">
                             <Profile
@@ -133,37 +132,26 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                                 displayType="unit_wo_image"
                                 displaySize="xl"
                             /></View>
-                         {isAddSelector && <View className={`${TABLET_MODE_FROM}:hidden`}><ContextSelector data={context} mode='min' /></View>}
+                        {isAddSelector && <View className={`${TABLET_MODE_FROM}:hidden`}><ContextSelector data={context} mode='min' /></View>}
                     </Row>
                 </View>
                 <View className=" items-end ">
-                    {isSplitMenu ? <Row className='w-full justify-between'>
-                        {showMoreMenu && 
-                            <CoverMenuMore
-                                {...menu}
-                                uri={uri}
-                                isSplitMenu={false}
-
-                            />
-                        }
+                    <Row className='w-full justify-between'>
                         {!showMoreMenu && <>
-                            <CoverMenu
-                                {...menu}
-                                uri={uri}
-                                isSplitMenu={isSplitMenu}
-                            />
-                            <CoverMenuMore
+                           <CoverMenu
                                 {...menu}
                                 uri={uri}
                                 isSplitMenu={true}
+                            /></>
+                        }
+                            <><CoverMenuMore
+                                {...menu}
+                                uri={uri}
+                                isSplitMenu={!showMoreMenu}
                             />
                         </>
-                        }
-                    </Row> : <>{!appSetting('cover', 'more_menu_in_navbar', data?.profile?.module) && <CoverMenu
-                        {...menu}
-                        uri={uri}
-                    />}</>
-                    }
+                        
+                    </Row>
                 </View>
             </Row>
         </View>
@@ -356,7 +344,7 @@ function CoverImage({ mode, profileData, coverData, allowEdit, allowSwitch, titl
                         <Button
                             rounded
                             size="sm"
-                         
+
                             variant="default"
                             startDecorator="Camera"
                             onPress={() =>
@@ -386,14 +374,14 @@ export default function ({ data, mode, uri, showMoreMenu, pageData, context }) {
         let match = isAllowSwitch.match(/switch_to_profile=(\d+)/)
         isAllowSwitch = match ? match[1] : null
     }
-    const isSplitMenu = appSetting('cover', 'split_action_menu') && data.actions_menu.persistent == 0
+
     const isMin = coverMode === 'min';
 
-    const isAddSelector  = context && context.list[0] && data.profile.module == context.list[0].module
+    const isAddSelector = context && context.list[0] && data.profile.module == context.list[0].module
     const ContextSelector = getComponent('molecule', 'context_selector')
     const Badges = getComponent('molecule', 'badges')
 
-   
+
     if (coverMode === 'none') {
         return null
     }
@@ -437,49 +425,32 @@ export default function ({ data, mode, uri, showMoreMenu, pageData, context }) {
                         )}
                     </View>
                     <View className="flex-row flex-wrap items-end justify-between  flex-auto gap-x-2 gap-y-2">
-                        {isSplitMenu ? (
-                            <View className="flex-row sm:items-end flex-wrap gap-3 lg:gap-4 lg:ml-auto">
-                                {bPerson && (
-                                    <View className={`${isMin ? 'h-24' : 'h-10'} lg:hidden flex-auto justify-end `}>
-                                        <View className=" flex-row flex-auto z-50 rounded-full p-1 flex-none bg-white mr-auto dark:bg-neutral-900 translate-y-1 -translate-x-1 ">
-                                            <CoverImage mode='picture' profileDisplaySize={isMin ? '2xl' : '3xl'} coverData={data?.cover} profileData={data.profile} allowEdit={bAllowEdit} allowSwitch={isAllowSwitch} />
-                                        </View>
+
+                        <View className="flex-row sm:items-end flex-wrap gap-3 lg:gap-4 lg:ml-auto">
+                            {bPerson && (
+                                <View className={`${isMin ? 'h-24' : 'h-10'} lg:hidden flex-auto justify-end `}>
+                                    <View className=" flex-row flex-auto z-50 rounded-full p-1 flex-none bg-white mr-auto dark:bg-neutral-900 translate-y-1 -translate-x-1 ">
+                                        <CoverImage mode='picture' profileDisplaySize={isMin ? '2xl' : '3xl'} coverData={data?.cover} profileData={data.profile} allowEdit={bAllowEdit} allowSwitch={isAllowSwitch} />
                                     </View>
-                                )}
-                                { <Row className='gap-2 lg:hidden'>
-                                        <CoverMenu
-                                            {...data.actions_menu}
-                                            uri={uri}
-                                            isSplitMenu={isSplitMenu}
-                                            containerClasses="gap-2 lg:gap-3"
-                                        />
-
-                                    <CoverMenuMore
-                                        {...data.actions_menu}
-                                        uri={uri}
-                                        isSplitMenu={true}
-                                    />
-                                </Row>}
-                                {showMoreMenu && <View className="w-11 items-end ">
-                                    <CoverMenuMore
-                                        {...data.actions_menu}
-                                        uri={uri}
-                                        isSplitMenu={isSplitMenu}
-                                    />
-                                </View>}
-                            </View>
-                        ) : (
-                            <>{ !appSetting('cover', 'more_menu_in_navbar', data?.profile?.module) && <CoverMenu
-                                {...data.actions_menu}
-                                uri={uri}
-                                persistent={2}
-                            />}</>
-                        )}
+                                </View>
+                            )}
+                            <Row className={`gap-2 ${appSetting('cover', 'more_menu_in_navbar', data?.profile?.module) && 'lg:hidden'}`}>
+                                <CoverMenu
+                                    {...data.actions_menu}
+                                    uri={uri}
+                                    isSplitMenu={true}
+                                    containerClasses="gap-2 lg:gap-3"
+                                />
+                                <CoverMenuMore
+                                    {...data.actions_menu}
+                                    uri={uri}
+                                    isSplitMenu={true}
+                                />
+                            </Row>
+                        </View>
                     </View>
-
                 </View>
             </View>
         </View>
-
     )
 }

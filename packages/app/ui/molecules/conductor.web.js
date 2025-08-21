@@ -325,18 +325,24 @@ const TabBar = ({ menu, routes, leftSideBar, pageData, currentUser, index, setIn
                     <ConductorMenu currentUser={currentUser} leftSideBar={leftSideBar} routes={routes} index={index} t={t} setIndex={setIndex} getNumCols={getNumCols} windowWidth={windowWidth} onChangeRoute={onChangeRoute} />
                 </View>
                 {(!!pageData.cover_block?.actions_menu) && <Row className="hidden lg:block items-center gap-x-2 justify-end  ">
-                    {isHideCover && <CoverMenu
+                    {/*isHideCover && <CoverMenu
                         {...pageData.cover_block.actions_menu}
                         uri={pageData.uri}
                         isSplitMenu={true}
                         containerClasses="gap-x-2"
-                    />}
-                    {!!appSetting('cover', 'more_menu_in_navbar', pageData?.module) && <CoverMenuMore
-                        {...pageData.cover_block.actions_menu}
-                        uri={pageData.uri}
-                        isSplitMenu={true}
-                        persistent={1}
-                    />}
+                    />*/}
+                    {!!appSetting('cover', 'more_menu_in_navbar', pageData?.module) && <Row className="gap-2">
+                        <CoverMenu
+                            {...pageData.cover_block.actions_menu}
+                            uri={pageData.uri}
+                            isSplitMenu={true}
+                            containerClasses="gap-2 lg:gap-3"
+                        />
+                        <CoverMenuMore
+                            {...pageData.cover_block.actions_menu}
+                            uri={pageData.uri}
+                            isSplitMenu={true}
+                        /></Row>}
                 </Row>}
             </TopSidebar>
 

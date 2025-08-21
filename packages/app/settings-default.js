@@ -156,7 +156,7 @@ export const settingsDefault = {
         fixed: false, //appSetting('layout', 'fixed_cover')
         scroll: false,
         hide_cover_for_context: false,
-        split_action_menu: true, //OLD appSetting('layout', 'split_action_menu')
+       // split_action_menu: true, //OLD appSetting('layout', 'split_action_menu')
         back_button_url_for_profile: '/friends', //OLD appSetting('layout', 'back_for_profile')
         view_by_module: {
             //appSetting('layout', 'cover_mode'
