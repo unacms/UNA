@@ -361,7 +361,7 @@ export default function (props) {
         )
     }
 
-    let contentElement = null
+    let contentElement = false
     if (props.extraProps?.galery) {
         const uniqueItems = dataItems.data.filter(
             (v, i, a) => a.findIndex((t) => t.id === v.id) === i
@@ -382,8 +382,7 @@ export default function (props) {
                 data={item}
             />
         ));
-        if (items.length == 0) return <></>
-        contentElement = <Galery items={items} />
+        contentElement = items.length == 0 ? null : <Galery items={items} />
 
     }
 
@@ -503,8 +502,11 @@ export default function (props) {
             Preload,
         ]
     )
+    if (contentElement === null){
+        return
+    }
 
-    if (!contentElement) {
+    if (contentElement === false) {
         contentElement = <UniList {...memoizedUniListProps} />
     }
 
