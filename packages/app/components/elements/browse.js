@@ -382,6 +382,7 @@ export default function (props) {
                 data={item}
             />
         ));
+        if (items.length == 0) return <></>
         contentElement = <Galery items={items} />
 
     }

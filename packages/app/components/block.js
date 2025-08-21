@@ -208,7 +208,7 @@ export default function Block(props) {
     const block = props.block;
 
    
-    const { name: extraPropsName, key,  ... extraPropsRest } = props.extraProps;
+    const { name: extraPropsName, key,  ... extraPropsRest } = props?.extraProps ?? {};
     const staticBlock = StaticBlock_(extraPropsName, extraPropsRest)
     if (staticBlock){
         return staticBlock
