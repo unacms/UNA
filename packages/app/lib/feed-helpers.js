@@ -2,12 +2,10 @@ import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
 import Time from 'app/ui/atoms/time'
 import Profile from 'app/ui/molecules/profile'
-import React, {
+import {
     memo,
     useState,
     useEffect,
-    useMemo,
-    useRef,
     useCallback,
 } from 'react'
 import { useCurrentUser } from 'app/context/user'

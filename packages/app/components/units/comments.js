@@ -252,6 +252,8 @@ export default function UnitComments(props) {
         isSelected ? { backgroundColor: interpolatedSelectionBackground } : {},
     ]
 
+    const Badges = getComponent('molecule', 'badges')
+
     return (
         <Wrapper style={combinedStyles}>
             <Row className={`${cd('gap-sm')}`}>
@@ -280,6 +282,7 @@ export default function UnitComments(props) {
                             displayType="unit_wo_image"
                             displaySize="sm"
                             showInfo="false"
+                            showInfo2={<Badges badges={data.author_badges} size="xs" />}
                         />
 
                         <Link href={data.cmt_url} size="xs" variant="ghost" emulate={true}>
