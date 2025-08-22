@@ -13,6 +13,7 @@ import ScrollList from 'app/ui/molecules/scroll_list'
 import MenuFooter from 'app/components/nav/menu-footer';
 import AnimatedView from 'app/ui/atoms/animated-view';
 
+
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from');
 const isWeb = Platform.OS === 'web'
 
@@ -28,7 +29,7 @@ function PageContent(props) {
                 </CardTitle>
                 {isWeb && <CardDescription>
                     {t('create_account_page_already_have')}{' '}
-                    <Link href="/login">{t('create_account_page_sign_in')}</Link>
+                    <Link variant="accent" size="sm" href="/login">{t('create_account_page_sign_in')}</Link>
                     .
                 </CardDescription>}
             </CardHeader>

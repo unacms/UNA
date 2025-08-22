@@ -78,7 +78,7 @@ export const resourcesDefault = {
             "splash_page_fp": "Forgot password?",
             "splash_page_new_account": 'Create new account',
             "splash_page_login": 'Log in to your account',
-            "splash_page_login2": 'Enter your email and password to login',
+            "splash_page_login2": 'Don\'t have an account?',
             "splash_page_login3": 'OR',
             "splash_page_rp": 'Reset password',
              

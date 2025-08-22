@@ -1106,7 +1106,7 @@ export const settingsDefault = {
                 padding_icon_only: ' h-11 px-2.5 ',
                 padding_with_title: ' px-4 gap-2 h-11 items-center ',
                 icon_container: ' text-base flex items-center ',
-                title_container: ' leading-5 text-sm items-center flex  ',
+                title_container: ' leading-11 text-sm items-center flex   ',
                 icon_size: 24,
                 icon_margin: ' ', // conditional margin for icon container when title is present
                 title_margin: ' ', // conditional margin for text container when icon is present
@@ -1193,28 +1193,26 @@ export const settingsDefault = {
             default_size: 'base',
             default_variant: 'default',
 
-            xxs: {
-                padding: ' px-0 py-0 rounded-md text-xs ',
-            },
+            
             xs: {
-                padding: ' px-1 rounded-md text-xs  leading-5 h-5 ',
+                padding: ' px-0.5 py-[1px] rounded ',
             },
             sm: {
-                padding: ' px-1 rounded-lg text-sm  leading-6 h-6 text-center ',
+                padding: ' px-1 py-0.5 rounded-md  ',
             },
             md: {
-                padding: ' px-3 py-2 rounded-xl text-base',
+                padding: ' px-1.5 py-1 rounded-lg',
             },
             lg: {
-                padding: ' px-4 py-3 rounded-2xl text-lg',
+                padding: ' px-2 py-1.5  rounded-xl',
             },
         },
 
         link_styles: {
             // Default
-            'u-link-default-cnt': ' web:group ',
+            'u-link-default-cnt': '  ',
             'u-link-default-text':
-                ' text-card-foreground web:group-hover:text-accent-foreground web:group-hover:underline ',
+                '  ',
             'u-link-default-trans': ' web:duration-200',
 
             // Ghost: transparent by default; muted on hover/active
@@ -1233,8 +1231,8 @@ export const settingsDefault = {
 
             // Accent: accent background and foreground
             'u-link-accent-cnt':
-                ' bg-accent web:hover:bg-accent web:active:bg-accent ',
-            'u-link-accent-text': ' text-accent-foreground ',
+                ' bg-accent/60 web:hover:bg-accent web:active:opacity-50 rounded ',
+        'u-link-accent-text': ' text-accent-foreground/80 web:hover:text-accent-foreground ',
             'u-link-accent-trans': ' web:duration-200 ',
 
             // Primary: link-style text
@@ -1287,7 +1285,7 @@ export const settingsDefault = {
                 ' u-card-list bg-card/80 web:hover:bg-card shadow-sm text-card-foreground sm:rounded-2xl sm:mb-4 ',
             'u-card-list-padding': ' p-4 ',
             'u-card-base':
-                ' u-card-base bg-card/80 web:hover:bg-card shadow-sm text-card-foreground overflow-hidden sm:rounded-2xl gap-4',
+                ' u-card-base bg-card/80 web:hover:bg-card shadow-sm text-card-foreground overflow-hidden rounded-2xl gap-4',
             'u-card-padding': ' p-4 ',
             'u-card-header': 'flex gap-2',
             'u-card-icon': 'text-card-foreground px-4 gap-y-2 gap-x-3',
@@ -1406,14 +1404,14 @@ export const settingsDefault = {
                 header: ' pb-1 px-3 gap-1 mb-4',
                 item: ' h-8 px-4 lg:px-6 text-sm rounded-lg ',
                 indicator: ' h-0.5 bottom-0 ',
-                text: ' text-sm ',
+                text: ' text-md ',
                 text_active: ' text-sm ',
             },
             lg: {
                 header: ' py-2 px-4 gap-1.5 ',
                 item: ' h-10 px-4 text-base rounded-xl ',
                 indicator: ' h-1 bottom-0 ',
-                text: ' text-base ',
+                text: ' text-lg ',
                 text_active: ' text-base ',
             },
         },
