@@ -23,19 +23,18 @@ import Link from 'app/ui/atoms/link'
 import Loading from 'app/ui/atoms/loading'
 import { Platform } from 'react-native'
 import { useRouter, useNavigation } from 'app/lib/hooks/router'
-import { useWindowDimensions } from 'react-native';
-import { getComponent } from 'app/components/registry';
+import { useWindowDimensions } from 'react-native'
+import { getComponent } from 'app/components/registry'
 
 const conductorTheme = appSetting('theme', 'conductor')
-const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from');
-
+const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from')
 
 const BackButton = ({ isPerson }) => {
     const router = useRouter()
-    const navigation = useNavigation();
+    const navigation = useNavigation()
 
     return isPerson && navigation.getState().index == 0 ? (
-        <Link href={appSetting("cover", "back_button_url_for_profile")}>
+        <Link href={appSetting('cover', 'back_button_url_for_profile')}>
             <Button
                 variant="default"
                 size="base"
@@ -49,11 +48,12 @@ const BackButton = ({ isPerson }) => {
             size="base"
             rounded={true}
             startDecorator="ArrowLeft"
-            onPress={() => { goBack(navigation, router) }}
+            onPress={() => {
+                goBack(navigation, router)
+            }}
         />
-    );
-};
-
+    )
+}
 
 function getCoverBackButton(is_person) {
     const isWeb = Platform.OS === 'web'
@@ -63,8 +63,7 @@ function getCoverBackButton(is_person) {
             <View className="lg:hidden">
                 <Button
                     rounded={true}
-                    size="base"
-
+                    size="sm"
                     variant="secondary"
                     startDecorator="ArrowLeft"
                     onPress={() => history.back()}
@@ -80,7 +79,6 @@ function getCoverBackButton(is_person) {
                         size="base"
                         variant="secondary"
                         startDecorator="ArrowLeft"
-
                     />
                 </Link>
             </View>
@@ -89,11 +87,18 @@ function getCoverBackButton(is_person) {
 }
 
 export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
-
-    const bPerson = data.profile.module == 'bx_persons' || appSetting('cover', 'show_pic_by_module', data?.profile?.module) ? true : false
-    const coverMode = appSetting('cover', 'view_by_module', data?.profile?.module) || mode
-    const { width: windowWidth } = useWindowDimensions();
-    const isAddSelector = context && context.list[0] && data.profile.module == context.list[0].module
+    const bPerson =
+        data.profile.module == 'bx_persons' ||
+        appSetting('cover', 'show_pic_by_module', data?.profile?.module)
+            ? true
+            : false
+    const coverMode =
+        appSetting('cover', 'view_by_module', data?.profile?.module) || mode
+    const { width: windowWidth } = useWindowDimensions()
+    const isAddSelector =
+        context &&
+        context.list[0] &&
+        data.profile.module == context.list[0].module
     const ContextSelector = getComponent('molecule', 'context_selector')
 
     if (windowWidth > LAYOUT_BREAKPOINTS[TABLET_MODE_FROM] && isAddSelector) {
@@ -104,73 +109,89 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
         return null
     }
 
-    let menu = cloneObject(data.actions_menu);
+    let menu = cloneObject(data.actions_menu)
 
     if (!showMoreMenu) {
         menu.items = menu.items.map((item, index) => {
-            return { ...item, persistent: 0 };
-        });
+            return { ...item, persistent: 0 }
+        })
     }
 
     return (
-        <View className={`${conductorTheme.content_max_width} mx-auto w-full px-3 py-2 flex-row `} >
-            <Row className="items-center justify-between flex-auto">
-                <View className={`flex-auto gap-3 lg:gap-3 flex-row items-center `}>
-                    {getCoverBackButton(bPerson)}
-                    <Row className={` ${context?.current?.id == data.profile.id ? TABLET_MODE_FROM + ':flex px-1 ' : ' flex-auto overflow-hidden truncate'}`}>
-                        {bPerson && (
-
-                            <Profile
-                                {...data.profile}
-                                displayType="unit_wo_info"
-                                displaySize="base"
-                            />
-                        )}
-                        <View className="px-1 items-center flex-row">
-                            <Profile
-                                {...data.profile}
-                                displayType="unit_wo_image"
-                                displaySize="xl"
-                            /></View>
-                        {isAddSelector && <View className={`${TABLET_MODE_FROM}:hidden`}><ContextSelector data={context} mode='min' /></View>}
-                    </Row>
+        <View
+            className={`${conductorTheme.content_max_width} mx-auto w-full px-3 py-2 gap-3 flex-row items-center `}
+        >
+            {getCoverBackButton(bPerson)}
+            <Row
+                className={` ${
+                    context?.current?.id == data.profile.id
+                        ? ' flex-auto  items-center'
+                        : ' flex-auto  items-center'
+                }`}
+            >
+                {bPerson && (
+                    <Profile
+                        {...data.profile}
+                        displayType="unit_wo_info"
+                        displaySize="sm"
+                    />
+                )}
+                <View className="px-1 items-center truncate flex-row">
+                    <Profile
+                        {...data.profile}
+                        displayType="unit_wo_image"
+                        displaySize="xl"
+                    />
                 </View>
-                <View className=" items-end ">
-                    <Row className='w-full justify-between'>
-                        {!showMoreMenu && <>
-                           <CoverMenu
-                                {...menu}
-                                uri={uri}
-                                isSplitMenu={true}
-                            /></>
-                        }
-                            <><CoverMenuMore
-                                {...menu}
-                                uri={uri}
-                                isSplitMenu={!showMoreMenu}
-                            />
-                        </>
-                        
-                    </Row>
-                </View>
+                {isAddSelector && (
+                    <View className={`${TABLET_MODE_FROM}:hidden`}>
+                        <ContextSelector data={context} mode="min" />
+                    </View>
+                )}
             </Row>
+            <View className=" items-end ">
+                <Row className="w-full justify-between">
+                    {!showMoreMenu && (
+                        <>
+                            <CoverMenu {...menu} uri={uri} isSplitMenu={true} />
+                        </>
+                    )}
+                    <>
+                        <CoverMenuMore
+                            {...menu}
+                            uri={uri}
+                            isSplitMenu={!showMoreMenu}
+                        />
+                    </>
+                </Row>
+            </View>
         </View>
     )
 }
 
-function CoverImage({ mode, profileData, coverData, allowEdit, allowSwitch, title, profileDisplaySize, is_person }) {
-    const [imageUrl, setImageUrl] = useState(mode == 'cover' ? coverData.src : profileData.url_avatar)
+function CoverImage({
+    mode,
+    profileData,
+    coverData,
+    allowEdit,
+    allowSwitch,
+    title,
+    profileDisplaySize,
+    is_person,
+}) {
+    const [imageUrl, setImageUrl] = useState(
+        mode == 'cover' ? coverData.src : profileData.url_avatar
+    )
 
     const uo = profileData.module + '_cover_crop'
     const so = coverData.storage
     const img_trans = ''
     const c = profileData.info.id
 
-
     const handleSwitch = async (id) => {
         const result = await fetcher(
             '/api.php?r=system/switch_profile/TemplServiceAccount&params[]=' +
-            id
+                id
         )
         location.reload()
     }
@@ -288,47 +309,55 @@ function CoverImage({ mode, profileData, coverData, allowEdit, allowSwitch, titl
 
     if (mode == 'cover') {
         const isCover = !!imageUrl
-        return (<View className={`duration-300 bg-primary lg:rounded-lg lg:mt-3 w-full ${appSetting('layout', 'max_width_content')} mx-auto overflow-hidden ${isCover
-            ? ` h-[30vh] sm:${appSetting(
-                'cover',
-                'aspect_ratio'
-            )}`
-            : 'pb-32'
-            }`}
-        >
-            {isCover && (
-                <Image
-                    alt={title}
-                    view="cover"
-                    sizes={LAYOUT_BREAKPOINTS.xl}
-                    className="u-cover opacity-50"
-                    src={imageUrl}
-                />
-            )}
-            {imageUrl?.includes('data:') && <View className='h-full w-full opacity-50 bg-bgrtabbar dark:bg-bgrtabbar-d w-full opacity-50 justify-center'><Loading /></View>}
-            <Row className="p-2 sm:px-4 justify-end gap-x-2 ">
-                {allowSwitch && (
-                    <Button
-                        rounded
-                        variant="default"
-                        startDecorator="RefreshCw"
-                        tooltip={'Switch to profile'}
-                        onPress={() => handleSwitch(allowSwitch)}
+        return (
+            <View
+                className={`duration-300 bg-primary lg:rounded-lg lg:mt-3 w-full ${appSetting(
+                    'layout',
+                    'max_width_content'
+                )} mx-auto overflow-hidden ${
+                    isCover
+                        ? ` h-[30vh] sm:${appSetting('cover', 'aspect_ratio')}`
+                        : 'pb-32'
+                }`}
+            >
+                {isCover && (
+                    <Image
+                        alt={title}
+                        view="cover"
+                        sizes={LAYOUT_BREAKPOINTS.xl}
+                        className="u-cover opacity-50"
+                        src={imageUrl}
                     />
                 )}
-                {allowEdit && (
-                    <Button
-                        rounded
-                        variant="default"
-                        startDecorator="Camera"
-                        onPress={() => handleUpload(mode)}
-                    />
+                {imageUrl?.includes('data:') && (
+                    <View className="h-full w-full opacity-50 bg-bgrtabbar dark:bg-bgrtabbar-d w-full opacity-50 justify-center">
+                        <Loading />
+                    </View>
                 )}
-            </Row>
-            <View className="absolute lg:hidden top-2 left-2 z-50 ">
-                {getCoverBackButton(is_person)}
+                <Row className="p-2 sm:px-4 justify-end gap-x-2 ">
+                    {allowSwitch && (
+                        <Button
+                            rounded
+                            variant="default"
+                            startDecorator="RefreshCw"
+                            tooltip={'Switch to profile'}
+                            onPress={() => handleSwitch(allowSwitch)}
+                        />
+                    )}
+                    {allowEdit && (
+                        <Button
+                            rounded
+                            variant="default"
+                            startDecorator="Camera"
+                            onPress={() => handleUpload(mode)}
+                        />
+                    )}
+                </Row>
+                <View className="absolute lg:hidden top-2 left-2 z-50 ">
+                    {getCoverBackButton(is_person)}
+                </View>
             </View>
-        </View>)
+        )
     }
     if (mode == 'picture') {
         return (
@@ -344,12 +373,9 @@ function CoverImage({ mode, profileData, coverData, allowEdit, allowSwitch, titl
                         <Button
                             rounded
                             size="sm"
-
                             variant="default"
                             startDecorator="Camera"
-                            onPress={() =>
-                                handleUpload(mode)
-                            }
+                            onPress={() => handleUpload(mode)}
                         />
                     </View>
                 )}
@@ -363,9 +389,15 @@ export default function ({ data, mode, uri, showMoreMenu, pageData, context }) {
     const { currentUser } = useCurrentUser()
     const isWeb = Platform.OS === 'web'
 
-    const coverMode = appSetting('cover', 'view_by_module', data?.profile?.module) || mode
-    const bPerson = data.profile.module == 'bx_persons' || appSetting('cover', 'show_pic_by_module', data?.profile?.module) ? true : false
-    const bAllowEdit = data.allow_edit && appSetting('cover', 'allow_edit') && isWeb
+    const coverMode =
+        appSetting('cover', 'view_by_module', data?.profile?.module) || mode
+    const bPerson =
+        data.profile.module == 'bx_persons' ||
+        appSetting('cover', 'show_pic_by_module', data?.profile?.module)
+            ? true
+            : false
+    const bAllowEdit =
+        data.allow_edit && appSetting('cover', 'allow_edit') && isWeb
     const foundItem = currentUser?.informer?.find((item) => {
         return item.id == 'sys-switch-profile-context'
     })
@@ -375,29 +407,50 @@ export default function ({ data, mode, uri, showMoreMenu, pageData, context }) {
         isAllowSwitch = match ? match[1] : null
     }
 
-    const isMin = coverMode === 'min';
+    const isMin = coverMode === 'min'
 
-    const isAddSelector = context && context.list[0] && data.profile.module == context.list[0].module
+    const isAddSelector =
+        context &&
+        context.list[0] &&
+        data.profile.module == context.list[0].module
     const ContextSelector = getComponent('molecule', 'context_selector')
     const Badges = getComponent('molecule', 'badges')
-
 
     if (coverMode === 'none') {
         return null
     }
 
-    const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from');
+    const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from')
 
     return (
-
         <View className={`w-full mx-auto ${appSetting('layout', 'max_width')}`}>
-            {!isMin && (<CoverImage mode='cover' coverData={data?.cover} profileData={data.profile} allowEdit={bAllowEdit} allowSwitch={isAllowSwitch} />)}
-            <View className={` ${appSetting('layout', 'max_width_content')} lg:flex-row gap-y-3 gap-x-3 mx-auto w-full lg:items-end px-3 pt-2.5 sm:px-4 sm:pt-4`} >
-
+            {!isMin && (
+                <CoverImage
+                    mode="cover"
+                    coverData={data?.cover}
+                    profileData={data.profile}
+                    allowEdit={bAllowEdit}
+                    allowSwitch={isAllowSwitch}
+                />
+            )}
+            <View
+                className={` ${appSetting(
+                    'layout',
+                    'max_width_content'
+                )} lg:flex-row gap-y-3 gap-x-3 mx-auto w-full lg:items-end px-3 pt-2.5 sm:px-4 sm:pt-4`}
+            >
                 {bPerson && (
                     <View className="hidden lg:flex flex-none h-24 justify-end w-min ">
                         <View className=" flex-auto z-50 rounded-full p-1 flex-none bg-white dark:bg-neutral-900 translate-y-1 -translate-x-1">
-                            <CoverImage is_person={bPerson} mode='picture' profileDisplaySize={isMin ? '2xl' : '4xl'} coverData={data?.cover} profileData={data.profile} allowEdit={bAllowEdit} allowSwitch={isAllowSwitch} />
+                            <CoverImage
+                                is_person={bPerson}
+                                mode="picture"
+                                profileDisplaySize={isMin ? '2xl' : '4xl'}
+                                coverData={data?.cover}
+                                profileData={data.profile}
+                                allowEdit={bAllowEdit}
+                                allowSwitch={isAllowSwitch}
+                            />
                         </View>
                     </View>
                 )}
@@ -411,9 +464,22 @@ export default function ({ data, mode, uri, showMoreMenu, pageData, context }) {
                                 {data.profile.display_name}
                             </Text>
                             <Badges badges={data.badges} size="sm" />
-                            {isAddSelector && <View className={`${TABLET_MODE_FROM}:hidden`}><ContextSelector data={context} mode='min' /></View>}
+                            {isAddSelector && (
+                                <View className={`${TABLET_MODE_FROM}:hidden`}>
+                                    <ContextSelector
+                                        data={context}
+                                        mode="min"
+                                    />
+                                </View>
+                            )}
                         </Row>
-                        {isWeb ? <CoverMenuMeta {...data.meta_menu} /> : <ScrollView horizontal={true}><CoverMenuMeta {...data.meta_menu} /></ScrollView>}
+                        {isWeb ? (
+                            <CoverMenuMeta {...data.meta_menu} />
+                        ) : (
+                            <ScrollView horizontal={true}>
+                                <CoverMenuMeta {...data.meta_menu} />
+                            </ScrollView>
+                        )}
                         {!!data.profile.info?.date_start && (
                             <Text className="  text-neutral-600 dark:text-neutral-400 text-xs uppercase font-semibold tracking-tight overflow-hidden rounded-md flex-none items-center">
                                 {formatDateInterval(
@@ -425,16 +491,36 @@ export default function ({ data, mode, uri, showMoreMenu, pageData, context }) {
                         )}
                     </View>
                     <View className="flex-row flex-wrap items-end justify-between  flex-auto gap-x-2 gap-y-2">
-
                         <View className="flex-row sm:items-end flex-wrap gap-3 lg:gap-4 lg:ml-auto">
                             {bPerson && (
-                                <View className={`${isMin ? 'h-24' : 'h-10'} lg:hidden flex-auto justify-end `}>
+                                <View
+                                    className={`${
+                                        isMin ? 'h-24' : 'h-10'
+                                    } lg:hidden flex-auto justify-end `}
+                                >
                                     <View className=" flex-row flex-auto z-50 rounded-full p-1 flex-none bg-white mr-auto dark:bg-neutral-900 translate-y-1 -translate-x-1 ">
-                                        <CoverImage mode='picture' profileDisplaySize={isMin ? '2xl' : '3xl'} coverData={data?.cover} profileData={data.profile} allowEdit={bAllowEdit} allowSwitch={isAllowSwitch} />
+                                        <CoverImage
+                                            mode="picture"
+                                            profileDisplaySize={
+                                                isMin ? '2xl' : '3xl'
+                                            }
+                                            coverData={data?.cover}
+                                            profileData={data.profile}
+                                            allowEdit={bAllowEdit}
+                                            allowSwitch={isAllowSwitch}
+                                        />
                                     </View>
                                 </View>
                             )}
-                            <Row className={`gap-2 ${appSetting('cover', 'more_menu_in_navbar', data?.profile?.module) && 'lg:hidden'}`}>
+                            <Row
+                                className={`gap-2 ${
+                                    appSetting(
+                                        'cover',
+                                        'more_menu_in_navbar',
+                                        data?.profile?.module
+                                    ) && 'lg:hidden'
+                                }`}
+                            >
                                 <CoverMenu
                                     {...data.actions_menu}
                                     uri={uri}
