@@ -98,7 +98,6 @@ export const Header = memo(({
 
     const ContextSelector = getComponent('molecule', 'context_selector')
     const HeaderElement = getComponent('molecule', 'header_element')
-    console.log("pageData", pageData)
     return (
 
             <Row className={`items-center h-16 justify-between ${cd('px-lg')} ${cd('gap-md')}`} >

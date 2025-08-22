@@ -156,9 +156,8 @@ export default function (props) {
 
     const fetchData = useCallback(
         async ({ }) => {
-            const sUrl =
-                data.request_url + JSON.stringify({ params: dataItems.params })
-            return (await fetcher(sUrl)).data[0].data
+            const sUrl = data.request_url + JSON.stringify({ params: dataItems.params })
+            return data.request_url ? (await fetcher(sUrl)).data[0].data : []
         },
         [dataItems.params]
     )
@@ -204,6 +203,7 @@ export default function (props) {
 
     const handleEndReached = useCallback(
         (lastItemIndex) => {
+            if (!data.request_url) return
             if (!hasNextPage) return
             if (props.only_one_page == true) return
             if (props.extraProps?.limit == true) return
@@ -338,7 +338,7 @@ export default function (props) {
     }, [dataItems.data])
 
     useEffect(() => {
-        if (dataItems.data.length == 0 && dataItems.params == browseParams) {
+        if (dataItems.data.length == 0 && dataItems.params == browseParams && data.request_url) {
             //console.log('refetch2');
             refetch()
         }
@@ -410,11 +410,7 @@ export default function (props) {
         ))
     }
 
-    const isShowPreloads =
-        dataItems.data.length == 0 &&
-        ((dataItems?.params?.start === 0 &&
-            !props.only_one_page /*&& data.unit != 'notifications'*/) ||
-            status === 'loading')
+    const isShowPreloads = dataItems.data.length == 0 && data.request_url &&  ((dataItems?.params?.start === 0 && !props.only_one_page /*&& data.unit != 'notifications'*/) || status === 'loading')
     let PreloadComponent = null
     if (isShowPreloads) {
         PreloadComponent = Preload

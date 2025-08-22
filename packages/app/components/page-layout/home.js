@@ -82,6 +82,12 @@ export default function (props) {
             return { name: key, block: props.blocks[key] }
         })
 
+    const centerBlocks = Object.keys(props.blocks)
+        .filter((key) => props.blocks[key].center)
+        .map((key) => {
+            return { name: key, block: props.blocks[key] }
+        })
+
     const navBarBlocks = Object.keys(props.blocks)
         .filter((key) => props.blocks[key].leftbar)
         .map((key) => {
@@ -99,7 +105,6 @@ export default function (props) {
         let dUser = Object.assign({}, currentUser)
         dUser.url_avatar = dUser.avatar
         dUser.url = appSetting('dashboard', 'url')
-
         const headerBlocks = (
             <>
                 {topBlocks?.map((item, index) => {
@@ -115,7 +120,21 @@ export default function (props) {
             </>
         )
 
-        const subHeader = (
+        
+        const BlocksCenter = <View  className={`${appSetting('layout', 'max_width')} mx-auto w-full`}>
+                {centerBlocks?.map((item, index) => {
+                    return (
+                        <BlockByName
+                            key={'block_' + index}
+                            name={item.block}
+                            data={props.data}
+                            {...item.block.props}
+                        />
+                    )
+                })}</View>
+
+                console.log("feedList.length", feedList.length)
+        const subHeader = feedList.length > 1 && (
             <Row className=' items-center h-14 '>
                 <ScrollView horizontal={true} className={`${cd('px-lg')} flex w-full scrollbar-hide`} >
                     <Row
@@ -145,9 +164,7 @@ export default function (props) {
             </Row>
         )
 
-        const isFeedMenuPresent =
-            feedList.length > 1 || appSetting('feed', 'show_selector_view')
-
+        const isFeedMenuPresent = feedList.length > 1 || appSetting('feed', 'show_selector_view')
         const FeedContent = (
             <>
                 {layoutName == 'ver' && (
@@ -155,6 +172,7 @@ export default function (props) {
                         {subHeader}
                     </View>
                 )}
+                
                 {feedList.map((item, index) => {
                     if (feedType == item.name) {
                         return (
@@ -206,6 +224,7 @@ export default function (props) {
                 })}
             </>
         )
+
 
         const SideBarContent = (
             <>
@@ -274,9 +293,8 @@ export default function (props) {
         )
 
         const cellsCustomConfig = appSetting('layouts', 'home')
-
-        //if (cellsCustomConfig?.adjustable) {
         return (
+            <>{BlocksCenter}
             <PanelGroup
                 autoSaveId={`cells-home`}
                 direction="horizontal"
@@ -326,7 +344,7 @@ export default function (props) {
                         </Panel>
                     </>
                 )}
-            </PanelGroup>
+            </PanelGroup></>
         )
     }
 }

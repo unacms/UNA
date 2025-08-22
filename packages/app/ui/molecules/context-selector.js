@@ -148,7 +148,7 @@ export default function ContextSelector({ data, url, uri, mode }) {
                         renderListItem_(
                             item.url,
                             item.title,
-                            item.icon && (
+                            item.icon && (item.icon == '{logo}' ? appStatic('logo', { mode: 'mark', }) : 
                                 <Icon
                                     icon={item.icon}
                                     size={20}
@@ -191,9 +191,7 @@ export default function ContextSelector({ data, url, uri, mode }) {
                                                 }`}
                                             >
                                                 <View className="p-1.5 flex-row rounded-full items-center justify-center">
-                                                    {appStatic('logo', {
-                                                        mode: 'mark',
-                                                    })}
+                                                    {appStatic('logo', { mode: 'mark', })}
                                                 </View>
                                             </Row>
                                         </Link>
