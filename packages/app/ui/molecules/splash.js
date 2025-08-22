@@ -11,6 +11,7 @@ import MenuFooter from 'app/components/nav/menu-footer';
 import AnimatedView from 'app/ui/atoms/animated-view';
 import { useTranslation } from 'react-i18next'
 import ScrollList from 'app/ui/molecules/scroll_list'
+import Link from 'app/ui/atoms/link'
 
 /**
  * Renders the login splash screen with adaptive layouts for web and mobile platforms.
@@ -27,7 +28,7 @@ function PageContent(props) {
     return (<Card padding="p-6">
         <CardHeader>
             <CardTitle>{t("splash_page_login")}</CardTitle>
-            <CardDescription>{t("splash_page_login2")}</CardDescription>
+            <CardDescription>{t("splash_page_login2")} <Link variant="accent" size="sm" href="/create-account">{t('splash_page_new_account')}</Link>.</CardDescription>
         </CardHeader>
         <CardContent>
             
