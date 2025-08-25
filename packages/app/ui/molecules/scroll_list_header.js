@@ -25,7 +25,7 @@ import {
 
 export const TextHeader = memo(({ text }) => {
     const { t } = useTranslation();
-    return <Text className="font-bold text-card-foreground flex-auto text-2xl tracking-tight">
+    return <Text className="font-bold text-card-foreground text-2xl tracking-tight">
         {t(text)}
     </Text>
 })
@@ -97,7 +97,10 @@ export const Header = memo(({
 
 
     const ContextSelector = getComponent('molecule', 'context_selector')
-    const HeaderElement = getComponent('molecule', 'header_element')
+    const HeaderElement = getComponent('molecule', 'header_element');
+
+console.log("pageData?.context?.current", pageData?.context?.current)
+
     return (
 
             <Row className={`items-center h-16 justify-between ${cd('px-lg')} ${cd('gap-md')}`} >
@@ -108,17 +111,19 @@ export const Header = memo(({
                     </Pressable>
                 </Link>
             }
-            {(pageData?.context) && <ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} />}
             {(backButtonPresented && (!isWeb || history.length > 2)) && (
                 <View className=""><Button variant="secondary" rounded onPress={() => {
                     FeedbackHaptics('Medium');
                     router ? router?.back() : history.back();
                 }} startDecorator="ArrowLeft" size="base" /></View>
             )}
-            {(!!text && !pageData?.context) && (
+            {(pageData?.context?.current?.url || isHome) && <View><ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} /></View>}
+            <Row className='items-center'>
+            {(!!text && !pageData?.context?.current?.url) && (
                 <TextHeader text={text}></TextHeader>
             )}
-
+            {(pageData?.context && !pageData?.context?.current?.url && !isHome) && <ContextSelector mode="min" url={pageData?.url} uri={pageData?.uri} data={pageData?.context} />}
+            </Row>
             {type !== 'string' && <View className="flex-auto">{headerContent}</View>}
             <Row className=" items-end ">
                 {rightHeaderComponent ? rightHeaderComponent : memoizedRightComponents}
