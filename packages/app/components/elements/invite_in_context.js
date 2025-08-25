@@ -12,11 +12,10 @@ export default function InviteInContext(props) {
     const [res, setRes] = useState("");
     //aY9sC
 
-
     useEffect(() => {
         (async () => {
             if (inputValue.length > 3) {
-                const sResponse = await fetcher(`/api.php?r=bx_invites/get_context_by_code/&params[]=${inputValue}&initiate=true`);
+                const sResponse = await fetcher(`/api.php?r=bx_invites/get_context_by_code/&params[]=${inputValue}&params[]={"initiate": 1}`);
                 setRes(sResponse.data)
             }
 
