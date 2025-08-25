@@ -27,6 +27,7 @@ import Pricing from './pricing';
 import Chart from './chart';
 import MapBox from './mapbox';
 import MultiPostForm from './multi_post_form';
+import InviteInContext from './invite_in_context';
 import Comments from './comments';
 import CommentContent from './comment_content';
 import NotificationsSettings from './notifications_settings';
@@ -42,6 +43,7 @@ import ApiPerformance from './api_performance';
 
 export const componentsMapDefault = {
     messenger_main_page: Messenger,
+    invite_in_context: InviteInContext,
     search_sections: SearchSections,
     reputation_summary: ReputationSummary,
     reputation_leaderboard: ReputationLeaderboard,
