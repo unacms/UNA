@@ -55,8 +55,8 @@ export default function ElementTime(props) {
 
     const defaultClasses =
         variant === 'link'
-            ? ' text-xs leading-5 font-semibold relative u-time-hitarea '
-            : ' text-xs leading-5 font-semibold text-muted-foreground web:group-hover:text-accent-foreground ';
+            ? '  font-semibold text-muted-foreground web:group-hover:text-accent-foreground relative u-time-hitarea '
+            : '  font-semibold  ';
 
     return (
         <Text

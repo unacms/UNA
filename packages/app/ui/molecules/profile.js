@@ -65,7 +65,7 @@ function UnitWoInfo({ oProps, sSize, sSizeFontLetter, iSizeWidth, bShowLinks, em
 function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont, actions, info2 }) {
     return (
        <Row className={`${cd('gap-xs')} justify-between`}>
-       <View className="my-auto gap-0.5">
+       <View className="my-auto gap-1">
 
             {bShowLinks ? (
                 <Row className={`${cd('gap-xs')} items-center`}>

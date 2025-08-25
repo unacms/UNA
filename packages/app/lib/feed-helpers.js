@@ -494,7 +494,7 @@ export const VisibilityInfo = memo(({ data }) => {
 
     return (
         <Row className={`items-center`}>
-            <Text className=" text-muted-foreground text-xs leading-5">·</Text>
+            <Text className=" text-muted text-lg leading-4">·</Text>
             <View className="flex-none px-1 flex-row gap-1 items-center justify-center">
                 {isUser ? (
                     <Profile
@@ -504,7 +504,7 @@ export const VisibilityInfo = memo(({ data }) => {
                     />
                 ) : icon ? (
                     <View className="text-muted-foreground ">
-                        <Icon icon={icon} width={14} height={14} />
+                        <Icon icon={icon} width={16} height={16} />
                     </View>
                 ) : null}
                     <Text className="text-muted-foreground text-xs leading-5 text-center flex-auto font-semibold">
@@ -555,7 +555,7 @@ export const Author = memo(({ data, url, t }) => {
                                 variant="ghost"
                                 className="u-time-hitarea relative "
                             >
-                                <Time
+                                <Time variant="link" stylesNameAdd="text-xs leading-5"
                                     ts={data.date}
                                 />
                             </Link>

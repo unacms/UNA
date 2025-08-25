@@ -62,8 +62,10 @@ export default function Badge({ data, variant = "default", size = 'sm', rounded 
     if (data.badge_url) {
         // PERSONAL BADGE, SSPECIFIED BY USER
         return (
-            <Link href={data.badge_link}><View className={`rounded-md w-5 h-5 overflow-hidden ${className}`}><Image
-                view="cover"
+            <Link href={data.badge_link}><View className={`rounded-md bg-muted web:hover:bg-secondary w-5 h-5 p-0.5 overflow-hidden ${className}`}><Image
+                width={16}
+                height={16}
+                className='rounded'
                 src={data.badge_url}
                 alt={data.badge_url.title_attr}
             /></View></Link>
@@ -82,7 +84,7 @@ export default function Badge({ data, variant = "default", size = 'sm', rounded 
 
         // Container sizing and padding from size map
         const containerSize = size && badgeSizes[size]?.container || '';
-        const roundedSize = size && badgeSizes[size]?.rounded || 'rounded-md';
+        const roundedSize = size && badgeSizes[size]?.rounded || 'rounded-md ';
         const sizeSize = size && badgeSizes[size]?.icon_size || 14
         const pad = size && ((hasText || hasBoth) ? badgeSizes[size]?.wide_padding : badgeSizes[size]?.padding) || '';
         const containerClasses = `${baseClasses} ${containerSize} ${pad}`.trim();
@@ -108,13 +110,15 @@ export default function Badge({ data, variant = "default", size = 'sm', rounded 
                 {hasIcon && <Text className={`${badgeTheme['u-badge-text']} ${textColorClass}`}>
                     <Icon icon={data.icon} size={sizeSize} />
                 </Text>}
-                {hasImage && <View className={`${containerSize} ${roundedSize}`}>
-                    <Image
-                        width={sizeSize}
-                        height={sizeSize}
-                        src={data.icon_url}
-                    />
-                </View>}
+                {hasImage && (
+                    <View className={`${size && badgeSizes[size]?.image_container || ''}`}>
+                        <Image
+                            width={sizeSize}
+                            height={sizeSize}
+                            src={data.icon_url}
+                        />
+                    </View>
+                )}
                 {hasText && <Text className={`${badgeTheme['u-badge-text']} ${textColorClass} ${size && badgeSizes[size]?.text || ''} `} >
                     {data.text}
                 </Text>}

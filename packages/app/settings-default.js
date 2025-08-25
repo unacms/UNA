@@ -1170,16 +1170,18 @@ export const settingsDefault = {
             default_size: '',
             xs: {
                 padding: ' px-0.5',
-                wide_padding: ' px-1 ',
-                container: ' min-w-5 h-5 gap-1 justify-center items-center ',
-                icon_size: 14,
-                text: ' text-xs ',
+                wide_padding: ' px-0.5 ',
+                container: '  min-w-5 h-5 overflow-hidden justify-center items-center ',
+                image_container: ' items-center justify-center rounded overflow-hidden ',
+                icon_size: 16,
+                text: ' text-xs leading-5 px-1 ',
                 rounded: ' rounded-md ',
             },
             sm: {
                 padding: ' px-1 ',
                 wide_padding: ' px-2 ',
                 container: ' min-w-7 h-7 gap-1 ',
+                image_container: ' items-center justify-center ',
                 icon_size: 20,
                 text: ' text-sm leading-[20px] ',
                 rounded: ' rounded-[7px] ',
@@ -1188,6 +1190,7 @@ export const settingsDefault = {
                 padding: ' px-1.5 ',
                 wide_padding: ' px-2.5 ',
                 container: ' min-w-8 h-8 gap-1 ',
+                image_container: ' items-center justify-center ',
                 icon_size: 20,
                 text: ' text-base leading-[20px] ',
                 rounded: ' rounded-[8px] ',
@@ -1196,6 +1199,7 @@ export const settingsDefault = {
                 padding: ' px-2 ',
                 wide_padding: ' px-3 ',
                 container: ' min-w-10 h-10 gap-1.5 ',
+                image_container: ' items-center justify-center ',
                 icon_size: 24,
                 text: ' text-lg leading-[24x] ',
                 rounded: ' rounded-[10px] ',
@@ -1208,7 +1212,7 @@ export const settingsDefault = {
 
             
             xs: {
-                padding: ' px-0.5 py-[1px] rounded-md ',
+                padding: ' px-1  rounded-md items-center flex  ',
             },
             sm: {
                 padding: ' px-1 py-0.5 rounded-md  ',
@@ -1230,7 +1234,7 @@ export const settingsDefault = {
 
             // Ghost: transparent by default; muted on hover/active
             'u-link-ghost-cnt':
-                 ' group bg-transparent web:hover:bg-accent/60 web:active:opacity-50 border-[0.5px] border-accent-foreground/10 web:border-0 web:hover:ring-[0.5px] web:hover:ring-inset web:hover:ring-accent-foreground/10 rounded-full ',
+                 ' group bg-transparent web:hover:bg-accent/60 web:active:opacity-50 ',
             'u-link-ghost-text':
                 ' text-muted-foreground web:hover:text-accent-foreground ',
             'u-link-ghost-trans': ' web:duration-200 ',
@@ -1338,13 +1342,13 @@ export const settingsDefault = {
                 'flex flex-row text-card-foreground mb-auto gap-2 ',
         },
         badges: {
-            'u-badge-default': ' bg-popover/80 text-secondary-foreground border-[0.5px] border-border/80 web:border-0 web:ring-[0.5px] web:ring-inset web:ring-border/80 rounded-full ',
+            'u-badge-default': ' bg-primary   ',
             'u-badge-destructive': ' bg-destructive ',
             'u-badge-outline': ' bg-transparent border border-border  ',
             'u-badge-accent': ' bg-accent/50  ',
             'u-badge-secondary': ' bg-secondary ',
             'u-badge-text': ' whitespace-nowrap tracking-tight font-medium ',
-            'u-badge-default-text': ' text-muted-foreground ',
+            'u-badge-default-text': ' text-primary-foreground ',
             'u-badge-destructive-text': ' text-destructive-foreground ',
             'u-badge-outline-text': ' text-card-foreground ',
             'u-badge-accent-text': ' text-accent-foreground ',
