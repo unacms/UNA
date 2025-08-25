@@ -480,7 +480,7 @@ export default function ({ data, mode, uri, showMoreMenu, pageData, context }) {
                             </Text>
                         )}
                     </View>
-                    <View className="flex-row flex-wrap items-end justify-between  flex-auto gap-x-2 gap-y-2">
+                    <View className="flex-row flex-wrap items-end justify-between gap-x-2 gap-y-2">
                         <View className="flex-row sm:items-end flex-auto flex-wrap gap-3 lg:ml-auto">
                             {bPerson && (
                                 <View
