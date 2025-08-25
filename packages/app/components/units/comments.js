@@ -358,8 +358,8 @@ export default function UnitComments(props) {
                             <Carousel data={imageList} />
                         </View>
                     )}
-                       {viewState.view != 'edited' && (
-                        <Row className={`${cd('pt-xs')} ${cd('gap-xs')} `}>
+                    {viewState.view != 'edited' && (
+                        <Row className={`${cd('pt-xs')} ${cd('gap-xs')}`}>
                             {!!currentUser &&
                             !!props.handleReply &&
                             !props.module.includes('_reviews') ? (
