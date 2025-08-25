@@ -37,7 +37,7 @@ const BackButton = ({ isPerson }) => {
         <Link href={appSetting('cover', 'back_button_url_for_profile')}>
             <Button
                 variant="default"
-                size="base"
+                size="sm"
                 rounded={true}
                 startDecorator="ArrowLeft"
             />
@@ -45,7 +45,7 @@ const BackButton = ({ isPerson }) => {
     ) : (
         <Button
             variant="default"
-            size="base"
+            size="sm"
             rounded={true}
             startDecorator="ArrowLeft"
             onPress={() => {
@@ -76,7 +76,7 @@ function getCoverBackButton(is_person) {
                 <Link href="/">
                     <Button
                         rounded={true}
-                        size="base"
+                        size="sm"
                         variant="secondary"
                         startDecorator="ArrowLeft"
                     />
@@ -119,10 +119,10 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
 
     return (
         <View
-            className={`${conductorTheme.content_max_width} mx-auto w-full px-3 py-2 gap-3 flex-row items-center `}
+            className={`${conductorTheme.content_max_width} w-full flex-auto mx-auto px-3 pt-2.5 gap-3 flex-row items-center justify-between `}
         >
             {getCoverBackButton(bPerson)}
-            <Row className='flex-auto items-center gap-2' >
+            <Row className='items-center p-1 bg-muted/60 web:hover:bg-secondary/60 rounded-full' >
                 {bPerson && (
                     <Profile
                         {...data.profile}
@@ -132,7 +132,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                 )}
                  
                 {isAddSelector && (
-                    <View className={`${TABLET_MODE_FROM}:hidden`}>
+                    <View className={`${TABLET_MODE_FROM}:hidden ounded-full`}>
                         <ContextSelector data={context} mode="min" />
                     </View>
                 )}

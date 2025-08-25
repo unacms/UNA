@@ -949,7 +949,7 @@ export const settingsDefault = {
             primaryBg: 'rgba(37,99,235,0.1)',
         },
         dropdown: {
-            cnt: ' rounded-2xl overflow-hidden shadow-lg p-1.5 border border-border/40 web:border-0 web:ring-1  web:ring-border/40 bg-popover/80 backdrop-blur-xl z-50  ',
+            cnt: ' rounded-2xl overflow-hidden shadow-lg p-1.5 bg-popover/90 backdrop-blur-xl z-50  ',
         },
         conductor: {
             menu: '   w-full items-left justify-center  ',
@@ -1524,7 +1524,7 @@ export const settingsDefault = {
             'u-btn-danger-trans': ' web:duration-200',
             
 
-            'u-btn-text-cnt': ' group web:hover:bg-secondary/60 active:opacity-50 ',
+            'u-btn-text-cnt': ' group web:hover:bg-muted/60 backdrop-blur active:opacity-50 ',
             'u-btn-text-text':
                 ' font-medium text-card-foreground web:group-hover:text-foreground',
             'u-btn-text-trans': ' web:duration-200',
