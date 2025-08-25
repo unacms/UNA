@@ -99,8 +99,6 @@ export const Header = memo(({
     const ContextSelector = getComponent('molecule', 'context_selector')
     const HeaderElement = getComponent('molecule', 'header_element');
 
-console.log("pageData?.context?.current", pageData?.context?.current)
-
     return (
 
             <Row className={`items-center h-16 justify-between ${cd('px-lg')} ${cd('gap-md')}`} >
@@ -118,13 +116,13 @@ console.log("pageData?.context?.current", pageData?.context?.current)
                 }} startDecorator="ArrowLeft" size="base" /></View>
             )}
             {(pageData?.context?.current?.url || isHome) && <View><ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} /></View>}
-            <Row className='items-center'>
+            {(!!text) && <Row className='items-center'><>
             {(!!text && !pageData?.context?.current?.url) && (
                 <TextHeader text={text}></TextHeader>
             )}
             {(pageData?.context && !pageData?.context?.current?.url && !isHome) && <ContextSelector mode="min" url={pageData?.url} uri={pageData?.uri} data={pageData?.context} />}
-            </Row>
-            {type !== 'string' && <View className="flex-auto">{headerContent}</View>}
+            </></Row>}
+            {(type !== 'string' && headerContent) && <View className="flex-auto">{headerContent}</View>}
             <Row className=" items-end ">
                 {rightHeaderComponent ? rightHeaderComponent : memoizedRightComponents}
                 <HeaderElement mode="small"  />

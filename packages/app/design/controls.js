@@ -515,9 +515,9 @@ export const Button = (props) => {
         
         if (disabled) classes += ' opacity-50';
         if (variant !== 'custom') {
-            classes += (solid ? '' : ' ' + ThemeCssClassesButton[`u-btn-${variant}-trans`]) + ' ' + ThemeCssClassesButton[`u-btn-${variant}-cnt`];
+            classes += ` ${!solid && ThemeCssClassesButton[`u-btn-${variant}-trans`]} ${className} ${ThemeCssClassesButton[`u-btn-${variant}-cnt`]} `;
         } else {
-            classes += ' ' + className;
+            classes += ` ${className} `;
         }
         if (bgColor){
             classes = classes.replaceAll(/bg-\S+/g, '').replaceAll(/ring-\S+/g, '') + ` ${bgColor}`;
@@ -537,7 +537,7 @@ export const Button = (props) => {
     const sClassText = useMemo(() => {
         let classes = 'whitespace-nowrap text-ellipsis overflow-hidden';
         if (variant !== 'custom' && !pressed) {
-            classes += ' ' + ThemeCssClassesButton[`u-btn-${variant}-text`];
+            classes += ` ${ThemeCssClassesButton[`u-btn-${variant}-text`]}`;
         } else {
             classes += ` ${classTextName}`;
         }

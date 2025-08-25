@@ -18,7 +18,7 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
     const isDynamicMenu = true;//windowWidth > LAYOUT_BREAKPOINTS.sm;
 
     useEffect(() => {
-        if (!isFixedCount && itemRefs.current.length> 0) {
+        if (!isFixedCount && itemRefs.current.length > 0) {
             const menuWidth = width;
             let visibleWidth = offsetWidth + (itemRefsMore?.current ? itemRefsMore?.current?.offsetWidth : 0);
             let visibleCount = 0;
@@ -36,7 +36,7 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
             if (visibleCount > persistent && persistent > 0)
                 visibleCount = persistent;
 
-            if (visibleCount != visibleItemsCount && visibleCount>0) {
+            if (visibleCount != visibleItemsCount && visibleCount > 0) {
                 setVisibleItemsCount(visibleCount);
             }
 
@@ -47,11 +47,11 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
     const handleLayout = useCallback((event) => {
         if (isFixedCount)
             return
-      
-        if (isDynamicMenu){
-           setWidth(event.nativeEvent.layout.width)
+
+        if (isDynamicMenu) {
+            setWidth(event.nativeEvent.layout.width)
         }
-                
+
         else
             setVisibleItemsCount(itemRefs.current.length)
 
@@ -87,14 +87,15 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
             <FormModal pageData={pageData} setPageData={setPageData} />
             <Container
                 contentContainerStyle={{ alignItems: 'center' }}
-                className={isWeb ? (containerClasses ? containerClasses.trim() + ' overflow-visible' : 'overflow-visible') :  (containerClasses ? containerClasses.trim() + ' overflow-visible' : 'overflow-visible')}
+                className={isWeb ? (containerClasses ? containerClasses.trim() + ' overflow-visible' : 'overflow-visible') : (containerClasses ? containerClasses.trim() + ' overflow-visible' : 'overflow-visible')}
                 horizontal={true}
                 onLayout={handleLayout}
             >
                 <View className={menuClasses} >
                     {
+
                         items.map((aItem, iKey) => {
-                            return <ViewRef key={name + 'menu' + iKey} className={(iKey > visibleItemsCount - 1 ? ' item-overlap ' : '')} ref={el => (itemRefs?.current ? (itemRefs.current[iKey] = el) : (el = null))} ><MenuItem item={{ ...aItem, onPress: (event) => handleFormModal(aItem, event, setPageData) }}  visibleItemsCount={visibleItemsCount} /></ViewRef>
+                            return <ViewRef key={name + 'menu' + iKey} className={`${iKey > visibleItemsCount - 1 && ' item-overlap '} ${aItem?.item?.settings?.class}`} ref={el => (itemRefs?.current ? (itemRefs.current[iKey] = el) : (el = null))} ><MenuItem item={{ ...aItem, onPress: (event) => handleFormModal(aItem, event, setPageData) }} visibleItemsCount={visibleItemsCount} /></ViewRef>
                         })
                     }
                 </View>

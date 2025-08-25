@@ -104,7 +104,7 @@ export default function ContextSelector({ data, url, uri, mode }) {
 
     const CurrentContext = (
         <Link  href={contextRoot.url}>
-            <Row className="items-center gap-2 px-2">
+           <Row className="items-center gap-2 px-2 w-44 lg:w-auto">
                 <View className='rounded-full items-center justify-center'>
                     {contextRoot.image}
                 </View>
@@ -116,6 +116,8 @@ export default function ContextSelector({ data, url, uri, mode }) {
             </Row>
         </Link>
     )
+    
+    const isLinkPage = data?.links?.some(item => contextRoot.url == item.url);
 
     const DropDown = (
         <DropdownPopup
@@ -132,7 +134,7 @@ export default function ContextSelector({ data, url, uri, mode }) {
                 {data.list.map((item) =>
                     renderListItem(
                         item,
-                        item.id === data.current?.id,
+                        !isLinkPage && item.id === data.current?.id,
                         handleItemClick
                     )
                 )}
