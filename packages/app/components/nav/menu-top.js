@@ -36,7 +36,7 @@ function MenuTopItem({ link, title, index, icon, isTitle, isActive }) {
                     <Row
                         className={`items-center justify-center h-12 p-1.5 min-w-24 rounded-xl web:duration-300 web:group-active:opacity-50 ${isActive
                             ? 'bg-accent/60 text-accent-foreground shadow-xs ring-[0.5px] ring-inset ring-ring/40 hover:bg-accent hover:ring-ring/60 '
-                            : 'text-muted-foreground web:group-hover:text-foreground web:hover:bg-muted/60 '
+                            : 'text-muted-foreground web:group-hover:text-foreground web:hover:bg-secondary/60 '
                             }`}
                     >
                         <Icon

@@ -79,7 +79,7 @@ export default function Unit(props) {
     return (
         <CardList padding={cd('p-xs')} >
             <Redirect ref={redirectdRef} />
-            <Link className="web:group " href={data.url}>
+            <Link className="group " href={data.url}>
                 <View
                     className={`flex-row sm:flex-col p-3  sm:p-0  sm:h-full`}
                 >

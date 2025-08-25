@@ -79,7 +79,7 @@ export default function ElementConfirmEmail(props) {
                         <View className="gap-y-2 w-full">
                             <Button variant="link" size="sm" title={t("Resend email")} onPress={pressBack} fullWidth />
                             <Link href="/logout" className="w-full">
-                                <Button variant="default" size="base" title={t("Sign out")} fullWidth ring="rounded-xl bg-neutral-300 dark:bg-neutral-950 shadow-sm hover:shadow-none" />
+                                <Button variant="default" size="base" title={t("Sign out")} fullWidth />
                             </Link>
                         </View>
                     </View>

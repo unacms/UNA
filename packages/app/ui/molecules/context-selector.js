@@ -22,18 +22,18 @@ function renderListItem_(url, text, icon, isActive) {
     return (
         <Link key={url} className="w-full" href={url}>
             <Row
-                className={`w-full px-0.5 active:bg-secondary web:hover:bg-muted/60 rounded-xl justify-between items-center ${
+                className={`w-full px-2 h-12 group rounded-xl justify-between items-center ${
                     isActive
-                        ? ' bg-accent text-accent-foreground rounded-xl'
-                        : ''
+                        ? ' bg-accent/60 text-accent-foreground rounded-xl  web:hover:bg-accent web:duration-200 '
+                        : '  web:hover:bg-muted/60 web:duration-200 '
                 }`}
             >
-                <Row className="items-center p-1.5">
+                <Row className="items-center">
                     <View
                         className={`items-center w-9 h-9  justify-center ${
                             isActive
                                 ? ' bg-primary text-primary-foreground  '
-                                : ' bg-secondary/80'
+                                : ' bg-muted/60 web:group-hover:bg-secondary/60 web:duration-200 '
                         } rounded-full`}
                     >
                         {icon}
@@ -43,7 +43,7 @@ function renderListItem_(url, text, icon, isActive) {
                     </Text>
                 </Row>
                 {isActive && (
-                    <View className="rounded-full bg-primary text-primary-foreground h-2 w-2 mr-4"></View>
+                    <View className="rounded-full bg-primary text-primary-foreground h-2 w-2 "></View>
                 )}
             </Row>
         </Link>
@@ -103,8 +103,8 @@ export default function ContextSelector({ data, url, uri, mode }) {
     }
 
     const CurrentContext = (
-        <Link variant="text" size="base" href={contextRoot.url}>
-            <Row className="items-center gap-2 pl-1.5 pr-0.5">
+        <Link  href={contextRoot.url}>
+            <Row className="items-center gap-2 px-2">
                 <View className='rounded-full items-center justify-center'>
                     {contextRoot.image}
                 </View>
@@ -120,15 +120,9 @@ export default function ContextSelector({ data, url, uri, mode }) {
     const DropDown = (
         <DropdownPopup
             trigger={
-                <View className="flex-none p-1.5">
-                    <Button
-                        variant="text"
-                        size="sm"
-                        
-                        startDecorator="ChevronDown"
-                        ring="p-1"
-                    />
-                </View>
+                <Row className="items-center justify-center w-12 h-12">
+                    <Icon icon="ChevronDown" size={20} />
+                </Row>
             }
             minPopupWidth={352}
             open={isOpen}
@@ -175,39 +169,40 @@ export default function ContextSelector({ data, url, uri, mode }) {
     return (
         <>
             {data?.list?.length > 0 || data?.links?.length > 0 ? (
-                <Row className='w-full items-center'> 
-                    {!!contextRoot.name &&
-                        appSetting('context_selector', 'logo') && (
-                            <>
-                                {(() => {
-                                    const isActiveAppRoot = uri === 'home'
-                                    return (
-                                        <Link href="/">
-                                            <Row
-                                                className={` rounded-xl ${
-                                                    isActiveAppRoot
-                                                        ? ' bg-accent/0 text-accent-foreground/0 web:hover:bg-accent/0'
-                                                        : ' web:hover:bg-muted/60'
-                                                }`}
-                                            >
-                                                <View className="p-1.5 flex-row rounded-full items-center justify-center">
-                                                    {appStatic('logo', { mode: 'mark', })}
-                                                </View>
-                                            </Row>
-                                        </Link>
-                                    )
-                                })()}
-                                <Icon
-                                    icon="ChevronRight"
-                                    size={20}
-                                    className="w-5 h-5 text-muted-foreground"
-                                />
-                            </>
-                        )}
+                 <Row className='w-full items-center'> 
+                 {!!contextRoot.name &&
+                     appSetting('context_selector', 'logo') && (
+                         <>
+                             {(() => {
+                                 const isActiveAppRoot = uri === 'home'
+                                 return (
+                                     <Link href="/">
+                                         <Row
+                                             className={` rounded-xl ${
+                                                 isActiveAppRoot
+                                                     ? ' bg-accent/0 text-accent-foreground/0 web:hover:bg-accent/0'
+                                                     : ' web:hover:bg-muted/60'
+                                             }`}
+                                         >
+                                             <View className="p-1.5 flex-row rounded-full items-center justify-center">
+                                                 {appStatic('logo', { mode: 'mark', })}
+                                             </View>
+                                         </Row>
+                                     </Link>
+                                 )
+                             })()}
+                             <Icon
+                                 icon="ChevronRight"
+                                 size={20}
+                                 className="w-5 h-5 text-muted-foreground"
+                             />
+                         </>
+                     )}
+                   
                     <ButtonsGroup variant="text" size="lg"  >
                         {CurrentContext}
                         {DropDown}
-                    </ButtonsGroup>
+                    </ButtonsGroup> 
                 </Row>
             ) : (
                 CurrentContext

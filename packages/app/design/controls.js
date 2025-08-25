@@ -277,28 +277,9 @@ export function ButtonsGroup({
     fullWidth = false,
     showTitleFromSize = '',
     rounded = false,
-    ring,
     children = [],
     ...rest
 }) {
-    // Get ring class similar to Button component
-    const ringClass = useMemo(() => {
-        // If ring prop is provided as a string, use it to override default
-        if (typeof ring === 'string') {
-            return ring;
-        }
-        
-        // Use the variant-specific ring style from buttons_group_styles
-        const variantRingClass = ThemeCssClassesButtonGroups[`u-btn-${variant}-ring`];
-        if (variantRingClass) {
-            // Do not append rounding here; rounding is applied on the outer wrapper
-            return variantRingClass;
-        }
-        
-        // Fallback to default ring
-        return ' p-[1px] bg-border ';
-    }, [ring, variant, ThemeCssClassesButtonGroups]);
-
     let sClassContainer = 'web:group';
     sClassContainer += fullWidth ? ' flex-auto' : ' w-fit m-0 truncate ';
     
@@ -307,14 +288,16 @@ export function ButtonsGroup({
 
     const bTextContainer = !!variant && variant == 'text';
     const ThemeButtonsGroupSizes = appSetting('theme', 'buttons_group_sizes');
+    const ThemeButtonsGroupItemSizes = appSetting('theme', 'buttons_group_items_sizes');
     const ThemeButtonItemStyles = appSetting('theme', 'button_styles');
     const groupSizeCfg = ThemeButtonsGroupSizes?.[size] || {};
+    const itemSizeCfg = ThemeButtonsGroupItemSizes?.[size] || {};
 
     const aChildren = children.map((child, iIndex) => {
         const childProps = child?.props || {};
         const { variant: childVariant, size: childSize, fullWidth: childFullWidth, ...restChild } = childProps;
-        const isLastChild = iIndex < children.length - 1;
-        const childClass = 'flex-auto items-center justify-center ' + (isLastChild && !bTextContainer ? ' border-r border-border/60' : '');
+        const isNotLastChild = iIndex < children.length - 1;
+        const childClass = ` h-full flex-auto items-center justify-center`;
 
         let childItem;
         if (child.type === Button) {
@@ -355,23 +338,54 @@ export function ButtonsGroup({
                 // Fallback: wrap arbitrary child with group item container styles and padding
                 const paddingOverride = groupSizeCfg.item_padding || '';
                 const itemCntClass = ThemeButtonItemStyles[`u-btn-group-item-${variant}-cnt`] || '';
-                childItem = <View className={`${itemCntClass} ${paddingOverride} items-center justify-center`}>{child}</View>;
+                const itemTextClass = ThemeButtonItemStyles[`u-btn-group-item-${variant}-text`] || '';
+                childItem = <View className={`${itemCntClass} ${itemTextClass} ${paddingOverride} items-center justify-center ${itemSizeCfg?.container || ''} ${rounded ? (itemSizeCfg?.rounded || '') : ''}`}>{child}</View>;
             }
         }
 
-        return (
-            <View key={iIndex} className={' ' + childClass}>
-                {childItem}
-            </View>
-        );
+        // For Button children, keep an outer wrapper to control layout
+        if (child.type === Button || (React.isValidElement(childProps.children) && childProps.children.type === Button)) {
+            return (
+                <View key={iIndex} className={' ' + childClass}>
+                    {childItem}
+                </View>
+            );
+        }
+        return React.cloneElement(childItem, { key: iIndex });
     });
 
-    // Wrap in ring container and apply group size height to wrapper for visual consistency
-    const groupHeightClass = groupSizeCfg?.height || '';
+    // Insert dividers between items when there are multiple children
+    const dividerSizeClass = groupSizeCfg?.divider || '';
+    const dividerStyleClass =
+        (ThemeButtonItemStyles[`u-btn-group-divider-${variant}-cnt`] ||
+            ThemeCssClassesButtonGroups[`u-btn-group-divider-${variant}-cnt`] ||
+            ThemeButtonItemStyles[`u-btn-group-divider-${variant}-text`] ||
+            ThemeCssClassesButtonGroups[`u-btn-group-divider-${variant}-text`] ||
+            ThemeButtonItemStyles[`u-btn-group-divider-${variant}`] ||
+            ThemeCssClassesButtonGroups[`u-btn-group-divider-${variant}`] ||
+            ThemeButtonItemStyles['u-btn-group-divider-cnt'] ||
+            ThemeCssClassesButtonGroups['u-btn-group-divider-cnt'] ||
+            ThemeButtonItemStyles['u-btn-group-divider-text'] ||
+            ThemeCssClassesButtonGroups['u-btn-group-divider-text'] ||
+            ThemeButtonItemStyles['u-btn-group-divider'] ||
+            ThemeCssClassesButtonGroups['u-btn-group-divider'] ||
+            '');
+    const itemsWithDividers = [];
+    aChildren.forEach((item, index) => {
+        itemsWithDividers.push(item);
+        if (index < aChildren.length - 1) {
+            itemsWithDividers.push(
+                <View key={`divider-${index}`} className={`${dividerStyleClass} ${dividerSizeClass}`}></View>
+            );
+        }
+    });
+
+    // Apply group container sizing on the same wrapper
+    const groupHeightClass = groupSizeCfg?.container || '';
     const groupRoundedClass = rounded ? ' rounded-full ' : (groupSizeCfg.rounded || '');
     return (
-        <View className={`${ringClass} ${fullWidth ? 'flex-auto' : 'w-fit'} ${groupRoundedClass} overflow-hidden`} {...rest}>
-            <View className={`${sClassContainer} ${groupHeightClass}`}>{aChildren}</View>
+        <View className={`${fullWidth ? 'flex-auto' : 'w-fit'} ${groupRoundedClass} overflow-hidden ${sClassContainer} ${groupHeightClass}`} {...rest}>
+            {itemsWithDividers}
         </View>
     );
 }
@@ -469,7 +483,6 @@ export const Button = (props) => {
         rounded = false,
         solid = false,
         padding,
-        ring,
         children,
         ...rest
     } = props;
@@ -746,7 +759,6 @@ function _ButtonMenuAction(props) {
         pressed = false,
         disabled = false,
         fullWidth= false,
-        ring,
         ...rest
     } = props;
     const _variant = variant || appSetting('layout', 'button_style_for_actions');
@@ -757,7 +769,6 @@ function _ButtonMenuAction(props) {
         pressed = {pressed}
         disabled = {disabled}
         fullWidth = {fullWidth}
-        ring={ring}
         {...rest}
     />
 }
@@ -770,7 +781,6 @@ function _ButtonMenuCounter(props) {
         pressed = false,
         disabled = false,
         fullWidth= false,
-        ring,
         ...rest
     } = props;
     const _variant = variant || appSetting('layout', 'button_style_for_actions');
@@ -782,7 +792,6 @@ function _ButtonMenuCounter(props) {
         pressed = {pressed}
         disabled = {disabled}
         fullWidth = {fullWidth}
-        ring={ring}
         {...rest}
     />
 }
