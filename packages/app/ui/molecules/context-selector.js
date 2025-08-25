@@ -120,7 +120,7 @@ export default function ContextSelector({ data, url, uri, mode }) {
     const DropDown = (
         <DropdownPopup
             trigger={
-                <Row className="items-center justify-center w-12 h-12">
+                <Row className="items-center justify-center w-9 h-9">
                     <Icon icon="ChevronDown" size={20} />
                 </Row>
             }

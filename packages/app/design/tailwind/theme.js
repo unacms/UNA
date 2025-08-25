@@ -117,11 +117,7 @@ const theme = {
             ...colors,
             ...nativewindUIColors,
         },
-        fontSize: {
-            'xs': '13px',
-            'sm': '15px',
-            base: '17px',
-        },
+      
         boxShadow: {
             DEFAULT: '0 1px 2px 0 rgb(0 0 0 / 0.08)',
             'xs': '0 1px 2px 0 rgb(0 0 0 / 0.08)',

@@ -119,10 +119,10 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
 
     return (
         <View
-            className={`${conductorTheme.content_max_width} mx-auto w-full px-3 py-2 gap-3 flex-row items-center `}
+            className={`${conductorTheme.content_max_width} w-full flex-auto mx-auto px-3 py-2 gap-3 flex-row items-center justify-between `}
         >
             {getCoverBackButton(bPerson)}
-            <Row className='flex-auto items-center gap-2' >
+            <Row className='items-center ' >
                 {bPerson && (
                     <Profile
                         {...data.profile}
@@ -132,7 +132,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                 )}
                  
                 {isAddSelector && (
-                    <View className={`${TABLET_MODE_FROM}:hidden`}>
+                    <View className={`${TABLET_MODE_FROM}:hidden bg-muted/60 backdrop-blur-xl rounded-full`}>
                         <ContextSelector data={context} mode="min" />
                     </View>
                 )}
