@@ -291,7 +291,7 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, windowWidth, isC
         <>
             <Animated.View className={`${conductorTheme.cover_base} cover-1 `} style={[{ zIndex: 'z-50' }, animatedStyleHeader2]}>
                 <ViewRef ref={cover1Ref} className={conductorTheme.cover_content + ' aaaaa'}   >
-                    {(isCover && !isHideCover) && <View className="w-full pb-4 border-b border-muted mb-1">
+                    {(isCover && !isHideCover) && <View className="w-full border-b border-border/20 ">
                         <Cover data={pageData.cover_block} mode={headerSettings.cover} uri={uri} context={pageData.context} />
                     </View>}
                     <View className="w-full ">

@@ -185,7 +185,7 @@ export function CoverMenuMeta(props) {
             params={{
                 button_variant: 'secondary',
                 button_size: 'sm',
-                className: ' min-h-10 flex-row flex-wrap gap-3 flex-none items-center',//lg:w-full lg:gap-y-2
+                className: ' min-h-9 flex-row flex-wrap flex-auto gap-3 items-center',//lg:w-full lg:gap-y-2
                 align_items: 'start'
             }}
         />

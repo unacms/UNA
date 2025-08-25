@@ -96,12 +96,12 @@ const getSkeleton = () => {
     return (
         <View className="gap-y-2">
         {[...Array(1, 2, 3)].map( i => 
-            <View key={i} className="flex-col p-2 bg-bgritem dark:bg-bgritem-d sm:rounded-lg">
+            <View key={i} className="flex-col p-2 bg-muted sm:rounded-lg">
                 <View className="animate-pulse flex-row items-center gap-3">
-                    <View className="rounded-full bg-bgritem dark:bg-bgritem-d h-10 w-10"></View>
+                    <View className="rounded-full bg-muted h-10 w-10"></View>
                     <View className="flex-1 gap-y-1">
-                        <View className="h-4 w-1/2 bg-bgritem dark:bg-bgritem-d rounded-full"></View>    
-                        <View className="h-3 w-1/3 bg-bgritem dark:bg-bgritem-d rounded-full"></View>
+                        <View className="h-4 w-1/2 bg-muted rounded-full"></View>    
+                        <View className="h-3 w-1/3 bg-muted rounded-full"></View>
                     </View>
                 </View>
             </View>

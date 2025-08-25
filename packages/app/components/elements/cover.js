@@ -322,11 +322,12 @@ function CoverImage({
                         <Loading />
                     </View>
                 )}
-                <Row className="p-2 sm:px-4 justify-end gap-x-2 ">
+                <Row className="py-2 px-3 justify-end gap-2 ">
                     {allowSwitch && (
                         <Button
                             rounded
-                            variant="default"
+                            size="sm"
+                            variant="secondary"
                             startDecorator="RefreshCw"
                             tooltip={'Switch to profile'}
                             onPress={() => handleSwitch(allowSwitch)}
@@ -335,13 +336,14 @@ function CoverImage({
                     {allowEdit && (
                         <Button
                             rounded
-                            variant="default"
+                            variant="secondary"
+                            size="sm"
                             startDecorator="Camera"
                             onPress={() => handleUpload(mode)}
                         />
                     )}
                 </Row>
-                <View className="absolute lg:hidden top-2 left-2 z-50 ">
+                <View className="absolute lg:hidden top-2 left-3 z-50 ">
                     {getCoverBackButton(is_person)}
                 </View>
             </View>
@@ -425,7 +427,7 @@ export default function ({ data, mode, uri, showMoreMenu, pageData, context }) {
                 className={` ${appSetting(
                     'layout',
                     'max_width_content'
-                )} lg:flex-row gap-y-3 gap-x-3 mx-auto w-full lg:items-end px-3 pt-2.5 sm:px-4 sm:pt-4`}
+                )} lg:flex-row gap-y-3 gap-x-3 mx-auto w-full lg:items-end p-3  `}
             >
                 {bPerson && (
                     <View className="hidden lg:flex flex-none h-24 justify-end w-min ">
@@ -433,7 +435,7 @@ export default function ({ data, mode, uri, showMoreMenu, pageData, context }) {
                             <CoverImage
                                 is_person={bPerson}
                                 mode="picture"
-                                profileDisplaySize={isMin ? '2xl' : '4xl'}
+                                profileDisplaySize={isMin ? 'xl' : '3xl'}
                                 coverData={data?.cover}
                                 profileData={data.profile}
                                 allowEdit={bAllowEdit}
@@ -443,15 +445,15 @@ export default function ({ data, mode, uri, showMoreMenu, pageData, context }) {
                     </View>
                 )}
                 <View className="flex-auto lg:flex-row flex-col-reverse gap-y-2 sm:gap-y-3">
-                    <View className="flex-col flex-auto gap-y-2 ">
-                        <Row className=" gap-x-3 flex-auto items-center min-h-10">
+                    <View className="flex-col flex-auto gap-3 ">
+                        <Row className=" gap-2 flex-auto items-center min-h-10">
                             <Text
-                                className={` tracking-tight text-3xl sm:text-4xl font-bold text-neutral-900 dark:text-neutral-50`}
+                                className={` tracking-tight text-2xl sm:text-3xl font-bold text-foreground`}
                                 numberOfLines={2}
                             >
                                 {data.profile.display_name}
                             </Text>
-                            <Badges badges={data.badges} size="sm" />
+                            <Badges badges={data.badges} size="xs" />
                             {isAddSelector && (
                                 <View className={`${TABLET_MODE_FROM}:hidden`}>
                                     <ContextSelector
@@ -479,11 +481,11 @@ export default function ({ data, mode, uri, showMoreMenu, pageData, context }) {
                         )}
                     </View>
                     <View className="flex-row flex-wrap items-end justify-between  flex-auto gap-x-2 gap-y-2">
-                        <View className="flex-row sm:items-end flex-wrap gap-3 lg:gap-4 lg:ml-auto">
+                        <View className="flex-row sm:items-end flex-auto flex-wrap gap-3 lg:ml-auto">
                             {bPerson && (
                                 <View
                                     className={`${
-                                        isMin ? 'h-24' : 'h-10'
+                                        isMin ? 'h-24' : 'h-9'
                                     } lg:hidden flex-auto justify-end `}
                                 >
                                     <View className=" flex-row flex-auto z-50 rounded-full p-1 flex-none bg-white mr-auto dark:bg-neutral-900 translate-y-1 -translate-x-1 ">

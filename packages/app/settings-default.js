@@ -1323,7 +1323,7 @@ export const settingsDefault = {
             'u-block-base':
                 'u-max-width-block rounded-xl lg:rounded-2xl gap-4',
             'u-block-bg':
-                'bg-card shadow-sm text-card-foreground border-[0.5px] border-border/50',
+                'bg-card shadow-sm text-card-foreground ',
             'u-block-pad':
                 'p-4',
             'u-block-header':
@@ -1512,7 +1512,7 @@ export const settingsDefault = {
             'u-btn-accent-trans': '  web:duration-200',
             
 
-            'u-btn-secondary-cnt': ' bg-secondary/60 web:hover:bg-secondary   ',
+            'u-btn-secondary-cnt': ' bg-muted/60 web:hover:bg-secondary/60 backdrop-blur   ',
             'u-btn-secondary-text':
                 ' font-medium text-card-foreground  ',
             'u-btn-secondary-trans': '  ',

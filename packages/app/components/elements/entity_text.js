@@ -65,7 +65,7 @@ function Default({ data, showPad, sidebar, block }) {
     const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from');
 
     return (
-        <View className="w-full lg:px-4">
+        <View className="w-full">
             {(!!data.video?.src_mp4) && <View className='w-full aspect-video rounded-xl overflow-hidden lg:mt-6'>
                 <Video poster={data.video.src_poster} src={data.video.src_mp4} cover={true}  controls={true} muted={"muted"} />
             </View>}
@@ -73,7 +73,7 @@ function Default({ data, showPad, sidebar, block }) {
                 <Youtube videoId={videoId} size={3} />
             </View>}
             {(!!data.image && !data.video) && <View className="w-full h-[30vh] mb-4 sm:rounded-xl overflow-hidden"><Image {...data.image} alt={data.title} sizes={LAYOUT_BREAKPOINTS.lg} className=" u-cover" view="cover" /></View>}
-            <View className={`mx-auto w-full px-4 ${TABLET_MODE_FROM}:px-0 ${(showPad == false || sidebar ? '' : ' ')}`}>
+            <View className={`mx-auto w-full gap-3 ${(showPad == false || sidebar ? '' : ' ')}`}>
                 {isSmall ? <TextMore tagName='h1' text={data.entry_title} numberOfLines={2} className="font-bold tracking-tight  text-neutral-900 dark:text-neutral-50 "></TextMore> :  <H1>{data.entry_title}</H1>}
                 {isSmall ? <ContentMore numberOfSymbols={200} showLess={true} content={text} numberOfLines={3}  openSmall={false} textClassName="  text-base text-neutral-600 dark:text-neutral-400" /> :  <Html data={text} />}
                 
