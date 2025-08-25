@@ -4,7 +4,7 @@ import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
 import Time from 'app/ui/atoms/time';
 import Link from 'app/ui/atoms/link'
-import { Card } from 'app/ui/molecules/card'
+import { Card, CardList } from 'app/ui/molecules/card'
 import Profile from 'app/ui/molecules/profile';
 
 function Unit({ data }) {
@@ -15,7 +15,7 @@ function Unit({ data }) {
 
     return (
             <Link  href={url}>
-                <Card className='max-w-4xl mx-auto w-full my-2'>
+                <CardList className='max-w-4xl mx-auto w-full  '>
                     <View className="flex-row items-center gap-3 ">
                         <View className="rounded-full flex-none " >
                             <Profile {...data.author_data} displayType="unit_wo_info" displaySize="lg" />
@@ -30,7 +30,7 @@ function Unit({ data }) {
                             </View>
                         </View>
                     </View>
-                </Card>
+                </CardList>
             </Link>
     );
 }

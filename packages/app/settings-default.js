@@ -1299,7 +1299,7 @@ export const settingsDefault = {
         },
         cards: {
             'u-card-list':
-                ' u-card-list bg-card/80 web:hover:bg-card shadow-sm text-card-foreground sm:rounded-2xl sm:mb-4 ',
+                ' u-card-list bg-card/80 web:hover:bg-card shadow-sm text-card-foreground sm:rounded-2xl mb-0.5 sm:mb-4 ',
             'u-card-list-padding': ' p-4 ',
             'u-card-base':
                 ' u-card-base bg-card/80 web:hover:bg-card shadow-sm text-card-foreground overflow-hidden rounded-2xl gap-4',
