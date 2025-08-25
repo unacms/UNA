@@ -22,15 +22,15 @@ function renderListItem_(url, text, icon, isActive) {
     return (
         <Link key={url} className="w-full" href={url}>
             <Row
-                className={`w-full px-2 h-12 group rounded-xl justify-between items-center ${
+                className={`w-full px-2 h-12 gap-2 group rounded-xl justify-between items-center ${
                     isActive
                         ? ' bg-accent/60 text-accent-foreground rounded-xl  web:hover:bg-accent web:duration-200 '
                         : '  web:hover:bg-muted/60 web:duration-200 '
                 }`}
             >
-                <Row className="items-center">
+                <Row className="items-center flex-auto gap-2">
                     <View
-                        className={`items-center w-9 h-9  justify-center ${
+                        className={`items-center w-9 h-9 justify-center ${
                             isActive
                                 ? ' bg-primary text-primary-foreground  '
                                 : ' bg-muted/60 web:group-hover:bg-secondary/60 web:duration-200 '
@@ -38,12 +38,12 @@ function renderListItem_(url, text, icon, isActive) {
                     >
                         {icon}
                     </View>
-                    <Text className="text-base px-3 font-semibold text-popover-foreground">
+                    <Text className="text-base flex-auto font-semibold text-popover-foreground">
                         {text}
                     </Text>
                 </Row>
                 {isActive && (
-                    <View className="rounded-full bg-primary text-primary-foreground h-2 w-2 "></View>
+                    <View className="rounded-full flex-none bg-primary text-primary-foreground h-2 w-2 "></View>
                 )}
             </Row>
         </Link>
@@ -169,7 +169,7 @@ export default function ContextSelector({ data, url, uri, mode }) {
     return (
         <>
             {data?.list?.length > 0 || data?.links?.length > 0 ? (
-                 <Row className='w-full items-center'> 
+                 <Row className=' items-center'> 
                  {!!contextRoot.name &&
                      appSetting('context_selector', 'logo') && (
                          <>

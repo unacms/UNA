@@ -122,34 +122,22 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
             className={`${conductorTheme.content_max_width} mx-auto w-full px-3 py-2 gap-3 flex-row items-center `}
         >
             {getCoverBackButton(bPerson)}
-            <Row
-                className={` ${
-                    context?.current?.id == data.profile.id
-                        ? ' flex-auto  items-center'
-                        : ' flex-auto  items-center'
-                }`}
-            >
+            <Row className='flex-auto items-center gap-2' >
                 {bPerson && (
                     <Profile
                         {...data.profile}
-                        displayType="unit_wo_info"
+                        displayType="unit"
                         displaySize="sm"
                     />
                 )}
-                <View className="px-1 items-center truncate flex-row">
-                    <Profile
-                        {...data.profile}
-                        displayType="unit_wo_image"
-                        displaySize="xl"
-                    />
-                </View>
+                 
                 {isAddSelector && (
                     <View className={`${TABLET_MODE_FROM}:hidden`}>
                         <ContextSelector data={context} mode="min" />
                     </View>
                 )}
             </Row>
-            <View className=" items-end ">
+            <View className="flex-none items-end ">
                 <Row className="w-full justify-between">
                     {!showMoreMenu && (
                         <>

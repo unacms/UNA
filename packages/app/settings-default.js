@@ -1208,7 +1208,7 @@ export const settingsDefault = {
 
             
             xs: {
-                padding: ' px-0.5 py-[1px] rounded ',
+                padding: ' px-0.5 py-[1px] rounded-md ',
             },
             sm: {
                 padding: ' px-1 py-0.5 rounded-md  ',
