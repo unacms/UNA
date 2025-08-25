@@ -12,8 +12,6 @@ import MenuFooter from 'app/components/nav/menu-footer';
 import AnimatedView from 'app/ui/atoms/animated-view';
 import { useTranslation } from 'react-i18next'
 import Link from 'app/ui/atoms/link'
-import { getComponent } from 'app/components/registry';
-
 
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from');
 
@@ -26,10 +24,10 @@ function PageContent(props) {
             </CardTitle>
             <CardDescription>
                 {t('splash_page_login2')}{' '}
-                <Link variant="accent" size="sm" href="/create-account">{t('splash_page_new_account')}</Link>
-                .
+                                    <Link variant="accent" size="sm" href="/create-account">{t('splash_page_new_account')}</Link>
+                                    .
             </CardDescription>
-        </CardHeader>
+        </CardHeader> 
         <CardContent>
             <BlockByName contentOnly={true} name={props.blocks.form} data={props.data} formProps={{ auto_focus: true, hide_errors: true, button_full_width: true }} />
         </CardContent>
@@ -43,15 +41,12 @@ export default function PageLayout(props) {
     const isWeb = Platform.OS === 'web';
     const refer = useRef();
 
-     const Component =  getComponent('element', 'invite_in_context');
     const content = isWeb ? (<View className={`flex-col justify-center pt-16 ${TABLET_MODE_FROM}:pt-0 mx-auto w-full web:min-h-[calc(100vh-16rem)] ${getPageWidth(props.uri, props.data?.config)}`}>
         <View className="w-full lg:flex-row max-w-7xl mx-auto my-auto">
             {appStatic('components_logincontent')}
             <View className="max-w-xl w-full flex-auto mx-auto p-4 sm:p-8 my-auto gap-y-4">
                 <AnimatedView>
                     <PageContent {...props} />
-    <Component/>
-
                 </AnimatedView>
             </View>
         </View>
