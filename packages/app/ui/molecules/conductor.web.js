@@ -57,6 +57,7 @@ const AddBlocks = (leftSideBarBlocks, data, onFormChangedValues) => {
             data={data}
             name={block}
             onChange={onFormChangedValues}
+            {...block}
         />
     });
 
