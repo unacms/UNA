@@ -484,8 +484,8 @@ export function LeftSidebar({ title, addButtons, children, width, menu }) {
     return (
         <View className={` ${appSetting('conductor', 'sidebar_container')}`}>
             {(!!title || !!addButtons?.length > 0) && (
-                <Row className="justify-between items-center h-12 pl-2 mb-2.5 z-10 ">
-                    <Text className=" text-2xl tracking-tight truncate mr-auto font-semibold leading-11 text-neutral-900 dark:text-neutral-100 hidden lg:flex  ">
+                <Row className="justify-between items-center h-12  mb-2.5 z-10 ">
+                    <Text className=" text-2xl tracking-tight truncate mr-auto font-bold leading-11 text-card-foreground hidden lg:flex  ">
                         {t(title)}
                     </Text>
                     <Row>{addButtons}</Row>
@@ -520,7 +520,7 @@ export function TopSidebar({
                 }`}
             >
                 <Row
-                    className="px-3 items-center justify-between pb-2">
+                    className=" pb-2 px-2.5 items-center justify-between ">
              
                     <Text className="text-2xl text-card-foreground tracking-tight hidden ">
                         {title}

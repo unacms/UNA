@@ -18,7 +18,7 @@ export default function () {
     const { width } = useWindowDimensions()
     const isLgUp = width >= LAYOUT_BREAKPOINTS.lg
     const buttonVariant = isLgUp ? 'secondary' : 'text'
-    const buttonSize = isLgUp ? 'base' : 'lg'
+    const buttonSize = isLgUp ? 'base' : 'base'
 
      useEffect(() => {
         const fetchData = async () => {

@@ -155,6 +155,10 @@ export function CoverMenuMore(props) {
     });
 
    
+    const isLgUp = width >= LAYOUT_BREAKPOINTS.lg
+    const buttonVariant = isLgUp ? 'secondary' : 'text'
+    const buttonSize = isLgUp ? size : 'base'
+
     return (
         <Menu
             {...propsCopy}
@@ -166,8 +170,8 @@ export function CoverMenuMore(props) {
                 show_action: true,
                 show_counter: true,
                 show_combined: true,
-                button_variant: 'secondary',
-                button_size: size,
+                button_variant: buttonVariant,
+                button_size: buttonSize,
                 button_full_width: props?.params?.button_full_width ?? false,
                 className: 'flex-wrap justify-end',
                 isFixedCount: true,

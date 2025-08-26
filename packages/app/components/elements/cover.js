@@ -55,16 +55,21 @@ const BackButton = ({ isPerson }) => {
     )
 }
 
-function getCoverBackButton(is_person) {
+function GetCoverBackButton({ isPerson }) {
     const isWeb = Platform.OS === 'web'
-    if (!isWeb) return <BackButton isPerson={is_person} />
+    const { width } = useWindowDimensions()
+    const isLgUp = width >= LAYOUT_BREAKPOINTS.lg
+    const buttonVariant = isLgUp ? 'secondary' : 'text'
+    const buttonSize = isLgUp ? 'base' : 'base'
+
+    if (!isWeb) return <BackButton isPerson={isPerson} />
     if (history.length > 2) {
         return (
             <View className="lg:hidden">
                 <Button
                     rounded={true}
-                    size="sm"
-                    variant="secondary"
+                    size={buttonSize}
+                    variant={buttonVariant}
                     startDecorator="ArrowLeft"
                     onPress={() => history.back()}
                 />
@@ -76,14 +81,18 @@ function getCoverBackButton(is_person) {
                 <Link href="/">
                     <Button
                         rounded={true}
-                        size="sm"
-                        variant="secondary"
+                        size={buttonSize}
+                        variant={buttonVariant}
                         startDecorator="ArrowLeft"
                     />
                 </Link>
             </View>
         )
     }
+}
+
+function getCoverBackButton(is_person) {
+    return <GetCoverBackButton isPerson={is_person} />
 }
 
 export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
@@ -119,7 +128,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
 
     return (
         <View
-            className={`${conductorTheme.content_max_width} w-full flex-auto mx-auto px-3 pt-2.5 gap-3 flex-row items-center justify-between `}
+            className={`${conductorTheme.content_max_width} w-full flex-auto mx-auto px-1.5 sm:px-3 py-1 sm:py-2 gap-3 flex-row items-center justify-between `}
         >
             {getCoverBackButton(bPerson)}
             <Row className='items-center p-1 bg-muted/60 web:hover:bg-secondary/60 rounded-full' >

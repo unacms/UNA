@@ -144,7 +144,7 @@ export default function (props) {
                 <View className={headerTheme.container + (headerTheme.special[props.layoutName] || headerTheme.special.default)
                 }  >
                     <View className={(isScrolled ? headerTheme.scrolled : headerTheme.initial)}>
-                        <View className={`px-3 w-full flex-row flex-auto items-center ${headerTheme.content}`}>
+                        <View className={` w-full flex-row flex-auto items-center ${headerTheme.content}`}>
                             <HeaderLine
                                 headerSettings={headerSettings}
                                 title={sTitle}

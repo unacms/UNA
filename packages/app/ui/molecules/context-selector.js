@@ -121,7 +121,7 @@ export default function ContextSelector({ data, url, uri, mode }) {
         <DropdownPopup
             trigger={
                 <Row className="items-center justify-center w-11 h-11">
-                    <Icon icon="ChevronDown" size={24} />
+                    <Icon icon="ChevronsUpDown" size={24} />
                 </Row>
             }
             minPopupWidth={352}

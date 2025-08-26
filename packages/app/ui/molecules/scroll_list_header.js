@@ -25,7 +25,7 @@ import {
 
 export const TextHeader = memo(({ text }) => {
     const { t } = useTranslation();
-    return <Text className="font-bold leading-9 text-card-foreground text-2xl tracking-tight">
+    return <Text className="font-bold leading-11 px-1.5 text-card-foreground text-2xl tracking-tight">
         {t(text)}
     </Text>
 })
@@ -101,13 +101,15 @@ export const Header = memo(({
 
     return (
 
-            <Row className="items-center justify-between py-1 px-1.5 sm:px-3 lg:py-2 gap-1">
+            <Row className="items-center justify-between h-14">
             {((!currentUser || !pageData?.context) && !text && (!settings?.headerSettings || settings?.headerSettings?.header)) && 
+                <View className=" px-3">
                 <Link href="/home" aria-label="Home">
-                    <Pressable className="items-center  ">
+                    <Pressable className="items-center">
                         {appStatic('logo')}
                     </Pressable>
                 </Link>
+                </View>
             }
             {(backButtonPresented && (!isWeb || history.length > 2)) && (
                 <View className=""><Button variant="secondary" rounded onPress={() => {
@@ -115,7 +117,7 @@ export const Header = memo(({
                     router ? router?.back() : history.back();
                 }} startDecorator="ArrowLeft" size="base" /></View>
             )}
-            {(pageData?.context?.current?.url || isHome) && <View className="flex-auto sm:flex-none"><ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} /></View>}
+            {(pageData?.context?.current?.url || isHome) && <ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} />}
             {(!!text) && <Row className='items-center'><>
             {(!!text && !pageData?.context?.current?.url) && (
                 <TextHeader text={text}></TextHeader>
@@ -123,7 +125,7 @@ export const Header = memo(({
             {(pageData?.context && !pageData?.context?.current?.url && !isHome) && <ContextSelector mode="min" url={pageData?.url} uri={pageData?.uri} data={pageData?.context} />}
             </></Row>}
             {(type !== 'string' && headerContent) && <View className="flex-auto">{headerContent}</View>}
-            <Row className=" items-end ">
+            <Row className=" items-end px-3">
                 {rightHeaderComponent ? rightHeaderComponent : memoizedRightComponents}
                 <HeaderElement mode="small"  />
                 {(pageData?.context && pageData?.cover_block?.actions_menu) && <CoverMenu

@@ -2,6 +2,7 @@ export const resourcesDefault = {
     en: {
         translation: 
         {
+            "app_name": "NEO",
             "USD": "$",
             "price-period-month-1": "Monthly",
             "price-period-year-1": "Yearly",
@@ -72,17 +73,17 @@ export const resourcesDefault = {
             "feed_type_bx_spaces": "added an Space",
             "feed_type_bx_polls": "added a Poll",
 
-            "splash_page_title": "Log in to NEO",
+            "splash_page_title": "Log in to your account",
             "splash_page_text": "Use your email and password to sign in",
             "splash_page_account": "Don't have an account?",
             "splash_page_fp": "Forgot password?",
-            "splash_page_new_account": 'Create new account',
-            "splash_page_login": 'Log in to your account',
-            "splash_page_login2": 'Don\'t have an account?',
+            "splash_page_new_account": 'Sign up',
+            "splash_page_login": 'Welcome back! Please sign in to continue.',
+            "splash_page_login2": 'Don’t have an account?',
             "splash_page_login3": 'OR',
-            "splash_page_rp": 'Reset password',
+            "splash_page_rp": 'Forgot password?',
              
-            "create_account_page_title": "Join NEO Now !",
+            "create_account_page_title": "Join Now !",
             "create_account_page_title_request_invite": "Request Invitation",
             "create_account_page_text": "Create an account to get started. It\'s quick and easy to join",
             "create_account_page_text_request_invite": "Registration is by invitation only. Please use invitation code to join.",
@@ -92,16 +93,16 @@ export const resourcesDefault = {
             "create_account_page_with_email": "Continue with email",
             "create_account_page_sign_in": "Sign in",
             
-            "login_page_title": "Log in to your NEO account",
+            "login_page_title": "Sign in to your account",
             "login_page_text": "Use your email and password to sign in",
 
-            "login_modal_title": "Log in",
+            "login_modal_title": "Sign in to",
             "login_modal_text": "Enter your email and password to login",
             "login_modal_fp": "Forgot password?",
             "login_modal_new_account": 'Create new account',
             "login_modal_heading": 'Login to see more',
             "login_modal_subheading": 'Enter your email and password to login',
-            "login_modal_rp": 'Reset password',
+            "login_modal_rp": 'Forgot password?',
         }
         
     },

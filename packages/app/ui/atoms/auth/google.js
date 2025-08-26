@@ -88,7 +88,7 @@ export default function AuthGoogle({ button }) {
             <Redirect ref={redirectRef} />
             {button ? <Pressable onPress={() => promptAsync({ useProxy: true })}>{button}</Pressable> : <Button
                 disabled={!request}
-                title={t("Login with Google")}
+                title={t("Continue with Google")}
                 onPress={() => promptAsync({ useProxy: true })}
                 fullWidth
                                  size="base"

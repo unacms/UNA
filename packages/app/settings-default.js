@@ -91,11 +91,11 @@ export const settingsDefault = {
             scrolled:
                 ' backdrop-blur-xl my-auto w-full mx-auto ring-1 ring-border/60 bg-card/90 shadow-sm ',
             content: ' h-16 mx-auto justify-between ',
-            content_left: ' flex-row items-center justify-center ',
+            content_left: ' flex-row items-center px-4 flex-none  xl:w-80 2xl:w-96 ',
             content_right:
-                ' items-center justify-end h-full ',
+                ' items-center justify-end h-full px-4 flex-none  xl:w-80 2xl:w-96 ',
             content_center:
-                ' absolute left-[50%] translate-x-[-50%] bg-muted/0 rounded-2xl p-1 hidden flex-auto xl:flex gap-2 ',
+                ' hidden flex-auto xl:flex gap-1 items-center justify-center max-w-2xl ',
             special: {
                 profile: 'hidden lg:flex',
                 messenger: 'hidden lg:flex',
@@ -957,7 +957,7 @@ export const settingsDefault = {
             content_max_width: ' w-full max-w-7xl ',
             menu_is_dynamic: true,
             menu_cnt: ' flex-row flex-none gap-2 ',
-            menu_categ_ident: 'pl-12',
+            menu_categ_ident: ' pl-12 ',
             right_column_cnt: 'fixed-process px-1.5 sm:px-2 py-4',
             right_column_cnt2: 'hidden xl:flex flex-auto max-w-sm',
 
@@ -973,7 +973,7 @@ export const settingsDefault = {
             topmenu_button_size: 'base',
             topmenu_button_pressed: true,
             left_menu_cnt: '  ',
-            cover_base: 'w-full shadow-sm bg-card',
+            cover_base: 'w-full bg-card',
             cover_content:
                 'items-center h-full w-full overflow-hidden justify-between',
             cover_small: 'w-full bg-card/90 backdrop-blur-xl shadow-sm'
@@ -1101,7 +1101,7 @@ export const settingsDefault = {
             },
             base: {
                 rounded: ' rounded-lg ',
-                ring: '', // Ring wrapper removed
+                
                 padding: '  ',
                 padding_icon_only: ' h-11 w-11 ',
                 padding_with_title: ' px-4 gap-2 h-11 items-center ',
@@ -1113,12 +1113,12 @@ export const settingsDefault = {
             },
             lg: {
                 rounded: ' rounded-xl ',
-                ring: '', // Ring wrapper removed
+                
                 padding: '  ',
-                padding_icon_only: ' h-12 w-12 ',
-                padding_with_title: 'gap-3 px-6 h-12 items-center ',
+                padding_icon_only: ' h-[52px] w-[52px] ',
+                padding_with_title: 'gap-3 px-6 h-[52px] items-center ',
                 icon_container: '  text-lg flex items-center ',
-                title_container: ' leading-6 text-base items-center flex',
+                title_container: ' leading-[52px] text-base items-center flex',
                 icon_size: 24,
                 icon_margin: '', // conditional margin for icon container when title is present
                 title_margin: '', // conditional margin for text container when icon is present
@@ -1250,12 +1250,12 @@ export const settingsDefault = {
             // Accent: accent background and foreground
             'u-link-accent-cnt':
                 ' bg-accent/60 web:hover:bg-accent web:active:opacity-50 rounded ',
-        'u-link-accent-text': ' text-accent-foreground/80 web:hover:text-accent-foreground ',
+        'u-link-accent-text': ' text-accent-foreground/80 web:hover:text-accent-foreground text-sm ',
             'u-link-accent-trans': ' web:duration-200 ',
 
             // Primary: link-style text
             'u-link-primary-cnt': ' ',
-            'u-link-primary-text': ' text-primary web:hover:underline ',
+            'u-link-primary-text': ' font-medium text-primary web:hover:underline ',
             'u-link-primary-trans': ' web:duration-200 ',
         },
         offsets: {
@@ -1311,7 +1311,7 @@ export const settingsDefault = {
                 'text-card-foreground text-2xl font-bold leading-none tracking-tight',
             'u-card-description': 'text-muted-foreground text-sm leading-tight ',
             'u-card-content': 'text-card-foreground ',
-            'u-card-footer': 'flex text-card-foreground gap-2',
+            'u-card-footer': 'flex text-sm leading-tight text-card-foreground gap-2',
         },
         panels: {
             'u-panel-base': 'm-0 gap-y-md',

@@ -30,11 +30,11 @@ export default function MenuTop({ url, uri }) {
 
 function MenuTopItem({ link, title, index, icon, isTitle, isActive }) {
     return (
-        <Link className=" rounded-xl web:focus-visible:outline-none web:focus-visible:ring-2 web:focus-visible:ring-ring web:focus-visible:ring-offset-2 web:focus-visible:ring-offset-background " href={link} alt={title}>
+        <Link className=" rounded-xl web:focus-visible:outline-none web:focus-visible:ring-2 min-w-16 flex-auto web:focus-visible:ring-ring web:focus-visible:ring-offset-2 web:focus-visible:ring-offset-background " href={link} alt={title}>
             <Tooltip content={title}>
                 <View className="flex-auto group" key={`menu-${index}`}>
                     <Row
-                        className={`items-center justify-center h-12 p-1.5 min-w-24 rounded-xl web:duration-300 web:group-active:opacity-50 ${isActive
+                        className={`items-center justify-center h-12 p-1.5  flex-auto  rounded-xl web:duration-300 web:group-active:opacity-50 ${isActive
                             ? 'bg-accent/60 text-accent-foreground shadow-xs ring-[0.5px] ring-inset ring-ring/40 hover:bg-accent hover:ring-ring/60 '
                             : 'text-muted-foreground web:group-hover:text-foreground web:hover:bg-muted/60 '
                             }`}
