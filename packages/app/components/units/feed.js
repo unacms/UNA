@@ -130,9 +130,9 @@ function DefaultUnit({ data }) {
                         />
                     </View>
                 </Row>
-                <Row className={`${cd('mb-md')} flex-auto `}>
+                <View className={`${cd('mb-md')} flex-auto `}>
                     {MainContentComponent}
-                </Row>
+                </View>
 
                 <Row className={`${cd('gap-md')} items-center flex-auto justify-between flex-wrap-reverse`}>
                     <ActionMenu
