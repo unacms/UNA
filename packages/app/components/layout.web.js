@@ -197,6 +197,7 @@ export default function Layout(props) {
             const innerHeight = window.innerHeight;
 
             elements.forEach(element => {
+               
                 const offset = getFullOffsetTop(element.parentNode);
                 const offset1 = 24;
                 const h = scrollY - offset;
@@ -206,21 +207,24 @@ export default function Layout(props) {
                 const marginBottom = parseInt(style.marginBottom, 10);
                 const elementHeight = element.offsetHeight;
                 const elementHeightParent = element.parentNode.parentNode.offsetHeight;
-                element.style.width = `${element.parentNode.offsetWidth}px`;
+                if (element.parentNode.offsetWidth > 0)
+                    element.style.width = `${element.parentNode.offsetWidth}px`;
                 
                 //console.log("element.style.width", element.parentNode, element.parentNode.offsetWidth, element.parentNode.clientWidth, getComputedStyle(element.parentNode).width)
                 
                 if (elementHeightParent > elementHeight) {
-                    element.classList.add('fixed');
-                    const height = elementHeight + marginTop + marginBottom - innerHeight + offset1;
-                    element.style.top = `${offset}px`;
+                    if (offset > 0){
+                        element.classList.add('fixed');
+                        const height = elementHeight + marginTop + marginBottom - innerHeight + offset1;
+                        element.style.top = `${offset}px`;
 
-                    if (innerHeight - offset < elementHeight + marginTop + marginBottom + offset1) {
-                        const topValue = height > h ? -h : -height;
-                        element.style.top = `${topValue}px`;
+                        if (innerHeight - offset < elementHeight + marginTop + marginBottom + offset1) {
+                            const topValue = height > h ? -h : -height;
+                            element.style.top = `${topValue}px`;
 
-                        if (height > h) {
-                            element.setAttribute('a', `${topValue}px`);
+                            if (height > h) {
+                                element.setAttribute('a', `${topValue}px`);
+                            }
                         }
                     }
                 } else {
