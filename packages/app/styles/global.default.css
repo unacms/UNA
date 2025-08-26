@@ -115,7 +115,7 @@
 
     /* Common settings */
     .u-max-width-block {
-        @apply max-w-7xl;
+        @apply max-w-6xl;
     }
     /*@keyframes tabContentFadeIn {
         from {

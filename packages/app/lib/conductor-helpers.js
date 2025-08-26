@@ -520,10 +520,8 @@ export function TopSidebar({
                 }`}
             >
                 <Row
-                    className={`${cd(
-                        'px-md'
-                    )} items-center justify-between py-2.5  `}
-                >
+                    className="px-3 items-center justify-between pb-2">
+             
                     <Text className="text-2xl text-card-foreground tracking-tight hidden ">
                         {title}
                     </Text>

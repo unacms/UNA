@@ -31,6 +31,11 @@ export default function ElementSearch(oProps) {
     const oParams = oProps?.params ? oProps.params : {}
     const [showModal, setShowModal] = useState(false)
 
+    const { width } = useWindowDimensions()
+    const isLgUp = width >= LAYOUT_BREAKPOINTS.lg
+    const buttonVariant = isLgUp ? 'secondary' : 'text'
+    const buttonSize = isLgUp ? 'base' : 'base'
+
     const handleOpenPopupDefault = () => {
         if (oParams?.trigger?.onPress) {
             oParams.trigger.onPress()
@@ -49,19 +54,19 @@ export default function ElementSearch(oProps) {
             <Pressable key="ddp-trigger" onPress={handleOpenPopupDefault}>
                 <ButtonRef
                     title={oProps.title === undefined ? '' : oProps.title}
-                    variant="secondary"
                     startDecorator={
                         oParams?.trigger?.icon
                             ? oParams?.trigger.icon
                             : 'Search'
                     }
                     rounded
-                    size="base"
                     tooltip={
                         oProps.tooltip === undefined ? 'Search' : oProps.tooltip
                     }
                     {...(oParams?.trigger &&
                         (({ onPress, ...rest }) => rest)(oParams.trigger))}
+                    variant={buttonVariant}
+                    size={buttonSize}
                 />
             </Pressable>
         )

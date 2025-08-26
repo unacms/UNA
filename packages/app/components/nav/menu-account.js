@@ -1,7 +1,7 @@
 import { Row, Pressable, View } from 'app/design/view'
 import { Button } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user'
-import { appSetting } from 'app/lib/util'
+import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import {
     menuItemsByName,
     menuItemsByNameNew,
@@ -17,6 +17,7 @@ import { fetcher } from 'app/lib/fetcher'
 import RadioButton from 'app/ui/atoms/radiobutton'
 import Redirect from 'app/ui/atoms/redirect'
 import MenuFooter from 'app/components/nav/menu-footer'
+import { useWindowDimensions } from 'react-native'
 
 export default function MenuAccount({ buttonProps, children }) {
     const redirectdRef = useRef()
@@ -24,6 +25,8 @@ export default function MenuAccount({ buttonProps, children }) {
     const [menuData, setMenuData] = useState(false)
     const [menuData1, setMenuData1] = useState(false)
     const [data, setData] = useState(false)
+    const { width } = useWindowDimensions()
+    const isLgUp = width >= LAYOUT_BREAKPOINTS.lg
 
     const fetchDataPr = async () => {
         const sResponse = await fetcher(
@@ -87,14 +90,16 @@ export default function MenuAccount({ buttonProps, children }) {
         )
     }
 
-    buttonProps = buttonProps || {
+    const defaultButtonProps = {
         tooltip: t('Dashboard'),
-        variant: 'secondary',
+        variant: isLgUp ? 'secondary' : 'text',
         rounded: true,
         padding: '0px',
         startDecorator: profile,
-        size: 'sm',
+        size: isLgUp ? 'sm' : 'lg',
     }
+
+    buttonProps = { ...defaultButtonProps, ...(buttonProps || {}) }
 
     if ((menu_account_items.length == 0 && menuData) || !profile) return <></>
 

@@ -281,7 +281,7 @@ export function ButtonsGroup({
     ...rest
 }) {
     let sClassContainer = 'web:group';
-    sClassContainer += fullWidth ? ' flex-auto' : ' w-fit m-0 truncate ';
+    sClassContainer += fullWidth ? ' flex-auto w-full items-stretch' : ' w-fit m-0 truncate ';
     
     sClassContainer += ThemeCssClassesButtonGroups['u-btn-' + variant + '-cnt'] ? ThemeCssClassesButtonGroups['u-btn-' + variant + '-cnt'] + ' ' : ' ';
     sClassContainer += className;
@@ -297,7 +297,8 @@ export function ButtonsGroup({
         const childProps = child?.props || {};
         const { variant: childVariant, size: childSize, fullWidth: childFullWidth, ...restChild } = childProps;
         const isNotLastChild = iIndex < children.length - 1;
-        const childClass = ` h-full flex-auto items-center justify-center`;
+        const childClass = ` h-full items-stretch min-w-0`;
+        const isIconLike = !!childProps?.trigger; // heuristic for dropdown/icon-only wrappers
 
         let childItem;
         if (child.type === Button) {
@@ -309,7 +310,7 @@ export function ButtonsGroup({
                     showTitleFromSize={showTitleFromSize}
                     variant={'group-item' + (!!childVariant ? '-' + childVariant : '')}
                     size={childSize}
-                    fullWidth={childFullWidth}
+                    fullWidth={childFullWidth ?? fullWidth}
                     padding={paddingOverride}
                     {...restChild}
                 />
@@ -328,7 +329,7 @@ export function ButtonsGroup({
                         showTitleFromSize={showTitleFromSize}
                         variant={'group-item' + (!!innerVariant ? '-' + innerVariant : '')}
                         size={innerProps.size}
-                        fullWidth={innerFullWidth}
+                        fullWidth={innerFullWidth ?? fullWidth}
                         padding={paddingOverride}
                         {...restInner}
                     />
@@ -343,15 +344,12 @@ export function ButtonsGroup({
             }
         }
 
-        // For Button children, keep an outer wrapper to control layout
-        if (child.type === Button || (React.isValidElement(childProps.children) && childProps.children.type === Button)) {
-            return (
-                <View key={iIndex} className={' ' + childClass}>
-                    {childItem}
-                </View>
-            );
-        }
-        return React.cloneElement(childItem, { key: iIndex });
+        // Always wrap each item to control flex behavior consistently
+        return (
+            <View key={iIndex} className={` ${childClass} ${fullWidth ? (isIconLike ? 'flex-none' : 'flex-auto') : 'flex-none'}`}>
+                {childItem}
+            </View>
+        );
     });
 
     // Insert dividers between items when there are multiple children
@@ -384,7 +382,7 @@ export function ButtonsGroup({
     const groupHeightClass = groupSizeCfg?.container || '';
     const groupRoundedClass = rounded ? ' rounded-full ' : (groupSizeCfg.rounded || '');
     return (
-        <View className={`${fullWidth ? 'flex-auto' : 'w-fit'} ${groupRoundedClass} overflow-hidden ${sClassContainer} ${groupHeightClass}`} {...rest}>
+        <View className={`${fullWidth ? 'flex-auto w-full' : 'w-fit'} ${groupRoundedClass} overflow-hidden ${sClassContainer} ${groupHeightClass}`} {...rest}>
             {itemsWithDividers}
         </View>
     );
@@ -437,16 +435,16 @@ const getAddon = (addon, isTitle) => {
         if (addon?.hideZero && sButtonAddonText == '0')
             return null;
         if (addon?.variant == 'primary')
-            sButtonAddonBg = ' bg-pop dark:bg-pop-d';
+            sButtonAddonBg = ' bg-destructive ';
     }
     else {
         sButtonAddonText = addon;
     }
 
-    const position = addon?.position == 'bottom' ? 'bottom-0' : 'top-0 end-0';
+    const position = addon?.position == 'bottom' ? 'bottom-0' : ' top-0 end-0';
 
     if (!isTitle && sButtonAddonText)
-        return <View className={`absolute ${sButtonAddonBg} shadow-sm rounded-full px-1.5 items-center justify-center ${position}`}><Text className='text-white text-sm font-medium'>{sButtonAddonText}</Text></View>
+        return <View className={`absolute ${sButtonAddonBg} border border-card web:border-0 web:ring-2 web:ring-card rounded-full px-1.5 items-center justify-center ${position}`}><Text className='text-white text-sm font-medium'>{sButtonAddonText}</Text></View>
 
     return sButtonAddonText && sButtonAddonText ? <View className='flex-1 items-end '>
         <View className={sButtonAddonBg + ' rounded-full px-2 py-0.5 text-center items-center'}>

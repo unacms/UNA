@@ -1,11 +1,12 @@
 import { View } from 'app/design/view'
 import { ButtonRef } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user'
-import { appSetting } from 'app/lib/util'
+import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { menuItemsByName, menuItemsByNameNew, getDataForMenu, storageSet, storageGet } from 'app/lib/util'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect, useMemo } from 'react';
+import { useWindowDimensions } from 'react-native'
 
 export default function () {
     const bApps = appSetting('layout', 'apps') == true;
@@ -14,6 +15,10 @@ export default function () {
     const [menuData, setMenuData] = useState(cached);
     const { currentUser } = useCurrentUser();
     const { t } = useTranslation();
+    const { width } = useWindowDimensions()
+    const isLgUp = width >= LAYOUT_BREAKPOINTS.lg
+    const buttonVariant = isLgUp ? 'secondary' : 'text'
+    const buttonSize = isLgUp ? 'base' : 'lg'
 
      useEffect(() => {
         const fetchData = async () => {
@@ -46,11 +51,11 @@ export default function () {
             >
                 <ButtonRef
                     tooltip="All Apps"
-                    variant="secondary"
                     rounded
                     alt={t("All Apps")}
                     startDecorator="LayoutGrid"
-                    size="base"
+                    variant={buttonVariant}
+                    size={buttonSize}
                 />
             </DropdownMenu>
     );

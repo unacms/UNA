@@ -27,16 +27,16 @@ const Logo = ({ mode = 'adaptive' }) => {
 
     const textStyles = {
         adaptive: ' hidden sm:block  ',
-        mark: ' hidden px-1 ',
+        mark: ' hidden ',
         full: ' ',
     };
 
     const markStyles = {
-        text: 'hidden sm:block px-0.5',
+        text: 'hidden sm:block ',
     };
 
     return (
-        <Row className='items-center gap-3'>
+        <Row className='items-center gap-2'>
             <View className={`${markStyles[mode]}`}>
                 <Svg
                     aria-label="Logo Mark"
@@ -72,7 +72,7 @@ const Logo = ({ mode = 'adaptive' }) => {
                     />
                 </Svg>
             </View>
-            <View className={`${textStyles[mode]}`}>
+            <View className={`${textStyles[mode]} px-1`}>
                 <Svg
                     aria-label="Logo Text"
                     width={72}

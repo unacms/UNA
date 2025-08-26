@@ -194,7 +194,7 @@ export default function (props) {
                                             pageData: props.data,
                                             headerHeight: isFeedMenuPresent
                                                 ? 122
-                                                : 66,
+                                                : 56,
                                             subHeaderComponent: subHeader,
                                         },
                                     }}

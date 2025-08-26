@@ -91,9 +91,9 @@ export const settingsDefault = {
             scrolled:
                 ' backdrop-blur-xl my-auto w-full mx-auto ring-1 ring-border/60 bg-card/90 shadow-sm ',
             content: ' h-16 mx-auto justify-between ',
-            content_left: ' flex-row px-3 items-center justify-center ',
+            content_left: ' flex-row items-center justify-center ',
             content_right:
-                ' items-center justify-end h-full px-3 ',
+                ' items-center justify-end h-full ',
             content_center:
                 ' absolute left-[50%] translate-x-[-50%] bg-muted/0 rounded-2xl p-1 hidden flex-auto xl:flex gap-2 ',
             special: {
@@ -305,15 +305,15 @@ export const settingsDefault = {
                 title: 'For you',
                 showTitle: true,
             },
-            {
-                name: 'account',
-                icon: 'Binoculars',
-                title: 'Following',
-                showTitle: true,
-            },
-            { name: 'hot', icon: 'Flame', title: 'Hot', showTitle: true },
-            { name: 'public', icon: 'Egg', title: 'Public', showTitle: true },
-            { name: 'channels', icon: 'Hash', title: 'News', showTitle: true },
+            // {
+            //     name: 'account',
+            //     icon: 'Binoculars',
+            //     title: 'Following',
+            //     showTitle: true,
+            // },
+            // { name: 'hot', icon: 'Flame', title: 'Hot', showTitle: true },
+            // { name: 'public', icon: 'Egg', title: 'Public', showTitle: true },
+            // { name: 'channels', icon: 'Hash', title: 'News', showTitle: true },
         ],
         units: {
             bx_market: 'MarketView',
@@ -760,7 +760,7 @@ export const settingsDefault = {
                 { component: 'add', className: '' },
                 { component: 'notifications', className: 'hidden sm:block' },
                 { component: 'link', href: "{messenger}", className: 'hidden sm:block', props: { variant: "secondary", rounded: true, size: "base", startDecorator: "MessageSquare" } },
-                { component: 'account', className: 'hidden sm:block' },
+                { component: 'account', className: 'hidden lg:block' },
             ],
             loggedOut: [
                 { component: 'search', className: 'items-center' },
@@ -1103,7 +1103,7 @@ export const settingsDefault = {
                 rounded: ' rounded-lg ',
                 ring: '', // Ring wrapper removed
                 padding: '  ',
-                padding_icon_only: ' h-11 px-2.5 ',
+                padding_icon_only: ' h-11 w-11 ',
                 padding_with_title: ' px-4 gap-2 h-11 items-center ',
                 icon_container: ' text-base flex items-center ',
                 title_container: ' leading-11 text-sm items-center flex   ',
@@ -1115,7 +1115,7 @@ export const settingsDefault = {
                 rounded: ' rounded-xl ',
                 ring: '', // Ring wrapper removed
                 padding: '  ',
-                padding_icon_only: ' h-12 px-3 ',
+                padding_icon_only: ' h-12 w-12 ',
                 padding_with_title: 'gap-3 px-6 h-12 items-center ',
                 icon_container: '  text-lg flex items-center ',
                 title_container: ' leading-6 text-base items-center flex',
@@ -1137,13 +1137,14 @@ export const settingsDefault = {
                 container: ' h-9 gap-0.5 ',
             },
             base: {
-                rounded: ' rounded-[10px] ',
-                container: ' h-11 gap-0.5 ',
+                rounded: ' rounded-xl ',
+                container: ' h-11 group ',
+                divider: ' w-0.5 h-full  ',
             },
             lg: {
                 rounded: ' rounded-xl ',
                 container: ' h-12 group ',
-                divider: ' w-0.5 h-full rounded-full ',
+                divider: ' w-0.5 h-full  ',
             },
         },
         // Button group item container sizes for inner wrappers inside a ButtonsGroup
@@ -1158,8 +1159,8 @@ export const settingsDefault = {
                 rounded: ' rounded-lg ',
             },
             base: {
-                container: ' h-full ',
-                rounded: ' rounded-[10px] ',
+                container: ' h-full rounded',
+                rounded: ' rounded-xl ',
             },
             lg: {
                 container: ' h-full rounded',
@@ -1300,7 +1301,7 @@ export const settingsDefault = {
         cards: {
             'u-card-list':
                 ' u-card-list bg-card/80 web:hover:bg-card shadow-sm text-card-foreground sm:rounded-2xl mb-0.5 sm:mb-4 ',
-            'u-card-list-padding': ' p-4 ',
+            'u-card-list-padding': ' p-3 lg:p-4 ',
             'u-card-base':
                 ' u-card-base bg-card/80 web:hover:bg-card shadow-sm text-card-foreground overflow-hidden rounded-2xl gap-4',
             'u-card-padding': ' p-4 ',

@@ -68,7 +68,6 @@ const HeaderLine = memo(
                         appSetting('layout', 'lock_unconfirmed'))) &&
                     (uri == 'home' || width >= LAYOUT_BREAKPOINTS.lg) && (
                         <Link
-                            className=" flex items-center hover:bg-bgritem web:dark:hover:bg-bgritem-d rounded-xl flex-row web:active:scale-95 web:active:opacity-50 text-neutral-800 dark:text-neutral-200 hover:text-neutral-950 dark:hover:text-neutral-50 web:duration-300 "
                             href="/home"
                         >
                             {appStatic('logo')}
@@ -145,7 +144,7 @@ export default function (props) {
                 <View className={headerTheme.container + (headerTheme.special[props.layoutName] || headerTheme.special.default)
                 }  >
                     <View className={(isScrolled ? headerTheme.scrolled : headerTheme.initial)}>
-                        <View className={`w-full flex-row flex-auto items-center ${headerTheme.content}`}>
+                        <View className={`px-3 w-full flex-row flex-auto items-center ${headerTheme.content}`}>
                             <HeaderLine
                                 headerSettings={headerSettings}
                                 title={sTitle}

@@ -25,7 +25,7 @@ import {
 
 export const TextHeader = memo(({ text }) => {
     const { t } = useTranslation();
-    return <Text className="font-bold text-card-foreground text-2xl tracking-tight">
+    return <Text className="font-bold leading-9 text-card-foreground text-2xl tracking-tight">
         {t(text)}
     </Text>
 })
@@ -101,10 +101,10 @@ export const Header = memo(({
 
     return (
 
-            <Row className={`items-center h-16 justify-between ${cd('px-lg')} ${cd('gap-md')}`} >
+            <Row className="items-center justify-between py-1 px-1.5 sm:px-3 lg:py-2 gap-1">
             {((!currentUser || !pageData?.context) && !text && (!settings?.headerSettings || settings?.headerSettings?.header)) && 
                 <Link href="/home" aria-label="Home">
-                    <Pressable className="items-center p-1.5 sm:p-2 flex-row web:hover:scale-105 web:active:scale-95 rounded-xl  text-neutral-800 dark:text-neutral-200 web:hover:text-neutral-800 web:dark:hover:text-neutral-200 duration-300 ">
+                    <Pressable className="items-center  ">
                         {appStatic('logo')}
                     </Pressable>
                 </Link>
@@ -115,7 +115,7 @@ export const Header = memo(({
                     router ? router?.back() : history.back();
                 }} startDecorator="ArrowLeft" size="base" /></View>
             )}
-            {(pageData?.context?.current?.url || isHome) && <View><ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} /></View>}
+            {(pageData?.context?.current?.url || isHome) && <View className="flex-auto sm:flex-none"><ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} /></View>}
             {(!!text) && <Row className='items-center'><>
             {(!!text && !pageData?.context?.current?.url) && (
                 <TextHeader text={text}></TextHeader>

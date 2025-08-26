@@ -63,7 +63,7 @@ function getContextRoot(data, url, uri) {
     if (!data.current?.id) {
         return {
             url: '/',
-            image: appStatic('logo'),
+            image: appStatic('logo', { mode: 'full', }),
             name: false,
         }
     }
@@ -103,8 +103,8 @@ export default function ContextSelector({ data, url, uri, mode }) {
     }
 
     const CurrentContext = (
-        <Link  href={contextRoot.url}>
-            <Row className="items-center gap-2 px-2">
+        <Link className="flex-auto items-center justify-start w-full flex" href={contextRoot.url}>
+            <Row className="items-center gap-1.5 lg:gap-2 px-1.5 lg:px-2">
                 <View className='rounded-full items-center justify-center'>
                     {contextRoot.image}
                 </View>
@@ -120,8 +120,8 @@ export default function ContextSelector({ data, url, uri, mode }) {
     const DropDown = (
         <DropdownPopup
             trigger={
-                <Row className="items-center justify-center w-9 h-9">
-                    <Icon icon="ChevronDown" size={20} />
+                <Row className="items-center justify-center w-11 h-11">
+                    <Icon icon="ChevronDown" size={24} />
                 </Row>
             }
             minPopupWidth={352}
@@ -199,7 +199,7 @@ export default function ContextSelector({ data, url, uri, mode }) {
                          </>
                      )}
                    
-                    <ButtonsGroup variant="text" size="lg"  >
+                    <ButtonsGroup variant="text" size="base" fullWidth={true} >
                         {CurrentContext}
                         {DropDown}
                     </ButtonsGroup> 
