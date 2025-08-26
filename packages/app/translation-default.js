@@ -88,7 +88,7 @@ export const resourcesDefault = {
             "create_account_page_text": "Create an account to get started. It\'s quick and easy to join",
             "create_account_page_text_request_invite": "Registration is by invitation only. Please use invitation code to join.",
             "create_account_page_caption": "Create your account",
-            "create_account_page_caption2": "It's quick and easy to join",
+            "create_account_page_caption2": "Welcome! Please fill in the details to get started.",
             "create_account_page_already_have": "Already have an account?",
             "create_account_page_with_email": "Continue with email",
             "create_account_page_sign_in": "Sign in",

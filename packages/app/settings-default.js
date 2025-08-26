@@ -63,7 +63,7 @@ export const settingsDefault = {
         tooltips: true,
         hide_header_for_non_logged: false,
         hide_header_for_all: false,
-        card_animation_duration: 0,
+        card_animation_duration: 500,
         user_remote_config: true,
         background_image_color: '', //OLD appSetting('layout', 'background_cover_color')
         background_image: '', //`url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239C92AC' fill-opacity='0.08' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E")`,
@@ -1300,18 +1300,18 @@ export const settingsDefault = {
         },
         cards: {
             'u-card-list':
-                ' u-card-list bg-card/80 web:hover:bg-card shadow-sm text-card-foreground sm:rounded-2xl mb-0.5 sm:mb-4 ',
+                ' u-card-list bg-card/90 shadow-sm text-card-foreground sm:rounded-2xl mb-0.5 sm:mb-4 ',
             'u-card-list-padding': ' p-3 lg:p-4 ',
             'u-card-base':
-                ' u-card-base bg-card/80 web:hover:bg-card shadow-sm text-card-foreground overflow-hidden rounded-2xl gap-4',
+                ' u-card-base bg-card/90 shadow-sm text-card-foreground overflow-hidden rounded-2xl gap-4',
             'u-card-padding': ' p-4 ',
             'u-card-header': 'flex gap-2',
             'u-card-icon': 'text-card-foreground px-4 gap-y-2 gap-x-3',
             'u-card-title':
                 'text-card-foreground text-2xl font-bold leading-none tracking-tight',
-            'u-card-description': 'text-muted-foreground text-sm leading-tight ',
+            'u-card-description': 'text-muted-foreground text-sm ',
             'u-card-content': 'text-card-foreground ',
-            'u-card-footer': 'flex text-sm leading-tight text-card-foreground gap-2',
+            'u-card-footer': 'flex text-base text-card-foreground gap-2',
         },
         panels: {
             'u-panel-base': 'm-0 gap-y-md',

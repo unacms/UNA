@@ -14,10 +14,10 @@ import { useTranslation } from 'react-i18next'
 export default function AuthPanel({
     googleButton,
     className,
-    showSeparator = true,
-    forgotPasswordLink = true,
-    createAccountLink = true,
-    loginLink = true,
+    showSeparator = false,
+    forgotPasswordLink = false,
+    createAccountLink = false,
+    loginLink = false,
 }) {
     if (appSetting('auth', 'enabled') !== true) return null
     const { t } = useTranslation()

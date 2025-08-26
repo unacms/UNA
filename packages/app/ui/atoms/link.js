@@ -77,6 +77,9 @@ export default function ElementLink(props) {
     }
     // Если ссылка внешняя, открываем в браузере
     if (domain && domain !== rootUrl || asExternal === true) {
+        const content = (typeof children === 'string' || typeof children === 'number') ? (
+            <Text>{children}</Text>
+        ) : children;
         if (mode == 'text'){
             return (
                 <Text onPress={handleExternalLinkPress}>
@@ -86,7 +89,7 @@ export default function ElementLink(props) {
         }
         return (
             <Pressable onPress={handleExternalLinkPress}>
-                {children}
+                {content}
             </Pressable>
         );
     }
@@ -131,10 +134,14 @@ if (mode == 'text'){
     );
 }
 
+    const content = (typeof children === 'string' || typeof children === 'number') ? (
+        <Text>{children}</Text>
+    ) : children;
+
     return (
         <Link push href={p} asChild {...rest}>
             <Pressable hitSlop={hitSlop} onPress={haptics ? handleHapticsPress : undefined} className={composedClassName}>
-                {children}
+                {content}
             </Pressable>
         </Link>
     );

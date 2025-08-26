@@ -91,7 +91,7 @@ export default function AuthGoogle({ button }) {
                 title={t("Continue with Google")}
                 onPress={() => promptAsync({ useProxy: true })}
                 fullWidth
-                                 size="base"
+                                 size="lg"
                 startDecorator="Google"
             />}
             {error && <FormError errorText={error} />}

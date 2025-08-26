@@ -1,4 +1,4 @@
-import { View } from 'app/design/view'
+import { View, Row } from 'app/design/view'
 import { BlockByName } from 'app/components/block'
 import { Text } from 'app/design/typography'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from 'app/ui/molecules/card'
@@ -17,24 +17,56 @@ const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from');
 
 function PageContent(props) {
     const { t } = useTranslation()
-    return (<Card padding="p-4 sm:p-6">
-        <CardHeader>
-            <CardTitle>
-                {t('splash_page_login')}
-            </CardTitle>
-            <CardDescription>
-                {t('splash_page_login2')}{' '}
-                                    <Link variant="accent" size="sm" href="/create-account">{t('splash_page_new_account')}</Link>
-                                    .
-            </CardDescription>
-        </CardHeader> 
-        <CardContent>
-            <BlockByName contentOnly={true} name={props.blocks.form} data={props.data} formProps={{ auto_focus: true, hide_errors: true, button_full_width: true }} />
-        </CardContent>
+    return (
+        <Card padding="p-0 pb-4" className="bg-card/50">
+        <AnimatedView direction="up" delay={300}>
+        <Card padding="p-6  ">
+            <CardHeader>
+                <CardTitle>{t('login_modal_title')} {t('app_name')}</CardTitle>
+                <CardDescription>
+                    {t('splash_page_login')}
+                
+                </CardDescription>
+            </CardHeader>
+            <CardContent className="gap-4">
+                <BlockByName
+                    name="system:login_form"
+                    contentOnly={true}
+                    data={props.data}
+                    formProps={{ hide_errors: true, button_full_width: true }}
+                />
+                <Row className="text-center text-sm items-center text-muted-foreground">
+                    <Link
+                        className="mx-auto"
+                        variant="primary"
+                        size="sm"
+                        href="/forgot-password"
+                        haptics="Medium"
+                    >
+                        {t('Forgot password?')}
+                    </Link>
+                </Row>
+            </CardContent>
+            <CardFooter>
+                
+                <AuthPanel showSeparator={true} />
+            </CardFooter>
+        </Card></AnimatedView>
         <CardFooter>
-            <AuthPanel loginLink={false} />
+                <Row className="text-center flex-none mx-auto text-base items-center gap-1">
+                    <Text className="text-muted-foreground text-base">{t('splash_page_login2')}</Text>
+                    <Link
+                        variant="primary"
+                        size="md"
+                        href="/create-account"
+                        haptics="Medium"
+                    >
+                        {t('splash_page_new_account')}
+                    </Link>
+                </Row>
         </CardFooter>
-    </Card>)
+        </Card>
+        )
 }
 
 export default function PageLayout(props) {
@@ -53,7 +85,7 @@ export default function PageLayout(props) {
         <MenuFooter cntClasses="w-full flex-row flex-wrap opacity-80 h-16 items-center justify-center" />
     </View>) : (
 
-        <View className="w-full flex-col lg:flex-row gap-y-4 mx-auto p-3 p-3 pt-20 ">
+        <View className="w-full flex-col lg:flex-row gap-y-4 mx-auto p-3 p-3 py-16 ">
             <PageContent {...props} />
             <MenuFooter cntClasses="w-full flex-row flex-wrap opacity-80 h-16 items-center justify-center" />
         </View>)

@@ -1,4 +1,4 @@
-import { View } from 'app/design/view'
+import { View, Row } from 'app/design/view'
 import { BlockByName, DataByName } from 'app/components/block'
 import { Text } from 'app/design/typography'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from 'app/ui/molecules/card'
@@ -22,15 +22,16 @@ function PageContent(props) {
     const isAllowJoin = props.isAllowJoin
     const { t } = useTranslation()
     return (
-        <Card padding="p-4 sm:p-6">
+        <Card padding="p-0 pb-4" className="bg-card/50">
+        <AnimatedView direction="up" delay={300}>
+        <Card padding="p-6 ">
             <CardHeader>
                 <CardTitle>
                     {t('create_account_page_caption')}
                 </CardTitle>
                 {isWeb && <CardDescription>
-                    {t('create_account_page_already_have')}{' '}
-                    <Link variant="accent" size="sm" href="/login">{t('create_account_page_sign_in')}</Link>
-                    .
+                    {t('create_account_page_caption2')}
+                    
                 </CardDescription>}
             </CardHeader>
              <CardContent>
@@ -60,8 +61,22 @@ function PageContent(props) {
             )}
             </CardContent>
             <CardFooter>
-            <AuthPanel createAccountLink={false} loginLink={!isWeb} />
+            <AuthPanel createAccountLink={false} loginLink={!isWeb} showSeparator={true} />
             </CardFooter>
+        </Card></AnimatedView>
+        <CardFooter>
+                <Row className="text-center flex-none mx-auto text-base items-center gap-1">
+                    <Text className="text-muted-foreground text-base">{t('create_account_page_already_have')}</Text>
+                    <Link
+                        variant="primary"
+                        size="md"
+                        href="/login"
+                        haptics="Medium"
+                    >
+                        {t('create_account_page_sign_in')}
+                    </Link>
+                </Row>
+        </CardFooter>
         </Card>
     );
 }
@@ -72,16 +87,16 @@ export default function PageLayout(props) {
     const isAllowJoin = joinData.content[0].type == 'form'
     const refer = useRef();
     const content = isWeb ? (
-        <View className={`flex-col justify-center web:min-h-[calc(100vh-16rem)] w-full pt-16 ${TABLET_MODE_FROM}:pt-0`}>
-            <View className="w-full lg:flex-row mx-auto my-auto  max-w-8xl">
-                <View className="my-auto flex-col items-center lg:items-start flex-auto p-4 sm:p-8 xl:p-16" accessible={true}>
+        <View className={`flex-col justify-center web:min-h-[calc(100vh-16rem)] w-full `}>
+            <View className="w-full lg:flex-row mx-auto my-auto max-w-7xl">
+                <View className="my-auto flex-col lg:w-1/2 items-center lg:items-start flex-auto p-4 sm:p-8 xl:p-16" accessible={true}>
                     {appStatic('join_text')}
                     <AnimatedView direction="up" className="flex-auto hidden lg:flex items-center lg:items-start gap-y-4 sm:gap-y-6 max-w-md sm:max-w-lg lg:max-w-3xl">
                         <Text
                             accessible={true}
                             accessibilityRole="heading"
                             aria-level={1}
-                            className="text-4xl lg:text-5xl xl:text-6xl text-center lg:text-start tracking-tight font-bold text-neutral-800 dark:text-neutral-200 text-pretty"
+                            className="text-3xl sm:text-4xl lg:text-5xl text-center lg:text-start tracking-tight font-bold text-neutral-800 dark:text-neutral-200 text-pretty"
                         >
                             {isAllowJoin
                                 ? t('create_account_page_title')
@@ -98,10 +113,9 @@ export default function PageLayout(props) {
                         </Text>
                     </AnimatedView>
                 </View>
-                <View className="max-w-xl w-full flex-auto mx-auto p-4 sm:p-8 my-auto">
-                    <AnimatedView>
+                <View className="max-w-xl w-full lg:w-1/2 flex-auto mx-auto p-4 sm:p-8 my-auto">
+                    <AnimatedView direction="up" delay={200}>
                         <View className="relative">
-                            <View className="absolute top-4 flex shadow rounded-3xl w-full h-full bg-neutral-500 dark:bg-black blur-lg opacity-20 dark:opacity-50"></View>
                             <PageContent {...props} isAllowJoin={isAllowJoin} />
                         </View>
                     </AnimatedView>
