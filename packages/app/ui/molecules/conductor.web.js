@@ -53,11 +53,13 @@ const AddBlocks = (leftSideBarBlocks, data, onFormChangedValues) => {
         return null;
 
     const leftSideBarBlocksObj = leftSideBarBlocks.map((block) => {
+        const { key, ...rest } = block;
         return <BlockByName
             data={data}
             name={block}
             onChange={onFormChangedValues}
-            {...block}
+            {...rest}
+            sidebar={true}
         />
     });
 
@@ -703,9 +705,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
 
         const sidebarUnitType = route.blocks?.browse_sidebar?.unitType || 'default';
         const layout_cols = !isLeftCol && !isRightCol ? 'c' :  !isLeftCol ? 'c-r' :  !isRightCol ? 'l-c' :  'l-c-r';
-        console.log("layout_colslayout_cols", layout_cols)
         const cellsCustomConfig = appSetting('layouts', route?.pageData?.uri) || appSetting('layouts', `cols-${layout_cols}`);
-        console.log("layout_colslayout_cols2", cellsCustomConfig)
         const pageData = route.inited ? route.pageData : prevRoute.pageData;
         //if (cellsCustomConfig?.adjustable) {
         return (

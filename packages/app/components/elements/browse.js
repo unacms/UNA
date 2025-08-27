@@ -77,13 +77,16 @@ export default function (props) {
     const [isRevalidate, setIsRevalidate] = useState(false)
     const { currentUser } = useCurrentUser()
     const data = props.data
+
+
+   const cacheParams = Object.entries((({ per_page, start, ...rest }) => rest)(data?.params)).map(([key, val]) => `${key}=${val}`).join(':');
+
     const storageKeyValue = storageKey(
         (props.uri ? props.uri : '') +
-        (data.request_url ? ':' + data.request_url : '') +
-        (data.params?.type ? ':' + data.params?.type : '') +
-        (data.params?.category ? ':' + data.params?.category : '') +
+        (data.request_url ? ':' + data.request_url : '') + ':'+cacheParams +
         (props.cachePrefix ? ':' + props.cachePrefix : '')
     )
+
     const cachedData = {
         state: getDataFromCache('ul:state', storageKeyValue),
         data: getDataFromCache('ul:data', storageKeyValue),
@@ -144,8 +147,8 @@ export default function (props) {
         }
     }
 
-    //const hOffset = isWeb ? (windowWidth < LAYOUT_BREAKPOINTS.lg ? 126 : 64) : 106;
     const hOffset = isWeb ? 0 : 56
+    
     const styles = isWeb
         ? {}
         : {
@@ -164,8 +167,7 @@ export default function (props) {
 
     const qKey = [
         data.request_url +
-        browseParams?.type +
-        defParams?.category +
+        storageKeyValue +
         props?.cachePrefix,
     ]
     const queryClient = useQueryClient()
@@ -386,7 +388,7 @@ export default function (props) {
 
     }
 
-
+    console.log("propsprops", props)
     if (props.sidebar && !props.extraProps?.galery) {
         const uniqueItems = dataItems.data.filter(
             (v, i, a) => a.findIndex((t) => t.id === v.id) === i
@@ -395,7 +397,7 @@ export default function (props) {
             ? uniqueItems.slice(0, props.extraProps?.limit)
             : uniqueItems
         contentElement = limitedItems.map((item, index) => (
-            <View key={`item${index}`} className={`${numColumns > 1 ? 'pb-2' : ''} ${data.unit !== 'feed' ? 'w-full' : ''}`}>
+            <View key={`item${index}`} className={`mb-3 ${data.unit !== 'feed' ? 'w-full' : ''}`}>
                 <Unit
                     unit={data.unit ? data.unit : ''}
                     mode={unitMode}
@@ -509,6 +511,7 @@ export default function (props) {
     if (!dataItems.data.length && props.showTitleInside)
          return;
 
+
     return (
         <View className="w-full h-full">
             <View className="w-full" onLayout={handleLayout}></View>
@@ -520,7 +523,7 @@ export default function (props) {
                 size="sm"
             />
             <View className="w-full  " style={styles}>
-                {props.showTitleInside ? (
+                {props.showTitleInside && (
                     <Row className="items-center justify-between px-2 my-3">
                         <Text className=" text-card-foreground text-xl font-bold leading-none lg:leading-none tracking-tight ">
                             {t(props.block.title)}
@@ -536,10 +539,8 @@ export default function (props) {
                             </Link>
                         ) : null}
                     </Row>
-                ) : (
-                    <></>
                 )}
-               {contentElement}
+              {contentElement}
             </View>
         </View>
     )
