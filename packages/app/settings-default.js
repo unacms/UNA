@@ -811,34 +811,6 @@ export const settingsDefault = {
         '/create-account': {
             max_width: '',
         },
-        /* 'audit-administration':{
-             gap: 4,
-             sizable: true,
-             cells:[
-                 { key: 'cell_2', defaultSize: 50, minSize: 50, maxSize:50 },
-                 { key: 'cell_3', defaultSize: 25.33, minSize: 10, breakpoint: 'md' },
-                 { key: 'cell_4', defaultSize: 25.33, minSize: 10, breakpoint: 'lg' },
-             ]
-         }*/
-        home: {
-            adjustable: true,
-            sizable: true,
-            cells: {
-                left: {
-                    defaultSize: 25,
-                    minSize: 20,
-                    maxSize: 30,
-                    breakpoint: 'xl',
-                },
-                center: { defaultSize: 50, minSize: 40, maxSize: 60 },
-                right: {
-                    defaultSize: 25,
-                    minSize: 20,
-                    maxSize: 30,
-                    breakpoint: 'lg',
-                },
-            },
-        },
         messenger: {
             adjustable: true,
             sizable: true,
@@ -852,20 +824,15 @@ export const settingsDefault = {
                 center: { defaultSize: 70, minSize: 40, maxSize: 80 },
             },
         },
-        navigator: {
+        'cols-c': {
             adjustable: true,
             sizable: true,
             cells: {
-                left: {
-                    defaultSize: 25,
-                    minSize: 20,
-                    maxSize: 30,
-                    breakpoint: 'lg',
-                },
-                center: { defaultSize: 75, minSize: 70, maxSize: 80 },
+
+                center: { defaultSize: 100, minSize: 50, maxSize: 100 },
             },
         },
-        'view-persons-profile': {
+        'cols-l-c-r': {
             adjustable: true,
             sizable: true,
             cells: {
@@ -884,20 +851,20 @@ export const settingsDefault = {
                 },
             },
         },
-        'view-group-profile': {
+        'cols-l-c': {
             adjustable: true,
             sizable: true,
             cells: {
-                center: { defaultSize: 60, minSize: 50, maxSize: 70 },
-                right: {
-                    defaultSize: 40,
-                    minSize: 30,
-                    maxSize: 50,
+                left: {
+                    defaultSize: 25,
+                    minSize: 20,
+                    maxSize: 30,
                     breakpoint: 'lg',
                 },
+                center: { defaultSize: 75, minSize: 70, maxSize: 80 },
             },
         },
-        'view-event-profile': {
+        'cols-c-r': {
             adjustable: true,
             sizable: true,
             cells: {

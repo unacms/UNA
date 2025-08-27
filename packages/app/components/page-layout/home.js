@@ -291,7 +291,7 @@ export default function (props) {
             </>
         )
 
-        const cellsCustomConfig = appSetting('layouts', 'home')
+        const cellsCustomConfig = appSetting('layouts', 'home') || appSetting('layouts', 'cols-l-c-r')
         return (
             <>{BlocksCenter}
                 <PanelGroup
