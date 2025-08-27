@@ -79,7 +79,13 @@ export default function (props) {
     const data = props.data
 
 
-   const cacheParams = Object.entries((({ per_page, start, ...rest }) => rest)(data?.params)).map(([key, val]) => `${key}=${val}`).join(':');
+    const cacheParams = Object.entries(((p = {}) => {
+        const { per_page, start, ...rest } = p;
+        return rest;
+    })(data?.params))
+        .filter(([, v]) => v != null && v !== '')
+        .map(([k, v]) => `${k}=${v}`)
+        .join(':');
 
     const storageKeyValue = storageKey(
         (props.uri ? props.uri : '') +
