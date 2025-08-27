@@ -91,7 +91,7 @@ export const settingsDefault = {
             scrolled:
                 ' backdrop-blur-xl my-auto w-full mx-auto ring-1 ring-border/60 bg-card/90 shadow-sm ',
             content: ' h-16 mx-auto justify-between ',
-            content_left: ' flex-row items-center px-3 flex-none  xl:w-80 2xl:w-96 ',
+            content_left: ' flex-row items-center px-2 flex-none  xl:w-80 2xl:w-96 ',
             content_right:
                 ' items-center justify-end h-full px-4 flex-none  xl:w-80 2xl:w-96 ',
             content_center:
@@ -1215,7 +1215,7 @@ export const settingsDefault = {
 
             // Ghost: transparent by default; muted on hover/active
             'u-link-ghost-cnt':
-                 ' group bg-transparent web:hover:bg-accent/60 web:active:opacity-50 ',
+                 ' group bg-transparent web:hover:bg-muted/60 active:bg-secondary/60 ',
             'u-link-ghost-text':
                 ' text-muted-foreground web:hover:text-accent-foreground ',
             'u-link-ghost-trans': ' web:duration-200 ',

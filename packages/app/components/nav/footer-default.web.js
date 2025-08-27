@@ -34,7 +34,7 @@ export default function () {
         let dUser = Object.assign({}, currentUser);
         dUser.url_avatar = dUser.avatar
         dUser.url = appSetting('dashboard', 'url')
-        profile = <View className="w-8 h-8 p-1"><Profile {...dUser} displayType="unit_wo_info" displaySize="xs" /></View>
+        profile = <View className="w-7 h-7"><Profile {...dUser} displayType="unit_wo_info" displaySize="xs" /></View>
     }
 
 
@@ -87,15 +87,13 @@ function MenuBottomItem({ link, title, index, icon, isActive, profile, iFrCounte
                 noprefetch={link === appSetting('notifications', 'url') ? "false" : "true"}
                 className="w-full"
             >
-                {isActive && (
-                    <View className="-top-2 w-full bg-primary rounded-xl h-0.5 animate-appear" />
-                )}
+                
                 <View className={`min-h-12 justify-between items-center ${isActive && ''}`}>
-                    <Text className={`${isActive ? 'text-primary' : 'text-neutral-700 dark:text-neutral-300'}`}>
-                        {link === appSetting('dashboard', 'url') ? profile : <Icon icon={icon} />}
+                    <Text className={`${isActive ? 'text-primary' : 'text-muted-foreground'}`}>
+                        {link === appSetting('dashboard', 'url') ? profile : <Icon icon={icon} size={28} />}
                     </Text>
-                    {<Text className={`group-hover:text-primary dark:group-hover:text-primary text-xs tracking-tight  leading-4 whitespace-nowrap ${isActive ? 'text-primary' : 'text-neutral-700 dark:text-neutral-300'}`}>{title}</Text>}
-                    {badge && <View className={`absolute bg-primary shadow-sm dark:border-neutral-900 rounded-full px-1.5 items-center justify-center  -top-1 left-1/2 -translate-x-1/2 ml-6`}><Text className="text-white text-xs ">{badge.text}</Text></View>}
+                    {<Text className={`group-hover:text-primary text-xs tracking-tight leading-5 whitespace-nowrap ${isActive ? 'text-primary' : 'text-muted-foreground'}`}>{title}</Text>}
+                    {badge && <View className={`absolute bg-destructive  border-2 border-card web:border-0 web:ring-2 web:ring-inset web:ring-card rounded-full px-2 items-center justify-center  -top-1.5 left-1/2 -translate-x-1/2 ml-5`}><Text className="text-white text-xs tracking-tight leading-5 ">{badge.text}</Text></View>}
                 </View>
             </Link>
         </View>
