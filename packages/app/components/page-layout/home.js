@@ -120,20 +120,19 @@ export default function (props) {
             </>
         )
 
-        
-        const BlocksCenter = <View  className={`${appSetting('layout', 'max_width')} mx-auto w-full`}>
-                {centerBlocks?.map((item, index) => {
-                    return (
-                        <BlockByName
-                            key={'block_' + index}
-                            name={item.block}
-                            data={props.data}
-                            {...item.block.props}
-                        />
-                    )
-                })}</View>
 
-                console.log("feedList.length", feedList.length)
+        const BlocksCenter = <View className={`${appSetting('layout', 'max_width')} mx-auto w-full`}>
+            {centerBlocks?.map((item, index) => {
+                return (
+                    <BlockByName
+                        key={'block_' + index}
+                        name={item.block}
+                        data={props.data}
+                        {...item.block.props}
+                    />
+                )
+            })}</View>
+
         const subHeader = feedList.length > 1 && (
             <Row className=' items-center h-14 '>
                 <ScrollView horizontal={true} className={`${cd('px-lg')} flex w-full scrollbar-hide`} >
@@ -172,7 +171,7 @@ export default function (props) {
                         {subHeader}
                     </View>
                 )}
-                
+
                 {feedList.map((item, index) => {
                     if (feedType == item.name) {
                         return (
@@ -230,31 +229,31 @@ export default function (props) {
             <>
                 <View>
                     {appSetting('layout', 'show_profile_info') && (
-                        
-                            <Link href={currentUser.url} emulate={true}>
-                                <Row
-                                    className={
-                                        ' rounded-xl group items-center gap-3 px-2 py-1.5 mb-0.5 hover:bg-muted/60 active:opacity-50  '
-                                    }
-                                >
-                                    <View className=''>
-                                        <Profile
-                                            {...currentUser}
-                                            url_avatar={currentUser.avatar}
-                                            displayType="unit_wo_info"
-                                            displaySize="sm"
-                                        />
-                                    </View>
 
-                                    <View className="flex-row gap-1 flex-auto justify-between ">
-                                        <Text className=" text-sm leading-tight font-semibold truncate text-card-foreground web:group-hover:text-foreground ">
-                                            {currentUser.display_name}
-                                        </Text>
-                                        <Badge size="xs" variant="default" iconOnly data={{text:currentUser.membership_name}}/>
-                                    </View>
-                                </Row>
-                            </Link>
-                       
+                        <Link href={currentUser.url} emulate={true}>
+                            <Row
+                                className={
+                                    ' rounded-xl group items-center gap-3 px-2 py-1.5 mb-0.5 hover:bg-muted/60 active:opacity-50  '
+                                }
+                            >
+                                <View className=''>
+                                    <Profile
+                                        {...currentUser}
+                                        url_avatar={currentUser.avatar}
+                                        displayType="unit_wo_info"
+                                        displaySize="sm"
+                                    />
+                                </View>
+
+                                <View className="flex-row gap-1 flex-auto justify-between ">
+                                    <Text className=" text-sm leading-tight font-semibold truncate text-card-foreground web:group-hover:text-foreground ">
+                                        {currentUser.display_name}
+                                    </Text>
+                                    <Badge size="xs" variant="default" iconOnly data={{ text: currentUser.membership_name }} />
+                                </View>
+                            </Row>
+                        </Link>
+
                     )}
 
                     {feedList.length > 1 && (
@@ -295,56 +294,56 @@ export default function (props) {
         const cellsCustomConfig = appSetting('layouts', 'home')
         return (
             <>{BlocksCenter}
-            <PanelGroup
-                autoSaveId={`cells-home`}
-                direction="horizontal"
-                className={`${appSetting('layout', 'max_width')} mx-auto w-full flex-auto relative flex-row`}
-                onLayout={(e) => {
-                    if (isWeb) {
-                        requestAnimationFrame(() => {
-                            document.body.offsetHeight
-                            window.dispatchEvent(new Event('resize_panel'))
-                        })
-                    }
-                }}
-            >
-                {layoutName == 'hor' && isWeb && (
-                    <>
-                        <Panel
-                            className={`hidden ${cellsCustomConfig.cells?.left?.breakpoint}:block`}
-                            {...cellsCustomConfig.cells?.left}
-                        >
-                            <View className={`${cd('p-md')} ${cd('gap-lg')} fixed-process `}>
-                                {SideBarContent}
-                            </View>
-                        </Panel>
-                        <PanelHandler
-                            gap="hidden xl:block"
-                            sizable={cellsCustomConfig.sizable}
-                        />
-                    </>
-                )}
-                <Panel {...cellsCustomConfig.cells?.center}>
-                    <View className={`sm:${cd('p-md')} max-w-3xl mx-auto`}>{FeedContent}</View>
-                </Panel>
+                <PanelGroup
+                    autoSaveId={`cells-home`}
+                    direction="horizontal"
+                    className={`${appSetting('layout', 'max_width')} mx-auto w-full flex-auto relative flex-row`}
+                    onLayout={(e) => {
+                        if (isWeb) {
+                            requestAnimationFrame(() => {
+                                document.body.offsetHeight
+                                window.dispatchEvent(new Event('resize_panel'))
+                            })
+                        }
+                    }}
+                >
+                    {layoutName == 'hor' && isWeb && (
+                        <>
+                            <Panel
+                                className={`hidden ${cellsCustomConfig.cells?.left?.breakpoint}:block`}
+                                {...cellsCustomConfig.cells?.left}
+                            >
+                                <View className={`${cd('p-md')} ${cd('gap-lg')} fixed-process `}>
+                                    {SideBarContent}
+                                </View>
+                            </Panel>
+                            <PanelHandler
+                                gap="hidden xl:block"
+                                sizable={cellsCustomConfig.sizable}
+                            />
+                        </>
+                    )}
+                    <Panel {...cellsCustomConfig.cells?.center}>
+                        <View className={`sm:${cd('p-md')} max-w-3xl mx-auto`}>{FeedContent}</View>
+                    </Panel>
 
-                {isWeb && (
-                    <>
-                        <PanelHandler
-                            gap="hidden lg:block"
-                            sizable={cellsCustomConfig.sizable}
-                        />
-                        <Panel
-                            className={`hidden ${cellsCustomConfig.cells?.right?.breakpoint}:block`}
-                            {...cellsCustomConfig.cells?.right}
-                        >
-                            <View className={`${cd('p-md')} ${cd('gap-lg')} fixed-process`}>
-                                {AsideContent}
-                            </View>
-                        </Panel>
-                    </>
-                )}
-            </PanelGroup></>
+                    {isWeb && (
+                        <>
+                            <PanelHandler
+                                gap="hidden lg:block"
+                                sizable={cellsCustomConfig.sizable}
+                            />
+                            <Panel
+                                className={`hidden ${cellsCustomConfig.cells?.right?.breakpoint}:block`}
+                                {...cellsCustomConfig.cells?.right}
+                            >
+                                <View className={`${cd('p-md')} ${cd('gap-lg')} fixed-process`}>
+                                    {AsideContent}
+                                </View>
+                            </Panel>
+                        </>
+                    )}
+                </PanelGroup></>
         )
     }
 }

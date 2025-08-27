@@ -506,6 +506,8 @@ export default function (props) {
         contentElement = <UniList {...memoizedUniListProps} />
     }
 
+    if (!dataItems.data.length && props.showTitleInside)
+         return;
 
     return (
         <View className="w-full h-full">
