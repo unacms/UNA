@@ -897,6 +897,19 @@ export const settingsDefault = {
                 },
             },
         },
+        'view-event-profile': {
+            adjustable: true,
+            sizable: true,
+            cells: {
+                center: { defaultSize: 60, minSize: 50, maxSize: 70 },
+                right: {
+                    defaultSize: 40,
+                    minSize: 30,
+                    maxSize: 50,
+                    breakpoint: 'lg',
+                },
+            },
+        },
     },
     // Behavior settings for block rendering (deprecated; use showPadding: false or list prop)
     theme: {

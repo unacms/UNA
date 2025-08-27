@@ -96,6 +96,10 @@ export default function ElementMenu(oProps) {
     //--- show menu's content only
     const bShowContent = oParams.showContent === 'true';
 
+	if (!oProps.items){
+	    return;
+	}
+
     //--- use iconset if available
     let iconset = { ...appSetting('menu_items', 'iconset'), ...appSetting('menu_items', oProps.object, 'iconset') };
     if (iconset) oParams.iconset = iconset;
