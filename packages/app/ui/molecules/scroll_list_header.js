@@ -25,7 +25,7 @@ import {
 
 export const TextHeader = memo(({ text }) => {
     const { t } = useTranslation();
-    return <Text className="font-bold leading-11 px-1.5 text-card-foreground text-2xl tracking-tight">
+    return <Text className="font-bold leading-12 px-3 lg:px-2 text-card-foreground text-2xl tracking-tight">
         {t(text)}
     </Text>
 })

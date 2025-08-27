@@ -199,7 +199,7 @@ export default function ContextSelector({ data, url, uri, mode }) {
                          </>
                      )}
                    
-                    <ButtonsGroup variant="text" size="base" fullWidth={true} >
+                    <ButtonsGroup variant="text" size="lg" fullWidth={true} >
                         {CurrentContext}
                         {DropDown}
                     </ButtonsGroup> 

@@ -91,7 +91,7 @@ export const settingsDefault = {
             scrolled:
                 ' backdrop-blur-xl my-auto w-full mx-auto ring-1 ring-border/60 bg-card/90 shadow-sm ',
             content: ' h-16 mx-auto justify-between ',
-            content_left: ' flex-row items-center px-4 flex-none  xl:w-80 2xl:w-96 ',
+            content_left: ' flex-row items-center px-3 flex-none  xl:w-80 2xl:w-96 ',
             content_right:
                 ' items-center justify-end h-full px-4 flex-none  xl:w-80 2xl:w-96 ',
             content_center:
@@ -969,7 +969,7 @@ export const settingsDefault = {
             menu_max_width: ' w-full max-w-7xl ',
             content_max_width: ' w-full max-w-7xl ',
             menu_is_dynamic: true,
-            menu_cnt: ' flex-row flex-none gap-2 ',
+            menu_cnt: ' flex-row flex-none gap-1 mx-3 ',
             menu_categ_ident: ' pl-12 ',
             right_column_cnt: 'fixed-process px-1.5 sm:px-2 py-4',
             right_column_cnt2: 'hidden xl:flex flex-auto max-w-sm',
