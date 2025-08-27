@@ -394,7 +394,7 @@ const RenderSceneHeader = ({ route, setFilterValue }) => {
     )
 };
 
-export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMenu, leftSideBar, leftSideBarBlocks, leftSideBarWidth = appSetting('conductor', 'sidebar_width'), skeleton = '', onChangeRoute, keyword, layoutName, defaultHeaderHeight = 120 }) {
+export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMenu, leftSideBar, leftSideBarBlocks, leftSideBarWidth = appSetting('conductor', 'sidebar_width'), skeleton = '', onChangeRoute, keyword, layoutName, defaultHeaderHeight = 106 }) {
     const uniRef = useRef();
     const { currentUser } = useCurrentUser();
     const { setBottomSheetData } = useBottomSheetData();

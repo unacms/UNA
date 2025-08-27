@@ -43,7 +43,7 @@ export function CoverMenuSmall(props) {
 }
 
 export function CoverMenu(props) {
-    let size = props.size || 'sm'
+    let size = props.size || 'base'
     const { width } = useWindowDimensions()
 
    // if (width < LAYOUT_BREAKPOINTS.sm) size = 'base'
@@ -112,7 +112,7 @@ export function CoverMenuMore(props) {
     const isWeb = Platform.OS === 'web'
     const { width } = useWindowDimensions()
     
-    let size = props.size || 'sm'
+    let size = props.size || 'base'
 
    // if (width < LAYOUT_BREAKPOINTS.sm) size = 'base'
 
@@ -156,8 +156,9 @@ export function CoverMenuMore(props) {
 
    
     const isLgUp = width >= LAYOUT_BREAKPOINTS.lg
-    const buttonVariant = isLgUp ? 'secondary' : 'text'
-    const buttonSize = isLgUp ? size : 'base'
+    const buttonVariant = isLgUp ? 'secondary' : 'secondary'
+    const buttonSize = isLgUp ? 'base' : 'sm'
+    const buttonRounded = isLgUp ? false : true
 
     return (
         <Menu
@@ -175,7 +176,6 @@ export function CoverMenuMore(props) {
                 button_full_width: props?.params?.button_full_width ?? false,
                 className: 'flex-wrap justify-end',
                 isFixedCount: true,
-                button_rounded: width < LAYOUT_BREAKPOINTS.lg,
             }}
         />
     )
