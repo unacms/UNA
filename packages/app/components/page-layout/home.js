@@ -313,7 +313,7 @@ export default function (props) {
                                 className={`hidden ${cellsCustomConfig.cells?.left?.breakpoint}:block`}
                                 {...cellsCustomConfig.cells?.left}
                             >
-                                <View className={`${cd('p-md')} ${cd('gap-lg')} fixed-process `}>
+                                <View className=" px-2 py-3 fixed-process ">
                                     {SideBarContent}
                                 </View>
                             </Panel>

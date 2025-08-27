@@ -25,7 +25,7 @@ import {
 
 export const TextHeader = memo(({ text }) => {
     const { t } = useTranslation();
-    return <Text className="font-bold leading-12 px-3 lg:px-2 text-card-foreground text-2xl tracking-tight">
+    return <Text className="font-bold leading-12 lg:px-2 text-card-foreground text-2xl tracking-tight">
         {t(text)}
     </Text>
 })
@@ -112,13 +112,13 @@ export const Header = memo(({
                 </View>
             }
             {(backButtonPresented && (!isWeb || history.length > 2)) && (
-                <View className=""><Button variant="secondary" rounded onPress={() => {
+                <View className=" px-3"><Button variant="secondary" rounded onPress={() => {
                     FeedbackHaptics('Medium');
                     router ? router?.back() : history.back();
                 }} startDecorator="ArrowLeft" size="base" /></View>
             )}
-            {(pageData?.context?.current?.url || isHome) && <ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} />}
-            {(!!text) && <Row className='items-center'><>
+            {(pageData?.context?.current?.url || isHome) && <View className=" px-2"><ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} /></View>}
+            {(!!text) && <Row className='items-center px-3'><>
             {(!!text && !pageData?.context?.current?.url) && (
                 <TextHeader text={text}></TextHeader>
             )}
