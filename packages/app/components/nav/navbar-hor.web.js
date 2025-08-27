@@ -49,7 +49,7 @@ const HeaderLine = memo(
         return (
             <View className={headerTheme.content_left}>
                 {headerSettings.menu && isDrawer && (
-                    <View className="lg:hidden pr-2 ">
+                   
                         <Pressable onPress={showMenu}>
                             <Button
                                 variant="text"
@@ -61,15 +61,13 @@ const HeaderLine = memo(
                                 role="button"
                             />
                         </Pressable>
-                    </View>
+                    
                 )}
                 {(!context ||
                     (!currentUser.confirmed &&
                         appSetting('layout', 'lock_unconfirmed'))) &&
                     (uri == 'home' || width >= LAYOUT_BREAKPOINTS.lg) && (
-                        <Link
-                            href="/home"
-                        >
+                        <Link href="/home" variant="ghost" size="lg" >
                             {appStatic('logo')}
                         </Link>
                     )}
