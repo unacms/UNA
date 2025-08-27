@@ -1,11 +1,12 @@
 import { Text } from 'app/design/typography'
 import { Button, Modal } from 'app/design/controls'
 import { fetcher } from 'app/lib/fetcher'
-import { appSetting, updateRouteDataForConnection, getPageSettings } from 'app/lib/util'
+import { appSetting, updateRouteDataForConnection, getPageSettings, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { getComponent } from 'app/components/registry';
 import { appStatic } from 'app/lib/app-static';
 import { View, Row } from 'app/design/view'
 import { MenuItemSidebar } from 'app/components/nav/menu-item-sidebar'
+import { useWindowDimensions } from 'react-native';
 import { 
     SvgBackgroundSplash, 
     SvgBackgroundSplashDark,
@@ -77,19 +78,28 @@ export function getButtonForConductorSmall(a, index, onPress) {
 }
 
 export function getButtonForConductorHor(icon, title, pressed, addon, onPress, item) {
+    function ConductorButtonResponsive({ icon, title, pressed, addon, onPress, item }) {
+        const { width } = useWindowDimensions();
+        const isDesktop = width > LAYOUT_BREAKPOINTS.lg;
+        const size = isDesktop ? 'base' : 'sm';
+        const rounded = !isDesktop;
+        return (
+            <Button
+                startDecorator={icon}
+                title={title}
+                variant={'text'}
+                rounded={rounded}
+                pressed={pressed}
+                disabled={item?.item?.disabled}
+                size={size}
+                haptics="Medium"
+                addon={addon}
+                onPress={onPress}
+            />
+        );
+    }
     return (
-        <Button
-            startDecorator={icon}
-            title={title}
-            variant={pressed ? 'text' : 'text' }
-            rounded
-            pressed={pressed}
-            disabled={item?.item?.disabled}
-            size="sm"
-            haptics="Medium"
-            addon={addon}
-            onPress={onPress}
-        />
+        <ConductorButtonResponsive icon={icon} title={title} pressed={pressed} addon={addon} onPress={onPress} item={item} />
     )
 }
 
@@ -144,20 +154,29 @@ export function getButtonForConductorNative(a, index, currentUser, setIndex, onC
     )
         addon = null
 
+    function NativeConductorButtonResponsive({ a, index, onChangeRoute, setIndex, iconName, addon }) {
+        const { width } = useWindowDimensions();
+        const isDesktop = width > LAYOUT_BREAKPOINTS.lg;
+        const size = isDesktop ? 'base' : 'sm';
+        const rounded = !isDesktop;
+        return (
+            <Button onPress={() => {
+                setIndex(a.index)
+                if (onChangeRoute) {
+                    onChangeRoute(a);
+                }
+            }} 
+            startDecorator={iconName}
+            addon={addon} 
+            fullWidth={false} 
+            variant={index === a.index ? 'primary' : "text"} 
+            rounded={rounded}
+            size={size} 
+            title={a.title} />
+        );
+    }
     return (
-        <Button onPress={() => {
-            setIndex(a.index)
-            if (onChangeRoute) {
-                onChangeRoute(a);
-            }
-        }} 
-        startDecorator={iconName}
-        addon={addon} 
-        fullWidth={false} 
-        variant={index === a.index ? 'primary' : "text"} 
-        rounded 
-        size='sm' 
-        title={a.title} />
+        <NativeConductorButtonResponsive a={a} index={index} onChangeRoute={onChangeRoute} setIndex={setIndex} iconName={iconName} addon={addon} />
     );
 }
 

@@ -500,7 +500,7 @@ export const VisibilityInfo = memo(({ data }) => {
                     <Profile
                         {...data.author_data}
                         displayType="unit_wo_info"
-                        displaySize="xs"
+                        displaySize="2xs"
                     />
                 ) : icon ? (
                     <View className="text-muted-foreground ">

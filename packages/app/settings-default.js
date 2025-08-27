@@ -935,8 +935,8 @@ export const settingsDefault = {
             menu: '   w-full items-left justify-center  ',
             menu_max_width: ' w-full max-w-7xl ',
             content_max_width: ' w-full max-w-7xl ',
-            menu_is_dynamic: true,
-            menu_cnt: ' flex-row flex-none gap-1 mx-3 ',
+            menu_is_dynamic: false,
+            menu_cnt: ' flex-row flex-none gap-1 ml-3 py-1.5 overflow-x-auto ',
             menu_categ_ident: ' pl-12 ',
             right_column_cnt: 'fixed-process px-1.5 sm:px-2 py-4',
             right_column_cnt2: 'hidden xl:flex flex-auto max-w-sm',
@@ -1038,9 +1038,8 @@ export const settingsDefault = {
             default_size: 'base',
             default_variant: 'default',
             default_ring: '',
-            pressed_container: ' bg-accent ',
+            pressed_container: ' bg-accent/60 ',
             pressed_text: ' text-primary font-medium ',
-            pressed_ring: ' bg-ring ',
             xxs: {
                 rounded: ' rounded-[5px] ',
                 ring: '', // Ring wrapper removed
@@ -1086,7 +1085,7 @@ export const settingsDefault = {
                 padding_icon_only: ' h-11 w-11 ',
                 padding_with_title: ' px-4 gap-2 h-11 items-center ',
                 icon_container: ' text-base flex items-center ',
-                title_container: ' leading-11 text-sm items-center flex   ',
+                title_container: ' leading-11 text-base items-center flex   ',
                 icon_size: 24,
                 icon_margin: ' ', // conditional margin for icon container when title is present
                 title_margin: ' ', // conditional margin for text container when icon is present

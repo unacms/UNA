@@ -15,15 +15,15 @@ import { Platform } from 'react-native'
 import { cd } from 'app/lib/util'
 
 const ProfilesListCnt = memo(({ data }) => (
-    <ProfilesList data={data} showEmpty={false} maxCount={3} displaySize="xs" />
+    <ProfilesList data={data} showEmpty={false} maxCount={3} displaySize="2xs" />
 ))
 
 function ImageSection({ data, imageSizes }) {
     const isWeb = Platform.OS == 'web'
     return (
         <View
-            className={` ${isWeb && 'h-32 sm:h-auto'
-                } aspect-square sm:w-full rounded-xl overflow-hidden items-center bg-bgritem dark:bg-bgritem-d justify-center`}
+            className={` ${isWeb && 'h-28 sm:h-auto'
+                } aspect-square sm:w-full rounded-full sm:rounded-xl overflow-hidden items-center bg-muted justify-center`}
         >
             <Image
                 src={data?.image?.src}
@@ -81,19 +81,19 @@ export default function Unit(props) {
             <Redirect ref={redirectdRef} />
             <Link className="group " href={data.url}>
                 <View
-                    className={`flex-row sm:flex-col p-3  sm:p-0  sm:h-full`}
+                    className={`flex-row sm:flex-col p-2 sm:p-0 sm:h-full`}
                 >
                     <ImageSection data={data} imageSizes={imageSizes} />
-                    <View className="flex-col pl-4 my-auto sm:pt-2 sm:p-1 flex-auto ">
-                        <View className="gap-y-3 h-14">
+                    <View className="flex-col pl-4 my-auto sm:p-2 flex-auto ">
+                        <View className="sm:h-14">
                             <Text
                                 numberOfLines={1}
-                                className=" text-base tracking-tight tracking-tight font-semibold text-neutral-800 dark:text-neutral-200"
+                                className=" text-lg leading-9 font-semibold text-card-foreground"
                             >
                                 {data.title}
                             </Text>
 
-                            <Row className="items-center gap-x-1 ">
+                            <Row className="items-center gap-1.5 ">
                                 <ProfilesListCnt
                                     data={
                                         isFollowers
