@@ -113,13 +113,16 @@ export default function UniList(props) {
     else {
         if (numColumns > 1) {
             contentComponent = (
-                <>{ListHeaderComponent}<VirtuosoGrid
-                    {...commonVirtuosoProps}
-                    itemContent={itemContent}
-                    stateChanged={stateChanged}
-                    {...(scrollToLastItem ? { initialTopMostItemIndex: data.length } : {})}
-                    atBottomStateChange={onEndReached}
-                /></>
+                <>
+                    {ListHeaderComponent && <ListHeaderComponent />}
+                    <VirtuosoGrid
+                        {...commonVirtuosoProps}
+                        itemContent={itemContent}
+                        stateChanged={stateChanged}
+                        {...(scrollToLastItem ? { initialTopMostItemIndex: data.length } : {})}
+                        atBottomStateChange={onEndReached}
+                    />
+                </>
             )
         }
         else {
@@ -156,12 +159,15 @@ export default function UniList(props) {
             }
             else {
                 contentComponent = (
-                    <>{ListHeaderComponent}<Virtuoso
-                        itemContent={itemContent}
-                        {...commonVirtuosoProps}
-                        {...(listState?.ranges && { restoreStateFrom: listState })}
-                        {...(scrollToLastItem && { initialTopMostItemIndex: data.length })}
-                    /></>
+                    <>
+                        {ListHeaderComponent && <ListHeaderComponent />}
+                        <Virtuoso
+                            itemContent={itemContent}
+                            {...commonVirtuosoProps}
+                            {...(listState?.ranges && { restoreStateFrom: listState })}
+                            {...(scrollToLastItem && { initialTopMostItemIndex: data.length })}
+                        />
+                    </>
                 )
             }
         }
