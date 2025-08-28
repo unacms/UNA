@@ -111,7 +111,7 @@ export default function UniList(props) {
         contentComponent = preloadComponent;
     }
     else {
-        if (numColumns > 1) {
+        if (numColumns > 0 && !sortable) {
             contentComponent = (
                 <>{ListHeaderComponent}<VirtuosoGrid
                     {...commonVirtuosoProps}
