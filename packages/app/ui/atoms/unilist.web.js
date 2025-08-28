@@ -113,8 +113,8 @@ export default function UniList(props) {
     else {
         if (numColumns > 1) {
             contentComponent = (
-                <>
-                    {ListHeaderComponent && <ListHeaderComponent />}
+                <View>
+                    {ListHeaderComponent && ListHeaderComponent()}
                     <VirtuosoGrid
                         {...commonVirtuosoProps}
                         itemContent={itemContent}
@@ -122,7 +122,7 @@ export default function UniList(props) {
                         {...(scrollToLastItem ? { initialTopMostItemIndex: data.length } : {})}
                         atBottomStateChange={onEndReached}
                     />
-                </>
+                </View>
             )
         }
         else {
@@ -159,15 +159,15 @@ export default function UniList(props) {
             }
             else {
                 contentComponent = (
-                    <>
-                        {ListHeaderComponent && <ListHeaderComponent />}
+                    <View>
+                        {ListHeaderComponent && ListHeaderComponent()}
                         <Virtuoso
                             itemContent={itemContent}
                             {...commonVirtuosoProps}
                             {...(listState?.ranges && { restoreStateFrom: listState })}
                             {...(scrollToLastItem && { initialTopMostItemIndex: data.length })}
                         />
-                    </>
+                    </View>
                 )
             }
         }

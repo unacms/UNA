@@ -76,7 +76,7 @@ const Gallery = React.memo(({ data, handleShowImage, windowWidthOr }) => {
                         <Image2 handleShowImage={handleShowImage} data={data} row={0} index={0} key={0} src={data[0].src} type={data[0].type} />
                     </View>
                 </View>
-            )
+            );
         }
         else {
             aspectStyle = w / h;
@@ -88,9 +88,8 @@ const Gallery = React.memo(({ data, handleShowImage, windowWidthOr }) => {
                     <View style={{ aspectRatio: aspectStyle }} className='h-full'>
                         <Image2 handleShowImage={handleShowImage} data={data} row={0} index={0} key={0} width={w} height={h} src={data[0].src} type={data[0].type} />
                     </View>
-                    
                 </View>
-            )
+            );
         }
 
     }
