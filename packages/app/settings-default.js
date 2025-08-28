@@ -1028,7 +1028,7 @@ export const settingsDefault = {
             rounded:
                 ' border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 rounded-full bg-input web:focus:bg-card px-4 py-3.5 flex-auto  text-base leading-6 overflow-hidden placeholder-muted-foreground text-card-foreground web:duration-300 ',
             roundedsmall:
-                ' border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 rounded-xl bg-input web:focus:bg-card px-3 py-2 flex-auto  text-base leading-6 overflow-hidden placeholder-muted-foreground text-card-foreground web:duration-300 ',
+                ' rounded-full bg-input p-3 flex-auto  text-base leading-5 overflow-hidden placeholder-muted-foreground text-card-foreground web:duration-300 ',
             small: ' border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 rounded-xl bg-input web:focus:bg-card px-3 py-2 flex-auto  text-base leading-6 overflow-hidden placeholder-muted-foreground text-card-foreground web:duration-300 ',
             select: ' pr-10 border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 rounded-xl bg-input web:focus:bg-card px-4 py-3.5 flex-auto  text-base leading-6 overflow-hidden placeholder-muted-foreground text-card-foreground web:duration-300',
             
@@ -1296,7 +1296,7 @@ export const settingsDefault = {
             'u-panel-base': 'm-0 gap-y-md',
             'u-panel-handler': '',
             'u-panel-line':
-                'w-0.5 h-full web:group-hover:bg-muted web:group-active:bg-muted ',
+                'w-0 h-full web:group-hover:bg-muted web:group-active:bg-muted ',
             'u-panel-group': '  flex',
         },
         blocks: {

@@ -71,7 +71,7 @@ export default function JotItem({ item, index, handleReply }) {
 
     const Jot = <TouchableWithoutFeedback  onPress={() => {emitter.emit('editor', { action: 'blur' })}}><View className='w-full py-3 px-3'>
         <Row className="gap-x-2">
-            <View className="w-10 flex-0">
+            <View className="w-11 h-11 flex-0">
                 <Profile {...item.author_data} displayType="unit_wo_info" displaySize="base" showInfo="false" />
             </View>
             <View className='flex-auto'>
