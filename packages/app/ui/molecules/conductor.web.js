@@ -53,12 +53,13 @@ const AddBlocks = (leftSideBarBlocks, data, onFormChangedValues) => {
         return null;
 
     const leftSideBarBlocksObj = leftSideBarBlocks.map((block) => {
-        const { key, ...rest } = block;
+        const { key, ...blockProps } = block;
         return <BlockByName
+            key={key}
             data={data}
             name={block}
             onChange={onFormChangedValues}
-            {...rest}
+            {...blockProps}
             sidebar={true}
         />
     });
@@ -294,7 +295,7 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, windowWidth, isC
         <>
             <Animated.View className={`${conductorTheme.cover_base} cover-1 `} style={[{ zIndex: 'z-50' }, animatedStyleHeader2]}>
                 <ViewRef ref={cover1Ref} className={conductorTheme.cover_content + ' aaaaa'}   >
-                    {(isCover && !isHideCover) && <View className="w-full border-b border-border/20 ">
+                    {(isCover && !isHideCover) && <View className="w-full ">
                         <Cover data={pageData.cover_block} mode={headerSettings.cover} uri={uri} context={pageData.context} />
                     </View>}
                     <View className="w-full ">
@@ -393,7 +394,7 @@ const RenderSceneHeader = ({ route, setFilterValue }) => {
     )
 };
 
-export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMenu, leftSideBar, leftSideBarBlocks, leftSideBarWidth = appSetting('conductor', 'sidebar_width'), skeleton = '', onChangeRoute, keyword, layoutName, defaultHeaderHeight = 120 }) {
+export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMenu, leftSideBar, leftSideBarBlocks, leftSideBarWidth = appSetting('conductor', 'sidebar_width'), skeleton = '', onChangeRoute, keyword, layoutName, defaultHeaderHeight = 106 }) {
     const uniRef = useRef();
     const { currentUser } = useCurrentUser();
     const { setBottomSheetData } = useBottomSheetData();
@@ -722,7 +723,10 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
 
             >
                 {isLeftCol && <>
-                    <Panel className={`hidden ${cellsCustomConfig.cells?.left?.breakpoint}:block`} {...cellsCustomConfig.cells?.left}>
+                    <Panel className={`hidden ${cellsCustomConfig.cells?.left?.breakpoint}:block`} {...(() => {
+                        const { breakpoint, ...panelProps } = cellsCustomConfig.cells?.left || {};
+                        return panelProps;
+                    })()}>
                         <View className={`fixed-process ${cd('p-md')}`}>
                             {AddBlocksCnt}
                         </View>
@@ -732,7 +736,10 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
                     />
                 </>
                 }
-                <Panel  {...cellsCustomConfig.cells?.center}>
+                <Panel  {...(() => {
+                    const { breakpoint, ...panelProps } = cellsCustomConfig.cells?.center || {};
+                    return panelProps;
+                })()}>
                     <View className={`${isRightCol ? 'flex-auto' : 'w-full mx-auto'} ${layoutName !== 'navigator' && 'sm:' + cd('p-md')} ${contentPaddingClass}`}>
                         {TabFlashListM}
                         {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 && callFn("noContentByUrl", [route?.endpoint])))}
@@ -742,8 +749,11 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
                     <PanelHandler
                         gap="hidden lg:block" sizable={cellsCustomConfig.sizable}
                     />
-                    <Panel className={`hidden ${cellsCustomConfig.cells?.right?.breakpoint}:block`} {...cellsCustomConfig.cells?.right}>
-                        <View className={`${cd('p-md')} fixed-process `}>
+                    <Panel className={`hidden ${cellsCustomConfig.cells?.right?.breakpoint}:block`} {...(() => {
+                        const { breakpoint, ...panelProps } = cellsCustomConfig.cells?.right || {};
+                        return panelProps;
+                    })()}>
+                        <View className={`${cd('p-md')} fixed-process yo `}>
                             {route?.sidebar?.content.map((item, index) => {
                                 return <View className="mb-4" key={'item' + index}><ItemRenderer unitType={sidebarUnitType} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''} /></View>
                             })}
@@ -855,7 +865,10 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
             return (
                 <><PanelGroup autoSaveId={`cells-navigator`} direction="horizontal" className={appSetting('layout', 'max_width')}>
                     {isShowColumn(true, windowWidth, cellsCustomConfig.cells?.left) && <>
-                        <Panel {...cellsCustomConfig.cells?.left}>
+                        <Panel {...(() => {
+                            const { breakpoint, ...panelProps } = cellsCustomConfig.cells?.left || {};
+                            return panelProps;
+                        })()}>
                             <View className={`${cd('p-md')}`}>
                                 {leftSideBarComponent}
                             </View>
@@ -863,7 +876,10 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
                         <PanelHandler
                             gap="hidden lg:block" sizable={cellsCustomConfig.sizable}
                         /></>}
-                    <Panel {...cellsCustomConfig.cells?.center}>
+                    <Panel {...(() => {
+                        const { breakpoint, ...panelProps } = cellsCustomConfig.cells?.center || {};
+                        return panelProps;
+                    })()}>
                         <View className={` sm:${cd('p-md')}`}>
                             {MainComponent}
                         </View>

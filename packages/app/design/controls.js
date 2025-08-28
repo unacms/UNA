@@ -49,14 +49,28 @@ export const InputRef = forwardRef(({ className, startDecorator, endDecorator, .
     </Row>
 ));
 
-export const InputMulti = forwardRef(({ className, startDecorator, endDecorator, ...props }, ref) => (
+export const InputMulti = forwardRef(({ className, startDecorator, endDecorator, onHeight, ...props }, ref) => (
      <Row className={`items-center flex-auto`}>
         {startDecorator && (
             <View className="absolute left-3.5 h-full items-center justify-center">
                 <Icon icon={startDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
             </View>
         )}
-        <TextInputDef className={`${className} ${inputSettings.multi} ${startDecorator ? 'pl-12' : ''} ${endDecorator ? 'pr-11' : ''}`} ref={ref} {...props} />
+        <TextInputDef
+            className={`${className} ${inputSettings.multi} ${startDecorator ? 'pl-12' : ''} ${endDecorator ? 'pr-11' : ''}`}
+            ref={ref}
+            {...props}
+            onContentSizeChange={(e) => {
+                // Call the original onContentSizeChange if provided
+                if (props.onContentSizeChange) {
+                    props.onContentSizeChange(e);
+                }
+                // Also call onHeight callback if provided (for messenger auto-grow)
+                if (onHeight && e.nativeEvent?.contentSize?.height) {
+                    onHeight(e.nativeEvent.contentSize.height);
+                }
+            }}
+        />
         {endDecorator && (
             <View className="absolute right-3 items-center justify-center">
                 <Icon icon={endDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />

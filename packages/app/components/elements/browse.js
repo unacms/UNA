@@ -418,7 +418,7 @@ export default function (props) {
         ))
     }
 
-    const isShowPreloads = dataItems.data.length == 0 && data.request_url &&  ((dataItems?.params?.start === 0 && !props.only_one_page /*&& data.unit != 'notifications'*/) || status === 'loading')
+    const isShowPreloads = dataItems.data.length == 0 && data.request_url &&  (((dataItems?.params?.start === 0 && !props.only_one_page) /*&& data.unit != 'notifications'*/) || status === 'loading')
     let PreloadComponent = null
     if (isShowPreloads) {
         PreloadComponent = Preload
@@ -471,8 +471,10 @@ export default function (props) {
                 ),
             onEndReached: handleEndReached,
             ListHeaderComponent: props.exProps?.headerBlocks
-                ? props.exProps?.headerBlocks
-                : '',
+                ? (typeof props.exProps?.headerBlocks === 'function'
+                    ? props.exProps?.headerBlocks
+                    : () => props.exProps?.headerBlocks)
+                : undefined,
             ListFooterComponent:
                 hasNextPage && isFetchingNextPage
                     ? Preload

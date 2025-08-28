@@ -308,7 +308,7 @@ function CoverImage({
         const isCover = !!imageUrl
         return (
             <View
-                className={`duration-300 bg-primary lg:rounded-lg lg:mt-3 w-full ${appSetting(
+                className={`duration-300 bg-primary lg:rounded-b-lg lg:pt-3 lg:px-3 w-full ${appSetting(
                     'layout',
                     'max_width_content'
                 )} mx-auto overflow-hidden ${
@@ -453,11 +453,11 @@ export default function ({ data, mode, uri, showMoreMenu, pageData, context }) {
                         </View>
                     </View>
                 )}
-                <View className="flex-auto lg:flex-row flex-col-reverse gap-y-2 sm:gap-y-3">
-                    <View className="flex-col flex-auto gap-3 ">
-                        <Row className=" gap-2 flex-auto items-center min-h-10">
+                <View className="flex-auto lg:flex-row flex-col-reverse gap-2 sm:gap-3">
+                    <View className="flex-col flex-auto gap-2 ">
+                        <Row className=" gap-2 flex-auto items-center min-h-12">
                             <Text
-                                className={` tracking-tight text-2xl sm:text-3xl font-bold text-foreground`}
+                                className={` tracking-tight text-3xl sm:text-4xl font-bold text-foreground`}
                                 numberOfLines={2}
                             >
                                 {data.profile.display_name}
@@ -489,7 +489,7 @@ export default function ({ data, mode, uri, showMoreMenu, pageData, context }) {
                             </Text>
                         )}
                     </View>
-                    <View className="flex-row flex-wrap items-end justify-between gap-x-2 gap-y-2">
+                    <View className="flex-row flex-wrap items-end  justify-between gap-x-2 gap-y-2">
                         <View className="flex-row sm:items-end flex-auto flex-wrap gap-3 lg:ml-auto">
                             {bPerson && (
                                 <View

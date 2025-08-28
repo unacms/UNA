@@ -169,9 +169,7 @@ function getRightHeader(items, currentUser, pagePath) {
                         btn = button.link ? <Link href={button.link} >{btn}</Link> : btn
                     }
 
-                    return (
-                       <View className="" key={`add-${button.icon}`} ></View>/*{btn}*/
-                    )
+                    return (<View className="" key={`add-${button.icon}`} ></View>)/*{btn}*/;
                 })
 
             }

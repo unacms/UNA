@@ -520,7 +520,7 @@ export function TopSidebar({
                 }`}
             >
                 <Row
-                    className=" h-12 items-center justify-between ">
+                    className=" items-center justify-between ">
              
                     <Text className="text-2xl text-card-foreground tracking-tight hidden ">
                         {title}

@@ -113,7 +113,7 @@ const TabScene = React.memo(({
     }*/
     return (
         <UniList
-            ListHeaderComponent={ListHeaderComponent}
+            ListHeaderComponent={typeof ListHeaderComponent === 'function' ? ListHeaderComponent : ListHeaderComponent ? () => ListHeaderComponent : undefined}
             scrollProps={
                 {
                     pageData: route.inited ? route.pageData : prevRoute.pageData,
@@ -399,11 +399,11 @@ export function Conductor({ isCoverDisabled, header, defaultHeaderHeight = 109, 
         if (currentRoute?.pageData) {// may be need to fix
             Object.assign(tabSceneProps, {
                 headerHeight: isProfileHeader ? 0 : defaultHeaderHeight,
-                headerComponent: <>
+                headerComponent: () => <>
                     <CoverSmall showMoreMenu={true} context={currentRoute?.pageData?.context} data={currentRoute.pageData?.cover_block} />
                     {sceneHeader}
                 </>,
-                ListHeaderComponent: <>
+                ListHeaderComponent: () => <>
                     <Cover data={currentRoute.pageData?.cover_block} showMoreMenu={false} uri={currentRoute.pageData?.uri} context={currentRoute?.pageData?.context} />
                     {sceneHeader}
                     {filter}
@@ -413,11 +413,11 @@ export function Conductor({ isCoverDisabled, header, defaultHeaderHeight = 109, 
             if (prevRoute){
             Object.assign(tabSceneProps, {
                 headerHeight: isProfileHeader ? 0 : defaultHeaderHeight,
-                headerComponent: <>
+                headerComponent: () => <>
                     <CoverSmall showMoreMenu={true} context={prevRoute?.pageData?.context} data={prevRoute.pageData?.cover_block} />
                     {sceneHeader}
                 </>,
-                ListHeaderComponent: <>
+                ListHeaderComponent: () => <>
                     <Cover data={prevRoute.pageData?.cover_block} showMoreMenu={false} uri={prevRoute.pageData?.uri} context={prevRoute?.pageData?.context} />
                     {sceneHeader}
                     {filter}

@@ -12,8 +12,8 @@ export default function defaultUnit(props) {
     const imageSizes = getImageSizes()
 
     return (
-        <CardList padding={cd('p-sm')} >
-            <View className={`flex-col ${cd('gap-sm')}`}>
+        <CardList padding="p-1 gap-1">
+            
                 <Link href={data.url}>
                     <View className="aspect-video rounded-xl overflow-hidden w-full">
                         <Image
@@ -23,35 +23,35 @@ export default function defaultUnit(props) {
                             className="u-cover"
                             sizes={imageSizes}
                         />
-                    </View></Link>
+                    </View>
+                </Link>
 
-                <View className={`flex-auto flex-row ${cd('px-sm')} gap-2 `}>
-                    <View className="flex-none  ">
+                <View className="flex-auto p-1 flex-col gap-1">
+                    <Link href={data.url}>
+                        <Text
+                            numberOfLines={2}
+                            className="text-card-foreground hover:bg-accent/60 sm:hover:text-primary rounded-md p-1 leading-tight text-lg font-bold"
+                        >
+                            {data.title}
+                        </Text>
+                    </Link>
+                    <View className="flex-row p-1 gap-1 w-full">
                         <Profile
                             {...data.author_data}
                             displayType="unit_wo_info"
-                            displaySize="base"
+                            displaySize="xs"
                             showInfo={false}
-                        /></View>
-                    <View className="flex-auto flex-col  ">
-                        <Link href={data.url}>
-                            <Text
-                                numberOfLines={2}
-                                className="text-card-foreground hover:bg-muted sm:hover:text-primary rounded-md p-1 leading-tight text-lg font-bold"
-                            >
-                                {data.title}
-                            </Text>
-                        </Link>
-                        <View className={`flex-auto ${cd('p-sm')} mb-1`}>
-                            <Profile
-                                {...data.author_data}
-                                displayType="unit_wo_image"
-                                displaySize="xs"
-                                showInfo="false"
-                            /></View>
+                        />
+                        <Profile
+                        {...data.author_data}
+                        displayType="unit_wo_image"
+                        displaySize="xs"
+                        showInfo="false"
+                    />
                     </View>
+                    
                 </View>
-            </View>
+            
         </CardList>
     )
 }

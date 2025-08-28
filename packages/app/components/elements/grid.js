@@ -545,7 +545,7 @@ export default function ElementGrid(props) {
                                 </View>
                             ))}
                         </Row>
-                    )
+                    );
                 }}
             />
 

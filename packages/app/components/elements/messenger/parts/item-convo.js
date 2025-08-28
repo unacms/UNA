@@ -11,23 +11,23 @@ export default function ({ item, index, changeConvo, selectedIndex }) {
     const names = participants.map(p => p.display_name).join(', ');
     //memo(
     const Item = ({item, index, changeConvo, selectedIndex }) => (<Pressable onPress={() => changeConvo(item)}>
-        <Row className={(selectedIndex == index ? ' bg-neutral-500/10 ' : '') + ' border-border/50  border-b  flex-row p-3 sm:px-4 '} >
-            <View className=" mr-3 rounded-full flex-none bg-secondary-500/10">
+        <Row className={(selectedIndex == index ? ' bg-accent/60 ' : '') + ' gap-3 border-border/40 border-b flex-row px-3 py-2'} >
+            <View className=" rounded-full flex-none bg-secondary">
                 <Profile
                     {...participants[0]}
                     displayType="unit_wo_info"
-                    displaySize="lg"
+                    displaySize="base"
                 />
             </View>
             <View className="flex-auto flex-col my-auto ">
                 
-                <Text className="flex-auto text-base  font-bold text-neutral-800 dark:text-neutral-200 sm:group-hover:text-neutral-950 web:sm:dark:group-hover:text-neutral-50" numberOfLines={1}>
+                <Text className="flex-auto text-base font-bold text-card-foreground sm:group-hover:text-accent web:sm:dark:group-hover:text-neutral-50" numberOfLines={1}>
                     {names}
                 </Text>
                 <Row>
-                    <Time className="text-xs flex-none" ts={item.date}></Time>
+                    <Time className="text-xs flex-none text-muted-foreground" ts={item.date}></Time>
                 </Row>
-                <View className="flex-row w-full items-end content-end">
+                <View className="flex-row absolute right-0 top-1/2 -translate-y-1/2  items-end content-end">
                    
                     <View className="flex-none bg-primary rounded-full    my-auto h-min px-1.5">
                         {(item.unread > 0 && selectedIndex != index) && (
@@ -39,7 +39,7 @@ export default function ({ item, index, changeConvo, selectedIndex }) {
                 </View>
             </View>
             {participants.length > 1 && (
-                    <View className='absolute bottom-1 left-10 bg-neutral-500 dark:bg-neutral-500 rounded-full p-1 h-6 w-6'>
+                    <View className='absolute bottom-1 left-9  bg-primary border border-background h-5 text-center justify-center rounded-full px-1'>
                     <Text className={` text-center items-center text-white text-xs font-semibold`}>
                             +{participants.length-1}
                     </Text>

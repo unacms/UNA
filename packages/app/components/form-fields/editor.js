@@ -29,45 +29,55 @@ export default function FormFieldText(props) {
             {props.html == 1 || props.html == 2 || props.html == 3 ? <RftText {...props} /> : <PlainText {...props} />}
         </Field>
     );
-}
 
 function PlainText(props) {
+    // Extract onHeight callback for messenger auto-grow support
+    const { onHeight, ...otherProps } = props;
 
-    const rules = getValidationRules(props);
-    const name = props.name;
-    const defaultValue = props.value ? props.value : '';
+    const rules = getValidationRules(otherProps);
+    const name = otherProps.name;
+    const defaultValue = otherProps.value ? otherProps.value : '';
     const formContext = useFormContext();
     const { field } = useController({ name, rules, defaultValue });
     // Use smaller initial height for comments forms
-    const isCommentsForm = props.container_class === 'comments';
+    const isCommentsForm = otherProps.container_class === 'comments';
+    const isMessenger = otherProps.form_name === 'messenger';
     const initialHeight = isCommentsForm ? 24 : null;
-    let h = props.height ? props.height : initialHeight;
+    let h = otherProps.height ? otherProps.height : initialHeight;
     const [height, setHeight] = useState(h);
-    const accessibility = props.caption.length > 0 ? props.caption : 'text';
-    const placeholder = props.use_caption_as_placeholder ? props.caption : props.placeholder;
-    const isAutoHeight = true;
+    const accessibility = otherProps.caption.length > 0 ? otherProps.caption : 'text';
+    const placeholder = otherProps.use_caption_as_placeholder ? otherProps.caption : otherProps.placeholder;
+    // Disable auto-height for messenger to prevent conflicts with parent height management
+    const isAutoHeight = !isMessenger;
 
     const minHeightValue = isCommentsForm ? 24 : 100;
 
     let input = (
         <InputMulti
             multiline
-            name={props.name}
+            name={otherProps.name}
             placeholder={placeholder}
             onChangeText={field.onChange}
             onBlur={field.onBlur}
             value={field.value}
             aria-label={accessibility}
+            onHeight={onHeight}
+            scrollEnabled={!isMessenger}
             onContentSizeChange={e => {
+                const newHeight = e.nativeEvent.contentSize.height;
                 if (isAutoHeight) {
-                    setHeight(e.nativeEvent.contentSize.height);
+                    setHeight(newHeight);
+                }
+                // Always call onHeight callback for messenger auto-grow
+                if (onHeight) {
+                    onHeight(newHeight);
                 }
             }}
-            style={isAutoHeight ? { height, minHeight: minHeightValue, maxHeight:200 } : {}}
-            defaultValue={props.value || props.default_value || ''}
+            style={isAutoHeight ? { height, minHeight: minHeightValue, maxHeight:200 } : { minHeight: minHeightValue }}
+            defaultValue={otherProps.value || otherProps.default_value || ''}
             editorProps={{
                 attributes: {
-                    class: `prose-mirror ${props.classes} ${ (props.form_name === 'feed_edit' || props.form_name === 'feed' || props.container_class !== 'comments') ? 'tiptap-default' : ''} `,
+                    class: `prose-mirror ${otherProps.classes} ${ (otherProps.form_name === 'feed_edit' || otherProps.form_name === 'feed' || otherProps.container_class !== 'comments') ? 'tiptap-default' : ''} `,
                 },
             }}
             onDebouncedUpdate={(editor) => {
@@ -76,24 +86,36 @@ function PlainText(props) {
         />
     );
 
-    if (props.viewClasses) {
+    if (otherProps.viewClasses) {
         input = <TextInputClear
             multiline
-            placeholder={props.placeholder}
-            onContentSizeChange={e => setHeight(e.nativeEvent.contentSize.height > 70 ? e.nativeEvent.contentSize.height : e.nativeEvent.contentSize.height < 32 ? 32 : e.nativeEvent.contentSize.height)}
-            name={props.name}
+            placeholder={otherProps.placeholder}
+            scrollEnabled={!isMessenger}
+            onContentSizeChange={e => {
+                const rawHeight = e.nativeEvent.contentSize.height;
+                const newHeight = rawHeight > 70 ? rawHeight : rawHeight < 32 ? 32 : rawHeight;
+                if (isAutoHeight) {
+                    setHeight(newHeight);
+                }
+                // Always call onHeight callback for messenger auto-grow
+                if (onHeight) {
+                    onHeight(rawHeight); // Pass raw height for proper calculation by parent
+                }
+            }}
+            name={otherProps.name}
             onChangeText={field.onChange}
             onBlur={field.onBlur}
             value={field.value}
-            className='placeholder-neutral-500 text-neutral-900 leading-6 dark:text-neutral-100 text-lg font-medium py-3 '
+            className=' placeholder-muted-foreground text-foreground leading-6 text-lg font-medium py-3 '
             aria-label={accessibility}
         />
     }
 
     useEffect(() => {
-        if (props.value !== undefined)
-            field.onChange(props.value)
-    }, [props.name, props.value]);
+        if (otherProps.value !== undefined)
+            field.onChange(otherProps.value)
+    }, [otherProps.name, otherProps.value]);
 
-    return input
+    return input;
+}
 }
