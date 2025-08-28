@@ -117,6 +117,8 @@ export default function ContextSelector({ data, url, uri, mode }) {
         </Link>
     )
 
+    const isLinkSelected = data.links.some(item => item.url == contextRoot.url);
+
     const DropDown = (
         <DropdownPopup
             trigger={
@@ -132,7 +134,7 @@ export default function ContextSelector({ data, url, uri, mode }) {
                 {data.list.map((item) =>
                     renderListItem(
                         item,
-                        item.id === data.current?.id,
+                        item.id === data.current?.id && !isLinkSelected,
                         handleItemClick
                     )
                 )}
