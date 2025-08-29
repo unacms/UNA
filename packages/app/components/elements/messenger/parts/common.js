@@ -429,7 +429,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
 
     const cellsCustomConfig = appSetting('layouts', 'messenger')
 
-    if (!isWeb){
+    if (!isWeb || isSmallScreen){
         return (
         <View className='flex-1 w-full h-full flex-row bg-card'>
             {panelsVisible.convos && <View className=' w-full'>
@@ -463,7 +463,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
 
         >
             <Panel
-                className={`hidden ${cellsCustomConfig.cells?.left?.breakpoint}:block`}
+                className={`block`}
                 {...cellsCustomConfig.cells?.left}
             >
                 {panelsVisible.convos && <View className='w-full'>
