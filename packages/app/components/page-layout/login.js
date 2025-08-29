@@ -46,11 +46,8 @@ function PageContent(props) {
                         {t('Forgot password?')}
                     </Link>
                 </Row>
-            </CardContent>
-            <CardFooter>
-                
                 <AuthPanel showSeparator={true} />
-            </CardFooter>
+            </CardContent>
         </Card></AnimatedView>
         <CardFooter>
                 <Row className="text-center flex-none mx-auto text-base items-center gap-1">
