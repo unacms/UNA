@@ -130,7 +130,7 @@ export default function PageLayout(props) {
                         </BlockTitle>
                         <BlockDescription>
                             <View>
-                                <Badge variant="default" data={{text:currentUser.membership_name}}/>
+                                <Badge variant="default" data={{ text: currentUser.membership_name }} />
                             </View>
                         </BlockDescription>
                     </BlockName>
@@ -242,31 +242,31 @@ export default function PageLayout(props) {
                                 </View>
                             )}
 
-                            {appSetting('layout', 'avaliable_feed_units').length > 1 && (
-                                <View className="w-full max-w-sm flex-1 min-w-[160px]">
-                                    <DropdownMenu
-                                        items={appSetting(
-                                            'layout',
-                                            'avaliable_feed_units'
-                                        ).map((feed_unit) => ({
-                                            id: feed_unit,
-                                            key: feed_unit,
-                                            name: feed_unit,
-                                            title: t(feed_unit),
-                                        }))}
-                                        onSelect={(oItem) => {
-                                            updateLayoutSettings({ feed_unit: oItem.id })
-                                        }}
-                                    >
-                                        <Button
-                                            variant="secondary"
-                                            title={t(layoutSettings.feed_unit)}
-                                            fullWidth
-                                            align="left"
-                                        />
-                                    </DropdownMenu>
-                                </View>
-                            )}
+                        {appSetting('layout', 'avaliable_feed_units').length > 1 && (
+                            <View className="w-full max-w-sm flex-1 min-w-[160px]">
+                                <DropdownMenu
+                                    items={appSetting(
+                                        'layout',
+                                        'avaliable_feed_units'
+                                    ).map((feed_unit) => ({
+                                        id: feed_unit,
+                                        key: feed_unit,
+                                        name: feed_unit,
+                                        title: t(feed_unit),
+                                    }))}
+                                    onSelect={(oItem) => {
+                                        updateLayoutSettings({ feed_unit: oItem.id })
+                                    }}
+                                >
+                                    <Button
+                                        variant="secondary"
+                                        title={t(layoutSettings.feed_unit)}
+                                        fullWidth
+                                        align="left"
+                                    />
+                                </DropdownMenu>
+                            </View>
+                        )}
                     </View>
                 </BlockContent>
                 <BlockFooter>
@@ -386,6 +386,18 @@ function ElementDashboardStat(props) {
                                                     colors.default
                                                 )}
                                             </Text>}
+                                            {(item?.type == 'messenger' && currentUser?.counters?.bx_messenger_new_messages) && (
+                                                <View className='bg-destructive border border-card web:border-0 web:ring-2 web:ring-card rounded-full px-1.5 items-center justify-center'>
+                                                    <Text className='text-white text-sm font-medium'>{currentUser?.counters?.bx_messenger_new_messages}</Text>
+                                                </View>
+                                                )
+                                            }
+                                             {(item?.type == 'notifications' && currentUser.notifications) && (
+                                                <View className='bg-destructive border border-card web:border-0 web:ring-2 web:ring-card rounded-full px-1.5 items-center justify-center'>
+                                                    <Text className='text-white text-sm font-medium'>{currentUser.notifications}</Text>
+                                                </View>
+                                                )
+                                            }
                                         </View></Link>
                                 </View>
 
@@ -428,59 +440,59 @@ function ElementDashboardStat(props) {
                 })}
             </Row>
             {data.manage.items.length > 0 && (
-                
-                        <View className="my-6 grid w-full grid-cols-1 gap-x-2 gap-y-1.5 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
-                            {currentUser?.id && (
-                                <>
-                                    <View className=" w-full min-w-[160px]  ">
-                                        <Button
-                                            variant="secondary"
-                                            align="left"
-                                            size="sm"
-                                            fullWidth
-                                            title={t('API Performance')}
-                                            startDecorator="Activity"
-                                            onPress={() =>
-                                                setShowApiPerformance(true)
-                                            }
-                                        />
-                                    </View>
-                                    <View className=" w-full min-w-[160px]  ">
-                                        <Button
-                                            variant="secondary"
-                                            align="left"
-                                            size="sm"
-                                            fullWidth
-                                            title="Theme Test"
-                                            startDecorator="Palette"
-                                            onPress={() =>
-                                                setShowThemeTest(true)
-                                            }
-                                        />
-                                    </View>
-                                </>
-                            )}
-                            {data.manage.items.map((item2, index) => {
-                                return (
-                                    <View
-                                        className=" w-full min-w-[160px]  "
-                                        key={index}
-                                    >
-                                        <Link href={item2.link}>
-                                            <Button
-                                                variant="secondary"
-                                                align="left"
-                                                size="sm"
-                                                fullWidth
-                                                title={t(item2.title)}
-                                                startDecorator={item2.icon}
-                                            />
-                                        </Link>
-                                    </View>
-                                )
-                            })}
-                        </View>
-                   
+
+                <View className="my-6 grid w-full grid-cols-1 gap-x-2 gap-y-1.5 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+                    {currentUser?.id && (
+                        <>
+                            <View className=" w-full min-w-[160px]  ">
+                                <Button
+                                    variant="secondary"
+                                    align="left"
+                                    size="sm"
+                                    fullWidth
+                                    title={t('API Performance')}
+                                    startDecorator="Activity"
+                                    onPress={() =>
+                                        setShowApiPerformance(true)
+                                    }
+                                />
+                            </View>
+                            <View className=" w-full min-w-[160px]  ">
+                                <Button
+                                    variant="secondary"
+                                    align="left"
+                                    size="sm"
+                                    fullWidth
+                                    title="Theme Test"
+                                    startDecorator="Palette"
+                                    onPress={() =>
+                                        setShowThemeTest(true)
+                                    }
+                                />
+                            </View>
+                        </>
+                    )}
+                    {data.manage.items.map((item2, index) => {
+                        return (
+                            <View
+                                className=" w-full min-w-[160px]  "
+                                key={index}
+                            >
+                                <Link href={item2.link}>
+                                    <Button
+                                        variant="secondary"
+                                        align="left"
+                                        size="sm"
+                                        fullWidth
+                                        title={t(item2.title)}
+                                        startDecorator={item2.icon}
+                                    />
+                                </Link>
+                            </View>
+                        )
+                    })}
+                </View>
+
             )}
         </>
     )
