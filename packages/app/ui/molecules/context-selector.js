@@ -117,7 +117,7 @@ export default function ContextSelector({ data, url, uri, mode }) {
         </Link>
     )
 
-    const isLinkSelected = data.links.some(item => item.url == contextRoot.url);
+    const isLinkSelected = data.links?.some(item => item.url == contextRoot.url);
 
     const DropDown = (
         <DropdownPopup
