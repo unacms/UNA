@@ -64,12 +64,12 @@ function UnitWoInfo({ oProps, sSize, sSizeFontLetter, iSizeWidth, bShowLinks, em
 
 function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont, actions, info2 }) {
     return (
-       <Row className={`${cd('gap-xs')} justify-between`}>
+       <Row className="justify-between">
        <View className="my-auto gap-0.5">
 
             {bShowLinks ? (
-                <Row className={`${cd('gap-xs')} items-center`}>
-                    <Link variant="ghost" size="xs" emulate={emulate} haptics="Select" href={oProps.url}>
+                <Row className="items-center">
+                    <Link variant="link" size="xs" emulate={emulate} haptics="Select" href={oProps.url}>
                         <DisplayNameLink
                             title={oProps.display_name}
                             url={oProps.url}

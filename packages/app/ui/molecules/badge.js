@@ -70,7 +70,7 @@ export default function Badge({ data, variant = "default", size = 'sm', rounded 
             /></View></Link>
         );
     } else {
-        data.icon = data.icon || 'BadgeCheck';
+        data.icon = data.icon || 'CheckMark';
 
         // Check what to display based on is_icon_only setting
         const hasIcon = !!data.icon && isNaN(data.icon); // Always show icon if it exists

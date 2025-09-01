@@ -26,7 +26,7 @@ export default function HeaderElement({ mode }) {
         : toolbarConfig?.loggedOut
 
     return (
-        <Row className="justify-end gap-1 lg:gap-2 items-center">
+        <Row className="justify-end gap-2 items-center">
             {itemsToRender?.map((item, index) => (
                 <View key={index} className={item.className}>
                     {(() => {
