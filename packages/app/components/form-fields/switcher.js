@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import Field from './_field';
-import { Switch } from 'app/design/controls'
+import Switch from 'app/ui/atoms/switcher'
 import { useFormContext } from 'react-hook-form';
 import { View } from 'app/design/view'
 import { Text } from 'app/design/typography'
