@@ -46,7 +46,7 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
         >
             <Row className="justify-between items-center">
                 <View className={menuSettings.item_cnt}>
-                {!!icon && <View className={menuSettings.item_icon}>{icon}</View>}
+                {(!!icon && !!menuSettings.item_icon) && <View className={menuSettings.item_icon}>{icon}</View>}
                 {!!item?.title &&
                     (typeof item.title === 'string' ? (
                         <Text className={menuSettings[`item_text`]}>{item.title}</Text>
