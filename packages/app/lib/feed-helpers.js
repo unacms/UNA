@@ -493,9 +493,9 @@ export const VisibilityInfo = memo(({ data }) => {
     const isUser = data.object_privacy_view < 0
 
     return (
-        <Row className={`items-center`}>
-            <Text className=" text-muted text-lg leading-4">·</Text>
-            <View className="flex-none px-1 flex-row gap-1 items-center justify-center">
+        <Row className="items-center justify-center text-center">
+                                 
+                    <View className="flex-none px-1 flex-row gap-1 items-center justify-center">
                 {isUser ? (
                     <Profile
                         {...data.author_data}
@@ -504,13 +504,16 @@ export const VisibilityInfo = memo(({ data }) => {
                     />
                 ) : icon ? (
                     <View className="text-muted-foreground ">
-                        <Icon icon={icon} width={16} height={16} />
+                        <Icon icon={icon} width={15} height={15} />
                     </View>
                 ) : null}
                     <Text className="text-muted-foreground text-xs leading-5 text-center flex-auto font-semibold">
                         {isUser ? data.author_data.display_name : text}
                     </Text>
                 </View>
+                <View className="text-secondary -mx-1.5 ">
+                        <Icon icon='Dot' size={20}  />
+                    </View>   
         </Row>
     )
 })
@@ -547,7 +550,11 @@ export const Author = memo(({ data, url, t }) => {
                 displaySize="base"
                 showInfo={
                     <Row className={` items-center flex-wrap`}>
-                         {isWeb ? (
+                       
+                        
+                        <VisibilityInfo data={data} />
+
+                        {isWeb ? (
                             <Link
                                 href={url}
                                 emulate={false}
@@ -577,8 +584,6 @@ export const Author = memo(({ data, url, t }) => {
                                 />
                             </Link>
                         )}
-                        
-                        <VisibilityInfo data={data} />
                        
                         <ItemInfo data={data} t={t} />
                        
