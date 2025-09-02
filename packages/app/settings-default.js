@@ -1069,12 +1069,12 @@ export const settingsDefault = {
                 rounded: ' rounded-lg ',
                 ring: '', // Ring wrapper removed
                 padding: '  ',
-                padding_icon_only: ' h-9 w-9 ',
-                padding_with_title: ' px-3 gap-1.5 ',
+                padding_icon_only: ' h-8 w-8 ',
+                padding_with_title: ' px-3 gap-2 ',
                 icon_container:
-                    ' text-base h-9 flex items-center justify-center',
-                title_container: ' text-sm leading-9 inline-flex items-center  ',
-                icon_size: 20,
+                    ' text-base h-8 flex items-center justify-center',
+                title_container: ' text-sm leading-8 inline-flex items-center  ',
+                icon_size: 16,
                 icon_margin: ' ', // conditional margin for icon container when title is present
                 title_margin: '  ', // conditional margin for text container when icon is present
             },
@@ -1477,7 +1477,7 @@ export const settingsDefault = {
         },
 
         button_styles: {
-            'u-btn-default-cnt': ' bg-popover/80 web:hover:bg-popover shadow-xs border-[0.5px] border-border/20 web:border-0 web:ring-[0.5px] web:ring-inset web:ring-border/20 web:hover:ring-border active:opacity-50 ',
+            'u-btn-default-cnt': ' bg-popover/80 web:hover:bg-popover shadow-xs border border-border/50 web:border-0 web:ring-1 web:ring-inset web:ring-border/50 web:hover:ring-border active:opacity-50 ',
             'u-btn-default-text':
                 ' font-medium text-popover-foreground  ',
             'u-btn-default-trans': '  web:duration-200',
@@ -1492,10 +1492,10 @@ export const settingsDefault = {
             'u-btn-accent-trans': '  web:duration-200',
             
 
-            'u-btn-secondary-cnt': ' bg-muted/60 web:hover:bg-secondary/60 backdrop-blur   ',
+            'u-btn-secondary-cnt': ' group bg-secondary/60 web:hover:bg-secondary backdrop-blur ',
             'u-btn-secondary-text':
-                ' font-medium text-card-foreground  ',
-            'u-btn-secondary-trans': '  ',
+                ' web:duration-200 font-medium text-secondary-foreground web:group-hover:text-foreground ',
+            'u-btn-secondary-trans': ' web:duration-200 ',
             
 
             'u-btn-danger-cnt':
