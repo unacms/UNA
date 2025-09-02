@@ -1066,15 +1066,28 @@ export const settingsDefault = {
                 title_margin: '  ', //
             },
             sm: {
-                rounded: ' rounded-lg ',
+                rounded: ' ',
                 ring: '', // Ring wrapper removed
                 padding: '  ',
                 padding_icon_only: ' h-8 w-8 ',
-                padding_with_title: ' px-3 gap-2 ',
+                padding_with_title: ' px-3 ',
                 icon_container:
                     ' text-base h-8 flex items-center justify-center',
-                title_container: ' text-sm leading-8 inline-flex items-center  ',
-                icon_size: 16,
+                title_container: ' text-sm leading-8 inline-flex items-cente px-1.5  ',
+                icon_size: 18,
+                icon_margin: ' ', // conditional margin for icon container when title is present
+                title_margin: '  ', // conditional margin for text container when icon is present
+            },
+            md: {
+                rounded: ' rounded-lg ',
+                ring: '', // Ring wrapper removed
+                padding: '  ',
+                padding_icon_only: ' h-9 w-9 ',
+                padding_with_title: ' px-3 gap-2 ',
+                icon_container:
+                    ' text-base h-9 flex items-center justify-center',
+                title_container: ' text-sm leading-9 inline-flex items-center  ',
+                icon_size: 20,
                 icon_margin: ' ', // conditional margin for icon container when title is present
                 title_margin: '  ', // conditional margin for text container when icon is present
             },
