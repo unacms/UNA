@@ -394,7 +394,6 @@ export default function (props) {
 
     }
 
-    console.log("propsprops", props)
     if (props.sidebar && !props.extraProps?.galery) {
         const uniqueItems = dataItems.data.filter(
             (v, i, a) => a.findIndex((t) => t.id === v.id) === i

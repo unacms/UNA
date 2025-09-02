@@ -208,47 +208,55 @@ export default function Layout(props) {
     }
 
     function handleScroll() {
-        const elements = document.querySelectorAll('.fixed-process');
-        const TOP_OFFSET = getTopOffset();
-        elements.forEach((el) => {
-            const parent = el.parentElement;
-            const container = parent?.parentElement;
-            if (!parent || !container) return;
+  const TOP_OFFSET = getTopOffset();
+  const HYST = 8;
+  const avail = Math.max(0, window.innerHeight - TOP_OFFSET);
 
-            if (parent.offsetWidth > 0) {
-                el.style.width = `${parent.offsetWidth}px`;
-            }
+  document.querySelectorAll('.fixed-process').forEach(el => {
+    const parent = el.parentElement;
+    const container = parent?.parentElement;
+    if (!parent || !container) return;
 
-            const elH = el.offsetHeight;
-            const containerRect = container.getBoundingClientRect();
-            const containerTopDoc = window.scrollY + containerRect.top;
-            const containerBottomDoc = window.scrollY + containerRect.bottom;
-            const containerH = containerRect.height;
+    if (parent.offsetWidth > 0) el.style.width = `${parent.offsetWidth}px`;
 
-            el.classList.remove('is-fixed');
-            el.style.position = '';
-            el.style.top = '';
-            el.style.bottom = '';
+    const elH = el.offsetHeight;
+    const containerTopDoc = window.scrollY + container.getBoundingClientRect().top;
+    const containerBottomDoc = containerTopDoc + container.scrollHeight;
 
-            if (containerH <= elH) return;
+    const stickyStart = containerTopDoc - TOP_OFFSET;
+    const stickyEnd   = containerBottomDoc - elH - TOP_OFFSET;
+    const y = window.scrollY;
 
-            const stickyStart = containerTopDoc - TOP_OFFSET;
-            const stickyEnd = containerBottomDoc - elH - TOP_OFFSET;
-            const y = window.scrollY;
+    // сброс по умолчанию
+    el.classList.remove('is-fixed');
+    el.style.position = '';
+    el.style.top = '';
+    el.style.bottom = '';
 
-            if (y < stickyStart) return;
+    if (container.scrollHeight <= elH || y < stickyStart) return;
 
-            if (y > stickyEnd) {
-                el.style.position = 'absolute';
-                el.style.bottom = '0';
-                return;
-            }
-
-            el.classList.add('is-fixed');
-            el.style.position = 'fixed';
-            el.style.top = `${TOP_OFFSET}px`;
-        });
+    if (y > stickyEnd + HYST) {
+      // прижимаем к низу
+      el.style.position = 'absolute';
+      el.style.bottom = '0';
+      return;
     }
+
+    // фиксируем
+    el.classList.add('is-fixed');
+    el.style.position = 'fixed';
+
+    if (elH <= avail) {
+      // помещается во viewport
+      el.style.top = `${TOP_OFFSET}px`;
+    } else {
+      // прокручиваем внутри viewport
+      const overflow = elH - avail;
+      const progress = Math.min(Math.max(y - stickyStart, 0), overflow);
+      el.style.top = `${TOP_OFFSET - progress}px`;
+    }
+  });
+}
 
     useEffect(() => {
         window.addEventListener('scroll', handleScroll);

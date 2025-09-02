@@ -2,15 +2,7 @@
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "storybook-static/**"]
-    },
-    "build:storybook": {
-      "dependsOn": ["^build"],
-      "outputs": ["storybook-static/**"]
-    },
-    "dev": {
-      "cache": false,
-      "persistent": true
+       "outputs": [".next/**"]
     }
   }
 }
