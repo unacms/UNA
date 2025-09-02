@@ -117,32 +117,21 @@ const theme = {
             ...colors,
             ...nativewindUIColors,
         },
+        
       
         boxShadow: {
-            'xs': '0 1px 2px 0 rgb(0 0 0 / 0.05)',
-            'sm': '0 1px 3px 0 rgb(0 0 0 / 0.05)',
-            'md': '0 4px 6px 0 rgb(0 0 0 / 0.1)',
-            'lg': '0 10px 15px 0 rgb(0 0 0 / 0.1)',
+            'xs': '0 0.5px 2px 0 rgb(0 0 0 / 0.05)',
+            'sm': '0 1px 4px 0 rgb(0 0 0 / 0.05)',
+            'md': '0 2px 8px 0 rgb(0 0 0 / 0.05)',
+            'lg': '0 8px 16px 0 rgb(0 0 0 / 0.08)',
             'xl': '0 20px 25px -5px rgb(0 0 0 / 0.08)',
             '2xl': '0 25px 50px -10px rgb(0 0 0 / 0.08)',
         },
 
         fontSize: {
-            '2xs': ['10px', { lineHeight: '12px' }],
-            xs: ['12px', { lineHeight: '16px' }],
-            sm: ['13px', { lineHeight: '20px' }],
-            base: ['15px', { lineHeight: '22px' }],
-            lg: ['17px', { lineHeight: '28px' }],
-            xl: ['19px', { lineHeight: '32px' }],
-            '2xl': ['21px', { lineHeight: '36px' }],
-            '3xl': ['23px', { lineHeight: '40px' }],
-            '4xl': ['25px', { lineHeight: '44px' }],
-            '5xl': ['27px', { lineHeight: '48px' }],
-            '6xl': ['29px', { lineHeight: '52px' }],
-            '7xl': ['31px', { lineHeight: '56px' }],
-            '8xl': ['33px', { lineHeight: '60px' }],
-            '9xl': ['35px', { lineHeight: '64px' }],
-            '10xl': ['37px', { lineHeight: '68px' }],
+            '2xs': ['11px', { lineHeight: '14px' }],
+            xs: ['13px', { lineHeight: '16px' }],
+         
         },
         
         minWidth: {

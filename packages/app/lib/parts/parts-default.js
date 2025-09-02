@@ -11,7 +11,7 @@ export function ParseHtmlClasses(className, tag) {
 
 export function ProfileDisplayNameLink(title, url, href, fontSize, actions) {
     return (
-        <Text className={"text-card-foreground web:hover:text-accent-foreground font-semibold tracking-tight truncate text-ellipsis " + (fontSize || 'text-sm leading-5')}>
+        <Text className={" text-card-foreground web:hover:text-foreground truncate text-ellipsis " + (fontSize || 'text-sm leading-5')}>
             {title}
         </Text>
     )

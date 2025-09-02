@@ -62,9 +62,9 @@ export default function Badge({ data, variant = "default", size = 'sm', rounded 
     if (data.badge_url) {
         // PERSONAL BADGE, SSPECIFIED BY USER
         return (
-            <Link href={data.badge_link}><View className={`rounded border-[0.5px] border-border bg-muted web:hover:bg-secondary overflow-hidden ${className}`}><Image
-                width={19}
-                height={19}
+            <Link href={data.badge_link}><View className={`rounded shadow-xs bg-muted overflow-hidden ${className}`}><Image
+                width={16}
+                height={16}
                 src={data.badge_url}
                 alt={data.badge_url.title_attr}
             /></View></Link>

@@ -29,6 +29,7 @@ import Loading from 'app/ui/atoms/loading'
 import { Animated, StyleSheet } from 'react-native'
 import { Theme } from 'app/design/theme'
 import { cd } from 'app/lib/util'
+import { Icon } from 'app/ui/atoms/icon'
 
 export default function UnitComments(props) {
     const { t } = useTranslation()
@@ -291,9 +292,9 @@ export default function UnitComments(props) {
                         {!!data.cmt_mood && (
                             <>
                                 <View>
-                                    <Text className="text-muted-foreground px-1">
-                                        ·
-                                    </Text>
+                                <View className="text-muted -mx-1">
+                        <Icon icon='Dot' size={16}  />
+                    </View>  
                                 </View>
                                 <StarsView
                                     rating={data.cmt_mood}

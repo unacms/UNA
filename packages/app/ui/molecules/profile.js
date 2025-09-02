@@ -28,7 +28,7 @@ export function DisplayNameLink({title, url, href, fontSize, actions}) {
 
 function DisplayNameText({ title, fontSize }) {
     return (
-        <Text className={' text-card-foreground web:hover:text-primary ' + fontSize + '  font-semibold tracking-tight truncate '}>
+        <Text className={' text-card-foreground web:hover:text-primary ' + fontSize + '  truncate '}>
             {title}
         </Text>
     )
@@ -65,15 +65,15 @@ function UnitWoInfo({ oProps, sSize, sSizeFontLetter, iSizeWidth, bShowLinks, em
 function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont, actions, info2 }) {
     return (
        <Row className="justify-between">
-       <View className="my-auto gap-0.5">
+       <View className="my-auto">
 
             {bShowLinks ? (
-                <Row className="items-center">
-                    <Link variant="link" size="xs" emulate={emulate} haptics="Select" href={oProps.url}>
+                <Row className="items-center gap-0.5">
+                    <Link variant="ghost" size="sm" emulate={emulate} haptics="Select"  href={oProps.url}>
                         <DisplayNameLink
                             title={oProps.display_name}
                             url={oProps.url}
-                            fontSize={ 'text-base leading-5' }
+                            fontSize={sSizeFont}
                             href={oProps.href}
                         />
                     </Link>
@@ -81,7 +81,7 @@ function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont, actions, in
                    
                 </Row>
             ) : (
-                <Row className={`${cd('gap-xs')} items-center`}>
+                <Row className="items-center gap-.5">
                     <DisplayNameText title={oProps.display_name} fontSize={sSizeFont} />
                     {info2}
                    
@@ -141,14 +141,14 @@ function AtomProfile_(oProps) {
             sSize: 'w-9 h-9',
             iSizeWidth: 36,
             iSizeHeight: 36,
-            sSizeFont: 'text-sm leading-6',
+            sSizeFont: 'text-sm leading-5 tracking-tight font-semibold',
             sSizeFontLetter: ' text-base opacity-50 font-semibold',
         },
         base: {
-            sSize: 'w-11 h-11',
-            iSizeWidth: 44,
-            iSizeHeight: 44,
-            sSizeFont: ' text-base leading-6 tracking-tight font-semibold ',
+            sSize: 'w-10 h-10',
+            iSizeWidth: 40,
+            iSizeHeight: 40,
+            sSizeFont: ' text-sm leading-5 tracking-tight font-bold ',
             sSizeFontLetter: ' p-2 text-center text-xl font-semibold',
         },
         lg: {
@@ -219,7 +219,7 @@ function AtomProfile_(oProps) {
     switch (sDisplayType) {
         case 'unit':
             return (
-                <Row className={`${cd('gap-xs')} items-center`}>
+                <Row className="gap-1 items-center">
                     <View className="flex-none">
                         <UnitWoInfo oProps={oProps} sSize={sSize} sSizeFontLetter={sSizeFontLetter} emulate={emulate} iSizeWidth={iSizeWidth} bShowLinks={bShowLinks} />
                     </View>

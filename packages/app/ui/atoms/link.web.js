@@ -52,6 +52,7 @@ export default function ElementLink(props) {
             case 'secondary': return 'secondary';
             case 'accent': return 'accent';
             case 'primary': return 'primary';
+            case 'text': return 'text';
             default: return 'default';
         }
     };

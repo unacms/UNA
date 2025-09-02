@@ -8,7 +8,7 @@
         --background: 244 244 245; /*zinc-100*/
         --foreground: 9 9 11; /*zinc-950*/
         --card: 255 255 255; /*white*/
-        --card-foreground: 31 41 55; /*zinc-800*/
+        --card-foreground: 63 63 70; /*zinc-700*/
         --popover: 255 255 255; /*white*/
         --popover-foreground: 31 41 55; /*zinc-800*/
         --primary: 37 99 235; /*blue-600*/
@@ -21,7 +21,7 @@
         --accent-foreground: 29 78 216; /*blue-700*/
         --destructive: 225 29 72; /*rose-600*/
         --destructive-foreground: 255 241 242; /*rose-50*/
-        --border: 212 212 216; /*zinc-300*/
+        --border: 161 161 170; /*zinc-400*/
         --input: 244 244 245; /*zinc-50*/
         --ring: 59 130 246; /*blue-500*/
 
@@ -51,8 +51,8 @@
         /* NativewindUI Design Tokens - Dark Mode */
         --background: 9 9 11; /*zinc-950*/
         --foreground: 250 250 250; /*zinc-50*/
-        --card: 39 39 42; /*zinc-800*/
-        --card-foreground: 228 228 231; /*zinc-200*/
+        --card: 24 24 27; /*zinc-900*/
+        --card-foreground: 212 212 216; /*zinc-300*/
         --popover: 39 39 42; /*zinc-800*/
         --popover-foreground: 228 228 231; /*zinc-200*/
         --primary: 37 99 235; /*blue-600*/

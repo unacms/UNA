@@ -260,10 +260,9 @@ export const ItemInfo = memo(({ data, t }) => {
         owners?.length > 0 ? (
             owners?.length == 1 ? (
                 <>
-                    <Text className="text-neutral-400 dark:text-neutral-600 text-sm">
-                        {' '}
-                        ·{' '}
-                    </Text>
+                    <View className="text-muted -mx-1">
+                        <Icon icon='Dot' size={16}  />
+                    </View>  
                     <Link href={data.owners[0].url} emulate={true}>
                         <Text className=" bg-primary/10 hover:bg-primary/20 p-1.5 rounded-md text-primary hover:text-linkhover text-xs ">
                             {owners[0].title}
@@ -272,9 +271,9 @@ export const ItemInfo = memo(({ data, t }) => {
                 </>
             ) : (
                 <>
-                    <Text className="text-neutral-400 dark:text-neutral-600 px-1">
-                        ·
-                    </Text>
+                    <View className="text-muted -mx-1">
+                        <Icon icon='Dot' size={16}  />
+                    </View>  
                     <Pressable
                         onPress={() => {
                             setShowContextList(true)
@@ -327,10 +326,10 @@ export const ItemInfo = memo(({ data, t }) => {
         return (
             l && (
                 <>
-                    <Text className=" text-muted-foreground text-xs leading-5">
-                        ·
-                    </Text>
-                    <Text className="px-1 text-muted-foreground tracking-tight text-xs leading-5 ">
+                    <View className="text-muted -mx-1">
+                        <Icon icon='Dot' size={16}  />
+                    </View>  
+                    <Text className="text-muted-foreground font-medium tracking-tight text-xs mx-1 leading-5 ">
                         {l}
                     </Text>
                 </>
@@ -494,8 +493,11 @@ export const VisibilityInfo = memo(({ data }) => {
 
     return (
         <Row className="items-center justify-center text-center">
-                                 
-                    <View className="flex-none px-1 flex-row gap-1 items-center justify-center">
+             <View className="text-muted -mx-1">
+                    <Icon icon="Dot" size={16} />
+                </View>
+            <View className="flex-none flex-row gap-1 items-center justify-center mx-1">
+               
                 {isUser ? (
                     <Profile
                         {...data.author_data}
@@ -504,16 +506,13 @@ export const VisibilityInfo = memo(({ data }) => {
                     />
                 ) : icon ? (
                     <View className="text-muted-foreground ">
-                        <Icon icon={icon} width={15} height={15} />
+                        <Icon icon={icon} width={14} height={14} />
                     </View>
                 ) : null}
-                    <Text className="text-muted-foreground text-xs leading-5 text-center flex-auto font-semibold">
-                        {isUser ? data.author_data.display_name : text}
-                    </Text>
-                </View>
-                <View className="text-secondary -mx-1.5 ">
-                        <Icon icon='Dot' size={20}  />
-                    </View>   
+                <Text className="text-muted-foreground text-xs  leading-5 text-center flex-auto font-medium">
+                    {isUser ? data.author_data.display_name : text}
+                </Text>
+            </View>
         </Row>
     )
 })
@@ -549,20 +548,16 @@ export const Author = memo(({ data, url, t }) => {
                 displayType="unit"
                 displaySize="base"
                 showInfo={
-                    <Row className={` items-center flex-wrap`}>
-                       
-                        
-                        <VisibilityInfo data={data} />
-
+                    <Row className="items-center flex-wrap">
                         {isWeb ? (
                             <Link
                                 href={url}
                                 emulate={false}
-                                size="xs"
+                                size="sm"
                                 variant="ghost"
                                 className="u-time-hitarea relative "
                             >
-                                <Time variant="link" stylesNameAdd="text-xs leading-5"
+                                <Time size="sm" variant="link" stylesNameAdd="text-xs leading-5"
                                     ts={data.date}
                                 />
                             </Link>
@@ -570,7 +565,7 @@ export const Author = memo(({ data, url, t }) => {
                             <Link
                                 href={url}
                                 mode="text"
-                                size="xs"
+                                size="sm"
                                 variant="secondary"
                                 hitSlop={{
                                     top: 8,
@@ -579,11 +574,15 @@ export const Author = memo(({ data, url, t }) => {
                                     right: 8,
                                 }}
                             >
-                                <Time
+                                <Time size="sm"
                                     ts={data.date}
                                 />
                             </Link>
                         )}
+                        
+                        <VisibilityInfo data={data} />
+
+                       
                        
                         <ItemInfo data={data} t={t} />
                        
@@ -614,8 +613,8 @@ export function SmallUnit({ data }) {
                             <Text className=" text-sm flex-auto font-medium text-neutral-800 dark:text-neutral-200">
                                 {data.author_data.display_name}
                             </Text>
-                            <Time
-                                className=" text-sm flex-none "
+                            <Time variant="link" className=" text-xs flex-none leading-5 "
+                                
                                 ts={data.date}
                             ></Time>
                         </Row>
