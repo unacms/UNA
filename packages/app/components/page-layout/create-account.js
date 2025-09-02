@@ -22,7 +22,7 @@ function PageContent(props) {
     const isAllowJoin = props.isAllowJoin
     const { t } = useTranslation()
     return (
-        <Card padding="p-0 pb-4" className="bg-card/50">
+        <Card padding="p-0 pb-4" >
         <AnimatedView direction="up" delay={300}>
         <Card padding="p-6 ">
             <CardHeader>

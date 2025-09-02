@@ -475,7 +475,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
                 sizable={cellsCustomConfig.sizable}
             />
             <Panel className=" w-full" {...cellsCustomConfig.cells?.center}>
-                {panelsVisible.jots && <View className='flex-1  border-border/40 lg:border-l'>
+                {panelsVisible.jots && <View className='flex-1  border-border/50 lg:border-l'>
                     <Msg onVisible={showMsg} title={showMsg} handleOk={() => { setShowMsg(false) }} />
                     <View className={`w-full ${!isWeb ? 'flex-1' : ''}`} style={{ height: layoutHeightRight }}>
                         {jotsComponent}
@@ -512,7 +512,7 @@ const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, 
 
     const srch = <InputRoundedSmall name="search" placeholder={("Search") + '...'} value={searchValue} onChangeText={(value) => handleSearch(value)} />;
 
-    const header = <Row className=' bg-card px-3 gap-2 web:border-b border-border/40 gap-x-3 h-16'>
+    const header = <Row className=' bg-card px-3 gap-2 web:border-b border-border/50 gap-x-3 h-16'>
         <View className='flex-auto hidden lg:flex'>
             {srch}
         </View>
@@ -587,7 +587,7 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
 
 
     const header = (
-        <View className='md:px-0 w-full border-border/40 bg-card border-b h-16 justify-center'>
+        <View className='md:px-0 w-full border-border/50 bg-card border-b h-16 justify-center'>
             <Row className='px-2 lg:px-4 items-center justify-between w-full '>
                 <Row className='items-center justify-start overflow-hidden gap-3 flex-auto'>
                     {isSmallScreen && <BackButton buttonProps={{ variant: "secondary", startDecorator: 'ArrowLeft', rounded: 'rounded' }} callback={showConvo} />}

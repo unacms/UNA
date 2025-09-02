@@ -11,7 +11,7 @@ export default function ({ item, index, changeConvo, selectedIndex }) {
     const names = participants.map(p => p.display_name).join(', ');
     //memo(
     const Item = ({item, index, changeConvo, selectedIndex }) => (<Pressable onPress={() => changeConvo(item)}>
-        <Row className={(selectedIndex == index ? ' bg-accent/60 ' : '') + ' gap-3 border-border/40 border-b flex-row px-3 py-2'} >
+        <Row className={(selectedIndex == index ? ' bg-accent/60 ' : '') + ' gap-3 border-border/50 border-b flex-row px-3 py-2'} >
             <View className=" rounded-full flex-none bg-secondary">
                 <Profile
                     {...participants[0]}

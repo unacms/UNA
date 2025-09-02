@@ -48,7 +48,7 @@ export default function ThemeCompatibilityTest({ data }) {
             <View className='w-full py-2 bg-destructive border items-center'><Text className="foregraund">destructive</Text></View>
             <View className='w-full py-2 bg-destructive-foreground border items-center'><Text className="foregraund">destructive-foreground</Text></View>
             <View className='w-full py-2 bg-border border items-center'><Text className="foregraund">border</Text></View>
-            <View className='w-full py-2 border/40 border items-center'><Text className="foregraund">input</Text></View>
+            <View className='w-full py-2 border/50 border items-center'><Text className="foregraund">input</Text></View>
             <View className='w-full py-2 bg-ring border items-center'><Text className="foregraund">ring</Text></View>
             <View className="flex-row space-x-2">
                 <Pressable
