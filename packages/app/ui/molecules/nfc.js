@@ -10,7 +10,7 @@ import { Text } from 'app/design/typography'
 import { Button } from 'app/design/controls'
 import NfcManager, { Ndef, NfcEvents, NfcTech, } from 'react-native-nfc-manager';
 import Profile from 'app/ui/molecules/profile';
-import { Switch } from 'app/design/controls'
+import Switch from 'app/ui/atoms/switcher'
 import { Theme } from 'app/design/theme';
 
 export default function Nfc(props) {

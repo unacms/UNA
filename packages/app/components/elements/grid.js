@@ -9,7 +9,7 @@ import { Button } from 'app/design/controls'
 import { fetcher } from 'app/lib/fetcher';
 import React, { useEffect, useState, useMemo, useCallback, useRef  } from 'react';
 import { Theme } from 'app/design/theme';
-import { Switch } from 'app/design/controls'
+import Switch from 'app/ui/atoms/switcher'
 import CheckBox from 'app/ui/atoms/checkbox';
 import { InputSmall } from 'app/design/controls'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';

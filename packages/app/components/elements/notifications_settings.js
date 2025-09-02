@@ -1,7 +1,7 @@
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import React, { useState } from 'react';
-import { Switch } from 'app/design/controls'
+import Switch from 'app/ui/atoms/switcher'
 import { Theme } from 'app/design/theme';
 import { fetcher } from 'app/lib/fetcher';
 import { Button } from 'app/design/controls'

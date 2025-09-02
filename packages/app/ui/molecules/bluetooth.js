@@ -7,7 +7,7 @@ import { fetcher } from 'app/lib/fetcher';
 import { Text } from 'app/design/typography'
 import { Button } from 'app/design/controls'
 import Profile from 'app/ui/molecules/profile';
-import { Switch } from 'app/design/controls'
+import Switch from 'app/ui/atoms/switcher'
 import { Theme } from 'app/design/theme';
 //import { BleManager } from 'react-native-ble-plx';
 import { useBottomSheetData } from 'app/context/bottomsheet';
