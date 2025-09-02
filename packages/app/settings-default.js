@@ -255,7 +255,8 @@ export const settingsDefault = {
 
         sys_forgot_password: {
             hide_errors: true,
-            button_full_width: true,
+            button_full_width: false,
+            
         },
         /* bx_invites_request_send: {
             hide_errors: true,
