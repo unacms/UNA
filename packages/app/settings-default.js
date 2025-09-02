@@ -87,9 +87,9 @@ export const settingsDefault = {
             container:
                 ' hidden lg:flex fixed w-full mx-auto h-16 left-[50%] translate-x-[-50%]  ',
             initial:
-                '  my-auto w-full items-cente bg-card ring-1 ring-border/5 transition-all web:duration-500    ',
+                '  my-auto w-full items-cente bg-card/90 border-b border-border/40 transition-all web:duration-500    ',
             scrolled:
-                ' backdrop-blur-xl my-auto w-full mx-auto ring-1 ring-border/10 bg-card/90 shadow-sm ',
+                ' backdrop-blur-xl my-auto w-full mx-auto border-b border-border/60 bg-card/90 shadow-sm ',
             content: ' h-16 mx-auto justify-between ',
             content_left: ' flex-row items-center px-2 flex-none  xl:w-80 2xl:w-96 ',
             content_right:
