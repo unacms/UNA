@@ -110,7 +110,7 @@ const AddMenu = (menu, filter) => {
         if (button.section)
             btn = <Search section={button.section} params={{ trigger: { size: "sm" } }} />
         else {
-            btn = <Button title={t(button.title)} startDecorator={button.icon}  variant="secondary" rounded size="sm" onPress={() => (handleFormModal(button, event, setPageData))} />;
+            btn = <Button title={t(button.title)} startDecorator={button.icon} variant="secondary" rounded size="sm" onPress={() => (handleFormModal(button, event, setPageData))} />;
             btn = (button.link && button.name != "Add") ? <Link href={button.link} >{btn}</Link> : btn
         }
 
@@ -401,7 +401,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
     const { layoutData, setLayoutData } = useLayoutData();
     const { layoutName: tmplLayout, density } = useLayoutSettings();
     const toasterRef = useRef(); // ref for toaster
-
+    const cleanUrl = data.url.split("?")[0];
     const { width: windowWidth, height: windowHeight } = useWindowDimensions();
 
     const initedTabs = fillTabs(menu, data, blocks, currentUser, useSectionAsMenu, leftSideBarBlocks);
@@ -421,11 +421,11 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
             if (useSectionAsMenu) {
                 return data.url === item.key;
             } else {
-                return data.url === item.key;
+                return cleanUrl === item.key;
             }
         });
         return foundIndex !== -1 ? foundIndex : 0;
-    }, [routes, data.url, useSectionAsMenu]);
+    }, [routes, cleanUrl, useSectionAsMenu]);
 
     const [index, _setIndex] = useState(initialIndex);
     const [prevIndex, setPrevIndex] = useState(initialIndex);
@@ -695,17 +695,17 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
             />
         }, [dataItems, numColumns, dataItems.length]);
 
-        if (layoutName == 'navigator'){
+        if (layoutName == 'navigator') {
             return (
                 <View className={`${isRightCol ? 'flex-auto' : 'w-full mx-auto'} ${layoutName !== 'navigator' && cd('p-md')} ${contentPaddingClass}`}>
-                        {TabFlashListM}
-                        {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 && callFn("noContentByUrl", [route?.endpoint])))}
-                    </View>
+                    {TabFlashListM}
+                    {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 && callFn("noContentByUrl", [route?.endpoint])))}
+                </View>
             )
         }
 
         const sidebarUnitType = route.blocks?.browse_sidebar?.unitType || 'default';
-        const layout_cols = !isLeftCol && !isRightCol ? 'c' :  !isLeftCol ? 'c-r' :  !isRightCol ? 'l-c' :  'l-c-r';
+        const layout_cols = !isLeftCol && !isRightCol ? 'c' : !isLeftCol ? 'c-r' : !isRightCol ? 'l-c' : 'l-c-r';
         const cellsCustomConfig = appSetting('layouts', route?.pageData?.uri) || appSetting('layouts', `cols-${layout_cols}`);
         const pageData = route.inited ? route.pageData : prevRoute.pageData;
         //if (cellsCustomConfig?.adjustable) {
@@ -885,7 +885,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
                         </View>
                     </Panel>
                 </PanelGroup>
-                <Footer /></>
+                    <Footer /></>
             );
         }
 
