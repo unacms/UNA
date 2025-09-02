@@ -936,7 +936,7 @@ export const settingsDefault = {
             menu_max_width: ' w-full max-w-7xl ',
             content_max_width: ' w-full max-w-7xl ',
             menu_is_dynamic: false,
-            menu_cnt: ' flex-row flex-none gap-1 ml-3 py-1.5 overflow-x-auto ',
+            menu_cnt: ' flex-row flex-none gap-1 mx-3 py-2 overflow-x-auto ',
             menu_categ_ident: ' pl-12 ',
             right_column_cnt: 'fixed-process px-1.5 sm:px-2 py-4',
             right_column_cnt2: 'hidden xl:flex flex-auto max-w-sm',
@@ -1065,7 +1065,7 @@ export const settingsDefault = {
                 title_margin: '  ', //
             },
             sm: {
-                rounded: ' ',
+                rounded: ' rounded-lg ',
                 ring: '', // Ring wrapper removed
                 padding: '  ',
                 padding_icon_only: ' h-8 w-8 ',

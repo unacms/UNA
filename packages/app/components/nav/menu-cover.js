@@ -156,8 +156,8 @@ export function CoverMenuMore(props) {
 
    
     const isLgUp = width >= LAYOUT_BREAKPOINTS.lg
-    const buttonVariant = isLgUp ? 'secondary' : 'secondary'
-    const buttonSize = isLgUp ? 'base' : 'sm'
+    const buttonVariant = isLgUp ? 'secondary' : 'text'
+    const buttonSize = isLgUp ? 'base' : 'base'
     const buttonRounded = isLgUp ? false : true
 
     return (

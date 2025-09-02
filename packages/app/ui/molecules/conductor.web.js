@@ -328,7 +328,7 @@ const TabBar = ({ menu, routes, leftSideBar, pageData, currentUser, index, setIn
                 <View className="flex-1">
                     <ConductorMenu currentUser={currentUser} leftSideBar={leftSideBar} routes={routes} index={index} t={t} setIndex={setIndex} getNumCols={getNumCols} windowWidth={windowWidth} onChangeRoute={onChangeRoute} />
                 </View>
-                {(!!pageData.cover_block?.actions_menu) && <Row className="hidden lg:block items-center gap-x-2 justify-end  ">
+                {(!!pageData.cover_block?.actions_menu) && <Row className="hidden lg:block items-center gap-x-2 justify-end mx-3  ">
                     {/*isHideCover && <CoverMenu
                         {...pageData.cover_block.actions_menu}
                         uri={pageData.uri}
@@ -340,7 +340,7 @@ const TabBar = ({ menu, routes, leftSideBar, pageData, currentUser, index, setIn
                             {...pageData.cover_block.actions_menu}
                             uri={pageData.uri}
                             isSplitMenu={true}
-                            containerClasses="gap-2 lg:gap-3"
+                            containerClasses="gap-2 "
                         />
                         <CoverMenuMore
                             {...pageData.cover_block.actions_menu}
