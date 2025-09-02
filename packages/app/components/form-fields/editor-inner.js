@@ -779,7 +779,7 @@ export default function RftText({
             onLayout={handleLayout}
             className={`flex-1 relative rounded-lg m-[1px] ${
                 isToolBar
-                    ? ' border/20 card-foreground rounded-lg px-3 py-3 '
+                    ? ' border/40 card-foreground rounded-lg px-3 py-3 '
                     : ''
             }`}
         >

@@ -227,7 +227,7 @@ export default function FormComments(props) {
 
                 )}
                 <View className="flex-1">
-                    <View className={`  items-stretch border/20 rounded-xl border border-border ${cd('px-sm')} py-2 `} >
+                    <View className={`  items-stretch border/40 rounded-xl border border-border ${cd('px-sm')} py-2 `} >
                     <Animated.View 
                    
                      style={inputWrapperAnimatedStyle}
