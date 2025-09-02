@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { appSetting, cd } from 'app/lib/util'
+import { appSetting, cd, cloneObject } from 'app/lib/util'
 import { View, Row, Pressable } from 'app/design/view'
 import { Modal } from 'app/design/controls'
 import { fetcher } from 'app/lib/fetcher'
@@ -54,14 +54,21 @@ function DefaultUnit({ data }) {
     )
 
     const showCommentsModal = async (initFormData) => {
+        let menu_actions2 = cloneObject(data.menu_actions)
+        menu_actions2.items = menu_actions2.items.filter(
+            (x) => x.name !== "item-comment"
+        );
+        console.log("menu_actions2", menu_actions2)
+
+
         let res = await fetcher(
             '/api.php?r=' +
-                appSetting('urls', 'cmts') +
-                '/&params[]={"module":"' +
-                data?.cmts?.module +
-                '","object_id":' +
-                data?.cmts?.object_id +
-                '}'
+            appSetting('urls', 'cmts') +
+            '/&params[]={"module":"' +
+            data?.cmts?.module +
+            '","object_id":' +
+            data?.cmts?.object_id +
+            '}'
         )
         res?.data?.form?.data?.inputs?.cmt_text &&
             (res.data.form.data.inputs.cmt_text.autofocus = true)
@@ -79,7 +86,22 @@ function DefaultUnit({ data }) {
                                 >
                                     <Author data={data} url={url} t={t} />
                                     {MainContentComponent}
+                                    <Row className={`${cd('gap-md')} items-center flex-auto justify-between flex-wrap-reverse`}>
+                                        <ActionMenu
+                                            data={menu_actions2}
+                                            showCommentsModal={showCommentsModal}
+                                        />
+                                        {!!data.menu_counters &&
+                                            appSetting('feed', 'counters_menu') && (
+                                                <CounterMenu
+                                                    data={data.menu_counters}
+                                                    showCommentsModal={showCommentsModal}
+                                                />
+                                            )}
+
+                                    </Row>
                                 </View>
+
                             </>
                         ),
                     }}
@@ -146,7 +168,7 @@ function DefaultUnit({ data }) {
                                 showCommentsModal={showCommentsModal}
                             />
                         )}
-                    
+
                 </Row>
 
                 {commentsData && (
