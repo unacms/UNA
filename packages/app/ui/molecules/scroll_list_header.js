@@ -117,7 +117,7 @@ export const Header = memo(({
                     router ? router?.back() : history.back();
                 }} startDecorator="ArrowLeft" size="base" /></View>
             )}
-            {(pageData?.context?.current?.url || isHome) && <View className=" px-2"><ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} /></View>}
+            {(pageData?.context?.current?.url || isHome) && <ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} />}
             {(!!text) && <Row className='items-center px-3'><>
             {(!!text && !pageData?.context?.current?.url) && (
                 <TextHeader text={text}></TextHeader>
