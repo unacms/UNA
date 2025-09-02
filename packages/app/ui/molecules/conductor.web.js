@@ -302,7 +302,7 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, windowWidth, isC
                         {tabBarObj}
                     </View>
                 </ViewRef></Animated.View>
-            <Animated.View className={`fixed w-full z-50 cover-2 ${isCoverDisabled ? ` hidden ${TABLET_MODE_FROM}:flex ` : ' hidden'}`} style={[{ position: isCoverDisabled ? '' : 'fixed', zIndex: '50', }, animatedStyleHeader3]} >
+            <Animated.View className={`fixed w-full z-50 cover-2 header-fixed ${isCoverDisabled ? ` hidden ${TABLET_MODE_FROM}:flex ` : ' hidden'}`} style={[{ position: isCoverDisabled ? '' : 'fixed', zIndex: '50', }, animatedStyleHeader3]} >
                 <View className={conductorTheme.cover_small} >
                     {(isCover && !isHideCover) && <View className="w-full">
                         <CoverSmall context={pageData.context} data={pageData.cover_block} />

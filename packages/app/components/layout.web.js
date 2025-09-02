@@ -39,7 +39,7 @@ async function runOneSignal() {
 const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutName, layoutName, data, children, uri, blocks, width }) => {
     const [isModal, setIsModal] = useState(false);
     const { t } = useTranslation()
-    
+
     useEffect(() => {
         if (currentUser === false && !storageGet('layout:modal', '', true) && appSetting('layout', 'show_login_modal') > 0 && !['create-account', 'home', 'login', 'forgot-password', 'confirm-email'].includes(uri)) {
             setTimeout(() => {
@@ -71,14 +71,14 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutNam
             {appStatic('maintenance_mode')}
         </>
     }
-    
+
     if (width < LAYOUT_BREAKPOINTS[TABLET_MODE_FROM]) {
         return (
             <>
                 <Suggestions />
                 <AsyncWorker />
-                    <Content width={width} layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} url={data?.url} />
-                    {(headerSettings?.footer !== false || !currentUser) && <Footer />}
+                <Content width={width} layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} url={data?.url} />
+                {(headerSettings?.footer !== false || !currentUser) && <Footer />}
                 <BottomSheet />
                 <ModalPopup />
             </>
@@ -97,7 +97,7 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutNam
             <ModalPopup />
         </>
     );
- 
+
 });
 
 const metaAdder = (queryProperty, value) => {
@@ -121,7 +121,7 @@ export default function Layout(props) {
     const root = window.document.documentElement;
     root.setAttribute('theme', theme)
     root.setAttribute('data-theme', theme);
-    
+
 
     const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
 
@@ -189,73 +189,89 @@ export default function Layout(props) {
         return offsetTop;
     }
 
-    // Sticky columns
+
+    function getTopOffset() {
+        const fixedEls = document.querySelectorAll('.header-fixed');
+
+        let sum = 0;
+        fixedEls.forEach(el => {
+            const rect = el.getBoundingClientRect();
+            const style = getComputedStyle(el);
+            const height = rect.height
+                + parseFloat(style.marginTop || 0)
+                + parseFloat(style.marginBottom || 0);
+
+            sum += height;
+        });
+
+        return sum;
+    }
+
+    function handleScroll() {
+        const elements = document.querySelectorAll('.fixed-process');
+        const TOP_OFFSET = getTopOffset();
+        elements.forEach((el) => {
+            const parent = el.parentElement;
+            const container = parent?.parentElement;
+            if (!parent || !container) return;
+
+            if (parent.offsetWidth > 0) {
+                el.style.width = `${parent.offsetWidth}px`;
+            }
+
+            const elH = el.offsetHeight;
+            const containerRect = container.getBoundingClientRect();
+            const containerTopDoc = window.scrollY + containerRect.top;
+            const containerBottomDoc = window.scrollY + containerRect.bottom;
+            const containerH = containerRect.height;
+
+            el.classList.remove('is-fixed');
+            el.style.position = '';
+            el.style.top = '';
+            el.style.bottom = '';
+
+            if (containerH <= elH) return;
+
+            const stickyStart = containerTopDoc - TOP_OFFSET;
+            const stickyEnd = containerBottomDoc - elH - TOP_OFFSET;
+            const y = window.scrollY;
+
+            if (y < stickyStart) return;
+
+            if (y > stickyEnd) {
+                el.style.position = 'absolute';
+                el.style.bottom = '0';
+                return;
+            }
+
+            el.classList.add('is-fixed');
+            el.style.position = 'fixed';
+            el.style.top = `${TOP_OFFSET}px`;
+        });
+    }
+
     useEffect(() => {
-        const handleScroll = () => {
-            const elements = Array.from(document.getElementsByClassName("fixed-process"));
-            const scrollY = window.scrollY;
-            const innerHeight = window.innerHeight;
-
-            elements.forEach(element => {
-               
-                const offset = getFullOffsetTop(element.parentNode);
-                const offset1 = 24;
-                const h = scrollY - offset;
-                const style = window.getComputedStyle(element);
-
-                const marginTop = parseInt(style.marginTop, 10);
-                const marginBottom = parseInt(style.marginBottom, 10);
-                const elementHeight = element.offsetHeight;
-                const elementHeightParent = element.parentNode.parentNode.offsetHeight;
-                if (element.parentNode.offsetWidth > 0)
-                    element.style.width = `${element.parentNode.offsetWidth}px`;
-                
-                //console.log("element.style.width", element.parentNode, element.parentNode.offsetWidth, element.parentNode.clientWidth, getComputedStyle(element.parentNode).width)
-                
-                if (elementHeightParent > elementHeight) {
-                    if (offset > 0){
-                        element.classList.add('fixed');
-                        const height = elementHeight + marginTop + marginBottom - innerHeight + offset1;
-                        element.style.top = `${offset}px`;
-
-                        if (innerHeight - offset < elementHeight + marginTop + marginBottom + offset1) {
-                            const topValue = height > h ? -h : -height;
-                            element.style.top = `${topValue}px`;
-
-                            if (height > h) {
-                                element.setAttribute('a', `${topValue}px`);
-                            }
-                        }
-                    }
-                } else {
-                    element.classList.remove('fixed');
-                    element.style.top = `0px`;
-                }
-            });
-        };
-
-       // document.addEventListener('DOMContentLoaded', handleScroll);
         window.addEventListener('scroll', handleScroll);
         window.addEventListener('resize_panel', handleScroll);
 
         return () => {
             window.removeEventListener('scroll', handleScroll);
             window.removeEventListener('resize_panel', handleScroll);
-          
+
         };
-        
+
     }, []);
     const { layoutName: pageLayoutName } = useLayoutSettings();
     const [headerSettings, setHeaderSettings] = useState(getHeaderSettings(uri, width, layoutName, data.config));
 
-    
+
     useEffect(() => {
         let a = getHeaderSettings(uri, width, layoutName, data.config);
         if (pageLayoutName == 'ver') {
             if (width > LAYOUT_BREAKPOINTS[TABLET_MODE_FROM])
                 a.offset = false;
         }
-        
+
         if (!deepEqual(headerSettings, a)) {
             setHeaderSettings(a);
         }

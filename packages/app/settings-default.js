@@ -85,7 +85,7 @@ export const settingsDefault = {
         header: {
             offset: ' h-16 w-full ',
             container:
-                ' hidden lg:flex fixed w-full mx-auto h-16 left-[50%] translate-x-[-50%]  ',
+                'header-fixed hidden lg:flex fixed w-full mx-auto h-16 left-[50%] translate-x-[-50%]  ',
             initial:
                 '  my-auto w-full items-cente bg-card/90 border-b border-border/40 transition-all web:duration-500    ',
             scrolled:

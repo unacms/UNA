@@ -111,7 +111,7 @@ export default function UniList(props) {
         contentComponent = preloadComponent;
     }
     else {
-        if (numColumns > 0 && !sortable) {
+        if (numColumns > 1 && !sortable) {
             contentComponent = (
                 <View>
                     {ListHeaderComponent && ListHeaderComponent()}
