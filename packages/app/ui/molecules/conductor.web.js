@@ -243,9 +243,13 @@ const LeftSideBarContainer = ({ menu, routes, currentUser, index, setIndex, left
 }
 
 const HeaderContainer = ({ tabBarObj, pageData, headerSettings, isCoverDisabled, isHideCover }) => {
+    const coverRef = useRef(null);
+    const menuRef = useRef(null);
+
     const scrollValue = useSharedValue(isCoverDisabled ? 0 : 1);
     const hideDefaultHeaderFrom = useSharedValue(200);
-    const cover1Ref = useRef(null);
+    const coverHeight = useSharedValue(0);
+    const menuHeight = useSharedValue(0);
 
     const uri = pageData?.uri;
     const coverMode = appSetting('cover', 'view_by_module', pageData.cover_block?.profile?.module)
@@ -267,10 +271,19 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, isCoverDisabled,
     useEffect(() => {
         if (!appSetting('cover', 'fixed') && isCover) {
             window.addEventListener('scroll', handleScroll);
-            cover1Ref.current.measureInWindow((x, y, width, height) => {
+            coverRef.current.measureInWindow((x, y, width, height) => {
                 hideDefaultHeaderFrom.value = height
             })
         }
+
+        coverRef.current.measureInWindow((x, y, width, height) => {
+            coverHeight.value = height
+        })
+
+        menuRef.current.measureInWindow((x, y, width, height) => {
+            menuHeight.value = height
+        })
+
 
         return () => {
             if (!appSetting('cover', 'fixed') && isCover) {
@@ -279,40 +292,59 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, isCoverDisabled,
         };
     }, [handleScroll]);
 
-    const animatedStyleHeader2 = useAnimatedStyle(() => {
+
+    const animatedStyleHeaderCommon = useAnimatedStyle(() => {
         return {
-            marginBottom: scrollValue.value == 1 || isCoverDisabled ? '0px' : '130px',
+            position: scrollValue.value == 1 ? 'relative' : 'fixed',
+            marginBottom: scrollValue.value == 1 ? '0px' : hideDefaultHeaderFrom.value + 'px',
         };
     }, [scrollValue]);
 
-    const animatedStyleHeader3 = useAnimatedStyle(() => {
+    const animatedStyleHeaderCover = useAnimatedStyle(() => {
+        return {
+            display: scrollValue.value == 1 ? 'flex' : 'none',
+        };
+    }, [scrollValue]);
+
+
+    const animatedStyleHeaderCoverSmall = useAnimatedStyle(() => {
         return {
             display: scrollValue.value == 1 ? 'none' : 'flex',
         };
     }, [scrollValue]);
 
+    const animatedStyleHeaderSpacer = useAnimatedStyle(() => {
+        return {
+            display: scrollValue.value == 1 ? 'none' : 'flex',
+            height: scrollValue.value == 1 ? '0px' : (coverHeight.value + menuHeight.value) + 'px',
+
+        };
+    }, [scrollValue]);
+
     return (
         <>
-            <Animated.View className={`${conductorTheme.cover_base} cover-1 `} style={[{ zIndex: 'z-50' }, animatedStyleHeader2]}>
-                <ViewRef ref={cover1Ref} className={conductorTheme.cover_content + ' aaaaa'}   >
-                    {(isCover && !isHideCover) && <View className="w-full ">
-                        <Cover data={pageData.cover_block} mode={headerSettings.cover} uri={uri} context={pageData.context} />
-                    </View>}
-                    <View className="w-full ">
-                        {tabBarObj}
-                    </View>
-                </ViewRef></Animated.View>
-            <Animated.View className={`fixed w-full z-50 cover-2 header-fixed ${isCoverDisabled ? ` hidden ${TABLET_MODE_FROM}:flex ` : ' hidden'}`} style={[{ position: isCoverDisabled ? '' : 'fixed', zIndex: '50', }, animatedStyleHeader3]} >
-                <View className={conductorTheme.cover_small} >
-                    {(isCover && !isHideCover) && <View className="w-full">
-                        <CoverSmall context={pageData.context} data={pageData.cover_block} />
-                    </View>}
-                    <View className="w-full ">
-                        {tabBarObj}
-                    </View>
+            <Animated.View style={[{ zIndex: 'z-50' }, animatedStyleHeaderSpacer]}/>
+            <Animated.View className={`${conductorTheme.cover_base} cover-1`} style={[{ zIndex: 'z-50' }, animatedStyleHeaderCommon]}>
+                <Animated.View style={[{}, animatedStyleHeaderCover]}>
+                    <ViewRef ref={coverRef} className={conductorTheme.cover_content}   >
+                        {(isCover && !isHideCover) && <View className="w-full ">
+                            <Cover data={pageData.cover_block} mode={headerSettings.cover} uri={uri} context={pageData.context} />
+                        </View>}
 
+                    </ViewRef>
+                </Animated.View>
+                <Animated.View style={[{}, animatedStyleHeaderCoverSmall]}>
+                    <View className={conductorTheme.cover_small} >
+                        {(isCover && !isHideCover) && <View className="w-full">
+                            <CoverSmall context={pageData.context} data={pageData.cover_block} />
+                        </View>}
+                    </View>
+                </Animated.View>
+                <View className="w-full" ref={menuRef}>
+                    {tabBarObj}
                 </View>
             </Animated.View>
+
         </>
     )
 };
