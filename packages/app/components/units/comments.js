@@ -549,7 +549,7 @@ const MenuManage_ = memo(
                             '}'
                     )
                     setViewState({ view: 'deleted' })
-                    props.handleDelete()
+                   // props.handleDelete()
                     break
 
                 /* case 'item-report':

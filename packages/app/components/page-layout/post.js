@@ -8,10 +8,11 @@ import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
 import { Platform } from 'react-native'
 import { useLocalSearchParams } from 'app/lib/hooks/router'
 import { appSetting } from 'app/lib/util';
-import Card from 'app/ui/molecules/card';
-import { cd } from 'app/lib/util';
+
 import emitter from 'app/context/emitter';
 import { useIsDesktop, useWindowHeight } from 'app/context/measure';
+import Card from 'app/ui/molecules/card';
+import { cd } from 'app/lib/util';
 
 export default function PageLayout(props) {
     const isWeb = Platform.OS == 'web';
@@ -79,17 +80,9 @@ export default function PageLayout(props) {
     }, []);
 
     return (
-        <View {...viewProps} className={`sm:${cd('p-lg')} ${appSetting('layout', 'feed_container')}`}>
-            <Card>
-                <View
-                    pointerEvents="box-none"
-                    className='w-full flex-1'
-                    style={{
-                        marginBottom: (isWeb && !isDesktop)
-                            ? Math.max(8, formHeight)
-                            : 0
-                    }}
-                >
+        <View {...viewProps} className={`flex-1 w-full h-full max-w-5xl mx-auto `}>
+            <View className="w-full flex-1  bg-card/80 backdrop-blur shadow-sm sm:border border-border/30 web:sm:border-0 web:ring-[1px] web:ring-inset web:ring-border/30 text-card-foreground rounded-2xl lg:my-4 ">
+                <View pointerEvents="box-none" className='w-full flex-1' style={{ marginBottom: !isDesktop ? 0 : formHeight  }}>
                     <CommentsBrowse
                         scrollProps={
                             {
@@ -97,8 +90,7 @@ export default function PageLayout(props) {
                                 pageData: props.data,
                                 headerComponent: headerItems[0].data,
                                 isBackButton: true,
-                                 padding: 16,
-                                 bottomPadding: 0,
+                                padding: 16,
                             }
                         }
                         scrollToIndex={scrollToEnd}
@@ -111,13 +103,12 @@ export default function PageLayout(props) {
                         replyId={replyId}
                     />
                 </View>
-            
+            </View>
             <KbAvoidingView>
-                <View onLayout={handleLayout} className={`${cd('p-lg')} web:fixed web:sm:relative web:bottom-0 bg-card w-full`}>
+                <View onLayout={handleLayout} className=' px-4 py-3 web:fixed web:bottom-0 web:lg:bottom-4 w-full max-w-5xl'>
                     <CommentsForm handleForm={setAddData} browse={commentsData?.content[0]?.browse} module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module} form={commentsData?.content[0]?.form} formData={formData} requestUrl={commentsData?.content[0]?.url} />
                 </View>
             </KbAvoidingView>
-            </Card>
         </View>
     );
 }
