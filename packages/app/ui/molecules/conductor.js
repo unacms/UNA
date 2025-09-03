@@ -6,7 +6,6 @@ import { fillTabs, parseData, fetchAndUpdateData, getNumCols } from 'app/lib/con
 import { ItemRenderer } from 'app/components/item-renderer';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers';
-import { useWindowDimensions } from 'react-native';
 import { Button } from 'app/design/controls';
 import { useCurrentUser } from 'app/context/user'
 import { useLayoutData } from 'app/context/layout';
@@ -18,10 +17,7 @@ import { useBottomSheetData } from 'app/context/bottomsheet';
 import { BlockByName } from 'app/components/block';
 import { callFn } from 'app/lib/functions/call';
 import Cover, { CoverSmall } from 'app/components/elements/cover';
-import { CoverMenuMore } from 'app/components/nav/menu-cover'
-
-
-const conductorTheme = appSetting('theme', 'conductor');
+import { useBreakpoint } from 'app/context/measure';
 
 const TabBar = React.memo(({ routes, index, setIndex, onChangeRoute, currentUser }) => {
     if (routes.length > 1) {
@@ -164,8 +160,9 @@ export function Conductor({ isCoverDisabled, header, defaultHeaderHeight = 109, 
     const [menuState, setMenuState] = useState(menu);
     const [isRevalidate, setIsRevalidate] = useState(false);
     const toasterRef2 = useRef();
-    const windowDimen = useWindowDimensions();
-    const windowWidth = windowDimen.width;
+    const currentBreakpoint = useBreakpoint();
+
+
 
 
     useEffect(() => {
@@ -209,7 +206,7 @@ export function Conductor({ isCoverDisabled, header, defaultHeaderHeight = 109, 
     const qKey = useMemo(() => [currentRoute?.endpoint?.request_url, index, keyword, JSON.stringify(currentRoute?.endpoint?.params?.filters)], [currentRoute, index, keyword]);
     const queryClient = useQueryClient();
 
-    const numColumns = getNumCols(windowWidth, currentRoute, null);
+    const numColumns = getNumCols(currentBreakpoint, currentRoute, null);
 
     useEffect(() => {
         if (currentRoute.cached) {

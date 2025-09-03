@@ -1,9 +1,7 @@
 import { View, ScrollView, ViewRef, Row } from 'app/design/view'
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Platform } from 'react-native'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
-import { useWindowDimensions } from 'react-native'
-import { LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal';
 
 export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, ButtonEx, containerClasses, items, menuClasses, menuExClasses, isButtonOutside, offsetWidth = 50, persistent = 0 }) {
@@ -14,7 +12,6 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
     const [visibleItemsCount, setVisibleItemsCount] = useState(isFixedCount ? persistent : items.length);
     const [width, setWidth] = useState(0);
     const [pageData, setPageData] = useState(false);
-    const { width: windowWidth } = useWindowDimensions();
     const isDynamicMenu = true;//windowWidth > LAYOUT_BREAKPOINTS.sm;
 
     useEffect(() => {

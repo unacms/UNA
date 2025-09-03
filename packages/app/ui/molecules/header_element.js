@@ -2,14 +2,13 @@ import Link from 'app/ui/atoms/link'
 import { View, Row } from 'app/design/view'
 import { Button } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user'
-import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
+import { appSetting } from 'app/lib/util'
 import Search from 'app/ui/molecules/search'
 import NotificationButton from 'app/ui/molecules/notif'
 import MenuAdd from 'app/components/nav/menu-add'
 import MenuAccount from 'app/components/nav/menu-account'
 import MenuLauncher from 'app/components/nav/menu-launcher'
-import { useWindowDimensions } from 'react-native'
-
+import { useIsDesktop } from 'app/context/measure';
 
 export default function HeaderElement({ mode }) {
 
@@ -17,9 +16,8 @@ export default function HeaderElement({ mode }) {
     const bSearch = appSetting('layout', 'search') == true;
     const bMessenger = appSetting('messenger', 'url') ? true : false;
     const bNotifs = appSetting('notifications', 'url') ? true : false;
-    const { width } = useWindowDimensions()
-    const isLgUp = width >= LAYOUT_BREAKPOINTS.lg
-
+    const isDesktop = useIsDesktop();
+    
     const toolbarConfig = appSetting('header_toolbar', 'hor')
     const itemsToRender = currentUser
         ? toolbarConfig?.loggedIn
@@ -52,8 +50,8 @@ export default function HeaderElement({ mode }) {
                                                         text: currentUser?.counters?.bx_messenger_new_messages,
                                                         hideZero: true,
                                                     },
-                                                    variant: isLgUp ? 'secondary' : 'text',
-                                                    size: isLgUp ? 'base' : 'lg',
+                                                    variant: isDesktop ? 'secondary' : 'text',
+                                                    size: isDesktop ? 'base' : 'lg',
                                                 }
                                                 : {})}
                                         />

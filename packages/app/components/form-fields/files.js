@@ -9,7 +9,7 @@ import { genRnd, appSetting } from 'app/lib/util';
 import * as DocumentPicker from 'expo-document-picker';
 import { fetcher } from 'app/lib/fetcher';
 import { useFormContext, useController } from 'react-hook-form';
-import { uploadImage, md5, LAYOUT_BREAKPOINTS } from 'app/lib/util';
+import { uploadImage, md5 } from 'app/lib/util';
 import Loading from 'app/ui/atoms/loading'
 import { Text } from 'app/design/typography'
 import { Image as ImageNative, Alert, Platform } from 'react-native';

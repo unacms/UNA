@@ -1,6 +1,6 @@
 import { View, Row, Pressable, ScrollView  } from 'app/design/view'
 import { useState, useReducer, useCallback } from 'react'
-import { Text, H1C } from 'app/design/typography'
+import { Text } from 'app/design/typography'
 import Link from 'app/ui/atoms/link'
 import Card from 'app/ui/molecules/card'
 import CircularProgress from 'app/ui/atoms/circular_progress'
@@ -9,8 +9,7 @@ import { Icon } from 'app/ui/atoms/icon'
 import { fetcher } from 'app/lib/fetcher'
 import { ContentMore } from 'app/ui/molecules/contentmore';
 import Image from 'app/ui/atoms/image';
-import Svg, { Line, Circle } from 'react-native-svg';
-import { LAYOUT_BREAKPOINTS } from 'app/lib/util'
+import Svg, { Circle } from 'react-native-svg';
 import Video from 'app/ui/atoms/video';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { BlockByData } from 'app/components/blocks-content/object-data-array-int';
@@ -496,7 +495,7 @@ function LessonSteps({ lessonData, startLessonPart, isEditable, reloadData, cour
                     </View>}
                     <Row className={`${index != 0 ? 'border-t border-bdr dark:border-bdr-d' : ''} pt-4 flex-1`}>
                         <View className='mb-4 aspect-video w-40 mr-5 rounded bg-gray-500' >
-                            {item.image?.src && <Image view='cover' sizes={LAYOUT_BREAKPOINTS.lg} alt='' className="rounded" src={item.image?.src} />}
+                            {item.image?.src && <Image view='cover' alt='' className="rounded" src={item.image?.src} />}
                         </View>
                         <View className={`flex-auto`}>
                             <Button variant="default" textColor={`text-white`} bgColor={`bg-` + getColorByType(item.type)} title={item.type} size="xs" rounded />
@@ -576,7 +575,7 @@ function LessonItem({ lessonItemData, lessonIndex, lessonData, startLessonPart }
                 })}
             </Row>
             {!!lessonItemData?.title && <Text className="mb-4  text-base leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200">{lessonItemData?.title}</Text>}
-            {!!lessonItemData?.image && !lessonItemData?.video && <View className="w-full aspect-[2/1] rounded-xl overflow-hidden "><Image {...lessonItemData.image} alt={lessonItemData.title} sizes={LAYOUT_BREAKPOINTS.lg} className=" u-cover" view="cover" /></View>}
+            {!!lessonItemData?.image && !lessonItemData?.video && <View className="w-full aspect-[2/1] rounded-xl overflow-hidden "><Image {...lessonItemData.image} alt={lessonItemData.title} className=" u-cover" view="cover" /></View>}
             {!!lessonItemData?.video && <View className='w-full aspect-video rounded-xl overflow-hidden '>
                 <Video poster={lessonItemData.video.src_poster} src={lessonItemData.video.src_mp4} cover={true} controls={true} muted={"muted"} />
             </View>}

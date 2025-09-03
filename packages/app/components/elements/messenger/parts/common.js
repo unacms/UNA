@@ -1,12 +1,11 @@
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import { fetcher } from 'app/lib/fetcher';
-import React, { memo, useState, useEffect, useContext, useRef, useCallback, useMemo } from 'react';
-import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
+import { memo, useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { appSetting } from 'app/lib/util'
 import UniList from 'app/ui/atoms/unilist'
-import { Button, InputRounded, InputRoundedSmall } from 'app/design/controls'
+import { Button, InputRoundedSmall } from 'app/design/controls'
 import Form from 'app/components/elements/form';
-import { useWindowDimensions } from 'react-native';
 import { Platform } from 'react-native'
 //import use-SWR from "swr";
 import useFetchForm from 'app/lib/hooks/fetch'
@@ -34,12 +33,11 @@ import {
 
 export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, fetchConvos, data, onSave, addButtons }) {
     const isWeb = Platform.OS == 'web'
-    const { width, height } = useWindowDimensions();
     const { setBottomSheetData } = useBottomSheetData();
     const [convoId, setConvoId] = useState(defaultConvoId);
     const [jots, setJots] = useState(false);
     const [listError, setListError] = useState(false);
-    const [isSmallScreen, setIsSmallScreen] = useState(width < LAYOUT_BREAKPOINTS.lg);
+    const isSmallScreen = !useIsDesktop();
     const [panelsVisible, setPanelsVisible] = useState({ convos: true, jots: isSmallScreen ? false : true });
     const [commentForm, setCommentForm] = useState(false);
     const [jotUpdated, setJotUpdated] = useState(false);
@@ -123,9 +121,6 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
         }
     }
 
-    useEffect(() => {
-        setIsSmallScreen(width < LAYOUT_BREAKPOINTS.lg);
-    }, [width]);
 
 
     useEffect(() => {

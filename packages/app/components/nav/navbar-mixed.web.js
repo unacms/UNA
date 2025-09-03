@@ -1,5 +1,4 @@
 import { memo, useState } from 'react'
-import { useWindowDimensions } from 'react-native'
 import Link from 'app/ui/atoms/link'
 import { Text } from 'app/design/typography'
 import { View, Row, Pressable } from 'app/design/view'
@@ -13,11 +12,12 @@ import Search from 'app/ui/molecules/search'
 import { useTranslation } from 'react-i18next';
 import MenuDrawer from 'app/components/nav/menu-drawer'
 import ProfileSwitcher from 'app/components/elements/profile_switcher';
+import { useBreakpoint, useIsDesktop } from 'app/context/measure';
 
 const HeaderLine = memo(({ headerSettings, currentUser, uri, title, menuPopup, setMenuPopup, showMenu }) => {
-
-    const { width } = useWindowDimensions();
-    if (width > LAYOUT_BREAKPOINTS.xl && menuPopup)
+    const currentBreakpoint = useBreakpoint();
+    const isDesktop = useIsDesktop();
+    if (currentBreakpoint >= LAYOUT_BREAKPOINTS.xl && menuPopup)
         setMenuPopup(false)
 
     const isDrawer = menuItemsByName('main_menu', appSetting('menu_items', 'menu_drawer'), currentUser).length > 0;
@@ -41,7 +41,7 @@ const HeaderLine = memo(({ headerSettings, currentUser, uri, title, menuPopup, s
 
                 </View>
             )}
-            {(uri === 'home' || width >= LAYOUT_BREAKPOINTS.lg) && (
+            {(uri === 'home' || isDesktop) && (
                 <Link className=" flex flex-row group gap-x-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus:outline-primary/50 rounded-lg " href="/home" aria-label="Logo">
 
 

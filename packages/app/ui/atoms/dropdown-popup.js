@@ -2,11 +2,9 @@ import { useState, useRef, useEffect, useMemo } from 'react';
 import {
     Modal as ModalBase,
     TouchableOpacity,
-    useWindowDimensions,
     Platform
 } from 'react-native';
 import { Pressable, ScrollView, View, ViewRef } from 'app/design/view'
-import { LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { RemoveScroll } from 'react-remove-scroll';
 import Animated, {
     useSharedValue,
@@ -19,7 +17,7 @@ import Animated, {
 import { appSetting } from 'app/lib/util';
 import { BlurView } from 'expo-blur';
 import { Theme } from 'app/design/theme';
-
+import { useIsDesktop, useWindowSize } from 'app/context/measure';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 const dropdownTheme = appSetting('theme', 'dropdown');
@@ -35,14 +33,15 @@ export default function DropdownPopup({
     contentClasses = dropdownTheme?.cnt 
 }) {
     const buttonRef = useRef(null);
+    const isDesktop = useIsDesktop();
     const contentRef = useRef(null);
     const [buttonPos, setButtonPos] = useState({ x: 0, y: 0, width: 0, height: 0 });
-    const { width: windowWidth, height: windowHeight } = useWindowDimensions();
+    const { width: windowWidth, height: windowHeight } = useWindowSize();
     const isWeb = useMemo(() => Platform.OS === 'web', []);
     const { colors } = Theme();
     const animation = useMemo(
-        () => (windowWidth > LAYOUT_BREAKPOINTS.md ? 'fade' : 'none'),
-        [windowWidth]
+        () => (isDesktop ? 'fade' : 'none'),
+        [isDesktop]
     );
     const [isOpen, setIsOpen] = useState(defaultOpen);
     const [isModalVisible, setIsModalVisible] = useState(false);

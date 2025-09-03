@@ -1,22 +1,22 @@
 import { View } from 'app/design/view';
 import { BlockByName, DataByName } from 'app/components/block';
 import { useState, useCallback, useMemo, useEffect } from 'react';
-import { stripTags, LAYOUT_BREAKPOINTS } from 'app/lib/util';
+import { stripTags } from 'app/lib/util';
 import { Theme } from 'app/design/theme';
 import { CommentsBrowse, CommentsForm } from 'app/lib/comments-helpers'
-import KbAvoidingView, { KbAvoidingViewScroll } from 'app/ui/atoms/kb-avoiding-view';
-import { useWindowDimensions, Platform } from 'react-native'
+import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
+import { Platform } from 'react-native'
 import { useLocalSearchParams } from 'app/lib/hooks/router'
 import { appSetting } from 'app/lib/util';
 import Card from 'app/ui/molecules/card';
 import { cd } from 'app/lib/util';
 import emitter from 'app/context/emitter';
-
-const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from');
+import { useIsDesktop, useWindowHeight } from 'app/context/measure';
 
 export default function PageLayout(props) {
     const isWeb = Platform.OS == 'web';
-    const { width: windowWidth, height: windowWHeight } = useWindowDimensions();
+    const windowWHeight = useWindowHeight();
+    const isDesktop = useIsDesktop();
     const [formData, setFormData] = useState({});
     const [addData, setAddData] = useState({});
     const [replyId, setReplyId] = useState(false);
@@ -55,11 +55,11 @@ export default function PageLayout(props) {
     }, [localUrl?.url]);
 
     const aItems = useMemo(() => Object.entries(props.blocks)
-        .filter(([key, value]) => value.forList && ((windowWidth < LAYOUT_BREAKPOINTS[TABLET_MODE_FROM] && value.forHeader == null) || windowWidth >= LAYOUT_BREAKPOINTS[TABLET_MODE_FROM]))
+        .filter(([key, value]) => value.forList && ((!isDesktop && value.forHeader == null) || isDesktop))
         .map(([key, value]) => ({
             id: `block_${key}`,
             data: <BlockByName data={props.data} name={value} contentOnly={true} />
-        })), [props.blocks, props.data, windowWidth]);
+        })), [props.blocks, props.data]);
 
     const headerItems = useMemo(() => {
         return Object.entries(props.blocks)
@@ -70,7 +70,7 @@ export default function PageLayout(props) {
     }, [props.blocks, props.data]);
 
     const viewProps = isWeb ? {
-        style: { minHeight: windowWidth < LAYOUT_BREAKPOINTS[TABLET_MODE_FROM] ? windowWHeight : windowWHeight - 64 },
+        style: { minHeight: !isDesktop ? windowWHeight : windowWHeight - 64 },
     } : {};
 
     const handleLayout = useCallback((event) => {
@@ -85,7 +85,7 @@ export default function PageLayout(props) {
                     pointerEvents="box-none"
                     className='w-full flex-1'
                     style={{
-                        marginBottom: (isWeb && windowWidth < LAYOUT_BREAKPOINTS[TABLET_MODE_FROM])
+                        marginBottom: (isWeb && !isDesktop)
                             ? Math.max(8, formHeight)
                             : 0
                     }}

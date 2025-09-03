@@ -1,7 +1,6 @@
 import { View, Row } from 'app/design/view'
-import { useRef, useState, useEffect } from 'react';
+import { useState } from 'react';
 import { getFormFieldByData, getEditorHeight } from 'app/lib/form-helpers'
-import { useWindowDimensions } from 'react-native';
 import { Platform } from 'react-native'
 import { useFormContext } from 'react-hook-form';
 import { FileButton } from 'app/lib/form-helpers';
@@ -18,15 +17,6 @@ export default function FormMessenger(props) {
 
 
 
-    const windowWidth = useWindowDimensions().width;
-
-
-    if (Platform.OS !== 'web') {
-        styles = { width: windowWidth - 110 }
-    }
-
-
-    const viewFormRef = useRef();
 
 
     function setIsFocus() {

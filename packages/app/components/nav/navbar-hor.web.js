@@ -1,23 +1,18 @@
-import { memo, useState, useRef, useEffect } from 'react'
-import { useWindowDimensions } from 'react-native'
+import { memo, useState, useEffect } from 'react'
 import Link from 'app/ui/atoms/link'
 import { Text } from 'app/design/typography'
 import { View, Row, Pressable } from 'app/design/view'
-import { Button, ButtonRef } from 'app/design/controls'
+import { Button } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user'
 import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { getBackButtonWeb } from 'app/lib/common-helpers'
 import { appStatic } from 'app/lib/app-static'
 import { menuItemsByName } from 'app/lib/util'
-import Search from 'app/ui/molecules/search'
-import NotificationButton from 'app/ui/molecules/notif'
 import { useTranslation } from 'react-i18next'
-import MenuAdd from 'app/components/nav/menu-add'
-import MenuAccount from 'app/components/nav/menu-account'
-import MenuLauncher from 'app/components/nav/menu-launcher'
 import MenuDrawer from 'app/components/nav/menu-drawer'
 import MenuTop from 'app/components/nav/menu-top'
 import { getComponent } from 'app/components/registry'
+import { useBreakpoint, useIsDesktop } from 'app/context/measure';
 
 const headerTheme = appSetting('layout', 'header');
 
@@ -34,8 +29,9 @@ const HeaderLine = memo(
         title,
         context,
     }) => {
-        const { width } = useWindowDimensions()
-        if (width > LAYOUT_BREAKPOINTS.xl && menuPopup) setMenuPopup(false)
+        const currentBreakpoint = useBreakpoint();
+        const isDesktop = useIsDesktop();
+        if (currentBreakpoint >= LAYOUT_BREAKPOINTS.xl && menuPopup) setMenuPopup(false)
 
         const ContextSelector = getComponent('molecule', 'context_selector')
 
@@ -66,7 +62,7 @@ const HeaderLine = memo(
                 {(!context ||
                     (!currentUser.confirmed &&
                         appSetting('layout', 'lock_unconfirmed'))) &&
-                    (uri == 'home' || width >= LAYOUT_BREAKPOINTS.lg) && (
+                    (uri == 'home' || isDesktop) && (
                         <Link href="/home" variant="ghost" size="lg" >
                             {appStatic('logo')}
                         </Link>

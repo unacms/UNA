@@ -1,12 +1,11 @@
 import { Text } from 'app/design/typography'
 import { Button, Modal } from 'app/design/controls'
 import { fetcher } from 'app/lib/fetcher'
-import { appSetting, updateRouteDataForConnection, getPageSettings, LAYOUT_BREAKPOINTS } from 'app/lib/util'
+import { appSetting, updateRouteDataForConnection, getPageSettings } from 'app/lib/util'
 import { getComponent } from 'app/components/registry';
 import { appStatic } from 'app/lib/app-static';
 import { View, Row } from 'app/design/view'
 import { MenuItemSidebar } from 'app/components/nav/menu-item-sidebar'
-import { useWindowDimensions } from 'react-native';
 import { 
     SvgBackgroundSplash, 
     SvgBackgroundSplashDark,
@@ -15,6 +14,7 @@ import {
     SvgBackgroundLogin,
     SvgBackgroundLoginDark,
 } from 'app/ui/atoms/backgrounds';
+import { useIsDesktop } from 'app/context/measure';
 
 export function getFriendsCounter(currentUser) {
     return currentUser?.counters?.bx_persons_friend_requests
@@ -79,8 +79,7 @@ export function getButtonForConductorSmall(a, index, onPress) {
 
 export function getButtonForConductorHor(icon, title, pressed, addon, onPress, item) {
     function ConductorButtonResponsive({ icon, title, pressed, addon, onPress, item }) {
-        const { width } = useWindowDimensions();
-        const isDesktop = width > LAYOUT_BREAKPOINTS.lg;
+        const isDesktop = useIsDesktop();
         const size = isDesktop ? 'base' : 'sm';
         const rounded = !isDesktop;
         return (
@@ -155,8 +154,7 @@ export function getButtonForConductorNative(a, index, currentUser, setIndex, onC
         addon = null
 
     function NativeConductorButtonResponsive({ a, index, onChangeRoute, setIndex, iconName, addon }) {
-        const { width } = useWindowDimensions();
-        const isDesktop = width > LAYOUT_BREAKPOINTS.lg;
+        const isDesktop = useIsDesktop();
         const size = isDesktop ? 'base' : 'sm';
         const rounded = !isDesktop;
         return (

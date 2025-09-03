@@ -1,6 +1,6 @@
-import { View, Row, Pressable, ScrollView } from 'app/design/view'
+import { View, Row, ScrollView } from 'app/design/view'
 import { BlockByName } from 'app/components/block'
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import {
     cd,
     appSetting,
@@ -17,7 +17,6 @@ import { Text } from 'app/design/typography'
 import UI from 'app/ui/molecules/ui'
 import { MenuItemSidebarWithWrapper } from 'app/components/nav/menu-item-sidebar'
 import { Platform } from 'react-native'
-import { useRef } from 'react'
 import { callFn } from 'app/lib/functions/call'
 import { getComponent } from 'app/components/registry'
 import {
@@ -25,13 +24,23 @@ import {
     PanelGroup,
     PanelHandler,
 } from 'app/ui/molecules/resizable-panels'
-import { useWindowDimensions } from 'react-native'
 import { useLayoutSettings } from 'app/context/layout-settings'
 import Badge from 'app/ui/molecules/badge'
+import { useBreakpoint, useWindowSize, useIsDesktop, useWindowHeight, useWindowWidth } from 'app/context/measure';
 
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from')
 
 export default function (props) {
+    
+   /* const wh = useWindowWidth();
+    console.log("whwhwh", wh)
+    return
+   /*   const currentBreakpoint = useBreakpoint();
+     const isDesktop = useIsDesktop();
+     // const windowSize = useWindowSize();
+      //console.log("!!!!!!!useWindowSize ", windowSize )
+         console.log("!!!!!!!bucket ", currentBreakpoint )
+return;*/
     //  return <Button variant="accent" title="dfsdfsd" startDecorator="Plus"></Button>
     // return <><Text className="text-red-500 text-3xl" >zcxzxc zx</Text><Text fontFamily="font-title" className="text-red-500 text-3xl" >zcxzxc zx</Text></>
     // return <Loading/>
@@ -41,7 +50,6 @@ export default function (props) {
      <Button startDecorator="Plus" variant="badge" title="fdfdsf"></Button>
 </>
     )*/
-    const { width: windowWidth } = useWindowDimensions()
     const isWeb = Platform.OS == 'web'
     if (appSetting('config', 'show_ui')) {
         return <UI />
@@ -94,11 +102,11 @@ export default function (props) {
             return { name: key, block: props.blocks[key] }
         })
 
-    useEffect(() => {
+    /*useEffect(() => {
         if (isWeb) {
             window.dispatchEvent(new Event('resize_panel'))
         }
-    }, [windowWidth])
+    }, [windowWidth])*/
 
     if (currentUser) {
         asyncStorageSet('layout:visited', 'true')

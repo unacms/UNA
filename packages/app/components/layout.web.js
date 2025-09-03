@@ -1,5 +1,4 @@
 import React, { useEffect, useCallback, lazy, useState } from 'react';
-import { useWindowDimensions } from 'react-native';
 import Footer from 'app/components/nav/footer';
 import { Modal } from 'app/design/controls'
 import Informer from 'app/components/elements/informer';
@@ -8,17 +7,16 @@ import AsyncWorker from 'app/ui/molecules/async_worker';
 import { View, Row } from 'app/design/view';
 import { useCurrentUser } from 'app/context/user'
 import BottomSheet from 'app/ui/molecules/bottomsheet_content';
-import { getHeaderSettings, getLayout, deepEqual } from 'app/lib/util';
-import { appSetting, storageSet, storageClear, storageGet, decodeText, LAYOUT_BREAKPOINTS } from 'app/lib/util'
+import { getHeaderSettings, deepEqual } from 'app/lib/util';
+import { appSetting, storageSet, storageClear, storageGet, decodeText } from 'app/lib/util'
 import { appStatic } from 'app/lib/app-static'
 import OneSignal from 'react-onesignal';
 import { ThemeName } from 'app/design/theme';
 import { useTranslation } from 'react-i18next'
 import { useLayoutSettings } from 'app/context/layout-settings';
+import { useIsDesktop } from 'app/context/measure';
 
 const Navbar = lazy(() => import('app/components/nav/navbar'));
-const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from');
-
 
 const NavbarMemo = React.memo(function NavbarMemo(props) {
     return (
@@ -36,8 +34,9 @@ async function runOneSignal() {
 }
 
 
-const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutName, layoutName, data, children, uri, blocks, width }) => {
+const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutName, layoutName, data, children, uri, blocks }) => {
     const [isModal, setIsModal] = useState(false);
+    const isDesktop = useIsDesktop();
     const { t } = useTranslation()
 
     useEffect(() => {
@@ -72,12 +71,12 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutNam
         </>
     }
 
-    if (width < LAYOUT_BREAKPOINTS[TABLET_MODE_FROM]) {
+    if (!isDesktop) {
         return (
             <>
                 <Suggestions />
                 <AsyncWorker />
-                <Content width={width} layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} url={data?.url} />
+                <Content layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} url={data?.url} />
                 {(headerSettings?.footer !== false || !currentUser) && <Footer />}
                 <BottomSheet />
                 <ModalPopup />
@@ -91,7 +90,7 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutNam
             <Suggestions />
             <AsyncWorker />
             <NavbarMemo pageLayoutName={pageLayoutName} headerSettings={headerSettings} context={data?.context} layoutName={layoutName} title={data?.name} menu={data?.menu} menu_add={data?.menu_add || false} uri={uri} url={data?.url} >
-                <Content width={width} layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} url={data?.url} />
+                <Content layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} url={data?.url} />
             </NavbarMemo>
             <BottomSheet />
             <ModalPopup />
@@ -115,8 +114,7 @@ export default function Layout(props) {
     const { currentUser } = useCurrentUser();
     const { layout, data, blocks, uri, children } = props;
     const { layoutName } = layout;
-    const { width } = useWindowDimensions();
-
+    const isDesktop = useIsDesktop();
     const theme = ThemeName();
     const root = window.document.documentElement;
     root.setAttribute('theme', theme)
@@ -270,20 +268,20 @@ export default function Layout(props) {
 
     }, []);
     const { layoutName: pageLayoutName } = useLayoutSettings();
-    const [headerSettings, setHeaderSettings] = useState(getHeaderSettings(uri, width, layoutName, data.config));
+    const [headerSettings, setHeaderSettings] = useState(getHeaderSettings(uri, isDesktop, layoutName, data.config));
 
 
     useEffect(() => {
-        let a = getHeaderSettings(uri, width, layoutName, data.config);
+        let a = getHeaderSettings(uri, isDesktop, layoutName, data.config);
         if (pageLayoutName == 'ver') {
-            if (width > LAYOUT_BREAKPOINTS[TABLET_MODE_FROM])
+            if (isDesktop)
                 a.offset = false;
         }
 
         if (!deepEqual(headerSettings, a)) {
             setHeaderSettings(a);
         }
-    }, [uri, width, layoutName, data.config, currentUser, pageLayoutName, headerSettings]);
+    }, [uri, isDesktop, layoutName, data.config, currentUser, pageLayoutName, headerSettings]);
 
     useEffect(() => {
         if (data?.title) {
@@ -328,10 +326,10 @@ export default function Layout(props) {
         applyStyles(stylesBgImage);
         applyStyles(stylesBg);
     }, [stylesBgImage, stylesBg]);
-    return <MemoizedContent width={width} pageLayoutName={pageLayoutName} blocks={blocks} headerSettings={headerSettings} currentUser={currentUser} layoutName={layoutName} data={data} children={children} uri={uri} />
+    return <MemoizedContent pageLayoutName={pageLayoutName} blocks={blocks} headerSettings={headerSettings} currentUser={currentUser} layoutName={layoutName} data={data} children={children} uri={uri} />
 }
 
-const Content = React.memo(({ children, headerSettings, stylesBgImage, currentUser, layoutName, url, width }) => {
+const Content = React.memo(({ children, headerSettings, currentUser, layoutName, url }) => {
     const isHideHeader = (appSetting('layout', 'hide_header_for_non_logged') && !currentUser) || appSetting('layout', 'hide_header_for_all');
     return (
         <View className="w-full items-stretch cnt-root" key={url}>

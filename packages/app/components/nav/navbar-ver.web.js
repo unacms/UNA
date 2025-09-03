@@ -1,17 +1,12 @@
 import { memo, useState, useRef, useEffect } from 'react'
-import { useWindowDimensions } from 'react-native'
-
 import Link from 'app/ui/atoms/link'
 import { Text } from 'app/design/typography'
 import { View, Row, Pressable, ScrollView } from 'app/design/view'
-import MenuDrawer from 'app/components/nav/menu-drawer'
-import { Button } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user'
-import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
+import { appSetting } from 'app/lib/util'
 import { appStatic } from 'app/lib/app-static'
 import { menuItemsByName } from 'app/lib/util'
 import Redirect from 'app/ui/atoms/redirect'
-import Search from 'app/ui/molecules/search'
 import Profile from 'app/ui/molecules/profile'
 import { useTranslation } from 'react-i18next';
 import MenuAdd from 'app/components/nav/menu-add'
@@ -19,6 +14,7 @@ import BlockByUrl from 'app/ui/molecules/block'
 import MenuAccount from 'app/components/nav/menu-account'
 import { getComponent } from 'app/components/registry'
 import { MenuItemSidebarWithWrapper } from 'app/components/nav/menu-item-sidebar'
+import { useIsDesktop } from 'app/context/measure';
 
 const SidebarBottomToolbar = ({ currentUser, menu_add_items, buttonProps }) => {
     const toolbarConfig = appSetting('header_toolbar', 'ver')?.loggedIn?.sidebar;
@@ -67,8 +63,8 @@ const SidebarBottomToolbar = ({ currentUser, menu_add_items, buttonProps }) => {
 
 const SideBar = memo(({ headerSettings, currentUser, uri, url, bSearch, menuPopup, setMenuPopup, showMenu, context }) => {
     const { t } = useTranslation();
-    const { width } = useWindowDimensions();
-    if (width > LAYOUT_BREAKPOINTS.xl && menuPopup)
+    const isDesktop = useIsDesktop();
+    if (isDesktop && menuPopup)
         setMenuPopup(false)
 
     const ContextSelector = getComponent('molecule', 'context_selector')
@@ -81,7 +77,7 @@ const SideBar = memo(({ headerSettings, currentUser, uri, url, bSearch, menuPopu
                 {(!context ||
                     (!currentUser.confirmed &&
                         appSetting('layout', 'lock_unconfirmed'))) &&
-                    (uri == 'home' || width >= LAYOUT_BREAKPOINTS.lg) && (
+                    (uri == 'home' || isDesktop) && (
                         <Link
                             className=" flex items-center  hover:bg-bgritem dark:hover:bg-bgritem-d rounded-xl flex-row active:scale-95 active:opacity-50 text-neutral-800 dark:text-neutral-200 hover:text-neutral-950 dark:hover:text-neutral-50 web:duration-300 "
                             href="/home"

@@ -16,11 +16,24 @@ import Link from 'app/ui/atoms/link'
 import { Text } from 'app/design/typography'
 import Card from 'app/ui/molecules/card'
 import { Button } from 'app/design/controls'
+import { useWindowDimensions } from 'react-native';
+import { useSetWindowSize } from 'app/context/measure';
+
+function WindowSizeSync({ }) {
+    const { width, height } = useWindowDimensions();
+    const setWindowSize = useSetWindowSize();
+    useEffect(() => {
+        setWindowSize(Math.round(width), Math.round(height));
+    }, [width, height, setWindowSize]);
+
+}
+
 export default function Layouts({ path, data, uri, url }) {
 
     registerAll();
 
     const { currentUser } = useCurrentUser();
+
     const layout = useMemo(() => {
         const isWeb = Platform.OS === 'web';
         return getLayoutName(data, data?.uri?.toString(), isWeb);
@@ -29,6 +42,7 @@ export default function Layouts({ path, data, uri, url }) {
     return (
         <Layout layout={layout} path={path} data={data} uri={uri} key={`layout${currentUser?.id}`}>
             <PageLayoutContent layout={layout} path={path} data={data} uri={uri} url={url} />
+            <WindowSizeSync />
         </Layout>
     )
 }
@@ -103,10 +117,6 @@ function PageLayoutContent(props) {
     const { currentUser } = useCurrentUser();
     const { layoutName, layoutBlocks, isCustomLayout } = props.layout;
 
-
-    const informerKey = currentUser?.informer?.map(i => i.id).join(",");
-    console.log("informerKeyinformerKey", informerKey)
-
     const hasProfileInformer = currentUser?.informer?.some(
         item => item.id === "sys-account-profile-system"
     );
@@ -119,7 +129,7 @@ function PageLayoutContent(props) {
         return <ConfirmEmail url={url} />;
     }
     if (hasProfileInformer && appSetting('layout', 'lock_no_profile')) {
-       
+
         if (currentUser?.menu?.items?.length > 1) {
             return (
                 <Card className='mx-auto my-4'>

@@ -1,15 +1,14 @@
-import { useCallback, useState, useEffect, useRef, useMemo, useContext, memo } from "react";
+import { useCallback, useState, useEffect, useRef, useMemo, memo } from "react";
 import { Text } from 'app/design/typography';
-import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing, withSpring } from "react-native-reanimated";
+import Animated, { useSharedValue, useAnimatedStyle } from "react-native-reanimated";
 import { View, ViewRef, Row, Pressable } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
-import { useWindowDimensions } from 'react-native';
-import { appSetting, getHeaderSettings, getUnitModeBySource, getURI, getLayout, handleFeedLayoutData, menuItemsByName, getMenuSettings, isObjectsEqual } from 'app/lib/util';
-import { fillTabs, parseData, fetchAndUpdateData, LeftSidebar, TopSidebar, getNumCols, processBlocks } from 'app/lib/conductor-helpers';
-import { ItemRenderer, ItemRendererMemo } from 'app/components/item-renderer';
+import { appSetting, getHeaderSettings, getUnitModeBySource, getURI, handleFeedLayoutData, getMenuSettings, isObjectsEqual } from 'app/lib/util';
+import { fillTabs, parseData, fetchAndUpdateData, LeftSidebar, TopSidebar, getNumCols } from 'app/lib/conductor-helpers';
+import { ItemRenderer } from 'app/components/item-renderer';
 import { Button } from 'app/design/controls';
 import Link from 'app/ui/atoms/link'
-import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
+import { useInfiniteQuery } from '@tanstack/react-query'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers';
 import { BlockByName } from 'app/components/block';
 import { useTranslation } from 'react-i18next';
@@ -18,7 +17,7 @@ import { useLayoutData } from 'app/context/layout';
 import { useCurrentUser } from 'app/context/user'
 import Search from 'app/ui/molecules/search';
 import DynamicMenu from 'app/components/nav/menu-dynamic';
-import { storageClear, menuItemsFilter, LAYOUT_BREAKPOINTS, cn } from 'app/lib/util';
+import { storageClear, menuItemsFilter} from 'app/lib/util';
 import Footer from 'app/components/nav/footer';
 import { subscribe } from 'app/ui/atoms/socket';
 import { fetcher } from 'app/lib/fetcher';
@@ -31,6 +30,7 @@ import { CoverMenuMore, CoverMenu } from 'app/components/nav/menu-cover'
 import { Panel, PanelGroup, PanelHandler, isShowColumn } from "app/ui/molecules/resizable-panels";
 import { useLayoutSettings } from 'app/context/layout-settings';
 import { cd } from 'app/lib/util'
+import { useIsDesktop, useBreakpoint, useWindowHeight } from 'app/context/measure';
 
 const conductorTheme = appSetting('theme', 'conductor');
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from');
@@ -124,7 +124,7 @@ const AddMenu = (menu, filter) => {
     });
 }
 
-function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, onChangeRoute, leftSideBar }) {
+function ConductorMenu({ routes, index, t, setIndex, getNumCols, currentBreakpoint, onChangeRoute, leftSideBar }) {
 
     const name = "cnd-main-menu"
     const filteredItems = routes.filter((aItem) => aItem.hideInTop != true)
@@ -138,7 +138,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
     const MenuItem = memo(({ item: a, itemRefs, index: index2, visibleItemsCount }) => {
         return callFn('getButtonForConductorSmall', [a, index, () => {
             setIndex(a.index);
-            getNumCols(windowWidth, routes[index], leftSideBar)
+            getNumCols(currentBreakpoint, routes[index], leftSideBar)
             window.history.pushState({}, '', '/' + a.key);
             if (onChangeRoute) {
                 onChangeRoute(a);
@@ -167,7 +167,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
         const handlePress = () => {
             emitter.emit('dynamic_menu', { action: 'hide' });
             setIndex(index);
-            getNumCols(windowWidth, routes[index], leftSideBar);
+            getNumCols(currentBreakpoint, routes[index], leftSideBar);
             window.history.pushState({}, '', '/' + key);
             if (onChangeRoute) {
                 onChangeRoute(item);
@@ -242,7 +242,7 @@ const LeftSideBarContainer = ({ menu, routes, currentUser, index, setIndex, left
     )
 }
 
-const HeaderContainer = ({ tabBarObj, pageData, headerSettings, windowWidth, isCoverDisabled, isHideCover }) => {
+const HeaderContainer = ({ tabBarObj, pageData, headerSettings, isCoverDisabled, isHideCover }) => {
     const scrollValue = useSharedValue(isCoverDisabled ? 0 : 1);
     const hideDefaultHeaderFrom = useSharedValue(200);
     const cover1Ref = useRef(null);
@@ -317,7 +317,7 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, windowWidth, isC
     )
 };
 
-const TabBar = ({ menu, routes, leftSideBar, pageData, currentUser, index, setIndex, getNumCols, windowWidth, onChangeRoute, isHideCover, omitDefaultBackground = false }) => {
+const TabBar = ({ menu, routes, leftSideBar, pageData, currentUser, index, setIndex, getNumCols, currentBreakpoint, onChangeRoute, isHideCover, omitDefaultBackground = false }) => {
     const { t } = useTranslation();
     const { layoutName: layout } = useLayoutSettings();
     const menuSettings = getMenuSettings(menu.object, menu.config, menu);
@@ -326,7 +326,7 @@ const TabBar = ({ menu, routes, leftSideBar, pageData, currentUser, index, setIn
         return (
             <TopSidebar omitDefaultBackground={omitDefaultBackground} leftSideBar={leftSideBar} addButtons={addButtons} layout={layout} title={t(menuSettings?.name)} >
                 <View className="flex-1">
-                    <ConductorMenu currentUser={currentUser} leftSideBar={leftSideBar} routes={routes} index={index} t={t} setIndex={setIndex} getNumCols={getNumCols} windowWidth={windowWidth} onChangeRoute={onChangeRoute} />
+                    <ConductorMenu currentUser={currentUser} leftSideBar={leftSideBar} routes={routes} index={index} t={t} setIndex={setIndex} getNumCols={getNumCols} currentBreakpoint={currentBreakpoint} onChangeRoute={onChangeRoute} />
                 </View>
                 {(!!pageData.cover_block?.actions_menu) && <Row className="hidden lg:block items-center gap-x-2 justify-end mx-3  ">
                     {/*isHideCover && <CoverMenu
@@ -402,8 +402,9 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
     const { layoutName: tmplLayout, density } = useLayoutSettings();
     const toasterRef = useRef(); // ref for toaster
     const cleanUrl = data.url.split("?")[0];
-    const { width: windowWidth, height: windowHeight } = useWindowDimensions();
-
+    const windowHeight = useWindowHeight();
+    const currentBreakpoint = useBreakpoint();
+    const isDesktop = useIsDesktop();
     const initedTabs = fillTabs(menu, data, blocks, currentUser, useSectionAsMenu, leftSideBarBlocks);
 
     const [routes, setRoutes] = useState(initedTabs);
@@ -438,9 +439,9 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
     const currentRoute = routes.find((item) => item.index === index);
     const prevRoute = useMemo(() => routes.find((item) => item.index === prevIndex), [routes, prevIndex]);;
     const queryKey = [currentRoute?.endpoint?.request_url, index, keyword, JSON.stringify(currentRoute?.endpoint?.params?.filters), data.uri];
-    const [headerSettings, setHeaderSettings] = useState(getHeaderSettings(getURI(currentRoute?.key), windowWidth, layoutName, currentRoute.config));
-
-    const [numColumns, setNumColumns] = useState(getNumCols(windowWidth, currentRoute, leftSideBar));
+    const [headerSettings, setHeaderSettings] = useState(getHeaderSettings(getURI(currentRoute?.key), isDesktop, layoutName, currentRoute.config));
+    
+    const [numColumns, setNumColumns] = useState(getNumCols(currentBreakpoint, currentRoute, leftSideBar));
 
     const {
         fetchNextPage,
@@ -477,14 +478,14 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
 
     useEffect(() => {
         if (currentRoute.inited) {
-            const headerSettingsN = getHeaderSettings(getURI(currentRoute?.key), windowWidth, layoutName, currentRoute.config);
+            const headerSettingsN = getHeaderSettings(getURI(currentRoute?.key), isDesktop, layoutName, currentRoute.config);
 
             if (!isObjectsEqual(headerSettings, headerSettingsN)) {
                 setHeaderSettings(headerSettingsN);
             }
         }
 
-    }, [windowWidth, layoutName, currentRoute?.key, currentRoute.config]);
+    }, [isDesktop, layoutName, currentRoute?.key, currentRoute.config]);
 
     useEffect(() => {
         if (currentRoute.cached) {
@@ -503,11 +504,11 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
     }, [isRevalidate]);
 
     useEffect(() => {
-        const numColumnsN = getNumCols(windowWidth, currentRoute, leftSideBar);
+        const numColumnsN = getNumCols(currentBreakpoint, currentRoute, leftSideBar);
         if (numColumnsN != numColumns) {
             setNumColumns(numColumnsN);
         }
-    }, [windowWidth, currentRoute, leftSideBar]);
+    }, [currentBreakpoint, currentRoute, leftSideBar]);
 
     /* UPDATE CONTENT PART */
     useEffect(() => {
@@ -647,9 +648,9 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
         return unitType ? [baseSkeleton, unitType] : baseSkeleton;
     }, [skeleton, currentRoute, unitType]);
 
-    useEffect(() => {
+    /*useEffect(() => {
         setTimeout(() => window.dispatchEvent(new Event('resize_panel')), 100);
-    }, [windowWidth]);
+    }, [windowWidth]);*/
 
     const Preload = useMemo(() => getSkeletonForList(sSkeleton, numColumns), [sSkeleton, numColumns]);
 
@@ -765,7 +766,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
         );
 
 
-    }, [numColumns, windowWidth, index, density]);
+    }, [numColumns, currentBreakpoint, index, density]);
 
     const sceneHeaderComponent = useMemo(() => (
         <RenderSceneHeader route={currentRoute} setFilterValue={setFilterValue} />
@@ -783,7 +784,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
             AddBlocksCnt={AddBlocksCnt} />
     ), [index, setIndex, menu, routes, currentUser, leftSideBarWidth, headerSettings, AddBlocksCnt]);
 
-    const isHideCover = data?.cover_block?.profile && appSetting('cover', 'hide_cover_for_context') && data?.cover_block?.profile?.id === data?.context?.current?.id && windowWidth >= LAYOUT_BREAKPOINTS[TABLET_MODE_FROM];
+    const isHideCover = data?.cover_block?.profile && appSetting('cover', 'hide_cover_for_context') && data?.cover_block?.profile?.id === data?.context?.current?.id && isDesktop;
 
     const tabBarObj = useMemo(() => (
         <TabBar
@@ -795,16 +796,16 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
             index={index}
             setIndex={setIndex}
             getNumCols={getNumCols}
-            windowWidth={windowWidth}
+            currentBreakpoint={currentBreakpoint}
             onChangeRoute={onChangeRoute}
             omitDefaultBackground={false}
             pageData={data}
         />
-    ), [menu, routes, leftSideBar, currentUser, index, setIndex, getNumCols, windowWidth, onChangeRoute, isHideCover]);
+    ), [menu, routes, leftSideBar, currentUser, index, setIndex, getNumCols, currentBreakpoint, onChangeRoute, isHideCover]);
 
     const isShowFilters = layoutName == 'navigator' && leftSideBarBlocks.length > 0;
 
-    const tabBarObj1 = windowWidth < LAYOUT_BREAKPOINTS[TABLET_MODE_FROM] && isShowFilters ?
+    const tabBarObj1 = !isDesktop && isShowFilters ?
         <>
             {tabBarObj}
             <View className={`items-start px-3 sm:px-4 py-2`}>
@@ -818,11 +819,10 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
             tabBarObj={tabBarObj1}
             headerSettings={headerSettings}
             pageData={data}
-            windowWidth={windowWidth}
             isCoverDisabled={isCoverDisabled}
         />
 
-    ), [cntWidth, currentUser, windowWidth, routes, index, isHideCover]);
+    ), [cntWidth, currentUser, routes, index, isHideCover]);
 
     const topSideBarComponent = useMemo(() => (
         <TopSideBarContainer
@@ -853,7 +853,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
 
         const MainComponent = <View className=" flex-auto ">
             {(headerSettings.showAltTopMenu) && topSideBarComponent}
-            {/*(windowWidth < LAYOUT_BREAKPOINTS.lg && layoutName == 'navigator' && leftSideBarBlocks.length > 0) && <View className="items-start ml-4 mt-2 mb-2">
+            {/*(!isDesktop && layoutName == 'navigator' && leftSideBarBlocks.length > 0) && <View className="items-start ml-4 mt-2 mb-2">
                                 <Button title="Filters" variant="default" size="sm" rounded onPress={showFilters} />
                             </View>*/}
             {sceneHeaderComponent}
@@ -864,7 +864,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
         if (cellsCustomConfig?.adjustable) {
             return (
                 <><PanelGroup autoSaveId={`cells-navigator`} direction="horizontal" className={appSetting('layout', 'max_width')}>
-                    {isShowColumn(true, windowWidth, cellsCustomConfig.cells?.left) && <>
+                    {isShowColumn(true, currentBreakpoint, cellsCustomConfig.cells?.left) && <>
                         <Panel {...(() => {
                             const { breakpoint, ...panelProps } = cellsCustomConfig.cells?.left || {};
                             return panelProps;
@@ -906,7 +906,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
 
     return (
         <View className="w-full h-full" scrollEnabled={false} onLayout={handleLayoutTop}>
-            {(isUseCurrentHeader || windowWidth > LAYOUT_BREAKPOINTS.lg) && headerComponent}
+            {(isUseCurrentHeader || isDesktop) && headerComponent}
             <Toaster ref={toasterRef} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" />
             <View className={`${conductorTheme.content_max_width} mx-auto w-full min-h-screen ${tmplLayout == 'mixed' ? 'mt-12' : ''}`}>
                 {sceneHeaderComponent}

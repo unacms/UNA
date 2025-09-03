@@ -28,7 +28,6 @@ import Link from 'app/ui/atoms/link'
  * @param {object} props - Component properties, including optional login form data.
  */
 
-const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from')
 
 function PageContent(props) {
     const { t } = useTranslation()

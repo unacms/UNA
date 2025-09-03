@@ -17,12 +17,11 @@ import { useTranslation } from 'react-i18next';
 import { stripTags } from 'app/lib/util';
 import { Modal } from 'app/design/controls'
 import { BlockByData } from 'app/components/blocks-content/object-data-array-int';
-import { useWindowDimensions } from 'react-native';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { Icon } from 'app/ui/atoms/icon'
 import Redirect from 'app/ui/atoms/redirect';
 import Stripe from 'app/ui/molecules/stripe';
-
+import { useBreakpoint} from 'app/context/measure';
 const getWidth1 = (width) => {
     if (!width)
         return undefined;
@@ -263,7 +262,7 @@ export default function ElementGrid(props) {
     const [modalContent, setModalContent] = useState(false);
     const [modalContentElement, setModalContentElement] = useState(false);
     const { t } = useTranslation();
-    const windowWidth = useWindowDimensions().width;
+    const currentBreakpoint = useBreakpoint();
 
     const deleteRows = useCallback((idsToRemove) => {
         const newItems = dataItems.data.filter(item => !idsToRemove.includes(item.id));
@@ -553,7 +552,7 @@ export default function ElementGrid(props) {
     </View>;
 
     return (
-        windowWidth < 600 ? <ScrollView horizontal={true} className='min-w-full'>
+        currentBreakpoint === 0 ? <ScrollView horizontal={true} className='min-w-full'>
             <View className='w-full mx-auto ' style={{ minWidth: 600 }} >
                 {a}
             </View>

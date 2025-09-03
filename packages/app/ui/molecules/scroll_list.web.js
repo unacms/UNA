@@ -6,12 +6,11 @@ import Animated, {
     withTiming,
 } from 'react-native-reanimated';
 import React, { useCallback, useEffect } from 'react';
-import { appSetting, isShowCover, getPageSettings, LAYOUT_BREAKPOINTS } from 'app/lib/util'
-import { useWindowDimensions } from 'react-native';
+import { appSetting, isShowCover, getPageSettings } from 'app/lib/util'
 import { Header, TextHeader } from 'app/ui/molecules/scroll_list_header';
 import { useCurrentUser } from 'app/context/user';
 import { getMenuSettings } from 'app/lib/util'
-import { cd } from 'app/lib/util'
+import { useIsDesktop } from 'app/context/measure';
 
 export default function ScrollList({
     content,
@@ -29,11 +28,9 @@ export default function ScrollList({
     isMenuNameAsTitle = false,
     isNoContainer = false,
 }) {
-    const { width } = useWindowDimensions();
-    const tabletModeFrom = appSetting('layout', 'tablet_mode_from');
-    const isSmallScreen = width < LAYOUT_BREAKPOINTS[tabletModeFrom]
-    const isCollapsibleHeader = appSetting('native', 'collapsible_header') && isSmallScreen;
-    const isShowScrollToTopButton = appSetting('native', 'scroll_to_top_button') && isSmallScreen;
+    const isDesktop = useIsDesktop();
+    const isCollapsibleHeader = appSetting('native', 'collapsible_header') && !isDesktop;
+    const isShowScrollToTopButton = appSetting('native', 'scroll_to_top_button') && !isDesktop;
     const transparencyOffset = 200;
     const animationDuration = 300;
     const { currentUser } = useCurrentUser();
@@ -154,9 +151,9 @@ export default function ScrollList({
     }
 
     return (
-        <View className={`flex-1`} style={{ paddingTop: isSmallScreen && !useCustomScrollHandler ? headerHeight : 0, paddingBottom: isSmallScreen ? bottomPadding : 0 }}>
+        <View className={`flex-1`} style={{ paddingTop: !isDesktop && !useCustomScrollHandler ? headerHeight : 0, paddingBottom: !isDesktop ? bottomPadding : 0 }}>
             {enhanced}
-            {isSmallScreen && <Animated.View className="backdrop-blur-lg" style={[headerStyle]}>
+            {!isDesktop && <Animated.View className="backdrop-blur-lg" style={[headerStyle]}>
 
                 <View className="w-full bg-card"  >
                     <Header

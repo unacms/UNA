@@ -17,19 +17,16 @@ import { useTranslation } from 'react-i18next';
 import Form from 'app/components/elements/form'
 import { useLayoutData } from 'app/context/layout';
 import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal';
-import { LAYOUT_BREAKPOINTS } from 'app/lib/util'
-import { useWindowDimensions } from 'react-native';
 import { cd } from 'app/lib/util'
+import { useIsDesktop } from 'app/context/measure';
 
 export default function ElementEntityAuthor(oProps) {
-    let { currentUser, setCurrentUser } = useCurrentUser();
+    let { currentUser } = useCurrentUser();
     const [viewState, setViewState] = useState({ view: '' })
     const [postData, setPostData] = useState(null)
     const { setLayoutData } = useLayoutData()
-    const { t } = useTranslation();
     const [pageData, setPageData] = useState(false);
-    const windowWidth = useWindowDimensions().width;
-
+    const isDesktop = useIsDesktop();
     const sInfo = (
         <Row className='items-center '>
             <Time ts={oProps.data.entry_date}></Time>
@@ -139,7 +136,7 @@ export default function ElementEntityAuthor(oProps) {
             }
 
             <View className={oProps.data.text ? '' : 'flex-auto'}>
-                <Profile {...oProps.data.author_data} displayType="unit" displaySize={windowWidth < LAYOUT_BREAKPOINTS.lg ? "base" : "lg"} className='hidden lg:flex' showInfo={sInfo} />
+                <Profile {...oProps.data.author_data} displayType="unit" displaySize={isDesktop ? "lgb" : "base"} className='hidden lg:flex' showInfo={sInfo} />
             </View>
           
             {(oProps.data.text && false) && (

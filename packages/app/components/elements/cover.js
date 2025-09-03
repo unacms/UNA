@@ -2,12 +2,11 @@ import { useState } from 'react'
 import { View, Row, ScrollView } from 'app/design/view'
 import Image from 'app/ui/atoms/image'
 import { Text } from 'app/design/typography'
-import { getBackButtonWeb } from 'app/lib/common-helpers'
 import { Button } from 'app/design/controls'
-import { appSetting, formatDateInterval, cloneObject } from 'app/lib/util'
+import { appSetting, formatDateInterval, cloneObject, uploadImage, md5, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import Profile from 'app/ui/molecules/profile'
 import * as ImagePicker from 'expo-image-picker'
-import { uploadImage, md5, LAYOUT_BREAKPOINTS } from 'app/lib/util'
+
 import { genRnd } from 'app/lib/util'
 import { fetcher } from 'app/lib/fetcher'
 import { manipulateAsync } from 'expo-image-manipulator'
@@ -23,8 +22,8 @@ import Link from 'app/ui/atoms/link'
 import Loading from 'app/ui/atoms/loading'
 import { Platform } from 'react-native'
 import { useRouter, useNavigation } from 'app/lib/hooks/router'
-import { useWindowDimensions } from 'react-native'
 import { getComponent } from 'app/components/registry'
+import { useIsDesktop } from 'app/context/measure';
 
 const conductorTheme = appSetting('theme', 'conductor')
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from')
@@ -57,11 +56,9 @@ const BackButton = ({ isPerson }) => {
 
 function GetCoverBackButton({ isPerson }) {
     const isWeb = Platform.OS === 'web'
-    const { width } = useWindowDimensions()
-    const isLgUp = width >= LAYOUT_BREAKPOINTS.lg
-    const buttonVariant = isLgUp ? 'secondary' : 'text'
-    const buttonSize = isLgUp ? 'base' : 'base'
-
+    const isDesktop = useIsDesktop();
+    const buttonVariant = isDesktop ? 'secondary' : 'text'
+    const buttonSize = isDesktop ? 'base' : 'base'
     if (!isWeb) return <BackButton isPerson={isPerson} />
     if (history.length > 2) {
         return (
@@ -96,6 +93,7 @@ function getCoverBackButton(is_person) {
 }
 
 export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
+    const isDesktop = useIsDesktop();
     const bPerson =
         data.profile.module == 'bx_persons' ||
         appSetting('cover', 'show_pic_by_module', data?.profile?.module)
@@ -103,14 +101,13 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
             : false
     const coverMode =
         appSetting('cover', 'view_by_module', data?.profile?.module) || mode
-    const { width: windowWidth } = useWindowDimensions()
     const isAddSelector =
         context &&
         context.list[0] &&
         data.profile.module == context.list[0].module
     const ContextSelector = getComponent('molecule', 'context_selector')
 
-    if (windowWidth > LAYOUT_BREAKPOINTS[TABLET_MODE_FROM] && isAddSelector) {
+    if (isDesktop && isAddSelector) {
         return null
     }
 

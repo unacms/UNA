@@ -1,23 +1,13 @@
-import { View, Row, Pressable, ScrollView } from 'app/design/view'
-import { Text, H1C } from 'app/design/typography'
-import { stripTags, appSetting } from 'app/lib/util'
-import Profile from 'app/ui/molecules/profile'
-import { useWindowDimensions } from 'react-native'
-import Image from 'app/ui/atoms/image'
-import { Theme } from 'app/design/theme'
-import { Icon } from 'app/ui/atoms/icon'
-import Menu from 'app/components/menu'
-import { BlurView } from 'expo-blur';
-import ProfilesList from 'app/ui/molecules/profile_list'
+import { View, Row } from 'app/design/view'
+import { Text } from 'app/design/typography'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
-import { Button, Modal } from 'app/design/controls'
-import { FeedbackHaptics } from 'app/lib/util';
+import { Button } from 'app/design/controls'
 import Link from 'app/ui/atoms/link'
 import Card from 'app/ui/molecules/card'
 import Progress from 'app/ui/atoms/progress'
 import Scroll from 'app/ui/molecules/scroll'
 import { memo } from 'react'
-import { useState, useReducer, useCallback } from 'react'
+import { useReducer, useCallback } from 'react'
 import { fetcher } from 'app/lib/fetcher'
 import { BlockByData } from 'app/components/blocks-content/object-data-array-int';
 import { useBottomSheetData } from 'app/context/bottomsheet';

@@ -1,14 +1,12 @@
 
-import { View, Row, Pressable } from 'app/design/view'
-import React, { memo, useState, useEffect, useCallback, useMemo } from 'react';
-import { appSetting, getLayout, menuItemsByName, getHeaderSettings, getURI, parseUrl, LAYOUT_BREAKPOINTS } from 'app/lib/util'
-import { useCurrentUser } from 'app/context/user'
-import { useWindowDimensions } from 'react-native';
+import { memo, useState, useEffect, useCallback, useMemo } from 'react';
+import { parseUrl } from 'app/lib/util'
 import Messenger from 'app/components/elements/messenger/parts/common'
 import { CreateConvoButton } from 'app/components/elements/messenger/parts/new-convo';
 import { fetcher } from 'app/lib/fetcher';
 import { Platform } from 'react-native'
 import { useLayoutSettings } from 'app/context/layout-settings';
+import { useIsDesktop, useWindowHeight } from 'app/context/measure';
 
 export default function MessengerEl(props) {
     const url=props.url;
@@ -24,7 +22,6 @@ export default function MessengerEl(props) {
         defaultConvoId = aUrl[2];
 
     const { layoutName: layout } = useLayoutSettings();
-    const isLeftMenu = layout != 'hor' ? false : false;
     
     const menuDefaultList = useMemo(() => {
         return data2.data.menu.items.filter(item => ['inbox', 'direct'].includes(item.name));
@@ -33,8 +30,8 @@ export default function MessengerEl(props) {
     const [menu, setMenu] = useState({ data: menuDefaultList, index: menuDefaultList.findIndex(item => item.name == defaultMenuName) });
     const [convos, setConvos] = useState(false);
     const [initedConvoId, setInitedConvoId] = useState(defaultConvoId);
-    const { width: windowWidth, height: windowWHeight } = useWindowDimensions();
-
+   
+    const windowWHeight = useWindowHeight();
     const fetchConvos = useCallback(async (term) => {
         if (menu) {
             const menuItem = menu?.data[menu?.index].name;
@@ -83,7 +80,6 @@ export default function MessengerEl(props) {
         data={data2}
         selectedMenu={menu?.data[menu?.index].name}
         defaultConvoId={initedConvoId}
-        windowWidth={windowWidth}
         windowWHeight={windowWHeight}
         layout={layout}
         onSave={onSave}
@@ -93,8 +89,9 @@ export default function MessengerEl(props) {
     return messengerContainer;
 }
 
-const MessengerContainer = memo(({ convos, selectedMenu, url, data, windowWHeight, windowWidth, layout, fetchConvos, defaultConvoId, onSave, addButtons }) => {
+const MessengerContainer = memo(({ convos, selectedMenu, url, data, windowWHeight, layout, fetchConvos, defaultConvoId, onSave, addButtons }) => {
     const isWeb = Platform.OS == 'web'
+    const isDesktop = useIsDesktop();
     const layoutHeaderHeight = 64;
     let height = useMemo(() => {
         let heightInit = windowWHeight;
@@ -107,7 +104,7 @@ const MessengerContainer = memo(({ convos, selectedMenu, url, data, windowWHeigh
         if (layout == 'mixed') {
             heightInit = windowWHeight - layoutHeaderHeight;
         }
-        if (windowWidth < LAYOUT_BREAKPOINTS.lg) {
+        if (!isDesktop) {
             heightInit = windowWHeight - 64 ; // ????????????????????
         }
         if (!isWeb) {
