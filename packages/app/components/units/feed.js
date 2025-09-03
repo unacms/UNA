@@ -28,10 +28,7 @@ import {
 import { Platform } from 'react-native'
 import { CardList } from 'app/ui/molecules/card'
 import AnimatedBlock from 'app/ui/atoms/animated-block'
-import Time from 'app/ui/atoms/time'
 import { useRouter } from 'app/lib/hooks/router'
-import Link from 'app/ui/atoms/link'
-import { Icon } from 'app/ui/atoms/icon'
 
 function DefaultUnit({ data }) {
     const isWeb = Platform.OS === 'web'

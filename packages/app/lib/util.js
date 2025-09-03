@@ -1186,7 +1186,7 @@ export const updateRouteDataForConnection = (endpoint, actions, object, currentR
     }
 };
 
-export async function getPageData(url) {
+export async function getPageData(url, codeOnly = false) {
     const pagePath = parseUrl(url);
     let sAdd = "";
 
@@ -1197,7 +1197,7 @@ export async function getPageData(url) {
         sAdd = `&params[]=&params[]=${JSON.stringify(params)}`;
     }
 
-    return await fetcher(`/api.php?r=system/get_page_by_request/TemplServicePages&params[]=${pagePath.path}${sAdd}`);
+    return await fetcher(`/api.php?r=system/get_page_${codeOnly && 'content_'}by_request/TemplServicePages&params[]=${pagePath.path}${sAdd}`);
 }
 
 export function BlockDataByName(data, name) {
