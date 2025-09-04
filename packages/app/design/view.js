@@ -1,8 +1,7 @@
 import {
     ScrollView as ReactNativeScrollView,
     View as ReactNativeView,
-    Pressable as ReactNativePressable,
-    ViewProps as ReactNativeViewProps,
+    Pressable as ReactNativePressable
 } from 'react-native'
 
 export const Pressable = ReactNativePressable
