@@ -447,9 +447,7 @@ export default function RftText({
 
     const insertMention = async (user, query) => {
         const html = await editor.getHTML()
-        const mentionLink = `<a class="bx-mention-link ${
-            user.classname
-        }" href="${user.url}">${user.label.trim()}</a>&shy;`
+        const mentionLink = `<a class="bx-mention-link data-profile-id=${user.value} ${user.classname || ''}" data-profile-id="${user.value}" href="${user.url}">${user.label.trim()}</a>&shy;`
         const replacementStringWithNbsp = mentionLink + '&nbsp;'
         const updatedContent = html.replace(query, replacementStringWithNbsp)
         editor.setContent(updatedContent)
