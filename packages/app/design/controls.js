@@ -665,7 +665,7 @@ export const Button = (props) => {
     } : {};
     const buttonContent = (
         <Cnt
-            className={`${fullWidth ? 'flex-auto ' : ''}`}
+            className={`${fullWidth ? 'flex-auto ' : ''} ${(ThemeButtonSizes?.[size]?.ring || ThemeButtonSizes?.default_ring || '')} ${(ThemeCssClassesButton['u-btn-' + variant + '-focus'] || ThemeCssClassesButton['u-btn-focus'] || '')}`}
             {...rest}
             {...buttonAttributes}
             onPress={onPress && !disabled ? handlePress : undefined}

@@ -24,7 +24,7 @@ export function MenuItemSidebar({ title, icon, isActive, addon }) {
     return (
         <Row className={` mb-0.5 px-2 py-1.5 items-center group rounded-xl ${isActive && 'bg-accent/80 web:hover:bg-accent text-accent-foreground  web:hover:shadow-sm ring-[0.5px] ring-inset ring-ring/20 web:hover:ring-ring/40' || 'web:hover:bg-muted/60'}`}>
             
-                <Text className={`h-9 w-9 text-center items-center justify-center flex rounded-full ${isActive ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground web:group-hover:bg-secondary web:group-hover:text-foreground web:duration-300'}`}>
+                <Text className={`h-9 w-9 text-center items-center justify-center flex rounded-full ${isActive ? 'bg-primary text-primary-foreground' : 'bg-grayA1 text-muted-foreground web:group-hover:bg-secondary web:group-hover:text-foreground web:duration-300'}`}>
                     {isEmoji(icon) ? icon : <Icon icon={icon} size="20" className={`${isActive ? 'text-primary-foreground' : 'text-muted-foreground web:group-hover:text-foreground'}`} />}
                 </Text>
             

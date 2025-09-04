@@ -31,7 +31,7 @@ export default function FormFieldPassword(props) {
                 value={field.value}
                 style={{paddingRight: 48}}
             />
-            <View className="absolute right-1.5 top-1/2 -translate-y-1/2 justify-center items-center">
+            <View className="absolute right-1 top-1/2 -translate-y-1/2 justify-center items-center">
                 <Button
                     startDecorator={isVisible ? buttonConfig.startDecorator.visible : buttonConfig.startDecorator.hidden}
                     size={buttonConfig.size}
