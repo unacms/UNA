@@ -680,9 +680,9 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
         return unitType ? [baseSkeleton, unitType] : baseSkeleton;
     }, [skeleton, currentRoute, unitType]);
 
-    /*useEffect(() => {
+    useEffect(() => {
         setTimeout(() => window.dispatchEvent(new Event('resize_panel')), 100);
-    }, [windowWidth]);*/
+    }, []);
 
     const Preload = useMemo(() => getSkeletonForList(sSkeleton, numColumns), [sSkeleton, numColumns]);
 
