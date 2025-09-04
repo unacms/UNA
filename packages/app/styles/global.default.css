@@ -2,55 +2,64 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @layer base {
     .light-theme-vars {
-        --background: 244 244 245; /*zinc-100*/
-        --foreground: 9 9 11; /*zinc-950*/
-        --card: 250 250 250; /*zinc-50*/
-        --card-foreground: 63 63 70; /*zinc-700*/
-        --popover: 255 255 255; /*white*/
-        --popover-foreground: 31 41 55; /*zinc-800*/
-        --primary: 37 99 235; /*blue-600*/
-        --primary-foreground: 255 255 255; /*white*/
+        /*semantic colors*/
+        --background: var(--neutral-100); /*main page background*/
+        --foreground: var(--neutral-950); /*main page content*/
+        --card: var(--neutral-50); /*cards, sidebars, navbars background*/
+        --card-foreground: var(--neutral-900); /*content on cards, sidebars, navbars*/
+        --popover: var(--white); /*background for popovers, inputs, tooltips, modals, elevated surfaces*/
+        --popover-foreground: var(--neutral-900); /*content on popovers, inputs, tooltips, modals, elevated surfaces*/
+        --primary: var(--accent); /*background for primary buttons, links, active states, focus rings. Use use high-contract background from gray-scale or accent-scale.*/
+        --primary-foreground: var(--accent-foreground); /*content on primary buttons, active states, primary surfaces*/
+        --secondary: var(--neutral-200);  /*background for secondary buttons, secondary surfaces*/
+        --secondary-foreground: var(--neutral-900); /*content on secondary buttons, secondary surfaces*/
+        --accent: var(--accent-700); /*background for accent buttons, accent surfaces*/
+        --accent-foreground: var(--white); /*content on accent buttons, accent surfaces*/
+        --muted: var(--neutral-200); /*background for ui items, sections, hover states*/
+        --muted-foreground: var(--neutral-600); /*muted content*/
+        --destructive: var(--red); /*background for destructive buttons, destructive surfaces*/
+        --destructive-foreground: var(--white); /*content on destructive buttons, destructive surfaces*/
+        --border: var(--neutral-400); /*borders, dividers, focus rings*/
+        --input: var(--neutral-50); /*form inputs*/
+        --ring: var(--accent-700); /*focus rings*/
+        --outline: var(--accent-700); /*focus outline color*/
 
-        --gray1: hsl(0, 0%, 99%); /*Backgrounds + Steps 11, 12 text*/
-        --gray2: hsl(0, 0%, 98%); /*Backgrounds + Steps 11, 12 text*/
-        --gray3: hsl(0, 0%, 94%); /*Interactive components + Steps 11 labels, Step 12 text*/
-        --gray4: hsl(0, 0%, 91%); /*Interactive components + Steps 11, 12 labels*/
-        --gray5: hsl(0, 0%, 88%); /*Interactive components + Steps 12 labels*/
-        --gray6: hsl(0, 0%, 85%); /*Borders and separators + Steps 1–5 backgrounds*/
-        --gray7: hsl(0, 0%, 81%); /*Borders and separators + Steps 1–5 backgrounds*/
-        --gray8: hsl(0, 0%, 73%); /*Borders, focus rings, disabled text + Steps 1–5 backgrounds*/
-        --gray9: hsl(0, 0%, 55%); /*Solid backgrounds, disabled text + White text*/
-        --gray10: hsl(0, 0%, 51%); /*Solid backgrounds, disabled text + White text*/
-        --gray11: hsl(0, 0%, 39%); /*Secondary text, links + Background colors*/
-        --gray12: hsl(0, 0%, 13%); /*High-contrast text + Background colors*/
 
-        --grayA1: hsla(0, 0%, 0%, 0.01); /* Alpha colors for elements that need to retain contrast when overlayed over different backgrounds*/
-        --grayA2: hsla(0, 0%, 0%, 0.02);
-        --grayA3: hsla(0, 0%, 0%, 0.06);
-        --grayA4: hsla(0, 0%, 0%, 0.09);
-        --grayA5: hsla(0, 0%, 0%, 0.12);
-        --grayA6: hsla(0, 0%, 0%, 0.15);
-        --grayA7: hsla(0, 0%, 0%, 0.19);
-        --grayA8: hsla(0, 0%, 0%, 0.27);
-        --grayA9: hsla(0, 0%, 0%, 0.45);
-        --grayA10: hsla(0, 0%, 0%, 0.49);
-        --grayA11: hsla(0, 0%, 0%, 0.61);
-        --grayA12: hsla(0, 0%, 0%, 0.87);
+         /* neutral scale (zinc) - standard Tailwind CSS zinc 50-950 */
+        --neutral-50: 250 250 250;    /* #fafafa */
+        --neutral-100: 244 244 245;   /* #f4f4f5 */
+        --neutral-200: 228 228 231;   /* #e4e4e7 */
+        --neutral-300: 212 212 216;   /* #d4d4d8 */
+        --neutral-400: 161 161 170;   /* #a1a1aa */
+        --neutral-500: 113 113 122;   /* #71717a */
+        --neutral-600: 82 82 91;      /* #52525b */
+        --neutral-700: 63 63 70;      /* #3f3f46 */
+        --neutral-800: 39 39 42;      /* #27272a */
+        --neutral-900: 24 24 27;      /* #18181b */
+        --neutral-950: 9 9 11;        /* #09090b */
 
-        --secondary: 212 212 216;  /*zinc-300*/
-        --secondary-foreground: 63 63 70; /*zinc-700*/
-        --muted: 244 244 245; /*zinc-100*/
-        --muted-foreground: 113 113 122; /*zinc-500*/
-        --accent: 219 234 254; /*blue-100*/
-        --accent-foreground: 29 78 216; /*blue-700*/
-        --destructive: 225 29 72; /*rose-600*/
-        --destructive-foreground: 255 241 242; /*rose-50*/
-        --border: 161 161 170; /*zinc-400*/
-        --input: 244 244 245; /*zinc-50*/
-        --ring: 59 130 246; /*blue-500*/
+         /* accent scale (blue) - Tailwind CSS blue-50 ... blue-950 */
+         --accent-50: 239 246 255;    /* #eff6ff */
+         --accent-100: 219 234 254;   /* #dbeafe */
+         --accent-200: 191 219 254;   /* #bfdbfe */
+         --accent-300: 147 197 253;   /* #93c5fd */
+         --accent-400: 96 165 250;    /* #60a5fa */
+         --accent-500: 59 130 246;    /* #3b82f6 */
+         --accent-600: 37 99 235;     /* #2563eb */
+         --accent-700: 29 78 216;     /* #1d4ed8 */
+         --accent-800: 30 64 175;     /* #1e40af */
+         --accent-900: 30 58 138;     /* #1e3a8a */
+         --accent-950: 23 37 84;      /* #172554 */
+
+
+        /* State colors for semantic system */
+        --white: 255 255 255;
+        --green: 34 197 94;    /*green-500*/
+        --yellow: 234 179 8;   /*yellow-500*/
+        --blue: 59 130 246;    /*blue-500*/
+        --red: 225 29 72; /*rose-600*/
 
         --android-background: var(--background);
         --android-foreground: var(--foreground);
@@ -75,54 +84,28 @@
     
 
     .dark-theme-vars {
-        /* NativewindUI Design Tokens - Dark Mode */
-        --background: 9 9 11; /*zinc-950*/
-        --foreground: 250 250 250; /*zinc-50*/
-        --card: 24 24 27; /*zinc-900*/
-        --card-foreground: 212 212 216; /*zinc-300*/
-        --popover: 39 39 42; /*zinc-800*/
-        --popover-foreground: 228 228 231; /*zinc-200*/
-        --primary: 37 99 235; /*blue-600*/
-        --primary-foreground: 250 250 250; /*zinc-50*/
+       /*semantic colors - Dark mode*/
 
-        --gray1: hsl(0, 0%, 7%);   /*Backgrounds + Steps 11, 12 text*/
-        --gray2: hsl(0, 0%, 10%);  /*Backgrounds + Steps 11, 12 text*/
-        --gray3: hsl(0, 0%, 13%);  /*Interactive components + Steps 11 labels, Step 12 text*/
-        --gray4: hsl(0, 0%, 16%);  /*Interactive components + Steps 11, 12 labels*/
-        --gray5: hsl(0, 0%, 19%);  /*Interactive components + Steps 12 labels*/
-        --gray6: hsl(0, 0%, 23%);  /*Borders and separators + Steps 1–5 backgrounds*/
-        --gray7: hsl(0, 0%, 28%);  /*Borders and separators + Steps 1–5 backgrounds*/
-        --gray8: hsl(0, 0%, 38%);  /*Borders, focus rings, disabled text + Steps 1–5 backgrounds*/
-        --gray9: hsl(0, 0%, 43%);  /*Solid backgrounds, disabled text + White text*/
-        --gray10: hsl(0, 0%, 48%); /*Solid backgrounds, disabled text + White text*/
-        --gray11: hsl(0, 0%, 71%); /*Secondary text, links + Background colors*/
-        --gray12: hsl(0, 0%, 93%); /*High-contrast text + Background colors*/
-
-        --grayA1: hsla(0, 0%, 0%, 0.01); /* Alpha colors for elements that need to retain contrast when overlayed over different backgrounds*/
-        --grayA2: hsla(0, 0%, 0%, 0.02);
-        --grayA3: hsla(0, 0%, 0%, 0.06);
-        --grayA4: hsla(0, 0%, 0%, 0.09);
-        --grayA5: hsla(0, 0%, 0%, 0.12);
-        --grayA6: hsla(0, 0%, 0%, 0.15);
-        --grayA7: hsla(0, 0%, 0%, 0.19);
-        --grayA8: hsla(0, 0%, 0%, 0.27);
-        --grayA9: hsla(0, 0%, 0%, 0.45);
-        --grayA10: hsla(0, 0%, 0%, 0.49);
-        --grayA11: hsla(0, 0%, 0%, 0.61);   
-        --grayA12: hsla(0, 0%, 0%, 0.87);
-
-        --secondary: 63 63 70; /*zinc-700*/
-        --secondary-foreground: 212 212 216; /*zinc-300*/
-        --muted: 39 39 42; /*zinc-800*/
-        --muted-foreground: 113 113 122; /*zinc-500*/
-        --accent: 23 37 84; /*blue-950*/
-        --accent-foreground: 59 130 246; /*blue-500*/
-        --destructive: 225 29 72; /*rose-600*/
-        --destructive-foreground: 76 5 25; /*rose-950*/
-        --border: 63 63 70; /*zinc-700*/
-        --input: 39 39 42; /*zinc-800*/
-        --ring: 29 78 216; /*blue-700*/
-
+        --background: var(--neutral-950); /*main page background*/
+        --foreground: var(--neutral-50); /*main page content*/
+        --card: var(--neutral-900); /*cards, sidebars, navbars background*/
+        --card-foreground: var(--neutral-300); /*content on cards, sidebars, navbars*/
+        --popover: var(--neutral-800); /*background for popovers, inputs, tooltips, modals, elevated surfaces*/
+        --popover-foreground: var(--neutral-200); /*content on popovers, inputs, tooltips, modals, elevated surfaces*/
+        --primary: var(--accent); /*background for primary buttons, links, active states, focus rings. Use use high-contract background from gray-scale or accent-scale.*/
+        --primary-foreground: var(--accent-foreground); /*content on primary buttons, active states, primary surfaces*/
+        --secondary: var(--neutral-700);  /*background for secondary buttons, secondary surfaces*/
+        --secondary-foreground: var(--neutral-300); /*content on secondary buttons, secondary surfaces*/
+        --accent: var(--accent-600); /*background for accent buttons, accent surfaces*/
+        --accent-foreground: var(--neutral-950); /*content on accent buttons, accent surfaces*/
+        --muted: var(--neutral-800); /*background for ui items, sections, hover states*/
+        --muted-foreground: var(--neutral-400); /*muted content*/
+        --destructive: var(--red); /*background for destructive buttons, destructive surfaces*/
+        --destructive-foreground: var(--neutral-950); /*content on destructive buttons, destructive surfaces*/
+        --border: var(--neutral-700); /*borders, dividers, focus rings*/
+        --input: var(--neutral-800); /*form inputs*/
+        --ring: var(--accent-600); /*focus rings*/
+        --outline-d: var(--accent-600); /*dark mode focus outline color*/
 
         --android-background: var(--background);
         --android-foreground: var(--foreground);
@@ -143,8 +126,7 @@
         --android-border: var(--border);
         --android-input: var(--input);
         --android-ring: var(--ring);
-        
-        }
+    }
 
     :root {
         @apply light-theme-vars;
@@ -248,7 +230,6 @@ html[theme="dark"] *:focus-visible {
     word-wrap: break-word;
     font-weight: 400;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, ".SFNSText-Regular", sans-serif;
-    ;
 }
 
 .u-vanilla-html :where(p):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
@@ -289,19 +270,19 @@ html[theme="dark"] *:focus-visible {
     margin-bottom: 0 !important;
 }
 
-.u-vanilla-html H1,
-H2,
-H3,
-H4,
-H5 {
+.u-vanilla-html h1,
+.u-vanilla-html h2,
+.u-vanilla-html h3,
+.u-vanilla-html h4,
+.u-vanilla-html h5 {
     @apply text-neutral-900 dark:text-neutral-100;
 }
 
-.u-vanilla-html-small H1,
-H2,
-H3,
-H4,
-H5 {
+.u-vanilla-html-small h1,
+.u-vanilla-html-small h2,
+.u-vanilla-html-small h3,
+.u-vanilla-html-small h4,
+.u-vanilla-html-small h5 {
     @apply text-neutral-900 dark:text-neutral-100;
 }
 
@@ -317,8 +298,10 @@ H5 {
     text-decoration: none;
 }
 
-.u-vanilla-html.u-vanilla-html-small A:hover,
-.u-vanilla-html.u-vanilla-html-small .link {
+.u-vanilla-html A:hover,
+.u-vanilla-html .link:hover,
+.u-vanilla-html-small A:hover,
+.u-vanilla-html-small .link:hover {
     text-decoration: underline;
 }
 

@@ -1,25 +1,28 @@
-const { hairlineWidth, platformSelect } = require('nativewind/theme');
+import { hairlineWidth, platformSelect } from 'nativewind/theme';
 
-// Official NativewindUI withOpacity function (matches their documentation)
+// Enhanced withOpacity function (handles both RGB and RGBA colors)
 function withOpacity(variableName) {
     return ({ opacityValue }) => {
         if (opacityValue !== undefined) {
+            // For dynamic opacity (e.g., bg-primary/50)
             return platformSelect({
                 ios: `rgb(var(--${variableName}) / ${opacityValue})`,
                 android: `rgb(var(--android-${variableName}) / ${opacityValue})`,
                 default: `rgb(var(--${variableName}) / ${opacityValue})`,
             });
         }
+        // For baked-in opacity colors (like rgba() values)
         return platformSelect({
-            ios: `rgb(var(--${variableName}))`,
-            android: `rgb(var(--android-${variableName}))`,
-            default: `rgb(var(--${variableName}))`,
+            ios: `var(--${variableName})`,
+            android: `var(--android-${variableName})`,
+            default: `var(--${variableName})`,
         });
     };
 }
 
 // NativewindUI color system - matches official documentation
 const nativewindUIColors = {
+    // 🎨 Core semantic tokens (existing)
     border: withOpacity('border'),
     input: withOpacity('input'),
     ring: withOpacity('ring'),
@@ -53,6 +56,11 @@ const nativewindUIColors = {
         DEFAULT: withOpacity('card'),
         foreground: withOpacity('card-foreground'),
     },
+
+    // Raw state colors
+    green: withOpacity('green'),
+    yellow: withOpacity('yellow'),
+    blue: withOpacity('blue'),
 };
 
 // NativewindUI theme extension
@@ -63,8 +71,8 @@ const nativewindUITheme = {
     colors: nativewindUIColors,
 };
 
-module.exports = {
+export {
     nativewindUITheme,
     nativewindUIColors,
     withOpacity,
-}; 
+};
