@@ -117,21 +117,19 @@ const theme = {
             ...colors,
             ...nativewindUIColors,
         },
-        
       
         boxShadow: {
-            'xs': '0 0.5px 2px 0 rgb(0 0 0 / 0.05)',
-            'sm': '0 1px 4px 0 rgb(0 0 0 / 0.05)',
-            'md': '0 2px 8px 0 rgb(0 0 0 / 0.05)',
-            'lg': '0 8px 16px 0 rgb(0 0 0 / 0.08)',
+            'xs': '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+            'sm': '0 1px 3px 0 rgb(0 0 0 / 0.05)',
+            'md': '0 4px 6px 0 rgb(0 0 0 / 0.1)',
+            'lg': '0 10px 15px 0 rgb(0 0 0 / 0.1)',
             'xl': '0 20px 25px -5px rgb(0 0 0 / 0.08)',
             '2xl': '0 25px 50px -10px rgb(0 0 0 / 0.08)',
         },
 
         fontSize: {
-            '2xs': ['11px', { lineHeight: '14px' }],
-            xs: ['13px', { lineHeight: '16px' }],
-         
+            '2xs': ['10px', { lineHeight: '12px' }],
+          
         },
         
         minWidth: {
