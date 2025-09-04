@@ -319,7 +319,7 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, isCoverDisabled,
             height: scrollValue.value == 1 ? '0px' : (coverHeight.value + menuHeight.value) + 'px',
 
         };
-    }, [scrollValue]);
+    }, [scrollValue, coverHeight.value, menuHeight.value]);
 
     return (
         <>
