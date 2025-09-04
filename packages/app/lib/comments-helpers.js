@@ -278,7 +278,8 @@ export function CommentsBrowse({ scrollProps, browse, requestUrl, module, handle
         if (!commentData.objectId)
             return;
 
-        if (commentData.last_count == commentData.perView) {
+        //if (commentData.last_count == commentData.perView) {
+        if (commentData.last_count != 0){
             handleMoreInner();
         }
     }

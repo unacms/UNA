@@ -53,8 +53,6 @@ export const Icon = memo(function Icon(props) {
        
     }, [icon, key]); // Зависим только от иконки и ключа
 
-    console.log("currentIcon", isXmlSvg, origIcon, `icon-${key}`)
-
     if (!currentIcon) {
         if (InlineIcon){
             return <InlineIcon width={width || size} height={height || size} />;

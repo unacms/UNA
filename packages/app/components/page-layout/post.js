@@ -1,7 +1,7 @@
 import { View } from 'app/design/view';
 import { BlockByName, DataByName } from 'app/components/block';
 import { useState, useCallback, useMemo, useEffect } from 'react';
-import { stripTags,cd } from 'app/lib/util';
+import { stripTags, cd } from 'app/lib/util';
 import { CommentsBrowse, CommentsForm } from 'app/lib/comments-helpers'
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
 import { Platform } from 'react-native'
@@ -10,7 +10,7 @@ import emitter from 'app/context/emitter';
 import { useIsDesktop, useWindowHeight } from 'app/context/measure';
 
 
-export default function PageLayout({data, blocks, isModal, url}) {
+export default function PageLayout({ data, blocks, isModal, url }) {
     const isWeb = Platform.OS == 'web';
     const windowWHeight = useWindowHeight();
     const isDesktop = useIsDesktop();
@@ -37,22 +37,22 @@ export default function PageLayout({data, blocks, isModal, url}) {
             if (hash) {
                 // click on reply
                 if (hash.includes('cmt_id=')) {
-                     console.log("notifsnotifs", hash)
+                    console.log("notifsnotifs", hash)
                     setReplyId(hash);
-                    emitter.emit('editor', { action: 'focus', note:"setReplyId", timeout:800});
+                    emitter.emit('editor', { action: 'focus', note: "setReplyId", timeout: 800 });
                 }
-                else{
-                    if (hash.includes('cid=')){
-                       
+                else {
+                    if (hash.includes('cid=')) {
+
                         //click from notifs
                         setScrollToEnd(hash.replace('cid=', ''));
                     }
-                    else{
+                    else {
                         // click on comments
                         setScrollToEnd(true);
-                        emitter.emit('editor', { action: 'focus', note:"a", timeout:800});
+                        emitter.emit('editor', { action: 'focus', note: "a", timeout: 800 });
                     }
-                    
+
                 }
             }
 
@@ -80,30 +80,30 @@ export default function PageLayout({data, blocks, isModal, url}) {
 
     const handleLayout = useCallback((event) => {
         if (isWeb)
-            setFormHeight(event.nativeEvent.layout.height) 
+            setFormHeight(event.nativeEvent.layout.height)
     }, []);
 
     const handleListLayout = (event) => {
-           
-            setListWidth(event.nativeEvent.layout.width - 2)
-        }
 
-        const handleLayoutModal = (event) => {
-            const h =
-                windowWHeight -
-                offset -
-                event.nativeEvent.layout.height
-            setHeight(h)
-        }
+        setListWidth(event.nativeEvent.layout.width - 2)
+    }
+
+    const handleLayoutModal = (event) => {
+        const h =
+            windowWHeight -
+            offset -
+            event.nativeEvent.layout.height
+        setHeight(h)
+    }
 
 
-    if (isModal){
+    if (isModal) {
         // NEEED TO IMPROVE TO AVOID DOUBLE CODE
-        
+
         return (
-              <View className="w-full h-full">
+            <View className="w-full h-full">
                 <View className="w-full " style={{ height: height }}>
-                  <CommentsBrowse
+                    <CommentsBrowse
                         scrollProps={
                             {
                                 headerHeight: 64,
@@ -113,7 +113,7 @@ export default function PageLayout({data, blocks, isModal, url}) {
                                 padding: 16,
                             }
                         }
-                        height={height > 0 ? height : undefined} 
+                        height={height > 0 ? height : undefined}
                         scrollToIndex={scrollToEnd}
                         addItems={aItems}
                         handleReply={data => setFormData({ ts: Date.now(), text: stripTags(data.cmt_text), parent_id: data.cmt_id, author: data.author_data, cmt_id: data.cmt_id, cmt_object_id: data.cmt_object_id })}
@@ -130,8 +130,7 @@ export default function PageLayout({data, blocks, isModal, url}) {
                         'py-sm'
                     )} border-t border-border`}
                 >
-                  <CommentsForm handleForm={setAddData} browse={commentsData?.content[0]?.browse} module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module} form={commentsData?.content[0]?.form} formData={formData} requestUrl={commentsData?.content[0]?.url} />
-                   
+                    <CommentsForm handleForm={setAddData} browse={commentsData?.content[0]?.browse} module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module} form={commentsData?.content[0]?.form} formData={formData} requestUrl={commentsData?.content[0]?.url} />
                 </View>
             </View>
         )
@@ -139,7 +138,7 @@ export default function PageLayout({data, blocks, isModal, url}) {
     return (
         <View {...viewProps} className={`flex-1 w-full h-full sm:h-[calc(100vh-16rem)] max-w-5xl mx-auto `}>
             <View className="w-full flex-1 bg-card/80 backdrop-blur shadow-sm sm:border border-border/30 web:sm:border-0 web:ring-[1px] web:ring-inset web:ring-border/30 text-card-foreground rounded-2xl lg:mt-4 ">
-                <View   onLayout={handleListLayout} pointerEvents="box-none" className='w-full flex-1' style={{ marginBottom: !isDesktop ? 0 : formHeight  }}>
+                <View onLayout={handleListLayout} pointerEvents="box-none" className='w-full flex-1' style={{ marginBottom: !isDesktop ? 0 : formHeight }}>
                     <CommentsBrowse
                         scrollProps={
                             {
@@ -162,10 +161,8 @@ export default function PageLayout({data, blocks, isModal, url}) {
                 </View>
             </View>
             <KbAvoidingView>
-                <View onLayout={handleLayout} style={{width:listWidth}} className='bg-card ml-[1px] rounded-2xl px-4 py-3 bor web:fixed web:bottom-0   w-full max-w-5xl'>
-                   
+                <View onLayout={handleLayout} style={{ width: listWidth }} className='bg-card ml-[1px] rounded-2xl px-4 py-3 bor web:fixed web:bottom-0   w-full max-w-5xl'>
                     <CommentsForm handleForm={setAddData} browse={commentsData?.content[0]?.browse} module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module} form={commentsData?.content[0]?.form} formData={formData} requestUrl={commentsData?.content[0]?.url} />
-                     
                 </View>
             </KbAvoidingView>
         </View>
