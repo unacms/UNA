@@ -1,9 +1,8 @@
 "use client"
 import Layout from 'app/components/layout';
 import { useCurrentUser } from 'app/context/user'
-import { getComponent, isComponent } from 'app/components/registry';
-import { appSetting, getPageSettings } from 'app/lib/util'
-import { Platform } from 'react-native'
+import { getComponent } from 'app/components/registry';
+import { appSetting, getLayoutName } from 'app/lib/util'
 import Cell from 'app/components/cell';
 import { View, Row } from 'app/design/view'
 import { appStatic } from 'app/lib/app-static'
@@ -35,8 +34,7 @@ export default function Layouts({ path, data, uri, url }) {
     const { currentUser } = useCurrentUser();
 
     const layout = useMemo(() => {
-        const isWeb = Platform.OS === 'web';
-        return getLayoutName(data, data?.uri?.toString(), isWeb);
+        return getLayoutName(data, data?.uri?.toString());
     }, [data, data?.uri]);
 
     return (
@@ -70,45 +68,6 @@ function ErrorPage({ type }) {
 
 function Wrapper(children) {
     return <View className="flex-1 mx-auto w-full h-full ">{children}</View>;/*animated-view*/
-}
-
-function getLayoutName(data, uri, isWeb) {
-    if (data?.page_status) {
-        return { layoutName: 'default', layoutBlocks: '', isCustomLayout: false };
-    }
-
-    const { layout: customLayout = '', blocks: customBlocks = '' } = getPageSettings(data?.config, uri) || {};
-    const isCustom = Boolean(customLayout);
-
-    const checks = [
-        {
-            cond: isCustom,
-            name: customLayout,
-            blocks: customBlocks,
-            custom: true,
-        },
-        {
-            cond: Boolean(data?.cover_block?.profile),
-            name: 'profile',
-        },
-        {
-            cond: data?.menu?.items?.length > 0 && !uri.includes('create-'),
-            name: 'navigator',
-        },
-        {
-            cond: data?.layout && isComponent('layout', data.layout),
-            name: data.layout,
-            blocks: customBlocks,
-        },
-    ];
-
-    for (const { cond, name, blocks = customBlocks, custom = isCustom } of checks) {
-        if (cond) {
-            return { layoutName: name, layoutBlocks: blocks, isCustomLayout: custom };
-        }
-    }
-
-    return { layoutName: 'default', layoutBlocks: customBlocks, isCustomLayout: isCustom };
 }
 
 function PageLayoutContent(props) {

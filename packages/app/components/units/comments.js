@@ -53,6 +53,7 @@ export default function UnitComments(props) {
 
     const handleReply = useCallback(
         (data, isNoReaction) => {
+            console.log("datadatadata", data)
             if (!isNoReaction) FeedbackHaptics('Medium')
             props.handleReply(data)
         },
