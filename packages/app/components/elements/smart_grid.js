@@ -1,23 +1,16 @@
 import { Text } from 'app/design/typography'
-import { View, Row } from 'app/design/view'
-import { useCurrentUser } from 'app/context/user'
-import { LAYOUT_BREAKPOINTS } from 'app/lib/util';
-import { Icon } from 'app/ui/atoms/icon'
-import { Button } from 'app/design/controls';
-import React, { useState } from 'react';
+import { View } from 'app/design/view'
 import Image from 'app/ui/atoms/image';
-;
-import Map from 'app/components/elements/map';
 
 export default function (props) {
     const initedData = props.data.content.sm;
 
 
     return <View className='w-full'>
-        {initedData?.map(a => 
+        {initedData?.map(a =>
         (
 
-           getCell(a)
+            getCell(a)
 
         )
         )}
@@ -29,14 +22,14 @@ function getCell(block, bAllowEdit) {
     let blockContent;
     switch (block.type) {
         case "image":
-            blockContent = <View className='w-full aspect-video'><Image view='cover' sizes={LAYOUT_BREAKPOINTS.lg} className=" u-cover " alt='' src={block.content} /></View>
+            blockContent = <View className='w-full aspect-video'><Image view='cover' className=" u-cover " alt='' src={block.content} /></View>
             break;
         case "text":
             blockContent = <View className="py-2 px-4 items-start justify-start"><Text className='text-lg text-neutral-900 dark:text-neutral-50'>{block.content}</Text></View>;
             break;
         case "link":
             const ImageComponent = ({ className, src }) => (
-                <Image view='cover' sizes={LAYOUT_BREAKPOINTS.lg} className={className} alt='' src={src} />
+                <Image view='cover' className={className} alt='' src={src} />
             );
 
             blockContent = block.content_data && (

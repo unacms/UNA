@@ -17,7 +17,7 @@ import { fetcher } from 'app/lib/fetcher'
 import RadioButton from 'app/ui/atoms/radiobutton'
 import Redirect from 'app/ui/atoms/redirect'
 import MenuFooter from 'app/components/nav/menu-footer'
-import { useWindowDimensions } from 'react-native'
+import { useIsDesktop } from 'app/context/measure';
 
 export default function MenuAccount({ buttonProps, children }) {
     const redirectdRef = useRef()
@@ -25,8 +25,7 @@ export default function MenuAccount({ buttonProps, children }) {
     const [menuData, setMenuData] = useState(false)
     const [menuData1, setMenuData1] = useState(false)
     const [data, setData] = useState(false)
-    const { width } = useWindowDimensions()
-    const isLgUp = width >= LAYOUT_BREAKPOINTS.lg
+    const isDesktop = useIsDesktop();
 
     const fetchDataPr = async () => {
         const sResponse = await fetcher(
@@ -92,11 +91,11 @@ export default function MenuAccount({ buttonProps, children }) {
 
     const defaultButtonProps = {
         tooltip: t('Dashboard'),
-        variant: isLgUp ? 'secondary' : 'text',
+        variant: isDesktop ? 'secondary' : 'text',
         rounded: true,
         padding: '0px',
         startDecorator: profile,
-        size: isLgUp ? 'sm' : 'lg',
+        size: isDesktop ? 'sm' : 'lg',
     }
 
     buttonProps = { ...defaultButtonProps, ...(buttonProps || {}) }

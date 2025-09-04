@@ -1,16 +1,15 @@
-import { View, ScrollView, Row, Pressable } from 'app/design/view'
-import { Modal } from 'app/design/controls'
-import { useState, useEffect, useContext } from 'react';
+import { View } from 'app/design/view'
+import { useState, useEffect } from 'react';
 import { useCurrentUser } from 'app/context/user';
-import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
+import { appSetting } from 'app/lib/util'
 import Browse from 'app/components/elements/browse'
 import { fetcher } from 'app/lib/fetcher';
-import { useWindowDimensions } from 'react-native';
 import { useBottomSheetData } from 'app/context/bottomsheet';
+import { useIsDesktop } from 'app/context/measure';
 
 export default function Suggestions(props) {
-    const windowWidth = useWindowDimensions().width;
-    let { currentUser, setCurrentUser } = useCurrentUser();
+    const { currentUser } = useCurrentUser();
+    const isDesktop = useIsDesktop();
     const [dataIndexModal, setDataIndexModal] = useState(0);
     const { setBottomSheetData } = useBottomSheetData();
     const [dataCount, setDataCount] = useState(0);
@@ -63,16 +62,16 @@ export default function Suggestions(props) {
 
     useEffect(() => {
         if (currentUser && currentUser.confirmed && dataModal && dataCount > 0) {
-            if (dataModal.perLine > 1 && windowWidth < LAYOUT_BREAKPOINTS.lg)
+            if (dataModal.perLine > 1 && !isDesktop)
                 dataModal.perLine = 1
             let cnt = (
-                <View className={(windowWidth > LAYOUT_BREAKPOINTS.lg ? 'max-h-96' : '') + ''}>
-                    <Browse sidebar={windowWidth > LAYOUT_BREAKPOINTS.lg ? false : true} only_one_page={true} data={{ request_url: dataModal.request_url.replace('{user_id}', currentUser.id), "type": "obj_own_and_con", unit: "general-content-list" }} perLine={dataModal.perLine} unitType={dataModal.unitType} />
+                <View className={(isDesktop ? 'max-h-96' : '') + ''}>
+                    <Browse sidebar={isDesktop ? false : true} only_one_page={true} data={{ request_url: dataModal.request_url.replace('{user_id}', currentUser.id), "type": "obj_own_and_con", unit: "general-content-list" }} perLine={dataModal.perLine} unitType={dataModal.unitType} />
                 </View>
             );
             setBottomSheetData({ title: dataModal.title, content: cnt, showClose: true, onClose: onCloseEvent, snapPoints: ['50%', '65%'] });
         }
-    }, [dataCount, windowWidth]);
+    }, [dataCount, isDesktop]);
 
     return <></>
 }

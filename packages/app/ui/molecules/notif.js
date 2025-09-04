@@ -1,22 +1,20 @@
 import { Text } from 'app/design/typography'
-import { View, Row, Pressable } from 'app/design/view'
-import { Button, ButtonRef } from 'app/design/controls'
-import { useState, useRef, useEffect, useMemo } from 'react'
-import { appSetting, clearNotif, LAYOUT_BREAKPOINTS } from 'app/lib/util'
+import { View } from 'app/design/view'
+import { Button } from 'app/design/controls'
+import { useState, useMemo } from 'react'
+import { appSetting, clearNotif } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import { useTranslation } from 'react-i18next'
 import Browse from 'app/components/elements/browse'
 import { Link } from 'solito/link'
-import { useWindowDimensions } from 'react-native'
-
+import { useIsDesktop } from 'app/context/measure';
 export default function ({ buttonProps, children, tooltip, fullWidth }) {
     const { currentUser, setCurrentUser } = useCurrentUser()
+    const isDesktop = useIsDesktop();
     const [ntfsOpen, setNtfsOpen] = useState(false)
     const notifCount = currentUser.notifications
     const { t } = useTranslation()
-    const { width } = useWindowDimensions()
-    const isLgUp = width >= LAYOUT_BREAKPOINTS.lg
 
     let data = {
         request_url: '/api.php?r=bx_notifications/get_data/&params[]=',
@@ -37,11 +35,11 @@ export default function ({ buttonProps, children, tooltip, fullWidth }) {
     }, [notifCount])
 
     const defaultButtonProps = {
-        variant: isLgUp ? 'secondary' : 'text',
+        variant: isDesktop ? 'secondary' : 'text',
         tooltip: tooltip || 'Notifications',
         rounded: true,
         startDecorator: 'Bell',
-        size: isLgUp ? 'base' : 'lg',
+        size: isDesktop ? 'base' : 'lg',
     }
 
     buttonProps = { ...defaultButtonProps, ...(buttonProps || {}) }

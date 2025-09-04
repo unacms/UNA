@@ -9,7 +9,6 @@ import {
     useMemo,
 } from 'react'
 import { View, Row } from 'app/design/view'
-import { useWindowDimensions } from 'react-native'
 import { Platform } from 'react-native'
 import UniList from 'app/ui/atoms/unilist'
 import { fetcher } from 'app/lib/fetcher'
@@ -20,7 +19,6 @@ import {
     storageSet,
     handleFeedLayoutData,
     cloneObject,
-    LAYOUT_BREAKPOINTS,
 } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
@@ -35,6 +33,7 @@ import { callFn } from 'app/lib/functions/call'
 import Link from 'app/ui/atoms/link'
 import Galery from 'app/ui/molecules/galery'
 import { Button } from 'app/design/controls'
+import { useBreakpoint, useWindowHeight } from 'app/context/measure';
 
 const Item = memo(({ item, index, numColumns, data, unitMode, props }) => (
     <View
@@ -138,11 +137,13 @@ export default function (props) {
 
     /* unit mode & change unit mode */
     const unitMode = props.unitMode
+    
+    const currentBreakpoint = useBreakpoint();
+    const windowHeight = useWindowHeight();
 
-    const windowWidth = useWindowDimensions().width
-    const windowHeight = useWindowDimensions().height
+
     const [numColumns, setNumColumns] = useState(
-        getNumCols(windowWidth, props, data)
+        getNumCols(currentBreakpoint, props, data)
     )
 
     const handleLayout = (event) => {

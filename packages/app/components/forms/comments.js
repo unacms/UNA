@@ -1,8 +1,7 @@
 import { View, Row, ScrollView } from 'app/design/view'
-import { useState, useEffect, useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { getFormFieldByData, getEditorHeight } from 'app/lib/form-helpers'
-import { Platform, useWindowDimensions } from 'react-native'
-import { Button } from 'app/design/controls'
+import { Platform } from 'react-native'
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing, SlideInLeft, SlideOutLeft } from 'react-native-reanimated'
 import { useFormContext } from 'react-hook-form'
 import { stripTags, removeEmptyTags } from 'app/lib/util'
@@ -10,9 +9,10 @@ import { useCurrentUser } from 'app/context/user'
 import Profile from 'app/ui/molecules/profile'
 import { FileButton } from 'app/lib/form-helpers'
 import { cd } from 'app/lib/util'
+import { useWindowHeight } from 'app/context/measure';
 
 export default function FormComments(props) {
-    const { height: screenHeight } = useWindowDimensions()
+    const screenHeight = useWindowHeight();
     const baseHeight = props.data.inputs['cmt_id']?.value ? 160 : 22
     const maxHeight = Platform.OS === 'web' ? /*screenHeight / 2*/ 160 : (screenHeight - 300) / 2 // 300 is approximate keyboard height
     const formContext = useFormContext()

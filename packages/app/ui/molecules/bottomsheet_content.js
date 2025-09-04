@@ -3,17 +3,16 @@ import { useBottomSheetData } from 'app/context/bottomsheet';
 import { View, ScrollView, Pressable } from 'app/design/view';
 import { Button } from 'app/design/controls';
 import { Text } from 'app/design/typography';
-import { LAYOUT_BREAKPOINTS } from 'app/lib/util'
-import { useWindowDimensions } from 'react-native'
 import { Modal } from 'app/design/controls'
-import BottomSheet, { BottomSheetModalProvider, BottomSheetBackdrop, BottomSheetModal, BottomSheetScrollView, BottomSheetFooter, BottomSheetBackdropProps } from '@gorhom/bottom-sheet';
+import { BottomSheetModalProvider, BottomSheetBackdrop, BottomSheetModal, BottomSheetScrollView, BottomSheetFooter, BottomSheetBackdropProps } from '@gorhom/bottom-sheet';
 import { StyleSheet } from "react-native";
 import { Theme } from 'app/design/theme';
 import { Platform } from 'react-native'
+import { useIsDesktop, useWindowHeight } from 'app/context/measure';
 
 export default function ElementBottomSheetContent(props) {
     const { bottomSheetData, setBottomSheetData } = useBottomSheetData();
-
+    const isDesktop = useIsDesktop();
     const {
         isListView = false,
         showClose = true,
@@ -62,11 +61,10 @@ export default function ElementBottomSheetContent(props) {
         header: bottomSheetHeader,
     }), [snapPoints, isListView, bottomSheetHeader, showClose]);
 
-    const windowDimensions = useWindowDimensions();
-
+    const windowHeight = useWindowHeight();
     if (!bottomSheetData) return null;
 
-    if (windowDimensions.width > LAYOUT_BREAKPOINTS.lg || bottomSheetData.modal) {
+    if (isDesktop || bottomSheetData.modal) {
         return (
             <Modal
                 title={bottomSheetData.title}
@@ -80,7 +78,7 @@ export default function ElementBottomSheetContent(props) {
                 outerClickClose={false}
                 transparent={true}
             >
-                <View className='w-full ' style={{ maxHeight: windowDimensions.height - 100 }}>
+                <View className='w-full ' style={{ maxHeight: windowHeight - 100 }}>
                     <ScrollView className=' w-full'>
                         {bottomSheetData.content}
                         {bottomSheetData.footer}

@@ -1,16 +1,17 @@
 import { View, Row } from 'app/design/view';
 import {BlockByName, DataByName} from 'app/components/block';
 import { useState, useRef } from 'react';
-import { stripTags, LAYOUT_BREAKPOINTS } from 'app/lib/util';
+import { stripTags } from 'app/lib/util';
 import { Dimensions } from 'react-native';
 import Card from 'app/ui/molecules/card'
-
+import { useIsDesktop } from 'app/context/measure';
 export default function PageLayout(props) {
 
     const [formData, setFormData] = useState({});
     const [addData, setAddData] = useState({});
     const [sizes, setSizes] = useState({cntHeight:0, listHeight:100, formHeight:0, formWidth:100});
-    
+    const isDesktop = useIsDesktop();
+
     const viewFormRef = useRef();
     const viewCntRef = useRef();
 
@@ -29,7 +30,6 @@ export default function PageLayout(props) {
         calculateSize();
     };
 
-    Dimensions.addEventListener('change', handleWindowSizeChange);
 
     const handleLayout = () => {
         calculateSize();
@@ -40,7 +40,7 @@ export default function PageLayout(props) {
             viewFormRef.current.measure((x, y, width, height, pageX, pageY) => {
                 let  FormH = height
                 let offset = 100;
-                if (Dimensions.get('window').width < LAYOUT_BREAKPOINTS.lg){
+                if (!isDesktop){
                     FormH = FormH 
                     offset = 128;
                 }
@@ -77,7 +77,7 @@ export default function PageLayout(props) {
             </View>
         );
     }
-    let isStycky = Dimensions.get('window').width < LAYOUT_BREAKPOINTS.lg || sizes.otherHeight < sizes.cntHeight;
+    let isStycky = !isDesktop || sizes.otherHeight < sizes.cntHeight;
 
     return ( 
         <View className="lg:py-4">

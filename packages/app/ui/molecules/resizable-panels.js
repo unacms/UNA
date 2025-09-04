@@ -1,5 +1,4 @@
 import { memo } from "react";
-import { LAYOUT_BREAKPOINTS } from 'app/lib/util';
 import { View } from 'app/design/view';
 
 export const PanelHandler = memo(({ gap, sizable }) => {

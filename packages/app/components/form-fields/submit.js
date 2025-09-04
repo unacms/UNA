@@ -1,10 +1,11 @@
-import React, { useCallback, useRef } from 'react';
+import { useCallback } from 'react';
 import Field, { FormError } from './_field';
 import { useController, useFormContext } from 'react-hook-form';
 import { Button, Hidden } from 'app/design/controls';
 import { View, Row } from 'app/design/view';
-import { useWindowDimensions, Keyboard, Platform } from 'react-native';
-import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util';
+import { Platform } from 'react-native';
+import { appSetting } from 'app/lib/util';
+import { useIsDesktop } from 'app/context/measure';
 
 export default function FormFieldSubmit(props) {
     // Destructure props with default values
@@ -27,7 +28,7 @@ export default function FormFieldSubmit(props) {
 
     const formContext = useFormContext();
     const { formState } = formContext;
-    const { width } = useWindowDimensions();
+    const isDesktop = useIsDesktop();
     // Initialize controller for form field
     const { field } = useController({ name, rules: {}, defaultValue: value });
 
@@ -56,7 +57,7 @@ export default function FormFieldSubmit(props) {
     const showErrors =
         errorKeys.length > 0 && !hide_errors && !formProps.hide_errors;
 
-    let fb = formProps.button_full_width || props.button_full_width || width < LAYOUT_BREAKPOINTS.lg;
+    let fb = formProps.button_full_width || props.button_full_width || !isDesktop
     
     if (notFullWidth){
         fb = false;

@@ -14,7 +14,6 @@ import MenuFooter from 'app/components/nav/menu-footer';
 import AnimatedView from 'app/ui/atoms/animated-view';
 
 
-const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from');
 const isWeb = Platform.OS === 'web'
 
 function PageContent(props) {

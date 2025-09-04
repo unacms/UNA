@@ -48,7 +48,7 @@ export const PanelGroup = createPanelComponent({ baseClass: 'u-panel-group', Com
 export const Panel = createPanelComponent({ baseClass: 'u-panel-base', Component: PanelDef });
 
 export const isShowColumn = (cond, windowWidth, cell) => {
-    if(cond && (!cell?.breakpoint || windowWidth > LAYOUT_BREAKPOINTS[cell?.breakpoint])){
+    if(cond && (!cell?.breakpoint || windowWidth >= LAYOUT_BREAKPOINTS[cell?.breakpoint])){
         return true
     }
     return false

@@ -1,24 +1,21 @@
-import { View } from 'app/design/view'
 import { ButtonRef } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user'
-import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
+import { appSetting } from 'app/lib/util'
 import { menuItemsByName, menuItemsByNameNew, getDataForMenu, storageSet, storageGet } from 'app/lib/util'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { useTranslation } from 'react-i18next';
-import { useState, useEffect, useMemo } from 'react';
-import { useWindowDimensions } from 'react-native'
+import { useState, useEffect } from 'react';
+import { useIsDesktop } from 'app/context/measure';
 
 export default function () {
     const bApps = appSetting('layout', 'apps') == true;
     const cached = storageGet('menu:launcher', '');
-
+    const isDesktop = useIsDesktop();
     const [menuData, setMenuData] = useState(cached);
     const { currentUser } = useCurrentUser();
     const { t } = useTranslation();
-    const { width } = useWindowDimensions()
-    const isLgUp = width >= LAYOUT_BREAKPOINTS.lg
-    const buttonVariant = isLgUp ? 'secondary' : 'text'
-    const buttonSize = isLgUp ? 'base' : 'base'
+    const buttonVariant = isDesktop ? 'secondary' : 'text'
+    const buttonSize = isDesktop ? 'base' : 'base'
 
      useEffect(() => {
         const fetchData = async () => {

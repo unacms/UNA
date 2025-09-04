@@ -20,7 +20,7 @@ import {
 } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
-import { Platform, useWindowDimensions, StyleSheet } from 'react-native'
+import { Platform, StyleSheet } from 'react-native'
 import { Button, Modal } from 'app/design/controls'
 import Menu from 'app/components/menu'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu'
@@ -31,7 +31,7 @@ import AnimatedBlock from 'app/ui/atoms/animated-block'
 import { CommentsBrowse, CommentsParts } from 'app/lib/comments-helpers'
 import { Pressable } from 'app/design/view'
 import { subscribe } from 'app/ui/atoms/socket'
-import { LAYOUT_BREAKPOINTS, getDataForMenu } from 'app/lib/util'
+import { getDataForMenu } from 'app/lib/util'
 import Form from 'app/components/elements/form'
 import useFetchForm from 'app/lib/hooks/fetch'
 import { useTranslation } from 'react-i18next'
@@ -41,13 +41,15 @@ import { Icon } from 'app/ui/atoms/icon'
 import { SafeMenuTrigger } from 'app/ui/atoms/safe-menu-trigger'
 import { useLayoutData } from 'app/context/layout'
 import { stripTags, cd, isWeb } from 'app/lib/util'
+import { useIsDesktop, useWindowHeight } from 'app/context/measure';
 
 export const CommentsModal = memo(
     ({ commentsData, initFormData, itemContent, closeOnPost }) => {
-        const windowDimensions = useWindowDimensions()
-        const offset = windowDimensions.width > LAYOUT_BREAKPOINTS.lg ? 100 : 60
+        const windowHeight = useWindowHeight();
+        const isDesktop = useIsDesktop();
+        const offset = isDesktop ? 100 : 60
         const [height, setHeight] = useState(
-            windowDimensions.height - offset - 100
+            windowHeight - offset - 100
         )
         const aItems = [itemContent]
         const CommentsPartsData = CommentsParts(
@@ -61,7 +63,7 @@ export const CommentsModal = memo(
 
         const handleLayout = (event) => {
             const h =
-                windowDimensions.height -
+                windowHeight -
                 offset -
                 event.nativeEvent.layout.height
             setHeight(h)

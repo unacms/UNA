@@ -418,9 +418,9 @@ export function processUrl(data, blocks) {
     return contentAndEndpoint
 }
 
-export function getNumCols(width, currentRoute, leftSideBar) {
+export function getNumCols(currentBreakpoint, currentRoute, leftSideBar) {
     const customNumCol = callFn('getNumColsForConductor', [
-        width,
+        currentBreakpoint,
         currentRoute,
         leftSideBar,
     ])
@@ -433,10 +433,7 @@ export function getNumCols(width, currentRoute, leftSideBar) {
     if (blocksroutes) {
         const blockKeys = Object.keys(blocksroutes)
         for (const key of blockKeys) {
-            if (
-                blocksroutes[key].perLine > 0 &&
-                width > LAYOUT_BREAKPOINTS.sm
-            ) {
+            if (blocksroutes[key].perLine > 0 && currentBreakpoint > 0) {
                 return blocksroutes[key].perLine
             }
         }
@@ -470,7 +467,7 @@ export function getNumCols(width, currentRoute, leftSideBar) {
     }
 
     for (let i = 0; i < perLineSettings.length; i++) {
-        if (width > perLineSettings[i].width) {
+        if (currentBreakpoint >= perLineSettings[i].width) {
             const count = perLineSettings[i].count
             return isWeb ? count : count > 1 ? count - 1 : count
         }

@@ -3,12 +3,12 @@ import "react-resizable/css/styles.css";
 import Image from 'app/ui/atoms/image';
 import { View, Pressable, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
-import { useContext, useState, useEffect, useCallback, useMemo, memo } from 'react';
+import { useState, useEffect, useMemo, memo } from 'react';
 import { Button, Modal } from "app/design/controls";
 import { fetcher } from 'app/lib/fetcher';
 import Form from 'app/components/elements/form';
 import Map from 'app/components/elements/map';
-import { appSetting, md5, LAYOUT_BREAKPOINTS } from 'app/lib/util'
+import { appSetting } from 'app/lib/util'
 import { WidthProvider, Responsive } from "react-grid-layout";
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
@@ -260,14 +260,14 @@ export default function (props) {
         let blockContent;
         switch (block.type) {
             case "image":
-                blockContent = <><Image view='cover' sizes={LAYOUT_BREAKPOINTS.lg} className=" u-cover " alt='' src={block.content} /></>
+                blockContent = <><Image view='cover' className=" u-cover " alt='' src={block.content} /></>
                 break;
             case "text":
                 blockContent = <View className="py-2 px-4 items-start justify-start h-full"><Text className='text-lg'>{block.content}</Text></View>;
                 break;
             case "link":
                 const ImageComponent = ({ className, src }) => (
-                    <Image view='cover' sizes={LAYOUT_BREAKPOINTS.lg} className={className} alt='' src={src} />
+                    <Image view='cover' className={className} alt='' src={src} />
                 );
 
                 blockContent = block.content_data && (

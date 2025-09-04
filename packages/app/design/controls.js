@@ -7,10 +7,10 @@ import { appSetting, isEmoji, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { Picker as PickerDef } from '@react-native-picker/picker';
 import { Theme, ThemeName } from 'app/design/theme';
 import Tooltip from 'app/ui/atoms/tooltip';
-import { useWindowDimensions } from 'react-native';
 import Loading from 'app/ui/atoms/loading'
 import { RemoveScroll } from 'react-remove-scroll';
 import { useSafeAreaInsets } from 'app/lib/hooks/router'
+import { useIsDesktop, useBreakpoint, useWindowHeight } from 'app/context/measure';
 /* inputs */
 const inputSettings = appSetting('theme', 'inputs');
 
@@ -202,15 +202,15 @@ export function Modal({
             }
         };
     }, []);
-    const { width, height } = useWindowDimensions();
-    const offset = (title || onClose  ? (width > LAYOUT_BREAKPOINTS.md ? 100 : 68)  : 0);
+    const currentBreakpoint = useBreakpoint();
+    const height = useWindowHeight();
+    const offset = (title || onClose  ? (currentBreakpoint >= LAYOUT_BREAKPOINTS.md ? 100 : 68)  : 0);
 
     if (!animation){
-        animation = width > LAYOUT_BREAKPOINTS.md ? 'fade' : 'slide';
+        animation = currentBreakpoint >= LAYOUT_BREAKPOINTS.md ? 'fade' : 'slide';
     }
 
     const styles = !autoHeight ? { maxHeight: height - offset } : {};
-   
     const isIOS = Platform.OS === 'ios';
 
     const isOuterClose = (onClose !== 'undefined' && outerClickClose !== false);
@@ -499,9 +499,8 @@ export const Button = (props) => {
 
     const { colors } = Theme();
     const themeName = ThemeName();
-    const { width } = useWindowDimensions();
-    
-    const showTooltip = useMemo(() => width >= LAYOUT_BREAKPOINTS.lg && tooltip, [width, tooltip]);
+    const isDesktop = useIsDesktop();
+    const showTooltip = useMemo(() => isDesktop && tooltip, [isDesktop, tooltip]);
 
     const sClassContainer = useMemo(() => {
         let classes = 'flex-row items-center';

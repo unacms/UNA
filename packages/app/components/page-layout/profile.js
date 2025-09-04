@@ -1,17 +1,15 @@
 import { Conductor } from 'app/ui/molecules/conductor';
 import { useState, useEffect, useMemo } from 'react';
-import Cover, { CoverSmall } from 'app/components/elements/cover';
-import { appSetting, getHeaderSettings, getBlocksFromData, cloneObject, getPageData, LAYOUT_BREAKPOINTS } from 'app/lib/util';
-import { useWindowDimensions } from 'react-native';
+import { appSetting, getBlocksFromData, cloneObject, getPageData } from 'app/lib/util';
 import { useLayoutData } from 'app/context/layout';
 import { processBlocks } from 'app/lib/conductor-helpers';
+import { useIsDesktop } from 'app/context/measure';
 
 export default function PageLayoutProfile({ layoutName, data, uri, blocks }) {
-    const { width: windowWidth } = useWindowDimensions();
     const { layoutData } = useLayoutData();
-    const [pageData, setPageData] = useState(data);
-    const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from');
-    const isAltView = layoutName === 'profile-alt' && windowWidth > LAYOUT_BREAKPOINTS[TABLET_MODE_FROM];
+    const [ pageData, setPageData ] = useState(data);
+    const isDesktop = useIsDesktop();
+    const isAltView = layoutName === 'profile-alt' && isDesktop;
 
     useEffect(() => {
         if (layoutData && layoutData?.type == 'сonnections:action' && layoutData?.data?.reload) {
@@ -57,7 +55,7 @@ export default function PageLayoutProfile({ layoutName, data, uri, blocks }) {
         menu.config = '{add:[]}';
     }
     const coverMode = appSetting('cover', 'view_by_module', pageData.cover_block.profile?.module)
-    const isCoverDisabled = ((windowWidth > LAYOUT_BREAKPOINTS.lg || true) && isAltView) || coverMode == 'none';
+    const isCoverDisabled = ((isDesktop || true) && isAltView) || coverMode == 'none';
 
     return (
         <Conductor

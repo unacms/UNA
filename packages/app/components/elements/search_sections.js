@@ -1,20 +1,19 @@
-import { View, Pressable, Row } from 'app/design/view';
+import { View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography'
 import UniList from 'app/ui/atoms/unilist'
 import { ItemRenderer } from 'app/components/item-renderer';
 import { useTranslation } from 'react-i18next';
 import Link from 'app/ui/atoms/link'
 import { Button } from 'app/design/controls';
-import { useWindowDimensions } from 'react-native';
 import { appSetting } from 'app/lib/util';
 import { Platform } from 'react-native'
+import { useBreakpoint } from 'app/context/measure';
 
 export default function ElementSearchSections(props) {
     const { t } = useTranslation();
-    const windowWidth = useWindowDimensions().width;
+    const currentBreakpoint = useBreakpoint();
     const isWeb = Platform.OS === 'web';
     
-
     return (
         <View className="w-full">
             {props.data.data.map((item, index) => {
@@ -32,7 +31,7 @@ export default function ElementSearchSections(props) {
                 }
                
                 for (let i = 0; i < perLineSettings.length; i++) {
-                    if (numColumns== 0 && windowWidth > perLineSettings[i].width) {
+                    if (numColumns== 0 && currentBreakpoint > perLineSettings[i].width) {
                         const count = perLineSettings[i].count;
                         numColumns =  isWeb ? count : (count > 1 ? count - 1 : count);
                     }

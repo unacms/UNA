@@ -4,7 +4,7 @@ import { useState, useRef, useCallback } from 'react';
 import { Button } from 'app/design/controls'
 import Link from 'app/ui/atoms/link'
 import Mapbox from "@rnmapbox/maps";
-import { useWindowDimensions } from 'react-native';
+import { useWindowHeight } from 'app/context/measure';
 
 //TODO SMALL POINTS + desc
 //https://blog.logrocket.com/building-custom-maps-react-native-mapbox/
@@ -13,7 +13,7 @@ export default function ElementMapBox({ data }) {
     const mapRef = useRef(null);
     const [selectedlayers, setSelectedLayers] = useState(['incarcerees']);
     const [popupInfo, setPopupInfo] = useState(null);
-    const windowHeight = useWindowDimensions().height;
+    const windowHeight =  useWindowHeight();
 
     const [viewport, setViewport] = useState({
         longitude: data.center[0],

@@ -1,12 +1,8 @@
-import { View } from 'app/design/view';
 import { Button } from 'app/design/controls'
-import DropdownMenu from 'app/ui/atoms/dropdown-menu'
 import Menu from 'app/components/menu'
-import { useWindowDimensions } from 'react-native'
-import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { useState } from 'react'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
-import { Platform } from 'react-native'
+import { useIsDesktop } from 'app/context/measure';
 
 export function CoverMenuSmall(props) {
     const [ntfsOpen, setNtfsOpen] = useState(false)
@@ -44,9 +40,6 @@ export function CoverMenuSmall(props) {
 
 export function CoverMenu(props) {
     let size = props.size || 'base'
-    const { width } = useWindowDimensions()
-
-   // if (width < LAYOUT_BREAKPOINTS.sm) size = 'base'
 
     const isSplitMenu = props.isSplitMenu;
 
@@ -109,13 +102,7 @@ export function CoverMenu(props) {
 }
 
 export function CoverMenuMore(props) {
-    const isWeb = Platform.OS === 'web'
-    const { width } = useWindowDimensions()
-    
-    let size = props.size || 'base'
-
-   // if (width < LAYOUT_BREAKPOINTS.sm) size = 'base'
-
+    const isDesktop = useIsDesktop();
     const isSplitMenu = props.isSplitMenu;
 
     let propsCopy = { ...props } // Create a copy of the array
@@ -155,10 +142,8 @@ export function CoverMenuMore(props) {
     });
 
    
-    const isLgUp = width >= LAYOUT_BREAKPOINTS.lg
-    const buttonVariant = isLgUp ? 'secondary' : 'text'
-    const buttonSize = isLgUp ? 'base' : 'base'
-    const buttonRounded = isLgUp ? false : true
+    const buttonVariant = isDesktop ? 'secondary' : 'text'
+    const buttonSize = isDesktop ? 'base' : 'base'
 
     return (
         <Menu

@@ -1,4 +1,4 @@
-import { View, Row, ScrollView } from 'app/design/view'
+import { View, Row } from 'app/design/view'
 import { Button, Modal } from 'app/design/controls'
 import { useState, useRef, useCallback, useMemo } from 'react'
 import { getFormFieldByData } from 'app/lib/form-helpers'
@@ -12,13 +12,13 @@ import Profile from 'app/ui/molecules/profile'
 import Card from 'app/ui/molecules/card'
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { stripTags, LAYOUT_BREAKPOINTS, cd } from 'app/lib/util'
-import { useWindowDimensions } from 'react-native'
+import { stripTags, cd } from 'app/lib/util'
 import { Keyboard } from 'react-native'
 import { useFormContext } from 'react-hook-form'
 import Reanimated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from 'react-native-reanimated';
 import { getEditorHeight } from 'app/lib/form-helpers';
 import { PollButton, LabelButton, FileButton } from 'app/lib/form-helpers'
+import { useBreakpoint, useWindowHeight } from 'app/context/measure';
 
 function ProfileView({ isImageOnly = false, data, handleSubmit, showImage, setShowImage, author }) {
     const { currentUser } = useCurrentUser();
@@ -83,15 +83,15 @@ export default function FormFeed(props) {
     const [responseId, setResponseId] = useState(0)
 
     const { setLayoutData } = useLayoutData()
-    const windowDimensions = useWindowDimensions()
 
     const isWeb = Platform.OS === 'web'
     const isIos = Platform.OS === 'ios'
-    const isSmall = windowDimensions.width < LAYOUT_BREAKPOINTS.sm || !isWeb ? true : false
+    const currentBreakpoint = useBreakpoint();
+    const isSmall = currentBreakpoint == 0 || !isWeb ? true : false
     const scrollViewRef = useRef(null)
 
     // Auto-growth state and logic
-    const { height: screenHeight } = useWindowDimensions();
+    const screenHeight = useWindowHeight();
     const baseEditorHeight = 120; // Initial height for the post input
     const editorMaxHeight = screenHeight / 2; // Max height it can grow to
     const animatedEditorHeight = useSharedValue(baseEditorHeight);

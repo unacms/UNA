@@ -1,14 +1,11 @@
-import { View } from 'app/design/view'
-import { Button, Modal } from 'app/design/controls'
+import { Button } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user'
-import { menuItemsByName, appSetting, menuItemsByNameNew, LAYOUT_BREAKPOINTS } from 'app/lib/util'
+import { menuItemsByName, appSetting, menuItemsByNameNew } from 'app/lib/util'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
-import { useTranslation } from 'react-i18next';
-import { getPageData, getBlocksFromData, getDataForMenu, storageSet, storageGet } from 'app/lib/util';
-import { useState, useEffect, useMemo } from 'react';
+import { getDataForMenu, storageSet, storageGet } from 'app/lib/util';
+import { useState, useEffect } from 'react';
 import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal';
-import { useWindowDimensions } from 'react-native'
-
+import { useIsDesktop } from 'app/context/measure';
 
 export default function MenuAdd({ buttonProps, children }) {
     const bMenu = appSetting('layout', 'add_menu') == true;
@@ -16,8 +13,7 @@ export default function MenuAdd({ buttonProps, children }) {
     const [pageData, setPageData] = useState(false);
     const cached = storageGet('menu:add', '');
     const [menuData, setMenuData] = useState(cached);
-    const { width } = useWindowDimensions()
-    const isLgUp = width >= LAYOUT_BREAKPOINTS.lg
+    const isDesktop = useIsDesktop();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -41,11 +37,11 @@ export default function MenuAdd({ buttonProps, children }) {
         return <></>;
     
     const defaultButtonProps = {
-        variant: isLgUp ? 'secondary' : 'text',
+        variant: isDesktop ? 'secondary' : 'text',
         rounded: 'rounded',
         startDecorator: 'Plus',
         tooltip: 'Create',
-        size: isLgUp ? 'base' : 'base',
+        size: isDesktop ? 'base' : 'base',
     }
 
     buttonProps = { ...defaultButtonProps, ...(buttonProps || {}) };

@@ -1,4 +1,4 @@
-import { useWindowDimensions, useColorScheme, View } from 'react-native'
+import { useColorScheme, View } from 'react-native'
 import IframeRenderer, { iframeModel } from '@native-html/iframe-plugin';
 import WebView from 'react-native-webview';
 import RenderHtml, {
@@ -12,6 +12,7 @@ import { useState } from 'react';
 import Video from 'app/ui/atoms/video';
 import * as WebBrowser from 'expo-web-browser';
 import { useRouter, useGlobalSearchParams } from 'app/lib/hooks/router'
+import { useWindowSize } from 'app/context/measure';
 
 const renderers = {
     iframe: IframeRenderer,
@@ -183,7 +184,7 @@ export default function ElementHtml(props) {
     const routerExpo = useRouter();
     const { colors } = Theme();
     const [iframeH, setIframeH] = useState({});
-    let { width, height } = useWindowDimensions();
+    const { width, height } = useWindowSize();
     let customClassName = props.customClassName ? props.customClassName : '';
     let fontSize = 16;
     let lineHeight = 22;

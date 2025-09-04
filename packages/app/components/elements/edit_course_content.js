@@ -1,17 +1,6 @@
-import { View, Row, Pressable, ScrollView } from 'app/design/view'
-import { Text, H1C } from 'app/design/typography'
-import { stripTags, appSetting } from 'app/lib/util'
-import Profile from 'app/ui/molecules/profile'
-import { useWindowDimensions } from 'react-native'
-import Image from 'app/ui/atoms/image'
-import { Theme } from 'app/design/theme'
-import { Icon } from 'app/ui/atoms/icon'
-import Menu from 'app/components/menu'
-import { BlurView } from 'expo-blur';
-import ProfilesList from 'app/ui/molecules/profile_list'
-import DropdownMenu from 'app/ui/atoms/dropdown-menu';
+import { View, Row } from 'app/design/view'
+import { Text } from 'app/design/typography'
 import { Button } from 'app/design/controls'
-import { FeedbackHaptics } from 'app/lib/util';
 import Link from 'app/ui/atoms/link'
 import Card from 'app/ui/molecules/card'
 import Progress from 'app/ui/atoms/progress'

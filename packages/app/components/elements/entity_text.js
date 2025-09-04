@@ -2,7 +2,7 @@ import { View } from 'app/design/view';
 import Image from 'app/ui/atoms/image';
 import Html from 'app/ui/atoms/html';
 import { Text, H1 } from 'app/design/typography';
-import { appSetting, clearLinks, getYouTubeVideoId, LAYOUT_BREAKPOINTS } from 'app/lib/util'
+import { appSetting, clearLinks, getYouTubeVideoId } from 'app/lib/util'
 import { ContentMore } from 'app/ui/molecules/contentmore';
 import EntityAttachments from './entity_attachments';
 import TextMore from 'app/ui/molecules/textmore';
@@ -62,7 +62,6 @@ function Default({ data, showPad, sidebar, block }) {
     const isSmall = block?.module == "bx_market";
 
     const videoId = data.video_embed && getYouTubeVideoId(data.video_embed) || null;
-    const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from');
 
     return (
         <View className="w-full">
@@ -72,7 +71,7 @@ function Default({ data, showPad, sidebar, block }) {
             {(videoId) && <View className='w-full aspect-video rounded-xl overflow-hidden lg:mt-6'>
                 <Youtube videoId={videoId} size={3} />
             </View>}
-            {(!!data.image && !data.video) && <View className="w-full h-[30vh] mb-4 sm:rounded-xl overflow-hidden"><Image {...data.image} alt={data.title} sizes={LAYOUT_BREAKPOINTS.lg} className=" u-cover" view="cover" /></View>}
+            {(!!data.image && !data.video) && <View className="w-full h-[30vh] mb-4 sm:rounded-xl overflow-hidden"><Image {...data.image} alt={data.title} className=" u-cover" view="cover" /></View>}
             <View className={`mx-auto w-full gap-3 ${(showPad == false || sidebar ? '' : ' ')}`}>
                 {isSmall ? <TextMore tagName='h1' text={data.entry_title} numberOfLines={2} className="font-bold tracking-tight  text-neutral-900 dark:text-neutral-50 "></TextMore> :  <H1>{data.entry_title}</H1>}
                 {isSmall ? <ContentMore numberOfSymbols={200} showLess={true} content={text} numberOfLines={3}  openSmall={false} textClassName="  text-base text-neutral-600 dark:text-neutral-400" /> :  <Html data={text} />}

@@ -2,10 +2,9 @@ import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
-import { getRandomColor, LAYOUT_BREAKPOINTS } from 'app/lib/util';
+import { getRandomColor } from 'app/lib/util';
 import { memo } from 'react';
 import { getPart } from 'app/lib/parts/part';
-import { cd } from 'app/lib/util';
 /**
  * displayType: 
  *    1. unit, 

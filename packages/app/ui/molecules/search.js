@@ -1,14 +1,13 @@
-import { useState, useRef, useEffect, useContext } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Icon } from 'app/ui/atoms/icon'
 import { appSetting } from 'app/lib/util'
 import { fetcher } from 'app/lib/fetcher'
 import { Text } from 'app/design/typography'
-import { Pressable, View, Row, ViewRef, ScrollView } from 'app/design/view'
+import { Pressable, View, Row, ScrollView } from 'app/design/view'
 import {
     Button,
     ButtonRef,
     InputRef,
-    InputRounded,
     InputRoundedRef,
     Modal,
 } from 'app/design/controls'
@@ -21,20 +20,18 @@ import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import { appStatic } from 'app/lib/app-static'
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view'
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet'
-import { useWindowDimensions } from 'react-native'
-import { LAYOUT_BREAKPOINTS } from 'app/lib/util'
+import { useIsDesktop } from 'app/context/measure';
 
 export default function ElementSearch(oProps) {
     const { t } = useTranslation()
+    const isDesktop = useIsDesktop();
     const { setBottomSheetData } = useBottomSheetData()
     const sType = oProps?.type ? oProps.type : 'default'
     const oParams = oProps?.params ? oProps.params : {}
     const [showModal, setShowModal] = useState(false)
 
-    const { width } = useWindowDimensions()
-    const isLgUp = width >= LAYOUT_BREAKPOINTS.lg
-    const buttonVariant = isLgUp ? 'secondary' : 'text'
-    const buttonSize = isLgUp ? 'base' : 'base'
+    const buttonVariant = isDesktop ? 'secondary' : 'text'
+    const buttonSize = isDesktop ? 'base' : 'base'
 
     const handleOpenPopupDefault = () => {
         if (oParams?.trigger?.onPress) {
@@ -146,12 +143,12 @@ export function SearchPanel(props) {
 
 export function ElementSearchData(oProps) {
     const { setBottomSheetData } = useBottomSheetData()
+    const isDesktop = useIsDesktop();
     const redirectdRef = useRef()
     const sSection = oProps?.section ? oProps.section : ''
     const sUrlRedirect =
         '/search-keyword?keyword={keyword}' +
         (!!sSection ? '&section=' + sSection : '')
-    const windowDimensions = useWindowDimensions()
     const [inputValue, setInputValue] = useState('')
     const [popupOpenHandle, setPopupOpenHandle] = useState(true)
     const [popupContent, setPopupContent] = useState('')
@@ -317,10 +314,7 @@ export function ElementSearchData(oProps) {
         )
     }
 
-    if (
-        oProps.isBottomSheet &&
-        windowDimensions.width < LAYOUT_BREAKPOINTS.lg
-    ) {
+    if (oProps.isBottomSheet && !isDesktop) {
         return (
             <>
                 <View className="flex-row mb-2">

@@ -22,8 +22,6 @@ export default function Unit(props) {
         redirectdRef.current.redirect(sUrl);
     };
 
-    console.log("sdfsdfsd", props.unitType)
-
     const friendsLabel = data.members_count > 0 ? tp("members", data?.members_count) : ''
 
     const { oMenuItemPrimary, oMenuItemSecondary } = useMemo(() => {

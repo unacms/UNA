@@ -5,22 +5,20 @@ import { useRef, memo, useMemo } from 'react';
 import MenuFooter from 'app/components/nav/menu-footer';
 import Animated from 'react-native-reanimated';
 import { LAYOUT_BREAKPOINTS } from 'app/lib/util'
-import { useWindowDimensions } from 'react-native';
 import { Panel, PanelGroup, PanelHandler } from "app/ui/molecules/resizable-panels";
 import { useLayoutSettings } from 'app/context/layout-settings';
+import { useBreakpoint } from 'app/context/measure';
 
-const isRowLayout = (cell, windowWidth) => !cell.defaultSize || (cell.breakpoint && windowWidth <= LAYOUT_BREAKPOINTS[cell.breakpoint]);
+const isRowLayout = (cell, currentBreakpoint) => !cell.defaultSize || (cell.breakpoint && currentBreakpoint <= LAYOUT_BREAKPOINTS[cell.breakpoint]);
 const hasData = (cellData) => Array.isArray(cellData) && cellData.length > 0;
 
 function PageContentUniversal({ children, data, layoutName }) {
-
+    const currentBreakpoint = useBreakpoint();
     const uri = data.uri;
     const cellsCustomConfig = appSetting('layouts', uri);
 
     const gap = cellsCustomConfig.gap || 4;
     const sizable = cellsCustomConfig.sizable === undefined ? true : cellsCustomConfig.sizable;
-
-    const { width: windowWidth } = useWindowDimensions();
 
     const layoutConfigs = {
         default: [
@@ -84,36 +82,36 @@ function PageContentUniversal({ children, data, layoutName }) {
 
     return (
         <View className={`mx-auto w-full u-max-width-block gap-y-${gap} p-3 sm:p-4`}>
-            <PanelRow gap={gap} cell={topCell} windowWidth={windowWidth} />
+            <PanelRow gap={gap} cell={topCell} currentBreakpoint={currentBreakpoint} />
             <PanelGroup autoSaveId={`cells-${uri}-${layoutName}`} direction="horizontal">
                 {midCells.map((cell, i) => {
-                    return <PanelCell key={cell.key} sizable={sizable} windowWidth={windowWidth} cell={cell} index={i} />
+                    return <PanelCell key={cell.key} sizable={sizable} currentBreakpoint={currentBreakpoint} cell={cell} index={i} />
                 })}
             </PanelGroup>
             {midCells.map((cell, i) => {
-                return <PanelRow key={cell.key} gap={gap} windowWidth={windowWidth} cell={cell} />
+                return <PanelRow key={cell.key} gap={gap} currentBreakpoint={currentBreakpoint} cell={cell} />
             })}
-            <PanelRow gap={gap} cell={bottomCell} windowWidth={windowWidth} />
+            <PanelRow gap={gap} cell={bottomCell} currentBreakpoint={currentBreakpoint} />
         </View>
     )
 }
 
-const PanelRow = memo(({ cell, windowWidth, gap }) => {
-    return (hasData(cell?.data) && isRowLayout(cell, windowWidth)) && (
+const PanelRow = memo(({ cell, currentBreakpoint, gap }) => {
+    return (hasData(cell?.data) && isRowLayout(cell, currentBreakpoint)) && (
         <View className={`w-full gap-y-${gap} `}>
             {cell.chd}
         </View>
     );
 })
 
-const PanelCell = memo(({ cell, windowWidth, index, sizable }) => {
+const PanelCell = memo(({ cell, currentBreakpoint, index, sizable }) => {
     const { density } = useLayoutSettings();
     const panelProps = {
         ...(cell.defaultSize !== undefined && { defaultSize: cell.defaultSize }),
         ...(cell.minSize !== undefined && { minSize: cell.minSize }),
         ...(cell.maxSize !== undefined && { maxSize: cell.maxSize }),
     };
-    return (hasData(cell?.data) && !isRowLayout(cell, windowWidth)) && (
+    return (hasData(cell?.data) && !isRowLayout(cell, currentBreakpoint)) && (
         <>
             {(index > 0) && (sizable ? <PanelHandler sizable={sizable} /> : <View className={cd('w-lg', density)} />)}
             <Panel {...panelProps} >

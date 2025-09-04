@@ -1,16 +1,12 @@
-import { View, ScrollView, Row, Pressable } from 'app/design/view'
+import { View, Row } from 'app/design/view'
 import { Modal } from 'app/design/controls'
 import { useState, useEffect } from 'react';
 import { useCurrentUser } from 'app/context/user';
-import { appSetting, storageSet, storageGet } from 'app/lib/util'
-import Browse from 'app/components/elements/browse'
 import { fetcher } from 'app/lib/fetcher';
-import { useWindowDimensions } from 'react-native';
 import { Text } from 'app/design/typography'
 import { Button } from 'app/design/controls'
-import NfcManager, { Ndef, NfcEvents, NfcTech, } from 'react-native-nfc-manager';
+import NfcManager, { Ndef, NfcTech, } from 'react-native-nfc-manager';
 import Profile from 'app/ui/molecules/profile';
-import Switch from 'app/ui/atoms/switcher'
 import { Theme } from 'app/design/theme';
 
 export default function Nfc(props) {

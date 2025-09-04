@@ -1,19 +1,15 @@
-import { View, Pressable, Row } from 'app/design/view';
+import { View, Row } from 'app/design/view';
 import Image from 'app/ui/atoms/image';
-import Html from 'app/ui/atoms/html';
 import { Text, H1 } from 'app/design/typography';
-import { appSetting, clearLinks, getYouTubeVideoId, LAYOUT_BREAKPOINTS } from 'app/lib/util'
-import { ContentMore } from 'app/ui/molecules/contentmore';
-import EntityAttachments from './entity_attachments';
-import TextMore from 'app/ui/molecules/textmore';
+import { appSetting, getYouTubeVideoId } from 'app/lib/util'
 import Video from 'app/ui/atoms/video';
 import Youtube from 'app/ui/molecules/youtube'
 import { fetcher } from 'app/lib/fetcher';
 import { useReducer } from 'react'
 import RadioButton from 'app/ui/atoms/radiobutton';
-import { VictoryPieChart, VictoryBarChart, getColor } from 'app/components/elements/chart';
+import { getColor } from 'app/components/elements/chart';
 import { Button } from 'app/design/controls'
-// <VictoryPieChart labelComponent={null} colorScale={backgroundColor2} data={transformedData} />
+
 function Results({ data }) {
     if (data) {
         const backgroundColor = appSetting('theme', 'profile_colors');
@@ -137,7 +133,7 @@ export default function ElementEntityPoll({ data }) {
                 {(videoId) && <View className='w-full aspect-video rounded-xl overflow-hidden lg:mt-6'>
                     <Youtube videoId={videoId} size={3} />
                 </View>}
-                {(!!data.image && !data.video) && <View className="w-full aspect-[2/1] rounded-xl overflow-hidden lg:mt-6"><Image {...data.image} alt={data.title} sizes={LAYOUT_BREAKPOINTS.lg} className=" u-cover" view="cover" /></View>}
+                {(!!data.image && !data.video) && <View className="w-full aspect-[2/1] rounded-xl overflow-hidden lg:mt-6"><Image {...data.image} alt={data.title} className=" u-cover" view="cover" /></View>}
                 <View className={"mx-auto w-full"}>
                     <H1 className="font-bold tracking-tight  text-neutral-900 dark:text-neutral-50 ">{data.title}</H1>
                 </View>

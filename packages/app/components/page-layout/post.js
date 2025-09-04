@@ -1,32 +1,29 @@
 import { View } from 'app/design/view';
 import { BlockByName, DataByName } from 'app/components/block';
 import { useState, useCallback, useMemo, useEffect } from 'react';
-import { stripTags, LAYOUT_BREAKPOINTS } from 'app/lib/util';
-import { Theme } from 'app/design/theme';
+import { stripTags } from 'app/lib/util';
 import { CommentsBrowse, CommentsForm } from 'app/lib/comments-helpers'
-import KbAvoidingView, { KbAvoidingViewScroll } from 'app/ui/atoms/kb-avoiding-view';
-import { useWindowDimensions, Platform } from 'react-native'
+import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
+import { Platform } from 'react-native'
 import { useLocalSearchParams } from 'app/lib/hooks/router'
-import { appSetting } from 'app/lib/util';
-import Card from 'app/ui/molecules/card';
-import { cd } from 'app/lib/util';
 import emitter from 'app/context/emitter';
+import { useIsDesktop, useWindowHeight } from 'app/context/measure';
 
-const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from');
 
 export default function PageLayout(props) {
     const isWeb = Platform.OS == 'web';
-    const { width: windowWidth, height: windowWHeight } = useWindowDimensions();
+    const windowWHeight = useWindowHeight();
+    const isDesktop = useIsDesktop();
     const [formData, setFormData] = useState({});
     const [addData, setAddData] = useState({});
     const [replyId, setReplyId] = useState(false);
     const [scrollToEnd, setScrollToEnd] = useState(false);
-    const [formHeight, setFormHeight] = useState(0)
+    const [formHeight, setFormHeight] = useState(0);
+    const [listWidth, setListWidth] = useState(0)
 
     const localUrl = useLocalSearchParams();
     
     const commentsData = useMemo(() => DataByName(props.data, props.blocks.comments), [props.data, props.blocks.comments]);
-    const { colors } = Theme()
 
     useEffect(() => {
         if (localUrl?.url) {
@@ -55,11 +52,11 @@ export default function PageLayout(props) {
     }, [localUrl?.url]);
 
     const aItems = useMemo(() => Object.entries(props.blocks)
-        .filter(([key, value]) => value.forList && ((windowWidth < LAYOUT_BREAKPOINTS[TABLET_MODE_FROM] && value.forHeader == null) || windowWidth >= LAYOUT_BREAKPOINTS[TABLET_MODE_FROM]))
+        .filter(([key, value]) => value.forList && ((!isDesktop && value.forHeader == null) || isDesktop))
         .map(([key, value]) => ({
             id: `block_${key}`,
             data: <BlockByName data={props.data} name={value} contentOnly={true} />
-        })), [props.blocks, props.data, windowWidth]);
+        })), [props.blocks, props.data]);
 
     const headerItems = useMemo(() => {
         return Object.entries(props.blocks)
@@ -70,7 +67,7 @@ export default function PageLayout(props) {
     }, [props.blocks, props.data]);
 
     const viewProps = isWeb ? {
-        style: { minHeight: windowWidth < LAYOUT_BREAKPOINTS[TABLET_MODE_FROM] ? windowWHeight : windowWHeight - 64 },
+        style: { minHeight: !isDesktop ? windowWHeight : windowWHeight - 64 },
     } : {};
 
     const handleLayout = useCallback((event) => {
@@ -78,18 +75,16 @@ export default function PageLayout(props) {
             setFormHeight(event.nativeEvent.layout.height) 
     }, []);
 
+    const handleListLayout = (event) => {
+           
+            setListWidth(event.nativeEvent.layout.width - 2)
+        }
+
+
     return (
-        <View {...viewProps} className={`sm:${cd('p-lg')} ${appSetting('layout', 'feed_container')}`}>
-            <Card>
-                <View
-                    pointerEvents="box-none"
-                    className='w-full flex-1'
-                    style={{
-                        marginBottom: (isWeb && windowWidth < LAYOUT_BREAKPOINTS[TABLET_MODE_FROM])
-                            ? Math.max(8, formHeight)
-                            : 0
-                    }}
-                >
+        <View {...viewProps} className={`flex-1 w-full h-full sm:h-[calc(100vh-16rem)] max-w-5xl mx-auto `}>
+            <View className="w-full flex-1 bg-card/80 backdrop-blur shadow-sm sm:border border-border/30 web:sm:border-0 web:ring-[1px] web:ring-inset web:ring-border/30 text-card-foreground rounded-2xl lg:mt-4 ">
+                <View   onLayout={handleListLayout} pointerEvents="box-none" className='w-full flex-1' style={{ marginBottom: !isDesktop ? 0 : formHeight  }}>
                     <CommentsBrowse
                         scrollProps={
                             {
@@ -97,8 +92,7 @@ export default function PageLayout(props) {
                                 pageData: props.data,
                                 headerComponent: headerItems[0].data,
                                 isBackButton: true,
-                                 padding: 16,
-                                 bottomPadding: 0,
+                                padding: 16,
                             }
                         }
                         scrollToIndex={scrollToEnd}
@@ -111,13 +105,14 @@ export default function PageLayout(props) {
                         replyId={replyId}
                     />
                 </View>
-            
+            </View>
             <KbAvoidingView>
-                <View onLayout={handleLayout} className={`${cd('p-lg')} web:fixed web:sm:relative web:bottom-0 bg-card w-full`}>
+                <View onLayout={handleLayout} style={{width:listWidth}} className='bg-card ml-[1px] rounded-2xl px-4 py-3 bor web:fixed web:bottom-0   w-full max-w-5xl'>
+                   
                     <CommentsForm handleForm={setAddData} browse={commentsData?.content[0]?.browse} module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module} form={commentsData?.content[0]?.form} formData={formData} requestUrl={commentsData?.content[0]?.url} />
+                     
                 </View>
             </KbAvoidingView>
-            </Card>
         </View>
     );
 }

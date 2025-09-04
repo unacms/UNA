@@ -18,6 +18,7 @@ const nativeCache = [];
 export const isWeb = Platform.OS === 'web'
 
 export const LAYOUT_BREAKPOINTS = {
+    '2xl': 1536,
     xl: 1280,
     lg: 1024, 
     md: 768,  
@@ -370,7 +371,7 @@ export function getBlocksFromData(data) {
     return blocks;
 }
 
-export function getHeaderSettings(uri, width, layout, config) {
+export function getHeaderSettings(uri, isDesktop, layout, config) {
     let settings = getPageSettings(config, uri);
     
     if (!settings?.headerSettings) {
@@ -390,7 +391,7 @@ export function getHeaderSettings(uri, width, layout, config) {
     let bHeader = typeof settings?.headerSettings?.header !== 'undefined' ? settings.headerSettings.header : true;
 
     let bFooter = typeof settings?.headerSettings?.footer !== 'undefined' ? settings.headerSettings.footer : true;
-    if (width > LAYOUT_BREAKPOINTS.lg) {
+    if (isDesktop) {
         bHeader = true;
     }
 
@@ -408,7 +409,7 @@ export function getHeaderSettings(uri, width, layout, config) {
     let bShowAltTopMenu = typeof settings?.headerSettings?.showAltTopMenu !== 'undefined' ? settings.headerSettings.showAltTopMenu : false;
 
     // Apply offset on all viewports, not just larger ones PLAESE DONT CHANGE IT
-    if (width >= LAYOUT_BREAKPOINTS.lg) 
+    if (isDesktop) 
         bOffset = true;
 
     return {
@@ -1185,7 +1186,7 @@ export const updateRouteDataForConnection = (endpoint, actions, object, currentR
     }
 };
 
-export async function getPageData(url) {
+export async function getPageData(url, codeOnly = false) {
     const pagePath = parseUrl(url);
     let sAdd = "";
 
@@ -1196,7 +1197,7 @@ export async function getPageData(url) {
         sAdd = `&params[]=&params[]=${JSON.stringify(params)}`;
     }
 
-    return await fetcher(`/api.php?r=system/get_page_by_request/TemplServicePages&params[]=${pagePath.path}${sAdd}`);
+    return await fetcher(`/api.php?r=system/get_page_${codeOnly && 'content_'}by_request/TemplServicePages&params[]=${pagePath.path}${sAdd}`);
 }
 
 export function BlockDataByName(data, name) {

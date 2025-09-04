@@ -3,10 +3,11 @@ import { View, Pressable, Row, ScrollView } from 'app/design/view'
 import Image from 'app/ui/atoms/image';
 import { Modal, Button } from "app/design/controls";
 import { Text } from 'app/design/typography';
-import { Image as ImageOr, useWindowDimensions,Platform } from 'react-native';
+import { Image as ImageOr, Platform } from 'react-native';
 import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import Video from 'app/ui/atoms/video';
 import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
+import { useWindowSize } from 'app/context/measure';
 
 const Image2 = memo((item) => {
 
@@ -121,9 +122,7 @@ const Carousel = memo(({ data = [] }) => {
 
     const [width, setWidth] = useState(400);
 
-    const windowDimensions = useWindowDimensions();
-    const windowWidthOr = windowDimensions.width;
-    const windowHeightOr = windowDimensions.height;
+    const { width: windowWidthOr, height: windowHeightOr } = useWindowSize();
 
     const handleShowImage = useCallback((img) => {
         setCurrentImageIndex(img.index);
