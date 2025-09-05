@@ -896,7 +896,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
         const cellsCustomConfig = appSetting('layouts', 'navigator') || appSetting('layouts', `cols-l-c`);
         if (cellsCustomConfig?.adjustable) {
             return (
-                <><PanelGroup key={pageData?.uri+'pnl1'} autoSaveId={`cells-navigator`} direction="horizontal" className={appSetting('layout', 'max_width')}>
+                <><PanelGroup key={data?.uri+'pnl1'} autoSaveId={`cells-navigator`} direction="horizontal" className={appSetting('layout', 'max_width')}>
                     {isShowColumn(true, currentBreakpoint, cellsCustomConfig.cells?.left) && <>
                         <Panel {...(() => {
                             const { breakpoint, ...panelProps } = cellsCustomConfig.cells?.left || {};

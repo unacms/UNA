@@ -85,11 +85,11 @@ export const settingsDefault = {
         header: {
             offset: ' h-16 w-full ',
             container:
-                ' header-fixed hidden lg:flex fixed w-full mx-auto h-16 left-[50%] translate-x-[-50%] web:duration-500 shadow-xs  ',
+                ' header-fixed hidden lg:flex fixed w-full mx-auto h-16 left-[50%] translate-x-[-50%] web:duration-500  ',
             initial:
-                ' my-auto w-full items-cente bg-card/80 backdrop-blur-xl border-b border-card web:border-0 web:ring-1 web:ring-inset web:ring-card transition-all shadow-sm ',
+                ' my-auto w-full items-cente bg-card/80 backdrop-blur-xl border-b border-border transition-all shadow-xs ',
             scrolled:
-                ' my-auto w-full items-cente bg-card/80 backdrop-blur-xl border-b border-card web:border-0 web:ring-1 web:ring-inset web:ring-card transition-all shadow-md',
+                ' my-auto w-full items-cente bg-card/80 backdrop-blur-xl border-b border-border transition-all shadow-sm',
             content: ' h-16 mx-auto justify-between ',
             content_left: ' flex-row items-center px-2 flex-none  xl:w-80 2xl:w-96 ',
             content_right:
@@ -1280,10 +1280,10 @@ export const settingsDefault = {
         },
         cards: {
             'u-card-list':
-                ' u-card-list bg-card/80 web:hover:bg-card backdrop-blur shadow-sm border border-border/30 web:border-0 web:ring-1 web:ring-inset web:ring-border/30 text-card-foreground sm:rounded-2xl mb-0.5 sm:mb-4 ',
+                ' u-card-list bg-card/80 shadow-sm border border-border web:border-0 web:ring-1 web:ring-inset web:ring-border text-card-foreground overflow-hidden sm:rounded-2xl mb-0.5 sm:mb-4 ',
             'u-card-list-padding': ' p-3 lg:p-4 ',
             'u-card-base':
-                ' u-card-base bg-card/80 backdrop-blur shadow-sm sm:border border-border/30 web:sm:border-0 web:ring-[1px] web:ring-inset web:ring-border/30 text-card-foreground overflow-hidden rounded-2xl gap-4',
+                ' u-card-base bg-card/80 shadow-sm border border-border web:border-0 web:ring-1 web:ring-inset web:ring-border text-card-foreground overflow-hidden rounded-2xl gap-4',
             'u-card-padding': ' p-4 ',
             'u-card-header': 'flex gap-2',
             'u-card-icon': 'text-card-foreground px-4 gap-y-2 gap-x-3',
@@ -1304,7 +1304,7 @@ export const settingsDefault = {
             'u-block-base':
                 'u-max-width-block rounded-xl lg:rounded-2xl gap-4 ',
             'u-block-bg':
-                'bg-card/80 shadow-sm text-card-foreground border border-border/20',
+                'bg-card shadow-sm text-card-foreground border border-border',
             'u-block-pad':
                 'p-4',
             'u-block-header':

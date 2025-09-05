@@ -27,7 +27,7 @@
         --outline: var(--accent-700); /*focus outline color*/
 
         /* Box shadow variables for light mode - NativeWind compatible */
-        --shadow-xs: 0px 1px 0px 0px rgba(244, 244, 245, 1);
+        --shadow-xs: 0px 1px 2px 0px rgba(0, 0, 0, 0.03);
         --shadow-sm: 0px 1px 4px 0px rgba(0, 0, 0, 0.05);
         --shadow-md: 0px 2px 8px 0px rgba(0, 0, 0, 0.1);
         --shadow-lg: 0px 8px 16px 0px rgba(0, 0, 0, 0.1);
@@ -116,7 +116,7 @@
         --outline-d: var(--accent-600); /*dark mode focus outline color*/
 
         /* Box shadow variables for dark mode - more pronounced shadows */
-        --shadow-xs: 0px 1px 0px 0px rgba(0, 0, 0, 0.8);
+        --shadow-xs: 0px 1px 2px 0px rgba(0, 0, 0, 0.5);
         --shadow-sm: 0px 1px 4px 0px rgba(0, 0, 0, 0.3);
         --shadow-md: 0px 2px 8px 0px rgba(0, 0, 0, 0.3);
         --shadow-lg: 0px 8px 16px 0px rgba(0, 0, 0, 0.4);
