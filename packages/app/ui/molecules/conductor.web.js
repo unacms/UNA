@@ -902,9 +902,9 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
                             const { breakpoint, ...panelProps } = cellsCustomConfig.cells?.left || {};
                             return panelProps;
                         })()}>
-                            <View className={`${cd('p-md')}`}>
+                            
                                 {leftSideBarComponent}
-                            </View>
+                           
                         </Panel>
                         <PanelHandler
                             gap="hidden lg:block" sizable={cellsCustomConfig.sizable}

@@ -332,16 +332,16 @@ export default function Layout(props) {
 const Content = React.memo(({ children, headerSettings, currentUser, layoutName, url }) => {
     const isHideHeader = (appSetting('layout', 'hide_header_for_non_logged') && !currentUser) || appSetting('layout', 'hide_header_for_all');
     return (
-        <View className="w-full items-stretch cnt-root" key={url}>
-            <View className=" w-full mx-auto flex-row " >
-                <View className={((layoutName != 'messenger' && layoutName != 'post' && !isHideHeader) ? ' pb-16 web:pb-0 lg:pb-0 ' : '') + ' w-full mx-auto'}>{/*mb-16* TODO lg:pb-0*/}
-                    <View className='w-full mx-auto'>
+        <View className="w-full items-stretch cnt-root mx-auto flex-row h-full" key={url}>
+            
+                <View className={((layoutName != 'messenger' && layoutName != 'post' && !isHideHeader) ? ' pb-16 web:pb-0 lg:pb-0 ' : '') + ' h-full w-full mx-auto'}>{/*mb-16* TODO lg:pb-0*/}
+                    
                         {(headerSettings.offset && !isHideHeader) && <View className={` ${appSetting('layout', 'header', 'offset')}`} />}{/*use this to offset the header globally*/}
                         <Informer />
                         {children}
-                    </View>
+                    
                 </View>
-            </View>
+            
         </View>
     );
 });

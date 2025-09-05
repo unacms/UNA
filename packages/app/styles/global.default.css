@@ -5,7 +5,7 @@
 @layer base {
     .light-theme-vars {
         /*semantic colors*/
-        --background: var(--neutral-100); /*main page background*/
+        --background: var(--neutral-50); /*main page background*/
         --foreground: var(--neutral-950); /*main page content*/
         --card: var(--white); /*cards, sidebars, navbars background*/
         --card-foreground: var(--neutral-900); /*content on cards, sidebars, navbars*/
@@ -13,11 +13,11 @@
         --popover-foreground: var(--neutral-900); /*content on popovers, inputs, tooltips, modals, elevated surfaces*/
         --primary: var(--accent); /*background for primary buttons, links, active states, focus rings. Use use high-contract background from gray-scale or accent-scale.*/
         --primary-foreground: var(--accent-foreground); /*content on primary buttons, active states, primary surfaces*/
-        --secondary: var(--neutral-200);  /*background for secondary buttons, secondary surfaces*/
-        --secondary-foreground: var(--neutral-900); /*content on secondary buttons, secondary surfaces*/
-        --accent: var(--accent-700); /*background for accent buttons, accent surfaces*/
+        --secondary: var(--neutral-300);  /*background for secondary buttons, secondary surfaces*/
+        --secondary-foreground: var(--neutral-700); /*content on secondary buttons, secondary surfaces*/
+        --accent: var(--accent-600); /*background for accent buttons, accent surfaces*/
         --accent-foreground: var(--white); /*content on accent buttons, accent surfaces*/
-        --muted: var(--neutral-200); /*background for ui items, sections, hover states*/
+        --muted: var(--neutral-300); /*background for ui items, sections, hover states*/
         --muted-foreground: var(--neutral-600); /*muted content*/
         --destructive: var(--red); /*background for destructive buttons, destructive surfaces*/
         --destructive-foreground: var(--white); /*content on destructive buttons, destructive surfaces*/
