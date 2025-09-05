@@ -120,12 +120,12 @@ const theme = {
         
       
         boxShadow: {
-            'xs': '0 0.5px 2px 0 rgb(0 0 0 / 0.05)',
-            'sm': '0 1px 4px 0 rgb(0 0 0 / 0.05)',
-            'md': '0 2px 8px 0 rgb(0 0 0 / 0.05)',
-            'lg': '0 8px 16px 0 rgb(0 0 0 / 0.08)',
-            'xl': '0 20px 25px -5px rgb(0 0 0 / 0.08)',
-            '2xl': '0 25px 50px -10px rgb(0 0 0 / 0.08)',
+            'xs': 'var(--shadow-xs)',
+            'sm': 'var(--shadow-sm)',
+            'md': 'var(--shadow-md)',
+            'lg': 'var(--shadow-lg)',
+            'xl': 'var(--shadow-xl)',
+            '2xl': 'var(--shadow-2xl)',
         },
 
         fontSize: {

@@ -26,8 +26,8 @@ export function MenuItemSidebar({ title, icon, isActive, addon }) {
             
                 <Text className={`h-9 w-9 text-center items-center justify-center flex rounded-full ${
                     isActive
-                        ? 'bg-interactive-primary text-text-inverse'
-                        : 'bg-interactive-secondary text-text-secondary web:group-hover:bg-interactive-hover web:group-hover:text-text-primary web:duration-300'
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-secondary text-secondary-foreground web:group-hover:bg-primary web:group-hover:text-primary-foreground web:duration-300'
                 }`}>
                     {isEmoji(icon) ? icon : <Icon icon={icon} size="20" className={`${isActive ? 'text-text-inverse' : 'text-text-secondary web:group-hover:text-text-primary'}`} />}
                 </Text>

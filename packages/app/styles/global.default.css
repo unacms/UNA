@@ -7,7 +7,7 @@
         /*semantic colors*/
         --background: var(--neutral-100); /*main page background*/
         --foreground: var(--neutral-950); /*main page content*/
-        --card: var(--neutral-50); /*cards, sidebars, navbars background*/
+        --card: var(--white); /*cards, sidebars, navbars background*/
         --card-foreground: var(--neutral-900); /*content on cards, sidebars, navbars*/
         --popover: var(--white); /*background for popovers, inputs, tooltips, modals, elevated surfaces*/
         --popover-foreground: var(--neutral-900); /*content on popovers, inputs, tooltips, modals, elevated surfaces*/
@@ -21,11 +21,18 @@
         --muted-foreground: var(--neutral-600); /*muted content*/
         --destructive: var(--red); /*background for destructive buttons, destructive surfaces*/
         --destructive-foreground: var(--white); /*content on destructive buttons, destructive surfaces*/
-        --border: var(--neutral-400); /*borders, dividers, focus rings*/
+        --border: var(--neutral-200); /*borders, dividers, focus rings*/
         --input: var(--neutral-50); /*form inputs*/
         --ring: var(--accent-700); /*focus rings*/
         --outline: var(--accent-700); /*focus outline color*/
 
+        /* Box shadow variables for light mode - NativeWind compatible */
+        --shadow-xs: 0px 1px 0px 0px rgba(244, 244, 245, 1);
+        --shadow-sm: 0px 1px 4px 0px rgba(0, 0, 0, 0.05);
+        --shadow-md: 0px 2px 8px 0px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0px 8px 16px 0px rgba(0, 0, 0, 0.1);
+        --shadow-xl: 0px 20px 25px -5px rgba(0, 0, 0, 0.1);
+        --shadow-2xl: 0px 25px 50px -10px rgba(0, 0, 0, 0.1);
 
          /* neutral scale (zinc) - standard Tailwind CSS zinc 50-950 */
         --neutral-50: 250 250 250;    /* #fafafa */
@@ -56,6 +63,7 @@
 
         /* State colors for semantic system */
         --white: 255 255 255;
+        --black: 0 0 0;
         --green: 34 197 94;    /*green-500*/
         --yellow: 234 179 8;   /*yellow-500*/
         --blue: 59 130 246;    /*blue-500*/
@@ -102,10 +110,18 @@
         --muted-foreground: var(--neutral-400); /*muted content*/
         --destructive: var(--red); /*background for destructive buttons, destructive surfaces*/
         --destructive-foreground: var(--neutral-950); /*content on destructive buttons, destructive surfaces*/
-        --border: var(--neutral-700); /*borders, dividers, focus rings*/
+        --border: var(--neutral-800); /*borders, dividers, focus rings*/
         --input: var(--neutral-800); /*form inputs*/
         --ring: var(--accent-600); /*focus rings*/
         --outline-d: var(--accent-600); /*dark mode focus outline color*/
+
+        /* Box shadow variables for dark mode - more pronounced shadows */
+        --shadow-xs: 0px 1px 0px 0px rgba(0, 0, 0, 0.8);
+        --shadow-sm: 0px 1px 4px 0px rgba(0, 0, 0, 0.3);
+        --shadow-md: 0px 2px 8px 0px rgba(0, 0, 0, 0.3);
+        --shadow-lg: 0px 8px 16px 0px rgba(0, 0, 0, 0.4);
+        --shadow-xl: 0px 20px 25px -5px rgba(0, 0, 0, 0.4);
+        --shadow-2xl: 0px 25px 50px -10px rgba(0, 0, 0, 0.4);
 
         --android-background: var(--background);
         --android-foreground: var(--foreground);

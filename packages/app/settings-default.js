@@ -85,11 +85,11 @@ export const settingsDefault = {
         header: {
             offset: ' h-16 w-full ',
             container:
-                'header-fixed hidden lg:flex fixed w-full mx-auto h-16 left-[50%] translate-x-[-50%]  ',
+                ' header-fixed hidden lg:flex fixed w-full mx-auto h-16 left-[50%] translate-x-[-50%] web:duration-500 shadow-xs  ',
             initial:
-                '  my-auto w-full items-cente bg-card/80 border-b border-border/30 web:border-0 web:ring-1 web:ring-inset web:ring-border/30 transition-all web:duration-500    ',
+                ' my-auto w-full items-cente bg-card/80 backdrop-blur-xl border-b border-card web:border-0 web:ring-1 web:ring-inset web:ring-card transition-all shadow-sm ',
             scrolled:
-                ' backdrop-blur my-auto w-full bg-card/90 mx-auto border-b border-border/50 web:border-0 web:ring-1 web:ring-inset web:ring-border/50 bg-card/90 shadow-sm ',
+                ' my-auto w-full items-cente bg-card/80 backdrop-blur-xl border-b border-card web:border-0 web:ring-1 web:ring-inset web:ring-card transition-all shadow-md',
             content: ' h-16 mx-auto justify-between ',
             content_left: ' flex-row items-center px-2 flex-none  xl:w-80 2xl:w-96 ',
             content_right:
