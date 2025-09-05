@@ -1,7 +1,6 @@
 import * as Haptics from 'expo-haptics';
 import { Platform } from 'react-native'
 import { fetcher } from 'app/lib/fetcher';
-//import { stringMd5 } from 'react-native-quick-md5';
 import * as Crypto from 'expo-crypto';
 import pako from 'pako';
 import { useTranslation } from 'react-i18next';
@@ -12,7 +11,7 @@ import { remoteSettings } from 'app/settings-remote';
 import { parse as flatted_parse, stringify as flatted_stringify } from 'flatted';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LogLevel, OneSignal } from 'react-native-onesignal';
-import * as RNLocalize from "react-native-localize";
+import { isComponent } from 'app/components/registry';
 
 const nativeCache = [];
 export const isWeb = Platform.OS === 'web'
@@ -369,6 +368,45 @@ export function getBlocksFromData(data) {
         })
     })
     return blocks;
+}
+
+export function getLayoutName(data, uri) {
+    if (data?.page_status) {
+        return { layoutName: 'default', layoutBlocks: '', isCustomLayout: false };
+    }
+
+    const { layout: customLayout = '', blocks: customBlocks = '' } = getPageSettings(data?.config, uri) || {};
+    const isCustom = Boolean(customLayout);
+
+    const checks = [
+        {
+            cond: isCustom,
+            name: customLayout,
+            blocks: customBlocks,
+            custom: true,
+        },
+        {
+            cond: Boolean(data?.cover_block?.profile),
+            name: 'profile',
+        },
+        {
+            cond: data?.menu?.items?.length > 0 && !uri.includes('create-'),
+            name: 'navigator',
+        },
+        {
+            cond: data?.layout && isComponent('layout', data.layout),
+            name: data.layout,
+            blocks: customBlocks,
+        },
+    ];
+
+    for (const { cond, name, blocks = customBlocks, custom = isCustom } of checks) {
+        if (cond) {
+            return { layoutName: name, layoutBlocks: blocks, isCustomLayout: custom };
+        }
+    }
+
+    return { layoutName: 'default', layoutBlocks: customBlocks, isCustomLayout: isCustom };
 }
 
 export function getHeaderSettings(uri, isDesktop, layout, config) {
@@ -1197,26 +1235,29 @@ export async function getPageData(url, codeOnly = false) {
         sAdd = `&params[]=&params[]=${JSON.stringify(params)}`;
     }
 
-    return await fetcher(`/api.php?r=system/get_page_${codeOnly && 'content_'}by_request/TemplServicePages&params[]=${pagePath.path}${sAdd}`);
+    return await fetcher(`/api.php?r=system/get_page_${codeOnly ? 'content_' : ''}by_request/TemplServicePages&params[]=${pagePath.path}${sAdd}`);
 }
 
 export function BlockDataByName(data, name) {
 
-    let b = null;
-    if (name){
-        const blockName = name;
-        Object.keys(data?.elements).forEach(key => {
-            Object.keys(data.elements[key]).forEach(key2 => {
-                if (data.elements[key][key2].content){
-                    Object.keys(data.elements[key][key2].content).forEach(key3 => {
-                        if(data.elements[key][key2].source == blockName.toString())
-                            b = data.elements[key][key2];
-                    });
-                }
-            });
-        });
-    }
-    return b;
+    if (!name) return null;
+
+    return Object.values(data?.elements ?? {})
+        .flatMap(level1 =>
+            Object.values(level1).filter(item => item?.source === name.toString())
+        )
+        .find(Boolean) || null;
+}
+
+export function BlockDataByType(data, type) {
+    if (!type) return null;
+
+    return Object.values(data?.elements ?? {})
+        .flatMap(level => Array.isArray(level) ? level : Object.values(level ?? {}))
+        .find(block =>
+            Array.isArray(block?.content) &&
+            block.content.some(el => el?.type === type)
+        ) || null;
 }
 
 export function getYouTubeVideoId(url) {

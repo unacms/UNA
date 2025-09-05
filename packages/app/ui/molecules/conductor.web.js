@@ -319,7 +319,7 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, isCoverDisabled,
             height: scrollValue.value == 1 ? '0px' : (coverHeight.value + menuHeight.value) + 'px',
 
         };
-    }, [scrollValue]);
+    }, [scrollValue, coverHeight.value, menuHeight.value]);
 
     return (
         <>
@@ -680,9 +680,9 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
         return unitType ? [baseSkeleton, unitType] : baseSkeleton;
     }, [skeleton, currentRoute, unitType]);
 
-    /*useEffect(() => {
+    useEffect(() => {
         setTimeout(() => window.dispatchEvent(new Event('resize_panel')), 100);
-    }, [windowWidth]);*/
+    }, []);
 
     const Preload = useMemo(() => getSkeletonForList(sSkeleton, numColumns), [sSkeleton, numColumns]);
 
@@ -744,6 +744,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
         //if (cellsCustomConfig?.adjustable) {
         return (
             <PanelGroup
+                key={pageData?.uri+'pnl2'}
                 autoSaveId={`cells-${pageData?.uri || 'default'}`}
                 direction="horizontal"
                 className={layoutName == 'navigator' ? '' : ''}
@@ -895,7 +896,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
         const cellsCustomConfig = appSetting('layouts', 'navigator') || appSetting('layouts', `cols-l-c`);
         if (cellsCustomConfig?.adjustable) {
             return (
-                <><PanelGroup autoSaveId={`cells-navigator`} direction="horizontal" className={appSetting('layout', 'max_width')}>
+                <><PanelGroup key={pageData?.uri+'pnl1'} autoSaveId={`cells-navigator`} direction="horizontal" className={appSetting('layout', 'max_width')}>
                     {isShowColumn(true, currentBreakpoint, cellsCustomConfig.cells?.left) && <>
                         <Panel {...(() => {
                             const { breakpoint, ...panelProps } = cellsCustomConfig.cells?.left || {};

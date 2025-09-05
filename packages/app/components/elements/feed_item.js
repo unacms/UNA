@@ -1,9 +1,9 @@
 import { View, Row } from 'app/design/view';
 import Html from 'app/ui/atoms/html';
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect } from 'react'
 import { useLayoutData } from 'app/context/layout';
 import Embed from 'app/ui/molecules/embed'
-import { storageSet, getDataFromCache } from 'app/lib/util';
+import { storageSet, getDataFromCache, cloneObject } from 'app/lib/util';
 import { Platform } from 'react-native'
 import { appSetting } from 'app/lib/util'
 import { ActionMenu, CounterMenu } from 'app/lib/feed-helpers'
@@ -11,7 +11,7 @@ import { UnitImages } from 'app/lib/feed-items'
 import { PollItem } from 'app/components/elements/entity_poll';
 import { cd } from 'app/lib/util'
 
-export default function ElementFeedItem({ data }) {
+export default function ElementFeedItem({data, isModal}) {
     const { layoutData } = useLayoutData();
     const [content, setContent] = useState(data.event.content)
     const isWeb = Platform.OS == 'web' ? true : false;
@@ -41,7 +41,12 @@ export default function ElementFeedItem({ data }) {
         content_attach = content_attach.concat(content.videos_attach);
     }
 
-
+    let menu_actions2 = cloneObject(data.event.menu_actions)
+    if (isModal){
+        menu_actions2.items = menu_actions2.items.filter(
+            (x) => x.name !== "item-comment"
+        );
+    }
 
     return (
         <View className="relative sm:my-0 w-full mx-auto max-w-5xl">
@@ -60,7 +65,7 @@ export default function ElementFeedItem({ data }) {
             {
                 data.event.menu_actions.items.length > 0 && (<View className=" flex-row items-center ">
                     <Row className={`flex-auto items-center flex-wrap-reverse justify-between ${cd('gap-md')} ${cd('pt-md')} ${cd('px-lg')}`}>
-                        <ActionMenu data={data.event.menu_actions} />
+                        <ActionMenu data={menu_actions2} />
                         {(!!data.event.menu_counters && appSetting('feed', 'counters_menu')) && <CounterMenu data={data.event.menu_counters} />}
 
                     </Row>

@@ -1,32 +1,51 @@
 import { Modal } from 'app/design/controls'
-import { getPageData } from 'app/lib/util';
+import { getPageData, getLayoutName, BlockDataByType, BlockDataByName  } from 'app/lib/util';
 import { BlockByData } from 'app/components/blocks-content/object-data-array-int';
-import { ScrollView, View } from 'app/design/view'
+import { ScrollView, View, Row } from 'app/design/view'
 import { useCallback } from 'react'
 import { Keyboard } from 'react-native'
+import { getComponent } from 'app/components/registry';
 
-export default function FormModal({ pageData, setPageData }) {
+export default function FormModal({ pageData, setPageData, modalView, url }) {
     const handleModalClose = useCallback(() => {
         Keyboard.dismiss()
     }, [])
 
-    const isShowHeader = pageData.module != "bx_timeline";
-    const Container = isShowHeader ? ScrollView : View;
-
     if (!pageData)
         return null;
+
+    if (modalView == 'bx_timeline') {
+        const authorData = BlockDataByType(pageData, 'entity_author');
+        const Component = getComponent('layout', 'post');
+        const layout = getLayoutName(pageData, 'item');
+        const { layoutBlocks } = layout;
+        return (
+            <Modal
+                outerClickClose={false}
+                onClose={() => setPageData(false)}
+                onVisible={!!pageData}
+                title={`${authorData.content[0].data.author_data.display_name}'s post`}
+                padding=""
+            >
+                <Component url={url} isModal={true} layoutName={'post'} data={pageData} blocks={layoutBlocks} />
+            </Modal>
+        );
+    }
+
+    const isShowHeader = pageData.module != "bx_timeline";
+    const Container = isShowHeader ? ScrollView : View;
 
     let modalWidth = 'max-w-4xl';
     Object.keys(pageData?.elements || {}).forEach(key => {
         Object.keys(pageData.elements[key] || {}).forEach(key2 => {
             const value = pageData.elements[key][key2]?.content[0];
-   
+
             if (value?.type === 'form' && value?.name === 'feed') {
                 modalWidth = 'max-w-2xl';
             }
         });
     });
-    
+
     return (
         <Modal
             maxWidth={modalWidth}
@@ -63,7 +82,7 @@ export default function FormModal({ pageData, setPageData }) {
 
 export const handleFormModal = async (oItem, event, setPageData, params) => {
     const sResponse = await getFormModal(oItem, params);
-    setPageData({...sResponse.data, ts: Date.now()});
+    setPageData({ ...sResponse.data, ts: Date.now() });
 }
 
 export const getFormModal = async (oItem, params) => {

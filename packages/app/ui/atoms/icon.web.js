@@ -9,7 +9,7 @@ export const Icon = memo(function Icon(props) {
     const isXmlSvg = origIcon?.startsWith('<svg');
     const icon = findIconFromRemote(origIcon);
     const _strokeWidth = strokeWidth || appSetting('layout', 'default_icon_stroke_width');
-
+//return <>{origIcon}</>
     
     // Мемоизируем ключ, чтобы он не пересчитывался при каждом рендере
     const key = useMemo(() => `${icon}-${width || ''}-${height || ''}-${size || ''}`, [icon, width, height, size, strokeWidth]);
@@ -17,6 +17,8 @@ export const Icon = memo(function Icon(props) {
     // Инициализируем состояние с иконкой из локального хранилища
     const [currentIcon, setCurrentIcon] = useState(() => storageGet(`icon-${key}`, '', true));
     const InlineIcon = SvgIcons[icon];
+
+
 
     useEffect(() => {
         // Функция для получения иконки с сервера
@@ -40,7 +42,7 @@ export const Icon = memo(function Icon(props) {
 
         // Проверяем, есть ли иконка в локальном хранилище, и вызываем `fetchIcon`, если её нет
        
-        if (!InlineIcon){
+        if (!InlineIcon && !isXmlSvg){
             const cachedIcon = storageGet(`icon-${key}`, '', true);
             if (icon && !cachedIcon) {
                 fetchIcon();

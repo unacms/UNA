@@ -3,14 +3,6 @@ import { appSetting, cd, cloneObject } from 'app/lib/util'
 import { View, Row, Pressable } from 'app/design/view'
 import { Modal } from 'app/design/controls'
 import { fetcher } from 'app/lib/fetcher'
-import {
-    Block,
-    BlockHeader,
-    BlockContent,
-    BlockFooter,
-    BlockName,
-    BlockActions,
-} from 'app/ui/molecules/page-block'
 import { useTranslation } from 'react-i18next'
 import {
     CommentsModal,
@@ -28,12 +20,10 @@ import {
 import { Platform } from 'react-native'
 import { CardList } from 'app/ui/molecules/card'
 import AnimatedBlock from 'app/ui/atoms/animated-block'
-import { useRouter } from 'app/lib/hooks/router'
 
 function DefaultUnit({ data }) {
     const isWeb = Platform.OS === 'web'
     const { t } = useTranslation()
-    const router = useRouter()
 
     const [viewState, setViewState] = useState({ view: '' })
     const [cmtsData, setCmtsData] = useState(false)

@@ -521,7 +521,7 @@ export const VisibilityInfo = memo(({ data }) => {
 
 export const Author = memo(({ data, url, t }) => {
     const Badges = getComponent('molecule', 'badges')
-    const ActionsElements = data.author_actions.map((item, index) => {
+    const ActionsElements = data.author_actions?.map((item, index) => {
         const Element = getComponent('molecule', String(item.type))
         if (!Element) return null // Explicitly return null for no component
         return (

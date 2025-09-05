@@ -117,7 +117,6 @@ const theme = {
             ...colors,
             ...nativewindUIColors,
         },
-        
       
         boxShadow: {
             'xs': 'var(--shadow-xs)',
@@ -129,9 +128,8 @@ const theme = {
         },
 
         fontSize: {
-            '2xs': ['11px', { lineHeight: '14px' }],
-            xs: ['13px', { lineHeight: '16px' }],
-         
+            '2xs': ['10px', { lineHeight: '12px' }],
+          
         },
         
         minWidth: {

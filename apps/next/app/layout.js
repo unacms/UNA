@@ -11,7 +11,6 @@ import AnimatedBackground from 'app/ui/atoms/animated-background';
 import { appSetting } from 'app/lib/util';
 import { useLayoutSettings } from 'app/context/layout-settings';
 
-
 export default function RootLayout({ children }) {
     const { langCode } = useLayoutSettings();
 
