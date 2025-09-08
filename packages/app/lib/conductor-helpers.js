@@ -522,11 +522,9 @@ export function TopSidebar({
                 <Row
                     className=" items-center justify-between ">
              
-                    <Text className="text-2xl text-card-foreground tracking-tight hidden ">
-                        {title}
-                    </Text>
+                    
                     {!currentUser && title ? (
-                        <View className="">
+                        <View className="ps-3">
                             <TextHeader text={title} />
                         </View>
                     ) : null}

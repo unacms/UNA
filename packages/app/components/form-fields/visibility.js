@@ -214,7 +214,7 @@ export default function (props) {
         <>
             {modalElement}
             <Field {...props} error2={formContext.formState.errors[name]}>
-                <View className='flex-row items-center px-2 bg-input/20 border border-border/50 h-14 rounded-xl'>
+                <View className='flex-row items-center px-2 bg-input/20 border border-border/60 h-14 rounded-xl'>
                 <Button
                     title={filteredValues.find(item => item.value == field.value)?.label || filteredValues[0].label}
                     startDecorator="Globe"
