@@ -1,8 +1,13 @@
 import { defineConfig } from 'vite'
-// import react from '@vitejs/plugin-react'
+import path from 'path'
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [],
-  // plugins: [react()], // comment out to avoid double inclusion of React plugin (already included by Storybook
+  resolve: {
+    alias: {
+      // Alias for app packages so Storybook can import from 'app/*'
+      'app': path.resolve(__dirname, '../../packages/app'),
+    },
+  },
 })

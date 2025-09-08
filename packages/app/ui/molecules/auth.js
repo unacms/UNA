@@ -66,11 +66,11 @@ export default function AuthPanel({
 
             {showSeparator && (
                 <View className="flex-row items-center justify-center w-full">
-                    <View className="flex-1 h-px w-full bg-border/50" />
+                    <View className="flex-1 h-px w-full bg-border/60" />
                     <Text className="mx-4 text-xs text-muted-foreground">
                         {t('splash_page_login3')}
                     </Text>
-                    <View className="flex-1 h-px w-full bg-border/50" />
+                    <View className="flex-1 h-px w-full bg-border/60" />
                 </View>
             )}
             <View className="web:flex-row web:flex-wrap gap-x-2 gap-y-2 w-full">
