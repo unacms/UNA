@@ -29,7 +29,7 @@ import {
     PanelGroup,
     PanelHandler,
 } from 'app/ui/molecules/resizable-panels'
-
+import { useIsDesktop } from 'app/context/measure';
 
 export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, fetchConvos, data, onSave, addButtons }) {
     const isWeb = Platform.OS == 'web'
