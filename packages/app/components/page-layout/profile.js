@@ -10,15 +10,16 @@ export default function PageLayoutProfile({ layoutName, data, uri, blocks }) {
     const [ pageData, setPageData ] = useState(data);
     const isDesktop = useIsDesktop();
     const isAltView = layoutName === 'profile-alt' && isDesktop;
-
+    
     useEffect(() => {
         if (layoutData && layoutData?.type == 'сonnections:action' && layoutData?.data?.reload) {
             (async () => {
-                const sResponse = await getPageData(pageData.url);
-                if (sResponse.data != pageData)
-                    setPageData(sResponse.data);
+                if (layoutData?.data?.object?.initiator == pageData?.cover_block?.profile?.id || layoutData?.data?.object?.content == pageData?.cover_block?.profile?.id || !layoutData?.data?.object?.content){
+                    const sResponse = await getPageData(pageData.url);
+                    if (sResponse.data != pageData)
+                        setPageData(sResponse.data);
+                }
             })();
-
         }
     }, [layoutData?.data?.time]);
 

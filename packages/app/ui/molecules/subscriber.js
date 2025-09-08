@@ -2,8 +2,8 @@
 
 import React, { useEffect, useCallback } from 'react';
 import { useCurrentUser } from 'app/context/user';
-import { Platform } from 'react-native'
-import { storageClear, decodeText, getDataFromCache, storageSet } from 'app/lib/util';
+import { useLayoutData } from 'app/context/layout';
+import { storageClear, getAlert, getDataFromCache, storageSet } from 'app/lib/util';
 import { remoteSettings } from 'app/settings-remote';
 import { subscribe } from 'app/ui/atoms/socket';
 import { getRemoteSettings } from 'app/config';
@@ -13,8 +13,8 @@ import { appSetting, isObjectsEqual } from 'app/lib/util'
 
 
 export default function Subscriber() {
-    let { currentUser, setCurrentUser } = useCurrentUser();
-
+    const { currentUser, setCurrentUser } = useCurrentUser();
+    const { setLayoutData } = useLayoutData()
     useEffect(() => {
         subscribe('sys_api_0', 'config_changed', onUpdateSettings);
     }, [])
@@ -31,7 +31,6 @@ export default function Subscriber() {
     }, [currentUser?.id])
 
     const onUpdateAccount = useCallback((data) => {
-        console.log('onUpdateAccount----------------------', data);
         setCurrentUser({
             confirmed: true,
         });
@@ -46,6 +45,7 @@ export default function Subscriber() {
         const oData = JSON.parse(data);
         if (oData?.user)
             setCurrentUser(oData.user);
+            setLayoutData(getAlert('сonnections:action', { object: oData, time: Date.now(), reload: true }));
     }, []);
 
     const onItemEdited = useCallback(async (strData) => {
