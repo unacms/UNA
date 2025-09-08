@@ -728,6 +728,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
                 height={isInPanel ? window.innerHeight : undefined}
                 numColumns={numColumns}
                 onEndReached={handleEndReached}
+                isInPanel={isInPanel}
                 renderItem={({ item, index }) => (
                     <ItemRenderer unitType={unitType} route={route} numColumns={numColumns} item={{ ...item, feed_type: route?.endpoint?.params?.type }} unit={route?.endpoint?.unit} module={route?.endpoint?.module} />
                 )}

@@ -7,12 +7,15 @@ import { storageSet, cd } from 'app/lib/util'
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { useCallback, forwardRef } from 'react';
 import ScrollList from 'app/ui/molecules/scroll_list'
+import { useBreakpoint } from 'app/context/measure'
+import { LAYOUT_BREAKPOINTS } from 'app/lib/util'
 
 export default function UniList(props) {
     let { useCustomScrollHandler, scrollProps, preloadComponent, sortable, data, renderItem, onEndReached, maxToRenderPerBatch, initialNumToRender, contentContainerStyle, initialScrollIndex, ListHeaderComponent, ListFooterComponent, refer, onScrollToIndex,
         onSort, numColumns, keyboardShouldPersistTaps, keyExtractor, useWindowScroll, height, listState, endpoint, index, viewParams, topItemCount, scrollToLastItem, refreshing, onRefresh, isInPanel, ...rest } = props
 
     const uniRef = useRef();
+    const currentBreakpoint = useBreakpoint();
 
     data = data.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i);
 
@@ -95,8 +98,8 @@ export default function UniList(props) {
                 return ListFooterComponent
             },
             Header: () => {
-                // Add header spacer only for panel layouts where content scrolls under semi-transparent header
-                if (isInPanel && scrollProps?.headerHeight > 0) {
+                // Add header spacer only for panel layouts on lg+ viewports where content scrolls under semi-transparent header
+                if (isInPanel && scrollProps?.headerHeight > 0 && currentBreakpoint >= LAYOUT_BREAKPOINTS.lg) {
                     return <View style={{ height: 64 }} />;
                 }
                 return useCustomScrollHandler ? <View style={{ paddingTop: scrollProps.headerHeight }}></View> : null;
@@ -104,8 +107,8 @@ export default function UniList(props) {
         } : {
             Footer: () => ListFooterComponent,
             Header: () => {
-                // Add header spacer only for panel layouts where content scrolls under semi-transparent header
-                if (isInPanel && scrollProps?.headerHeight > 0) {
+                // Add header spacer only for panel layouts on lg+ viewports where content scrolls under semi-transparent header
+                if (isInPanel && scrollProps?.headerHeight > 0 && currentBreakpoint >= LAYOUT_BREAKPOINTS.lg) {
                     return <View style={{ height: 64 }} />;
                 }
                 return useCustomScrollHandler ? <View style={{ paddingTop: scrollProps.headerHeight }}></View> : null;

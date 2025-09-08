@@ -444,6 +444,7 @@ export default function (props) {
             height: isWeb ? (props?.isInPanel ? windowHeight - 64 : undefined) : props?.height,
             url: props?.url,
             contentContainerStyle: props?.contentContainerStyle,
+            isInPanel: props?.isInPanel,
             maxToRenderPerBatch: 10,
             initialNumToRender: 10,
             no_scroll: props.no_scroll,
