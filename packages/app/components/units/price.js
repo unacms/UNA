@@ -14,7 +14,7 @@ import { useCurrentUser } from 'app/context/user';
 import Link from 'app/ui/atoms/link'
 import { useTranslation } from 'react-i18next'
 
-export default function UniPrice({ data, onBuy }) {
+function UniPriceCard({ data, onBuy }) {
     const { t } = useTranslation()
     const { currentUser, setCurrentUser } = useCurrentUser();
     const firstNonEmpty = data.actions.data.find(
@@ -82,3 +82,26 @@ export default function UniPrice({ data, onBuy }) {
         </Card>
     )
 }
+
+function UniPriceList({ data, onBuy }) {
+    const firstNonEmpty = data.actions.data.find(
+        (action) => action && Object.keys(action).length > 0
+    );
+
+    const price = data.price.value
+
+    return <Card className=" w-full text-left max-w-sm justify-center my-4 mx-auto" >
+        <Row className='gap-x-4 items-center justify-between'>
+            <Text className="text-2xl text-foreground font-semibold">{price}</Text>
+            <Button variant="primary" title={firstNonEmpty.title} onPress={() => { onBuy(firstNonEmpty) }} />
+        </Row>
+    </Card>
+}
+
+export default function UniPrice({ unit, data, onBuy }) {
+    if (unit == 'productlist') {
+        return <UniPriceList data={data} onBuy={onBuy} />;
+    }
+    return <UniPriceCard data={data} onBuy={onBuy} />;
+}
+

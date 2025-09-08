@@ -9,6 +9,7 @@ import { appStatic } from 'app/lib/app-static'
 import { useTranslation } from 'react-i18next'
 
 export default function ElementPricing({ data }) {
+    console.log("data", data)
     const { t } = useTranslation()
     const preparedTabs = [];
 
@@ -29,12 +30,15 @@ export default function ElementPricing({ data }) {
     });
 
 
+    if (sorted.length == 1)
+        return <ElementPricingPeriod data={data.data} period={sorted[0]} unit={data.settings.unit} />
+
     sorted.forEach(item => {
         preparedTabs.push({
             key: `tab_${item.unit}_${item.period}`,
             title: t('price-period-' + item.unit + '-' + item.period),
 
-            content: <ElementPricingPeriod data={data.data} period={item} />
+            content: <ElementPricingPeriod data={data.data} period={item} unit={data.settings.unit} />
         });
     });
 
@@ -47,7 +51,7 @@ export default function ElementPricing({ data }) {
     )
 }
 
-function ElementPricingPeriod({ data, period }) {
+function ElementPricingPeriod({ data, period, unit }) {
     const filtered = data.filter(item => item?.period?.value.period === period.period && item?.period?.value.unit === period.unit);
     const [showModal, setShowModal] = useState(false);
     return (
@@ -55,7 +59,7 @@ function ElementPricingPeriod({ data, period }) {
             {filtered.map((item, index) => {
                 const Price = getComponent('unit', 'price');
                 return (
-                    <Price data={item} key={index} onBuy={setShowModal} />
+                    <Price data={item} unit={unit} key={index} onBuy={setShowModal} />
                 )
             })}
             {showModal && <Modal onVisible={!!showModal} onClose={() => { setShowModal(false) }} transparent={false}>
