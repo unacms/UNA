@@ -28,13 +28,12 @@ Default.args = {
 // Headings
 export const Heading1 = (args) => <H1 {...args} />;
 Heading1.args = {
-  className: "text-gray-900",
   children: "Heading 1 (H1)",
 };
 
 export const Heading1C = (args) => <H1C {...args} />;
 Heading1C.args = {
-  className: "text-gray-800",
+  
   children: "Heading 1 Compact (H1C)",
 };
 
