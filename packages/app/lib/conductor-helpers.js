@@ -480,16 +480,19 @@ export function LeftSidebar({ title, addButtons, children, width, menu }) {
     const { t } = useTranslation()
     return (
         <View className={` ${appSetting('conductor', 'sidebar_container')}`}>
-            {(!!title || !!addButtons?.length > 0) && (
-                <Row className="justify-between items-center h-12 px-2 py-1.5 mb-2.5 z-10 ">
-                    <Text className=" text-2xl tracking-tight truncate mr-auto font-bold leading-11 text-card-foreground hidden lg:flex  ">
-                        {t(title)}
-                    </Text>
-                    <Row>{addButtons}</Row>
-                </Row>
-            )}
-
-            {children}
+            <View style={{ height: 64 }} />
+                {(!!title || !!addButtons?.length > 0) && (
+                    <Row className="sticky top-[64px] z-10 justify-between items-center h-12 px-2 py-1.5 mb-2.5 z-10 ">
+                        <Text className=" text-2xl tracking-tight truncate mr-auto font-bold leading-11 text-card-foreground hidden lg:flex  ">
+                            {t(title)}
+                        </Text>
+                        <Row>{addButtons}</Row>
+                    </Row>
+                )}
+                <View className="flex-1">
+                {children}
+                </View>
+            
         </View>
     )
 }

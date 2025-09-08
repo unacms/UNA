@@ -10,19 +10,27 @@ const panelTheme = appSetting('theme', 'panels');
 
 function createPanelComponent({ baseClass, Component = PanelDef, role, ariaLevel }) {
     return function PanelSubComponent({ className = '', density, ...props }) {
+        // PanelGroup needs overflow: hidden for proper layout containment
+        // Panels can have overflow: visible to allow sticky children
+        const styleProps = baseClass === 'u-panel-group' 
+            ? { style: { overflow: 'hidden' } }
+            : baseClass === 'u-panel-base'
+            ? { style: { overflow: 'visible' } }
+            : {};
 
         return (
             <Component
                 className={` ${panelTheme[baseClass]} $ ${className}`}
                 role={role}
                 aria-level={ariaLevel}
+                {...styleProps}
                 {...props}
             />
         );
     };
 }
 
-export const PanelHandler = memo(({ gap, sizable, className = '', style }) => {
+export const PanelHandler = memo(({ gap, sizable, className = '  ', style }) => {
     const { density: effectiveDensity } = useLayoutSettings();
     const densityClass = panelTheme[`u-panel-handler-${effectiveDensity}`] ;
 

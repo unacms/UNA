@@ -10,7 +10,7 @@ import ScrollList from 'app/ui/molecules/scroll_list'
 
 export default function UniList(props) {
     let { useCustomScrollHandler, scrollProps, preloadComponent, sortable, data, renderItem, onEndReached, maxToRenderPerBatch, initialNumToRender, contentContainerStyle, initialScrollIndex, ListHeaderComponent, ListFooterComponent, refer, onScrollToIndex,
-        onSort, numColumns, keyboardShouldPersistTaps, keyExtractor, useWindowScroll, height, listState, endpoint, index, viewParams, topItemCount, scrollToLastItem, refreshing, onRefresh, ...rest } = props
+        onSort, numColumns, keyboardShouldPersistTaps, keyExtractor, useWindowScroll, height, listState, endpoint, index, viewParams, topItemCount, scrollToLastItem, refreshing, onRefresh, isInPanel, ...rest } = props
 
     const uniRef = useRef();
 
@@ -94,9 +94,22 @@ export default function UniList(props) {
             Footer: () => {
                 return ListFooterComponent
             },
+            Header: () => {
+                // Add header spacer only for panel layouts where content scrolls under semi-transparent header
+                if (isInPanel && scrollProps?.headerHeight > 0) {
+                    return <View style={{ height: 64 }} />;
+                }
+                return useCustomScrollHandler ? <View style={{ paddingTop: scrollProps.headerHeight }}></View> : null;
+            },
         } : {
             Footer: () => ListFooterComponent,
-            Header: () => useCustomScrollHandler ? <View style={{ paddingTop: scrollProps.headerHeight }}></View> : null,
+            Header: () => {
+                // Add header spacer only for panel layouts where content scrolls under semi-transparent header
+                if (isInPanel && scrollProps?.headerHeight > 0) {
+                    return <View style={{ height: 64 }} />;
+                }
+                return useCustomScrollHandler ? <View style={{ paddingTop: scrollProps.headerHeight }}></View> : null;
+            },
         },
         isScrolling,
         ...rest,
@@ -113,7 +126,7 @@ export default function UniList(props) {
     else {
         if (numColumns > 1 && !sortable) {
             contentComponent = (
-                <View>
+                <View style={style}>
                     {ListHeaderComponent && ListHeaderComponent()}
                     <VirtuosoGrid
                         {...commonVirtuosoProps}
@@ -148,7 +161,7 @@ export default function UniList(props) {
                                         {...commonVirtuosoProps}
                                         {...(listState?.ranges && { restoreStateFrom: listState })}
                                         {...(scrollToLastItem && { initialTopMostItemIndex: data.length })}
-
+                                        endReached={onEndReached}
                                     />
                                     {provided.placeholder}
                                 </View>
@@ -159,13 +172,14 @@ export default function UniList(props) {
             }
             else {
                 contentComponent = (
-                    <View>
+                    <View style={style}>
                         {ListHeaderComponent && ListHeaderComponent()}
                         <Virtuoso
                             itemContent={itemContent}
                             {...commonVirtuosoProps}
                             {...(listState?.ranges && { restoreStateFrom: listState })}
                             {...(scrollToLastItem && { initialTopMostItemIndex: data.length })}
+                            endReached={onEndReached}
                         />
                     </View>
                 )

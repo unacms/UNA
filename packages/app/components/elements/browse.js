@@ -154,10 +154,10 @@ export default function (props) {
         }
     }
 
-    const hOffset = isWeb ? 0 : 56
+    const hOffset = isWeb ? 64 : 56
     
     const styles = isWeb
-        ? {}
+        ? { }
         : {
             height: defParams?.height
                 ? defParams.height
@@ -428,6 +428,7 @@ export default function (props) {
         // }
     }
 
+
     const memoizedUniListProps = useMemo(
         () => ({
             scrollProps: props?.exProps?.scrollProps,
@@ -439,8 +440,8 @@ export default function (props) {
             listState: cachedData?.state?.state,
             unit: data.unit,
             storagekey: storageKeyValue,
-            useWindowScroll: true,
-            height: props?.height,
+            // Use viewport height minus header for web in panel layouts
+            height: isWeb ? (props?.isInPanel ? windowHeight - 64 : undefined) : props?.height,
             url: props?.url,
             contentContainerStyle: props?.contentContainerStyle,
             maxToRenderPerBatch: 10,
@@ -448,8 +449,8 @@ export default function (props) {
             no_scroll: props.no_scroll,
             onRefresh: onStartRefresh,
             refreshing: isRefreshing,
-            renderItem: ({ item, index }) =>
-                isWeb ? (
+            renderItem: ({ item, index }) => {
+                return isWeb ? (
                     <Item
                         key={'item' + item.id}
                         item={item}
@@ -468,7 +469,8 @@ export default function (props) {
                         unitMode={unitMode}
                         props={props}
                     />
-                ),
+                );
+            },
             onEndReached: handleEndReached,
             ListHeaderComponent: props.exProps?.headerBlocks
                 ? (typeof props.exProps?.headerBlocks === 'function'
@@ -492,6 +494,7 @@ export default function (props) {
             data.unit,
             storageKeyValue,
             props?.height,
+            windowHeight,
             props?.url,
             props?.contentContainerStyle,
             props.no_scroll,

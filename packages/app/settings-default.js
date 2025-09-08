@@ -50,7 +50,7 @@ export const settingsDefault = {
         avaliable_langs: ['auto', 'en', 'ru'],
         screen: ' w-full  ',
         ui_density_switcher: true,
-        max_width: ' w-full ',
+        max_width: ' w-full  ',
         max_width_content: ' w-full max-w-7xl ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
         feed_container: ' sm:p-3 mx-auto w-full max-w-4xl ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
 
@@ -206,7 +206,7 @@ export const settingsDefault = {
         show_nav_counters: 'primary', // OLD appSetting('layout', 'show_nav_counters')
         show_nav_titles: false, // OLD appSetting('layout', 'show_nav_titles')
         hide_browse_filter: true, // OLD appSetting('layout', 'hide_browse_filter')
-        sidebar_container: ' p-2 bg-card/80 h-full border-e border-border  ',
+        sidebar_container: ' p-2 bg-card/80 border-e-[0.5px] border-border h-full overflow-y-auto flex flex-col ',
         sidebar_width: ' w-80 hidden lg:block',
         sidebar_position: ' z-50 fixed fixed-process ',
         bgrDecorator: true, // Enable/disable decorator background globally for conductor buttons
@@ -1294,11 +1294,11 @@ export const settingsDefault = {
             'u-card-footer': 'flex text-base text-card-foreground gap-2',
         },
         panels: {
-            'u-panel-base': ' ',
+            'u-panel-base': ' h-full flex-col ',
             'u-panel-handler': ' ',
             'u-panel-line':
                 'w-0 h-full web:group-hover:bg-muted web:group-active:bg-muted ',
-            'u-panel-group': '  flex',
+            'u-panel-group': ' h-full flex',
         },
         blocks: {
             'u-block-base':
