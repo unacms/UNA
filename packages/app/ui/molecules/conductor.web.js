@@ -471,7 +471,13 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
     const currentRoute = routes.find((item) => item.index === index);
     const prevRoute = useMemo(() => routes.find((item) => item.index === prevIndex), [routes, prevIndex]);;
     const queryKey = [currentRoute?.endpoint?.request_url, index, keyword, JSON.stringify(currentRoute?.endpoint?.params?.filters), data.uri];
-    const [headerSettings, setHeaderSettings] = useState(getHeaderSettings(getURI(currentRoute?.key), isDesktop, layoutName, currentRoute.config));
+    const cellsCustomConfig = appSetting('layouts', 'navigator') || appSetting('layouts', `cols-l-c`);
+    const initialHeaderSettings = getHeaderSettings(getURI(currentRoute?.key), isDesktop, layoutName, currentRoute.config);
+    // Disable offset for adjustable panel layouts
+    if (cellsCustomConfig?.adjustable) {
+        initialHeaderSettings.offset = false;
+    }
+    const [headerSettings, setHeaderSettings] = useState(initialHeaderSettings);
     
     const [numColumns, setNumColumns] = useState(getNumCols(currentBreakpoint, currentRoute, leftSideBar));
 
@@ -511,6 +517,10 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
     useEffect(() => {
         if (currentRoute.inited) {
             const headerSettingsN = getHeaderSettings(getURI(currentRoute?.key), isDesktop, layoutName, currentRoute.config);
+            // Disable offset for adjustable panel layouts
+            if (cellsCustomConfig?.adjustable) {
+                headerSettingsN.offset = false;
+            }
 
             if (!isObjectsEqual(headerSettings, headerSettingsN)) {
                 setHeaderSettings(headerSettingsN);
@@ -686,7 +696,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
 
     const Preload = useMemo(() => getSkeletonForList(sSkeleton, numColumns), [sSkeleton, numColumns]);
 
-    const RenderScene = useCallback(({ route, header, prevRoute, headerHeight, isCoverDisabled }) => {
+    const RenderScene = useCallback(({ route, header, prevRoute, headerHeight, isCoverDisabled, isInPanel }) => {
 
         const dataItems = route?.data
         const contentPaddingClass = header ? '' : '';
@@ -714,10 +724,14 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
                 refer={uniRef}
                 route={route}
                 unit={route.endpoint?.unit}
-                useWindowScroll
+                useWindowScroll={!isInPanel}
+                height={isInPanel ? window.innerHeight : undefined}
                 numColumns={numColumns}
                 onEndReached={handleEndReached}
-                renderItem={({ item, index }) => <ItemRenderer unitType={unitType} route={route} numColumns={numColumns} item={{ ...item, feed_type: route?.endpoint?.params?.type }} unit={route?.endpoint?.unit} module={route?.endpoint?.module} />}
+                isInPanel={isInPanel}
+                renderItem={({ item, index }) => (
+                    <ItemRenderer unitType={unitType} route={route} numColumns={numColumns} item={{ ...item, feed_type: route?.endpoint?.params?.type }} unit={route?.endpoint?.unit} module={route?.endpoint?.module} />
+                )}
                 ListFooterComponent={
                     <View>
                         {(hasNextPage && isFetchingNextPage) ? (
@@ -726,7 +740,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
                     </View>
                 }
             />
-        }, [dataItems, numColumns, dataItems.length]);
+        }, [dataItems, numColumns, dataItems.length, isInPanel]);
 
         if (layoutName == 'navigator') {
             return (
@@ -747,7 +761,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
                 key={pageData?.uri+'pnl2'}
                 autoSaveId={`cells-${pageData?.uri || 'default'}`}
                 direction="horizontal"
-                className={layoutName == 'navigator' ? '' : ''}
+                className={(layoutName == 'navigator' ? '' : '') + " h-full"}
                 onLayout={() => {
                     requestAnimationFrame(() => {
                         document.body.offsetHeight;
@@ -787,7 +801,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
                         const { breakpoint, ...panelProps } = cellsCustomConfig.cells?.right || {};
                         return panelProps;
                     })()}>
-                        <View className={`${cd('p-md')} fixed-process yo `}>
+                        <View className={`${cd('p-md')} fixed-process `}>
                             {route?.sidebar?.content.map((item, index) => {
                                 return <View className="mb-4" key={'item' + index}><ItemRenderer unitType={sidebarUnitType} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''} /></View>
                             })}
@@ -884,41 +898,39 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
             </View>
         }
 
-        const MainComponent = <View className=" flex-auto ">
+        const MainComponent = (isInPanel = false) => <View className=" flex-auto ">
             {(headerSettings.showAltTopMenu) && topSideBarComponent}
             {/*(!isDesktop && layoutName == 'navigator' && leftSideBarBlocks.length > 0) && <View className="items-start ml-4 mt-2 mb-2">
                                 <Button title="Filters" variant="default" size="sm" rounded onPress={showFilters} />
                             </View>*/}
             {sceneHeaderComponent}
-            <RenderScene isCoverDisabled={isCoverDisabled} prevRoute={prevRoute} headerHeight={isShowFilters && routes.length > 1 ? defaultHeaderHeight + 52 : defaultHeaderHeight} header={isUseCurrentHeader ? null : headerComponent} route={currentRoute} />
+            <RenderScene isCoverDisabled={isCoverDisabled} prevRoute={prevRoute} headerHeight={isShowFilters && routes.length > 1 ? defaultHeaderHeight + 52 : defaultHeaderHeight} header={isUseCurrentHeader ? null : headerComponent} route={currentRoute} isInPanel={isInPanel} />
         </View>
 
-        const cellsCustomConfig = appSetting('layouts', 'navigator') || appSetting('layouts', `cols-l-c`);
         if (cellsCustomConfig?.adjustable) {
             return (
-                <><PanelGroup key={pageData?.uri+'pnl1'} autoSaveId={`cells-navigator`} direction="horizontal" className={appSetting('layout', 'max_width')}>
-                    {isShowColumn(true, currentBreakpoint, cellsCustomConfig.cells?.left) && <>
+                <View className={appSetting('layout', 'max_width')} style={{ height: '100vh', position: 'relative' }}>
+                    <PanelGroup key={data?.uri+'pnl1'} autoSaveId={`cells-navigator`} direction="horizontal" className={appSetting('layout', 'max_width') + " h-full"}>
+                        {isShowColumn(true, currentBreakpoint, cellsCustomConfig.cells?.left) && <>
+                            <Panel {...(() => {
+                                const { breakpoint, ...panelProps } = cellsCustomConfig.cells?.left || {};
+                                return panelProps;
+                            })()}>
+                                {leftSideBarComponent}
+                            </Panel>
+                            <PanelHandler
+                                gap="hidden lg:block" sizable={cellsCustomConfig.sizable}
+                            /></>}
                         <Panel {...(() => {
-                            const { breakpoint, ...panelProps } = cellsCustomConfig.cells?.left || {};
+                            const { breakpoint, ...panelProps } = cellsCustomConfig.cells?.center || {};
                             return panelProps;
                         })()}>
-                            <View className={`${cd('p-md')}`}>
-                                {leftSideBarComponent}
+                            <View className="flex-1 sm:p-3 h-full overflow-hidden" >
+                                {MainComponent(true)}
                             </View>
                         </Panel>
-                        <PanelHandler
-                            gap="hidden lg:block" sizable={cellsCustomConfig.sizable}
-                        /></>}
-                    <Panel {...(() => {
-                        const { breakpoint, ...panelProps } = cellsCustomConfig.cells?.center || {};
-                        return panelProps;
-                    })()}>
-                        <View className={` sm:${cd('p-md')}`}>
-                            {MainComponent}
-                        </View>
-                    </Panel>
-                </PanelGroup>
-                    <Footer /></>
+                    </PanelGroup>
+                </View>
             );
         }
 
@@ -929,7 +941,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
                 <View style={{ minHeight: (windowHeight - offset) }} className={appSetting('layout', 'max_width  ') + 'mx-auto w-full  '} >{/*mt-28 lg:mt-0*/}
                     <Row className={rc}>
                         {a}
-                        {MainComponent}
+                        {MainComponent()}
                     </Row>
                 </View>
                 <Footer />

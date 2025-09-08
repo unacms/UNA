@@ -6,7 +6,7 @@ function AnimatedCard({ children }) {
     const opacity = useSharedValue(0);
     const translateY = useSharedValue(-50);
 
-    const animationDuration = appSetting('layout', 'card_animation_duration') || 350;
+    const animationDuration = appSetting('layout', 'card_animation_duration') || 300;
 
     useEffect(() => {
         opacity.value = withTiming(1, { duration: animationDuration });

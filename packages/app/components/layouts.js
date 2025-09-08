@@ -67,7 +67,7 @@ function ErrorPage({ type }) {
 }
 
 function Wrapper(children) {
-    return <View className="flex-1 mx-auto w-full h-full ">{children}</View>;/*animated-view*/
+    return <View className="flex mx-auto w-full ">{children}</View>;/*animated-view*/
 }
 
 function PageLayoutContent(props) {
