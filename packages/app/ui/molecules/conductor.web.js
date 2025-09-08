@@ -33,7 +33,6 @@ import { cd } from 'app/lib/util'
 import { useIsDesktop, useBreakpoint, useWindowHeight } from 'app/context/measure';
 
 const conductorTheme = appSetting('theme', 'conductor');
-const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from');
 
 const getUnitType = (currentRoute) => {
     const blocksroutes = currentRoute?.blocks;
@@ -426,7 +425,7 @@ const RenderSceneHeader = ({ route, setFilterValue }) => {
     )
 };
 
-export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMenu, leftSideBar, leftSideBarBlocks, leftSideBarWidth = appSetting('conductor', 'sidebar_width'), skeleton = '', onChangeRoute, keyword, layoutName, defaultHeaderHeight = 106 }) {
+export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionAsMenu, leftSideBar, leftSideBarBlocks, leftSideBarWidth = appSetting('conductor', 'sidebar_width'), skeleton = '', onChangeRoute, keyword, layoutName, defaultHeaderHeight = 106 }) {
     const uniRef = useRef();
     const { currentUser } = useCurrentUser();
     const { setBottomSheetData } = useBottomSheetData();
@@ -441,6 +440,7 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
 
     const [routes, setRoutes] = useState(initedTabs);
 
+   
     const [cntWidth, setCntWidth] = useState(0);
     const [isRevalidate, setIsRevalidate] = useState(false);
 
@@ -467,6 +467,18 @@ export function Conductor({ isCoverDisabled, menu, data, blocks, useSectionAsMen
         setPrevIndex(index);
         _setIndex(newIndex);
     };
+
+    useEffect(() => {
+       const foundIndex = routes.findIndex(function (item) {
+            if (useSectionAsMenu) {
+                return data.url === item.key;
+            } else {
+                return cleanUrl === item.key;
+            }
+        });
+        if (foundIndex !==index);
+            setIndex(foundIndex)
+    }, [ts]);
 
     const currentRoute = routes.find((item) => item.index === index);
     const prevRoute = useMemo(() => routes.find((item) => item.index === prevIndex), [routes, prevIndex]);;
