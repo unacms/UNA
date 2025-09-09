@@ -5,7 +5,7 @@
 @layer base {
     .light-theme-vars {
         /*semantic colors*/
-        --background: var(--neutral-50); /*main page background*/
+        --background: var(--neutral-100); /*main page background*/
         --foreground: var(--neutral-950); /*main page content*/
         --card: var(--white); /*cards, sidebars, navbars background*/
         --card-foreground: var(--neutral-900); /*content on cards, sidebars, navbars*/
@@ -21,7 +21,7 @@
         --muted-foreground: var(--neutral-600); /*muted content*/
         --destructive: var(--red); /*background for destructive buttons, destructive surfaces*/
         --destructive-foreground: var(--white); /*content on destructive buttons, destructive surfaces*/
-        --border: var(--neutral-300); /*borders, dividers, focus rings*/
+        --border: var(--neutral-200); /*borders, dividers, focus rings*/
         --input: var(--neutral-100); /*form inputs*/
         --ring: var(--accent-500); /*focus rings*/
 
@@ -109,7 +109,7 @@
         --muted-foreground: var(--neutral-400); /*muted content*/
         --destructive: var(--red); /*background for destructive buttons, destructive surfaces*/
         --destructive-foreground: var(--neutral-950); /*content on destructive buttons, destructive surfaces*/
-        --border: var(--neutral-700); /*borders, dividers, focus rings*/
+        --border: var(--neutral-800); /*borders, dividers, focus rings*/
         --input: var(--neutral-800); /*form inputs*/
         --ring: var(--accent-700); /*focus rings*/
 
@@ -217,7 +217,7 @@ body {
     /* @apply prose dark:prose-invert; */
     @apply text-neutral-800 dark:text-neutral-200;
     font-size: 16px;
-    line-height: 22px;
+    line-height: 20px;
     max-width: none;
     word-wrap: break-word;
     font-weight: 400;
