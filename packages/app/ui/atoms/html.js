@@ -211,7 +211,7 @@ export default function ElementHtml({ customClassName, data }) {
     let html = data.replace(/\n|\r/g, '').replace(/&nbsp;/g, ' ')
     if (html.trim() != '' && !html.includes('<p')) html = `<p>${html}</p>`
     return (
-        <View className={`u-vanilla-html ${customClassName || ''}`}>
+        <View className={`${customClassName || 'u-vanilla-html'}`}>
             {parseHtmlToReact(html)}
         </View>
     )

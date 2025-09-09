@@ -51,7 +51,7 @@ export default function ElementFeedItem({data, isModal}) {
     return (
         <View className="relative sm:my-0 w-full mx-auto max-w-5xl">
             <View className={`${cd('px-lg')} `}>
-                <Html data={tlContent} customClassName='u-vanilla-html-small' />
+                <Html data={tlContent}/>
                 {!!content.embed && <Embed data={content.embed} />}
 
                 <View className='w-full'>
