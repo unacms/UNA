@@ -36,7 +36,6 @@ async function runOneSignal() {
 
 const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutName, layoutName, data, children, uri, blocks }) => {
     const [isModal, setIsModal] = useState(false);
-    const isDesktop = useIsDesktop();
     const { t } = useTranslation()
 
     useEffect(() => {
@@ -70,8 +69,9 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutNam
             {appStatic('maintenance_mode')}
         </>
     }
+    
 
-    if (!isDesktop) {
+    /*if (!isDesktop) {
         return (
             <>
                 <Suggestions />
@@ -83,7 +83,7 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutNam
             </>
         );
 
-    }
+    }*/
 
     return (
         <>
