@@ -12,6 +12,8 @@ export default function Tabs({ tabs, activeTab, fullWidth = false, size, content
     const listRef = useRef(null);
     const triggerRefs = useRef({});
     const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0 });
+    const [ready, setReady] = useState(false);
+    const readyRef = useRef(false);
 
     const updateIndicator = useCallback(() => {
         try {
@@ -24,6 +26,10 @@ export default function Tabs({ tabs, activeTab, fullWidth = false, size, content
             const left = elRect.left - wrapperRect.left;
             const width = elRect.width;
             setIndicatorStyle({ left, width });
+            if (!readyRef.current) {
+                readyRef.current = true;
+                setReady(true);
+            }
         } catch (e) {}
     }, [currentTab]);
 
@@ -65,7 +71,7 @@ export default function Tabs({ tabs, activeTab, fullWidth = false, size, content
                     ))}
                 </TabsPrimitive.List>
                 <div
-                    className={`${tabsTheme['u-controls-tabs-header-item-active-indicator']}${sizeCfg.indicator || ''}`}
+                    className={`${tabsTheme['u-controls-tabs-header-item-active-indicator']}${sizeCfg.indicator || ''} ${ready ? 'web:transition-all web:duration-300 web:ease-out' : ''}`}
                     style={{ left: `${indicatorStyle.left}px`, width: `${indicatorStyle.width}px` }}
                 />
             </div>

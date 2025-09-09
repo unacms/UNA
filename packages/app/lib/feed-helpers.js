@@ -331,7 +331,7 @@ export const ItemInfo = memo(({ data, t }) => {
                     <View className="text-muted -mx-1">
                         <Icon icon='Dot' size={16}  />
                     </View>  
-                    <Text className="text-muted-foreground font-medium tracking-tight text-xs mx-1 leading-5 ">
+                    <Text className="text-muted-foreground font-medium tracking-tight text-xs mx-0.5 leading-5 ">
                         {l}
                     </Text>
                 </>
@@ -498,7 +498,7 @@ export const VisibilityInfo = memo(({ data }) => {
              <View className="text-muted -mx-1">
                     <Icon icon="Dot" size={16} />
                 </View>
-            <View className="flex-none flex-row gap-1 items-center justify-center mx-1">
+            <View className="flex-none flex-row gap-1 items-center justify-center mx-0.5">
                
                 {isUser ? (
                     <Profile

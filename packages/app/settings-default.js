@@ -959,29 +959,15 @@ export const settingsDefault = {
                 'items-center h-full w-full overflow-hidden justify-between',
             cover_small: 'w-full bg-card/90 backdrop-blur-xl shadow-sm'
         },
-        /* checkbox: {
-            container:
-                ' h-5 w-5 m-1 rounded-sm border-2 border-neutral-500 bg-transparent justify-center items-center   ',
-            selected: ' h-2.5 w-2.5 rounded-xs bg-primary m-1 items-center justify-center',
-            text: '  text-neutral-800 dark:text-neutral-200 text-base leading-5 font-medium pl-2 ',
-        },*/
+       
         checkbox_set: {
             container: ' gap-x-2 items-center',
         },
-        /*switcher: {
-            container: 'items-center flex flex-row-reverse justify-between gap-x-2 items-center h-14 min-w-14 rounded-xl flex-auto  p-3  bg-neutral-50 border border-neutral-200  hover:border-neutral-300 focus:border-primary dark:bg-neutral-900 overflow-hidden  dark:border-neutral-800 dark:hover:border-neutral-700  focus:bg-bgrinput-f dark:focus:bg-neutral-950    web:duration-300  placeholder-neutral-500   ',
-            text: ' text-neutral-800 dark:text-neutral-200  text-base ',
-            track: 'item-center rounded-full ',
-            thumb: ' rounded-full aspect-square bg-white',
-            track_color: 'bg-neutral-400 dark:bg-neutral-600 ',
-            active_track_color: 'bg-primary',
-            size_base: ['w-20 h-8 p-1 ', 'h-6 w-6'],
-            size_sm: ['w-10 h-4 p-0.5 ', 'h-3 w-3'],
-        },*/
+        
         doublerange: {
             container: 'w-full items-center justify-between mt-2',
             value_container:
-                'w-36 bg-bgrinput dark:bg-bgrinput-d border border-bdrinput py-2 px-4 text-center rounded-lg justify-between',
+                'w-36 bg-input border border-border/60 py-2 px-4 text-center rounded-lg justify-between',
             text_value: 'text-neutral-700 dark:text-neutral-300',
             text_info: '',
             track_height: 4,
@@ -1024,14 +1010,15 @@ export const settingsDefault = {
         },
 
         inputs: {
-            default: ' bg-input border border-border/60 focus:border-border rounded-xl focus:bg-card px-3 min-h-12 flex-auto text-base leading-6 overflow-hidden placeholder-muted-foreground text-card-foreground web:duration-300 web:focus-visible:ring-2 web:focus-visible:ring-ring web:focus-visible:ring-offset-2 web:focus-visible:ring-offset-background',
-            multi: ' border border-border focus:border-border rounded-xl web:focus:bg-card web:focus:ring-border px-3 min-h-12 flex-auto text-base leading-6 overflow-hidden placeholder-muted-foreground text-card-foreground web:duration-300 web:focus-visible:ring-2 web:focus-visible:ring-ring web:focus-visible:ring-offset-2 web:focus-visible:ring-offset-background',
+            default: ' bg-input border border-border/60 web:border-0 web:ring-1 web:ring-inset web:ring-border/60  rounded-xl focus:bg-card focus:ring-border px-3 min-h-12 flex-auto text-base leading-6 overflow-hidden placeholder-muted-foreground text-card-foreground web:duration-100',
+           
+            multi: ' border border-border focus:border-border rounded-xl web:focus:bg-card px-3 min-h-12 flex-auto text-base leading-6 overflow-hidden placeholder-muted-foreground text-card-foreground web:duration-300',
             rounded:
-                ' border border-border/60 focus:border-border web:border-0 web:ring-1 web:ring-inset web:ring-border/60 rounded-full web:focus:ring-border web:focus:bg-card px-3 min-h-12 flex-auto  text-base leading-6 overflow-hidden placeholder-muted-foreground text-card-foreground web:duration-300 web:focus-visible:ring-2 web:focus-visible:ring-primary web:focus-visible:ring-offset-2 web:focus-visible:ring-offset-background ',
+                ' border border-border/60 focus:border-border web:border-0 web:ring-1 web:ring-inset web:ring-border/60 rounded-full web:focus:bg-card px-3 min-h-12 flex-auto  text-base leading-6 overflow-hidden placeholder-muted-foreground text-card-foreground web:duration-300 ',
             roundedsmall:
-                ' rounded-full border/50 focus:border-border web:focus:ring-border web:border-0 web:ring-1 web:ring-inset web:ring-border/60 px-2 min-h-10 flex-auto  text-base leading-5 overflow-hidden placeholder-muted-foreground text-card-foreground web:duration-300 web:focus-visible:ring-2 web:focus-visible:ring-primary web:focus-visible:ring-offset-2 web:focus-visible:ring-offset-background ',
-            small: ' border border-border/60 web:border-0 web:ring-1 web:ring-inset web:ring-border/60 rounded-lg web:focus:bg-card web:focus:ring-border px-2 min-h-10 flex-auto  text-base leading-6 overflow-hidden placeholder-muted-foreground text-card-foreground web:duration-300 web:focus-visible:ring-2 web:focus-visible:ring-primary web:focus-visible:ring-offset-2 web:focus-visible:ring-offset-background ',
-            select: ' pr-10 border border-border/60 web:border-0 web:ring-1 web:ring-inset web:ring-border/60 rounded-xl web:focus:bg-card web:focus:ring-border px-3 min-h-12 flex-auto  text-base leading-6 overflow-hidden placeholder-muted-foreground text-card-foreground web:duration-300 web:focus-visible:ring-2 web:focus-visible:ring-primary web:focus-visible:ring-offset-2 web:focus-visible:ring-offset-background',
+                ' rounded-full border/50 focus:border-border web:border-0 web:ring-1 web:ring-inset web:ring-border/60 px-2 min-h-10 flex-auto  text-base leading-5 overflow-hidden placeholder-muted-foreground text-card-foreground web:duration-300 ',
+            small: ' border border-border/60 web:border-0 web:ring-1 web:ring-inset web:ring-border/60 rounded-lg web:focus:bg-card px-2 min-h-10 flex-auto  text-base leading-6 overflow-hidden placeholder-muted-foreground text-card-foreground web:duration-300 ',
+            select: ' pr-10 border border-border/60 web:border-0 web:ring-1 web:ring-inset web:ring-border/60 rounded-xl web:focus:bg-card px-3 min-h-12 flex-auto  text-base leading-6 overflow-hidden placeholder-muted-foreground text-card-foreground web:duration-300 ',
         },
 
         button_sizes: {
@@ -1196,10 +1183,10 @@ export const settingsDefault = {
                 padding: ' px-0.5  rounded-sm items-center flex  ',
             },
             sm: {
-                padding: ' px-1  rounded items-center flex ',
+                padding: ' px-0.5  rounded items-center flex ',
             },
             md: {
-                padding: ' px-1.5  rounded-md items-center flex',
+                padding: ' px-1  rounded-md items-center flex',
             },
             lg: {
                 padding: ' px-2 py-1  rounded-lg items-center flex ',
@@ -1219,7 +1206,7 @@ export const settingsDefault = {
 
             // Ghost: transparent by default; muted on hover/active
             'u-link-ghost-cnt': ' group bg-transparent web:hover:bg-muted/60 active:bg-secondary/60 ',
-            'u-link-ghost-text': ' text-muted-foreground web:hover:text-accent-foreground ',
+            'u-link-ghost-text': ' text-muted-foreground web:group-hover:text-accent ',
             'u-link-ghost-trans': ' web:duration-200 ',
 
             // Secondary: muted by default; secondary on hover/active
@@ -1280,7 +1267,7 @@ export const settingsDefault = {
         },
         cards: {
             'u-card-list':
-                ' u-card-list bg-card shadow-sm border border-border/60 web:border-0 web:ring-1 web:ring-inset web:ring-border/60 text-card-foreground overflow-hidden sm:rounded-2xl mb-0.5 sm:mb-4 ',
+                ' u-card-list bg-card shadow-sm border border-border/60 web:border-0 web:ring-1 web:ring-inset web:ring-border/60 text-card-foreground overflow-hidden sm:rounded-2xl mb-0.5 sm:mb-3 ',
             'u-card-list-padding': ' p-3 lg:p-4 ',
             'u-card-base':
                 ' u-card-base bg-card shadow-sm border border-border/60 web:border-0 web:ring-1 web:ring-inset web:ring-border/60 text-card-foreground overflow-hidden rounded-2xl gap-4',

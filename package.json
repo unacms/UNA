@@ -7,6 +7,12 @@
   ],
   "devDependencies": {
     "@eslint/js": "^9.28.0",
+    "@storybook/addon-a11y": "^9.1.5",
+    "@storybook/addon-coverage": "^2.0.0",
+    "@storybook/addon-interactions": "^8.6.14",
+    "@storybook/addon-themes": "^9.1.5",
+    "@storybook/addon-viewport": "^9.0.8",
+    "@storybook/test": "^8.6.14",
     "@types/react": "~18.3.12",
     "eslint": "^9.28.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",
@@ -15,7 +21,8 @@
     "globals": "^16.2.0",
     "lerna-update-wizard": "^1.1.2",
     "turbo": "^1.4.2",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "vite-plugin-istanbul": "^7.1.0"
   },
   "scripts": {
     "native": "cd apps/expo && dotenv -e ../../.env.local -- expo start --clear",

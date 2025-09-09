@@ -23,8 +23,7 @@
         --destructive-foreground: var(--white); /*content on destructive buttons, destructive surfaces*/
         --border: var(--neutral-300); /*borders, dividers, focus rings*/
         --input: var(--neutral-100); /*form inputs*/
-        --ring: var(--accent-700); /*focus rings*/
-        --outline: var(--accent-700); /*focus outline color*/
+        --ring: var(--accent-500); /*focus rings*/
 
         /* Box shadow variables for light mode - NativeWind compatible */
         --shadow-xs: 0px 1px 2px 0px rgba(0, 0, 0, 0.03);
@@ -112,8 +111,7 @@
         --destructive-foreground: var(--neutral-950); /*content on destructive buttons, destructive surfaces*/
         --border: var(--neutral-700); /*borders, dividers, focus rings*/
         --input: var(--neutral-800); /*form inputs*/
-        --ring: var(--accent-600); /*focus rings*/
-        --outline-d: var(--accent-600); /*dark mode focus outline color*/
+        --ring: var(--accent-700); /*focus rings*/
 
         /* Box shadow variables for dark mode - more pronounced shadows */
         --shadow-xs: 0px 1px 2px 0px rgba(0, 0, 0, 0.5);
@@ -163,23 +161,23 @@
     }
 }
 
-@layer components {
-
-    /* Common settings */
-    .u-max-width-block {
-        @apply max-w-6xl;
+/* Global outline color only (no width). Components control size/offset. */
+*:focus-visible {
+    outline-color: rgb(var(--ring));
+    outline-style: solid;
+    outline-offset: 2px;
+    outline-width: 2px;
+}
+[data-theme="dark"] *:focus-visible {
+    outline-color: rgb(var(--ring));
+}
+@media (prefers-color-scheme: dark) {
+    :root *:focus-visible {
+        outline-color: rgb(var(--ring));
     }
-    /*@keyframes tabContentFadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(4px);
-        }
+}
 
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }*/
+@layer components {
 
 
     /* Larger hit area for web timestamp link without layout shift */
@@ -213,18 +211,7 @@ body {
     -webkit-overflow-scrolling: touch;
 }
 
-/* Chrome-specific focus outline fix */
-*:focus {
-    outline: none !important;
-}
 
-*:focus-visible {
-    outline: 4px solid var(--outline) !important;
-}
-
-html[theme="dark"] *:focus-visible {
-    outline: 4px solid var(--outline-d) !important;
-}
 
 .u-vanilla-html {
     /* @apply prose dark:prose-invert; */

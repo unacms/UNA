@@ -8,7 +8,7 @@ export default {
 };
 
 export const DefaultView = () => (
-  <View className="p-4 bg-gray-100 rounded-lg">
+  <View className="p-4 bg-card rounded-lg">
     <Text>This is a basic View component</Text>
   </View>
 );

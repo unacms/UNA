@@ -55,7 +55,7 @@ function ElementPricingPeriod({ data, period, unit }) {
     const filtered = data.filter(item => item?.period?.value.period === period.period && item?.period?.value.unit === period.unit);
     const [showModal, setShowModal] = useState(false);
     return (
-        <Row className={`flex-wrap ${cd('gap-md')}`}>
+        <Row className="flex-wrap gap-3 p-3">
             {filtered.map((item, index) => {
                 const Price = getComponent('unit', 'price');
                 return (

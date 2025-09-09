@@ -37,8 +37,7 @@ const Notif = memo(() => (
             <View className="rounded-full bg-neutral-500/40 h-12 w-12"></View>
             <View className="flex-1 gap-1.5">
                 <View className="flex-row justify-between">
-                    <View className="h-3 w-1/2 bg-neutral-500/60 rounded-full"></View>
-                   
+                    <View className="h-3 w-1/2 bg-neutral-500/60 rounded-full"></View>           
                 </View>
                 <View className="h-3 w-full bg-neutral-500/50 rounded-full"></View>
             </View>

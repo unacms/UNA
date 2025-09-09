@@ -11,11 +11,11 @@ function withOpacity(variableName) {
                 default: `rgb(var(--${variableName}) / ${opacityValue})`,
             });
         }
-        // For baked-in opacity colors (like rgba() values)
+        // Default: return a valid CSS color using rgb() wrapper so all Tailwind utilities work (e.g., ring-*, border-*)
         return platformSelect({
-            ios: `var(--${variableName})`,
-            android: `var(--android-${variableName})`,
-            default: `var(--${variableName})`,
+            ios: `rgb(var(--${variableName}))`,
+            android: `rgb(var(--android-${variableName}))`,
+            default: `rgb(var(--${variableName}))`,
         });
     };
 }

@@ -6,6 +6,11 @@ import { useTranslation } from 'react-i18next'
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
 import Tooltip from 'app/ui/atoms/tooltip';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import Animated, { useAnimatedStyle, useSharedValue, withTiming, withSpring } from 'react-native-reanimated';
+
+// Persist indicator state across remounts (web/native)
+let __menuTopIndicatorPersist = { initialized: false, x: 0, width: 0 };
 
 export default function MenuTop({ url, uri }) {
     const { currentUser } = useCurrentUser();
@@ -16,13 +21,81 @@ export default function MenuTop({ url, uri }) {
         currentUser
     )
 
-    return (
-        <Row className={appSetting('layout', 'header', 'content_center')}>
-            {menu_navbar_items.map((item, index) => {
-                const isActive = item.link === '/' + url || (item.link === '/' && uri === 'home');
-                return <MenuTopItem key={`bmi-${index}`} link={item.link} icon={item.icon} isTitle={item.showTitle} title={t(item.title)} isActive={isActive} />
+    // Compute active index based on current route
+    const activeIndex = useMemo(() => {
+        return menu_navbar_items.findIndex((item) => (item.link === '/' + url) || (item.link === '/' && uri === 'home'));
+    }, [menu_navbar_items, url, uri]);
 
+    // Track measured layouts for each tab item
+    const [itemLayouts, setItemLayouts] = useState({});
+
+    const handleItemLayout = (index, layout) => {
+        setItemLayouts((prev) => {
+            const width = layout?.width || 0;
+            const x = layout?.x || 0;
+            if (prev[index] && prev[index].width === width && prev[index].x === x) return prev;
+            return { ...prev, [index]: { width, x } };
+        });
+    };
+
+    // Animated underline shared values
+    const indicatorX = useSharedValue(0);
+    const indicatorWidth = useSharedValue(0);
+
+    const hasPositionedRef = useRef(false);
+
+    // Restore last known position on mount to avoid starting from 0
+    useEffect(() => {
+        if (__menuTopIndicatorPersist.initialized && !hasPositionedRef.current) {
+            indicatorX.value = __menuTopIndicatorPersist.x;
+            indicatorWidth.value = __menuTopIndicatorPersist.width;
+            hasPositionedRef.current = true;
+        }
+    }, []);
+
+    useEffect(() => {
+        if (activeIndex != null && activeIndex >= 0) {
+            const target = itemLayouts[activeIndex];
+            if (target && typeof target.x === 'number' && typeof target.width === 'number') {
+                if (!hasPositionedRef.current) {
+                    // First paint after mount/remount: place without anim to avoid jumping from 0
+                    indicatorX.value = target.x;
+                    indicatorWidth.value = target.width;
+                    hasPositionedRef.current = true;
+                } else {
+                    indicatorX.value = withSpring(target.x, { damping: 15, stiffness: 180 });
+                    indicatorWidth.value = withSpring(target.width, { damping: 15, stiffness: 180 });
+                }
+                // Persist latest for future remounts
+                __menuTopIndicatorPersist = { initialized: true, x: target.x, width: target.width };
+            }
+        }
+    }, [activeIndex, itemLayouts]);
+
+    const animatedStyle = useAnimatedStyle(() => ({
+        transform: [{ translateX: indicatorX.value }],
+        transformOrigin: 'left center',
+        width: `${indicatorWidth.value}px`,
+    }), [indicatorX, indicatorWidth]);
+
+    return (
+        <Row className={`${appSetting('layout', 'header', 'content_center')} relative`}>
+            {menu_navbar_items.map((item, index) => {
+                const isActive = index === activeIndex;
+                return (
+                    <View key={`wrap-${index}`} onLayout={(e) => handleItemLayout(index, e?.nativeEvent?.layout)} className="flex-auto relative">
+                        <MenuTopItem
+                            index={index}
+                            link={item.link}
+                            icon={item.icon}
+                            isTitle={item.showTitle}
+                            title={t(item.title)}
+                            isActive={isActive}
+                        />
+                    </View>
+                );
             })}
+            <Animated.View pointerEvents="none" style={animatedStyle} className="rounded-full flex-none bg-primary/80 absolute -bottom-2 left-0 h-[3px]" />
         </Row>
 
     )
@@ -30,12 +103,12 @@ export default function MenuTop({ url, uri }) {
 
 function MenuTopItem({ link, title, index, icon, isTitle, isActive }) {
     return (
-        <Link className=" rounded-xl web:focus-visible:outline-none web:focus-visible:ring-2 min-w-16 flex-auto web:focus-visible:ring-ring web:focus-visible:ring-offset-2 web:focus-visible:ring-offset-background " href={link} alt={title}>
+        <Link className=" rounded-xl min-w-16 flex-auto relative " href={link} alt={title}>
             <Tooltip content={title}>
                 <View className="flex-auto group" key={`menu-${index}`}>
                     <Row
                         className={`items-center justify-center h-12 min-w-14 px-1.5 flex-auto rounded-xl web:duration-200 web:group-active:opacity-50 ${isActive
-                            ? 'bg-secondary/50 text-primary  '
+                            ? 'bg-transparent text-primary'
                             : 'text-muted-foreground web:group-hover:text-foreground web:hover:bg-secondary/50 '
                             }`}
                     >
