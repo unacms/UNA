@@ -4,8 +4,12 @@ export const resourcesDefault = {
         {
             "app_name": "NEO",
             "USD": "$",
-            "price-period-month-1": "Monthly",
-            "price-period-year-1": "Yearly",
+            "price-period-lifetime": "Lifetime",
+            "price-period-month": "Monthly",
+            "price-period-year": "Yearly",
+            "price-period-day": "Daily",
+            "price-period-week": "Weekly",
+            
 
             "members_0": " ",
             "members_1": "{{count}} member",

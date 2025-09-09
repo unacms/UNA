@@ -454,7 +454,7 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
             if (useSectionAsMenu) {
                 return data.url === item.key;
             } else {
-                return cleanUrl === item.key;
+                return item.key.includes('?') ? data.url === item.key : cleanUrl === item.key;
             }
         });
         return foundIndex !== -1 ? foundIndex : 0;
@@ -473,7 +473,7 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
             if (useSectionAsMenu) {
                 return data.url === item.key;
             } else {
-                return cleanUrl === item.key;
+                return item.key.includes('?') ? data.url === item.key : cleanUrl === item.key;
             }
         });
         if (foundIndex !==index);

@@ -5,7 +5,7 @@ import { Button, Modal } from 'app/design/controls';
 import { Icon } from 'app/ui/atoms/icon';
 import {
     Card,
-    CardContent,
+    CardFooter,
     CardHeader,
     CardTitle,
     CardDescription,
@@ -13,6 +13,17 @@ import {
 import { useCurrentUser } from 'app/context/user';
 import Link from 'app/ui/atoms/link'
 import { useTranslation } from 'react-i18next'
+
+function getPriceParts(data)
+{
+    let price = data.price.value.value;
+    let period = data.period.value.period ? `${data.period.value.period > 1 ? data.period.value.period : ''} ${data.period.value.unit}` : '' ;
+    if (data.period.value.period && data.period?.value?.period && data.period?.value?.period == 1 && (data.period.value.unit == 'year' || data.period.value.unit == 'month')){
+        price =  (data.price.value.value/data.period.value.period/ (data.period.value.unit == 'year' ? 12 : 1)).toFixed(2)
+        period = 'month';
+    }
+    return {price: price, period: period}
+}
 
 function UniPriceCard({ data, onBuy }) {
     const { t } = useTranslation()
@@ -44,8 +55,8 @@ function UniPriceCard({ data, onBuy }) {
     }
 
     const LevelName = data.level_name.value;
-    
-    const price = data.price.value.value/data.period.value.period/ (data.period.value.unit == 'year' ? 12 : 1)
+    const priceParts = getPriceParts(data)
+  
 
     return (
         <Card className=" w-full text-left max-w-sm justify-between"  >
@@ -54,8 +65,8 @@ function UniPriceCard({ data, onBuy }) {
                 <CardDescription>{LevelDescriptions[LevelName]}</CardDescription>
                 <View>
                     <View className=" flex-row items-end gap-4">
-                        <Text className="text-5xl font-semibold text-foreground">{t(data.price.value.currency)} {price}</Text>
-                        <Text className="text-base text-foreground pb-1">/ month</Text>
+                        <Text className="text-5xl font-semibold text-foreground">{t(data.price.value.currency)} {priceParts.price}</Text>
+                        <Text className="text-base text-foreground pb-1">{priceParts.period ? `/ ${priceParts.period}` : ''}</Text>
                         <Text className="text-base text-foreground pb-1">
                             {data.trial.value != 'none' ? 'Trial:' + data.trial.value : ''}
                         </Text>
@@ -76,7 +87,8 @@ function UniPriceCard({ data, onBuy }) {
                     </View>
                 </View>
             </CardHeader>
-            <CardFooter>  {currentUser ? <Button variant="primary" title={firstNonEmpty.title} onPress={() => { onBuy(firstNonEmpty) }} /> :
+            <CardFooter>
+                {currentUser ? <Button variant="primary" title={firstNonEmpty.title} onPress={() => { onBuy(firstNonEmpty) }} /> :
                 <Link href="/create-account"><Button variant="primary" title='Create  account' /></Link>}
             </CardFooter>
         </Card>
@@ -84,16 +96,16 @@ function UniPriceCard({ data, onBuy }) {
 }
 
 function UniPriceList({ data, onBuy }) {
+    const { t } = useTranslation()
     const firstNonEmpty = data.actions.data.find(
         (action) => action && Object.keys(action).length > 0
     );
-
-    const price = data.price.value
+    const priceParts = getPriceParts(data)
 
     return <Card className=" w-full text-left max-w-sm justify-center my-4 mx-auto" >
         <Row className='gap-x-4 items-center justify-between'>
-            <Text className="text-2xl text-foreground font-semibold">{price}</Text>
-            <Button variant="primary" title={firstNonEmpty.title} onPress={() => { onBuy(firstNonEmpty) }} />
+            <Text className="text-2xl text-foreground font-semibold">{t(data.price.value.currency)} {priceParts.price} {priceParts.period ? `/ ${priceParts.period}` : ''}</Text>
+            {!!firstNonEmpty && <Button variant="primary" title={firstNonEmpty.title} onPress={() => { onBuy(firstNonEmpty) }} />}
         </Row>
     </Card>
 }
