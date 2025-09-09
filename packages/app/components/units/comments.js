@@ -272,13 +272,11 @@ export default function UnitComments(props) {
                         <View className="w-0.5 ml-4 top-0.5 flex-auto bg-muted"></View>
                     )}
                 </View>
-
+                <View className="flex-1 flex-col gap-0.5">
                 <View
-                    className={`bg-muted/60 flex-1 rounded-xl ${cd(
-                        'py-sm'
-                    )} ${cd('px-sm')} ${cd('mt-md')} ${cd('gap-xs')}`}
+                    className="bg-muted/60 flex-1 rounded-xl p-2 gap-1 mt-3"
                 >
-                    <View className="flex-row items-center overflow-hidden justify-between gap-2 ">
+                    <View className="flex-row items-center justify-between gap-2 ">
                         <Profile
                             {...data.author_data}
                             displayType="unit_wo_image"
@@ -287,7 +285,7 @@ export default function UnitComments(props) {
                             showInfo2={<Badges badges={data.author_badges} size="xs" />}
                         />
 
-                        <Link href={data.cmt_url} size="xs" variant="ghost" emulate={true}>
+                        <Link href={data.cmt_url} size="sm" variant="ghost" emulate={true}>
                             <Time ts={data.cmt_time}></Time>
                         </Link>
                         {!!data.cmt_mood && (
@@ -360,12 +358,15 @@ export default function UnitComments(props) {
                             <Carousel data={imageList} />
                         </View>
                     )}
-                    {viewState.view != 'edited' && (
-                        <Row className={`${cd('pt-xs')} ${cd('gap-xs')}`}>
+                   
+                   
+                </View>
+                {viewState.view != 'edited' && (
+                        <Row className="gap-1">
                             {!!currentUser &&
                             !!props.handleReply &&
                             !props.module.includes('_reviews') ? (
-                                <View className=" ">
+                                
                                     <Button
                                         align="start"
                                         title={t('Reply')}
@@ -375,7 +376,7 @@ export default function UnitComments(props) {
                                         variant="text"
                                         onPress={() => handleReply(data)}
                                     />
-                                </View>
+                                
                             ) : (
                                 <View></View>
                             )}
@@ -418,7 +419,7 @@ export default function UnitComments(props) {
                                     }}
                                 />
 
-                                <View className="ml-auto flex-row items-center ">
+                                <View className="ml-auto flex-row items-center gap-1">
                                     <Menu
                                         {...data.menu_actions}
                                         displayType="element"
@@ -445,9 +446,7 @@ export default function UnitComments(props) {
                             </View>
                         </Row>
                     )}
-                   
                 </View>
-               
             </Row>
          
         </Wrapper>

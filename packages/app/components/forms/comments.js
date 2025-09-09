@@ -13,7 +13,7 @@ import { useWindowHeight } from 'app/context/measure';
 
 export default function FormComments(props) {
     const screenHeight = useWindowHeight();
-    const baseHeight = props.data.inputs['cmt_id']?.value ? 160 : 22
+    const baseHeight = props.data.inputs['cmt_id']?.value ? 160 : 18
     const maxHeight = Platform.OS === 'web' ? /*screenHeight / 2*/ 160 : (screenHeight - 300) / 2 // 300 is approximate keyboard height
     const formContext = useFormContext()
 
@@ -56,13 +56,13 @@ export default function FormComments(props) {
 
     function checkEditorHeight(reportedInternalHeight) {
         const actualHasText = stripTags(formContext.getValues('cmt_text') || '').trim().length > 0;
-        const growthStepAmount = 20; // Define early for use in placeholder check
+        const growthStepAmount = 18; // Define early for use in placeholder check
 
         if (!actualHasText) {
             // If no text, clamp to baseHeight unless the editor reports something
             // significantly larger than what baseHeight can contain (which shouldn't happen for a placeholder).
             // The main goal here is to ensure it stays at baseHeight (40px) for the placeholder.
-            const placeholderChromeEstimate = 20; // Matches totalChromeEstimate for placeholder state
+            const placeholderChromeEstimate = 18; // Matches totalChromeEstimate for placeholder state
             const placeholderVisualHeight = reportedInternalHeight + placeholderChromeEstimate;
             // If the reported placeholder content + its chrome fits within baseHeight, or slightly over by less than a full step,
             // force it to baseHeight. This prevents small placeholder overflows from bumping height by a full step.
@@ -75,7 +75,7 @@ export default function FormComments(props) {
 
         // When typing, initial visual height should accommodate 1 line + all relevant chrome.
         // 1 line content ~20px. Wrapper chrome when expanded (pt-10, pb-48) = 58px. Editor internal est. ~2px. Total ~80px.
-        const minVisualHeightWhenTyping = 80;
+        const minVisualHeightWhenTyping = 64;
         const visualFloorHeight = actualHasText ? minVisualHeightWhenTyping : baseHeight;
 
         let totalChromeHeightEstimate;
@@ -87,7 +87,7 @@ export default function FormComments(props) {
         } else {
             // This path is for initial calculation if the above early return for !actualHasText wasn't met.
             // Or if somehow called with !actualHasText after initial placeholder setup.
-            totalChromeHeightEstimate = 20; // Wrapper: 10px top/bottom
+            totalChromeHeightEstimate = 18; // Wrapper: 10px top/bottom
         }
 
         const newCalculatedHeight = getEditorHeight(
@@ -227,7 +227,7 @@ export default function FormComments(props) {
 
                 )}
                 <View className="flex-1">
-                    <View className=" items-stretch bg-muted/60 rounded-xl border border-border/80 p-2" >
+                    <View className=" items-stretch bg-muted/60 rounded-xl border border-border/80 px-3 py-2" >
                     <Animated.View 
                    
                      style={inputWrapperAnimatedStyle}

@@ -8,7 +8,7 @@ import React, { useMemo, useCallback } from 'react';
 import { Text } from 'app/design/typography'
 
 export default function ElementLink(props) {
-    const { href = '', target, haptics, children, asExternal, mode, variant, size, className = '', hitSlop,  ...rest } = props;
+    const { href = '', target, haptics, children, asExternal, mode, variant, size, className = '', hitSlop, hitarea = true,  ...rest } = props;
     const glob = useGlobalSearchParams();
     const { currentUser } = useCurrentUser();
 
@@ -124,6 +124,9 @@ export default function ElementLink(props) {
         return token;
     })();
 
+    // Fallback hitSlop from theme by size (native only); explicit prop wins; allow disabling with hitarea={false}
+    const resolvedHitSlop = hitSlop ?? (hitarea === false ? undefined : (size ? ThemeLinkSizes[size]?.hitSlop : undefined));
+
     const composedClassName = [variantClass, sizeClass, className].filter(Boolean).join(' ').trim();
 
 
@@ -141,7 +144,7 @@ if (mode == 'text'){
 
     return (
         <Link push href={p} asChild {...rest}>
-            <Pressable hitSlop={hitSlop} onPress={haptics ? handleHapticsPress : undefined} className={composedClassName}>
+            <Pressable hitSlop={resolvedHitSlop} onPress={haptics ? handleHapticsPress : undefined} className={composedClassName}>
                 {content}
             </Pressable>
         </Link>

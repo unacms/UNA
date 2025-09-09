@@ -32,7 +32,7 @@ const AnimatedContainer = (props) => {
     },[opacity, translateY]);
     
     return (
-        <Animated.View style={[animatedStyles]} className="max-w-5xl w-full mx-auto">
+        <Animated.View style={[animatedStyles]} className={appSetting('layout', 'max_width_content') + ' w-full mx-auto'}>
             {props.children}
         </Animated.View>
     );

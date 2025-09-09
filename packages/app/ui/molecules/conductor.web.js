@@ -371,7 +371,7 @@ const TabBar = ({ menu, routes, leftSideBar, pageData, currentUser, index, setIn
                             {...pageData.cover_block.actions_menu}
                             uri={pageData.uri}
                             isSplitMenu={true}
-                            containerClasses="gap-2 "
+                            containerClasses="gap-2"
                         />
                         <CoverMenuMore
                             {...pageData.cover_block.actions_menu}

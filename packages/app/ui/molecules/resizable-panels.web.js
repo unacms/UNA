@@ -34,14 +34,14 @@ export const PanelHandler = memo(({ gap, sizable, className = '  ', style }) => 
     const { density: effectiveDensity } = useLayoutSettings();
     const densityClass = panelTheme[`u-panel-handler-${effectiveDensity}`] ;
 
-    const gapClass = gap && gap.includes(' ') ? gap : gap ? `w-${gap}` : 'w-lg';
+    const gapClass = gap && gap.includes(' ') ? gap : gap ? `w-${gap}` : 'w-1';
 
-    const defaultClasses = `${gapClass} group transition-all duration-300 justify-center items-center flex`;
+    const defaultClasses = `${gapClass} group transition-all web:duration-200 justify-center items-center flex`;
     const finalClasses = `${className || defaultClasses} ${densityClass}`;
 
     return sizable ? (
         <PanelResizeHandle 
-            className={' ' +finalClasses}
+            className={panelTheme['u-panel-handler']} 
             style={style}
         >
             <View className={panelTheme['u-panel-line']} />

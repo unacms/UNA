@@ -144,7 +144,7 @@ export default function PageLayout({ data, blocks, isModal, url }) {
     }
     return (
         <View {...viewProps} className={`flex-1 w-full h-full sm:h-[calc(100vh-16rem)] max-w-5xl mx-auto `}>
-            <View className="w-full flex-1 bg-card/80 backdrop-blur shadow-sm sm:border border-border/30 web:sm:border-0 web:ring-[1px] web:ring-inset web:ring-border/30 text-card-foreground rounded-2xl lg:mt-4 ">
+            <View className="w-full flex-1 bg-card shadow-sm  text-card-foreground rounded-2xl lg:my-4 ">
                 <View onLayout={handleListLayout} pointerEvents="box-none" className='w-full flex-1' style={{ marginBottom: !isDesktop ? 0 : formHeight }}>
                     <CommentsBrowse
                         scrollProps={
@@ -168,7 +168,7 @@ export default function PageLayout({ data, blocks, isModal, url }) {
                 </View>
             </View>
             <KbAvoidingView>
-                <View onLayout={handleLayout} style={{ width: listWidth }} className='bg-card ml-[1px] rounded-2xl px-4 py-3 bor web:fixed web:bottom-0   w-full max-w-5xl'>
+                <View onLayout={handleLayout} style={{ width: listWidth }} className='bg-card ml-[1px] rounded-2xl px-4 py-3 bor web:fixed web:bottom-0 web:lg:bottom-4   w-full max-w-5xl'>
                     <CommentsForm handleForm={setAddData} browse={commentsData?.content[0]?.browse} module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module} form={commentsData?.content[0]?.form} formData={formData} requestUrl={commentsData?.content[0]?.url} />
                 </View>
             </KbAvoidingView>

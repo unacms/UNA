@@ -206,7 +206,7 @@ export const settingsDefault = {
         show_nav_counters: 'primary', // OLD appSetting('layout', 'show_nav_counters')
         show_nav_titles: false, // OLD appSetting('layout', 'show_nav_titles')
         hide_browse_filter: true, // OLD appSetting('layout', 'hide_browse_filter')
-        sidebar_container: ' p-2 bg-card/80 border-e border-border/80 h-full overflow-y-auto flex flex-col ',
+        sidebar_container: ' p-2 bg-card/80 h-full overflow-y-auto flex flex-col ring-1 ring-border/80 ',
         sidebar_width: ' w-80 hidden lg:block',
         sidebar_position: ' z-50 fixed fixed-process ',
         bgrDecorator: true, // Enable/disable decorator background globally for conductor buttons
@@ -841,14 +841,14 @@ export const settingsDefault = {
                     defaultSize: 25,
                     minSize: 20,
                     maxSize: 30,
-                    breakpoint: 'md',
+                    breakpoint: 'lg',
                 },
                 center: { defaultSize: 50, minSize: 40, maxSize: 60 },
                 right: {
                     defaultSize: 25,
                     minSize: 20,
                     maxSize: 30,
-                    breakpoint: 'lg',
+                    breakpoint: 'xl',
                 },
             },
         },
@@ -858,9 +858,9 @@ export const settingsDefault = {
             cells: {
                 left: {
                     defaultSize: 25,
-                    minSize: 20,
-                    maxSize: 30,
-                    breakpoint: 'lg',
+                    minSize: 25,
+                    maxSize: 40,
+                    breakpoint: 'xl',
                 },
                 center: { defaultSize: 75, minSize: 70, maxSize: 80 },
             },
@@ -1024,12 +1024,10 @@ export const settingsDefault = {
         button_sizes: {
             default_size: 'base',
             default_variant: 'default',
-            default_ring: ' ',
-            pressed_container: ' bg-primary ',
-            pressed_text: ' text-primary-foreground font-medium ',
+            pressed_container: ' bg-primary/10 border border-primary/80 web:border-0 web:ring-1 web:ring-inset web:ring-primary/80 ',
+            pressed_text: ' text-primary font-medium ',
             xxs: {
                 rounded: ' rounded-sm ',
-                ring: ' web:focus-visible:ring-2 web:focus-visible:ring-offset-2 ',
                 padding: ' px-1 ',
                 padding_icon_only: ' w-[18px] ',
                 padding_with_title: ' px-1 gap-1 ',
@@ -1038,37 +1036,40 @@ export const settingsDefault = {
                 icon_size: 12,
                 icon_margin: ' ', // conditional margin for icon container when title is present
                 title_margin: '  ', //
+                hitarea_class: ' relative u-action-hitarea u-action-hitarea-xxs ',
+                hitSlop: { top: 6, right: 6, bottom: 6, left: 6 },
             },
             xs: {
-                rounded: ' rounded ',
-                ring: ' web:focus-visible:ring-2 web:focus-visible:ring-offset-2 web:focus-visible:rounded ',
+                rounded: ' rounded-md ',
                 padding: ' ',
                 padding_icon_only: ' h-7 w-7 ',
-                padding_with_title: ' px-2 gap-1 ',
+                padding_with_title: ' px-1.5 gap-1 ',
                 icon_container:
                     ' h-7 text-sm flex items-center justify-center',
                 title_container: ' text-xs leading-7 text-xs',
                 icon_size: 16,
                 icon_margin: ' ', // conditional margin for icon container when title is present
                 title_margin: '  ', //
+                hitarea_class: ' relative u-action-hitarea u-action-hitarea-xs ',
+                hitSlop: { top: 8, right: 8, bottom: 8, left: 8 },
             },
             sm: {
-                rounded: ' rounded-md ',
-                ring: ' web:focus-visible:ring-2 web:focus-visible:ring-offset-2 web:focus-visible:rounded-md ',
+                rounded: ' rounded-lg ',
                 padding: '  ',
                 padding_icon_only: ' h-9 w-9 ',
-                padding_with_title: ' px-3 ',
+                padding_with_title: ' px-2 gap-1 ',
                 icon_container:
                     ' text-base h-9 flex items-center justify-center',
-                title_container: ' text-sm leading-9 inline-flex items-cente px-1.5  ',
+                title_container: ' text-sm leading-9 inline-flex items-cente px-0.5  ',
                 icon_size: 20,
                 icon_margin: ' ', // conditional margin for icon container when title is present
                 title_margin: '  ', // conditional margin for text container when icon is present
+                hitarea_class: ' relative u-action-hitarea u-action-hitarea-sm ',
+                hitSlop: { top: 10, right: 10, bottom: 10, left: 10 },
             },
             
             base: {
                 rounded: ' rounded-lg ',
-                ring: ' web:focus-visible:ring-2 web:focus-visible:ring-offset-2 web:focus-visible:rounded-lg ',
                 padding: '  ',
                 padding_icon_only: ' h-10 w-10 ',
                 padding_with_title: ' px-3 gap-2 h-10 items-center ',
@@ -1077,10 +1078,11 @@ export const settingsDefault = {
                 icon_size: 24,
                 icon_margin: ' ', // conditional margin for icon container when title is present
                 title_margin: ' ', // conditional margin for text container when icon is present
+                hitarea_class: ' relative u-action-hitarea u-action-hitarea-base ',
+                hitSlop: { top: 12, right: 12, bottom: 12, left: 12 },
             },
             lg: {
                 rounded: ' rounded-xl ',
-                ring: ' web:focus-visible:ring-2 web:focus-visible:ring-offset-2 web:focus-visible:rounded-xl  ',
                 padding: '  ',
                 padding_icon_only: ' h-12 w-12 ',
                 padding_with_title: ' px-4 h-12 items-center ',
@@ -1089,6 +1091,8 @@ export const settingsDefault = {
                 icon_size: 24,
                 icon_margin: '', // conditional margin for icon container when title is present
                 title_margin: '', // conditional margin for text container when icon is present
+                hitarea_class: ' relative u-action-hitarea u-action-hitarea-lg ',
+                hitSlop: { top: 14, right: 14, bottom: 14, left: 14 },
             },
         },
         // Button group sizes (separate from individual button sizes)
@@ -1142,7 +1146,7 @@ export const settingsDefault = {
                 container: '  min-w-5 h-5 overflow-hidden justify-center items-center ',
                 image_container: ' items-center justify-center rounded overflow-hidden ',
                 icon_size: 16,
-                text: ' text-xs leading-5 px-1 ',
+                text: ' text-xs leading-4 px-1 ',
                 rounded: ' rounded-md ',
             },
             sm: {
@@ -1180,16 +1184,26 @@ export const settingsDefault = {
 
             
             xs: {
-                padding: ' px-0.5  rounded-sm items-center flex  ',
+                padding: ' px-0.5 rounded-sm items-center flex  ',
+                // Web pseudo-element class to extend clickable hit area
+                hitarea_class: ' relative u-link-hitarea u-link-hitarea-xs ',
+                // Native Pressable hitSlop defaults (can be overridden per usage)
+                hitSlop: { top: 6, right: 6, bottom: 6, left: 6 },
             },
             sm: {
-                padding: ' px-0.5  rounded items-center flex ',
+                padding: ' px-1 rounded-md items-center flex ',
+                hitarea_class: ' relative u-link-hitarea u-link-hitarea-sm ',
+                hitSlop: { top: 8, right: 8, bottom: 8, left: 8 },
             },
             md: {
-                padding: ' px-1  rounded-md items-center flex',
+                padding: ' px-2 py-1 rounded-md items-center flex',
+                hitarea_class: ' relative u-link-hitarea u-link-hitarea-md ',
+                hitSlop: { top: 10, right: 10, bottom: 10, left: 10 },
             },
             lg: {
-                padding: ' px-2 py-1  rounded-lg items-center flex ',
+                padding: ' px-3 py-2 rounded-lg items-center flex ',
+                hitarea_class: ' relative u-link-hitarea u-link-hitarea-lg ',
+                hitSlop: { top: 12, right: 12, bottom: 12, left: 12 },
             },
         },
 
@@ -1205,7 +1219,7 @@ export const settingsDefault = {
             'u-link-text-trans': ' web:duration-200',
 
             // Ghost: transparent by default; muted on hover/active
-            'u-link-ghost-cnt': ' group bg-transparent web:hover:bg-muted/60 active:bg-secondary/60 ',
+            'u-link-ghost-cnt': 'group bg-transparent web:hover:bg-accent/10 active:bg-secondary/60 ',
             'u-link-ghost-text': ' text-muted-foreground web:group-hover:text-accent ',
             'u-link-ghost-trans': ' web:duration-200 ',
 
@@ -1282,9 +1296,9 @@ export const settingsDefault = {
         },
         panels: {
             'u-panel-base': ' h-full flex-col ',
-            'u-panel-handler': ' ',
+            'u-panel-handler': ' w-1 web:hover:bg-border/80 web:active:bg-ring/80',
             'u-panel-line':
-                'w-0 h-full web:group-hover:bg-muted web:group-active:bg-muted ',
+                '  ',
             'u-panel-group': ' h-full flex',
         },
         blocks: {
@@ -1494,11 +1508,11 @@ export const settingsDefault = {
             'u-btn-danger-trans': ' web:duration-200',
             
 
-            'u-btn-text-cnt': ' group web:hover:bg-muted active:opacity-50 web:focus-visible:bg-muted ',
+            'u-btn-text-cnt': ' group web:hover:bg-muted/60 active:bg-muted web:active:bg-muted web:focus-visible:bg-muted/60 active:scale-95 web:duration-200  ',
             'u-btn-text-text':
                 ' font-medium text-card-foreground web:group-hover:text-foreground',
             'u-btn-text-trans': ' web:duration-200',
-            'u-btn-text-focus': ' web:focus-visible:bg-muted ',
+            'u-btn-text-focus': ' web:focus-visible:bg-muted/60 ',
 
             'u-btn-link-cnt': '  ',
             'u-btn-link-text':

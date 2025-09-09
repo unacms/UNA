@@ -167,7 +167,26 @@ export default function (props) {
     const fetchData = useCallback(
         async ({ }) => {
             const sUrl = data.request_url + JSON.stringify({ params: dataItems.params })
-            return data.request_url ? (await fetcher(sUrl)).data[0].data : []
+            if (!data.request_url) return { data: [], params: browseParams }
+
+            const res = await fetcher(sUrl)
+            // Expected UNA response shape: { data: [ { data: { data: [...], params: {...} } } ] }
+            const nested = res?.data?.[0]?.data
+            if (nested && (Array.isArray(nested?.data) || nested?.params)) {
+                return nested
+            }
+            // Fallbacks for looser shapes
+            const arrData = Array.isArray(res?.data) ? res.data : []
+            if (arrData.length) {
+                return { data: arrData, params: browseParams }
+            }
+            if (Array.isArray(res)) {
+                return { data: res, params: browseParams }
+            }
+            if (Array.isArray(res?.data?.data)) {
+                return { data: res.data.data, params: res.data.params || browseParams }
+            }
+            return { data: [], params: browseParams }
         },
         [dataItems.params]
     )

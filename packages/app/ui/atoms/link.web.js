@@ -6,7 +6,7 @@ import { appSetting, cd } from 'app/lib/util'
 
 export default function ElementLink(props) {  
 
-    let { href, emulate, target, variant, size, className = '',  ...rest } = props;
+    let { href, emulate, target, variant, size, className = '', hitarea = true,  ...rest } = props;
     const router = useRouter();
 
     const handlePress = (event, href) => {
@@ -67,8 +67,8 @@ export default function ElementLink(props) {
     const sizeClass = (() => {
         if (!size) return '';
         const token = ThemeLinkSizes[size]?.padding;
-        if (!token) return '';
-        return token;
+        const hitareaClass = hitarea === false ? '' : (ThemeLinkSizes[size]?.hitarea_class || '');
+        return [token || '', hitareaClass].filter(Boolean).join(' ');
     })();
 
     const composedClassName = [variantClass, sizeClass, className].filter(Boolean).join(' ').trim();

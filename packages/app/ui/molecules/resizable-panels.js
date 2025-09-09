@@ -2,7 +2,7 @@ import { memo } from "react";
 import { View } from 'app/design/view';
 
 export const PanelHandler = memo(({ gap, sizable }) => {
-    return <View className={`w-${gap}`}/>
+    return <View className={`w-2`}/>
 });
 
 export const PanelGroup = (props) => {

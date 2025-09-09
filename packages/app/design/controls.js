@@ -308,17 +308,14 @@ export function ButtonsGroup({
     const aChildren = children.map((child, iIndex) => {
         const childProps = child?.props || {};
         const { variant: childVariant, size: childSize, fullWidth: childFullWidth, ...restChild } = childProps;
-        const isNotLastChild = iIndex < children.length - 1;
-        const childClass = ` h-full items-stretch min-w-0`;
-        const isIconLike = !!childProps?.trigger; // heuristic for dropdown/icon-only wrappers
 
-        let childItem;
+        // If child is a Button: size and style it as a group item and return directly
         if (child.type === Button) {
-            // Use group size to ensure consistent sizing across group items
             const hasTitle = !!restChild.title;
             const paddingOverride = hasTitle ? (groupSizeCfg.item_padding || '') : (groupSizeCfg.item_padding_icon_only || groupSizeCfg.item_padding || '');
-            childItem = (
+            return (
                 <Button
+                    key={iIndex}
                     showTitleFromSize={showTitleFromSize}
                     variant={'group-item' + (!!childVariant ? '-' + childVariant : '')}
                     size={childSize}
@@ -327,40 +324,35 @@ export function ButtonsGroup({
                     {...restChild}
                 />
             );
-        } else {
-            // If child is a wrapper (e.g., Link) around a Button, enforce group size on the inner Button
-            const inner = childProps.children;
-            if (React.isValidElement(inner) && inner.type === Button) {
-                const innerProps = inner.props || {};
-                const innerVariant = innerProps.variant;
-                const { fullWidth: innerFullWidth, ...restInner } = innerProps;
-                const hasTitle = !!restInner.title;
-                const paddingOverride = hasTitle ? (groupSizeCfg.item_padding || '') : (groupSizeCfg.item_padding_icon_only || groupSizeCfg.item_padding || '');
-                const sizedInner = (
-                    <Button
-                        showTitleFromSize={showTitleFromSize}
-                        variant={'group-item' + (!!innerVariant ? '-' + innerVariant : '')}
-                        size={innerProps.size}
-                        fullWidth={innerFullWidth ?? fullWidth}
-                        padding={paddingOverride}
-                        {...restInner}
-                    />
-                );
-                childItem = React.cloneElement(child, { children: sizedInner });
-            } else {
-                // Fallback: wrap arbitrary child with group item container styles and padding
-                const paddingOverride = groupSizeCfg.item_padding || '';
-                const itemCntClass = ThemeButtonItemStyles[`u-btn-group-item-${variant}-cnt`] || '';
-                const itemTextClass = ThemeButtonItemStyles[`u-btn-group-item-${variant}-text`] || '';
-                childItem = <View className={`${itemCntClass} ${itemTextClass} ${paddingOverride} items-center justify-center ${itemSizeCfg?.container || ''} ${rounded ? (itemSizeCfg?.rounded || '') : ''}`}>{child}</View>;
-            }
         }
 
-        // Always wrap each item to control flex behavior consistently
+        // If child is a wrapper (e.g., Link) around a Button: replace inner Button with sized group item
+        const inner = childProps.children;
+        if (React.isValidElement(inner) && inner.type === Button) {
+            const innerProps = inner.props || {};
+            const innerVariant = innerProps.variant;
+            const { fullWidth: innerFullWidth, ...restInner } = innerProps;
+            const hasTitle = !!restInner.title;
+            const paddingOverride = hasTitle ? (groupSizeCfg.item_padding || '') : (groupSizeCfg.item_padding_icon_only || groupSizeCfg.item_padding || '');
+            const sizedInner = (
+                <Button
+                    showTitleFromSize={showTitleFromSize}
+                    variant={'group-item' + (!!innerVariant ? '-' + innerVariant : '')}
+                    size={innerProps.size}
+                    fullWidth={innerFullWidth ?? fullWidth}
+                    padding={paddingOverride}
+                    {...restInner}
+                />
+            );
+            return React.cloneElement(child, { key: iIndex, children: sizedInner });
+        }
+
+        // Fallback: non-Button child — wrap with group item container styles and padding
+        const paddingOverride = groupSizeCfg.item_padding || '';
+        const itemCntClass = ThemeButtonItemStyles[`u-btn-group-item-${variant}-cnt`] || '';
+        const itemTextClass = ThemeButtonItemStyles[`u-btn-group-item-${variant}-text`] || '';
         return (
-            <View key={iIndex} className={` ${childClass} ${fullWidth ? (isIconLike ? 'flex-none' : 'flex-auto') : 'flex-none'}`}>
-                {childItem}
-            </View>
+            <View key={iIndex} className={`${itemCntClass} ${itemTextClass} ${paddingOverride} items-center justify-center ${itemSizeCfg?.container || ''} ${rounded ? (itemSizeCfg?.rounded || '') : ''}`}>{child}</View>
         );
     });
 
@@ -494,6 +486,7 @@ export const Button = (props) => {
         solid = false,
         padding,
         children,
+        hitarea = true,
         ...rest
     } = props;
 
@@ -590,7 +583,8 @@ export const Button = (props) => {
                 paddingClass = ThemeButtonSizes[size]?.padding;
             }
             
-            sizeClasses = `${roundingClass} ${padding || paddingClass}`;
+            const hitareaClass = hitarea === false ? '' : (ThemeButtonSizes[size]?.hitarea_class || '');
+            sizeClasses = `${roundingClass} ${padding || paddingClass} ${hitareaClass}`;
             iconContainerClass = `${ThemeButtonSizes[size]?.icon_container} ${title ? ThemeButtonSizes[size]?.icon_margin : ''}`;
             iconSize = ThemeButtonSizes[size]?.icon_size;
             titleContainerClass += title ? ThemeButtonSizes[size]?.title_container + (startDecorator || endDecorator ? ThemeButtonSizes[size]?.title_margin : '') : '';
@@ -651,6 +645,12 @@ export const Button = (props) => {
     }, [haptics, onPress]);
 
     const Cnt = onPress && !disabled /*&& !isWeb*/ ? Pressable : View;
+    // Resolve default native hitSlop from theme size unless explicitly overridden via rest.hitSlop
+    const resolvedHitSlop = useMemo(() => {
+        if (rest.hitSlop !== undefined) return rest.hitSlop;
+        if (hitarea === false) return undefined;
+        return ThemeButtonSizes?.[size]?.hitSlop;
+    }, [rest.hitSlop, hitarea, size]);
     const refProps = forwardedRef ? { ref: forwardedRef } : {};
 
   
@@ -664,23 +664,22 @@ export const Button = (props) => {
     } : {};
     const buttonContent = (
         <Cnt
-            className={`${fullWidth ? 'flex-auto ' : ''} ${(ThemeButtonSizes?.[size]?.ring || ThemeButtonSizes?.default_ring || '')} ${(ThemeCssClassesButton['u-btn-' + variant + '-focus'] || ThemeCssClassesButton['u-btn-focus'] || '')}`}
+            className={`${fullWidth ? 'flex-auto ' : ''} ${sClassContainer} ${sizeClasses} ${(ThemeCssClassesButton['u-btn-' + variant + '-focus'] || ThemeCssClassesButton['u-btn-focus'] || '')}`}
             {...rest}
             {...buttonAttributes}
             onPress={onPress && !disabled ? handlePress : undefined}
+            hitSlop={resolvedHitSlop}
             {...refProps}
         >
-            <View className={`${sClassContainer} ${sizeClasses}`}>
-                {sButtonIconStart}
-                {isTitle && (
-                    <Text className={`${sClassText} ${sTitleContainer}`} numberOfLines={1}>
-                        {title}
-                    </Text>
-                )}
-                {sButtonIconEnd}
-                {isTitle && oButtonAddon}
-                {children}
-            </View>
+            {sButtonIconStart}
+            {isTitle && (
+                <Text className={`${sClassText} ${sTitleContainer}`} numberOfLines={1}>
+                    {title}
+                </Text>
+            )}
+            {sButtonIconEnd}
+            {isTitle && oButtonAddon}
+            {children}
             {!isTitle && oButtonAddon}
         </Cnt>
     );

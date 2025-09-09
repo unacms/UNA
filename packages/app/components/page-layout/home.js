@@ -241,20 +241,20 @@ return;*/
                         <Link href={currentUser.url} emulate={true}>
                             <Row
                                 className={
-                                    ' rounded-xl group items-center gap-3 px-2 py-1.5 mb-0.5 hover:bg-muted/60 active:opacity-50  '
+                                    ' rounded-xl group items-center gap-1 px-2 py-1.5 mb-0.5 hover:bg-muted/60 active:opacity-50  '
                                 }
                             >
-                                <View className=''>
+                                
                                     <Profile
                                         {...currentUser}
                                         url_avatar={currentUser.avatar}
                                         displayType="unit_wo_info"
                                         displaySize="sm"
                                     />
-                                </View>
+                                
 
-                                <View className="flex-row gap-1 flex-auto justify-between ">
-                                    <Text className=" text-sm leading-tight font-semibold truncate text-card-foreground web:group-hover:text-foreground ">
+                                <View >
+                                    <Text className="px-1 text-sm leading-tight font-semibold truncate text-card-foreground web:group-hover:text-foreground ">
                                         {currentUser.display_name}
                                     </Text>
                                     <Badge size="xs" variant="default" iconOnly data={{ text: currentUser.membership_name }} />
