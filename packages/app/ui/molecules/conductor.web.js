@@ -244,7 +244,7 @@ const LeftSideBarContainer = ({ menu, routes, currentUser, index, setIndex, left
 const HeaderContainer = ({ tabBarObj, pageData, headerSettings, isCoverDisabled, isHideCover }) => {
     const coverRef = useRef(null);
     const menuRef = useRef(null);
-
+     const isDesktop = useIsDesktop();
     const scrollValue = useSharedValue(isCoverDisabled ? 0 : 1);
     const hideDefaultHeaderFrom = useSharedValue(200);
     const coverHeight = useSharedValue(0);
@@ -294,8 +294,8 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, isCoverDisabled,
 
     const animatedStyleHeaderCommon = useAnimatedStyle(() => {
         return {
-            position: scrollValue.value == 1 ? 'relative' : 'fixed',
-            marginBottom: scrollValue.value == 1 ? '0px' : hideDefaultHeaderFrom.value + 'px',
+            position: scrollValue.value == 1 || (isCoverDisabled && !isDesktop) ? 'relative' : 'fixed',
+            marginBottom: scrollValue.value == 1 || (isCoverDisabled && !isDesktop) ? '0px' : hideDefaultHeaderFrom.value + 'px',
         };
     }, [scrollValue]);
 
@@ -314,8 +314,8 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, isCoverDisabled,
 
     const animatedStyleHeaderSpacer = useAnimatedStyle(() => {
         return {
-            display: scrollValue.value == 1 ? 'none' : 'flex',
-            height: scrollValue.value == 1 ? '0px' : (coverHeight.value + menuHeight.value) + 'px',
+            display: scrollValue.value == 1 || (isCoverDisabled && !isDesktop) ? 'none' : 'flex',
+            height: scrollValue.value == 1 || (isCoverDisabled && !isDesktop)  ? '0px' : (coverHeight.value + menuHeight.value) + 'px',
 
         };
     }, [scrollValue, coverHeight.value, menuHeight.value]);
@@ -371,7 +371,7 @@ const TabBar = ({ menu, routes, leftSideBar, pageData, currentUser, index, setIn
                             {...pageData.cover_block.actions_menu}
                             uri={pageData.uri}
                             isSplitMenu={true}
-                            containerClasses="gap-2"
+                            containerClasses="gap-2 "
                         />
                         <CoverMenuMore
                             {...pageData.cover_block.actions_menu}
