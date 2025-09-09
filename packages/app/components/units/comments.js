@@ -326,7 +326,7 @@ export default function UnitComments(props) {
                             )}
                     </View>
                     {view == 'flat' && data.cmt_parent_id > 0 && (
-                        <View className="   border border-border/60 rounded-md p-2 my-1">
+                        <View className="   border border-border/80 rounded-md p-2 my-1">
                             <View className="flex-row items-baseline">
                                 <View>
                                     <Text className="text-xs text-muted-foreground">

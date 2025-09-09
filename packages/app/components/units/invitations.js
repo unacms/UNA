@@ -86,7 +86,7 @@ export default function Unit(props) {
     return (
         <Link href={data.url} emulate={true}>
             <View
-                className=" flex-row p-2 rounded-xl web:active:opacity-90 web:hover:bg-secondary items-center  max-w-4xl mx-auto w-full"
+                className=" flex-row p-2 rounded-xl web:active:opacity-90 web:hover:bg-muted/60 items-center  max-w-4xl mx-auto w-full"
             >
                 <Profile
                     url_avatar={data?.image?.src}

@@ -190,8 +190,8 @@ export default function FormComments(props) {
     const attachmentButtonContainerClasses = [
         'absolute',
         'bottom-0',
-        'z-10',
-        'h-10',
+        'w-11',
+        'h-11',
         'flex',
         'items-center',
         'justify-center',
@@ -200,7 +200,7 @@ export default function FormComments(props) {
 
     let currentAttachmentButtonWidthClass;
     if (isWeb) {
-        currentAttachmentButtonWidthClass = ' w-10 h-10';
+        currentAttachmentButtonWidthClass = ' w-11 h-11';
     } else {
         currentAttachmentButtonWidthClass = 'w-fit';
     }
@@ -214,20 +214,20 @@ export default function FormComments(props) {
 
     return (
         <View className="w-full ">
-            <Row className="w-full gap-x-2">
+            <Row className="w-full gap-x-2 items-end ">
                 {currentUser && (
 
                     <Profile
                         {...currentUser}
                         url_avatar={currentUser.avatar}
                         displayType="unit_wo_info"
-                        displaySize="base"
+                        displaySize="sm"
 
                     />
 
                 )}
                 <View className="flex-1">
-                    <View className={`  items-stretch border/50 rounded-xl border border-border ${cd('px-sm')} py-2 `} >
+                    <View className=" items-stretch bg-muted/60 rounded-xl border border-border/80 p-2" >
                     <Animated.View 
                    
                      style={inputWrapperAnimatedStyle}
@@ -254,7 +254,7 @@ export default function FormComments(props) {
                             {
                                 form_name: props.name,
                                 container_class: 'comments',
-                                classes: 'flex-1 text-base leading-5 text-neutral-800 dark:text-neutral-200 tiptap-comments',
+                                classes: 'flex-1 text-sm leading-5 text-card-foreground tiptap-comments',
                                 autofocus: isAutoFocus,
                                 bg: 'transparent',
                                 placeholder: 'Leave a comment...',

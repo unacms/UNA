@@ -187,7 +187,7 @@ export default function ElementHtml(props) {
     const { width, height } = useWindowSize();
     let customClassName = props.customClassName ? props.customClassName : '';
     let fontSize = 16;
-    let lineHeight = 22;
+    let lineHeight = 20;
     if (customClassName == 'u-vanilla-html-small') {
         fontSize = 14;
         lineHeight = 18;
