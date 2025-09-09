@@ -32,7 +32,7 @@ export default function ElementPricing({ data }) {
 
 
     if (sorted.length == 1)
-        return <ElementPricingPeriod data={data.data} period={sorted[0]} unit={data.settings.unit} />
+        return <ElementPricingPeriod data={data.data} period={sorted[0]} unit={data.settings.unit} settings={data.settings} />
 
     sorted.forEach(item => {
         preparedTabs.push({
