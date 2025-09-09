@@ -55,7 +55,7 @@ export default function ElementMapBox({ data }) {
             paint: {
                 'circle-color': 'circleColor',
                 'circle-radius': 'circleRadius',
-                'circle-stroke-width': 'circleStrokeWidth',
+                'circle-strokeWidth': 'circleStrokeWidth',
                 'circle-stroke-color': 'circleStrokeColor',
                 'fill-color': 'fillColor',
                 'fill-opacity': 'fillOpacity',

@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { appSetting, FeedbackHaptics } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { useCurrentUser } from 'app/context/user';
@@ -398,7 +398,7 @@ export default function ElementReactions(oProps) {
                 });
 
                 sActionButton = sActionButton = oItems.length > 1 ? (
-                    <ReactionPopover key="action" type="modal" showPopupType="onPress" items={aReactionItems} onTap={(item) => { _handleDo(item.name) }} disabled={bShowActionDisabled} >
+                    <ReactionPopover key="action" type="modal" showPopupType="onPress" items={aReactionItems} onTap={(item) => { _handleDo(item.name) }} disabled={bShowActionDisabled} asChild={true} childRefProp="forwardedRef">
                         <ButtonAction startDecorator={_getIconAlias(sReaction)} disabled={bShowActionDisabled} title={bShowActionLabel ? sTitle : false} {...oButtonProps} />
                     </ReactionPopover>
                 ) : (
@@ -475,6 +475,8 @@ const ReactionPopover = ({
     onTap,
     disabled,
     children,
+    asChild = false,
+    childRefProp = 'ref',
 }) => {
     const bWeb = Platform.OS === 'web';
     const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -521,11 +523,8 @@ const ReactionPopover = ({
         onTap?.(item);
     };
 
-    return (
-        <View>
-            <TouchableOpacity ref={buttonRef} onPress={openModal} disabled={disabled}>
-                {children}
-            </TouchableOpacity>
+    const content = (
+        <>
             {modalVisible && (
                 <ModalBase
                     transparent={true}
@@ -546,7 +545,6 @@ const ReactionPopover = ({
                                     <TouchableOpacity
                                         key={item.id}
                                         onPress={() => handleSelect(item)}
-
                                     >
                                         <Tooltip content={item.title}><Text className="text-3xl px-2">{item.emoji}</Text></Tooltip>
                                     </TouchableOpacity>
@@ -556,6 +554,33 @@ const ReactionPopover = ({
                     </TouchableWithoutFeedback>
                 </ModalBase>
             )}
+        </>
+    );
+
+    if (asChild) {
+        const childProps = {
+            [childRefProp]: buttonRef,
+            onPress: disabled ? undefined : openModal,
+        };
+        return (
+            <View>
+                {children && typeof children === 'object' ? (
+                    // Clone child to inject ref and onPress without extra wrapper
+                    <>
+                        {React.cloneElement(children, childProps)}
+                        {content}
+                    </>
+                ) : null}
+            </View>
+        );
+    }
+
+    return (
+        <View>
+            <TouchableOpacity ref={buttonRef} onPress={openModal} disabled={disabled}>
+                {children}
+            </TouchableOpacity>
+            {content}
         </View>
     );
 };
