@@ -178,7 +178,9 @@
 }
 
 @layer components {
-
+    .u-max-width-block {
+        @apply max-w-6xl;
+    }
 
     /* Larger hit area for web timestamp link without layout shift */
     .u-time-hitarea::before {
