@@ -76,9 +76,7 @@ export const CommentsModal = memo(
                 </View>
                 <View
                     onLayout={handleLayout}
-                    className={`${cd('px-lg')} ${cd(
-                        'py-sm'
-                    )} border-t border-border`}
+                    className="border-t border-border/60 px-3 py-2"
                 >
                     {CommentsPartsData[1]}
                 </View>

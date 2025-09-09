@@ -244,7 +244,7 @@ export function Modal({
                 (title || onClose) && <Row className={`items-center justify-${align} ${headerBorder && modalSettings.header} `}>
                     {(title && type === 'string') && (
                         <View className='flex-auto absolute left-0 right-0'>
-                            <Text className='text-xl sm:text-2xl text-center leading-none tracking-tight font-semibold text-neutral-800 dark:text-neutral-200 '>{title}</Text>
+                            <Text className='text-xl text-center leading-9 font-bold text-card-foreground '>{title}</Text>
                         </View>
                     )}
                     {(title && type !== 'string') && (title)}
@@ -255,7 +255,7 @@ export function Modal({
                     )}
                 </Row>
             }
-            <Cnt style={styles} className={`${padding} flex-auto h-full`}>{children}</Cnt>{/*overflow-y-auto*/}
+            <Cnt style={styles} className={`${padding} flex-auto `}>{children}</Cnt>{/*overflow-y-auto*/}
         </View>
     </View>
 </View>)

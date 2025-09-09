@@ -15,7 +15,7 @@ export default function () {
     return (
         <View className="gap-y-6 sm:p-2 w-full max-w-lg mx-auto">
             <View className="flex-col flex-auto gap-y-2 justify-center ">
-                <Text className="text-xl sm:text-2xl text-center lg:text-left leading-none tracking-tight font-semibold text-neutral-800 dark:text-neutral-200">
+                <Text className="text-xl text-center lg:text-left leading-none tracking-tight font-semibold text-neutral-800 dark:text-neutral-200">
                     {t('login_modal_heading')}
                 </Text>
                 <Text className="text-sm sm: text-base text-center lg:text-left text-neutral-500">
