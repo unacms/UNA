@@ -34,7 +34,7 @@
     "grapesjs-style-bg": "^2.0.2",
     "headroom.js": "^0.12.0",
     "highlight.js": "github:highlightjs/highlight.js",
-    "hls.js": "^1.6.11",
+    "hls.js": "^1.6.12",
     "htmx.org": "^2.0.6",
     "jekyll-toc": "https://github.com/ghiculescu/jekyll-table-of-contents",
     "jquery": "^3.7.1",

@@ -1777,10 +1777,10 @@ headroom.js@^0.12.0:
   version "11.11.1"
   resolved "https://codeload.github.com/highlightjs/highlight.js/tar.gz/5697ae5187746c24732e62cd625f3f83004a44ce"
 
-hls.js@^1.6.11:
-  version "1.6.11"
-  resolved "https://registry.yarnpkg.com/hls.js/-/hls.js-1.6.11.tgz#643cf98f93701accdcff3b912d712b2387e8ca3e"
-  integrity sha512-tdDwOAgPGXohSiNE4oxGr3CI9Hx9lsGLFe6TULUvRk2TfHS+w1tSAJntrvxsHaxvjtr6BXsDZM7NOqJFhU4mmg==
+hls.js@^1.6.12:
+  version "1.6.12"
+  resolved "https://registry.yarnpkg.com/hls.js/-/hls.js-1.6.12.tgz#a130d2b902bd1e1a30b4d9db9676f3dba3187629"
+  integrity sha512-Pz+7IzvkbAht/zXvwLzA/stUHNqztqKvlLbfpq6ZYU68+gZ+CZMlsbQBPUviRap+3IQ41E39ke7Ia+yvhsehEQ==
 
 hosted-git-info@^2.1.4:
   version "2.8.9"
