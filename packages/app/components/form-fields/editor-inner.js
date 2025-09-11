@@ -30,6 +30,8 @@ import { ThemeName } from 'app/design/theme'
 import { TextInput } from 'react-native'
 import emitter from 'app/context/emitter'
 
+const inputSettings = appSetting('theme', 'inputs');
+
 export default function RftText({
     name,
     value = '',
@@ -39,9 +41,11 @@ export default function RftText({
     onFocus,
     onBlur,
     html,
+    bg,
     enableSubmitOnEnter = false,
     ...props
 }) {
+
     const unicFormName = `${props.form_name}` // for catch images in editor
 
     let b = [...DEFAULT_TOOLBAR_ITEMS]
@@ -779,7 +783,7 @@ export default function RftText({
             className={`flex-1 relative rounded-lg ${
                 isToolBar
                     ? ' border/80 card-foreground rounded-lg p-3 '
-                    : ''
+                    : (bg == 'transparent' ? '' : inputSettings.multi)
             }`}
         >
             {suggestions && suggestions.length > 0 && (

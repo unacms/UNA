@@ -3,10 +3,13 @@ import { useController, useFormContext } from 'react-hook-form';
 import { Input } from 'app/design/controls'
 import { useEffect } from 'react';
 import { lazy } from 'react';
+import { Text } from 'app/design/typography'
 
 const PhoneInput = lazy(() => import('app/components/form-fields/phone'));
 
 export default function FormFieldText(props) {
+
+
     const name = props.name;
     const defaultValue = props.value ? props.value : '';
     const rules = getValidationRules(props);
@@ -19,6 +22,10 @@ export default function FormFieldText(props) {
             formContext.setValue(props.name, props.value)
     }, [props.name, props.value]);
 
+    if (props.type == "value"){
+        return  !field.value ? null : <Field {...props} caption={props.caption+': '+field.value} error2={formContext.formState.errors[name]}/>
+    }
+
     return (
         <Field {...props} error2={formContext.formState.errors[name]}>
             {name.includes("phone") || props.type == "phone" ? <PhoneInput
@@ -29,7 +36,7 @@ export default function FormFieldText(props) {
                 value={String(field.value)}
                 ariaLabel={props.caption}
                 field={field}
-            /> : (props.type == "value" && !field.value ? null : <Input
+            /> : <Input
                 textContentType="none"
 
                 /* experiment */
@@ -50,7 +57,7 @@ export default function FormFieldText(props) {
                 onBlur={field.onBlur}
                 value={String(field.value)}
                 aria-label={props.caption}
-            />)
+            />
             }
         </Field>
     );
