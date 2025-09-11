@@ -120,15 +120,26 @@ export default function PageLayout(props) {
                     </AnimatedView>
                 </View>
             </View>
-            <MenuFooter cntClasses="w-full flex-row flex-wrap opacity-80 h-16 items-center justify-center" />
-        </View>
+            <MenuFooter
+                            cntClasses="mx-auto flex-row flex-wrap gap-1 p-1"
+                            variant="ghost"
+                            size="sm"
+                            itemClassName="text-sm"
+                            
+                        />        </View>
     ) : (
         <View className="w-full flex-col lg:flex-row gap-y-4 mx-auto p-3 pt-16">
             <View className="my-auto flex-col items-center lg:items-start flex-auto " >
                 {appStatic('join_text')}
             </View>
             <PageContent {...props} isAllowJoin={isAllowJoin} />
-            <MenuFooter cntClasses="w-full flex-row flex-wrap opacity-80 h-16 items-center justify-center" />
+            <MenuFooter
+                            cntClasses="mx-auto flex-row flex-wrap gap-1 p-1"
+                            variant="ghost"
+                            size="sm"
+                            itemClassName="text-sm"
+                            
+                        /> 
         </View>
     );
 

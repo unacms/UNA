@@ -125,7 +125,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
 
     return (
         <View
-            className={`${conductorTheme.content_max_width} w-full flex-auto mx-auto px-1.5 sm:px-3 py-1 sm:py-2 gap-3 flex-row items-center justify-between `}
+            className={`${conductorTheme.content_max_width} flex-row items-center justify-between mx-auto `}
         >
             {getCoverBackButton(bPerson)}
             <Row className='items-center p-1 bg-muted/60 web:hover:bg-secondary/60 rounded-full' >

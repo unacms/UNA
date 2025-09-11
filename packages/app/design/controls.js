@@ -433,7 +433,7 @@ const getIcon2 = (buttonInfo, classIconName, sClassText, sIconContainer, iIconSi
 
 const getAddon = (addon, isTitle) => {
     let sButtonAddonText = "";
-    let sButtonAddonBg = "bg-neutral-500 dark:bg-neutral-500";
+    let sButtonAddonBg = "bg-muted";
     if (typeof addon === 'object') {
         sButtonAddonText = addon?.text;
         if (addon?.hideZero && sButtonAddonText == '0')
@@ -445,10 +445,10 @@ const getAddon = (addon, isTitle) => {
         sButtonAddonText = addon;
     }
 
-    const position = addon?.position == 'bottom' ? 'bottom-0' : ' top-0 end-0';
+    const position = addon?.position == 'bottom' ? 'bottom-0' : ' -top-1 -end-1';
 
     if (!isTitle && sButtonAddonText)
-        return <View className={`absolute ${sButtonAddonBg} border border-card web:border-0 web:ring-2 web:ring-card rounded-full px-1.5 items-center justify-center ${position}`}><Text className='text-white text-sm font-medium'>{sButtonAddonText}</Text></View>
+        return <View className={`absolute ${sButtonAddonBg} border border-card web:border-0 web:ring-1 web:ring-card rounded-full px-1 min-w-5 min-h-5 min items-center justify-center ${position}`}><Text className='text-white text-xs font-semibold'>{sButtonAddonText}</Text></View>
 
     return sButtonAddonText && sButtonAddonText ? <View className='flex-1 items-end '>
         <View className={sButtonAddonBg + ' rounded-full px-2 py-0.5 text-center items-center'}>

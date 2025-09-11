@@ -452,7 +452,8 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     return (
 
         <PanelGroup
-            autoSaveId={`cells-messenger`}
+            key={`cells-messenger-${cellsCustomConfig.sizable ? 'sizable' : 'static'}`}
+            autoSaveId={cellsCustomConfig.sizable ? `cells-messenger` : undefined}
             direction="horizontal"
             className={`${appSetting('layout', 'max_width')} mx-auto w-full flex-auto relative flex-row`}
 

@@ -232,11 +232,10 @@ export default function MenuAccount({ buttonProps, children }) {
                 footer={
                     menu_footer_items.length > 0 ? (
                         <MenuFooter
-                            cntClasses="w-full flex-row flex-wrap opacity-80 h-16 items-center justify-center"
-                            btnStyle={{
-                                variant: 'link',
-                                size: 'xs',
-                            }}
+                            cntClasses="w-full flex-row flex-wrap gap-1 p-1"
+                            variant="ghost"
+                            size="sm"
+                            itemClassName="text-sm"
                             menu_items={menu_footer_items}
                         />
                     ) : null

@@ -260,7 +260,7 @@ export const ItemInfo = memo(({ data, t }) => {
         owners?.length > 0 ? (
             owners?.length == 1 ? (
                 <>
-                    <View className="text-muted -mx-1">
+                    <View className="text-muted -mx-1.5">
                         <Icon icon='Dot' size={16}  />
                     </View>  
                     <Link href={data.owners[0].url} emulate={true}>
@@ -271,7 +271,7 @@ export const ItemInfo = memo(({ data, t }) => {
                 </>
             ) : (
                 <>
-                    <View className="text-muted -mx-1">
+                    <View className="text-muted -mx-1.5">
                         <Icon icon='Dot' size={16}  />
                     </View>  
                     <Pressable
@@ -326,10 +326,10 @@ export const ItemInfo = memo(({ data, t }) => {
         return (
             l && (
                 <>
-                    <View className="text-muted -mx-1">
+                    <View className="text-muted -mx-1.5">
                         <Icon icon='Dot' size={16}  />
                     </View>  
-                    <Text className="text-muted-foreground font-medium tracking-tight text-xs mx-0.5 leading-5 ">
+                    <Text className="text-muted-foreground font-medium tracking-tight text-xs mx-1 leading-5 ">
                         {l}
                     </Text>
                 </>
@@ -493,10 +493,10 @@ export const VisibilityInfo = memo(({ data }) => {
 
     return (
         <Row className="items-center justify-center text-center">
-             <View className="text-muted -mx-1">
+             <View className="text-muted -mx-1.5">
                     <Icon icon="Dot" size={16} />
                 </View>
-            <View className="flex-none flex-row gap-1 items-center justify-center mx-0.5">
+            <View className="flex-none flex-row gap-1 items-center justify-center mx-1">
                
                 {isUser ? (
                     <Profile

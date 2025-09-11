@@ -12,8 +12,13 @@ export default function PageLayout(props) {
             <View className='sm:p-4 web:duration-300 w-full'>
                 {props.children}
             </View>
-            <MenuFooter cntClasses="w-full flex-row flex-wrap opacity-80 h-16 items-center justify-center"/>
-        </Animated.ScrollView>
+            <MenuFooter
+                            cntClasses="mx-auto flex-row flex-wrap gap-1 p-1"
+                            variant="ghost"
+                            size="sm"
+                            itemClassName="text-sm"
+                            
+                        />         </Animated.ScrollView>
     );
 
     return (

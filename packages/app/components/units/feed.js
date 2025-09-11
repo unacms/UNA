@@ -129,7 +129,7 @@ function DefaultUnit({ data }) {
                 </Modal>
             )}
             <CardList>
-                <Row className={`${cd('gap-md')} ${cd('mb-md')} flex-auto `}>
+                <Row className="gap-3 flex-auto mb-3">
                     <Author data={data} url={url} t={t} />
                     <View className="flex-none mb-auto">
                         <MenuManage

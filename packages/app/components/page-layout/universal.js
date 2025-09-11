@@ -83,7 +83,7 @@ function PageContentUniversal({ children, data, layoutName }) {
     return (
         <View className={`mx-auto w-full u-max-width-block gap-y-${gap} p-3 sm:p-4`}>
             <PanelRow gap={gap} cell={topCell} currentBreakpoint={currentBreakpoint} />
-            <PanelGroup autoSaveId={`cells-${uri}-${layoutName}`} direction="horizontal">
+            <PanelGroup key={`cells-${uri}-${layoutName}-${sizable ? 'sizable' : 'static'}`} autoSaveId={sizable ? `cells-${uri}-${layoutName}` : undefined} direction="horizontal">
                 {midCells.map((cell, i) => {
                     return <PanelCell key={cell.key} sizable={sizable} currentBreakpoint={currentBreakpoint} cell={cell} index={i} />
                 })}
@@ -129,8 +129,13 @@ export default function PageLayoutUniversal(props) {
     const content = (
         <Animated.ScrollView ref={refer} className={getPageWidth(props.uri, props.data?.config) + ' mx-auto w-full '} keyboardShouldPersistTaps="always" keyboardDismissMode="on-drag">
             <PageContentUniversal {...props} />
-            <MenuFooter cntClasses="w-full flex-row flex-wrap opacity-80 h-16 items-center justify-center" />
-        </Animated.ScrollView>
+            <MenuFooter
+                            cntClasses="mx-auto flex-row flex-wrap gap-1 p-1"
+                            variant="ghost"
+                            size="sm"
+                            itemClassName="text-sm"
+                            
+                        />         </Animated.ScrollView>
     );
 
     return (

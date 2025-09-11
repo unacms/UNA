@@ -15,7 +15,7 @@ import { useIsDesktop } from 'app/context/measure';
 export default function ScrollList({
     content,
     pageData,
-    headerHeight = 64,
+    headerHeight = 56,
     bottomPadding = 64,
     isBackButton = false,
     contentType,
@@ -138,11 +138,9 @@ export default function ScrollList({
     }
 
     return (
-        <View className={`flex-1`} style={{ paddingTop: !isDesktop && !useCustomScrollHandler ? headerHeight : 0, paddingBottom: !isDesktop ? bottomPadding : 0 }}>
+        <View className="flex-auto" style={{ paddingTop: !isDesktop && !useCustomScrollHandler ? headerHeight : 0, paddingBottom: !isDesktop ? bottomPadding : 0 }}>
             {enhanced}
-            {!isDesktop && <Animated.View className="backdrop-blur-lg test2" style={[headerStyle]}>
-
-                <View className="w-full bg-card"  >
+            {!isDesktop && <Animated.View className="backdrop-blur-xl w-full bg-card/80 px-2" style={[headerStyle]}>
                     <Header
                         backButtonPresented={isBackButton}
                         headerComponent={headerComponent}
@@ -154,8 +152,6 @@ export default function ScrollList({
                         isNoContainer={isNoContainer}
                     />
                     {subHeaderComponent}
-                </View>
-
             </Animated.View>}
         </View>
     )

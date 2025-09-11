@@ -109,7 +109,7 @@ function MenuTopItem({ link, title, index, icon, isTitle, isActive }) {
                     <Row
                         className={`items-center justify-center h-12 min-w-14 px-1.5 flex-auto rounded-xl web:duration-200 web:group-active:opacity-50 ${isActive
                             ? 'bg-transparent text-primary'
-                            : 'text-muted-foreground web:group-hover:text-foreground web:hover:bg-secondary/50 '
+                            : 'text-muted-foreground web:group-hover:text-foreground web:hover:bg-muted/60 active:bg-muted'
                             }`}
                     >
                         <Icon

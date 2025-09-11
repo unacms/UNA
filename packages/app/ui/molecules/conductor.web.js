@@ -179,7 +179,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, currentBreakpoi
 
         return (
             <Pressable
-                className={' pupurs' + menu_settings?.class ?? ''}
+                className={' ' + menu_settings?.class ?? ''}
                 onPress={handlePress}
             >
                 <Row className="  hover:cursor-pointer justify-between  flex flex-row h-10 items-center px-3 text-base rounded-xl web:hover:bg-muted items-center ">
@@ -359,7 +359,7 @@ const TabBar = ({ menu, routes, leftSideBar, pageData, currentUser, index, setIn
                 <View className="flex-1">
                     <ConductorMenu currentUser={currentUser} leftSideBar={leftSideBar} routes={routes} index={index} t={t} setIndex={setIndex} getNumCols={getNumCols} currentBreakpoint={currentBreakpoint} onChangeRoute={onChangeRoute} />
                 </View>
-                {(!!pageData.cover_block?.actions_menu) && <Row className="hidden lg:block items-center gap-x-2 justify-end mx-3  ">
+                {(!!pageData.cover_block?.actions_menu) && <Row className="hidden lg:block items-center   ">
                     {/*isHideCover && <CoverMenu
                         {...pageData.cover_block.actions_menu}
                         uri={pageData.uri}
@@ -770,8 +770,8 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
         //if (cellsCustomConfig?.adjustable) {
         return (
             <PanelGroup
-                key={pageData?.uri+'pnl2'}
-                autoSaveId={`cells-${pageData?.uri || 'default'}`}
+                key={`${pageData?.uri || 'default'}-pnl2-${cellsCustomConfig.sizable ? 'sizable' : 'static'}`}
+                autoSaveId={cellsCustomConfig.sizable ? `cells-${pageData?.uri || 'default'}` : undefined}
                 direction="horizontal"
                 className={(layoutName == 'navigator' ? '' : '') + " h-full"}
                 onLayout={() => {
@@ -922,7 +922,7 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
         if (cellsCustomConfig?.adjustable) {
             return (
                 <View className={appSetting('layout', 'max_width')} style={{ height: '100vh', position: 'relative' }}>
-                    <PanelGroup key={data?.uri+'pnl1'} autoSaveId={`cells-navigator`} direction="horizontal" className={appSetting('layout', 'max_width') + " h-full"}>
+                    <PanelGroup key={`${data?.uri}-pnl1-${cellsCustomConfig.sizable ? 'sizable' : 'static'}`} autoSaveId={cellsCustomConfig.sizable ? `cells-navigator` : undefined} direction="horizontal" className={appSetting('layout', 'max_width') + " h-full"}>
                         {isShowColumn(true, currentBreakpoint, cellsCustomConfig.cells?.left) && <>
                             <Panel {...(() => {
                                 const { breakpoint, ...panelProps } = cellsCustomConfig.cells?.left || {};
