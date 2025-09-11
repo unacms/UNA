@@ -179,7 +179,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, currentBreakpoi
 
         return (
             <Pressable
-                className={' pupurs' + menu_settings?.class ?? ''}
+                className={' ' + menu_settings?.class ?? ''}
                 onPress={handlePress}
             >
                 <Row className="  hover:cursor-pointer justify-between  flex flex-row h-10 items-center px-3 text-base rounded-xl web:hover:bg-muted items-center ">
@@ -359,7 +359,7 @@ const TabBar = ({ menu, routes, leftSideBar, pageData, currentUser, index, setIn
                 <View className="flex-1">
                     <ConductorMenu currentUser={currentUser} leftSideBar={leftSideBar} routes={routes} index={index} t={t} setIndex={setIndex} getNumCols={getNumCols} currentBreakpoint={currentBreakpoint} onChangeRoute={onChangeRoute} />
                 </View>
-                {(!!pageData.cover_block?.actions_menu) && <Row className="hidden lg:block items-center gap-x-2 justify-end mx-3  ">
+                {(!!pageData.cover_block?.actions_menu) && <Row className="hidden lg:block items-center   ">
                     {/*isHideCover && <CoverMenu
                         {...pageData.cover_block.actions_menu}
                         uri={pageData.uri}

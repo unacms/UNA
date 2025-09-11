@@ -30,18 +30,18 @@ function createPanelComponent({ baseClass, Component = PanelDef, role, ariaLevel
     };
 }
 
-export const PanelHandler = memo(({ gap, sizable, className = '  ', style }) => {
+export const PanelHandler = memo(({ gap, sizable, className = '', style }) => {
     const { density: effectiveDensity } = useLayoutSettings();
     const densityClass = panelTheme[`u-panel-handler-${effectiveDensity}`] ;
 
     const gapClass = gap && gap.includes(' ') ? gap : gap ? `w-${gap}` : 'w-1';
 
     const defaultClasses = `${gapClass} group transition-all web:duration-200 justify-center items-center flex`;
-    const finalClasses = `${className || defaultClasses} ${densityClass}`;
+    const finalClasses = `${defaultClasses} ${className} ${densityClass}`;
 
     return sizable ? (
         <PanelResizeHandle 
-            className={panelTheme['u-panel-handler']} 
+            className={`${panelTheme['u-panel-handler']} ${finalClasses}`}
             style={style}
         >
             <View className={panelTheme['u-panel-line']} />

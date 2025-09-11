@@ -91,9 +91,8 @@ export const settingsDefault = {
             scrolled:
                 ' my-auto w-full items-cente bg-card/80 backdrop-blur-xl border-b border-border transition-all shadow-sm',
             content: ' h-16 mx-auto justify-between ',
-            content_left: ' flex-row items-center px-2 flex-none  xl:w-80 2xl:w-96 ',
-            content_right:
-                ' items-center justify-end h-full px-4 flex-none  xl:w-80 2xl:w-96 ',
+            content_left: ' flex-row items-center ps-3 2xl:ps-4 pe-1 flex-none xl:w-80 2xl:w-96 ',
+            content_right: ' flex-row items-center justify-end ps-1 pe-3 2xl:pe-4 flex-none xl:w-80 2xl:w-96 ',
             content_center:
                 ' hidden flex-auto xl:flex gap-1 items-center justify-center px-3 max-w-3xl ',
             special: {
@@ -812,6 +811,25 @@ export const settingsDefault = {
         '/create-account': {
             max_width: '',
         },
+        home: {
+            adjustable: true,
+            sizable: false,
+            cells: {
+                left: {
+                    defaultSize: 25,
+                    minSize: 20,
+                    maxSize: 30,
+                    breakpoint: 'xl',
+                },
+                center: { defaultSize: 50, minSize: 40, maxSize: 60 },
+                right: {
+                    defaultSize: 25,
+                    minSize: 20,
+                    maxSize: 30,
+                    breakpoint: 'xl',
+                },
+            },
+        },
         messenger: {
             adjustable: true,
             sizable: true,
@@ -841,7 +859,7 @@ export const settingsDefault = {
                     defaultSize: 25,
                     minSize: 20,
                     maxSize: 30,
-                    breakpoint: 'lg',
+                    breakpoint: 'xl',
                 },
                 center: { defaultSize: 50, minSize: 40, maxSize: 60 },
                 right: {
@@ -933,11 +951,11 @@ export const settingsDefault = {
             cnt: ' rounded-2xl overflow-hidden shadow-lg p-1.5 bg-popover/90 backdrop-blur-xl z-50  ',
         },
         conductor: {
-            menu: '   w-full items-left justify-center  ',
+            menu: ' w-full items-left justify-center ',
             menu_max_width: ' w-full max-w-7xl ',
             content_max_width: ' w-full max-w-7xl ',
             menu_is_dynamic: false,
-            menu_cnt: ' flex-row flex-none gap-1 mx-3 py-2 overflow-x-auto ',
+            menu_cnt: ' flex-row flex-none gap-1 mx-3 h-14 items-center overflow-x-auto ',
             menu_categ_ident: ' pl-12 ',
             right_column_cnt: 'fixed-process px-1.5 sm:px-2 py-4',
             right_column_cnt2: 'hidden xl:flex flex-auto max-w-sm',
@@ -957,7 +975,7 @@ export const settingsDefault = {
             cover_base: 'w-full bg-card',
             cover_content:
                 'items-center h-full w-full overflow-hidden justify-between',
-            cover_small: 'w-full bg-card/90 backdrop-blur-xl shadow-sm'
+            cover_small: 'max-w-7xl mx-auto flex-row w-full px-3 items-center bg-card/80 h-14 backdrop-blur-xl'
         },
        
         checkbox_set: {
@@ -1024,7 +1042,7 @@ export const settingsDefault = {
         button_sizes: {
             default_size: 'base',
             default_variant: 'default',
-            pressed_container: ' bg-primary/10 border border-primary/80 web:border-0 web:ring-1 web:ring-inset web:ring-primary/80 ',
+            pressed_container: ' bg-primary/10  ',
             pressed_text: ' text-primary font-medium ',
             xxs: {
                 rounded: ' rounded-sm ',
