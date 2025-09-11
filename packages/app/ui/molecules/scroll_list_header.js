@@ -125,7 +125,7 @@ export const Header = memo(({
             {(pageData?.context && !pageData?.context?.current?.url && !isHome) && <ContextSelector mode="min" url={pageData?.url} uri={pageData?.uri} data={pageData?.context} />}
             </></Row>}
             {(type !== 'string' && headerContent) && <View className="flex-auto">{headerContent}</View>}
-            <Row className=" items-end px-3">
+            <Row className=" items-end">
                 {rightHeaderComponent ? rightHeaderComponent : memoizedRightComponents}
                 <HeaderElement mode="small"  />
                 {(pageData?.context && pageData?.cover_block?.actions_menu) && <CoverMenu

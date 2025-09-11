@@ -770,8 +770,8 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
         //if (cellsCustomConfig?.adjustable) {
         return (
             <PanelGroup
-                key={pageData?.uri+'pnl2'}
-                autoSaveId={`cells-${pageData?.uri || 'default'}`}
+                key={`${pageData?.uri || 'default'}-pnl2-${cellsCustomConfig.sizable ? 'sizable' : 'static'}`}
+                autoSaveId={cellsCustomConfig.sizable ? `cells-${pageData?.uri || 'default'}` : undefined}
                 direction="horizontal"
                 className={(layoutName == 'navigator' ? '' : '') + " h-full"}
                 onLayout={() => {
@@ -922,7 +922,7 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
         if (cellsCustomConfig?.adjustable) {
             return (
                 <View className={appSetting('layout', 'max_width')} style={{ height: '100vh', position: 'relative' }}>
-                    <PanelGroup key={data?.uri+'pnl1'} autoSaveId={`cells-navigator`} direction="horizontal" className={appSetting('layout', 'max_width') + " h-full"}>
+                    <PanelGroup key={`${data?.uri}-pnl1-${cellsCustomConfig.sizable ? 'sizable' : 'static'}`} autoSaveId={cellsCustomConfig.sizable ? `cells-navigator` : undefined} direction="horizontal" className={appSetting('layout', 'max_width') + " h-full"}>
                         {isShowColumn(true, currentBreakpoint, cellsCustomConfig.cells?.left) && <>
                             <Panel {...(() => {
                                 const { breakpoint, ...panelProps } = cellsCustomConfig.cells?.left || {};

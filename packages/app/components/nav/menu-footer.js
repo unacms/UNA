@@ -1,5 +1,4 @@
 import { View } from 'app/design/view'
-import { Button } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user'
 import { appSetting } from 'app/lib/util'
 import { menuItemsByName, menuItemsByNameNew, getDataForMenu } from 'app/lib/util'
@@ -9,16 +8,19 @@ import Link from 'app/ui/atoms/link'
 
 let footerMenuDataCache = null;
 
-const MenuFooter = ({ cntClasses, btnStyle, menu_items }) => {
+const MenuFooter = ({ cntClasses, btnStyle, menu_items, variant, size, itemClassName }) => {
     const { t } = useTranslation();
     const [menuData, setMenuData] = useState(footerMenuDataCache !== null ? footerMenuDataCache : false);
     const { currentUser } = useCurrentUser();
-    const btnStyle1 = useMemo(() => (
-        btnStyle || {
-            variant: "text",
-            size: "sm",
-        }
-    ), [btnStyle]);
+    // Backward compatibility: derive visual props from legacy btnStyle unless explicitly provided
+    const visualProps = useMemo(() => {
+        const legacy = btnStyle || {};
+        return {
+            variant: variant ?? legacy.variant ?? 'text',
+            size: size ?? legacy.size ?? 'sm',
+            className: itemClassName ?? legacy.className ?? '',
+        };
+    }, [btnStyle, variant, size, itemClassName]);
 
     useEffect(() => {
         if (!menu_items && footerMenuDataCache === null) {
@@ -39,11 +41,14 @@ const MenuFooter = ({ cntClasses, btnStyle, menu_items }) => {
     return (
         <View className={cntClasses}>
             {menu_launcher_items.map((item, index) => (
-                <Link href={`/${item.link}`} key={item.link || index}>
-                    <Button
-                        {...btnStyle1}
-                        title={t(item.title)}
-                    />
+                <Link
+                    href={`/${item.link}`}
+                    key={item.link || index}
+                    variant={visualProps.variant}
+                    size={visualProps.size}
+                    className={visualProps.className}
+                >
+                    {t(item.title)}
                 </Link>
             ))}
         </View>

@@ -83,7 +83,7 @@ function PageContentUniversal({ children, data, layoutName }) {
     return (
         <View className={`mx-auto w-full u-max-width-block gap-y-${gap} p-3 sm:p-4`}>
             <PanelRow gap={gap} cell={topCell} currentBreakpoint={currentBreakpoint} />
-            <PanelGroup autoSaveId={`cells-${uri}-${layoutName}`} direction="horizontal">
+            <PanelGroup key={`cells-${uri}-${layoutName}-${sizable ? 'sizable' : 'static'}`} autoSaveId={sizable ? `cells-${uri}-${layoutName}` : undefined} direction="horizontal">
                 {midCells.map((cell, i) => {
                     return <PanelCell key={cell.key} sizable={sizable} currentBreakpoint={currentBreakpoint} cell={cell} index={i} />
                 })}

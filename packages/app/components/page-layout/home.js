@@ -303,7 +303,8 @@ return;*/
         return (
             <>{BlocksCenter}
                 <PanelGroup
-                    autoSaveId={`cells-home`}
+                    key={`cells-home-${cellsCustomConfig.sizable ? 'sizable' : 'static'}`}
+                    autoSaveId={cellsCustomConfig.sizable ? `cells-home` : undefined}
                     direction="horizontal"
                     className={`${appSetting('layout', 'max_width')} mx-auto w-full flex-auto relative flex-row`}
                     onLayout={(e) => {

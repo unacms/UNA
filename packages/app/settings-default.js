@@ -91,7 +91,7 @@ export const settingsDefault = {
             scrolled:
                 ' my-auto w-full items-cente bg-card/80 backdrop-blur-xl border-b border-border transition-all shadow-sm',
             content: ' h-16 mx-auto justify-between ',
-            content_left: ' flex-row items-center ps-3 2xl:ps-4 pe-1 flex-none xl:w-80 2xl:w-96 ',
+            content_left: ' flex-row items-center ps-1 2xl:ps-2 pe-1 flex-none xl:w-80 2xl:w-96 ',
             content_right: ' flex-row items-center justify-end ps-1 pe-3 2xl:pe-4 flex-none xl:w-80 2xl:w-96 ',
             content_center:
                 ' hidden flex-auto xl:flex gap-1 items-center justify-center px-3 max-w-3xl ',
@@ -812,7 +812,7 @@ export const settingsDefault = {
             max_width: '',
         },
         home: {
-            adjustable: true,
+            adjustable: false,
             sizable: false,
             cells: {
                 left: {
@@ -948,7 +948,7 @@ export const settingsDefault = {
             primaryBg: 'rgba(37,99,235,0.1)',
         },
         dropdown: {
-            cnt: ' rounded-2xl overflow-hidden shadow-lg p-1.5 bg-popover/90 backdrop-blur-xl z-50  ',
+            cnt: ' rounded-2xl overflow-hidden shadow-lg p-1.5 bg-popover/60 backdrop-blur-xl z-50  ',
         },
         conductor: {
             menu: ' w-full items-left justify-center ',
@@ -1055,7 +1055,7 @@ export const settingsDefault = {
                 icon_margin: ' ', // conditional margin for icon container when title is present
                 title_margin: '  ', //
                 hitarea_class: ' relative u-action-hitarea u-action-hitarea-xxs ',
-                hitSlop: { top: 6, right: 6, bottom: 6, left: 6 },
+                hitSlop: { top: 8, right: 8, bottom: 8, left: 8 },
             },
             xs: {
                 rounded: ' rounded-md ',
@@ -1083,7 +1083,7 @@ export const settingsDefault = {
                 icon_margin: ' ', // conditional margin for icon container when title is present
                 title_margin: '  ', // conditional margin for text container when icon is present
                 hitarea_class: ' relative u-action-hitarea u-action-hitarea-sm ',
-                hitSlop: { top: 10, right: 10, bottom: 10, left: 10 },
+                hitSlop: { top: 6, right: 6, bottom: 6, left: 6 },
             },
             
             base: {
@@ -1097,7 +1097,7 @@ export const settingsDefault = {
                 icon_margin: ' ', // conditional margin for icon container when title is present
                 title_margin: ' ', // conditional margin for text container when icon is present
                 hitarea_class: ' relative u-action-hitarea u-action-hitarea-base ',
-                hitSlop: { top: 12, right: 12, bottom: 12, left: 12 },
+                hitSlop: { top: 4, right: 4, bottom: 4, left: 4 },
             },
             lg: {
                 rounded: ' rounded-xl ',
@@ -1209,7 +1209,7 @@ export const settingsDefault = {
                 hitSlop: { top: 6, right: 6, bottom: 6, left: 6 },
             },
             sm: {
-                padding: ' px-1 rounded-md items-center flex ',
+                padding: ' px-1 py-0.5 active:scale-95 rounded-md items-center flex ',
                 hitarea_class: ' relative u-link-hitarea u-link-hitarea-sm ',
                 hitSlop: { top: 8, right: 8, bottom: 8, left: 8 },
             },
@@ -1237,7 +1237,7 @@ export const settingsDefault = {
             'u-link-text-trans': ' web:duration-200',
 
             // Ghost: transparent by default; muted on hover/active
-            'u-link-ghost-cnt': 'group bg-transparent web:hover:bg-accent/10 active:bg-secondary/60 ',
+            'u-link-ghost-cnt': 'group bg-transparent web:hover:bg-muted/60 active:bg-muted ',
             'u-link-ghost-text': ' text-muted-foreground web:group-hover:text-accent ',
             'u-link-ghost-trans': ' web:duration-200 ',
 
