@@ -79,12 +79,24 @@ export default function PageLayout(props) {
                 </AnimatedView>
             </View>
         </View>
-        <MenuFooter cntClasses="w-full flex-row flex-wrap opacity-80 h-16 items-center justify-center" />
+        <MenuFooter
+                            cntClasses="mx-auto flex-row flex-wrap gap-1 p-1"
+                            variant="ghost"
+                            size="sm"
+                            itemClassName="text-sm"
+                            
+                        /> 
     </View>) : (
 
         <View className="w-full flex-col lg:flex-row gap-y-4 mx-auto p-3 p-3 py-16 ">
             <PageContent {...props} />
-            <MenuFooter cntClasses="w-full flex-row flex-wrap opacity-80 h-16 items-center justify-center" />
+            <MenuFooter
+                            cntClasses="mx-auto flex-row flex-wrap gap-1 p-1"
+                            variant="ghost"
+                            size="sm"
+                            itemClassName="text-sm"
+                            
+                        /> 
         </View>)
 
 

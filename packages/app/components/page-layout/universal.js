@@ -129,8 +129,13 @@ export default function PageLayoutUniversal(props) {
     const content = (
         <Animated.ScrollView ref={refer} className={getPageWidth(props.uri, props.data?.config) + ' mx-auto w-full '} keyboardShouldPersistTaps="always" keyboardDismissMode="on-drag">
             <PageContentUniversal {...props} />
-            <MenuFooter cntClasses="w-full flex-row flex-wrap opacity-80 h-16 items-center justify-center" />
-        </Animated.ScrollView>
+            <MenuFooter
+                            cntClasses="mx-auto flex-row flex-wrap gap-1 p-1"
+                            variant="ghost"
+                            size="sm"
+                            itemClassName="text-sm"
+                            
+                        />         </Animated.ScrollView>
     );
 
     return (

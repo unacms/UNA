@@ -21,8 +21,13 @@ export default function PageLayout(props) {
                 <View className='p-3 sm:p-4  web:duration-300 w-full '>
                     {cells}
                 </View>
-                <MenuFooter cntClasses="w-full flex-row flex-wrap opacity-80 h-16 items-center justify-center" />
-            </Animated.ScrollView>
+                <MenuFooter
+                            cntClasses="mx-auto flex-row flex-wrap gap-1 p-1"
+                            variant="ghost"
+                            size="sm"
+                            itemClassName="text-sm"
+                            
+                        />             </Animated.ScrollView>
         return <ScrollList
             refer={refer}
             content={content}

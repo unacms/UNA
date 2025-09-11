@@ -82,8 +82,13 @@ export default function Splash(props) {
                 {appStatic('splash_text')}
                 <PageContent {...props} />
             </View>
-            <MenuFooter cntClasses="w-full flex-row flex-wrap opacity-80 h-16 items-center justify-center" />
-        </>
+            <MenuFooter
+                            cntClasses="mx-auto flex-row flex-wrap gap-1 p-1"
+                            variant="ghost"
+                            size="sm"
+                            itemClassName="text-sm"
+                            
+                        />         </>
     ) : (
         <View
             className={`flex-col justify-center pt-14 lg:pt-0 web:min-h-[calc(100vh-16rem)] w-full absolute`}
@@ -96,8 +101,13 @@ export default function Splash(props) {
                     </AnimatedView>
                 </View>
             </View>
-            <MenuFooter cntClasses="w-full flex-row flex-wrap opacity-80 h-16 items-center justify-center" />
-        </View>
+            <MenuFooter
+                            cntClasses="mx-auto flex-row flex-wrap gap-1 p-1"
+                            variant="ghost"
+                            size="sm"
+                            itemClassName="text-sm"
+                            
+                        />         </View>
     )
 
     return (
