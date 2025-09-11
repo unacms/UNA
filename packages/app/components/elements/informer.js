@@ -22,7 +22,7 @@ export default function ElementInformer({data}) {
         return <></>
 
     return (
-        <View className="w-full mx-auto fixed bottom-0">
+        <View className="w-full mx-auto fixed bottom-16 lg:bottom-1">
             <View className="  w-full border-bdr/50 dark:border-bdr-d/50 mx-auto ">
             {currentUser?.informer?.map((item, index) => {
                    if (item.id == 'sys-account-unconfirmed-email'){
@@ -34,8 +34,8 @@ export default function ElementInformer({data}) {
                     }
                     
                     return (                   
-                        <View key={'informer' + index} className="max-w-screen-lg mx-auto bg-yellow-100/80 dark:bg-yellow-900/80 border dark:border-yellow-800 border-yellow-300 p-3 rounded-lg m-2 gap-y-3 justify-center items-center">
-                            <Text className="text-black dark:text-white">{stripTags(item.msg)}</Text>
+                        <View key={'informer' + index} className="max-w-screen-lg mx-auto bg-accent  p-3 rounded-lg m-2 gap-y-3 justify-center items-center">
+                            <Text className="text-accent-foreground/80">{stripTags(item.msg)}</Text>
                         </View>
                     )
                 })}
